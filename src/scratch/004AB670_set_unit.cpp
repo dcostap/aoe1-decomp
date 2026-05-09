@@ -1,15 +1,64 @@
-// try 10 extern global pointer instead of absolute macro
-class RGE_Base_Game { public: char gap[0x3FC]; short master_obj_id; };
-extern RGE_Base_Game* rge_base_game;
-struct ListInfo { char text[100]; short id; };
-class TListPanel { public: void scroll_cur_line(unsigned char mode, short line, int update_scrollbar); };
-class TRIBE_Screen_Sed { public: char gap_000[0x63C]; TListPanel* unit_list; char gap_640[4]; ListInfo* unit_list_info; void set_unit(short unit); };
+// VA: 004AB670 TRIBE_Screen_Sed::set_unit(short)
+// PDB source: scr_sed.cpp lines 2178-2183 (102 bytes, 31 asm lines)
+// Default flags. No inline asm/hacks.
+//
+// Behavior: if unit == -1, set rge_base_game->master_obj_id to -1 and scroll the unit list to -1.
+// Otherwise set master_obj_id to unit_list_info[unit].id and scroll the unit list to unit.
+//
+// Attempt log:
+// - Existing scratch/baseline is behaviorally correct but VC5 chooses ESI as the preserved parameter register
+//   (`push esi; mov esi,[esp+8]`) while original chooses EDI (`push edi; mov edi,[esp+8]`). This cascades into
+//   push-immediate -1 vs push-register, opposite global-cache register in the non--1 path, and shifted push order.
+// - Tried local-only surface without shared include: same ESI-param family.
+// - Tried `register short` parameter hint: ignored, same output.
+// - Tried `int` parameter with short casts: same ESI-param family.
+// - Tried aliased stack/local reads (`short u = *(short*)&unit`) and aliasing only the -1 call argument: optimized
+//   back to the same ESI-param family.
+// - Tried volatile local alias: forced stack spills/reloads and wrong broad family.
+// - Tried `/Ob0`: no effect. Tried `/O1`: wrong 95-byte family. Removed custom flag file.
+// - Tried else-path `RGE_Base_Game* game` local before index: moved some push scheduling but still ESI-param/global-EDI.
+// - Tried unsigned-short surface: worse constant 0xFFFF stores/pushes and still ESI-param.
+// - Tried reversed positive-first branch: wrong block order and still ESI-param.
+// - Tried `extern RGE_Base_Game* rge_base_game` instead of absolute macro: worse global reload/call shape.
+// Left in scratch: remaining blocker is register-allocation/source-shape around keeping the incoming short parameter
+// in EDI across both branches while using ESI only as the else-path cached global pointer. Calls, stores, offsets,
+// stack cleanup, and behavior are understood.
+
+class RGE_Base_Game {
+public:
+    char gap[0x3FC];
+    short master_obj_id;
+};
+
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+
+struct ListInfo {
+    char text[100];
+    short id;
+};
+
+class TListPanel {
+public:
+    void scroll_cur_line(unsigned char mode, short line, int update_scrollbar);
+};
+
+class TRIBE_Screen_Sed {
+public:
+    char gap_000[0x63C];
+    TListPanel* unit_list;      // +0x63C
+    char gap_640[4];
+    ListInfo* unit_list_info;   // +0x644
+
+    void set_unit(short unit);
+};
+
 void TRIBE_Screen_Sed::set_unit(short unit) {
     if (unit == -1) {
         rge_base_game->master_obj_id = unit;
         unit_list->scroll_cur_line(1, unit, 1);
         return;
     }
+
     rge_base_game->master_obj_id = unit_list_info[unit].id;
     unit_list->scroll_cur_line(1, unit, 1);
 }

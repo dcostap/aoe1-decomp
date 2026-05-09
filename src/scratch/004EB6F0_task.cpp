@@ -173,6 +173,8 @@
 // - revisited case11 parameter-slot reuse more directly: original uses [esp+30] (incoming tactical parameter slot) as the HP accumulator while preserving the tactical pointer in a register. Kept a local saved tactical pointer plus tactical-as-accumulator form because it improves positional diff substantially and brings the switch default target closer (rebuilt displacement 0x157c vs original 0x159e), even though EBX/EDI coloring is still wrong and needs a later pass.
 // - tried the same [esp+30] tactical-parameter-slot accumulator in case4/case10. Direct local store/return improved positional bytes but moved the switch default before later case bodies (rebuilt displacement 0x13ed), contradicting the original jump-table order, so rolled it back to the shared `store_return_one_mid` shape.
 // - probed case11 using `taskID` as the loop index to force [esp+38] instead of [esp+40]; stack slot matched that local original clue but positional worsened by one byte with no edit gain, so left the index in `busyOK` for now.
+// - rewrote gather case 9/14 from one combined `u && ai && zone` condition into explicit bad-object removal plus `else if (zone == ...)`. Positional worsened slightly but edit equality jumped 2716->3657, confirming this is the closer resync/source shape for the first real post-displacement hunk.
+// - inverted gather distance source to `if (gatherDist < nearDist) stop else group` so the stop/currentOrder path is inline and the group path is the taken branch, matching original block polarity around the FPU compare.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
@@ -392,7 +394,9 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         for (gi = 0, unitp = unitsValue; gi < 40; ++gi, ++unitp) {
             if (*unitp == -1) continue;
             RGE_Static_Object* u = md->object(*unitp);
-            if (u != 0 && u->unitAI() != 0 && gatherObj->lookupZone((int)u->world_x, (int)u->world_y) == zone) {
+            if (u == 0 || u->unitAI() == 0) {
+                removeUnitByIndex(gi, md);
+            } else if (gatherObj->lookupZone((int)u->world_x, (int)u->world_y) == zone) {
                 if (busyOK == 0 && u->unitAI()->currentAction() != -1 && u->unitAI()->currentAction() != 0x266)
                     continue;
                 if (taskID == 14)
@@ -401,10 +405,12 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                     nearDist = (float)tactical->strategicNumber(0x29);
                 float gatherDist = u->distance_to_position(gatherLocationValue.x, gatherLocationValue.y, gatherLocationValue.z) - 1.0f;
                 if (gatherDist < 0.0f) gatherDist = 0.0f;
-                if (gatherDist >= nearDist)
+                if (gatherDist < nearDist) {
+                    if (u->unitAI()->currentOrder() != -1)
+                        tactical->stopUnit(*unitp, 100);
+                } else {
                     tactical->groupGatherUnit(*unitp, commanderValue, gatherLocationValue.x, gatherLocationValue.y, gatherLocationValue.z, nearDist, tactical->calculatePriority(gatherDist));
-                else if (u->unitAI()->currentOrder() != -1)
-                    tactical->stopUnit(*unitp, 100);
+                }
             } else {
                 removeUnitByIndex(gi, md);
             }

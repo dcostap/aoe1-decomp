@@ -2,19 +2,21 @@
 // PDB source: scr_sed.cpp lines 1541-1560
 // Default flags
 //
-// attempt log:
-// Multiple attempts, all 79-80/107 matching.
-// Root cause: original saves this→edx, loads game→ecx first thing.
-// My VC5 loads game first and loses this→ecx, cascading reg alloc through 6
-// pointer dereferences. Needs full TU context (scr_sed.cpp) to match.
+// BLOCKER: behavior and field offsets are understood, but VC5 stays in the
+// opposite this/global register basin. Original begins `mov edx,ecx; push esi;
+// mov ecx,[rge_base_game]`, preserving `this` in EDX and game in ECX through the
+// master-object checks. Natural source (macro or extern global, with/without
+// self locals) loads game into EDX first and keeps `this` in ECX, cascading the
+// pointer chain through EDI/ECX instead of EDX/EDI. Tail variants also either
+// hoist the vtable load before `test esi,esi` or use the wrong register for the
+// disabled branch call shape.
 //
-// Also: call [reg+0x10h] (indirect through memory) vs mov reg,[reg+0x10h]; call reg
-// (through register). Minor instruction encoding difference.
-//
-// Fields: player_num @+0x4B8 (short), world @+0x928, game @0x62C574 (global),
-// game->sub_game_mode @+0x1B8, game->master_obj_id @+0x3FC (short).
-// World->players @+0x40, player->master_objects @+0x24.
-// Object type @+4 (byte), flag @+0x16C (byte).
+// Attempt log:
+// 1. Original scratch with macro global: behavior right, but game loaded first into EDX; no initial `mov edx,ecx`.
+// 2. extern `rge_base_game` plus explicit self local: same game-in-EDX/this-in-ECX basin.
+// 3. volatile self local forced a stack spill and worse prologue.
+// 4. branch-local vs preloaded vtable tail: preloaded tail gives smallest edit diff, branch-local closer to original test placement but larger edit diff.
+// 5. variant_lab over macro/extern globals, no/local/ref self, this/self/split access, branch/preloaded vtable tails, and vc5-small flags: no exact. Only four asm families; all first mismatch at offset 1 due to missing `mov edx,ecx`.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
