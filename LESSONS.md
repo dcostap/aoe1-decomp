@@ -3703,3 +3703,15 @@ This can produce original-looking code such as loading the higher-offset value f
 ### Object and node padding offsets can decide the saved-register basin
 
 When a simple list-walk/free loop is behaviorally right but VC5 saves an extra register or chooses EBP instead of EBX for `this`, verify both the containing object offset and the node field offsets before reshaping control flow. A class with virtuals needs the vptr counted in the padding (`pad_04[target-4]`, not `pad_00[target]`), and a linked-list node's `next` may sit after an unused/padding field. Getting `this->list` and `node->next` at the exact binary offsets can remove artificial temporaries (like an EDI-held next pointer) and land the natural two-register loop.
+
+## Lesson: Avoid naming a reusable divisor when the original delays saving EAX across a call
+
+For expressions like `debug_rand(...) % member + (base - member / 2)`, naming `int sep = member` can make VC5 allocate the divisor in EDI from the first load (`mov edi,[...] ; test edi,edi`). If the original instead loads/tests in EAX and only does `mov edi,eax` immediately before the call, try leaving the member as direct rereads inside the expression:
+
+```cpp
+if (this->member > 0) {
+    this->out = debug_rand(file, line) % this->member + (this->base - this->member / 2);
+}
+```
+
+Even though this looks like extra source-level rereads, VC5 can keep the tested EAX value until the call-save point and then generate the expected delayed `mov edi,eax`, idiv, and signed-half arithmetic. Use when a correct local-divisor version is stuck in an early saved-register family.
