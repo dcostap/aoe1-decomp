@@ -3598,3 +3598,23 @@ Try when:
 
 Caveat:
 - only prefer this when the original keeps the array base in a register and advances via index/stride-compatible addressing; true pointer-walk originals may still need a carried pointer local.
+
+## Lesson: Trust odd binary-observed FPU operands over natural distance formulas
+
+When an x87-heavy distance/length loop is close but the stack schedule differs, trace the actual `fld`/`fsub` operands before assuming the source was the natural mathematical formula. A duplicated load can mean one value is intentionally used in two different subtractions.
+
+Example pattern:
+```cpp
+sqrtf((next.x - prev.x) * (next.x - prev.x)
+    + (next.y - prev.y) * (next.y - prev.y)
+    + (next.z - prev.x) * (next.z - prev.z));
+```
+This matched an original sequence that loaded `next.z` twice, then subtracted `prev.z` for one factor and `prev.x` for the other. The natural `dz * dz` expression produced a different x87 stack order.
+
+Try when:
+- the function is an FPU expression loop and control flow/register setup already matches;
+- the original has repeated `fld` of the same field and asymmetric `fsub` operands;
+- decompiler output hints at a strange cross-axis term.
+
+Why it helps:
+- VC5 preserves much of the source expression tree in x87 stack scheduling; correcting one “weird” operand can snap the whole loop into the exact basin.

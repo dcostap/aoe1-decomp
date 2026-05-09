@@ -4,6 +4,13 @@
 //   ctor; jmp common; null xor eax; common mov [esi+58h],eax before EH teardown;
 //   rebuilt new expression sinks the store/teardown into the non-null path.
 // 2026 retry after 0052E530: revalidated, same 21-byte positional / 15-byte edit diff.
+// 2026-05-09 GraniteCub: tried 18 focused variants: direct assignment, zero-init local,
+// explicit if/goto/two-stage common-store forms, assignment-in-if/comma/do-while,
+// param2 local, this alias, volatile local, no-virtual command surface, void*/int member,
+// ctor signature casts, and brief /O1+/GX flag probe. Same blocker as 0052E650:
+// direct new keeps exact EH/new/ctor family but sinks store into success path; artificial
+// `if (p == 0) p = 0;` reaches a closer common-store basin (16 positional/11 edit)
+// but inserts a redundant post-merge test before the store. Left cleaner direct-new source.
 // FLAGS: /GX
 class RGE_Game_World;
 

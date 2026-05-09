@@ -1,5 +1,15 @@
 // 004319E0 RGE_Communications_Queue::ExpectedNextSequence
-// HollowSnowdrop pass: body through the loop now matches exactly; remaining mismatch is localized to the final byte-mask return tail. Best source below exact size 91/91, 15.38% positional / 14.29% edit. Tried ternary, explicit mask/g local, and inverted compare spellings; they change register/order but do not hit original `or cl,0xff; pop edi; cmp cl,bl; mov ecx,[global]; sbb al,al; pop esi; not al; pop ebp; and eax,ecx` tail.
+// Default flags.
+// HollowSnowdrop pass: body through the loop matches exactly; remaining mismatch was localized to final byte-mask return tail.
+// MidnightLily attempts:
+// - Baseline confirmed loop body exact; original tail is `or cl,0xff; pop edi; cmp cl,bl; mov ecx,[global]; sbb al,al; pop esi; not al; pop ebp; and eax,ecx`.
+// - Try 1: `unsigned char c=0xff; if (c >= seq) return global; return 0;` improved tail to edit diff 9 but VC5 loads global before `or al,0xff` and uses AL, not CL.
+// - Try 2/3: derive `c`/temp from `this` to encourage CL (`(unsigned char)(unsigned int)this`, byte of int temp); optimized back to AL tail.
+// - Try 4/5: mask local and `register unsigned char c`; same AL/register family.
+// - Try 6/7: result/local and ok-before-global forms changed not width/order (`not eax`, ECX mask) but still not original CL tail.
+// - Try 8: attempted `&this` byte expression; VC5 rejects `&` on `this`, rolled back.
+// - Try 9: /O1 probe wrong size/family (84 bytes), flag removed.
+// Left in scratch: best source below has exact loop/body and equivalent return logic; blocker is final tail register/order selection (CL vs AL and pop/global-load order). No inline asm/hacks.
 
 extern int DAT_0062cf40;
 
@@ -44,8 +54,10 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(unsigned long turn,
     } while (i <= this->HighQueueDepth);
 
     {
-        unsigned char c;
-        c = 0xff;
-        return (unsigned char)(DAT_0062cf40 & (unsigned char)-(c >= seq));
+        unsigned char c = 0xff;
+        if (c >= seq) {
+            return (unsigned char)DAT_0062cf40;
+        }
+        return 0;
     }
 }

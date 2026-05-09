@@ -3,6 +3,12 @@
 // but remaining drift is small condition/codegen around effect kind and zero enable arg. Original uses
 // 32-bit `sub ecx,65; je skip; dec ecx; jne skip; push 0`; VC5 either emits an extra `test ecx,ecx`
 // after dec and reuses ECX for `push ecx`, or byte-register ops if kind is unsigned char.
+// 2026-05-09 GraniteCub: tried 18 focused variants around the stubborn hunk: `--kind == 0`,
+// `kind--; if/else`, goto labels after dec, switch on adjusted kind, switch/direct byte tests,
+// signed/long kind, explicit zero locals/volatile zero/constant spellings, and tech_abling second
+// parameter widths (`int`, `long`, `short`, `char`, `unsigned char`). All stayed in the same
+// 33 positional / 13 edit diff basin or regressed. Blocker remains VC5's redundant post-dec
+// `test ecx,ecx` plus `push ecx` instead of original flag-preserving `dec ecx; jne` and `push 0`.
 
 class TRIBE_Player {
 public:
