@@ -8,6 +8,10 @@
 // >10 attempts: leaving in scratch at the closest basin rather than churning wider context
 // 2026 retry: staged size locals/colors-header-sizeImage/total forms regressed to 10-byte drift;
 // restored closest direct memcpy expression with remaining 6-byte second-size register-coloring drift.
+// 2026-05-09 GraniteCub: tried 16 focused variants: second-size expression reorder/shift/raw offsets,
+// header/img temps, macro/helper, positive if/label tail, nonvolatile+volatile-cast surfaces,
+// HGLOBAL temp, and memcpy return/calling-convention decl tweaks. Best remains 6-byte
+// register-coloring drift in the second size calculation before memcpy; no exact match.
 extern void* memcpy(void* dst, const void* src, unsigned long n);
 
 class tagBITMAPINFOHEADER {

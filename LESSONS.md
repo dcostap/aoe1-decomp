@@ -3567,3 +3567,23 @@ When a VC5 match is down to a commutative-looking x87 expression (`value * membe
 ### Split chained member calls to prevent argument interleaving
 
 When a call result is immediately used for another member call and later another argument-producing call feeds a small wrapper, VC5 can interleave argument pushes if the source keeps everything as one expression. If the original shows one call's full argument block, call, `mov ecx,eax`, second call, then a separate helper call whose result is pushed into a wrapper, split the expression into named pointer/message temporaries. This preserves the natural call boundaries and avoids extra/early pushes from nested argument evaluation.
+
+## Lesson: `while(1)` with continue bottom plus goto success can restore VC5's direct `jl` backedge
+
+For tiny counted search loops where a natural `do { ... } while (++i < count)` compiles to `jge exit; jmp loop` but the original has the compact bottom `cmp i,count; jl loop`, try a positive outer guard and an infinite loop whose bottom is spelled:
+
+```cpp
+if (i < count) continue;
+return 0;
+```
+
+If the success return must be placed after the loop-fail return, route the match through a trailing `goto found; return 1;` rather than returning directly inside the loop.
+
+Try when:
+- the loop body and register choices already match, but the only structural drift is a 4-byte inverted loop exit plus jump instead of a 2-byte `jl` backedge;
+- the original has distinct return blocks for loop-fail, success, and early-empty cases.
+
+Why it helps:
+- the positive outer guard preserves the separate early-empty tail;
+- the `continue` bottom encourages VC5 to emit the backward conditional branch directly;
+- the `goto found` success path can keep the success return after the loop-fail return without disturbing the loop body.
