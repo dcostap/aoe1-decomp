@@ -3663,3 +3663,23 @@ Try when:
 - original constructor loop checks `i >= cap` before any stores and returns immediately;
 - after the active-count loop, a second loop fills remaining slots;
 - natural do/while source shifts the `i >= cap` check below stores or emits an extra early epilogue before the second phase.
+
+## Lesson: Declare global byte bases as `char*` to recover indexed LEA/load/store sequences
+
+When a global table base is used only for byte-offset arithmetic, declaring it as `extern char*` and indexing it directly can steer VC5 into the original register/addressing basin:
+
+```cpp
+extern char* global_base;
+int* p = (int*)(global_base + index * 4 + OFFSET);
+int old = *p;
+*p = old - 1;
+```
+
+This can emit a separate global load into the expected register plus `lea address`, `mov value`, `dec`, `mov [address],value`, instead of shorter or shifted forms such as `a1` global loads, memory `dec`, or recomputed `[base+index]` stores.
+
+Try when:
+- the logic is correct but the global table load uses `mov eax,[imm]`/wrong register instead of `mov edx,[imm]`;
+- VC5 collapses a read-modify-write on a global indexed table or emits a one-byte-short branch-shifting variant.
+
+Caveat:
+- use this only when the global truly is being treated as an untyped byte base in the original addressing; typed globals may be preferable for ordinary field access.

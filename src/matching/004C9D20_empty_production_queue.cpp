@@ -1,30 +1,16 @@
 // VA: 004C9D20 TRIBE_Building_Object::empty_production_queue()
 // PDB source: t_b_obj.cpp lines 1119-1131 (97 bytes, 23 asm lines)
 // Default flags
-//
-// __thiscall: this in ecx, no stack params. void return (ret, not ret N).
-//
-// 96/97 bytes matching. Left in scratch.
-//
-// Difference: VC5 optimizes `arr[pid]--` to `dec dword [ecx+eax*4+0A34h]`
-// (7 bytes) instead of the original's `lea eax,[edx+ecx*4+0A34h]; 
-// mov ecx,[edx+ecx*4+0A34h]; dec ecx; mov [eax],ecx` (17 bytes).
-// This is a stable VC5 version optimization — the newer compiler recognizes
-// the read-modify-write pattern and uses the single-instruction form.
-// Net effect: 10 bytes saved in the array access, 9 NOPs fill the gap,
-// making the section 96 bytes vs the original 97.
-//
-// Everything else matches exactly:
-// - push esi; mov esi, ecx prologue
-// - mov ax, [esi+1DAh]; cmp ax, 0FFFFh; je skip for -1 check
-// - cmp ax, 4; jne skip_attr for == 4 check
-// - mov eax, [esi+0Ch] for owner_player access
-// - movsx eax, word [eax+4Ah] for player_id sign extension
-// - mov word [esi+1DAh], 0FFFFh for setting need_attr to -1
-// - mov ecx, [esi+1D4h]; mov word [esi+1CEh], 0 for queue clear
-// - call delete_list on production_queue_actions
-// - mov al,[esi+1D8h]; inc al; mov [esi+1D8h],al for flag increment
-// - pop esi; ret epilogue
+// Exact match.
+// Attempts:
+// - Initial scratch with `extern void* rge_base_game` and `(char*)game + pid*4 + off` was behaviorally correct
+//   but one byte short / wrong register family around the global table decrement. VC5 used `a1`/shorter global
+//   load or different base/index registers, shifting the branches.
+// - Tried volatile pointer, reordered pid/game/pointer/old locals, player local, and function-scope locals; all
+//   stayed in the same near-miss family.
+// - Winning shape: declare the global table base as `extern char* rge_base_game` and index it directly
+//   (`(int*)(rge_base_game + pid * 4 + 0xA34)`). This makes VC5 load the global into EDX and materialize
+//   the LEA + load + dec + store sequence exactly instead of the shorter/shifted forms.
 
 struct TRIBE_Player {
     char gap_4A[0x4A];
@@ -50,15 +36,14 @@ struct TRIBE_Building_Object {
     void empty_production_queue();
 };
 
-extern void* rge_base_game;  // 0x62C574
+extern char* rge_base_game;  // 0x62C574
 
 void TRIBE_Building_Object::empty_production_queue() {
     short need_attr = this->production_queue_need_attr;
     if (need_attr != -1) {
         if (need_attr == 4) {
-            void* game = rge_base_game;
             int pid = (int)(short)this->owner_player->player_id;
-            int* val_p = (int*)((char*)game + pid * 4 + 0xA34);
+            int* val_p = (int*)(rge_base_game + pid * 4 + 0xA34);
             int old = *val_p;
             int result = old - 1;
             *val_p = result;
