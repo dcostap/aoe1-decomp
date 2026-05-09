@@ -3637,3 +3637,29 @@ Try when:
 
 Caveat:
 - use narrowly; volatile rereads can add unwanted stack/local traffic in non-FPU contexts.
+
+### Natural virtual destructor surface can beat manual vptr/base-dtor plumbing
+
+For EH-framed VC5 destructors that restore a derived vtable, call a few virtual methods, then tail into the base destructor, prefer a real `virtual ~Base()` / `virtual ~Derived()` class surface and let the compiler emit the vptr restore and base-dtor call. Manual `this->vtable_ptr = addr; ... this->Base::~Base();` can be behaviorally identical but may reorder the vptr store after object loads/EH-state setup and route the base destructor through an extra local thunk/call basin. A natural virtual destructor declaration can make VC5 place the vptr store at the source-line boundary and emit the direct base destructor tail expected by the original.
+
+## Lesson: `while (1)` with top capacity return and bottom continue can preserve constructor fill-loop layout
+
+For constructors that partially initialize fixed-capacity arrays from a requested count, a natural `do { if (i >= cap) return; stores; } while (i < count)` may let VC5 move the capacity check after the stores or create an early epilogue before the second fill phase. Spelling the first fill as:
+
+```cpp
+while (1) {
+    if (i >= CAP) return;
+    // stores for active entries
+    ++i;
+    ++p;
+    if (i < this->count) continue;
+    break;
+}
+```
+
+can keep the original top-of-loop capacity guard, store block, reload of `this->count`, and fallthrough into the second fill loop.
+
+Try when:
+- original constructor loop checks `i >= cap` before any stores and returns immediately;
+- after the active-count loop, a second loop fills remaining slots;
+- natural do/while source shifts the `i >= cap` check below stores or emits an extra early epilogue before the second phase.

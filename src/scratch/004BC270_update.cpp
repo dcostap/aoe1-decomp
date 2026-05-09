@@ -1,4 +1,12 @@
 // VA: 004BC270 RGE_Sound::update
+// 2026-05-09 GraniteCub: tried 14 focused variants. Best basin is a `while` loop with outer
+// `push ebp/push esi`, body/call/store exact after resync, and only 10 edit bytes drift. Do-while
+// and nested-positive source families regressed to missing early EBP save (90 positional/32 edit).
+// Tried i/offset declaration order, block scoping, positive/nested cache guards, cache local,
+// goto/return shape, volatile counter, and while vs do-while. Remaining blocker in best while basin:
+// VC5 saves EDI too early (before initial sound_num/cache guards) and uses `je` for cache_time==0,
+// while original delays `push edi` until after the redundant second sound_num test and uses `jbe`.
+// Left source in the best edit-diff basin; no inline asm/hacks.
 
 class TDigital {
 public:

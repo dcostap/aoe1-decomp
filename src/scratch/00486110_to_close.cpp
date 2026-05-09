@@ -11,6 +11,13 @@
 // `jge exit; jmp loop` (4 bytes) instead of `jl loop` (2 bytes). The compiler
 // inverts the loop-end condition when a `return 1` exists inside the body.
 // The epilogue difference saves ~1 byte.
+// 2026-05-09 GraniteCub: tried 20 focused variants: while/for/goto/continue loop
+// forms, bottom conditions `i < count`, `count > i`, `i - count < 0`, `!(i >= count)`,
+// `count - i > 0`, volatile i/count checks, pointer vs reference info_line, and local
+// declaration/order changes for count/radius/x/y. The algebraic bottom tests can force
+// the desired `cmp esi,edi; jl` but make VC5 spill count to the stack and add a prologue
+// `push ecx`; natural do-while keeps the compact body but compiles to a 96-byte text
+// section (checker cannot compare 97 bytes). Leaving the original closest source.
 
 struct RGE_Object_Info_Line {
     char gap_00[0x24];
