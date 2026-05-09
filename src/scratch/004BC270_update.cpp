@@ -31,24 +31,18 @@ public:
 
 void RGE_Sound::update(unsigned long now) {
     short count = this->sound_num;
-    if (count <= 0) {
-        return;
-    }
-    if (this->cache_time == 0) {
-        return;
-    }
+    if (count <= 0) return;
+    if (this->cache_time == 0) return;
     int i = 0;
-    if (count <= 0) {
-        return;
-    }
+    if (count <= 0) return;
     int offset = 0;
-    do {
-                RGE_Sound_Info* entry = (RGE_Sound_Info*)((char*)this->sounds + offset);
-                if (entry->loaded == 1 && (now - entry->time) > this->cache_time) {
-                    entry->digital_sound->unload();
-                    ((RGE_Sound_Info*)((char*)this->sounds + offset))->loaded = 2;
-                }
-                ++i;
-                offset += 0x24;
-    } while (i < this->sound_num);
+    while (i < this->sound_num) {
+        RGE_Sound_Info* entry = (RGE_Sound_Info*)((char*)this->sounds + offset);
+        if (entry->loaded == 1 && (now - entry->time) > this->cache_time) {
+            entry->digital_sound->unload();
+            ((RGE_Sound_Info*)((char*)this->sounds + offset))->loaded = 2;
+        }
+        ++i;
+        offset += 0x24;
+    }
 }

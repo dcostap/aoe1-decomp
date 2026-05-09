@@ -3618,3 +3618,22 @@ Try when:
 
 Why it helps:
 - VC5 preserves much of the source expression tree in x87 stack scheduling; correcting one “weird” operand can snap the whole loop into the exact basin.
+
+## Lesson: Volatile parameter rereads can preserve duplicate x87 stack operands
+
+When VC5 should keep two copies of the same float parameter on the x87 stack (for example `fld param; fld param; fcomp 0.0; fadd member`) but natural source loads another operand and uses `fxch`, reread the parameter through a volatile lvalue in each source expression:
+
+```cpp
+float sum = *(volatile float*)&amount + this->hp;
+...
+if (*(volatile float*)&amount < 0.0f) { ... }
+```
+
+This can force separate stack-parameter `fld` instructions and preserve the original duplicate-operand FPU schedule. Combine with positive success-arm spelling for later FPU comparisons when the original has `test ah,41h; je fail` and success falls through.
+
+Try when:
+- the first mismatch is an x87 `fld member`/`fxch` sequence instead of two `fld [esp+param]` loads;
+- the parameter is reused for both arithmetic and a sign/zero comparison.
+
+Caveat:
+- use narrowly; volatile rereads can add unwanted stack/local traffic in non-FPU contexts.
