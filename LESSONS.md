@@ -3715,3 +3715,21 @@ if (this->member > 0) {
 ```
 
 Even though this looks like extra source-level rereads, VC5 can keep the tested EAX value until the call-save point and then generate the expected delayed `mov edi,eax`, idiv, and signed-half arithmetic. Use when a correct local-divisor version is stuck in an early saved-register family.
+
+## Lesson: Let VC5 synthesize sparse-switch classification tables
+
+When original code shows a range-normalized sparse switch (`add eax,-min`, unsigned range check, byte classification table, then jump table), a manual reproduction with an explicit class table plus second switch can force the wrong table/check basin. Try the natural source first:
+
+```cpp
+switch (value) {
+case A:
+case B:
+    return X;
+case C:
+    return Y;
+default:
+    return D;
+}
+```
+
+VC5 can synthesize the byte class table and grouped return blocks exactly from grouped sparse case labels. Preserve the original grouped return order if visible from line records/asm, but do not pre-encode the classifier table unless the natural switch fails.
