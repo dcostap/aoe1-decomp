@@ -25,21 +25,44 @@
 // - Try 8: `register short oid` collapsed back to try 1 (single missing 66 prefix).
 // - Try 9: temporary /O1 probe emitted only 58 bytes, wrong family; removed flag.
 // - Try 10: `const short oid` also collapsed to try 1.
-// Left in scratch: best source below is behaviorally right and has only the stable
-//   1-byte width drift at the obj_id load (`8b54240c` vs `668b54240c`), which shifts
-//   the remainder by one byte. No inline asm/hacks used.
+// - Try 11: declaration-order probes for pp/uid/oid and split assignment forms
+//   all kept the cx/early-unique_id-store family when the obj_id local was plain short.
+// - Try 12: volatile destination stores preserved source order but still used cx
+//   for the word load and moved the load after the pre_paid/unique_id stores.
+// - Try 13: pointer/ref/union/struct volatile reads of obj_id all collapsed back
+//   to the best one-byte dword-load family.
+// - Try 14: member-initializer/autovtable constructor surface shifted base `this`
+//   to +4 and was a wrong-family broad mismatch.
+// - Try 15: direct `this->obj_id = obj_id` before the other stores produced the
+//   exact `mov dx,[esp+0Ch]` load, but VC5 also stored obj_id before unique_id/vptr.
+// - Try 16: tried /Ob0, /Og, /Op, /Os, and /GX; /Os was wrong-size and the others
+//   kept the same one-byte width drift, so no per-function flag is kept.
+// - Try 17: real typed RGE_Action/TRIBE_Action_Make_Obj surface (matching load/save
+//   field layout) compiled to the same best one-byte dword-load drift as raw stores.
+// ACCEPTED_DRIFT: reviewed by Boss. Non-zero diff is a single load-width encoding
+// difference for obj_id: rebuilt uses `mov edx,[esp+0Ch]` while original uses
+// `mov dx,[esp+0Ch]`; the later store is `mov [esi+40h],dx`, so the high half of
+// edx is unused. Memory effects, call/cleanup, stores, and return are identical;
+// remaining positional diff is one-byte shift fallout plus final padding NOP.
 
 class RGE_Action_Object;
 
 class RGE_Action {
 public:
-    char _gap[0x40];
+    virtual ~RGE_Action();
+    short action_type;
+    char gap_06[0x3A];
+
     RGE_Action(RGE_Action_Object* obj, int type);
 };
 
 class TRIBE_Action_Make_Obj : public RGE_Action {
 public:
-    char gap_40[0x10];
+    short obj_id;
+    int work_done;
+    int unique_id;
+    unsigned char pre_paid;
+
     TRIBE_Action_Make_Obj(RGE_Action_Object* obj, short obj_id, int unique_id, unsigned char pre_paid);
 };
 
@@ -50,10 +73,10 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj, short obj_i
     int uid = *(volatile int*)&unique_id;
     const short oid = *(volatile short*)&obj_id;
 
-    *(unsigned char*)((char*)this + 0x4C) = pp;
-    *(int*)((char*)this + 0x48) = uid;
+    this->pre_paid = pp;
+    this->unique_id = uid;
     *(int*)this = 0x5751A8;
-    *(short*)((char*)this + 4) = 0x66;
-    *(short*)((char*)this + 0x40) = oid;
-    *(int*)((char*)this + 0x44) = 0;
+    this->action_type = 0x66;
+    this->obj_id = oid;
+    this->work_done = 0;
 }

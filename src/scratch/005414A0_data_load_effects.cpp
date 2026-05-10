@@ -22,6 +22,8 @@
 // 10. Store through pointer-to-member slot local: optimized back to sunk-store basin.
 // 11. Volatile local assigned from natural new: optimized back to sunk-store basin.
 // 12. variant_lab over member volatility, direct/local/ternary/ifelse/volatile/goto shapes, and vc5-risky flags: no exact; best default families are sunk-store or volatile-spill; /Oa slightly changes spill ordering but still not exact.
+// 13. LemonLily pass: tried direct member assignment, plain local, assignment-expression, empty if(e), goto/common-label, if/else self-assign, slot pointer/ref, volatile member declaration, raw +0x4C store, comma expression, volatile filename/this, int/long volatile reads, and address-escape forms. They collapse to either sunk-store/null-tail or common-tail-with-stack-spill; none produced original direct `mov [esi+4Ch],eax` common tail.
+// 14. Additional temporary flag probes on the int-volatile-read family (/Oa, /Ow, /Og, /Oi, /Ox /Oa, no /Oy, /Ob0, /Gs) did not match; /Oa-/Ow reduce edit diff slightly but still keep extra stack traffic. Original /GX flag file kept unchanged.
 
 class RGE_Effects {
 public:

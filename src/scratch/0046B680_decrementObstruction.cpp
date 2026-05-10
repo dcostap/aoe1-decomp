@@ -25,6 +25,9 @@
 // - ZestyPond 10: reuse y parameter as lane after separate byteIndex local: smaller edit diff but still EDI and shifted prologue.
 // - ZestyPond 11: positive field guard on mirror surface recovered original jbe body branch; remaining blocker is prologue/EDI basin.
 // - variant_lab: 96 default variants and 1152 vc5-risky variants over flat/2D surface, pointer shapes, lane type, named/inline shift, guard polarity, and flags found no exact match. Best edit diff family was /O1 but wrong 80-byte loop/prologue; best default body is the mirror-increment source below.
+// - LemonLily pass: tried 19 additional source shapes focused on forcing original x-first/no-EDI basin: row-first temporaries, mutating x/y parameters, PathingSystem* this+row aliases, raw char* base+row aliases, 2D rows, index-temp reuse, register locals, and no-shift-local forms. None removed the stable extra EDI save while preserving the original body.
+// - Best new x-first family (adjusted this/char* base) loaded x then y and computed row in ESI, but still pushed EDI for y/col or this alias and often spilled CL; closest first mismatch remained the extra push EDI at offset 0x0C.
+// - Reconfirmed current mirror-increment source remains the smallest/cleanest 82-byte build despite swapped initial parameter loads and the EDI save/pop family.
 
 extern const unsigned char ObstructionValueShift[];
 extern const unsigned char ObstructionValueMask[];

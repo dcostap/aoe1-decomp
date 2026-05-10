@@ -18,6 +18,12 @@
 // - Try 6/7/9: direct assignment expression, ternary common store, and separate pointer declaration all collapsed to baseline
 //   success-path store/null-to-tail family (edit diff 15).
 // - Try 8: /Ob0 flag with direct-new variants had no effect; restored /GX-only flag.
+// - 2026-05-10 pass: retried 20+ focused variants: direct/local new, common-store if/else arms, empty if arms,
+//   assignment-in-condition, goto common store, zero-init local, parameter reuse, volatile local, bool/switch/do/while/for
+//   null forms, ternary/self-assignment/comma no-ops, and narrow flag probes (/O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oy-).
+//   No exact. Best is still the current common-tail source; it has the original ctor-success jump, null xor, and common
+//   member-store intent, but VC5 inserts a no-op `test eax,eax; jne +0` at the join, pushing the epilogue past the
+//   88-byte function window (tail disassembles incomplete). Not an accepted_drift suggestion under the 00449E20 ruling.
 // Left in scratch: behavior and EH/call surface are correct; blocker is VC5 source shaping around null-path/common-store join.
 // No inline asm/hacks.
 

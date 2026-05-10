@@ -5,6 +5,13 @@
 // tmp/base/off local declaration orders, long/register/volatile temps, af11 store and speed-calc orderings, int-pointer tmp,
 // direct expression stores, and if/else dispatch. Best edit basin is current source: af12 register order and af11 block match,
 // but VC5 inserts `mov eax,edx` before the two af12 stores and stores oframe2 from eax, adding 2 bytes and shifting the rest.
+// 2026-05-10 pass: retried char*/int/uint/long oframe fields, packed FlicHead surface, raw pointer stores,
+// pointer aliases, duplicate expressions, compound assignment forms, local/self/volatile self shapes, if/else dispatch,
+// switch default/tail variants, and narrow flags (/O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oy-). No exact; best remains
+// default /O2 with only the af12 copy/scheduling drift (edit diff 7.9545%, positional 73.8636%).
+// ACCEPTED_DRIFT review denied by Boss: although the AF12 register copy is equivalent in isolation, the extra 2 bytes
+// push the final `mov [ecx+60],edx; ret` past the 88-byte function window, so the tail disassembles incomplete (`8951`)
+// and original final `60 c3` bytes are missing inside the compared function. Leave in scratch.
 // Blocker: need original af12 `mov eax,[ecx]; mov edx,[ecx+5c]; add edx,eax; mov [ecx+5c],edx; mov [ecx+60],edx`
 // without the extra result copy; no inline asm/hacks used.
 
