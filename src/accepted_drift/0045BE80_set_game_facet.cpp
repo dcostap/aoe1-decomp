@@ -17,6 +17,14 @@
 // 7. Uninitialized info + shape local: regressed to EAX facet.
 // 8. Explicit hotspot_y local and commuted bottom expression: no change from best.
 // 9. variant_lab over combined/nested guards, five info/store/order shapes, direct/local/commuted bottom, and vc5-small flags: no exact. Only five asm families; best remains base-before shape with edit diff 8.
+// 10. Follow-up tried store-before-info, raw shape pointer, int base, mutating facet, direct array, and repeated direct array accesses; all regressed to EAX-facet/ESI-base or extra saved-register families.
+// 11. Tried block-scoped bottom temp, volatile/nonvolatile hotspot_y temp, raw bottom field load, and split shape_info statements; best-family variants kept the same 4-byte schedule drift, volatile temp was worse.
+// 12. Flag probes /Ob0, /Og, /Ot no effect; /Oa regressed, /Os and /O1 were wrong-size. No per-function flag kept.
+// ACCEPTED_DRIFT: reviewed by Boss. Behavior and all non-scheduling bytes are
+// correct. Remaining drift is a localized independent-instruction scheduling shift:
+// rebuilt saves esi and loads shape_info before storing game_facet/shifting facet,
+// while original stores game_facet and shifts first. The same values are used, all
+// later stores/subtractions match, and size/epilogue are intact (no truncation).
 
 class Shape_Info {
 public:

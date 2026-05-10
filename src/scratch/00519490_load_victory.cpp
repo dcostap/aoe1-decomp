@@ -11,7 +11,14 @@
 // exact EH/new/ctor family but sinks store into success path; artificial
 // `if (v == 0) v = 0;` reaches closer common-store basin but inserts redundant
 // post-merge test/sete code before store. Left cleaner direct-new source.
-// No inline asm/hacks.
+// 2026-05-10 SpruceGlow: tried 15 more focused variants. Direct store, ternary, and two-local result stayed in
+//   the baseline success-store/null-tail family (edit diff 15, first mismatch 50). Null normalization, goto join,
+//   param locals, this alias, self-assign, while/do-break, param-zero reuse, void* member, and explicit this store all
+//   reached the better common-store basin but kept the redundant `test eax,eax; jne +0` at the join (edit diff 11,
+//   first mismatch 78). If/else store worsened edit diff 17; assignment-in-condition worsened edit diff 26; local int
+//   param3 and plain/incomplete ctor surface were worse. Kept the better common-store source below.
+// Left in scratch: behavior/EH/allocation/ctor push order are correct; blocker is the same redundant join-test plus
+// tail/epilogue truncation seen in neighboring init helpers. Not proposing accepted_drift. No inline asm/hacks.
 class RGE_Player;
 class TRIBE_Victory_Conditions;
 
@@ -30,7 +37,9 @@ public:
 };
 
 void TRIBE_Player::load_victory(int param_1, long* param_2, unsigned char param_3) {
-    TRIBE_Victory_Conditions* v;
-    v = new TRIBE_Victory_Conditions((RGE_Player*)this, param_1, param_2, param_3);
+    TRIBE_Victory_Conditions* v = new TRIBE_Victory_Conditions((RGE_Player*)this, param_1, param_2, param_3);
+    if (v == 0) {
+        v = 0;
+    }
     this->victory = v;
 }

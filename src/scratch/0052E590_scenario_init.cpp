@@ -13,7 +13,16 @@
 // - Try 4: manual operator new + explicit constructor call removes EH new-expression lowering, only 64 bytes.
 // - Try 5/6: direct assignment and ternary common-store collapse to baseline success-path store/null-to-tail family (edit diff 15).
 // - Try 7: /Ob0 flag with try-1 source no effect; restored /GX-only flag.
+// - SpruceGlow tries 8/9/14/15: direct store, separate temp, ternary store, and two-local result all fell back to first mismatch 53
+//   (success-path store / null-to-tail family), not the original common-store join.
+// - SpruceGlow tries 10-13/16-18/25: if/else store, goto join, negated/nested null tests, assignment-in-condition, self-assign arm,
+//   result local, and member-qualified store all stayed in the best common-store basin but kept the redundant `test eax,eax; jne +0`
+//   at the join (edit diff 11, first mismatch 75).
+// - SpruceGlow tries 19/20: reusing param_1 or param_2 as the zero source for the null arm did not change the redundant join test.
+// - SpruceGlow tries 21-23: label/nullcase and while/do loop spellings did not change the redundant join test.
+// - SpruceGlow try 24: helper-returned zero worsened codegen (extra call/shape, edit diff 20).
 // Left in scratch: behavior and EH/call surface are correct; blocker is VC5 source shaping around null-path/common-store join.
+// Not proposing accepted_drift: best object inserts a no-op test/jne and shifts/truncates the compared tail, so exact ownership is not safe.
 // No inline asm/hacks.
 
 class RGE_Game_World;

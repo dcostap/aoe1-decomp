@@ -19,8 +19,20 @@
 // - Try 7: /Ob0 with explicit null normalization: no effect, restored /GX-only flag.
 // - Try 8: /O1 /GX probe wrong size/family (75-byte text), restored /GX-only flag.
 // - Try 9: separate declaration then assignment with explicit null normalization: same redundant join test as try 1.
+// - SpruceGlow tries 10/16/17: direct store, ternary common-store, and two-local result all fell back to the
+//   baseline success-path store/null-to-tail family (edit diff 15, first mismatch 53).
+// - SpruceGlow tries 11/13/14/18/23: separate declaration, goto join, negated empty-else, self-assign arm,
+//   and explicit `this->scenario` all stayed in the best common-store basin but kept the redundant
+//   `test eax,eax; jne +0` at the join (edit diff 11, first mismatch 75).
+// - SpruceGlow try 12: if/else member stores kept first mismatch 75 but worsened edit diff to 17.
+// - SpruceGlow try 15: assignment-in-condition worsened edit diff to 26.
+// - SpruceGlow tries 19/20: reusing param1 or param2 as the null-arm zero source did not change the redundant join test.
+// - SpruceGlow tries 21/22: while/do break spellings did not change the redundant join test.
+// - SpruceGlow try 24: removing the virtual destructor / making RGE_Scenario a plain 0x1990-byte class did not change best-basin codegen.
+// - SpruceGlow try 25: helper-returned zero worsened codegen (edit diff 20).
 // Left in scratch: behavior, EH frame, allocation size, ctor args/call, and stack cleanup are correct; blocker is
-// VC5 source shaping around the null-path/common-store join, same as sibling init helpers. No inline asm/hacks.
+// VC5 source shaping around the null-path/common-store join, same as sibling init helpers. Not proposing accepted_drift:
+// best object inserts a no-op join test and shifts/truncates the compared tail/epilogue. No inline asm/hacks.
 
 class RGE_Game_World;
 

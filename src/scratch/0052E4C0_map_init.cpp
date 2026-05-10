@@ -17,6 +17,12 @@
 // success path; artificial `if (p == 0) p = 0;` reaches closer common-store basin
 // (16 positional/11 edit) but inserts a redundant post-merge test before store.
 // Left cleaner direct-new source. No inline asm/hacks.
+// LemonLily pass: tried 12 more source forms: plain local/direct assignment, volatile pointer/int
+// read, explicit if-null/self-assign, goto-common, if/else self, ternary, map slot pointer, field_30
+// local, dummy param_2 use, and flag local. Also probed /GX variants with no-/Oy, /Oa, /Ow, /Ot,
+// /Ox, and /O1. No exact: direct new keeps exact allocation/ctor path but stores in success path;
+// artificial common-join forms reduce edit diff but add an unwanted post-merge `test eax,eax`; volatile
+// forms keep the original join but spill/reload EAX before the member store. /O1 emits too-short text.
 //
 // Field layout:
 //   map     @ +0x28 (TRIBE_Map*)

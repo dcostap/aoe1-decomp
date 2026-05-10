@@ -3797,3 +3797,43 @@ Caveat:
 - keep `/GX` as a deliberate per-function flag only when the original really has the EH frame; do not add fake EH-relevant locals just to force the frame.
 
 Reference: `00405510` and `004CF090` matched by changing only `rge_read` from `extern "C"` to a plain C++ declaration.
+
+## Lesson: Use a wider integer temp to keep byte operations on CL instead of AL
+
+When a tail compares a byte accumulator against an all-ones mask and the original uses the
+low byte of an existing pointer register (`or cl,0xff; cmp cl,bl`) before reloading `ecx`
+with a global, do not narrow the mask temp to `unsigned char` too early. Spell the mask as a
+wider integer derived from the live pointer, OR it with `0xff`, and only cast to byte at the
+comparison:
+
+```cpp
+unsigned int c = (unsigned int)this;
+c |= 0xff;
+if ((unsigned char)c >= seq) return (unsigned char)global;
+return 0;
+```
+
+Try when:
+- the original mutates `cl`/`dl` with a byte operation after a loop, but rebuilt code loads a
+  global first and uses `al` for the same constant byte mask;
+- a pure `unsigned char c = 0xff` source gives equivalent logic but wrong register/order.
+
+Why it helps:
+- the wider temp preserves the existing pointer register as the parent value, so VC5 emits the
+  byte operation on that register's low byte instead of materializing the byte constant in AL;
+- delaying the global load until after the compare can recover the original pop/global-load tail.
+
+Caveat:
+- this is a codegen-shaping trick for binary-observed register tails; do not use it when the
+  widened value would be behaviorally consumed as more than its low byte.
+
+## Lesson: Switch on raw adjacent byte values can beat hand-written adjusted if chains
+
+When the original dispatch on adjacent byte codes looks like `sub reg, base; je skip; dec reg; jne skip; ...`, try a `switch` on the original raw byte values with an explicit no-op case for the base value and a handled case for the next value. VC5 can lower the switch into the compact subtract/decrement branch chain and still push literal zero arguments, while equivalent nested `if`, pre-decrement, or adjusted-value tests may insert a redundant `test reg,reg` after `dec` and reuse the now-zero register for `push reg`.
+
+Try when:
+- the binary has adjacent code handling (`case N` skip, `case N+1` call) compiled as `sub; je; dec; jne`;
+- source using `kind -= N; if (kind && --kind == 0)` is behaviorally right but emits `test` after `dec` or changes zero-argument pushes.
+
+Caveat:
+- use the raw source value in the switch; switching on the already-adjusted value may add an extra `sub reg,0` or choose a different register basin.

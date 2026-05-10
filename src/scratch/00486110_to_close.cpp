@@ -5,19 +5,35 @@
 // __thiscall: this in ecx, 3 stack params. ret 0Ch cleanup.
 // Returns 1 if (x,y) is within land_inner_radius of any land point, 0 otherwise.
 //
-// 96/97 bytes matching. Left in scratch.
+// Previous scratch notes:
+// - Natural do-while source was reported as very close but compiled to a 96-byte .text
+//   section (checker cannot compare the 97-byte function). The known blocker was loop
+//   bottom layout: VC5 tends to emit `jge exit; jmp loop` instead of original `jl loop`,
+//   or reaches the desired `jl` only by spilling count and adding a `push ecx` prologue.
+// - 2026-05-09 GraniteCub tried 20 variants: while/for/goto/continue loop forms,
+//   bottom conditions `i < count`, `count > i`, `i - count < 0`, `!(i >= count)`,
+//   `count - i > 0`, volatile i/count checks, pointer vs reference info_line, and local
+//   declaration/order changes for count/radius/x/y. No exact.
 //
-// Difference: VC5 restructures do-while loop with early return to use
-// `jge exit; jmp loop` (4 bytes) instead of `jl loop` (2 bytes). The compiler
-// inverts the loop-end condition when a `return 1` exists inside the body.
-// The epilogue difference saves ~1 byte.
-// 2026-05-09 GraniteCub: tried 20 focused variants: while/for/goto/continue loop
-// forms, bottom conditions `i < count`, `count > i`, `i - count < 0`, `!(i >= count)`,
-// `count - i > 0`, volatile i/count checks, pointer vs reference info_line, and local
-// declaration/order changes for count/radius/x/y. The algebraic bottom tests can force
-// the desired `cmp esi,edi; jl` but make VC5 spill count to the stack and add a prologue
-// `push ecx`; natural do-while keeps the compact body but compiles to a 96-byte text
-// section (checker cannot compare 97 bytes). Leaving the original closest source.
+// 2026-05-10 focused pass on this VA only:
+// - Revalidated the checked-in natural do-while source: current VC5 emits a 96-byte
+//   function with extra `push ecx`/byte result local family, so check_function stops
+//   with configured size 97 > .text 96.
+// - Try 1: declaration-order probes (`i` before `count`, split locals, positive outer
+//   `if (count > 0)`) can recover the original prologue/register family and a 97-byte
+//   comparable function, but introduce a duplicated `test edi,edi; jle` before the loop
+//   and shift the loop/tail (best comparable edit diff 17, 88 equal bytes).
+// - Try 2: `for`, `while`, `while(1)+continue`, `goto found`, and explicit label-order
+//   variants either kept the duplicate guard family, crossed-initialization compile errors,
+//   or regressed to the stack-spilled result-local basin.
+// - Try 3: ordering y/radius/p_y locals to match original `mov ebp,[esp+1Ch]; lea edx;
+//   mov ebx,[eax+24h]` did not change scheduling; VC5 still emits `lea edx` before the
+//   duplicated guard and delays the `ebp` load to the loop entry.
+// - Try 4: flag probes /Ob0, /Og, /Ot no effect on the 96-byte natural source; /Os and
+//   /O1 were 79-byte wrong-family functions. No custom flag kept.
+// Left in scratch: current source is the best comparable 97-byte family, not exact and not
+// an accepted_drift candidate because the duplicate loop guard and shifted tails are broader
+// than a localized harmless scheduling/register drift. No inline asm/hacks used.
 
 struct RGE_Object_Info_Line {
     char gap_00[0x24];
@@ -33,27 +49,25 @@ struct RGE_RMM_Object_Generator {
 };
 
 unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line* info_line, long x, long y) {
-    long count = this->land_num;
     long i = 0;
-    if (count <= 0) return 0;
+    long count = this->land_num;
 
-    long radius = info_line->land_inner_radius;
-    long* p_y = (long*)((char*)this + 0x12CC);
+    if (count > 0) {
+        long radius = info_line->land_inner_radius;
+        long* p_y = (long*)((char*)this + 0x12CC);
 
-    do {
-        long dx = x - *(p_y - 1);
-        if (dx < 0) dx = -dx;
+        for (; i < count; i++, p_y += 4) {
+            long dx = x - *(p_y - 1);
+            if (dx < 0) dx = -dx;
 
-        long dy = y - *p_y;
-        if (dy < 0) dy = -dy;
+            long dy = y - *p_y;
+            if (dy < 0) dy = -dy;
 
-        if (dx < radius && dy < radius) {
-            return 1;
+            if (dx < radius && dy < radius) {
+                return 1;
+            }
         }
-
-        i++;
-        p_y += 4;
-    } while (i < count);
+    }
 
     return 0;
 }

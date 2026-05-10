@@ -14,6 +14,8 @@
 // 4. volatile size_ptr and register queue: no change.
 // 5. Simple mq++ loop like neighboring queue functions: worse, hoisted Queue before saves and only used EBX/ESI.
 // 6. variant_lab over init order, ptr_do/ptr_while/arr_while scans, offset expression forms, clear forms, and vc5-small flags: no exact; best default family is same early-EDI/queue-in-EDI basin (edit diff 27-29), /Ow variants produce smaller 96B bodies but wrong prologue/tail.
+// 7. LemonLily pass: tried decompiler-direct do loop, queue-local do/while/goto with `> 0`/`<= 0`, direct this->Queue size pointer, offset-scanning forms that keep Queue in ESI, zero-local compare, and no-preload size_ptr variants. Also probed /O2 no-/Oy, /Ot, /Og, /Ox, /Oa, /Ow, /O1 on the best ESI-queue offset scan. No exact.
+// 8. Offset scan can delay Queue into ESI and push EDI after queue load, but then VC5 preloads first Size into EDI/uses EDX as index and regresses the clear tail (edit 67). The kept source remains the best edit-diff basin: early EDI save and Queue-in-EDI, but tail clear/reload is closest. No custom flag kept.
 
 class MsgQueue {
 public:
