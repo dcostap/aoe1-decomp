@@ -8,15 +8,21 @@
 //   Original order: sar mapX/4 → imul*mapY → cdq/and/add → THEN qy
 //   Our order:      sar mapX/4 → LOAD param_2, compute qy → THEN imul*mapY
 // Attempt 2: separate lines for denom = X/4; denom*=Y → 78/105 (worse)
-// Attempt 3: final_denom before qy → 88/105 (same as 1)
-// Attempt 4: local int mx, int my → different reg alloc, worse
+// Attempt 3: final_denom before qy → 88/105 (same family)
+// Attempt 4: local int mx, int my → different reg alloc, worse (first mismatch 0)
 // Attempt 5: virtual function in class → 62/105, first mismatch at 0 (vtable shifts offsets)
+// Attempt 6: mutate param_2 *= 4 after denom sign-adjust → same as attempt 1
+// Attempt 7: denom / 4 spelling → 86/105 equal, still schedules qy before imul
+// Attempt 8: reuse param_1 as denom carrier → same as attempt 1
+// Attempt 9: narrow /O1 flag probe → wrong .text size (93 vs 105), removed
 //
 // Root cause: VC5 reorders independent denom/qy computations around mapY.
 // In native TU context (taiinfmd.cpp), the full file's register pressure
 // and scheduling heuristics produce a different ordering than single-function
 // compilation. The operations are semantically equivalent but structurally
-// diverge after the first sar+imul scheduling point.
+// diverge after the first sar+imul scheduling point. Not suggesting accepted
+// drift yet: although behavior appears equivalent, the scheduling/register drift
+// covers the whole tail rather than a tiny localized encoding difference.
 //
 // Note: The ((int*)this)[idx] access pattern works without a vtable at +0
 // because the class apparently has no compiler-managed vtable in this build.

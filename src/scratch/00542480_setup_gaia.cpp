@@ -20,6 +20,12 @@
 //   non-EH family. Restored /GX-only flag.
 // - Hoisting `*master_players` into a local adds EDI/save and shifts call setup; worse.
 // - Narrow ctor parameter declarations (`char` flags, `char*` name) do not affect the blocker.
+// - 2026-05-10 pass on this VA only: retried 15+ variants: direct, if-null/if-not/goto common-store,
+//   assignment-in-condition, zero-init, volatile pointer, bool temp, empty-if, if/else member stores, hoisted
+//   players/master locals, char ctor flags/name, void* store, comma/no-op forms. No exact. Best remains the
+//   current explicit null-normalization/common-store shape: edit diff 7.6923%, positional 16.3462%; mismatch
+//   is a redundant join `test eax,eax; jne +0` that shifts the final FS restore and truncates add/ret out of
+//   the 104-byte window, so not an accepted_drift suggestion under Boss's truncation ruling.
 // Left in scratch: same null-path/common-store join blocker as sibling World init helpers. Allocation size, EH frame,
 // ctor args/call, final store, stack cleanup, and behavior are understood.
 

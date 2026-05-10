@@ -7,11 +7,22 @@
 // [3] Interleaved fill & uVar2 init: same basin.
 // [4] unsigned short uVar2: compiler uses ebp frame + sign-extension.
 // [5] Using `int iVar1; unsigned short uVar2; unsigned long fill;` locals: same.
+// [6] Natural 10-byte DestMap with dword/dword/word fill and `DestMap[i]` improved
+//     stack-indexing to match loop store, but scheduler still moves `push edi/this/i`
+//     before `mov eax,4E4E4E4E`, emits word immediate store before dword stores, and
+//     uses eax instead of ecx for the bottom MaxGamePlayers zero-extension.
+// [7] 14-byte buffer + pass `DestMap+4` confirmed decompiler's +4 view is misleading:
+//     local size becomes 0x10 and offsets drift. Reverted to 10-byte buffer.
+// [8] `unsigned int` loop counter fixed loop branch to unsigned `jbe`, but not register
+//     choice (`eax` vs original `ecx`) or prologue/fill scheduling.
+// [9] explicit `maxPlayers` local optimized to same code; /O1 probe wrong .text size.
 //
-// Blocked: VC5 uses completely different codegen basin. Original saves esi,edi and uses
-// edi=this, esi=uVar2, eax=fill, ebx='Y'. Our VC5 uses different register allocation
-// and doesn't emit `mov eax, fill` (inlines fills), produces different stack offsets
-// for DestMap, and uses different register conventions for the loop.
+// Blocked: behavior/calls/stack cleanup are understood, and current source gets the
+// loop store/address family right, but isolated VC5 chooses a different scheduling basin
+// for initialization and loop-bottom reloads. Original saves esi,edi and uses edi=this,
+// esi=index, eax=fill, ebx='Y', then ecx for MaxGamePlayers reload. Rebuilt keeps edi/esi
+// but initializes this/index before fill, stores the trailing word as an immediate first,
+// and uses eax for the reload/TXChat argument setup. Broad drift, not accepted_drift.
 
 class TChat {
 public:
@@ -35,23 +46,24 @@ public:
 };
 
 void TCommunications_Handler::SendGroupChatMsg(char* param_1) {
-    int iVar1;
-    unsigned short uVar2;
-    unsigned long fill;
     unsigned char DestMap[10];
+    unsigned int i;
+    unsigned int maxPlayers;
 
-    fill = 0x4E4E4E4E;
-    *(unsigned long*)&DestMap[0] = fill;
-    uVar2 = 1;
-    if (uVar2 <= this->MaxGamePlayers) {
+    *(unsigned int*)&DestMap[0] = 0x4E4E4E4E;
+    i = 1;
+    *(unsigned int*)&DestMap[4] = 0x4E4E4E4E;
+    *(unsigned short*)&DestMap[8] = 0x4E4E;
+
+    if (i <= this->MaxGamePlayers) {
         do {
-            iVar1 = this->Chat->inChatGroup(uVar2);
-            if (iVar1 != 0) {
-                DestMap[uVar2 + 4] = 0x59;
+            if (this->Chat->inChatGroup(i)) {
+                DestMap[i] = 'Y';
             }
-            uVar2 = uVar2 + 1;
-        } while (uVar2 <= this->MaxGamePlayers);
+            i++;
+            maxPlayers = this->MaxGamePlayers;
+        } while (i <= maxPlayers);
     }
 
-    this->TXChat(this->Me, (char*)&DestMap[0], param_1);
+    this->TXChat(this->Me, (char*)DestMap, param_1);
 }

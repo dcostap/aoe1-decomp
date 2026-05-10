@@ -1,33 +1,33 @@
 // 0042B200 TCommunications_Handler::GetNextSequence (Com_hand.cpp:4042-4084, 108B)
-// ~64% matching. VC5-version codegen differences:
 //
-// 1. NEW-VALUE PATH (2-byte shift): original uses `mov byte [addr], 1` (c605, 7B)
-//    for `byte_62CF2C = 1` then `mov al, 1` (2B) for return. Our VC5 instead does
-//    `mov al, 1; mov [addr], al` (2+5=7B), combining the store source and return
-//    value register. Same total bytes but shifted instruction order, changing the
-//    je offset at offset 0Dh (11 vs 0F) and all subsequent addresses.
-//
-// 2. INCREMENT PATH SPILL (4 bytes): our VC5 always allocates a stack slot for
-//    local `seq` and spills `mov [esp+4], al` after `cmp`, before the global store.
-//    The 1998 build avoids the spill entirely (no stack frame for this trivial function).
-//    The spill shifts the log and clamp code.
-//
-// 3. LOG CALL REGISTERS: original loads byte value into eax, logptr into ecx.
-//    Our VC5 loads logptr into eax (overwriting byte value in al), then reloads
-//    byte value from stack spill into ecx. Different register choices but same
-//    push order and stack layout.
-//
-// 4. CLAMP PATH JUMP OFFSETS: shifted by 8-10 bytes due to above differences.
-//    Clamp logic, store pattern (`mov byte [addr], 100`), and return are correct.
-//
-// All control flow, memory effects, field offsets, and global addresses match
-// the original. The differences are pure VC5-version scheduling/register allocation.
+// Attempt log:
+// - Original scratch used `unsigned char byte_62CF2C` and fake log signature
+//   `(value,msg,log)`. It matched control flow but spilled the incremented byte to
+//   `[esp+4]`, used wrong log-call register order, and kept the new-turn path as
+//   `mov al,1; mov [global],al` instead of original immediate byte store.
+// - Try 1: corrected log declaration to `(log,msg,value)`. This fixed the push order
+//   and log registers but still spilled the byte local.
+// - Try 2: reused the incoming parameter slot, used unsigned/int seq locals, no seq
+//   local, volatile byte reads/stores: all kept the stack byte spill family.
+// - Try 3: modelled the sequence global as a dword at 0x62CF2C and accessed its low
+//   byte explicitly. This removed the stack spill and recovered the original overflow
+//   logging shape: byte load/inc/cmp/store, dword reload, log pointer in ECX, AND EAX,
+//   push value/msg/log.
+// - Try 4: tried to force the new-turn path's `mov byte [global],1; mov al,1` with
+//   value-value expressions, volatile stores, volatile/global return reads, and return
+//   from the global. VC5 either kept `mov al,1; mov [global],al` or added a reload.
+// - Try 5: flag probes /Ob0, /Og, /Ot no effect; /Os and /O1 were 103-byte wrong-size
+//   bodies. No per-function flag kept.
+// Left in scratch: best source below is behavior-equivalent and same-size. Remaining
+// drift is localized to the new-turn store/return scheduling (`mov al,1; mov [g],al`
+// vs original `mov byte [g],1; mov al,1`), shifting later blocks/tail 2 bytes earlier
+// with trailing NOP padding. Accepted_drift candidate if reviewed; no inline asm/hacks.
 
-extern unsigned char byte_62CF2C;
+extern unsigned int dword_62CF2C;
 extern unsigned long dword_62CF30;
 
 class TDebuggingLog;
-extern void __cdecl TDebuggingLog_Log(unsigned char value, const char* msg, TDebuggingLog* log);
+extern void __cdecl TDebuggingLog_Log(TDebuggingLog* log, const char* msg, unsigned int value);
 
 class TCommunications_Handler {
 public:
@@ -40,19 +40,19 @@ public:
 unsigned char TCommunications_Handler::GetNextSequence(unsigned long value) {
     if (value != dword_62CF30) {
         dword_62CF30 = value;
-        byte_62CF2C = 1;
+        *(unsigned char*)&dword_62CF2C = 1;
         return 1;
     }
 
-    unsigned char seq = byte_62CF2C;
+    unsigned char seq = *(unsigned char*)&dword_62CF2C;
     ++seq;
-    byte_62CF2C = seq;
+    *(unsigned char*)&dword_62CF2C = seq;
     if (seq >= 0xFF) {
-        TDebuggingLog_Log(seq, (const char*)0x582490, *(TDebuggingLog**)0x62C4FC);
+        TDebuggingLog_Log(*(TDebuggingLog**)0x62C4FC, (const char*)0x582490, dword_62CF2C & 0xFF);
         return 0;
     }
     if (this->pause_state == 4 && seq > 100) {
-        byte_62CF2C = 100;
+        *(unsigned char*)&dword_62CF2C = 100;
         return 100;
     }
     return seq;

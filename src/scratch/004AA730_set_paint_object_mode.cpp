@@ -17,6 +17,9 @@
 // 3. volatile self local forced a stack spill and worse prologue.
 // 4. branch-local vs preloaded vtable tail: preloaded tail gives smallest edit diff, branch-local closer to original test placement but larger edit diff.
 // 5. variant_lab over macro/extern globals, no/local/ref self, this/self/split access, branch/preloaded vtable tails, and vc5-small flags: no exact. Only four asm families; all first mismatch at offset 1 due to missing `mov edx,ecx`.
+// 6. Retried branch-direct, explicit self local, pre-this-read, nested-if, no-enabled early-return, byte/bool enabled, and reload-global tail shapes; no exact. Best still preloaded-vtable shape; all useful variants miss at offset 1.
+// 7. Tried register locals, declaration order self/game vs game/self, direct vs preloaded vtable tails; register keyword made no allocation difference.
+// 8. Tried flags /Oa, /G5, /Gr, /Gz, /O1, /Od; /O2-family unchanged, /O1 shrinks body, /Od produces EBP frame and broad mismatch.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 

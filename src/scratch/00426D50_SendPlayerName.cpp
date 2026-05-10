@@ -12,6 +12,15 @@
 //   lpszLongName = this->MyFormalName (+0x1179)
 //   lpszShortName = this->MyFriendlyName (+0x10F8)
 //   dwSize = 0x10
+// 2026-05-10 pass: retried 15+ variants: explicit field-zero order, self local,
+// brace init with long-name first, volatile struct, dword-array and volatile-array
+// forms, individual four-local dwords, call argument temporaries, early Err local,
+// no result/local result forms, local vtable/call pointer, and attempted member
+// function pointer cast (rejected by VC5 __thiscall). No exact. Variants either keep
+// the current optimizer basin (push ESI/mov this before xor, hoisted field stores
+// before call pushes) or force broader volatile/array stack traffic. Behavior remains
+// understood but mismatch is broad store scheduling/dead-store elimination, so no
+// accepted_drift suggestion from this pass.
 
 #include <string.h>
 

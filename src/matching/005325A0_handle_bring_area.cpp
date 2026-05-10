@@ -10,13 +10,12 @@
 // The FPU bounds-check section matches byte-for-byte (4x fld/fcomp/fnstsw/test
 // sequences with correct test ah,1/test ah,41h for < and > comparisons).
 // State_done code also matches (mov al,[ecx+2Eh]; test al,al; jne + mov/c7/c2).
-//
-// Remaining issues:
-// 1. Null check: VC5 inlines `state=3; ret 4` (9 bytes: jne+inline+ret) instead
-//    of `je` to a shared tail (2+7=9 bytes same, but offsets differ).
-// 2. Block ordering: VC5 puts bounds code inline after the obj_state check and
-//    state_done at a label (jae), while original puts state_done inline and
-//    bounds at a label (jb). Semantically equivalent but shifts all offsets.
+// - Initial scratch had null check inline and block ordering reversed: VC5 emitted `jne` skip-over-null and put
+//   bounds inline while original uses `je` to null tail and puts state_done inline before bounds label.
+// - SpruceGlow try 1 MATCH: write the main body as `if (obj) { ... } else { state=3; return; }`, with the
+//   state_done arm (`object_state >= 3`) before bounds. This forces the original `je` null tail and `jb` to
+//   bounds block while preserving the FPU compare sequence.
+// Result: MATCH locally with `python tools/check_function.py --va 005325A0`.
 
 class RGE_Static_Object {
 public:
@@ -50,12 +49,15 @@ public:
 void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* entry) {
     RGE_Static_Object* obj = entry->this_obj;
 
-    if (obj == 0) {
-        entry->state = 3;
-        return;
-    }
+    if (obj) {
+        if (obj->object_state >= 3) {
+            if (entry->state == 0) {
+                entry->state = 1;
+            }
+            entry->this_obj = 0;
+            return;
+        }
 
-    if (obj->object_state < 3) {
         if (obj->world_x < entry->x0 || obj->world_x > entry->x1 ||
             obj->world_y < entry->y0 || obj->world_y > entry->y1) {
             entry->state = 0;
@@ -63,11 +65,8 @@ void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* entry) {
             entry->state = 2;
         }
         return;
+    } else {
+        entry->state = 3;
+        return;
     }
-
-    // object_state >= 3: bring area is done/completed
-    if (entry->state == 0) {
-        entry->state = 1;
-    }
-    entry->this_obj = 0;
 }

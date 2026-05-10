@@ -3837,3 +3837,162 @@ Try when:
 
 Caveat:
 - use the raw source value in the switch; switching on the already-adjusted value may add an extra `sub reg,0` or choose a different register basin.
+
+## Lesson: Split aggregate loads and vtable loads to control late store scheduling
+
+When VC5 moves a call argument push or structure field store too early around a
+zeroed stack aggregate, split source into small named loads in the original order
+and introduce a vtable/function-table local before the late field assignment.
+
+Try when:
+- the rebuilt code has the right `rep stosd`, globals, and virtual call, but
+  schedules a constant argument push or `dwSize`/header store before nearby
+  global copies;
+- the original loads a service/global pointer and vtable before a final aggregate
+  header store immediately before the call.
+
+Why it helps:
+- naming each global dword load can preserve the original load/store interleave;
+- `void** vt = *(void***)serv;` creates a real use that VC5 schedules before the
+  following field assignment, allowing a later `desc.a[0] = size` store to land
+  after the vtable load but before the remaining argument pushes/call.
+
+Caveat:
+- this is a scheduling tool for already-understood calls; it can worsen codegen if
+  the function pointer local changes register pressure or if argument order is not
+  already correct. Verified on `004324F0` Refresh.
+
+## Lesson: Let natural destructors emit vtable restore, member dtors, and base dtor
+
+For VC5 EH-framed C++ destructors, prefer a natural destructor body and real class/member declarations over manual vtable stores or explicit member destructor calls. Once the base layout and member offsets are correct, VC5 can synthesize the derived vtable restore, EH state transitions, member destructor calls, and base destructor call in the exact order.
+
+Try when:
+- a destructor near-matches but saves an extra register for a member pointer;
+- EH state slots shift (for example `[esp+14h]` instead of `[esp+10h]`);
+- the rebuilt output appears to call a member destructor twice or schedules the vtable store too late.
+
+Why it helps:
+- explicit member destructor calls in a destructor body are in addition to compiler-generated member destruction;
+- manual vtable stores can disturb VC5's built-in destructor lowering and liveness.
+
+Caveat:
+- this depends on accurate class layout and visible non-trivial member/base destructors; if the compiler cannot see the real destructor surface, it cannot synthesize the original sequence.
+
+## Lesson: Volatile stores can preserve ordered multi-array constructor fills
+
+When a constructor fills several parallel arrays in one loop and VC5 keeps reordering
+independent stores or delaying the loop-index increment, try applying `volatile` only
+to the first-loop stores that must stay in source order:
+
+```cpp
+int v = *source;
+++i;
+*(volatile int*)(dst - 8) = v;
+*(volatile int*)dst = -1;
+*(volatile int*)(dst + 8) = -1;
+```
+
+Try when:
+- the original has a top capacity guard, then loads a source value, increments the
+  loop index, and stores to multiple fixed-offset sibling arrays in a specific order;
+- non-volatile source is behaviorally correct but VC5 moves constant stores before the
+  value store or sinks `++i` below the stores.
+
+Why it helps:
+- volatile lvalue stores constrain VC5's store scheduling without necessarily changing
+  the surrounding register allocation or the later non-volatile fill loop.
+
+Caveat:
+- apply narrowly to the stores whose order is binary-observed; volatile on temps or
+  broader locals can introduce stack spills or worse register pressure.
+
+## Lesson: Mutate parameter pairs for min/max swaps instead of decompiler result locals
+
+For small clamp/region helpers that normalize two endpoint pairs, writing natural
+in-place parameter swaps with one `temp` can keep VC5 from pre-loading a result
+local before callee-save pushes:
+
+```cpp
+if (a > b) { temp = a; a = b; b = temp; }
+if (c > d) { temp = c; c = d; d = temp; }
+```
+
+Try when:
+- the original loads endpoint parameters into callee-saved registers after pushes;
+- a decompiler-style `minVar = param; maxVar = other;` version preloads a parameter
+  into `eax` before the prologue and causes broad register drift.
+
+Why it helps:
+- mutating the source parameters directly lets VC5 map normalized endpoints onto
+  the original parameter/register roles instead of creating separate long-lived
+  result locals.
+
+Caveat:
+- use this for true endpoint normalization; if original later needs the raw
+  unnormalized parameters, preserve them separately.
+
+## Lesson: Use `strcpy` to expose VC5's exact strlen-plus-copy REP-string idiom
+
+When a function copies a NUL-terminated string and the original assembly shows a
+`repne scasb` length scan followed by `rep movsd`/`rep movsb`, try the natural
+`strcpy(dst, src)` surface before spelling it as `strlen(src)+1` plus `memcpy`.
+
+Try when:
+- manual `strlen`/`memcpy` produces the right REP instructions but schedules the
+  destination slot calculation after the scan or saves `this` unnecessarily;
+- the original computes the destination pointer/slot before the scan and then
+  copies the whole string including the terminator.
+
+Why it helps:
+- VC5 recognizes `strcpy` as a single string-copy idiom and can lower it to the
+  compact scan/copy sequence with the same live registers;
+- separate `strlen` and `memcpy` calls/expressions can create extra temps, delayed
+  address calculation, or no-op length adjustments.
+
+Caveat:
+- keep any destination slot pointer local if later code reuses the same slot; this
+  can preserve the null-source and tail-store shape. Verified on `0048BA60` Set_BuildList.
+
+## Lesson: Positive object guard with `else` can force null-handler tail layout
+
+For small handlers with an object/null guard, spelling the main body as
+`if (obj) { ... } else { null_handler; return; }` can make VC5 emit a `je` to a
+late null-handler tail, while `if (obj == 0) { ...; return; }` often emits an
+inline null return with `jne` over it.
+
+Try when:
+- the original branches on a null object with `je` to a handler near the end of the
+  function;
+- the rebuilt code has correct behavior but uses `jne` and inlines the null case
+  before the main body;
+- a state-done/block-complete arm should be inline before a bounds/check block.
+
+Why it helps:
+- the positive guarded body lets VC5 lay out the main success path first and place
+  the `else` null case as a tail block, preserving short-branch direction and
+  offsets.
+
+Caveat:
+- keep the original arm order inside the positive body; moving a completion arm
+  after bounds checks may still invert a later `jb`/`jae` block layout. Verified on
+  `005325A0` handle_bring_area.
+
+### Let a natural `for` condition own the empty-loop check
+
+When an original loop loads a member count, zeroes the index, then immediately `test`s the loaded count before entering the body, avoid writing a separate `if (count <= 0) return/fail;` guard before a `for` loop over the same member. VC5 may emit both the explicit guard and another loop-entry test. A plain `for (i = 0; i < this->count; ++i)` after only the unrelated outer guards can generate the desired single sequence: `mov count; xor index,index; test count,count; jle fail`, while still reloading the member count at the loop tail. Check operand order (`i < count` vs `count > i`) because it also controls the tail `cmp`/branch polarity.
+
+## Lesson: Use a real member declaration for direct `__thiscall` calls, not raw function pointers
+
+When the original direct call sequence is `mov ecx,this; push arg; call target`, declare
+the target as a normal class member and call it through a casted object pointer, e.g.
+`((TPanel*)this)->set_curr_child(child)`. This makes VC5 emit the desired thiscall setup
+without using the forbidden `__thiscall` keyword.
+
+Try when:
+- a raw function pointer version emits `push this`/stdcall-like arguments or an indirect
+  `mov eax, addr; call eax` sequence;
+- the call target is a known non-virtual member function and relocation masking can cover
+  the direct call target.
+
+Caveat:
+- use virtual declarations for vtable calls; this lesson is for direct member calls.

@@ -6,8 +6,13 @@
 // EBP, rebuilt saves this in EDI. Cascading effect changes all [ebp+N] to [edi+N],
 // and swaps ESI/EDI roles for pointer walk vs temp pointers.
 // Tried: self = this local, direct this-> access, different variable orderings.
-// All produce the same EDI-this pattern. VC5 register allocator prefers EDI
-// over EBP for the base pointer in isolation.
+// Tried pointer-walk cursor local + area temp: closer edit diff (25.7%) but worse
+// positional; VC5 chose ebx=this and ebp=zero/counter, opposite of original.
+// Tried declaration reorder, register/const/split initialization, long/unsigned
+// counter, and narrow /O1 flag probe; none selected ebp=this (O1 wrong size).
+// Kept direct this-> form because it is the best validated default-flags result.
+// All source-level variants so far suggest a VC5 register allocator/TU-context
+// barrier for choosing EBP as object base in isolation.
 
 void operator_delete(void* ptr);
 

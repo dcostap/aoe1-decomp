@@ -20,6 +20,10 @@
 // v5: volatile local pointer: no change from direct sunk-store basin.
 // v6: explicit operator new + ctor wrapper: no EH new-expression frame, 64-byte body.
 // v7: variant_lab over direct/local/ternary/ifelse/volread/slot shapes, preloaded sounds vs direct member, member pointer/void/volatile surfaces, and vc5-risky flags: no exact. Best default-compatible family remains /GX volread (first mismatch 81, edit 16); /GX /Oa volread has slightly smaller edit diff 14 but still spills EAX.
+// v8: retried direct/local/ternary/slot/no-op-if shapes under default /GX; all fell back to sunk-member-store basin, first mismatch 53.
+// v9: explicit null/goto/common-tail/self-assignment shapes keep the common join but add dead `test eax,eax; jne +0` after the join, first mismatch 76.
+// v10: broad focused flag sweep (/Oa, /Ob0, /Gs, /GF, /GA, /G5, /Og, /Oi, /Ot, /Os) across direct/volread/explicit shapes: no exact; only /Oa volread changed tail ordering and remained worse/last-resort.
+// v11: changed member surface to typed RGE_Map* and retested direct/volread/explicit; no codegen change versus void* member.
 
 class RGE_Game_World {
 public:

@@ -9,19 +9,24 @@
 // 7: single return, dz*dz+dy*dy+dx*dx expr order -> 80%
 // 8: compound condition, single local -> 85%
 // 9: early returns, pw local, dz*dz+dy*dy+dx*dx -> 85%
+// 10: single result initialized from DAT_00570e40 + nested ifs restored push ecx,
+//     shared fld-zero and shared epilogue; 83 equal bytes, first mismatch at branch
+//     distances because no push esi/current+next pointer shape.
+// 11: raw byte-offset current/next arithmetic improved zero/global and stack slot,
+//     but VC5 kept next offset in ecx instead of original saving esi; branch targets
+//     stay short by 3 bytes and address/FPU load order differs.
+// 12: split off/next statements, register next, and expression-order swaps did not
+//     force esi; best kept variant is raw-offset z/y/x expression, 83 equal bytes.
 //
-// BLOCKER: persistent FPU codegen-family problem. The original uses:
-//   - push ecx (1 byte, 4-byte slot) not sub esp,8
-//   - fld [global_zero] PUSHED ONCE before all checks, shared by all exits
-//   - fstp st0 (pop zero) + FPU expression with specific fxch/faddp pattern
-//   - shared pop ecx; ret epilogue
-// My code: sub esp,8 for 2 locals, each exit loads 0.0 separately,
-// FPU expression (dx*dx+dy*dy+dz*dz) schedules differently despite
-// trying multiple expression orders.
-//
-// Left in scratch — FPU scheduling basin.
+// BLOCKER: persistent FPU/codegen-family problem. Behavior and checks are understood.
+// Current source matches original prologue style (push ecx), single global-zero result,
+// shared exit, and much of the FPU square/sum/fsqrt stack choreography. Remaining drift
+// is broad: original pushes esi and computes current/next addresses as ecx/esi before
+// popping zero, while isolated VC5 uses ecx only and schedules next-coordinate loads
+// differently. Not an accepted_drift suggestion.
 
 #include <math.h>
+extern float DAT_00570e40;
 
 struct Waypoint {
     float x;
@@ -44,18 +49,26 @@ public:
 };
 
 float Path::distanceToNextWaypoint() const {
-    int temp;
+    float result = DAT_00570e40;
     Waypoint* path = this->pathValue;
-    if (path == 0) {
-        return 0.0f;
+    int current;
+
+    if (path != 0) {
+        current = this->currentWaypointValue;
+        if (current >= 0 && current < this->currentSizeValue - 1) {
+            int off = current;
+            register int next = current + 1;
+            Waypoint* pw;
+            off <<= 4;
+            pw = (Waypoint*)((char*)path + off);
+            next <<= 4;
+            result = (float)sqrt((*(float*)((char*)path + next + 8) - pw->z) *
+                                 (*(float*)((char*)path + next + 8) - pw->z) +
+                                 (*(float*)((char*)path + next + 4) - pw->y) *
+                                 (*(float*)((char*)path + next + 4) - pw->y) +
+                                 (*(float*)((char*)path + next) - pw->x) *
+                                 (*(float*)((char*)path + next) - pw->x));
+        }
     }
-    int current = this->currentWaypointValue;
-    if (current < 0 || current >= this->currentSizeValue - 1) {
-        return 0.0f;
-    }
-    Waypoint* pw = path + current;
-    float dx = pw[1].x - pw->x;
-    float dy = pw[1].y - pw->y;
-    float dz = pw[1].z - pw->z;
-    return (float)sqrt(dz*dz + dy*dy + dx*dx);
+    return result;
 }

@@ -18,8 +18,15 @@
 // - Typed COM method with absolute glpSERV changes global/vtable register use and is worse.
 // - /Ob0: no effect. /O1: wrong 95-byte text. Removed custom flag file.
 // - `memset(&desc,0,sizeof(desc))` with the preloaded GUID collapses to the same rep-stos family as the for loop.
-// Left in scratch: call boundaries, stack cleanup, zeroing, GUID data, and vcall are understood; remaining blocker is
-// VC5 scheduling of the constant last argument (`push 1`) and dwSize store relative to GUID stores/vtable load.
+// - SpruceGlow tries 1-4/6-10: one-local, volatile one, comma dwSize second-arg, funcptr local, raw stack typedef,
+//   volatile/no serv local, pd alias, callback local did not improve the earlier scheduling family.
+// - SpruceGlow try 5: splitting ApplicationGUID loads into g0/g1/g3 locals before stores fixed the GUID-store and
+//   `push 1` scheduling, leaving only dwSize store before vtable load (edit diff 16, first mismatch 80).
+// - SpruceGlow tries 11-14: comma side effects for dwSize in first/second/third arg and typedef call variants did not
+//   move the dwSize store to the original location.
+// - SpruceGlow try 15 MATCH: keep `void** vt = *(void***)serv;` before assigning `desc.a[0] = 0x50`, then call through
+//   `vt[13]`. This forces the vtable load before the dwSize store while preserving the later argument push order.
+// Result: MATCH locally with `python tools/check_function.py --va 004324F0`.
 
 struct DPSESSIONDESC2 {
     unsigned long a[20];
@@ -35,25 +42,28 @@ public:
 
 int TCommunications_Sessions::Refresh() {
     DPSESSIONDESC2 desc;
-    unsigned long guid2;
+    unsigned long g2;
 
     EraseInformation();
 
-    guid2 = *(unsigned long*)0x62CF50;
+    g2 = *(unsigned long*)0x62CF50;
     for (int i = 0; i < 20; i++) {
         desc.a[i] = 0;
     }
 
-    desc.a[6] = *(unsigned long*)0x62CF48;
-    unsigned long guid1 = *(unsigned long*)0x62CF4C;
-    desc.a[9] = *(unsigned long*)0x62CF54;
+    unsigned long g0 = *(unsigned long*)0x62CF48;
+    unsigned long g1 = *(unsigned long*)0x62CF4C;
+    desc.a[6] = g0;
+    unsigned long g3 = *(unsigned long*)0x62CF54;
+    desc.a[9] = g3;
 
     void* serv = glpSERV;
-    desc.a[8] = guid2;
-    desc.a[7] = guid1;
+    desc.a[8] = g2;
+    desc.a[7] = g1;
+    void** vt = *(void***)serv;
     desc.a[0] = 0x50;
 
-    return ((int (__stdcall*)(void*, DPSESSIONDESC2*, unsigned long, void*, TCommunications_Sessions*, unsigned long))(*(void***)serv)[13])(
+    return ((int (__stdcall*)(void*, DPSESSIONDESC2*, unsigned long, void*, TCommunications_Sessions*, unsigned long))vt[13])(
         serv,
         &desc,
         0,

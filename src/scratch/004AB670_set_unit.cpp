@@ -20,6 +20,12 @@
 // - Tried unsigned-short surface: worse constant 0xFFFF stores/pushes and still ESI-param.
 // - Tried reversed positive-first branch: wrong block order and still ESI-param.
 // - Tried `extern RGE_Base_Game* rge_base_game` instead of absolute macro: worse global reload/call shape.
+// - 2026-05-10 pass on this VA only: retried 15+ focused variants: switch/default, positive-first if/goto,
+//   parameter self-assign/address/volatile-address, int/long/ushort signatures, raw member pointers, local list/info/game,
+//   explicit int index, precomputed id, and alternate local/global scheduling. No exact. All sane variants still choose
+//   ESI for the incoming parameter and EDI for the else-path global, opposite of original; variants that add locals push
+//   both ESI/EDI at entry and worsen block shape. Not an accepted_drift suggestion because register swap cascades through
+//   push encodings/block size and can truncate the tail in the compared window.
 // Left in scratch: remaining blocker is register-allocation/source-shape around keeping the incoming short parameter
 // in EDI across both branches while using ESI only as the else-path cached global pointer. Calls, stores, offsets,
 // stack cleanup, and behavior are understood.
