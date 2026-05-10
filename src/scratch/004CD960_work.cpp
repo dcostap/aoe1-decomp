@@ -2,6 +2,17 @@
 // left in scratch: behavior/core matched, but remaining 9-byte drift is load/register order.
 // Original owner check loads actor into EDX first, then target owner into ECX; VC5 uses ECX first.
 // Fallback coordinate stores also reload stack params in a different order despite source z,x,y and int punning.
+// SpruceGlow tries 1-10: actor local/owner locals, reversed compare, direct float stores, z/x/y int-pun forms,
+//   explicit param local order, goto fallback, nested positive form, direct action condition. No improvement;
+//   actor local first was worse (edit 29), goto much worse, most stayed at same 9-byte register/load-order diff.
+// SpruceGlow tries 11-20: raw owner offset loads, delayed actor owner, alternate fallback load/store order,
+//   vtable local, inverted condition, char* int-puns, direct float lvalue forms. Same 9-byte diff.
+// SpruceGlow tries 21-30: owner-id helper, short/int owner-id locals, volatile actor, union/pointer/volatile
+//   fallback parameter loads, extra vtable local, action switch, and else-nesting. Same 9-byte diff or worse
+//   (helper/action-switch/volatile/union variants drifted substantially).
+// Accepted_drift suggestion: yes, pending Boss review. Diff is register/load-order only in owner-id comparison
+//   and fallback coordinate reload/store ordering; branches, calls, stack cleanup, stores to same fields, and
+//   return values are otherwise identical. No inline asm/hacks.
 
 class RGE_Static_Object;
 

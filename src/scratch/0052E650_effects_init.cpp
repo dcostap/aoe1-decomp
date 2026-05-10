@@ -11,6 +11,13 @@
 // - Try 3: manual `operator new` + explicit ctor / placement-new declarations (with and without initialized locals, reversed if arms) still chose the sunk-store basin; no exact common-tail improvement.
 // - Try 4: volatile read of the local after construction kept the common join but spilled `eax` through `[esp+18h]` and stored via `edx`; /Oa reduced edit diff to 14 but is still worse and would be a custom flag.
 // - Try 5: flags /Oa, /Ob0, /Ot, /Gf, /Od, /O1, and no-/Oy probes did not find an exact family; restored /GX-only.
+// 2026-05-10 SpruceGlow resumed pass for Boss assignment: revalidated current best, then tried 20 more
+// targeted variants: direct/local assignment, if/else member stores, store-then-null, branch-return, ternary,
+// comma, assignment-in-if, volatile e, result initialized to 0, goto common/null, member reference/address,
+// bool temp, omitting explicit operator new declaration, and including <new.h>. None exact. Direct/local stay in
+// sunk-store basin (21 positional/15 edit); current common-tail source remains best edit diff (16 positional/11 edit).
+// Some explicit if/else store variants reduce positional bytes to 14 but have worse edit diff and extra real branch/store
+// layout changes, so not kept.
 // Left in scratch: current source keeps the closest common-tail shape. Behavior-equivalent accepted_drift candidate if Boss approves: one redundant `test eax,eax; jne +0` before `this->effects = e`, with epilogue shifted into padding. No inline asm/hacks used.
 
 void* operator new(unsigned int size);

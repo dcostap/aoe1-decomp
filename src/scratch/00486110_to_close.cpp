@@ -31,6 +31,13 @@
 //   duplicated guard and delays the `ebp` load to the loop entry.
 // - Try 4: flag probes /Ob0, /Og, /Ot no effect on the 96-byte natural source; /Os and
 //   /O1 were 79-byte wrong-family functions. No custom flag kept.
+// - 2026-05-10 resumed pass on this VA only: tried 10 more variants: natural do/while,
+//   for without separate outer guard, for with outer guard, preloaded y, explicit goto,
+//   one-return result local, reversed comparisons, ternary abs expressions, byte-pointer
+//   land pointer, and radius-before-pointer ordering. No exact. Natural/goto/preload
+//   forms still compile to 96-byte text and checker cannot compare; comparable for-loop
+//   forms either start with wrong param load/order or keep duplicated count guard and
+//   shifted tail. Current checked-in comparable 97-byte family remains best.
 // Left in scratch: current source is the best comparable 97-byte family, not exact and not
 // an accepted_drift candidate because the duplicate loop guard and shifted tails are broader
 // than a localized harmless scheduling/register drift. No inline asm/hacks used.

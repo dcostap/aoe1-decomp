@@ -1,6 +1,9 @@
 // VA: 0052B080 T_Scenario::InitializePlayerValues
 // left in scratch: behavior/offset pattern modeled, but VC5 keeps a shorter pointer-loop family.
 // Original uses EAX=this+0x18CC saved stack slot, EDX loop counter, ECX advanced by 0x10, and EBP=ESI.
+// 2026-05-10 StarryZephyr pass: rechecked baseline (112-byte text vs configured 123), tried explicit `zero` local
+// to encourage EBX=0 style. It made no size/family change; restored baseline. Still stuck in shorter pointer-loop
+// family with different register allocation/constant hoisting.
 
 struct Player_Start_Info {
     int Gold;

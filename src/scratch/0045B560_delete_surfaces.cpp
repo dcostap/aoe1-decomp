@@ -13,6 +13,12 @@
 // Kept direct this-> form because it is the best validated default-flags result.
 // All source-level variants so far suggest a VC5 register allocator/TU-context
 // barrier for choosing EBP as object base in isolation.
+// 2026-05-10 current Boss-assigned pass: revalidated baseline and tried pointer-walk forms,
+// self/register locals, top/inner declarations, unqualified member access, direct index vs pointer walk,
+// while/for/do loop spellings, delete expressions vs explicit dtor/operator_delete, global operator delete,
+// virtual dtor surface, and flag probes (/G5, /Oa, /Og, /Ob0, /Ot, /Ox, /Ow). No exact. Direct-index
+// family keeps zero in EBX but this in EDI; pointer-walk/delete-expression family uses EBX=this and
+// EBP=zero/counter. Neither selects original EBP=this, EBX=zero, EDI=cursor slot, ESI=temp area.
 
 void operator_delete(void* ptr);
 

@@ -15,6 +15,9 @@
 // This propagates to push order (push ebx vs push ebp) and comparison encoding
 // (cmp [mem], bp vs cmp cx, [mem]). Isolated TU cannot reproduce original's
 // register allocation.
+// 2026-05-10 StarryZephyr pass: rechecked baseline, tried `register` on source iterator (no change),
+// a do/if-null loop form (uses EBX/EBP together but much worse prologue/branch family), and explicit
+// object/y locals (no useful change, slight positional worse). Restored baseline.
 
 #include <stdlib.h>
 

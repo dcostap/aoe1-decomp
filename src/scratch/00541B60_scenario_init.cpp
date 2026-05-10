@@ -30,6 +30,20 @@
 // - SpruceGlow tries 21/22: while/do break spellings did not change the redundant join test.
 // - SpruceGlow try 24: removing the virtual destructor / making RGE_Scenario a plain 0x1990-byte class did not change best-basin codegen.
 // - SpruceGlow try 25: helper-returned zero worsened codegen (edit diff 20).
+// - 2026-05-10 resumed pass on this VA only: retried 15 variants: direct store,
+//   local-no-if, if-null/if-not/voidcast/intcast/zero-init/volatile/bool/while common
+//   tail, goto, assignment-in-condition, member-alias, param locals, if-member-arms,
+//   and plain non-virtual scenario surface. No exact. Direct/goto forms fall to the
+//   success-store/null-tail basin; common-tail forms keep the redundant `test eax,eax;
+//   jne +0`; member-arm forms add a real post-join branch. Same EH epilogue/window
+//   truncation blocker remains.
+// - 2026-05-10 current Boss-assigned pass: revalidated baseline and tried slot pointer/reference aliases,
+//   ternary/self-ternary, if/else-empty, goto null/non-null labels, switch-on-pointer, and one-shot loop forms.
+//   Alias/goto/switch forms stayed in the best common-tail basin but kept the redundant join test; ternary
+//   collapsed to success-store/null-tail; loop forms added real loop/control-flow drift. Kept unqualified
+//   `scenario = p` best source because `this->scenario = p` falls back to the worse success-store family.
+// - 2026-05-10 StarryZephyr pass: rechecked current source (16.6667% positional, 11.4583% edit) and direct member new
+//   (success-store/null-tail, first mismatch 53, edit 15). Restored current best source; same EH join-test blocker.
 // Left in scratch: behavior, EH frame, allocation size, ctor args/call, and stack cleanup are correct; blocker is
 // VC5 source shaping around the null-path/common-store join, same as sibling init helpers. Not proposing accepted_drift:
 // best object inserts a no-op join test and shifts/truncates the compared tail/epilogue. No inline asm/hacks.

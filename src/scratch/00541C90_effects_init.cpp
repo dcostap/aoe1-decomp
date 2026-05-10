@@ -24,6 +24,9 @@
 //   No exact. Best is still the current common-tail source; it has the original ctor-success jump, null xor, and common
 //   member-store intent, but VC5 inserts a no-op `test eax,eax; jne +0` at the join, pushing the epilogue past the
 //   88-byte function window (tail disassembles incomplete). Not an accepted_drift suggestion under the 00449E20 ruling.
+// - 2026-05-10 StarryZephyr pass: rechecked baseline (18.18% positional, edit 12.5%), tried ternary member assignment
+//   (collapses to sunk-store/null-tail, 23.86%), then restored current common-tail self-assignment source. Same blocker
+//   as data_load_effects: exact prefix through EH/new/ctor; tail join either gains no-op test/jne or sinks the store.
 // Left in scratch: behavior and EH/call surface are correct; blocker is VC5 source shaping around null-path/common-store join.
 // No inline asm/hacks.
 

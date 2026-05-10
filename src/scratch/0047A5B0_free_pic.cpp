@@ -4,9 +4,18 @@
 // attempt 3: 65.8%, same
 // attempt 4: 112 bytes, temp var too small
 // attempt 5: 65.8%, same as attempt 2
-// BEST: 65.8%. BLOCKER: VC5 optimizes away redundant null test (line 157/164),
-//   uses ecx instead of edi, reloads ptr from member (not saved in reg).
-//   Original has extra push edi/pop edi and redundant test edi,edi.
+// BEST kept: 65.8% positional, 29.1% edit diff. BLOCKER: VC5 optimizes away
+// redundant null test (line 157/164), uses ecx instead of edi, reloads ptr from
+// member (not saved in reg). Original has extra push edi/pop edi and redundant
+// test edi,edi.
+// Additional tries: explicit p/s locals selected desired saved-pointer idea but
+// produced 112-byte .text (too small for configured compare); virtual destructors,
+// volatile locals, byte-offset member loads, and raw own_pic tests stayed too small.
+// Reverted to compiling direct-member source because it is the best validated
+// default-flags result. No accepted_drift: broad register/prologue/call-shape drift.
+// 2026-05-10 StarryZephyr pass: rechecked baseline and retried explicit p/s locals to
+// encourage saved-pointer use. It again produced the 112-byte too-small family, still
+// no push edi/redundant test. Restored direct-member baseline.
 extern void __cdecl operator_delete(void*);
 
 class TPicture {

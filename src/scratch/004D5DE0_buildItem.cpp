@@ -2,6 +2,10 @@
 // PDB: taibldmd.cpp:1759-1773
 // left in scratch: behavior/calls/layout modeled; remaining drift is the same list-loop branch shape
 // seen in 00500320 (`cmp sentinel; je fail; test; jne body`) versus original backedge to loop-top test.
+// 2026-05-10 StarryZephyr pass: rechecked baseline, then tried a straightforward do/while sentinel-only loop
+// with explicit initial null guard. It reduced positional diff slightly but worsened edit diff and moved the
+// found/fail tails earlier with padding; restored baseline because it retains closer edit alignment and original
+// null-at-top loop intent.
 
 class BuildItem {
 public:

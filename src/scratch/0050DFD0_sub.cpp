@@ -22,9 +22,18 @@
 //   96 bytes or use ecx as target/next with shifted branches.
 // - Tried assigning/reloading the parameter through volatile, entry-left compare order, late target temp,
 //   and label-order variants; no exact. No per-function flags kept.
+// - 2026-05-10 StarryZephyr pass: rechecked baseline (still 96-byte text vs configured 100), tried a separate
+//   `target` local to keep the parameter in a register (no size/code-family change), explicit scan/found labels
+//   (no change), and a source shape that tests `this->time_list` before loading `cur` (recovered a visible second
+//   test but introduced push ebx/three-register coloring and still 96-byte text). Restored compact baseline.
 // Left in scratch: behavior is understood, next offset is corrected, but source remains stuck between
-// a compact 96-byte ebx/pp-coloring family and a larger volatile-parameter family. No accepted_drift
-// suggestion because the current best is wrong-size/broad register-coloring drift, not localized.
+// a compact 96-byte pp-coloring family and larger/broader duplicate-null-test families. No accepted_drift
+// suggestion because the current best is wrong-size/broad loop/register-coloring drift, not localized.
+// 2026-05-10 current Boss-assigned pass: revalidated baseline and tried goto/do/for loop forms,
+// target locals, parameter self-assign/reload, member/head reload, volatile head/cur/pp second-null-test
+// forms, nested member/local source shapes, and flag probes (/Ob0, /Og, /Oa, /Ot, /G5, /Ox, /O1, /Oy-).
+// Compact forms stay 96 bytes with the second null test optimized out and a reloaded stack-param compare
+// at loop bottom; duplicate-null-test forms introduce EBX/extra stack or otherwise broad register drift.
 
 extern "C" void __cdecl free(void* block);
 

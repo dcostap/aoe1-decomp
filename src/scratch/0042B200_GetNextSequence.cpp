@@ -18,13 +18,24 @@
 //   from the global. VC5 either kept `mov al,1; mov [global],al` or added a reload.
 // - Try 5: flag probes /Ob0, /Og, /Ot no effect; /Os and /O1 were 103-byte wrong-size
 //   bodies. No per-function flag kept.
-// Left in scratch: best source below is behavior-equivalent and same-size. Remaining
-// drift is localized to the new-turn store/return scheduling (`mov al,1; mov [g],al`
-// vs original `mov byte [g],1; mov al,1`), shifting later blocks/tail 2 bytes earlier
-// with trailing NOP padding. Accepted_drift candidate if reviewed; no inline asm/hacks.
+// - 2026-05-10 StarryZephyr pass: revalidated current best (108/108, edit diff 33) and
+//   tried storing `(unsigned char)value` before returning 1. That produced `mov [g],al;
+//   mov al,1`, lowering edit diff to 22 but changing behavior for new-turn sequence when
+//   low byte of value is not 1, so it was rejected and current behavior-correct best restored.
+// - 2026-05-10 SpruceGlow Boss-assigned pass: tried 13 variants: immediate-store then
+//   return literal, store-before/after overflow cmp, `seq == 0xff`, dword low-byte masking,
+//   positive/goto branch order, volatile store, return-literal block, `byte_62CF2C++`, and
+//   absolute byte macro forms. No exact. Absolute byte macro reduces edit diff to 15 but
+//   still emits `mov al,1; mov [g],al` and shifts all later labels, so kept the clearer
+//   extern-global source.
+// Left in scratch: best source is behavior-equivalent and same-size. Remaining drift is
+// localized to the new-turn store/return scheduling (`mov al,1; mov [g],al` vs original
+// `mov byte [g],1; mov al,1`), shifting later blocks/tail 2 bytes earlier with trailing
+// NOP padding. Accepted_drift candidate if reviewed; no inline asm/hacks.
 
 extern unsigned int dword_62CF2C;
 extern unsigned long dword_62CF30;
+extern unsigned char byte_62CF2C;
 
 class TDebuggingLog;
 extern void __cdecl TDebuggingLog_Log(TDebuggingLog* log, const char* msg, unsigned int value);
@@ -40,20 +51,23 @@ public:
 unsigned char TCommunications_Handler::GetNextSequence(unsigned long value) {
     if (value != dword_62CF30) {
         dword_62CF30 = value;
-        *(unsigned char*)&dword_62CF2C = 1;
-        return 1;
+        byte_62CF2C = 1;
+        return byte_62CF2C;
     }
 
-    unsigned char seq = *(unsigned char*)&dword_62CF2C;
+    unsigned char seq = byte_62CF2C;
     ++seq;
-    *(unsigned char*)&dword_62CF2C = seq;
+    byte_62CF2C = seq;
+
     if (seq >= 0xFF) {
         TDebuggingLog_Log(*(TDebuggingLog**)0x62C4FC, (const char*)0x582490, dword_62CF2C & 0xFF);
         return 0;
     }
+
     if (this->pause_state == 4 && seq > 100) {
-        *(unsigned char*)&dword_62CF2C = 100;
+        byte_62CF2C = 100;
         return 100;
     }
+
     return seq;
 }

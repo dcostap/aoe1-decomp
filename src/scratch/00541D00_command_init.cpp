@@ -20,8 +20,27 @@
 //   `test eax,eax; jne +0` at the join. This shifts/truncates the EH epilogue inside
 //   the 89-byte window (`83c4` incomplete at tail), so it is not an accepted_drift
 //   suggestion under Boss's 00449E20/00541C90 window ruling.
+// - 2026-05-10 resumed pass on this VA only: tried 20 more variants across plain,
+//   virtual-dtor, virtual-method, void-world, and void-world/void-handler command
+//   surfaces, with common-tail, direct, if-not, and voidcast forms. No exact. Virtual
+//   surfaces change allocation size to 0x1c; direct forms sink store/epilogue into
+//   success path; common-tail forms either spill through stack or keep the redundant
+//   join test. Kept the clean redundant-join common-tail source as best source.
+// 2026-05-10 SpruceGlow Boss-assigned pass: revalidated baseline and tried 16 variants:
+// explicit if-null/if-not null normalization, goto common/null, direct/local assignment,
+// param2 local, this local, member reference/pointer alias, store-in-both-arms,
+// volatile pointer, bool temp, zero-init, and assignment-in-if. No exact. Explicit
+// null-normalization/goto forms reach the common-tail family but insert the same
+// redundant `test eax,eax; jne +0`, shifting/truncating the EH epilogue inside the
+// 89-byte window. Direct/local forms sink the store into the success path. Store-in-arm
+// variants reduce positional bytes to 14 but have worse edit diff and real branch/store drift.
 // Left in scratch: behavior and EH/call surface are correct; blocker is VC5 source shaping
-// around null-path/common-store join. No inline asm/hacks.
+// around null-path/common-store join. No inline asm/hacks; no accepted_drift suggestion
+// due the denied EH join-test epilogue/window truncation pattern.
+// 2026-05-10 current pass: rechecked exact status, tried direct/local new, explicit two-arm stores,
+// ternary, goto/empty-if/loop/comma variants, prezero member forms, placement-new declaration, manual
+// member-method ctor substitutes, and virtual/dtor command surfaces; also re-probed several /GX flag
+// variants. Same basins: direct forms sink success store, common-tail forms insert `test eax,eax; jne +0`.
 
 void* __cdecl operator new(unsigned int size);
 
@@ -44,8 +63,8 @@ public:
 
 void RGE_Game_World::command_init(int param1, TCommunications_Handler* param2) {
     RGE_Command* p = new RGE_Command(this, param2);
-    if (p == 0) {
-        p = 0;
+    if ((void*)p == 0) {
+        p = (RGE_Command*)0;
     }
     this->command = p;
 }

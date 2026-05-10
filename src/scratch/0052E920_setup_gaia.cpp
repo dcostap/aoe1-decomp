@@ -23,6 +23,13 @@
 // Kept explicit-null normalization because it reaches the best 16.67% positional / 7.84% edit
 // diff: only an extra dead `test eax,eax; jne +0` appears at the common ctor/null join.
 // String/handler addresses are relocations masked by the tool. No inline asm/hacks.
+// 2026-05-10 current Boss-assigned pass: revalidated baseline and tried direct/local store,
+// unqualified store, goto-common, empty-if/else, slot local before/after new, master/world locals,
+// if-store-arms, ternary, TRIBE_World method surface, typed players/master_players, typed world ctor
+// args, string/zero locals, and manual operator-new/placement-style spelling. No exact. The best
+// common-store family still inserts the dead `test eax,eax; jne +0`; direct/ternary forms sink the
+// success store/epilogue; early slot/master locals perturb saves/registers broadly. Accepted drift
+// for this join-test/window pattern was previously denied, so no accepted_drift suggestion.
 
 class RGE_Master_Player {
 public:

@@ -4,14 +4,14 @@
 // 133 bytes, not yet matched (parked)
 // Complex function: 6 params + thiscall, base class call, conditional swap/adjust,
 // final function call with adjusted coords. 5 callee-saved regs used.
-// 4 source forms tried, all >133 bytes (144+). VC5 register allocation
-// diverges from original's tight register usage. 2 relocations.
-// 
 // Attempt log:
 // v0: direct function pointer call → wrong indirect call + superfluous param
 // v1: RGE_Map base class call + temp locals → 144 bytes (casts + reg pressure)
 // v2: RGE_Map base class call, no temps → 144 bytes
 // v3: same but more explicit → still 144 bytes
+// 2026-05-10 StarryZephyr pass: tried typed member `tribe_clean_terrain` and long-param natural rectangle source; produced
+// 128-byte too-short text window. Restored comparable baseline. Remaining drift is broad parameter/register ordering and final
+// call cleanup; no accepted_drift.
 
 #include "../../include/game_globals.h"
 

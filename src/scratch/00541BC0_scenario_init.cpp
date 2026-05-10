@@ -18,6 +18,9 @@
 // 5. Slot local/pointer-to-member shape and ternary collapse back to the sunk-store basin.
 // 6. 2026-05-10 pass on this VA only: retried 20+ variants: direct/local new, if-null/if-not/goto common-store, assignment-in-condition, zero-init, volatile local, parameter reuse, bool temp, switch, empty-if, ternary, do/for single-pass, if/else member stores, and volatile-read. Also probed flags /O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oa, /Ot with /GX. No exact.
 // 7. Best current source below: edit diff 12.0879%, positional 17.5824%; mismatch is redundant join-test plus epilogue truncation (`83c4` incomplete at tail). Not an accepted_drift suggestion under Boss's window/truncation ruling.
+// 8. 2026-05-10 StarryZephyr pass: rechecked current baseline (same 17.5824%/12.0879%), tried direct member new and plain local new
+//    (both collapse to sunk-store/null-tail, 23.0769%/16.4835%), and positive goto common-store (same redundant join-test basin).
+//    Restored current best common-tail source; no accepted_drift due EH tail/window drift.
 // No inline asm/hacks.
 
 void* __cdecl operator new(unsigned int size);

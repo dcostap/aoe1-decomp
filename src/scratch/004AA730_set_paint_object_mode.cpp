@@ -20,6 +20,9 @@
 // 6. Retried branch-direct, explicit self local, pre-this-read, nested-if, no-enabled early-return, byte/bool enabled, and reload-global tail shapes; no exact. Best still preloaded-vtable shape; all useful variants miss at offset 1.
 // 7. Tried register locals, declaration order self/game vs game/self, direct vs preloaded vtable tails; register keyword made no allocation difference.
 // 8. Tried flags /Oa, /G5, /Gr, /Gz, /O1, /Od; /O2-family unchanged, /O1 shrinks body, /Od produces EBP frame and broad mismatch.
+// 9. 2026-05-10 StarryZephyr pass: rechecked current preloaded-vtable baseline (107/107, first mismatch offset 1),
+//    retried explicit `self = this` with branch-local vtable calls and direct branch-local vtable calls. Both kept the
+//    wrong game-in-EDX/this-in-ECX register basin and worsened edit diff. Restored preloaded-vtable baseline.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 

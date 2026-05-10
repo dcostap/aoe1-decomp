@@ -17,8 +17,16 @@
 //   reached the better common-store basin but kept the redundant `test eax,eax; jne +0` at the join (edit diff 11,
 //   first mismatch 78). If/else store worsened edit diff 17; assignment-in-condition worsened edit diff 26; local int
 //   param3 and plain/incomplete ctor surface were worse. Kept the better common-store source below.
+// 2026-05-10 StarryZephyr pass: rechecked current common-tail source (16.1616% positional, 11.1111% edit), tried
+//   direct member new (success-store/null-tail, first mismatch 50, edit 15), and positive goto common-store (same
+//   redundant join-test basin). Restored current best source.
 // Left in scratch: behavior/EH/allocation/ctor push order are correct; blocker is the same redundant join-test plus
 // tail/epilogue truncation seen in neighboring init helpers. Not proposing accepted_drift. No inline asm/hacks.
+// 2026-05-10 current Boss-assigned pass: revalidated baseline and tried unqualified store, direct/local no-if,
+// goto-null, if/else-empty, slot reference alias, ternary, param locals/int-param3, if-store-arms, separated
+// declaration/zero-init, assignment-in-if, comma, do/while break, raw member store, void* member surface, and
+// RGE_Player inheritance surface. No exact. Common-tail family always keeps `test eax,eax; jne +0`; direct/ternary
+// forms sink store/epilogue into success path; store-arms lower positional bytes but add real branch/store drift.
 class RGE_Player;
 class TRIBE_Victory_Conditions;
 
@@ -41,5 +49,5 @@ void TRIBE_Player::load_victory(int param_1, long* param_2, unsigned char param_
     if (v == 0) {
         v = 0;
     }
-    this->victory = v;
+    victory = v;
 }

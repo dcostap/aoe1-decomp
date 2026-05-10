@@ -1,5 +1,8 @@
 // TRIBE_Credits_Screen::draw — real pass
 // VA: 00492CC0
+// 2026-05-10 StarryZephyr pass: tried replacing raw __fastcall helper calls with natural thiscall typed members.
+// That recovered source clarity but still emitted indirect `mov eax,addr; call eax` calls and a 128-byte too-short
+// text window; /Gr did not help. Restored prior raw baseline. No accepted_drift due broad call/tail drift.
 #include "../../include/game_globals.h"
 
 void __fastcall draw_credits(void* _this, int _)

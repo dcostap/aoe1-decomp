@@ -3996,3 +3996,120 @@ Try when:
 
 Caveat:
 - use virtual declarations for vtable calls; this lesson is for direct member calls.
+
+## Lesson: Preserve destructor inheritance context but override a vtordisp-shifted field access with a proven byte offset
+
+For destructor matches, real inheritance may be needed to get VC5's EH frame,
+vptr restore, base-destructor call, and saved-register choices. If that inherited
+surface inserts a vtordisp and shifts a derived field by 4 bytes compared with the
+binary, do not throw away the whole class context. Keep the inheritance and access
+the binary-proven field through an explicit byte offset:
+
+```cpp
+FieldType*& field = *(FieldType**)((char*)this + 0x104);
+```
+
+Try when:
+- the destructor frame/registers/base call match with inheritance;
+- only a derived field load/store is off by a vtordisp-sized displacement
+  (for example +0x108 rebuilt vs +0x104 original).
+
+Why it helps:
+- VC5 still sees the natural destructor context, while the source forces the exact
+  data offset used by the original binary.
+
+Caveat:
+- use only for binary-proven offsets; do not hide uncertain class layout guesses
+  behind raw pointer arithmetic.
+
+## Shared result locals can force the original callee-save/register basin
+
+When two branches compute arguments and then make the same call after the branch,
+try naming shared result locals outside the `if` and doing one common call instead
+of calling from each branch. In VC5 this can extend enough liveness across the
+branch join to select a callee-save register (for example ESI) and match original
+`push`/`pop` usage, stack offsets, and branch distances. This is especially useful
+when a direct per-branch call version is behaviorally right but one byte short and
+keeps object pointers in volatile registers.
+
+## Sentinel-list loops may need `while (node != sentinel)` plus a top null break
+
+For intrusive/sentinel list walks that also tolerate null nodes, spelling the loop
+as `while (node != sentinel) { if (node == 0) break; ...; node = node->next; }`
+can match VC5 codegen better than `while (node != 0)` with an inner/bottom sentinel
+return. This shape encourages the compiler to keep the sentinel in a callee-save
+register, load long-lived parameters before the top null test, and use the bottom
+`next != sentinel` comparison as the only back-edge condition. A semantically similar
+null-primary loop may introduce an extra bottom null test and different register
+allocation.
+
+- When two adjacent virtual/member calls use the same object pointer but the original reloads the owner/vtable between calls, do not always preserve one source local across both calls. Reintroducing a second local/reload for the same owner between calls can shorten liveness, let VC5 allocate earlier arguments in the expected registers, and avoid compensating zero-extension temporaries. This is especially useful when the first call wants one member value preserved in EDI while the owner remains in ECX, and the second call naturally reloads the owner/vtable.
+
+## Lesson: Widen visible virtual-call parameters to force zero-extended byte argument pushes
+
+When a virtual call passes several byte fields as arguments and the original emits
+`xor eax,eax; mov al,[field]; push eax` for each one, declare the corresponding
+visible callee parameters as `unsigned int` rather than `unsigned char`.
+
+Try when:
+- the rebuilt virtual call uses byte loads into a dirty register or saves an extra
+  register to preserve narrow arguments;
+- the original clearly zero-extends byte fields to full 32-bit stack arguments
+  before a virtual call;
+- the call target/slot is known and behavior expects ordinary promoted integer
+  arguments.
+
+Why it helps:
+- VC5 treats the widened prototype as requiring full-width integer arguments and
+  naturally emits explicit zero-extension before each push;
+- a too-narrow visible prototype can keep arguments as byte values in existing
+  registers, perturbing register pressure and call setup.
+
+Caveat:
+- use this for the caller-visible declaration only when the binary proves the stack
+  argument width; do not change stored field widths. Verified on `00434D40`
+  do_command_ai_order.
+
+## Refreshed count locals can avoid loop peeling while preserving bottom tests
+
+When a loop count is obtained by a member call and the original has one pre-loop
+count check plus a bottom back-edge call/test, try a named `count` local initialized
+before the loop and refreshed at the end of each iteration (`count = obj->count()`).
+This can make VC5 emit the initial `test`/`jle` and then the desired bottom
+`index < obj->count()` comparison without adding an extra top-of-loop call or
+peeling the first iteration into a special `array[0]` case.
+
+- For VC5 constructors with EH setup, base-constructor call, vtable restore, and optional setup call, prefer a real inheritance surface with a visible virtual destructor and an initializer-list base constructor. Fake “base as member” wrappers or manual ctor calls can be behaviorally close but omit the natural constructor EH/frame and produce much smaller bodies; sibling constructors in the same class are strong donors for the exact declaration surface.
+
+- For intrusive-list scans where the original loop checks `group == sentinel` before entry and at the bottom, but the loop top begins with a null test, a natural `for (node = head; node != sentinel; node = node->next)` with an inner `if (node == 0) break;` can match VC5 better than `while (node != 0)` plus explicit sentinel returns/gotos. This shape can make VC5 place the bottom sentinel compare as the sole backedge to a top null test.
+
+- When a wrapper method extends a previously matched helper body and then calls the base implementation, reuse the helper's minimal class surface and source shape before adding richer donor declarations. Extra visible ctors/dtors or decompiler-style temporaries can change saved-this slots, register save order, and loop register allocation; the base-qualified call can still match on a minimal inheritance surface.
+
+- When an early-return case performs an update and then stores the same value as the function's common tail, try letting that case `break`/fall into the shared tail instead of spelling an explicit second store plus `return`. VC5 may then reuse the computed register for the tail store and avoid an otherwise harmless result-copy instruction that shifts the whole function.
+
+
+- For chained integer arithmetic with repeated signed constant division, preserve the original left-associative source expression when possible (for example `mapX / 4 * mapY / 4`) instead of splitting it into a named multiply result plus a later sign-adjust/shift. VC5 may schedule the whole left-associative expression in source order, emitting the first `/4`, multiply, second `/4` sign-adjust, and only then independent later work; splitting the expression can let the optimizer delay the multiply/divide tail across unrelated calculations and cause broad scheduling drift.
+
+- For small fixed buffer initialization, a simple byte-fill loop can be the exact source even when the binary contains widened dword/word stores. If explicit `*(int*)`/`*(short*)` stores get the right bytes but perturb prologue/fill scheduling or loop reload registers, try the natural `for (j = 0; j < n; ++j) buf[j] = 'X';`; VC5 may collapse it into the same wide stores while preserving the original scheduling basin.
+
+- VC5 local declaration order can decide whether a zero-initialized stack float is emitted as an immediate store before a loop/count test or as a shorter register store after the test. If the original has `xor index,index; mov dword [esp+slot],0; test count,count`, try declaring/initing the float/stack local before the integer loop index (`float best = 0.0f; int i = 0;`). Declaring the index first can make VC5 reuse the zeroed index register for `mov [esp+slot],esi`, shortening and shifting the loop even though behavior is identical.
+
+- When a run of adjacent scalar stores matches but the constructor return-value restore (`mov eax,this`) is scheduled too late, try spelling those stores as a small natural loop. VC5 may fully unroll the loop but place the implicit constructor return restore at the source-line boundary the original used, avoiding tail-shift drift that explicit stores cannot fix.
+
+- For VC5 optimized string comparisons, prefer the natural CRT helper call (`strcmp(a, literal)`) before hand-spelling byte loops. Under /O2 VC5 may inline `strcmp` into its characteristic two-byte unrolled loop with EBX/ESI/EAX scheduling; manual equivalent loops can choose a different register family and drift broadly.
+- In EH-framed constructors, a later allocation derived from a base member may need to be spelled as a reload from the constructed object (`*(T**)((char*)this + observed_offset)`) rather than by reusing the original constructor parameter. Reusing the parameter can keep it live across base/member calls, forcing an extra saved register and broad stack/register drift; the binary may instead reload the stabilized base field after the base constructor/setter has run.
+
+- For clipped rectangle/grid loops, writes back into incoming parameter stack slots can be the exact VC5 source shape, not decompiler noise. If original asm computes bounds in registers then stores a clipped end into one parameter home and the running row/index into another (`mov [esp+param],edi/eax`) just before loops, try keeping natural locals for the arithmetic but assigning the stabilized values back to the parameters before the loop (`x = end; radius = start_y;`). Separate clean locals can force early stores, extra reloads, and shifted inner loops.
+
+- For calls with one boolean argument feeding a larger common argument tail, a single conditional expression (`flag ? 1 : 0` or `flag != 0`) can make VC5 materialize the bool in a register and save an extra callee-saved register. If original asm instead does `push trailing_arg; test flag; push 1/0; ...` with a shared call tail, try spelling the call twice under `if (flag) ... else ...` with literal 1/0. VC5 can merge the duplicated call setup into the original branch-push/common-tail shape.
+
+- For equality checks on a freshly returned tick/time value against a member, `a != b` may compile to `cmp`, while original VC5 sometimes uses destructive subtract (`sub eax,ecx; je/jne`) when the source was arithmetic-shaped. If all else matches and only `cmp reg,member` vs `sub reg,member` drifts before a zero branch, try spelling the predicate as `(a - b) != 0` or `(a - b) == 0`. This preserves equivalent zero testing while steering VC5 to the original `sub` form.
+- For EH-framed lazy-allocation setters, prefer the natural typed `member = new T(); member->method(arg);` surface over fake destructor guards or raw helper wrappers. With the real class constructor/copy declarations visible under `/GX`, VC5 can emit the original new-expression EH state, direct calls, and common cleanup; artificial guards/wrappers may force the wrong EH prologue, extra saved registers, and indirect call thunks.
+
+- In small loops over object arrays, naming a secondary object pointer can make VC5 preserve it in an extra callee-saved register (often EBX), adding a save/restore and shortening/recoloring the body. If original repeatedly reloads `world->players[i]` for consecutive relation/flag/victory calls with no extra saved register, avoid a clean `other` local and spell the member chain directly at each use. The redundant source reloads can be the exact-match shape.
+
+- For EH-framed delete/recreate helpers, a near-perfect `/GX` match can still differ only in the `operator new` allocation size if the local stub class is empty or undersized. Model the allocated class size immediately (even as `char gap_00[sizeof]`) before chasing EH variants; VC5's `new T(args...)` will then preserve the same EH prologue/constructor/null path while fixing the `push sizeof(T)`.
+- For VC5 counted scans with a precheck and a call in the loop condition, source `while (i < obj->count()) { ...; ++i; }` can match the original top-tested loop, while an equivalent `if (count > 0) do { ... } while (++i < count)` may cause VC5 to peel/duplicate the first iteration or choose a different FPU/index form. Prefer the direct `while` shape when the asm calls the count method before the first body and again at the bottom.
+- If a Win32/API-heavy helper has the right behavior but VC5 chooses the wrong callee-saved registers, try naming a reused imported function pointer as a local before nearby size/result locals. Caching an IAT function pointer (for example `gh = GlobalHandle; gh(x); gh(x);`) can make VC5 dedicate EDI to the thunk and move other long-lived values into the original registers instead of repeatedly emitting direct IAT calls with different EBX/EBP allocation.
+- For stack struct/API call setup, exact offsets matter as much as source intent. If VC5 creates a too-large local frame or shifted argument home for a DirectDraw/Win32 struct, reduce the local to the observed stack size and model the exact written fields/offsets (for example a 0x64-byte DDBLTFX window with writes at `+0` and `+0x50`, not a guessed larger C struct). Also name the vtable before field stores when the original loads it before setting up the struct.
+- For /GX constructors of derived action/task classes, a visible nontrivial/virtual base destructor can be required to make VC5 emit the original EH registration and base-cleanup state after the base constructor. If a natural constructor is far too short with no EH frame, declare the base destructor surface before chasing body variants, then tune derived padding to restore observed member offsets.

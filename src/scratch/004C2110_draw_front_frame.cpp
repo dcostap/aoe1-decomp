@@ -4,19 +4,25 @@
 //
 // __thiscall: this in ecx, 3 stack params (TDrawArea*, short, short). ret 0Ch cleanup.
 //
-// ~91/125 edit-match bytes. Left in scratch due to stable VC5 heuristic differences:
+// ~91/125 edit-match bytes. Left in scratch due to stable VC5 heuristic differences.
+// 2026-05-10 assigned pass: tried if/else, direct if==1, if!=1, goto labels, outer switch,
+// explicit `ot > 3` guard, `ot <= 3` guard, switch returns vs breaks, case 2/3 shared vs
+// duplicated, unsigned-int/int/unsigned-char/volatile outline locals, do/while wrapper, and
+// narrow flag probes (/Ot,/Os,/O1,/Ox,/Ob0,/Gs). No exact.
 //
 // 1. Block ordering (game_mode check): Original puts `game_mode==1` path as fall-through
-//    with `jne` to switch. VC5 always inverts: puts switch as fall-through with `je` to
-//    game_mode==1 path. This is a compiler-version heuristic choice.
+//    with `jne` to switch. Normal jump-table source makes VC5 invert it: switch fall-through
+//    with `je` to game_mode==1 path. A smaller if-chain/default-square spelling can recover
+//    the original `jne` prefix through the first cube call, but then loses the jump table.
 //
 // 2. Jump table layout: Due to the block reordering, the jump table entries shift.
 //    In the original, the jump table has 4 entries (case 0, 1, 2, 2/3) pointing to
 //    004C2148, 004C215F, 004C2176, 004C2176. In VC5 rebuild, the game_mode==1 code
 //    body lands between case 0 and case 1 handlers, shifting all jump targets.
 //
-// 3. Case 2/3 handler: Missing from output — the compiler merges case 2/3 with the
-//    default return due to overlapping block addresses.
+// 3. Case 2/3 handler: some spellings omit or merge the square handler; explicit case 2/3
+//    restores it but keeps the broad outer block-order/table-layout drift.
+// No accepted_drift: the mismatch is a broad control-flow/jump-table layout difference.
 //
 // Field layout confirmed:
 //   rge_base_game = global @ [62C574h]

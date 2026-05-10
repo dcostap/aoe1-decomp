@@ -21,6 +21,10 @@
 // before call pushes) or force broader volatile/array stack traffic. Behavior remains
 // understood but mismatch is broad store scheduling/dead-store elimination, so no
 // accepted_drift suggestion from this pass.
+// 2026-05-10 StarryZephyr pass: rechecked baseline (105/105 but broad 86.6667% positional), tried explicit four zero
+// stores before field assignment (collapsed to 96-byte optimized basin), and volatile DPNAME with explicit stores (kept
+// 105 bytes but much worse stack traffic/edit diff). Restored cleaner brace-init source. Still no accepted_drift: broad
+// prologue/store scheduling and dead-store differences.
 
 #include <string.h>
 

@@ -23,6 +23,13 @@
 // /Ox, and /O1. No exact: direct new keeps exact allocation/ctor path but stores in success path;
 // artificial common-join forms reduce edit diff but add an unwanted post-merge `test eax,eax`; volatile
 // forms keep the original join but spill/reload EAX before the member store. /O1 emits too-short text.
+// 2026-05-10 current Boss-assigned pass: revalidated baseline and tried local/null common-store,
+// unqualified store, goto-common, empty else, slot-after-new, field/param/flag locals, if-store-arms,
+// ternary, plain/void/int map member surfaces, placement-new/manual init surfaces, and flag probes
+// (/Ob0, /Og, /Oa, /Ot, /G5, /Ox, /O1, /Oy- with /GX). No exact. Common-store forms keep
+// the same redundant `test eax,eax; jne +0` join; direct/ternary forms sink store/epilogue into
+// success path; field local and /Oy- perturb broad register/frame shape; /O1 and manual-init forms
+// are wrong-size. No accepted_drift due to the denied EH join-test/window truncation pattern.
 //
 // Field layout:
 //   map     @ +0x28 (TRIBE_Map*)

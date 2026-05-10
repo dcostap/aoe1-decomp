@@ -17,6 +17,16 @@
 //     stay short by 3 bytes and address/FPU load order differs.
 // 12: split off/next statements, register next, and expression-order swaps did not
 //     force esi; best kept variant is raw-offset z/y/x expression, 83 equal bytes.
+// 13: 2026-05-10 StarryZephyr pass: rechecked current baseline (110/110, first mismatch
+//     at branch distance from missing push esi). Tried typed `pw/nw` pointer form with
+//     y/x/z expression order; it removed next-offset arithmetic entirely, stayed no-ESI,
+//     shortened the body further, and worsened edit diff. Restored raw-offset baseline.
+// 14: 2026-05-10 FablePetal pass: tried typed cur/next, `path+i+1`, register pointer,
+//     offset pointer, delayed next offset, explicit dx/dy/dz locals, y/x/z and z/y/x
+//     expression order, char* path arithmetic, and dummy/register keep variants. None
+//     forced the original `push esi; lea esi,[eax+1]; shl esi,4`; VC5 either uses ECX
+//     for the next offset or removes the second offset entirely. Flag probes /Ob0,
+//     /Oa, /Ow, /Og, /Ot, /Ox, /O2 without /Oy, /Oy-, /O1, and /Od worsened or wrong-sized.
 //
 // BLOCKER: persistent FPU/codegen-family problem. Behavior and checks are understood.
 // Current source matches original prologue style (push ecx), single global-zero result,

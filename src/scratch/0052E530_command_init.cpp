@@ -25,9 +25,23 @@
 //   stack and stored via EDX; worse and also truncates the epilogue.
 // - Try 6: regular member-init helper instead of constructor removed the special
 //   new-expression EH lowering and compiled to only 48 bytes; wrong family.
+// - 2026-05-10 resumed pass on this VA only: retried 15 variants: direct member store,
+//   local-no-if, if-not/if-null storing into member in arms, goto-store, assignment in
+//   condition, void*/int casts, comma expression, volatile read, member pointer alias,
+//   handler local/param assignment, bool temp, and while-break null form. No exact.
+//   Direct/local/goto forms collapse to sunk-store/null-tail basin; all common-tail
+//   null-normalization forms keep the redundant join `test eax,eax; jne +0`; store-in-arm
+//   forms add a real post-join branch. Same EH epilogue/window truncation blocker.
+// 2026-05-10 SpruceGlow Boss-assigned pass: revalidated current best and tried 16 more source
+// variants: direct/local new assignment, handler local, this local, if-not-empty, goto common/null,
+// member reference/pointer alias, if store in both arms, volatile command pointer, bool temp,
+// unused-param touch, and explicit casts/order on ctor args. No exact. The direct/local family remains
+// sunk-store/null-tail (21 positional/15 edit). Common-tail variants all keep the redundant join
+// `test eax,eax; jne +0` and truncate/shift the EH epilogue in-window. Store-in-arm forms have fewer
+// positional bytes (14) but worse edit diff and real branch/store layout drift, so not kept.
 // Left in scratch: current source is the closest common-tail source but remains stuck
 // because VC5 inserts a redundant join test that shifts the EH epilogue. No inline asm
-// or accepted_drift suggestion for this state.
+// or accepted_drift suggestion for this state (same blocker as denied 0052E650 drift).
 
 void* __cdecl operator new(unsigned int size);
 

@@ -28,6 +28,15 @@
 // - LemonLily pass: tried 19 additional source shapes focused on forcing original x-first/no-EDI basin: row-first temporaries, mutating x/y parameters, PathingSystem* this+row aliases, raw char* base+row aliases, 2D rows, index-temp reuse, register locals, and no-shift-local forms. None removed the stable extra EDI save while preserving the original body.
 // - Best new x-first family (adjusted this/char* base) loaded x then y and computed row in ESI, but still pushed EDI for y/col or this alias and often spilled CL; closest first mismatch remained the extra push EDI at offset 0x0C.
 // - Reconfirmed current mirror-increment source remains the smallest/cleanest 82-byte build despite swapped initial parameter loads and the EDI save/pop family.
+// - 2026-05-10 pass on this VA only: tried 10+ additional shapes: row-first pointer,
+//   mutating x/y parameters, attempted adjusted-this alias, explicit asm-order locals,
+//   no-ptrlocal direct char-base expression, volatile x read, hardcoded table addresses,
+//   `field != 0`, int field, and unsigned-char compare variants. No exact. Most still
+//   choose the stable y-first/EDI family or spill CL; the one x-ish no-extra-body family
+//   still pushes EDI or changes saved registers. Current mirror-increment source remains
+//   the cleanest understood source; no accepted_drift suggestion because the initial
+//   parameter load order, extra EDI save/pop, and row/column register allocation cause
+//   broad positional/register drift, not a tiny local scheduling difference.
 
 extern const unsigned char ObstructionValueShift[];
 extern const unsigned char ObstructionValueMask[];

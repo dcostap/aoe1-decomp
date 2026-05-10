@@ -21,6 +21,17 @@
 // - SpruceGlow tries 19/20: reusing param_1 or param_2 as the zero source for the null arm did not change the redundant join test.
 // - SpruceGlow tries 21-23: label/nullcase and while/do loop spellings did not change the redundant join test.
 // - SpruceGlow try 24: helper-returned zero worsened codegen (extra call/shape, edit diff 20).
+// - 2026-05-10 StarryZephyr pass: rechecked baseline (16.6667% positional, 11.4583% edit), retried direct member new
+//   (success-path store/null-to-tail, first mismatch 53, edit 15), `if (!s)` null arm, and positive empty-if/else-null;
+//   both null-arm spellings stayed in the redundant join-test basin. Restored current best source.
+// 2026-05-10 SpruceGlow Boss-assigned pass: revalidated current best and tried 16 variants:
+// direct/local assignment, explicit if-null/if-not null normalization, goto common/null,
+// param1 local, param2 local, member reference/pointer alias, store-in-both-arms,
+// volatile pointer, bool temp, zero-init, and assignment-in-if. No exact. Direct/local
+// forms sink the store into the success path (21 positional/15 edit, first mismatch 53).
+// Common-tail forms all keep the redundant `test eax,eax; jne +0` (16 positional/11 edit,
+// first mismatch 75) and truncate/shift the EH epilogue inside the function window. Store-in-arm
+// forms reduce positional bytes to 14 but have worse edit diff and real branch/store layout drift.
 // Left in scratch: behavior and EH/call surface are correct; blocker is VC5 source shaping around null-path/common-store join.
 // Not proposing accepted_drift: best object inserts a no-op test/jne and shifts/truncates the compared tail, so exact ownership is not safe.
 // No inline asm/hacks.

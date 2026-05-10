@@ -24,6 +24,10 @@
 // 12. variant_lab over member volatility, direct/local/ternary/ifelse/volatile/goto shapes, and vc5-risky flags: no exact; best default families are sunk-store or volatile-spill; /Oa slightly changes spill ordering but still not exact.
 // 13. LemonLily pass: tried direct member assignment, plain local, assignment-expression, empty if(e), goto/common-label, if/else self-assign, slot pointer/ref, volatile member declaration, raw +0x4C store, comma expression, volatile filename/this, int/long volatile reads, and address-escape forms. They collapse to either sunk-store/null-tail or common-tail-with-stack-spill; none produced original direct `mov [esi+4Ch],eax` common tail.
 // 14. Additional temporary flag probes on the int-volatile-read family (/Oa, /Ow, /Og, /Oi, /Ox /Oa, no /Oy, /Ob0, /Gs) did not match; /Oa-/Ow reduce edit diff slightly but still keep extra stack traffic. Original /GX flag file kept unchanged.
+// 15. This pass retried direct member assignment (sunk-store/null-tail, 23.86%),
+//     plain local assignment (same), and explicit null self-assignment (adds
+//     unwanted test/jne at join, 18.18%). Reverted to plain local assignment. Still
+//     no accepted_drift suggestion: tail control-flow/stack-spill variants are broad.
 
 class RGE_Effects {
 public:
@@ -40,6 +44,7 @@ public:
 };
 
 void RGE_Game_World::data_load_effects(char* filename) {
-    RGE_Effects* e = new RGE_Effects(filename);
-    this->effects = *(RGE_Effects* volatile*)&e;
+    RGE_Effects* e;
+    e = new RGE_Effects(filename);
+    this->effects = e;
 }

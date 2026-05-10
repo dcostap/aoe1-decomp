@@ -1,28 +1,30 @@
 // 004782A0 TListPanel::TListPanel (Pnl_lst.cpp:26-41, 102B)
-// ========== BLOCKER: vptr=0 safety init ==========
-// Our VC5 inserts `mov dword [esi], 0` (6-byte vptr-zero safety) where the
-// 1998 build has `mov ecx, 1` (5 bytes). This 1-byte shift cascades through
-// the entire function: different register allocation (eax vs ecx for const 1),
-// different field grouping, different vtable-set position.
 //
-// Attempts:
-// 1. Both virtual dtors (/O2): 62.7% - vptr=0 at orig mov ecx,1 position
-// 2. No virtual dtors: 96 bytes, no vtable assignment at all
-// 3. TListPanel virtual only: layout wrong (base at offset 4)
-// 4. /O1 both virtual: 63.7% - vptr=0 at end, push/pop for const 1
-// 5. Field reordering match: no effect - vptr=0 always inserted
-// 2026-05-09 GraniteCub: tried 10 more focused variants: derived/base/both
-// __declspec(novtable), manual vptr assignment, flat non-inherited TListPanel with
-// explicit base ctor call, volatile field stores, local `one = 1`, alternate vptr
-// source positions, /O1, and /Od+/GX. Best flat+volatile basin removes the vptr-zero
-// safety store but VC5 hoists the manual vptr store immediately after zeroing EAX and
-// uses EAX as the constant-1 register; original needs `mov ecx,1`, five zero stores,
-// `field_19C=ecx`, then the vptr store. Existing inherited basin remains the cleaner
-// source but has the automatic vptr-zero/version-scheduling blocker. No inline asm/hacks.
-//
-// No C++ source or compiler flag fix found. VC5-version difference.
-// The 1998 build also sets vtable mid-body (after some field stores), while
-// our VC5 sets it immediately after base ctor. Two independent version diffs.
+// Attempt log / blocker:
+// - Natural inherited constructor calls TTextPanel::TTextPanel(), then VC5 emits the
+//   TListPanel vptr store immediately after `xor eax,eax` and uses EAX for the later
+//   constant-1 stores. Original needs `xor eax,eax; mov ecx,1`, five zero stores,
+//   `field_19C=ecx`, then the TListPanel vptr store mid-body, followed by byte/one
+//   stores in source order.
+// - Prior work tried virtual/no-virtual combinations, derived/base/both
+//   __declspec(novtable), manual vptr assignment, flat non-inherited TListPanel with
+//   explicit base ctor call, volatile field stores, local `one = 1`, alternate vptr
+//   source positions, /O1, and /Od+/GX. Best flat/manual basin removed C++ automatic
+//   vptr scheduling but still hoisted the manual vptr store and used EAX for one.
+// - 2026-05-10: verified target only. Re-tested natural inherited shape, then tried
+//   flat raw-store variants with locals/const/register one, member-pointer local,
+//   volatile vptr/byte/after-stores, all-base/all-derived novtable/manual-vptr mixes,
+//   and flags /vd0 /vd1 /GR- /GX /Od /O2(no /Oy) /Ox /G5. No exact basin found.
+//   Volatile-after flat variant reduced edit diff to 23 bytes but reordered real
+//   stores (vptr early, field_19C late), so it is not a good accepted_drift candidate.
+// - 2026-05-10 StarryZephyr pass: retried flat/manual base-ctor call with explicit vptr store after field_19C,
+//   volatile vptr store plus register `one`, and a derived-member initializer-list hypothesis. Manual/volatile
+//   flat forms still hoisted the vptr store immediately after `xor eax,eax` and used EAX for later one-stores;
+//   initializer-list form either failed for base members or followed declaration/memory order, not source order.
+//   Restored natural inherited source as the cleaner model.
+// Left in scratch: natural source below is the cleaner typed model. Remaining mismatch
+// is constructor vptr/constant scheduling and broad later store order, not localized
+// enough for accepted_drift.
 
 class TTextPanel {
 public:

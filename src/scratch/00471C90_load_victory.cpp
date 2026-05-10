@@ -28,7 +28,15 @@
 // 5. Best current source below: edit diff 11.1111%, positional 16.1616%; mismatch is
 //    redundant join-test plus epilogue truncation (`83c4` incomplete at tail). Not an
 //    accepted_drift suggestion under Boss's window/truncation ruling.
-// No inline asm/hacks.
+// 6. 2026-05-10 SpruceGlow Boss-assigned pass: revalidated current best and tried 16 variants:
+//    direct/local assignment, explicit if-null/if-not null normalization, goto common/null,
+//    param1 local, param2 local, param3 int local, member reference/pointer alias,
+//    store-in-both-arms, volatile pointer, bool temp, and assignment-in-if. No exact.
+//    Direct/local forms sink the store into success path (21 positional/15 edit, first mismatch 50).
+//    Common-tail forms all keep the redundant `test eax,eax; jne +0` (16 positional/11 edit,
+//    first mismatch 78) and shift/truncate the EH epilogue inside the function window. Store-in-arm
+//    variants reduce positional bytes to 14 but have worse edit diff and real branch/store layout drift.
+// No inline asm/hacks. No accepted_drift suggestion due the denied EH join-test/window truncation pattern.
 
 void* __cdecl operator new(unsigned int size);
 

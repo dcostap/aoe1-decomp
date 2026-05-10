@@ -1,5 +1,11 @@
 // VA: 00480610 RGE_TimeSinceLastCall::GetHiLoInfo
 // PDB source: RGE_TSLC.cpp
+// Attempt log:
+// - Baseline has correct behavior but VC5 allocates an extra local (`push ecx`) for `orig`/loop counter preservation, shifting
+//   the frame versus original's reuse of the incoming parameter stack slot.
+// - 2026-05-10 StarryZephyr pass: tried removing `orig`, reusing `param_1` as loop counter, adding a separate `count`, and
+//   avg/lo/hi natural variants. These either kept the extra local and made 128-byte too-short windows or worsened register
+//   allocation. Restored baseline. No accepted_drift: prologue/frame, loop counter stack slot, avg register, and sprintf args drift.
 
 #include <stdio.h>
 

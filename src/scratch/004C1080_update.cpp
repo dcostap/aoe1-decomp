@@ -2,6 +2,16 @@
 // PDB source: sprite.cpp lines 955-975
 // left in scratch: behavior modeled; nearest shape gets saved EBX and correct early structure,
 // but remaining drift is source-order/register scheduling around first-time path and timeout delete.
+// 2026-05-10 current Boss-assigned pass: tried hoisting param/now before the FPU compare,
+// inverted delta-time branch, explicit else/no-return first-time forms, temp one/now locals,
+// volatile now, split arithmetic in original-looking order, cmp-after-store temps, and
+// shape-delete redundant-test variants. No exact. Redundant delete-test variants recover
+// original `test edi,edi` before deleting but lengthen the late path and shift/truncate the tail;
+// the kept baseline is cleaner overall. VC5 still loads param after the zero-compare branch,
+// stores `delta_time=1` before `last_time` in the first-time path, and compares before storing
+// accumulated delta. Original loads param before the branch, stores last_time then delta_time,
+// stores delta before cmp, and has different branch distances. No accepted_drift: broad
+// scheduling/layout drift across both first-time and timeout paths.
 
 struct TShape {
     ~TShape();

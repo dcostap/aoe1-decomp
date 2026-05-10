@@ -18,6 +18,8 @@
 // 5. Slot local/pointer-to-member shape and ternary collapse back to the sunk-store basin.
 // 6. 2026-05-10 pass on this VA only: retried 20+ variants: direct/local new, if-null/if-not/goto common-store, assignment-in-condition, zero-init, volatile local, parameter reuse, bool temp, switch, empty-if, ternary, do/for single-pass, and volatile-read. Also probed flags /O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oa, /Ot with /GX. No exact.
 // 7. Best current source below: edit diff 12.0879%, positional 17.5824%; mismatch is redundant join-test plus epilogue truncation (`83c4` incomplete at tail). Not an accepted_drift suggestion under Boss's window/truncation ruling.
+// 8. 2026-05-10 StarryZephyr pass: baseline rechecked unchanged, then tried positive empty-if/else-null form; it produced the same
+//    redundant join-test basin. Restored current best source. Same blocker as effects_init/data_load_effects.
 // No inline asm/hacks.
 
 void* __cdecl operator new(unsigned int size);

@@ -1,6 +1,9 @@
 // VA: 0040F9B0 AIPlay::groupGivenCommandOnPhase (132 bytes)
-// 3.79% diff: instruction scheduling + register width, can't fix from C++
-// ACCEPTED_DRIFT
+// Attempt log:
+// - Previous source suggested accepted drift, but live check was broad (48% positional) due scheduling/stack-slot mismatch and local command body.
+// - 2026-05-10 StarryZephyr pass: tried removing local AIPlayPhase::command body and forcing parameter stack-slot write/reload for
+//   the observed byte compare. VC5 still kept the type byte in EDX and produced a 128-byte too-short text window, so restored
+//   the comparable 132-byte baseline. No accepted_drift: branch distances, loop body, and tail/padding drift remain broad.
 
 struct AIPlayPhaseCommand {
     unsigned char field_0;

@@ -4,6 +4,9 @@
 // stores healRate into the param stack slot, uses `fmul st1; fidiv [esp+0C]; fst [esp+0C]`;
 // VC5 keeps preloading param/hp and emits fxch/fdivp-heavy expression code. Tried named maxHpFloat,
 // reversed compare algebra, volatile param, and positive pay branch; no exact basin yet.
+// 2026-05-10 StarryZephyr pass: rechecked baseline, tried inlining healRate load (no change) and named
+// `maxHpFloat` reused across scaling/clamp. maxHpFloat reduced edit diff but still preloaded hp and used
+// fxch/fdivp-heavy FPU with shifted/truncated tail. Restored baseline.
 
 class TRIBE_Player {
 public:

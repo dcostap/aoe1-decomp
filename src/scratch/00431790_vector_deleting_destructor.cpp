@@ -1,7 +1,7 @@
 // 00431790 `vector deleting destructor' for MsgQueue (113 bytes, 47 asm lines)
 // Compiler-emitted helper (no PDB source)
 //
-// Attempts: 14. Best: 112 bytes (1 byte short of original 113).
+// Attempts: 22+. Best: 112 bytes (1 byte short of original 113).
 //
 // BLOCKER: Register-save scheduling basin. The original pushes ebx/esl/edi
 // at function entry (conservative — all three saved regardless of path).
@@ -13,6 +13,12 @@
 // All logic, field offsets (+0/+4/+8/+0C/+10/+14/+18), function-pointer
 // call at vtable[0], and both paths are correct.
 //
+// Additional attempts this round:
+// - Retried current/default plus /GX removed, /Oa, /G5, /Ob0, /Og, /Ot, /O1, /Od.
+//   /O2-family stayed in the same 112-byte delayed-save basin; /O1 shrank; /Od broad EBP mismatch.
+// - Tried using zero in vector path, precomputing vector base, self/return pointer locals, no zero local;
+//   no change to the 112-byte basin.
+// - Tried volatile flags to force a real 113-byte body; it perturbs flag loads/stack stores and broadens diff.
 // Left in scratch — register-save-scheduling basin.
 
 #include "..\..\include\game_globals.h"
