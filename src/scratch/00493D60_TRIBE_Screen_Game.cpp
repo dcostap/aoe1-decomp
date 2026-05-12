@@ -443,9 +443,10 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     TButtonPanel** draw_buttons = (TButtonPanel**)((char*)this + 0x4f8);
     for (i = 3; i != 0; i--) {
         (*draw_buttons)->setDrawType(3);
-        (*draw_buttons)->draw_type_byte = 3;
-        (*draw_buttons)->set_text(0, (*(BaseGameStub**)0x62c574)->get_string(0x66, (*draw_buttons)->get_id(), 0, str, 0x200));
-        (*draw_buttons)->set_bevel_info(3, OFF8(0x320), OFF8(0x321), OFF8(0x322), OFF8(0x323), OFF8(0x324), OFF8(0x325));
+        TButtonPanel* b = *draw_buttons;
+        b->draw_type_byte = 3;
+        b->set_text(0, (*(BaseGameStub**)0x62c574)->get_string(0x66, b->get_id(), 0, str, 0x200));
+        b->set_bevel_info(3, OFF8(0x320), OFF8(0x321), OFF8(0x322), OFF8(0x323), OFF8(0x324), OFF8(0x325));
         draw_buttons++;
     }
     }

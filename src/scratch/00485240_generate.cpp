@@ -1,24 +1,13 @@
 // VA: 00485240 RGE_RMM_Land_Generator::generate
-// rmm_land.cpp lines 33-51
-//
-// Attempt log:
-// - SpruceGlow tried 24 variants: natural memset/set_terrain/clean_terrain with corrected member layout, width/height
-//   argument order swaps, raw offset accesses, manual byte and dword fill loops, local value/count temporaries,
-//   signed/unsigned char terrain fields, alternate memset prototypes/includes, staged count/value expressions,
-//   volatile value temps, and raw signed/unsigned byte value loads.
-// - Behavior and call surface are understood. Best current source is the raw-offset/memset family: it gets the same
-//   calls, field offsets, fill operation, and return, but VC5 schedules the memset setup differently: rebuilt emits
-//   `xor eax,eax` / value load order and moves the set_terrain trailing pushes relative to the REP fill differently.
-// - Best observed: positional diff 96/133, edit diff 31, first mismatch offset 12. Not an accepted_drift suggestion:
-//   broad scheduling/layout drift through the fill and set_terrain setup remains.
+// PDB: rmm_land.cpp lines 33-51 (133 bytes, 53 asm lines)
+// Default flags. No inline asm/hacks.
 
-extern "C" void* memset(void* dst, int value, unsigned int size);
+extern "C" void* memset(void* dst, int val, unsigned int size);
 
 class RGE_Map {
 public:
-    void set_terrain(void* player, void* world, int a, int b, short x, short y,
-                     unsigned char terrain, unsigned char flag1, unsigned char flag2);
-    void clean_terrain(long x, long y, long w, long h, unsigned char terrain);
+    void set_terrain(void* a1, void* a2, int a3, int a4, short w, short h, unsigned char terrain, unsigned char flag1, unsigned char flag2);
+    void clean_terrain(int a1, int a2, int w, int h, unsigned char terrain);
 };
 
 class RGE_Random_Map_Module {
@@ -28,6 +17,21 @@ public:
 
 class RGE_RMM_Land_Generator : public RGE_Random_Map_Module {
 public:
+    char gap_00[0x0C];
+    void* rmm_map;
+    char gap_10[4];
+    int width;
+    int height;
+    char gap_1C[4];
+    void* fill_buf;
+    char gap_24[0x144C - 0x24];
+    unsigned char fill_value;
+    char fill_pad[3];
+    unsigned char land_terrain;
+    char gap_1451[0x1454 - 0x1451];
+    int int_fill;
+    int int_terrain;
+
     unsigned char generate();
     unsigned char base_land_generate();
 };
@@ -35,26 +39,24 @@ public:
 unsigned char RGE_RMM_Land_Generator::generate() {
     this->clear_stack();
 
-    memset(*(void**)((char*)this + 0x20),
-           *(unsigned char*)((char*)this + 0x144C),
-           *(int*)((char*)this + 0x14) * *(int*)((char*)this + 0x18));
+    int area = this->width * this->height;
+    memset(this->fill_buf, (signed char)this->fill_value, area);
 
-    (*(RGE_Map**)((char*)this + 0x0C))->set_terrain(
+    (*(RGE_Map**)&this->rmm_map)->set_terrain(
         0, 0, 0, 0,
-        (short)(*(int*)((char*)this + 0x14) - 1),
-        (short)(*(int*)((char*)this + 0x18) - 1),
-        *(unsigned char*)((char*)this + 0x1450),
+        this->width - 1,
+        this->height - 1,
+        this->land_terrain,
         1,
         0);
 
     this->base_land_generate();
 
-    (*(RGE_Map**)((char*)this + 0x0C))->clean_terrain(
-        0,
-        0,
-        *(int*)((char*)this + 0x14),
-        *(int*)((char*)this + 0x18),
-        *(unsigned char*)((char*)this + 0x1450));
+    (*(RGE_Map**)&this->rmm_map)->clean_terrain(
+        0, 0,
+        this->width,
+        this->height,
+        this->land_terrain);
 
     return 1;
 }

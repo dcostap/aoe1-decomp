@@ -1,28 +1,17 @@
-// InfluenceMap::incrementValue
-// VA: 0044E600
-// parked: original-like natural source without shared include. Remaining work is VC5 source-shape/register allocation.
-// tried this pass: removed shared include, mutable parameter-style source, explicit byte locals, int cur, removed casts.
-// current result is worse than prior parked note (81.3% positional diff): VC5 saves EBX/ESI and preserves this in ESI instead of original's single ESI save with this in ECX.
-// SpruceGlow tries 1-10: mutable x/y params, no cell local, byte cur/sum, limit locals, positive/nested bounds,
-// raw offsets, early limit, return local. All worse/same; byte-cur form failed compile under current surface.
-// SpruceGlow tries 11-22: no-this member access, unsigned cur/sum, char* row local, limit ref, single return,
-// goto fail, direct/compact field names, threshold decrement local, virtual class surface. None recovered original
-// single-ESI-save register allocation; best remains current 81.3% positional diff family.
-// Left in scratch: behavior is understood, but broad register-allocation/frame mismatch remains. Not proposing
-// accepted_drift due broad codegen differences and extra callee-saved register/epilogue changes. No inline asm/hacks.
-// 2026-05-10 StarryZephyr pass: rechecked baseline and retried mutable x/y parameters with explicit byte limit/cur/sum.
-// It worsened to 91.1% positional and first mismatch offset 1, still saving EBX/ESI and not matching original ECX-live shape.
-// Restored baseline.
+// VA: 0044E600 InfluenceMap::incrementValue
+// PDB: infmap.cpp lines 240-257 (123 bytes, 45 asm lines)
+// Default flags. No inline asm/hacks.
 
 struct InfluenceMap {
-    char gap_00[4];
+    int vtable;
     int xSize;
     int ySize;
     int xReferencePoint;
     int yReferencePoint;
-    char gap_14[4];
+    int gap_14;
     unsigned char** rowData;
-    char gap_1C[8];
+    int gap_1C_1;
+    int gap_1C_2;
     unsigned char maxLimit;
 
     int incrementValue(int x, int y, unsigned char value);
@@ -36,18 +25,18 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
         return 0;
 
     unsigned char* cell = this->rowData[ry] + rx;
-    int cur = *cell;
+    unsigned char cur = *cell;
 
     if (cur >= this->maxLimit)
         return 1;
 
-    cur = cur + value;
+    unsigned int sum = (unsigned int)(unsigned char)cur + (unsigned int)(unsigned char)value;
 
-    if (cur >= this->maxLimit) {
-        *cell = this->maxLimit - 1;
+    if (sum >= (unsigned int)(unsigned char)this->maxLimit) {
+        *cell = (unsigned char)((unsigned int)(unsigned char)this->maxLimit - 1);
         return 1;
     }
 
-    *cell = cur;
+    *cell = (unsigned char)sum;
     return 1;
 }

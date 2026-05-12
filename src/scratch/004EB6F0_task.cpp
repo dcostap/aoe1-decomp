@@ -175,6 +175,12 @@
 // - probed case11 using `taskID` as the loop index to force [esp+38] instead of [esp+40]; stack slot matched that local original clue but positional worsened by one byte with no edit gain, so left the index in `busyOK` for now.
 // - rewrote gather case 9/14 from one combined `u && ai && zone` condition into explicit bad-object removal plus `else if (zone == ...)`. Positional worsened slightly but edit equality jumped 2716->3657, confirming this is the closer resync/source shape for the first real post-displacement hunk.
 // - inverted gather distance source to `if (gatherDist < nearDist) stop else group` so the stop/currentOrder path is inline and the group path is the taken branch, matching original block polarity around the FPU compare.
+// - changed gather zone mismatch to an explicit `!= zone` removal arm; this recovered the original `je`-to-valid-body branch family and improved positional diff 3911->3494 with exact equality through the gather loop compare hunk.
+// - case3 retreat FPU/log audit: spelling the range gate as `distance < los*1/3` with the no-move log first recovered the original `fxch; fcompp` sequence; correcting that log's vararg from master object to unit id improved positional diff to 2869.
+// - moved case7 accumulator zero before debug_rand to match the observed line order; slight improvement to 2848 bytes, but stack slots still differ (`roll`/accumulator/index are [30]/[38]/[40] rebuilt vs [18]/[30]/[38] original).
+// - converted case7 to reuse the incoming tactical parameter slot as the HP accumulator (with a saved tactical pointer), matching original [esp+30] accumulator and [esp+38] index topology. Positional worsened to 3288 but edit equality improved to 3940 and the first switch displacement moved much closer (0x1599 vs original 0x159e). Kept as a layout/fidelity lead; remaining local drift is EB P/EDI coloring (saved tactical in EBP, unit pointer in EDI) vs original tactical in EDI, unit pointer in EBP, plus roll still at [esp+40] instead of original [esp+18].
+// - register keyword and a far label for the case7 tactical-accumulator tail compiled identically; kept no keyword and source label only where useful.
+// - tactical-parameter-slot accumulator variant plus raw `*(int*)&tactical` call-surface probe worsened (3340 positional/3719 edit equal) and risked wrong call receiver; rolled back to the better positional case7 shape. A top-level rollScratch and unitp/tt declaration-order/register probes compiled identically.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
@@ -352,7 +358,6 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         consecutiveGatherAttemptsValue = 0;
 
     int oHP;
-    float distance;
     switch (taskID) {
     case 0:
     case 1: {
@@ -396,7 +401,9 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             RGE_Static_Object* u = md->object(*unitp);
             if (u == 0 || u->unitAI() == 0) {
                 removeUnitByIndex(gi, md);
-            } else if (gatherObj->lookupZone((int)u->world_x, (int)u->world_y) == zone) {
+            } else if (gatherObj->lookupZone((int)u->world_x, (int)u->world_y) != zone) {
+                removeUnitByIndex(gi, md);
+            } else {
                 if (busyOK == 0 && u->unitAI()->currentAction() != -1 && u->unitAI()->currentAction() != 0x266)
                     continue;
                 if (taskID == 14)
@@ -411,8 +418,6 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                 } else {
                     tactical->groupGatherUnit(*unitp, commanderValue, gatherLocationValue.x, gatherLocationValue.y, gatherLocationValue.z, nearDist, tactical->calculatePriority(gatherDist));
                 }
-            } else {
-                removeUnitByIndex(gi, md);
             }
         }
         return 1;
@@ -427,6 +432,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         int i;
         int* unitp;
         RGE_Static_Object* obj;
+        float distance;
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_19);
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_20, retreatLocationValue.x, retreatLocationValue.y);
         for (i = 0, unitp = unitsValue; i < 40; ++i, ++unitp) {
@@ -440,11 +446,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             }
             distance = obj->distance_to_position(retreatLocationValue.x, retreatLocationValue.y, retreatLocationValue.z) - 1.0f;
             if (distance < 0.0f) distance = 0.0f;
-            if (obj->master_obj->los * 0.33333334f <= distance) {
+            if (distance < obj->master_obj->los * 0.33333334f) {
+                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_24, *unitp);
+            } else {
                 TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_23, *unitp);
                 tactical->moveUnit(*unitp, retreatLocationValue.x, retreatLocationValue.y, 100);
-            } else {
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_24, obj->master_obj);
             }
         }
         return 1;
@@ -457,8 +463,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         int* unitp;
         RGE_Static_Object* obj;
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_32);
-        int roll = debug_rand(s_file, 0x3af) % 100;
         taskID = 0;
+        int roll = debug_rand(s_file, 0x3af) % 100;
         busyOK = 0;
         unitp = unitsValue;
         do {
@@ -915,4 +921,5 @@ store_return_one_zero_waypoints:
     originalUnitNumberValue = numberUnitsValue;
     numberAttackWaypointsValue = 0;
     return 1;
+
 }

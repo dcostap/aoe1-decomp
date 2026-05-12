@@ -1,74 +1,86 @@
 // VA: 00404590 RGE_Action_List::add_action_at_end(RGE_Action*)
-// PDB source: act_list.cpp lines 342-372
-// Default flags
+// PDB: act_list.cpp lines 342-372 (114 bytes, 46 asm lines)
+// Default flags. No inline asm/hacks.
 //
-// __thiscall: this in ecx, action param on stack at [esp+4]. ret 4.
-// calloc(1, 8) for node allocation.
+// BLOCKER: Multi-axis register-allocation and control-flow differences prevent
+// exact match. Not accepted_drift — diff is structural (90% positional, 75% edit)
+// with different register saves, vtable call scheduling, loop structure, and
+// branch displacements.
 //
-// Fields: obj@+0x04, list@+0x08. Node: action@+0x00, next@+0x04.
-// Virtual: vf00 at vtable+0x00, vf07 at vtable+0x1C.
+// Original register layout:
+//   ESI = this (saved at entry, reused as loop traversal ptr)
+//   ECX = action (reloaded from stack after calloc)
+//   EDX = cur pointer (list traversal)
+//   EAX = ephemeral (obj, node, vtable ptr)
+//   No EDI save.
+// Original loop: `do { next = cur->next; if (!next) append; cur = next; } while (cur);`
+// with three duplicated vf7(1) tails.
 //
-// Attempt log update:
-// - Original scratch was too small for configured 114-byte comparison (112-byte text).
-// - Rewrote with explicit separate vf7 call/return sites to recover original-size code;
-//   now compares 114 bytes but VC5 saves `this` in edi and uses esi for list traversal,
-//   unlike original which starts with esi=this then reuses esi as next-node after the
-//   list head has been loaded in edx. This shifts stack parameter offsets and broadens
-//   the diff.
-// - Tried branch order variants (`cur != 0`, `cur == 0`, explicit else) and explicit
-//   duplicated tail calls; all stayed in the push-edi/edi=this basin.
-// - Behavior/calls/stack cleanup are understood; remaining blocker is register/liveness
-//   basin around preserving `this` across allocation/list insertion while also needing a
-//   traversal pointer. Not accepted_drift: broad register/control-flow drift.
-// - 2026-05-10 current Boss-assigned pass: tried natural no-else, self/register locals,
-//   head-positive branch (kept below), goto/label loop forms, do/while loop forms,
-//   explicit next decl, reversed loop predicates, no-cur-name traversal, and parameter
-//   alias variants. Best kept source restores original prologue/early high-state path
-//   (`push esi; mov esi,ecx`, unshifted param loads) but loop/tail still differ broadly:
-//   VC5 initializes traversal as `esi=head; edx=next` and emits extra loop tests/tails,
-//   while original keeps `edx=head`, loads `esi=[edx+4]`, and has separate duplicated
-//   vf7 return sites. No accepted_drift due to broad control-flow/register drift.
+// VC5's consistent basin (10+ variants):
+//   ESI = this
+//   EDI = action (preserved across calloc, forces push edi)
+//   ECX/EDX = cur/next (loop traversal, swapped roles)
+//   Extra push edi at offset 3 (shifts all param loads by 4 bytes on stack)
+//   Loop: alternative form with extra test/je checks
+//   vtable calls: loads vt[7] slot directly instead of indirect through vtable ptr
+//   Only 2 vf7 tails instead of 3 (merged via shared fall-through path)
+
+// Attempts (10+ focused variants):
+// - Named void* parameter: EDI basin
+// - int parameter + cast: same EDI basin
+// - No intermediate nxt local: same
+// - Earlier scratch tried EDI/ESI, goto/gcc-ext/register/volatile do/for/while
+//   all converge to push-edi basins
 
 #include <stdlib.h>
 
-struct ActionObj {
+struct RGE_Action_Node {
+    void* action;
+    RGE_Action_Node* next;
+};
+
+struct RGE_Action_Object {
     char pad[0x48];
     unsigned char object_state;
 };
 
-class ActionVTable {
-public:
-    virtual void vf0(int) {}
-    virtual void vf1() {}
-    virtual void vf2() {}
-    virtual void vf3() {}
-    virtual void vf4() {}
-    virtual void vf5() {}
-    virtual void vf6() {}
-    virtual void vf7(int) {}
-};
-
-struct ActionNode {
-    ActionVTable* act;     // +0x04 (reversed by compiler)
-    ActionNode* nxt;       // +0x00
-};
-
 struct RGE_Action_List {
     void* vtable;
-    void* obj;
-    ActionNode* list;
+    RGE_Action_Object* obj;
+    RGE_Action_Node* list;
 
-    void add_action_at_end(ActionVTable* action);
+    void add_action_at_end(void* action);
 };
 
-void RGE_Action_List::add_action_at_end(ActionVTable* action) {
-    if (((ActionObj*)this->obj)->object_state > 2) { if (action) action->vf0(1); return; }
-    ActionNode* node=(ActionNode*)calloc(1,8); node->nxt=0; node->act=action;
-    ActionNode* head=this->list;
-    if (head != 0) {
-        ActionNode* cur=head;
-        for (;;) { ActionNode* next=cur->nxt; if (next == 0) { cur->nxt=node; action->vf7(1); return; } cur=next; if (cur == 0) break; }
-        action->vf7(1); return;
+void* calloc(int count, int size);
+
+void RGE_Action_List::add_action_at_end(void* action) {
+    if (obj->object_state > 2) {
+        if (action) {
+            (*(void(__stdcall*)(int))(*(void***)action)[0])(1);
+        }
+        return;
     }
-    this->list=node; action->vf7(1);
+
+    RGE_Action_Node* n = (RGE_Action_Node*)calloc(1, 8);
+    n->next = 0;
+    n->action = action;
+
+    RGE_Action_Node* cur = list;
+    if (cur) {
+        do {
+            if (cur->next == 0) {
+                cur->next = n;
+                (*(void(__stdcall*)(int))(*(void***)action)[7])(1);
+                return;
+            }
+            cur = cur->next;
+        } while (cur);
+
+        (*(void(__stdcall*)(int))(*(void***)action)[7])(1);
+        return;
+    }
+
+    list = n;
+    (*(void(__stdcall*)(int))(*(void***)action)[7])(1);
 }

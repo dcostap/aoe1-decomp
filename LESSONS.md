@@ -9,7 +9,28 @@ Use this file for generalized eureka moments, especially lessons about:
 
 - source shapes that make VC5 emit the expected assembly;
 
+### Redundant null-test preservation via mixed local/member access in `&&`
+
+For functions where the original VC5 preserves a redundant `test reg,reg` inside
+a short-circuit `&&` expression (e.g. `if (own_pic && pic)` generating both a
+guard `test reg,reg` and a redundant inner `test reg,reg`), use a LOCAL alias for
+the outer null check and delete calls, but MEMBER ACCESS in the inner `&&`
+condition:
+```cpp
+Type* p = this->member;     // local alias for outer check
+if (p != 0) {
+    if (this->flag != 0 && this->member != 0) {  // member access inside &&
+        p->method();                             // local for the body
+    }
+    this->member = 0;
+}
+```
+The member access inside `&&` prevents VC5 from optimizing away the redundant
+null check, and keeps the saved-pointer register allocation (push edi/edi = ptr).
+Example: 0047A5B0 TPicturePanel::free_pic.
+
 ### IAT import thunks via `extern const` function pointer
+
 
 When the original calls through an import thunk (`call dword [IAT_addr]` like
 `call [88A88Ch]` for MessageBeep), use:
@@ -1857,6 +1878,29 @@ Why it helps:
 - A cached local forces VC5 to allocate a callee-save register for it.
 - Reloading from memory uses scratch registers (eax/ecx/edx), matching original.
 - Caching can cascade into extra `push/pop` of callee-save registers.
+
+## Lesson: Removing explicit `if (n <= 0)` guard eliminates VC5's redundant duplicate loop guard
+
+When a `for` loop uses `i < n` as its condition, VC5 already generates the upper-bound guard
+(`test n,n; jle epilogue`) internally. An explicit `if (n <= 0) return 0;` before the for-loop
+creates a *redundant* duplicate guard — the second `test/jle` appears right before the loop
+body, adding 4 extra bytes. Removing the explicit check lets VC5 generate exactly one guard,
+matching the original binary.
+
+Try when:
+- The original has one `test/jle` guard before the loop entry.
+- The rebuilt has two: one before `xor i,i` and one after it.
+- The loop uses `for (int i = 0; i < n; i++)`.
+
+Why it helps:
+- VC5's for-loop codegen already handles the empty-loop case. An explicit source guard
+  is redundant and creates a duplicate.
+- Removing the explicit check is behaviorally safe (the for-loop condition covers it).
+
+Caveats:
+- Only applies when `n` is a local or member loaded once before the loop.
+- Does NOT apply when the early-exit guard needs additional side effects (logging, cleanup).
+- Verified with AIPlayBook::play (00411370).
 
 ## Lesson: Proper struct members generate tighter code than raw casts
 
@@ -4312,6 +4356,48 @@ original asm has the `lea index; shl; lea base=this+index; [base+field]` pattern
 
 - VC5 base-call this-adjustment can expose a bad local class surface even when bytes are otherwise exact: if a final qualified base call emits `lea ecx,[this+4]` but the original uses `mov ecx,this`, model the real polymorphic base vtable at offset 0 instead of putting virtual slots only on the derived/local class. This can remove a hidden empty/non-polymorphic-base adjustment without changing behavior.
 
+### /GX new-expression simple field store: VC5 tail-merge dead zone
+
+When a /GX-compiled function is exactly 88 bytes with a new-expression followed
+by a simple field store (`this->field = new T(args);`), VC5 either sinks the
+store into the non-null branch (sunk-store family, ~24% diff) or inserts a
+redundant 4-byte `test/jne` at the join point (join-test family, ~16-18% diff).
+Neither family matches the original clean common tail without the extra test.
+
+This appears to be a VC5 codegen quirk specific to 88-byte functions where the
+common tail is exactly 21 bytes and the 4-byte overhead overruns the function
+boundary, truncating the epilogue. No source shape (volatile, goto, if/else,
+ternary, pointer-to-member, separate operator_new, placement new) and no flag
+variation eliminated the 4-byte overhead while keeping the common tail.
+
+Affected functions (both in World.cpp):
+- 005414A0 data_load_effects (88B, 27 asm)
+- 00541C90 effects_init (88B, 27 asm)
+
+If you encounter a /GX new-expression function with first mismatch at offset
+50 (sunk-store) or offset 67 (join-test), this is the persistent VC5 quirk.
+Work around it by testing the volatile-local approach (72 matching bytes) for
+context clues, but the exact match likely requires a different hidden axis.
+
+### Force esi register allocation by using array-style indexing, not pointer arithmetic
+
+In VC5, to make the compiler save/preserve esi for an offset computation, use
+`path[current+1].x/y/z` (array-style `[index]`) for ALL accesses through that
+offset, even when a `pw = &path[current]` pointer is available. The compiler is
+more likely to compute `next*sizeof(Waypoint)` into a dedicated register (esi)
+when it sees repeated array-indexing expressions, because each one requires the
+scaled-offset computation independently. Using `pw[1].y` (pointer-arithmetic
+access through `pw`) lets VC5 fall back to base+displacement addressing without
+needing esi.
+
+Combined with inlining: if named float locals (dx, dy, dz) cause `sub esp,8`
+instead of `push ecx`, inline all subtraction and square expressions directly
+in the sqrt() parameter. VC5 keeps intermediates in FPU registers rather than
+spilling them to named local stack slots.
+
+Affected function:
+- 0046AFE0 Path::distanceToNextWaypoint() (110B, 46 asm, Path.cpp)
+
 ### Account for transient pushes before interpreting local buffer LEAs
 
 When VC5 emits `push arg; lea reg,[esp+N]; push fmt; push reg; call sprintf`, the
@@ -4321,3 +4407,47 @@ If the same buffer is later passed to another call with a different surrounding
 push state, compare both LEAs together; the natural source may simply be
 `sprintf(buffer, ...)` followed by `new T(buffer, ...)`, with the apparent +4
 coming only from the earlier push.
+
+## Lesson: `#define` absolute-address globals match `mov reg,[addr]` encoding
+
+For global singletons at a fixed address (e.g., `rge_base_game` at 0x0062C574),
+use `#define` with an explicit address cast instead of `extern`:
+
+```cpp
+// Bad: generates mov reg,[0] (COFF relocation, bytes zeroed)
+extern RGE_Base_Game* rge_base_game;
+
+// Good: generates mov reg,[62C574h] (absolute address embedded in instruction)
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+```
+
+The `#define` pattern creates a direct memory reference that VC5 encodes as
+`mov eax, [62C574h]` with the literal address in the instruction bytes.
+The `extern` pattern generates a relocation entry that gets zeroed during
+comparison, producing `mov eax, [0]` instead.
+
+Try when:
+- The original asm loads from a fixed absolute address (`mov reg,[XXXXXXXXh]`)
+- A global variable is known to live at a specific address in the binary
+
+Verified with: `normal_draw` (004C2080), `set_unit` (004AB670), `handle_idle` (004B5BB0).
+
+## Lesson: Literal call-and-return arms can tail-merge into `push imm; jmp shared_call`
+
+When a long dispatcher has many arms that all call the same member function with a
+small literal argument and return success, spell each arm as the direct call plus
+return (for example via a `SEND(imm)` macro) instead of assigning the argument to a
+shared `code` local and calling once at the end.
+
+Try when:
+- the original emits `push imm` in each matching arm followed by a jump to one shared
+  call/return tail;
+- the rebuilt uses `mov eax, imm` in each arm and `push eax` at the shared tail.
+
+Why it helps:
+- VC5 tail-merges identical call/epilogue sequences while preserving each arm's
+  literal argument push, avoiding a live result/code local and saving bytes per arm.
+
+Caveat:
+- this only applies when every arm is semantically an immediate call-and-return;
+  if later code really consumes the selected value, keep the local.

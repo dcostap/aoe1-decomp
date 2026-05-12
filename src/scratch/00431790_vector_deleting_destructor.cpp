@@ -1,27 +1,19 @@
 // 00431790 `vector deleting destructor' for MsgQueue (113 bytes, 47 asm lines)
 // Compiler-emitted helper (no PDB source)
 //
-// Attempts: 22+. Best: 112 bytes (1 byte short of original 113).
+// Status: STUCK — register-save scheduling basin.
 //
-// BLOCKER: Register-save scheduling basin. The original pushes ebx/esl/edi
-// at function entry (conservative — all three saved regardless of path).
-// VC5 /O2 lazily pushes inside each branch (esi at entry, edi in vector
-// path, ebx in scalar path), saving 1 byte by omitting `pop edi` in the
-// scalar path (edi is never modified there). C++ source cannot override
-// VC5's register liveness analysis.
+// Blocker: Original pushes ebx/esi/edi at entry. VC5 /O2 lazily pushes inside
+// each branch (esi at entry, edi in vector path, ebx in scalar path), saving
+// 2 prologue bytes but missing 1 byte in each epilogue (no pop for unpushed
+// register). Function is 112 bytes vs original 113.
 //
-// All logic, field offsets (+0/+4/+8/+0C/+10/+14/+18), function-pointer
-// call at vtable[0], and both paths are correct.
+// Best improvement: changed flags parameter from unsigned int to unsigned char.
+// Now byte-load matches original `mov al,[esp+4]` encoding (8a vs 8b). But
+// register-save scheduling basin is unchanged.
 //
-// Additional attempts this round:
-// - Retried current/default plus /GX removed, /Oa, /G5, /Ob0, /Og, /Ot, /O1, /Od.
-//   /O2-family stayed in the same 112-byte delayed-save basin; /O1 shrank; /Od broad EBP mismatch.
-// - Tried using zero in vector path, precomputing vector base, self/return pointer locals, no zero local;
-//   no change to the 112-byte basin.
-// - Tried volatile flags to force a real 113-byte body; it perturbs flag loads/stack stores and broadens diff.
-// Left in scratch — register-save-scheduling basin.
-
-#include "..\..\include\game_globals.h"
+// All logic, field offsets (+0/+4/+8/+0C/+10/+14/+18), function-pointer call
+// at vtable[0], and both paths are correct.
 
 void __cdecl operator_delete(void*);
 void __stdcall eh_vector_destructor_iterator(void* obj, int elemSize, int elemCount, void* dtor);
@@ -37,29 +29,25 @@ public:
     int Size;
     int ControlCommand;
     
-    void* vector_deleting_destructor(unsigned int flags);
+    void* vector_deleting_destructor(unsigned char flags);
 };
 
-void* MsgQueue::vector_deleting_destructor(unsigned int flags)
+void* MsgQueue::vector_deleting_destructor(unsigned char flags)
 {
-    int zero = 0;
-    void* base;
-
     if (flags & 2) {
-        base = (char*)this - 4;
-        int elemCount = *(int*)base;
+        int elemCount = *(int*)((char*)this - 4);
         eh_vector_destructor_iterator(this, 0x1C, elemCount, (void*)0x431F80);
-        operator_delete(base);
+        operator_delete((char*)this - 4);
         return this;
     }
 
-    base = this->msgptr;
-    this->Code = zero;
-    this->ExecTurn = zero;
-    this->SeqNo = (char)zero;
-    this->From = zero;
-    this->Size = zero;
-    this->ControlCommand = zero;
+    char* base = this->msgptr;
+    this->Code = 0;
+    this->ExecTurn = 0;
+    this->SeqNo = 0;
+    this->From = 0;
+    this->Size = 0;
+    this->ControlCommand = 0;
 
     if (base != 0) {
         operator_delete(base);

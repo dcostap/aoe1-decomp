@@ -1,30 +1,33 @@
 // 004782A0 TListPanel::TListPanel (Pnl_lst.cpp:26-41, 102B)
 //
-// Attempt log / blocker:
-// - Natural inherited constructor calls TTextPanel::TTextPanel(), then VC5 emits the
-//   TListPanel vptr store immediately after `xor eax,eax` and uses EAX for the later
-//   constant-1 stores. Original needs `xor eax,eax; mov ecx,1`, five zero stores,
-//   `field_19C=ecx`, then the TListPanel vptr store mid-body, followed by byte/one
-//   stores in source order.
-// - Prior work tried virtual/no-virtual combinations, derived/base/both
-//   __declspec(novtable), manual vptr assignment, flat non-inherited TListPanel with
-//   explicit base ctor call, volatile field stores, local `one = 1`, alternate vptr
-//   source positions, /O1, and /Od+/GX. Best flat/manual basin removed C++ automatic
-//   vptr scheduling but still hoisted the manual vptr store and used EAX for one.
-// - 2026-05-10: verified target only. Re-tested natural inherited shape, then tried
-//   flat raw-store variants with locals/const/register one, member-pointer local,
-//   volatile vptr/byte/after-stores, all-base/all-derived novtable/manual-vptr mixes,
-//   and flags /vd0 /vd1 /GR- /GX /Od /O2(no /Oy) /Ox /G5. No exact basin found.
-//   Volatile-after flat variant reduced edit diff to 23 bytes but reordered real
-//   stores (vptr early, field_19C late), so it is not a good accepted_drift candidate.
-// - 2026-05-10 StarryZephyr pass: retried flat/manual base-ctor call with explicit vptr store after field_19C,
-//   volatile vptr store plus register `one`, and a derived-member initializer-list hypothesis. Manual/volatile
-//   flat forms still hoisted the vptr store immediately after `xor eax,eax` and used EAX for later one-stores;
-//   initializer-list form either failed for base members or followed declaration/memory order, not source order.
-//   Restored natural inherited source as the cleaner model.
-// Left in scratch: natural source below is the cleaner typed model. Remaining mismatch
-// is constructor vptr/constant scheduling and broad later store order, not localized
-// enough for accepted_drift.
+// Status: STUCK — constructor vtable scheduling + register allocation mismatch.
+//
+// Blocker: VC5's constructor optimizer makes different global choices for
+// register allocation (1 reg vs 2 regs) and vtable store placement (early vs
+// mid-body) that are not controllable through source form or standard flags.
+// - Original: xor eax/mov ecx (2 registers); zero stores use eax, one stores use
+//   ecx; vtable stored mid-body after field_19C=1 before field_EE=4.
+// - Rebuilt: xor eax only (1 register); eax used for zeros then reassigned to 1
+//   for ones; vtable zeroed at very beginning (or omitted).
+// This is a deep optimizer-internal heuristic, not a surface-shape issue.
+// 63 positional diff bytes (61.76%) — too large for accepted_drift.
+//
+// Attempt log:
+// - Pre-existing passes (GraniteCub, SpruceGlow, StarryZephyr): 50+ variants over
+//   virtual/no-virtual, novtable/manual-vptr, flat/inherited, volatile stores,
+//   local consts, /O1/Od/Ox/G5 flags. Best: 61.76% positional, 55.88% edit.
+// - 2026-05-12 (this pass): Variants 1-7:
+//   V1: Proper class hierarchy with virtual functions (62.75%)
+//   V2: Flat class with manual vtable via global (81.37%)
+//   V3: Flat class with virtual functions, TTextPanel ctor thunk (81.37%)
+//   V4: Natural inherited, store order matched to original asm (61.76%)
+//   V5: TListPanel with virtual overrides (~dtor, handle_idle) (61.76%)
+//   V6: __declspec(novtable) + manual vtable mid-body (75.49%)
+//   V7: Local `int one = 1` to try forcing 2-reg allocation (61.76%)
+//   None improved beyond the natural baseline.
+//
+// No accepted_drift: 61.76% positional diff is structural, not localized.
+// No inline asm/hacks. Left in scratch.
 
 class TTextPanel {
 public:

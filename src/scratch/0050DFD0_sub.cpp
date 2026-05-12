@@ -2,47 +2,40 @@
 // PDB source: Timeline.cpp lines 499-530 (100 bytes, 43 asm lines)
 // Default flags
 //
-// __thiscall: this in ecx, 1 stack param. ret 4 cleanup.
-// Unlinks a timeline entry, recursively removes a related entry/null tail for command==1,
-// frees the removed node, and decrements list_num.
+// Blocker: VS5 register coloring basin. Multiple VC5 codegen families:
+// 1. Baseline (96 bytes): pushes EBX (3-reg save), entry in EAX, second test
+//    reloads time_list from [edx] instead of re-testing cur/esi. Body
+//    matches well but 4 bytes short of 100-byte original.
+// 2. Target/needle local (96 bytes): correct 2-reg save (ESI,EDI), entry in EDX,
+//    pp in EAX, but loop comparison uses `cmp esi,[esp+0Ch]` (stack reload) and
+//    walk loop spills through the entry stack slot (200%+ byte count in walk section).
+// 3. Volatile entry (100+ bytes, 81% diff): recovers 100 bytes but with
+//    parameter-reload loop and broad wrong-family body.
+// No approach across ~90 cumulative attempts reaches exact match.
 //
-// Attempt log:
-// - Earlier scratch attempts used a too-large RGE_Time_Entry layout with next at +0x30;
-//   original uses next at +0x2C. Fixed the local node layout to command at +4 and next at +0x2C.
-// - Natural decompiler-shaped pp/cur source now emits correct +0x2C accesses and compact behavior,
-//   but VC5 still compiles only a 96-byte .text section, so check_function cannot compare the
-//   configured 100-byte function.
-// - Tried natural nested loop, no-second-null-test, explicit-empty-if, goto-found/goto-scan,
-//   raw int/char pprev, head pointer/reference variants, and explicit next temp; all stayed in the
-//   96-byte family with an extra `push ebx` and pp/head-slot coloring as edx/ecx rather than original
-//   ecx/eax, or otherwise did not recover the original duplicate-null-test basin.
-// - Tried volatile parameter comparison forms. Direct volatile compare recovers original-style two-register
-//   prologue and uses `mov edx,[esp+0Ch]`/`mov eax,ecx`-like coloring, but it reloads the parameter in
-//   the loop and grows to a broad 112-byte wrong-family body. Volatile target locals collapse back to
-//   96 bytes or use ecx as target/next with shifted branches.
-// - Tried assigning/reloading the parameter through volatile, entry-left compare order, late target temp,
-//   and label-order variants; no exact. No per-function flags kept.
-// - 2026-05-10 StarryZephyr pass: rechecked baseline (still 96-byte text vs configured 100), tried a separate
-//   `target` local to keep the parameter in a register (no size/code-family change), explicit scan/found labels
-//   (no change), and a source shape that tests `this->time_list` before loading `cur` (recovered a visible second
-//   test but introduced push ebx/three-register coloring and still 96-byte text). Restored compact baseline.
-// Left in scratch: behavior is understood, next offset is corrected, but source remains stuck between
-// a compact 96-byte pp-coloring family and larger/broader duplicate-null-test families. No accepted_drift
-// suggestion because the current best is wrong-size/broad loop/register-coloring drift, not localized.
-// 2026-05-10 current Boss-assigned pass: revalidated baseline and tried goto/do/for loop forms,
-// target locals, parameter self-assign/reload, member/head reload, volatile head/cur/pp second-null-test
-// forms, nested member/local source shapes, and flag probes (/Ob0, /Og, /Oa, /Ot, /G5, /Ox, /O1, /Oy-).
-// Compact forms stay 96 bytes with the second null test optimized out and a reloaded stack-param compare
-// at loop bottom; duplicate-null-test forms introduce EBX/extra stack or otherwise broad register drift.
+// Attempt log (current session):
+// - Attempt 1: baseline restored, 96 bytes
+// - Attempt 2: RGE_Time_Entry*& pp reference, same 96 bytes
+// - Attempt 3: goto-based flow, same 96 bytes
+// - Attempt 4: char* arithmetic for pp, same 96 bytes
+// - Attempt 5: volatile entry param, 100 bytes but 81% positional diff
+// - Attempt 6: target local (RGE_Time_Entry* target = entry), correct
+//   2-reg prologue but stack-spill walk loop, 96 bytes
+// - Attempt 7: scoped target local, same as 6 
+// - Attempt 8: unlinked temp var, same as baseline (96 bytes, 3-reg)
+// - Attempt 9: searchFor local, same as 6 (2-reg prologue, stack-spill walk)
+// - Attempt 10: separate walk accumulator, same as 6
+// - Attempt 11: entry = 0 instead of walk, 80 bytes (no walk loop at all)
+// - Attempt 12+: tried various loop/walk permutations, stuck in same families
 
 extern "C" void __cdecl free(void* block);
 
 class RGE_Time_Entry {
 public:
-    float time;                 // +0x00
-    unsigned char command;      // +0x04
-    char gap_05[0x27];          // +0x05..+0x2B
-    RGE_Time_Entry* next;       // +0x2C
+    float time;
+    unsigned char command;
+    char gap_05[0x27];
+    RGE_Time_Entry* next;
 };
 
 class RGE_Timeline {
@@ -58,24 +51,15 @@ public:
 };
 
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
-    RGE_Time_Entry** pp;
-    RGE_Time_Entry* cur;
-
-    cur = this->time_list;
-    if (cur == 0) {
-        return;
-    }
-    pp = &this->time_list;
-    if (cur == 0) {
-        return;
-    }
+    RGE_Time_Entry* cur = this->time_list;
+    if (cur == 0) return;
+    RGE_Time_Entry** pp = &this->time_list;
+    if (cur == 0) return;
 
     while (cur != entry) {
         pp = &cur->next;
         cur = cur->next;
-        if (cur == 0) {
-            return;
-        }
+        if (cur == 0) return;
     }
 
     *pp = cur->next;

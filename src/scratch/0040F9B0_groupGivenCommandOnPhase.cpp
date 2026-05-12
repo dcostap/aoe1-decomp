@@ -1,64 +1,47 @@
-// VA: 0040F9B0 AIPlay::groupGivenCommandOnPhase (132 bytes)
-// Attempt log:
-// - Previous source suggested accepted drift, but live check was broad (48% positional) due scheduling/stack-slot mismatch and local command body.
-// - 2026-05-10 StarryZephyr pass: tried removing local AIPlayPhase::command body and forcing parameter stack-slot write/reload for
-//   the observed byte compare. VC5 still kept the type byte in EDX and produced a 128-byte too-short text window, so restored
-//   the comparable 132-byte baseline. No accepted_drift: branch distances, loop body, and tail/padding drift remain broad.
+// VA: 0040F9B0 AIPlay::groupGivenCommandOnPhase
+// PDB: aipbook.cpp lines 645-658 (132 bytes, 58 asm lines)
+// Default flags. No inline asm/hacks.
 
-struct AIPlayPhaseCommand {
-    unsigned char field_0;
-    unsigned char field_1;
-    char gap_02[2];
-    int field_4;
-    int field_8;
-    int field_C;
-};
+// AIPlayPhase::command() defined elsewhere (0040F110 already matching)
 
-struct AIPlayPhaseTrigger {
-    unsigned char typeValue;
-    char gap_01[3];
-    int value1Value;
-    int value2Value;
-    unsigned char phaseValue;
-    unsigned char nextPhaseValue;
-    char gap_0E[2];
-    int randomnessValue;
+class AIPlayPhase_Entry_0040F110 {
+public:
+    char data[16];
 };
 
 class AIPlayPhase {
 public:
-    AIPlayPhaseCommand commands[5];
-    AIPlayPhaseTrigger triggers[3];
-    AIPlayPhaseCommand *command(int index);
+    AIPlayPhase_Entry_0040F110 entries_[5];
+    char triggers_area_[0x8C - 0x50];
+
+    AIPlayPhase_Entry_0040F110* command(int index);
 };
 
 class AIPlay {
 public:
     char pad_00[0x90];
     AIPlayPhase phases[10];
+
     int groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseIndex);
 };
 
-int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseIndex) {
-    if (groupValue < 0 || groupValue >= 5) return -1;
-    if (phaseIndex < 0 || phaseIndex >= 10) return -1;
+int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseIndex)
+{
+    if (groupValue < 0 || groupValue >= 5)
+        return -1;
+    if (phaseIndex < 0 || phaseIndex >= 10)
+        return -1;
 
     AIPlayPhase* phase = &this->phases[phaseIndex];
-    for (int cmdIdx = 0; cmdIdx < 5; cmdIdx++) {
-        AIPlayPhaseCommand* cmd = phase->command(cmdIdx);
-        if ((unsigned int)cmd->field_0 == (unsigned int)groupValue) {
-            AIPlayPhaseCommand* cmd2 = phase->command(cmdIdx);
-            unsigned char uc = cmd2->field_1;
-            unsigned int typeVal = uc;
-            if (typeVal == (unsigned int)typeValue) {
-                return cmdIdx;
+    for (int i = 0; i < 5; i++) {
+        AIPlayPhase_Entry_0040F110* cmd = phase->command(i);
+        if ((unsigned int)cmd->data[0] == (unsigned int)groupValue) {
+            AIPlayPhase_Entry_0040F110* cmd2 = phase->command(i);
+            int t = (unsigned char)cmd2->data[1];
+            if (t == typeValue) {
+                return i;
             }
         }
     }
     return -1;
-}
-
-AIPlayPhaseCommand *AIPlayPhase::command(int index) {
-    if (index < 0 || index >= 5) return 0;
-    return &this->commands[index];
 }

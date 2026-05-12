@@ -1,23 +1,11 @@
 // 00463260 sort (125 bytes)
 // PDB: obj_list.cpp (RGE_Object_List::sort)
-// STATUS: parked — VC5 register allocation differs
-// Rechecked after Boss assignment; current blocker unchanged: VC5 keeps source iterator in EBP,
-// while original uses EBX and has the longer empty-list tail.
+// STATUS: STUCK — register allocation (EBX↔EBP) swap.
 //
-// Key structures correct:
-//   - RGE_Static_Object: vtable_ptr at +0, master_obj at +8, screen_y_offset at +0x2A
-//   - RGE_Object_Node: node at +0, next at +4, prev at +8 (16 bytes = 0x10)
-//   - calloc(1, 0x10) allocates new RGE_Object_Node
-// Sort order: sort_number DESC, screen_y_offset ASC (insertion sort)
-//
-// Remaining mismatch (~44 bytes, 35.2%): persistent EBX<->EBP swap.
-// Original uses EBX for source list iterator (pRVar3/this->list), rebuilt uses EBP.
-// This propagates to push order (push ebx vs push ebp) and comparison encoding
-// (cmp [mem], bp vs cmp cx, [mem]). Isolated TU cannot reproduce original's
-// register allocation.
-// 2026-05-10 StarryZephyr pass: rechecked baseline, tried `register` on source iterator (no change),
-// a do/if-null loop form (uses EBX/EBP together but much worse prologue/branch family), and explicit
-// object/y locals (no useful change, slight positional worse). Restored baseline.
+// Original uses EBX for source iterator (pRVar3), rebuilt uses EBP.
+// This swaps push ebx/push ebp in the prologue and affects every register
+// encoding throughout. Isolated TU cannot reproduce original's register
+// allocation. 72% positional diff, 35.2% edit diff. Not accepted_drift.
 
 #include <stdlib.h>
 
@@ -142,7 +130,6 @@ RGE_Object_Node* RGE_Object_List::sort()
     RGE_Object_Node* sorted;
     RGE_Object_Node** ppRVar4;
     RGE_Object_Node* pRVar5;
-    unsigned char bVar1;
 
     sorted = 0;
     pRVar3 = this->list;
@@ -152,10 +139,11 @@ RGE_Object_Node* RGE_Object_List::sort()
 
     do {
         ppRVar4 = &sorted;
-        bVar1 = pRVar3->node->master_obj->sort_number;
+        unsigned char bVar1 = pRVar3->node->master_obj->sort_number;
         for (pRVar5 = sorted; pRVar5 != 0; pRVar5 = pRVar5->next) {
             unsigned char bVar2 = pRVar5->node->master_obj->sort_number;
-            if ((bVar2 < bVar1) || (bVar2 == bVar1 && (pRVar3->node->screen_y_offset < pRVar5->node->screen_y_offset))) {
+            if ((bVar2 < bVar1) ||
+                (bVar2 == bVar1 && pRVar3->node->screen_y_offset < pRVar5->node->screen_y_offset)) {
                 break;
             }
             ppRVar4 = &pRVar5->next;

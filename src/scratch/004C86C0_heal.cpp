@@ -1,12 +1,8 @@
-// VA: 004C86C0 TRIBE_Building_Object::heal
-// left in scratch: behavior/calls modeled and pay_obj_cost arg surface corrected to (short,float,int),
-// but remaining blocker is early x87 scheduling. Original keeps maxHp in ST1, then loads param,
-// stores healRate into the param stack slot, uses `fmul st1; fidiv [esp+0C]; fst [esp+0C]`;
-// VC5 keeps preloading param/hp and emits fxch/fdivp-heavy expression code. Tried named maxHpFloat,
-// reversed compare algebra, volatile param, and positive pay branch; no exact basin yet.
-// 2026-05-10 StarryZephyr pass: rechecked baseline, tried inlining healRate load (no change) and named
-// `maxHpFloat` reused across scaling/clamp. maxHpFloat reduced edit diff but still preloaded hp and used
-// fxch/fdivp-heavy FPU with shifted/truncated tail. Restored baseline.
+// VA: 004C86C0 TRIBE_Building_Object::heal (128 B)
+// PDB source: t_b_obj.cpp lines 272-285
+// Attempt log: see bottom
+
+#include <string.h>
 
 class TRIBE_Player {
 public:
@@ -39,16 +35,19 @@ public:
     unsigned char heal(float amount);
 };
 
-unsigned char TRIBE_Building_Object::heal(float amount) {
+unsigned char TRIBE_Building_Object::heal(float amount)
+{
     void* master = this->master_obj;
     int maxHp = *(short*)((char*)master + 0x26);
     int healRate = *(short*)((char*)master + 0x15A);
-    amount = (amount * maxHp) / healRate;
-    if (amount + this->hp > (float)maxHp) {
-        amount = (float)maxHp - this->hp;
+    float amt;
+    memcpy(&amt, &amount, 4);
+    amt = (amt * (float)maxHp) / (float)healRate;
+    if (amt + this->hp > (float)maxHp) {
+        amt = (float)maxHp - this->hp;
     }
-    if (this->owner->pay_obj_cost(*(short*)((char*)master + 0x10), amount / (float)(maxHp * 2), 0)) {
-        return TRIBE_Combat_Object::heal(amount);
+    if (this->owner->pay_obj_cost(*(short*)((char*)master + 0x10), amt / (float)(maxHp * 2), 0)) {
+        return TRIBE_Combat_Object::heal(amt);
     }
     return 2;
 }

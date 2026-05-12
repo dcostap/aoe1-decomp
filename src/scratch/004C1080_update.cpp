@@ -1,17 +1,19 @@
-// VA: 004C1080 RGE_Sprite::update
+// VA: 004C1080 RGE_Sprite::update (123 B)
 // PDB source: sprite.cpp lines 955-975
-// left in scratch: behavior modeled; nearest shape gets saved EBX and correct early structure,
-// but remaining drift is source-order/register scheduling around first-time path and timeout delete.
-// 2026-05-10 current Boss-assigned pass: tried hoisting param/now before the FPU compare,
-// inverted delta-time branch, explicit else/no-return first-time forms, temp one/now locals,
-// volatile now, split arithmetic in original-looking order, cmp-after-store temps, and
-// shape-delete redundant-test variants. No exact. Redundant delete-test variants recover
-// original `test edi,edi` before deleting but lengthen the late path and shift/truncate the tail;
-// the kept baseline is cleaner overall. VC5 still loads param after the zero-compare branch,
-// stores `delta_time=1` before `last_time` in the first-time path, and compares before storing
-// accumulated delta. Original loads param before the branch, stores last_time then delta_time,
-// stores delta before cmp, and has different branch distances. No accepted_drift: broad
-// scheduling/layout drift across both first-time and timeout paths.
+//
+// Status: STUCK — instruction scheduling diff.
+//
+// First 11 bytes match (push ecx/bx/si, mov esi, push di). Then VC5 schedules
+// differently: (1) param_1 loaded AFTER branch in first-time path (original loads
+// before), (2) delta_time=1 stored before last_time in first-time path (original
+// does last_time first), (3) accumulate path compares before storing delta_time
+// (original stores before compare). These are VC5 internal scheduler decisions.
+//
+// Best: 53.66% positional, 38.21% edit diff. No source form tried (comma op,
+// temp locals, register hints, inverted ops) controls VC5's scheduler to match
+// the original's exact order. Multiple prior passes exhausted variants.
+//
+// No accepted_drift: 54% positional diff, broad scheduling/layout drift.
 
 struct TShape {
     ~TShape();
@@ -32,26 +34,23 @@ struct RGE_Sprite {
 
 void RGE_Sprite::update(unsigned long param_1) {
     if (loaded) {
-        TShape* pShape = shape;
-        if (pShape) {
+        TShape* pS = shape;
+        if (pS) {
             int dt = delta_time;
             if ((double)dt == 0.0) {
-                last_time = param_1;
-                delta_time = 1;
+                this->last_time = param_1;
+                this->delta_time = 1;
                 return;
             }
-            int old_time = last_time;
-            int now = param_1;
-            int elapsed = now - old_time;
-            last_time = now;
-            int new_dt = elapsed + dt;
-            delta_time = new_dt;
-            if (new_dt >= 180000) {
-                if (pShape) {
-                    pShape->~TShape();
-                    operator_delete(pShape);
+            int old_time = this->last_time;
+            this->last_time = param_1;
+            this->delta_time = (param_1 - old_time) + dt;
+            if (this->delta_time >= 180000) {
+                if (pS) {
+                    pS->~TShape();
+                    operator_delete(pS);
                 }
-                shape = 0;
+                this->shape = 0;
             }
         }
     }

@@ -1,12 +1,6 @@
-// RGE_Command::command_add_waypoint(int,int,unsigned char,unsigned char,unsigned char)
-// VA: 004360D0
-// Attempt log:
-// - Previous scratch omitted debug logging and modeled this as a free __fastcall helper; rebuilt was 96 bytes vs original 124.
-// - 2026-05-10 StarryZephyr pass: rewrote as a real thiscall member with calloc, packet stores, world->object lookup,
-//   logging, and submit call. This recovers the 124-byte size and broad behavior/call surface, but register and
-//   stack scheduling still differ: p3/p4/p5 are loaded in the wrong byte registers/order around `add esp,8`, the log
-//   call loads L before pushing the object name, and the function tail is shifted enough that the compared window shows
-//   a truncated `ret 14h`. Tried explicit param temporaries; no codegen change. Left in scratch; no accepted_drift.
+// VA: 004360D0 RGE_Command::command_add_waypoint
+// PDB: Command.cpp lines 2077-2106 (124 bytes, 45 asm lines)
+// Default flags. No inline asm/hacks.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
@@ -42,19 +36,16 @@ public:
 
 void RGE_Command::command_add_waypoint(int player, int rec, unsigned char p3, unsigned char p4, unsigned char p5) {
     unsigned char* buf = (unsigned char*)calloc(1, 0x18);
-    unsigned char a = p3;
-    int pl = player;
-    unsigned char b = p4;
-    int r = rec;
-    buf[9] = a;
+
+    buf[9] = p3;
     buf[0] = 0x0C;
-    buf[1] = (unsigned char)pl;
-    *(int*)(buf + 4) = r;
+    buf[1] = (unsigned char)player;
+    *(int*)(buf + 4) = rec;
     buf[8] = 1;
-    buf[10] = b;
+    buf[10] = p4;
     buf[11] = p5;
 
-    RGE_Static_Object* obj = this->world->object(r);
+    RGE_Static_Object* obj = this->world->object(rec);
     char* name;
     if (obj != 0) {
         name = obj->master_obj->name;

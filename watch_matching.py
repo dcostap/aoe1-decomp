@@ -4,6 +4,7 @@ Watches src/matching/ for new files and plays the configured match sound.
 Run from repo root:  python watch_matching.py
 """
 
+import argparse
 import winsound
 import time
 import wave
@@ -12,7 +13,7 @@ from pathlib import Path
 
 MATCHING_DIR = Path(__file__).parent / "src" / "matching"
 MATCH_SOUND_WAV = Path(__file__).parent / "build" / "temp" / "watch_matching_sound.wav"
-BOOSTED_MATCH_SOUND_WAV = Path(__file__).parent / "build" / "temp" / "watch_matching_sound_200pct.wav"
+BOOSTED_MATCH_SOUND_WAV_TEMPLATE = "watch_matching_sound_{percent}pct.wav"
 FALLBACK_WAV = Path(r"C:\Windows\Media\tada.wav")
 LOUDNESS_MULTIPLIER = 2.0
 
@@ -55,24 +56,28 @@ def make_louder_wav(src, dst, multiplier):
         out.writeframes(bytes(boosted))
 
 
-def match_sound_path():
+def match_sound_path(volume_scale):
     src = MATCH_SOUND_WAV if MATCH_SOUND_WAV.exists() else FALLBACK_WAV
     if src == FALLBACK_WAV:
         print(f"  configured sound not found, falling back to {FALLBACK_WAV}")
 
+    multiplier = LOUDNESS_MULTIPLIER * volume_scale
+    percent = int(round(volume_scale * 100.0))
+    output_wav = MATCH_SOUND_WAV.parent / BOOSTED_MATCH_SOUND_WAV_TEMPLATE.format(percent=percent)
+
     try:
-        if (not BOOSTED_MATCH_SOUND_WAV.exists() or
-                BOOSTED_MATCH_SOUND_WAV.stat().st_mtime < src.stat().st_mtime):
-            make_louder_wav(src, BOOSTED_MATCH_SOUND_WAV, LOUDNESS_MULTIPLIER)
-        return str(BOOSTED_MATCH_SOUND_WAV)
+        if (not output_wav.exists() or
+                output_wav.stat().st_mtime < src.stat().st_mtime):
+            make_louder_wav(src, output_wav, multiplier)
+        return str(output_wav)
     except Exception as e:
         print(f"  error preparing loud sound, falling back to {src}: {e}")
         return str(src)
 
 
-def play_tada():
+def play_tada(volume_scale):
     try:
-        winsound.PlaySound(match_sound_path(), winsound.SND_FILENAME | winsound.SND_ASYNC)
+        winsound.PlaySound(match_sound_path(volume_scale), winsound.SND_FILENAME | winsound.SND_ASYNC)
     except Exception as e:
         print(f"  error playing sound: {e}")
 
@@ -81,13 +86,30 @@ def get_files():
     return set(f.name for f in MATCHING_DIR.iterdir())
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Watch src/matching/ for new files and play a match sound.")
+    parser.add_argument(
+        "volume",
+        nargs="?",
+        type=float,
+        default=1.0,
+        help="volume scale relative to the normal watch_matching.py sound (for example, 0.3 = 30%%)",
+    )
+    args = parser.parse_args()
+    if args.volume < 0:
+        parser.error("volume must be non-negative")
+    return args
+
+
 def main():
+    args = parse_args()
+
     if not MATCHING_DIR.exists():
         print(f"matching dir not found: {MATCHING_DIR}")
         return
 
     known = get_files()
-    print(f"watching {MATCHING_DIR}  ({len(known)} files known)")
+    print(f"watching {MATCHING_DIR}  ({len(known)} files known, volume {args.volume:.0%})")
     print("press Ctrl+C to stop")
 
     while True:
@@ -102,7 +124,7 @@ def main():
             ts = datetime.now().strftime("%H:%M")
             for name in sorted(new):
                 print(f"  [{ts}] >> new: {name}")
-                play_tada()
+                play_tada(args.volume)
             known = current
 
 
