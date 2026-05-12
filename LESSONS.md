@@ -4150,3 +4150,7 @@ Why it helps:
 Caveat:
 - only use this after the frame layout is proven from asm; otherwise prefer typed/named locals.
   Verified on `005415B0` (`data_load_world`).
+
+- For optimized VC5 handlers with many early failure exits and one final zero-return tail, a small branch that semantically returns the callee boolean may need to be written as `if (call(...) == 0) goto fail; return 1;` rather than `return call(...) != 0;` or an immediate if/else return. The latter can be booleanized into `neg/sbb/neg` plus a local epilogue, while the original keeps `test eax,eax; je common_fail; mov eax,1; ret`.
+
+- When a constructor/new expression uses a local character buffer and VC5 EH state, validate the stack window by the generated `lea` offsets, not by decompiler-proposed subobject names like `str + 4`. If declaring the real object size and base vptr context leaves only a consistent +4 buffer drift, try passing the start of the local array; VC5 may already have reserved an adjacent hidden/new temp slot separately.
