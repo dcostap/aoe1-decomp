@@ -4113,3 +4113,40 @@ peeling the first iteration into a special `array[0]` case.
 - If a Win32/API-heavy helper has the right behavior but VC5 chooses the wrong callee-saved registers, try naming a reused imported function pointer as a local before nearby size/result locals. Caching an IAT function pointer (for example `gh = GlobalHandle; gh(x); gh(x);`) can make VC5 dedicate EDI to the thunk and move other long-lived values into the original registers instead of repeatedly emitting direct IAT calls with different EBX/EBP allocation.
 - For stack struct/API call setup, exact offsets matter as much as source intent. If VC5 creates a too-large local frame or shifted argument home for a DirectDraw/Win32 struct, reduce the local to the observed stack size and model the exact written fields/offsets (for example a 0x64-byte DDBLTFX window with writes at `+0` and `+0x50`, not a guessed larger C struct). Also name the vtable before field stores when the original loads it before setting up the struct.
 - For /GX constructors of derived action/task classes, a visible nontrivial/virtual base destructor can be required to make VC5 emit the original EH registration and base-cleanup state after the base constructor. If a natural constructor is far too short with no EH frame, declare the base destructor surface before chasing body variants, then tune derived padding to restore observed member offsets.
+
+## Lesson: Preload sibling struct fields before a flag dispatch to match VC5 register scheduling
+
+When a loop body tests one field and then uses several neighboring fields in both arms, try explicitly loading those sibling fields into locals immediately after the guard and before the flag/bit dispatch. VC5 may then emit a compact burst of loads/sign-extends before the branch, preserving the original register roles across both call arms.
+
+Try when:
+- the original loads a flag plus multiple adjacent short/int fields before branching on the flag;
+- natural direct member expressions reload fields separately inside each arm or choose byte loads for a masked flag;
+- the remaining mismatch is localized to register choice and load scheduling around a two-arm helper call.
+
+Why it helps:
+- naming the sibling fields widens their live range just enough for VC5 to schedule the same pre-branch load cluster and reuse the same registers in each arm;
+- using an `int` flag local can force the original dword load plus mask instead of a narrower byte-load shortcut.
+
+Caveat:
+- keep these locals tightly scoped after the node/type guard; declaring them too early can perturb outer-loop register allocation.
+
+## Lesson: Exact stack windows can beat nominal locals for fscanf filename blocks
+
+When a loader parses many fixed-width filename buffers with one large `fscanf` and then passes
+odd slices of those locals to virtual load helpers, a single explicit stack-window array can be
+closer to the original than many named `char name[24]` locals.
+
+Try when:
+- the original reserves one large frame and all pre-call `lea` offsets form a regular record layout;
+- named locals get the right behavior but frame size/local order is off;
+- later helper calls pass a mixture of pointers and dword values reloaded from the same local slots.
+
+Why it helps:
+- using `char local[frame_size]` and binary-observed offsets preserves VC5's exact `lea [esp+disp]`
+  setup across right-to-left vararg pushes;
+- modeling stack-slot dword reloads as `*(int*)(local+off)` prevents VC5 from taking addresses where
+  the original loaded the slot contents.
+
+Caveat:
+- only use this after the frame layout is proven from asm; otherwise prefer typed/named locals.
+  Verified on `005415B0` (`data_load_world`).
