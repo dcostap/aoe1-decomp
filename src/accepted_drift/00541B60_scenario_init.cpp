@@ -45,8 +45,11 @@
 // - 2026-05-10 StarryZephyr pass: rechecked current source (16.6667% positional, 11.4583% edit) and direct member new
 //   (success-store/null-tail, first mismatch 53, edit 15). Restored current best source; same EH join-test blocker.
 // Left in scratch: behavior, EH frame, allocation size, ctor args/call, and stack cleanup are correct; blocker is
-// VC5 source shaping around the null-path/common-store join, same as sibling init helpers. Not proposing accepted_drift:
-// best object inserts a no-op join test and shifts/truncates the compared tail/epilogue. No inline asm/hacks.
+// VC5 source shaping around the null-path/common-store join, same as sibling init helpers.
+// === ACCEPTED_DRIFT ===
+// 2026-05-12: Verified identical artifact to sibling accepted_drift functions 00541C90/00541BC0.
+// First 75 bytes exact, then dead `test eax,eax; jne +0` at join. 16.6667% positional / 11.4583% edit diff.
+// Accepted under Boss's same-artifact ruling: zero-displacement branch is behavior-neutral; no inline asm/hacks.
 
 class RGE_Game_World;
 
