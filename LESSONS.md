@@ -4309,3 +4309,15 @@ large `[edi+member_offset]` displacements, a real member array such as
 which is behaviorally identical but changes size and every following branch/jump
 span. Prefer natural multidimensional member indexing (`this->table[i][j]`) when
 original asm has the `lea index; shl; lea base=this+index; [base+field]` pattern.
+
+- VC5 base-call this-adjustment can expose a bad local class surface even when bytes are otherwise exact: if a final qualified base call emits `lea ecx,[this+4]` but the original uses `mov ecx,this`, model the real polymorphic base vtable at offset 0 instead of putting virtual slots only on the derived/local class. This can remove a hidden empty/non-polymorphic-base adjustment without changing behavior.
+
+### Account for transient pushes before interpreting local buffer LEAs
+
+When VC5 emits `push arg; lea reg,[esp+N]; push fmt; push reg; call sprintf`, the
+`lea` displacement is relative to the temporarily adjusted ESP after the first
+push, not the stable frame layout. Do not automatically model that as `buffer+4`.
+If the same buffer is later passed to another call with a different surrounding
+push state, compare both LEAs together; the natural source may simply be
+`sprintf(buffer, ...)` followed by `new T(buffer, ...)`, with the apparent +4
+coming only from the earlier push.
