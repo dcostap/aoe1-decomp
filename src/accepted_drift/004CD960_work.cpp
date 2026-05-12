@@ -10,9 +10,10 @@
 // SpruceGlow tries 21-30: owner-id helper, short/int owner-id locals, volatile actor, union/pointer/volatile
 //   fallback parameter loads, extra vtable local, action switch, and else-nesting. Same 9-byte diff or worse
 //   (helper/action-switch/volatile/union variants drifted substantially).
-// Accepted_drift suggestion: yes, pending Boss review. Diff is register/load-order only in owner-id comparison
-//   and fallback coordinate reload/store ordering; branches, calls, stack cleanup, stores to same fields, and
-//   return values are otherwise identical. No inline asm/hacks.
+// === ACCEPTED_DRIFT ===
+// Diff is register/load-order only in owner-id comparison and fallback coordinate reload/store ordering;
+// branches, calls, stack cleanup, stores to same fields, and return values are otherwise identical.
+// No inline asm/hacks.
 
 class RGE_Static_Object;
 
