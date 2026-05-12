@@ -4154,3 +4154,158 @@ Caveat:
 - For optimized VC5 handlers with many early failure exits and one final zero-return tail, a small branch that semantically returns the callee boolean may need to be written as `if (call(...) == 0) goto fail; return 1;` rather than `return call(...) != 0;` or an immediate if/else return. The latter can be booleanized into `neg/sbb/neg` plus a local epilogue, while the original keeps `test eax,eax; je common_fail; mov eax,1; ret`.
 
 - When a constructor/new expression uses a local character buffer and VC5 EH state, validate the stack window by the generated `lea` offsets, not by decompiler-proposed subobject names like `str + 4`. If declaring the real object size and base vptr context leaves only a consistent +4 buffer drift, try passing the start of the local array; VC5 may already have reserved an adjacent hidden/new temp slot separately.
+
+- For virtual-call matches, a one-byte vtable displacement mismatch is usually a declaration-surface bug, not control flow. Count every visible virtual slot to the binary-observed offset before chasing source shape; likewise, constructor argument pushes from nearby same-width fields can expose wrong local struct padding even when behavior looks plausible.
+
+- For EH-framed constructors, visible virtual special-member surface can be the difference between no EH prologue and exact VC5 constructor cleanup. If a natural derived constructor compiles too small/no SEH despite `/GX`, declare the base and derived virtual destructors as visible (matching the real polymorphic class), then recheck layout gaps after the implicit vptr. Adding the virtual surface introduces the EH frame, but all manual `gap_XX` fields must be rebased from `+0x04`; otherwise every derived offset shifts by four bytes.
+
+- For VC5 list walks with a top null check and sentinel loop condition, an ordinary `while (item != end) { if (!item) return ...; ...; item = item->next; }` may preserve the binary's bottom `cmp item,end; jne top` shape. Hand-written gotos or explicit bottom `if (item != end) goto top` can make VC5 combine the bottom sentinel/null exits into an equivalent but shifted `je exit; test item; jne body` sequence.
+
+- For VC5 FPU nearest/best-distance scans, compare direction and object reload spelling both matter. If the original computes a squared distance on the FPU stack and then does `fld best; fcomp` against the computed distance, spell the source as `best > dist` rather than `dist < best` to keep the same `fcomp` direction. If the original reloads `node->object` immediately before the distance math or direct return, introduce a tight `current = node->object` in that block instead of reusing an earlier carried object local; otherwise VC5 may use the carried register and shift the tail by a few bytes.
+
+- For sparse notify/event dispatches, try a real `switch` before hand-written subtract/if/goto chains. VC5 may emit a subtract cascade with case bodies laid out independently of source order (for example `sub base; je later_case; sub delta; jne default; inline_case...`), while equivalent if/goto code can invert the first branch and move large case bodies inline.
+
+- When VC5 emits a large fixed `rep movsd` copy immediately after an allocation and delays `add esp,4` for the allocation argument until after a following variable `memcpy`, model the fixed copy as a whole-struct assignment rather than `memcpy`. The aggregate assignment can preserve the original stack-argument lifetime and rep-copy scheduling. For COM-like vtable calls, also verify `__stdcall` virtual declarations so `this` is pushed as an argument instead of being passed in `ecx`.
+
+- VC5 may lower small integer status dispatches differently for an `if/else` chain than for a real `switch`, even when there are only three cases. If the original widens an unsigned-char return (`and eax, 0FFh`) and then emits a `sub eax,0` / `dec eax` cascade with case bodies out of source order, try `switch` on an `unsigned int` temporary instead of direct `if (state == 0) ... else if ...`. This can preserve the original branch distances and downstream loop layout.
+
+- For VC5 list scans with `if (obj != 0 && obj->field == ...)`, the compiler can legally schedule the field load before the null branch when the source/decompiler has already named the field value. If original asm does `mov obj; test obj; mov field; je skip`, or even loads through `obj` before honoring the null check, try hoisting the field-derived local before the explicit `if (obj != 0)` rather than adding safer-looking guard structure. This can restore branch distances in otherwise exact scans.
+
+- When matching VC5 code with indirect vtable calls, prefer real virtual member declarations over ad-hoc function-pointer typedefs if the compiler rejects or perturbs `__thiscall` pointer surfaces. A padded virtual surface with correctly placed slots lets ordinary source calls emit the expected `mov ecx,this` / `call dword [vtable+off]`, preserves reused vtable registers across adjacent virtual calls, and avoids artificial calling-convention glue.
+
+- In VC5 object scans, preserving a parent/world pointer local for one call and then reusing it for a later virtual-call argument can shorten code and miss original reloads. If original computes a candidate through a saved container pointer for a predicate (e.g. `world->players[i]->computerPlayer()`), then reloads the owner/world chain before passing the same player to a virtual method, spell the second use as a fresh direct chain (`this->owner->world->players[i]`) rather than reusing the saved local. This can restore the expected vtable-load/register sequence exactly.
+
+### Overlay struct for parallel arrays accessed through a single iterating pointer
+
+When VC5 accesses multiple parallel member arrays through the same iterating
+pointer (e.g. `&resources[iter]` to also reach `numResources[iter]`,
+`closestDropsiteValue[iter]`, etc.), it uses one base register (ebx) and fixed
+offsets, never computing the index explicitly.
+
+Writing `int idx = rp - &this->resources[0]` and then `this->closestDropsiteValue[idx]`
+defeats this: the compiler computes idx with a sub/sar sequence and uses scaled-index
+addressing, which adds an extra local and shifts the frame.
+
+**Fix:** Define a local struct that overlays the parallel arrays' memory layout as
+seen from the base pointer, cast `&resources[0]` to it, and access fields through it.
+
+The struct has padded fields at the correct offsets (0x10 for count, 0x70 for
+closestDropsiteValue). The compiler then emits `mov [ebx+70h]` exactly. Advance
+by 4 bytes per iteration via `rp = (BlockType*)((int*)rp + 1)`.
+
+Used in: `004E2D10_updateAllResourceDropsites`.
+
+### Generating `rep movsd` for block copy loops in VC5
+
+VC5 with `/O2` generates inline `rep movsd` for `memcpy()` calls with non-constant
+sizes when `<string.h>` is included and the size is a multiple of 4. The compiler
+emits alignment-handling code (`shr ecx,2` + `rep movsd` + `and ecx,3` + `rep movsb`)
+for arbitrary sizes, or a plain `rep movsd` when it can prove alignment.
+
+Manual dword copy loops (`while (n--) { *d++ = *s++; }`) do NOT trigger `rep movsd`
+in VC5; they compile to inlined scalar dword moves (`mov [edx],ebx; add edx,4; dec ecx; jne`).
+
+For backward copies (STD+`rep movsd`), VC5 does not emit `std`/`cld` automatically
+from source patterns. A backward dword loop compiles to a decrementing scalar loop.
+The original OverlayMemCopy uses STD+rep movsd for backward copy, but VC5 does not
+elect this optimization from any tested C source shape (memccpy, memmove, manual loops).
+
+Used in: `00445580_OverlayMemCopy` (left in scratch).
+
+## Forcing VC5 destructor-style SEH frames with /GX
+
+VC5 with `/GX` only auto-generates the full EH frame
+(push -1; push handler; mov fs[0],esp; push ecx) for:
+- constructors and destructors (always)
+- functions that use C++ `new` expression (not raw `operator_new`)
+- functions with stack objects having nontrivial destructors
+
+For non-constructor member functions that allocate in the original TU with EH,
+`operator_new()` + explicit constructor call does NOT trigger the EH frame,
+even with `/GX`. Using `new TDrawArea(...)` expression instead forces VC5 to
+emit the frame because the compiler treats `new` as potentially throwing.
+
+Used in: `0051CE40_set_rect`
+
+### __ftol via C-style cast avoids temp spill overhead
+
+When the original asm calls `__ftol` directly without storing the float argument
+to memory (`fld; fmul; fdiv; fmul; call __ftol` — result stays on FPU stack),
+passing the expression through `__ftol(expr)` (declared as `extern long __ftol(float)`)
+forces VC5 to `fstp` the result to a stack temp, reload it on the next line, and
+do `push ecx/add esp,4` around the call. Using `(long)(expr)` C-style cast instead
+keeps the value on the FPU register stack, generating the same `...; call __ftol`
+pattern as the original.
+
+Also, when calling a `__thiscall` method (ecx=this, parameters on stack), declare
+the method as a member function of the appropriate class and use `ptr->method(args)`
+syntax. The compiler generates the correct `mov ecx, ptr` setup. Do NOT redeclare
+it as a `__fastcall` wrapper with dummy second parameter (the added `xor edx,edx`
+for the unused edx parameter bloats the call site by 2 bytes).
+
+For `unsigned char` locals that are only compared against 0 or 1, use
+`unsigned char done = 0` instead of `int done = 0`. VC5 generates a byte store
+(`mov byte [esp+4], 0`) matching the original, and avoids allocating a
+callee-saved register (`esi`) for the flag variable.
+
+For `fild` of a 32-bit integer difference, store the intermediate in an explicit
+`int ticks = cur - prev` local rather than casting inline. The compiler emits
+`fild dword [mem]` (32-bit load) instead of `fild qword` (64-bit load).
+
+Used in: `00493540_RGE_fade_palette_step`
+
+### EH-frame function matching with new/delete and /GX
+
+When the original asm has a SEH frame (prologue with `mov eax,[fs:0]; push -1;
+push handler; push eax; mov [fs:0],esp`) and uses `operator_new(0x68)` followed
+by explicit constructor call, do NOT write `operator_new(0x68)` + constructor
+call manually. Instead use the `new T(args)` expression, which VC5 translates
+to `operator_new(sizeof(T))` + conditional constructor call. The `new` expression
+triggers the SEH frame emission because VC5 treats allocation as potentially
+throwing. The cookie variable (`mov [esp+XX], N` after each op_new) is generated
+automatically for the cleanup handler.
+
+For class `sizeof` matching, add a `char gap_00[SIZE]` member to reach the
+correct allocation size. The `new T(...)` expression passes `sizeof(T)` to
+`operator_new`, so the class must have the exact size.
+
+Key requirements:
+- `/GX` flag in the .rsp file to enable exception handling
+- `#include <new.h>` for operator_new/operator_delete declarations
+- Use `delete ptr` for destruction (generates dtor call + operator_delete)
+- Use `new T(args)` for construction (generates op_new + ctor call)
+- The base class must be declared with at least a virtual destructor to match
+  the compiler's class layout for single inheritance.
+- For non-virtual base class calls (like `TPanel::set_rect`), call directly
+  via `static_cast<Base*>(this)->method(args)`.
+- For the final virtual call in the SEH epilogue, use a member function call.
+  The vtable slot is determined by declaration order: add enough padding
+  virtuals to reach the needed offset.
+
+Used in: `00533F70_set_rect`, `0051CE40_set_rect`
+
+- In tight pointer-editing helpers, preserving decompiler-style temporary topology can be the exact VC5 basin: rewriting named buffers to mirror `pcVar2`/`pcVar3`/`pcVar4` lifetimes may flip callee-saved pointer coloring (for example EBX as stable buffer start, EBP as current scan pointer) without changing behavior. After that, spell relational tests with the original operand order (`pos >= len` vs `len <= pos`, `cur > start` vs `start < cur`) to get the same compare/branch polarity.
+
+- For VC5 calls with nested calls as arguments, be careful inferring arity from pushes. A pushed constant immediately before a member call can be an outer function argument evaluated early, not a callee argument. In `addstring(&dst, panel->get_text(), ".ext")`, VC5 may push the extension, call `get_text()` (no args), then push the returned pointer and `&dst`; preserving that source shape can fix stack cleanup and call layout. Also, for fallback branches, spelling the source as `if (found != -1) { success } else { fail }` can make VC5 emit a direct `je fail_after_success` rather than an early `xor/jmp` island.
+
+### Inline the real `ManagedArray<int>::operator[]` surface instead of hand-expanding resize
+
+When original code indexes a `ManagedArray<int>` and the asm includes the familiar
+inline grow/copy/delete path (`index > maximumSizeValue - 1`, allocate `index+1`,
+copy while bounded by both old max and new size, update `value`/`maximumSizeValue`),
+define the actual `operator[](int)` body and use `array[index]` at the call site.
+Hand-expanding equivalent resize logic in the parent can look close but VC5 may
+emit extra pre-loop tests, different loop predicates, or shifted block sizes. The
+inline operator surface lets VC5 reproduce the canonical utmarray.h code shape.
+
+### Model strided scenario tables as real multidimensional arrays for indexed member addressing
+
+When VC5 should compute `index * stride` once, keep that offset in `eax`, form a
+separate base register with `lea edi,[eax+this]`, and then access fields as
+large `[edi+member_offset]` displacements, a real member array such as
+`int table[N][20]` can be crucial. Hand-building a row pointer like
+`&table[i * 20]` may instead make VC5 set the base register to the member address
+(`this + offset + member_offset`) and then use short `[edi+small]` displacements,
+which is behaviorally identical but changes size and every following branch/jump
+span. Prefer natural multidimensional member indexing (`this->table[i][j]`) when
+original asm has the `lea index; shl; lea base=this+index; [base+field]` pattern.

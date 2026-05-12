@@ -1,0 +1,162 @@
+// VA: 00509C60 TRIBE_Command::do_command_build
+// tcommand.cpp lines 256-331
+// Attempt log:
+// 1: natural structured source from packet/decompiler: 416 B, frame 8 not original 0xC; count tested as byte.
+// 2: introduced int count local loaded from cmd->count early: restored original early prologue/load order through player lookup, still frame 8 and 416 B.
+// 3: widened placementResult storage to int while passing uchar*: worsened to 400 B; rolled back.
+// 4: split count declaration/assignment: no material change, still 416 B.
+// 5: volatile count stack-forcing: section 432 B, first mismatch still frame imm and broad extra volatile traffic; rolled back.
+// 6: positive count comparisons (0 < count) instead of count <= 0: no size/layout improvement.
+// 7: local one variable for can_place constant args optimized away/no improvement.
+// 8: flags /O2 no-/Oy, /Ox, and /GX: same 416 B outcome.
+// Left in scratch: behavior/call surface is modeled and early load order is close, but VC5 standalone keeps a 0x08 frame instead of original 0x0C and then broad branch/register displacement drift remains. Not accepted_drift-safe.
+
+typedef unsigned char uchar;
+
+class RGE_Static_Object;
+
+class RGE_Game_World {
+public:
+    char gap_00[0x40];
+    void** players;
+};
+
+class RGE_Command {
+public:
+    void* vtable;
+    RGE_Game_World* world;
+    RGE_Static_Object* get_obj(int id);
+};
+
+class RGE_Static_Object {
+public:
+#define OPAD(n) virtual void o##n();
+    OPAD(0) OPAD(1) OPAD(2) OPAD(3) OPAD(4) OPAD(5) OPAD(6) OPAD(7)
+    OPAD(8) OPAD(9) OPAD(10) OPAD(11) OPAD(12) OPAD(13) OPAD(14) OPAD(15)
+    OPAD(16) OPAD(17) OPAD(18) OPAD(19) OPAD(20) OPAD(21) OPAD(22) OPAD(23)
+    OPAD(24) OPAD(25) OPAD(26) OPAD(27) OPAD(28) OPAD(29) OPAD(30) OPAD(31)
+    OPAD(32) OPAD(33) OPAD(34) OPAD(35) OPAD(36) OPAD(37)
+#undef OPAD
+    virtual void place(void* foundation, long x, long y, int flag);
+    int id;
+    void removeAllFromPathingGroup();
+};
+
+class TRIBE_Player {
+public:
+#define PPAD(n) virtual void p##n();
+    PPAD(0) PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
+    PPAD(8) PPAD(9) PPAD(10) PPAD(11) PPAD(12) PPAD(13) PPAD(14) PPAD(15)
+    PPAD(16) PPAD(17) PPAD(18) PPAD(19) PPAD(20) PPAD(21) PPAD(22) PPAD(23)
+    PPAD(24) PPAD(25) PPAD(26) PPAD(27) PPAD(28) PPAD(29) PPAD(30) PPAD(31)
+    PPAD(32) PPAD(33) PPAD(34) PPAD(35) PPAD(36) PPAD(37) PPAD(38) PPAD(39)
+    PPAD(40) PPAD(41) PPAD(42) PPAD(43) PPAD(44) PPAD(45) PPAD(46) PPAD(47)
+    PPAD(48) PPAD(49) PPAD(50) PPAD(51) PPAD(52) PPAD(53) PPAD(54) PPAD(55)
+    PPAD(56) PPAD(57) PPAD(58) PPAD(59) PPAD(60) PPAD(61) PPAD(62) PPAD(63)
+#undef PPAD
+    virtual void build_action(uchar result, int unique_id, int obj_id, long x, long y, long p5, int object_id);
+    char gap_04[0x20];
+    int** objects;
+    uchar pay_obj_cost(short obj_id, float amount, int flag);
+};
+
+class BuildInfo {
+public:
+    virtual void b0();
+    virtual void b1();
+    virtual void b2();
+    virtual void b3();
+    virtual void b4();
+    virtual void b5();
+    virtual void b6();
+    virtual void b7();
+    virtual uchar can_place(TRIBE_Player* player, long x, long y, uchar* placement, int a, int b, int c, int d, int e, int f);
+    virtual void b9();
+    virtual void b10();
+    virtual void b11();
+    virtual void b12();
+    virtual void b13();
+    virtual void b14();
+    virtual int create_foundation(TRIBE_Player* player, long x, long y, int zero, int unique_id);
+};
+
+struct TRIBE_Command_Build {
+    uchar command;
+    uchar count;
+    uchar player_id;
+    uchar pad3;
+    long x;
+    long y;
+    short obj_id;
+    short padE;
+    int unique_id;
+    int ids[1];
+};
+
+class TRIBE_Command : public RGE_Command {
+public:
+    void do_command_build(TRIBE_Command_Build* cmd);
+};
+
+void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
+{
+    uchar placementResult;
+    int blockingObject;
+    int count;
+
+    count = cmd->count;
+    TRIBE_Player* player = (TRIBE_Player*)this->world->players[cmd->player_id];
+    if (player == 0) {
+        return;
+    }
+    if (cmd->obj_id == -1) {
+        return;
+    }
+
+    BuildInfo* info = (BuildInfo*)player->objects[cmd->obj_id];
+    if (info == 0) {
+        return;
+    }
+
+    placementResult = info->can_place(player, cmd->x, cmd->y, &placementResult, 1, 1, 1, 1, 1, 1);
+    if (placementResult != 0) {
+        if (count <= 0) {
+            return;
+        }
+        RGE_Static_Object* obj = this->get_obj(cmd->ids[0]);
+        if (obj == 0) {
+            return;
+        }
+        player->build_action(placementResult, count, cmd->obj_id, cmd->x, cmd->y, cmd->unique_id, obj->id);
+        return;
+    }
+
+    if (!player->pay_obj_cost(cmd->obj_id, 1.0f, 0)) {
+        if (count <= 0) {
+            return;
+        }
+        RGE_Static_Object* obj = this->get_obj(cmd->ids[0]);
+        if (obj == 0) {
+            return;
+        }
+        player->build_action(0, count, cmd->obj_id, cmd->x, cmd->y, cmd->unique_id, obj->id);
+        return;
+    }
+
+    blockingObject = info->create_foundation(player, cmd->x, cmd->y, 0, cmd->unique_id);
+    if (count <= 0) {
+        return;
+    }
+
+    int* idp = &cmd->ids[0];
+    int n = count;
+    do {
+        RGE_Static_Object* obj = this->get_obj(*idp);
+        if (obj != 0) {
+            obj->removeAllFromPathingGroup();
+            obj->place((void*)blockingObject, cmd->x, cmd->y, 0);
+        }
+        ++idp;
+        --n;
+    } while (n != 0);
+}
