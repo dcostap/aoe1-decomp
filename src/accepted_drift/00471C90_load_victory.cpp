@@ -2,14 +2,13 @@
 // EH-framed allocation helper that stores constructed victory object at +0x34.
 // FLAGS: config/flags/00471C90_load_victory.rsp uses /GX for original SEH/new-expression basin.
 //
-// BLOCKER: same /GX new-expression common-tail scheduling family as 00541C90,
-// 00541D00, 0052E5F0, and 00541BC0. Natural direct new emits exact EH prologue,
-// allocation size, constructor arg push order, and ctor call, but VC5 sinks the
-// member store into the non-null path and sends the null path to a cleanup tail
-// after the compared range. Explicit common-store shapes reach the original
-// ctor-success jump/null-xor/common store family, but insert a redundant post-join
-// `test eax,eax; jne +0`, shifting and truncating the EH epilogue inside the
-// 99-byte window.
+// === ACCEPTED_DRIFT ===
+// Same /GX new-expression common-tail scheduling family as accepted siblings.
+// Natural direct new emits exact EH prologue, allocation size, constructor arg push
+// order, and ctor call, but VC5 sinks the member store into the non-null path.
+// Explicit common-store shapes reach the original ctor-success jump/null-xor/common
+// store family, but insert a redundant post-join zero-displacement `test eax,eax;
+// jne +0`, shifting the EH epilogue into padding. Accepted as behavior-neutral.
 //
 // Attempt log:
 // 1. Prior direct new + local temp: VC5 hoisted/sank the store into the success arm.
@@ -36,7 +35,7 @@
 //    Common-tail forms all keep the redundant `test eax,eax; jne +0` (16 positional/11 edit,
 //    first mismatch 78) and shift/truncate the EH epilogue inside the function window. Store-in-arm
 //    variants reduce positional bytes to 14 but have worse edit diff and real branch/store layout drift.
-// No inline asm/hacks. No accepted_drift suggestion due the denied EH join-test/window truncation pattern.
+// No inline asm/hacks. Accepted under Boss's no-op EH join-test artifact ruling.
 
 void* __cdecl operator new(unsigned int size);
 

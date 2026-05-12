@@ -3,6 +3,10 @@
 // FLAGS: config/flags/00542480_setup_gaia.rsp uses /GX for original EH new-expression frame.
 // No inline asm/hacks.
 //
+// === ACCEPTED_DRIFT ===
+// Same behavior-neutral VC5 no-op phi-merge artifact as accepted World/tworld init helpers:
+// first 83 bytes exact, then dead `test eax,eax; jne +0` shifts final epilogue into padding.
+//
 // Behavior: allocate an RGE_Player (sizeof 0x220), construct it as GAIA with
 // (this, *master_players, 0, "GAIA", 0, 1), then store it through *players.
 //
@@ -24,15 +28,15 @@
 //   assignment-in-condition, zero-init, volatile pointer, bool temp, empty-if, if/else member stores, hoisted
 //   players/master locals, char ctor flags/name, void* store, comma/no-op forms. No exact. Best remains the
 //   current explicit null-normalization/common-store shape: edit diff 7.6923%, positional 16.3462%; mismatch
-//   is a redundant join `test eax,eax; jne +0` that shifts the final FS restore and truncates add/ret out of
-//   the 104-byte window, so not an accepted_drift suggestion under Boss's truncation ruling.
+//   is a redundant join `test eax,eax; jne +0` that shifts the final FS restore and add/ret into padding;
+//   accepted under Boss's same-artifact ruling.
 // - 2026-05-10 SpruceGlow Boss-assigned pass: revalidated current best and tried 16 variants:
 //   direct/local assignment, if-null/if-not, goto common/null, players/master locals, member reference,
 //   store-in-both-arms, volatile pointer, bool temp, zero-init, assignment-in-if, and explicit casts.
 //   No exact. Direct/local sink store to success path. Common-tail variants keep the redundant join test.
 //   Member-reference reduced positional diff to 14 but worsened edit diff and still changes tail layout, so not kept.
-// Left in scratch: same null-path/common-store join blocker as sibling World init helpers. Allocation size, EH frame,
-// ctor args/call, final store, stack cleanup, and behavior are understood.
+// Accepted drift: same null-path/common-store join artifact as sibling World init helpers. Allocation size, EH frame,
+// ctor args/call, final store, stack cleanup, and behavior are understood. No inline asm/hacks.
 
 class RGE_Game_World;
 

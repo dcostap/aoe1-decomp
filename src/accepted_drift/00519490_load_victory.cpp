@@ -1,3 +1,10 @@
+// 00519490 TRIBE_Player::load_victory
+// === ACCEPTED_DRIFT ===
+// Same /GX new-expression no-op join-test artifact as accepted counterpart 00471C90.
+// First 78 bytes match exactly, then VC5 inserts dead zero-displacement
+// `test eax,eax; jne +0`, shifting the common-store/SEH epilogue into padding.
+// Behavior, memory effects, register preservation, and stack cleanup are identical.
+//
 // attempt log:
 // first pass: EH-framed factory helper with a direct 0x20 new and the observed push order into the victory ctor
 // second pass: use a local pointer with an explicit zero path so the failure case stays visible without changing the ctor push order
@@ -20,8 +27,8 @@
 // 2026-05-10 StarryZephyr pass: rechecked current common-tail source (16.1616% positional, 11.1111% edit), tried
 //   direct member new (success-store/null-tail, first mismatch 50, edit 15), and positive goto common-store (same
 //   redundant join-test basin). Restored current best source.
-// Left in scratch: behavior/EH/allocation/ctor push order are correct; blocker is the same redundant join-test plus
-// tail/epilogue truncation seen in neighboring init helpers. Not proposing accepted_drift. No inline asm/hacks.
+// Accepted drift: behavior/EH/allocation/ctor push order are correct; blocker is the same redundant join-test plus
+// tail/epilogue shift seen in neighboring init helpers. No inline asm/hacks.
 // 2026-05-10 current Boss-assigned pass: revalidated baseline and tried unqualified store, direct/local no-if,
 // goto-null, if/else-empty, slot reference alias, ternary, param locals/int-param3, if-store-arms, separated
 // declaration/zero-init, assignment-in-if, comma, do/while break, raw member store, void* member surface, and
