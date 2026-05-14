@@ -4451,3 +4451,25 @@ Why it helps:
 Caveat:
 - this only applies when every arm is semantically an immediate call-and-return;
   if later code really consumes the selected value, keep the local.
+
+## Lesson: Explicit if/else byte assignment can avoid setcc zero-extension
+
+When the original stores a boolean byte with `cmp ...; sete cl; mov [field],cl` and
+there is no preceding `xor ecx,ecx`, a compact expression or ternary assignment to an
+`unsigned char`/`bool` field may make VC5 zero the whole register first. Spell the
+assignment as an explicit `if { field = 1; } else { field = 0; }`; VC5 can still
+collapse it to `setcc` but may omit the zero-extension and preserve the original
+scheduling. Verified on TXChat (00429870).
+
+### Lock/Unlock cleanup may run after failed Lock when guarded by outer feature flag
+
+When original code checks an outer feature/state flag, calls `Lock`, and then branches to a common default/tail block on Lock failure or switch default, do not assume `Unlock` is inside the `if (Lock())` body. A source shape like:
+```cpp
+if (enabled) {
+    if (draw->Lock(name, 1)) {
+        switch (mode) { ... }
+    }
+    draw->Unlock(name);
+}
+```
+can be required even though it appears to unlock after a failed lock. This fixes the near-branch target to the shared cleanup block rather than the final epilogue. Verified on Time_Line_Panel::draw_border (0051F120), where moving `Unlock` outside the Lock-success guard changed the only remaining byte and produced an exact match.
