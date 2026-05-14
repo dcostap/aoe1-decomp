@@ -4514,3 +4514,28 @@ Why it helps:
 
 Caveat:
 - only duplicate the call when both branches truly make the same call and the original shows arguments already pushed before the join.
+
+## Lesson: For COM vtable calls, naming the vtable local can preserve load-before-local-store setup
+
+When matching VC5 code that calls a COM-style `__stdcall` vtable method and initializes an input struct immediately before the call, a direct typed expression such as `obj->vtbl[n](obj, &local, flags)` may let VC5 store the struct size before loading the vtable. If the original loads `ecx = [eax]` first, then pushes arguments, then stores `local.dwSize` after the pushes, introduce a `void **vtbl = obj->vtbl;` local before the struct-size assignment and call through `vtbl[n]`.
+
+This can make VC5 emit the original sequence:
+`mov ecx,[eax] ; ... push flags ; push &local ; push eax ; mov [esp+...],sizeof(T) ; call [ecx+slot]`.
+
+Caveat: make sure the struct layout is exact; in DirectPlay `DPCAPS`, `dwMaxLocalPlayers` sits before `dwHeaderLength` and `dwTimeout`, so a size-only fix can still leave later stack-offset mismatches.
+
+## Lesson: Combined `&&` loop bounds can remove extra guard tests and recover VC5 counted-copy loops
+
+For small array search/copy loops with two upper bounds, spelling the loop as a single combined condition (`while (i < count && i < capacity)`) can produce VC5's compact compare-at-bottom topology. An equivalent source with outer `if`, `do`, and explicit `if (i >= capacity) break;` may add extra `test`/`jge` guards, shift block layout, and perturb saved-register choices even when behavior is the same.
+
+Try this when an append/reallocation helper is behaviorally right but rebuilt loops contain extra pre-loop capacity tests or pointer-increment scans while the original uses indexed `[base+eax*4]` loads and a pair of simple bound compares. Verified on a managed-int-array append in TribeInformationAIModule::addObject (004DC1B0).
+
+## Lesson: Derived `new` can be needed just to reproduce post-constructor vptr stores
+
+When VC5 emits `operator new`, a base-class constructor call, then an explicit vptr store before using the object, model the allocation as a small derived class even if the surrounding code only calls base methods. A plain `new Base` may compile to the same allocation and constructor call but omit the post-constructor `mov [obj], derived_vtbl`, producing a too-small EH/new block. This can occur for adjacent list members where some are derived list types and a later one is only the base type. Verified in TRIBE_Player::load (005128A0) for two object-list members.
+
+## Lesson: If a virtual numeric getter feeds a common `ftol`, its source return type may be `float`
+
+When original VC5 code chooses between a virtual getter and a float member, then joins both paths at one shared `__ftol` call, declare the virtual getter as returning `float` and cast each branch to `int` at the assignment site. Declaring the virtual as `int` makes VC5 skip the shared conversion for that branch and changes the short jump over the float-member load.
+
+Try this when one branch is `call [vtable+slot]; jmp shared_ftol` and the other is `fld [field]; shared_ftol:`. The key is that the virtual returns its value in the FPU stack, not in `eax`.
