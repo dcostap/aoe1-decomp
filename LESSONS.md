@@ -4473,3 +4473,44 @@ if (enabled) {
 }
 ```
 can be required even though it appears to unlock after a failed lock. This fixes the near-branch target to the shared cleanup block rather than the final epilogue. Verified on Time_Line_Panel::draw_border (0051F120), where moving `Unlock` outside the Lock-success guard changed the only remaining byte and produced an exact match.
+
+## Lesson: Explicit base-destructor calls can match double base-dtor destructor tails
+
+In `/GX` destructors, if the original tail shows a normal member cleanup call, then a
+base-class destructor call, then the EH state is set to -1 followed by another
+compiler-emitted base destructor call, model the first call explicitly in the derived
+destructor body (`this->Base::~Base();`). VC5 will still emit the automatic base
+destructor after the body, giving the observed double-call tail. This is useful when
+a near-match only differs at the destructor epilogue after all resource cleanup.
+
+For delete blocks, keep a local pointer (`T* p = this->field; if (p) { p->~T(); delete p; }`)
+when the original carries the pointer in EDI through destructor and operator delete;
+reloading `this->field` for delete changes scheduling and branch offsets. Verified on
+RGE_View::~RGE_View (00533760).
+
+### FPU `test ah,41h` after `fcomp` often means inclusive bound (`<=` / `>=`), not strict `<`
+
+When VC5 emits `fcomp`, `fnstsw ax`, then `test ah,41h` and branches on nonzero, it is testing C0 or C3: less-than OR equal (and some unordered cases depending on operands). If a near match differs only by `test ah,01h`, the source likely used an inclusive comparison such as `x <= 0.0` or `max <= x`, not a strict comparison like `x < 0.0` / `max < x`. This can fix a tiny mask-only diff without changing surrounding FPU code. Verified on TribeConstructionAIModule::canPlace (004D5F00).
+
+## Lesson: Duplicate branch calls can preserve pre-pushed argument layout around a shared call tail
+
+When one branch selects between two constant/string arguments for the same member call, a tidy source shape with a `target` local followed by one common call can compile shorter/differently than the original. If the original pushes the call arguments inside each branch and jumps into a shared tail at the `mov ecx, object; call method` sequence, spell the call in both branches:
+
+```cpp
+if (panel_exists) {
+    panel_system.setCurrentPanel(name_a, 0);
+} else {
+    new Screen;
+    panel_system.setCurrentPanel(name_b, 0);
+}
+```
+
+Try when:
+- rebuilt code uses `mov eax, const; jmp common_push_args` but original has `push 0; push const; jmp common_call`;
+- the diff is a small size/layout mismatch around two branches that call the same method with different constant args.
+
+Why it helps:
+- VC5 can tail-merge the actual `this` load and call while preserving branch-local argument pushes and EH-state stores.
+
+Caveat:
+- only duplicate the call when both branches truly make the same call and the original shows arguments already pushed before the join.
