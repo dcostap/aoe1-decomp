@@ -12,6 +12,7 @@ from status_core import build_status_rows, status_counts, write_status_csv
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 BUCKET_ORDER = ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"]
+MATCHED_PROGRESS_BUCKETS = {"matching", "accepted_drift"}
 CORPUS_ORDER = ["normal", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 BUCKET_COLORS = {
     "matching": "#22c55e",
@@ -189,7 +190,7 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
         group["bucketCounts"][bucket] = int(group["bucketCounts"][bucket]) + 1
         group["bucketBytes"][bucket] = int(group["bucketBytes"][bucket]) + size_bytes
 
-        if bucket == "matching":
+        if bucket in MATCHED_PROGRESS_BUCKETS:
             group["matchedCount"] = int(group["matchedCount"]) + 1
             group["matchedBytes"] = int(group["matchedBytes"]) + size_bytes
         if row["is_remaining"] == "yes":
@@ -224,8 +225,8 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
     total_functions = len(normal_rows)
     total_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows)
-    matched_functions = sum(1 for row in normal_rows if row["source_bucket"] == "matching")
-    matched_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] == "matching")
+    matched_functions = sum(1 for row in normal_rows if row["source_bucket"] in MATCHED_PROGRESS_BUCKETS)
+    matched_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] in MATCHED_PROGRESS_BUCKETS)
     remaining_functions = sum(1 for row in normal_rows if row["is_remaining"] == "yes")
     remaining_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows if row["is_remaining"] == "yes")
 

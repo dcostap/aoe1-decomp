@@ -4608,3 +4608,26 @@ For VC5 string-buffer initialization code, prefer CRT-recognized `memset`/`strcp
 ### Switch source order can control VC5 jump-table body layout
 
 For sparse switch dispatches where VC5 emits a jump table, the physical order of `case` blocks in source can determine the order of generated case bodies and therefore branch distances/default target encodings. If behavior is right but near branches and jump-table targets are shifted, reorder the source cases to match the original body order rather than numeric case order. Example: 00461270 `load_master_object` matched after ordering cases 10,20,30,60,40,50,25.
+
+### Decompiler stack-array +N names can be artifacts
+
+When a packet names a local character buffer use as `buf + 4`, verify against the actual `lea [esp+...]` in the original before preserving the offset. Ghidra may map the local array start four bytes low/high because of saved registers or varargs stack accounting. Passing the apparent `buf + 4` can make VC5 emit `lea [esp+10h]` where the original used `lea [esp+0Ch]`; the natural `buf` spelling may be exact. Example: 00428B10 `DropDeadPlayer` matched after changing language/sprintf calls from `msg_str + 4` to `msg_str`.
+
+### EH `new` object stubs: allocation size and member call argument order
+
+For VC5 EH-framed functions that `new` a C++ object and immediately call a constructor, make the visible local class `sizeof` match the observed `operator new` size exactly, even if only one late field is read. A non-virtual local stub with method declarations has no hidden vptr data, so pad to the allocation size deliberately instead of assuming the first observed field offset implies the object end. Also verify member-call prototypes from emitted push order; decompiler-style parameter names can hide unusual dialog/helper argument orders, and one swapped argument may be the final byte-level drift.
+
+- In EH-framed destructors, prefer natural virtual class/destructor declarations and let VC5 synthesize the derived vptr restore before the first member cleanup. A manual `*(int*)this = vtbl` can be scheduled after the EH state/first argument setup even when bytes are otherwise identical; removing the manual store may let the compiler emit the original early vptr store (observed in `TribeGameSettingsScreen::~TribeGameSettingsScreen`, 004B5920).
+- In large UI/game setup functions, VC5 saved-`this` register choice can be steered by early-lived locals. If rebuilt keeps `this` in ESI but original uses EDI, look for a value loaded early and live across many calls (for example a game-info pointer or count). Splitting that value into a named local at the right point can occupy ESI and move `this` to EDI without changing behavior; avoid initializing count locals too early if that emits premature zeroing.
+- For VC5 constructor matches with EH frames, visible virtual destructors on both base and derived classes can be necessary context even when source does not call them directly. The destructor declarations affect EH/unwind constructor lowering, vptr handling, and cleanup metadata; try natural base/derived class declarations with virtual destructors before manual vptr/EH shaping.
+
+## Lesson: Visible virtual destructors can trigger the expected /GX constructor EH frame
+
+When a constructor body already matches except it is missing the original VC5 EH registration prologue/epilogue, and the original was built with `/GX`, make the base/derived class surface include visible virtual destructors if the real classes are polymorphic/destructible. The destructor declarations can make VC5 treat the base constructor phase as needing unwind cleanup and emit the `push -1; push handler; fs:[0]` constructor frame without changing the natural constructor body.
+
+Try when:
+- a constructor with a base-constructor call is undersized by exactly the EH frame/tail;
+- the body after the base call (vptr store, member initialization, repeated calls) already matches closely;
+- `/GX` alone does not emit EH because the local class surface is too non-polymorphic/non-destructible.
+
+Caveat: keep this to real constructor/destructor surfaces; do not add fake virtuals just to perturb ordinary functions. Verified on `0050F410 TRIBE_Map`.

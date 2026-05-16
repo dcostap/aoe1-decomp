@@ -484,6 +484,7 @@
     const DATA = __DASHBOARD_DATA__;
     const SUMMARY = DATA.summary || {};
     const BUCKET_ORDER = SUMMARY.bucketOrder || ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"];
+    const MATCHED_PROGRESS_BUCKETS = new Set(["matching", "accepted_drift"]);
     const BUCKET_COLORS = SUMMARY.bucketColors || {
       matching: "#22c55e",
       accepted_drift: "#f59e0b",
@@ -712,7 +713,7 @@
         valueAsmLines += fn.asmLines;
         bucketCounts[fn.bucket] += 1;
         bucketBytes[fn.bucket] += fn.sizeBytes;
-        if (fn.bucket === "matching") {
+        if (MATCHED_PROGRESS_BUCKETS.has(fn.bucket)) {
           matchedCount += 1;
           matchedBytes += fn.sizeBytes;
         }
@@ -810,7 +811,7 @@
         stats.asmLines += fn.asmLines;
         stats.bucketCounts[fn.bucket] += 1;
         stats.bucketBytes[fn.bucket] += fn.sizeBytes;
-        if (fn.bucket === "matching") {
+        if (MATCHED_PROGRESS_BUCKETS.has(fn.bucket)) {
           stats.matchedFunctions += 1;
           stats.matchedBytes += fn.sizeBytes;
         }
