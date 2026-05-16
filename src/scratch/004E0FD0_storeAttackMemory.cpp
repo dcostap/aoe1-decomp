@@ -1,0 +1,151 @@
+// VA: 004E0FD0 TribeInformationAIModule::storeAttackMemory
+// Source: taiinfmd.cpp lines 6370-6418
+// FLAGS: /nologo /c /O2 /Oy
+//
+// Attempt log:
+// 1: first typed - 320 bytes
+// 2: for loop + volatile - 352 bytes
+// 3: while loop + direct field access - 416 bytes
+// 4: volatile timeOffset + push ecx - 416 bytes
+// 5: moved bestIdx init after quadrant - 416 bytes
+// 6: explicit int locals for params, match exact computation
+
+#include <stdlib.h>
+
+struct AttackMemory {
+    int id;                     // +0x00
+    unsigned char type;         // +0x04
+    unsigned char minX;         // +0x05
+    unsigned char minY;         // +0x06
+    unsigned char maxX;         // +0x07
+    unsigned char maxY;         // +0x08
+    unsigned char attackingOwner; // +0x09
+    unsigned char targetOwner;    // +0x0A
+    unsigned char pad_0B;         // +0x0B
+    short kills;                // +0x0C
+    unsigned char success;      // +0x0E
+    unsigned char pad_0F;       // +0x0F
+    unsigned int timeStamp;     // +0x10
+    int play;                   // +0x14
+};
+
+class MainAIModule {
+public:
+    char gap_00[0xF0];
+    void* field_F0;             // +0xF0
+};
+
+class TribeInformationAIModule {
+public:
+    char gap_00[0x100];
+    MainAIModule* md;           // +0x100
+    int mapXSizeValue;          // +0x104
+    int mapYSizeValue;          // +0x108
+    char gap_10C[0x1FC - 0x10C];
+    int maxAttackMemories;      // +0x1FC
+    AttackMemory* attackMemories; // +0x200
+    char gap_204[0x40C - 0x204];
+    int numberAttacksOnUs;      // +0x40C
+    int numberAttacksByUs;      // +0x410
+
+    int storeAttackMemory(
+        unsigned char param_1,
+        unsigned char param_2,
+        unsigned char param_3,
+        unsigned char param_4,
+        unsigned char param_5,
+        unsigned char param_6,
+        unsigned char param_7,
+        short param_8,
+        unsigned char param_9,
+        unsigned int param_10,
+        int param_11);
+};
+
+int TribeInformationAIModule::storeAttackMemory(
+    unsigned char param_1,
+    unsigned char param_2,
+    unsigned char param_3,
+    unsigned char param_4,
+    unsigned char param_5,
+    unsigned char param_6,
+    unsigned char param_7,
+    short param_8,
+    unsigned char param_9,
+    unsigned int param_10,
+    int param_11)
+{
+    volatile int timeOffset;
+    int bestIdx;
+    int count;
+
+    if (this->mapXSizeValue > 0 && this->mapYSizeValue > 0) {
+        int nMaxX = *(int*)&param_4;
+        int nMinX = *(int*)&param_2;
+        nMaxX &= 0xFF;
+        nMinX &= 0xFF;
+        int sum = nMaxX + nMinX;
+        int product = sum * 4;
+        int cx = product / this->mapXSizeValue;
+        int cy = product / this->mapYSizeValue;
+        cx >>= 1;
+        cy >>= 1;
+        if (cx > 4) cx = 3;
+        if (cy > 4) cy = 3;
+
+        unsigned short playerID = *(unsigned short*)((char*)this->md->field_F0 + 0x4A);
+        if ((int)param_7 == (unsigned char)playerID) {
+            *(int*)((char*)this + cy * 12 + cx * 48 + 0x40C) += 1;
+        } else if ((int)param_6 == (unsigned char)playerID) {
+            *(int*)((char*)this + cy * 12 + cx * 48 + 0x410) += 1;
+        }
+    }
+
+    bestIdx = -1;
+    timeOffset = 0xFFFFFFE8;
+    count = 0;
+
+    if (this->maxAttackMemories > 0) {
+        int offset = 0;
+        AttackMemory* mem = this->attackMemories;
+
+        while (count < this->maxAttackMemories) {
+            if (*(int*)((char*)mem + offset) == -1) {
+                bestIdx = count;
+                break;
+            }
+
+            if (bestIdx == -1) {
+                bestIdx = count;
+                timeOffset = offset;
+            } else {
+                int bestTime = *(int*)((char*)mem + timeOffset + 0x10);
+                int curTime = *(int*)((char*)mem + offset + 0x10);
+                if (bestTime < curTime) {
+                    bestIdx = count;
+                    timeOffset = offset;
+                }
+            }
+
+            count++;
+            offset += 0x18;
+        }
+    }
+
+    if (bestIdx != -1) {
+        this->attackMemories[bestIdx].id = count;
+        this->attackMemories[bestIdx].type = param_1;
+        this->attackMemories[bestIdx].minX = param_2;
+        this->attackMemories[bestIdx].minY = param_3;
+        this->attackMemories[bestIdx].maxX = param_4;
+        this->attackMemories[bestIdx].maxY = param_5;
+        this->attackMemories[bestIdx].attackingOwner = param_6;
+        this->attackMemories[bestIdx].targetOwner = param_7;
+        this->attackMemories[bestIdx].kills = param_8;
+        this->attackMemories[bestIdx].success = param_9;
+        this->attackMemories[bestIdx].timeStamp = param_10;
+        this->attackMemories[bestIdx].play = param_11;
+    }
+
+    return bestIdx;
+}

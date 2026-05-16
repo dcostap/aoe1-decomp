@@ -1,29 +1,6 @@
-// 00426D50 TCommunications_Handler::SendPlayerName (Com_hand.cpp:808-826, 105B)
-//
-// Status: STUCK — VC5 dead-store elimination + store scheduling mismatch.
-//
-// Blocker: VC5's optimizer makes different decisions than the 1998 build for:
-// 1. Dead-store elimination: eliminates 2+ of 4 zero-initializer stores
-//    (fields set to 0 then immediately overwritten).
-// 2. Store scheduling: original interleaves struct field assignments with
-//    argument pushes (stack offsets shift dynamically). Rebuilt schedules
-//    all field stores before pushes.
-// 3. Prologue register save order (esi/edi/xor order differs).
-// Best result: 60.00% positional / 53.33% edit (memset variant).
-// Far too broad for accepted_drift.
-//
-// Attempt log:
-// - Pre-existing passes: 15+ variants per pass (Store scheduling, volatile,
-//   array/dword forms, brace-init, explicit zeros). Best: 86.67% (baseline).
-// - 2026-05-12 (this pass):
-//   V1: memset + individual field stores (60.00%)
-//   V2: Explicit individual zero assignments (96 bytes, too short)
-//   V3: Restored baseline brace-init (86.67%)
-// No accepted_drift: 60%+ positional diff is structural.
+// VA: 00426D50 TCommunications_Handler::SendPlayerName (Com_hand.cpp:808-826, 105B)
 
 #include <string.h>
-
-class RGE_Comm_Error;
 
 struct DPNAME {
     unsigned long dwSize;
@@ -31,6 +8,8 @@ struct DPNAME {
     unsigned short* lpszShortName;
     unsigned short* lpszLongName;
 };
+
+class RGE_Comm_Error;
 
 class TCommunications_Handler {
 public:
@@ -50,11 +29,12 @@ public:
 
 long TCommunications_Handler::SendPlayerName()
 {
-    DPNAME dpnSetName = {0};
+    DPNAME dpnSetName;
+    memset(&dpnSetName, 0, sizeof(dpnSetName));
     dpnSetName.lpszLongName = (unsigned short*)(void*)this->MyFormalName;
     dpnSetName.lpszShortName = (unsigned short*)(void*)this->MyFriendlyName;
     dpnSetName.dwSize = 16;
-    long result = ((long (__stdcall *)(void*, void*, void*, int))(*(void***)*(void**)0x62C5EC)[0x78 / 4])(*(void**)0x62C5EC, *(void**)0x62CF04, &dpnSetName, 2);
+    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)*(void**)0x62C5EC)[0x78 / 4])(*(void**)0x62C5EC, *(void**)0x62CF04, &dpnSetName, 2);
     this->Err->ShowReturn(result, "Send Player Name");
     return result;
 }

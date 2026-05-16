@@ -45,6 +45,18 @@
 // call: behavior is the same stable rge_base_game global, but avoiding the
 // object relocation on these two loads reduces edit diff to 349 / 5.9566%.
 // It still uses eax (original uses edx) and the loop remains one byte short.
+// 2026-05-12 pass: revalidated current baseline (edit diff 349 / 5.9566%).
+// Rolled back: per-iteration button local (widened to 15.79% edit), normal
+// rge_base_game get_string in draw loop (6.04%), buffer cast / str+(i-i) no
+// change, volatile palette stores worsened to 6.23%. Palette source-order tweak
+// around pal27 emitted identical code; remaining durable gap is still draw-loop
+// get_string scheduling/bevel arg register cycle plus palette-store scheduling.
+// Follow-up lab: comma_str/comma_zero/comma_id/split_outer draw-loop variants all
+// collapsed to baseline; temp_id became a much worse 1688 edit diff. Forcing
+// game_for_text before setDrawType widened to ~14.85%; volatile global load and
+// post-store game local both widened to ~6.21%. Flag probes /O1 and /Os emitted
+// undersized text; /Ob0 widened badly; /Gf no change. Palette pal7b arithmetic
+// or late declaration still collapsed to baseline.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
@@ -443,10 +455,9 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     TButtonPanel** draw_buttons = (TButtonPanel**)((char*)this + 0x4f8);
     for (i = 3; i != 0; i--) {
         (*draw_buttons)->setDrawType(3);
-        TButtonPanel* b = *draw_buttons;
-        b->draw_type_byte = 3;
-        b->set_text(0, (*(BaseGameStub**)0x62c574)->get_string(0x66, b->get_id(), 0, str, 0x200));
-        b->set_bevel_info(3, OFF8(0x320), OFF8(0x321), OFF8(0x322), OFF8(0x323), OFF8(0x324), OFF8(0x325));
+        (*draw_buttons)->draw_type_byte = 3;
+        (*draw_buttons)->set_text(0, (*(BaseGameStub**)0x62c574)->get_string(0x66, (*draw_buttons)->get_id(), 0, str, 0x200));
+        (*draw_buttons)->set_bevel_info(3, OFF8(0x320), OFF8(0x321), OFF8(0x322), OFF8(0x323), OFF8(0x324), OFF8(0x325));
         draw_buttons++;
     }
     }

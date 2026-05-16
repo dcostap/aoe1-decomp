@@ -4539,3 +4539,72 @@ When VC5 emits `operator new`, a base-class constructor call, then an explicit v
 When original VC5 code chooses between a virtual getter and a float member, then joins both paths at one shared `__ftol` call, declare the virtual getter as returning `float` and cast each branch to `int` at the assignment site. Declaring the virtual as `int` makes VC5 skip the shared conversion for that branch and changes the short jump over the float-member load.
 
 Try this when one branch is `call [vtable+slot]; jmp shared_ftol` and the other is `fld [field]; shared_ftol:`. The key is that the virtual returns its value in the FPU stack, not in `eax`.
+
+## Lesson: Reverse source argument order to match right-to-left push order for color/helper calls
+
+For helper calls that pass a run of adjacent fields (for example bevel/color slots), remember that VC5 pushes cdecl/thiscall arguments right-to-left. If a near-match has the same call target and values but the push sequence is reversed, try spelling the source arguments in the binary-observed semantic order rather than the decompiler's natural ascending field order.
+
+Try when:
+- the only mismatch in a helper call cluster is the order of `push [this+field]` instructions;
+- fields are a symmetric pair/range such as bevel colors, bounds, or style parameters;
+- the callee prototype is understood and stack cleanup already matches.
+
+Why it helps:
+- Source argument order directly controls VC5's right-to-left push emission; swapping source arguments can recover the exact memory-load/push sequence without changing control flow.
+
+Caveat:
+- Do not swap to chase bytes until the callee's semantic parameter order is known; otherwise this can hide a wrong prototype or wrong field labels.
+
+## Lesson: Incomplete local class stubs can silently shrink `new` sizes
+
+When matching factory/setup functions that allocate local class types, do not leave the allocated class as an incomplete or empty stub. VC5 will use `sizeof(T)` from the visible class body, so an empty class can emit `operator new(1)` even when behavior and EH shape are otherwise correct. Add explicit size pads for the proven class size when full layout is not yet shared.
+
+Try when:
+- a `new T(...)` call has the right constructor/EH shape but pushes the wrong allocation size;
+- the packet/type info proves only the class size, not all fields;
+- a natural `/GX` constructor path is close except for allocation immediates.
+
+Why it helps:
+- The visible class definition controls `sizeof(T)` and therefore the immediate passed to `operator new`; explicit padding preserves the real allocation size without inventing field semantics.
+
+Caveat:
+- Prefer real fields when offsets are known or reused; use size pads only as a local exact-layout placeholder.
+
+## Lesson: Parent virtual fallback calls require the inherited vtable slot, not slot zero
+
+When a derived UI/panel action handler falls back to `Base::action(...)`, the base class must expose enough preceding virtuals for the fallback call to use the original vtable offset. If the base stub only declares `action` as the first virtual, VC5 emits a call through `[vtable]`; padding the base vtable so `action` lands at the proven slot (for example slot 45 / `+0xB4`) can fix tail call size and branch displacement drift.
+
+Try when:
+- the function body is close but the final/default fallback virtual call uses `[eax]` instead of `[eax+offset]`;
+- packet/class info proves a nonzero vtable slot for a common UI method;
+- the remaining diff is a small tail shift after a base-method fallback.
+
+Why it helps:
+- VC5 emits virtual dispatch offsets from the visible class declaration; correct padding preserves the inherited vtable layout without raw function-pointer hacks.
+
+Caveat:
+- Count slots carefully and keep this local unless the class vtable layout is broadly reused and ready for shared headers.
+
+### Duplicate branch calls can beat a selector temp for VC5 tail merging
+
+When two branches call the same method with only one argument different, a clean selector temp such as `techID = cond ? a : b; obj->method(techID, this);` can be shorter but land in the wrong branch family. If original asm has each branch loading its own object/arguments and then jumping into a shared call setup, write the source as duplicated calls inside the `if`/`else`:
+```cpp
+if (cond) {
+    world->effects->do_tech_effect((short)this->startTech, this);
+} else {
+    world->effects->do_tech_effect(0xD2, this);
+}
+```
+VC5 may tail-merge the duplicate call setup exactly, preserving the original branch distances and per-arm reloads. Example: 00512690 `TRIBE_Player::scenario_load`.
+
+### Virtual classes: do not double-count the implicit vptr in field gaps
+
+When modeling a class with virtual methods, remember the compiler inserts the vptr at offset +0. Declare data fields at their real offsets after that implicit vptr; do not add an explicit `char gap_00[4]` unless the asm proves a separate data word. Double-counting the vptr shifts every field by four bytes and can make otherwise natural save/load/write loops miss. For virtual class stubs, a field commented as `// +04` can be declared as the first data member immediately after the virtual declarations. Example: RGE_Game_World::save matched after removing an explicit +0 vptr gap so `world_time` naturally landed at +4.
+
+### Prefer CRT string/memory surfaces and avoid carried pointer liveness when original reloads late
+
+For VC5 string-buffer initialization code, prefer CRT-recognized `memset`/`strcpy` surfaces over handwritten loops/helpers when original uses `rep stosd` and inline `repne scasb` / `rep movsd` / `rep movsb`. Also, in pointer/index loops over multiple parallel arrays, source liveness of the row/name pointer matters: using `array[i][0]` instead of a carried pointer can keep the pointer-slot reload/update at the original late location while preserving the array-index register schedule.
+
+### Switch source order can control VC5 jump-table body layout
+
+For sparse switch dispatches where VC5 emits a jump table, the physical order of `case` blocks in source can determine the order of generated case bodies and therefore branch distances/default target encodings. If behavior is right but near branches and jump-table targets are shifted, reorder the source cases to match the original body order rather than numeric case order. Example: 00461270 `load_master_object` matched after ordering cases 10,20,30,60,40,50,25.
