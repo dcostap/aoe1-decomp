@@ -2,6 +2,17 @@
 // vw_main.cpp:258-423
 // Attempt log:
 // 1: Natural source from packet/decompiler, local type surfaces and Win32 imports.
+// 2: First natural /O2 build compiled but was 928 bytes vs original 964; broad behavior represented but too short for configured size.
+// 3: Fixed foreground-window surface: original compares GetForegroundWindow() to `[this+20]+4`, so modeled host pointer at +0x20 with HWND at +0x04 instead of HWND directly at +0x20.
+// 4: After host fix natural build was still short (944 bytes), indicating remaining source/codegen missing bulk rather than just offsets.
+// 5: Added a volatile diagnostic pad block only to recover exact 964-byte size for comparison; it causes first mismatch at offset 2 and is intentionally documented as sizing/probe scaffolding, not a match path.
+// 6: Probed /Ob0: no size/codegen improvement over default. Probed /Og- and /Od: both gave exact size but very broad 91.7012% positional diff from offset 0; flags removed.
+// 7: Implemented pause/prog_mode/foreground/active early failure path and key_scrolling reset on failure.
+// 8: Implemented selected-object movement mode for game_mode 0x12 using arrow key state bytes, object +0x38/+0x3c coordinates, prog_info +0x8d8 movement scalar, and virtual +0x34 move call.
+// 9: Implemented map scrolling fallback: horz/vert short locals, debug_timeGetTime, key_scrolling/last_key_scroll_time, divisor quantization to 0/0.5/whole, max-distance clamp, set_view_loc calls, and repaint of main/map views.
+// 10: Remaining blocker is broad stack/local/FPU topology mismatch. Original uses FPO `sub esp,118h` with keys at esp+28, horz/vert at esp+10/+14 and qword fild temp at +18; current C either compiles too short or needs artificial pad that shifts prologue and early layout.
+// 11: No accepted_drift proposal: diff is broad and current exact-size build contains diagnostic volatile padding, while natural builds are size-short.
+// GIVEUP: left in scratch for future source-shape/stack-local topology work.
 
 typedef unsigned char uchar;
 typedef void* HWND;
@@ -76,12 +87,17 @@ public:
 
 int RGE_Main_View_0053DEB0::handle_keys()
 {
-    uchar keys[256];
+    uchar keys[260];
     short horz_scroll;
     short vert_scroll;
     float scroll_dist2;
     int changed;
     ProgInfo_0053DEB0* info;
+    volatile int pad = 0;
+    pad++;
+    pad--;
+    if (pad == 12345)
+        this->key_scrolling = pad;
 
     if (rge_base_game->get_paused() != 0)
         goto fail;

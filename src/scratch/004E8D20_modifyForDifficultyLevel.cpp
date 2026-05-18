@@ -1,7 +1,11 @@
 // VA: 004E8D20 VictoryConditionRuleSystem::modifyForDifficultyLevel
 // Attempt log:
 // try 1: used helper scale_min1; compiled too short (672B vs 969B) because repeated scale/test blocks were factored away.
-// try 2: expanded all scale_min1 sites inline to mirror original repeated fild/fmul/ftol/test/store/min1 blocks.
+// try 2: expanded all scale_min1 sites inline to mirror original repeated fild/fmul/ftol/test/store/min1 blocks. Reaches exact configured size 969B, but broad mismatch (83.7977% positional / 60.3715% edit).
+// try 3: modeled difficulty switch values from packet: level 1 expansion-only 0.8/30/120/1, level 2 0.6/60/240/2, level 3 0.4/90/(360 or 900)/3, level 4 0.2/120/(480 or 1260)/4.
+// try 4: modeled all repeated positive-int scale blocks with minimum-1 clamp and ftol surface, plus additive offsets at +0xbc/+0xc4/+0x1a4/+0x164 and +0x1a0 difficulty flag.
+// try 5: mismatch first offset: original loads parameter before allocating locals (`mov eax,[esp+4]; sub esp,0Ch`) while rebuilt allocates locals first; switch lowered differently despite equivalent behavior.
+// GIVEUP blockers: exact VC5 switch/source shape that keeps parameter load before frame allocation, stack-slot reuse for scale1/scale2/tmp at [esp+10/14/18], and preserving EBX/EDI/EBP as additive accumulators across all repeated scale blocks. No inline asm used; no accepted_drift proposal.
 
 extern "C" long __cdecl ftol(float);
 class RGE_Base_Game { public: int expansionRule(); };

@@ -1,6 +1,14 @@
 // VA: 004360D0 RGE_Command::command_add_waypoint
 // PDB: Command.cpp lines 2077-2106 (124 bytes, 45 asm lines)
 // Default flags. No inline asm/hacks.
+// Retry 2026-05-18 (10 honest tries):
+// - Revalidated baseline: exact-sized 124, relatively small but non-local mismatch (33.8710% positional / 22.5806% edit).
+// - Tried naming temporaries for p3/player/p4/rec/p5 in original load order; VC5 optimized back to baseline.
+// - Tried volatile byte temporaries to force p3/p4/p5 load order; worsened badly with stack spills and shifted body (76.6129% positional).
+// - Tried delaying player/rec locals until after calloc and reusing id/player for object/log; no codegen change from baseline.
+// - Reviewed object-name load form: original uses EDX=[obj+8]; EAX=[EDX+8], while rebuilt collapses to EAX=[EAX+8]; EAX=[EAX+8]. Source typing did not force the extra EDX temp.
+// - Reviewed logging global order: original pushes name, then loads L into EAX before pushing player/fmt/log; rebuilt loads L into ECX before name push. Source arg order/locals did not fix.
+// GIVEUP: remaining drift is source scheduling/register allocation around packet byte stores, object-name temp register, global L load, and final submit call displacement. Not an accepted_drift proposal because differences are spread across setup/logging/submit, not a single benign hunk.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 

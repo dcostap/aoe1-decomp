@@ -41,41 +41,42 @@
 // No source/flag workaround found for the combined constraint cluster.
 // Not suitable for accepted_drift — diff is structural (multi-instruction
 // scheduling/layout), not a localized no-op.
-
-struct RGE_Object_Info_Line {
-    char gap_00[0x24];
-    long land_inner_radius;
-};
+//
+// Retry 2026-05-18 (10 honest tries):
+// - changed parameter to void*/volatile char* and moved early count<=0 return before radius load; VC5 still hoisted radius in the non-volatile form (96B, size-short).
+// - tried volatile count load from this+0x18f8; no scheduling change.
+// - moved radius load inside loop condition/body; optimizer still hoisted it unless volatile.
+// - tried volatile radius local; got exact configured size 97 and preserved push-register prologue, but introduced stack spill, changed y/x register topology, inverted bottom branch into jge+jmp, and broad 64.9485% positional / 51.5464% edit mismatch. Not accepted-drift quality.
+// - tried /Ob0 flag briefly; no change from volatile-radius broad mismatch, flag removed.
+// GIVEUP: exact source basin still requires original combination: no radius hoist, no volatile spill, y param in EBP before loop, inc-before-add bottom with single jl, and original early-count epilogue ordering.
 
 struct RGE_RMM_Object_Generator {
     char area[0x18FC];
 
-    unsigned char to_close(RGE_Object_Info_Line* info_line, long x, long y);
+    unsigned char to_close(volatile char* info_line, long x, long y);
 };
 
-unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line* info_line, long x, long y) {
+unsigned char RGE_RMM_Object_Generator::to_close(volatile char* info_line, long x, long y) {
+    long count = *(volatile long*)((char*)this + 0x18F8);
     long i = 0;
-    long count = *(long*)((char*)this + 0x18F8);
+    if (count <= 0) return 0;
 
-    if (count > 0) {
-        long* p = (long*)((char*)this + 0x12CC);
-        long r = *(long*)((char*)info_line + 0x24);
+    long* p = (long*)((char*)this + 0x12CC);
+    do {
+        volatile long r = *(long*)((char*)info_line + 0x24);
+        long dx = x - *(p - 1);
+        if (dx < 0) dx = -dx;
 
-        do {
-            long dx = x - *(p - 1);
-            if (dx < 0) dx = -dx;
+        long dy = y - *p;
+        if (dy < 0) dy = -dy;
 
-            long dy = y - *p;
-            if (dy < 0) dy = -dy;
+        if (dx < r && dy < r) {
+            return 1;
+        }
 
-            if (dx < r && dy < r) {
-                return 1;
-            }
-
-            i++;
-            p = (long*)((char*)p + 0x10);
-        } while (i < count);
-    }
+        ++i;
+        p = (long*)((char*)p + 0x10);
+    } while (i < count);
 
     return 0;
 }

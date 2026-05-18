@@ -31,6 +31,15 @@
 // - No intermediate nxt local: same
 // - Earlier scratch tried EDI/ESI, goto/gcc-ext/register/volatile do/for/while
 //   all converge to push-edi basins
+//
+// Retry 2026-05-18 (10 honest tries):
+// - Revalidated baseline: exact-size 114 but broad mismatch 90.3509% positional / 74.5614% edit; extra push edi and EDI=action basin remain.
+// - Tried typed RGE_Action with virtual vf0/vf7 to coax member-call shape; worsened register allocation to EDI=this and still push edi.
+// - Tried explicit endless loop with next local and duplicated tail; still merged/reshaped loop and retained extra saved register.
+// - Tried preserving action in a local after calloc and using that local for duplicated calls; still EDI basin.
+// - Tried __stdcall-style vtable calls vs natural virtual calls; __stdcall baseline is less bad, but still loads slot directly and saves EDI.
+// - Tried /Ob0 briefly; no change, flag removed.
+// GIVEUP: exact source basin still blocked by combined constraints: original has no EDI save, reloads action from stack after calloc into ECX, traverses list with EDX/ESI, keeps three duplicated vf7 tails, and uses indirect vtable-pointer load scheduling. Current best is structural mismatch, not accepted_drift.
 
 #include <stdlib.h>
 

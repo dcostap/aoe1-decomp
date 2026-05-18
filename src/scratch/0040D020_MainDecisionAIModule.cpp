@@ -28,6 +28,14 @@
 //
 // No accepted_drift: the prologue format diff shifts stack offsets throughout,
 // and 64% positional diff is too broad. The body is correct but the frame is wrong.
+//
+// Retry 2026-05-18 (10 honest tries):
+// - Revalidated baseline /GX novtable: exact size 112, edit 18.75%, positional 64.2857%; body matches after resync but VC5 emits push-first EH prologue with saved-this slot.
+// - Removed novtable to restore derived vtable store; vtable-store shape appears, but edit diff worsens to 37.5% and prologue/frame mismatch remains.
+// - Tried /G5, /GR-, and no-/Oy flag variants with /GX; no change to push-first EH prologue family or saved-this slot.
+// - Reviewed whether source could force FS-first SEH ordering; all natural C++ destructor surfaces still use compiler-fixed push-first prologue.
+// - Kept best novtable baseline because it gives smallest edit diff and preserves the destructor body/cleanup behavior after resync.
+// GIVEUP: exact match appears blocked by compiler EH prologue family difference (original FS-first, no saved-this slot, add esp 0Ch; rebuilt push-first, saved-this slot, add esp 10h). No accepted_drift proposal because frame/prologue/tail stack cleanup drift is structural even though the destructor body is behaviorally right.
 
 class AIModuleID {
 public:

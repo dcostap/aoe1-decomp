@@ -1,11 +1,11 @@
 // 00463260 sort (125 bytes)
 // PDB: obj_list.cpp (RGE_Object_List::sort)
-// STATUS: STUCK — register allocation (EBX↔EBP) swap.
+// STATUS: MATCH.
 //
-// Original uses EBX for source iterator (pRVar3), rebuilt uses EBP.
-// This swaps push ebx/push ebp in the prologue and affects every register
-// encoding throughout. Isolated TU cannot reproduce original's register
-// allocation. 72% positional diff, 35.2% edit diff. Not accepted_drift.
+// Key shape: keep the empty-list case on the shared final return by wrapping
+// the loop in `if (pRVar3 != 0)` instead of early-returning. The tie-break also
+// needs the scanned object's field on the left (`scanObj->screen_y_offset > curY`)
+// to get the original memory-vs-register compare encoding.
 
 #include <stdlib.h>
 
@@ -126,24 +126,24 @@ public:
 
 RGE_Object_Node* RGE_Object_List::sort()
 {
-    RGE_Object_Node* pRVar3;
+    register RGE_Object_Node* pRVar3;
     RGE_Object_Node* sorted;
     RGE_Object_Node** ppRVar4;
     RGE_Object_Node* pRVar5;
 
     sorted = 0;
     pRVar3 = this->list;
-    if (pRVar3 == 0) {
-        return 0;
-    }
-
+    if (pRVar3 != 0) {
     do {
         ppRVar4 = &sorted;
-        unsigned char bVar1 = pRVar3->node->master_obj->sort_number;
+        RGE_Static_Object* curObj = pRVar3->node;
+        short curY = curObj->screen_y_offset;
+        unsigned char bVar1 = curObj->master_obj->sort_number;
         for (pRVar5 = sorted; pRVar5 != 0; pRVar5 = pRVar5->next) {
-            unsigned char bVar2 = pRVar5->node->master_obj->sort_number;
+            RGE_Static_Object* scanObj = pRVar5->node;
+            unsigned char bVar2 = scanObj->master_obj->sort_number;
             if ((bVar2 < bVar1) ||
-                (bVar2 == bVar1 && pRVar3->node->screen_y_offset < pRVar5->node->screen_y_offset)) {
+                (bVar2 == bVar1 && scanObj->screen_y_offset > curY)) {
                 break;
             }
             ppRVar4 = &pRVar5->next;
@@ -160,6 +160,7 @@ RGE_Object_Node* RGE_Object_List::sort()
 
         pRVar3 = pRVar3->next;
     } while (pRVar3 != 0);
+    }
 
     return sorted;
 }

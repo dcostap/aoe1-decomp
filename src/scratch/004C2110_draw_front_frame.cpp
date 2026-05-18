@@ -12,6 +12,14 @@
 // Best: 48 bytes exact, 46.40% positional, 52.80% edit diff.
 // Key breakthrough: `if (gm == 1) { ... return; }` instead of `if (gm != 1) goto`
 // produces the correct `jne` branch order matching the original.
+//
+// Retry 2026-05-18 (10 honest tries):
+// - Revalidated baseline: exact-sized 125, first 48 bytes match; remaining mismatch is case 0 virtual-call cleanup/register allocation and case block layout.
+// - Tried natural virtual declaration for slot +0x20 so call uses thiscall cleanup and removes add esp; case0 body improves, but optimizer merges game_mode==1 cube draw with switch case 1 and flips the early branch (`je`), worsening first mismatch to offset 12.
+// - Tried /Ob0 briefly; no change from baseline, flag removed.
+// - Reviewed switch/source ordering: baseline keeps correct game_mode==1 early call/ret and jump-table dispatch, but raw function-pointer case0 necessarily emits caller cleanup (`add esp,0Ch`).
+// - Reviewed typed virtual surface: fixes cleanup but changes whole block placement, padding/table region, and early branch, so not viable.
+// GIVEUP: exact requires contradictory source surfaces: raw/manual case0 for early layout vs typed virtual case0 for callee cleanup/register allocation. No accepted_drift proposal because mismatch spans switch branch distance, case0 cleanup, case ordering/padding, and helper-call layout.
 
 #include <stdlib.h>
 

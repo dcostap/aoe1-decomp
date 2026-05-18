@@ -14,6 +14,16 @@
 // the original's exact order. Multiple prior passes exhausted variants.
 //
 // No accepted_drift: 54% positional diff, broad scheduling/layout drift.
+// Top-20 scratch retry notes:
+// try 1: baseline validation in current tree: exact size 123B but 107 positional diff bytes / 86.99%; current source no longer hits old best and omits original EBX save.
+// try 2: introduced explicit `new_dt` local and compared that rather than `this->delta_time`; worsened scheduling/arithmetic, rolled back.
+// try 3: tried `register int old_time`; no improvement, same no-EBX basin.
+// try 4: tried `volatile int old_time`; worsened stack-slot scheduling, rolled back.
+// try 5: /GX probe; no code/size improvement, removed flag.
+// try 6: reviewed original target shape: wants EBX saved at entry, param loaded before the zero-delta branch, first-time path stores last_time before delta_time, accumulate path stores delta_time before compare, and retains redundant `if (pS)` test before delete.
+// try 7: reviewed current rebuilt shape: no EBX save, param load after branch in first-time path, delta_time store before last_time, compare before delta_time store, and delete block lacks redundant null test.
+// tries 8-9: prior scratch already records comma/temp/register/inverted-op variants and flags; no retained variant produced the original scheduler/register basin.
+// try 10: accepted_drift review rejected: mismatch is broad scheduling/layout/register-save drift across prologue, both time-update paths, delete block, and epilogues. GIVEUP.
 
 struct TShape {
     ~TShape();
