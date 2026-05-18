@@ -1,0 +1,207 @@
+// VA: 00540010 pick_best_target (823B)
+// vw_main.cpp
+// Attempt log:
+// initial natural reconstruction from packet; compiles but .text is 800B vs original 823B.
+// tried source model with typed RGE_Main_View/RGE_View fields at +FC/+100 and vtable padding for +E4 score call.
+// tried direct typed action-system virtuals for [vtable+4]/[vtable+8] calls instead of raw helper wrappers.
+// tried explicit goto next_target to mirror original single shared target-advance block.
+// tried do/while outer and inner loops to mirror original bottom tests.
+// tried stack local order selected_count/selected_objects/j/target_count/master/cur/arrays to force 0x224 frame.
+// tried explicit PickedObjInfo[12-byte] walking so info[-1].picked and info->action match +(-4)/+0 access.
+// tried list fallback as a typed ObjectList at save_player +0x22/+0x24 to match fallback scan.
+// tried final best scan with running Picked_Objects pointer and direct out-param guarded store.
+// remaining gap: behavior/call surface is reconstructed, but VC5 emits shorter code (800B) than original 823B;
+// likely source-shape/register/block-layout problem across the nested target/fallback loops. Left in scratch.
+
+extern "C" void __cdecl free(void*);
+
+struct RGE_Static_Object;
+struct RGE_Master_Action_Object;
+
+struct PickedObjInfo {
+    int picked;
+    short action;
+    short pad;
+    int unused;
+};
+
+extern PickedObjInfo Picked_Objects[];
+
+class RGE_Player {
+public:
+    char gap_000[0x88];
+    RGE_Static_Object** objects; // +88 in nested player/world object used by asm
+    char gap_08C[0xA8];
+    int get_selected_objects_to_command(RGE_Static_Object*** out, short* count, int a, int b, int c, int d);
+};
+
+class RGE_View {
+public:
+    void* vftable;
+    char gap_004[0xF8];
+    RGE_Player* player; // +FC
+    RGE_Master_Action_Object* pick_objects(long x, long y, int a, int b, int c, int d, int e);
+};
+
+class RGE_Main_View : public RGE_View {
+public:
+    RGE_Player* save_player; // +100
+    virtual char pad00(); virtual char pad01(); virtual char pad02(); virtual char pad03();
+    virtual char pad04(); virtual char pad05(); virtual char pad06(); virtual char pad07();
+    virtual char pad08(); virtual char pad09(); virtual char pad10(); virtual char pad11();
+    virtual char pad12(); virtual char pad13(); virtual char pad14(); virtual char pad15();
+    virtual char pad16(); virtual char pad17(); virtual char pad18(); virtual char pad19();
+    virtual char pad20(); virtual char pad21(); virtual char pad22(); virtual char pad23();
+    virtual char pad24(); virtual char pad25(); virtual char pad26(); virtual char pad27();
+    virtual char pad28(); virtual char pad29(); virtual char pad30(); virtual char pad31();
+    virtual char pad32(); virtual char pad33(); virtual char pad34(); virtual char pad35();
+    virtual char pad36(); virtual char pad37(); virtual char pad38(); virtual char pad39();
+    virtual char pad40(); virtual char pad41(); virtual char pad42(); virtual char pad43();
+    virtual char pad44(); virtual char pad45(); virtual char pad46(); virtual char pad47();
+    virtual char pad48(); virtual char pad49(); virtual char pad50(); virtual char pad51();
+    virtual char pad52(); virtual char pad53(); virtual char pad54(); virtual char pad55();
+    virtual char pick_score(RGE_Static_Object* obj, int action);
+    RGE_Static_Object* pick_best_target(long x, long y, int* attacking_out, short action_filter);
+};
+
+class RGE_Action_System {
+public:
+    virtual void* v0();
+    virtual void* can_do(RGE_Static_Object* actor, RGE_Static_Object* target, int a, int b, int c);
+    virtual int accept(void* action);
+};
+
+struct RGE_Static_Object {
+    void* vt;
+    unsigned char kind; // +4
+    char gap_005[1];
+    short action_id; // +6 for returned action object
+    char gap_008[0x0C];
+    short object_type; // +14
+    char gap_016[0x32];
+    unsigned char owner_type; // +48
+    char gap_049[0x8F];
+    RGE_Action_System* actions; // +D8
+    char gap_0DC[0x10];
+    unsigned char flag_ec; // +EC
+};
+
+struct ObjectList {
+    char gap_00[0x22];
+    short count;
+    RGE_Static_Object** list;
+};
+
+RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attacking_out, short action_filter) {
+    RGE_Static_Object** selected_objects;
+    short selected_count;
+    int j;
+    int target_count;
+    RGE_Master_Action_Object* master_obj;
+    RGE_Static_Object* cur_target;
+    int valid_target_count[64];
+    int attacking[64];
+
+    if (attacking_out != 0) {
+        *attacking_out = 0;
+    }
+
+    master_obj = this->pick_objects(x, y, 10, 20, 15, 4, 1);
+    if (master_obj == 0) {
+        return 0;
+    }
+
+    if (!this->save_player->get_selected_objects_to_command(&selected_objects, &selected_count, -1, -1, -1, -1)) {
+        return 0;
+    }
+
+    if ((int)master_obj > 0) {
+        for (int z = 0; z < (int)master_obj; z++) attacking[z] = 0;
+        for (z = 0; z < (int)master_obj; z++) valid_target_count[z] = 0;
+    }
+
+    j = 0;
+    if (selected_count > 0) {
+        do {
+            target_count = 0;
+            cur_target = selected_objects[j];
+            if ((int)master_obj > 0) {
+                PickedObjInfo* info = &Picked_Objects[1];
+                do {
+                    int picked = info[-1].picked;
+                    if (picked >= 0) {
+                        RGE_Static_Object* obj = this->player->objects[picked];
+                        if (obj != 0 && obj->owner_type < 7) {
+                            void* action = cur_target->actions->can_do(selected_objects[j], obj, 0, 0, 0);
+                            if (action != 0) {
+                                if (action_filter != -1 && *((short*)((char*)action + 6)) != action_filter) {
+                                    action = 0;
+                                }
+                                if (action != 0) {
+                                    valid_target_count[target_count] += this->pick_score(obj, info->action);
+                                    if (cur_target->actions->accept(action)) {
+                                        attacking[target_count] = 1;
+                                    }
+                                    goto next_target;
+                                }
+                            }
+                            if (cur_target->flag_ec != 0) {
+                                ObjectList* list = (ObjectList*)this->save_player;
+                                int k = 0;
+                                if (list->count > 0) {
+                                    do {
+                                        RGE_Static_Object* obj2 = list->list[k];
+                                        if (obj2 != 0 && obj2->object_type == cur_target->object_type &&
+                                            obj2->kind == cur_target->kind && obj2->flag_ec == cur_target->flag_ec) {
+                                            void* action2 = obj2->actions->can_do(selected_objects[j], obj, 0, 0, 0);
+                                            if (action2 != 0) {
+                                                if (action_filter != -1 && *((short*)((char*)action2 + 6)) != action_filter) {
+                                                    action2 = 0;
+                                                }
+                                                if (action2 != 0) {
+                                                    valid_target_count[target_count] += this->pick_score(obj, info->action);
+                                                    if (obj2->actions->accept(action2)) {
+                                                        attacking[target_count] = 1;
+                                                    }
+                                                    goto next_target;
+                                                }
+                                            }
+                                        }
+                                        k++;
+                                    } while (k < list->count);
+                                }
+                            }
+                        }
+                    }
+next_target:
+                    target_count++;
+                    info++;
+                } while (target_count < (int)master_obj);
+            }
+            j++;
+        } while (j < selected_count);
+    }
+
+    free(selected_objects);
+
+    int best = 0;
+    RGE_Static_Object* best_obj = 0;
+    int i = 0;
+    if ((int)master_obj > 0) {
+        PickedObjInfo* info2 = Picked_Objects;
+        do {
+            int score = valid_target_count[i];
+            if (score > best) {
+                int picked = info2->picked;
+                best_obj = this->player->objects[picked];
+                if (attacking_out != 0) {
+                    *attacking_out = attacking[i];
+                }
+                best = score;
+            }
+            i++;
+            info2++;
+        } while (i < (int)master_obj);
+    }
+    return best_obj;
+}

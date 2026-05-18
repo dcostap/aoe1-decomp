@@ -9,6 +9,16 @@ Use this file for generalized eureka moments, especially lessons about:
 
 - source shapes that make VC5 emit the expected assembly;
 
+### Pre-initializing loop variables can move zeroing before a call
+
+When original VC5 zeros a loop counter immediately before a setup/helper call and then uses it in the following loop, declare/initialize the loop variable before the call instead of inside the `for` initializer:
+```cpp
+int i = 0;
+object.reset();
+for (; i < count; ++i) object.add_default();
+```
+This can emit `xor ebx,ebx` before `call reset` rather than after it. Useful for load/setup functions where a reset/clear call is followed by a counted append loop.
+
 ### Redundant null-test preservation via mixed local/member access in `&&`
 
 For functions where the original VC5 preserves a redundant `test reg,reg` inside
@@ -4631,3 +4641,57 @@ Try when:
 - `/GX` alone does not emit EH because the local class surface is too non-polymorphic/non-destructible.
 
 Caveat: keep this to real constructor/destructor surfaces; do not add fake virtuals just to perturb ordinary functions. Verified on `0050F410 TRIBE_Map`.
+## Lesson: Local stub vtable shape for deleting through a non-primary virtual destructor slot
+
+When original asm deletes an object via `mov eax,[ecx]; push 1; call dword [eax+4]`, a minimal local class declared as only `virtual ~T()` will call `[eax]` instead. If the real PDB/vtable has another virtual before the destructor, model that slot even when the function body only needs `delete p`:
+
+```cpp
+class T { public: virtual void unknown(); virtual ~T(); };
+```
+
+This keeps natural `delete p` source while moving VC5's scalar-deleting-dtor call to the observed vtable offset.
+
+## Lesson: Constructor EH state stores require visible destructible subobjects
+
+In `/GX` constructors with many member subobject constructors, VC5 emits the EH
+state byte update before each subobject constructor only when the member type is
+visibly destructible (for example has a virtual destructor declaration). If a
+member is modeled as a plain byte blob with only a constructor declaration, the
+calls and offsets may match but the `mov byte [esp+state], N` updates disappear,
+shortening the constructor and shifting every later block.
+
+Try when:
+- a constructor prologue and first member constructor match, but later member
+  constructor calls are missing EH state stores;
+- the original has sequential `c6 44 24 xx N` writes before subobject ctor calls;
+- member offsets are correct but the rebuilt constructor is shorter by about five
+  bytes per missing state transition.
+
+Caveat:
+- preserve the same total member size when adding the visible vptr/destructor;
+  reduce the explicit padding by four bytes if the original subobject already
+  includes a vtable pointer.
+
+## Lesson: Fixed-size zero fill may need `memset` to order `mov ecx; xor eax; lea edi; rep stosd`
+
+For fixed small array clearing, a natural `for` loop can optimize to `lea edi,
+[dst]` before loading the repeat count and zero register. An explicit `memset`
+with a constant size can make VC5 emit the classic sequence `mov ecx,count; xor
+eax,eax; lea edi,[dst]; rep stosd`, matching constructors that zero a fixed int
+array in an else/default path.
+
+## Lesson: Name `i + 1` as a local to keep VC5's grow-array loop index in EDI
+
+In repeated dynamic-array growth loops, VC5 may choose different saved registers for the loop index and the newly allocated pointer depending on whether `i + 1` is recomputed inline or named as a local. If original asm uses `EDI` as the outer index, `ESI` as the new array pointer, and stores `capacity = i + 1`, try:
+
+```cpp
+int newMax = i + 1;
+int* newArr = (int*)operator new(i * 4 + 4);
+...
+for (j = 0; j < oldMax && j < newMax; ++j) ...
+capacity = newMax;
+```
+
+This can avoid VC5 keeping the index in `ESI` and the allocation in `EDI`, while preserving natural source and exact copy/grow behavior. Verified on a save routine with three nearly identical int-array serialization loops.
+
+- For VC5 factory functions that are just `switch` + `new Derived(args)`, a natural virtual base declaration can match the EH/jump-table factory exactly. Do not add an explicit vptr field to a derived stub when the base already has a virtual function: that shifts member offsets (for example owner from +4 to +8) while leaving the factory shape otherwise nearly identical. Also set each derived stub's `sizeof` to the exact `operator new` size; VC5 will emit one compact repeated EH state per case.
