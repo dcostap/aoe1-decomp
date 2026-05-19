@@ -1,12 +1,14 @@
 // 00542060 RGE_Game_World::load_player
 // Source: World.cpp lines 1005-1017. 137 bytes. __thiscall, ret 0Ch.
 // Has EH registration — needs /GX.
+// Retry 2026-05-19: fixed RGE_Player sizeof to 0x220 (explicit vptr + gap), then added a named self=this local and reloaded through self->players[param_3] for the virtual call. This forced VC5 into the original ESI=this / EDI=param_1 / EBX=param_3 register basin and preserved the post-store reload. check_function: MATCH 0.0000%.
 
 class RGE_Game_World;
 
 class RGE_Player {
 public:
-    char gap_00[0x21C]; // +4 vtable = 0x220 total
+    void* vtable;
+    char gap_04[0x21C];
     RGE_Player(int param_1, RGE_Game_World* world, short param_3);
 };
 
@@ -35,10 +37,11 @@ public:
 };
 
 void RGE_Game_World::load_player(int param_1, unsigned char param_2, short param_3) {
+    RGE_Game_World* self = this;
     if (param_2 != 0)
         return;
 
-    RGE_Player* player = new RGE_Player(param_1, this, param_3);
-    this->players[param_3] = (void**)player;
-    ((PlayerVTable*)player)->vfunc(param_1);
+    RGE_Player* player = new RGE_Player(param_1, self, param_3);
+    self->players[param_3] = (void**)player;
+    ((PlayerVTable*)self->players[param_3])->vfunc(param_1);
 }

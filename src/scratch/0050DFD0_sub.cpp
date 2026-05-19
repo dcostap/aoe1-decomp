@@ -9,6 +9,9 @@
 // 6: Tried volatile target to force stack parameter compare; worsened layout and introduced stack homes, rolled back.
 // 7: Tried /O1 /Oy: size-short 84, rolled flag back.
 // 8: Kept best exact-size behavior-equivalent source. Current diff is due register/save and block-layout choices, not changed calls, memory effects, stack cleanup, or predicates.
+// 9: Retried Ghidra-natural `if (p != 0 && (link=&time_list,p!=0))`/`while` shape; no EBX but size-short 96 and loses original duplicated null/block layout, rolled back.
+// 10: Tried separated early `return` null checks with natural while; same size-short 96 family, rolled back.
+// 11: Tried separate traversal temp/sub_entry and volatile next field; temp stayed in 96-byte family, volatile field caused qualifier mismatch/unhelpful surface, rolled back.
 // ACCEPTED_DRIFT_PROPOSAL: Small 100-byte function; rebuilt preserves behavior and public effects (unlink, recursive sub argument including command==1 null behavior, free found node, decrement count). Mismatch is localized codegen topology/register allocation: extra EBX save/use for `next`, different loop/early-return layout. Needs Boss review before moving.
 
 extern "C" void __cdecl free(void* block);

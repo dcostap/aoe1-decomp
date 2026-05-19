@@ -1,6 +1,9 @@
 // VA: 0043E5C0 TribeDiplomacyDialog::check_wood
 // PDB: dlg_dip.cpp lines 777-805 (136 bytes, 51 asm lines)
 // Default flags. No inline asm/hacks.
+// MATCHED 2026-05-19: use pointer-walking do loop and declare `i` before the
+// button pointer so VC5 emits xor edi before lea esi. Reload *pp after
+// set_disabled so the later vcall uses the original `mov ecx,[esi]` shape.
 
 extern void* rge_base_game;
 
@@ -52,7 +55,6 @@ public:
 
 int TribeDiplomacyDialog::check_wood()
 {
-    // Use register keyword to hint VC5 to keep result in a register
     register int result;
     RGE_Base_Game* game = (RGE_Base_Game*)rge_base_game;
 
@@ -68,8 +70,10 @@ int TribeDiplomacyDialog::check_wood()
         }
     }
 
-    for (int i = 0; i < 8; i++) {
-        TButtonPanel* btn = this->woodTributeButtons[i];
+    int i = 0;
+    TButtonPanel** pp = this->woodTributeButtons;
+    do {
+        TButtonPanel* btn = *pp;
         if (btn != 0) {
             if (i == this->curPlayerRow) {
                 btn->set_disabled(1);
@@ -77,13 +81,16 @@ int TribeDiplomacyDialog::check_wood()
                 btn->set_disabled(result);
             }
 
+            btn = *pp;
             if (this->tributeFlag != 0) {
                 btn->vf14(1);
             } else {
                 btn->vf14(0);
             }
         }
-    }
+        ++i;
+        ++pp;
+    } while (i < 8);
 
     return result;
 }

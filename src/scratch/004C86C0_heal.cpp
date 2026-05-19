@@ -10,6 +10,12 @@
 // try 8: tail/pay_obj_cost and base heal call sequence is aligned after resync; main remaining issue is early FPU scheduling/stack-slot setup causing broad shift.
 // try 9: accepted_drift review rejected: although behavior/calls look aligned, diff spans most function due shifted FPU setup and tail addresses; not localized.
 // try 10: final validation remains exact size 128B but broad mismatch. GIVEUP.
+// Retry 2026-05-19:
+// - split computation through `float maxHpF; amount *= maxHpF; amount /= healRate;` moved first mismatch from +4 to +26 and improved edit diff to 20.31%, but VC5 emits `mov [esp+4],eax; fld st0; fmul [amount]; fild [esp+4]; fdivp` instead of original `fld [amount]; mov [esp+0Ch],eax; fmul st1; fidiv [esp+0Ch]`.
+// - explicit `amount = amount * maxHpF` produced same improved basin as compound multiply.
+// - trying to write healRate through `*(int*)&amount` before the divide regressed to early-FLD and extra fxch family (45.31% edit).
+// - volatile healRate forced a larger stack frame (`sub esp,8`) and broad drift (39.84% edit), rejected.
+// Left in scratch: improved split-computation basin below; remaining drift is the FPU setup/divide instruction family and shifted tail, not accepted-drift quality.
 
 #include <string.h>
 
@@ -49,9 +55,11 @@ unsigned char TRIBE_Building_Object::heal(float amount)
     void* master = this->master_obj;
     int maxHp = *(short*)((char*)master + 0x26);
     int healRate = *(short*)((char*)master + 0x15A);
-    amount = ((float)maxHp * amount) / (float)healRate;
-    if (amount + this->hp > (float)maxHp) {
-        amount = (float)maxHp - this->hp;
+    float maxHpF = (float)maxHp;
+    amount = amount * maxHpF;
+    amount = amount / (float)healRate;
+    if (amount + this->hp > maxHpF) {
+        amount = maxHpF - this->hp;
     }
     if (this->owner->pay_obj_cost(*(short*)((char*)master + 0x10), amount / (float)(maxHp * 2), 0)) {
         return TRIBE_Combat_Object::heal(amount);

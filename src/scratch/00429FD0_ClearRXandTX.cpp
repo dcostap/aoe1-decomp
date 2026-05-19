@@ -4,6 +4,13 @@
 //
 // Attempt log:
 // 16: match original offset-increment-before-stores order
+// Retry 2026-05-19 target-only:
+// try 1: revalidated baseline: exact size 136B, MISMATCH 95 positional bytes / 69.85%, edit diff 32B; behavior and stores mostly align after resync.
+// try 2: split rx base load (`rx=this->rx_array; entry=rx+offset`); no codegen change, still uses EDX base then `mov esi,ebp; add esi,edx` instead of original `mov esi,[edi+1524]; add esi,ebp`.
+// try 3: split tx base and pre-zero using `*(entry+offset)=0; entry+=offset`; worsened by swapping zero/offset registers (EBP/EBX), rolled back.
+// try 4: /G5 flag probe; no codegen change, removed flag.
+// try 5: cast address arithmetic through int for rx/tx; no codegen change.
+// GIVEUP: remaining drift is broad but behavior-equivalent register/address scheduling across both loops: rebuilt uses EDX as array-base temp and schedules tx `lea edi` after count/xor, while original loads base directly into ESI and schedules `lea edi` before count/xor. Not proposing accepted_drift without approval because positional diff is large despite small edit diff.
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,7 +33,7 @@ void TCommunications_Handler::ClearRXandTX()
 
     offset = 0;
     do {
-        entry = this->rx_array + offset;
+        entry = (char*)((int)this->rx_array + offset);
         if (*(void**)entry) {
             operator_delete(*(void**)entry);
         }
@@ -40,7 +47,7 @@ void TCommunications_Handler::ClearRXandTX()
 
     offset = 0;
     do {
-        entry = this->tx_array + offset;
+        entry = (char*)((int)this->tx_array + offset);
         *((void**)entry) = 0;
         if (*(void**)(entry + 8)) {
             operator_delete(*(void**)(entry + 8));

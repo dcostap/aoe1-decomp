@@ -1,6 +1,9 @@
 // 00431A80 FlushTurnRange
 // 143 bytes, __thiscall, RGE_Communications_Queue method
 // probe 1: natural loop through Queue array, clear items in turn range
+// MATCHED 2026-05-19: MsgQueue is 0x1C bytes (no DataSize field; Data at +0x0C).
+// Use direct Queue byte-offset expressions for execTurn/mq to get load-base/lea shape,
+// and spell range miss as `execTurn < param_1 || execTurn > param_2` for cmp/jb.
 
 void __cdecl operator delete(void* ptr);
 
@@ -9,7 +12,6 @@ struct MsgQueue {
     unsigned int ExecTurn;
     unsigned char Code;
     char gap_09[3];
-    unsigned int DataSize;
     void* Data;
     unsigned int field_10;
     unsigned int field_14;
@@ -36,21 +38,20 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(unsigned long param_1, uns
     unsigned int local_4 = 0;
 
     for (int edi = 0; local_4 <= HighQueueDepth; local_4++, edi += 0x1C) {
-        MsgQueue* mq = Queue + local_4;
-        unsigned int execTurn = mq->ExecTurn;
+        unsigned int execTurn = *(unsigned int*)((char*)Queue + edi + 4);
+        MsgQueue* mq = (MsgQueue*)((char*)Queue + edi);
 
-        if (!((param_1 <= execTurn) && (execTurn <= param_2)) &&
+        if (((execTurn < param_1) || (execTurn > param_2)) &&
             !((param_1 == 0) && (param_2 == 0))) {
             continue;
         }
 
         i++;
-        if (mq->field_14 == 0) continue;
+        if (mq->field_14 <= 0) continue;
 
         mq->ControlCommand = 0;
         mq->ExecTurn = 0;
         mq->Code = 0;
-        mq->DataSize = 0;
         mq->field_10 = 0;
         mq->field_14 = 0;
         mq->field_18 = 0;

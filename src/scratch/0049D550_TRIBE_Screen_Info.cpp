@@ -1,11 +1,15 @@
 // VA: 0049D550 TRIBE_Screen_Info::TRIBE_Screen_Info
 // scr_info.cpp lines 32-52
 
-// attempt 1-2: natural constructor with /GX for EH
-// 142/142 bytes exact size match, 70 diff bytes
-// Remaining: auto_close computation pattern (cmp/sbb/neg) not matching,
-// instruction ordering differs.
-// Left in scratch.
+// Attempt log:
+// 1-2: Existing natural constructor with /GX had exact size 142 but broad scheduling/register drift around timer/auto_close/vptr/setup.
+// 3: Fixed RGE_Base_Game layout so draw_area is at +0x4C; call surface now matches original memory offset, but constructor scheduling still off.
+// 4: Tried __declspec(novtable) plus manual vptr store at original source point; vptr placement improved locally but EH state store still stayed before setup rather than before vptr, and auto_close used EDX result family; rolled back.
+// 5: Added explicit derived virtual destructor declaration; no EH-state scheduling change.
+// 6: Tried `timer_val != 0` / if-else auto_close spelling; worsened to setne family, rolled back.
+// 7: Tried volatile zero to force explicit zero local/registers; worsened with stack zero homes, rolled back.
+// 8: Tried saved `p2` local and zero local for setup argument pressure; minor register/order changes only.
+// GIVEUP: exact size but no match. Remaining mismatch is broad constructor body scheduling: original zeros EDX/ECX, stores timer, loads param2 into EDX, emits cmp/sbb/neg auto_close with local_4 state before vptr; rebuilt keeps vptr/state and setup arg scheduling in a different basin. No accepted_drift proposed.
 
 class TPanel {
 public:
@@ -23,6 +27,7 @@ public:
 
 class RGE_Base_Game {
 public:
+    char gap_00[0x4C];
     void* draw_area;  // +0x4C
 };
 
@@ -34,16 +39,19 @@ public:
     unsigned int timer;       // +0x47C
     unsigned int last_time;   // +0x480
 
+    virtual ~TRIBE_Screen_Info();
     void close_screen();
     TRIBE_Screen_Info(char* name, char* param2, long param3, unsigned long timer_val);
 };
 
 TRIBE_Screen_Info::TRIBE_Screen_Info(char* name, char* param2, long param3, unsigned long timer_val)
     : TScreenPanel((int)name) {
+    unsigned int zero = 0;
     this->timer = timer_val;
-    this->auto_close = (0 < timer_val);
-    this->last_time = 0;
-    int result = TScreenPanel::setup(rge_base_game->draw_area, param2, (void*)param3, 0);
+    char* p2 = param2;
+    this->auto_close = (zero < timer_val);
+    this->last_time = zero;
+    int result = TScreenPanel::setup(rge_base_game->draw_area, p2, (void*)param3, zero);
     if (result == 0) {
         *(int*)((char*)this + 0xD8) = 1;
     }

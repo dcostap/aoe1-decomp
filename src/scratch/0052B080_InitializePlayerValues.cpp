@@ -14,7 +14,14 @@
 // 8: Probed /O1 /Oy: size-short 94; removed flag.
 // 9: Replaced field-array member access with raw offsets 0x18CC/0x1998; no size/topology change.
 // 10: Added explicit saved pointer/zero locals and reordered pointer increments before stores to mirror original; still size-short 112 under default.
-// GIVEUP: no accepted_drift. Default optimized build is size-short, and exact-size diagnostic /Og- is broad from offset 0. Current source preserves broad initialization behavior but cannot reproduce original push-ecx/saved-pointer/register-heavy loop shape.
+// retry 11: `volatile int* p` preserved duplicate four zero stores and reached exact 123B, but broad register/topology mismatch (EAX/ECX not original, constants hoisted into EBP/ECX), 91.87% pos / 98.37% edit.
+// retry 12: `register` on piVar1/piVar2/iVar3/zero with volatile p; no change from retry 11.
+// retry 13: moved `zero` local inside loop with nonvolatile p; compiler again optimized duplicate zeros away, size-short 112.
+// retry 14: used volatile casts only for first four zero stores; same 123B broad volatile-p basin as retry 11.
+// retry 15: custom /Ob0 on current exact-size source; no codegen change, removed flag.
+// retry 16: custom /Oa on current exact-size source; tiny positional change only (91.06%) and same broad topology, removed flag.
+// retry 17: custom /Ot on current exact-size source; no codegen change, removed flag.
+// GIVEUP: no accepted_drift. Best exact-size attempt has too-broad register/topology mismatch; best nonvolatile attempt is behavior-correct but size-short 112.
 
 class RGE_Scenario {
 public:
@@ -41,22 +48,21 @@ void T_Scenario::InitializePlayerValues() {
     int* piVar1;
     int* piVar2;
     int iVar3;
-    int zero;
 
     saved = (int*)((char*)this + 0x18CC);
-    zero = 0;
     iVar3 = 0;
     piVar1 = saved;
     piVar2 = (int*)((char*)this + 0x1998);
     do {
         int* p = piVar2 - 2;
+        int zero = 0;
         iVar3 = iVar3 + 1;
         piVar2 = piVar2 + 4;
         piVar1 = piVar1 + 1;
-        p[0] = zero;
-        p[1] = zero;
-        p[2] = zero;
-        p[3] = zero;
+        ((volatile int*)p)[0] = zero;
+        ((volatile int*)p)[1] = zero;
+        ((volatile int*)p)[2] = zero;
+        ((volatile int*)p)[3] = zero;
         piVar1[0x1f] = zero;
         p[0] = zero;
         p[1] = 200;

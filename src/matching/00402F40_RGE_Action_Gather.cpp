@@ -1,9 +1,6 @@
-// tried /GX; size correct (134) but instruction ordering differs at offset 29
-// tried swapping action_type and task init order; no change
-// tried changing RGE_Action class layout to match 00402EA0; no change
-// tried different parent constructor param types; no change
-// BLOCKER: mov esi,ecx instruction ordering before/after push edi
-//           size correct, behaviorally correct, but VC5 codegen basin differs
+// VA: 00402F40 RGE_Action_Gather::RGE_Action_Gather
+// Existing tries: /GX/ordering/layout/parent param probes; blocker was constructor/register ordering.
+// try 11: fix parent ctor surface to observed two args (param_1, 1) and make targetType int at +0x40.
 
 class RGE_Sprite;
 class RGE_Action_Object;
@@ -13,9 +10,9 @@ public:
     char gap_00[0x08];
     RGE_Action_Object* obj;
     char gap_0C[0x2C];
-    float target_x;
-    float target_y;
-    float target_z;
+    int target_x;
+    int target_y;
+    int target_z;
 };
 
 class RGE_Action {
@@ -45,7 +42,7 @@ public:
     virtual void vf58(void*);
     virtual void set_state(unsigned char);
 
-    RGE_Action(int, RGE_Action_Object*, int);
+    RGE_Action(RGE_Action_Object*, int);
 
     short action_type;
     char gap_06[0x2];
@@ -56,9 +53,9 @@ public:
     void* target_obj2;
     int targetID;
     int target2ID;
-    float target_x;
-    float target_y;
-    float target_z;
+    int target_x;
+    int target_y;
+    int target_z;
     float timer;
     void* task;
     void* sub_actions;
@@ -70,12 +67,11 @@ public:
 class RGE_Action_Gather : public RGE_Action {
 public:
     RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3);
-
-    short targetType;
+    int targetType;
 };
 
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3)
-    : RGE_Action((int)param_1, (RGE_Action_Object*)param_2, 1) {
+    : RGE_Action(param_1, 1) {
     this->task = param_2;
     this->action_type = 5;
     this->set_target_obj(param_3);

@@ -1,6 +1,9 @@
 // VA: 00485240 RGE_RMM_Land_Generator::generate
 // PDB: rmm_land.cpp lines 33-51 (133 bytes, 53 asm lines)
 // Default flags. No inline asm/hacks.
+// MATCHED 2026-05-19: use int fill with only low byte assigned to avoid movsx/xor
+// before VC5's inline memset; spelling area as height*width makes VC5 emit
+// load width then imul height.
 
 extern "C" void* memset(void* dst, int val, unsigned int size);
 
@@ -39,8 +42,12 @@ public:
 unsigned char RGE_RMM_Land_Generator::generate() {
     this->clear_stack();
 
-    int area = this->width * this->height;
-    memset(this->fill_buf, (signed char)this->fill_value, area);
+    int area = this->height;
+    int fill;
+    *(char*)&fill = this->fill_value;
+    void* buf = this->fill_buf;
+    area *= this->width;
+    memset(buf, fill, area);
 
     (*(RGE_Map**)&this->rmm_map)->set_terrain(
         0, 0, 0, 0,

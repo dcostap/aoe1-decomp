@@ -927,6 +927,35 @@ uses `diff = other - this` once and reuses it, but VC5 may compute separate
 offsets. The field-copy portion (102 bytes) matches exactly; loop bodies
 show different register allocation.
 
+## Lesson: Header-provided CRT declarations can be required for constructor EH shape
+
+In `/GX` constructors, hand-declaring CRT functions such as `calloc` can keep VC5 in a non-EH or wrong register-save basin even when behavior is identical. If a matched sibling constructor uses `<stdlib.h>`, include it rather than replacing it with `extern "C" void* calloc(...)`. Also, after a base constructor stores a parameter into a member, using the member (`this->obj`) for later work can avoid preserving the incoming parameter in an extra callee-saved register. Verified on 004CE530 `TRIBE_Action_Discovery_Artifact`.
+
+## Lesson: Use the real constructor call to trigger VC5 `/GX` new-object EH state
+
+For factory/init helpers where the original has an SEH `FS:[0]` frame, a try-level local set to `0` around construction, and then reset to `-1`, model the allocation as a direct C++ construction expression:
+
+```cpp
+T* obj = new T(arg1, arg2, ...);
+```
+
+Do not lower it to `new T; obj->init(...)`: even if the called routine is the same code address, VC5 may not generate the constructor EH state pattern. Also avoid defining empty special members locally just to satisfy declarations; an empty destructor/ctor body can emit an extra COMDAT before the target and shift extraction. Leave special members as declarations when only their call surface is needed. Verified on 0045A9E0 `init_missile`.
+
+## Lesson: Declare loop cursor before the guard to preserve compare-move-branch scheduling
+
+When an inner loop is guarded by a bounds check and the original VC5 emits an independent cursor initialization between the compare and branch (`cmp limit; mov cursor,start; jg skip`), declare/initialize the cursor before the `if` guard rather than inside the guarded body:
+
+```cpp
+for (...) {
+    long cursor = start;
+    if (cursor <= limit) {
+        do { ++cursor; ... } while (cursor <= limit);
+    }
+}
+```
+
+If the cursor is declared inside the `if`, VC5 may emit `cmp; jg skip; mov cursor,start`, which is behaviorally identical but shifts the whole loop body. Verified on 00486180 `set_search_area`.
+
 ## Lesson: Eliminating local variables can fix register allocation swaps
 
 When VC5 allocates registers differently from the original (ECX vs EAX, EDX vs ECX),
@@ -4698,3 +4727,137 @@ This can avoid VC5 keeping the index in `ESI` and the allocation in `EDI`, while
 - When modeling a large owner object that contains submodules at fixed binary offsets, do not embed empty/opaque C++ class members directly unless their real sizes are known. Even an empty class member contributes one byte in C++, shifting later submodule offsets by small amounts while leaving most code identical. Prefer a raw byte-backed owner plus casts to `(Submodule*)((char*)owner + observed_offset)` for calls at known offsets; this can fix tiny one-byte displacement/offset mismatches in otherwise exact logging/status-style functions.
 - For VC5 vector deleting destructors with two semantic paths, an early `return` from the vector-delete arm can make the compiler choose lazy per-branch callee-save pushes/pops and miss the original shared prologue/epilogue shape. If the original pushes all saved registers at entry and both arms return through equivalent epilogues, try spelling the function as `if (flags & 2) { ... } else { ... } return this;` rather than returning inside the first arm. This can force the common save/restore basin without changing behavior.
 - For small list-building/insertion routines, replacing an early null-list `return` with `if (list != 0) { ... } return result;` can make VC5 keep the empty-list path on the shared epilogue instead of emitting a short early epilogue. Also, for tie-break compares, spelling the comparison with the scanned object's field on the left (for example `scan->y > curY`) can force the original memory-vs-register `cmp [mem],reg` encoding instead of the equivalent reversed `cmp reg,[mem]`.
+
+
+## Lesson: Seed only the low byte of an `int` memset value to avoid zero/sign extension
+
+For VC5 inline `memset` patterns that build a repeated byte in `EBX`/`EAX`, an ordinary `char` or `unsigned char` argument may cause `movsx` or `xor eax,eax; mov al,...` before the fill setup. If the original only does `mov al,[byte]` and then copies `al` into `bl/bh`, declare an `int fill;` and assign only its low byte before passing it to `memset`:
+
+```cpp
+int fill;
+*(char*)&fill = this->fill_value;
+memset(buf, fill, count);
+```
+
+This preserves the binary-observed low-byte load while letting the compiler form the repeated dword value naturally. Pair with operand-order probes for the `count` expression; VC5 may emit `height * width` source as a load-width / imul-height sequence.
+
+## Lesson: `register`-qualified parameters can keep stack args in caller-saved registers
+
+When VC5 insists on preserving an input parameter in ESI/EDI and this causes a whole-function register-family mismatch, try `register` on the parameter declaration/definition before rewriting the algorithm. In small read-only helper methods, `register int param` can make VC5 load the stack argument into EAX before saving callee-saved registers and keep it as the table index, matching originals that use EAX directly. Applying `register` to a dispatch parameter can similarly steer the switch/if chain into EDX rather than EAX.
+
+Try when:
+- original begins with `mov eax,[esp+4]; push esi; test eax,eax` but rebuilt starts `push esi; mov esi,[esp+8]`;
+- table lookups differ only by `eax*scale` versus `esi*scale`;
+- dispatch temp uses EDX in original but EAX in rebuilt.
+
+Caveat: only use where source semantics do not require the parameter address; overuse can perturb other functions. Verified on a DiplomacyAIModule stance helper.
+
+## Lesson: Correct aggregate size can unlock VC5 whole-struct copy addressing
+
+When original VC5 copies a small aggregate by first forming source base pointers
+(`lea reg,[base+off]`, `add base,next_off`) and then moving adjacent dwords, model
+the aggregate at its exact binary size and use natural whole-struct assignment.
+A too-large pseudo-struct can make VC5 abandon the base-pointer copy sequence and
+fold every member load as fixed `[base+imm]` accesses.
+
+Try when:
+- a GUID/RECT/small parameter block copy is behaviorally right but lacks the original
+  `lea`/`add` source pointer setup;
+- generated type guesses have widened subfields (for example treating a 16-byte GUID
+  as five dwords / 20 bytes).
+
+Why it helps:
+- exact aggregate size lets VC5 recognize a compact struct-copy pattern and schedule
+  base pointer formation before the dword moves;
+- wrong size/field layout forces independent member loads and changes both instruction
+  count and register roles.
+
+Caveat:
+- do not pad standard binary aggregates just to name apparent decompiler fields; verify
+  the actual adjacent offsets first. Verified on 00432200 TCommunications_Sessions.
+
+## Lesson: Use constructor-shaped `new T(args...)` to trigger VC5 `/GX` allocation EH
+
+When original code around `operator new` has an ESP-based SEH/EH frame with a try-state slot, model the allocation as a real constructor expression (`new T(args...)`) with a declared constructor, not as `new T; obj->init(args...)`. Under `/GX`, VC5 emits the allocation cleanup frame for constructor failure only for the constructor-shaped source; splitting allocation from initialization can compile to a shorter no-EH function even if the behavior is otherwise similar.
+
+Try when:
+- original prologue starts with `push -1; push handler; mov eax, fs:[0]; ...` around an allocation;
+- rebuilt `new` + manual init has no FS frame or is much shorter;
+- the call after allocation is semantically a constructor even if decompiler names it like an init helper.
+
+Caveat: keep the constructor signature and `sizeof(T)` exact, and use `/GX` only when the original clearly has the EH frame. Verified on a missile-action allocation helper.
+
+
+## Lesson: Declaration order can control loop-index zeroing vs pointer LEA
+
+In pointer-walking loops, VC5 may swap the setup order between zeroing the index register and computing the traversal pointer. If the original has `xor edi,edi` before `lea esi,[this+array]`, declare/initialize the index before the pointer local:
+
+```cpp
+int i = 0;
+TButtonPanel** pp = this->buttons;
+do { ... ++i; ++pp; } while (i < N);
+```
+
+Reversing the declarations can emit the `lea` first and then `xor`, causing a tiny but exactness-breaking diff. Also, if the original reloads `*pp` after a member call before a virtual call, explicitly reload the pointer local after the call rather than reusing the pre-call local.
+
+## Lesson: Natural virtual float getters plus casted arguments can reproduce interleaved FPU/push forwarding
+
+When a forwarding wrapper builds a long argument list from virtual float-returning methods and float fields, prefer declaring the real virtual slots and writing the final callee call naturally with casts in the desired left-to-right argument order. VC5 will evaluate arguments right-to-left, leaving virtual float returns on the FPU stack and emitting `push ecx; fstp [esp]` for float arguments, while `(int)float_field` arguments interleave as `fld field; call __ftol; push eax`.
+
+Try when:
+- original has virtual calls like `[vtable+0x100]`, `[+0x108]`, `[+0x10c]` followed by `fstp dword [esp]`;
+- a fake helper or manual ftol stub produces too-short code or misses the FPU stack/push pattern;
+- the wrapper simply forwards object fields, virtual float properties, and ftol-converted coordinates to another overload.
+
+Caveat: vtable slot padding and the destination overload signature/order must be exact, since right-to-left argument evaluation determines the emitted push sequence.
+
+## Lesson: Callee parameter widths can control early sign-extension scheduling
+
+When a caller passes a narrow member value multiple times, the callee declaration's
+parameter width can decide whether VC5 sign-extends the value once early or delays
+a 16-bit load until the push site. If the original emits `movsx reg, word [obj+off]`
+before a long argument-push sequence, declare the receiving parameters as `int`
+rather than `short` even if the source value is a short field.
+
+Try when:
+- rebuilt code uses `mov ax,[field]` or a narrow push-side load where original uses
+  `movsx eax,word [field]`;
+- the same short member is passed to one or more integer-looking callee parameters.
+
+Why it helps:
+- VC5 must materialize a full-width integer argument and can reuse that register for
+  repeated pushes, matching early sign-extension and liveness.
+
+Caveat:
+- do not widen the actual field unless layout proves it; this is about the callee
+  signature surface. Verified on 00471940 command_stand_ground.
+
+
+## Lesson: Reuse an incoming parameter as a moving offset to preserve dual-index loops
+
+When original VC5 mutates one incoming parameter into an address offset (for example `param = param*4 + 0x10; param += stride`) while a separate register tracks the loop byte offset, spell that mutation directly on the source parameter instead of introducing a clean `offset` local. Also consider repeating the base member expression inside the condition/store rather than caching a base pointer or loaded value; this can keep the original register roles (`edx` loop index, `esi` moving offset, `eax` base, `ecx` loaded value).
+
+Try this when a near-match has the right loop but uses one register for both index/base arithmetic or inserts an extra `add base,index` before the store. Verified on an acknowledge-message scan that clears a per-destination slot.
+
+## Lesson: Use real C++ `delete` syntax in destructors to preserve VC5 destructor EH cleanup
+
+For virtual destructors that delete pointer members and then call a nontrivial base destructor under `/GX`, prefer natural `delete this->member; this->member = 0;` with the ordinary C++ `void operator delete(void*)` declaration. Declaring an `extern "C" operator_delete` helper or manually calling a delete-like function can compile to a shorter function or the wrong EH/local layout, while real `delete` lets VC5 emit the expected destructor EH frame, vptr restore, cleanup-state store, and base destructor call.
+
+Try when:
+- original destructor has an ESP-based EH prologue (`push -1; push handler; fs:[0]`) and a state slot before the base destructor;
+- body diffs center around missing EH frame or wrong local allocation;
+- member deletes are currently modeled as raw helper calls.
+
+Caveat: this applies to actual C++ deletion of object/char buffers; keep the base destructor virtual/nontrivial surface accurate.
+
+
+## Lesson: Direct byte-offset member expressions plus miss-condition spelling can recover inline queue scans
+
+For array/queue scans where VC5 should load the array base, form a byte-offset pointer with `lea`, then reload a field through the same base+offset, a normal `array[index]` source may keep the element pointer as the base register and shorten the sequence. Spelling the field load and element pointer as direct byte-offset expressions can recover the original load-base/LEA pattern:
+
+```cpp
+unsigned exec = *(unsigned*)((char*)this->queue + off + 4);
+Entry* e = (Entry*)((char*)this->queue + off);
+```
+
+Also preserve compare polarity for range-miss tests. `if (exec < lo || exec > hi)` can emit `cmp exec,lo; jb miss`, while `if (!(lo <= exec && exec <= hi))` may invert to `cmp lo,exec; ja miss`. Use the binary-observed compare/branch family when exactness depends on it.

@@ -1,16 +1,12 @@
 // VA: 004782A0 TListPanel::TListPanel (Pnl_lst.cpp:26-41, 102B)
-// Top-20 scratch retry attempt log:
-// try 1: baseline explicit pointer arithmetic source: exact size 102B but broad store-order/vptr drift.
-// try 2: corrected TTextPanel/TListPanel layout using generated reference: derived fields auto_track +0x188, mouse_scroll_last_time +0x18C, interval +0x190, up/down +0x194/+0x198, drawHighlightBar +0x19C.
-// try 3: added virtual TListPanel destructor to coax natural vptr store; no improvement, compiler still stores vptr at start and uses EAX for ones.
-// try 4: removed virtuals and used manual vptr store; offsets shifted by -4, exposing need for explicit vptr field in non-virtual stub.
-// try 5: added explicit vptr field to non-virtual TTextPanel stub; offsets correct and size exact, but compiler hoists vptr store before zero stores and uses EAX=1 instead of ECX=1.
-// try 6: used volatile vptr store to force ordering; no codegen change.
-// try 7: rewrote body as raw pointer stores in original source order with local one=1; no codegen change, vptr still hoisted and one still EAX.
-// try 8: /GX probe; no code/size change, removed flag.
-// try 9: /Od probe; broad EBP-frame mismatch, removed flag.
-// try 10: final validation default: exact size 102B but 69 positional diff bytes / 67.65%; mismatch is broad constructor store ordering/register choice, not accepted_drift candidate.
-// GIVEUP: although final field values match, original delays vptr store until after early zero/one stores and carries one in ECX; rebuilt hoists vptr store and writes one fields with EAX in a different order. Constructor write ordering/vptr timing drift is too broad for accepted_drift.
+// Attempt log:
+// inherited tries 1-10: baseline/natural/manual stores, virtual/nonvirtual, /GX,/Od; best exact size but vptr hoisted before zero stores and ones used EAX.
+// try 11: volatile int/byte store pointers preserved source order and delayed vptr; improved to exact size with only ECX-vs-EAX one-register family remaining (31.37% positional, 14.71% edit).
+// try 12: separate zero and one locals with volatile stores; no allocation change.
+// try 13: register-qualified one local; no allocation change.
+// try 14: pointer-typed constant onep; no allocation change.
+// try 15: volatile one stack local forced stack frame/loads and worsened broad diff; rolled back.
+// GIVEUP: best source below matches calls, size, field offsets, store order, vptr timing, and final values; remaining localized drift is VC5 choosing EAX for constant 1 after zero stores instead of original preloading ECX=1 before zero stores. Not proposing accepted_drift without approval because five store encodings differ and mov ecx placement is absent.
 
 class TTextPanel {
 public:
@@ -43,18 +39,21 @@ public:
 };
 
 TListPanel::TListPanel() : TTextPanel() {
+    volatile int* p = (volatile int*)this;
+    volatile unsigned char* b = (volatile unsigned char*)this;
+    int zero = 0;
     int one = 1;
-    *(int*)((char*)this + 0x0C0) = 0;
-    *(int*)((char*)this + 0x18C) = 0;
-    *(int*)((char*)this + 0x194) = 0;
-    *(int*)((char*)this + 0x198) = 0;
-    *(int*)((char*)this + 0x188) = 0;
-    *(int*)((char*)this + 0x19C) = one;
-    *(int*)((char*)this + 0) = 0x00571578;
-    *(unsigned char*)((char*)this + 0x0EE) = 4;
-    *(int*)((char*)this + 0x170) = one;
-    *(int*)((char*)this + 0x190) = 0x32;
-    *(int*)((char*)this + 0x080) = one;
-    *(int*)((char*)this + 0x184) = one;
-    *(int*)((char*)this + 0x180) = one;
+    p[0x0C0/4] = zero;
+    p[0x18C/4] = zero;
+    p[0x194/4] = zero;
+    p[0x198/4] = zero;
+    p[0x188/4] = zero;
+    p[0x19C/4] = one;
+    p[0] = 0x00571578;
+    b[0x0EE] = 4;
+    p[0x170/4] = one;
+    p[0x190/4] = 0x32;
+    p[0x080/4] = one;
+    p[0x184/4] = one;
+    p[0x180/4] = one;
 }

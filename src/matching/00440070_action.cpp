@@ -1,14 +1,22 @@
 // VA: 00440070 TMessageDialog::action
 // Dlg_msg.cpp lines 182-203
 
-// attempt 1: natural action handler for 3 buttons
-// 139/139 bytes exact size, 93 diff bytes
-// Issue: parent offset wrong, vtable dispatch patterns differ
-// Left in scratch.
+// Attempt log:
+// 1: Existing natural action handler was exact size but differed because parent->action emitted vtable slot +4 instead of original +0xB4.
+// 2: Added TPanel vtable padding so action lands at vt[45] / +0xB4; natural source then matched exactly.
+// MATCH: python tools/check_function.py --va 00440070 => Result: MATCH / 0.0000%.
+
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
 class TPanel {
 public:
     virtual ~TPanel();
+    VPAD32(1) VPAD8(33) VPAD4(41)
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
     char gap_04[0x3C];  // up to +0x40 for parent
 };

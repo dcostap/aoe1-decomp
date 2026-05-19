@@ -49,6 +49,12 @@
 // - tried volatile radius local; got exact configured size 97 and preserved push-register prologue, but introduced stack spill, changed y/x register topology, inverted bottom branch into jge+jmp, and broad 64.9485% positional / 51.5464% edit mismatch. Not accepted-drift quality.
 // - tried /Ob0 flag briefly; no change from volatile-radius broad mismatch, flag removed.
 // GIVEUP: exact source basin still requires original combination: no radius hoist, no volatile spill, y param in EBP before loop, inc-before-add bottom with single jl, and original early-count epilogue ordering.
+// Retry 2026-05-19 (additional focused probes):
+// - nonvolatile radius local outside loop kept size 96 but VC5 still chose x in EBP, spilled radius to [esp+14], and used jge+jmp loop bottom.
+// - explicit yy=y local did not persuade VC5 to keep y in EBP; generated asm unchanged.
+// - rewriting match test as `dx >= r || dy >= r` with else-return generated the same code as the positive && test.
+// - changing info_line from volatile char* to char* and then to a typed RGE_Object_Info_Line member access did not stop the radius spill or x/y register swap.
+// Left in scratch: best exact-size basin remains volatile-radius version below; mismatch is structural, not accepted-drift quality.
 
 struct RGE_RMM_Object_Generator {
     char area[0x18FC];

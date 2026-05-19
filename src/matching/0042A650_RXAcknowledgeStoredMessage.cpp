@@ -1,5 +1,8 @@
 // 0042A650 TCommunications_Handler::RXAcknowledgeStoredMessage
 // Size: 139 bytes
+// MATCHED 2026-05-19: reuse param_2 as the moving destination offset and keep a
+// separate loop_idx. Directly repeating the StoredMessages expression lets VC5
+// use edx for loop_idx, esi for offset, eax for base, ecx for loaded value.
 
 #define G_LOG_PTR (*(int*)0x62C4FC)
 
@@ -18,7 +21,6 @@ public:
 
 int TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int param_1, unsigned int param_2) {
     unsigned int loop_idx;
-    unsigned int offset;
 
     if (!this->RGE_Guaranteed_Delivery) {
         Log(G_LOG_PTR, "!RGEGTD RxAck");
@@ -28,17 +30,15 @@ int TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int param_1, un
     Log(G_LOG_PTR, "COMM: RX ACK from P#%d for Ser#%d", param_2, param_1);
     this->WaitingForAck = 0;
 
-    this->WaitingForAck = 0;
-
     loop_idx = 0;
-    offset = param_2 * 4 + 0x10;
+    param_2 = param_2 * 4 + 0x10;
     do {
-        char* const msgs = (char*)this->StoredMessages;
-        if (*(int*)(msgs + loop_idx + 4) == (int)param_1 && *(int*)(msgs + loop_idx + 4) != 0) {
-            *(int*)(msgs + offset) = 0;
+        if (*(int*)((char*)this->StoredMessages + loop_idx + 4) == (int)param_1 &&
+            *(int*)((char*)this->StoredMessages + loop_idx + 4) != 0) {
+            *(int*)((char*)this->StoredMessages + param_2) = 0;
         }
         loop_idx += 0x38;
-        offset += 0x38;
+        param_2 += 0x38;
     } while (loop_idx <= 0x6D98);
     return 1;
 }

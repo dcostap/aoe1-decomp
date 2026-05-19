@@ -1,5 +1,5 @@
 // VA: 00426D50 TCommunications_Handler::SendPlayerName (Com_hand.cpp:808-826, 105B)
-// Retry 2026-05-18 (10 honest tries):
+// Retry 2026-05-18/19 (13 honest tries):
 // - baseline memset/natural DPNAME exact-sized but broad scheduling mismatch: 60.0000% positional / 53.3333% edit.
 // - expanded memset into explicit field zeroes; VC5 moved this into ESI before first zero, compiled size-short (96B) or worse ordering.
 // - tried explicit self local to force mov esi after first zero store; no improvement, still size-short/order drift.
@@ -7,6 +7,8 @@
 // - tried aggregate `{0}` initializer; exact-sized with trailing nops but worse prologue/order mismatch (86.6667% positional).
 // - tried comma-expression argument evaluation to delay lpszShortName and dwSize until call argument setup; VC5 still scheduled zero/lea too early and compiled size-short.
 // - tried /Od briefly; emitted EBP debug frame and broad mismatch, flag removed.
+// - 2026-05-19 tried explicit field-zero/source-order with saved DP interface local; worsened prologue (70.4762% positional).
+// - 2026-05-19 tried virtual IDirectPlay-style SetPlayerName surface; compiled size-short (96B), same setup-order family.
 // GIVEUP: remaining blocker is exact VC5 scheduling of DPNAME zero stores around saved-register pushes and right-to-left call argument side effects (load interface global before short-name lea, set dwSize after pushes). No accepted_drift proposal: call/setup instructions are reordered broadly, not a localized benign drift.
 
 #include <string.h>

@@ -1,6 +1,12 @@
 // VA: 00445AF0 TDrawArea::DrawVertLine (143 B)
 // PDB source: Drawarea.cpp
 // Draws a vertical line clipped to the clip rect
+// Attempt log:
+// Retry 2026-05-19 target-only:
+// try 1: revalidated inherited source: exact size 143B, MISMATCH 86 positional bytes / 60.14%, edit diff 85B; behavior close but register allocation differs (rebuilt uses EBP=Bits, EBX=x, EDI=h; original uses EBX=Bits, EDI=x, EBP=h).
+// try 2: introduced explicit `bits` local and used it in address expressions; no codegen change.
+// try 3: added register locals for x/h to force x/h into desired registers; this did put Bits in EBX but introduced early param preload and worse layout (92.31% positional), rolled back.
+// GIVEUP: remaining mismatch is broad register-allocation/scheduling for the same clipped vertical-line behavior. Original wants EBX=Bits loaded before saving EBP, EDI=x, EDX=y, EBP=h, ESI=pitch/clip temp; rebuilt persists in a different register basin. Not proposing accepted_drift because positional drift is broad.
 
 struct tagRECT {
     long left;

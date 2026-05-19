@@ -21,6 +21,14 @@
 // - Probed /O2 /GX with /Oy disabled: size 80, no EH frame; rolled back.
 // - Probed /G5 and /GR- with /GX: identical to baseline exact-size mismatch.
 // - Restored baseline visible base virtual dtor, no derived dtor, /O2 /Oy /GX.
+// Retry 2026-05-19:
+// - Revalidated assigned target only: still exact size 113, MISMATCH 75.2212%, first mismatch offset 0.
+// - Added empty ManagedArray_Int ctor/dtor to test member-lifetime EH; optimized away, no codegen change.
+// - Added visible derived virtual destructor; constructor section shrank to 112 bytes, rolled back.
+// - Removed base virtual dtor; constructor shrank to 80 bytes, rolled back.
+// - Tried explicit vtable store with base virtual restored; section shrank to 80 bytes, rolled back.
+// - Added extra derived virtual dummy; no improvement, same broad no-EH baseline.
+// - Tried body try/catch plus /Ob0 probe while EH-affecting variants were present: forced push-first EH family with extra saved regs/slots, not original FS-first; rolled back.
 // GIVEUP: not a reasonable accepted_drift; mismatch is broad from offset 0 and includes prologue/frame/function-boundary topology rather than a localized equivalent hunk.
 
 struct ManagedArray_Int {

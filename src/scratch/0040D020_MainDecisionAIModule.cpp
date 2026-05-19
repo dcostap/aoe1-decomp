@@ -36,6 +36,15 @@
 // - Reviewed whether source could force FS-first SEH ordering; all natural C++ destructor surfaces still use compiler-fixed push-first prologue.
 // - Kept best novtable baseline because it gives smallest edit diff and preserves the destructor body/cleanup behavior after resync.
 // GIVEUP: exact match appears blocked by compiler EH prologue family difference (original FS-first, no saved-this slot, add esp 0Ch; rebuilt push-first, saved-this slot, add esp 10h). No accepted_drift proposal because frame/prologue/tail stack cleanup drift is structural even though the destructor body is behaviorally right.
+// Retry 2026-05-19 (additional focused probes):
+// - novtable + manual/volatile vtable store was worse (edit 41.07%); VC5 scheduled the store after EH-state setup and object load, not like original automatic vptr store.
+// - non-novtable plus /vd0 and /vd1 did not change the push-first EH family; edit remained 37.5%.
+// - /O1 produced an EBP-frame/destructor-helper basin with broad body drift (79.46% edit), rejected; restored /O2 /Oy /GX.
+// - dropping /Oy made no EH-family improvement; stack frame still had saved-this slot.
+// - `delete this->objects_value` compiled identically to explicit `operator_delete` for the best novtable baseline.
+// - making AIModule::~AIModule non-virtual broke the base size/field offsets (objects at +0xF0), rejected.
+// - modeling the object list as a real subobject with its own destructor emitted a separate destructor body and different caller, far worse.
+// Left in scratch: best baseline unchanged; mismatch remains structural EH prologue/saved-this/tail cleanup, not accepted-drift quality.
 
 class AIModuleID {
 public:

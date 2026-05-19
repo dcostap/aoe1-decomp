@@ -1,13 +1,17 @@
 // VA: 0044E600 InfluenceMap::incrementValue
 // PDB: infmap.cpp lines 240-257 (123 bytes, 45 asm lines)
 // Default flags. No inline asm/hacks.
-// Retry 2026-05-18 (10 honest tries):
+// Retry 2026-05-18/19 (18 honest tries):
 // - Revalidated baseline: exact-sized 123 but broad register/order mismatch (71.5447% positional / 60.9756% edit).
 // - Tried naming rowData/limit/row/cell/cur locals to force original ESI=rowData and CL=limit; worsened to extra EDI save and 86.1789% positional.
 // - Tried precomputing cell vs using row[rx]; original wants both LEA cell in ESI and load from [edx+eax], but VC5 either keeps pointer in EAX or spills cur.
 // - Tried `--limit` / `limit-1` saturation spellings; no improvement.
 // - Tried preserving coordinate roles by swapping temp names and expression order; VC5 still uses EDX for rx/EAX for ry in baseline, opposite original.
 // - Tried /Ob0 briefly; no change, flag removed.
+// - 2026-05-19 tried mutating x/y parameter slots; got original initial EAX=x/EDX=xRef but introduced extra EDI save and worse body.
+// - 2026-05-19 tried x-mutated/y-local, explicit assignment locals, register locals, and swapped parameter names; either same baseline register swap or extra callee-save pressure.
+// - 2026-05-19 tried direct row[rx] stores instead of cell local and nested positive bounds checks; both worsened with extra EDI/EBX saves.
+// - 2026-05-19 tried real virtual class surface from type dump; no codegen change from flat vtable field.
 // GIVEUP: remaining blocker is combined register allocation (original EAX=rx, EDX=ry, ESI=cell, CL=limit) plus exact unsigned-byte widening/order around sum and saturation. No accepted_drift proposal because drift changes stack spills/register topology/control displacements broadly.
 
 struct InfluenceMap {
@@ -16,10 +20,10 @@ struct InfluenceMap {
     int ySize;
     int xReferencePoint;
     int yReferencePoint;
-    int gap_14;
+    unsigned char* valueValue;
     unsigned char** rowData;
-    int gap_1C_1;
-    int gap_1C_2;
+    int coverageCount;
+    int connectionCount;
     unsigned char maxLimit;
 
     int incrementValue(int x, int y, unsigned char value);

@@ -1,20 +1,22 @@
 // VA: 004AA730 TRIBE_Screen_Sed::set_paint_object_mode (107 B)
 // PDB: scr_sed.cpp lines 1541-1560
-// Original attempt: explicit this-as-local for register coloring.
-// Top-20 scratch retry attempt log:
-// try 1: baseline validation: exact size 107B but 98.13% positional diff; edit/resync shows same broad structure shifted.
-// try 2: swapped self/game local declaration order; no codegen change.
-// try 3: replaced indirect virtual call expression with helper mode_call(game,mode,arg); worsened tail call surface and reduced equal bytes, rolled back.
-// try 4: /GX probe; no code/size change, removed flag.
-// try 5: inspected original: it preserves incoming this in EDX before loading global rge_base_game into ECX; rebuilt loads global first and keeps this in ECX.
-// try 6: confirmed object lookup chain is behaviorally same but register topology differs: original uses EDX for this/world/player/master list, rebuilt uses ECX/EDI.
-// try 7: tail call surface differs equivalently: original loads vtable then calls [vtable+0x10], rebuilt loads [game+0x10] then calls [reg]; same virtual slot if stub layout is interpreted as vtable pointer vs direct slot but not byte-local.
-// try 8: no-/GX retained as best; /Od not tried because original is optimized FPO/no frame and prior /Od probes in this queue were broad bad matches.
-// try 9: accepted_drift review rejected: although high-level behavior is likely same, diff spans nearly whole tiny function and includes call-surface/register topology, not a localized harmless drift.
-// try 10: final validation remains exact size 107B, broad mismatch. GIVEUP.
+// Attempt log:
+// try 1: inherited scratch baseline was exact size but broad 98.13% diff; call surface used a fake indirect slot and global reload.
+// try 2: changed RGE_Base_Game to a real virtual surface; tail calls now match exactly and diff dropped to 11 bytes / 10.28%.
+// try 3: direct indexed expression self->world->players[self->player_num] kept same remaining mismatch.
+// try 4: int player-number local kept same remaining mismatch.
+// try 5: explicit players local kept same remaining mismatch.
+// try 6: volatile player_num forced source load order but destroyed register allocation; rolled back.
+// try 7: volatile self forced stack home/prologue and worsened badly; rolled back.
+// try 8: final remaining mismatch is localized to lookup-chain register/load order only: original loads player_num into EDI before world into EDX, rebuilt loads world into EDI then player_num into EDX.
+// GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is an address-generation/register-topology hunk in the object lookup, not a tiny harmless encoding swap.
 
 struct RGE_Base_Game {
-    void* vtable;
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void set_game_mode(int mode, int arg);
     char pad_04[0x1B4];
     int sub_game_mode;
     char pad_1BC[0x240];
@@ -56,8 +58,9 @@ void TRIBE_Screen_Sed::set_paint_object_mode() {
     int enabled = 0;
 
     if (mo_id != -1) {
-        short pn = self->player_num;
-        RGE_Player* pl = (RGE_Player*)self->world->players[pn];
+        int pn = (int)self->player_num;
+        void** players = self->world->players;
+        RGE_Player* pl = (RGE_Player*)players[pn];
         RGE_Master_Static_Object* obj = (RGE_Master_Static_Object*)pl->master_objects[mo_id];
 
         if (obj != 0 && obj->obj_type == 0x50 && obj->flag != 0) {
@@ -65,10 +68,9 @@ void TRIBE_Screen_Sed::set_paint_object_mode() {
         }
     }
 
-    game = rge_base_game;
     if (enabled) {
-        (*(void(__stdcall*)(int,int))*((int**)game)[4])(0x15, 0);
+        game->set_game_mode(0x15, 0);
     } else {
-        (*(void(__stdcall*)(int,int))*((int**)game)[4])(8, game->sub_game_mode);
+        game->set_game_mode(8, game->sub_game_mode);
     }
 }

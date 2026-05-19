@@ -15,6 +15,13 @@
 // try 8: re-reviewed flag probes already recorded (/Oa /Og /Ot /Ob0 /G5 /Gs /GX /O1 /Od); no retained flag because default remains best exact-size/equal-byte result.
 // try 9: accepted_drift review rejected: diff is mostly register allocation but spans prologue, branch-local EBX/EDI save timing, arithmetic hunk, final stores, and epilogues; not localized.
 // try 10: final validation remains exact size 117B but broad 35.04% positional mismatch. GIVEUP.
+// retry 11: Boss denied accepted_drift for prior broad mismatch; continued only as scratch matching work.
+// retry 12: moved result declaration inside success branch and used compound assignments; no codegen change (same EBX=this/EDI=result, 35.04% pos / 24.79% edit).
+// retry 13: removed tactical local and used direct `this->tacticalAI` member calls; no codegen change.
+// retry 14: seeded `int r = 0` before tactical local and used `> r` guard to try occupying EBX before preserving this; no codegen change.
+// retry 15: explicit `self = this` and `register self`; no codegen change.
+// retry 16: modeled real nearby taimdmd class/inheritance/subobject layout from matching constructor and tested /GX donor flag; offset remains right but allocation unchanged, /GX not retained.
+// GIVEUP: kept best 117B source in scratch. Do not propose accepted_drift; mismatch remains broad EBX/EDI allocation/topology.
 
 class TribeTacticalAIModule {
 public:
@@ -34,12 +41,12 @@ public:
 };
 
 void TribeMainDecisionAIModule::setTributeChat() {
-    register int r;
     TribeTacticalAIModule* tactical = &this->tacticalAI;
     if (tactical->strategicNumber(0x7E) > 0) {
+        int r;
         r = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x41D) % tactical->strategicNumber(0x7E);
-        r = r - tactical->strategicNumber(0x7E) / 2;
-        r = r + tactical->strategicNumber(0x7D);
+        r -= tactical->strategicNumber(0x7E) / 2;
+        r += tactical->strategicNumber(0x7D);
         this->tributeChatTimeout = r;
     } else {
         this->tributeChatTimeout = tactical->strategicNumber(0x7D);

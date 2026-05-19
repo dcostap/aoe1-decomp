@@ -24,6 +24,14 @@
 // try 7: reviewed current rebuilt shape: no EBX save, param load after branch in first-time path, delta_time store before last_time, compare before delta_time store, and delete block lacks redundant null test.
 // tries 8-9: prior scratch already records comma/temp/register/inverted-op variants and flags; no retained variant produced the original scheduler/register basin.
 // try 10: accepted_drift review rejected: mismatch is broad scheduling/layout/register-save drift across prologue, both time-update paths, delete block, and epilogues. GIVEUP.
+// Retry 2026-05-19:
+// try 11: revalidated assigned target baseline: exact size 123B but 107 positional bytes / 86.99%; no EBX save, scheduler differs in both update paths.
+// try 12: introduced `time` temp and `register old_time`/`new_dt`; worsened arithmetic order, still no EBX save; rolled back.
+// try 13: hoisted old_time before zero-delta test to increase live pressure; added early load but still no EBX save and worse schedule; rolled back.
+// try 14: /G5 flag probe; no codegen change, removed flag.
+// try 15: tried `delete pS` instead of explicit destructor+operator_delete; identical codegen to explicit form, restored explicit form.
+// try 16: assignment-in-condition for delta_time threshold; no codegen improvement, kept only because it compiles to same current baseline.
+// GIVEUP: remaining issue still broad VC5 scheduling/register allocation (missing EBX save/use, param load after branch, first-time stores reversed, compare/store order reversed, delete redundant test optimized out). Not accepted_drift.
 
 struct TShape {
     ~TShape();
@@ -54,8 +62,7 @@ void RGE_Sprite::update(unsigned long param_1) {
             }
             int old_time = this->last_time;
             this->last_time = param_1;
-            this->delta_time = (param_1 - old_time) + dt;
-            if (this->delta_time >= 180000) {
+            if ((this->delta_time = (param_1 - old_time) + dt) >= 180000) {
                 if (pS) {
                     pS->~TShape();
                     operator_delete(pS);
