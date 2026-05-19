@@ -5,7 +5,11 @@
 // - Removed register `r` and block-scoped the up-rect temp: still 144B.
 // - Reordered `r++` to match original later `inc esi` placement after down-rect load: still 144B.
 // - /Ob0 flag probe and dummy local/increment probe did not change emitted size; flag/probe removed.
-// GIVEUP: behavior and offsets are understood and source is close, but blocker is a 2-byte size/likely scheduling difference that cannot be inspected through current size gate without a full object disassembly path. No accepted_drift proposed without byte-level diff.
+// - Direct expression form (no r/dl locals) still emitted 144B and optimized to no saved ESI.
+// - register r no change; volatile r overgrew to 176B and badly changed scheduling.
+// - switch form and inverted if/else branch form both stayed 144B, no exact.
+// - /O1 shrank to 141B; /O2 without /Oy and /Ob0 stayed 144B; flags removed.
+// GIVEUP: behavior and offsets are understood and source is close, but blocker is a 2-byte size/scheduling difference. Current object disassembly shows compiler emits no saved ESI and appends two NOPs in 144B, while original uses push/pop ESI and 146B. No accepted_drift proposed due size/register topology mismatch.
 
 class TScrollBarPanel {
 public:
@@ -45,7 +49,7 @@ void TScrollBarPanel::calc_item_rects() {
     if (this->orientation == 1) {
         x = this->tab_x;
         w = this->field_18;
-        int r = this->up_rect_right;
+        register int r = this->up_rect_right;
         this->tab_rect_left = x;
         w = w + x - 5;
         x--;
@@ -61,7 +65,7 @@ void TScrollBarPanel::calc_item_rects() {
     } else {
         x = this->tab_y;
         w = this->field_14;
-        int r = this->up_rect_bottom;
+        register int r = this->up_rect_bottom;
         this->tab_rect_top = x;
         w = w + x - 5;
         x--;

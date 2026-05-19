@@ -15,6 +15,10 @@
 // - Reversing compare spellings for top/bottom clipping worsened slightly (60.8392% positional) and was rolled back.
 // - Introducing a separate `len` local for h forced early parameter preload and worse 92.3077% positional; rolled back.
 // - /O1 with the len-style basin was size-short/wrong prologue; rejected and flag removed.
+// Boss retry 2026-05-19: revalidated baseline (86/143 positional, first mismatch +1).
+// - Removing the explicit bits local optimized to identical baseline.
+// - register rx/rh locals forced Bits into EBX, but introduced early h preload, worse 132/143
+//   positional and wrong scheduling; rolled back.
 // Left in scratch: default flags and best known source. No accepted_drift: broad register allocation/scheduling drift across the whole function.
 
 struct tagRECT {

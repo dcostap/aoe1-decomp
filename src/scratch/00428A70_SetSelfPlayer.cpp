@@ -29,6 +29,7 @@
 // loading until after the first bounds check.
 //
 // Left in scratch. Not proposing accepted_drift.
+// Retry 2026-05-19 Boss pass: 10 additional variants (p declared after count check, unsigned/goto/for loop shapes, selfDcoID local vs reload vs volatile, value temp, L local, separate assignment style). None improved prior best; most worsened to 55-67% positional / 61-119% edit by perturbing prologue/loop. Restored prior exact-size scratch.
 
 #include <stdlib.h>
 

@@ -12,6 +12,7 @@
 // try 21: raw vtable/stdcall nonvolatile simple list shape preserved EDI for action and worsened to 89.47%; rolled back to best no-EDI stack-reload basin.
 // final validation: exact size 114B but MISMATCH, 46 positional bytes / 40.35%.
 // GIVEUP: best no-EDI basin has correct prologue/no saved EDI and same first branch size, but still uses EAX/EDX for action reloads instead of ECX, reshapes the list traversal (ECX next with extra tests instead of ESI next / EDX cur), and vtable-call scheduling differs. Structural enough that this is not an accepted_drift proposal.
+// Retry 2026-05-19 Boss pass: 10 additional variants (natural nonvolatile param, while/goto/for loop shapes, helper-call split, pointer-to-pointer scan, low-branch volatile reload only, calloc sizeof, inverted condition, typed virtual RGE_Action). None improved the saved no-EDI stack-reload basin; most were 112B/96B short or 85%+ positional, best remains 40.35% positional.
 
 #include <stdlib.h>
 struct RGE_Action_Node { void* action; RGE_Action_Node* next; };

@@ -22,6 +22,17 @@
 //   (3) Best rebuilt: EAX/EDX=key, ECX=obj, CL/AL=byte ops, EAX=result, ESI=info, EDI=zero.
 //   Same compiler, same source → different register allocation. Not fixable from C++.
 //   Not proposing accepted_drift because positional diff is 82-90% — too broad.
+// Retry 2026-05-19 assigned pass:
+// Attempt 11: register pi forced EDI save/use and worsened scheduling; rolled back.
+// Attempt 12: named zero local similarly forced EDI zeroing and broad drift; rolled back.
+// Attempt 13: explicit mask expression `-(key!='(')&obj` used cmp/setne family; worse; rolled back.
+// Attempt 14: swapped local store order to match apparent stack layout; worsened broad scheduling; rolled back.
+// Attempt 15: register key local worsened to EDI-save basin; rolled back.
+// Attempt 16: unsigned-char key/param surface moved first mismatch to +7 but worsened edit diff; rolled back.
+// Attempt 17: memset(info,0,20) again forced EDI/and eax,0FFh basin; rolled back.
+// Attempt 18: using pi for call args no improvement; rolled back.
+// Attempt 19: /Ob0 flag probe no improvement; removed.
+// GIVEUP: final default-flags validation 151/151, MISMATCH 134 positional bytes / 88.7417%, edit 95 bytes / 62.9139%, first mismatch +4. Register topology remains fundamentally different across whole function.
 
 #include <stdlib.h>
 

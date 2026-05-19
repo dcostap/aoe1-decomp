@@ -10,6 +10,12 @@
 // v5: goto with function-scope vars — prolog push ebx/ebp/esi
 // v6: Ghidra-style else-if(bit8) pattern + shared tail — 80% matching
 // v7: else-if(!(elapsed & 0x100)) with goto for set-flag-jump — 130/162 matching
+// Fresh pass 2026-05-19:
+// v8: hoisted obj initializer and elapsed declaration; no codegen change.
+// v9: explicit objects-array local; no codegen change.
+// v10: compound |= / &= selected updates; no codegen change.
+// v11: selected byte pointer locals; no codegen change.
+// v12: compute elapsed before object lookup; worsened badly to 149/162 positional and prologue drift; rolled back.
 // 
 // Remaining diff (32 bytes, ~20%): register allocation swap
 //   - obj in edi instead of edx (mov edi,[edi+edx*4] vs mov edx,[edi+edx*4])

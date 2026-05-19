@@ -27,6 +27,7 @@
 // produce different optimization decisions.
 //
 // Left in scratch. Not proposing accepted_drift (>50% diff).
+// Retry 2026-05-19 Boss pass: 12 additional variants (nested vs && debug gates, five copy-loop shapes including goto/break and buf sizing, idx*100 LEA spelling, sprintf arg temp/order). Best new positional was 55.8442% but edit diff worsened; no variant fixed register assignment/loop/sprintf scheduling. Restored prior exact-size scratch.
 
 #include <stdlib.h>
 #include <stdio.h>

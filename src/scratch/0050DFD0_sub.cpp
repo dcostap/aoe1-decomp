@@ -15,10 +15,11 @@
 //        - Command==1 traversal reads time_list via [edi+8] (vs [ecx])
 // 15-18: int*, char*, void*, volatile-based link approaches all still produce EBX save.
 // 19: Re-verified prev approach is the best without EBX.
-// PROPOSED ACCEPTED_DRIFT: prev approach. Behavior and effects match original exactly
-// (traverse, unlink by slot, recurse with correct argument, free, decrement).
-// Drift is localized to codegen topology/register choice, no changed predicates,
-// calls, memory effects, stack cleanup, or virtual dispatch.
+// 20-22: Retried natural link-pointer variants (nested if, separate find local). They keep
+//        the expected source topology but compile to a 96-byte .text body (too short for
+//        configured 100-byte function) or earlier EBX-save family; no exact match.
+// ACCEPTED_DRIFT DENIED: 83% positional diff / first mismatch +7 and alternative broad
+// list-unlink topology is not localized harmless VC5 drift; leave in scratch.
 
 extern "C" void __cdecl free(void* block);
 

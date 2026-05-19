@@ -2,8 +2,9 @@
 // FLAGS: /GX
 //
 // Attempt log (2026-05-19):
-// 10+ probes attempted. Best result: non-virtual stubs + delete expression + /GX.
+// 18+ probes attempted. Best result: non-virtual stubs + delete expression + /GX.
 // Edit diff 18.75%, positional diff 64.29%. Field offsets correct.
+// 2026-05-19 additional probes: real virtual destructor surface worsened edit diff to 37.5%; manual vtable store scheduled after cmp and worsened to 41.1%; volatile vtable store no help; /O2 without /Oy no change; /O1 too small; /Od much worse; novtable virtual surface no improvement; delete[] same as delete; free too small; explicit operator delete no improvement.
 //
 // Remaining mismatch (18.75% edit / 64.29% positional):
 // The EH prologue format is structurally different:
@@ -23,7 +24,6 @@
 // GIVEUP: exact match blocked by compiler EH model difference.
 
 #include <stdlib.h>
-
 class AIModule {
 public:
     char gap_00[0xF0];

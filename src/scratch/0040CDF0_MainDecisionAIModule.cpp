@@ -37,6 +37,7 @@
 // - /Ob0 with member-constructor probe produced push-first EH plus explicit member ctor call; worse and rolled back.
 // - /EHsc accepted by VC5 but did not alter baseline no-EH ctor family; /d1ESrt was unsupported by c1.
 // Left in scratch: still blocked on compiler EH-prologue/function-boundary topology, not accepted-drift quality.
+// Retry 2026-05-19 Boss pass: 12 additional variants with existing custom /GX flags: derived dtor (112B), const-char name, extra base virtual slots before/after dtor, static/extern name, param_3 local, store order swap, derived dummy/nonvirtual dtor; ManagedArray ctor/dtor declarations failed to compile without definitions. All compiling full-size variants stayed baseline 75.2212% positional first mismatch 0; no FS-first EH prologue.
 
 struct ManagedArray_Int {
     int* value;

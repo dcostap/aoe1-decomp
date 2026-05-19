@@ -7,6 +7,7 @@
 // - Reordered radius arithmetic to keep source `radius += y`/stack-slot style closer to original; edit diff improved to 39.3103% but same broad register allocation mismatch.
 // - Tried `register long r = radius` and /Ob0 flag probe: no change; flag removed.
 // GIVEUP: behavior, call signature, bounds, loop structure, and offsets are understood, but remaining mismatch is broad early parameter-load/register-allocation drift (original loads radius first then saves regs; rebuilt preloads y and swaps EBX/EBP roles). No accepted_drift: broad loop/register topology drift, not localized.
+// Retry 2026-05-19 Boss pass: 10 additional variants (natural radius+x order, parameter mutation/stack-slot style, register/volatile radius, goto-bound clamps, while/do loop forms, compare algebra swaps, world/terrain locals). None improved over saved 39.3103% edit basin; one param-mutation form shrank to 144B. Restored prior exact-size scratch.
 
 #include "../../include/game_globals.h"
 

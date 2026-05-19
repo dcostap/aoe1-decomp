@@ -42,6 +42,7 @@
 // not localized.
 //
 // Left in scratch: best result with int p1 = param_1; (attempt 9).
+// Retry 2026-05-19 Boss pass: 10 additional variants (dword alias for param_1 to force mov edi+dword, masters local/no local, real TRIBE_Command member thiscall, int vs short original_param, flag local, list_num local, raw thiscall pointer). Best new edit diff was 18.8811% but still broad register/argument scheduling mismatch; most dword-alias variants worsened first mismatch to offset 1 by perturbing prologue. Restored prior exact-size best.
 
 #include <stddef.h>
 #include <stdlib.h>

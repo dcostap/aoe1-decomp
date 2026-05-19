@@ -62,6 +62,7 @@
 // but differs in register allocation and instruction scheduling. The
 // VC5 codegen barriers appear to be intrinsic to the compiler's register
 // allocator and loop-invariant optimization heuristics.
+// Retry 2026-05-19 Boss pass: 10 additional variants (volatile block/all stores, char* byte-offset addressing, for 1..16 loop, memset block clear, volatile constants, explicit zero local, short counter, !=16 loop condition). Best new try was char* offset form at 73.1707% positional but still broad register/scheduling mismatch; restored prior behaviorally-correct scratch.
 
 class T_Scenario {
 public:

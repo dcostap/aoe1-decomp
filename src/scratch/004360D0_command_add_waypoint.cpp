@@ -9,6 +9,9 @@
 // try 15: local byte aliases a/b/c before calloc; optimized back, no codegen change.
 // try 16: raw unsigned char* packet stores instead of WayPacket fields; no codegen change.
 // try 17: TDebuggingLog as thiscall member improved positional to 31.45% but broke original cdecl stack cleanup/tail scheduling; rolled back.
+// Boss retry 2026-05-19: revalidated baseline; tried p3 as int, volatile packet pointer,
+// and explicit master_obj local. All optimized to same 42-byte-diff baseline; no deeper
+// movement on original CL/DL byte-param load schedule or EDX object-name load.
 // GIVEUP: current best remains exact-size 124B but MISMATCH (42 positional bytes / 33.8710%, 28 edit bytes / 22.5806%). Drift is spread across parameter byte-load scheduling/registers (original CL=p3, DL=p4, reload CL=p5; rebuilt EBX/player first, CL=p4, DL=p5, AL=p3), object-name temp register (original EDX then EAX, rebuilt EAX/EAX), global L load/push order, and shifted final submit. Not proposing accepted_drift.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

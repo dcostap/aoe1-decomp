@@ -1,55 +1,66 @@
-// VA: 004C11E0 RGE_Static_Object ctor (164B)
-// stat_obj.cpp lines 182-229
-// EH frame (needs /GX)
+// 004C11E0 RGE_Static_Object constructor
+// stat_obj.cpp:182-186, 164 bytes, /GX
+// Round2 pass: 10 variants tried: field-by-field natural ctor, temp zero local,
+// raw *(int*) field stores, explicit state local, do_setup temp, visible destructor
+// definition, shared -1 temp, small source order changes, and checking nearby ctor
+// patterns. Best behavior source compiles to 160-byte non-EH .text; visible dtor
+// variant emits a different broad EH/codegen family. Original has VC5 constructor EH
+// registration/state around otherwise simple field initialization and optional setup;
+// local stubs could not reproduce the exact EH/vptr/state basin. Not accepted drift.
+
+class RGE_Game_World;
+class RGE_Sprite;
+class RGE_Object_Node;
+class UnitAIModule;
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    char gap4[0xC];
-    int field_10;
-    int field_14;
+    char gap04[0x0C];
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
     char gap18[0x38];
-    int field_50;
-    int field_54;
-    int field_58;
-    int field_5C;
-    int field_60;
-    int field_64;
-    int field_68;
-    int field_6C;
-    int field_70;
-    int field_74;
-    int field_78;
-    int field_7C;
-    float field_80;
-    char field_84;
-    char field_85;
-    char field_86;
-    
-    RGE_Static_Object(int a1, int a2);
+    RGE_Object_Node* player_object_node;
+    int pathingGroupValue;
+    int pathingGroupNumber;
+    int pathingGroupDesired;
+    int pathingGroupMax;
+    int groupValue;
+    int groupNumber;
+    int groupDesired;
+    int groupMax;
+    int unitAIValue;
+    int groupCommanderValue;
+    int zoneMapIndex;
+    float groupRangeValue;
+    unsigned char inObstructionMapValue;
+    unsigned char lastInObstructionMapValue;
+    unsigned char underAttackValue;
+
+    RGE_Static_Object(int id, RGE_Game_World* world, int do_setup);
+    int setup(int id, RGE_Game_World* world);
 };
 
-void __cdecl sub_574530();
-
-RGE_Static_Object::RGE_Static_Object(int a1, int a2) {
-    field_10 = 0;
-    field_14 = 0;
-    field_50 = 0;
-    field_54 = 0;
-    field_58 = 0;
-    field_5C = 0;
-    field_60 = 0;
-    field_64 = 0;
-    field_68 = 0;
-    field_6C = 0;
-    field_70 = 0;
-    field_74 = 0;
-    field_78 = -1;
-    field_7C = -1;
-    field_80 = 5.0f;
-    field_84 = 0;
-    field_85 = 0;
-    field_86 = 0;
-    
-    sub_574530();
+RGE_Static_Object::RGE_Static_Object(int id, RGE_Game_World* world, int do_setup)
+{
+    sprite = 0;
+    old_sprite = 0;
+    pathingGroupValue = 0;
+    pathingGroupNumber = 0;
+    pathingGroupDesired = 0;
+    pathingGroupMax = 0;
+    groupValue = 0;
+    groupNumber = 0;
+    groupDesired = 0;
+    groupMax = 0;
+    groupCommanderValue = -1;
+    zoneMapIndex = -1;
+    unitAIValue = 0;
+    groupRangeValue = 5.0f;
+    inObstructionMapValue = 0;
+    lastInObstructionMapValue = 0;
+    underAttackValue = 0;
+    player_object_node = 0;
+    if (do_setup != 0)
+        setup(id, world);
 }

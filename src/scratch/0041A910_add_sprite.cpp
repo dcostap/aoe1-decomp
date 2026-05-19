@@ -1,11 +1,23 @@
 // tried ppPrev before/after first loop; tried for-loop and while-loop forms
 // tried moving ppPrev init inside/outside loop; tried do-while for second loop
 // variant lab: 6 variants across 2 runs, all produce 160 bytes (2 too large)
-// best mismatch at offset 38: VC5 loads [esi+4] into eax instead of ecx, then add esi,4 instead of lea edi,[esi+4]
+// prior best mismatch at offset 38: VC5 loads [esi+4] into eax instead of ecx, then add esi,4 instead of lea edi,[esi+4]
 // tried reversing local decl order, while vs for, early pp init: no change in register basin
-// this is a codegen basin issue: VC5 modifies this pointer (esi) instead of keeping it and using edi for ppPrev
-// original preserves esi (this) and uses edi for pointer-to-pointer traversal
-// TU context or different register pressure from neighboring functions likely needed
+// Fresh pass 2026-05-19:
+// try 1: baseline exact-size 158B, 47/158 positional, first mismatch +38.
+// try 2: corrected RGE_Active_Sprite::set_offset to virtual slot +4 and calloc(0xc,1); improved to
+//        exact-size 158B, 36/158 positional, 26 edit bytes; kept.
+// try 3: register self=this; no change.
+// try 4: register ppPrev; no change.
+// try 5: explicit head local; worsened to 43/158 and extra tests; rolled back.
+// try 6: reference alias for list; no change.
+// try 7: register pp; no change.
+// try 8: explicit goto loop labels; no change.
+// try 9: volatile ppPrev; badly worsened prologue/stack, 85% mismatch; rolled back.
+// Remaining issue is a codegen basin: VC5 modifies this pointer (esi) into &list instead of keeping
+// this in esi and using edi for ppPrev; this also flips duplicate-hit count temp (al/ecx) and new-node
+// register (edi/esi). Original preserves esi (this) through traversal and uses edi for pointer-to-pointer.
+// Not accepted-drift safe; diff spans traversal, allocation/insertion registers, and early-return tail.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
@@ -14,10 +26,9 @@ class RGE_Static_Object;
 
 class RGE_Active_Sprite {
 public:
-    void* vtable_ptr;
+    virtual void destroy(int);
+    virtual void set_offset(long, long);
     RGE_Sprite* sprite;
-    void destroy(int);
-    void set_offset(long, long);
     int check_for_shadows();
 };
 
@@ -56,21 +67,27 @@ void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* param_1, unsigned char param
         this->owner->remove_shadows();
     }
 
+    pp = this->list;
     ppPrev = &this->list;
-    for (pp = this->list; pp; pp = pp->next) {
+find_existing:
+    if (pp) {
         if (pp->node->sprite == param_1) {
             pp->count++;
             return;
         }
+        pp = pp->next;
+        goto find_existing;
     }
 
     pp = this->list;
-    while (pp && pp->order <= param_2) {
+find_insert:
+    if (pp && pp->order <= param_2) {
         ppPrev = &pp->next;
         pp = pp->next;
+        goto find_insert;
     }
 
-    RGE_Active_Sprite_Node* node = (RGE_Active_Sprite_Node*)calloc(1, 0xc);
+    RGE_Active_Sprite_Node* node = (RGE_Active_Sprite_Node*)calloc(0xc, 1);
     RGE_Active_Sprite* asp = param_1->make_active_sprite();
     node->node = asp;
     asp->set_offset(param_3, param_4);

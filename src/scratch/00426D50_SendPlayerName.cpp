@@ -11,6 +11,7 @@
 // - 2026-05-19 tried virtual IDirectPlay-style SetPlayerName surface; compiled size-short (96B), same setup-order family.
 // - 2026-05-19 retried explicit zeroes with DP interface local; worsened prologue to push/mov-this before xor and 70.4762% diff.
 // - 2026-05-19 retried explicit zero/source order without DP local; compiled size-short (96B) and kept the wrong push/mov-this-before-zero family.
+// - 2026-05-19 Boss retry: 13 additional source-order/local-dp/late-size/volatile/memset-subrange variants; best remained 56.1905% positional, most were 71.4286%-86.6667% or size-short 96B.
 // GIVEUP: remaining blocker is exact VC5 scheduling of DPNAME zero stores around saved-register pushes and right-to-left call argument side effects (load interface global before short-name lea, set dwSize after pushes). No accepted_drift proposal: call/setup instructions are reordered broadly, not a localized benign drift.
 
 #include <string.h>

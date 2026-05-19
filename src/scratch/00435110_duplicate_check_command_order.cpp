@@ -14,22 +14,21 @@
 // 10: long* p1/p2 declared early — 153B but prologue still wrong (3 pushes, no ecx/ebp).
 // 11: Explicit n1/n2 for count, p1/p2 for arrays — same 153B.
 // 12: Manual delta pointer sub — no improvement.
+// Boss retry 2026-05-19:
+// 13: Shared `goto fail` with top-declared i and explicit p1/p2 unit pointers: major improvement
+//     to exact-size 153B, 33/153 positional (21.57%), 32 edit bytes. It restored push ecx/push ebp,
+//     shared fail epilogue, stack-stored unit pointers, and BP ftol temps.
+// 14: Reversed float comparison source operands. y compare improved but x fld order worsened; net
+//     unchanged metrics. Kept improved shared-fail source.
 //
 // Persistent differences from original:
-// 1. Prologue: 3 pushes (ebx,esi,edi) vs 5 pushes (ecx,ebx,ebp,esi,edi)
-//    — missing push ecx (4B local slot) and push ebp (ebp register)
-// 2. Register allocation: edi=param_1 vs ebx=param_1; count on [esp+10h] vs edi
-// 3. ftol temp: bx vs bp (ebp not saved)
-// 4. Error handling: inline je+8; xor al,al; pop; ret per check (8B each ×4)
-//    vs shared jne+0x65 to single xor al,al; pop; ret at end
-// 5. Zero extension: and edx,0xFF (6B) vs xor/mov byte (4B)
-// 6. Unit array: add esi,14h modifies last_order ptr vs separate lea+stores
+// 1. Prologue/local setup still schedules count load before last_order load; original loads last_order first.
+// 2. Some register choices differ (ECX/EDX swapped for unit pointer homes; ECX vs EDX target compare).
+// 3. First x-coordinate ftol evaluation is reversed from original; y can be matched only by worsening x.
+// 4. Success zero-count branch target/epilogue placement is still shifted by extra fallthrough bytes.
 //
-// Root cause: VC5 register allocator chooses different strategy.
-// Cannot control register assignment (ebx vs edi for param_1, ebp usage)
-// from C++ source in this toolchain.
-//
-// Left in scratch. Not proposing accepted_drift (pervasive reg alloc diff).
+// Left in scratch. Not proposing accepted_drift (remaining drift spans prologue scheduling, compare order,
+// and branch layout, not a tiny localized benign difference).
 
 class RGE_Command_Order {
 public:
@@ -53,24 +52,29 @@ public:
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
     RGE_Command_Order* last_order = this->last_order;
-    unsigned char n = param_1->unit_num;
+    unsigned int n = (unsigned char)param_1->unit_num;
+    long* p1 = param_1->units;
+    long* p2 = last_order->units;
+    int i;
 
-    if (n != last_order->unit_num)
-        return 0;
+    if (n != (unsigned char)last_order->unit_num)
+        goto fail;
 
-    if ((short)(int)param_1->pos_x != (short)(int)last_order->pos_x)
-        return 0;
+    if ((short)(int)last_order->pos_x != (short)(int)param_1->pos_x)
+        goto fail;
 
-    if ((short)(int)param_1->pos_y != (short)(int)last_order->pos_y)
-        return 0;
+    if ((short)(int)last_order->pos_y != (short)(int)param_1->pos_y)
+        goto fail;
 
     if (last_order->target_id != param_1->target_id)
-        return 0;
+        goto fail;
 
-    for (int i = 0; i < n; i++) {
-        if (param_1->units[i] != last_order->units[i])
-            return 0;
+    for (i = 0; i < (int)n; i++) {
+        if (p1[i] != p2[i])
+            goto fail;
     }
 
     return 1;
+fail:
+    return 0;
 }

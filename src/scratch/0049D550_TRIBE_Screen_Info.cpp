@@ -12,7 +12,18 @@
 // 2026-05-19 later pass:
 // 9: Re-tried novtable/manual vptr with current p2/zero source; vptr placed earlier but worsened to 76 positional bytes and still used ECX/EDX wrong for auto_close/setup scheduling.
 // 10: Removed derived virtual declarations while using novtable/manual vptr; no improvement over try 9, rolled back.
-// GIVEUP: exact size but no match. Remaining mismatch is broad constructor body scheduling: original zeros EDX/ECX, stores timer, loads param2 into EDX, emits cmp/sbb/neg auto_close with local_4 state before vptr; rebuilt keeps vptr/state and setup arg scheduling in a different basin. No accepted_drift proposed.
+// Retry 2026-05-19 assigned pass:
+// 11: separate zero/zero2 locals no change.
+// 12: timer_val != 0 spelling produced setne family and worsened to 78 positional bytes; rolled back.
+// 13: volatile param2 local also forced setne/bad scheduling; rolled back.
+// 14: explicit negative boolean added double neg and worsened; rolled back.
+// 15: /Ob0 no codegen change; preserved original custom /GX flags only.
+// 16: explicit param3 local and moving p2/p3 declarations around setup did not affect argument scheduling.
+// 17: intentionally swapped setup args improved edit diff slightly but is semantically wrong; rolled back.
+// 18: /O1 worsened to 103 positional bytes; rolled back.
+// 19: novtable/manual vptr improved local vptr placement but worsened positional diff and still scheduled vptr before sbb/state; rolled back.
+// 20: auto_close temp and signed zero locals no codegen change.
+// GIVEUP: exact size but no match. Existing custom flags file remains /nologo /c /O2 /Oy /GX. Remaining mismatch is broad constructor body scheduling: original zeros EDX/ECX, stores timer, loads param2 into EDX, emits cmp/sbb/neg auto_close with local_4 state before vptr; rebuilt keeps vptr/state and setup arg scheduling in a different basin. No accepted_drift proposed.
 
 class TPanel {
 public:
@@ -49,12 +60,14 @@ public:
 
 TRIBE_Screen_Info::TRIBE_Screen_Info(char* name, char* param2, long param3, unsigned long timer_val)
     : TScreenPanel((int)name) {
-    unsigned int zero = 0;
+    int zero = 0;
     this->timer = timer_val;
-    char* p2 = param2;
-    this->auto_close = (zero < timer_val);
+    int ac = (zero < timer_val);
+    this->auto_close = ac;
     this->last_time = zero;
-    int result = TScreenPanel::setup(rge_base_game->draw_area, p2, (void*)param3, zero);
+    char* p2 = param2;
+    void* p3 = (void*)param3;
+    int result = TScreenPanel::setup(rge_base_game->draw_area, p2, p3, zero);
     if (result == 0) {
         *(int*)((char*)this + 0xD8) = 1;
     }

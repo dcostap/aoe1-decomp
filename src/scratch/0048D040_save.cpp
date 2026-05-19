@@ -9,8 +9,14 @@
 // Attempt 6: off < scenario_num*0x10C — added multiplication (shl/add/lea/shl).
 // Attempt 7: Declared vars before fd — pushed ebp/esi in wrong order.
 // Attempt 8: Struct-wrap to bias ESI — no change.
+// Boss retry 2026-05-19:
+// - Revalidated baseline: exact size, 98/152 positional, 37 edit bytes, first mismatch +29.
+// - Hoisted `cnt` declaration before first write but initialized after it: preserved original push ebp
+//   before count write and moved best to 76/152 positional, 26 edit bytes.
+// - Typed ScenarioInfoEntry pointer variant worsened badly (sub esp 8, 81.6% positional), rolled back.
+// - Reordered `+8+off` expression for name write; no encoding change.
 //
-// Left in scratch: Best result (attempt 3) at 130/152 matching bytes.
+// Left in scratch: Best result below at 136/152 equal bytes, 26 edit bytes.
 // Remaining differences (22 bytes / 14.5%):
 //   1. LEA destination: eax vs esi (lea eax,[ebx+104h] vs lea esi,[ebx+104h])
 //   2. Register for push arg: eax vs esi (consequence of #1)
@@ -51,14 +57,15 @@ void RGE_Scenario_File_Info::save()
     if (fd == -1)
         return;
 
+    int cnt;
     rge_write_uncompressed(fd, &this->scenario_num, 4);
+    cnt = 0;
 
     if (this->scenario_num > 0) {
         int off = 0;
-        int cnt = 0;
         do {
             rge_write_uncompressed(fd, (char*)this->scenarios + off, 4);
-            rge_write_uncompressed(fd, (char*)this->scenarios + off + 8, 0x104);
+            rge_write_uncompressed(fd, (char*)this->scenarios + 8 + off, 0x104);
 
             RGE_Scenario_Header* h = *(RGE_Scenario_Header**)((char*)this->scenarios + off + 4);
             h->save(fd);

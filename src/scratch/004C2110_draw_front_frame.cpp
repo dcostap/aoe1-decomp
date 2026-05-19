@@ -16,6 +16,7 @@
 // - try 24: declared real virtual slot +0x20 and called it only in case0; case0 became exact but branch inverted/switch hoisted, broad regression.
 // BEST CURRENT: exact-sized 125, first 57 bytes match, 22.4000% positional / 47.2000% edit. Remaining drift is case0 arg-register scheduling (ECX vs EDX) and switch case1/case2 block order/table layout.
 // GIVEUP: no accepted_drift proposal because drift spans switch table targets/block order and multiple call setup blocks, not a small localized equivalent instruction swap.
+// Retry 2026-05-19 Boss pass: 10 additional variants (if-chain, case source-order swaps, case0 arg temps/reverse temps, raw thiscall probe which failed compile, real virtual slot, signed-char/direct/named game switch, break-vs-return). Several stayed in best 22.4000% basin; none fixed case0 EDX scheduling plus case block/table order.
 
 extern void* rge_base_game;
 

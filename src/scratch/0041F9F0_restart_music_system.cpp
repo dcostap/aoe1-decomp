@@ -13,6 +13,7 @@
 // try 5: flag tries /G5, /Os, /GA - no change
 // GIVEUP: VC5 internal prologue/epilogue heuristic mismatch; cannot override register save order
 //   (ebx,esi,edi vs edi,esi,ebx) or save timing (prologue vs after early-null-check) from C++ source.
+// Retry 2026-05-19 Boss pass: 10 source variants (self/ms locals, direct member access, shared-goto return, explicit pos/loop/to/cur locals, duplicate original tests, nested if/else, result local) all remained 144B or worse (one 128B). Flag probes /Od, /O1, /Ox, /O2 without /Oy did not help (/Od broad mismatch, /O1 110B, /Ox and /Oy- still 144B). Restored prior scratch.
 
 class TMusic_System {
 public:

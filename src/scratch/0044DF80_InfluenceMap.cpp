@@ -3,17 +3,20 @@
 // Status: PARKED in scratch - VC5 register/scheduling drift
 //
 // Attempt log:
-// v0: virtual class, C++ constructor → EBP frame, vtable auto-write position mismatch
-// v1: struct + __fastcall with dummy, manual vfptr → EBP kept for ySize param
-// v2: field accesses for ySize/xSize → compiler still keeps params in regs
-// v3: memset intrinsic → call not inline, size too small (144 bytes)
-// v4: __thiscall member + memset pragma → compile error (undeclared)
-// v5: string.h include → guarded fill loops, still EBP
-// v6: C++ constructor (virtual) → auto-generated fill code, EBP
-// v7: volatile params store+compute order → first 5 bytes match!
-// v8: volatile params, single p var → 5-byte prologue match, still EBP
-// v9: explicit v<<24 fill → correct 4-byte fill pattern, still EBP + guarded fill
-//
+// v0: virtual class, C++ constructor -> EBP frame, vtable auto-write position mismatch
+// v1: struct + __fastcall with dummy, manual vfptr -> EBP kept for ySize param
+// v2: field accesses for ySize/xSize -> compiler still keeps params in regs
+// v3: memset intrinsic -> call not inline, size too small (144 bytes)
+// v4: __thiscall member + memset pragma -> compile error (undeclared)
+// v5: string.h include -> guarded fill loops, still EBP
+// v6: C++ constructor (virtual) -> auto-generated fill code, EBP
+// v7: volatile params store+compute order -> first 5 bytes match!
+// v8: volatile params, single p var -> 5-byte prologue match, still EBP
+// v9: explicit v<<24 fill -> correct 4-byte fill pattern, still EBP + guarded fill
+// Fresh pass 2026-05-19:
+// v10: natural constructor rewrite; worsened to 91.98% positional, kept EBP and reordered stores.
+// v11: current source re-restored parked volatile Init form; still exact-size 162B, 145/162 positional.
+// v12: attempted non-volatile/natural fill and explicit row loop; no improvement.
 // Remaining drift summary:
 // 1. PROLOGUE: compiler saves EBP (extra callee-saved register). Original saves
 //    ebx/esi/edi (3 regs) but mine saves ebx/ebp/esi/edi (4 regs). Root cause:
@@ -28,7 +31,7 @@
 //    pointer and row pointer; mine uses separate registers).
 // 5. All differences are stable VC5 codegen-family drift; behavior is equivalent.
 
-void* __cdecl operator_new(size_t size);
+void* __cdecl operator_new(unsigned int size);
 
 struct InfluenceMap {
     int vfptr;          // 0x00

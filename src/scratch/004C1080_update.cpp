@@ -42,6 +42,16 @@
 // try 23: /Ob0 flag improved to 35.7724% and exact size but inserted an extra `push 0` before the shape destructor call, so rejected/flag removed.
 // try 24: fake non-dtor destroy() call removed /Ob0 extra push but is not a valid source model and returned to 53.6585%; rolled back.
 // Final remains default flags, 123B, 53.6585% positional / 38.2114% edit, first mismatch offset 12. No accepted_drift: broad scheduler/layout drift across both time paths and delete block.
+// Retry 2026-05-19 late pass:
+// try 25: register dt no change.
+// try 26: volatile pointer reload of param after dt improved to 48.7805% / 37.3984% by loading param before the zero-delta branch and fixing first-time store order; kept.
+// try 27: declaring time before dt lost EBX-save basin and regressed to 86.9919%; rolled back.
+// try 28: volatile time local regressed to 86.1789%; rolled back.
+// try 29: assignment-in-condition for dt with early param load regressed to 86.9919%; rolled back.
+// try 30: comparing this->delta_time after store did not change compare/store order.
+// try 31: volatile new_dt local slightly improved positional to 47.9675% but edit diff worsened to 49.5935%; rolled back.
+// try 32: /Ob1 and /Og flag probes no better than kept source; removed flags.
+// GIVEUP: best kept default-flags source is 123B, 48.7805% positional / 37.3984% edit, first mismatch offset 12. It fixes early param-load/store ordering but still has broad register/scheduler/layout drift (dt in EDX not ECX, compare before delta store, no redundant delete null test). Not accepted_drift.
 
 struct TShape {
     ~TShape();
@@ -65,7 +75,8 @@ void RGE_Sprite::update(unsigned long param_1) {
         TShape* pS = shape;
         if (pS) {
             int dt = delta_time;
-            unsigned long time = param_1;
+            volatile unsigned long* ptime = &param_1;
+            unsigned long time = *ptime;
             if ((double)dt == 0.0) {
                 this->last_time = time;
                 this->delta_time = 1;

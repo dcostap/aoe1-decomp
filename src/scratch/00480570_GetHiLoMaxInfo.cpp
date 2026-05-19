@@ -44,6 +44,10 @@
 // structure, not localized drift.
 //
 // Left in scratch with best attempt (count=param_1 first, separate inits).
+// Boss retry 2026-05-19: revalidated best attempt still 144B text for 146B target.
+// Tried volatile counter pointer plus register hi to force stack-slot dec/store and EBX hi; it
+// produced exact size but with push-ecx stack home, sum in EBX, hi on stack, and 93.15% positional
+// drift. Rolled back to known best 144B source.
 
 #include <stdio.h>
 

@@ -10,12 +10,21 @@
 // try 6: cast name global reads through volatile pointers; still hoisted.
 // try 7: put Log in comma expression feeding first name store; optimizer still schedules local name/DPNAME setup before log.
 // tried transient /Od flag: body 130 bytes with EBP/debug basin, not useful; removed flag.
+// Boss retry 2026-05-19:
+// - Added missing DAT_005832bc/c4 declarations so scratch compiles; original comma/volatile source
+//   remained 128B text (too short) with initialization hoisted before Log.
+// - Rewrote as explicit Log-first then manual overlapped test/DPNAME stores; got exact 148B size
+//   and first 19 bytes match, but store scheduling/offsets and COM-call setup still differ broadly
+//   (90/148 positional, 87.16% edit).
+// - Reordered TEMPORARY_NAME chunk stores c4/c0/bc; no improvement. Kept exact-size Log-first source.
 // GIVEUP: behavior surface understood (Log, build DPNAME with TEMPORARY_NAME, DirectPlay SetPlayerName). Remaining blocker is VC5 scheduling/stack-overlap shape: original calls Log first, delays cdecl cleanup, then initializes overlapping local string/DPNAME slots; rebuilt under /O2 keeps same 0x30 frame and final COM call but hoists local initialization before Log and compacts to 128 bytes. Not proposing accepted_drift because call/order and stack-write schedule differ broadly.
 
 #include "../../include/game_globals.h"
 
 extern void* L;
 extern "C" void __cdecl Log(void* log, char* text, ...);
+extern unsigned int DAT_005832bc;
+extern unsigned int DAT_005832c4;
 
 struct DPNAME {
     unsigned long dwSize;
@@ -39,19 +48,26 @@ public:
 };
 
 void TCommunications_Handler::ForceNameChange(void) {
-    volatile char test[32];
+    char test[32];
     DPNAME dpn;
 
-    *(int*)&test[0] = (Log(L, "Force Name Change"), *(volatile unsigned int*)&DAT_005832bc);
-    *(int*)&test[4] = *(volatile unsigned int*)&DAT_005832c0;
-    *(int*)&test[8] = *(volatile unsigned int*)&DAT_005832c4;
-    *(short*)&test[12] = *(volatile unsigned short*)&DAT_005832c8;
-    test[14] = *(volatile unsigned char*)&DAT_005832ca;
+    Log(L, "Force Name Change");
+
+    *(int*)&test[12] = DAT_005832c4;
+    *(int*)&test[8] = DAT_005832c0;
+    *(int*)&test[4] = DAT_005832bc;
+    *(int*)&test[19] = 0;
+    *(int*)&test[23] = 0;
+    test[18] = DAT_005832ca;
+    *(int*)&test[27] = 0;
+    *(int*)&test[0] = (int)(test + 4);
+    *(short*)&test[16] = DAT_005832c8;
+    test[31] = 0;
 
     dpn.dwSize = 0x10;
     dpn.dwFlags = 0;
     dpn.lpszShortName = 0;
-    dpn.lpszLongName = (char*)test;
+    dpn.lpszLongName = test + 4;
 
     ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, &dpn, 2);
 }

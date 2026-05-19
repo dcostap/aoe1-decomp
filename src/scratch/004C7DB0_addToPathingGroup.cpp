@@ -6,7 +6,11 @@
 // - Tried explicit members local inside first duplicate scan: no codegen improvement; rolled back.
 // - Tried j/k copy-loop spelling to mirror preincrement copy indexing: worsened edit diff/compile surface; rolled back.
 // - /Ob0 flag probe: no change; removed.
-// GIVEUP: behavior, offsets, allocation/copy/growth logic are understood, but remaining mismatch is broad register allocation and loop-shape drift in both duplicate scan and copy loop. No accepted_drift: broad topology/register drift, not localized.
+// Boss retry 2026-05-19:
+// - for-loop spelling of duplicate scan/copy loop greatly improved edit diff to 23B and kept exact size,
+//   but inserted an extra redundant count test in scan and shifted the rest of function (76.55% positional).
+// - goto-shaped scan did not help; fell back to pointer-walk/register-swapped family (78.62%).
+// Kept for-loop variant as best current source. GIVEUP: behavior, offsets, allocation/copy/growth logic are understood, but remaining mismatch is register allocation plus shifted redundant-test/loop-shape drift. No accepted_drift: positional drift is broad, not localized.
 
 #include "../../include/game_globals.h"
 
@@ -30,13 +34,12 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
     int count = this->pathingGroupCount;
     if (count > 0) {
         int max = this->pathingGroupMax;
-        do {
+        for (; i < count; i++) {
             if (i >= max)
                 break;
             if (this->pathingGroupMembers[i] == groupIndex)
                 return;
-            i++;
-        } while (i < count);
+        }
     }
 
     if (count > this->pathingGroupMax - 1) {
@@ -46,13 +49,12 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
             int max = this->pathingGroupMax;
             int j = 0;
             if (max > 0) {
-                do {
+                for (; j < max; j++) {
                     if (j >= newMax)
                         break;
                     newMembers[j] = this->pathingGroupMembers[j];
-                    j++;
                     max = this->pathingGroupMax;
-                } while (j < max);
+                }
             }
             operator delete(this->pathingGroupMembers);
             this->pathingGroupMembers = newMembers;

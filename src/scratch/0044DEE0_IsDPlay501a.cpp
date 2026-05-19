@@ -5,6 +5,14 @@
 // attempt 4-10: various source reshapes (65-74%)
 // attempt 11: add GetLastError on GetFileVersionInfoA failure path -> 65%
 //   Also reverted comparison to simple if form
+// Fresh pass 2026-05-19:
+// try 12: register verSize; no change, still ESI=size / EDI=buffer (opposite original).
+// try 13: hoisted pv declaration/assignment; no change.
+// try 14: volatile pv; badly worsened to 72.5% and first mismatch +2; rolled back.
+// try 15: `if(verSize) ... else GetLastError` source; size collapsed to 144; rolled back.
+// try 16: comparison as major/minor locals with equality-first nesting; worse edit/branch shape.
+// try 17: De Morgan comparison; got p[3] preload but wrong jb/jne tree; rolled back.
+// try 18: explicit <= failure inside equality arm; emitted sbb/inc boolean return; rolled back.
 //
 // Remaining 65%: register swap (esi/edi) + comparison tree shape.
 // VC5 register allocation basin. Left in scratch.
@@ -18,6 +26,7 @@ extern unsigned int __stdcall GetLastError( void );
 extern void* operator new( unsigned int );
 
 int IsDPlay501a() {
+    void* pv;
     void* verInfo;
     unsigned int verSize;
     unsigned int verInfoLen;
@@ -28,7 +37,8 @@ int IsDPlay501a() {
         GetLastError();
         return 0;
     }
-    if (void* pv = operator new(verSize)) {
+    pv = operator new(verSize);
+    if (pv) {
         if (!GetFileVersionInfoA( "dplayx.dll", 0, verSize, pv )) {
             GetLastError();
             return 0;

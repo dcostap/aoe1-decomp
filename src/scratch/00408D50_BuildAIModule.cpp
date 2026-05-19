@@ -11,8 +11,18 @@
 // 4-8: Various explicit call approaches — all caused push edi
 // 9: Let VC5 auto-call ~BuildItem/~AIModule — NO push edi, correct offsets
 //     Remaining diff: EH state initial value (02 vs 01)
+// 2026-05-19 assigned retry:
+// 10: saved typesToIgnoreValue local; no codegen change.
+// 11: delete[] and explicit operator delete call; no codegen change; restored delete.
+// 12: novtable/manual vptr store worsened vptr scheduling and positional diff; rolled back.
+// 13: `0 < buildListLength` no change; `>= 1` worsened branch/codegen; rolled back.
+// 14: zero-field store order reversed worsened edit diff; rolled back.
+// 15: flag probes /O2 /GX and /Ob0 no change; /O1 much worse; restored /O2 /Oy /GX.
+// 16: inverted empty delete if/else no change; rolled back.
+// 17: non-virtual BuildItem destructor worsened offsets/codegen; rolled back.
 //
-// Accepted drift rationale:
+// ACCEPTED_DRIFT DENIED by review: remaining mismatch is EH state numbering plus an omitted redundant state store before delete; this is cleanup/unwind-state topology, not safe localized register/layout drift. Leave in scratch.
+// Former accepted drift rationale (kept as evidence, not accepted):
 // - All field offsets match (+0xA0, +0xAC, +0xF0, +0xB0/+0xB4/+0xB8)
 // - All stack offsets match ([esp+14h], [esp+0Ch])
 // - No register save differences (no push edi, same callee-saves)

@@ -15,6 +15,10 @@
 // - 2026-05-19 later pass tried parameter mutation (x-=ref/y-=ref) with named rows/row/limit/cell: got original EAX=x start but added EDI save and worsened to 86%+ positional.
 // - Tried x-mutated with y local and value+cur order: still added EDI save and worsened to 87.8% positional.
 // - Tried value parameter as int and split rx/ry copy-then-sub assignments: no change from baseline register-swap basin.
+// - 2026-05-19 Boss retry: revalidated baseline (71.5447% / first mismatch +1); tried direct
+//   parameter mutation and xref/yref/named row+limit variants. Direct mutation stayed in baseline
+//   register-swap basin; xref/named variants got desired initial EAX/EDX but added EDI save and
+//   worsened to 86.1789%. Rolled back to baseline as best scratch state.
 // GIVEUP: remaining blocker is combined register allocation (original EAX=rx, EDX=ry, ESI=cell, CL=limit) plus exact unsigned-byte widening/order around sum and saturation. No accepted_drift proposal because drift changes stack spills/register topology/control displacements broadly.
 
 struct InfluenceMap {

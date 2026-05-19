@@ -6,6 +6,14 @@
 // try 3: split offset *= width and pcVar3 += terms; no codegen change.
 // try 4: delayed cVar6 declaration/assignment and register-qualified pcVar3/cVar6; no codegen change.
 // try 5: changed cVar6 to char; worsened broad register allocation, rolled back.
+// try 6: explicit row/base/pcVar3 pointer steps; no codegen change.
+// try 7: non-register cVar6; no codegen change.
+// try 8: declare row before width; no codegen change.
+// try 9: /Ob0 flag probe; no codegen change, removed flag.
+// try 10: /G5 flag probe; no codegen change, removed flag.
+// try 11: alternate address expression iVar7 + (row + PlacementArray); no codegen change.
+// try 12: volatile PlacementArray forced different address basin and worsened to 88 positional bytes; rolled back.
+// try 13: boolean initializer for cVar6 used setg/register reshuffle and worsened to 98 positional bytes; rolled back.
 // GIVEUP: remaining drift is localized to inner pointer computation: original uses EAX=row (EBX*width), loads PlacementArray in ESI, adds EDI then ESI, then reuses ESI as count; rebuilt loads PlacementArray into EBP early and zeros ESI before imul. Behavior/size otherwise match; not proposing accepted_drift without approval because it is a nontrivial address-generation/register-topology hunk.
 
 class PointMaker {

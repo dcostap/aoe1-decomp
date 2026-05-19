@@ -14,6 +14,9 @@
 // try 11: made player_num field volatile; no improvement for the lookup hunk and with some shapes perturbed the whole register allocation, rolled back.
 // try 12: raw offset read *(short*)((char*)self+0x4B8) for player_num; optimizer still reordered world load before index load.
 // try 13: explicit world local and reversed pointer addition *(pn + players); no improvement; explicit world local with volatile field worsened prologue/register allocation.
+// try 14: short pn local and direct players[pn] access; same 11-byte localized lookup-order mismatch.
+// try 15: raw char* pointer arithmetic for world/player lookup; optimizer still hoisted world load before player_num.
+// try 16: volatile short pointer for player_num forced source read order but changed prologue/register allocation and worsened to 26 bytes; rolled back.
 // GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is an address-generation/register-topology hunk in the object lookup, not a tiny harmless encoding swap.
 
 struct RGE_Base_Game {
