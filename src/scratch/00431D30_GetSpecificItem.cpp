@@ -2,7 +2,7 @@
 // com_q.cpp:298-323
 // Default flags
 
-#define g_queue_data (*(int*)0x0062CF3C)
+extern int g_queue_data;
 
 struct MsgQueueEntry {
     int Code;           // +0

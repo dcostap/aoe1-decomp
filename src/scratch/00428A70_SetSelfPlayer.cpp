@@ -3,12 +3,12 @@
 // Com_hand.cpp:2303-2323
 // 156 bytes
 //
-// Attempt 7: Use volatile pointer for selfDcoID to prevent hoisting.
+// Attempt 9: Pure while loop like attempt 1, only change = volatile globals.
 
 #include <stdlib.h>
 
-extern volatile int selfDcoID;        // volatile prevents hoisting
-extern void* L;
+extern volatile int selfDcoID;     // volatile prevents hoisting
+extern volatile void* L;
 
 extern void __cdecl Log(void* log, const char* fmt, ...);
 
