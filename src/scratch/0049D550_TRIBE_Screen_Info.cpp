@@ -9,6 +9,9 @@
 // 6: Tried `timer_val != 0` / if-else auto_close spelling; worsened to setne family, rolled back.
 // 7: Tried volatile zero to force explicit zero local/registers; worsened with stack zero homes, rolled back.
 // 8: Tried saved `p2` local and zero local for setup argument pressure; minor register/order changes only.
+// 2026-05-19 later pass:
+// 9: Re-tried novtable/manual vptr with current p2/zero source; vptr placed earlier but worsened to 76 positional bytes and still used ECX/EDX wrong for auto_close/setup scheduling.
+// 10: Removed derived virtual declarations while using novtable/manual vptr; no improvement over try 9, rolled back.
 // GIVEUP: exact size but no match. Remaining mismatch is broad constructor body scheduling: original zeros EDX/ECX, stores timer, loads param2 into EDX, emits cmp/sbb/neg auto_close with local_4 state before vptr; rebuilt keeps vptr/state and setup arg scheduling in a different basin. No accepted_drift proposed.
 
 class TPanel {

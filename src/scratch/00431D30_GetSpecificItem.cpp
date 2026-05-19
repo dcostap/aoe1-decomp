@@ -1,59 +1,57 @@
-// 00431D30 GetSpecificItem
-// 156 bytes, __thiscall, RGE_Communications_Queue method
-// probe 3: restructure loop to match original control flow
+// 00431D30 RGE_Communications_Queue::GetSpecificItem (156B)
+// com_q.cpp:298-323
+// Default flags
 
-struct MsgQueue {
-    unsigned int ControlCommand;
-    unsigned int ExecTurn;
-    unsigned char Code;
-    char gap_09[3];
-    unsigned int DataSize;
-    void* Data;
-    unsigned int field_10;
-    unsigned int field_14;
-    unsigned int field_18;
-};
+#define g_queue_data (*(int*)0x0062CF3C)
+
+struct MsgQueueEntry {
+    int Code;           // +0
+    int ExecTurn;       // +4
+    unsigned char SeqNo; // +8
+    char pad_09[3];     // +9..+B
+    char* msgptr;       // +0xC
+    int From;           // +0x10
+    int Size;           // +0x14
+    int ControlCommand; // +0x18
+}; // total = 0x1C
 
 class RGE_Communications_Queue {
 public:
-    unsigned int QueueDepth;
-    unsigned int HighQueueDepth;
-    unsigned int MaxQSize;
-    char TBuff[255];
-    unsigned char _pad_0[1];
-    unsigned long LastCurrentTurn;
-    unsigned char Sequence;
-    unsigned char _pad_1[3];
-    MsgQueue* Queue;
+    char gap_00[4];
+    int HighQueueDepth;     // +4
+    char gap_08[0x10C];     // +8 to +0x113
+    MsgQueueEntry* Queue;   // +0x114
 
     void* GetSpecificItem(unsigned int param_1, unsigned long param_2, unsigned char param_3, unsigned int* param_4);
 };
 
-extern unsigned int g_queue_data;
+void* RGE_Communications_Queue::GetSpecificItem(unsigned int param_1, unsigned long param_2, unsigned char param_3, unsigned int* param_4)
+{
+    int targetCode = param_1 * 1000 + param_3;
 
-void* RGE_Communications_Queue::GetSpecificItem(unsigned int param_1, unsigned long param_2, unsigned char param_3, unsigned int* param_4) {
-    unsigned int i = 0;
-    MsgQueue* mq = Queue;
-    unsigned int targetCode = param_1 * 1000 + param_3;
+    int idx = 0;
+    MsgQueueEntry* entry = Queue;
 
-    for (;;) {
-        if (mq->ControlCommand == targetCode && mq->ExecTurn == param_2) break;
-        i++;
-        mq++;
-        if (i > HighQueueDepth) return 0;
+    while (1) {
+        if (entry->Code == targetCode && entry->ExecTurn == param_2)
+            goto found;
+        idx++;
+        entry++;
+        if (idx > HighQueueDepth)
+            return 0;
     }
 
-    *param_4 = mq->field_14;
-    g_queue_data = (unsigned int)mq->Data;
-    mq->Data = 0;
+found:
+    *param_4 = entry->Size;
+    g_queue_data = (int)entry->msgptr;
+    entry->msgptr = 0;
 
-    mq->ControlCommand = 0;
-    mq->ExecTurn = 0;
-    mq->Code = 0;
-    mq->DataSize = 0;
-    mq->field_10 = 0;
-    mq->field_14 = 0;
-    mq->field_18 = 0;
+    entry->Code = 0;
+    entry->ExecTurn = 0;
+    entry->SeqNo = 0;
+    entry->From = 0;
+    entry->Size = 0;
+    entry->ControlCommand = 0;
 
     return (void*)g_queue_data;
 }

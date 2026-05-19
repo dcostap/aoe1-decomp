@@ -9,6 +9,11 @@
 // try 6: volatile player_num forced source load order but destroyed register allocation; rolled back.
 // try 7: volatile self forced stack home/prologue and worsened badly; rolled back.
 // try 8: final remaining mismatch is localized to lookup-chain register/load order only: original loads player_num into EDI before world into EDX, rebuilt loads world into EDI then player_num into EDX.
+// try 9: typed world->players as RGE_Player** instead of void**; no codegen change.
+// try 10: collapsed lookup to one direct indexed expression; no codegen change.
+// try 11: made player_num field volatile; no improvement for the lookup hunk and with some shapes perturbed the whole register allocation, rolled back.
+// try 12: raw offset read *(short*)((char*)self+0x4B8) for player_num; optimizer still reordered world load before index load.
+// try 13: explicit world local and reversed pointer addition *(pn + players); no improvement; explicit world local with volatile field worsened prologue/register allocation.
 // GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is an address-generation/register-topology hunk in the object lookup, not a tiny harmless encoding swap.
 
 struct RGE_Base_Game {
@@ -23,9 +28,11 @@ struct RGE_Base_Game {
     short master_obj_id;
 };
 
+struct RGE_Player;
+
 struct RGE_Game_World {
     char pad_00[0x40];
-    void** players;
+    RGE_Player** players;
 };
 
 struct RGE_Player {
@@ -59,9 +66,7 @@ void TRIBE_Screen_Sed::set_paint_object_mode() {
 
     if (mo_id != -1) {
         int pn = (int)self->player_num;
-        void** players = self->world->players;
-        RGE_Player* pl = (RGE_Player*)players[pn];
-        RGE_Master_Static_Object* obj = (RGE_Master_Static_Object*)pl->master_objects[mo_id];
+        RGE_Master_Static_Object* obj = (RGE_Master_Static_Object*)(*(pn + self->world->players))->master_objects[mo_id];
 
         if (obj != 0 && obj->obj_type == 0x50 && obj->flag != 0) {
             enabled = 1;

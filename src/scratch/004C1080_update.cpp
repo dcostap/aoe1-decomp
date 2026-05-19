@@ -32,6 +32,16 @@
 // try 15: tried `delete pS` instead of explicit destructor+operator_delete; identical codegen to explicit form, restored explicit form.
 // try 16: assignment-in-condition for delta_time threshold; no codegen improvement, kept only because it compiles to same current baseline.
 // GIVEUP: remaining issue still broad VC5 scheduling/register allocation (missing EBX save/use, param load after branch, first-time stores reversed, compare/store order reversed, delete redundant test optimized out). Not accepted_drift.
+// Retry 2026-05-19/20 assigned pass:
+// try 17: introduced `time = param_1` and explicit elapsed/new_dt locals; restored EBX save and improved from 86.99% to old-best 53.6585%, but still schedules param load after zero-delta branch and reverses first-path store order / compare-store order.
+// try 18: moving `time` declaration inside the loaded/shape block produced identical codegen to try 17.
+// try 19: volatile last_time stores did not affect scheduling; rolled back.
+// try 20: separated new_dt store then compared local; VC5 still compared before store.
+// try 21: compared `this->delta_time` after store with volatile delta_time field; forced store+reload before compare but worsened layout/size (52.8455% positional, bad tail truncation); rolled back.
+// try 22: reloaded `shape` into pS2 to preserve redundant null test before delete; did preserve test but overgrew/truncated tail and worsened layout; rolled back.
+// try 23: /Ob0 flag improved to 35.7724% and exact size but inserted an extra `push 0` before the shape destructor call, so rejected/flag removed.
+// try 24: fake non-dtor destroy() call removed /Ob0 extra push but is not a valid source model and returned to 53.6585%; rolled back.
+// Final remains default flags, 123B, 53.6585% positional / 38.2114% edit, first mismatch offset 12. No accepted_drift: broad scheduler/layout drift across both time paths and delete block.
 
 struct TShape {
     ~TShape();
@@ -55,14 +65,18 @@ void RGE_Sprite::update(unsigned long param_1) {
         TShape* pS = shape;
         if (pS) {
             int dt = delta_time;
+            unsigned long time = param_1;
             if ((double)dt == 0.0) {
-                this->last_time = param_1;
+                this->last_time = time;
                 this->delta_time = 1;
                 return;
             }
             int old_time = this->last_time;
-            this->last_time = param_1;
-            if ((this->delta_time = (param_1 - old_time) + dt) >= 180000) {
+            int elapsed = time - old_time;
+            this->last_time = time;
+            int new_dt = elapsed + dt;
+            this->delta_time = new_dt;
+            if (new_dt >= 180000) {
                 if (pS) {
                     pS->~TShape();
                     operator_delete(pS);

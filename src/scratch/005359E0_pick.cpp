@@ -1,12 +1,27 @@
 // VA: 005359E0 RGE_View::pick
 // Source: view.cpp lines 2272-2300
 // Size: 151 bytes, __thiscall, ret 18h (6 params)
-// Status: parked — 8 probes, epilogue + zeroing scheduling artifact
-// Conditional generates correct sub/neg/sbb/and pattern.
-// view_function call pushes 9 args correctly (stdcall, callee-cleanup).
-// Remaining: struct zeroing interleaved with arg prep (lea reordering),
-//   missing duplicated epilogue for 0x33 branch (7 bytes short = 144 vs 151).
-// Compiler optimization — different scheduling from original VC5.
+// Default flags: /nologo /c /O2 /Oy
+//
+// Attempt log:
+// Attempt 1-3: Named locals eliminated sub esp,10h (128 bytes short). Restored
+//   int locals[4] array but register allocation differed per attempt.
+// Attempt 4-6: Tried unsigned char key type → added masking (and eax,0FFh).
+// Attempt 7: Baseline with array + result-first → 151 bytes, byte ops via (unsigned char)cast,
+//   but key in EDX not EAX, obj in ECX not ESI, info in ESI not EDI.
+// Attempt 8: Named struct fields + RGE_Pick_Info struct → eliminated sub esp,10h,
+//   generated mov dword [mem],0 pattern (5 bytes each vs 3 bytes with xor reg,reg).
+// Attempt 9: (unsigned char)key cast + result-first + local array → 151 bytes. Byte ops
+//   correct (mov al,dl; sub al,28h; neg al; sbb eax,eax). Key in EDX, obj in ECX,
+//   info in ESI (same as attempt 7).
+// Attempt 10: memset(info,0,20) forces xor edx,edx + mov [ecx],edx pattern. Key in EAX!
+//   But byte ops use CL instead of DL, local store order scrambled, memset uses ECX instead of EDI.
+// Left in scratch: 10 attempts, all 151 bytes. Fundamental register-allocation differences:
+//   (1) EDX/ECX/EAX/ESI/EDI register set differs from original throughout the entire function.
+//   (2) Original: EAX=key, ESI=obj, DL=byte ops, EDX=result, EDI=info, EDX=zero.
+//   (3) Best rebuilt: EAX/EDX=key, ECX=obj, CL/AL=byte ops, EAX=result, ESI=info, EDI=zero.
+//   Same compiler, same source → different register allocation. Not fixable from C++.
+//   Not proposing accepted_drift because positional diff is 82-90% — too broad.
 
 #include <stdlib.h>
 
@@ -22,16 +37,18 @@ struct RGE_View {
 
 unsigned char RGE_View::pick(int key, int param_2, int mouse_y, int mouse_x,
                               void* info, void* obj) {
-    // Local: 16 bytes
     int locals[4];
-    locals[0] = mouse_y;     // [esp+8] area: start_mouse_pos.y
-    locals[1] = mouse_x;     // [esp+0Ch] area: mouse_pos.x
-    locals[2] = mouse_y;     // [esp+10h] area: mouse_pos.y
 
-    // Conditional: result = (key != '(') ? obj : 0
-    int result = (key != 0x28) ? (int)obj : 0;
+    // Byte-level comparison via unsigned char cast
+    int result = ((unsigned char)key != '(') ? (int)obj : 0;
 
-    // Zero info: separate from call arg prep
+    // Local stores matching original intent
+    locals[3] = mouse_x;
+    locals[1] = mouse_x;
+    locals[2] = mouse_y;
+    locals[0] = mouse_y;
+
+    // Zero info structure
     int* pi = (int*)info;
     pi[0] = 0;
     pi[1] = 0;

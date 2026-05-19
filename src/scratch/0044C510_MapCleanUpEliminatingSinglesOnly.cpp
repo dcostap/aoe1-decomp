@@ -1,5 +1,12 @@
 // PointMaker::MapCleanUpEliminatingSinglesOnly
 // VA: 0044C510 - best version (10.4% diff)
+// 2026-05-19 retry:
+// try 1: revalidated inherited best: exact size, 15 positional bytes / 10.4167%, only pointer-computation register/order hunk differs.
+// try 2: introduced explicit offset local and PlacementArray+iVar7+offset; no codegen change.
+// try 3: split offset *= width and pcVar3 += terms; no codegen change.
+// try 4: delayed cVar6 declaration/assignment and register-qualified pcVar3/cVar6; no codegen change.
+// try 5: changed cVar6 to char; worsened broad register allocation, rolled back.
+// GIVEUP: remaining drift is localized to inner pointer computation: original uses EAX=row (EBX*width), loads PlacementArray in ESI, adds EDI then ESI, then reuses ESI as count; rebuilt loads PlacementArray into EBP early and zeros ESI before imul. Behavior/size otherwise match; not proposing accepted_drift without approval because it is a nontrivial address-generation/register-topology hunk.
 
 class PointMaker {
 public:
@@ -22,7 +29,8 @@ void PointMaker::MapCleanUpEliminatingSinglesOnly() {
                 do {
                     int iVar1 = Width;
                     char* pcVar3 = PlacementArray + iVar5 * iVar1 + iVar7;
-                    int cVar6 = 0;
+                    register int cVar6;
+                    cVar6 = 0;
                     if (pcVar3[-iVar1] > 0) cVar6 = 1;
                     if (pcVar3[-1] > 0) cVar6++;
                     if (pcVar3[1] > 0) cVar6++;

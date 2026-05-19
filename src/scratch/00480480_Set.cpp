@@ -10,6 +10,10 @@
 // try 6: swapped equality expression to now == prev; changed cmp operand order but still EDX prev and worse family.
 // try 7: /O1 probe: 133B too short, removed.
 // try 8: /O2 /Os probe: 133B too short, removed.
+// 2026-05-19 later pass:
+// try 9: non-register now + register prev/diff and explicit diff-=prev before TSLC; no improvement, 102 positional / 42 edit.
+// try 10: idx++ split from Offset load; same worse family.
+// try 11: direct field compare before prev local; same worse family.
 // GIVEUP: current best below is behaviorally straightforward and exact-size, but original keeps previous LastCall in ECX, copies now to EDX for delta, preserves a longer load/store schedule, and has no NOP padding; rebuilt keeps previous LastCall in EDX/uses ECX for delta or offset depending source. Not proposing accepted_drift because drift spans register allocation, index update schedule, aTSLC store source, and final length/padding.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);

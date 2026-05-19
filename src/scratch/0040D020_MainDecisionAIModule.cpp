@@ -1,94 +1,48 @@
 // 0040D020 MainDecisionAIModule::~MainDecisionAIModule (aimdmod.cpp:57-58, 112B)
 // FLAGS: /GX
 //
-// Status: STUCK — VC5 EH prologue family mismatch.
+// Attempt log (2026-05-19):
+// 10+ probes attempted. Best result: non-virtual stubs + delete expression + /GX.
+// Edit diff 18.75%, positional diff 64.29%. Field offsets correct.
 //
-// Blocker: The 1998 build uses an FS-first SEH prologue (mov eax,[fs:0]; push -1;
-// push handler; push eax) with no saved-this slot. Our VC5 uses a push-first
-// prologue (push -1; push handler; mov eax,[fs:0]; push eax; push ecx) with an
-// extra saved-this slot. This shifts all stack offsets and cleanup (`add esp,0Ch`
-// vs `add esp,10h`). The prologue format is controlled by VC5's internal compiler
-// version/architecture, not by source or flag choices.
+// Remaining mismatch (18.75% edit / 64.29% positional):
+// The EH prologue format is structurally different:
+//   Original: FS-first 3-slot (mov eax,[fs:0]; push -1; push handler; push eax)
+//   Rebuilt:  push-first 4-slot (push -1; push handler; mov eax,[fs:0]; push eax; push ecx)
+// VC5's /GX always emits push-first (4-slot with saved-this). The 1998 build's
+// compiler emitted FS-first (3-slot, no saved-this). This is a compiler-version
+// internal EH model difference.
 //
-// Best result: __declspec(novtable) on derived class removes the vtable store
-// (edit diff 18.75%, positional 64.29%). Without novtable: edit diff 37.5%.
-// Edit diff is misleading because resync shifts prologue misalignment into the
-// tail - the actual instruction-level differences are in the first 30 bytes
-// (prologue format) and the last 3 bytes (stack cleanup). The function body
-// (null check, delete call, zero stores, base destructor call) matches perfectly.
+// Body (null check, delete, zero stores, base dtor call) is behaviorally correct.
+// Stack frame offsets differ by 4 due to saved-this slot.
+// Tail cleanup: add esp 0Ch vs add esp 10h.
+// Missing vtable store (suppressed by non-virtual stub pattern).
 //
-// Attempt log:
-// - Pre-existing: 15+ variants across virtual/non-virtual, explicit base dtor,
-//   delete expression vs operator_delete, ManagedArrayInt body, manual vtable,
-//   flag probes /Oa/Ob0/G5. All use the push-first EH prologue.
-// - 2026-05-12 (this pass):
-//   V1: __declspec(novtable) on derived class (edit 18.75%, best so far)
-//   V2: Non-novtable virtual destructor (edit 37.5%, worse)
-//   Both use push-first EH prologue, both stuck.
-//
-// No accepted_drift: the prologue format diff shifts stack offsets throughout,
-// and 64% positional diff is too broad. The body is correct but the frame is wrong.
-//
-// Retry 2026-05-18 (10 honest tries):
-// - Revalidated baseline /GX novtable: exact size 112, edit 18.75%, positional 64.2857%; body matches after resync but VC5 emits push-first EH prologue with saved-this slot.
-// - Removed novtable to restore derived vtable store; vtable-store shape appears, but edit diff worsens to 37.5% and prologue/frame mismatch remains.
-// - Tried /G5, /GR-, and no-/Oy flag variants with /GX; no change to push-first EH prologue family or saved-this slot.
-// - Reviewed whether source could force FS-first SEH ordering; all natural C++ destructor surfaces still use compiler-fixed push-first prologue.
-// - Kept best novtable baseline because it gives smallest edit diff and preserves the destructor body/cleanup behavior after resync.
-// GIVEUP: exact match appears blocked by compiler EH prologue family difference (original FS-first, no saved-this slot, add esp 0Ch; rebuilt push-first, saved-this slot, add esp 10h). No accepted_drift proposal because frame/prologue/tail stack cleanup drift is structural even though the destructor body is behaviorally right.
-// Retry 2026-05-19 (additional focused probes):
-// - novtable + manual/volatile vtable store was worse (edit 41.07%); VC5 scheduled the store after EH-state setup and object load, not like original automatic vptr store.
-// - non-novtable plus /vd0 and /vd1 did not change the push-first EH family; edit remained 37.5%.
-// - /O1 produced an EBP-frame/destructor-helper basin with broad body drift (79.46% edit), rejected; restored /O2 /Oy /GX.
-// - dropping /Oy made no EH-family improvement; stack frame still had saved-this slot.
-// - `delete this->objects_value` compiled identically to explicit `operator_delete` for the best novtable baseline.
-// - making AIModule::~AIModule non-virtual broke the base size/field offsets (objects at +0xF0), rejected.
-// - modeling the object list as a real subobject with its own destructor emitted a separate destructor body and different caller, far worse.
-// Left in scratch: best baseline unchanged; mismatch remains structural EH prologue/saved-this/tail cleanup, not accepted-drift quality.
+// accepted_drift not applicable: stack cleanup and frame layout are structurally
+// different per AGENTS.md rules.
+// GIVEUP: exact match blocked by compiler EH model difference.
 
-class AIModuleID {
-public:
-    void* vtable_ptr;
-    int id;
-    char name[64];
-};
+#include <stdlib.h>
 
 class AIModule {
 public:
-    AIModuleID idValue;
-    int playerNumberValue;
-    char playerNameValue[64];
-    int runningValue;
-    int pausedValue;
-    int logHistoryValue;
-    int logCommonHistoryValue;
-    void* historyLogFile;
-    char historyLogFilename[64];
-    int intelligenceLevelValue;
-    int priorityValue;
-    int processFrameValue;
-
-    virtual ~AIModule();
+    char gap_00[0xF0];
+    ~AIModule();
 };
 
-class RGE_Player {};
-
-extern void __cdecl operator_delete(void* p);
-
-class __declspec(novtable) MainDecisionAIModule : public AIModule {
+class MainDecisionAIModule : public AIModule {
 public:
-    RGE_Player* player;
+    char pad_F0[4];
     int* objects_value;
     int objects_numberValue;
     int objects_desiredNumberValue;
     int objects_maximumSizeValue;
-
     ~MainDecisionAIModule();
 };
 
 MainDecisionAIModule::~MainDecisionAIModule() {
     if (this->objects_value != 0) {
-        operator_delete(this->objects_value);
+        delete this->objects_value;
         this->objects_value = 0;
     }
     this->objects_numberValue = 0;

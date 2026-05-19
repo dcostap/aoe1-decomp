@@ -22,6 +22,14 @@
 // retry 15: explicit `self = this` and `register self`; no codegen change.
 // retry 16: modeled real nearby taimdmd class/inheritance/subobject layout from matching constructor and tested /GX donor flag; offset remains right but allocation unchanged, /GX not retained.
 // GIVEUP: kept best 117B source in scratch. Do not propose accepted_drift; mismatch remains broad EBX/EDI allocation/topology.
+// Retry 17: split rand assignment from `%=`; no codegen change, same EBX=this/EDI=result basin.
+// Retry 18: introduced named `half` temp and explicit `r = r - half`; worsened to EBP=this plus extra EBX/EDI saves and 64.10% positional diff; rolled back.
+// Retry 19: modeled tacticalAI as raw byte subobject plus cast; no codegen change.
+// Retry 20: volatile self cast around tactical access; no codegen change.
+// Retry 21: const method plus casted final stores; no codegen change; rolled back.
+// Retry 22: /Gr flag probe; no codegen change and flag removed.
+// Retry 23: /GB flag probe; no codegen change and flag removed.
+// Final 2026-05-19 validation remains default flags, exact 117B, 35.0427% positional / 24.7863% edit, first mismatch offset 0.
 
 class TribeTacticalAIModule {
 public:

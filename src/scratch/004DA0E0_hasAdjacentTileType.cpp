@@ -7,6 +7,13 @@
 // - Tried explicit goto/shared-check labels and moving the check into switch/default/case bodies. Duplicating the check produced closer block placement but changed register allocation (EBP loop index vs original EDI, param_3 in EDI vs original EBP) and still mismatched.
 // - Tried while/goto and for-loop forms; original's `switch` jump table plus out-of-line case bodies remains sticky.
 // GIVEUP: no accepted_drift proposal. Although behavior is understood, drift changes switch table targets/block layout and some register allocation, not a localized benign difference.
+// Retry 2026-05-19/20 assigned pass:
+// - Revalidated baseline/default: exact size 141B, first 40 bytes match, 58.1560% positional / 14.1844% edit; only real shape issue remains inline case bodies vs original out-of-line case bodies after epilogues.
+// - Added `default: goto check` and explicit shared `check:` label in the switch to encourage out-of-line case layout; VC5 emitted identical code to baseline.
+// - /Ob0 flag probe emitted identical code to baseline; flag removed.
+// - /O1 probe forced EBP-frame/broad different basin (93.6170% positional), rejected and flag removed.
+// - Reviewed accepted_drift possibility again: not suitable because jump table targets/block layout differ and branch distances/epilogue placement shift, despite understood behavior.
+// Left in scratch: default flags, same best baseline. Remaining blocker is VC5 switch case block placement.
 
 struct Terrain {
     char gap0[8];
@@ -39,6 +46,8 @@ int TribeInformationAIModule::hasAdjacentTileType(int param_1, int param_2, int 
         case 7:
             y--;
             break;
+        default:
+            goto check;
         case 1:
         case 2:
             x++;
@@ -53,6 +62,7 @@ int TribeInformationAIModule::hasAdjacentTileType(int param_1, int param_2, int 
             break;
         }
 
+check:
         if (x >= 0 && y >= 0 && x <= terrain->width - 1 && y <= terrain->height - 1) {
             unsigned char* row = terrain->rows[y];
             int xx = x + x * 2;

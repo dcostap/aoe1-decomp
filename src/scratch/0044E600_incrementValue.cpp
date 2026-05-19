@@ -12,6 +12,9 @@
 // - 2026-05-19 tried x-mutated/y-local, explicit assignment locals, register locals, and swapped parameter names; either same baseline register swap or extra callee-save pressure.
 // - 2026-05-19 tried direct row[rx] stores instead of cell local and nested positive bounds checks; both worsened with extra EDI/EBX saves.
 // - 2026-05-19 tried real virtual class surface from type dump; no codegen change from flat vtable field.
+// - 2026-05-19 later pass tried parameter mutation (x-=ref/y-=ref) with named rows/row/limit/cell: got original EAX=x start but added EDI save and worsened to 86%+ positional.
+// - Tried x-mutated with y local and value+cur order: still added EDI save and worsened to 87.8% positional.
+// - Tried value parameter as int and split rx/ry copy-then-sub assignments: no change from baseline register-swap basin.
 // GIVEUP: remaining blocker is combined register allocation (original EAX=rx, EDX=ry, ESI=cell, CL=limit) plus exact unsigned-byte widening/order around sum and saturation. No accepted_drift proposal because drift changes stack spills/register topology/control displacements broadly.
 
 struct InfluenceMap {
@@ -30,8 +33,10 @@ struct InfluenceMap {
 };
 
 int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
-    int rx = x - this->xReferencePoint;
-    int ry = y - this->yReferencePoint;
+    int rx = x;
+    int ry = y;
+    rx -= this->xReferencePoint;
+    ry -= this->yReferencePoint;
 
     if (rx < 0 || ry < 0 || rx >= this->xSize || ry >= this->ySize)
         return 0;

@@ -9,6 +9,11 @@
 // try 5: /Ob0 flag probe; no change, removed flag.
 // try 6: tried while(param_1--) loop form; no improvement, rolled back to do/countdown shape.
 // try 7: split original declaration/assignment; no improvement.
+// 2026-05-19 later pass:
+// try 8: register original / non-register sum-hi-lo declaration order; no improvement from best 128B basin.
+// try 9: decompiler-shaped uVar source using param_1 as loop variable and explicit avg/hi/lo outputs; reached 132B but broad regression with extra stack home, wrong saved registers, and wrong accumulator register.
+// try 10: declaration order with register hi/sum/lo before original; same broad 132B regression.
+// try 11: explicit extern sprintf instead of <stdio.h>; no codegen change.
 // GIVEUP: current object remains 128B, blocking byte compare. Dumpbin shows behaviorally close loop/sprintf shape but VC5 keeps sum in EBX and hi in a stack slot, with pre-push parameter load, while original uses EAX=sum, EBX=hi, EBP=original count, and the incoming param stack slot as loop counter. Not accepted_drift: register/stack topology and function-size mismatch are structural.
 
 #include <stdio.h>

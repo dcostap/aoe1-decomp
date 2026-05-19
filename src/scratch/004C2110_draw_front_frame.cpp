@@ -9,6 +9,11 @@
 // - 2026-05-19 breakthrough: raw vtable call cast to `__stdcall` removes caller `add esp,0Ch` while preserving the first 57 bytes (game_mode branch and jump table) and exact function size.
 // - Tried case0 function-pointer locals and arg temporaries to force original `edx` argument reload sequence; VC5 still loads vtable first and uses ECX for param_3/param_1.
 // - Tried source case-order swaps and per-case param_1 locals to place cube before square; VC5 either keeps square-before-cube in block layout or inverts the early game_mode branch.
+// 2026-05-19 later pass:
+// - try 21: reversed source order of case1 vs case2/3; compiler inverted game_mode branch and emitted switch first, much worse.
+// - try 22: removed per-case param_1 locals; no codegen change from best basin.
+// - try 23: inlined case0 raw function-pointer expression instead of fn local; no codegen change.
+// - try 24: declared real virtual slot +0x20 and called it only in case0; case0 became exact but branch inverted/switch hoisted, broad regression.
 // BEST CURRENT: exact-sized 125, first 57 bytes match, 22.4000% positional / 47.2000% edit. Remaining drift is case0 arg-register scheduling (ECX vs EDX) and switch case1/case2 block order/table layout.
 // GIVEUP: no accepted_drift proposal because drift spans switch table targets/block order and multiple call setup blocks, not a small localized equivalent instruction swap.
 
@@ -41,14 +46,12 @@ void RGE_Static_Object::draw_front_frame(void* param_1, short param_2, short par
             break;
         }
         case 1: {
-            void* p = param_1;
-            this->draw_frame_3d_cube_front(p, param_2, param_3);
+            this->draw_frame_3d_cube_front(param_1, param_2, param_3);
             break;
         }
         case 2:
         case 3: {
-            void* p = param_1;
-            this->draw_frame_3d_square_front(p, param_2, param_3);
+            this->draw_frame_3d_square_front(param_1, param_2, param_3);
             break;
         }
     }

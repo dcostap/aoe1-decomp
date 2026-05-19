@@ -30,6 +30,13 @@
 // - Added extra derived virtual dummy; no improvement, same broad no-EH baseline.
 // - Tried body try/catch plus /Ob0 probe while EH-affecting variants were present: forced push-first EH family with extra saved regs/slots, not original FS-first; rolled back.
 // GIVEUP: not a reasonable accepted_drift; mismatch is broad from offset 0 and includes prologue/frame/function-boundary topology rather than a localized equivalent hunk.
+// Retry 2026-05-19/20 assigned pass:
+// - Revalidated baseline /GX: exact-size section from ctor plus synthesized deleting dtor tail, but target ctor still no FS-first EH; 75.2212% positional, first mismatch 0.
+// - Body try/catch forced EH but wrong push-first family with saved-this slot; improved edit diff (27.4336%) yet stack offsets/tail cleanup and vptr/player store order stayed wrong.
+// - Inline ManagedArray_Int constructor optimized back to baseline; out-of-line constructor polluted function boundary with separate helper before target.
+// - /Ob0 with member-constructor probe produced push-first EH plus explicit member ctor call; worse and rolled back.
+// - /EHsc accepted by VC5 but did not alter baseline no-EH ctor family; /d1ESrt was unsupported by c1.
+// Left in scratch: still blocked on compiler EH-prologue/function-boundary topology, not accepted-drift quality.
 
 struct ManagedArray_Int {
     int* value;

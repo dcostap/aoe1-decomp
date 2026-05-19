@@ -1,54 +1,100 @@
 // VA: 00480570 RGE_TimeSinceLastCall::GetHiLoMaxInfo
-// PDB source: RGE_TSLC.cpp
+// PDB: RGE_TSLC.cpp lines 139-148
+// Default flags: /nologo /c /O2 /Oy
+// Size: 146 bytes original, 144 bytes rebuilt
+//
+// Attempt log (20 attempts):
+//
+// Attempt 17/18/19 was best: 144 bytes (98.6% of original), 2 bytes short.
+// Match quality breakdown vs original:
+//   ✓ Register allocation: eax=sum, ebx=sum(alt), ebp=count, edi=lo, edx=idx
+//   ✓ idx wrap check: test edx,edx; jg (matches original encoding)
+//   ✓ Vtable/field offsets: Offset (+0x2A0=672), aTSLC (+0x10C=268), 
+//     lowTSLC (+0x100=256), highTSLC (+0x104=260)
+//   ✓ sprintf arg order matches (highTSLC, hi, count, avg, lo, lowTSLC, fmt, this)
+//   ✓ Bounds checks: cmp 1, jl exit; cmp 100, jg exit
+//   ✓ if(param_1>0) guard with test/jle before loop
+//   ✓ do-while(param_1!=0) with dec; jne at loop bottom
+//   ✓ div ebp for unsigned division (sum/count)
+//
+// Remaining 2-byte difference (stable across all attempts):
+//
+// Issue 1 — hi on stack vs. ebx register:
+//   Original: xor ebx,ebx (hi in ebx)
+//   Rebuilt:  xor ecx,ecx; mov [esp+N],ecx (hi on stack)
+//   Root cause: int count = param_1; at function scope allocates ebp for
+//   count, pushing hi to the stack. Removing count causes param_1 to use 
+//   ebx instead of ebp, breaking the div ebp / ebp preservation pattern.
+//   
+// Issue 2 — Counter not stored to param_1 stack slot:
+//   Original: mov [esp+14h],ebp (store counter); mov ecx,[esp+14h]; dec ecx;
+//             mov [esp+14h],ecx; jne (load/dec/store in loop)
+//   Rebuilt:  dec eax; jne (register-only counter)
+//   Root cause: VC5 optimizes the counter into register (eax) instead of
+//   storing to the param_1 stack slot. This saves 8 bytes.
+//   
+// Net: hi-on-stack adds ~6 bytes, counter-in-register saves ~8 bytes →
+// 2 bytes shorter overall.
+//
+// These are stable VC5 codegen decisions — the compiler chooses register-only
+// counter tracking and allocates hi to stack when count needs ebp. No source
+// rearrangement tested (20 variants) changed this allocation.
+//
+// Not suitable for accepted_drift — 2 bytes shorter means different binary
+// structure, not localized drift.
+//
+// Left in scratch with best attempt (count=param_1 first, separate inits).
 
 #include <stdio.h>
 
 class RGE_TimeSinceLastCall {
 public:
     char TBuff[0x100];
-    unsigned long lowTSLC;
-    unsigned long highTSLC;
-    unsigned long TSLC;
-    unsigned long aTSLC[100];
-    char gap_29C_29F[4];
-    int Offset;
-    unsigned long LastCall;
-    unsigned long FirstCall;
-    unsigned long Now;
+    unsigned long lowTSLC;      // +0x100
+    unsigned long highTSLC;     // +0x104
+    unsigned long gap_108;      // +0x108
+    unsigned long aTSLC[100];   // +0x10C (100*4 = 0x190, ends at 0x29C)
+    char gap_29C[4];            // +0x29C
+    int Offset;                 // +0x2A0
 
     char* GetHiLoMaxInfo(int param_1);
 };
 
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 {
-    unsigned long sum = 0;
-    unsigned long hi = 0;
-    unsigned long lo = 0xF423F;
-    int idx;
     int count = param_1;
+    unsigned long sum;
+    unsigned long hi;
+    unsigned long lo;
+    sum = 0;
+    hi = 0;
+    lo = 0xF423F;
 
     if (param_1 >= 1 && param_1 <= 100) {
-        idx = Offset;
-        do {
-            idx--;
-            if (idx < 1)
-                idx = 100;
-            unsigned long val = aTSLC[idx];
-            sum += val;
-            if (val < lo)
-                lo = val;
-            if (val > hi)
-                hi = val;
-            param_1--;
-        } while (param_1 != 0);
-        param_1 = sum / count;
+        int idx = this->Offset;
+        if (param_1 > 0) {
+            do {
+                idx--;
+                if (idx <= 0)
+                    idx = 100;
+                unsigned long val = this->aTSLC[idx];
+                sum += val;
+                if (val < lo)
+                    lo = val;
+                if (val > hi)
+                    hi = val;
+                param_1--;
+            } while (param_1 != 0);
+        }
+        param_1 = sum / (unsigned long)count;
     } else {
         lo = param_1;
         hi = param_1;
     }
 
-    sprintf(TBuff, "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)",
-            lowTSLC, lo, (int)(unsigned int)param_1, count, hi, highTSLC);
+    sprintf(this->TBuff,
+        "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)",
+        this->lowTSLC, lo, param_1, count, hi, this->highTSLC);
 
-    return TBuff;
+    return this->TBuff;
 }

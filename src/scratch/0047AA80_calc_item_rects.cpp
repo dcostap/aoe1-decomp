@@ -1,5 +1,11 @@
 // 0047AA80 TScrollBarPanel::calc_item_rects
 // Size: 146 bytes
+// Retry 2026-05-19/20 assigned pass:
+// - Revalidated inherited near-source: build emits only 144B for configured 146B, so check_function stops before producing rebuilt disassembly.
+// - Removed register `r` and block-scoped the up-rect temp: still 144B.
+// - Reordered `r++` to match original later `inc esi` placement after down-rect load: still 144B.
+// - /Ob0 flag probe and dummy local/increment probe did not change emitted size; flag/probe removed.
+// GIVEUP: behavior and offsets are understood and source is close, but blocker is a 2-byte size/likely scheduling difference that cannot be inspected through current size gate without a full object disassembly path. No accepted_drift proposed without byte-level diff.
 
 class TScrollBarPanel {
 public:
@@ -34,20 +40,19 @@ public:
 };
 
 void TScrollBarPanel::calc_item_rects() {
-    register int r;
     int x, w, dl;
 
     if (this->orientation == 1) {
         x = this->tab_x;
         w = this->field_18;
-        r = this->up_rect_right;
+        int r = this->up_rect_right;
         this->tab_rect_left = x;
         w = w + x - 5;
-        r++;
         x--;
         this->tab_rect_right = w;
         this->top_rect_right = x;
         dl = this->down_rect_left;
+        r++;
         w++;
         dl--;
         this->top_rect_left = r;
@@ -56,14 +61,14 @@ void TScrollBarPanel::calc_item_rects() {
     } else {
         x = this->tab_y;
         w = this->field_14;
-        r = this->up_rect_bottom;
+        int r = this->up_rect_bottom;
         this->tab_rect_top = x;
         w = w + x - 5;
-        r++;
         x--;
         this->tab_rect_bottom = w;
         this->top_rect_bottom = x;
         dl = this->down_rect_top;
+        r++;
         w++;
         dl--;
         this->top_rect_top = r;

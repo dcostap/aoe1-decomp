@@ -5,8 +5,13 @@
 // try 14: stack reload post-calloc removed EDI; 40.35% positional, loop/call scheduling still off.
 // try 15: explicit while(1) loop shortened to 112B, wrong.
 // try 16: split vtable local before vf7 push; no codegen change from try 14.
-// final default validation: exact first 114B compared but MISMATCH, 46 positional bytes / 40.35%, 52 edit bytes / 45.61%.
-// GIVEUP: best no-EDI basin now has correct prologue/no saved EDI and same first branch size, but still uses EAX/EDX for action reloads instead of ECX, reshapes the list traversal (ECX next with extra tests instead of ESI next / EDX cur), and vtable-call scheduling differs. Structural enough that this is not an accepted_drift proposal.
+// try 17: natural typed virtual RGE_Action surface shortened to 112B and kept wrong loop/vcall scheduling.
+// try 18: virtual dtor/first_in_stack declaration did not improve over typed virtual basin.
+// try 19: volatile parameter forced ECX reload for calls but lengthened high branch and worsened diff (71.9%).
+// try 20: local alias for high branch still emitted extra parameter reload and 112B body.
+// try 21: raw vtable/stdcall nonvolatile simple list shape preserved EDI for action and worsened to 89.47%; rolled back to best no-EDI stack-reload basin.
+// final validation: exact size 114B but MISMATCH, 46 positional bytes / 40.35%.
+// GIVEUP: best no-EDI basin has correct prologue/no saved EDI and same first branch size, but still uses EAX/EDX for action reloads instead of ECX, reshapes the list traversal (ECX next with extra tests instead of ESI next / EDX cur), and vtable-call scheduling differs. Structural enough that this is not an accepted_drift proposal.
 
 #include <stdlib.h>
 struct RGE_Action_Node { void* action; RGE_Action_Node* next; };

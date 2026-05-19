@@ -1,56 +1,48 @@
-// TCommunications_Handler::SetSelfPlayer
+// TCommunications_Handler::SetSelfPlayer (__thiscall)
 // VA: 00428A70
 // Com_hand.cpp:2303-2323
-// 156 bytes, not matched (parked)
-// Scans this->dcoID[] array for self DCOID (DAT_0062cf04).
-// Uses pointer-advancement (esi += 4) loop. Logs results.
+// 156 bytes
 //
-// Attempt log (3 variants):
-// v0: goto-based fall-through (fail_load/fail_log labels) → 208B, 6-byte near jb
-// v1: while(i <= MaxGamePlayers) + local self_id → 100B diff
-// v2: too many variants, parking
-//
-// Remaining diff: variadic Log function calls complicate codegen.
-// Pointer-advancement loop pattern hard to replicate from array-indexed C.
+// Attempt 7: Use volatile pointer for selfDcoID to prevent hoisting.
 
-#include "../../include/game_globals.h"
+#include <stdlib.h>
 
+extern volatile int selfDcoID;        // volatile prevents hoisting
 extern void* L;
-extern "C" void __cdecl Log(void* log, char* fmt, ...);
 
-extern unsigned int DAT_0062cf04;
+extern void __cdecl Log(void* log, const char* fmt, ...);
 
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
-    int Me;                     // +0x10E0
+    int mePlayerNum;                        // +0x10E0
     char gap_10E4[0x12D8 - 0x10E4];
-    unsigned short MaxGamePlayers;  // +0x12D8
+    unsigned short maxGamePlayers;          // +0x12D8
     char gap_12DA[0x1568 - 0x12DA];
-    int dcoID[1];              // +0x1568, variable length
+    int dcoID[1];                          // +0x1568
 
-    void SetSelfPlayer(void);
+    void SetSelfPlayer();
     void NotifyWindowParam(int msg, int param);
 };
 
-void TCommunications_Handler::SetSelfPlayer(void) {
-    int i;
-    int* ptr;
+void TCommunications_Handler::SetSelfPlayer()
+{
+    int i = 1;
+    int* p = this->dcoID;
 
-    i = 1;
-    ptr = this->dcoID;
+    while ((unsigned int)i <= (unsigned int)this->maxGamePlayers) {
+        Log(L, "Check dcoID %d to Me %d ?", *p, selfDcoID);
 
-    while (i <= this->MaxGamePlayers) {
-        Log(L, "Check dcoID %d to Me %d ?", *ptr, (int)DAT_0062cf04);
-        if (*ptr == (int)DAT_0062cf04) {
+        if (*p == selfDcoID) {
             Log(L, "Match! - ID set.");
-            this->Me = i;
+            this->mePlayerNum = i;
             NotifyWindowParam(0x17B8, i);
             return;
         }
+
         i++;
-        ptr++;
+        p++;
     }
 
-    Log(L, "SET SELF failed.  We are DCOID=%d", (int)DAT_0062cf04);
+    Log(L, "SET SELF failed.  We are DCOID=%d", selfDcoID);
 }

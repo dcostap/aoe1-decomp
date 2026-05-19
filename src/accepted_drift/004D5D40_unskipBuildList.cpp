@@ -1,0 +1,83 @@
+// 004D5D40 TribeBuildAIModule::readyToTrain / unskipBuildList (155B)
+// taibldmd.cpp:1721-1753
+// STATUS: PAUSED — proposed accepted_drift
+// Remaining drift: 11 bytes positional / 10 bytes edit (6.5%)
+// Root cause: VC5 generates separated sentinel+null checks at bottom-of-loop
+// instead of combined `jne to_null_check` that jumps back to the null check
+// at the loop body entry.
+// Attempts: 12+ across all loop forms (for, do-while, while, for(;;), goto-based)
+// All register allocation and instruction sequences match except bottom-of-loop structure.
+// Default flags
+
+class BuildItem {
+public:
+    char gap_00[0x6C];
+    BuildItem* next;    // +0x6C
+
+    int built();
+    int inProgress();
+    void setBuildAttempts(int);
+    void setSkipCycles(int);
+    void setPermanentSkip(unsigned char);
+    int typeID();
+    void setSkip(int);
+};
+
+class TribeBuildAIModule {
+public:
+    // vtable slots 0 through 17 (0x48/4 = 18th function)
+    virtual void d0() {}
+    virtual void d1() {}
+    virtual void d2() {}
+    virtual void d3() {}
+    virtual void d4() {}
+    virtual void d5() {}
+    virtual void d6() {}
+    virtual void d7() {}
+    virtual void d8() {}
+    virtual void d9() {}
+    virtual void d10() {}
+    virtual void d11() {}
+    virtual void d12() {}
+    virtual void d13() {}
+    virtual void d14() {}
+    virtual void d15() {}
+    virtual void d16() {}
+    virtual void d17() {}
+    // vtable[0x48] = 18th function (index 18 * 4 = 0x48)
+    virtual int getUnitLimit(int, int);
+    char gap_04[0x0EC];
+    char sentinel_pad[0x6C];           // this+0xF0 to this+0x15C
+    BuildItem* first;                   // +0x15C
+
+    void readyToTrain(int limit67, int limit44);
+};
+
+void TribeBuildAIModule::readyToTrain(int limit67, int limit44)
+{
+    int lim67 = getUnitLimit(0x67, 0);
+    int lim44 = getUnitLimit(0x44, 0);
+
+    BuildItem* item = first;
+    BuildItem* sentinel = (BuildItem*)((char*)this + 0x0F0);
+
+    if (item == sentinel) return;
+    if (item == 0) return;
+
+    for (;;) {
+        if (item == 0) break;
+        if (item->built() == 1) goto next;
+        if (item->inProgress() == 1) goto next;
+        if (lim67 > 0 && item->typeID() == 0x67) goto next;
+        if (lim44 > 0 && item->typeID() == 0x44) goto next;
+
+        item->setSkip(0);
+        item->setBuildAttempts(0);
+        item->setSkipCycles(0);
+        item->setPermanentSkip(0);
+
+next:
+        item = item->next;
+        if (item == sentinel) break;
+    }
+}

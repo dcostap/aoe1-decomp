@@ -11,6 +11,13 @@
 //    instead of original's clean `jl` back-edge when written as `for(...; i<n; ...)`.
 // 3) Member offsets confirmed: currentUpdateComputerPlayer @ +0xFC, player_num @ +0x3C
 //    (signed word, movsx), players @ +0x40, RGE_Player::type @ +0x48.
+// Retry 2026-05-19/20 assigned pass:
+// - Revalidated current source: 143/143, MISMATCH, 83.9161% positional / 62.9371% edit; first byte differs due extra `push ecx`/this home.
+// - Removed `(unsigned char)` param casts: first loop moved closer to original dword-param compare via zero-extended type, but overall worsened to 96.5035% and kept this home; rolled back.
+// - Changed `players` to typed `RGE_Player**`: no codegen change from the no-cast form; rolled back.
+// - Tested reloading `currentUpdateComputerPlayer` in the else path instead of preserving a `current` local: no codegen improvement; rolled back.
+// - /Og flag probe: no improvement; removed.
+// GIVEUP: no accepted_drift. Remaining mismatch is broad register allocation/this-home and loop-topology drift, not localized benign equivalence.
 
 class RGE_Game_World {
 public:
