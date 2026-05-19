@@ -3,23 +3,48 @@
 // Com_hand.cpp:2303-2323
 // 156 bytes
 //
-// Attempt 9: Pure while loop like attempt 1, only change = volatile globals.
+// Attempt log:
+// 1: Clean while loop with extern globals — 29% positional diff, 21% edit diff.
+//    Issues: selfDcoID hoisted before prologue; signed vs unsigned comparison (jle vs jbe)
+// 2: goto-based with unsigned short — worse prologue
+// 3: Direct address derefs via macro — worse code
+// 4: *(type*)0xADDR access — 72% diff
+// 5: for-loop structure — 88% edit diff
+// 6: Unsigned comparisons — similar to attempt 1
+// 7: volatile globals — 115% diff
+// 8: inline helper functions — similar
+// 9: volatile globals + casts — 115% diff
+//
+// Best result (attempt 1): 29.5% positional diff, 21.2% edit diff.
+// 135 bytes equal, 46 bytes diff (12 relocations masked).
+//
+// Remaining diffs from best:
+// 1. selfDcoID (extern int) hoisted before prologue — VC5 moves global loads 
+//    to function entry under /O2. Original loads at first-use point.
+// 2. jle (signed, 7E) vs jbe (unsigned, 76) — different signedness convention
+// 3. Branch offset values differ due to prologue layout differences
+//
+// Root cause: Single-function TU prevents exact register/scheduling match.
+// extern int selfDcoID always hoisted before prologue; original delays 
+// loading until after the first bounds check.
+//
+// Left in scratch. Not proposing accepted_drift.
 
 #include <stdlib.h>
 
-extern volatile int selfDcoID;     // volatile prevents hoisting
-extern volatile void* L;
+extern void* L;
+extern int selfDcoID;
 
 extern void __cdecl Log(void* log, const char* fmt, ...);
 
 class TCommunications_Handler {
 public:
     char gap_00[0x10E0];
-    int mePlayerNum;                        // +0x10E0
+    int mePlayerNum;
     char gap_10E4[0x12D8 - 0x10E4];
-    unsigned short maxGamePlayers;          // +0x12D8
+    unsigned short maxGamePlayers;
     char gap_12DA[0x1568 - 0x12DA];
-    int dcoID[1];                          // +0x1568
+    int dcoID[1];
 
     void SetSelfPlayer();
     void NotifyWindowParam(int msg, int param);
@@ -30,7 +55,7 @@ void TCommunications_Handler::SetSelfPlayer()
     int i = 1;
     int* p = this->dcoID;
 
-    while ((unsigned int)i <= (unsigned int)this->maxGamePlayers) {
+    while (i <= this->maxGamePlayers) {
         Log(L, "Check dcoID %d to Me %d ?", *p, selfDcoID);
 
         if (*p == selfDcoID) {
