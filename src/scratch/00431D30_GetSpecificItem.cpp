@@ -46,12 +46,15 @@ found:
     DAT_0062cf3c = (unsigned int)Queue[idx].msgptr;
     Queue[idx].msgptr = 0;
 
-    Queue[idx].Code = 0;
-    Queue[idx].ExecTurn = 0;
-    Queue[idx].SeqNo = 0;
-    Queue[idx].From = 0;
-    Queue[idx].Size = 0;
-    Queue[idx].ControlCommand = 0;
+    {
+        MsgQueueEntry* p = &Queue[idx];
+        p->Code = 0;
+        p->ExecTurn = 0;
+        p->SeqNo = 0;
+        p->From = 0;
+        p->Size = 0;
+        p->ControlCommand = 0;
+    }
 
     return (void*)DAT_0062cf3c;
 }
