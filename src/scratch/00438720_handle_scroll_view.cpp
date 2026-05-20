@@ -14,6 +14,15 @@
 // - volatile orig locals worsened edit diff to 66.8919%; initialized tile worsened to 87.1622%; rolled back.
 // - Moving tile declaration after orig locals: no change.
 // GIVEUP: behavior/calls/offsets are understood, but remaining mismatch is broad stack-address/setup and register allocation around pick_tile (original emits LEAs before saving EBX/ESI/EDI and loads EBX/EDI later; rebuilt preloads params and pushes in different schedule). No accepted_drift: broad topology drift, not localized.
+// Retry assigned 2026-05-20:
+// - Baseline revalidation: 148B exact size, 80.4054% positional / 40.5405% edit, first mismatch +3.
+// - Removed saved original-parameter locals and wrote final stores from param slots; first LEAs matched to +11 but lost EBX/EDI preservation and worsened edit diff to 48.6486%; rolled back.
+// - Declaring `tile` before saved originals and adding `const` to originals did not improve; same early preload/saved-register schedule.
+// - Swapped pick out-parameter order plus swapped set_view_loc arguments improved edit diff to 39.1892% but was semantically suspect for pick_tile out slots; rolled back.
+// - Explicit `ptile/out1/out2` pointer locals did not change codegen.
+// - Tried reference-form pick_tile declaration/call; no codegen improvement, restored pointer signature.
+// - /Ob1 probe under default flags produced no change; flag removed.
+// GIVEUP: exactness still blocked by broad pre-call stack-address/register allocation topology around pick_tile; not accepted_drift.
 
 class RGE_Player {
 public:

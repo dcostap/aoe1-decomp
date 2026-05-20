@@ -18,39 +18,51 @@
 // VC5 register allocation basin. Left in scratch.
 // Core logic correct: GetFileVersionInfoSizeA -> operator new -> GetFileVersionInfoA
 // -> VerQueryValueA -> version comparison (0x40005, 0x1062F) -> return 1/0.
+// Retry 2026-05-20 assigned pass:
+// try 19: declare GetLastError as dllimport to match original IAT indirect call; improved to 31.25% positional.
+// try 20-24: local declaration order, inner pv declaration, register qualifiers, and positive verSize guard; no register swap fix.
+// try 25-27: size-as-void, extra keep temp, and swapped declarations; size-as-void plus dllimport improved to 22.5% but still ESI=size/EDI=buffer opposite original.
+// try 28-32: several comparison spellings; explicit orig-like goto compare gave best 20.625% positional / 15.0% edit but still broad ESI/EDI swap.
+// try 33-34: using pv as temporary size and stack/cast size tests did not fix the register basin.
+// GIVEUP: kept best source below. No accepted_drift: remaining mismatch includes persistent ESI/EDI role swap through allocation/version calls plus comparison/return layout, not a localized behavior-equivalent hunk.
 
 extern unsigned int __stdcall GetFileVersionInfoSizeA( const char*, unsigned int* );
 extern int __stdcall GetFileVersionInfoA( const char*, unsigned int, unsigned int, void* );
 extern int __stdcall VerQueryValueA( void*, const char*, void**, unsigned int* );
-extern unsigned int __stdcall GetLastError( void );
+extern __declspec(dllimport) unsigned int __stdcall GetLastError( void );
 extern void* operator new( unsigned int );
 
 int IsDPlay501a() {
     void* pv;
     void* verInfo;
-    unsigned int verSize;
+    void* verSize;
     unsigned int verInfoLen;
     unsigned int lpDummy;
 
-    verSize = GetFileVersionInfoSizeA( "dplayx.dll", &lpDummy );
+    verSize = (void*)GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);
     if (verSize == 0) {
         GetLastError();
         return 0;
     }
-    pv = operator new(verSize);
+    pv = operator new((unsigned int)verSize);
     if (pv) {
-        if (!GetFileVersionInfoA( "dplayx.dll", 0, verSize, pv )) {
+        if (!GetFileVersionInfoA("dplayx.dll", 0, (unsigned int)verSize, pv)) {
             GetLastError();
             return 0;
         }
-        if (VerQueryValueA( pv, "\\", &verInfo, &verInfoLen )) {
+        if (VerQueryValueA(pv, "\\", &verInfo, &verInfoLen)) {
             unsigned int* p = (unsigned int*)verInfo;
-            if (p[2] > 0x40005) {
-                return 1;
-            }
-            if (p[2] == 0x40005 && p[3] >= 0x1062F) {
-                return 1;
-            }
+            unsigned int a = p[2];
+            unsigned int b = p[3];
+            if (a != 0x40005) goto check;
+            if (b >= 0x1062F) goto yes;
+            a = a - a;
+        check:
+            if (a <= 0x40005) goto no;
+        yes:
+            return 1;
+        no:
+            ;
         }
     }
     return 0;

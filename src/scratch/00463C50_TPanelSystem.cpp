@@ -1,9 +1,21 @@
 // STATUS: blocked
 // BLOCKER: constructor-side layout is understood, but VC5 still drifts in destructor prologue/local setup and the palette cleanup loop register allocation
 // NOTE: panel-list teardown and palette cleanup semantics match; remaining mismatch is codegen/register-shape only
+// Retry 2026-05-20 assigned pass:
+// try 1: revalidated inherited source: exact size 162 but broad 135 positional diff, first mismatch at prologue (sub esp,8 vs push ecx).
+// try 2: removed volatile delete_object/count; rebuilt shrank to 160B and still used sub esp,8 / stack DeleteObject thunk, not original push-ecx + EBX thunk.
+// try 3: direct DeleteObject call without function-pointer local; still 160B sub-esp family.
+// try 4: nonvolatile delete_object with volatile count; exact-size 162 and improved to 55 positional / 17 edit, but still wrong sub esp,8, EBX zero-register, and stack-held thunk.
+// try 5: for-loop over palette entries; 160B sub-esp family.
+// try 6: while(count-- != 0) palette loop; 160B sub-esp family.
+// try 7: rewrote whole destructor naturally with direct this instead of self/declaration block; no improvement, still sub esp,8.
+// try 8: declared DeleteObject as extern const function pointer instead of dllimport; no change.
+// try 9: register delete_object local; no change, compiler still stored thunk in stack local and used EBX as zero.
+// try 10: made zero stores depend on DeleteObject return local to try forcing xor eax after call; optimized back to EBX-zero stack-thunk family.
+// GIVEUP: best exact-size source is try 4-style 55 positional / 17 edit. Remaining drift is structural prologue/local/register allocation: original uses one push-ecx local, EBX=DeleteObject thunk, and EAX zeroed after each call; rebuilt insists on sub esp,8, EBX=zero, and stack-held thunk. Not proposing accepted_drift because prologue and palette loop register topology differ broadly.
 
 extern "C" void __cdecl free(void* ptr);
-extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
+extern "C" int (__stdcall* const DeleteObject)(void* object);
 
 class TPanel {
 public:
@@ -43,46 +55,42 @@ public:
 };
 
 TPanelSystem::~TPanelSystem(void) {
-    TPanelSystem* self;
-    PanelNode* panel_list;
-    PanelNode* node;
-    void** palette_entry;
-    char (*palette_file_entry)[260];
-    int (__stdcall* volatile delete_object)(void*);
-    volatile int count;
+    this->restore_system_colors();
 
-    self = this;
-    self->restore_system_colors();
-    panel_list = self->panelListValue;
+    PanelNode* panel_list = this->panelListValue;
     if (panel_list != 0) {
-        node = panel_list->next_node;
+        PanelNode* node = panel_list->next_node;
         if (node != panel_list) {
             do {
                 node = node->next_node;
-                if (node->prev_node->panel != 0) {
-                    node->prev_node->panel->scalar_deleting_destructor(1);
+                TPanel* panel = node->prev_node->panel;
+                if (panel != 0) {
+                    panel->scalar_deleting_destructor(1);
                 }
                 free(node->prev_node);
-            } while (node != self->panelListValue);
+            } while (node != this->panelListValue);
         }
-        free(self->panelListValue);
-        self->panelListValue = 0;
+        free(this->panelListValue);
+        this->panelListValue = 0;
     }
-    delete_object = DeleteObject;
-    palette_entry = self->palette;
-    palette_file_entry = self->palette_file;
-    count = 10;
+
+    register int (__stdcall* delete_object)(void*) = DeleteObject;
+    void** palette_entry = this->palette;
+    char (*palette_file_entry)[260] = this->palette_file;
+    int count = 10;
     do {
-        if (*palette_entry != 0) {
-            delete_object(*palette_entry);
-            *palette_entry = 0;
-            (*palette_file_entry)[0] = 0;
-            *(int*)((char*)palette_entry + 0xA50) = 0;
-            self->palette_ids[0] = 0;
+        if (*palette_entry) {
+            int z = delete_object(*palette_entry);
+            z = 0;
+            *palette_entry = (void*)z;
+            (*palette_file_entry)[0] = (char)z;
+            *(int*)((char*)palette_entry + 0xA50) = z;
+            this->palette_ids[0] = z;
         }
         palette_entry++;
         palette_file_entry++;
         count--;
     } while (count != 0);
-    self->EnableIME();
+
+    this->EnableIME();
 }

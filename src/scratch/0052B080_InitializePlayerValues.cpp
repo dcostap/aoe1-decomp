@@ -63,6 +63,7 @@
 // VC5 codegen barriers appear to be intrinsic to the compiler's register
 // allocator and loop-invariant optimization heuristics.
 // Retry 2026-05-19 Boss pass: 10 additional variants (volatile block/all stores, char* byte-offset addressing, for 1..16 loop, memset block clear, volatile constants, explicit zero local, short counter, !=16 loop condition). Best new try was char* offset form at 73.1707% positional but still broad register/scheduling mismatch; restored prior behaviorally-correct scratch.
+// Retry 2026-05-20 Boss pass: revalidated current scratch baseline (123B, 87.8049% positional/edit, first mismatch 4). Tried /O1, /O2 without /Oy, /Og, /Oa, /Ox, /Gs, /Ob0; tried volatile block zero stores, explicit zero local, constants inside loop, char* byte-offset source, for 1..16, register locals, goto loop, and while-top loop. /Oa moved only slightly (86.18% positional), volatile/goto/for worsened, and the rest were identical to baseline or noncompetitive. No exact or accepted-drift-quality result; broad register allocation, constant hoisting, dead-store elimination, and loop scheduling remain.
 
 class T_Scenario {
 public:

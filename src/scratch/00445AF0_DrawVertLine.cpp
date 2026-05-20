@@ -19,7 +19,16 @@
 // - Removing the explicit bits local optimized to identical baseline.
 // - register rx/rh locals forced Bits into EBX, but introduced early h preload, worse 132/143
 //   positional and wrong scheduling; rolled back.
-// Left in scratch: default flags and best known source. No accepted_drift: broad register allocation/scheduling drift across the whole function.
+// Retry 2026-05-20 assigned pass:
+// - Revalidated baseline: exact size 143B, 86 positional / 85 edit, first mismatch +1.
+// - Tried no bits local and register bits local; no change from baseline.
+// - Tried parameter-mutation source with explicit bottom/top locals; no improvement.
+// - Tried function-scope xx/yy/hh locals and register variants; yy/hh forms worsened badly, x forms no change.
+// - Tried duplicated per-orientation loops and do-loop/for-loop variants; duplicated loops destroyed layout, do/for did not improve.
+// - Tried raw-offset field accesses; no change from baseline.
+// - Breakthrough: removed the shared pitch local and used direct this->Pitch in each orientation arm with a separate step variable; this matched the prologue/Bits/x clipping exactly and reduced diff to 32 positional / 35 edit, first mismatch +31.
+// - Tried register-y signature, yy locals, top/bottom locals, inverted top compare, end local, parameter-slot/color no-op, and h+y term order; none improved the remaining +31 register-coloring hunk.
+// Left in scratch: best source is exact size and behavior-equivalent but still mismatches in y/top/step register allocation and equivalent address/add ordering. Not promoting; possible accepted_drift only if reviewer accepts moderate register-coloring drift.
 
 struct tagRECT {
     long left;
@@ -44,41 +53,14 @@ public:
 void TDrawArea::DrawVertLine(long x, long y, long h, unsigned char color)
 {
     unsigned char* bits = this->Bits;
-    if (bits == 0)
-        return;
-
-    if (x < this->ClipRect.left || x > this->ClipRect.right)
-        return;
-
-    if (y > this->ClipRect.bottom)
-        return;
-
-    if (y < this->ClipRect.top) {
-        h += y - this->ClipRect.top;
-        y = this->ClipRect.top;
-    }
-
-    if (y + h - 1 > this->ClipRect.bottom) {
-        h = this->ClipRect.bottom - y + 1;
-    }
-
-    if (h < 1)
-        return;
-
-    int pitch;
-    unsigned char* dest;
-    if (this->Orien == 1) {
-        pitch = this->Pitch;
-        dest = bits + y * pitch + x;
-    } else {
-        pitch = this->Pitch;
-        dest = bits + (this->Height - y - 1) * pitch + x;
-        pitch = -pitch;
-    }
-
-    while (h > 0) {
-        *dest = color;
-        dest += pitch;
-        h--;
-    }
+    if (bits == 0) return;
+    if (x < this->ClipRect.left || x > this->ClipRect.right) return;
+    if (y > this->ClipRect.bottom) return;
+    if (y < this->ClipRect.top) { h += y - this->ClipRect.top; y = this->ClipRect.top; }
+    if (y + h - 1 > this->ClipRect.bottom) h = this->ClipRect.bottom - y + 1;
+    if (h < 1) return;
+    unsigned char* dest; int step;
+    if (this->Orien == 1) { dest = bits + y * this->Pitch + x; step = this->Pitch; }
+    else { dest = bits + (this->Height - y - 1) * this->Pitch + x; step = -this->Pitch; }
+    while (h > 0) { *dest = color; dest += step; h--; }
 }

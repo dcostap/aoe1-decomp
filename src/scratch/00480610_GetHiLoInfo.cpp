@@ -21,6 +21,18 @@
 // try 14: declaration-order swaps for original/sum/hi/self; no change.
 // try 15: /O2 without /Oy; no change, flag removed.
 // try 16: decompiler-shaped avg/out_hi initialized to param; no change from 128B basin.
+// Retry 2026-05-20 assigned pass:
+// try 17: simple param-count source with no avg/out_hi locals; still 128B too small.
+// try 18: count local plus explicit param_1=count before do-loop to model incoming stack slot as countdown; still 128B.
+// try 19: register param_1/count variant with --param_1 loop; still 128B.
+// try 20: decompiler-shaped source with explicit invalid-path lo/avg/out_hi reset; still 128B.
+// try 21: reduced to only count/sum/hi/lo locals and reused sum as avg; still 128B.
+// try 22: declaration order sum/hi/count/lo; still 128B.
+// try 23: declaration order hi/count/sum/lo; still 128B.
+// try 24: declaration order count/hi/sum/lo; still 128B.
+// try 25: /O1 /Oy flag probe produced wrong 123B family; removed flag.
+// try 26: /Od /Oy produced 132B but completely wrong unoptimized EBP-frame family (128 positional diff); removed flag.
+// try 27: /O2 /Oy /Gf and /Og flag probes did not change the 128B family; removed flags.
 // GIVEUP: exact validation still cannot compare because rebuilt .text is 128B vs configured 132B. Remaining structural mismatch is register/stack allocation: rebuilt saves extra ECX/local slot, uses EBX=this and EBP=sum/stack hi, original uses EDI=this, EBP=original count, EAX=sum, EBX=hi and reuses incoming param slot as loop counter. Not accepted_drift.
 
 #include <stdio.h>

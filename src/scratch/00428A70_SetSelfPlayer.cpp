@@ -30,8 +30,14 @@
 //
 // Left in scratch. Not proposing accepted_drift.
 // Retry 2026-05-19 Boss pass: 10 additional variants (p declared after count check, unsigned/goto/for loop shapes, selfDcoID local vs reload vs volatile, value temp, L local, separate assignment style). None improved prior best; most worsened to 55-67% positional / 61-119% edit by perturbing prologue/loop. Restored prior exact-size scratch.
-
-#include <stdlib.h>
+// Retry 2026-05-20 Boss pass:
+// - Made loop index unsigned int: kept, fixes the loop-back branch to jbe and improves best to 45 positional bytes / 28.8462%, 32 edit bytes / 20.5128%.
+// - volatile selfDcoID: delayed load but changed saved-register assignment and block order badly (46.1538% positional / 115.3846% edit); rolled back.
+// - /Og-, /Oa-, /Ob0, /O1 flag probes: no improvement or wrong-size/worse output; no custom flag kept.
+// - Guarded if/do-while and duplicated fail-log shapes delayed the initial selfDcoID load past the prologue, but VC5 unrolled/pipelined the loop and produced broad topology drift; rolled back.
+// - Explicit local `me = selfDcoID` inside guard caused EBP save and broad loop drift; rolled back.
+// - `extern const int selfDcoID` and removing <stdlib.h>: no meaningful scheduling change; const rolled back, include removal kept as neutral.
+// GIVEUP: current best remains exact size but first mismatch at offset 0 from selfDcoID hoisted before prologue; remaining drift is non-local scheduling/topology, not accepted_drift.
 
 extern void* L;
 extern int selfDcoID;
@@ -53,7 +59,8 @@ public:
 
 void TCommunications_Handler::SetSelfPlayer()
 {
-    int i = 1;
+    unsigned int i = 1;
+
     int* p = this->dcoID;
 
     while (i <= this->maxGamePlayers) {

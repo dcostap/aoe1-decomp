@@ -24,6 +24,18 @@
 // 19: novtable/manual vptr improved local vptr placement but worsened positional diff and still scheduled vptr before sbb/state; rolled back.
 // 20: auto_close temp and signed zero locals no codegen change.
 // GIVEUP: exact size but no match. Existing custom flags file remains /nologo /c /O2 /Oy /GX. Remaining mismatch is broad constructor body scheduling: original zeros EDX/ECX, stores timer, loads param2 into EDX, emits cmp/sbb/neg auto_close with local_4 state before vptr; rebuilt keeps vptr/state and setup arg scheduling in a different basin. No accepted_drift proposed.
+// Retry assigned 2026-05-20:
+// 21: baseline revalidation: 142B exact size, 50.0000% positional / 44.3662% edit, first mismatch +44.
+// 22: separate signed `long z1` for auto_close compare (`z1 < (long)timer_val`) produced setg/test family and worsened to 54.9296%; rolled back.
+// 23: literal-zero compare/stores (`0 < timer_val`, `last_time = 0`) no codegen change.
+// 24: `#define rge_base_game (*(RGE_Base_Game**)0x62C574)` recovered literal global address but worsened register choice/order to 52.1127%; rolled back to extern.
+// 25: `__declspec(novtable)` without manual vptr suppressed vptr store and worsened to 54.9296%; rolled back.
+// 26: explicit if/else assignment for auto_close moved param loads early and worsened to 51.4085%; rolled back.
+// 27: moving timer/auto_close/last_time into member initializer list worsened body scheduling to 51.4085%; rolled back.
+// 28: /Ob0 under /GX no codegen change; restored flags.
+// 29: /Gr under /GX no codegen change; restored flags.
+// 30: named draw_area local before setup no codegen change; rolled back.
+// GIVEUP: still broad constructor scheduling/register basin mismatch, not accepted_drift.
 
 class TPanel {
 public:

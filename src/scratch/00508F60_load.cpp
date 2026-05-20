@@ -8,6 +8,14 @@
 // register-allocation basin (rebuilt keeps this in ESI and list_num pointer in EBX;
 // original keeps this in EBX and list_num pointer/index offset in ESI) plus loop index
 // address scheduling. Not accepted-drift quality.
+// Retry 2026-05-20 Boss pass: revalidated baseline (161B, 39.7516% positional,
+// 26.0870% edit, first mismatch +2). Tried 13 additional probes: self alias with
+// count pointer/int index, register self, short-index variant, int task_type/local_4
+// plus explicit vtable local, cached arr local, /O2 without /Oy, /Ox, /Oa, /Og,
+// /O1, and explicit vtable function-pointer calls with __cdecl/__stdcall/default
+// signatures. None fixed the EBX/ESI this-vs-count register basin; best edit-only
+// probe (__stdcall vtable pointer) reached 25.4658% edit but used the wrong call
+// convention/stack shape family and did not improve positional diff. Kept baseline.
 
 struct FILE;
 class RGE_Sprite;

@@ -14,6 +14,8 @@
 // GIVEUP: VC5 internal prologue/epilogue heuristic mismatch; cannot override register save order
 //   (ebx,esi,edi vs edi,esi,ebx) or save timing (prologue vs after early-null-check) from C++ source.
 // Retry 2026-05-19 Boss pass: 10 source variants (self/ms locals, direct member access, shared-goto return, explicit pos/loop/to/cur locals, duplicate original tests, nested if/else, result local) all remained 144B or worse (one 128B). Flag probes /Od, /O1, /Ox, /O2 without /Oy did not help (/Od broad mismatch, /O1 110B, /Ox and /Oy- still 144B). Restored prior scratch.
+// Retry 2026-05-20: 10 more variants: nested no-goto, self/ms locals, raw/direct calls, separate-goto epilogues, result local, duplicate tests, explicit pos/loop/to/cur locals, volatile music_system, single outer else, raw byte-offset members. All close variants still 144B; volatile music_system reached exact size but broad 71.8121% positional / 144.2953% edit regression; one explicit-local variant shrank to 128B. Restored 144B best.
+// GIVEUP: same blocker remains. Original delays callee-save pushes until after the music_system null check and uses separate inline epilogues; VC5 C++ source keeps selecting the 144B shared-epilogue/prologue family unless volatile forces a completely wrong stack-home basin. Not accepted_drift: best is 5 bytes short and exact-size variant is broadly reordered.
 
 class TMusic_System {
 public:

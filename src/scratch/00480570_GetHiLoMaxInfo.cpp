@@ -48,6 +48,13 @@
 // Tried volatile counter pointer plus register hi to force stack-slot dec/store and EBX hi; it
 // produced exact size but with push-ecx stack home, sum in EBX, hi on stack, and 93.15% positional
 // drift. Rolled back to known best 144B source.
+// Retry 2026-05-20: 11 additional probes: explicit param_1=count before loop, volatile param dec,
+// pointer-to-param counter, temp assignment, while/for loop forms, hi-before-count and count-after-inits
+// declaration orders, volatile formal, register formal. The only exact-size variants were broad
+// regressions (82.9-90.4% positional), while all close variants stayed 144B/2 bytes short.
+// GIVEUP: remaining blocker is still the stable VC5 choice between stack-slot parameter countdown
+// and register-only loop/count/hi allocation. Not accepted_drift: exact-size variants reorder the
+// whole function badly, and the best close form is structurally 2 bytes short.
 
 #include <stdio.h>
 

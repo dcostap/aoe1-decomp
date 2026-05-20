@@ -5,6 +5,7 @@
 // 18+ probes attempted. Best result: non-virtual stubs + delete expression + /GX.
 // Edit diff 18.75%, positional diff 64.29%. Field offsets correct.
 // 2026-05-19 additional probes: real virtual destructor surface worsened edit diff to 37.5%; manual vtable store scheduled after cmp and worsened to 41.1%; volatile vtable store no help; /O2 without /Oy no change; /O1 too small; /Od much worse; novtable virtual surface no improvement; delete[] same as delete; free too small; explicit operator delete no improvement.
+// 2026-05-20 Boss retry: revalidated baseline (same 18.75% edit / 64.29% positional, first mismatch 0). Tried /GR, /vd0, /vd1, /Gd flag additions: no byte change. Tried manual vtable store first: worsened to 41.07% edit / 69.64% positional. Tried explicit local pointer for objects_value: no byte change. Tried explicit operator delete call: no byte change. Tried virtual derived dtor: worsened to 65.18% edit / 69.64% positional. Tried virtual base+derived dtors: worsened to 45.54% edit / 67.86% positional. Tried removing <stdlib.h>: no byte change.
 //
 // Remaining mismatch (18.75% edit / 64.29% positional):
 // The EH prologue format is structurally different:

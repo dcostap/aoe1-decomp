@@ -34,11 +34,15 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
     int count = this->pathingGroupCount;
     if (count > 0) {
         int max = this->pathingGroupMax;
-        for (; i < count; i++) {
+        while (1) {
             if (i >= max)
                 break;
             if (this->pathingGroupMembers[i] == groupIndex)
                 return;
+            i++;
+            if (i < count)
+                continue;
+            break;
         }
     }
 

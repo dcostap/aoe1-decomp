@@ -19,6 +19,17 @@
 //   parameter mutation and xref/yref/named row+limit variants. Direct mutation stayed in baseline
 //   register-swap basin; xref/named variants got desired initial EAX/EDX but added EDI save and
 //   worsened to 86.1789%. Rolled back to baseline as best scratch state.
+// - 2026-05-20 Boss retry: revalidated baseline (123 bytes, 71.5447% positional / 60.9756% edit).
+// - Tried direct parameter mutation with direct rowData[y][x] accesses; worse (109 positional bytes, first mismatch +5).
+// - Tried parameter mutation with row/cell/cur/limit locals to force ESI cell and CL limit; worse (108 positional bytes).
+// - Tried nested positive bounds checks and in-body cur<limit structure; much worse edit/position due to different branch/layout basin.
+// - Tried int value local and sum/value+cur ordering; worse and changed early parameter/register allocation.
+// - Tried xref/yref locals plus rows/row/cell/limit locals; got a different family but still worse (106 positional bytes).
+// - Tried rx/ry declaration/assignment expression forms and positive `&&` guard; no improvement over the known bad families.
+// - Tried `register` on x, y, and both parameters; no codegen change from baseline.
+// - Tried volatile value parameter; worsened to 98 positional bytes.
+// - Tried signature width variants for value (`int`, `unsigned int`, `char`, `signed char`); no change from baseline.
+// - Tried flag probes `/Og`, `/Oi`, `/Ox`, `/Gf` on top of default `/O2 /Oy`; no change, flags removed.
 // GIVEUP: remaining blocker is combined register allocation (original EAX=rx, EDX=ry, ESI=cell, CL=limit) plus exact unsigned-byte widening/order around sum and saturation. No accepted_drift proposal because drift changes stack spills/register topology/control displacements broadly.
 
 struct InfluenceMap {

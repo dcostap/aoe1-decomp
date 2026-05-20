@@ -38,6 +38,7 @@
 // - /EHsc accepted by VC5 but did not alter baseline no-EH ctor family; /d1ESrt was unsupported by c1.
 // Left in scratch: still blocked on compiler EH-prologue/function-boundary topology, not accepted-drift quality.
 // Retry 2026-05-19 Boss pass: 12 additional variants with existing custom /GX flags: derived dtor (112B), const-char name, extra base virtual slots before/after dtor, static/extern name, param_3 local, store order swap, derived dummy/nonvirtual dtor; ManagedArray ctor/dtor declarations failed to compile without definitions. All compiling full-size variants stayed baseline 75.2212% positional first mismatch 0; no FS-first EH prologue.
+// Retry 2026-05-20 assigned pass: 17 more probes. ManagedArray visible dtor/ctor+dtor/virtual dtor forced EH but only the wrong push-first EH family (best 60.1770% positional, first mismatch 0) with extra saved regs/member ctor calls, not the original FS-first constructor frame. Base dummy virtual, hardcoded string address, param_3 local, flat member fields, and /Ob0 /Gz /Gr /Og /Op /GB all collapsed to baseline no-EH 75.2212% first mismatch 0. Base nonvirtual dtor and manual vptr stores did not compile under this surface. Still no accepted_drift: broad prologue/frame/function-boundary topology mismatch from byte 0, not localized equivalent drift.
 
 struct ManagedArray_Int {
     int* value;

@@ -8,6 +8,14 @@
 // Remaining drift is broad register/prologue/control-flow basin. Original delays EDI/EBP/EBX saves until after
 // cap success and uses ECX=count through duplicate scan/realloc; rebuilt saves all callee-saves at entry and
 // uses EDX/count plus pointer-walk duplicate scan. Not accepted-drift safe.
+// Retry 2026-05-20: 16 more probes. Tried block-scoped locals after cap, positive/goto cap guard,
+// shared found return, scan locals to mimic original, for-loop scan, combined/case-body copy loops,
+// volatile/raw count guard, late groupIndex alias, parameter stack cast, count-before-cap, and raw
+// offset-only member accesses. All close variants still first-mismatch at offset 0 with eager
+// EBX/EBP/ESI/EDI save family; best metric remained broad ~91.36% positional / 53.70% edit.
+// GIVEUP: exact blocker is VC5 choosing eager callee-saved prologue and pointer-walk scan/copy
+// instead of original delayed-save basin. Not accepted_drift: broad prologue/control-flow/register
+// allocation mismatch, not localized benign drift.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* p);

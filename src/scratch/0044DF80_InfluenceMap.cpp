@@ -17,6 +17,12 @@
 // v10: natural constructor rewrite; worsened to 91.98% positional, kept EBP and reordered stores.
 // v11: current source re-restored parked volatile Init form; still exact-size 162B, 145/162 positional.
 // v12: attempted non-volatile/natural fill and explicit row loop; no improvement.
+// Retry 2026-05-20 Boss pass:
+// v13: natural constructor signature with external memset: emitted 144B, wrong-size call/helper shape; rolled back.
+// v14: natural constructor plus manual while(cnt--) fill: exact size but still saved EBP and worsened to 88.8889% positional / 100% edit.
+// v15: volatile constructor/manual for-loop fill: exact size but still EBP/scheduler drift, 87.6543% positional / 90.1235% edit.
+// v16: #pragma intrinsic(memset) plus /Oi probe: still 144B wrong-size; flag removed.
+// GIVEUP: restored parked volatile Init form. Exact size 162B but first mismatch +5; no accepted_drift because prologue/fill/row-loop register topology is broad, not localized.
 // Remaining drift summary:
 // 1. PROLOGUE: compiler saves EBP (extra callee-saved register). Original saves
 //    ebx/esi/edi (3 regs) but mine saves ebx/ebp/esi/edi (4 regs). Root cause:

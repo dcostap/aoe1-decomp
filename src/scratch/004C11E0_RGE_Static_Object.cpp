@@ -7,6 +7,18 @@
 // variant emits a different broad EH/codegen family. Original has VC5 constructor EH
 // registration/state around otherwise simple field initialization and optional setup;
 // local stubs could not reproduce the exact EH/vptr/state basin. Not accepted drift.
+// Retry 2026-05-20 assigned pass:
+// try 11: revalidated current /GX source; object text order starts with compiler-emitted dtor/deleting-dtor helpers and checker sees only a 160-byte constructor COMDAT, not original 164B EH constructor.
+// try 12: __declspec(novtable) on class; shrank to wrong 112B/non-EH family.
+// try 13: removed virtual destructor; wrong 112B/non-EH family.
+// try 14: pure virtual destructor and reordered destructor declaration; still helper COMDAT first / wrong size.
+// try 15: flag probes /Gy-, /Ob0, /GR-, and no /GX; no useful change from wrong 112/160B families.
+// try 16: initializer-list field initialization; still 160B wrong text-order/non-EH extraction.
+// try 17: raw byte-offset stores; still 160B wrong text-order family.
+// try 18: manual vptr write in body; shrank to wrong 128B family.
+// try 19: named do_setup local and compact assignment order; still 160B family.
+// try 20: /Og- and /Od reached 164B but broad wrong unoptimized/prologue family (140 positional diff); /O1, /vd0, /vmg rejected/wrong size. Flags restored to /O2 /Oy /GX.
+// GIVEUP: exact source/layout facts are understood, but local isolated VC5 cannot reproduce the original constructor EH COMDAT/text-order basin. Not proposing accepted_drift because this is structural EH/prologue/text-section drift, not localized equivalent codegen.
 
 class RGE_Game_World;
 class RGE_Sprite;

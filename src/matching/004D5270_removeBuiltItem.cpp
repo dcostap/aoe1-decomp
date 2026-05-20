@@ -53,26 +53,22 @@ public:
 int TribeBuildAIModule::removeBuiltItem(int id)
 {
     BuildItem* item = *(BuildItem**)((char*)this + 0x15C);
-    int zero = 0;
+    int found = 0;
     BuildItem* sentinel = (BuildItem*)((char*)this + 0x0F0);
 
-    if (item == sentinel) {
-    } else for (int found = zero; item != 0 && found == zero; ) {
+    while (item != sentinel && item != 0 && found == 0) {
         if (item->gameID() == id && item->built() == 1) {
             item->setInProgress(found);
             item->setBuilt(found);
             item->setGameID(-1);
-            item->setBuildAttempts(zero);
+            item->setBuildAttempts(found);
             if (item->typeID() == 0x114) {
-                this->md->wonderBuiltValue = zero;
+                this->md->wonderBuiltValue = found;
             }
             found = 1;
         } else {
             item = (BuildItem*)item->next;
-            found = zero;
         }
-        if (item == sentinel)
-            break;
     }
 
     ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->updateNeededResources();

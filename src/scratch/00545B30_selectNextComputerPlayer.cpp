@@ -26,6 +26,7 @@
 //   lives in EBX not original ECX and first loop got duplicated compare body / different exit.
 // - `register int current` did not move current to ECX. Kept improved no-this-home source.
 // GIVEUP: no accepted_drift. Remaining mismatch is broad register allocation and loop-topology drift, not localized benign equivalence.
+// Retry 2026-05-20 Boss pass: revalidated kept improved source (143B, 38.4615% positional, 46.1538% edit, first mismatch +7). Tried 11 more probes: decompiler-shaped source with separate else, for-loop first pass with int temp, unsigned-char temp, volatile current load, nested-if do second loop, loading player_num before current, plus /O1, /O2 without /Oy, /Ox, /Oa, and /Og flag probes. All source variants either reintroduced the this-home prologue / first-byte mismatch or worsened to 94%+ positional; flag variants were unchanged except /O1 too small. Kept existing best no-this-home source.
 
 class RGE_Player;
 

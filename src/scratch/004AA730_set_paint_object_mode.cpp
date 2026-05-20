@@ -17,7 +17,21 @@
 // try 14: short pn local and direct players[pn] access; same 11-byte localized lookup-order mismatch.
 // try 15: raw char* pointer arithmetic for world/player lookup; optimizer still hoisted world load before player_num.
 // try 16: volatile short pointer for player_num forced source read order but changed prologue/register allocation and worsened to 26 bytes; rolled back.
-// GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is an address-generation/register-topology hunk in the object lookup, not a tiny harmless encoding swap.
+// try 17: register int pn with explicit world local; no change, still world in EDI before player_num in EDX.
+// try 18: volatile world load after pn forced source order but destroyed prologue/register allocation; rolled back.
+// try 19: raw intptr chain with separate pn/world/players/player/masters locals; optimizer kept same reordered lookup hunk.
+// try 20: mutating self to world after pn; no change.
+// try 21: one raw direct expression with pn first; no change.
+// try 22: C++ reference to self->world after pn; no change.
+// try 23: function-scope local declaration order pn/w/obj; no change.
+// try 24: players and player locals after pn; no change.
+// try 25: /O1 tested as a flag probe but object was too small/wrong family; /O2 without /Oy, /Ob1, /Gs, and /Gr all kept same 11-byte hunk.
+// try 26: direct this expression without self alias; no change.
+// try 27: using game->master_obj_id directly instead of mo_id local destroyed early register/branch shape; rolled back.
+// try 28: bool enabled changed the whole prologue/result basin; rolled back.
+// try 29: nested ifs with short pn local; no change in lookup hunk.
+// try 30: comma pn/world assignment and split pointer arithmetic variants; no change.
+// GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is a localized address-generation/register-topology hunk in the object lookup (world pointer vs player index register/load order), not a tiny harmless encoding swap.
 
 struct RGE_Base_Game {
     virtual void vf00();

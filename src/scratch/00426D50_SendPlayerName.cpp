@@ -12,7 +12,9 @@
 // - 2026-05-19 retried explicit zeroes with DP interface local; worsened prologue to push/mov-this before xor and 70.4762% diff.
 // - 2026-05-19 retried explicit zero/source order without DP local; compiled size-short (96B) and kept the wrong push/mov-this-before-zero family.
 // - 2026-05-19 Boss retry: 13 additional source-order/local-dp/late-size/volatile/memset-subrange variants; best remained 56.1905% positional, most were 71.4286%-86.6667% or size-short 96B.
-// GIVEUP: remaining blocker is exact VC5 scheduling of DPNAME zero stores around saved-register pushes and right-to-left call argument side effects (load interface global before short-name lea, set dwSize after pushes). No accepted_drift proposal: call/setup instructions are reordered broadly, not a localized benign drift.
+// - 2026-05-20 retry: 20 more probes. Best kept below: memset + lpszLongName before DP global + local DPNAME* + comma dwSize, 40.0000% positional / 31.4286% edit, first mismatch offset 22.
+// - Tried explicit first zero before self, brace init, raw char stack buffer, no/with DP local, formal/friendly pointer locals, p-before/after-formal, side-effect argument expressions, flags/player locals, volatile first field, register self; none matched.
+// GIVEUP: remaining blocker is exact VC5 scheduling/register coloring of DPNAME setup around right-to-left call argument side effects. Best near-match has correct size/tail but uses ECX not EDX for formal-name LEA, stores long-name too early, loads short-name/dwSize before pushes, and reorders vtable/player loads. No accepted_drift proposal: call/setup instructions are broadly reordered, not localized benign drift.
 
 #include <string.h>
 
@@ -46,9 +48,10 @@ long TCommunications_Handler::SendPlayerName()
     DPNAME dpnSetName;
     memset(&dpnSetName, 0, sizeof(dpnSetName));
     dpnSetName.lpszLongName = (unsigned short*)(void*)this->MyFormalName;
+    void* dp = *(void**)0x62C5EC;
+    DPNAME* p = &dpnSetName;
     dpnSetName.lpszShortName = (unsigned short*)(void*)this->MyFriendlyName;
-    dpnSetName.dwSize = 16;
-    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)*(void**)0x62C5EC)[0x78 / 4])(*(void**)0x62C5EC, *(void**)0x62CF04, &dpnSetName, 2);
-    this->Err->ShowReturn(result, "Send Player Name");
+    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)dp)[0x78 / 4])(dp, *(void**)0x62CF04, (p->dwSize=16,p), 2);
+    this->Err->ShowReturn(result, (const char*)0x580EB4);
     return result;
 }

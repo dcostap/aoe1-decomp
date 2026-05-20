@@ -12,6 +12,17 @@
 // try 8: ++numberTilesExplored no change.
 // try 9: manual while/break loop shape no change; rolled back.
 // try 10-11: /Ob0 and /G5 flag probes no change; flags removed.
+// Retry 2026-05-20 assigned pass:
+// try 12: revalidated current best: exact size 156B, 81 positional / 53 edit, first mismatch +49.
+// try 13: C++ reference to row slot like accepted-drift recomputeExplored; destroyed prologue/register basin (first mismatch +0), rolled back.
+// try 14: row_ptr = this->map_offsets + y reference/index form; worsened badly, rolled back.
+// try 15: source call to add_node before row store to try early argument pushes; wrong behavior order and much worse codegen, rolled back.
+// try 16: for-loop combined y/rowOffset and direct for headers; worsened from offset 0, rolled back.
+// try 17: direct indexed `map_offsets[y]`/`unified_map_offsets[y]`; similar but slightly worse than baseline, rolled back.
+// try 18: keep slot and row2 aliases to force extra LEA/slot lifetime; worsened from offset 0.
+// try 19: signed-char condition and pointer arithmetic `*(row+x)`; worsened from offset 0.
+// try 20: preload player and mask locals before inner loop; extra liveness worsened from offset 0.
+// try 21: separate numberTilesExplored temp and separate add_node arg locals; optimized back to baseline, no improvement.
 // GIVEUP: best kept is exact size 156B, 51.9231% positional / 33.9744% edit. Remaining mismatch is inner-loop register/address topology: original keeps row in EDX, emits extra LEA slot, schedules add_node pushes before store/or-mask; rebuilt uses EAX row and shorter body. Not accepted drift.
 
 extern unsigned long* unified_map_offsets[256];

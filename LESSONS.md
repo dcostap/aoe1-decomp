@@ -5688,3 +5688,247 @@ Why it helps:
 - it preserves exact field offsets for embedded modules while still generating virtual
 dispatch for each subobject. Verified on 004E4FA0.
 
+
+## Lesson: Keep chained arithmetic/calls in one expression to preserve VC5 saved-register roles
+
+When a result is built from several calls and arithmetic steps, splitting the computation into
+multiple assignments (`r = call() % bound; r -= other()/2; r += base();`) can extend the result
+local's lifetime enough for VC5 to put it in the wrong callee-saved register and move `this` to
+another register. If the original keeps `this` in one saved register and uses a different saved
+register only inside the success branch for the arithmetic result, try spelling the whole value as
+one assignment expression:
+
+```cpp
+this->field = call_a() % obj->bound() - obj->bound() / 2 + obj->base();
+```
+
+Why it helps:
+- VC5 can evaluate the chained expression with the branch-local result register chosen from the
+  original basin, while keeping the owner/`this` pointer in its long-lived register.
+- Semantically equivalent stepwise compound assignments may introduce a stable EBX/EDI swap across
+  the prologue, arithmetic hunk, final store, and epilogues.
+
+Caveat:
+- Use only when the original call/arithmetic order matches the expression's evaluation order; keep
+  separate statements if they are needed to force interleaving or side-effect order. Verified on
+  004E6580 `setTributeChat`.
+
+## Lesson: Pair default-thiscall virtual helper casts with source case order for switch body layout
+
+When a switch case needs to call an observed vtable slot with `ECX=this` and only the explicit stack arguments pushed, use a separate helper class with dummy virtual declarations and a normal/default member function at the target slot. Do not mark that helper virtual `__stdcall` unless the original pushes `this`; `__stdcall` adds an extra `push ecx` and shifts all following case bodies.
+
+For the same switch, source case order can still determine physical body order even when the jump table entries are numeric. If the original places case bodies in a non-numeric order, order the source cases to match that body order while keeping the labels semantically correct (for example case 0, then cases 2/3, then case 1).
+
+Try when:
+- a raw vtable function-pointer call has the right table slot but wrong argument registers/cleanup;
+- a virtual helper fixes one case but leaves only jump-table target/body-order drift;
+- the original has a dense switch jump table with small immediate-return case bodies.
+
+Why it helps:
+- the default virtual helper preserves thiscall dispatch (`mov eax,[ecx]; push args; call [eax+slot]`) without forbidden `__thiscall` typedefs or `__stdcall` stack-this glue;
+- VC5 may lay out switch bodies in source order, so semantic labels and physical order can be tuned independently.
+
+Caveat:
+- only reorder source cases after verifying the original jump table targets; do not change case semantics to chase bytes. Verified on 004C2110 `draw_front_frame`.
+
+## Lesson: Header-first packet stores can make VC5 schedule byte parameter loads in original order
+
+For small command-packet builders that allocate a byte buffer, fill a fixed header, then fill a few
+trailing byte parameters, the source store order may need to be the natural packet layout order even
+when the original asm appears to load/store a trailing byte first. Writing the header stores first:
+
+```cpp
+buf->cmd = CMD;
+buf->player = (unsigned char)player;
+buf->rec = rec;
+buf->one = 1;
+buf->p3 = p3;
+buf->p4 = p4;
+buf->p5 = p5;
+```
+
+can let VC5 reschedule the independent parameter loads into the binary-observed pre-cleanup order
+(e.g. `CL=p3`, `EBX=player`, `DL=p4`, `ESI=calloc_result`, `EAX=rec`, then reload `CL=p5`) while
+still emitting the stores in packet-field order after `add esp,8`.
+
+Try when:
+- a near-match has the right packet bytes but byte parameters are colored as `AL/CL/DL` in the wrong
+  order around a `calloc` call;
+- forcing byte locals or volatile reads only adds spills or stays in the same basin.
+
+Caveat:
+- this works because the stores are independent and VC5 is free to schedule the loads; if a field has
+  side effects or aliasing, preserve the real order. Verified on 004360D0 `command_add_waypoint`.
+
+## Lesson: Explicit row/column while cursors can recover terrain-brush register roles
+
+For clipped rectangle/brush loops, a natural `for` loop over adjusted bounds may still make VC5 preload parameters before saving registers or swap the row/column bound registers. After computing and clipping `x1/x2/y1/y2`, try assigning explicit cursor locals and using nested `while` loops:
+
+```cpp
+long row = y1;
+while (row <= y2) {
+    long col = x1;
+    while (col <= x2) {
+        this->set_terrain(world, col, row, terrain, 0, 0);
+        ++col;
+    }
+    ++row;
+}
+```
+
+Try when:
+- the original keeps the owner in one saved register, uses separate saved registers for `x2`, `row`, and `col`, and reloads the inner cursor from the clipped start after each row;
+- `for` headers or parameter-mutation source are behaviorally correct but cause early parameter preloads and EBX/EBP/ESI role swaps.
+
+Why it helps:
+- explicit cursors shorten the live ranges of the bounds and make VC5 materialize the inner cursor at the loop boundary, matching the original nested-loop schedule. Verified on `00457320` `do_terrain_brush`.
+
+## Lesson: Destructible member subobjects control VC5 destructor EH state numbering
+
+When a /GX destructor is behaviorally correct but EH state numbers are off and a cleanup block
+looks like manual delete/zero code, the missing source fact may be that the cleaned-up fields are a
+real member subobject with an inline destructor, not ordinary fields manually cleaned in the parent
+destructor. Model the member type with its real fields and destructor, then let VC5 automatically
+call it from the parent destructor.
+
+Try when:
+- rebuilt destructor has state sequence like `1 -> 0 -> -1` but original has `2 -> 1 -> 0 -> -1`;
+- an omitted/redundant state store appears immediately before a delete/zero block;
+- manual cleanup matches behavior but review rejects accepted drift because unwind topology differs.
+
+Why it helps:
+- each visible destructible member contributes to VC5's EH unwind-state numbering;
+- an inline member destructor can emit the same delete/zero stores while giving the parent destructor
+  the correct state transitions and automatic subobject cleanup ordering.
+
+Caveat:
+- preserve exact member size/offsets when replacing raw fields with a subobject. Verified on
+  00408D50 `BuildAIModule::~BuildAIModule`.
+
+- In list scans that use a `found` flag, keep the flag as one named int initialized before the sentinel pointer and write the loop condition naturally (`item != sentinel && item != 0 && found == 0`). Prechecking the sentinel or introducing a separate zero local can make VC5 delay `push edi`, use EAX as the found state, or add extra bottom tests; the natural while lets VC5 dedicate EDI to the flag from entry and preserve the original sentinel/null/found test topology.
+
+## Lesson: Recompute fixed byte strides from the loop index to let VC5 strength-reduce into the original offset register
+
+When a loop walks fixed-size records and a carried `offset += STRIDE` local gives the wrong register basin, try computing the offset from the loop index inside the body:
+
+```cpp
+for (int i = 0; i < this->count; ++i) {
+    int offset = i * STRIDE;
+    use(base + offset);
+}
+```
+
+VC5 can strength-reduce the multiplication back into a running byte-offset register, but the source shape may preserve a separate loop counter and narrow pre-loop count tests that a manually carried offset local perturbs.
+
+Try when:
+- the original has both a loop counter and a byte-offset induction variable;
+- a manual `offset += STRIDE` source swaps registers or changes the pre-loop count load/test;
+- the loop bound is reloaded from a member at the bottom.
+
+Caveat: this is for fixed-stride record loops where the binary already proves the stride; direct multiplication may generate worse code if VC5 cannot strength-reduce it.
+
+## Lesson: Mutate source string parameters and keep nested vararg expressions inline for debug logging helpers
+
+For compact debug logging wrappers that copy a slice of a filename into a small stack buffer and then call `sprintf`, mutating the incoming string parameter in place can recover VC5's exact pointer/end loop:
+
+```cpp
+param_1 += 10;
+char* d = buf;
+char* end = param_1 + 8;
+char c = *param_1;
+while (c != '.' && param_1 < end) {
+    *d = c;
+    c = param_1[1];
+    ++d;
+    ++param_1;
+}
+```
+
+This can emit the desired `add eax,0Ah`, `lea end,[eax+8]`, copy current byte, preload next byte, increment both pointers loop shape. Separately, avoid naming nested globals like `game` or `world_time` before a vararg `sprintf` if the original evaluates stack arguments first. Keeping the nested expression inline in the argument list can preserve right-to-left vararg scheduling:
+
+```cpp
+sprintf(log + idx * 100, fmt,
+        (*(Game**)&rge_base_game)->world->world_time,
+        buf, line, seed);
+```
+
+Try when:
+- a filename-slice copy loop is close but uses index/delta arithmetic instead of a moving source pointer plus end pointer;
+- `sprintf` call setup loads global owner/world pointers too early before pushing later varargs.
+
+Why it helps:
+- mutating the parameter gives VC5 the same source pointer lifetime as the original;
+- inline nested expressions let VC5 evaluate varargs right-to-left without long-lived locals that force early global loads.
+
+Caveat:
+- use only when the original parameter value is dead after the copy or only needed through another saved argument/register. Verified on 00423140 `debug_srand`.
+
+- For remove-from-selected-list routines, preserving the programmer-visible index expression can be the difference between wrong-size and exact: zeroing `sel_list[sel_count - 1]` may force VC5 to reload the decremented/short count path differently, while spelling the source as `sel_list[sel_count - 1] = 0` before the decrement can match the original reload-and-store through the selected-object base. Also, if original layout is `jl` into the move-last-item block with the zero-current-slot block as fallthrough, spell the source as `if (i >= last) { zero } else { move }`; the semantically obvious `if (i < last)` may invert the branch and shift the rest of the function.
+
+## Lesson: Positive nested bounds plus `while (node != 0)` can fix tile-list search tail layout
+
+For tile/list search helpers with several bad-bounds checks, a count write, and then a linked-list walk, early negative-return guards can push the bad-bounds tail too early/late and make VC5 choose near branches or split not-found tails. Try spelling the bounds as nested positive conditions and putting one common `*out = 0; return -1;` after the positive body. Inside the valid-tile body, use `while (node != 0)` and let the loop fall through to a local `return -1` when the list is exhausted.
+
+Try when:
+- original has multiple bounds failures jumping to one out-parameter-zero tail near the end;
+- the list walk uses a compact bottom `node = node->next; test node; jne loop` and a separate local not-found return before a success tail;
+- a behaviorally identical `if (bad) return` / `while(1)` source gives near/short branch displacement drift.
+
+Why it helps:
+- nested positive bounds preserve the physical placement of the bad-bounds handler;
+- a natural node-condition loop lets VC5 place the list-exhausted return before the found/success tail and use the short backedge expected by the original. Verified on `00545C00` `objectGroupOnTile`.
+
+## Lesson: Natural offset-order member stores can beat decompiler/PDB line scheduling
+
+For large setter methods that copy many incoming parameters into adjacent object fields, do not
+assume the decompiler's or line-record apparent store order is the source order. Try the simple
+field-offset order first:
+
+```cpp
+field_34 = p1;
+field_9C = p2;
+field_A0 = p3;
+field_A4 = p4;
+...
+field_50 = p13;
+```
+
+VC5 may reschedule the loads/stores into a very different binary order while preserving the
+natural source order. Also, for a following virtual callback with a nullable helper object, spell the
+two call arms explicitly (`if (obj) callback(obj->w, obj->h); else callback(0, 0);`) instead of
+pre-initializing `w`/`h` locals; this can preserve literal `push 0; push 0` in the null arm.
+
+Try when:
+- a setter is behaviorally correct but store/load scheduling is broadly different;
+- volatile/raw-offset attempts preserve source order too strongly and worsen the match;
+- the original has a null callback arm with explicit zero pushes.
+
+Verified on 00464E00 `TPanel::set_positioning`.
+
+## Lesson: Use one padded virtual surface for multiple slots on the same object
+
+When a function calls several virtual methods on the same object at different vtable offsets, model those slots in one class declaration rather than separate ad-hoc casts or an overlong guessed vtable. Count the observed slots exactly and place the real methods at those indices:
+
+```cpp
+class UnitLike {
+public:
+    VPAD64(0) VPAD2(64) VPAD1(66)
+    virtual float get_value(...);     // slot 67 / +0x10C
+    VPAD16(68)
+    virtual int command(...);         // slot 84 / +0x150
+    VPAD16(85)
+    virtual int check(...);           // slot 101 / +0x194
+    char gap_04[...];                 // data still begins after the implicit vptr
+};
+```
+
+Try when:
+- original loads one vptr and calls offsets such as `+0x10C`, `+0x150`, and `+0x194`;
+- a local stub calls the wrong offsets or separate helper interfaces change register allocation;
+- the same object also needs data fields after the vptr.
+
+Why it helps:
+- VC5 can reuse the loaded vtable register and emit natural thiscall virtual dispatch at each exact offset;
+- the object data layout remains consistent with a single implicit vptr.
+
+Caveat: count slots carefully. One extra or missing dummy virtual shifts every later call and can look like broad control-flow drift.

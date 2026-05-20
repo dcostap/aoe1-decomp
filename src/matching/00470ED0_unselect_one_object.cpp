@@ -26,11 +26,11 @@ void RGE_Player::unselect_one_object(short index)
         obj->selected = 0;
         int count = sel_count;
         int last = count - 1;
-        if (i < last) {
-            sel_list[i] = sel_list[count - 1];
-            sel_list[sel_count] = 0;
-        } else {
+        if (i >= last) {
             sel_list[i] = 0;
+        } else {
+            sel_list[i] = sel_list[count - 1];
+            sel_list[sel_count - 1] = 0;
         }
         RGE_Static_Object* cur = selected_obj;
         --sel_count;

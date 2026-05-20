@@ -22,6 +22,7 @@
 // try 15: register diff / separate Offset store probes fell into same 128B/short-tail family.
 // Rolled back to exact-size baseline as best scratch state.
 // GIVEUP: current best below is behaviorally straightforward and exact-size, but original keeps previous LastCall in ECX, copies now to EDX for delta, preserves a longer load/store schedule, and has no NOP padding; rebuilt keeps previous LastCall in EDX/uses ECX for delta or offset depending source. Not proposing accepted_drift because drift spans register allocation, index update schedule, aTSLC store source, and final length/padding.
+// Retry 2026-05-20 Boss pass: revalidated baseline (141B, 69.50% positional, 29.08% edit, first mismatch 16). Tried decompiler order without register now, diff-before-store, explicit delta copy, LastCall reference local, unsigned idx/direct minmax, result local, member ++Offset, volatile now/prev combinations, raw byte-offset field access, and direct min/max assignments. Best edit-only variant was LastCall reference (26.95% edit) but positional worsened and still used wrong register/schedule; many variants compiled to shorter .text or worsened with stack spills. No improvement over exact-size baseline.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 

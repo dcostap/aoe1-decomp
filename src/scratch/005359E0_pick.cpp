@@ -33,6 +33,7 @@
 // Attempt 18: using pi for call args no improvement; rolled back.
 // Attempt 19: /Ob0 flag probe no improvement; removed.
 // GIVEUP: final default-flags validation 151/151, MISMATCH 134 positional bytes / 88.7417%, edit 95 bytes / 62.9139%, first mismatch +4. Register topology remains fundamentally different across whole function.
+// Retry 2026-05-20 Boss pass: revalidated baseline (151B, 88.7417% positional, 62.9139% edit, first mismatch +4). Tried 17 additional probes: key/param_2 signature width matrix (int/uchar/char), object-first local, explicit mask expression, /O2 without /Oy, /Ox, /Oa, /Og, /O1, plus void* result variant under the width probes. Best positional probe was `int key, unsigned char param_2` at 63.5762% positional but edit stayed 62.2517% and register topology/call setup remained broad mismatch; most other probes worsened or were unchanged. Kept existing baseline scratch.
 
 #include <stdlib.h>
 

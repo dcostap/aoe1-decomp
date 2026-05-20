@@ -18,6 +18,7 @@
 // this in esi and using edi for ppPrev; this also flips duplicate-hit count temp (al/ecx) and new-node
 // register (edi/esi). Original preserves esi (this) through traversal and uses edi for pointer-to-pointer.
 // Not accepted-drift safe; diff spans traversal, allocation/insertion registers, and early-return tail.
+// Retry 2026-05-20 assigned pass: 15 more probes. Tried natural double-for, ppPrev declaration after first loop, self alias, list reference alias, class surface with explicit gap vs virtual dtor, local declaration order, int priority param, calloc argument order, first-loop for form, second-loop break form, combined loop forms, and flags /Og /Ot /Ob0 /G5 /GB /Oa. All sane source/flag variants stayed in the same ESI-mutated-to-&list basin (or worsened). GIVEUP, no accepted_drift: mismatch is broad register/topology drift spanning first traversal, duplicate-count tail, insertion traversal, new-node register, and final insertion stores, not a localized equivalent hunk.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 

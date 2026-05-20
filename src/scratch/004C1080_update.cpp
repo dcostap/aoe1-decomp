@@ -52,6 +52,19 @@
 // try 31: volatile new_dt local slightly improved positional to 47.9675% but edit diff worsened to 49.5935%; rolled back.
 // try 32: /Ob1 and /Og flag probes no better than kept source; removed flags.
 // GIVEUP: best kept default-flags source is 123B, 48.7805% positional / 37.3984% edit, first mismatch offset 12. It fixes early param-load/store ordering but still has broad register/scheduler/layout drift (dt in EDX not ECX, compare before delta store, no redundant delete null test). Not accepted_drift.
+// Retry assigned 2026-05-20:
+// try 33: baseline revalidation: same 48.7805% positional / 37.3984% edit, first mismatch +12.
+// try 34: removed volatile param reload to recover ECX=dt; regressed to 53.6585%, param load delayed and first-path stores reversed.
+// try 35: volatile int dt forced stack frame / no EBX-save basin, 89.4309%; rolled back.
+// try 36: register-qualified param declaration/definition: no codegen change from kept baseline.
+// try 37: duplicated `time = param_1` in if/else around zero-delta test; same as no-volatile 53.6585%, rolled back.
+// try 38: inverted zero test to put nonzero path first; worsened layout to 60.9756% and moved first-time path out of line.
+// try 39: assignment-in-condition `(this->delta_time = new_dt) >= ...`; no change from kept baseline.
+// try 40: `dt + elapsed` operand order for new_dt; no change.
+// try 41: /Ob0 with current source still emits extra `push 0` before destructor call; 48.7805%, rejected and flag removed.
+// try 42: /O1 and /Os flag probes produced too-small .text (100B < configured 123B); removed flags.
+// try 43: reversed threshold spelling `180000 <= new_dt`; no codegen change from kept baseline.
+// GIVEUP: leave in scratch. Not accepted_drift: differences remain broad scheduler/register/layout drift across both update paths and delete block, not a localized harmless encoding/scheduling swap.
 
 struct TShape {
     ~TShape();
@@ -87,7 +100,7 @@ void RGE_Sprite::update(unsigned long param_1) {
             this->last_time = time;
             int new_dt = elapsed + dt;
             this->delta_time = new_dt;
-            if (new_dt >= 180000) {
+            if (180000 <= new_dt) {
                 if (pS) {
                     pS->~TShape();
                     operator_delete(pS);

@@ -29,6 +29,14 @@
 //
 // Left in scratch. Not proposing accepted_drift (remaining drift spans prologue scheduling, compare order,
 // and branch layout, not a tiny localized benign difference).
+// Retry 2026-05-20: 20 more probes. Best improved to exact-size 153B, 17.6471% positional/edit by using
+// nested positive success predicates instead of shared goto-fail for the top checks. Tried last_n/local
+// forcing, split declarations, volatile last_order load, param-units-before-count, manual/delta loop,
+// result local, target operand swap, explicit ftol temps, and alternative x/y compare spellings. None
+// fixed the stable early scheduling mismatch: VC5 still emits `xor/load param count` before pushing EBP
+// and before loading `last_order`, while original pushes EBP/ESI and loads last_order first. Remaining
+// diffs also include x ftol operand order and ECX-vs-EDX target compare coloring. Not accepted_drift:
+// broad prologue/FPU/compare scheduling, not localized benign drift.
 
 class RGE_Command_Order {
 public:
@@ -51,30 +59,7 @@ public:
 
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
-    RGE_Command_Order* last_order = this->last_order;
-    unsigned int n = (unsigned char)param_1->unit_num;
-    long* p1 = param_1->units;
-    long* p2 = last_order->units;
-    int i;
-
-    if (n != (unsigned char)last_order->unit_num)
-        goto fail;
-
-    if ((short)(int)last_order->pos_x != (short)(int)param_1->pos_x)
-        goto fail;
-
-    if ((short)(int)last_order->pos_y != (short)(int)param_1->pos_y)
-        goto fail;
-
-    if (last_order->target_id != param_1->target_id)
-        goto fail;
-
-    for (i = 0; i < (int)n; i++) {
-        if (p1[i] != p2[i])
-            goto fail;
-    }
-
-    return 1;
-fail:
-    return 0;
+    RGE_Command_Order* last_order = this->last_order; unsigned int n=(unsigned char)param_1->unit_num; long* p1=param_1->units; long* p2=last_order->units; int i;
+    if (n == (unsigned char)last_order->unit_num) { if ((short)(int)param_1->pos_x == (short)(int)last_order->pos_x) { if ((short)(int)param_1->pos_y == (short)(int)last_order->pos_y) { if (last_order->target_id == param_1->target_id) { for(i=0;i<(int)n;i++){ if(p1[i]!=p2[i]) goto fail; } return 1; } } } }
+fail: return 0;
 }

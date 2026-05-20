@@ -18,8 +18,22 @@
 // 20-22: Retried natural link-pointer variants (nested if, separate find local). They keep
 //        the expected source topology but compile to a 96-byte .text body (too short for
 //        configured 100-byte function) or earlier EBX-save family; no exact match.
-// ACCEPTED_DRIFT DENIED: 83% positional diff / first mismatch +7 and alternative broad
-// list-unlink topology is not localized harmless VC5 drift; leave in scratch.
+// 23: Revisited simple link-pointer form. Best no-EBX family is 73% positional / 46% edit,
+//     first mismatch +8: VC5 uses EAX for &time_list/link, ECX for param, and omits the
+//     original duplicate entry null test + mov eax,ecx. Body/tail broadly shifted.
+// 24: Swapped link initialization order (link=&time_list; p=*link); no codegen change.
+// 25: `register` on link; no codegen change.
+// 26: Declaring link before p; no codegen change.
+// 27: Added local `this` alias before link setup; no codegen change.
+// 28: Tried `char*` raw link pointer; no codegen change from simple link-pointer family.
+// 29: Added separate `head` link to preserve original ECX=&time_list for command==1 scan;
+//     this forces EBX save and shifts from byte 0.
+// 30: Changed command==1 scan to reload `this->time_list`; still EBX-save family when
+//     preserving a separate head/base pointer.
+// 31: Tried integrated `for (; p != 0; p=p->next)` with found body inline; forces EBX save
+//     and different early return layout.
+// ACCEPTED_DRIFT DENIED: best remaining diff is broad register/topology drift (first
+// mismatch +8 or +0 in other families), not localized harmless drift; leave in scratch.
 
 extern "C" void __cdecl free(void* block);
 
