@@ -18,6 +18,7 @@
 // try 18: manual vptr write in body; shrank to wrong 128B family.
 // try 19: named do_setup local and compact assignment order; still 160B family.
 // try 20: /Og- and /Od reached 164B but broad wrong unoptimized/prologue family (140 positional diff); /O1, /vd0, /vmg rejected/wrong size. Flags restored to /O2 /Oy /GX.
+// Retry 2026-05-21 Boss pass: 19 more probes. Tried compact current body, inline dtor definition after ctor (164B but wrong helper/text order, 85.9756% positional), novtable, manual vptr, raw offset stores, do_setup local, initializer-list stores, no virtual dtor, pure virtual dtor, and flags /Ob0 /GR- /G5 /GB /vd0 /Gy- /no-GX /no-Oy /O1 /Od. Normal variants stayed 160B too small; novtable/no-virtual/manual-vptr variants shrank to 112/128B; only /Od and inline dtor reached 164B but broad wrong prologue/helper family from byte 0. Still no accepted_drift: structural EH COMDAT/text-order/prologue mismatch.
 // GIVEUP: exact source/layout facts are understood, but local isolated VC5 cannot reproduce the original constructor EH COMDAT/text-order basin. Not proposing accepted_drift because this is structural EH/prologue/text-section drift, not localized equivalent codegen.
 
 class RGE_Game_World;

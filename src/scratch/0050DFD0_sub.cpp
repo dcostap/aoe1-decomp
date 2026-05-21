@@ -32,6 +32,15 @@
 //     preserving a separate head/base pointer.
 // 31: Tried integrated `for (; p != 0; p=p->next)` with found body inline; forces EBX save
 //     and different early return layout.
+// 32: Re-tested natural link-pointer topology with p=*link and nested positive guards; still
+//     compiles to a 96-byte body (checker rejects configured 100B), omitting original LEA/dup-test.
+// 33: Added `register` to entry with link initialized before p; no size/codegen change (96B).
+// 34: Made link itself volatile; forces stack home plus EBX save, first mismatch at byte 0.
+// 35: Used redundant `(int)p != 0` for the second guard; VC5 still folds it, 96B no-match.
+// 36: Used volatile cast only for duplicate p null-test; preserves duplicate test but spills p
+//     and forces EBX/save-stack family, first mismatch at byte 0.
+// 37: Rolled back to prev-based no-EBX baseline because it remains the least bad compiler-facing
+//     owner; exact source likely needs a hidden VC5 line/TU/liveness axis for link=&time_list.
 // ACCEPTED_DRIFT DENIED: best remaining diff is broad register/topology drift (first
 // mismatch +8 or +0 in other families), not localized harmless drift; leave in scratch.
 

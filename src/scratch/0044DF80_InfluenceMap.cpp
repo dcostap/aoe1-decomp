@@ -22,6 +22,7 @@
 // v14: natural constructor plus manual while(cnt--) fill: exact size but still saved EBP and worsened to 88.8889% positional / 100% edit.
 // v15: volatile constructor/manual for-loop fill: exact size but still EBP/scheduler drift, 87.6543% positional / 90.1235% edit.
 // v16: #pragma intrinsic(memset) plus /Oi probe: still 144B wrong-size; flag removed.
+// Retry 2026-05-21 Boss pass: 15 more probes. Tried nonvolatile local copies in original store order, alternate 4-byte fill pattern source, do/while-style fill, external memset, row-pointer direct loop, nonvolatile/uchar-fill signatures (compile-surface mismatch), value/vptr store reorder, while-top row loop, no row null check (compile-surface mismatch), and flags /Ob0 /Og /G5 /GB /O1. All compiling default-family variants stayed exact-size 162B with first mismatch +5 and broad 89.5062% positional drift; memset was 160B/too small and /O1 regressed from byte 0.
 // GIVEUP: restored parked volatile Init form. Exact size 162B but first mismatch +5; no accepted_drift because prologue/fill/row-loop register topology is broad, not localized.
 // Remaining drift summary:
 // 1. PROLOGUE: compiler saves EBP (extra callee-saved register). Original saves

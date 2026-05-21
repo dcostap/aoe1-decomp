@@ -14,46 +14,66 @@
 // GIVEUP: best no-EDI basin has correct prologue/no saved EDI and same first branch size, but still uses EAX/EDX for action reloads instead of ECX, reshapes the list traversal (ECX next with extra tests instead of ESI next / EDX cur), and vtable-call scheduling differs. Structural enough that this is not an accepted_drift proposal.
 // Retry 2026-05-19 Boss pass: 10 additional variants (natural nonvolatile param, while/goto/for loop shapes, helper-call split, pointer-to-pointer scan, low-branch volatile reload only, calloc sizeof, inverted condition, typed virtual RGE_Action). None improved the saved no-EDI stack-reload basin; most were 112B/96B short or 85%+ positional, best remains 40.35% positional.
 // Retry 2026-05-20 Boss pass: revalidated baseline (114B, 40.35% positional, first mismatch 13). Tried natural typed virtual source, typed virtual with preserved action local, raw nonvolatile action local + while, explicit weird while(1) traversal, shared goto call tail, register parameter, four declaration-order permutations for action/node/cur, self-assignment to parameter, and volatile-store-only/nonvolatile-call split. Natural typed virtuals compiled to 112B short; nonvolatile/register/declaration-order families fell back to saved-EDI/action-preserved basin (~89.47% positional); volatile-store-only kept no-EDI but worsened to 41.23% and wrong tail scheduling. No improvement over saved baseline.
+// Retry 2026-05-21 Boss pass: 18 more probes. Revalidated baseline. Tried direct-param while/do/goto/ptr-to-ptr/param self-assign/volatile-param/register-param plus flags /Ob0, /Oa, /Og-, /Gd, /O1, /Od (no match; /Ob0 no change, /Oa and no global opts worse). Typed virtual RGE_Action plus volatile stack-reload improved the high-state branch and moved first mismatch to offset 19 (34.21% positional). Best new source uses typed virtual RGE_Action, volatile stack store for node->action, and for/condition next scan; it matches through offset 61 and improves positional diff to 30.70%, but loop body/call-tail topology remains wrong (ECX next and shared/shortened tail instead of original ESI next, redundant EDX test, and three physical call/return tails). Tried register/outer next declarations and goto-loop variants; no improvement.
+// GIVEUP 2026-05-21: left in scratch with best positional baseline (30.70%). Not accepted_drift: remaining differences are control-flow/call-tail structure, not localized benign drift.
 
 #include <stdlib.h>
-struct RGE_Action_Node { void* action; RGE_Action_Node* next; };
-struct RGE_Action_Object { char pad[0x48]; unsigned char object_state; };
-struct RGE_Action_List { void* vtable; RGE_Action_Object* obj; RGE_Action_Node* list; void add_action_at_end(void* action); };
+
+struct RGE_Action_Node;
+
+class RGE_Action {
+public:
+    virtual void func0(int);
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void func7(int);
+};
+
+struct RGE_Action_Node {
+    RGE_Action* action;
+    RGE_Action_Node* next;
+};
+
+struct RGE_Action_Object {
+    char pad[0x48];
+    unsigned char object_state;
+};
+
+struct RGE_Action_List {
+    void* vtable;
+    RGE_Action_Object* obj;
+    RGE_Action_Node* list;
+    void add_action_at_end(RGE_Action* action);
+};
+
 void* calloc(int count, int size);
 
-typedef void (__stdcall *ActionFn)(int);
-
-void RGE_Action_List::add_action_at_end(void* action) {
+void RGE_Action_List::add_action_at_end(RGE_Action* action) {
     if (obj->object_state > 2) {
         if (action) {
-            void** vt = *(void***)action;
-            ((ActionFn)vt[0])(1);
+            action->func0(1);
         }
         return;
     }
+
     RGE_Action_Node* n = (RGE_Action_Node*)calloc(1, 8);
     n->next = 0;
-    n->action = *(void* volatile *)&action;
+    n->action = *(RGE_Action* volatile*)&action;
+
     RGE_Action_Node* cur = list;
-    if (cur != 0) {
-        do {
-            RGE_Action_Node* next = cur->next;
-            if (next == 0) {
-                cur->next = n;
-                void* a = *(void* volatile *)&action;
-                void** vt = *(void***)a;
-                ((ActionFn)vt[7])(1);
-                return;
-            }
+    if (cur) {
+        for (RGE_Action_Node* next = cur->next; next != 0; next = cur->next) {
             cur = next;
-        } while (cur != 0);
-        void* a = *(void* volatile *)&action;
-        void** vt = *(void***)a;
-        ((ActionFn)vt[7])(1);
+        }
+        cur->next = n;
+        (*(RGE_Action* volatile*)&action)->func7(1);
         return;
     }
+
     list = n;
-    void* a = *(void* volatile *)&action;
-    void** vt = *(void***)a;
-    ((ActionFn)vt[7])(1);
+    (*(RGE_Action* volatile*)&action)->func7(1);
 }

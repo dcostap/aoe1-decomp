@@ -59,11 +59,8 @@ public:
 
 void TCommunications_Handler::SetSelfPlayer()
 {
-    unsigned int i = 1;
-
-    int* p = this->dcoID;
-
-    while (i <= this->maxGamePlayers) {
+    for (unsigned int i = 1; i <= this->maxGamePlayers; ++i) {
+        int* p = &this->dcoID[i - 1];
         Log(L, "Check dcoID %d to Me %d ?", *p, selfDcoID);
 
         if (*p == selfDcoID) {
@@ -72,9 +69,6 @@ void TCommunications_Handler::SetSelfPlayer()
             NotifyWindowParam(0x17B8, i);
             return;
         }
-
-        i++;
-        p++;
     }
 
     Log(L, "SET SELF failed.  We are DCOID=%d", selfDcoID);

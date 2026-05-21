@@ -1617,6 +1617,33 @@ Clue: `use_member_hwnd` variant (using this->main_wnd instead of hwnd param) get
 (first_mismatch=76 vs 23) but hits struct-init ordering at GetCaps call.
 The dwSize init gets scheduled BEFORE argument pushes in rebuilt (original pushes first).
 
+## Lesson: Unsigned loop counters recover `jbe` loop bounds after an increment
+
+When a counted loop increments a register and then compares it against a positive constant or count, the signedness of the source counter controls the final branch family. If the original has `inc reg; cmp reg, limit; jbe loop` but a natural `int` loop emits `jle`, make the loop counter unsigned:
+
+```cpp
+for (unsigned int i = 1; i <= limit; ++i) { ... }
+```
+
+This is especially useful when everything else already matches and the only remaining byte is the branch opcode after a loop-end `cmp`. Verified on 00432B20.
+
+## Lesson: Preloading constructor parameters into locals can restore post-base-ctor scheduling
+
+In `/GX` constructors where the original loads several incoming parameters into registers only after the base constructor returns, introduce explicit locals for those parameters before the member stores, then use the locals in the later setup call:
+
+```cpp
+unsigned long tv = timer_val;
+char* p2 = param2;
+long p3 = param3;
+int zero = 0;
+this->timer = tv;
+this->auto_close = (0 < tv);
+this->last_time = zero;
+setup(draw_area, p2, (void*)p3, zero);
+```
+
+Try when the body is behaviorally correct but VC5 schedules the vptr/state store and setup argument loads in the wrong order after a base constructor. The extra locals can make VC5 keep the timer in `eax`, delay/reorder the `param2`/`param3` reloads, and preserve the original `cmp/sbb/neg` auto-close basin. Verified on 0049D550.
+
 ## Lesson: Function-scope locals force `edx` for global pointer and `cl` for byte temp in tiny switch functions
 
 For small switch functions that load a global pointer, read a byte member, and dispatch to cases that each store back, declaring locals at function scope (uninitialized, then assigned) forces VC5 to allocate `edx` for the pointer register and `cl` for the byte temp, matching the original `mov cl, X` / `mov [edx+50h], cl` register-store pattern.
@@ -5932,3 +5959,85 @@ Why it helps:
 - the object data layout remains consistent with a single implicit vptr.
 
 Caveat: count slots carefully. One extra or missing dummy virtual shifts every later call and can look like broad control-flow drift.
+
+## Lesson: One-based `for` with per-iteration pointer expression can delay globals past the count guard
+
+For small searches over one-based player slots, a clean predeclared pointer-walk (`int* p = base; while (i <= count)`) can make VC5 hoist unrelated global loads before the prologue/count guard. Rewriting as a one-based `for` and forming the element pointer inside the loop body (`int* p = &array[i - 1];`) can preserve the original `mov i=1; cmp count,i; jb fail; load global; lea base` schedule while still compiling to the same pointer-walk loop with `add esi,4` and unsigned `jbe` backedge.
+
+Try when:
+- original checks a one-based count before loading a global used only in the loop/fail log;
+- a predeclared pointer local causes VC5 to hoist the global to function entry;
+- the loop backedge needs unsigned `jbe` against an unsigned-short count.
+
+Caveat: use when the source really is one-based; keep `unsigned int` for the loop counter if the original uses unsigned backedge semantics. Verified on 00428A70 `SetSelfPlayer`.
+
+## Lesson: Indexed `for` loops can recover unrolled-looking pointer cleanup basins
+
+When a destructor cleanup loop over parallel arrays keeps drifting with carried pointer locals and a manual countdown (`ptr++`, `name += stride`, `count--`), try a simple indexed `for (int i = 0; i < N; i++)` and form the primary pointer inside the body (`void** entry = &array[i]`). VC5 may strength-reduce the indexed source back into the original pointer-walk/countdown code, including a cached imported function pointer and exact stack counter, while carried-pointer source can choose a different prologue/local frame or be two bytes short.
+
+Try when:
+- original uses one pointer into the first array, a second pointer with a fixed large stride, and a stack countdown;
+- source pointer-walk variants are behaviorally right but miss the `push ecx` local or imported-thunk register allocation;
+- the loop count is a small compile-time constant.
+
+Caveat: keep any intentionally odd shared store offsets from the original (for example resetting a fixed `palette_ids[0]` each iteration) until other functions prove a better layout. Verified on 00463C50 `TPanelSystem::~TPanelSystem`.
+
+## Lesson: Re-read a member to preserve redundant guard/free blocks
+
+When VC5 appears to keep a redundant null test after a path has already proven a saved pointer local non-null, try spelling the later guard/free through the member again (`if (member == 0) ...; free(member);`) instead of reusing the local (`old`). The reload may be optimized back into the same register value but can preserve the original `test reg,reg; je alloc; push reg; free` block and branch distances.
+
+This can combine with high-level string helpers: `strcpy(dst, src)` may still lower to the original inline REP-copy sequence, while an explicit `memcpy(dst, src, strlen(src)+1)` can produce a shorter copy setup.
+
+Caveat: only do this when behavior is unchanged under the program's aliasing model; do not use it if an intervening call can legitimately mutate the member differently from the saved local.
+
+## Lesson: Replace aggregate assignment with explicit narrow-field copies when padding matters
+
+For small structs whose logical fields do not fill the full stride (for example three dwords plus a trailing byte in a 16-byte slot), C++ aggregate assignment may copy the trailing padding as a full dword and push VC5 into a different saved-register/stack-home basin. Spelling each field explicitly, especially copying the final byte member as a byte, can recover the original narrow `mov dl`/`mov [dst],dl` shape and avoid extra saved registers.
+
+Try when:
+- original copies several dwords and then a byte from each element;
+- rebuilt aggregate assignment copies the last slot as a dword or introduces a stack temp;
+- the loop stride is larger than the sum of meaningful fields.
+
+Caveat: only omit padding copies when the original really omits them; if padding is semantically initialized elsewhere, aggregate assignment may still be the right source.
+
+- For VC5 constructors with EH/member-ctor state, prefer initializer-list scalar zeroing when the original zeros scalar members before/after a member constructor. Moving those zeros into the constructor body can shift the EH state/local stores and alter register allocation even when behavior is identical. For empty string initialization, a visible `strcpy(dest, "")` may inline as the original `repne scasb`/`rep movsd`/`rep movsb` sequence, while manual `dest[0] = 0` or byte loops land in a different basin.
+
+## Lesson: Inline repeated row-address expressions to avoid base-pointer liveness
+
+When iterating fixed-size table rows, naming a row pointer local can make VC5 preserve the table base in an extra register and synthesize `mov base; mov index; add`, which can shift the whole loop and even lengthen an earlier short branch to near form. If the original reloads the table member and adds the offset directly for each access (`mov eax,[this+table]; add eax,offset`), try repeating the full `(char*)this->table + offset` expression in the byte test and ID/load sites instead of introducing an `entry`/`row` local. This can reduce register pressure and recover the original short-branch layout.
+
+## Lesson: Model relation/flag arrays as pointer fields to preserve pointer-load-plus-cmp
+
+When original VC5 loads a member pointer to a byte table and then compares through it (`mov eax,[obj+84h]; cmp byte [eax+idx],0`), raw byte-offset expressions like `(char*)obj + 0x84 + idx` can compile to a shorter direct object-relative load/test (`mov al,[obj+idx+84h]; test al,al`). Declare the member as the real `unsigned char*` table and index it naturally (`obj->table[idx]`) so VC5 emits the separate pointer load and memory compare.
+
+Try when:
+- a near-match is exactly a couple bytes short in a loop over diplomacy/relation/flag arrays;
+- rebuilt uses `mov/test` from `[object+index+offset]` but original uses `mov table_ptr; cmp [table_ptr+index],0`;
+- the offset is known to hold a pointer, not an inline byte array.
+
+Why it helps:
+- the typed pointer field preserves the extra indirection and lets VC5 keep surrounding registers/block layout intact, instead of folding the access as an inline array. Verified on `00532880` `handle_victory_points`.
+
+## Lesson: Use byte-delta copy expressions to control SIB operand order
+
+For small pointer-copy loops where VC5 strength-reduces source and destination pointers into a single base-plus-index addressing mode, semantically identical `src++/dst++` loops may emit the right instructions but with the SIB operands swapped (`[eax+ecx]` vs `[ecx+eax]`). If exact bytes hinge on that ModRM/SIB order, try computing a byte delta between the original source and destination (`int delta = (char*)src - (char*)dst`) and loading through `(char*)dst + delta` while incrementing only the destination pointer. This can preserve behavior while nudging VC5 into the original addressing encoding.
+
+## Lesson: Prefer natural constant division over hand-written magic multiplies
+
+When original VC5 code contains a magic multiply/shift sequence for division by a constant (for example `mul 0xD1B71759; shr edx,0x0D` for unsigned `/ 10000` after a 32-bit product), write the source as the ordinary `/ constant` expression first. Hand-writing the `__int64` multiply/shift can force helper calls, save `this` in an extra register, and perturb the entire function even if the math is equivalent. Natural division lets VC5 choose its built-in strength reduction and often preserves register allocation.
+
+## Lesson: Duplicate tiny helper tails with per-case returns to shape switch layout
+
+For VC5 switch functions that copy or return a string per case, a single shared post-switch tail can collapse the layout differently from the original. If the binary has duplicated helper tails and only some paths fall through, try spelling each named case as `helper(...); return;` and leave only the default (or exceptional path) to fall through. This can recover sparse byte-table dispatch layout, branch polarity for pre-switch guards, and the original duplicated inline `strcpy`/REP-copy tails.
+
+## Lesson: Use real member/virtual surfaces even when local layout must stay raw
+
+If a function matches poorly because direct address-cast calls emit helper loads, `xor edx`, or wrong virtual slot calls, declare small local classes for the called objects and use real member syntax. A vtable-padded local class can put a virtual method at the exact observed slot (for example `+0xE0`), while the caller object itself can still use raw byte offsets when nearby UI arrays overlap or generated layout is uncertain.
+
+Try when:
+- original uses direct thiscall member calls and virtual calls through a known vtable offset;
+- function-pointer casts produce `mov eax,imm; call eax`, `xor edx`, or slot `+0` instead of the target slot;
+- the receiver object's own fields are awkward/overlapping, but callee surfaces are clear.
+
+Caveat: vtable slot padding must be counted exactly, and raw offsets should be limited to the uncertain owner layout rather than replacing well-understood callee types.

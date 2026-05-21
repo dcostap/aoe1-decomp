@@ -27,7 +27,7 @@
 // Issue 2 — Constant hoisting:
 //   Original: `mov dword [ecx-14h],0C8h` (immediate 200, 7 bytes).
 //   Rebuilt: `mov ebx,0C8h` (5B) + `mov [ecx-14h],ebx` (3B) per 200 store
-//   (8+3=11B for two), plus `mov ebp,96h` (5B) + `mov [ecx-0Ch],ebp` (3B)
+//   (8+3=11B for two), plus `mov ebp,96h` (5B) + `mov [ecx-0Ch],ebp`
 //   for 150. VC5's loop-invariant code motion always hoists repeated
 //   constants into registers when used 2+ times. Using separate expressions
 //   (decimal/hex, typed casts) does not prevent hoisting.
@@ -64,6 +64,7 @@
 // allocator and loop-invariant optimization heuristics.
 // Retry 2026-05-19 Boss pass: 10 additional variants (volatile block/all stores, char* byte-offset addressing, for 1..16 loop, memset block clear, volatile constants, explicit zero local, short counter, !=16 loop condition). Best new try was char* offset form at 73.1707% positional but still broad register/scheduling mismatch; restored prior behaviorally-correct scratch.
 // Retry 2026-05-20 Boss pass: revalidated current scratch baseline (123B, 87.8049% positional/edit, first mismatch 4). Tried /O1, /O2 without /Oy, /Og, /Oa, /Ox, /Gs, /Ob0; tried volatile block zero stores, explicit zero local, constants inside loop, char* byte-offset source, for 1..16, register locals, goto loop, and while-top loop. /Oa moved only slightly (86.18% positional), volatile/goto/for worsened, and the rest were identical to baseline or noncompetitive. No exact or accepted-drift-quality result; broad register allocation, constant hoisting, dead-store elimination, and loop scheduling remain.
+// Retry 2026-05-21 Boss pass: revalidated baseline. Tried volatile int pointers, volatile store casts, char-base volatile stores, indexed for 1..16, count-down loop, zero-first local, volatile zero local, register zero/i locals, saved-first, this alias, zero+char-base, inside-loop constant locals, q-before-p order, and zero+i-after-pointers. Best current kept source is zero-first (123B, 81.3008% positional, first mismatch 12), which improves register/push scheduling slightly but still hits broad constant-hoist/dead-store/register-allocation drift. Still not accepted_drift.
 
 class T_Scenario {
 public:
@@ -82,10 +83,11 @@ public:
 
 void T_Scenario::InitializePlayerValues()
 {
+    int zero = 0;
+    int i = 0;
     int* p = (int*)((char*)this + 0x18CC);
     int* q = (int*)((char*)this + 0x1998);
     int* saved = p;
-    int i = 0;
 
     do {
         int* block = q - 2;
@@ -94,23 +96,23 @@ void T_Scenario::InitializePlayerValues()
         q += 4;
         p++;
 
-        block[0] = 0;
-        block[1] = 0;
-        block[2] = 0;
-        block[3] = 0;
+        block[0] = zero;
+        block[1] = zero;
+        block[2] = zero;
+        block[3] = zero;
 
-        p[0x1f] = 0;
-        block[0] = 0;
+        p[0x1f] = zero;
+        block[0] = zero;
 
         q[-5] = 200;
         q[-4] = 200;
         q[-3] = 150;
 
-        p[-1] = 0;
+        p[-1] = zero;
         p[0xf] = i;
         p[-0x11] = 4;
-        p[0xCB6] = 0;
-        p[0xE0C] = 0;
+        p[0xCB6] = zero;
+        p[0xE0C] = zero;
     } while (i < 16);
 
     *saved = 1;

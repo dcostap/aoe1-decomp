@@ -55,6 +55,11 @@
 // GIVEUP: remaining blocker is still the stable VC5 choice between stack-slot parameter countdown
 // and register-only loop/count/hi allocation. Not accepted_drift: exact-size variants reorder the
 // whole function badly, and the best close form is structurally 2 bytes short.
+// Retry 2026-05-21 Boss pass: tried condition on `count` vs `param_1`, delayed count assignment,
+// `register count`, separate `avg` local, inline avg expression, named `hiArg`, volatile write back
+// to `param_1`, unsigned count, `while` loop form, and separate `n` countdown local. Close families
+// remain 144B/2 bytes short; exact-size variants spill/push ecx or move count to EBX/EBP differently
+// and drift broadly. Rolled back to prior 144B close source; no accepted_drift proposal.
 
 #include <stdio.h>
 
@@ -73,8 +78,7 @@ public:
 
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 {
-    int count = param_1;
-    unsigned long sum;
+    int count = param_1;    unsigned long sum;
     unsigned long hi;
     unsigned long lo;
     sum = 0;
@@ -83,7 +87,8 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = this->Offset;
-        if (param_1 > 0) {
+        if (count > 0) {
+            param_1 = count;
             do {
                 idx--;
                 if (idx <= 0)
@@ -105,7 +110,7 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 
     sprintf(this->TBuff,
         "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)",
-        this->lowTSLC, lo, param_1, count, hi, this->highTSLC);
+        this->lowTSLC, lo, (unsigned long)param_1, count, hi, this->highTSLC);
 
     return this->TBuff;
 }

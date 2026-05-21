@@ -31,6 +31,10 @@
 // try 28: bool enabled changed the whole prologue/result basin; rolled back.
 // try 29: nested ifs with short pn local; no change in lookup hunk.
 // try 30: comma pn/world assignment and split pointer arithmetic variants; no change.
+// try 31: register pn plus raw +0x40 players load; no change, same 11-byte hunk.
+// try 32: pointer-to-players, C++ reference world, raw all-char chain, precomputed slot, short-copy pn, declaration-split assignments, and reversed w/pn declarations; all kept same 11-byte hunk.
+// try 33: const int pn kept same 11-byte hunk.
+// try 34: unsigned short pn destroyed prologue/register allocation and worsened to broad mismatch; rolled back.
 // GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is a localized address-generation/register-topology hunk in the object lookup (world pointer vs player index register/load order), not a tiny harmless encoding swap.
 
 struct RGE_Base_Game {

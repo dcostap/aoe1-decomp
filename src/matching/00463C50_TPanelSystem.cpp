@@ -74,23 +74,17 @@ TPanelSystem::~TPanelSystem(void) {
         this->panelListValue = 0;
     }
 
-    register int (__stdcall* delete_object)(void*) = DeleteObject;
-    void** palette_entry = this->palette;
-    char (*palette_file_entry)[260] = this->palette_file;
-    int count = 10;
-    do {
+    int (__stdcall* delete_object)(void*) = DeleteObject;
+    for (int i = 0; i < 10; i++) {
+        void** palette_entry = &this->palette[i];
         if (*palette_entry) {
-            int z = delete_object(*palette_entry);
-            z = 0;
-            *palette_entry = (void*)z;
-            (*palette_file_entry)[0] = (char)z;
-            *(int*)((char*)palette_entry + 0xA50) = z;
-            this->palette_ids[0] = z;
+            delete_object(*palette_entry);
+            *palette_entry = 0;
+            this->palette_file[i][0] = 0;
+            this->palette_use_count[i] = 0;
+            this->palette_ids[0] = 0;
         }
-        palette_entry++;
-        palette_file_entry++;
-        count--;
-    } while (count != 0);
+    }
 
     this->EnableIME();
 }

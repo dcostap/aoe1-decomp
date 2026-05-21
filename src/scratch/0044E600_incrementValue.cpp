@@ -31,6 +31,12 @@
 // - Tried signature width variants for value (`int`, `unsigned int`, `char`, `signed char`); no change from baseline.
 // - Tried flag probes `/Og`, `/Oi`, `/Ox`, `/Gf` on top of default `/O2 /Oy`; no change, flags removed.
 // GIVEUP: remaining blocker is combined register allocation (original EAX=rx, EDX=ry, ESI=cell, CL=limit) plus exact unsigned-byte widening/order around sum and saturation. No accepted_drift proposal because drift changes stack spills/register topology/control displacements broadly.
+// 2026-05-21 Boss retry: tried declaration-order swap (`ry` before `rx`), direct parameter mutation,
+//   combined initializer expressions, split assignment locals, `register` locals, explicit `rows/row/cell`
+//   forms, `register` cell, cell/reference form, signed `int sum`, and positive `cur < limit` body.
+//   Best new family gets exact first 22 bytes with `rows` local and signed sum, improving edit diff to
+//   ~26%, but still uses `add edx,eax`/stack-spilled cur instead of original `lea esi,[edx+eax]` + AL
+//   and shifts all return tails. No MATCH; not accepted_drift-worthy because the diff is still broad.
 
 struct InfluenceMap {
     int vtable;
@@ -48,27 +54,24 @@ struct InfluenceMap {
 };
 
 int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
-    int rx = x;
-    int ry = y;
-    rx -= this->xReferencePoint;
-    ry -= this->yReferencePoint;
+    int rx = x - this->xReferencePoint;
+    int ry = y - this->yReferencePoint;
 
     if (rx < 0 || ry < 0 || rx >= this->xSize || ry >= this->ySize)
         return 0;
 
-    unsigned char* cell = this->rowData[ry] + rx;
-    unsigned char cur = *cell;
+    unsigned char** rows = this->rowData;
+    unsigned char* cell = rows[ry] + rx;
+    unsigned char cur = rows[ry][rx];
 
-    if (cur >= this->maxLimit)
-        return 1;
-
-    unsigned int sum = (unsigned int)(unsigned char)cur + (unsigned int)(unsigned char)value;
-
-    if (sum >= (unsigned int)(unsigned char)this->maxLimit) {
-        *cell = (unsigned char)((unsigned int)(unsigned char)this->maxLimit - 1);
+    if (cur < this->maxLimit) {
+        int sum = (int)(unsigned char)value + (int)(unsigned char)cur;
+        if (sum >= (int)(unsigned char)this->maxLimit) {
+            *cell = (unsigned char)((int)(unsigned char)this->maxLimit - 1);
+            return 1;
+        }
+        *cell = (unsigned char)sum;
         return 1;
     }
-
-    *cell = (unsigned char)sum;
     return 1;
 }

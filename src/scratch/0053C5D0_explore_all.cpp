@@ -24,6 +24,11 @@
 // try 20: preload player and mask locals before inner loop; extra liveness worsened from offset 0.
 // try 21: separate numberTilesExplored temp and separate add_node arg locals; optimized back to baseline, no improvement.
 // GIVEUP: best kept is exact size 156B, 51.9231% positional / 33.9744% edit. Remaining mismatch is inner-loop register/address topology: original keeps row in EDX, emits extra LEA slot, schedules add_node pushes before store/or-mask; rebuilt uses EAX row and shorter body. Not accepted drift.
+// Retry 2026-05-21 Boss pass: tried commutative `x[row]` access, `(*slot)[x]` with reload,
+// reference rowRef, int* map_offsets/raw row casts, int PlayerExploredMask, /Ob0 and /GA flag probes,
+// and unsigned x. The reference/reload family improved edit diff to 23.08% but moved into a different
+// add/addrs topology; all exact-size variants still have broad inner-loop scheduling/register drift.
+// Rolled back to prior exact-size best; no accepted_drift proposal.
 
 extern unsigned long* unified_map_offsets[256];
 extern void __cdecl log_map_call(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9);
@@ -55,8 +60,7 @@ public:
 
 class RGE_Visible_Map {
 public:
-    unsigned char** map_offsets;
-    RGE_Game_World* world;
+    unsigned char** map_offsets;    RGE_Game_World* world;
     RGE_Player* player;
     void* map;
     unsigned char* visible_map;
@@ -66,7 +70,6 @@ public:
     int numberTotalTilesValue;
     char gap_20[0x08];
     unsigned long PlayerExploredMaskValue;
-
     void explore_all(void);
 };
 

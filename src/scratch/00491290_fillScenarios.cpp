@@ -7,17 +7,16 @@
 //   rge_base_game loaded into wrong register (8B vs A1 encoding)
 //   Arg order for get_scenario_list was swapped initially
 //   Two zero-initializations instead of one
-// Probe 3: Add RGE_Base_Game* bg = rge_base_game temp → 32 diff bytes!
-//   rge_base_game now loaded into eax (A1 encoding) ✓
-//   Loop bodies nearly match
-//   Prologue/epilogue match
-// Probe 4-6: Scope tricks, loop var changes — 32 bytes unchanged
-// Remaining 32 diff bytes (17.9%):
-//   Arg setup for get_scenario_list: instruction reordering (LEAs vs PUSHes, zero init position)
-//   Loop body register allocation (ecx vs eax for scenarios pointer)
-//   get_line/set_line reg allocation (eax vs edx for count)
-//   All semantically equivalent, pure VC5 scheduling/regalloc basin
-// Parked in scratch per Boss direction.
+// Probe 3: Add RGE_Base_Game* bg = rge_base_game temp -> 32 diff bytes.
+//   rge_base_game now loaded into eax (A1 encoding), loop bodies nearly match, prologue/epilogue match.
+// Probe 4-6: Scope tricks, loop var changes -> 32 bytes unchanged.
+// 2026-05-21 retry: tried count/scenarios declaration order, late zero, separate Game_Info temp, no bg temp,
+// comma-expression zeroing in call args, volatile scenarios, flags /Ob0 /O2-no-/Oy /Oa /O1 /G5, list local
+// all/inner-only, text/free temps, and explicit do loops. No variant improved the 179B / 17.8771% positional
+// baseline. Remaining drift: get_scenario_list arg setup scheduling (LEAs/pushes/zero init), loop-body register
+// allocation for scenarios pointer/text arg, and get_line/free argument register choice. Calls, stack cleanup, and
+// behavior line up, but drift is still spread across several setup/call hunks, so left in scratch rather than
+// accepted_drift.
 
 class TListPanel {
 public:

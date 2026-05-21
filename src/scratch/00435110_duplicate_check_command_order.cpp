@@ -37,6 +37,14 @@
 // and before loading `last_order`, while original pushes EBP/ESI and loads last_order first. Remaining
 // diffs also include x ftol operand order and ECX-vs-EDX target compare coloring. Not accepted_drift:
 // broad prologue/FPU/compare scheduling, not localized benign drift.
+// Retry 2026-05-21 Boss pass: 10 more probes. Tried split last_order-first declarations,
+// volatile last_order load, delaying n until after pointer locals, explicit x ftol temps,
+// reversed x comparison spelling, target-id operand swap, manual delta loop, explicit
+// goto-fail/success-label form, result local, and delaying p1/p2 until loop. Best stayed
+// the current exact-size 153B source at 17.6471% positional/edit, first mismatch +6.
+// Remaining mismatch is stable VC5 scheduling/register coloring: count load before
+// EBP/ESI/last_order, x ftol operand order, and target compare register choice. Leaving
+// in scratch; no accepted_drift because the drift spans prologue/FPU/compare scheduling.
 
 class RGE_Command_Order {
 public:

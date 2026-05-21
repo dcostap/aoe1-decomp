@@ -34,6 +34,7 @@
 // try 26: /Od /Oy produced 132B but completely wrong unoptimized EBP-frame family (128 positional diff); removed flag.
 // try 27: /O2 /Oy /Gf and /Og flag probes did not change the 128B family; removed flags.
 // GIVEUP: exact validation still cannot compare because rebuilt .text is 128B vs configured 132B. Remaining structural mismatch is register/stack allocation: rebuilt saves extra ECX/local slot, uses EBX=this and EBP=sum/stack hi, original uses EDI=this, EBP=original count, EAX=sum, EBX=hi and reuses incoming param slot as loop counter. Not accepted_drift.
+// Retry 2026-05-21 Boss pass: 18 more probes. Tried simpler invalid-path source, explicit param-slot countdown, for-local countdown, register locals, raw this+offset array access (only 132B variant, but broad 88.6364% mismatch from byte 0), explicit stack-lvalue invalid reads, self local, exact decompiler-shaped variables, no-inner-if do loop, unsigned range test, plus flags /G5 /Gr /Gz /Ob0 /Og /Gf /Os /O1. All source/flag variants either stayed the 128B too-small family or regressed badly; none reached the original EDI=this/EBP=count/EAX=sum/EBX=hi/param-slot-countdown register topology. Leaving in scratch; no accepted_drift because size/register/stack topology mismatch is structural.
 
 #include <stdio.h>
 

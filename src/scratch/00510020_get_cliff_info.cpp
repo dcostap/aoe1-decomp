@@ -8,13 +8,16 @@
 // v3: Ghidra-style while loop -> 144 bytes
 // v4: shared 'done' label with z0..z3 overwrite -> 160 bytes
 // v5-v9: varied struct/array access, type casts, variable ordering -> 144-160 bytes
+// tried natural C++ struct return by value; still 144-byte compact family.
+// tried full RGE_Map base surface from matched find_cliff donor; no change to compact family.
+// tried direct found-path copy instead of z-overwrite/goto; produced 128-byte compact family.
+// tried /Ob0 (no change) and /Og- (wrong broad family); removed flags.
 //
 // Remaining gap: register allocation. Original uses ebx/ebp/esi/edi (4 callee-saved)
-// as zero constants + working registers. VC5 in all probes uses 2-3 saves + stack temps.
-// The core issue is VC5's register allocator choosing not to use ebx/ebp as callee-saved
-// zero registers in this TU context. No function calls inside the function body means
-// callee-saved registers serve no purpose, so VC5 minimizes them.
-// Behavior, loop structure, and memory effects all match.
+// as zero constants + working registers. VC5 in all probes uses 2-3 saves + stack temps
+// or a too-compact no-match family. The core issue is VC5's register allocator choosing
+// not to use ebx/ebp as callee-saved zero registers in this isolated TU context.
+// Behavior, loop structure, and memory effects are understood; left in scratch.
 
 #include <string.h>
 

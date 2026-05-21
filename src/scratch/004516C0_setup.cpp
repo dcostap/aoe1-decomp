@@ -25,6 +25,7 @@
 // try 18: dummy pre-fscanf missile_type assignment; worsened edit diff and did not affect first mismatch.
 // try 19: flag probes /Ob0, no /Oy, and /Gf; no change. /Og- and /O1 produced wrong codegen families; flags removed.
 // GIVEUP: behavior is understood (base setup, set +0xA4/+4, fscanf five %hd into temp/parameter slots plus %f into +0x150, copy low bytes to +0x148..+0x14C). Remaining mismatch is source/stack-topology: original uses one pushed local, saves param_1 in EDI, evaluates base-call args right-to-left, and forms fscanf addresses from overlapping incoming parameter stack slots; rebuilt either delays EDI or perturbs argument/address ordering. Not proposing accepted_drift because stack writes/call setup are broad, not localized.
+// Retry 2026-05-21 Boss pass: 17 more probes. Tried p4/p2/p3/file locals in desired load order, no-file-local until after base call, delayed/register/volatile file, base call with file/param mixes and comma assignment, fscanf address locals, copied post-fscanf store order, short* casts to parameter slots, &ballistics_ratio/address locals, and several file-lifetime variants. Best kept below improves to 68.0000% positional with first mismatch +16 by delaying the file local until after the base setup call, matching the initial parameter-load order; however it loses the original EDI file lifetime and still has broad fscanf address/copy scheduling drift. No accepted_drift: stack/call/register topology remains structural.
 
 #include <stdio.h>
 
@@ -48,9 +49,8 @@ struct RGE_Master_Combat_Object_setup4 {
 int RGE_Master_Missile_Object::setup(FILE* param_1, void** param_2, void** param_3, short param_4)
 {
     short temp_missile_type;
-    FILE* file = param_1;
-
     ((RGE_Master_Combat_Object_setup4*)this)->setup(param_1, param_2, param_3, param_4);
+    FILE* file = param_1;
 
     *(unsigned char*)((char*)this + 0xA4) = 1;
     *(unsigned char*)((char*)this + 4) = 0x3C;

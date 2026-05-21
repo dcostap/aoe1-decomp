@@ -15,6 +15,7 @@
 // - 2026-05-20 retry: 20 more probes. Best kept below: memset + lpszLongName before DP global + local DPNAME* + comma dwSize, 40.0000% positional / 31.4286% edit, first mismatch offset 22.
 // - Tried explicit first zero before self, brace init, raw char stack buffer, no/with DP local, formal/friendly pointer locals, p-before/after-formal, side-effect argument expressions, flags/player locals, volatile first field, register self; none matched.
 // GIVEUP: remaining blocker is exact VC5 scheduling/register coloring of DPNAME setup around right-to-left call argument side effects. Best near-match has correct size/tail but uses ECX not EDX for formal-name LEA, stores long-name too early, loads short-name/dwSize before pushes, and reorders vtable/player loads. No accepted_drift proposal: call/setup instructions are broadly reordered, not localized benign drift.
+// 2026-05-21 Boss retry: 10 more honest probes. Tried formal pointer/function-scope locals, volatile formal, explicit zeroes, delaying dwSize into first argument, split virtual-function local, re-reading DP global in function/first arg expressions. Best kept below improves to 33.3333% positional / exact size/tail, but VC5 still schedules short-name LEA/store before formal-name and writes dwSize too early. Leaving in scratch; not accepted_drift because mismatches are non-local call setup/order differences.
 
 #include <string.h>
 
@@ -46,12 +47,15 @@ public:
 long TCommunications_Handler::SendPlayerName()
 {
     DPNAME dpnSetName;
+    unsigned short* formal;
+    void* dp;
+    DPNAME* p;
     memset(&dpnSetName, 0, sizeof(dpnSetName));
-    dpnSetName.lpszLongName = (unsigned short*)(void*)this->MyFormalName;
-    void* dp = *(void**)0x62C5EC;
-    DPNAME* p = &dpnSetName;
-    dpnSetName.lpszShortName = (unsigned short*)(void*)this->MyFriendlyName;
-    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)dp)[0x78 / 4])(dp, *(void**)0x62CF04, (p->dwSize=16,p), 2);
+    formal = (unsigned short*)(void*)this->MyFormalName;
+    dp = *(void**)0x62C5EC;
+    dpnSetName.lpszLongName = formal;
+    p = &dpnSetName;
+    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)dp)[0x78 / 4])(dp, *(void**)0x62CF04, (dpnSetName.lpszShortName=(unsigned short*)(void*)this->MyFriendlyName, p->dwSize=16,p), 2);
     this->Err->ShowReturn(result, (const char*)0x580EB4);
     return result;
 }

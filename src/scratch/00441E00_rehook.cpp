@@ -21,6 +21,13 @@
 //    Original uses __thiscall which doesn't need edx.
 // 3. All differences are stable VC5 codegen-family drift (register scheduler choice).
 //    Behavior is equivalent in all paths.
+// Retry 2026-05-21 Boss pass: tried register/volatile doppled, assignment-in-condition and
+// inverted/goto positive branch, passing member vs local to get_object_pointer, id local,
+// removing count temp, virtual destroy_obj surface with adjusted vptr layout, __thiscall
+// function-pointer probe (VC5 rejects), integer obj/owner surfaces, `~doppled` negative-index
+// spelling, and /G5 /Op flags. Best kept improves edit diff to 16.6667% but still has broad
+// ECX-vs-EAX first load, owner register, branch target, and final vtable-call convention drift.
+// Not accepted_drift-worthy.
 
 struct RGE_Static_Object {
     char gap_00[4];         // vtable at +0x00
@@ -52,40 +59,39 @@ void RGE_Doppleganger_Object::rehook() {
     int doppled;
     int index;
     void* player;
-    void* owner;
+    int owner;
     int entry;
-    short count;
 
     RGE_Static_Object::rehook();
 
     doppled = this->doppled_object;
     if (doppled >= 0) {
-        void* obj = this->get_object_pointer(doppled);
-        this->doppled_object = (int)obj;
+        int id = doppled;
+        int obj = (int)this->get_object_pointer(id);
+        this->doppled_object = obj;
         if (obj == 0) {
             goto second_part;
         }
-        this->doppledObjectID = *(int*)((char*)obj + 4);
-        owner = *(void**)((char*)obj + 0x0C);
+        this->doppledObjectID = *(int*)(obj + 4);
+        owner = *(int*)(obj + 0x0C);
         goto color_lookup;
     }
 
     // neg path - falls through to color_lookup
-    index = -1 - doppled;
+    index = ~doppled;
     this->doppled_object = 0;
     this->doppledObjectID = -1;
     player = *(void**)((char*)this + 0x0C);
-    owner = *(void**)(*(int*)(*(int*)((char*)player + 0x3C) + 0x40) + index * 4);
+    owner = *(int*)(*(int*)(*(int*)((char*)player + 0x3C) + 0x40) + index * 4);
 
 color_lookup:
-    this->draw_color = *(int*)((char*)owner + 0x108);
+    this->draw_color = *(int*)(owner + 0x108);
 
 second_part:
     if (this->doppled_master_obj >= 0) {
         player = *(void**)((char*)this + 0x0C);
         entry = *(int*)(*(int*)(*(int*)((char*)player + 0x3C) + 0x40) + this->doppled_player * 4);
-        count = *(short*)(entry + 0x22);
-        if (this->doppled_master_obj < count) {
+        if (this->doppled_master_obj < *(short*)(entry + 0x22)) {
             this->doppled_master_obj = *(int*)(*(int*)(entry + 0x24) + this->doppled_master_obj * 4);
             return;
         }

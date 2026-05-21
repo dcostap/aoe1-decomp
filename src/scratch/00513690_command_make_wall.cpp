@@ -45,6 +45,12 @@
 // Retry 2026-05-19 Boss pass: 10 additional variants (dword alias for param_1 to force mov edi+dword, masters local/no local, real TRIBE_Command member thiscall, int vs short original_param, flag local, list_num local, raw thiscall pointer). Best new edit diff was 18.8811% but still broad register/argument scheduling mismatch; most dword-alias variants worsened first mismatch to offset 1 by perturbing prologue. Restored prior exact-size best.
 // Retry 2026-05-20: 12 more probes. Kept real TRIBE_Command member call because it fixes the no-add-esp command_build_wall shape and improves edit diff to 18.8811%, but positional remains 70.6294% from early register/encoding drift. Tried int formal, short casts, raw indexed load, register p1, frame struct, dword alias, p1 short/no-p1; no exact. int formal gives very high byte equality but wrong prologue/order and non-original signature surface, so not kept.
 // GIVEUP: remaining mismatch is not accepted_drift-worthy: VC5 chooses merged `movsx edi,word [esp+10h]` and EAX master_objects base instead of original dword param load to EDI plus `movsx eax,di` and ECX base; LEA register choices also differ. Later call bodies are close with real member call, but drift is systematic register-allocation/instruction encoding across setup and arguments.
+// Retry 2026-05-21 Boss pass: tried int formal for param_1 (excellent edit diff ~14% but wrong
+// prologue: parameter loaded before saved-register pushes), explicit `self` alias, dword alias via
+// `*(int*)&param_1`, volatile p1, separate `masters` local, swapping p1/list_num declaration order,
+// unsigned p1, and widening TRIBE_Command list_count/original_param declarations to int. None reached
+// original dword-load-after-push shape; widened command prototype did not remove the late movsx family.
+// Rolled back to prior exact-size best with real member call; still not accepted_drift-worthy.
 
 #include <stddef.h>
 #include <stdlib.h>

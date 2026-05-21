@@ -23,6 +23,7 @@
 // - Tried reference-form pick_tile declaration/call; no codegen improvement, restored pointer signature.
 // - /Ob1 probe under default flags produced no change; flag removed.
 // GIVEUP: exactness still blocked by broad pre-call stack-address/register allocation topology around pick_tile; not accepted_drift.
+// Retry 2026-05-21 Boss pass: revalidated baseline (148B, 80.4054% positional / 40.5405% edit, first mismatch +3). Tried pointer locals before original-param saves, volatile/register originals after pointer locals, saving originals after call from parameter homes, direct final stores from mutated parameter slots (matched first LEAs to +11 but lost EBX/EDI and worsened edit), reference-form out params, comma-if assignment, explicit assign-then-pointer locals, split declaration order, extra pointer-address dependency, and flags /Oa /Og- /O2-no-/Oy /Ob0+/G5. No exact or accepted-drift-quality result; direct-param family improves first LEAs but still has broad saved-register/pick_tile call topology drift.
 
 class RGE_Player {
 public:

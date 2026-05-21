@@ -16,6 +16,7 @@
 // GIVEUP: exact blocker is VC5 choosing eager callee-saved prologue and pointer-walk scan/copy
 // instead of original delayed-save basin. Not accepted_drift: broad prologue/control-flow/register
 // allocation mismatch, not localized benign drift.
+// Retry 2026-05-21 Boss pass: revalidated baseline (162B, ~91.98% positional, first mismatch 0). Tried direct indexed scan/copy, positive outer cap body, for-loop scan, no count local, goto cap, flags /Ob0 /O2-no-/Oy /Oa /O1 /G5, ManagedArray-style surface, delayed-scope/goto found shape, early count condition, and register this alias. No variant reached the original delayed-save prologue; best edit-only variants still kept broad eager EBX/EBP/ESI/EDI save or otherwise failed to compile cleanly. Left scratch unchanged; not accepted_drift.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* p);

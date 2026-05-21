@@ -4,12 +4,18 @@
 // first: 176 bytes (4 short). Non-virtual TShape methods, direct calls.
 // second: precomputed temps didn't change register allocation.
 // third: inline function args, back_frame local var — same result.
-// Left in scratch: 4 byte diff (2.2%) in inner loop body register allocation.
-//   Inner loop body: original loads field_10 via eax (reusing after back_frame push)
-//   and field_0C via ecx. Rebuilt loads field_10 directly to ecx, field_0C to edx.
-//   Savings: mov eax,[esi+10h](3)+mov ecx,ebx(2)+add ecx,eax(2) vs mov ecx,[esi+10h](3)+add ecx,ebx(2)
-//            and mov ecx,[esi+0Ch](3)+mov edx,edi(2)+add edx,ecx(2) vs mov edx,[esi+0Ch](3)+add edx,edi(2)
-//   Rest of function (138 bytes) identical.
+// fourth: mark base offset fields volatile to force call-argument evaluation order; worsened scheduling (180B but 15.6% diff), rolled back.
+// fifth: field-first add expressions; no change from best 176B family.
+// sixth: explicit x/y locals immediately before shape_draw; optimized away/no change.
+// seventh: local shape pointer for draw call; no change.
+// eighth-tenth: /Ob0, /O2-no-/Oy, /O1 flag probes; no improvement (/O1 153B), flags removed.
+// eleventh: volatile cast on both coordinate member reads; worsened to 15.6%.
+// twelfth: volatile cast only on x/base field_10; worsened early branch distances.
+// thirteenth: volatile cast only on y/base field_0C; worsened early branch distances.
+// GIVEUP: best source is 176B, 4 bytes shorter than original. Remaining issue is localized inner-loop register allocation/eval scheduling.
+//   Original computes x as mov eax,[esi+10h]; mov ecx,ebx; add ecx,eax and y as mov ecx,[esi+0Ch]; mov edx,edi; add edx,ecx.
+//   VC5 rebuild folds to mov ecx,[esi+10h]; add ecx,ebx and mov edx,[esi+0Ch]; add edx,edi.
+//   Behavior is equivalent, but check_function cannot compare because the function is 4 bytes short; not proposing accepted_drift without a comparable 180B low-diff build.
 
 struct TShape {
     int shape_minmax(long* y_max, long* pic_hgt, long* x_min, long* y_min, int frame);
@@ -47,8 +53,8 @@ void TScrollBarPanel::draw_back_pic() {
                     do {
                         this->button_pics->shape_draw(
                             this->field_20,
-                            inner + this->field_0C,
-                            outer + this->field_10,
+                            this->field_0C + inner,
+                            this->field_10 + outer,
                             this->back_frame,
                             0,
                             0

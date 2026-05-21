@@ -16,6 +16,12 @@
 // signatures. None fixed the EBX/ESI this-vs-count register basin; best edit-only
 // probe (__stdcall vtable pointer) reached 25.4658% edit but used the wrong call
 // convention/stack shape family and did not improve positional diff. Kept baseline.
+// Retry 2026-05-21 Boss pass: tried explicit self+count aliases, register self/count,
+// int task_type, int loop index, task local, cached tasks array, while/do-while loop
+// forms, create_task(int,int), int-return RGE_Task::load/delete_list, unsigned list_num,
+// and /G5 /Op /Gr flags. Most either stayed in the wrong ESI=this/EBX=count basin or
+// shrank to 160B / broadly regressed; none recovered original EBX=this and ESI=list_num
+// pointer/index-offset sharing. Restored exact-size baseline; no accepted_drift proposal.
 
 struct FILE;
 class RGE_Sprite;

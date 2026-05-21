@@ -25,6 +25,7 @@
 // try 28-32: several comparison spellings; explicit orig-like goto compare gave best 20.625% positional / 15.0% edit but still broad ESI/EDI swap.
 // try 33-34: using pv as temporary size and stack/cast size tests did not fix the register basin.
 // GIVEUP: kept best source below. No accepted_drift: remaining mismatch includes persistent ESI/EDI role swap through allocation/version calls plus comparison/return layout, not a localized behavior-equivalent hunk.
+// Retry 2026-05-21 Boss pass: revalidated best (160B, 20.625% positional / 15.0% edit, first mismatch +21). Tried register/decl-order variants for pv/verSize/lpDummy, unsigned-int vs void* size forms, several comparison spellings (natural >=, nested positive, fail-return, cmp-eax-style), and flags /G5 /Ob0 /Oa /O2-no-/Oy /O1. No source or flag changed the core ESI/EDI role swap; best comparison remains current explicit-goto form. Still not accepted_drift: register swap persists across allocation/version calls plus comparison/return layout drift.
 
 extern unsigned int __stdcall GetFileVersionInfoSizeA( const char*, unsigned int* );
 extern int __stdcall GetFileVersionInfoA( const char*, unsigned int, unsigned int, void* );

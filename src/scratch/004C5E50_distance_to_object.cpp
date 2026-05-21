@@ -1,14 +1,24 @@
-// VA: 004C5E50 distance_to_object (167B)
-// stat_obj.cpp
+// VA: 004C5E50 RGE_Static_Object::distance_to_object (stat_obj.cpp)
+#include <math.h>
+// Retry 2026-05-21: replaced placeholder dx+dy with full decompiled behavior (world delta, abs, subtract radii, clamp, sqrt). Baseline full behavior compiles to 160B, too small vs original 167B; original has push ecx and reuses the incoming parameter stack slot plus one local for FPU temporaries.
+// Tried 12 probes: volatile dy local (exact 167B but broad 86.2275% positional mismatch from byte 0, no push-ecx and wrong FPU order), stack-store abs-y temp, double zero comparisons, master-object locals, ternary clamps, x/y return-order swap, zero_float symbol, explicit sqrt extern, interleaved subtract assignments, volatile x/local result, dummy local, and decompiler-style parameter reuse. Most stayed 160B too small; none recovered original stack-slot/FPU scheduling.
+// GIVEUP: leaving full behavior source in scratch. No accepted_drift: remaining mismatch is structural FPU stack scheduling/local-slot topology, not localized benign drift.
+
+class RGE_Master_Object {
+public:
+    char gap_00[0x30];
+    float radius_x;
+    float radius_y;
+};
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    char gap4[0x34];
-    float field_38;
-    float field_3C;
-    char gap40[0x44];
-    float field_7C;
+    char gap_04[4];
+    RGE_Master_Object* master_obj; // +0x08
+    char gap_0C[0x2C];
+    float world_x; // +0x38
+    float world_y; // +0x3C
     
     float distance_to_object(RGE_Static_Object* other);
 };
@@ -16,11 +26,17 @@ public:
 extern float zero_float;
 
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
-    float dx = other->field_38 - field_38;
-    float dy = other->field_3C - field_3C;
-    
+    float dx = other->world_x - this->world_x;
+    float dy = other->world_y - this->world_y;
+
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
-    
-    return dx + dy;
+
+    float x = dx - this->master_obj->radius_x - other->master_obj->radius_x;
+    float y = dy - this->master_obj->radius_y - other->master_obj->radius_y;
+
+    if (x < 0.0f) x = 0.0f;
+    if (y < 0.0f) y = 0.0f;
+
+    return (float)sqrt(y * y + x * x);
 }

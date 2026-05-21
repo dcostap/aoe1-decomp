@@ -65,6 +65,7 @@
 // try 42: /O1 and /Os flag probes produced too-small .text (100B < configured 123B); removed flags.
 // try 43: reversed threshold spelling `180000 <= new_dt`; no codegen change from kept baseline.
 // GIVEUP: leave in scratch. Not accepted_drift: differences remain broad scheduler/register/layout drift across both update paths and delete block, not a localized harmless encoding/scheduling swap.
+// Retry 2026-05-21 Boss pass: 10 more probes. Tried dt-before-param with volatile reload after FPU test, plain dt/time locals to recover ECX/EAX, function-scope time/dt locals, volatile delta reload after store, redundant shape reload before delete, delete-expression form, assignment-in-condition store+compare, float zero comparison, explicit goto tails, and dt+elapsed operand/source-order variants. Best remains the kept default-flags source at 123B, 48.7805% positional / 37.3984% edit, first mismatch +12. Most variants lost the EBX-save basin and mismatched from +1; none fixed the compare-before-delta-store or delete-block layout. Still no accepted_drift: broad scheduler/register/layout drift, not a localized benign swap.
 
 struct TShape {
     ~TShape();

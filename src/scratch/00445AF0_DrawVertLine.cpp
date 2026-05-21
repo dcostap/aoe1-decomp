@@ -29,6 +29,7 @@
 // - Breakthrough: removed the shared pitch local and used direct this->Pitch in each orientation arm with a separate step variable; this matched the prologue/Bits/x clipping exactly and reduced diff to 32 positional / 35 edit, first mismatch +31.
 // - Tried register-y signature, yy locals, top/bottom locals, inverted top compare, end local, parameter-slot/color no-op, and h+y term order; none improved the remaining +31 register-coloring hunk.
 // Left in scratch: best source is exact size and behavior-equivalent but still mismatches in y/top/step register allocation and equivalent address/add ordering. Not promoting; possible accepted_drift only if reviewer accepts moderate register-coloring drift.
+// Retry 2026-05-21 Boss pass: revalidated best baseline (143B, 22.3776% positional, first mismatch +31). Tried top/bottom local reshapes, direct parameter-mutation, yy/hh locals, while count local, register x/y/h parameters, volatile y reread, explicit parameter-slot mutation, pitch-local ordering, flags /Ob0 /Oa /G5 /Gr /O1 /O2-no-/Oy, and offset/address-expression rewrites that mutate y or name `off`. None improved; most fell back to the old 60% register basin or worse. Best remains this exact-size behavioral source; no accepted_drift proposal because 32 bytes of register-coloring/address-order drift is still moderate and not a tiny localized swap.
 
 struct tagRECT {
     long left;
