@@ -2,39 +2,42 @@
 // Source: view.cpp lines 2272-2300
 // Size: 151 bytes, __thiscall, ret 18h (6 params)
 // Default flags: /nologo /c /O2 /Oy
+// No inline asm/hacks.
 //
-// Attempt log:
-// Attempt 1-3: Named locals eliminated sub esp,10h (128 bytes short). Restored
-//   int locals[4] array but register allocation differed per attempt.
-// Attempt 4-6: Tried unsigned char key type -> added masking (and eax,0FFh).
-// Attempt 7: Baseline with array + result-first -> 151 bytes, byte ops via (unsigned char)cast,
-//   but key in EDX not EAX, obj in ECX not ESI, info in ESI not EDI.
-// Attempt 8: Named struct fields + RGE_Pick_Info struct -> eliminated sub esp,10h,
-//   generated mov dword [mem],0 pattern (5 bytes each vs 3 bytes with xor reg,reg).
-// Attempt 9: (unsigned char)key cast + result-first + local array -> 151 bytes. Byte ops
-//   correct (mov al,dl; sub al,28h; neg al; sbb eax,eax). Key in EDX, obj in ECX,
-//   info in ESI (same as attempt 7).
-// Attempt 10: memset(info,0,20) forces xor edx,edx + mov [ecx],edx pattern. Key in EAX!
-//   But byte ops use CL instead of DL, local store order scrambled, memset uses ECX instead of EDI.
-// Left in scratch: 10 attempts, all 151 bytes. Fundamental register-allocation differences:
-//   (1) EDX/ECX/EAX/ESI/EDI register set differs from original throughout the entire function.
-//   (2) Original: EAX=key, ESI=obj, DL=byte ops, EDX=result, EDI=info, EDX=zero.
-//   (3) Best rebuilt: EAX/EDX=key, ECX=obj, CL/AL=byte ops, EAX=result, ESI=info, EDI=zero.
-//   Same compiler, same source -> different register allocation. Not fixable from C++.
-//   Not proposing accepted_drift because positional diff is 82-90% -> too broad.
-// Retry 2026-05-19 assigned pass:
-// Attempt 11: register pi forced EDI save/use and worsened scheduling; rolled back.
-// Attempt 12: named zero local similarly forced EDI zeroing and broad drift; rolled back.
-// Attempt 13: explicit mask expression `-(key!='(')&obj` used cmp/setne family; worse; rolled back.
-// Attempt 14: swapped local store order to match apparent stack layout; worsened broad scheduling; rolled back.
-// Attempt 15: register key local worsened to EDI-save basin; rolled back.
-// Attempt 16: unsigned-char key/param surface moved first mismatch to +7 but worsened edit diff; rolled back.
-// Attempt 17: memset(info,0,20) again forced EDI/and eax,0FFh basin; rolled back.
-// Attempt 18: using pi for call args no improvement; rolled back.
-// Attempt 19: /Ob0 flag probe no improvement; removed.
-// GIVEUP: final default-flags validation 151/151, MISMATCH 134 positional bytes / 88.7417%, edit 95 bytes / 62.9139%, first mismatch +4. Register topology remains fundamentally different across whole function.
-// Retry 2026-05-20 Boss pass: revalidated baseline (151B, 88.7417% positional, 62.9139% edit, first mismatch +4). Tried 17 additional probes: key/param_2 signature width matrix (int/uchar/char), object-first local, explicit mask expression, /O2 without /Oy, /Ox, /Oa, /Og, /O1, plus void* result variant under the width probes. Best positional probe was `int key, unsigned char param_2` at 63.5762% positional but edit stayed 62.2517% and register topology/call setup remained broad mismatch; most other probes worsened or were unchanged. Kept existing baseline scratch.
-// Retry 2026-05-21 Boss pass: revalidated baseline. Tried object-first local, manual object mask branch, register object, register info, key/param2 uchar signatures, named zero order, memset, alternate local pointer order, member view_function surface, direct unsigned-char result masking. Best new retained source casts the view_function return to unsigned char before comparing, giving exact size 151B, 62.9139% positional / 58.2781% edit, first mismatch +4. This only improves tail alignment; the core prologue/register/call-setup topology remains broad. Not accepted_drift.
+// Previous history summary:
+// - Attempts 1-10: named locals eliminated sub esp,10h; local int array restored size but
+//   register allocation differed. memset/struct versions changed zeroing/register basin.
+// - 2026-05-19 pass: tried register pi, named zero, explicit mask, store-order swaps,
+//   register key, uchar signatures, memset, using pi for call args, /Ob0. No exact.
+// - 2026-05-20 pass: width matrix for key/param2, object-first local, explicit mask,
+//   /O2 without /Oy, /Ox, /Oa, /Og, /O1, void* result. Best positional probe still broad.
+// - 2026-05-21 pass: object-first local, manual branch mask, register object/info,
+//   uchar signatures, named zero, memset, alternate pointer order, member view_function
+//   surface, direct uchar result masking. Best retained source casts view_function return
+//   to unsigned char before comparisons: exact size 151B, 62.9139% positional / 58.2781%
+//   edit, first mismatch +4.
+//
+// Current Boss retry (10 honest probes):
+// 1: Revalidated retained baseline: exact size 151, 62.9139% positional / 58.2781% edit.
+// 2: Rewrote object mask as `masked=obj; if (key=='(') masked=0;`: much worse (92% edit),
+//    branch/spill family.
+// 3: Added pinfo alias and named zero local: no improvement from baseline.
+// 4: Modeled RGE_Pick_Info struct with typed fields: worsened badly; compiler emitted larger
+//    typed/narrow stores and different frame.
+// 5: Declared view_function as returning unsigned char: removed return mask but reg topology
+//    regressed to older 88.7417% positional / 62.9139% edit family.
+// 6: key as unsigned char formal: first mismatch moved to +7 but positional/edit worsened.
+// 7: key and param_2 as unsigned char: same broad mismatch, worse edit.
+// 8: Removed `(unsigned char)` cast on view_function return: regressed to older 88.7417%
+//    positional family.
+// 9: Tried equivalent mask spellings `key == '(' ? 0 : obj`, `-((uchar)key!='(')&obj`, and
+//    `(uchar)(key-0x28) != 0 ? obj : 0`; all unchanged or worse.
+// 10: Flag probe `/O2` without `/Oy`: no improvement, flag removed.
+// 11: Named POINT-style locals instead of locals[4]: .text too short (144B), rejected.
+// GIVEUP: no accepted_drift proposal. Remaining mismatch is broad register/prologue/call setup
+// topology (original EAX=key, ESI=obj then info, DL byte-mask, EDX result/zero, EDI=info;
+// rebuilt keeps key in EDX/EAX, object/result/info in different registers and uses different
+// zeroing/call-arg LEA registers), not localized harmless drift.
 
 #include <stdlib.h>
 
@@ -52,16 +55,13 @@ unsigned char RGE_View::pick(int key, int param_2, int mouse_y, int mouse_x,
                               void* info, void* obj) {
     int locals[4];
 
-    // Byte-level comparison via unsigned char cast
     int result = ((unsigned char)key != '(') ? (int)obj : 0;
 
-    // Local stores matching original intent
     locals[3] = mouse_x;
     locals[1] = mouse_x;
     locals[2] = mouse_y;
     locals[0] = mouse_y;
 
-    // Zero info structure
     int* pi = (int*)info;
     pi[0] = 0;
     pi[1] = 0;
@@ -69,7 +69,6 @@ unsigned char RGE_View::pick(int key, int param_2, int mouse_y, int mouse_x,
     pi[3] = 0;
     pi[4] = 0;
 
-    // Call view_function
     int ret = (unsigned char)view_function(key, param_2,
                             &locals[2], &locals[0], &result,
                             (int*)((char*)info + 0),

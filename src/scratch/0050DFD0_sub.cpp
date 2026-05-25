@@ -4,7 +4,7 @@
 // 1-11: Various approaches with RGE_Time_Entry** link all produced EBX save (push ebx at offset 0).
 //        The EBX save is due to register pressure: link, entry, and &time_list occupy all 3
 //        scratch registers (EAX, ECX, EDX), forcing EBX for the p->next unlink temp.
-// 12-14: prev-based approach (track previous node, if/else unlink) eliminates EBX save. 
+// 12-14: prev-based approach (track previous node, if/else unlink) eliminates EBX save.
 //        First 7 bytes match original. Remaining mismatch is structural:
 //        - No lea ecx,[edi+8] (prev approach doesn't need &time_list in register)
 //        - xor eax,eax for prev=0 (vs mov eax,ecx for link init)
@@ -41,8 +41,14 @@
 //     and forces EBX/save-stack family, first mismatch at byte 0.
 // 37: Rolled back to prev-based no-EBX baseline because it remains the least bad compiler-facing
 //     owner; exact source likely needs a hidden VC5 line/TU/liveness axis for link=&time_list.
+// 38: Reset to decompiler/natural link-pointer source; reproduces link topology but saves EBX
+//     immediately and remains broad drift (88% positional, 57% edit).
+// 39: Added `register` parameter and swapped p/link declaration/init order; still EBX-save,
+//     and even moves LEA before the head load.
+// 40: Forced stack-slot-looking parameter compare with `*(RGE_Time_Entry**)&entry`; no codegen
+//     improvement, still ECX-param/EDX-link/EBX-next family.
 // ACCEPTED_DRIFT DENIED: best remaining diff is broad register/topology drift (first
-// mismatch +8 or +0 in other families), not localized harmless drift; leave in scratch.
+// mismatch +7/+8 or +0 in link families), not localized harmless drift; leave in scratch.
 
 extern "C" void __cdecl free(void* block);
 

@@ -29,6 +29,7 @@
 // ECX previous-LastCall and first mismatch +33, but collapses to a 128-byte body with NOP padding and
 // wrong offset/delta register schedule. Other variants return to the exact-size baseline family with
 // previous LastCall in EDX. Leaving in scratch; diff is broad, not accepted_drift-worthy.
+// Retry 2026-05-24 Boss pass: 10 more probes. Revalidated baseline (141B, 69.5035% positional / 29.0780% edit). Tried ++Offset family again (first mismatch +32, edit 25.5319% but short real body/NOP tail and wrong delta/index registers), explicit `t=now; t=t-old`, direct field compare/no reference, register now, volatile LastCall (first mismatch +33, best edit 21.9858% but reloads LastCall after branch and shifts store/compare order), register old, and /Ob0 flag (no change, removed). No retained exact improvement: either baseline EDX-prev family or the ECX-prev/short-tail family. Not accepted_drift because drift spans LastCall register allocation, delta/index update scheduling, aTSLC store source, and function length/tail padding.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
@@ -49,12 +50,12 @@ public:
 unsigned long RGE_TimeSinceLastCall::Set()
 {
     unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x5D);
-    unsigned long& prev = this->LastCall;
-    if (prev == now) return 0;
-    unsigned long old = prev;
-    unsigned long t = now;
-    prev = now;
-    t -= old;
+    if (this->LastCall == now) return 0;
+    register unsigned long old = this->LastCall;
+    unsigned long t;
+    t = now;
+    this->LastCall = now;
+    t = t - old;
     this->TSLC = t;
     int idx = this->Offset + 1;
     this->Offset = idx;

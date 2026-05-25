@@ -45,6 +45,7 @@
 // Remaining mismatch is stable VC5 scheduling/register coloring: count load before
 // EBP/ESI/last_order, x ftol operand order, and target compare register choice. Leaving
 // in scratch; no accepted_drift because the drift spans prologue/FPU/compare scheduling.
+// Retry 2026-05-24 Boss pass: 19 more probes. Revalidated current exact-size best (17.6471% positional/edit, first mismatch +6). Tried last_order/p2 before n, target compare operand swap, explicit x/y ftol temps, early last unit count, delta-pointer loop, do-loop, pointer-walk while, flat && predicate, reversed FPU comparisons, volatile/register last_order, register param, uchar/int/long/volatile n widths, and const pointer locals. No variant improved on the current source; loop rewrites and uchar/volatile count regressed badly. Stable blocker remains the same early scheduling/coloring (VC5 loads param count before EBP/ESI/last_order), plus FPU operand order and target compare coloring. Not accepted_drift: broad prologue/FPU/compare scheduling, not localized benign drift.
 
 class RGE_Command_Order {
 public:

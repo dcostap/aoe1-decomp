@@ -29,6 +29,7 @@
 // and unsigned x. The reference/reload family improved edit diff to 23.08% but moved into a different
 // add/addrs topology; all exact-size variants still have broad inner-loop scheduling/register drift.
 // Rolled back to prior exact-size best; no accepted_drift proposal.
+// Retry 2026-05-24 assigned pass: 11 more probes. Absolute-address unified_map_offsets worsened slightly; direct unified[y] worsened badly; volatile slot-address failed/noncompetitive; row reload in body improved edit diff to 23.0769% but moved to a different row-load/byte-compare topology; x[row], add_node arg locals, register row, row int temp, row declaration order, and raw base+slot reload did not improve; add_node-before-store worsened and changes source order. PROPOSED_ACCEPTED_DRIFT: current kept source is exact-size and behavior-equivalent; remaining drift is confined to inner-loop register/address topology and scheduling (row/slot LEA, push-argument timing vs row store, unified-map OR address form). Outer log call, loop bounds, tile count increment, explored-mask OR, add_node call, final collapse flag, and stack cleanup are unchanged.
 
 extern unsigned long* unified_map_offsets[256];
 extern void __cdecl log_map_call(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9);

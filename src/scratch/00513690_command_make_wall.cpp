@@ -1,56 +1,35 @@
 // VA: 00513690 TRIBE_Player::command_make_wall
 // PDB: tplayer.cpp lines 1140-1156 (143 bytes, 59 asm lines)
 // Default flags: /nologo /c /O2 /Oy
+// No inline asm/hacks.
 //
-// Attempt log (10 attempts):
+// Prior attempts summary:
+// - Many variants before this pass tried int formal, short casts, raw indexed load, register p1,
+//   frame struct, dword alias, p1 short/no-p1, self alias, separate masters local, widened
+//   TRIBE_Command declarations, volatile/dword aliases, and real TRIBE_Command member call.
+// - Best kept state uses real TRIBE_Command member call: exact size 143, edit diff 18.8811%,
+//   but broad positional drift from early parameter/register encoding.
+// - Key stubborn mismatch: original loads DWORD param_1 into EDI after pushes, then `movsx eax,di`
+//   and uses ECX for master_objects base. VC5 for the natural short formal merges to
+//   `movsx edi,word [esp+10h]` and uses EAX as master_objects base. Int formal gets a very good
+//   body/edit diff but moves the parameter load before saved-register pushes, so not kept.
 //
-// Attempt 9 was best: 30.77% edit diff, 113/143 bytes matching (79.0%).
-// Prologue pushes all 3 registers first (push ecx; push esi; push edi) ✓
-// VTable call matches exactly (mov [esi+24h]; mov [ecx+1D8h]; mov edx,[ecx]; call [edx+2Ch]) ✓
-// All field offsets verified from inventory types (RGE_Player at +0x24, +0x3C) ✓
-// get_selected_objects_to_command call sequence matches ✓
-//
-// Remaining differences (all register-allocation / instruction-encoding):
-//
-// Issue 1 — param_1 load:
-//   Original: `mov edi,[esp+10h]` (DWORD load, 4B) + `movsx eax,di` (4B) = 8B
-//   Rebuilt:  `movsx edi,word [esp+10h]` (sign-extending word load, 5B) = 5B
-//   VC5 merges the load+sign-extend into one instruction when p1 is int.
-//   Net: 3 bytes shorter, 5 bytes difference.
-//
-// Issue 2 — master_objects register:
-//   Original: ecx = [esi+24h]; eax = [ecx+eax*4]
-//   Rebuilt:  eax = [esi+24h]; eax = [eax+edi*4]
-//   Different register selection for base pointer.
-//
-// Issue 3 — get_selected_objects LEA registers:
-//   Original: lea edx,[esp+14h]; lea eax,[esp+20h]; push edx; push eax
-//   Rebuilt:  lea ecx,[esp+14h]; lea edx,[esp+20h]; push ecx; push edx
-//   Different register choice (ecx/edx swapped).
-//
-// Issue 4 — sVar2 (original param_1) in command_build_wall args:
-//   Original: `push edi` (edi holds DWORD param_1, no sign-extend)
-//   Rebuilt:  `movsx edx,word [esp+1Ch]` (sign-extend short, then push edx)
-//   From using `param_1` directly (short) in the argument list.
-//   Using `(int)p1` in the call would need p1 preserved differently.
-//
-// Issue 5 — Branch displacements differ by 6 bytes (77 vs 71, 70 vs 6a, 53 vs 4d)
-//   due to 2-byte total size difference (143 vs 141) shifting jump targets.
-//
-// Not suitable for accepted_drift — remaining structural diff in register
-// allocation and instruction encoding is systematic across the function,
-// not localized.
-//
-// Left in scratch: best result with int p1 = param_1; (attempt 9).
-// Retry 2026-05-19 Boss pass: 10 additional variants (dword alias for param_1 to force mov edi+dword, masters local/no local, real TRIBE_Command member thiscall, int vs short original_param, flag local, list_num local, raw thiscall pointer). Best new edit diff was 18.8811% but still broad register/argument scheduling mismatch; most dword-alias variants worsened first mismatch to offset 1 by perturbing prologue. Restored prior exact-size best.
-// Retry 2026-05-20: 12 more probes. Kept real TRIBE_Command member call because it fixes the no-add-esp command_build_wall shape and improves edit diff to 18.8811%, but positional remains 70.6294% from early register/encoding drift. Tried int formal, short casts, raw indexed load, register p1, frame struct, dword alias, p1 short/no-p1; no exact. int formal gives very high byte equality but wrong prologue/order and non-original signature surface, so not kept.
-// GIVEUP: remaining mismatch is not accepted_drift-worthy: VC5 chooses merged `movsx edi,word [esp+10h]` and EAX master_objects base instead of original dword param load to EDI plus `movsx eax,di` and ECX base; LEA register choices also differ. Later call bodies are close with real member call, but drift is systematic register-allocation/instruction encoding across setup and arguments.
-// Retry 2026-05-21 Boss pass: tried int formal for param_1 (excellent edit diff ~14% but wrong
-// prologue: parameter loaded before saved-register pushes), explicit `self` alias, dword alias via
-// `*(int*)&param_1`, volatile p1, separate `masters` local, swapping p1/list_num declaration order,
-// unsigned p1, and widening TRIBE_Command list_count/original_param declarations to int. None reached
-// original dword-load-after-push shape; widened command prototype did not remove the late movsx family.
-// Rolled back to prior exact-size best with real member call; still not accepted_drift-worthy.
+// Current Boss retry (10+ focused probes):
+// 1: Revalidated baseline: exact size, 70.6294% positional / 18.8811% edit, first mismatch +3.
+// 2: Int formal param_1: edit diff improved to 13.9860% and LEA regs/body very close, but prologue
+//    becomes `push ecx; mov eax,[esp+8]; push esi; ... push edi`, first mismatch +1.
+// 3: Int formal plus `self=this` alias: no change from int-formal prologue family.
+// 4: Short formal with `int p1 = *(int*)&param_1` and `(short)p1` index: worsened to first mismatch +1.
+// 5: Same dword alias without short cast in index: still worse (82.5% positional / 19.58% edit).
+// 6: get_selected_objects second parameter declared `void*` and passed `&local_4`: no change.
+// 7: Moved `local_4` declaration before p1: no change.
+// 8: Used int `list_num` local/out parameter instead of `local_4`: no change.
+// 9: Widened command_build_wall original_param to int: no change.
+// 10: Named/register `masters` local: no change.
+// 11: Removed p1 local and used `(int)param_1` directly: worsened to first mismatch +1.
+// 12: Used `short p1 = param_1`: worsened to first mismatch +1.
+// GIVEUP: no exact match. Not proposing accepted_drift; remaining differences are systematic
+// prologue/register-allocation and argument-setup encoding, not a tightly localized equivalent drift.
 
 #include <stddef.h>
 #include <stdlib.h>

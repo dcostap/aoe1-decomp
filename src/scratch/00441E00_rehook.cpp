@@ -28,6 +28,13 @@
 // spelling, and /G5 /Op flags. Best kept improves edit diff to 16.6667% but still has broad
 // ECX-vs-EAX first load, owner register, branch target, and final vtable-call convention drift.
 // Not accepted_drift-worthy.
+// Retry 2026-05-24 assigned pass: 15 more probes. A separate vtable-helper interface for the final
+// destroy call removed the spurious `xor edx,edx` but shortened the tail and worsened positional
+// drift. Volatile/raw/register/member-pointer/assignment-condition doppled reads, dummy locals,
+// pointer-typed doppled_object, separate `-1 - doppled` index spellings, and void* owner surfaces
+// all kept the same first mismatch at +9 (ECX-vs-EAX load/test/push) or worsened. No exact match;
+// not accepted_drift: remaining differences span the first branch, negative owner lookup, branch
+// targets, and final vtable-call shape rather than a localized benign hunk.
 
 struct RGE_Static_Object {
     char gap_00[4];         // vtable at +0x00

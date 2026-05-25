@@ -60,6 +60,7 @@
 // to `param_1`, unsigned count, `while` loop form, and separate `n` countdown local. Close families
 // remain 144B/2 bytes short; exact-size variants spill/push ecx or move count to EBX/EBP differently
 // and drift broadly. Rolled back to prior 144B close source; no accepted_drift proposal.
+// Retry 2026-05-24 Boss pass: 10 more probes. Revalidated current close source still 144B for 146B target. Tried `register count`, declaration order hi/count changes, const count, volatile formal (exact-size but 82.8767% positional and broad prologue/tail drift), `int& count = param_1` (128B), decompiler-natural body, removing avg local, condition on count, explicit `param_1=count`, and volatile/nonvolatile return locals. Best close families remain 144B/2 bytes short; exact-size variants are broad regressions. Leaving prior close source. Not accepted_drift: structural size/codegen-family mismatch, not localized benign drift.
 
 #include <stdio.h>
 

@@ -6019,6 +6019,27 @@ Try when:
 Why it helps:
 - the typed pointer field preserves the extra indirection and lets VC5 keep surrounding registers/block layout intact, instead of folding the access as an inline array. Verified on `00532880` `handle_victory_points`.
 
+## Lesson: Volatile raw guard read can prevent count reuse and recover delayed callee-save prologues
+
+When an early capacity guard should compile as a direct memory compare and return before any heavy locals/register saves, but VC5 preloads the count into a register for later reuse and eagerly saves EBX/EBP/EDI, make only the guard read volatile through the proven raw offset:
+
+```cpp
+if (*(volatile int*)((char*)this + COUNT_OFF) >= LIMIT) return 0;
+int count = this->count;  // normal non-volatile reload for the body
+```
+
+Try when:
+- the original has `push esi; mov esi,ecx; cmp [esi+off],imm; jl body; xor eax; pop esi; ret`;
+- the rebuilt loads the count into a register before the compare and shifts the body by a couple bytes, or saves all callee-saves at entry;
+- the later body legitimately needs a normal count local.
+
+Why it helps:
+- the volatile raw guard blocks CSE/reuse between the early guard and the body count local;
+- VC5 then emits the guard as a standalone memory compare and can delay heavier callee-save pushes until after the guard succeeds.
+
+Caveat:
+- keep volatility limited to the guard. Making the body count or whole object volatile can force a wrong stack-home/register family. Verified on `004C7920` `addToGroup`.
+
 ## Lesson: Use byte-delta copy expressions to control SIB operand order
 
 For small pointer-copy loops where VC5 strength-reduces source and destination pointers into a single base-plus-index addressing mode, semantically identical `src++/dst++` loops may emit the right instructions but with the SIB operands swapped (`[eax+ecx]` vs `[ecx+eax]`). If exact bytes hinge on that ModRM/SIB order, try computing a byte delta between the original source and destination (`int delta = (char*)src - (char*)dst`) and loading through `(char*)dst + delta` while incrementing only the destination pointer. This can preserve behavior while nudging VC5 into the original addressing encoding.
@@ -6041,3 +6062,123 @@ Try when:
 - the receiver object's own fields are awkward/overlapping, but callee surfaces are clear.
 
 Caveat: vtable slot padding must be counted exactly, and raw offsets should be limited to the uncertain owner layout rather than replacing well-understood callee types.
+
+## Lesson: Inner pointer/type locals can fix first-pass scan scheduling without perturbing later loops
+
+For small two-phase selection scans, a first pass over `RGE_Player**`-style arrays may need a plain `for (; i < n; ++i, ++ptr)` loop to get VC5's compact `jl` backedge, but the loop body can still be scheduled wrong or cause unrelated member-count loads to hoist. Naming the loaded pointer and widened byte field inside the loop:
+
+```cpp
+RGE_Player* p = *ptr;
+int t = p->type;
+if (t == wanted) { ... }
+```
+
+can make VC5 emit the original `mov ecx,[ptr] ; xor ebx,ebx ; mov bl,[ecx+off] ; cmp ebx,param` order while preserving the outer saved-register basin. This is useful when a do/while or direct `(*ptr)->type` condition duplicates the loop body or hoists a shared count before an earlier state compare.
+
+Try when:
+- the original first loop has a clean bottom `cmp i,n ; jl loop` and a widened byte compare through EBX;
+- the rebuilt has the right later loop but the first loop is peeled/duplicated or loads the member count before the state dispatch.
+
+Caveat:
+- keep the second phase's state/current reload shape separate; preserving one `current` local across both phases can regress the later loop register topology.
+
+## Lesson: Natural `memset` plus guarded `do/while` can recover constructor fill and row-pointer setup
+
+When a constructor allocates a flat byte buffer and fills it with one repeated byte, try the natural CRT `memset(buffer, fill, total)` with `<string.h>` before hand-writing dword/byte fill loops. VC5 can inline `memset` into the exact `and fill,0xff; bl/bh byte replication; rep stosd; rep stosb` sequence without extra callee-saves or guard branches.
+
+For the following row-pointer table setup, a source `for` loop may keep the byte offset and row index in the opposite registers. If the original uses `EAX` as the row index and `ECX` as the accumulated byte offset (`row[i] = value + offset; inc i; offset += xSize; cmp i,ySize`), spell the loop as an explicit guarded `do/while` with `i++` before `offset += xSize`:
+
+```cpp
+int i = 0;
+int offset = 0;
+if (i < this->ySize) {
+    do {
+        this->row[i] = this->value + offset;
+        i++;
+        offset += this->xSize;
+    } while (i < this->ySize);
+}
+```
+
+Try when:
+- manual fill loops introduce EBP or guarded rep loops but the original has a compact inline memset basin;
+- the row setup is behaviorally correct but `i` and `offset` are swapped between EAX/ECX.
+
+Why it helps:
+- VC5's recognized `memset` intrinsic supplies the original byte-replication and REP-string code;
+- the guarded `do/while` with source increment order steers VC5's induction-variable coloring and bottom compare to the original pattern.
+
+Caveat:
+- include `<string.h>` so VC5 recognizes the intrinsic; an external/custom memset declaration may compile as a call or a too-short helper sequence.
+
+## Lesson: Local pointer initializer can schedule into a vararg call setup gap
+
+For VC5 constructors/loaders with a local pointer that is passed by address to a helper after a preceding vararg read, declaring the pointer with an initializer at the local declaration can schedule the zero store into the original call-setup gap:
+
+```cpp
+char* name = 0;
+fscanf(file, "%hd %s %hd %hd", &id, buffer, &map, &type);
+addstring(&name, buffer, ".ext");
+```
+
+Try when:
+- original pushes all `fscanf`/vararg arguments, then stores `0` to a local pointer slot immediately before the call;
+- a separate `name = 0;` statement before the call stores too early, while a statement after the call stores too late.
+
+Why it helps:
+- the declaration initializer gives VC5 a zeroing requirement with a broad scheduling window, so it can sink the store past independent argument pushes without crossing the call.
+
+Caveat:
+- this is for simple locals whose initialized value is not read until after the call; do not use if the callee should see the initialized value through an argument.
+
+## Lesson: Prefer natural independent min/max locals before parameter-slot reuse in clipped brush loops
+
+When matching clipped rectangle/brush loops, writes to incoming parameter homes can look tempting if the original stores clipped bounds on the stack. However, VC5 may recover those same stack homes and register roles from the natural source with independent endpoint locals:
+
+```cpp
+long minx = x - radius;
+long maxx = x + radius;
+long miny = y - radius;
+long maxy = y + radius;
+// clip min/max...
+for (long row = miny; row <= maxy; ++row) {
+    if (minx <= maxx) {
+        int offset = minx * STRIDE;
+        int count = maxx - minx + 1;
+        do { ...; offset += STRIDE; count--; } while (count);
+    }
+}
+```
+
+Try when:
+- a parameter-reuse version is exact-sized but has broad register/topology drift;
+- the original has clipped min/max values stored to stack homes and an inner count+offset loop;
+- the loop body is a fixed-stride row edit.
+
+Why it helps:
+- separate min/max locals let VC5 choose the original saved registers and stack homes for the clipped endpoints;
+- the plain `for(row=miny; row<=maxy; ++row)` plus inner `do/count--` loop can reproduce the original outer-row and inner-offset topology without mutating source parameters.
+
+Caveat:
+- parameter reuse is still useful when the original clearly writes and reloads an incoming slot for an out-parameter or helper call; this lesson is for clipped brush bounds where natural endpoint locals are semantically clearer and can match exactly.
+
+## Lesson: Infer virtual wrapper argument ownership from right-to-left pushes, not decompiler labels
+
+For command/wrapper methods that make several virtual calls, verify which source parameter feeds each call by the actual stack offsets after saved-register pushes. A decompiler may label nearby pushed values as the wrong formal. Once the callee signature is modeled with the full observed arity, source argument order controls VC5's right-to-left push sequence exactly:
+
+```cpp
+// To emit ... push param5; push param4; push cmd ...
+obj->send_signal(id, p1, cmd, param4, param5, ...);
+```
+
+Try when:
+- a near-match differs only by adjacent `push reg` order late in a virtual call;
+- one parameter is saved in a callee-saved register and another is reloaded from the stack;
+- a preceding helper call uses a different parameter than the decompiler suggests.
+
+Why it helps:
+- correcting the visible virtual prototype/arity avoids missing pushes and wrong object size;
+- swapping the source argument order for the semantically correct callee signature restores the original right-to-left push order without lower-level casts.
+
+Caveat:
+- only swap after confirming the callee's real parameter order from callers/vtable semantics; otherwise this can hide a wrong prototype.

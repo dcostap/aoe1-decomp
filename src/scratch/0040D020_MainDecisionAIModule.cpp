@@ -24,6 +24,7 @@
 // accepted_drift not applicable: stack cleanup and frame layout are structurally
 // different per AGENTS.md rules.
 // GIVEUP: exact match blocked by compiler EH model difference.
+// 2026-05-24 Boss retry: re-read packet and revalidated baseline (18.75% edit / 64.29% positional, first mismatch 0). Tried 10 more source-shape probes: virtual derived dtor (65.18% edit), virtual derived + explicit operator delete (65.18%), novtable virtual + manual vptr (61.61%), nonvirtual + manual vptr (41.07%), local pointer + manual vptr (41.07%), virtual base+derived (37.50%), positive if/local delete path (same as baseline), reversed zero-store order (22.32%), memset tail (compile rejected until string.h; not pursued because it would only affect the already-matching zero-store tail), explicit base-dtor call in body (30.36%). No probe moved first mismatch past offset 0 or removed VC5's push-first EH prologue/saved-this slot. Baseline remains best; accepted_drift still not proposed because EH frame/stack cleanup and missing vptr store are structural, not localized benign drift.
 
 #include <stdlib.h>
 class AIModule {

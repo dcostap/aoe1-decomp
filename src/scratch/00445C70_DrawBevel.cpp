@@ -9,6 +9,7 @@
 // topology drift. Best retained exact-size behavior-equivalent source is the parameter-mutating width/height form:
 // 167B, 86.2275% positional / 116.7665% edit, first mismatch 0.
 // GIVEUP: no accepted_drift proposal; remaining mismatch is broad prologue/register/call-argument topology, not localized.
+// 2026-05-24 Boss pass: 20 more probes. Revalidated baseline exact-size wrong push-ecx/local-frame basin (86.2275% positional, first mismatch 0). Tried decompiler/natural source, >= nested form, original-endpoint call source, no-return nested source, self-local forms, mixed width/height locals, int/long color helper signatures, int/long color formals, register/volatile parameters, xor-swap, parameter-mutating self variants, height-local/width-local variants, and flags /Ob0 /Og- /G3 /G4 /Ox /Os. Natural/local variants remain 160B too short; exact-size variants all stay broad wrong prologue/register/call-argument topology. Not accepted_drift: mismatch is structural from byte 0.
 
 class TDrawArea {
 public:

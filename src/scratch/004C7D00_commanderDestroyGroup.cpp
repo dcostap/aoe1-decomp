@@ -12,6 +12,7 @@
 // Probe 9: /Ob0 flag; no improvement.
 // Probe 10: /G5 flag; no improvement.
 // GIVEUP: best C source still chooses EBP for outer group index and EBX for newMax, while original uses EBX for outer index and EBP for newMax with delayed EBP save. This causes broad register/prologue and loop-body drift, not accepted-drift safe.
+// Retry 2026-05-24 Boss pass: 20 more probes. Revalidated baseline (170B, 50.0000% positional / 34.1176% edit, first mismatch 0). Tried declaring i before newMax, block-scoped newMax, for-loop/no-outer-if/while/goto outer loops, decompiler iVar shape, several copy-loop spellings (positive/combined/postinc), register/volatile i and newMax, self alias, top-declared j/obj, count/max locals, direct raw group_value indexing, and operator-size `(i+1)*4` form. Most stayed in the same EBP=i / EBX=newMax basin; volatile/count/max/copy-loop variants regressed broadly. No accepted_drift: remaining drift is still structural prologue/register allocation and loop-body topology.
 
 void* __cdecl operator_new(unsigned int);
 void __cdecl operator_delete(void*);

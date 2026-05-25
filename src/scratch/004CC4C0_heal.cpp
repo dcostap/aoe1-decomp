@@ -8,6 +8,11 @@
 // fallback, then FPU codegen diverges because VC5 emits an fild/fxch family instead
 // of original fild max; fld param; store denom; fmul st1; fidiv stack-slot sequence.
 // Not accepted_drift-worthy: remaining drift is broad FPU scheduling/stack topology.
+// Retry 2026-05-24 Boss pass: 16 probes. Revalidated baseline: exact-size 173B, first 56 bytes match, then FPU scheduling diverges.
+// Tried max_hp_f local, split *= then /=, float denominator, short source locals, direct denominator expression, product temp,
+// reversed max/amount+hp compare, cost denominator local, fail-first pay_obj_cost branch, and flags /Op /Ob0 /Og /Ot /G5 /GB /O1.
+// All sane source variants stayed in the same exact-size FPU basin (57.8035% positional / 36.4162% edit, first mismatch +56); /Op and branch/compare inversions worsened, /O1 too small.
+// GIVEUP: no accepted_drift proposal because remaining mismatch is broad x87 stack/local-slot scheduling through heal clamp and payment argument setup.
 
 struct RGE_Static_Object {
     char gap_00[8];

@@ -35,7 +35,9 @@
 // try 32: pointer-to-players, C++ reference world, raw all-char chain, precomputed slot, short-copy pn, declaration-split assignments, and reversed w/pn declarations; all kept same 11-byte hunk.
 // try 33: const int pn kept same 11-byte hunk.
 // try 34: unsigned short pn destroyed prologue/register allocation and worsened to broad mismatch; rolled back.
-// GIVEUP: behavior/calls/size match, but not exact; not proposing accepted_drift because remaining drift is a localized address-generation/register-topology hunk in the object lookup (world pointer vs player index register/load order), not a tiny harmless encoding swap.
+// try 35: pointer-to-player_num plus explicit world/player locals kept the same 11-byte lookup-order hunk.
+// try 36: mutating a char* self cursor through +0x4B8/+0x928/+0x40 also optimized back to the same hunk.
+// PROPOSED_ACCEPTED_DRIFT: behavior/calls/size match; remaining 11 bytes are localized to equivalent lookup-chain register topology only. Original loads player_num into EDI then world/players through EDX; rebuilt loads world/players into EDI then player_num into EDX. Same addresses are read, same null/type/flag checks, same virtual calls and stack cleanup.
 
 struct RGE_Base_Game {
     virtual void vf00();

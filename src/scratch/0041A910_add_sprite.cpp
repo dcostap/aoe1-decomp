@@ -20,6 +20,10 @@
 // Not accepted-drift safe; diff spans traversal, allocation/insertion registers, and early-return tail.
 // Retry 2026-05-20 assigned pass: 15 more probes. Tried natural double-for, ppPrev declaration after first loop, self alias, list reference alias, class surface with explicit gap vs virtual dtor, local declaration order, int priority param, calloc argument order, first-loop for form, second-loop break form, combined loop forms, and flags /Og /Ot /Ob0 /G5 /GB /Oa. All sane source/flag variants stayed in the same ESI-mutated-to-&list basin (or worsened). GIVEUP, no accepted_drift: mismatch is broad register/topology drift spanning first traversal, duplicate-count tail, insertion traversal, new-node register, and final insertion stores, not a localized equivalent hunk.
 // Retry 2026-05-21 Boss pass: 10 more probes. Tried natural two-while, ppPrev declaration after first loop, self alias, member-direct second loop, manual integer ppPrev, register pp/ppPrev, goto form with extra self touch, explicit count temp, named new_node allocation, and reversed calloc argument source. All sane variants stayed in the same exact-size 158B / 22.7848% positional / 16.4557% edit basin with first mismatch +38; calloc-order variants worsened. Still blocked on VC5 choosing to mutate ESI into &list instead of preserving this in ESI and using EDI as ppPrev. Leaving in scratch; no accepted_drift because drift spans traversal, duplicate tail, allocation, and insertion stores.
+// Retry 2026-05-24 Boss pass: 10 more probes. Rechecked baseline at exact-size 158B, 36/158 positional, first mismatch +38.
+// Tried self alias, volatile self (worse stack frame), ppPrev-before-pp / *ppPrev reload, ppStart alias, and flags /Ob0 /Og /Ot /Oa /G5 /GB /O1.
+// All non-worsening variants stayed in the same ESI-mutated-to-&list basin; /Oa and volatile worsened. Removed temporary flag file.
+// GIVEUP again; no accepted_drift proposal because the remaining diff is structural across traversal registers, duplicate-count tail, allocation register, and final insertion stores.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 

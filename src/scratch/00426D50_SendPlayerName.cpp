@@ -16,14 +16,15 @@
 // - Tried explicit first zero before self, brace init, raw char stack buffer, no/with DP local, formal/friendly pointer locals, p-before/after-formal, side-effect argument expressions, flags/player locals, volatile first field, register self; none matched.
 // GIVEUP: remaining blocker is exact VC5 scheduling/register coloring of DPNAME setup around right-to-left call argument side effects. Best near-match has correct size/tail but uses ECX not EDX for formal-name LEA, stores long-name too early, loads short-name/dwSize before pushes, and reorders vtable/player loads. No accepted_drift proposal: call/setup instructions are broadly reordered, not localized benign drift.
 // 2026-05-21 Boss retry: 10 more honest probes. Tried formal pointer/function-scope locals, volatile formal, explicit zeroes, delaying dwSize into first argument, split virtual-function local, re-reading DP global in function/first arg expressions. Best kept below improves to 33.3333% positional / exact size/tail, but VC5 still schedules short-name LEA/store before formal-name and writes dwSize too early. Leaving in scratch; not accepted_drift because mismatches are non-local call setup/order differences.
+// 2026-05-24 Boss retry: 10 more probes focused on DPNAME field/order shaping. Tried moving lpszLong assignment before/into call args, register formal pointer, comma expressions in argument 2/4, swapped local DPNAME field order with compensating source assignments, and volatile dwSize. Best kept below improves first mismatch to offset 41, 30.4762% positional / 29.5238% edit: bytes through the formal-name store now match and memory contents are correct, but VC5 still emits the short-name LEA before the stack-param LEA/push, stores short name and dwSize too early, and loads vtable/player in the wrong order. Not accepted_drift: remaining mismatch is non-local call setup scheduling, not a tiny benign register/encoding drift.
 
 #include <string.h>
 
 struct DPNAME {
     unsigned long dwSize;
     unsigned long dwFlags;
-    unsigned short* lpszShortName;
     unsigned short* lpszLongName;
+    unsigned short* lpszShortName;
 };
 
 class RGE_Comm_Error;
@@ -47,15 +48,14 @@ public:
 long TCommunications_Handler::SendPlayerName()
 {
     DPNAME dpnSetName;
-    unsigned short* formal;
+    register unsigned short* formal;
     void* dp;
     DPNAME* p;
     memset(&dpnSetName, 0, sizeof(dpnSetName));
-    formal = (unsigned short*)(void*)this->MyFormalName;
+    formal = (unsigned short*)(void*)this->MyFriendlyName;
     dp = *(void**)0x62C5EC;
-    dpnSetName.lpszLongName = formal;
     p = &dpnSetName;
-    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)dp)[0x78 / 4])(dp, *(void**)0x62CF04, (dpnSetName.lpszShortName=(unsigned short*)(void*)this->MyFriendlyName, p->dwSize=16,p), 2);
+    long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)dp)[0x78 / 4])(dp, (dpnSetName.lpszShortName=(unsigned short*)(void*)this->MyFormalName, *(void**)0x62CF04), (*(volatile unsigned long*)&p->dwSize=16,p), (dpnSetName.lpszLongName = formal, 2));
     this->Err->ShowReturn(result, (const char*)0x580EB4);
     return result;
 }

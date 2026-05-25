@@ -26,6 +26,7 @@
 // try 19: flag probes /Ob0, no /Oy, and /Gf; no change. /Og- and /O1 produced wrong codegen families; flags removed.
 // GIVEUP: behavior is understood (base setup, set +0xA4/+4, fscanf five %hd into temp/parameter slots plus %f into +0x150, copy low bytes to +0x148..+0x14C). Remaining mismatch is source/stack-topology: original uses one pushed local, saves param_1 in EDI, evaluates base-call args right-to-left, and forms fscanf addresses from overlapping incoming parameter stack slots; rebuilt either delays EDI or perturbs argument/address ordering. Not proposing accepted_drift because stack writes/call setup are broad, not localized.
 // Retry 2026-05-21 Boss pass: 17 more probes. Tried p4/p2/p3/file locals in desired load order, no-file-local until after base call, delayed/register/volatile file, base call with file/param mixes and comma assignment, fscanf address locals, copied post-fscanf store order, short* casts to parameter slots, &ballistics_ratio/address locals, and several file-lifetime variants. Best kept below improves to 68.0000% positional with first mismatch +16 by delaying the file local until after the base setup call, matching the initial parameter-load order; however it loses the original EDI file lifetime and still has broad fscanf address/copy scheduling drift. No accepted_drift: stack/call/register topology remains structural.
+// Retry 2026-05-24 Boss pass: 10 more probes. Revalidated kept baseline (150B, 68.0000% positional / 54.6667% edit). Tried pre-base file local and register file (restores EDI lifetime but regresses first mismatch to +2 and wrong initial load order), reversed fscanf argument source order, explicit base pointer local, volatile FILE* after base, captured base setup return, widened base param_4 to int (movsx/worse), and /Ob0 flag (no change, removed). Best remains kept delayed-file baseline. Not accepted_drift: mismatch remains broad structural stack/call/register topology around base setup/fscanf and post-read copies.
 
 #include <stdio.h>
 
@@ -55,7 +56,7 @@ int RGE_Master_Missile_Object::setup(FILE* param_1, void** param_2, void** param
     *(unsigned char*)((char*)this + 0xA4) = 1;
     *(unsigned char*)((char*)this + 4) = 0x3C;
 
-    fscanf(file, "%hd %hd %hd %hd %hd %f",
+    fscanf((FILE*)file, "%hd %hd %hd %hd %hd %f",
            &temp_missile_type,
            &param_4,
            &param_3,

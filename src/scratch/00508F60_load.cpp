@@ -22,6 +22,7 @@
 // and /G5 /Op /Gr flags. Most either stayed in the wrong ESI=this/EBX=count basin or
 // shrank to 160B / broadly regressed; none recovered original EBX=this and ESI=list_num
 // pointer/index-offset sharing. Restored exact-size baseline; no accepted_drift proposal.
+// Retry 2026-05-24 Boss pass: 20 more probes. Revalidated baseline (161B, 39.7516% positional / 26.0870% edit, first mismatch +2). Tried decompiler-shaped `local_4=this`/task_type stack reuse, int task_type, int loop counter with short casts, explicit count-pointer/self locals, do/while loop, vtable local, cached list array, saved/register file handle, raw offset class surface with pointer locals and direct raw member accesses, novtable class, and flags /Ob0 /Oa /Og- /G3 /G4 /Ox /Os. No variant improved the EBX=this / ESI=list_num-pointer basin; raw/cached/decompiler variants regressed broadly and flags were unchanged or worse. Kept exact-size baseline; not accepted_drift because remaining drift is broad register-allocation and loop-address scheduling.
 
 struct FILE;
 class RGE_Sprite;

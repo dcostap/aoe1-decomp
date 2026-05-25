@@ -18,6 +18,12 @@
 // or a too-compact no-match family. The core issue is VC5's register allocator choosing
 // not to use ebx/ebp as callee-saved zero registers in this isolated TU context.
 // Behavior, loop structure, and memory effects are understood; left in scratch.
+// Retry 2026-05-24 assigned pass: 13 more probes. Volatile zero locals produced exact size but
+// broad wrong frame/register family (98.8372% positional). register zeros, direct-zero fail path,
+// direct-copy found path, struct-entry typed row, while <=255, unsigned i, and flags /Ob0 /Oa
+// /G5 /O1 /Og all stayed in too-short 144/153/160 byte families. memcpy done path was exact size
+// but broad wrong stack-copy family. No accepted_drift: best behavioral source is 12 bytes short,
+// while exact-size variants are broad topology mismatches.
 
 #include <string.h>
 

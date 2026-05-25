@@ -3,6 +3,12 @@
 // Retry 2026-05-21: replaced placeholder dx+dy with full decompiled behavior (world delta, abs, subtract radii, clamp, sqrt). Baseline full behavior compiles to 160B, too small vs original 167B; original has push ecx and reuses the incoming parameter stack slot plus one local for FPU temporaries.
 // Tried 12 probes: volatile dy local (exact 167B but broad 86.2275% positional mismatch from byte 0, no push-ecx and wrong FPU order), stack-store abs-y temp, double zero comparisons, master-object locals, ternary clamps, x/y return-order swap, zero_float symbol, explicit sqrt extern, interleaved subtract assignments, volatile x/local result, dummy local, and decompiler-style parameter reuse. Most stayed 160B too small; none recovered original stack-slot/FPU scheduling.
 // GIVEUP: leaving full behavior source in scratch. No accepted_drift: remaining mismatch is structural FPU stack scheduling/local-slot topology, not localized benign drift.
+// Retry 2026-05-24 Boss pass: 20 more probes. Baseline still compiles to 160B vs original 167B.
+// Tried parameter-slot reuse via *(float*)&other (exact 167B but 83.8323% positional, first mismatch byte 0), volatile dy (167B but 86.2275% byte-0 mismatch),
+// volatile x/y locals, ternary abs/clamps, swapped return term order, named result temp, master-object locals, explicit double cast for sqrt,
+// dropping sqrt to inspect inline expression family, and flags /Op /Ob0 /Og /Ot /G5 /GB /O1 /Ox.
+// Only /Op and param/volatile-dy variants reached 167B, all with broad wrong prologue/FPU topology; non-worsening natural variants stayed 160B.
+// GIVEUP again; no accepted_drift proposal because remaining mismatch is structural stack-slot/FPU scheduling, not a localized equivalent hunk.
 
 class RGE_Master_Object {
 public:
