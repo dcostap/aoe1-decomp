@@ -1,0 +1,121 @@
+// 004E1D10 TribeInformationAIModule::findStagingPoint
+// Attempt log:
+// try 1: direct reconstruction from packet/decompiler; focus on call set, stack locals, nested scan topology.
+// try 2: initial direct __ftol placeholder compiled too small (.text 1072 vs 1219), because distance expression optimized away/under-modeled.
+// try 3: changed distance to natural `(int)sqrt((double)d2)`, producing closer size (.text 1200 vs 1219) but still too short to compare.
+// try 4: tested a volatile pad sink to inflate frame/size; worsened to .text 1168, rolled back.
+// try 5: tested /GX: no effect on 1200-byte no-EH body; rolled back.
+// try 6: tested /O1: much smaller (.text 922), rolled back.
+// left in scratch: behavior skeleton likely has the right major call set and nested scan, but not exact/accepted_drift quality; needs precise original source expression for inner passability and scoring to recover the missing 19+ bytes under default /O2.
+
+typedef unsigned char uchar;
+struct XYPoint { int x; int y; };
+struct ObjectMemory { int id; short mid; short group; unsigned char x; unsigned char y; unsigned char owner; unsigned char pad; };
+
+class RGE_Visible_Map { public: unsigned char get_visible(int x, int y); };
+class RGE_Static_Object {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
+    virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43(); virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
+    virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51(); virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
+    virtual void v56(); virtual void v57(); virtual void v58(); virtual void v59(); virtual void v60(); virtual void v61(); virtual void v62(); virtual void v63();
+    virtual void v64(); virtual void v65(); virtual void v66(); virtual void v67();
+    virtual int canPlace(float y, float x, int flag); // +114
+    virtual void v69(); virtual void v70(); virtual void v71(); virtual void v72(); virtual void v73(); virtual void v74(); virtual void v75(); virtual void v76(); virtual void v77(); virtual void v78(); virtual void v79(); virtual void v80(); virtual void v81(); virtual void v82(); virtual void v83(); virtual void v84(); virtual void v85(); virtual void v86(); virtual void v87(); virtual void v88(); virtual void v89(); virtual void v90(); virtual void v91(); virtual void v92(); virtual void v93(); virtual void v94(); virtual void v95(); virtual void v96(); virtual void v97(); virtual void v98(); virtual void v99(); virtual void v100(); virtual void v101(); virtual void v102(); virtual void v103(); virtual void v104(); virtual void v105(); virtual void v106(); virtual void v107();
+    virtual int findDrop(XYPoint* a, XYPoint* b, float c, XYPoint* d, int e); // +1B0
+    int findClosestPointInTerrainType(XYPoint p, XYPoint* out, int type, int terrain, int radius);
+    unsigned char lookupZone(int x, int y);
+};
+class MainDecisionAIModule { public: char gap0[0x38]; RGE_Visible_Map* vis; char gap3c[0xB4]; void* player; char gapf4[0x12478]; void* mapwrap; RGE_Static_Object* object(int id); };
+struct PlayerLike { char gap[0x28]; void* map; };
+struct MapLike { char gap[0x8D8C]; int** rows; };
+class InfluenceMap { public: int lookupValue(int x, int y); };
+extern InfluenceMap losMap;
+extern InfluenceMap attackMap;
+extern int debug_rand(char*, int);
+extern "C" double sqrt(double);
+
+class TribeInformationAIModule {
+public:
+    char gap[0x100]; MainDecisionAIModule* md;
+    ObjectMemory* objectMemory(int id);
+    int isBoat(RGE_Static_Object* obj);
+    int setupLOSMap(int owner, int x, int y);
+    int setupAttackMap(int owner, int x, int y);
+    int mapBound(XYPoint* p);
+    int findStagingPoint(XYPoint p, XYPoint& out, int p3, int p4, int targetID, int radius, int objID);
+};
+
+int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, int p4, int targetID, int radius, int objID)
+{
+    ObjectMemory* target = this->objectMemory(targetID);
+    if (!target) return 0;
+    RGE_Static_Object* unit = this->md->object(objID);
+    if (!unit) return 0;
+
+    int terrainType, terrain;
+    if (this->isBoat(unit) == 1 && p3 == 0) { terrainType = 1; terrain = 0x16; }
+    else { terrainType = 2; terrain = 0; }
+
+    XYPoint zoneRefPoint;
+    zoneRefPoint.x = p.x; zoneRefPoint.y = p.y;
+    unit->findClosestPointInTerrainType(p, &zoneRefPoint, terrainType, terrain, 4);
+    unsigned char zone = unit->lookupZone(zoneRefPoint.x, zoneRefPoint.y);
+
+    int maxLOSValue = this->setupLOSMap(target->owner, target->x, target->y);
+    int maxAttackValue = this->setupAttackMap(target->owner, target->x, target->y);
+    XYPoint min, max, targetPoint;
+    min.x = (int)target->x - radius; min.y = (int)target->y - radius; this->mapBound(&min);
+    max.x = (int)target->x + radius; max.y = (int)target->y + radius; this->mapBound(&max);
+    targetPoint.x = target->x; targetPoint.y = target->y; this->mapBound(&targetPoint);
+
+    int bestValue = -1;
+    RGE_Visible_Map* vis = this->md->vis;
+    PlayerLike* ai = (PlayerLike*)this->md->mapwrap;
+    MapLike* map = (MapLike*)ai->map;
+
+    for (int y = min.x; y <= max.x; ++y) {
+        int rowoff = y * 0x18;
+        for (int x = min.y; x <= max.y; ++x) {
+            unsigned char tile = (unsigned char)(*((unsigned char*)map->rows[x] + rowoff + 5) & 0x1f);
+            vis->get_visible(y, x);
+            int ok = 0;
+            if (p3 == 1) { if (tile == 2) ok = 1; }
+            else if (p4 == 1) { if (tile != 1 && tile != 0x16) ok = 1; }
+            else { if (p4 != 0 || tile == 1 || tile == 0x16) ok = 1; }
+            if (!ok) continue;
+            if (unit->lookupZone(y, x) != zone) continue;
+            if (p3 == 1) {
+                XYPoint passMin, passMax;
+                passMin.x = y - 2; passMin.y = x - 2; this->mapBound(&passMin);
+                passMax.x = y + 2; passMax.y = x + 2; this->mapBound(&passMax);
+                int good = 1;
+                for (int yy = passMin.x; good && yy <= passMax.x; ++yy) {
+                    int off = yy * 0x18;
+                    for (int xx = passMin.y; good && xx <= passMax.y; ++xx) {
+                        unsigned char t = (unsigned char)(*((unsigned char*)map->rows[xx] + off + 5) & 0x1f);
+                        if (t != 1 && t != 0x16 && unit->canPlace((float)xx, (float)yy, 1) == 0) good = 0;
+                    }
+                }
+                if (!good) continue;
+            }
+            int dx = target->x - y;
+            int dy = target->y - x;
+            int d2 = dx * dx + dy * dy;
+            int dist = (int)sqrt((double)d2);
+            int rnd = debug_rand((char*)0x5878DC, 0x1b3f) % (radius * 3);
+            XYPoint a, b, c;
+            a.x = y; a.y = x; c.x = rnd;
+            int found = unit->findDrop(&a, &targetPoint, 1.0f, &b, 1);
+            int v = (found != 1 ? radius : 0) + rnd + dist;
+            if (maxLOSValue > 0) v -= losMap.lookupValue(y, x) * radius / maxLOSValue;
+            if (maxAttackValue > 0) v -= attackMap.lookupValue(y, x) * radius / maxAttackValue;
+            if (bestValue == -1 || bestValue < v) { bestValue = v; out.x = y; out.y = x; }
+        }
+    }
+    return bestValue != -1;
+}
