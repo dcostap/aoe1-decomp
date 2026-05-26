@@ -26,15 +26,27 @@
 // do_setup temp, reordered unitAI/-1 stores, virtual dummy/setup/destroy surfaces without destructor, and protected destructor visibility.
 // Best new clue was virtual-base EH family first mismatch +25, but it inserts/omits broad initialization chunks and helper text; not kept.
 // GIVEUP again; no accepted_drift because the remaining difference is constructor EH/vtable/text-order structure, not localized benign drift.
+// 2026-05-26 Boss retry: 10 more probes. Revalidated current too-small 160B source, then explored
+// the virtual-base EH family, novtable base/derived, volatile raw zero stores, volatile/nonvolatile
+// -1 stores, explicit local EH-like state, removing derived dtor, manual vptr store, partial
+// nonvolatile group zeroes, named zero local, and reordered -1/group stores. Best kept below is
+// virtual-base + volatile zero-store variant: 164B, EH prologue matches through +25, and edit diff
+// improves to 36.5854%, but it still hoists -1/cmp/vptr-related work and emits broad different
+// vtable/base helper text. GIVEUP; no accepted_drift because the drift is structural EH/vptr/store
+// scheduling, not localized benign codegen.
 
 class RGE_Game_World;
 class RGE_Sprite;
 class RGE_Object_Node;
 class UnitAIModule;
 
-class RGE_Static_Object {
+class RGE_Base_Object {
 public:
-    virtual ~RGE_Static_Object();
+    virtual ~RGE_Base_Object();
+};
+
+class RGE_Static_Object : public RGE_Base_Object {
+public:
     char gap04[0x0C];
     RGE_Sprite* sprite;
     RGE_Sprite* old_sprite;
@@ -62,18 +74,19 @@ public:
 
 RGE_Static_Object::RGE_Static_Object(int id, RGE_Game_World* world, int do_setup)
 {
-    sprite = 0;
-    old_sprite = 0;
-    pathingGroupValue = 0;
-    pathingGroupNumber = 0;
-    pathingGroupDesired = 0;
-    pathingGroupMax = 0;
-    groupValue = 0;
-    groupNumber = 0;
-    groupDesired = 0;
-    groupMax = 0;
+    int zero = 0;
+    *(volatile int*)((char*)this + 0x10) = zero;
+    *(volatile int*)((char*)this + 0x14) = zero;
+    *(volatile int*)((char*)this + 0x54) = zero;
+    *(volatile int*)((char*)this + 0x58) = zero;
+    *(volatile int*)((char*)this + 0x5C) = zero;
+    *(volatile int*)((char*)this + 0x60) = zero;
     groupCommanderValue = -1;
     zoneMapIndex = -1;
+    *(volatile int*)((char*)this + 0x64) = zero;
+    *(volatile int*)((char*)this + 0x68) = zero;
+    *(volatile int*)((char*)this + 0x6C) = zero;
+    *(volatile int*)((char*)this + 0x70) = zero;
     unitAIValue = 0;
     groupRangeValue = 5.0f;
     inObstructionMapValue = 0;

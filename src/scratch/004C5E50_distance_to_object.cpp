@@ -9,6 +9,7 @@
 // dropping sqrt to inspect inline expression family, and flags /Op /Ob0 /Og /Ot /G5 /GB /O1 /Ox.
 // Only /Op and param/volatile-dy variants reached 167B, all with broad wrong prologue/FPU topology; non-worsening natural variants stayed 160B.
 // GIVEUP again; no accepted_drift proposal because remaining mismatch is structural stack-slot/FPU scheduling, not a localized equivalent hunk.
+// Retry 2026-05-26 Boss pass: 18 probes on VA 004C5E50 only. Revalidated natural full-behavior source: 160B for 167B target. Tried parameter-slot reuse via `*(float*)&other` (167B but 83.8323% positional, first mismatch byte 0), volatile dy (167B / 86.2275%), dy stack pointer, zero_float symbol, explicit double sqrt (167B / 82.0359%), x*x+y*y return order, master-object locals, ternary abs/clamps, result local, y-first subtract order, and a decompiler-style saved `other` reuse attempt (VC5 cast error). Flag probes /Op (167B but 76.0479% positional, first mismatch +18), /G5 /GB /Og /Ob0 /Oy- /O1 /Ox; only /Op reached size and was broad wrong FPU topology. GIVEUP: not accepted_drift quality; size-matching variants change the FPU stack/prologue topology broadly rather than leaving a localized equivalent hunk.
 
 class RGE_Master_Object {
 public:

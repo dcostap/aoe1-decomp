@@ -30,6 +30,13 @@
 // 12: Used `short p1 = param_1`: worsened to first mismatch +1.
 // GIVEUP: no exact match. Not proposing accepted_drift; remaining differences are systematic
 // prologue/register-allocation and argument-setup encoding, not a tightly localized equivalent drift.
+// 2026-05-26 Boss retry: 10 more honest probes. Tried int formal with/without short cast,
+// short formal plus dword/word parameter aliases, stack-store p1 temp, register/volatile p1,
+// named masters local before p1, int local_4/list_count, widened command_build_wall args,
+// and direct dword reload of param_1 for the wall arg. Best remains the prior kept short-formal
+// baseline (143B, 70.6294% positional / 18.8811% edit, first mismatch +3). Int-formal body
+// has lower edit diff (13.9860%) but wrong prologue (`mov eax,[esp+8]` before saved pushes).
+// Not accepted_drift: drift starts in prologue/register allocation and affects argument setup.
 
 #include <stddef.h>
 #include <stdlib.h>

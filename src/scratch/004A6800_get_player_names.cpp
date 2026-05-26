@@ -1,29 +1,70 @@
-// TRIBE_Screen_Name::get_player_names — real pass
+// TRIBE_Screen_Name::get_player_names
 // VA: 004A6800
-#include "../../include/game_globals.h"
+// Retry 2026-05-26 Boss pass: rebuilt source with real thiscall member surfaces and absolute rge_base_game.
+// Revalidated best: 178B exact size, MISMATCH 41 positional / 41 edit, first mismatch +24.
+// Tried 15 variants: players initialized at declaration (before/after empty_list), local order swaps,
+// direct rge_base_game vs game local, casted/swapped get_people_list args, count as long, TTextPanel
+// list local, text local before append_line, while/do loops, split get_line/set_line, comma assignment,
+// and declaration-after-statement forms. Real member surface fixed compile and most calls, but remaining
+// drift is broad scheduling/register order: get_people_list out-param LEAs/init ordering, append/free loop
+// ECX/EDX/EAX coloring, and get_line argument push scheduling. GIVEUP; not accepted_drift without review.
 
-void __fastcall get_player_names(void* _this, int _)
+extern "C" void __cdecl free(void*);
+
+class TTextPanel {
+public:
+    char gap_00[0x15C];
+    int flag_15c;
+    void empty_list();
+    int append_line(char* text, int index);
+    long get_line(long line);
+    void set_line(long line);
+};
+
+class RGE_Game_Info {
+public:
+    long get_people_list(char*** players, long* current_player);
+};
+
+class RGE_Base_Game {
+public:
+    void* vtable;
+    RGE_Game_Info* player_game_info;
+};
+
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+
+class TRIBE_Screen_Name {
+public:
+    char gap_00[0x480];
+    TTextPanel* name_list;
+    void get_player_names();
+};
+
+void TRIBE_Screen_Name::get_player_names()
 {
-    void* nameList = *(void**)((char*)_this + 0x480);
-    ((void(__fastcall*)(void*,int))0x47E370)(nameList, 0);
-    
-    void* bg = (void*)rge_base_game;
-    void* gameInfo = *(void**)((char*)bg + 4);
-    char** players = 0;
-    long currIdx = 0;
-    int numPlayers = ((int(__fastcall*)(void*,int,char***,long*))0x44D850)(gameInfo, 0, &players, &currIdx);
-    if (!numPlayers) return;
-    
-    *(int*)((char*)nameList + 0x15C) = 1;
-    
+    char** players;
+    long local_4;
+    int count;
     int i;
-    for (i = 0; i < numPlayers; i++)
-        ((int(__fastcall*)(void*,int,int,void*))0x47DCD0)(nameList, 0, i, (void*)players[i]);
-    
-    long line = ((long(__fastcall*)(void*,int,long))0x47E200)(nameList, 0, currIdx);
-    ((void(__fastcall*)(void*,int,long))0x47DC80)(nameList, 0, line);
-    
-    for (i = 0; i < numPlayers; i++)
-        ((void(__fastcall*)(void*,int))0x54B7D0)((void*)players[i], 0);
-    ((void(__fastcall*)(void*,int))0x54B7D0)((void*)players, 0);
+
+    this->name_list->empty_list();
+
+    RGE_Base_Game* game = rge_base_game;
+    players = 0;
+    count = game->player_game_info->get_people_list(&players, &local_4);
+    if (count != 0) {
+        this->name_list->flag_15c = 1;
+
+        for (i = 0; i < count; i++) {
+            this->name_list->append_line(players[i], i);
+        }
+
+        this->name_list->set_line(this->name_list->get_line(local_4));
+
+        for (i = 0; i < count; i++) {
+            free(players[i]);
+        }
+        free(players);
+    }
 }

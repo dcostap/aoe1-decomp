@@ -34,6 +34,13 @@
 //    `(uchar)(key-0x28) != 0 ? obj : 0`; all unchanged or worse.
 // 10: Flag probe `/O2` without `/Oy`: no improvement, flag removed.
 // 11: Named POINT-style locals instead of locals[4]: .text too short (144B), rejected.
+// 2026-05-26 Boss retry: 11 more probes. Tried register result, explicit key byte local,
+// obj as int, named zero, removing return mask, unsigned-char view_function/direct uchar
+// result, for-loop zeroing, arithmetic mask spellings, unsigned/signed-char key formals,
+// register pi, and pointer-increment zeroing. Best remains retained baseline: exact size
+// 151B, 62.9139% positional / 58.2781% edit, first mismatch +4. Unsigned-char key got
+// first 7 bytes to match but worsened the rest; for-loop zeroing made EAX=key but lost
+// the EDI save/zeroing basin.
 // GIVEUP: no accepted_drift proposal. Remaining mismatch is broad register/prologue/call setup
 // topology (original EAX=key, ESI=obj then info, DL byte-mask, EDX result/zero, EDI=info;
 // rebuilt keeps key in EDX/EAX, object/result/info in different registers and uses different

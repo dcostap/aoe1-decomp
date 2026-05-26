@@ -30,6 +30,15 @@
 // wrong offset/delta register schedule. Other variants return to the exact-size baseline family with
 // previous LastCall in EDX. Leaving in scratch; diff is broad, not accepted_drift-worthy.
 // Retry 2026-05-24 Boss pass: 10 more probes. Revalidated baseline (141B, 69.5035% positional / 29.0780% edit). Tried ++Offset family again (first mismatch +32, edit 25.5319% but short real body/NOP tail and wrong delta/index registers), explicit `t=now; t=t-old`, direct field compare/no reference, register now, volatile LastCall (first mismatch +33, best edit 21.9858% but reloads LastCall after branch and shifts store/compare order), register old, and /Ob0 flag (no change, removed). No retained exact improvement: either baseline EDX-prev family or the ECX-prev/short-tail family. Not accepted_drift because drift spans LastCall register allocation, delta/index update scheduling, aTSLC store source, and function length/tail padding.
+// Retry 2026-05-26 Boss pass: 18 more probes. Revalidated exact-size baseline first
+// (141B, 69.5035% positional / 29.0780% edit, first mismatch +16). Tried old-before-if,
+// register/const/signed old types, diff-before-store, explicit delta/copy locals, comma
+// store, raw byte-offset LastCall/Offset access, old reference, idx declared early, postinc
+// member Offset family, local idx array store, ternary/direct minmax, volatile now/delta/old,
+// and store-order variants. The only deeper first-mismatch family is still member Offset++:
+// it matches through +33 and gets ECX=old, but uses EAX for delta, EDX for Offset, emits a
+// short real body with NOP tail, and worsens edit diff. Restored baseline; no accepted_drift
+// because drift is still broad register/schedule/length mismatch rather than localized drift.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 

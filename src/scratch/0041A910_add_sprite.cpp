@@ -24,6 +24,14 @@
 // Tried self alias, volatile self (worse stack frame), ppPrev-before-pp / *ppPrev reload, ppStart alias, and flags /Ob0 /Og /Ot /Oa /G5 /GB /O1.
 // All non-worsening variants stayed in the same ESI-mutated-to-&list basin; /Oa and volatile worsened. Removed temporary flag file.
 // GIVEUP again; no accepted_drift proposal because the remaining diff is structural across traversal registers, duplicate-count tail, allocation register, and final insertion stores.
+// Retry 2026-05-26 Boss pass: 10 more probes. Revalidated baseline exact-size 158B,
+// 36 positional / 26 edit, first mismatch +38. Tried forcing `this` liveness after the
+// first loop (worse broad drift), moving ppPrev init after the duplicate scan, raw int
+// ppPrev, for-loop second scan, bottom-test/goto second scan, self alias, volatile order
+// byte, early node/asp declarations, explicit count temp for duplicate hit, and reversed
+// order compare. All non-worsening variants stayed in the same basin: VC5 mutates ESI
+// into &list and uses EDI for the allocated node, while original preserves ESI=this and
+// uses EDI=ppPrev / ESI=new node. No accepted_drift: mismatch remains structural.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 

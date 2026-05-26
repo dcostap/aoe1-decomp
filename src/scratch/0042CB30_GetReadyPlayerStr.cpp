@@ -7,6 +7,7 @@
 // tried volatile current_turn only (current source): 179B and reloads current_turn each iteration, but still wrong ebx=this, esi=max_count, eax=buffer pointer family.
 // tried register/split default char; VC5 still immediate '?' rather than original bl=3Fh.
 // left in scratch: behavior is understood; remaining gap is broad VC5 register-allocation/induction-variable basin (original ebp=this, eax=i, edx=record pointer, bl='?', reload max into cx at bottom).
+// Retry 2026-05-26 Boss pass: 17 probes on VA 0042CB30 only. Revalidated current source: 179B, 58.6592% positional / 70.3911% edit, first mismatch byte 0. Tried nonvolatile current_turn, this/self alias to encourage EBP, direct indexed volatile stores, reloading MaxGamePlayers each loop, `MaxGamePlayers != 0` guard, default immediate '?' instead of defc, if/else chain instead of switch, buffer-base expression, and flags /G5 /Oa /Og /Ob0 /Oy- /O1 /Od. Competitive variants all kept the wrong EBX=this / ESI=count or running-buffer-pointer basin; /O1 shrank and /Od was broad wrong. GIVEUP: not accepted_drift quality; mismatch is broad prologue/register allocation plus induction-variable/switch layout, not a localized equivalent hunk.
 
 #include <string.h>
 #pragma intrinsic(strcpy)

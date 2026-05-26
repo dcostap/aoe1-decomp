@@ -16,6 +16,14 @@
 //   Original computes x as mov eax,[esi+10h]; mov ecx,ebx; add ecx,eax and y as mov ecx,[esi+0Ch]; mov edx,edi; add edx,ecx.
 //   VC5 rebuild folds to mov ecx,[esi+10h]; add ecx,ebx and mov edx,[esi+0Ch]; add edx,edi.
 //   Behavior is equivalent, but check_function cannot compare because the function is 4 bytes short; not proposing accepted_drift without a comparable 180B low-diff build.
+// Retry 2026-05-26 Boss pass: 13 more probes. Revalidated best source: 176B too short.
+// Tried reversed coordinate expression order, explicit x/y locals, staged xbase/ybase adds,
+// volatile xbase and ybase, draw_area/frame locals, shape local, while loops, for loops,
+// swapped semantic draw args, back_frame local, void/uchar TShape return declarations, and
+// flags /Ob0 /Oa /Og. All exact-size variants were broad regressions (best volatile-xbase
+// 62 positional / 37 edit, first mismatch +19); all close variants stayed 176B. Still no
+// accepted_drift proposal: the behavior-equivalent diff is localized, but the best source is
+// short/truncated and exact-size variants are not localized.
 
 struct TShape {
     int shape_minmax(long* y_max, long* pic_hgt, long* x_min, long* y_min, int frame);

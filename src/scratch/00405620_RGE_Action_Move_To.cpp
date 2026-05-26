@@ -1,59 +1,64 @@
-// VA: 00405620 RGE_Action_Move_To::RGE_Action_Move_To (overloaded)
-// PDB source: act_move.cpp
-// EH-framed constructor with set_target_obj call
-// FLAGS: /GX
-//
-// Attempt log:
-// - First pass: 144 bytes (no EH frame w/o /GX or with /GX)
-// - Virtual declaration broke layout (offsets shifted by +4)
-// - EH_Dummy struct local: 224 bytes (EH frame present but too much overhead)
-// - Need to find the exact trigger for the original EH frame
-//
-// Left in scratch: cannot reproduce the 23-byte EH frame overhead.
-// VC5 only generates FS:[0] EH prolog when the function has local objects
-// with destructors or explicit try/catch. The original has neither visible
-// in the asm, suggesting the original source file had different context
-// (e.g., an enclosing function with EH, or #pragma that forced it).
-
-#include <stdlib.h>
+// VA: 00405620 RGE_Action_Move_To::RGE_Action_Move_To
+// act_move.cpp
+// Retry 2026-05-26: modeled base as non-virtual destructible RGE_Action to get VC5 /GX EH frame without layout shift.
+// Best result: exact size 186B, setup/base call/vptr/target/range/FPU code all match; remaining diff is late sprite fallback block layout.
+// Tried 10 variants: old extern set_target surface, virtual/nonvirtual base dtor, novtable/manual vptr, this->obj reload vs saved obj,
+// if(s)/else, if(!s)/else, temp-final assignment, volatile temp, two independent ifs, and goto-shaped fallback. Best is current.
+// Left in scratch: MISMATCH 24 positional / 17 edit bytes at +137. Drift is localized to the final `if (spr==0)` fallback:
+// original uses `jne shared_epilogue`, then inner `if(s) sprite=s; else sprite=o->sprite18;` with a shared epilogue; rebuilt emits
+// equivalent fallback values but arranges the inner/outer branches differently around the EH epilogue. Not proposing accepted_drift yet
+// unless reviewer accepts this localized equivalent tail-layout drift.
 
 class RGE_Action_Object;
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Task;
 class RGE_Action_List;
-class RGE_Action;
 
-extern void __cdecl RGE_Action_set_target_obj(RGE_Action* action, RGE_Static_Object* target);
+class RGE_Static_Object {
+public:
+    char gap_00[0x38];
+    float world_x;
+    float world_y;
+    float world_z;
+};
+
+class RGE_Action_Object {
+public:
+    char gap_00[8];
+    RGE_Static_Object* obj;
+};
 
 class RGE_Action {
 public:
-    void* vtable_ptr;          // +0x00
-    short action_type;         // +0x04
-    char gap_06_07[2];        // +0x06
-    RGE_Action_Object* obj;    // +0x08
-    unsigned char state;       // +0x0C
-    char pad_0D_0F[3];        // +0x0D
-    RGE_Static_Object* target_obj;   // +0x10
-    RGE_Static_Object* target_obj2;  // +0x14
-    int targetID;             // +0x18
-    int target2ID;            // +0x1C
-    float target_x;            // +0x20
-    float target_y;            // +0x24
-    float target_z;            // +0x28
-    float timer;               // +0x2C
-    RGE_Task* task;            // +0x30
-    RGE_Action_List* sub_actions;  // +0x34
-    RGE_Sprite* sprite;        // +0x38
-    unsigned char subActionValue;  // +0x3C
-    char pad_3D_3F[3];        // +0x3D
+    void* vtable_ptr;
+    short action_type;
+    char gap_06_07[2];
+    RGE_Action_Object* obj;
+    unsigned char state;
+    char pad_0D_0F[3];
+    RGE_Static_Object* target_obj;
+    RGE_Static_Object* target_obj2;
+    int targetID;
+    int target2ID;
+    float target_x;
+    float target_y;
+    float target_z;
+    float timer;
+    RGE_Task* task;
+    RGE_Action_List* sub_actions;
+    RGE_Sprite* sprite;
+    unsigned char subActionValue;
+    char pad_3D_3F[3];
 
+    ~RGE_Action();
     RGE_Action(RGE_Action_Object* obj, int type);
+    void set_target_obj(RGE_Static_Object* target);
 };
 
-class RGE_Action_Move_To : public RGE_Action {
+class __declspec(novtable) RGE_Action_Move_To : public RGE_Action {
 public:
-    float range;               // +0x40
+    float range;
 
     RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object* target, float range_val, RGE_Sprite* spr);
 };
@@ -61,14 +66,14 @@ public:
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object* target, float range_val, RGE_Sprite* spr)
     : RGE_Action(obj, 1)
 {
-    vtable_ptr = (void*)0x56E3A0;
+    *(int*)this = 0x56E3A0;
     action_type = 1;
-    RGE_Action_set_target_obj(this, target);
+    set_target_obj(target);
 
     if (target) {
-        target_x = *(float*)((char*)target + 0x38);
-        target_y = *(float*)((char*)target + 0x3C);
-        target_z = *(float*)((char*)target + 0x40);
+        target_x = target->world_x;
+        target_y = target->world_y;
+        target_z = target->world_z;
     }
 
     range = range_val;
@@ -78,12 +83,12 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
         range = 0.4f;
 
     if (spr == 0) {
-        void* obj2 = *(void**)((char*)this + 8);
-        void* target_obj_inner = *(void**)((char*)obj2 + 8);
-        RGE_Sprite* s = *(RGE_Sprite**)((char*)target_obj_inner + 0xBC);
-        if (s)
+        RGE_Static_Object* o = this->obj->obj;
+        RGE_Sprite* s = *(RGE_Sprite**)((char*)o + 0xBC);
+        if (s == 0) {
+            sprite = *(RGE_Sprite**)((char*)o + 0x18);
+        } else {
             sprite = s;
-        else
-            sprite = *(RGE_Sprite**)((char*)target_obj_inner + 0x18);
+        }
     }
 }

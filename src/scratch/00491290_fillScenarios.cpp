@@ -17,6 +17,12 @@
 // allocation for scenarios pointer/text arg, and get_line/free argument register choice. Calls, stack cleanup, and
 // behavior line up, but drift is still spread across several setup/call hunks, so left in scratch rather than
 // accepted_drift.
+// 2026-05-26 Boss pass: 17 more probes. Revalidated current best (179B, 17.8771% positional, first mismatch +24).
+// Tried no-init plus late scenarios=0, comma-arg zeroing, reversed get_scenario_list prototype, count-first local order,
+// inline rge_base_game, text/free pointer temps, flags /Ob0 /Og /Ot /G5 /Oa, local frame structs in both field orders,
+// explicit do loops, panel local, and no line local. All useful variants stayed in the same 179B basin except inline/panel/Oa
+// regressions. GIVEUP: no accepted_drift because remaining drift spans get_scenario_list LEA/push/zero scheduling plus
+// loop argument register choices; not localized benign drift.
 
 class TListPanel {
 public:

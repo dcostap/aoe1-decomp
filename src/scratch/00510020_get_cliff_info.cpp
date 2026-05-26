@@ -24,6 +24,14 @@
 // /G5 /O1 /Og all stayed in too-short 144/153/160 byte families. memcpy done path was exact size
 // but broad wrong stack-copy family. No accepted_drift: best behavioral source is 12 bytes short,
 // while exact-size variants are broad topology mismatches.
+// Retry 2026-05-26 Boss pass: 16 probes on VA 00510020 only. Revalidated kept source: 160B for
+// 172B target. Tried direct found-path copy, register/volatile zeros (volatile exact-size but
+// 97.0930% positional byte-0 mismatch), while/nested-if loop, typed CliffEntry row, <=255 and
+// unsigned loop counters, struct temp, memcpy copy, recomputed found-index source, true struct
+// return-by-value signature, dummy locals, and flags /Ob0 /G5 /Oa /Og /Oy- /O1 /Od /Zp1. Close
+// behavioral families remain 144/160B; exact-size variants are broad wrong frame/register/copy
+// topology. GIVEUP: not accepted_drift quality; mismatch is structural register allocation and
+// hidden-return/copy layout, not localized equivalent drift.
 
 #include <string.h>
 

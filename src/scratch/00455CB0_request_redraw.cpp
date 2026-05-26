@@ -17,6 +17,12 @@
 // 7: Swapped-predicate spelling (`x1 < x0`, nested positive bounds): better positional (74.8571%)
 //    but much worse edit/control flow and still wrong early EBP/ESI coloring.
 // 8: Removed self local/direct this; no change from best.
+// 2026-05-26 Boss retry: 10 more probes. Revalidated baseline; tried swapped/min locals with x1<x0,
+// register x1 parameter, volatile x1 parameter/local, precomputed x-offset outside the row loop,
+// direct-this/no-self, while outer loop, row pointer local, explicit `(x+x*2)<<3` tile offset,
+// register self, and alternate y swap predicate/order. None matched; precomputed x-offset improved
+// positional to 62.2857% but destroyed edit/control-flow shape, while alternate y swap reached
+// 74.8571% positional / 49.7143% edit but kept wrong EBP/EDI roles. Best kept is still baseline.
 // GIVEUP: not accepted_drift-worthy. Behavior is understood, but mismatch is broad: original pushes
 // ecx/ebx/ebp/esi before loading x0/x1, uses ESI=x0, EDI=x1, EBX=this/height, EBP=y0, ECX/y1 stack,
 // and precomputes x0*24 once outside the row loop. VC5 variants either preload x1 into EBP before
@@ -53,7 +59,7 @@ void RGE_Map::request_redraw(int x0, int y0, int x1, int y1, unsigned char val)
         if (x1 >= self->map_width) x1 = self->map_width - 1;
         if (y1 >= self->map_height) y1 = self->map_height - 1;
 
-        for (; y0 <= y1; ++y0) {
+        while (y0 <= y1) {
             if (x0 <= x1) {
                 unsigned char* p = self->map_row_offset[y0] + x0 * 0x18 + 0x0A;
                 int count = x1 - x0 + 1;
@@ -64,6 +70,7 @@ void RGE_Map::request_redraw(int x0, int y0, int x1, int y1, unsigned char val)
                     --count;
                 } while (count != 0);
             }
+            ++y0;
         }
     }
 }

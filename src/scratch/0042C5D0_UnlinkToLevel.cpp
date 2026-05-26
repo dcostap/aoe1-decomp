@@ -21,6 +21,16 @@
 // The 12 remaining diff bytes (after masking 12 relocations) are ALL from
 // this peel + consequent register/offset changes.
 //
+// Retry 2026-05-26 Boss pass: 12 more probes. Revalidated current source: 179B,
+// 69 positional / 100 edit, first mismatch +60. Tried while without updating
+// original_status, explicit top-goto loop, do/break loop, fail-after-loop label,
+// assignment-in-condition, assigning directly to CommunicationsStatus, for-loop with
+// original_status update, hardcoded string-address variant, and flags /Ob0, /O1, /Ox.
+// No exact basin. Best edit-only probe (`for(; original_status>param_1;)` with update)
+// reduced edit to 44 but still has first mismatch +60 and wrong loop semantics/topology;
+// other source forms either keep the same peeled-call family or broaden drift. Still not
+// accepted_drift: drift is structural loop peeling plus shifted success/failure blocks.
+//
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
 // Globals: *(void**)0x62C4FC for debugging log L
 // Functions: Log(void*, const char*, ...), sprintf

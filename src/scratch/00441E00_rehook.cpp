@@ -35,6 +35,7 @@
 // all kept the same first mismatch at +9 (ECX-vs-EAX load/test/push) or worsened. No exact match;
 // not accepted_drift: remaining differences span the first branch, negative owner lookup, branch
 // targets, and final vtable-call shape rather than a localized benign hunk.
+// Retry 2026-05-26 Boss pass: revalidated baseline (168B, 100 positional / 28 edit, first mismatch +9). Tried 15 more variants. Best improvement was direct member use in the first branch (no saved `doppled` local), which matched through +46 and reduced to 34 positional / 20 edit, but still drifted in positive owner register (`mov eax,[eax+0C]` vs original `mov edx,[eax+0C]`), negative-path scheduling (`this+0C` load and `sub` placement), and final fastcall tail (`xor edx,edx`). Other probes: volatile/assignment/register doppled reads, alternate `-1-doppled` spellings, owner/int locals, virtual destroy helper, second-part locals/direct member, delayed positive store, cdecl tail. No exact. Kept older baseline because it preserves the previously reviewed source shape; best direct-member variant is noted but not promoted since remaining drift remains structural. GIVEUP; not accepted_drift without review because drift spans multiple control-flow regions and call-tail convention.
 
 struct RGE_Static_Object {
     char gap_00[4];         // vtable at +0x00

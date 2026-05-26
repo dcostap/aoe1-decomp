@@ -67,6 +67,7 @@
 // GIVEUP: leave in scratch. Not accepted_drift: differences remain broad scheduler/register/layout drift across both update paths and delete block, not a localized harmless encoding/scheduling swap.
 // Retry 2026-05-21 Boss pass: 10 more probes. Tried dt-before-param with volatile reload after FPU test, plain dt/time locals to recover ECX/EAX, function-scope time/dt locals, volatile delta reload after store, redundant shape reload before delete, delete-expression form, assignment-in-condition store+compare, float zero comparison, explicit goto tails, and dt+elapsed operand/source-order variants. Best remains the kept default-flags source at 123B, 48.7805% positional / 37.3984% edit, first mismatch +12. Most variants lost the EBX-save basin and mismatched from +1; none fixed the compare-before-delta-store or delete-block layout. Still no accepted_drift: broad scheduler/register/layout drift, not a localized benign swap.
 // Retry 2026-05-24 Boss pass: 10 more probes. Revalidated baseline (same 48.7805% / 37.3984%). Tried delaying volatile param load until after FPU test, register dt, integer zero test, `new_dt > 179999`, predeclared new_dt, volatile pS2/redundant delete test, volatile shape field, explicit first bool local, and inverted `!((double)dt != 0.0)` spelling. No improvement: delayed load loses first-path store order; volatile pS2 destroys frame/register basin; bool local inserts materialization branches; others are same or worse. Best kept remains 123B, 48.7805% positional / 37.3984% edit, first mismatch +12. Not accepted_drift: broad branch-distance/register/scheduling drift across prologue, both update paths, and delete block.
+// Retry 2026-05-26 Boss pass: 15 probes on VA 004C1080 only. Plain param/no-volatile, compare-member-after-store, unsigned new_dt, comma assignment, and float compare all lost the EBX/save basin or regressed to byte +1 mismatch. Operand/order and mutate-param forms matched the kept code. Reloading `this->shape` into a nonvolatile pS2 before delete preserved the original redundant `test edi,edi` delete gate and improved to 47.9675% positional / 31.7073% edit (first mismatch +12), so kept. Other pS2 combinations (`new_dt > 179999`, no volatile time) were same or worse; goto form hit VC5 skipped-initialization errors. GIVEUP: remaining drift still broad branch-distance/register/scheduler layout (dt in edx/eax instead of original ecx/edx, compare/store order in accumulate path, early branch distances), not localized accepted_drift quality.
 
 struct TShape {
     ~TShape();
@@ -103,9 +104,10 @@ void RGE_Sprite::update(unsigned long param_1) {
             int new_dt = elapsed + dt;
             this->delta_time = new_dt;
             if (180000 <= new_dt) {
-                if (pS) {
-                    pS->~TShape();
-                    operator_delete(pS);
+                TShape* pS2 = this->shape;
+                if (pS2) {
+                    pS2->~TShape();
+                    operator_delete(pS2);
                 }
                 this->shape = 0;
             }

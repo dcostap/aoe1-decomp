@@ -3,6 +3,8 @@
 // Attempt log:
 // first: extra ebx (temp var), movsx sign-ext on short, merged set_state paths, undersized by 12 bytes
 // second: try matching register layout and code structure
+// current: close control flow except rebuilt uses short `je` to final state-3 tail and is 12B smaller; original uses near `je` and keeps separate state-3 tails for param1==0 and target==0.
+// tried positive guard + target local; got correct early branch family/size worse. Tried explicit master locals; no change. Remaining likely block-layout/tail-duplication source shape around two identical set_state(3) exits plus zero-constant relocation.
 
 // VirtualHelper for RGE_Action_Object vtable+0x80 (slot 32)
 struct ObjVHelper {
@@ -79,26 +81,29 @@ void RGE_Action_Gather::first_in_stack(unsigned char param1) {
         ((ObjVHelper*)this->obj)->v80(*(short*)((char*)this->task + 0x14), 0);
     }
 
-    if (param1 == 0) {
-        this->set_state(3);
-    } else if (this->target_obj == 0) {
-        this->set_state(3);
-    } else {
-        if (*(int*)((char*)this->target_obj + 0x0C) == *(int*)((char*)this->obj + 0x0C)) {
-            short s = *(short*)(*(int*)((char*)this->target_obj + 0x08) + 0x10);
+    if (param1 != 0) {
+        void* target = this->target_obj;
+        if (target != 0) {
+            if (*(int*)((char*)target + 0x0C) == *(int*)((char*)this->obj + 0x0C)) {
+                int targ_master = *(int*)((char*)target + 0x08);
+                int obj_master = *(int*)((char*)this->obj + 0x08);
+                short s = *(short*)(targ_master + 0x10);
 
-            if ((s == *(short*)(*(int*)((char*)this->obj + 0x08) + 0xE8) ||
-                 s == *(short*)(*(int*)((char*)this->obj + 0x08) + 0xEA)) &&
-                *(float*)((char*)this->obj + 0x44) > 0.0f) {
-                this->vf58(this->target_obj);
-                this->set_target_obj(0);
-                this->target_x = -1.0f;
-                this->target_y = -1.0f;
-                this->target_z = -1.0f;
-                this->set_state(8);
-                return;
+                if ((s == *(short*)(obj_master + 0xE8) ||
+                     s == *(short*)(obj_master + 0xEA)) &&
+                    *(float*)((char*)this->obj + 0x44) > 0.0f) {
+                    this->vf58(target);
+                    this->set_target_obj(0);
+                    this->target_x = -1.0f;
+                    this->target_y = -1.0f;
+                    this->target_z = -1.0f;
+                    this->set_state(8);
+                    return;
+                }
             }
+            this->set_state(4);
+            return;
         }
-        this->set_state(4);
     }
+    this->set_state(3);
 }

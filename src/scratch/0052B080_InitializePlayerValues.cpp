@@ -66,6 +66,9 @@
 // Retry 2026-05-20 Boss pass: revalidated current scratch baseline (123B, 87.8049% positional/edit, first mismatch 4). Tried /O1, /O2 without /Oy, /Og, /Oa, /Ox, /Gs, /Ob0; tried volatile block zero stores, explicit zero local, constants inside loop, char* byte-offset source, for 1..16, register locals, goto loop, and while-top loop. /Oa moved only slightly (86.18% positional), volatile/goto/for worsened, and the rest were identical to baseline or noncompetitive. No exact or accepted-drift-quality result; broad register allocation, constant hoisting, dead-store elimination, and loop scheduling remain.
 // Retry 2026-05-21 Boss pass: revalidated baseline. Tried volatile int pointers, volatile store casts, char-base volatile stores, indexed for 1..16, count-down loop, zero-first local, volatile zero local, register zero/i locals, saved-first, this alias, zero+char-base, inside-loop constant locals, q-before-p order, and zero+i-after-pointers. Best current kept source is zero-first (123B, 81.3008% positional, first mismatch 12), which improves register/push scheduling slightly but still hits broad constant-hoist/dead-store/register-allocation drift. Still not accepted_drift.
 // Retry 2026-05-24 assigned pass: 11 more probes. Literal-zero/no-zero-local and explicit goto/preinc loop stayed identical to current best. Volatile block stores worsened to 91.0569% and first mismatch 4. Declaring pointer locals before zero/counter worsened to 87.8049% first mismatch 4. Fully direct indexed this+offset form worsened badly (95.122%, first mismatch 1). Flag probes /Og-, /Oi-, /Ot, /Od /Oy either stayed current best or produced wrong broad families; /Os and /O1 did not produce a useful compile/result under this setup. Still no accepted_drift: broad loop register allocation, dead-store elimination, constant hoisting, and scheduling differ throughout the body.
+// Retry 2026-05-26 Boss pass: revalidated old zero-first source (123B, 81.3008% positional, first mismatch 12). Tried 15 variants: all-volatile stores, volatile zero-only, raw this-offset volatile zeros, for/preinc, declaration-order split locals, pointer/counter order, unsigned long counter, memset block clear, separated constant expressions, while(1)/break, volatile saved pointer, explicit count temp, moving increment around memset, p-before-q increment, and per-store 200 locals. Best new source uses natural `memset(block,0,16)` for the four zero stores; it keeps correct prologue registers through the zero block and improves to 78 positional bytes / 63.4146% and edit diff 30 / 24.3902%, but still has non-local drift: saved-pointer stack store is scheduled after `add ecx`, increment/add order differs, VC5 hoists the repeated 200 into ESI, and tail offsets shift. GIVEUP; not accepted_drift because remaining differences are broad scheduling/constant-hoist topology, not localized benign drift.
+
+#include <string.h>
 
 class T_Scenario {
 public:
@@ -97,10 +100,7 @@ void T_Scenario::InitializePlayerValues()
         q += 4;
         p++;
 
-        block[0] = zero;
-        block[1] = zero;
-        block[2] = zero;
-        block[3] = zero;
+        memset(block, 0, 16);
 
         p[0x1f] = zero;
         block[0] = zero;

@@ -1,5 +1,19 @@
 // PointMaker::SetDefaultValues
 // VA: 0044AB90
+// Retry 2026-05-26 Boss pass: 18 probes on VA 0044AB90 only. Revalidated baseline:
+// exact 178B, 16.8539% positional / 10.6742% edit, first mismatch byte 0. The
+// remaining drift is the initial constant/register schedule: original saves ESI at
+// entry, uses ESI=2, EAX=3, ECX=0x118, then later zeroes ESI before the 0x100C
+// store; rebuilt uses EAX=2, delays push ESI until just before push EDI, then
+// reloads EAX=3 and schedules the 0x100C store before xor ESI. Tried register/
+// volatile/two-local variants for the `2` value, explicit two/three/width locals
+// and declaration order changes, class-method surface, register self pointer,
+// dummy value uses, manual zero loop instead of memset, and flags /G5 /Oa /Og
+// /Ob0 /Oy- /O1. No variant produced the original ESI=2 entry basin; many either
+// stayed identical to baseline, shrank to 176B, or regressed broadly. GIVEUP:
+// not accepted_drift quality for promotion here; although behavior is identical,
+// diff starts at byte 0 and includes prologue/register scheduling, not a single
+// localized trailing hunk.
 #include <string.h>
 
 void __fastcall SetDefaultValues(void* _this, int _)

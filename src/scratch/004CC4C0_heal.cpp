@@ -13,6 +13,11 @@
 // reversed max/amount+hp compare, cost denominator local, fail-first pay_obj_cost branch, and flags /Op /Ob0 /Og /Ot /G5 /GB /O1.
 // All sane source variants stayed in the same exact-size FPU basin (57.8035% positional / 36.4162% edit, first mismatch +56); /Op and branch/compare inversions worsened, /O1 too small.
 // GIVEUP: no accepted_drift proposal because remaining mismatch is broad x87 stack/local-slot scheduling through heal clamp and payment argument setup.
+// Retry 2026-05-26 Boss pass: 16 probes. Revalidated baseline (57.8035% positional / 36.4162% edit, first mismatch +56). Tried maxf local,
+// maxf-left compare, double casts, volatile param reread, split product, max*amount operand order, parameter-slot/union denominator mutation,
+// denominator locals, inverted/empty clamp branches, hp local, clamp-as-subtract, and flags /Op /Ob0 /G5. Best retained below is maxf local:
+// 52.6012% positional / 31.7919% edit, first mismatch +72. It fixes the initial max fild/load order but VC5 still loads hp too early and
+// the remaining x87 clamp/payment stack scheduling differs broadly. GIVEUP: no accepted_drift because drift spans x87 stack topology and call setup.
 
 struct RGE_Static_Object {
     char gap_00[8];
@@ -42,9 +47,10 @@ unsigned char TRIBE_Combat_Object::heal(float amount)
 
     long max_hp = *(short*)((char*)master + 0x26);
     long heal_rate = *(short*)((char*)master + 0x15A);
-    amount = amount * (float)max_hp / heal_rate;
-    if (amount + this->hit_points > (float)max_hp) {
-        amount = (float)max_hp - this->hit_points;
+    float maxf = (float)max_hp;
+    amount = amount * maxf / heal_rate;
+    if (amount + this->hit_points > maxf) {
+        amount = maxf - this->hit_points;
     }
 
     if (((TRIBE_Player*)this->player)->pay_obj_cost(*(short*)((char*)master + 0x10), amount / (float)(max_hp * 2), 1)) {

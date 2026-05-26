@@ -18,6 +18,14 @@
 // GIVEUP: same blocker remains. Original delays callee-save pushes until after the music_system null check and uses separate inline epilogues; VC5 C++ source keeps selecting the 144B shared-epilogue/prologue family unless volatile forces a completely wrong stack-home basin. Not accepted_drift: best is 5 bytes short and exact-size variant is broadly reordered.
 // Retry 2026-05-21 Boss pass: tried explicit `self`/`ms` locals, raw byte-offset access to bias EAX=self/ECX=music_system, ms-before-self ordering, `register` self, `__stdcall` and int-return TMusic declarations, non-virtual declaration, /Ob0 and /Gz flag probes, and duplicate explicit track_from test/goto file-case shape. All close variants stayed 144B; no variant recovered original delayed `push edi; push esi; push ebx` with EAX self and ECX music_system. Restored prior 144B best; no accepted_drift proposal.
 // Retry 2026-05-24 assigned pass: 15 further probes. Volatile music_system field/local and volatile-after-check variants reached exact 149B but were broad wrong stack-home/register families (best 69.7987% positional, first mismatch 0). Nested positive, separate return labels, ms local/direct-after-check stayed 144B or failed. Volatile track_from exact-size variant worsened to 91.9463%. Flag probes /Ob0 /Og /Oa /Ow /Gs /Gy on the best source all stayed 144B. Still not accepted_drift: best behavioral source is 5 bytes short; exact-size volatile families are broad byte-0 topology mismatches.
+// Retry 2026-05-26 Boss pass: 10 further probes. Rechecked non-virtual explicit-vptr
+// class surface, direct/no-local member access, `self` locals, no-local `save_music_track_from`
+// rereads, TMusic return type `int` vs `void`, `register int from`, and combinations of
+// self/from/to locals. All close variants still compile to the same 144-byte family with
+// an initial `push ecx` stack home, eager EBX/ESI saves, and shared/short epilogues; none
+// recover original `mov eax,ecx; mov ecx,[eax+64h]` null gate followed by delayed
+// `push edi; push esi; push ebx`. No accepted_drift: best source is short/truncated, exact-size
+// volatile variants from earlier are broad mismatches.
 
 class TMusic_System {
 public:

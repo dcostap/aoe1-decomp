@@ -15,11 +15,16 @@
  *   first mismatch at offset 13 (parameter loading).
  * - All 36 variants produce the same register allocation: r assigned to esi instead of ebx,
  *   x1 to edi instead of esi, x2 to ebx instead of edi.
+ * - Follow-up tries: explicit locals in 6 declaration orders, r local before/after base call,
+ *   self-assign/casts, precomputing r+c, /Od, and vc5-risky variant lab (432 variants).
+ *   None reached the original load basin; best remained first mismatch offset 13 / edit 88.
  * - This is a stable VC5 codegen basin: VC5's heuristic chooses different callee-saved
  *   registers for the same parameter set regardless of source structure changes.
  *
- * Left in scratch: remaining ~73-byte drift is purely register allocation (esi↔ebx↔edi swap
- * for x1/x2/r). Behavior, call set, stack cleanup, and conditional logic all match.
+ * Left in scratch: remaining ~73-byte drift is register allocation and equivalent address
+ * arithmetic/scheduling (esi↔ebx↔edi swap for x1/x2/r). Behavior, call set, stack cleanup,
+ * and conditional logic all match. Potential accepted_drift candidate only after reviewer
+ * confirms broad register-renaming drift is acceptable.
  */
 
 class RGE_Map {

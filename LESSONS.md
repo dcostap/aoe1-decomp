@@ -4041,6 +4041,29 @@ Caveat:
 - use this for true endpoint normalization; if original later needs the raw
   unnormalized parameters, preserve them separately.
 
+## Lesson: Reload a count inside a `for` loop to preserve duplicate guard tests
+
+When VC5 should emit `test count; jle done; xor index,index; test count; jle done` before a counted member loop, a plain `for (i = 0; i < count; ++i)` may collapse the duplicate guard. Naming a `count` local for the initial guard but reloading the member count inside the loop body can keep both tests and the original bottom reload:
+
+```cpp
+int count = this->count;
+if (count > 0) {
+    int i;
+    for (i = 0; i < count; i++) {
+        items[i]->save(fd);
+        count = this->count;  // preserves bottom reload and duplicate entry guard
+    }
+}
+```
+
+Try when:
+- original has a seemingly redundant second `test eax,eax` after zeroing the loop index;
+- the loop count is a member already written/read by nearby serialization calls;
+- a simpler loop is exact except 4 bytes short and shifts the close/epilogue.
+
+Caveat:
+- only reload when the original actually reloads the member at the loop bottom; otherwise it can add unwanted memory traffic. Verified on `0044D3B0` `RGE_Game_Info::save`.
+
 ## Lesson: Use `strcpy` to expose VC5's exact strlen-plus-copy REP-string idiom
 
 When a function copies a NUL-terminated string and the original assembly shows a
@@ -4735,6 +4758,29 @@ For fixed small array clearing, a natural `for` loop can optimize to `lea edi,
 with a constant size can make VC5 emit the classic sequence `mov ecx,count; xor
 eax,eax; lea edi,[dst]; rep stosd`, matching constructors that zero a fixed int
 array in an else/default path.
+
+## Lesson: Use a positive-arm copy limit to avoid extra grow-loop tests
+
+For small dynamic-array growth copies bounded by both old capacity and a new `i + 1` limit, the exact VC5 loop may require the copy body inside a positive `if (j < newMax)` arm rather than an early `if (j >= newMax) break;` before the body:
+
+```cpp
+do {
+    if (j < newMax) {
+        ++j;
+        newValue[j - 1] = oldValue[j - 1];
+    } else {
+        break;
+    }
+} while (j < oldMax);
+```
+
+Try when:
+- the original loop top is `cmp j,newMax; jge exit`, then increments `j` before `[j*4-4]` copy;
+- an early-break source adds extra pre-loop `test newMax` or produces a two-check bottom (`cmp oldMax` then `cmp newMax`);
+- the outer register coloring is close but the grow/copy block is several bytes too long.
+
+Why it helps:
+- the positive arm lets VC5 emit the top `cmp eax, ebp; jge exit` and the post-increment `j-1` addressing form directly, avoiding redundant new-limit tests and restoring saved-register roles. Verified on `004C7D00` `commanderDestroyGroup`.
 
 ## Lesson: Name `i + 1` as a local to keep VC5's grow-array loop index in EDI
 
@@ -6131,6 +6177,18 @@ Why it helps:
 Caveat:
 - this is for simple locals whose initialized value is not read until after the call; do not use if the callee should see the initialized value through an argument.
 
+## Lesson: Keep derived width/height locals instead of mutating endpoint parameters for bevel/rectangle helpers
+
+When a rectangle/bevel helper normalizes endpoints and then draws the four edges, do not assume binary stack writes to endpoint homes mean the source mutated those parameters into width/height. A natural source with separate `w = x2 - x1 + 1` and `h = y2 - y1 + 1` locals can let VC5 choose the original saved-register basin (`this` in EBP, left/top in EDI/ESI, width in EBX) and exact call-argument scheduling. Mutating `x2`/`y2` into width/height may compile to an exact-sized but wrong push-ecx/local-frame family.
+
+Try when:
+- the original swaps min/max endpoints, computes inclusive width/height, then calls horizontal/vertical line helpers;
+- parameter-mutating source is structurally wrong from byte 0 or saves `this` on the stack instead of in a callee-saved register;
+- the calls semantically use both original max endpoints and derived dimensions.
+
+Caveat:
+- still pass the edge helper arguments in the natural geometric form (`x2`, `y2`, `w`, `h - 1`) rather than forcing stack-slot reuse unless the binary proves mutation is needed. Verified on `00445C70` `DrawBevel`.
+
 ## Lesson: Prefer natural independent min/max locals before parameter-slot reuse in clipped brush loops
 
 When matching clipped rectangle/brush loops, writes to incoming parameter homes can look tempting if the original stores clipped bounds on the stack. However, VC5 may recover those same stack homes and register roles from the natural source with independent endpoint locals:
@@ -6182,3 +6240,104 @@ Why it helps:
 
 Caveat:
 - only swap after confirming the callee's real parameter order from callers/vtable semantics; otherwise this can hide a wrong prototype.
+
+## Lesson: Inline ternary `? -1 : 0` can preserve `neg; sbb; and` without stealing saved registers
+
+When a loop calls a helper and folds its nonzero result into a small bitmask, a named helper-result local can occupy a callee-saved register and force the loop cursor into a stack home. Inlining the helper call inside a ternary mask expression can keep the cursor in the original saved register while still producing VC5's compact branchless mask:
+
+```cpp
+int val = ((obj->helper(i) ? -1 : 0) & 2) + (current == i);
+```
+
+Try when:
+- original uses `neg eax; sbb eax,eax; and eax,imm` immediately after a call;
+- a source `-(helper()!=0)` or named `int r = helper();` adds extra `test/setne/neg` work or changes saved-register allocation;
+- a pointer/cursor local should stay in EBP/ESI across the call loop.
+
+Why it helps:
+- `? -1 : 0` names the all-bits mask directly, allowing VC5 to lower the call result through `neg/sbb`;
+- keeping the expression inline avoids a durable result local that can displace the array cursor from its intended register.
+
+Caveat:
+- use this only when the helper result is consumed solely as a boolean mask; if the numeric result is reused, keep a real local.
+## Lesson: Destructible member subobjects plus `novtable` can recover constructor EH state while preserving manual vptr timing
+
+For `/GX` constructors that initialize embedded array-like members and show EH state stores between zero-fill blocks, model those blocks as real destructible member subobjects instead of flat integer fields. Inline/default member constructors can emit the same zero stores and cause VC5 to generate the expected constructor EH frame/state transitions. If the original delays the class vptr write until after scalar field initialization, put `__declspec(novtable)` on the class and write the vptr explicitly at the observed source point.
+
+Try when:
+- a flat-field constructor is a few bytes short/no EH, or has no state-slot writes;
+- adding a polymorphic base creates EH but moves the vptr/store order too early;
+- the original has two adjacent 4-dword zero blocks with EH state changes around them.
+
+Why it helps:
+- visible destructible members make VC5 track subobject lifetime/unwind state;
+- `novtable` suppresses the automatic early vptr store so a manual store can match the binary schedule.
+
+Caveat:
+- declaration order still controls member-constructor zeroing before body assignments; use initializer-list/body order to place ordinary scalar stores around the member subobject setup. Verified on `004C1100` `RGE_Static_Object` constructor.
+
+
+## Lesson: Non-virtual destructor declarations can trigger lightweight /GX constructor EH without extra COMDATs
+
+For VC5 derived constructors that need the original lightweight EH frame (`push -1`, handler, `fs:[0]`, hidden `this` home) and a real base-constructor call, declaring base and derived destructors as non-virtual declarations only can be enough to make `/GX` emit the constructor cleanup context. Do not define the destructors in the scratch TU unless needed; definitions can add COMDATs or shrink/shift the target. Pair this with an initializer-list base constructor and raw/proven offset stores if the local class layout is only partially modeled.
+
+Try when:
+- a constructor body is otherwise straightforward but compiles too short with no EH frame;
+- adding virtual destructors gives an EH frame but shifts vptr/layout or broadens drift;
+- defining helper/base functions in the same TU changes section order or emits the wrong function first.
+
+Why it helps:
+- visible destructible base/derived surfaces make VC5 generate base cleanup state under `/GX`;
+- declarations-only preserve external calls/relocations without introducing extra local code.
+
+Caveat:
+- use this only when the real classes are destructible and the original has the EH frame; keep field offsets binary-proven because non-virtual vs virtual destructor surface changes object layout assumptions.
+
+- For `/GX` constructors with embedded destructible members, scalar fields that the original initializes before member constructor calls may need to be named in the constructor initializer list, not assigned in the body. VC5 follows declaration/init-list lowering for scalar member initialization before later subobject ctor calls, while body assignments are delayed until after all member constructors; this can be the difference between exact early stores and shifted ctor-call blocks. Combine with `__declspec(novtable)` plus a manual vptr store when the binary delays the vptr write until after member construction.
+
+## Lesson: Decompiler-style offset locals can restore queue-entry flush loops
+
+For compact queue scans that log and then clear a fixed-stride record, a clean typed
+`MsgQueue* q = Queue + i` loop can keep the parameter or entry pointer in the wrong
+callee-saved register and shrink the function. If the original keeps `this` in a
+saved register, stores the logical index in a stack local, and carries a separate byte
+offset (`off += stride`), mirror that topology explicitly: use a local `this` alias,
+read the record field through `(char*)queue + off + field_off`, and recompute the
+record pointer after side-effecting calls before clearing/freeing it.
+
+Try when:
+- original has both an index stack slot and a byte-offset register for the same loop;
+- a typed array loop is behaviorally right but picks a different saved-register basin;
+- the record is reloaded after a vararg/log call before zeroing and deleting a payload.
+
+Why it helps:
+- the byte-offset local and recomputed pointer preserve VC5's liveness boundaries around
+  vararg calls and make the compiler keep `this`, index, and record cursor in the original roles.
+
+Caveat:
+- keep the struct field offsets binary-proven; this pattern is for matching observed
+  low-level topology, not a default replacement for natural typed array loops. Verified on
+  `00431B10` `FlushForPlayer`.
+
+- For VC5 string-buffer code, prefer the actual CRT helper spelling when the original shows canonical inline string/memory idioms. `memset(buf, 0, len)` can lower to the compact `xor eax; rep stosd/stosb` clear sequence, and `strlen(buf)` can lower to `or ecx,-1; xor eax,eax; repne scasb; not/dec ecx`. Hand-written loops often expand, add extra saved registers, or change branch distances even when behavior is identical.
+
+## Lesson: C helper arity and stack-slot reuse can unlock MMIO chunk walkers
+
+For old C helpers around WinMM/MMIO APIs, infer the true parameter list from stack-slot
+loads, not from the decompiler prototype. A load like `[esp+20h]` inside a callee-saved
+block may be a fourth pointer parameter even when the decompiler collapses the two handles
+to one. Also, VC5 may reuse an incoming parameter home as a `result = 0` stack slot before
+a function-pointer call; keeping a named `int result` local can reproduce the store.
+
+Try when:
+- an MMIO/RIFF walker is close but a copied chunk call pushes the same handle twice;
+- original reloads a later stack argument for one source/destination handle;
+- a zero result store appears between argument pushes and an indirect API call.
+
+Why it helps:
+- the extra formal preserves the exact `[esp+disp]` reload and push order;
+- the stack result local gives VC5 the same home-slot store and later reload without inline asm.
+
+Caveat:
+- match compare operand order too (`childEnd > parentEnd`) because equivalent reversed
+  bounds tests can leave only a tiny `cmp`/branch opcode drift. Verified on `00448340`.

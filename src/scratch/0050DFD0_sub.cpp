@@ -47,6 +47,29 @@
 //     and even moves LEA before the head load.
 // 40: Forced stack-slot-looking parameter compare with `*(RGE_Time_Entry**)&entry`; no codegen
 //     improvement, still ECX-param/EDX-link/EBX-next family.
+// 41: Retried exact natural `RGE_Time_Entry** link=&time_list; p=*link` topology with duplicate
+//     null guard; still immediate EBX save at byte 0 (88% positional / 64% edit).
+// 42: Raw `int link=(int)&time_list` and raw stores through `(RGE_Time_Entry**)link`; same EBX
+//     save family as typed link.
+// 43: do/break link loop with positive outer body; still byte-0 drift and broad layout mismatch.
+// 44: Tried using `entry = *link` for the recursive argument after unlink to keep link/base live;
+//     compile failed in one form or stayed in EBX-save family when repaired.
+// 45: Added explicit unsigned-char command local in prev-based baseline to force `mov al; cmp al,1`;
+//     did not improve, first mismatch remains +7 and broad prev-vs-link topology drift.
+// 46: Volatile parameter/target variants either failed type constraints or forced stack/EBX saves.
+// 47: `for`-header link walk and `while(1)`/continue link walk: both preserve behavior but choose
+//     the same EBX-save register family and worse positional diff.
+// 48: Swapped p/link declaration and initialization order; no useful change from link family.
+// 49: Positive-wrapper prev form (`if (p) { if (p) ... }`) worsened first mismatch to +4.
+// 50: Tested narrow per-function flags `/O1`, `/Od`, `/O2` without `/Oy`, `/Ox`; no exact basin.
+//     `/Od` is completely wrong; `/O2` variants equal default; `/O1` not viable here.
+// 51: Introduced late `target = entry` local after duplicate null guards to try forcing original
+//     `mov edx,[esp+0Ch]`; still EBX-save link family.
+// 52: Added separate `base=&time_list` plus late target to preserve ECX as head/link base; still
+//     EBX-save family.
+// 53: `register` late target did not affect allocation. Remaining issue is still not localized:
+//     either prev-based no-EBX topology misses original link/LEA/duplicate-test shape, or natural
+//     link topology matches source intent but saves EBX from byte 0.
 // ACCEPTED_DRIFT DENIED: best remaining diff is broad register/topology drift (first
 // mismatch +7/+8 or +0 in link families), not localized harmless drift; leave in scratch.
 
