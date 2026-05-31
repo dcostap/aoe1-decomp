@@ -619,7 +619,7 @@ Using `this->groups[i]` instead of a local `int* p = this->groups` delays the po
 
 ## Compare operand order for short/integer comparisons
 
-For `if (this->frame >= param_1)` (memory on left), VC5 generates `cmp [ecx+14h], ax; jl → exit`. 
+For `if (this->frame >= param_1)` (memory on left), VC5 generates `cmp [ecx+14h], ax; jl → exit`.
 For `if (param_1 <= this->frame)` (register on left), VC5 generates `cmp ax, [ecx+14h]; jg → exit`.
 Both produce the same logical result but different bytes. Put the member field on the LEFT for `cmp [mem], reg` encoding. Verified with `frame_passed` (0041B560).
 
@@ -668,7 +668,7 @@ public:
 Then calling `this->redraw(1)` generates `mov ecx, esi; call [esi+20h]`.
 
 Try when:
-- The original asm shows `call dword [reg+XXh]` (vtable dispatch via 
+- The original asm shows `call dword [reg+XXh]` (vtable dispatch via
   register+offset).
 - You know the vtable slot number: slot = offset / 4.
 
@@ -1049,7 +1049,7 @@ change the load instruction from `mov eax, [esp+4]` (4B) to `mov al, [esp+4]` (1
 ### DriveInformation getters match with simple struct layout
 All DriveInformation getters match with minimal class declarations:
 - initialDrive: `return initialDriveValue;`
-- initialDriveAsLetter: `return (char)initialDriveValue + '@';`  
+- initialDriveAsLetter: `return (char)initialDriveValue + '@';`
 - initialDirectory: `return initialDirectoryValue;`  (char[256] at +4)
 - currentDrive: `return currentDriveValue;`  (at +0x104)
 - currentDriveAsLetter: `return (char)currentDriveValue + '@';`
@@ -1589,7 +1589,7 @@ Caveats:
 ### LogTimestamp store-before-push (00436330)
 Original: `mov ecx, eax; mov [esi], eax; push ecx` (copy to ecx, store, push from ecx)
 Rebuilt: `push eax; mov ecx, esi; mov [esi], eax` (push, load this, store)
-Clue: VC5 creates a register copy when three uses of a value (setne result → store, push, call) 
+Clue: VC5 creates a register copy when three uses of a value (setne result → store, push, call)
 require different registers. Source that forces "push before store" cannot be fixed with
 local temp variables because VC5 optimizes the copy away. Untested axis: declaring the
 method parameter as `unsigned char` (narrower than int) might force a separate load.
@@ -6341,3 +6341,65 @@ Why it helps:
 Caveat:
 - match compare operand order too (`childEnd > parentEnd`) because equivalent reversed
   bounds tests can leave only a tiny `cmp`/branch opcode drift. Verified on `00448340`.
+
+## Lesson: Positive outer success guard plus volatile float parameter can fix FPU/tail layout
+
+When a float-progress helper has an early “already done” success return and a later success path after a virtual/status call, a negative early return (`if (done) return 1;`) can make VC5 inline or merge the success epilogues. Spelling the main body as a positive outer guard (`if (done == 0) { ... } return 1;`) can keep the original late success tail while preserving a separate call-success return before the failure tail.
+
+For the FPU math inside that body, use narrow volatile parameter rereads only on the expressions that must load the stack parameter first, e.g. `*(volatile float*)&amount + this->build_pts`. This can recover `fld [esp+param]; fadd [member]` without perturbing the surrounding comparisons.
+
+Try when:
+- the original top branch jumps over a long body to a late `mov al,1; ret` tail;
+- a near-match has the right FPU expression but loads the member before the parameter;
+- the final completion test should fall through to a call-success return and branch to a failure return.
+
+Caveat: keep the volatile casts local to the FPU add sites; broader volatile locals can change stack/register layout.
+
+## Lesson: Hoist address-taken read locals to avoid dead-parameter slot reuse
+
+When VC5 reuses an incoming parameter home as a temporary buffer for a later `rge_read`/helper output but the original uses a dedicated stack local, declare the address-taken local at function scope before intervening string/helper calls. A block-scoped `int ver;` after a `strcpy`/open call can be assigned to the now-dead parameter slot; hoisting it can force the stable local slot and fix otherwise tiny `lea [esp+..]` / reload displacement mismatches.
+
+Try when:
+- the function is otherwise byte-exact and only the address passed to a read/helper plus its subsequent reload differs by the same stack-slot delta;
+- the rebuilt slot aliases a dead input parameter while the original packet shows a separate local.
+
+Caveat: do not hoist every scratch value blindly; this is for address-taken locals with binary-proven stack-slot placement. Verified on `0044D1A0` `RGE_Game_Info::RGE_Game_Info`.
+
+## Lesson: Positive buffer guard can preserve lazy callee-save and shared null tail in C COM helpers
+
+For C helpers that fetch a COM object pointer from an array and then perform several `__stdcall` vtable calls, a direct `if (buf == 0) return 0;` can make VC5 emit a separate early epilogue and save callee-saved registers too early. Keep the object-null guard as a positive body and return the buffer at the common tail:
+
+```c
+buf = obj->buffers[obj->index];
+if (buf != 0) {
+    hr = buf->lpVtbl->GetStatus(buf, &status);
+    ...
+}
+return (int)buf;
+```
+
+This lets VC5 delay `push esi` until after the parent object null check, route a null buffer through the shared `mov eax, esi; pop esi; pop edi; ret` tail, and still emit natural COM calls when the vtable is modeled as `__stdcall` function-pointer slots at the observed offsets. Verified on `00447A60` `_SndObjGetFreeBuffer`.
+
+## Lesson: Switch case source order can force a two-case out-of-line handler layout
+
+For small C parsers with two magic chunk IDs, an `if/else if` chain may keep the first case body inline even when the original compares that value first and jumps to a handler placed after the other case. A `switch` with the desired inline case written first can produce the original shape:
+
+```c
+switch (type) {
+case DATA_ID:  /* inline body */ break;
+case FMT_ID:   /* out-of-line body */ break;
+}
+```
+
+Try when the asm has `cmp type,FMT; je fmt_handler_after_data; cmp type,DATA; jne next;` and the data/default path is physically before the fmt body. Verified on `00447C60` `_DSParseWaveResource`.
+
+## Lesson: Adjacent local-array stores can need reversed source order too
+
+VC5 can reorder adjacent independent stores into a stack/local pointer array just as it does for member stores. If a near-match differs only by two neighboring local-array loads/stores being swapped (for example `slots[3]` before `slots[2]` in the original), try writing the source assignments in the opposite/natural index order and let VC5 schedule them.
+
+Try when:
+- the local frame, calls, and branch layout already match;
+- only two adjacent stack-slot stores and their source member loads are swapped;
+- the stores are independent and the final array contents are unchanged.
+
+Caveat: verify any apparent field gap first; wrong member offsets can masquerade as a store-order issue.
