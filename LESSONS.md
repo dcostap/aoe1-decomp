@@ -6496,3 +6496,31 @@ Caveat:
 - use the literal only when the format/API size is binary-proven. Verified on `00448080`
   `_WaveCreateFile`, where non-PCM WAVEFORMATEX writes used `18 + cbSize` while the
   visible C struct rounded to 20 bytes.
+
+
+## Lesson: Reuse a dead pointer register for a repeated import thunk with a void* local
+
+For C helpers that repeatedly call the same imported function late in cleanup, a typed
+function-pointer local can perturb earlier callee-saved register allocation. If the original
+reuses a now-dead object/packet pointer register to cache the thunk, declare a narrow
+cleanup-local `void*` initialized from the import and cast it only at the call sites:
+
+```c
+void* f = (void*)ImportedThunk;
+use(((ImportedFn)f)(arg));
+use2(((ImportedFn)f)(arg));
+```
+
+Try when:
+- the body is exact until cleanup but repeated direct IAT calls are two bytes too long;
+- a typed function-pointer local fixes cleanup size but flips earlier ESI/EDI-style roles;
+- the original loads the import into the same register that held a dead pointer earlier.
+
+Why it helps:
+- the untyped local can give VC5 a late reusable value without extending a typed function
+  pointer's lifetime through the main body;
+- the allocator can reuse the dead pointer register for `mov reg,[IAT]` and `call reg`.
+
+Caveat:
+- use this only for binary-proven repeated cleanup imports; prefer normal dllimport or typed
+  declarations when they do not perturb the body. Verified on `00448400` `riffCopyChunk`.

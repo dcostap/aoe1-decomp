@@ -1,14 +1,8 @@
 /* VA: 00448400 riffCopyChunk */
 /* Dsutil.c lines 1191-1227, 208 bytes */
-/*
- * Attempt log:
- * - Absolute IAT macros give exact 208-byte size and keep the prologue/import call shape close.
- * - Current blocker: first mismatch offset 34. Original uses short `jne` into the allocated body
- *   with an immediate null-return epilogue; VC5 keeps merging the null return with the later
- *   failure tail as a near `je`, causing large positional drift (edit diff about 26.9%).
- * - Tried guard/tail/register/pragma/flag variant labs and a natural positive-body rewrite;
- *   the rewrite regressed to mismatch at offset 6, so the best absolute-IAT baseline is kept.
- */
+/* Match note: use direct member-size expressions for the read/write checks; this makes VC5 keep
+ * the size in EBX and copy it through ECX for the mmioRead argument.  The cleanup helper caches
+ * GlobalHandle through a void* local so the dead pckIn/ESI register is reused for the thunk. */
 
 typedef unsigned int UINT;
 typedef unsigned int DWORD;
@@ -44,43 +38,41 @@ typedef int (__stdcall *MMIOASCEND)(HMMIO hmmio, MMCKINFO_LOCAL* ck, UINT flags)
 #define mmioWrite_abs (*(MMIOWRITE*)0x88A948)
 #define mmioAscend_abs (*(MMIOASCEND*)0x88A934)
 
+#define CLEANUP_DATA() do { \
+    void* handle_func = (void*)GlobalHandle_abs; \
+    GlobalUnlock_abs(((GLOBALHANDLE)handle_func)(data)); \
+    GlobalFree_abs(((GLOBALHANDLE)handle_func)(data)); \
+} while (0)
+
 int __cdecl riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, MMCKINFO_LOCAL* pckIn)
 {
     MMCKINFO_LOCAL ck;
     char* data;
-    LONG size;
 
     data = (char*)GlobalLock_abs(GlobalAlloc_abs(0x42, pckIn->cksize));
     if (data == 0) {
-        goto alloc_failed;
-    }
-    goto allocated;
-alloc_failed:
-    return 0;
-allocated:
-    {
-        ck.ckid = pckIn->ckid;
-        ck.cksize = pckIn->cksize;
-
-        if (mmioCreateChunk_abs(hmmioDst, &ck, 0) == 0) {
-            size = pckIn->cksize;
-            if (mmioRead_abs(hmmioSrc, data, size) == size) {
-                if (mmioWrite_abs(hmmioDst, data, size) == pckIn->cksize) {
-                    if (mmioAscend_abs(hmmioDst, &ck, 0) == 0) {
-                        goto success;
-                    }
-                }
-            }
-        }
-
-        GlobalUnlock_abs(GlobalHandle_abs(data));
-        GlobalFree_abs(GlobalHandle_abs(data));
         return 0;
-
-success:
-        GlobalUnlock_abs(GlobalHandle_abs(data));
-        GlobalFree_abs(GlobalHandle_abs(data));
-        return 1;
     }
-}
 
+    ck.ckid = pckIn->ckid;
+    ck.cksize = pckIn->cksize;
+    if (mmioCreateChunk_abs(hmmioDst, &ck, 0) != 0) {
+        goto fail;
+    }
+    if (mmioRead_abs(hmmioSrc, data, pckIn->cksize) != (LONG)pckIn->cksize) {
+        goto fail;
+    }
+    if (mmioWrite_abs(hmmioDst, data, pckIn->cksize) != pckIn->cksize) {
+        goto fail;
+    }
+    if (mmioAscend_abs(hmmioDst, &ck, 0) != 0) {
+        goto fail;
+    }
+
+    CLEANUP_DATA();
+    return 1;
+
+fail:
+    CLEANUP_DATA();
+    return 0;
+}
