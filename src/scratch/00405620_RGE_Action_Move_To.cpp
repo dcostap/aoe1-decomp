@@ -8,6 +8,9 @@
 // original uses `jne shared_epilogue`, then inner `if(s) sprite=s; else sprite=o->sprite18;` with a shared epilogue; rebuilt emits
 // equivalent fallback values but arranges the inner/outer branches differently around the EH epilogue. Not proposing accepted_drift yet
 // unless reviewer accepts this localized equivalent tail-layout drift.
+// 2026-05-31 retry: explicit goto-shaped fallback and inverted `if (s != 0)` worsened (outer branch jumps past the original-sized body;
+// two-independent-if version adds extra tests). A final-sprite temp lowered edit diff to 13 but used a common `mov [esi+38],eax`
+// store instead of the original two branch-local stores, so kept the better positional baseline.
 
 class RGE_Action_Object;
 class RGE_Sprite;

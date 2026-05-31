@@ -6403,3 +6403,96 @@ Try when:
 - the stores are independent and the final array contents are unchanged.
 
 Caveat: verify any apparent field gap first; wrong member offsets can masquerade as a store-order issue.
+
+## Lesson: Import function-pointer locals can map to registers in reverse declaration order
+
+When VC5 caches several imported USER32-style function pointers in callee-saved registers, the source declaration order of the function-pointer locals can control which pointer lands in EBX/EBP/EDI. In one run-loop match, declaring them as `translate`, `peek`, `dispatch` produced the original loads `EBX=DispatchMessageA`, `EBP=PeekMessageA`, `EDI=TranslateMessage` because VC5 assigned the last declared pointer to EBX, the middle to EBP, and the first to EDI.
+
+Try when:
+- original preloads multiple IAT entries into callee-saved registers before a loop;
+- rebuilt has the same calls but swaps which register calls which import;
+- the call order is correct and only the cached import register assignment differs.
+
+Why it helps:
+- the register choice affects every later `call ebx` / `call edi` byte even when behavior is identical;
+- fixing declaration order can recover the exact prologue and all cached-call sites without changing control flow.
+
+Caveat:
+- local stack layout still matters independently. If the original passes a pointer to a subfield-like window but returns another field at `+8`, model the exact 0x1C-byte stack window (for example fields at offset 0 plus a trailing pad) rather than adding a leading pad that shifts every `lea [esp+N]`. Verified on `0041CFD0`.
+
+## Lesson: Separate the current method from a same-object fallback virtual slot
+
+When a method body ends by dispatching through this object's vtable at a high offset, do not assume the source should call the same named method recursively. The current function can be declared as the concrete non-virtual method being matched, while a separate padded virtual declaration represents the fallback/default slot:
+
+```cpp
+class Owner {
+public:
+    // pad to observed slot
+    virtual int default_handle(unsigned int command, long param);
+    int handle(unsigned int command, long param);
+};
+
+int Owner::handle(unsigned int command, long param) {
+    ...
+    return this->default_handle(command, param) != 0;
+}
+```
+
+Try when:
+- the original uses `mov eax,[this]; ...; call [eax+slot]` near the tail of the method being matched;
+- a qualified base call would emit a direct call, but the binary clearly uses virtual dispatch;
+- the vtable slot is not necessarily the current function's own slot.
+
+Why it helps:
+- the local class surface can preserve the real object vptr and data offsets while giving VC5 a natural thiscall virtual dispatch at the observed slot;
+- the current function definition remains a normal member, avoiding accidental self-recursion or wrong vtable layout assumptions. Verified on `004212E0`.
+
+## Lesson: Let VC5 choose dead parameter stack slots for size locals
+
+When original VC5 reuses a dead incoming parameter stack slot to home a computed packet size (for example `mov [esp+param], reg` after `lea size`), do not model that as an explicit assignment back to the source parameter. Keep the natural `int size` local and pass/use that local; VC5 may choose the dead parameter slot as its home by itself. Forcing the parameter assignment can extend the parameter/local lifetime, add shifted object-call/register-save code, and break an otherwise exact command-packet builder.
+
+
+## Lesson: `__declspec(dllimport)` can be needed to let VC5 cache repeated IAT calls
+
+When a C helper calls the same Win32 API import more than once in a cleanup block, an
+absolute-address macro such as `#define GlobalFree_abs (*(FN*)IAT)` can force repeated
+direct `call dword [IAT]` sites or perturb callee-saved register allocation. Declaring
+the API as `__declspec(dllimport)` with the real `__stdcall` signature lets VC5 treat the
+import as a normal DLL import and choose its original caching/scheduling basin.
+
+Try when:
+- the original loads an import thunk into a callee-saved register for two nearby calls;
+- an absolute IAT macro matches single call sites but swaps saved-register roles or emits
+  direct IAT calls for each use;
+- the function is an old C API helper with address-taken stack locals and cleanup gotos.
+
+Why it helps:
+- VC5 may cache a dllimport function pointer only where reuse pressure appears, while
+  preserving natural parameter/local register allocation;
+- relocation masking still handles the import address bytes during comparison.
+
+Caveat:
+- keep the signature/calling convention exact; for single-use imports, absolute macros
+  or dllimport may both be viable. Verified on `004484D0` `_WaveLoadFile`.
+
+
+## Lesson: Use protocol wire-size constants when local structs may be padded
+
+For C API/file-format helpers, a visible local struct can have VC5 alignment padding that is
+not part of the on-disk/API wire size. If the original computes a variable write size as a
+field plus a literal (for example `cbSize + 0x12` for `WAVEFORMATEX`), do not use
+`sizeof(local_struct) + field` unless the emitted add immediate proves it.
+
+Try when:
+- a near-match differs only by `add reg, 14h` vs `add reg, 12h` or a similar size literal;
+- the source struct mixes DWORDs and WORDs and VC5 rounds `sizeof` up;
+- the binary is writing a packed file/API record rather than copying the C object layout.
+
+Why it helps:
+- spelling the protocol constant preserves the original immediate and downstream compare;
+- it avoids inventing a packed pragma or changing field offsets just to make `sizeof` work.
+
+Caveat:
+- use the literal only when the format/API size is binary-proven. Verified on `00448080`
+  `_WaveCreateFile`, where non-PCM WAVEFORMATEX writes used `18 + cbSize` while the
+  visible C struct rounded to 20 bytes.
