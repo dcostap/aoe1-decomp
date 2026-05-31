@@ -1,5 +1,7 @@
 // VA: 0044D1A0 RGE_Game_Info::RGE_Game_Info(char* path)
 // 346 bytes
+// Matched 2026-05-31: hoisting the address-taken version local to function scope
+// forced VC5 to use the original stack local instead of reusing the dead path parameter slot.
 
 #include <string.h>
 
@@ -37,6 +39,8 @@ struct RGE_Game_Info {
 extern int version_marker;
 
 RGE_Game_Info::RGE_Game_Info(char* path) {
+    int ver;
+
     people_info = 0;
     people_num = 0;
     campaign_num = 0;
@@ -45,7 +49,6 @@ RGE_Game_Info::RGE_Game_Info(char* path) {
     strcpy(save_filename, path);
     int fd = rge_open(path, 0x8000);
     if (fd > -1) {
-        int ver;
         rge_read(fd, &ver, 4);
         if (ver == version_marker) {
             rge_read(fd, this, 4);

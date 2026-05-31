@@ -2,6 +2,8 @@
 // VA: 00412310
 // PDB: airesmod.cpp:26-44
 // EH-framed, needs /GX
+// Matched 2026-05-31: __declspec(novtable) plus a manual vtable store after
+// materializing `param_3 * 4` recovered the delayed vptr schedule.
 
 #include "../../include/game_globals.h"
 #include <stdlib.h>
@@ -13,7 +15,7 @@ public:
     char gap_04[0xEC];
 };
 
-class ResourceAIModule : public AIModule {
+class __declspec(novtable) ResourceAIModule : public AIModule {
 public:
     void* md;                   // +0xF0
     int numberResourcesValue;   // +0xF4
@@ -37,8 +39,10 @@ ResourceAIModule::ResourceAIModule(void* param_1, int param_2,
 {
     this->md = 0;
     this->numberResourcesValue = param_3;
+    int bytes = param_3 * 4;
+    *(void**)this = (void*)0x56E9D8;
 
-    this->resourceValue = (int*)operator new(param_3 * 4);
+    this->resourceValue = (int*)operator new(bytes);
     this->minValue = (int*)operator new(this->numberResourcesValue * 4);
     this->maxValue = (int*)operator new(this->numberResourcesValue * 4);
     this->resourceTypesValue = (int**)operator new(this->numberResourcesValue * 4);
