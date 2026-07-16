@@ -20,6 +20,10 @@ heuristics, and blocker responses for agents.
   `python tools\check_function.py --va <VA>` and `Result: MATCH` / `0.0000%`.
 - Positional byte equality is authoritative for exactness. Edit/resync diff is
   diagnostic only.
+- The checker also enforces the original function boundary and known direct-call
+  relocation identity. Entry-reachable rebuilt code past the original boundary
+  or a call to the wrong external symbol is not an exact match even when old-style
+  relocation masking would have hidden it.
 - Inline asm is forbidden for real functions unless the user explicitly requests
   it. See the narrow padding-only exception below.
 - High-confidence exclusions are listed in:

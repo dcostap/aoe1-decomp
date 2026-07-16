@@ -40,6 +40,13 @@ unexpected VC5 codegen-family problems after a function has reached reasonable
 behavioral/layout parity. They are not a substitute for first understanding the
 behavior, call set, stack cleanup, and touched type/global surface.
 
+`tools\check_function.py` reports size, frame, instruction/call/CFG structure,
+strict bytes, and the output change since the previous run before recommending the
+next workflow stage. It rejects entry-reachable code beyond the original boundary
+without confusing adjacent jump-table/EH data for function bytes, and does not
+mask relocations at structurally incompatible instruction sites. See
+`docs\check_function_diagnostics.md` for the report and acceptance semantics.
+
 ## Toolchain
 
 VC5-era Microsoft toolchain, pinned through `config\toolchain.json`.

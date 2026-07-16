@@ -1,3 +1,4 @@
+// FLAGS: /GX is required for the binary-observed new-expression EH frame.
 class RGE_Action_Object;
 
 class RGE_Action {
