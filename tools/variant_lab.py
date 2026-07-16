@@ -22,12 +22,13 @@ from typing import Iterable
 from common import (
     CONFIG_DIR,
     REPO_ROOT,
-    byte_diff_metrics,
+    edit_diff_metrics,
     ensure_dir,
     format_hex,
     function_record_by_va,
     function_slug,
     load_toolchain,
+    positional_byte_diff_metrics,
     preferred_source_path,
     repo_path,
     tool_env,
@@ -1335,19 +1336,11 @@ def build_variant(
                 masked_original[i] = 0
     masked_original_bytes = bytes(masked_original)
 
-    metrics = byte_diff_metrics(masked_original_bytes, masked_rebuilt)
+    metrics = positional_byte_diff_metrics(masked_original_bytes, masked_rebuilt)
     mismatch_text = str(metrics["first_mismatch_offset"])
     mismatch = int(mismatch_text) if mismatch_text else None
     exact = metrics["result"] == "MATCH" and len(compare_bytes) == expected_size
     status = "match" if exact else "mismatch"
-    ret_ends = detect_ret_ends(loaded.data)
-    last_ret_end = ret_ends[-1] if ret_ends else None
-    extra_after_last_ret = (len(loaded.data) - last_ret_end) if last_ret_end is not None else None
-    likely_context_tail = (
-        last_ret_end is not None
-        and last_ret_end < expected_size
-        and len(loaded.data) > last_ret_end
-    )
 
     masked_full_rebuilt = mask_relocations(loaded.data, loaded.relocations)
     group_material = b"\0".join(
@@ -1371,17 +1364,6 @@ def build_variant(
         diff_bytes=int(metrics["diff_bytes"]),
         diff_percent=float(metrics["diff_percent"]),
         diff_spans=int(metrics["diff_spans"]),
-        edit_diff_bytes=int(metrics["edit_diff_bytes"]),
-        edit_diff_percent=float(metrics["edit_diff_percent"]),
-        edit_insert_bytes=int(metrics["edit_insert_bytes"]),
-        edit_delete_bytes=int(metrics["edit_delete_bytes"]),
-        edit_replace_bytes=int(metrics["edit_replace_bytes"]),
-        edit_equal_bytes=int(metrics["edit_equal_bytes"]),
-        likely_shifted_alignment=bool(metrics["likely_shifted_alignment"]),
-        ret_count=len(ret_ends),
-        last_ret_end=last_ret_end,
-        extra_after_last_ret=extra_after_last_ret,
-        likely_context_tail=likely_context_tail,
         group_key=group_key,
         source_path=str(source_path),
         obj_path=str(obj_path),
@@ -1389,6 +1371,51 @@ def build_variant(
         stdout=proc.stdout,
         stderr=proc.stderr,
     )
+
+
+def analyze_unique_groups(results: list[VariantResult], original_bytes: bytes, expected_size: int) -> None:
+    """Run expensive edit-diff/disassembly work once per emitted-code group."""
+    groups: dict[str, list[VariantResult]] = {}
+    for result in results:
+        if result.group_key and result.obj_path:
+            groups.setdefault(result.group_key, []).append(result)
+
+    for members in groups.values():
+        representative = members[0]
+        loaded = load_text_from_obj(Path(representative.obj_path or ""))
+        compare_bytes = loaded.data[:expected_size]
+        compare_relocs = [reloc for reloc in loaded.relocations if reloc.offset < len(compare_bytes)]
+        masked_rebuilt = mask_relocations(compare_bytes, compare_relocs)
+        masked_original = bytearray(original_bytes[:expected_size])
+        for reloc in compare_relocs:
+            start = reloc.offset
+            end = min(len(masked_original), start + reloc.width)
+            if 0 <= start < len(masked_original):
+                for i in range(start, end):
+                    masked_original[i] = 0
+
+        edit = edit_diff_metrics(bytes(masked_original), masked_rebuilt)
+        ret_ends = detect_ret_ends(loaded.data)
+        last_ret_end = ret_ends[-1] if ret_ends else None
+        extra_after_last_ret = (len(loaded.data) - last_ret_end) if last_ret_end is not None else None
+        likely_context_tail = (
+            last_ret_end is not None
+            and last_ret_end < expected_size
+            and len(loaded.data) > last_ret_end
+        )
+
+        for result in members:
+            result.edit_diff_bytes = int(edit["edit_diff_bytes"])
+            result.edit_diff_percent = float(edit["edit_diff_percent"])
+            result.edit_insert_bytes = int(edit["edit_insert_bytes"])
+            result.edit_delete_bytes = int(edit["edit_delete_bytes"])
+            result.edit_replace_bytes = int(edit["edit_replace_bytes"])
+            result.edit_equal_bytes = int(edit["edit_equal_bytes"])
+            result.likely_shifted_alignment = bool(edit["likely_shifted_alignment"])
+            result.ret_count = len(ret_ends)
+            result.last_ret_end = last_ret_end
+            result.extra_after_last_ret = extra_after_last_ret
+            result.likely_context_tail = likely_context_tail
 
 
 def interesting_sort_key(group: GroupInfo, expected_size: int) -> tuple[int, int, int, int, int]:
@@ -2214,6 +2241,8 @@ def main(argv: list[str] | None = None) -> int:
                 )
             if completed == total_jobs or completed % max(1, total_jobs // 20) == 0:
                 print(f"  completed {completed}/{total_jobs}")
+
+    analyze_unique_groups(built_results, original_bytes, expected_size)
 
     result_by_variant = {result.variant_id: result for result in built_results}
     results: list[VariantResult] = []
