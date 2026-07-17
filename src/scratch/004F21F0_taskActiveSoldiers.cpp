@@ -34,6 +34,16 @@
 // - reshaped inactive attack target selection to match the Ghidra/natural ManagedArray flow more closely: resize playersToAttack only when the target lookup path actually needs player[0], then call objectToAttack/objectToAttackByGroup unconditionally after ensuring capacity; also removed null guards in active action 7/replacement retarget paths after ensure. Current check_function: MISMATCH 76.0334% positional / 165.8351% edit, first mismatch offset 87.
 // - moved inactive-branch mem/commander/allOutside initialization up to the start of the !inUse arm to mirror original early zero/init stores, then enlarged scratch_frame to keep the original 0xD0 frame. Added missing attackState.active clears on several inactive setAction(1) exits. Current check_function: MISMATCH 76.0543% positional / 159.5720% edit, first mismatch offset 30 (sentinel register allocation ebx/ebp).
 // - naturalized the initial null tests from `(unsigned long)cur == 0` to `cur == 0`; codegen unchanged. Probed moving RESET_GROUP's numberObjectsToDestroy store after setTargetType to mimic the late shared reset block, but edit diff worsened, so rolled back.
+// - restored the PDB-proven XYZPoint layout (three ints, size 0x0c) and binary-observed RGE_Static_Object virtual surfaces: weaponRange at +0x10c, canPath(XYZPoint,...) at +0x198, canPathWithAdditionalPassability at +0x1a4, and find-first-path-point at +0x1a8. Replaced the approximate direct helper calls across the major pathing branches with natural typed virtual dispatch. Edit/resync diff improved substantially from 159.5720% to 128.9040%, and equal bytes rose from 1693 to 3013.
+// - current path-surface baseline: MISMATCH 78.0063% positional / 128.9040% edit. The natural locals now produce a 0xD4 frame (original 0xD0), so first mismatch is frame size at offset 2; one excess 4-byte local/home remains to identify. A full relic fallback port raised the frame to 0xDC and worsened edit diff, so it was rolled back pending shared-stack-local modeling.
+// - restored the second influence-path virtual call as findAvoidancePath at vtable +0x1cc, with the proven XYZPoint* / weaponRange / mode arguments, replacing the temporary nonsensical float-to-Path cast. Current check_function: MISMATCH 77.4217% positional / 130.4593% edit, 2949 equal bytes. This correct call surface needs 12 more local bytes in the current block-scoped model (frame 0xE0); hoisting one XYZPoint across the inactive arm over-collapsed the frame to 0xC8 and worsened edit diff, so rolled back.
+// - restored the full relic exception-path fallback and the three binary-observed +0x194 canAttack gates; the virtual call surfaces now include +0x10c/+0x194/+0x198/+0x1a4/+0x1a8/+0x1cc and the md enemy test at +0x1c.
+// - replaced the incorrect large catch-all idle/unit-retask scaffold with the Ghidra-observed final HP/unit-loss check, and routed terminal task requests through one shared task tail. Relative to the session baseline this cut rebuilt size from 10576 to 9936, calls from 487 to 448, and CFG conditionals from 264 to 236 (original 9580/440/233); frame is now exact at 0xD0.
+// - current check_function: MISMATCH 94.1224% positional / 116.2037% edit, 3358 equal bytes, first mismatch +0x60. The opening matches through sentinel setup; remaining first hunk is original `xor ebp; cmp esi,ebp` versus rebuilt `test esi,esi`. Size is now only +356 rather than +996, so continue structural/call-tail cleanup before register coloring.
+// - corrected the action-2 play gate: target acquisition/retask now runs only for playNumberValue==-1, while the play-status recovery is the separate original fallback. Restored repeated unit/retreatLocation/unitAI/targetLocation calls visible in the binary and the redundant subtype check.
+// - moved the victory-condition target-selection/grow logic onto the type-100/0x67 attack-enabled arm instead of the unrelated inactive generic-type arm. Shared only the binary-observed ManagedArray delete tail and the active exception-path finish; this removed the duplicate objectToAttackByGroup path and brought direct-call totals much closer.
+// - reshaped the active action dispatch around the original 0xc/0x13/3 gates, shared the action-7 timeout path, restored the second assist-group lookup, and routed the defend exception path through the observed common attack-state clear. This moved ordered call alignment from the first relic failure calls to the post-relic-success tail.
+// - current check_function: MISMATCH 92.2547% positional / 116.7328% edit, shape 52.82%, longest aligned run 96, frame exact 0xD0. Rebuilt is now 9380 vs 9580 (-200), 435 vs 440 calls, 231 vs 233 conditionals, and 64 vs 69 jumps. First mismatch remains +0x60 (`test esi,esi` vs zero-in-EBP compare); first ordered call divergence is now +0x36A after the relic fallback, where rebuilt still places one setAction failure block before the direct-success setters.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1424,7 +1434,7 @@ extern void __cdecl operator_delete(void* ptr);
 static const char s_C__msdev_work_age1_x1_taitacmd_c[] = "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
 struct XYPoint { int x; int y; };
-struct XYZPoint { float x; float y; float z; };
+struct XYZPoint { int x; int y; int z; };
 struct Waypoint { float x; float y; float z; int facetToNextWaypoint; };
 
 class TribeTacticalAIModule;
@@ -1445,6 +1455,59 @@ class AIPlayStatus;
 
 class Path;
 void stuffAvoidancePath(TribeTacticalAIModule*, TacticalAIGroup*, Path*);
+void __cdecl logCommonHistory(TribeTacticalAIModule*, const char*, ...);
+
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
+
+class VMainDecisionIsEnemy {
+public:
+    VPAD4(0) VPAD2(4) VPAD1(6)
+    virtual int isEnemy(int player_id); // +0x1c
+};
+
+// RGE_Static_Object virtual-call views.  Keep these separate from the flat data
+// layout below: the real object already owns the vptr at +0, while each view
+// exposes only the binary-observed slot needed by a particular call surface.
+class VObjWeaponRange {
+public:
+    VPAD64(0) VPAD2(64) VPAD1(66)
+    virtual float weaponRange(); // +0x10c
+};
+class VObjCanMove {
+public:
+    VPAD64(0) VPAD32(64) VPAD4(96) VPAD2(100)
+    virtual int canPath(XYZPoint point, float range, int target_id, float* out,
+                        int a, int b, int c); // +0x198
+};
+class VObjCanAttack {
+public:
+    VPAD64(0) VPAD32(64) VPAD4(96) VPAD1(100)
+    virtual int canAttack(int target_id, float range); // +0x194
+};
+class VObjCanPath {
+public:
+    VPAD64(0) VPAD32(64) VPAD8(96) VPAD1(104)
+    virtual int canPathWithAdditionalPassability(XYZPoint point, float range, int target_id,
+                                                  float* out, int a, int b, int c,
+                                                  int d, int e); // +0x1a4
+};
+class VObjPathPoint {
+public:
+    VPAD64(0) VPAD32(64) VPAD8(96) VPAD2(104)
+    virtual int findFirstTerrainAlongExceptionPath(int mode, float* out, float* aux); // +0x1a8
+};
+class VObjFindAvoidancePath {
+public:
+    VPAD64(0) VPAD32(64) VPAD16(96) VPAD2(112) VPAD1(114)
+    virtual Path* findAvoidancePath(XYZPoint* point, float range, int mode); // +0x1cc
+};
+
 class AIPlayStatus {};
 class RGE_Action { public: char gap_00[0x0C]; unsigned char state; };
 class RGE_Action_List { public: unsigned char have_action(); RGE_Action* get_action(); };
@@ -1499,7 +1562,9 @@ public:
     float world_z;                 // +0x40
     char gap_44[0x04];
     unsigned char object_state;    // +0x48
-    char gap_49[0x13B];
+    char gap_49[0x05];
+    unsigned char type;            // +0x4E
+    char gap_4F[0x135];
     RGE_Action_List* actions;      // +0x184
 
     UnitAIModule* unitAI();
@@ -1652,10 +1717,18 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
     (g)->setTargetType(-1); \
     (g)->setTargetLocation(-1.0f, -1.0f, -1.0f); \
 } while (0)
+#define TASK_GROUP(code, arg1, arg2) do { \
+    pendingTaskCode = (code); \
+    pendingTaskArg1 = (arg1); \
+    pendingTaskArg2 = (arg2); \
+    goto task_group; \
+} while (0)
     TacticalAIGroup* cur;
     TacticalAIGroup* sentinel;
+    int pendingTaskCode;
+    int pendingTaskArg1;
+    int pendingTaskArg2;
     int t;
-    char scratch_frame[0x34];
 
     cur = this->groups.next;
     if (this->nextActiveSoldierGroupToTaskValue != -1) {
@@ -1706,12 +1779,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                     if (t == 0x65 || cur->type() == 0x68) {
                         int commander;
                         int distance;
-                        float pathDistance;
                         float gatherX;
-                        unsigned char x;
-                        unsigned char y;
-                        unsigned char z;
                         XYPoint commanderPoint;
+                        XYZPoint pathPoint;
 
                         commander = cur->commander();
                         mem = this->md->informationAI.objectToDefend(commander);
@@ -1728,20 +1798,24 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 } else {
                                     distance = this->sn[0x39];
                                 }
-                                x = mem->x;
-                                y = mem->y;
-                                z = mem->z;
-                                pathDistance = commanderObj->pathDistance(mem->id, &commanderPoint, 1, -1, -1);
-                                if (commanderObj->canMoveTo(x, y, z, pathDistance)) {
+                                pathPoint.x = mem->x;
+                                pathPoint.y = mem->y;
+                                pathPoint.z = mem->z;
+                                if (((VObjCanMove*)commanderObj)->canPath(pathPoint, (float)distance,
+                                        mem->id, (float*)&commanderPoint, 1, -1, -1)) {
                                     mem->attackAttempts = 1;
                                     cur->setTarget(mem->id);
                                     cur->setTargetType((int)mem->type);
                                     cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
                                     cur->setGatherLocation((float)mem->x, (float)mem->y, (float)mem->z);
                                     cur->setInUse(1);
+                                    goto inactive_post_setup;
                                 } else {
-                                    if (commanderObj->canPathTo(x, y, z, (float)distance, mem->id, &commanderPoint, 1, 0x16, 1, -1, -1) &&
-                                        commanderObj->pathPoint(2, &gatherX, scratch_frame) == 1) {
+                                    if (((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
+                                            pathPoint, (float)distance, mem->id, (float*)&commanderPoint,
+                                            1, 0x16, 1, -1, -1) &&
+                                        ((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
+                                            2, &gatherX, (float*)&commanderPoint.y) == 1) {
                                         mem->attackAttempts = 1;
                                         cur->task(this, this->md, 0x0e, 1, 0);
                                         cur->setAction(0x0d);
@@ -1750,6 +1824,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
                                         cur->setInUse(1);
                                         cur->setWaitCode(200);
+                                        goto clear_attack_state;
                                     } else {
                                         cur->setAction(1);
                                     }
@@ -1769,45 +1844,67 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                             elapsed = (md->player->world->world_time - idle) / 1000;
                             if (elapsed < 60) {
                                 cur->setAction(1);
-                                this->attackStateValue.active = 0;
+                                goto clear_attack_state;
                             } else {
                                 relic = md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
                                 if (relic == 0) {
                                     cur->setAction(1);
-                                    this->attackStateValue.active = 0;
+                                    goto clear_attack_state;
                                 } else {
-                                    commanderObj = md->object(cur->commander());
+                                    commanderObj = this->md->object(cur->commander());
                                     if (commanderObj == 0) {
                                         cur->setAction(1);
-                                        this->attackStateValue.active = 0;
+                                        goto clear_attack_state;
                                     } else {
-                                        float dist;
                                         float pathDistance_6d;
-                                        dist = commanderObj->pathDistance(relic->id, &pathDistance_6d, 1, -1, -1);
-                                        if (commanderObj->canMoveTo((int)relic->world_x, (int)relic->world_y, (int)relic->world_z, dist)) {
+                                        float gatherX_6d;
+                                        float gatherAux_6d;
+                                        XYZPoint relicPoint;
+                                        relicPoint.x = (int)relic->world_x;
+                                        relicPoint.y = (int)relic->world_y;
+                                        relicPoint.z = (int)relic->world_z;
+                                        if (!((VObjCanMove*)commanderObj)->canPath(relicPoint,
+                                                (float)this->sn[0x17], relic->id,
+                                                &pathDistance_6d, 1, -1, -1)) {
+                                            if (!((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
+                                                    relicPoint, (float)this->sn[0x17], relic->id,
+                                                    &pathDistance_6d, 1, 0x16, 1, -1, -1)) {
+                                                cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
+                                                cur->setAction(1);
+                                            } else if (((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
+                                                           2, &gatherX_6d, &gatherAux_6d) == 1) {
+                                                cur->task(this, this->md, 0x0e, 1, 0);
+                                                cur->setAction(0x0d);
+                                                cur->setTarget(relic->id);
+                                                cur->setTargetType((int)relic->type);
+                                                cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
+                                                cur->setInUse(1);
+                                                cur->setWaitCode(200);
+                                            } else {
+                                                goto relic_path_failure;
+                                            }
+                                        } else {
                                             cur->setTarget(relic->id);
                                             cur->setTargetType(0x6d);
                                             cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
                                             cur->setGatherLocation(relic->world_x, relic->world_y, relic->world_z);
                                             cur->setInUse(1);
-                                        } else {
-                                            cur->setAction(1);
-                                            this->attackStateValue.active = 0;
+                                            goto inactive_post_setup;
                                         }
                                     }
                                 }
                             }
                         } else {
-                            int currentVictory;
+                            goto inactive_post_setup;
+active_target_selection:
                             int* players;
-                            currentVictory = this->md->strategyAI.currentVictoryCondition();
-                            if (currentVictory == 0) {
+                            int* newPlayers;
+                            if (this->md->strategyAI.currentVictoryCondition() == 0) {
                                 int capture;
                                 capture = this->itemToCapture();
                                 mem = this->md->informationAI.objectMemory(capture);
                                 if (mem == 0) {
                                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        int* newPlayers;
                                         newPlayers = (int*)operator_new(4);
                                         if (newPlayers != 0) {
                                             int i;
@@ -1816,21 +1913,17 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                                 newPlayers[i] = this->playersToAttack.value[i];
                                                 i++;
                                             }
-                                            operator_delete(this->playersToAttack.value);
-                                            this->playersToAttack.value = newPlayers;
-                                            this->playersToAttack.maximumSizeValue = 1;
+                                            goto inactive_resize_commit;
                                         }
                                     }
-                                    players = this->playersToAttack.value;
-                                    mem = this->md->informationAI.objectToAttack(*players, 1, 1, cur->commander(), &allOutsideTransport);
+                                    goto inactive_object_to_attack;
                                 }
-                            } else if (currentVictory == 4) {
+                            } else if (this->md->strategyAI.currentVictoryCondition() == 4) {
                                 int bring;
                                 bring = this->itemToBringToArea();
                                 mem = this->md->informationAI.objectMemory(bring);
                                 if (mem == 0) {
                                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        int* newPlayers;
                                         newPlayers = (int*)operator_new(4);
                                         if (newPlayers != 0) {
                                             int i;
@@ -1839,13 +1932,10 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                                 newPlayers[i] = this->playersToAttack.value[i];
                                                 i++;
                                             }
-                                            operator_delete(this->playersToAttack.value);
-                                            this->playersToAttack.value = newPlayers;
-                                            this->playersToAttack.maximumSizeValue = 1;
+                                            goto inactive_resize_commit;
                                         }
                                     }
-                                    players = this->playersToAttack.value;
-                                    mem = this->md->informationAI.objectToAttack(*players, 1, 1, cur->commander(), &allOutsideTransport);
+                                    goto inactive_object_to_attack;
                                 }
                             } else {
                                 if (this->playersToAttack.maximumSizeValue - 1 < 0) {
@@ -1869,7 +1959,20 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                     this->nextActiveSoldierGroupToTaskValue = cur->id();
                                     return;
                                 }
+                                goto inactive_target_selected;
                             }
+                            goto inactive_target_selected;
+inactive_resize_commit:
+                            operator_delete(this->playersToAttack.value);
+                            this->playersToAttack.value = newPlayers;
+                            this->playersToAttack.maximumSizeValue = 1;
+inactive_object_to_attack:
+                            players = this->playersToAttack.value;
+                            mem = this->md->informationAI.objectToAttack(*players, 1, 1,
+                                                                         cur->commander(),
+                                                                         &allOutsideTransport);
+inactive_target_selected:
+                            goto active_target_selected_common;
                             if (mem == 0) {
                                 cur->setAction(1);
                                 this->attackStateValue.active = 0;
@@ -1880,16 +1983,19 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                     cur->setAction(1);
                                     this->attackStateValue.active = 0;
                                 } else {
-                                    float dist;
-                                    XYPoint pathOut;
-                                    dist = commanderObj->pathDistance2(mem->id, &pathOut, 1, mem->owner, 0x1b, 0, 0);
-                                    if (commanderObj->canMoveTo(mem->x, mem->y, mem->z, dist)) {
+                                    float pathOut;
+                                    XYZPoint targetPoint;
+                                    targetPoint.x = mem->x;
+                                    targetPoint.y = mem->y;
+                                    targetPoint.z = mem->z;
+                                    if (((VObjCanMove*)commanderObj)->canPath(targetPoint,
+                                            ((VObjWeaponRange*)commanderObj)->weaponRange(), mem->id,
+                                            &pathOut, 1, mem->owner, 0x1b)) {
                                         this->lastGroupAttackTime = this->md->player->world->world_time;
                                         cur->setTarget(mem->id);
                                         cur->setTargetType((int)mem->type);
                                         cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
                                         cur->setInUse(1);
-                                        this->checkForCoopAttack((unsigned int)mem->owner, (unsigned int)mem->x, (unsigned int)mem->y);
                                     } else {
                                         cur->setAction(1);
                                         this->attackStateValue.active = 0;
@@ -1900,6 +2006,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                     }
                 } else {
                     int attackEnabled;
+                    int* players;
+                    int* newPlayers;
                     unsigned long lastAttackTime;
                     unsigned long elapsed;
 
@@ -1907,6 +2015,10 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                     if (attackEnabled == 0) {
                         this->attackStateValue.active = 0;
                     } else {
+                        if (this->sn[0xa2] != 0 && cur->type() != 0x67) {
+                            mem = this->md->informationAI.objectMemory(*(int*)0);
+                            goto attack_target_ready;
+                        }
                         lastAttackTime = this->lastGroupAttackTime;
                         elapsed = (this->md->player->world->world_time - lastAttackTime) / 1000;
                         if (lastAttackTime != 0 && this->sn[0x2f] == 2 && elapsed != 0 && this->attackLimiterTime(0x2e) > elapsed) {
@@ -1914,29 +2026,98 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         } else if (lastAttackTime != 0 && this->sn[0x2f] == 1 && this->attackLimiterTime(0x2e) > elapsed) {
                             this->attackStateValue.active = 0;
                         } else {
-                            int* players;
+                            if (this->md->strategyAI.currentVictoryCondition() == 0) {
+                                int capture;
+                                capture = this->itemToCapture();
+                                mem = this->md->informationAI.objectMemory(capture);
+                                if (mem == 0) {
+                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+                                        newPlayers = (int*)operator_new(4);
+                                        if (newPlayers != 0) {
+                                            int i;
+                                            i = 0;
+                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+                                                newPlayers[i] = this->playersToAttack.value[i];
+                                                i++;
+                                            }
+                                            goto active_resize_commit;
+                                        }
+                                    }
+                                    goto active_object_to_attack;
+                                }
+                            } else if (this->md->strategyAI.currentVictoryCondition() == 4) {
+                                int bring;
+                                bring = this->itemToBringToArea();
+                                mem = this->md->informationAI.objectMemory(bring);
+                                if (mem == 0) {
+                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+                                        newPlayers = (int*)operator_new(4);
+                                        if (newPlayers != 0) {
+                                            int i;
+                                            i = 0;
+                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+                                                newPlayers[i] = this->playersToAttack.value[i];
+                                                i++;
+                                            }
+                                            goto active_resize_commit;
+                                        }
+                                    }
+                                    goto active_object_to_attack;
+                                }
+                            } else {
+                                if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+                                    int* generalPlayers;
+                                    generalPlayers = (int*)operator_new(4);
+                                    if (generalPlayers != 0) {
+                                        int i;
+                                        i = 0;
+                                        while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+                                            generalPlayers[i] = this->playersToAttack.value[i];
+                                            i++;
+                                        }
+                                        operator_delete(this->playersToAttack.value);
+                                        this->playersToAttack.value = generalPlayers;
+                                        this->playersToAttack.maximumSizeValue = 1;
+                                    }
+                                }
+                                players = this->playersToAttack.value;
+                                mem = this->md->informationAI.objectToAttackByGroup(
+                                    *players, cur, &this->attackStateValue, param_1);
+                                if (this->attackStateValue.active == 1) {
+                                    this->nextActiveSoldierGroupToTaskValue = cur->id();
+                                    return;
+                                }
+                                goto active_target_selected_common;
+                            }
+                            goto active_target_selected_common;
+active_resize_commit:
+                            operator_delete(this->playersToAttack.value);
+                            this->playersToAttack.value = newPlayers;
+                            this->playersToAttack.maximumSizeValue = 1;
+active_object_to_attack:
                             players = this->playersToAttack.value;
-                            mem = 0;
-                            if (players != 0) {
-                                mem = this->md->informationAI.objectToAttackByGroup(*players, cur, &this->attackStateValue, param_1);
-                            }
-                            if (this->attackStateValue.active == 1) {
-                                this->nextActiveSoldierGroupToTaskValue = cur->id();
-                                return;
-                            }
+                            mem = this->md->informationAI.objectToAttack(*players, 1, 1,
+                                                                         cur->commander(),
+                                                                         &allOutsideTransport);
+active_target_selected_common:
                             if (mem == 0) {
                                 cur->setAction(1);
                                 this->attackStateValue.active = 0;
                             } else {
                                 mem->attackAttempts = mem->attackAttempts + 1;
+attack_target_ready:
                                 commanderObj = this->md->object(cur->commander());
                                 if (commanderObj == 0) {
                                     cur->setAction(1);
                                 } else {
-                                    float dist;
-                                    XYPoint point;
-                                    dist = commanderObj->pathDistance2(mem->id, &point, 1, mem->owner, 0x1b, 0, 0);
-                                    if (commanderObj->canMoveTo(mem->x, mem->y, mem->z, dist)) {
+                                    float point;
+                                    XYZPoint targetPoint;
+                                    targetPoint.x = mem->x;
+                                    targetPoint.y = mem->y;
+                                    targetPoint.z = mem->z;
+                                    if (((VObjCanMove*)commanderObj)->canPath(targetPoint,
+                                            ((VObjWeaponRange*)commanderObj)->weaponRange(), mem->id,
+                                            &point, 1, mem->owner, 0x1b)) {
                                         this->lastGroupAttackTime = this->md->player->world->world_time;
                                         if (this->sn[0x47] == 1) {
                                             this->lastAttackResponseTime = this->md->player->world->world_time;
@@ -1948,17 +2129,19 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         this->checkForCoopAttack((unsigned int)mem->owner, (unsigned int)mem->x, (unsigned int)mem->y);
                                     } else {
                                         float gatherX2;
-                                        char aux2[4];
-                                        if (commanderObj->canPathTo(mem->x, mem->y, mem->z, dist, mem->id, &point, 1, 0x16, 1, mem->owner, 0x1b) &&
-                                            commanderObj->pathPoint(2, &gatherX2, aux2) == 1) {
+                                        char aux2[16];
+                                        if (((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
+                                                targetPoint, ((VObjWeaponRange*)commanderObj)->weaponRange(),
+                                                mem->id, &point, 1, 0x16, 1,
+                                                mem->owner, 0x1b) &&
+                                            ((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
+                                                2, &gatherX2, (float*)aux2) == 1) {
                                             cur->task(this, this->md, 0x0e, 1, 0);
                                             cur->setAction(0x0d);
                                             cur->setTarget(mem->id);
                                             cur->setTargetType((int)mem->type);
-                                            cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
-                                            cur->setInUse(1);
-                                            cur->setWaitCode(200);
-                                            cur->playNumberValue = -1;
+                                            pendingTaskCode = (int)mem;
+                                            goto exception_path_finish;
                                         } else {
                                             cur->setAction(1);
                                         }
@@ -1968,20 +2151,25 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         }
                     }
                 }
-                if (mem != 0 && commanderObj != 0 && this->sn[0x67] == 1 && (cur->type() == 100 || cur->type() == 0x67)) {
-                    XYPoint targetTile;
+inactive_post_setup:
+                if (this->md->strategyAI.currentVictoryCondition() == 0x0b &&
+                    mem != 0 && commanderObj != 0 && this->sn[0x67] == 1 &&
+                    (cur->type() == 100 || cur->type() == 0x67)) {
+                    XYZPoint targetTile;
                     Path* avoidancePath;
                     this->md->informationAI.addEnemyInfluences((unsigned int)mem->owner, mem->id);
                     this->md->informationAI.addPriorAttackInfluences((unsigned int)mem->owner, mem->id);
                     targetTile.x = (int)mem->x;
                     targetTile.y = (int)mem->y;
-                    avoidancePath = (Path*)(int)commanderObj->pathDistance(mem->id, &targetTile, 1, -1, -1);
+                    targetTile.z = 1;
+                    avoidancePath = ((VObjFindAvoidancePath*)commanderObj)->findAvoidancePath(
+                        &targetTile, ((VObjWeaponRange*)commanderObj)->weaponRange(), 1);
                     if (avoidancePath != 0) {
                         stuffAvoidancePath(this, cur, avoidancePath);
                     }
                 }
                 if (allOutsideTransport == 0 && cur->action() == 2) {
-                    cur->task(this, this->md, 0x15, 1, 0);
+                    TASK_GROUP(0x15, 1, 0);
                 }
             } else {
                 t = cur->action();
@@ -2029,9 +2217,12 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                     unitObj2 = this->md->object(unit_id);
                                     if (unitObj2 != 0) {
                                         ai = unitObj2->unitAI();
-                                        if (ai != 0 && ai->currentAction() == -1) {
-                                            didTask = 1;
-                                            this->taskToEnter(unit_id, assist->commander());
+                                        if (ai != 0) {
+                                            ai = unitObj2->unitAI();
+                                            if (ai->currentAction() == -1) {
+                                                didTask = 1;
+                                                this->taskToEnter(unit_id, assist->commander());
+                                            }
                                         }
                                     }
                                     i++;
@@ -2052,7 +2243,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                     } else {
                         this->attackStateValue.active = 0;
                     }
-                } else if (t == 0x0f) {
+                } else if (cur->action() == 0x0f) {
                     TacticalAIGroup* assist;
                     RGE_Static_Object* transportObj;
 
@@ -2082,7 +2273,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 if (unitObj2 != 0) {
                                     ai = unitObj2->unitAI();
                                     if (ai != 0) {
-                                        if (unit_id == cur->commander()) {
+                                        if (cur->unit(i) == cur->commander()) {
                                             Waypoint* loc;
                                             XYPoint zp;
                                             loc = cur->targetLocation();
@@ -2099,13 +2290,19 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         } else if (unitObj2->inside_obj == 0) {
                                             needTransporter = 0;
                                             if (unitObj2->unitAI()->currentOrder() != 700 && unitObj2->unitAI()->currentOrder() != 0x2cd) {
-                                                this->taskToEnter(unit_id, assist->commander());
+                                                this->taskToEnter(cur->unit(i), assist->commander());
                                             }
                                         } else {
                                             cur->removeUnit(unitObj2->id, this->md);
                                         }
+                                    } else {
+                                        logCommonHistory(this, (const char*)0x005883B4);
+                                        goto transport_unit_done;
                                     }
+                                } else {
+                                    logCommonHistory(this, (const char*)0x005883D4);
                                 }
+transport_unit_done:
                                 i++;
                             }
                             if (needTransporter != 0) {
@@ -2132,13 +2329,11 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                     int j;
                                     j = 0;
                                     while (j < assist->numberUnits()) {
-                                        int defender_id;
-                                        defender_id = assist->unit(j);
-                                        if (defender_id != assist->commander()) {
+                                        if (assist->unit(j) != assist->commander()) {
                                             RGE_Static_Object* defenderObj;
-                                            defenderObj = this->md->object(defender_id);
+                                            defenderObj = this->md->object(assist->unit(j));
                                             if (defenderObj != 0) {
-                                                this->taskDefender(defender_id, assist->commander(), defenderObj->master_obj->los * 0.5f, 99);
+                                                this->taskDefender(assist->unit(j), assist->commander(), defenderObj->master_obj->los * 0.5f, 99);
                                             }
                                         }
                                         j++;
@@ -2159,7 +2354,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         cur->setInUse(0);
                         this->attackStateValue.active = 0;
                     }
-                } else if (t == 0x10) {
+                } else if (cur->action() == 0x10) {
                     TacticalAIGroup* assist;
                     assist = this->group(cur->assistGroupID(), -1, -1, -1);
                     if (assist != 0) {
@@ -2183,13 +2378,28 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         if (cur->type() == 100) {
                                             RGE_Static_Object* targetObj;
                                             targetObj = this->md->object(cur->target());
-                                            if (targetObj != 0 && unitObj2->unitAI()->currentTarget() != cur->target()) {
-                                                Waypoint* loc;
-                                                loc = cur->targetLocation();
-                                                this->taskAttacker(unit_id, loc->x, loc->y, cur->target(), -1, 0, 0, -1, 0);
+                                            if (targetObj != 0) {
+                                                UnitAIModule* attackAI;
+                                                attackAI = unitObj2->unitAI();
+                                                if (attackAI != 0) {
+                                                    attackAI = unitObj2->unitAI();
+                                            if (attackAI->currentTarget() != cur->target()) {
+                                                if (((VObjCanAttack*)unitObj2)->canAttack(
+                                                        cur->target(), ((VObjWeaponRange*)unitObj2)->weaponRange()) == 1) {
+                                                    Waypoint* loc;
+                                                    float attackX;
+                                                    float attackY;
+                                                    loc = cur->targetLocation();
+                                                    attackY = loc->y;
+                                                    loc = cur->targetLocation();
+                                                    attackX = loc->x;
+                                                    this->taskAttacker(cur->unit(i), attackX, attackY, cur->target(), -1, 0, 0, -1, 0);
+                                                }
+                                            }
+                                                }
                                             }
                                         } else {
-                                            this->stopUnit(unit_id, 100);
+                                            this->stopUnit(cur->unit(i), 100);
                                         }
                                     } else {
                                         needReset = 0;
@@ -2200,55 +2410,64 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                             if (allOutside == 1) {
                                 if (transportObj->actions == 0 || transportObj->actions->have_action() == 0 || transportObj->actions->get_action()->state == 2) {
                                     Waypoint* loc;
+                                    float transportX;
+                                    float transportY;
                                     loc = assist->targetLocation();
-                                    this->taskTransporter(assist->commander(), loc->x + 0.5f, loc->y + 0.5f);
+                                    transportY = loc->y + 0.5f;
+                                    loc = assist->targetLocation();
+                                    transportX = loc->x + 0.5f;
+                                    this->taskTransporter(assist->commander(), transportX, transportY);
                                     assist->setAction(0x0c);
                                 }
                             } else if (needReset != 0) {
-                                assist->setTarget(-1);
-                                assist->setTargetType(-1);
-                                assist->setAction(1);
-                                assist->setInUse(0);
-                                if (cur->type() != 100) {
+                                TacticalAIGroup* resetAssist;
+                                resetAssist = this->group(cur->assistGroupID(), -1, -1, -1);
+                                if (resetAssist != 0) {
+                                    resetAssist->setTarget(-1);
+                                    resetAssist->setTargetType(-1);
+                                    resetAssist->setAction(1);
+                                    resetAssist->setInUse(0);
                                     RGE_Static_Object* relicObj;
                                     relicObj = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
                                     if (relicObj != 0) {
-                                        this->moveUnit(assist->commander(), relicObj->world_x, relicObj->world_y, 50);
+                                        this->moveUnit(resetAssist->commander(), relicObj->world_x, relicObj->world_y, 50);
                                     }
-                                    Waypoint* loc;
-                                    loc = cur->targetLocation();
-                                    cur->setGatherLocation(loc->x, loc->y, loc->z);
+                                }
+                                if (cur->type() != 100) {
+                                    if (cur->type() != 0x65 && cur->type() != 0x6d) {
+                                        goto loss_check;
+                                    }
+                                    Waypoint* tloc;
+                                    float gatherX;
+                                    float gatherY;
+                                    float gatherZ;
+                                    tloc = cur->targetLocation();
+                                    gatherZ = tloc->z;
+                                    tloc = cur->targetLocation();
+                                    gatherY = tloc->y;
+                                    tloc = cur->targetLocation();
+                                    gatherX = tloc->x;
+                                    cur->setGatherLocation(gatherX, gatherY, gatherZ);
                                     cur->setInUse(0);
                                     cur->setAction(1);
-                                    if (cur->type() == 0x65 || cur->type() == 0x6d) {
-                                        Waypoint* tloc;
-                                        tloc = cur->targetLocation();
-                                        cur->setGatherLocation(tloc->x, tloc->y, tloc->z);
-                                        cur->setTarget(-1);
-                                        cur->numberObjectsToDestroyValue = 0;
-                                        cur->setTargetType(-1);
-                                        cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                    }
-                                    cur->task(this, this->md, 1, 1, 1);
+                                    TASK_GROUP(1, 1, 1);
                                 } else {
                                     RGE_Static_Object* commanderObjT;
                                     commanderObjT = this->md->object(cur->commander());
                                     if (commanderObjT == 0) {
                                         cur->setInUse(1);
                                         cur->setAction(7);
-                                        cur->task(this, this->md, 7, 0, 1);
+                                        TASK_GROUP(7, 0, 1);
                                     } else {
-                                        float distT;
-                                        XYPoint ptT;
-                                        distT = commanderObjT->pathDistance(cur->target(), &ptT, 1, -1, -1);
-                                        if (commanderObjT->canPathTo((int)commanderObjT->world_x, (int)commanderObjT->world_y, (int)commanderObjT->world_z, distT, cur->target(), 0, 1, 0x16, 1, -1, -1) == 1) {
+                                        if (((VObjCanAttack*)commanderObjT)->canAttack(
+                                                cur->target(), ((VObjWeaponRange*)commanderObjT)->weaponRange()) == 1) {
                                             this->lastGroupAttackTime = this->md->player->world->world_time;
                                             cur->setAction(2);
-                                            cur->task(this, this->md, 2, 0, 1);
+                                            TASK_GROUP(2, 0, 1);
                                         } else {
                                             cur->setInUse(1);
                                             cur->setAction(7);
-                                            cur->task(this, this->md, 7, 0, 1);
+                                            TASK_GROUP(7, 0, 1);
                                         }
                                     }
                                 }
@@ -2267,7 +2486,11 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         cur->setInUse(0);
                         this->attackStateValue.active = 0;
                     }
-                } else if (t == 7) {
+                } else {
+                    if (cur->action() == 0x0c) goto action0c;
+                    if (cur->action() == 0x13) goto action13;
+                    if (cur->action() == 3) goto action3;
+                    if (cur->action() == 7) {
                     RGE_Static_Object* commanderObj3;
                     ObjectMemory* mem;
                     RGE_Static_Object* targetObj;
@@ -2300,54 +2523,62 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         targetObj = this->md->object(mem->id);
                     }
                     if (commanderObj3 == 0 || mem == 0 || targetObj == 0) {
-                        unsigned long idle;
-                        idle = cur->consecutiveIdleUnitCount();
-                        if ((unsigned int)(this->sn[0x58] << 2) < (this->md->player->world->world_time - idle) / 1000) {
-                            cur->setAction(7);
-                            cur->task(this, this->md, 7, 0, 1);
-                        }
+                        goto action7_timeout;
                     } else {
-                        float dist;
-                        XYPoint pathOut;
-                        dist = commanderObj3->pathDistance2(mem->id, &pathOut, 1, mem->owner, 0x1b, 0, 0);
-                        if (commanderObj3->canMoveTo(mem->x, mem->y, mem->z, dist) == 1) {
+                        float pathOut;
+                        XYZPoint targetPoint7;
+                        targetPoint7.x = mem->x;
+                        targetPoint7.y = mem->y;
+                        targetPoint7.z = mem->z;
+                        if (((VObjCanMove*)commanderObj3)->canPath(targetPoint7,
+                                ((VObjWeaponRange*)commanderObj3)->weaponRange(), mem->id,
+                                &pathOut, 1, mem->owner, 0x1b) == 1) {
                             cur->setAction(2);
                             cur->setTarget(mem->id);
                             cur->setTargetType((int)mem->type);
                             cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
                             cur->setInUse(1);
-                            cur->task(this, this->md, 2, 0, 1);
+                            TASK_GROUP(2, 0, 1);
                         } else {
                             char aux7[4];
                             float gather7;
-                            if (commanderObj3->canPathTo(mem->x, mem->y, mem->z, dist, mem->id, &pathOut, 1, 0x16, 1, mem->owner, 0x1b) == 1 &&
-                                commanderObj3->pathPoint(2, &gather7, aux7) == 1) {
+                            if (((VObjCanPath*)commanderObj3)->canPathWithAdditionalPassability(
+                                    targetPoint7, ((VObjWeaponRange*)commanderObj3)->weaponRange(),
+                                    mem->id, &pathOut, 1, 0x16, 1,
+                                    mem->owner, 0x1b) == 1 &&
+                                ((VObjPathPoint*)commanderObj3)->findFirstTerrainAlongExceptionPath(
+                                    2, &gather7, (float*)aux7) == 1) {
                                 cur->task(this, this->md, 0x0e, 1, 0);
                                 cur->setAction(0x0d);
                                 cur->setTarget(mem->id);
                                 cur->setTargetType((int)mem->type);
-                                cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
-                                cur->setInUse(1);
-                                cur->setWaitCode(200);
-                                cur->playNumberValue = -1;
+                                pendingTaskCode = (int)mem;
+                                goto exception_path_finish;
                             } else {
-                                unsigned long idle2;
-                                idle2 = cur->consecutiveIdleUnitCount();
-                                if ((unsigned int)(this->sn[0x58] << 2) < (this->md->player->world->world_time - idle2) / 1000) {
-                                    cur->setAction(7);
-                                    cur->task(this, this->md, 7, 0, 1);
-                                } else {
-                                    cur->setAction(1);
-                                }
+                                goto action7_timeout;
                             }
                         }
                     }
-                } else if (t == 2) {
+                    goto action7_done;
+action7_timeout:
+                    {
+                        unsigned long idle;
+                        idle = cur->consecutiveIdleUnitCount();
+                        if ((unsigned int)(this->sn[0x58] << 2) <
+                            (this->md->player->world->world_time - idle) / 1000) {
+                            cur->setAction(7);
+                            TASK_GROUP(7, 0, 1);
+                        }
+                    }
+action7_done:
+                    ;
+                } else if (cur->action() == 2) {
                     RGE_Static_Object* targetObj2;
                     int targetType;
                     int i;
 
-                    if (cur->playNumberValue == -1 && this->sn[0x5b] < 100) {
+                    if (cur->playNumberValue == -1) {
+                    if (this->sn[0x5b] < 100) {
                         i = 0;
                         while (i < cur->numberUnits()) {
                             int unit_id;
@@ -2361,9 +2592,14 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 curhp = (int)unitObj2->hp;
                                 if (((oldhp - curhp) * 100) / cur->unitOriginalHitPoints(i) > this->sn[0x5b]) {
                                     Waypoint* retreat;
+                                    float retreatX;
+                                    float retreatY;
                                     retreat = cur->retreatLocation();
-                                    this->moveUnit(unit_id, retreat->x, retreat->y, 100);
-                                    cur->removeUnit(unit_id, this->md);
+                                    retreatY = retreat->y;
+                                    retreat = cur->retreatLocation();
+                                    retreatX = retreat->x;
+                                    this->moveUnit(cur->unit(i), retreatX, retreatY, 100);
+                                    cur->removeUnit(cur->unit(i), this->md);
                                     if (cur->numberUnits() == 0) {
                                         break;
                                     }
@@ -2379,19 +2615,18 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                     targetObj2 = this->md->object(cur->target());
                     if (targetObj2 != 0 && targetObj2->object_state < 3) {
                         if (cur->subType() == -1) {
-                            if (this->md->isEnemy(targetObj2->owner->id) == 0) {
+                            if (((VMainDecisionIsEnemy*)this->md)->isEnemy(targetObj2->owner->id) == 0) {
                                 if (cur->allUnitsIdle(this->md, 0) != 1) {
-                                    cur->task(this, this->md, 0x14, 0, 1);
+                                    TASK_GROUP(0x14, 0, 1);
                                 } else {
                                     RGE_Static_Object* commanderObj4;
                                     commanderObj4 = this->md->object(cur->commander());
                                     if (commanderObj4 == 0) {
                                         this->attackStateValue.active = 0;
                                     } else {
-                                        float dist;
-                                        dist = commanderObj4->pathDistance(cur->target(), &targetType, 1, -1, -1);
-                                        if (commanderObj4->canPathTo((int)targetObj2->world_x, (int)targetObj2->world_y, (int)targetObj2->world_z, dist, cur->target(), 0, 1, 0x16, 1, -1, -1) == 1) {
-                                            cur->task(this, this->md, 0x14, 0, 1);
+                                        if (((VObjCanAttack*)commanderObj4)->canAttack(
+                                                cur->target(), ((VObjWeaponRange*)commanderObj4)->weaponRange()) == 1) {
+                                            TASK_GROUP(0x14, 0, 1);
                                         } else {
                                             cur->setGatherLocation(commanderObj4->world_x, commanderObj4->world_y, commanderObj4->world_z);
                                             cur->setInUse(0);
@@ -2418,7 +2653,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                             }
                         } else {
                             unsigned long idle;
-                            if (cur->subType() == 4 && targetObj2->owner != 0 && targetObj2->owner->id == this->md->player->id && this->md->isMoveable(targetObj2->id)) {
+                            if (cur->subType() != 0 && cur->subType() == 4 &&
+                                targetObj2->owner->id == this->md->player->id &&
+                                this->md->isMoveable(targetObj2->id)) {
                                 Waypoint* p1;
                                 Waypoint* p2;
                                 float mx;
@@ -2449,16 +2686,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 this->attackStateValue.active = 0;
                             }
                         }
-                        if (cur->action() == 2 && cur->playNumberValue != -1) {
-                            RGE_Static_Object* commanderObj9;
-                            commanderObj9 = this->md->object(cur->commander());
-                            if (commanderObj9 != 0 && commanderObj9->unitAI() != 0 && commanderObj9->unitAI()->playStatus == 0) {
-                                cur->playNumberValue = -1;
-                                this->attackStateValue.active = 0;
-                            }
-                        }
                     } else {
                         ObjectMemory* replacement;
+                        RGE_Static_Object* replacementCommander;
                         int* players2;
                         if (this->sn[0x31] == 2) {
                             cur->setAction(1);
@@ -2466,8 +2696,13 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                             cur->numberObjectsToDestroyValue = 0;
                             cur->setTargetType(-1);
                             cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                            cur->task(this, this->md, cur->action(), 1, 0);
+                            TASK_GROUP(cur->action(), 1, 0);
                         } else {
+                        replacementCommander = this->md->object(cur->commander());
+                        if (replacementCommander == 0) {
+                            this->attackStateValue.active = 0;
+                            goto task_done;
+                        }
                         if (this->playersToAttack.maximumSizeValue - 1 < 0) {
                             int* newPlayers;
                             newPlayers = (int*)operator_new(4);
@@ -2490,20 +2725,20 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                             return;
                         }
                         if (replacement != 0) {
-                            RGE_Static_Object* commanderObj6;
-                            commanderObj6 = this->md->object(cur->commander());
-                            if (commanderObj6 != 0) {
-                                float dist2;
-                                XYPoint path2;
-                                dist2 = commanderObj6->pathDistance2(replacement->id, &path2, 1, replacement->owner, 0x1b, 0, 0);
-                                if (commanderObj6->canMoveTo(replacement->x, replacement->y, replacement->z, dist2) == 1) {
+                                float path2;
+                                XYZPoint replacementPoint;
+                                replacementPoint.x = replacement->x;
+                                replacementPoint.y = replacement->y;
+                                replacementPoint.z = replacement->z;
+                                if (((VObjCanMove*)replacementCommander)->canPath(replacementPoint,
+                                        ((VObjWeaponRange*)replacementCommander)->weaponRange(),
+                                        replacement->id, &path2, 1, replacement->owner, 0x1b) == 1) {
                                     cur->setTarget(replacement->id);
                                     cur->setTargetType((int)replacement->type);
                                     cur->setTargetLocation((float)replacement->x, (float)replacement->y, (float)replacement->z);
                                     cur->setInUse(1);
-                                    cur->task(this, this->md, 2, 0, 0);
+                                    TASK_GROUP(2, 0, 0);
                                 }
-                            }
                         }
                         targetType = cur->targetType();
                         cur->setInUse(0);
@@ -2512,32 +2747,35 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         cur->setTargetType(-1);
                         cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
                         if (this->sn[0x31] == 0) {
-                            RGE_Static_Object* commanderObj5;
-                            commanderObj5 = this->md->object(cur->commander());
-                            if (commanderObj5 != 0) {
-                                cur->setGatherLocation(commanderObj5->world_x, commanderObj5->world_y, commanderObj5->world_z);
-                            }
+                            cur->setGatherLocation(replacementCommander->world_x,
+                                                   replacementCommander->world_y,
+                                                   replacementCommander->world_z);
                         } else if (this->sn[0x31] == 3 && targetType != 0x7e && targetType != 0x59) {
                             if (this->sn[0x87] == 1) {
-                                RGE_Static_Object* commanderObj7;
-                                commanderObj7 = this->md->object(cur->commander());
-                                if (commanderObj7 != 0) {
                                     int cx;
                                     int cy;
                                     int radius;
-                                    cx = (int)commanderObj7->world_x;
-                                    cy = (int)commanderObj7->world_y;
+                                    cx = (int)replacementCommander->world_x;
+                                    cy = (int)replacementCommander->world_y;
                                     radius = this->sn[0x88];
                                     this->md->informationAI.blotExploredMap(cx - radius, cy - radius, cx + radius, cy + radius);
-                                }
                             }
                             cur->setInUse(1);
                             cur->setAction(7);
-                            cur->task(this, this->md, 7, 0, 1);
+                            TASK_GROUP(7, 0, 1);
                         }
                         }
                     }
-                } else if (t == 4) {
+                    }
+                    if (cur->action() == 2 && cur->playNumberValue != -1) {
+                        RGE_Static_Object* commanderObj9;
+                        commanderObj9 = this->md->object(cur->commander());
+                        if (commanderObj9 != 0 && commanderObj9->unitAI() != 0 && commanderObj9->unitAI()->playStatus == 0) {
+                            cur->playNumberValue = -1;
+                            this->attackStateValue.active = 0;
+                        }
+                    }
+                } else if (cur->action() == 4) {
                     if (cur->allUnitsIdle(this->md, 1) != 1 || cur->isGathered(this, this->md) != 0) {
                         RGE_Static_Object* targetObj4;
                         targetObj4 = this->md->object(cur->target());
@@ -2552,12 +2790,36 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 }
                                 cur->setAction(1);
                                 cur->setInUse(0);
+                            } else {
+                                goto loss_check;
                             }
+                        } else {
+                            goto loss_check;
                         }
                     } else {
-                        cur->task(this, this->md, 9, 1, 0);
+                        TASK_GROUP(9, 1, 0);
                     }
-                } else if (t == 0x0c || t == 0x13) {
+                    } else {
+                        goto loss_check;
+                    }
+                    goto active_dispatch_done;
+action0c:
+                    this->attackStateValue.active = 0;
+                    goto active_dispatch_done;
+action13:
+                    {
+                    unsigned long idle;
+                    idle = cur->consecutiveIdleUnitCount();
+                    if (cur->isGathered(this, this->md) == 0 &&
+                        cur->allUnitsIdle(this->md, 1) == 1 &&
+                        5 < (this->md->player->world->world_time - idle) / 1000) {
+                        cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
+                        TASK_GROUP(9, 1, 0);
+                    }
+                    }
+                    goto active_dispatch_done;
+action3:
+                    {
                     unsigned long idle;
                     idle = cur->consecutiveIdleUnitCount();
                     if ((unsigned int)this->sn[0x4c] < (this->md->player->world->world_time - idle) / 1000) {
@@ -2593,14 +2855,28 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         } else {
                             this->attackStateValue.active = 0;
                         }
-                    } else {
-                        if (cur->allUnitsIdle(this->md, 1) == 1 && 5 < (this->md->player->world->world_time - idle) / 1000) {
-                            cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
-                            cur->task(this, this->md, 9, 1, 0);
+                    }
+                    }
+                    goto active_dispatch_done;
+loss_check:
+                    {
+                    if (cur->action() != 3 && cur->action() != 0x0d) {
+                        int currentHP;
+                        int originalHP;
+                        int currentUnits;
+                        int originalUnits;
+
+                        currentHP = cur->currentHitPoints(this->md);
+                        originalHP = cur->originalHitPoints();
+                        currentUnits = cur->numberUnits();
+                        originalUnits = cur->originalUnitNumber();
+                        if (this->sn[0x1e] < ((originalHP - currentHP) * 100) / cur->originalHitPoints() ||
+                            this->sn[0x1f] < ((originalUnits - currentUnits) * 100) / cur->originalUnitNumber()) {
+                            cur->setAction(3);
+                            TASK_GROUP(3, 1, 0);
                         }
                     }
-                } else if (t == 3) {
-                } else {
+#if 0
                     int currentHP;
                     int originalHP;
                     int currentUnits;
@@ -2644,14 +2920,14 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         idle = cur->consecutiveIdleUnitCount();
                         if (5 < (this->md->player->world->world_time - idle) / 1000) {
                             cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
-                            cur->task(this, this->md, 9, 1, 0);
+                            TASK_GROUP(9, 1, 0);
                         }
                     }
                     if (originalHP != 0 && originalUnits != 0 &&
                         (this->sn[0x1e] < ((originalHP - currentHP) * 100) / originalHP ||
                          this->sn[0x1f] < ((originalUnits - currentUnits) * 100) / originalUnits)) {
                         cur->setAction(3);
-                        cur->task(this, this->md, 3, 1, 0);
+                        TASK_GROUP(3, 1, 0);
                     }
                     if (cur->type() == 0x65 || cur->type() == 0x68 || cur->type() == 0x6d) {
                         ObjectMemory* mem2;
@@ -2682,8 +2958,6 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         }
                         if (cur->inUse() != 0) {
                             int j;
-                            Waypoint* loc;
-                            loc = cur->targetLocation();
                             j = 0;
                             while (j < cur->numberUnits()) {
                                 int unit_id2;
@@ -2694,10 +2968,15 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 if (unitObj3 != 0) {
                                     ai2 = unitObj3->unitAI();
                                     if (ai2 != 0) {
-                                        if (ai2->currentTarget() != cur->target()) {
-                                            this->taskAttacker(unit_id2, loc->x, loc->y, cur->target(), cur->subType(), 0, 0, -1, 0);
-                                        } else if (ai2->currentAction() == -1) {
-                                            this->taskAttacker(unit_id2, loc->x, loc->y, cur->target(), cur->subType(), 0, 0, -1, 0);
+                                        if (ai2->currentTarget() != cur->target() || ai2->currentAction() == -1) {
+                                            Waypoint* loc;
+                                            float attackX;
+                                            float attackY;
+                                            loc = cur->targetLocation();
+                                            attackY = loc->y;
+                                            loc = cur->targetLocation();
+                                            attackX = loc->x;
+                                            this->taskAttacker(unit_id2, attackX, attackY, cur->target(), cur->subType(), 0, 0, -1, 0);
                                         }
                                     } else {
                                         this->stopUnit(unit_id2, 100);
@@ -2730,9 +3009,33 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         }
                     }
                     this->attackStateValue.active = 0;
+#endif
+                    }
+active_dispatch_done:
+                    ;
                 }
             }
 
+            goto task_done;
+relic_path_failure:
+            cur->setAction(1);
+            goto clear_attack_state;
+clear_attack_state:
+            this->attackStateValue.active = 0;
+            goto task_done;
+exception_path_finish:
+            cur->setTargetLocation((float)((ObjectMemory*)pendingTaskCode)->x,
+                                   (float)((ObjectMemory*)pendingTaskCode)->y,
+                                   (float)((ObjectMemory*)pendingTaskCode)->z);
+            cur->setInUse(1);
+            cur->setWaitCode(200);
+            cur->playNumberValue = -1;
+            this->attackStateValue.active = 0;
+            goto task_done;
+task_group:
+            cur->task(this, this->md, pendingTaskCode, pendingTaskArg1, pendingTaskArg2);
+            this->attackStateValue.active = 0;
+task_done:
             if (this->attackStateValue.active != 0) {
                 return;
             }
@@ -2749,4 +3052,5 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
     }
     this->nextActiveSoldierGroupToTaskValue = -1;
 #undef RESET_GROUP
+#undef TASK_GROUP
 }
