@@ -8,7 +8,7 @@ The concise report is deliberately ordered from global invariants to local bytes
 1. rebuilt meaningful code size versus the original size;
 2. stack frame and entry callee-save set;
 3. instruction-shape alignment and longest aligned run;
-4. direct/virtual call sequence and coarse CFG signals;
+4. direct/virtual call sequence, per-target call-count deltas, and coarse CFG signals;
 5. strict positional byte equality;
 6. change impact relative to the previous run;
 7. a workflow stage and the next highest-value diagnostic hunk.
@@ -47,6 +47,12 @@ The complete machine-readable report is written to `build/diff/<slug>.json`; the
 human report is `build/diff/<slug>.txt`. The prior rebuilt output is retained under
 `build/history/<slug>/` so each run can report output blast radius and strict
 improvements/regressions.
+
+For structural mismatches, the report lists aggregate call-target count differences
+as `rebuilt/original`, ordered by the largest absolute gap. It also reports which
+target counts changed in the latest iteration. These counts expose missing or extra
+behavioral calls but do not replace the ordered first-call divergence: equal totals
+can still hide reordered calls, shared-tail placement changes, or wrong control flow.
 
 Use `--verbose` for subprocess details and `--refresh-original` only when the
 pinned original inputs changed. Original extraction is otherwise cached.

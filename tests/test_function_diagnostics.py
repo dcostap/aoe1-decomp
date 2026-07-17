@@ -10,6 +10,8 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 from coff import CoffRelocation, CoffSection, _merge_sections  # noqa: E402
 from extract_obj_function import extraction_extent, meaningful_code_size  # noqa: E402
 from function_diagnostics import (  # noqa: E402
+    call_count_deltas,
+    call_target_counts,
     clean_symbol_name,
     compatible_relocation_masks,
     decode_instructions,
@@ -75,6 +77,29 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         alignment = instruction_alignment(original, rebuilt)
         self.assertEqual(alignment["equal_instructions"], 4)
         self.assertEqual(alignment["similarity_percent"], 80.0)
+
+    def test_call_count_deltas_prioritize_largest_target_gaps(self) -> None:
+        original = call_target_counts(
+            [
+                {"kind": "direct", "target": "setaction"},
+                {"kind": "direct", "target": "setaction"},
+                {"kind": "direct", "target": "object"},
+                {"kind": "virtual", "target": "vslot+0x198"},
+            ]
+        )
+        rebuilt = call_target_counts(
+            [
+                {"kind": "direct", "target": "object"},
+                {"kind": "direct", "target": "object"},
+                {"kind": "direct", "target": "isenemy"},
+                {"kind": "virtual", "target": "vslot+0x198"},
+            ]
+        )
+        deltas = call_count_deltas(original, rebuilt)
+        self.assertEqual(
+            [(row["target"], row["delta"]) for row in deltas],
+            [("setaction", -2), ("isenemy", 1), ("object", 1)],
+        )
 
     def test_iteration_delta_reports_direction(self) -> None:
         result = iteration_delta(

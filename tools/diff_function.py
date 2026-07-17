@@ -7,13 +7,16 @@ from pathlib import Path
 
 from common import byte_diff_metrics, ensure_build_subdir, function_record_by_va, function_slug, repo_path
 from function_diagnostics import (
+    call_count_deltas,
     call_fingerprint,
+    call_target_counts,
     compatible_relocation_masks,
     control_flow_summary,
     decode_instructions,
     instruction_alignment,
     iteration_delta,
     paired_instruction_context,
+    pdb_line_for_address,
     prologue_summary,
 )
 
@@ -60,7 +63,13 @@ def _first_call_difference(original_calls: list[dict], rebuilt_calls: list[dict]
     return None
 
 
-def _format_call_context(original_calls: list[dict], rebuilt_calls: list[dict], start: tuple[int, int], radius: int = 3) -> list[str]:
+def _format_call_context(
+    original_calls: list[dict],
+    rebuilt_calls: list[dict],
+    start: tuple[int, int],
+    function_va: int,
+    radius: int = 3,
+) -> list[str]:
     i1, j1 = start
     lines: list[str] = []
     for row in range(-radius, radius + 1):
@@ -68,10 +77,39 @@ def _format_call_context(original_calls: list[dict], rebuilt_calls: list[dict], 
         ri = j1 + row
         left = original_calls[oi] if 0 <= oi < len(original_calls) else None
         right = rebuilt_calls[ri] if 0 <= ri < len(rebuilt_calls) else None
-        left_text = "" if left is None else f"+{int(left['offset']):04X} {left['kind']} {left['display']}"
+        if left is None:
+            left_text = ""
+        else:
+            line = pdb_line_for_address(function_va, function_va + int(left["offset"]))
+            line_text = "" if line is None else f" L{line}"
+            left_text = f"+{int(left['offset']):04X}{line_text} {left['kind']} {left['display']}"
         right_text = "" if right is None else f"+{int(right['offset']):04X} {right['kind']} {right['display']}"
         marker = " " if left and right and (left["kind"], left["target"]) == (right["kind"], right["target"]) else "!"
         lines.append(f" {marker} {left_text:<48} | {right_text}")
+    return lines
+
+
+def _format_call_count_deltas(rows: list[dict], limit: int = 14) -> list[str]:
+    lines: list[str] = []
+    for row in rows[:limit]:
+        label = f"{row['kind']} {row['target']}"
+        lines.append(
+            f"  {int(row['delta']):+4d}  {int(row['rebuilt']):3d}/{int(row['original']):3d}  {label}"
+        )
+    if len(rows) > limit:
+        lines.append(f"  ... {len(rows) - limit} more target-count difference(s)")
+    return lines
+
+
+def _format_iteration_call_deltas(rows: list[dict], limit: int = 10) -> list[str]:
+    lines: list[str] = []
+    for row in rows[:limit]:
+        label = f"{row['kind']} {row['target']}"
+        lines.append(
+            f"  {int(row['delta']):+4d}  now {int(row['rebuilt']):3d}, previous {int(row['original']):3d}  {label}"
+        )
+    if len(rows) > limit:
+        lines.append(f"  ... {len(rows) - limit} more changed call target(s)")
     return lines
 
 
@@ -81,6 +119,7 @@ def _workflow_guidance(
     original_prologue: dict,
     rebuilt_prologue: dict,
     call_difference: tuple[int, int] | None,
+    call_target_deltas: list[dict],
     relocation_validation: dict,
     metrics: dict,
 ) -> list[str]:
@@ -112,10 +151,18 @@ def _workflow_guidance(
             reasons.append(f"instruction-shape similarity is only {shape_percent:.1f}%")
         if call_difference is not None:
             reasons.append("call/virtual-slot sequence is not aligned")
+        if call_target_deltas:
+            reasons.append(f"{len(call_target_deltas)} call target count(s) differ")
         if known_wrong_calls:
             reasons.append(f"{known_wrong_calls} known direct-call target mismatch(es)")
         lines.append("Why: " + "; ".join(reasons) + ".")
-        lines.append("Next: fix the first paired structural/call hunk and size/CFG parity; do not tune register coloring yet.")
+        if call_target_deltas:
+            lines.append(
+                "Next: resolve behavior-backed call-count gaps and the first ordered structural/call hunk; "
+                "do not tune register coloring yet."
+            )
+        else:
+            lines.append("Next: fix the first paired structural/call hunk and size/CFG parity; do not tune register coloring yet.")
         if frame_differs:
             lines.append("Frame note: frame sizes differ, but stabilize real shared local lifetimes before padding the frame.")
     elif frame_differs:
@@ -186,12 +233,22 @@ def main() -> None:
     rebuilt_flow = control_flow_summary(rebuilt_instructions)
     original_calls = call_fingerprint(original_instructions, original=True)
     rebuilt_calls = call_fingerprint(rebuilt_instructions, original=False)
+    original_call_counts = call_target_counts(original_calls)
+    rebuilt_call_counts = call_target_counts(rebuilt_calls)
+    call_target_deltas = call_count_deltas(original_call_counts, rebuilt_call_counts)
     call_difference = _first_call_difference(original_calls, rebuilt_calls)
 
     previous_bin = history_dir / "previous.bin"
+    previous_diff = history_dir / "previous.diff.json"
     delta = None
+    iteration_call_deltas: list[dict] = []
     if previous_bin.exists():
         delta = iteration_delta(original_bytes, previous_bin.read_bytes(), rebuilt_bytes)
+    if previous_diff.exists():
+        previous_payload = json.loads(previous_diff.read_text(encoding="utf-8"))
+        previous_counts = list(previous_payload.get("rebuilt_call_counts") or [])
+        if previous_counts:
+            iteration_call_deltas = call_count_deltas(previous_counts, rebuilt_call_counts)
 
     guidance = _workflow_guidance(
         rebuilt_meta,
@@ -199,6 +256,7 @@ def main() -> None:
         original_prologue,
         rebuilt_prologue,
         call_difference,
+        call_target_deltas,
         guidance_relocation_validation,
         metrics,
     )
@@ -220,6 +278,10 @@ def main() -> None:
         "rebuilt_prologue": rebuilt_prologue,
         "original_control_flow": original_flow,
         "rebuilt_control_flow": rebuilt_flow,
+        "original_call_counts": original_call_counts,
+        "rebuilt_call_counts": rebuilt_call_counts,
+        "call_target_count_deltas": call_target_deltas,
+        "iteration_call_target_deltas": iteration_call_deltas,
         "iteration_delta": delta,
         "workflow_stage": guidance[0].split(":", 1)[-1].strip() if guidance else "",
         "workflow_guidance": guidance[1:],
@@ -241,6 +303,7 @@ def main() -> None:
         f"Instructions: original {shape['original_instructions']}, rebuilt {shape['rebuilt_instructions']}; "
         f"shape similarity {float(shape['similarity_percent']):.2f}%; longest aligned run {shape['longest_equal_run']}",
         f"Calls: original {len(original_calls)}, rebuilt {len(rebuilt_calls)}; "
+        f"target-count differences {len(call_target_deltas)}; "
         f"relocations safely masked {relocation_validation['compatible']}/{len(relocations)}",
         "CFG signals (orig/rebuilt): "
         f"cond {original_flow['conditional_branches']}/{rebuilt_flow['conditional_branches']}, "
@@ -275,6 +338,14 @@ def main() -> None:
         summary.append(f"First strict mismatch: +{mismatch:04X} (VA {va + mismatch:08X})")
 
     detail: list[str] = []
+    if iteration_call_deltas:
+        detail.append("")
+        detail.append("Call-target changes made by this iteration (current - previous):")
+        detail.extend(_format_iteration_call_deltas(iteration_call_deltas))
+    if call_target_deltas:
+        detail.append("")
+        detail.append("Call target count differences (rebuilt/original; aggregate diagnostic only):")
+        detail.extend(_format_call_count_deltas(call_target_deltas))
     if shape.get("first_change"):
         detail.append("")
         detail.append("First paired instruction-shape hunk (! differs):")
@@ -282,7 +353,7 @@ def main() -> None:
     if call_difference is not None:
         detail.append("")
         detail.append("First call/virtual-slot sequence divergence:")
-        detail.extend(_format_call_context(original_calls, rebuilt_calls, call_difference))
+        detail.extend(_format_call_context(original_calls, rebuilt_calls, call_difference, va))
     if actionable_target_mismatches:
         detail.append("")
         detail.append("Known direct-call target mismatches (not masked):")

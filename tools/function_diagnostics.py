@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import difflib
 import re
+from collections import Counter
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Iterable
@@ -130,6 +131,54 @@ def call_fingerprint(
                 kind = "indirect"
             calls.append({"offset": instruction.offset, "kind": kind, "target": target, "display": target})
     return calls
+
+
+def call_target_counts(calls: list[dict[str, object]]) -> list[dict[str, object]]:
+    """Return stable per-kind/target counts for reports and run-to-run comparison."""
+    counts = Counter((str(row["kind"]), str(row["target"])) for row in calls)
+    return [
+        {"kind": kind, "target": target, "count": count}
+        for (kind, target), count in sorted(counts.items())
+    ]
+
+
+def call_count_deltas(
+    original_counts: list[dict[str, object]],
+    rebuilt_counts: list[dict[str, object]],
+) -> list[dict[str, object]]:
+    """Compare call multisets without claiming that their sequence is aligned."""
+    original = {
+        (str(row["kind"]), str(row["target"])): int(row["count"])
+        for row in original_counts
+    }
+    rebuilt = {
+        (str(row["kind"]), str(row["target"])): int(row["count"])
+        for row in rebuilt_counts
+    }
+    rows: list[dict[str, object]] = []
+    for kind, target in sorted(set(original) | set(rebuilt)):
+        left = original.get((kind, target), 0)
+        right = rebuilt.get((kind, target), 0)
+        if left == right:
+            continue
+        rows.append(
+            {
+                "kind": kind,
+                "target": target,
+                "original": left,
+                "rebuilt": right,
+                "delta": right - left,
+            }
+        )
+    rows.sort(
+        key=lambda row: (
+            -abs(int(row["delta"])),
+            0 if int(row["original"]) == 0 or int(row["rebuilt"]) == 0 else 1,
+            str(row["kind"]),
+            str(row["target"]),
+        )
+    )
+    return rows
 
 
 def instruction_shape(instruction: DecodedInstruction) -> str:
