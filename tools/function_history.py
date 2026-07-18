@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import time
+import difflib
 from collections import Counter
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -184,6 +185,7 @@ def _artifact_candidates(slug: str, source_path: Path, custom_flags: Path) -> It
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.full.bin",
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.json",
         REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.txt",
+        REPO_ROOT / "build" / "asm" / f"rebuilt_{slug}.lines.json",
         REPO_ROOT / "build" / "diff" / f"{slug}.json",
         REPO_ROOT / "build" / "diff" / f"{slug}.txt",
         REPO_ROOT / "build" / "manifests" / f"build_{slug}.json",
@@ -636,3 +638,55 @@ def format_history_comparison(record: dict[str, str], left_selector: str, right_
     index = _load_index(function_slug(record))
     left = _resolve_run(index, left_selector)
     return format_checkpoint_comparison(record, left, right_selector, current_name=left_selector)
+
+
+def _run_source_path(record: dict[str, str], run: dict) -> Path:
+    slug = function_slug(record)
+    history_root = _history_root(slug).resolve()
+    run_root = (REPO_ROOT / str(run["artifact_path"])).resolve()
+    if not run_root.is_relative_to(history_root):
+        raise ValueError(f"Checkpoint artifact is outside function history: {run_root}")
+    source_root = run_root / "source"
+    preferred = source_root / preferred_source_path(record).name
+    if preferred.is_file():
+        return preferred
+    candidates = sorted(path for path in source_root.iterdir() if path.is_file()) if source_root.is_dir() else []
+    if len(candidates) != 1:
+        raise FileNotFoundError(f"Could not identify checkpoint source under {source_root}")
+    return candidates[0]
+
+
+def format_history_source_comparison(
+    record: dict[str, str],
+    left_selector: str,
+    right_selector: str,
+    *,
+    limit: int = 500,
+) -> list[str]:
+    """Return a bounded unified source diff between two persistent checkpoints."""
+    index = _load_index(function_slug(record))
+    left = _resolve_run(index, left_selector)
+    right = _resolve_run(index, right_selector)
+    left_path = _run_source_path(record, left)
+    right_path = _run_source_path(record, right)
+    left_lines = left_path.read_text(encoding="utf-8").splitlines()
+    right_lines = right_path.read_text(encoding="utf-8").splitlines()
+    diff = list(
+        difflib.unified_diff(
+            left_lines,
+            right_lines,
+            fromfile=f"{left_selector}:{str(left.get('id', ''))[:18]}/{left_path.name}",
+            tofile=f"{right_selector}:{str(right.get('id', ''))[:18]}/{right_path.name}",
+            lineterm="",
+        )
+    )
+    header = [
+        f"Checkpoint source comparison: {left_selector} ({str(left.get('id', ''))[:18]}) vs "
+        f"{right_selector} ({str(right.get('id', ''))[:18]})"
+    ]
+    if not diff:
+        return header + ["  (sources are identical)"]
+    if limit > 0 and len(diff) > limit:
+        omitted = len(diff) - limit
+        diff = diff[:limit] + [f"... {omitted} more unified-diff line(s); raise --history-diff-limit to show them"]
+    return header + diff

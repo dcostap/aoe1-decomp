@@ -49,7 +49,7 @@ human report is `build/diff/<slug>.txt`. The prior rebuilt output is retained un
 `build/history/<slug>/` so each run can report output blast radius and strict
 improvements/regressions.
 
-Every completed check also records a deduplicated persistent checkpoint under
+Every completed build/extraction check also records a deduplicated persistent checkpoint under
 `build/history/<slug>/runs/`. A checkpoint contains the source, custom flag state,
 generated object/assembly, extraction metadata, and full diff report (large text/JSON
 artifacts are gzip-compressed). The compact
@@ -64,6 +64,7 @@ python tools\check_function.py --va 00449750 --checkpoint best-call-prefix
 python tools\check_function.py --va 00449750 --history
 python tools\check_function.py --va 00449750 --compare-checkpoint best-call-prefix
 python tools\check_function.py --va 00449750 --compare-history best-call-prefix @best-shape
+python tools\check_function.py --va 00449750 --compare-history-source best-call-prefix @best-shape
 python tools\check_function.py --va 00449750 --restore-checkpoint best-call-prefix
 python tools\check_function.py --va 00449750 --restore-checkpoint @best-call-prefix
 python tools\check_function.py --va 00449750 --prune-history --prune-keep 20
@@ -86,6 +87,10 @@ movement of the first block divergence. Issue comparison uses call kind/target/s
 rather than absolute rebuilt offsets, so harmless code shifts do not disguise the
 same underlying discrepancy.
 
+`--compare-history-source LEFT RIGHT` prints a unified diff of the two checkpointed
+sources without restoring or rebuilding either candidate. Output is bounded to 500
+lines by default; use `--history-diff-limit 0` for the complete diff.
+
 History pruning is dry-run by default. It removes only old checkpoints that are
 unlabeled, off the Pareto frontier, and outside the requested recent-retention window.
 `--apply-prune` is required for deletion; labels, Pareto candidates, and the newest
@@ -102,6 +107,17 @@ target counts changed in the latest iteration. These counts expose missing or ex
 behavioral calls but do not replace call-site alignment: equal totals can still hide
 reordered calls, shared-tail placement changes, or wrong control flow.
 
+The summary therefore reports ordered call-site gaps separately as
+`site gaps -<deleted>/+<inserted> repl <replaced>`. These are alignment diagnostics,
+not aggregate counts; compensating extra/missing calls can no longer disappear behind
+a single `440/440` headline.
+
+Concise giant-function output now includes the aggregate target-count delta table
+instead of only saying how many targets differ. The highest-priority call discrepancy
+uses the aggregate direction when local alignment is ambiguous: a many-to-one tail
+merge can no longer be headlined as an "extra" rebuilt call when the rebuilt target
+count is globally lower.
+
 ## Call-site alignment
 
 `--call-map` prints every aligned call occurrence with:
@@ -117,10 +133,18 @@ The alignment uses a weighted dynamic program over target identity, occurrence
 frequency, neighboring calls, setup instructions, and block membership. Repeated
 calls therefore receive lower confidence unless their context agrees. VC5 forms that
 load a vtable, then load a slot into a register, then `call reg` are recognized in
-addition to direct `call dword [vtable+slot]` forms.
+addition to direct `call dword [vtable+slot]` forms. Slots spilled to an ESP-relative
+temporary are tracked through intervening pushes in the same basic block, so
+`load [vtable+10Ch] -> mov [esp+14h],reg -> call [esp+24h]` is reported as
+`vslot+0x10C`, not the unrelated spill displacement `vslot+0x24`.
 
 Call alignment remains diagnostic. Low-confidence replacements are not proof that two
 particular source call sites correspond.
+
+The report separately pairs calls contained in conservative order-independent
+relocated-block matches. These pairs do not inflate the ordered call similarity or
+prefix, but they identify delete/insert noise already explained by a uniquely matched
+moved cold block. They are also stored in `relocated_call_pairs` in the JSON report.
 
 ## Basic-block alignment
 
@@ -130,6 +154,29 @@ strongest exact block islands, and the first context-aware divergence. Blocks ar
 aligned using normalized instruction shape, contained calls, terminator shape, and
 successor count. Exact promotion still uses positional bytes and relocation identity,
 not block similarity.
+
+## Filtered maps
+
+Large functions rarely need every alignment row on the console. Map filters retain
+the original alignment indices so a filtered row can still be located in the full
+JSON/report:
+
+```bat
+python tools\check_function.py --va 004F21F0 --call-map-unmatched --map-limit 40
+python tools\check_function.py --va 004F21F0 --call-map-target setaction --map-limit 30
+python tools\check_function.py --va 004F21F0 --call-map-target-exact action
+python tools\check_function.py --va 004F21F0 --call-map-target-regex "^(direct|virtual) .*action$"
+python tools\check_function.py --va 004F21F0 --block-map-differences --map-limit 50
+```
+
+The three call-target filters are mutually exclusive. The legacy option performs a
+case-insensitive substring search; `--call-map-target-exact` compares the normalized
+target/display, and `--call-map-target-regex` searches kind/target/display.
+
+`--call-map-unmatched`, all call-target filters, and `--block-map-differences` imply
+their corresponding full-map option. `--map-limit 0` means unlimited. Filters affect
+console/report map rendering only; `build/diff/<slug>.json` continues to contain the
+complete call and compact block alignments.
 
 Functions with multiple original body ranges are decoded at each range's real VA while
 retaining combined comparison offsets. This prevents out-of-line case/EH blocks from
@@ -166,6 +213,45 @@ resynchronized similarity (equal resynchronized bytes divided by the larger inpu
 
 Use `--refresh-original` only when the pinned original inputs changed. Original
 extraction is otherwise cached.
+
+## Fingerprinted rebuilt-artifact cache
+
+Rebuilt compilation is cached by the pinned compiler identity, effective response
+file, source, and transitive repo-local includes. Repeating a range/call/block query
+without changing those inputs reuses the object and extracted bytes instead of
+compiling the function again. Cached diagnostic-only runs do not create duplicate
+automatic history checkpoints or repeat a stale "This iteration" comparison.
+
+```bat
+python tools\check_function.py --va 004F21F0 --call-map-target setaction
+python tools\check_function.py --va 004F21F0 --no-build --range orig:+0900-+0A40
+python tools\check_function.py --va 004F21F0 --rebuild
+```
+
+`--no-build` is strict: it fails when the source, flags, compiler configuration, or
+repo-local include fingerprint changed. `--rebuild` bypasses the cache. The older
+explicit spelling `--reuse-latest` is accepted, but fingerprinted reuse is the
+default.
+
+Normal builds also request a VC5 assembly/source listing. The parsed map is written
+to `build/asm/rebuilt_<slug>.lines.json`. Rebuilt calls, blocks, focused disassembly,
+and instruction contexts therefore include compiler-attributed living-source line
+numbers alongside the original PDB lines.
+
+`--stack-map` prints the VC5 listing's optimized local symbols grouped by compiler
+stack offset. Several names at one offset are evidence of lifetime-based home reuse,
+not duplicate storage:
+
+```bat
+python tools\check_function.py --va 004F21F0 --stack-map --no-build
+```
+
+Basic-block diagnostics also report conservative order-insensitive cold-block
+candidates. Exact signatures must be unique; fuzzy candidates require a distinctive
+identical call sequence and strong instruction-shape agreement. These candidates are
+diagnostic only, but prevent a physically moved cold block from being presented as a
+confident unrelated call replacement. The JSON report includes attributed CFG
+terminator/successor differences in `cfg_alignment_issues`.
 
 Core diagnostics also have committed golden fixtures in
 `tests/fixtures/function_diagnostics_golden.json`. They cover exact virtual calls,

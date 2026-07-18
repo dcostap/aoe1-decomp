@@ -126,6 +126,21 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual([(row["kind"], row["target"]) for row in calls], [("virtual", "vslot+0x28")])
         self.assertEqual(calls[0]["block_offset"], 0)
 
+    def test_stack_spilled_vtable_slot_tracks_push_adjustments(self) -> None:
+        # mov eax,[ecx]; mov edx,[eax+10Ch]; mov [esp+14h],edx;
+        # push four args; call dword [esp+24h]; ret
+        instructions = decode_instructions(
+            bytes.fromhex("8B 01 8B 90 0C 01 00 00 89 54 24 14 6A 01 6A 02 6A 03 6A 04 FF 54 24 24 C3"),
+            0x1000,
+        )
+        calls = call_fingerprint(instructions, original=False)
+        self.assertEqual([(row["kind"], row["target"]) for row in calls], [("virtual", "vslot+0x10C")])
+
+    def test_unproven_esp_indirect_call_is_not_a_virtual_slot(self) -> None:
+        instructions = decode_instructions(bytes.fromhex("FF 54 24 24 C3"), 0x1000)
+        calls = call_fingerprint(instructions, original=False)
+        self.assertEqual([(row["kind"], row["target"]) for row in calls], [("indirect", "indirect")])
+
     def test_call_alignment_marks_contextual_slot_replacement(self) -> None:
         original = [
             {"offset": 1, "kind": "direct", "target": "a", "display": "a", "setup": ["push 1"], "previous_targets": [], "next_targets": ["b"]},
@@ -169,6 +184,29 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         alignment = block_alignment(original_blocks, rebuilt_blocks)
         self.assertGreaterEqual(len(alignment["strong_islands"]), 1)
         self.assertIsNotNone(alignment["first_difference_row"])
+
+    def test_block_alignment_reports_unique_relocated_exact_block(self) -> None:
+        def block(index: int, offset: int, signature: str) -> dict[str, object]:
+            return {
+                "index": index,
+                "offset": offset,
+                "end_offset": offset + 1,
+                "instruction_count": 1,
+                "shapes": [signature],
+                "signature": signature,
+                "terminator": signature,
+                "successors": [],
+                "calls": [],
+            }
+
+        alignment = block_alignment(
+            [block(0, 0, "a"), block(1, 1, "b"), block(2, 2, "c")],
+            [block(0, 0, "a"), block(1, 1, "c"), block(2, 2, "b")],
+        )
+        self.assertTrue(alignment["relocated_pairs"])
+        pair = alignment["relocated_pairs"][0]
+        self.assertTrue(pair["exact"])
+        self.assertEqual(pair["original"]["signature"], pair["rebuilt"]["signature"])
 
     def test_iteration_delta_reports_direction(self) -> None:
         result = iteration_delta(

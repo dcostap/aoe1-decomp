@@ -106,6 +106,20 @@ B
         specs = variant_lab.make_specs(plan)
         self.assertEqual(len(specs), 16)  # 15 dummy-surface cases plus one outer-only branch.
 
+    def test_localized_splice_retains_markers_and_replaces_body(self) -> None:
+        base = "before\n// REGION START\nold body\n// REGION END\nafter\n"
+        fragment = "@choice body\n@case a\nnew a\n@case b\nnew b\n@endchoice\n"
+        combined = variant_lab.splice_template(base, fragment, "REGION START", "REGION END")
+        self.assertNotIn("old body", combined)
+        self.assertIn("// REGION START\n@choice body", combined)
+        self.assertIn("@endchoice\n// REGION END", combined)
+        plan = variant_lab.parse_template(combined)
+        self.assertEqual(len(variant_lab.make_specs(plan)), 2)
+
+    def test_localized_splice_rejects_ambiguous_marker(self) -> None:
+        with self.assertRaisesRegex(ValueError, "exactly one"):
+            variant_lab.splice_template("// X\n// X\n// Y\n", "body\n", "X", "Y")
+
 
 if __name__ == "__main__":
     unittest.main()

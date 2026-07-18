@@ -16,6 +16,7 @@ from function_history import (  # noqa: E402
     _resolve_run,
     _validate_label,
     history_prune_candidates,
+    format_history_source_comparison,
     prune_history,
     structural_checkpoint_delta,
 )
@@ -165,6 +166,33 @@ class FunctionHistoryTests(unittest.TestCase):
             self.assertFalse(old_dir.exists())
             self.assertTrue(kept_dir.exists())
             self.assertTrue(any("Deleted 1 checkpoint" in line for line in lines))
+
+    def test_history_source_comparison_returns_bounded_unified_diff(self) -> None:
+        record = {"va": "00001000", "name": "demo"}
+        slug = "00001000_demo"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            history_root = root / "build" / "history" / slug
+            for run_id, source in (("left-run", "one\ntwo\n"), ("right-run", "one\nchanged\nthree\n")):
+                source_dir = history_root / "runs" / run_id / "source"
+                source_dir.mkdir(parents=True)
+                (source_dir / f"{slug}.cpp").write_text(source, encoding="utf-8")
+            index = {
+                "version": 1,
+                "slug": slug,
+                "labels": {"left": "left-run", "right": "right-run"},
+                "runs": [
+                    {"id": "left-run", "artifact_path": str((history_root / "runs" / "left-run").relative_to(root))},
+                    {"id": "right-run", "artifact_path": str((history_root / "runs" / "right-run").relative_to(root))},
+                ],
+            }
+            (history_root / "history.json").write_text(json.dumps(index), encoding="utf-8")
+            with patch("function_history.REPO_ROOT", root):
+                lines = format_history_source_comparison(record, "left", "right", limit=5)
+            text = "\n".join(lines)
+            self.assertIn("Checkpoint source comparison", text)
+            self.assertIn("-two", text)
+            self.assertTrue(any("more unified-diff line" in line for line in lines))
 
 
 if __name__ == "__main__":

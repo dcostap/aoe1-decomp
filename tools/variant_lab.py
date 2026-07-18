@@ -138,6 +138,20 @@ Active axes select one case. Reusing the same axis name links choices together;
 if a later active block omits the selected label, that block emits nothing.
 Duplicate @case labels in one block are rejected.
 
+Localized splice templates
+--------------------------
+
+For giant functions, a template may contain only the region being varied. Two
+unique marker lines in an unchanged full source delimit the replacement:
+
+  python tools/variant_lab.py --va 004F21F0 --template build/temp/gate.tpl.cpp ^
+    --splice-base src/scratch/004F21F0_taskActiveSoldiers.cpp ^
+    --splice-start "// LAB START gate" --splice-end "// LAB END gate"
+
+The marker lines remain in the generated source; text between them is replaced by
+the fragment before @choice expansion. Preview/show/expand modes support the same
+options, so the full spliced source can be inspected before compiling.
+
 Choices may be nested inside @case bodies. Nested axes are active only when their
 parent case is selected, so this generates 3 variants, not 4:
 
@@ -2027,6 +2041,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--va", help="Function VA in hex, e.g. 0051ACA0")
     parser.add_argument("--template", help="Full-source template path, or '-' for stdin")
     parser.add_argument(
+        "--splice-base",
+        metavar="PATH",
+        help="Treat --template as a localized replacement fragment spliced into this full source.",
+    )
+    parser.add_argument("--splice-start", metavar="MARKER", help="Unique line substring starting a localized splice region.")
+    parser.add_argument("--splice-end", metavar="MARKER", help="Unique line substring ending a localized splice region.")
+    parser.add_argument(
         "--flag-preset",
         action="append",
         choices=sorted(FLAG_PRESETS.keys()),
@@ -2066,6 +2087,24 @@ def init_template(va_text: str) -> Path:
     return out_path
 
 
+def splice_template(base_text: str, fragment_text: str, start_marker: str, end_marker: str) -> str:
+    """Replace text between two unique marker lines while retaining the markers."""
+    base_lines = base_text.splitlines(keepends=True)
+    start_rows = [index for index, line in enumerate(base_lines) if start_marker in line]
+    end_rows = [index for index, line in enumerate(base_lines) if end_marker in line]
+    if len(start_rows) != 1:
+        raise ValueError(f"splice start marker must match exactly one line; found {len(start_rows)}")
+    if len(end_rows) != 1:
+        raise ValueError(f"splice end marker must match exactly one line; found {len(end_rows)}")
+    start, end = start_rows[0], end_rows[0]
+    if end <= start:
+        raise ValueError("splice end marker must occur after the start marker")
+    fragment = fragment_text
+    if fragment and not fragment.endswith(("\n", "\r")):
+        fragment += "\n"
+    return "".join(base_lines[: start + 1]) + fragment + "".join(base_lines[end:])
+
+
 def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
@@ -2073,6 +2112,9 @@ def main(argv: list[str] | None = None) -> int:
         parse_args(["--help"])
         return 0
     args = parse_args(argv)
+    splice_values = (args.splice_base, args.splice_start, args.splice_end)
+    if any(splice_values) and not all(splice_values):
+        raise SystemExit("--splice-base, --splice-start, and --splice-end must be supplied together")
     if args.list_templates:
         for name, path in available_variant_templates():
             print(f"{name}\t{path}")
@@ -2101,6 +2143,26 @@ def main(argv: list[str] | None = None) -> int:
         template_path = repo_path(args.template)
         template_text = template_path.read_text(encoding="utf-8")
         template_name = str(template_path)
+
+    splice_metadata = None
+    if args.splice_base:
+        base_path = repo_path(args.splice_base)
+        try:
+            template_text = splice_template(
+                base_path.read_text(encoding="utf-8"),
+                template_text,
+                args.splice_start,
+                args.splice_end,
+            )
+        except ValueError as exc:
+            raise SystemExit(f"splice error: {exc}") from exc
+        splice_metadata = {
+            "base": str(base_path),
+            "fragment": template_name,
+            "start_marker": args.splice_start,
+            "end_marker": args.splice_end,
+        }
+        template_name = f"splice {template_name} into {base_path}"
 
     preset_text = flag_preset_template(args.flag_preset)
     raw_effective_template_text = template_text + preset_text
@@ -2163,6 +2225,8 @@ def main(argv: list[str] | None = None) -> int:
     work_root = run_dir / "work"
     ensure_dir(work_root)
     (run_dir / "template_input.cpp").write_text(template_text, encoding="utf-8")
+    if splice_metadata:
+        (run_dir / "splice.json").write_text(json.dumps(splice_metadata, indent=2), encoding="utf-8")
     if preset_text:
         (run_dir / "flag_presets.tpl").write_text(preset_text, encoding="utf-8")
     if preset_text or template_expansions:

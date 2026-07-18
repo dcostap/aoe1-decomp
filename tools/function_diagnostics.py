@@ -5,7 +5,7 @@ import re
 from collections import Counter
 from dataclasses import dataclass, replace
 from functools import lru_cache
-from typing import Iterable
+from typing import Callable, Iterable
 
 from iced_x86 import Decoder, DecoderOptions, FlowControl, Formatter, FormatterSyntax
 
@@ -16,11 +16,20 @@ _REGISTER_RE = re.compile(
     r"\b(?:e?[abcd]x|e?[sd]i|e?[sb]p|[abcd][lh]|[cdefgs]s|st[0-7]|xmm\d+)\b",
     re.IGNORECASE,
 )
-_VIRTUAL_SLOT_RE = re.compile(r"call\s+dword\s+\[[^\]]*?\+([0-9a-f]+)h\]", re.IGNORECASE)
+_VIRTUAL_SLOT_RE = re.compile(
+    r"call\s+dword\s+\[(e(?:ax|bx|cx|dx|si|di|bp))\+([0-9a-f]+)h\]$",
+    re.IGNORECASE,
+)
 _CALL_REGISTER_RE = re.compile(r"call\s+(e(?:ax|bx|cx|dx|si|di|bp))$", re.IGNORECASE)
+_CALL_STACK_RE = re.compile(r"call\s+dword\s+\[esp(?:\+([0-9a-f]+)h?)?\]$", re.IGNORECASE)
 _MOV_RE = re.compile(r"mov\s+(e(?:ax|bx|cx|dx|si|di|bp)),(.+)$", re.IGNORECASE)
+_MOV_STACK_STORE_RE = re.compile(
+    r"mov\s+(?:dword\s+)?\[esp(?:\+([0-9a-f]+)h?)?\],(e(?:ax|bx|cx|dx|si|di|bp))$",
+    re.IGNORECASE,
+)
 _MEMORY_RE = re.compile(r"(?:dword\s+)?\[(e(?:ax|bx|cx|dx|si|di|bp|sp))(?:(\+|-)([0-9a-f]+)h?)?\]$", re.IGNORECASE)
 _REGISTER_RE_FULL = re.compile(r"e(?:ax|bx|cx|dx|si|di|bp)$", re.IGNORECASE)
+_STACK_ADJUST_RE = re.compile(r"(add|sub)\s+esp,([0-9a-f]+)h?$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -162,15 +171,19 @@ def _block_instruction_ranges(instructions: list[DecodedInstruction]) -> list[tu
 
 
 def _loaded_virtual_slots(instructions: list[DecodedInstruction]) -> dict[int, int]:
-    """Recognize VC5's load-vtable/load-slot/call-register virtual-call form.
+    """Recognize VC5's loaded virtual slots through registers and stack spills.
 
     This is intentionally conservative.  It only propagates a slot loaded from a
-    register that was itself loaded from ``[object]`` in the same basic block.
+    register that was itself loaded from ``[object]`` in the same basic block.  A
+    slot spilled to ``[esp+N]`` is keyed by its stack coordinate, accounting for
+    intervening pushes, so the later ``call [esp+M]`` is not misreported as vslot M.
     """
     result: dict[int, int] = {}
     for start, end in _block_instruction_ranges(instructions):
         vtable_registers: set[str] = set()
         slot_registers: dict[str, int] = {}
+        stack_slots: dict[int, int] = {}
+        stack_delta = 0
         for instruction in instructions[start:end]:
             text = instruction.text.lower().strip()
             call_match = _CALL_REGISTER_RE.fullmatch(text)
@@ -178,6 +191,22 @@ def _loaded_virtual_slots(instructions: list[DecodedInstruction]) -> dict[int, i
                 register = call_match.group(1)
                 if register in slot_registers:
                     result[instruction.offset] = slot_registers[register]
+            stack_call_match = _CALL_STACK_RE.fullmatch(text)
+            if stack_call_match:
+                displacement = int(stack_call_match.group(1) or "0", 16)
+                coordinate = stack_delta + displacement
+                if coordinate in stack_slots:
+                    result[instruction.offset] = stack_slots[coordinate]
+
+            stack_store_match = _MOV_STACK_STORE_RE.fullmatch(text)
+            if stack_store_match:
+                displacement = int(stack_store_match.group(1) or "0", 16)
+                register = stack_store_match.group(2)
+                coordinate = stack_delta + displacement
+                if register in slot_registers:
+                    stack_slots[coordinate] = slot_registers[register]
+                else:
+                    stack_slots.pop(coordinate, None)
 
             mov_match = _MOV_RE.fullmatch(text)
             if mov_match:
@@ -215,6 +244,22 @@ def _loaded_virtual_slots(instructions: list[DecodedInstruction]) -> dict[int, i
                 for register in ("eax", "ecx", "edx"):
                     vtable_registers.discard(register)
                     slot_registers.pop(register, None)
+                stack_slots.clear()
+
+            if text.startswith("push "):
+                stack_delta -= 4
+            elif text.startswith("pop "):
+                stack_delta += 4
+            else:
+                adjust_match = _STACK_ADJUST_RE.fullmatch(text)
+                if adjust_match:
+                    amount = int(adjust_match.group(2), 16)
+                    stack_delta += amount if adjust_match.group(1) == "add" else -amount
+                elif text.startswith(("lea esp,", "mov esp,")):
+                    # Unknown stack rebasing invalidates coordinates accumulated
+                    # earlier in the block.
+                    stack_slots.clear()
+                    stack_delta = 0
     return result
 
 
@@ -257,7 +302,7 @@ def call_fingerprint(
         elif instruction.flow_control == FlowControl.INDIRECT_CALL:
             slot_match = _VIRTUAL_SLOT_RE.search(instruction.text)
             if slot_match:
-                slot = int(slot_match.group(1), 16)
+                slot = int(slot_match.group(2), 16)
                 target = f"vslot+0x{slot:X}"
                 kind = "virtual"
             elif instruction.offset in loaded_slots:
@@ -615,6 +660,64 @@ def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, o
             )
             current = []
     islands.sort(key=lambda row: (-int(row["instructions"]), int(row["original_start"])))
+    deleted = [row["original"] for row in rows if row["status"] == "delete" and row.get("original")]
+    inserted = [row["rebuilt"] for row in rows if row["status"] == "insert" and row.get("rebuilt")]
+    inserted_by_signature: dict[str, list[dict[str, object]]] = {}
+    for block in inserted:
+        inserted_by_signature.setdefault(str(block["signature"]), []).append(block)
+    relocated_pairs: list[dict[str, object]] = []
+    consumed_rebuilt: set[int] = set()
+    # Exact signatures are safe, order-insensitive evidence. Restrict to unique
+    # candidates so repeated tiny epilogues do not manufacture correspondences.
+    deleted_counts = Counter(str(block["signature"]) for block in deleted)
+    for left in deleted:
+        signature = str(left["signature"])
+        candidates = inserted_by_signature.get(signature, [])
+        if deleted_counts[signature] != 1 or len(candidates) != 1:
+            continue
+        right = candidates[0]
+        consumed_rebuilt.add(int(right["index"]))
+        relocated_pairs.append(
+            {
+                "confidence": "high",
+                "exact": True,
+                "instruction_count": int(left["instruction_count"]),
+                "original": left,
+                "rebuilt": right,
+                "offset_delta": int(right["offset"]) - int(left["offset"]),
+            }
+        )
+    # Calls provide a useful conservative fallback for larger non-exact cold
+    # blocks. Require a distinctive non-empty call sequence and strong shape.
+    for left in deleted:
+        if any(pair["original"] is left for pair in relocated_pairs) or not left.get("calls"):
+            continue
+        candidates: list[tuple[float, dict[str, object]]] = []
+        for right in inserted:
+            if int(right["index"]) in consumed_rebuilt or left.get("calls") != right.get("calls"):
+                continue
+            ratio = difflib.SequenceMatcher(
+                a=list(left["shapes"]), b=list(right["shapes"]), autojunk=False
+            ).ratio()
+            if ratio >= 0.78:
+                candidates.append((ratio, right))
+        candidates.sort(key=lambda item: -item[0])
+        if len(candidates) != 1:
+            continue
+        ratio, right = candidates[0]
+        consumed_rebuilt.add(int(right["index"]))
+        relocated_pairs.append(
+            {
+                "confidence": "medium",
+                "exact": False,
+                "shape_similarity": ratio,
+                "instruction_count": int(left["instruction_count"]),
+                "original": left,
+                "rebuilt": right,
+                "offset_delta": int(right["offset"]) - int(left["offset"]),
+            }
+        )
+    relocated_pairs.sort(key=lambda row: (-int(row["instruction_count"]), int(row["original"]["offset"])))
     first_difference = next((index for index, row in enumerate(rows) if row["status"] != "equal"), None)
     return {
         "rows": rows,
@@ -624,6 +727,7 @@ def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, o
         ),
         "first_difference_row": first_difference,
         "strong_islands": islands[:8],
+        "relocated_pairs": relocated_pairs[:32],
     }
 
 
@@ -734,6 +838,7 @@ def paired_instruction_context(
     alignment: dict[str, object],
     function_va: int,
     radius: int = 4,
+    rebuilt_line_for_offset: Callable[[int], int | None] | None = None,
 ) -> list[str]:
     first = alignment.get("first_change")
     if not first:
@@ -756,7 +861,9 @@ def paired_instruction_context(
             line_text = "" if line is None else f" L{line}"
             left_text = f"+{left_item.offset:04X}{line_text} {left_item.text}"
         if right_item is not None:
-            right_text = f"+{right_item.offset:04X} {right_item.text}"
+            rebuilt_line = None if rebuilt_line_for_offset is None else rebuilt_line_for_offset(right_item.offset)
+            line_text = "" if rebuilt_line is None else f" L{rebuilt_line}"
+            right_text = f"+{right_item.offset:04X}{line_text} {right_item.text}"
         marker = " " if left_item and right_item and instruction_shape(left_item) == instruction_shape(right_item) else "!"
         lines.append(f" {marker} {left_text:<49} | {right_text}")
     return lines
