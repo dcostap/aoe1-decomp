@@ -44,6 +44,38 @@
 // - moved the victory-condition target-selection/grow logic onto the type-100/0x67 attack-enabled arm instead of the unrelated inactive generic-type arm. Shared only the binary-observed ManagedArray delete tail and the active exception-path finish; this removed the duplicate objectToAttackByGroup path and brought direct-call totals much closer.
 // - reshaped the active action dispatch around the original 0xc/0x13/3 gates, shared the action-7 timeout path, restored the second assist-group lookup, and routed the defend exception path through the observed common attack-state clear. This moved ordered call alignment from the first relic failure calls to the post-relic-success tail.
 // - current check_function: MISMATCH 92.2547% positional / 116.7328% edit, shape 52.82%, longest aligned run 96, frame exact 0xD0. Rebuilt is now 9380 vs 9580 (-200), 435 vs 440 calls, 231 vs 233 conditionals, and 64 vs 69 jumps. First mismatch remains +0x60 (`test esi,esi` vs zero-in-EBP compare); first ordered call divergence is now +0x36A after the relic fallback, where rebuilt still places one setAction failure block before the direct-success setters.
+// - inverted the action-0x10 type-100 reset arm to keep its commander/canAttack path inline before the non-100 gather path, matching the original physical order; shape rose from 52.82% to 53.66% and ordered-call alignment from 80.00% to 81.36%.
+// - inverted the action-2 valid-target subtype dispatch so non-default subtypes stay inline and subtype -1 becomes the late handler, matching the original +1C9C compare chain and post-epilogue handler family. This was the major structural breakthrough: shape rose to 69.12%, call alignment to 85.23%, and edit/resync similarity to 41.08%.
+// - reordered action-0x13 predicates to isGathered -> elapsed-time/consecutive-idle -> allUnitsIdle, following the original call order. Kept despite broad address movement because all three calls now align in order.
+// - restored the binary-observed independent transport inside-object tests instead of an else-if simplification. This recovered the second commander call and removeUnit block, made CFG conditional counts exact (233/233), reduced target-count differences from 11 to 8, and raised shape/call alignment to 70.33%/86.82%.
+// - spelling the outer action-2 invalid-target predicate first (as suggested by PDB line order) and naming a null-group local were codegen-neutral; retained the natural negative invalid-target source, but rolled back the unused null local.
+// - current baseline: MISMATCH 92.0564% positional / 51.68% bounded edit, shape 70.33%, 3911 equal bytes, frame exact 0xD0. Rebuilt is 9387 vs 9580 (-193), 436 vs 440 calls, conditionals exact at 233/233, jumps 62 vs 69. First mismatch remains +0x60 (`test esi,esi` versus `xor ebp; cmp esi,ebp`); first ordered divergence remains the early relic success/failure block placement around +0x360.
+// - rewrote the transport-loop invalid-object/invalid-unitAI cases as natural nested branches rather than goto handlers; this preserved both binary-observed logCommonHistory call sites and improved bounded edit similarity.
+// - restored the missing +0x10c weaponRange virtual call in the defend-object canPath predicate and the type-0x67 guard that skips the attack exception-path fallback; both aggregate call counts now match the original.
+// - made the two defend-object null failures exit immediately, preventing VC5 from merging their distinct setAction calls. Split the inactive default-task selection so its action result is materialized for the shared task tail.
+// - shared the defend/relic gather-location and set-in-use tail through one label, matching the original common +27F4 tail and eliminating one extra call of each kind. The three float values intentionally reuse the pending-task stack homes.
+// - corrected the active attack exception fallback to nested type/path/path-point gates and duplicated its natural completion tail. This recovered the missing task call and brought rebuilt size from -193 to -41 bytes; VC5 did not tail-merge targetLocation/waitCode as far as the original, leaving one extra call of each.
+// - modeled the two path-point outputs as distinct float locals (including the defend gatherAux); frame returned to the exact 0xD0.
+// - current baseline: rebuilt 9539 vs 9580 (-41), 441 vs 440 calls, frame exact 0xD0, shape 71.17%, bounded edit 49.40%, and 4145 equal bytes. Remaining aggregate call gaps are one missing setAction plus one extra setTargetLocation and setWaitCode; CFG has one extra conditional and four fewer jumps. First mismatch remains +0x60 (`test esi,esi` versus `xor ebp; cmp esi,ebp`).
+// - split the active exception-path canPath failure from the type/path-point rejection. The former also clears numberObjectsToDestroy, matching the distinct original +09E8 failure block and recovering the last missing setAction call.
+// - precompute the exception-path target coordinates in the three pending-task homes before converging the active-selection and action-7 paths. Sharing only the calls after task preserves both task call sites while tail-sharing setAction/target/type/location/in-use/wait. This made all 440 aggregate call counts exact.
+// - hoisted the reused ObjectMemory pointer to function scope so the converged exception tail does not need an artificial fourth pending local. The defend canPath output is one float, while its two find-first-path outputs remain distinct floats; correcting that surface keeps the frame at the exact 0xD0.
+// - inverted the defend and active-attack direct canPath branches so the exception fallback is source-inline and direct success is the else arm, matching the original cold-block order. Shape improved from 69.99% to 73.99% and call alignment from 87.73% to 90.45%. Applying the same common failure label to defend/relic over-merged five setter calls, so that probe was rolled back.
+// - current baseline: rebuilt/original size exactly 9580, calls exactly 440 with zero target-count differences, frame exactly 0xD0, saved registers exact, shape 73.99%, call alignment 90.45%, bounded edit 46.19%, and 4415 equal bytes. CFG is close at 234/233 conditionals and 67/69 jumps. First mismatch is +0x57 because the rebuilt second sentinel compare uses eax and `test esi,esi`, while original keeps the sentinel in ebx then emits `xor ebp; cmp esi,ebp`.
+// - removed the incorrect playNumber=-1 store from the active-selection null-commander failure. This moved the block into the original +090B family, improved strict diff to 91.88%, and extended ordered call alignment from the early 30s to 57 calls.
+// - rewrote the active exception fallback as linear negative guards (type, additional canPath, then positive path-point success), preserving the original distinct canPath failure and rejection blocks. Splitting task/setAction/setTarget/setTargetType before the shared coordinate/set-location tail raised the ordered call prefix to 109 and shape above 75%.
+// - the original direct canPath and additional-passability canPath use distinct float output homes; modeling `point` and `exceptionPoint` separately restores the exact 0xD0 frame after the exception-prefix split. The action-0x0f invalid reset also requires the observed numberObjectsToDestroy=0 store.
+// - action-0x0f and action-0x10 invalid resets appear to converge at the old LAB_004f37f1 source label. Explicitly unifying them removes the extra target/targetType pair, but VC5 then over-merges one unrelated setAction/setInUse pair and shrinks the function by 52 bytes; rolled back pending a source shape that preserves those setters naturally.
+// - current baseline: size exactly 9580, frame exactly 0xD0, saved registers exact, shape 75.66%, call alignment 90.95% with a 109-call prefix, and CFG 234/233 conditionals plus 66/69 jumps. Calls are 442/440: only one extra setTarget and setTargetType site remain, localized to reset-tail sharing. First mismatch remains +0x57 at the second sentinel/null test.
+// - unified the action-0x0f/0x10 invalid reset at the binary-observed common tail, then isolated the action-0x10 attack failure with a local label and natural direct task call. This prevents VC5 from merging that setInUse/setAction pair with the distant action-7 timeout tail: aggregate calls are now exact at 440, size is -27, shape 75.70%, and call alignment 91.59%.
+// - restored the original combined inactive task gate (`allOutside || action()!=2`), extending the exact ordered call prefix from 109 to 215. The loss-check task now uses the observed post-setAction action() call and a direct task tail, which restores exact size/call totals and also fixes the opening sentinel register to EBX.
+// - action-0x10 performs the target/object lookup before its type test even though non-type-100 paths discard the result. Reusing pendingTaskCode for that binary-observed pointer home preserves the exact 0xD0 frame. Current milestone: size/frame/calls exact, shape 76.53%, call alignment 92.27% with prefix 225, edit/resync similarity 55.41%; first mismatch is now +0x60 at the zero-in-EBP null compare.
+// - inlined the action-0x10 taskAttacker target/location arguments to recover the original right-to-left call order, extending the ordered prefix to 255. This removes two artificial float homes and exposes an 8-byte frame deficit that still needs a real local-layout fix.
+// - restored the binary-observed lastAttackResponseTime update and changed the action-0x10 success to task the group's post-setAction action value with args (1,0). The natural direct suffix merges with the loss-check suffix as in the original and extends the ordered call prefix to 323.
+// - isolated the action-7 timeout with its natural direct task call, preventing VC5 from merging its setAction with a distant identical tail. Aggregate calls return to exact and the ordered prefix reaches 358. A direct-task spelling for the sn[0x31]==2 reset added an action call and collapsed the early prefix, so it was rolled back.
+// - the non-default action-2 idle-timeout reset must exit immediately; letting it fall into the play-status recovery was behaviorally wrong and encouraged setter-tail merging. Restoring the direct task_done edge keeps its target-type/location calls distinct, raises shape to 77.86% and call alignment to 92.95%, and extends the ordered prefix to 360.
+// - enlarging the action-7 auxiliary output window from 4 to 12 bytes restored the 0xD0 frame and improved block coverage, but it is not justified by the float* callee surface and changed the sentinel register, so it was rolled back. The current 0xC8 frame is an exposed real-local modeling deficit, not a padding invitation.
+// - an explicit goto split for subtype==-1 moved that cold handler too early, reduced call alignment to 88.86%, and was rolled back; keep the positive non-default subtype body for now.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1728,6 +1760,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
     int pendingTaskCode;
     int pendingTaskArg1;
     int pendingTaskArg2;
+    ObjectMemory* mem;
     int t;
 
     cur = this->groups.next;
@@ -1767,7 +1800,6 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
 
             if (!cur->inUse()) {
                 int allOutsideTransport;
-                ObjectMemory* mem;
                 RGE_Static_Object* commanderObj;
 
                 mem = 0;
@@ -1780,18 +1812,21 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         int commander;
                         int distance;
                         float gatherX;
-                        XYPoint commanderPoint;
+                        float gatherAux;
+                        float commanderPoint;
                         XYZPoint pathPoint;
 
                         commander = cur->commander();
                         mem = this->md->informationAI.objectToDefend(commander);
                         if (mem == 0) {
                             cur->setAction(1);
+                            goto task_done;
                         } else {
                             commander = cur->commander();
                             commanderObj = this->md->object(commander);
                             if (commanderObj == 0) {
                                 cur->setAction(1);
+                                goto task_done;
                             } else {
                                 if (mem->type == 0x6d) {
                                     distance = this->sn[0x16];
@@ -1801,21 +1836,14 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 pathPoint.x = mem->x;
                                 pathPoint.y = mem->y;
                                 pathPoint.z = mem->z;
-                                if (((VObjCanMove*)commanderObj)->canPath(pathPoint, (float)distance,
-                                        mem->id, (float*)&commanderPoint, 1, -1, -1)) {
-                                    mem->attackAttempts = 1;
-                                    cur->setTarget(mem->id);
-                                    cur->setTargetType((int)mem->type);
-                                    cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
-                                    cur->setGatherLocation((float)mem->x, (float)mem->y, (float)mem->z);
-                                    cur->setInUse(1);
-                                    goto inactive_post_setup;
-                                } else {
+                                if (!((VObjCanMove*)commanderObj)->canPath(pathPoint,
+                                        ((VObjWeaponRange*)commanderObj)->weaponRange(),
+                                        mem->id, &commanderPoint, 1, -1, -1)) {
                                     if (((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
-                                            pathPoint, (float)distance, mem->id, (float*)&commanderPoint,
+                                            pathPoint, (float)distance, mem->id, &commanderPoint,
                                             1, 0x16, 1, -1, -1) &&
                                         ((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
-                                            2, &gatherX, (float*)&commanderPoint.y) == 1) {
+                                            2, &gatherX, &gatherAux) == 1) {
                                         mem->attackAttempts = 1;
                                         cur->task(this, this->md, 0x0e, 1, 0);
                                         cur->setAction(0x0d);
@@ -1826,8 +1854,17 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         cur->setWaitCode(200);
                                         goto clear_attack_state;
                                     } else {
-                                        cur->setAction(1);
+                                        goto active_no_commander;
                                     }
+                                } else {
+                                    mem->attackAttempts = 1;
+                                    cur->setTarget(mem->id);
+                                    cur->setTargetType((int)mem->type);
+                                    cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
+                                    *(float*)&pendingTaskCode = (float)mem->x;
+                                    *(float*)&pendingTaskArg1 = (float)mem->y;
+                                    *(float*)&pendingTaskArg2 = (float)mem->z;
+                                    goto inactive_direct_gather;
                                 }
                             }
                         }
@@ -1887,9 +1924,10 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                             cur->setTarget(relic->id);
                                             cur->setTargetType(0x6d);
                                             cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
-                                            cur->setGatherLocation(relic->world_x, relic->world_y, relic->world_z);
-                                            cur->setInUse(1);
-                                            goto inactive_post_setup;
+                                            *(float*)&pendingTaskCode = relic->world_x;
+                                            *(float*)&pendingTaskArg1 = relic->world_y;
+                                            *(float*)&pendingTaskArg2 = relic->world_z;
+                                            goto inactive_direct_gather;
                                         }
                                     }
                                 }
@@ -2108,16 +2146,51 @@ active_target_selected_common:
 attack_target_ready:
                                 commanderObj = this->md->object(cur->commander());
                                 if (commanderObj == 0) {
+active_no_commander:
                                     cur->setAction(1);
+                                    goto clear_attack_state;
                                 } else {
                                     float point;
                                     XYZPoint targetPoint;
                                     targetPoint.x = mem->x;
                                     targetPoint.y = mem->y;
                                     targetPoint.z = mem->z;
-                                    if (((VObjCanMove*)commanderObj)->canPath(targetPoint,
+                                    if (!((VObjCanMove*)commanderObj)->canPath(targetPoint,
                                             ((VObjWeaponRange*)commanderObj)->weaponRange(), mem->id,
                                             &point, 1, mem->owner, 0x1b)) {
+                                        float exceptionPoint;
+                                        float gatherX2;
+                                        float aux2;
+                                        if (cur->type() == 0x67) {
+                                            goto active_exception_rejected;
+                                        }
+                                        if (!((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
+                                                targetPoint, ((VObjWeaponRange*)commanderObj)->weaponRange(),
+                                                mem->id, &exceptionPoint, 1, 0x16, 1,
+                                                mem->owner, 0x1b)) {
+                                            cur->numberObjectsToDestroyValue = 0;
+                                            cur->setAction(1);
+                                            cur->playNumberValue = -1;
+                                            this->attackStateValue.active = 0;
+                                            goto task_done;
+                                        }
+                                        if (((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
+                                                2, &gatherX2, &aux2) == 1) {
+                                            pendingTaskCode = (int)mem;
+                                            cur->task(this, this->md, 0x0e, 1, 0);
+                                            cur->setAction(0x0d);
+                                            cur->setTarget(mem->id);
+                                            cur->setTargetType((int)mem->type);
+                                            *(float*)&pendingTaskCode = (float)mem->x;
+                                            *(float*)&pendingTaskArg1 = (float)mem->y;
+                                            *(float*)&pendingTaskArg2 = (float)mem->z;
+                                            goto exception_after_task;
+                                        }
+active_exception_rejected:
+                                        cur->setAction(1);
+                                        cur->playNumberValue = -1;
+                                        goto clear_attack_state;
+                                    } else {
                                         this->lastGroupAttackTime = this->md->player->world->world_time;
                                         if (this->sn[0x47] == 1) {
                                             this->lastAttackResponseTime = this->md->player->world->world_time;
@@ -2127,30 +2200,18 @@ attack_target_ready:
                                         cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
                                         cur->setInUse(1);
                                         this->checkForCoopAttack((unsigned int)mem->owner, (unsigned int)mem->x, (unsigned int)mem->y);
-                                    } else {
-                                        float gatherX2;
-                                        char aux2[16];
-                                        if (((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
-                                                targetPoint, ((VObjWeaponRange*)commanderObj)->weaponRange(),
-                                                mem->id, &point, 1, 0x16, 1,
-                                                mem->owner, 0x1b) &&
-                                            ((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
-                                                2, &gatherX2, (float*)aux2) == 1) {
-                                            cur->task(this, this->md, 0x0e, 1, 0);
-                                            cur->setAction(0x0d);
-                                            cur->setTarget(mem->id);
-                                            cur->setTargetType((int)mem->type);
-                                            pendingTaskCode = (int)mem;
-                                            goto exception_path_finish;
-                                        } else {
-                                            cur->setAction(1);
-                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+                goto inactive_post_setup;
+inactive_direct_gather:
+                cur->setGatherLocation(*(float*)&pendingTaskCode,
+                                       *(float*)&pendingTaskArg1,
+                                       *(float*)&pendingTaskArg2);
+                cur->setInUse(1);
 inactive_post_setup:
                 if (this->md->strategyAI.currentVictoryCondition() == 0x0b &&
                     mem != 0 && commanderObj != 0 && this->sn[0x67] == 1 &&
@@ -2168,9 +2229,10 @@ inactive_post_setup:
                         stuffAvoidancePath(this, cur, avoidancePath);
                     }
                 }
-                if (allOutsideTransport == 0 && cur->action() == 2) {
-                    TASK_GROUP(0x15, 1, 0);
+                if (allOutsideTransport != 0 || cur->action() != 2) {
+                    TASK_GROUP(cur->action(), 1, 0);
                 }
+                TASK_GROUP(0x15, 1, 0);
             } else {
                 t = cur->action();
                 if (t == 0x0d) {
@@ -2252,7 +2314,6 @@ inactive_post_setup:
                         transportObj = this->md->object(assist->commander());
                         if (transportObj != 0) {
                             int i;
-                            int allInside;
                             int needTransporter;
                             unsigned char targetZone;
 
@@ -2261,7 +2322,6 @@ inactive_post_setup:
                             }
                             targetZone = 0xff;
                             needTransporter = 1;
-                            allInside = 0;
                             i = 0;
                             while (i < cur->numberUnits()) {
                                 int unit_id;
@@ -2270,9 +2330,13 @@ inactive_post_setup:
 
                                 unit_id = cur->unit(i);
                                 unitObj2 = this->md->object(unit_id);
-                                if (unitObj2 != 0) {
+                                if (unitObj2 == 0) {
+                                    logCommonHistory(this, (const char*)0x005883D4);
+                                } else {
                                     ai = unitObj2->unitAI();
-                                    if (ai != 0) {
+                                    if (ai == 0) {
+                                        logCommonHistory(this, (const char*)0x005883B4);
+                                    } else {
                                         if (cur->unit(i) == cur->commander()) {
                                             Waypoint* loc;
                                             XYPoint zp;
@@ -2286,23 +2350,19 @@ inactive_post_setup:
                                             if (unitObj2->unitAI()->currentAction() != -1) {
                                                 this->stopUnit(unitObj2->id, 100);
                                             }
-                                            allInside = allInside + 1;
-                                        } else if (unitObj2->inside_obj == 0) {
-                                            needTransporter = 0;
-                                            if (unitObj2->unitAI()->currentOrder() != 700 && unitObj2->unitAI()->currentOrder() != 0x2cd) {
-                                                this->taskToEnter(cur->unit(i), assist->commander());
+                                        }
+                                        if (unitObj2->inside_obj == 0 || unitObj2->inside_obj->id == assist->commander()) {
+                                            if (unitObj2->inside_obj == 0) {
+                                                needTransporter = 0;
+                                                if (unitObj2->unitAI()->currentOrder() != 700 && unitObj2->unitAI()->currentOrder() != 0x2cd) {
+                                                    this->taskToEnter(cur->unit(i), assist->commander());
+                                                }
                                             }
                                         } else {
                                             cur->removeUnit(unitObj2->id, this->md);
                                         }
-                                    } else {
-                                        logCommonHistory(this, (const char*)0x005883B4);
-                                        goto transport_unit_done;
                                     }
-                                } else {
-                                    logCommonHistory(this, (const char*)0x005883D4);
                                 }
-transport_unit_done:
                                 i++;
                             }
                             if (needTransporter != 0) {
@@ -2341,18 +2401,10 @@ transport_unit_done:
                                 }
                             }
                         } else {
-                            cur->setTarget(-1);
-                            cur->setTargetType(-1);
-                            cur->setAction(1);
-                            cur->setInUse(0);
-                            this->attackStateValue.active = 0;
+                            goto reset_action10;
                         }
                     } else {
-                        cur->setTarget(-1);
-                        cur->setTargetType(-1);
-                        cur->setAction(1);
-                        cur->setInUse(0);
-                        this->attackStateValue.active = 0;
+                        goto reset_action10;
                     }
                 } else if (cur->action() == 0x10) {
                     TacticalAIGroup* assist;
@@ -2375,26 +2427,23 @@ transport_unit_done:
                                 if (unitObj2 != 0 && unitObj2->unitAI() != 0) {
                                     if (unitObj2->inside_obj == 0) {
                                         allOutside = 0;
+                                        pendingTaskCode = (int)this->md->object(cur->target());
                                         if (cur->type() == 100) {
                                             RGE_Static_Object* targetObj;
-                                            targetObj = this->md->object(cur->target());
+                                            targetObj = (RGE_Static_Object*)pendingTaskCode;
                                             if (targetObj != 0) {
                                                 UnitAIModule* attackAI;
                                                 attackAI = unitObj2->unitAI();
                                                 if (attackAI != 0) {
                                                     attackAI = unitObj2->unitAI();
-                                            if (attackAI->currentTarget() != cur->target()) {
-                                                if (((VObjCanAttack*)unitObj2)->canAttack(
-                                                        cur->target(), ((VObjWeaponRange*)unitObj2)->weaponRange()) == 1) {
-                                                    Waypoint* loc;
-                                                    float attackX;
-                                                    float attackY;
-                                                    loc = cur->targetLocation();
-                                                    attackY = loc->y;
-                                                    loc = cur->targetLocation();
-                                                    attackX = loc->x;
-                                                    this->taskAttacker(cur->unit(i), attackX, attackY, cur->target(), -1, 0, 0, -1, 0);
-                                                }
+                                                if (attackAI->currentTarget() != cur->target()) {
+                                                    if (((VObjCanAttack*)unitObj2)->canAttack(
+                                                            cur->target(), ((VObjWeaponRange*)unitObj2)->weaponRange()) == 1) {
+                                                        this->taskAttacker(cur->unit(i),
+                                                            cur->targetLocation()->x,
+                                                            cur->targetLocation()->y,
+                                                            cur->target(), -1, 0, 0, -1, 0);
+                                                    }
                                             }
                                                 }
                                             }
@@ -2433,7 +2482,30 @@ transport_unit_done:
                                         this->moveUnit(resetAssist->commander(), relicObj->world_x, relicObj->world_y, 50);
                                     }
                                 }
-                                if (cur->type() != 100) {
+                                if (cur->type() == 100) {
+                                    RGE_Static_Object* commanderObjT;
+                                    commanderObjT = this->md->object(cur->commander());
+                                    if (commanderObjT == 0) {
+                                        goto action10_attack_failure;
+                                    } else {
+                                        if (((VObjCanAttack*)commanderObjT)->canAttack(
+                                                cur->target(), ((VObjWeaponRange*)commanderObjT)->weaponRange()) == 1) {
+                                            this->lastGroupAttackTime = this->md->player->world->world_time;
+                                            if (this->sn[0x47] == 1) {
+                                                this->lastAttackResponseTime = this->md->player->world->world_time;
+                                            }
+                                            cur->setAction(2);
+                                            cur->task(this, this->md, cur->action(), 1, 0);
+                                            goto clear_attack_state;
+                                        } else {
+action10_attack_failure:
+                                            cur->setInUse(1);
+                                            cur->setAction(7);
+                                            cur->task(this, this->md, 7, 0, 1);
+                                            goto clear_attack_state;
+                                        }
+                                    }
+                                } else {
                                     if (cur->type() != 0x65 && cur->type() != 0x6d) {
                                         goto loss_check;
                                     }
@@ -2451,35 +2523,13 @@ transport_unit_done:
                                     cur->setInUse(0);
                                     cur->setAction(1);
                                     TASK_GROUP(1, 1, 1);
-                                } else {
-                                    RGE_Static_Object* commanderObjT;
-                                    commanderObjT = this->md->object(cur->commander());
-                                    if (commanderObjT == 0) {
-                                        cur->setInUse(1);
-                                        cur->setAction(7);
-                                        TASK_GROUP(7, 0, 1);
-                                    } else {
-                                        if (((VObjCanAttack*)commanderObjT)->canAttack(
-                                                cur->target(), ((VObjWeaponRange*)commanderObjT)->weaponRange()) == 1) {
-                                            this->lastGroupAttackTime = this->md->player->world->world_time;
-                                            cur->setAction(2);
-                                            TASK_GROUP(2, 0, 1);
-                                        } else {
-                                            cur->setInUse(1);
-                                            cur->setAction(7);
-                                            TASK_GROUP(7, 0, 1);
-                                        }
-                                    }
                                 }
                             }
                         } else {
-                            cur->setTarget(-1);
-                            cur->setTargetType(-1);
-                            cur->setAction(1);
-                            cur->setInUse(0);
-                            this->attackStateValue.active = 0;
+                            goto reset_action10;
                         }
                     } else {
+reset_action10:
                         cur->setTarget(-1);
                         cur->setTargetType(-1);
                         cur->setAction(1);
@@ -2492,7 +2542,6 @@ transport_unit_done:
                     if (cur->action() == 3) goto action3;
                     if (cur->action() == 7) {
                     RGE_Static_Object* commanderObj3;
-                    ObjectMemory* mem;
                     RGE_Static_Object* targetObj;
                     int* players;
 
@@ -2552,8 +2601,18 @@ transport_unit_done:
                                 cur->setAction(0x0d);
                                 cur->setTarget(mem->id);
                                 cur->setTargetType((int)mem->type);
-                                pendingTaskCode = (int)mem;
-                                goto exception_path_finish;
+                                *(float*)&pendingTaskCode = (float)mem->x;
+                                *(float*)&pendingTaskArg1 = (float)mem->y;
+                                *(float*)&pendingTaskArg2 = (float)mem->z;
+exception_after_task:
+                                cur->setTargetLocation(*(float*)&pendingTaskCode,
+                                                       *(float*)&pendingTaskArg1,
+                                                       *(float*)&pendingTaskArg2);
+                                cur->setInUse(1);
+                                cur->setWaitCode(200);
+                                cur->playNumberValue = -1;
+                                this->attackStateValue.active = 0;
+                                goto task_done;
                             } else {
                                 goto action7_timeout;
                             }
@@ -2567,7 +2626,8 @@ action7_timeout:
                         if ((unsigned int)(this->sn[0x58] << 2) <
                             (this->md->player->world->world_time - idle) / 1000) {
                             cur->setAction(7);
-                            TASK_GROUP(7, 0, 1);
+                            cur->task(this, this->md, 7, 0, 1);
+                            goto clear_attack_state;
                         }
                     }
 action7_done:
@@ -2613,80 +2673,7 @@ action7_done:
                     }
 
                     targetObj2 = this->md->object(cur->target());
-                    if (targetObj2 != 0 && targetObj2->object_state < 3) {
-                        if (cur->subType() == -1) {
-                            if (((VMainDecisionIsEnemy*)this->md)->isEnemy(targetObj2->owner->id) == 0) {
-                                if (cur->allUnitsIdle(this->md, 0) != 1) {
-                                    TASK_GROUP(0x14, 0, 1);
-                                } else {
-                                    RGE_Static_Object* commanderObj4;
-                                    commanderObj4 = this->md->object(cur->commander());
-                                    if (commanderObj4 == 0) {
-                                        this->attackStateValue.active = 0;
-                                    } else {
-                                        if (((VObjCanAttack*)commanderObj4)->canAttack(
-                                                cur->target(), ((VObjWeaponRange*)commanderObj4)->weaponRange()) == 1) {
-                                            TASK_GROUP(0x14, 0, 1);
-                                        } else {
-                                            cur->setGatherLocation(commanderObj4->world_x, commanderObj4->world_y, commanderObj4->world_z);
-                                            cur->setInUse(0);
-                                            cur->setAction(1);
-                                            cur->setTarget(-1);
-                                            cur->setTargetType(-1);
-                                            cur->numberObjectsToDestroyValue = 0;
-                                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                        }
-                                    }
-                                }
-                            } else {
-                                RGE_Static_Object* commanderObj8;
-                                cur->setInUse(0);
-                                cur->setAction(1);
-                                cur->setTarget(-1);
-                                cur->setTargetType(-1);
-                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                cur->numberObjectsToDestroyValue = 0;
-                                commanderObj8 = this->md->object(cur->commander());
-                                if (commanderObj8 != 0) {
-                                    cur->setGatherLocation(commanderObj8->world_x, commanderObj8->world_y, commanderObj8->world_z);
-                                }
-                            }
-                        } else {
-                            unsigned long idle;
-                            if (cur->subType() != 0 && cur->subType() == 4 &&
-                                targetObj2->owner->id == this->md->player->id &&
-                                this->md->isMoveable(targetObj2->id)) {
-                                Waypoint* p1;
-                                Waypoint* p2;
-                                float mx;
-                                float my;
-                                float mz;
-                                cur->addUnit(targetObj2->id, this->md);
-                                p1 = this->md->strategyAI.targetPoint1();
-                                p2 = this->md->strategyAI.targetPoint2();
-                                mx = (p1->x + p2->x) * 0.5f;
-                                my = (p1->y + p2->y) * 0.5f;
-                                mz = (p1->z + p2->z) * 0.5f;
-                                cur->setInUse(0);
-                                cur->setAction(1);
-                                cur->setTarget(-1);
-                                cur->numberObjectsToDestroyValue = 0;
-                                cur->setTargetType(-1);
-                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                cur->setGatherLocation(mx, my, mz);
-                            }
-                            idle = cur->consecutiveIdleUnitCount();
-                            if ((unsigned int)this->sn[0x4c] < (this->md->player->world->world_time - idle) / 1000) {
-                                cur->setInUse(0);
-                                cur->setAction(1);
-                                cur->setTarget(-1);
-                                cur->setTargetType(-1);
-                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                                cur->numberObjectsToDestroyValue = 0;
-                                this->attackStateValue.active = 0;
-                            }
-                        }
-                    } else {
+                    if (targetObj2 == 0 || targetObj2->object_state >= 3) {
                         ObjectMemory* replacement;
                         RGE_Static_Object* replacementCommander;
                         int* players2;
@@ -2765,6 +2752,80 @@ action7_done:
                             TASK_GROUP(7, 0, 1);
                         }
                         }
+                    } else {
+                        if (cur->subType() != -1) {
+                            unsigned long idle;
+                            if (cur->subType() != 0 && cur->subType() == 4 &&
+                                targetObj2->owner->id == this->md->player->id &&
+                                this->md->isMoveable(targetObj2->id)) {
+                                Waypoint* p1;
+                                Waypoint* p2;
+                                float mx;
+                                float my;
+                                float mz;
+                                cur->addUnit(targetObj2->id, this->md);
+                                p1 = this->md->strategyAI.targetPoint1();
+                                p2 = this->md->strategyAI.targetPoint2();
+                                mx = (p1->x + p2->x) * 0.5f;
+                                my = (p1->y + p2->y) * 0.5f;
+                                mz = (p1->z + p2->z) * 0.5f;
+                                cur->setInUse(0);
+                                cur->setAction(1);
+                                cur->setTarget(-1);
+                                cur->numberObjectsToDestroyValue = 0;
+                                cur->setTargetType(-1);
+                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                cur->setGatherLocation(mx, my, mz);
+                            }
+                            idle = cur->consecutiveIdleUnitCount();
+                            if ((unsigned int)this->sn[0x4c] < (this->md->player->world->world_time - idle) / 1000) {
+                                cur->setInUse(0);
+                                cur->setAction(1);
+                                cur->setTarget(-1);
+                                cur->setTargetType(-1);
+                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                cur->numberObjectsToDestroyValue = 0;
+                                this->attackStateValue.active = 0;
+                                goto task_done;
+                            }
+                        } else {
+                            if (((VMainDecisionIsEnemy*)this->md)->isEnemy(targetObj2->owner->id) == 0) {
+                                if (cur->allUnitsIdle(this->md, 0) != 1) {
+                                    TASK_GROUP(0x14, 0, 1);
+                                } else {
+                                    RGE_Static_Object* commanderObj4;
+                                    commanderObj4 = this->md->object(cur->commander());
+                                    if (commanderObj4 == 0) {
+                                        this->attackStateValue.active = 0;
+                                    } else {
+                                        if (((VObjCanAttack*)commanderObj4)->canAttack(
+                                                cur->target(), ((VObjWeaponRange*)commanderObj4)->weaponRange()) == 1) {
+                                            TASK_GROUP(0x14, 0, 1);
+                                        } else {
+                                            cur->setGatherLocation(commanderObj4->world_x, commanderObj4->world_y, commanderObj4->world_z);
+                                            cur->setInUse(0);
+                                            cur->setAction(1);
+                                            cur->setTarget(-1);
+                                            cur->setTargetType(-1);
+                                            cur->numberObjectsToDestroyValue = 0;
+                                            cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                        }
+                                    }
+                                }
+                            } else {
+                                RGE_Static_Object* commanderObj8;
+                                cur->setInUse(0);
+                                cur->setAction(1);
+                                cur->setTarget(-1);
+                                cur->setTargetType(-1);
+                                cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                cur->numberObjectsToDestroyValue = 0;
+                                commanderObj8 = this->md->object(cur->commander());
+                                if (commanderObj8 != 0) {
+                                    cur->setGatherLocation(commanderObj8->world_x, commanderObj8->world_y, commanderObj8->world_z);
+                                }
+                            }
+                        }
                     }
                     }
                     if (cur->action() == 2 && cur->playNumberValue != -1) {
@@ -2808,13 +2869,14 @@ action0c:
                     goto active_dispatch_done;
 action13:
                     {
-                    unsigned long idle;
-                    idle = cur->consecutiveIdleUnitCount();
-                    if (cur->isGathered(this, this->md) == 0 &&
-                        cur->allUnitsIdle(this->md, 1) == 1 &&
-                        5 < (this->md->player->world->world_time - idle) / 1000) {
-                        cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
-                        TASK_GROUP(9, 1, 0);
+                    if (cur->isGathered(this, this->md) == 0) {
+                        unsigned long idle;
+                        idle = cur->consecutiveIdleUnitCount();
+                        if (5 < (this->md->player->world->world_time - idle) / 1000 &&
+                            cur->allUnitsIdle(this->md, 1) == 1) {
+                            cur->setConsecutiveIdleUnitCount(this->md->player->world->world_time);
+                            TASK_GROUP(9, 1, 0);
+                        }
                     }
                     }
                     goto active_dispatch_done;
@@ -2861,19 +2923,19 @@ action3:
 loss_check:
                     {
                     if (cur->action() != 3 && cur->action() != 0x0d) {
-                        int currentHP;
-                        int originalHP;
+                        int hpLoss;
                         int currentUnits;
-                        int originalUnits;
+                        int unitLoss;
 
-                        currentHP = cur->currentHitPoints(this->md);
-                        originalHP = cur->originalHitPoints();
+                        hpLoss = ((cur->originalHitPoints() - cur->currentHitPoints(this->md)) * 100) /
+                                 cur->originalHitPoints();
                         currentUnits = cur->numberUnits();
-                        originalUnits = cur->originalUnitNumber();
-                        if (this->sn[0x1e] < ((originalHP - currentHP) * 100) / cur->originalHitPoints() ||
-                            this->sn[0x1f] < ((originalUnits - currentUnits) * 100) / cur->originalUnitNumber()) {
+                        unitLoss = ((cur->originalUnitNumber() - currentUnits) * 100) /
+                                   cur->originalUnitNumber();
+                        if (this->sn[0x1e] < hpLoss || this->sn[0x1f] < unitLoss) {
                             cur->setAction(3);
-                            TASK_GROUP(3, 1, 0);
+                            cur->task(this, this->md, cur->action(), 1, 0);
+                            goto clear_attack_state;
                         }
                     }
 #if 0
@@ -3021,15 +3083,6 @@ relic_path_failure:
             cur->setAction(1);
             goto clear_attack_state;
 clear_attack_state:
-            this->attackStateValue.active = 0;
-            goto task_done;
-exception_path_finish:
-            cur->setTargetLocation((float)((ObjectMemory*)pendingTaskCode)->x,
-                                   (float)((ObjectMemory*)pendingTaskCode)->y,
-                                   (float)((ObjectMemory*)pendingTaskCode)->z);
-            cur->setInUse(1);
-            cur->setWaitCode(200);
-            cur->playNumberValue = -1;
             this->attackStateValue.active = 0;
             goto task_done;
 task_group:
