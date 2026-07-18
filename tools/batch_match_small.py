@@ -108,7 +108,7 @@ def function_slug(va, name):
 def check_function(va):
     """Run the check pipeline, return True if match."""
     result = subprocess.run(
-        [sys.executable, str(TOOLS_DIR / 'check_function.py'), '--va', va],
+        [sys.executable, str(TOOLS_DIR / 'check_function.py'), '--va', va, '--no-history'],
         capture_output=True, text=True
     )
     return result.returncode == 0

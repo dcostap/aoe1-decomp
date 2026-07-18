@@ -48,7 +48,7 @@ def inventory_by_slug() -> dict[str, dict[str, str]]:
 
 
 def run_check(va: str) -> subprocess.CompletedProcess[str]:
-    command = [sys.executable, str(REPO_ROOT / "tools" / "check_function.py"), "--va", va]
+    command = [sys.executable, str(REPO_ROOT / "tools" / "check_function.py"), "--va", va, "--no-history"]
     return subprocess.run(command, capture_output=True, text=True)
 
 

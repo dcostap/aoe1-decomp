@@ -16,6 +16,8 @@ class DiffMetricsTests(unittest.TestCase):
         self.assertEqual(metrics["result"], "MATCH")
         self.assertEqual(metrics["diff_bytes"], 0)
         self.assertEqual(metrics["edit_diff_bytes"], 0)
+        self.assertEqual(metrics["edit_cost_percent_total"], 0.0)
+        self.assertEqual(metrics["resync_similarity_percent"], 100.0)
         self.assertFalse(metrics["likely_shifted_alignment"])
 
     def test_single_replace(self) -> None:
@@ -32,6 +34,8 @@ class DiffMetricsTests(unittest.TestCase):
         self.assertEqual(metrics["diff_bytes"], 5)
         self.assertEqual(metrics["edit_diff_bytes"], 1)
         self.assertEqual(metrics["edit_insert_bytes"], 1)
+        self.assertLessEqual(metrics["edit_cost_percent_total"], 100.0)
+        self.assertAlmostEqual(metrics["resync_similarity_percent"], 5 * 100.0 / 6)
         self.assertTrue(metrics["likely_shifted_alignment"])
 
     def test_single_delete_resynchronizes(self) -> None:

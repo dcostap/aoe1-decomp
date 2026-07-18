@@ -1,18 +1,21 @@
 from __future__ import annotations
 
 import argparse
-import difflib
 import json
 from pathlib import Path
 
 from common import byte_diff_metrics, ensure_build_subdir, function_record_by_va, function_slug, repo_path
 from function_diagnostics import (
+    basic_blocks,
+    block_alignment,
+    call_alignment,
     call_count_deltas,
     call_fingerprint,
     call_target_counts,
     compatible_relocation_masks,
     control_flow_summary,
     decode_instructions,
+    decode_instruction_ranges,
     instruction_alignment,
     iteration_delta,
     paired_instruction_context,
@@ -50,42 +53,207 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare original and rebuilt function outputs.")
     parser.add_argument("--va", required=True, help="Function VA in hex, for example 00449750.")
     parser.add_argument("--verbose", action="store_true", help="Print the longer diagnostic report to the console.")
+    parser.add_argument(
+        "--detail",
+        choices=("auto", "concise", "full"),
+        default="auto",
+        help="Console detail level. Auto uses concise output for giant functions.",
+    )
+    parser.add_argument("--call-map", action="store_true", help="Print the full context-aware call-site alignment.")
+    parser.add_argument("--block-map", action="store_true", help="Print the full basic-block alignment.")
+    parser.add_argument(
+        "--range",
+        dest="focus_range",
+        metavar="[orig:|rebuilt:]START-END",
+        help="Print focused aligned blocks/disassembly for a combined offset or real VA range.",
+    )
     return parser.parse_args()
 
 
-def _first_call_difference(original_calls: list[dict], rebuilt_calls: list[dict]) -> tuple[int, int] | None:
-    left = [(row["kind"], row["target"]) for row in original_calls]
-    right = [(row["kind"], row["target"]) for row in rebuilt_calls]
-    matcher = difflib.SequenceMatcher(a=left, b=right, autojunk=False)
-    for tag, i1, _, j1, _ in matcher.get_opcodes():
-        if tag != "equal":
-            return i1, j1
-    return None
+def _call_text(row: dict | None, function_va: int, original: bool) -> str:
+    if row is None:
+        return ""
+    line = pdb_line_for_address(function_va, function_va + int(row["offset"])) if original else None
+    line_text = "" if line is None else f" L{line}"
+    block = row.get("block_offset")
+    block_text = "" if block is None else f" B+{int(block):04X}"
+    cleanup = int(row.get("caller_cleanup_bytes", 0))
+    cleanup_text = "" if cleanup == 0 else f" cleanup={cleanup}"
+    return f"+{int(row['offset']):04X}{line_text}{block_text} {row['kind']} {row['display']}{cleanup_text}"
 
 
 def _format_call_context(
-    original_calls: list[dict],
-    rebuilt_calls: list[dict],
-    start: tuple[int, int],
+    alignment: dict,
+    start_row: int,
     function_va: int,
     radius: int = 3,
 ) -> list[str]:
-    i1, j1 = start
+    rows = list(alignment.get("rows") or [])
     lines: list[str] = []
-    for row in range(-radius, radius + 1):
-        oi = i1 + row
-        ri = j1 + row
-        left = original_calls[oi] if 0 <= oi < len(original_calls) else None
-        right = rebuilt_calls[ri] if 0 <= ri < len(rebuilt_calls) else None
-        if left is None:
-            left_text = ""
+    for aligned_index in range(max(0, start_row - radius), min(len(rows), start_row + radius + 1)):
+        aligned = rows[aligned_index]
+        left_text = _call_text(aligned.get("original"), function_va, True)
+        right_text = _call_text(aligned.get("rebuilt"), function_va, False)
+        marker = " " if aligned["status"] == "equal" else "!"
+        confidence = str(aligned.get("confidence", ""))[:1].upper()
+        lines.append(f" {marker}{confidence} {left_text:<58} | {right_text}")
+    return lines
+
+
+def _format_full_call_map(alignment: dict, function_va: int) -> list[str]:
+    lines = ["Call-site alignment (diagnostic; H/M/L is confidence):"]
+    for index, row in enumerate(alignment.get("rows") or []):
+        left_text = _call_text(row.get("original"), function_va, True)
+        right_text = _call_text(row.get("rebuilt"), function_va, False)
+        confidence = str(row.get("confidence", "low"))[:1].upper()
+        marker = {"equal": "=", "replace": "~", "delete": "-", "insert": "+"}.get(str(row.get("status")), "?")
+        lines.append(f"  {index:04d} {marker}{confidence} {left_text:<62} | {right_text}")
+        if row.get("status") != "equal" and row.get("original") and row.get("rebuilt"):
+            left_setup = " ; ".join(row["original"].get("setup") or [])
+            right_setup = " ; ".join(row["rebuilt"].get("setup") or [])
+            lines.append(f"         setup orig: {left_setup}")
+            lines.append(f"         setup rebu: {right_setup}")
+    return lines
+
+
+def _format_block(row: dict | None) -> str:
+    if row is None:
+        return ""
+    calls = ",".join(row.get("calls") or []) or "-"
+    successors = ",".join(f"+{int(value):04X}" for value in row.get("successors") or []) or "-"
+    return (
+        f"B{int(row['index']):03d} +{int(row['offset']):04X}..+{int(row['end_offset']):04X} "
+        f"n={int(row['instruction_count'])} calls=[{calls}] succ=[{successors}]"
+    )
+
+
+def _format_block_context(alignment: dict, radius: int = 2) -> list[str]:
+    rows = list(alignment.get("rows") or [])
+    first = alignment.get("first_difference_row")
+    if first is None:
+        return []
+    lines: list[str] = []
+    for index in range(max(0, int(first) - radius), min(len(rows), int(first) + radius + 1)):
+        row = rows[index]
+        marker = " " if row["status"] == "equal" else "!"
+        confidence = str(row.get("confidence", ""))[:1].upper()
+        lines.append(f" {marker}{confidence} {_format_block(row.get('original')):<80} | {_format_block(row.get('rebuilt'))}")
+    return lines
+
+
+def _format_full_block_map(alignment: dict) -> list[str]:
+    lines = ["Basic-block alignment (diagnostic; exact/fuzzy/gap):"]
+    for index, row in enumerate(alignment.get("rows") or []):
+        marker = {"equal": "=", "fuzzy": "~", "delete": "-", "insert": "+"}.get(str(row.get("status")), "?")
+        confidence = str(row.get("confidence", "low"))[:1].upper()
+        lines.append(f"  {index:04d} {marker}{confidence} {_format_block(row.get('original')):<82} | {_format_block(row.get('rebuilt'))}")
+    return lines
+
+
+def _focus_endpoint(text: str, instructions: list, function_va: int) -> int:
+    value_text = text.strip()
+    explicit_offset = value_text.startswith("+")
+    if explicit_offset:
+        value_text = value_text[1:]
+    value = int(value_text, 16)
+    if explicit_offset or value < function_va:
+        return value
+    for instruction in instructions:
+        if instruction.address <= value < instruction.address + len(instruction.data):
+            return instruction.offset + (value - instruction.address)
+    # Rebuilt code is contiguous; this fallback is also useful for an endpoint
+    # exactly at the end of an original range.
+    return value - function_va
+
+
+def _parse_focus_range(spec: str, original_instructions: list, rebuilt_instructions: list, function_va: int) -> tuple[str, int, int]:
+    value = spec.strip()
+    side = "original"
+    if ":" in value:
+        prefix, value = value.split(":", 1)
+        normalized = prefix.strip().lower()
+        if normalized in {"orig", "original"}:
+            side = "original"
+        elif normalized in {"rebuilt", "rebuild", "new"}:
+            side = "rebuilt"
         else:
-            line = pdb_line_for_address(function_va, function_va + int(left["offset"]))
-            line_text = "" if line is None else f" L{line}"
-            left_text = f"+{int(left['offset']):04X}{line_text} {left['kind']} {left['display']}"
-        right_text = "" if right is None else f"+{int(right['offset']):04X} {right['kind']} {right['display']}"
-        marker = " " if left and right and (left["kind"], left["target"]) == (right["kind"], right["target"]) else "!"
-        lines.append(f" {marker} {left_text:<48} | {right_text}")
+            raise ValueError(f"Unknown range side {prefix!r}; use orig: or rebuilt:")
+    separator = ".." if ".." in value else ("-" if "-" in value else "")
+    if separator:
+        start_text, end_text = value.split(separator, 1)
+    else:
+        start_text = end_text = value
+    instructions = original_instructions if side == "original" else rebuilt_instructions
+    start = _focus_endpoint(start_text, instructions, function_va)
+    end = _focus_endpoint(end_text, instructions, function_va) + 1
+    if start < 0 or end <= start:
+        raise ValueError(f"Invalid focused range: {spec}")
+    return side, start, end
+
+
+def _focused_instruction_lines(instructions: list, start: int, end: int, function_va: int, original: bool) -> list[str]:
+    lines: list[str] = []
+    for instruction in instructions:
+        if instruction.end <= start or instruction.offset >= end:
+            continue
+        line = pdb_line_for_address(function_va, instruction.address) if original else None
+        line_text = "" if line is None else f" L{line}"
+        lines.append(f"      +{instruction.offset:04X}{line_text} {instruction.data.hex():<16} {instruction.text}")
+    return lines
+
+
+def _format_focus_range(
+    spec: str,
+    function_va: int,
+    original_instructions: list,
+    rebuilt_instructions: list,
+    alignment: dict,
+) -> list[str]:
+    side, start, end = _parse_focus_range(spec, original_instructions, rebuilt_instructions, function_va)
+    selected: list[dict] = []
+    for row in alignment.get("rows") or []:
+        block = row.get("original" if side == "original" else "rebuilt")
+        if block is not None and int(block["end_offset"]) > start and int(block["offset"]) < end:
+            selected.append(row)
+    lines = [f"Focused {side} range +{start:04X}..+{end - 1:04X} ({spec}):"]
+    if not selected:
+        lines.append("  No aligned basic block overlaps the range; showing same-offset instructions.")
+        lines.append("  ORIGINAL")
+        lines.extend(_focused_instruction_lines(original_instructions, start, end, function_va, True) or ["      (none)"])
+        lines.append("  REBUILT")
+        lines.extend(_focused_instruction_lines(rebuilt_instructions, start, end, function_va, False) or ["      (none)"])
+        return lines
+    if len(selected) > 80:
+        selected = selected[:80]
+        lines.append("  Range overlaps more than 80 aligned rows; output truncated. Narrow --range for full detail.")
+    for row in selected:
+        marker = {"equal": "=", "fuzzy": "~", "delete": "-", "insert": "+"}.get(str(row.get("status")), "?")
+        confidence = str(row.get("confidence", "low"))[:1].upper()
+        lines.append(f"  {marker}{confidence} {_format_block(row.get('original'))} | {_format_block(row.get('rebuilt'))}")
+        original_block = row.get("original")
+        if original_block is not None:
+            lines.append("    ORIGINAL")
+            lines.extend(
+                _focused_instruction_lines(
+                    original_instructions,
+                    int(original_block["offset"]),
+                    int(original_block["end_offset"]),
+                    function_va,
+                    True,
+                )
+            )
+        rebuilt_block = row.get("rebuilt")
+        if rebuilt_block is not None:
+            lines.append("    REBUILT")
+            lines.extend(
+                _focused_instruction_lines(
+                    rebuilt_instructions,
+                    int(rebuilt_block["offset"]),
+                    int(rebuilt_block["end_offset"]),
+                    function_va,
+                    False,
+                )
+            )
     return lines
 
 
@@ -182,6 +350,119 @@ def _format_frame(value: object) -> str:
     return "none" if value is None else f"0x{int(value):X}"
 
 
+def _compact_block(block: dict | None) -> dict | None:
+    if block is None:
+        return None
+    return {key: value for key, value in block.items() if key not in {"shapes", "signature"}}
+
+
+def _compact_block_alignment(alignment: dict) -> dict:
+    return {
+        **{key: value for key, value in alignment.items() if key != "rows"},
+        "rows": [
+            {
+                **{key: value for key, value in row.items() if key not in {"original", "rebuilt"}},
+                "original": _compact_block(row.get("original")),
+                "rebuilt": _compact_block(row.get("rebuilt")),
+            }
+            for row in alignment.get("rows") or []
+        ],
+    }
+
+
+def _hard_discrepancies(call_map: dict, target_mismatches: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for mismatch in target_mismatches:
+        rows.append(
+            {
+                "priority": 1,
+                "kind": "direct-target",
+                "confidence": "high",
+                "message": f"+{int(mismatch['offset']):04X}: original {mismatch['original']} -> rebuilt {mismatch['rebuilt']}",
+            }
+        )
+    for aligned in call_map.get("rows") or []:
+        left = aligned.get("original") or {}
+        right = aligned.get("rebuilt") or {}
+        if (
+            aligned.get("status") in {"equal", "replace"}
+            and left
+            and right
+            and int(left.get("caller_cleanup_bytes", 0)) != int(right.get("caller_cleanup_bytes", 0))
+        ):
+            rows.append(
+                {
+                    "priority": 4,
+                    "kind": "stack-cleanup-mismatch",
+                    "confidence": aligned.get("confidence", "low"),
+                    "message": (
+                        f"original +{int(left['offset']):04X} cleanup {int(left.get('caller_cleanup_bytes', 0))} -> "
+                        f"rebuilt +{int(right['offset']):04X} cleanup {int(right.get('caller_cleanup_bytes', 0))}"
+                    ),
+                }
+            )
+        if aligned.get("status") in {"delete", "insert"} and aligned.get("confidence") != "low":
+            call = left or right
+            side = "missing rebuilt call" if aligned["status"] == "delete" else "extra rebuilt call"
+            rows.append(
+                {
+                    "priority": 3,
+                    "kind": "missing-or-extra-call",
+                    "confidence": aligned.get("confidence", "low"),
+                    "message": f"{side}: {call.get('kind')} {call.get('target')} near +{int(call['offset']):04X}",
+                }
+            )
+        if aligned.get("status") != "replace":
+            continue
+        if left.get("kind") == "virtual" and right.get("kind") == "virtual":
+            rows.append(
+                {
+                    "priority": 2,
+                    "kind": "virtual-slot-replacement",
+                    "confidence": aligned.get("confidence", "low"),
+                    "message": (
+                        f"original +{int(left['offset']):04X} {left['target']} -> "
+                        f"rebuilt +{int(right['offset']):04X} {right['target']}"
+                    ),
+                }
+            )
+        elif aligned.get("confidence") != "low":
+            rows.append(
+                {
+                    "priority": 3,
+                    "kind": "call-target-replacement",
+                    "confidence": aligned.get("confidence", "low"),
+                    "message": (
+                        f"original +{int(left['offset']):04X} {left.get('target')} -> "
+                        f"rebuilt +{int(right['offset']):04X} {right.get('target')}"
+                    ),
+                }
+            )
+    rows.sort(key=lambda row: (int(row["priority"]), 0 if row["confidence"] == "high" else 1, row["message"]))
+    return rows
+
+
+def _top_changed_ranges(delta: dict, limit: int = 3) -> tuple[list[dict], list[dict]]:
+    ranges = list(delta.get("ranges") or [])
+    improved = sorted(
+        (row for row in ranges if int(row["improved"]) > int(row["regressed"])),
+        key=lambda row: (-(int(row["improved"]) - int(row["regressed"])), -int(row["changed"])),
+    )[:limit]
+    regressed = sorted(
+        (row for row in ranges if int(row["regressed"]) > int(row["improved"])),
+        key=lambda row: (-(int(row["regressed"]) - int(row["improved"])), -int(row["changed"])),
+    )[:limit]
+    return improved, regressed
+
+
+def _format_changed_ranges(label: str, rows: list[dict]) -> str:
+    values = ", ".join(
+        f"+{int(row['start']):04X}..+{int(row['end']):04X} (+{int(row['improved'])}/-{int(row['regressed'])})"
+        for row in rows
+    )
+    return f"{label}: {values or 'none'}"
+
+
 def main() -> None:
     args = parse_args()
     va = int(args.va, 16)
@@ -192,30 +473,34 @@ def main() -> None:
     history_dir = repo_path(Path("build") / "history" / slug)
 
     orig_bin = asm_dir / f"orig_{slug}.bin"
+    orig_json = asm_dir / f"orig_{slug}.json"
     rebuilt_bin = asm_dir / f"rebuilt_{slug}.bin"
     rebuilt_json = asm_dir / f"rebuilt_{slug}.json"
     report_path = diff_dir / f"{slug}.txt"
 
     if not orig_bin.exists():
         raise SystemExit(f"Missing original bytes: {orig_bin}")
+    if not orig_json.exists():
+        raise SystemExit(f"Missing original metadata: {orig_json}")
     if not rebuilt_bin.exists():
         raise SystemExit(f"Missing rebuilt bytes: {rebuilt_bin}")
     if not rebuilt_json.exists():
         raise SystemExit(f"Missing rebuilt metadata: {rebuilt_json}")
 
     original_bytes = orig_bin.read_bytes()
+    original_meta = json.loads(orig_json.read_text(encoding="utf-8"))
     rebuilt_bytes = rebuilt_bin.read_bytes()
     rebuilt_meta = json.loads(rebuilt_json.read_text(encoding="utf-8"))
     relocations = list(rebuilt_meta.get("relocations") or [])
 
     masked_original, masked_rebuilt, relocation_validation = compatible_relocation_masks(
-        original_bytes, rebuilt_bytes, relocations, va
+        original_bytes, rebuilt_bytes, relocations, va, original_meta.get("ranges") or []
     )
     metrics = byte_diff_metrics(masked_original, masked_rebuilt)
     mismatch_text = str(metrics["first_mismatch_offset"])
     mismatch = int(mismatch_text) if mismatch_text else None
 
-    original_instructions = decode_instructions(original_bytes, va)
+    original_instructions = decode_instruction_ranges(original_bytes, original_meta.get("ranges") or [])
     rebuilt_instructions = decode_instructions(rebuilt_bytes, va, relocations)
     shape = instruction_alignment(original_instructions, rebuilt_instructions)
     actionable_target_mismatches = (
@@ -233,10 +518,15 @@ def main() -> None:
     rebuilt_flow = control_flow_summary(rebuilt_instructions)
     original_calls = call_fingerprint(original_instructions, original=True)
     rebuilt_calls = call_fingerprint(rebuilt_instructions, original=False)
+    call_map = call_alignment(original_calls, rebuilt_calls)
+    call_difference_row = call_map.get("first_difference_row")
     original_call_counts = call_target_counts(original_calls)
     rebuilt_call_counts = call_target_counts(rebuilt_calls)
     call_target_deltas = call_count_deltas(original_call_counts, rebuilt_call_counts)
-    call_difference = _first_call_difference(original_calls, rebuilt_calls)
+    original_blocks = basic_blocks(original_instructions, original_calls)
+    rebuilt_blocks = basic_blocks(rebuilt_instructions, rebuilt_calls)
+    block_map = block_alignment(original_blocks, rebuilt_blocks)
+    hard_discrepancies = _hard_discrepancies(call_map, actionable_target_mismatches)
 
     previous_bin = history_dir / "previous.bin"
     previous_diff = history_dir / "previous.diff.json"
@@ -255,11 +545,12 @@ def main() -> None:
         shape,
         original_prologue,
         rebuilt_prologue,
-        call_difference,
+        None if call_difference_row is None else (0, 0),
         call_target_deltas,
         guidance_relocation_validation,
         metrics,
     )
+    exact = mismatch is None and not relocation_validation["target_mismatches"]
 
     metrics_path = diff_dir / f"{slug}.json"
     metrics_payload = {
@@ -281,11 +572,15 @@ def main() -> None:
         "original_call_counts": original_call_counts,
         "rebuilt_call_counts": rebuilt_call_counts,
         "call_target_count_deltas": call_target_deltas,
+        "call_alignment": call_map,
+        "block_alignment": _compact_block_alignment(block_map),
+        "hard_discrepancies": hard_discrepancies,
         "iteration_call_target_deltas": iteration_call_deltas,
         "iteration_delta": delta,
         "workflow_stage": guidance[0].split(":", 1)[-1].strip() if guidance else "",
         "workflow_guidance": guidance[1:],
         **metrics,
+        "result": "MATCH" if exact else "MISMATCH",
     }
     metrics_path.write_text(json.dumps(metrics_payload, indent=2), encoding="utf-8")
 
@@ -301,8 +596,10 @@ def main() -> None:
         f"rebuilt {_format_frame(rebuilt_prologue.get('frame_size'))}; "
         f"saved regs {original_prologue.get('saved_registers')} / {rebuilt_prologue.get('saved_registers')}",
         f"Instructions: original {shape['original_instructions']}, rebuilt {shape['rebuilt_instructions']}; "
-        f"shape similarity {float(shape['similarity_percent']):.2f}%; longest aligned run {shape['longest_equal_run']}",
+        f"shape similarity {float(shape['similarity_percent']):.2f}%; longest aligned run {shape['longest_equal_run']}; "
+        f"exact-block coverage {float(block_map['matched_coverage_percent']):.2f}%",
         f"Calls: original {len(original_calls)}, rebuilt {len(rebuilt_calls)}; "
+        f"aligned {float(call_map['similarity_percent']):.2f}% (prefix {call_map['aligned_prefix_calls']}); "
         f"target-count differences {len(call_target_deltas)}; "
         f"relocations safely masked {relocation_validation['compatible']}/{len(relocations)}",
         "CFG signals (orig/rebuilt): "
@@ -311,8 +608,9 @@ def main() -> None:
         f"returns {original_flow['returns']}/{rebuilt_flow['returns']}",
         f"Strict positional diff: {metrics['diff_bytes']} bytes ({float(metrics['diff_percent']):.4f}%), "
         f"{metrics['diff_spans']} span(s)",
-        f"Raw edit/resync diagnostic: {metrics['edit_diff_bytes']} ({float(metrics['edit_diff_percent']):.4f}%), "
-        f"equal {metrics['edit_equal_bytes']}",
+        f"Edit/resync diagnostic: raw cost {metrics['edit_diff_bytes']}, "
+        f"bounded cost {float(metrics['edit_cost_percent_total']):.2f}%, "
+        f"similarity {float(metrics['resync_similarity_percent']):.2f}% ({metrics['edit_equal_bytes']} equal bytes)",
     ]
     if delta is not None:
         summary.append(
@@ -321,23 +619,20 @@ def main() -> None:
             f"strictly improved {delta['strict_improvements']}, regressed {delta['strict_regressions']}, "
             f"neutral {delta['neutral_changes']}, size {delta['size_delta']:+d}"
         )
-        changed_ranges = list(delta.get("ranges") or [])
-        if changed_ranges:
-            range_text = ", ".join(
-                f"+{int(row['start']):04X}..+{int(row['end']):04X}"
-                f" (better {row['improved']}, worse {row['regressed']}, neutral {row['neutral']})"
-                for row in changed_ranges[:6]
-            )
-            if len(changed_ranges) > 6:
-                range_text += f", ... {len(changed_ranges) - 6} more"
-            summary.append("Changed output ranges: " + range_text)
+        improved_ranges, regressed_ranges = _top_changed_ranges(delta)
+        summary.append(_format_changed_ranges("Top improved ranges", improved_ranges))
+        summary.append(_format_changed_ranges("Top regressed ranges", regressed_ranges))
 
-    exact = mismatch is None and not relocation_validation["target_mismatches"]
     summary.append(f"Result: {'MATCH' if exact else 'MISMATCH'}")
     if mismatch is not None:
         summary.append(f"First strict mismatch: +{mismatch:04X} (VA {va + mismatch:08X})")
 
     detail: list[str] = []
+    if hard_discrepancies:
+        detail.append("")
+        detail.append("Prioritized call-surface discrepancies (diagnostic confidence shown):")
+        for row in hard_discrepancies[:8]:
+            detail.append(f"  [{str(row['confidence']).upper():6}] {row['kind']}: {row['message']}")
     if iteration_call_deltas:
         detail.append("")
         detail.append("Call-target changes made by this iteration (current - previous):")
@@ -346,30 +641,91 @@ def main() -> None:
         detail.append("")
         detail.append("Call target count differences (rebuilt/original; aggregate diagnostic only):")
         detail.extend(_format_call_count_deltas(call_target_deltas))
+    if block_map.get("strong_islands"):
+        detail.append("")
+        detail.append("Strongest exact basic-block islands:")
+        for island in block_map["strong_islands"][:5]:
+            detail.append(
+                f"  {int(island['instructions']):4d} insn / {int(island['blocks']):3d} block(s): "
+                f"orig +{int(island['original_start']):04X}..+{int(island['original_end']):04X} | "
+                f"rebuilt +{int(island['rebuilt_start']):04X}..+{int(island['rebuilt_end']):04X}"
+            )
+    if block_map.get("first_difference_row") is not None:
+        detail.append("")
+        detail.append("First context-aware basic-block divergence:")
+        detail.extend(_format_block_context(block_map))
     if shape.get("first_change"):
         detail.append("")
         detail.append("First paired instruction-shape hunk (! differs):")
         detail.extend(paired_instruction_context(original_instructions, rebuilt_instructions, shape, va))
-    if call_difference is not None:
+    if call_difference_row is not None:
         detail.append("")
-        detail.append("First call/virtual-slot sequence divergence:")
-        detail.extend(_format_call_context(original_calls, rebuilt_calls, call_difference, va))
+        detail.append("First context-aware call-site divergence (H/M/L confidence):")
+        detail.extend(_format_call_context(call_map, int(call_difference_row), va))
     if actionable_target_mismatches:
         detail.append("")
         detail.append("Known direct-call target mismatches (not masked):")
         for row in actionable_target_mismatches[:12]:
             detail.append(f"  +{int(row['offset']):04X}: original {row['original']} | rebuilt {row['rebuilt']}")
+    raw_detail: list[str] = []
     if mismatch is not None:
-        detail.append("")
-        detail.append("First raw-byte edit/resync hunks (secondary diagnostic):")
-        detail.extend(format_edit_hunks(metrics, masked_original, masked_rebuilt))
+        raw_detail.append("")
+        raw_detail.append("First raw-byte edit/resync hunks (secondary diagnostic):")
+        raw_detail.extend(format_edit_hunks(metrics, masked_original, masked_rebuilt))
 
-    report_lines = summary + [""] + guidance + detail
+    map_detail: list[str] = []
+    if args.call_map:
+        map_detail.append("")
+        map_detail.extend(_format_full_call_map(call_map, va))
+    if args.block_map:
+        map_detail.append("")
+        map_detail.extend(_format_full_block_map(block_map))
+    if args.focus_range:
+        map_detail.append("")
+        try:
+            map_detail.extend(
+                _format_focus_range(
+                    args.focus_range,
+                    va,
+                    original_instructions,
+                    rebuilt_instructions,
+                    block_map,
+                )
+            )
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+
+    report_lines = summary + [""] + guidance + detail + raw_detail + map_detail
     report_path.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
 
+    if args.verbose or args.detail == "full":
+        console_detail = detail + raw_detail
+    elif args.detail == "concise" or (args.detail == "auto" and expected_size >= 2000):
+        # Giant-function mode: keep hard discrepancies and only the first local
+        # block/instruction/call contexts. Aggregate tables and raw byte hunks
+        # remain in the report and JSON.
+        console_detail = []
+        if hard_discrepancies:
+            console_detail += ["", "Top hard discrepancy:"]
+            row = hard_discrepancies[0]
+            console_detail.append(f"  [{str(row['confidence']).upper()}] {row['kind']}: {row['message']}")
+        if block_map.get("first_difference_row") is not None:
+            console_detail += ["", "First basic-block divergence:"] + _format_block_context(block_map, radius=1)
+        if shape.get("first_change"):
+            console_detail += ["", "First instruction-shape hunk:"] + paired_instruction_context(
+                original_instructions, rebuilt_instructions, shape, va, radius=2
+            )
+        if call_difference_row is not None:
+            console_detail += ["", "First call-site divergence:"] + _format_call_context(
+                call_map, int(call_difference_row), va, radius=2
+            )
+    else:
+        console_detail = detail
+
     console_lines = summary + [""] + guidance
-    if args.verbose or not exact:
-        console_lines += detail
+    if not exact:
+        console_lines += console_detail
+    console_lines += map_detail
     print("\n".join(console_lines))
     raise SystemExit(0 if exact else 1)
 

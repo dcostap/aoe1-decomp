@@ -46,6 +46,12 @@ next workflow stage. It rejects entry-reachable code beyond the original boundar
 without confusing adjacent jump-table/EH data for function bytes, and does not
 mask relocations at structurally incompatible instruction sites. See
 `docs\check_function_diagnostics.md` for the report and acceptance semantics.
+For large functions it also provides context-aware `--call-map` and `--block-map`
+alignment, concise giant-function output, and automatic restorable run history.
+Use `--checkpoint <label>`, `--history`, and `--restore-checkpoint <label-or-id>`
+to preserve and compare structural experiments without replacing a better baseline.
+Checkpoint comparisons include call/block deltas; `--range` focuses one aligned
+assembly band, and dry-run-first `--prune-history` controls retained experiments.
 
 ## Toolchain
 

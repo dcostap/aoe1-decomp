@@ -269,7 +269,7 @@ def main():
         scratch_path.write_text(source, encoding="utf-8")
         
         result = subprocess.run(
-            [sys.executable, str(TOOLS_DIR / "check_function.py"), "--va", va],
+            [sys.executable, str(TOOLS_DIR / "check_function.py"), "--va", va, "--no-history"],
             capture_output=True, text=True, timeout=30
         )
         

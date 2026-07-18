@@ -128,7 +128,7 @@ def run() -> int:
             source = PRELUDE + FUNCTION_TEMPLATE.format(body=body)
             SCRATCH.write_text(source, encoding="utf-8")
             proc = subprocess.run(
-                [sys.executable, "tools/check_function.py", "--va", "0042F640"],
+                [sys.executable, "tools/check_function.py", "--va", "0042F640", "--no-history"],
                 capture_output=True,
                 text=True,
             )

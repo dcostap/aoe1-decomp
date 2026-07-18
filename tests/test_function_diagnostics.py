@@ -10,10 +10,15 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 from coff import CoffRelocation, CoffSection, _merge_sections  # noqa: E402
 from extract_obj_function import extraction_extent, meaningful_code_size  # noqa: E402
 from function_diagnostics import (  # noqa: E402
+    basic_blocks,
+    block_alignment,
+    call_alignment,
     call_count_deltas,
+    call_fingerprint,
     call_target_counts,
     clean_symbol_name,
     compatible_relocation_masks,
+    decode_instruction_ranges,
     decode_instructions,
     instruction_alignment,
     iteration_delta,
@@ -78,6 +83,19 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(alignment["equal_instructions"], 4)
         self.assertEqual(alignment["similarity_percent"], 80.0)
 
+    def test_discontiguous_original_ranges_keep_real_addresses_and_combined_offsets(self) -> None:
+        instructions = decode_instruction_ranges(
+            bytes.fromhex("90 C3 90 C3"),
+            [
+                {"start": "00001000", "size_bytes": 2},
+                {"start": "00002000", "size_bytes": 2},
+            ],
+        )
+        self.assertEqual([row.address for row in instructions], [0x1000, 0x1001, 0x2000, 0x2001])
+        self.assertEqual([row.offset for row in instructions], [0, 1, 2, 3])
+        blocks = basic_blocks(instructions, [])
+        self.assertEqual([row["offset"] for row in blocks], [0, 2])
+
     def test_call_count_deltas_prioritize_largest_target_gaps(self) -> None:
         original = call_target_counts(
             [
@@ -100,6 +118,57 @@ class CoffAndDiagnosticTests(unittest.TestCase):
             [(row["target"], row["delta"]) for row in deltas],
             [("setaction", -2), ("isenemy", 1), ("object", 1)],
         )
+
+    def test_loaded_vtable_slot_call_is_identified(self) -> None:
+        # mov eax,[ecx]; mov edx,[eax+28h]; call edx; ret
+        instructions = decode_instructions(bytes.fromhex("8B 01 8B 50 28 FF D2 C3"), 0x1000)
+        calls = call_fingerprint(instructions, original=False)
+        self.assertEqual([(row["kind"], row["target"]) for row in calls], [("virtual", "vslot+0x28")])
+        self.assertEqual(calls[0]["block_offset"], 0)
+
+    def test_call_alignment_marks_contextual_slot_replacement(self) -> None:
+        original = [
+            {"offset": 1, "kind": "direct", "target": "a", "display": "a", "setup": ["push 1"], "previous_targets": [], "next_targets": ["b"]},
+            {"offset": 5, "kind": "direct", "target": "b", "display": "b", "setup": ["push 2"], "previous_targets": ["a"], "next_targets": ["vslot+0x28"]},
+            {"offset": 9, "kind": "virtual", "target": "vslot+0x28", "display": "vslot+0x28", "setup": ["mov reg,[reg]"], "previous_targets": ["a", "b"], "next_targets": []},
+        ]
+        rebuilt = [
+            {**original[0]},
+            {**original[1], "next_targets": ["vslot+0x38"]},
+            {**original[2], "target": "vslot+0x38", "display": "vslot+0x38"},
+        ]
+        alignment = call_alignment(original, rebuilt)
+        self.assertEqual(alignment["aligned_prefix_calls"], 2)
+        self.assertEqual(alignment["rows"][-1]["status"], "replace")
+        self.assertIn(alignment["rows"][-1]["confidence"], {"medium", "high"})
+
+    def test_call_alignment_marks_unique_gap_between_anchors_high_confidence(self) -> None:
+        def call(offset: int, target: str) -> dict[str, object]:
+            return {
+                "offset": offset,
+                "kind": "direct",
+                "target": target,
+                "display": target,
+                "setup": [],
+                "previous_targets": [],
+                "next_targets": [],
+            }
+
+        alignment = call_alignment(
+            [call(1, "a"), call(2, "missing"), call(3, "c")],
+            [call(1, "a"), call(3, "c")],
+        )
+        gap = next(row for row in alignment["rows"] if row["status"] == "delete")
+        self.assertEqual(gap["confidence"], "high")
+
+    def test_basic_block_alignment_finds_exact_island_after_changed_entry(self) -> None:
+        original_instructions = decode_instructions(bytes.fromhex("85 C0 74 01 90 C3"), 0x1000)
+        rebuilt_instructions = decode_instructions(bytes.fromhex("83 F8 00 74 01 90 C3"), 0x1000)
+        original_blocks = basic_blocks(original_instructions, [])
+        rebuilt_blocks = basic_blocks(rebuilt_instructions, [])
+        alignment = block_alignment(original_blocks, rebuilt_blocks)
+        self.assertGreaterEqual(len(alignment["strong_islands"]), 1)
+        self.assertIsNotNone(alignment["first_difference_row"])
 
     def test_iteration_delta_reports_direction(self) -> None:
         result = iteration_delta(

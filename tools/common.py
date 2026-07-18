@@ -345,6 +345,9 @@ def edit_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | bool
     edit_bytes = insert_bytes + delete_bytes + replace_bytes
     compare_size = max(len(left), len(right))
     edit_percent = 0.0 if compare_size == 0 else (edit_bytes / compare_size) * 100.0
+    total_size = len(left) + len(right)
+    edit_cost_percent_total = 0.0 if total_size == 0 else (edit_bytes / total_size) * 100.0
+    resync_similarity_percent = 100.0 if compare_size == 0 else (equal_bytes / compare_size) * 100.0
     positional = positional_byte_diff_metrics(left, right)
     positional_diff_bytes = int(positional["diff_bytes"])
     shifted = (
@@ -357,6 +360,8 @@ def edit_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | bool
     return {
         "edit_diff_bytes": edit_bytes,
         "edit_diff_percent": edit_percent,
+        "edit_cost_percent_total": edit_cost_percent_total,
+        "resync_similarity_percent": resync_similarity_percent,
         "edit_equal_bytes": equal_bytes,
         "edit_insert_bytes": insert_bytes,
         "edit_delete_bytes": delete_bytes,

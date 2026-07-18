@@ -162,7 +162,7 @@ def generate_source(va, pattern, info, content):
 def check_function(va):
     """Compile and compare."""
     result = subprocess.run(
-        [sys.executable, str(TOOLS_DIR / "check_function.py"), "--va", va],
+        [sys.executable, str(TOOLS_DIR / "check_function.py"), "--va", va, "--no-history"],
         capture_output=True, text=True, timeout=30
     )
     return result.returncode == 0, result.stdout

@@ -190,7 +190,7 @@ def generate_wrapper_ne_source(packet_text: str, target_record: dict[str, str]) 
 
 def check_function(va: str) -> bool:
     result = subprocess.run(
-        [sys.executable, str(REPO_ROOT / "tools" / "check_function.py"), "--va", va],
+        [sys.executable, str(REPO_ROOT / "tools" / "check_function.py"), "--va", va, "--no-history"],
         capture_output=True,
         text=True,
     )

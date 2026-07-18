@@ -3,7 +3,7 @@ from __future__ import annotations
 import difflib
 import re
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import lru_cache
 from typing import Iterable
 
@@ -17,6 +17,10 @@ _REGISTER_RE = re.compile(
     re.IGNORECASE,
 )
 _VIRTUAL_SLOT_RE = re.compile(r"call\s+dword\s+\[[^\]]*?\+([0-9a-f]+)h\]", re.IGNORECASE)
+_CALL_REGISTER_RE = re.compile(r"call\s+(e(?:ax|bx|cx|dx|si|di|bp))$", re.IGNORECASE)
+_MOV_RE = re.compile(r"mov\s+(e(?:ax|bx|cx|dx|si|di|bp)),(.+)$", re.IGNORECASE)
+_MEMORY_RE = re.compile(r"(?:dword\s+)?\[(e(?:ax|bx|cx|dx|si|di|bp|sp))(?:(\+|-)([0-9a-f]+)h?)?\]$", re.IGNORECASE)
+_REGISTER_RE_FULL = re.compile(r"e(?:ax|bx|cx|dx|si|di|bp)$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -66,6 +70,34 @@ def decode_instructions(code: bytes, start_va: int, relocations: Iterable[dict] 
     return result
 
 
+def decode_instruction_ranges(
+    code: bytes,
+    ranges: Iterable[dict[str, object]],
+) -> list[DecodedInstruction]:
+    """Decode concatenated original bytes at their real discontiguous VAs."""
+    result: list[DecodedInstruction] = []
+    combined_offset = 0
+    for row in ranges:
+        start_text = str(row.get("start") or "0")
+        start = int(start_text, 16)
+        size = int(row.get("size_bytes") or 0)
+        chunk = code[combined_offset:combined_offset + size]
+        for instruction in decode_instructions(chunk, start):
+            result.append(
+                replace(
+                    instruction,
+                    offset=combined_offset + instruction.offset,
+                    end=combined_offset + instruction.end,
+                )
+            )
+        combined_offset += size
+    if combined_offset != len(code):
+        raise ValueError(
+            f"Original range metadata covers {combined_offset} byte(s), but the binary has {len(code)}"
+        )
+    return result
+
+
 def clean_symbol_name(name: str) -> str:
     value = name.strip()
     if value.startswith("__imp_"):
@@ -102,22 +134,124 @@ def original_call_target(instruction: DecodedInstruction, names_by_va: dict[int,
     return names_by_va.get(instruction.target, f"{instruction.target:08X}")
 
 
+def _block_instruction_ranges(instructions: list[DecodedInstruction]) -> list[tuple[int, int]]:
+    """Return half-open instruction-index ranges for ordinary basic blocks."""
+    if not instructions:
+        return []
+    address_to_index = {item.address: index for index, item in enumerate(instructions)}
+    leaders = {0}
+    terminators = {
+        FlowControl.CONDITIONAL_BRANCH,
+        FlowControl.UNCONDITIONAL_BRANCH,
+        FlowControl.RETURN,
+    }
+    for index, instruction in enumerate(instructions):
+        if index and instruction.address != instructions[index - 1].address + len(instructions[index - 1].data):
+            leaders.add(index)
+        if instruction.flow_control in (FlowControl.CONDITIONAL_BRANCH, FlowControl.UNCONDITIONAL_BRANCH):
+            target_index = address_to_index.get(instruction.target)
+            if target_index is not None:
+                leaders.add(target_index)
+        if instruction.flow_control in terminators and index + 1 < len(instructions):
+            leaders.add(index + 1)
+    ordered = sorted(leaders)
+    return [
+        (start, ordered[pos + 1] if pos + 1 < len(ordered) else len(instructions))
+        for pos, start in enumerate(ordered)
+    ]
+
+
+def _loaded_virtual_slots(instructions: list[DecodedInstruction]) -> dict[int, int]:
+    """Recognize VC5's load-vtable/load-slot/call-register virtual-call form.
+
+    This is intentionally conservative.  It only propagates a slot loaded from a
+    register that was itself loaded from ``[object]`` in the same basic block.
+    """
+    result: dict[int, int] = {}
+    for start, end in _block_instruction_ranges(instructions):
+        vtable_registers: set[str] = set()
+        slot_registers: dict[str, int] = {}
+        for instruction in instructions[start:end]:
+            text = instruction.text.lower().strip()
+            call_match = _CALL_REGISTER_RE.fullmatch(text)
+            if call_match:
+                register = call_match.group(1)
+                if register in slot_registers:
+                    result[instruction.offset] = slot_registers[register]
+
+            mov_match = _MOV_RE.fullmatch(text)
+            if mov_match:
+                destination = mov_match.group(1)
+                source = mov_match.group(2).strip()
+                vtable_registers.discard(destination)
+                slot_registers.pop(destination, None)
+                memory_match = _MEMORY_RE.fullmatch(source)
+                if memory_match:
+                    base = memory_match.group(1)
+                    sign = memory_match.group(2)
+                    displacement_text = memory_match.group(3)
+                    displacement = 0 if displacement_text is None else int(displacement_text, 16)
+                    if sign == "-":
+                        displacement = -displacement
+                    if displacement == 0 and base != "esp":
+                        vtable_registers.add(destination)
+                    elif base in vtable_registers and displacement >= 0:
+                        slot_registers[destination] = displacement
+                elif _REGISTER_RE_FULL.fullmatch(source):
+                    if source in vtable_registers:
+                        vtable_registers.add(destination)
+                    if source in slot_registers:
+                        slot_registers[destination] = slot_registers[source]
+            elif text.startswith(("pop ", "lea ", "xor ", "add ", "sub ", "and ", "or ")):
+                parts = text.split(None, 1)
+                destination = parts[1].split(",", 1)[0].strip() if len(parts) == 2 else ""
+                if _REGISTER_RE_FULL.fullmatch(destination):
+                    vtable_registers.discard(destination)
+                    slot_registers.pop(destination, None)
+
+            if instruction.flow_control in (FlowControl.CALL, FlowControl.INDIRECT_CALL):
+                # Caller-saved values do not survive a call.  Callee-saved vtable
+                # bases remain useful for later loaded-slot calls.
+                for register in ("eax", "ecx", "edx"):
+                    vtable_registers.discard(register)
+                    slot_registers.pop(register, None)
+    return result
+
+
 def call_fingerprint(
     instructions: list[DecodedInstruction],
     original: bool,
     names_by_va: dict[int, str] | None = None,
 ) -> list[dict[str, object]]:
     names = names_by_va or _function_names_by_va()
+    loaded_slots = _loaded_virtual_slots(instructions)
+    address_to_offset = {item.address: item.offset for item in instructions}
+    block_ranges = _block_instruction_ranges(instructions)
+    block_for_instruction: dict[int, tuple[int, int, int]] = {}
+    for block_index, (start, end) in enumerate(block_ranges):
+        for instruction_index in range(start, end):
+            block_for_instruction[instruction_index] = (block_index, start, end)
     calls: list[dict[str, object]] = []
-    for instruction in instructions:
+    for instruction_index, instruction in enumerate(instructions):
+        block_index, block_start, block_end = block_for_instruction.get(
+            instruction_index, (0, 0, len(instructions))
+        )
         if instruction.flow_control == FlowControl.CALL:
-            target = original_call_target(instruction, names) if original else instruction.relocation_symbol
+            if not original and instruction.relocation_symbol:
+                target = instruction.relocation_symbol
+            elif instruction.target in address_to_offset:
+                target = f"internal+0x{address_to_offset[instruction.target]:X}"
+            else:
+                target = original_call_target(instruction, names) if original else instruction.relocation_symbol
             calls.append(
                 {
                     "offset": instruction.offset,
                     "kind": "direct",
                     "target": clean_symbol_name(target) if target else "unresolved",
                     "display": clean_symbol_name(target) if target else "unresolved",
+                    "instruction_index": instruction_index,
+                    "block_index": block_index,
+                    "block_offset": instructions[block_start].offset,
                 }
             )
         elif instruction.flow_control == FlowControl.INDIRECT_CALL:
@@ -126,11 +260,371 @@ def call_fingerprint(
                 slot = int(slot_match.group(1), 16)
                 target = f"vslot+0x{slot:X}"
                 kind = "virtual"
+            elif instruction.offset in loaded_slots:
+                slot = loaded_slots[instruction.offset]
+                target = f"vslot+0x{slot:X}"
+                kind = "virtual"
             else:
                 target = "indirect"
                 kind = "indirect"
-            calls.append({"offset": instruction.offset, "kind": kind, "target": target, "display": target})
+            calls.append(
+                {
+                    "offset": instruction.offset,
+                    "kind": kind,
+                    "target": target,
+                    "display": target,
+                    "instruction_index": instruction_index,
+                    "block_index": block_index,
+                    "block_offset": instructions[block_start].offset,
+                }
+            )
+        if calls and int(calls[-1].get("instruction_index", -1)) == instruction_index:
+            setup_start = max(block_start, instruction_index - 4)
+            calls[-1]["setup"] = [instruction_shape(item) for item in instructions[setup_start:instruction_index]]
+            calls[-1]["block_end_offset"] = instructions[block_end - 1].end
+            post_end = min(block_end, instruction_index + 3)
+            calls[-1]["post"] = [
+                instruction_shape(item) for item in instructions[instruction_index + 1:post_end]
+            ]
+            cleanup = 0
+            if instruction_index + 1 < block_end:
+                cleanup_match = re.fullmatch(
+                    r"add esp,([0-9a-f]+)h?", instructions[instruction_index + 1].text.lower()
+                )
+                if cleanup_match:
+                    cleanup = int(cleanup_match.group(1), 16)
+            calls[-1]["caller_cleanup_bytes"] = cleanup
+            push_count = 0
+            scan = instruction_index - 1
+            while scan >= block_start and instruction_index - scan <= 12:
+                previous = instructions[scan]
+                if previous.flow_control in (
+                    FlowControl.CALL,
+                    FlowControl.INDIRECT_CALL,
+                    FlowControl.CONDITIONAL_BRANCH,
+                    FlowControl.UNCONDITIONAL_BRANCH,
+                    FlowControl.RETURN,
+                ):
+                    break
+                if previous.mnemonic == "push":
+                    push_count += 1
+                scan -= 1
+            calls[-1]["nearby_push_count"] = push_count
+    for index, row in enumerate(calls):
+        row["previous_targets"] = [
+            str(item["target"]) for item in calls[max(0, index - 2):index]
+        ]
+        row["next_targets"] = [
+            str(item["target"]) for item in calls[index + 1:index + 3]
+        ]
     return calls
+
+
+def basic_blocks(
+    instructions: list[DecodedInstruction], calls: list[dict[str, object]] | None = None
+) -> list[dict[str, object]]:
+    """Build JSON-friendly basic-block records with normalized signatures."""
+    if not instructions:
+        return []
+    call_rows = calls or []
+    calls_by_block: dict[int, list[dict[str, object]]] = {}
+    for call in call_rows:
+        calls_by_block.setdefault(int(call.get("block_index", -1)), []).append(call)
+    address_to_offset = {item.address: item.offset for item in instructions}
+    ranges = _block_instruction_ranges(instructions)
+    blocks: list[dict[str, object]] = []
+    for block_index, (start, end) in enumerate(ranges):
+        body = instructions[start:end]
+        last = body[-1]
+        successors: list[int] = []
+        if last.flow_control == FlowControl.CONDITIONAL_BRANCH:
+            if last.target in address_to_offset:
+                successors.append(address_to_offset[last.target])
+            if end < len(instructions) and last.address + len(last.data) == instructions[end].address:
+                successors.append(instructions[end].offset)
+        elif last.flow_control == FlowControl.UNCONDITIONAL_BRANCH:
+            if last.target in address_to_offset:
+                successors.append(address_to_offset[last.target])
+        elif (
+            last.flow_control != FlowControl.RETURN
+            and end < len(instructions)
+            and last.address + len(last.data) == instructions[end].address
+        ):
+            successors.append(instructions[end].offset)
+        block_calls = calls_by_block.get(block_index, [])
+        shapes = [instruction_shape(item) for item in body]
+        blocks.append(
+            {
+                "index": block_index,
+                "offset": body[0].offset,
+                "end_offset": body[-1].end,
+                "instruction_start": start,
+                "instruction_end": end,
+                "instruction_count": len(body),
+                "shapes": shapes,
+                "signature": "\n".join(shapes),
+                "terminator": shapes[-1],
+                "successors": successors,
+                "calls": [f"{row['kind']}:{row['target']}" for row in block_calls],
+            }
+        )
+    return blocks
+
+
+def _setup_similarity(left: dict[str, object], right: dict[str, object]) -> float:
+    a = list(left.get("setup") or [])
+    b = list(right.get("setup") or [])
+    if not a and not b:
+        return 1.0
+    return difflib.SequenceMatcher(a=a, b=b, autojunk=False).ratio()
+
+
+def call_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, object]]) -> dict[str, object]:
+    """Weighted, context-aware call-site alignment.
+
+    Repeated calls are deliberately low confidence unless neighboring calls and
+    setup shapes agree.  The result is diagnostic and never affects exactness.
+    """
+    left_counts = Counter((str(row["kind"]), str(row["target"])) for row in original)
+    right_counts = Counter((str(row["kind"]), str(row["target"])) for row in rebuilt)
+    n, m = len(original), len(rebuilt)
+    gap = -7.0
+    scores = [[0.0] * (m + 1) for _ in range(n + 1)]
+    trace = [[""] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        scores[i][0] = i * gap
+        trace[i][0] = "D"
+    for j in range(1, m + 1):
+        scores[0][j] = j * gap
+        trace[0][j] = "I"
+
+    def pair_score(left: dict[str, object], right: dict[str, object]) -> float:
+        left_key = (str(left["kind"]), str(left["target"]))
+        right_key = (str(right["kind"]), str(right["target"]))
+        setup = _setup_similarity(left, right)
+        if left_key == right_key:
+            frequency = max(left_counts[left_key], right_counts[right_key])
+            uniqueness = 5.0 / max(frequency, 1)
+            neighbors = 0.0
+            if left.get("previous_targets") == right.get("previous_targets"):
+                neighbors += 1.5
+            if left.get("next_targets") == right.get("next_targets"):
+                neighbors += 1.5
+            return 12.0 + uniqueness + neighbors + setup * 2.0
+        if left["kind"] == right["kind"]:
+            return -2.0 + setup * 3.0
+        return -6.0 + setup
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            diagonal = scores[i - 1][j - 1] + pair_score(original[i - 1], rebuilt[j - 1])
+            delete = scores[i - 1][j] + gap
+            insert = scores[i][j - 1] + gap
+            best = max(diagonal, delete, insert)
+            # Prefer an exact diagonal on ties, otherwise prefer a gap over a
+            # speculative replacement.
+            exact = (original[i - 1]["kind"], original[i - 1]["target"]) == (
+                rebuilt[j - 1]["kind"], rebuilt[j - 1]["target"]
+            )
+            if diagonal == best and (exact or (diagonal > delete and diagonal > insert)):
+                trace[i][j] = "M"
+            elif delete == best:
+                trace[i][j] = "D"
+            else:
+                trace[i][j] = "I"
+            scores[i][j] = best
+
+    rows: list[dict[str, object]] = []
+    i, j = n, m
+    while i or j:
+        operation = trace[i][j]
+        if operation == "M":
+            left = original[i - 1]
+            right = rebuilt[j - 1]
+            exact = (left["kind"], left["target"]) == (right["kind"], right["target"])
+            setup = _setup_similarity(left, right)
+            frequency = max(
+                left_counts[(str(left["kind"]), str(left["target"]))],
+                right_counts[(str(right["kind"]), str(right["target"]))],
+            )
+            if exact and (frequency == 1 or setup >= 0.75):
+                confidence = "high"
+            elif exact:
+                confidence = "medium"
+            elif left["kind"] == right["kind"] and setup >= 0.5:
+                confidence = "medium"
+            else:
+                confidence = "low"
+            rows.append(
+                {
+                    "status": "equal" if exact else "replace",
+                    "confidence": confidence,
+                    "original_index": i - 1,
+                    "rebuilt_index": j - 1,
+                    "original": left,
+                    "rebuilt": right,
+                    "setup_similarity": setup,
+                }
+            )
+            i -= 1
+            j -= 1
+        elif operation == "D" or j == 0:
+            rows.append(
+                {
+                    "status": "delete",
+                    "confidence": "low",
+                    "original_index": i - 1,
+                    "rebuilt_index": None,
+                    "original": original[i - 1],
+                    "rebuilt": None,
+                }
+            )
+            i -= 1
+        else:
+            rows.append(
+                {
+                    "status": "insert",
+                    "confidence": "low",
+                    "original_index": None,
+                    "rebuilt_index": j - 1,
+                    "original": None,
+                    "rebuilt": rebuilt[j - 1],
+                }
+            )
+            j -= 1
+    rows.reverse()
+    for index, row in enumerate(rows):
+        if row["status"] not in {"delete", "insert"}:
+            continue
+        call = row.get("original") or row.get("rebuilt") or {}
+        key = (str(call.get("kind")), str(call.get("target")))
+        frequency = left_counts[key] if row["status"] == "delete" else right_counts[key]
+        anchors = sum(
+            1
+            for neighbor in (index - 1, index + 1)
+            if 0 <= neighbor < len(rows) and rows[neighbor]["status"] == "equal"
+        )
+        if frequency == 1 and anchors == 2:
+            row["confidence"] = "high"
+        elif frequency <= 2 and anchors >= 1:
+            row["confidence"] = "medium"
+    exact_count = sum(row["status"] == "equal" for row in rows)
+    prefix = 0
+    for row in rows:
+        if row["status"] != "equal":
+            break
+        prefix += 1
+    first_difference = next((index for index, row in enumerate(rows) if row["status"] != "equal"), None)
+    return {
+        "rows": rows,
+        "exact_calls": exact_count,
+        "similarity_percent": exact_count * 100.0 / max(n, m, 1),
+        "aligned_prefix_calls": prefix,
+        "first_difference_row": first_difference,
+    }
+
+
+def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, object]]) -> dict[str, object]:
+    """Align basic blocks using normalized instructions, calls, and terminators."""
+    n, m = len(original), len(rebuilt)
+    gap = -9.0
+    scores = [[0.0] * (m + 1) for _ in range(n + 1)]
+    trace = [[""] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        scores[i][0] = i * gap
+        trace[i][0] = "D"
+    for j in range(1, m + 1):
+        scores[0][j] = j * gap
+        trace[0][j] = "I"
+
+    def pair_score(left: dict[str, object], right: dict[str, object]) -> float:
+        if left["signature"] == right["signature"]:
+            return 30.0 + min(int(left["instruction_count"]), 20) / 2.0
+        ratio = difflib.SequenceMatcher(
+            a=list(left["shapes"]), b=list(right["shapes"]), autojunk=False
+        ).ratio()
+        calls = 6.0 if left["calls"] and left["calls"] == right["calls"] else 0.0
+        terminator = 2.0 if left["terminator"] == right["terminator"] else 0.0
+        successor_shape = 1.0 if len(left["successors"]) == len(right["successors"]) else 0.0
+        return ratio * 14.0 + calls + terminator + successor_shape - 5.0
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            diagonal = scores[i - 1][j - 1] + pair_score(original[i - 1], rebuilt[j - 1])
+            delete = scores[i - 1][j] + gap
+            insert = scores[i][j - 1] + gap
+            best = max(diagonal, delete, insert)
+            if diagonal == best and diagonal > delete and diagonal > insert:
+                trace[i][j] = "M"
+            elif delete == best:
+                trace[i][j] = "D"
+            else:
+                trace[i][j] = "I"
+            scores[i][j] = best
+
+    rows: list[dict[str, object]] = []
+    i, j = n, m
+    while i or j:
+        operation = trace[i][j]
+        if operation == "M":
+            left, right = original[i - 1], rebuilt[j - 1]
+            exact = left["signature"] == right["signature"]
+            ratio = difflib.SequenceMatcher(
+                a=list(left["shapes"]), b=list(right["shapes"]), autojunk=False
+            ).ratio()
+            rows.append(
+                {
+                    "status": "equal" if exact else "fuzzy",
+                    "confidence": "high" if exact else ("medium" if ratio >= 0.65 else "low"),
+                    "original": left,
+                    "rebuilt": right,
+                    "shape_similarity": ratio,
+                }
+            )
+            i -= 1
+            j -= 1
+        elif operation == "D" or j == 0:
+            rows.append({"status": "delete", "confidence": "low", "original": original[i - 1], "rebuilt": None})
+            i -= 1
+        else:
+            rows.append({"status": "insert", "confidence": "low", "original": None, "rebuilt": rebuilt[j - 1]})
+            j -= 1
+    rows.reverse()
+
+    exact_instructions = sum(
+        int(row["original"]["instruction_count"])
+        for row in rows
+        if row["status"] == "equal" and row["original"] is not None
+    )
+    islands: list[dict[str, object]] = []
+    current: list[dict[str, object]] = []
+    for row in rows + [{"status": "end"}]:
+        if row["status"] == "equal":
+            current.append(row)
+            continue
+        if current:
+            islands.append(
+                {
+                    "blocks": len(current),
+                    "instructions": sum(int(item["original"]["instruction_count"]) for item in current),
+                    "original_start": current[0]["original"]["offset"],
+                    "original_end": current[-1]["original"]["end_offset"],
+                    "rebuilt_start": current[0]["rebuilt"]["offset"],
+                    "rebuilt_end": current[-1]["rebuilt"]["end_offset"],
+                }
+            )
+            current = []
+    islands.sort(key=lambda row: (-int(row["instructions"]), int(row["original_start"])))
+    first_difference = next((index for index, row in enumerate(rows) if row["status"] != "equal"), None)
+    return {
+        "rows": rows,
+        "exact_instructions": exact_instructions,
+        "matched_coverage_percent": exact_instructions * 100.0 / max(
+            sum(int(row["instruction_count"]) for row in original), 1
+        ),
+        "first_difference_row": first_difference,
+        "strong_islands": islands[:8],
+    }
 
 
 def call_target_counts(calls: list[dict[str, object]]) -> list[dict[str, object]]:
@@ -305,6 +799,7 @@ def compatible_relocation_masks(
     rebuilt_bytes: bytes,
     rebuilt_relocations: list[dict],
     start_va: int,
+    original_ranges: Iterable[dict[str, object]] | None = None,
 ) -> tuple[bytes, bytes, dict[str, object]]:
     """Mask only relocations whose containing instruction still aligns.
 
@@ -312,7 +807,11 @@ def compatible_relocation_masks(
     different original creates artificial equal bytes. Known direct-call target
     mismatches are deliberately left unmasked and therefore fail exactness.
     """
-    original_instructions = decode_instructions(original_bytes, start_va)
+    original_instructions = (
+        decode_instruction_ranges(original_bytes, original_ranges)
+        if original_ranges is not None
+        else decode_instructions(original_bytes, start_va)
+    )
     rebuilt_instructions = decode_instructions(rebuilt_bytes, start_va, rebuilt_relocations)
     original_by_offset = {item.offset: item for item in original_instructions}
     names = _function_names_by_va()

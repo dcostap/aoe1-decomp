@@ -51,7 +51,7 @@ def main():
         
         # Check if it still compiles and matches
         result = subprocess.run(
-            [sys.executable, str(REPO / "tools/check_function.py"), "--va", f"0x{va}", "--quiet"],
+            [sys.executable, str(REPO / "tools/check_function.py"), "--va", f"0x{va}", "--quiet", "--no-history"],
             capture_output=True, text=True, timeout=30
         )
         if "Result: MATCH" in result.stdout:
