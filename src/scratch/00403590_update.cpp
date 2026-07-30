@@ -1,0 +1,451 @@
+// VA: 00403590 RGE_Action_Gather::update (1620B)
+// PDB source: ACT_GATH.cpp
+// Attempt log:
+// try 1: natural switch/state reconstruction from packet; exact action/object/player field offsets and observed virtual slots.
+// try 2: corrected state/object virtual surfaces; build reached 1612 bytes, frame 8 vs 0xc.
+// try 3: widened RGE_Static_Object/RGE_Action_Object vtables; frame reached exact 0xc and size 1620.
+// try 4: restored target-owner mismatch guard; longest aligned run improved to 91, but switch body remains structurally divergent.
+// try 5: corrected gather state numbering and action virtual slots; no metric improvement.
+// try 6: added typed gather/action methods and natural FPU locals; calls remain 49 vs original 53.
+// try 7: paused at budget; blocker is switch/jump-table body and missing repeated set_state/set_target virtual calls (19/22 slot 0x5c, 1/2 slot 0x138, 1/2 slot 0x1ec).
+
+#define RGE_BASE_GAME (*(RGE_Base_Game**)0x62C574)
+
+class RGE_Action_Object;
+class RGE_Static_Object;
+class RGE_Task;
+class RGE_Sprite;
+class RGE_Sound { public: void play(int); };
+class RGE_Action_List;
+class RGE_Master_Static_Object;
+class RGE_Player;
+class RGE_Game_World;
+
+class RGE_Action {
+public:
+    virtual void v00();
+    virtual int setup(RGE_Action_Object*);
+    virtual int setup_file(int, RGE_Action_Object*);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
+    virtual void v10();
+    virtual void save(int);
+    virtual short type();
+    virtual void first_in_stack(unsigned char);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char idle_update();
+    virtual unsigned char update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual unsigned char attack_response(RGE_Static_Object*);
+    virtual unsigned char relation_response(long, unsigned char);
+    virtual void copy_obj(void*);
+    virtual void copy_obj_sprites(void*, void*, void*);
+    virtual void get_state_name(char*);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
+    virtual void set_target_obj(RGE_Static_Object*);
+    virtual void set_target_obj2(RGE_Static_Object*);
+    virtual void set_state(unsigned char);
+
+    short action_type;
+    char gap_06[2];
+    RGE_Action_Object* obj;
+    unsigned char state;
+    char gap_0D[3];
+    RGE_Static_Object* target_obj;
+    RGE_Static_Object* target_obj2;
+    int targetID;
+    int target2ID;
+    float target_x;
+    float target_y;
+    float target_z;
+    float timer;
+    RGE_Task* task;
+    RGE_Action_List* sub_actions;
+    RGE_Sprite* sprite;
+    unsigned char subActionValue;
+    char gap_3D[3];
+    int targetType;
+};
+
+class RGE_Object_Info {
+public:
+    char gap_00[0x7C];
+    short attribute_type;
+    char gap_7E[0x66];
+    float gather_multiplier;
+};
+
+class RGE_Master_Static_Object {
+public:
+    char gap_00[0x10];
+    short id;
+    char gap_12[0xD6];
+    short drop_site;
+    short backup_drop_site;
+};
+
+class RGE_Static_Object {
+public:
+    int id;
+    RGE_Object_Info* object_data;
+    RGE_Player* owner;
+    char gap_10[0x34];
+    float attribute_amount_held;
+    union { void* sound; unsigned char object_state; } state_sound;
+    float distance_to_object(RGE_Static_Object*);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+};
+
+class RGE_Action_Object {
+public:
+    virtual void v00();
+    virtual void v01();
+    virtual void v02();
+    virtual unsigned char object_type();
+    virtual void v04();
+    virtual void v05();
+    virtual void v06();
+    virtual void v07();
+    virtual void v08();
+    virtual void v09();
+    virtual void v0A();
+    virtual void v0B();
+    virtual void v0C();
+    virtual void v0D();
+    virtual void v0E();
+    virtual void v0F();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v1A();
+    virtual void v1B();
+    virtual void v1C();
+    virtual void v1D();
+    virtual void v1E();
+    virtual void v1F();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, unsigned char, unsigned char);
+    virtual void v22();
+    virtual void v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual void v29();
+    virtual void v2A();
+    virtual void v2B();
+    virtual void v2C();
+    virtual void v2D();
+    virtual void v2E();
+    virtual void v2F();
+    virtual void v30();
+    virtual void v31();
+    virtual void v32();
+    virtual void v33();
+    virtual void v34();
+    virtual void v35();
+    virtual void v36();
+    virtual void v37();
+    virtual void v38();
+    virtual void v39();
+    virtual void v3A();
+    virtual void v3B();
+    virtual void v3C();
+    virtual void v3D();
+    virtual void v3E();
+    virtual void v3F();
+    virtual void v40();
+    virtual void v41();
+    virtual void v42();
+    virtual void v43();
+    virtual void v44();
+    virtual void v45();
+    virtual void v46();
+    virtual void v47();
+    virtual void v48();
+    virtual void v49();
+    virtual void v4A();
+    virtual void v4B();
+    virtual void v4C();
+    virtual void v4D();
+    virtual unsigned char check_attribute(short);
+    virtual void v4F();
+    virtual void v50();
+    virtual void v51();
+    virtual void notify(int, int, int, int, int, int);
+    virtual void v53();
+    virtual void v54();
+    virtual void v55();
+    virtual void v56();
+    virtual void v57();
+    virtual void v58();
+    virtual void v59();
+    virtual void v5A();
+    virtual void v5B();
+    virtual void v5C();
+    virtual void v5D();
+    virtual void v5E();
+    virtual void v5F();
+    virtual void v60();
+    virtual void v61();
+    virtual void v62();
+    virtual void v63();
+    virtual void v64();
+    virtual void v65();
+    virtual void v66();
+    virtual void v67();
+    virtual void v68();
+    virtual void v69();
+    virtual void v6A();
+    virtual void v6B();
+    virtual void v6C();
+    virtual void v6D();
+    virtual void v6E();
+    virtual void v6F();
+    virtual void v70();
+    virtual void v71();
+    virtual void v72();
+    virtual void v73();
+    virtual void v74();
+    virtual void v75();
+    virtual void v76();
+    virtual void v77();
+    virtual void v78();
+    virtual void v79();
+    virtual void v7A();
+    virtual void cancel_action();
+    virtual unsigned char can_gather(RGE_Action_Object*, int, int);
+    virtual unsigned char turn_towards(RGE_Static_Object*, int, int);
+    virtual unsigned char a4E();
+    virtual void stop_moving();
+    int id;
+    RGE_Object_Info* object_data;
+    RGE_Player* owner;
+    char gap_10[0x34];
+    float attribute_amount_held;
+    union { void* sound; unsigned char object_state; } state_sound;
+    float distance_to_object(RGE_Static_Object*);
+};
+
+class RGE_Task {
+public:
+    char gap_00[0x14];
+    short attribute_type;
+    char gap_16[6];
+    float gather_amount;
+};
+
+class RGE_Player {
+public:
+    virtual void p00(); virtual void p04(); virtual void p08(); virtual void p0C();
+    virtual void p10(); virtual void p14(); virtual void p18(); virtual void p1C();
+    virtual void p20(); virtual void p24(); virtual void p28(); virtual void p2C();
+    virtual void p30(); virtual void p34(); virtual void p38(); virtual void p3C();
+    virtual void p40(); virtual void p44(); virtual void p48(); virtual void p4C();
+    virtual void p50(); virtual void p54(); virtual void p58();
+    virtual void trackUnitGather(int, int, int);
+    virtual void p60(); virtual void p64(); virtual void p68(); virtual void p6C();
+    virtual void p70(); virtual void p74();
+    virtual void add_attribute_num(short, float, unsigned char);
+    char gap_04[0x38];
+    RGE_Game_World* world;
+    char gap_40[0x0C];
+    short fallback_attribute;
+    char gap_4E[2];
+    float* attribute_table;
+    int computerPlayer();
+};
+
+class RGE_Game_World {
+public:
+    RGE_Static_Object* object(int id);
+    char gap_04[0x80];
+    float world_time_delta_seconds;
+};
+
+class RGE_Action_List {
+public:
+    virtual void l00(); virtual void l04(); virtual void l08();
+    virtual unsigned char update();
+};
+
+class RGE_Base_Game { public: char gap_00[0x9A8]; int quick_build; };
+
+class RGE_Action_Gather : public RGE_Action {
+public:
+    unsigned char update();
+};
+
+extern float DAT_0056E278;
+extern double DAT_0056E280;
+extern double DAT_0056E290;
+
+unsigned char RGE_Action_Gather::update()
+{
+    volatile float give_amount;
+    volatile float modifier;
+    volatile float max_hold;
+
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0)
+        this->set_target_obj(0);
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0)
+        this->set_target_obj2(0);
+
+    if (this->target_obj != 0 && this->target_obj->state_sound.object_state >= 7)
+        this->set_target_obj(0);
+    if (this->target_obj2 != 0 && this->target_obj2->state_sound.object_state >= 7)
+        this->set_target_obj2(0);
+
+    RGE_Static_Object* check_obj = this->target_obj;
+    if (check_obj != 0 && *(short*)((char*)check_obj->owner + 0x4A) != 0 &&
+        *(short*)((char*)check_obj->owner + 0x4A) != *(short*)((char*)this->obj->owner + 0x4A)) {
+        this->set_state(1);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x261, 0, 0);
+        return 4;
+    }
+
+    switch ((int)this->state) {
+    case 1:
+        return 1;
+
+    case 3:
+        if (this->timer < 0.0f) {
+            this->timer += this->obj->owner->world->world_time_delta_seconds;
+            if (this->timer > 0.0f) {
+                this->timer = -10.0f;
+                this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
+                return 0;
+            }
+        }
+        break;
+
+    case 4: {
+        unsigned char result = this->sub_actions->update();
+        switch (result) {
+        case 1:
+        case 2:
+            this->set_state(6); return 0;
+        case 3:
+            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
+            this->set_state(3); return 0;
+        case 4:
+        case 5:
+            this->set_target_obj(0); this->set_state(11); return 0;
+        }
+        break;
+    }
+
+    case 6:
+        if (this->obj == 0) { this->set_state(3); return 0; }
+        if (this->obj->can_gather(this->obj, 0, 0)) {
+            if (this->obj->attribute_amount_held <= 0.0f &&
+                this->obj->check_attribute((short)this->obj->object_data->attribute_type) == 0) {
+                this->set_target_obj(0); this->set_state(3); return 0;
+            }
+            this->set_state(7); return 0;
+        }
+        break;
+
+    case 7: {
+        RGE_Static_Object* holder = this->target_obj;
+        if (holder == 0) {
+            holder = (RGE_Static_Object*)this->obj;
+            if (holder->attribute_amount_held <= 0.0f) goto done;
+        }
+        if (RGE_BASE_GAME->quick_build != 0)
+            give_amount = holder->attribute_amount_held;
+        else
+            give_amount = this->task->gather_amount * this->obj->object_data->gather_multiplier * this->obj->owner->world->world_time_delta_seconds;
+        if (holder->attribute_amount_held < give_amount) give_amount = holder->attribute_amount_held;
+        short attr = this->task->attribute_type;
+        if (attr == -1) modifier = 1.0f;
+        else modifier = this->obj->owner->attribute_table[attr];
+        max_hold = (float)*(short*)((char*)this->obj->object_data + 0x7C) * modifier - this->obj->attribute_amount_held;
+        if (max_hold < modifier * give_amount)
+            give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
+        holder->set_attribute_amount(-give_amount, 1, 1);
+        this->obj->set_attribute_amount(give_amount, 1, 0);
+        if (this->obj->attribute_amount_held < give_amount || this->obj->attribute_amount_held <= 0.0f)
+            this->set_state(8);
+        break;
+    }
+
+    case 8:
+        if (this->timer < 0.0f) {
+            this->timer += this->obj->owner->world->world_time_delta_seconds;
+            if (this->timer > 0.0f) {
+                this->timer = 0.0f; this->set_target_obj2(0); this->set_state(8); return 0;
+            }
+        } else {
+            switch (this->sub_actions->update()) {
+            case 1:
+            case 2:
+                if (this->target_obj == 0) { this->set_state(8); return 0; }
+                if (this->obj->distance_to_object(this->target_obj2) > 1.0f) {
+                    this->timer = -1.5f; this->obj->stop_moving(); return 0;
+                }
+                if (this->target_obj->state_sound.sound != 0) ((RGE_Sound*)this->target_obj->state_sound.sound)->play(1);
+                { short attr = this->target_obj->id; if (attr == -1) attr = this->obj->owner->fallback_attribute;
+                  this->obj->owner->add_attribute_num(attr, this->obj->attribute_amount_held, 0); }
+                this->obj->owner->trackUnitGather(this->obj->id, this->obj->id, (int)this->obj->attribute_amount_held);
+                this->obj->set_attribute(-1, 0.0f);
+                if (this->target_obj != 0) { this->set_target_obj2(0); this->set_state(4); return 0; }
+                if (this->target_x != -1.0f && this->target_y != -1.0f) { this->set_state(11); return 0; }
+                goto done;
+            case 3:
+            case 4:
+            case 5:
+                this->timer = -1.5f; this->obj->stop_moving(); return 0;
+            }
+        }
+        break;
+
+    case 11:
+    case 15:
+        switch (this->sub_actions->update()) {
+        case 1:
+        case 2:
+        case 5:
+            if (this->state == 11) { this->set_state(3); return 0; }
+            goto done;
+        case 3:
+            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
+            goto done;
+        case 4:
+            this->set_target_obj(0);
+            if (this->state == 11) { this->set_state(11); return 0; }
+            this->set_state(15); return 0;
+        }
+        break;
+
+    case 13:
+        switch (this->sub_actions->update()) {
+        case 1:
+        case 2:
+        case 5:
+            if (this->target_obj2 != 0) { this->set_state(4); return 0; }
+        case 3:
+            this->set_state(3); return 0;
+        case 4:
+            this->set_target_obj(0); this->set_state(11); return 0;
+        }
+        break;
+
+    case 14:
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x261, 0, 0);
+        return 3;
+    }
+
+done:
+    return 0;
+}
