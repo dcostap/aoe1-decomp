@@ -76,6 +76,9 @@
 // - the non-default action-2 idle-timeout reset must exit immediately; letting it fall into the play-status recovery was behaviorally wrong and encouraged setter-tail merging. Restoring the direct task_done edge keeps its target-type/location calls distinct, raises shape to 77.86% and call alignment to 92.95%, and extends the ordered prefix to 360.
 // - enlarging the action-7 auxiliary output window from 4 to 12 bytes restored the 0xD0 frame and improved block coverage, but it is not justified by the float* callee surface and changed the sentinel register, so it was rolled back. The current 0xC8 frame is an exposed real-local modeling deficit, not a padding invitation.
 // - an explicit goto split for subtype==-1 moved that cold handler too early, reduced call alignment to 88.86%, and was rolled back; keep the positive non-default subtype body for now.
+// - modeled the defend-distance selection as a real float and restored two shared gather-coordinate homes from the Ghidra fVar topology; frame is now exact at 0xD0 and the original +0407/+040F FILD blocks are exact. Reversed several equivalent threshold predicates to preserve binary-observed compare operand order, raising exact-block coverage from 33.04% to 37.08% and the longest aligned run from 96 to 106 while keeping all 440 call counts exact. Current size is +42, shape 78.24%, call prefix 360; first mismatch is +0x57 at the sentinel/zero-register choice.
+// - rolled back focused sentinel probes (direct member comparison, register local, and a scoped zero/null alias): they either compiled identically or changed only four unrelated later bytes; none recovered the original `lea ebx` / `xor ebp; cmp esi, ebp` opening.
+// - rolled back positive `isEnemy` arm order: it improved size/call-site count slightly but reduced block/edit alignment and did not move the misplaced virtual-dispatch block into the original +0x2400 family.
 
 #if 0
 Source: taitacmd.cpp.decomp
@@ -1762,6 +1765,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
     int pendingTaskArg2;
     ObjectMemory* mem;
     int t;
+    float directGatherY;
+    float directGatherZ;
 
     cur = this->groups.next;
     if (this->nextActiveSoldierGroupToTaskValue != -1) {
@@ -1810,7 +1815,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                     t = cur->type();
                     if (t == 0x65 || cur->type() == 0x68) {
                         int commander;
-                        int distance;
+                        float distance;
                         float gatherX;
                         float gatherAux;
                         float commanderPoint;
@@ -1829,9 +1834,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 goto task_done;
                             } else {
                                 if (mem->type == 0x6d) {
-                                    distance = this->sn[0x16];
+                                    distance = (float)this->sn[0x16];
                                 } else {
-                                    distance = this->sn[0x39];
+                                    distance = (float)this->sn[0x39];
                                 }
                                 pathPoint.x = mem->x;
                                 pathPoint.y = mem->y;
@@ -1840,7 +1845,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                         ((VObjWeaponRange*)commanderObj)->weaponRange(),
                                         mem->id, &commanderPoint, 1, -1, -1)) {
                                     if (((VObjCanPath*)commanderObj)->canPathWithAdditionalPassability(
-                                            pathPoint, (float)distance, mem->id, &commanderPoint,
+                                            pathPoint, distance, mem->id, &commanderPoint,
                                             1, 0x16, 1, -1, -1) &&
                                         ((VObjPathPoint*)commanderObj)->findFirstTerrainAlongExceptionPath(
                                             2, &gatherX, &gatherAux) == 1) {
@@ -1861,9 +1866,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                     cur->setTarget(mem->id);
                                     cur->setTargetType((int)mem->type);
                                     cur->setTargetLocation((float)mem->x, (float)mem->y, (float)mem->z);
-                                    *(float*)&pendingTaskCode = (float)mem->x;
-                                    *(float*)&pendingTaskArg1 = (float)mem->y;
-                                    *(float*)&pendingTaskArg2 = (float)mem->z;
+                                    directGatherZ = (float)mem->z;
+                                    directGatherY = (float)mem->y;
+                                    *(float*)&pendingTaskArg2 = (float)mem->x;
                                     goto inactive_direct_gather;
                                 }
                             }
@@ -1924,9 +1929,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                             cur->setTarget(relic->id);
                                             cur->setTargetType(0x6d);
                                             cur->setTargetLocation(relic->world_x, relic->world_y, relic->world_z);
-                                            *(float*)&pendingTaskCode = relic->world_x;
-                                            *(float*)&pendingTaskArg1 = relic->world_y;
-                                            *(float*)&pendingTaskArg2 = relic->world_z;
+                                            *(float*)&pendingTaskArg2 = relic->world_x;
+                                            directGatherY = relic->world_y;
+                                            directGatherZ = relic->world_z;
                                             goto inactive_direct_gather;
                                         }
                                     }
@@ -2208,9 +2213,9 @@ active_exception_rejected:
                 }
                 goto inactive_post_setup;
 inactive_direct_gather:
-                cur->setGatherLocation(*(float*)&pendingTaskCode,
-                                       *(float*)&pendingTaskArg1,
-                                       *(float*)&pendingTaskArg2);
+                cur->setGatherLocation(*(float*)&pendingTaskArg2,
+                                       directGatherY,
+                                       directGatherZ);
                 cur->setInUse(1);
 inactive_post_setup:
                 if (this->md->strategyAI.currentVictoryCondition() == 0x0b &&
@@ -2623,8 +2628,8 @@ action7_timeout:
                     {
                         unsigned long idle;
                         idle = cur->consecutiveIdleUnitCount();
-                        if ((unsigned int)(this->sn[0x58] << 2) <
-                            (this->md->player->world->world_time - idle) / 1000) {
+                        if ((this->md->player->world->world_time - idle) / 1000 >
+                            (unsigned int)(this->sn[0x58] << 2)) {
                             cur->setAction(7);
                             cur->task(this, this->md, 7, 0, 1);
                             goto clear_attack_state;
@@ -2778,7 +2783,8 @@ action7_done:
                                 cur->setGatherLocation(mx, my, mz);
                             }
                             idle = cur->consecutiveIdleUnitCount();
-                            if ((unsigned int)this->sn[0x4c] < (this->md->player->world->world_time - idle) / 1000) {
+                            if ((this->md->player->world->world_time - idle) / 1000 >
+                                (unsigned int)this->sn[0x4c]) {
                                 cur->setInUse(0);
                                 cur->setAction(1);
                                 cur->setTarget(-1);
@@ -2884,7 +2890,8 @@ action3:
                     {
                     unsigned long idle;
                     idle = cur->consecutiveIdleUnitCount();
-                    if ((unsigned int)this->sn[0x4c] < (this->md->player->world->world_time - idle) / 1000) {
+                    if ((this->md->player->world->world_time - idle) / 1000 >
+                        (unsigned int)this->sn[0x4c]) {
                         cur->setInUse(0);
                         cur->setAction(1);
                         cur->setTarget(-1);
@@ -2932,7 +2939,7 @@ loss_check:
                         currentUnits = cur->numberUnits();
                         unitLoss = ((cur->originalUnitNumber() - currentUnits) * 100) /
                                    cur->originalUnitNumber();
-                        if (this->sn[0x1e] < hpLoss || this->sn[0x1f] < unitLoss) {
+                        if (hpLoss > this->sn[0x1e] || unitLoss > this->sn[0x1f]) {
                             cur->setAction(3);
                             cur->task(this, this->md, cur->action(), 1, 0);
                             goto clear_attack_state;
@@ -3098,7 +3105,7 @@ task_done:
             } else {
                 this->nextActiveSoldierGroupToTaskValue = cur->id();
             }
-            if (param_2 <= debug_timeGetTime(s_C__msdev_work_age1_x1_taitacmd_c, 0x14fe) - param_1) {
+            if (debug_timeGetTime(s_C__msdev_work_age1_x1_taitacmd_c, 0x14fe) - param_1 >= param_2) {
                 return;
             }
         } while (cur != sentinel);
