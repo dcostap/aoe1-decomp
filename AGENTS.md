@@ -70,6 +70,7 @@ Common examples:
 
 ```bat
 python tools\query_project_status.py --unclaimed --normal --smallest --no-blockers --limit 20
+python tools\query_project_status.py --unclaimed --normal --no-blockers --unleased --smallest --triage --leases --limit 12
 python tools\query_project_status.py --remaining --normal --smallest --limit 20
 python tools\query_project_status.py --va 0047A3A0 --paths
 python tools\query_project_status.py --source Pnl_pic.cpp --remaining
@@ -81,7 +82,15 @@ Useful filters include `--normal`, `--unclaimed`, `--scratch`, `--matching`,
 `--accepted-drift`, `--conflict`, `--remaining`, `--no-blockers`, `--blockers`,
 `--source <file-or-path-substring>`, `--query <tokens>`, `--min-size`,
 `--max-size`, `--smallest`, `--largest`, `--sort size|asm|va|name|source|bucket|diff|edit-diff|first-mismatch`,
-`--paths`, `--notes`, `--json`, and `--csv`.
+`--paths`, `--notes`, `--unleased`, `--active-leases`, `--owner <agent>`,
+`--leases`, `--triage`, `--json`, and `--csv`.
+
+Use `--triage` before opening several large function packets. It parses compact
+frame/EH/call/vslot/saved-register/PDB/decompiler evidence only for the rows left
+after sorting and `--limit`. Inspect at most two or three promising complete
+packets during target selection; do not dump eight or ten 50-KB packets into the
+agent context merely to choose a target. Once a VA is assigned explicitly, skip
+candidate shopping entirely.
 
 If a human-readable dashboard is needed, run
 `python tools\generate_status_dashboard.py` to rewrite `project_full_status.csv`
@@ -89,22 +98,174 @@ and `project_full_status.html`. Do not treat the generated CSV as the live sourc
 of truth unless explicitly using `query_project_status.py --from-csv` for a
 known stale/fast check.
 
+## Default autonomous matching contract
+
+When a user gives a short request such as `match 0043C2B0`, treat this section as
+the complete default task contract; the user does not need to repeat it in the
+prompt.
+
+1. Read `README.md` and the complete `LESSONS.md` as required above. `AGENTS.md`
+   is already injected into the agent system prompt; do not reread it through a
+   file tool unless the user asks or the injected text is unavailable.
+2. Preserve unrelated working-tree changes. Never clean/reset another agent's
+   files.
+3. Confirm the requested VA is a `normal` function and inspect its live status:
+   `python tools/query_project_status.py --va <VA> --paths --notes --leases`.
+   For an unassigned target search, use the compact `--triage` command above. If
+   it is already exact in `src/matching`, validate/report rather than creating a
+   second owner. If it is paused in `src/scratch`, read its attempt log and target
+   session/history before proposing new experiments so prior negative evidence is
+   not repeated.
+4. Before editing, claim the target with a short unique owner name for this
+   session and a default budget of **10 meaningful hypotheses**:
+   `python tools/target_session.py start --va <VA> --owner <unique-owner> --budget 10`.
+   Do not force-take an active lease. If the exact requested VA is leased by
+   someone else, report the conflict unless the user explicitly authorizes a
+   takeover.
+5. Inspect the function packet, then run the dossier, donor ranking, and ABI
+   evidence tools before broad declaration/layout archaeology:
+   `target_dossier.py`, `find_function_donors.py`, and `query_abi.py`.
+6. Create/edit only the living per-function source in `src/scratch` and use local
+   type/global stubs until reuse and proof justify shared changes.
+7. Record the first successful reconstruction check as `--kind baseline`, then
+   record each interpreted source/type/layout/control-flow/context hypothesis via
+   the integrated checker. Syntax/build repairs and unchanged reruns are not new
+   hypotheses and are not probes:
+
+   ```bat
+   python tools/target_session.py check --va <VA> --owner <owner> ^
+     --kind control-flow --note "specific hypothesis" -- --detail concise
+   ```
+
+   Do not pass `--no-build` before the target has a current built artifact. A
+   compile/syntax repair is not a probe; rerun the same intended probe after the
+   repair. `check_function.py` exits with status 1 for an ordinary completed
+   mismatch, which some harnesses display as a command error; interpret the
+   report, not that expected nonzero status. `target_session.py check` handles
+   match and mismatch statuses correctly.
+
+8. Treat the checker's `Workflow stage` as authoritative for what kind of work
+   comes next. `STRUCTURAL RECONSTRUCTION` means fix size, ordered calls, CFG, and
+   block topology before register coloring or broad variants. `EXACT CODEGEN`
+   means focused source-shape work is appropriate. Do not override the checker
+   stage merely because frame size or call counts happen to match.
+9. Stop after 10 meaningful hypotheses by default, or earlier when exact, when a
+   real ABI/layout blocker is identified, or when further variants would be
+   blind. A source change that emits the same code as an earlier probe is useful
+   negative evidence, but heed the session's `Codegen duplicate` notice and do
+   not keep exploring the same compiler basin.
+10. If exact, review source/flags, validate again, move (not copy) to
+    `src/matching`, and validate after the move. If unresolved, leave the best
+    state in `src/scratch`, write a compact attempt log, and pause with
+    `target_session.py pause --va <VA> --owner <owner> --reason "..."` (`--note`
+    is accepted as an alias). Never use `accepted_drift` merely because the
+    budget ended.
+11. Report target, outcome, probe count, current/best metrics, changed files,
+    validations, and the evidence-backed next lead. A bounded documented pause
+    is a valid outcome; never force a fake match.
+
+Pi executes shell commands through Bash. In Bash command strings use forward
+slashes such as `python tools/query_project_status.py`; unquoted Windows
+backslashes can be consumed as escapes. Batch examples elsewhere in this file use
+backslashes because they are written for `cmd.exe`.
+
+## Parallel target sessions and evidence dossiers
+
+When multiple agents share a working tree, claim a target before editing it:
+
+```bat
+python tools\target_session.py start --va 005204A0 --owner AgentName --budget 10
+python tools\target_session.py list --active
+python tools\query_project_status.py --remaining --normal --unleased --smallest --leases
+```
+
+The lease is advisory local state under ignored `build\target_sessions\`. Record
+meaningful interpreted hypotheses with `target_session.py probe`, then pause or
+release the lease when stopping. Compiler launches are not attempts by themselves;
+one probe should correspond to one source/type/context hypothesis and its observed
+effect. Keep durable conclusions in the scratch-file attempt log because session
+state is not committed.
+
+Probe kinds are `baseline`, `behavior`, `abi`, `layout`, `control-flow`,
+`liveness`, `context`, `flags`, `variant`, `restore`, and `other`. Use `baseline`
+for the first compiled reconstruction, and `restore` for a deliberate rollback
+rather than describing either as a new behavior hypothesis. Recorded `restore`
+checks remain in history but do not consume the meaningful-hypothesis budget.
+
+Prefer the integrated checker wrapper so a completed check, checkpoint, input
+hashes, emitted-code identity, duplicate-codegen detection, metric delta, and
+probe note stay together:
+
+```bat
+python tools\target_session.py check --va 005204A0 --owner AgentName ^
+  --kind liveness --note "direct member reload probe" -- --detail concise
+```
+
+For large, broad, or type-fragile targets, generate the binary-evidence dossier
+before source-shape search:
+
+```bat
+python tools\target_dossier.py --va 005204A0
+```
+
+The dossier's calls and assembly accesses are evidence, but its `this` aliases,
+generated names, and class-size comparison remain conservative hypotheses. Verify
+them against original asm before changing a living layout. Entry-relative stack
+coordinates are emitted only while stack adjustments and callee cleanup remain
+provable; unknown rows are intentionally left unnormalized. See
+`docs\agentic_matching_workflow.md`.
+
+Before inventing a helper/global/class declaration, query exact-source donors and
+generated reference provenance:
+
+```bat
+python tools\query_abi.py --symbol rge_read
+python tools\query_abi.py --class TRIBE_Player
+python tools\query_abi.py --global save_game_version
+```
+
+Exact matching source is strong codegen evidence, but a narrow local stub in one
+exact function is not automatically canonical semantic ABI. The query tool never
+auto-promotes declarations into shared headers.
+
+For large/type-fragile functions, rank exact donors before inventing another TU or
+class surface:
+
+```bat
+python tools\find_function_donors.py --va 004407A0 --limit 20
+```
+
+Donor scores are discovery heuristics, not proof of shared source or canonical
+ABI. Same-TU and same-class exact donors deserve inspection; low-weight raw
+displacement overlap does not prove common fields.
+
+Call **count/target-multiset parity is not ordered call-site parity**. Before
+saying the call set is aligned, inspect the session/checker call similarity and
+`delete`/`insert`/`replace` site counts. A report such as `47/47` with `-2/+2`
+site gaps is still structurally unresolved. Use
+`check_function.py --call-map-unmatched` and the dossier/PDB evidence bands to
+locate those gaps before tuning entry registers.
+
 ## Normal function workflow
 
 1. If choosing a target, use `python tools\query_project_status.py` and usually
    pick from `--unclaimed --normal --no-blockers`; avoid non-normal buckets.
-2. Read the function packet in `inventory\functions\...`.
-3. Check relevant shared headers/source and generated type/class/global reference.
-4. Implement or edit one per-function source in `src\scratch\...`.
-5. Compile and compare with `tools\check_function.py`.
-6. Fix missing shared facts only when stable/reusable; otherwise keep local stubs.
-7. Iterate source shape, layout, declarations, and context until exact or clearly
+2. In a shared agent workspace, claim the VA with `tools\target_session.py` before
+   editing. For a large/broad target, generate `tools\target_dossier.py --va <VA>`.
+3. Read the function packet in `inventory\functions\...`.
+4. Check relevant shared headers/source and generated type/class/global reference.
+5. Implement or edit one per-function source in `src\scratch\...`.
+6. Compile and compare with `tools\check_function.py`.
+7. Fix missing shared facts only when stable/reusable; otherwise keep local stubs.
+8. Iterate source shape, layout, declarations, and context until exact or clearly
    paused with notes.
-8. When a non-obvious reusable insight makes a function click, append the compact
+9. Record meaningful agent probes in the target session and durable conclusions in
+   the source attempt log. Pause/release the target session when stopping.
+10. When a non-obvious reusable insight makes a function click, append the compact
    generalized lesson to `LESSONS.md`.
-9. Promote to `src\matching\...` only after local exact validation. This is a
+11. Promote to `src\matching\...` only after local exact validation. This is a
    move, not a copy; a VA must have exactly one compiler-facing owner.
-10. Use `src\accepted_drift\...` only for rare reviewed localized equivalent
+12. Use `src\accepted_drift\...` only for rare reviewed localized equivalent
    drift, preserving the full attempt log and adding an `ACCEPTED_DRIFT` note.
 
 When assigned a whole PDB translation unit, do not call it exhausted just because
@@ -143,6 +304,11 @@ Practical rules:
   should be deliberate and documented by the template/attempt log.
 - Do not auto-promote from a lab result. Review the winning source, reduce any
   context, then validate normally with `check_function.py`.
+- For localized late-stage labs, use `--focus-range` and hard gates such as
+  `--require-size --require-frame --require-call-set`. Gated variants are still
+  whole-function compiles; ineligible groups remain visible but rank after groups
+  that preserve the requested invariants. COFF relocation symbol identity is part
+  of call-set grouping/gating.
 
 ## Type/global policy: local first, exact layout always
 

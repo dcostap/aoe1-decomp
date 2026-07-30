@@ -53,6 +53,27 @@ to preserve and compare structural experiments without replacing a better baseli
 Checkpoint comparisons include call/block deltas; `--range` focuses one aligned
 assembly band, and dry-run-first `--prune-history` controls retained experiments.
 
+Parallel late-corpus work also has four advisory agent tools:
+
+- `tools\target_session.py` provides shared-tree target leases, meaningful-probe
+  bookkeeping, emitted-code duplicate detection, and a checker-stage-aware
+  current-metrics briefing;
+- `tools\target_dossier.py` generates a target-local binary-evidence report for
+  calls, candidate `this` offsets, globals, conservatively entry-normalized stack
+  accesses/parameter homes, and generated-type size conflicts;
+- `tools\query_abi.py` joins function/global/class reference metadata with
+  declaration and usage evidence from living exact-match sources.
+- `tools\find_function_donors.py` ranks exact donor functions using TU, owner
+  class, constructor/destructor family, call/vslot, displacement, frame, and
+  saved-register evidence.
+
+See `docs\agentic_matching_workflow.md` for their workflow and evidence limits.
+Compact target selection is available through
+`tools\query_project_status.py --triage`; it avoids loading many full function
+packets into an agent context merely to choose a target. The complete default
+contract for a short request such as `match 0043C2B0` lives in `AGENTS.md` and is
+injected into every repo-local agent session.
+
 ## Toolchain
 
 VC5-era Microsoft toolchain, pinned through `config\toolchain.json`.

@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 
+from common import REPO_ROOT, load_functions
 from status_core import (
     build_status_rows,
     filter_status_rows,
@@ -13,6 +15,7 @@ from status_core import (
     sort_status_rows,
     status_counts,
 )
+from target_session import load_target_sessions, meaningful_probe_count, session_is_active
 
 
 def parse_args() -> argparse.Namespace:
@@ -42,6 +45,12 @@ def parse_args() -> argparse.Namespace:
     blockers.add_argument("--no-blockers", action="store_true", help="Exclude functions with BLOCKER notes")
     blockers.add_argument("--blockers", action="store_true", help="Only functions with BLOCKER notes")
 
+    leases = parser.add_mutually_exclusive_group()
+    leases.add_argument("--unleased", action="store_true", help="Only functions without an unexpired active target lease")
+    leases.add_argument("--active-leases", action="store_true", help="Only functions with an unexpired active target lease")
+    parser.add_argument("--owner", help="Only active leases owned by this exact agent/session name")
+    parser.add_argument("--leases", action="store_true", help="Include lease owner/state/probe columns in table output")
+
     parser.add_argument("--va", help="Show one VA, e.g. 0047A3A0")
     parser.add_argument("--source", help="Filter by PDB source file/path substring, e.g. Pnl_pic.cpp")
     parser.add_argument("--query", "-q", help="Whitespace-token search over VA/name/source/path/notes")
@@ -62,6 +71,14 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--paths", action="store_true", help="Include source and packet paths in table output")
     parser.add_argument("--notes", action="store_true", help="Include blocker/note/next columns in table output")
+    parser.add_argument(
+        "--triage",
+        action="store_true",
+        help=(
+            "Add compact packet evidence (PDB span, frame, EH, calls, vslots, saved registers, decomp). "
+            "Packet parsing happens only after sorting/--limit."
+        ),
+    )
     parser.add_argument("--json", action="store_true", help="Emit JSON rows")
     parser.add_argument("--csv", action="store_true", help="Emit CSV rows")
     parser.add_argument("--summary", action="store_true", help="Print bucket summary instead of rows")
@@ -131,6 +148,74 @@ def limited(rows: list[dict[str, str]], limit: int) -> list[dict[str, str]]:
     return rows
 
 
+def annotate_leases(rows: list[dict[str, str]], sessions: list[dict] | None = None) -> list[dict[str, str]]:
+    source_sessions = load_target_sessions() if sessions is None else sessions
+    by_va = {str(session.get("va", "")).upper(): session for session in source_sessions}
+    for row in rows:
+        session = by_va.get(row.get("va", "").upper())
+        active = bool(session and session_is_active(session))
+        total_probes = meaningful_probe_count(session or {}, current_claim_only=False)
+        row["lease_active"] = "yes" if active else "no"
+        row["lease_owner"] = str((session or {}).get("owner", "")) if active else ""
+        row["lease_state"] = "active" if active else str((session or {}).get("state", ""))
+        row["lease_expires_at"] = str((session or {}).get("lease_expires_at", "")) if active else ""
+        row["lease_probes"] = str(meaningful_probe_count(session or {})) if session else ""
+        row["lease_probe_total"] = str(total_probes) if session else ""
+    return rows
+
+
+def filter_leases(
+    rows: list[dict[str, str]], *, unleased: bool = False, active_only: bool = False, owner: str = ""
+) -> list[dict[str, str]]:
+    result = rows
+    if unleased:
+        result = [row for row in result if row.get("lease_active") != "yes"]
+    if active_only:
+        result = [row for row in result if row.get("lease_active") == "yes"]
+    if owner:
+        result = [
+            row
+            for row in result
+            if row.get("lease_active") == "yes" and row.get("lease_owner") == owner
+        ]
+    return result
+
+
+def annotate_triage(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Attach bounded packet evidence to already-sorted/limited status rows."""
+    if not rows:
+        return rows
+    from find_function_donors import packet_features
+
+    names_by_va = {int(row["va"], 16): row["name"] for row in load_functions()}
+    for row in rows:
+        packet_text_path = Path(row.get("packet_path") or packet_path_for_row(row))
+        if not packet_text_path.is_absolute():
+            packet_text_path = REPO_ROOT / packet_text_path
+        features = packet_features(packet_text_path, names_by_va)
+        header = ""
+        if packet_text_path.exists():
+            with packet_text_path.open("r", encoding="utf-8", errors="replace") as handle:
+                header = "".join(handle.readline() for _ in range(16))
+                has_decomp = any(
+                    line.rstrip() == "=== GhidraDecompilerExcerpt ===" for line in handle
+                )
+        else:
+            has_decomp = False
+        line_span = re.search(r"^PdbLineSpan:\s*(.+)$", header, re.MULTILINE)
+        line_records = re.search(r"^PdbLineRecordCount:\s*(\d+)$", header, re.MULTILINE)
+        frame_size = int(features.get("frame_size") or 0)
+        row["triage_pdb_lines"] = line_span.group(1).strip() if line_span else ""
+        row["triage_line_records"] = line_records.group(1) if line_records else ""
+        row["triage_frame"] = f"0x{frame_size:X}" if frame_size else "-"
+        row["triage_eh"] = "yes" if features.get("eh_frame") else "no"
+        row["triage_calls"] = str(len(features.get("calls") or []))
+        row["triage_vslots"] = str(len(features.get("vslots") or []))
+        row["triage_saved"] = ",".join(features.get("saved_registers") or []) or "-"
+        row["triage_decomp"] = "yes" if has_decomp else "no"
+    return rows
+
+
 def print_summary(rows: list[dict[str, str]]) -> None:
     counts = status_counts(rows)
     total_bytes = sum(int(row.get("size_bytes") or 0) for row in rows)
@@ -152,6 +237,8 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         f"asm_special={counts['asm_special']} "
         f"asm_region={counts['asm_region']}"
     )
+    active_leases = sum(row.get("lease_active") == "yes" for row in rows)
+    print(f"leases: active={active_leases} unleased={len(rows) - active_leases}")
 
 
 def emit_csv(rows: list[dict[str, str]]) -> None:
@@ -163,15 +250,31 @@ def emit_csv(rows: list[dict[str, str]]) -> None:
 
 
 def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
-    cols = [
-        ("size", "size_bytes", 6),
-        ("asm", "asm_lines", 5),
-        ("VA", "va", 10),
-        ("bucket", "source_bucket", 15),
-        ("corpus", "corpus_bucket", 22),
-        ("name", "name", 36),
-        ("pdb_source", "pdb_source_file", 20),
-    ]
+    if args.triage:
+        cols = [
+            ("size", "size_bytes", 6),
+            ("asm", "asm_lines", 5),
+            ("VA", "va", 10),
+            ("name", "name", 32),
+            ("pdb_source", "pdb_source_file", 16),
+            ("lines", "triage_pdb_lines", 11),
+            ("frame", "triage_frame", 8),
+            ("EH", "triage_eh", 4),
+            ("calltg", "triage_calls", 6),
+            ("vslots", "triage_vslots", 7),
+            ("saved", "triage_saved", 16),
+            ("decomp", "triage_decomp", 7),
+        ]
+    else:
+        cols = [
+            ("size", "size_bytes", 6),
+            ("asm", "asm_lines", 5),
+            ("VA", "va", 10),
+            ("bucket", "source_bucket", 15),
+            ("corpus", "corpus_bucket", 22),
+            ("name", "name", 36),
+            ("pdb_source", "pdb_source_file", 20),
+        ]
     if args.paths:
         cols.extend([
             ("source_path", "source_path", 46),
@@ -182,6 +285,13 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
             ("blocker", "source_blocker", 28),
             ("note", "source_note", 36),
             ("next", "source_next", 36),
+        ])
+    if args.leases or args.unleased or args.active_leases or args.owner:
+        cols.extend([
+            ("lease_owner", "lease_owner", 20),
+            ("lease", "lease_state", 10),
+            ("probes", "lease_probes", 7),
+            ("expires", "lease_expires_at", 20),
         ])
     return cols
 
@@ -211,7 +321,10 @@ def emit_table(rows: list[dict[str, str]], args: argparse.Namespace, total_befor
 
 def main() -> None:
     args = parse_args()
+    if args.triage and (args.limit <= 0 or args.limit > 50):
+        raise SystemExit("--triage requires a bounded --limit between 1 and 50")
     rows = load_rows(args)
+    rows = annotate_leases(rows)
     rows = filter_status_rows(
         rows,
         corpus_bucket=corpus_bucket_from_args(args),
@@ -225,6 +338,12 @@ def main() -> None:
         max_size=args.max_size,
         va=args.va,
     )
+    rows = filter_leases(
+        rows,
+        unleased=args.unleased,
+        active_only=args.active_leases,
+        owner=args.owner or "",
+    )
 
     if args.summary:
         print_summary(rows)
@@ -234,6 +353,8 @@ def main() -> None:
     rows = sort_status_rows(rows, sort=sort_key, descending=descending)
     total_before_limit = len(rows)
     rows = limited(rows, args.limit)
+    if args.triage:
+        rows = annotate_triage(rows)
 
     if args.json:
         print(json.dumps(rows, ensure_ascii=False, indent=2))

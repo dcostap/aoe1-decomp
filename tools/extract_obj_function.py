@@ -13,7 +13,8 @@ from common import ensure_build_subdir, format_hex, function_record_by_va, funct
 PADDING_BYTES = {0x90, 0xCC}
 
 
-def decode_bytes(code_bytes: bytes, start_va: int) -> list[dict]:
+def decode_bytes(code_bytes: bytes, start_va: int, relocations=()) -> list[dict]:
+    relocation_rows = list(relocations)
     decoder = Decoder(32, code_bytes, ip=start_va, options=DecoderOptions.NONE)
     formatter = Formatter(FormatterSyntax.NASM)
     lines: list[dict] = []
@@ -22,12 +23,23 @@ def decode_bytes(code_bytes: bytes, start_va: int) -> list[dict]:
         offset = instruction.ip - start_va
         next_offset = instruction.next_ip - start_va
         instruction_bytes = code_bytes[offset:next_offset]
+        related = [
+            {
+                "offset": relocation.offset,
+                "type": f"0x{relocation.reloc_type:04X}",
+                "width": relocation.width,
+                "symbol_name": relocation.symbol_name,
+            }
+            for relocation in relocation_rows
+            if offset <= relocation.offset < next_offset
+        ]
         lines.append(
             {
                 "offset": offset,
                 "address": format_hex(instruction.ip),
                 "bytes": instruction_bytes.hex(),
                 "text": formatter.format(instruction),
+                "relocations": related,
             }
         )
     return lines
@@ -206,10 +218,21 @@ def main() -> None:
 
     bin_path.write_bytes(extracted_bytes)
     full_bin_path.write_bytes(section.data)
+    asm_lines = decode_bytes(extracted_bytes, va, selected_relocations)
+    metadata["decoded"] = asm_lines
     json_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    asm_lines = decode_bytes(extracted_bytes, va)
+    rendered_lines = []
+    for line in asm_lines:
+        rendered = f"{line['address']}  {line['bytes']:<16}  {line['text']}"
+        if line["relocations"]:
+            descriptions = [
+                f"COFF {row['type']} -> {row['symbol_name'] or '<unnamed>'}"
+                for row in line["relocations"]
+            ]
+            rendered += "  ; " + "; ".join(descriptions)
+        rendered_lines.append(rendered)
     asm_path.write_text(
-        "\n".join(f"{line['address']}  {line['bytes']:<16}  {line['text']}" for line in asm_lines) + "\n",
+        "\n".join(rendered_lines) + "\n",
         encoding="utf-8",
     )
 

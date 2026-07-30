@@ -15,6 +15,7 @@ import struct
 import subprocess
 import sys
 import time
+from collections import Counter
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Iterable
@@ -33,7 +34,15 @@ from common import (
     repo_path,
     tool_env,
 )
-from extract_obj_function import decode_bytes
+from extract_obj_function import decode_bytes, meaningful_code_size
+from function_diagnostics import (
+    basic_blocks,
+    block_alignment,
+    call_fingerprint,
+    decode_instructions,
+    prologue_summary,
+)
+from target_session import current_metric_summary
 
 
 # Variant labs are intentionally allowed to get large: sticky VC5 codegen-family
@@ -258,6 +267,10 @@ Run controls
   --max-variants N     refuse larger expanded labs (default 250000)
   --max-variants 0     disable the cap for an intentional huge run
   --no-dedupe-expanded compile identical expanded source/flag variants separately
+  --focus-range A-B    score one inclusive original offset/VA band
+  --require-size       reject ranking/promotion leads with the wrong meaningful size
+  --require-frame      require the original prologue frame size
+  --require-call-set   require direct/virtual/indirect target counts and COFF symbol identity
 
 Identical expanded source+flags are deduped before compile by default. Duplicate
 work dirs contain dedup_alias.txt pointing to the representative object.
@@ -287,6 +300,10 @@ summary.txt fields to know:
   Axes                includes "from @template ..." provenance when known
   Exact-match axis sensitivity: label exact counts, e.g. if_cond(1/1)
   Top groups          exact=1 means group has an exact; exact_count=N counts them
+  invariants_ok       requested size/frame/call-set gates all passed
+  focus_diff          positional mismatches inside --focus-range only
+  prefix_delta        first-mismatch movement versus the current checker baseline
+  lost_blocks         baseline exact original blocks no longer exact in the variant
 
 Trace a lead by opening summary.txt, then groups/Gxxxx/diff.txt and
 representative.cpp; use variants.tsv for the exact Vxxxxxx row and artifacts.
@@ -308,6 +325,7 @@ class CoffReloc:
     symbol_index: int
     reloc_type: int
     width: int
+    symbol_name: str = ""
 
 
 @dataclass(frozen=True)
@@ -376,6 +394,17 @@ class VariantResult:
     last_ret_end: int | None = None
     extra_after_last_ret: int | None = None
     likely_context_tail: bool = False
+    focus_diff_bytes: int | None = None
+    focus_diff_percent: float | None = None
+    focus_first_mismatch: int | None = None
+    frame_size: int | None = None
+    call_set_matches: bool | None = None
+    invariants_ok: bool = True
+    invariant_failures: list[str] = field(default_factory=list)
+    stable_prefix_delta: int | None = None
+    exact_block_coverage_percent: float | None = None
+    lost_baseline_exact_blocks: list[int] = field(default_factory=list)
+    new_exact_blocks: list[int] = field(default_factory=list)
     group_key: str | None = None
     error_key: str | None = None
     source_path: str | None = None
@@ -408,6 +437,37 @@ class GroupInfo:
     last_ret_end: int | None = None
     extra_after_last_ret: int | None = None
     likely_context_tail: bool = False
+    focus_diff_bytes: int | None = None
+    focus_diff_percent: float | None = None
+    focus_first_mismatch: int | None = None
+    invariants_ok: bool = True
+    invariant_failures: list[str] = field(default_factory=list)
+    stable_prefix_delta: int | None = None
+    exact_block_coverage_percent: float | None = None
+    lost_baseline_exact_blocks: list[int] = field(default_factory=list)
+    new_exact_blocks: list[int] = field(default_factory=list)
+
+
+@dataclass
+class LabConstraints:
+    focus_start: int | None = None
+    focus_end: int | None = None
+    require_size: bool = False
+    require_frame: bool = False
+    require_call_set: bool = False
+    original_frame_size: int | None = None
+    original_call_counts: dict[tuple[str, str], int] = field(default_factory=dict)
+    baseline_first_mismatch: int | None = None
+    baseline_exact_blocks: set[int] = field(default_factory=set)
+    baseline_fresh: bool = False
+
+    def enabled(self) -> bool:
+        return bool(
+            self.focus_start is not None
+            or self.require_size
+            or self.require_frame
+            or self.require_call_set
+        )
 
 
 @dataclass
@@ -473,6 +533,19 @@ def load_text_from_obj(path: Path) -> LoadedText:
         raise ValueError(f"unsupported COFF machine 0x{machine:04X} in {path}")
 
     sec_base = 20 + opt_size
+    string_table_base = ptr_symtab + num_symbols * 18
+
+    def symbol_name(symbol_index: int) -> str:
+        offset = ptr_symtab + symbol_index * 18
+        if offset < 0 or offset + 18 > len(data):
+            return ""
+        raw = data[offset : offset + 8]
+        if raw[:4] == b"\0\0\0\0":
+            string_offset = struct.unpack_from("<L", raw, 4)[0]
+            target = string_table_base + string_offset
+            return read_c_string(data, target) if target < len(data) else ""
+        return raw.split(b"\0", 1)[0].decode("ascii", "replace")
+
     sections: list[tuple[str, bytes, list[CoffReloc]]] = []
     for index in range(num_sections):
         off = sec_base + index * 40
@@ -509,6 +582,7 @@ def load_text_from_obj(path: Path) -> LoadedText:
                     symbol_index=symbol_index,
                     reloc_type=reloc_type,
                     width=relocation_width(reloc_type),
+                    symbol_name=symbol_name(symbol_index),
                 )
             )
         sections.append((name, section_bytes, relocs))
@@ -530,6 +604,7 @@ def load_text_from_obj(path: Path) -> LoadedText:
                         symbol_index=reloc.symbol_index,
                         reloc_type=reloc.reloc_type,
                         width=reloc.width,
+                        symbol_name=reloc.symbol_name,
                     )
                 )
             base += len(chunk)
@@ -574,6 +649,70 @@ def first_mismatch(left: bytes, right: bytes) -> int | None:
     if len(left) != len(right):
         return limit
     return None
+
+
+def parse_focus_range(text: str, va: int, expected_size: int) -> tuple[int, int]:
+    if "-" not in text:
+        raise ValueError("focus range must be START-END")
+    start_text, end_text = text.split("-", 1)
+
+    def endpoint(value: str) -> tuple[int, bool]:
+        stripped = value.strip()
+        is_offset = stripped.startswith("+")
+        number = int(stripped[1:] if is_offset else stripped, 16)
+        if not is_offset and number >= va:
+            number -= va
+        return number, is_offset
+
+    start, _start_offset = endpoint(start_text)
+    end_inclusive, _end_offset = endpoint(end_text)
+    end = end_inclusive + 1
+    if start < 0 or end <= start or end > expected_size:
+        raise ValueError(f"focus range must fall inside +0000-+{expected_size - 1:04X}")
+    return start, end
+
+
+def relocation_dicts(relocations: list[CoffReloc], limit: int) -> list[dict[str, object]]:
+    return [
+        {
+            "offset": reloc.offset,
+            "width": reloc.width,
+            "symbol_name": reloc.symbol_name,
+        }
+        for reloc in relocations
+        if reloc.offset < limit
+    ]
+
+
+def call_counts_for_code(code: bytes, va: int, relocations: list[CoffReloc] | None = None) -> dict[tuple[str, str], int]:
+    instructions = decode_instructions(code, va, relocation_dicts(relocations or [], len(code)))
+    return dict(Counter((str(row["kind"]), str(row["target"])) for row in call_fingerprint(instructions, original=False)))
+
+
+def evaluate_constraints(
+    *,
+    constraints: LabConstraints,
+    text_size: int,
+    expected_size: int,
+    frame_size: int | None,
+    call_counts: dict[tuple[str, str], int],
+) -> list[str]:
+    failures: list[str] = []
+    if constraints.require_size and text_size != expected_size:
+        failures.append(f"size {text_size} != {expected_size}")
+    if constraints.require_frame and frame_size != constraints.original_frame_size:
+        failures.append(f"frame {frame_size} != {constraints.original_frame_size}")
+    if constraints.require_call_set and call_counts != constraints.original_call_counts:
+        missing = constraints.original_call_counts.keys() - call_counts.keys()
+        extra = call_counts.keys() - constraints.original_call_counts.keys()
+        count_drift = sum(
+            constraints.original_call_counts.get(key, 0) != call_counts.get(key, 0)
+            for key in constraints.original_call_counts.keys() & call_counts.keys()
+        )
+        failures.append(
+            f"call-set mismatch missing={len(missing)} extra={len(extra)} count_drift={count_drift}"
+        )
+    return failures
 
 
 def detect_ret_ends(code: bytes) -> list[int]:
@@ -1244,6 +1383,7 @@ def build_variant(
     expected_size: int,
     va: int,
     slug: str,
+    constraints: LabConstraints,
     source_body: str | None = None,
     extra_flags: str | None = None,
 ) -> VariantResult:
@@ -1356,11 +1496,46 @@ def build_variant(
     exact = metrics["result"] == "MATCH" and len(compare_bytes) == expected_size
     status = "match" if exact else "mismatch"
 
+    focus_diff_bytes: int | None = None
+    focus_diff_percent: float | None = None
+    focus_first_mismatch: int | None = None
+    if constraints.focus_start is not None and constraints.focus_end is not None:
+        focus = positional_byte_diff_metrics(
+            masked_original_bytes[constraints.focus_start : constraints.focus_end],
+            masked_rebuilt[constraints.focus_start : constraints.focus_end],
+        )
+        focus_diff_bytes = int(focus["diff_bytes"])
+        focus_diff_percent = float(focus["diff_percent"])
+        focus_text = str(focus["first_mismatch_offset"])
+        focus_first_mismatch = None if not focus_text else constraints.focus_start + int(focus_text)
+
+    rebuilt_instructions = decode_instructions(
+        compare_bytes, va, relocation_dicts(compare_relocs, len(compare_bytes))
+    )
+    rebuilt_frame = prologue_summary(rebuilt_instructions).get("frame_size")
+    rebuilt_call_counts = dict(
+        Counter(
+            (str(row["kind"]), str(row["target"]))
+            for row in call_fingerprint(rebuilt_instructions, original=False)
+        )
+    )
+    invariant_failures = evaluate_constraints(
+        constraints=constraints,
+        text_size=meaningful_code_size(loaded.data),
+        expected_size=expected_size,
+        frame_size=None if rebuilt_frame is None else int(rebuilt_frame),
+        call_counts=rebuilt_call_counts,
+    )
+
     masked_full_rebuilt = mask_relocations(loaded.data, loaded.relocations)
     group_material = b"\0".join(
         [
             str(len(loaded.data)).encode("ascii"),
             masked_full_rebuilt,
+            "|".join(
+                f"{reloc.offset}:{reloc.reloc_type}:{reloc.symbol_name}"
+                for reloc in loaded.relocations
+            ).encode("utf-8", "replace"),
         ]
     )
     group_key = stable_hash(group_material)
@@ -1378,6 +1553,15 @@ def build_variant(
         diff_bytes=int(metrics["diff_bytes"]),
         diff_percent=float(metrics["diff_percent"]),
         diff_spans=int(metrics["diff_spans"]),
+        focus_diff_bytes=focus_diff_bytes,
+        focus_diff_percent=focus_diff_percent,
+        focus_first_mismatch=focus_first_mismatch,
+        frame_size=None if rebuilt_frame is None else int(rebuilt_frame),
+        call_set_matches=(rebuilt_call_counts == constraints.original_call_counts)
+        if constraints.require_call_set
+        else None,
+        invariants_ok=not invariant_failures,
+        invariant_failures=invariant_failures,
         group_key=group_key,
         source_path=str(source_path),
         obj_path=str(obj_path),
@@ -1387,13 +1571,22 @@ def build_variant(
     )
 
 
-def analyze_unique_groups(results: list[VariantResult], original_bytes: bytes, expected_size: int) -> None:
+def analyze_unique_groups(
+    results: list[VariantResult],
+    original_bytes: bytes,
+    expected_size: int,
+    va: int,
+    constraints: LabConstraints,
+) -> None:
     """Run expensive edit-diff/disassembly work once per emitted-code group."""
     groups: dict[str, list[VariantResult]] = {}
     for result in results:
         if result.group_key and result.obj_path:
             groups.setdefault(result.group_key, []).append(result)
 
+    original_instructions = decode_instructions(original_bytes[:expected_size], va)
+    original_calls = call_fingerprint(original_instructions, original=True)
+    original_blocks = basic_blocks(original_instructions, original_calls)
     for members in groups.values():
         representative = members[0]
         loaded = load_text_from_obj(Path(representative.obj_path or ""))
@@ -1417,6 +1610,34 @@ def analyze_unique_groups(results: list[VariantResult], original_bytes: bytes, e
             and last_ret_end < expected_size
             and len(loaded.data) > last_ret_end
         )
+        rebuilt_instructions = decode_instructions(
+            compare_bytes, va, relocation_dicts(compare_relocs, len(compare_bytes))
+        )
+        rebuilt_calls = call_fingerprint(rebuilt_instructions, original=False)
+        rebuilt_blocks = basic_blocks(rebuilt_instructions, rebuilt_calls)
+        block_map = block_alignment(original_blocks, rebuilt_blocks)
+        exact_offsets = {
+            int(row["original"]["offset"])
+            for row in block_map.get("rows") or []
+            if row.get("status") == "equal" and row.get("original") is not None
+        }
+        lost_exact = (
+            sorted(constraints.baseline_exact_blocks - exact_offsets)
+            if constraints.baseline_fresh
+            else []
+        )
+        new_exact = (
+            sorted(exact_offsets - constraints.baseline_exact_blocks)
+            if constraints.baseline_fresh
+            else []
+        )
+        stable_prefix_delta = (
+            None
+            if not constraints.baseline_fresh
+            or constraints.baseline_first_mismatch is None
+            or representative.first_mismatch is None
+            else representative.first_mismatch - constraints.baseline_first_mismatch
+        )
 
         for result in members:
             result.edit_diff_bytes = int(edit["edit_diff_bytes"])
@@ -1430,11 +1651,15 @@ def analyze_unique_groups(results: list[VariantResult], original_bytes: bytes, e
             result.last_ret_end = last_ret_end
             result.extra_after_last_ret = extra_after_last_ret
             result.likely_context_tail = likely_context_tail
+            result.stable_prefix_delta = stable_prefix_delta
+            result.exact_block_coverage_percent = float(block_map.get("matched_coverage_percent") or 0.0)
+            result.lost_baseline_exact_blocks = lost_exact
+            result.new_exact_blocks = new_exact
 
 
-def interesting_sort_key(group: GroupInfo, expected_size: int) -> tuple[int, int, int, int, int]:
+def interesting_sort_key(group: GroupInfo, expected_size: int) -> tuple:
     if group.exact:
-        return (0, 0, 0, 0, -group.count)
+        return (0, 0, 0, 0, 0, -group.count)
     first = group.first_mismatch if group.first_mismatch is not None else -1
     text_size = group.text_size or 0
     # Prefer true exact-size groups first; long/short groups can have a useful
@@ -1442,7 +1667,9 @@ def interesting_sort_key(group: GroupInfo, expected_size: int) -> tuple[int, int
     # stronger signal during matching work.
     exact_text_penalty = 0 if text_size == expected_size else 1
     size_distance = abs(text_size - expected_size)
-    return (1, exact_text_penalty, size_distance, -first, -group.count)
+    invariant_penalty = 0 if group.invariants_ok else 1
+    focus_diff = group.focus_diff_bytes if group.focus_diff_bytes is not None else 1 << 30
+    return (1, invariant_penalty, focus_diff, exact_text_penalty, size_distance, -first, -group.count)
 
 
 def write_asm(path: Path, code: bytes, va: int) -> None:
@@ -1510,6 +1737,22 @@ def write_group_artifacts(
         diff_lines.append(f"First mismatch: {rep.first_mismatch}")
         diff_lines.append(f"Positional diff bytes: {rep.diff_bytes}")
         diff_lines.append(f"Positional diff percent: {rep.diff_percent:.4f}")
+        diff_lines.append(f"Invariants OK: {int(rep.invariants_ok)}")
+        diff_lines.append(f"Invariant failures: {' | '.join(rep.invariant_failures) or '<none>'}")
+        diff_lines.append(f"Frame size: {rep.frame_size}")
+        diff_lines.append(f"Focus first mismatch: {rep.focus_first_mismatch}")
+        diff_lines.append(f"Focus diff bytes: {rep.focus_diff_bytes}")
+        diff_lines.append(f"Focus diff percent: {rep.focus_diff_percent}")
+        diff_lines.append(f"Stable prefix delta vs current checker baseline: {rep.stable_prefix_delta}")
+        diff_lines.append(f"Exact block coverage percent: {rep.exact_block_coverage_percent}")
+        diff_lines.append(
+            "Lost baseline exact blocks: "
+            + (", ".join(f"+{value:04X}" for value in rep.lost_baseline_exact_blocks) or "<none>")
+        )
+        diff_lines.append(
+            "New exact blocks: "
+            + (", ".join(f"+{value:04X}" for value in rep.new_exact_blocks) or "<none>")
+        )
         diff_lines.append(f"Edit diff bytes: {rep.edit_diff_bytes}")
         diff_lines.append(f"Edit diff percent: {rep.edit_diff_percent:.4f}")
         diff_lines.append(f"Likely shifted alignment: {int(rep.likely_shifted_alignment)}")
@@ -1629,7 +1872,7 @@ def write_axis_sensitivity(
             label = spec.labels[key]
             stats = label_stats.setdefault(label, {"total": 0, "exact": 0, "errors": 0})
             stats["total"] += 1
-            if result.exact:
+            if result.exact and result.invariants_ok:
                 stats["exact"] += 1
             if result.status not in ("match", "mismatch"):
                 stats["errors"] += 1
@@ -1678,7 +1921,9 @@ def write_reports(
     template_expansions: list[dict] | None = None,
     compile_jobs: int | None = None,
     deduped_variants: int = 0,
+    constraints: LabConstraints | None = None,
 ) -> None:
+    constraints = constraints or LabConstraints()
     group_map: dict[str, GroupInfo] = {}
     error_map: dict[str, ErrorGroup] = {}
 
@@ -1694,7 +1939,7 @@ def write_reports(
                     compare_size=result.compare_size,
                     relocations=result.relocations,
                     first_mismatch=result.first_mismatch,
-                    exact=result.exact,
+                    exact=result.exact and result.invariants_ok,
                     diff_bytes=result.diff_bytes,
                     diff_percent=result.diff_percent,
                     diff_spans=result.diff_spans,
@@ -1705,12 +1950,21 @@ def write_reports(
                     last_ret_end=result.last_ret_end,
                     extra_after_last_ret=result.extra_after_last_ret,
                     likely_context_tail=result.likely_context_tail,
+                    focus_diff_bytes=result.focus_diff_bytes,
+                    focus_diff_percent=result.focus_diff_percent,
+                    focus_first_mismatch=result.focus_first_mismatch,
+                    invariants_ok=result.invariants_ok,
+                    invariant_failures=list(result.invariant_failures),
+                    stable_prefix_delta=result.stable_prefix_delta,
+                    exact_block_coverage_percent=result.exact_block_coverage_percent,
+                    lost_baseline_exact_blocks=list(result.lost_baseline_exact_blocks),
+                    new_exact_blocks=list(result.new_exact_blocks),
                 )
                 group_map[result.group_key] = group
             group.count += 1
-            if result.exact:
+            if result.exact and result.invariants_ok:
                 group.exact_count += 1
-            if result.exact and not group.exact:
+            if result.exact and result.invariants_ok and not group.exact:
                 group.exact = True
                 group.representative = result
         elif result.error_key:
@@ -1741,7 +1995,7 @@ def write_reports(
     # Variants TSV
     with (run_dir / "variants.tsv").open("w", encoding="utf-8", newline="") as f:
         f.write(
-            "variant_id\tstatus\tgroup_id\terror_id\texact\ttext_size\tcompare_size\tfirst_mismatch\tdiff_bytes\tdiff_percent\tdiff_spans\tedit_diff_bytes\tedit_diff_percent\tedit_insert_bytes\tedit_delete_bytes\tedit_replace_bytes\tedit_equal_bytes\tlikely_shifted_alignment\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\tlabels\tsource\tobject\tflags\n"
+            "variant_id\tstatus\tgroup_id\terror_id\texact\tinvariants_ok\tinvariant_failures\ttext_size\tcompare_size\tframe_size\tfirst_mismatch\tstable_prefix_delta\tdiff_bytes\tdiff_percent\tfocus_first_mismatch\tfocus_diff_bytes\tfocus_diff_percent\texact_block_coverage_percent\tlost_baseline_exact_blocks\tnew_exact_blocks\tdiff_spans\tedit_diff_bytes\tedit_diff_percent\tedit_insert_bytes\tedit_delete_bytes\tedit_replace_bytes\tedit_equal_bytes\tlikely_shifted_alignment\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\tlabels\tsource\tobject\tflags\n"
         )
         for result in results:
             group_id = key_to_group_id.get(result.group_key or "", "")
@@ -1754,11 +2008,21 @@ def write_reports(
                         group_id,
                         error_id,
                         "1" if result.exact else "0",
+                        "1" if result.invariants_ok else "0",
+                        " | ".join(result.invariant_failures),
                         "" if result.text_size is None else str(result.text_size),
                         "" if result.compare_size is None else str(result.compare_size),
+                        "" if result.frame_size is None else str(result.frame_size),
                         "" if result.first_mismatch is None else str(result.first_mismatch),
+                        "" if result.stable_prefix_delta is None else str(result.stable_prefix_delta),
                         str(result.diff_bytes),
                         f"{result.diff_percent:.4f}",
+                        "" if result.focus_first_mismatch is None else str(result.focus_first_mismatch),
+                        "" if result.focus_diff_bytes is None else str(result.focus_diff_bytes),
+                        "" if result.focus_diff_percent is None else f"{result.focus_diff_percent:.4f}",
+                        "" if result.exact_block_coverage_percent is None else f"{result.exact_block_coverage_percent:.4f}",
+                        ",".join(str(value) for value in result.lost_baseline_exact_blocks),
+                        ",".join(str(value) for value in result.new_exact_blocks),
                         str(result.diff_spans),
                         str(result.edit_diff_bytes),
                         f"{result.edit_diff_percent:.4f}",
@@ -1783,7 +2047,7 @@ def write_reports(
 
     # Groups TSV and per-group variant lists.
     with (run_dir / "groups.tsv").open("w", encoding="utf-8", newline="") as f:
-        f.write("group_id\tcount\texact\texact_count\ttext_size\tcompare_size\tfirst_mismatch\tdiff_bytes\tdiff_percent\tdiff_spans\tedit_diff_bytes\tedit_diff_percent\tlikely_shifted_alignment\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\trepresentative\tlabels\thash\n")
+        f.write("group_id\tcount\texact\texact_count\tinvariants_ok\tinvariant_failures\ttext_size\tcompare_size\tfirst_mismatch\tstable_prefix_delta\tdiff_bytes\tdiff_percent\tfocus_first_mismatch\tfocus_diff_bytes\tfocus_diff_percent\texact_block_coverage_percent\tlost_baseline_exact_blocks\tnew_exact_blocks\tdiff_spans\tedit_diff_bytes\tedit_diff_percent\tlikely_shifted_alignment\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\trepresentative\tlabels\thash\n")
         for group in groups:
             rep = group.representative
             f.write(
@@ -1793,11 +2057,20 @@ def write_reports(
                         str(group.count),
                         "1" if group.exact else "0",
                         str(group.exact_count),
+                        "1" if group.invariants_ok else "0",
+                        " | ".join(group.invariant_failures),
                         "" if group.text_size is None else str(group.text_size),
                         "" if group.compare_size is None else str(group.compare_size),
                         "" if group.first_mismatch is None else str(group.first_mismatch),
+                        "" if group.stable_prefix_delta is None else str(group.stable_prefix_delta),
                         str(group.diff_bytes),
                         f"{group.diff_percent:.4f}",
+                        "" if group.focus_first_mismatch is None else str(group.focus_first_mismatch),
+                        "" if group.focus_diff_bytes is None else str(group.focus_diff_bytes),
+                        "" if group.focus_diff_percent is None else f"{group.focus_diff_percent:.4f}",
+                        "" if group.exact_block_coverage_percent is None else f"{group.exact_block_coverage_percent:.4f}",
+                        ",".join(str(value) for value in group.lost_baseline_exact_blocks),
+                        ",".join(str(value) for value in group.new_exact_blocks),
                         str(group.diff_spans),
                         str(group.edit_diff_bytes),
                         f"{group.edit_diff_percent:.4f}",
@@ -1835,7 +2108,7 @@ def write_reports(
 
     # Copy matches explicitly.
     matches_dir = run_dir / "matches"
-    exact_results = [result for result in results if result.exact]
+    exact_results = [result for result in results if result.exact and result.invariants_ok]
     axis_sensitivity_lines = write_axis_sensitivity(run_dir, axes, specs, results)
     if exact_results:
         ensure_dir(matches_dir)
@@ -1889,6 +2162,30 @@ def write_reports(
     summary.append(f"Tool errors: {tool_errors}")
     summary.append(f"Unique asm groups: {len(groups)}")
     summary.append(f"Exact matches: {len(exact_results)}")
+    invariant_ok_count = sum(
+        result.status in ("match", "mismatch") and result.invariants_ok for result in results
+    )
+    if constraints.enabled():
+        summary.append(f"Invariant-eligible variants: {invariant_ok_count}/{compile_ok}")
+        if constraints.focus_start is not None:
+            summary.append(
+                f"Focus range: +{constraints.focus_start:04X}-+{constraints.focus_end - 1:04X}"
+            )
+        required_names = [
+            name
+            for name, enabled in (
+                ("size", constraints.require_size),
+                ("frame", constraints.require_frame),
+                ("call-set", constraints.require_call_set),
+            )
+            if enabled
+        ]
+        if required_names:
+            summary.append("Required invariants: " + ", ".join(required_names))
+        summary.append(
+            "Checker baseline for prefix/block deltas: "
+            + ("current" if constraints.baseline_fresh else "unavailable or stale")
+        )
     preset_axes = [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")]
     if preset_axes:
         summary.append(f"Flag presets: {', '.join(preset_axes)}")
@@ -1921,8 +2218,10 @@ def write_reports(
         rep = group.representative
         tail_note = " context-tail" if group.likely_context_tail else ""
         summary.append(
-            f"  {group.group_id} count={group.count} exact={int(group.exact)} exact_count={group.exact_count} text_size={group.text_size} "
+            f"  {group.group_id} count={group.count} exact={int(group.exact)} exact_count={group.exact_count} invariants_ok={int(group.invariants_ok)} text_size={group.text_size} "
             f"compare_size={group.compare_size} first_mismatch={group.first_mismatch} pos_diff={group.diff_bytes} "
+            f"focus_diff={group.focus_diff_bytes} prefix_delta={group.stable_prefix_delta} "
+            f"blocks={group.exact_block_coverage_percent} lost_blocks={len(group.lost_baseline_exact_blocks)} "
             f"edit_diff={group.edit_diff_bytes} shifted={int(group.likely_shifted_alignment)} reloc={group.relocations} "
             f"last_ret_end={group.last_ret_end} extra_after_ret={group.extra_after_last_ret}{tail_note}"
         )
@@ -2014,6 +2313,22 @@ def write_reports(
         "tool_errors": tool_errors,
         "unique_groups": len(groups),
         "exact_matches": len(exact_results),
+        "invariant_eligible": invariant_ok_count,
+        "constraints": {
+            "focus_start": constraints.focus_start,
+            "focus_end": constraints.focus_end,
+            "require_size": constraints.require_size,
+            "require_frame": constraints.require_frame,
+            "require_call_set": constraints.require_call_set,
+            "original_frame_size": constraints.original_frame_size,
+            "baseline_first_mismatch": constraints.baseline_first_mismatch,
+            "baseline_exact_blocks": sorted(constraints.baseline_exact_blocks),
+            "baseline_fresh": constraints.baseline_fresh,
+            "original_call_counts": [
+                {"kind": key[0], "target": key[1], "count": value}
+                for key, value in sorted(constraints.original_call_counts.items())
+            ],
+        },
         "flag_presets": [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")],
         "template_expansions": template_expansions or [],
         "axes": [
@@ -2067,6 +2382,18 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--preview-variants", type=int, metavar="N", help="Print the first N fully expanded variant sources/flags and exit; no compile")
     parser.add_argument("--show-variant", metavar="ID", help="Print one expanded variant by index or V000123 and exit; no compile")
     parser.add_argument("--no-dedupe-expanded", action="store_true", help="Disable pre-compile deduping of identical expanded source/flag variants")
+    parser.add_argument(
+        "--focus-range",
+        metavar="START-END",
+        help="Score one inclusive original offset/VA range, e.g. +0490-+04B0.",
+    )
+    parser.add_argument("--require-size", action="store_true", help="Rank/recommend only variants with the original text size.")
+    parser.add_argument("--require-frame", action="store_true", help="Require the original prologue frame size.")
+    parser.add_argument(
+        "--require-call-set",
+        action="store_true",
+        help="Require exact direct/virtual/indirect call target counts, including COFF symbol identity.",
+    )
     return parser.parse_args(argv)
 
 
@@ -2219,6 +2546,47 @@ def main(argv: list[str] | None = None) -> int:
     original_bytes = orig_bin.read_bytes()
     if len(original_bytes) != expected_size:
         raise SystemExit(f"original byte size {len(original_bytes)} does not match expected {expected_size}")
+    original_instructions = decode_instructions(original_bytes, va)
+    original_frame = prologue_summary(original_instructions).get("frame_size")
+    original_calls = call_fingerprint(original_instructions, original=True)
+    baseline_first_mismatch: int | None = None
+    baseline_exact_blocks: set[int] = set()
+    baseline_diff_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
+    baseline_fresh = bool(current_metric_summary(record).get("artifact_fresh"))
+    if baseline_fresh and baseline_diff_path.exists():
+        try:
+            baseline_payload = json.loads(baseline_diff_path.read_text(encoding="utf-8"))
+            baseline_text = str(baseline_payload.get("first_mismatch_offset") or "")
+            baseline_first_mismatch = int(baseline_text) if baseline_text else None
+            baseline_exact_blocks = {
+                int(row["original"]["offset"])
+                for row in (baseline_payload.get("block_alignment") or {}).get("rows") or []
+                if row.get("status") == "equal" and row.get("original") is not None
+            }
+        except (OSError, ValueError, TypeError):
+            baseline_first_mismatch = None
+            baseline_exact_blocks = set()
+    focus_start: int | None = None
+    focus_end: int | None = None
+    if args.focus_range:
+        try:
+            focus_start, focus_end = parse_focus_range(args.focus_range, va, expected_size)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+    constraints = LabConstraints(
+        focus_start=focus_start,
+        focus_end=focus_end,
+        require_size=args.require_size,
+        require_frame=args.require_frame,
+        require_call_set=args.require_call_set,
+        original_frame_size=None if original_frame is None else int(original_frame),
+        original_call_counts=dict(
+            Counter((str(row["kind"]), str(row["target"])) for row in original_calls)
+        ),
+        baseline_first_mismatch=baseline_first_mismatch,
+        baseline_exact_blocks=baseline_exact_blocks,
+        baseline_fresh=baseline_fresh,
+    )
 
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     run_dir = REPO_ROOT / "build" / "variant_lab" / slug / timestamp
@@ -2263,6 +2631,12 @@ def main(argv: list[str] | None = None) -> int:
     if len(specs_to_build) != len(specs):
         print(f"Deduped variants: {len(specs) - len(specs_to_build)}")
     print(f"Workers: {workers}")
+    if constraints.enabled():
+        print(
+            "Constraints: "
+            f"focus={args.focus_range or '-'} size={int(args.require_size)} "
+            f"frame={int(args.require_frame)} call_set={int(args.require_call_set)}"
+        )
 
     started_at = time.time()
     built_results: list[VariantResult] = []
@@ -2282,6 +2656,7 @@ def main(argv: list[str] | None = None) -> int:
                 expected_size,
                 va,
                 slug,
+                constraints,
             ): spec
             for spec in specs_to_build
         }
@@ -2306,7 +2681,7 @@ def main(argv: list[str] | None = None) -> int:
             if completed == total_jobs or completed % max(1, total_jobs // 20) == 0:
                 print(f"  completed {completed}/{total_jobs}")
 
-    analyze_unique_groups(built_results, original_bytes, expected_size)
+    analyze_unique_groups(built_results, original_bytes, expected_size, va, constraints)
 
     result_by_variant = {result.variant_id: result for result in built_results}
     results: list[VariantResult] = []
@@ -2332,8 +2707,9 @@ def main(argv: list[str] | None = None) -> int:
         template_expansions=template_expansions,
         compile_jobs=len(specs_to_build),
         deduped_variants=len(specs) - len(specs_to_build),
+        constraints=constraints,
     )
-    return 0 if any(result.exact for result in results) else 1
+    return 0 if any(result.exact and result.invariants_ok for result in results) else 1
 
 
 if __name__ == "__main__":

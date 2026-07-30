@@ -120,6 +120,30 @@ B
         with self.assertRaisesRegex(ValueError, "exactly one"):
             variant_lab.splice_template("// X\n// X\n// Y\n", "body\n", "X", "Y")
 
+    def test_focus_range_accepts_offsets_and_real_vas(self) -> None:
+        self.assertEqual(variant_lab.parse_focus_range("+0010-+001F", 0x401000, 0x100), (0x10, 0x20))
+        self.assertEqual(variant_lab.parse_focus_range("00401010-0040101F", 0x401000, 0x100), (0x10, 0x20))
+        with self.assertRaisesRegex(ValueError, "inside"):
+            variant_lab.parse_focus_range("+00F0-+0100", 0x401000, 0x100)
+
+    def test_invariant_evaluation_reports_size_frame_and_call_set(self) -> None:
+        constraints = variant_lab.LabConstraints(
+            require_size=True,
+            require_frame=True,
+            require_call_set=True,
+            original_frame_size=8,
+            original_call_counts={("direct", "a"): 1},
+        )
+        failures = variant_lab.evaluate_constraints(
+            constraints=constraints,
+            text_size=12,
+            expected_size=10,
+            frame_size=4,
+            call_counts={("direct", "b"): 1},
+        )
+        self.assertEqual(len(failures), 3)
+        self.assertIn("size", failures[0])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -44,6 +44,18 @@ instructions have the same start, mnemonic, and length. Known direct-call target
 mismatches are not masked. This avoids manufacturing equal bytes by applying
 rebuilt relocation offsets to unrelated original instructions.
 
+The standalone rebuilt artifacts are relocation-aware as well. Every decoded row
+in `build/asm/rebuilt_<slug>.json` carries any containing COFF relocation, and the
+text listing appends comments such as:
+
+```text
+004524F9  e800000000  call 004524FEh  ; COFF 0x0014 -> _rge_read
+```
+
+The raw placeholder disassembly is retained for byte/layout comparison while the
+comment exposes the intended symbol and relocation type. Do not interpret the raw
+self/next-instruction target as a linked call address.
+
 The complete machine-readable report is written to `build/diff/<slug>.json`; the
 human report is `build/diff/<slug>.txt`. The prior rebuilt output is retained under
 `build/history/<slug>/` so each run can report output blast radius and strict
@@ -70,6 +82,14 @@ python tools\check_function.py --va 00449750 --restore-checkpoint @best-call-pre
 python tools\check_function.py --va 00449750 --prune-history --prune-keep 20
 python tools\check_function.py --va 00449750 --prune-history --prune-keep 20 --apply-prune
 ```
+
+In a parallel agent session, `tools\target_session.py check` is the preferred
+wrapper for an ordinary interpreted probe. It runs this checker, assigns a
+checkpoint, and records source/flags hashes, relocation-aware emitted-code
+identity, duplicate-codegen links, ordered call-site gaps, meaningful code size,
+exact-block coverage, and metric deltas under the active lease. The session's
+recommendation follows this checker's workflow stage. Direct checker use remains
+valid for diagnostics and human workflows.
 
 Restore first backs up the current source/custom response file under
 `build/history/<slug>/restore-backups/`. It restores source and custom-flag state;

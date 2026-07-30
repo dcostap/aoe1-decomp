@@ -72,3 +72,17 @@ Conventions:
 - Add new cases freely as real matching work discovers reusable VC5 basins.
 - Exact matches from broad presets must still be reduced and reviewed before
   promotion.
+
+For a localized late-stage lab, combine splice templates with focused scoring and
+hard invariants when appropriate:
+
+```bat
+python tools\variant_lab.py --va 004524E0 --template build\temp\gate.tpl.cpp ^
+  --splice-base src\scratch\004524E0_setup.cpp ^
+  --splice-start "// LAB START" --splice-end "// LAB END" ^
+  --focus-range +0490-+04B0 --require-size --require-frame --require-call-set
+```
+
+These gates do not compile a region independently. Every variant remains a full
+function/TU compile; reports rank groups that preserve requested whole-function
+invariants before ineligible groups.
