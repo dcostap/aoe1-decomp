@@ -36,8 +36,10 @@ PROBE_KINDS = (
     "flags",
     "variant",
     "restore",
+    "validation",
     "other",
 )
+NON_MEANINGFUL_PROBE_KINDS = {"restore", "validation"}
 
 
 def _utc_now() -> datetime:
@@ -128,7 +130,7 @@ def _lease_active(session: dict, now: datetime | None = None) -> bool:
 def _probe_is_meaningful(probe: dict) -> bool:
     if "meaningful" in probe:
         return bool(probe["meaningful"])
-    return probe.get("kind") != "restore"
+    return probe.get("kind") not in NON_MEANINGFUL_PROBE_KINDS
 
 
 def meaningful_probe_count(session: dict, *, current_claim_only: bool = True) -> int:
@@ -468,7 +470,16 @@ def metric_delta(current: dict[str, object], prior: dict[str, object]) -> dict[s
     return result
 
 
-def record_probe(record: dict[str, str], owner: str, kind: str, note: str, checkpoint: str = "") -> dict:
+def record_probe(
+    record: dict[str, str],
+    owner: str,
+    kind: str,
+    note: str,
+    checkpoint: str = "",
+    *,
+    evidence: dict[str, object] | None = None,
+    detect_output_duplicate: bool = True,
+) -> dict:
     with _sessions_lock():
         session = _require_active_owner(_load_session(record), owner, record)
         now = _utc_now()
@@ -479,7 +490,7 @@ def record_probe(record: dict[str, str], owner: str, kind: str, note: str, check
         outputs = current_output_snapshot(record, metrics)
         duplicate_of = None
         identity = outputs.get("emitted_identity_sha256")
-        if identity:
+        if identity and detect_output_duplicate:
             for earlier in reversed(session.get("probes") or []):
                 if (earlier.get("outputs") or {}).get("emitted_identity_sha256") == identity:
                     duplicate_of = earlier.get("number")
@@ -491,7 +502,7 @@ def record_probe(record: dict[str, str], owner: str, kind: str, note: str, check
             + 1,
             "at": _iso(now),
             "kind": kind,
-            "meaningful": kind != "restore",
+            "meaningful": kind not in NON_MEANINGFUL_PROBE_KINDS,
             "note": note.strip(),
             "checkpoint": checkpoint.strip(),
             "metrics": metrics,
@@ -500,6 +511,8 @@ def record_probe(record: dict[str, str], owner: str, kind: str, note: str, check
             "outputs": outputs,
             "same_emitted_code_as_probe": duplicate_of,
         }
+        if evidence:
+            probe["evidence"] = evidence
         session.setdefault("probes", []).append(probe)
         session.setdefault("events", []).append(
             {"at": _iso(now), "kind": "probe", "probe_number": probe["number"]}
@@ -524,7 +537,7 @@ def run_checked_probe(
         used = meaningful_probe_count(session)
         budget = int(session.get("meaningful_probe_budget") or 0)
         next_number = len(session.get("probes") or []) + 1
-    if budget and used >= budget:
+    if budget and used >= budget and kind not in NON_MEANINGFUL_PROBE_KINDS:
         print(
             f"WARNING: meaningful probe budget is exhausted ({used}/{budget}); "
             "continue only if this is a deliberate new lead.",
@@ -552,9 +565,43 @@ def run_checked_probe(
     return result.returncode, session
 
 
+def require_final_validation(record: dict[str, str], session: dict) -> None:
+    """Reject a pause that would leave the durable source newer than its check."""
+    probes = session.get("probes") or []
+    claim_probes = probes[int(session.get("probe_start_index") or 0) :]
+    if not claim_probes:
+        # A target may be paused before its first compile for a documented hard
+        # blocker. Once checks exist, the stronger finalization contract applies.
+        return
+    latest = claim_probes[-1]
+    command = (
+        f"python tools/target_session.py check --va {record['va']} --owner {session['owner']} "
+        "--kind validation --note \"final validation after attempt-log update\" -- --detail concise"
+    )
+    if latest.get("kind") != "validation":
+        raise RuntimeError(
+            "cannot pause after recorded checks until the last check is --kind validation; "
+            f"update the attempt log first, then run: {command}"
+        )
+    current_inputs = current_input_snapshot(record)
+    if latest.get("inputs") != current_inputs:
+        raise RuntimeError(
+            "cannot pause because source/flags/compiler/include inputs changed after the final validation; "
+            f"run: {command}"
+        )
+    metrics = current_metric_summary(record)
+    if metrics.get("artifact_fresh") is not True:
+        reason = metrics.get("freshness_reason") or "checker artifacts are stale"
+        raise RuntimeError(
+            f"cannot pause because the final validation is not current ({reason}); run: {command}"
+        )
+
+
 def change_state(record: dict[str, str], owner: str, state: str, reason: str) -> dict:
     with _sessions_lock():
         session = _require_owner(_load_session(record), owner, record)
+        if state == "pause":
+            require_final_validation(record, session)
         now = _utc_now()
         session["state"] = state
         session["updated_at"] = _iso(now)
@@ -608,6 +655,14 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
                 lines.append(
                     "Codegen duplicate: emitted code is unchanged from probe "
                     f"#{last_probe['same_emitted_code_as_probe']}."
+                )
+            evidence = last_probe.get("evidence") or {}
+            if evidence.get("kind") == "variant_lab":
+                lines.append(
+                    "Variant lab: "
+                    f"{evidence.get('variants')} variants, "
+                    f"{evidence.get('invariant_eligible')} invariant-eligible, "
+                    f"{evidence.get('exact_matches')} exact; {evidence.get('run_dir')}"
                 )
     if metrics:
         freshness = "current" if metrics.get("artifact_fresh") else "STALE"

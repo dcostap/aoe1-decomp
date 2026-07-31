@@ -156,10 +156,15 @@ prompt.
    not keep exploring the same compiler basin.
 10. If exact, review source/flags, validate again, move (not copy) to
     `src/matching`, and validate after the move. If unresolved, leave the best
-    state in `src/scratch`, write a compact attempt log, and pause with
+    state in `src/scratch` and write the compact attempt log **before** the final
+    integrated validation. Record that unchanged final check with
+    `--kind validation`, then pause with
     `target_session.py pause --va <VA> --owner <owner> --reason "..."` (`--note`
-    is accepted as an alias). Never use `accepted_drift` merely because the
-    budget ended.
+    is accepted as an alias). Validation must precede pause because checks require
+    an active lease. The session tool rejects a pause when the current claim has
+    recorded checks unless its latest check is a current `validation`; edits after
+    validation make it stale and require another validation. Never use
+    `accepted_drift` merely because the budget ended.
 11. Report target, outcome, probe count, current/best metrics, changed files,
     validations, and the evidence-backed next lead. A bounded documented pause
     is a valid outcome; never force a fake match.
@@ -187,10 +192,12 @@ effect. Keep durable conclusions in the scratch-file attempt log because session
 state is not committed.
 
 Probe kinds are `baseline`, `behavior`, `abi`, `layout`, `control-flow`,
-`liveness`, `context`, `flags`, `variant`, `restore`, and `other`. Use `baseline`
+`liveness`, `context`, `flags`, `variant`, `restore`, `validation`, and `other`. Use `baseline`
 for the first compiled reconstruction, and `restore` for a deliberate rollback
-rather than describing either as a new behavior hypothesis. Recorded `restore`
-checks remain in history but do not consume the meaningful-hypothesis budget.
+rather than describing either as a new behavior hypothesis. Use `validation`
+only for an unchanged final check after notes/documentation are complete.
+Recorded `restore` and `validation` checks remain in history but do not consume
+the meaningful-hypothesis budget.
 
 Prefer the integrated checker wrapper so a completed check, checkpoint, input
 hashes, emitted-code identity, duplicate-codegen detection, metric delta, and
@@ -302,6 +309,13 @@ Practical rules:
 - `python tools\variant_lab.py --help` is the concise reference.
 - Variant labs may try thousands/tens of thousands of variants, but the axes
   should be deliberate and documented by the template/attempt log.
+- One deliberate variant-lab run is one meaningful `variant` hypothesis family,
+  regardless of how many generated cases it compiles. During a leased agent
+  session pass `--session-owner <owner>` so the lab records that probe
+  automatically; do not run unrecorded labs around the budget.
+- `--preview-variants N` prints compact labels/sizes/hashes. Add `--preview-full`
+  only when complete generated sources are truly needed; use `--show-variant`
+  for one specific full expansion.
 - Do not auto-promote from a lab result. Review the winning source, reduce any
   context, then validate normally with `check_function.py`.
 - For localized late-stage labs, use `--focus-range` and hard gates such as

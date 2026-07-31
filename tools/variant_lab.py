@@ -20,6 +20,7 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Iterable
 
+from coff import find_function_symbol, function_symbol_section, load_coff_object
 from common import (
     CONFIG_DIR,
     REPO_ROOT,
@@ -34,7 +35,7 @@ from common import (
     repo_path,
     tool_env,
 )
-from extract_obj_function import decode_bytes, meaningful_code_size
+from extract_obj_function import decode_bytes, extraction_extent
 from function_diagnostics import (
     basic_blocks,
     block_alignment,
@@ -42,7 +43,7 @@ from function_diagnostics import (
     decode_instructions,
     prologue_summary,
 )
-from target_session import current_metric_summary
+from target_session import current_metric_summary, record_probe
 
 
 # Variant labs are intentionally allowed to get large: sticky VC5 codegen-family
@@ -123,7 +124,8 @@ Quick workflow
   python tools/variant_lab.py --init --va 0051ACA0
   # edit build/temp/<slug>_lab.tpl.cpp
   python tools/variant_lab.py --template build/temp/<slug>_lab.tpl.cpp --preview-variants 3
-  python tools/variant_lab.py --va 0051ACA0 --template build/temp/<slug>_lab.tpl.cpp
+  # add --preview-full only when complete generated sources are really needed
+  python tools/variant_lab.py --va 0051ACA0 --template build/temp/<slug>_lab.tpl.cpp --session-owner AgentName
 
 Inspection commands (no compile; --va not required):
 
@@ -131,6 +133,7 @@ Inspection commands (no compile; --va not required):
   python tools/variant_lab.py --template-help vc5_guard
   python tools/variant_lab.py --template build/temp/lab.tpl.cpp --expand-only
   python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants 3
+  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants 1 --preview-full
   python tools/variant_lab.py --template build/temp/lab.tpl.cpp --show-variant V000042
 
 Source choices
@@ -268,12 +271,15 @@ Run controls
   --max-variants 0     disable the cap for an intentional huge run
   --no-dedupe-expanded compile identical expanded source/flag variants separately
   --focus-range A-B    score one inclusive original offset/VA band
-  --require-size       reject ranking/promotion leads with the wrong meaningful size
+  --require-size       reject leads with the wrong checker-effective function size
   --require-frame      require the original prologue frame size
   --require-call-set   require direct/virtual/indirect target counts and COFF symbol identity
+  --session-owner NAME record one meaningful `variant` probe for the whole lab family
 
 Identical expanded source+flags are deduped before compile by default. Duplicate
 work dirs contain dedup_alias.txt pointing to the representative object.
+`--preview-variants` is compact by default (labels, sizes, and hashes only);
+`--preview-full` opts into printing complete generated source.
 
 Output and reports
 ------------------
@@ -300,10 +306,15 @@ summary.txt fields to know:
   Axes                includes "from @template ..." provenance when known
   Exact-match axis sensitivity: label exact counts, e.g. if_cond(1/1)
   Top groups          exact=1 means group has an exact; exact_count=N counts them
+  text_size           checker-effective function size, not the complete code section
   invariants_ok       requested size/frame/call-set gates all passed
   focus_diff          positional mismatches inside --focus-range only
   prefix_delta        first-mismatch movement versus the current checker baseline
   lost_blocks         baseline exact original blocks no longer exact in the variant
+
+A completed compile run exits 0 only when an invariant-eligible exact match is
+found. Exit 1 with populated reports is the normal "no exact variant" result,
+not a compile/tool failure.
 
 Trace a lead by opening summary.txt, then groups/Gxxxx/diff.txt and
 representative.cpp; use variants.tsv for the exact Vxxxxxx row and artifacts.
@@ -630,6 +641,42 @@ def load_text_from_obj(path: Path) -> LoadedText:
     raise ValueError(f"no usable code section in {path}; sections: {available}")
 
 
+def load_variant_function_from_obj(path: Path) -> LoadedText:
+    """Select the target function's COFF symbol section like the normal checker.
+
+    The legacy text loader remains as a fallback for ad-hoc objects whose file
+    name does not carry the normal ``<VA>_<name>`` slug.
+    """
+    match = re.match(r"^[0-9A-Fa-f]{8}_(.+)$", path.stem)
+    if match is None:
+        return load_text_from_obj(path)
+    wanted_name = match.group(1).lower()
+    try:
+        obj = load_coff_object(path)
+        symbol = find_function_symbol(
+            obj, lambda candidate: wanted_name in candidate.name.lower()
+        )
+        if wanted_name not in symbol.name.lower():
+            raise KeyError(f"target function symbol containing {wanted_name!r} not found")
+        section = function_symbol_section(obj, symbol)
+    except (KeyError, OSError, ValueError) as exc:
+        raise ValueError(f"cannot select target function from {path}: {exc}") from exc
+    return LoadedText(
+        name=section.name,
+        data=section.data,
+        relocations=[
+            CoffReloc(
+                offset=relocation.offset,
+                symbol_index=relocation.symbol_index,
+                reloc_type=relocation.reloc_type,
+                width=relocation.width,
+                symbol_name=relocation.symbol_name,
+            )
+            for relocation in section.relocations
+        ],
+    )
+
+
 def mask_relocations(data: bytes, relocs: list[CoffReloc]) -> bytes:
     mutable = bytearray(data)
     for reloc in relocs:
@@ -687,6 +734,48 @@ def relocation_dicts(relocations: list[CoffReloc], limit: int) -> list[dict[str,
 def call_counts_for_code(code: bytes, va: int, relocations: list[CoffReloc] | None = None) -> dict[tuple[str, str], int]:
     instructions = decode_instructions(code, va, relocation_dicts(relocations or [], len(code)))
     return dict(Counter((str(row["kind"]), str(row["target"])) for row in call_fingerprint(instructions, original=False)))
+
+
+def variant_code_extent(
+    data: bytes,
+    expected_size: int,
+    indirect_targets: list[int] | None = None,
+) -> dict[str, object]:
+    """Apply the normal checker's function-boundary policy to one lab object.
+
+    VC5 may append unrelated generated context after the target body in the same
+    code section. Unreachable context is not a size failure; entry-reachable code
+    beyond the inventory boundary remains an overflow.
+    """
+    return extraction_extent(data, expected_size, indirect_targets)
+
+
+def variant_indirect_targets(obj_path: Path, expected_size: int) -> list[int]:
+    """Recover checker-equivalent same-section targets referenced past the boundary."""
+    match = re.match(r"^[0-9A-Fa-f]{8}_(.+)$", obj_path.stem)
+    if match is None:
+        return []
+    wanted_name = match.group(1).lower()
+    try:
+        obj = load_coff_object(obj_path)
+        symbol = find_function_symbol(
+            obj, lambda candidate: wanted_name in candidate.name.lower()
+        )
+        if wanted_name not in symbol.name.lower():
+            return []
+        section = function_symbol_section(obj, symbol)
+    except (KeyError, OSError, ValueError):
+        return []
+    symbol_by_index = {candidate.index: candidate for candidate in obj.symbols}
+    targets: list[int] = []
+    for relocation in section.relocations:
+        if relocation.offset < expected_size:
+            continue
+        target = symbol_by_index.get(relocation.symbol_index)
+        if target is None or target.section_number != symbol.section_number:
+            continue
+        targets.append(target.value - symbol.value)
+    return sorted(set(targets))
 
 
 def evaluate_constraints(
@@ -1246,12 +1335,31 @@ def select_spec(specs: list[VariantSpec], selector: str) -> VariantSpec:
 
 
 def print_variant_preview(plan: TemplatePlan, specs: list[VariantSpec], selected_specs: list[VariantSpec]) -> None:
+    print_variant_preview_with_mode(plan, specs, selected_specs, full_source=True)
+
+
+def print_variant_preview_with_mode(
+    plan: TemplatePlan,
+    specs: list[VariantSpec],
+    selected_specs: list[VariantSpec],
+    *,
+    full_source: bool,
+) -> None:
     print(f"Expanded variants: {len(specs)}")
     for spec in selected_specs:
         fmt_values = preview_fmt_values()
         source = expand_source(plan, spec)
         flags = expand_flags(plan, spec, fmt_values)
-        print(f"\n===== {spec.variant_id} {label_text(spec, plan.axes)} =====")
+        labels = label_text(spec, plan.axes)
+        if not full_source:
+            line_count = len(source.splitlines())
+            flags_hash = stable_hash(flags) if flags else "-"
+            print(
+                f"{spec.variant_id}\t{labels}\tlines={line_count}\tbytes={len(source.encode('utf-8'))}"
+                f"\tsource={stable_hash(source)}\tflags={flags_hash}"
+            )
+            continue
+        print(f"\n===== {spec.variant_id} {labels} =====")
         if flags.strip():
             print("----- flags -----")
             print(flags.rstrip())
@@ -1461,7 +1569,7 @@ def build_variant(
         )
 
     try:
-        loaded = load_text_from_obj(obj_path)
+        loaded = load_variant_function_from_obj(obj_path)
     except Exception as exc:
         text = normalize_error(str(exc), work_dir, source_path, obj_path)
         return VariantResult(
@@ -1478,7 +1586,14 @@ def build_variant(
             stderr=proc.stderr,
         )
 
-    compare_bytes = loaded.data[:expected_size]
+    extent = variant_code_extent(
+        loaded.data,
+        expected_size,
+        variant_indirect_targets(obj_path, expected_size),
+    )
+    effective_size = int(extent["effective_size"])
+    comparison_size = int(extent["comparison_size"])
+    compare_bytes = loaded.data[:comparison_size]
     compare_relocs = [reloc for reloc in loaded.relocations if reloc.offset < len(compare_bytes)]
     masked_rebuilt = mask_relocations(compare_bytes, compare_relocs)
     masked_original = bytearray(original_bytes[:expected_size])
@@ -1493,7 +1608,11 @@ def build_variant(
     metrics = positional_byte_diff_metrics(masked_original_bytes, masked_rebuilt)
     mismatch_text = str(metrics["first_mismatch_offset"])
     mismatch = int(mismatch_text) if mismatch_text else None
-    exact = metrics["result"] == "MATCH" and len(compare_bytes) == expected_size
+    exact = (
+        metrics["result"] == "MATCH"
+        and effective_size == expected_size
+        and not bool(extent["has_code_overflow"])
+    )
     status = "match" if exact else "mismatch"
 
     focus_diff_bytes: int | None = None
@@ -1521,20 +1640,21 @@ def build_variant(
     )
     invariant_failures = evaluate_constraints(
         constraints=constraints,
-        text_size=meaningful_code_size(loaded.data),
+        text_size=effective_size,
         expected_size=expected_size,
         frame_size=None if rebuilt_frame is None else int(rebuilt_frame),
         call_counts=rebuilt_call_counts,
     )
 
-    masked_full_rebuilt = mask_relocations(loaded.data, loaded.relocations)
+    identity_relocs = [reloc for reloc in loaded.relocations if reloc.offset < comparison_size]
+    masked_full_rebuilt = mask_relocations(compare_bytes, identity_relocs)
     group_material = b"\0".join(
         [
-            str(len(loaded.data)).encode("ascii"),
+            str(effective_size).encode("ascii"),
             masked_full_rebuilt,
             "|".join(
                 f"{reloc.offset}:{reloc.reloc_type}:{reloc.symbol_name}"
-                for reloc in loaded.relocations
+                for reloc in identity_relocs
             ).encode("utf-8", "replace"),
         ]
     )
@@ -1545,7 +1665,7 @@ def build_variant(
         labels_text=labels,
         status=status,
         returncode=proc.returncode,
-        text_size=len(loaded.data),
+        text_size=effective_size,
         compare_size=len(compare_bytes),
         relocations=len(compare_relocs),
         first_mismatch=mismatch,
@@ -1589,8 +1709,13 @@ def analyze_unique_groups(
     original_blocks = basic_blocks(original_instructions, original_calls)
     for members in groups.values():
         representative = members[0]
-        loaded = load_text_from_obj(Path(representative.obj_path or ""))
-        compare_bytes = loaded.data[:expected_size]
+        loaded = load_variant_function_from_obj(Path(representative.obj_path or ""))
+        extent = variant_code_extent(
+            loaded.data,
+            expected_size,
+            variant_indirect_targets(Path(representative.obj_path or ""), expected_size),
+        )
+        compare_bytes = loaded.data[: int(extent["comparison_size"])]
         compare_relocs = [reloc for reloc in loaded.relocations if reloc.offset < len(compare_bytes)]
         masked_rebuilt = mask_relocations(compare_bytes, compare_relocs)
         masked_original = bytearray(original_bytes[:expected_size])
@@ -1712,11 +1837,16 @@ def write_group_artifacts(
         if rep.flags_path and Path(rep.flags_path).exists():
             shutil.copyfile(rep.flags_path, group_dir / "variant_flags.rsp")
         try:
-            loaded = load_text_from_obj(obj_path)
+            loaded = load_variant_function_from_obj(obj_path)
         except Exception as exc:
             (group_dir / "extract_error.txt").write_text(str(exc), encoding="utf-8")
             continue
-        compare_bytes = loaded.data[:expected_size]
+        extent = variant_code_extent(
+            loaded.data,
+            expected_size,
+            variant_indirect_targets(obj_path, expected_size),
+        )
+        compare_bytes = loaded.data[: int(extent["comparison_size"])]
         (group_dir / "rebuilt.bin").write_bytes(compare_bytes)
         write_asm(group_dir / "rebuilt.asm", compare_bytes, va)
 
@@ -1794,11 +1924,16 @@ def group_mismatch_snippet(group: GroupInfo, original_bytes: bytes, expected_siz
     if not obj_path.exists():
         return []
     try:
-        loaded = load_text_from_obj(obj_path)
+        loaded = load_variant_function_from_obj(obj_path)
     except Exception as exc:
         return [f"        snippet unavailable: {exc}"]
 
-    compare_bytes = loaded.data[:expected_size]
+    extent = variant_code_extent(
+        loaded.data,
+        expected_size,
+        variant_indirect_targets(obj_path, expected_size),
+    )
+    compare_bytes = loaded.data[: int(extent["comparison_size"])]
     compare_relocs = [reloc for reloc in loaded.relocations if reloc.offset < len(compare_bytes)]
     masked_rebuilt = mask_relocations(compare_bytes, compare_relocs)
     masked_original = bytearray(original_bytes[:expected_size])
@@ -2379,7 +2514,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--list-templates", action="store_true", help="List reusable @template presets and exit")
     parser.add_argument("--template-help", metavar="NAME", help="Print a reusable @template preset file and exit")
     parser.add_argument("--expand-only", action="store_true", help="Expand @template directives to @choice text and print the effective template; no --va required")
-    parser.add_argument("--preview-variants", type=int, metavar="N", help="Print the first N fully expanded variant sources/flags and exit; no compile")
+    parser.add_argument(
+        "--preview-variants",
+        type=int,
+        metavar="N",
+        help="Print a compact label/size/hash summary for the first N variants and exit; no compile.",
+    )
+    parser.add_argument(
+        "--preview-full",
+        action="store_true",
+        help="With --preview-variants, also print each complete expanded source and flags.",
+    )
     parser.add_argument("--show-variant", metavar="ID", help="Print one expanded variant by index or V000123 and exit; no compile")
     parser.add_argument("--no-dedupe-expanded", action="store_true", help="Disable pre-compile deduping of identical expanded source/flag variants")
     parser.add_argument(
@@ -2387,12 +2532,21 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         metavar="START-END",
         help="Score one inclusive original offset/VA range, e.g. +0490-+04B0.",
     )
-    parser.add_argument("--require-size", action="store_true", help="Rank/recommend only variants with the original text size.")
+    parser.add_argument(
+        "--require-size",
+        action="store_true",
+        help="Require the checker-equivalent effective function size (unreachable context tails ignored).",
+    )
     parser.add_argument("--require-frame", action="store_true", help="Require the original prologue frame size.")
     parser.add_argument(
         "--require-call-set",
         action="store_true",
         help="Require exact direct/virtual/indirect call target counts, including COFF symbol identity.",
+    )
+    parser.add_argument(
+        "--session-owner",
+        metavar="OWNER",
+        help="After a compile run, record the whole lab family as one meaningful variant probe for this active target session.",
     )
     return parser.parse_args(argv)
 
@@ -2518,8 +2672,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.preview_variants is not None:
         if args.preview_variants < 0:
             raise SystemExit("--preview-variants must be nonnegative")
-        print_variant_preview(plan, specs, specs[: args.preview_variants])
+        print_variant_preview_with_mode(
+            plan,
+            specs,
+            specs[: args.preview_variants],
+            full_source=args.preview_full,
+        )
         return 0
+    if args.preview_full:
+        raise SystemExit("--preview-full requires --preview-variants")
     if args.show_variant:
         try:
             spec = select_spec(specs, args.show_variant)
@@ -2709,6 +2870,37 @@ def main(argv: list[str] | None = None) -> int:
         deduped_variants=len(specs) - len(specs_to_build),
         constraints=constraints,
     )
+    if args.session_owner:
+        exact_count = sum(result.exact and result.invariants_ok for result in results)
+        eligible_count = sum(result.invariants_ok for result in results)
+        relative_run_dir = str(run_dir.relative_to(REPO_ROOT))
+        try:
+            session = record_probe(
+                record,
+                args.session_owner,
+                "variant",
+                (
+                    f"variant lab {relative_run_dir}: {len(specs)} variants, "
+                    f"{eligible_count} invariant-eligible, {exact_count} exact"
+                ),
+                evidence={
+                    "kind": "variant_lab",
+                    "run_dir": relative_run_dir,
+                    "variants": len(specs),
+                    "compile_jobs": len(specs_to_build),
+                    "invariant_eligible": eligible_count,
+                    "exact_matches": exact_count,
+                },
+                detect_output_duplicate=False,
+            )
+        except (RuntimeError, ValueError) as exc:
+            raise SystemExit(
+                f"Lab reports were written, but the variant probe could not be recorded: {exc}"
+            ) from exc
+        print(
+            f"Recorded variant probe #{session['probes'][-1]['number']} "
+            f"for target session owner {args.session_owner}."
+        )
     return 0 if any(result.exact and result.invariants_ok for result in results) else 1
 
 

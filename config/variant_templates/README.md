@@ -14,7 +14,11 @@ python tools\variant_lab.py --list-templates
 python tools\variant_lab.py --template-help vc5_guard
 python tools\variant_lab.py --template build\temp\some_lab.tpl.cpp --expand-only
 python tools\variant_lab.py --template build\temp\some_lab.tpl.cpp --preview-variants 3
+python tools\variant_lab.py --template build\temp\some_lab.tpl.cpp --preview-variants 1 --preview-full
 ```
+
+`--preview-variants` is compact by default. Use `--preview-full` only to inspect
+all generated text, or `--show-variant V000123` for one full expansion.
 
 Basic usage:
 
@@ -80,9 +84,13 @@ hard invariants when appropriate:
 python tools\variant_lab.py --va 004524E0 --template build\temp\gate.tpl.cpp ^
   --splice-base src\scratch\004524E0_setup.cpp ^
   --splice-start "// LAB START" --splice-end "// LAB END" ^
-  --focus-range +0490-+04B0 --require-size --require-frame --require-call-set
+  --focus-range +0490-+04B0 --require-size --require-frame --require-call-set ^
+  --session-owner AgentName
 ```
 
 These gates do not compile a region independently. Every variant remains a full
 function/TU compile; reports rank groups that preserve requested whole-function
-invariants before ineligible groups.
+invariants before ineligible groups. The size gate follows checker-equivalent
+effective-boundary logic, ignoring unreachable compiler context tails but not
+entry-reachable overflow. One lab run counts as one meaningful `variant` probe;
+`--session-owner` records it against the active lease automatically.

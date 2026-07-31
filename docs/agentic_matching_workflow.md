@@ -53,9 +53,11 @@ python tools\target_session.py probe --va 005204A0 --owner AgentName ^
 ```
 
 Valid probe kinds are `baseline`, `behavior`, `abi`, `layout`, `control-flow`,
-`liveness`, `context`, `flags`, `variant`, `restore`, and `other`. Use `baseline`
-for the first successful reconstruction check. A `restore` check is recorded but
-does not consume the meaningful-hypothesis budget.
+`liveness`, `context`, `flags`, `variant`, `restore`, `validation`, and `other`.
+Use `baseline` for the first successful reconstruction check. `restore` and
+`validation` checks are recorded but do not consume the meaningful-hypothesis
+budget. Use `validation` only for the unchanged final check after the scratch
+attempt log is complete.
 
 Prefer the integrated form for normal work. It verifies the active owner, runs
 the checker, creates a checkpoint, snapshots source/flags and emitted-code
@@ -67,12 +69,22 @@ python tools\target_session.py check --va 005204A0 --owner AgentName ^
   --kind liveness --note "direct member reload probe" -- --detail concise
 ```
 
-When stopping:
+When stopping, update the scratch attempt log first, validate that exact current
+file while the lease is still active, and only then pause:
 
 ```bat
+python tools\target_session.py check --va 005204A0 --owner AgentName ^
+  --kind validation --note "final validation after attempt-log update" -- --detail concise
 python tools\target_session.py pause --va 005204A0 --owner AgentName ^
   --reason "needs a proven player/history layout before more source-shape work"
 ```
+
+A paused lease cannot run integrated checks. This ordering keeps the session's
+final metric snapshot current instead of forcing a direct unrecorded rebuild.
+When the current claim has any recorded checks, `pause` enforces this contract:
+the last check must be `validation`, its exact input snapshot must still match,
+and its checker artifacts must be fresh. A pre-compile hard blocker may still be
+paused without a validation.
 
 `--note` is accepted as an alias for `--reason`. A default autonomous matching
 assignment uses a budget of ten meaningful hypotheses unless the user requests a
@@ -237,10 +249,19 @@ For an understood localized mismatch, focus scoring and preserve hard invariants
 python tools\variant_lab.py --va 004524E0 --template build\temp\sprite_loop.tpl.cpp ^
   --splice-base src\scratch\004524E0_setup.cpp ^
   --splice-start "// LAB START sprite" --splice-end "// LAB END sprite" ^
-  --focus-range +0490-+04B0 --require-size --require-frame --require-call-set
+  --focus-range +0490-+04B0 --require-size --require-frame --require-call-set ^
+  --session-owner AgentName
 ```
 
 The reports retain ineligible groups but rank invariant-preserving groups first.
+`--require-size` uses the same effective function-boundary logic as the normal
+checker: unreachable compiler context after the function does not fail the gate,
+while entry-reachable overflow still does. A leased agent lab is one meaningful
+`variant` hypothesis family regardless of generated case count;
+`--session-owner` records it automatically.
+A completed lab exits with status 1 when it found no invariant-eligible exact
+variant; treat populated reports plus zero compile/extract/tool errors as a normal
+negative result rather than a failed tool run.
 Focused diff fields and invariant failures are written to `variants.tsv`,
 `groups.tsv`, group reports, summaries, and the run manifest. Exact outputs are
 copied to `matches\` only when all requested gates pass.

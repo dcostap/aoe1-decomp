@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import io
 import sys
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -143,6 +145,47 @@ B
         )
         self.assertEqual(len(failures), 3)
         self.assertIn("size", failures[0])
+
+    def test_effective_extent_ignores_unreachable_context_tail(self) -> None:
+        extent = variant_lab.variant_code_extent(b"\xC3\x55\x8B\xEC\xC3", 1)
+        self.assertEqual(extent["meaningful_size"], 5)
+        self.assertEqual(extent["effective_size"], 1)
+        self.assertFalse(extent["has_code_overflow"])
+
+    def test_effective_extent_keeps_entry_reachable_overflow(self) -> None:
+        # jmp +0 crosses the two-byte inventory boundary and reaches the ret.
+        extent = variant_lab.variant_code_extent(b"\xEB\x00\xC3", 2)
+        self.assertEqual(extent["effective_size"], 3)
+        self.assertTrue(extent["has_code_overflow"])
+
+    def test_effective_extent_keeps_indirect_target_overflow(self) -> None:
+        extent = variant_lab.variant_code_extent(
+            b"\xC3\x55\x8B\xEC\xC3", 1, indirect_targets=[3]
+        )
+        self.assertEqual(extent["effective_size"], 5)
+        self.assertTrue(extent["has_code_overflow"])
+
+    def test_variant_preview_is_compact_unless_full_is_requested(self) -> None:
+        plan = variant_lab.parse_template(
+            "before\n@choice x\n@case a\nA\n@case b\nB\n@endchoice\nafter\n"
+        )
+        specs = variant_lab.make_specs(plan)
+        compact = io.StringIO()
+        with redirect_stdout(compact):
+            variant_lab.print_variant_preview_with_mode(
+                plan, specs, specs, full_source=False
+            )
+        compact_text = compact.getvalue()
+        self.assertIn("src.x=a", compact_text)
+        self.assertIn("source=", compact_text)
+        self.assertNotIn("before\nA\nafter", compact_text)
+
+        full = io.StringIO()
+        with redirect_stdout(full):
+            variant_lab.print_variant_preview_with_mode(
+                plan, specs, specs[:1], full_source=True
+            )
+        self.assertIn("before\nA\nafter", full.getvalue())
 
 
 if __name__ == "__main__":

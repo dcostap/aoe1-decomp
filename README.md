@@ -56,8 +56,8 @@ assembly band, and dry-run-first `--prune-history` controls retained experiments
 Parallel late-corpus work also has four advisory agent tools:
 
 - `tools\target_session.py` provides shared-tree target leases, meaningful-probe
-  bookkeeping, emitted-code duplicate detection, and a checker-stage-aware
-  current-metrics briefing;
+  bookkeeping, non-budget restore/final-validation checks, emitted-code duplicate
+  detection, and a checker-stage-aware current-metrics briefing;
 - `tools\target_dossier.py` generates a target-local binary-evidence report for
   calls, candidate `this` offsets, globals, conservatively entry-normalized stack
   accesses/parameter homes, and generated-type size conflicts;
@@ -73,6 +73,10 @@ Compact target selection is available through
 packets into an agent context merely to choose a target. The complete default
 contract for a short request such as `match 0043C2B0` lives in `AGENTS.md` and is
 injected into every repo-local agent session.
+
+Focused `variant_lab.py` runs can enforce checker-equivalent effective size,
+frame, and call-set gates. Compact previews avoid dumping whole generated files,
+and `--session-owner <owner>` records one lab family as one meaningful probe.
 
 ## Toolchain
 
