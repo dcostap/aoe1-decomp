@@ -1,20 +1,35 @@
 // 00487FA0 TRIBE_RMM_Database_Controller::add_object_module
-// Attempt log:
-// baseline: natural reconstruction from the packet with exact random-map record layouts.
-// moved locals to function scope and removed cached record indices; recovered 0x14 frame,
-// 1749-byte output, and 89.9% instruction-shape similarity.
-// typed aggregate land-line shift is the closest copy basin; raw dword cursors changed
-// the saved-this register and were rolled back. Protected base declaration matches the
-// original direct-call symbol. Final land-id gate follows the observed test/jl.
-// paused after the hypothesis budget: remaining mismatch begins in the backward land-line
-// shift/register coloring, with later drift largely a resynchronization consequence.
-// resumed: direct indexed aggregate assignment exactly restored the original rep movsd shift.
-// direct map member reads plus moving wall_1 after the center calculations now match the
-// complete map_type==6 block through 004880F5; the unresolved basin begins in the first
-// land-size adjustment loop (count/register and pointer topology).
-// rolled back counter initialization inside the land-count guard; it worsened edit alignment.
-// paused after the second budget: best rebuilt size/frame are exact, calls are 11/11 aligned,
-// and the remaining structural mismatch starts at the land-size adjustment loop.
+// Attempt log (condensed after 89 total meaningful probes):
+// - Natural typed reconstruction recovered the exact 1749-byte size, 0x14 frame, saved
+//   registers, and 11/11 ordered direct calls. Direct indexed aggregate assignment restored
+//   the original rep movsd land shift. Precomputing land_size_adjustment recovered the target
+//   idiv/test/pointer loop; the positive `done` guard recovered the 73-insn collision island.
+// - Current best: 93.60% instruction shape, 57.29% exact-block coverage, raw edit cost 194
+//   (5.55% bounded), 480/484 instructions, and first strict mismatch +0x161. The mismatch is
+//   still structural, so this function is not eligible for accepted drift.
+// - DIA/asm stack topology (entry-relative after sub esp,14h and four pushes): compiler
+//   temporary local_4 at -0x04; collision index home local_8 at -0x08; long index1 retry
+//   counter at -0x0C; long count island count at -0x10; uchar done at -0x11; and long
+//   extra_island_roll at -0x14. The last two homes overlap after their disjoint lifetimes.
+//   PDB line changes for 449-521 and 525-567 are consistent with the retained statement order.
+// - Exact layouts are RGE_Random_Map_Module 0x30, land_info 0x1438 at +0x3C,
+//   object_info 0x18C8 at +0x270C, and controller size 0x4F5C. A full polymorphic RGE_Map
+//   declaration emitted the same target code; broader same-TU context remains uncalibrated.
+// - Exhausted natural loop/index spellings: operand order, casts, typed/raw member surfaces,
+//   pointer subscripting, aliases, scopes, for/do forms, zone order, and grouped assignments.
+//   Focused micro-tests also emit the rebuilt two-op `load member; add index` form. Corpus-only
+//   motif hits 0044B950 (scratch) and 004D84E0 (unclaimed) have no exact source donor.
+// - Exhausted tail spellings: case order, direct/local loads, separate/goto/shared-label arms,
+//   assignment forms, rereads, and line grouping. VC5 keeps merging the two /6 source arms;
+//   original blocks B050/B051 remain absent. Flag presets plus /G5 and /G6 were worse.
+// - Diagnostic only: `volatile long extra_island_roll` improved shape to 94.375% and strict
+//   diff to 1191, but added stores/reloads absent from the original and restored no blocks.
+//   Its emitted changes begin only at +0x5F3, proving tail liveness sensitivity but not a
+//   shared cause for the earlier index blocks. The valid best was restored afterward.
+// - Remaining independent gaps: B025's eleven three-op index sums, B036/B039 index scheduling,
+//   and the late switch blocks B050/B051. Do not run more broad expression, tail, or flag labs.
+//   Next leads are an exact-register-environment micro-test for the early index basin and one
+//   defined two-predecessor tail-local experiment that does not rely on an uninitialized value.
 
 typedef unsigned char uchar;
 
@@ -156,6 +171,7 @@ void TRIBE_RMM_Database_Controller::add_object_module()
     int i;
     int x;
     int y;
+    long extra_island_roll;
 
     this->RGE_RMM_Database_Controller::add_object_module();
     debug_rand((char*)0x585E04, 0x198);
@@ -215,89 +231,87 @@ void TRIBE_RMM_Database_Controller::add_object_module()
         if (count + this->number_of_players > 10)
             count = 10 - this->number_of_players;
 
+        long land_size_adjustment = ((this->map_height + this->map_width) * count) / this->land_info.land_num;
         i = 0;
         if (this->land_info.land_num > 0) {
             long* p = &this->land_info.land[0].land_size;
             do {
-                *p -= ((this->map_height + this->map_width) * count) / this->land_info.land_num;
+                *p -= land_size_adjustment;
                 ++i;
                 p += 13;
             } while (i < this->land_info.land_num);
         }
 
-        i = 0;
         index1 = 0;
-        if (count > 0) {
-            do {
-                int land_count = this->land_info.land_num;
-                this->land_info.land[i + land_count].terrain_type = 0;
-                this->land_info.land[i + this->land_info.land_num].area = 7;
-                this->land_info.land[i + this->land_info.land_num].base_size = 3;
-                this->land_info.land[i + this->land_info.land_num].zone = (uchar)i + (uchar)this->land_info.land_num;
-                this->land_info.land[i + this->land_info.land_num].land_size = (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
-                this->land_info.land[i + this->land_info.land_num].clumpiness_factor = 10;
-                this->land_info.land[i + this->land_info.land_num].wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
-                this->land_info.land[i + this->land_info.land_num].wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
-                this->land_info.land[i + this->land_info.land_num].wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
-                this->land_info.land[i + this->land_info.land_num].wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
-                this->land_info.land[i + this->land_info.land_num].wall_fade = this->land_info.wall_fade;
+        for (i = 0; i < count; ++i) {
+            this->land_info.land[this->land_info.land_num + i].terrain_type = 0;
+            this->land_info.land[this->land_info.land_num + i].area = 7;
+            this->land_info.land[this->land_info.land_num + i].base_size = 3;
+            this->land_info.land[this->land_info.land_num + i].zone = (uchar)i + (uchar)this->land_info.land_num;
+            this->land_info.land[this->land_info.land_num + i].land_size = (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
+            this->land_info.land[this->land_info.land_num + i].clumpiness_factor = 10;
+            this->land_info.land[this->land_info.land_num + i].wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
+            this->land_info.land[this->land_info.land_num + i].wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
+            this->land_info.land[this->land_info.land_num + i].wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
+            this->land_info.land[this->land_info.land_num + i].wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
+            this->land_info.land[this->land_info.land_num + i].wall_fade = this->land_info.wall_fade;
 
+            local_8 = 0;
+            index1 = 0;
+            do {
+                ++index1;
+                done = 1;
+                x = (debug_rand((char*)0x585E04, 0x1DE) * (this->map_width - 0x10)) / 0x7FFF + 8;
+                y = (debug_rand((char*)0x585E04, 0x1DF) * (this->map_height - 0x10)) / 0x7FFF + 8;
                 local_8 = 0;
-                index1 = 0;
-                do {
-                    ++index1;
-                    done = 1;
-                    x = (debug_rand((char*)0x585E04, 0x1DE) * (this->map_width - 0x10)) / 0x7FFF + 8;
-                    y = (debug_rand((char*)0x585E04, 0x1DF) * (this->map_height - 0x10)) / 0x7FFF + 8;
-                    local_8 = 0;
-                    if (this->land_info.land_num > 0) {
-                        long* p = &this->land_info.land[0].y;
-                        do {
-                            if (!done)
-                                goto found_bad_position;
+                if (this->land_info.land_num > 0) {
+                    long* p = &this->land_info.land[0].y;
+                    do {
+                        if (done) {
                             if ((x - p[-1]) * (x - p[-1]) + (y - p[0]) * (y - p[0]) < 400)
                                 done = 0;
-                            ++local_8;
-                            p += 13;
-                        } while (local_8 < this->land_info.land_num);
-                    }
-                    if (done)
-                        break;
+                        } else {
+                            goto found_bad_position;
+                        }
+                        ++local_8;
+                        p += 13;
+                    } while (local_8 < this->land_info.land_num);
+                }
+                if (done)
+                    break;
 found_bad_position:
-                    ;
-                } while (index1 < 1000);
+                ;
+            } while (index1 < 1000);
 
-                if (index1 >= 1000)
-                    count = i;
+            if (index1 >= 1000)
+                count = i;
 
-                this->land_info.land[i + this->land_info.land_num].x = x;
-                this->land_info.land[i + this->land_info.land_num].y = y;
+            this->land_info.land[this->land_info.land_num + i].x = x;
+            this->land_info.land[this->land_info.land_num + i].y = y;
 
-                this->object_info.objects[this->object_info.object_num].terrain = -1;
-                this->object_info.objects[this->object_info.object_num].group_flag = 2;
-                this->object_info.objects[this->object_info.object_num].scale_flag = 0;
-                this->object_info.objects[this->object_info.object_num].object_number_per_group = 8;
-                this->object_info.objects[this->object_info.object_num].object_number_varience = 0;
-                this->object_info.objects[this->object_info.object_num].number_of_groups = 1;
-                this->object_info.objects[this->object_info.object_num].group_area = 4;
-                this->object_info.objects[this->object_info.object_num].player_id = 0;
-                this->object_info.objects[this->object_info.object_num].land_id = i + this->land_info.land_num;
-                this->object_info.objects[this->object_info.object_num].land_inner_radius = 0;
-                this->object_info.objects[this->object_info.object_num].land_outer_radius = 0x1A;
-                this->object_info.objects[this->object_info.object_num].object_exclusion_zone = 0;
-                if (debug_rand((char*)0x585E04, 0x1FD) < 0x3FFF)
-                    this->object_info.objects[this->object_info.object_num].obj_id = 0x66;
-                else
-                    this->object_info.objects[this->object_info.object_num].obj_id = 0x42;
+            this->object_info.objects[this->object_info.object_num].terrain = -1;
+            this->object_info.objects[this->object_info.object_num].group_flag = 2;
+            this->object_info.objects[this->object_info.object_num].scale_flag = 0;
+            this->object_info.objects[this->object_info.object_num].object_number_per_group = 8;
+            this->object_info.objects[this->object_info.object_num].object_number_varience = 0;
+            this->object_info.objects[this->object_info.object_num].number_of_groups = 1;
+            this->object_info.objects[this->object_info.object_num].group_area = 4;
+            this->object_info.objects[this->object_info.object_num].player_id = 0;
+            this->object_info.objects[this->object_info.object_num].land_id = this->land_info.land_num + i;
+            this->object_info.objects[this->object_info.object_num].land_inner_radius = 0;
+            this->object_info.objects[this->object_info.object_num].land_outer_radius = 0x1A;
+            this->object_info.objects[this->object_info.object_num].object_exclusion_zone = 0;
+            if (debug_rand((char*)0x585E04, 0x1FD) < 0x3FFF)
+                this->object_info.objects[this->object_info.object_num].obj_id = 0x66;
+            else
+                this->object_info.objects[this->object_info.object_num].obj_id = 0x42;
 
-                ++this->object_info.object_num;
-                this->object_info.lands[this->object_info.land_num].y = y;
-                this->object_info.lands[this->object_info.land_num].x = x;
-                this->object_info.lands[this->object_info.land_num].id = i + this->land_info.land_num;
-                this->object_info.lands[this->object_info.land_num].player_id = 0;
-                ++this->object_info.land_num;
-                ++i;
-            } while (i < count);
+            ++this->object_info.object_num;
+            this->object_info.lands[this->object_info.land_num].y = y;
+            this->object_info.lands[this->object_info.land_num].x = x;
+            this->object_info.lands[this->object_info.land_num].id = this->land_info.land_num + i;
+            this->object_info.lands[this->object_info.land_num].player_id = 0;
+            ++this->object_info.land_num;
         }
         this->land_info.land_num += count;
     }
@@ -315,20 +329,26 @@ found_bad_position:
                     *p = 0xC;
                     break;
                 }
-            } else if (p[-3] == -2) {
-                switch (p[-11]) {
-                case 0x3B:
-                case 0x42:
-                    *p = this->map->map_width / 6;
-                    break;
-                case 0x41:
-                    *p = this->map->map_width / 8;
-                    break;
-                case 0x66:
-                    *p = this->map->map_width / 6;
-                    break;
-                }
+                goto object_exclusion_done;
             }
+            if (p[-3] != -2)
+                goto object_exclusion_done;
+            switch (p[-11]) {
+            case 0x3B:
+            case 0x42:
+                extra_island_roll = this->map->map_width;
+                goto divide_by_six;
+            case 0x41:
+                extra_island_roll = this->map->map_width;
+                *p = extra_island_roll / 8;
+                break;
+            case 0x66:
+                extra_island_roll = this->map->map_width;
+divide_by_six:
+                *p = extra_island_roll / 6;
+                break;
+            }
+object_exclusion_done:
             ++i;
             p += 12;
         } while (i < this->object_info.object_num);
