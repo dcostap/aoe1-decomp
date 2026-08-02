@@ -71,35 +71,59 @@
 // All retained/nearby variants emitted the same 140-byte family; no probe restored
 // the original EBP parameter-home countdown or EAX/EBX sum/high coloring. Final
 // state remains the best 140-byte source; structural mismatch is not accepted drift.
+//
+// Retry 2026-08-03 Luna480570: canonical-layout reset. Ground-truth type evidence
+// proves TBuff[255] plus one padding byte, lowTSLC/highTSLC/TSLC at +100/+104/+108,
+// aTSLC[101] at +10C through +29F, and Offset at +2A0. The indexed loop can read
+// element 100, so the old aTSLC[100] plus gap model was discarded before new probes.
+// Probe 2026-08-03: best clean source so far uses the formal count as the
+// preserved divisor/format value and a separate natural remaining-count local
+// for the scan; it reaches the original prologue and loop register basin.
+// The branch-local store placement variant was rolled back: it changed the
+// prologue to an EBX-count/stack-home family and widened the structural drift.
+// The direct-formal-countdown variant returned to the old 140-byte family.
+// A focused three-case source lab confirmed this formal-remaining form as the
+// best plausible basin: 144 extracted bytes versus 146 original, 78 strict
+// diff bytes, exact call-set parity; scoped-count forms regressed broadly.
+// Remaining mismatch is structural: the natural remaining local is homed at
+// [esp+14h] before the bounds branches and is written as the average after div,
+// whereas the oracle homes the countdown after the positive guard and keeps the
+// quotient in EAX. No exact or accepted-drift result was found.
 
 #include <stdio.h>
 
 class RGE_TimeSinceLastCall {
 public:
-    char TBuff[0x100];
+    char TBuff[255];
+    unsigned char TBuff_pad;
     unsigned long lowTSLC;      // +0x100
     unsigned long highTSLC;     // +0x104
-    unsigned long gap_108;      // +0x108
-    unsigned long aTSLC[100];   // +0x10C (100*4 = 0x190, ends at 0x29C)
-    char gap_29C[4];            // +0x29C
+    unsigned long TSLC;         // +0x108
+    unsigned long aTSLC[101];   // +0x10C (101*4 = 0x194, ends at 0x2A0)
     int Offset;                 // +0x2A0
+    unsigned long LastCall;     // +0x2A4
+    unsigned long FirstCall;    // +0x2A8
+    unsigned long Now;          // +0x2AC
+    unsigned long cps;          // +0x2B0
 
     char* GetHiLoMaxInfo(int param_1);
 };
 
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 {
-    int count = param_1;    unsigned long sum;
+    int remaining;
+    unsigned long sum;
     unsigned long hi;
     unsigned long lo;
     sum = 0;
     hi = 0;
     lo = 0xF423F;
 
+    remaining = param_1;
+
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = this->Offset;
-        if (count > 0) {
-            param_1 = count;
+        if (remaining > 0) {
             do {
                 idx--;
                 if (idx <= 0)
@@ -110,18 +134,18 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
                     lo = val;
                 if (val > hi)
                     hi = val;
-                param_1--;
-            } while (param_1 != 0);
+                remaining--;
+            } while (remaining != 0);
         }
-        param_1 = sum / (unsigned long)count;
+        remaining = sum / (unsigned long)param_1;
     } else {
-        lo = param_1;
-        hi = param_1;
+        lo = remaining;
+        hi = remaining;
     }
 
     sprintf(this->TBuff,
         "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)",
-        this->lowTSLC, lo, (unsigned long)param_1, count, hi, this->highTSLC);
+        this->lowTSLC, lo, (unsigned long)remaining, param_1, hi, this->highTSLC);
 
     return this->TBuff;
 }
