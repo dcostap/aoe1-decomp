@@ -20,6 +20,10 @@
 // Paused after 10 meaningful hypotheses; remaining gap is the VC5 EH tail layout at the final sprite fallback.
 // Main-agent source audit replaced the two binary-proven raw sprite offsets with
 // named `sprite18`/`spriteBC` fields; emitted code and the EH-tail blocker were unchanged.
+// 2026-08-02 Luna405620b sequential pass: named independent inner tests improved the tail to 188B/34B but added redundant tests;
+// direct-member and reversed-test forms remained nonexact. Named ternary reached 186B/31B but merged the two branch stores.
+// Outer-label/goto and natural virtual-vptr context probes did not improve the EH-tail basin (natural vptr worsened to 205B/56B).
+// Restored the canonical named sprite18/spriteBC ownership and natural inner if/else; remaining blocker is shared-vs-duplicated EH epilogue layout.
 
 class RGE_Action_Object;
 class RGE_Sprite;
