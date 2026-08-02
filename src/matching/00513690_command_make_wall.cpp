@@ -51,27 +51,88 @@
 // - Paused after budget: remaining blocker is compiler register/parameter-home allocation at
 //   the short formal's first use; next lead is a fresh TU/source-context or ABI-surface review,
 //   not another raw alias or parameter-width variant.
+// 2026-08-02 Luna513690 exact recovery: replaced the parameter-slot/raw-alias experiment with
+// a clean donor-shaped source: named master-object info, selected-object list/local_4, typed
+// world command surface, and the natural seven-argument command_build_wall call. Exact 143B.
 
 #include <stddef.h>
 #include <stdlib.h>
 extern "C" void __cdecl free(void*);
-class RGE_Master_Static_Object; class RGE_Game_World; class RGE_Static_Object; class TRIBE_Command { public: void command_build_wall(RGE_Static_Object** objects, short list_count, short original_param, long p2,long p3,long p4,long p5); };
-class RGE_Player { public: void* vtable_ptr; int a,b,c,d; long e,f,g; unsigned char h; unsigned char pad; short master_object_num; RGE_Master_Static_Object** master_objects; char gap_28[0x14]; RGE_Game_World* world; unsigned char get_selected_objects_to_command(RGE_Static_Object***, short*, int,int,int,int); };
-class TRIBE_Player: public RGE_Player { public: unsigned char command_make_wall(short,long,long,long,long); };
-class __declspec(novtable) WallHelper { public: virtual void v0()=0; virtual void v1()=0; virtual void v2()=0; virtual void v3()=0; virtual void v4()=0; virtual void v5()=0; virtual void v6()=0; virtual void v7()=0; virtual void v8()=0; virtual void v9()=0; virtual void v10()=0; virtual void clear_wall_data()=0; };
-unsigned char TRIBE_Player::command_make_wall(short param_1,long param_2,long param_3,long param_4,long param_5)
+
+class RGE_Static_Object;
+
+class RGE_Master_Static_Object {
+public:
+    char gap[0x52];
+    unsigned char flag52;
+};
+
+class RGE_Game_World;
+
+class TRIBE_Command {
+public:
+    void command_build_wall(RGE_Static_Object** objects, short list_count,
+                            short original_param, long p2, long p3, long p4,
+                            long p5);
+};
+
+class RGE_Player {
+public:
+    void* vtable_ptr;
+    int a, b, c, d;
+    long e, f, g;
+    unsigned char h;
+    unsigned char pad;
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    char gap_28[0x14];
+    RGE_Game_World* world;
+
+    unsigned char get_selected_objects_to_command(
+        RGE_Static_Object***, short*, int, int, int, int);
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    unsigned char command_make_wall(short, long, long, long, long);
+};
+
+class RGE_Game_World {
+public:
+    char gap[0x58];
+    TRIBE_Command* commands;
+};
+
+class __declspec(novtable) WallHelper {
+public:
+    virtual void v0() = 0;
+    virtual void v1() = 0;
+    virtual void v2() = 0;
+    virtual void v3() = 0;
+    virtual void v4() = 0;
+    virtual void v5() = 0;
+    virtual void v6() = 0;
+    virtual void v7() = 0;
+    virtual void v8() = 0;
+    virtual void v9() = 0;
+    virtual void v10() = 0;
+    virtual void clear_wall_data() = 0;
+};
+
+unsigned char TRIBE_Player::command_make_wall(short type, long p2, long p3,
+                                               long p4, long p5)
 {
-    short list_num;
-    int p1;
-    p1 = param_1;
-    RGE_Master_Static_Object* obj = this->master_objects[(short)p1];
-    if (obj && *(char*)((char*)obj + 0x52)) {
-        short local_4;
-        if (this->get_selected_objects_to_command((RGE_Static_Object***)&param_1, (short*)&local_4, 4, 4, -1, -1)) {
+    short local_4;
+    RGE_Static_Object** list;
+
+    RGE_Master_Static_Object* info = this->master_objects[type];
+    if (info != 0 && info->flag52 != 0) {
+        if (get_selected_objects_to_command(&list, &local_4, 4, 4,
+                                            -1, -1)) {
             ((WallHelper*)this->master_objects[0x76])->clear_wall_data();
-            TRIBE_Command* cmd = *(TRIBE_Command**)((char*)this->world + 0x58);
-            cmd->command_build_wall((RGE_Static_Object**)(long)param_1, local_4, (short)p1, param_2,param_3,param_4,param_5);
-            free((void*)(long)param_1);
+            this->world->commands->command_build_wall(list, local_4, type,
+                                                       p2, p3, p4, p5);
+            free(list);
             return 1;
         }
     }
