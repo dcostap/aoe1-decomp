@@ -77,11 +77,117 @@ Blind reviewers must establish these directly from the executable:
 
 ## Review rounds
 
-No formal blind review round has been integrated yet.
+### Formal round 1 — concurrent blind cohort
+
+Two fresh reviewers assessed the candidate concurrently. Both were strictly
+read-only and unleased, and were blind to this ledger, Git history, prior
+reports, and matching conclusions.
+
+#### Reviewer 1 — broad adversarial behavior
+
+> **Verdict: PASS; no definite behavioral difference found** against the
+> supplied original assembly/Ghidra evidence. This is a semantic verdict, not
+> an exact-codegen verdict.
+>
+> **Verified**
+>
+> - Base call, ignored `debug_rand(0x198)`, `startingAge()` test, and both
+>   age-specific scans match.
+> - Map-type-6 descending copy moves exactly 13 dwords per land record, then
+>   initializes the inserted land with the observed fields and widths.
+> - Signed `/2`, `/6`, and `/8` behavior matches the original `cdq`/magic
+>   division sequences. IDs `0x3B`, `0x42`, and `0x66` use `/6`; `0x41` uses
+>   `/8`.
+> - Map-type `<2` count generation, player clamp, land-size adjustment,
+>   new-land insertion, object writes, land-point writes, and cached
+>   `land_info.land_num` usage match.
+> - Collision retry ordering is correct: `done` is checked before later scan
+>   entries, retries stop at 1000 attempts, and the final sampled
+>   position/object is still inserted after cutoff.
+> - Object field writes have matching widths and values, including byte-sized
+>   group/scale/exclusion-related fields.
+> - Exclusion semantics match: nonnegative land IDs set exclusion to `0xC` only
+>   for the four specified IDs; `-2` invokes the ID-specific `/6` or `/8` logic;
+>   other negative IDs remain unchanged.
+> - Final `debug_rand(0x236)`, `Log` arguments/order, and void return match.
+>
+> **Plausible concerns**
+>
+> - The source intentionally relies on 32-bit VC5 signed arithmetic, including
+>   overflow behavior. This matches the executable model but is not portable
+>   C++ semantics.
+> - `land_count_ref` is used across external `debug_rand` calls. The original
+>   explicitly reloads `land_num` at several points; hidden mutation through an
+>   alias or concurrent modification would require confirming the rebuilt code
+>   also reloads rather than hoisting.
+>
+> **Unestablished:** helper internals and behavior with invalid pointers/object
+> tables could not be established from this packet alone.
+
+#### Reviewer 2 — independent full semantic pass
+
+> **Verdict: No definite behavioral difference found** for defined, in-bounds
+> executions. The candidate matches the original executable's observable
+> control flow and memory effects.
+>
+> **Verified**
+>
+> - Base `add_object_module`, initial `debug_rand(0x198)`, and starting-age
+>   handling occur in the correct order; the age-1 scans correctly modify IDs
+>   `0x53` and `0x6D`.
+> - Map type 6 performs the overlapping backward 13-dword land-record copy and
+>   initializes all observed fields.
+> - Map types `<2` use signed count generation/clamping, signed land-size
+>   division, and correct land-number timing.
+> - New-land placement uses the exact random sequence (`0x1DE`, `0x1DF`),
+>   distance predicate, collision scan, and 1000-attempt cutoff. The unusual
+>   `count = i` truncation behavior is preserved.
+> - Generated land/object/land-point records, field widths, IDs, zones, and
+>   increment order match.
+> - Final exclusion-zone handling uses the correct object-ID selectors
+>   (`0x3B`, `0x41`, `0x42`, `0x66`) and signed `/6` and `/8` formulas.
+> - Final random call and logging arguments/order match. No extra calls,
+>   catches, cleanup, or observable error handling were introduced.
+>
+> **Plausible limitations:** signed overflow in coordinate-distance products,
+> dimension sums, and index arithmetic is technically undefined in portable
+> C++; out-of-range counters, null pointers, and array overruns are likewise not
+> formally defined. The observed pinned-code access/control order matches.
+> `land_num == 0` under map type `<2` reaches the same unguarded divide-by-zero
+> point. Arbitrary concurrent/reentrant helper mutation was not independently
+> executable-tested; no mismatch is visible in the reload/call sequencing.
+>
+> **Overall:** behaviorally equivalent, with only malformed-input/C++-UB
+> qualification; no concrete semantic defect identified.
 
 ## Main-agent adjudication
 
-Pending independent review.
+- **Cleared — `land_count_ref` reload concern.** The retained reference changes
+  source IR/register allocation but does not cache the value in emitted code.
+  Focused rebuilt disassembly repeatedly reloads `[ebp+1458h]`, including at
+  `004883B5` before the `debug_rand(0x1FD)` region, at `004883D5`, `00488495`,
+  and `0048855D`; these accesses and their ordering are byte-identical to the
+  original. No external-call mutation can be hidden by source-level caching.
+- **Cleared — signed arithmetic and malformed-state caveats for the pinned
+  artifact.** Candidate emission uses the same 32-bit integer operations,
+  `cdq`/`idiv` or equivalent signed constant-division sequences, x87 conversion,
+  loads, stores, and branches as the oracle on these paths. The same unguarded
+  `land_num == 0` divide fault and the same machine-level wrap/access behavior
+  remain; portable-language abstraction is not substituted for emitted code.
+- **Cleared — missing physical switch blocks.** Both reviewers independently
+  reconstructed the complete exclusion semantics. The rebuilt compiler merges
+  identical `/6` source arms, but selectors `0x3B`, `0x42`, and `0x66` still
+  perform signed map-width `/6`, `0x41` performs `/8`, nonnegative selected IDs
+  store `0xC`, and all defaults preserve the original no-write behavior. The
+  absent physical blocks do not remove a runtime distinction.
+- **Cleared — all remaining behavior.** Both reviews converge on call order,
+  scans, descending overlap-safe copy, field values and widths, collision-loop
+  sequencing, cutoff behavior, counters, generated records, logging, errors,
+  and returns. Checker validation confirms exact size/frame, all 11 ordered
+  calls, 30/30 conditional branches, and only the previously bounded early
+  address-shape and late merged-switch differences.
+
+No substantive finding remains open after formal round 1.
 
 ## Integrated changes
 
@@ -89,5 +195,15 @@ None during logic review yet.
 
 ## Final decision
 
-Pending. The function remains in `src/scratch` and must not move to
-`src/verified_logic` while any substantive finding is unresolved.
+Approved for `src/verified_logic` on 2026-08-02 after a complete concurrent blind
+cohort, direct main-agent instruction-level adjudication, and unchanged final
+validation. Both reviewers independently found no behavioral discrepancy. The
+only explicit concern—whether source reference aliasing could cache `land_num`
+across helper calls—is disproved by rebuilt disassembly, which retains the same
+repeated memory reloads as the executable.
+
+Final nonsemantic metrics remain original/rebuilt size 1749/1749, frame
+`0x14`/`0x14`, saved registers aligned, calls 11/11 ordered, conditionals 30/30,
+instructions 480/484, shape 97.73%, exact-block coverage 94.38%, strict
+difference 95 bytes in 9 spans, and bounded edit cost 1.17%. Promotion asserts
+reconstructed executable behavior, not exact code parity.
