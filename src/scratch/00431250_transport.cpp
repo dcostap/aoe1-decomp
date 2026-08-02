@@ -1,137 +1,260 @@
-// 00431250 RGE_Combat_Object::transport(float, float, float, int)
-// PDB: com_obj.cpp:1146-1172, 230 bytes
-// __thiscall, returns int, ret 10h (4 params: float x 3, int)
-// FLAGS: /GX (original TU used /GX, generating SEH frame)
+// VA: 00431250, RGE_Combat_Object::transport, 230 bytes
+// Source: com_obj.cpp lines 1146-1172
+// __thiscall virtual, returns int, ret 10h (float x, float y, float z, int w)
 //
 // Attempt log:
-// probe 1-4: class layout wrong (+0x180/0x188 vs +0x184), no EH
-// probe 5-7: thunk class approach for virtual calls (placement new)
-// probe 8-10: regular new with /GX, EH frame generated but TU-dependent handler
-//
-// Parked: 79% diff.
-// Core logic IS correct — the function body (after EH prologue) follows the
-// same flow as original: have_action→get_type→type==0xC path vs alloc path
-//
-// Issues:
-// 1. EH handler address is TU-dependent (0x55CE9B in com_obj.cpp, can't match standalone)
-// 2. Register allocation: EDI for this instead of ESI
-// 3. Extra locals from /GX+new (sub esp,8 vs push ecx for try_level)
-// 4. Virtual calls using thunk classes work but vtable slots may differ from real classes
-//
-// These are TU-context and EH-table issues that require compiling within the
-// full com_obj.cpp translation unit to resolve fully.
+// probe 1-10 (prior workers): thunk classes + extern wrappers + flat layout,
+//   79% diff, wrong layout (+0x180/0x188 vs +0x184), wrong EH basin.
+// This session (sa-e16e6199): mirror the exact matched sibling 00431340 unload
+//   (same TU com_obj.cpp, same class surface, same /GX EH frame). Baseline 82 diff.
+// Probes (source-shape, all same emitted tail except noted):
+//   - if/else, goto-exit result, result+if/else: VC5 canonicalizes -> inline ret0 epilogue (82 diff, 249B)
+//   - comma-return func34,1: worse (175 diff, 276B)
+//   - goto fail at end: 82 diff (249B)
+//   - result=0; if (transport!=0) {body; result=1;} return result;  => BEST 67 diff,
+//     230/230 bytes, shape 93.9%, exact-blocks 93.8%, edit-diff 14.
+// Left in scratch: single-return shape shares the epilogue exactly like the original
+//   (tail [call;mov eax,1] + [epilogue] blocks match byte-for-byte; mov eax,1 not hoisted
+//   into epilogue; original fs-restore interleave reproduced), but the ret0 head differs:
+//   rebuilt emits [xor eax,eax; try=-1; test edi,edi; je epilogue] (xor hoisted before
+//   the test), original emits [test; try=-1; jne body; xor eax,eax; jmp epilogue]
+//   (xor inside inline ret0 block, body as jne target).
+// Next lead: plain two-return shape has right head but VC5 duplicates the epilogue and
+//   hoists mov eax,1 into it (preventing the cross-jump); the single-return shape shares
+//   the epilogue but hoists xor eax,eax before the test. A shape that yields BOTH
+//   (xor after the test AND shared epilogue) should be exact. Candidates not yet tried:
+//   a mixed form with an explicit shared exit label reached by the ret0 via a conditional
+//   edge rather than an unconditional goto, or controlling the try-level reset scheduling
+//   (reset is emitted between test and branch in the original; VC5's scheduling of the
+//   /GX end-of-try store relative to the source if-test is the lever).
+// FLAGS: /nologo /c /O2 /Oy /GX
 
-#include <stdlib.h>
-#include <new.h>
+#include <stddef.h>
 
 typedef unsigned char uchar;
 
-// External game functions (cdecl wrappers called from game EXE)
-extern uchar __cdecl have_action(void* list);
-extern void* __cdecl get_action(void* list);
-extern void __cdecl delete_list(void* list);
-
-// Thunk for RGE_Action virtuals:
-// slot 6 (vtable+0x18): get_type() -> returns short, compared with 0xC
-// slot 13 (vtable+0x34): init(int, float, float, float)
-struct RGE_ActionThunk {
-    virtual void d0();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void d5();
-    virtual short get_type();               // slot 6
-    virtual void d7();
-    virtual void d8();
-    virtual void d9();
-    virtual void d10();
-    virtual void d11();
-    virtual void d12();
-    virtual void init(int a, float x, float y, float z); // slot 13
+// RGE_Action_List (direct calls)
+class RGE_Action_List {
+public:
+    uchar have_action();
+    void* get_action();
+    void delete_list();
 };
 
-// RGE_Action_Transport size: 0x40
-struct RGE_Action_Transport : RGE_ActionThunk {
-    char pad_04[0x3C];
-    RGE_Action_Transport(void* owner, void* task, float x, float y, float z);
+// RGE_Action with virtual functions for correct vtable dispatch
+class RGE_Action {
+public:
+    // vtable pointer at +0x00 from compiler
+    short action_type;     // +0x04
+    uchar gap_06[2];       // +0x06
+    void* obj;             // +0x08
+    uchar state;           // +0x0C
+    uchar gap_0D[3];       // +0x0D
+    void* target_obj;      // +0x10
+    void* target_obj2;     // +0x14
+    int targetID;          // +0x18
+    int target2ID;         // +0x1C
+    float target_x;        // +0x20
+    float target_y;        // +0x24
+    float target_z;        // +0x28
+    float timer;           // +0x2C
+    void* task;            // +0x30
+    void* sub_actions;     // +0x34
+    void* sprite;          // +0x38
+    uchar subActionValue;  // +0x3C
+    uchar gap_3D[3];       // +0x3D
+
+    virtual ~RGE_Action();
+    virtual void slot_04();
+    virtual void slot_08();
+    virtual void slot_0C();
+    virtual void slot_10();
+    virtual void slot_14();
+    virtual short func18();
+    virtual void slot_1C();
+    virtual void slot_20();
+    virtual void slot_24();
+    virtual void slot_28();
+    virtual void slot_2C();
+    virtual void slot_30();
+    virtual void func34(void*, float, float, float);
 };
 
-// Thunk for RGE_Combat_Object virtual at slot 130 (vtable+0x208):
-// add_action(RGE_Action*)
-struct RGE_CombatThunk {
-    virtual void d0();
-    virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4();
-    virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8();
-    virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
-    virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16();
-    virtual void d17(); virtual void d18(); virtual void d19();
-    virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
-    virtual void d24(); virtual void d25(); virtual void d26(); virtual void d27();
-    virtual void d28(); virtual void d29();
-    virtual void d30(); virtual void d31(); virtual void d32(); virtual void d33();
-    virtual void d34(); virtual void d35(); virtual void d36(); virtual void d37();
-    virtual void d38(); virtual void d39();
-    virtual void d40(); virtual void d41(); virtual void d42(); virtual void d43();
-    virtual void d44(); virtual void d45(); virtual void d46(); virtual void d47();
-    virtual void d48(); virtual void d49();
-    virtual void d50(); virtual void d51(); virtual void d52(); virtual void d53();
-    virtual void d54(); virtual void d55(); virtual void d56(); virtual void d57();
-    virtual void d58(); virtual void d59();
-    virtual void d60(); virtual void d61(); virtual void d62(); virtual void d63();
-    virtual void d64(); virtual void d65(); virtual void d66(); virtual void d67();
-    virtual void d68(); virtual void d69();
-    virtual void d70(); virtual void d71(); virtual void d72(); virtual void d73();
-    virtual void d74(); virtual void d75(); virtual void d76(); virtual void d77();
-    virtual void d78(); virtual void d79();
-    virtual void d80(); virtual void d81(); virtual void d82(); virtual void d83();
-    virtual void d84(); virtual void d85(); virtual void d86(); virtual void d87();
-    virtual void d88(); virtual void d89();
-    virtual void d90(); virtual void d91(); virtual void d92(); virtual void d93();
-    virtual void d94(); virtual void d95(); virtual void d96(); virtual void d97();
-    virtual void d98(); virtual void d99();
-    virtual void d100(); virtual void d101(); virtual void d102(); virtual void d103();
-    virtual void d104(); virtual void d105(); virtual void d106(); virtual void d107();
-    virtual void d108(); virtual void d109();
-    virtual void d110(); virtual void d111(); virtual void d112(); virtual void d113();
-    virtual void d114(); virtual void d115(); virtual void d116(); virtual void d117();
-    virtual void d118(); virtual void d119();
-    virtual void d120(); virtual void d121(); virtual void d122(); virtual void d123();
-    virtual void d124(); virtual void d125(); virtual void d126(); virtual void d127();
-    virtual void d128(); virtual void d129();
-    virtual void add_action(void* a);      // slot 130 (vtable+0x208)
+class RGE_Action_Transport : public RGE_Action {
+public:
+    RGE_Action_Transport(void* obj, void* task, float x, float y, float z);
 };
 
-void* __cdecl operator new(unsigned int s) { return malloc(s); }
-
-// RGE_Combat_Object: flat layout (size 0x1C4)
-// Base RGE_Action_Object: actions at +0x184
-struct RGE_Combat_Object {
-    char gap_00[0x184];
-    void* actions;                         // +0x184: RGE_Action_List*
-    char gap_188[0x1C4 - 0x188];
+// RGE_Combat_Object: no virtual functions declared (no vtable pointer shift)
+class RGE_Combat_Object {
+public:
+    void* vtable_ptr;              // +0x00 - real vtable from hierarchy
+    uchar gap_04[0x34];            // +0x04 to +0x37
+    float world_x;                 // +0x38
+    float world_y;                 // +0x3C
+    float world_z;                 // +0x40
+    uchar gap_44[0x140];           // +0x44 to +0x183
+    RGE_Action_List* actions;      // +0x184
 
     int transport(float x, float y, float z, int w);
 };
 
-int RGE_Combat_Object::transport(float x, float y, float z, int w) {
-    void* lst = this->actions;
-    RGE_ActionThunk* a;
+// Virtual table call helper for vtable[0x208] (slot 0x82)
+struct VTable208 {
+    virtual void s00();
+    virtual void s04();
+    virtual void s08();
+    virtual void s0C();
+    virtual void s10();
+    virtual void s14();
+    virtual void s18();
+    virtual void s1C();
+    virtual void s20();
+    virtual void s24();
+    virtual void s28();
+    virtual void s2C();
+    virtual void s30();
+    virtual void s34();
+    virtual void s38();
+    virtual void s3C();
+    virtual void s40();
+    virtual void s44();
+    virtual void s48();
+    virtual void s4C();
+    virtual void s50();
+    virtual void s54();
+    virtual void s58();
+    virtual void s5C();
+    virtual void s60();
+    virtual void s64();
+    virtual void s68();
+    virtual void s6C();
+    virtual void s70();
+    virtual void s74();
+    virtual void s78();
+    virtual void s7C();
+    virtual void s80();
+    virtual void s84();
+    virtual void s88();
+    virtual void s8C();
+    virtual void s90();
+    virtual void s94();
+    virtual void s98();
+    virtual void s9C();
+    virtual void sA0();
+    virtual void sA4();
+    virtual void sA8();
+    virtual void sAC();
+    virtual void sB0();
+    virtual void sB4();
+    virtual void sB8();
+    virtual void sBC();
+    virtual void sC0();
+    virtual void sC4();
+    virtual void sC8();
+    virtual void sCC();
+    virtual void sD0();
+    virtual void sD4();
+    virtual void sD8();
+    virtual void sDC();
+    virtual void sE0();
+    virtual void sE4();
+    virtual void sE8();
+    virtual void sEC();
+    virtual void sF0();
+    virtual void sF4();
+    virtual void sF8();
+    virtual void sFC();
+    virtual void s100();
+    virtual void s104();
+    virtual void s108();
+    virtual void s10C();
+    virtual void s110();
+    virtual void s114();
+    virtual void s118();
+    virtual void s11C();
+    virtual void s120();
+    virtual void s124();
+    virtual void s128();
+    virtual void s12C();
+    virtual void s130();
+    virtual void s134();
+    virtual void s138();
+    virtual void s13C();
+    virtual void s140();
+    virtual void s144();
+    virtual void s148();
+    virtual void s14C();
+    virtual void s150();
+    virtual void s154();
+    virtual void s158();
+    virtual void s15C();
+    virtual void s160();
+    virtual void s164();
+    virtual void s168();
+    virtual void s16C();
+    virtual void s170();
+    virtual void s174();
+    virtual void s178();
+    virtual void s17C();
+    virtual void s180();
+    virtual void s184();
+    virtual void s188();
+    virtual void s18C();
+    virtual void s190();
+    virtual void s194();
+    virtual void s198();
+    virtual void s19C();
+    virtual void s1A0();
+    virtual void s1A4();
+    virtual void s1A8();
+    virtual void s1AC();
+    virtual void s1B0();
+    virtual void s1B4();
+    virtual void s1B8();
+    virtual void s1BC();
+    virtual void s1C0();
+    virtual void s1C4();
+    virtual void s1C8();
+    virtual void s1CC();
+    virtual void s1D0();
+    virtual void s1D4();
+    virtual void s1D8();
+    virtual void s1DC();
+    virtual void s1E0();
+    virtual void s1E4();
+    virtual void s1E8();
+    virtual void s1EC();
+    virtual void s1F0();
+    virtual void s1F4();
+    virtual void s1F8();
+    virtual void s1FC();
+    virtual void s200();
+    virtual void s204();
+    virtual void call208(void* arg);  // slot 0x82 (130), offset 0x208
+};
 
-    if (have_action(lst)) {
-        a = (RGE_ActionThunk*)get_action(lst);
-        if (a->get_type() == 0xC) {
-            a = (RGE_ActionThunk*)get_action(lst);
-            a->init(0, x, y, z);
+int RGE_Combat_Object::transport(float x, float y, float z, int w)
+{
+    int result;
+
+    if (actions->have_action() == 1) {
+        RGE_Action* action = (RGE_Action*)actions->get_action();
+        if (action->func18() == 0x0C) {
+            // Call get_action() AGAIN (original does this)
+            RGE_Action* action2 = (RGE_Action*)actions->get_action();
+            action2->func34(0, x, y, z);
             return 1;
         }
     }
 
-    RGE_Action_Transport* t = new RGE_Action_Transport(this, 0, x, y, z);
-    if (!t) return 0;
-
-    delete_list(lst);
-    ((RGE_CombatThunk*)this)->add_action(t);
-    t->init((int)this, x, y, z);
-    return 1;
+    RGE_Action_Transport* transport = new RGE_Action_Transport(this, 0, x, y, z);
+    result = 0;
+    if (transport != 0) {
+        actions->delete_list();
+        ((VTable208*)this)->call208(transport);
+        transport->func34(this, x, y, z);
+        result = 1;
+    }
+    return result;
 }
