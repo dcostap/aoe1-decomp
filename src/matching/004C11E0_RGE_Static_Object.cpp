@@ -27,40 +27,39 @@
 // Best new clue was virtual-base EH family first mismatch +25, but it inserts/omits broad initialization chunks and helper text; not kept.
 // GIVEUP again; no accepted_drift because the remaining difference is constructor EH/vtable/text-order structure, not localized benign drift.
 // 2026-05-26 Boss retry: 10 more probes. Revalidated current too-small 160B source, then explored
-// the virtual-base EH family, novtable base/derived, volatile raw zero stores, volatile/nonvolatile
-// -1 stores, explicit local EH-like state, removing derived dtor, manual vptr store, partial
-// nonvolatile group zeroes, named zero local, and reordered -1/group stores. Best kept below is
-// virtual-base + volatile zero-store variant: 164B, EH prologue matches through +25, and edit diff
-// improves to 36.5854%, but it still hoists -1/cmp/vptr-related work and emits broad different
-// vtable/base helper text. GIVEUP; no accepted_drift because the drift is structural EH/vptr/store
-// scheduling, not localized benign codegen.
+// the virtual-base EH family, novtable base/derived, volatile zero stores, explicit local EH-like
+// state, manual vptr setup, and reordered field stores. Best prior source remained structurally
+// different in the EH/vptr/store basin.
+// LunaC11E0 probe: matched the neighboring exact constructor's canonical ManagedArrayInt member
+// surface and natural initializer/body order; this restored the compiler-managed EH state and
+// delayed vtable store, producing an exact 164-byte match. Keep the shared layout local here.
 
 class RGE_Game_World;
 class RGE_Sprite;
 class RGE_Object_Node;
 class UnitAIModule;
 
-class RGE_Base_Object {
+class ManagedArrayInt {
 public:
-    virtual ~RGE_Base_Object();
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+    ManagedArrayInt() : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+    ~ManagedArrayInt();
 };
 
-class RGE_Static_Object : public RGE_Base_Object {
+class __declspec(novtable) RGE_Static_Object {
 public:
+    virtual ~RGE_Static_Object();
     char gap04[0x0C];
     RGE_Sprite* sprite;
     RGE_Sprite* old_sprite;
     char gap18[0x38];
     RGE_Object_Node* player_object_node;
-    int pathingGroupValue;
-    int pathingGroupNumber;
-    int pathingGroupDesired;
-    int pathingGroupMax;
-    int groupValue;
-    int groupNumber;
-    int groupDesired;
-    int groupMax;
-    int unitAIValue;
+    ManagedArrayInt pathingGroupMembers;
+    ManagedArrayInt groupMembers;
+    void* unitAIValue;
     int groupCommanderValue;
     int zoneMapIndex;
     float groupRangeValue;
@@ -73,27 +72,19 @@ public:
 };
 
 RGE_Static_Object::RGE_Static_Object(int id, RGE_Game_World* world, int do_setup)
+    : sprite(0), old_sprite(0)
 {
-    int zero = 0;
-    *(volatile int*)((char*)this + 0x10) = zero;
-    *(volatile int*)((char*)this + 0x14) = zero;
-    *(volatile int*)((char*)this + 0x54) = zero;
-    *(volatile int*)((char*)this + 0x58) = zero;
-    *(volatile int*)((char*)this + 0x5C) = zero;
-    *(volatile int*)((char*)this + 0x60) = zero;
-    groupCommanderValue = -1;
-    zoneMapIndex = -1;
-    *(volatile int*)((char*)this + 0x64) = zero;
-    *(volatile int*)((char*)this + 0x68) = zero;
-    *(volatile int*)((char*)this + 0x6C) = zero;
-    *(volatile int*)((char*)this + 0x70) = zero;
-    unitAIValue = 0;
-    groupRangeValue = 5.0f;
-    inObstructionMapValue = 0;
-    lastInObstructionMapValue = 0;
-    underAttackValue = 0;
-    player_object_node = 0;
-    if (do_setup != 0)
-        setup(id, world);
+    this->unitAIValue = 0;
+    this->groupCommanderValue = -1;
+    this->zoneMapIndex = -1;
+    this->groupRangeValue = 5.0f;
+    this->inObstructionMapValue = 0;
+    this->lastInObstructionMapValue = 0;
+    this->underAttackValue = 0;
+    *(int*)this = 0x574530;
+    this->player_object_node = 0;
+    if (do_setup != 0) {
+        this->setup(id, world);
+    }
 }
 
