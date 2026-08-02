@@ -43,6 +43,19 @@
 // Retry 2026-05-24 assigned pass: 18 further probes. Derived virtual/nonvirtual dtor declarations failed or shrank to 112B, base dummy slots stayed baseline, ManagedArray ctor/dtor/virtual-dtor surfaces either baseline or wrong EH family (best still first mismatch 0), object initializer and local object pointer no change, param3 local/zero-first/manual vptr/zero-loop did not recover EH, flags /Ob0 /Oa /Og /Ow /Zp1 /vmg no change, and <new.h>/<stdlib.h>/<string.h>/hardcoded string contexts stayed baseline or worse. Still no accepted_drift: broad byte-0 EH/function-boundary mismatch, not localized equivalent drift.
 // Retry 2026-05-26 Boss pass: 18 more probes on VA 0040CDF0 only. Member ctor/dtor/init-list variants could force EH, but only the wrong push-first family (best 60.1770% positional, first mismatch 0) with extra saved regs/member calls; member ctor-only was 66.3717%, dtor-only 61.9469%, inline ctor collapsed to baseline. Derived virtual dtor and aggregate zero-init shrank to 112B; player init-list, const char base ctor, operator delete declaration, and inline cleanup local stayed baseline. Flag probes /O1, /Oy-, /Gm, /GR, /Za, /Zp4, /vd0, /vd1 did not recover FS-first EH (or shrank/worsened). GIVEUP: not accepted_drift quality; mismatch remains broad byte-0 EH prologue/frame/function-boundary topology, not localized equivalent drift.
 
+// Retry 2026-08-02 LunaM40CDF0: claimed after dossier/donor/ABI review. Fresh /GX baseline
+// rebuilt only 78/113 bytes (93.8053% positional, 63 edit bytes, first mismatch 0), with
+// the single direct AIModule call aligned and the expected +0xF0..+0x100 stores present;
+// current output is the no-EH basin, not the stale historical 113-byte artifact. Tested
+// binary-proven absolute string/vtable addresses (context; 107 positional / 60 edit), a
+// comma-expression store-order probe (duplicate codegen), compiler-owned vptr with the
+// absolute string (107 positional / 60 edit), and a real player member initializer
+// (duplicate codegen). Rolled all speculative probes back to the literal/automatic-vptr
+// baseline. The original still begins FS-first (mov eax,[fs:0], push -1, handler, old FS)
+// while VC5 either emits no EH or the already-documented push-first saved-this EH family.
+// This is a real pinned-toolchain EH/function-boundary blocker; stop before spending the
+// remaining hypothesis budget on repetitions. Leave in scratch; not accepted_drift.
+
 struct ManagedArray_Int {
     int* value;
     int numberValue;
