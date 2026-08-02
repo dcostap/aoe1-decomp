@@ -18,6 +18,12 @@
 // 2026-05-21 Boss retry: 10 more honest probes. Tried formal pointer/function-scope locals, volatile formal, explicit zeroes, delaying dwSize into first argument, split virtual-function local, re-reading DP global in function/first arg expressions. Best kept below improves to 33.3333% positional / exact size/tail, but VC5 still schedules short-name LEA/store before formal-name and writes dwSize too early. Leaving in scratch; not accepted_drift because mismatches are non-local call setup/order differences.
 // 2026-05-24 Boss retry: 10 more probes focused on DPNAME field/order shaping. Tried moving lpszLong assignment before/into call args, register formal pointer, comma expressions in argument 2/4, swapped local DPNAME field order with compensating source assignments, and volatile dwSize. Best kept below improves first mismatch to offset 41, 30.4762% positional / 29.5238% edit: bytes through the formal-name store now match and memory contents are correct, but VC5 still emits the short-name LEA before the stack-param LEA/push, stores short name and dwSize too early, and loads vtable/player in the wrong order. Not accepted_drift: remaining mismatch is non-local call setup scheduling, not a tiny benign register/encoding drift.
 // 2026-05-26 Boss retry: 10 more probes. Tried moving dwSize assignment into the hidden/first argument, swapping player/load-before-shortName with a player local, volatile shortName store, non-register/register formal/dp/p locals, no p local/direct &dpn, and a padded __stdcall virtual DP interface call. None improved on the kept 30.4762% baseline; several regressed first mismatch to offset 22 or kept the same schedule. GIVEUP remains: call argument side-effect scheduling, not acceptable localized drift.
+// 2026-08-02 LunaM426D50 session: fresh baseline rebuilt at 105B/0x10 frame/2 calls, 32 positional bytes (30.4762%), first mismatch +0x29.
+// - natural typed stdcall DPNAME surface regressed to 107B/66.3551%; reverted.
+// - natural DPNAME with short-name/dwSize comma side effects reached 105B/33.3333%, but put the formal-name LEA in the wrong early field band; reverted.
+// - separate field assignment, volatile/register/reference pointer aliases, and moving dwSize to arg1 either duplicated the 30.4762% codegen or regressed frame/order; reverted.
+// - corrected ShowReturn declaration to the original char* symbol surface; no intended byte-shape change.
+// PAUSE: best remains the pre-existing 105B/30.4762% source; ordered calls, frame, size, and tail match, while VC5 still swaps the arg-side-effect/pointer-LEA schedule at +0x29. Remaining drift is non-local call setup scheduling, not accepted_drift.
 
 #include <string.h>
 
@@ -43,7 +49,7 @@ public:
 
 class RGE_Comm_Error {
 public:
-    void ShowReturn(long result, const char* msg);
+    void ShowReturn(long result, char* msg);
 };
 
 long TCommunications_Handler::SendPlayerName()
@@ -57,6 +63,6 @@ long TCommunications_Handler::SendPlayerName()
     dp = *(void**)0x62C5EC;
     p = &dpnSetName;
     long result = ((long (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)dp)[0x78 / 4])(dp, (dpnSetName.lpszShortName=(unsigned short*)(void*)this->MyFormalName, *(void**)0x62CF04), (*(volatile unsigned long*)&p->dwSize=16,p), (dpnSetName.lpszLongName = formal, 2));
-    this->Err->ShowReturn(result, (const char*)0x580EB4);
+    this->Err->ShowReturn(result, (char*)0x580EB4);
     return result;
 }
