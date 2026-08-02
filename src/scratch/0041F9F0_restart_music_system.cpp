@@ -26,12 +26,25 @@
 // recover original `mov eax,ecx; mov ecx,[eax+64h]` null gate followed by delayed
 // `push edi; push esi; push ebx`. No accepted_drift: best source is short/truncated, exact-size
 // volatile variants from earlier are broad mismatches.
+// Retry 2026-08-02 Luna-41F9F0: corrected the local music field layout and TMusic call
+// prototypes from repo ground truth; no emitted-byte change.
+// An inline post-null helper was a productive source-context probe: it reproduced the
+// delayed callee-save prologue and exact early-null block, improving the best build to
+// 144 aligned bytes / 149-byte boundary. A narrow volatile read on the first track_to
+// comparison preserved the original direct `cmp [eax+78h]` and later reload, giving 138
+// equal bytes, 96.61% exact-block coverage, and only three resync spans.
+// The remaining structural gap is binary-proven at basegame.cpp:2882: original has the
+// redundant `test edx,edx; je file; mov esi,[eax+78h]; test esi,esi; je file`, while VC5
+// removes the first two instructions after every natural/direct-member spelling tried.
+// Volatile-addressing the local creates a stack home and a broad 164-byte mismatch;
+// duplicate predicates, nested positive flow, and repeated direct members are codegen
+// duplicates. Left in scratch pending a source-context lead that preserves that block.
 
 class TMusic_System {
 public:
-    void play_track(int track_from, int pos, int loop);
-    void play_tracks(int track_from, int track_to, int pos, int cur_track, int loop);
-    void play_file(char* filename, int pos, int loop);
+    int play_track(int track_from, int loop, unsigned long pos);
+    int play_tracks(int track_from, int track_to, int loop, int cur_track, unsigned long pos);
+    int play_file(char* filename, int loop, unsigned long pos);
 };
 
 class RGE_Base_Game {
@@ -39,42 +52,46 @@ public:
     // vtable at +0x00 (implicit from virtual function)
     char gap_04[0x60];
     TMusic_System* music_system;   // +0x64
-    char gap_68[0x0C];
+    short sound_num;             // +0x68
+    char gap_6A[2];
+    void* sounds;                // +0x6C
+    unsigned char save_music_type; // +0x70
+    char gap_71[3];
     int save_music_track_from;      // +0x74
     int save_music_track_to;        // +0x78
     int save_music_cur_track;       // +0x7C
-    char save_music_file[4];        // +0x80
-    char gap_84[0x100];
-    int save_music_pos;             // +0x184
-    int save_music_loop;            // +0x188
+    char save_music_file[260];      // +0x80
+    int save_music_loop;             // +0x184
+    unsigned long save_music_pos;   // +0x188
 
     virtual int restart_music_system();
 };
+
+static inline int restart_music_system_body(RGE_Base_Game* self)
+{
+    if (self->save_music_track_from) {
+        if (self->save_music_track_from == *(volatile int*)&self->save_music_track_to) {
+            self->music_system->play_track(self->save_music_track_from, self->save_music_loop, self->save_music_pos);
+            return 1;
+        }
+
+        if (self->save_music_track_from != 0 && self->save_music_track_to) {
+            self->music_system->play_tracks(self->save_music_track_from, self->save_music_track_to,
+                self->save_music_loop, self->save_music_cur_track, self->save_music_pos);
+            return 1;
+        }
+    }
+
+    if (self->save_music_file[0]) {
+        self->music_system->play_file(self->save_music_file, self->save_music_loop, self->save_music_pos);
+    }
+
+    return 1;
+}
 
 int RGE_Base_Game::restart_music_system()
 {
     if (!this->music_system)
         return 1;
-
-    int track_from = this->save_music_track_from;
-    if (!track_from)
-        goto check_file;
-
-    if (track_from == this->save_music_track_to) {
-        this->music_system->play_track(track_from, this->save_music_pos, this->save_music_loop);
-        return 1;
-    }
-
-    if (this->save_music_track_to) {
-        this->music_system->play_tracks(track_from, this->save_music_track_to,
-            this->save_music_pos, this->save_music_cur_track, this->save_music_loop);
-        return 1;
-    }
-
-check_file:
-    if (this->save_music_file[0]) {
-        this->music_system->play_file(this->save_music_file, this->save_music_pos, this->save_music_loop);
-    }
-
-    return 1;
+    return restart_music_system_body(this);
 }
