@@ -284,7 +284,9 @@ arms around the guarded body. For example, after an allocation and `short i = 0`
 `cmp count,i; mov field,ptr; jle skip`, because the common assignment is hoisted
 between the compare and branch. A single assignment before/after the `if` may schedule
 as `mov; cmp; jle` or `cmp; jle; mov` instead. Use only when the duplicated assignment
-is genuinely equivalent on both paths.
+is genuinely equivalent on both paths. The same shape can preserve an x87
+`fcom; fstp; fnstsw` sequence: a single member assignment may instead lower as
+`fst; fcomp`, changing both the FPU pop order and the branch hunk.
 
 ## Lesson: `je` dispatch to handlers after the epilogue signals a switch
 
