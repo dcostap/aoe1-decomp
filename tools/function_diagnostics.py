@@ -109,6 +109,11 @@ def decode_instruction_ranges(
 
 def clean_symbol_name(name: str) -> str:
     value = name.strip()
+    lowered = value.lower()
+    if value.startswith("??_L@") or "eh_vector_constructor_iterator" in lowered:
+        return "eh_vector_constructor_iterator"
+    if value.startswith("??_M@") or "eh_vector_destructor_iterator" in lowered:
+        return "eh_vector_destructor_iterator"
     if value.startswith("__imp_"):
         value = value[6:]
     if value.startswith("??2@") or value.startswith("??_U@"):

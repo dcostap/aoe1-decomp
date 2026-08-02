@@ -39,14 +39,12 @@ public:
     RGE_Communications_Addresses(TCommunications_Handler* handler);
 };
 
-int __stdcall _WSAStartup(int version, void* data);
-
 RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* handler)
 {
     this->comm = handler;
     this->EraseInformation();
 
-    int wsResult = _WSAStartup(0x101, &this->wsaData);
+    int wsResult = WSAStartup(0x101, (WSADATA*)&this->wsaData);
 
     this->pIPAD = new IPAD[8];
 

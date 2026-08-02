@@ -61,6 +61,22 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(clean_symbol_name("??0RGE_Action_List@@QAE@XZ"), "rge_action_list")
         self.assertEqual(clean_symbol_name("~RGE_Action_List"), "rge_action_list")
         self.assertEqual(clean_symbol_name("?type@TacticalAIGroup@@QAEHXZ"), "type")
+        self.assertEqual(
+            clean_symbol_name("??_L@YGXPAXIHP6EX0@Z1@Z"),
+            "eh_vector_constructor_iterator",
+        )
+        self.assertEqual(
+            clean_symbol_name("`eh_vector_constructor_iterator'"),
+            "eh_vector_constructor_iterator",
+        )
+        self.assertEqual(
+            clean_symbol_name("??_M@YGXPAXIHP6EX0@Z@Z"),
+            "eh_vector_destructor_iterator",
+        )
+        self.assertEqual(
+            clean_symbol_name("?eh_vector_destructor_iterator@@YGXPAXHH0@Z"),
+            "eh_vector_destructor_iterator",
+        )
 
     def test_relocation_is_not_masked_across_different_instruction_shapes(self) -> None:
         original = bytes.fromhex("B8 11 22 33 44 C3")  # mov eax,imm32
