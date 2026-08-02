@@ -27,11 +27,36 @@
 // variants collapsed to the same 177B FPU basin. Restored the best natural maxf source.
 // GIVEUP: exact match remains blocked by broad x87 scheduling/stack topology from
 // +0x48 through clamp/payment setup; calls, cleanup, and return structure are aligned.
+// Retry 2026-08-02 Luna4CC4C0 continuation: baseline after dossier/donor/ABI review
+// remains 177B, 103 positional diff bytes, exact 3-call set/CFG, first mismatch +0x48.
+// Tested deferred maxf (189B), volatile hp rereads (same size but worse CFG), typed
+// TRIBE master fields, declaration/init order, virtual base surface, amount-home alias,
+// and direct rate conversion; typed/declaration/virtual/direct-rate forms collapsed
+// to the same baseline basin. A five-case focused FPU variant lab found no exact case:
+// three 177B forms shared the baseline group, max-left was 189B, direct max cast 185B.
+// Restored the pinned clean natural source; remaining gap is broad x87 scheduling and
+// stack-slot placement, not calls or control flow. GIVEUP after 10 meaningful probes.
+// Main-agent source audit retained the codegen-neutral typed master/player field
+// surface from that pass instead of the older raw offset accesses; validation stayed
+// in the same 177-byte FPU basin.
+
+struct TRIBE_Player;
+
+struct TRIBE_Master_Combat_Object {
+    char gap_00[0x10];
+    short cost_type;          // +0x10
+    char gap_12[2];
+    short object_type;        // +0x14
+    char gap_16[0x10];
+    short max_hit_points;     // +0x26
+    char gap_28[0x132];
+    short heal_rate;          // +0x15A
+};
 
 struct RGE_Static_Object {
     char gap_00[8];
-    void* master_obj;       // +0x08
-    void* player;           // +0x0C
+    TRIBE_Master_Combat_Object* master_obj; // +0x08
+    TRIBE_Player* player;                    // +0x0C
     char gap_10[0x20];
     float hit_points;       // +0x30
 
@@ -48,21 +73,21 @@ struct TRIBE_Combat_Object : RGE_Static_Object {
 
 unsigned char TRIBE_Combat_Object::heal(float amount)
 {
-    void* master = this->master_obj;
-    short type = *(short*)((char*)master + 0x14);
+    TRIBE_Master_Combat_Object* master = this->master_obj;
+    short type = master->object_type;
     if (type != 2 && type != 0x14 && type != 0x15 && type != 0x16) {
         return RGE_Static_Object::heal(amount);
     }
 
-    long max_hp = *(short*)((char*)master + 0x26);
-    long heal_rate = *(short*)((char*)master + 0x15A);
+    long max_hp = master->max_hit_points;
+    long heal_rate = master->heal_rate;
     float maxf = (float)max_hp;
     amount = amount * maxf / heal_rate;
     if (amount + this->hit_points > maxf) {
         amount = maxf - this->hit_points;
     }
 
-    if (((TRIBE_Player*)this->player)->pay_obj_cost(*(short*)((char*)master + 0x10), amount / (float)(max_hp * 2), 1)) {
+    if (this->player->pay_obj_cost(master->cost_type, amount / (float)(max_hp * 2), 1)) {
         return RGE_Static_Object::heal(amount);
     }
     return 2;
