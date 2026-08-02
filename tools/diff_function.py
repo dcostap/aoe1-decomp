@@ -553,7 +553,10 @@ def _workflow_guidance(
 
     lines: list[str] = []
     if int(metrics["diff_bytes"]) == 0 and not known_wrong_calls and not size_delta:
-        return ["Workflow stage: COMPLETE"]
+        return [
+            "Workflow stage: COMPLETE",
+            "Source gate: exact emitted code still requires a plausibility and policy audit before promotion.",
+        ]
     if known_wrong_calls and shape_percent >= 95.0 and not size_delta:
         return [
             "Workflow stage: CALL TARGET INTEGRITY",
@@ -594,7 +597,10 @@ def _workflow_guidance(
         lines.append("Next: work from the first paired instruction hunk; keep already aligned regions stable.")
     elif int(metrics["diff_bytes"]) > 0:
         lines.append("Workflow stage: EXACT CODEGEN")
-        lines.append("Next: use the first localized hunk for source-shape/register/branch probes or a focused variant lab.")
+        lines.append(
+            "Next: keep the clean-source reconstruction authoritative; use the first localized hunk for "
+            "diagnostic source-shape probes or a focused variant lab. Assembly-closer is not source-better."
+        )
     return lines
 
 
@@ -970,14 +976,14 @@ def main() -> None:
     ]
     if delta is not None:
         summary.append(
-            "This iteration: "
+            "Emitted-code movement this iteration: "
             f"changed {delta['changed_bytes']} byte(s) in {delta['changed_spans']} span(s), "
-            f"strictly improved {delta['strict_improvements']}, regressed {delta['strict_regressions']}, "
+            f"assembly-closer {delta['strict_improvements']}, assembly-farther {delta['strict_regressions']}, "
             f"neutral {delta['neutral_changes']}, size {delta['size_delta']:+d}"
         )
         improved_ranges, regressed_ranges = _top_changed_ranges(delta)
-        summary.append(_format_changed_ranges("Top improved ranges", improved_ranges))
-        summary.append(_format_changed_ranges("Top regressed ranges", regressed_ranges))
+        summary.append(_format_changed_ranges("Top assembly-closer ranges", improved_ranges))
+        summary.append(_format_changed_ranges("Top assembly-farther ranges", regressed_ranges))
 
     summary.append(f"Result: {'MATCH' if exact else 'MISMATCH'}")
     if mismatch is not None:

@@ -217,6 +217,10 @@ def main() -> None:
 
     if args.no_history and (args.checkpoint or args.compare_checkpoint):
         raise SystemExit("--no-history cannot be combined with --checkpoint or --compare-checkpoint")
+    if args.checkpoint == "clean-source":
+        raise SystemExit(
+            "clean-source is reserved for target_session.py pin-clean so the source audit and session metadata stay together"
+        )
 
     if args.apply_prune and not args.prune_history:
         raise SystemExit("--apply-prune requires --prune-history")
@@ -325,7 +329,7 @@ def main() -> None:
         label_text = "" if not labels else f" labels={labels}"
         print(
             f"History checkpoint: {checkpoint['id']}"
-            f"{' [Pareto]' if checkpoint.get('pareto') else ''}{label_text}"
+            f"{' [Codegen frontier]' if checkpoint.get('pareto') else ''}{label_text}"
         )
         if args.compare_checkpoint:
             print("\n".join(format_checkpoint_comparison(record, checkpoint, args.compare_checkpoint)))

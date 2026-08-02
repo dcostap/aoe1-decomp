@@ -209,7 +209,7 @@ def _copy_checkpoint_artifact(source: Path, run_dir: Path, relative: Path) -> No
 
 
 def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None) -> dict:
-    """Persist the current source, generated artifacts, metrics, and Pareto state.
+    """Persist current source, artifacts, metrics, and codegen-frontier state.
 
     Identical source/flags/rebuilt-byte runs are deduplicated.  Labels may be
     moved to an existing run without creating another artifact copy.
@@ -289,6 +289,12 @@ def record_checkpoint(record: dict[str, str], label: str | None = None) -> dict:
     slug = function_slug(record)
     with _history_lock(slug):
         return _record_checkpoint_unlocked(record, label)
+
+
+def checkpoint_info(record: dict[str, str], selector: str) -> dict:
+    """Return one checkpoint row without exposing the mutable history index."""
+    index = _load_index(function_slug(record))
+    return dict(_resolve_run(index, selector))
 
 
 def _resolve_run(index: dict, selector: str) -> dict:
@@ -535,7 +541,10 @@ def format_history(record: dict[str, str], limit: int = 20) -> list[str]:
     label_by_id: dict[str, list[str]] = {}
     for label, run_id in (index.get("labels") or {}).items():
         label_by_id.setdefault(str(run_id), []).append(str(label))
-    lines = [f"History for {slug}: {len(runs)} checkpoint(s)", "P  timestamp             id prefix          diff      shape  calls  blocks size  labels"]
+    lines = [
+        f"History for {slug}: {len(runs)} checkpoint(s)",
+        "F  timestamp             id prefix          diff      shape  calls  blocks size  labels",
+    ]
     for run in reversed(runs[-limit:]):
         summary = run.get("summary") or {}
         labels = ",".join(sorted(label_by_id.get(str(run["id"]), []))) or "-"
@@ -548,7 +557,9 @@ def format_history(record: dict[str, str], limit: int = 20) -> list[str]:
             f"{float(summary.get('block_coverage_percent') or 0):6.1f} "
             f"{int(summary.get('size_delta') or 0):+5d}  {labels}"
         )
-    lines.append("* = current Pareto frontier (no recorded checkpoint is better on every tracked structural objective)")
+    lines.append(
+        "* = codegen frontier (no recorded checkpoint is closer on every tracked emitted-code objective)"
+    )
     lines.append("Selectors: @latest, @best-call-prefix, @best-shape, @best-blocks, @best-positional, @closest-size")
     return lines
 

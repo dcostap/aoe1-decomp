@@ -21,9 +21,11 @@ from common import (
     preferred_flags_rsp_path,
     preferred_source_path,
 )
+from function_history import checkpoint_info, record_checkpoint, restore_checkpoint
 
 
-SESSION_VERSION = 2
+SESSION_VERSION = 3
+CLEAN_CHECKPOINT_LABEL = "clean-source"
 OWNER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
 PROBE_KINDS = (
     "baseline",
@@ -108,6 +110,7 @@ def _load_session(record: dict[str, str]) -> dict | None:
 
 
 def _write_session(record: dict[str, str], payload: dict) -> None:
+    payload["version"] = SESSION_VERSION
     path = _session_path(record)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".json.tmp")
@@ -277,7 +280,7 @@ def classify_next_stage(metrics: dict[str, object]) -> str:
     if metrics.get("artifact_fresh") is False:
         return "Recorded check is stale: rebuild before interpreting metrics or spending another hypothesis."
     if metrics.get("result") == "MATCH":
-        return "Exact candidate: review source/flags and validate locally before promotion."
+        return "Exact candidate: audit source plausibility, review flags, and validate locally before promotion."
     stage = str(metrics.get("workflow_stage") or "").upper()
     if stage == "CALL TARGET INTEGRITY":
         return "Call-target integrity: fix the declaration or symbol binding without reshaping aligned code."
@@ -299,7 +302,10 @@ def classify_next_stage(metrics: dict[str, object]) -> str:
     if stage == "BLOCK SHAPE AND LIVENESS":
         return "Block shape/liveness: work from the first paired hunk while preserving exact blocks."
     if stage == "EXACT CODEGEN":
-        return "Focused codegen: preserve aligned regions and use a localized range or deliberate variant lab."
+        return (
+            "Focused emitted-code work: keep the clean-source baseline authoritative while using a localized "
+            "range or deliberate variant lab. Closer assembly does not by itself improve the source model."
+        )
     if int(metrics.get("wrong_direct_targets") or 0) or int(metrics.get("call_target_count_gap") or 0):
         return "Behavior/ABI first: resolve missing, extra, or wrong direct calls before source-shape tuning."
     original_frame = metrics.get("original_frame")
@@ -309,7 +315,10 @@ def classify_next_stage(metrics: dict[str, object]) -> str:
     shape = metrics.get("shape_percent")
     if shape is None or float(shape) < 75.0:
         return "Structural reconstruction: fix the first block/control-flow divergence; do not run broad variant sweeps."
-    return "Focused codegen: preserve aligned regions and use a localized range or deliberate variant lab."
+    return (
+        "Focused emitted-code work: preserve aligned regions and the clean-source baseline while using a "
+        "localized range or deliberate variant lab."
+    )
 
 
 def _new_session(
@@ -350,6 +359,7 @@ def _new_session(
         "probes": probes,
         "events": events,
         "last_metric_summary": current_metric_summary(record),
+        "clean_baseline": dict((prior or {}).get("clean_baseline") or {}),
     }
 
 
@@ -524,6 +534,89 @@ def record_probe(
     return session
 
 
+def clean_baseline_is_current(record: dict[str, str], session: dict) -> bool:
+    baseline = session.get("clean_baseline") or {}
+    return bool(baseline) and baseline.get("inputs") == current_input_snapshot(record)
+
+
+def require_clean_baseline(record: dict[str, str], owner: str) -> dict:
+    """Require an active owner and one explicitly audited clean-source checkpoint."""
+    with _sessions_lock():
+        session = _require_active_owner(_load_session(record), owner, record)
+        baseline = dict(session.get("clean_baseline") or {})
+    if not baseline:
+        raise RuntimeError(
+            "no clean-source baseline is pinned; compile the natural reconstruction with "
+            "--kind baseline, or run target_session.py pin-clean after a current check"
+        )
+    checkpoint_id = str(baseline.get("checkpoint_id") or "")
+    try:
+        checkpoint_info(record, checkpoint_id)
+    except (KeyError, OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(
+            f"pinned clean-source checkpoint is unavailable ({checkpoint_id or 'missing id'})"
+        ) from error
+    return baseline
+
+
+def pin_clean_baseline(record: dict[str, str], owner: str, note: str) -> dict:
+    """Designate the current checked source as the canonical clean reconstruction."""
+    checked_note = note.strip()
+    if not checked_note:
+        raise ValueError("clean-source note must describe canonical ownership and the plausible source family")
+    with _sessions_lock():
+        _require_active_owner(_load_session(record), owner, record)
+    metrics = current_metric_summary(record)
+    if metrics.get("artifact_fresh") is not True:
+        reason = metrics.get("freshness_reason") or "checker artifacts are stale"
+        raise RuntimeError(f"cannot pin clean source without a current completed check ({reason})")
+    checkpoint = record_checkpoint(record, CLEAN_CHECKPOINT_LABEL)
+    inputs = current_input_snapshot(record)
+    baseline = {
+        "checkpoint_id": checkpoint.get("id"),
+        "label": CLEAN_CHECKPOINT_LABEL,
+        "pinned_at": _iso(_utc_now()),
+        "owner": owner,
+        "note": checked_note,
+        "inputs": inputs,
+        "metrics": metrics,
+    }
+    with _sessions_lock():
+        session = _require_active_owner(_load_session(record), owner, record)
+        session["clean_baseline"] = baseline
+        session["updated_at"] = _iso(_utc_now())
+        session.setdefault("events", []).append(
+            {
+                "at": baseline["pinned_at"],
+                "kind": "pin-clean",
+                "owner": owner,
+                "checkpoint": checkpoint.get("id"),
+                "note": checked_note,
+            }
+        )
+        _write_session(record, session)
+    return session
+
+
+def restore_clean_baseline(record: dict[str, str], owner: str) -> dict:
+    """Restore the pinned clean source into the one living compiler-facing file."""
+    baseline = require_clean_baseline(record, owner)
+    restored = restore_checkpoint(record, str(baseline["checkpoint_id"]))
+    return record_probe(
+        record,
+        owner,
+        "restore",
+        f"restored pinned clean source {str(baseline['checkpoint_id'])[:18]}",
+        str(baseline["checkpoint_id"]),
+        evidence={
+            "kind": "clean_restore",
+            "restored_source_path": restored.get("restored_source_path"),
+            "restore_backup": restored.get("restore_backup"),
+        },
+        detect_output_duplicate=False,
+    )
+
+
 def run_checked_probe(
     record: dict[str, str],
     owner: str,
@@ -537,6 +630,7 @@ def run_checked_probe(
         used = meaningful_probe_count(session)
         budget = int(session.get("meaningful_probe_budget") or 0)
         next_number = len(session.get("probes") or []) + 1
+        clean_baseline = dict(session.get("clean_baseline") or {})
     if budget and used >= budget and kind not in NON_MEANINGFUL_PROBE_KINDS:
         print(
             f"WARNING: meaningful probe budget is exhausted ({used}/{budget}); "
@@ -544,7 +638,14 @@ def run_checked_probe(
             file=sys.stderr,
         )
     label = checkpoint.strip() or f"probe-{next_number:03d}-{kind}"
-    forbidden = {"--va", "--checkpoint", "--no-history", "--history", "--restore-checkpoint"}
+    forbidden = {
+        "--va",
+        "--checkpoint",
+        "--compare-checkpoint",
+        "--no-history",
+        "--history",
+        "--restore-checkpoint",
+    }
     for argument in checker_args:
         option = argument.split("=", 1)[0]
         if option in forbidden:
@@ -556,12 +657,19 @@ def run_checked_probe(
         record["va"],
         "--checkpoint",
         label,
+        *(
+            ["--compare-checkpoint", CLEAN_CHECKPOINT_LABEL]
+            if clean_baseline and kind != "baseline"
+            else []
+        ),
         *checker_args,
     ]
     result = subprocess.run(command, cwd=REPO_ROOT)
     if result.returncode not in {0, 1}:
         raise RuntimeError(f"check_function failed with exit code {result.returncode}; probe was not recorded")
     session = record_probe(record, owner, kind, note, label)
+    if kind == "baseline":
+        session = pin_clean_baseline(record, owner, note)
     return result.returncode, session
 
 
@@ -595,6 +703,19 @@ def require_final_validation(record: dict[str, str], session: dict) -> None:
         raise RuntimeError(
             f"cannot pause because the final validation is not current ({reason}); run: {command}"
         )
+    if metrics.get("result") != "MATCH":
+        baseline = session.get("clean_baseline") or {}
+        if not baseline:
+            raise RuntimeError(
+                "cannot pause an unresolved checked target without a pinned clean-source baseline; "
+                "audit the current natural reconstruction and run target_session.py pin-clean"
+            )
+        if not clean_baseline_is_current(record, session):
+            raise RuntimeError(
+                "cannot pause while the living source differs from the pinned clean reconstruction. "
+                "Run restore-clean, update the attempt log, validate, then pin-clean; or, if the current "
+                "source is now the defensible natural reconstruction, explicitly pin-clean it after validation"
+            )
 
 
 def change_state(record: dict[str, str], owner: str, state: str, reason: str) -> dict:
@@ -602,6 +723,16 @@ def change_state(record: dict[str, str], owner: str, state: str, reason: str) ->
         session = _require_owner(_load_session(record), owner, record)
         if state == "pause":
             require_final_validation(record, session)
+        elif state == "release":
+            claim_probes = list(session.get("probes") or [])[int(session.get("probe_start_index") or 0) :]
+            metrics = current_metric_summary(record)
+            if claim_probes and not (
+                metrics.get("result") == "MATCH" and metrics.get("artifact_fresh") is True
+            ):
+                raise RuntimeError(
+                    "release is only for an exact current result or a claim with no recorded work; "
+                    "finalize unresolved work with validation, pin-clean, and pause"
+                )
         now = _utc_now()
         session["state"] = state
         session["updated_at"] = _iso(now)
@@ -638,19 +769,33 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
                 f"remaining={remaining}; target total={total_probes}; recorded checks={total_checks}",
             ]
         )
+        baseline = session.get("clean_baseline") or {}
+        if baseline:
+            baseline_metrics = baseline.get("metrics") or {}
+            baseline_state = "CURRENT" if clean_baseline_is_current(record, session) else "saved"
+            lines.append(
+                f"Clean source [{baseline_state}]: {str(baseline.get('checkpoint_id') or '')[:18]} "
+                f"diff={baseline_metrics.get('diff_bytes')} note={baseline.get('note') or '-'}"
+            )
+        else:
+            lines.append("Clean source: <not pinned>")
         if session.get("probes"):
             last_probe = session["probes"][-1]
             delta = last_probe.get("metric_delta") or {}
             changed = []
             for key, row in delta.items():
                 if row.get("delta"):
-                    changed.append(f"{key}={row['delta']:+g}({row.get('direction', 'changed')})")
+                    direction = {
+                        "improved": "assembly-closer",
+                        "regressed": "assembly-farther",
+                    }.get(str(row.get("direction")), str(row.get("direction") or "changed"))
+                    changed.append(f"{key}={row['delta']:+g}({direction})")
             lines.append(
                 f"Last probe: #{last_probe.get('number')} {last_probe.get('kind')} "
                 f"checkpoint={last_probe.get('checkpoint') or '-'}"
             )
             if changed:
-                lines.append("Last metric delta: " + ", ".join(changed[:8]))
+                lines.append("Last emitted-code metric delta: " + ", ".join(changed[:8]))
             if last_probe.get("same_emitted_code_as_probe") is not None:
                 lines.append(
                     "Codegen duplicate: emitted code is unchanged from probe "
@@ -698,6 +843,16 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
             lines.append(f"Freshness: {metrics.get('freshness_reason')}")
     else:
         lines.append("Latest check: <none>")
+    try:
+        codegen_best = checkpoint_info(record, "@best-positional")
+    except (KeyError, OSError, json.JSONDecodeError):
+        codegen_best = {}
+    if codegen_best:
+        best_summary = codegen_best.get("summary") or {}
+        lines.append(
+            f"Codegen best (diagnostic): {str(codegen_best.get('id') or '')[:18]} "
+            f"diff={best_summary.get('diff_bytes')} shape={float(best_summary.get('shape_percent') or 0):.2f}%"
+        )
     lines.extend(
         [
             f"Recorded checker checkpoints: {_history_count(record)}",
@@ -719,6 +874,10 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
 def session_status_payload(record: dict[str, str], session: dict | None) -> dict[str, object]:
     source = preferred_source_path(record)
     metrics = current_metric_summary(record)
+    try:
+        codegen_best = checkpoint_info(record, "@best-positional")
+    except (KeyError, OSError, json.JSONDecodeError):
+        codegen_best = {}
     return {
         "target": {
             "va": record["va"],
@@ -730,6 +889,8 @@ def session_status_payload(record: dict[str, str], session: dict | None) -> dict
         },
         "session": session,
         "current_metrics": metrics,
+        "clean_baseline": dict((session or {}).get("clean_baseline") or {}),
+        "codegen_best": codegen_best,
         "checkpoint_count": _history_count(record),
         "recommendation": classify_next_stage(metrics),
     }
@@ -762,7 +923,7 @@ def format_session_list(rows: list[dict], active_only: bool = False) -> str:
         rows = [row for row in rows if _lease_active(row)]
     if not rows:
         return "No target sessions."
-    lines = ["VA       owner                state     probes  lease/update", "-" * 78]
+    lines = ["VA       owner                state     probes  clean  lease/update", "-" * 86]
     for row in rows:
         state = "active" if _lease_active(row) else str(row.get("state", ""))
         probes = meaningful_probe_count(row)
@@ -770,14 +931,17 @@ def format_session_list(rows: list[dict], active_only: bool = False) -> str:
         when = row.get("lease_expires_at") if state == "active" else row.get("updated_at")
         lines.append(
             f"{row.get('va', ''):<8} {str(row.get('owner', '')):<20} {state:<9} "
-            f"{probes:>3}/{str(budget):<3} {when or ''}"
+            f"{probes:>3}/{str(budget):<3} {('yes' if row.get('clean_baseline') else 'no'):<6} {when or ''}"
         )
     return "\n".join(lines)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Advisory target leases and meaningful-probe bookkeeping for parallel matching work."
+        description=(
+            "Advisory target leases, clean-source checkpoints, and meaningful-probe bookkeeping "
+            "for parallel matching work."
+        )
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -808,6 +972,25 @@ def parse_args() -> argparse.Namespace:
         nargs=argparse.REMAINDER,
         help="Additional check_function arguments after --, for example -- --detail concise.",
     )
+
+    pin_clean = subparsers.add_parser(
+        "pin-clean",
+        help="Designate the current checked source as the canonical clean reconstruction.",
+    )
+    pin_clean.add_argument("--va", required=True)
+    pin_clean.add_argument("--owner", required=True)
+    pin_clean.add_argument(
+        "--note",
+        required=True,
+        help="Canonical ownership and plausible original-source family.",
+    )
+
+    restore_clean = subparsers.add_parser(
+        "restore-clean",
+        help="Restore the pinned clean reconstruction into the one living source file.",
+    )
+    restore_clean.add_argument("--va", required=True)
+    restore_clean.add_argument("--owner", required=True)
 
     for command in ("pause", "release"):
         action = subparsers.add_parser(command, help=f"{command.title()} the lease while retaining its notebook.")
@@ -845,6 +1028,8 @@ def main() -> None:
             print(format_session(record, session))
         elif args.command == "probe":
             session = record_probe(record, args.owner, args.kind, args.note, args.checkpoint)
+            if args.kind == "baseline":
+                session = pin_clean_baseline(record, args.owner, args.note)
             print(format_session(record, session))
         elif args.command == "check":
             checker_args = list(args.checker_args)
@@ -859,6 +1044,12 @@ def main() -> None:
                 checker_args,
             )
             print(format_session(record, session))
+        elif args.command == "pin-clean":
+            session = pin_clean_baseline(record, args.owner, args.note)
+            print(format_session(record, session))
+        elif args.command == "restore-clean":
+            session = restore_clean_baseline(record, args.owner)
+            print(format_session(record, session))
         elif args.command in {"pause", "release"}:
             session = change_state(record, args.owner, args.command, args.reason)
             print(format_session(record, session))
@@ -869,7 +1060,7 @@ def main() -> None:
                 if args.json
                 else format_session(record, session)
             )
-    except (RuntimeError, ValueError) as error:
+    except (RuntimeError, ValueError, FileNotFoundError, KeyError) as error:
         raise SystemExit(str(error)) from error
 
 

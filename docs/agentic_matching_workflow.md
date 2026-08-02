@@ -62,7 +62,9 @@ python tools\target_session.py probe --va 005204A0 --owner AgentName ^
 
 Valid probe kinds are `baseline`, `behavior`, `abi`, `layout`, `control-flow`,
 `liveness`, `context`, `flags`, `variant`, `restore`, `validation`, and `other`.
-Use `baseline` for the first successful reconstruction check. `restore` and
+Use `baseline` for the first successful clean reconstruction check. The integrated
+baseline check automatically labels its ordinary history checkpoint `clean-source`.
+This is a protected snapshot, not a second living `.cpp`. `restore` and
 `validation` checks are recorded but do not consume the meaningful-hypothesis
 budget. Use `validation` only for the unchanged final check after the scratch
 attempt log is complete.
@@ -77,12 +79,28 @@ python tools\target_session.py check --va 005204A0 --owner AgentName ^
   --kind liveness --note "direct member reload probe" -- --detail concise
 ```
 
-When stopping, update the scratch attempt log first, validate that exact current
-file while the lease is still active, and only then pause:
+`status` shows three distinct things: the one living source, its pinned clean
+reference, and the metric-best codegen checkpoint. “Assembly closer/farther” and
+the codegen frontier describe bytes only. Integrated checks automatically compare
+the current result with `clean-source` as well as with the prior run. If binary/type
+evidence genuinely improves the natural reconstruction, check it and move the clean
+pin explicitly:
 
 ```bat
+python tools\target_session.py pin-clean --va 005204A0 --owner AgentName ^
+  --note "canonical player arrays with one natural indexed loop"
+```
+
+When stopping unresolved, restore the clean reconstruction if experiments changed
+the living source, update the scratch attempt log, validate that exact current file,
+repin the documented final source, and only then pause:
+
+```bat
+python tools\target_session.py restore-clean --va 005204A0 --owner AgentName
 python tools\target_session.py check --va 005204A0 --owner AgentName ^
   --kind validation --note "final validation after attempt-log update" -- --detail concise
+python tools\target_session.py pin-clean --va 005204A0 --owner AgentName ^
+  --note "restored canonical reconstruction; attempt log updated"
 python tools\target_session.py pause --va 005204A0 --owner AgentName ^
   --reason "needs a proven player/history layout before more source-shape work"
 ```
@@ -91,8 +109,13 @@ A paused lease cannot run integrated checks. This ordering keeps the session's
 final metric snapshot current instead of forcing a direct unrecorded rebuild.
 When the current claim has any recorded checks, `pause` enforces this contract:
 the last check must be `validation`, its exact input snapshot must still match,
-and its checker artifacts must be fresh. A pre-compile hard blocker may still be
-paused without a validation.
+its checker artifacts must be fresh, and an unresolved living source must equal
+the current clean pin. A pre-compile hard blocker may still be paused without a
+validation.
+
+`release` is intentionally narrower: it is accepted for an exact current result
+or a claim with no recorded work. It cannot bypass the clean-source/final-validation
+contract for unresolved work.
 
 `--note` is accepted as an alias for `--reason`. A default autonomous matching
 assignment uses a budget of ten meaningful hypotheses unless the user requests a
@@ -299,6 +322,8 @@ The lab edits one source region but compiles and compares the whole function.
 Treat generated variants as experiments, not automatic source replacements. A
 nonexact winner must pass a period-plausibility and canonical-ownership review;
 an opaque winner with only a modest metric gain should be recorded and discarded.
+Leased compile runs require `--session-owner` and an existing clean-source pin.
+Lab headings explicitly describe emitted-code ranking, never source quality.
 This is intentional: VC5 register allocation, stack homes, block placement, and
 branch distances are whole-function effects. Do not treat a separately compiled
 loop/helper as proof of the parent function's codegen.

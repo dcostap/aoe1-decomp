@@ -145,6 +145,12 @@ reconstruction with canonical field/type ownership before localized codegen
 tuning. Do not frame a decompiler-shaped retained scratch file as authoritative
 source merely because it currently has the best diff.
 
+The worker's first integrated `baseline` check pins that reconstruction in the
+existing function history. There is still one living source file. Later experiments
+may occupy metric-best history checkpoints without moving the clean pin. An
+unresolved worker must restore or explicitly repin the defensible final source
+before pausing; the session tool enforces this after final validation.
+
 Ten hypotheses bound one worker assignment. They do not prove that the function
 is exhausted. The main agent may assign fresh workers to the same function many
 times. Before doing so, ensure the next worker reads the existing source attempt
@@ -181,7 +187,8 @@ For every worker result:
 5. rerun `check_function.py --va <VA>` and confirm the claimed outcome;
 6. verify that the attempt log accurately records tried, kept, rolled-back, and
    remaining hypotheses;
-7. if an opaque nonexact experiment only improved metrics, preserve its evidence
+7. inspect the session's clean-source and codegen-best lines separately; if an
+   opaque nonexact experiment only moved assembly closer, preserve its evidence
    in notes and restore the clean reconstruction before integration;
 8. accept, revise, or reject the result;
 9. perform status moves and version-control integration only after verification.

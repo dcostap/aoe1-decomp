@@ -43,7 +43,7 @@ from function_diagnostics import (
     decode_instructions,
     prologue_summary,
 )
-from target_session import current_metric_summary, record_probe
+from target_session import current_metric_summary, record_probe, require_clean_baseline
 
 
 # Variant labs are intentionally allowed to get large: sticky VC5 codegen-family
@@ -116,7 +116,9 @@ copied scratch-relative includes usually work unchanged.
 
 Use it for late-stage VC5 source-shape/codegen-basin work after behavior is
 mostly understood. Matches still need normal review, reduction, and local
-check_function validation before promotion.
+check_function validation before promotion. Rankings measure emitted-code
+proximity, not source quality. A leased `--session-owner` compile requires the
+session's pinned clean-source checkpoint; generated variants never replace it.
 
 Quick workflow
 --------------
@@ -2349,7 +2351,7 @@ def write_reports(
     else:
         summary.append("  <none>")
     summary.append("")
-    summary.append("Top groups:")
+    summary.append("Top emitted-code groups (ranking does not assess source plausibility):")
     for group in groups[:20]:
         rep = group.representative
         tail_note = " context-tail" if group.likely_context_tail else ""
@@ -2371,7 +2373,7 @@ def write_reports(
     edit_groups.sort(key=lambda group: (group.edit_diff_bytes, group.diff_bytes, group.first_mismatch or -1, group.group_id))
     if edit_groups:
         summary.append("")
-        summary.append("Smallest resync edit diffs:")
+        summary.append("Smallest resync edit diffs (diagnostic, not source quality):")
         for group in edit_groups[:10]:
             rep = group.representative
             summary.append(
@@ -2386,7 +2388,7 @@ def write_reports(
     deepest_groups.sort(key=lambda group: (group.first_mismatch or -1, -(abs((group.text_size or 0) - expected_size))), reverse=True)
     if deepest_groups:
         summary.append("")
-        summary.append("Deepest first mismatches:")
+        summary.append("Deepest first mismatches (diagnostic, not source quality):")
         for group in deepest_groups[:10]:
             rep = group.representative
             tail_note = " context-tail" if group.likely_context_tail else ""
@@ -2697,6 +2699,15 @@ def main(argv: list[str] | None = None) -> int:
     record = function_record_by_va(va)
     slug = function_slug(record)
     expected_size = int(record["size_bytes"])
+    if args.session_owner:
+        try:
+            clean = require_clean_baseline(record, args.session_owner)
+        except (RuntimeError, ValueError) as exc:
+            raise SystemExit(f"variant lab requires a pinned clean-source baseline: {exc}") from exc
+        print(
+            "Clean-source reference: "
+            f"{str(clean.get('checkpoint_id') or '')[:18]} ({clean.get('note') or '-'})"
+        )
 
     toolchain = load_toolchain()
     cl_path = repo_path(toolchain["compiler"]["cl"])

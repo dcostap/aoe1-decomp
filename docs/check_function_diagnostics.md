@@ -64,16 +64,24 @@ self/next-instruction target as a linked call address.
 
 The complete machine-readable report is written to `build/diff/<slug>.json`; the
 human report is `build/diff/<slug>.txt`. The prior rebuilt output is retained under
-`build/history/<slug>/` so each run can report output blast radius and strict
-improvements/regressions.
+`build/history/<slug>/` so each run can report output blast radius and bytes that
+moved assembly-closer or assembly-farther. These terms do not judge source quality.
 
 Every completed build/extraction check also records a deduplicated persistent checkpoint under
 `build/history/<slug>/runs/`. A checkpoint contains the source, custom flag state,
 generated object/assembly, extraction metadata, and full diff report (large text/JSON
 artifacts are gzip-compressed). The compact
-`history.json` index stores metrics and a multi-objective Pareto marker. Pareto means
-that no other recorded run is at least as good on every tracked structural objective;
-it does **not** mean the candidate is exact or preferred after human review.
+`history.json` index stores metrics and a multi-objective codegen-frontier marker
+(internally retained as `pareto` for compatibility). It means that no other recorded
+run is at least as close on every tracked emitted-code objective; it does **not**
+mean the candidate is exact, plausible source, or preferred after human review.
+
+Target sessions assign the movable label `clean-source` to the canonical plausible
+reconstruction. Any label already protects a checkpoint from pruning, so this adds
+no parallel storage mechanism. The codegen frontier and clean-source checkpoint may
+be different runs. The label is reserved: move it through `target_session.py
+pin-clean`, not `check_function.py --checkpoint`, so the audit note and session
+metadata remain synchronized.
 
 Useful commands:
 
@@ -94,8 +102,10 @@ wrapper for an ordinary interpreted probe. It runs this checker, assigns a
 checkpoint, and records source/flags hashes, relocation-aware emitted-code
 identity, duplicate-codegen links, ordered call-site gaps, meaningful code size,
 exact-block coverage, and metric deltas under the active lease. The session's
-recommendation follows this checker's workflow stage. Direct checker use remains
-valid for diagnostics and human workflows.
+recommendation follows this checker's workflow stage. Once pinned, every integrated
+probe also prints a comparison with `clean-source`, preventing the immediately prior
+experimental variant from becoming the only reference point. Direct checker use
+remains valid for diagnostics and human workflows.
 
 Restore first backs up the current source/custom response file under
 `build/history/<slug>/restore-backups/`. It restores source and custom-flag state;
@@ -104,8 +114,8 @@ run the checker again to rebuild generated artifacts.
 Computed selectors avoid forcing one scalar “best” score: `@latest`,
 `@best-call-prefix`, `@best-shape`, `@best-blocks`, `@best-positional`, and
 `@closest-size`. These selectors use a primary metric plus a positional-diff
-tiebreak; inspect the Pareto history before restoring because different structural
-objectives can legitimately favor different candidates.
+tiebreak; inspect the codegen-frontier history before restoring because different
+structural objectives can legitimately favor different candidates.
 
 Checkpoint comparison includes structural deltas in addition to summary metrics:
 new/resolved call-alignment issues, newly exact/lost original basic blocks, and the
@@ -118,8 +128,8 @@ sources without restoring or rebuilding either candidate. Output is bounded to 5
 lines by default; use `--history-diff-limit 0` for the complete diff.
 
 History pruning is dry-run by default. It removes only old checkpoints that are
-unlabeled, off the Pareto frontier, and outside the requested recent-retention window.
-`--apply-prune` is required for deletion; labels, Pareto candidates, and the newest
+unlabeled, off the codegen frontier, and outside the requested recent-retention window.
+`--apply-prune` is required for deletion; labels, frontier candidates, and the newest
 `--prune-keep` runs are protected.
 
 Programmatic sweeps and labs should pass `--no-history` so thousands of transient
@@ -232,10 +242,11 @@ JSON. Concise giant-function output shows metric deltas, the highest-priority ha
 call discrepancy, and the first block/instruction/call contexts. `--verbose` implies
 full detail and also shows subprocess output.
 
-Iteration output ranks the top three improved and regressed ranges instead of listing
-neutral churn. Raw edit cost remains available for compatibility, but the console now
-also reports bounded edit cost (normalized by both input lengths) and bounded
-resynchronized similarity (equal resynchronized bytes divided by the larger input).
+Iteration output ranks the top three assembly-closer and assembly-farther ranges
+instead of listing neutral churn. Raw edit cost remains available for compatibility,
+but the console also reports bounded edit cost (normalized by both input lengths)
+and bounded resynchronized similarity (equal resynchronized bytes divided by the
+larger input).
 
 Use `--refresh-original` only when the pinned original inputs changed. Original
 extraction is otherwise cached.

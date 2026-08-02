@@ -172,6 +172,7 @@ def annotate_leases(rows: list[dict[str, str]], sessions: list[dict] | None = No
         row["lease_expires_at"] = str((session or {}).get("lease_expires_at", "")) if active else ""
         row["lease_probes"] = str(meaningful_probe_count(session or {})) if session else ""
         row["lease_probe_total"] = str(total_probes) if session else ""
+        row["clean_pinned"] = "yes" if session and session.get("clean_baseline") else ""
     return rows
 
 
@@ -322,6 +323,7 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
             ("lease_owner", "lease_owner", 20),
             ("lease", "lease_state", 10),
             ("probes", "lease_probes", 7),
+            ("clean", "clean_pinned", 6),
             ("expires", "lease_expires_at", 20),
         ])
     return cols

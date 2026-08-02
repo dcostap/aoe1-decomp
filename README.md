@@ -89,12 +89,18 @@ Use `--checkpoint <label>`, `--history`, and `--restore-checkpoint <label-or-id>
 to preserve and compare structural experiments without replacing a better baseline.
 Checkpoint comparisons include call/block deltas; `--range` focuses one aligned
 assembly band, and dry-run-first `--prune-history` controls retained experiments.
+Target sessions designate one ordinary history checkpoint as `clean-source`: the
+canonical plausible reconstruction. Metric-best experiments remain separate
+history evidence. There is still exactly one compiler-facing `.cpp` per function.
+History's codegen frontier and “assembly closer/farther” language describe emitted
+bytes only; they do not rank source quality.
 
 Parallel late-corpus work also has four advisory agent tools:
 
 - `tools\target_session.py` provides shared-tree target leases, meaningful-probe
   bookkeeping, non-budget restore/final-validation checks, emitted-code duplicate
-  detection, and a checker-stage-aware current-metrics briefing;
+  detection, clean-source pin/restore commands, and a checker-stage-aware
+  current-metrics briefing;
 - `tools\target_dossier.py` generates a target-local binary-evidence report for
   calls, candidate `this` offsets, globals, conservatively entry-normalized stack
   accesses/parameter homes, and generated-type size conflicts;

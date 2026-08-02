@@ -148,8 +148,16 @@ prompt.
 
    ```bat
    python tools/target_session.py check --va <VA> --owner <owner> ^
-     --kind control-flow --note "specific hypothesis" -- --detail concise
+     --kind baseline --note "canonical ownership and plausible source family" -- --detail concise
    ```
+
+   A successful `--kind baseline` check automatically pins that checkpoint as the
+   session's clean-source reference. It remains in ordinary function history; no
+   second compiler-facing source file is created. When later evidence genuinely
+   improves the canonical reconstruction, update the pin explicitly with
+   `target_session.py pin-clean --va <VA> --owner <owner> --note "..."` after a
+   current check. Subsequent integrated checks report movement both from the prior
+   probe and from this clean reference.
 
    Do not pass `--no-build` before the target has a current built artifact. A
    compile/syntax repair is not a probe; rerun the same intended probe after the
@@ -159,7 +167,8 @@ prompt.
    match and mismatch statuses correctly.
 
 8. Treat the checker's `Workflow stage` as authoritative for what kind of work
-   comes next. `STRUCTURAL RECONSTRUCTION` means fix size, ordered calls, CFG, and
+   comes next in emitted code, not as proof that the source model is canonical.
+   `STRUCTURAL RECONSTRUCTION` means fix size, ordered calls, CFG, and
    block topology before register coloring or broad variants. `EXACT CODEGEN`
    means focused source-shape work is appropriate. Do not override the checker
    stage merely because frame size or call counts happen to match.
@@ -172,11 +181,13 @@ prompt.
    exhausted. Preserve enough evidence in the source attempt log for a later
    worker and the project orchestrator to avoid repeating the same hypotheses.
 10. If exact, review source/flags, validate again, move (not copy) to
-    `src/matching`, and validate after the move. If unresolved, leave the best
+    `src/matching`, validate after the move, and release the lease. If unresolved,
+    leave the best
     source reconstruction in `src/scratch`, not an opaque nonexact variant kept
-    solely for metrics, and write the compact attempt log **before** the final
-    integrated validation. Record that unchanged final check with
-    `--kind validation`, then pause with
+    solely for metrics. Restore it with `target_session.py restore-clean` when
+    necessary, write the compact attempt log, and record the unchanged final
+    check with `--kind validation`. Because attempt-log edits change the source
+    snapshot, explicitly `pin-clean` that validated final source, then pause with
     `target_session.py pause --va <VA> --owner <owner> --reason "..."` (`--note`
     is accepted as an alias). Validation must precede pause because checks require
     an active lease. The session tool rejects a pause when the current claim has
@@ -187,8 +198,9 @@ prompt.
     starts semantic review on its own; that transition belongs to the designated
     project orchestrator after reviewing cumulative work from as many sequential
     matching assignments as it considers useful.
-11. Report target, outcome, probe count, current/best metrics, changed files,
-    validations, and the evidence-backed next lead. A bounded documented pause
+11. Report target, outcome, probe count, clean-source and codegen-best checkpoints,
+    current metrics, changed files, validations, and the evidence-backed next lead.
+    A bounded documented pause
     is a valid outcome; never force a fake match.
 
 ## Participant roles and shared-worktree conduct
@@ -369,13 +381,16 @@ attempt log and restore the clean candidate.
    and generated type/class/global reference.
 5. Implement or restore a clean period-plausible reconstruction in
    `src\scratch\...`; establish named ownership before raw pointer tuning.
-6. Compile and compare with `tools\check_function.py`.
+6. Compile it as the session baseline; the integrated baseline check pins the
+   clean source in existing function history.
 7. Fix missing shared facts only when stable/reusable; otherwise keep local stubs.
 8. Iterate source shape, layout, declarations, and context until exact or clearly
    paused with notes. Use plausibility checkpoints and clean-source resets rather
    than indefinitely optimizing one decompiler/compiler basin.
 9. Record meaningful agent probes in the target session and durable conclusions in
-   the source attempt log. Pause/release the target session when stopping.
+   the source attempt log. Restore the clean pin before an unresolved pause,
+   validate the final documented file, repin it, then pause. Use `release` for an
+   exact completion or a claim on which no source/check work was performed.
 10. When a non-obvious reusable insight makes a function click, append the compact
    generalized lesson to `LESSONS.md`.
 11. Promote to `src\matching\...` only after local exact validation. This is a
@@ -426,7 +441,9 @@ Practical rules:
 - One deliberate variant-lab run is one meaningful `variant` hypothesis family,
   regardless of how many generated cases it compiles. During a leased agent
   session pass `--session-owner <owner>` so the lab records that probe
-  automatically; do not run unrecorded labs around the budget.
+  automatically; do not run unrecorded labs around the budget. Leased labs require
+  the session's clean-source pin, and their ranking measures emitted-code proximity,
+  not source quality.
 - `--preview-variants N` prints compact labels/sizes/hashes. Add `--preview-full`
   only when complete generated sources are truly needed; use `--show-variant`
   for one specific full expansion.

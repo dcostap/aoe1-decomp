@@ -161,6 +161,62 @@ class TargetSessionTests(unittest.TestCase):
                         self.record, "AgentA", "layout", "note", "", ["--no-history"]
                     )
 
+    def test_checked_baseline_automatically_pins_clean_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorded = {"owner": "AgentA", "probes": [{"number": 1}]}
+            pinned = {"owner": "AgentA", "clean_baseline": {"checkpoint_id": "clean"}}
+            with patch.object(target_session, "REPO_ROOT", root):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                with patch.object(
+                    target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
+                ), patch.object(
+                    target_session, "record_probe", return_value=recorded
+                ), patch.object(
+                    target_session, "pin_clean_baseline", return_value=pinned
+                ) as pin:
+                    _code, session = target_session.run_checked_probe(
+                        self.record,
+                        "AgentA",
+                        "baseline",
+                        "canonical fields and natural loop",
+                        "",
+                        [],
+                    )
+            self.assertEqual(session, pinned)
+            pin.assert_called_once_with(
+                self.record,
+                "AgentA",
+                "canonical fields and natural loop",
+            )
+
+    def test_checked_probe_compares_against_pinned_clean_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(target_session, "REPO_ROOT", root):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                session = target_session._load_session(self.record)
+                session["clean_baseline"] = {"checkpoint_id": "clean-id"}
+                target_session._write_session(self.record, session)
+                with patch.object(
+                    target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
+                ) as run, patch.object(
+                    target_session,
+                    "record_probe",
+                    return_value={"owner": "AgentA"},
+                ):
+                    target_session.run_checked_probe(
+                        self.record,
+                        "AgentA",
+                        "liveness",
+                        "localized experiment",
+                        "",
+                        [],
+                    )
+            command = run.call_args.args[0]
+            compare_index = command.index("--compare-checkpoint")
+            self.assertEqual(command[compare_index + 1], target_session.CLEAN_CHECKPOINT_LABEL)
+
     def test_duplicate_emitted_code_is_linked_to_earlier_probe(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -260,6 +316,9 @@ class TargetSessionTests(unittest.TestCase):
                 target_session, "current_input_snapshot", return_value=snapshot
             ):
                 target_session.start_session(self.record, "AgentA", 2, 2.0)
+                seeded = target_session._load_session(self.record)
+                seeded["clean_baseline"] = {"inputs": snapshot, "checkpoint_id": "clean-1"}
+                target_session._write_session(self.record, seeded)
                 target_session.record_probe(
                     self.record, "AgentA", "control-flow", "changed guard"
                 )
@@ -274,6 +333,67 @@ class TargetSessionTests(unittest.TestCase):
                     self.record, "AgentA", "pause", "bounded stop"
                 )
             self.assertEqual(paused["state"], "pause")
+
+    def test_pin_clean_records_existing_checkpoint_and_current_inputs(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            snapshot = {"source_sha256": "clean", "flags_sha256": "flags"}
+            with patch.object(target_session, "REPO_ROOT", root), patch.object(
+                target_session,
+                "current_metric_summary",
+                return_value={"result": "MISMATCH", "artifact_fresh": True, "diff_bytes": 12},
+            ), patch.object(
+                target_session, "current_input_snapshot", return_value=snapshot
+            ), patch.object(
+                target_session,
+                "record_checkpoint",
+                return_value={"id": "checkpoint-clean"},
+            ):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                session = target_session.pin_clean_baseline(
+                    self.record,
+                    "AgentA",
+                    "canonical fields and natural indexed loop",
+                )
+            baseline = session["clean_baseline"]
+            self.assertEqual(baseline["checkpoint_id"], "checkpoint-clean")
+            self.assertEqual(baseline["inputs"], snapshot)
+            self.assertIn("natural indexed loop", baseline["note"])
+
+    def test_pause_rejects_unresolved_source_without_clean_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            snapshot = {"source_sha256": "validated"}
+            with patch.object(target_session, "REPO_ROOT", root), patch.object(
+                target_session,
+                "current_metric_summary",
+                return_value={"result": "MISMATCH", "artifact_fresh": True},
+            ), patch.object(
+                target_session, "current_input_snapshot", return_value=snapshot
+            ):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.record_probe(
+                    self.record, "AgentA", "validation", "final current check"
+                )
+                with self.assertRaisesRegex(RuntimeError, "clean-source baseline"):
+                    target_session.change_state(
+                        self.record, "AgentA", "pause", "bounded stop"
+                    )
+
+    def test_release_cannot_bypass_unresolved_pause_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(target_session, "REPO_ROOT", root), patch.object(
+                target_session,
+                "current_metric_summary",
+                return_value={"result": "MISMATCH", "artifact_fresh": True},
+            ), patch.object(target_session, "current_input_snapshot", return_value={}):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.record_probe(self.record, "AgentA", "baseline", "first")
+                with self.assertRaisesRegex(RuntimeError, "pin-clean, and pause"):
+                    target_session.change_state(
+                        self.record, "AgentA", "release", "stop"
+                    )
 
     def test_pause_rejects_changes_after_final_validation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
