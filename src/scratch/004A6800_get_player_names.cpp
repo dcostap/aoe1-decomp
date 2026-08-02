@@ -10,17 +10,36 @@
 // variants, and a 27-case source lab plus 2048-case invariant-gated lab; all eligible variants stayed
 // in the same 41-byte codegen basin. Remaining drift is setup LEA/store ordering plus append/free
 // register coloring and get_line argument scheduling. Paused unresolved; not accepted_drift.
+// Luna4A6800b sequential pass: restored canonical TPanel/TEasy_Panel/TScreenPanel inheritance,
+// exact TRIBE_Screen_Name field ownership, TListPanel name_list type, and polymorphic RGE_Base_Game;
+// aggregate-output, extern-global, /GX, source-order, and decompiler-curr_player probes were all
+// unchanged or worse. Final normalized source remains the natural char** player-list form.
 
 extern "C" void __cdecl free(void*);
 
-class TTextPanel {
+class TPanel {
 public:
-    char gap_00[0x15C];
+    char gap_04[0xEC];
+    virtual ~TPanel();
+};
+
+class TTextPanel : public TPanel {
+public:
+    char gap_F0[0x6C];
     int flag_15c;
     void empty_list();
     int append_line(char* text, long index);
     long get_line(long line);
     void set_line(long line);
+};
+
+class TListPanel : public TTextPanel {
+};
+
+class TScrollBarPanel : public TPanel {
+};
+
+class TButtonPanel : public TPanel {
 };
 
 class RGE_Game_Info {
@@ -30,28 +49,35 @@ public:
 
 class RGE_Base_Game {
 public:
-    void* vtable;
+    virtual ~RGE_Base_Game();
     RGE_Game_Info* player_game_info;
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+extern RGE_Base_Game* rge_base_game;
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-
-class TRIBE_Screen_Name {
+class TEasy_Panel : public TPanel {
 public:
-    VPAD32(0)
-    VPAD16(32)
-    VPAD1(48)
-    VPAD1(49)
-    virtual void set_tab_order(void** panels, int count);
-    char gap_04[0x47C];
-    TTextPanel* name_list;
+    char gap_F0[0x384];
+};
+
+class TScreenPanel : public TEasy_Panel {
+public:
+    char gap_474[4];
+    virtual ~TScreenPanel();
+};
+
+class TRIBE_Screen_Name : public TScreenPanel {
+public:
+    TTextPanel* title;
+    TTextPanel* name_text;
+    TListPanel* name_list;
+    TScrollBarPanel* name_scrollbar;
+    TButtonPanel* new_button;
+    TButtonPanel* remove_button;
+    TButtonPanel* ok_button;
+    TButtonPanel* cancel_button;
+    TButtonPanel* close_button;
+    int started_input;
     void get_player_names();
 };
 
