@@ -1,6 +1,12 @@
-// VA: 0046AC10 Path::insertAtEnd(const Waypoint& wp)
+// VA: 0046AC10 Path::insertAtEnd(Waypoint wp)
 // Path.cpp lines 144-153
 // 205 bytes
+// baseline: natural Waypoint aggregate copy produced a 191-byte whole-struct
+// copy basin with an eager EDI save; binary shows four explicit field copies.
+// probe 2: explicit field copies restored size/resize loop, but the reference
+// parameter kept EDI live through the append. The binary has a 16-byte by-value
+// Waypoint home and ret 10h, so use the period ABI's by-value parameter.
+// probe 3: the by-value Waypoint ABI reproduces the original 205-byte function.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -23,15 +29,18 @@ struct Path {
     int currentSizeValue;
     int currentWaypointValue;
 
-    int insertAtEnd(const Waypoint& wp);
+    int insertAtEnd(Waypoint wp);
 };
 
-int Path::insertAtEnd(const Waypoint& wp) {
+int Path::insertAtEnd(Waypoint wp) {
     if (currentSizeValue == maxSizeValue) {
         maxSizeValue += maxSizeValue;
         Waypoint* new_path = (Waypoint*)operator_new(maxSizeValue * 16);
         for (int i = 0; i < currentSizeValue; i++) {
-            new_path[i] = pathValue[i];
+            new_path[i].x = pathValue[i].x;
+            new_path[i].y = pathValue[i].y;
+            new_path[i].z = pathValue[i].z;
+            new_path[i].facetToNextWaypoint = pathValue[i].facetToNextWaypoint;
         }
         if (pathValue != 0) {
             operator_delete(pathValue);

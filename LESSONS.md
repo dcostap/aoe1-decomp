@@ -2137,3 +2137,20 @@ Why it helps:
 Caveat:
 - use only when the carried value is genuinely consumed by the observed compare;
   do not add locals solely to perturb registers.
+
+## Lesson: Nested negative equality arms preserve late VC5 dispatch handlers
+
+When a compare chain jumps with `je` to a handler placed after later comparisons,
+the natural positive `if (value == A) return ...;` spelling may put that handler
+inline and emit `jne` instead. Within a proven range guard, try a nested negative
+form such as `if (value != A) { ... } else { return ...; }`; for several late
+handlers, nest the `!=` tests and keep the final equality arm inline.
+
+Why it helps:
+- VC5 can place the equality arm after the remaining test path, preserving the
+  original `je` target and downstream branch distances without gotos or raw CFG
+  scaffolding.
+
+Caveat:
+- use only when the executable proves the late handler layout; ordinary positive
+  equality chains remain the more readable default when their layout matches.
