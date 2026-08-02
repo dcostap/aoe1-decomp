@@ -1,4 +1,5 @@
 // 00487FA0 TRIBE_RMM_Database_Controller::add_object_module
+// Status: VERIFIED_LOGIC — reviewed behavior; non-exact merged exclusion switch.
 // Attempt log (condensed after 99 total meaningful probes):
 // - Natural typed reconstruction recovered the exact 1749-byte size, 0x14 frame, saved
 //   registers, and 11/11 ordered direct calls. Direct indexed aggregate assignment restored
