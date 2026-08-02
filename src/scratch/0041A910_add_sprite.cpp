@@ -40,17 +40,39 @@
 // Retry 2026-08-02 Luna41A910: baseline rechecked after claiming this target; clean source remains 158B with 36 positional bytes / 26 edit bytes, first mismatch +38.
 // New hypotheses: exact decompiler head/scan cursor forms (43B), swapped cursor ownership (same 43B), canonical Active_Sprite destructor/full virtual surface (same 36B), compound head initialization (same), CRT <stdlib.h> calloc declaration (same), scan-node reuse (same), and positive outer guard (same). `sizeof(Node)` allocation worsened to 38B and was restored.
 // Final clean-source choice: retain the prior period-plausible typed list insertion candidate; unresolved drift is broad register/liveness topology, not a localized behavior-equivalent hunk.
+// Retry 2026-08-02 Luna41A910b: baseline remained 158B/36 positional bytes; restored the inventory-proven Active_Sprite fields and full virtual surface, with no emitted change.
+// register-qualified new-node local, reused check-result local, typed raw list-slot view, and narrow volatile list-head rereads all emitted the same 158B basin; compile repair for the volatile cast was rerun as the same probe.
+// Scoped insertion cursor/allocation locals separately from duplicate scan; same 36-byte structural drift. Restored the natural typed member source; no accepted-drift proposal.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
 class RGE_Sprite;
 class RGE_Static_Object;
+class RGE_Color_Table;
+class TDrawArea;
 
 class RGE_Active_Sprite {
 public:
-    virtual void destroy(int);
+    virtual ~RGE_Active_Sprite();
     virtual void set_offset(long, long);
+    virtual void save(int);
+    virtual void update(float, float);
+    virtual void draw(short, long, long, long, long, RGE_Color_Table*, TDrawArea*);
+    virtual void normal_draw(short, long, long, RGE_Color_Table*, TDrawArea*);
+    virtual void shadow_draw(short, long, long, RGE_Color_Table*, TDrawArea*, unsigned char);
+    virtual short what_frame();
+    virtual unsigned char is_animating();
+    virtual void set_frame(short);
+    virtual unsigned char frame_passed(short);
+    virtual unsigned char looped();
+    virtual short get_facetindex(short);
+    virtual unsigned char get_frame(short*, short*, short*, short*, long);
+    virtual void setToFirstFrame();
     RGE_Sprite* sprite;
+    unsigned char type;
+    unsigned char gap_09[0x3];
+    long offset_x;
+    long offset_y;
     int check_for_shadows();
 };
 
@@ -61,8 +83,6 @@ public:
 };
 
 class RGE_Static_Object { public: void remove_shadows(); };
-class RGE_Color_Table;
-class TDrawArea;
 
 class RGE_Active_Sprite_Node {
 public:

@@ -13,6 +13,9 @@
 // Luna-4C5E50 2026-08-02: fresh baseline rebuilt 147B (166 differing bytes). Volatile dy plus volatile x recovered the exact 0x00-0x46 prefix and 159B output (89 differing bytes, 53.2934%); removing x volatility, volatile y, x address-taking, dx reuse, and reversed radius operands all regressed or changed only a few bytes. An absolute F_ZERO view expanded global loads. Ordinary x plus an unused volatile saved_x was the best measured state at 169B (86 differing bytes), but it was codegen-only scaffolding and still diverged structurally at +0x47, so the natural source was restored. Next pass should revisit canonical radius/expression ownership rather than retain fake volatility.
 
 // Luna4C5E50 2026-08-03: dossier/donor/ABI review confirmed world/radius ownership and no calls; declaration, local-reuse, class-surface, clamp-order, and parameter-home variants remained broad structural FPU mismatches. Clean source restored after the bounded 10-probe pass; blocker remains radius-expression evaluation/stack topology, not benign drift.
+// Luna4C5E50b 2026-08-03: hoisted/top-declared locals, address-taken x, proven zero global, dx reuse, the RGE_Master_Static_Object name, and the full proven object field surface all emitted the clean 147B basin unchanged.
+// The focused 10-variant dy/radius lab found no exact candidate; size-matching variants still had the wrong entry home/prologue. A one-field local Distance_Temp wrapper reached 167B/162 differing bytes and 60.71% shape, but still lacked the target push/local prefix and is codegen-only scaffolding, so it was rolled back.
+// Final bounded pass exhausted: retain the natural world-coordinate/radius source. Remaining evidence is a broad VC5 FPU stack/local-topology blocker, not localized equivalent drift.
 
 class RGE_Master_Object {
 public:
