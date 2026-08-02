@@ -62,8 +62,15 @@ Operational rules:
 6. Reserve two read-only slots for a complete blind-review cohort once a function
    enters logic review. Do not start one reviewer while the other cohort slot is
    occupied by unrelated work.
-7. Matching results may be integrated individually as they finish. In contrast,
-   collect a blind cohort in full before adjudicating or editing its candidate.
+7. Matching results may be integrated individually as they finish. Blind-review
+   reports may likewise be collected individually, but they create a logical
+   barrier: do not adjudicate, edit the reviewed candidate, or act on any cohort
+   finding until every member of that cohort has finished.
+8. Do not turn a cohort's logical barrier into an immediate blocking wait for all
+   reviewers. Use completion notifications or collect whichever result is ready,
+   then continue independent orchestration work while the remaining reviewers
+   run. Block only when adjudication is the next useful action and the cohort is
+   still incomplete.
 
 Broad initial queues are counterproductive in a shared worktree. Start with the
 smallest useful batch, observe integration cost and compiler contention, and
@@ -211,7 +218,17 @@ suspected issue.
 Do not start a partial cohort merely to occupy a slot. If the user's concurrency
 ceiling cannot provide at least two simultaneous read-only reviewers, finish or
 defer other work first, or ask the user to revise the contract. Launch every
-member of the cohort before waiting for results.
+member of the cohort before collecting results. Record the cohort membership so
+that an early report cannot accidentally trigger adjudication. Collect completed
+reports as they arrive and continue unrelated useful work; cohort completeness
+is required for action, not for the main agent to remain responsive.
+
+In a harness with `wait_mode`, prefer nonblocking completion notifications or
+`wait_mode="any"` when a result is currently needed. Keep the full cohort ID set
+as the outstanding barrier and remove members only as their reports are safely
+collected. Use a blocking `wait_mode="all"` only when no independent useful work
+remains and progress genuinely depends on the complete cohort. Do not replace
+this with repeated status polling.
 
 A suitable neutral core prompt is:
 
@@ -227,7 +244,11 @@ A suitable neutral core prompt is:
 
 ## Adjudicate and integrate a review round
 
-Wait for the full concurrent cohort before editing. Append the complete reports
+Do not edit or adjudicate until the full concurrent cohort has completed. This is
+a logical gate, not a requirement to issue a blocking wait-all operation as soon
+as reviewers launch. Until the last report arrives, the main agent should keep
+integrating independent matching results, validating unrelated targets, updating
+the queue, or doing other non-conflicting work. Once complete, append all reports
 to the per-function ledger, deduplicate findings, and adjudicate each one against
 the binary as confirmed, unresolved, or cleared. Reviewer count is not a vote;
 one evidence-backed behavioral objection blocks promotion.
