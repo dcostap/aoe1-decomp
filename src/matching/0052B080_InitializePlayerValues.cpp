@@ -83,6 +83,11 @@
 // the induction order (`add eax,4` / `add ecx,10h` / `inc edx` versus original
 // `inc edx` / `add ecx,10h` / `add eax,4`) and repeated-200 hoisting (`mov esi`
 // versus two immediate stores). No exact or accepted-drift promotion.
+// Logic-review normalization 2026-08-02: replaced compiler-shaped cross-member pointer
+// arithmetic with the plausible original typed arrays and a natural indexed `for` loop.
+// Canonical fields at +0x188C/+0x18CC/+0x190C/+0x194C/+0x1990/+0x4BA8/+0x5100
+// make every store explicit and auditable. VC5 emits the original 123 bytes exactly:
+// 40/40 instructions, full CFG/call parity, 0 differing bytes. Promoted as MATCH.
 
 #include <string.h>
 
@@ -95,43 +100,39 @@ struct Player_Start_Info {
 
 class T_Scenario {
 public:
-    char gap_00[0x18CC];
-    int _padding_[0x31];
+    char gap_00[0x188C];
+    int PlayerPosture[16];
+    int PlType[16];
+    int PlCivilization[16];
+    int PlActive[16];
+    char gap_198C[4];
     Player_Start_Info player_info[16];
-    char gap_1A90[0x3218];
+    char gap_1A90[0x3118];
+    int AlliedVictory[16];
+    char gap_4BE8[0x518];
+    int PlayerAge[16];
 
     void InitializePlayerValues();
 };
 
 void T_Scenario::InitializePlayerValues()
 {
-    int zero = 0;
-    int i = 0;
-    int* p = this->_padding_;
-    int* saved = p;
-    int* q = &this->player_info[0].Food;
+    for (int i = 0; i < 16; ++i) {
+        Player_Start_Info* info = &this->player_info[i];
+        memset(info, 0, sizeof(*info));
 
-    do {
-        int* block = q - 2;
-        p++;
-        ++i;
-        q += 4;
+        this->PlActive[i] = 0;
+        info->Gold = 0;
+        info->Wood = 200;
+        info->Food = 200;
+        info->Stone = 150;
 
-        memset(block, 0, 16);
+        this->PlType[i] = 0;
+        this->PlCivilization[i] = i + 1;
+        this->PlayerPosture[i] = 4;
+        this->AlliedVictory[i] = 0;
+        this->PlayerAge[i] = 0;
+    }
 
-        p[0x1f] = zero;
-        block[0] = zero;
-
-        q[-5] = 200;
-        q[-4] = 200;
-        q[-3] = 150;
-
-        p[-1] = zero;
-        p[0x0f] = i;
-        p[-0x11] = 4;
-        p[0xCB6] = zero;
-        p[0xE0C] = zero;
-    } while (i < 16);
-
-    *saved = 1;
+    this->PlType[0] = 1;
 }

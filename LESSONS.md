@@ -1862,3 +1862,28 @@ Caveat:
 - use the literal only when the format/API size is binary-proven. Verified on `00448080`
   `_WaveCreateFile`, where non-PCM WAVEFORMATEX writes used `18 + cbSize` while the
   visible C struct rounded to 20 bytes.
+
+## Lesson: Normalize cross-member cursors into canonical arrays and indexed loops
+
+When a loop has correct raw offsets but remains stuck in pointer-induction,
+constant-hoisting, or register-allocation drift, reconstruct the canonical owning
+arrays/fields and try the natural indexed loop the original developer likely
+wrote. Decompiler-style cursors that walk across neighboring members can hide an
+off-by-one and also push VC5 into the wrong IR basin.
+
+Try when:
+- one running pointer addresses several binary-proven arrays through large
+  positive and negative subscripts;
+- the loop index naturally selects the same element from each array;
+- emitted memory offsets are nearly aligned but induction updates or immediates
+  differ.
+
+Why it helps:
+- named arrays expose common-index relationships to VC5;
+- natural `array[i]` expressions can recover the original induction scheduling,
+  immediate stores, and register allocation;
+- explicit field ownership makes displacement errors visible during review.
+
+Verify every offset and array extent first; readable source is not permission to
+approximate layout. This normalization recovered full byte equality after a
+pointer-cursor reconstruction had appeared codegen-stalled.

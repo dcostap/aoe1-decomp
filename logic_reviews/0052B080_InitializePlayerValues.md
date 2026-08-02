@@ -139,7 +139,64 @@ post-fix cohort is required before final adjudication or promotion.
   to 22 raw bytes (8.94% bounded) and 109 bytes remain equal. This metric
   regression is required for correct memory effects.
 
+### Formal round 2 — fresh post-fix mixed-model cohort
+
+A fresh Luna reviewer and a DeepSeek V4 Flash reviewer independently assessed
+the corrected candidate concurrently. Both were strictly read-only, unleased,
+and blind to this ledger, prior reports, and history.
+
+#### Reviewer 3 — emitted access sequence
+
+> **Verdict: behaviorally equivalent for a valid `T_Scenario`; no definite
+> behavioral difference found.**
+>
+> Exact bases, 16 iterations, induction, every store address/width/value/order,
+> first/last boundaries, redundant Gold zero, 200/200/150 writes, all five
+> distant arrays, final `PlType[0]=1`, and void return match. The current
+> `memset` lowers to the same four ordered dword stores. Register-only induction
+> scheduling and constant hoisting are nonsemantic. The only concerns are the
+> truncated local class declaration and formally nonportable cross-member
+> pointer arithmetic.
+
+#### Reviewer 4 — independent full address derivation
+
+> **Definite differences: None. Verdict: semantically equivalent.**
+>
+> Independently derived all 11 source store families across 16 iterations from
+> original register arithmetic and found exact parity in address, value, width,
+> multiplicity, and order. Fault surface and final state match. Formal caveats
+> are out-of-bounds/truncated local-class typing, strict aliasing, and dependence
+> on pinned `memset` inlining; no emitted behavioral discrepancy was found.
+
+### Post-review source normalization and exact breakthrough
+
+The fresh cohort cleared the corrected machine effects but highlighted that the
+source still encoded real members as cross-object pointer arithmetic and an
+undersized placeholder class. Under the project's post-matching normalization
+rule, the main agent replaced that residue with canonical named arrays and the
+natural indexed loop a real developer plausibly wrote:
+
+- `PlayerPosture[16]` at `+0x188C`;
+- `PlType[16]` at `+0x18CC`;
+- `PlCivilization[16]` at `+0x190C`;
+- `PlActive[16]` at `+0x194C`;
+- `player_info[16]` at `+0x1990`;
+- `AlliedVictory[16]` at `+0x4BA8`;
+- `PlayerAge[16]` at `+0x5100`.
+
+The normalized source removes cross-member pointer arithmetic and names each
+effect directly. Unexpectedly, this also resolves every codegen difference:
+VC5 emits 123/123 identical bytes, 40/40 instructions, exact frame/register/CFG
+parity, no calls, and strict/edit difference 0.
+
+Final adjudication: the round-1 defect is fixed, both post-fix reviewers found no
+remaining semantic difference, formal source-model caveats were removed by
+normalization, and exact emitted-code equality closes all remaining machine-level
+uncertainty.
+
 ## Final decision
 
-Pending. The function remains in `src/scratch` and must not move to
-`src/verified_logic` while any substantive finding is unresolved.
+Promote to `src/matching`, not `src/verified_logic`. Natural source normalization
+reopened and completed exact matching: `check_function.py --va 0052B080` reports
+`Result: MATCH`, 123/123 bytes, and 0.0000% difference. The full review ledger is
+retained because it records the discovered offset defect and its correction.
