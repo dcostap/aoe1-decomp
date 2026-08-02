@@ -108,10 +108,27 @@
 //     neutral at the 96 B polymorphic baseline (93 strict diff, 81.40% shape). The clean
 //     source remains the natural polymorphic do/while. Remaining structural lead is the
 //     original duplicate top guard plus ECX-head/EAX-link coloring; no new ABI evidence.
+// 74 (Luna50DFD0b): Reconstructed the likely combined search predicate `p != 0 &&
+//     p != entry` inside the outer non-null guard. It improved exact-block coverage to
+//     55.81% but emitted 92 B/98 strict diff with the same EBX-save basin; restored clean.
+// 75: A separate stable `base` head pointer, link-before-p initialization, reference head
+//     alias, and register-qualified entry were each tested around that predicate. Results
+//     stayed in the same EBX/ECX-link family (91-92 B, 96-98 strict diff); no source was kept.
+// 76: A focused 27-variant lab over plausible declaration/search/head-use forms produced
+//     no emitted code because the temporary template had closure/undeclared-base errors;
+//     it provided no ranking evidence and was not promoted.
+// 77: The short-circuit assignment form `p != 0 && (link = &time_list, p != 0)` also stayed
+//     at 92 B/98 strict diff. Restored the canonical clean body afterward.
+// 78 (Luna50DFD0b): Added the complete period-plausible RGE_Timeline declaration surface
+//     from class metadata without changing the natural body. Codegen remained 96 B/93
+//     strict diff; this is the current best source. Remaining blocker is the original
+//     duplicate top guard plus ECX-head/EAX-link lifetime, with a recursive-call relocation
+//     classified as internal+0x0 in the original versus the rebuilt sub symbol.
 
 #include <stdlib.h>
 
 class RGE_Game_World;
+class RGE_Static_Object;
 
 struct RGE_Time_Entry {
     float time;                    // +0x00
@@ -136,6 +153,8 @@ struct RGE_Time_Entry {
 
 class RGE_Timeline {
 public:
+    RGE_Timeline(RGE_Game_World* world);
+    RGE_Timeline(int handle, RGE_Game_World* world);
     virtual ~RGE_Timeline();
     RGE_Game_World* world;         // +0x04
     RGE_Time_Entry* time_list;     // +0x08
@@ -143,7 +162,19 @@ public:
     short avail_id;                // +0x0E
     float old_time;                // +0x10
 
+    RGE_Time_Entry* add(float time);
+    RGE_Time_Entry* add_attack(float time, RGE_Static_Object* this_obj,
+                                RGE_Static_Object* target_obj);
+    RGE_Time_Entry* add_create(float time, short obj_type, unsigned char player,
+                                float x, float y, float z);
+    RGE_Time_Entry* add_delete(float time, RGE_Static_Object* this_obj);
+    RGE_Time_Entry* add_move(float time, RGE_Static_Object* this_obj,
+                             float x, float y, float z);
+    short find_id(RGE_Static_Object* obj);
+    void mock_update(float time);
+    void save(int handle);
     void sub(RGE_Time_Entry* entry);
+    void update();
 };
 
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
