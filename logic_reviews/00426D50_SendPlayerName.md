@@ -75,15 +75,76 @@ Blind reviewers must establish these directly from the executable:
 
 ## Review rounds
 
-No formal blind review round has been integrated yet.
+### Formal round 1 — concurrent blind cohort
+
+Two fresh reviewers independently assessed the candidate concurrently. Both
+were strictly read-only and unleased, and blind to this ledger, Git history,
+prior reports, and matching conclusions.
+
+#### Reviewer 1 — ABI and exceptional-order review
+
+> **Verdict:** normal-path call behavior is correct, but the candidate is not a
+> full behavioral match.
+>
+> The original physical `DPNAME` layout is `dwSize`, `dwFlags`,
+> `lpszShortName`, `lpszLongName`; the scratch declaration reversed the two
+> pointer names, although compensating assignments produced correct bytes.
+> DirectPlay vslot `+0x78`, `__stdcall` arguments, `ShowReturn`, cleanup, and
+> returned result are correct.
+>
+> **Definite exceptional-path difference:** original reads global player ID
+> `0062CF04` and stores the friendly-name pointer before dereferencing the
+> DirectPlay object, while the rebuilt candidate dereferenced the object first
+> and had already stored `dwSize`. A null/invalid interface therefore changes
+> the first-fault ordering and the partially initialized stack `DPNAME` visible
+> at the fault.
+
+#### Reviewer 2 — independent normal and malformed-state review
+
+> **Definite behavioral differences:** none found for reachable valid state.
+>
+> Correct handler offsets, all call-time `DPNAME` bytes, vslot `+0x78`,
+> arguments, calling convention, one-time global reads, `ShowReturn`, cleanup,
+> and result preservation were verified. The reversed field declaration is a
+> type-model/maintenance concern despite physically compensated bytes.
+>
+> **Plausible concern:** raw indirect-call expression sequencing does not prove
+> exact invalid-interface fault timing relative to final `DPNAME` stores. Normal
+> execution is equivalent; concurrent mutation is unsynchronized.
 
 ## Main-agent adjudication
 
-Pending independent review.
+- **Confirmed — invalid-interface fault ordering.** Original instructions load
+  `0062CF04` at `00426D85`, store the friendly pointer at `00426D8B`, dereference
+  the DirectPlay object at `00426D8F`, and store `dwSize` only at `00426D93`.
+  The pre-fix rebuilt sequence dereferenced the object before loading
+  `0062CF04`, and stored `dwSize` before that dereference. This is a concrete
+  machine-state difference if the interface is invalid; one evidence-backed
+  objection blocks promotion even though the second reviewer classified it as
+  only plausible.
+- **Confirmed and corrected — reversed local type model.** Although physical
+  bytes were compensated, the member names were opposite the executable's
+  canonical `DPNAME` layout and made review error-prone.
+- **Cleared provisionally — valid call behavior and tail.** Both reviewers agree
+  on final record bytes, call target/convention/arguments, `ShowReturn`, cleanup,
+  and result.
+
+The bounded ordering/type defects were corrected directly. Fresh blind post-fix
+review is required before final adjudication or promotion.
 
 ## Integrated changes
 
-None during logic review yet.
+- Corrected `DPNAME` to canonical short-name-at-`+0x08`, long-name-at-`+0x0C`
+  order.
+- Replaced nested comma-expression/raw-vtable call plumbing with explicit typed
+  `IDirectPlay`/vtable statements and named reads/stores.
+- The emitted candidate now loads the player global, stores both name pointers,
+  dereferences the interface, then stores `dwSize`, matching the original's
+  fault-relevant ordering. The function remains 105/105 bytes with both calls
+  aligned; strict drift improves from 32 to 24 bytes. First mismatch moves
+  earlier because the semantically required player-global load is now explicit,
+  but the remaining reordering is among non-faulting LEAs/pushes before the same
+  call boundary.
 
 ## Final decision
 
