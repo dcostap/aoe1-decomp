@@ -11,6 +11,15 @@
 // 2026-05-31 retry: explicit goto-shaped fallback and inverted `if (s != 0)` worsened (outer branch jumps past the original-sized body;
 // two-independent-if version adds extra tests). A final-sprite temp lowered edit diff to 13 but used a common `mov [esi+38],eax`
 // store instead of the original two branch-local stores, so kept the better positional baseline.
+// FLAGS: config/flags/00405620_RGE_Action_Move_To.rsp (/GX) is required for the original EH-framed constructor basin.
+// 2026-08-02 Luna405620 session: fresh checker baseline is structurally 205B vs original 186B (47 positional bytes;
+// entry-reachable duplicated EH epilogue past the original boundary). Inner/outer goto forms and destructor ABI/context
+// variants did not change the 47B basin; an inner ternary reached 186B/31B but changed the binary's branch-local stores.
+// A six-case variant lab found no invariant-eligible lead (the overloaded constructor was not selected by lab extraction).
+// Final clean source restored: natural named-object + inner if/else remains the best period-plausible reconstruction.
+// Paused after 10 meaningful hypotheses; remaining gap is the VC5 EH tail layout at the final sprite fallback.
+// Main-agent source audit replaced the two binary-proven raw sprite offsets with
+// named `sprite18`/`spriteBC` fields; emitted code and the EH-tail blocker were unchanged.
 
 class RGE_Action_Object;
 class RGE_Sprite;
@@ -20,10 +29,14 @@ class RGE_Action_List;
 
 class RGE_Static_Object {
 public:
-    char gap_00[0x38];
+    char gap_00[0x18];
+    RGE_Sprite* sprite18;
+    char gap_1C[0x1C];
     float world_x;
     float world_y;
     float world_z;
+    char gap_44[0x78];
+    RGE_Sprite* spriteBC;
 };
 
 class RGE_Action_Object {
@@ -87,9 +100,9 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
 
     if (spr == 0) {
         RGE_Static_Object* o = this->obj->obj;
-        RGE_Sprite* s = *(RGE_Sprite**)((char*)o + 0xBC);
+        RGE_Sprite* s = o->spriteBC;
         if (s == 0) {
-            sprite = *(RGE_Sprite**)((char*)o + 0x18);
+            sprite = o->sprite18;
         } else {
             sprite = s;
         }
