@@ -66,49 +66,73 @@
 // rebuilt keeps key in EDX/EAX, object/result/info in different registers and uses different
 // zeroing/call-arg LEA registers), not localized harmless drift.
 
-#include <stdlib.h>
+// Luna5359E0 continuation (2026-08-02):
+// - canonical ABI/member-call and stack-home probes exposed the real
+//   RGE_Pick_Info/view_function surface but initially worsened structure.
+// - a focused source-shape lab found the natural memset(param_5,0,20),
+//   picked-object local passed by address, and low-byte mask basin.
+// - final control-flow probe used one if/else-if assignment chain and the
+//   live return code. Current best is 151B with 16 positional bytes / 10.5960%
+//   strict diff, 10 edit bytes / 6.62%, exact frame/call set, and first mismatch
+//   at +1B. Remaining drift is early parameter/local scheduling, not localized
+//   harmless codegen. The attempted register hint was a duplicate and is not
+//   retained.
 
-extern int __stdcall view_function(int a, int b,
-                                    int* c, int* d, int* e,
-                                    int* f, int* g, short* h, short* i);
+#include <string.h>
 
-struct RGE_View {
-    char _gap[4];
-    unsigned char pick(int key, int param_2, int mouse_y, int mouse_x,
-                       void* info, void* obj);
+struct tagPOINT {
+    long x;
+    long y;
 };
 
-unsigned char RGE_View::pick(int key, int param_2, int mouse_y, int mouse_x,
-                              void* info, void* obj) {
+struct RGE_Static_Object;
+struct RGE_Tile;
+
+struct RGE_Pick_Info {
+    float x;
+    float y;
+    short scr_x;
+    short scr_y;
+    RGE_Static_Object* object;
+    RGE_Tile* tile;
+};
+
+struct RGE_View {
+    long view_function(unsigned char mode, unsigned char parm,
+                       tagPOINT* mouse_pos, tagPOINT* start_mouse_pos,
+                       void** picked, float* out_x, float* out_y,
+                       short* out_scr_x, short* out_scr_y);
+    unsigned char pick(unsigned char param_1, unsigned char param_2,
+                       long param_3, long param_4,
+                       RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
+};
+
+unsigned char RGE_View::pick(unsigned char param_1, unsigned char param_2,
+                              long param_3, long param_4,
+                              RGE_Pick_Info* param_5,
+                              RGE_Static_Object* param_6) {
+    RGE_Static_Object* picked = ((unsigned char)param_1 != '(') ? param_6 : 0;
     int locals[4];
 
-    int result = ((unsigned char)key != '(') ? (int)obj : 0;
+    locals[3] = param_4;
+    locals[1] = param_4;
+    locals[2] = param_3;
+    locals[0] = param_3;
 
-    locals[3] = mouse_x;
-    locals[1] = mouse_x;
-    locals[2] = mouse_y;
-    locals[0] = mouse_y;
+    memset(param_5, 0, 20);
 
-    int* pi = (int*)info;
-    pi[0] = 0;
-    pi[1] = 0;
-    pi[2] = 0;
-    pi[3] = 0;
-    pi[4] = 0;
-
-    int ret = (unsigned char)view_function(key, param_2,
-                            &locals[2], &locals[0], &result,
-                            (int*)((char*)info + 0),
-                            (int*)((char*)info + 4),
-                            (short*)((char*)info + 8),
-                            (short*)((char*)info + 0xA));
-
-    unsigned char ucode = (unsigned char)ret;
-    if (ucode == 0x34) {
-        *(int*)((char*)info + 0xC) = result;
-    } else if (ucode == 0x33) {
-        *(int*)((char*)info + 0x10) = result;
+    long ret = this->view_function(
+        param_1, param_2, (tagPOINT*)&locals[2],
+        (tagPOINT*)&locals[0], (void**)&picked,
+        (float*)((char*)param_5 + 0),
+        (float*)((char*)param_5 + 4),
+        (short*)((char*)param_5 + 8),
+        (short*)((char*)param_5 + 0xA));
+    unsigned char code = (unsigned char)ret;
+    if (code == 0x34) {
+        param_5->object = picked;
+    } else if (code == 0x33) {
+        param_5->tile = (RGE_Tile*)picked;
     }
-
-    return ucode;
+    return code;
 }
