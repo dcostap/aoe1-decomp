@@ -24,11 +24,13 @@
 // - separate field assignment, volatile/register/reference pointer aliases, and moving dwSize to arg1 either duplicated the 30.4762% codegen or regressed frame/order; reverted.
 // - corrected ShowReturn declaration to the original char* symbol surface; no intended byte-shape change.
 // PAUSE: best remains the pre-existing 105B/30.4762% source; ordered calls, frame, size, and tail match, while VC5 still swaps the arg-side-effect/pointer-LEA schedule at +0x29. Remaining drift is non-local call setup scheduling, not accepted_drift.
-// Formal review fix 2026-08-02: corrected the canonical DPNAME pointer-field order and replaced
-// comma-expression/raw-call plumbing with explicit typed statements. The emitted code now reads
-// the player global, stores both name pointers, then dereferences the DirectPlay object, and stores
-// dwSize only after that dereference, preserving the original invalid-interface fault state/order.
-// This also improves the retained candidate to 105/105 bytes and 24 strict differing bytes.
+// Formal review/normalization 2026-08-02: corrected canonical DPNAME field order and replaced
+// comma-expression/raw-call plumbing with explicit statements and a period-appropriate typed COM
+// interface. The emitted code reads both globals, stores both name pointers, dereferences the
+// DirectPlay object, and stores dwSize afterward. Current validation is 105/105 bytes, 31 strict
+// differing bytes, with both calls aligned. One post-fix reviewer still considers the different
+// placement of argument pushes at an invalid-interface fault observable; retain in scratch pending
+// fresh review of this normalized source rather than reintroduce scheduling hacks.
 
 #include <string.h>
 
@@ -39,16 +41,25 @@ struct DPNAME {
     unsigned short* lpszLongName;
 };
 
-struct IDirectPlay;
-
-struct IDirectPlayVtbl {
-    void* gap_00[0x78 / 4];
-    long (__stdcall* SetPlayerName)(IDirectPlay* self, void* player,
-                                    DPNAME* name, int flags);
-};
-
-struct IDirectPlay {
-    IDirectPlayVtbl* vtable;
+class IDirectPlay {
+public:
+    virtual void v00() = 0; virtual void v04() = 0;
+    virtual void v08() = 0; virtual void v0C() = 0;
+    virtual void v10() = 0; virtual void v14() = 0;
+    virtual void v18() = 0; virtual void v1C() = 0;
+    virtual void v20() = 0; virtual void v24() = 0;
+    virtual void v28() = 0; virtual void v2C() = 0;
+    virtual void v30() = 0; virtual void v34() = 0;
+    virtual void v38() = 0; virtual void v3C() = 0;
+    virtual void v40() = 0; virtual void v44() = 0;
+    virtual void v48() = 0; virtual void v4C() = 0;
+    virtual void v50() = 0; virtual void v54() = 0;
+    virtual void v58() = 0; virtual void v5C() = 0;
+    virtual void v60() = 0; virtual void v64() = 0;
+    virtual void v68() = 0; virtual void v6C() = 0;
+    virtual void v70() = 0; virtual void v74() = 0;
+    virtual long __stdcall SetPlayerName(void* player, DPNAME* name,
+                                         int flags) = 0;
 };
 
 class RGE_Comm_Error;
@@ -73,14 +84,12 @@ long TCommunications_Handler::SendPlayerName()
 {
     DPNAME dpnSetName;
     memset(&dpnSetName, 0, sizeof(dpnSetName));
-    unsigned short* friendly = (unsigned short*)(void*)this->MyFriendlyName;
     IDirectPlay* dp = *(IDirectPlay**)0x62C5EC;
     dpnSetName.lpszLongName = (unsigned short*)(void*)this->MyFormalName;
-    void* player = *(void* volatile*)0x62CF04;
-    dpnSetName.lpszShortName = friendly;
-    IDirectPlayVtbl* vtable = dp->vtable;
+    dpnSetName.lpszShortName = (unsigned short*)(void*)this->MyFriendlyName;
+    void* player = *(void**)0x62CF04;
     dpnSetName.dwSize = sizeof(dpnSetName);
-    long result = vtable->SetPlayerName(dp, player, &dpnSetName, 2);
+    long result = dp->SetPlayerName(player, &dpnSetName, 2);
     this->Err->ShowReturn(result, (char*)0x580EB4);
     return result;
 }

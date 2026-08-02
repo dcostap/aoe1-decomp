@@ -146,6 +146,51 @@ review is required before final adjudication or promotion.
   but the remaining reordering is among non-faulting LEAs/pushes before the same
   call boundary.
 
+### Formal round 2 — fresh post-fix mixed-model cohort
+
+A fresh Luna reviewer and a DeepSeek V4 Flash reviewer independently assessed
+the corrected candidate concurrently. Both were read-only, unleased, and blind
+to this ledger, previous reports, and history.
+
+#### Reviewer 3 — strict fault-context review
+
+> **Verdict: Reject as a full behavioral match.** Valid-pointer behavior,
+> canonical `DPNAME`, all final bytes, vslot/ABI/arguments, `ShowReturn`, cleanup,
+> and result are correct. At an unreadable player-global slot or invalid
+> DirectPlay object, however, original and rebuilt have pushed different subsets
+> of `2` and `&DPNAME` when the fault occurs. The local record contents agree,
+> but fault-time ESP/stack context differs.
+
+#### Reviewer 4 — independent machine-effect review
+
+> **Verdict: PASS — no definite semantic difference.** The reviewer independently
+> verified the canonical layout, zero/name/size store order, global-read and
+> vtable-dereference order, invalid-interface record state, vslot `+0x78`,
+> `__stdcall` arguments, `ShowReturn`, and return. It classified the residual
+> 24-byte drift as register selection and side-effect-free LEA/load/push
+> scheduling, with no changed program-visible memory slot, constant, call, or
+> target.
+
+### Round 2 adjudication and subsequent normalization
+
+- **Still unresolved — fault-time argument-push context.** The reviewers agree
+  on every C/C++-level read, write, call, argument, fault address, and local
+  record byte, but disagree on whether transient argument words beneath ESP at
+  an access violation are part of the required observable behavior. No evidence
+  has yet established an enclosing handler that inspects these words, but one
+  evidence-backed strict objection remains and therefore blocks promotion.
+- **Cleared — all ordinary and call-boundary behavior.** Both reports independently
+  confirm the complete valid path and DirectPlay ABI.
+
+After the cohort, the source received the newly required plausibility cleanup:
+the explicit raw vtable structure was replaced with a period-appropriate typed
+COM interface and ordinary `dp->SetPlayerName(...)` call. The normalized source
+remains 105/105 bytes with both calls aligned and 31 strict differing bytes. It
+preserves global/name/vtable/size ordering but changes scheduling and was not the
+exact candidate reviewed in round 2. A fresh cohort must review this normalized
+source before any final adjudication; no further cohort was launched in the
+current orchestration window.
+
 ## Final decision
 
 Pending. The function remains in `src/scratch` and must not move to
