@@ -10,12 +10,28 @@
 // - Paused after 10 meaningful probes; no accepted_drift proposed.
 // - Main-agent ABI audit restored the binary-backed inherited virtual surface through slot +0x28;
 //   emitted code and the remaining prologue/register mismatch were unchanged.
+// - Sequential pass: direct target-count guards, target aliasing, register-qualified count,
+//   declaration order, branch-local lifetimes, full derived layout/vtable surface, and a short
+//   counter were either worse or codegen-neutral; the 8-variant prologue lab collapsed to one
+//   188-byte group. The binary-backed RGE_Armor_Weapon_Info surface is retained.
+// - Final best remains 42 strict bytes: exact +0039..+00BC island, 188-byte size/frame/call set;
+//   unresolved entry target/count register basin only. No accepted_drift proposed.
 
 #include "..\..\include\game_globals.h"
 
-struct DamageEntry { short type; short amount; };
+class RGE_Armor_Weapon_Info {
+public:
+    short type;
+    short value;
+};
 
 class RGE_Sprite;
+class RGE_Player;
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class RGE_Task_List;
+class TDrawArea;
+class RGE_Color_Table;
 class RGE_Master_Combat_Object;
 
 class RGE_Master_Action_Object {
@@ -41,18 +57,43 @@ public:
     unsigned char base_armor; // +0x100
     char gap_101;
     short armor_num;          // +0x102
-    DamageEntry* armor;       // +0x104
+    RGE_Armor_Weapon_Info* armor; // +0x104
     short weapon_num;         // +0x108
-    DamageEntry* weapon;      // +0x10C
+    RGE_Armor_Weapon_Info* weapon; // +0x10C
 
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object* target);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long, int,
+        unsigned char);
+    virtual RGE_Task_List* create_task_list();
+    short defense_terrain_bonus; // +0x110
+    char gap_112[2];
+    float weapon_range; // +0x114
+    float area_effect_range; // +0x118
+    unsigned char area_effect_level; // +0x11C
+    char gap_11D[3];
+    float speed_of_attack; // +0x120
+    short missile_id; // +0x124
+    short base_hit_chance; // +0x126
+    unsigned char break_off_combat; // +0x128
+    char gap_129;
+    short fire_missile_at_frame; // +0x12A
+    float weapon_offset_x; // +0x12C
+    float weapon_offset_y; // +0x130
+    float weapon_offset_z; // +0x134
+    float minimum_weapon_range; // +0x138
+    short orig_armor; // +0x13C
+    short orig_weapon; // +0x13E
+    float orig_weapon_range; // +0x140
+    float orig_speed_of_attack; // +0x144
 };
 
 long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object* target)
 {
     float total = DAT_00570504;
     int count = target->weapon_num;
-    DamageEntry* weapon = target->weapon;
+    RGE_Armor_Weapon_Info* weapon = target->weapon;
 
     if (count > 0) {
         int armor_count = this->armor_num;
@@ -62,18 +103,18 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object
             int value = base_armor;
             if (armor_count > 0) {
                 short weapon_type = weapon->type;
-                DamageEntry* armor = this->armor;
+                RGE_Armor_Weapon_Info* armor = this->armor;
                 n = armor_count;
                 do {
                     if (armor->type == weapon_type) {
-                        value = armor->amount;
+                        value = armor->value;
                     }
                     ++armor;
                     --n;
                 } while (n != 0);
             }
 
-            int attack = weapon->amount;
+            int attack = weapon->value;
             float diff = (float)attack - (float)value;
             if ((double)diff > DAT_00570508) {
                 total += diff;
