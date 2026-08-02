@@ -99,20 +99,45 @@
 // 64: Explicit top-tested search label/backedge emitted the same EBX-save family.
 // 65: Restored declaration-only virtual destructor donor surface; no codegen change.
 //     Bounded Luna-50DFD0 session exhausted at unchanged best 92/100 (98-byte strict diff).
+// 66 (Luna50DFD0): Fresh canonical reset: use the proven polymorphic Timeline surface and
+//     the natural do/while traversal so the null case falls through while the non-null path
+//     takes the original top compare and `jne` backedge. The next check is the clean baseline.
+// 67-73 (Luna50DFD0): Tested an explicit infinite loop, found-arm return, short-circuit
+//     duplicate guard, scoped link, stable-base/moving-link pair, and direct-member first
+//     guard. The infinite/found forms regressed to 92 B; the other forms were duplicate or
+//     neutral at the 96 B polymorphic baseline (93 strict diff, 81.40% shape). The clean
+//     source remains the natural polymorphic do/while. Remaining structural lead is the
+//     original duplicate top guard plus ECX-head/EAX-link coloring; no new ABI evidence.
 
-extern "C" void __cdecl free(void* block);
+#include <stdlib.h>
+
+class RGE_Game_World;
 
 struct RGE_Time_Entry {
     float time;                    // +0x00
     unsigned char command;         // +0x04
-    unsigned char gap_05[0x27];    // 0x05-0x2B
+    unsigned char gap_05[1];       // +0x05
+    short obj_type;                // +0x06
+    unsigned char player;          // +0x08
+    unsigned char gap_09[3];       // +0x09
+    float x;                       // +0x0C
+    float y;                       // +0x10
+    float z;                       // +0x14
+    short task;                    // +0x18
+    unsigned char gap_1A[2];       // +0x1A
+    void* this_obj;                // +0x1C
+    short this_obj_id;             // +0x20
+    unsigned char gap_22[2];       // +0x22
+    void* target_obj;              // +0x24
+    short target_obj_id;           // +0x28
+    unsigned char gap_2A[2];       // +0x2A
     RGE_Time_Entry* next;          // +0x2C
 };
 
 class RGE_Timeline {
 public:
-    void* vtable;                  // +0x00
-    void* world;                   // +0x04
+    virtual ~RGE_Timeline();
+    RGE_Game_World* world;         // +0x04
     RGE_Time_Entry* time_list;     // +0x08
     short list_num;                // +0x0C
     short avail_id;                // +0x0E
@@ -123,24 +148,27 @@ public:
 
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
     RGE_Time_Entry* p = this->time_list;
-    RGE_Time_Entry** base = &this->time_list;
+    RGE_Time_Entry** link = &this->time_list;
     if (p != 0) {
-        RGE_Time_Entry** link = base;
         if (p != 0) {
-            while (p != entry) {
+            do {
+                if (p == entry)
+                    break;
                 link = &p->next;
                 p = p->next;
-                if (p == 0) return;
+            } while (p != 0);
+
+            if (p != 0) {
+                *link = p->next;
+                if (p->command == 1) {
+                    entry = this->time_list;
+                    while (entry != 0)
+                        entry = entry->next;
+                }
+                this->sub(entry);
+                free(p);
+                this->list_num--;
             }
-            *link = p->next;
-            if (p->command == 1) {
-                entry = *base;
-                while (entry != 0)
-                    entry = entry->next;
-            }
-            this->sub(entry);
-            free(p);
-            this->list_num--;
         }
     }
 }
