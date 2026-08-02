@@ -25,54 +25,75 @@
 // GIVEUP: exactness still blocked by broad pre-call stack-address/register allocation topology around pick_tile; not accepted_drift.
 // Retry 2026-05-21 Boss pass: revalidated baseline (148B, 80.4054% positional / 40.5405% edit, first mismatch +3). Tried pointer locals before original-param saves, volatile/register originals after pointer locals, saving originals after call from parameter homes, direct final stores from mutated parameter slots (matched first LEAs to +11 but lost EBX/EDI and worsened edit), reference-form out params, comma-if assignment, explicit assign-then-pointer locals, split declaration order, extra pointer-address dependency, and flags /Oa /Og- /O2-no-/Oy /Ob0+/G5. No exact or accepted-drift-quality result; direct-param family improves first LEAs but still has broad saved-register/pick_tile call topology drift.
 // Retry 2026-05-24 Boss pass: 20 more probes. Revalidated baseline (148B, 80.4054% positional / 40.5405% edit, first mismatch +3). Tried tile-before-original declarations, original order swaps, no-saved-original/direct-param stores (first mismatch +11 but wrong behavior for final full-dword mouse stores and still 75.68% positional), direct-call success locals, named float/int temporaries, post-call saved locals, raw pointer out-param locals, swapped out params / swapped float args (best edit 39.19% but semantically suspect and still early mismatch), register/const/volatile original locals, explicit ok temp/comma call, main_view temp, casted virtual update calls, reference/address locals before original saves, assigning pointer locals before saves, saved refs, and orig-inside-args/copy-back variants. All real-behavior variants stay in the same early pick_tile setup basin; no accepted_drift because mismatch remains broad call setup/saved-register/stack-address topology.
-// Retry 2026-05-26 Boss pass: revalidated baseline (148B, 80.4054% positional / 40.5405% edit, first mismatch +3). Tried 15 more variants: direct parameter homes with final stores from params (first mismatch +11 but wrong final full-dword semantics and still 112 positional), pointer-locals-before-saves, assignment-before-pointer forms, local frame struct, comma-if saves, orig order swaps, named short/float temps, explicit ok temp, volatile originals, final store order swap, long* out-param prototype, initialized tile, else-success layout, and hardcoded float constant address. No behavior-correct variant improved the early call setup basin; best real source remains current baseline. GIVEUP; not accepted_drift because drift is broad pre-call stack-address/saved-register topology and shifted FPU/call tail, not localized benign drift.
+// Luna-438720 bounded pass (2026-08-02, 10 hypotheses):
+// - Fresh baseline: 152B vs 148B, 91.4474% positional diff, 28.29% edit diff, first mismatch +3; calls/frame aligned.
+// - Restored the historical flat/raw-vtable source (160B, worse), then reused the exact matched diam_map.cpp TPanel/RGE_View donor surface (same 152B basin).
+// - Typed the tile out-parameter and varied tile/original declaration order, volatile address aliases, direct parameter stores, register parameters, const out declarations, and separated assignments; no behavior-correct variant improved the setup basin.
+// - Best retained source uses the matched TPanel/RGE_View surface, typed RGE_Tile**, and saved full-width original parameters. Remaining drift is the broad pre-pick_tile LEA/save/address topology (original LEAs precede callee-save pushes; rebuild has a four-byte larger setup), not accepted-drift quality.
+
+struct RGE_Tile;
 
 class RGE_Player {
 public:
     void set_view_loc(float x, float y);
 };
 
-class VBase {
+class TPanel {
 public:
-    virtual void d0();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void d5();
-    virtual void d6();
-    virtual void d7();
-    virtual void update_view(int);
+    virtual ~TPanel() {}
+    virtual void v04() {}
+    virtual void v08() {}
+    virtual void v0C() {}
+    virtual void v10() {}
+    virtual void v14() {}
+    virtual void v18() {}
+    virtual void v1C() {}
+    virtual void update_view(int mode) {}
+    char gap_00[0xF0];
 };
 
-class RGE_Diamond_Map : public VBase {
+class RGE_View {
+public:
+    virtual ~RGE_View() {}
+    virtual void v04() {}
+    virtual void v08() {}
+    virtual void v0C() {}
+    virtual void v10() {}
+    virtual void v14() {}
+    virtual void v18() {}
+    virtual void v1C() {}
+    virtual void update_view(int mode) {}
+};
+
+class RGE_Diamond_Map : public TPanel {
 public:
     void handle_scroll_view(long param_1, long param_2);
-    int pick_tile(long param_1, long param_2, short* out1, short* out2, void** out_tile);
+    int pick_tile(long param_1, long param_2, short* out1, short* out2, RGE_Tile** out_tile);
 
-    char gap_04[0xF0];
-    void* world;                 // +0xF4
+    char gap_F4[0x04];          // +0xF4: world (unused)
     RGE_Player* player;          // +0xF8
     char gap_FC[0x0C];
     long mouse_last_x;           // +0x108
     long mouse_last_y;           // +0x10C
     char gap_110[0x40];
-    VBase* main_view;            // +0x150
-    char gap_154[0x18];
+    RGE_View* main_view;          // +0x150
+    int scrolling;               // +0x154 (unused)
 };
 
 void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2)
 {
-    long orig_2 = param_2;
-    long orig_1 = param_1;
-    void* tile;
+    RGE_Tile* tile;
+    long orig_2;
+    long orig_1;
+    orig_2 = param_2;
+    orig_1 = param_1;
     if (this->pick_tile(param_1, param_2, (short*)&param_1, (short*)&param_2, &tile) != 0) {
         this->player->set_view_loc((float)(short)param_2 - 0.5f, (float)(short)param_1 - 0.5f);
 
         this->update_view(1);
 
         if (this->main_view != 0) {
-            this->main_view->update_view(1);
+        this->main_view->update_view(1);
         }
 
         this->mouse_last_x = orig_1;
