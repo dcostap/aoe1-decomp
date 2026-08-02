@@ -78,15 +78,66 @@ Blind reviewers must establish these directly from the executable:
 
 ## Review rounds
 
-No formal blind review round has been integrated yet.
+### Formal round 1 — concurrent blind cohort
+
+Two fresh reviewers independently assessed the candidate concurrently. Both
+were strictly read-only and unleased, and blind to this ledger, Git history,
+prior reports, and matching conclusions.
+
+#### Reviewer 1 — full emitted-effects review
+
+> **Verdict: Not behaviorally equivalent.**
+>
+> **Definite difference:** the body increments `p` and then uses `p[0x20]`.
+> This writes candidate offsets `P+0x84` through `P+0xC0`, while original
+> `mov [eax+7Ch],edi` writes `P+0x80` through `P+0xBC`. The translated
+> expression must be `p[0x1f]` after the increment. One intended element remains
+> uncleared and one following element is incorrectly cleared.
+>
+> **Verified matching behavior:** initial pointers, saved pointer, 16 iterations
+> and counter values, player-block zeroing and Wood/Food/Stone replacements,
+> duplicate `block[0]` write, all other `p`-relative stores, final `*saved = 1`,
+> return, and callee-saved restoration match. Current `memset` lowering expands
+> to the same four ordered dword stores. Hoisting 200 is register-only.
+
+#### Reviewer 2 — independent offset and layout review
+
+> **Verdict: Reject as-is.**
+>
+> **Definite mismatch:** with `p == &_padding_[0]` and `p++` already performed,
+> original `add eax,4; mov [eax+7Ch],edi` is `p[0x1F] = 0`, not `p[0x20]`.
+> The candidate leaves the first active-player element unchanged, shifts the
+> remaining clears by one, and its last iteration clears the following field.
+>
+> `block=q-2`, the four zero stores, 200/200/150 values, `p[-1]`, `p[0x0F]`,
+> `p[-0x11]`, `p[0xCB6]`, `p[0xE0C]`, 16-iteration topology, and final saved
+> pointer write were independently confirmed. Source-level `memset` alone does
+> not promise four separate accesses, but the pinned emitted candidate does.
 
 ## Main-agent adjudication
 
-Pending independent review.
+- **Confirmed — active-player clear is displaced by four bytes.** Both reports
+  independently identify the same instruction-proved error. Initial `p` is
+  `this+0x18CC`; after `p++`, original `[eax+0x7C]` addresses
+  `this+0x194C+4*i`, whereas source `p[0x20]` addressed
+  `this+0x1950+4*i`. This is an ordinary valid-state behavioral defect.
+- **Cleared provisionally — all other effects.** Both reviewers independently
+  confirmed every other store, width, value, loop boundary, and final override.
+  Rebuilt disassembly confirms `memset` lowers to four ordered 32-bit stores,
+  so no helper call or altered granularity exists in the pinned artifact.
+
+The confirmed defect is bounded and has been corrected directly. A fresh blind
+post-fix cohort is required before final adjudication or promotion.
 
 ## Integrated changes
 
-None during logic review yet.
+- Changed the post-increment active-player clear from `p[0x20]` to `p[0x1f]`,
+  reproducing original displacement `+0x7C` from the advanced pointer.
+- Post-fix validation remains 123/123 bytes with the same frame, saved registers,
+  loop CFG, and no calls. The shorter `+0x7C` encoding changes late layout and
+  raises positional drift to 68 bytes, while edit/resync cost improves from 23
+  to 22 raw bytes (8.94% bounded) and 109 bytes remain equal. This metric
+  regression is required for correct memory effects.
 
 ## Final decision
 

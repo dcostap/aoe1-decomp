@@ -119,7 +119,7 @@ void T_Scenario::InitializePlayerValues()
 
         memset(block, 0, 16);
 
-        p[0x20] = zero;
+        p[0x1f] = zero;
         block[0] = zero;
 
         q[-5] = 200;
