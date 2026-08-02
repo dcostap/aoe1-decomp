@@ -54,6 +54,11 @@
 //     do-store, comma-mode, and base dispatch); one invariant-eligible group, no exact. Current
 //     between-stores spelling remains best at 41 strict bytes.
 // Final bounded result: 10/10 meaningful hypotheses exhausted; leave scratch at validated 41 B.
+// Logic review round 1 confirmed the between-stores spelling is behaviorally wrong at the
+// virtual redraw boundary. Main-agent fix: store both mouse_last fields before set_redraw.
+// VC5 tail-merges that corrected path with a later redraw/return tail: validated 1801B,
+// 96 strict bytes, 35/36 static call sites (runtime case-7 redraw preserved). Semantic order
+// takes precedence over the smaller matching-oriented diff; fresh blind review is required.
 
 #include <windows.h>
 #include <stdlib.h>
@@ -246,8 +251,8 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
             return 1;
         }
         this->mouse_last_x = param_1;
-        this->set_redraw(1);
         this->mouse_last_y = param_2;
+        this->set_redraw(1);
         return 1;
 
     case 8:

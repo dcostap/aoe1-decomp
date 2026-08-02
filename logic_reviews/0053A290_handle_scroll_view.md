@@ -62,15 +62,110 @@ Blind reviewers must establish these directly from the executable:
 
 ## Review rounds
 
-No formal blind review round has been integrated yet.
+### Formal round 1 — complete concurrent blind cohort
+
+Two fresh reviewers ran concurrently, blind to this ledger, Git history, prior
+reports, and harmlessness claims. Both were strictly read-only and unleased.
+
+#### Reviewer 1 — broad adversarial behavior
+
+> **Conclusion:** The candidate matches the original executable's ordinary
+> control flow, predicates, offsets, calls, argument order, conversions, and side
+> effects across cases 2, 6, 7, 8, and default dispatch. One definite
+> reentrancy-visible difference remains.
+>
+> **Definite difference**
+>
+> For `scroll_action == 7`, when both drag distances are `<= 8`, the source does
+> `mouse_last_x = param_1; set_redraw(1); mouse_last_y = param_2;`. Original
+> instructions `0053A484–0053A493` write both fields before the virtual redraw
+> call. A redraw override or reentrant callback can therefore observe old
+> `mouse_last_y` in the candidate but the new value in the original.
+>
+> **Verified assumptions**
+>
+> - Only 2, 6, 7, and 8 have dedicated switch paths; all other byte values use
+>   the edge-scroll path.
+> - Case 7/8 nonzero deltas are strictly `-99..99`; edge deltas are strictly
+>   `-199..199`; cursor warp uses distance `> 8`.
+> - The 16-bit `map_x`/`map_y` writes and order match.
+> - `pick`, `is_inside`, `bound_point`, `set_view_loc`, `set_selection_area`,
+>   `teleport`, `do_paint`, and virtual redraw targets and arguments match.
+> - Case 4 reloads `selected_obj` after teleport and follows the original
+>   sprite-list/sprite/fallback level chain.
+> - Case 9 passes pre-update coordinates to `do_paint`; null/failure paths and
+>   final view-change return/redraw logic match.
+>
+> Extreme signed subtraction/`abs(LONG_MIN)` depends on pinned VC5 wraparound.
+> The ordering difference is definitely present at a virtual call boundary even
+> though observability requires inspection or reentry.
+>
+> **Recommendation:** Not fully equivalent until the case-7 stores both precede
+> redraw.
+
+#### Reviewer 2 — dispatch, calls, state ordering, and numeric edges
+
+> **Definite finding:** Case 7's non-warp path has the wrong observable write
+> order. Original `0053A484–0053A493` writes `mouse_last_x` and
+> `mouse_last_y`, then calls virtual `set_redraw(1)`. The candidate calls between
+> the stores. A reentrant/overridden redraw sees different state and any
+> callback mutation of `mouse_last_y` is overwritten afterward. The case-7 warp
+> path is correct: y store, x store, then redraw.
+>
+> **Verified matches**
+>
+> - Switch/default semantics and virtual slots `is_inside +0xBC`, redraw
+>   `+0x20`, `do_paint +0xF4`, and teleport `+0x34` match.
+> - Direct helpers and both stdcall Windows APIs have matching arguments and
+>   cleanup.
+> - Signed thresholds, strict clipping ranges, `abs(...) > 8`, 16-bit map
+>   updates, float conversions, nullability/unguarded dereferences, sprite
+>   fallback, and return/redraw decisions match apart from case-7 timing.
+>
+> x87 C3-only equality and extreme signed overflow are pinned-artifact caveats,
+> not separately evidenced mismatches.
+>
+> **Verdict:** Reject strict behavioral equivalence until the non-warp source is
+> `mouse_last_x = param_1; mouse_last_y = param_2; set_redraw(1);`.
 
 ## Main-agent adjudication
 
-Pending independent review.
+### Formal round 1 adjudication
+
+- **Confirmed — case-7 non-warp write/call order.** Original B018 loads the
+  redraw vtable and argument, writes `mouse_last_x`, writes `mouse_last_y`, then
+  performs the virtual call. The candidate's retained matching-oriented source
+  calls redraw between those writes. Virtual dispatch is an observable boundary:
+  an override can inspect both fields or mutate `mouse_last_y`, so this is a real
+  behavioral difference and blocks promotion.
+- **Cleared provisionally — all other reviewed paths.** Both independent reports
+  agree with instruction evidence on dispatch, predicates, calls and arguments,
+  widths, null behavior, FPU/integer conversions, warp path, object/sprite
+  handling, redraw decisions, and return values. These areas require fresh
+  confirmation after the source fix but have no current open finding.
+- **Cleared — portable-overflow caveats for the pinned artifact.** Promotion is
+  judged on the actual VC5-emitted candidate. Final adjudication will verify its
+  32-bit arithmetic and x87 predicates directly rather than substitute modern
+  portable-language semantics.
+
+The confirmed issue is bounded and its exact correction is proved by original
+instruction order, so the main agent will integrate it directly before another
+fresh blind cohort.
 
 ## Integrated changes
 
-None during logic review yet.
+- Changed the case-7 non-warp source to store `mouse_last_x` and
+  `mouse_last_y` before calling `set_redraw(1)`, matching the original's
+  observable state at the virtual call boundary. Validation and resulting
+  metrics are recorded after the edit.
+- Post-fix validation: size remains 1801/1801, frame `0x24`/`0x24`, saved
+  registers aligned, instructions 588/586, strict difference 96 bytes, bounded
+  edit cost 3.03%, and CFG signals 59/59 conditionals and 9/9 jumps. Static call
+  sites are 36/35 because VC5 tail-merges the corrected case-7 redraw/return with
+  the later identical redraw/return tail; focused disassembly confirms the
+  case-7 path performs both field stores and then reaches the shared virtual
+  `set_redraw(1)` call. This is a code-layout regression from the 41-byte
+  matching-oriented source but a required semantic correction.
 
 ## Final decision
 
