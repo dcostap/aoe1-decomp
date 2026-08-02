@@ -9,11 +9,35 @@
 //   remaining: register encoding only (esi for md, edi for capacity)
 // probe 3: 28.4% - explicit md var, worse register allocation
 //
-// left in scratch: best was probe 2 (10.4%). Remaining drift is VC5
-// register allocation: ESI overwritten with md (instead of using EDI),
-// EDI used for capacity save (instead of ESI). Same instructions,
-// different register encodings (8b b6 vs 8b be, 8b f8 vs 8b f0).
-// All semantically equivalent. Stable VC5 decision at single-function scope.
+// Session 2026-08-02 (sa-6032f135), 7 probes:
+// - Canonical ownership established: md(+0xF0) -> RGE_Player(player+0xF0) ->
+//   float* attributes(+0x50); capacity = (int)attributes[6] via __ftol (PDB
+//   12313). sn is the real strategicNumbers[226] array at +0x194; +0x3EC =
+//   sn[0x96], +0x48C = sn[param3+0xBE]. buildAI at md+0x104, resourceAI at
+//   md+0x10D7C, informationAI at md+0xCEC (granaries sibling 00501C70 matched
+//   with raw-cast md style; that style kept here).
+// - Best clean reconstruction (this file, pinned): in-place multiply + named
+//   result-first tail -> 12.16% (27 bytes, 3 spans), 222/222, calls 100%,
+//   EXACT CODEGEN stage. md->edi, tail sub/store/clamp order correct.
+// - Remaining drift is ONE localized VC5 register/scheduling basin:
+//   orig keeps capacity in EAX through test/jne/mov/`imul eax,ebx` and saves
+//   the product to ESI only right before the call; every rebuilt variant
+//   coalesces capacity+product into a callee-saved register (esi or edi) and
+//   sinks `imul` after the call. 4 variant-lab rounds (~47 source shapes:
+//   in-place vs separate product, operand swap, store-first vs result-first,
+//   named vs anonymous ternary, ghidra `((r<0)-1)&r` return, register/const
+//   qualifiers, top-declared locals, multiply-in-return, param mutation) +
+//   full real class surfaces (TacticalAIModule base + sn[226] + typed md
+//   members with real sizes) + risky-flag sweep all collapse into the same
+//   two basins; no third basin reaches the original. Store-first ternary
+//   keeps imul before call but forces md->esi/product->edi plus an extra
+//   mov; result-first is clean in the tail but coalesces/sinks.
+// - Next lead: none obvious at single-function scope. Sibling 004E3E90
+//   (TribeInformationAIModule::numberAvailableStoragePits) is stuck on the
+//   same esi/edi register-swap family. A future worker might re-try md typed
+//   as the real TribeMainDecisionAIModule (0x125C8) or check whether the
+//   original source reused iVar3 for the product with an explicit separate
+//   result variable under a slightly different TU include context.
 
 #include <stdlib.h>
 
@@ -33,12 +57,18 @@ public:
     int numberAvailableStoragePits(int type);        // 004E3E90h, ret 4
 };
 
+class RGE_Player {
+public:
+    char gap_00[0x50];
+    float* attributes;   // +0x50
+};
+
 class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
-    void* player;              // +0xF0
-    char gap_F4[0x10];         // up to +0x103
-    BuildAIModule buildAI;     // +0x104
+    RGE_Player* player;          // +0xF0
+    char gap_F4[0x10];           // +0xF4 to +0x103
+    BuildAIModule buildAI;       // +0x104
 };
 
 class TribeTacticalAIModule {
@@ -67,15 +97,15 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
 
     int storage_pit_count = this->sn_3EC;
     if (storage_pit_count != -1) {
-        void* player = this->md->player;
-        int capacity = (int)*(float*)((char*)*(void**)((char*)player + 0x50) + 0x18);
+        int capacity = (int)this->md->player->attributes[6];
         if (capacity == 0) {
             capacity = 1;
         }
         capacity *= storage_pit_count;
         int count = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
+        int result = capacity - count;
         param1 = count;
-        return (capacity - count < 0) ? 0 : capacity - count;
+        return result < 0 ? 0 : result;
     } else {
         int count = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
         param1 = count;
