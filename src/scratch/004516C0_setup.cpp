@@ -28,6 +28,8 @@
 // Retry 2026-05-21 Boss pass: 17 more probes. Tried p4/p2/p3/file locals in desired load order, no-file-local until after base call, delayed/register/volatile file, base call with file/param mixes and comma assignment, fscanf address locals, copied post-fscanf store order, short* casts to parameter slots, &ballistics_ratio/address locals, and several file-lifetime variants. Best kept below improves to 68.0000% positional with first mismatch +16 by delaying the file local until after the base setup call, matching the initial parameter-load order; however it loses the original EDI file lifetime and still has broad fscanf address/copy scheduling drift. No accepted_drift: stack/call/register topology remains structural.
 // Retry 2026-05-24 Boss pass: 10 more probes. Revalidated kept baseline (150B, 68.0000% positional / 54.6667% edit). Tried pre-base file local and register file (restores EDI lifetime but regresses first mismatch to +2 and wrong initial load order), reversed fscanf argument source order, explicit base pointer local, volatile FILE* after base, captured base setup return, widened base param_4 to int (movsx/worse), and /Ob0 flag (no change, removed). Best remains kept delayed-file baseline. Not accepted_drift: mismatch remains broad structural stack/call/register topology around base setup/fscanf and post-read copies.
 // Retry 2026-05-26 Boss pass: 15 probes on VA 004516C0 only. Revalidated kept source: 150B, 68.0000% positional / 54.6667% edit, first mismatch +16. Tried pre-base file local and file-used-in-base (restored EDI but regressed to +2 / 81.3333%), explicit p4/p2/p3/file locals (88.6667%), short* casts for fscanf destinations, fmt local, byte-pointer field stores, return local, post-copy byte temps, captured base return, void* ballistics arg, and flag probes /G5 /Og /Oa /Oy- /O1. No improvement; most variants optimized to kept baseline or regressed broadly. GIVEUP: not accepted_drift quality; remaining mismatch is structural call/stack/register topology around base setup, fscanf address formation, and post-read copies.
+// Luna-4516C0 2026-08-02: fresh baseline rebuilt 152B (75.0000% positional, first mismatch +16; prior 150B record was stale).
+// Tried exact RGE_Master_Combat_Object declaration (no code change), pre-base FILE alias (88.1579%, wrong entry loads), using alias in base call (duplicate), register alias/declaration reorder (duplicate), and register FILE parameter (same 75.0000% family). Restored the delayed FILE alias best source. Structural blocker remains: original saves EDI before base-argument pushes and keeps incoming parameter homes as overlapping fscanf destinations; current source omits EDI and schedules the post-fscanf byte reload/store family differently. Not accepted_drift: broad call/stack topology drift.
 
 #include <stdio.h>
 
@@ -43,7 +45,7 @@ struct RGE_Master_Missile_Object {
     int setup(FILE* param_1, void** param_2, void** param_3, short param_4);
 };
 
-struct RGE_Master_Combat_Object_setup4 {
+struct RGE_Master_Combat_Object {
     char base[0x148];
     int setup(FILE* param_1, void** param_2, void** param_3, short param_4);
 };
@@ -51,7 +53,7 @@ struct RGE_Master_Combat_Object_setup4 {
 int RGE_Master_Missile_Object::setup(FILE* param_1, void** param_2, void** param_3, short param_4)
 {
     short temp_missile_type;
-    ((RGE_Master_Combat_Object_setup4*)this)->setup(param_1, param_2, param_3, param_4);
+    ((RGE_Master_Combat_Object*)this)->setup(param_1, param_2, param_3, param_4);
     FILE* file = param_1;
 
     *(unsigned char*)((char*)this + 0xA4) = 1;
