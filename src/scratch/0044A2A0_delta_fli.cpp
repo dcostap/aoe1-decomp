@@ -1,66 +1,83 @@
 // RGE_Flic_Player::delta_fli
 // VA: 0044A2A0 (232 bytes)
-// Decodes delta-FLIC video frames
+// flics.cpp lines 445-488
+// Decodes delta-FLIC video frames.
+//
+// Attempt log:
+// - v1 baseline (natural reconstruction): chunk = this->chunk; count = *(int*)chunk;
+//   chunk += 8; if (count <= 0) return; do { lines = (signed char)*chunk++; x = 0;
+//   if (lines > 0) { do { x += *chunk; cnt = chunk[1]; chunk += 2;
+//   if (cnt < 0) { cnt = -cnt; memset(window_buffer + x, *chunk, cnt); chunk++; }
+//   else { memcpy(window_buffer + x, chunk, cnt); chunk += cnt; } x += cnt; }
+//   while (--lines != 0); } window_buffer += drawarea_width; } while (--count != 0);
+//   diff 282 -> 177 (shape 93.9%, size 233/232). Packet loop + loop bottoms already
+//   byte-exact; only 3 localized gaps remained: count-spill placement, lines-spill
+//   placement, and chunk+=2 vs two inc ebp.
+// - v2: x=0 declared before chunk++; split chunk+=2 into chunk++; chunk++.
+//   diff 177 -> 174 (shape 95.1%). x=0 order now matches (xor ebx,ebx before inc ebp)
+//   but VC5 still merges the two increments into add ebp,2 (3B vs 2B). BEST state.
+// - v3: wrapped outer do-while in if (count > 0) { ... } per Ghidra shape: REGRESSED
+//   to 184 (shape 91.5%, size 235). Reverted to v2.
+// - Remaining gap (v2): original spills count/lines to their home slots AFTER the
+//   guard branches (count: [esp+18h] after jle + push edi/ebx; lines: [esp+14h] after
+//   jle) in separate spill blocks; rebuilt spills both BEFORE the jle. Original also
+//   emits two separate inc ebp for the packet-header advance (PDB lines 468/469)
+//   while rebuilt merges to add ebp,2. Untried: barrier between the two chunk++
+//   statements (e.g. +=1 forms, comma, or a use of chunk between them); for-loop
+//   spelling of the packet loop; volatile/cast spelling of chunk[1].
 
-struct RGE_Flic_Player {
-    char gap_00[0x90];
-    int flic_buffer_delta;   // +0x90
-    char gap_94[0x04];
-    unsigned char* frame_buf; // +0x98
-    char gap_9C[0x04];
-    unsigned char* chunk_ptr; // +0xA0
+#include <string.h>
+
+class RGE_Flic_Player {
+public:
+    unsigned char* flic_buffer;   // +0x00
+    int flic_handle;              // +0x04
+    char flichead[0x84];          // +0x08
+    void* drawarea;               // +0x8C
+    long drawarea_width;          // +0x90
+    long flic_width;              // +0x94
+    unsigned char* window_buffer; // +0x98
+    unsigned char* save_buffer;   // +0x9C
+    char* chunk;                  // +0xA0
+    long x1;                      // +0xA4
+    long y1;                      // +0xA8
+    long x2;                      // +0xAC
+    long y2;                      // +0xB0
+    long flic_size_x;             // +0xB4
+    long flic_size_y;             // +0xB8
 
     void delta_fli();
 };
 
-void RGE_Flic_Player::delta_fli() {
-    unsigned char* chunk = chunk_ptr;
-    int chunk_count = *(int*)chunk;
+void RGE_Flic_Player::delta_fli()
+{
+    char* chunk = this->chunk;
+    int count = *(int*)chunk;
     chunk += 8;
-    
-    if (chunk_count <= 0) return;
-    
+    if (count <= 0) return;
+
     do {
-        int line_count = (signed char)*chunk;
+        int lines = (signed char)*chunk;
+        int x = 0;
         chunk++;
-        int line_offset = 0;
-        
-        if (line_count > 0) {
-            int y = line_count;
-            while (y != 0) {
-                signed char opcode = (signed char)*chunk;
-                line_offset += opcode;
+        if (lines > 0) {
+            do {
+                x += (signed char)*chunk;
+                char cnt = chunk[1];
                 chunk++;
-                
-                if (opcode < 0) {
-                    // Fill run: negative opcode = count, next byte = color
-                    int count = -opcode;
-                    unsigned char color = *chunk;
+                chunk++;
+                if (cnt < 0) {
+                    cnt = -cnt;
+                    memset(this->window_buffer + x, *chunk, cnt);
                     chunk++;
-                    unsigned int fill_val = color | (color << 8) | (color << 16) | (color << 24);
-                    unsigned char* dest = frame_buf + line_offset;
-                    int ecx = count >> 2;
-                    int rem = count & 3;
-                    // rep stosd
-                    while (ecx--) { *(unsigned int*)dest = fill_val; dest += 4; }
-                    // rep stosb
-                    while (rem--) { *dest = (unsigned char)fill_val; dest++; }
                 } else {
-                    // Copy run: positive opcode = count, copy that many bytes from chunk
-                    int count = opcode;
-                    unsigned char* dest = frame_buf + line_offset;
-                    // rep movsd
-                    int ecx = count >> 2;
-                    int rem = count & 3;
-                    while (ecx--) { *(unsigned int*)dest = *(unsigned int*)chunk; dest += 4; chunk += 4; }
-                    while (rem--) { *dest = *chunk; dest++; chunk++; }
+                    memcpy(this->window_buffer + x, chunk, cnt);
+                    chunk += cnt;
                 }
-                
-                y--;
-            }
+                x += cnt;
+            } while (--lines != 0);
         }
-        
-        flic_buffer_delta += frame_buf - (unsigned char*)0 + flic_buffer_delta; // approximate
-        chunk_count--;
-    } while (chunk_count != 0);
+        this->window_buffer += this->drawarea_width;
+        count--;
+    } while (count != 0);
 }

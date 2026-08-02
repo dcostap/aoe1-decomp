@@ -1,14 +1,32 @@
 // RGE_Victory_Conditions::handle_points_high_attribute_once
 // VA: 00533330
 // victory.cpp
+// Attempt log:
+// - Probe 1 (baseline): natural for-loop, walking pp = players+1, per-iteration re-reads of
+//   this->player->id / world->player_num. Recovered push ecx frame, size 224, both ftol calls,
+//   param-slot reuse for val; diff 217 -> 61. Remaining: prologue register roles and tail arms.
+// - Probe 2: guarded do/while with pp++ at top (Ghidra shape) -> frame 0x8, diff 221 (self local
+//   forced a stack home); rolled back. For-loop was the right basin.
+// - Probe 3: flipped final if/else arms to `>=` with points inline -> original je-to-end tail
+//   layout; diff 61 -> 43, tail region byte-exact.
+// - Probes 4-6: p=entry alias / entry direct, do/while variants -> no better; register coloring
+//   (entry in ebx vs original edi) was the only remaining gap at 43.
+// - Probes 7-8: guard-if with pp init inside (pp = players+1 after jle) + do/while bottom
+//   increments -> 32; then pp = players pre-guard + pp++ inside guard + do/while bottom i++/pp++
+//   -> 29, shape 96.4%, blocks 88.1%, loop prelude order matches (cmp; mov players; jle; add 4).
+// - Probes 9-11: register on pp, plain for-loop with separate pp=players+1 statement -> 43, no
+//   flip; rolled back to the 29-byte do/while form. `register` on pp is a no-op.
+// - Left in scratch: remaining 29 bytes = pure register coloring swap: rebuilt keeps entry in ebx
+//   and pp in edi while the original keeps entry in edi and pp in ebx (same push order ebx/ebp/
+//   esi/edi). Prologue interleave and every [reg+X] operand differ only by that swap. All calls,
+//   frame, size, CFG, block topology, and tail are exact. Next lead: a source/type-surface change
+//   that makes VC5 allocate the loop-invariant pp (not entry) to ebx (donor 00533180 gives ebx to
+//   the loop-invariant scaled attribute; all matched victory.cpp donors keep entry in edi).
 
-struct RGE_Game_World {
-    char gap_00[0x3C];
-    short player_num;         // +0x3C
-    void** players;           // +0x40
-};
+class RGE_Game_World;
 
-struct RGE_Player {
+class RGE_Player {
+public:
     char gap_00[0x3C];
     RGE_Game_World* world;    // +0x3C
     char gap_40[0x0A];
@@ -17,8 +35,17 @@ struct RGE_Player {
     float* attributes;        // +0x50
 };
 
-struct RGE_Victory_Point_Entry {
-    char gap_00;
+class RGE_Game_World {
+public:
+    char gap_00[0x3C];
+    short player_num;         // +0x3C
+    char gap_3E[2];
+    RGE_Player** players;     // +0x40
+};
+
+class RGE_Victory_Point_Entry {
+public:
+    unsigned char command;    // +0x00
     unsigned char state;      // +0x01
     char gap_02[2];
     long attribute;           // +0x04
@@ -30,9 +57,14 @@ struct RGE_Victory_Point_Entry {
 
 class RGE_Victory_Conditions {
 public:
-    char gap_00[0x0C];
+    void* vftable;            // +0x00
+    void* victory_list;       // +0x04
+    long list_num;            // +0x08
     RGE_Player* player;       // +0x0C
-    char gap_10[0x0C];
+    unsigned char victory;    // +0x10
+    char gap_11[3];
+    void* victory_point_list; // +0x14
+    long point_list_num;      // +0x18
     long tot_victory_points;  // +0x1C
 
     void handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry);
@@ -46,23 +78,24 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
         entry->curr_attribute_amount = (float)val;
     }
 
-    RGE_Player* self = this->player;
-    int num = self->world->player_num;
-    short self_id = self->id;
-
-    for (int i = 1; i < num; i++) {
-        RGE_Player* p = (RGE_Player*)self->world->players[i];
-        if (i != self_id && (float)entry->amount <= p->attributes[entry->attribute]) {
-            entry->amount = (long)p->attributes[entry->attribute];
-        }
-        self = this->player;
+    int i = 1;
+    register RGE_Player** pp = this->player->world->players;
+    if (i < this->player->world->player_num) {
+        pp++;
+        do {
+            if (i != this->player->id && (float)entry->amount <= (*pp)->attributes[entry->attribute]) {
+                entry->amount = (long)(*pp)->attributes[entry->attribute];
+            }
+            i++;
+            pp++;
+        } while (i < this->player->world->player_num);
     }
 
     long result;
-    if (entry->curr_attribute_amount < (float)entry->amount) {
-        result = (val == entry->amount) ? entry->curr_points : 0;
-    } else {
+    if (entry->curr_attribute_amount >= (float)entry->amount) {
         result = entry->points;
+    } else {
+        result = (val == entry->amount) ? entry->curr_points : 0;
     }
 
     if (result != entry->curr_points) {

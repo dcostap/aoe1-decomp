@@ -10,6 +10,24 @@
  *   (`mov edi,[IAT]; push 0`, one byte longer) or use direct IAT calls without the cached pointer.
  * - Tried focused variant labs for fact-branch shape, cached/direct/dllimport/extern import surfaces,
  *   register/flag argument expressions, and assignment position; no exact match yet.
+ * - Probe 1: natural direct macro calls, 3rd arg of first final mmioAscend = `result` (binary pushes
+ *   edi holding the RIFF-descend result), if/else instead of goto. -> diff 59, push edi OK but direct
+ *   call [88A934h] (no cached pointer).
+ * - Probe 2: same body with __declspec(dllimport) declarations -> VC5 cached mmioAscend in a register
+ *   for ALL four calls (diff 160); import unresolved in this build env. REVERTED.
+ * - Baseline for final-block lab: macro + direct calls + result as 3rd arg (diff 59, shape 98.06%).
+ * - Probe 4 (lab, 11 final-block shapes): all local-cache forms (assign-expr, separate stmt, late decl,
+ *   discarded/assigned first result, 3rd arg result/0) collapse to ONE family: `mov edi,[88A934h];
+ *   push 0; push ebp; push edx; call edi` (8 bytes vs original 7-byte `push edi; mov edi,[88A934h]`);
+ *   direct-macro forms stay direct calls. No exact basin found.
+ * - Key open lead (from prior worker's assignpos lab, 20260531_145344 V000000): assigning the ascend
+ *   local BEFORE mmioWrite made VC5 emit the original's push-then-load ORDER
+ *   (`push edi; mov edi,[esp+18h]; push ebp; push edx; call edi`) but it loaded the local from a reused
+ *   dead parameter slot ([esp+18h]) instead of rematerializing [88A934h] (diff 58, size 240). A future
+ *   worker should try to make that slot load come from [88A934h] directly (e.g., register local, or a
+ *   form where the store is eliminated and the load is rematerialized) while keeping push-then-load order.
+ *   Note the original loads [88A934h] into edi AFTER pushing edi, reusing the just-pushed register;
+ *   every local-cache variant emits the load BEFORE the pushes and folds the 3rd arg to push 0.
  */
 
 typedef unsigned int UINT;
@@ -61,7 +79,6 @@ typedef int (__stdcall *MMIOCLOSE)(HMMIO, UINT);
 int __cdecl _WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO_LOCAL* pckOut, MMCKINFO_LOCAL* pckOutRIFF, MMIOINFO_LOCAL* pmmioinfoOut, DWORD cSamples)
 {
     int result;
-    MMIOASCEND ascend;
 
     if (*phmmioOut == 0) {
         return 0;
@@ -79,13 +96,12 @@ int __cdecl _WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO_LOCAL* pckOut, MMCKIN
                 if (result == 0) {
                     pckOut->ckid = 0x74636166;
                     if (mmioDescend_abs(*phmmioOut, pckOut, pckOutRIFF, 0x10) == 0) {
-                        goto have_fact;
+                        mmioWrite_abs(*phmmioOut, (const char*)&cSamples, 4);
+                        mmioAscend_abs(*phmmioOut, pckOut, result);
+                        result = mmioAscend_abs(*phmmioOut, pckOutRIFF, 0);
+                    } else {
+                        return 1;
                     }
-                    goto no_fact;
-have_fact:
-                    mmioWrite_abs(*phmmioOut, (const char*)&cSamples, 4);
-                    result = (ascend = mmioAscend_abs)(*phmmioOut, pckOut, result);
-                    result = ascend(*phmmioOut, pckOutRIFF, 0);
                 }
             }
         }
@@ -96,7 +112,4 @@ have_fact:
         *phmmioOut = 0;
     }
     return result;
-
-no_fact:
-    return 1;
 }
