@@ -55,6 +55,15 @@
 // `mov ecx,[this+8c]`, `or eax,-1; sub eax,ecx`, and the target EDX owner
 // register without replacing the typed ownership model with opaque casts.
 
+// Luna441E00b sequential follow-up: direct-member guard/call alone was a
+// codegen duplicate, and materializing the negative index before the stores
+// was also unchanged.  A duplicate color-assignment arm regressed the CFG.
+// The clean natural if/else with direct typed color expressions (and a local
+// player only for the later master-object lookup) recovered the original
+// 168-byte function exactly: 48/48 instructions, 3/3 ordered calls,
+// 100% block coverage, and 0 positional/edit diff.  Kept; no custom flags
+// or inline assembly.
+
 struct RGE_Game_World;
 struct RGE_Color_Table;
 struct RGE_Master_Static_Object;
@@ -132,29 +141,24 @@ struct RGE_Doppleganger_Object : RGE_Animated_Object {
 };
 
 void RGE_Doppleganger_Object::rehook() {
-    RGE_Static_Object* doppled;
     RGE_Player* player;
+    int player_index;
 
     RGE_Static_Object::rehook();
 
-    doppled = this->doppled_object;
-    if ((long)doppled >= 0) {
-        this->doppled_object = this->get_object_pointer((long)doppled);
+    if ((long)this->doppled_object >= 0) {
+        this->doppled_object = this->get_object_pointer((long)this->doppled_object);
         if (this->doppled_object == 0) {
             goto second_part;
         }
         this->doppledObjectID = this->doppled_object->id;
-        player = this->doppled_object->owner;
-        goto color_lookup;
+        this->draw_color = this->doppled_object->owner->color_table;
+    } else {
+        player_index = -1 - (long)this->doppled_object;
+        this->doppled_object = 0;
+        this->doppledObjectID = -1;
+        this->draw_color = this->owner->world->players[player_index]->color_table;
     }
-
-    // neg path - falls through to color_lookup
-    this->doppled_object = 0;
-    this->doppledObjectID = -1;
-    player = this->owner->world->players[-1 - (long)doppled];
-
-color_lookup:
-    this->draw_color = player->color_table;
 
 second_part:
     if ((long)this->doppled_master_obj >= 0) {
