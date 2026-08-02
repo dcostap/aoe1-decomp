@@ -2090,6 +2090,26 @@ Caveat:
 - this is a narrow binary-supported layout/codegen form, not a reason to replace
   an unproven class or array model with arbitrary pointer arithmetic.
 
+## Lesson: Keep an integer load while narrowing later mode comparisons
+
+When the original loads a four-byte mode/state field with `mov eax,[object+off]`
+but compares only `AL` against a chain of byte constants, a direct `char` local can
+make VC5 emit a byte load instead. Use an `int` temporary for the field load and cast
+that temporary to `char` at each comparison:
+
+```cpp
+int mode = game->mode;
+if ((char)mode != 1 && (char)mode != 2) { ... }
+```
+
+Why it helps:
+- VC5 keeps the proven dword load while selecting byte-width `cmp al,imm8`
+  instructions, preserving both exact instruction width and downstream branch spans.
+
+Caveat:
+- apply only when the executable proves both the dword load and byte compares; a
+  genuinely byte-sized field should remain naturally typed.
+
 ## Lesson: Carry an aligned field value through a linked-list merge test
 
 When a span/list merge loop aligns a node field, stores it back, and immediately
