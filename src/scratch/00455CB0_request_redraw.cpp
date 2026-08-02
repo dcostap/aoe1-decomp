@@ -27,6 +27,28 @@
 // ecx/ebx/ebp/esi before loading x0/x1, uses ESI=x0, EDI=x1, EBX=this/height, EBP=y0, ECX/y1 stack,
 // and precomputes x0*24 once outside the row loop. VC5 variants either preload x1 into EBP before
 // `push esi`, use EBP as maxx instead of EDI, or choose a shorter/nested branch family.
+// Luna455CB0 pass (2026-08-02, 10/10 meaningful probes): dossier confirms map_width +08,
+// map_height +0C, map_row_offset +8D8C, tile stride 0x18, draw_attribute +0A. Typed tile
+// ownership/decompiler-local forms and register-qualified y parameters did not recover the
+// target prologue. A 64-variant source-shape lab found no exact; explicit x0*24 outside the
+// row loop was the metric best (109 positional bytes / 85.90% shape) but is not the cleanest
+// source and moved the loop topology. The final clean candidate below is exact-sized, with
+// remaining drift broad in register coloring, row/offset scheduling, and early block layout.
+
+class RGE_Tile {
+public:
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0C[0x0C];
+};
 
 class RGE_Map {
 public:
@@ -34,7 +56,7 @@ public:
     int map_width;
     int map_height;
     char gap_10[0x8D7C];
-    unsigned char** map_row_offset;
+    RGE_Tile** map_row_offset;
     void request_redraw(int x0, int y0, int x1, int y1, unsigned char val);
 };
 
@@ -61,7 +83,7 @@ void RGE_Map::request_redraw(int x0, int y0, int x1, int y1, unsigned char val)
 
         while (y0 <= y1) {
             if (x0 <= x1) {
-                unsigned char* p = self->map_row_offset[y0] + x0 * 0x18 + 0x0A;
+                unsigned char* p = &self->map_row_offset[y0][x0].draw_attribute;
                 int count = x1 - x0 + 1;
                 do {
                     p[-3] = 0xCC;
