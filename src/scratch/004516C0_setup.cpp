@@ -31,6 +31,9 @@
 // Luna-4516C0 2026-08-02: fresh baseline rebuilt 152B (75.0000% positional, first mismatch +16; prior 150B record was stale).
 // Tried exact RGE_Master_Combat_Object declaration (no code change), pre-base FILE alias (88.1579%, wrong entry loads), using alias in base call (duplicate), register alias/declaration reorder (duplicate), and register FILE parameter (same 75.0000% family). Restored the delayed FILE alias best source. Structural blocker remains: original saves EDI before base-argument pushes and keeps incoming parameter homes as overlapping fscanf destinations; current source omits EDI and schedules the post-fscanf byte reload/store family differently. Not accepted_drift: broad call/stack topology drift.
 // Luna4516C0 2026-08-02: bounded retry probes tested direct FILE use, volatile/separate FILE aliases, an address-taken parameter home, explicit base-call aliases, and the canonical named base layout. The volatile/pre-base families saved EDI but moved the initial parameter loads and remained 134-byte mismatches; direct/named-layout families were codegen duplicates of the 152-byte clean source. Restored the clean delayed-FILE source; blocker remains structural call/stack/register topology, not behavior or call-set uncertainty.
+// Luna4516C0 sequential pass: dossier/donor/ABI evidence confirms the canonical base setup plus six-conversion fscanf behavior and exact call set.
+// Tried typed RGE_Sprite**/RGE_Sound** parameters, this/self-slot overlap models, declaration-order moves, and comma-sequenced FILE aliases; no exact basin. A focused five-case alias lab grouped into only the delayed 152-byte family and the 134-byte prebase family.
+// Restored the delayed-FILE clean source; remaining broad drift is the original EDI save plus overlapping parameter-home fscanf topology and post-read register coloring. Not accepted_drift.
 
 #include <stdio.h>
 
