@@ -1,7 +1,7 @@
 // VA: 004C1080 RGE_Sprite::update (123 B)
 // PDB source: sprite.cpp lines 955-975
 //
-// Status: STUCK — instruction scheduling diff.
+// Status: VERIFIED_LOGIC — semantic review complete; non-exact scheduling diff.
 //
 // First 11 bytes match (push ecx/bx/si, mov esi, push di). Then VC5 schedules
 // differently: (1) param_1 loaded AFTER branch in first-time path (original loads
