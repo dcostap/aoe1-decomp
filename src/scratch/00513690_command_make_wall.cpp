@@ -37,6 +37,20 @@
 // baseline (143B, 70.6294% positional / 18.8811% edit, first mismatch +3). Int-formal body
 // has lower edit diff (13.9860%) but wrong prologue (`mov eax,[esp+8]` before saved pushes).
 // Not accepted_drift: drift starts in prologue/register allocation and affects argument setup.
+// 2026-08-02 Luna-513690 bounded pass (10 meaningful probes):
+// - Fresh baseline rebuilt at 143B; first mismatch is the merged `movsx edi,word [esp+10h]`
+//   versus original `mov edi,[esp+10h]` followed by `movsx eax,di`.
+// - Raw/volatile dword aliases, direct parameter use, delayed locals, and separate assignment
+//   either moved the load before the save pushes or reproduced the same merged basin.
+// - Keeping `int p1` but indexing with `(short)p1` is the best new source basin: it restores
+//   `movsx eax,di`, `ECX` master_objects addressing, exact LEA register choices, and the exact
+//   helper-call body after the early three-byte drift. Best rebuilt size 146B (original 143B),
+//   141 positional differing bytes, 22-byte edit/resync diff (15.07%), first mismatch +3.
+// - Typed short local_4 and direct indexed WallHelper dispatch were retained; they emit the
+//   expected stack/out-parameter and vslot body in the best basin. No exact match; not drift-safe.
+// - Paused after budget: remaining blocker is compiler register/parameter-home allocation at
+//   the short formal's first use; next lead is a fresh TU/source-context or ABI-surface review,
+//   not another raw alias or parameter-width variant.
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -48,15 +62,15 @@ class __declspec(novtable) WallHelper { public: virtual void v0()=0; virtual voi
 unsigned char TRIBE_Player::command_make_wall(short param_1,long param_2,long param_3,long param_4,long param_5)
 {
     short list_num;
-    int p1 = param_1;
-    RGE_Master_Static_Object* obj = this->master_objects[p1];
+    int p1;
+    p1 = param_1;
+    RGE_Master_Static_Object* obj = this->master_objects[(short)p1];
     if (obj && *(char*)((char*)obj + 0x52)) {
-        void* local_4;
+        short local_4;
         if (this->get_selected_objects_to_command((RGE_Static_Object***)&param_1, (short*)&local_4, 4, 4, -1, -1)) {
-            WallHelper* helper = *(WallHelper**)((char*)this->master_objects + 0x1D8);
-            helper->clear_wall_data();
+            ((WallHelper*)this->master_objects[0x76])->clear_wall_data();
             TRIBE_Command* cmd = *(TRIBE_Command**)((char*)this->world + 0x58);
-            cmd->command_build_wall((RGE_Static_Object**)(long)param_1, *(short*)&local_4, (short)p1, param_2,param_3,param_4,param_5);
+            cmd->command_build_wall((RGE_Static_Object**)(long)param_1, local_4, (short)p1, param_2,param_3,param_4,param_5);
             free((void*)(long)param_1);
             return 1;
         }
