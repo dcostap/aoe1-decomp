@@ -35,6 +35,18 @@
 // Best retained below: explicit 0x30 frame with DPNAME at frame base and test at +0x0c;
 // it models the binary-proven four-byte local overlap and keeps frame parity, but remains
 // 144B with broad stack-write/cleanup drift. No accepted_drift: mismatch is structural.
+// Luna42F190 2026-08-02 follow-up (10-probe budget):
+// - Baseline confirmed the retained explicit 0x30 frame at 144B/61.4865% positional.
+// - Natural DPNAME/&dwFlags, post-Log declaration scope, volatile global reads, and SDK-width
+//   pointer fields either duplicated or worsened the structural basin.
+// - A temporary test+31 dword-zero probe reached 148B/54.7297%, but moved the store to the
+//   wrong pre-cleanup address; moving it after the DPNAME assignment regressed to 144B.
+// - A recorded 18-variant source-order lab found no exact match. Its low-to-high/tail-first
+//   diagnostic winner validated at 148B/54.0541%, but is opaque and not retained as source.
+// - A plausible TemporaryName {pointer,text[28]} aggregate regressed to 152B/76.9737%.
+// Main-agent source audit: the explicit raw frame encoded VC5's stack-slot overlap rather than
+// plausible original source. Restored the typed TemporaryName + DPNAME reconstruction despite
+// its worse byte metrics; compiler artifacts remain diagnostic evidence, not living source.
 
 #include "../../include/game_globals.h"
 
@@ -48,6 +60,11 @@ struct DPNAME {
     unsigned long dwFlags;
     char* lpszShortName;
     char* lpszLongName;
+};
+
+struct TemporaryName {
+    char* shortName;
+    char text[28];
 };
 
 struct IDirectPlayVtbl {
@@ -65,27 +82,26 @@ public:
 };
 
 void TCommunications_Handler::ForceNameChange(void) {
-    char frame[0x30];
-    char* test = frame + 0x0c;
-    DPNAME* dpn = (DPNAME*)frame;
+    TemporaryName test;
+    DPNAME dpn;
 
     Log(L, "Force Name Change");
 
-    *(int*)&test[12] = DAT_005832c4;
-    *(int*)&test[8] = DAT_005832c0;
-    *(int*)&test[4] = DAT_005832bc;
-    *(int*)&test[19] = 0;
-    *(int*)&test[23] = 0;
-    test[18] = DAT_005832ca;
-    *(int*)&test[27] = 0;
-    *(int*)&test[0] = (int)(test + 4);
-    *(short*)&test[16] = DAT_005832c8;
-    test[31] = 0;
+    *(int*)&test.text[8] = DAT_005832c4;
+    *(int*)&test.text[4] = DAT_005832c0;
+    *(int*)&test.text[0] = DAT_005832bc;
+    *(int*)&test.text[15] = 0;
+    *(int*)&test.text[19] = 0;
+    test.text[14] = DAT_005832ca;
+    *(int*)&test.text[23] = 0;
+    test.shortName = test.text;
+    *(short*)&test.text[12] = DAT_005832c8;
+    test.text[27] = 0;
 
-    dpn->dwSize = 0x10;
-    dpn->dwFlags = 0;
-    dpn->lpszShortName = 0;
-    dpn->lpszLongName = test + 4;
+    dpn.dwSize = 0x10;
+    dpn.dwFlags = 0;
+    dpn.lpszShortName = 0;
+    dpn.lpszLongName = test.text;
 
-    ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, dpn, 2);
+    ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, &dpn, 2);
 }
