@@ -2507,3 +2507,34 @@ Caveat:
 - apply only when the binary proves the dedicated zero register and the extra
   callee-save; keep the late declaration at a plausible source position near its
   first use. Verified on 0041F030 `RGE_Base_Game::setup_sound_system`.
+
+## Lesson: `memset` keeps overwritten zero stores that `= {0}` dead-store-eliminates
+
+For a small address-escaped struct (e.g. a `DPNAME`/API descriptor filled field-by-field
+and then passed by address to a COM call), VC5 dead-store-eliminates the per-field zero
+stores of an aggregate initializer when a later assignment overwrites the same slot
+(`dpid.dwSize = sizeof(dpid)` kills the initializer's `dwSize = 0` store). The original
+binary keeps that "dead" zero store and all four fields zeroed in field order, often via
+`xor ecx,ecx` plus four register stores interleaved with neighboring call-argument pushes.
+
+Writing `memset(&dpid, 0, sizeof(dpid))` instead of `DPNAME dpid = {0};` makes VC5 inline
+the same four zero stores without applying that partial dead-store elimination, restoring
+the missing `mov [esp+N],ecx` and the exact field-order zeroing.
+
+Try when:
+- a near-match is missing exactly one early zero store (`mov [reg],0` / `mov [esp+N],reg`)
+  at the start of an aggregate-init block, shifting every following `[esp+N]` offset by 4;
+- the struct's address is passed to a later call, so no store is really removable;
+- an equivalent sibling function in the same TU family is already matched and uses `memset`.
+
+Why it helps:
+- the inlined `memset` expansion is treated as an opaque fill, so VC5 does not prove the
+  overwritten first dword dead and keeps the full four-store zero block in field order;
+- the preserved store re-aligns all subsequent stack offsets and the value-store/arg-push
+  interleaving.
+
+Caveat:
+- keep the field assignment order that mirrors the binary's value-store order (observed
+  +8, +0, +0xC for short-name/dwSize/long-name), since VC5 schedules from it;
+- `memset` still needs `<string.h>`; a constant size is required for the inline form.
+  Verified on `0042D960` AddSelfPlayer (and consistent with 00426D50 SendPlayerName).
