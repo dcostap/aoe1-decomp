@@ -14,12 +14,116 @@ Subagent output is always a proposal until the main agent reads the complete dif
 and source, checks policy compliance and unrelated changes, reruns the relevant
 validation, and confirms the reported result.
 
-The main agent may run many matching workers concurrently on different targets.
-Only one worker may edit a given function at a time.
+Within the user-supplied concurrency ceiling, the main agent may run matching
+workers concurrently on different targets. Only one worker may edit a given
+function at a time.
 
 Use `python tools/query_project_status.py --logic-review-in-progress --paths`
 to inspect candidates currently in semantic review, and `--verified-logic` for
 completed semantic reconstructions.
+
+## User-supplied execution contract
+
+Before launching subagents, obtain the user's execution contract:
+
+- exact provider/model ID, not a nickname or inferred equivalent;
+- explicit thinking level;
+- an approximate maximum active-subagent count or an allowed range;
+- any per-role model differences or temporary stop/replacement instructions.
+
+Resolve an ambiguous model name with the local model-list command and confirm the
+exact ID. Never inherit or guess a subagent model or thinking level. Unless the
+user supplies separate role contracts, use the approved model/thinking pair for
+matching workers, readiness auditors, and semantic reviewers alike.
+
+Treat the user's maximum, or the upper end of a range, as a ceiling across active
+and queued subagents. It is not a requirement to keep every slot occupied. A
+lower end is a planning preference, not permission to launch low-value work. A
+later user instruction such as "wrap up" or "start no more" overrides the earlier
+contract immediately; do not replace completed or failed agents afterward.
+
+## Concurrency and scheduling
+
+Prefer a small live set whose results the main agent can review promptly. For a
+four-agent ceiling, the normal allocation is at most two matching workers and at
+most two read-only analysis/review workers. Adapt this split to the queue, but
+never place two editors on one function.
+
+Operational rules:
+
+1. Count queued work against the ceiling; do not create a long hidden backlog.
+2. Launch independent matching workers only on different targets.
+3. Integrate and commit completed edits before reflexively filling the freed
+   slot. The ceiling is not an occupancy target.
+4. Replace a failed agent only when the user still permits launches and the
+   replacement has a narrower, useful scope.
+5. Do not poll running agents repeatedly. Use completion notifications; request
+   status only when an orchestration decision actually depends on it.
+6. Reserve two read-only slots for a complete blind-review cohort once a function
+   enters logic review. Do not start one reviewer while the other cohort slot is
+   occupied by unrelated work.
+7. Matching results may be integrated individually as they finish. In contrast,
+   collect a blind cohort in full before adjudicating or editing its candidate.
+
+Broad initial queues are counterproductive in a shared worktree. Start with the
+smallest useful batch, observe integration cost and compiler contention, and
+expand only within the user contract.
+
+## Participant briefings
+
+Every subagent prompt must assign exactly one role and include the relevant
+constraints below. Repository documents supplement the prompt; they do not make
+an ambiguous assignment safe.
+
+### Matching worker
+
+- one explicit VA and one unique lease owner;
+- read `README.md`, the complete `LESSONS.md`, `AGENTS.md`, the current attempt
+  log, and target history;
+- follow the ten-hypothesis target-session contract unless given another budget;
+- run dossier, donor, and ABI evidence before broad archaeology;
+- edit only the target source and narrowly justified flags/shared facts;
+- do not commit, change unrelated functions, or normalize whole-file line endings;
+- finish with attempt notes, unchanged validation, and pause or exact promotion.
+
+### Phase-readiness auditor
+
+- strictly read-only; no lease, edits, source-shape probes, or commits;
+- may inspect attempt logs, session evidence, concise checker output, and Git
+  history because this is matching-stall analysis, not blind semantic review;
+- normally assess one or two named functions only;
+- judge exact-match exhaustion separately from semantic completeness;
+- identify concrete remaining leads and the exact prerequisite for ledger entry.
+
+Do not assign an auditor a corpus-wide packet sweep. Use
+`query_project_status.py` to shortlist, then inspect at most a few candidates.
+If a broader scan is necessary, divide it into bounded source/TU groups.
+
+### Blind semantic reviewer
+
+- one named function, fresh context, and explicitly read-only;
+- no lease, edits, commits, `logic_reviews`, Git history, prior reports, or prior
+  claims that a difference is harmless;
+- compare candidate source directly with executable evidence and treat comments
+  as untrusted hypotheses;
+- report definite differences, plausible concerns, verified assumptions,
+  unestablished areas, and a conclusion with concrete binary evidence.
+
+A readiness audit is never counted as a blind semantic review. A reviewer that
+accidentally reads the ledger or prior conclusions is contaminated and cannot
+count toward an independent cohort.
+
+## Context and output discipline
+
+- A matching worker receives one target, not a shopping list.
+- A readiness auditor normally receives no more than two targets.
+- A blind reviewer receives exactly one candidate.
+- Prefer concise checker maps, focused ranges, and dossier sections over complete
+  packet/history dumps.
+- Ask for compact final reports containing outcome, probes or review scope,
+  metrics/findings, changed files, validation, and next lead.
+- If an audit approaches the model context limit, stop and return the bounded
+  evidence already established rather than loading more candidates.
 
 ## Matching assignments
 
@@ -61,6 +165,13 @@ For every worker result:
 6. accept, revise, or reject the result;
 7. perform status moves and version-control integration only after verification.
 
+Also inspect `git status` before and after integration. Shared-tree workers must
+not silently rewrite line endings, leave compiler artifacts, or modify common
+headers without reusable evidence. Stage explicit reviewed paths rather than
+using a blanket add, and keep another running worker's changes out of the commit.
+If Git is temporarily locked by an active process, wait for that process; do not
+delete a live lock file.
+
 Exact functions go to `src\matching`. Rare near-exact functions may go to
 `src\accepted_drift` only under its existing narrow policy. Materially uncertain
 functions remain in `src\scratch`.
@@ -82,10 +193,10 @@ changes only after final adjudication.
 
 ## Launch a blind review cohort
 
-Launch several fresh reviewers concurrently. Give them the candidate source and
-original evidence, but not the ledger, Git history, previous reports, or a claim
-that any difference is harmless. Reviewers must be explicitly read-only and must
-not claim the target.
+Launch a complete cohort of at least two fresh reviewers concurrently. Give them
+the candidate source and original evidence, but not the ledger, Git history,
+previous reports, or a claim that any difference is harmless. Reviewers must be
+explicitly read-only and must not claim the target.
 
 Every review prompt must state that the goal is the original executable's actual
 behavior, including bugs, odd signedness, incorrect-looking formulas, unintended
@@ -96,6 +207,11 @@ Use complementary scopes such as control flow and bounds; calls, ABI, layout, an
 memory effects; cleanup, ownership, and exceptional paths; and full adversarial
 semantic review. Include at least one broad reviewer that is not primed with a
 suspected issue.
+
+Do not start a partial cohort merely to occupy a slot. If the user's concurrency
+ceiling cannot provide at least two simultaneous read-only reviewers, finish or
+defer other work first, or ask the user to revise the contract. Launch every
+member of the cohort before waiting for results.
 
 A suitable neutral core prompt is:
 

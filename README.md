@@ -92,6 +92,11 @@ are documented in `docs\main_agent_workflow.md`. That document is intended for
 the user-designated main coordinating agent; ordinary matching workers continue
 to use the bounded contract in `AGENTS.md`.
 
+The user supplies the exact subagent provider/model ID, thinking level, and an
+approximate maximum concurrency or range. The main agent treats the upper bound
+as a ceiling rather than an obligation to fill slots, assigns one explicit role
+per participant, and reserves complete concurrent cohorts for blind logic review.
+
 Focused `variant_lab.py` runs can enforce checker-equivalent effective size,
 frame, and call-set gates. Compact previews avoid dumping whole generated files,
 and `--session-owner <owner>` records one lab family as one meaningful probe.

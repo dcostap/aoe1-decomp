@@ -300,12 +300,33 @@ canonical scratch source at a time. Useful independent roles are:
 Analysts should return evidence or proposed patches to the target owner rather
 than creating competing scratch owners.
 
+The user supplies the exact subagent model/thinking contract and an approximate
+maximum concurrency or range. The orchestrator treats that as a ceiling, not a
+slot-filling target. Count queued work, avoid large backlogs, and integrate a
+completed worker before automatically launching a replacement. A four-agent
+working set normally means at most two matching editors on distinct functions
+and two read-only analysis/review roles.
+
+Keep assignments context-bounded: one VA per matching worker, one or two named
+targets per readiness auditor, and one function per blind semantic reviewer.
+Corpus-wide audits should shortlist with `query_project_status.py` and inspect
+only a few complete packets; broad packet/history sweeps are prone to context
+failure and produce weaker evidence than focused audits.
+
+Ordinary subagents do not commit or rewrite line endings. The main agent reviews
+and stages explicit paths so one worker's result cannot absorb another worker's
+live shared-tree edits.
+
 This matching-phase collaboration is distinct from a formal logic-review cohort.
 Formal logic reviewers are fresh, concurrent, and read-only. They do not inspect
 the function's logic-review ledger, Git history, or one another's reports. The
 main agent collects the complete cohort, adjudicates it, directly applies bounded
 accepted fixes, updates the ledger, and launches another fresh cohort when the
 candidate changes materially.
+
+A formal cohort contains at least two reviewers launched together. Do not count
+a phase-readiness auditor as a blind reviewer, and do not launch a partial cohort
+while another read-only slot is occupied by unrelated work.
 
 ## Stop conditions
 

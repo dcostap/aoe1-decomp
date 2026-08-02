@@ -10,6 +10,8 @@ logic_reviews/<function-slug>.md
 
 The designated main agent owns these files. Matching workers and blind reviewers
 must not edit them. Blind reviewers must not read them or receive their contents.
+Phase-readiness auditors may use matching attempt/history evidence but are not
+blind reviewers and do not count toward a review cohort.
 
 Each ledger should contain:
 
@@ -32,3 +34,7 @@ confidence percentages, voting scores, or a separate manifest. Git records the
 source and ledger changes. Version each completed review/adjudication round with
 its related source changes so unresolved handoffs remain durable. Folder
 placement remains the function's status marker.
+
+Launch each formal round as a complete concurrent cohort of at least two fresh
+reviewers. If the user-supplied concurrency ceiling cannot provide two read-only
+slots together, defer the round rather than running a one-person pseudo-cohort.

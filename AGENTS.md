@@ -182,6 +182,33 @@ prompt.
     validations, and the evidence-backed next lead. A bounded documented pause
     is a valid outcome; never force a fake match.
 
+## Participant roles and shared-worktree conduct
+
+The assigning prompt must give each subagent exactly one role. Do not silently
+change roles during an assignment.
+
+- **Matching worker:** edits one leased function under the bounded contract
+  above. It may inspect prior attempts and history. It does not commit.
+- **Phase-readiness auditor:** strictly read-only and unleased. It may inspect
+  attempt logs, session/checker evidence, and Git history to judge cumulative
+  matching exhaustion, but normally assesses at most two named functions.
+- **Blind semantic reviewer:** strictly read-only and unleased. It must not read
+  `logic_reviews`, Git history, prior reports, or harmlessness claims. It compares
+  one candidate directly with the executable behavior oracle.
+- **Main agent:** owns queueing, integration, ledger updates, status moves, and
+  commits. Subagent output remains a proposal until main-agent validation.
+
+All non-main participants preserve unrelated working-tree changes, avoid broad
+shared-header edits, do not write compiler artifacts outside `build`, and do not
+normalize an existing file's line endings. A worker must report any shared file
+it touched. Read-only roles do not run source-shape experiments or checkers that
+rewrite current build/history state unless the main agent explicitly authorizes
+that narrow operation.
+
+Concurrency, user-supplied model/thinking contracts, reviewer cohort sizing,
+context limits, and integration order are defined in
+`docs\main_agent_workflow.md` for the designated orchestrator.
+
 Pi executes shell commands through Bash. In Bash command strings use forward
 slashes such as `python tools/query_project_status.py`; unquoted Windows
 backslashes can be consumed as escapes. Batch examples elsewhere in this file use
