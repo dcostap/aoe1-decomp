@@ -168,12 +168,21 @@ def packet_path_for_row(row: dict[str, str]) -> str:
     return str(Path("inventory") / "functions" / row["va"][:4] / f"{row['slug']}.txt")
 
 
-def build_status_rows(*, include_source_preview: bool = True, include_diff_metrics: bool = True) -> list[dict[str, str]]:
+def build_status_rows(
+    *,
+    include_source_preview: bool = True,
+    include_diff_metrics: bool = True,
+    va: str | None = None,
+) -> list[dict[str, str]]:
     """Build current project status rows from live repo state.
 
     This deliberately does not read project_full_status.csv. The CSV/HTML dashboard
     are generated human-facing artifacts and may be stale; callers that need fresh
     answers should use this function directly.
+
+    When ``va`` is supplied, all records are still classified for corpus-wide
+    remaining-rank parity, but source notes and diff metrics are read only for the
+    selected function.
     """
     scratch_dir = REPO_ROOT / "src" / "scratch"
     matching_dir = REPO_ROOT / "src" / "matching"
@@ -194,6 +203,7 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
     parent_owned_fragments = load_parent_owned_fragments()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
+    va_norm = va.upper() if va else None
 
     for record in records:
         slug = record["slug"]
@@ -241,6 +251,12 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
             source_path = ""
             note_path = None
 
+        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
+        if is_remaining == "yes":
+            remaining_records.append(record)
+        if va_norm is not None and record["va"].upper() != va_norm:
+            continue
+
         custom_flags_path = flags_dir / f"{slug}.rsp"
         logic_review_path = logic_reviews_dir / f"{slug}.md"
         header_notes = parse_header_notes(note_path) if note_path is not None else default_header_notes()
@@ -252,7 +268,6 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
                 else missing_ledger
             )
         preview_path = scratch_path or verified_logic_path or accepted_drift_path or matching_path
-        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
         diff_metrics: dict[str, object] = {}
         if include_diff_metrics:
             diff_metrics_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
@@ -339,8 +354,6 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
             "first_mismatch_offset": str(diff_metrics.get("first_mismatch_offset", "")),
         }
         rows.append(row)
-        if is_remaining == "yes":
-            remaining_records.append(record)
 
     size_ranks = rank_map(remaining_records, "size_bytes")
     asm_ranks = rank_map(remaining_records, "asm_lines")

@@ -108,7 +108,7 @@ def load_rows(args: argparse.Namespace) -> list[dict[str, str]]:
     if args.from_csv:
         with args.from_csv.open("r", encoding="utf-8", errors="replace", newline="") as handle:
             return list(csv.DictReader(handle))
-    return build_status_rows(include_source_preview=args.with_preview)
+    return build_status_rows(include_source_preview=args.with_preview, va=args.va)
 
 
 def source_bucket_from_args(args: argparse.Namespace) -> str | None:
