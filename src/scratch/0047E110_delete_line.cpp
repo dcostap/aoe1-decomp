@@ -1,5 +1,90 @@
-// 0047E110_delete_line
-// Probe 1: structural stub
-class TPanel { public: char _gap_00[4]; };
-class TTextPanel : public TPanel { public: char _gap_04[0x14c]; void delete_line(int); };
-void TTextPanel::delete_line(int) {  }
+// 0047E110 TTextPanel::delete_line
+// Baseline reconstruction: remove one linked-list text node, update the line
+// counters, and refresh the panel.  The list/node offsets are binary-proven.
+// Attempt log:
+// - Baseline natural bounded list removal: size/calls/frame matched, but VC5
+//   loaded the parameter after saving this and strength-reduced the index loop.
+// - register-qualified parameter, split guards, function-scope locals, an
+//   explicit index copy, and a shared fail label all emitted the same basin.
+// - Natural-source variant lab (54 variants; size/frame/call-set gated) found
+//   no exact group; full proven TPanel/TTextPanel layout also emitted the same
+//   code. A while-loop and const-parameter loop probe were unchanged.
+// - Restored clean source after the probes. Remaining drift is the entry
+//   parameter scheduling plus incrementing-versus-countdown loop shape.
+
+extern "C" void __cdecl free(void* block);
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual void dummy1();
+    virtual void dummy2();
+    virtual void dummy3();
+    virtual void dummy4();
+    virtual void dummy5();
+    virtual void dummy6();
+    virtual void dummy7();
+    virtual void redraw(int);
+};
+
+struct TextNode {
+    char* text;
+    char* text2;
+    void* unknown_08;
+    TextNode* next_node;
+};
+
+class TTextPanel : public TPanel {
+public:
+    char gap_04[0xF0];
+    TextNode* list;
+    short num_lines;
+    char gap_FA[6];
+    short cur_line;
+
+    void calc_draw_info(int);
+    int delete_line(long line);
+};
+
+int TTextPanel::delete_line(long line)
+{
+    if (line >= 0 && line <= this->num_lines - 1) {
+        TextNode* deleted;
+
+        if (line == 0) {
+            deleted = this->list;
+            this->list = deleted->next_node;
+        } else {
+            TextNode* node = this->list;
+            int i = 0;
+            for (; i != line - 1; ++i) {
+                node = node->next_node;
+            }
+            deleted = node->next_node;
+            node->next_node = deleted->next_node;
+        }
+
+        if (deleted != 0) {
+            if (deleted->text != 0) {
+                free(deleted->text);
+            }
+            if (deleted->text2 != 0) {
+                free(deleted->text2);
+            }
+            free(deleted);
+            --this->num_lines;
+
+            short count = this->num_lines;
+            if (count == 0) {
+                this->cur_line = 0;
+            } else if (this->cur_line >= count) {
+                this->cur_line = count - 1;
+            }
+
+            this->calc_draw_info(1);
+            this->redraw(1);
+            return 1;
+        }
+    }
+    return 0;
+}
