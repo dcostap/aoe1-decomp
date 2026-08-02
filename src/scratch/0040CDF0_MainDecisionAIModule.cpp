@@ -80,6 +80,17 @@
 // VC5 EH topology blocker, not localized drift; keep this readable source in
 // scratch and do not repeat the exhausted thin-class/flag variants.
 
+// Retry 2026-08-03 Luna40CDF0TU final TU-context lead:
+// - Temporarily compiled a faithful aimdmod.cpp-style TU under /O2 /Oy /GX,
+//   with both MainDecisionAIModule constructors and its destructor, real
+//   AIModule/AIModuleID field declarations, and the current explicit delayed
+//   derived-vptr assignment. The target constructor remained the same 78-byte
+//   no-EH emission: 106/113 positional diff, 55.17% shape, 1/1 call aligned,
+//   first mismatch 0. No FS-first 3-slot frame appeared.
+// - Integrated probe #15 was an emitted-code duplicate of the clean source.
+//   Restored the canonical single-function source; no flags or sibling files
+//   were changed. Full TU context does not overcome the pinned VC5 EH basin.
+
 struct ManagedArray_Int {
     int* value;
     int numberValue;

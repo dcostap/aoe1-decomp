@@ -34,30 +34,101 @@
 // emits push-first 4-slot EH with saved-this. Prior source/flag probes already
 // cover the natural/virtual/manual-vptr, delete form, TU, and flag axes; leave
 // the best baseline in scratch rather than repeat them.
+// 2026-08-03 Luna40D020TU: normalized the compiler-facing source toward the
+// binary-backed polymorphic AIModule/MainDecisionAIModule layout: named base
+// fields, virtual destructors, the real player member, a named ManagedArray
+// member, natural delete, and implicit base destruction. Manual vptr/base-dtor
+// plumbing remains intentionally absent.
+// Probe baseline: the normalized natural source is 117B, 99 positional bytes
+// different (84.6154%), with both calls aligned and the first mismatch at 0.
+// Expanding the complete binary-backed virtual method surface and replacing the
+// local pointer/array aliases with RGE_Player* / ManagedArray<int> were codegen
+// duplicates.
+// Full-TU lead: a temporary faithful aimdmod.cpp context defining AIModuleID,
+// AIModule, both related MainDecision constructors, and both destructors under
+// /O2 /Oy /GX emitted the same push-first EH family. It did not produce the
+// original FS-first 3-slot entry. The natural candidate does reproduce the
+// observed null test, operator delete, post-delete nulling, three scalar zero
+// stores, derived-vptr write, and compiler-generated base-dtor call. The only
+// remaining lead is the pinned VC5 EH topology/function-boundary difference;
+// retain this readable source in scratch for logic-readiness assessment.
 
 #include <stdlib.h>
+
+class AIModuleMessage;
+class RGE_Player;
+class RGE_Static_Object;
+struct _iobuf;
+
+class AIModuleID {
+public:
+    virtual ~AIModuleID();
+
+    int id;
+    char name[0x40];
+};
+
 class AIModule {
 public:
-    char gap_00[0xF0];
-    ~AIModule();
+    virtual ~AIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* name);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* name);
+    virtual int saveState(char* name);
+    virtual int gleanState(int value);
+    virtual int processMessage(AIModuleMessage* message);
+    virtual int update(int value);
+    virtual void setCallbackMessage(AIModuleMessage* message);
+    virtual int filterOutMessage(AIModuleMessage* message);
+
+    AIModuleID idValue;
+    int playerNumberValue;
+    char playerNameValue[0x40];
+    int runningValue;
+    int pausedValue;
+    int logHistoryValue;
+    int logCommonHistoryValue;
+    _iobuf* historyLogFile;
+    char historyLogFilename[0x40];
+    int intelligenceLevelValue;
+    int priorityValue;
+    int processFrameValue;
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
 };
 
 class MainDecisionAIModule : public AIModule {
 public:
-    char pad_F0[4];
-    int* objects_value;
-    int objects_numberValue;
-    int objects_desiredNumberValue;
-    int objects_maximumSizeValue;
-    ~MainDecisionAIModule();
+    RGE_Player* player;
+    ManagedArray<int> objects;
+
+    virtual ~MainDecisionAIModule();
+    virtual void setLogHistory(int value);
+    virtual int save(int value);
+    virtual int addObject(RGE_Static_Object* object);
+    virtual int removeObject(int object_id);
+    virtual int objectGroupThatCanPerformAction(int action);
+    virtual int canPerformAction(int action, int target);
 };
 
 MainDecisionAIModule::~MainDecisionAIModule() {
-    if (this->objects_value != 0) {
-        delete this->objects_value;
-        this->objects_value = 0;
+    if (this->objects.value != 0) {
+        delete this->objects.value;
+        this->objects.value = 0;
     }
-    this->objects_numberValue = 0;
-    this->objects_desiredNumberValue = 0;
-    this->objects_maximumSizeValue = 0;
+    this->objects.numberValue = 0;
+    this->objects.desiredNumberValue = 0;
+    this->objects.maximumSizeValue = 0;
 }
