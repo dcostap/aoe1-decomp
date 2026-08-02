@@ -8,6 +8,17 @@
 // tried /Ob0 (no help) and /O1 (too short); kept /GX because original has EH frame.
 // left in scratch: body after branch is largely understood, but remaining mismatch is broad early EH/parameter scheduling and fallback push order, not accepted drift.
 // Retry 2026-05-26 Boss pass: 15 probes on VA 0052E400 only. Revalidated baseline /GX: 180B, 73.8889% positional / 38.8889% edit, first mismatch +14 from type load before FS registration. Tried direct `type != 1`, `type == 1` else, unsigned-char temp, int temp with decrement, mutating `type`, saving `player` before/after branch, direct `p->init`, index local, manual placement-new (VC5 rejected), expression forms `((t&0xff)-1)==0` / `!=0`, no-temp casts, and flags /Ob0 /G5 /Oa /Oy- /O1 with /GX. Kept the int-temp/decrement variant because it improves to 67.7778% positional / 25.0000% edit and first mismatch +35, but it still has an extra `and eax,0xff` and shifts the allocation branch. GIVEUP: not accepted_drift quality; remaining drift is broad EH/type-test/fallback layout and shifted new/virtual-call path, not localized equivalent drift.
+// Luna52E400 session: baseline rebuilt 185B, 147 differing bytes, first mismatch +35 from a duplicate `and eax,0xff`; all four calls and body CFG aligned.
+// Tested direct type guards, unsigned/int/byte temporary variants, promoted `type - 1`, and explicit mask forms; the closest unchanged basin is the int temporary with one explicit byte cast.
+// Tested the canonical RGE_Master_Player/TRIBE_Master_Player inheritance and finish_init(void*) surface; emitted metrics stayed in the same 185B basin, so it is retained for source plausibility.
+// Tested condition arm inversion and found it changes branch layout/call ordering; restored the clean source after each nonproductive probe.
+// Session exhausted at 10 meaningful hypotheses; remaining gap is localized to VC5 type-test/EH scheduling, not behavior or call/layout uncertainty.
+// Main-agent source audit: removed the redundant `t = (unsigned char)t` compiler-
+// steering assignment from the retained candidate. The parameter already has the
+// proven unsigned-byte ABI, so the ordinary promoted temporary is the defensible
+// source even though it returns to the broader early-load codegen basin. Validation:
+// 181/180 bytes, 150 strict differing bytes, 98.31% shape, 4/4 calls aligned;
+// first mismatch +0x0E from loading `type` before FS registration.
 
 class RGE_Game_World {
 public:
@@ -15,20 +26,25 @@ public:
     unsigned char init_player_type(int player, short index, unsigned char type);
 };
 
-class TRIBE_Master_Player {
+class RGE_Master_Player {
 public:
+    virtual ~RGE_Master_Player();
+    virtual void finish_init(int player, void* a, void* b);
     char bytes[0x28];
+    RGE_Master_Player(int player);
+};
+
+class TRIBE_Master_Player : public RGE_Master_Player {
+public:
     TRIBE_Master_Player(int player);
-    virtual void v0();
-    virtual void init(int player, int a, int b);
 };
 
 class TRIBE_World : public RGE_Game_World {
 public:
     char gap_04[0x2C];
-    int field_30;
+    void* field_30;
     char gap_34[4];
-    int field_38;
+    void* field_38;
     char gap_3C[0x0C];
     TRIBE_Master_Player** players; // +0x48
 
@@ -38,13 +54,12 @@ public:
 unsigned char TRIBE_World::init_player_type(int player, short index, unsigned char type)
 {
     int t = type;
-    t = (unsigned char)t;
     if (--t != 0) {
         return RGE_Game_World::init_player_type(player, index, type);
     }
 
     TRIBE_Master_Player* p = new TRIBE_Master_Player(player);
     this->players[index] = p;
-    this->players[index]->init(player, this->field_38, this->field_30);
+    this->players[index]->finish_init(player, this->field_38, this->field_30);
     return 1;
 }
