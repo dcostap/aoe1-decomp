@@ -2538,3 +2538,74 @@ Caveat:
   +8, +0, +0xC for short-name/dwSize/long-name), since VC5 schedules from it;
 - `memset` still needs `<string.h>`; a constant size is required for the inline form.
   Verified on `0042D960` AddSelfPlayer (and consistent with 00426D50 SendPlayerName).
+
+## Lesson: Double-cast float multiply can anchor fld/fmul operand order
+
+For a float member assignment in a switch/helper where the original emits `fld value; fmul [member]; fstp [member]` (parameter loaded first), a plain source spelling `field = value * field;` can make VC5 emit the reversed `fld [member]; fmul value` even though the multiplication is commutative. The explicit double-cast form `field = (float)((double)value * (double)field);` anchors left-to-right evaluation and reproduces the parameter-first fld/fmul order.
+
+Try when:
+- a small modify-percent-style dispatch is byte-perfect except each float-multiply arm has swapped `fld`/`fmul` memory operands (same sizes, one paired hunk per arm);
+- the exact-match sibling for the same feature family already uses the `(float)((double)a * (double)b)` idiom.
+
+Why it helps:
+- VC5's x87 scheduler treats the plain float expression as commutable and may load the member first; the explicit double conversions prevent the commutation and keep the source operand order.
+
+Caveat:
+- apply only when the binary proves parameter-first loading; `fld [member]; fmul value` originals want the plain spelling. Verified on 00450D00 modify_percent (the three float arms), consistent with exact sibling 004535F0.
+
+## Lesson: Single post-if store can move a callee-saved save from loop-top to prologue
+
+When a function's `if/else` ends by storing the same constant (or a value computed after the
+branch) in BOTH arms, VC5 may keep the two-store/two-return layout but treat the last-used
+callee-saved register as loop-local and defer its `push` to the loop top (`push edi` after the
+loop guard), popping it only in the main exit. Writing the store ONCE after the `if/else` can
+make VC5 tail-duplicate the store+return into both exit blocks while saving that register in
+the prologue, matching the original.
+
+```cpp
+// both-branches form: edi push deferred to loop top
+if (n > 0) { ... for (...) {...} cache = 300000; } else { p = 0; cache = 300000; }
+// single-store form: edi pushed in prologue, store+ret duplicated per exit
+if (n > 0) { ... for (...) {...} } else { p = 0; }
+cache = 300000;
+```
+
+Try when:
+- the only remaining diff is `push edi` placement (prologue vs loop top) plus its
+  knock-on `[esp+disp]` displacements and epilogue pop ordering;
+- PDB line map shows the common store on a line AFTER the if/else close (its duplicated
+  copies may be attributed to the return line);
+- size, calls, CFG, and every other instruction already align.
+
+Why it helps:
+- VC5's register-save placement is sensitive to which exit block "owns" the final store;
+  a single post-branch store changes the exit-block structure so the callee-saved set is
+  decided at function level.
+
+Caveat:
+- apply only when the duplicated store is genuinely identical on both exits; if the binary
+  proves different values per arm, keep the arm-local stores.
+- Verified on 004BBE40 RGE_Sound::RGE_Sound (also the strcat intrinsic order note below).
+
+## Lesson: strcat intrinsic computes strlen of the SECOND argument first
+
+VC5's inlined `strcat(dst, src)` emits `strlen(src)` (the `.wav`-style suffix) BEFORE
+`strlen(dst)`, then copies src to `dst + strlen(dst)` as `repne scasb`/`rep movsd`/`rep movsb`.
+Spelling the same operation as `strcpy(dst + strlen(dst), src)` produces `strlen(dst)` first —
+a different but equally valid intrinsic ordering — so the two source forms are NOT codegen-
+neutral. Use plain `strcat(name, ".wav")` when the binary scans the suffix literal first.
+`<string.h>` plus `/Oi` (inside `/O2`) is enough to inline these in VC5; a manual
+`extern "C" char* __cdecl strcat(char*, const char*);` declaration also works (see 004A2910).
+
+Try when:
+- a loop appends a constant suffix to a scanned name and the rebuilt `strcpy`-based inline
+  differs only in which `repne scasb` comes first;
+- the register allocation around the string copy is otherwise aligned.
+
+Why it helps:
+- the intrinsic lowering order is fixed per source construct, so picking the construct that
+  matches the binary's scasb order can snap the whole inline sequence into the exact basin.
+
+Caveat:
+- not a license to use strcat where the binary proves strcpy semantics; check the operand
+  order of the two strlen scans (suffix first = strcat) before switching.
