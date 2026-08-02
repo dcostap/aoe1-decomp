@@ -1,5 +1,13 @@
 // PointMaker::SetDefaultValues
 // VA: 0044AB90
+// ACCEPTED_DRIFT: reviewed localized VC5 scheduling drift only. Original clears
+// ESI immediately before the BranchDistance store; rebuilt performs the identical
+// store and then clears ESI. Size, frame, all other bytes, stores, values, and
+// subsequent behavior agree (176/178 bytes are equal). If `this` is invalid or
+// protected, both fault on the same store/address, but the exception context has
+// ESI=0 in the original and ESI=2 in the rebuild. This register-only fault-context
+// difference is accepted as low-risk codegen drift; no call, predicate, cleanup,
+// or program-memory effect differs.
 //
 // Attempt log:
 // - Baseline raw-offset source was 178 bytes, 30 positional bytes different (16.8539%).
@@ -12,6 +20,15 @@
 //   tested as diagnostic liveness probes. They either emitted the same 8-byte basin
 //   or regressed to 34 bytes; none reproduced the original xor-then-BranchDistance
 //   order. No custom flags or shared declarations were kept.
+// - Fractal-context lab (36 variants) added the union of exact fractal.cpp donor
+//   declarations, class-versus-struct point records, and likely VC5 headers
+//   (<memory.h>, <stdlib.h>, and game_types.h) without changing the emitted group:
+//   all 36 remained 178 bytes with the same 8-byte hunk. No context surface won.
+// - Fault-state audit: the original copies entry `this` to EDX, clears ESI, then
+//   performs the BranchDistance store; the candidate faults on that same store
+//   before clearing ESI (ESI is 2 instead of 0), while EDX/ECX/EAX are otherwise
+//   the same. Valid-object state is identical, but invalid/protected-this fault
+//   register context is a real caveat for any behavior-equivalence decision.
 // - Paused after the ten-hypothesis budget. Remaining drift is the localized
 //   xor esi,esi / BranchDistance store order at 0044ABC7, not a behavior or layout gap.
 #include <string.h>
