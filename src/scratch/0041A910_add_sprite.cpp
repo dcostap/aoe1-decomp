@@ -37,6 +37,9 @@
 // Separate head/scan cursors (including decompiler initialization order and top-declared locals) entered a 43-byte basin with an extra head test; restored.
 // Swapping traversal declaration/initialization order and a focused 4-variant alias/head lab did not move the 36-byte basin; all variants remained 158B with exact call-set parity.
 // left in scratch: VC5 still folds this into ESI=&list/EDI=new-node instead of original ESI=this/EDI=ppPrev; drift spans traversal, duplicate-hit tail, allocation, and insertion stores.
+// Retry 2026-08-02 Luna41A910: baseline rechecked after claiming this target; clean source remains 158B with 36 positional bytes / 26 edit bytes, first mismatch +38.
+// New hypotheses: exact decompiler head/scan cursor forms (43B), swapped cursor ownership (same 43B), canonical Active_Sprite destructor/full virtual surface (same 36B), compound head initialization (same), CRT <stdlib.h> calloc declaration (same), scan-node reuse (same), and positive outer guard (same). `sizeof(Node)` allocation worsened to 38B and was restored.
+// Final clean-source choice: retain the prior period-plausible typed list insertion candidate; unresolved drift is broad register/liveness topology, not a localized behavior-equivalent hunk.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
