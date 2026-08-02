@@ -13,7 +13,13 @@
 //   32 edit-diff bytes (16.2%). Remaining mismatches are jump-offset shifts from EH handler split
 //   (.text$x/.xdata$x in .obj vs inline in EXE) — linker-level, not source-fixable.
 //   Winning source: externC + direct param reads + get_string inline in new args + /GX
-// Left in scratch: behavior correct, body very close. EH section split is the blocker.
+// Current assignment:
+// Probe 5: changed panel_system from a pointer to the inventory-proven global object; MATCH.
+// Probe 6: modeled TribeAchievementsScreen as the TScreenPanel-derived 0x5F8 class with its
+//   proven fields and virtual destructor; MATCH unchanged.
+// Probe 7: default /O2 /Oy without /GX removed the EH prologue and produced 128 bytes; rolled back.
+// Probe 8: typed the four TribeEndScreen fields from inventory; MATCH unchanged.
+// Kept /GX because the original has the FS:[0] registration and constructor-cleanup state.
 
 #include "..\..\include\game_globals.h"
 
@@ -51,25 +57,57 @@ public:
     int setCurrentPanel(char* name, int param);
     int destroyPanel(char* name);
 };
-extern TPanelSystem* panel_system;
+extern TPanelSystem panel_system;
 
 class TScreenPanel : public TEasy_Panel {
 public:
     virtual ~TScreenPanel();
 };
 
-class TribeAchievementsScreen : public TPanel {
+class TTextPanel;
+class TScrollBarPanel;
+class TButtonPanel;
+class TPicturePanel;
+class TShape;
+class Time_Line_Panel;
+
+class TribeAchievementsScreen : public TScreenPanel {
 public:
-    char _gap_F4[0x504];
-    TribeAchievementsScreen(char* str, int flag);
+    int end_game_flag;
+    int current_mode;
+    int size;
+    TTextPanel* title;
+    TTextPanel* summary_text;
+    TTextPanel* instruction;
+    TTextPanel* win_loss_text;
+    TTextPanel* time;
+    TTextPanel* title_bar[7];
+    TTextPanel* achievement_choice[5];
+    TTextPanel* statistics[8][7];
+    TTextPanel* player_names[8];
+    TScrollBarPanel* summary_text_bar;
+    TScrollBarPanel* instruction_bar;
+    TScrollBarPanel* win_loss_text_bar;
+    TButtonPanel* okButton;
+    TButtonPanel* backButton;
+    TButtonPanel* backButton2;
+    TButtonPanel* timelineButton;
+    TButtonPanel* aftermathButton;
+    TButtonPanel* restartButton;
+    TButtonPanel* close_button;
+    TShape* win_decal;
+    Time_Line_Panel* time_line;
+
+    virtual ~TribeAchievementsScreen();
+    TribeAchievementsScreen(char* summary_text, int end_game_flag);
 };
 
 class TribeEndScreen : public TScreenPanel {
 public:
-    void* background;
-    void* title;
-    void* text;
-    void* okButton;
+    TPicturePanel* background;
+    TTextPanel* title;
+    TTextPanel* text;
+    TButtonPanel* okButton;
 
     virtual ~TribeEndScreen();
     long action(TPanel* panel, long id, unsigned long param3, unsigned long param4);
@@ -80,9 +118,9 @@ long TribeEndScreen::action(TPanel* panel, long id, unsigned long param3, unsign
     if (panel == 0 || id != 1)
         return ((TEasy_Panel*)this)->action(panel, id, param3, param4);
 
-    TribeAchievementsScreen* obj = new TribeAchievementsScreen(this->get_string(0x269E), 1);
+    new TribeAchievementsScreen(this->get_string(0x269E), 1);
 
-    panel_system->setCurrentPanel("Achievements Screen", 0);
-    panel_system->destroyPanel("End Screen");
+    panel_system.setCurrentPanel("Achievements Screen", 0);
+    panel_system.destroyPanel("End Screen");
     return 1;
 }

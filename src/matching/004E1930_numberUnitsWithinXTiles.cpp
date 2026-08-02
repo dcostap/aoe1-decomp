@@ -3,7 +3,7 @@
 // Source: taiinfmd.cpp lines 6656-6676
 // Size: 197 bytes
 //
-// Status: PARKED - VC5 codegen structure drift
+// Status: exact validated match
 //
 // Attempt log:
 // Probe 1: natural C++ with type stubs (wrong field offsets)
@@ -12,20 +12,15 @@
 // Probe 4: goto with exact original branch pattern (192 bytes)
 // Probe 5: do-while with continue pattern (192 bytes, too short)
 // Probe 6: do-while with boolean doCheck (197 bytes, 27.9% edit diff)
+// Session probe 1: typed md->player surface plus explicit owner-dispatch labels
+// moved the branch family but was 8 bytes short; rolled back as less natural.
+// Session probe 2: combined owner-or-enemy gate with a nested sentinel test
+// produced exact bytes; rewrote it as a natural nested boolean expression.
+// Session probe 3: removed the diagnostic labels; emitted code stayed exact.
 //
-// Remaining diff (73% positional, 27.9% edit):
-//   1. Inverted branch: orig uses je (== -1, to enemy_check),
-//      rebuilt uses jne (!= -1, to else path)
-//   2. Missing redundant cmp playerFilter,-1; jne do_dist after
-//      owner match (orig has it, it's always taken)
-//   3. sete/mov/test for boolean vs direct jne in original
-//   4. jmp to shared result check in -1 path (rebuilt) vs
-//      fall-through in original
-//   5. Register allocation differences throughout
-//
-// All field offsets, call targets, stack cleanup, and return
-// values are correct. Control flow shape and register allocation
-// are VC5 TU-context dependent patterns.
+// Exact reconstruction: important-object records are 0x24 bytes; md->player is
+// the typed owner-check surface at +0xF0; the combined owner/enemy predicate
+// preserves the original redundant playerFilter sentinel comparison.
 
 #include <stdlib.h>
 
@@ -58,6 +53,12 @@ public:
     virtual int isEnemy(int playerNum);
 };
 
+class MainDecisionAIModule {
+public:
+    char gap_00[0xF0];
+    RGE_Player* player;             // +0xF0
+};
+
 struct TribeInformationAIModule_base {
     char pad[0xF0];
 };
@@ -65,7 +66,7 @@ struct TribeInformationAIModule_base {
 class TribeInformationAIModule : public TribeInformationAIModule_base {
 public:
     char gap_F0[0x10];
-    void* md;                  // +0x100
+    MainDecisionAIModule* md;  // +0x100
     int mapXSizeValue;         // +0x104
     int mapYSizeValue;         // +0x108
     int lastUpdateRowValue;    // +0x10C
@@ -83,14 +84,10 @@ int TribeInformationAIModule::numberUnitsWithinXTiles(int playerFilter, int xCen
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            int doCheck;
-            if (playerFilter == -1) {
-                RGE_Player* aiPlayer = *(RGE_Player**)((char*)this->md + 0xF0);
-                doCheck = aiPlayer->isEnemy(this->importantObjectMemory[i].owner);
-            } else {
-                doCheck = ((int)this->importantObjectMemory[i].owner == playerFilter);
-            }
-            if (doCheck) {
+            if ((playerFilter == -1 ||
+                 (int)this->importantObjectMemory[i].owner == playerFilter) &&
+                (playerFilter != -1 ||
+                 this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0)) {
                 int dx = (int)this->importantObjectMemory[i].x - xCenter;
                 int dy = (int)this->importantObjectMemory[i].y - yCenter;
                 if (dx * dx + dy * dy <= radiusSquared) {
