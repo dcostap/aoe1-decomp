@@ -1,7 +1,7 @@
 // VA: 00425A40 TCommunications_Handler::TCommunications_Handler
 // PDB source: Com_hand.cpp lines 268-332 (1700 bytes, EH-framed /GX ctor)
 //
-// ATTEMPT LOG (owner DS4-425A40, 10-probe budget):
+// ATTEMPT LOG (prior owner DS4-425A40; current owner Luna-425A40, 10-probe budget):
 // 1 baseline: natural /GX ctor with real new expressions (new NAME[maxPlayers+1],
 //   new RGE_Communications_Queue(0x1F5), new RESENDER[0x1F6], new HOLDER[0x1F6],
 //   new RGE_Comm_Error(hwnd), new RGE_Lobby(hwnd), new Speed(this), new Sync(this)),
@@ -29,8 +29,33 @@
 //   as the corresponding EH vector helpers. Revalidation has 28/28 ordered calls and
 //   no call-target differences; 00424AC0 and the other affected exact donors also
 //   revalidate. The remaining blocker is source/codegen, not relocation identity.
-// NEXT LEAD: the NAME-block frame 0x28->0x20 register coloring; try fuller likely-TU
-//   class/declaration context before more loop spelling variants.
+//
+// Luna-425A40 bounded follow-up (2026-08-02):
+// 1 baseline: inherited best state, 1700B, frame 0x28 vs 0x20, 28/28 calls,
+//    diff 1237B.
+// 2 context: restored inventory-proven full field surfaces for the handler and
+//    constructed communication subobjects; codegen unchanged.
+// 3 context: restored donor-header pack(1)/pack(4) context; codegen unchanged.
+// 4 layout: scoped each NAME allocation/count pair and used count-1 guards;
+//    frame reached 0x20, size 1692B, diff 1123B, exact-block coverage 81.76%.
+// 5 layout: kept one NAME* across both scopes; frame stayed 0x20 but shape
+//    regressed; restored probe 4.
+// 6 layout: scoped Codestr/p lifetime; unchanged; retained the scoped form.
+// 7 control-flow: explicit null zero arms worsened size/CFG (1704B, diff 1147B);
+//    restored.
+// 8 control-flow: duplicated NAME member stores worsened size/CFG (1708B,
+//    diff 1125B); restored.
+// 9 layout: one shared mutable count with an explicit reset before the second
+//    allocation and explicit null member stores; recovered exact 1700B/frame
+//    0x20 and diff 179B, but NAME block topology remained non-exact.
+// 10 control-flow: changed only Codestr to the observed guarded do/while;
+//    removed the first extra lea and improved to diff 165B (1648/1700 equal,
+//    28/28 ordered calls, exact frame/size). Budget exhausted.
+// CURRENT BEST: keep the full class/context surface and the shared count-reset
+//   NAME topology. Remaining drift is localized to NAME allocation block shape,
+//   starting at 00425C01 (stack-home selection [esp+48] vs [esp+4C]); no EH or
+//   call-target blocker remains. Next lead: preserve the frame-0x20 shared-count
+//   basin while restoring the original count/pointer parameter-home assignments.
 
 #include <string.h>
 
@@ -96,7 +121,15 @@ class RGE_TimeSinceLastCall;
 
 class RGE_Communications_Queue {
 public:
-    char gap_00[0x118];
+    unsigned int QueueDepth;
+    unsigned int HighQueueDepth;
+    unsigned int MaxQSize;
+    char TBuff[255];
+    unsigned char _pad_10B;
+    unsigned long LastCurrentTurn;
+    unsigned char Sequence;
+    unsigned char _pad_111[3];
+    void* Queue;
     RGE_Communications_Queue(int maxQSize);
     ~RGE_Communications_Queue();
     void FlushAll();
@@ -104,32 +137,89 @@ public:
 
 class RGE_Comm_Error {
 public:
-    char gap_00[0x8];
+    void* HostHWND;
+    long LastReportedError;
     RGE_Comm_Error(void* hwnd);
     ~RGE_Comm_Error();
 };
 
 class RGE_Lobby {
 public:
-    char gap_00[0x1C];
+    void* HostHWND;
+    void* glpDPL;
+    void* glpDPL2;
+    void* glpDP;
+    void* glpdplConnection;
+    unsigned char lobby_game;
+    unsigned char _pad_15[3];
+    RGE_Comm_Error* Err;
     RGE_Lobby(void* hwnd);
     ~RGE_Lobby();
 };
 
 class RGE_Communications_Speed {
 public:
-    char gap_00[0x240];
+    char TBuff[255];
+    unsigned char _pad_FF;
+    void* TurnTSLC;
+    void* FrameTSLC;
+    TCommunications_Handler* Comm;
+    unsigned char _pad_10C[4];
+    double AccumDiff;
+    int SpeedControlEnabled;
+    unsigned int CurrentBufferFrames;
+    unsigned int FutureBufferFrames;
+    unsigned int TotalBufferFramesRemaining;
+    unsigned int TargetTurnLengthMsec;
+    unsigned int CurrentBufferGranularity;
+    unsigned int FutureBufferGranularity;
+    unsigned int OverheadFactor;
+    unsigned long TimeSinceLastBuffer;
+    unsigned long FutureSpeedChangeTurn;
+    unsigned long NextLatencyChangeTurn;
+    unsigned int ActualLatency[10];
+    unsigned int AverageTSLC[10];
+    unsigned char PlayerOptimalFrames[10];
+    unsigned char PlayerOptimalGranularity[10];
+    unsigned short RequestFasterOrSlower[10];
+    unsigned long PlayerAvgFramesMsec[10];
+    unsigned long PlayerHighLatencyMsec[10];
+    unsigned long HighestLatencyMsec;
+    unsigned int SkipFrames;
+    unsigned int OptimalBufferFrames;
+    unsigned int OptimalBufferGranularity;
+    unsigned int DiffOffset;
+    unsigned int AllAcknowledgedBuffersRemaining;
+    unsigned int LastAdjusted;
+    unsigned long RealTimePassed;
+    unsigned long BufferTimePassed;
+    unsigned int DroppedFrames;
+    unsigned int DroppedFramesTurn;
+    unsigned long AdjustmentCount;
+    int LastFrameHadTime;
     RGE_Communications_Speed(TCommunications_Handler* comm);
     ~RGE_Communications_Speed();
 };
 
 class RGE_Communications_Synchronize {
 public:
-    char gap_00[0x7EC];
+    TCommunications_Handler* Comm;
+    unsigned long CheckTime;
+    unsigned long CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
+    int NewData;
+    int LastResult;
+    unsigned int Offset;
+    int DoChecksums;
+    unsigned long LastWorldRandom;
+    unsigned long GameWorldChecksum;
+    char Check[55 * 0x24];
     RGE_Communications_Synchronize(TCommunications_Handler* comm);
     ~RGE_Communications_Synchronize();
 };
-
+#pragma pack(push, 1)
 class COMMPLAYEROPTIONS {
 public:
     unsigned char NeedsToBeSent;      // +0x00
@@ -162,7 +252,9 @@ public:
     int GameHasStarted;               // +0x1C8
     unsigned long DataSizeToFollow;   // +0x1CC
 };
+#pragma pack(pop)
 
+#pragma pack(push, 4)
 class TCommunications_Handler {
 public:
     int OptionsChanged;                 // +0x00
@@ -174,9 +266,14 @@ public:
     TChat* Chat;                        // +0x18
     int MeHost;                         // +0x1C
     int HaveHostInit;                   // +0x20
-    char gap_24[0x10C8 - 0x24];
+    char InCommBuff[4001];              // +0x24
+    char TBuff[257];                    // +0xFC5
+    unsigned char _pad_10C6[2];
     unsigned long current_turn;         // +0x10C8
-    char gap_10CC[0x10DC - 0x10CC];
+    unsigned long next_command_turn;    // +0x10CC
+    unsigned int sequence;              // +0x10D0
+    long WaitOnPlayer;                   // +0x10D4
+    unsigned long TurnSpeedMsec;         // +0x10D8
     unsigned long AcknowledgeAfterMsec; // +0x10DC
     unsigned int Me;                    // +0x10E0
     int Multiplayer;                    // +0x10E4
@@ -187,7 +284,10 @@ public:
     char MyFriendlyName[129];           // +0x10F8
     char MyFormalName[129];             // +0x1179
     char MyGameTitle[129];              // +0x11FA
-    char gap_127B[0x1288 - 0x127B];
+    unsigned char _pad_127B;
+    unsigned long CurrentPlayers;       // +0x127C
+    int previous_last_world_random;     // +0x1280
+    int last_world_random;              // +0x1284
     int StepMode;                       // +0x1288
     unsigned long turnstart;            // +0x128C
     unsigned long lastcalltick;         // +0x1290
@@ -269,6 +369,7 @@ public:
     void ClearRXandTX();
     void ResetLastCommunicationTimes();
 };
+#pragma pack(pop)
 
 TCommunications_Handler::TCommunications_Handler(void* hwnd, unsigned char maxPlayers, TChat* chat, GUID appGUID)
 {
@@ -302,37 +403,48 @@ TCommunications_Handler::TCommunications_Handler(void* hwnd, unsigned char maxPl
     Log(L, "COMM:  %s  Version... %s",
         "C:\\msdev\\work\\age1_x1\\Com_hand.cpp", "Fri Jul 17 09:39:38 1998");
 
-    char Codestr[32];
-    strcpy(Codestr, "13:17:08");
-    char* p = Codestr;
-    while (*p != 0) {
-        if (*p == ':') {
-            *p = '0';
+    {
+        char Codestr[32];
+        strcpy(Codestr, "13:17:08");
+        if (*Codestr != 0) {
+            char* p = Codestr;
+            do {
+                if (*p == ':') {
+                    *p = '0';
+                }
+                ++p;
+            } while (*p != 0);
         }
-        ++p;
     }
-
     // LAB-START nameblock (variant-lab splice region; keep identical in both blocks)
     this->CommunicationsVersionCode = 0x2E2887;
-    NAME* names = new NAME[maxPlayers + 1];
+    int count = maxPlayers + 1;
+    NAME* names = new NAME[count];
     if (names != 0) {
         NAME* p = names;
-        for (int i = 0; i <= maxPlayers; ++i) {
+        while (count > 0) {
             strcpy(p->Text, " ");
             ++p;
+            --count;
         }
+        this->FriendlyName = names;
+    } else {
+        this->FriendlyName = names;
     }
-    this->FriendlyName = names;
 
-    names = new NAME[maxPlayers + 1];
+    count = maxPlayers + 1;
+    names = new NAME[count];
     if (names != 0) {
         NAME* p = names;
-        for (int i = 0; i <= maxPlayers; ++i) {
+        while (count > 0) {
             strcpy(p->Text, " ");
             ++p;
+            --count;
         }
+        this->FormalName = names;
+    } else {
+        this->FormalName = names;
     }
-    this->FormalName = names;
     // LAB-END nameblock
 
     this->InQ = new RGE_Communications_Queue(0x1F5);
