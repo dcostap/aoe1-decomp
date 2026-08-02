@@ -28,6 +28,19 @@
 // - if/else dispatch (cmp/jne chain) vs switch jump table (sub+byte+table)
 // - add eax,-7 / test/jne vs sub eax,7 / je encoding
 // - case handler order differs from original
+//
+// Session sa-ff64edc9-r1 (10 meaningful probes):
+// - natural switch emitted the required table but VC5 merged all tactical calls
+//   into one tail (204 bytes, 1/7 calls; 172 positional diff).
+// - volatile pointee/pointer qualifiers and explicit goto handler labels were
+//   unchanged; /pragma optimize("g", off) was 428 bytes and /pragma optimize
+//   ("t", off) was 99 bytes, so both were rejected.
+// - a 256-case expression variant lab found no exact variant; pointer spelling
+//   changed only table/tail details and never restored independent calls.
+// - the typed nested md->tacticalAI surface was also codegen-identical to the
+//   raw-offset switch; an explicit volatile md-field lvalue was unchanged.
+// Best paused source below keeps the binary-proven primary switch and named
+// nested ownership, rather than retaining codegen-only volatility/labels.
 // No custom flags, no inline asm.
 
 struct AIModule {
@@ -43,7 +56,11 @@ public:
     int strategicNumber(int val);
 };
 
-class TribeMainDecisionAIModule; // opaque
+class TribeMainDecisionAIModule {
+public:
+    char gap_00[0x1146C];
+    TribeTacticalAIModule tacticalAI;
+};
 
 struct TribeInformationAIModule : public InformationAIModule {
     char farmsPad[0x10]; // ManagedArray<int> farmsTaskedThisUpdate at +0xF0
@@ -54,24 +71,27 @@ struct TribeInformationAIModule : public InformationAIModule {
 
 int TribeInformationAIModule::defendPriority(int param_1, int param_2)
 {
-    if (param_1 == 0x2D)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x46);
-    if (param_1 == 0x6D)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x38);
-    if (param_1 == 0x9E || param_1 == 0xA3)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x36);
-    if (param_1 == 0x9F)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x37);
+    switch (param_1) {
+    case 0x2D:
+        return md->tacticalAI.strategicNumber(0x46);
+    case 0x6D:
+        return md->tacticalAI.strategicNumber(0x38);
+    case 0x9E:
+    case 0xA3:
+        return md->tacticalAI.strategicNumber(0x36);
+    case 0x9F:
+        return md->tacticalAI.strategicNumber(0x37);
+    }
 
     int t = param_2;
     t -= 7;
     if (t == 0)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x34);
+        return md->tacticalAI.strategicNumber(0x34);
     t--;
     if (t == 0)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x33);
+        return md->tacticalAI.strategicNumber(0x33);
     t -= 0x18;
     if (t == 0)
-        return ((TribeTacticalAIModule*)((char*)md + 0x1146C))->strategicNumber(0x32);
+        return md->tacticalAI.strategicNumber(0x32);
     return -1;
 }

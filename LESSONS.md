@@ -2154,3 +2154,27 @@ Why it helps:
 Caveat:
 - use only when the executable proves the late handler layout; ordinary positive
   equality chains remain the more readable default when their layout matches.
+
+## Lesson: Positive switch arms plus an explicit shared cleanup can preserve an FPU cold tail
+
+When a switch has a cold equality handler after a floating-point case, and one
+floating path must branch to a cleanup that pops a live x87 value before the
+common return, VC5 may place that cleanup before the cold handler if both arms use
+negative early returns. A positive case predicate with a direct return on the
+call arm and an explicit fallthrough to a shared cleanup label can preserve the
+original handler/cleanup order and jump distances.
+
+Try when:
+- the original has a `je` to a late case handler and a separate `jne` to a late
+  `fstp st0` cleanup block;
+- an equivalent switch with `if (x != value) return` emits the right bodies but
+  inserts the cleanup before the handler.
+
+Why it helps:
+- the positive call arm becomes its own terminal block while the mismatch and
+  floating guard paths converge at the source-level cleanup, letting VC5 retain
+  the original FPU liveness and physical block order.
+
+Caveat:
+- use only when the executable proves the x87 cleanup and shared-tail topology;
+  do not add gotos merely to steer bytes around an unproven source model.
