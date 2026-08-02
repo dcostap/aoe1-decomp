@@ -39,6 +39,19 @@
 // Main-agent source audit retained the codegen-neutral typed master/player field
 // surface from that pass instead of the older raw offset accesses; validation stayed
 // in the same 177-byte FPU basin.
+// Retry 2026-08-02 Luna4CC4C0b continuation: dossier/donor/ABI evidence confirmed
+// exact 3-call ordering, 3-return CFG, and the proven +0x10/+0x14/+0x26/+0x15A
+// master fields. Probe 031's data-only base view and probe 033's full typed master
+// hierarchy were codegen duplicates; probe 035 mirrored the matched sibling's
+// derived-data/base surface and was also unchanged. A pointer-local hit-points
+// liveness probe (037) worsened to 181B, so it was rolled back. Combining the
+// sibling surface with max-left product (039) and modeling the actual
+// RGE_Static->RGE_Combat hierarchy plus virtual heal (041/045) likewise produced
+// the same 177B basin. A 12-case focused surface/product/clamp variant lab (043)
+// found only the existing 177B/189B groups, with no size-eligible or exact case.
+// Restored the clean natural source. Final blocker remains the broad x87 stack
+// topology and parameter-home choice from +0x48 through clamp/payment setup;
+// calls, cleanup, and return structure remain aligned. GIVEUP for this pass.
 
 struct TRIBE_Player;
 
