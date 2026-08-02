@@ -59,6 +59,13 @@
 // improvement; the best remained the current 153-byte/24-byte-diff candidate. The final typed RGE_Obj_Info target
 // and trailing-record layout regressed to 33 bytes. Restored the clean candidate; broad prologue/register coloring
 // remains unresolved, so this stays in scratch rather than accepted_drift.
+// Retry 2026-08-03 Luna435110 (9 meaningful probes): canonical RGE_Command_Order/RGE_Obj_Info layouts and raw
+// trailing-record views remained worse (27-33 bytes); typed trailing IDs and target-load spellings did not improve.
+// A scoped direct-count form broke structure (145 bytes), and raw byte views reached only 30 bytes. One focused
+// declaration/initialization lab and one target/pointer lab found no exact or better basin. Restored the clean
+// 153-byte/24-byte candidate. Remaining evidence is the stable first +6 prologue scheduling/register-coloring
+// mismatch (original saves EBP/ESI and loads last_order before count), plus pointer-role and target-register drift.
+// No accepted_drift: the residual mismatch remains broad rather than a localized benign codegen difference.
 
 class RGE_Command_Order {
 public:
