@@ -59,6 +59,9 @@
 // not retained. Restored the clean best source below: 141B, 91 positional / 38
 // edit, original call-set/frame/size parity; remaining drift is old LastCall
 // register color, delta/index scheduling, and the padded tail. No accepted drift.
+// 2026-08-03 Luna480480b: a focused 135-variant core lab found exact bytes with
+// TSLC assigned before LastCall and a post-increment member Offset++ (the named
+// idx form was not exact). Exact candidate retained below; validate before move.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
@@ -83,13 +86,11 @@ unsigned long RGE_TimeSinceLastCall::Set()
 {
     unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x5D);
     if (this->LastCall == now) return 0;
-    register unsigned long old = this->LastCall;
-    unsigned long diff = now - old;
+    unsigned long old = this->LastCall;
+    this->TSLC = now - old;
     this->LastCall = now;
-    this->TSLC = diff;
-    int idx = this->Offset + 1;
-    this->Offset = idx;
-    if (idx > 100) this->Offset = 0;
+    this->Offset++;
+    if (this->Offset > 100) this->Offset = 0;
     this->aTSLC[this->Offset] = this->TSLC;
     unsigned long t = this->TSLC;
     unsigned long v = this->lowTSLC;
