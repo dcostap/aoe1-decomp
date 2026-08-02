@@ -1961,3 +1961,17 @@ Caveat:
 - apply only when the success/failure return topology and cursor stride are
   established by the original assembly; do not use a cursor merely to steer
   codegen around an unknown layout.
+
+## Lesson: Prefer declared globals over literal absolute-address dereferences
+
+Even when both forms ultimately address the same fixed VA, VC5 can schedule and
+color a declared external global differently from an integer-cast absolute load.
+If an otherwise aligned function has a stubborn global/index load-order mismatch,
+replace expressions such as `*(int*)0xADDRESS` with the established shared global
+declaration before trying liveness hacks. Preserve typed ownership for any pointed-to
+table or record array.
+
+This can change whole-block register allocation and branch distances—not merely
+relocation metadata—while keeping the source more plausible. Verify the global's
+width, mutability, and pointer-vs-object meaning first; do not invent a declaration
+solely to perturb codegen.

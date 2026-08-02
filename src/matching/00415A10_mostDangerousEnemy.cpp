@@ -8,6 +8,19 @@
 // rebuilt keeps master in EDI and vtable in EBX while original keeps master in EBX and vtable in EDI; update block loads global/index in
 // opposite order. Behavior/calls/stack cleanup/FPU compare look equivalent, but not proposing accepted_drift because drift spans register
 // allocation throughout the central virtual-call block rather than a tiny isolated encoding difference.
+// Luna415A10 pass: baseline rebuilt to 189B under the stricter boundary/call checker; old 188B cache
+// had truncated the final ret operand. Direct loop-index ID spelling was codegen-duplicate.
+// Unified objectValue/target as the proven polymorphic RGE_Static_Object surface and typed owner as
+// RGE_Player*; both were codegen-duplicate. A focused central lab showed direct master/owner member
+// access is the clean best source: 68 positional / 13 edit bytes, 98.53% shape, 189B.
+// Update-order lab found pointer-local and volatile-index forms alter the prologue; the volatile-index
+// probe regressed to 84 bytes. Restored the direct nonvolatile ID expression; remaining drift is the
+// two independent update-block loads (original index-before-global, rebuilt global-before-index).
+// Main-agent audit replaced literal absolute dereferences with the established shared globals and
+// modeled the 8-byte lookup entry. That natural declaration context recovered exact load order,
+// register allocation, branch distances, and 188/188-byte equality.
+
+#include "../../include/game_globals.h"
 
 class RGE_Master_Static_Object {
 public:
@@ -17,14 +30,14 @@ public:
     int field_10C;
 };
 
-class RGE_Static_Object {
-public:
-    char gap_00[8];
-    RGE_Master_Static_Object* master_obj;
-    void* owner;
+class RGE_Player;
+
+struct UnitAIObjectEntry {
+    int object_id;
+    int unknown;
 };
 
-class RGE_Action_Object {
+class RGE_Static_Object {
 public:
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0C();
     virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
@@ -43,7 +56,11 @@ public:
     virtual void vC8(); virtual void vCC(); virtual void vD0(); virtual void vD4();
     virtual void vD8(); virtual void vDC(); virtual void vE0(); virtual void vE4();
     virtual void vE8(); virtual void vEC();
-    virtual float threat1(RGE_Static_Object* a, void* owner, RGE_Static_Object* b); // +0xF0
+    virtual float threat1(RGE_Static_Object* a, RGE_Player* owner, RGE_Static_Object* b); // +0xF0
+
+    int id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
 };
 
 class UnitAIModule {
@@ -53,7 +70,7 @@ public:
     virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1C();
     virtual void preMostDangerous(); // +0x20
 
-    RGE_Action_Object* objectValue;
+    RGE_Static_Object* objectValue;
 
     RGE_Static_Object* lookupObject(int id);
     int mostDangerousEnemy(float* outThreat);
@@ -65,22 +82,19 @@ int UnitAIModule::mostDangerousEnemy(float* outThreat) {
     int best = -1;
     float bestThreat = 0.0f;
     int i = 0;
-    if (*(int*)0x87D7D8 > 0) {
+    if ((int)DAT_0087d7d8 > 0) {
         do {
-            RGE_Static_Object* obj = lookupObject(*(int*)(*(int*)0x87D7F0 + i * 8));
+            RGE_Static_Object* obj = lookupObject(((UnitAIObjectEntry*)DAT_0087d7f0)[i].object_id);
             if (obj) {
-                void* owner = obj->owner;
-                RGE_Master_Static_Object* master = obj->master_obj;
-                float f = objectValue->threat2(master->field_108, master->field_10C,
-                    objectValue->threat1(obj, owner, obj));
+                float f = objectValue->threat2(obj->master_obj->field_108, obj->master_obj->field_10C,
+                    objectValue->threat1(obj, obj->owner, obj));
                 if (best == -1 || f > bestThreat) {
                     bestThreat = f;
-                    int idx = i;
-                    best = *(int*)(*(int*)0x87D7F0 + idx * 8);
+                    best = ((UnitAIObjectEntry*)DAT_0087d7f0)[i].object_id;
                 }
             }
             i++;
-        } while (i < *(int*)0x87D7D8);
+        } while (i < (int)DAT_0087d7d8);
     }
 
     if (outThreat) {
