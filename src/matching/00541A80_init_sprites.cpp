@@ -3,7 +3,7 @@
 // Source: World.cpp lines 804-816
 // Size: 216 bytes
 //
-// Status: PARKED — VC5 EH prologue ordering / register allocation drift
+// Status: exact candidate — locally validated under the pinned VC5 toolchain
 //
 // Attempt log:
 // Probe 1: basic stub, no EH — 112 bytes (need 216)
@@ -15,6 +15,12 @@
 // Probe 4: virtual init_sprites decl — same prologue issue
 // Probe 5: non-virtual init_sprites — same
 // Probe 6: restructured for loops — same
+// Current session probe 1 (baseline): current scratch source emitted 226 bytes;
+// the minimal RGE_Game_World surface had the wrong field offsets and rehook arg.
+// Current session probe 2 (layout): restored the polymorphic world surface and
+// proven fields at +0x30/+0x34/+0x38/+0x64; size stayed 226 bytes.
+// Current session probe 3 (behavior): rehook takes the sprite-array value, not
+// &sprites; exact 216-byte match.
 //
 // Key findings:
 // - /GX + operator new triggers C++ EH frame
@@ -27,14 +33,9 @@
 // - RGE_Sprite::rehook takes sprites array as arg
 // - Virtual destructor NOT needed for EH (virtual method sufficient)
 //
-// Remaining drift (VC5 TU-context):
-// - EH prologue: push -1; push handler; mov eax,fs:[0]; push eax
-//   vs original: mov eax,fs:[0]; push -1; push handler; push eax
-// - Extra push ecx (4-byte local) vs original reuses param_1 stack slot
-// - Register allocation: edi=this, ebp=&sprite_num, esi=&sprites
-//   vs original: esi=this, ebx=&sprite_num, ebp=param_1
-// - Cached &sprites pointer vs per-access reload from [esi+38h]
-// No inline asm, custom flags: /GX
+// Resolved: the corrected rehook pointer level lets VC5 select the original EH,
+// parameter-slot reuse, register allocation, and per-access member reloads.
+// No inline asm; custom flags: /GX (required by the original EH frame).
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -45,9 +46,10 @@ struct RGE_Sound;
 struct RGE_Color_Table;
 
 struct RGE_Sprite {
-    char dummy[0x78];
+    void* vtable_ptr;
+    char gap_04[0x74];
 
-    void rehook(RGE_Sprite*** sprites_array);
+    void rehook(RGE_Sprite** sprites_array);
     RGE_Sprite(int param_1, RGE_Sound** sounds, RGE_Color_Table** color_tables);
 };
 
@@ -57,6 +59,8 @@ void* calloc(int count, int size);
 
 class RGE_Game_World {
 public:
+    virtual void init_sprites(int param_1);
+
     char pad_00[0x30 - 4];
     RGE_Sound** sounds;         // +0x30
     short sprite_num;           // +0x34
@@ -65,7 +69,6 @@ public:
     char pad_3C[0x64 - 0x3C];
     RGE_Color_Table** color_tables; // +0x64
 
-    void init_sprites(int param_1);
 };
 
 void RGE_Game_World::init_sprites(int param_1)
@@ -84,7 +87,7 @@ void RGE_Game_World::init_sprites(int param_1)
 
     for (int j = 0; j < sprite_num; j++) {
         if (sprites[j]) {
-            sprites[j]->rehook(&sprites);
+            sprites[j]->rehook(sprites);
         }
     }
 }

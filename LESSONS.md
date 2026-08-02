@@ -2208,3 +2208,35 @@ Why it helps:
 Caveat:
 - confirm the narrow signature from callers, fields, or period source context;
   do not widen or narrow a real API solely to perturb codegen.
+
+## Lesson: Reuse the ManagedArray scan basin and name indexed RMW addresses
+
+For a function that searches a `ManagedArray<int>`-shaped field and then shifts
+its entries, a direct bounded indexed `for` scan can reproduce the canonical
+pointer induction and `jl` back-edge that a decompiler-shaped pointer
+`do/while` with an inner `break` may miss. For a later indexed decrement, a
+named element pointer plus explicit load/store can preserve the original
+`mov value; lea address; dec value; mov [address],value` sequence:
+
+```cpp
+int* p = &owner->counts[index];
+int value = *p;
+*p = value - 1;
+```
+
+Try when:
+- a same-TU `ManagedArray` donor already matches with a bounded indexed scan;
+- the rebuilt search has a redundant bottom compare/jump or the tail folds to
+  a one-instruction memory decrement;
+- the original separately loads an indexed value and forms its address before
+  storing the decremented result.
+
+Why it helps:
+- the indexed loop exposes the compiler's established array-search basin;
+- naming the lvalue address prevents VC5 from collapsing a source-level
+  load/decrement/store into `dec dword [base+index*4]`.
+
+Caveat:
+- use only when the field ownership and element offset are binary-proven; keep
+  the pointer local as an observed address/load/store form, not arbitrary
+  register-steering scaffolding.
