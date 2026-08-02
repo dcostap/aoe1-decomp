@@ -1,60 +1,80 @@
 // RGE_Victory_Conditions::handle_points_highest_attribute
 // VA: 00533240
 // victory.cpp
+// Attempt log:
+// - Baseline: reconstructed from scratch (previous scratch source was a decompiler-shaped
+//   wrong reconstruction: reversed threshold direction, invented max-scan loop, invented
+//   trailing ftol). Modeled on exact sibling handle_points_attribute_first (00533180):
+//   same RGE_Player/RGE_Game_World/RGE_Victory_Point_Entry/RGE_Victory_Conditions surface.
+// - Binary semantics: val = ftol(player->attributes[entry->attribute]); curr_amount =
+//   (float)val; best starts at entry->points; if val < entry->initial_amount then best = 0
+//   else scan players[1..num-1]: if any other player's attribute > curr_amount -> best = 0
+//   (break), if == curr_amount -> best = entry->curr_points; finally if best != curr_points
+//   award delta to tot_victory_points and store best.
 
-struct RGE_Victory_Point_Entry {
-    unsigned char command;     // +0x00
-    unsigned char state;       // +0x01
-    char gap_02[2];
-    long attribute;            // +0x04
-    long initial_amount;       // +0x08
-    long points;               // +0x0C
-    long curr_points;          // +0x10
-    float curr_attribute_amount; // +0x14
+class RGE_Game_World;
+
+class RGE_Player {
+public:
+    char gap_00[0x3C];
+    RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
+    char gap_4C[4];
+    float* attributes;
 };
 
-struct RGE_Victory_Conditions {
-    void* vftable;            // +0x00
-    void* victory_list;       // +0x04
-    long list_num;            // +0x08
-    void* player;             // +0x0C
-    unsigned char victory;    // +0x10
-    char gap_11[3];
-    void* victory_point_list; // +0x14
-    long point_list_num;      // +0x18
-    long tot_victory_points;  // +0x1C
+class RGE_Game_World {
+public:
+    char gap_00[0x3C];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
+};
 
-    void handle_points_highest_attribute(struct RGE_Victory_Point_Entry* entry);
+class RGE_Victory_Point_Entry {
+public:
+    unsigned char command; unsigned char state; char gap_02[2];
+    long attribute; long initial_amount; long points; long curr_points;
+    float curr_attribute_amount;
+};
+class RGE_Victory_Conditions {
+public:
+    void* vftable; void* victory_list; long list_num; RGE_Player* player;
+    unsigned char victory; char gap_11[3]; void* victory_point_list;
+    long point_list_num; long tot_victory_points;
+    void handle_points_highest_attribute(RGE_Victory_Point_Entry* entry);
 };
 
 void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_Entry* entry) {
-    if (entry->state) return;
-
-    long val = (long)*(float*)(*(long*)((char*)(this->player) + 0x50) + entry->attribute * 4);
-    entry->curr_attribute_amount = (float)val;
-
-    if (val < entry->initial_amount) {
-        // Find highest among all players
-        void* world = *(void**)((char*)(this->player) + 0x3C);
-        short num = *(short*)((char*)world + 0x3C);
-        void** players = *(void***)((char*)world + 0x40);
-        short my_id = *(short*)((char*)(this->player) + 0x4A);
-        float curr_best = 0.0f;
-
-        for (long i = 1; i < (long)num; i++) {
-            if (i == (long)my_id) continue;
-
-            float other_val = *(float*)(*(long*)((char*)players[i] + 0x50) + entry->attribute * 4);
-            
-            if (other_val > curr_best) {
-                curr_best = other_val;
+    RGE_Player* player;
+    if (entry->state == 0) {
+        player = this->player;
+        long val = (long)player->attributes[entry->attribute];
+        long best = entry->points;
+        float curr_amount = (float)val;
+        entry->curr_attribute_amount = curr_amount;
+        RGE_Player** players = player->world->players;
+        if (val < entry->initial_amount) {
+            best = 0;
+        } else {
+            int num = player->world->player_num;
+            for (int i = 1; i < num; ++i) {
+                if (i != player->id) {
+                    float other = players[i]->attributes[entry->attribute];
+                    if (other > curr_amount) {
+                        best = 0;
+                        break;
+                    }
+                    if (other == curr_amount) {
+                        best = entry->curr_points;
+                    }
+                }
             }
         }
-
-        long new_val = (long)curr_best;
-        if (new_val != entry->curr_points) {
-            this->tot_victory_points += new_val - entry->curr_points;
-            entry->curr_points = new_val;
+        if (best != entry->curr_points) {
+            this->tot_victory_points += best - entry->curr_points;
+            entry->curr_points = best;
         }
     }
 }
