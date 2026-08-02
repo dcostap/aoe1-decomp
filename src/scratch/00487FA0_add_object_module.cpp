@@ -1,12 +1,12 @@
 // 00487FA0 TRIBE_RMM_Database_Controller::add_object_module
-// Attempt log (condensed after 89 total meaningful probes):
+// Attempt log (condensed after 99 total meaningful probes):
 // - Natural typed reconstruction recovered the exact 1749-byte size, 0x14 frame, saved
 //   registers, and 11/11 ordered direct calls. Direct indexed aggregate assignment restored
 //   the original rep movsd land shift. Precomputing land_size_adjustment recovered the target
 //   idiv/test/pointer loop; the positive `done` guard recovered the 73-insn collision island.
-// - Current best: 93.60% instruction shape, 57.29% exact-block coverage, raw edit cost 194
-//   (5.55% bounded), 480/484 instructions, and first strict mismatch +0x161. The mismatch is
-//   still structural, so this function is not eligible for accepted drift.
+// - Prior best before the final Luna-487FA0 assignment: 93.60% instruction shape, 57.29%
+//   exact-block coverage, raw edit cost 194 (5.55% bounded), 480/484 instructions, and first
+//   strict mismatch +0x161. The function was not eligible for accepted drift.
 // - DIA/asm stack topology (entry-relative after sub esp,14h and four pushes): compiler
 //   temporary local_4 at -0x04; collision index home local_8 at -0x08; long index1 retry
 //   counter at -0x0C; long count island count at -0x10; uchar done at -0x11; and long
@@ -68,6 +68,24 @@
 //   left operand (the 3-op follows from it); tail needs a way to make the two /6 arms' loads
 //   differ (different temp register per arm) without volatile. Both remain open; broad
 //   expression/tail/flag labs remain exhausted.
+//
+// Session Luna-487FA0 (2026-08-02, final bounded assignment; 10 probes):
+// - Restoring the generated same-TU virtual declaration surface through init/de_init changed
+//   no bytes. A block-local cached land_num regressed to a 0x1C frame; case-scoped distinct /6
+//   locals, a pointer/raw map-width split, and reuse of x/y all emitted the old 1192-byte basin.
+//   Thus no defined nonvolatile tail spelling tried here restored B050/B051.
+// - A nonvolatile reference alias scoped to the new-land block,
+//       long& land_count_ref = this->land_info.land_num;
+//   and used for every new-land index plus the object-info land-id stores, is the first strong
+//   B025/B039 lead: it keeps i as the add's left operand and emits the original rotating
+//   `mov esi/edx/ecx,[land_num]; mov eax,ebx; add eax,reg` family. It improved 1192 bytes to
+//   307, then to 95 after using the alias for the object-info land-list id. The alias is kept.
+// - Reversing the independent clamp sum (`number_of_players + count`) was a codegen duplicate.
+//   Final retained metrics: exact size/frame and 11/11 calls, 97.73% shape, 94.38% exact-block
+//   coverage, edit cost 41, 480/484 instructions, strict diff 95 bytes, first mismatch +0x19A.
+//   Remaining drift is the +0x19A SIB/base-order byte hunk plus the missing late /6 blocks.
+//   No credible exact-matching lead remains after this bounded assignment; any further route
+//   would require genuinely new whole-TU/compiler-IR evidence rather than another spelling lab.
 
 typedef unsigned char uchar;
 
@@ -193,11 +211,20 @@ protected:
     virtual void add_terrain_module();
     virtual void add_object_module();
     virtual void add_elevation_module();
+    virtual uchar init(RGE_Map*, RGE_Game_World*, uchar, long, uchar);
+    virtual uchar de_init();
 };
 
 class TRIBE_RMM_Database_Controller : public RGE_RMM_Database_Controller {
 public:
+    // Same-TU declaration context: the other three virtual overrides are
+    // declared on the derived controller in rmm_tdbc.cpp as well.
+    virtual void add_land_module(uchar);
+    virtual void add_terrain_module();
     virtual void add_object_module();
+    virtual void add_elevation_module();
+    virtual uchar init(RGE_Map*, RGE_Game_World*, uchar, long, uchar);
+    virtual uchar de_init();
 };
 
 void TRIBE_RMM_Database_Controller::add_object_module()
@@ -266,7 +293,7 @@ void TRIBE_RMM_Database_Controller::add_object_module()
 
     if (this->map_type < 2) {
         count = (debug_rand((char*)0x585E04, 0x1C3) * 4) / 0x7FFF + 1;
-        if (count + this->number_of_players > 10)
+        if (this->number_of_players + count > 10)
             count = 10 - this->number_of_players;
 
         long land_size_adjustment = ((this->map_height + this->map_width) * count) / this->land_info.land_num;
@@ -281,18 +308,19 @@ void TRIBE_RMM_Database_Controller::add_object_module()
         }
 
         index1 = 0;
+        long& land_count_ref = this->land_info.land_num;
         for (i = 0; i < count; ++i) {
-            this->land_info.land[this->land_info.land_num + i].terrain_type = 0;
-            this->land_info.land[this->land_info.land_num + i].area = 7;
-            this->land_info.land[this->land_info.land_num + i].base_size = 3;
-            this->land_info.land[this->land_info.land_num + i].zone = (uchar)i + (uchar)this->land_info.land_num;
-            this->land_info.land[this->land_info.land_num + i].land_size = (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
-            this->land_info.land[this->land_info.land_num + i].clumpiness_factor = 10;
-            this->land_info.land[this->land_info.land_num + i].wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
-            this->land_info.land[this->land_info.land_num + i].wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
-            this->land_info.land[this->land_info.land_num + i].wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
-            this->land_info.land[this->land_info.land_num + i].wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
-            this->land_info.land[this->land_info.land_num + i].wall_fade = this->land_info.wall_fade;
+            this->land_info.land[land_count_ref + i].terrain_type = 0;
+            this->land_info.land[land_count_ref + i].area = 7;
+            this->land_info.land[land_count_ref + i].base_size = 3;
+            this->land_info.land[land_count_ref + i].zone = (uchar)i + (uchar)land_count_ref;
+            this->land_info.land[land_count_ref + i].land_size = (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
+            this->land_info.land[land_count_ref + i].clumpiness_factor = 10;
+            this->land_info.land[land_count_ref + i].wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
+            this->land_info.land[land_count_ref + i].wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
+            this->land_info.land[land_count_ref + i].wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
+            this->land_info.land[land_count_ref + i].wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
+            this->land_info.land[land_count_ref + i].wall_fade = this->land_info.wall_fade;
 
             local_8 = 0;
             index1 = 0;
@@ -324,8 +352,8 @@ found_bad_position:
             if (index1 >= 1000)
                 count = i;
 
-            this->land_info.land[this->land_info.land_num + i].x = x;
-            this->land_info.land[this->land_info.land_num + i].y = y;
+            this->land_info.land[land_count_ref + i].x = x;
+            this->land_info.land[land_count_ref + i].y = y;
 
             this->object_info.objects[this->object_info.object_num].terrain = -1;
             this->object_info.objects[this->object_info.object_num].group_flag = 2;
@@ -335,7 +363,7 @@ found_bad_position:
             this->object_info.objects[this->object_info.object_num].number_of_groups = 1;
             this->object_info.objects[this->object_info.object_num].group_area = 4;
             this->object_info.objects[this->object_info.object_num].player_id = 0;
-            this->object_info.objects[this->object_info.object_num].land_id = this->land_info.land_num + i;
+            this->object_info.objects[this->object_info.object_num].land_id = land_count_ref + i;
             this->object_info.objects[this->object_info.object_num].land_inner_radius = 0;
             this->object_info.objects[this->object_info.object_num].land_outer_radius = 0x1A;
             this->object_info.objects[this->object_info.object_num].object_exclusion_zone = 0;
@@ -347,7 +375,7 @@ found_bad_position:
             ++this->object_info.object_num;
             this->object_info.lands[this->object_info.land_num].y = y;
             this->object_info.lands[this->object_info.land_num].x = x;
-            this->object_info.lands[this->object_info.land_num].id = this->land_info.land_num + i;
+            this->object_info.lands[this->object_info.land_num].id = land_count_ref + i;
             this->object_info.lands[this->object_info.land_num].player_id = 0;
             ++this->object_info.land_num;
         }
@@ -373,18 +401,21 @@ found_bad_position:
                 goto object_exclusion_done;
             switch (p[-11]) {
             case 0x3B:
-            case 0x42:
-                extra_island_roll = this->map->map_width;
-                goto divide_by_six;
-            case 0x41:
+            case 0x42: {
+                x = this->map->map_width;
+                *p = x / 6;
+                break;
+            }
+            case 0x41: {
                 extra_island_roll = this->map->map_width;
                 *p = extra_island_roll / 8;
                 break;
-            case 0x66:
-                extra_island_roll = this->map->map_width;
-divide_by_six:
-                *p = extra_island_roll / 6;
+            }
+            case 0x66: {
+                y = this->map->map_width;
+                *p = y / 6;
                 break;
+            }
             }
 object_exclusion_done:
             ++i;
