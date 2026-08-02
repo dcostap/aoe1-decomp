@@ -40,18 +40,30 @@
 // short real body with NOP tail, and worsens edit diff. Restored baseline; no accepted_drift
 // because drift is still broad register/schedule/length mismatch rather than localized drift.
 
+// 2026-08-02 Luna-480480: rebuilt baseline and claimed the target with the full
+// generated class surface. A 36-variant source lab held size/frame/call-set constant;
+// its best group used a named diff before the LastCall store and a fresh TSLC reload
+// local (91 positional / 38 edit bytes), retained below. A pre-guard copied-time
+// liveness variant collapsed to a 125-byte direct-update family (103 positional / 31
+// edit), so it was rolled back. Remaining drift is broad: VC5 loads old LastCall into
+// EDX rather than original ECX, computes delta in ECX rather than original EDX, and
+// shifts the Offset/TSLC schedule while leaving a NOP tail.
+
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 class RGE_TimeSinceLastCall {
 public:
-    char TBuff[0x100];
+    char TBuff[255];
+    unsigned char TBuff_pad;
     unsigned long lowTSLC;
     unsigned long highTSLC;
     unsigned long TSLC;
-    unsigned long aTSLC[100];
-    char gap_29C_29F[4];
+    unsigned long aTSLC[101];
     int Offset;
     unsigned long LastCall;
+    unsigned long FirstCall;
+    unsigned long Now;
+    unsigned long cps;
 
     unsigned long Set();
 };
@@ -61,16 +73,14 @@ unsigned long RGE_TimeSinceLastCall::Set()
     unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x5D);
     if (this->LastCall == now) return 0;
     register unsigned long old = this->LastCall;
-    unsigned long t;
-    t = now;
+    unsigned long diff = now - old;
     this->LastCall = now;
-    t = t - old;
-    this->TSLC = t;
+    this->TSLC = diff;
     int idx = this->Offset + 1;
     this->Offset = idx;
     if (idx > 100) this->Offset = 0;
     this->aTSLC[this->Offset] = this->TSLC;
-    t = this->TSLC;
+    unsigned long t = this->TSLC;
     unsigned long v = this->lowTSLC;
     if (t < v) v = t;
     this->lowTSLC = v;
