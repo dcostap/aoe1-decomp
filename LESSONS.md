@@ -873,6 +873,13 @@ Try when:
 Caveat:
 - use this only when the global truly is being treated as an untyped byte base in the original addressing; typed globals may be preferable for ordinary field access.
 
+For indexed writes into a known global character buffer, a local `extern char buffer[]`
+surface can be important even when the absolute address is already known. VC5 may then
+preserve the loop index in EAX and emit symbol-relative `[buffer+eax+imm]` stores; a raw
+absolute-pointer cast can instead fold the base into a running output cursor and change
+the induction/compare topology. Keep the external declaration local unless the global
+identity is stable enough for the shared global surface, and verify relocation masking.
+
 ## Lesson: Avoid naming a reusable divisor when the original delays saving EAX across a call
 
 For expressions like `debug_rand(...) % member + (base - member / 2)`, naming `int sep = member` can make VC5 allocate the divisor in EDI from the first load (`mov edi,[...] ; test edi,edi`). If the original instead loads/tests in EAX and only does `mov edi,eax` immediately before the call, try leaving the member as direct rereads inside the expression:
