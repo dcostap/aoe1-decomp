@@ -2022,3 +2022,27 @@ Why it helps:
 Caveat:
 - use only when the binary proves the member update/ordering; post-increment is
   not interchangeable with a pre-increment or an index local for VC5 codegen.
+
+## Lesson: Interior-byte cursors can preserve exact VC5 record addressing
+
+When a fixed-size record scan's original induction pointer is anchored at a
+proven interior byte, model that cursor directly instead of starting at the
+record base and relying on typed-member offsets. For an 8-byte record whose
+coordinate byte is the anchor, an `unsigned char* cursor = &records[1].y`
+surface can preserve `lea base+1`, negative/zero coordinate accesses, and the
+unaligned positive offset for a later dword.
+
+Try when:
+- a natural typed record pointer is otherwise exact but emits `lea base` with
+  `[cursor]`, `[cursor+1]`, and `[cursor+4]` instead of the observed interior
+  anchor and `cursor[-1]`, `cursor[0]`, `cursor+3` forms;
+- the record field offsets and stride are already binary-proven.
+
+Why it helps:
+- VC5 preserves the source lvalue base in the address expression, so shifting
+  the cursor to the observed subfield can recover both instruction encodings and
+  downstream branch alignment without changing the underlying record ownership.
+
+Caveat:
+- this is a narrow binary-supported layout/codegen form, not a reason to replace
+  an unproven class or array model with arbitrary pointer arithmetic.
