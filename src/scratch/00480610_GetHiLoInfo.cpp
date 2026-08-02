@@ -51,6 +51,31 @@
 // countdown. Declaration/register-order and max-compare probes did not alter it.
 // PAUSED: no accepted_drift; remaining register/stack topology is broad.
 
+// Retry 2026-08-03 Luna480610: sibling-derived local ABI hypothesis; use
+// unsigned long accumulators matching the validated RGE_TSLC sibling source,
+// while retaining the natural formal-count source shape.
+
+// probe 4 behavior/control-flow: do not initialize the valid-loop value from
+// the parameter before the prologue; assign invalid-path min/max explicitly so
+// the executable's three fallback pushes remain direct parameter reads.
+
+// Probe 5 (rolled back): delaying original-count assignment widened the
+// prologue; retain original-first declaration order.
+// Probe 6: swap sum/max declaration order under the sibling's unsigned-long
+// local surface to test the EAX=sum/EBX=max coloring directly.
+
+// Probe 7: sibling-shaped countdown/average lifetime; keep formal param
+// unchanged for divisor/final format and reuse remaining for both countdown
+// and valid average, with value scoped to the loop body.
+// Probe 8: focused value-surface lab found the direct hi output form preserves
+// the 132-byte basin; a separate value local regressed to the 126-byte family.
+// Probe 9: corrected/repeated lab (2 natural forms, size/call-set gated) found
+// no exact variant; direct form remains best, first mismatch is countdown-home
+// placement at +22. The failed first lab expansion was only a template repair.
+// Final bounded state: exact call target/site parity and canonical element-100
+// layout are retained; remaining drift is parameter-home scheduling plus the
+// quotient/output tail. Not accepted_drift because the block drift is structural.
+
 #include <stdio.h>
 
 class RGE_TimeSinceLastCall {
@@ -72,11 +97,11 @@ public:
 
 char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
 {
-    int original = param_1;
-    unsigned int hi = 0;
-    unsigned int sum = 0;
-    unsigned int min = 999999;
-    unsigned int value = param_1;
+    int remaining;
+    unsigned long sum = 0;
+    unsigned long hi = 0;
+    unsigned long min = 999999;
+    remaining = param_1;
 
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = Offset;
@@ -87,22 +112,22 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
                 } else {
                     idx = 100;
                 }
-                value = aTSLC[idx];
+                unsigned long value = aTSLC[idx];
                 sum = sum + value;
                 if (value < min)
                     min = value;
                 if (value > hi)
                     hi = value;
-                param_1 = param_1 - 1;
-            } while (param_1 != 0);
+                remaining = remaining - 1;
+            } while (remaining != 0);
         }
-        param_1 = sum / (unsigned int)original;
-        value = hi;
+        remaining = sum / (unsigned long)param_1;
     } else {
-        min = param_1;
+        min = remaining;
+        hi = remaining;
     }
 
     sprintf(TBuff, "Lo=%d < Avg=%d > Hi=%d of %d",
-            min, param_1, value, original);
+            min, remaining, hi, param_1);
     return TBuff;
 }
