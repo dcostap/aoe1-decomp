@@ -23,6 +23,18 @@
 // explicit do loops, panel local, and no line local. All useful variants stayed in the same 179B basin except inline/panel/Oa
 // regressions. GIVEUP: no accepted_drift because remaining drift spans get_scenario_list LEA/push/zero scheduling plus
 // loop argument register choices; not localized benign drift.
+// 2026-08-03 Luna491290 session (10 meaningful hypotheses):
+// - Reconstructed the PDB-visible currentScenario output alias and tested long**
+//   versus char*** / long& call surfaces; emitted code stayed at 32 bytes diff.
+// - Tested comma-expression output initialization, full proven UI inheritance
+//   context, and <stdlib.h> CRT context; all were codegen duplicates.
+// - Focused pointer-shape lab (225 size/frame/call-set variants) found four
+//   basins; the best natural basin remained 179 bytes / 32 positional bytes.
+// - Focused setup-order lab (7 variants) found no setup improvement; direct
+//   bg-local source remained the only size/frame/call-set basin.
+// Final clean-source restore: remaining drift is distributed across the
+// get_scenario_list LEA/push/zero setup and loop register coloring (append,
+// get_line, and free), with all eight calls, frame, size, and CFG aligned.
 
 class TListPanel {
 public:
