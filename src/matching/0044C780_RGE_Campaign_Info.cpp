@@ -1,5 +1,12 @@
 // VA: 0044C780 RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign*)
 // gameinfo.cpp lines 84-126, 227 bytes
+//
+// Attempt log:
+// - baseline: canonical layout from matched donors (name[256] @0x0, current_scenario
+//   @0x100, scenario_num @0x104, scenario_info @0x108, last_scenario @0x10C,
+//   campaign @0x110); null path must use strcpy(name, "") to reproduce the
+//   full inline strlen+rep-copy of the empty literal (mov edi, "" at 0x592A40),
+//   not a plain name[0] = 0 store.
 
 #include <string.h>
 
@@ -43,7 +50,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* camp) {
         }
     } else {
         campaign = 0;
-        name[0] = 0;
+        strcpy(name, "");
         current_scenario = 0;
         last_scenario = 0;
         scenario_num = 0;

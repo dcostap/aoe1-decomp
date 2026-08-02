@@ -1766,6 +1766,8 @@ Caveat: only omit padding copies when the original really omits them; if padding
 
 When iterating fixed-size table rows, naming a row pointer local can make VC5 preserve the table base in an extra register and synthesize `mov base; mov index; add`, which can shift the whole loop and even lengthen an earlier short branch to near form. If the original reloads the table member and adds the offset directly for each access (`mov eax,[this+table]; add eax,offset`), try repeating the full `(char*)this->table + offset` expression in the byte test and ID/load sites instead of introducing an `entry`/`row` local. This can reduce register pressure and recover the original short-branch layout.
 
+The same applies to pure bounds-check helpers with no calls: a named local for a CSE'd pointer subtraction (e.g. `RGE_Tile* tile_up = tile - map_width;`) can shift the parameter register allocation (x going to ESI instead of EDX) and add a redundant `mov ebp,eax` in the row-pointer setup (+2 bytes). Spelling the arithmetic inline in each check (`(tile - map_width)->tile_type`, `(tile - map_width)[-1].tile_type`, ...) lets VC5 CSE it into the original basin and produce the exact bytes. PDB line bands that map both the computation and the first check to one line are a strong signal that the source was inline, not a named local. Verified on `00511000` `do_terrain_brush_check` (exact match).
+
 ## Lesson: Model relation/flag arrays as pointer fields to preserve pointer-load-plus-cmp
 
 When original VC5 loads a member pointer to a byte table and then compares through it (`mov eax,[obj+84h]; cmp byte [eax+idx],0`), raw byte-offset expressions like `(char*)obj + 0x84 + idx` can compile to a shorter direct object-relative load/test (`mov al,[obj+idx+84h]; test al,al`). Declare the member as the real `unsigned char*` table and index it naturally (`obj->table[idx]`) so VC5 emits the separate pointer load and memory compare.
@@ -2310,3 +2312,143 @@ original `mov [stack], al` and zero-extended reload rather than an `int` value.
 
 Try this when every switch arm is slightly too long, the rebuilt call has an
 extra `add esp, N`, or the original uses `ret N` while the candidate uses `ret`.
+
+## Lesson: Duplicated switch case bodies mean separate `case` blocks, not stacked `case X: case Y:`
+
+When the original binary emits the same case body twice (two byte-identical blocks
+for two different case values, each with its own call sites and epilogues), the
+source used separate `case 2:` and `case 3:` blocks with identical text, not the
+stacked `case 2: case 3:` form. VC5 treats a stacked label group as one case and
+emits one shared body (fewer calls, plus a range-check dispatch `cmp al,1; je;
+jbe; cmp al,N; ja`), whereas separate cases keep per-case bodies and can change
+the dispatch to a `dec eax; je` chain with the last case inline.
+
+Try when:
+- rebuilt call count is one fewer than the original for two adjacent cases that
+  look identical;
+- the original's dispatch is `dec eax; je L1; dec eax; je L2; dec eax; jne default`
+  with the last case falling through inline, but the rebuilt uses a range check.
+
+Why it helps:
+- matching the binary's body duplication restores the exact call-site count and
+  the `xor eax,eax; mov al,[byte]` zero-extended dispatch prologue.
+
+Caveat:
+- this is binary-observed duplication, not a rule to duplicate source blindly;
+  stacked cases are still the right spelling when the binary shares one body.
+
+## Lesson: Hoistable loop-invariant temp placement (pre-for vs inner-body-first) can flip the whole register basin
+
+When a nested loop uses a loop-invariant subexpression of the outer counter (for example `x - xReferencePointValue` inside a `row[y - yRef][x - xRef]` access), where that value is *declared* in the source changes VC5's entire register allocation — not just the scheduling of that one expression.
+
+Writing the temp as the first statement of the INNER loop body:
+
+```cpp
+for (int x = from.x; x <= to.x; x++) {
+    for (int y = from.y; y <= to.y; y++) {
+        int xr = x - this->xReferencePointValue;
+        if (this->rowValue[y - this->yReferencePointValue][xr] >= threshold) { ... }
+    }
+}
+```
+
+lets VC5 hoist `xr` into the preheader and transform the outer counter's register in place (`sub esi, xRef`), spilling the outer counter — matching an original with a 2-local frame (`sub esp,8`) and a specific validation register coloring (`from`->edi, xSize->ebx, ySize kept in memory).
+
+Declaring the identical temp *before* the inner `for` header:
+
+```cpp
+for (int x = from.x; x <= to.x; x++) {
+    int xr = x - this->xReferencePointValue;
+    for (int y = from.y; y <= to.y; y++) { ... }
+}
+```
+
+keeps the same size/frame basin but copies the counter into a fresh register for `xr` (`mov edi,esi; sub edi,edx`) and shifts the validation coloring (`from`->ebx, xSize->ebp, ySize loaded into edi).
+
+Try when:
+- a nested double loop's inner access includes an outer-counter-derived index and the rebuilt code is behaviorally right but the whole function's register coloring/prologue is off;
+- the PDB line map shows the preheader's invariant computation attributed to the inner body line (a sign the original declared the temp inside the body);
+- two semantically identical temp placements differ only in where the declaration statement sits.
+
+Why it helps:
+- VC5 treats a named temp's declaration position as a scheduling/liveness input; the inner-body-first position gives the allocator a different live-range/interference picture than the pre-for position, which can cascade back into validation-phase register choices and even the prologue frame size.
+
+Caveat:
+- this is a codegen-steering observation; keep the source natural (a developer plausibly writes the temp inside the body). Verify the line map and the emitted preheader before relying on it. Verified on `0044E900` `InfluenceMap::setCoverageCount`.
+
+## Lesson: Explicit intermediate-pointer local before a global-chain member call can fix the global-load register and this-load scheduling
+
+For a call shaped like `rge_base_game->player_game_info->method(&out1, out2)` where the callee object is a global-pointer chain, writing the chain inline can make VC5 load the global into EDX (`mov edx,[abs]`, 6-byte `8B15`+reloc), hoist both argument LEAs to the top of the setup block, and defer the `this`-load until after all pushes — 1 byte over target and a whole-function register-family shift. Naming the intermediate pointer as a local first:
+
+```cpp
+RGE_Game_Info* info = rge_base_game->player_game_info;
+long count = info->get_campaign_list(&campaigns, current);
+```
+
+can instead make VC5 load the global into EAX (5-byte `A1`), schedule `mov ecx,[eax+4]` between the two argument pushes, and reuse EAX for the second argument LEA — reproducing the original setup block exactly.
+
+Try when:
+- the rebuilt differs only in the callee-object setup: `mov edx,[global]` vs `mov eax,[global]` (A1 vs 8B15), arg LEA order, and the position of the `this`-load relative to the argument pushes;
+- an inline `global->field->method(args)` chain compiles to a 1-byte-larger or differently-scheduled call setup;
+- a same-file/same-author exact donor already uses the `Type* x = global->field; x->method(...)` idiom for the same global.
+
+Why it helps:
+- VC5's allocator assigns the global-chain temporary a register based on the scheduled evaluation order; naming the intermediate pointer creates a real local whose live range changes the register pressure and lets the scheduler place the `this`-load where the original has it;
+- the A1 (`mov eax,[abs]`) encoding saves exactly 1 byte, which can be the difference between exact size and +1, and the earlier `this`-load frees EAX for the later argument LEA.
+
+Caveat:
+- keep the pointer local narrowly scoped to the call that needs it (do not carry it across calls or VC5 may allocate a callee-saved register); separate call sites in the same function each need their own load, as the original re-loads the global at each site.
+- Verified on 004911A0 `fillCampaigns` (scr_cams.cpp), where the same idiom already appears in the exact donor 00490FF0 `action` in the same file.
+
+## Lesson: Keep a width-cast inside the call argument to preserve the original push-sequence scheduling
+
+When the original emits `sub reg,reg; movsx ebp,ax; push ebp; lea reg,[buf]; push src; push reg; call strncpy` — i.e. the sign-extension is computed as part of the call argument evaluation, and the destination-address LEA is scheduled *after* the size push — write the cast inside the call argument rather than assigning a pre-cast named local:
+
+```cpp
+int len = nl - text;                        // 304: sub eax,esi
+strncpy(temp_text, text, (short)len);       // 305: movsx ebp,ax; push ebp; lea; push; push; call
+temp_text[(short)len] = '\0';               // reuses ebp as the index register
+```
+
+A pre-cast local (`int len = (short)(nl - text);` then `strncpy(..., len)`) lets VC5's scheduler hoist the independent buffer LEA above the `movsx`, producing `sub; lea; movsx; push; push; push; call` (19 bytes of drift in one hunk).
+
+Try when:
+- the only mismatch is the order of an address LEA versus a sign/zero-extension inside a call's argument block;
+- the original line map splits the pointer-diff (`sub`) and the cast (`movsx`) across two source lines, with the cast attributed to the call line;
+- the widened value is reused later (e.g. as a buffer index), so the callee-saved register must stay CSE'd.
+
+Why it helps:
+- VC5 evaluates cdecl call arguments strictly right-to-left when the expression is inline, keeping `movsx`/`push` and the following LEA in the binary's order; a named local breaks the expression into statements and opens scheduling slack for the LEA to float earlier.
+- reusing the identical `(short)len` expression at the later index keeps the truncation CSE'd in the same register, matching `mov byte [esp+ebp+10h],0` without a reload.
+
+Caveat:
+- apply only when the truncation is binary-observed (`movsx ebp,ax` on a pointer-diff); do not introduce casts that change real semantics. Verified on 0047C560 `TTextPanel::set_text` (Pnl_txt.cpp).
+
+## Lesson: Struct-return callees shape call sites differently from out-param helpers
+
+When a call target is already exact-matched in the same TU, use its exact living
+signature — especially a small struct-return ABI — before reconstructing callers.
+The call-site codegen differs between an out-param helper and a struct return:
+
+- Initialization `T c = f();` lets VC5 pass `&c` directly as the hidden return
+  slot (no copy after the call; the returned pointer in EAX is simply discarded).
+- Assignment `c = f();` materializes the result through a temporary slot, then
+  copies the aggregate (unrolled `mov` pairs) into the target.
+
+Try when:
+- a parked caller keeps reading its local buffer via stack slots
+  (`mov ecx,[esp+20h]`) while the original reads through the callee's return
+  pointer (`mov ecx,[eax]`);
+- the parked source used a guessed `void*`/out-param helper for a callee whose
+  exact donor returns a struct by value.
+
+Why it helps:
+- the struct-return shape changes which values are kept live and in which
+  registers, which can flip the whole function into the original's saved-register
+  basin (this/ebx in prologue, edi/esi deferred into the guarded block).
+
+Also check the exact mangled parameter types of matched helpers (e.g.
+`remove_cliff_edge` is `QAEXJJJ@Z` = long,long,long, not int,int,int) and reuse
+the incoming parameter slot as the loop counter when the binary writes to it
+(`mov dword [esp+param],-1` ... store back), rather than introducing a new local.
+Verified on 00510960 `TRIBE_Map::delete_cliff`.
