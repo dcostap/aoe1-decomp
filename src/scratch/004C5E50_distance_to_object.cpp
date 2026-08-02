@@ -12,6 +12,8 @@
 // Retry 2026-05-26 Boss pass: 18 probes on VA 004C5E50 only. Revalidated natural full-behavior source: 160B for 167B target. Tried parameter-slot reuse via `*(float*)&other` (167B but 83.8323% positional, first mismatch byte 0), volatile dy (167B / 86.2275%), dy stack pointer, zero_float symbol, explicit double sqrt (167B / 82.0359%), x*x+y*y return order, master-object locals, ternary abs/clamps, result local, y-first subtract order, and a decompiler-style saved `other` reuse attempt (VC5 cast error). Flag probes /Op (167B but 76.0479% positional, first mismatch +18), /G5 /GB /Og /Ob0 /Oy- /O1 /Ox; only /Op reached size and was broad wrong FPU topology. GIVEUP: not accepted_drift quality; size-matching variants change the FPU stack/prologue topology broadly rather than leaving a localized equivalent hunk.
 // Luna-4C5E50 2026-08-02: fresh baseline rebuilt 147B (166 differing bytes). Volatile dy plus volatile x recovered the exact 0x00-0x46 prefix and 159B output (89 differing bytes, 53.2934%); removing x volatility, volatile y, x address-taking, dx reuse, and reversed radius operands all regressed or changed only a few bytes. An absolute F_ZERO view expanded global loads. Ordinary x plus an unused volatile saved_x was the best measured state at 169B (86 differing bytes), but it was codegen-only scaffolding and still diverged structurally at +0x47, so the natural source was restored. Next pass should revisit canonical radius/expression ownership rather than retain fake volatility.
 
+// Luna4C5E50 2026-08-03: dossier/donor/ABI review confirmed world/radius ownership and no calls; declaration, local-reuse, class-surface, clamp-order, and parameter-home variants remained broad structural FPU mismatches. Clean source restored after the bounded 10-probe pass; blocker remains radius-expression evaluation/stack topology, not benign drift.
+
 class RGE_Master_Object {
 public:
     char gap_00[0x30];
@@ -30,8 +32,6 @@ public:
     
     float distance_to_object(RGE_Static_Object* other);
 };
-
-extern float zero_float;
 
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     float dx = other->world_x - this->world_x;
