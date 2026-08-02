@@ -39,6 +39,13 @@
 // Volatile-addressing the local creates a stack home and a broad 164-byte mismatch;
 // duplicate predicates, nested positive flow, and repeated direct members are codegen
 // duplicates. Left in scratch pending a source-context lead that preserves that block.
+// Retry 2026-08-02 Luna41F9F0: the key source shape is two independent `if` statements,
+// not a second range check nested inside the first `if (track_from)`. This preserves the
+// original redundant `test edx,edx` and produces MATCH (149/149, 0.0000%). Removing the
+// prior volatile `track_to` read leaves the exact bytes unchanged. Auditing away the
+// inline helper and using a direct positive/null-guard body reintroduces eager callee-save
+// pushes and a broad 143-byte mismatch, so the helper-backed source is retained as the
+// smallest exact-friendly TU context. No inline asm or custom flags.
 
 class TMusic_System {
 public:
@@ -70,16 +77,16 @@ public:
 static inline int restart_music_system_body(RGE_Base_Game* self)
 {
     if (self->save_music_track_from) {
-        if (self->save_music_track_from == *(volatile int*)&self->save_music_track_to) {
+        if (self->save_music_track_from == self->save_music_track_to) {
             self->music_system->play_track(self->save_music_track_from, self->save_music_loop, self->save_music_pos);
             return 1;
         }
+    }
 
-        if (self->save_music_track_from != 0 && self->save_music_track_to) {
-            self->music_system->play_tracks(self->save_music_track_from, self->save_music_track_to,
-                self->save_music_loop, self->save_music_cur_track, self->save_music_pos);
-            return 1;
-        }
+    if (self->save_music_track_from != 0 && self->save_music_track_to) {
+        self->music_system->play_tracks(self->save_music_track_from, self->save_music_track_to,
+            self->save_music_loop, self->save_music_cur_track, self->save_music_pos);
+        return 1;
     }
 
     if (self->save_music_file[0]) {
