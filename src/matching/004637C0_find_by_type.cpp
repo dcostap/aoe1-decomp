@@ -3,17 +3,14 @@
 // RGE_Static_Object* find_by_type(unsigned char type, float x, float y, unsigned char check_state, unsigned char state)
 //
 // Attempt log:
-// 1: do/while with return 0 → null check inlined, fcom for dist comparison
-// 2: if(node != 0) wrap → 183/207 equal, still fcom + merged epilogue
-// 3: while(1)/break → same
-// All remaining: VC5 codegen drift (fcom vs fld+fcomp, loop jne vs je+jmp, register choice)
-// Attempts: 4 probes.
-// - Prologue through type-cmp branch: nearly identical first 18 bytes
-// - FPU math for dx*dx+dy*dy and best_distance compare: same structure
-// - Three return paths correct (null, early, normal end)
-// Remaining: loop epilogue (je+jmp vs jne), distance compare (fcom vs fld+fcomp),
-//   null check epilogue (inline vs shared tail), early return register (ecx vs [edx])
-// Parked: VC5 codegen drift only after 4 probes
+// - Baseline natural scan with an explicit empty-list return: 183-byte diff.
+// - Wrapping the traversal in if(node != 0) plus do/while improved to 60 bytes;
+//   this also exposed the original FPU compare as best_distance > dist.
+// - Direct node->obj for the sentinel return matched the original memory reload,
+//   but the loop still emitted je-to-tail plus jmp-to-loop (30-byte diff).
+// - A forward goto/late return label was diagnostic only and emitted the same code.
+// - Removing the redundant outer guard and using a natural while(node != 0), with
+//   direct return node->obj, produced the exact 207-byte match under default flags.
 
 #include <math.h>
 
@@ -48,22 +45,18 @@ RGE_Static_Object* RGE_Object_List::find_by_type(unsigned char type, float x, fl
     RGE_Static_Object* best_obj = 0;
     RGE_Object_Node* node = this->list;
 
-    if (node == 0) {
-        return 0;
-    }
-
     while (node != 0) {
         RGE_Static_Object* obj = node->obj;
         if (obj != 0 && obj->type == type && (!check_state || obj->object_state == state)) {
             if (x == -1.0f && y == -1.0f) {
-                return obj;
+                return node->obj;
             }
 
             float dx = x - obj->world_x;
             float dy = y - obj->world_y;
             float dist = dx * dx + dy * dy;
 
-            if (best_distance == -1.0f || dist < best_distance) {
+            if (best_distance == -1.0f || best_distance > dist) {
                 best_distance = dist;
                 best_obj = obj;
             }
