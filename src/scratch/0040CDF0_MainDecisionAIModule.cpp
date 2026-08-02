@@ -56,6 +56,30 @@
 // This is a real pinned-toolchain EH/function-boundary blocker; stop before spending the
 // remaining hypothesis budget on repetitions. Leave in scratch; not accepted_drift.
 
+// Retry 2026-08-02 Luna40CDF0 canonical-base pass:
+// - Replaced the gap-only AIModule stub with the donor-backed 0xF0 field surface
+//   (AIModuleID, player/name/log fields, and the scalar tail) and the explicit
+//   vtable-pointer style used by exact 0040E2D0_AIModule. Baseline #8 remained
+//   the no-EH 78-byte basin (106 positional diff, first mismatch 0), but its
+//   delayed explicit vptr write followed the scalar initialization rather than
+//   the old compiler-owned-vptr ordering.
+// - Filled AIModuleID with its typed vptr/id/name fields and declared the
+//   binary AIModule/AIModuleID destruction surface (#9); emitted code was an
+//   exact duplicate, so the added lifetime metadata did not enable EH.
+// - Used the proven MainDecisionAIModule vtable address for the explicit write
+//   (#10); this made the vptr bytes literal but worsened positional alignment
+//   (107 bytes) and still emitted no EH. Rolled back to the donor-style external
+//   vtable surface.
+// - Tried the complete AIModule virtual method list as an ABI-context control
+//   (#11); it returned to the same 78-byte no-EH basin (duplicate of the old
+//   compiler-owned-vptr output), not the original FS-first frame. Restored the
+//   clean explicit-vtable/full-field source.
+// Conclusion: the canonical full AIModule surface restores the delayed derived
+// vptr ordering family but does not restore the original FS-first 3-slot EH
+// entry. The remaining byte-0 prologue/function-boundary mismatch is a pinned
+// VC5 EH topology blocker, not localized drift; keep this readable source in
+// scratch and do not repeat the exhausted thin-class/flag variants.
+
 struct ManagedArray_Int {
     int* value;
     int numberValue;
@@ -65,12 +89,35 @@ struct ManagedArray_Int {
 
 class RGE_Player {};
 
+// Binary-backed AIModule surface, matching the exact base constructor donor at
+// 0040E2D0.  This is intentionally an explicit vtable pointer: the donor's
+// living match uses the same pre-vtable VC5 surface rather than a thin virtual
+// stub, and the derived constructor writes its delayed vtable explicitly.
+struct AIModuleID {
+    char gap_00[0x48];
+    AIModuleID(int id, char* name);
+};
+
 class AIModule {
 public:
-    char gap_04[0xEC];
+    void* vtable;                 // +0x00
+    AIModuleID id;                // +0x04, sizeof 0x48
+    int playerNumber;             // +0x4C
+    char playerName[0x40];        // +0x50
+    int running;                  // +0x90
+    int paused;                   // +0x94
+    int logHistory;               // +0x98
+    int logCommonHistory;          // +0x9C
+    void* historyLogFile;         // +0xA0
+    char historyLogFilename[0x40];// +0xA4
+    int intelligenceLevel;        // +0xE4
+    int priority;                 // +0xE8
+    int processFrame;             // +0xEC
+
     AIModule(char* name, int id, int player_number, void* owner);
-    virtual ~AIModule();
 };
+
+extern void* MainDecisionAIModule_vtable;
 
 class MainDecisionAIModule : public AIModule {
 public:
@@ -88,4 +135,5 @@ MainDecisionAIModule::MainDecisionAIModule(void* param_1, int param_2, RGE_Playe
     this->objects.numberValue = 0;
     this->objects.desiredNumberValue = 0;
     this->objects.maximumSizeValue = 0;
+    this->vtable = &MainDecisionAIModule_vtable;
 }
