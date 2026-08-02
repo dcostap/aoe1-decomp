@@ -2240,3 +2240,18 @@ Caveat:
 - use only when the field ownership and element offset are binary-proven; keep
   the pointer local as an observed address/load/store form, not arbitrary
   register-steering scaffolding.
+
+## Lesson: VC5 `strlen` intrinsic raw result is length+1; source `strlen(x) + 1` cancels the fixup
+
+The VC5 `/O2` (implies `/Oi`) `strlen` intrinsic lowers to `mov edi,str; or ecx,-1; xor eax,eax; repne scasb; not ecx`, and the raw value in `ecx` after `not ecx` is `strlen+1` (it counts the terminating NUL). When the source needs the true `strlen`, VC5 emits a `dec ecx` fixup after `not ecx`. When the source spells `strlen(x) + 1` (the classic save-format "length including NUL"), the fixup and the `+1` cancel and VC5 emits just `not ecx` with no adjustment.
+
+Try when:
+- serialization/save code writes a short length before the string bytes and the original asm has `repne scasb; not ecx` with NO `dec`/`sub` after;
+- a sibling write of a true length shows `not ecx; dec ecx` instead (e.g. 004119C0 writes real strlen, 0046F6B0 scenario_postsave writes length+1).
+
+Why it helps:
+- picking the wrong spelling (`strlen(x)` when the file gets length+1, or `strlen(x)+1` when it gets length) adds or removes a `dec ecx` and shifts the whole serialization block;
+- the `short count = strlen(name) + 1;` form also reproduces the dword store into the short local and the later `movsx` word reload exactly.
+
+Caveat:
+- the intrinsic result register can be `ecx` (as here) rather than `eax`; do not assume the length lands in a particular register when reading sibling asm.
