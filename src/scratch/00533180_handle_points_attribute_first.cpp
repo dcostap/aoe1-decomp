@@ -1,18 +1,38 @@
 // RGE_Victory_Conditions::handle_points_attribute_first
 // VA: 00533180
 // victory.cpp
-// Give-up notes (10+ honest tries):
-// - Baseline behavior understood: if entry state is 0, ftol current player attr, store curr_attribute_amount,
-//   gate on initial_amount, scan other players for same/higher attribute, mark state 1 if any; otherwise award
-//   points delta and mark state 2.
-// - Tried natural typed RGE_Player/RGE_World surface, raw-offset/minimal surface, top-declared locals,
-//   delayed/repeated entry->attribute expressions, goto state1 tail, register/volatile parameter probes,
-//   and flags /O1, /Od, /Ox, /Gf, /Ob0, /Og, /Oi-.
-// - Best current source has correct size (186 B) and behavior, but broad register/topology drift remains:
-//   rebuilt preloads param into ESI before `push edi` and uses EDI/EBX differently, while original pushes all
-//   callee-saves first, keeps entry in EDI, this in EBP, current player in ESI, and attr offset in EBX.
-// - Also current loop emits a jge+jmp backedge/tail layout family in some variants; source-goto tail improves
-//   semantic layout but does not fix the early register basin. Not an accepted_drift proposal: drift is broad.
+// Attempt log:
+// - Baseline behavior: when state is zero, truncate the current player's attribute, record it,
+//   require the initial amount, scan the other players for an equal-or-higher value, then either
+//   set state 1 or award the points delta and set state 2.
+// - Typed RGE_Player/RGE_Game_World ownership improved the source model without changing size;
+//   direct entry->attribute indexing recovered the compiler's shl/address family (probe 4).
+// - Reversed the threshold to the binary-observed negative early-return compare (probe 5),
+//   recovering 70% exact-block coverage and the 188-byte best reconstruction.
+// - Explicit goto/cold-tail, register-qualified owner/entry aliases, and equivalent continue/else
+//   loop forms were unchanged or nonproductive (probes 6-10); broad prologue/register coloring and
+//   the loop's out-of-line state-1 block remain unresolved.
+// - Best current source is period-plausible typed C++ and retains the proven offsets; no custom flags.
+
+class RGE_Game_World;
+
+class RGE_Player {
+public:
+    char gap_00[0x3C];
+    RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
+    char gap_4C[4];
+    float* attributes;
+};
+
+class RGE_Game_World {
+public:
+    char gap_00[0x3C];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
+};
 
 class RGE_Victory_Point_Entry {
 public:
@@ -22,57 +42,36 @@ public:
 };
 class RGE_Victory_Conditions {
 public:
-    void* vftable; void* victory_list; long list_num; void* player;
+    void* vftable; void* victory_list; long list_num; RGE_Player* player;
     unsigned char victory; char gap_11[3]; void* victory_point_list;
     long point_list_num; long tot_victory_points;
     void handle_points_attribute_first(RGE_Victory_Point_Entry* entry);
 };
 
 void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Entry* entry) {
-    if (entry->state) return;
+    if (entry->state == 0) {
+        RGE_Player* player = this->player;
+        int val = (int)player->attributes[entry->attribute];
+        int points = entry->points;
+        RGE_Player** players = player->world->players;
+        entry->curr_attribute_amount = (float)val;
+        if (val < entry->initial_amount) return;
 
-    void* player = this->player;
-    void* world;
-    void** players;
-    int i;
-    int count;
-    int my_id;
-    long val;
-    long points;
-    long amount;
-    int attr;
-
-    attr = entry->attribute;
-    val = (long)*(float*)(*(long*)((char*)player + 0x50) + attr * 4);
-    points = entry->points;
-    world = *(void**)((char*)player + 0x3C);
-    entry->curr_attribute_amount = (float)val;
-    amount = entry->initial_amount;
-    players = *(void***)((char*)world + 0x40);
-    if (val < amount) return;
-
-    player = this->player;
-    i = 0;
-    count = *(short*)((char*)*(void**)((char*)player + 0x3C) + 0x3C);
-    if (count > 0) {
-        my_id = *(short*)((char*)player + 0x4A);
-        do {
-            if (i != my_id) {
-                void* other = *players;
-                if ((float)amount <= *(float*)(*(long*)((char*)other + 0x50) + attr * 4)) {
-                    goto other_player;
+        val = 0;
+        int count = this->player->world->player_num;
+        if (0 < count) {
+            do {
+                if (val != this->player->id &&
+                    (float)entry->initial_amount <= (*players)->attributes[entry->attribute]) {
+                    entry->state = 1;
+                    return;
                 }
-            }
-            i++;
-            players++;
-        } while (i < count);
+                val = val + 1;
+                players = players + 1;
+            } while (val < count);
+        }
+        this->tot_victory_points += points - entry->curr_points;
+        entry->curr_points = points;
+        entry->state = 2;
     }
-
-    this->tot_victory_points += points - entry->curr_points;
-    entry->curr_points = points;
-    entry->state = 2;
-    return;
-
-other_player:
-    entry->state = 1;
 }
