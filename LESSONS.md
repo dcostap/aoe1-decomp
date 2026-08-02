@@ -2255,3 +2255,45 @@ Why it helps:
 
 Caveat:
 - the intrinsic result register can be `ecx` (as here) rather than `eax`; do not assume the length lands in a particular register when reading sibling asm.
+
+## Lesson: Break into a shared post-switch return to recover VC5 shared case tails
+
+When a VC5 `switch` dispatch uses the `dec eax; je` chain and the original binary
+shares one return tail between a case body and the default (a case's body falls
+through into the default's `mov eax,1; ret`), do not write `return 1;` in both the
+case and the default. VC5 duplicates the epilogue for each per-case `return` and
+places the default inline after the jump chain. Instead, write the case and the
+default with `break;` and put a single `return 1;` after the switch:
+
+```cpp
+switch (status) {
+case 1:
+    return 0;
+case 2:
+    obj->ClearRestored();
+    set_render_all();
+    break;
+case 3:
+    ValidateRect(hwnd, 0);
+    DestroyWindow(hwnd);
+    return 0;
+default:
+    break;
+}
+return 1;
+```
+
+This makes VC5 emit the original layout: the last chain test becomes `jne default`
+with the last case's body inline (fall-through), the breaking case's body is placed
+immediately before the single shared return tail, and the earliest case's early
+return stays at the very end of the function.
+
+Try when:
+- a switch near-match differs only in the final dispatch test (`je caseN` vs
+  `jne default`) and duplicated `mov eax,1; ret` tails;
+- the original has one case body physically falling into the return-1 tail shared
+  with the default path.
+
+Caveat:
+- applies only when the shared value is genuinely the same `return` for both paths;
+  per-case distinct returns remain the natural spelling when values differ.
