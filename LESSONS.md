@@ -291,6 +291,12 @@ Serialization helpers commonly preserve a file handle in a register while using 
 old stack slot as the read/write buffer. Conversely, do not force explicit mutation
 when the compiler naturally chose the dead slot for an ordinary block-local temp.
 
+The same reuse can arise from a natural API output local: declare the separate
+out-pointer local and pass its address, rather than taking the address of the input
+parameter just because the binary uses that incoming slot. In old C utility code,
+an initialized descriptor plus a separate wave-data output local can let VC5 reuse
+the dead name-parameter home while preserving the original zero-store schedule.
+
 ## Lesson: Nested-if branch control for signed bounds checks
 
 When matching forward branches (`jl`/`jg` for error exits) in functions with signed bounds checks:
