@@ -99,6 +99,28 @@
 // a basin where time already lands in EAX after the FPU test (e.g. volatile load
 // of `time` AFTER the if-condition, or `register` on param), not with the current
 // volatile-early placement.
+//
+// Luna-4C1080 final focused pass (2026-08-02), probes L1-L9:
+// L1: const time plus direct assignment-in-condition; lost the EBX-save basin,
+//     123B/95.1220% strict diff. Rolled back.
+// L2: register-qualified time in the kept volatile basin; byte-identical to the
+//     kept baseline (duplicate). Rolled back.
+// L3: kept volatile timing plus direct assignment-in-condition; same L1 basin,
+//     123B/95.1220% strict diff. Rolled back.
+// L4: delayed volatile reads into the two post-condition arms; no EBX-save basin,
+//     123B/95.1220% strict diff. Rolled back.
+// L5: nonvolatile time plus direct assignment-in-condition; no EBX-save basin,
+//     123B/94.3089% strict diff. Rolled back.
+// L6: assignment-in-condition plus duplicate false-arm delta store; improved local
+//     block coverage but overran the boundary to 131B/60.3053%. Rolled back.
+// L7: register nonvolatile time; 125B/60.0000%, parameter remained duplicated
+//     after the branch and first-path stores stayed reversed. Rolled back.
+// L8: separate register-time declaration/assignment; byte-identical to L7.
+// L9: register time plus direct assignment-in-condition; byte-identical to L5.
+// Final focused lead exhausted without a credible exact basin. Preserve the
+// DS4 baseline: 123B, 71 strict differing bytes/57.7236%, 36 raw edit bytes
+// (29.27%; bounded edit 14.63%), first mismatch +000C. No accepted_drift:
+// remaining mismatch is broad register/scheduling/block-shape drift, not local.
 
 struct TShape {
     ~TShape();
