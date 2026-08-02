@@ -87,6 +87,18 @@
 //     `if (p != 0)`; the extra guard block before the loop head is expected to keep the
 //     loop NON-rotated (backedge to top cmp), which then kills the EBX save (entry copy
 //     dies at top cmp, edx reused for p->next) and produces the separate not-found pop/pop/ret.
+// 56 (Luna-50DFD0 baseline): Re-established the two-link source; checker result remained
+//     92/100 bytes, 98 strict diff, and EBX/rotated-loop family.
+// 57: Comma-assignment duplicate guard `(link = base, p != 0)` was folded with no codegen change.
+// 58: Moved base/link initialization into the short-circuit expression; no codegen change.
+// 59: Explicit search/found/done gotos changed only neutral alignment bytes; no structural gain.
+// 60: Register-qualified base/link did not alter the allocator or EBX save.
+// 61: Swapped base/link declaration order; emitted code unchanged.
+// 62: Const-qualified head-pointer variant required a cast and emitted the same code; rolled back.
+// 63: Reversed the list compare operands; only neutral compare encoding drift, no metric gain.
+// 64: Explicit top-tested search label/backedge emitted the same EBX-save family.
+// 65: Restored declaration-only virtual destructor donor surface; no codegen change.
+//     Bounded Luna-50DFD0 session exhausted at unchanged best 92/100 (98-byte strict diff).
 
 extern "C" void __cdecl free(void* block);
 
