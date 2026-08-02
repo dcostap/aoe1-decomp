@@ -76,6 +76,19 @@
 // layout are retained; remaining drift is parameter-home scheduling plus the
 // quotient/output tail. Not accepted_drift because the block drift is structural.
 
+// Retry 2026-08-03 Luna480610b (10 probes): a 48-case home/tail lab found no
+// exact variant; its metric-best diagnostic family moved the countdown initialization into
+// the positive inner guard and forced invalid-arm stack rereads with narrow
+// volatile casts: 132 bytes, 11 strict diff bytes, 87.04% exact blocks, and
+// exact call/relocation parity. That fake-volatility form was not retained. A volatile invalid assignment,
+// duplicated sprintf arms, and a register-qualified output-high temporary were
+// rolled back (the last emitted 138-byte family did expose the missing
+// pre-divisor ECX copy but added stack-tail loads). The natural canonical source
+// below was restored for validation; the diagnostic proves the remaining axis is
+// pre-divisor/invalid-arm scheduling, not a missing semantic operation. Main-agent
+// validation after restoration: 132/132 bytes, 65 strict diff, 87.50% shape,
+// exact call parity.
+
 #include <stdio.h>
 
 class RGE_TimeSinceLastCall {
@@ -102,7 +115,6 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
     unsigned long hi = 0;
     unsigned long min = 999999;
     remaining = param_1;
-
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = Offset;
         if (param_1 > 0) {
@@ -126,7 +138,6 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
         min = remaining;
         hi = remaining;
     }
-
     sprintf(TBuff, "Lo=%d < Avg=%d > Hi=%d of %d",
             min, remaining, hi, param_1);
     return TBuff;
