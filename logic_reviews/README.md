@@ -29,6 +29,16 @@ Each ledger should contain:
    substantive finding remains open, and the rationale for promotion or return
    to scratch work.
 
+Before the first formal round, the main agent should normalize the candidate away
+from exact-matching experiment residue and toward plausible original-developer
+C/C++: canonical types and fields, explicit statements, natural control flow,
+and typed calls. Comma-expression scheduling tricks, fake volatility, raw vtable
+casts, manual offsets, and decompiler scaffolding should not survive merely
+because they improve byte metrics. Retain an odd form only when executable
+evidence proves it expresses real behavior, and document that evidence in this
+ledger. Record validation after normalization even when the nonsemantic diff
+worsens.
+
 The ledger is ordinary Markdown tracked by Git. Do not add source hashes,
 confidence percentages, voting scores, or a separate manifest. Git records the
 source and ledger changes. Version each completed review/adjudication round with

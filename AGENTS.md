@@ -607,6 +607,39 @@ bounded fixes, and no open behavioral uncertainty. The original executable is
 the oracle, including its bugs, odd edge cases, unintended side effects, and
 incorrect-looking formulas.
 
+### Source shape after exact matching is suspended
+
+Once the main agent deliberately suspends exact matching and enters logic review,
+the source-shape objective changes. The candidate should no longer preserve
+compiler-steering residue merely because it once improved byte metrics. Before
+formal blind review, normalize the function toward the simplest ordinary C/C++ a
+real developer plausibly wrote, while preserving every behavior proved by the
+executable.
+
+- Prefer canonical typed structs/classes, named fields, ordinary member or
+  virtual calls, explicit statements, natural loops/branches, and clear lifetime
+  and ownership expressions.
+- Remove codegen-only comma expressions, fake volatile qualifiers, raw vtable or
+  function-pointer plumbing, redundant aliases/temporaries, decompiler-shaped
+  gotos, manual offset stores, and declaration-order tricks when they are not
+  required by observed behavior.
+- Do not retain an unnatural source spelling just because it has a smaller diff.
+  After exact matching is suspended, semantic fidelity and human auditability are
+  authoritative over compiler metrics.
+- Preserve unnatural source only when binary evidence proves that it expresses a
+  real behavior—such as aliasing, overlap, evaluation/fault order, width, lifetime,
+  or an intentional bug—that a natural spelling would lose. Document that reason
+  in the source and ledger.
+- Rerun the checker after normalization and record the resulting nonsemantic
+  metric change. A worse diff is acceptable; changed calls, memory effects, or
+  behavior are not.
+
+Formal reviewers should receive the normalized candidate, not an opaque matching
+experiment. Review findings and fixes should continue moving source toward
+plausible original-developer C/C++ unless the executable specifically requires an
+odd form. `src\verified_logic` is expected to be readable reconstructed source,
+not a museum of failed VC5 scheduling tricks.
+
 When assigned as an independent logic reviewer:
 
 - do not edit any file, claim a target, run source-shape experiments, or make a

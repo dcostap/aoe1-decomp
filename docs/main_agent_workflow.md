@@ -189,6 +189,24 @@ Only the main agent may decide to suspend exact matching and enter formal logic
 review. This requires substantial cumulative matching work and a candidate whose
 behavior appears reconstructable even though exact VC5 codegen remains stuck.
 
+Before launching the first blind cohort, perform a source-normalization pass.
+Exact matching and logic reconstruction have different source-shape objectives:
+matching may temporarily justify compiler-steering spellings, while logic review
+should present the simplest ordinary C/C++ the original developers plausibly
+wrote. Replace codegen-only comma expressions, fake volatility, raw vtable/call
+casts, manual-offset plumbing, redundant aliases, declaration-order tricks, and
+decompiler scaffolding with canonical types, named fields, explicit statements,
+natural control flow, and typed calls whenever the executable does not require
+the odd form. Do not keep a lower diff at the cost of readability once exact
+matching has been suspended.
+
+An unnatural spelling may remain only when instruction evidence shows that it is
+needed for real behavior such as access width, overlap, aliasing, lifetime,
+evaluation/fault order, or an original bug. Document that reason. Rerun validation
+after normalization and record metric regressions as nonsemantic drift. If
+normalization exposes uncertain behavior, resolve it or return to matching work;
+do not ask reviewers to reverse-engineer opaque codegen-lab residue.
+
 Create `logic_reviews\<slug>.md` from the format documented in
 `logic_reviews\README.md`. Record the phase-transition rationale, current exact
 and structural metrics, cumulative matching evidence, known assembly differences,
@@ -258,6 +276,12 @@ function and updates the ledger in the same integration pass. Rerun the checker
 and inspect the complete diff. Do not delegate isolated review fixes merely to
 have another agent edit them.
 
+Write review fixes as plausible ordinary developer source, not as new
+compiler-scheduling puzzles. Prefer canonical declarations, explicit statements,
+and typed calls even when they worsen byte metrics. Keep low-level or unusual
+source only when the adjudicated executable behavior requires it, and record that
+evidence in the ledger.
+
 After the round is adjudicated and validated, version the ledger and any source
 changes together. If the main agent stops with unresolved findings, version that
 ledger state as the durable handoff rather than leaving the only record in an
@@ -284,11 +308,13 @@ in the ledger.
 When satisfied, the main agent:
 
 1. reads the complete source and ledger;
-2. performs final policy and behavioral adjudication;
-3. reruns final validation;
-4. completes the ledger's final-decision section;
-5. moves the source to `src\verified_logic`;
-6. versions the source, ledger, and status change together.
+2. confirms the source is normalized, readable, plausible original-developer
+   C/C++, with every remaining oddity justified by binary-observed behavior;
+3. performs final policy and behavioral adjudication;
+4. reruns final validation;
+5. completes the ledger's final-decision section;
+6. moves the source to `src\verified_logic`;
+7. versions the source, ledger, and status change together.
 
 `verified_logic` is non-exact and remains eligible for future exact-matching work.
 Moving it back into matching work must preserve its ledger and attempt history.
