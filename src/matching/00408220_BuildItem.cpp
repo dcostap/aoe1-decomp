@@ -1,23 +1,21 @@
 // VA: 00408220 BuildItem::BuildItem(int,int,int,int,int,int,char*,float,float,float,int,int,int,int)
 // aiblditm.cpp lines 63-66
 
-// attempt 1-4: various init list/body orderings (best 32%)
-// attempt 5: explicit temp variables (47%)
-// attempt 6: moved buildFrom/terrainSet before zero block (37%)
-// attempt 7: variant_lab (7 variants, all same basin, 32%)
-// attempt 8: volatile params (didn't help)
-// left in scratch: persistent register-allocation drift
-// Original uses ECX for cat load, EDX for number, ECX for priority,
-// then hoists buildFrom→EDX and terrainSet→ECX before zero block.
-// VC5 in our TU puts cat→EAX, number→ECX, priority→EDX, with
-// buildFrom/terrainSet loaded AFTER zero block. Size matches (194B),
-// all fields, vtable, ret 38h correct. Pure register-allocation drift.
+// Attempt log:
+// - body assignments and reordered bodies kept a 194-byte function but left a
+//   63-byte register/scheduling mismatch after the BaseItem call.
+// - the donor-backed pointer types for vtable/next/prev were retained; adding a
+//   polymorphic surface, an explicit base call, register parameters, and a
+//   focused variant sweep did not improve codegen.
+// - exact source shape: initialize the scalar members in the constructor
+//   initializer list, then assign the array elements and vtable pointer in the
+//   body. This reproduces the original post-base load/store schedule exactly.
 
 #include <string.h>
 
 class BaseItem {
 public:
-    int vtable;
+    void* vtable_ptr;
     int typeIDValue;
     int gameIDValue;
     int uniqueIDValue;
@@ -36,8 +34,8 @@ public:
 
 class BuildItem : public BaseItem {
 public:
-    void* next;
-    void* prev;
+    BuildItem* next;
+    BuildItem* prev;
     int buildCategoryValue;
     int numberValue;
     int priorityValue;
@@ -62,23 +60,13 @@ public:
 BuildItem::BuildItem(int cat, int typeID, int uniqueID, int number, int priority,
                      int buildFrom, char* name, float xSize, float ySize, float zSize,
                      int terrainSet, int adj0, int adj1, int elevation)
-    : BaseItem(typeID, -1, uniqueID, name, -1.0f, -1.0f, -1.0f, xSize, ySize, zSize) {
-    this->buildCategoryValue = cat;
-    this->numberValue = number;
-    this->priorityValue = priority;
-    this->next = 0;
-    this->prev = 0;
-    this->progressValue = 0;
-    this->builtValue = 0;
-    this->buildAttemptsValue = 0;
-    this->numberBuildsValue = 0;
-    this->skipCyclesValue = 0;
-    this->permanentSkipValue = 0;
-    this->buildFromValue = buildFrom;
-    this->terrainSetValue = terrainSet;
+    : BaseItem(typeID, -1, uniqueID, name, -1.0f, -1.0f, -1.0f, xSize, ySize, zSize),
+      next(0), prev(0), buildCategoryValue(cat), numberValue(number),
+      priorityValue(priority), progressValue(0), builtValue(0),
+      buildAttemptsValue(0), buildFromValue(buildFrom), terrainSetValue(terrainSet),
+      placeOnElevationValue(elevation), numberBuildsValue(0), buildCapValue(-1),
+      skipCyclesValue(0), permanentSkipValue(0) {
     this->terrainAdjacencyValue[0] = adj0;
-    this->placeOnElevationValue = elevation;
-    this->buildCapValue = -1;
-    this->vtable = 0x56E734;
+    this->vtable_ptr = (void*)0x56E734;
     this->terrainAdjacencyValue[1] = adj1;
 }
