@@ -128,6 +128,56 @@ reports, and harmlessness claims. Both were strictly read-only and unleased.
 > **Verdict:** Reject strict behavioral equivalence until the non-warp source is
 > `mouse_last_x = param_1; mouse_last_y = param_2; set_redraw(1);`.
 
+### Formal round 2 — fresh post-fix concurrent blind cohort
+
+Two new reviewers independently assessed the corrected source concurrently.
+They were blind to this ledger, Git history, the first cohort, and the integrated
+finding, and remained strictly read-only and unleased.
+
+#### Reviewer 3 — broad post-fix behavior
+
+> **Verdict: PASS — no definite function-level behavioral difference found.**
+>
+> - Entry early return, player-view snapshot, dispatch for 2/6/7/8/default,
+>   strict movement bounds, cursor thresholds, and field widths/offsets match.
+> - Case 7 now has the original redraw ordering: both `mouse_last` fields precede
+>   redraw; warp stores y then x, non-warp stores x then y.
+> - Case 8 conversion/update behavior, default edge gating, action-specific
+>   3/4/9 handling, final view-change redraw/return, all calls and arguments,
+>   action-4 object reload/fallback, null/error behavior, and ownership effects
+>   match.
+>
+> **Conditional concern:** the local `RGE_View::set_redraw` stub has an empty
+> body, whereas the runtime implementation forwards to `TPanel::set_redraw` and
+> has mode-2 behavior. The reviewed function nevertheless performs the correct
+> virtual call through slot `+0x20`; this matters only if the local stub replaces
+> the runtime implementation rather than serving as a compilation surface.
+>
+> External callee internals, concurrent mutation, and pathological portable-C++
+> overflow/conversion behavior were not independently established. No
+> instruction-evidenced discrepancy exists under the pinned runtime model.
+
+#### Reviewer 4 — adversarial post-fix behavior
+
+> **Definite findings:** None.
+>
+> **Verified behavior**
+>
+> - Entry, switch/default semantics, case-2 bound/redraw, case-6
+>   inside/pick/view update, case-7/8 strict deltas and cursor paths, default edge
+>   handling, action-4 object reload/sprite fallback, and final redraw/returns
+>   match addresses `0053A290–0053A998`.
+> - Correct virtual slots and arguments are used for `is_inside +0xBC`, redraw
+>   `+0x20`, teleport `+0x34`, and `do_paint +0xF4`.
+> - Both case-7 paths store both mouse fields before redraw, with the original
+>   per-path field order.
+>
+> x87 C3-only equality, signed overflow/`abs(INT_MIN)`, pathological `__ftol`,
+> and external callback internals are pinned-artifact or unestablished caveats,
+> not concrete candidate/oracle differences.
+>
+> **Verdict:** Behaviorally faithful; no semantic discrepancy identified.
+
 ## Main-agent adjudication
 
 ### Formal round 1 adjudication
@@ -151,6 +201,28 @@ reports, and harmlessness claims. Both were strictly read-only and unleased.
 The confirmed issue is bounded and its exact correction is proved by original
 instruction order, so the main agent will integrate it directly before another
 fresh blind cohort.
+
+### Formal round 2 adjudication
+
+- **Cleared — corrected case-7 ordering.** Both post-fix reviewers independently
+  verified the corrected x/y-store ordering on warp and non-warp paths. Focused
+  rebuilt disassembly confirms the non-warp path performs both stores before it
+  reaches VC5's shared redraw/return tail, so static tail merging does not
+  reintroduce the round-1 behavior defect.
+- **Cleared — local empty virtual bodies.** Placeholder bodies supply vtable
+  layout to this isolated translation unit; `handle_scroll_view` itself emits
+  runtime indirect calls through the object's vtable. Checker and disassembly
+  confirm redraw uses slot `+0x20`, so no local direct call to the empty stub is
+  part of this function's behavior.
+- **Cleared — numeric-language caveats.** The emitted candidate uses the same
+  32-bit integer, x87 status, `__ftol`, and narrow-word operations as the
+  original on the reviewed paths. Modern portable-language edge semantics are
+  not substituted for the pinned artifact.
+- **Cleared — remaining paths and effects.** Dispatch, predicates, external and
+  virtual calls, arguments, widths, object reloads, null behavior, state writes,
+  redraw decisions, and returns received independent post-fix confirmation.
+
+No substantive finding remains open after formal round 2.
 
 ## Integrated changes
 
