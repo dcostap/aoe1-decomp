@@ -2023,6 +2023,43 @@ Caveat:
 - use only when the binary proves the member update/ordering; post-increment is
   not interchangeable with a pre-increment or an index local for VC5 codegen.
 
+## Lesson: Duplicate loop advances in non-rare dispatch arms can preserve a cold tail
+
+For a scan that skips the current player or a below-threshold candidate, VC5 may
+place the rare state/update arm inline even when the original keeps it out of line
+after the normal award epilogue. Writing the two non-rare `if` arms explicitly and
+duplicating the ordinary cursor advances in each arm can make VC5 merge those
+identical advances while placing the rare arm in the cold tail:
+
+```cpp
+if (index == self_id) {
+    ++index;
+    ++players;
+} else if (threshold > (*players)->value[key]) {
+    ++index;
+    ++players;
+} else {
+    entry->state = 1;
+    return;
+}
+```
+
+Try when:
+- the original has a self-id equality skip, an FPU/inclusive threshold test,
+  and a rare state/update return after the common epilogue;
+- a natural combined `&&` condition emits the rare arm inline plus a
+  `jge`/unconditional-jump loop backedge.
+
+Why it helps:
+- VC5 tail-merges the duplicated increments, recovering the original
+  `je`-skip, direct `jl` backedge, out-of-line rare block, and often the
+  callee-saved register coloring at the same time.
+
+Caveat:
+- use only when both arms have genuinely identical advances and the executable
+  proves the cold-tail topology; keep the source as ordinary control flow rather
+  than fake volatility or raw register steering.
+
 ## Lesson: Interior-byte cursors can preserve exact VC5 record addressing
 
 When a fixed-size record scan's original induction pointer is anchored at a

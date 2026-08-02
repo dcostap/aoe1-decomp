@@ -10,9 +10,11 @@
 // - Reversed the threshold to the binary-observed negative early-return compare (probe 5),
 //   recovering 70% exact-block coverage and the 188-byte best reconstruction.
 // - Explicit goto/cold-tail, register-qualified owner/entry aliases, and equivalent continue/else
-//   loop forms were unchanged or nonproductive (probes 6-10); broad prologue/register coloring and
-//   the loop's out-of-line state-1 block remain unresolved.
-// - Best current source is period-plausible typed C++ and retains the proven offsets; no custom flags.
+//   loop forms were unchanged or nonproductive (prior probes 6-10).
+// - A nested self-id/threshold dispatch with duplicated natural loop-advance statements (probe 8
+//   of the current pass) recovered the cold state-1 block, exact size, and the original ESI/EDI
+//   coloring; current validation is byte-exact. The duplicated advances are ordinary source control
+//   flow, not compiler-only scaffolding, and all field offsets remain binary-proven; no custom flags.
 
 class RGE_Game_World;
 
@@ -49,29 +51,35 @@ public:
 };
 
 void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Entry* entry) {
+    RGE_Player* player;
+    RGE_Victory_Point_Entry* p;
     if (entry->state == 0) {
-        RGE_Player* player = this->player;
-        int val = (int)player->attributes[entry->attribute];
-        int points = entry->points;
+        player = this->player;
+        p = entry;
+        int val = (int)player->attributes[p->attribute];
+        int points = p->points;
         RGE_Player** players = player->world->players;
-        entry->curr_attribute_amount = (float)val;
-        if (val < entry->initial_amount) return;
+        p->curr_attribute_amount = (float)val;
+        if (val < p->initial_amount) return;
 
         val = 0;
         int count = this->player->world->player_num;
         if (0 < count) {
             do {
-                if (val != this->player->id &&
-                    (float)entry->initial_amount <= (*players)->attributes[entry->attribute]) {
-                    entry->state = 1;
+                if (val == this->player->id) {
+                    val = val + 1;
+                    players = players + 1;
+                } else if ((float)p->initial_amount > (*players)->attributes[p->attribute]) {
+                    val = val + 1;
+                    players = players + 1;
+                } else {
+                    p->state = 1;
                     return;
                 }
-                val = val + 1;
-                players = players + 1;
             } while (val < count);
         }
-        this->tot_victory_points += points - entry->curr_points;
-        entry->curr_points = points;
-        entry->state = 2;
+        this->tot_victory_points += points - p->curr_points;
+        p->curr_points = points;
+        p->state = 2;
     }
 }
