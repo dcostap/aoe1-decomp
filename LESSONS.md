@@ -2089,3 +2089,29 @@ Why it helps:
 Caveat:
 - this is a narrow binary-supported layout/codegen form, not a reason to replace
   an unproven class or array model with arbitrary pointer arithmetic.
+
+## Lesson: Carry an aligned field value through a linked-list merge test
+
+When a span/list merge loop aligns a node field, stores it back, and immediately
+compares the aligned value against the next node, an explicit scalar temporary can
+preserve VC5's original load/flag/store scheduling:
+
+```cpp
+int end = node->EndPx | 3;
+node->EndPx = end;
+if (end >= next_start) { ... }
+```
+
+Try when:
+- the binary carries the aligned value in a register across the null/merge guard;
+- direct repeated member access produces the right behavior but the wrong branch
+  layout, saved-register coloring, or store placement.
+
+Why it helps:
+- the named value keeps the compare independent of a member reread and lets VC5
+  schedule the field store around the guard while retaining the original register
+  live range.
+
+Caveat:
+- use only when the carried value is genuinely consumed by the observed compare;
+  do not add locals solely to perturb registers.
