@@ -29,37 +29,44 @@
 // Retry 2026-05-24 assigned pass: 15 more probes. Tried uint verSize, pv declared/initialized inside allocation block, register/volatile size and pv, size copy temp, natural all-in-one source, nested comparison, pv declaration order/registers, cmp-eax-eax tail/goto variants, unsigned long declarations, and a typed VS_FIXEDFILEINFO-style struct. All competitive variants kept the same first mismatch +21 ESI/EDI role swap; natural comparison forms worsened. Best remains current 160B source at 20.625% positional / 15.0% edit. Not accepted_drift: persistent ESI/EDI role swap spans allocation/version calls and comparison/return layout, not a localized benign hunk.
 // Retry 2026-05-26 Boss pass: 18 probes on VA 0044DEE0 only. Revalidated current best: 160B, 20.6250% positional / 15.0000% edit, first mismatch +21. Tried `unsigned int verSize`, declaration order changes, pv declared inside allocation block, register size/pv, size copy temp for both new/version call, char* pv, call-arg temp order, typed unsigned-int verInfo pointer, natural comparison form, and flag probes /G5 /Og /Oa /Ob0 /Oy- /O1 /Gr /Gz. No source/flag changed the core ESI/EDI role swap; natural comparison and /Oy- worsened, /O1 shrank. GIVEUP: not accepted_drift quality; remaining ESI/EDI role swap persists through allocation/version calls with comparison/return layout drift, not a localized benign hunk.
 
+// Retry 2026-08-02 Luna-44DEE0: restored the explicit compare-gate form (`a != 0x40005` goto check; `a <= 0x40005` at check), recovering exact 160-byte size, CFG, all six calls, and the original 63-instruction shape. Typed VS_FIXEDFILEINFO fields, declaration-order/type variants, allocation/new[] variants, an integer buffer handle, and direct typed VerQuery output all emitted the same best code. Current best: 8 positional bytes (5.0%), 8 edit bytes (2.5%), first mismatch +21. Remaining drift is persistent ESI/EDI coloring at size/buffer uses (+21,+23,+40,+47,+52,+55,+56,+102); no accepted_drift because it spans calls. Paused after bounded 10-probe session; next lead is a fresh TU/declaration-context experiment rather than another equivalent local spelling.
+
 extern unsigned int __stdcall GetFileVersionInfoSizeA( const char*, unsigned int* );
 extern int __stdcall GetFileVersionInfoA( const char*, unsigned int, unsigned int, void* );
 extern int __stdcall VerQueryValueA( void*, const char*, void**, unsigned int* );
 extern __declspec(dllimport) unsigned int __stdcall GetLastError( void );
 extern void* operator new( unsigned int );
 
+struct IsDPlay501a_VS_FIXEDFILEINFO {
+    unsigned int signature;
+    unsigned int structVersion;
+    unsigned int fileVersionMS;
+    unsigned int fileVersionLS;
+};
+
 int IsDPlay501a() {
-    void* pv;
-    void* verInfo;
-    void* verSize;
+    char* pv;
+    IsDPlay501a_VS_FIXEDFILEINFO* verInfo;
+    unsigned int verSize;
     unsigned int verInfoLen;
     unsigned int lpDummy;
 
-    verSize = (void*)GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);
+    verSize = GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);
     if (verSize == 0) {
         GetLastError();
         return 0;
     }
-    pv = operator new((unsigned int)verSize);
+    pv = new char[verSize];
     if (pv) {
-        if (!GetFileVersionInfoA("dplayx.dll", 0, (unsigned int)verSize, pv)) {
+        if (!GetFileVersionInfoA("dplayx.dll", 0, verSize, pv)) {
             GetLastError();
             return 0;
         }
-        if (VerQueryValueA(pv, "\\", &verInfo, &verInfoLen)) {
-            unsigned int* p = (unsigned int*)verInfo;
-            unsigned int a = p[2];
-            unsigned int b = p[3];
+        if (VerQueryValueA(pv, "\\", (void**)&verInfo, &verInfoLen)) {
+            unsigned int a = verInfo->fileVersionMS;
+            unsigned int b = verInfo->fileVersionLS;
             if (a != 0x40005) goto check;
             if (b >= 0x1062F) goto yes;
-            a = a - a;
         check:
             if (a <= 0x40005) goto no;
         yes:
