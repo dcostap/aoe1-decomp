@@ -165,6 +165,12 @@ success body with `else`/shared failure after it. Nested positive bounds can lik
 route several checks to one tail. Use negative early returns when the binary instead
 keeps the rare handler inline. Source arm order is a layout probe, not a semantic rule.
 
+For multi-stage open/read/validate code, an outer positive resource-valid guard with
+an inner negative validation guard can preserve both layouts at once: the open-failure
+epilogue stays late while the validation-failure close/return block stays before the
+success body. An equivalent early `if (fd == -1) return` followed by a success-first
+check may make VC5 share the wrong epilogue and reverse the validation branch.
+
 ## Lesson: Model the proven subfield offset directly, not an invented helper subobject
 
 When asm proves an array-element size and fixed subfield offset, model those bytes

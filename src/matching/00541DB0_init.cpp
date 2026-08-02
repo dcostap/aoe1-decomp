@@ -3,33 +3,17 @@
 // Virtual slot: vt[44] (0xB0)
 // FLAGS: default
 //
-// Best probe (G0000): strcmp(...)==0 success-first, je at fd check
-// Positional diff: 52/190 (27.4%), Edit diff: 45 (23.7%)
+// Exact match: the natural outer `fd != -1` guard with an inner mismatch-first
+// version guard reproduces the original block order and epilogues.
+// Positional diff: 0/190 (0.0%), Edit diff: 0 (0.0%)
 // Relocs masked: 5
-// 
+//
 // Attempt log:
-// probe 1-7: various if(fd==-1) return 0 structures -> jne inline, 117 pos diff
-// probe 8: strcmp(...)==0 { success } fallthrough mismatch, je at fd check! 52 pos diff
-// probe 9: strcmp(...)!=0 { mismatch } -> jne at fd check, 117 pos diff
-// probe 10: single return variable -> 86% diff, completely different codegen
-// probe 11-13: else blocks, explicit casts, local vars -> same as probe 8
-// probe 14-16: goto fail, extra conditionals, variant_lab -> confirms 2 groups
-//
-// Variant lab confirms: eq/ne comparison direction is the only axis that changes
-// the fd-check codegen. All fail_flow forms (return/goto/ifelse) give identical results.
-//
-// Remaining gap (probe 8 baseline, group G0000):
-// - Block order: success-first (rebuilt) vs mismatch-first (original)
-//   Original: test,eax; je success; [mismatch close+return0]; [success]; [shared epilogue]
-//   Rebuilt: test,eax; jne mismatch; [success close+return1]; [mismatch close]; [shared epilogue]
-// - Mismatch path: rebuilt shares fd==-1's return-0 epilogue (saves 12 bytes)
-//   Original has inline return-0 for mismatch (12 bytes extra)
-// - Result: 12 NOP bytes at end, je displacement 0x73 vs 0x7f
-//
-// This is a VC5 block-ordering/epilogue-sharing decision that requires full
-// World.cpp TU context to match. Single-function scratch can't replicate the
-// surrounding function declarations that affect VC5's register allocation and
-// basic-block ordering heuristics.
+// prior probes 1-16: direct fd-failure forms, comparison-direction forms,
+// explicit fail labels, and a focused variant lab left two codegen groups;
+// the best success-first form was 55 positional bytes away in this TU.
+// current probe: put the read/version logic inside `if (fd != -1)` and use
+// `if (strcmp(...) != 0)` for the close/false arm; exact 190-byte match.
 
 #include <string.h>
 
@@ -103,18 +87,18 @@ unsigned char RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommu
     *(long*)((char*)this + 0x68) = 0;
 
     int fd = rge_open(param_1, 0x8000);
-    if (fd == -1) {
-        return 0;
-    }
+    if (fd != -1) {
+        rge_read(fd, version, 8);
 
-    rge_read(fd, version, 8);
+        if (strcmp(version, "VER 3.7") != 0) {
+            rge_close(fd);
+            return 0;
+        }
 
-    if (strcmp(version, "VER 3.7") == 0) {
         this->world_init(fd, param_2, param_3);
         rge_close(fd);
         return 1;
     }
 
-    rge_close(fd);
     return 0;
 }
