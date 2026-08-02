@@ -25,6 +25,17 @@
  * arithmetic/scheduling (esi↔ebx↔edi swap for x1/x2/r). Behavior, call set, stack cleanup,
  * and conditional logic all match. Potential accepted_drift candidate only after reviewer
  * confirms broad register-renaming drift is acceptable.
+ *
+ * Luna50FDD0 pass (10 meaningful probes): dossier/donor/ABI evidence confirmed the
+ * canonical six-argument member surface. register-qualified parameters, commutative
+ * r+c order, inline unsigned promotion, int radius, and staged radius/byte updates did
+ * not recover the entry basin (staged form worsened to 97 diff bytes; promotion to 87).
+ * Removing local virtual keywords improved the diagnostic to 78 bytes and matched more
+ * body blocks, but contradicts the PDB virtual surface and did not change the EBX/ESI/EDI
+ * parameter coloring; derived-only virtual context worsened to 157 bytes. Restored the
+ * period-plausible virtual source. Remaining lead is TU/compiler register allocation:
+ * original assigns r/x1/x2 to EBX/ESI/EDI while the clean rebuild assigns x2/r/x1 to
+ * EBX/ESI/EDI. Calls, cleanup, CFG, and 188-byte boundary remain aligned.
  */
 
 class RGE_Map {
