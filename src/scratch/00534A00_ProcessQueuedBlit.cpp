@@ -1,76 +1,112 @@
 // RGE_View::ProcessQueuedBlit (00534A00)
 // PDB source: view.cpp:1218-1318
 // Size: 219 bytes
-// PARKED - pure VC5 instruction scheduling / register rotation / jump encoding drift
 //
 // Attempt log:
-// - Probe 1 (abstract class + cached ox/oy + tagRECT struct): 208 bytes, major struct diffs
-// - Probe 2 (no cached ox/oy + int array ss): 208 bytes, closer but vf1c call mismatch
-// - Probe 3 (raw typedef fn ptr dispatch): 208 bytes, different push order  
-// - Probe 4 (correct __stdcall abstract class + (surf,dx,dy,surf,ss,16)): 208 bytes, push order MATCHES
-//   remaining drift: register coloring (push ebx/pop ebx vs not), store offset assignment,
-//   blob construction order (original does push-0x10 + top store, then X load + left store,
-//   then push-&src + bottom+1 store, then right+1 store; my version computes offsets at
-//   different times), some jump near→short encoding (2×4=8 bytes diff)
-// - Probe 5 (short member names + ss[5]): 219 bytes but vf34 pushing surf twice, vf1c push
-//   order wrong, sub esp 14h instead of 10h due to ss[5]
-// 
-// Remaining gap: pure VC5 register/scheduling/encoding drift within the isolated scratch
-// context. The original's instruction interleaving for blit RECT construction + vf1c call
-// uses specific register assignments and push/schedule timing that match the TU context.
-// Near→short jump encoding change is an expected VC5 distance artifact.
-//
-// FLAGS: none attempted; inline asm forbidden; no custom flags
-// Best variant: abstract class __stdcall + (surf,dx,dy,surf,ss,16), 208 bytes,
-// push order matches original exactly for both vf34 and vf1c calls
+// - Old parked state: wrong ss slot mapping (src.right written to index 3),
+//   missing src.bottom entry, ss[5]-induced sub esp,14h frame. Rewrote from scratch.
+// - Canonical ownership (ground truth): render_area(TDrawArea*)@+0x20,
+//   DrawSurface(IDirectDrawSurface*)@TDrawArea+0x3C; Queued_Blits@+0x2D8,
+//   Blit_Queue@+0x2DC, Blit_Queue_Size@+0x2E0, Current_Blit@+0x2E8,
+//   Blit_Offset_X@+0x2EC, Blit_Offset_Y@+0x2F0. Blit_Queue_Entry = 32B
+//   { tagRECT src; tagRECT dest; }.
+// - Vtable evidence: [vtable+0x34] = GetBltStatus(this,1) (2 args __stdcall),
+//   [vtable+0x1C] = BltFast(this, dest.left+OX, dest.top+OY, DrawSurface,
+//   &src, 16) (6 args __stdcall) — DirectDraw surface COM calls.
+// - RECT math (binary-observed field processing order top,left,bottom,right):
+//   src.top = st+OY, src.left = sl+OX, src.bottom = sb+OY+1, src.right = sr+OX+1;
+//   dest coords = dl+OX, dt+OY. Final check loads Blit_Queue_Size first then
+//   Current_Blit+1 (size on the left of the comparison).
+// - Post-call dead store of the BltFast result into the force parameter home
+//   ([esp+20h] = E+4) implies the original source reused the dead force param
+//   as the call-result scratch (force = BltFast(...)).
+// - Probe 1 (baseline): src.bottom=BltFast + left,top,right,bottom field order:
+//   diff=197, shape=67.95%; store eliminated; field order left,top,right,bottom
+//   (rebuilt preserved source order -> original wrote top,left,bottom,right).
+// - Probe 2 (layout, current): top,left,bottom,right field order + force=BltFast:
+//   diff=195, shape=73.08%; RECT region now matches; remaining drift is the
+//   extra push ebx (vtable lands in ebx instead of edx -> one extra saved reg),
+//   the &src lea/push interleave (rebuilt hoists &src before push 16), dest
+//   register roles, the eliminated post-call param-slot store, and final-check
+//   load order (size-first vs CB-first).
+// - Left in scratch: pure VC5 register/scheduling/encoding drift inside the
+//   isolated scratch TU; the post-call dead store is eliminated by VC5 here but
+//   was kept in the original view.cpp TU (TU-context-sensitive DSE/scheduling).
+// FLAGS: none. Inline asm forbidden.
+// Best variant: probe 2 (current source), 219 bytes, frame 0x10, 2/2 calls aligned.
 
-struct BQE {
-    int sl; int st; int sr; int sb;
-    int dl; int dt; int dr; int db;
+struct tagRECT { long left; long top; long right; long bottom; };
+
+struct Blit_Queue_Entry {
+    tagRECT src;   // +0x0
+    tagRECT dest;  // +0x10
 };
 
-struct IDV {
-    virtual int __stdcall QI(void*,void*) = 0;
-    virtual int __stdcall AR() = 0;
-    virtual int __stdcall RL() = 0;
-    virtual int __stdcall d3() = 0; virtual int __stdcall d4() = 0;
-    virtual int __stdcall d5() = 0; virtual int __stdcall d6() = 0;
-    virtual void __stdcall v7(void*,int,int,void*,void*,int) = 0;
-    virtual int __stdcall d8() = 0; virtual int __stdcall d9() = 0;
-    virtual int __stdcall dA() = 0; virtual int __stdcall dB() = 0;
-    virtual int __stdcall dC() = 0; virtual int __stdcall vD(void*,int) = 0;
+// DirectDraw surface vtable (IDirectDrawSurface), slots 0..13 used:
+// BltFast = slot 7 (0x1C), GetBltStatus = slot 13 (0x34).
+struct IDirectDrawSurface {
+    virtual long __stdcall QueryInterface(void*, void*);
+    virtual long __stdcall AddRef();
+    virtual long __stdcall Release();
+    virtual long __stdcall AddAttachedSurface(void*);
+    virtual long __stdcall AddOverlayDirtyRect(void*);
+    virtual long __stdcall Blt(void*, void*, void*, unsigned long, void*);
+    virtual long __stdcall BltBatch(void*, void*, unsigned long, unsigned long);
+    virtual long __stdcall BltFast(long, long, IDirectDrawSurface*, tagRECT*, unsigned long);
+    virtual long __stdcall DeleteAttachedSurface(unsigned long, void*);
+    virtual long __stdcall EnumAttachedSurfaces(void*, void*);
+    virtual long __stdcall EnumOverlayZOrders(unsigned long, void*, void*);
+    virtual long __stdcall Flip(void*, unsigned long);
+    virtual long __stdcall GetAttachedSurface(void*, void*);
+    virtual long __stdcall GetBltStatus(unsigned long);
 };
 
-struct TDA { unsigned char g0[0x3C]; IDV* DS; };
-
-struct RGE_View {
-    unsigned char g0[0x20]; TDA* da; unsigned char g1[0x2B4];
-    int QB; BQE* BQ; int BQS; unsigned char g2[0x04];
-    int CB; int OX; int OY;
-    void PQBI(int);
+class TDrawArea {
+public:
+    char gap_00[0x3C];
+    IDirectDrawSurface* DrawSurface;   // +0x3C
 };
 
-// Best attempt: abstract class __stdcall with correct param order
-// Push order for vf34: push 1, push surf, mov ecx,[surf], call [ecx+52]
-// Push order for vf1c: push 16, push &ss, push surf, push dy, mov ebx,[surf], push dx, push surf, call [ebx+28]
-// These match the original EXACTLY (same push order, same argument assignment)
-void RGE_View::PQBI(int p1)
+class RGE_View {
+public:
+    char gap_00[0x20];
+    TDrawArea* render_area;            // +0x20
+    char gap_24[0x2D8 - 0x24];
+    int Queued_Blits;                  // +0x2D8
+    Blit_Queue_Entry* Blit_Queue;      // +0x2DC
+    int Blit_Queue_Size;               // +0x2E0
+    char gap_2E4[4];
+    int Current_Blit;                  // +0x2E8
+    int Blit_Offset_X;                 // +0x2EC
+    int Blit_Offset_Y;                 // +0x2F0
+
+    void ProcessQueuedBlit(int force);
+};
+
+void RGE_View::ProcessQueuedBlit(int force)
 {
-    if (!QB) return;
-    if (!p1) { IDV* s = da->DS; if (s->vD(s,1)) return; }
-    int n = CB + 1; CB = n;
-    BQE* q = BQ;
-    if (q && n >= 0 && n < BQS) {
-        BQE* e = q + n;
-        int ss[4];
-        ss[1] = e->st + OY;
-        ss[0] = OX + e->sl;
-        ss[3] = e->sr + OX + 1;
-        int dx = e->dl + OX;
-        int dy = e->dt + OY;
-        IDV* s = da->DS;
-        s->v7(s,dx,dy,s,ss,16);
+    if (!this->Queued_Blits)
+        return;
+
+    if (force == 0) {
+        if (this->render_area->DrawSurface->GetBltStatus(1))
+            return;
     }
-    if (CB + 1 < BQS) return;
-    QB = 0;
+
+    this->Current_Blit++;
+    if (this->Blit_Queue && this->Current_Blit >= 0 && this->Current_Blit < this->Blit_Queue_Size) {
+        Blit_Queue_Entry* entry = &this->Blit_Queue[this->Current_Blit];
+        tagRECT src;
+        src.top = entry->src.top + this->Blit_Offset_Y;
+        src.left = entry->src.left + this->Blit_Offset_X;
+        src.bottom = entry->src.bottom + this->Blit_Offset_Y + 1;
+        src.right = entry->src.right + this->Blit_Offset_X + 1;
+        force = this->render_area->DrawSurface->BltFast(
+            entry->dest.left + this->Blit_Offset_X,
+            entry->dest.top + this->Blit_Offset_Y,
+            this->render_area->DrawSurface, &src, 16);
+        if (this->Current_Blit + 1 < this->Blit_Queue_Size)
+            return;
+    }
+    this->Queued_Blits = 0;
 }
