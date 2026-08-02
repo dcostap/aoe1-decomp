@@ -127,6 +127,9 @@ count toward an independent cohort.
 - A blind reviewer receives exactly one candidate.
 - Prefer concise checker maps, focused ranges, and dossier sections over complete
   packet/history dumps.
+- Remind participants to use `everything_search` for filename/path discovery and
+  `rg` for contents; recursive `find` is inappropriate for ordinary indexed repo
+  discovery and can stall on large `orig`/`build` trees.
 - Ask for compact final reports containing outcome, probes or review scope,
   metrics/findings, changed files, validation, and next lead.
 - If an audit approaches the model context limit, stop and return the bounded
@@ -137,13 +140,19 @@ count toward an independent cohort.
 Assign one function to one matching worker. Require the worker to follow the
 normal target-session contract in `AGENTS.md`, including a default budget of ten
 meaningful hypotheses, a compact source attempt log, final validation, and a
-pause or exact promotion result.
+pause or exact promotion result. Begin from or restore a clean period-plausible
+reconstruction with canonical field/type ownership before localized codegen
+tuning. Do not frame a decompiler-shaped retained scratch file as authoritative
+source merely because it currently has the best diff.
 
 Ten hypotheses bound one worker assignment. They do not prove that the function
 is exhausted. The main agent may assign fresh workers to the same function many
 times. Before doing so, ensure the next worker reads the existing source attempt
 log and target history and has a plausible way to add new evidence rather than
-repeat an explored compiler basin.
+repeat an explored compiler basin. When prior workers mainly optimized one raw
+pointer/decompiler form, prefer a clean-source reset using exact donors, PDB line
+bands, canonical arrays/classes, and original API idioms over another register
+allocation pass.
 
 Judge an exact-match stall from cumulative evidence, including:
 
@@ -165,12 +174,17 @@ For every worker result:
 
 1. inspect the complete diff and resulting source;
 2. ensure only authorized files changed and preserve unrelated work;
-3. reject forbidden asm, fake exactness, relocation mistakes, and policy drift;
-4. rerun `check_function.py --va <VA>` and confirm the claimed outcome;
-5. verify that the attempt log accurately records tried, kept, rolled-back, and
+3. audit source plausibility: reject retained fake volatility, unused locals,
+   comma-expression scheduling, raw vtable/offset plumbing, or decompiler cursors
+   that have no original-source or behavior justification;
+4. reject forbidden asm, fake exactness, relocation mistakes, and policy drift;
+5. rerun `check_function.py --va <VA>` and confirm the claimed outcome;
+6. verify that the attempt log accurately records tried, kept, rolled-back, and
    remaining hypotheses;
-6. accept, revise, or reject the result;
-7. perform status moves and version-control integration only after verification.
+7. if an opaque nonexact experiment only improved metrics, preserve its evidence
+   in notes and restore the clean reconstruction before integration;
+8. accept, revise, or reject the result;
+9. perform status moves and version-control integration only after verification.
 
 Also inspect `git status` before and after integration. Shared-tree workers must
 not silently rewrite line endings, leave compiler artifacts, or modify common
@@ -190,10 +204,11 @@ review. This requires substantial cumulative matching work and a candidate whose
 behavior appears reconstructable even though exact VC5 codegen remains stuck.
 
 Before launching the first blind cohort, perform a source-normalization pass.
-Exact matching and logic reconstruction have different source-shape objectives:
-matching may temporarily justify compiler-steering spellings, while logic review
-should present the simplest ordinary C/C++ the original developers plausibly
-wrote. Replace codegen-only comma expressions, fake volatility, raw vtable/call
+Natural source is already the matching baseline; matching may temporarily test
+compiler-steering spellings in checkpoints or labs, while logic review requires
+all unjustified residue to be gone. Present the simplest ordinary C/C++ the
+original developers plausibly wrote. Replace codegen-only comma expressions,
+fake volatility, raw vtable/call
 casts, manual-offset plumbing, redundant aliases, declaration-order tricks, and
 decompiler scaffolding with canonical types, named fields, explicit statements,
 natural control flow, and typed calls whenever the executable does not require

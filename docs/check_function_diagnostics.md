@@ -37,6 +37,12 @@ The stage is evidence-driven rather than a per-function instruction:
   focused variant lab.
 - `COMPLETE`: strict comparison and checked relocation identities match.
 
+The stage classifies emitted-code work; it does not validate the source model.
+Even at `EXACT CODEGEN`, begin from canonical, period-plausible source and keep
+opaque variants experimental. A deeper first mismatch or lower diff does not by
+itself justify retaining fake volatility, unused locals, raw offsets, or
+decompiler plumbing in the living source.
+
 ## Relocations
 
 A rebuilt relocation is masked only when its containing original and rebuilt

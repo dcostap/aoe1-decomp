@@ -207,20 +207,34 @@ weight. Read the donor source and packet before reusing its declarations/context
 
 ## Phase-gated work
 
-Treat large targets as four phases:
+Treat large targets as five phases:
 
-1. **Behavior** — calls, predicates, memory effects, and stack cleanup.
-2. **ABI/layout** — signatures, virtual slots, object offsets, sizes, globals, and
+1. **Source model** — reconstruct period-plausible ownership and idiom from PDB
+   lines, exact donors, canonical fields/arrays, and original API/TU context.
+2. **Behavior** — calls, predicates, memory effects, and stack cleanup.
+3. **ABI/layout** — signatures, virtual slots, object offsets, sizes, globals, and
    EH ownership.
-3. **Structure** — frame, local topology, loops, blocks, and call ordering.
-4. **Exact codegen** — localized source-shape, declaration-context, and variant
+4. **Structure** — frame, local topology, loops, blocks, and call ordering.
+5. **Exact codegen** — localized source-shape, declaration-context, and variant
    experiments.
+
+The source-model phase is not satisfied by translating Ghidra expressions into
+compiling C++. Establish which class or array owns each offset and write the
+natural loop/member/API form before tuning liveness. Keep the clean model as the
+living baseline. Broad raw-pointer, fake-volatile, comma-expression, or manual
+vtable variants belong in checkpoints/templates unless they are binary-required
+or exact.
 
 Do not start broad variant labs while calls are missing, direct targets are wrong,
 the frame is unexplained, or field layout is contradictory. The session briefing
 uses the checker's recorded workflow stage as its primary recommendation. Treat
 that checker stage as authoritative for workflow: structural reconstruction comes
 before register coloring even when the frame and per-target call counts match.
+
+After three duplicate or nonproductive exact-codegen probes, pause for a source
+plausibility checkpoint. Re-read the PDB line bands and exact donors and ask
+whether the current basin is optimizing a decompiler artifact. If so, restore or
+rebuild the clean source model before continuing.
 
 Equal call counts or an empty per-target count delta do not prove ordered call
 parity. Read call similarity and the `delete`/`insert`/`replace` site counts. For
@@ -282,6 +296,9 @@ freshness check used by target sessions; stale baselines are reported as
 unavailable rather than compared.
 
 The lab edits one source region but compiles and compares the whole function.
+Treat generated variants as experiments, not automatic source replacements. A
+nonexact winner must pass a period-plausibility and canonical-ownership review;
+an opaque winner with only a modest metric gain should be recorded and discarded.
 This is intentional: VC5 register allocation, stack homes, block placement, and
 branch distances are whole-function effects. Do not treat a separately compiled
 loop/helper as proof of the parent function's codegen.

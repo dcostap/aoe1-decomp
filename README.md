@@ -21,11 +21,34 @@ There are three completed banks:
 `verified_logic` is not an exact-match claim and is not a relaxed form of
 `accepted_drift`. It is a separately reported semantic-reconstruction result.
 
+### Source-recovery principle
+
+The project is not trying to manufacture matching bytes from arbitrary C++.
+Its primary source hypothesis should be the period-plausible C/C++ the original
+developers most likely wrote. Exact assembly is the decisive test of that
+hypothesis, not a reason to begin from decompiler artifacts or retain opaque
+compiler-steering tricks.
+
+Before low-level codegen tuning, reconstruct canonical ownership: real structs
+and classes, named fields and arrays, API/COM surfaces, natural loops and control
+flow, and likely same-TU declarations. Treat Ghidra cursor arithmetic, raw
+offsets, fake volatility, comma-expression scheduling, manual vtable calls, and
+register-forcing aliases as temporary experiments. They should not displace a
+clean living source merely because they produce a modestly better diff.
+
+This is period-plausible recovery, not modern prettification. Preserve original
+bugs, odd evaluation order, overlap, aliasing, macros, C idioms, and narrow
+widths whenever the executable proves them. An unusual spelling belongs in the
+living source only when it is plausible original code, reaches exactness, or is
+required for binary-observed behavior. Exact promotion still requires byte
+equality; readability never relaxes the oracle.
+
 The basic unit of work is a function:
 
 1. identify a target function,
 2. inspect its pregenerated raw packet,
-3. implement it,
+3. reconstruct the simplest binary-supported, period-plausible source and its
+   canonical type/layout ownership,
 4. build it with the pinned toolchain,
 5. compare rebuilt output against the original,
 6. iterate until it matches or the current bounded matching assignment runs out
@@ -50,7 +73,9 @@ reduce carefully, not something to strip blindly.
 Variant-generation labs or harnesses are a normal, encouraged tool for stubborn
 unexpected VC5 codegen-family problems after a function has reached reasonable
 behavioral/layout parity. They are not a substitute for first understanding the
-behavior, call set, stack cleanup, and touched type/global surface.
+behavior, call set, stack cleanup, touched type/global surface, and likely
+original source structure. Variant output is experimental: review it as source
+before replacing the clean living candidate.
 
 `tools\check_function.py` reports size, frame, instruction/call/CFG structure,
 strict bytes, and the output change since the previous run before recommending the

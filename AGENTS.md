@@ -8,6 +8,10 @@ heuristics, and blocker responses for agents.
 ## Non-negotiables
 
 - The project is **function-first** and **exact-match-first**.
+- Source recovery is **period-plausible-source-first**: reconstruct what the
+  original developers likely wrote, then use exact bytes to test it. Do not let
+  decompiler artifacts or modest metric gains turn experimental codegen
+  scaffolding into the living source.
 - The original EXE is the behavioral oracle. PDB/Ghidra/type dumps are reference
   metadata, not behavior oracles.
 - Use repo-local `orig\...` inputs, especially
@@ -132,11 +136,15 @@ prompt.
    evidence tools before broad declaration/layout archaeology:
    `target_dossier.py`, `find_function_donors.py`, and `query_abi.py`.
 6. Create/edit only the living per-function source in `src/scratch` and use local
-   type/global stubs until reuse and proof justify shared changes.
+   type/global stubs until reuse and proof justify shared changes. Before tuning
+   codegen, reconstruct the canonical owning fields/arrays and the simplest
+   period-plausible source shape. Do not adopt decompiler cursor arithmetic or
+   raw offset plumbing as the baseline when named ownership can be proved.
 7. Record the first successful reconstruction check as `--kind baseline`, then
    record each interpreted source/type/layout/control-flow/context hypothesis via
    the integrated checker. Syntax/build repairs and unchanged reruns are not new
-   hypotheses and are not probes:
+   hypotheses and are not probes. The baseline note must summarize the canonical
+   ownership and plausible source family, not only its diff metrics:
 
    ```bat
    python tools/target_session.py check --va <VA> --owner <owner> ^
@@ -165,7 +173,8 @@ prompt.
    worker and the project orchestrator to avoid repeating the same hypotheses.
 10. If exact, review source/flags, validate again, move (not copy) to
     `src/matching`, and validate after the move. If unresolved, leave the best
-    state in `src/scratch` and write the compact attempt log **before** the final
+    source reconstruction in `src/scratch`, not an opaque nonexact variant kept
+    solely for metrics, and write the compact attempt log **before** the final
     integrated validation. Record that unchanged final check with
     `--kind validation`, then pause with
     `target_session.py pause --va <VA> --owner <owner> --reason "..."` (`--note`
@@ -213,6 +222,11 @@ Pi executes shell commands through Bash. In Bash command strings use forward
 slashes such as `python tools/query_project_status.py`; unquoted Windows
 backslashes can be consumed as escapes. Batch examples elsewhere in this file use
 backslashes because they are written for `cmd.exe`.
+
+For filename/path discovery, use the harness `everything_search` tool with a
+repository `scope_path`; use `rg` for file contents. Do not recursively traverse
+the repository with `find` when Everything can answer the query immediately.
+Use `rg --files` for newly generated or potentially unindexed workspace files.
 
 ## Parallel target sessions and evidence dossiers
 
@@ -293,6 +307,57 @@ site gaps is still structurally unresolved. Use
 `check_function.py --call-map-unmatched` and the dossier/PDB evidence bands to
 locate those gaps before tuning entry registers.
 
+## Source recovery discipline: plausible original code first
+
+Exact bytes are the acceptance oracle, but arbitrary byte-producing C++ is not
+the source-recovery objective. At every phase, start from the simplest
+binary-supported, period-plausible C/C++ the original developers likely wrote.
+This rule is operational, not aesthetic.
+
+Before source-shape tuning:
+
+1. establish canonical ownership for every proven offset: real fields, adjacent
+   arrays, bases, API structs, COM/virtual surfaces, and object lifetimes;
+2. inspect same-TU, same-class, and same-feature exact donors for naming,
+   declarations, macros, and coding idioms;
+3. write the natural loop/control-flow/member-call form suggested by that model;
+4. compile that clean reconstruction as the baseline;
+5. only then explore localized codegen axes.
+
+Decompiler output is evidence about effects, not a source template. Cross-member
+cursor arithmetic, raw offsets, fake helper calls, manual vtables, comma-expression
+scheduling, fake volatility, redundant aliases, and declaration-order tricks are
+temporary experiments unless one of these conditions holds:
+
+- the form is plausible period source supported by donors or SDK/header idiom;
+- it produces an exact match without violating policy; or
+- instruction evidence proves it is required for real behavior such as width,
+  overlap, aliasing, lifetime, evaluation/fault order, or an original bug.
+
+A small metric improvement alone does not justify replacing clean living source
+with opaque scaffolding. Keep broad or ugly experiments in `build\temp`, a
+variant-lab template, or a restorable checkpoint. The compiler-facing scratch
+file should remain the best *source reconstruction*, not merely the smallest diff.
+If an experiment is not retained, record its useful emitted-code evidence in the
+attempt log and restore the clean candidate.
+
+### Plausibility checkpoints
+
+- Review the source as source before the baseline, before a variant lab, after
+  three duplicate/nonproductive codegen probes, and before final validation.
+- Ask whether a developer could plausibly have written it, whether canonical
+  field ownership has been lost, and whether a decompiler artifact is being
+  optimized instead of the original source model.
+- When a basin stalls, perform a clean-source reset: reconstruct again from the
+  packet, PDB line bands, exact donors, types, and period APIs before spending
+  more liveness/register hypotheses.
+- Prefer a natural candidate with worse temporary metrics over a fake-volatile or
+  unused-local candidate that only perturbs scheduling. Preserve the latter as
+  diagnostic evidence, not living source.
+- Exact output still receives a source-plausibility audit. Byte equality does not
+  permit inline asm, undefined hacks, fabricated calls, or needlessly opaque
+  source when a normal exact form exists.
+
 ## Normal function workflow
 
 1. If choosing a target, use `python tools\query_project_status.py` and usually
@@ -300,12 +365,15 @@ locate those gaps before tuning entry registers.
 2. In a shared agent workspace, claim the VA with `tools\target_session.py` before
    editing. For a large/broad target, generate `tools\target_dossier.py --va <VA>`.
 3. Read the function packet in `inventory\functions\...`.
-4. Check relevant shared headers/source and generated type/class/global reference.
-5. Implement or edit one per-function source in `src\scratch\...`.
+4. Check relevant shared headers/source, exact donors, original SDK/API surfaces,
+   and generated type/class/global reference.
+5. Implement or restore a clean period-plausible reconstruction in
+   `src\scratch\...`; establish named ownership before raw pointer tuning.
 6. Compile and compare with `tools\check_function.py`.
 7. Fix missing shared facts only when stable/reusable; otherwise keep local stubs.
 8. Iterate source shape, layout, declarations, and context until exact or clearly
-   paused with notes.
+   paused with notes. Use plausibility checkpoints and clean-source resets rather
+   than indefinitely optimizing one decompiler/compiler basin.
 9. Record meaningful agent probes in the target session and durable conclusions in
    the source attempt log. Pause/release the target session when stopping.
 10. When a non-obvious reusable insight makes a function click, append the compact
@@ -345,6 +413,9 @@ Practical rules:
 
 - Avoid blind whole-function Cartesian sweeps. Prefer focused labs on localized
   gates, call sites, temps, or block-shape regions once those regions are understood.
+- Build axes from plausible source idioms first. A lab that merely permutes fake
+  volatile qualifiers, unused locals, raw offsets, or comma side effects around
+  an unproven source model is premature.
 - For nontrivial labs, write a template under `build\temp\...tpl.cpp` rather
   than embedding giant shell/Python strings.
 - Reusable preset packs live in `config\variant_templates\*.vtpl`; each starts
@@ -359,8 +430,10 @@ Practical rules:
 - `--preview-variants N` prints compact labels/sizes/hashes. Add `--preview-full`
   only when complete generated sources are truly needed; use `--show-variant`
   for one specific full expansion.
-- Do not auto-promote from a lab result. Review the winning source, reduce any
-  context, then validate normally with `check_function.py`.
+- Do not auto-promote from a lab result. Review the winner for period plausibility
+  and canonical ownership, reduce any context, and validate normally. If a
+  nonexact winner is opaque and only modestly improves metrics, record it as
+  diagnostic evidence and restore the clean source.
 - For localized late-stage labs, use `--focus-range` and hard gates such as
   `--require-size --require-frame --require-call-set`. Gated variants are still
   whole-function compiles; ineligible groups remain visible but rank after groups
@@ -407,10 +480,12 @@ evidence in the file's attempt log.
   destructors, `delete`, library calls, and aggregate assignments often land in a
   better VC5 basin than raw stores, fake helpers, forced gotos, or temporary-heavy
   decompiler scaffolding. Treat natural source shape as the default hypothesis:
-  make lower-level or decompiler-shaped source earn its keep by moving the diff
-  deeper or matching a binary-observed effect. When chasing variants, periodically
-  stop and review the source as source: ask whether a human would likely have
-  written it that way, or whether you are preserving decompiler artifacts.
+  lower-level or decompiler-shaped source may be useful diagnostic evidence when
+  it moves the diff deeper, but should replace the living source only when it is
+  plausible original code, reaches exactness, or matches a binary-observed
+  behavior a natural form loses. When chasing variants, periodically stop and
+  review the source as source: ask whether a human would likely have written it
+  that way, or whether you are preserving decompiler artifacts.
 - Use PDB line-change info to localize the mismatch region. If the first
   mismatch lives in one early source-line band, treat later line bands that
   already map cleanly as provisionally solved and stop churning them.
@@ -609,12 +684,12 @@ incorrect-looking formulas.
 
 ### Source shape after exact matching is suspended
 
-Once the main agent deliberately suspends exact matching and enters logic review,
-the source-shape objective changes. The candidate should no longer preserve
-compiler-steering residue merely because it once improved byte metrics. Before
-formal blind review, normalize the function toward the simplest ordinary C/C++ a
-real developer plausibly wrote, while preserving every behavior proved by the
-executable.
+The natural-source discipline applies throughout matching. Once the main agent
+deliberately suspends exact matching, it becomes a hard review gate: no residual
+compiler-steering experiment may survive merely because it once improved byte
+metrics. Before formal blind review, normalize the function toward the simplest
+ordinary C/C++ a real developer plausibly wrote, while preserving every behavior
+proved by the executable.
 
 - Prefer canonical typed structs/classes, named fields, ordinary member or
   virtual calls, explicit statements, natural loops/branches, and clear lifetime
@@ -734,9 +809,11 @@ from exclusion manifests.
 
 If reviewing child-agent or branch-local work before it lands in the main tree,
 do not trust a reported match blindly. Read each incoming `.cpp` and paired
-`config\flags\...rsp`, verify repo rules and no forbidden inline asm/hacks, then
-run local `check_function.py --va <VA>` before promotion. Promotion is a review
-decision, not a blind move.
+`config\flags\...rsp`, verify repo rules, canonical ownership, period-plausible
+source, and no forbidden inline asm/hacks, then run local
+`check_function.py --va <VA>` before promotion. Exact bytes do not excuse an
+avoidable opaque source hack when a normal exact reconstruction exists.
+Promotion is a review decision, not a blind move.
 
 ## Error handling mindset
 
@@ -748,7 +825,8 @@ React pragmatically:
 - compile failure: narrow and fix the smallest correct surface;
 - generated scaffold mismatch: treat scaffold as a first-pass candidate, not
   authority; improve the living working source rather than preserving bad output;
-- mismatch: trust binary-observed behavior over prettier source;
+- mismatch: trust binary-observed behavior over cosmetic prettiness, but do not
+  confuse decompiler/compiler scaffolding with binary-observed behavior;
 - ordinary mismatch: assume source/type/layout/context is still wrong before
   reaching for flags or hacks;
 - when a non-obvious exact-match lesson is reusable, append it to `LESSONS.md`
