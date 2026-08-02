@@ -1,10 +1,20 @@
 // VA: 00417860 UnitAIModule::lookAround
 // PDB: aiuaimod.cpp lines 3949-3987
-// Attempt: implemented full decompiler behavior from packet; tuning against VC5 codegen.
+// Attempt: canonical visible-unit bucket scan; tuning against VC5 codegen.
+// Exact: the terminal count/list globals are the last elements of the five-bucket
+// VisibleUnitList_Size/VisibleUnitList arrays established by GetVisibleUnits; this
+// method scans the two terminal buckets with the binary-proven byte offsets.
+
+#include "../../include/game_globals.h"
 
 class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Player;
+
+struct UnitAIObjectEntry {
+    int object_id;
+    int unknown;
+};
 
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -70,8 +80,9 @@ void UnitAIModule::lookAround()
     world = owner->world;
 
     for (int off = 0; off > -8; off -= 4) {
-        for (int j = 0; j < *(int*)(0x87D7D8 + off); ++j) {
-            RGE_Static_Object* obj = world->object(*(int*)(*(int*)(0x87D7F0 + off) + j * 8));
+        for (int j = 0; j < *(int*)((char*)&DAT_0087d7d8 + off); ++j) {
+            UnitAIObjectEntry* entries = *(UnitAIObjectEntry**)((char*)&DAT_0087d7f0 + off);
+            RGE_Static_Object* obj = world->object(entries[j].object_id);
             if (obj != 0 && obj->object_state <= 2) {
                 this->objectValue->owner->signal(obj_id, ownerID, 0x20D, obj->id, 0, 0);
             }
@@ -79,5 +90,6 @@ void UnitAIModule::lookAround()
     }
 
     this->lookAroundTimerValue = 0;
-    this->lookAroundTimeoutValue = debug_rand((char*)0x57F980, 0xF92) % 1000 + 4000;
+    this->lookAroundTimeoutValue =
+        debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xF92) % 1000 + 4000;
 }
