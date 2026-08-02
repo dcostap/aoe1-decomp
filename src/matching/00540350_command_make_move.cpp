@@ -3,46 +3,33 @@
 // Source: vw_main.cpp lines 1818-1846
 // Size: 197 bytes
 //
-// Status: PARKED - VC5 frame layout / register allocation drift
+// Status: MATCH - exact under config/flags/default.rsp
 //
 // Attempt log:
-// Probe 1: type stubs, got 197 bytes, 79.7% positional diff
-//   Issues: sub esp 0x18 vs 0x1C, extra push ebx, wrong player offset
-// Probe 2: fixed player offset (pad[0xFC] + vptr), pick1 param order
-//   Same sub/ebx issues, fld from type-pun
-// Probe 3: restructured (no goto), long x/y, memcpy for scr_combined
-//   Got 197 bytes without ebx! rge_base_game call correct.
-//   Fixes: no push ebx, proper command_action push order, no FPU
-//   Remaining: sub esp 0x18 vs 0x1C (~79% positional, all offsets shifted)
-//
-// Remaining diff (~79% positional):
-//   sub esp 0x18 (24) vs 0x1C (28): frame size difference of 4 bytes
-//   cascades through ALL stack offsets throughout the function
-//   Shared fail block (original uses je near to fail at end) vs
-//   inline early return (jne short + inline cleanup)
-//   Different register allocation in command_action section
-//
-// All behavior, call targets, field offsets (player at +0x100),
-// pick1 param order, command_action args, and stack cleanup are correct.
+// Probe 1 baseline: old type-pun/early-return reconstruction; frame was 0x18
+//   instead of 0x1C and the two guard failures were inline.
+// Probe 2 layout: canonical list/list_num/pick_info locals, real pick1 and
+//   RGE_Player::command_make_move prototypes, nested positive guards, and
+//   proven absolute globals restored the 0x1C frame and 98.63% shape.
+// Probe 3 liveness: removed the redundant explicit byte cast after using the
+//   accurately typed unsigned-char command_make_move return; exact 197 bytes.
 // Frame layout is VC5 TU-context dependent.
 
 #include <stdlib.h>
-#include <malloc.h>
-#include <string.h>
+
+class RGE_Static_Object;
+class RGE_Tile;
 
 struct RGE_Pick_Info {
-    long x;
-    long y;
+    float x;
+    float y;
     short scr_x;
     short scr_y;
-    void* object;
-    void* tile;
+    RGE_Static_Object* object;
+    RGE_Tile* tile;
 };
 
-extern int allow_user_commands;
-
 struct RGE_Base_Game;
-extern RGE_Base_Game* rge_base_game;
 
 struct RGE_Base_Game {
     virtual void vt_pad_00();
@@ -51,6 +38,9 @@ struct RGE_Base_Game {
     virtual void vt_pad_03();
     virtual void update(unsigned long a, unsigned long b);
 };
+
+extern int allow_user_commands;
+extern RGE_Base_Game* rge_base_game;
 
 class RGE_Player {
 public:
@@ -94,11 +84,12 @@ public:
     virtual void vt_pad_37();
     virtual void vt_pad_38();
     virtual void vt_pad_39();
-    virtual long command_action(long a, long b, long c);
+    virtual unsigned char command_make_move(RGE_Static_Object* target, float x, float y);
 
     unsigned char get_selected_objects_to_command(
-        void*** pick_info_out, short* list_num_out,
-        int a, int b, int c, int d);
+        RGE_Static_Object*** list_out, short* list_num_out,
+        short min_select_level, short object_group,
+        short object_id, short unit_level);
 };
 
 class RGE_Main_View {
@@ -116,7 +107,9 @@ public:
     char pad_004[0xFC];
     RGE_Player* player;
 
-    unsigned char pick1(int a1, int a2, void* a3, long a4, long a5, int a6, int a7);
+    unsigned char pick1(unsigned char command, unsigned char mode,
+                        long x, long y, RGE_Pick_Info* info,
+                        RGE_Static_Object* exclude, int flags);
     void fixup_pick_info(RGE_Pick_Info* info);
 
     int command_make_move(long param_1, long param_2);
@@ -124,36 +117,28 @@ public:
 
 int RGE_Main_View::command_make_move(long param_1, long param_2)
 {
-    if (!allow_user_commands) return 0;
-
+    RGE_Static_Object** list;
+    short list_num;
     RGE_Pick_Info pick_info;
-    void* list;
+    int result;
 
-    if (!this->player->get_selected_objects_to_command(
-            (void***)&pick_info,
-            (short*)((char*)&list + 2),
-            -1, -1, -1, -1))
-    {
-        return 0;
+    if (allow_user_commands != 0) {
+        if (this->player->get_selected_objects_to_command(
+                &list, &list_num, -1, -1, -1, -1)) {
+            free(list);
+
+            result = 0;
+            if (this->pick1(0x2A, 1, param_1, param_2,
+                            &pick_info, 0, 1) != 0x32) {
+                this->fixup_pick_info(&pick_info);
+                result = this->player->command_make_move(
+                    pick_info.object, pick_info.x, pick_info.y);
+                this->set_redraw(1);
+            }
+
+            rge_base_game->update(0, 0);
+            return result;
+        }
     }
-
-    free((void*)pick_info.x);
-
-    int result = 0;
-    if (this->pick1(1, 0, (void*)((char*)&pick_info + 4),
-                    param_2, param_1, 1, 0x2A) != 0x32)
-    {
-        this->fixup_pick_info((RGE_Pick_Info*)((char*)&pick_info + 4));
-
-        long scr_combined;
-        memcpy(&scr_combined, &pick_info.scr_x, 4);
-        result = this->player->command_action(
-            scr_combined, pick_info.y, (long)pick_info.tile);
-
-        result = (unsigned char)result;
-        this->set_redraw(1);
-    }
-
-    rge_base_game->update(0, 0);
-    return result;
+    return 0;
 }
