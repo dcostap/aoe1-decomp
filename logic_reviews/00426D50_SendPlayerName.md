@@ -191,7 +191,85 @@ exact candidate reviewed in round 2. A fresh cohort must review this normalized
 source before any final adjudication; no further cohort was launched in the
 current orchestration window.
 
+### Formal round 3 — normalized-source mixed-model cohort
+
+A fresh Luna reviewer and DeepSeek V4 Flash reviewer independently reviewed the
+normalized typed-COM candidate. Both were read-only, unleased, and blind to this
+ledger, prior reports, and Git history.
+
+#### Reviewer 5 — Luna fault-order review
+
+> **Scope:** Reviewed the current candidate against the original packet and
+> emitted disassembly, including malformed DirectPlay state and fault order.
+>
+> **Normal path:** DPNAME contents, COM slot and arguments, error reporting,
+> return value, and cleanup are correct.
+>
+> **Finding [P2]:** The rebuilt candidate dereferences `dp->vtable` before any
+> COM arguments are pushed. The original pushes `2` and `&DPNAME` before the
+> vtable dereference. A null/invalid interface therefore faults with a different
+> ESP and different argument-setup context. Preserve the original dereference
+> ordering for fault equivalence.
+>
+> **Verified:** `dwSize=0x10`, `dwFlags=0`, short name at `this+0x10F8`, long
+> name at `this+0x1179`, vslot `+0x78`, `__stdcall` argument order,
+> unconditional `ShowReturn`, unchanged result, and cleanup.
+>
+> **Verdict:** needs attention. Malformed-state reachability was not established.
+
+#### Reviewer 6 — DeepSeek adversarial machine-effect review
+
+> **Scope:** Independently re-extracted and disassembled the original and
+> rebuilt the current source in a temporary VC5 sandbox. No repository checker,
+> ledger, history, edit, or lease was used.
+>
+> **Normal path:** Fully equivalent. The final DPNAME is `{16, 0,
+> &MyFriendlyName, &MyFormalName}`; the virtual `__stdcall` call uses the same
+> interface, player, record, flag, and vslot `+0x78`; `ShowReturn`, return value,
+> and cleanup agree. The 105-byte candidate has 31 genuine differing instruction
+> bytes plus the same-symbol direct-call relocation bytes.
+>
+> **Finding [P2]:** At an invalid DirectPlay interface, the vtable load occurs
+> after two argument pushes in the original but before all argument pushes in the
+> rebuilt candidate. Thus the faulting context has an eight-byte ESP difference
+> and different transient argument words. This is observable through SEH,
+> debugger, or crash-dump context. The report also claimed the original had not
+> yet stored the short-name pointer or read the player global at the fault.
+>
+> **Verified non-issues:** Register choices at the eventual stdcall boundary are
+> not callee-visible; the return byte, inlined four-dword zeroing, relative global
+> and name-store order, and null-`Err` behavior otherwise agree.
+>
+> **Verdict:** needs attention — one narrow, definite invalid-interface
+> fault-context divergence; normal-path semantics are verified.
+
+### Round 3 main-agent adjudication
+
+- **Confirmed — transient fault-context difference.** Original assembly pushes
+  `2` at `00426D7C` and `&dpnSetName` at `00426D84`, then dereferences the
+  interface at `00426D8F`. The normalized rebuilt assembly dereferences the
+  interface before any pushes. At an access violation, ESP and the transient
+  argument words therefore differ. The executable is the behavioral oracle,
+  including fault behavior, so this remains substantive and blocks promotion.
+- **Corrected — DeepSeek's partial-record detail.** The original loads the player
+  global at `00426D85` and stores the friendly/short-name pointer at `00426D8B`,
+  both before the vtable dereference at `00426D8F`. Thus the original and rebuilt
+  record contents and player-global read have converged by the fault; the proven
+  difference is the pushed-argument/ESP context, not the short-name field or
+  player-global timing.
+- **Confirmed — ordinary behavior.** Both fresh reviewers independently verified
+  the complete valid path, ABI, calls, memory values, error reporting, cleanup,
+  and returned result.
+- **Decision:** no source change was made. Reintroducing opaque raw-vtable or
+  comma-expression scheduling merely to reduce this drift would violate the
+  normalized-source gate without proof that it restores the complete original
+  fault context. The candidate remains in `src/scratch`; formal logic promotion
+  is blocked unless a plausible source surface reproduces the original push-before-
+  dereference sequence or project policy explicitly narrows the behavioral oracle.
+
 ## Final decision
 
-Pending. The function remains in `src/scratch` and must not move to
-`src/verified_logic` while any substantive finding is unresolved.
+Not promoted. The function remains in `src/scratch`. Three cohorts agree that
+normal-path behavior is complete, but the round-2/round-3 transient ESP and
+argument-stack difference at an invalid-interface access violation remains a
+substantive executable-behavior mismatch.
