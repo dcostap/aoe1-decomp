@@ -34,6 +34,17 @@
 // row loop was the metric best (109 positional bytes / 85.90% shape) but is not the cleanest
 // source and moved the loop topology. The final clean candidate below is exact-sized, with
 // remaining drift broad in register coloring, row/offset scheduling, and early block layout.
+// Luna455CB0b sequential pass (2026-08-02):
+// 1: Full ground-truth RGE_Map/RGE_Tile declaration surface from exact map.cpp donors; no emitted change.
+// 2: register-qualified early row cursor moved to 160 positional bytes and recovered ESI=x0/EDI=x1,
+//    EBP=row, but loaded y0 too early and retained the wrong y1/map-width/map-height roles.
+// 3: register row declared then assigned after clipping was a codegen duplicate of clean source.
+// 4: explicit post-swap min/max aliases introduced a +10-byte structural tail; rolled back.
+// 5-7: combined register self/row, direct-this/row, and zero-initialized late row assignment either
+//    duplicated the 160-byte basin or clean baseline; no new lead.
+// 8: register-qualified y1 with early row was also a duplicate.
+// 9: focused 8-variant lab over y1/self/row surfaces produced only two groups (160/167 positional),
+//    no exact. Clean typed source restored; remaining issue is broad VC5 register coloring and loop layout.
 
 class RGE_Tile {
 public:
