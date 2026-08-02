@@ -70,8 +70,23 @@
 // 53: `register` late target did not affect allocation. Remaining issue is still not localized:
 //     either prev-based no-EBX topology misses original link/LEA/duplicate-test shape, or natural
 //     link topology matches source intent but saves EBX from byte 0.
-// ACCEPTED_DRIFT DENIED: best remaining diff is broad register/topology drift (first
-// mismatch +7/+8 or +0 in link families), not localized harmless drift; leave in scratch.
+// 54 (DS4-50DFD0): NEW topology: keep the param DIRECT (no early local), declare BOTH
+//     `base = &time_list` (never updated; lives in ECX, read via *base at the walk) and
+//     `link = base` (updated in loop; EAX). Duplicate `if (p != 0)` guard to reproduce the
+//     test/test/mov/je shape. Loop body advances link BEFORE p (lea eax,[esi+2Ch] then
+//     mov esi,[esi+2Ch]). Walk passes NULL (while entry != 0 -> entry = entry->next).
+// 55 (DS4-50DFD0): Probe 1 result: still EBX-save family, code 92/100 (-8), diff 98%,
+//     shape 79.55%. VC5 folded the duplicate `if (p != 0)` (single test; missing test+je),
+//     ROTATED the loop (bottom `cmp esi,eax; jne body` + `je shared-epilogue` instead of
+//     original `jne loop_top` with own pop/pop/ret), and kept the entry copy live across the
+//     loop in EAX -> unlink temp needed EBX. Walk read DID go through the base register
+//     ([edx] vs original [ecx]) so the two-link topology is confirmed right; command load
+//     came out split (mov cl,[esi+4]; cmp cl,1) naturally; recursion+free relocations OK.
+//     Next lead: the duplicate guard must be spelled so VC5 cannot fold it, e.g.
+//     `if (p != 0 && (link = base, p != 0))` (exact Ghidra shape) inside the outer
+//     `if (p != 0)`; the extra guard block before the loop head is expected to keep the
+//     loop NON-rotated (backedge to top cmp), which then kills the EBX save (entry copy
+//     dies at top cmp, edx reused for p->next) and produces the separate not-found pop/pop/ret.
 
 extern "C" void __cdecl free(void* block);
 
@@ -82,7 +97,8 @@ struct RGE_Time_Entry {
     RGE_Time_Entry* next;          // +0x2C
 };
 
-struct RGE_Timeline {
+class RGE_Timeline {
+public:
     void* vtable;                  // +0x00
     void* world;                   // +0x04
     RGE_Time_Entry* time_list;     // +0x08
@@ -94,34 +110,25 @@ struct RGE_Timeline {
 };
 
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
-    RGE_Time_Entry* p;
-    RGE_Time_Entry* prev;
-
-    p = this->time_list;
-    if (p == 0) return;
-
-    prev = 0;
-    if (p == 0) return;
-
-    while (p != entry) {
-        prev = p;
-        p = p->next;
-        if (p == 0) return;
-    }
-
-    if (prev == 0)
-        this->time_list = p->next;
-    else
-        prev->next = p->next;
-
-    if (p->command == 1) {
-        entry = this->time_list;
-        if (entry != 0) {
-            while (entry->next != 0)
-                entry = entry->next;
+    RGE_Time_Entry* p = this->time_list;
+    RGE_Time_Entry** base = &this->time_list;
+    if (p != 0) {
+        RGE_Time_Entry** link = base;
+        if (p != 0) {
+            while (p != entry) {
+                link = &p->next;
+                p = p->next;
+                if (p == 0) return;
+            }
+            *link = p->next;
+            if (p->command == 1) {
+                entry = *base;
+                while (entry != 0)
+                    entry = entry->next;
+            }
+            this->sub(entry);
+            free(p);
+            this->list_num--;
         }
     }
-    this->sub(entry);
-    free(p);
-    this->list_num--;
 }

@@ -30,6 +30,44 @@
 //   and the late switch blocks B050/B051. Do not run more broad expression, tail, or flag labs.
 //   Next leads are an exact-register-environment micro-test for the early index basin and one
 //   defined two-predecessor tail-local experiment that does not rely on an uninitialized value.
+//
+// Session DS4-487FA0 (2026-08-02): micro-test family + donor/TU evidence; no target-source
+//   probes changed the retained best (still 1192 strict / 93.60% shape / 57.29% blocks / 480 vs
+//   484 insn / first strict +0x161; all 11 calls aligned; size/frame exact).
+// - Exact-register-environment micro-test family (13 standalone variants, pinned VC5 /O2 /Oy,
+//   sandbox only): member+reg and reg+member index sums in minimal loops with calls, int/long
+//   widths, register-qualified counters, nested loops, and all use contexts (lea-chain index,
+//   push-arg, compare, pointer-deref, stack store) ALWAYS emit the rebuilt 2-op fold
+//   `mov eax,[mem]; add eax,reg`. The 3-op form is not reproducible from any natural spelling
+//   in this loop environment. The original vs rebuilt register state at B025 entry is
+//   byte-identical through the loop-entry check; the divergence is purely the allocator's load
+//   register choice (original: rotating scratch esi/edx/ecx + `mov eax,ebx` copy; rebuilt:
+//   fold into eax).
+// - IR operand-order proof: the wall_4 store's folded lea is `lea eax,[ebx+ecx+2]` in the
+//   original (i = BASE, land_num = index) but `lea eax,[ecx+ebx+2]` in the rebuilt under BOTH
+//   spellings (i+land_num and land_num+i). So the original IR kept i as the add's left operand
+//   (the 3-op copy follows directly), while the rebuilt IR always normalizes land_num left;
+//   operand order is not source-controlled here. Same for the zone byte sum (original
+//   `mov cl,bl; mov al,[mem]; add cl,al` vs rebuilt `mov cl,[mem]; add cl,bl`).
+// - Corpus motif scan found 14 functions with the 3-op load/copy/add form; examined contexts:
+//   0047B8B0 (push-arg), 00429D90 (pointer deref; sum live across a call -> callee-saved
+//   result), 004BE4B0 (compare), 00410220/00413AB0/004675C0 (call args), 00534A00 (stack
+//   store). Donor 3-op correlates with the sum result being pinned to a register different
+//   from the load register; no exact-match source donor exists for the pattern, and matched
+//   rmm_tdbc.cpp siblings (00487940/00488700/00488870) use raw-offset cursor surfaces with no
+//   3-op index sums, so no TU donor either.
+// - Tail: PDB line attribution shows the 0x66 arm emitted first (loads L556, shared div6
+//   L557) and the 0x3B/0x42 arm's div6+store was tail-merged into it (its load keeps L559);
+//   the two loads differ in temp register (eax vs edx), which is what keeps the loads split in
+//   the original. The volatile-diag checkpoint proves volatile does NOT split the arms (single
+//   merged handler + store/reload). The defined two-predecessor local (both 0x3B/0x42 and 0x66
+//   assign extra_island_roll) is exactly the retained source and VC5 CSEs the identical
+//   assignments, merging the arms completely - so the missing split requires an IR-level
+//   difference no source spelling tried here produces.
+// - Next-worker leads: B025 needs a TU-context or IR-shape trigger that keeps i as the add's
+//   left operand (the 3-op follows from it); tail needs a way to make the two /6 arms' loads
+//   differ (different temp register per arm) without volatile. Both remain open; broad
+//   expression/tail/flag labs remain exhausted.
 
 typedef unsigned char uchar;
 

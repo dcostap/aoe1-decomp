@@ -68,6 +68,37 @@
 // Retry 2026-05-21 Boss pass: 10 more probes. Tried dt-before-param with volatile reload after FPU test, plain dt/time locals to recover ECX/EAX, function-scope time/dt locals, volatile delta reload after store, redundant shape reload before delete, delete-expression form, assignment-in-condition store+compare, float zero comparison, explicit goto tails, and dt+elapsed operand/source-order variants. Best remains the kept default-flags source at 123B, 48.7805% positional / 37.3984% edit, first mismatch +12. Most variants lost the EBX-save basin and mismatched from +1; none fixed the compare-before-delta-store or delete-block layout. Still no accepted_drift: broad scheduler/register/layout drift, not a localized benign swap.
 // Retry 2026-05-24 Boss pass: 10 more probes. Revalidated baseline (same 48.7805% / 37.3984%). Tried delaying volatile param load until after FPU test, register dt, integer zero test, `new_dt > 179999`, predeclared new_dt, volatile pS2/redundant delete test, volatile shape field, explicit first bool local, and inverted `!((double)dt != 0.0)` spelling. No improvement: delayed load loses first-path store order; volatile pS2 destroys frame/register basin; bool local inserts materialization branches; others are same or worse. Best kept remains 123B, 48.7805% positional / 37.3984% edit, first mismatch +12. Not accepted_drift: broad branch-distance/register/scheduling drift across prologue, both update paths, and delete block.
 // Retry 2026-05-26 Boss pass: 15 probes on VA 004C1080 only. Plain param/no-volatile, compare-member-after-store, unsigned new_dt, comma assignment, and float compare all lost the EBX/save basin or regressed to byte +1 mismatch. Operand/order and mutate-param forms matched the kept code. Reloading `this->shape` into a nonvolatile pS2 before delete preserved the original redundant `test edi,edi` delete gate and improved to 47.9675% positional / 31.7073% edit (first mismatch +12), so kept. Other pS2 combinations (`new_dt > 179999`, no volatile time) were same or worse; goto form hit VC5 skipped-initialization errors. GIVEUP: remaining drift still broad branch-distance/register/scheduler layout (dt in edx/eax instead of original ecx/edx, compare/store order in accumulate path, early branch distances), not localized accepted_drift quality.
+//
+// DS4-4C1080 pass (2026-08-02), probes H1..H3:
+// baseline revalidated at session start: 123B, 57.7236% positional / 14.63% bounded
+// edit, first mismatch +000C. Block map: B000/B001/B003/B005-B008 already exact;
+// divergence is B002 (FPU block: dt in EDX vs orig ECX, param load interleaved
+// inside FPU block vs orig after test ah,40h) and B004 (accumulate, 22B vs orig
+// 24B: rebuilt does cmp-before-store without the orig `mov eax,edx` copy).
+// New durable fact: double 0.0 constant at 00574528 declared as shared global
+// DAT_00574528 (src/game_globals.cpp / include/game_globals.h); fcomp relocation
+// against it is safely masked and byte-equal (the old local 0.0 constant was a
+// permanent byte mismatch). Raw `*(double*)0x00574528` materializes the address
+// in EAX (worse) — use the extern global instead.
+// H1: dropped volatile, named `unsigned long time = param_1;`, `elapsed += dt;`,
+// `if ((this->delta_time = elapsed) >= 180000)` (assignment-in-condition matches
+// the PDB line-968 signature `mov eax,edx; mov [esi+24h],edx; cmp; jl`). Result:
+// 125B, 60.0000% — named time local duplicates the param load per path (load in
+// first-time path + load at accumulate start), dt still EDX, first-time stores
+// reversed (delta_time=1 before last_time), accumulate cmp-before-store. Rolled back.
+// H2: direct param_1 on both paths (no time local) hoping VC5 CSE-hoists the
+// shared `[esp+14h]` load to the branch point like the original. Result: byte-
+// identical codegen to H1 (60.0000%, 125B). Rolled back.
+// H3: restored this kept baseline below (the 2026-05-26 best) and revalidated:
+// 123B, 57.7236% / 14.63%, first mismatch +000C.
+// Next lead: the original's single EAX param load between `test ah,40h` and `je`
+// is a load hoisted to the branch point (both paths use it); no source form yet
+// (volatile forces it too early into ECX; named local duplicates it per path;
+// direct param does not hoist). The accumulate `mov eax,edx; store; cmp` signature
+// strongly suggests assignment-in-condition source on line 968 — retry it only in
+// a basin where time already lands in EAX after the FPU test (e.g. volatile load
+// of `time` AFTER the if-condition, or `register` on param), not with the current
+// volatile-early placement.
 
 struct TShape {
     ~TShape();

@@ -469,6 +469,8 @@ float DAT_00573af0 = 0.0f;
 double DAT_00573af8 = 0.0;
 // 00574524 [.rdata]
 float DAT_00574524 = 0.0f;
+// 00574528 [.rdata] binary double zero
+double DAT_00574528 = 0.0;
 // 00574718 [.rdata]
 double DAT_00574718 = 0.0;
 // 00574724 [.rdata]

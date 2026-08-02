@@ -18,6 +18,16 @@
 // GIVEUP 2026-05-21: left in scratch with best positional baseline (30.70%). Not accepted_drift: remaining differences are control-flow/call-tail structure, not localized benign drift.
 // Retry 2026-05-24 Boss pass: revalidated current best (matches through offset 61; 30.70% positional). Tried 18 focused variants around the remaining loop/call-tail: do/decompiler loop (34.21%, first mismatch 19), while(1) top-next declaration (bad/failed shape), do+extra test/goto (44.74%), outer next declarations / while-condition / nested-if (no change from baseline), shared raw call-tail (29.82% positional but first mismatch regressed to 19 and broad call-tail drift), three duplicated goto labels (35.96%), replacing volatile func7 reloads with normal action calls (no change), volatile/register/outer-declared next (no change or 92%+ bad), volatile cur/list loads (no improvement), action local after/before calloc (112B too short). No variant produced original ESI-next/EDX-cur traversal with ECX action preserved and three physical call/return tails. Kept previous source because it preserves the longest exact prefix; still not accepted_drift due structural loop/call-tail mismatch.
 // Retry 2026-05-26 Boss pass: revalidated best (114B, 35 positional, first mismatch 61). Tried 10 more loop/call-tail variants: do/while with unreachable post-loop call (39 diff, first mismatch 19), explicit ESI-named next (no change), infinite-loop redundant cur test (bad/compile-shape failure), nonvolatile action store/calls (106 diff), common post-if vcall (41 diff), member-function-pointer raw vtable slot (no change), goto-duplicated call labels (no change), do+goto set_next (39 diff), condition-inside while (no change), and no-return after store/else (no change). GIVEUP remains: best source keeps longest exact prefix, but remaining drift is broad loop topology/vcall-tail structure, not localized benign accepted_drift.
+// Retry 2026-08-02 DS4-404590: revalidated inherited best baseline (114B, 35 diff / 30.70% positional,
+// first mismatch +003D, loop/call-tail region). No source change made; zero probes this pass.
+// Fresh analysis of original loop: bottom test is ON cur (test edx,edx; jne) not a next reload;
+// next reuses ESI (saved-this slot, so `this` must be dead in loop), cur in EDX, action stays in
+// ECX from post-calloc reload (+0x1F) through all three func7 tails; attach block is a forward je
+// target placed AFTER the unreachable loop-exit func7 tail. Rebuilt instead uses for-loop with
+// bottom next reload and volatile action reload at attach.
+// Next lead: while(cur)/do-while bottom-test-on-cur source with attach as separate forward-je
+// block (goto or if-break-to-block), non-volatile action first used only after calloc, and no
+// this-member reference inside the loop body.
 
 #include <stdlib.h>
 
