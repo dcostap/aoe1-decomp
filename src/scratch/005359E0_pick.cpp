@@ -17,7 +17,27 @@
 //   to unsigned char before comparisons: exact size 151B, 62.9139% positional / 58.2781%
 //   edit, first mismatch +4.
 //
-// Current Boss retry (10 honest probes):
+// Current Luna retry (bounded probes):
+// - baseline rebuilt after claim: exact size 151B, 65.5629% positional /
+//   60.26% edit, first mismatch +4; current source is the retained prior best.
+// - probe 1: restored the binary-proven Pick_Info/tagPOINT layout and natural
+//   member view_function surface; it regressed to 169B and was rolled back.
+// - probe 2: byte formals/direct uchar result kept size 151B but worsened to
+//   91.3907% positional; the mode copy was optimized away. Rolled forward only
+//   as the next focused condition-lifetime probe.
+// - probe 3: consuming the mask condition from the mode local was codegen
+//   duplicate; restored baseline.
+// - probe 4: typed Pick_Info forced EBX/+22B and was rolled back.
+// - probe 5: typed object formal was a codegen duplicate. Probe 6 removed the
+//   early info alias; that was also a duplicate of the baseline.
+// - probe 6: removing the info alias was a codegen duplicate. Probe 7 direct
+//   member-call context corrected the conceptual relocation but regressed to
+//   154B/83.1169%; rolled back for the final focused basin probes.
+// - probe 7: register-qualified key/object hints were a codegen duplicate.
+// - probe 8: direct branchless mask emitted setne/neg, regressed to 153B /
+//   86.9281%; rolled back. Best retained state is the pre-claim 151B basin.
+//
+// Previous Boss retry (10 honest probes):
 // 1: Revalidated retained baseline: exact size 151, 62.9139% positional / 58.2781% edit.
 // 2: Rewrote object mask as `masked=obj; if (key=='(') masked=0;`: much worse (92% edit),
 //    branch/spill family.
