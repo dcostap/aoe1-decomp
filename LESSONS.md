@@ -1962,6 +1962,30 @@ Caveat:
   established by the original assembly; do not use a cursor merely to steer
   codegen around an unknown layout.
 
+## Lesson: Named point locals can resolve decompiler stack-field aliases
+
+When a small wrapper writes two repeated coordinate pairs into a 16-byte local
+area and passes pointers into that area, a decompiler may label the pointer
+arguments as `&point.y` even though the original source used two ordinary
+`tagPOINT` locals and passed their bases. Model the proven fixed-size objects,
+then verify the actual pointer bases from the emitted `lea` displacements.
+
+Try when:
+- an `int[4]` reconstruction has the right frame and zero block but differs in
+  parameter-load/register order and pointer LEA displacements;
+- the binary stores the same two coordinate values into two adjacent point-like
+  records before a helper call.
+
+Why it helps:
+- named `tagPOINT` fields expose the natural object layout and can recover both
+  the register schedule and call-site address expressions;
+- a decompiler's stack-relative `.y` names may reflect alias accounting rather
+  than a real source-level subfield.
+
+Caveat:
+- establish the byte values and callee-visible pointer bases from the original
+  assembly first. Do not swap coordinate semantics merely to steer codegen.
+
 ## Lesson: Prefer declared globals over literal absolute-address dereferences
 
 Even when both forms ultimately address the same fixed VA, VC5 can schedule and
@@ -1975,3 +1999,26 @@ This can change whole-block register allocation and branch distances—not merel
 relocation metadata—while keeping the source more plausible. Verify the global's
 width, mutability, and pointer-vs-object meaning first; do not invent a declaration
 solely to perturb codegen.
+
+## Lesson: Post-increment member updates can preserve VC5 delta/index scheduling
+
+For a timestamp/update helper where the original copies the new value, stores a
+delta, then increments an object index and wraps it, a named `index = member + 1`
+local can select the wrong register schedule. A natural post-increment member
+statement (`this->Offset++`) combined with assigning the delta directly to its
+member before the timestamp store can reproduce the original reuse of the old
+timestamp register and the later index/array stores.
+
+Try when:
+- the original keeps the old timestamp in one register, computes `now - old`,
+  and then reuses that register for the member delta;
+- a near-match has correct size and calls but moves the index load before the
+  subtraction or leaves a padded tail.
+
+Why it helps:
+- VC5 lowers post-increment member access and direct member assignment as one
+  coherent update family, unlike a separate delta local plus named index.
+
+Caveat:
+- use only when the binary proves the member update/ordering; post-increment is
+  not interchangeable with a pre-increment or an index local for VC5 codegen.

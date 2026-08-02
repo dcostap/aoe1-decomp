@@ -77,6 +77,15 @@
 //   at +1B. Remaining drift is early parameter/local scheduling, not localized
 //   harmless codegen. The attempted register hint was a duplicate and is not
 //   retained.
+//
+// Luna5359E0b continuation:
+// - baseline check retained the pinned canonical source (151B, 16 bytes).
+// - named tagPOINT locals recovered the natural two-point layout and reduced the
+//   drift to 4 bytes; using their x-field bases recovered the two call LEAs.
+// - assigning the two point coordinates as x=param_3/y=param_4 reproduced the
+//   original local-byte layout and produced an exact 151B match.
+// - final source is ordinary typed C++: tagPOINT locals, memset for the proven
+//   20-byte Pick_Info block, direct member call, and natural result dispatch.
 
 #include <string.h>
 
@@ -103,27 +112,28 @@ struct RGE_View {
                        void** picked, float* out_x, float* out_y,
                        short* out_scr_x, short* out_scr_y);
     unsigned char pick(unsigned char param_1, unsigned char param_2,
-                       long param_3, long param_4,
+                       long x, long y,
                        RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
 };
 
 unsigned char RGE_View::pick(unsigned char param_1, unsigned char param_2,
-                              long param_3, long param_4,
+                              long x, long y,
                               RGE_Pick_Info* param_5,
                               RGE_Static_Object* param_6) {
     RGE_Static_Object* picked = ((unsigned char)param_1 != '(') ? param_6 : 0;
-    int locals[4];
+    tagPOINT start_mouse_pos;
+    tagPOINT mouse_pos;
 
-    locals[3] = param_4;
-    locals[1] = param_4;
-    locals[2] = param_3;
-    locals[0] = param_3;
+    mouse_pos.x = x;
+    mouse_pos.y = y;
+    start_mouse_pos.x = x;
+    start_mouse_pos.y = y;
 
     memset(param_5, 0, 20);
 
     long ret = this->view_function(
-        param_1, param_2, (tagPOINT*)&locals[2],
-        (tagPOINT*)&locals[0], (void**)&picked,
+        param_1, param_2, &mouse_pos,
+        &start_mouse_pos, (void**)&picked,
         (float*)((char*)param_5 + 0),
         (float*)((char*)param_5 + 4),
         (short*)((char*)param_5 + 8),
