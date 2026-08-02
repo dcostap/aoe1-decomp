@@ -47,6 +47,17 @@
 // Main-agent source audit: the explicit raw frame encoded VC5's stack-slot overlap rather than
 // plausible original source. Restored the typed TemporaryName + DPNAME reconstruction despite
 // its worse byte metrics; compiler artifacts remain diagnostic evidence, not living source.
+// Luna42F190b follow-up 2026-08-02 (10-probe pass):
+// - Natural literal strcpy with SDK-width DPNAME regressed to 119B/89.1892% positional.
+// - TemporaryName aggregate literal initialization regressed to 167B/87.4251%.
+// - A standalone name pointer, including post-Log declaration scope, duplicated the 144B/61.4865%
+//   structural family; initializing only binary-observed DPNAME fields reached 136B/66.8919%.
+// - Zero-initialized char/DPNAME aggregates regressed to 160B/91.2500%.
+// - Typed 32-byte/prefix-only TemporaryName forms reached 144B/61.4865% but did not recover the
+//   original delayed cdecl cleanup or COM setup; moving lpszLongName before stores reached 144B/75.6757%.
+// - Swapping TemporaryName field order reached 152B/77.6316%; all alternatives were rolled back.
+// Final pass result: retain the audited typed TemporaryName + DPNAME source; mismatch remains broad
+// and structural, so no accepted_drift or promotion is warranted.
 
 #include "../../include/game_globals.h"
 
