@@ -1,44 +1,103 @@
 // PointMaker::SetDefaultValues
 // VA: 0044AB90
-// Retry 2026-05-26 Boss pass: 18 probes on VA 0044AB90 only. Revalidated baseline:
-// exact 178B, 16.8539% positional / 10.6742% edit, first mismatch byte 0. The
-// remaining drift is the initial constant/register schedule: original saves ESI at
-// entry, uses ESI=2, EAX=3, ECX=0x118, then later zeroes ESI before the 0x100C
-// store; rebuilt uses EAX=2, delays push ESI until just before push EDI, then
-// reloads EAX=3 and schedules the 0x100C store before xor ESI. Tried register/
-// volatile/two-local variants for the `2` value, explicit two/three/width locals
-// and declaration order changes, class-method surface, register self pointer,
-// dummy value uses, manual zero loop instead of memset, and flags /G5 /Oa /Og
-// /Ob0 /Oy- /O1. No variant produced the original ESI=2 entry basin; many either
-// stayed identical to baseline, shrank to 176B, or regressed broadly. GIVEUP:
-// not accepted_drift quality for promotion here; although behavior is identical,
-// diff starts at byte 0 and includes prologue/register scheduling, not a single
-// localized trailing hunk.
+//
+// Attempt log:
+// - Baseline raw-offset source was 178 bytes, 30 positional bytes different (16.8539%).
+// - Reconstructed the proven PointMaker layout and reordered SatelliteRadius after
+//   Width/Height, as suggested by the fractal.cpp line-38 record; this moved the
+//   first mismatch to the zero/BranchDistance schedule and reached 8 differing
+//   bytes (4.4944%). This is retained as the best clean source reconstruction.
+// - Separate constant locals, register-qualified locals, explicit zero assignment,
+//   arithmetic/comma sequencing, and a direct early MaxBranchFlag assignment were
+//   tested as diagnostic liveness probes. They either emitted the same 8-byte basin
+//   or regressed to 34 bytes; none reproduced the original xor-then-BranchDistance
+//   order. No custom flags or shared declarations were kept.
+// - Paused after the ten-hypothesis budget. Remaining drift is the localized
+//   xor esi,esi / BranchDistance store order at 0044ABC7, not a behavior or layout gap.
 #include <string.h>
 
-void __fastcall SetDefaultValues(void* _this, int _)
+struct PrimaryPt {
+    int x;
+    int y;
+};
+
+struct PtToPt {
+    int x;
+    int y;
+};
+
+class PointMaker {
+public:
+    PrimaryPt Prime;
+    PtToPt Point[500];
+    char* Mask_2x2;
+    char* Mask_3x3;
+    char* Mask_4x4;
+    char* Mask_5x5;
+    int x;
+    int y;
+    int NumSplitsPerBranch;
+    int NumberOfSatellites;
+    int ChanceOfNextNode;
+    int MaxNumberOfBranches;
+    int MaxBranchFlag;
+    int Width;
+    int Height;
+    int MinimumNumTiles;
+    int NumNodes;
+    int NumTilesActuallyChosen;
+    int CurrentPoint;
+    int ProbabilityTiles;
+    int TargetProbabilityCount;
+    int ProbabilityAdd;
+    int BranchRadius;
+    int SatelliteRadius;
+    int PrimaryRadius;
+    int SizeArrays;
+    int SatelliteDistance;
+    int BranchDistance;
+    int DirX;
+    int DirY;
+    int MaxNumberOfBranchLevels;
+    int CurrentNumberOfBranchLevels;
+    char* ExternalArray;
+    char* ProbArray;
+    char* PlacementArray;
+    char* WritableExternalArray;
+    int DoNotDrawOnFlag;
+    int DrawOnOnlyFlag;
+    int DrawOnlyInExternalArrayFlag;
+    int DrawToOneArrayFlag;
+    int BorderDepthPercentage;
+    int LeftLimit;
+    int RightLimit;
+    int TopLimit;
+    int BottomLimit;
+    char SpecialLandType;
+
+    void SetDefaultValues(void);
+};
+
+void PointMaker::SetDefaultValues(void)
 {
-    int val = 2;
-    ((int*)((char*)_this + 0xFC4))[0] = val;   // NumberOfSatellites
-    ((int*)((char*)_this + 0xFFC))[0] = val;   // SatelliteRadius
-    val = 3;
-    ((int*)((char*)_this + 0xFC0))[0] = val;   // NumSplitsPerBranch
-    ((int*)((char*)_this + 0xFD8))[0] = 0x118; // Height
-    ((int*)((char*)_this + 0xFD4))[0] = 0x118; // Width
-    ((int*)((char*)_this + 0xFF8))[0] = val;   // BranchRadius
-    ((int*)((char*)_this + 0x100C))[0] = val;  // BranchDistance
-    ((int*)((char*)_this + 0xFC8))[0] = 0x32;  // ChanceOfNextNode
-    ((int*)((char*)_this + 0xFCC))[0] = 6;     // MaxNumberOfBranches
-    ((int*)((char*)_this + 0x1000))[0] = 4;    // PrimaryRadius
-    ((int*)((char*)_this + 0x1040))[0] = 0x0F; // BorderDepthPercentage
-    val = 0;
-    ((int*)((char*)_this + 0xFD0))[0] = val;   // MaxBranchFlag
-    ((int*)((char*)_this + 0x1008))[0] = 1;    // SatelliteDistance
-    ((int*)((char*)_this + 0x1018))[0] = 0x10; // MaxNumberOfBranchLevels
-    ((int*)((char*)_this + 0xFDC))[0] = 0x7D0; // MinimumNumTiles
-    memset((char*)_this + 8, 0, 0xFA0);        // zero Point array
-    ((int*)((char*)_this + 0x1030))[0] = val;  // DoNotDrawOnFlag
-    ((int*)((char*)_this + 0x1034))[0] = val;  // DrawOnOnlyFlag
-    ((int*)((char*)_this + 0x103C))[0] = val;  // DrawToOneArrayFlag
-    ((int*)((char*)_this + 0x1038))[0] = val;  // DrawOnlyInExternalArrayFlag
+    this->NumberOfSatellites = 2;
+    this->NumSplitsPerBranch = 3;
+    this->Height = 0x118;
+    this->Width = 0x118;
+    this->SatelliteRadius = 2;
+    this->BranchRadius = 3;
+    this->BranchDistance = 3;
+    this->ChanceOfNextNode = 0x32;
+    this->MaxNumberOfBranches = 6;
+    this->PrimaryRadius = 4;
+    this->BorderDepthPercentage = 0x0F;
+    this->MaxBranchFlag = 0;
+    this->SatelliteDistance = 1;
+    this->MaxNumberOfBranchLevels = 0x10;
+    this->MinimumNumTiles = 0x7D0;
+    memset(this->Point, 0, sizeof(this->Point));
+    this->DoNotDrawOnFlag = 0;
+    this->DrawOnOnlyFlag = 0;
+    this->DrawToOneArrayFlag = 0;
+    this->DrawOnlyInExternalArrayFlag = 0;
 }
