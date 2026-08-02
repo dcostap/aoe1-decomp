@@ -26,6 +26,14 @@
 // GIVEUP: exact match blocked by compiler EH model difference.
 // 2026-05-24 Boss retry: re-read packet and revalidated baseline (18.75% edit / 64.29% positional, first mismatch 0). Tried 10 more source-shape probes: virtual derived dtor (65.18% edit), virtual derived + explicit operator delete (65.18%), novtable virtual + manual vptr (61.61%), nonvirtual + manual vptr (41.07%), local pointer + manual vptr (41.07%), virtual base+derived (37.50%), positive if/local delete path (same as baseline), reversed zero-store order (22.32%), memset tail (compile rejected until string.h; not pursued because it would only affect the already-matching zero-store tail), explicit base-dtor call in body (30.36%). No probe moved first mismatch past offset 0 or removed VC5's push-first EH prologue/saved-this slot. Baseline remains best; accepted_drift still not proposed because EH frame/stack cleanup and missing vptr store are structural, not localized benign drift.
 // 2026-05-26 Boss retry: re-read packet and revalidated baseline (18.75% edit / 64.29% positional, first mismatch 0). Tried 16 additional axes: manual vptr first (41.07%), explicit pointer local (same), reversed zero-store order (22.32%), else/goto delete guards (same), zero local (compile/no improvement), virtual derived (49.11%), virtual base+derived (37.50%), novtable virtual+manual vptr (61.61%), struct member surface (same), delete[] (same), no-/GX virtual variants (95.54% / wrong no-EH basin), __try/__finally no-/GX (58.93%), __try with /GX or /EH rejected by C2712, and hidden /d1ESrt flag rejected. No probe moved first mismatch past offset 0 or produced the original FS-first 3-slot EH prologue. GIVEUP remains: baseline is best; no accepted_drift proposal because EH frame shape/stack cleanup and vptr-store differences are structural.
+// 2026-08-02 LunaM40D020: claimed and rechecked the live baseline after dossier,
+// donor, and ABI review. Current checker: 112B, 2/2 calls aligned, 75.0000%
+// positional diff (84 bytes), first mismatch offset 0. Dossier confirms the
+// only unresolved structural facts are the FS-first 3-slot original EH entry,
+// absent saved-this slot, and original vptr store; the current /GX compiler
+// emits push-first 4-slot EH with saved-this. Prior source/flag probes already
+// cover the natural/virtual/manual-vptr, delete form, TU, and flag axes; leave
+// the best baseline in scratch rather than repeat them.
 
 #include <stdlib.h>
 class AIModule {
