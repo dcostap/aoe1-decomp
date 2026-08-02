@@ -28,6 +28,20 @@
 // Next lead: while(cur)/do-while bottom-test-on-cur source with attach as separate forward-je
 // block (goto or if-break-to-block), non-volatile action first used only after calloc, and no
 // this-member reference inside the loop body.
+// Retry 2026-08-02 Luna-404590 focused family: H1 do/while + forward attach + nonvolatile calls
+// but the old volatile node-action store was 133B; H2 removed that volatile store but saved EDI
+// and was 126B; H3 moved the empty-list arm before traversal and stayed in the EDI basin.
+// H4 direct while(cur) with cur->next gate recovered the original loop bytes and call count but
+// put the empty arm first (118B, 38 diff). H5 put that direct while inside the nonempty arm and
+// kept attach as the forward target after the loop-exit func7 tail: 114B, 5/5 ordered calls,
+// 97.83% shape, 2 positional bytes. The attach tail alone chooses mov edx,[ecx] / call [edx+1C]
+// instead of the original EAX form. H6 eight attach-call/store spellings in one variant family
+// were codegen-identical; H7 killing dead n after the attach store was also identical. Keep the
+// natural H5 source; remaining drift is one attach-tail register choice, not structural.
+// ACCEPTED_DRIFT: manually reviewed 2-byte difference is confined to loading the same action
+// vtable into EDX rather than EAX for one `func7(1)` tail. Size, CFG, calls, argument, target,
+// stack cleanup, memory effects, and every other instruction are identical; no value is live
+// across the load/push/call in a way that distinguishes EAX from EDX.
 
 #include <stdlib.h>
 
@@ -74,18 +88,26 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
 
     RGE_Action_Node* n = (RGE_Action_Node*)calloc(1, 8);
     n->next = 0;
-    n->action = *(RGE_Action* volatile*)&action;
+    n->action = action;
 
     RGE_Action_Node* cur = list;
-    if (cur) {
-        for (RGE_Action_Node* next = cur->next; next != 0; next = cur->next) {
-            cur = next;
+    if (cur != 0) {
+        while (cur != 0) {
+            if (cur->next == 0) {
+                goto attach;
+            }
+            cur = cur->next;
         }
-        cur->next = n;
-        (*(RGE_Action* volatile*)&action)->func7(1);
+
+        action->func7(1);
         return;
     }
 
     list = n;
-    (*(RGE_Action* volatile*)&action)->func7(1);
+    action->func7(1);
+    return;
+
+attach:
+    cur->next = n;
+    action->func7(1);
 }
