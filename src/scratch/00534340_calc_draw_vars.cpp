@@ -23,20 +23,37 @@
 // left in scratch: remaining drift is VC5 register allocation — 
 // EAX/EBP/EDI register choices differ from original by 80 bytes (36.9%).
 // Single-function scope cannot resolve. Needs TU context or register allocation control.
+// probe 13: true TPanel base/polymorphic surface — emitted code unchanged.
+// probe 14: short/int zero locals, register-qualified width locals, and natural
+//   statement-order variants — unchanged or structurally worse.
+// probe 15: exact tagRECT dword aggregate for render_rect — emitted code unchanged.
+// final: retain the period-plausible inherited TPanel/tagRECT ownership; remaining
+//   mismatch is isolated to VC5 register coloring and zero-path save/pop order.
 
-class RGE_View {
+class tagRECT {
 public:
-    char gap_00[0x14];
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0x10];
     int pnl_wid;                           // +0x14
     int pnl_hgt;                           // +0x18
     char gap_1C[0x54];                     // +0x1C to +0x6F
     int visible;                           // +0x70
     char gap_74[0x18];                     // +0x74 to +0x8B
-    short render_rect_left_low;            // +0x8C
-    short render_rect_left_high;           // +0x8E
-    short render_rect_top_low;             // +0x90
-    short render_rect_top_high;            // +0x92
-    char gap_94[0x74];                     // +0x94 to +0x107
+    tagRECT render_rect;                   // +0x8C
+    char gap_9C[0x58];                     // +0x9C to +0xF3
+};
+
+class RGE_View : public TPanel {
+public:
+    char gap_F4[0x14];                     // +0xF4 to +0x107
     short tile_wid;                        // +0x108
     short tile_hgt;                        // +0x10A
     short tile_half_wid;                   // +0x10C
@@ -66,8 +83,8 @@ void RGE_View::calc_draw_vars() {
         this->center_scr_row_offset = 0;
         this->max_col_num = (short)(pw / (int)this->tile_wid);
         this->max_row_num = (short)(ph / (int)this->tile_hgt);
-        this->center_scr_col = (this->render_rect_left_low - this->tile_half_wid) + (short)(pw / 2);
-        this->center_scr_row = (this->render_rect_top_low - this->tile_half_hgt) + (short)(ph / 2);
+        this->center_scr_col = (this->render_rect.left - this->tile_half_wid) + (short)(pw / 2);
+        this->center_scr_row = (this->render_rect.top - this->tile_half_hgt) + (short)(ph / 2);
     } else {
         this->max_row_num = 0;
         this->max_col_num = 0;

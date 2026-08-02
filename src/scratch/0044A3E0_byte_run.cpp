@@ -1,54 +1,68 @@
 // RGE_Flic_Player::byte_run
 // VA: 0044A3E0 (217 bytes)
 // Decodes byte-run compressed FLIC frames
+// Attempt log:
+// - Baseline CRT fill/copy candidate was structurally close but used the wrong
+//   row ownership/lifetime and saved EBX as this (195 differing bytes).
+// - Restored canonical fields, loaded chunk before the guard, reset the row
+//   offset per row, shared the run local, and put the fill arm first.  This
+//   recovered the original branch topology and a 0xC frame, but not the final
+//   register basin (163 differing bytes, rebuilt body 208 vs 217 bytes).
+// - Manual-loop, destination-local, alias, and declaration-scope variants were
+//   tested and either regressed or produced duplicate codegen.  Best source is
+//   retained here; remaining drift is the original ESI/EBX coloring and
+//   line-offset spill/layout around the rep-string paths.
 
 #include <string.h>
 
 struct RGE_Flic_Player {
     char gap_00[0x90];
-    int flic_buffer_delta;      // +0x90
-    int flic_width;             // +0x94
-    unsigned char* frame_buf;   // +0x98
+    long drawarea_width;        // +0x90
+    long flic_width;            // +0x94
+    unsigned char* window_buffer; // +0x98
     char gap_9C[0x04];
-    unsigned char* chunk_ptr;   // +0xA0
+    char* chunk;                // +0xA0
     char gap_A4[0x04];
-    int x1;                      // +0xA8
+    long y1;                     // +0xA8
     char gap_AC[0x0C];
-    int y1;                      // +0xB8
+    long flic_size_y;            // +0xB8
 
     void byte_run();
 };
 
 void RGE_Flic_Player::byte_run() {
-    int count = x1 + y1 - 1;
+    RGE_Flic_Player* player = this;
+    char* chunk = player->chunk;
+    int count = player->y1 + player->flic_size_y - 1;
     if (count < 0) return;
     count++;
-    
-    unsigned char* chunk = chunk_ptr + 1;
-    int line_offset = 0;
-    
+
+    chunk++;
+    int line_offset;
+    unsigned char* dst;
+
     do {
+        line_offset = 0;
         do {
-            signed char opcode = (signed char)*chunk;
+            unsigned char opcode = (unsigned char)*chunk;
             chunk++;
+            int copy_count;
             
-            if (opcode >= 0) {
-                // Fill run
-                int copy_count = opcode;
-                unsigned char fill_val = *chunk;
+            if ((signed char)opcode >= 0) {
+                copy_count = (signed char)opcode;
+                dst = player->window_buffer + line_offset;
+                memset(dst, *chunk, copy_count);
                 chunk++;
-                memset(frame_buf + line_offset, fill_val, copy_count);
-                line_offset += copy_count;
             } else {
-                // Copy run
-                int copy_count = -opcode;
-                memcpy(frame_buf + line_offset, chunk, copy_count);
+                copy_count = (signed char)-opcode;
+                dst = player->window_buffer + line_offset;
+                memcpy(dst, chunk, copy_count);
                 chunk += copy_count;
-                line_offset += copy_count;
             }
-        } while (line_offset < flic_width);
+            line_offset += copy_count;
+        } while (line_offset < player->flic_width);
         
-        frame_buf += flic_buffer_delta;
+        player->window_buffer += player->drawarea_width;
         count--;
     } while (count != 0);
 }
