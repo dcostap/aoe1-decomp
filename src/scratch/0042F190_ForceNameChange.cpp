@@ -22,6 +22,19 @@
 // Retry 2026-05-21 Boss pass: 10 more probes. Tried original c4/c0/bc store order with explicit zero/ch locals, volatile zero local, removing DPNAME zero stores (144B too short), moving dpn.longName before tail string stores, Frame{DPNAME,test} aggregate, local IDirectPlay/player temps, raw function-pointer cast, absolute-address string chunk reads, manual literal char stores, and char-pointer byte fill. Best remains existing exact-size source: 148B, first 19 bytes match, 60.8108% positional / 87.1622% edit. None recovered original delayed cdecl cleanup plus overlapped stack-write schedule. Leaving in scratch; no accepted_drift because call cleanup/write ordering/COM setup are broad structural drift.
 // Retry 2026-05-24 assigned pass: 10 more probes. Swapped local order to DPNAME-then-test, volatile test array, one Frame aggregate, larger test[36], memcpy chunk copies, Log as stdcall/plain C++/int-return, COM vtable local, and DirectPlay/player locals. Most collapsed to the existing exact-size 60.8108%/first+19 family; Log stdcall, larger local, and player locals worsened. Still no accepted_drift: original's delayed cdecl cleanup and overlapped DPNAME/test stack writes plus COM setup are broad structural scheduling differences, not localized equivalent drift.
 // Retry 2026-05-26 Boss pass: 15 more probes. Revalidated baseline exact-size 148B, first 19 bytes match, 60.8108% positional / 87.1622% edit. Tried temp-ordered DAT_005832c4/c0/bc loads, raw 0x30 frame overlay (144B), DPNAME-first local order, vtable local late, natural strcpy (128B), volatile stores, explicit zero local, literal byte stores, partial/no DPNAME zero stores (144B), and several source-order variants around longName/dwSize. Best stayed the existing exact-size family; some variants worsened first mismatch to offset 8 or shrank to 128/144B. GIVEUP: no accepted_drift because remaining drift is still broad delayed-cdecl-cleanup/overlapped stack-write/COM-call setup topology, not localized benign codegen.
+// Luna-42F190 2026-08-02: baseline rebuilt 152B / 76.9737% positional, first mismatch +0x13.
+// Probe 1 absolute-address globals: 152B / 82.2368%, worsened strict bytes despite better edit resync.
+// Probe 2 explicit frame overlay at +0x0c: 144B / 62.1622%, frame 0x2c; improved but under-sized.
+// Probe 3 padded 0x30 frame overlay: 144B / 61.4865%, frame matched; best fresh structural basin.
+// Probe 4 volatile c4/c0 stores: duplicate codegen, no effect.
+// Probe 5 DPNAME-before-test locals: duplicate old 152B family.
+// Probe 6 &dpn.dwFlags / decompiler values: 156B / 80.1282%, regressed.
+// Probe 7 pre-Log dpn string-size assignment: 160B / 87.5000%, regressed.
+// Probe 8 typed unsigned-short DPNAME fields: duplicate 152B family.
+// Probe 9 casted &dpn.dwFlags with canonical values: duplicate 152B family.
+// Best retained below: explicit 0x30 frame with DPNAME at frame base and test at +0x0c;
+// it models the binary-proven four-byte local overlap and keeps frame parity, but remains
+// 144B with broad stack-write/cleanup drift. No accepted_drift: mismatch is structural.
 
 #include "../../include/game_globals.h"
 
@@ -52,8 +65,9 @@ public:
 };
 
 void TCommunications_Handler::ForceNameChange(void) {
-    char test[32];
-    DPNAME dpn;
+    char frame[0x30];
+    char* test = frame + 0x0c;
+    DPNAME* dpn = (DPNAME*)frame;
 
     Log(L, "Force Name Change");
 
@@ -68,10 +82,10 @@ void TCommunications_Handler::ForceNameChange(void) {
     *(short*)&test[16] = DAT_005832c8;
     test[31] = 0;
 
-    dpn.dwSize = 0x10;
-    dpn.dwFlags = 0;
-    dpn.lpszShortName = 0;
-    dpn.lpszLongName = test + 4;
+    dpn->dwSize = 0x10;
+    dpn->dwFlags = 0;
+    dpn->lpszShortName = 0;
+    dpn->lpszLongName = test + 4;
 
-    ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, &dpn, 2);
+    ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, dpn, 2);
 }
