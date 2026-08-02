@@ -37,6 +37,23 @@
 //    y-store before set_redraw) so VC5 colors the vtable into edx and schedules both
 //    stores before the call without merging; then the warp register cascade should
 //    follow automatically.
+// 10. liveness: TPanel pointer alias across case 7 redraw calls: emitted code unchanged (41 B).
+// 11. context: stores-first plus explicit TPanel dispatch: tail merged, structural 96 B with one
+//     missing vslot call; rolled back.
+// 12. control-flow: dedicated case-7 success label: duplicate 96 B result; rolled back.
+// 13. liveness: pointer local for the case-7 y destination: duplicate 96 B result; rolled back.
+// 14. liveness: stores-first named result local: 93 B but still missing the case-7 vslot call;
+//     rolled back in favor of the 41 B source.
+// 15. liveness: named result local with the 41 B between-stores order: emitted code unchanged;
+//     rolled back as a duplicate source shape.
+// 16. abi: restored the binary-proven RGE_View set_redraw override; emitted code unchanged, kept
+//     as the more accurate local class surface.
+// 17. control-flow: comma expression sequencing y-store then redraw: tail merged, 96 B; rolled back.
+// 18. layout: proven raw +0x170 y-store with stores-first order: tail merged, 96 B; rolled back.
+// 19. variant: eight focused case-7 tail spellings (including stores-first, result/pointer locals,
+//     do-store, comma-mode, and base dispatch); one invariant-eligible group, no exact. Current
+//     between-stores spelling remains best at 41 strict bytes.
+// Final bounded result: 10/10 meaningful hypotheses exhausted; leave scratch at validated 41 B.
 
 #include <windows.h>
 #include <stdlib.h>
@@ -128,6 +145,8 @@ public:
 
 class RGE_View : public TPanel {
 public:
+    virtual void set_redraw(int mode) {}
+
     char pre_render_area[0x1C];      // +0x04..+0x1F
     void* render_area;               // +0x20
     tagRECT clip_rect;               // +0x24..+0x33
