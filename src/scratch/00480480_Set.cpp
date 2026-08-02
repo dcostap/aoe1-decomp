@@ -49,6 +49,17 @@
 // EDX rather than original ECX, computes delta in ECX rather than original EDX, and
 // shifts the Offset/TSLC schedule while leaving a NOP tail.
 
+// 2026-08-03 Luna480480: canonical-layout retry used the required full
+// TBuff[255]+pad / TSLC / aTSLC[101] / Offset(+2A0) surface throughout. Direct
+// TSLC-before-LastCall, preincrement Offset, old-before-guard, saved-now, and
+// mutable-delta source-shape probes did not improve the emitted family. A
+// 180-variant focused lab (all size/call-set valid) found no exact result; its
+// closest edit group was a diagnostic direct-delta family (88 positional / 15
+// edit, first mismatch +40) with a broad register/schedule mismatch, so it was
+// not retained. Restored the clean best source below: 141B, 91 positional / 38
+// edit, original call-set/frame/size parity; remaining drift is old LastCall
+// register color, delta/index scheduling, and the padded tail. No accepted drift.
+
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 class RGE_TimeSinceLastCall {
