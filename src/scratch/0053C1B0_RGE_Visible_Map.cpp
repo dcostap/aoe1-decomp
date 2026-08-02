@@ -1,8 +1,14 @@
-// tried the direct constructor shape first; the mismatch moved into the prolog and the 0xff fill loop shape
-// switching to the decompiler-temp form next so the old dims and local temp order match the asm more closely
-// if it stays non-exact, the gap is likely just init ordering / loop shape
+// baseline reconstruction: natural constructor/member layout with CRT memset fill
+// probe 2: keep dimensions as named members so VC5 can reuse the original field loads
+// probe 3: preserve the source operand order at the total-size store and fill
+// probe 4: use direct mask-member assignments so VC5 rereads the stored mask
+// variant lab: an explicit volatile reread reduced the byte diff but did not
+// resolve the initial multiply register drift; restored natural member reads.
+// Final canonical validation: 212-byte size and call/CFG parity; remaining
+// codegen drift is the multiply register plus mask-tail scheduling.
 
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+#include <stdlib.h>
+#include <string.h>
 
 class RGE_Game_World;
 class RGE_Player {
@@ -53,56 +59,34 @@ public:
 };
 
 RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
-    int iVar1;
-    int iVar4;
-    unsigned char* puVar2;
-    unsigned char** ppuVar3;
-    unsigned int uVar5;
-    unsigned int uVar6;
+    int row;
 
     this->world = param_2->world;
     this->player = param_2;
     this->map = param_1;
-    iVar4 = param_1->map_width;
-    this->widthValue = iVar4;
-    iVar1 = param_1->map_height;
-    this->heightValue = iVar1;
+    this->widthValue = param_1->map_width;
+    this->heightValue = param_1->map_height;
     this->numberTilesExploredValue = 0;
-    this->numberTotalTilesValue = iVar1 * iVar4;
-    if ((iVar4 < 1) || (iVar1 < 1)) {
+    this->numberTotalTilesValue = this->widthValue * this->heightValue;
+    if ((this->widthValue <= 0) || (this->heightValue <= 0)) {
         this->visible_map = 0;
         this->map_offsets = 0;
     } else {
-        puVar2 = (unsigned char*)calloc(iVar1 * iVar4, 1);
-        this->visible_map = puVar2;
-        ppuVar3 = (unsigned char**)calloc(this->heightValue, 4);
-        this->map_offsets = ppuVar3;
-        iVar4 = 0;
+        this->visible_map = (unsigned char*)calloc(this->numberTotalTilesValue, 1);
+        this->map_offsets = (unsigned char**)calloc(this->heightValue, 4);
+        row = 0;
         if (0 < this->heightValue) {
             do {
-                this->map_offsets[iVar4] = this->visible_map + iVar4 * this->widthValue;
-                iVar4 = iVar4 + 1;
-            } while (iVar4 < this->heightValue);
+                this->map_offsets[row] = this->visible_map + row * this->widthValue;
+                row = row + 1;
+            } while (row < this->heightValue);
         }
-        uVar5 = this->heightValue * this->widthValue;
-        puVar2 = this->visible_map;
-        for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
-            puVar2[0] = 0xff;
-            puVar2[1] = 0xff;
-            puVar2[2] = 0xff;
-            puVar2[3] = 0xff;
-            puVar2 = puVar2 + 4;
-        }
-        for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
-            *puVar2 = 0xff;
-            puVar2 = puVar2 + 1;
-        }
+        memset(this->visible_map, 0xff, this->heightValue * this->widthValue);
     }
-    uVar6 = 1 << ((unsigned char)param_2->id & 0x1f);
+    unsigned long mask = 1 << (unsigned char)param_2->id;
     this->input_csum = 0;
-    this->PlayerVisibleMaskValue = uVar6;
-    this->PlayerVisibleMaskInvertValue = ~uVar6;
-    uVar6 = this->PlayerVisibleMaskValue << 0x10;
-    this->PlayerExploredMaskValue = uVar6;
-    this->PlayerExploredMaskInvertValue = ~uVar6;
+    this->PlayerVisibleMaskValue = mask;
+    this->PlayerVisibleMaskInvertValue = ~this->PlayerVisibleMaskValue;
+    this->PlayerExploredMaskValue = this->PlayerVisibleMaskValue << 0x10;
+    this->PlayerExploredMaskInvertValue = ~this->PlayerExploredMaskValue;
 }
