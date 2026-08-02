@@ -2452,3 +2452,58 @@ Also check the exact mangled parameter types of matched helpers (e.g.
 the incoming parameter slot as the loop counter when the binary writes to it
 (`mov dword [esp+param],-1` ... store back), rather than introducing a new local.
 Verified on 00510960 `TRIBE_Map::delete_cliff`.
+
+## Lesson: `for`/`while` loop shape steers register coloring and x87 mask peepholes; body-`i++` position controls `inc` scheduling
+
+For compact flag-plus-FPU-compare loops, the loop statement shape and where `i++` sits are codegen inputs, not cosmetic choices:
+
+- A `do/while` with a named `int count` local (and `count = ...` reloaded in the body) pushed the flag into EBX and the loop counter into EDI, and let VC5 shorten the second `fnstsw` test to `test bl,ah` (using the known-to-be-1 flag register as a 2-byte mask instead of `test ah,1`), shifting every later displacement by one byte.
+- The same body written as `for (i = 1; i < expr - 1; i++)` (no `count` local) flipped the coloring to the original flag->EDI / counter->EBX and reverted to the 3-byte `test ah,1`, aligning the whole middle of the function — even though the emitted instruction stream was otherwise identical.
+- With the `for` increment clause, VC5 schedules `inc` after the body's calls (the loop-increment slot). To reproduce an original where `inc ebx` sits inside the `fadd`/`fstp` FPU-store gap, write the loop as `while (cond) { ...; accum += dist(); i++; path->move(); }` — an explicit `i++` BODY statement placed before the next call lets VC5 fill the x87 store latency with the increment.
+
+Try when:
+- a near-exact FPU loop differs only by an EBX/EDI flag-vs-counter swap plus a one-byte `test reg,reg2` vs `test reg,imm` hunk;
+- the original's `inc` appears between `fadd` and `fstp` in the loop tail but the rebuilt puts it after a following call.
+
+Why it helps:
+- VC5's register allocator and peephole pass are sensitive to whether the loop counter is a named local reloaded in the body versus a plain loop induction variable;
+- an explicit body `i++` before the next call gives the scheduler an independent integer op to slot into the FPU store gap, reproducing the original tail byte-for-byte.
+
+Caveat:
+- the compound condition that forces the observed `cmp reg,1; jne` second test must stay spelled as `(flag || a >= x) && (flag != 1 || b >= y)` — nested if/else forms drop the second flag test entirely. Verified on 00502230 `stuffAvoidancePath`.
+
+## Lesson: Declaring a long-lived zero variable after a mid-function early-return block can preserve the dedicated zero register
+
+When a function has both a value initialized to 0 at the top that is only assigned
+later (e.g., a volume/accumulator that gets `var = -call()` after several calls)
+and a mid-function block that needs a call-crossing callee-saved temp (for example
+a `delete`-pointer reload), the DECLARATION POSITION of the zero variable controls
+whether VC5 keeps a dedicated zero register or reuses it.
+
+- Declaring `int volume = 0;` at the top lets VC5 treat the variable as const-0
+  until its later assignment; the mid-function temp then reuses that register
+  (no extra `push ebx`), and all zero compares/stores collapse to `test`/C7 forms.
+- Declaring the same variable AFTER the mid-function block, right before its first
+  real use, keeps VC5's zero register dedicated for the whole function: the `xor
+  reg,reg` is hoisted to the top and attributed to the first zero-compare line, the
+  original `cmp [mem],reg` / `cmp reg,reg` / `mov [mem],reg` register-zero forms are
+  preserved, and the mid-function temp is allocated the next free callee-saved
+  register (ebx), adding the prologue `push ebx`/`pop ebx`.
+
+Try when:
+- the rebuild differs only by a missing callee-save push in the prologue and by
+  `test`/C7 zero encodings where the original uses a known-zero register operand;
+- a top-declared `= 0` variable's live range brackets an early-return branch, and
+  every semantically-equivalent re-spelling of the branch produces identical code.
+
+Why it helps:
+- VC5's allocator/optimizer shortens the live range of a top-level const-0 variable
+  and rematerializes the constant, freeing its register for a later temp;
+- a late declaration makes the same register a function-wide zero that the allocator
+  keeps live, forcing the temp into a different callee-saved register and restoring
+  both the register-zero encodings and the extra save.
+
+Caveat:
+- apply only when the binary proves the dedicated zero register and the extra
+  callee-save; keep the late declaration at a plausible source position near its
+  first use. Verified on 0041F030 `RGE_Base_Game::setup_sound_system`.
