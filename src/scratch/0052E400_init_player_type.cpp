@@ -19,6 +19,13 @@
 // source even though it returns to the broader early-load codegen basin. Validation:
 // 181/180 bytes, 150 strict differing bytes, 98.31% shape, 4/4 calls aligned;
 // first mismatch +0x0E from loading `type` before FS registration.
+// Luna52E400b sequential pass: full RGE world/Player virtual surfaces and inherited
+// field ownership, switch CFG, self alias, and volatile dword parameter-view probes
+// were nonproductive; the full context/switch/alias forms were codegen-neutral and
+// the volatile view regressed size/coverage. A guarded variant lab (8 source forms,
+// plus VC5-small flag classification) found no exact or invariant-eligible variant;
+// restored the prior clean canonical source. Remaining lead is VC5 EH/type-test
+// scheduling at +0x0E, with body/calls/layout aligned and no behavioral blocker.
 
 class RGE_Game_World {
 public:
