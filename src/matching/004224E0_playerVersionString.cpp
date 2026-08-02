@@ -1,13 +1,19 @@
 // VA: 004224E0 RGE_Base_Game::playerVersionString (231 B)
 // PDB source: basegame.cpp
-// Packet-grounded: switch on playerVersion result, return version string
+// PDB line span: 5200-5230
 
-extern unsigned char playerVersion(int id);
+class RGE_Base_Game {
+public:
+    char gap_0[0x98A];
+    unsigned char arr_[1];
+    unsigned char playerVersion(int i);
+    char* playerVersionString(int param);
+};
 
-char* RGE_Base_Game_playerVersionString(int param)
+char* RGE_Base_Game::playerVersionString(int param)
 {
     unsigned char v = playerVersion(param);
-    
+
     switch (v) {
         case 0:   return "";
         case 1:   return "1.0";

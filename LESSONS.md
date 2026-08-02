@@ -2297,3 +2297,16 @@ Try when:
 Caveat:
 - applies only when the shared value is genuinely the same `return` for both paths;
   per-case distinct returns remain the natural spelling when values differ.
+
+## Lesson: PDB `__thiscall` with `ret N` requires a member-function definition
+
+When a target's PDB signature is `__thiscall` with stack parameters and the
+original returns via `ret N`, define it as a real class member. A free function
+compiles as cdecl: returns become plain `ret`, calls gain caller cleanup, and
+stack offsets shift throughout small switch/return helpers.
+
+Also preserve the helper's real return width. A byte result may require the
+original `mov [stack], al` and zero-extended reload rather than an `int` value.
+
+Try this when every switch arm is slightly too long, the rebuilt call has an
+extra `add esp, N`, or the original uses `ret N` while the candidate uses `ret`.
