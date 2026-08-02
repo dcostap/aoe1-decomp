@@ -11,10 +11,12 @@
 // 6: loop needed ((uv4&1)==1) for mov/and/cmp/jne pattern instead of test/je
 // 7: FILE* temp for DDlogf vs direct access — register allocation choice for DDlogf load
 //
-// Remaining drift: register allocation (ecx↔eax for owner ptr), DDlogf encoding (a1 vs 8b 0d).
-// The entire loop body (mov edx/and edx,1/cmp dl,1/jne through mov [esi+0A0h],edi) is byte-identical.
-// 182/196 bytes equal (92.9%), 16 edit diff bytes, all registers/scheduling.
-// Parked: VC5 register allocation drift only.
+// Previous baseline: cached `RGE_Player* plyr` kept the right structure but chose
+// ECX for the owner and encoded DDlogf as `mov eax,[addr]`, leaving a scheduling
+// mismatch after the first 66 bytes.
+// Current pass: a local FILE* logf was a codegen duplicate and was rolled back.
+// Removing the cached owner and using direct this->owner reads reproduces the
+// original EAX owner / ECX DDlogf coloring and matches all 196 bytes.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,15 +43,15 @@ struct RGE_Player {
 // RGE_Static_Object layout (size 0x88 = 136 bytes)
 struct RGE_Static_Object {
     // vt[0..8]: base virtuals
-    virtual void dtor_base() {}
-    virtual void vf04_base() {}
-    virtual void vf08_base() {}
-    virtual void vf0C_base() {}
-    virtual void vf10_base() {}
-    virtual void vf14_base() {}
-    virtual void vf18_base() {}
-    virtual void vf1C_base() {}
-    virtual void vf20_base() {}
+    virtual void dtor_base();
+    virtual void vf04_base();
+    virtual void vf08_base();
+    virtual void vf0C_base();
+    virtual void vf10_base();
+    virtual void vf14_base();
+    virtual void vf18_base();
+    virtual void vf1C_base();
+    virtual void vf20_base();
 
     long id;                              // +0x04
     RGE_Static_Object* master_obj;        // +0x08
@@ -79,22 +81,22 @@ struct RGE_Doppleganger_Object : public RGE_Animated_Object {
     // vt[10..25] = +0x28..+0x64: 16 dummies
     // vt[26] = +0x68: destroy_obj()
     virtual unsigned char update();
-    virtual void slot10() {}
-    virtual void slot11() {}
-    virtual void slot12() {}
-    virtual void slot13() {}
-    virtual void slot14() {}
-    virtual void slot15() {}
-    virtual void slot16() {}
-    virtual void slot17() {}
-    virtual void slot18() {}
-    virtual void slot19() {}
-    virtual void slot20() {}
-    virtual void slot21() {}
-    virtual void slot22() {}
-    virtual void slot23() {}
-    virtual void slot24() {}
-    virtual void slot25() {}
+    virtual void slot10();
+    virtual void slot11();
+    virtual void slot12();
+    virtual void slot13();
+    virtual void slot14();
+    virtual void slot15();
+    virtual void slot16();
+    virtual void slot17();
+    virtual void slot18();
+    virtual void slot19();
+    virtual void slot20();
+    virtual void slot21();
+    virtual void slot22();
+    virtual void slot23();
+    virtual void slot24();
+    virtual void slot25();
     virtual void destroy_obj();
 };
 
@@ -114,21 +116,19 @@ unsigned char RGE_Doppleganger_Object::update()
 
     unsigned long uVar1 = *this->MapAddress;
     if (uVar1 != this->LastMapValue) {
-        RGE_Player* plyr = this->owner;
-        if ((plyr->mutualVisibleMask & uVar1) != 0 && this->object_state < 3) {
+        if ((this->owner->mutualVisibleMask & uVar1) != 0 && this->object_state < 3) {
             if (DDlogf != 0) {
                 fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n",
-                    plyr->world->someField,
+                    this->owner->world->someField,
                     this->id,
-                    plyr->id);
+                    this->owner->id);
             }
             this->destroy_obj();
-            plyr = this->owner;
         }
 
-        unsigned long uVar4 = plyr->nonMutualVisibleMask & uVar1;
+        unsigned long uVar4 = this->owner->nonMutualVisibleMask & uVar1;
         if (uVar4 != 0) {
-            unsigned long* puVar5 = (unsigned long*)((char*)plyr + 0xDC);
+            unsigned long* puVar5 = (unsigned long*)((char*)this->owner + 0xDC);
             do {
                 if ((uVar4 & 1) == 1) {
                     this->CantSeeBits |= *puVar5;
