@@ -859,6 +859,7 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
             f"Recommendation: {classify_next_stage(metrics)}",
             "",
             "Useful commands:",
+            f"  python tools/target_session.py history --va {record['va']}",
             f"  python tools/target_dossier.py --va {record['va']}",
             f"  python tools/query_abi.py --va {record['va']} --limit 40",
             f"  python tools/find_function_donors.py --va {record['va']} --limit 20",
@@ -936,77 +937,243 @@ def format_session_list(rows: list[dict], active_only: bool = False) -> str:
     return "\n".join(lines)
 
 
+def _history_index(record: dict[str, str]) -> dict:
+    """Load the checker checkpoint index for a target (mirrors _history_count)."""
+    path = REPO_ROOT / "build" / "history" / function_slug(record) / "history.json"
+    if not path.exists():
+        return {"slug": function_slug(record), "labels": {}, "runs": []}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"slug": function_slug(record), "labels": {}, "runs": []}
+    payload.setdefault("labels", {})
+    payload.setdefault("runs", [])
+    return payload
+
+
+def format_history(record: dict[str, str], session: dict | None, limit: int) -> str:
+    """Human-readable per-target history: checker runs plus notebook probes, newest first."""
+    index = _history_index(record)
+    runs = list(index.get("runs") or [])
+    probes = list((session or {}).get("probes") or [])
+    lines = [
+        f"Target: {record['va']} {record['name']} ({record['size_bytes']} bytes)",
+    ]
+    if session is None:
+        lines.append("Session: unclaimed")
+    else:
+        state = "active" if _lease_active(session) else str(session.get("state", "inactive"))
+        lines.append(
+            f"Session: {state}; owner={session.get('owner')} "
+            f"claimed={session.get('claimed_at')} updated={session.get('updated_at')}"
+        )
+        budget = int(session.get("meaningful_probe_budget") or 0)
+        lines.append(
+            f"Probes: {len(probes)} recorded; "
+            f"{meaningful_probe_count(session)} meaningful this claim "
+            f"(budget {budget or 'unbounded'}); checker checkpoints: {len(runs)}"
+        )
+    lines.append("")
+    lines.append("Checker runs (newest first):")
+    if not runs:
+        lines.append("  <none recorded>")
+    else:
+        lines.append("at (UTC)             result    diff      diff%     resync    flags  labels / source")
+        shown = 0
+        for run in reversed(runs):
+            if limit > 0 and shown >= limit:
+                break
+            shown += 1
+            summary = run.get("summary") or {}
+            when = str(run.get("timestamp") or run.get("id") or "?")[:19].replace("T", " ")
+            result = summary.get("result", "?")
+            diff_b = summary.get("diff_bytes")
+            diff_p = float(summary.get("diff_percent") or 0)
+            resync = float(summary.get("resync_similarity_percent") or 0)
+            flags = "custom" if run.get("custom_flags") else "-"
+            labels = ",".join(run.get("labels") or []) or "-"
+            source = str(run.get("source_path") or "?")
+            lines.append(
+                f"{when:<19} {str(result):<9} {str(diff_b):>8} {diff_p:>7.1f}% {resync:>7.1f}% "
+                f"{flags:<6} {labels:<20} {source}"
+            )
+    lines.append("")
+    lines.append("Notebook probes (newest first):")
+    if not probes:
+        lines.append("  <none recorded>")
+    else:
+        lines.append("#    kind           at (UTC)             checkpoint        note")
+        shown = 0
+        for probe in reversed(probes):
+            if limit > 0 and shown >= limit:
+                break
+            shown += 1
+            note = str(probe.get("note") or "").replace("\n", " ")[:90]
+            lines.append(
+                f"#{str(probe.get('number', '?')):<4} {str(probe.get('kind')):<15} "
+                f"{str(probe.get('at'))[:19].replace('T', ' '):<19} {str(probe.get('checkpoint') or '-'):<17} {note}"
+            )
+    lines.append("")
+    lines.append(
+        f"Full data: python tools/target_session.py history --va {record['va']} --json "
+        f"(or build/history/{function_slug(record)}/history.json)"
+    )
+    return "\n".join(lines)
+
+
+def history_payload(record: dict[str, str], session: dict | None, limit: int) -> dict[str, object]:
+    """Structured per-target history (runs and probes, newest first)."""
+    index = _history_index(record)
+    runs = list(index.get("runs") or [])
+    probes = list((session or {}).get("probes") or [])
+    if limit > 0:
+        runs = runs[-limit:]
+        probes = probes[-limit:]
+    return {
+        "target": {
+            "va": record["va"],
+            "name": record["name"],
+            "slug": function_slug(record),
+            "size_bytes": int(record["size_bytes"]),
+        },
+        "session": session,
+        "checkpoint_count": len(index.get("runs") or []),
+        "runs": list(reversed(runs)),
+        "probes": list(reversed(probes)),
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
             "Advisory target leases, clean-source checkpoints, and meaningful-probe bookkeeping "
-            "for parallel matching work."
-        )
+            "for parallel matching work.\n"
+            "\n"
+            "Conventions:\n"
+            "  --va        target VA as hex, e.g. 00425A40\n"
+            "  --owner     stable agent/session name (use your subagent id)\n"
+            "  pause/release require --reason (--note is an alias for it)\n"
+            "  status      takes --va only; --owner is NOT accepted\n"
+            "  list        flags are --active and --json only (there is no --all flag)\n"
+            "  history     shows a target's checker checkpoints and notebook probes\n"
+            "\n"
+            "Examples:\n"
+            '  python tools/target_session.py start --va 00425A40 --owner sa-1234\n'
+            '  python tools/target_session.py check --va 00425A40 --owner sa-1234 '
+            '--kind abi --note "hypothesis note" -- --detail concise\n'
+            '  python tools/target_session.py status --va 00425A40\n'
+            '  python tools/target_session.py history --va 00425A40\n'
+            '  python tools/target_session.py release --va 00425A40 --owner sa-1234 '
+            '--reason "exact match"\n'
+            '  python tools/target_session.py list --active\n'
+        ),
+        epilog=(
+            "Per-target attempt history also lives on disk under "
+            "build/history/<va>_<slug>/runs/ and build/dossiers/<slug>.{txt,json}."
+        ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    start = subparsers.add_parser("start", help="Claim or resume one target and print a diagnostic briefing.")
-    start.add_argument("--va", required=True)
-    start.add_argument("--owner", required=True, help="Stable agent/session name.")
+    start = subparsers.add_parser(
+        "start",
+        help="Claim or resume one target lease and print a briefing. Requires --va and --owner.",
+    )
+    start.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    start.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
     start.add_argument("--budget", type=int, default=10, help="Meaningful hypothesis budget (default 10).")
-    start.add_argument("--lease-hours", type=float, default=8.0)
-    start.add_argument("--force", action="store_true", help="Deliberately take over another active lease.")
+    start.add_argument("--lease-hours", type=float, default=8.0, help="Lease duration in hours (default 8.0).")
+    start.add_argument("--force", action="store_true", help="Deliberately take over another active lease (use with care).")
 
-    probe = subparsers.add_parser("probe", help="Record one interpreted hypothesis after a checker run.")
-    probe.add_argument("--va", required=True)
-    probe.add_argument("--owner", required=True)
-    probe.add_argument("--kind", required=True, choices=PROBE_KINDS)
-    probe.add_argument("--note", required=True)
+    probe = subparsers.add_parser(
+        "probe",
+        help="Record one hypothesis probe on a target. Requires --va --owner --kind --note.",
+    )
+    probe.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    probe.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    probe.add_argument(
+        "--kind", required=True, choices=PROBE_KINDS,
+        help="Probe kind. One of: " + ", ".join(PROBE_KINDS) + ".",
+    )
+    probe.add_argument("--note", required=True, help="Free-form note describing the hypothesis (required).")
     probe.add_argument("--checkpoint", default="", help="Optional checker checkpoint label/id.")
 
     check = subparsers.add_parser(
-        "check", help="Run check_function under the active lease, checkpoint it, and record one probe."
+        "check",
+        help="Run check_function under the active lease, checkpoint it, and record a probe. "
+        "Requires --va --owner --kind --note.",
     )
-    check.add_argument("--va", required=True)
-    check.add_argument("--owner", required=True)
-    check.add_argument("--kind", required=True, choices=PROBE_KINDS)
-    check.add_argument("--note", required=True)
+    check.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    check.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    check.add_argument(
+        "--kind", required=True, choices=PROBE_KINDS,
+        help="Probe kind. One of: " + ", ".join(PROBE_KINDS) + ".",
+    )
+    check.add_argument("--note", required=True, help="Free-form note describing the hypothesis (required).")
     check.add_argument("--checkpoint", default="", help="Optional label; defaults to probe-NNN-kind.")
     check.add_argument(
         "checker_args",
         nargs=argparse.REMAINDER,
-        help="Additional check_function arguments after --, for example -- --detail concise.",
+        help="Everything after '--' is forwarded to check_function, e.g. -- --detail concise.",
     )
 
     pin_clean = subparsers.add_parser(
         "pin-clean",
-        help="Designate the current checked source as the canonical clean reconstruction.",
+        help="Pin the current checked source as the canonical clean reconstruction. "
+        "Requires --va --owner --note.",
     )
-    pin_clean.add_argument("--va", required=True)
-    pin_clean.add_argument("--owner", required=True)
+    pin_clean.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    pin_clean.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
     pin_clean.add_argument(
         "--note",
         required=True,
-        help="Canonical ownership and plausible original-source family.",
+        help="Canonical ownership and plausible original-source family (required).",
     )
 
     restore_clean = subparsers.add_parser(
         "restore-clean",
-        help="Restore the pinned clean reconstruction into the one living source file.",
+        help="Restore the pinned clean reconstruction into the one living source file. "
+        "Requires --va --owner.",
     )
-    restore_clean.add_argument("--va", required=True)
-    restore_clean.add_argument("--owner", required=True)
+    restore_clean.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    restore_clean.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
 
     for command in ("pause", "release"):
-        action = subparsers.add_parser(command, help=f"{command.title()} the lease while retaining its notebook.")
-        action.add_argument("--va", required=True)
-        action.add_argument("--owner", required=True)
+        action = subparsers.add_parser(
+            command,
+            help=f"{command.title()} the lease while keeping its notebook. "
+            "Requires --va --owner and --reason (or its alias --note).",
+        )
+        action.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+        action.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
         reason = action.add_mutually_exclusive_group(required=True)
-        reason.add_argument("--reason", dest="reason")
-        reason.add_argument("--note", dest="reason", help="Alias for --reason.")
+        reason.add_argument("--reason", dest="reason", help="Why the lease is being paused/released (REQUIRED).")
+        reason.add_argument("--note", dest="reason", help="Alias for --reason (REQUIRED either way).")
 
-    status = subparsers.add_parser("status", help="Show one target's lease, metrics, and recommended next stage.")
-    status.add_argument("--va", required=True)
-    status.add_argument("--json", action="store_true")
+    status = subparsers.add_parser(
+        "status",
+        help="Show one target's lease, metrics, and next stage. Takes --va only (no --owner).",
+    )
+    status.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    status.add_argument("--json", action="store_true", help="Emit JSON instead of the human summary.")
 
-    listing = subparsers.add_parser("list", help="List target sessions in this shared working tree.")
+    history = subparsers.add_parser(
+        "history",
+        help="Show a target's checker checkpoint runs and notebook probes, newest first.",
+    )
+    history.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    history.add_argument("--json", action="store_true", help="Emit JSON instead of the human tables.")
+    history.add_argument(
+        "--limit", type=int, default=15,
+        help="Max rows per section, newest first (0 = all; default 15).",
+    )
+
+    listing = subparsers.add_parser(
+        "list",
+        help="List target sessions. Flags are --active and --json only (no --all, no --va).",
+    )
     listing.add_argument("--active", action="store_true", help="Show only unexpired active leases.")
-    listing.add_argument("--json", action="store_true")
+    listing.add_argument("--json", action="store_true", help="Emit JSON instead of the human table.")
     return parser.parse_args()
 
 
@@ -1059,6 +1226,15 @@ def main() -> None:
                 json.dumps(session_status_payload(record, session), indent=2)
                 if args.json
                 else format_session(record, session)
+            )
+        elif args.command == "history":
+            if args.limit < 0:
+                raise ValueError("--limit must be zero or positive")
+            session = _load_session(record)
+            print(
+                json.dumps(history_payload(record, session, args.limit), indent=2)
+                if args.json
+                else format_history(record, session, args.limit)
             )
     except (RuntimeError, ValueError, FileNotFoundError, KeyError) as error:
         raise SystemExit(str(error)) from error

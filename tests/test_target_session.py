@@ -417,5 +417,72 @@ class TargetSessionTests(unittest.TestCase):
                     )
 
 
+    def test_history_lists_checker_runs_and_notebook_probes_newest_first(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            slug = "00001000_demo"
+            session_dir = root / "build" / "target_sessions"
+            history_dir = root / "build" / "history" / slug
+            session_dir.mkdir(parents=True)
+            history_dir.mkdir(parents=True)
+            with patch.object(target_session, "REPO_ROOT", root):
+                target_session._write_session(
+                    self.record,
+                    {
+                        "va": "00001000",
+                        "name": "demo",
+                        "slug": slug,
+                        "owner": "AgentA",
+                        "state": "pause",
+                        "claimed_at": "2026-08-02T10:00:00Z",
+                        "updated_at": "2026-08-02T11:00:00Z",
+                        "lease_expires_at": "2026-08-02T12:00:00Z",
+                        "lease_hours": 2.0,
+                        "meaningful_probe_budget": 4,
+                        "probe_start_index": 0,
+                        "probes": [
+                            {"number": 1, "kind": "baseline", "at": "2026-08-02T10:01:00Z",
+                             "checkpoint": "probe-001-baseline", "note": "first probe"},
+                            {"number": 2, "kind": "abi", "at": "2026-08-02T10:30:00Z",
+                             "checkpoint": "probe-002-abi", "note": "second probe"},
+                        ],
+                    },
+                )
+                (history_dir / "history.json").write_text(
+                    json.dumps(
+                        {
+                            "version": 1,
+                            "slug": slug,
+                            "labels": {"probe-001-baseline": "run-a", "probe-002-abi": "run-b"},
+                            "runs": [
+                                {"id": "run-a", "timestamp": "2026-08-02T10:01:00Z",
+                                 "labels": ["probe-001-baseline"], "custom_flags": False,
+                                 "source_path": "src/scratch/demo.cpp",
+                                 "summary": {"result": "MISMATCH", "diff_bytes": 10,
+                                             "diff_percent": 15.6, "resync_similarity_percent": 80.0}},
+                                {"id": "run-b", "timestamp": "2026-08-02T10:30:00Z",
+                                 "labels": ["probe-002-abi"], "custom_flags": True,
+                                 "source_path": "src/scratch/demo.cpp",
+                                 "summary": {"result": "MATCH", "diff_bytes": 0,
+                                             "diff_percent": 0.0, "resync_similarity_percent": 100.0}},
+                            ],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                session = target_session._load_session(self.record)
+                text = target_session.format_history(self.record, session, limit=15)
+                self.assertLess(text.index("10:30:00"), text.index("10:01:00"))
+                self.assertIn("MATCH", text)
+                self.assertIn("probe-002-abi", text)
+                self.assertIn("second probe", text)
+                payload = target_session.history_payload(self.record, session, limit=1)
+                self.assertEqual(len(payload["runs"]), 1)
+                self.assertEqual(payload["runs"][0]["id"], "run-b")
+                self.assertEqual(len(payload["probes"]), 1)
+                self.assertEqual(payload["probes"][0]["number"], 2)
+                self.assertEqual(payload["checkpoint_count"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()
