@@ -90,6 +90,24 @@
 // whereas the oracle homes the countdown after the positive guard and keeps the
 // quotient in EAX. No exact or accepted-drift result was found.
 
+// Sequential pass 2026-08-03 Luna480570b (new claim):
+// - baseline #27: canonical source rebuilt 144/146, diff 78, exact call-set;
+//   retained as clean source.
+// - decompiler seven-local/current-value/output topology: 142 bytes, broad
+//   prologue/CFG regression (diff 134); restored.
+// - formal quotient plus separate original-count local: 150 bytes, broad
+//   register/frame regression (diff 142); restored.
+// - direct formal countdown with exact >=1/<=100 comparisons: 140 bytes,
+//   old EAX/EBX/stack-min family (diff 137); restored.
+// - outer current-value local was codegen-identical to that direct-formal
+//   family; restored as a duplicate.
+// - four-case natural source lab (current, formal-quotient, branch-local
+//   remaining variants) found no size-gated candidate or exact match; the
+//   current 144-byte form remained the only close group. Syntax-repair rerun
+//   was not a new source hypothesis.
+// Remaining blocker is the original parameter-home countdown plus EAX quotient
+// and invalid-arm stack reads; no new exact or accepted-drift lead was found.
+
 #include <stdio.h>
 
 class RGE_TimeSinceLastCall {
