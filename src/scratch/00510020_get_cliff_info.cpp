@@ -32,11 +32,31 @@
 // behavioral families remain 144/160B; exact-size variants are broad wrong frame/register/copy
 // topology. GIVEUP: not accepted_drift quality; mismatch is structural register allocation and
 // hidden-return/copy layout, not localized equivalent drift.
+// Retry 2026-08-02 Luna-510020 (10/10): baseline rebuilt 159B/154 diff. Reconstructed the
+// true struct-return ABI, Ghidra-style bounded scan, and initialized aggregate; the direct
+// aggregate form reached exact size 172B (155 diff, 58.4% shape). A four-form zero-init lab
+// was one variant family (all 172B/155 diff). Restoring the RGE_Map base was codegen-neutral.
+// Deriving the copied row from the loop index and the typed 40-byte cliff table exposed the
+// original LEA index topology (shape 63.9%, 178B/164 diff); direct aggregate return improved
+// it to 72.2% shape, 176B/164 diff, edit diff 97. Register-qualified zeros were codegen-neutral.
+// Best current source keeps the true return ABI, index-derived typed row, and direct aggregate
+// return. Remaining mismatch is the original four-save/zero-register basin (EBP/EBX/EDX/ESI)
+// and delayed EDI pop; no accepted-drift promotion.
 
 #include <string.h>
 
 struct TRIBE_Cliff_Info {
     int info[4];
+};
+
+struct TRIBE_Master_Cliff_Info {
+    int id;
+    int facet;
+    int id2;
+    int facet2;
+    TRIBE_Cliff_Info info;
+    float offset_x;
+    float offset_y;
 };
 
 class RGE_Master_Static_Object {
@@ -53,48 +73,51 @@ public:
     unsigned char facet;                   // +0x35
 };
 
-class TRIBE_Map {
+class RGE_Map {
 public:
-    char gap_00[0x8DF8];
-
-    TRIBE_Cliff_Info* get_cliff_info(TRIBE_Cliff_Info* ret, RGE_Static_Object* obj);
+    char gap_00[0x08];
+    long map_width;
+    long map_height;
+    char gap_10[0x8D7C];
+    void* map_row_offset;
 };
 
-TRIBE_Cliff_Info* TRIBE_Map::get_cliff_info(TRIBE_Cliff_Info* ret, RGE_Static_Object* obj) {
-    int z0 = 0;
-    int z1 = 0;
-    int z2 = 0;
-    int z3 = 0;
+class TRIBE_Map : public RGE_Map {
+public:
+    char gap_8D90[0x68];
+    TRIBE_Master_Cliff_Info cliff_master_table[256];
+
+    TRIBE_Cliff_Info get_cliff_info(RGE_Static_Object* obj);
+};
+
+TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj) {
+    register int z0 = 0;
+    register int z1 = 0;
+    register int z2 = 0;
+    register int z3 = 0;
+    TRIBE_Cliff_Info ret = {z0, z1, z2, z3};
 
     if (obj == 0) {
-        ret->info[0] = z0;
-        ret->info[1] = z1;
-        ret->info[2] = z2;
-        ret->info[3] = z3;
         return ret;
     }
 
     int facet = (int)obj->facet;
     int masterObjId = (int)obj->master_obj->id;
     int* entryPtr = (int*)((char*)this + 0x8DFC);
-    int i;
+    int i = 0;
 
-    for (i = 0; i < 256; i++) {
-        if (entryPtr[-1] == masterObjId && entryPtr[0] == facet) {
-            z0 = entryPtr[3]; z1 = entryPtr[4]; z2 = entryPtr[5]; z3 = entryPtr[6];
-            goto done;
-        }
-        if (entryPtr[1] == masterObjId && entryPtr[2] == facet) {
-            z0 = entryPtr[3]; z1 = entryPtr[4]; z2 = entryPtr[5]; z3 = entryPtr[6];
-            goto done;
-        }
+    while ((entryPtr[-1] != masterObjId || entryPtr[0] != facet) &&
+           (entryPtr[1] != masterObjId || entryPtr[2] != facet)) {
+        ++i;
         entryPtr += 10;
+        if (i > 255) {
+            ret.info[0] = z0;
+            ret.info[1] = z1;
+            ret.info[2] = z2;
+            ret.info[3] = z3;
+            return ret;
+        }
     }
 
-done:
-    ret->info[0] = z0;
-    ret->info[1] = z1;
-    ret->info[2] = z2;
-    ret->info[3] = z3;
-    return ret;
+    return this->cliff_master_table[i].info;
 }
