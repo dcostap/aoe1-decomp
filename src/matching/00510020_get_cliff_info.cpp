@@ -32,18 +32,13 @@
 // behavioral families remain 144/160B; exact-size variants are broad wrong frame/register/copy
 // topology. GIVEUP: not accepted_drift quality; mismatch is structural register allocation and
 // hidden-return/copy layout, not localized equivalent drift.
-// Retry 2026-08-02 Luna-510020 (10/10): baseline rebuilt 159B/154 diff. Reconstructed the
-// true struct-return ABI, Ghidra-style bounded scan, and initialized aggregate; the direct
-// aggregate form reached exact size 172B (155 diff, 58.4% shape). A four-form zero-init lab
-// was one variant family (all 172B/155 diff). Restoring the RGE_Map base was codegen-neutral.
-// Deriving the copied row from the loop index and the typed 40-byte cliff table exposed the
-// original LEA index topology (shape 63.9%, 178B/164 diff); direct aggregate return improved
-// it to 72.2% shape, 176B/164 diff, edit diff 97. Register-qualified zeros were codegen-neutral.
-// Best current source keeps the true return ABI, index-derived typed row, and direct aggregate
-// return. Remaining mismatch is the original four-save/zero-register basin (EBP/EBX/EDX/ESI)
-// and delayed EDI pop; no accepted-drift promotion.
-
-#include <string.h>
+// Retry 2026-08-02 Luna-510020: the true struct-return ABI and initialized aggregate were
+// retained, but the decompiler-shaped match-while/inner-bound loop was replaced with a
+// bounded for scan that returns the copied row directly on a match. Using the proven named
+// facet address as the cursor exposed the original table ownership and reached 4-byte drift.
+// Moving ++i before entryPtr += 10 recovered the original increment/add order and MATCH.
+// Replacing the raw cursor offset with &cliff_master_table[0].facet and removing the unused
+// string header were both codegen-neutral. Final default-flags check: 172/172 bytes, MATCH.
 
 struct TRIBE_Cliff_Info {
     int info[4];
@@ -91,11 +86,7 @@ public:
 };
 
 TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj) {
-    register int z0 = 0;
-    register int z1 = 0;
-    register int z2 = 0;
-    register int z3 = 0;
-    TRIBE_Cliff_Info ret = {z0, z1, z2, z3};
+    TRIBE_Cliff_Info ret = {0, 0, 0, 0};
 
     if (obj == 0) {
         return ret;
@@ -103,21 +94,17 @@ TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj) {
 
     int facet = (int)obj->facet;
     int masterObjId = (int)obj->master_obj->id;
-    int* entryPtr = (int*)((char*)this + 0x8DFC);
-    int i = 0;
+    int* entryPtr = &this->cliff_master_table[0].facet;
+    int i;
 
-    while ((entryPtr[-1] != masterObjId || entryPtr[0] != facet) &&
-           (entryPtr[1] != masterObjId || entryPtr[2] != facet)) {
+    for (i = 0; i < 256;) {
+        if ((entryPtr[-1] == masterObjId && entryPtr[0] == facet) ||
+            (entryPtr[1] == masterObjId && entryPtr[2] == facet)) {
+            return this->cliff_master_table[i].info;
+        }
         ++i;
         entryPtr += 10;
-        if (i > 255) {
-            ret.info[0] = z0;
-            ret.info[1] = z1;
-            ret.info[2] = z2;
-            ret.info[3] = z3;
-            return ret;
-        }
     }
 
-    return this->cliff_master_table[i].info;
+    return ret;
 }

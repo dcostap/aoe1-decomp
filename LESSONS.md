@@ -1942,3 +1942,22 @@ Why it helps:
 Verify every offset and array extent first; readable source is not permission to
 approximate layout. This normalization recovered full byte equality after a
 pointer-cursor reconstruction had appeared codegen-stalled.
+
+## Lesson: Direct-return bounded scans avoid a post-loop bound branch
+
+For a fixed-size table scan that returns a small aggregate on success and a
+preinitialized zero aggregate on failure, write the match arm as a direct return
+inside a bounded `for` loop and let loop exhaustion fall through to the zero
+return. An explicit `if (index == limit)` after the loop can add a redundant
+compare/branch and change the physical block layout.
+
+When a binary also carries a table cursor alongside the index, use the proven
+named field address for the cursor and put the source updates in observed order
+(for example `++index` before `cursor += stride`). VC5 can preserve that order
+in the emitted induction sequence even when a `for` increment clause would swap
+the two operations.
+
+Caveat:
+- apply only when the success/failure return topology and cursor stride are
+  established by the original assembly; do not use a cursor merely to steer
+  codegen around an unknown layout.
