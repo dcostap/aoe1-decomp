@@ -18,6 +18,15 @@
 // denominator locals, inverted/empty clamp branches, hp local, clamp-as-subtract, and flags /Op /Ob0 /G5. Best retained below is maxf local:
 // 52.6012% positional / 31.7919% edit, first mismatch +72. It fixes the initial max fild/load order but VC5 still loads hp too early and
 // the remaining x87 clamp/payment stack scheduling differs broadly. GIVEUP: no accepted_drift because drift spans x87 stack topology and call setup.
+// Retry 2026-08-02 Luna-4CC4C0 pass: claimed target and ran dossier/donor/ABI evidence.
+// Baseline rebuilt 177B, 103 positional diff bytes (58.1921%), exact calls/CFG and
+// first mismatch +0x48. Ten meaningful hypotheses covered direct max casts, maxf
+// product order/types, a post-product hp local, matched base context, volatile amount,
+// declaration placement, flattened data surface, and reversed clamp comparison.
+// The post-product hp and reversed-comparison variants worsened size/CFG; the other
+// variants collapsed to the same 177B FPU basin. Restored the best natural maxf source.
+// GIVEUP: exact match remains blocked by broad x87 scheduling/stack topology from
+// +0x48 through clamp/payment setup; calls, cleanup, and return structure are aligned.
 
 struct RGE_Static_Object {
     char gap_00[8];
