@@ -28,11 +28,60 @@ The source models the binary-backed `AIModule` fields, base-constructor call, `p
 
 ## Review rounds
 
-No blind cohort has been launched because the user instructed the orchestrator to start no additional subagents.
+### Round 1 — concurrent blind cohort, 2026-08-02
+
+- `sa-47849d84` — `openai-codex/gpt-5.6-luna`, max thinking
+- `sa-5de0aea2` — `deepseek/deepseek-v4-flash`, max thinking
+
+Both reviewers independently verified the signature, base-constructor arguments,
+derived layout, successful-path stores, delayed derived-vptr value/timing, return
+value, and final object state. Neither found a successful-construction data or
+call difference.
+
+The DeepSeek reviewer judged the absent target-local EH registration
+behaviorally inert because the visible body has no throwing operation after the
+base constructor. The Luna reviewer independently identified the original EH
+metadata's base-destructor unwind action, the rebuilt store-order difference,
+the unresolved vtable symbol requirement, and an inactive local `AIModuleID`
+constructor declaration whose parameter order disagrees with exact donors.
 
 ## Main-agent adjudication
 
-Pending fresh blind semantic review.
+- **Normal construction:** verified. The call, arguments, field widths/offsets,
+  final values, derived vptr, and implicit constructor return agree.
+- **Original EH metadata:** direct extraction from `empiresx.exe` at
+  `FuncInfo 0x5788F0` proves `maxState=1` and one unwind-map entry
+  `state 0 -> -1`, action `0x55C630`. That action loads the object from
+  `[ebp-0x18]` and tail-jumps to `AIModule::~AIModule` at `0x40E360`.
+  However, the function initializes its state word to `-1`, never writes state
+  zero, and has no IP-to-state map (`nIPMapEntries=0`), so the cleanup action is
+  not shown reachable by the visible executable path. The metadata is real, but
+  no concrete cleanup-outcome difference is currently proved.
+- **FS chain:** the original installs its registration before calling the base
+  constructor; the rebuild installs none. This is directly observable to an
+  exception/signal handler or code that walks `FS:[0]`, even if no ordinary
+  successful call does so. The two reviewers did not establish an ordinary
+  caller-reachable observer.
+- **Store/fault order:** original emitted code stores `player` at `+0xF0` before
+  zeroing `+0xF4..+0x100`; the current rebuilt code zeroes `+0xF4..+0x100`
+  before storing `player`. The C++ statements are in original order, but VC5
+  reschedules them. Final state matches for a valid object; an invalid or
+  boundary-mapped `this` can fault at a different first address and after
+  different partial writes. Under the project's executable-fault policy this is
+  a substantive unresolved edge, not silently harmless drift.
+- **Vtable symbol:** `MainDecisionAIModule_vtable` must eventually be defined at
+  the original vtable relocation/address. The symbolic donor-style declaration
+  expresses the intended ownership but the current per-function corpus is not a
+  complete link, so this remains an integration requirement rather than a
+  proved target-body difference.
+- **Local declaration concern:** exact `AIModuleID` donors support
+  `AIModuleID(char*, int)`, while this file declares `(int, char*)`. This target
+  does not call that constructor directly, so it does not alter target behavior,
+  but it should be corrected during the next source-normalization pass.
+
+Round 1 therefore does **not** meet the no-substantive-open-finding gate. The
+successful path is verified, but the emitted fault/store order and original-only
+FS registration remain unresolved.
 
 ## Integrated changes
 
@@ -40,4 +89,8 @@ The candidate was normalized to full binary-backed field ownership before phase 
 
 ## Final decision
 
-Pending. The function remains in `src/scratch` and must not move to `src/verified_logic` without complete fresh review cohorts and evidence-backed adjudication of EH and partial-construction behavior.
+Remain in `src/scratch`. Do not promote to `src/verified_logic` from this round.
+The next useful lead is a natural, canonical source/TU surface that preserves the
+original `player`-first emitted store order while retaining all verified fields;
+if no such source exists, the orchestrator must explicitly resolve the project's
+fault-observability standard before another blind cohort can converge.
