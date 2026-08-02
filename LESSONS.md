@@ -1965,6 +1965,14 @@ named field address for the cursor and put the source updates in observed order
 in the emitted induction sequence even when a `for` increment clause would swap
 the two operations.
 
+If the successful scan item immediately performs a call sequence, keep that
+sequence inside the positive arm of the bounded loop (`continue` for skipped
+items, call/cleanup/return for the first usable item) rather than breaking and
+handling the selected index after the loop. VC5 can then place the exhaustion
+return before the load/call handler and preserve the original cold-tail layout;
+an equivalent break-plus-post-loop guard may merge the exhaustion return into a
+common tail or add a redundant bound compare.
+
 Caveat:
 - apply only when the success/failure return topology and cursor stride are
   established by the original assembly; do not use a cursor merely to steer
@@ -2178,3 +2186,25 @@ Why it helps:
 Caveat:
 - use only when the executable proves the x87 cleanup and shared-tail topology;
   do not add gotos merely to steer bytes around an unproven source model.
+
+## Lesson: Narrow virtual setter parameters preserve low-word state increments
+
+When a short state field is loaded into `AX`, sign-extended into a separate
+compare register, and then incremented in one branch before a virtual call,
+model the setter's state parameter as `short` when ABI evidence permits it.
+The narrow callee surface lets VC5 pass the low-word increment without inserting
+an `and eax, 0xffff`, while retaining the original per-arm vtable loads.
+
+Try when:
+- the original preserves `AX` for `inc eax` after a signed bounds/equality test;
+- an `int` setter declaration adds zero-extension or causes the vtable load to
+  hoist before the branch.
+
+Why it helps:
+- parameter width changes the caller's required value-extension and register
+  liveness, which can recover both the low-word arithmetic and branch-local call
+  setup.
+
+Caveat:
+- confirm the narrow signature from callers, fields, or period source context;
+  do not widen or narrow a real API solely to perturb codegen.
