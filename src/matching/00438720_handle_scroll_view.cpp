@@ -30,6 +30,8 @@
 // - Restored the historical flat/raw-vtable source (160B, worse), then reused the exact matched diam_map.cpp TPanel/RGE_View donor surface (same 152B basin).
 // - Typed the tile out-parameter and varied tile/original declaration order, volatile address aliases, direct parameter stores, register parameters, const out declarations, and separated assignments; no behavior-correct variant improved the setup basin.
 // - Best retained source uses the matched TPanel/RGE_View surface, typed RGE_Tile**, and saved full-width original parameters. Remaining drift is the broad pre-pick_tile LEA/save/address topology (original LEAs precede callee-save pushes; rebuild has a four-byte larger setup), not accepted-drift quality.
+// Luna438720 breakthrough: modeled pick_tile's two short outputs as natural short locals while leaving the long parameters live for the final mouse stores; VC5 coalesced those output homes with the incoming parameter slots and reproduced the original save/LEA schedule.
+// Exact: 148B, 0.0000% positional/edit diff, all 50 instructions and 4 call sites aligned.
 
 struct RGE_Tile;
 
@@ -40,29 +42,29 @@ public:
 
 class TPanel {
 public:
-    virtual ~TPanel() {}
-    virtual void v04() {}
-    virtual void v08() {}
-    virtual void v0C() {}
-    virtual void v10() {}
-    virtual void v14() {}
-    virtual void v18() {}
-    virtual void v1C() {}
-    virtual void update_view(int mode) {}
+    virtual ~TPanel();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void update_view(int mode);
     char gap_00[0xF0];
 };
 
 class RGE_View {
 public:
-    virtual ~RGE_View() {}
-    virtual void v04() {}
-    virtual void v08() {}
-    virtual void v0C() {}
-    virtual void v10() {}
-    virtual void v14() {}
-    virtual void v18() {}
-    virtual void v1C() {}
-    virtual void update_view(int mode) {}
+    virtual ~RGE_View();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void update_view(int mode);
 };
 
 class RGE_Diamond_Map : public TPanel {
@@ -82,21 +84,19 @@ public:
 
 void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2)
 {
+    short out_1;
+    short out_2;
     RGE_Tile* tile;
-    long orig_2;
-    long orig_1;
-    orig_2 = param_2;
-    orig_1 = param_1;
-    if (this->pick_tile(param_1, param_2, (short*)&param_1, (short*)&param_2, &tile) != 0) {
-        this->player->set_view_loc((float)(short)param_2 - 0.5f, (float)(short)param_1 - 0.5f);
+    if (this->pick_tile(param_1, param_2, &out_1, &out_2, &tile) != 0) {
+        this->player->set_view_loc((float)out_1 - 0.5f, (float)out_2 - 0.5f);
 
         this->update_view(1);
 
         if (this->main_view != 0) {
-        this->main_view->update_view(1);
+            this->main_view->update_view(1);
         }
 
-        this->mouse_last_x = orig_1;
-        this->mouse_last_y = orig_2;
+        this->mouse_last_x = param_1;
+        this->mouse_last_y = param_2;
     }
 }

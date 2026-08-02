@@ -81,6 +81,39 @@ The member access inside `&&` prevents VC5 from optimizing away the redundant
 null check, and keeps the saved-pointer register allocation (push edi/edi = ptr).
 Example: 0047A5B0 TPicturePanel::free_pic.
 
+## Lesson: Sibling `if` statements can preserve a redundant recheck after an early return
+
+When the original enters a second conditional block with a predicate that was
+already tested in an earlier block, keep the blocks as separate sibling `if`
+statements rather than nesting the second condition inside the first guard:
+
+```cpp
+if (from != 0) {
+    if (from == to) {
+        play_one(from);
+        return 1;
+    }
+}
+if (from != 0 && to != 0) {
+    play_range(from, to);
+    return 1;
+}
+```
+
+Try when:
+- the original has `test from`/conditional jump at the start of one block and
+  repeats `test from` at the start of a later block after an equality branch;
+- a nested equivalent source makes VC5 CSE the second test and removes a
+  binary-observed two-instruction block.
+
+Why it helps:
+- VC5 preserves the sibling block's independently evaluated predicate, while
+  nesting lets it carry the first guard's fact and omit the redundant test/jump.
+
+Caveat:
+- apply only when the repeated check is present in the executable; surrounding
+  inline-helper/TU context can still control delayed callee-save prologues.
+
 ## Lesson: IAT import thunks via `extern const` function pointer
 
 When the original calls through an import thunk (`call dword [IAT_addr]` like
@@ -296,6 +329,15 @@ out-pointer local and pass its address, rather than taking the address of the in
 parameter just because the binary uses that incoming slot. In old C utility code,
 an initialized descriptor plus a separate wave-data output local can let VC5 reuse
 the dead name-parameter home while preserving the original zero-store schedule.
+
+When narrow output locals are passed by address while the original full-width
+parameters are used again after the call, keep the outputs as ordinary `short`
+locals and leave the parameters untouched in source. VC5 can coalesce those locals
+with the incoming parameter homes while saving the unmodified parameters in
+callee-saved registers, reproducing an `lea`-before-save prologue. Explicitly
+casting the parameter addresses or introducing early full-width copies can instead
+force the loads before address setup or preserve the wrong narrowed values.
+Verified with `handle_scroll_view` (00438720).
 
 ## Lesson: Nested-if branch control for signed bounds checks
 
