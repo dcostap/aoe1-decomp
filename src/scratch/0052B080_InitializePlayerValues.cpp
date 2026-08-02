@@ -68,19 +68,37 @@
 // Retry 2026-05-24 assigned pass: 11 more probes. Literal-zero/no-zero-local and explicit goto/preinc loop stayed identical to current best. Volatile block stores worsened to 91.0569% and first mismatch 4. Declaring pointer locals before zero/counter worsened to 87.8049% first mismatch 4. Fully direct indexed this+offset form worsened badly (95.122%, first mismatch 1). Flag probes /Og-, /Oi-, /Ot, /Od /Oy either stayed current best or produced wrong broad families; /Os and /O1 did not produce a useful compile/result under this setup. Still no accepted_drift: broad loop register allocation, dead-store elimination, constant hoisting, and scheduling differ throughout the body.
 // Retry 2026-05-26 Boss pass: revalidated old zero-first source (123B, 81.3008% positional, first mismatch 12). Tried 15 variants: all-volatile stores, volatile zero-only, raw this-offset volatile zeros, for/preinc, declaration-order split locals, pointer/counter order, unsigned long counter, memset block clear, separated constant expressions, while(1)/break, volatile saved pointer, explicit count temp, moving increment around memset, p-before-q increment, and per-store 200 locals. Best new source uses natural `memset(block,0,16)` for the four zero stores; it keeps correct prologue registers through the zero block and improves to 78 positional bytes / 63.4146% and edit diff 30 / 24.3902%, but still has non-local drift: saved-pointer stack store is scheduled after `add ecx`, increment/add order differs, VC5 hoists the repeated 200 into ESI, and tail offsets shift. GIVEUP; not accepted_drift because remaining differences are broad scheduling/constant-hoist topology, not localized benign drift.
 
+// Retry 2026-08-02 LunaM52B080 (10 meaningful probes, no variant lab):
+// ran the required dossier, donor ranking, and ABI queries, then modeled the
+// proven Player_Start_Info layout (Food at +0x1998) and _padding_ at +0x18CC.
+// The closest source uses typed member addresses plus memset(block,0,16),
+// declaration order `p; saved=p; q`, and yields 123 bytes / 23 positional
+// differences (18.6992%), 85.37% shape, 108 equal bytes, first mismatch +0x20.
+// This improves the old best substantially and exactly matches the prologue,
+// stack home, zero stores, tail, and all memory offsets after the induction
+// setup. Reordering saved before q fixes the +0x0F scheduling mismatch.
+// Prefix/postfix counter and p/q update variants are codegen duplicates; typed
+// block aliases regress q-base scheduling. Volatile destination casts are also
+// a duplicate and do not prevent the VC5 constant hoist. Remaining drift is
+// the induction order (`add eax,4` / `add ecx,10h` / `inc edx` versus original
+// `inc edx` / `add ecx,10h` / `add eax,4`) and repeated-200 hoisting (`mov esi`
+// versus two immediate stores). No exact or accepted-drift promotion.
+
 #include <string.h>
+
+struct Player_Start_Info {
+    int Gold;
+    int Wood;
+    int Food;
+    int Stone;
+};
 
 class T_Scenario {
 public:
-    char gap_00[0x188C];
-    int fields_188C[16];
-    int PlType[16];
-    char gap_190C[0x8C];
-    int players_1998[16 * 4];
-    char gap_1A98[0x310C];
-    int far_fields_1[16];
-    char gap_4BE4[0x518];
-    int far_fields_2[16];
+    char gap_00[0x18CC];
+    int _padding_[0x31];
+    Player_Start_Info player_info[16];
+    char gap_1A90[0x3218];
 
     void InitializePlayerValues();
 };
@@ -89,20 +107,19 @@ void T_Scenario::InitializePlayerValues()
 {
     int zero = 0;
     int i = 0;
-    int* p = (int*)((char*)this + 0x18CC);
-    int* q = (int*)((char*)this + 0x1998);
+    int* p = this->_padding_;
     int* saved = p;
+    int* q = &this->player_info[0].Food;
 
     do {
         int* block = q - 2;
-
-        i++;
-        q += 4;
         p++;
+        ++i;
+        q += 4;
 
         memset(block, 0, 16);
 
-        p[0x1f] = zero;
+        p[0x20] = zero;
         block[0] = zero;
 
         q[-5] = 200;
@@ -110,7 +127,7 @@ void T_Scenario::InitializePlayerValues()
         q[-3] = 150;
 
         p[-1] = zero;
-        p[0xf] = i;
+        p[0x0f] = i;
         p[-0x11] = 4;
         p[0xCB6] = zero;
         p[0xE0C] = zero;
