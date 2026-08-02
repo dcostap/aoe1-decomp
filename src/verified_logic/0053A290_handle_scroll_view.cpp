@@ -1,5 +1,6 @@
 // VA: 0053A290 RGE_View::handle_scroll_view (view.cpp:5922-6155)
 // __thiscall virtual (vtable slot 59), int (long param_1, long param_2), ret 8. 1801 bytes.
+// Status: VERIFIED_LOGIC — post-review case-7 ordering corrected; non-exact tail merge.
 //
 // Attempt log (owner DS4-53A290, 2026-08-02):
 // 1. baseline: natural reconstruction from packet/decomp + binary-verified details

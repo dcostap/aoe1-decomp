@@ -241,5 +241,24 @@ No substantive finding remains open after formal round 2.
 
 ## Final decision
 
-Pending. The function remains in `src/scratch` and must not move to
-`src/verified_logic` while any substantive finding is unresolved.
+Approved for `src/verified_logic` on 2026-08-02 after two complete fresh blind
+cohorts (four independent reviews), main-agent instruction-level adjudication,
+and a bounded correction followed by fresh post-fix review.
+
+The first cohort identified one real discrepancy: case 7 called virtual redraw
+between the x and y mouse-state stores. The original exposes both new values at
+that call boundary. The source now stores both fields first, and focused rebuilt
+disassembly confirms VC5's shared redraw/return tail preserves that corrected
+runtime ordering. The second cohort independently found no remaining behavioral
+difference. All switch/default values, predicates and bounds, x87/integer/short
+conversions, call targets and arguments, field widths and offsets, object
+reloads, cursor APIs, warp behavior, redraw decisions, null/error paths, and
+returns are accounted for. No substantive finding remains open.
+
+Final nonsemantic metrics are original/rebuilt size 1801/1801, frame
+`0x24`/`0x24`, saved registers aligned, instructions 588/586, conditional
+branches 59/59, jumps 9/9, strict difference 96 bytes in 15 spans, and bounded
+edit cost 3.03%. Static call sites are 36/35 and returns 10/9 because VC5 merges
+one corrected case-7 redraw/return with a later identical tail; path-level
+disassembly verifies the call still executes after both required stores.
+Promotion asserts reconstructed executable behavior, not exact code parity.
