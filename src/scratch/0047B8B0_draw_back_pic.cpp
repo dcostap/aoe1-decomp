@@ -24,31 +24,47 @@
 // 62 positional / 37 edit, first mismatch +19); all close variants stayed 176B. Still no
 // accepted_drift proposal: the behavior-equivalent diff is localized, but the best source is
 // short/truncated and exact-size variants are not localized.
+// Luna47B8B0 baseline: natural nested inclusive tiling source is 176B; all calls/fields/CFG align,
+// but VC5 folds each base-plus-cursor add into a memory-destination form.
+// ABI probes: corrected TShape return/reference/parameter types and TDrawArea*; relocation symbols now match,
+// with no codegen movement. Offset-first terms, coordinate locals, and a canonical TPanel base were duplicates.
+// Volatile coordinate rereads reached exact size and 28-byte positional drift, but changed scheduling broadly;
+// rolled back as diagnostic-only. Raw probes of one-sided volatility, long cursors, comma sequencing, and swaps
+// did not produce the original order. Keep the ordinary source reconstruction, not the compiler-steering variant.
+
+class TDrawArea;
 
 struct TShape {
-    int shape_minmax(long* y_max, long* pic_hgt, long* x_min, long* y_min, int frame);
-    int shape_draw(void* draw_area, long y, long x, int frame, int param5, int param6);
+    unsigned char shape_minmax(long& y_max, long& pic_hgt, long& x_min, long& y_min, long frame);
+    unsigned char shape_draw(TDrawArea* draw_area, long x, long y, long frame,
+                             unsigned char color_flag, unsigned char* color_table);
 };
 
-struct TScrollBarPanel {
-    char gap_00[0x0C];       // +0x00 to +0x0B
+class TPanel {
+public:
+    virtual void vf00();
+    char gap_04[0x0C - 0x04]; // +0x04 to +0x0B
     long field_0C;           // +0x0C (base y offset)
     long field_10;           // +0x10 (base x offset)
     long field_14;           // +0x14 (inner loop bound)
     long field_18;           // +0x18 (outer loop bound)
     char gap_1C[4];          // +0x1C
-    void* field_20;          // +0x20 (draw area pointer)
+    TDrawArea* field_20;     // +0x20 (draw area pointer)
+};
+
+class TScrollBarPanel : public TPanel {
     char gap_24[0xE4];       // +0x24 to +0x107
     TShape* button_pics;     // +0x108
     int back_frame;          // +0x10C
 
+protected:
     void draw_back_pic();
 };
 
 void TScrollBarPanel::draw_back_pic() {
     if (this->button_pics != 0 && this->back_frame != -1) {
         long x_min, y_max, pic_hgt, y_min;
-        this->button_pics->shape_minmax(&y_max, &pic_hgt, &x_min, &y_min, this->back_frame);
+        this->button_pics->shape_minmax(y_max, pic_hgt, x_min, y_min, this->back_frame);
 
         int row_step = (x_min - y_max) + 1;
         int col_step = (y_min - pic_hgt) + 1;
@@ -63,10 +79,7 @@ void TScrollBarPanel::draw_back_pic() {
                             this->field_20,
                             this->field_0C + inner,
                             this->field_10 + outer,
-                            this->back_frame,
-                            0,
-                            0
-                        );
+                            this->back_frame, 0, 0);
                         inner += row_step;
                     } while (inner <= this->field_14);
                 }
