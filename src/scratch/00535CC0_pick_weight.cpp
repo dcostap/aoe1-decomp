@@ -6,20 +6,22 @@
 // ret 8 cleanup (2 params, thiscall)
 //
 // === Attempt log ===
-// attempts 1-18: all produce 208-211 byte function, same codegen family.
-// Persistent register allocation differences:
-//   - bVar1 in ecx vs original's edx
-//   - switch var in eax vs original's ecx
-//   - no pre-zero xor eax,eax at switch dispatch
-//   - case 2: branch-free (setne/dec/and) vs original's branching
-// Tried: if-else/ternary/nested bVar1 forms, param_1 overwrite vs local var,
-//   __fastcall standalone function, order changes, id capture.
-// All produce same register family; root cause appears to be VC5 single-function
-// TU context (view.cpp with ~100 virtual functions in RGE_View) vs isolated
-// compilation. Full TU compilation might resolve but is not single-function
-// reproducible.
-//
-// Best variant retained below.
+// Baseline isolated source was structurally broad (198 differing bytes, 198-byte
+// rebuilt body).  Reconstructing a separate select_level local, initialized before
+// the touched-object test, recovered the original 211-byte size and the complete
+// first 46-byte load/test block (probe 3).
+// Probes 4-6: bool/initialized-result/local-declaration-order variants either
+// regressed or were codegen duplicates.  A polymorphic TPanel/RGE_View surface and
+// int/long result-width variants were also duplicates (probes 8-9).
+// Probe 7: a named zero result was a duplicate, but is retained because the binary
+// pre-zeroes EAX before the level dispatch and returns that zero on two arms.
+// Probe 10: reversing the final case-2 equality to an explicit negative guard
+// improved the isolated result to 207 bytes, 150 differing bytes, 88.57% shape,
+// and 77.94% exact-block coverage.  The remaining first hunk is register coloring:
+// rebuilt bVar1 is ECX while original is EDX; rebuilt dispatch value is EAX while
+// original is ECX; original also hoists XOR EAX,EAX and keeps a branching case-2
+// tail.  No calls, frame, or ABI/layout uncertainty remains.
+// Best source reconstruction retained below; no exact match in this assignment.
 
 struct RGE_Master_Static_Object_Layout {
     char _gap_00[0x8D];
@@ -32,23 +34,32 @@ struct RGE_Static_Object_Layout {
     RGE_Master_Static_Object_Layout* master_obj;
 };
 
-struct RGE_View_Helper {
-    char _gap_00[0x33C];
+class TPanel {
+public:
+    virtual void v00();
+};
+
+class RGE_View_Helper : public TPanel {
+public:
+    char _gap_04[0x33C - 4];
     int UC_ObjectTouched;
     int UC_TouchedObj;
-    int pick_weight(RGE_Static_Object_Layout* param_1, int param_2);
+    virtual int pick_weight(RGE_Static_Object_Layout* param_1, int param_2);
 };
 
 int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2) {
-    // Check touched state
     int bVar1;
+    unsigned char select_level = param_1->master_obj->select_level;
+
+    // Check touched state.
     if (this->UC_ObjectTouched && this->UC_TouchedObj == param_1->id)
         bVar1 = 1;
     else
         bVar1 = 0;
 
-    // Overwrite param_1 with select_level (original reuses stack slot)
-    param_1 = (RGE_Static_Object_Layout*)(unsigned)(unsigned char)param_1->master_obj->select_level;
+    param_1 = (RGE_Static_Object_Layout*)(unsigned)select_level;
+
+    int zero = 0;
 
     // Switch on select_level (values 2,3,4 handled, default=1)
     switch ((int)(unsigned)param_1) {
@@ -60,12 +71,12 @@ int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2)
         case 3:
             if (bVar1) return 5;
             if (param_2 == 1 || param_2 == 2) return 3;
-            return 0;
+            return zero;
         case 2:
             if (bVar1) return 5;
             if (param_2 == 1 || param_2 == 2) return 3;
-            if (param_2 == 3) return 2;
-            return 0;
+            if (param_2 != 3) return zero;
+            return 2;
         default:
             return 1;
     }
