@@ -47,6 +47,13 @@
 // in scratch; no accepted_drift because the drift spans prologue/FPU/compare scheduling.
 // Retry 2026-05-24 Boss pass: 19 more probes. Revalidated current exact-size best (17.6471% positional/edit, first mismatch +6). Tried last_order/p2 before n, target compare operand swap, explicit x/y ftol temps, early last unit count, delta-pointer loop, do-loop, pointer-walk while, flat && predicate, reversed FPU comparisons, volatile/register last_order, register param, uchar/int/long/volatile n widths, and const pointer locals. No variant improved on the current source; loop rewrites and uchar/volatile count regressed badly. Stable blocker remains the same early scheduling/coloring (VC5 loads param count before EBP/ESI/last_order), plus FPU operand order and target compare coloring. Not accepted_drift: broad prologue/FPU/compare scheduling, not localized benign drift.
 // Retry 2026-05-26 Boss pass: 15 more probes. Revalidated current exact-size best (17.6471% positional/edit, first mismatch +6). Tried split last_order-first declarations (matched prologue through last_order but introduced early unit-pointer LEA/store and worsened to 23.5%), last_order+n+m+p declaration/assignment variants, char last-count local, direct member count, target-id operand swap, explicit ftol int locals, volatile float rereads, negative-goto form, and do/pointer-walk loop. None beat current best; several compile/regressed or worsened branch/FPU layout. GIVEUP: no accepted_drift because remaining drift is still broad prologue scheduling, FPU operand order, target compare coloring, not a localized benign difference.
+// Retry 2026-08-02 Luna-435110 (10 meaningful probes): full RGE_Command data/polymorphic context was tested; the
+// polymorphic declaration plus raw unsigned-char* last_order and reversed source operands for both coordinate
+// comparisons improved the best to 24/153 positional bytes (15.6863%), exact size, all 4 calls/64 instructions,
+// first mismatch +6. Ground-truth nested target/param+1 layout regressed; volatile last_order over-framed; reversed
+// pointer declarations regressed; late target_id local was codegen-neutral. Remaining drift is broad prologue
+// scheduling/register coloring (original saves EBP/ESI and loads last_order before count), pointer register roles,
+// and final target compare register (original EDX versus rebuilt ECX). Left in scratch; no accepted_drift.
 
 class RGE_Command_Order {
 public:
@@ -61,15 +68,21 @@ public:
 
 class RGE_Command {
 public:
-    char gap_00[8];
-    RGE_Command_Order* last_order; // +0x08
+    virtual void do_command_give_attribute(void*);
+    virtual ~RGE_Command();
+    virtual void do_command(void*);
+    void* world; // +0x04
+    unsigned char* last_order; // +0x08 (raw storage in the real class)
+    long last_order_size; // +0x0C
+    long last_order_time; // +0x10
+    void* com_hand; // +0x14
 
     unsigned char duplicate_check_command_order(RGE_Command_Order* param_1);
 };
 
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
-    RGE_Command_Order* last_order = this->last_order; unsigned int n=(unsigned char)param_1->unit_num; long* p1=param_1->units; long* p2=last_order->units; int i;
-    if (n == (unsigned char)last_order->unit_num) { if ((short)(int)param_1->pos_x == (short)(int)last_order->pos_x) { if ((short)(int)param_1->pos_y == (short)(int)last_order->pos_y) { if (last_order->target_id == param_1->target_id) { for(i=0;i<(int)n;i++){ if(p1[i]!=p2[i]) goto fail; } return 1; } } } }
+    RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order; unsigned int n=(unsigned char)param_1->unit_num; long* p1=param_1->units; long* p2=last_order->units; int i;
+    if (n == (unsigned char)last_order->unit_num) { if ((short)(int)last_order->pos_x == (short)(int)param_1->pos_x) { if ((short)(int)last_order->pos_y == (short)(int)param_1->pos_y) { long target_id = last_order->target_id; if (target_id == param_1->target_id) { for(i=0;i<(int)n;i++){ if(p1[i]!=p2[i]) goto fail; } return 1; } } } }
 fail: return 0;
 }
