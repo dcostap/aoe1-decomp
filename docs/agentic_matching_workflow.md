@@ -5,6 +5,14 @@ VC5 source shape cannot safely be solved as one undifferentiated problem. This
 document describes the coordination and evidence tools intended for parallel
 agent work.
 
+In the project-wide model, the user-designated main agent maintains the queue and
+assigns one function to one matching worker at a time. A worker's default ten
+meaningful hypotheses bound one assignment, not the lifetime of the function.
+The main agent may send later fresh workers to the same paused target after
+reading and validating the accumulated attempt log. See
+`docs\main_agent_workflow.md` for the complete orchestrator and logic-review
+workflow.
+
 The original EXE remains the behavior oracle. A generated dossier, generated
 type dump, Ghidra output, checkpoint score, or agent lease never overrides the
 normal exact-match and review rules in `AGENTS.md`.
@@ -93,6 +101,9 @@ different bound; the complete short-prompt contract is in `AGENTS.md`.
 The scratch-file attempt log remains the durable project notebook. Session files
 are local coordination state and are not committed; copy durable conclusions into
 the scratch header before pausing or releasing a target.
+The attempt log must remain when a function later enters `verified_logic`; it is
+the evidence of how thoroughly exact matching was pursued. Semantic-review
+reports belong in the separate per-function ledger under `logic_reviews\`.
 
 ## Generate a binary-evidence dossier
 
@@ -152,7 +163,7 @@ python tools\query_abi.py --va 00480080 --json
 ```
 
 By default, source references come only from `src\matching`. Use
-`--include-nonexact` when scratch and accepted-drift context is diagnostically
+`--include-nonexact` when scratch, accepted-drift, and verified-logic context is diagnostically
 useful; those rows are labeled separately. Symbol queries can find generated
 class methods as well as function/global/type names. Declaration-like rows are
 grouped by exact textual spelling with separate exact/nonexact occurrence counts,
@@ -288,6 +299,13 @@ canonical scratch source at a time. Useful independent roles are:
 
 Analysts should return evidence or proposed patches to the target owner rather
 than creating competing scratch owners.
+
+This matching-phase collaboration is distinct from a formal logic-review cohort.
+Formal logic reviewers are fresh, concurrent, and read-only. They do not inspect
+the function's logic-review ledger, Git history, or one another's reports. The
+main agent collects the complete cohort, adjudicates it, directly applies bounded
+accepted fixes, updates the ledger, and launches another fresh cohort when the
+candidate changes materially.
 
 ## Stop conditions
 

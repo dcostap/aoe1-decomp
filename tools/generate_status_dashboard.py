@@ -11,12 +11,13 @@ from status_core import build_status_rows, status_counts, write_status_csv
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
-BUCKET_ORDER = ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"]
-MATCHED_PROGRESS_BUCKETS = {"matching", "accepted_drift"}
+BUCKET_ORDER = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
+COMPLETED_PROGRESS_BUCKETS = {"matching", "accepted_drift", "verified_logic"}
 CORPUS_ORDER = ["normal", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 BUCKET_COLORS = {
     "matching": "#22c55e",
     "accepted_drift": "#f59e0b",
+    "verified_logic": "#06b6d4",
     "scratch": "#8b5cf6",
     "unclaimed": "#475569",
     "conflict": "#ef4444",
@@ -130,10 +131,10 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
                 "valueBytes": 0,
                 "valueAsmLines": 0,
                 "functionCount": 0,
-                "matchedCount": 0,
+                "completedCount": 0,
                 "remainingCount": 0,
                 "remainingBytes": 0,
-                "matchedBytes": 0,
+                "completedBytes": 0,
                 "blockerCount": 0,
                 "customFlagsCount": 0,
                 "bucketCounts": {name: 0 for name in BUCKET_ORDER},
@@ -151,6 +152,7 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
             "callingConvention": row["calling_convention"],
             "bucket": bucket,
             "sourcePath": row["source_path"],
+            "logicReviewPath": row.get("logic_review_path", ""),
             "sourceStatus": row["source_status"],
             "sourceFlagsNote": row["source_flags_note"],
             "sourceNote": row["source_note"],
@@ -190,9 +192,9 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
         group["bucketCounts"][bucket] = int(group["bucketCounts"][bucket]) + 1
         group["bucketBytes"][bucket] = int(group["bucketBytes"][bucket]) + size_bytes
 
-        if bucket in MATCHED_PROGRESS_BUCKETS:
-            group["matchedCount"] = int(group["matchedCount"]) + 1
-            group["matchedBytes"] = int(group["matchedBytes"]) + size_bytes
+        if bucket in COMPLETED_PROGRESS_BUCKETS:
+            group["completedCount"] = int(group["completedCount"]) + 1
+            group["completedBytes"] = int(group["completedBytes"]) + size_bytes
         if row["is_remaining"] == "yes":
             group["remainingCount"] = int(group["remainingCount"]) + 1
             group["remainingBytes"] = int(group["remainingBytes"]) + size_bytes
@@ -209,10 +211,10 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
         )
         function_count = int(group["functionCount"])
         value_bytes = int(group["valueBytes"])
-        matched_count = int(group["matchedCount"])
-        matched_bytes = int(group["matchedBytes"])
-        group["progressFunctions"] = 0.0 if function_count == 0 else round((matched_count / function_count) * 100.0, 2)
-        group["progressBytes"] = 0.0 if value_bytes == 0 else round((matched_bytes / value_bytes) * 100.0, 2)
+        completed_count = int(group["completedCount"])
+        completed_bytes = int(group["completedBytes"])
+        group["progressFunctions"] = 0.0 if function_count == 0 else round((completed_count / function_count) * 100.0, 2)
+        group["progressBytes"] = 0.0 if value_bytes == 0 else round((completed_bytes / value_bytes) * 100.0, 2)
         group["dominantBucket"] = max(BUCKET_ORDER, key=lambda name: (int(group["bucketCounts"][name]), int(group["bucketBytes"][name])))
     return group_list
 
@@ -225,25 +227,33 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
     total_functions = len(normal_rows)
     total_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows)
-    matched_functions = sum(1 for row in normal_rows if row["source_bucket"] in MATCHED_PROGRESS_BUCKETS)
-    matched_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] in MATCHED_PROGRESS_BUCKETS)
+    completed_functions = sum(1 for row in normal_rows if row["source_bucket"] in COMPLETED_PROGRESS_BUCKETS)
+    completed_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] in COMPLETED_PROGRESS_BUCKETS)
     remaining_functions = sum(1 for row in normal_rows if row["is_remaining"] == "yes")
     remaining_bytes = sum(to_int(row["size_bytes"]) for row in normal_rows if row["is_remaining"] == "yes")
+    logic_review_functions = sum(1 for row in normal_rows if row.get("has_logic_review") == "yes")
+    logic_review_in_progress = sum(
+        1
+        for row in normal_rows
+        if row.get("has_logic_review") == "yes" and row["source_bucket"] == "scratch"
+    )
 
     bucket_counts = {bucket: sum(1 for row in normal_rows if row["source_bucket"] == bucket) for bucket in BUCKET_ORDER}
     bucket_bytes = {bucket: sum(to_int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] == bucket) for bucket in BUCKET_ORDER}
     corpus_counts = {bucket: sum(1 for row in rows if row["corpus_bucket"] == bucket) for bucket in CORPUS_ORDER}
 
-    progress_functions = 0.0 if total_functions == 0 else (matched_functions / total_functions) * 100.0
-    progress_bytes = 0.0 if total_bytes == 0 else (matched_bytes / total_bytes) * 100.0
+    progress_functions = 0.0 if total_functions == 0 else (completed_functions / total_functions) * 100.0
+    progress_bytes = 0.0 if total_bytes == 0 else (completed_bytes / total_bytes) * 100.0
 
     summary = {
         "totalFunctions": total_functions,
-        "matchedFunctions": matched_functions,
+        "completedFunctions": completed_functions,
         "remainingFunctions": remaining_functions,
         "totalBytes": total_bytes,
-        "matchedBytes": matched_bytes,
+        "completedBytes": completed_bytes,
         "remainingBytes": remaining_bytes,
+        "logicReviewFunctions": logic_review_functions,
+        "logicReviewInProgress": logic_review_in_progress,
         "progressFunctions": round(progress_functions, 2),
         "progressBytes": round(progress_bytes, 2),
         "bucketCounts": bucket_counts,
@@ -281,6 +291,7 @@ def main() -> None:
         "Counts: "
         f"matching={counts['matching']} "
         f"accepted_drift={counts['accepted_drift']} "
+        f"verified_logic={counts['verified_logic']} "
         f"scratch={counts['scratch']} "
         f"unclaimed={counts['unclaimed']} "
         f"conflict={counts['conflict']} "

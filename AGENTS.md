@@ -53,7 +53,12 @@ Repository roles:
 - `src\scratch\...`: active or paused unresolved functions, one file per target.
 - `src\accepted_drift\...`: reviewed localized behavior-equivalent non-exact
   functions; rare.
+- `src\verified_logic\...`: behaviorally reconstructed functions promoted only
+  after exact matching has genuinely stalled and repeated independent semantic
+  reviews have converged with no substantive open finding.
 - `src\matching\...`: exact validated finished functions.
+- `logic_reviews\...`: versioned per-function ledgers for the logic-review phase;
+  never use these ledgers as input to a blind first-pass review.
 - `LESSONS.md`: shared pattern memory for generalized exact-match breakthroughs.
 
 ## Project status queries and target search
@@ -79,7 +84,8 @@ python tools\query_project_status.py --summary --normal
 ```
 
 Useful filters include `--normal`, `--unclaimed`, `--scratch`, `--matching`,
-`--accepted-drift`, `--conflict`, `--remaining`, `--no-blockers`, `--blockers`,
+`--accepted-drift`, `--verified-logic`, `--conflict`, `--remaining`,
+`--logic-review`, `--logic-review-in-progress`, `--no-blockers`, `--blockers`,
 `--source <file-or-path-substring>`, `--query <tokens>`, `--min-size`,
 `--max-size`, `--smallest`, `--largest`, `--sort size|asm|va|name|source|bucket|diff|edit-diff|first-mismatch`,
 `--paths`, `--notes`, `--unleased`, `--active-leases`, `--owner <agent>`,
@@ -154,6 +160,9 @@ prompt.
    blind. A source change that emits the same code as an earlier probe is useful
    negative evidence, but heed the session's `Codegen duplicate` notice and do
    not keep exploring the same compiler basin.
+   This is a per-worker bound, not a declaration that the function is globally
+   exhausted. Preserve enough evidence in the source attempt log for a later
+   worker and the project orchestrator to avoid repeating the same hypotheses.
 10. If exact, review source/flags, validate again, move (not copy) to
     `src/matching`, and validate after the move. If unresolved, leave the best
     state in `src/scratch` and write the compact attempt log **before** the final
@@ -165,6 +174,10 @@ prompt.
     recorded checks unless its latest check is a current `validation`; edits after
     validation make it stale and require another validation. Never use
     `accepted_drift` merely because the budget ended.
+    An ordinary matching worker never promotes a target to `verified_logic` or
+    starts semantic review on its own; that transition belongs to the designated
+    project orchestrator after reviewing cumulative work from as many sequential
+    matching assignments as it considers useful.
 11. Report target, outcome, probe count, current/best metrics, changed files,
     validations, and the evidence-backed next lead. A bounded documented pause
     is a valid outcome; never force a fake match.
@@ -274,6 +287,9 @@ locate those gaps before tuning entry registers.
    move, not a copy; a VA must have exactly one compiler-facing owner.
 12. Use `src\accepted_drift\...` only for rare reviewed localized equivalent
    drift, preserving the full attempt log and adding an `ACCEPTED_DRIFT` note.
+13. Only the designated project orchestrator may enter the separate logic-review
+   workflow or promote to `src\verified_logic\...`; ordinary matching workers
+   stop with a validated, documented scratch state.
 
 When assigned a whole PDB translation unit, do not call it exhausted just because
 one function is large/EH-framed/sticky. Give every tractable function a real pass;
@@ -530,13 +546,15 @@ Use edit/resync diagnostics for triage:
 - positional diff remains the promotion authority;
 - edit diff is a guide to localize experiments, not a claim of equivalence.
 
-## Scratch, accepted drift, and matching
+## Scratch, accepted drift, verified logic, and matching
 
 Status meanings:
 
 - `src\scratch\...`: active or paused unresolved function.
 - `src\accepted_drift\...`: rare reviewed localized non-exact but
   behavior-equivalent VC5 drift.
+- `src\verified_logic\...`: independently reviewed semantic reconstruction after
+  exact matching was deliberately suspended; broader codegen drift may remain.
 - `src\matching\...`: exact validated match only.
 
 It is okay to leave a function in scratch when the remaining mismatch is
@@ -552,9 +570,36 @@ accepted drift for changed predicates, calls, stack cleanup, memory effects, cop
 sizes, virtual dispatch, or broad unexplained drift. Folder placement is the only
 status marker; no separate manifest.
 
+Verified logic is a different and more demanding semantic-review workflow, not a
+place to move functions merely because matching is difficult. The full process is
+owned by the designated main agent and documented in
+`docs\main_agent_workflow.md`. Promotion requires a per-function ledger under
+`logic_reviews\`, repeated fresh read-only review cohorts, evidence-backed
+adjudication of every substantive finding, direct main-agent integration of
+bounded fixes, and no open behavioral uncertainty. The original executable is
+the oracle, including its bugs, odd edge cases, unintended side effects, and
+incorrect-looking formulas.
+
+When assigned as an independent logic reviewer:
+
+- do not edit any file, claim a target, run source-shape experiments, or make a
+  status move;
+- do not inspect `logic_reviews\`, Git history, prior reviewer reports, or claims
+  that a difference is harmless;
+- compare the candidate directly with original binary evidence and report
+  definite differences, plausible concerns, verified assumptions, and areas that
+  could not be established;
+- treat comments, decompiler output, PDB metadata, and intended game behavior as
+  hypotheses; only the original executable is the behavior oracle.
+
 ## Attempt logs and comments
 
 Scratch and accepted-drift files keep compact attempt-log comments near the top.
+Verified-logic files retain the complete matching attempt log too; it is the
+durable evidence used to decide that exact matching had genuinely stalled. The
+separate logic-review ledger records semantic reviews and adjudications rather
+than replacing or deleting the matching attempt log.
+
 Append factual one-probe notes:
 
 ```c
@@ -583,7 +628,7 @@ liveness, declaration/type/layout facts, include or flag context, helper surface
 or variant-lab findings that are likely to help future matching work.
 
 Do not use `LESSONS.md` as a per-function attempt log or victory diary. Keep the
-local blow-by-blow in the scratch/accepted-drift source file. In `LESSONS.md`,
+local blow-by-blow in the scratch/accepted-drift/verified-logic source file. In `LESSONS.md`,
 abstract the lesson away from the specific function: explain the reusable pattern,
 when to try it, why it changes VC5 codegen, and any caveats. Mention function
 names or VAs only as optional evidence.
@@ -609,8 +654,9 @@ lead remains, leave it in scratch with clear notes.
 
 ## Non-normal manifest work
 
-Do not create scratch/matching files for entries classified into non-normal
-buckets. For duplicated generic helper labels inside known CRT/helper islands,
+Do not create scratch, accepted-drift, verified-logic, or matching files for
+entries classified into non-normal buckets. For duplicated generic helper labels
+inside known CRT/helper islands,
 prefer region manifests over brittle name lists. Use
 `tools\generate_toolchain_supplied_manifest.py` for safe exact-name toolchain
 extraction and hidden-label reports.
@@ -655,5 +701,8 @@ Final mental model:
 - `include\...` + `src\game_globals.cpp` = living shared source
 - `src\scratch\...` = active/paused unresolved work
 - `src\accepted_drift\...` = reviewed localized equivalent non-exact drift
+- `src\verified_logic\...` = independently verified reconstructed behavior,
+  still non-exact
 - `src\matching\...` = exact validated finished bank
+- `logic_reviews\...` = full per-function semantic-review history
 - `LESSONS.md` = shared generalized memory of matching breakthroughs

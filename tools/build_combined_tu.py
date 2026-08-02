@@ -9,6 +9,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRATCH_DIR = REPO_ROOT / "src" / "scratch"
 MATCHING_DIR = REPO_ROOT / "src" / "matching"
 ACCEPTED_DIR = REPO_ROOT / "src" / "accepted_drift"
+VERIFIED_LOGIC_DIR = REPO_ROOT / "src" / "verified_logic"
 TOOLS_DIR = REPO_ROOT / "tools"
 CONFIG_DIR = REPO_ROOT / "config" / "flags"
 
@@ -65,7 +66,7 @@ def get_functions_for_source(source_file):
 
 def find_source(va):
     """Find the existing source file for a function, if any."""
-    for d in [SCRATCH_DIR, MATCHING_DIR, ACCEPTED_DIR]:
+    for d in [SCRATCH_DIR, MATCHING_DIR, ACCEPTED_DIR, VERIFIED_LOGIC_DIR]:
         for f in sorted(d.glob(f"{va}_*.cpp")):
             return f
     return None

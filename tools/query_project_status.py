@@ -34,12 +34,21 @@ def parse_args() -> argparse.Namespace:
     source.add_argument("--scratch", action="store_true", help="Only scratch functions")
     source.add_argument("--matching", action="store_true", help="Only matching functions")
     source.add_argument("--accepted-drift", action="store_true", help="Only accepted-drift functions")
+    source.add_argument("--verified-logic", action="store_true", help="Only verified-logic functions")
     source.add_argument("--conflict", action="store_true", help="Only conflict functions")
-    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "scratch", "unclaimed", "conflict"], help="Only this source bucket")
+    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"], help="Only this source bucket")
 
     remaining = parser.add_mutually_exclusive_group()
     remaining.add_argument("--remaining", action="store_true", help="Only remaining normal functions (scratch/unclaimed/conflict)")
     remaining.add_argument("--done", action="store_true", help="Only non-remaining functions")
+
+    logic_review = parser.add_mutually_exclusive_group()
+    logic_review.add_argument("--logic-review", action="store_true", help="Only functions with a logic-review ledger")
+    logic_review.add_argument(
+        "--logic-review-in-progress",
+        action="store_true",
+        help="Only scratch functions that have entered logic review",
+    )
 
     blockers = parser.add_mutually_exclusive_group()
     blockers.add_argument("--no-blockers", action="store_true", help="Exclude functions with BLOCKER notes")
@@ -113,6 +122,8 @@ def source_bucket_from_args(args: argparse.Namespace) -> str | None:
         return "matching"
     if args.accepted_drift:
         return "accepted_drift"
+    if args.verified_logic:
+        return "verified_logic"
     if args.conflict:
         return "conflict"
     return None
@@ -225,9 +236,22 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         "source: "
         f"matching={counts['matching']} "
         f"accepted_drift={counts['accepted_drift']} "
+        f"verified_logic={counts['verified_logic']} "
         f"scratch={counts['scratch']} "
         f"unclaimed={counts['unclaimed']} "
         f"conflict={counts['conflict']}"
+    )
+    bucket_bytes = {
+        bucket: sum(
+            int(row.get("size_bytes") or 0)
+            for row in rows
+            if row.get("source_bucket") == bucket
+        )
+        for bucket in ("matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict")
+    }
+    print(
+        "source_bytes: "
+        + " ".join(f"{bucket}={bucket_bytes[bucket]}" for bucket in bucket_bytes)
     )
     print(
         "corpus: "
@@ -239,6 +263,12 @@ def print_summary(rows: list[dict[str, str]]) -> None:
     )
     active_leases = sum(row.get("lease_active") == "yes" for row in rows)
     print(f"leases: active={active_leases} unleased={len(rows) - active_leases}")
+    logic_reviews = sum(row.get("has_logic_review") == "yes" for row in rows)
+    logic_reviews_in_progress = sum(
+        row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"
+        for row in rows
+    )
+    print(f"logic_reviews: total={logic_reviews} in_progress={logic_reviews_in_progress}")
 
 
 def emit_csv(rows: list[dict[str, str]]) -> None:
@@ -278,6 +308,7 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
     if args.paths:
         cols.extend([
             ("source_path", "source_path", 46),
+            ("logic_review", "logic_review_path", 46),
             ("packet", "packet_path", 56),
         ])
     if args.notes:
@@ -338,6 +369,14 @@ def main() -> None:
         max_size=args.max_size,
         va=args.va,
     )
+    if args.logic_review:
+        rows = [row for row in rows if row.get("has_logic_review") == "yes"]
+    elif args.logic_review_in_progress:
+        rows = [
+            row
+            for row in rows
+            if row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"
+        ]
     rows = filter_leases(
         rows,
         unleased=args.unleased,

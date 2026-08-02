@@ -84,7 +84,7 @@ A follow-up cleanup removed the 38 old compiler-facing source files for function
 | `asm_region` | 7 | 0 |
 | `asm_special` | 0 | 0 |
 
-After regenerating the dashboard, no `toolchain_supplied`, `asm_special`, or `asm_region` entry has a `src\matching\...`, `src\scratch\...`, or `src\accepted_drift\...` owner.
+After regenerating the dashboard, no `toolchain_supplied`, `asm_special`, or `asm_region` entry has a `src\matching\...`, `src\scratch\...`, `src\accepted_drift\...`, or `src\verified_logic\...` owner.
 
 ## Still-normal functions with no PDB-backed `.cpp`/`.c` source
 

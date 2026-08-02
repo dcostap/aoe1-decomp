@@ -272,6 +272,8 @@ def preferred_source_path(record: dict[str, str]) -> Path:
         REPO_ROOT / "src" / "matching" / f"{slug}.cpp",
         REPO_ROOT / "src" / "accepted_drift" / f"{slug}.c",
         REPO_ROOT / "src" / "accepted_drift" / f"{slug}.cpp",
+        REPO_ROOT / "src" / "verified_logic" / f"{slug}.c",
+        REPO_ROOT / "src" / "verified_logic" / f"{slug}.cpp",
         REPO_ROOT / "src" / "scratch" / f"{slug}.c",
         REPO_ROOT / "src" / "scratch" / f"{slug}.cpp",
     ]

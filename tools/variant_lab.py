@@ -109,9 +109,9 @@ Variant lab template reference
 
 variant_lab compiles a full C/C++ source template many times, compares each
 emitted object against one original function, and groups variants by emitted
-machine code. It never edits src/scratch or src/matching; generated files go to
+machine code. It never edits any compiler-facing source bank; generated files go to
 build/variant_lab/<slug>/<run-id>/. Compile runs add repo-root, include/, and
-src/{scratch,matching,accepted_drift}/ include roots so normal repo includes and
+src/{scratch,matching,accepted_drift,verified_logic}/ include roots so normal repo includes and
 copied scratch-relative includes usually work unchanged.
 
 Use it for late-stage VC5 source-shape/codegen-basin work after behavior is
@@ -1526,6 +1526,7 @@ def build_variant(
         REPO_ROOT / "src" / "scratch",
         REPO_ROOT / "src" / "matching",
         REPO_ROOT / "src" / "accepted_drift",
+        REPO_ROOT / "src" / "verified_logic",
     ]
     command.extend(f"/I{path}" for path in include_roots)
     if extra_flags.strip():

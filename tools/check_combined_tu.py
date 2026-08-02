@@ -154,7 +154,7 @@ def build_combined_tu(source_file, output_path, functions):
         
         # Find source file
         src_path = None
-        for d in [REPO_ROOT / "src/scratch", REPO_ROOT / "src/matching", REPO_ROOT / "src/accepted_drift"]:
+        for d in [REPO_ROOT / "src/scratch", REPO_ROOT / "src/matching", REPO_ROOT / "src/accepted_drift", REPO_ROOT / "src/verified_logic"]:
             matches = list(d.glob(f"{va}_*.cpp")) + list(d.glob(f"{va}_*.c"))
             if matches:
                 src_path = matches[0]

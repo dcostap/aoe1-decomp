@@ -19,15 +19,21 @@ from common import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Sweep claimed-finished functions and rerun validation.")
-    parser.add_argument(
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument(
         "--matching-only",
         action="store_true",
         help="Validate exact claimed finished bank under src\\matching\\.",
     )
-    parser.add_argument(
+    mode.add_argument(
         "--accepted-drift",
         action="store_true",
         help="Validate accepted drift bank under src\\accepted_drift\\; mismatches are expected and reported.",
+    )
+    mode.add_argument(
+        "--verified-logic",
+        action="store_true",
+        help="Validate verified-logic bank under src\\verified_logic\\; mismatches are expected and reported.",
     )
     return parser.parse_args()
 
@@ -54,11 +60,16 @@ def run_check(va: str) -> subprocess.CompletedProcess[str]:
 
 def main() -> None:
     args = parse_args()
-    if args.matching_only == args.accepted_drift:
-        raise SystemExit("Use exactly one of --matching-only or --accepted-drift")
-
-    bank = "matching" if args.matching_only else "accepted_drift"
-    mode_label = "matching-only" if args.matching_only else "accepted-drift"
+    if args.matching_only:
+        bank = "matching"
+        mode_label = "matching-only"
+    elif args.accepted_drift:
+        bank = "accepted_drift"
+        mode_label = "accepted-drift"
+    else:
+        bank = "verified_logic"
+        mode_label = "verified-logic"
+    nonexact_bank = not args.matching_only
 
     slug_map = inventory_by_slug()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
@@ -111,9 +122,9 @@ def main() -> None:
         va = record["va"]
         result = run_check(va)
         if result.returncode == 0:
-            if args.accepted_drift:
+            if nonexact_bank:
                 failed += 1
-                message = f"FAIL  {va}  {slug}  accepted_drift is now exact; move to src\\matching"
+                message = f"FAIL  {va}  {slug}  {bank} is now exact; move to src\\matching"
                 print(message)
                 lines.append(message)
                 continue
@@ -123,10 +134,10 @@ def main() -> None:
             lines.append(message)
             continue
 
-        if args.accepted_drift:
+        if nonexact_bank:
             passed += 1
             diff_report = REPO_ROOT / "build" / "diff" / f"{slug}.txt"
-            message = f"PASS-DRIFT  {va}  {slug}  see {diff_report.relative_to(REPO_ROOT)}"
+            message = f"PASS-NONEXACT  {va}  {slug}  see {diff_report.relative_to(REPO_ROOT)}"
             print(message)
             lines.append(message)
             continue

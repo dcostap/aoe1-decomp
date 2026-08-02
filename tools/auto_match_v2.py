@@ -212,7 +212,7 @@ def main():
     
     matched, failed, skipped = 0, 0, 0
     already_has = set()
-    for d in [MATCHING_DIR, SCRATCH_DIR, REPO_ROOT / "src/accepted_drift"]:
+    for d in [MATCHING_DIR, SCRATCH_DIR, REPO_ROOT / "src/accepted_drift", REPO_ROOT / "src/verified_logic"]:
         if d.exists():
             for f in d.glob("0*.cpp"):
                 already_has.add(f.name.split("_")[0])

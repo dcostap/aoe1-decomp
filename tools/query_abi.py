@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--include-nonexact",
         action="store_true",
-        help="Include accepted_drift and scratch source references after exact evidence.",
+        help="Include accepted_drift, verified_logic, and scratch source references after exact evidence.",
     )
     parser.add_argument("--limit", type=int, default=40, help="Maximum source evidence rows (default 40; 0 unlimited).")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
@@ -194,6 +194,7 @@ def _source_paths(include_nonexact: bool) -> list[tuple[str, Path]]:
         buckets.extend(
             [
                 ("accepted_drift", REPO_ROOT / "src" / "accepted_drift"),
+                ("verified_logic", REPO_ROOT / "src" / "verified_logic"),
                 ("scratch", REPO_ROOT / "src" / "scratch"),
             ]
         )

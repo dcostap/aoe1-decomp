@@ -18,6 +18,7 @@
       --accent: #d8dde6;
       --matching: #22c55e;
       --accepted-drift: #f59e0b;
+      --verified-logic: #06b6d4;
       --scratch: #8b5cf6;
       --unclaimed: #475569;
       --conflict: #ef4444;
@@ -483,11 +484,12 @@
   <script>
     const DATA = __DASHBOARD_DATA__;
     const SUMMARY = DATA.summary || {};
-    const BUCKET_ORDER = SUMMARY.bucketOrder || ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"];
-    const MATCHED_PROGRESS_BUCKETS = new Set(["matching", "accepted_drift"]);
+    const BUCKET_ORDER = SUMMARY.bucketOrder || ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"];
+    const COMPLETED_PROGRESS_BUCKETS = new Set(["matching", "accepted_drift", "verified_logic"]);
     const BUCKET_COLORS = SUMMARY.bucketColors || {
       matching: "#22c55e",
       accepted_drift: "#f59e0b",
+      verified_logic: "#06b6d4",
       scratch: "#8b5cf6",
       unclaimed: "#475569",
       conflict: "#ef4444",
@@ -698,8 +700,8 @@
       const bucketBytes = Object.fromEntries(BUCKET_ORDER.map((bucket) => [bucket, 0]));
       let valueBytes = 0;
       let valueAsmLines = 0;
-      let matchedCount = 0;
-      let matchedBytes = 0;
+      let completedCount = 0;
+      let completedBytes = 0;
       let remainingCount = 0;
       let remainingBytes = 0;
       let blockerCount = 0;
@@ -713,9 +715,9 @@
         valueAsmLines += fn.asmLines;
         bucketCounts[fn.bucket] += 1;
         bucketBytes[fn.bucket] += fn.sizeBytes;
-        if (MATCHED_PROGRESS_BUCKETS.has(fn.bucket)) {
-          matchedCount += 1;
-          matchedBytes += fn.sizeBytes;
+        if (COMPLETED_PROGRESS_BUCKETS.has(fn.bucket)) {
+          completedCount += 1;
+          completedBytes += fn.sizeBytes;
         }
         if (fn.isRemaining) {
           remainingCount += 1;
@@ -746,8 +748,8 @@
         functionCount: children.length,
         valueBytes,
         valueAsmLines,
-        matchedCount,
-        matchedBytes,
+        completedCount,
+        completedBytes,
         remainingCount,
         remainingBytes,
         blockerCount,
@@ -757,8 +759,8 @@
         avgEditDiffPercent: diffKnownCount ? editDiffPercentTotal / diffKnownCount : 0,
         bucketCounts,
         bucketBytes,
-        progressFunctions: children.length ? (matchedCount / children.length) * 100 : 0,
-        progressBytes: valueBytes ? (matchedBytes / valueBytes) * 100 : 0,
+        progressFunctions: children.length ? (completedCount / children.length) * 100 : 0,
+        progressBytes: valueBytes ? (completedBytes / valueBytes) * 100 : 0,
         dominantBucket,
       };
     }
@@ -796,8 +798,8 @@
         functions: visibleFns.length,
         bytes: 0,
         asmLines: 0,
-        matchedFunctions: 0,
-        matchedBytes: 0,
+        completedFunctions: 0,
+        completedBytes: 0,
         remainingFunctions: 0,
         remainingBytes: 0,
         blockers: 0,
@@ -811,9 +813,9 @@
         stats.asmLines += fn.asmLines;
         stats.bucketCounts[fn.bucket] += 1;
         stats.bucketBytes[fn.bucket] += fn.sizeBytes;
-        if (MATCHED_PROGRESS_BUCKETS.has(fn.bucket)) {
-          stats.matchedFunctions += 1;
-          stats.matchedBytes += fn.sizeBytes;
+        if (COMPLETED_PROGRESS_BUCKETS.has(fn.bucket)) {
+          stats.completedFunctions += 1;
+          stats.completedBytes += fn.sizeBytes;
         }
         if (fn.isRemaining) {
           stats.remainingFunctions += 1;
@@ -1161,7 +1163,7 @@
       if (headerRect.height > 30) {
         ctx.font = '12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
         ctx.fillStyle = secondary;
-        const meta = `${formatPercent(group.progressBytes, 0)} matched · ${formatNumber(group.functionCount)} fn`;
+        const meta = `${formatPercent(group.progressBytes, 0)} completed · ${formatNumber(group.functionCount)} fn`;
         ctx.fillText(meta, left, top);
       }
 
@@ -1381,7 +1383,7 @@
       if (item.type === "group") {
         return `
           <div class="tooltip-title">${escapeHtml(item.name)}</div>
-          <div class="tooltip-sub">${formatNumber(item.functionCount)} fn · ${formatPercent(item.progressBytes, 1)} matched bytes · ${formatBytes(item.remainingBytes)} remaining</div>
+          <div class="tooltip-sub">${formatNumber(item.functionCount)} fn · ${formatPercent(item.progressBytes, 1)} completed bytes · ${formatBytes(item.remainingBytes)} remaining</div>
           <div class="tooltip-note">${escapeHtml(item.path || "(no PDB path)")}</div>`;
       }
       return `
@@ -1419,23 +1421,26 @@
 
       elements.statsPrimary.innerHTML = [
         statHtml("normal", `${formatNumber(SUMMARY.totalFunctions)} fn`),
-        statHtml("matched fn", formatPercent(SUMMARY.progressFunctions, 1)),
-        statHtml("matched bytes", formatPercent(SUMMARY.progressBytes, 1)),
+        statHtml("completed fn", formatPercent(SUMMARY.progressFunctions, 1)),
+        statHtml("completed bytes", formatPercent(SUMMARY.progressBytes, 1)),
+        statHtml("exact", `${formatNumber(SUMMARY.bucketCounts?.matching || 0)} fn / ${formatBytes(SUMMARY.bucketBytes?.matching || 0)}`),
         statHtml("remaining", `${formatNumber(SUMMARY.remainingFunctions)} fn`),
-        statHtml("accepted drift", `${formatNumber(SUMMARY.bucketCounts?.accepted_drift || 0)} fn`),
+        statHtml("accepted drift", `${formatNumber(SUMMARY.bucketCounts?.accepted_drift || 0)} fn / ${formatBytes(SUMMARY.bucketBytes?.accepted_drift || 0)}`),
+        statHtml("verified logic", `${formatNumber(SUMMARY.bucketCounts?.verified_logic || 0)} fn / ${formatBytes(SUMMARY.bucketBytes?.verified_logic || 0)}`),
+        statHtml("logic review active", `${formatNumber(SUMMARY.logicReviewInProgress || 0)} fn`),
         statHtml("scratch", `${formatNumber(SUMMARY.bucketCounts?.scratch || 0)} fn`),
         statHtml("unclaimed", `${formatNumber(SUMMARY.bucketCounts?.unclaimed || 0)} fn`),
         statHtml("conflict", `${formatNumber(SUMMARY.bucketCounts?.conflict || 0)} fn`),
         statHtml("excluded", `${formatNumber(SUMMARY.excludedFunctions || 0)} fn`),
       ].join("");
 
-      const visibleFnProgress = derived.stats.functions ? (derived.stats.matchedFunctions / derived.stats.functions) * 100 : 0;
-      const visibleByteProgress = derived.stats.bytes ? (derived.stats.matchedBytes / derived.stats.bytes) * 100 : 0;
+      const visibleFnProgress = derived.stats.functions ? (derived.stats.completedFunctions / derived.stats.functions) * 100 : 0;
+      const visibleByteProgress = derived.stats.bytes ? (derived.stats.completedBytes / derived.stats.bytes) * 100 : 0;
       elements.statsSecondary.innerHTML = [
         statHtml("visible files", formatNumber(derived.stats.files)),
         statHtml("visible fn", formatNumber(derived.stats.functions)),
-        statHtml("visible matched fn", formatPercent(visibleFnProgress, 1)),
-        statHtml("visible matched bytes", formatPercent(visibleByteProgress, 1)),
+        statHtml("visible completed fn", formatPercent(visibleFnProgress, 1)),
+        statHtml("visible completed bytes", formatPercent(visibleByteProgress, 1)),
         statHtml("visible remaining", formatBytes(derived.stats.remainingBytes)),
         statHtml("color", state.colorMode === "progress" ? "edit diff %" : state.colorMode),
         statHtml("blockers", formatNumber(derived.stats.blockers)),
@@ -1503,7 +1508,7 @@
               ${topFiles.map((group) => `
                 <button class="mini-row" data-select-group="${escapeHtml(group.name)}" data-zoom-group="${escapeHtml(group.name)}">
                   <div class="mini-title">${escapeHtml(group.name)}</div>
-                  <div class="list-meta">${formatBytes(group.remainingBytes)} remaining · ${formatNumber(group.remainingCount)} fn · ${formatPercent(group.progressBytes, 0)} matched</div>
+                  <div class="list-meta">${formatBytes(group.remainingBytes)} remaining · ${formatNumber(group.remainingCount)} fn · ${formatPercent(group.progressBytes, 0)} completed</div>
                 </button>
               `).join("") || `<div class="inline-note">No remaining files under the current filters.</div>`}
             </div>
@@ -1531,7 +1536,7 @@
         </div>
         <div class="detail-tags">
           <span class="chip"><span class="dot" style="background:${BUCKET_COLORS[group.dominantBucket]}"></span>${escapeHtml(group.dominantBucket)}</span>
-          <span class="chip">${formatPercent(group.progressBytes, 1)} matched bytes</span>
+          <span class="chip">${formatPercent(group.progressBytes, 1)} completed bytes</span>
           <span class="chip">${formatNumber(group.remainingCount)} remaining</span>
           ${group.blockerCount ? `<span class="chip">${formatNumber(group.blockerCount)} blockers</span>` : ""}
           ${group.customFlagsCount ? `<span class="chip">${formatNumber(group.customFlagsCount)} custom flags</span>` : ""}
@@ -1539,7 +1544,7 @@
         <div class="detail-grid">
           <div class="detail-block"><div class="detail-label">Functions</div><div class="detail-value">${formatNumber(group.functionCount)}</div></div>
           <div class="detail-block"><div class="detail-label">Remaining bytes</div><div class="detail-value">${formatBytes(group.remainingBytes)}</div></div>
-          <div class="detail-block"><div class="detail-label">Matched bytes</div><div class="detail-value">${formatBytes(group.matchedBytes)}</div></div>
+          <div class="detail-block"><div class="detail-label">Completed bytes</div><div class="detail-value">${formatBytes(group.completedBytes)}</div></div>
           <div class="detail-block"><div class="detail-label">Bucket mix</div><div class="detail-value">${BUCKET_ORDER.map((bucket) => `${bucket} ${formatNumber(group.bucketCounts[bucket] || 0)}`).join(" · ")}</div></div>
         </div>
         <div class="section-label">largest remaining functions in this file</div>
@@ -1574,6 +1579,9 @@
       if (fn.customFlagsPath) {
         actions.push(`<a class="button" href="${escapeHtml(repoUrl(fn.customFlagsPath))}" target="_blank" rel="noopener">open flags</a>`);
       }
+      if (fn.logicReviewPath) {
+        actions.push(`<a class="button" href="${escapeHtml(repoUrl(fn.logicReviewPath))}" target="_blank" rel="noopener">open logic review</a>`);
+      }
       actions.push(`<button class="button" data-select-group="${escapeHtml(fn.groupName)}">inspect file</button>`);
       if (!state.zoomGroup || state.zoomGroup !== fn.groupName) {
         actions.push(`<button class="button active" data-focus-function="${escapeHtml(fn.va)}">zoom to file</button>`);
@@ -1586,7 +1594,7 @@
         </div>
         <div class="detail-tags">
           <span class="chip"><span class="dot" style="background:${BUCKET_COLORS[fn.bucket]}"></span>${escapeHtml(fn.bucket)}</span>
-          ${fn.bucket === "accepted_drift" ? `<span class="chip">accepted drift</span>` : (fn.isRemaining ? `<span class="chip">remaining</span>` : `<span class="chip">matched</span>`)}
+          ${fn.bucket === "accepted_drift" ? `<span class="chip">accepted drift</span>` : (fn.bucket === "verified_logic" ? `<span class="chip">verified logic</span>` : (fn.isRemaining ? `<span class="chip">remaining</span>` : `<span class="chip">exact</span>`))}
           ${fn.hasBlocker ? `<span class="chip">blocker</span>` : ""}
           ${fn.usesCustomFlags ? `<span class="chip">custom flags</span>` : ""}
         </div>

@@ -15,13 +15,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRATCH = REPO_ROOT / "src" / "scratch"
 MATCHING = REPO_ROOT / "src" / "matching"
 ACCEPTED = REPO_ROOT / "src" / "accepted_drift"
+VERIFIED_LOGIC = REPO_ROOT / "src" / "verified_logic"
 HEADER_PATH = REPO_ROOT / "include" / "unit_ai_module.h"
 
 
 def find_all_unitai_files():
     """Find all files that reference UnitAIModule."""
     files = []
-    for d in [SCRATCH, MATCHING, ACCEPTED]:
+    for d in [SCRATCH, MATCHING, ACCEPTED, VERIFIED_LOGIC]:
         for f in sorted(d.glob("0041*.cpp")):
             content = f.read_text(errors="replace")
             if "UnitAIModule" in content:

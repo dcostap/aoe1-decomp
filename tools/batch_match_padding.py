@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRATCH_DIR = REPO_ROOT / "src" / "scratch"
 MATCHING_DIR = REPO_ROOT / "src" / "matching"
 ACCEPTED_DRIFT_DIR = REPO_ROOT / "src" / "accepted_drift"
+VERIFIED_LOGIC_DIR = REPO_ROOT / "src" / "verified_logic"
 
 ALLOWED_INSTRUCTIONS = {
     "nop",
@@ -109,8 +110,13 @@ def main() -> None:
         slug = function_slug(record)
         matching_path = MATCHING_DIR / f"{slug}.cpp"
         accepted_drift_path = ACCEPTED_DRIFT_DIR / f"{slug}.cpp"
+        verified_logic_path = VERIFIED_LOGIC_DIR / f"{slug}.cpp"
         if accepted_drift_path.exists():
             print(f"[skip] {va} already in accepted_drift")
+            skipped += 1
+            continue
+        if verified_logic_path.exists():
+            print(f"[skip] {va} already in verified_logic")
             skipped += 1
             continue
         if matching_path.exists():

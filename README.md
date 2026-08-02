@@ -7,11 +7,19 @@ substantially easier.
 
 ## Core goal
 
-The project goal is **exact generated assembly parity** under a pinned
-historical toolchain. A separate audited escape-hatch bucket,
-`src\accepted_drift\`, exists for rare functions whose remaining non-zero diff
-is manually reviewed as localized behavior-equivalent VC5 codegen drift. These
-are not exact matches and are reported separately from `src\matching\`.
+The project remains **exact-match-first** under a pinned historical toolchain,
+but it now tracks decompilation confidence separately from compiler parity.
+There are three completed banks:
+
+- `src\matching\` — exact generated assembly parity;
+- `src\accepted_drift\` — rare, near-exact functions whose remaining localized
+  drift has been manually reviewed as behavior-equivalent VC5 codegen;
+- `src\verified_logic\` — functions for which exact matching was suspended only
+  after substantial matching work, followed by repeated independent review of
+  the reconstructed behavior against the original executable.
+
+`verified_logic` is not an exact-match claim and is not a relaxed form of
+`accepted_drift`. It is a separately reported semantic-reconstruction result.
 
 The basic unit of work is a function:
 
@@ -20,15 +28,19 @@ The basic unit of work is a function:
 3. implement it,
 4. build it with the pinned toolchain,
 5. compare rebuilt output against the original,
-6. iterate until it matches, or in rare reviewed cases move it to
-   `src\accepted_drift\` with the full attempt log preserved and a clear
-   `ACCEPTED_DRIFT` comment explaining the localized equivalent drift.
+6. iterate until it matches or the current bounded matching assignment runs out
+   of productive hypotheses;
+7. after enough independent matching work, the project orchestrator may either
+   approve a narrowly localized `accepted_drift` result or begin the separate
+   logic-review workflow documented in `docs\main_agent_workflow.md`.
 
 Exact parity is determined by the rebuilt machine code, not by source-body
 plausibility alone. Diff tooling records byte-diff metrics for every checked
 function; `0.0000%` diff is an exact match. A non-zero diff is only considered
 accepted drift when the source file lives in `src\accepted_drift\`; there is no
-separate manifest. In stubborn cases the effective source model can include
+separate manifest. Logic verification is represented by placement in
+`src\verified_logic\` plus a versioned per-function review ledger under
+`logic_reviews\`. In stubborn cases the effective source model can include
 small translation-unit context such as neighboring declarations or a minimal
 header include. Include context from the function's likely original donor file
 is legitimate source context even when the tiny function body does not textually
@@ -73,6 +85,12 @@ Compact target selection is available through
 packets into an agent context merely to choose a target. The complete default
 contract for a short request such as `match 0043C2B0` lives in `AGENTS.md` and is
 injected into every repo-local agent session.
+
+Project-wide orchestration, repeated worker assignment, exact-match stall
+decisions, blind logic-review cohorts, ledger handling, and promotion authority
+are documented in `docs\main_agent_workflow.md`. That document is intended for
+the user-designated main coordinating agent; ordinary matching workers continue
+to use the bounded contract in `AGENTS.md`.
 
 Focused `variant_lab.py` runs can enforce checker-equivalent effective size,
 frame, and call-set gates. Compact previews avoid dumping whole generated files,

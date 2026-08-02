@@ -15,7 +15,7 @@ def main():
     
     # Collect all unique method signatures
     methods = {}
-    for d in [REPO_ROOT / "src/scratch", REPO_ROOT / "src/matching", REPO_ROOT / "src/accepted_drift"]:
+    for d in [REPO_ROOT / "src/scratch", REPO_ROOT / "src/matching", REPO_ROOT / "src/accepted_drift", REPO_ROOT / "src/verified_logic"]:
         for f in sorted(d.glob("0041*.cpp")):
             content = f.read_text(errors="replace")
             if "UnitAIModule::" not in content:

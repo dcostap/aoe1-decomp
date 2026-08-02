@@ -1,8 +1,9 @@
 # LESSONS.md (distilled draft)
 
 This is a proposed compact replacement for the current `LESSONS.md`. It merges repeated
-entries by theme and removes per-function diary material. Keep detailed attempts in the
-scratch/accepted-drift source file; add only generalized, reusable lessons here.
+entries by theme and removes per-function diary material. Keep detailed matching attempts in the
+scratch/accepted-drift/verified-logic source file and semantic reviews in the per-function
+`logic_reviews` ledger; add only generalized, reusable lessons here.
 
 Core rule: the original EXE is the behavioral oracle. PDB/type dumps, Ghidra names, and
 similar metadata are reference material. Exact promotion still requires positional byte
@@ -558,11 +559,14 @@ use only when the ABI/frame proves it.
 For varargs, remember VC5 pushes right-to-left. If the original push order looks reversed from labels in
 the format string, the source argument order may need to look odd to match bytes.
 
-## 10. Known VC5 barriers and accepted-drift candidates
+## 10. Known VC5 barriers and non-exact candidates
 
 Accepted drift remains rare and reviewed; positional `MATCH` is required for promotion to
 `src/matching`. The patterns below are useful for recognizing when further C source probing may be
 low-yield after behavior, calls, stack cleanup, and layout are understood.
+
+Broader non-exact candidates are not accepted drift. Only the designated main agent may move them
+through the repeated independent semantic-review workflow into `src/verified_logic`.
 
 Common benign barriers:
 - independent instruction scheduling swaps of adjacent `mov`/`xor`/`sub` instructions;

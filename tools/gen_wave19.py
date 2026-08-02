@@ -22,7 +22,7 @@ def load_unclaimed_31_50():
             continue
         if info.get('corpus_bucket', 'normal') != 'normal':
             continue
-        if info['source_bucket'] in ('matching', 'accepted_drift', 'scratch'):
+        if info['source_bucket'] in ('matching', 'accepted_drift', 'verified_logic', 'scratch'):
             continue
         if info['calling_convention'] != '__thiscall':
             continue

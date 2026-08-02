@@ -18,7 +18,7 @@ from common import (
 )
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
-SOURCE_BUCKETS = ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"]
+SOURCE_BUCKETS = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
 CORPUS_BUCKETS = ["normal", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 STATUS_FIELDNAMES = [
     "va",
@@ -31,6 +31,8 @@ STATUS_FIELDNAMES = [
     "pdb_source_path",
     "source_bucket",
     "source_path",
+    "logic_review_path",
+    "has_logic_review",
     "corpus_bucket",
     "corpus_reason",
     "toolchain_supplied",
@@ -176,10 +178,13 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
     scratch_dir = REPO_ROOT / "src" / "scratch"
     matching_dir = REPO_ROOT / "src" / "matching"
     accepted_drift_dir = REPO_ROOT / "src" / "accepted_drift"
+    verified_logic_dir = REPO_ROOT / "src" / "verified_logic"
+    logic_reviews_dir = REPO_ROOT / "logic_reviews"
     flags_dir = REPO_ROOT / "config" / "flags"
     scratch_files = source_files(scratch_dir)
     matching_files = source_files(matching_dir)
     accepted_drift_files = source_files(accepted_drift_dir)
+    verified_logic_files = source_files(verified_logic_dir)
 
     records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
@@ -195,7 +200,12 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
         scratch_path = scratch_files.get(slug)
         matching_path = matching_files.get(slug)
         accepted_drift_path = accepted_drift_files.get(slug)
-        present_paths = [path for path in (matching_path, accepted_drift_path, scratch_path) if path is not None]
+        verified_logic_path = verified_logic_files.get(slug)
+        present_paths = [
+            path
+            for path in (matching_path, accepted_drift_path, verified_logic_path, scratch_path)
+            if path is not None
+        ]
 
         corpus_bucket, corpus_reason = classify_corpus_bucket(
             record,
@@ -209,7 +219,7 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
         if len(present_paths) > 1:
             source_bucket = "conflict"
             source_path = " | ".join(str(path.relative_to(REPO_ROOT)) for path in present_paths)
-            note_path = scratch_path
+            note_path = scratch_path or verified_logic_path or accepted_drift_path or matching_path
         elif matching_path:
             source_bucket = "matching"
             source_path = str(matching_path.relative_to(REPO_ROOT))
@@ -218,6 +228,10 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
             source_bucket = "accepted_drift"
             source_path = str(accepted_drift_path.relative_to(REPO_ROOT))
             note_path = accepted_drift_path
+        elif verified_logic_path:
+            source_bucket = "verified_logic"
+            source_path = str(verified_logic_path.relative_to(REPO_ROOT))
+            note_path = verified_logic_path
         elif scratch_path:
             source_bucket = "scratch"
             source_path = str(scratch_path.relative_to(REPO_ROOT))
@@ -228,9 +242,17 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
             note_path = None
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
+        logic_review_path = logic_reviews_dir / f"{slug}.md"
         header_notes = parse_header_notes(note_path) if note_path is not None else default_header_notes()
-        preview_path = scratch_path or accepted_drift_path or matching_path
-        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift"} else "no"
+        if source_bucket == "verified_logic" and not logic_review_path.exists():
+            missing_ledger = "verified_logic source has no logic-review ledger"
+            header_notes["BLOCKER"] = (
+                f"{header_notes['BLOCKER']} | {missing_ledger}"
+                if header_notes["BLOCKER"]
+                else missing_ledger
+            )
+        preview_path = scratch_path or verified_logic_path or accepted_drift_path or matching_path
+        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
         diff_metrics: dict[str, object] = {}
         if include_diff_metrics:
             diff_metrics_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
@@ -274,6 +296,8 @@ def build_status_rows(*, include_source_preview: bool = True, include_diff_metri
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
+            "logic_review_path": str(logic_review_path.relative_to(REPO_ROOT)) if logic_review_path.exists() else "",
+            "has_logic_review": "yes" if logic_review_path.exists() else "no",
             "corpus_bucket": corpus_bucket,
             "corpus_reason": corpus_reason,
             "toolchain_supplied": "yes" if corpus_bucket == "toolchain_supplied" else "no",

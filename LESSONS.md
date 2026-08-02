@@ -13,7 +13,8 @@ Use this file for generalized eureka moments, especially lessons about:
 - stubborn-match breakthroughs after many failed equivalent spellings.
 
 Do **not** use this file as a per-function attempt log. Keep detailed local
-history in the scratch or accepted-drift source file. In `LESSONS.md`, generalize
+matching history in the scratch, accepted-drift, or verified-logic source file;
+semantic-review history belongs in the per-function `logic_reviews` ledger. In `LESSONS.md`, generalize
 from the function: avoid long function-specific narratives, and mention a VA or
 function name only as optional evidence.
 

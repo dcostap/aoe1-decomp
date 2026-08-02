@@ -422,7 +422,7 @@ def _restore_checkpoint_unlocked(record: dict[str, str], selector: str) -> dict:
     source_relative = Path(str(run["source_path"]))
     recorded_source = REPO_ROOT / source_relative
     current_source = preferred_source_path(record)
-    # Preserve the current corpus owner (scratch/matching/accepted_drift) if the
+    # Preserve the current corpus owner (scratch/matching/accepted_drift/verified_logic) if the
     # file has moved since the checkpoint. Restoring an old path as a second file
     # would create two compiler-facing owners for one VA.
     source_target = current_source if current_source.exists() else recorded_source
