@@ -38,18 +38,34 @@
 // Retry 2026-05-24 Boss pass: 20 more probes. Revalidated current source still emits only 128B, so checker cannot byte-compare against 132B original. Tried decompiler-exact variable topology, separate invalid-path assignments, register-qualified params/locals, self alias first, volatile param-slot countdown (only 132B compareable source, but 92.42% positional from byte 0), while/predec and for-countdown loops, split/nested range compares, raw this+offset array accesses, extern sprintf, hardcoded format address, unsigned index, mutating param_1 as idx, late avg/out_hi assignments, lo/hi/sum declaration reorders, equivalent compare operand swaps, removed inner guard, and flags /G3 /G4 /GB /Ox /Ow /Ot /Oi /GX. Every non-volatile source/flag stayed in the same 128B too-small family; volatile stack-slot source regressed badly. No accepted_drift: still a structural size/register/stack-topology mismatch, not localized benign drift.
 // Retry 2026-05-26 Boss pass: 16 more probes. Revalidated current source still emits 128B vs original 132B (checker stops before byte compare). Tried register parameter/original, direct param-as-count, count-local without param mutation, avg-as-accumulator, minimal/no avg-out_hi locals, while/predec loop, no-original-local form, declaration orders hi/sum/lo/original, const/split/orig-last original, register all locals, and equivalent range nesting. All stayed in the same stable 128B basin: push ecx scratch, EDI=this, EBX=sum, EBP=hi, original count homed at [esp+10h], div [esp+10h]. Original remains push ebx/push ebp first, EBP=original count, EAX=sum, EBX=hi, incoming param stack slot reused as countdown, div ebp. GIVEUP: no accepted_drift because the mismatch is still function-size plus register/stack-topology structural drift, not a localized benign difference.
 
+// Retry 2026-08-02 Luna-480610 (10 probes): exact class surface and unsigned-int
+// locals were codegen-duplicate. Distinguishing invalid-path low output from the
+// valid minimum reached the original 132-byte boundary; >=1/<=100 and explicit
+// idx>0 spellings recovered most loop CFG shape. Reusing param_1 as countdown and
+// average, with one min/output local plus invalid fallback, gave the best stable
+// basin: 124 meaningful bytes (128 extracted), 73.21% shape, 51.85% exact-block
+// coverage, 126 strict diff bytes; call target/site parity is exact. Remaining
+// structural mismatch is register allocation: rebuilt loads param before saves,
+// keeps sum in EBX and max in the incoming home; original loads count into EBP
+// after initial saves, keeps sum in EAX/max in EBX, and uses the incoming home as
+// countdown. Declaration/register-order and max-compare probes did not alter it.
+// PAUSED: no accepted_drift; remaining register/stack topology is broad.
+
 #include <stdio.h>
 
 class RGE_TimeSinceLastCall {
 public:
-    char TBuff[0x100];
+    char TBuff[255];
+    unsigned char _pad_0[1];
     unsigned long lowTSLC;
     unsigned long highTSLC;
     unsigned long TSLC;
-    unsigned long aTSLC[100];
-    char gap_29C_29F[4];
+    unsigned long aTSLC[101];
     int Offset;
     unsigned long LastCall;
+    unsigned long FirstCall;
+    unsigned long Now;
+    unsigned long cps;
 
     char* GetHiLoInfo(int param_1);
 };
@@ -57,33 +73,36 @@ public:
 char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
 {
     int original = param_1;
-    unsigned long sum = 0;
-    unsigned long hi = 0;
-    unsigned long lo = 0xF423F;
-    unsigned long avg = param_1;
-    unsigned long out_hi = param_1;
+    unsigned int hi = 0;
+    unsigned int sum = 0;
+    unsigned int min = 999999;
+    unsigned int value = param_1;
 
-    if (0 < param_1 && param_1 < 0x65) {
+    if (param_1 >= 1 && param_1 <= 100) {
         int idx = Offset;
-        if (0 < param_1) {
+        if (param_1 > 0) {
             do {
-                idx--;
-                if (idx < 1)
+                idx = idx - 1;
+                if (idx > 0) {
+                } else {
                     idx = 100;
-                out_hi = aTSLC[idx];
-                sum = sum + out_hi;
-                if (out_hi < lo)
-                    lo = out_hi;
-                if (hi < out_hi)
-                    hi = out_hi;
+                }
+                value = aTSLC[idx];
+                sum = sum + value;
+                if (value < min)
+                    min = value;
+                if (value > hi)
+                    hi = value;
                 param_1 = param_1 - 1;
             } while (param_1 != 0);
         }
-        avg = sum / (unsigned int)original;
-        out_hi = hi;
+        param_1 = sum / (unsigned int)original;
+        value = hi;
+    } else {
+        min = param_1;
     }
 
     sprintf(TBuff, "Lo=%d < Avg=%d > Hi=%d of %d",
-            lo, avg, out_hi, original);
+            min, param_1, value, original);
     return TBuff;
 }
