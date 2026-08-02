@@ -32,6 +32,11 @@
 // order compare. All non-worsening variants stayed in the same basin: VC5 mutates ESI
 // into &list and uses EDI for the allocated node, while original preserves ESI=this and
 // uses EDI=ppPrev / ESI=new node. No accepted_drift: mismatch remains structural.
+// Retry 2026-08-02 Luna-41A910: baseline rebuilt at 158B, 36 positional bytes, 26 edit bytes, first mismatch +38.
+// Restored the complete known polymorphic list surface; emitted code was unchanged.
+// Separate head/scan cursors (including decompiler initialization order and top-declared locals) entered a 43-byte basin with an extra head test; restored.
+// Swapping traversal declaration/initialization order and a focused 4-variant alias/head lab did not move the 36-byte basin; all variants remained 158B with exact call-set parity.
+// left in scratch: VC5 still folds this into ESI=&list/EDI=new-node instead of original ESI=this/EDI=ppPrev; drift spans traversal, duplicate-hit tail, allocation, and insertion stores.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
@@ -53,6 +58,8 @@ public:
 };
 
 class RGE_Static_Object { public: void remove_shadows(); };
+class RGE_Color_Table;
+class TDrawArea;
 
 class RGE_Active_Sprite_Node {
 public:
@@ -65,7 +72,18 @@ public:
 
 class RGE_Active_Sprite_List {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Active_Sprite_List();
+    virtual short frame(RGE_Sprite*);
+    virtual void update(float, float);
+    virtual void draw(short, short, short, short, short, RGE_Color_Table*, TDrawArea*);
+    virtual void normal_draw(short, short, short, RGE_Color_Table*, TDrawArea*);
+    virtual void shadow_draw(short, short, short, RGE_Color_Table*, TDrawArea*, unsigned char);
+    virtual unsigned char is_animating(RGE_Sprite*);
+    virtual void set_frame(RGE_Sprite*, short);
+    virtual unsigned char frame_passed(RGE_Sprite*, short);
+    virtual unsigned char looped(RGE_Sprite*);
+    virtual short get_facetindex(RGE_Sprite*, short);
+    virtual unsigned char load_node(int, unsigned char, RGE_Sprite**);
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;
     void add_sprite(RGE_Sprite* param_1, unsigned char param_2, long param_3, long param_4);
