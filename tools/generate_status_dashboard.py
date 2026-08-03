@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import re
+import subprocess
 from datetime import datetime
 from pathlib import Path
 
 from common import REPO_ROOT
 from status_core import build_status_rows, status_counts, write_status_csv
+from status_history import build_history
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -219,9 +222,7 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
     return group_list
 
 
-def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
-    html_path = REPO_ROOT / "project_full_status.html"
-
+def dashboard_payload(rows: list[dict[str, str]], generated_at: str | None = None) -> dict[str, object]:
     normal_rows = [row for row in rows if row["corpus_bucket"] == "normal"]
     excluded_rows = [row for row in rows if row["corpus_bucket"] != "normal"]
 
@@ -266,11 +267,79 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
         "excludedBytes": sum(to_int(row["size_bytes"]) for row in excluded_rows),
     }
 
-    payload = {
-        "generatedAt": datetime.now().isoformat(timespec="seconds"),
+    return {
+        "generatedAt": generated_at or datetime.now().isoformat(timespec="seconds"),
         "summary": summary,
         "groups": build_group_list(normal_rows),
     }
+
+
+def write_html_dashboard(
+    rows: list[dict[str, str]],
+    *,
+    history_ref: str = "HEAD",
+    include_history: bool = True,
+) -> Path:
+    html_path = REPO_ROOT / "project_full_status.html"
+    payload = dashboard_payload(rows)
+
+    if include_history:
+        commits = subprocess.check_output(
+            ["git", "rev-list", "--reverse", "--first-parent", history_ref],
+            text=True,
+        ).splitlines()
+        history_cache_path = REPO_ROOT / "build" / "status_history_cache.json"
+        cache_key = {"version": 5, "ref": history_ref, "commits": commits}
+        history = None
+        resume = None
+        prefix_history = None
+        if history_cache_path.exists():
+            try:
+                cached = json.loads(history_cache_path.read_text(encoding="utf-8"))
+                if cached.get("key") == cache_key:
+                    history = cached.get("history")
+                else:
+                    # Reuse the cached prefix when the repo only advanced: the new
+                    # commit list is a strict extension of the cached one.
+                    cached_key = cached.get("key") or {}
+                    cached_commits = cached_key.get("commits") or []
+                    if (
+                        cached_key.get("version") == 5
+                        and cached_key.get("ref") == history_ref
+                        and len(cached_commits) < len(commits)
+                        and commits[: len(cached_commits)] == cached_commits
+                    ):
+                        candidate = cached.get("resume")
+                        if isinstance(candidate, dict) and candidate.get("processed") == len(cached_commits):
+                            resume = candidate
+                            prefix_history = cached.get("history")
+            except (OSError, json.JSONDecodeError):
+                history = None
+                resume = None
+                prefix_history = None
+        if history is None:
+            history, resume = build_history(
+                commits,
+                lambda historical_rows: build_group_list(
+                    [row for row in historical_rows if row["corpus_bucket"] == "normal"]
+                ),
+                lambda historical_rows: dashboard_payload(historical_rows)["summary"],
+                resume=resume,
+                prefix_history=prefix_history,
+            )
+            history_cache_path.parent.mkdir(parents=True, exist_ok=True)
+            history_cache_path.write_text(
+                json.dumps(
+                    {"key": cache_key, "history": history, "resume": resume},
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                ),
+                encoding="utf-8",
+            )
+        payload["history"] = history
+        # The history owns the full snapshots. Keeping another copy of the current
+        # treemap here would defeat the point of storing only changes between commits.
+        payload.pop("groups", None)
 
     html_template = HTML_TEMPLATE_PATH.read_text(encoding="utf-8")
     html_text = html_template.replace("__DASHBOARD_DATA__", json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
@@ -279,10 +348,15 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Generate the current status dashboard and its commit timeline.")
+    parser.add_argument("--no-history", action="store_true", help="only write the current dashboard (useful for quick local checks)")
+    parser.add_argument("--history-ref", default="HEAD", help="commit/ref whose first-parent history becomes the timeline (default: HEAD)")
+    args = parser.parse_args()
+
     rows = build_status_rows()
     output_path = REPO_ROOT / "project_full_status.csv"
     write_status_csv(rows, output_path)
-    html_output_path = write_html_dashboard(rows)
+    html_output_path = write_html_dashboard(rows, history_ref=args.history_ref, include_history=not args.no_history)
     counts = status_counts(rows)
 
     print(f"Wrote {output_path}")

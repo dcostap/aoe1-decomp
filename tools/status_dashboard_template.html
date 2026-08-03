@@ -146,6 +146,52 @@
       margin-top: 2px;
     }
 
+    .timeline {
+      width: 100%;
+      padding: 10px 12px 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .timeline-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 5px;
+    }
+
+    .timeline-title {
+      color: var(--muted-2);
+      font: 11px var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .timeline-meta {
+      color: var(--muted);
+      font: 12px/1.45 var(--mono);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #timeline-slider {
+      display: block;
+      width: 100%;
+      margin: 0;
+      accent-color: #8b5cf6;
+      cursor: pointer;
+    }
+
+    .timeline-range {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted-2);
+      font: 10px var(--mono);
+    }
+
     .search {
       display: inline-flex;
       align-items: center;
@@ -450,6 +496,14 @@
       <h1>aoe1 status treemap</h1>
       <div class="generated" id="generated"></div>
     </div>
+    <div class="timeline" id="timeline">
+      <div class="timeline-head">
+        <span class="timeline-title">commit timeline</span>
+        <span class="timeline-meta" id="timeline-meta"></span>
+      </div>
+      <input id="timeline-slider" type="range" min="0" max="0" value="0" step="1" aria-label="Project commit timeline">
+      <div class="timeline-range"><span id="timeline-start"></span><span id="timeline-end"></span></div>
+    </div>
     <div class="stats-row" id="stats-primary"></div>
     <div class="stats-row" id="stats-secondary"></div>
     <div class="controls">
@@ -483,7 +537,8 @@
 
   <script>
     const DATA = __DASHBOARD_DATA__;
-    const SUMMARY = DATA.summary || {};
+    let SUMMARY = DATA.summary || {};
+    const HISTORY = DATA.history || null;
     const BUCKET_ORDER = SUMMARY.bucketOrder || ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"];
     const COMPLETED_PROGRESS_BUCKETS = new Set(["matching", "accepted_drift", "verified_logic"]);
     const BUCKET_COLORS = SUMMARY.bucketColors || {
@@ -496,19 +551,233 @@
     };
     const STORAGE_KEY = "aoe1-status-treemap-v5";
 
-    const groups = (DATA.groups || []).map((group) => {
-      const copy = { ...group };
-      copy.children = (group.children || []).map((fn) => ({
-        ...fn,
-        groupName: group.name,
-        groupPath: group.path || "",
-      }));
-      return copy;
-    });
+    function decodeHistoryChild(value, va = "") {
+      if (!Array.isArray(value)) {
+        return { ...(value || {}), va };
+      }
+      const child = { va };
+      for (let index = 0; index < (HISTORY?.schema || []).length; index += 1) {
+        child[HISTORY.schema[index]] = value[index];
+      }
+      return child;
+    }
 
-    const GROUP_BY_NAME = new Map(groups.map((group) => [group.name, group]));
-    const FUNCTIONS = groups.flatMap((group) => group.children);
-    const FUNCTION_BY_VA = new Map(FUNCTIONS.map((fn) => [fn.va, fn]));
+    function resolveHistoryChild(child, va = "") {
+      return resolvePreview(decodeHistoryChild(child, va));
+    }
+
+    function rebuildGroups(rawGroups) {
+      return (rawGroups || []).map((rawGroup) => {
+        const children = (rawGroup.children || []).map((child) => ({
+          ...resolveHistoryChild(child),
+          groupName: rawGroup.name,
+          groupPath: rawGroup.path || "",
+        }));
+        const aggregate = aggregateGroup({ name: rawGroup.name, path: rawGroup.path || "" }, children);
+        return { ...aggregate, children };
+      });
+    }
+
+    let groups = rebuildGroups(DATA.groups || []);
+    let GROUP_BY_NAME = new Map(groups.map((group) => [group.name, group]));
+    let FUNCTIONS = groups.flatMap((group) => group.children);
+    let FUNCTION_BY_VA = new Map(FUNCTIONS.map((fn) => [fn.va, fn]));
+
+    function installGroups(rawGroups, summary) {
+      groups = rebuildGroups(rawGroups);
+      GROUP_BY_NAME = new Map(groups.map((group) => [group.name, group]));
+      FUNCTIONS = groups.flatMap((group) => group.children);
+      FUNCTION_BY_VA = new Map(FUNCTIONS.map((fn) => [fn.va, fn]));
+      SUMMARY = summary || {};
+    }
+
+    function installDecodedGroups(groupObjects, summary) {
+      groups = groupObjects;
+      GROUP_BY_NAME = new Map(groups.map((group) => [group.name, group]));
+      FUNCTIONS = groups.flatMap((group) => group.children);
+      FUNCTION_BY_VA = new Map(FUNCTIONS.map((fn) => [fn.va, fn]));
+      SUMMARY = summary || {};
+    }
+
+    let timelineIndex = HISTORY ? HISTORY.commits.length - 1 : -1;
+    let timelineRows = new Map();
+    const PREVIEW_FIELD_INDEX = HISTORY ? HISTORY.schema.indexOf("sourcePreviewId") : -1;
+
+    function resolvePreview(child) {
+      if (PREVIEW_FIELD_INDEX >= 0 && child.sourcePreviewId !== undefined) {
+        child.sourcePreview = (HISTORY?.sourcePreviews || [])[child.sourcePreviewId] || "";
+        delete child.sourcePreviewId;
+      }
+      return child;
+    }
+
+    // Timeline rows stay as compact schema arrays end to end. Field patches
+    // mutate the row array in place, so replaying hundreds of commits costs a
+    // few milliseconds instead of hundreds (no per-patch object spreads).
+    // Rows are decoded to plain objects only once per rendered frame in
+    // groupsFromRows; the decoded object is cached per row array and dropped
+    // the moment that row is patched, so steady-state frames re-decode only
+    // the rows a delta actually touched.
+    const DECODED_CACHE = new WeakMap();
+
+    function decodeRow(row) {
+      let fn = DECODED_CACHE.get(row);
+      if (fn === undefined) {
+        fn = resolveHistoryChild(row);
+        DECODED_CACHE.set(row, fn);
+      }
+      return fn;
+    }
+
+    function rowsFromGroups(rawGroups) {
+      return new Map((rawGroups || []).flatMap((group) => (group.children || []).map((child) => [child[0], child])));
+    }
+
+    function applyOneDelta(index) {
+      const delta = HISTORY.deltas?.[index] || {};
+      for (const change of delta.changes || []) {
+        if (change.patch) {
+          const current = timelineRows.get(change.va);
+          if (current) {
+            DECODED_CACHE.delete(current);
+            for (const [fieldIndex, value] of change.patch) {
+              current[fieldIndex] = value;
+            }
+          }
+        } else if (change.value === null || change.value === undefined) {
+          timelineRows.delete(change.va);
+        } else {
+          timelineRows.set(change.va, change.value);
+        }
+      }
+    }
+
+    function applyTimelineTo(target) {
+      const clamped = clamp(Number(target), 0, HISTORY.commits.length - 1);
+      if (!timelineRows.size || clamped < timelineIndex) {
+        timelineRows = rowsFromGroups(HISTORY.base?.groups || []);
+        timelineIndex = 0;
+      }
+      while (timelineIndex < clamped) {
+        applyOneDelta(timelineIndex + 1);
+        timelineIndex += 1;
+      }
+      return clamped;
+    }
+
+    function groupsFromRows(rowMap) {
+      const byGroup = new Map();
+      for (const child of rowMap.values()) {
+        const resolved = decodeRow(child);
+        const name = resolved.groupName || "(no pdb source file)";
+        if (!byGroup.has(name)) {
+          byGroup.set(name, { name, path: resolved.groupPath || "", children: [] });
+        }
+        byGroup.get(name).children.push(resolved);
+      }
+      const result = [];
+      for (const rawGroup of byGroup.values()) {
+        const aggregate = aggregateGroup(rawGroup, rawGroup.children);
+        result.push({ ...aggregate, children: rawGroup.children });
+      }
+      result.sort((a, b) => metricValue(b) - metricValue(a) || a.name.localeCompare(b.name));
+      return result;
+    }
+
+    function installTimeline(index) {
+      if (!HISTORY || !HISTORY.commits.length) {
+        return;
+      }
+      const target = applyTimelineTo(index);
+      const commit = HISTORY.commits[target] || {};
+      installDecodedGroups(groupsFromRows(timelineRows), commit.summary || HISTORY.base?.summary || {});
+      timelineIndex = target;
+      state.selected = null;
+      renderTimeline();
+    }
+
+    // Live drag: the slider thumb and label follow the pointer instantly; a
+    // requestAnimationFrame loop replays the (cheap, in-place) row deltas under
+    // a time budget and re-renders each frame so the treemap and stats track
+    // the drag instead of waiting for release. Releasing snaps to the exact
+    // commit with a full-quality render.
+    let dragPending = null;
+    let dragFrameScheduled = false;
+
+    function scheduleDragTick() {
+      if (dragFrameScheduled) {
+        return;
+      }
+      dragFrameScheduled = true;
+      requestAnimationFrame(() => {
+        dragFrameScheduled = false;
+        dragTick();
+      });
+    }
+
+    function dragTick() {
+      if (dragPending === null || !HISTORY || !HISTORY.commits.length) {
+        return;
+      }
+      const target = clamp(Number(dragPending), 0, HISTORY.commits.length - 1);
+      if (target < timelineIndex) {
+        timelineRows = rowsFromGroups(HISTORY.base?.groups || []);
+        timelineIndex = 0;
+      }
+      const deadline = performance.now() + 30;
+      while (timelineIndex < target && performance.now() < deadline) {
+        applyOneDelta(timelineIndex + 1);
+        timelineIndex += 1;
+      }
+      state.liveDrag = true;
+      const commit = HISTORY.commits[timelineIndex] || {};
+      installDecodedGroups(groupsFromRows(timelineRows), commit.summary || HISTORY.base?.summary || {});
+      state.selected = null;
+      derived = deriveData();
+      renderTopStats();
+      renderControls();
+      renderDetail();
+      renderTreemap();
+      renderTimeline(dragPending);
+      if (timelineIndex < target) {
+        scheduleDragTick();
+      }
+    }
+
+    function historyDate(commit) {
+      const value = commit?.authorDate || commit?.commitDate || "";
+      if (!value) return "";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+
+    function renderTimeline(previewIndex = timelineIndex) {
+      const slider = document.getElementById("timeline-slider");
+      const meta = document.getElementById("timeline-meta");
+      const start = document.getElementById("timeline-start");
+      const end = document.getElementById("timeline-end");
+      if (!HISTORY || !HISTORY.commits.length) {
+        slider.disabled = true;
+        meta.textContent = "no commit history available";
+        return;
+      }
+      const displayIndex = clamp(Number(previewIndex), 0, HISTORY.commits.length - 1);
+      const commit = HISTORY.commits[displayIndex] || HISTORY.commits[HISTORY.commits.length - 1];
+      slider.max = String(HISTORY.commits.length - 1);
+      slider.value = String(displayIndex);
+      start.textContent = historyDate(HISTORY.commits[0]);
+      end.textContent = historyDate(HISTORY.commits[HISTORY.commits.length - 1]);
+      meta.textContent = `${displayIndex + 1}/${HISTORY.commits.length} · ${commit.shortHash || commit.hash?.slice(0, 8) || ""} · ${historyDate(commit)} · ${commit.subject || ""}`;
+    }
+
+    function renderCommitDetail() {
+      if (!HISTORY || !HISTORY.commits.length) return "";
+      const commit = HISTORY.commits[timelineIndex] || {};
+      const files = commit.changedFiles || [];
+      return `<div class="mini-row"><div class="note-label">commit ${escapeHtml(commit.shortHash || "")}</div><div>${escapeHtml(commit.subject || "(no subject)")} · ${escapeHtml(historyDate(commit))} · ${escapeHtml(commit.author || "")}${files.length ? ` · ${formatNumber(files.length)} files changed` : ""}</div></div>`;
+    }
+
+    /* Keep the existing dashboard code below focused on one active snapshot. */
 
     const elements = {
       top: document.getElementById("top"),
@@ -856,22 +1125,7 @@
       return items
         .filter((item) => item.value > 0)
         .map((item) => ({ item, area: (item.value / total) * area }))
-        .sort((a, b) => b.item.value - a.item.value || String(a.item.id).localeCompare(String(b.item.id)));
-    }
-
-    function worstRatio(row, shortSide) {
-      if (!row.length || shortSide <= 0) {
-        return Number.POSITIVE_INFINITY;
-      }
-      const areas = row.map((entry) => entry.area);
-      const sum = areas.reduce((total, value) => total + value, 0);
-      const max = Math.max(...areas);
-      const min = Math.min(...areas);
-      if (min <= 0 || sum <= 0) {
-        return Number.POSITIVE_INFINITY;
-      }
-      const sideSquared = shortSide * shortSide;
-      return Math.max((sideSquared * max) / (sum * sum), (sum * sum) / (sideSquared * min));
+        .sort((a, b) => b.item.value - a.item.value || (a.item.id < b.item.id ? 1 : a.item.id > b.item.id ? -1 : 0));
     }
 
     function placeTreemapRow(row, rect) {
@@ -921,19 +1175,58 @@
       const placements = [];
       let remaining = { ...rect };
       let row = [];
+      let rowSum = 0;
+      let rowMin = 0;
+      let rowMax = 0;
+      let cursor = 0;
 
-      while (working.length) {
-        const candidate = working[0];
-        const shortSide = Math.min(remaining.width, remaining.height);
-        if (!row.length || worstRatio(row.concat(candidate), shortSide) <= worstRatio(row, shortSide)) {
+      function ratioWith(candidate) {
+        const sum = rowSum + candidate.area;
+        const min = row.length ? Math.min(rowMin, candidate.area) : candidate.area;
+        const max = row.length ? Math.max(rowMax, candidate.area) : candidate.area;
+        const side = Math.min(remaining.width, remaining.height);
+        if (sum <= 0 || min <= 0 || side <= 0) {
+          return Number.POSITIVE_INFINITY;
+        }
+        const sideSquared = side * side;
+        return Math.max((sideSquared * max) / (sum * sum), (sum * sum) / (sideSquared * min));
+      }
+
+      function ratioCurrent() {
+        if (!row.length || rowSum <= 0 || rowMin <= 0) {
+          return Number.POSITIVE_INFINITY;
+        }
+        const side = Math.min(remaining.width, remaining.height);
+        if (side <= 0) {
+          return Number.POSITIVE_INFINITY;
+        }
+        const sideSquared = side * side;
+        return Math.max((sideSquared * rowMax) / (rowSum * rowSum), (rowSum * rowSum) / (sideSquared * rowMin));
+      }
+
+      while (cursor < working.length) {
+        const candidate = working[cursor];
+        if (!row.length || ratioWith(candidate) <= ratioCurrent()) {
           row.push(candidate);
-          working.shift();
+          if (row.length === 1) {
+            rowSum = candidate.area;
+            rowMin = candidate.area;
+            rowMax = candidate.area;
+          } else {
+            rowSum += candidate.area;
+            rowMin = Math.min(rowMin, candidate.area);
+            rowMax = Math.max(rowMax, candidate.area);
+          }
+          cursor += 1;
           continue;
         }
         const placed = placeTreemapRow(row, remaining);
         placements.push(...placed.placed);
         remaining = placed.remaining;
         row = [];
+        rowSum = 0;
+        rowMin = 0;
+        rowMax = 0;
       }
 
       if (row.length) {
@@ -1214,7 +1507,12 @@
 
     function renderOverviewTreemap(ctx, stageRect) {
       const selected = selectedKey();
-      const groupItems = derived.visibleGroups.map((group) => ({ ...group, type: "group", id: `group:${group.name}`, value: metricValue(group) }));
+      const groupItems = derived.visibleGroups;
+      for (const group of groupItems) {
+        group.type = "group";
+        group.id = `group:${group.name}`;
+        group.value = metricValue(group);
+      }
       const groupPlacements = squarify(groupItems, stageRect);
 
       for (const placement of groupPlacements) {
@@ -1246,7 +1544,12 @@
           continue;
         }
 
-        const childItems = group.childrenVisible.map((fn) => ({ ...fn, type: "function", id: `fn:${fn.va}`, value: metricValue(fn) }));
+        const childItems = group.childrenVisible;
+        for (const fn of childItems) {
+          fn.type = "function";
+          fn.id = `fn:${fn.va}`;
+          fn.value = metricValue(fn);
+        }
         const childPlacements = squarify(childItems, childRect);
         for (const childPlacement of childPlacements) {
           const fn = childPlacement.item;
@@ -1258,14 +1561,25 @@
           const selectedFn = selected === fn.id;
           const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.04)";
           const fnStroke = selectedFn ? 1.8 : 0.8;
-          fillRoundedRect(ctx, fnRect, Math.min(4, fnRect.width / 3, fnRect.height / 3), fnFill, fnBorder, fnStroke);
+          const tileArea = fnRect.width * fnRect.height;
+          if (state.liveDrag || tileArea < 1500) {
+            ctx.fillStyle = fnFill;
+            ctx.fillRect(fnRect.x, fnRect.y, fnRect.width, fnRect.height);
+          } else {
+            fillRoundedRect(ctx, fnRect, Math.min(4, fnRect.width / 3, fnRect.height / 3), fnFill, fnBorder, fnStroke);
+          }
           pushHitRegion(fnRect, fn, { type: "zoom-group", group: group.name });
         }
       }
     }
 
     function renderFlatFunctionTreemap(ctx, stageRect, functions, insideZoom) {
-      const items = functions.map((fn) => ({ ...fn, type: "function", id: `fn:${fn.va}`, value: metricValue(fn) }));
+      for (const fn of functions) {
+        fn.type = "function";
+        fn.id = `fn:${fn.va}`;
+        fn.value = metricValue(fn);
+      }
+      const items = functions;
       const placements = squarify(items, stageRect);
       const selected = selectedKey();
 
@@ -1276,13 +1590,21 @@
         const selectedFn = selected === fn.id;
         const border = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.08)";
         const strokeWidth = selectedFn ? 2 : 1;
+        const tileArea = rect.width * rect.height;
 
-        fillRoundedRect(ctx, rect, 6, fill, border, strokeWidth);
-        const sheen = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.height);
-        sheen.addColorStop(0, "rgba(255,255,255,0.07)");
-        sheen.addColorStop(1, "rgba(255,255,255,0.01)");
-        fillRoundedRect(ctx, rect, 6, sheen);
-        drawFunctionLabel(ctx, rect, fn, fill);
+        if (state.liveDrag || tileArea < 1500) {
+          ctx.fillStyle = fill;
+          ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+        } else {
+          fillRoundedRect(ctx, rect, 6, fill, border, strokeWidth);
+          if (!state.liveDrag && tileArea >= 2600) {
+            const sheen = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.height);
+            sheen.addColorStop(0, "rgba(255,255,255,0.07)");
+            sheen.addColorStop(1, "rgba(255,255,255,0.01)");
+            fillRoundedRect(ctx, rect, 6, sheen);
+          }
+          drawFunctionLabel(ctx, rect, fn, fill);
+        }
         pushHitRegion(rect, fn, { type: "select-function", va: fn.va, group: fn.groupName, insideZoom });
       }
     }
@@ -1417,7 +1739,10 @@
     }
 
     function renderTopStats() {
-      elements.generated.textContent = `generated ${DATA.generatedAt}`;
+      const activeCommit = HISTORY?.commits?.[timelineIndex];
+      elements.generated.textContent = activeCommit
+        ? `commit ${activeCommit.shortHash || activeCommit.hash?.slice(0, 8) || ""} · ${historyDate(activeCommit)}`
+        : `generated ${DATA.generatedAt}`;
 
       elements.statsPrimary.innerHTML = [
         statHtml("normal", `${formatNumber(SUMMARY.totalFunctions)} fn`),
@@ -1501,6 +1826,7 @@
           <h2 class="detail-title">overview</h2>
           <div class="detail-subtitle">The main treemap is the dashboard. In the default file overview, each large region is a source file and the small colored tiles inside are individual functions. Click anywhere in a file region to zoom into it.</div>
         </div>
+        ${renderCommitDetail()}
         <div class="split">
           <div>
             <div class="section-label">largest remaining files</div>
@@ -1665,7 +1991,9 @@
     }
 
     function render() {
-      saveState();
+      if (!state.liveDrag) {
+        saveState();
+      }
       derived = deriveData();
       fitCanvasHeight();
       renderTopStats();
@@ -1783,6 +2111,23 @@
       render();
     });
 
+    document.getElementById("timeline-slider").addEventListener("input", (event) => {
+      // The label follows the thumb instantly; the treemap/stats track the drag
+      // through a requestAnimationFrame loop (dragTick) that replays the cheap
+      // row deltas under a time budget, so the dashboard updates while dragging
+      // instead of only after release.
+      dragPending = Number(event.target.value);
+      renderTimeline(dragPending);
+      scheduleDragTick();
+    });
+
+    document.getElementById("timeline-slider").addEventListener("change", (event) => {
+      dragPending = null;
+      state.liveDrag = false;
+      installTimeline(event.target.value);
+      render();
+    });
+
     function schedulePointerUpdate(pointer) {
       queuedPointer = pointer;
       if (hoverFramePending) {
@@ -1859,6 +2204,10 @@
       renderTreemap();
     });
 
+    if (HISTORY && HISTORY.commits.length) {
+      installTimeline(HISTORY.commits.length - 1);
+    }
+    renderTimeline();
     render();
   </script>
 </body>
