@@ -39,16 +39,52 @@ Blind reviewers must establish directly from the executable:
 
 ## Review rounds
 
-No formal blind cohort has yet been adjudicated.
+### Round 1 (partially returned)
+
+- Broad adversarial machine-effect reviewer found three substantive differences:
+  1. `dy` remained in x87 extended precision instead of being stored/reloaded as
+     binary32. For opposite-sign `FLT_MAX` coordinates, the executable rounds to
+     infinity while the candidate returned a finite result.
+  2. Master/radius dereferences occurred in a different order, changing first
+     faults and exceptional ordering on malformed inputs.
+  3. The missing ECX stack home changed scratch writes and normal exit ECX state.
+  Verdict: needs attention.
+- FPU/ABI reviewer found ordinary predicates, field offsets, arithmetic grouping,
+  special-value clamps, return and ABI correct. It independently observed the
+  other-X/this-X radius read-order difference and a possible last-ulp rounding
+  issue, but classified fault order as nonblocking and did not compile the
+  candidate to establish its actual spill points.
 
 ## Main-agent adjudication
 
-Pending a complete concurrent blind cohort.
+All three machine-effect findings are substantive under the executable-as-oracle rule.
+The main agent integrated them rather than treating excess precision or
+caller-volatile register state as harmless.
+
+The FPU/ABI review does not rebut the broad adversarial review's concrete
+`FLT_MAX` counterexample: it analyzed abstract float source and explicitly left
+the candidate's actual spills unestablished, whereas the other reviewer compared
+the emitted object. Its suggestion that radius fault order is nonbehavioral is
+also rejected by project policy, which includes first-fault order.
+
+The corrected rebuild now matches the executable from entry through +0x47:
+`push ecx`, coordinate reads, the binary32 `dy` store/reloads, absolute-value
+tests, `this->master_obj` then `other->master_obj`, and the first other-X radius
+read/fault all occur in oracle order. It also restores ECX with `pop ecx`.
 
 ## Integrated changes
 
 - Renamed the local radius-owner stub from `RGE_Master_Object` to the proven `RGE_Master_Static_Object`; emitted code and metrics were unchanged.
 - Revalidated and repinned the normalized natural source.
+- Made `dy` a narrowly justified volatile float home to require the executable's
+  binary32 rounding and x87 flag behavior.
+- Materialized `this_master` and `other_master` in executable order and made the
+  other-X radius read a narrowly justified volatile float home. This preserves
+  the oracle's pointer/radius first-fault order while retaining ordinary named
+  ownership.
+- Post-fix checker state: rebuilt/original 169/167 bytes, 81 strict differing
+  bytes, first mismatch +0x47, 67.86% instruction shape, no calls. A fresh blind
+  review is required after the pending first-round result returns.
 
 ## Final decision
 

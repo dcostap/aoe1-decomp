@@ -18,6 +18,14 @@
 // Final bounded pass exhausted: retain the natural world-coordinate/radius source. Remaining evidence is a broad VC5 FPU stack/local-topology blocker, not localized equivalent drift.
 // Main-agent normalization: aligned the radius-owner stub name with the proven
 // RGE_Master_Static_Object sibling/type surface; behavior and layout are unchanged.
+// Logic-review integration 2026-08-05: the first blind reviewer proved that
+// plain VC5 excess precision changed overflow results for dy and that master/
+// radius read order changed malformed-pointer fault behavior. Retained narrowly
+// justified volatile float homes for dy and other_radius_x, plus explicit
+// this/other master ownership. The rebuild now matches the executable from entry
+// through +0x47, including push/pop ECX, binary32 dy rounding, master-pointer
+// reads, and radius fault order. Current 169/167 bytes, 81 strict diff; remaining
+// emitted drift begins after the behaviorally ordered other-X read.
 
 class RGE_Master_Static_Object {
 public:
@@ -40,15 +48,27 @@ public:
 
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     float dx = other->world_x - this->world_x;
-    float dy = other->world_y - this->world_y;
+    // The executable stores this delta to a 32-bit stack slot before reuse.
+    // Volatility is behavioral here: it preserves binary32 rounding and the
+    // corresponding x87 overflow/underflow flags instead of retaining 80-bit
+    // excess precision.
+    volatile float dy = other->world_y - this->world_y;
 
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    float x = dx - this->master_obj->radius_x - other->master_obj->radius_x;
-    float y = dy - this->master_obj->radius_y - other->master_obj->radius_y;
+    // Preserve the executable's radius-read order: other X, this X, this Y,
+    // then (after the X clamp decision) other Y.
+    RGE_Master_Static_Object* this_master = this->master_obj;
+    RGE_Master_Static_Object* other_master = other->master_obj;
+    volatile float other_radius_x = other_master->radius_x;
+    float this_radius_x = this_master->radius_x;
+    float this_radius_y = this_master->radius_y;
+    float x = dx - this_radius_x - other_radius_x;
 
     if (x < 0.0f) x = 0.0f;
+
+    float y = dy - this_radius_y - other_master->radius_y;
     if (y < 0.0f) y = 0.0f;
 
     return (float)sqrt(y * y + x * x);
