@@ -2645,3 +2645,96 @@ Why it helps:
 Caveats:
 - Only reach for this after confirming the original indeed overlaps two distinct strides (a scalar-stride family and a wider-stride family) with a counter in a callee-saved register. If the original uses separate stepping pointer locals with no index, a `do/while` pointer form is the right baseline and this indexed rewrite may not apply.
 - The `i*N+j` spelling is a bit unusual in source; it reflects a genuine multi-column panel structure, so keep the group width (`N=3`) and column count tied to the observed stride/offsets. Verified on 004A94A0 `~TRIBE_Screen_Sed` (the Diplomacy box loop), which snapped from 96.5% to 100% exact.
+
+## Lesson: One sparse switch reproduces VC5's bound-check + compare-chain dispatch
+
+When a guard/range dispatch emits `cmp reg, MAX; jg L_high; je L_caseMAX; dec reg; jne L_default; [lowest case inline]`, do not hand-build `if` chains. Write ONE sparse `switch` on the value whose cases include both the low cluster and the high cluster. VC5 lowers it as: bound check against the upper cluster (the `jg`), a `je` for the max-valued case that reuses the bound compare's flags, then `dec`/`sub` compare-chain or sub+table dispatch for the remaining cases, with the lowest case body falling through inline and the default jumping to the shared tail.
+
+Try when:
+- the original dispatch tests the largest case first via `je` right after a `jg`/`ja` bound check, then a small case via `dec reg; jne`;
+- guarded `if (x <= MAX) { if (x == MAX) ...; switch/if ... }` forms emit the case tests in ascending order (`dec; je; sub; je`) with early-return bodies inline, which never matches.
+
+Why it helps:
+- a single switch lets VC5 cluster cases itself (compare-chain group vs sub+table group) and place the last/lowest case body inline, matching the original's test order and out-of-line high-case body;
+- switch case SOURCE ORDER still controls body emission order, so keep the case labels in the PDB line order.
+
+Caveat:
+- apply only when the executable's dispatch is a compare chain (no index-table `mov dl,[index]`); genuinely dense/sparse tables use the index-table lowering instead. Example: TRIBE_Game::get_string2 (00522930) case 103.
+
+## Lesson: Duplicate the call AND the value expression in branch-local shared-call tails
+
+When a shared member-call tail is reached from two branches that differ only in a
+constant/derived argument (for example `set_info_file(str, id)` immediately followed
+by `set_popup_info_file(str, id)` with the same id), the original often pushes the
+arguments inside each branch and joins at the `mov ecx,this; call` instruction. To
+recover it, duplicate BOTH calls in both branches and write the derived value as the
+plain expression in each call, not as a branch-local temp:
+
+```cpp
+if (culture == 4) {
+    this->set_info_file(str, 0xCF08);
+    this->set_popup_info_file(str, 0xCF08);
+} else {
+    this->set_info_file(str, culture + 0xC356);
+    this->set_popup_info_file(str, culture + 0xC356);
+}
+```
+
+This emits `push 0CF08h` twice in the constant branch and `lea edi,[ebx+0C356h]`
+once (VC5 CSEs the expression) plus `push edi` twice in the else branch, joining at
+the shared `call set_popup_info_file`.
+
+Try when:
+- rebuilt code hoists a selector temp: `mov edi,0CF08h; jmp shared; lea edi,[ebx+0C356h]` but the original pushes immediates/register per branch;
+- a branch-local named temp (`long info_id = culture + 0xC356;`) produces 5 wrong direct-call targets or a 1-call gap (it can disturb the checker's call-site pairing); the duplicated expression form instead keeps every call aligned.
+
+Why it helps:
+- VC5 tail-merges the identical `this`-load/call while preserving branch-local
+  argument pushes, and CSEs the repeated derived expression into the original
+  register (edi) without a stack temp;
+- the same duplicated-expression idiom applies to the following button_pics call and
+  to any second callee that shares the tail.
+
+Related exactness tricks that finished the same function:
+- conditional-value local first: `TShape* pic; if (i < 12) pic = border1; else pic = border2; this->button_panel[i]->border_pic = pic;` keeps the `button_panel[i]` pointer load at the store site instead of hoisting it before the `i < 12` guard (`mov edx,[ecx]` before `cmp eax,0Ch` shifts the whole loop);
+- re-expressing a store as the source field (`this->save_culture = player->culture;`) lets VC5 CSE the guard's loaded value and store from EAX instead of the later clamp copy register EBX (one byte: `89 86` vs `89 9e`).
+
+Caveats:
+- only duplicate when both branches genuinely make the same calls with the same
+  argument shape; a selector temp remains right when the value is consumed later.
+- Verified on 00498A50 TRIBE_Screen_Game::player_changed (diff 1790 -> 0 bytes).
+
+## Lesson: Among several call-crossing locals, declaration order decides which one wins the scarce callee-saved register
+
+When a function has several locals live across a call but only one callee-saved register left, VC5's register-vs-stack choice for each local follows source declaration order in a non-obvious way. In a large sprintf case (00514720 TRIBE_Player::aiStatus case 6) three int locals (`last`, `avg`, `attackEnabled`) plus the buffer/world pointers all crossed an `updateAreaName` call with only ebp free:
+
+- Declaring `attackEnabled` before `last`/`avg` kept `attackEnabled` in ebp and spilled `last`/`avg` to the stack slots — near match, 112-byte diff.
+- Declaring `last`/`avg` first and `attackEnabled` last made `last` win ebp and homed `attackEnabled` to the stack, byte-for-byte matching the original (which reloads `attackEnabled` from `[esp+...]` at its late push and keeps `last` in ebp for its early push).
+
+Try when:
+- an otherwise aligned sprintf/format function differs only by which local is kept in a callee-saved register versus reloaded from a stack slot across a call;
+- the original pushes one long-lived value early (register) and reloads another value late (stack slot);
+- two or three named int/pointer locals all feed one call's argument list.
+
+Why it helps:
+- VC5 assigns register homes partly by declaration order; the first-declared long-lived value tends to claim the register, later ones get stack homes;
+- matching the original's per-value push position (early push = register, late push = stack reload) lets you pick which local to declare first.
+
+Caveat:
+- keep the declaration order plausible; only reorder when binary evidence shows the early-loaded/early-pushed value in a callee-saved register and the late value homed to the stack. Verified on 00514720 aiStatus.
+
+## Lesson: A derived class's first field lands at the base's ALIGNED size, not the last base field's end
+
+VC5 places the first data member of a derived class at the base's aligned `sizeof` (rounded to the base's alignment), not at the raw end of the last base field. If the base's last field ends at an unaligned offset (e.g. 0x11D), the derived field starts at 0x120 instead — the base's tail padding separates them.
+
+Try when:
+- the original binary reads a byte/field at an unaligned offset (e.g. `mov dl,[reg+11Dh]`) that you modeled as the first field of a derived class;
+- the rebuilt code consistently emits the aligned offset (+0x120) instead of the binary-proven +0x11D;
+- the PDB type dump lists the field at the unaligned offset but the derived-from-base layout keeps missing by 1-3 bytes.
+
+Why it helps:
+- a flat overlay class (`char gap[0x11D]; unsigned char field;`) with no inheritance places the field at the exact binary offset;
+- keep the base layout separate for the fields that do live in the base; the cast to the flat overlay view is only for the proven byte.
+
+Caveat:
+- use the overlay only for the specific proven offset; if the base class is genuinely the runtime type, inheritance may still be needed for other codegen contexts. Verified on 00514720 aiStatus (TRIBE_World.controllingComputerPlayer at +0x11D).
