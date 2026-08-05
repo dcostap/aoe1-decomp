@@ -2738,3 +2738,139 @@ Why it helps:
 
 Caveat:
 - use the overlay only for the specific proven offset; if the base class is genuinely the runtime type, inheritance may still be needed for other codegen contexts. Verified on 00514720 aiStatus (TRIBE_World.controllingComputerPlayer at +0x11D).
+
+## Lesson: A terminator dword Ghidra folds into a buffer's first element can be a separate local that owns the missing frame dword
+
+When a serialization routine writes a magic end marker (for example `-99`) by storing a dword and calling `rge_write(fd, &slot, 4)`, Ghidra may label that stack slot as `buffer[0]` because the decompiler's buffer base sits 4 bytes below the real one. The original source instead wrote the strings at the buffer base and kept a distinct `int` terminator local whose home is immediately BELOW the buffer in the frame.
+
+Fingerprint:
+- the rebuilt body is otherwise byte-exact (same call set, CFG, every `[esp+N]` displacement matches) but the frame is exactly 4 bytes short (e.g. `0x1D0` vs `0x1D4`);
+- the terminator store and its `lea` land at the slot just below a big local string buffer;
+- the mirror-image source writes the strings at `buf + 4` and the marker into `buf[0]`, producing identical instructions but one fewer dword of locals.
+
+Fix (all three together):
+- declare a separate `int end_marker;` local;
+- write the strings at the buffer base (drop the `+ 4`);
+- write the marker through `&end_marker`.
+
+Why it helps:
+- VC5 gives the separate address-taken dword its own stack home; coalescing the marker into the buffer head removes a local and shrinks the frame by exactly 4 bytes, which is the entire remaining diff in functions that are otherwise aligned.
+
+Try when:
+- the only diff is `sub esp,1D0h` vs `sub esp,1D4h`-style frame size plus the knock-on parameter/home displacements, and a -99/-1/0xFFFFFFFF marker write sits 4 bytes below a local buffer;
+- a decompiler labels a dword at `buf_base - 4` as `buf[0]` while the string operations target `buf + 4`.
+
+Caveat:
+- verify the real buffer sizes (here both were 224 = 0xE0) and the marker slot from the asm before choosing the model; the +4-vs-base spelling and the separate local must be changed together or the string destinations shift by 4. Verified on 0048C3E0 RGE_Scenario::save, where this single local made the function exact (2108 bytes, 0.5693% -> 0.0000%).
+
+## Lesson: A mid-loop reassignment of a spilled loop variable forces it into a callee-saved register; use a separate call-argument temp instead
+
+When a loop computes a per-iteration value (e.g. `humanity`), keeps it in a stack home, and later appears to overwrite it for one call, the original may NOT have reassigned the variable at all. In VC5, a single variable that is computed at loop top, used later from its stack home, AND reassigned mid-loop gets allocated a callee-saved register (EBP) for its whole live range — reversing the homes of two locals (`humanity`->EBP and `is_me`->[esp+10] when the original has `humanity`->[esp+10] and `is_me`->EBP). The natural fix is a separate temp whose value flows straight into the call:
+
+```cpp
+int color;
+if (is_me == 1 && this->myPlayerColor != 0) {
+    color = this->myPlayerColor;
+} else {
+    color = ((TRIBE_Game*)rge_base_game)->playerColor(i);
+}
+this->playerColor[i]->set_state_by_id(color);
+```
+
+The binary proves this shape: `mov eax,[myPlayerColor]; test eax,eax; jne join` passes eax DIRECTLY to the call, and the later `cmp [esp+10],2` still reads the ORIGINAL top-of-loop value — so the reassigned value was never stored back to the variable's home.
+
+Try when:
+- rebuilt keeps the wrong variable in a callee-saved register and spills the one the original keeps in EBP;
+- a volatile diagnostic on one local reproduces the stack home (that is a symptom, not the fix);
+- the "reassigned" value is only consumed by one immediate call.
+
+Why it helps:
+- without the mid-loop assignment, the variable's live range stays short enough for VC5 to spill it at its computation point and keep the other local in EBP.
+
+Caveat:
+- verify from asm that the reassigned value never flows back into later uses of the original variable (check the reloads/cmp against the memory home). Verified on 004A37D0 fillPlayers (scr_mps.cpp), where this single change cut the diff from 1759 to 1450 bytes and unblocked every later structural fix.
+
+## Lesson: Match `cmp reg,1` vs `test reg,reg` by mixing `var == 1` and plain `var` spellings per site
+
+When the same int 0/1 variable is tested in several conditions, the ORIGINAL binary can mix `cmp ebp,1` (equality) at some sites and `test ebp,ebp` (truthiness) at others. That means the source itself mixed the spellings: `if (is_me == 1 && field != 0)` in some conditions, `if (is_me && ready == 0)` in others. Spell each site to match the binary's compare form; a uniform `is_me` spelling makes VC5 emit `test` everywhere and shifts the branch hunk (often exactly one `cmp reg,1` + `jne` vs `test reg,reg` + `je`).
+
+Try when:
+- a near-exact function differs only in one compare opcode/branch polarity around a boolean flag;
+- the original uses BOTH `cmp reg,1` and `test reg,reg` on the same variable in the same function.
+
+Caveat:
+- this is only plausible when the variable is genuinely int-width (e.g. `mov ebp,ecx` after `sete cl`); a real `bool` local would not mix the two forms.
+
+## Lesson: /GX explicit destructor calls double the automatic scope-exit destruction
+
+In VC5 /GX functions, a local object with a destructor is automatically destroyed at
+scope exit (`return`), emitting `mov [state_slot],-1` BEFORE the destructor call so the
+destructor's own exceptions do not re-enter the funclet. If the source ALSO writes an
+explicit `obj.~T();` before the return, VC5 emits TWO destructor calls per exit: the
+explicit one (try-level unchanged) followed by the automatic one (with the reset). This
+adds ~8-10 bytes and one direct call per site (often 3 sites = +24 bytes and +3 calls).
+
+Try when:
+- a /GX function's call count is 3 higher than the original and the function is ~25-70
+  bytes too long;
+- the rebuilt shows `call dtor; lea; mov [state],-1; call dtor` at a return point while
+  the original has one `mov [state],-1; call dtor`;
+- the state-slot stores otherwise match (same values, same numbering).
+
+Why it helps:
+- removing the explicit calls lets VC5 emit exactly the original automatic-destruction
+  pattern at each return, restoring call counts and size.
+- Do NOT keep a "direct-delete" or explicit-dtor metric winner when the oracle clearly
+  uses the single automatic call.
+
+Caveat:
+- only remove the explicit call when the original's single call has the try-level reset
+  BEFORE it (automatic form); an explicit call without the automatic follow-up is a
+  different, valid spelling. Verified on 004D60E0 placeStructure (+70 bytes and +3 direct
+  constructionitem calls were exactly the explicit-plus-automatic dtor pairs).
+
+## Lesson: `test ah,40h` after `fcomp` tests C3 = EQUALITY, not less-than
+
+When reading VC5 x87 compares, `test ah,1` tests C0 (ST0 < m32, less-than) but
+`test ah,40h` tests C3 (ST0 == m32, equality). A `fcomp; fnstsw; test ah,40h; je skip`
+branch continues only when the two operands are EQUAL. Do not assume a float field
+comparison is a size/range test just because the surrounding code looks like one.
+
+Try when:
+- a near-match differs only by `test ah,1` vs `test ah,40h` (or the source spells `>`/`<`
+  but the binary proves equality);
+- the original evaluates one operand first, saves it (`fstp [esp+N]`), evaluates the
+  other, then `fcomp`s against the saved value.
+
+Why it helps:
+- spelling the source as `first_operand == second_operand` (with the FIRST-evaluated
+  operand on the left) produces the exact `fstp; fcomp; test ah,40h; je` bytes;
+- `>`/`<` spellings emit `test ah,1` (C0) instead.
+
+Caveat:
+- operand order matters: VC5 evaluates LEFT-to-right, saving the left result and
+  `fcomp`ing the right against it; verify which operand is saved in the asm. Verified on
+  004D60E0 placeStructure (xSize/ySize guards are `cur->xSize() == item->xSize()` with
+  cur evaluated first, not size-range tests).
+
+## Lesson: Kill a long-lived constructor parameter's live range at its first store to free the callee-saved register for `this`
+
+In a large `/GX` constructor that stores a parameter into a member at the top (`this->world = world;`) and later passes that SAME parameter to a subobject constructor, spelling the later call as `new T(file, this->world)` (reload from the member) instead of `new T(file, world)` (use the parameter) makes the parameter dead right after the top store. VC5 then no longer needs a callee-saved register for it, which can flip the whole register basin: `this` moves from a spilled EDI/stack-home into EBX, the pointer/index loops get EDI/EBP, and the frame loses the `this`-spill and version-home locals.
+
+Try when:
+- the prologue matches except `this` is in EDI with a `mov [esp+X],edi` spill, while the original keeps `this` in EBX and reloads the parameter from the member at the subobject call;
+- the parameter is only used twice: the top store and one later call.
+
+Why it helps:
+- the parameter's live range ends at the store, freeing EBX; the original's `mov edx,[ebx+8]` reload at the call site proves the source read the member, not the parameter.
+
+Caveat:
+- only when the binary shows the member reload at the later call; otherwise keeping the parameter may be the real source. Verified on 0048AE10 RGE_Scenario ctor (diff 1784 -> 1387 bytes in one probe).
+
+## Lesson: Version-gate float literals must match the observed `fcomp` memory-operand width
+
+For `if (Version < X)` / `>` checks, the literal's precision selects `fcomp dword` (`d8 1d`, float) vs `fcomp qword` (`dc 1d`, double). Writing `1.03` (double literal) emits `dc 1d`; writing `1.03f` emits `d8 1d`. The original AoE1 scenario loader mixes both: `1.03`, `1.15`, `1.02` checks use float literals (`d8 1d`), while `1.07/1.11/1.09/1.1/1.08` use doubles. Always read the original `fcomp` opcode and match the literal precision; a single opcode byte (`d8` vs `dc`) is a one-byte diff but also shifts branch spans.
+
+## Lesson: VC5 canonicalizes `int + ptr`; SIB base/index at terminator stores is not steerable from the store expression
+
+When the only remaining diff is the SIB base/index byte at byte-terminator stores (`mov byte [len+ptr-1],0` original base=LENGTH vs rebuilt base=PTR, with identical registers and load order), the choice is made in the IR and VC5 canonicalizes every `int + ptr` / `(int-1) + ptr` / cast spelling to `ptr + int`, so NO source form of the store statement flips it. Before spending a budget on terminator spelling, verify the register allocation and load order are truly identical; if they are, the difference is a TU-state artifact of the original compile and the store spelling is a dead axis. Natural subscripts remain the best living source. Check `sibling` matched functions for a natural base=len precedent (e.g. 0048AB10 gets base=len only because `len` is long-lived in a callee-saved register).
