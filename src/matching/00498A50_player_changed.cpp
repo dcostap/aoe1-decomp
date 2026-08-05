@@ -6,16 +6,28 @@
 //   panel calls, natural new/delete TShape ownership; default flags omitted the
 //   original EH frame and produced a 205-byte-short build.
 // - flags: /GX restored the 0x204 frame, four callee-saves, all 73 calls, and
-//   exact size; this is the binary-supported donor context.
+//   exact size; this is the binary-supported donor context (scr_game.cpp EH).
 // - control-flow/liveness: direct player->culture guard with the field on the
 //   left recovered the original ECX save-culture/EAX culture load and compare;
 //   saved-culture locals and direct assignment variants were unchanged or worse.
 // - behavior: using str rather than decompiler str+4 was required by transient
 //   push accounting; it raised exact-block coverage to 91% and shape similarity
-//   to 98.08%. The current remaining drift starts at the info-id branch's
-//   immediate/local scheduling and later codegen-only alignment.
-// - diagnostic variants: branch-duplicated popup calls and a direct conditional
-//   popup-id expression disturbed call integrity/coverage; rolled back.
+//   to 98.08%.
+// - MATCH breakthrough (3 changes, each verified independently):
+//   (1) branch-duplicated set_info_file/set_popup_info_file and set_button_pics
+//       calls (culture == 4 literal pushed twice, else branch CSEs culture+id
+//       into edi) recovered the original branch-local argument pushes;
+//   (2) pic-local loop (`TShape* pic; if (i < 12) pic = border1 else border2;
+//       button_panel[i]->border_pic = pic;`) kept the button load at the store
+//       site instead of hoisting it before the i<12 guard;
+//   (3) `save_culture = player->culture;` (CSE with the guard load) selects the
+//       original EAX store instead of the EBX clamp copy.
+//   These reduced the diff from 1790 bytes to 0.
+// - surface: replaced vf00/manual-vtable scaffolding with the canonical
+//   TPanel/TButtonPanel surfaces (TPanel vt[0..8] = dtor/setup/set_rect/...
+//   /set_redraw per donor-slot evidence; TButtonPanel : TPanel with virtual
+//   ~TButtonPanel; RGE_Base_Game/RGE_Player virtual dtors; real TPanel fields
+//   previousPanelValue..panelNameValue). Codegen unchanged (still exact).
 
 #include <stdio.h>
 
@@ -29,22 +41,38 @@ class TRIBE_Panel_Inven;
 class TRIBE_Panel_Object;
 class TTextPanel;
 
+class TDrawArea;
+
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
 class TPanel {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void set_redraw(int mode);
+    virtual ~TPanel();                                        // vt[0]
+    virtual long setup(TDrawArea* area, TPanel* parent, long x,
+                       long y, long wid, long hgt, unsigned char mode);  // vt[1]
+    virtual void set_rect(tagRECT rect);                      // vt[2]
+    virtual void set_rect(long x, long y, long wid, long hgt); // vt[3]
+    virtual void set_color(unsigned char color);              // vt[4]
+    virtual void set_active(int active);                      // vt[5]
+    virtual void set_positioning(int mode, long x, long y, long wid,
+                                 long hgt, long x2, long y2, TPanel* p1,
+                                 TPanel* p2, TPanel* p3, TPanel* p4); // vt[6]
+    virtual void set_fixed_position(long x, long y, long wid, long hgt); // vt[7]
+    virtual void set_redraw(int mode);                        // vt[8]
 
-    char gap_04[0x10];
-    long pnl_wid;
-    long pnl_hgt;
-    char gap_1C[0xD8];
+    TPanel* previousPanelValue;   // +0x04
+    TPanel* previousModalPanelValue; // +0x08
+    long pnl_x;                   // +0x0C
+    long pnl_y;                   // +0x10
+    long pnl_wid;                 // +0x14
+    long pnl_hgt;                 // +0x18
+    char* panelNameValue;         // +0x1C
+    char gap_20[0xD4];            // 0x20..0xF3
 };
 
 class TEasy_Panel : public TPanel {
@@ -110,7 +138,7 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void vf00();
+    virtual ~RGE_Base_Game();
     char gap_04[0x1B0];
     int game_mode;
     RGE_Player* get_player();
@@ -118,7 +146,7 @@ public:
 
 class RGE_Player {
 public:
-    virtual void vf00();
+    virtual ~RGE_Player();
     char gap_04[0x46];
     short id;
     char gap_4C[8];
@@ -152,19 +180,11 @@ public:
     void set_player(RGE_Player* player);
 };
 
-class TButtonPanel {
+class TButtonPanel : public TPanel {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20(int mode);
+    virtual ~TButtonPanel();
 
-    char gap_04[0x2B4];
+    char gap_F4[0x1C4];
 
     void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
     void set_picture(short state, TShape* picture, short frame);
@@ -260,7 +280,7 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     if (player->id != 0) {
         if (player->culture != this->save_culture || this->pnl_wid != this->save_screen_width) {
             int culture = player->culture;
-            this->save_culture = culture;
+            this->save_culture = player->culture;
             this->save_screen_width = this->pnl_wid;
 
             if (culture >= 5) {
@@ -269,25 +289,21 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
 
             sprintf(str, (char*)0x5864E8, culture);
 
-            long info_id;
             if (culture == 4) {
                 this->set_info_file(str, 0xCF08);
-                info_id = 0xCF08;
+                this->set_popup_info_file(str, 0xCF08);
             } else {
-                info_id = culture + 0xC356;
-                this->set_info_file(str, info_id);
+                this->set_info_file(str, culture + 0xC356);
+                this->set_popup_info_file(str, culture + 0xC356);
             }
-            this->set_popup_info_file(str, info_id);
 
             sprintf(str, (char*)0x5864E0, culture);
 
-            long button_pics_id;
             if (culture == 4) {
-                button_pics_id = 0xCF0C;
+                this->set_button_pics(str, 0xCF0C);
             } else {
-                button_pics_id = culture + 0xC5AD;
+                this->set_button_pics(str, culture + 0xC5AD);
             }
-            this->set_button_pics(str, button_pics_id);
 
             switch (culture) {
             case 0:
@@ -393,11 +409,13 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
             this->game_screen_pic = new TShape(str, game_pic_id);
 
             for (int i = 0; i < 0x11; ++i) {
+                TShape* pic;
                 if (i < 0x0C) {
-                    this->button_panel[i]->border_pic = this->button_border1_pic;
+                    pic = this->button_border1_pic;
                 } else {
-                    this->button_panel[i]->border_pic = this->button_border2_pic;
+                    pic = this->button_border2_pic;
                 }
+                this->button_panel[i]->border_pic = pic;
             }
 
             if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
