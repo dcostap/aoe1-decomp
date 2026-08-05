@@ -332,6 +332,12 @@ Serialization helpers commonly preserve a file handle in a register while using 
 old stack slot as the read/write buffer. Conversely, do not force explicit mutation
 when the compiler naturally chose the dead slot for an ordinary block-local temp.
 
+In long save routines, the exact source may need both roles at once: keep a separate
+address-taken temporary for an early matrix write, then save the file handle and
+reuse the incoming parameter itself for later serialized scalar values. Collapsing
+both roles into one local can select the wrong stack home and remove the original
+prologue `push ecx`; the split role was confirmed in the exact 004D84E0 save.
+
 The same reuse can arise from a natural API output local: declare the separate
 out-pointer local and pass its address, rather than taking the address of the input
 parameter just because the binary uses that incoming slot. In old C utility code,
@@ -1137,6 +1143,12 @@ define the actual `operator[](int)` body and use `array[index]` at the call site
 Hand-expanding equivalent resize logic in the parent can look close but VC5 may
 emit extra pre-loop tests, different loop predicates, or shifted block sizes. The
 inline operator surface lets VC5 reproduce the canonical utmarray.h code shape.
+
+The definition must remain an actually inline header/template surface (for example,
+the body inside `ManagedArray<T>`). An out-of-line local helper with the same body may
+survive as six direct operator calls instead of expanding at each use. Once the
+period inline surface is restored, the canonical grow/copy/delete blocks and their
+call count can return together.
 
 ## Lesson: Model strided scenario tables as real multidimensional arrays for indexed member addressing
 
