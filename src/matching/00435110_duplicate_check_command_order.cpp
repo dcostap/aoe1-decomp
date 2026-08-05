@@ -82,6 +82,24 @@
 // remains: VC5 still pushes EDI before reading last_order->unit_num, whereas the
 // executable reads that byte first. Volatile diagnostics did not move it; do not
 // promote until post-fix review resolves or accepts this stack-alias case.
+// Retry 2026-08-06 sa-8c92ffb1-r1 (exact match): declaration-order variant lab
+// found the exact basin. Two key source facts together reproduce the whole
+// original machine order:
+//   1. Declare the incoming order's count and units pointer FIRST
+//      (n; p1; last_order; last_n; p2). With n and a param-based pointer before
+//      last_order, VC5 stops hoisting the count read above the register saves,
+//      reads param count (al) then last count (cl), pushes EDI after the last
+//      count, and computes the unit pointers in the executable's order.
+//   2. Declare the loop counter INSIDE the for (for (int i = 0; ...)) instead of
+//      a top-level `int i;`. That flips the pointer-home assignment to the
+//      executable's slots: p1 (param units) stored to the incoming param home
+//      [esp+18h] first, p2 (last units) to [esp+10h] second (the stack alias).
+//   3. Spell the coordinate equality with last_order on the left
+//      ((short)(int)last_order->pos_x == (short)(int)param_1->pos_x) so VC5
+//      emits cmp ax,bp while still converting the incoming order first.
+// Result: exact 153-byte match, 4/4 calls, 100% block coverage.
+// This supersedes the previous 28-byte best; the old round-3 residual (EDI push
+// before the last count, p2 home before p1) is fully resolved.
 
 class RGE_Command_Order {
 public:
@@ -110,22 +128,21 @@ public:
 
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
-    RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order;
-    long* p2 = last_order->units;
     unsigned int n = (unsigned char)param_1->unit_num;
-    unsigned int last_n = (unsigned char)last_order->unit_num;
     long* p1 = param_1->units;
-    int i;
+    RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order;
+    unsigned int last_n = (unsigned char)last_order->unit_num;
+    long* p2 = last_order->units;
 
     if (n == last_n) {
         // The executable converts the incoming order first. Equality is
         // commutative, but this order preserves coordinate fault/FPU-exception
         // sequencing and the upper-EAX residue on a failed comparison.
-        if ((short)(int)param_1->pos_x == (short)(int)last_order->pos_x) {
-            if ((short)(int)param_1->pos_y == (short)(int)last_order->pos_y) {
+        if ((short)(int)last_order->pos_x == (short)(int)param_1->pos_x) {
+            if ((short)(int)last_order->pos_y == (short)(int)param_1->pos_y) {
                 long target_id = last_order->target_id;
                 if (target_id == param_1->target_id) {
-                    for (i = 0; i < (int)n; i++) {
+                    for (int i = 0; i < (int)n; i++) {
                         if (p1[i] != p2[i])
                             goto fail;
                     }
