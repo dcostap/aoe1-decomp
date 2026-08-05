@@ -20,14 +20,40 @@
 // - orchestrator behavior audit: strategicNumber(0x9B) is called unconditionally
 //   after strategicNumber(0xA0) in the executable, even when A0 is zero; moved
 //   that call before the A0 guard to preserve its side effects and call topology.
+// - layout audit: BuildItem must be 0xB0 bytes (buildListLength at +0x1A0), not
+//   0x74; added gap_74. Fixes the fishing-block buildListLength displacement
+//   (reb was +0x164). shape 85.5 -> 89.3%, blocks 41.9 -> 61.7%.
+// - behavior audit: original stores ironAgeIndex = val9B + 4 unconditionally
+//   (before the valA0 != 0 test); moved the store out of the if. Original also
+//   resets bronzeAgeIndex = 0 in the valA0 block preheader (missing reset would
+//   leak the bronze-fill count into insertGathererPercentage); added it.
+// - bronze insert: if/else with duplicated insert() calls (bp>1 ? bp-1 : 1)
+//   restores the original branch-pushed argument shape (lea/push vs materialized
+//   selector).
+// - valA0 loop: if+do-while form (matches Ghidra reconstruction) restores the
+//   original instruction count (532/532) and puts the bronzeAgeIndex=0 store
+//   near its original block; diff 1076, size -7, shape 90.0%%.
+// - tool-age double guard: the original keeps BOTH the `if (remaining > 0)`
+//   guard (191) and the while-loop guard (199); rebuilt VC5 merges them into
+//   one test. Tried sibling-step-calc forms, do-while forms, inline condition,
+//   register-qualified step: all add a step spill or break call parity. Left
+//   the natural nested form (single merged guard); 1 missing test+jle hunk.
+// - register allocation: original keeps `count` (0x66) in EBP through the first
+//   loop + transport fill; rebuilt keeps `warshipCount` (0x65) there instead.
+//   This flips the 11 counter frame-slot assignment (rebuilt slots: divisionSize
+//   <-> totalPercentage +18/+20; four-slot rotation +24..+34) and the A0-loop
+//   ironAgeIndex register home. Declaration order, branch nesting, and chained
+//   initializers were all probed; VC5's slot allocation is not source-order
+//   driven here.
 //
-// LEFT IN SCRATCH: semantically faithful natural reconstruction with correct class
-// surface, /GX EH frame, and 100%% call parity. Remaining ~60%% positional diff is
-// pervasive VC5 slot/register-allocation drift across 78 spans (nearly every basic
-// block differs by 1-2 bytes of framing plus a few missing-block structural gaps).
-// The 11 hot counter locals are all repeatedly reloaded; landing the exact frame
-// slot assignment is not evidence-backed within a bounded session. This is a strong
-// verified-logic-tier candidate for orchestrator semantic review.
+// LEFT IN SCRATCH: semantically faithful natural reconstruction with correct
+// class surface (/GX EH frame, 0xB0 BuildItem), 100%% call parity (61/61), and
+// matching instruction count (532/532). Remaining ~60%% positional diff is
+// pervasive VC5 register/slot-allocation drift (count-vs-warshipCount EBP
+// choice, frame-slot permutation, A0-loop ironAgeIndex home) plus one missing
+// tool-age loop guard. Landing the exact allocation is not evidence-backed
+// within a bounded session. Strong verified-logic-tier candidate for
+// orchestrator semantic review.
 
 class ResourceItem;
 
@@ -39,7 +65,7 @@ public:
 
 class ResourceItem {
 public:
-    void* vtable_ptr;                 // +0x00
+    virtual ~ResourceItem();
     ResourceItem* next;               // +0x04
     ResourceItem* prev;               // +0x08
     int valueValue[8];                // +0x0C
@@ -48,7 +74,6 @@ public:
     int numberValue;                  // +0x6C
 
     ResourceItem(int count);
-    ~ResourceItem();
     void setAllValues(int value);
     int value(int index);
 };
@@ -68,6 +93,7 @@ public:
 
     BuildItem* next;                  // +0x6C
     BuildItem* prev;                  // +0x70
+    char gap_74[0xB0 - 0x74];         // BuildItem is 0xB0 bytes (real layout)
 
     int buildCategory();
 };
@@ -269,7 +295,12 @@ void TribeBuildAIModule::initialize()
                 bronzeAgeIndex++;
             }
             if (bronzeAgeIndex > bx) {
-                int r = insert(0x46, -1, bp > 1 ? bp - 1 : 1);
+                int r;
+                if (bp > 1) {
+                    r = insert(0x46, -1, bp - 1);
+                } else {
+                    r = insert(0x46, -1, 1);
+                }
                 if (r == 1) {
                     bx += 4;
                 }
@@ -285,9 +316,8 @@ void TribeBuildAIModule::initialize()
     // Resource/gatherer distribution.
     int valA0 = this->md->tacticalAI.strategicNumber(0xA0);
     int val9B = this->md->tacticalAI.strategicNumber(0x9B);
+    ironAgeIndex = val9B + 4;
     if (valA0 != 0) {
-        ironAgeIndex = val9B + 4;
-
         BuildItem* item2 = this->buildList.next;
         BuildItem* sentinel2 = &this->buildList;
 
@@ -295,37 +325,41 @@ void TribeBuildAIModule::initialize()
         divisionSize = 0;
         resource.setAllValues(0);
 
-        while (item2 != sentinel2 && item2 != 0) {
-            if (item2->buildCategory() == 6) {
-                item2 = item2->next;
-                divisionSize++;
-            } else {
-                if (item2->buildCategory() == 1 || item2->buildCategory() == 4) {
-                    this->md->aiPlayer->researchCost(item2->typeID(), -1, &resource, 1);
+        if (item2 != sentinel2) {
+            bronzeAgeIndex = 0;
+            do {
+                if (item2 == 0) break;
+                if (item2->buildCategory() == 6) {
+                    item2 = item2->next;
+                    divisionSize++;
                 } else {
-                    this->md->aiPlayer->objectCost(item2->typeID(), -1, &resource, 1);
-                }
-                divisionSize++;
-
-                if (divisionSize >= ironAgeIndex) {
-                    int total = 0;
-                    for (int i = 0; i < 4; i++) {
-                        total += resource.value(i);
+                    if (item2->buildCategory() == 1 || item2->buildCategory() == 4) {
+                        this->md->aiPlayer->researchCost(item2->typeID(), -1, &resource, 1);
+                    } else {
+                        this->md->aiPlayer->objectCost(item2->typeID(), -1, &resource, 1);
                     }
-                    if (total > 0) {
+                    divisionSize++;
+
+                    if (divisionSize >= ironAgeIndex) {
+                        int total = 0;
                         for (int i = 0; i < 4; i++) {
-                            insertGathererPercentage(i,
-                                (resource.value(i) * valA0) / total,
-                                bronzeAgeIndex);
+                            total += resource.value(i);
                         }
-                        resource.setAllValues(0);
-                        bronzeAgeIndex += ironAgeIndex;
-                        divisionSize = 0;
+                        if (total > 0) {
+                            for (int i = 0; i < 4; i++) {
+                                insertGathererPercentage(i,
+                                    (resource.value(i) * valA0) / total,
+                                    bronzeAgeIndex);
+                            }
+                            resource.setAllValues(0);
+                            bronzeAgeIndex += ironAgeIndex;
+                            divisionSize = 0;
+                        }
                     }
-                }
 
-                item2 = item2->next;
-            }
+                    item2 = item2->next;
+                }
+            } while (item2 != sentinel2);
         }
     }
 }
