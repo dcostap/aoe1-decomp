@@ -91,4 +91,33 @@ count branch.
 
 ## Final decision
 
-Pending.
+Pending completion of the post-fix cohort.
+
+### Round 2 (post-fix; in progress)
+
+- Numeric/ABI reviewer found no blocking difference. It independently verified
+  the corrected full dereference order (`this->last_order`, both count bytes,
+  param-first X/Y conversions, target IDs, then p1/p2 units), malformed-pointer
+  fault order, low-16-bit `__ftol` quirks for NaN/infinity/overflow, loop bounds,
+  AL-only return contract, stack aliases, and `ret 4` cleanup.
+- Two concurrent post-fix machine/adversarial reviewers remain pending.
+- Adversarial reviewer found the early-return rewrite introduced a new P1
+  machine-order defect: p1/p2 homes became conditional, occurred after the first
+  coordinate load, and occupied opposite stack slots. Stack-overlapping records
+  and trapping coordinate loads therefore differed. It also reported caller-
+  saved register residue differences. Verdict: needs attention.
+
+The main agent restored a nested count guard and reversed pointer declarations.
+The emitted object now writes p2 to `[esp+10h]` and p1 to `[esp+18h]`
+unconditionally before the count branch and all coordinate loads, while retaining
+param-first coordinate conversion and `this->last_order` as the first object
+dereference. A narrower pre-existing ordering gap remains: rebuilt `push edi`
+still precedes the last-order count read, unlike the executable. Promotion is
+blocked pending the final machine reviewer and any further natural source remedy.
+
+- The remaining round-2 machine reviewer completed against the superseded
+  29-byte early-return candidate. It independently reproduced the same swapped,
+  delayed pointer-home defect and volatile-residue differences, while verifying
+  all ordinary record/FPU/loop/ABI behavior. Its source-faithful verdict does not
+  clear the concrete stack-alias defect and is stale for the corrected 28-byte
+  candidate. A fresh round-3 reviewer is evaluating the current emitted object.

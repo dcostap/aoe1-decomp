@@ -74,6 +74,14 @@
 // +0x18), preserving malformed-pointer, stack-alias, and x87 exception order.
 // Metrics are intentionally secondary here: 153/153 bytes, 29 strict diff,
 // 4/4 calls; the later LEA/branch placement remains codegen-only.
+// Round-2 adversarial review found that the early-return shape delayed and
+// reversed p1/p2 homes until after the first FLD. Restored the nested guard and
+// declared p2 before p1: both homes are now unconditional, in the executable's
+// slots, and precede count-branch/coordinate faults. Early p2 ownership also
+// keeps this->last_order ahead of the incoming count. One narrower ordering gap
+// remains: VC5 still pushes EDI before reading last_order->unit_num, whereas the
+// executable reads that byte first. Volatile diagnostics did not move it; do not
+// promote until post-fix review resolves or accepts this stack-alias case.
 
 class RGE_Command_Order {
 public:
@@ -103,26 +111,26 @@ public:
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
     RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order;
-    unsigned int n = (unsigned char)param_1->unit_num;
-    if (n != (unsigned char)last_order->unit_num)
-        return 0;
-
-    long* p1 = param_1->units;
     long* p2 = last_order->units;
+    unsigned int n = (unsigned char)param_1->unit_num;
+    unsigned int last_n = (unsigned char)last_order->unit_num;
+    long* p1 = param_1->units;
     int i;
 
-    // The executable converts the incoming order first. Equality is
-    // commutative, but this order preserves coordinate fault/FPU-exception
-    // sequencing and the upper-EAX residue on a failed comparison.
-    if ((short)(int)param_1->pos_x == (short)(int)last_order->pos_x) {
-        if ((short)(int)param_1->pos_y == (short)(int)last_order->pos_y) {
-            long target_id = last_order->target_id;
-            if (target_id == param_1->target_id) {
-                for (i = 0; i < (int)n; i++) {
-                    if (p1[i] != p2[i])
-                        goto fail;
+    if (n == last_n) {
+        // The executable converts the incoming order first. Equality is
+        // commutative, but this order preserves coordinate fault/FPU-exception
+        // sequencing and the upper-EAX residue on a failed comparison.
+        if ((short)(int)param_1->pos_x == (short)(int)last_order->pos_x) {
+            if ((short)(int)param_1->pos_y == (short)(int)last_order->pos_y) {
+                long target_id = last_order->target_id;
+                if (target_id == param_1->target_id) {
+                    for (i = 0; i < (int)n; i++) {
+                        if (p1[i] != p2[i])
+                            goto fail;
+                    }
+                    return 1;
                 }
-                return 1;
             }
         }
     }
