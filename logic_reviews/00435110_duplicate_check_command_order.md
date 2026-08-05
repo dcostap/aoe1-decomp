@@ -121,3 +121,14 @@ blocked pending the final machine reviewer and any further natural source remedy
   all ordinary record/FPU/loop/ABI behavior. Its source-faithful verdict does not
   clear the concrete stack-alias defect and is stale for the corrected 28-byte
   candidate. A fresh round-3 reviewer is evaluating the current emitted object.
+
+### Round 3 (current 28-byte candidate)
+
+The fresh reviewer confirmed the pointer homes now occupy the correct slots and
+that coordinate/FPU order, target comparison, loop reads, cleanup, and ordinary
+record behavior match. One substantive P2 remains: rebuilt `push edi` and the p2
+home write occur before reading `last_order->unit_num`; the executable reads both
+counts first, then pushes EDI, compares, and writes p1 followed by p2. Stack-
+backed/overlapping records can observe different bytes, spill contents, or fault
+points. Verdict: needs attention. The function returns to exact matching with
+this narrow ordering requirement; verified-logic promotion remains blocked.
