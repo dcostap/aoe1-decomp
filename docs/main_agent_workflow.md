@@ -122,6 +122,12 @@ count toward an independent cohort.
 
 ## Context and output discipline
 
+Subagent status `CH` means **cache-hit percentage**, not context consumed or
+context remaining; never use it to infer context exhaustion. The separate
+context-occupancy field is authoritative—for example, `12.3%/1049k` means
+12.3% of a 1,049,000-token context is occupied. Scope and steer assignments so
+each subagent normally stays at or below **300k occupied context tokens**.
+
 - A matching worker receives one target, not a shopping list.
 - A readiness auditor normally receives no more than two targets.
 - A blind reviewer receives exactly one candidate.
