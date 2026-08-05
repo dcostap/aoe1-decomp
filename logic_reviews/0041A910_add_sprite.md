@@ -40,11 +40,24 @@ Blind reviewers must establish directly from the executable:
 
 ## Review rounds
 
-No formal blind cohort has yet been adjudicated.
+### Round 1 (complete; two reviewers)
+
+- Broad adversarial reviewer found no blocking difference after checking null
+  handling, byte-width order/count behavior, `calloc(12,1)`, allocation-failure
+  faults, virtual dispatch at slot +4, insertion/mutation order, and `ret 0x10`.
+- List/lifetime reviewer independently found no blocking difference after an
+  instruction-by-instruction check of both traversals, duplicate byte-count
+  overflow, unsigned order comparison, shadow calls, allocation/OOM behavior,
+  virtual slot +4, mutation/fault order, and `ret 0x10`.
 
 ## Main-agent adjudication
 
-Pending a complete concurrent blind cohort.
+Both blind reviewers independently converged on behavioral equivalence. Their
+coverage includes ordinary and malformed lists, allocation failure, byte-width
+overflow, call/fault/mutation order, virtual dispatch, and ABI cleanup. No
+finding requires a source change. The noted `while` versus likely original
+for-loop header is codegen-only because the loop body has no alternate control
+edge.
 
 ## Integrated changes
 
@@ -53,4 +66,6 @@ Pending a complete concurrent blind cohort.
 
 ## Final decision
 
-Pending.
+Promote the normalized candidate to `src/verified_logic`. Exact matching remains
+suspended with a stable 36-byte register/list-predecessor topology difference;
+semantic review found no unresolved behavior.
