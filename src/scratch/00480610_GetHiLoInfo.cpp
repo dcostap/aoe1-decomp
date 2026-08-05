@@ -88,6 +88,9 @@
 // pre-divisor/invalid-arm scheduling, not a missing semantic operation. Main-agent
 // validation after restoration: 132/132 bytes, 65 strict diff, 87.50% shape,
 // exact call parity.
+// Main-agent normalization before semantic review: removed the redundant
+// param_1>0 guard already proved by the 1..100 range and replaced the empty
+// positive idx branch with the natural `if (idx <= 0) idx = 100` wrap.
 
 #include <stdio.h>
 
@@ -117,22 +120,18 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
     remaining = param_1;
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = Offset;
-        if (param_1 > 0) {
-            do {
-                idx = idx - 1;
-                if (idx > 0) {
-                } else {
-                    idx = 100;
-                }
-                unsigned long value = aTSLC[idx];
-                sum = sum + value;
-                if (value < min)
-                    min = value;
-                if (value > hi)
-                    hi = value;
-                remaining = remaining - 1;
-            } while (remaining != 0);
-        }
+        do {
+            idx = idx - 1;
+            if (idx <= 0)
+                idx = 100;
+            unsigned long value = aTSLC[idx];
+            sum = sum + value;
+            if (value < min)
+                min = value;
+            if (value > hi)
+                hi = value;
+            remaining = remaining - 1;
+        } while (remaining != 0);
         remaining = sum / (unsigned long)param_1;
     } else {
         min = remaining;
