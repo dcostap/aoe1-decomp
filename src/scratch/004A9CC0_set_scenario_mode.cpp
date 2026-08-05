@@ -25,6 +25,12 @@
 // Next lead: case-5 loop register home is allocator-driven; try a variant-lab axis on the
 //    loop-top access order (player_text first vs AlliedVictory first) or the p local's
 //    live range across the je.
+// Follow-up session: an explicit TPanel cast, child/parent locals, and a register-qualified
+// child local did not move the set_curr_child hunk. A canonical TButtonPanel p local and a
+// function-scope p likewise emitted the unchanged 122-byte form. The focused diplomacy lab
+// confirmed that loading AlliedVictory before player_text makes the frame 0x10; declaring p
+// before the text access is emitted-identical to the clean text-first form. A focused call
+// lab (direct, paired locals, reference alias) also left the +036A register difference.
 
 typedef unsigned char uchar;
 
