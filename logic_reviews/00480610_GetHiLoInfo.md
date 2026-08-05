@@ -38,7 +38,7 @@ Blind reviewers must establish directly from the executable:
 
 ## Review rounds
 
-### Round 1 (in progress)
+### Round 1
 
 - Numeric/control reviewer found no blocking difference. It verified the signed
   valid range 1..100, invalid-path fallback values, decrement/wrap behavior for
@@ -73,6 +73,23 @@ unreachable positive-count guard remains intentionally normalized away.
   97 strict differing bytes, first mismatch +0x17, 1/1 ordered call, and 79.63%
   exact-block coverage. A fresh post-fix blind review is required.
 
+### Round 2 (post-fix)
+
+- Stack/numeric reviewer found no blocking difference. It independently verified
+  the corrected `Offset`-before-countdown initialization, zero countdown home
+  versus register-held quotient, valid/invalid results, malformed-index behavior,
+  unsigned overflow/division, format arguments, return and `ret 4` ABI.
+- Adversarial reviewer independently found no behavioral divergence under
+  ABI-valid execution. It verified the same layout, valid/invalid paths,
+  countdown and unsigned arithmetic, malformed-offset reads/faults, exact
+  `sprintf` target/arguments, return and cleanup. The omitted redundant
+  `test/jle`, invalid-path register setup, and volatile residue were classified
+  as codegen-only.
+
 ## Final decision
 
-Pending.
+Approved for `src/verified_logic`. Both fresh post-fix reviewers converged with
+no open behavioral uncertainty after the round-1 stack-home finding was fixed.
+The remaining 12-byte size deficit, unreachable redundant branch, register setup,
+and transient residue are nonsemantic compiler-shape differences. Exact matching
+remains suspended; this is not an exact-match or accepted-drift promotion.
