@@ -40,7 +40,7 @@ Blind reviewers must establish directly from the executable:
 
 ## Review rounds
 
-### Round 1 (in progress)
+### Round 1 (complete; four reviewers)
 
 - Broad adversarial reviewer: normal-path arithmetic, comparisons, loop, calls,
   returns, and cleanup agree, but reported a definite fault/read-order difference
@@ -48,19 +48,46 @@ Blind reviewers must establish directly from the executable:
   the current rebuild performs the parameter read first. With valid `param_1`
   and invalid `this`, the candidate therefore reads `param_1+8` before faulting,
   while the executable faults on `this+8` first. Verdict: needs attention.
-- Remaining concurrent reviewers are pending. No source change will be integrated
-  until the cohort is complete; the leading natural remedy is to materialize the
-  last-order count before the parameter count, then re-review emitted read order.
+- ABI/numeric reviewer found no blocking result, width, loop, `__ftol`, ABI, or
+  cleanup difference and independently confirmed the intentional low-16-bit
+  coordinate comparison behavior, including NaN/infinity/overflow cases.
+- Control/memory reviewer confirmed all ordinary predicates and memory effects,
+  but found that both coordinate equalities are spelled in the reverse operand
+  order. The executable reads/converts `param_1->pos_x/pos_y` first; the candidate
+  reads/converts `last_order->pos_x/pos_y` first. Results are commutatively equal,
+  but fault and signaling-NaN exception order differ. Recommended remedy: put
+  `param_1` on the left for both coordinate comparisons.
+- Full machine-effect reviewer independently confirmed both defects. It also
+  identified changed upper-EAX residue on a Y mismatch and a stack-alias case in
+  which the candidate's earlier callee-save push could overwrite a count byte
+  before reading it. Verdict: needs attention.
 
 ## Main-agent adjudication
 
-The entry read-order finding is provisionally substantive because executable
-fault order is part of the behavior oracle. Final adjudication awaits the full
-cohort.
+Both ordering findings are substantive because the executable is the oracle for
+fault, exception, and stack-alias behavior. The ABI/numeric review's `correct`
+verdict applies to ordinary values and confirms the predicates, widths, and
+low-16-bit conversion quirk, but does not rebut the concrete machine-order
+counterexamples reported by the other three reviewers.
+
+The main agent integrated the natural source-order corrections and confirmed the
+new emitted prologue against the oracle. It now loads `this->last_order`, reads
+the incoming count, reads the last-order count, and delays `push edi` in the same
+order as the executable. Both coordinate pairs now convert `param_1` first.
+The first strict mismatch moved from +6 to +0x18; the remaining first hunk is the
+placement of non-faulting unit-pointer LEAs relative to the already-equivalent
+count branch.
 
 ## Integrated changes
 
-None at phase entry. The normalized candidate was validated unchanged.
+- Reversed both coordinate equalities to evaluate `param_1` first, preserving
+  coordinate fault/FPU-exception order and mismatch register residue.
+- Moved count rejection before unit-pointer declarations. This changed VC5's
+  prologue to the executable's dereference/push order and preserves malformed
+  pointer and stack-alias behavior.
+- Revalidated the corrected candidate: 153/153 bytes, 64/64 instructions, 4/4
+  ordered calls, 29 strict differing bytes, first mismatch +0x18.
+- A fresh post-fix blind cohort is required before promotion.
 
 ## Final decision
 

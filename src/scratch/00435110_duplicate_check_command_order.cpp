@@ -66,6 +66,14 @@
 // 153-byte/24-byte candidate. Remaining evidence is the stable first +6 prologue scheduling/register-coloring
 // mismatch (original saves EBP/ESI and loads last_order before count), plus pointer-role and target-register drift.
 // No accepted_drift: the residual mismatch remains broad rather than a localized benign codegen difference.
+// Logic-review integration 2026-08-05: the first blind cohort found two real
+// machine-order differences despite ordinary-path equivalence. Put param_1 on
+// the left of both coordinate conversions, and reject a count mismatch before
+// declaring the unit pointers. The rebuilt prologue now matches the executable
+// through both count reads and the delayed EDI push (first mismatch moved +6 to
+// +0x18), preserving malformed-pointer, stack-alias, and x87 exception order.
+// Metrics are intentionally secondary here: 153/153 bytes, 29 strict diff,
+// 4/4 calls; the later LEA/branch placement remains codegen-only.
 
 class RGE_Command_Order {
 public:
@@ -96,21 +104,25 @@ unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* para
 {
     RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order;
     unsigned int n = (unsigned char)param_1->unit_num;
+    if (n != (unsigned char)last_order->unit_num)
+        return 0;
+
     long* p1 = param_1->units;
     long* p2 = last_order->units;
     int i;
 
-    if (n == (unsigned char)last_order->unit_num) {
-        if ((short)(int)last_order->pos_x == (short)(int)param_1->pos_x) {
-            if ((short)(int)last_order->pos_y == (short)(int)param_1->pos_y) {
-                long target_id = last_order->target_id;
-                if (target_id == param_1->target_id) {
-                    for (i = 0; i < (int)n; i++) {
-                        if (p1[i] != p2[i])
-                            goto fail;
-                    }
-                    return 1;
+    // The executable converts the incoming order first. Equality is
+    // commutative, but this order preserves coordinate fault/FPU-exception
+    // sequencing and the upper-EAX residue on a failed comparison.
+    if ((short)(int)param_1->pos_x == (short)(int)last_order->pos_x) {
+        if ((short)(int)param_1->pos_y == (short)(int)last_order->pos_y) {
+            long target_id = last_order->target_id;
+            if (target_id == param_1->target_id) {
+                for (i = 0; i < (int)n; i++) {
+                    if (p1[i] != p2[i])
+                        goto fail;
                 }
+                return 1;
             }
         }
     }
