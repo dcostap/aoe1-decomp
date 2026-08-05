@@ -91,6 +91,10 @@
 // Main-agent normalization before semantic review: removed the redundant
 // param_1>0 guard already proved by the 1..100 range and replaced the empty
 // positive idx branch with the natural `if (idx <= 0) idx = 100` wrap.
+// Logic-review integration 2026-08-05: separated the average from the countdown
+// and initialize the countdown only after the valid-path Offset read. The valid
+// loop now leaves its stack home at zero and never overwrites it with the
+// quotient, matching the executable's stack-alias/fault-handler behavior.
 
 #include <stdio.h>
 
@@ -114,12 +118,13 @@ public:
 char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
 {
     int remaining;
+    unsigned long average;
     unsigned long sum = 0;
     unsigned long hi = 0;
     unsigned long min = 999999;
-    remaining = param_1;
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = Offset;
+        remaining = param_1;
         do {
             idx = idx - 1;
             if (idx <= 0)
@@ -132,12 +137,13 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int param_1)
                 hi = value;
             remaining = remaining - 1;
         } while (remaining != 0);
-        remaining = sum / (unsigned long)param_1;
+        average = sum / (unsigned long)param_1;
     } else {
-        min = remaining;
-        hi = remaining;
+        min = param_1;
+        hi = param_1;
+        average = param_1;
     }
     sprintf(TBuff, "Lo=%d < Avg=%d > Hi=%d of %d",
-            min, remaining, hi, param_1);
+            min, average, hi, param_1);
     return TBuff;
 }

@@ -38,16 +38,40 @@ Blind reviewers must establish directly from the executable:
 
 ## Review rounds
 
-No formal blind cohort has yet been adjudicated.
+### Round 1 (in progress)
+
+- Numeric/control reviewer found no blocking difference. It verified the signed
+  valid range 1..100, invalid-path fallback values, decrement/wrap behavior for
+  malformed offsets, unsigned accumulation/division overflow, output argument
+  order, return pointer, and all member-read/fault paths. It classified the
+  removed positive-count guard as unreachable codegen residue.
+- The reviewer noted that the rebuilt symbol surface names the CRT `_sprintf`
+  import while the executable target at 0054BBC0 is the game's sprintf wrapper;
+  checker relocation evidence must settle identity before final promotion even
+  though `%d` output is expected equivalent.
+- The concurrent adversarial reviewer remains pending.
+- Adversarial reviewer confirmed the core values and ABI but found a substantive
+  stack-home difference: the candidate wrote the final quotient back over the
+  countdown home and initialized that home before reading `Offset`; the
+  executable reads `Offset` first and leaves the valid-path home at zero.
+  Verdict: needs attention.
 
 ## Main-agent adjudication
 
-Pending a complete concurrent blind cohort.
+The stack-home finding is substantive for stack aliases and fault handlers. The
+main agent integrated it by separating `average` from `remaining` and delaying
+countdown initialization until after the valid-path `Offset` read. The emitted
+candidate now preserves the executable's home value and read/write order. The
+unreachable positive-count guard remains intentionally normalized away.
 
 ## Integrated changes
 
 - Removed codegen-only redundant/empty branch scaffolding.
 - Revalidated and repinned the normalized natural source; the expected metric regression from the 11-byte diagnostic to 108 strict bytes is explicitly nonsemantic pending blind verification.
+- Separated average/result storage from the loop countdown and delayed countdown
+  initialization until after `Offset`. Post-fix checker state is 120/132 bytes,
+  97 strict differing bytes, first mismatch +0x17, 1/1 ordered call, and 79.63%
+  exact-block coverage. A fresh post-fix blind review is required.
 
 ## Final decision
 
