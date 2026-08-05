@@ -88,4 +88,44 @@ read/fault all occur in oracle order. It also restores ECX with `pop ecx`.
 
 ## Final decision
 
-Pending.
+Blocked; returned to matching after round-2 findings.
+
+### Round 2 adversarial findings
+
+The post-fix adversarial reviewer found four substantive machine-effect gaps:
+
+- x was not rounded through the executable's binary32 scratch home before reuse;
+- other-Y radius access occurred after the X clamp rather than between x's
+  compare and status test;
+- integer-staged radius values changed signaling-NaN/denormal x87 event order;
+- the scratch value and caller-volatile residue differed.
+
+Verdict: needs attention.
+
+### Main-agent round-2 adjudication
+
+A bounded ten-hypothesis pass accepted these findings and reconstructed the
+natural x87 expression ownership with exact-valued `double` expression temps for
+other-X, this-X, and this-Y. The retained object is 167/167 bytes with 22 strict
+diff bytes and matches through +0x62, including binary32 dy/x homes, X-radius
+load/event order, scratch x, and x-first squaring. Integer/volatile radius staging
+was removed.
+
+One substantive issue remains open: the rebuilt other-Y radius read still occurs
+after the X branch, whereas the executable performs it after x's `fcomp` but
+before consuming the status word. Moving the source read earlier either loaded it
+before the compare or freed/coalesced the binary32 homes and changed precision.
+The candidate is therefore not eligible for verified-logic promotion. A fresh
+matching pass/review must resolve this fault/x87-exception ordering corner.
+
+The concurrent FPU reviewer classified the current candidate as correct. It
+verified binary32 dy/x homes, excess precision, NaN/inf/signed-zero behavior,
+radius addresses, unconditional other-Y access, final sqrt, and ABI. It argued
+that the +0x62 window preserves ordinary results and FPU arithmetic order, with
+only the X-clamp scratch store moving across a hypothetical other-Y/unmasked-FPU
+fault. Main-agent adjudication does not clear the blocker: this project treats
+fault-handler-visible mutation order and unmasked exception timing as executable
+behavior, not merely ABI-valid behavior. In the executable y arithmetic can
+fault before the X clamp store/status branch; in the rebuild it occurs afterward.
+The active matching follow-up must resolve that ordering or produce stronger
+binary evidence that no observable handler/alias state can distinguish it.
