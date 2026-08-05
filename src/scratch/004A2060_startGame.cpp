@@ -48,6 +48,18 @@
 // do-while loop forms, init clause orders, declaration scopes. This looks like a
 // hard VC5 allocator basin; a future worker should try function-top declarations of
 // the role variables in first-use order or a variant lab before accepting the drift.
+//
+// Follow-up sa44_startGame_followup:
+// - confirmed the clean natural no-VPAD game/panel surface, exact frame/size, and 83/83
+//   ordered calls; first checker hunk remains version-loop register roles at +0100.
+// - swapped version roles, reused/top-declared loop scalars, changed the block-12
+//   condition to the computed value, used compound civ/team decrements, moved
+//   send_options, tested natural base/derived game ownership, and tried saved-this
+//   aliases; all emitted the same 67-byte mismatch.
+// - focused natural variant lab (send initialization x temp_team zero-fill, 4 variants)
+//   preserved size/frame/call-set but collapsed to one codegen group, still diff=67.
+// - restored the canonical no-VPAD source; remaining drift is the whole-function EBP/
+//   EBX allocator basin plus documented role-register swaps, not a call/layout gap.
 
 #include <string.h>
 #include <windows.h>
