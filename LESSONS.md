@@ -2874,3 +2874,158 @@ For `if (Version < X)` / `>` checks, the literal's precision selects `fcomp dwor
 ## Lesson: VC5 canonicalizes `int + ptr`; SIB base/index at terminator stores is not steerable from the store expression
 
 When the only remaining diff is the SIB base/index byte at byte-terminator stores (`mov byte [len+ptr-1],0` original base=LENGTH vs rebuilt base=PTR, with identical registers and load order), the choice is made in the IR and VC5 canonicalizes every `int + ptr` / `(int-1) + ptr` / cast spelling to `ptr + int`, so NO source form of the store statement flips it. Before spending a budget on terminator spelling, verify the register allocation and load order are truly identical; if they are, the difference is a TU-state artifact of the original compile and the store spelling is a dead axis. Natural subscripts remain the best living source. Check `sibling` matched functions for a natural base=len precedent (e.g. 0048AB10 gets base=len only because `len` is long-lived in a callee-saved register).
+
+## Lesson: Adjacent-constant value selects feeding a call arg go branchless; duplicate the call in if/else arms to keep the branch
+
+When the original binary branches on a boolean/getter (`test eax,eax; je; push 0FA3h; jmp; push 0FA4h`) to select one of two adjacent language ids passed to a shared call, a source ternary like `get_string(x ? 0xFA3 : 0xFA4)` can compile to the branchless `neg/sbb/add` select instead of the branch. VC5's optimizer folds simple two-constant selects around a call argument, even when the surrounding code clearly branches.
+
+Fix: spell the full call in each `if/else` arm:
+
+```cpp
+if (rge_base_game->fullVisibility()) {
+    strcpy(str1, get_string(0xFA3));
+} else {
+    strcpy(str1, get_string(0xFA4));
+}
+```
+
+VC5 keeps the branch, pushes the id in each arm, and tail-merges the identical call+strcpy tails into one shared block — reproducing the binary exactly. This also applies to value-fetch patterns that push a common trailing arg before the branch (e.g. `get_string(id, buf, 0x100)` with `push 0x100` hoisted): keep the get_string call in each arm so the shared 0x100 push stays before the test.
+
+Try when:
+- rebuilt code shows `neg eax; sbb eax,eax; add eax,CONST` / `neg al; sbb` where the original has `test; je; push; jmp; push`;
+- the two selected constants are adjacent or differ by 1 (0xFA3/0xFA4, 0x25B5/0x2617);
+- the ternary's result is consumed directly as a call argument or index.
+
+Why it helps:
+- branchless selects change instruction count and block layout, shifting every later branch span;
+- the if/else duplicate-call form lets VC5 keep the observed branch topology and tail-merge the shared call site (call count stays identical).
+
+Caveats:
+- do not apply to every ternary: VC5 keeps the branch for some call-argument selects (context/register-pressure dependent), and forcing if/else can duplicate the tail when the merged sequences differ. Verify the emitted code after each change. Verified on 004A5610 TRIBE_Screen_Wait (deathMatch 0x2617/0x25B5, fullVisibility/allowCheatCodes 0xFA3/0xFA4).
+
+## Lesson: `for (int i = 0; ...)` vs top-level `int i;` can flip VC5's stack-home slot assignment for pointer locals
+
+For a small function whose locals are mostly registers plus two pointer locals that need stack homes (one reused incoming-parameter home, one fresh push-ecx slot), whether the loop counter is declared inside the `for` header or as a separate top-level `int i;` changes which pointer local VC5 assigns to which home slot — a whole-prologue store-order change from a seemingly trivial declaration-scope detail.
+
+```cpp
+long* p1 = param_1->units;      // first-declared pointer
+long* p2 = last_order->units;
+...
+for (int i = 0; i < n; i++) {   // inner counter: p1 -> [esp+18h] (param home), p2 -> [esp+10h]
+    if (p1[i] != p2[i]) ...
+}
+// with a top-level `int i;` + for (i = 0; ...): p1 -> [esp+10h], p2 -> [esp+18h] (swapped)
+```
+
+Try when:
+- a near-match is byte-perfect except the two prologue home stores are swapped (`mov [esp+18h],edx; mov [esp+10h],eax` vs the reverse);
+- the loop counter local is currently declared at function top;
+- the pointer homes are one param-slot reuse plus one push-ecx local.
+
+Why it helps:
+- the top-level live `i` changes the local list/allocator pressure so the first-declared pointer takes the fresh slot; an inner-only counter leaves the allocator free to put the first-declared pointer in the reused param home (the stack-alias the binary shows).
+
+Caveats:
+- verify the emitted prologue; the effect depends on the full local set and register pressure;
+- keep the natural `for (int i = 0; ...)` spelling — do not add fake locals. Verified on 00435110 duplicate_check_command_order (153B, exact).
+
+## Lesson: Incoming-order-first declaration order (n; param-units; last_order; last_n; last-units) prevents VC5 count-read hoisting and restores the exact prologue
+
+When the original prologue loads `this->last_order` first, then the incoming count, then the last count, then saves EDI and computes both unit pointers, VC5 hoists the incoming count read above the register saves if the source declares `last_order` immediately before/after it. Declaring the incoming order's count and a param-based pointer FIRST (before `last_order`), with `last_order` and the last-order data after them, keeps the machine order:
+
+```cpp
+unsigned int n = (unsigned char)param_1->unit_num;
+long* p1 = param_1->units;
+RGE_Command_Order* last_order = (RGE_Command_Order*)this->last_order;
+unsigned int last_n = (unsigned char)last_order->unit_num;
+long* p2 = last_order->units;
+if (n == last_n) { ... }
+```
+
+emits `mov esi,[this+8]` (last_order), `mov al,[ebx+8]` (n), `mov cl,[esi+8]` (last_n), `push edi; mov edi,eax`, `lea edx,[ebx+14h]` (p1), `lea eax,[esi+14h]` (p2), `cmp edi,ecx`, stores — instead of the hoisted `xor eax,eax` before `push ebp` or the swapped `n`/`last_n` registers.
+
+Try when:
+- the rebuilt prologue hoists the param count read above `push ebp`/`push esi` or reads the counts in the wrong registers;
+- the original clearly reads both counts before the EDI save and before the pointer LEAs.
+
+Why it helps:
+- a param-based statement between `n` and `last_order` blocks VC5's early count-read scheduling and keeps the callee-save loads/reads in the executable's order.
+
+Caveats:
+- keep the loop counter inner (`for (int i = 0; ...)`) — a top-level `int i;` breaks the slot assignment (see previous lesson);
+- for `==` on the `(short)(int)float` conversions, the exact `cmp ax,bp` bytes require spelling the LAST order's coordinate on the LEFT (`(short)(int)last_order->pos_x == (short)(int)param_1->pos_x`) even though the executable converts the incoming order first; the ftol call order stays incoming-first. Verified on 00435110 duplicate_check_command_order (exact 153B match after months of 20-28 byte near-misses).
+
+## Lesson: Trace the x87 stack to map each bound test to its source edge — originals can transpose axes
+
+When reconstructing bounds/geometry checks that compile to x87 `fld`/`fsub`/`fadd`/`fstp`/`fcomp` sequences, do not assume the natural mathematical pairing (width vs x-derived edge, height vs y-derived edge). Trace the FPU register stack instruction-by-instruction and record exactly which computed value each compare consumes and which slot each `fstp` lands in. The original may reveal a swapped-variable bug that a "corrected" reconstruction silently loses.
+
+Try when:
+- a placement/bounds function's FPU prologue computes several `x ± r`, `y ± r`, `- epsilon` edges before a multi-condition `if`;
+- the rebuilt code is semantically "correct" but the diff never converges and the FPU block/homes stay shifted;
+- Ghidra's decompile disagrees with the byte-level operand order (its stack analysis can mislabel which parameter feeds an `fadd`).
+
+Why it helps:
+- in the Age beta `check_placement` (00453C40), the binary actually tests `map_width <= (radius_y_value + y) - 0.001` and `map_height <= (radius_x_value + x) - 0.001`, and converts `x_max` from the Y-derived edge and `y_max` from the X-derived edge — a genuine transposed-axis bug in the original source. Reproducing it is required for exact bytes;
+- the four `fstp` order and the ftol load order then define the correct declaration/conversion order for the source, which also steers the local slot assignment.
+
+Caveats:
+- only reproduce the transpose when the executable proves it consistently (perimeter ranges, subsequent scans, and the overlap check all use the values the same way); if only one site looks swapped, keep auditing before changing the model;
+- keep the source spelling natural (`left`, `right`, `top`, `bottom` with the -0.001 on the upper edges) even though the pairs look wrong — the comment should document the bug.
+
+## Lesson: For-header init/increment form can place a loop's error block as a cold tail
+
+When a loop body contains an `if (cond) { error; return 0; }` handler and the original places that handler at the very END of the function (a cold tail reached by a far `jne near`), while the rebuilt keeps it inline between the loop bottom and the next section, the loop STATEMENT FORM can control the placement even though the emitted CFG is identical.
+
+- A `do { ... } while (cond)` with the increments at the bottom compiles to `cmp; jl back` with fall-through to the next section, and VC5 may keep the error block INLINE after the loop bottom by encoding the bottom as `jge exit; jmp back`.
+- The same loop written with all init AND increment clauses in a `for` header (`for (i3 = 0, u12 = 1, pl = p; u12 < 9; i3++, pl++, u12++)`) can make VC5 move the error block to the cold tail, keeping the bottom as `jl back` with fall-through.
+
+Try when:
+- a loop-scoped error handler is `jne near`-targeted at the function end in the original but sits inline in the rebuild;
+- the loop init and increments map to a single PDB line (the for-header line) in the original;
+- goto labels and source statement order do not move the block.
+
+Why it helps:
+- the for-header form changes the front-end IR shape (single init/incr node) enough to flip VC5's block-layout cost decision between "jump-around inline error" and "cold-tail error";
+- this can cascade-fix the whole early CFG, loop back-edge encoding, and downstream register coloring.
+
+Caveat:
+- keep all comma-separated inits in the header with pre-declared variables (C++ cannot mix types in a for-init declaration);
+- the do-while form is still correct when the binary keeps the handler inline (e.g., a later sibling loop in the same function kept its error inline even after this change). Verified on 004A2060 startGame (scr_mps.cpp), where the checksum-scan error was the only cold-tail handler in a function full of inline popup errors.
+
+## Lesson: Verify helper out-param ABI and coordinate bounds before blaming "frame-slot drift"
+
+When a large multi-phase function's instruction shapes mostly align but every phase B/C memory operand is offset by a few bytes and the rebuilt frame/locals look "packed differently", do not assume the compiler's local-home policy differs. First verify the called helpers' out-param order and which coordinate each stack slot actually holds.
+
+For `RGE_Random_Map_Module::pop_stack(head, &x, &y, &cost)` (exact donor 00480DA0: `*param_2 = node->x`, `*param_3 = node->y`), the pushed address order in the caller is `&cost, &y, &x` (deepest to top: cost, y, x). If a reconstruction writes `search_map_rows[x][y]` everywhere while the binary consistently indexes `search_map_rows[y][x]` (row = pop_stack's y-out bounded by `max_x = height-1`, column = x-out bounded by `in_zone = width-1`), every access is transposed. The transposition is invisible to call-count and CFG-shape metrics: it compiles to the same instruction families with swapped memory slots, producing exactly the "every [esp+N] is off by a few bytes" signature that looks like allocator drift. Fixing the indices (plus the neighbor-push argument order and `check_terrain_and_zone(t, index, x, y)` argument order) moved 00485520 from 60.95% to 76.5% shape with the frame snapping to the exact 0xB10.
+
+Try when:
+- a flood-fill/neighbor-scan function has correct calls/CFG but consistently shifted [esp+disp] operands in one phase;
+- the row bound is compared against height-1 and the column bound against width-1, but the source indexes the arrays with the opposite variable;
+- Ghidra names the two pop_stack outputs confusingly (e.g. `x`/`local_b0c` swapped).
+
+Why it helps:
+- transposed row/col accesses are real semantic bugs that fake the symptoms of register-allocation drift, and fixing them can unlock the exact frame before any liveness work.
+
+Caveat:
+- confirm the exact matched pop_stack/push_stack ABI first (out-param order and which node field feeds which slot); also spell phase C bounds as `x >= 1` / `y >= 1` when the binary uses `cmp reg,1; jl` there even if phase B uses `0 < x` (`test; jle`) — the two families are not codegen-neutral.
+
+## Lesson: First body statement consuming a ctor parameter hoists the load AND defers the automatic vptr store
+
+In a /GX (EH-framed) constructor, the position of the first body statement that reads a constructor parameter controls two coupled VC5 scheduling effects:
+
+1. **Load hoisting**: VC5 hoists that parameter load to the very top of the body (`mov cl,[esp+param]` right after the base-ctor call), keeping it live in a byte register until its member store.
+2. **Automatic vptr-store deferral**: with that load hoisted, VC5 also schedules the derived-class automatic vptr store LATE — after the initial run of independent field-zero stores — instead of immediately after the base-ctor call. No manual `*(unsigned long*)this = vftable` store is needed; the automatic store lands at the observed deferred position.
+
+Try when:
+- a /GX ctor's original prologue has the parameter load first, then zeroing of several pointer members, then the vptr store, then the parameter's member store, then a call whose `this`-load is interleaved between the last array stores;
+- any earlier body statement (a pointer alias, a manual vptr store, or even an unused `gf` local copy of the parameter) breaks the hoist and re-shifts the whole prologue;
+- the member-zeroing of a small pointer array needs VC5's working-pointer + fresh-zero form (`mov eax,ebx; xor edx,edx; mov [eax],edx; mov [eax+4],edx; mov [eax+8],edx`): a constant-count `for` loop or `memset(ptr,0,sizeof)` produces it, while explicit `arr[0]=0; arr[1]=0; arr[2]=0;` statements fold to `[ebx]`-relative stores.
+
+Why it helps:
+- the source statement ORDER (which statement comes first) is a real codegen input: VC5 treats the first body statement as the anchor for both the load-hoist and the vptr-store/variable-init scheduling;
+- the register cascade follows: with the param load hoisted into a byte register that does not conflict (cl), the field-zero register (eax) is free to be reused as the array working pointer and a fresh zero (edx) serves the array stores, letting the call's `this`-load (ecx) interleave between the array stores.
+
+Caveats:
+- this is sensitive to statement order; adding any statement before the parameter-consuming assignment (including a manual vptr store) collapses the basin;
+- verify the automatic vptr store really lands at the deferred position before removing a manual store; both forms can be exact depending on the exact first statement.
+- Verified on 004B8100 `TRIBE_Mission_Screen` ctor (scr_vc.cpp): `this->game_flag = game_flag;` as the first body statement was the single change that took the function from 61 bytes of prologue drift to 0.
