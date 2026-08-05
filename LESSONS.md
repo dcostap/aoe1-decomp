@@ -2609,3 +2609,27 @@ Why it helps:
 Caveat:
 - not a license to use strcat where the binary proves strcpy semantics; check the operand
   order of the two strlen scans (suffix first = strcat) before switching.
+
+## Lesson: Convert spilled-count pointer loop to a `for(i)` indexed form to free the count register
+
+When a pointer-cursor `do/while` loop's counter keeps spilling to memory (`mov dword [esp+N],count` ... reload/store), the usual cause is VC5 strength-reducing a `cursor + k` subexpression into a separate register (its induction optimizer creates one IV for the base cursor and one for the +k address), leaving no spare callee-saved register for the trip counter. The fix is to rewrite the loop so the *index* is the primary induction and the cursors are derived from it:
+
+```cpp
+for (int i = 0; i < 8; i++) {
+    delete_panel(&this->single);        // fixed, repeats each iter
+    delete_panel(&this->arrA[i]);       // stride 1  (stepping +4)
+    delete_panel(&this->arrB[i*3 + 0]); // stride 3  (stepping +0xC)
+    delete_panel(&this->arrB[i*3 + 1]); //           (lea [cur+4])
+    delete_panel(&this->arrB[i*3 + 2]); //           (lea [cur+8])
+    delete_panel(&this->arrC[i]);       // stride 1
+}
+```
+
+Why it helps:
+- With an explicit `i`, VC5 keeps `i` in the count register (ebp in this case, `mov ebp,N; dec ebp; jne`) and strength-reduces each distinct stride into its own stepping cursor, producing the original's clean `add ebx,4` / `add edi,0Ch` cursors with `[edi-4],[edi],[edi+4]` inline — no separate IV for the +k address.
+- The `i*3+j` form tells the optimizer the group is 3-wide so it emits one stepping pointer for the *3 family (anchored at the middle subfield via `lea edi,[esi+mid]` + `[edi-4],[edi],[edi+4]`) while the stride-1 arrays get their own +4 cursor.
+- This drops the function frame from `sub esp,8` (2 locals) back to the original `push ecx` (1 this-home local) and removes the `mov/reload/store` counter updates, recovering both exact size and instruction count.
+
+Caveats:
+- Only reach for this after confirming the original indeed overlaps two distinct strides (a scalar-stride family and a wider-stride family) with a counter in a callee-saved register. If the original uses separate stepping pointer locals with no index, a `do/while` pointer form is the right baseline and this indexed rewrite may not apply.
+- The `i*N+j` spelling is a bit unusual in source; it reflects a genuine multi-column panel structure, so keep the group width (`N=3`) and column count tied to the observed stride/offsets. Verified on 004A94A0 `~TRIBE_Screen_Sed` (the Diplomacy box loop), which snapped from 96.5% to 100% exact.
