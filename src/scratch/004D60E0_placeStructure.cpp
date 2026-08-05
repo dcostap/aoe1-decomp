@@ -37,6 +37,13 @@
 //    default /GX placement is late (after the loop-entry test), matching the original -- only a
 //    register-conflict-free cur (edi) reproduces it.
 //
+// Follow-up sa-603da332-r1: split cur declaration/assignment; move setup declarations before the
+// temp; use a for-header cur; mirror the donor destructor declaration; add the later itemType temp;
+// add register cur; and restore a correctly sized ConstructionAIModule base. Each emitted the same
+// 73-byte diff. A focused /GX lab with the full named BaseItem/ConstructionItem field surface also
+// collapsed to the same group. Clean-source reconstruction is therefore restored; no source-model
+// or canonical-layout lead moved the first hunk.
+//
 // Next lead: find a source shape that gives cur a register other than esi at the loop entry (e.g.
 //   model the item-type comparison temp, or reorder the loop body so the allocator prefers edi for
 //   cur), or a TU/class-surface change that alters the /GX constant caching. Then the state store
