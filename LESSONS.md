@@ -3029,3 +3029,37 @@ Caveats:
 - this is sensitive to statement order; adding any statement before the parameter-consuming assignment (including a manual vptr store) collapses the basin;
 - verify the automatic vptr store really lands at the deferred position before removing a manual store; both forms can be exact depending on the exact first statement.
 - Verified on 004B8100 `TRIBE_Mission_Screen` ctor (scr_vc.cpp): `this->game_flag = game_flag;` as the first body statement was the single change that took the function from 61 bytes of prologue drift to 0.
+
+## Lesson: Shared-return register basin is controlled by if/else-with-single-return and guarded-block-with-single-return source shapes
+
+In VC5, a function whose case bodies all `return 1` can keep the constant in a callee-saved register (ebx) and hoist `mov ebx,1` before the FIRST branch of each case, OR rematerialize `mov eax,1` per return block, depending on the source shape of the shared/exiting returns:
+
+- `if (A) { X; } else { Y; } return 1;` — one return after an if/else — makes VC5 tail-duplicate the return epilogue into BOTH branches AND hoist `mov reg,1` before the condition test, so both exits use the register form and merge with other identical returns.
+- `if (cond) { ...body... } return 1;` (no return inside the guarded block) — all exits of the block share one return statement; VC5 tail-duplicates it into each exit (a near per-exit copy plus a far merged copy) and again hoists the register materialization before the guard.
+- Separate per-branch `return 1`/`break` statements keep the constant materialization inside each branch and produce IMMEDIATE (`mov eax,1`) shared returns that do not merge with the register-form returns — a 4-byte-per-case + branch-displacement cascade.
+
+Try when:
+- a switch with many `return 1` cases is size-exact but the `mov reg,1` appears after the first conditional branch instead of before it;
+- the shared return block (target of breaks) uses `mov eax,1` while the original uses `mov eax,ebx` (or vice versa);
+- tail-merged shared returns (one epilogue reached by several cases) land in the wrong merge group (immediate vs register).
+
+Why it helps:
+- the register-vs-immediate choice at a merge point depends on whether ALL incoming paths carry the register; the single-return shapes make VC5 duplicate the return into every exit, covering the far paths with the register form, so the merged block can use it and the materialization hoists to the common dominator (before the first branch).
+
+Caveats:
+- only use the if/else-single-return shape when both branches genuinely share the same return value;
+- the inverted guarded form `if (!(a && b && c)) { sync; } return 1;` (condition-true falls through to the shared return) can also fix which return block a nested early-return merges into;
+- an explicit per-exit `return 1` inside the guarded block keeps a separate near epilogue (e.g. the sync-done return right after a call) — that part is desired when the original has two distinct return blocks.
+- Verified on 004A2D50 `TribeMPSetupScreen::handle_user_command` (scr_mps.cpp): the 17B9 if/else form and the 17BB/17A6 single-return-after-guard forms took the diff from 365B to 6B.
+
+## Lesson: Derived screen classes need the real base-class data gap, not just the vtable
+
+When rebuilding a screen/panel hierarchy (TPanel -> TEasy_Panel -> TScreenPanel -> concrete screen), a local TPanel with ONLY virtual declarations compiles fine but is 4 bytes (vptr only), shifting every derived field by the real TPanel data size (0xF0). All `[this+off]` displacements then read 0xF0 low — a whole-function offset error that looks like a frame/layout problem.
+
+Add the real base data gap (`char gap_04[0xF0]` for TPanel = 0xF4) so derived fields land at their canonical offsets; the compiler only needs the SIZE, not the field names, unless the target function touches them.
+
+Try when:
+- every member access displacement is uniformly off by a constant (e.g. all 0xF0 low);
+- the frame size and call set are correct but every `[edi+off]` operand differs.
+
+Verified on 004A2D50 (all TribeMPSetupScreen offsets snapped to +0x72C..+0x88C after adding the TPanel data gap).
