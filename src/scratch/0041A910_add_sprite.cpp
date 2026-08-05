@@ -40,6 +40,9 @@
 // Retry 2026-08-02 Luna41A910: baseline rechecked after claiming this target; clean source remains 158B with 36 positional bytes / 26 edit bytes, first mismatch +38.
 // New hypotheses: exact decompiler head/scan cursor forms (43B), swapped cursor ownership (same 43B), canonical Active_Sprite destructor/full virtual surface (same 36B), compound head initialization (same), CRT <stdlib.h> calloc declaration (same), scan-node reuse (same), and positive outer guard (same). `sizeof(Node)` allocation worsened to 38B and was restored.
 // Final clean-source choice: retain the prior period-plausible typed list insertion candidate; unresolved drift is broad register/liveness topology, not a localized behavior-equivalent hunk.
+// Main-agent normalization before semantic review: replaced the two explicit
+// traversal labels/gotos with ordinary typed while loops. The labels were
+// matching-era CFG scaffolding rather than required behavior.
 // Retry 2026-08-02 Luna41A910b: baseline remained 158B/36 positional bytes; restored the inventory-proven Active_Sprite fields and full virtual surface, with no emitted change.
 // register-qualified new-node local, reused check-result local, typed raw list-slot view, and narrow volatile list-head rereads all emitted the same 158B basin; compile repair for the volatile cast was rerun as the same probe.
 // Scoped insertion cursor/allocation locals separately from duplicate scan; same 36-byte structural drift. Restored the natural typed member source; no accepted-drift proposal.
@@ -124,22 +127,18 @@ void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* param_1, unsigned char param
 
     pp = this->list;
     ppPrev = &this->list;
-find_existing:
-    if (pp) {
+    while (pp != 0) {
         if (pp->node->sprite == param_1) {
             pp->count++;
             return;
         }
         pp = pp->next;
-        goto find_existing;
     }
 
     pp = this->list;
-find_insert:
-    if (pp && pp->order <= param_2) {
+    while (pp != 0 && pp->order <= param_2) {
         ppPrev = &pp->next;
         pp = pp->next;
-        goto find_insert;
     }
 
     RGE_Active_Sprite_Node* node = (RGE_Active_Sprite_Node*)calloc(0xc, 1);
