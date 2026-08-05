@@ -7,34 +7,59 @@
 //     TSpan_List_Manager* clip masks @0x178/0x17C/0x180;
 //     Limited_Render_Rect@0x2A0, Use_Rect2@0x2A4, Render_Rect1@0x2A8, Render_Rect2@0x2B8;
 //     Float_X/Y_Delta@0x2D0/0x2D4, Queued_Blits@0x2D8; save_area1@0x324; prior_objs@0x334.
-//     TPanel virtuals: vf28(int)@slot0x28, vf2c()@slot0x2C.
+//     TPanel virtuals: draw_setup(int)@slot0x28, draw_finish()@slot0x2C.
 //     TDrawArea: Width@0x18, Height@0x1C, ClipRect@0x28, DisplayOffsets@0xBC.
 //   - Globals: view_debug_redraw_all@0x87D7A4, view_debug_ObstructionMap@0x87D7A8,
 //     view_debug_palette@0x87D7B0, frame_count@0x87D7B8, tiles_drawn@0x87D7BC,
 //     MouseSystem@0x62E660, rge_base_game@0x62C574.
-//   - Diagnostic baseline: 26/26 calls aligned and saved regs ebx/ebp/esi/edi,
-//     with frame 0x54 and -41 bytes / 81.6% strict diff, but that version also
-//     contained the false member write and duplicated clipping block described
-//     below; it is codegen evidence only, not the clean-source baseline.
-//   - Probe: deltas are binary-observed `short` on both operands; leaving them as
-//     `long` int (int-int) vs faithful short widened inside matched decompiler shape.
-//   - Codegen blocker (kept canonical source): the cleanest single-copy clipping
-//     using local sw/sh (faithful to decompiler iVar13 local, and the binary NEVER
-//     writes back this->screen_w/screen_h) drops the rebuilt to 1763B / frame 0x50 /
-//     95.1%. An opaque variant that added a spurious `this->screen_w -= ...` member
-//     write plus a duplicate clipping block got to 1794B / frame 0x54 / 81.6% but
-//     is NOT faithful source, so it is not retained. The gap driver is VC5 liveness
-//     around the rect-clipping locals (one 4-byte frame slot + -31 bytes).
-//   Next lead: this is a large 1835B / 26-call virtual; exact byte-parity likely
-//     needs a focused variant lab on the clipping-block liveness basin or the full
-//     view.cpp TU context (several helper callees here are themselves scratch:
-//     CreateBlitQueue/ProcessQueuedBlit/update/draw_view). Frame is provably 0x54
-//     with these locals; find what occupies the 4th rect/short slot.
-//   - Orchestrator audit: retained as a full natural scratch reconstruction, not
-//     as an exhausted or logic-review-ready candidate. Only one meaningful probe
-//     was completed. The first structural lead is to materialize the initial
-//     view_debug_redraw_all read before tiles_drawn=0, matching the executable's
-//     load-before-frame/store schedule, then recover the missing 0x54 local slot.
+//   - Prior diagnostic variant with a false screen_w/screen_h write and duplicate
+//     clipping was rejected: it is not executable-supported source. The retained
+//     reconstruction has one natural clipping pass and never writes those members.
+//   - Materializing `redraw_all = view_debug_redraw_all` before tiles_drawn recovered
+//     the original global-load-before-frame/store schedule (1764B; frame remained
+//     0x50). Keeping raw screen_width/screen_height locals from the initial rectangle
+//     setup through the two directional clips restored the proven 0x54 frame and
+//     reached 1792B / 67.7% shape / 1498 strict diff while retaining 26/26 calls.
+//   - Narrow `short` dx/dy locals were tested and rolled back: they changed the frame
+//     to 0x50 and reduced structural shape despite a smaller size gap. Reordering
+//     snapshot/map-offset declarations was mostly codegen-neutral.
+//   - Late final clipping reads were changed back to direct `this->screen_w` /
+//     `this->screen_h` expressions, matching the binary's member rereads without
+//     member writes. This retained 26/26 calls and frame 0x54, improved shape to
+//     77.3% and resync similarity to 64.5% (1782B; 1501 strict diff); keep this
+//     source-plausible candidate rather than the opaque metric-only variant.
+//   - A named rge_base_game intermediate recovered the A1 global-load encoding but
+//     did not improve whole-function structure, so it was rolled back. No volatility,
+//     inline asm, fake stores, or opaque register-steering scaffolding is retained.
+//   - Bounded pause: remaining structural drift is broad around VC5 register/local
+//     liveness and clipping block layout; next lead is a focused natural-source
+//     variant lab or full view.cpp TU context, not more false member writes.
+//   - Session sa-3ce3c739-r1 (2026-08-06, 10+ probes): improved 1501 -> 1441 strict
+//     (78.0% shape, -49B, frame 0x54, 26/26 calls; codegen-best diagnostic now 1441).
+//     Retained changes (all natural, PDB/binary-supported):
+//       * rounding tests spelled `dx <= 0` / `dy <= 0` instead of `dx < 1` ->
+//         matches orig `test reg,reg; jg` form (was `cmp reg,1; jge`);
+//       * clip_rect2 sub-if arms swapped to `if (clip_rect1.left != -1) {Use_Rect2/
+//         Render_Rect2} else {Limited_Render_Rect/Render_Rect1}` -- PDB line map
+//         (1765 test / 1768 else inline / 1773 if-arm out-of-line) proves this order;
+//       * old_map_scr_x_offset declared BEFORE y -> VC5 spills map_scr_y_offset to
+//         [esp+1Ch] like the original (was spilling x; 1484 -> 1444);
+//       * snapshot declaration map_col-first -> original load order (1444 -> 1441).
+//     Rejected/negative evidence:
+//       * `short dx/dy` again collapses frame to 0x50 (map offsets both land in
+//         callee-saved regs; the dedicated zero moves to ecx) -- binary proves 16-bit
+//         dx/dy ops but the 0x54 frame needs the zero in edi with map_y spilled;
+//         no source spelling found to reproduce that exact allocation.
+//       * dy-before-dx computation order worsens (1643); rect declaration order and
+//         snapshot declaration order are codegen-neutral; fuller TPanel/RGE_View
+//         vtable/field surface (64 slots, virtual dtor, DispSel_List) is
+//         codegen-duplicate -- the register basin is robust to TU class surface.
+//     Current basin: zero register = esi (orig edi); start_map_col = bx (orig si);
+//     map_y = [esp+1Ch] (orig same) but map_x = edi (orig ebx); dx/dy 32-bit in
+//     ebx/eax (orig 16-bit dx/si); old_rect@[esp+54h]/clip_rect1@[esp+44h] slots
+//     swapped vs orig; Render_Rect1 copy stays inline (orig out-of-line at 005351D1)
+//     -> PtrClear2->Poll region +46B vs orig. These are one coherent allocator basin;
+//     the remaining blocker is flipping zero-register choice, not more local shapes.
 // FLAGS: none (default /O2 /Oy). Inline asm forbidden.
 
 struct tagRECT { long left; long top; long right; long bottom; };
@@ -105,10 +130,10 @@ public:
     virtual void vf18();
     virtual void vf1C();
     virtual void set_redraw(int);
-    virtual long handle_idle();
-    virtual void vf28(int);
-    virtual void vf2c();
-    virtual void vf30();
+    virtual void set_overlapped_redraw();
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
 };
 
 class RGE_View : public TPanel {
@@ -164,21 +189,14 @@ public:
 
 void RGE_View::draw()
 {
-    tagRECT old_rect;
-    tagRECT new_rect;
-    tagRECT clip_rect1;
     tagRECT clip_rect2;
-    short old_start_scr_col;
-    short old_start_scr_row;
-    short old_start_map_col;
-    short old_start_map_row;
-    int old_map_scr_x_offset;
-    int old_map_scr_y_offset;
-    int sw;
-    int sh;
+    tagRECT new_rect;
+    tagRECT old_rect;
+    tagRECT clip_rect1;
+    int redraw_all = view_debug_redraw_all;
 
     tiles_drawn = 0;
-    if (view_debug_redraw_all != 0) {
+    if (redraw_all != 0) {
         this->render_terrain_mode = 0;
         view_debug_redraw_all = 0;
     }
@@ -187,25 +205,25 @@ void RGE_View::draw()
     }
 
     if (this->world == 0) {
-        this->vf28(0);
+        this->draw_setup(0);
         this->render_area->Clear(&this->clear_rect, this->clear_color);
-        this->vf2c();
+        this->draw_finish();
         return;
     }
 
-    old_start_scr_col = this->start_scr_col;
-    old_start_map_row = this->start_map_row;
-    old_start_scr_row = this->start_scr_row;
-    old_start_map_col = this->start_map_col;
+    short old_start_map_col = this->start_map_col;
+    short old_start_map_row = this->start_map_row;
+    short old_start_scr_col = this->start_scr_col;
+    short old_start_scr_row = this->start_scr_row;
     this->Terrain_Clip_Mask->ResetAll();
     this->Terrain_Fog_Clip_Mask->ResetAll();
     this->Master_Clip_Mask->ResetAll();
-    old_map_scr_x_offset = this->map_scr_x_offset;
-    old_map_scr_y_offset = this->map_scr_y_offset;
+    int old_map_scr_x_offset = this->map_scr_x_offset;
+    int old_map_scr_y_offset = this->map_scr_y_offset;
     this->Use_Rect2 = 0;
     this->Limited_Render_Rect = 0;
     this->update();
-    this->vf28(0);
+    this->draw_setup(0);
 
     if (this->render_terrain_mode == 1) {
         if ((this->start_map_col == old_start_map_col && this->start_map_row == old_start_map_row) &&
@@ -217,12 +235,15 @@ void RGE_View::draw()
         long dy = (short)this->map_scr_y_offset - old_map_scr_y_offset;
         if (dx == 0 && dy == 0) goto label_done;
 
+        int screen_width = this->screen_w;
+        int screen_height = this->screen_h;
+
         new_rect.left = (int)dx;
         new_rect.top = (int)dy;
         old_rect.left = 0;
         old_rect.top = 0;
-        old_rect.right = this->screen_w - 1;
-        old_rect.bottom = this->screen_h - 1;
+        old_rect.right = screen_width - 1;
+        old_rect.bottom = screen_height - 1;
         new_rect.right = old_rect.right + new_rect.left;
         new_rect.bottom = old_rect.bottom + new_rect.top;
 
@@ -232,48 +253,46 @@ void RGE_View::draw()
         }
 
         if ((dx & 7) != 0) {
-            long t = new_rect.left;
-            if (dx < 1) t = new_rect.left + 7;
-            long a = (t & ~7) - new_rect.left;
+            long t = dx;
+            if (dx <= 0) t = dx + 7;
+            long a = (t & ~7) - dx;
             dx += a;
             this->map_scr_x_offset += a;
         }
         if ((dy & 7) != 0) {
-            long t = new_rect.top;
-            if (dy < 1) t = new_rect.top + 7;
-            long a = (t & ~7) - new_rect.top;
+            long t = dy;
+            if (dy <= 0) t = dy + 7;
+            long a = (t & ~7) - dy;
             dy += a;
             this->map_scr_y_offset += a;
         }
 
-        int xd = (int)dx;
-        int yd = (int)dy;
-
-        sw = this->screen_w - 1;
-        sh = this->screen_h - 1;
         if (dx < 0) {
             old_rect.left = 0;
-            old_rect.right = (int)dx + sw;
+            old_rect.right = (int)dx + screen_width - 1;
             new_rect.left = -(int)dx;
         } else {
             old_rect.left = (int)dx;
-            old_rect.right = sw;
+            old_rect.right = screen_width - 1;
             new_rect.left = 0;
-            sw = sw - old_rect.left;
+            screen_width = screen_width - old_rect.left;
         }
-        new_rect.right = sw;
+        new_rect.right = screen_width - 1;
 
         if (dy < 0) {
             old_rect.top = 0;
-            old_rect.bottom = (int)dy + sh;
+            old_rect.bottom = (int)dy + screen_height - 1;
             new_rect.top = -(int)dy;
         } else {
             old_rect.top = (int)dy;
-            old_rect.bottom = sh;
+            old_rect.bottom = screen_height - 1;
             new_rect.top = 0;
-            sh = sh - old_rect.top;
+            screen_height = screen_height - old_rect.top;
         }
-        new_rect.bottom = sh;
+        new_rect.bottom = screen_height - 1;
+
+        int xd = (int)dx;
+        int yd = (int)dy;
 
         if (this->render_area->DrawSystem->field478 == 1 || this->render_area->UsingVidMem == 0) {
             this->render_area->OverlayMemCopy(&old_rect, &new_rect, xd, yd, this->field_8C, this->field_90);
@@ -316,25 +335,25 @@ void RGE_View::draw()
 
         this->save_area1->SetFloatOffsets(this->Float_X_Delta, this->Float_Y_Delta);
 
-        if ((new_rect.left == 0) && (new_rect.right == sw)) {
+        if ((new_rect.left == 0) && (new_rect.right == this->screen_w - 1)) {
             clip_rect1.left = -1;
-            if ((new_rect.top == 0) && (new_rect.bottom == sh)) {
+            if ((new_rect.top == 0) && (new_rect.bottom == this->screen_h - 1)) {
                 clip_rect2.left = -1;
             } else {
                 clip_rect2.left = 0;
-                clip_rect2.right = sw;
+                clip_rect2.right = this->screen_w - 1;
                 if (new_rect.top == 0) {
                     clip_rect2.top = new_rect.bottom + 1;
-                    clip_rect2.bottom = sh;
+                    clip_rect2.bottom = this->screen_h - 1;
                 } else {
                     clip_rect2.top = 0;
                     clip_rect2.bottom = new_rect.top - 1;
                 }
             }
         } else if (new_rect.left == 0) {
-            clip_rect1.right = sw;
+            clip_rect1.right = this->screen_w - 1;
             clip_rect1.left = new_rect.right + 1;
-            clip_rect1.bottom = sh;
+            clip_rect1.bottom = this->screen_h - 1;
             clip_rect1.top = 0;
             if ((new_rect.top == 0) && (new_rect.bottom == clip_rect1.bottom)) {
                 clip_rect2.left = -1;
@@ -352,7 +371,7 @@ void RGE_View::draw()
             }
         } else {
             clip_rect1.right = new_rect.left - 1;
-            clip_rect1.bottom = sh;
+            clip_rect1.bottom = this->screen_h - 1;
             clip_rect1.left = 0;
             clip_rect1.top = 0;
             if ((new_rect.top == 0) && (new_rect.bottom == clip_rect1.bottom)) {
@@ -361,11 +380,11 @@ void RGE_View::draw()
                 clip_rect2.left = new_rect.left;
                 if (new_rect.top == 0) {
                     clip_rect2.top = new_rect.bottom + 1;
-                    clip_rect2.right = sw;
+                    clip_rect2.right = this->screen_w - 1;
                     clip_rect2.bottom = clip_rect1.bottom;
                 } else {
                     clip_rect2.top = 0;
-                    clip_rect2.right = sw;
+                    clip_rect2.right = this->screen_w - 1;
                     clip_rect2.bottom = new_rect.top - 1;
                 }
             }
@@ -378,12 +397,12 @@ void RGE_View::draw()
         }
         if (clip_rect2.left != -1) {
             this->save_area1->PtrClear(&clip_rect2, 0);
-            if (clip_rect1.left == -1) {
-                this->Limited_Render_Rect = 1;
-                this->Render_Rect1 = clip_rect2;
-            } else {
+            if (clip_rect1.left != -1) {
                 this->Use_Rect2 = 1;
                 this->Render_Rect2 = clip_rect2;
+            } else {
+                this->Limited_Render_Rect = 1;
+                this->Render_Rect1 = clip_rect2;
             }
         }
     }
@@ -406,6 +425,6 @@ label_done:
 
     this->draw_view(10, this->save_area1);
     this->render_terrain_mode = 1;
-    this->vf2c();
+    this->draw_finish();
     frame_count++;
 }
