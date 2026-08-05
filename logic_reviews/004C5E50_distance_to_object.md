@@ -129,3 +129,28 @@ behavior, not merely ABI-valid behavior. In the executable y arithmetic can
 fault before the X clamp store/status branch; in the rebuild it occurs afterward.
 The active matching follow-up must resolve that ordering or produce stronger
 binary evidence that no observable handler/alias state can distinguish it.
+
+### Post-round-2 matching follow-up
+
+A fresh bounded worker isolated the remaining VC5 mechanism with dedicated mini
+reproducers and approximately seventy source shapes, a 56-variant focused lab,
+and more than twenty flag combinations. At two-deep x87 stack depth, evaluating
+the Y expression before the X clamp makes VC5 eagerly load the volatile minuend;
+this overlays the required binary32 homes and removes `push ecx`. At one-deep
+depth after `fcomp` pops X, VC5 fuses the home read as `fsubr [esp+8]`, but only
+after the source-level branch. No tested period-plausible spelling emitted the
+executable's fused subtraction between `fcomp` and `fnstsw` while preserving both
+homes.
+
+The clean 167/167-byte candidate was restored and revalidated: 55/55
+instructions, 4/4 conditional branches, no calls, 22 strict differing bytes in
+one span beginning at +0x62, and 96.36% shape similarity. The narrow `volatile
+float dy` remains behaviorally justified because it enforces the executable's
+binary32 rounding and x87 exception behavior; no diagnostic fake volatility was
+retained.
+
+This strengthens matching-exhaustion evidence but does not clear semantic
+review. Other-Y arithmetic and its possible memory/x87 fault still occur after
+the X branch in the candidate rather than between the executable's X `fcomp` and
+status consumption. Consequently the function remains in `src/scratch` and is
+not eligible for either accepted drift or verified-logic promotion.

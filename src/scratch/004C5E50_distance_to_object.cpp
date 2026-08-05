@@ -20,12 +20,40 @@
 // RGE_Master_Static_Object sibling/type surface; behavior and layout are unchanged.
 // Logic-review integration 2026-08-05: the first blind reviewer proved that
 // plain VC5 excess precision changed overflow results for dy and that master/
-// radius read order changed malformed-pointer fault behavior. Retained narrowly
-// justified volatile float homes for dy and other_radius_x, plus explicit
-// this/other master ownership. The rebuild now matches the executable from entry
-// through +0x47, including push/pop ECX, binary32 dy rounding, master-pointer
-// reads, and radius fault order. Current 169/167 bytes, 81 strict diff; remaining
-// emitted drift begins after the behaviorally ordered other-X read.
+// radius read order changed malformed-pointer fault behavior.
+// Round-2 review then found binary32 x rounding, Y-radius fault order, x87 event
+// order, and scratch residue differences. A bounded main-agent pass recovered a
+// natural 167-byte/22-diff x87 topology by using exact-valued double expression
+// temps for other-X, this-X, and this-Y. The emitted object now matches through
+// the x store/compare at +0x62, including binary32 dy/x homes and X-radius x87
+// event order. Promotion remains blocked: other-Y is still read after the X
+// branch rather than between x's fcomp and status test. Attempts to move that
+// read earlier either lost the required homes/rounding or loaded it before the
+// x comparison; a fresh pass must solve this final fault/exception-order gap.
+// Fresh sa-eeb4e55b pass 2026-08-05: reverse-Y, ordinary-dy, delayed-predicate,
+// same-line initialization, declaration-lifetime, conditional-clamp, and
+// ordinary-dy/volatile-x probes did not preserve the clean basin. A focused
+// natural Y-before-clamp lab found that direct Y-before-clamp emits the desired
+// pending-x87-status subtraction, but overlays the dy and x homes and loses the
+// required push ecx; alternate algebraic forms are broader. Restored the clean
+// 167-byte/22-diff source. The remaining source-topology gap is still only the
+// binary-observed fsubr [esp+8] between X fcomp and fnstsw, with the other-radius
+// Y memory read after fnstsw; no fake volatility or opaque scheduling was kept.
+// sa-62602825-r1 pass 2026-08-06: exhaustive negative result. Mechanism
+// established with mini reproducers: VC5 eagerly loads a volatile minuend (fld)
+// when the y expression is evaluated at 2-deep before a branch, and fuses it into
+// fsubr [mem] only when evaluated at 1-deep (subtrahend on top, after the X
+// fcomp pops x). The original fuses dy into the fcomp->fnstsw gap; y-before-clamp
+// always evaluates at 2-deep (eager fld, homes overlay, no push ecx), y-after
+// evaluates at 1-deep but after the branch. ~70 source shapes tested (y operand
+// orders, temp types, clamp orders, dx-reuse/fVar1, volatile-x, cast/copy reads,
+// negated/dy-last forms) plus 20+ flag sets (/Op /Oa /Ot /Og /Oi /Ob0/1 /Os
+// /Og- /Ot- /Oy- /G1-G6 /GB) and a 56-variant lab: none emit the fused fsubr in
+// the gap while keeping both homes. Siblings inRange (004C5D80) and
+// distance_to_position (004C5F00) have the identical gap in their originals;
+// their reconstructions share the blocker (004C5F00 accepted as drift with the
+// same overlay difference). Clean 167B/22-diff source retained; remaining gap is
+// the y arithmetic position (fault-order: other-Y read after the X branch).
 
 class RGE_Master_Static_Object {
 public:
@@ -57,19 +85,20 @@ float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    // Preserve the executable's radius-read order: other X, this X, this Y,
-    // then (after the X clamp decision) other Y.
+    // Preserve the proven other-X, this-X, then this-Y ownership/order.
     RGE_Master_Static_Object* this_master = this->master_obj;
     RGE_Master_Static_Object* other_master = other->master_obj;
-    volatile float other_radius_x = other_master->radius_x;
-    float this_radius_x = this_master->radius_x;
-    float this_radius_y = this_master->radius_y;
+    // The executable carries this Y radius on the x87 stack while it rounds and
+    // clamps x, then subtracts it from the binary32 dy home. The remaining
+    // unresolved machine-order gap is the other-Y read documented above.
+    double other_radius_x = other_master->radius_x;
+    double this_radius_x = this_master->radius_x;
     float x = dx - this_radius_x - other_radius_x;
+    double this_radius_y = this_master->radius_y;
 
     if (x < 0.0f) x = 0.0f;
-
     float y = dy - this_radius_y - other_master->radius_y;
     if (y < 0.0f) y = 0.0f;
 
-    return (float)sqrt(y * y + x * x);
+    return (float)sqrt(x * x + y * y);
 }
