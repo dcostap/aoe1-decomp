@@ -16,8 +16,10 @@
 // Luna4C5E50b 2026-08-03: hoisted/top-declared locals, address-taken x, proven zero global, dx reuse, the RGE_Master_Static_Object name, and the full proven object field surface all emitted the clean 147B basin unchanged.
 // The focused 10-variant dy/radius lab found no exact candidate; size-matching variants still had the wrong entry home/prologue. A one-field local Distance_Temp wrapper reached 167B/162 differing bytes and 60.71% shape, but still lacked the target push/local prefix and is codegen-only scaffolding, so it was rolled back.
 // Final bounded pass exhausted: retain the natural world-coordinate/radius source. Remaining evidence is a broad VC5 FPU stack/local-topology blocker, not localized equivalent drift.
+// Main-agent normalization: aligned the radius-owner stub name with the proven
+// RGE_Master_Static_Object sibling/type surface; behavior and layout are unchanged.
 
-class RGE_Master_Object {
+class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
     float radius_x;
@@ -28,7 +30,7 @@ class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
     char gap_04[4];
-    RGE_Master_Object* master_obj; // +0x08
+    RGE_Master_Static_Object* master_obj; // +0x08
     char gap_0C[0x2C];
     float world_x; // +0x38
     float world_y; // +0x3C
