@@ -21,6 +21,39 @@
 //    The prior unconditional null assignment contradicted the executable's goto.
 //    Recheck: 59/59 calls and 0xEC frame remain exact; strict diff improved
 //    1839->1784 and exact-block coverage 58.49%->60.84% (size now +14).
+//  - BREAKTHROUGH (this session): world must DIE at the top. The timeline ctor
+//    arg is `this->world` (original reloads mov edx,[ebx+8] at 0050D5B0 call), so
+//    the world param live range ends at `this->world = world;`. That freed ebx for
+//    this (original prologue: ebx=this, esi=file, edi/ebp loop regs) and removed
+//    the this-spill/version-home locals. Diff 1784->1387, frame 0xE4->0xEC with
+//    text[0xDC]->[0xE4].
+//  - Version gates: original keeps the rare arms (victory=1, <1.11 zero block,
+//    mission_picture=0) as LATE jump targets; the ifs must be spelled positive
+//    (>= 1.07 / >= 1.11 / >= 1.1) so the common read arms fall through. Diff
+//    1387->71, calls 59/59, exact-blocks 96.6%.
+//  - Float literals for fcomp dword sites: 1.03f, 1.15f, 1.02f (qword default
+//    emitted dc 1d vs original d8 1d). Tail zero is a single dword: *(int*)text=0.
+//  - BLOCKER (7 bytes, 0.37%): SIB base/index at 7 terminator stores. Original
+//    encodes base=LENGTH (SIB 02/08/02/11) at description/hints/win/loss and the
+//    BuildList/CityPlan/AiRules loop terminators; rebuilt encodes base=PTR
+//    (SIB 10/01/10/0a). All other 1903 bytes incl. register allocation and load
+//    order are identical; scenario_name terminator matches (base=ptr in both).
+//    Exhausted: 10+ terminator spellings (every IR add-tree shape incl. int/ptr
+//    casts and length-first), headers, full/polymorphic class surfaces,
+//    register/volatile on length, /Ow /Oa /Og- /Os /Z7 /Zi /Zd /G4 /G5 /G6,
+//    TU context via appended sibling fn, 2 variant-lab families. VC5 canonicalizes
+//    int+ptr so no source form yields base=length; the original's length-first IR
+//    at exactly these seven sites is an unreproducible TU-state artifact. Left in
+//    scratch with the clean natural source (natural subscript terminators).
+//  - Main-agent source audit replaced the literal vtable store/local vptr field
+//    with RGE_Scenario's canonical four-slot virtual surface. VC5 still emits the
+//    constructor vptr store; all substantive bytes and the seven SIB differences
+//    are unchanged (the vtable address is relocation-masked as intended).
+// ACCEPTED_DRIFT: seven one-byte SIB base/index swaps at terminator stores only.
+// Each pair addresses the identical commutative sum (pointer + length, with the
+// same displacement); instruction length, memory write, flags, control flow,
+// calls, exception behavior, and all surrounding bytes are identical. Exhaustive
+// natural source, context, and flag probes could not steer VC5's SIB choice.
 
 #include <stddef.h>
 
@@ -29,6 +62,7 @@ void* __cdecl operator new(unsigned int size);
 void* __cdecl calloc(int count, int size);
 
 class RGE_Game_World;
+class RGE_Static_Object;
 
 class RGE_Timeline {
 public:
@@ -57,7 +91,10 @@ public:
 
 class RGE_Scenario {
 public:
-    void* vtable;                       // +0x00
+    virtual RGE_Static_Object* get_object_pointer(int object_id);
+    virtual ~RGE_Scenario();
+    virtual void rehook();
+    virtual void save(int file);
     RGE_Timeline* time_line;            // +0x04
     RGE_Game_World* world;              // +0x08
     char victory_conquest;              // +0x0C
@@ -99,9 +136,8 @@ public:
 RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
 {
     short length;
-    char text[0xDC];
+    char text[0xE4];
 
-    this->vtable = (void*)0x572128;
     this->world = world;
     InitializeTextValues();
 
@@ -120,37 +156,32 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         }
     }
 
-    if (this->Version < 1.07) {
-        this->victory_conquest = 1;
-    } else {
+    if (this->Version >= 1.07) {
         rge_read(file, &this->victory_conquest, 1);
+    } else {
+        this->victory_conquest = 1;
     }
 
-    this->time_line = new RGE_Timeline(file, world);
+    this->time_line = new RGE_Timeline(file, this->world);
 
     rge_read(file, &length, 2);
     if (length > 0) rge_read(file, this->scenario_name, length);
     this->scenario_name[length] = 0;
-
     rge_read(file, &length, 2);
     if (length > 0) {
         this->description = (char*)calloc(length, 1);
         rge_read(file, this->description, length);
-        this->description[length-1] = 0;
+        this->description[length - 1] = 0;
     } else {
         this->description = 0;
     }
 
-    if (this->Version < 1.11) {
-        this->hints = 0;
-        this->win_message = 0;
-        this->loss_message = 0;
-    } else {
+    if (this->Version >= 1.11) {
         rge_read(file, &length, 2);
         if (length > 0) {
             this->hints = (char*)calloc(length, 1);
             rge_read(file, this->hints, length);
-            this->hints[length-1] = 0;
+            this->hints[length - 1] = 0;
         } else {
             this->hints = 0;
         }
@@ -158,7 +189,7 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         if (length > 0) {
             this->win_message = (char*)calloc(length, 1);
             rge_read(file, this->win_message, length);
-            this->win_message[length-1] = 0;
+            this->win_message[length - 1] = 0;
         } else {
             this->win_message = 0;
         }
@@ -166,7 +197,7 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         if (length > 0) {
             this->loss_message = (char*)calloc(length, 1);
             rge_read(file, this->loss_message, length);
-            this->loss_message[length-1] = 0;
+            this->loss_message[length - 1] = 0;
         } else {
             this->loss_message = 0;
         }
@@ -177,9 +208,14 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         } else {
             this->historicle_notes = 0;
         }
+    } else {
+        this->hints = 0;
+        this->win_message = 0;
+        this->loss_message = 0;
+        this->historicle_notes = 0;
     }
 
-    if (this->Version < 1.03) {
+    if (this->Version < 1.03f) {
         rge_read(file, &length, 2);
         if (length > 0) rge_read(file, text + 4, length);
         rge_read(file, &length, 2);
@@ -206,10 +242,10 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         this->Mission_Bmp[length] = 0;
     }
 
-    if (this->Version < 1.1) {
-        this->mission_picture = 0;
-    } else {
+    if (this->Version >= 1.1) {
         this->mission_picture = new TPicture(file, 1);
+    } else {
+        this->mission_picture = 0;
     }
 
     for (int n3 = 0; n3 < 16; n3++) {
@@ -238,7 +274,7 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         this->BuildListFile[n6] = 0;
         this->CityPlanFile[n6] = 0;
         this->AiRulesFile[n6] = 0;
-        if (this->Version >= 1.15) {
+        if (this->Version >= 1.15f) {
             if (this->BuildListFileSize[n6] > 0) {
                 this->BuildListFile[n6] = (unsigned char*)calloc(this->BuildListFileSize[n6], 1);
                 rge_read(file, this->BuildListFile[n6], this->BuildListFileSize[n6]);
@@ -254,10 +290,7 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         }
     }
 
-    text[0] = 0;
-    text[1] = 0;
-    text[2] = 0;
-    text[3] = 0;
-    if (this->Version > 1.02)
+    *(int*)text = 0;
+    if (this->Version > 1.02f)
         rge_read(file, text, 4);
 }
