@@ -17,6 +17,49 @@
 //   and 189/196 bytes match. Remaining drift is localized to +0x1A..+0x2B:
 //   rebuilt loads param_2 into EAX and sets ECX=this before the first stores,
 //   while the original loads param_2 into ECX and param_1 into EAX first.
+//
+// orch-w18 pass (2026-08-07):
+// - Reconfirmed the residual hunk: orig +0x1A..+0x2B is
+//     mov ecx,[esp+18h]; mov eax,[esp+14h]; mov [esi+0FBCh],ecx; mov [esi+4],ecx;
+//     mov ecx,esi; ... (param_2 in ECX, param_1 in EAX, both loaded at the top,
+//     this-setup after the ECX stores)
+//   while rebuilt emits
+//     mov eax,[esp+18h]; mov ecx,esi; mov [esi+0FBCh],eax; mov [esi+4],eax;
+//     mov eax,[esp+14h]; ... (param_2 in EAX, this-setup hoisted, param_1 deferred).
+//   Every other block (prologue, loop, epilogue) is byte-exact.
+// - Variant-lab #12: permuted the 6 store statements (y/Py/P/N/x/Px in 10 orders),
+//   chained/comma/local/register spellings. VC5 fully reorders the independent
+//   stores (direct_yfirst == direct_zerosfirst emit identical code), and ALL
+//   variants stay in the same 15-byte EAX basin or regress. Source order is not
+//   a free axis here.
+// - Variant-lab #13: flag sweep (vc5-small + vc5-risky presets: /GX, /Oi, /Og,
+//   /Ot, /Ob0, /Ow, /Oa, /Og-, /O1, /Ox) - every flag either stays in the same
+//   15-byte basin or breaks the prologue (/O1, /Og-).
+// - Variant-lab #15: debug-context preset (/Zd, /Zi, /Z7) - no change.
+// - Micro-repro (build/temp/micro_create2.cpp) faithfully reproduces the rebuilt
+//   basin; explored ~20 more source shapes there: param stores via locals
+//   declared top/mid/late (with/without register), interleaved pair stores
+//   (y,x,Py,Px), chained pair assignments (Prime_y = y = param_2), single-store
+//   variants, member-load sources, volatile param reads, int-returning DrawPrimary,
+//   and loop locals declared at function top. The ONLY shapes that put a
+//   stack-param value into ECX (interleaved/single-store) also reverse the
+//   store order (x before y), which mismatches the binary store order; every
+//   shape that keeps the binary store order (y,Py,zeros,x,Px) gives param_2 in
+//   EAX. The loop body (member loads) and sibling 00433D40/00478F40 show the
+//   same compiler assigning the FIRST-STORE value to ECX, so the rebuilt's EAX
+//   choice is a block-scheduling artifact, not a stable rule.
+// - Include/TU context probes (0047E530-style): game_globals.h, game_types.h,
+//   CRT headers (<stdlib.h>, <string.h>, <memory.h>) on the real scratch and the
+//   micro repro - no change. /G4/G5/G6 CPU flags - no change.
+// - Conclusion: the residual 15 bytes are a locked VC5 load-scheduling/
+//   register-allocation basin for this block shape. Best next lead: reproduce
+//   the original's PDB line map, which attributes BOTH param loads to line 248
+//   (the y store line) while the x store is on line 250 - suggesting the source
+//   declared a line-248 local (e.g. `int xv = param_1;`) whose value feeds the
+//   line-250 x stores; VC5 still sinks that load to EAX in every tested spelling,
+//   so the hoist difference likely needs TU-level allocator state (closest
+//   analog: /GX EH-framed ctor 00478F40 loads stack params into ECX, but this
+//   function has no EH frame).
 
 class PrimaryPt {
 public:
@@ -104,19 +147,19 @@ int PointMaker::CreateShape(int param_1, int param_2) {
     DrawPrimaryIntoProbabilityArray();
     ErrorCheckingAndCorrection();
 
-    int minimum = MinimumNumTiles;
-    int probability = ProbabilityTiles;
+    int iVar1 = MinimumNumTiles;
+    int iVar3 = ProbabilityTiles;
     NumTilesActuallyChosen = 0;
-    int attempts = 0;
-    while (probability < minimum && attempts++ < 1500) {
-        probability = Prime.y;
+    int iVar2 = 0;
+    while (iVar3 < iVar1 && iVar2++ < 1500) {
+        iVar3 = Prime.y;
         x = Prime.x;
-        y = probability;
+        y = iVar3;
         CurrentNumberOfBranchLevels = MaxNumberOfBranchLevels;
         NumNodes = 0;
-        probability = MakeFirstLink();
-        Branch(probability);
-        probability = ProbabilityTiles;
+        iVar3 = MakeFirstLink();
+        Branch(iVar3);
+        iVar3 = ProbabilityTiles;
     }
     CreateMapBasedOnProbabilityArray();
     MapCleanUpEliminatingSinglesOnly();

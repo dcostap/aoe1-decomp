@@ -24,6 +24,19 @@
 // direct-member and reversed-test forms remained nonexact. Named ternary reached 186B/31B but merged the two branch stores.
 // Outer-label/goto and natural virtual-vptr context probes did not improve the EH-tail basin (natural vptr worsened to 205B/56B).
 // Restored the canonical named sprite18/spriteBC ownership and natural inner if/else; remaining blocker is shared-vs-duplicated EH epilogue layout.
+// 2026-08-07 orch-w12 pass (13 probes): re-confirmed the 47B blocker. Negative evidence: inner `goto done`
+// and ternary-STATEMENT forms fold to the same tail-dup; switch((int)s) case0/default is worse (85.7% shape);
+// full virtual RGE_Action surface from exact donor 00407A20 leaves the tail unchanged; May-2026 raw-cast source
+// still yields 47B (the old 24B was a pre-boundary-enforcement artifact); #include <stdlib.h> changes nothing;
+// adding sibling ctor/dtor definitions to the TU broke checker extraction. Two focused variant labs (48 combos of
+// outer-guard x inner-statement x flags): ONLY the two-independent-ifs family shares the epilogue (188B/34B,
+// redundant second test + swapped o/s register coloring) and the ternary family shares with exact size (186B/31B,
+// but merges the two branch-local stores). Both are metric experiments, not period source. Direct verification of
+// the original binary tail bytes (jmp eb03 over the 3-byte else arm into the single FS-first EH epilogue) matches
+// the packet. Sibling originals show the layout decision is per-function VC5: 004055A0 (no-EH, same fallback)
+// tail-dups, 00401550 (EH, per-arm returns) tail-dups, 0044D1A0 (EH, long arms with calls) shares. The natural
+// if/else reconstruction remains the best period-plausible source; the shared-epilogue layout is not reproducible
+// with local source/type/flag/context changes in this VC5 basin.
 
 class RGE_Action_Object;
 class RGE_Sprite;
