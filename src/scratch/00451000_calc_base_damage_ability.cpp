@@ -16,6 +16,35 @@
 //   188-byte group. The binary-backed RGE_Armor_Weapon_Info surface is retained.
 // - Final best remains 42 strict bytes: exact +0039..+00BC island, 188-byte size/frame/call set;
 //   unresolved entry target/count register basin only. No accepted_drift proposed.
+// - orch-w13 claim: loop-form axis fully explored. Init-order permutations
+//   (count/weapon/total, count/total/weapon) are codegen duplicates; hoisting
+//   armor_count/base_armor before the guard is worse (57B).
+// - KEY NEGATIVE: every top-condition loop (while(count!=0), for(int i=count;i>0;i--),
+//   for(;count>0;count--), for(int i=0;i<count;i++)) reproduces the ORIGINAL's exact
+//   prologue (mov edx,[esp+4] pre-frame; movsx eax,[edx+108h]; pushes after movsx;
+//   mov edi,[edx+10Ch]), the in-guard count spill, single guard, and the correct homes
+//   (count -8, base_armor -4, value +8) -- but ALWAYS inserts `mov ebp,ecx` (this->EBP)
+//   at +001E, cascading base_armor->ECX/armor->value->ECX/value->EDX and producing
+//   153B diff in the real function (prologue exact, body register-cascade).
+// - The do-while keeps this->ECX and the body registers right (armor->value->EBP) but
+//   sits in the target->EAX/count->EDX prologue basin (42B). The ORIGINAL's allocation
+//   (target->EDX, count->EAX, this->ECX, base_armor->EDX, value->EAX, attack->EDX,
+//   armor->value->EBP) is NOT producible by any single natural loop form: top-condition
+//   loops give count->EAX but force this->EBP; the do-while keeps this->ECX but colors
+//   count->EDX. The only form with this->ECX + count->EAX + base_armor->EDX was the
+//   for-index-noif variant WITH an integer-sub body (`(float)((int)weapon->value - v)`
+//   carried in EBX) -- but that changes the binary's two-fild/fxch/fsubp float-sub body
+//   and the home mapping, so it is not the original source.
+// - 18-variant lab (6 loop forms x 3 tails, 20260807_180331) confirms do-while is the
+//   best emitted-code basin (pos 39/focus 35); every other family is worse. Flags
+//   (/O1, /O2 alone, /Og /Oy, /GB) do not leave the do-while basin.
+// - Conclusion: 42B stays the frontier. The remaining drift is the systematic EAX/EDX
+//   swap of {target,count-init,base_armor,value,attack} (loop-data chain EAX vs
+//   address/base chain EDX), steered by the loop-form-dependent allocator order.
+//   Next lead: a TU/header-context difference (the original m_co_obj.cpp include set)
+//   or a genuinely different control structure not yet found; a fresh worker should
+//   audit the real class hierarchy (RGE_Master_Static_Object base chain) before more
+//   codegen probes.
 
 #include "..\..\include\game_globals.h"
 
