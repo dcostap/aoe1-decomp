@@ -10,6 +10,11 @@
 // variants, and a 27-case source lab plus 2048-case invariant-gated lab; all eligible variants stayed
 // in the same 41-byte codegen basin. Remaining drift is setup LEA/store ordering plus append/free
 // register coloring and get_line argument scheduling. Paused unresolved; not accepted_drift.
+// orch-w8 pass: mirroring the exact same-family donor 004911A0 fillCampaigns (scr_cams.cpp) body
+// shape: resolved RGE_Game_Info* info = rge_base_game->player_game_info local, char** players = 0
+// declaration-with-initializer, long count declared at the call site, nested { int i; for(...) }
+// loop blocks. That donor's original call-setup and loop bytes are identical to this target's, so
+// the same source shape should reproduce the original register coloring and call-setup scheduling.
 // Luna4A6800b sequential pass: restored canonical TPanel/TEasy_Panel/TScreenPanel inheritance,
 // exact TRIBE_Screen_Name field ownership, TListPanel name_list type, and polymorphic RGE_Base_Game;
 // aggregate-output, extern-global, /GX, source-order, and decompiler-curr_player probes were all
@@ -83,27 +88,31 @@ public:
 
 void TRIBE_Screen_Name::get_player_names()
 {
-    char** players;
-    long local_4;
-    int count;
-    int i;
-
     this->name_list->empty_list();
 
-    RGE_Base_Game* game = rge_base_game;
-    players = 0;
-    count = game->player_game_info->get_people_list(&players, local_4);
+    RGE_Game_Info* info = rge_base_game->player_game_info;
+    char** players = 0;
+    long current_player;
+
+    long count = info->get_people_list(&players, current_player);
+
     if (count != 0) {
         this->name_list->flag_15c = 1;
 
-        for (i = 0; i < count; i++) {
-            this->name_list->append_line(players[i], i);
+        {
+            int i;
+            for (i = 0; i < count; i++) {
+                this->name_list->append_line(players[i], i);
+            }
         }
 
-        this->name_list->set_line(this->name_list->get_line(local_4));
+        this->name_list->set_line(this->name_list->get_line(current_player));
 
-        for (i = 0; i < count; i++) {
-            free(players[i]);
+        {
+            int i;
+            for (i = 0; i < count; i++) {
+                free(players[i]);
+            }
         }
         free(players);
     }
