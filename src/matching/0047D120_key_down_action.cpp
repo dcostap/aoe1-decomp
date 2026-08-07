@@ -3,14 +3,20 @@
 // Attempt log:
 // - Replaced the structural stub with the period-plausible switch and panel
 //   forwarding path supported by the original CFG and proven TPanel layout.
-// - Baseline source-order switch was exact-sized but VC5 merged all four
-//   break-case scroll calls; matching the binary's case layout with 28/26,
-//   22/21, then 24/23 improved the structural diff but still leaves one
-//   merged scroll call.
-// - The PDB-proven unsigned-char scroll ABI did not change emitted bytes.
-// - Duplicated/goto forwarding tails and a narrow volatile reread did not
-//   split the merged call; an early-return duplicate tail restored the call
-//   count but grew the function by 53 bytes, so it was rolled back.
+// - Earlier sessions: baseline source-order switch exact-sized but VC5 merged
+//   all four break-case scroll calls; goto/duplicated-tail probes (probe-003
+//   .. probe-010) all collapsed to the same full 4-way merge (diff 139).
+// - NEW: return placement inside the if body vs after the if changes VC5's
+//   tail-merge grouping. Uniform ret-after-if merges all four arrow cases
+//   into one scroll call (diff 139). Uniform ret-inside-if merges 28/26/22
+//   into one call and keeps 21 separate (3+1, diff 31).
+// - EXACT: pair 1 (0x28/0x26) with `return 1;` INSIDE the if body and pair 2
+//   (0x22/0x21) with `return 1;` AFTER the if produces the binary's 2+2
+//   grouping (28/26 share one scroll call+check, 22/21 share another) and
+//   exact bytes (diff 0). The mixed return placement is binary-proven: the
+//   forward-path ret is a distinct block from the shared ret-1 tail.
+// - Jump table lands at the original position once the grouping matches;
+//   relocation identity of the table base is preserved (5/5 masked).
 
 class TPanel {
 public:
@@ -79,16 +85,34 @@ long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
     switch (param_1) {
     case 0x28:
         this->scroll(2, 0, 1);
-        break;
+        if (this->parent_panel != 0 && this->tab_stop != 0) {
+            this->parent_panel->key_down_action(param_1, param_2, param_3,
+                                                 param_4, param_5);
+            return 1;
+        }
+        return 1;
     case 0x26:
         this->scroll(3, 0, 1);
-        break;
+        if (this->parent_panel != 0 && this->tab_stop != 0) {
+            this->parent_panel->key_down_action(param_1, param_2, param_3,
+                                                 param_4, param_5);
+            return 1;
+        }
+        return 1;
     case 0x22:
         this->scroll(4, 0, 1);
-        break;
+        if (this->parent_panel != 0 && this->tab_stop != 0) {
+            this->parent_panel->key_down_action(param_1, param_2, param_3,
+                                                 param_4, param_5);
+        }
+        return 1;
     case 0x21:
         this->scroll(5, 0, 1);
-        break;
+        if (this->parent_panel != 0 && this->tab_stop != 0) {
+            this->parent_panel->key_down_action(param_1, param_2, param_3,
+                                                 param_4, param_5);
+        }
+        return 1;
     case 0x24:
         this->scroll(6, 0, 1);
         return 1;
@@ -98,10 +122,4 @@ long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
     default:
         return 0;
     }
-
-    if (this->parent_panel != 0 && this->tab_stop != 0) {
-        this->parent_panel->key_down_action(param_1, param_2, param_3,
-                                             param_4, param_5);
-    }
-    return 1;
 }
