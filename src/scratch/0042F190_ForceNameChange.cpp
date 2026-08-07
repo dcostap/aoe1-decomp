@@ -58,24 +58,39 @@
 // - Swapping TemporaryName field order reached 152B/77.6316%; all alternatives were rolled back.
 // Final pass result: retain the audited typed TemporaryName + DPNAME source; mismatch remains broad
 // and structural, so no accepted_drift or promotion is warranted.
+//
+// orch-w4 2026-08-07 retry (10-probe budget):
+// - KEY INSIGHT: VC5 /O2 inlines `char test[32] = "TEMPORARY NAME";` as dword loads from the
+//   .rdata literal + zero-fill of the remaining 17 bytes (mov [esp+X],0 reusing xor'd register),
+//   exactly matching the original's string-store family. The original's stores sit at PDB line
+//   6849 AFTER the Log call at 6845, so the declaration is a MID-FUNCTION C++ declaration after
+//   the Log statement. The frame is plain DPNAME(16B)+char[32] = 0x30, no TemporaryName union:
+//   dpn@esp+0x00 (dwSize, dwFlags NEVER written, lpszShortName@0x08, lpszLongName@0x0c),
+//   test@esp+0x10. Previous "TemporaryName overlap" hypothesis was a misreading of the
+//   dpn.lpszLongName/test.shortName slot coincidence.
+// - Probe record (labs 55-61 + manual compiles): swept all 6 dpn field orders, strcpy/memset/
+//   array-init forms, dp/player/vtbl/function-pointer locals, comma-in-arg side effects, pointer-
+//   through stores, &dpn.dwSize argument, call-result local, and 19 flag sets. Best retained:
+//   arr-init + (lpszShortName, lpszLongName, dwSize) + direct SetPlayerName call = 148B / 0x30
+//   frame / 38 instr / calls aligned / 12 diff bytes (8.1081%), first mismatch at +0x81.
+// - REMAINING 12-byte gap: the dwSize store. Original emits `mov [esp+10h],10h` AFTER the final
+//   two arg pushes (vtbl load + push player + push dp precede it); VC5 always emits the constant
+//   store BEFORE the vtbl load in this code family. Every source shape, local form, and flag set
+//   lands at [esp+8] pre-vtbl. SendPlayerName (00426D50) shares the identical original tail
+//   (dwSize after pushes, call [ecx+78h]) and is also paused in scratch for the same reason; its
+//   dp/player-local source moves the dwSize after the pushes but destroys the push-interleaving.
+//   No accepted_drift: the store position changes the memory-write schedule in the call setup.
 
 #include "../../include/game_globals.h"
 
 extern void* L;
 extern "C" void __cdecl Log(void* log, char* text, ...);
-extern unsigned int DAT_005832bc;
-extern unsigned int DAT_005832c4;
 
 struct DPNAME {
     unsigned long dwSize;
     unsigned long dwFlags;
-    char* lpszShortName;
-    char* lpszLongName;
-};
-
-struct TemporaryName {
-    char* shortName;
-    char text[28];
+    unsigned short* lpszShortName;
+    unsigned short* lpszLongName;
 };
 
 struct IDirectPlayVtbl {
@@ -93,26 +108,15 @@ public:
 };
 
 void TCommunications_Handler::ForceNameChange(void) {
-    TemporaryName test;
     DPNAME dpn;
 
     Log(L, "Force Name Change");
 
-    *(int*)&test.text[8] = DAT_005832c4;
-    *(int*)&test.text[4] = DAT_005832c0;
-    *(int*)&test.text[0] = DAT_005832bc;
-    *(int*)&test.text[15] = 0;
-    *(int*)&test.text[19] = 0;
-    test.text[14] = DAT_005832ca;
-    *(int*)&test.text[23] = 0;
-    test.shortName = test.text;
-    *(short*)&test.text[12] = DAT_005832c8;
-    test.text[27] = 0;
+    char test[32] = "TEMPORARY NAME";
 
+    dpn.lpszShortName = (unsigned short*)test;
+    dpn.lpszLongName = (unsigned short*)test;
     dpn.dwSize = 0x10;
-    dpn.dwFlags = 0;
-    dpn.lpszShortName = 0;
-    dpn.lpszLongName = test.text;
 
     ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, &dpn, 2);
 }

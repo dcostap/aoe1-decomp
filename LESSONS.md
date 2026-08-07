@@ -3165,3 +3165,75 @@ Caveats:
 - only use the shared-tail form when the binary really has duplicated tails (two call sites, two epilogues); a genuinely shared tail in the binary wants the shared-statement form's single call;
 - keep the receiver as direct member access in both arms (a hoisted local moves the CSE'd receiver load before the test and shifts the first mismatch);
 - verified on 0049C650 command_score (scr_game.cpp): per-arm calls gave 142 bytes / 4 calls, the shared post-branch `set_redraw(1)` gave the exact 189 bytes / 6 calls.
+
+## Lesson: `value * 32` (multiply + cast-after) vs `value << 5` flips byte RMW operand scheduling
+
+For a byte read-modify-write like `byte[5] = (byte[5] & 0x1F) | (value << 5)` (packing a 3-bit elevation into bits 5-7 of a tile byte), the spelling of the shifted value decides WHICH operand VC5 evaluates first:
+
+- `(unsigned char)(value * 32)` (or `& 31` mask, any OR operand order, even a named `unsigned char be = ...` temp) compiles to the READ-FIRST schedule: `mov cl,[tile+5]; and cl,1Fh; lea esi,[tile+5]; mov dl,[base]; shl dl,5; or cl,dl; mov [esi],cl` — the base load lands in `dl` AFTER the address LEA (it clobbers the row-pointer register, forcing the LEA first).
+- Every `<< 5` spelling — bitfield elevation write (`tile->elevation = x`), raw `(unsigned char)value << 5`, and `(unsigned char)(value << 5)` — makes VC5 schedule the base load FIRST into the OR-destination register (`cl`), CSE the tile address into `esi`, and read the byte via `[esi]`, producing a 2-byte-short inner loop (`mov dl,[esi]` instead of `mov cl,[edx+edi+5]`).
+
+Try when:
+- a byte RMW loop is 2 bytes short and the first mismatch is the load order: original reads/masks the memory byte first, rebuilt loads the shifted constant/value first;
+- the rebuilt reads through a materialized address register (`mov dl,[esi]`) where the original reads via a displacement form (`mov cl,[edx+edi+5]`) with the LEA emitted between the mask and the value load;
+- bitfield and raw-expression spellings all collapse into the same value-first basin.
+
+Why it helps:
+- VC5 treats a multiply by a power of two differently from a shift at expression level: the cast-after-32-bit-product form stays in the natural read-first basin, while `<< 5` triggers the value-first/CSE schedule;
+- the same operation elsewhere in the file (e.g. `base_elevation_generate` line 377) may genuinely use `<< 5 | & 0x1f` with value-first codegen — so per-site spelling matters, not a file-wide idiom.
+
+Caveats:
+- only when the binary shows the read-first pattern with the value load between the address LEA and the shift; if the original is value-first, keep `<< 5`;
+- `& 0x1F`, `& 31`, and swapped OR operands are all exact with `* 32`; use the hex mask if the file's matched sources use hex;
+- verified on 00484700 generate (rmm_elev.cpp): diff went 141 (73.8%) → 0 (0.0000%) by changing only the value expression to `(unsigned char)(base_elevation * 32)`.
+
+## Lesson: literal array init after a call reproduces the exact inline-copy + zero-fill store family
+
+For a function that copies a short string literal into a stack buffer right after an unrelated call (e.g. a debug Log), declare the buffer with a literal array initializer *after* the call statement:
+
+```cpp
+Log(L, "...");
+char test[32] = "TEMPORARY NAME";
+```
+
+VC5 /O2 inlines this as dword loads from the .rdata literal (`mov eax,[lit+8]` etc.) followed by the string stores and a remainder zero-fill (`mov [esp+X],0` reusing one xor'd register, unaligned dword zeros at 15/19/23/27 + byte 31 for a 32-byte buffer). This is the exact store family the original emits, including the *delayed* cdecl cleanup of the preceding call (`add esp,8` landing in the middle of the store block with the first batch addressed at ESP-8). Explicit per-byte stores from `DAT_005832xx` globals, `strcpy`, or `memset+strcpy` all land in worse basins (shorter code, wrong scheduling, or register-save growth).
+
+Try when:
+- a small function's string setup (copy + tail zeros interleaved with a delayed `add esp,N`) is the bulk of a sticky mismatch;
+- the original's stores are split across two PDB line bands (the declaration line and the next statement line) — that is a mid-function C++ declaration, not a top-of-block one;
+- the frame layout then falls out as plain locals (e.g. a 16-byte struct + 32-byte char array = 0x30) with no union/overlap struct needed.
+
+Caveats:
+- the buffer must be 32 bytes for the 17-byte tail-zero pattern; smaller/larger sizes change the zero-store shapes;
+- VC5 still refuses to reproduce *some* schedules regardless of buffer form — e.g. a constant field store (`dpn.dwSize = 16`) placed BEFORE the callee's final argument pushes is emitted before the vtable load in every source shape, while the original emits it after the last two pushes (`mov [esp+10h],10h` at deeper ESP). Both ForceNameChange (0042F190) and its sibling SendPlayerName (00426D50) show this exact 12-byte tail gap; no field order, local form, comma-argument side effect, pointer store, or flag set moves the store.
+
+## Lesson: Split the per-row tile base from the subfield offset to keep the row computation at the loop head
+
+When a per-row pointer is only used inside a nested `if` in a tile-loop, spelling the whole address as the byte pointer at the loop head (`unsigned char* p = &map_row_offset[row][x0].draw_attribute;`) lets VC5 sink the computation below the branch test and fold the subfield offset into an address `lea` (`lea eax,[eax+ecx+0Ah]`), changing the loop topology. Instead, compute the TYPED base at the loop head and apply the subfield offset inside the branch:
+
+```cpp
+while (row <= y1) {
+    RGE_Tile* tile = &map_row_offset[row][x0];   // loop head: base only
+    if (x0 <= x1) {                               // inner if test AFTER the computation
+        unsigned char* p = (unsigned char*)tile + 0x0A;   // +offset inside
+        int count = x1 - x0 + 1;
+        do { p[-3] = 0xCC; *p = val; p += 0x18; --count; } while (count != 0);
+    }
+    ++row;
+}
+```
+
+Try when:
+- the original loop head computes the tile base first (`mov eax,[esp+..]; mov edx,[eax+..]; mov eax,[edx+row*4]; add eax,offset`), then tests the inner condition, and applies the subfield offset (`add eax,0Ah`) only inside the branch;
+- the rebuilt with a full byte-pointer at the loop head emits the inner-if test interleaved into the computation and folds the +offset into the final `lea`;
+- the PDB line map attributes the base computation and the subfield add to different lines (base on the pointer line, `add` on the `if` line).
+
+Why it helps:
+- VC5 treats the typed base expression and the subfield access as separable address computations: the base stays anchored at the loop head (also letting LICM hoist the invariant `x0*stride` into the pre-header as `lea/sh`), while the +offset is sunk into the branch where it is used;
+- keeping the base at the loop head also stops the scheduler from reordering the inner-if test above the whole computation.
+
+Also pair this with declaring the loop counter (`int row = y0;`) INSIDE the guard after the clamps rather than at function top or before the guard: the copy (`mov ebp,eax`) then lands at the loop entry, giving the original register basin (this->ebx, min-x->esi, max-x->edi, y0->eax, y1->ecx+param-slot, row->ebp) with the `cmp eax,ecx; mov ebp,eax` entry test and `xor eax,eax` y0 clamp.
+
+Caveat:
+- the tile type must be exactly the record being walked (24-byte stride here) and the subfield offset binary-proven (draw_attribute +0x0A); use the raw `(unsigned char*)tile + 0x0A` or `&tile->field` spelling that matches the observed `add eax,0Ah`.
+- Verified on 00455CB0 `RGE_Map::request_redraw` (map.cpp): 162-byte positional diff -> 0 after this split.
