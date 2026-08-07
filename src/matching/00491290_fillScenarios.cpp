@@ -47,93 +47,47 @@
 //   union output alias was diagnostic only and was rolled back.
 // Final source retains the natural scenario-pointer/currentScenario reconstruction; 32-byte
 // distributed codegen drift remains across setup and loop register coloring.
+// 2026-08-07 orch-w10: EXACT MATCH (0.0000%) after mirroring the exact sibling donor
+//   004911A0 fillCampaigns: cache the FIELD local (RGE_Game_Info* info =
+//   rge_base_game->player_game_info) instead of the global bg, initialize
+//   scenarios = 0 in its declaration, and call through info. VC5 then loads the
+//   global into EAX (A1), schedules mov ecx,[eax+4] between the two arg pushes,
+//   and reuses EAX for the &scenarios LEA — the previously unreachable basin.
+// probe-027 context: reduced the generated TPanel/TScreenPanel/TEasy vtable-pad
+//   surface to the sibling-style flat class (scenarioList at +0x4AC via
+//   campaignList +0x490 + gap 0x18); still exact, kept as the final source.
+// Final: minimal flat surface + field-local call shape; exact match verified.
 
-class TPanel {
-public:
-    virtual ~TPanel();
-#define TPAD(n) virtual void p##n();
-    TPAD(1) TPAD(2) TPAD(3) TPAD(4) TPAD(5) TPAD(6) TPAD(7) TPAD(8)
-    TPAD(9) TPAD(10) TPAD(11) TPAD(12) TPAD(13) TPAD(14) TPAD(15) TPAD(16)
-    TPAD(17) TPAD(18) TPAD(19) TPAD(20) TPAD(21) TPAD(22) TPAD(23) TPAD(24)
-    TPAD(25) TPAD(26) TPAD(27) TPAD(28) TPAD(29) TPAD(30) TPAD(31) TPAD(32)
-    TPAD(33) TPAD(34) TPAD(35) TPAD(36) TPAD(37) TPAD(38) TPAD(39) TPAD(40)
-    TPAD(41) TPAD(42) TPAD(43) TPAD(44) TPAD(45) TPAD(46) TPAD(47) TPAD(48)
-    TPAD(49) TPAD(50) TPAD(51) TPAD(52) TPAD(53) TPAD(54) TPAD(55) TPAD(56)
-    TPAD(57) TPAD(58) TPAD(59) TPAD(60) TPAD(61) TPAD(62) TPAD(63) TPAD(64)
-    TPAD(65) TPAD(66) TPAD(67) TPAD(68) TPAD(69) TPAD(70) TPAD(71) TPAD(72)
-    TPAD(73)
-#undef TPAD
-    char _data[0xF0];
-};
-
-class TTextPanel : public TPanel {
-public:
-    char _gap_F4[0x68];
-    int zero_15c;
-    void empty_list();
-    long get_line(long index);
-    void set_line(long line);
-    int append_line(char* text, long index);
-};
-
-class TListPanel : public TTextPanel {
-public:
-    void scroll_cur_line(unsigned char dir, short param2, int param3);
-};
-
-class TScreenPanel : public TPanel {
-public:
-    char _gap_F4[0x384];
-};
+#include <stdlib.h>
 
 class RGE_Game_Info {
 public:
     long get_scenario_list(char*** scenarios, long& count);
 };
 
-struct RGE_Base_Game {
+class RGE_Base_Game {
+public:
     char _gap_00[4];
-    RGE_Game_Info* player_game_info;
+    RGE_Game_Info* player_game_info;    // +0x04
 };
 
 extern RGE_Base_Game* rge_base_game;
 
-#define EPAD(n) virtual void e##n();
-class TEasy_Panel : public TScreenPanel {
+class TTextPanel {
 public:
-    EPAD(0) EPAD(1) EPAD(2) EPAD(3) EPAD(4) EPAD(5) EPAD(6) EPAD(7)
-    EPAD(8) EPAD(9) EPAD(10) EPAD(11) EPAD(12) EPAD(13) EPAD(14) EPAD(15)
-    EPAD(16) EPAD(17) EPAD(18) EPAD(19) EPAD(20) EPAD(21) EPAD(22) EPAD(23)
-    EPAD(24) EPAD(25) EPAD(26) EPAD(27) EPAD(28) EPAD(29) EPAD(30) EPAD(31)
-    EPAD(32) EPAD(33) EPAD(34) EPAD(35) EPAD(36) EPAD(37) EPAD(38) EPAD(39)
-    EPAD(40) EPAD(41) EPAD(42) EPAD(43) EPAD(44)
-#undef EPAD
-    virtual long vB4(TPanel* panel, long code, unsigned long p3, unsigned long p4);
+    void empty_list();
+    int append_line(char* text, long value);
+    long get_line(long index);
+    void set_line(long line);
+    void scroll_cur_line(unsigned char dir, short param2, int param3);
 };
 
-class TRIBE_Screen_Campaign_Selection : public TEasy_Panel {
+class TRIBE_Screen_Campaign_Selection {
 public:
-    TPanel* title;
-    int campaignListX;
-    int campaignListY;
-    int campaignListWidth;
-    int campaignListHeight;
-    TPanel* campaignTitle;
-    TTextPanel* campaignList;
-    TPanel* campaignScrollbar;
-    int scenarioListX;
-    int scenarioListY;
-    int scenarioListWidth;
-    int scenarioListHeight;
-    TPanel* scenarioTitle;
-    TTextPanel* scenarioList;
-    TPanel* scenarioScrollbar;
-    TPanel* difficultyTitle;
-    TPanel* difficultyDrop;
-    TPanel* okButton;
-    TPanel* cancelButton;
-    TPanel* close_button;
-    int campaignsLoaded;
+    char _gap_000[0x490];
+    TTextPanel* campaignList;           // +0x490
+    char _gap_018[0x18];
+    TTextPanel* scenarioList;           // +0x4AC
 
     void fillScenarios();
 };
@@ -143,17 +97,16 @@ extern "C" void __cdecl free(void* ptr);
 void TRIBE_Screen_Campaign_Selection::fillScenarios() {
     scenarioList->empty_list();
 
-    char** scenarios;
+    RGE_Game_Info* info = rge_base_game->player_game_info;
+    char** scenarios = 0;
     long currentScenario;
-    RGE_Base_Game* bg = rge_base_game;
-    scenarios = 0;
-    long num = bg->player_game_info->get_scenario_list(&scenarios, currentScenario);
+
+    long num = info->get_scenario_list(&scenarios, currentScenario);
 
     if (num != 0) {
         long i;
         for (i = 0; i < num; i++) {
-            scenarioList->append_line(
-                scenarios[i], i);
+            scenarioList->append_line(scenarios[i], i);
         }
 
         long line = scenarioList->get_line(currentScenario);
@@ -164,6 +117,6 @@ void TRIBE_Screen_Campaign_Selection::fillScenarios() {
         }
         free(scenarios);
 
-        ((TListPanel*)scenarioList)->scroll_cur_line(7, 0, 1);
+        scenarioList->scroll_cur_line(7, 0, 1);
     }
 }
