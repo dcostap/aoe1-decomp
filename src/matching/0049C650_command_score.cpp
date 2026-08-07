@@ -2,12 +2,12 @@
 // VA: 0049C650
 // scr_game.cpp
 // Attempt log:
-// - Canonical fields are world +0x5B4 score_displayed, score_panel[8] +0x58C,
+// - Canonical fields are world +0x5B4 show_score, score_panel[8] +0x58C,
 //   text_line_panel +0x50C, and main_view +0x4B8.  The natural counted panel
 //   loop and reset_score_display call match through 0049C68E in the best basin.
 // - Hoisting one TMessagePanel* line before the score_displayed branch moved
 //   the first mismatch from offset 0 to +0x44 and improved positional diff
-//   113 -> 100; this is retained as the best source reconstruction.
+//   113 -> 100; that still left the arm merge unsolved.
 // - Restoring the period type surfaces (TPanel/TMessagePanel, TRIBE_World,
 //   TRIBE_Main_View, TScreenPanel) and naming the +0x18 call set_positioning
 //   produced the same best code, but supports the canonical ownership.
@@ -16,9 +16,14 @@
 //   surfaces, and a narrow volatile main_view probe did not improve the best.
 // - A focused branch/local variant lab found no 189-byte/6-call candidate:
 //   VC5 emits one 142-byte common set_positioning/redraw tail in every basin.
-// - Paused unresolved: original retains two duplicated virtual call arms
-//   (+0x18 and +0x20), while VC5 tail-merges them; no accepted_drift proposed
-//   because the remaining call-count/CFG drift is broad.
+// - EXACT: the two duplicated virtual call arms (+0x18 and +0x20) come from
+//   VC5 tail-duplicating ONE shared `set_redraw(1)` written after the if/else
+//   into both arms.  Spelling set_redraw inside each arm (with early returns)
+//   made VC5 MERGE the arms into one call with a conditional-argument select
+//   (142 bytes, 2 calls lost); the if/else + shared post-branch tail instead
+//   duplicates the call+epilogue into both exits, reproducing the original
+//   189-byte layout byte-for-byte.  PDB line map (arm1 5240->5244->5245,
+//   arm2 5242->5244->5245) is the fingerprint: both redraws map to line 5244.
 
 class TPanel {
 public:
@@ -107,13 +112,10 @@ void TRIBE_Screen_Game::command_score(int a1)
         this->reset_score_display();
     }
 
-    TMessagePanel* line = this->text_line_panel;
     if (this->world->show_score != 0) {
-        line->set_positioning(8, 4, 0, 0xB8, 4, 0, 0, 0x22, 0x22);
-        this->main_view->set_redraw(1);
-        return;
+        this->text_line_panel->set_positioning(8, 4, 0, 0xB8, 4, 0, 0, 0x22, 0x22);
+    } else {
+        this->text_line_panel->set_positioning(8, 4, 0, 4, 4, 0, 0, 0x22, 0x22);
     }
-    line->set_positioning(8, 4, 0, 4, 4, 0, 0, 0x22, 0x22);
     this->main_view->set_redraw(1);
-    return;
 }

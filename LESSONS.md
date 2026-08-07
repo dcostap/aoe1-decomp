@@ -348,7 +348,20 @@ When narrow output locals are passed by address while the original full-width
 parameters are used again after the call, keep the outputs as ordinary `short`
 locals and leave the parameters untouched in source. VC5 can coalesce those locals
 with the incoming parameter homes while saving the unmodified parameters in
-callee-saved registers, reproducing an `lea`-before-save prologue. Explicitly
+callee-saved registers, reproducing an `lea`-before-save prologue.
+
+The same pattern resolves fscanf `%hd`-destination functions that keep the FILE*
+parameter in EDI across a base-class setup call: declare separate `short` output
+locals for every `%hd` destination that lands in an incoming parameter home, pass
+the parameters themselves by value to the base call and the fscanf FILE* argument,
+and read the tails back from the output locals. VC5 coalesces the locals into the
+parameter homes (mapping them to the homes in destination order) and keeps the
+unmodified FILE* value in EDI across the call — reproducing the original
+batch-arg prologue, overlapping `lea [esp+param]` destinations, and the
+post-read byte reload/store family exactly. Passing `&param_1` directly instead
+home-binds the parameter and forces stack reloads (no EDI); pre-call FILE aliases
+restore EDI but hoist the parameter load and break the entry argument order.
+Verified with `handle_scroll_view` (00438720) and `setup` (004516C0). Explicitly
 casting the parameter addresses or introducing early full-width copies can instead
 force the loads before address setup or preserve the wrong narrowed values.
 Verified with `handle_scroll_view` (00438720).
@@ -3066,3 +3079,89 @@ Try when:
 - the frame size and call set are correct but every `[edi+off]` operand differs.
 
 Verified on 004A2D50 (all TribeMPSetupScreen offsets snapped to +0x72C..+0x88C after adding the TPanel data gap).
+
+## Lesson: Natural array indexing beats raw byte-offset cursors for the candidate compare in scan loops with a mid-loop call
+
+When a scan loop over fixed-size records contains a call (so a strength-reduced walking pointer cannot be kept in a callee-saved register, and VC5 instead reloads the array member each iteration and carries a byte-offset induction variable), spell the record accesses as natural typed array indexing (`this->Queue[i].Code`, `this->Queue[i].ExecTurn`) rather than raw cursor arithmetic (`*(uint*)((char*)Queue + off)`).
+
+Try when:
+- the original loop top reloads the array member and adds a byte-offset register (`mov eax,[esi+114h]; add eax,edi`), with a separate index register, and the post-call candidate phase uses `mov edx,[member]; mov eax,[edx+off]; lea ecx,[edx+off]; cmp eax,best; ... cmp [ecx+4],param` (indexed load PLUS a separately lea'd element pointer);
+- every raw-offset spelling (`(char*)Queue + off`, `(char*)&Queue->Field + off`, typed pointer locals, even volatile rereads) makes VC5 CSE the two adjacent field reads into one `add`-merged pointer register (`mov ecx,[member]; add ecx,off; mov eax,[ecx]`), leaving a 2-byte size drift that shifts all later branch displacements.
+
+Why it helps:
+- with plain `array[i]` member indexing, VC5 strength-reduces `i * sizeof(record)` into the byte-offset register itself, reloads the member from `this`, and treats the second same-element field read as a typed element access that materializes the element pointer via `lea` from the base register (keeping the first read indexed) — exactly the original's load-base/lea shape;
+- raw cast loads from `base+off` and `base+off+const` share a CSE-able subexpression, so VC5 unifies them into one mutated pointer register instead.
+
+Caveats:
+- this needs the element type/stride to be exact (`sizeof(MsgQueue) == 0x1C` proved from the binary);
+- do not cache the member in a local (`MsgQueue* q = this->Queue`): with all callee-saved registers already taken, the original reloads the member every iteration, and a cached local can force a different prologue/saved-register basin.
+- Verified on 00431E40 `GetNextItemOrdered` (com_q.cpp): the natural `Queue[i]` form matched exactly after ten raw-cursor/volatile/typed-pointer probes all landed in the same 2-byte-drift basin.
+
+## Lesson: A bound check as the loop's first body statement avoids VC5's entry peel/fold
+
+When a scan loop must test an induction variable against a count at the TOP of every
+iteration (original emits `cmp dx,bp; jge exit` at the loop header with the back-edge
+jumping back to it), spelling the count check as the loop CONDITION makes VC5
+constant-fold the first-iteration test and peel it: `while (count < limit)` or
+`do { if (count >= limit) break; ... } while (slot < 25)` both fold count==0 into
+`test bp,bp; jle exit` at entry AND re-test `cmp dx,bp` at the loop bottom — an extra
+3+2 = 5 bytes per loop. The original source instead wrote the OTHER bound as the
+while condition and the count check as the FIRST statement of the body:
+
+```cpp
+short slot = 0, count = 0;
+while (slot < 25) {
+    if (count >= selected_count) break;   // body first-statement
+    obj = player->sel_list[slot];
+    if (obj != 0) { ...; ++count; }
+    ++slot;
+}
+```
+
+VC5 rotates this into exactly the binary shape: entry test = count (unfolded), bottom
+test = slot<25 only, back-edge targets the count test. The identical same-file exact
+donor `any_selected_have_action` (0049D440) uses the same shape:
+`while (slot < 25) { if (index >= count) return 0; ... }` and its asm has the same
+top-count/bottom-slot topology.
+
+Try when:
+- a two-bound scan loop's original has the count/limit test at the loop header
+  (`cmp dx,bp; jge exit`, `... jl loop_top`) but the rebuilt peels it
+  (`test bp,bp; jle exit` plus a duplicated bottom count test), adding ~5 bytes per loop;
+- one loop bound is an induction-vs-count check and the other is a fixed array bound
+  that is provably true at entry (slot==0 < 25).
+
+Why it helps:
+- VC5 constant-folds the loop's OWN condition when the induction variable is statically
+  known at entry (0), but a body-first-statement break that rotation hoists to the
+  entry is emitted as-is;
+- the while-condition bound (slot) is eliminated at entry (provably true) and rotated
+  to the bottom, producing the exact entry-test/bottom-test topology.
+
+Caveats:
+- the body first statement must be the check that appears at the top in the binary;
+- keep the found/exited arm's direct member reload (`candidate = player->sel_list[slot];`)
+  when the binary re-issues the indexed load there (aliasing prevents the CSE);
+- verified on 0049D370 command_tab_selected: two 199-byte functions (target + donor)
+  both matched with this shape after the loop-condition spellings folded.
+
+## Lesson: A shared post-branch virtual call tail makes VC5 duplicate arms; per-arm duplicated calls make it merge them
+
+When two if/else arms end with an identical short tail (a virtual call plus the function return), the SOURCE PLACEMENT of that tail decides whether VC5 duplicates or merges:
+
+- Writing the tail call inside each arm with early returns (`if (c) { A; v->redraw(1); return; } B; v->redraw(1); return;`) makes VC5 MERGE the whole arms into ONE call with a conditional-argument select (`test; je; push X; jmp; push Y; ...call`), dropping two call sites and up to ~47 bytes.
+- Writing ONE shared tail statement after the if/else (`if (c) { A; } else { B; } v->redraw(1);`) makes VC5 TAIL-DUPLICATE the call + epilogue into BOTH exits, reproducing the original's two fully duplicated arms.
+
+Try when:
+- a near-match keeps emitting one merged `set_positioning`/`redraw`-style tail while the original has two duplicated virtual-call arms, each with its own epilogue/`ret`;
+- the PDB line map shows the first arm's call body at line N, its tail call at line M, and the second arm's call body at a line between N and M with its tail call ALSO at line M (both copies of the tail call map to the same line);
+- checker reports `virtual vslot+N rebuilt/original 1/2` call-count gaps.
+
+Why it helps:
+- VC5's cross-jump/if-conversion merges identical arm suffixes aggressively when the source already duplicates them; the single shared statement instead triggers the tail-duplication path, which is what the original build exhibits;
+- the resulting register/vtable load placement (`mov ecx,[this+off]` receiver CSE between the test and the branch) also aligns automatically.
+
+Caveats:
+- only use the shared-tail form when the binary really has duplicated tails (two call sites, two epilogues); a genuinely shared tail in the binary wants the shared-statement form's single call;
+- keep the receiver as direct member access in both arms (a hoisted local moves the CSE'd receiver load before the test and shifts the first mismatch);
+- verified on 0049C650 command_score (scr_game.cpp): per-arm calls gave 142 bytes / 4 calls, the shared post-branch `set_redraw(1)` gave the exact 189 bytes / 6 calls.

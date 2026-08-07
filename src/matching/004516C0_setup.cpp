@@ -34,6 +34,12 @@
 // Luna4516C0 sequential pass: dossier/donor/ABI evidence confirms the canonical base setup plus six-conversion fscanf behavior and exact call set.
 // Tried typed RGE_Sprite**/RGE_Sound** parameters, this/self-slot overlap models, declaration-order moves, and comma-sequenced FILE aliases; no exact basin. A focused five-case alias lab grouped into only the delayed 152-byte family and the 134-byte prebase family.
 // Restored the delayed-FILE clean source; remaining broad drift is the original EDI save plus overlapping parameter-home fscanf topology and post-read register coloring. Not accepted_drift.
+// orch-w5 2026-08-07 EXACT MATCH: LESSONS.md parameter-slot reuse pattern (00438720 handle_scroll_view) applied.
+// Declare short OUTPUT LOCALS (targetting_out/hit_info_out/die_info_out/area_specials_out) as the fscanf %hd
+// destinations and leave the parameters untouched in source (file/sprites/sounds/target_type passed by value to
+// base setup + fscanf). VC5 coalesces the locals into the incoming parameter homes (entry+0x10/+0xC/+8/+4) and
+// keeps the unmodified file value in EDI across the base call, reproducing the original batch-arg prologue,
+// overlapping lea destinations, and post-read byte reload/store family exactly. diff 114 -> 0. Moved to matching.
 
 #include <stdio.h>
 
@@ -46,35 +52,39 @@ struct RGE_Master_Missile_Object {
     unsigned char area_effect_specials;
     char gap_14D[3];
     float ballistics_ratio;
-    int setup(FILE* param_1, void** param_2, void** param_3, short param_4);
+    int setup(FILE* file, void** sprites, void** sounds, short target_type);
 };
 
 struct RGE_Master_Combat_Object {
     char base[0x148];
-    int setup(FILE* param_1, void** param_2, void** param_3, short param_4);
+    int setup(FILE* file, void** sprites, void** sounds, short target_type);
 };
 
-int RGE_Master_Missile_Object::setup(FILE* param_1, void** param_2, void** param_3, short param_4)
+int RGE_Master_Missile_Object::setup(FILE* file, void** sprites, void** sounds, short target_type)
 {
     short temp_missile_type;
-    ((RGE_Master_Combat_Object*)this)->setup(param_1, param_2, param_3, param_4);
-    FILE* file = param_1;
+    short targetting_out;
+    short hit_info_out;
+    short die_info_out;
+    short area_specials_out;
+
+    ((RGE_Master_Combat_Object*)this)->setup(file, sprites, sounds, target_type);
 
     *(unsigned char*)((char*)this + 0xA4) = 1;
     *(unsigned char*)((char*)this + 4) = 0x3C;
 
-    fscanf((FILE*)file, "%hd %hd %hd %hd %hd %f",
+    fscanf(file, "%hd %hd %hd %hd %hd %f",
            &temp_missile_type,
-           &param_4,
-           &param_3,
-           &param_2,
-           &param_1,
-           (float*)((char*)this + 0x150));
+           &targetting_out,
+           &hit_info_out,
+           &die_info_out,
+           &area_specials_out,
+           &ballistics_ratio);
 
-    targetting_type = (unsigned char)param_4;
-    missile_hit_info = (unsigned char)param_3;
-    missile_die_info = (unsigned char)param_2;
-    area_effect_specials = (unsigned char)param_1;
+    targetting_type = (unsigned char)targetting_out;
+    missile_hit_info = (unsigned char)hit_info_out;
+    missile_die_info = (unsigned char)die_info_out;
+    area_effect_specials = (unsigned char)area_specials_out;
     missile_type = (unsigned char)temp_missile_type;
 
     return 1;

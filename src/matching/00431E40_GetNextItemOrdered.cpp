@@ -1,5 +1,13 @@
 // 00431E40 GetNextItemOrdered
 // 193 bytes, __thiscall, RGE_Communications_Queue method
+// MATCHED 2026-08-07 (orch-w17): natural Queue[i] array-indexed scan with
+// direct this->Queue member indexing (GetNextItemSingle family, no cached
+// Queue local). VC5 strength-reduces i*0x1C into the byte-offset register and
+// materializes the candidate element pointer via lea, reproducing the original
+// `mov edx,[esi+114h]; mov eax,[edx+edi]; lea ecx,[edx+edi]` candidate shape.
+// All earlier raw byte-offset cursor spellings kept CSE-ing the Code and
+// ExecTurn reads into one add-merged pointer register (2-byte drift).
+// prior attempt log:
 // probe 1: find smallest ControlCommand matching ExecTurn==param_1, return Data
 // probe 2: corrected MsgQueue to the proven 0x1C-byte com_q.cpp layout and
 // canonical member names; retained the natural indexed scan for this check.
@@ -10,10 +18,6 @@
 // spellings were codegen duplicates; retained the simplest direct cursor form.
 // probe 9: keeping the cursor live across TestShowQueue changed the prologue;
 // reverted. Probe 10: a narrow volatile reread was also a codegen duplicate.
-// Best unresolved reconstruction: canonical 0x1C MsgQueue layout and proven
-// byte-offset scan are exact structurally through the first candidate compare;
-// remaining drift is a two-byte candidate-address/register expression plus the
-// resulting branch alignment and parameter compare coloring.
 
 void __cdecl operator delete(void* ptr);
 
@@ -53,25 +57,20 @@ void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long param_1) {
     unsigned int i = 0;
     int bestIndex = -1;
 
-    int idx = 0;
     do {
-        MsgQueue* item = (MsgQueue*)((char*)Queue + idx);
-
-        if (item->Code != 0 && item->Size != 0) {
-            if (item->ExecTurn < param_1) {
+        if (Queue[i].Code != 0 && Queue[i].Size != 0) {
+            if (Queue[i].ExecTurn < param_1) {
                 TestShowQueue();
             }
 
-            unsigned int code = *(unsigned int*)((char*)Queue + idx);
-            if (code < bestControlCommand &&
-                *(unsigned int*)((char*)Queue + idx + 4) == param_1) {
-                bestControlCommand = code;
+            if (Queue[i].Code < bestControlCommand &&
+                Queue[i].ExecTurn == param_1) {
+                bestControlCommand = Queue[i].Code;
                 bestIndex = i;
             }
         }
 
         i++;
-        idx += 0x1C;
     } while (i <= HighQueueDepth);
 
     if (bestIndex == -1) return 0;
