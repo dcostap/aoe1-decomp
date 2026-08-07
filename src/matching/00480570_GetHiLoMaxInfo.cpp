@@ -107,6 +107,34 @@
 //   was not a new source hypothesis.
 // Remaining blocker is the original parameter-home countdown plus EAX quotient
 // and invalid-arm stack reads; no new exact or accepted-drift lead was found.
+//
+// Retry 2026-08-07 orch-w3 (10 probes): EXACT MATCH.
+// - probe 1: sibling-derived natural source (countdown init inside inner guard,
+//   separate average, else reads param_1) -> 142B, countdown in EBP register,
+//   hi on stack, 140 diff. Restored.
+// - probe 2: else path reads the countdown local (extends live range) -> right
+//   basin (countdown in [esp+14h] param home, hi in EBX, sum in EAX) but 140B/
+//   50 diff; else-path home reads CSE'd into one read + copies; no pre-div
+//   mov ecx,ebx.
+// - probe 3: else-path assignment order avg/lo/hi — no change (still 50 diff).
+// - probe 4: Ghidra-faithful param_1 countdown + out_hi/out_lo inits -> 142 diff
+//   (old register-basin family). Restored.
+// - variant lab (80 + 24 cases): KEY BREAKTHROUGH — declare-only output locals
+//   (average/out_hi/out_lo UNINITIALIZED, assigned only in the valid branch)
+//   coalesce onto the dead param home [esp+14h]. The invalid path then reads
+//   the home 3x (eax/edi/ecx), and the separate out_hi copy after the loop
+//   forces the pre-div `mov ecx,ebx` and the exact tail register schedule.
+//   Winning source (146B, 0 diff): countdown `remaining` assigned inside the
+//   inner guard, orig=param_1 divisor, average=sum/orig, then out_lo=lo;
+//   out_hi=hi (LO FIRST — hi-first order swapped the invalid-path edi/ecx
+//   reads and left 2 bytes diff).
+// NOTE on invalid path: average/out_hi/out_lo are read uninitialized there;
+// VC5 coalesces their homes with the dead incoming param slot, so the invalid
+// path reads [esp+14h] == param_1 (same stack-alias behavior documented for
+// verified sibling 00480610 GetHiLoInfo). Explicit else-path initialization
+// (average=param_1 etc.) or top-level inits switch VC5 into a different
+// register basin (140-152B, 100+ diff) and lose exactness, so this quirk is
+// binary-required.
 
 #include <stdio.h>
 
@@ -130,18 +158,22 @@ public:
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
 {
     int remaining;
-    unsigned long sum;
-    unsigned long hi;
-    unsigned long lo;
-    sum = 0;
-    hi = 0;
-    lo = 0xF423F;
-
-    remaining = param_1;
+    unsigned long sum = 0;
+    unsigned long hi = 0;
+    unsigned long lo = 0xF423F;
+    int orig = param_1;
+    // Invalid-path outputs: assigned only in the valid branch; on the invalid
+    // path VC5 coalesces these homes with the dead incoming param slot, so the
+    // invalid path reads [esp+14h] == param_1 for avg/lo/hi (binary-observed
+    // stack-alias quirk shared with GetHiLoInfo 00480610).
+    unsigned long average;
+    unsigned long out_hi;
+    unsigned long out_lo;
 
     if (param_1 >= 1 && param_1 <= 100) {
         int idx = this->Offset;
-        if (remaining > 0) {
+        if (param_1 > 0) {
+            remaining = param_1;
             do {
                 idx--;
                 if (idx <= 0)
@@ -155,15 +187,14 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int param_1)
                 remaining--;
             } while (remaining != 0);
         }
-        remaining = sum / (unsigned long)param_1;
-    } else {
-        lo = remaining;
-        hi = remaining;
+        average = sum / (unsigned long)orig;
+        out_lo = lo;
+        out_hi = hi;
     }
 
     sprintf(this->TBuff,
         "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)",
-        this->lowTSLC, lo, (unsigned long)remaining, param_1, hi, this->highTSLC);
+        this->lowTSLC, out_lo, average, orig, out_hi, this->highTSLC);
 
     return this->TBuff;
 }

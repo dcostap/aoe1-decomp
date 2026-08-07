@@ -3237,3 +3237,58 @@ Also pair this with declaring the loop counter (`int row = y0;`) INSIDE the guar
 Caveat:
 - the tile type must be exactly the record being walked (24-byte stride here) and the subfield offset binary-proven (draw_attribute +0x0A); use the raw `(unsigned char*)tile + 0x0A` or `&tile->field` spelling that matches the observed `add eax,0Ah`.
 - Verified on 00455CB0 `RGE_Map::request_redraw` (map.cpp): 162-byte positional diff -> 0 after this split.
+
+## Lesson: Mixed return placement across switch case groups controls VC5's tail-merge pairing
+
+When several switch cases each end with a call plus a conditional tail (e.g. `scroll(...)` followed by `if (parent && tab) { forward(); } return 1;`), VC5's cross-jump pass merges identical case tails. The grouping of that merge is controlled by whether the `return` statement sits INSIDE the if-body or AFTER it — and the pairing can differ per case group even when every case is textually near-identical:
+
+- Uniform `return 1;` AFTER each if → all case tails become one identical `call; jmp shared_check` suffix → VC5 merges every case into ONE call site + ONE check block.
+- Uniform `return 1;` INSIDE each if-body → the last case in layout falls through to the shared forward block while all earlier cases end with `jmp` → VC5 merges N-1 cases into one call and keeps the last case separate (a 3+1 split for four cases).
+- MIXED: pair A cases with `return 1;` inside the if, pair B cases with `return 1;` after the if → the two pairs' tails end differently (`jmp forward` vs fall-through into forward) and VC5 keeps them as TWO separate call+check groups (a 2+2 split).
+
+Try when:
+- a switch over scroll/arrow/page keys has several identical `call; guarded forward; return 1` case bodies and the rebuilt merges all of them into one call site while the original binary shows two shared call sites (or any specific 2+2/3+1 grouping);
+- the original asm has two near-identical check blocks whose only difference is the trailing `jmp` vs fall-through into the shared forward block, and duplicated check code in source alone does not reproduce the grouping;
+- the diff is a small localized block (e.g. 31 bytes in a 191-byte function) confined to the case-group region, with the jump table placement following along once the grouping matches.
+
+Why it helps:
+- VC5 groups case tails by byte/symbolic content INCLUDING the terminal branch kind (unconditional `jmp` vs fall-through); the return placement changes where the shared `return 1` block lives, which changes that terminal branch, which changes the merge grouping;
+- reproducing the exact grouping also snaps the jump-table alignment/placement to the original position.
+
+Caveat:
+- this is a codegen-observed source shape; keep the source natural (each case still reads `if (parent != 0 && tab != 0) { forward } return 1;`), just accept that the binary-proven grouping may require the return inside the if for one pair and after it for the other;
+- PDB line records for the shared forward/return blocks are attributed to the last case that owns them, so the line map alone cannot disambiguate the mixed form from a uniform one — trust the byte grouping.
+- Verified on 0047D120 `TTextPanel::key_down_action` (Pnl_txt.cpp): uniform forms gave diff 139 (full merge) and 31 (3+1); the mixed form (0x28/0x26 return-inside, 0x22/0x21 return-after) gave the binary's 2+2 grouping and diff 0.
+
+## Lesson: Declare-only output locals assigned in one branch can coalesce onto the dead parameter home and force pre-div arg copies
+
+When a function's valid branch computes distinct output values (min/max/average) but the invalid branch must push the INCOMING PARAMETER for all of them (original asm: `mov eax,[esp+param]; mov edi,[esp+param]; mov ecx,[esp+param]`), do not initialize the output locals or write an explicit invalid-path `= param_1` block. Declare the outputs at function top WITHOUT initializers and assign them only inside the valid branch:
+
+```cpp
+unsigned long average;
+unsigned long out_hi;
+unsigned long out_lo;
+if (param_1 >= 1 && param_1 <= 100) {
+    ...
+    average = sum / (unsigned long)orig;
+    out_lo = lo;
+    out_hi = hi;
+}
+sprintf(TBuff, fmt, lowTSLC, out_lo, average, orig, out_hi, highTSLC);
+```
+
+VC5 coalesces the uninitialized output homes with the DEAD incoming parameter slot, so the invalid path reads `[esp+param]` (which still holds the incoming parameter) with no init stores, exactly like the oracle. The separate `out_hi = hi` copy after the loop also materializes hi into the sprintf arg register (ecx) and can be scheduled into the division setup gap, reproducing `xor edx,edx; mov ecx,ebx; div ebp` and the exact tail register order (highTSLC->edx, lowTSLC reloaded into eax after the avg push).
+
+Try when:
+- the original else/invalid path loads the incoming parameter home three times into three different registers;
+- a near match has the right loop/register basin but pushes hi from ebx directly instead of a pre-div `mov ecx,ebx`, and hoists both member loads into ecx/edx instead of the interleaved edx/eax schedule;
+- explicit `= param_1` initializers or an explicit invalid-path block shift the whole prologue (extra `push ecx`, countdown in a register, hi on the stack).
+
+Why it helps:
+- the uninitialized-declaration shape lets VC5 alias the outputs onto the dead param slot, which no natural initialization spelling reproduces (all explicit forms switch to a different register basin);
+- the copy order in the valid branch determines the invalid-path read register order — assign the sprintf's earlier arg first (`out_lo = lo; out_hi = hi` when lo is pushed before hi), otherwise the second/third home reads swap edi/ecx and leave a 2-byte diff.
+
+Caveats:
+- the invalid path formally reads uninitialized locals (UB in C++); this is the binary-observed stack-alias behavior — keep a comment documenting it (same quirk as verified sibling 00480610 GetHiLoInfo);
+- the out locals' declaration order and the countdown local placement still matter — keep the countdown assigned inside the guard so it stays homed at the param slot.
+- Verified on 00480570 GetHiLoMaxInfo (146B, exact after 20+ prior attempts across many workers): the remaining 2-byte diff was fixed solely by ordering `out_lo = lo;` before `out_hi = hi;`.
