@@ -45,6 +45,17 @@
 // 8: register-qualified y1 with early row was also a duplicate.
 // 9: focused 8-variant lab over y1/self/row surfaces produced only two groups (160/167 positional),
 //    no exact. Clean typed source restored; remaining issue is broad VC5 register coloring and loop layout.
+// orch-w7 pass (2026-08-07): EXACT MATCH. Two structural fixes unlocked it:
+// 1. TILE-SPLIT: compute the RGE_Tile* base at the loop head (`RGE_Tile* tile = &map_row_offset[row][x0];`)
+//    and apply the subfield offset inside the inner if (`(unsigned char*)tile + 0x0A`). This keeps the row
+//    computation at the loop head BEFORE the inner-if test and emits the +0x0A as a separate `add eax,0Ah`
+//    inside the if (matching PDB line 430/431 attribution), instead of VC5 sinking the whole pointer and
+//    folding +0x0A into a lea. All earlier variants computed p = &...draw_attribute directly (folded lea,
+//    test-before-computation loop topology).
+// 2. Loop-entry row copy: declare `int row = y0;` INSIDE the guard after the clamps (not at function top,
+//    not before the guard). This lands the `mov ebp,eax` at the loop entry and gives the original register
+//    basin: this->ebx, x0->esi, x1->edi, y0->eax, y1->ecx+slot, row->ebp, with `cmp eax,ecx; mov ebp,eax`
+//    entry test and `xor eax,eax` y0 clamp. Guard-on-y0 + clamps-on-y0 (original semantics).
 
 class RGE_Tile {
 public:
@@ -92,18 +103,20 @@ void RGE_Map::request_redraw(int x0, int y0, int x1, int y1, unsigned char val)
         if (x1 >= self->map_width) x1 = self->map_width - 1;
         if (y1 >= self->map_height) y1 = self->map_height - 1;
 
-        while (y0 <= y1) {
+        int row = y0;
+        while (row <= y1) {
+            RGE_Tile* tile = &self->map_row_offset[row][x0];
             if (x0 <= x1) {
-                unsigned char* p = &self->map_row_offset[y0][x0].draw_attribute;
+                unsigned char* p = (unsigned char*)tile + 0x0A;
                 int count = x1 - x0 + 1;
                 do {
-                    p[-3] = 0xCC;
+                    p[-3] = 0xcc;
                     *p = val;
                     p += 0x18;
                     --count;
                 } while (count != 0);
             }
-            ++y0;
+            ++row;
         }
     }
 }
