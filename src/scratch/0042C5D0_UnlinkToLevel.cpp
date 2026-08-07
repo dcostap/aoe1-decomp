@@ -20,6 +20,41 @@
 // L, while the rebuild uses ECX/status then pushes before setting this and chooses a
 // different L load register. Not accepted_drift: this is compiler scheduling drift.
 //
+// Attempt log (orch-w9, 2026-08-07):
+// Re-examined the 46B gap with fresh labs (~50 variants) after the Luna pause.
+// target success Log: mov edx,[esi+12D4h]; mov ecx,esi; push edx; call Get;
+//   push eax; mov eax,[62C4FCh]; push fmt; push eax; call Log  (t1->edx, t2->eax,
+//   t2 load AFTER arg2 push; A1 short form).
+// rebuilt success Log: mov ecx,[esi+12D4h]; push ecx; mov ecx,esi; call Get;
+//   mov edx,[62C4FCh]; push eax; push fmt; push edx; call Log  (t1->ecx, t2->edx,
+//   t2 load BEFORE arg2 push; 8B15 long form -> success block +1 byte -> je disp 33/34).
+// failure Log: target L->ecx (8B0D), rebuilt L->eax (A1) -- -1 byte offsets the success +1.
+//
+// Axes collapsed to the same 179B/46B basin (or worse):
+//  - call-site spelling: member/static/free Log, inline/unqualified/raw/volatile/add_zero
+//    success args, direct/local/cast failure Log (prior lab + lab2/lab4)
+//  - reported arg: inline member, clean COMMSTATUS reported local, new_status local
+//    (new_status -> 176B push-eax basin, proves the original read the MEMBER, not the local)
+//  - class layout: truncated vs full real 0x1774 donor layout (from 0042BAE0) -- no change
+//  - Log/L/sprintf declarations: extern TDebuggingLog* L, G_LOG_PTR int, member __cdecl,
+//    static member, extern "C"/C++ sprintf, void/int sprintf return -- no change
+//  - TU headers: stdio.h/string.h/stdlib.h -- no change
+//  - flags: /O1 /Ox /Og- /Ot- /Oa /GX (vc5-risky preset), /G5 /G6 -- all worse
+//    (prologue/first-Log order breaks; default /O2 /Oy is correct)
+//  - two-local success form (reported + current at declaration) -- 78B, +1 size (worse)
+//
+// Conclusion: the two Log call setups land in a genuine VC5 register-allocator/scheduler
+// basin (t1 in ecx + t2 in edx + failure-L in eax) that no clean period-plausible source
+// spelling, declaration surface, layout, or flag steers to the target's (t1 in edx +
+// t2 in eax + failure-L in ecx). Same instruction multiset, same pushes, same call set;
+// only register choice and one push order differ. The target pattern matches exact donors
+// (RequestResumeGame 0042C9E2 t1->edx; TXAcknowledgeMessage 0042A5FB L->eax-after-push;
+// UnlinkCurrentLevel 0042BAFB 2-arg L->ecx), so it is the common VC5 idiom -- the rebuilt
+// basin is the odd one. Left in scratch: compiler scheduling drift, not accepted_drift.
+// Next lead: the only unexplored axis is reproducing the ORIGINAL Com_hand.cpp TU header
+// pile (project headers beyond stdio/string/stdlib) or a full-TU compile; class surface
+// and standard headers already tested negative.
+//
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
 // Globals: *(void**)0x62C4FC for debugging log L
 // Functions: TDebuggingLog::Log(char*, ...), sprintf
