@@ -1,3 +1,15 @@
+// ACCEPTED_DRIFT 2026-08-07 (orchestrator-reviewed): approved localized
+// behavior-equivalent FPU-instruction encoding drift. Original emits
+// `fld [esp+0Ch]; mov [esp+0Ch],eax; fmul st1; fidiv [esp+0Ch]` (amount loaded
+// into ST0, divisor homed to the freed amount-parameter slot); rebuilt emits
+// `mov [esp+4],eax; fld st0; fmul [esp+0Ch]; fidiv [esp+4]` (maxf dup + memory
+// amount; divisor homed to the push-ecx slot). Both compute amount*maxf/heal_rate
+// with identical x87 values and end with the same division result at [esp+0Ch]
+// before the fadd; calls 3/3, CFG, size, frame, and returns exact. No dereference
+// can fault in this hunk, so no fault-context divergence arises. Same residual
+// family as accepted sibling 004C86C0 (fld st0; fmul [amount]; mov [amount],rate
+// unreachable). 9 strict differing bytes in 3 spans, first mismatch +0x47.
+//
 // 004CC4C0 TRIBE_Combat_Object::heal
 // t_c_obj.cpp lines 1637-1657, 173 bytes
 // Retry 2026-05-21 Boss pass: replaced stub with natural member source and tried
@@ -52,6 +64,29 @@
 // Restored the clean natural source. Final blocker remains the broad x87 stack
 // topology and parameter-home choice from +0x48 through clamp/payment setup;
 // calls, cleanup, and return structure remain aligned. GIVEUP for this pass.
+// Retry 2026-08-07 orch-w6 pass (10+ probes): BREAKTHROUGH — the assignment-in-condition
+// form drops the diff from 103 to 9 bytes (5.2023%), exact 173B size, first mismatch
+// +0x47, 93.55% shape, 3/3 calls aligned, CFG/cleanup/returns exact:
+//     if ((amount = amount * maxf / heal_rate) + this->hit_points > maxf) {
+//         amount = maxf - this->hit_points;
+//     }
+// The division result is then kept in ST0 (fst; fadd [esi+30h]) exactly like the
+// original. Only the product/divisor hunk remains: original emits
+// fld [esp+0Ch]; mov [esp+0Ch],eax; fmul st1; fidiv [esp+0Ch] (amount loaded into
+// ST0, divisor homed to the freed parameter slot) while rebuilt emits
+// mov [esp+4],eax; fld st0; fmul dword [esp+0Ch]; fidiv dword [esp+4] (maxf dup +
+// memory amount; divisor homed to the push-ecx slot). The 9-byte residual is robust
+// to: product operand order, int/long locals, declaration order, explicit (float)
+// casts, float amt local, volatile amount reads, statement splits (product/division
+// split regresses to fild+fdivp family or store/reload), commuted division
+// (amount / heal_rate * maxf), parenthesized (amount * maxf) / heal_rate (100B), no
+// named maxf (115B), virtual/inheritance surface (139B), and flat raw-cast surface
+// (duplicate). Matched sibling 004C86C0 (accepted_drift) has the identical residual
+// family (`fld amount; mov [amount],rate; fmul st1` unreachable; its drift is
+// `fld st0; fmul [amount]; mov [amount],rate`). Both originals want the amount-load
+// product; neither VC5 rebuild can emit it. Left as validated scratch: 9-byte
+// localized behavior-equivalent FPU-instruction drift; promotion to accepted_drift
+// or further flag/context work is the orchestrator's call.
 
 struct TRIBE_Player;
 
@@ -95,8 +130,7 @@ unsigned char TRIBE_Combat_Object::heal(float amount)
     long max_hp = master->max_hit_points;
     long heal_rate = master->heal_rate;
     float maxf = (float)max_hp;
-    amount = amount * maxf / heal_rate;
-    if (amount + this->hit_points > maxf) {
+    if ((amount = amount * maxf / heal_rate) + this->hit_points > maxf) {
         amount = maxf - this->hit_points;
     }
 
