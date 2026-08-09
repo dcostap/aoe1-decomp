@@ -14,6 +14,11 @@
 //   (`dx + x`, `dy + y`) and canonical PrimaryPt/PtToPt array ownership probes
 //   were also duplicates.  Restored the simplest typed/raw surface that keeps
 //   the signed-remainder basin; no allocator-only scaffolding retained.
+// - Inline parity calls (rather than a reusable `r` local) moved dx/dy into the
+//   original EDI/EBX roles and reduced the positional diff from 193 to 187;
+//   coordinate/store-order variants were duplicates.  Kept the inline calls as
+//   the cleanest period-plausible source; remaining drift is the early
+//   coordinate block's VC5 scheduling/liveness.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -58,13 +63,13 @@ public:
 int PointMaker::MakeFirstLink() {
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
     dx = dx % BranchDistance + 2;
-    int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
-    if (r % 2) dx = -dx;
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134) % 2)
+        dx = -dx;
 
     int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
     dy = dy % BranchDistance + 2;
-    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
-    if (r % 2) dy = -dy;
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135) % 2)
+        dy = -dy;
 
     DirX = dx;
     int nx = x + dx;

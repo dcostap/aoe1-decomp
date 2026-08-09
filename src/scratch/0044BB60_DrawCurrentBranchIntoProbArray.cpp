@@ -13,6 +13,10 @@
 //   point/radius locals and saturation tail; parameter capture and raw/typed
 //   array/register probes did not move it.  Retained readable typed source,
 //   not fake volatility, raw offsets, or register-only scaffolding.
+// - Register-qualified parameter, entry index/Point-element pointer captures,
+//   and direct ProbabilityAdd tail casts were either duplicates or regressed;
+//   restored the clean typed baseline.  Current blocker remains the broad
+//   pre-save index/register basin (target loads [esp+0C] before callee saves).
 
 class PrimaryPt {
 public:
@@ -79,46 +83,46 @@ public:
     char pad_end[3];                     // +0x1055
 
     void AddingRect(int param1, int param2, int param3, int param4);
-    void DrawCurrentBranchIntoProbArray(int param_1);
+    void DrawCurrentBranchIntoProbArray(int point_index);
 };
 
-void PointMaker::DrawCurrentBranchIntoProbArray(int param_1) {
-    int iVar2;
-    int iVar3;
-    int iVar6;
-    int iVar7;
-    int iVar8;
-    int i;
-    int local_4;
+void PointMaker::DrawCurrentBranchIntoProbArray(int point_index) {
+    int radius;
+    int point_y;
+    int min_y;
+    int max_x;
+    int min_x;
+    int max_y;
+    int ring;
 
-    iVar8 = Point[param_1].x;
-    iVar2 = BranchRadius;
-    iVar3 = Point[param_1].y;
-    iVar7 = iVar2 + iVar8;
-    iVar8 = iVar8 - iVar2;
-    iVar6 = iVar3 - iVar2;
-    i = iVar3 + iVar2;
+    min_x = Point[point_index].x;
+    radius = BranchRadius;
+    point_y = Point[point_index].y;
+    max_x = radius + min_x;
+    min_x = min_x - radius;
+    min_y = point_y - radius;
+    max_y = point_y + radius;
 
-    if (iVar7 >= 0 && i >= 0 && iVar8 < Width && iVar6 < Height) {
-        if (iVar8 < 0) iVar8 = 0;
-        if (iVar6 < 0) iVar6 = 0;
-        if (iVar7 >= Width) iVar7 = Width - 1;
-        if (i >= Height) i = Height - 1;
+    if (max_x >= 0 && max_y >= 0 && min_x < Width && min_y < Height) {
+        if (min_x < 0) min_x = 0;
+        if (min_y < 0) min_y = 0;
+        if (max_x >= Width) max_x = Width - 1;
+        if (max_y >= Height) max_y = Height - 1;
 
         ProbabilityAdd = 1;
-        local_4 = 0;
+        ring = 0;
         if (BranchRadius > 0) {
-            for (; local_4 < BranchRadius; ++local_4) {
-                AddingRect(iVar8, iVar6, iVar7, i);
-                ++iVar8;
-                if (iVar8 >= Width || ++iVar6 >= Height || --iVar7 < 0 || --i < 0) {
+            for (; ring < BranchRadius; ++ring) {
+                AddingRect(min_x, min_y, max_x, max_y);
+                ++min_x;
+                if (min_x >= Width || ++min_y >= Height || --max_x < 0 || --max_y < 0) {
                     break;
                 }
                 ++ProbabilityAdd;
             }
         }
 
-        int prob_idx = Width * Point[param_1].y + Point[param_1].x;
+        int prob_idx = Width * Point[point_index].y + Point[point_index].x;
         if (prob_idx > 0 && prob_idx < SizeArrays - 1) {
             char* p = ProbArray + prob_idx;
             char old = *p;

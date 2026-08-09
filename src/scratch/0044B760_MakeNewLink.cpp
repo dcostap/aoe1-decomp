@@ -1,6 +1,17 @@
 // PointMaker::MakeNewLink
 // VA: 0044B760 - from Ghidra decomp
 
+// Attempt log:
+// - Reconstructed the natural signed-remainder parity gates, old-coordinate
+//   accumulation, and the binary-observed dy = -dx lower-bound bug.
+// - Added the proven max_x stack local and removed the upper vertical DirY
+//   store present in the initial scaffold; this recovered exact size and
+//   reduced the positional diff from 255 to 71 bytes.
+// - Operand-order, max_y declaration, reusable/inline parity, and post-clamp
+//   variants did not improve the 71-byte result.  The remaining drift is the
+//   localized EBX/EDI direction coloring and max_x/max_y clamp compare shape;
+//   retained the readable source rather than register-forcing scaffolding.
+
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
 class PointMaker {
@@ -35,60 +46,62 @@ public:
 };
 
 int PointMaker::MakeNewLink() {
-    int dx = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14a);
+    int max_x;
+    int r;
+    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14a);
     dx = dx % BranchDistance + 1;
-    int r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14a);
-    int abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) dx = -dx;
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14a) % 2)
+        dx = -dx;
 
-    int dy = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14b);
+    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14b);
     dy = dy % BranchDistance + 1;
-    r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14b);
-    abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) dy = -dy;
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14b) % 2)
+        dy = -dy;
 
-    int ndx = dx + DirX;
-    int ndy = dy + DirY;
+    int old_x = x;
+    dx += DirX;
+    dy += DirY;
 
-    if (ndx + x < 5) {
+    if (dx + old_x < 5) {
         dx = -dx;
         DirX = -DirX;
     }
 
-    if (Width - 5 <= ndx + x) {
+    max_x = Width - 5;
+    int sum_x = dx + old_x;
+    if (sum_x >= max_x) {
         dx = -dx;
         DirX = -DirX;
     }
 
-    if (ndy + y < 5) {
+    int old_y = y;
+    if (dy + old_y < 5) {
         dy = -dx;
         DirY = -DirY;
     }
 
-    if (Height - 5 <= ndy + y) {
+    int max_y = Height - 5;
+    if (dy + old_y >= max_y) {
         dy = -dy;
-        DirY = -DirY;
     }
 
-    dx = ndx + x;
-    dy = ndy + y;
+    dx += old_x;
+    dy += old_y;
 
     if (dx < 5) dx = 5;
     if (Width - 5 <= dx) dx = Width - 5;
     if (dy < 5) dy = 5;
     if (Height - 5 <= dy) dy = Height - 5;
 
-    r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15a);
-    abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) {
-        r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15a);
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15a);
+    if (r % 2) {
+        r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15a);
         DirX = DirX + r % 3 - 1;
     }
 
-    r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15b);
-    abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) {
-        r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15b);
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15b);
+    if (r % 2) {
+        r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15b);
         DirY = DirY + r % 3 - 1;
     }
 

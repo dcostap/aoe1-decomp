@@ -14,6 +14,9 @@
 //   alter VC5's final loop load schedule.  Retain ordinary typed assignments;
 //   the remaining six bytes are the localized Prime.x/Prime.y load-order
 //   choice, with all calls, size, frame, CFG, and other blocks aligned.
+// - Reversed the natural source assignment order to `x = Prime.x; y = Prime.y;`;
+//   VC5 then lowered the independent loads/stores in the original y-then-x
+//   order and reached an exact 334-byte match.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -109,18 +112,18 @@ int PointMaker::CreateShape() {
     DrawPrimaryIntoProbabilityArray();
     ErrorCheckingAndCorrection();
 
-    int iVar1 = MinimumNumTiles;
-    int iVar3 = ProbabilityTiles;
+    int minimum_tiles = MinimumNumTiles;
+    int probability_tiles = ProbabilityTiles;
     NumTilesActuallyChosen = 0;
-    int iVar2 = 0;
-    while (iVar3 < iVar1 && iVar2++ < 1500) {
-        y = Prime.y;
+    int attempts = 0;
+    while (probability_tiles < minimum_tiles && attempts++ < 1500) {
         x = Prime.x;
+        y = Prime.y;
         CurrentNumberOfBranchLevels = MaxNumberOfBranchLevels;
         NumNodes = 0;
-        iVar3 = MakeFirstLink();
-        Branch(iVar3);
-        iVar3 = ProbabilityTiles;
+        probability_tiles = MakeFirstLink();
+        Branch(probability_tiles);
+        probability_tiles = ProbabilityTiles;
     }
 
     CreateMapBasedOnProbabilityArray();

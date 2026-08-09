@@ -14,6 +14,10 @@
 //   Candidate temporary/compound scheduling, declaration order, and canonical
 //   PrimaryPt/PtToPt point-array layout probes were duplicates or regressed;
 //   retained the clean typed source rather than allocator-only scaffolding.
+// - Inline parity calls, several candidate_x declaration/update orders, and a
+//   focused four-variant schedule lab all emitted the same 336-byte result.
+//   The remaining first hunk is the target's mov/add candidate-x schedule
+//   versus VC5's equivalent LEA; restored the clean direct bound expressions.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
