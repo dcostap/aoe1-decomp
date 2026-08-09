@@ -16,6 +16,12 @@
 // - A 12-variant permutation lab over the three coordinate and two range stores
 //   found no exact codegen; the current x/z/y plus range/min order is the best
 //   plausible family (33 bytes, 91.55% shape).
+// - A current-context assignment lab found one diagnostic x/range/z/min/y
+//   spelling at 32 positional bytes, but it moved the range register/store
+//   topology farther from the binary and is not the PDB/decompiler-supported
+//   canonical order; it was not promoted into the living source.
+// - A six-way shared-local surface lab was codegen-neutral for the current
+//   typed guards; sharing the action-object local instead forced an EBP frame.
 // - Restored the proven 0x5C attack tail and typed the action-object/master-combat
 //   inheritance and offsets.  Correcting the inherited gaps preserved the same
 //   33-byte output; retain this canonical ownership rather than the old fake
