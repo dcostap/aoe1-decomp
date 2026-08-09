@@ -22,8 +22,10 @@
 //   readable source and leave the rewind loop/backedge as the next lead.
 // Main-agent audit restored canonical polymorphic timeline/world/player/master
 // and object ownership while retaining the natural forward/rewind scans.
+// Session sa1-0050db10: binary vslot-0 + delete-flag calls require natural
+// polymorphic delete; retained that behavior and restored the readable scan.
 
-struct RGE_Static_Object { virtual ~RGE_Static_Object(); virtual void destroy(int); };
+struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };
 struct RGE_Player { virtual ~RGE_Player(); char gap_04[0x20]; RGE_Master_Static_Object** master_objects; };
 struct RGE_World { virtual ~RGE_World(); char gap_04[0x3C]; RGE_Player** players; };
@@ -81,7 +83,7 @@ void RGE_Timeline::mock_update(float t)
                                 if (obj == n->this_obj) n->this_obj = 0;
                                 if (obj == n->target_obj) n->target_obj = 0;
                             }
-                            if (obj != 0) obj->destroy(1);
+                            if (obj != 0) delete obj;
                         }
                         break;
                     case 4:
@@ -137,7 +139,7 @@ void RGE_Timeline::mock_update(float t)
                             if (obj == n->this_obj) n->this_obj = 0;
                             if (obj == n->target_obj) n->target_obj = 0;
                         }
-                    if (obj != 0) obj->destroy(1);
+                        if (obj != 0) delete obj;
                     }
                     break;
                 }

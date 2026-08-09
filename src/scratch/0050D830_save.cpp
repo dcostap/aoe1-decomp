@@ -14,6 +14,9 @@
 //   signed-extension choice versus the original low-word parameter-home reuse.
 // Main-agent audit removed the raw vtable field and byte-offset event cursor,
 // restoring canonical polymorphic timeline/player/object ownership.
+// Session sa1-0050d830: an inline short player-id accessor was a codegen
+// duplicate; restored direct typed id access. Remaining 4 bytes are the two
+// signed-short-to-int loads versus the original low-word parameter-home reuse.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
@@ -69,12 +72,10 @@ void RGE_Timeline::save(int file) {
     int target_player_id;
     RGE_Time_Entry* entry;
     short* count_ptr;
-    RGE_Timeline* self;
     int i;
     int save_file;
 
     save_file = file;
-    self = this;
     count_ptr = &this->list_num;
     rge_write(save_file, count_ptr, 2);
     rge_write(save_file, &this->avail_id, 2);
@@ -83,7 +84,7 @@ void RGE_Timeline::save(int file) {
     i = 0;
     if (*count_ptr > 0) {
         do {
-            entry = &self->time_list[i];
+            entry = &this->time_list[i];
             if (entry->source != 0) {
                 file = entry->source->owner->id;
             } else {
