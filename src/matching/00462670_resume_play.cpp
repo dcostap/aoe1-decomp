@@ -17,14 +17,30 @@
 // Fresh pass: negated conjunction, narrow volatile/raw guard reads, and named guard locals did not leave the zero-register basin.
 // Fresh pass: period mmsystem.h/MCI_PLAY_PARMS API context compiled but emitted the same 176-byte mismatch and is retained as the canonical SDK surface.
 // Fresh pass result: natural source retained; all 10 hypotheses exhausted. Persistent gap is VC5 zero-register/compare basin in the line-782 guard and zero stores/pushes; call set, size, CFG counts, and field ownership are otherwise aligned.
+// Current session hypothesis 1: restore the older natural result-local/default dispatch
+// shape; its emitted code previously preserved the original load/test and immediate-zero
+// stores, while the newer direct duplicate-call shape shared a zero register too early.
+// Current session hypothesis 2: restoring duplicated per-case notify tests recovered both
+// indirect calls but returned to the prior zero-register basin.
+// Current session hypothesis 3: scoped result locals in each MCI case preserved both calls
+// and the original liveness; exact match.
+// Main-agent audit confirmed canonical non-polymorphic music/WinMM ownership and
+// natural state dispatch; exact bytes were revalidated after promotion.
 
-#include <windows.h>
-#include <mmsystem.h>
+class tagMCI_PLAY_PARMS {
+public:
+    unsigned long dwCallback;
+    unsigned long dwFrom;
+    unsigned long dwTo;
+};
 
 class TSound_Driver {
 public:
     int resume_stream();
 };
+
+extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(
+    unsigned int, unsigned int, unsigned long, void*);
 
 class TMusic_System {
 public:
@@ -36,7 +52,7 @@ public:
     void* window;
     int device_open;
     unsigned int device_id;
-    MCI_PLAY_PARMS play_info;
+    tagMCI_PLAY_PARMS play_info;
     unsigned char playing_track;
     char file_name[261];
     unsigned char _pad_1[2];
@@ -76,16 +92,20 @@ int TMusic_System::resume_play()
     }
 
     switch (this->music_type) {
-    case 1:
-        if (mciSendCommandA(this->device_id, 0x806, 0, (DWORD)&this->play_info) == 0) {
+    case 1: {
+        int result = mciSendCommandA(this->device_id, 0x806, 0, &this->play_info);
+        if (result == 0) {
             this->notify_waiting++;
         }
         break;
-    case 2:
-        if (mciSendCommandA(this->device_id, 0x806, 0, (DWORD)&this->play_info) == 0) {
+    }
+    case 2: {
+        int result = mciSendCommandA(this->device_id, 0x806, 0, &this->play_info);
+        if (result == 0) {
             this->notify_waiting++;
         }
         break;
+    }
     case 3:
         if (this->sound_system != 0) {
             this->sound_system->resume_stream();
