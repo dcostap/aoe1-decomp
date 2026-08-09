@@ -13,8 +13,11 @@
 //   - no quick_build/rge_base_game block;
 //   - area_attack gated only on object_info[0x118] > 0.0f;
 //   - area_attack last arg is 0 (not target): vf21C(p3,p4,p5,attacker,0);
-//   - damage last arg is target (param_1), not attacker: pushes at 004302F2
-//     are [esp+14h]=param_1, [esi+0Ch], mod-temp, [eax+10Ch], [eax+108h].
+//   - damage last arg is attacker (param_2), not target: after vf0F0's
+//     cleanup, the push at 004302F2 reloads the attacker home at [esp+14h].
+// probe 7 (current): corrected vf070's fifth argument to attacker, as in the
+// exact TRIBE_Combat_Object::do_attack donor; this removed the post-vf0F0
+// push-edi drift and produced an exact 234-byte match.
 
 extern "C" int __cdecl debug_rand(const char* file, int line);
 
@@ -51,7 +54,7 @@ public:
     virtual void vf064(void);
     virtual void vf068(void);
     virtual void vf06C(void);
-    virtual void vf070(int weapon_type, int weapon_info, float mod, int source, RGE_Static_Object* target);
+    virtual void vf070(int weapon_type, int weapon_info, float mod, int source, RGE_Combat_Object* attacker);
 
     int id;
 };
@@ -222,7 +225,7 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
                       *(int*)((char*)this->object_info + 0x10c),
                       mod,
                       this->field_0C,
-                      target);
+                      attacker);
     }
     return 1;
 }

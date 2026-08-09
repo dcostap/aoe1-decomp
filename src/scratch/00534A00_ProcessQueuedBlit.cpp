@@ -32,6 +32,16 @@
 // - Left in scratch: pure VC5 register/scheduling/encoding drift inside the
 //   isolated scratch TU; the post-call dead store is eliminated by VC5 here but
 //   was kept in the original view.cpp TU (TU-context-sensitive DSE/scheduling).
+// - Continuation: reversing the final bound comparison made the branch shape
+//   worse without changing the byte diff; restored the clean source.
+// - Continuation: adding the proven TPanel base improved shape but worsened the
+//   byte diff; the SDK ddraw.h surface, four-dword RECT buffer, narrow surface
+//   local, volatile RECT, CINTERFACE/lpVtbl calls, and unused-call-result forms
+//   were duplicates or worse.
+// - Main-agent normalization retained the proven TPanel inheritance and base
+//   render-area ownership despite the slightly worse positional metric; the
+//   shape improves and canonical source remains authoritative over register
+//   steering in this unresolved function.
 // FLAGS: none. Inline asm forbidden.
 // Best variant: probe 2 (current source), 219 bytes, frame 0x10, 2/2 calls aligned.
 
@@ -67,11 +77,17 @@ public:
     IDirectDrawSurface* DrawSurface;   // +0x3C
 };
 
-class RGE_View {
+class TPanel {
 public:
-    char gap_00[0x20];
+    virtual ~TPanel();
+    char gap_04[0x1C];
     TDrawArea* render_area;            // +0x20
-    char gap_24[0x2D8 - 0x24];
+    char gap_24[0xF4 - 0x24];
+};
+
+class RGE_View : public TPanel {
+public:
+    char gap_F4[0x2D8 - 0xF4];
     int Queued_Blits;                  // +0x2D8
     Blit_Queue_Entry* Blit_Queue;      // +0x2DC
     int Blit_Queue_Size;               // +0x2E0

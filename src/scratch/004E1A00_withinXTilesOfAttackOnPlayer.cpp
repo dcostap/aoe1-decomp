@@ -21,6 +21,20 @@
 //   (PDB line map attributes both statements to line 6694); indexed
 //   `attackMemories[i]` access without the am local; hoisting this-based
 //   reloads to keep `this` live in the loop body.
+// - Follow-up probes: direct indexed access, split/compound square setup,
+//   separate loop-counter/max locals, hoisted pointer declaration, and
+//   one-line/long dy/dx declarations all emitted the same 211-byte basin.
+//   A scoped pointer walk changed topology and worsened to 204 bytes; restored.
+//   Modeling the proven InformationAIModule base changed only register/layout
+//   scheduling (71.7% shape), so the narrow field-offset surface is retained.
+// - Completed AttackMemory ownership/layout from ground truth: unsigned byte
+//   fields, +0x0B padding, timestamp at +0x10, play at +0x14, total 0x18.
+//   Final validated clean source remains natural indexed scan with shared
+//   continue/increment path. Calls and touched offsets are correct; remaining
+//   drift is the VC5 allocator basin (counter home, am/this coloring, and
+//   tilesSq/tx register swap), not a known behavior or layout mismatch.
+// - Main-agent normalization retained the proven InformationAIModule base and
+//   canonical inheritance boundary; emitted code is unchanged.
 
 class RGE_Static_Object {
 public:
@@ -33,22 +47,30 @@ public:
 
 struct AttackMemory {
     int id;                 // +0x00
-    char type;              // +0x04
-    char minX;              // +0x05
-    char minY;              // +0x06
-    char maxX;              // +0x07
-    char maxY;              // +0x08
-    char attackingOwner;    // +0x09
-    char targetOwner;       // +0x0A
+    unsigned char type;              // +0x04
+    unsigned char minX;              // +0x05
+    unsigned char minY;              // +0x06
+    unsigned char maxX;              // +0x07
+    unsigned char maxY;              // +0x08
+    unsigned char attackingOwner;    // +0x09
+    unsigned char targetOwner;       // +0x0A
+    unsigned char gap_0B;            // +0x0B
     short kills;            // +0x0C
-    char success;           // +0x0E
-    char gap_0F[5];
+    unsigned char success;  // +0x0E
+    unsigned char gap_0F;   // +0x0F
+    unsigned long timeStamp; // +0x10
     int play;               // +0x14
 };
 
-class TribeInformationAIModule {
+class InformationAIModule {
 public:
-    char gap_00[0x1FC];
+    virtual ~InformationAIModule();
+    char gap_04[0xEC];
+};
+
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    char gap_F0[0x1FC - 0xF0];
     int maxAttackMemories;               // +0x1FC
     AttackMemory* attackMemories;        // +0x200
 
