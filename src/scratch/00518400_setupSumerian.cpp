@@ -9,29 +9,50 @@
 // path (170 bytes) matches perfectly. All field offsets, store values, string
 // refs, and control flow verified correct.
 // FLAGS: /nologo /c /O2 /Oy
+// Shared-cluster ABI uses RGE_Base_Game inheritance for the proven difficulty
+// method and the common AIModule/TRIBE_Game/TRIBE_Player surface. Map-type and
+// reused-value locals, plus a positive difficulty guard, did not move codegen;
+// retain the natural direct-store reconstruction.
+// Final validation: 313 rebuilt bytes, 292 equal bytes, 122 strict diff bytes,
+// and 35-byte edit diff; the four-byte excess is the p-load-before-jge basin.
+// Direct outer else-if difficulty syntax (as in exact same-TU donors) also
+// stayed identical; retain this simpler source shape.
 
-extern "C" void logCommonHistory(void* aimodule, char* msg);
+// Main-agent audit confirmed the shared canonical game/player/AI ownership;
+// direct civilization table stores remain authoritative.
+class AIModule {
+public:
+    void logCommonHistory(char* message, ...);
+};
 
-struct RGE_Base_Game {
-    char _pad_00[4];
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
     int difficulty();
 };
 
-struct TRIBE_Game : RGE_Base_Game {
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    virtual ~TRIBE_Game();
     unsigned char deathMatch();
 };
 
-extern "C" { extern TRIBE_Game* rge_base_game; }
+extern TRIBE_Game* rge_base_game;
 
-struct TRIBE_Player5 {
-    char _pad_00[0x238];
-    void* playerAI;
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x234];
+    AIModule* playerAI;
+};
 
+class TRIBE_Player : public RGE_Player {
+public:
     void setupSumerian(int* p, int type, int unused1, int unused2);
 };
 
-void TRIBE_Player5::setupSumerian(int* p, int type, int unused1, int unused2) {
-    logCommonHistory(playerAI, "Setting up as Sumerians.");
+void TRIBE_Player::setupSumerian(int* p, int type, int unused1, int unused2) {
+    this->playerAI->logCommonHistory("Setting up as Sumerians.");
 
     if (rge_base_game->deathMatch() == 1) {
         if (type == 0 || type == 1) {
@@ -45,12 +66,9 @@ void TRIBE_Player5::setupSumerian(int* p, int type, int unused1, int unused2) {
         } else {
             p[0x20] = 100;
         }
+    } else if (rge_base_game->difficulty() < 1) {
+        p[0x26] = 100;
     } else {
-        if (rge_base_game->difficulty() < 1) {
-            p[0x26] = 100;
-            return;
-        }
-
         p[3] = 10;
         p[9] = 10;
         p[10] = 10;

@@ -14,17 +14,29 @@
 // - Main-agent audit replaced the decompiler-style numbered structs and free
 //   logger shim with canonical TRIBE_Game/TRIBE_Player/AIModule ownership;
 //   emitted code remains unchanged.
+// - Rechecked the shared RGE_Base_Game inheritance for the proven difficulty
+//   ABI; codegen stayed unchanged, so the remaining p-load/jge schedule is a
+//   VC5 basin rather than a game-type declaration issue.
+// - The direct outer else-if difficulty form used by exact setup donors also
+//   emitted the same bytes; retain it as the cleaner period-plausible shape.
 // FLAGS: /nologo /c /O2 /Oy
 
+// Main-agent audit confirmed the shared canonical game/player/AI ownership;
+// direct civilization table stores remain authoritative.
 class AIModule {
 public:
     void logCommonHistory(char* message, ...);
 };
 
-class TRIBE_Game {
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    int difficulty();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
 public:
     virtual ~TRIBE_Game();
-    int difficulty();
     unsigned char deathMatch();
 };
 
@@ -57,12 +69,9 @@ void TRIBE_Player::setupMinoan(int* p, int type, int unused1, int unused2) {
         } else {
             p[0x1C] = 100;
         }
+    } else if (rge_base_game->difficulty() < 1) {
+        p[0x25] = 100;
     } else {
-        if (rge_base_game->difficulty() < 1) {
-            p[0x25] = 100;
-            return;
-        }
-
         p[4] = 10;
         p[6] = 10;
         p[9] = 10;

@@ -26,17 +26,31 @@
 // Current source is the clean typed reconstruction: the deathmatch path and
 // non-deathmatch behavior/CFG/calls match, but only the non-deathmatch store
 // register coloring and immediate-vs-register encoding remain different.
+// A shared-cluster TRIBE_Game surface (difficulty plus nonconst deathMatch) and
+// distinct constant expressions for the three proven 20 stores were tested;
+// both emitted the same 285-byte VC5 basin. Keep the ordinary literal source.
+// The final declaration surface also uses the proven RGE_Base_Game base shared
+// by the difficulty-using siblings; Shang's emitted bytes remain unchanged.
 
 typedef unsigned char uchar;
 
+// Main-agent audit confirmed the shared canonical game/player/AI ownership;
+// direct civilization table stores remain authoritative.
 class AIModule {
 public:
     void logCommonHistory(char* fmt, ...);
 };
 
-struct TRIBE_Game {
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    int difficulty();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
     virtual ~TRIBE_Game();
-    uchar deathMatch() const;
+    uchar deathMatch();
 };
 
 class RGE_Player {

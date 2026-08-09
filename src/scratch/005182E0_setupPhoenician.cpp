@@ -33,14 +33,30 @@
 // This was a key insight to get the first 157 bytes matching.
 // Main-agent audit restored canonical game/player destructor ownership; the
 // validated 25-byte constant-coloring gap is unchanged.
+// The unified AIModule/TRIBE_Game/RGE_Player surface used by this tplayer.cpp
+// setup cluster was also tested; it leaves the emitted code unchanged.
+// The final shared surface includes the proven RGE_Base_Game base for ABI
+// consistency with the difficulty-using siblings; this target is unchanged.
 
 #include <stddef.h>
 
 typedef unsigned char uchar;
 
-extern "C" void __cdecl logCommonHistory(void* target, char* msg);
+// Main-agent audit confirmed the shared canonical game/player/AI ownership;
+// direct civilization table stores remain authoritative.
+class AIModule {
+public:
+    void logCommonHistory(char* message, ...);
+};
 
-struct TRIBE_Game {
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    int difficulty();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
     virtual ~TRIBE_Game();
     uchar deathMatch();
 };
@@ -49,7 +65,7 @@ class RGE_Player {
 public:
     virtual ~RGE_Player();
     char pad_04[0x234];
-    void* playerAI;  // +0x238
+    AIModule* playerAI;  // +0x238
 };
 
 class TRIBE_Player : public RGE_Player {
@@ -57,11 +73,11 @@ public:
     void setupPhoenician(int* param_1, int param_2, int param_3, int param_4);
 };
 
-extern "C" { extern TRIBE_Game* rge_base_game; }  // 0x0062C574
+extern TRIBE_Game* rge_base_game;
 
 void TRIBE_Player::setupPhoenician(int* param_1, int param_2, int param_3, int param_4)
 {
-    logCommonHistory(this->playerAI, "Setting up as Phoenicians.");
+    this->playerAI->logCommonHistory("Setting up as Phoenicians.");
 
     if (rge_base_game->deathMatch() == 1) {
         if (param_2 == 0 || param_2 == 1) {

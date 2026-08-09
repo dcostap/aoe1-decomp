@@ -11,16 +11,28 @@
 // - Size: 320 bytes (3 short of 323)
 // - Edit diff: ~18% (57/320 bytes, shifted alignment)
 // - Left in scratch: register allocation / scheduling mismatch locked after many probes
+// - Rebuilt with the shared AIModule/RGE_Base_Game/TRIBE_Game/TRIBE_Player
+//   surface, and tested a reused 50->100 value plus an early map_type local;
+//   both stayed in the same 320-byte basin. Keep the direct stores.
+// - Direct outer else-if difficulty syntax, matching exact setup donors, also
+//   stayed identical; retain the simpler period-plausible branch shape.
 
-extern "C" void __cdecl logCommonHistory(int playerAI, const char* str);
+// Main-agent audit confirmed the shared canonical game/player/AI ownership;
+// direct civilization table stores remain authoritative.
+class AIModule {
+public:
+    void logCommonHistory(char* message, ...);
+};
 
 class RGE_Base_Game {
 public:
+    virtual ~RGE_Base_Game();
     int difficulty();
 };
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
+    virtual ~TRIBE_Game();
     unsigned char deathMatch();
 };
 
@@ -28,21 +40,19 @@ extern TRIBE_Game* rge_base_game;
 
 class RGE_Player {
 public:
-    char gap_000[0x220];
+    virtual ~RGE_Player();
+    char gap_04[0x234];
+    AIModule* playerAI;
 };
 
 class TRIBE_Player : public RGE_Player {
 public:
-    char gap_220[0x18];
-    int playerAI;
-    char gap_23C[0x60C];
-
     void setupYamato(int* param_1, int param_2, int param_3, int param_4);
 };
 
 void TRIBE_Player::setupYamato(int* param_1, int param_2, int param_3, int param_4)
 {
-    logCommonHistory(this->playerAI, "Setting up as Yamato.");
+    this->playerAI->logCommonHistory("Setting up as Yamato.");
 
     if (rge_base_game->deathMatch() == 1) {
         if (param_2 == 0 || param_2 == 1) {
@@ -61,30 +71,27 @@ void TRIBE_Player::setupYamato(int* param_1, int param_2, int param_3, int param
         }
         param_1[0x21] = 100;
         return;
-    }
-
-    if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < 1) {
         param_1[0x27] = 100;
-        return;
-    }
+    } else {
+        param_1[3] = 10;
+        param_1[4] = 10;
+        param_1[9] = 10;
+        param_1[10] = 10;
+        param_1[6] = 50;
+        param_1[7] = 50;
+        param_1[0] = 20;
+        param_1[1] = 20;
+        param_1[0x10] = 40;
+        param_1[0x0B] = 20;
+        param_1[0x3B] = 100;
 
-    param_1[3] = 10;
-    param_1[4] = 10;
-    param_1[9] = 10;
-    param_1[10] = 10;
-    param_1[6] = 50;
-    param_1[7] = 50;
-    param_1[0] = 20;
-    param_1[1] = 20;
-    param_1[0x10] = 40;
-    param_1[0x0B] = 20;
-    param_1[0x3B] = 100;
-
-    if (param_2 == 0 || param_2 == 1) {
-        param_1[0x60] = 200;
-        param_1[0x61] = 200;
-    } else if (param_2 == 2 || param_2 == 6 || param_2 == 8 || param_2 == 5) {
-        param_1[0x60] = 100;
-        param_1[0x61] = 100;
+        if (param_2 == 0 || param_2 == 1) {
+            param_1[0x60] = 200;
+            param_1[0x61] = 200;
+        } else if (param_2 == 2 || param_2 == 6 || param_2 == 8 || param_2 == 5) {
+            param_1[0x60] = 100;
+            param_1[0x61] = 100;
+        }
     }
 }
