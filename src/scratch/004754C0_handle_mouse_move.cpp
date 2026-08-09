@@ -7,6 +7,12 @@
 //   width/xPosition temporaries reproduce the original call order and frame.
 // - probes of direct versus local child pointers, arithmetic spellings,
 //   named argument copies, and named child types were codegen duplicates.
+// - inline width/xPosition, receiver-local, arithmetic-parenthesization, and
+//   inherited TPanel-base-call probes were also duplicates or structurally worse.
+// - canonical TListPanel->TTextPanel ownership and the int/long width ABI
+//   variants do not affect the remaining final-call scheduling hunk.
+// - focused final-dispatch variant lab (direct/base cast/named x/split x/local
+//   receiver) collapsed to one 253-byte group; no variant changed the hunk.
 // - best natural reconstruction: 253 bytes, all 9 calls/CFG/frame aligned;
 //   remaining 15 bytes are only final-call scheduling/SIB operand order.
 
@@ -82,7 +88,14 @@ public:
     char gap_F4[0x1C4];
 };
 
-class TListPanel : public TPanel {
+class TTextPanel : public TPanel {
+public:
+    char gap_F4[0x8C];
+    int border_size;
+    int spacer_size;
+};
+
+class TListPanel : public TTextPanel {
 public:
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
     virtual long handle_mouse_up(unsigned char, long, long, int, int);

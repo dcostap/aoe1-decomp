@@ -15,7 +15,7 @@
 //   - TTextPanel: numberLines 0047DC30 / numberDrawLines 0047DC40, border_size +180, spacer_size +184.
 //   - TPanelSystem: restorePreviousModalPanel 00464010, setModalPanel 00463F60; panel_system 62E870.
 //
-// probe history (best = 1540 diff / 70.5%):
+// probe history before this session (best = 1540 diff / 70.5%):
 // 1 baseline: 1896 diff, frame 8 vs 16; old_mode stayed in a register, notify calls tail-merged.
 // 2 else-path zero init + epilogue outside parent check: call prefix 31; frame still 8.
 // 3 local declaration order (parent_y first): no change.
@@ -31,7 +31,20 @@
 //   zero->edx (register mode store), else-path reg zeros; diff 1671 -> 1540; frame 8 -> 0xC.
 // 10 named pos_w/above again post-fix: regressed (1612); restored calc_wid state.
 //
+// Current session probes:
+// - inverted the outer mode guard and hoisted calc_wid's declaration: emitted-code duplicates.
+// - hoisted value_wid and value_hgt before the list_is_above branch: improved to 1395 bytes
+//   (63.84%), shape 87.17%, and exact-block coverage 41.18%; retained as the clean candidate.
+// - pointer-to-member dispatch for this->set_fixed_position: regressed to 1944 bytes and
+//   introduced direct compiler-generated PMF thunks; removed.
+// - volatile calc_wid: regressed to 1959 bytes; removed.
+// - local TPanel receiver and removal of register keywords: emitted-code duplicates; retained
+//   ordinary local declarations and direct self calls for source plausibility.
+// - reversed the initial equality operands: one byte farther with no structural change; restored
+//   `mode == this->mode`.
+//
 // Left in scratch, remaining drift (all localized codegen):
+// - current best is 1395 bytes (63.84%), shape 87.17%, size 2142 vs 2185, frame 0xC vs 0x10;
 // - frame 0xC vs 0x10: original keeps a 4th slot [E0-4] caching list_wid for the above path;
 //   rebuilt keeps calc_wid in ebp (register) and spills only the fn ptr to old_mode's home.
 // - 480/484: original hoists arg3/arg4 (val_wid+btn_wid+1, val_hgt) and pushes them BEFORE the
@@ -209,10 +222,10 @@ void TDropDownPanel::set_mode(int mode) {
         return;
     }
 
-    register long parent_y = 0;
-    register long parent_x = 0;
-    register long parent_w = 0;
-    register long parent_h = 0;
+    long parent_y = 0;
+    long parent_x = 0;
+    long parent_w = 0;
+    long parent_h = 0;
     int old_mode;
 
     if (this->parent_panel) {
@@ -252,14 +265,16 @@ void TDropDownPanel::set_mode(int mode) {
                                              this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
         }
         this->clip_to_parent = 1;
+        long value_wid = this->val_wid + this->btn_wid + 1;
+        long value_hgt = this->val_hgt;
         if (this->list_is_above) {
             this->set_fixed_position(this->pnl_x - parent_x,
                                      this->pnl_y + this->pnl_hgt - this->val_hgt - old_mode,
-                                     this->val_wid + this->btn_wid + 1, this->val_hgt);
+                                     value_wid, value_hgt);
             this->list_is_above = 0;
         } else {
             this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - old_mode,
-                                     this->val_wid + this->btn_wid + 1, this->val_hgt);
+                                     value_wid, value_hgt);
         }
         if (this->parent_panel) {
             this->parent_panel->set_redraw(1);
