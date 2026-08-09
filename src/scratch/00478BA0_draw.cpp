@@ -19,6 +19,12 @@
 //   the saved vtable/current line and EDI for DC, versus rebuilt EDI/EBX.
 // - Main-agent audit confirmed canonical panel inheritance and typed drawing
 //   ownership; no declaration-order steering survives in the source.
+// - typed Windows handle aliases (including distinct HDC/HGDIOBJ/HRGN forms)
+//   worsened the suffix or did not move the first register hunk; restored the
+//   void* GDI surface used by the exact same-TU draw donor.
+// - scoping DC/font and the loop line like the exact same-TU donor, and
+//   base-qualifying the inherited draw helpers, all reproduced the same 18-byte
+//   register-coloring group; no natural source lead remained this pass.
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);

@@ -1,8 +1,20 @@
 // TListPanel::scroll_cur_line - switch over action (1-7) with clamping and scroll/redraw/callback
+//
+// Attempt log:
+// - restored the typed same-TU scroll ABI (int, short, int), the +0x20 redraw
+//   virtual, and the +0xB4 parent callback with the oracle's action value 1.
+// - corrected the strict max clamp, page endpoint ownership (case 4 -> bot,
+//   case 5 -> top), and case-3 range/decrement behavior from the executable.
+// - a positive current<bot case-2 arm and split case-3 decrement/scroll arms
+//   recover the oracle's switch block topology; this reaches exact size/frame,
+//   9 ordered calls, and 10/10 CFG signals with 267 positional bytes differing.
+// - shared endpoint locals and explicit common-tail goto probes were broader
+//   regressions or emitted duplicates; restored the natural scoped-source best.
+//   Left in scratch: localized case-5/6 tail/block layout and branch-span drift.
 
 class TPanel {
 public:
-    virtual void vf00();
+    virtual ~TPanel();
     virtual void vf04();
     virtual void vf08();
     virtual void vf0C();
@@ -10,7 +22,7 @@ public:
     virtual void vf14();
     virtual void vf18();
     virtual void vf1C();
-    virtual long vf20(long param_1);
+    virtual void set_redraw(int clear);
     virtual void vf24();
     virtual void vf28();
     virtual long vf2C(long param_1);
@@ -47,7 +59,8 @@ public:
     virtual void vfA8();
     virtual void vfAC();
     virtual void vfB0();
-    virtual void vfB4(void* caller, int action, int index, int zero);
+    virtual long action(TPanel* caller, long action, unsigned long index,
+                        unsigned long zero);
 
     char pad_00[0x3C];
     TPanel* parent_panel;
@@ -55,7 +68,7 @@ public:
 
 class TTextPanel : public TPanel {
 public:
-    void scroll(unsigned char action, int delta, int param_3);
+    void scroll(int action, short delta, int param_3);
 };
 
 class TListPanel : public TTextPanel {
@@ -80,7 +93,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         this->cur_line = new_cur;
         if (new_cur < 0) {
             this->cur_line = 0;
-        } else if (new_cur >= this->num_lines - 1) {
+        } else if (new_cur > this->num_lines - 1) {
             this->cur_line = this->num_lines - 1;
         }
         if (this->cur_line < this->top_line) {
@@ -94,26 +107,28 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         short cur = this->cur_line;
         if (cur < this->top_line || cur > this->bot_line) {
             this->cur_line = this->bot_line;
-            cur = this->bot_line;
         }
-        if (cur >= this->bot_line) {
-            if (cur < this->num_lines - 1) {
-                cur++;
-                this->cur_line = cur;
-                this->scroll(2, 0, flag);
-            }
-        } else {
+        cur = this->cur_line;
+        if (cur < this->bot_line) {
             cur++;
             this->cur_line = cur;
+        } else if (cur < this->num_lines - 1) {
+            cur++;
+            this->cur_line = cur;
+            this->scroll(2, 0, flag);
         }
         break;
     }
     case 3: {
         short cur = this->cur_line;
-        if (cur > this->top_line)
+        if (cur < this->top_line || cur > this->bot_line) {
+            this->cur_line = this->top_line;
+        }
+        cur = this->cur_line;
+        if (cur > this->top_line) {
             cur--;
-        if (cur > 0) {
-            cur--;
+            this->cur_line = cur;
+        } else if (cur > 0) {
             this->cur_line = cur;
             this->scroll(3, 0, flag);
         }
@@ -128,18 +143,19 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         if (this->cur_line == this->bot_line) {
             this->scroll(4, 0, flag);
         }
+        this->cur_line = this->bot_line;
         break;
     }
     case 5: {
         short cur = this->cur_line;
         if (cur < this->top_line || cur > this->bot_line) {
-            this->cur_line = this->bot_line;
-            cur = this->bot_line;
-        }
-        if (this->cur_line == this->bot_line) {
-            this->scroll(5, 0, flag);
             this->cur_line = this->top_line;
+            cur = this->top_line;
         }
+        if (this->cur_line == this->top_line) {
+            this->scroll(5, 0, flag);
+        }
+        this->cur_line = this->top_line;
         break;
     }
     case 6:
@@ -152,9 +168,11 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         break;
     }
 
+    this->set_redraw(1);
+
     if (this->cur_line != old_cur) {
         if (this->parent_panel != 0 && this->cur_line > -1 && this->cur_line < this->num_lines) {
-            this->parent_panel->vfB4(this, 2, this->cur_line, 0);
+            this->parent_panel->action(this, 1, this->cur_line, 0);
         }
     }
 }
