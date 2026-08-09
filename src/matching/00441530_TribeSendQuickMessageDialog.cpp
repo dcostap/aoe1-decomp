@@ -19,9 +19,10 @@
 //   natural source keeps it in ECX (`and ecx,5; add ecx,2668h`), adding one
 //   byte to the function. A focused byte-select lab found no compileable
 //   candidate under its tested spellings.
-// - Left in scratch: call set, CFG, EH frame, field ownership, and all panel
-//   argument values match; only the localized VC5 title-ID register/schedule
-//   basin remains unresolved.
+// - An explicit natural if/else assignment to an uninitialized title_id
+//   reproduced the original EAX title-ID schedule and exact 246-byte body.
+//   Both Mode cases assign title_id before the call; this is a plausible
+//   period source form, not a register-forcing alias.
 
 class TDrawArea;
 
@@ -102,7 +103,11 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parent,
         return;
     }
 
-    int title_id = (this->modeValue != AsChat ? 0x266D : 0x2668);
+    int title_id;
+    if (this->modeValue == AsChat)
+        title_id = 0x2668;
+    else
+        title_id = 0x266D;
     if (!this->create_text(this, &this->chatTitle, title_id,
                            5, 5, 0x78, 0x19, 4, 1, 1, 0)) {
         return;
