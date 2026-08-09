@@ -9,16 +9,67 @@
 // - Also: first okButton check loads into ecx for register-to-register cmp
 //   instead of original's direct memory cmp. CancelButton/help_button are correct (memory form).
 // - Left in scratch: structural VC5 codegen barrier for default/case block placement
-
-#define VPAD1(n) virtual void vpad##n() {}
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+// - SA60574_action baseline: typed switch retained an extra activatePanels call
+//   and the same default-before-case8 layout.
+// - SA60574_action nested positive guards (id!=7, then id==8) restored the
+//   original 13-call topology, 105 instructions, and 95.24% exact-block
+//   coverage; final size is +2 bytes and 114 positional-diff bytes.
+// - Final bounded evidence: the remaining hunk is the dropdown dispatch
+//   spelling (oracle sub eax,7 / dec eax / jne default; rebuilt cmp eax,7 /
+//   cmp eax,8) plus the resulting two-byte block span. Switch label/order,
+//   goto-to-late-label, arithmetic-normalized dispatch, and alternate guard
+//   orders either duplicated code or produced no improvement; restored the
+//   natural nested-guard candidate.
 
 class TPanel {
 public:
     virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long,
+                                 long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(void*);
+    virtual void draw_offset(long, long, void*);
+    virtual void draw_rect2(void*);
+    virtual void draw_offset2(long, long, void*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
     char gap_04[0xF0];
     void set_curr_child(TPanel* child);
 };
@@ -38,15 +89,7 @@ public:
     void set_line(long val);
 };
 
-class TribeMPSetupScreen {
-public:
-    VPAD16(0)
-    VPAD16(16)
-    VPAD8(32)
-    VPAD4(40)
-    VPAD1(44)
-    virtual void vfB4(TPanel* caller, int a, int b, int c);
-};
+class TribeMPSetupScreen : public TPanel {};
 
 class TribeGameSettingsScreen : public TEasy_Panel {
 public:
@@ -84,14 +127,14 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned lon
     if (param_1 == this->okButton && param_2 == 1) {
         ((TPanel*)this)->set_curr_child(this->scenarioList);
         this->sendSettings();
-        this->chat_scr->vfB4(this, 1, 0, 0);
+        this->chat_scr->action(this, 1, 0, 0);
         return 1;
     }
 
     if (param_1 == this->cancelButton && param_2 == 1) {
         ((TPanel*)this)->set_curr_child(this->scenarioList);
         this->getSettings();
-        this->chat_scr->vfB4(this, 0, 0, 0);
+        this->chat_scr->action(this, 0, 0, 0);
         return 1;
     }
 
@@ -101,16 +144,16 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned lon
     }
 
     if (param_1 == (TPanel*)this->victoryTypeDrop && param_2 == 0) {
-        switch (this->victoryTypeDrop->get_id()) {
-        case 7:
+        long id = this->victoryTypeDrop->get_id();
+        if (id != 7) {
+            if (id == 8) {
+                this->scoreDrop->set_line(7);
+            } else {
+                this->activatePanels();
+                return 1;
+            }
+        } else {
             this->timeDrop->set_line(3);
-            break;
-        case 8:
-            this->scoreDrop->set_line(7);
-            break;
-        default:
-            this->activatePanels();
-            return 1;
         }
         this->activatePanels();
         return 1;
@@ -127,5 +170,5 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned lon
     }
 
 def:
-    return ((TEasy_Panel*)this)->action(param_1, param_2, param_3, param_4);
+    return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }

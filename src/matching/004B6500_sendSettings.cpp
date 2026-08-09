@@ -10,9 +10,16 @@
 // 8: tried /O2 without /Oy; unchanged.
 // 9: remaining main mismatch starts in victory-type dispatch/call-tail sharing: original uses sub/dec with shared setVictoryType tail and unusual one/two pushed args; rebuilt emits separate calls/branches.
 // 10: left in scratch: all settings calls and offsets are modeled, same-size 567 B, but broad mid-function branch/call-layout mismatch remains and is not accepted_drift-safe.
+// SA60574_send: the default victory arm is a two-int setVictoryType call;
+// right-to-left lowering intentionally leaves the literal 1 below the
+// no-argument victory get_id result before the shared setter tail. A direct
+// switch with the three typed setter calls reproduces the original sub/dec
+// dispatch and tail merge exactly.
+// SA60574_send: replaced the raw empty-string address with the natural ""
+// literal; it remains an exact 567-byte match under default.rsp.
 
 class TTextPanel { public: long get_id(); char* get_text(); };
-class TDropDownPanel { public: long get_id(); long get_id(int); };
+class TDropDownPanel { public: long get_id(); };
 class TButtonPanel { public: int get_state(); };
 
 class RGE_Base_Game {
@@ -33,7 +40,6 @@ class TRIBE_Game : public RGE_Base_Game {
 public:
     void setMapSize(int);
     void setMapType(int);
-    void setVictoryType(int);
     void setVictoryType(int, int);
     void setDeathMatch(unsigned char);
     void setRandomizePositions(unsigned char);
@@ -84,21 +90,21 @@ void TribeGameSettingsScreen::sendSettings()
         rge_base_game->setScenarioName(this->scenarioList->get_text());
     } else {
         rge_base_game->setScenarioGame(0);
-        rge_base_game->setScenarioName((char*)0x00592A40);
+        rge_base_game->setScenarioName("");
     }
 
     rge_base_game->setDeathMatch(this->scenarioList->get_id() == -1);
 
-    long v = this->victoryTypeDrop->get_id();
-    v -= 7;
-    if (v != 0) {
-        if (--v != 0) {
-            rge_base_game->setVictoryType(this->victoryTypeDrop->get_id(1));
-        } else {
-            rge_base_game->setVictoryType(8, this->scoreDrop->get_id());
-        }
-    } else {
+    switch (this->victoryTypeDrop->get_id()) {
+    case 7:
         rge_base_game->setVictoryType(7, this->timeDrop->get_id());
+        break;
+    case 8:
+        rge_base_game->setVictoryType(8, this->scoreDrop->get_id());
+        break;
+    default:
+        rge_base_game->setVictoryType(this->victoryTypeDrop->get_id(), 1);
+        break;
     }
 
     if (rge_base_game->randomGame()) {
