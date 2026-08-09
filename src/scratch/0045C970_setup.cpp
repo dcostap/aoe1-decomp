@@ -9,6 +9,15 @@
 //   scaffolding. Remaining drift starts at the facet guard and FPU scheduling.
 // - Main-agent audit restored canonical polymorphic master-object ownership;
 //   validated output remains the same 152-byte structural mismatch.
+// - This session: zero-local, post-guard pointer alias, short facings, direct
+//   sprite rereads, scoped/const sprite lifetime, and full static-object
+//   surface probes were unchanged or worse; all rolled back.
+// - Literal angle constants worsened FPU bytes. A diagnostic narrow volatile
+//   facet-guard lab changed size to 293B but left the sprite register mismatch;
+//   no volatility retained in living source.
+// - Paused at 10 meaningful hypotheses: current clean source is 295B vs 291B,
+//   with five ordered calls aligned; first unresolved block is sprite/facet
+//   guard (original ECX direct short compare/reload vs rebuilt EAX/AX reuse).
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 

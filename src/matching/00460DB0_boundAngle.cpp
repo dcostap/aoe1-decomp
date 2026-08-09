@@ -7,7 +7,8 @@
 // 6: Deferred positive store enlarged the function; rolled back.
 // 8: Chained positive assignment and do/while variants emitted the same 7-byte drift.
 // Variant lab: seven positive-loop spellings produced three codegen groups; no exact group.
-// Best clean source retained below; remaining drift is fcom/fstp versus fst/fcomp at +0x43.
+// 9: Replaced generated DAT_00570B50 references with the period literal 6.2831855f; this restored fcom/fstp ordering and matched exactly.
+// Math-header/constness/context probes were unchanged; keep the literal source as the binary-supported reconstruction.
 
 class RGE_Moving_Object {
 public:
@@ -19,7 +20,6 @@ public:
 
 extern float DAT_00570b48;
 extern float DAT_00570b4c;
-extern float DAT_00570b50;
 extern double DAT_00570b98;
 extern float DAT_00570b88;
 extern float DAT_00570bfc;
@@ -34,8 +34,8 @@ void RGE_Moving_Object::boundAngle(float* angle, int numberFacets) {
         } while (wrappedAngle < DAT_00570b48);
         *angle = wrappedAngle;
     } else {
-        while (wrappedAngle > DAT_00570b50) {
-            *angle = wrappedAngle = *angle - DAT_00570b50;
+        while (wrappedAngle > 6.2831855f) {
+            *angle = wrappedAngle = *angle - 6.2831855f;
         }
     }
 
