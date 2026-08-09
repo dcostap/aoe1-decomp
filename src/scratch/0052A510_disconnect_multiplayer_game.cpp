@@ -20,6 +20,9 @@
 // (289 B) and was discarded.  No natural source probe flipped the ESI/EDI pair.
 // Main-agent audit restored canonical world polymorphic ownership; the
 // validated 16-byte coloring gap is unchanged.
+// new context pass: added the recovered named game/screen/video derived field
+// surface from the now-exact neighboring TU functions; it was a codegen
+// duplicate, so the EDI-this / ESI-elapsed coloring gap remains unexplained.
 
 enum COMMSTATUS {
     COMMSTATUS_UNINITIALIZED = 0,
@@ -63,6 +66,50 @@ extern unsigned long debug_timeGetTime(const char* file, int line);
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
+    // Canonical tribegam.cpp derived surface recovered from the game/screen/
+    // video donors.  These named members preserve the real TU ownership while
+    // leaving the disconnect body unchanged.
+    void* MouseRightClickTable; // +0xA24
+    int MouseRightClickTableSize; // +0xA28
+    void* MouseLeftClickTable; // +0xA2C
+    int MouseLeftClickTableSize; // +0xA30
+    long queue_is_waiting_on_pop_counter[9]; // +0xA34
+    int random_civ[9]; // +0xA58
+    unsigned char tribe_game_options[0x6C]; // +0xA7C
+    char testing_scenario[260]; // +0xAE8
+    void* video_window; // +0xBEC
+    int cur_video; // +0xBF0
+    int (__stdcall *old_video_wnd_proc)(); // +0xBF4
+    int video_paused; // +0xBF8
+    unsigned long last_video_time; // +0xBFC
+    int video_setup; // +0xC00
+    int video_double_size; // +0xC04
+    int video_changed_res; // +0xC08
+    int video_hi_color; // +0xC0C
+    long video_save_res_wid; // +0xC10
+    long video_save_res_hgt; // +0xC14
+    void* video_save_palette; // +0xC18
+    int started_menu_music; // +0xC1C
+    int show_object_id; // +0xC20
+    void* game_screen; // +0xC24
+    long notification_loc_x[5]; // +0xC28
+    long notification_loc_y[5]; // +0xC3C
+    long current_notification_loc; // +0xC50
+    long current_notification_recalled; // +0xC54
+    char startup_scenario[260]; // +0xC58
+    char startup_game[260]; // +0xD5C
+    unsigned long auto_exit_time; // +0xE60
+    char save_game_name[260]; // +0xE64
+    char load_game_name[260]; // +0xF68
+    char timing_text2[256]; // +0x106C
+    int save_humanity[9]; // +0x116C
+    unsigned char quick_start_game; // +0x1190
+    unsigned char gap_1191[3];
+    int random_start_value; // +0x1194
+    char computerNameUsed[18][10]; // +0x1198
+    void* handleIdleLock; // +0x124C
+    int inHandleIdle; // +0x1250
+
     void show_status_message(int message, char* parameter, long value);
     void disconnect_multiplayer_game();
 };
