@@ -27,6 +27,17 @@
 // - Final fresh-pass state retains the natural nonzero-first four-arm source;
 //   residual drift is the +4-byte arithmetic/register basin in the pixel arms.
 //
+// Fresh bounded pass (sa-7925fc20-GetPixel):
+// - inherited the documented 107-byte clean candidate and did not repeat the
+//   prior worker's ten hypotheses.
+// - row-offset-first and sequential address variants improved structure to
+//   93 bytes but retained four extra bytes and a noncanonical pointer schedule.
+// - the final ordinary 32-bit pixel-address expression, with row computation
+//   first and the Bits member added before x/Width terms, produced MATCH:
+//   204/204 bytes, 4/4 calls, and exact CFG/boundary parity.
+// - the cast is limited to the 32-bit pixel-address expression; no absolute
+//   addresses, asm, volatility, or fabricated calls are used.
+//
 class TPicture {
 public:
     void* Dib;
@@ -54,15 +65,19 @@ unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
 
     if (param_3 != 0) {
         if (orientation == 1) {
-            return this->Bits[this->Width +
-                              (this->AlignedWidth() * y - x) - 1];
+            return *(unsigned char*)(this->AlignedWidth() * y +
+                                     (long)this->Bits - x + this->Width - 1);
         }
-        return this->Bits[this->Width +
-                          (this->AlignedWidth() * (this->Height - y - 1) - x) - 1];
+        return *(unsigned char*)(this->AlignedWidth() *
+                                 (this->Height - y - 1) +
+                                 (long)this->Bits - x + this->Width - 1);
     }
 
     if (orientation == 1) {
-        return this->Bits[x + this->AlignedWidth() * y];
+        return *(unsigned char*)(this->AlignedWidth() * y +
+                                 (long)this->Bits + x);
     }
-    return this->Bits[x + this->AlignedWidth() * (this->Height - y - 1)];
+    return *(unsigned char*)(this->AlignedWidth() *
+                             (this->Height - y - 1) +
+                             (long)this->Bits + x);
 }
