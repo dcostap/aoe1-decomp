@@ -11,6 +11,11 @@
 //     volatile pointer, const blocks, char-pointer casts, int*__restrict.
 //     None changed VC5's register allocation decision.
 // v7: /O1 flag → 274 bytes (worse).
+// v8-v10 (this session): typed TRIBE_Game/const deathMatch, canonical AIModule
+//     varargs member logger, polymorphic player base, C++ global linkage, a
+//     map_type copy/register qualifier, and chained adjacent stores. The ABI
+//     fixes changed call symbol identity but no emitted bytes; source-shape
+//     probes all remained at 285 rebuilt bytes and the same first mismatch.
 // 
 // Root cause: VC5 register allocator version difference. Original uses edx
 // for cyclic constants (0Ah→1Eh→64h) and ecx for 32h→param_2. Our VC5
@@ -18,19 +23,27 @@
 // (005182E0). Both functions require the same two-register constant pattern
 // that this VC5 version doesn't produce.
 // 
-// Deathmatch path matches exactly. Only non-deathmatch stores differ.
-
-#include <stddef.h>
+// Current source is the clean typed reconstruction: the deathmatch path and
+// non-deathmatch behavior/CFG/calls match, but only the non-deathmatch store
+// register coloring and immediate-vs-register encoding remain different.
 
 typedef unsigned char uchar;
 
-extern "C" void __cdecl logCommonHistory(void* target, const char* msg);
-extern "C" uchar __fastcall deathMatch_fn(void* game);
+class AIModule {
+public:
+    void logCommonHistory(char* fmt, ...);
+};
+
+struct TRIBE_Game {
+    virtual ~TRIBE_Game();
+    uchar deathMatch() const;
+};
 
 class RGE_Player {
 public:
-    char pad_00[0x238];
-    void* playerAI;  // +0x238
+    virtual ~RGE_Player();
+    char pad_04[0x234];
+    AIModule* playerAI;  // +0x238
 };
 
 class TRIBE_Player : public RGE_Player {
@@ -38,13 +51,13 @@ public:
     void setupShang(int* param_1, int param_2, int param_3, int param_4);
 };
 
-extern void* rge_base_game;  // 0x0062C574
+extern TRIBE_Game* rge_base_game;  // 0x0062C574
 
 void TRIBE_Player::setupShang(int* param_1, int param_2, int param_3, int param_4)
 {
-    logCommonHistory(this->playerAI, "Setting up as Shang.");
+    this->playerAI->logCommonHistory("Setting up as Shang.");
 
-    if (deathMatch_fn(rge_base_game) == 1) {
+    if (rge_base_game->deathMatch() == 1) {
         // Deathmatch path
         if (param_2 == 0 || param_2 == 1) {
             param_1[0x45] = 100;
@@ -66,6 +79,7 @@ void TRIBE_Player::setupShang(int* param_1, int param_2, int param_3, int param_
         param_1[6] = 50;
         param_1[7] = 50;
         param_1[0x38] = 50;
+
         param_1[11] = 30;
         param_1[0x14] = 30;
         param_1[1] = 0x14;
