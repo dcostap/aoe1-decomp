@@ -300,4 +300,11 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
 - In an EH-framed VC5 `new` path, a proven polymorphic screen/object surface is structural: if the allocation immediate and a member access are both exactly 4 bytes too small, model the vptr with a real virtual destructor (and preserve the named field offset) before changing control flow. With `/GX`, a natural typed `new T(args)` then restores the compiler's constructor/EH state and exact size.
 - For a same-TU class helper whose natural indexed loop has exact size/CFG/calls but only SIB base/index bytes differ, model the proven polymorphic base and full member placement before trying pointer walkers or casts. A real vptr plus the known derived member boundary can flip VC5's encoder choice while leaving the readable indexed source unchanged.
 - When two identical switch arms contain binary-proven separate API call sites, a function-wide result local can make VC5 fold the calls into one site. Scoped result locals inside each natural case can preserve both calls and the original liveness basin without register-forcing tricks.
+
+- For a counted scan bounded by both a live count and a capacity, an un-nested
+  `for (i = 0; i < count && i < capacity; ++i)` can preserve VC5's one initial
+  count test, capacity compare, indexed SIB load, and backedge exactly. An outer
+  positive-count guard can duplicate the count test, while an equivalent
+  do/while may turn the indexed access into a pointer walk; use this only when
+  the original compare order and loop bounds support it.
 - For a proven fixed-size member record whose zeroing must interleave with a later API argument address, `memset(&record, 0, sizeof(record))` can recover VC5's early address/store and `rep stosd` schedule where a scalar field zero emits a later direct store. Keep this only when the record size and byte-level schedule are independently established.

@@ -3,13 +3,17 @@
 // Size: 229 bytes
 // NC: no custom flags (default /O2 /Oy)
 //
-// Status: PAUSED — VC5 codegen drift after bounded matching assignment
+// Status: EXACT — validated VC5 codegen match
 //
 // Attempt log:
 // Probe 1: __cdecl virtual calls — 89.1% positional diff, __cdecl cleanup added
 // Probe 2: better register usage — 82.1% positional diff, still __cdecl cleanup
 // Probe 3: __stdcall virtual calls — 77.3% positional diff, first 26 bytes exact
 // Probe 4: if/else structure — 77.3% positional diff (same as Probe 3)
+// Probe 5: same-TU polymorphic donor surfaces — codegen-neutral; retained the
+// canonical destructor/vtable context from exact taiuaimd.cpp idle donors.
+// Probe 6: explicit float casts around the negated movement products — exact;
+// VC5 emits the binary's fchs/fadd tails instead of fsubr.
 //
 // Session findings (2026-08):
 // - Nested-if (if (targetID != -1) { ...; return 6; } return 5;) reproduces the
@@ -38,11 +42,9 @@
 // - Constant [5758B0h] = 3.0f
 // - Returns 6 (fled) or 5 (idle) — ret 4 (one stack param, unused)
 //
-// Remaining drift:
-// - Control flow: original uses `je near shared_exit`, rebuilt uses `jne short; inline return`
-// - FPU temp store ordering differs (extra fst by VC5)
-// - fchs+fadd vs fsubr encoding difference
-// - Epilogue truncated by ~12 bytes due to FPU code size differences
+// Exactness note:
+// - The nested positive guards, scaled-speed initialization, typed virtual
+//   surfaces, and explicit float casts reproduce the complete 229-byte body.
 //
 // Current session findings (2026-08-09):
 // - A named distance alone and a separate speed3 local were codegen-neutral.
@@ -68,7 +70,9 @@ struct RGE_Game_World;
 struct RGE_Static_Object;
 struct RGE_Player;
 
-struct RGE_Game_World {
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
     RGE_Static_Object* object(int objectID);
 };
 
@@ -78,37 +82,46 @@ struct RGE_Game_World {
 #define VPAD8(n) VPAD4(n) VPAD4(n##_4)
 #define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 
-struct RGE_Static_Object {
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char pad_04[0x38];
+    RGE_Game_World* world;       // +0x3C
+
+    int computerPlayer();
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
     VPAD16(object0);
     VPAD16(object16);
     VPAD16(object32);
     VPAD8(object48);
     VPAD4(object56);
     VPAD2(object60);
-    VPAD1(object62);
-    virtual float maximumSpeed(); // slot 0x3F
-    int id;                       // +0x4
-    void* master_obj;             // +0x8
-    RGE_Player* owner;            // +0x0C
-    char pad_10[0x28];
-    float world_x;                // +0x38
-    float world_y;                // +0x3C
-    float world_z;                // +0x40
-};
+    virtual float maximumSpeed() = 0; // slot 0x3F
 
-struct RGE_Player {
-    char pad_00[0x3C];
-    RGE_Game_World* world;       // +0x3C
+    char pad_04[0x08];             // +0x04 .. +0x0B
+    RGE_Player* owner;             // +0x0C
+    char pad_10[0x28];
+    float world_x;                 // +0x38
+    float world_y;                 // +0x3C
+    float world_z;                 // +0x40
 };
 
 class UnitAIModule {
 public:
-    VPAD16(ai0);
-    virtual int closestObject(int, int, int, int, int*); // slot 0x10
+    virtual ~UnitAIModule();
+    VPAD8(ai1);
+    VPAD4(ai9);
+    VPAD2(ai13);
+    VPAD1(ai15);
+    virtual int closestObject(int, int, int, int, int) = 0; // slot 0x10
     VPAD16(ai17);
     VPAD4(ai33);
     VPAD2(ai37);
-    virtual int evasiveMoveTo(float, float, float, int); // slot 0x27
+    virtual int evasiveMoveTo(float, float, float, int) = 0; // slot 0x27
     RGE_Static_Object* objectValue; // +0x4
 };
 
@@ -133,8 +146,8 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
             dx = target->world_x - objectValue->world_x;
             dy = target->world_y - objectValue->world_y;
             distance = (float)sqrt(dx * dx + dy * dy);
-            nx = -((dx / distance) * speed) + objectValue->world_x;
-            ny = -((dy / distance) * speed) + objectValue->world_y;
+            nx = (float)(-((dx / distance) * speed)) + objectValue->world_x;
+            ny = (float)(-((dy / distance) * speed)) + objectValue->world_y;
             evasiveMoveTo(nx, ny, objectValue->world_z, 1);
             return 6;
         }
