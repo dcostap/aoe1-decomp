@@ -42,6 +42,26 @@
 // Best paused source below keeps the binary-proven primary switch and named
 // nested ownership, rather than retaining codegen-only volatility/labels.
 // No custom flags, no inline asm.
+//
+// Session orch-luna-4de4a0-w2 (10 meaningful probes, fresh pass):
+// - distinct inherited receiver types, per-arm result locals, complete ABI-proven
+//   class hierarchy, explicit switch default ownership, distinct owner-view types,
+//   qualified virtual/direct calls, and binary-observed case order all emitted the
+//   same one-call basin (or only neutral table bytes).
+// - two 128/2187-case variant families mixed direct/raw, volatile-receiver, and
+//   result-local spellings; all size-preserving groups still merged the seven
+//   handlers to one direct strategicNumber call.
+// - a compile-time pointer-to-member call also stayed in the same 204-byte basin.
+// Final evidence: structural blocker is unchanged: rebuilt/original direct calls
+//   1/7, positional diff 172/204 (84.3137%), first mismatch +0x0B. Retain the
+//   natural primary switch and named md/tacticalAI ownership for the next pass.
+// Main-agent exact follow-up:
+// - Restoring the second sparse dispatch as a natural `switch (param_2)` rather
+//   than its equivalent hand-written subtract chain changed VC5's whole-function
+//   tail-merging decision and recovered all seven independent call handlers.
+// - Ordering the first switch's source cases by the binary handler layout
+//   (0x6D, 0x2D, 0x9F, 0x9E/0xA3) fixed the remaining four literal bytes.
+// Exact: 204/204 bytes, seven ordered calls, and full byte equality.
 
 struct AIModule {
     virtual void dummy();
@@ -72,26 +92,25 @@ struct TribeInformationAIModule : public InformationAIModule {
 int TribeInformationAIModule::defendPriority(int param_1, int param_2)
 {
     switch (param_1) {
-    case 0x2D:
-        return md->tacticalAI.strategicNumber(0x46);
     case 0x6D:
         return md->tacticalAI.strategicNumber(0x38);
+    case 0x2D:
+        return md->tacticalAI.strategicNumber(0x46);
+    case 0x9F:
+        return md->tacticalAI.strategicNumber(0x37);
     case 0x9E:
     case 0xA3:
         return md->tacticalAI.strategicNumber(0x36);
-    case 0x9F:
-        return md->tacticalAI.strategicNumber(0x37);
     }
 
-    int t = param_2;
-    t -= 7;
-    if (t == 0)
+    switch (param_2) {
+    case 7:
         return md->tacticalAI.strategicNumber(0x34);
-    t--;
-    if (t == 0)
+    case 8:
         return md->tacticalAI.strategicNumber(0x33);
-    t -= 0x18;
-    if (t == 0)
+    case 0x20:
         return md->tacticalAI.strategicNumber(0x32);
-    return -1;
+    default:
+        return -1;
+    }
 }
