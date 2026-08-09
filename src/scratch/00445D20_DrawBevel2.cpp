@@ -12,6 +12,12 @@
 // - reverse temporary/assignment order and staged width/height arithmetic were
 //   codegen regressions or duplicates; final source restored to the natural
 //   typed form and left in scratch.
+// - Session retested the DrawBevel21 direct-swap family, width/height widths,
+//   parameter-home boundary locals, repeated arithmetic, and point-of-use
+//   inner coordinates; none removed the frame or improved the canonical
+//   validated source. Original call targets and color roles remain aligned.
+// Main-agent audit confirmed the natural draw-area line ownership and retained
+// the ordinary clipped bevel construction.
 
 class TDrawArea {
 public:

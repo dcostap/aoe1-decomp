@@ -15,8 +15,13 @@
 // load before all pushes and was rolled back to the direct member call.
 // Probe: two 32-variant natural source-shape labs (one with /GX) found no exact;
 // local call aliases only changed scheduling, so the direct typed member form stays.
+// Session probes: a narrow SetSpanRegions receiver alias reduced drift to 21
+// bytes and made the AddSpan tail exact; argument-local, reference-receiver,
+// comparison-reversal, and temporary-order variants were worse or duplicate.
 // Remaining drift is localized register/load scheduling at the comparison, ctor
 // arguments, SetSpanRegions/AddSpan argument setup, and final CurSpanList reload.
+// Main-agent audit confirmed canonical draw-area/span-list ownership and retained
+// the natural clip-region rebuild.
 
 class VSpan_Node;
 
@@ -81,7 +86,10 @@ public:
     long Height;                  // +0x1C
     long Pitch;                   // +0x20
     long Orien;                   // +0x24
-    tagRECT ClipRect;             // +0x28
+    long ClipLeft;                // +0x28
+    long ClipTop;                 // +0x2C
+    long ClipRight;               // +0x30
+    long ClipBottom;              // +0x34
     void* DrawDc;                 // +0x38
     void* DrawSurface;            // +0x3C
     char SurfaceDesc[0x6C];       // +0x40
@@ -115,10 +123,10 @@ void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
 {
     TSpan_List_Manager* span_list = this->SpanList;
 
-    this->ClipRect.left = left;
-    this->ClipRect.top = top;
-    this->ClipRect.right = right;
-    this->ClipRect.bottom = bottom;
+    this->ClipLeft = left;
+    this->ClipTop = top;
+    this->ClipRight = right;
+    this->ClipBottom = bottom;
 
     if (span_list != 0 && span_list->Num_Lines != this->Height) {
         if (this->SpanList != 0) {
@@ -133,15 +141,18 @@ void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
     }
 
     this->SpanList->ResetAll();
-    this->SpanList->SetSpanRegions(this->ClipRect.left, this->ClipRect.top,
-                                   this->ClipRect.right, this->ClipRect.bottom);
+    {
+        TSpan_List_Manager* span_manager = this->SpanList;
+        span_manager->SetSpanRegions(this->ClipLeft, this->ClipTop,
+                                     this->ClipRight, this->ClipBottom);
+    }
 
-    int y = this->ClipRect.top;
-    if (y <= this->ClipRect.bottom) {
+    int y = this->ClipTop;
+    if (y <= this->ClipBottom) {
         do {
-            this->SpanList->AddSpan(this->ClipRect.left, this->ClipRect.right, y);
+            this->SpanList->AddSpan(this->ClipLeft, this->ClipRight, y);
             ++y;
-        } while (y <= this->ClipRect.bottom);
+        } while (y <= this->ClipBottom);
     }
 
     this->CurSpanList = this->SpanList;

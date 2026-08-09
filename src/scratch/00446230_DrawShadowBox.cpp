@@ -16,6 +16,12 @@
 // - Main-agent audit replaced the raw color-table vptr field with its canonical
 //   virtual destructor surface; the validated gap is 48 bytes with unchanged
 //   size, calls, frame, and instruction shape.
+// - This session retested the row address expression, inner cursor scope and
+//   declaration order, plus point-of-use Bits/row-address locals. The natural
+//   canonical source remains the best living reconstruction; residual drift is
+//   the row-base/pixel cursor register schedule and a two-byte tail shift.
+// Main-agent audit confirmed canonical draw-area/color-table ownership and kept
+// the natural typed row/pixel traversal.
 
 struct tagRECT {
     long left;
