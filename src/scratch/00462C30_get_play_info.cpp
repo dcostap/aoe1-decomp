@@ -17,6 +17,16 @@
 // behavior are established; leave unresolved for a future focused control-flow pass.
 // Main-agent audit confirmed canonical non-polymorphic music/MCI ownership and
 // retained the natural typed output/status flow.
+// Fresh worker pass: deferring the status declaration and restoring the SDK
+// mmsystem.h/MCI_STATUS_PARMS surface were codegen duplicates; the header cast
+// is ABI-plausible but did not change VC5 output.
+// Fresh worker pass: a 36-variant permutation of independent initial-output
+// assignment order changed suffix bytes only; it never moved the first pointer
+// home, so the register basin is not controlled by that store order.
+// Fresh worker pass: early playing-track return remains the metric-best natural
+// guard (69-byte diagnostic with one folded call); asymmetric goto/common-store,
+// success-flag, and mixed inline/common-store forms either duplicated the tail,
+// grew the frame body, or returned to the 165-byte baseline.
 
 #include <string.h>
 

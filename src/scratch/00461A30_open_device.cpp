@@ -20,6 +20,13 @@
 // pass to move status/set/open/file homes by four bytes and reproduce late failure tails.
 // Main-agent audit replaced raw string addresses with named SDK/global surfaces
 // and retained the natural typed WinMM/file-device flow.
+// Fresh worker pass: for(;;), do/while(true), and scoped-label FILE scans all
+// triggered VC5 loop peeling and four static sprintf/fopen sites; the natural
+// bottom-test scan remains the only clean 11-call source shape.
+// Fresh worker pass: placing sprintf in the do-condition via a comma/&& chain
+// recovered a single-site scan and improved the diagnostic diff to 454 bytes,
+// but changed the frame-size/CFG basin and used opaque scheduling source; it was
+// rolled back. Declaration reordering and pointer-truth tests were duplicates.
 
 #include <stdio.h>
 #include <windows.h>

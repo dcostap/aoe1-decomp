@@ -1,40 +1,235 @@
-// VA: 00462200 play (952B)
-// music.cpp
+// VA: 00462200 TMusic_System::play (952B)
+// PDB source: music.cpp lines 523-728
+// Attempt log:
+// Baseline reconstruction: restored the protected five-argument play ABI, the
+// typed WinMM/stdio surfaces, the three music-type branches, and the common
+// playing-state tail from the executable packet.
+// Consolidated internal failure exits through the shared playing-state tail;
+// this reduced the return/CFG mismatch and is retained in the reconstruction.
+// Added the type-1 MCI play-error mciGetErrorStringA path; this recovered the
+// original 15-call multiset and the ordered call prefix.
+// Reversed the bounded-track comparison to parameter-left `from > count`,
+// matching the original compare algebra and improving the early block island.
+// Ten bounded probes left the best build at 908/952 bytes, 15/15 ordered calls,
+// 80.92% shape, and 511 positional diff bytes. Remaining drift is structural:
+// VC5 keeps the filename pointer and switch selector in opposite registers,
+// places the proven stack records/buffers four bytes higher, and merges the
+// two identical Unknown-Error copies. No raw-address or inline-asm experiment
+// was retained; target remains scratch pending a later source/context pass.
+
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+#include <mmsystem.h>
+
+extern const char MUSIC_WAV_FORMAT[];
+extern const char MUSIC_MID_FORMAT[];
+extern const char MUSIC_NAME_FORMAT[];
+extern const char MUSIC_MID_SUFFIX[];
+extern const char s_Unknow_Error[];
+
+extern "C" int __cdecl open(const char*, int);
+extern "C" int __cdecl close(int);
+
+typedef MCIERROR (WINAPI *MCI_SEND_COMMAND_PROC)(
+    unsigned int, unsigned int, unsigned long, unsigned long);
+
+class TSound_Driver {
+public:
+    int stream_file(char*, int, long);
+};
 
 class TMusic_System {
 public:
-    char gap4[0xFC];
-    char field_100;
-    char gap101[0x28];
-    char field_129;
-    char gap12A[0x106];
-    int field_230;
-    int field_234;
-    int field_238;
-    int field_23C;
-    int field_240;
-    int field_244;
-    int field_248;
-    int field_24C;
-    
-    int play(int a1, int a2, int a3, int a4, int a5, int a6);
+    char path[260];
+    unsigned char music_type;
+    unsigned char _pad_0[3];
+    TSound_Driver* sound_system;
+    void* instance;
+    void* window;
+    int device_open;
+    unsigned int device_id;
+    MCI_PLAY_PARMS play_info;
+    unsigned char playing_track;
+    char file_name[261];
+    unsigned char _pad_1[2];
+    int start_track;
+    int end_track;
+    int make_cur_track;
+    unsigned long set_pos;
+    int loop;
+    int current_track;
+    int track_count;
+    int notify_waiting;
+    long start_volume;
+    long volume;
+    int paused;
+    int auto_paused;
+    int inactivated;
+    int fade_out;
+    unsigned long fade_time;
+    int fading_track;
+
+    int play(int, int, char*, int, unsigned long);
+    int stop_playing();
 };
 
-int __cdecl midiStreamOpen(int* hStream, int* a, int b, int c, int d);
+int TMusic_System::play(int from, int to, char* name, int current, unsigned long start)
+{
+    MCI_SEEK_PARMS seek_info;
+    MCI_OPEN_PARMSA open_info;
+    char track_name[261];
+    char error_message[256];
+    MCIERROR result;
+    MCIERROR error_result;
+    char* source_name = name;
+    int device_open = this->device_open;
+    int music_type;
 
-int TMusic_System::play(int a1, int a2, int a3, int a4, int a5, int a6) {
-    if (!field_248) return 0;
-    
-    // Play music track
-    int hStream = 0;
-    int result = midiStreamOpen(&hStream, &a1, a2, 0, 0);
-    if (result != 0) return 0;
-    
-    field_230 = a3;
-    field_234 = a4;
-    field_238 = a5;
-    field_23C = a6;
-    field_240 = a1;
-    
+    if (!device_open) {
+        goto finish;
+    }
+
+    if (this->playing_track != 0) {
+        this->stop_playing();
+    }
+
+    if (!source_name || !*source_name) {
+        int count = this->track_count;
+        if (!count) {
+            goto finish;
+        }
+        if (from > count) {
+            goto finish;
+        }
+        if (!from) {
+            goto finish;
+        }
+        if (current) {
+            this->current_track = current;
+        } else {
+            this->current_track = from;
+        }
+    }
+
+    music_type = this->music_type;
+    switch (music_type) {
+    case 1: {
+        MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
+        this->play_info.dwCallback = (unsigned long)this->window;
+        unsigned int flags = 1;
+
+        if (!start) {
+            flags = 5;
+            this->play_info.dwFrom = (unsigned char)this->current_track;
+        } else {
+            open_info.dwCallback = start;
+            seek_info.dwTo = 0;
+            mci(this->device_id, 0x807, 10,
+                (unsigned long)&seek_info.dwTo);
+        }
+
+        if (from < this->track_count && to < this->track_count) {
+            flags |= 8;
+            this->play_info.dwTo = (unsigned char)(to + 1);
+        }
+
+        result = mci(this->device_id, 0x806, flags,
+                     (unsigned long)&this->play_info);
+        if (!result) {
+            this->playing_track = 1;
+            ++this->notify_waiting;
+        } else {
+            error_result = mciGetErrorStringA(result, error_message + 4,
+                                              0x100);
+            if (!error_result) {
+                strcpy(error_message + 4, s_Unknow_Error);
+            }
+        }
+        break;
+    }
+
+    case 2: {
+        if (!source_name || !*source_name) {
+            sprintf(track_name + 4, MUSIC_MID_FORMAT,
+                    this->path, this->current_track);
+        } else {
+            sprintf(track_name + 4, MUSIC_NAME_FORMAT,
+                    this->path, source_name);
+            if (strchr(track_name + 4, '.') == 0) {
+                strcat(track_name + 4, MUSIC_MID_SUFFIX);
+            }
+        }
+
+        int file_handle = open(track_name + 4, 0);
+        if (file_handle != -1) {
+            close(file_handle);
+
+            MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
+            open_info.lpstrElementName = MAKEINTRESOURCEA(0x20B);
+            open_info.lpstrAlias = track_name + 4;
+            result = mci(0, 0x803, 0x3200,
+                         (unsigned long)&open_info.wDeviceID);
+            if (result) {
+                error_result = mciGetErrorStringA(result, error_message + 4,
+                                                  0x100);
+                if (error_result) {
+                    goto finish;
+                }
+                strcpy(error_message + 4, s_Unknow_Error);
+                if (result) {
+                    goto finish;
+                }
+            }
+
+            this->device_id = (unsigned int)open_info.lpstrDeviceType;
+            if (start) {
+                open_info.dwCallback = start;
+                seek_info.dwTo = 0;
+                mci((unsigned int)open_info.lpstrDeviceType, 0x807, 8,
+                    (unsigned long)&seek_info.dwTo);
+            }
+
+            this->play_info.dwCallback = (unsigned long)this->window;
+            result = mci(this->device_id, 0x806, 1,
+                         (unsigned long)&this->play_info);
+            if (!result) {
+                this->playing_track = 1;
+                ++this->notify_waiting;
+            }
+        }
+        break;
+    }
+
+    case 3:
+        if (this->sound_system) {
+            if (!source_name || !*source_name) {
+                sprintf(track_name + 4, MUSIC_WAV_FORMAT,
+                        this->path, this->current_track);
+            } else {
+                sprintf(track_name + 4, MUSIC_NAME_FORMAT,
+                        this->path, source_name);
+            }
+
+            if (!this->sound_system->stream_file(track_name + 4, 0,
+                                                 this->volume)) {
+                goto finish;
+            }
+            this->playing_track = 1;
+        }
+        break;
+    }
+
+finish:
+    if (!this->playing_track) {
+        goto failure;
+    }
+
+    this->paused = 0;
+    this->auto_paused = 0;
+    this->inactivated = 0;
     return 1;
+
+failure:
+    return 0;
 }
