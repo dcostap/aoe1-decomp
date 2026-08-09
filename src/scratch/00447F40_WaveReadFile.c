@@ -1,6 +1,21 @@
 /* VA: 00447F40 _WaveReadFile */
 /* Dsutil.c lines 680-745, 242 bytes */
-/* attempt 2026-05-31: implemented natural MMIO read loop from packet/source shape; first 33 bytes match but default memcpy is inlined and register allocation differs (cbRead/bytesRead/pointers in esi/ebx/edi instead of original ebx/edi/ebp), 57.85% positional. A memcpy2 call probe made body 240B (<242) and still wrong register coloring, rolled back to exact-size natural source. */
+/* attempt log:
+ * baseline: natural named-cursor MMIO loop, default flags; 248B, missing the
+ * binary-proven direct memcpy call.
+ * /Oi- probe: restored direct memcpy and all four calls, but the extra locals
+ * colored the total/read/destination cursors incorrectly (232B).
+ * byte-at-a-time SDK-source probe: period-plausible but VC5 retained a scalar
+ * loop, cached the mmioAdvance import, and missed memcpy (205B).
+ * direct-field chunk probes: removed cursor aliases and recovered the original
+ * EBX/EDI/EBP/ECX/ESI topology; best was 234B with 120 positional differences.
+ * min-order and conditional-argument variants were nonproductive. A focused
+ * 15-variant lab found three emitted groups, no size/frame/call-set eligible
+ * candidate, and no exact match.
+ * final scratch candidate keeps the clean period-plausible chunk loop and the
+ * proven /Oi- direct memcpy context; remaining drift is the VC5 branch-specific
+ * memcpy argument-push topology and six-to-eight bytes of block layout.
+ */
 
 typedef unsigned int UINT;
 typedef unsigned long DWORD;
@@ -39,63 +54,54 @@ __declspec(dllimport) MMRESULT __stdcall mmioAdvance(void* hmmio, MMIOINFO* info
 __declspec(dllimport) MMRESULT __stdcall mmioSetInfo(void* hmmio, MMIOINFO* info, UINT flags);
 void* __cdecl memcpy(void* dst, const void* src, unsigned int count);
 
-MMRESULT __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, MMCKINFO* pckIn, UINT* cbActualRead)
+int __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, MMCKINFO* pckIn, UINT* cbActualRead)
 {
     MMIOINFO mmioinfoIn;
-    MMRESULT result;
+    int nError = 0;
+    UINT cT;
     UINT cbDataIn;
     UINT cbDataToCopy;
-    UINT cbBytesRead;
-    BYTE* pbDestCur;
-    char* pchNext;
-    char* pchEndRead;
 
-    result = (mmioGetInfo(hmmio, &mmioinfoIn, 0) != 0);
-    if (result == 0) {
-        if (cbRead > pckIn->cksize) {
-            cbRead = pckIn->cksize;
-        }
-        pckIn->cksize -= cbRead;
-
-        cbBytesRead = 0;
-        if (cbRead != 0) {
-            pbDestCur = pbDest;
-            pchNext = mmioinfoIn.pchNext;
-            do {
-                pchEndRead = mmioinfoIn.pchEndRead;
-                if (pchNext == pchEndRead) {
-                    result = mmioAdvance(hmmio, &mmioinfoIn, 0);
-                    if (result != 0) {
-                        goto error;
-                    }
-                    pchNext = mmioinfoIn.pchNext;
-                    pchEndRead = mmioinfoIn.pchEndRead;
-                    if (pchNext == pchEndRead) {
-                        result = 0xE103;
-                        goto error;
-                    }
-                }
-
-                cbDataIn = pchEndRead - pchNext;
-                cbDataToCopy = cbRead - cbBytesRead;
-                if (cbDataToCopy < cbDataIn) {
-                    cbDataIn = cbDataToCopy;
-                }
-                memcpy(pbDestCur + cbBytesRead, pchNext, cbDataIn);
-                cbBytesRead += cbDataIn;
-                pchNext += cbDataIn;
-                mmioinfoIn.pchNext = pchNext;
-            } while (cbBytesRead < cbRead);
-        }
-
-        result = mmioSetInfo(hmmio, &mmioinfoIn, 0);
-        if (result == 0) {
-            *cbActualRead = cbRead;
-            return result;
-        }
+    if ((nError = (mmioGetInfo(hmmio, &mmioinfoIn, 0) != 0))) {
+        goto error;
     }
+
+    cbDataIn = cbRead;
+    if (cbDataIn > pckIn->cksize) {
+        cbDataIn = pckIn->cksize;
+    }
+
+    pckIn->cksize -= cbDataIn;
+
+    for (cT = 0; cT < cbDataIn;) {
+        if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead) {
+            if ((nError = mmioAdvance(hmmio, &mmioinfoIn, 0)) != 0) {
+                goto error;
+            }
+            if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead) {
+                nError = 0xE103;
+                goto error;
+            }
+        }
+
+        cbDataToCopy = mmioinfoIn.pchEndRead - mmioinfoIn.pchNext;
+        if (cbDataIn - cT < cbDataToCopy) {
+            cbDataToCopy = cbDataIn - cT;
+        }
+        memcpy(pbDest + cT, mmioinfoIn.pchNext, cbDataToCopy);
+        cT += cbDataToCopy;
+        mmioinfoIn.pchNext += cbDataToCopy;
+    }
+
+    if ((nError = mmioSetInfo(hmmio, &mmioinfoIn, 0)) != 0) {
+        goto error;
+    }
+
+    *cbActualRead = cbDataIn;
+    goto done;
 
 error:
     *cbActualRead = 0;
-    return result;
+done:
+    return nError;
 }
