@@ -17,6 +17,12 @@
 //   - 20-variant lab (y position x clamp form x temp forms x dy volatility): 0 exact; best family remains y-after-clamp + double this_radius_y declared BEFORE the clamp (declaration position is load-bearing: declaring it after the clamp collapses to 184B).
 //   - Final state: 22 diff / 199B exact size / first mismatch +0062 (VA 004C5DE2); the only remaining byte span is the binary-observed fused `fsubr [esp+8]` positioned between the x fcomp and fnstsw (y's dy read before the x<0 branch). Rebuilt emits fnstsw;test;je;mov [esp],0 before fsubr;fsub. This is the same known unreachable VC5 x87 scheduling gap as siblings distance_to_object (22 diff, same gap) and distance_to_position (accepted drift with the same overlay difference). The gap changes fault order (dy home read after the branch vs before) so it is not accepted_drift material.
 //   - Next leads: (a) TU-context probe - compile with stat_obj.cpp-like headers/context, since the original's y-before-clamp line map implies the fused schedule came from the real TU; (b) ternary-CSE shape `y = (x < 0 ? (x = 0, dy - this_ry) : dy - this_ry) - other_ry` to CSE-hoist both y steps before the branch; (c) duplicate-in-both-arms with the second subtraction split as a post-if `y -= other_master->radius_y`.
+// 2026-08-09 orch-luna-4c5d80-w2 fresh pass (10 meaningful hypotheses):
+//   - stat_obj.cpp-like <math.h> context was codegen-neutral; no header/context movement recovered the gap.
+//   - The ternary-CSE shape from the prior lead improved 22 -> 14 differing bytes and exact size 199B; it emitted the fused fsubr/fnstsw but left the second `fsub [other+34h]` after the branch. This is the codegen-best diagnostic, not the clean source.
+//   - Full-branch/partial/common y forms, y-before-clamp with ternary or explicit homes, and a narrow volatile x reread stayed in no-push/broad 186+ diff basins. A focused radius-type/pointer lab found no exact 199B variant.
+//   - The focused risky-flag lab (default, /GX, /Oa, /Og-, /Ot-, /O1, /Ox combinations) left the 14-byte default group or broke structure; no flag lead.
+//   - A final comma-sequenced y assignment likewise stayed in the no-push basin. Restored the clean natural y-after-clamp reconstruction; blocker remains the binary-observed x87/fault-order gap, shared by 004C5E50 and 004C5F00.
 
 class RGE_Master_Static_Object {
 public:

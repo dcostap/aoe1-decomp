@@ -15,6 +15,11 @@
 // - Inverting the outer guard and explicit current-player cursors worsened CFG
 //   and size parity. A two-case relation-gate variant lab also produced one
 //   emitted group with no improvement.
+// - Fresh pass: dossier/ABI/donor evidence confirmed no calls, frame, or
+//   layout blocker. Rechecked local aliases, scoped comparison values, guard
+//   spellings, full polymorphic class/entry surfaces, and 32 register-qualified
+//   local variants; all emitted the same register basin (best diagnostic diff
+//   25, no exact variant).
 // - Paused: remaining drift is entry/callee-save and related register coloring
 //   from offset 0; no call, frame, size, or behavior/layout blocker found.
 
@@ -59,17 +64,42 @@ struct RGE_Player {
 };
 
 struct RGE_Victory_Entry {
-    char gap_00[4];
+    unsigned char command;       // +0x00
+    char gap_01[3];
     long obj_type;                // +0x04
     RGE_Player* target_player;    // +0x08
-    char gap_0C[0x22];
+    float x0;                     // +0x0C
+    float y0;                     // +0x10
+    float x1;                     // +0x14
+    float y1;                     // +0x18
+    long number;                  // +0x1C
+    long count;                   // +0x20
+    RGE_Static_Object* this_obj;  // +0x24
+    RGE_Static_Object* target_obj; // +0x28
+    unsigned char victory_group;  // +0x2C
+    unsigned char ally_flag;      // +0x2D
     unsigned char state;          // +0x2E
+    unsigned char checked_flag;   // +0x2F
+    RGE_Victory_Entry* next;      // +0x30
 };
+
+struct RGE_Victory_Point_Entry;
 
 class RGE_Victory_Conditions {
 public:
-    char gap_00[0x0C];
-    RGE_Player* player;           // +0x0C
+    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
+    virtual void handle_condition(RGE_Victory_Entry* entry);
+    virtual char* condition_description(RGE_Victory_Entry* entry);
+    virtual void save(int handle);
+
+    RGE_Victory_Entry* victory_list; // +0x04
+    long list_num;                   // +0x08
+    RGE_Player* player;              // +0x0C
+    unsigned char victory;           // +0x10
+    char gap_11[3];
+    RGE_Victory_Point_Entry* victory_point_list; // +0x14
+    long point_list_num;            // +0x18
+    long tot_victory_points;        // +0x1C
 
     void handle_destroy_all(RGE_Victory_Entry* entry);
 };

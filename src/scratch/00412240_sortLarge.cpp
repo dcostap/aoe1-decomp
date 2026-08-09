@@ -12,6 +12,15 @@
 // - Preincrement, sorted aliases, register/volatile qualifiers, raw offset
 //   views, and pointer-local variants were tested; none improved the 14-byte
 //   positional mismatch. Leave the natural cursor source in scratch.
+// - Fresh pass: function-scope local promotion, exact leading ResourceItem
+//   fields/polymorphic context, indexed cursor spellings, and a 16-case
+//   candidate/max-expression lab all emitted the same 14-byte mismatch;
+//   explicit outer-cursor and narrow alias forms regressed the structural basin.
+// - Final clean source retained: mismatch is still limited to the 7-byte inner
+//   cursor setup order plus the one SIB base/index byte at the maximum compare.
+// - Normalization: removed the unused `pad` local that had preserved the old
+//   0x10 frame only as compiler steering; the prior 200-byte/14-byte result
+//   remains diagnostic history, not living source.
 
 class ResourceItem {
 public:
@@ -27,6 +36,7 @@ public:
 int ResourceItem::sortLarge()
 {
     int i;
+
     for (i = 0; i < this->numberValue; i++) {
         this->sortedValue[i] = this->valueValue[i];
         this->sortedIndexValue[i] = i;
