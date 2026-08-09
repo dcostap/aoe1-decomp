@@ -1,114 +1,180 @@
-// 00481CD0 RGE_RMM_Cliffs_Generator::generate_cliff
+// 00481CD0 RGE_RMM_Cliffs_Generator::generate_cliff()
+// Source: rmm_clif.cpp lines 177-294
 // Attempt log:
-// try 1: reconstructed from asm with stack locals, random choice loop, direction update, valid-site checks, drawing calls.
-// try 2: first compile exact byte size but frame 0x24 vs original 0x34; broad local-slot/register drift.
-// try 3: verified debug_rand lines 196/221/227 from asm pushes 0xC4/0xDD/0xE3; kept.
-// try 4: modeled start_x/start_y as long initialized to -1 to force ebp/edi sentinels; compiler still homes to stack too early.
-// try 5: kept direct member offsets +0x38/+0x3c/+0x24/+0x500 per asm; no type-layout blocker found.
-// try 6: modeled initial pop retry as do/while; call sequence present but local offsets differ.
-// try 7: modeled first_cliff/cliff_end_found as unsigned char; byte stores present but stack slots shifted.
-// try 8: expressed direction turn thresholds as <18/<36 to match compare constants; region remains structurally close but shifted.
-// try 9: expressed four check_for_valid_cliff_site calls in natural || chain; call set/stack cleanup match family, register scheduling drifts.
-// try 10: modeled drawing calls as virtual calls at +0x10/+0x20 with scale (coord*3+1); late block recognizable but not exact.
-// left in scratch: behavior/call set are reconstructed, but VC5 local-frame topology is wrong (0x24 vs 0x34) causing broad positional drift; not accepted_drift-safe.
+// - Replaced the old offset-only scaffold with the canonical random-map base,
+//   RGE_Cliffs_Info fields, valid_cliff_sites Map_Stack, and typed RGE_Map
+//   virtual surface established by the same-TU setup/generate callers.
+// - The do/pop retry shape and vtable padding recover the 15-call set,
+//   including map slots +0x10/+0x20; the best canonical source is 771 bytes
+//   with a 0x38 frame and 15 aligned calls.
+// - A six-variant local-order/retry lab found no size/frame/call-set eligible
+//   improvement. Remaining structural drift is the 0x34 target frame and
+//   start-sentinel/register/stack-home topology around Map_Stack cliff; no
+//   register-forcing or opaque local scaffold was retained.
 
-extern "C" int __cdecl debug_rand(char*, int);
+extern "C" int __cdecl debug_rand(char* file, int line);
 static char rmm_clif_cpp[] = "C:\\msdev\\work\\age1_x1\\rmm_clif.cpp";
 
-struct DrawIface { virtual void f0(); virtual void f4(); virtual void f8(); virtual void fC(); virtual void draw_line(int,int,int,int,int,int); virtual void f18(); virtual void f1c(); virtual void draw_rect(int,int,int,int,int,int); };
-
-class RGE_RMM_Cliffs_Generator {
-public:
-    char gap0[0x0c];
-    DrawIface* draw;
-    char gap10[0x24-0x10];
-    unsigned char** valid_rows;
-    char gap28[0x38-0x28];
-    int cliff_min_length;
-    int cliff_max_length;
-    int cliff_terrain_spacing;
-    int cliff_color;
-    char gap48[0x4f0-0x48];
-    char valid_cliff_sites;
-    char gap4f1[0x500-0x4f1];
-    int cliff_stack_count;
-
-    void init_stack(void*);
-    void* pop_stack(void*, long*, long*, long*);
-    void push_stack(void*, int, int, float, float);
-    unsigned char check_for_valid_cliff_site(long, long*, long*, long);
-    void invalidate_cliff_area(long, long, long);
-    void generate_cliff();
+struct Map_Stack {
+    long x;
+    long y;
+    float cost;
+    float tot_cost;
+    Map_Stack* next;
+    Map_Stack* prev;
 };
 
-void RGE_RMM_Cliffs_Generator::generate_cliff()
-{
+class RGE_Map {
+public:
+    virtual ~RGE_Map();
+    virtual void vf04(void);
+    virtual void vf08(void);
+    virtual void vf0c(void);
+    virtual void draw_line(long x1, long y1, long x2, long y2, long color, long width);
+    virtual void vf18(void);
+    virtual void vf1c(void);
+    virtual void vf20(void);
+    virtual void draw_rect(long x1, long y1, long x2, long y2, long color, long width);
+};
+
+class RGE_Random_Map_Module {
+public:
+    virtual unsigned char generate(void);
+
+    void* parent;
+    void* list;
+    RGE_Map* map;
+    void* map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    unsigned char* search_map;
+    unsigned char** search_map_rows;
+    Map_Stack* stack_array;
+    Map_Stack** stack_offsets;
+
+    void init_stack(Map_Stack* stack);
+    Map_Stack* pop_stack(Map_Stack* head, long* x, long* y, float* cost);
+    void push_stack(Map_Stack* head, long x, long y, float cost, float total_cost);
+};
+
+struct RGE_Cliffs_Hot_Spots {
+    long x;
+    long y;
+    long radius;
+};
+
+struct RGE_Cliffs_Info {
+    long number_of_cliffs;
+    long number_of_cliffs_variance;
+    long average_cliff_size;
+    long cliff_size_variance;
+    long cliff_terrain_spacing;
+    long cliff_to_cliff_spacing;
+    RGE_Cliffs_Hot_Spots hot_spots[99];
+    long hot_spot_num;
+};
+
+class RGE_RMM_Cliffs_Generator : public RGE_Random_Map_Module {
+public:
+    virtual unsigned char generate(void);
+
+    RGE_Cliffs_Info info;
+    Map_Stack valid_cliff_sites;
+
+    unsigned char check_for_valid_cliff_site(long direction, long* y,
+                                              long* valid_height, long index);
+    void invalidate_cliff_area(long x, long y, long spacing);
+    void generate_cliff(void);
+};
+
+void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
+    long start_x = -1;
+    long start_y = -1;
     long x;
     long y;
     long valid_height;
-    long cliff;
+    long index;
+    long this_cliff_size;
+    long direction;
     long cost;
     unsigned char first_cliff;
     unsigned char cliff_end_found;
-    long dir;
-    long start_x;
-    long start_y;
+    Map_Stack cliff;
+    float stack_cost;
 
-    start_y = -1;
-    start_x = -1;
-    cost = this->cliff_min_length + ((debug_rand(rmm_clif_cpp, 196) * this->cliff_max_length * 2) / 32767) - this->cliff_max_length;
+    cost = ((debug_rand(rmm_clif_cpp, 0xc4) *
+                 this->info.cliff_size_variance * 2) / 0x7fff +
+            this->info.average_cliff_size) - this->info.cliff_size_variance;
     first_cliff = 1;
-    if (this->cliff_stack_count == 0 || cost < 3) return;
+    if (this->valid_cliff_sites.next == 0) {
+        return;
+    }
+    if (cost < 3) {
+        return;
+    }
 
     this->init_stack(&cliff);
     do {
-        this->pop_stack(&this->valid_cliff_sites, &x, &valid_height, &cliff);
-        if (this->valid_rows[valid_height][x] != 0) break;
-        if (this->cliff_stack_count == 0) return;
-    } while (1);
+        this->pop_stack(&this->valid_cliff_sites, &y, &valid_height,
+                        &stack_cost);
+    } while (this->search_map_rows[valid_height][y] == 0 &&
+             this->valid_cliff_sites.next != 0);
+    if (this->search_map_rows[valid_height][y] == 0) {
+        return;
+    }
 
-    y = valid_height;
-    dir = this->valid_rows[valid_height][x];
-    this->push_stack(&y, x, valid_height, 0, 0);
-    this->valid_rows[valid_height][x] = 0;
-    dir = (debug_rand(rmm_clif_cpp, 221) * 4) / 32767;
+    index = this->search_map_rows[valid_height][y];
+    this->push_stack(&cliff, y, valid_height, 0.0f, 0.0f);
+    this->search_map_rows[valid_height][y] = 0;
 
-    long i = 0;
+    direction = (debug_rand(rmm_clif_cpp, 0xdd) * 4) / 0x7fff;
+    this_cliff_size = 0;
     if (cost > 0) {
         do {
             cliff_end_found = 0;
-            long r = (debug_rand(rmm_clif_cpp, 227) * 100) / 32767;
-            if (r < 18) {
-                if (dir <= 0) dir = 3;
-                else dir--;
-            } else if (r < 36) {
-                if (dir >= 3) dir = 0;
-                else dir++;
+            long turn = (debug_rand(rmm_clif_cpp, 0xe3) * 100) / 0x7fff;
+            if (turn < 0x12) {
+                if (direction < 1) {
+                    direction = 3;
+                } else {
+                    direction--;
+                }
+            } else if (turn < 0x24) {
+                if (direction < 3) {
+                    direction++;
+                } else {
+                    direction = 0;
+                }
             }
-            if (this->check_for_valid_cliff_site(dir, &x, &valid_height, y) ||
-                this->check_for_valid_cliff_site(dir + 1, &x, &valid_height, y) ||
-                this->check_for_valid_cliff_site(dir - 1, &x, &valid_height, y) ||
-                (first_cliff && this->check_for_valid_cliff_site(dir - 2, &x, &valid_height, y))) {
-            } else {
+
+            if (this->check_for_valid_cliff_site(direction, &y, &valid_height, index) == 0 &&
+                this->check_for_valid_cliff_site(direction + 1, &y, &valid_height, index) == 0 &&
+                this->check_for_valid_cliff_site(direction - 1, &y, &valid_height, index) == 0 &&
+                (first_cliff == 0 ||
+                 this->check_for_valid_cliff_site(direction - 2, &y, &valid_height, index) == 0)) {
                 cliff_end_found = 1;
             }
             first_cliff = 0;
-            if (cliff_end_found) break;
-            this->push_stack(&y, x, valid_height, 0, 0);
-            this->valid_rows[valid_height][x] = 0;
-            i++;
-        } while (i < cost);
+            if (cliff_end_found != 0) {
+                break;
+            }
+            this->push_stack(&cliff, y, valid_height, 0.0f, 0.0f);
+            this->search_map_rows[valid_height][y] = 0;
+            this_cliff_size++;
+        } while (this_cliff_size < cost);
     }
 
-    if (this->cliff_stack_count == 0) return;
-    do {
-        this->pop_stack(&cliff, &x, &y, &valid_height);
-        if (start_y == -1) {
-            start_y = y;
-            start_x = x;
+    while (cliff.prev != 0) {
+        this->pop_stack(&cliff, &y, &valid_height, &stack_cost);
+        if (start_x == -1) {
+            start_x = y;
+            start_y = valid_height;
         }
-        this->draw->draw_line(start_y * 3 + 1, start_x * 3 + 1, y * 3 + 1, x * 3 + 1, 1, 16);
-        this->draw->draw_rect(start_y * 3 + 1, start_x * 3 + 1, valid_height * 3 + 1, x * 3 + 1, 0, 0);
-        this->invalidate_cliff_area(x, y, this->cliff_color);
-    } while (this->cliff_stack_count != 0);
+        this->map->draw_line(start_x * 3 + 1, start_y * 3 + 1,
+                             y * 3 + 1, valid_height * 3 + 1, 1, 0x10);
+        this->map->draw_rect(start_x * 3 + 1, start_y * 3 + 1,
+                             y * 3 + 1, valid_height * 3 + 1, 0, 0);
+        this->invalidate_cliff_area(y, valid_height, this->info.cliff_to_cliff_spacing);
+    }
 }
