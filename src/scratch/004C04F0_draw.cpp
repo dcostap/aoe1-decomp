@@ -1,20 +1,132 @@
-// VA: 004C04F0 draw (304B)
-// sprite.cpp
+// VA: 004C04F0 RGE_Sprite::draw (304B)
+// PDB source: sprite.cpp, lines 594-621
+// Attempt log:
+// baseline reconstruction: natural typed RGE_Sprite/RGE_Picture_List ownership,
+// child-list scan, draw-level coordinate selection, and do_draw calls.
+// parameter mutation/direct-return and nonpositive-list guards reached the right
+// size but stayed in a different register/frame basin; top-level locals and a
+// typed 16-byte cursor did not recover the original saved-this topology.
+// best emitted probe: direct parameter mutation, 304B, 289 differing bytes;
+// clean source retained because the remaining gap is structural register/local
+// allocation (original 0xC frame, stack-saved this, cached color/draw pointers).
+// Main-agent audit retained the natural non-polymorphic sprite/picture-list
+// ownership; no codegen-only frame or parameter-mutation probe survives.
+
+class RGE_Color_Table;
+class TDrawArea;
+class RGE_Sprite;
+
+class RGE_Picture_List {
+public:
+    short picture_num;
+    char gap_02[2];
+    RGE_Sprite* sprite;
+    short offset_x;
+    short offset_y;
+    short facet;
+    char gap_0E[2];
+};
 
 class RGE_Sprite {
 public:
-    char gap4[0x5C];
-    short field_60;
-    char gap62[0x1E];
-    int field_80;
-    
-    void draw(int frameIdx, int a2, int a3);
+    char pict_name[13];
+    char gap_0D[3];
+    long resource_id;
+    unsigned char loaded;
+    char gap_15[3];
+    RGE_Color_Table** color_tables;
+    void* shape;
+    long last_time;
+    long delta_time;
+    unsigned char color_flag;
+    unsigned char draw_level;
+    short color_table;
+    unsigned char transparent_picking_flag;
+    char gap_2D[1];
+    short box_x1;
+    short box_y1;
+    short box_x2;
+    short box_y2;
+    short draw_list_num;
+    RGE_Picture_List* draw_list;
+    void* main_sound;
+    unsigned char micro_man_sound;
+    char gap_41[3];
+    void* sound_list;
+    char name[21];
+    char gap_5D[1];
+    short frame_num;
+    short facet_num;
+    float base_speed;
+    float duration;
+    float pause_between_loops;
+    unsigned char flag;
+    char gap_71[1];
+    short id;
+    unsigned char mirror_flag;
+    char gap_75[3];
+
+    void do_draw(long frame, long param_2, long x, long y,
+                 RGE_Color_Table* color_table, TDrawArea* draw_area,
+                 unsigned char color_index);
+    unsigned char draw(long facet, long param_2, long param_3, long param_4,
+                       long param_5, long param_6,
+                       RGE_Color_Table* color_table, TDrawArea* draw_area,
+                       unsigned char color_index);
 };
 
-void RGE_Sprite::draw(int frameIdx, int a2, int a3) {
-    if (frameIdx >= (signed short)field_60) {
-        frameIdx = 0;
+unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
+                               long param_4, long param_5, long param_6,
+                               RGE_Color_Table* color_table,
+                               TDrawArea* draw_area,
+                               unsigned char color_index)
+{
+    unsigned char result;
+
+    if (facet >= (signed short)this->facet_num) {
+        facet = 0;
     }
-    
-    field_80 = frameIdx;
+
+    if ((this->draw_list_num < 1) || (this->draw_list == 0)) {
+        if (this->draw_level < 0xb) {
+            param_3 = param_5;
+            param_4 = param_6;
+        }
+        this->do_draw(facet, param_2, param_3, param_4,
+                      color_table, draw_area, color_index);
+        result = 1;
+    }
+    else {
+        result = 0;
+        int index = 0;
+        if (0 < this->draw_list_num) {
+            do {
+                RGE_Picture_List* entry = &this->draw_list[index];
+                short entry_facet = entry->facet;
+                if ((entry_facet < 0) || (entry_facet == facet)) {
+                    RGE_Sprite* sprite = entry->sprite;
+                    long offset_y = entry->offset_y;
+                    long offset_x;
+                    long base_x;
+                    if (sprite->draw_level < 0xb) {
+                        offset_y = offset_y + param_6;
+                        offset_x = entry->offset_x;
+                        base_x = param_5;
+                    }
+                    else {
+                        offset_y = offset_y + param_4;
+                        offset_x = entry->offset_x;
+                        base_x = param_3;
+                    }
+                    sprite->do_draw((sprite->facet_num * facet) /
+                                        (int)this->facet_num,
+                                    param_2, offset_x + base_x, offset_y,
+                                    color_table, draw_area, color_index);
+                }
+                index = index + 1;
+            } while (index < this->draw_list_num);
+            return (unsigned char)index;
+        }
+    }
+    return result;
 }
