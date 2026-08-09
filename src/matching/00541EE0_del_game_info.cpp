@@ -6,9 +6,11 @@
 // attempt 4: use explicit pass labels and a short count temp; VC5 still folds initial player_num/player-list guards.
 // attempt 5: positive `num != 0 && num > 0` form; no change in the stubborn region.
 // attempt 6: /O1, /GX, /Od probes; /O1 smaller, /GX unchanged, /Od broad mismatch; no custom flags kept.
-// left in scratch: default /O2 build is 368 bytes vs original 373. Prefix through scenario cleanup and final reset are understood.
-// remaining issue: original emits `mov ax,[esi+3C]; cmp ax,bx` and re-enters the second player cleanup pass on first-pass guard failure;
-// rebuilt uses shorter direct memory compares and folds the impossible second-pass false path.
+// attempt 7: remove the cached `num` and redundant !=0 tests; this folded the
+// duplicate pre-body test.
+// attempt 8: retain the outer short count but use ordinary for loops for both
+// passes.  VC5 then preserves the binary's early AX load, duplicate compare,
+// and shared transition into the second pass.  Exact with default flags.
 
 extern "C" void __cdecl free(void*);
 
@@ -33,7 +35,7 @@ public:
 
 class RGE_Game_World {
 public:
-    virtual void v000(); virtual void v004(); virtual void v008(); virtual void v00C();
+    virtual ~RGE_Game_World(); virtual void v004(); virtual void v008(); virtual void v00C();
     virtual void v010(); virtual void v014(); virtual void v018(); virtual void v01C();
     virtual void v020(); virtual void v024(); virtual void v028(); virtual void v02C();
     virtual void v030(); virtual void v034(); virtual void v038(); virtual void v03C();
@@ -91,7 +93,6 @@ public:
 void RGE_Game_World::del_game_info()
 {
     int i;
-    short num;
     world_update_counter = 0;
 
     this->game_state = 2;
@@ -134,38 +135,26 @@ void RGE_Game_World::del_game_info()
         this->scenario = 0;
     }
 
-    num = this->player_num;
-    if (num != 0 && num > 0) {
-        if (this->players != 0) {
-            i = 0;
-            if (num != 0 && num > 0) {
-                do {
-                    if (this->players[i] != 0) {
-                        this->players[i]->destroy_objects();
-                    }
-                    i++;
-                } while (i < this->player_num);
+    short num = this->player_num;
+    if (num > 0 && this->players != 0) {
+        for (i = 0; i < this->player_num; i++) {
+            if (this->players[i] != 0) {
+                this->players[i]->destroy_objects();
             }
         }
     }
 
     num = this->player_num;
-    if (num != 0 && num > 0) {
-        if (this->players != 0) {
-            i = 0;
-            if (num != 0 && num > 0) {
-                do {
-                    if (this->players[i] != 0) {
-                        this->players[i]->scalar_delete(1);
-                        this->players[i] = 0;
-                    }
-                    i++;
-                } while (i < this->player_num);
+    if (num > 0 && this->players != 0) {
+        for (i = 0; i < this->player_num; i++) {
+            if (this->players[i] != 0) {
+                this->players[i]->scalar_delete(1);
+                this->players[i] = 0;
             }
-            this->player_num = 0;
-            free(this->players);
-            this->players = 0;
         }
+        this->player_num = 0;
+        free(this->players);
+        this->players = 0;
     }
 
     this->next_object_id = 0;

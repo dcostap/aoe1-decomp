@@ -10,23 +10,27 @@
 // 8: No-register pointer/count zeroing regressed to newMax=EBX/newList=EDI and manual loop.
 // 9: No-register indexed zeroing improved edit diff to 23.85%, but newMax remains EDI not original EBP.
 // 10: Hoist newMax/newList/i declarations to function top: no codegen change.
-// Left in scratch: behavior/calls/field offsets look correct, but remaining mismatch is VC5 register allocation and zero-tail basin in resize blocks. Best source gets EBX=newList and EDI=newMax (original EBP=newMax) and emits indexed zero loop instead of original `mov ecx,ebp; lea edi,[ebx+eax*4]; sub ecx,eax; xor eax,eax; rep stosd`; this shifts positive/negative branch targets from first mismatch offset 0x16.
+// 11: A typed pointer/remaining clear and memset were diagnostic variants; the
+// pointer loop stayed in a separate branch basin and memset used byte-count
+// conversion.  Restored the natural indexed for-header clear.
+// 12: `for (; i < newMax; i++) newList[i] = 0` in both resize arms restores
+// the original rep stosd setup, saved-register coloring, and exact 457-byte
+// output.  The named arrays and +0x88..+0x9C ownership remain canonical.
 
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
 extern void* VIS_UNIT_objectsValue;
-extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 class RGE_Static_Object {
 public:
-    void* vtbl;
+    virtual ~RGE_Static_Object();
     int id;
     void change_unique_id();
 };
 
 class RGE_Game_World {
 public:
-    void* vtbl;
+    virtual ~RGE_Game_World();
     char pad_004[0x74 - 4];
     unsigned char scenario_object_flag; // +74
     char pad_075[0x88 - 0x75];
@@ -62,10 +66,9 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
                 } while (i < this->maxNumberObjectsValue);
             }
             if (i < newMax) {
-                do {
+                for (; i < newMax; i++) {
                     newList[i] = 0;
-                    i++;
-                } while (i < newMax);
+                }
             }
             operator_delete(this->objectsValue);
             this->objectsValue = newList;
@@ -97,10 +100,9 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
                 } while (i < this->maxNumberNegativeObjectsValue);
             }
             if (i < newMax) {
-                do {
+                for (; i < newMax; i++) {
                     newList[i] = 0;
-                    i++;
-                } while (i < newMax);
+                }
             }
             operator_delete(this->negativeObjectsValue);
             this->negativeObjectsValue = newList;
