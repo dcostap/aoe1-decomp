@@ -1,93 +1,142 @@
 // 004E9260 TribeStrategyAIModule::TribeStrategyAIModule
+// taistrmd.cpp
+//
 // Attempt log:
-// try 1: direct constructor reconstruction with /GX, local layout, helper unique-int insertion compiled too small/out-of-line (.text 784).
-// try 2: macro-expanded the three unique-int insertion loops; exact size but broad mismatch, initial EH missing until destructor surfaces added.
-// try 3: added nontrivial base/member destructors; EH prologue appeared, first mismatch moved to +47.
-// try 4: fixed inherited/base padding from 0xEC to 0xF0; field offsets now align, edit diff improved.
-// try 5: made IntArray zeroing occur through initializer-list/inline constructor so zero stores precede VictoryConditionRuleSystem construction like original; first mismatch moved to +54, edit diff ~41.5%, but loop codegen still broad mismatch.
-// left in scratch: constructor call set/field offsets/read sequence are mostly modeled, but exact match likely needs true class declarations/initializer list and natural ManagedArray<int>::add/contains implementation rather than local macro loops.
+// baseline reset: canonical StrategyAIModule(void*,int) ABI, virtual derived
+// construction, real ManagedArray<int> members, and the period inline add
+// implementation. Earlier work used an int-typed base shim and a macro-expanded
+// duplicate scan; those produced the wrong constructor relocation and a
+// pointer-walk/boolean CFG rather than the donor's indexed ManagedArray scan.
+// parameter-home probe: reusing the dead first constructor parameter for the
+// serialized name length and rule values reduced the mismatch from 31 bytes to
+// 7 bytes and aligned all three indexed add loops.
+// frame probes: explicit/scoped value locals, top-of-function declarations,
+// address-taken aliases, and an explicit self pointer all collapsed back to a
+// 0xC frame and a 20-byte displacement-only drift; these were diagnostic and
+// were rolled back.
+// left in scratch: best canonical source is the parameter-home/ManagedArray
+// reconstruction (7 bytes, 0x10 frame). Remaining drift is the original
+// compiler's one-word local-frame reservation around the name-length home.
 
-extern "C" void rge_read(int file, void* dst, int size);
-void* __cdecl operator new(unsigned int);
-void __cdecl operator delete(void*);
+extern "C" void __cdecl rge_read(int file, void* dst, int size);
+extern "C" void* __cdecl operator_new(unsigned int size);
+extern "C" void __cdecl operator_delete(void* pointer);
 extern float save_game_version;
+extern float DAT_00575690;
 
-class StrategyAIModule { public: StrategyAIModule(int zero, int a); ~StrategyAIModule(); };
-class VictoryConditionRuleSystem { public: VictoryConditionRuleSystem(); ~VictoryConditionRuleSystem(); char data[0x38C]; };
+class AIModule {
+public:
+    virtual ~AIModule();
+    AIModule(char* name, int id, int parameter, void* object);
+};
 
-struct IntArray {
-    int* value;
+class StrategyAIModule : public AIModule {
+public:
+    StrategyAIModule(void* object, int parameter);
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
-    IntArray() : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+
+    ManagedArray()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0)
+    {
+    }
+
+    ~ManagedArray() {
+        if (this->value != 0) {
+            operator_delete(this->value);
+            this->value = 0;
+        }
+        this->numberValue = 0;
+        this->desiredNumberValue = 0;
+        this->maximumSizeValue = 0;
+    }
+
+    int add(T valueToAdd) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == valueToAdd)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int newSize = this->numberValue + 1;
+            T* newValue = (T*)operator_new(newSize * sizeof(T));
+            if (newValue != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= newSize)
+                        break;
+                    newValue[j] = this->value[j];
+                }
+                operator_delete(this->value);
+                this->value = newValue;
+                this->maximumSizeValue = newSize;
+            }
+        }
+
+        this->value[this->numberValue] = valueToAdd;
+        this->numberValue++;
+        return 1;
+    }
+};
+
+class VictoryConditionRuleSystem {
+public:
+    virtual ~VictoryConditionRuleSystem();
+    VictoryConditionRuleSystem();
+    char data[0x388];
+};
+
+struct WaypointBytes {
+    char data[0x10];
 };
 
 class TribeStrategyAIModule : public StrategyAIModule {
 public:
-    char gap_base[0xF0];          // to 0xf0 after vptr/base
-    void* md;                    // f0
-    int currentVictoryConditionValue; // f4
-    char ruleSetNameValue[0x104]; // f8
-    int targetIDValue;           // 1fc
-    int pad200;
-    int secondTargetIDValue;     // 204
-    int secondTargetTypeValue;   // 208
-    char targetPoint1Value[0x10];// 20c
-    char targetPoint2Value[0x10];// 21c
-    int targetAttributeValue;    // 22c
-    int targetNumberValue;       // 230
-    int victoryConditionChangeTimeout; //234
-    IntArray vcRuleSet;          //238
-    IntArray executingRules;     //248
-    IntArray idleRules;          //258
-    VictoryConditionRuleSystem vcRules; //268
-    int difficultyLevel;         //5f4
+    char gap_base[0xEC];
+    void* md;                          // +0xF0
+    int currentVictoryConditionValue;  // +0xF4
+    char ruleSetNameValue[0x101];      // +0xF8
+    unsigned char ruleSetNamePadding[3];
+    int targetIDValue;                 // +0x1FC
+    int targetTypeValue;               // +0x200
+    int secondTargetIDValue;           // +0x204
+    int secondTargetTypeValue;         // +0x208
+    WaypointBytes targetPoint1Value;   // +0x20C
+    WaypointBytes targetPoint2Value;   // +0x21C
+    int targetAttributeValue;          // +0x22C
+    int targetNumberValue;             // +0x230
+    int victoryConditionChangeTimeout; // +0x234
+    ManagedArray<int> vcRuleSet;       // +0x238
+    ManagedArray<int> executingRules;  // +0x248
+    ManagedArray<int> idleRules;       // +0x258
+    VictoryConditionRuleSystem vcRules;// +0x268
+    int difficultyLevel;               // +0x5F4
 
+    virtual ~TribeStrategyAIModule();
     TribeStrategyAIModule(int a, int file);
     int loadRules(char* name);
     void setDifficultyLevel(int level);
 };
 
-#define ADD_UNIQUE(ARR, VAL) do { \
-    IntArray* a_ = (ARR); \
-    int n_ = a_->numberValue; \
-    int j_ = 0; \
-    int found_ = 0; \
-    if (n_ > 0) { \
-        do { \
-            if (j_ >= a_->maximumSizeValue) break; \
-            if (a_->value[j_] == (VAL)) { found_ = 1; break; } \
-            ++j_; \
-        } while (j_ < n_); \
-    } \
-    if (!found_) { \
-    if (n_ > a_->maximumSizeValue - 1) { \
-        int newCap_ = n_ + 1; \
-        int* p_ = (int*)operator new(newCap_ * 4); \
-        if (p_) { \
-            j_ = 0; \
-            if (a_->maximumSizeValue > 0) { \
-                do { \
-                    if (j_ >= newCap_) break; \
-                    p_[j_] = a_->value[j_]; \
-                    ++j_; \
-                } while (j_ < a_->maximumSizeValue); \
-            } \
-            operator delete(a_->value); \
-            a_->value = p_; \
-            a_->maximumSizeValue = newCap_; \
-        } \
-    } \
-    a_->value[a_->numberValue] = (VAL); \
-    ++a_->numberValue; \
-    } \
-} while(0)
-
-TribeStrategyAIModule::TribeStrategyAIModule(int a, int file) : StrategyAIModule(0, a), md(0), vcRuleSet(), executingRules(), idleRules(), vcRules()
+TribeStrategyAIModule::TribeStrategyAIModule(int a, int file)
+    : StrategyAIModule((void*)0, a),
+      md(0),
+      vcRuleSet(),
+      executingRules(),
+      idleRules(),
+      vcRules(),
+      difficultyLevel(0)
 {
-    this->difficultyLevel = 0;
-
     rge_read(file, &this->currentVictoryConditionValue, 4);
     rge_read(file, &this->targetIDValue, 4);
     rge_read(file, &this->secondTargetIDValue, 4);
@@ -97,31 +146,32 @@ TribeStrategyAIModule::TribeStrategyAIModule(int a, int file) : StrategyAIModule
     rge_read(file, &this->targetAttributeValue, 4);
     rge_read(file, &this->targetNumberValue, 4);
     rge_read(file, &this->victoryConditionChangeTimeout, 4);
-    if (save_game_version >= 1.5f) {
+    if (save_game_version >= DAT_00575690) {
         rge_read(file, &this->difficultyLevel, 4);
     }
 
-    int len;
-    rge_read(file, &len, 4);
-    rge_read(file, this->ruleSetNameValue, len);
-    this->ruleSetNameValue[len] = 0;
+    int length;
+    rge_read(file, &length, 4);
+    rge_read(file, this->ruleSetNameValue, length);
+    this->ruleSetNameValue[length] = 0;
     this->loadRules(this->ruleSetNameValue);
     this->setDifficultyLevel(this->difficultyLevel);
 
-    int count, v;
+    int count;
+    int i;
     rge_read(file, &count, 4);
-    for (int i = 0; i < count; ++i) {
-        rge_read(file, &v, 4);
-        ADD_UNIQUE(&this->vcRuleSet, v);
+    for (i = 0; i < count; ++i) {
+        rge_read(file, &a, 4);
+        this->vcRuleSet.add(a);
     }
     rge_read(file, &count, 4);
     for (i = 0; i < count; ++i) {
-        rge_read(file, &v, 4);
-        ADD_UNIQUE(&this->executingRules, v);
+        rge_read(file, &a, 4);
+        this->executingRules.add(a);
     }
     rge_read(file, &count, 4);
     for (i = 0; i < count; ++i) {
-        rge_read(file, &v, 4);
-        ADD_UNIQUE(&this->idleRules, v);
+        rge_read(file, &a, 4);
+        this->idleRules.add(a);
     }
 }

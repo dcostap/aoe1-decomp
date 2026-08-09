@@ -6,3 +6,6 @@
 0055A830 ??6ostream@@QAEAAV0@PBD@Z
 0055AFD0 ??6ostream@@QAEAAV0@N@Z
 0055AF00 ??6ostream@@QAEAAV0@H@Z
+# utmarray.h operator[] used by TribeStrategyAIModule::setVictoryCondition;
+# the inventory packet preserves this decorated overload identity.
+004EA750 ??A?$ManagedArray@H@@QAEAAHH@Z

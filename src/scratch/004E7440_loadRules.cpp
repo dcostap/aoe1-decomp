@@ -1,17 +1,78 @@
-// VA: 004E7440 loadRules (394B)
+// VA: 004E7440 VictoryConditionRuleSystem::loadRules (394B)
 // taistrmd.cpp
+//
+// Attempt log:
+// baseline: natural VC5 stdio parser with the proven NONE/empty-name guards,
+// temporary filename buffer, comment/directive filter, rule-index bounds check,
+// and .tmp cleanup; frame was 0x108 and the only drift was stack topology.
+// widened the named temp to 260 bytes, matching the observed temp+4/0x100
+// fgets window and frame 0x10C; all calls, CFG, and table accesses aligned,
+// leaving four bytes of sscanf byte-local scheduling drift.
+// tried an explicit ruleIndex dword/byte overlay, a two-byte comment array,
+// and several declaration/argument order variants. The closest two-byte
+// variants reversed the parsed comment-byte tests or otherwise changed the
+// natural local ownership; they were diagnostic only and were rolled back.
+// left in scratch: canonical behavior and frame/call topology match; the
+// remaining difference is the original VC5 allocation/load order for the two
+// sscanf comment-byte destinations (4 bytes, 1.0152%).
 
-class TribeStrategyAIModule {
+extern "C" int __cdecl strcmp(const char* left, const char* right);
+extern "C" unsigned int __cdecl strlen(const char* text);
+extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
+extern "C" void* __cdecl fopen(const char* filename, const char* mode);
+extern "C" char* __cdecl fgets(char* buffer, int count, void* stream);
+extern "C" int __cdecl sscanf(const char* buffer, const char* format, ...);
+extern "C" int __cdecl fclose(void* stream);
+extern "C" char* __cdecl strstr(const char* text, const char* search);
+extern "C" int __cdecl _unlink(const char* filename);
+
+#pragma intrinsic(strcmp)
+#pragma intrinsic(strlen)
+
+class VictoryConditionRuleSystem {
 public:
-    char gap4[0x100];
-    int field_104;
-    
-    void loadRules(const char* filename);
+    virtual ~VictoryConditionRuleSystem();
+    int sn[226];
+
+    int loadRules(char* filename);
 };
 
-void TribeStrategyAIModule::loadRules(const char* filename) {
-    if (!filename) return;
-    
-    const char* defaultRules = (const char*)0x57F350;
-    field_104 = (int)filename;
+int VictoryConditionRuleSystem::loadRules(char* filename)
+{
+    char commentTemp1;
+    char commentTemp2;
+    int ruleValue;
+    char temp[260];
+    void* file;
+
+    if (strcmp(filename, "NONE") != 0 &&
+        filename != 0 &&
+        strlen(filename) != 0) {
+        sprintf(temp + 4, "%s", filename);
+        file = fopen(temp + 4, "r");
+        if (file != 0) {
+            while (fgets(temp + 4, 0x100, file) != 0) {
+                sscanf(temp + 4, " %c%c",
+                       &commentTemp1, &commentTemp2);
+                if ((commentTemp1 != '/' || commentTemp2 != '/') &&
+                    (commentTemp1 != 'D' || commentTemp2 != 'E') &&
+                    (commentTemp1 != 'V' || commentTemp2 != 'C')) {
+                    if (commentTemp1 == 'E' && commentTemp2 == 'N') {
+                        break;
+                    }
+                    sscanf(temp + 4, "%d %d ",
+                           &ruleValue, temp);
+                    if (ruleValue >= 0 && ruleValue < 0xE2) {
+                        this->sn[ruleValue] = *(int*)temp;
+                    }
+                }
+            }
+            fclose(file);
+            if (strstr(filename, ".tmp") != 0) {
+                _unlink(filename);
+            }
+            return 1;
+        }
+    }
+    return 0;
 }
