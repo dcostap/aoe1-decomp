@@ -1,80 +1,148 @@
 // VA: 00444C30 TDrawArea::SetClipRect (279 B)
-// PDB source: Drawarea.cpp
-// Packet-grounded: EH-framed. Store clip rect, manage SpanList (create or reuse), 
-//   reset + set span regions, loop add spans, store cur span list
+// Attempt log:
+// Baseline scaffold had free helper calls and no C++ EH/new surface.  The
+// executable shows the Drawarea.cpp member plus the real TSpan_List_Manager
+// constructor/destructor/method calls, so this reconstruction uses those
+// period-plausible class surfaces and the proven +28 ClipRect/+CC SpanList
+// ownership.
+// FLAGS: config/flags/00444C30_SetClipRect.rsp (/GX; original has C++ EH/new state)
+// Probe: natural member/new/delete reconstruction reached size 279, all 7 calls,
+// and diff 28; reversed the manager-lines/height compare to preserve its observed
+// load family, and used the member guard to retain the binary's redundant null test.
+// Probe: PDB/inventory long spellings and the full 0x100-byte TDrawArea surface
+// emitted unchanged code; these are retained as canonical ownership context.
+// Probe: a per-row pointer alias improved diff to 26 but moved the AddSpan manager
+// load before all pushes and was rolled back to the direct member call.
+// Probe: two 32-variant natural source-shape labs (one with /GX) found no exact;
+// local call aliases only changed scheduling, so the direct typed member form stays.
+// Remaining drift is localized register/load scheduling at the comparison, ctor
+// arguments, SetSpanRegions/AddSpan argument setup, and final CurSpanList reload.
 
-extern void* operator_new(unsigned int size);
-extern void operator_delete(void* p);
-extern int TSpan_List_Manager_ctor(void* mgr, int width, int height);
-extern int TSpan_List_Manager_dtor(void* mgr);
-extern void TSpan_List_Manager_ResetAll(void* mgr);
-extern void TSpan_List_Manager_SetSpanRegions(void* mgr, int left, int top, int right, int bottom);
-extern void TSpan_List_Manager_AddSpan(void* mgr, int left, int right, int y);
+class VSpan_Node;
 
-struct Shim_SetClipRect_4C30 {
-    char gap00[0x18];
-    int Width;                 // +0x18
-    int Height;                // +0x1C
-    char gap20[0x28 - 0x20];
-    int ClipLeft;              // +0x28
-    int ClipTop;               // +0x2C
-    int ClipRight;             // +0x30
-    int ClipBottom;            // +0x34
-    char gap38[0xCC - 0x38];
-    void* SpanList;            // +0xCC
-    int field_D0;              // +0xD0 (CurSpanList)
+class TSpan_Node_List {
+public:
+    VSpan_Node** Zone_Ptrs;       // +0x00
+    int* Zone_Size_Ptrs;          // +0x04
+    long Used_Zones;              // +0x08
+    long Max_Zones;               // +0x0C
+    VSpan_Node* Free_Head;        // +0x10
+    long Free_Pool_Zone;          // +0x14
+    long Free_Pool_Index;         // +0x18
+    long Total_Blocks;             // +0x1C
+    long Free_Blocks;             // +0x20
+    long Default_Grow_Size;        // +0x24
+    long Element_Size;             // +0x28
+    long Alloc_Count;              // +0x2C
+    long Dealloc_Count;            // +0x30
+    long NewZone_Count;            // +0x34
+    long Reset_Count;              // +0x38
+
+    ~TSpan_Node_List();
 };
 
-void TDrawArea_SetClipRect(Shim_SetClipRect_4C30* self, int left, int top, int right, int bottom)
+class TSpan_List_Manager : public TSpan_Node_List {
+public:
+    VSpan_Node** Line_Head_Ptrs;  // +0x3C
+    VSpan_Node** Line_Tail_Ptrs;  // +0x40
+    long* LeftMostPx;             // +0x44
+    long* RightMostPx;            // +0x48
+    long* Span_Count;             // +0x4C
+    long Num_Lines;               // +0x50
+    long Num_Pixels;              // +0x54
+    long Min_Span_Px;             // +0x58
+    long Max_Span_Px;             // +0x5C
+    long Min_Line;                // +0x60
+    long Max_Line;                // +0x64
+
+    TSpan_List_Manager(long NumPixels, long NumLines);
+    ~TSpan_List_Manager();
+    void ResetAll();
+    void SetSpanRegions(long left, long top, long right, long bottom);
+    void AddSpan(long left, long right, long y);
+};
+
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawArea {
+public:
+    void* DrawSystem;             // +0x00
+    void* Wnd;                    // +0x04
+    unsigned char* Bits;          // +0x08
+    void* BitmapInfo;             // +0x0C
+    void* Bitmap;                 // +0x10
+    void* OldBitmap;              // +0x14
+    long Width;                   // +0x18
+    long Height;                  // +0x1C
+    long Pitch;                   // +0x20
+    long Orien;                   // +0x24
+    tagRECT ClipRect;             // +0x28
+    void* DrawDc;                 // +0x38
+    void* DrawSurface;            // +0x3C
+    char SurfaceDesc[0x6C];       // +0x40
+    void* Node;                   // +0xAC
+    char* Name;                   // +0xB0
+    unsigned char* LastBits;      // +0xB4
+    long LastPitch;               // +0xB8
+    void** DisplayOffsets;        // +0xBC
+    void** CurDisplayOffsets;     // +0xC0
+    void** FloatOffsets;          // +0xC4
+    void* shadow_color_table;     // +0xC8
+    TSpan_List_Manager* SpanList; // +0xCC
+    TSpan_List_Manager* CurSpanList; // +0xD0
+    long Float_X_Delta;           // +0xD4
+    long Float_Y_Delta;           // +0xD8
+    long DisplayOffsetsSz;        // +0xDC
+    long FloatOffsetsSz;           // +0xE0
+    long SystemMemOnly;           // +0xE4
+    long UsingVidMem;             // +0xE8
+    long UseTrans;                // +0xEC
+    long IsPrimarySurface;        // +0xF0
+    long Restored;                // +0xF4
+    long ExtendedLines;           // +0xF8
+    unsigned char TransColor;     // +0xFC
+    unsigned char gap_FD[0x03];
+
+    void SetClipRect(long left, long top, long right, long bottom);
+};
+
+void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
 {
-    // EH frame: FS:[0] setup (this is __thiscall with EH bookkeeping)
-    
-    // Store old SpanList before updating clip rect
-    void* oldSpanList = self->SpanList;
-    
-    // Store the new clip rect
-    self->ClipLeft = left;
-    self->ClipTop = top;
-    self->ClipRight = right;
-    self->ClipBottom = bottom;
-    
-    // If old SpanList exists but its height doesn't match current height, destroy it
-    if (oldSpanList && *(int*)((char*)oldSpanList + 0x50) != self->Height) {
-        if (oldSpanList) {
-            TSpan_List_Manager_dtor(oldSpanList);
-            operator_delete(oldSpanList);
+    TSpan_List_Manager* span_list = this->SpanList;
+
+    this->ClipRect.left = left;
+    this->ClipRect.top = top;
+    this->ClipRect.right = right;
+    this->ClipRect.bottom = bottom;
+
+    if (span_list != 0 && span_list->Num_Lines != this->Height) {
+        if (this->SpanList != 0) {
+            delete this->SpanList;
         }
-        self->SpanList = 0;
+        this->SpanList = 0;
     }
-    
-    // If SpanList is null, create a new one
-    if (!self->SpanList) {
-        void* newSpanList = operator_new(0x68);
-        if (newSpanList) {
-            // TSpan_List_Manager ctor(width, height)
-            // returns the object
-            TSpan_List_Manager_ctor(newSpanList, self->Width, self->Height);
-        } else {
-            newSpanList = 0;
-        }
-        self->SpanList = newSpanList;
+
+    if (this->SpanList == 0) {
+        span_list = new TSpan_List_Manager(this->Width, this->Height);
+        this->SpanList = span_list;
     }
-    
-    // Reset and set spans
-    TSpan_List_Manager_ResetAll(self->SpanList);
-    TSpan_List_Manager_SetSpanRegions(self->SpanList, self->ClipLeft, self->ClipTop, self->ClipRight, self->ClipBottom);
-    
-    // Loop rows from top to bottom, adding spans
-    int y = self->ClipTop;
-    if (y <= self->ClipBottom) {
+
+    this->SpanList->ResetAll();
+    this->SpanList->SetSpanRegions(this->ClipRect.left, this->ClipRect.top,
+                                   this->ClipRect.right, this->ClipRect.bottom);
+
+    int y = this->ClipRect.top;
+    if (y <= this->ClipRect.bottom) {
         do {
-            TSpan_List_Manager_AddSpan(self->SpanList, self->ClipLeft, self->ClipRight, y);
-            y++;
-        } while (y <= self->ClipBottom);
+            this->SpanList->AddSpan(this->ClipRect.left, this->ClipRect.right, y);
+            ++y;
+        } while (y <= this->ClipRect.bottom);
     }
-    
-    // Store as current span list
-    self->field_D0 = (int)self->SpanList;
-    
-    // EH frame teardown: FS:[0] restore
+
+    this->CurSpanList = this->SpanList;
 }

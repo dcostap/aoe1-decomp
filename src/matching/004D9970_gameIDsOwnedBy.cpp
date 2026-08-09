@@ -3,13 +3,25 @@
 // __thiscall: ecx=this, 3 stack params, ret 0Ch
 // No SEH
 //
-// Status: PARKED — VC5 codegen drift (37.3% positional, 24.7% edit diff)
+// Status: EXACT — MATCH validated and promoted under the default VC5 flags.
 //
 // Attempt log:
-// Probe 1: Existing scratch — 37.3% positional, 24.7% edit diff (best result)
-// Probe 2: Rewrite with proper struct hierarchy — 88.5% positional (worse, 3 locals vs 2)
-// Probe 3: while loop — 86.7% positional (worse)
-// Probe 4: Back to Probe 1 structure — 37.3% positional (restored best result)
+// Baseline: canonical ObjectMemory stride/fields, typed world lookup, and a
+// natural dynamic output-array scan; 108 differing bytes.
+// Probes 2-4: output aliases and killing the incoming output parameter did not
+// change emitted code; the direct parameter surface was retained.
+// Probe 5: moved delete outside the copy guard with a combined condition; it
+// changed block shape and grew the emitted body, so it was rolled back.
+// Probe 6: nested old-buffer/capacity copy guards plus an independent delete
+// recovered the original size and reduced drift to 12 bytes.
+// Probes 7-8: local declaration/assignment reorder was neutral at 12 bytes.
+// Probe 9: declaration-time byte-offset initialization improved the localized
+// stack-home schedule to 17 bytes; the guarded reset was retained as the next
+// source-shape lead.
+// Probe 10: keeping that guarded reset alongside the declaration initializer
+// reduced drift to 6 bytes by restoring the original pre-guard local stores.
+// Probe 11: a natural for-loop inside the old-buffer branch restored loop-init
+// scheduling; exact MATCH (279/279 bytes).
 //
 // Key findings:
 // - This->md at +0x100 = TribeMainDecisionAIModule* (size 0x125C8)
@@ -20,24 +32,38 @@
 // - Capacity starts at 10, grows by *2, allocation is capacity*8
 // - Output array stores int IDs at 4-byte indices
 // - Uses platform-appropriate new/delete (not C++ new[])
-//
-// Remaining drift (all VC5 register/scheduling):
-// - esi/ebx register swap: out_ptr vs byte_offset
-// - Prologue param load interleaving difference
-// - Copy/free flow: merged vs separate conditional branches
+// - The old output buffer is copied only in the positive-capacity branch, but
+//   freed in a separate branch; this preserves the original conditional CFG.
+// - The byte-offset declaration initializer plus guarded reset is intentionally
+//   retained: together they reproduce VC5's observed local-home schedule while
+//   remaining ordinary C++ with no asm, volatility, or raw cursor ownership.
+// - Main-agent audit restored canonical player/world/object/AI ownership while
+//   preserving the exact binary-backed ObjectMemory stride schedule.
 
 class RGE_Game_World;
+class RGE_Player;
 
 class RGE_Static_Object {
 public:
-    char gap_00[0x8];
+    virtual ~RGE_Static_Object();
+    char gap_04[4];
     void* master_obj;
-    void* owner;
+    RGE_Player* owner;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
 };
 
 class RGE_Game_World {
 public:
-    char gap_00[0x88];
+    virtual ~RGE_Game_World();
+    char gap_04[0x84];
     void** objectsValue;
     int numberObjectsValue;
     int maxNumberObjectsValue;
@@ -57,13 +83,15 @@ public:
 
 class TribeMainDecisionAIModule {
 public:
-    char gap_00[0x1256C];
-    void* aiPlayer;
+    virtual ~TribeMainDecisionAIModule();
+    char gap_04[0x12568];
+    RGE_Player* aiPlayer;
 };
 
 class TribeInformationAIModule {
 public:
-    char gap_00[0x100];
+    virtual ~TribeInformationAIModule();
+    char gap_04[0xFC];
     TribeMainDecisionAIModule* md;
     char gap_104[0xC];
     int maxImportantObjectMemory;
@@ -79,19 +107,21 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
 {
     int count = 0;
     int capacity = 10;
-    int i = 0;
+    int byte_offset = 0;
+    int i;
     *out = 0;
+    i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
-        int byte_offset = 0;
+        byte_offset = 0;
         do {
             if (*(int*)((char*)this->importantObjectMemory + byte_offset) != -1) {
-                void* world = *(void**)((char*)*(void**)((char*)this->md + 0x1256C) + 0x3C);
-                RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(
+                RGE_Game_World* world = this->md->aiPlayer->world;
+                RGE_Static_Object* obj = world->object(
                     *(int*)((char*)this->importantObjectMemory + byte_offset)
                 );
                 if (obj != 0) {
-                    int ownerId = *(short*)((char*)obj->owner + 0x4A);
+                    int ownerId = obj->owner->id;
                     if (ownerId == owner_id) {
                         if (owner_filter == -1 || owner_filter == *(unsigned char*)((char*)this->importantObjectMemory + byte_offset + 0x0B)) {
                             if (count == capacity || *out == 0) {
@@ -100,9 +130,11 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
                                     for (int j = 0; j < capacity; j++) {
                                         new_arr[j] = (*out)[j];
                                     }
-                                    operator_delete(*out);
                                 }
                                 capacity *= 2;
+                                if (*out != 0) {
+                                    operator_delete(*out);
+                                }
                                 *out = new_arr;
                             }
                             (*out)[count] = *(int*)((char*)this->importantObjectMemory + byte_offset);
