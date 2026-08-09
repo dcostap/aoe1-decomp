@@ -6,6 +6,8 @@
 // - Corrected the playbook lookup from param_2 to param_3; this reduced the strict diff to 7 bytes.
 // - Tried loop/declaration/register/layout/context variants; all retained the same 7-byte register-coloring drift.
 // - Remaining drift is vtable register EBP versus EBX and loop counter EBX versus EBP; no opaque codegen scaffold retained.
+// - Tried a natural indexed selected-list loop; VC5 canonicalized it to the same 7-byte output.
+// - Corrected the proven unsigned-char return widths of the v_c4/v_d0 command slots; caller output stayed unchanged.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };
@@ -29,9 +31,9 @@ public:
     VPAD8(0) VPAD4(8)
     virtual void send_signal(int player_id, int p1, int cmd, int a, int b, int f1, int f2, int f3, int f4, int one, int zero, int hundred);
     VPAD32(13) VPAD4(45)
-    virtual void v_c4(int a, int* p, int b, int flag);
+    virtual unsigned char v_c4(int a, int* p, int b, int flag);
     VPAD2(50)
-    virtual void v_d0(int a);
+    virtual unsigned char v_d0(int a);
 
     char gap_04[0x38];
     RGE_Game_World* world;      // +0x3C

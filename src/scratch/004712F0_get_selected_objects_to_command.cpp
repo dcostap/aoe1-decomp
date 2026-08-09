@@ -14,6 +14,12 @@
 //   register coloring, the distinct stack list-count/cursor lifetime, and
 //   the target load-before-sub-esp scheduling. No opaque register forcing or
 //   fake volatility is retained.
+// - This pass tried output-store ordering, direct-this/alias and cursor
+//   declaration permutations, and separate list/list_count locals; none beat
+//   the aggregate 0x8-frame basin.
+// - A diagnostic volatile list_count reproduced the target stack home and
+//   reduced drift to 121B but added reloads and retained wrong register roles;
+//   it was restored. A three-variant init-order lab found no exact candidate.
 
 class RGE_Player;
 

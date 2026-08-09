@@ -16,6 +16,13 @@
 //   sweep found no size/frame-eligible exact form. Ten meaningful hypotheses
 //   exhausted; left in scratch with no inline asm, fake volatility, or raw
 //   vtable plumbing.
+// - This pass reversed the sleeping/doppelganger prefix, used sequential +=
+//   checksum updates, and hoisted scalar declarations; all were codegen-neutral.
+// - A 40-variant accumulator/prefix/object-expression lab found no frame-0x18
+//   candidate; the best natural basin remains 277B/0x14 with 5/5 calls.
+// - A diagnostic six-field aggregate reproduced frame 0x18 but added 10B and
+//   worsened the body; it was restored. Separate locals in the binary stack
+//   order likewise collapsed back to the clean 0x14 output.
 
 extern "C" long __cdecl __ftol(void);
 

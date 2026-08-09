@@ -15,6 +15,12 @@
 // - Remaining binary-local drift is the second memset setup order and the
 //   common selection-tail counter compare/register order; no opaque steering
 //   or fake volatility was retained.
+// - An ordinary byte-clear loop compiles to the exact REP-stos block and
+//   removes the memset setup-order drift; swapped count/index declarations
+//   recover ESI-then-EDI zeroing. The remaining 24 bytes are the compiler's
+//   nested count recheck/polarity and a 9-byte late tail beyond the boundary.
+// - Outer-guard/goto, pointer/header, and typed dword-clear variants were
+//   tested and restored; they either changed the whole CFG or worsened output.
 
 #include <string.h>
 
@@ -77,7 +83,9 @@ int RGE_Player::group_objects(int group)
         }
 
         if (i == 0x7F) {
-            memset(groups_used + 1, 0, 0x7E);
+            for (int clear_i = 1; clear_i < 0x7F; ++clear_i) {
+                groups_used[clear_i] = 0;
+            }
 
             RGE_Object_Node* node = objects->list;
             while (node) {
@@ -113,8 +121,8 @@ int RGE_Player::group_objects(int group)
         }
     }
 
-    short i = 0;
     short count = 0;
+    short i = 0;
     do {
         if (sel_count <= count) {
             return 1;
