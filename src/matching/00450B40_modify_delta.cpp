@@ -17,6 +17,10 @@
 //   duplicate the count test, fold the first indexed load differently, or
 //   compile identically.  Remaining drift is the early target/pointer
 //   scheduling and the local handler-body liveness around the two scans.
+// - Exact breakthrough: declare each packed target as an unsigned short before
+//   the table pointer and initialize it from (encoded >> 8) & 0xff.  This is a
+//   natural packed-attribute source shape and recovers the original VC5 AH,
+//   redundant ffff-mask, scan, and handler scheduling exactly.
 
 class RGE_Sprite;
 
@@ -69,10 +73,10 @@ void RGE_Master_Combat_Object::modify_delta(float value,
     switch (attribute) {
     case 8: {
         int encoded = (int)value;
+        unsigned short type = (unsigned short)((encoded >> 8) & 0xff);
         RGE_Armor_Weapon_Info* entries = armor;
         if (entries != 0) {
             int count = armor_num;
-            int type = (encoded >> 8) & 0xff;
             unsigned short index = 0;
             for (; index < count; ++index) {
                 if ((int)entries[index].type == type) {
@@ -85,10 +89,10 @@ void RGE_Master_Combat_Object::modify_delta(float value,
     }
     case 9: {
         int encoded = (int)value;
+        unsigned short type = (unsigned short)((encoded >> 8) & 0xff);
         RGE_Armor_Weapon_Info* entries = weapon;
         if (entries != 0) {
             int count = weapon_num;
-            int type = (encoded >> 8) & 0xff;
             unsigned short index = 0;
             for (; index < count; ++index) {
                 if ((int)entries[index].type == type) {

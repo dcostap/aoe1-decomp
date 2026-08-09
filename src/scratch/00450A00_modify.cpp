@@ -14,6 +14,12 @@
 //   index extraction, case-16 zero-extension, and default-call scheduling.
 // - Main-agent audit restored the canonical base destructor/copy/modify virtual
 //   prefix; the validated codegen gap is unchanged.
+// - Follow-up probes: an int high-byte local improved the packed update by only
+//   2 raw bytes; byte locals, register hints, and repeated conversions expanded
+//   the frame/body or added calls.  A packed-byte union reproduced mov cl,ah and
+//   movzx ax,al locally but changed handler ordering and was not retained.
+// - bounded session exhausted with the clean named-field source restored; the
+//   remaining first hunk is the VC5 packed-byte extraction/relocation schedule.
 
 class RGE_Sprite;
 

@@ -53,6 +53,9 @@
 //   this->EBP cascade; short armor_count was 162B; register weapon was neutral.
 // - Fresh control-flow negatives: assigning count in the signed guard was 47B, and
 //   moving --count into the do-while condition was 129B. Restored clean do-while.
+// - Fresh worker checks: target alias, count-first initialization, neighboring
+//   stdlib context, and a register-qualified target parameter were codegen
+//   duplicates at 42B; the clean natural do-while remains authoritative.
 
 #include "..\..\include\game_globals.h"
 

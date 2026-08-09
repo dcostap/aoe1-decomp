@@ -10,12 +10,14 @@
 // - Scoped calloc-result temporaries were rolled back because they introduced
 //   an EBP frame and displaced the exact prologue.
 // - The retained source reuses the short scan index, value-count, and value
-//   pointer in the same natural phases as the executable.  The final audit
-//   replaced decompiler-style writes into pointer parameter homes with real
-//   short parser outputs.  Current check is 557/557 bytes, 194 positional-diff
-//   bytes, 92.90% shape, 100% calls;
+//   pointer in the same natural phases as the executable.  Best check is
+//   557/557 bytes, 194 positional-diff bytes, 92.90% shape, 100% calls;
 //   remaining drift starts at the armor calloc store/compare scheduling and
 //   register coloring in the final max scans.
+// - Bounded follow-up: typed short declaration order/scope, byte-width output
+//   probes, a contiguous local record, a natural FILE alias, and dead short
+//   count-home reuse did not improve the clean typed source; the aggregate and
+//   byte variants disturbed the prologue or stack topology.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -133,19 +135,19 @@ public:
 
 int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
                                     RGE_Sound** sounds, short count) {
-    short temp_base_armor;
-    short temp_area_effect_level;
-    short temp_break_off_combat;
-    short temp_fire_missile_at_frame;
     short index;
     short* armor_count_value;
     int value_count;
     short* value_ptr;
-    short sprite_index;
-    RGE_Sprite* selected_sprite;
 
     RGE_Master_Action_Object::setup(file, sprites, sounds, count);
     master_type = 0x32;
+    short sprite_index;
+    short temp_base_armor;
+    short temp_area_effect_level;
+    short temp_break_off_combat;
+    short temp_fire_missile_at_frame;
+    RGE_Sprite* selected_sprite;
 
     fscanf(file,
            "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
