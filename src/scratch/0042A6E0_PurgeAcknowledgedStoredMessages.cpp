@@ -34,6 +34,11 @@
 // Main-agent normalization removed the compiler-steering flat byte/dword cursors
 // from living source and restored ordinary RESENDER indexing. The cleaner source
 // validates at 255 bytes / 266 differing bytes; behavior and ordered calls remain.
+//
+// Worker pass sa-49ac68ff-r1 found a 14-byte diagnostic using independent flat
+// dword and byte cursors. Main-agent audit restored the owning RESENDER record
+// array: the flatter form was compiler-steering plumbing, not plausible living
+// source. Its codegen result remains useful evidence for the address-family gap.
 
 class TDebuggingLog {
 public:
@@ -45,11 +50,11 @@ extern TDebuggingLog* L;
 void operator_delete(void* ptr);
 
 struct RESENDER {
-    unsigned long TimeSent;     // +0x00
-    unsigned int Serial;         // +0x04
-    char* ResendMsg;              // +0x08
-    unsigned int Length;         // +0x0C
-    unsigned int DestMap[10];    // +0x10
+    unsigned int state;
+    unsigned int serial;
+    void* data;
+    unsigned int reserved;
+    unsigned int acknowledgements[10];
 };
 
 class TCommunications_Handler {
@@ -58,14 +63,7 @@ public:
     unsigned short MaxGamePlayers;   // +0x12D8
     char gap_12DA[0x242];
     int WaitingForAck;               // +0x151C
-    RESENDER* Resend;                // +0x1520 — 502 entries, each 14 dwords (0x38 bytes)
-
-    // Slot layout (dword offsets from slot base):
-    //   [0] = TimeSent
-    //   [1] = serial number
-    //   [2] = data pointer (void*)
-    //   [3] = field_C
-    //   [4..13] = player ack flags (10 dwords for players 1-9, [4] unused)
+    RESENDER* Resend;
 
     int IsPlayerHuman(unsigned int player);
     int PurgeAcknowledgedStoredMessages();
@@ -73,48 +71,54 @@ public:
 
 int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 {
-    for (int slot = 0; slot < 502; ++slot) {
-        RESENDER& resend = this->Resend[slot];
+    int slot = 0;
+    do {
         int nonAckCount = 0;
+        RESENDER* resend = &this->Resend[slot];
 
-        if (resend.Serial != 0) {
+        if (resend->serial != 0) {
             unsigned int player;
 
             for (player = 1; player <= (unsigned int)this->MaxGamePlayers; player++) {
-                if (this->IsPlayerHuman(player) && resend.DestMap[player] > 0) {
-                    nonAckCount++;
+                if (this->IsPlayerHuman(player)) {
+                    if (resend->acknowledgements[player] > 0) {
+                        nonAckCount++;
+                    }
                 }
             }
 
             if (nonAckCount == 0) {
                 L->Log("GTD: Ser #%d Slot=%d  Ackd by all. (Released)",
-                       resend.Serial, slot);
+                    resend->serial, slot);
 
-                resend.TimeSent = 0;
-                if (resend.ResendMsg != 0) {
-                    operator_delete(resend.ResendMsg);
+                void* data = resend->data;
+                resend->state = 0;
+                if (data != 0) {
+                    operator_delete(data);
                 }
-                resend.ResendMsg = 0;
-                resend.Serial = 0;
-                resend.Length = 0;
+                resend->data = 0;
+                resend->serial = 0;
+                resend->reserved = 0;
 
                 for (int i = 0; i < 10; i++) {
-                    resend.DestMap[i] = 0;
+                    resend->acknowledgements[i] = 0;
                 }
             }
         }
-    }
+
+        slot++;
+    } while (slot < 502);
 
     // Count remaining non-zero serials into WaitingForAck
     {
-        RESENDER* p = this->Resend;
-        int i = 0x1F6;                       // 502 slots
+        RESENDER* resend = this->Resend;
+        int i = 502;
 
         do {
-            if (p->Serial != 0) {
+            if (resend->serial != 0) {
                 this->WaitingForAck++;
             }
-            p++;
+            resend++;
             i--;
         } while (i != 0);
     }

@@ -1,19 +1,25 @@
 // VA: 004261E0 TCommunications_Handler::~TCommunications_Handler()
 // PDB source: Com_hand.cpp lines 335-380
-// attempt 1: natural destructor sequence, explicit scalar dtors/deletes, delete[] for two vector arrays, unsigned byte-offset log loop; mismatch: VC5 inlined vector delete loops and saved EBP.
-// attempt 2: call vector-destructor iterator explicitly and reload Resend through a volatile field each loop to avoid cached EBP base; fixed no-EBP prologue but swapped this/offset ESI/EDI.
-// attempt 3: introduce a local this alias and use it throughout; no change, still ESI=this/EDI=offset.
-// attempt 4: declare offset before slot; worsened init order and still ESI=this/EDI=offset.
-// attempt 5: use register hints with slot first, offset second; no register-color change.
-// attempt 6: vector destructor iterator is stdcall/callee-cleanup like original; removed cleanup drift but ESI/EDI coloring still swapped.
-// attempt 7: predeclare scalar cleanup pointer locals at function top; no register-color change.
-// attempt 8: /O1 probe produced too-small .text; removed flags and kept default /O2 /Oy.
-// left in scratch: behavior/call set are modeled, no inline asm. Main blocker is VC5 callee-saved register coloring: rebuilt keeps this in ESI and loop/delete temps in EDI, while original keeps this in EDI and uses ESI for the resend offset/delete pointers. Explicit stdcall vector-destructor helper fixed cleanup shape but not coloring.
+// Attempt log:
+//   baseline: natural scalar cleanup, resend log scan, vector cleanup, and child deletes;
+//     exact size/frame/call count but the helper symbol and loop register/address shape drifted.
+//   ABI: corrected the cleanup helper to __cdecl-name `eh_vector_destructor_iterator`;
+//     all 21 ordered calls and relocation identities then aligned.
+//   liveness: removed the local this alias; this improved the broad drift from 300 to 42
+//     differing bytes while retaining the original no-frame shape.
+//   declaration-scope and typed Resend/DestMap variants were tested; late child-pointer
+//     declarations were codegen-identical, while natural pointer/DestMap forms regressed
+//     to a 370-byte basin. Restored the best direct-this source.
+// Left in scratch: the remaining 42 bytes are a localized VC5 callee-save/address family:
+//   rebuilt keeps this in ESI and loop offset/child temporaries in EDI, while original keeps
+//   this in EDI and offset/delete pointers in ESI, including its explicit entry LEA. The
+//   A volatile/raw-offset Resend diagnostic reproduced the reload but was not
+//   retained. Living source uses the owning RESENDER array and named fields.
 
 class RESENDER;
 class HOLDER;
 void __cdecl operator_delete(void* p);
-void __stdcall vector_destructor_iterator(void* ptr, unsigned int size, int count, void* dtor);
+extern "C" void __stdcall eh_vector_destructor_iterator(void* ptr, unsigned int size, int count, void* dtor);
 void __cdecl RESENDER_dtor(RESENDER* p);
 void __cdecl HOLDER_dtor(HOLDER* p);
 
@@ -22,10 +28,15 @@ public:
     void __cdecl Log(char* fmt, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 };
 extern TDebuggingLog* L;
+extern char s_resender_status[];
 
 class RESENDER {
 public:
-    char data[0x38];
+    int state;
+    int active;
+    void* data;
+    int field_0C;
+    int acknowledgements[10];
     ~RESENDER();
 };
 
@@ -67,77 +78,63 @@ public:
 };
 
 TCommunications_Handler::~TCommunications_Handler() {
-    RGE_Communications_Queue* q;
-    RGE_Lobby* lobby;
-    RGE_Communications_Speed* speed;
-    RGE_Communications_Synchronize* sync;
-    RGE_Comm_Error* err;
-    TCommunications_Handler* th = this;
-
-    th->DestroyMultiplayerGame();
-    th->CloseSession();
-    th->ReleaseComm();
-    th->FreeOptions();
-    operator_delete(th->FriendlyName);
-    operator_delete(th->FormalName);
+    this->DestroyMultiplayerGame();
+    this->CloseSession();
+    this->ReleaseComm();
+    this->FreeOptions();
+    operator_delete(this->FriendlyName);
+    operator_delete(this->FormalName);
 
     int slot = 0;
-    unsigned int offset = 0;
     do {
-        char* entry = (char*)*(RESENDER* volatile*)((char*)th + 0x1520) + offset;
-        int active = *(int*)(entry + 4);
-        if (active != 0) {
-            L->Log((char*)0x580D00, slot, active,
-                *(int*)(entry + 0x0C),
-                *(int*)(entry + 0x14),
-                *(int*)(entry + 0x18),
-                *(int*)(entry + 0x1C),
-                *(int*)(entry + 0x20),
-                *(int*)(entry + 0x24),
-                *(int*)(entry + 0x28),
-                *(int*)(entry + 0x2C),
-                *(int*)(entry + 0x30));
+        RESENDER* entry = &this->Resend[slot];
+        if (entry->active != 0) {
+            L->Log(s_resender_status, slot, entry->active,
+                entry->field_0C,
+                entry->acknowledgements[1], entry->acknowledgements[2],
+                entry->acknowledgements[3], entry->acknowledgements[4],
+                entry->acknowledgements[5], entry->acknowledgements[6],
+                entry->acknowledgements[7], entry->acknowledgements[8]);
         }
-        offset += 0x38;
         slot++;
-    } while (offset <= 0x6D98);
+    } while (slot < 502);
 
-    if (th->Resend != 0) {
-        void* p = (char*)th->Resend - 4;
-        vector_destructor_iterator(th->Resend, 0x38, *(int*)p, (void*)RESENDER_dtor);
+    if (this->Resend != 0) {
+        void* p = (char*)this->Resend - 4;
+        eh_vector_destructor_iterator(this->Resend, 0x38, *(int*)p, (void*)RESENDER_dtor);
         operator_delete(p);
     }
-    if (th->OnHold != 0) {
-        void* p = (char*)th->OnHold - 4;
-        vector_destructor_iterator(th->OnHold, 0x18, *(int*)p, (void*)HOLDER_dtor);
+    if (this->OnHold != 0) {
+        void* p = (char*)this->OnHold - 4;
+        eh_vector_destructor_iterator(this->OnHold, 0x18, *(int*)p, (void*)HOLDER_dtor);
         operator_delete(p);
     }
 
-    q = th->InQ;
+    RGE_Communications_Queue* q = this->InQ;
     if (q != 0) {
         q->~RGE_Communications_Queue();
         operator_delete(q);
     }
 
-    lobby = th->Lobby;
+    RGE_Lobby* lobby = this->Lobby;
     if (lobby != 0) {
         lobby->~RGE_Lobby();
         operator_delete(lobby);
     }
 
-    speed = th->Speed;
+    RGE_Communications_Speed* speed = this->Speed;
     if (speed != 0) {
         speed->~RGE_Communications_Speed();
         operator_delete(speed);
     }
 
-    sync = th->Sync;
+    RGE_Communications_Synchronize* sync = this->Sync;
     if (sync != 0) {
         sync->~RGE_Communications_Synchronize();
         operator_delete(sync);
     }
 
-    err = th->Err;
+    RGE_Comm_Error* err = this->Err;
     if (err != 0) {
         err->~RGE_Comm_Error();
         operator_delete(err);
