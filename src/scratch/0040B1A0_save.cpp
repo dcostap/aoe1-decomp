@@ -1,9 +1,16 @@
 // 0040B1A0 ConstructionAIModule::save
 // Attempt log:
-// 1: behavior reconstruction from packet/Ghidra: write construction-plan fields, then serialize construction lots and second list items.
-// 2: first version used a static helper for item serialization; check compared only the helper-shortened main body (text 896), so expanded as macro/inlined body.
-// 3: inlined version reaches exact 1263-byte size but has 0x124 frame vs original 0x118 and broad mismatch; removing unused tempInt did not alter frame.
-// 4: key mismatch is source shape/local packing and duplicated item-serialization scheduling. Original uses tempString at esp+24 with this stored in first dword, repeated compiler strcpy/strlen loops, tempFloat/tempBOOL/local_110 slots at esp+10/14/18, and two near-identical hand-inlined list loops. Current macro source preserves behavior but VC5 allocates different locals and emits different loop/call choreography. Not accepted_drift-safe.
+// 1: reconstructed the two serialized sentinel-list walks from the packet, preserving the original
+//    null/sentinel exits and duplicated name/field write sequence.
+// 2: corrected the item ABI/layout to a full 0x80-byte ConstructionItem and restored the +174/+178/+1F8
+//    field ownership; the reference addresses and all 67 direct calls now align.
+// 3: serialized strlen/type/state values through integer homes and float accessors through a float home;
+//    this removes all spurious __ftol calls and reaches the original 0x118 frame and 1263-byte size.
+// 4: removing the explicit tempString self overlay is the cleaner source shape and leaves one natural
+//    self home, but VC5 still places tempString+4 at esp+28 (original esp+24) and shifts the first
+//    scratch home by four bytes. Explicit overlay, declaration order, and 261-byte-buffer probes were
+//    diagnostic and did not produce a compliant exact source. Remaining drift is stack/local topology,
+//    not behavior or call set; leave this typed reconstruction in scratch.
 
 #include <string.h>
 
@@ -26,6 +33,9 @@ public:
     char gap[0x6c];
     ConstructionItem* next;
     ConstructionItem* prev;
+    int inProgressValue;
+    int builtValue;
+    int buildAttemptsValue;
     int inProgress();
     int built();
     int buildAttempts();
@@ -37,32 +47,30 @@ public:
     ConstructionItem constructionLots; // +F4 sentinel
     int numberSomething; // +174
     ConstructionItem secondList; // +178 sentinel
-    char gap1e8[0x1F8-0x1E8];
     char constructionPlanNameValue[0x104]; // +1F8
     int xReferencePointValue; // +2FC
     int yReferencePointValue; // +300
     int zReferencePointValue; // +304
     int mapXSizeValue; // +308
     int mapYSizeValue; // +30C
-    int save(int fd) const;
+    int save(int fd);
 };
 
-#define WRITE_ITEM(item) do {     strcpy(tempString + 4, (item)->name());     tempFloat = (float)strlen(tempString + 4);     rge_write(fd, &tempFloat, 4);     rge_write(fd, tempString + 4, (int)tempFloat);     tempFloat = (float)(item)->typeID(); rge_write(fd, &tempFloat, 4);     tempFloat = (float)(item)->gameID(); rge_write(fd, &tempFloat, 4);     tempFloat = (float)(item)->uniqueID(); rge_write(fd, &tempFloat, 4);     tempBOOL = (int)(item)->x(); rge_write(fd, &tempBOOL, 4);     tempBOOL = (int)(item)->y(); rge_write(fd, &tempBOOL, 4);     tempBOOL = (int)(item)->z(); rge_write(fd, &tempBOOL, 4);     tempBOOL = (int)(item)->xSize(); rge_write(fd, &tempBOOL, 4);     tempBOOL = (int)(item)->ySize(); rge_write(fd, &tempBOOL, 4);     tempBOOL = (int)(item)->zSize(); rge_write(fd, &tempBOOL, 4);     local_110 = (item)->skip(); rge_write(fd, &local_110, 4);     local_110 = (item)->inProgress(); rge_write(fd, &local_110, 4);     local_110 = (item)->built(); rge_write(fd, &local_110, 4);     tempFloat = (float)(item)->buildAttempts(); rge_write(fd, &tempFloat, 4); } while(0)
+#define WRITE_ITEM(item) do {     strcpy(tempString + 4, (item)->name());     tempInt = strlen(tempString + 4);     rge_write(fd, &tempInt, 4);     rge_write(fd, tempString + 4, tempInt);     tempInt = (item)->typeID(); rge_write(fd, &tempInt, 4);     tempInt = (item)->gameID(); rge_write(fd, &tempInt, 4);     tempInt = (item)->uniqueID(); rge_write(fd, &tempInt, 4);     tempFloat = (item)->x(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->y(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->z(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->xSize(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->ySize(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->zSize(); rge_write(fd, &tempFloat, 4);     status_value = (item)->skip(); rge_write(fd, &status_value, 4);     status_value = (item)->inProgress(); rge_write(fd, &status_value, 4);     status_value = (item)->built(); rge_write(fd, &status_value, 4);     status_value = (item)->buildAttempts(); rge_write(fd, &status_value, 4); } while(0)
 
-int ConstructionAIModule::save(int fd) const
+int ConstructionAIModule::save(int fd)
 {
     float tempFloat;
-    int tempBOOL;
-    int local_110;
-    ConstructionItem* local_10c;
+    int tempInt;
+    int status_value;
+    ConstructionItem* sentinel;
     char tempString[257];
 
-    *(const ConstructionAIModule**)tempString = this;
     rge_write(fd, (void*)&this->numberConstructionLotsValue, 4);
     strcpy(tempString + 4, this->constructionPlanNameValue);
-    tempFloat = (float)strlen(tempString + 4);
-    rge_write(fd, &tempFloat, 4);
-    rge_write(fd, tempString + 4, (int)tempFloat);
+    tempInt = strlen(tempString + 4);
+    rge_write(fd, &tempInt, 4);
+    rge_write(fd, tempString + 4, tempInt);
     rge_write(fd, (void*)&this->xReferencePointValue, 4);
     rge_write(fd, (void*)&this->yReferencePointValue, 4);
     rge_write(fd, (void*)&this->zReferencePointValue, 4);
@@ -70,24 +78,24 @@ int ConstructionAIModule::save(int fd) const
     rge_write(fd, (void*)&this->mapYSizeValue, 4);
 
     ConstructionItem* item = this->constructionLots.next;
-    local_10c = (ConstructionItem*)((char*)this + 0xF4);
-    if (item != local_10c) {
+    sentinel = &this->constructionLots;
+    if (item != sentinel) {
         do {
             if (item == 0) break;
             WRITE_ITEM(item);
             item = item->next;
-        } while (item != local_10c);
+        } while (item != sentinel);
     }
 
-    rge_write(fd, (void*)((char*)this + 0x174), 4);
-    item = *(ConstructionItem**)((char*)this + 0x1E4);
-    local_10c = (ConstructionItem*)((char*)this + 0x178);
-    if (item != local_10c) {
+    rge_write(fd, (void*)&this->numberSomething, 4);
+    item = this->secondList.next;
+    sentinel = &this->secondList;
+    if (item != sentinel) {
         do {
             if (item == 0) return 1;
             WRITE_ITEM(item);
             item = item->next;
-        } while (item != local_10c);
+        } while (item != sentinel);
     }
     return 1;
 }

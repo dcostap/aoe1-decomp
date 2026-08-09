@@ -1,9 +1,17 @@
 // 0040B690 ConstructionAIModule::loadConstructionPlan
-// scratch give-up: natural /GX reconstruction reaches exact size 731 and matches through setup/strncpy/strcmp
-// but remains 54.86% positional / 27.36% edit mismatch. First real drift is branch-distance after
-// strcmp because later local layout/code size differs; persistent issues include temp buffer at esp+7c
-// vs original esp+78, FILE* allocated in EDI vs original ESI, and constructor/new argument scheduling.
-// Kept /GX because original has EH frame and default flags do not reproduce prologue.
+// Attempt log:
+// - Natural /GX parser reconstruction reaches the correct 0x168 frame, 17-call set, and 226 instructions.
+// - Modeled sscanf's %d field as int xSize; this removes a spurious __ftol and restores call/CFG parity.
+// - Bound the proven aiconmod string-table addresses (NONE, formats, NULL, .tmp, and messages) so COFF
+//   relocation identities and the inline strcmp/rep-copy paths follow the original symbols.
+// - A dead-float comment-byte overlay, 68-byte name buffer, typed union overlay, scoped pointer, and
+//   declaration-order probes were diagnostic only; the overlay/size forms worsened codegen and the
+//   remaining scopes/order collapsed to the same output.
+// - Kept the clean typed source: original uses name+4 at esp+38 and temp+4 at esp+78, while rebuilt
+//   uses esp+3c/esp+7c. The two widened temp LEAs account for the remaining +6 bytes and branch drift.
+//   A compiler-reused name-prefix/new-result home is suggested by the decompiler but no policy-compliant
+//   natural spelling found it; leave this target in scratch rather than retain an opaque overlay.
+// FLAGS: config/flags/0040B690_loadConstructionPlan.rsp (/GX for EH frame)
 
 #include <stdio.h>
 #include <string.h>
@@ -49,16 +57,13 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     float x;
     float z;
     float zSize;
-    float xSize;
+    float item_arg_6;
+    int xSize;
     float ySize;
-    float local_154;
-    float local_164;
-    int id;
+    float item_arg_5;
     char itemName[64];
     char temp[256];
     FILE* fp;
-    ConstructionItem* item;
-    ConstructionItem* prev;
     char* plan;
 
     this->setReferencePoint(p2, p3, p4, p5, p6);
@@ -67,7 +72,7 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     }
 
     plan = this->constructionPlanNameValue;
-    id = (int)plan;
+    char* saved_plan = plan;
     strncpy(plan, name, 0x3f);
 
     if (strcmp(plan, "NONE") == 0 || plan == 0) {
@@ -89,12 +94,14 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
         do {
             sscanf(temp + 4, " %c%c", &commentTemp1, &commentTemp2);
             if (commentTemp1 != '/' || commentTemp2 != '/') {
-                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &z, &x, &zSize, &ySize, &local_154, &local_164, &xSize, itemName + 4);
+                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &z, &x, &zSize, &ySize, &item_arg_5, &item_arg_6, &xSize, itemName + 4);
                 z = this->xReferencePointValue + z;
                 x = this->yReferencePointValue + x;
                 zSize = this->zReferencePointValue + zSize;
                 if (this->lot(z, x) == 0) {
-                    item = new ConstructionItem(z, x, zSize, ySize, local_154, local_164, (int)xSize, itemName + 4);
+                    ConstructionItem* item;
+                    ConstructionItem* prev;
+                    item = new ConstructionItem(z, x, zSize, ySize, item_arg_5, item_arg_6, xSize, itemName + 4);
                     item->next = &this->constructionLots;
                     prev = this->constructionLots.prev;
                     item->prev = prev;
@@ -104,7 +111,7 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
                 }
             }
         } while (fgets(temp + 4, 0x100, fp) != 0);
-        plan = (char*)id;
+        plan = saved_plan;
     }
 
     fclose(fp);

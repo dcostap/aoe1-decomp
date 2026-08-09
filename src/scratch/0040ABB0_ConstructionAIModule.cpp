@@ -1,66 +1,95 @@
 // 0040ABB0 ConstructionAIModule::ConstructionAIModule
 // Attempt log:
-// 1: reconstruction from packet: base AIModule ctor, two ConstructionItem sentinel ctors/lists, read serialized fields, allocate/reconstruct lot items, link into two lists.
-// 2: /GX is required for the original EH-framed constructor basin; without /GX the body is only 1328 bytes vs original 1379.
-// 3: first /GX build reached exact 1379-byte size but used a 0x144 frame instead of original 0x148 and had broad mismatch (76.8673% positional / 87.0921% edit).
-// 4: reused a single name buffer for both list loops and added a volatile dummy local trying to force the missing 4-byte stack slot; exact-size remained but prologue frame stayed 0x144.
-// 5: behavior modeled includes the initial serialized count/name/reference-point fields, two 0x80-byte ConstructionItem allocations, setter calls, and linking onto +0xF4/+0x178 sentinel lists.
-// 6: remaining gap is constructor/EH/local-slot/source-shape mismatch: original has very specific 0x148 frame with name buffer at esp+54, loop index at esp+48, allocation temp at esp+4C, EH states 0..4, and manual list-link scheduling. Current natural source preserves behavior but wrong frame/local packing and broad call/register ordering. Not accepted_drift-safe.
+// - Recovered the full 0x80-byte ConstructionItem and 0xF0-byte polymorphic AIModule ownership;
+//   /GX now gives the original 0x148 frame and compiler-owned vptr/EH surface.
+// - Reconstructed the binary-proven serialized read order, name+4 buffer, 8-argument constructor,
+//   setter order, and both sentinel-list link paths. Typed IntFloat wire unions preserve raw float/int
+//   bits without fabricated calls or conversion helpers; all 58 direct calls align.
+// - Moved count/sentinel construction into member initializers and kept the observed first-list,
+//   reference-field, vptr, and second-list statement order. Reference fields are real floats and the
+//   local serialized name buffer is 257 bytes, matching the observed stack window.
+// - Remaining mismatch is compiler-owned vptr scheduling: rebuilt stores the derived vptr at 0040AC50
+//   before the reference-field stores, while the oracle stores it at 0040AC8C after those stores; the
+//   current source is exact-frame/call-set but 1391 vs 1379 bytes. Manual vptr/novtable tricks are
+//   prohibited, so retain this readable canonical reconstruction in scratch.
 
 extern "C" void rge_read(int fd, void* dst, int size);
 
-class AIModule { public: AIModule(char*, int, int, int); };
-class ConstructionItem {
+class BaseItem {
 public:
-    char gap[0x6c];
+    virtual ~BaseItem();
+};
+
+class AIModule {
+public:
+    virtual ~AIModule();
+    char gap_04[0xEC];
+    AIModule(char*, int, int, int);
+};
+
+class ConstructionItem : public BaseItem {
+public:
+    char gap_04[0x68];
     ConstructionItem* next;
     ConstructionItem* prev;
+    int inProgressValue;
+    int builtValue;
+    int buildAttemptsValue;
+    virtual ~ConstructionItem();
     ConstructionItem();
-    ConstructionItem(int,int,float,float,float,float,float,float,int,int,int,int);
-    void setID(int); void setGameID(int); void setUniqueID(int); void setSkip(int); void setInProgress(int); void setBuilt(int);
+    ConstructionItem(float,float,float,float,float,float,int,const char*);
+    void setBuildAttempts(int); void setGameID(int); void setUniqueID(int); void setSkip(int); void setInProgress(int); void setBuilt(int);
 };
 class ConstructionAIModule : public AIModule {
 public:
-    char gap_base[0xF0-sizeof(AIModule)];
+    virtual ~ConstructionAIModule();
     int numberConstructionLotsValue;
     ConstructionItem lots;
     int numberSecondValue;
     ConstructionItem second;
-    char gap1fc[0x2FC-0x1EC];
-    int xReferencePointValue, yReferencePointValue, zReferencePointValue, mapXSizeValue, mapYSizeValue;
+    char constructionPlanNameValue[0x104];
+    float xReferencePointValue, yReferencePointValue, zReferencePointValue;
+    int mapXSizeValue, mapYSizeValue;
     int zero310;
     ConstructionAIModule(int p1, int fd);
 };
 
-ConstructionAIModule::ConstructionAIModule(int p1, int fd) : AIModule((char*)0x57F380, 0x3ea, p1, 0), lots(), second()
-{
-    int n;
-    int len;
-    int typeID, gameID, uniqueID, skip, inProgress, built, buildAttempts;
-    float x,y,z,xSize,ySize,zSize;
-    ConstructionItem* item;
-    volatile int dummyLocal;
-    char name[0x104];
+union IntFloat {
+    int i;
+    float f;
+};
 
-    dummyLocal = 0;
-    this->numberConstructionLotsValue = 0;
-    this->numberSecondValue = 0;
+ConstructionAIModule::ConstructionAIModule(int p1, int fd)
+    : AIModule("ConAI", 0x3ea, p1, 0),
+      numberConstructionLotsValue(0),
+      lots(),
+      numberSecondValue(0),
+      second()
+{
+    IntFloat x, y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, skip;
+    int typeID;
+    IntFloat zSize;
+    int built;
+    IntFloat gameID, i;
+    int n;
+    ConstructionItem* item;
+    char name[257];
+
     this->lots.next = &this->lots;
     this->lots.prev = &this->lots;
-    this->second.next = &this->second;
-    this->second.prev = &this->second;
-    this->xReferencePointValue = 0xbf800000;
-    this->yReferencePointValue = 0xbf800000;
-    this->zReferencePointValue = 0xbf800000;
+    this->xReferencePointValue = -1.0f;
+    this->yReferencePointValue = -1.0f;
+    this->zReferencePointValue = -1.0f;
     this->mapXSizeValue = -1;
     this->mapYSizeValue = -1;
     this->zero310 = 0;
-    *(int*)this = 0x56E7A0;
+    this->second.next = &this->second;
+    this->second.prev = &this->second;
 
     rge_read(fd, &this->numberConstructionLotsValue, 4);
-    rge_read(fd, &len, 4);
-    rge_read(fd, (char*)this + 0x1F8, len);
-    *((char*)this + 0x1F8 + len) = 0;
+    rge_read(fd, &x.i, 4);
+    rge_read(fd, this->constructionPlanNameValue, x.i);
+    this->constructionPlanNameValue[x.i] = 0;
     rge_read(fd, &this->xReferencePointValue, 4);
     rge_read(fd, &this->yReferencePointValue, 4);
     rge_read(fd, &this->zReferencePointValue, 4);
@@ -68,29 +97,29 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd) : AIModule((char*)0x5
     rge_read(fd, &this->mapYSizeValue, 4);
 
     for (n=0; n<this->numberConstructionLotsValue; n++) {
-        rge_read(fd, &len, 4);
-        rge_read(fd, name, len);
-        name[len] = 0;
+        rge_read(fd, &x.i, 4);
+        rge_read(fd, name + 4, x.i);
+        name[x.i + 4] = 0;
         rge_read(fd, &typeID, 4);
-        rge_read(fd, &gameID, 4);
-        rge_read(fd, &uniqueID, 4);
-        rge_read(fd, &x, 4);
-        rge_read(fd, &y, 4);
-        rge_read(fd, &z, 4);
-        rge_read(fd, &xSize, 4);
-        rge_read(fd, &ySize, 4);
-        rge_read(fd, &zSize, 4);
-        rge_read(fd, &skip, 4);
-        rge_read(fd, &inProgress, 4);
+        rge_read(fd, &inProgress.i, 4);
+        rge_read(fd, &skip.i, 4);
+        rge_read(fd, &y.f, 4);
+        rge_read(fd, &zSize.f, 4);
+        rge_read(fd, &gameID.i, 4);
+        rge_read(fd, &ySize.f, 4);
+        rge_read(fd, &i.i, 4);
+        rge_read(fd, &xSize.f, 4);
         rge_read(fd, &built, 4);
-        rge_read(fd, &buildAttempts, 4);
-        item = new ConstructionItem(typeID, gameID, x, y, z, xSize, ySize, zSize, skip, inProgress, built, buildAttempts);
-        item->setID(uniqueID);
-        item->setGameID(gameID);
-        item->setUniqueID(uniqueID);
-        item->setSkip(skip);
-        item->setInProgress(inProgress);
-        item->setBuilt(built);
+        rge_read(fd, &z.f, 4);
+        rge_read(fd, &uniqueID.i, 4);
+        rge_read(fd, &buildAttempts.i, 4);
+        item = new ConstructionItem(y.f, zSize.f, gameID.f, ySize.f, i.f, xSize.f, typeID, name + 4);
+        item->setInProgress(z.i);
+        item->setBuilt(uniqueID.i);
+        item->setBuildAttempts(buildAttempts.i);
+        item->setGameID(inProgress.i);
+        item->setUniqueID(skip.i);
+        item->setSkip(built);
         item->next = &this->lots;
         item->prev = this->lots.prev;
         this->lots.prev->next = item;
@@ -99,29 +128,29 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd) : AIModule((char*)0x5
 
     rge_read(fd, &this->numberSecondValue, 4);
     for (n=0; n<this->numberSecondValue; n++) {
-        rge_read(fd, &len, 4);
-        rge_read(fd, name, len);
-        name[len] = 0;
-        rge_read(fd, &typeID, 4);
-        rge_read(fd, &gameID, 4);
-        rge_read(fd, &uniqueID, 4);
-        rge_read(fd, &x, 4);
-        rge_read(fd, &y, 4);
-        rge_read(fd, &z, 4);
-        rge_read(fd, &xSize, 4);
-        rge_read(fd, &ySize, 4);
-        rge_read(fd, &zSize, 4);
-        rge_read(fd, &skip, 4);
-        rge_read(fd, &inProgress, 4);
+        rge_read(fd, &x.i, 4);
+        rge_read(fd, name + 4, x.i);
+        name[x.i + 4] = 0;
         rge_read(fd, &built, 4);
-        rge_read(fd, &buildAttempts, 4);
-        item = new ConstructionItem(typeID, gameID, x, y, z, xSize, ySize, zSize, skip, inProgress, built, buildAttempts);
-        item->setID(uniqueID);
-        item->setGameID(gameID);
-        item->setUniqueID(uniqueID);
-        item->setSkip(skip);
-        item->setInProgress(inProgress);
-        item->setBuilt(built);
+        rge_read(fd, &i.i, 4);
+        rge_read(fd, &xSize.i, 4);
+        rge_read(fd, &y.f, 4);
+        rge_read(fd, &z.f, 4);
+        rge_read(fd, &uniqueID.i, 4);
+        rge_read(fd, &buildAttempts.i, 4);
+        rge_read(fd, &inProgress.i, 4);
+        rge_read(fd, &skip.i, 4);
+        rge_read(fd, &typeID, 4);
+        rge_read(fd, &zSize.i, 4);
+        rge_read(fd, &gameID.i, 4);
+        rge_read(fd, &ySize.i, 4);
+        item = new ConstructionItem(y.f, z.f, uniqueID.f, buildAttempts.f, inProgress.f, skip.f, built, name + 4);
+        item->setInProgress(zSize.i);
+        item->setBuilt(gameID.i);
+        item->setBuildAttempts(ySize.i);
+        item->setGameID(i.i);
+        item->setUniqueID(xSize.i);
+        item->setSkip(typeID);
         item->next = &this->second;
         item->prev = this->second.prev;
         this->second.prev->next = item;
