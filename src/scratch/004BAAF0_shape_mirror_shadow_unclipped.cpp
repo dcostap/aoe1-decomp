@@ -8,6 +8,11 @@
 // - Tried pointer-typed x parameter to encourage [esp+1C] reuse; it perturbed LEA operand order and still did not match, reverted to real long signature.
 // - Tried while vs do-while count loops and explicit byte temp reuse. Remaining mismatch is loop-count lowering: original uses [esp+20] byte temp with `mov esi,[esp+20]; test dl; ... mov edx,esi; and edx,0FFh` and no extra mid-loop test; rebuilt either hoists masks or inserts redundant tests.
 // - Left in scratch after serious source-shape attempts; next lead is focused variant_lab around parameter-slot reuse and RLE loop spelling.
+// - Sink-row declaration/assignment variants and direct x-home row-counter reuse changed the prologue basin to 264/267-byte structural drift; restored.
+// - Signed-long odd/even counters improved instruction-shape similarity (81.98%) but worsened strict bytes (200); explicit nested packet guards were codegen-duplicate or worse; restored.
+// - Focused variant lab (144 variants; count types/update spellings; size and call-set gated) found no exact. Best group was odd-long/even-uchar, 193 positional / 90 edit bytes, but it retained the same early row-home mismatch and was not adopted.
+// - Direct mutation of y for the even shadow run improved shape to 83.49% with the same 188 strict bytes but changed register coloring and table-load order; restored clean source.
+// - Final retained state: natural typed RLE decoder, 267-byte output, one aligned AlignedWidth call, 188 strict differing bytes (70.4120%), first mismatch at 004BAB1E. Paused: remaining gap is VC5 local-home/block scheduling, not unresolved behavior or call ABI.
 
 typedef unsigned char byte;
 

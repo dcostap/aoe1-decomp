@@ -7,12 +7,20 @@
 // - First persistent drift is loop entry register allocation/order: original loads importantObjectMemory into EDX, offset into EAX, then owner param into EDX and zero-extends owner byte into ECX; rebuilt uses EAX for base and EDX for offset/byte. Tried separate mem local, char* field, and compare operand swap; compare swap improved one byte but allocation remained.
 // - Tried reordering radius/x/y integer calculations to match original `fld y; mov ebx,eax; lea ecx,[edi+eax]; sub ebx,edi; store maxX; ftol`; source variants either kept current call-before-integer scheduling or caused a larger shifted diff.
 // - Tried explicit UnitTypeInfo temp/yfloat temp; worsened to ~47% positional by shortening the middle block.
+// - Promoted ObjectMemory and RGE master/object layouts from the local gaps; bytes were unchanged.
+// - Reordered bound declarations, raw id/owner record access, split base/record setup, and a focused
+//   36-variant lab over record/master/bounds/virtual spellings; no emitted group reached the original.
+// - Final clean source keeps the canonical typed ObjectMemory stride and natural bound locals; remaining
+//   drift is VC5 register allocation/FPU scheduling at loop entry and the three bound conversions.
 // - Remaining blocker: VC5 register allocation and scheduling in the object-memory entry check plus FPU/int interleaving before incrementValue.
+// - Main-agent audit restored canonical InfluenceMap/master/object/AI destructor
+//   surfaces; the validated 39-byte codegen gap is unchanged.
 
 typedef unsigned char uchar;
 
 class InfluenceMap {
 public:
+    virtual ~InfluenceMap();
     int initialize(uchar param);
     void setReferencePoint(int x, int y);
     int incrementValue(int min_x, int min_y, int max_x, int max_y, int flag);
@@ -21,14 +29,15 @@ public:
 
 InfluenceMap* const losMap = (InfluenceMap*)0x86BC10;
 
-struct UnitTypeInfo {
-    char gap_00[0x28];
-    float los_radius;
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x24];
+    float los;
 };
 
 class RGE_Static_Object {
 public:
-    virtual void vf000(); virtual void vf004(); virtual void vf008(); virtual void vf00C();
+    virtual ~RGE_Static_Object(); virtual void vf004(); virtual void vf008(); virtual void vf00C();
     virtual void vf010(); virtual void vf014(); virtual void vf018(); virtual void vf01C();
     virtual void vf020(); virtual void vf024(); virtual void vf028(); virtual void vf02C();
     virtual void vf030(); virtual void vf034(); virtual void vf038(); virtual void vf03C();
@@ -47,8 +56,8 @@ public:
     virtual void vf100(); virtual void vf104();
     virtual float vf108();
 
-    char gap_04[4];
-    UnitTypeInfo* type;     // +0x08
+    int id;                  // +0x04
+    RGE_Master_Static_Object* master_obj; // +0x08
     char gap_0C[0x38 - 0x0C];
     float x;                // +0x38
     float y;                // +0x3C
@@ -59,21 +68,32 @@ public:
     RGE_Static_Object* object(int id);
 };
 
-struct ImportantObjectMemory {
+struct ObjectMemory {
     int id;                 // +0
-    char gap_04[7];
+    short type;              // +0x04
+    short group;             // +0x06
+    unsigned char x;         // +0x08
+    unsigned char y;         // +0x09
+    unsigned char z;         // +0x0A
     uchar owner;            // +0x0B
-    char gap_0C[0x24 - 0x0C];
+    short hitPoints;        // +0x0C
+    char gap_0E[2];
+    int attackAttempts;     // +0x10
+    uchar kills;             // +0x14
+    char gap_15[3];
+    float damageCapability; // +0x18
+    float rateOfFire;       // +0x1C
+    float range;            // +0x20
 };
 
 class TribeInformationAIModule {
 public:
-    virtual void vf00();
+    virtual ~TribeInformationAIModule();
     char gap_04[0x100 - 0x04];
     MainDecisionAIModule* md;                 // +0x100
     char gap_104[0x110 - 0x104];
     int maxImportantObjectMemory;             // +0x110
-    char* importantObjectMemory;              // +0x114
+    ObjectMemory* importantObjectMemory;      // +0x114
 
     int setupLOSMap(int owner, int refX, int refY);
 };
@@ -87,11 +107,11 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
     if (this->maxImportantObjectMemory > 0) {
         int offset = 0;
         do {
-            ImportantObjectMemory* mem = (ImportantObjectMemory*)(this->importantObjectMemory + offset);
+            ObjectMemory* mem = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
             if ((unsigned int)owner == (unsigned int)mem->owner) {
                 RGE_Static_Object* obj = this->md->object(mem->id);
                 if (obj != 0) {
-                    int range = (int)obj->type->los_radius;
+                    int range = (int)obj->master_obj->los;
                     int objX = (int)obj->x;
                     int objY = (int)obj->y;
                     int maxX = range + objX;
