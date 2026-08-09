@@ -1,24 +1,120 @@
 // VA: 0050F8D0 check_tile_for_forest_change (434B)
 // tmap.cpp
+//
+// Attempt log:
+// baseline: clean reconstruction from the packet's forest/wood object-list
+// behavior and the exact tmap.cpp tile layout.
+// probes 2-8: switch dispatch, tile initializer order, byte/typed tile
+// surfaces, parameter naming, and register declarations were tested; the
+// switch form is the best structural basin (0x14 frame, 3 calls, 75.16%
+// shape, 388-byte strict diff).
+// probe 9: explicit pointer/count neighborhood loops were rejected; they
+// increased the code to 454 bytes. Restored the natural nested loops.
+// left in scratch: behavior and field ownership are reconstructed; remaining
+// drift is prologue/register scheduling plus recursive-call relocation.
 
-class TRIBE_Map {
+class RGE_Game_World;
+
+class RGE_Master_Static_Object {
 public:
-    char gap4[0x4];
-    int field_8;
-    int field_C;
-    char gap10[0x8D78];
-    int field_8D88;
-    int field_8D8C;
-    
-    void check_tile_for_forest_change(short x, short y);
+    char gap_00[0x14];
+    short id;
 };
 
-void TRIBE_Map::check_tile_for_forest_change(short x, short y) {
-    int sx = (signed short)x;
-    int sy = (signed short)y;
-    int* arr = (int*)field_8D8C;
-    
-    if (arr) {
-        field_8D88 = sx + sy;
+class RGE_Static_Object {
+public:
+    char gap_00[0x08];
+    RGE_Master_Static_Object* master_obj;
+    char gap_0C[0x3C];
+    unsigned char field_48;
+};
+
+class RGE_Object_Node {
+public:
+    RGE_Static_Object* object;
+    RGE_Object_Node* next;
+};
+
+class RGE_Tile {
+public:
+    char gap_00[0x05];
+    unsigned char terrain;
+    char gap_06[0x0A];
+    RGE_Object_Node* object_list;
+    char gap_14[0x04];
+};
+
+class RGE_Map {
+public:
+    char gap_00[0x08];
+    long map_width;
+    long map_height;
+    char gap_10[0x8D7C];
+    RGE_Tile** map_row_offset;
+};
+
+class TRIBE_Map : public RGE_Map {
+public:
+    void change_terrain(short x, short y, unsigned char terrain,
+                        RGE_Game_World* world);
+    void check_tile_for_forest_change(short x, short y,
+                                      RGE_Game_World* world);
+};
+
+void TRIBE_Map::check_tile_for_forest_change(short x, short y,
+                                             RGE_Game_World* world)
+{
+    RGE_Tile* tile = this->map_row_offset[y] + x;
+    short x0 = x - 1;
+    short x1 = x + 1;
+    short y0 = y - 1;
+    short y1 = y + 1;
+    unsigned char object_found = 0;
+    unsigned char changed = 0;
+    if (x0 < 0)
+        x0 = 0;
+    if (y0 < 0)
+        y0 = 0;
+    if (x1 >= this->map_width)
+        x1 = (short)this->map_width - 1;
+    if (y1 >= this->map_height)
+        y1 = (short)this->map_height - 1;
+
+    unsigned char terrain = tile->terrain & 0x1F;
+    switch (terrain) {
+    case 0x0A: {
+        for (short row = y0; row <= y1; ++row) {
+            for (short col = x0; col <= x1; ++col) {
+                unsigned char nearby = (this->map_row_offset[row] + col)->terrain & 0x1F;
+                if (nearby != 0x0A && nearby != 0x12)
+                    changed = 1;
+            }
+        }
+
+        if (changed)
+            this->change_terrain(x, y, 0x12, world);
+        break;
+    }
+    case 0x12: {
+        for (RGE_Object_Node* node = tile->object_list; node != 0;
+             node = node->next) {
+            RGE_Static_Object* object = node->object;
+            if (object->master_obj->id == 0x0F && object->field_48 < 8)
+                object_found = 1;
+        }
+
+        if (!object_found) {
+            this->change_terrain(x, y, 0, world);
+            for (short row = y0; row <= y1; ++row) {
+                for (short col = x0; col <= x1; ++col) {
+                    if (col != x || row != y)
+                        this->check_tile_for_forest_change(col, row, world);
+                }
+            }
+        }
+        break;
+    }
+    default:
+        break;
     }
 }
