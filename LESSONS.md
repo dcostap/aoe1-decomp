@@ -156,6 +156,7 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
 ## Loop and induction forms
 
 - Choose loop shape from CFG: `while(node){...;node=next;}` often rotates the test to a bottom backedge; `do/while`, breaks, and found handling differ.
+- When a linked-list scan has an explicit initial null return and a second return after exhausting the list, prefer `while (node)` after the guard over `do/while (node)`. VC5 can preserve the original `jne` backedge and distinct fall-through zero-return epilogue; `do/while` may tail-merge both zero-return paths into one shared exit.
 - A separate `next` local forces a two-register linked-list walk. Assign a sign-extended `short` directly to `int` for one `movsx` rather than short-local load+extend.
 - Remove an explicit `if(n<=0)` when the natural `for(i<n)` already emits the sole observed guard; retain it if asm has both or it has effects.
 - A bound that must occur at the top each iteration can be the first body statement while another fixed bound is the `while` condition; putting both in the condition may peel/fold the known first iteration and duplicate tests (`0049D370`).
