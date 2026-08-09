@@ -17,6 +17,10 @@
 // - A volatile-count diagnostic changed the frame and was rejected.  The
 //   validated best remains 316 bytes with all six calls/CFG aligned; the
 //   remaining 17 bytes are the initial x87 local spill/order sequence.
+// - Mirroring the exact terrain-stroke donor's distance/step/position
+//   declaration and initialization order reduced the gap to five bytes.
+// - Declaring count inside the positive index arm delayed its stack store past
+//   the test and produced an exact 316-byte match.
 // Main-agent audit confirmed canonical map virtual ownership and retained the
 // natural clipped interpolation source.
 
@@ -61,22 +65,23 @@ unsigned char RGE_Map::do_cliff_brush_stroke(long x0, long y0, long x1,
     if (y1 >= this->map_height)
         y1 = this->map_height - 1;
 
+    long x_distance = x1 - x0;
+    long y_distance = y1 - y0;
     long index;
-    long dx = x1 - x0;
-    long dy = y1 - y0;
-    double x;
-    double y;
     double step_x;
     double step_y;
-    index = (long)sqrt((double)dx * dx + (double)dy * dy);
+    double x;
+    double y;
+    index = (long)sqrt((double)x_distance * x_distance +
+                       (double)y_distance * y_distance);
+    step_x = (double)x_distance / (double)index;
+    step_y = (double)y_distance / (double)index;
     x = (double)x0;
     y = (double)y0;
-    step_x = (double)dx / (double)index;
-    step_y = (double)dy / (double)index;
 
     this->do_cliff_brush(x0, y0, a, b);
-    long count = index;
-    if (count > 0) {
+    if (index > 0) {
+        long count = index;
         do {
             x = step_x + x;
             y = step_y + y;
