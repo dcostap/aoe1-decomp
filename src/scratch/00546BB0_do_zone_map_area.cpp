@@ -5,11 +5,29 @@
 // 3: kept tile-before-cell best form; blocker is y parameter preserved in EDI instead of original EDX, causing broad register/layout drift after first 50 exact bytes.
 // 4: same-size best is behaviorally close flood-fill but not accepted_drift-safe because drift spans all four neighbor arms.
 // 5: no further safe source-shape lead found; leave in scratch.
+// 6: TU-aware pass restored the canonical RGE_Tile bitfield and DAT_00577a20
+//    double comparison; this improves the FPU/global surface and block alignment,
+//    but the tile-row/cell-row register schedule still preserves y in EDI.
+// Main-agent audit restored canonical polymorphic map ownership and retained
+// named tile/zone-row flood-fill traversal.
 
-struct RGE_Tile { short sx; short sy; unsigned char a; unsigned char flags; char pad[0x12]; };
-struct RGE_Map { char pad0[8]; int map_width; int map_height; char pad10[0x8d8c-0x10]; RGE_Tile** map_row_offset; };
+struct RGE_Tile {
+    short sx;
+    short sy;
+    unsigned char tile_type;
+    unsigned char terrain_type : 5;
+    unsigned char border_type : 4;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char objects[0x0c];
+};
+struct RGE_Map { virtual ~RGE_Map(); char pad04[4]; int map_width; int map_height; char pad10[0x8d8c-0x10]; RGE_Tile** map_row_offset; };
 struct Zone_Queue;
-extern "C" void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, int x, int y);
+extern double DAT_00577a20;
+extern "C" void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y);
 extern "C" unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long* x, long* y);
 
 class RGE_Zone_Map {
@@ -29,7 +47,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y] + x - 1;
             unsigned char* cell = this->zone_map_rows[y] + x - 1;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->flags & 0x1f] > 0.0f) ? 1 : 0;
+                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
                 if (ok == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x - 1, y);
@@ -40,7 +58,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y - 1] + x;
             unsigned char* cell = this->zone_map_rows[y - 1] + x;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->flags & 0x1f] > 0.0f) ? 1 : 0;
+                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
                 if (ok == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x, y - 1);
@@ -51,7 +69,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y] + x + 1;
             unsigned char* cell = this->zone_map_rows[y] + x + 1;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->flags & 0x1f] > 0.0f) ? 1 : 0;
+                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
                 if (ok == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x + 1, y);
@@ -62,7 +80,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
             RGE_Tile* tile = this->map->map_row_offset[y + 1] + x;
             unsigned char* cell = this->zone_map_rows[y + 1] + x;
             if (*cell == 0xff) {
-                int ok = (this->terrain_passability_rules[tile->flags & 0x1f] > 0.0f) ? 1 : 0;
+                int ok = (this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0;
                 if (ok == (passable & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x, y + 1);

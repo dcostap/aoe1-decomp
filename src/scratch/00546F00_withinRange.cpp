@@ -5,6 +5,10 @@
 // - Recovered the binary's guarded do/while topology and live x/y indices; 247B.
 // - sqrtf preserves the observed fsqrt/fcomp float-range comparison; remaining
 //   drift is local register scheduling in max construction and the outer tail.
+// - This assignment's probes swapped lower-bound declarations, split/rewrote
+//   max additions, tried an outer do/while, and materialized x_distance squared;
+//   the latter improved block alignment but widened the body, while the others
+//   were duplicate or worse. Restored the simplest typed reconstruction.
 // - Paused after the bounded 10-hypothesis matching assignment.
 
 typedef unsigned char uchar;
@@ -20,6 +24,8 @@ struct RGE_Map {
     long map_height;
 };
 
+// Main-agent audit confirmed canonical zone-map field ownership and retained
+// the ordinary bounded range scan.
 class RGE_Zone_Map {
 public:
     int numberTilesInZoneValue[257];

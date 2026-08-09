@@ -13,7 +13,13 @@
 //   guards do not remove the EH-tail drift.
 // - the known nonvirtual RGE_Zone_Map destructor is declared for the canonical
 //   type surface; it does not change the remaining emitted drift.
+// - This TU-aware pass tested reusing the scan index through a shared done label
+//   and a post-loop hit/create if-else. Moving declarations for the goto changed
+//   the EH prologue; the if-else changed call/block layout. Restored the natural
+//   direct ternary source.
 // FLAGS: /nologo /c /O2 /Oy /GX
+// Main-agent audit retained natural typed cache lookup/growth and nonvirtual
+// zone-map lifetime ownership; no shared-tail steering survives.
 
 #include <stdlib.h>
 #include <string.h>

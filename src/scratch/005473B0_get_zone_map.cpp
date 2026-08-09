@@ -15,7 +15,12 @@
 //   index and has a duplicated cleanup, while the original keeps EDI live and jumps
 //   back to the shared epilogue at 00547485. Left in scratch; no inline asm or
 //   compiler-only scaffolding retained.
+// - This TU-aware pass tried a result/goto common label (including reversed hit
+//   assignment order) and a break/post-loop hit branch; both were worse or kept
+//   the same duplicated EH cleanup. Restored the guarded-while reconstruction.
 // FLAGS: config/flags/005473B0_get_zone_map.rsp (/GX with default /O2 /Oy)
+// Main-agent audit retained the natural typed cache growth and nonvirtual
+// zone-map lifetime surface; no EH-tail steering survives.
 
 #include <stdlib.h>
 #include <string.h>

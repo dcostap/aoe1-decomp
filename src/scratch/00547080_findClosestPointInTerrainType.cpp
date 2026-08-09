@@ -11,8 +11,10 @@
 //   aliases were codegen-duplicate and aggregates increased the frame to 0x18.
 // - variant lab tried scalar declaration/initialization orders and aggregates;
 //   no invariant-eligible exact candidate was found.
-// - paused: best source is natural scalar bounds, with exact frame/saved-regs,
-//   call/CFG parity, and remaining prologue/local-slot/register drift.
+// - Final TU-aware probe widened the terrain temporary to int and reversed the
+//   upper-bound comparisons to match the observed cmp direction; this removes
+//   the byte spill and is the best natural source, but local-slot/prologue drift
+//   remains. No asm or raw-layout scaffolding retained.
 
 struct XYPoint {
     int x;
@@ -27,6 +29,8 @@ public:
     unsigned char get_terrain(short x, short y);
 };
 
+// Main-agent audit confirmed canonical terrain/zone ownership and retained the
+// natural closest-point scan.
 class RGE_Zone_Map {
 public:
     int numberTilesInZoneValue[257];
@@ -56,11 +60,11 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int
     }
 
     x_max = point.x + c;
-    if (this->map->map_width - 1 < x_max) {
+    if (x_max > this->map->map_width - 1) {
         x_max = this->map->map_width - 1;
     }
     y_max = point.y + c;
-    if (this->map->map_height - 1 < y_max) {
+    if (y_max > this->map->map_height - 1) {
         y_max = this->map->map_height - 1;
     }
 
@@ -72,7 +76,7 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int
                 int y_distance = point.y - y_min;
                 int y = y_min;
                 do {
-                    unsigned char terrain = this->map->get_terrain((short)x_min, (short)y);
+                    int terrain = this->map->get_terrain((short)x_min, (short)y);
                     if (terrain == a || terrain == b) {
                         int distance = c * c + y_distance * y_distance;
                         if (best == -1 || distance < best) {
