@@ -37,9 +37,14 @@
 //   vptr stores as living source; the canonical polymorphic class is retained.
 // - Probes: adding donor virtual-destructor surfaces enabled /GX EH; replacing
 //   the explicit polymorphic root with a flat/empty-base model broke the call
-//   ABI; the final novtable/explicit-vptr shape is an exact 282-byte match.
-// - Main-agent audit restored canonical source and returned this target to scratch.
+//   ABI. Typed player/master/global map ownership is codegen-identical.
+// - The natural candidate is 282 bytes with exact size/frame/call/CFG parity;
+//   only the derived-vptr timing differs. The earlier novtable/explicit-vptr
+//   experiment was byte-exact but is rejected by source policy. Keep this
+//   canonical polymorphic source in scratch for a later context investigation.
 // FLAGS: /nologo /c /O2 /Oy /GX
+// Main-agent audit restored canonical master/player destructor ownership and
+// retained natural compiler-managed vptr lowering.
 
 #include <stddef.h>
 
@@ -51,11 +56,20 @@ struct Production_Queue_Record;
 struct RGE_Action_List;
 struct TRIBE_Master_Building_Object;
 
-extern int unified_map_offsets[];
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    char _pad_04[0x0C];
+};
+
+struct TRIBE_Master_Building_Object : RGE_Master_Static_Object {
+};
+
+extern unsigned long* unified_map_offsets[];
 
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
-    char _pad_04[0x08];                            // +0x04 to +0x0B
+    long id;                                       // +0x04
+    RGE_Master_Static_Object* master_obj;          // +0x08
     RGE_Player* owner;                             // +0x0C
     char _pad_10[0x28];                            // +0x10 to +0x37
     float world_x;                                 // +0x38
@@ -73,7 +87,8 @@ struct TRIBE_Combat_Object : RGE_Combat_Object {
 };
 
 struct RGE_Player {
-    char _pad_00[0x40];
+    virtual ~RGE_Player();
+    char _pad_04[0x3C];
     RGE_Doppleganger_Creator* doppleganger_creator;  // +0x40
 };
 struct RGE_Doppleganger_Creator {
@@ -118,11 +133,11 @@ TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object* mb, R
     this->production_queue_need_attr = -1;
     this->unique_build_id = -1;
 
-    this->production_queue = (Production_Queue_Record*)0;
+    this->production_queue = 0;
     this->production_queue_size = 0;
     this->production_queue_count = 0;
     this->production_queue_enabled = 1;
-    this->production_queue_actions = (RGE_Action_List*)0;
+    this->production_queue_actions = 0;
     this->production_queue_change_flag = 0;
     this->production_queue_auto_paused = 0;
     this->DoppleInstalled = 0;
@@ -134,7 +149,7 @@ TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object* mb, R
     int col = (int)this->world_x;
 
     this->DoppleInstalled = this->owner->doppleganger_creator->add_doppleganger_check(
-        this, (unsigned long*)(unified_map_offsets[row] + col * 4));
+        this, unified_map_offsets[row] + col);
 
     this->PriorMap1 = 0;
     this->PriorMap2 = 0;

@@ -5,23 +5,25 @@
 // __thiscall: this in ecx, 2 stack params (short master_id, short max_remove). ret 8 cleanup.
 // Removes up to max_remove units of master_id from the production queue.
 //
-// Left in scratch: 352/355 bytes matching (3 bytes short, ~99%+ edit-equal).
+// Current reconstruction is intentionally kept in scratch.  The natural
+// single-index form with top-declared locals recovers the original EBX index,
+// EDI record stride, EBP reimbursement countdown, frame, calls, and most block
+// bytes.  The remaining VC5 drift is the backward-search branch polarity and
+// the source-level schedule of the game counter decrement; it is not a
+// behavior or ownership uncertainty.
 //
-// Differences are ALL stable VC5 version heuristics:
-//
-// 1. REGISTER ALLOCATION: Original uses ebx for the queue_count/index temporary,
-//    this version uses ebp. This cascades throughout: test bx,bx vs test bp,bp,
-//    movsx ecx,bx vs movsx ecx,bp, mov eax,ebx vs mov eax,ebp, etc.
-//    The push/pop order also differs accordingly.
-//
-// 2. SEARCH LOOP CONTROL: Original uses `jge 004C9B36h` (loop back if >=0) +
-//    `jmp 004C9C51h` (not found), 7 bytes. This version uses `jl 004C9C45h`
-//    + `jmp short 004C9B36h`, 8 bytes (1 byte longer).
-//
-// 3. NEW_COUNT COMPARISON (3 byte diff): Original uses
-//    `mov cx,[esi+1CEh]; cmp bx,cx` (9 bytes, register-register compare).
-//    This version uses `cmp bp,[esi+1CEh]` (6 bytes, register-memory compare).
-//    VC5 optimizes away the intermediate register load.
+// Attempt log:
+// - Replaced the two-index decompiler-shaped search with one named queue index
+//   plus an int reimbursement count and copy index; this restored the original
+//   saved-register coloring and substantially improved CFG/size parity.
+// - Tried positive continuation, do/while, and labeled-search spellings for the
+//   jge-back/jmp-final search topology; all were worse or introduced extra
+//   blocks, so the ordinary while form remains the living source.
+// - Recovered the proven RGE_Base_Game virtual surface and named counter field;
+//   raw save_music_file pointer arithmetic was rejected as noncanonical.
+// - Left unresolved: exact VC5 search branch layout and the separate global
+//   load/LEA/decrement schedule.  The current source remains behaviorally typed
+//   and period-plausible rather than retaining metric-only pointer scaffolding.
 //
 // Field layout (TRIBE_Building_Object):
 //   owner_player               +0x0C (TRIBE_Player*)
@@ -40,10 +42,12 @@
 //   4. Decrease unit_count by max_remove, increment change flag
 //   5. If unit_count <= 0: decrement queue_count, shift entries left
 //   6. If removed index 0 and need_attr != -1:
-//      - If need_attr == 4: decrement game->array[player_id] at +0xA34
+//      - If need_attr == 4: decrement the named game counter at +0xA34
 //      - Set need_attr = -1
 //      - Stop and delete production_queue_actions
-//   7. Call game->vf40(0x7C, player_id, 0, 0, 0)
+//   7. Call the RGE_Base_Game notification slot with (0x7C, player_id, 0, 0, 0)
+// Main-agent audit restored canonical polymorphic player/game/building ownership
+// and retained the natural indexed queue search/copy.
 
 struct ProductionEntry {
     short master_id;
@@ -51,7 +55,8 @@ struct ProductionEntry {
 };
 
 struct TRIBE_Player {
-    char gap_4A[0x4A];
+    virtual ~TRIBE_Player();
+    char gap_04[0x46];
     short player_id;
     void reimburse_obj_cost(short master_id);
 };
@@ -61,8 +66,9 @@ struct RGE_Action_List {
     void delete_list();
 };
 
-struct RGE_Game {
-    virtual void vf00();
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
     virtual void vf04();
     virtual void vf08();
     virtual void vf0C();
@@ -78,11 +84,14 @@ struct RGE_Game {
     virtual void vf34();
     virtual void vf38();
     virtual void vf3C();
-    virtual void vf40(int a, int b, int c, int d, int e);
+    virtual void notification(int a, long b, long c, long d, long e);
+    char gap_44[0xA30];
+    long queue_is_waiting_on_pop_counter[9]; // +0xA34
 };
 
 struct TRIBE_Building_Object {
-    char gap_00[0x0C];
+    virtual ~TRIBE_Building_Object();
+    char gap_04[0x08];
     TRIBE_Player* owner_player;
     char gap_10[0x1C8 - 0x10];
     ProductionEntry* production_queue;
@@ -96,67 +105,72 @@ struct TRIBE_Building_Object {
     void remove_from_production_queue(short master_id, short max_remove);
 };
 
-extern RGE_Game* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 
 void TRIBE_Building_Object::remove_from_production_queue(short master_id, short max_remove) {
-    short idx = this->production_queue_count;
-    if (idx != 0) {
-        idx--;
-        if (idx >= 0) {
-            short orig_idx = idx;
+    int remove_count;
+    short index;
+    short copy_index;
 
+    index = this->production_queue_count;
+    if (index != 0) {
+        index--;
+        if (index >= 0) {
             while (1) {
-                if (this->production_queue[orig_idx].master_id == master_id) break;
-                orig_idx--;
-                if (orig_idx < 0) goto update_game;
+                if (this->production_queue[index].master_id == master_id) {
+                    break;
+                }
+                index--;
+                if (index >= 0) {
+                    continue;
+                }
+                goto update_game;
             }
 
-            {
-                int count = (int)(short)max_remove;
-                if (this->production_queue[orig_idx].unit_count <= max_remove) {
-                    count = (int)(short)this->production_queue[orig_idx].unit_count;
-                }
+            remove_count = max_remove;
+            if (this->production_queue[index].unit_count <= max_remove) {
+                remove_count = this->production_queue[index].unit_count;
+            }
 
-                if (count > 0) {
+            if (remove_count > 0) {
+                do {
+                    this->owner_player->reimburse_obj_cost(master_id);
+                    remove_count--;
+                } while (remove_count != 0);
+            }
+
+            this->production_queue[index].unit_count -= max_remove;
+            this->production_queue_change_flag++;
+
+            if (this->production_queue[index].unit_count <= 0) {
+                this->production_queue_count--;
+                copy_index = index;
+                if (index < this->production_queue_count) {
                     do {
-                        this->owner_player->reimburse_obj_cost(master_id);
-                        count--;
-                    } while (count != 0);
+                        this->production_queue[copy_index].master_id =
+                            this->production_queue[copy_index + 1].master_id;
+                        this->production_queue[copy_index].unit_count =
+                            this->production_queue[copy_index + 1].unit_count;
+                        copy_index++;
+                    } while (copy_index < this->production_queue_count);
                 }
 
-                this->production_queue[orig_idx].unit_count -= max_remove;
-                this->production_queue_change_flag++;
-
-                if (this->production_queue[orig_idx].unit_count <= 0) {
-                    this->production_queue_count--;
-                    short new_count = this->production_queue_count;
-                    short loop_limit = new_count;
-                    if (orig_idx < loop_limit) {
-                        short i = orig_idx;
-                        do {
-                            this->production_queue[i].master_id = this->production_queue[i + 1].master_id;
-                            this->production_queue[i].unit_count = this->production_queue[i + 1].unit_count;
-                            i++;
-                        } while (i < this->production_queue_count);
-                    }
-
-                    if (orig_idx == 0) {
-                        short need_attr = this->production_queue_need_attr;
-                        if (need_attr != -1) {
-                            if (need_attr == 4) {
-                                int pid = (int)(short)this->owner_player->player_id;
-                                ((int*)((char*)rge_base_game + 0xA34))[pid]--;
-                            }
-                            this->production_queue_need_attr = -1;
+                if (index == 0) {
+                    if (this->production_queue_need_attr != -1) {
+                        if (this->production_queue_need_attr == 4) {
+                            int pid = (int)(short)this->owner_player->player_id;
+                            rge_base_game->queue_is_waiting_on_pop_counter[pid]--;
                         }
-                        this->production_queue_actions->action_stop();
-                        this->production_queue_actions->delete_list();
+                        this->production_queue_need_attr = -1;
                     }
+                    this->production_queue_actions->action_stop();
+                    this->production_queue_actions->delete_list();
                 }
             }
         }
-update_game:;
+
+update_game:
         int pid = (int)(short)this->owner_player->player_id;
-        rge_base_game->vf40(0x7C, pid, 0, 0, 0);
+        rge_base_game->notification(0x7C, pid, 0, 0, 0);
     }
 }
