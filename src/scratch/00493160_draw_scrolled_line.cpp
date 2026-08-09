@@ -1,86 +1,180 @@
-// VA: 00493160 TScrollTextPanel::draw_scrolled_line
+// VA: 00493160 TScrollTextPanel::draw_scrolled_line (692 bytes)
+// PDB source: scr_cred.cpp lines 547-644
+//
 // Attempt log:
-// initial reconstruction from packet: get two texts, calc rect, optional colors, draw modes 0/1/2 for primary and secondary text.
-// tried Win32 lstrlenA declaration for text lengths; emitted call-based shorter text (624B), unlike original inline repne scasb.
-// replaced with manual pointer scan; rebuilt grew to 640B but still much shorter than original 692B.
-// modeled SetTextColor/SetBkMode/DrawText as IAT-style stdcall surfaces from packet call sites.
-// modeled get_text/get_text2/calc_line_pos and key panel fields at observed offsets 0xf8/0x10c/0x114/0x11c/0x160/0x17c/0x188/0x194.
-// tried switch over draw_mode 0/1/2 with duplicated primary/secondary branches; source still collapses too much and check stops before diff.
-// left in scratch: behavior is approximate, but source is 52 bytes short and not accepted_drift-safe.
+// initial reconstruction used DrawTextA/SetBkMode and a flat approximate panel;
+// the binary actually calls TextOutA and uses the two clip-region fields.
+// Rebuilt the source around the proven TPanel/TTextPanel/TScrollTextPanel
+// ownership and the old source's switch-shaped three-mode rendering.
+// independent text-null checks restored the original redundant branch and
+// reached the best checked source shape (692-byte rebuild, diff 656).
+// direct saved-self reload, declaration order, Windows ABI spellings, and
+// header-context variants were either unchanged or worsened frame/register
+// topology. Main-agent audit restored direct this ownership and an ordinary
+// RECT output instead of retaining the diagnostic overlapping stack window.
+// The normalized source validates at 685 bytes with 614 differing bytes,
+// improving on the diagnostic overlap's 656-byte diff despite losing exact
+// size. Remaining drift is primarily VC5 register/stack-slot coloring.
 
-extern "C" int __stdcall SetTextColor(void*, int);
-extern "C" int __stdcall SetBkMode(void*, int);
-extern "C" int (__stdcall* const DrawTextA)(void*, const char*, int, void*, unsigned int);
+#include <windows.h>
+#include <string.h>
 
-struct RECT { int left, top, right, bottom; };
-class TScrollTextPanel {
+typedef unsigned char uchar;
+typedef unsigned long ulong;
+
+extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(HDC hdc, HRGN region);
+extern "C" __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC hdc, COLORREF color);
+extern "C" __declspec(dllimport) BOOL __stdcall TextOutA(HDC hdc, int x, int y,
+                                                           LPCSTR text, int count);
+
+class TPanel {
 public:
-    char gap0[0x10]; int clip_bottom; char gap14[4]; int base_y; char gap1c[0xd4]; short line_count;
-    char gapfa[0x10c-0xfa]; int line_height; char gap110[4]; int align; char gap118[4]; int draw_mode;
-    char gap120[0x160-0x120]; int scroll_y; char gap164[0x17c-0x164]; int text_color; char gap180[8]; int offset_y;
-    char gap18c[8]; int done;
-    char* get_text(short); char* get_text2(short); void calc_line_pos(void*, int, short, RECT*, int);
-    void draw_scrolled_line(void*, int, short, unsigned long, unsigned long);
+    virtual ~TPanel();
+
+    void* previous_panel;          // +0x04
+    void* previous_modal;          // +0x08
+    long pnl_x;                    // +0x0c
+    long pnl_y;                    // +0x10
+    long pnl_wid;                  // +0x14
+    long pnl_hgt;                  // +0x18
+    char* panel_name;              // +0x1c
+    void* render_area;             // +0x20
+    char gap_24[0x64];
+    void* clip_rgn;                // +0x88
+    char gap_8c[0x68];
 };
 
-void TScrollTextPanel::draw_scrolled_line(void* hdc, int x, short line, unsigned long c1, unsigned long c2)
-{
-    RECT r;
-    int len1 = 0, len2 = 0;
-    char* t1;
-    char* t2;
-    short l = line;
-    int y;
-    t1 = get_text(l);
-    t2 = get_text2(l);
-    if (!t1 && !t2) return;
-    if (t1) { char* p = t1; while (*p) ++p; len1 = p - t1; }
-    if (t2) { char* q = t2; while (*q) ++q; len2 = q - t2; }
-    calc_line_pos(hdc, x, l, &r, 0);
-    y = r.top;
-    if (this->align != 0 && this->align != 6) y += 5;
-    y += this->scroll_y;
-    r.top = y;
-    r.left = this->base_y - this->offset_y + r.left;
-    if (len1 == (short)(this->line_count - 1) && this->line_height + r.left < this->clip_bottom) this->done = 1;
-    if (this->text_color) SetTextColor(hdc, this->text_color);
+class TTextPanel : public TPanel {
+public:
+    char gap_f4[4];
+    short line_count;              // +0xf8
+    char gap_fa[0x12];
+    long line_height;              // +0x10c
+    char gap_110[4];
+    long align;                    // +0x114
+    char gap_118[4];
+    long draw_mode;                // +0x11c
+    char gap_120[0x40];
+    long line_offset;              // +0x160
+    char gap_164[0x18];
+    void* clip_region;             // +0x17c
+    char gap_180[8];
+
+    char* get_text(long index);
+    char* get_text2(long index);
+    void calc_line_pos(void* hdc, short draw_index, short line_index,
+                       RECT* line_rect, long* offset);
+};
+
+class TScrollTextPanel : public TTextPanel {
+public:
+    long scroll;                   // +0x188
+    long last_time;                // +0x18c
+    long scroll_speed;             // +0x190
+    long done;                     // +0x194
+
+    void draw_scrolled_line(void* hdc, short draw_index, short line_index,
+                            ulong color1, ulong color2);
+};
+
+void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
+                                          short line_index, ulong color1,
+                                          ulong color2) {
+    char* temp_text2;
+    short text2_length;
+    RECT line_rect;
+    long line_number;
+    char* text;
+    short text_len;
+    long text_x;
+    long text_y;
+    line_number = (long)line_index;
+    temp_text2 = 0;
+    text2_length = 0;
+    text = this->get_text(line_number);
+    temp_text2 = this->get_text2(line_number);
+    if (text == 0) {
+        if (temp_text2 == 0) return;
+    }
+    if (text != 0) {
+        text_len = (short)strlen(text);
+    }
+    if (temp_text2 != 0) {
+        text2_length = (short)strlen(temp_text2);
+    }
+
+    this->calc_line_pos(hdc, draw_index, line_index, &line_rect, 0);
+
+    text_x = line_rect.left;
+    if ((this->align != 0) && (this->align != 6)) {
+        text_x += 5;
+    }
+    text_x = this->line_offset + text_x;
+    text_y = this->pnl_hgt - this->scroll + line_rect.top;
+    if ((line_number == (short)this->line_count - 1) &&
+        (this->line_height + text_y < this->pnl_y)) {
+        this->done = 1;
+    }
+
+    if (this->clip_region != 0) {
+        SelectClipRgn(hdc, this->clip_region);
+    }
+
     switch (this->draw_mode) {
     case 0:
-        SetBkMode(hdc, c2);
-        if (t1) DrawTextA(hdc, t1, (short)len1, &r, 0);
+        SetTextColor(hdc, color1);
+        if (text != 0) {
+            TextOutA(hdc, text_x, text_y, text, (int)text_len);
+        }
         break;
     case 1:
-        SetBkMode(hdc, c2);
-        if (t1) DrawTextA(hdc, t1, (short)len1, &r, 0);
-        SetBkMode(hdc, c1);
-        if (t1) DrawTextA(hdc, t1, (short)len1, &r, 0);
+        SetTextColor(hdc, color1);
+        if (text != 0) {
+            TextOutA(hdc, text_x - 1, text_y + 1, text, (int)text_len);
+        }
+        SetTextColor(hdc, color2);
+        if (text != 0) {
+            TextOutA(hdc, text_x, text_y, text, (int)text_len);
+        }
         break;
     case 2:
-        SetBkMode(hdc, c1);
-        if (t1) DrawTextA(hdc, t1, (short)len1, &r, 0);
-        SetBkMode(hdc, c2);
-        if (t1) DrawTextA(hdc, t1, (short)len1, &r, 0);
+        SetTextColor(hdc, color2);
+        if (text != 0) {
+            TextOutA(hdc, text_x - 1, text_y + 1, text, (int)text_len);
+        }
+        SetTextColor(hdc, color1);
+        if (text != 0) {
+            TextOutA(hdc, text_x, text_y, text, (int)text_len);
+        }
+        break;
+    default:
         break;
     }
-    if (t2) {
-        if (this->text_color) SetTextColor(hdc, *(int*)((char*)this + 0x88));
-        switch (this->draw_mode) {
-        case 0:
-            SetBkMode(hdc, c2);
-            DrawTextA(hdc, t2, (short)len2, &r, 0);
-            break;
-        case 1:
-            SetBkMode(hdc, c2);
-            DrawTextA(hdc, t2, (short)len2, &r, 0);
-            SetBkMode(hdc, c1);
-            DrawTextA(hdc, t2, (short)len2, &r, 0);
-            break;
-        case 2:
-            SetBkMode(hdc, c1);
-            DrawTextA(hdc, t2, (short)len2, &r, 0);
-            SetBkMode(hdc, c2);
-            DrawTextA(hdc, t2, (short)len2, &r, 0);
-            break;
-        }
+
+    if (temp_text2 == 0) return;
+
+    if (this->clip_region != 0) {
+        SelectClipRgn(hdc, this->clip_rgn);
+    }
+
+    switch (this->draw_mode) {
+    case 0:
+        SetTextColor(hdc, color1);
+        TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
+        return;
+    case 1:
+        SetTextColor(hdc, color1);
+        TextOutA(hdc, text_x - 1, text_y + 1, temp_text2, (int)text2_length);
+        SetTextColor(hdc, color2);
+        TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
+        return;
+    case 2:
+        SetTextColor(hdc, color2);
+        TextOutA(hdc, text_x - 1, text_y + 1, temp_text2, (int)text2_length);
+        SetTextColor(hdc, color1);
+        TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
+        return;
+    default:
+        return;
     }
 }

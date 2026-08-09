@@ -11,8 +11,14 @@
 // - a reversed global-assignment experiment was the metric-best diagnostic
 //   (277 bytes, 121 positional differences) but is not retained as source: the
 //   natural color/time/type/first/last/draw order is the plausible reconstruction.
-// - left in scratch: ordered prologue scheduling and destination-cursor setup
-//   remain non-exact; calls, loop CFG, and final timestamp/FPU/flag logic align.
+// - the 720-order sweep found a plausible color/draw/time/type/first/last order
+//   that matches the prologue and initialization through the palette branch;
+//   the remaining copy-cursor setup is still structurally non-exact.
+// - windows.h context and global declaration-order probes were codegen-neutral;
+//   a binary-backed byte-cursor copy improved resynchronization but was rolled
+//   back as decompiler-shaped scaffolding.
+// - left in scratch: ordered destination-cursor setup remains non-exact; calls,
+//   loop CFG, and final timestamp/FPU/flag logic align.
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
@@ -44,12 +50,12 @@ void RGE_fade_palette_start(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
                             float fade_time, unsigned char fade_type,
                             tagPALETTEENTRY* palette, int first, int last)
 {
+    DAT_0086bab0 = draw_area;
     DAT_0086b2a8 = fade_color;
     DAT_0086b290 = fade_time;
     DAT_0086b2a4 = fade_type;
     DAT_0086b298 = first;
     DAT_0086b29c = last;
-    DAT_0086bab0 = draw_area;
 
     for (int i = 0; i < 256; i++) {
         DAT_0086b2b0[i].peRed = 0;
