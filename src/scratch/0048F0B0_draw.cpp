@@ -14,7 +14,18 @@
 // diagnostic: pointer subtraction and a narrow win-decal local both worsened
 //   structure; rolled back. The remaining drift is register/address scheduling
 //   around the spilled count, player-array load, and shape-call setup.
-// left in scratch: natural typed reconstruction; no exact match this claim.
+// fresh pass (orch-luna-48f0b0-w3): name-pointer cursor plus shared index was
+//   a duplicate/worse basin; full TPanel donor surface, function-scope locals,
+//   and a register-qualified count were unchanged. A natural loop variant lab
+//   (six loop forms, size/frame/call gates) found no eligible improvement.
+// fresh pass: a local players[] alias caused a 192-byte frame-less body; proven
+//   polymorphic RGE_Player/RGE_Game_World surfaces were codegen-identical; a
+//   short countdown moved to 216 bytes but emitted 16-bit operations. The final
+//   binary-proven raw name/this player-address relation fell to 193 bytes.
+// left in scratch: restored natural typed shared-index reconstruction; all eight
+//   calls/frame remain aligned, with unresolved world/count register scheduling.
+// main-agent normalization restored the donor-backed polymorphic RGE_Player and
+// RGE_Game_World surfaces; emitted code is unchanged.
 
 typedef unsigned char uchar;
 
@@ -96,13 +107,15 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x80];
+    virtual ~RGE_Player();
+    char gap_04[0x7C];
     uchar active;
 };
 
 class RGE_Game_World {
 public:
-    char gap_00[0x3C];
+    virtual void data_load_world();
+    char gap_04[0x38];
     short player_num;
     char gap_3E[2];
     RGE_Player** players;

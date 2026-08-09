@@ -24,6 +24,26 @@
 //   metric-best pointer-cursor candidate (180 differing bytes); current source
 //   is 183 differing bytes with 100% ordered call-set parity. Left in scratch:
 //   structural prologue/register/stack-home mismatch remains unresolved.
+// - Fresh pass: dossier/donor/ABI evidence confirmed the /GX EH frame, 0x31C
+//   RGE_Shallows_Info, 0x34C generator, and same-TU donors 00488700/00487940.
+// - Fresh probe 1: materialized shallows_info.shallows_num at the proven
+//   end-of-aggregate slot; diff improved 183 -> 170.
+// - Fresh probe 2: restored the natural strided pointer cursors; diff improved
+//   to 132 (one-byte size overrun) with exact saved-register parity.
+// - Fresh probe 3: anchored the shallow cursor at shallows[1] and advanced both
+//   cursors after the stores; diff improved to 2 bytes / 96.49% shape.
+// - Fresh probes 4-10: direct aggregate assignment, declaration placement,
+//   destructor removal, union/reference overlays, and standalone/new-result
+//   variants either regressed the new/ctor CFG or emitted the same 2-byte basin.
+//   The natural standalone new-expression is retained because its result is not
+//   consumed after construction.
+// - Final fresh state: exact size/frame/instruction count, 4/4 ordered calls,
+//   48/57 exact instructions, and 2 differing stack-displacement bytes remain:
+//   rebuilt LEAs use [esp+14h]/[esp+10h] versus original [esp+10h]/[esp+0Ch].
+// - Main-agent exact follow-up: anchor one long cursor at the canonical first
+//   line's `y` field, write its adjacent `x` through `[-1]`, and pass the whole
+//   `shallows_info` object to the constructor. This preserves named aggregate
+//   ownership while reproducing both original LEAs. Exact: 206/206 bytes.
 
 #include <new.h>
 
@@ -113,7 +133,6 @@ public:
     virtual unsigned char generate();
     RGE_RMM_Shallows_Generator(RGE_Map* map, RGE_Random_Map_Module* parent,
                                RGE_Shallows_Info* info);
-    ~RGE_RMM_Shallows_Generator();
 };
 
 class TDebuggingLog {
@@ -131,20 +150,25 @@ public:
 
 void TRIBE_RMM_Database_Controller::add_shallows_module()
 {
-    RGE_RMM_Shallows_Generator* generator;
     RGE_Shallows_Info shallows_info;
     int i = 0;
 
-    if (this->land_info.land_num > 0) {
+    shallows_info.shallows_num = this->land_info.land_num;
+
+    if (shallows_info.shallows_num > 0) {
+        long* shallow = &shallows_info.shallows[0].y;
+        RGE_Land_Info_Line* land = this->land_info.land;
         do {
-            shallows_info.shallows[i].y = this->land_info.land[i].x;
-            shallows_info.shallows[i + 1].x = this->land_info.land[i].y;
+            shallow[-1] = land->x;
             ++i;
-        } while (i < this->land_info.land_num);
+            shallow[0] = land->y;
+            ++land;
+            shallow += 2;
+        } while (i < shallows_info.shallows_num);
     }
 
-    generator = new RGE_RMM_Shallows_Generator(
-        this->map, this, (RGE_Shallows_Info*)&shallows_info.shallows[0].y);
+    new RGE_RMM_Shallows_Generator(
+        this->map, this, &shallows_info);
 
     L->Log("Random Map shallows initilization, rand: %d",
            debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x25F));
