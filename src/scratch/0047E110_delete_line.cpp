@@ -9,6 +9,11 @@
 // - Natural-source variant lab (54 variants; size/frame/call-set gated) found
 //   no exact group; full proven TPanel/TTextPanel layout also emitted the same
 //   code. A while-loop and const-parameter loop probe were unchanged.
+// - Fresh pass: explicit line decrement forms (predecrement, assignment, and
+//   for-init), long/function-scope loop locals, derived-dtor/CRT-header context,
+//   and a four-variant limit-local lab all stayed in the same countdown basin.
+// - The flag lab found /Og-/Ot-/Ob0 unchanged or structurally wrong; no flag
+//   lead is retained. The clean natural source remains the defensible candidate.
 // - Restored clean source after the probes. Remaining drift is the entry
 //   parameter scheduling plus incrementing-versus-countdown loop shape.
 
