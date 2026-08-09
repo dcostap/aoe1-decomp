@@ -39,6 +39,9 @@
 //   source ordering.
 // Best state: diff 1761 (79.6%), shape 94.02%, exact-blocks 59.58%, size +8,
 // frame 0xA54, 35/35 calls aligned.
+// New worker context review: check_terrain's verified uchar/long call surface and
+// link_stack_randomly's proven Map_Stack/base-module layout agree with this TU;
+// no new ABI/layout fact justifies blind edits to this large generator.
 // Remaining structural gap (next leads):
 // 1) The float score still lands at +0x2C instead of reusing fair_count's +0x18
 //    slot (original merges them; index1 keeps +0x24).  This shifts in_zone and

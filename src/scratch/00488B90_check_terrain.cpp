@@ -10,113 +10,174 @@
 // attempt 8: tried preserving this in a local stack slot; VC5 either optimized it into EBX or added extra stores in the prologue.
 // attempt 9: tried recomputing row offset per outer iteration vs preserving it; no improvement to size/register family.
 // attempt 10: reviewed param widths (uchar terrain/avoid vs int masks); current source explicitly preserves avoid&0xff table lookup, but remaining mismatch is loop topology/register allocation.
-// Left in scratch: behavior is modeled, but exact VC5 source basin not found; not accepted_drift.
+// attempt 11: rebuilt the prior raw-offset source as the session baseline; 426B/0x14 frame, structural stage.
+// attempt 12: restored the period terrain-generator/map/row ownership and direct repeated tile-byte predicates; test whether the canonical base surface restores the original frame and loop topology.
+// attempt 13: corrected the proven terrain-set member from rows to impassable_terrain (+0x2E within the +0x8C terrain table); the observed map-relative lookup is +0xBA + index*0x198.
+// attempt 14: widened the base-terrain result to long, matching the original dword local/home and EBX zero-plus-byte load rather than a byte-only stack home.
+// attempt 15: gave the first radius scan its own row index instead of mutating min_y; original asm spills/reloads that outer index at +0x18 while retaining min_y in the setup register.
+// attempt 16: hoisted the row-index declaration before count/base locals to probe VC5's source declaration/home ordering without changing ownership or CFG.
+// attempt 17: carried a typed self pointer through both scans, reflecting the binary's repeated saved-this reloads rather than relying on an implicit compiler spill.
+// attempt 19: ordered the row-index declaration before the typed self local, probing the remaining four-byte home permutation at the otherwise exact prologue.
+// attempt 20: initialized the spilled first-scan row index directly from y-radius rather than copying min_y; this is the last bounded liveness probe before retaining the best canonical basin.
+// Left in scratch: canonical typed terrain/map/row ownership, long base-terrain ABI, and both scan CFGs are reconstructed; remaining drift is VC5 stack-home/register coloring and early loop block shape (best current 429B, exact frame, 70.7% positional diff).
 
 typedef unsigned char uchar;
 
-class RGE_RMM_Terrain_Generator {
-public:
-    uchar check_terrain(uchar terrain, long x, long y, long radius, uchar avoid_terrain);
+struct RGE_Tile {
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type : 5;
+    unsigned char elevation : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
+    char objects[12];
 };
 
-#define W(off) (*(int*)((char*)this + (off)))
-#define BADDR(p, off) (*(unsigned char*)((char*)(p) + (off)))
+class RGE_Tile_Set {
+public:
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    void* shape;
+    void* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char map_lt_cliff_color;
+    unsigned char map_rt_cliff_color;
+    unsigned char passable_terrain;
+    unsigned char impassable_terrain;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    char tiles[0x72];
+    short terrain_to_draw;
+    short rows;
+    short cols;
+    char rest[0x198 - 0xC0];
+};
 
-uchar RGE_RMM_Terrain_Generator::check_terrain(uchar terrain, long x, long y, long radius, uchar avoid_terrain)
+class RGE_Map {
+public:
+    virtual ~RGE_Map();
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    long world_width;
+    long world_height;
+    char tile_sizes[0x74];
+    RGE_Tile_Set terrain_types[32];
+};
+
+class RGE_Random_Map_Module {
+public:
+    virtual uchar generate() = 0;
+    RGE_Random_Map_Module* parent;
+    void* list;
+    RGE_Map* map;
+    RGE_Tile** map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    uchar* search_map;
+    uchar** search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
+};
+
+class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
+public:
+    uchar check_terrain(uchar terrain, long x, long y, long radius,
+                        uchar avoid_terrain);
+};
+
+uchar RGE_RMM_Terrain_Generator::check_terrain(
+    uchar terrain, long x, long y, long radius, uchar avoid_terrain)
 {
-    int self;
-    int count;
-    int baseTerrain;
-    int rowOffset;
-    int yy;
-    int rowPtrSave;
-
-    int av = (int)avoid_terrain & 0xff;
-    int t = av;
-    t <<= 4;
-    t += av;
-    self = (int)this;
-    count = 1;
-    t = t + t * 2;
-    baseTerrain = *(unsigned char*)(*(int*)(self + 0x0c) + t * 8 + 0xba);
+    long row_index;
+    RGE_RMM_Terrain_Generator* self = this;
+    long count = 1;
+    long base_terrain = self->map->terrain_types[avoid_terrain].impassable_terrain;
 
     if (radius > 0) {
-        int minX = x;
-        int maxY = y;
-        int maxX;
-        int minY;
-        minX -= radius;
-        maxY -= radius;
-        maxX = x + radius;
-        y += radius;
-        if (minX < 0) minX = 0;
-        if (maxY < 0) maxY = 0;
-        if (maxX >= *(int*)(self + 0x14)) maxX = *(int*)(self + 0x14) - 1;
-        if (y >= *(int*)(self + 0x18)) y = *(int*)(self + 0x18) - 1;
+        long min_x = x - radius;
+        long min_y = y - radius;
+        long max_x = x + radius;
+        long max_y = y + radius;
 
-        int rows = *(int*)(self + 0x10);
-        rowOffset = (minX + minX * 2) << 3;
-        int row = *(int*)(rows + maxY * 4);
-        rowPtrSave = rows + maxY * 4;
-        yy = maxY;
-        row += rowOffset;
-        if (yy <= y) {
+        if (min_x < 0) min_x = 0;
+        if (min_y < 0) min_y = 0;
+        if (max_x >= self->map_width) max_x = self->map_width - 1;
+        if (max_y >= self->map_height) max_y = self->map_height - 1;
+
+        RGE_Tile** row_ptr = self->map_row_offset + min_y;
+        long x_offset = min_x * 0x18;
+        uchar* row = (uchar*)*row_ptr + x_offset;
+
+        row_index = y - radius;
+        if (row_index <= max_y) {
             do {
-                int xx = minX;
-                if (xx <= maxX) {
-                    unsigned char* tile = (unsigned char*)(row + 5);
+                if (min_x <= max_x) {
+                    long xx = min_x;
+                    uchar* tile = row + 5;
                     do {
-                        unsigned char raw = *tile;
-                        unsigned char masked = raw & 0x1f;
-                        if (masked != avoid_terrain && ((raw & 0x1f) != baseTerrain) && masked != terrain) {
+                        if (((*tile & 0x1f) != avoid_terrain) &&
+                            ((*tile & 0x1f) != base_terrain) &&
+                            ((*tile & 0x1f) != terrain)) {
                             return 0;
                         }
-                        xx++;
+                        ++xx;
                         tile += 0x18;
-                    } while (xx <= maxX);
-                    rowOffset = (minX + minX * 2) << 3;
-                    self = (int)this;
+                    } while (xx <= max_x);
                 }
-                rowPtrSave += 4;
-                yy++;
-                row = rowOffset + *(int*)rowPtrSave;
-            } while (yy <= y);
+                ++row_ptr;
+                ++row_index;
+                row = (uchar*)*row_ptr + x_offset;
+            } while (row_index <= max_y);
         }
     }
 
-    int minX2 = x - 2;
-    int minY2 = y - 2;
-    int maxX2 = x + 2;
-    int maxY2 = y + 2;
-    if (minX2 < 0) minX2 = 0;
-    if (minY2 < 0) minY2 = 0;
-    if (maxX2 >= *(int*)(self + 0x14)) maxX2 = *(int*)(self + 0x14) - 1;
-    if (maxY2 >= *(int*)(self + 0x18)) maxY2 = *(int*)(self + 0x18) - 1;
+    long min_x = x - 2;
+    long min_y = y - 2;
+    long max_x = x + 2;
+    long max_y = y + 2;
 
-    int rows2 = *(int*)(self + 0x10);
-    rowOffset = (minX2 + minX2 * 2) << 3;
-    rowPtrSave = rows2 + minY2 * 4;
-    int row2 = *(int*)rowPtrSave + rowOffset;
-    if (minY2 <= maxY2) {
-        int rowCount = maxY2 - minY2 + 1;
+    if (min_x < 0) min_x = 0;
+    if (min_y < 0) min_y = 0;
+    if (max_x >= self->map_width) max_x = self->map_width - 1;
+    if (max_y >= self->map_height) max_y = self->map_height - 1;
+
+    RGE_Tile** row_ptr = self->map_row_offset + min_y;
+    long x_offset = min_x * 0x18;
+    uchar* row = (uchar*)*row_ptr + x_offset;
+    if (min_y <= max_y) {
+        long row_count = max_y - min_y + 1;
         do {
-            if (minX2 <= maxX2) {
-                unsigned char* tile2 = (unsigned char*)(row2 + 5);
-                int colCount = maxX2 - minX2 + 1;
+            if (min_x <= max_x) {
+                uchar* tile = row + 5;
+                long col_count = max_x - min_x + 1;
                 do {
-                    if ((*tile2 & 0x1f) == terrain) {
-                        count++;
+                    if ((*tile & 0x1f) == terrain) {
+                        ++count;
                     }
-                    tile2 += 0x18;
-                    colCount--;
-                } while (colCount != 0);
+                    tile += 0x18;
+                    --col_count;
+                } while (col_count != 0);
             }
-            rowPtrSave += 4;
-            row2 = rowOffset + *(int*)rowPtrSave;
-            rowCount--;
-        } while (rowCount != 0);
+            ++row_ptr;
+            row = (uchar*)*row_ptr + x_offset;
+            --row_count;
+        } while (row_count != 0);
     }
     return (uchar)count;
 }
-#undef W
-#undef BADDR

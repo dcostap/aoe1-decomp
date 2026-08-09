@@ -11,8 +11,13 @@
 //   hunk at +0008; declaration-order tuning reached 88.4% and did not close it.
 // - Restored the clean-source baseline after the 10-hypothesis budget: remaining
 //   drift is VC5 local liveness/register coloring, not call set, layout, or CFG.
+// - New worker baseline: same-TU check_terrain recovery confirms the full random-module base surface; next probe names those proven base fields instead of a gap-only prefix.
+// - Full base surface emitted identically to the gap-only donor; no new structural lead. Keep the named canonical base and pause rather than repeat the prior liveness basin.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
+
+class RGE_Map;
+class RGE_Random_Map_Module_List;
 
 struct Map_Stack {
     long x;
@@ -27,7 +32,10 @@ class RGE_Random_Map_Module {
 public:
     virtual unsigned char generate() = 0;
 
-    char gap_04[0x10];
+    RGE_Random_Map_Module* parent;
+    RGE_Random_Map_Module_List* list;
+    RGE_Map* map;
+    void* map_row_offset;
     long map_width;
     long map_height;
     float schedule;
