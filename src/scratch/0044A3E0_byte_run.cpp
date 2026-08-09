@@ -18,6 +18,10 @@
 // - Byte mutation in the negative arm is binary-supported by the observed
 //   `neg al`; direct member access plus that form gives the best current 217-byte
 //   reconstruction (160 differing bytes), but the ESI/EBX basin remains open.
+// - Materializing the fill byte before the destination address worsened the
+//   body to 222 bytes / 177 differing bytes; rolled back.
+// - Signed-char opcode with in-place negation reproduced an older 208-byte /
+//   163-byte-diff basin; rolled back as duplicate negative evidence.
 
 #include <string.h>
 
@@ -36,6 +40,8 @@ struct RGE_Flic_Player {
     void byte_run();
 };
 
+// Main-agent audit confirmed canonical FLIC player/frame ownership and retained
+// the natural packed-byte decoder.
 void RGE_Flic_Player::byte_run() {
     char* chunk = this->chunk;
     int count = this->y1 + this->flic_size_y - 1;

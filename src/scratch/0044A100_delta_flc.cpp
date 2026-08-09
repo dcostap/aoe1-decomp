@@ -8,7 +8,13 @@
 // 5: casted byte increments instead of +=2 to avoid constant-2 register; no change.
 // 6: flags /O2(no /Oy), /O1, /Ox, /Ob0: /O1 much shorter, others same family.
 // 7: volatile dummy forces comparable 412-byte output but broad drift (91.9903% pos, first mismatch 5).
-// Left in scratch: behavior is modeled, but compiler insists on EDX chunk pointer + EBP constant 2 instead of original EBP chunk pointer, cascading through loop/register layout; not accepted_drift-safe.
+// Fresh pass: replace the compiler-steering dummy with the binary-supported
+// cur_y stack local and the natural ushort packet cursor from the sibling FLIC
+// decoder.  This is the clean baseline for the remaining register/layout work.
+// - A short/long outer-count, single-cursor, signed packet-count, and positive
+//   payload-cursor pass were neutral or lower-shape; retain the two-cursor
+//   natural decoder.  The remaining gap is EBP packet-cursor allocation and
+//   the cur_y/line-count stack-home schedule.
 
 #include <string.h>
 
@@ -22,35 +28,39 @@ public:
     long flic_width;
     uchar* window_buffer;
     uchar* save_buffer;
-    uchar* chunk;
+    char* chunk;
     void delta_flc();
 };
 
+// Main-agent audit confirmed canonical FLIC player/frame ownership and retained
+// the natural packed ushort delta decoder.
 void RGE_Flic_Player::delta_flc()
 {
-    volatile long dummy = 0;
-    long cur_y = dummy;
-    uchar* p = this->chunk;
-    int lines = (int)*(short*)p;
-    p = (uchar*)((int)p + 2);
-    if (lines <= 0) return;
+    long cur_y = 0;
+    short lines = *(short*)this->chunk;
+    ushort* p = (ushort*)(this->chunk + 2);
+    if (lines <= 0) {
+        return;
+    }
 
     do {
         unsigned char found = 0;
-        short packets = 0;
+        ushort packets = 0;
+        ushort* scan = p;
         do {
-            unsigned short code = *(unsigned short*)p;
-            unsigned int top;
-            p = (uchar*)((int)p + 2);
-            top = ((unsigned int)code) >> 14;
+            ushort code = *scan;
+            ushort value = 0;
+            p = scan + 1;
+            unsigned int top = ((unsigned int)code) >> 14;
             if (top == 0) {
-                packets = (short)code;
+                value = code;
+                packets = value;
                 found = 1;
             } else if (top == 2) {
                 this->window_buffer[this->flic_width - 1] = (uchar)code;
-                code = *(unsigned short*)p;
-                p = (uchar*)((int)p + 2);
-                packets = (short)code;
+                value = *p;
+                p = scan + 2;
+                packets = value;
                 found = 1;
             } else if (top == 3) {
                 int skip = -(int)(short)code;
@@ -58,35 +68,37 @@ void RGE_Flic_Player::delta_flc()
                 this->save_buffer += this->drawarea_width * skip;
                 this->window_buffer = this->save_buffer;
             }
-        } while (!found);
+            scan = p;
+        } while (found == 0);
 
-        if (packets > 0) {
-            int packet_count = packets;
+        if ((short)packets > 0) {
+            int packet_count = (short)packets;
             do {
-                signed char xskip = *(signed char*)p++;
-                signed char size;
-                this->window_buffer += xskip;
-                size = *(signed char*)p++;
-                if (size > 0) {
-                    int bytes = (int)size << 1;
-                    memcpy(this->window_buffer, p, bytes);
-                    this->window_buffer += bytes;
-                    p += bytes;
-                } else {
+                ushort pair = *p;
+                this->window_buffer += (signed char)pair;
+                signed char size = *((signed char*)p + 1);
+                ushort* payload = p + 1;
+                if (size < 1) {
                     int bytes = -(int)size << 1;
                     if (bytes > 1) {
                         int n = bytes >> 1;
                         do {
-                            *(unsigned short*)this->window_buffer = *(unsigned short*)p;
+                            *(ushort*)this->window_buffer = *payload;
                             this->window_buffer += 2;
                             n--;
                         } while (n != 0);
                     }
                     if (bytes == 1) {
-                        *this->window_buffer = *p;
+                        *this->window_buffer = (uchar)*payload;
                         this->window_buffer++;
                     }
-                    p = (uchar*)((int)p + 2);
+                    p = payload + 1;
+                } else {
+                    int bytes = (int)size << 1;
+                    uchar* dst = this->window_buffer;
+                    memcpy(dst, payload, bytes);
+                    this->window_buffer += bytes;
+                    p = payload + size;
                 }
             } while (--packet_count != 0);
         }

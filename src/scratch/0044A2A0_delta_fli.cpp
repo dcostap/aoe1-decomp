@@ -33,6 +33,9 @@
 //   A focused three-way header variant lab likewise found no exact or size-valid
 //   candidate. Best source retained below; remaining mismatch is the two `inc ebp`
 //   instructions at PDB lines 468-469 versus VC5's `add ebp,2`.
+// - A typed payload pointer spanning the two header bytes reproduced an older
+//   232-byte / 221-byte-diff basin and was rolled back; it did not provide a
+//   useful source-level barrier for the separate increments.
 
 #include <string.h>
 
@@ -57,6 +60,8 @@ public:
     void delta_fli();
 };
 
+// Main-agent audit confirmed canonical FLIC player/frame ownership and retained
+// the natural packed delta decoder.
 void RGE_Flic_Player::delta_fli()
 {
     char* chunk = this->chunk;
