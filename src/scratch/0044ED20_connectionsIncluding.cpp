@@ -1,86 +1,157 @@
-// 0044ED20 InfMap::connectionsIncluding
+// 0044ED20 InfluenceMap::connectionsIncluding
+// Source: infmap.cpp lines 495-585
 // Attempt log:
-// initial direct low-level reconstruction from packet: validate bounds, scan rectangle, count neighboring connections.
-// first build compiles but rebuilt .text is 656 vs original/configured 713, so check_function stops before compare.
-// source models the initial bounds checks, start_count result, rectangle scan over row pointers, neighbor direction loop, parity/all_dirs filters, and mode-based edge penalties, but it is a broad behavioral scaffold.
-// remaining mismatch is likely the exact 8-direction switch topology, row-pointer arithmetic, and odd/even direction gating; current source is too compact and wrong-shaped compared to original's large hand-unrolled switch/jumptable structure.
-// left in scratch: not accepted_drift-safe because object size/topology is far from original and behavior details of several edge cases are speculative.
+// - initial scaffold used an incomplete InfluenceMap layout and a compact
+//   direction loop; it built 656B against the 713B original and was not a
+//   behavior-safe reconstruction.
+//
+// Canonical baseline below follows the binary-supported source family: bounds
+// validation, an x/y rectangle scan, two natural eight-direction switch loops,
+// and the original odd/even edge and neighbor accounting.  The full class
+// surface is local until this function's layout is independently reusable.
+// - split validation guards and positive outer guards broadened or reduced
+//   structural parity; restored the shared natural validation form.
+// - explicit dispatch labels/common checks for both switch loops moved the
+//   direction handlers to the binary-proven cold placement: 252 instructions,
+//   0x34 frame, 588 differing bytes. That diagnostic layout was normalized
+//   back to ordinary switches for the living source.
+// - signed modulo-2 parity and a hoisted edge accumulator were tested; the
+//   former grew the body to 828B and the latter to a 0x38 frame, so both were
+//   rolled back.
 
-struct Point { int x; int y; };
+#include <stdlib.h>
 
-class InfMap {
-public:
-    char gap0[4];
-    int width;
-    int height;
-    int origin_x;
-    int row_base;
-    void** rows;
-    char gap1c[4];
-    int start_count;
+typedef unsigned char uchar;
 
-    int connectionsIncluding(Point* a, Point* b, unsigned char base, unsigned char want, int mode1, int mode2, int all_dirs);
+struct XYPoint {
+    int x;
+    int y;
 };
 
-static int parity(int x) { return x & 1; }
+class InfluenceMap {
+public:
+    virtual ~InfluenceMap();
+    int xSizeValue;                         // +0x04
+    int ySizeValue;                         // +0x08
+    int xReferencePointValue;               // +0x0C
+    int yReferencePointValue;               // +0x10
+    unsigned char* valueValue;              // +0x14
+    unsigned char** rowValue;               // +0x18
+    int coverageCountValue;                 // +0x1C
+    int connectionCountValue;               // +0x20
+    unsigned char unchangeableLimitValue;   // +0x24
 
-int InfMap::connectionsIncluding(Point* a, Point* b, unsigned char base, unsigned char want, int mode1, int mode2, int all_dirs)
+    int connectionsIncluding(const XYPoint& from, const XYPoint& to,
+                             uchar minimum, uchar amount,
+                             int mode1, int mode2, int allDirections);
+};
+
+int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
+                                       uchar minimum, uchar amount,
+                                       int mode1, int mode2, int allDirections)
 {
-    int ax = a->x;
-    if (ax < 0) return 0;
-    int ay = a->y;
-    if (ay < 0) return 0;
-    int w = this->width;
-    if (ax >= w) return 0;
-    int h = this->height;
-    if (ay >= h) return 0;
-    int bx = b->x;
-    if (bx < 0) return 0;
-    int by = b->y;
-    if (by < 0) return 0;
-    if (bx >= w) return 0;
-    if (by >= h) return 0;
-    if (ax > bx) return this->start_count;
-    if (ay > by) return this->start_count;
+    int result = this->connectionCountValue;
 
-    int result = this->start_count;
-    int y = ay;
-    do {
-        int rowoff = y * 4;
-        int x = ax;
-        do {
-            unsigned char v = *((unsigned char*)this->rows[y - this->row_base] + (x - this->origin_x));
-            if ((int)v + (int)base >= (int)want) {
-                if (v >= want) {
-                    int nx = ax;
-                    int ny = ay;
-                    for (int dir = 0; dir < 8; dir++) {
-                        switch (dir) {
-                        case 0: nx = x - 1; ny = y - 1; break;
-                        case 1: nx = x;     ny = y - 1; break;
-                        case 2: nx = x + 1; ny = y - 1; break;
-                        case 3: nx = x - 1; ny = y;     break;
-                        case 4: nx = x + 1; ny = y;     break;
-                        case 5: nx = x - 1; ny = y + 1; break;
-                        case 6: nx = x;     ny = y + 1; break;
-                        case 7: nx = x + 1; ny = y + 1; break;
+    if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
+        from.y >= this->ySizeValue || to.x < 0 || to.y < 0 ||
+        to.x >= this->xSizeValue || to.y >= this->ySizeValue) {
+        return 0;
+    }
+
+    for (int x = from.x; x <= to.x; ++x) {
+        if (from.y <= to.y) {
+            unsigned char** rowsMap = this->rowValue;
+            int xOffset = x - this->xReferencePointValue;
+            int y = from.y;
+
+            for (; y <= to.y; ++y) {
+                if ((int)rowsMap[y - this->yReferencePointValue][xOffset] +
+                        (int)amount >= (int)minimum) {
+                    if (rowsMap[y - this->yReferencePointValue][xOffset] >= minimum) {
+                        int neighborX = x;
+                        int neighborY = y;
+                        int edgeResult = result;
+
+                        for (int direction = 0; direction < 8; ++direction) {
+                            switch (direction) {
+                            case 0:
+                                --neighborX;
+                                --neighborY;
+                                break;
+                            case 1:
+                            case 2:
+                                ++neighborX;
+                                break;
+                            case 3:
+                            case 4:
+                                ++neighborY;
+                                break;
+                            case 5:
+                            case 6:
+                                --neighborX;
+                                break;
+                            case 7:
+                                --neighborY;
+                                break;
+                            }
+
+                            if (allDirections || (abs(direction) & 1) != 0) {
+                                if (neighborX < 0 || neighborX >= this->xSizeValue ||
+                                    neighborY < 0 || neighborY >= this->ySizeValue) {
+                                    if ((mode1 == 1 && abs(direction) == 1) ||
+                                        (mode2 == 1 && abs(direction) == 0)) {
+                                        --edgeResult;
+                                    }
+                                    if (edgeResult <= 0)
+                                        break;
+                                }
+                            }
                         }
-                        if (!all_dirs && ((dir < 0 ? -dir : dir) & 1) == 0) continue;
-                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                            unsigned char nv = *((unsigned char*)this->rows[ny - this->row_base] + (nx - this->origin_x));
-                            if (nv >= want) result += 2;
-                        } else {
-                            if (mode1 == 1 && ((dir < 0 ? -dir : dir) & 1) == 1) result--;
-                            else if (mode2 == 1 && ((dir < 0 ? -dir : dir) & 1) == 0) result--;
+                        result = edgeResult;
+                    }
+
+                    int neighborX = x;
+                    int neighborY = y;
+                    for (int direction = 0; direction < 8; ++direction) {
+                        switch (direction) {
+                        case 0:
+                            --neighborX;
+                            --neighborY;
+                            break;
+                        case 1:
+                        case 2:
+                            ++neighborX;
+                            break;
+                        case 3:
+                        case 4:
+                            ++neighborY;
+                            break;
+                        case 5:
+                        case 6:
+                            --neighborX;
+                            break;
+                        case 7:
+                            --neighborY;
+                            break;
+                        }
+
+                        if (allDirections || (abs(direction) & 1) != 0) {
+                            if (neighborX < 0 || neighborX >= this->xSizeValue ||
+                                neighborY < 0 || neighborY >= this->ySizeValue) {
+                                if ((mode1 == 1 && abs(direction) == 1) ||
+                                    (mode2 == 1 && abs(direction) == 0)) {
+                                    --result;
+                                }
+                            } else if (rowsMap[neighborY - this->yReferencePointValue]
+                                             [neighborX - this->xReferencePointValue] >= minimum) {
+                                result += 2;
+                            }
                         }
                     }
-                } else {
-                    result--;
                 }
             }
-            x++;
-        } while (x <= bx);
-        y++;
-    } while (y <= by);
+        }
+    }
+
     return result;
 }

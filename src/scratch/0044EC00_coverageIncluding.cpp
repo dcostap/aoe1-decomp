@@ -21,6 +21,15 @@
 //   the observed 4-byte row cursor without changing the map's ownership model.
 // - probe 11: restore the canonical typed row lookup and put the decrement in
 //   the do/while condition, testing the natural pre-decrement loop spelling.
+// - current assignment: reordered y/row-count declarations and combined their
+//   natural initializers; both emitted the same 6-byte setup-order gap.
+// - current assignment: a post-decrement row condition broadened the function
+//   to 283B; restored the clean pre-decrement form.
+// - current assignment: a cached y-reference reproduced the earlier 279B,
+//   143-byte drift; restored the direct named-field lookup.
+// - current assignment: focused setup/access lab (row cursor, scaled offset,
+//   loop and declaration orders) found no exact variant; the typed current
+//   group remained best.
 // Final bounded result: natural typed reconstruction is 275B with the 0x10
 // frame, saved-register set, CFG, and all 94 instruction boundaries aligned;
 // only 6 bytes remain at +0x96 (VC5 emits `inc eax; shl edi,2` instead of the
