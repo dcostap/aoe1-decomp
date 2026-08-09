@@ -5,7 +5,17 @@
 // try 3: /GX no change from try 2, rolled back.
 // try 4: /O1 too small (.text 1277), rolled back.
 // try 5: /Od exact-size comparable but worse debug-basin mismatch (92.9429% positional / 146.8468% edit), rolled back.
-// left in scratch: behavior skeleton covers busy/paused guards, GetCurrentPosition, PostMessage updates, Lock/Unlock, WaveReadFile/WaveStartDataRead loops, silence fill for 8/16-bit, starvation/end state, and play cursor wrap. Not accepted_drift quality; needs exact original C local topology and DirectSound/Wave prototypes/source spelling.
+// try 6-9: removed prologue zero initializers, mirrored PDB local names/order,
+// and tested the local_4 GetCurrentPosition home plus shared zero/one values;
+// these preserved the exact 18-call set but left the broad CFG/register basin.
+// final normalized source keeps ordinary uninitialized API output locals and
+// natural literal predicates rather than compiler-steering aliases.
+// FLAGS: config/flags/00448BA0_ds_stream_time_func.rsp = /Oi- (five direct memset calls)
+// Main-agent audit replaced fixed-address global macros with named extern
+// ownership. The normalized source now has exact 1332-byte size and 18 calls,
+// 64.58% shape, and 1248 differing bytes. Remaining drift starts at prologue
+// save/zero scheduling and continues through Lock output homes, silence
+// branches, and shared tails. Not accepted_drift.
 
 typedef unsigned long DWORD;
 typedef unsigned int UINT;
@@ -24,24 +34,24 @@ extern "C" BOOL __stdcall PostMessageA(HWND, UINT, unsigned int, long);
 extern "C" int __cdecl WaveReadFile(void*, DWORD, void*, void*, DWORD*);
 extern "C" int __cdecl WaveStartDataRead(void*, void*, void*);
 
-#define g_in_func (*(int*)0x0062E658)
-#define g_buffer (*(DSBUF**)0x00888490)
-#define g_buf_size (*(DWORD*)0x00888494)
-#define g_chunk (*(DWORD*)0x00888498)
-#define g_play (*(DWORD*)0x0088849C)
-#define g_lastplay (*(DWORD*)0x008884A0)
-#define g_total (*(DWORD*)0x008884A4)
-#define g_end_pending (*(int*)0x008884A8)
-#define g_looped (*(int*)0x008884AC)
-#define g_starving (*(int*)0x008884B0)
-#define g_starve_count (*(int*)0x008884B4)
-#define g_paused (*(int*)0x008884C0)
-#define g_hwnd (*(HWND*)0x008884C4)
-#define g_wavefile (*(void**)0x00888464)
-#define g_mmioinfo (*(void**)0x00888468)
-#define g_unused_end (*(void**)0x0088847C)
-#define g_wavefmt (*(WAVEFORMATEX_L**)0x00888460)
-#define g_post (*(BOOL (__stdcall **)(HWND,UINT,unsigned int,long))0x0088A8B4)
+extern int g_in_func;
+extern DSBUF* g_buffer;
+extern DWORD g_buf_size;
+extern DWORD g_chunk;
+extern DWORD g_play;
+extern DWORD g_lastplay;
+extern DWORD g_total;
+extern int g_end_pending;
+extern int g_looped;
+extern int g_starving;
+extern int g_starve_count;
+extern int g_paused;
+extern HWND g_hwnd;
+extern void* g_wavefile;
+extern void* g_mmioinfo;
+extern void* g_unused_end;
+extern WAVEFORMATEX_L* g_wavefmt;
+extern BOOL (__stdcall *g_post)(HWND, UINT, unsigned int, long);
 
 #define CLEAR_AUDIO(P,N) do { \
     WAVEFORMATEX_L* wf_ = g_wavefmt; \
@@ -53,19 +63,22 @@ extern "C" int __cdecl WaveStartDataRead(void*, void*, void*);
 
 extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWORD time, DWORD unused)
 {
-    DWORD play = 0, write = 0;
-    void* p1 = 0; void* p2 = 0;
-    DWORD n1 = 0, n2 = 0;
-    DWORD got = 0;
+    DWORD dwPlay;
+    DWORD dwWrite;
+    void* lpWrite1;
+    void* lpWrite2;
+    DWORD dwLen1;
+    DWORD dwLen2;
+    DWORD uChkErr;
 
     if (g_in_func || g_paused) return;
     g_in_func = 1;
     if (g_end_pending || !g_buffer) goto done;
 
-    g_buffer->lpVtbl->GetCurrentPosition(g_buffer, &play, &write);
-    if (g_play < write) {
+    g_buffer->lpVtbl->GetCurrentPosition(g_buffer, &dwPlay, &dwWrite);
+    if (g_play < dwWrite) {
         DWORD t = g_play + g_chunk;
-        if (t > write) goto done;
+        if (t > dwWrite) goto done;
     }
 
     if (g_starving && !g_starve_count) {
@@ -78,10 +91,10 @@ extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWOR
 
     {
         DWORD diff;
-        if (write < g_lastplay) diff = g_buf_size + write;
-        else diff = write;
+        if (dwWrite < g_lastplay) diff = g_buf_size + dwWrite;
+        else diff = dwWrite;
         diff -= g_lastplay;
-        g_lastplay = write;
+        g_lastplay = dwWrite;
         g_total += diff;
         g_post(g_hwnd, 0x502, 0, 0);
     }
@@ -90,58 +103,58 @@ extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWOR
         --g_starve_count;
         if (g_starve_count <= 1) goto done;
         if (!g_buffer) goto done;
-        if (g_buffer->lpVtbl->Lock(g_buffer, g_play, g_chunk, &p1, &n1, &p2, &n2, 0)) goto done;
-        CLEAR_AUDIO(p1, n1);
-        g_buffer->lpVtbl->Unlock(g_buffer, p1, n1, p2, n2);
+        if (g_buffer->lpVtbl->Lock(g_buffer, g_play, g_chunk, &lpWrite1, &dwLen1, &lpWrite2, &dwLen2, 0)) goto done;
+        CLEAR_AUDIO(lpWrite1, dwLen1);
+        g_buffer->lpVtbl->Unlock(g_buffer, lpWrite1, dwLen1, lpWrite2, dwLen2);
         g_play += g_chunk;
         if (g_play < g_buf_size) goto done;
         goto wrap_play;
     }
 
     if (!g_buffer) goto done;
-    if (g_buffer->lpVtbl->Lock(g_buffer, g_play, g_chunk, &p1, &n1, &p2, &n2, 0)) goto done;
+    if (g_buffer->lpVtbl->Lock(g_buffer, g_play, g_chunk, &lpWrite1, &dwLen1, &lpWrite2, &dwLen2, 0)) goto done;
 
-    if (p1 && !g_end_pending) {
-        WaveReadFile(g_wavefile, n1, p1, g_mmioinfo, &got);
-        if (got < n1) {
+    if (lpWrite1 && !g_end_pending) {
+        WaveReadFile(g_wavefile, dwLen1, lpWrite1, g_mmioinfo, &uChkErr);
+        if (uChkErr < dwLen1) {
             if (!g_looped) {
-                CLEAR_AUDIO((BYTE*)p1 + got, n1 - got);
-                if (g_play <= n2) g_starve_count = (g_buf_size + g_play - n2) / g_chunk;
-                else g_starve_count = (g_play - n2) / g_chunk;
+                CLEAR_AUDIO((BYTE*)lpWrite1 + uChkErr, dwLen1 - uChkErr);
+                if (g_play <= dwLen2) g_starve_count = (g_buf_size + g_play - dwLen2) / g_chunk;
+                else g_starve_count = (g_play - dwLen2) / g_chunk;
                 g_starving = 1;
-            } else if (n2) {
+            } else if (dwLen2) {
                 do {
                     WaveStartDataRead(g_wavefile, g_mmioinfo, g_unused_end);
-                    WaveReadFile(g_wavefile, n1 - got, (BYTE*)p1 + got, g_mmioinfo, &got);
-                } while (got < n1);
+                    WaveReadFile(g_wavefile, dwLen1 - uChkErr, (BYTE*)lpWrite1 + uChkErr, g_mmioinfo, &uChkErr);
+                } while (uChkErr < dwLen1);
             }
         }
-    } else if (p1 && g_end_pending && g_wavefmt && n1) {
-        CLEAR_AUDIO(p1, n1);
+    } else if (lpWrite1 && g_end_pending && g_wavefmt && dwLen1) {
+        CLEAR_AUDIO(lpWrite1, dwLen1);
     }
 
-    if (p2) {
+    if (lpWrite2) {
         if (!g_end_pending) {
-            WaveReadFile(g_wavefile, n2, p2, g_mmioinfo, &got);
-            if (got < n2) {
+            WaveReadFile(g_wavefile, dwLen2, lpWrite2, g_mmioinfo, &uChkErr);
+            if (uChkErr < dwLen2) {
                 if (!g_looped) {
-                    CLEAR_AUDIO((BYTE*)p2 + got, n2 - got);
-                    if (g_play <= n2) g_starve_count = (g_buf_size + g_play - n2) / g_chunk;
-                    else g_starve_count = (g_play - n2) / g_chunk;
+                    CLEAR_AUDIO((BYTE*)lpWrite2 + uChkErr, dwLen2 - uChkErr);
+                    if (g_play <= dwLen2) g_starve_count = (g_buf_size + g_play - dwLen2) / g_chunk;
+                    else g_starve_count = (g_play - dwLen2) / g_chunk;
                     g_starving = 1;
-                } else if (n2) {
+                } else if (dwLen2) {
                     do {
                         WaveStartDataRead(g_wavefile, g_mmioinfo, g_unused_end);
-                        WaveReadFile(g_wavefile, n2 - got, (BYTE*)p2 + got, g_mmioinfo, &got);
-                    } while (got < n2);
+                        WaveReadFile(g_wavefile, dwLen2 - uChkErr, (BYTE*)lpWrite2 + uChkErr, g_mmioinfo, &uChkErr);
+                    } while (uChkErr < dwLen2);
                 }
             }
-        } else if (g_end_pending && g_wavefmt && n2) {
-            CLEAR_AUDIO(p2, n2);
+        } else if (g_end_pending && g_wavefmt && dwLen2) {
+            CLEAR_AUDIO(lpWrite2, dwLen2);
         }
     }
 
-    if (g_buffer) g_buffer->lpVtbl->Unlock(g_buffer, p1, n1, p2, n2);
+    if (g_buffer) g_buffer->lpVtbl->Unlock(g_buffer, lpWrite1, dwLen1, lpWrite2, dwLen2);
     g_play += g_chunk;
     if (g_play >= g_buf_size) {
 wrap_play:

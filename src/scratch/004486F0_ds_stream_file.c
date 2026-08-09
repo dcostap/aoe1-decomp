@@ -11,7 +11,17 @@
 // 8: Call set and broad behavior are represented: ds_stream_stop, WaveOpen/Close/Start/Read, CreateSoundBuffer/Lock/Unlock/Set*, SendMessageA, timeBeginPeriod/timeSetEvent.
 // 9: Mid-function DSBUFFERDESC/Lock region differs: rebuilt inlines/zeroes descriptor fields and orders arguments differently; original does `memset(&dsbd,0,0x14)` then compact stores.
 // 10: Loop/fill branch is semantically represented, but register family is inverted (ESI/ECX and EBX/EBP zero/one) and branch layout is not localized.
-// GIVEUP: left in scratch; no accepted_drift proposal because mismatch is broad from prologue register allocation and DSBUFFERDESC setup, not a localized equivalent drift.
+// 11: /Oi- restores both binary-proven direct memset helper calls and all 20
+//     ordered call sites; default flags omit those calls and inline the clears.
+// 12: Restored the binary-proven `dsbd.lpwfxFormat = _wiWave` store; the natural
+//     typed descriptor/clear reaches 828B versus 835B but remains broadly shifted.
+// 13: Typed SDK global/vtable declarations worsened register and stack topology;
+//     reverted. Reusing the ignored second Lock output pair shrank the frame to
+//     0x20; reverted. The living source keeps separate period C output locals.
+// PAUSED: remaining drift is a broad VC5 ABI/layout basin (EBX zero vs EDI,
+//     EBP one/save, descriptor/output stack homes, and Lock argument scheduling),
+//     not a localized behavior-equivalent difference; no accepted_drift proposal.
+// FLAGS: config/flags/004486F0_ds_stream_file.rsp = /Oi- (direct memset calls)
 
 extern unsigned int _bFileOpen;
 extern unsigned int _bPlaying;
@@ -63,35 +73,34 @@ int ds_stream_file(char* filename, int param_2)
     unsigned char* lpWrite2;
     unsigned int dwLen2;
     struct DSBUFFERDESC_MINE dsbd;
-    register int zero = 0;
-    register int one = 1;
 
-    if (_bFileOpen != zero || _bPlaying != zero || _bTimerInstalled != zero) {
+    if (_bFileOpen != 0 || _bPlaying != 0 || _bTimerInstalled != 0) {
         ds_stream_stop();
     }
 
-    _stream_paused = zero;
-    if (_WaveOpenFile(filename, &DAT_00888464, &_wiWave, &DAT_0088847c) != zero) {
-        return zero;
+    _stream_paused = 0;
+    if (_WaveOpenFile(filename, &DAT_00888464, &_wiWave, &DAT_0088847c) != 0) {
+        return 0;
     }
 
-    if (*(short*)_wiWave != one) {
+    if (*(short*)_wiWave != 1) {
         _WaveCloseReadFile(&DAT_00888464, &_wiWave);
-        return zero;
+        return 0;
     }
 
-    if (_WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c) != zero) {
+    if (_WaveStartDataRead(&DAT_00888464, &DAT_00888468, &DAT_0088847c) != 0) {
         _WaveCloseReadFile(&DAT_00888464, &_wiWave);
-        return zero;
+        return 0;
     }
 
     DAT_00888498 = (((*(unsigned int*)(_wiWave + 8) * 120) / 100) / 6);
     DAT_00888494 = DAT_00888498 * 6;
-    memset(&dsbd, zero, 20);
+    memset(&dsbd, 0, sizeof(dsbd));
 
     dsbd.dwSize = 20;
     dsbd.dwFlags = 0xE0;
     dsbd.dwBufferBytes = DAT_00888494;
+    dsbd.lpwfxFormat = (void*)_wiWave;
     if ((*(int (__stdcall **)(unsigned int, struct DSBUFFERDESC_MINE*, unsigned int*, int))(*(unsigned int*)_lpDS + 0x0C))(_lpDS, &dsbd, &_lpDSBStreamBuffer, 0) != 0) {
         return 0;
     }

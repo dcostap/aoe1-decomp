@@ -12,9 +12,13 @@
  * min-order and conditional-argument variants were nonproductive. A focused
  * 15-variant lab found three emitted groups, no size/frame/call-set eligible
  * candidate, and no exact match.
- * final scratch candidate keeps the clean period-plausible chunk loop and the
- * proven /Oi- direct memcpy context; remaining drift is the VC5 branch-specific
- * memcpy argument-push topology and six-to-eight bytes of block layout.
+ * this session: branch-local assignment in the memcpy count reached 242B/16B
+ * drift but swapped the next/remaining register roles; SDK headers did not
+ * change the natural 234B basin. The exact source shape assigns the selected
+ * length in the destination argument's comma expression, which preserves the
+ * binary-proven selected-length state while VC5 evaluates the cdecl pushes.
+ * exact: local MMIOINFO/MMCKINFO surface, /Oi- direct memcpy, and branch-local
+ * selected-length update now match all 242 bytes; casts are period SDK-style.
  */
 
 typedef unsigned int UINT;
@@ -52,6 +56,7 @@ typedef struct _MMIOINFO {
 __declspec(dllimport) MMRESULT __stdcall mmioGetInfo(void* hmmio, MMIOINFO* info, UINT flags);
 __declspec(dllimport) MMRESULT __stdcall mmioAdvance(void* hmmio, MMIOINFO* info, UINT flags);
 __declspec(dllimport) MMRESULT __stdcall mmioSetInfo(void* hmmio, MMIOINFO* info, UINT flags);
+
 void* __cdecl memcpy(void* dst, const void* src, unsigned int count);
 
 int __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, MMCKINFO* pckIn, UINT* cbActualRead)
@@ -86,9 +91,12 @@ int __cdecl _WaveReadFile(void* hmmio, UINT cbRead, BYTE* pbDest, MMCKINFO* pckI
 
         cbDataToCopy = mmioinfoIn.pchEndRead - mmioinfoIn.pchNext;
         if (cbDataIn - cT < cbDataToCopy) {
-            cbDataToCopy = cbDataIn - cT;
+            memcpy((cbDataToCopy = cbDataIn - cT, (BYTE*)pbDest + cT),
+                   (BYTE*)mmioinfoIn.pchNext, cbDataIn - cT);
+        } else {
+            memcpy((BYTE*)pbDest + cT, (BYTE*)mmioinfoIn.pchNext,
+                   cbDataToCopy);
         }
-        memcpy(pbDest + cT, mmioinfoIn.pchNext, cbDataToCopy);
         cT += cbDataToCopy;
         mmioinfoIn.pchNext += cbDataToCopy;
     }
