@@ -85,6 +85,20 @@
 // Paused: remaining drift is structural FPU argument/scratch scheduling and
 // distance-register coloring, not a map ownership, boundary, signedness, or
 // call-ABI blocker.
+// 2026-08-09 sa-fd4bc279-r1-81000 follow-up (8 meaningful probes):
+// - Tested extern zero-rdata declarations for the binary's 571E38/571E40
+//   constants; unresolved local relocations worsened the basin (2012 bytes,
+//   44.68% shape), so the literal-zero form remains the clean candidate.
+// - Tested a typed aggregate/reference wrapper for the contiguous FPU locals;
+//   it added 28 code bytes and disturbed the frame-local schedule (2121-byte
+//   diff, 50.84% shape), so it was rolled back. Scoped cost and compound
+//   cardinal additions were codegen-neutral.
+// - Normalized the compiler-facing stack argument declarations to the PDB's
+//   Map_Stack& surface for find_path, push_stack, and pop_stack; VC5 emitted
+//   identical bytes, but the reference form is the more plausible source ABI.
+// Final retained candidate: typed row/tile ownership, byte flag array, exact
+//   frame/call set, and natural eight-direction search; unresolved drift is
+//   the previously documented VC5 local-slot/register/FPU scheduler basin.
 
 #include <string.h>
 
@@ -139,13 +153,13 @@ public:
     Map_Stack** stack_offsets;
 
     void clear_stack();
-    void push_stack(Map_Stack* path_stack, long x, long y, float cost, float total_cost);
-    Map_Stack* pop_stack(Map_Stack* path_stack, long* x, long* y, float* cost);
-    unsigned char find_path(Map_Stack* path_stack, long x, long y,
+    void push_stack(Map_Stack& path_stack, long x, long y, float cost, float total_cost);
+    Map_Stack* pop_stack(Map_Stack& path_stack, long* x, long* y, float* cost);
+    unsigned char find_path(Map_Stack& path_stack, long x, long y,
                             long* target_x, long* target_y, float* terrain_cost);
 };
 
-unsigned char RGE_Random_Map_Module::find_path(Map_Stack* path_stack, long x, long y,
+unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, long y,
                                                 long* target_x, long* target_y,
                                                 float* terrain_cost) {
     unsigned char calc_cost[4];  // [1]=up, [2]=right, [3]=down
@@ -438,8 +452,8 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack* path_stack, long x, lo
             cost = (float)sqrt((double)map_h);
         }
 
-        if (path_stack->next != 0) {
-            path_stack->next->prev = 0;
+        if (path_stack.next != 0) {
+            path_stack.next->prev = 0;
         }
         return 1;
     }

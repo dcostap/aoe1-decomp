@@ -12,6 +12,14 @@
 //   but returns to structural reconstruction (147-byte diff, 73.33% shape);
 //   the frame is still 0x964 versus 0x968. Next work should recover the real
 //   local declaration/layout context rather than reintroduce offset views.
+// - A typed diagnostic state aggregate (outer count, collection offset, then
+//   Map_Stack[100]) recovered the 0x968 frame and 95.12% shape/44-byte diff;
+//   it was restored because PDB ownership presents separate locals and the
+//   aggregate is not established as original source.
+// - Moving declarations, naming bucket/node locals, inlining the bucket index,
+//   and mirroring the stable same-TU module fields were codegen-neutral around
+//   that aggregate. Remaining lead is a plausible separate-local layout that
+//   preserves the arithmetic-before-node reload and callee-save coloring.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 

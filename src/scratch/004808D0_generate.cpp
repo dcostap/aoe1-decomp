@@ -45,15 +45,23 @@
 // extra 4-byte frame slot. Typed member calls fixed the prior call-target
 // mismatch; the remaining virtual-call and logging relocations are equivalent
 // direct/indirect sites under the checker.
-// Paused after the default 10 meaningful hypotheses; next lead is a fresh
-// period-plausible declaration/context reconstruction, not more register
-// qualifiers or declaration-order permutations.
+// - New pass: a common fallback insertion block plus a named search successor
+//   reduced the structural size to 274-275 bytes; the completed module layout
+//   was neutral.  The final cdecl explicit-self Log surface produced 276 bytes,
+//   75.47% shape, and 248 strict differing bytes.
+// - Final source retains the natural typed list ownership and cdecl Log ABI;
+//   it remains scratch because the frame is 0xC versus 0x8 and the compiler
+//   colors the saved successor/search roles opposite the oracle.  Next lead is
+//   a source-plausible lifetime reconstruction that yields EBP=next, ESI=search
+//   and two stack homes, not more register qualifiers or blind variants.
 
 #include <stddef.h>
 
 typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(const char* file, int line);
+extern "C" void __cdecl Log(void* self, const char* msg, int value);
+extern void* L;
 
 class RGE_Random_Map_Module;
 
@@ -65,8 +73,19 @@ public:
 
 class RGE_Random_Map_Module {
 public:
-    char gap_04[4];                     // +0x04
+    virtual ~RGE_Random_Map_Module();
+
+    RGE_Random_Map_Module* parent;      // +0x04
     RGE_Random_Map_Module_List* list;   // +0x08
+    void* map;                           // +0x0C
+    void* map_row_offset;                // +0x10
+    int map_width;                       // +0x14
+    int map_height;                      // +0x18
+    float schedule;                      // +0x1C
+    unsigned char* search_map;           // +0x20
+    void* stack_array;                    // +0x24
+    unsigned char** search_map_rows;     // +0x28
+    void* stack_offsets;                  // +0x2C
 
     virtual uchar generate();
 
@@ -76,48 +95,49 @@ protected:
 
 uchar RGE_Random_Map_Module::generate()
 {
-    RGE_Random_Map_Module_List* sorted = 0;
-    RGE_Random_Map_Module_List* next;
-    RGE_Random_Map_Module_List* current;
     RGE_Random_Map_Module_List* search;
+    RGE_Random_Map_Module_List* search_next;
+    RGE_Random_Map_Module_List* next;
+    RGE_Random_Map_Module_List* sorted = 0;
+    RGE_Random_Map_Module_List* current;
 
-    for (current = this->list; current != 0; current = next) {
+    current = this->list;
+    while (current != 0) {
         next = current->next;
-
         if (sorted != 0) {
             if (current->module->get_schedule() >= sorted->module->get_schedule()) {
                 search = sorted;
-                while (search->next != 0) {
-                    if (current->module->get_schedule() < search->next->module->get_schedule())
+                while ((search_next = search->next) != 0) {
+                    if (current->module->get_schedule() < search_next->module->get_schedule())
                         break;
-                    search = search->next;
+                    search = search_next;
                 }
                 current->next = search->next;
                 search->next = current;
-            } else {
-                current->next = sorted;
-                sorted = current;
+                current = next;
+                continue;
             }
-        } else {
-            current->next = sorted;
-            sorted = current;
         }
+
+        current->next = sorted;
+        sorted = current;
+        current = next;
     }
 
     this->list = sorted;
-    debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A);
-
-    extern void* g_LogObj;
-    extern void __fastcall Log(void* self, int, const char* msg, int val);
-    Log(*(void**)0x62C4FC, 0, "RGE_RANDOM_MAP_MODULE::map start", 0);
+    Log(L, "RGE_RANDOM_MAP_MODULE::map start",
+        debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A));
 
     current = this->list;
+    if (current == 0)
+        return 1;
+
     while (current != 0) {
         if (current->module->generate() == 0)
             return 0;
 
-        debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F);
-        Log(*(void**)0x62C4FC, 0, "RGE_RANDOM_MAP_MODULE::module completed with ret:", 0);
+        Log(L, "RGE_RANDOM_MAP_MODULE::module completed with ret:",
+            debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F));
         current = current->next;
     }
 
