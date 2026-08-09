@@ -1,79 +1,142 @@
 // VA: 004852D0 RGE_RMM_Land_Generator::check_terrain_and_zone
 // rmm_land.cpp lines 57-140
 // Attempt log:
-// 1: natural/raw-offset source from packet/decompiler: 416 B (configured 417), close prologue/calls but frame 0x20 not original 0x1c and x/y registers swapped.
-// 2: swapped long parameter order: still 416 B and did not fix row-index/register roles.
-// 3: removing unused-looking radius bounds locals shortened to 368 B, worse; rolled back.
-// 4: volatile dummy frame-forcing on shortened source had no useful effect.
-// tried flags /O2 no-/Oy, /Ox same; /O1 much too short.
-// left in scratch: behavior modeled, but remaining mismatch is broad stack-frame/register allocation and x/y role scheduling; not accepted_drift-safe.
+// - baseline: restored the typed RGE_Random_Map_Module/RGE_Land_Info ownership
+//   and the ordinary terrain/zone scan; 412 B, frame 0x20, one ftol call.
+// - layout: an explicit typed land-record pointer and direct two-cell gate
+//   removed the ftol call and shortened the function; rolled back.
+// - behavior: restoring the radius-derived gate kept the ftol call and moved
+//   the resynchronization diff closer, but the original comparisons visibly
+//   use y-2/y+2, so this was diagnostic only.
+// - layout/context: raw land anchors and the minimal same-TU generator surface
+//   preserved the target displacement shape but stayed in the same 0x20-frame
+//   basin; no shared ABI fact justified keeping those forms.
+// - liveness/abi: declaration-order, y-origin, and long-local probes were
+//   duplicate or nonproductive.  Removing one diagnostic radius bound reached
+//   the target 0x1c frame (396 B, 67.13% shape) but retained the wrong gate.
+// - final canonical reset: named typed ownership and the binary-proven y-2/y+2
+//   terrain-zone test are retained.  The remaining issue is the VC5 local-home
+//   and register basin (target 0x1c frame, EBP-held row origin, and the observed
+//   ftol/radius stack stores); no natural bounded probe found the transition.
 
 typedef unsigned char uchar;
 
-class RGE_RMM_Land_Generator {
+struct RGE_Land_Info_Line {
+    long land_size;
+    long terrain_type;
+    long x;
+    long y;
+    long base_size;
+    long area;
+    uchar zone;
+    uchar pad_19[3];
+    long clumpiness_factor;
+    long wall_1_avoidance_line;
+    long wall_2_avoidance_line;
+    long wall_3_avoidance_line;
+    long wall_4_avoidance_line;
+    uchar wall_fade;
+    uchar pad_31[3];
+};
+
+struct RGE_Land_Info {
+    RGE_Land_Info_Line land[99];
+    long land_num;
+    uchar base_terrain;
+    uchar pad_1421[3];
+    long wall_1_avoidance_line;
+    long wall_2_avoidance_line;
+    long wall_3_avoidance_line;
+    long wall_4_avoidance_line;
+    uchar wall_fade;
+    uchar pad_1435[3];
+};
+
+class RGE_Random_Map_Module {
 public:
-    uchar check_terrain_and_zone(uchar land_id, uchar unused, long x, long y);
+    virtual uchar generate() = 0;
+    RGE_Random_Map_Module* parent;
+    void* list;
+    void* map;
+    void* map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    uchar* search_map;
+    uchar** search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
+};
+
+class RGE_RMM_Land_Generator : public RGE_Random_Map_Module {
+public:
+    RGE_Land_Info info;
+
+    uchar check_terrain_and_zone(uchar unused, uchar land_id, long x, long y);
 };
 
 extern double dbl_571ED0;
 
-uchar RGE_RMM_Land_Generator::check_terrain_and_zone(uchar land_id, uchar unused, long x, long y)
+uchar RGE_RMM_Land_Generator::check_terrain_and_zone(uchar unused, uchar land_id, long x, long y)
 {
-    int count = 0;
-    char* self = (char*)this;
-    int land_index = (int)(unsigned char)land_id;
-    char* land = self + land_index * 52;
-    int area = *(int*)(land + 0x44);
-    int x1 = x - area;
-    int y0 = y - area;
-    int x2 = x + area;
-    int y2 = y + area;
-    int cx1 = x - 2;
-    int cy1 = y - 2;
-    int cx2 = x + 2;
-    int cy2 = y + 2;
-    int radius = (int)((double)area * dbl_571ED0);
-    unsigned char zone = *(unsigned char*)(land + 0x48);
-    unsigned char terrain;
-    int yy;
-    int xx;
-    int* rows;
+    long count = 0;
+    long area = this->info.land[land_id].area;
+    long x1 = x - area;
+    long y1 = y - area;
+    long x2 = x + area;
+    long y2 = y + area;
+    long cx1 = x - 2;
+    long cy1 = y - 2;
+    long cx2 = x + 2;
+    long cy2 = y + 2;
+    long radius = (long)((double)area * dbl_571ED0);
+    uchar zone = this->info.land[land_id].zone;
+    uchar** rows = this->search_map_rows;
 
-    rows = *(int**)(self + 0x24);
-    terrain = *(unsigned char*)(rows[y] + x);
-    if ((int)terrain != *(int*)(self + 0x144C)) {
+    if ((int)rows[y][x] != this->info.land_num) {
         return 0;
     }
 
-    if (radius < 2) radius = 2;
-    y0 = y - radius;
-    y2 = y + radius;
+    // The executable performs this radius calculation and clamps it, but its
+    // later zone-window comparisons are the independently observed +/-2
+    // bounds above rather than the radius result.
+    if (radius < 2) {
+        radius = 2;
+    }
 
-    yy = y - area;
+    long yy = y - area;
+    long xx;
     if (yy > y + area) {
         return (uchar)count;
     }
 
     do {
         if (yy < 0) {
-            if (yy > cy1) count += 5;
-        } else if (yy >= *(int*)(self + 0x18)) {
-            if (yy < cy2) count += 5;
+            if (yy > cy1) {
+                count += 5;
+            }
+        } else if (yy >= this->map_height) {
+            if (yy < cy2) {
+                count += 5;
+            }
         } else {
             xx = x1;
             if (xx <= x2) {
                 do {
                     if (xx < 0) {
-                        if (xx > cx1) count++;
-                    } else if (xx >= *(int*)(self + 0x14)) {
-                        if (xx < cx2) count++;
+                        if (xx > cx1) {
+                            count++;
+                        }
+                    } else if (xx >= this->map_width) {
+                        if (xx < cx2) {
+                            count++;
+                        }
                     } else {
-                        unsigned char t = *(unsigned char*)(rows[yy] + xx);
-                        if (t == zone) {
-                            if (yy >= y0 && yy <= y2 && xx >= cx1 && xx <= cx2) {
+                        if (rows[yy][xx] == zone) {
+                            if (yy >= cy1 && yy <= cy2 && xx >= cx1 && xx <= cx2) {
                                 count++;
                             }
-                        } else if ((int)t < *(int*)(self + 0x144C)) {
+                        } else if ((int)rows[yy][xx] < this->info.land_num) {
                             return 0;
                         }
                     }

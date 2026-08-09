@@ -56,6 +56,12 @@
 //   via a helper-surface change or by shrinking local_b08's live range so VC5's
 //   spill-cost model prefers memory) may cascade the whole function into the
 //   original basin.
+// - bounded ABI-transfer pass (current): rechecked the exact pop_stack donor
+//   and helper packet.  pop_stack writes node->x to the first output (column)
+//   and node->y to the second (row); check_terrain_and_zone takes an ignored
+//   first uchar, land id second, then column/row longs.  The current source
+//   already uses those roles for map_row_offset/search_map_rows, neighbor
+//   pushes, and the helper call; no blind large-function reshaping was done.
 // Phase map (original asm offsets):
 //   A: +0000..+024A  init_stack / bounds / set_terrain / zone fill / 4 edge pushes
 //   B: +024A..+05DD  flood-fill do-while (done flag), chance/check_terrain_and_zone,
@@ -132,15 +138,16 @@ public:
 
     unsigned char base_land_generate();
     unsigned char chance(long a, long b, long c);
-    unsigned char check_terrain_and_zone(unsigned char t, unsigned char index, long a, long b);
+    unsigned char check_terrain_and_zone(unsigned char unused, unsigned char land_id,
+                                         long column, long row);
 };
 
 unsigned char RGE_RMM_Land_Generator::base_land_generate() {
     long land_size[100];
     Map_Stack stack[99];
 
-    long y;                    // row (pop_stack out, bounded by max_x)
-    long x;                    // column (pop_stack out, bounded by in_zone)
+    long y;                    // row (pop_stack second out, bounded by max_x)
+    long x;                    // column (pop_stack first out, bounded by in_zone)
     unsigned char bVar3;       // chance result (phase B)
     unsigned char bVar4;       // check_terrain_and_zone result (phase B)
     long* index1;              // land_size[1..] pointer (phase B)
@@ -252,6 +259,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                     long iVar11 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 299);
                     if (bVar3 <= (iVar11 * 100) / 0x7fff) {
                         iStack_af8 = (long)&this->map_row_offset[y][x];
+                        // ABI: unused terrain byte, land id, column, row.
                         bVar4 = this->check_terrain_and_zone(
                             (unsigned char)plVar12[-6], (unsigned char)index3, x, y);
                         unsigned int uVar6 = bVar4;
