@@ -17,6 +17,15 @@
 //   self/count coloring.
 // - Main-agent audit restored canonical polymorphic master/static/world/player
 //   and victory ownership while retaining the typed ally/object scans.
+// - New worker baseline retained the audited polymorphic surface. Naming the
+//   world and declaring players before num was a natural source-order probe;
+//   the latter recovered the original players-in-ECX/LEA setup, leaving 100%
+//   exact-block coverage and 189 positional bytes.
+// - Relation pointer/index spellings, signedness, a loop relation alias, and
+//   loop-index declaration order were codegen duplicates. Removing the proven
+//   virtual surface regressed offsets/registers and was restored. Remaining
+//   drift is the one-byte relation SIB/base-order choice plus resulting branch
+//   displacements and trailing padding.
 
 struct RGE_Master_Object {
     virtual ~RGE_Master_Object();
@@ -95,10 +104,10 @@ public:
 
 void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
     int count = 0;
-    RGE_Player* self = this->player;
+    RGE_Player* player = this->player;
 
     // Count own objects of matching type in area with state==2
-    RGE_Object_Node* node = self->objects->list;
+    RGE_Object_Node* node = player->objects->list;
     while (node != 0) {
         RGE_Static_Object* obj = node->node;
         if (obj->master_obj->copy_id == entry->obj_type && 
@@ -113,17 +122,18 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
     }
 
     // Add allied objects
-    if (entry->ally_flag != 0 && self->allied_victory != 0) {
-        int num = self->world->player_num;
-        RGE_Player** players = self->world->players;
+    if (entry->ally_flag != 0 && player->allied_victory != 0) {
+        RGE_Game_World* world = player->world;
         int i = 1;
+        RGE_Player** players = world->players;
+        int num = world->player_num;
         if (i < num) {
             RGE_Player** current = players + 1;
             do {
-                if (self->relations[i] == 0) {
+                if (player->relations[i] == 0) {
                     RGE_Player* p = *current;
-                    if (p->relations[self->id] == 0 &&
-                        i != self->id &&
+                    if (p->relations[player->id] == 0 &&
+                        i != player->id &&
                         p->allied_victory != 0) {
                         node = p->objects->list;
                         while (node != 0) {

@@ -19,6 +19,14 @@
 //   behavior defect. Best diagnostic checkpoint is probe-006-control-flow (394 bytes).
 // - Main-agent audit removed the diagnostic +4 stack window and pointer-overlaid output slot.
 //   The living source uses the declared text buffer and a separate result pointer.
+// - New worker initialized a separate result pointer before the 200-byte buffer;
+//   this recovered the original 0xCC frame and natural temp base, but the direct
+//   switch still has one extra sprintf call from VC5 tail layout (433 bytes).
+// - A shared text pointer was codegen-neutral. A behavior-correct common case-1/
+//   case-9 tail using long varargs recovered exact size/frame/call count (394 bytes;
+//   393 with proven absolute string addresses), but pointer-to-long argument
+//   scaffolding is not retained as living source. Argument declaration reordering
+//   was a duplicate; restore the clean typed direct switch.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
@@ -75,10 +83,9 @@ public:
 };
 
 char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
-    char* description;
+    char* description = 0;
     char temp[200];
 
-    temp[0] = 0;
     switch (entry->command) {
     case 0:
         sprintf(temp, "Capture %s", entry->this_obj->master_obj->name);

@@ -24,6 +24,10 @@
 //   from offset 0; no call, frame, size, or behavior/layout blocker found.
 // - Main-agent audit restored canonical polymorphic world/player/master/static
 //   and victory ownership; the natural object-list scans remain.
+// - New worker revalidated the audited source after the prior 39-probe pass; no
+//   new natural source/ABI lead emerged. The remaining 25 bytes begin at entry
+//   register allocation (original EBX home vs rebuilt EDX), with size/frame/CFG
+//   and all typed memory effects already aligned.
 
 struct RGE_Player;
 

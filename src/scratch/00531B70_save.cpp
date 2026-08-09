@@ -8,14 +8,18 @@
 // - Positive non-null arms for target_player/this_obj/target_obj recovered the original CFG
 //   and left only the target-object version/owner hunk. Binary stores both target_obj->id and
 //   the null sentinel as raw dwords, so version_field is a long, not a float.
-// - A diagnostic volatile pointer lvalue for the second target_obj reread reproduced the original
-//   reload and left 7 differing bytes (571-byte size, 0xC frame, 28/28 calls exact). A
+// - A narrow volatile pointer lvalue for the second target_obj reread reproduces the original
+//   reload and leaves 7 differing bytes (571-byte size, 0xC frame, 28/28 calls exact). A
 //   volatile member and volatile pointer local were worse; comma/ordering variants were
 //   emitted-code duplicates.
 // - Paused after the bounded pass with the readable typed source retained. Remaining drift is
 //   the localized VC5 order of the version-field store versus the proven target_obj reread.
 // - Main-agent audit removed that fake-volatile reload control. Direct typed member access is
 //   authoritative in the living source; the seven-byte result remains diagnostic only.
+// - New worker restored the near-exact checkpoint, then rechecked a pure comma expression,
+//   scoped target local, and nonvolatile address-taken aliases; each changed to the broad
+//   432-byte basin. The exact 7-byte output still requires the prior fake-volatile reread,
+//   so the direct typed serializer is retained.
 
 struct RGE_Player {
     char gap_00[0x4A];

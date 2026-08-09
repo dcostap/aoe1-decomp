@@ -15,6 +15,10 @@
 //   behavior defect. No explicit vptr or raw cross-member cursor is retained.
 // - Main-agent audit removed the artificial local-window aggregate and pointer aliases.
 //   Ordinary named locals and direct member ownership remain authoritative living source.
+// - New worker compared the prior diagnostic aggregate against the audited named-local form;
+//   the aggregate alone recovers size/frame/calls (502 bytes) but is not canonical source.
+//   Adding the proven virtual destructor to the named-local surface was codegen-neutral; the
+//   remaining canonical blocker is the entry-frame/local-lifetime basin (865 vs 920 bytes).
 
 extern "C" void rge_read(int handle, void* data, int size);
 extern "C" void* calloc(unsigned int count, unsigned int size);
