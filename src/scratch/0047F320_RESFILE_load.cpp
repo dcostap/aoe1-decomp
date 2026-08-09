@@ -1,37 +1,82 @@
 // VA: 0047F320 RESFILE_load (346B)
 // Res_file.cpp
+//
+// Attempt log:
+// - replaced the stale one-argument mapping placeholder with the four-argument
+//   resource loader implied by the mangled call surface and the original calls.
+// - baseline: typed locate outputs and Win32 error surface; frame matched but
+//   source placed the error path after the success path (size +11, diff 263).
+// - control-flow: positive locate result nested after the missing-resource
+//   diagnostic; size/calls became exact (diff 181).
+// - liveness: separate malloc result and the original error-buffer base matched
+//   the full call set and moved the diff to 179 bytes.
+// - declaration/order and pointer-result variants were codegen duplicates.
+//   Best current reconstruction has exact frame/size/call/CFG counts; remaining
+//   drift is the mapped-data success block's load/register order and its short
+//   branch span. Keep typed pointer arithmetic rather than the diagnostic cast.
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-extern void* g_resFileList;
-extern void* __cdecl malloc(unsigned size);
-extern void* __cdecl CreateFileMappingA(void* hFile, void* lpAttr, unsigned flProtect, unsigned dwMaxSizeHigh, unsigned dwMaxSizeLow, const char* lpName);
-extern void* __cdecl MapViewOfFile(void* hMap, unsigned dwDesiredAccess, unsigned dwFileOffsetHigh, unsigned dwFileOffsetLow, unsigned dwNumBytesToMap);
-extern int __cdecl close(int fd);
+typedef unsigned char uchar;
 
-void* __cdecl RESFILE_load(const char* name) {
-    void** cur = *(void***)g_resFileList;
-    
-    while (cur) {
-        const char* curName = (const char*)cur + 0x10;
-        if (strcmp(name, curName) == 0) {
-            if (*(int*)cur == 0) {
-                // Not yet mapped - create file mapping
-                int fd = *(int*)((char*)cur + 4);
-                if (fd == -1) return 0;
-                
-                void* hMap = CreateFileMappingA((void*)fd, 0, 2, 0, 0, 0);
-                if (!hMap) return 0;
-                
-                void* view = MapViewOfFile(hMap, 4, 0, 0, 0);
-                *(void**)cur = view;
-                return view;
-            }
-            return *(void**)cur;
+extern int __cdecl RESFILE_locate_resource(unsigned long type, unsigned long id,
+    int& file_handle, int& data_offset, uchar*& mapped_data, int& data_size);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(
+    void* hWnd, const char* text, const char* caption, unsigned int type);
+extern "C" int __cdecl lseek(int fd, int offset, int whence);
+extern "C" int __cdecl read(int fd, void* buffer, unsigned int count);
+
+extern int DAT_0086B258;
+
+uchar* __cdecl RESFILE_load(unsigned long type, unsigned long id,
+    int& load_type, int& data_size)
+{
+    int file_handle;
+    int data_offset;
+    int resource_size;
+    uchar* mapped_data;
+    uchar* data;
+    char error_string[100];
+
+    load_type = -1;
+    data_size = 0;
+
+    if (RESFILE_locate_resource(type, id, file_handle, data_offset,
+            mapped_data, resource_size) == 0) {
+        if (DAT_0086B258 != 0) {
+            sprintf(error_string,
+                "ERROR: res_read_bin, resource type %4.4c , id %d",
+                type, id);
+            MessageBoxA(0, error_string, "RESOURCE ERROR", 0x30);
+            return 0;
         }
-        cur = (void**)cur[3];
+    } else {
+        if (mapped_data != 0) {
+            data = mapped_data + data_offset;
+            load_type = 0;
+            data_size = resource_size;
+            return data;
+        }
+
+        load_type = 1;
+        data = (uchar*)malloc(resource_size);
+        data_size = resource_size;
+        if (data == 0) {
+            MessageBoxA(0, "Error: Out of memory in res_read_bin.",
+                "RESOURCE ERROR", 0x30);
+            return 0;
+        }
+
+        lseek(file_handle, data_offset, 0);
+        if (read(file_handle, data, resource_size) == resource_size) {
+            return data;
+        }
+
+        MessageBoxA(0, "Error: unable to read resource",
+            "RESOURCE ERROR", 0x30);
+        return 0;
     }
-    
+
     return 0;
 }

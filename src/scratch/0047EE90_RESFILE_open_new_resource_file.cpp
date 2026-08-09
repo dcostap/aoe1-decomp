@@ -1,7 +1,7 @@
 // RESFILE_open_new_resource_file (0047EE90, 541 bytes, Res_file.cpp)
 // Lines 70-233
 //
-// STATUS: PAUSED — multi-range fragment alignment issue
+// STATUS: PAUSED — multi-range parent-fragment alignment issue
 //
 // This function spans 3 body ranges + 2 parent-owned fragments (0047F00C, 0047F076).
 // The checker concatenates only the 3 body ranges into the comparison buffer, skipping
@@ -10,10 +10,11 @@
 // compares fragment-equivalent code against completely different range-2 code —
 // guaranteed misalignment, not real source-model drift.
 //
-// Within body range 1 (first 380 bytes) the rebuilt is very close: only the local-init
-// store order (6 bytes at offset 34-39) differs, and string references are
-// relocation-masked. The ~55%+ diff figure is misleading because of the concatenation
-// gap.
+// After restoring the natural Win32 imports, exact global-list ownership, strcmp
+// surface, and mapped/file branch order, the first body range is byte-identical
+// apart from relocation bytes and the one-byte INT3 parent-fragment boundary.
+// The ~48% whole-function diff is misleading because the checker concatenates
+// ranges while skipping the parent-owned INT3/message and list-validation blocks.
 //
 // Resolving this properly likely requires either:
 //   - tooling that compares body ranges individually instead of concatenating, or
@@ -25,7 +26,12 @@
 // - attempt 1 (scratch): wrong layout, no EBP frame — 73% diff (most from tooling gap)
 // - probes 1-5: added /Oy- per-function rsp, fixed init order — 64%
 // - probes 6-11: clean if/else, decl/assign ordering — 55% (misleading, real range-1 gap is tiny)
-// - decision: paused. Fragment alignment blocks exact comparison. See notes above.
+// - bounded pass: swapped mapped/fHandle declarations, used period Win32/C
+//   linkage, modeled the 0x114 node/0x40 header, inverted node setup, restored
+//   typed g_resFileList, and used the compiler's strcmp idiom. Frame and the
+//   first 0x17B-byte range now match structurally; the remaining mismatch starts
+//   at the excluded INT3 fragment and includes extra rebuilt fragment calls.
+// - decision: paused. Fragment alignment blocks whole-function exact comparison.
 
 #include <stdlib.h>
 #include <string.h>
@@ -33,41 +39,45 @@
 typedef void* HANDLE;
 typedef unsigned long DWORD;
 
-typedef HANDLE (__stdcall *CreateFileA_t)(const char*, DWORD, DWORD, void*, DWORD, DWORD, HANDLE);
-typedef HANDLE (__stdcall *CreateFileMappingA_t)(HANDLE, void*, DWORD, DWORD, DWORD, const char*);
-typedef int (__stdcall *CloseHandle_t)(HANDLE);
-typedef void* (__stdcall *MapViewOfFile_t)(HANDLE, DWORD, DWORD, DWORD, DWORD);
-typedef int (__stdcall *MessageBoxA_t)(void*, const char*, const char*, unsigned int);
+extern "C" __declspec(dllimport) HANDLE __stdcall CreateFileA(
+    const char*, DWORD, DWORD, void*, DWORD, DWORD, HANDLE);
+extern "C" __declspec(dllimport) HANDLE __stdcall CreateFileMappingA(
+    HANDLE, void*, DWORD, DWORD, DWORD, const char*);
+extern "C" __declspec(dllimport) int __stdcall CloseHandle(HANDLE);
+extern "C" __declspec(dllimport) void* __stdcall MapViewOfFile(
+    HANDLE, DWORD, DWORD, DWORD, DWORD);
+extern "C" __declspec(dllimport) int __stdcall MessageBoxA(
+    void*, const char*, const char*, unsigned int);
 
-extern CreateFileA_t CreateFileA_ptr;
-extern CreateFileMappingA_t CreateFileMappingA_ptr;
-extern CloseHandle_t CloseHandle_ptr;
-extern MapViewOfFile_t MapViewOfFile_ptr;
-extern MessageBoxA_t MessageBoxA_ptr;
+extern "C" int __cdecl __open(const char* path, int flags, ...);
+extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
+extern "C" int __cdecl lseek(int fd, int offset, int whence);
+extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 
-extern int __cdecl _open(const char* path, int flags);
-extern void* __cdecl malloc(unsigned size);
-extern int sprintf(char* buf, const char* fmt, ...);
-extern int __cdecl lseek(int fd, int offset, int whence);
-extern int __cdecl read(int fd, void* buf, unsigned size);
-extern int __cdecl strncmp(const char* s1, const char* s2, unsigned n);
-
-extern void* g_resFileList;
-
-typedef struct {
+struct ResFileNode {
     void* data;
     int fd;
     void* directory;
-    void* next;
+    ResFileNode* next;
     char name[260];
-} ResFileNode;
+};
+
+struct resfile_header {
+    char banner_msg[40];
+    char version[4];
+    char password[12];
+    int num_res_types;
+    int directory_size;
+};
+
+extern ResFileNode* g_resFileList;
 
 void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* path, int isMapped) {
     char resFile[260];
     char error_msg[80];
-    struct { char g[0x3C]; int directory_size; } rHdr;
-    int fHandle = -1;
+    resfile_header rHdr;
     void* mappedData = 0;
+    int fHandle = -1;
 
     sprintf(resFile, "%s%s", path, name);
 
@@ -75,34 +85,34 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         HANDLE hFile;
         HANDLE hMapping;
 
-        hFile = CreateFileA_ptr(resFile, 0x80000000, 1, 0, 4, 0x80, 0);
+        hFile = CreateFileA(resFile, 0x80000000, 1, 0, 4, 0x80, 0);
         if (hFile == (HANDLE)-1) {
             sprintf(error_msg, "Error: Open_new_ResFile, mapped file %s not found.", name);
-            MessageBoxA_ptr(0, error_msg, "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, error_msg, "RESOURCE ERROR", 0x30);
             return;
         }
 
-        hMapping = CreateFileMappingA_ptr(hFile, 0, 2, 0, 0, 0);
-        CloseHandle_ptr(hFile);
+        hMapping = CreateFileMappingA(hFile, 0, 2, 0, 0, 0);
+        CloseHandle(hFile);
 
         if (hMapping == 0) {
-            MessageBoxA_ptr(0, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", 0x30);
             return;
         }
 
-        mappedData = MapViewOfFile_ptr(hMapping, 4, 0, 0, 0);
+        mappedData = MapViewOfFile(hMapping, 4, 0, 0, 0);
 
         if (mappedData == 0) {
-            MessageBoxA_ptr(0, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", 0x30);
             return;
         }
 
-        CloseHandle_ptr(hMapping);
+        CloseHandle(hMapping);
     } else {
-        fHandle = _open(resFile, 0x8000);
+        fHandle = __open(resFile, 0x8000);
         if (fHandle == -1) {
             sprintf(error_msg, "Error: Open_new_ResFile, file %s not Found.", name);
-            MessageBoxA_ptr(0, error_msg, "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, error_msg, "RESOURCE ERROR", 0x30);
             return;
         }
     }
@@ -111,41 +121,41 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         ResFileNode* node;
         node = (ResFileNode*)malloc(0x114);
         if (node == 0) {
-            MessageBoxA_ptr(0, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", 0x30);
             return;
         }
 
         strcpy(node->name, name);
         node->next = 0;
 
-        if (isMapped != 0) {
+        if (isMapped == 0) {
+            node->fd = -1;
+            node->data = mappedData;
+            node->directory = mappedData;
+        } else {
             int n;
             node->fd = fHandle;
             node->data = 0;
             lseek(fHandle, 0, 1);
             n = read(fHandle, &rHdr, sizeof(rHdr));
             if (n != sizeof(rHdr)) {
-                MessageBoxA_ptr(0, "Error: Reading resfile header.", "RESOURCE ERROR", 0x30);
+                MessageBoxA(0, "Error: Reading resfile header.", "RESOURCE ERROR", 0x30);
                 return;
             }
             node->directory = malloc(rHdr.directory_size);
             lseek(fHandle, 0, 0);
             n = read(fHandle, node->directory, rHdr.directory_size);
             if (n != rHdr.directory_size) {
-                MessageBoxA_ptr(0, "Error: Reading resfile header data.", "RESOURCE ERROR", 0x30);
+                MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", 0x30);
                 return;
             }
-        } else {
-            node->fd = -1;
-            node->data = mappedData;
-            node->directory = mappedData;
         }
 
         {
             void* head;
-            head = *(void**)g_resFileList;
+            head = g_resFileList;
             if (head == 0) {
-                *(ResFileNode**)&g_resFileList = node;
+                g_resFileList = node;
             } else {
                 ResFileNode* cur;
                 cur = (ResFileNode*)head;
@@ -157,22 +167,14 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         }
 
         {
-            char* a;
-            char* b;
-            a = (char*)node->directory + 0x2C;
-            b = cmpName;
-            while (*a != 0 && *a == *b) {
-                a++;
-                b++;
-            }
-            if (*a != *b) {
-                MessageBoxA_ptr(0, "Error: Open_ResFile, Corruption detected in resourcefile.", "RESOURCE ERROR", 0x30);
+            if (strcmp((char*)node->directory + 0x2C, cmpName) != 0) {
+                MessageBoxA(0, "Error: Open_ResFile, Corruption detected in resourcefile.", "RESOURCE ERROR", 0x30);
                 return;
             }
         }
 
         if (strncmp((char*)node->directory + 0x28, "1.00", 4) != 0) {
-            MessageBoxA_ptr(0, "Error: Open_ResFile, Resfile not correct version.", "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, "Error: Open_ResFile, Resfile not correct version.", "RESOURCE ERROR", 0x30);
             return;
         }
     }

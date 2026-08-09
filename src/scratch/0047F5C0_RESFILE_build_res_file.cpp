@@ -6,8 +6,8 @@
 //     Result: MISMATCH frame 0x4A0 (vs 0x4A4), size -28, fscanf 4/3 (loop
 //     rotation), log 7/8 (tail-merge grouping), resHandle store eliminated
 //     (frame -4).
-//   probe control-flow: while(1)+break loop (fixes fscanf rotation), volatile
-//     resHandle (keeps the binary-observed [F+2C] store), swap data/temp decl.
+//   probe control-flow: while(1)+break loop (fixes fscanf rotation), diagnostic
+//     resHandle storage, swap data/temp decl.
 //     Result: fscanf 3/3, log 8/8, frame still 0x4A0, size -19. Best state.
 //   probe layout: header as 0x3C + separate directory_size local, original
 //     decl order (temp before data). REGRESSED: frame 0x49C, size -34. Reverted.
@@ -17,20 +17,27 @@
 //     VC5 slot-packing quirks: buildFile/resHandle slots share in my build but
 //     not in the original; rPassword/theHeader overlap by 4 in the original
 //     only. First mismatch is prologue sub esp,4A0h vs 4A4h.
-//   Binary quirk (modeled): the sprintf for resource_filename reads [entry+0x1C]
-//     and the sprintf for data_filename reads [entry+0x18] -- 16/20 bytes ABOVE
-//     param_3's home (E+0xC), while the PDB/mangled name declare exactly 3
-//     char* params (?RESFILE_build_res_file@@YAHPAD00@Z, '00' = repeated-type
-//     abbreviations). Callers (setup @ 00521822/3E/5A) push exactly 3 args
-//     (add esp,0Ch). The original reads uninitialized caller-stack slots
-//     (setup's saved EBX/EBP region); Ghidra's decompiler merged those reads
-//     back into param_2/param_3 semantics. Modeled as params 6/7 so VC5 emits
-//     the observed [esp+4BCh]/[esp+4D0h] stack reads. Params 4/5 unused.
+//   ABI correction from stack accounting: the resource-name load at 0047F651
+//     occurs before fscanf's 0x10-byte cleanup, so [esp+4D0] is the third
+//     (target_path) argument; the data-name load at 0047F6B4 occurs after the
+//     0x0C cleanup, so [esp+4BC] is the second (source_path) argument. Keep
+//     the mangled three-parameter surface instead of inventing caller-stack
+//     params.
 //   PDB names: params build_list_file/source_path/target_path; locals incl.
 //     resHandle (F+0x2C = 3rd dword of the id-dir record write) and dead
 //     ID_List (F+0x0C). resfile_header per binary: version @ +0x28, password
 //     @ +0x2C, num_res_types @ +0x38, directory_size @ +0x3C (write is 0x40
 //     bytes from F+0x3C; rPassword at F+0x78 overlaps directory_size by 4).
+//   bounded follow-up: typed FILE*/resource-file handles, PDB local declaration
+//     order, the named ID_List cleanup owner, and the corrected three-parameter
+//     path ABI were checked. The last correction moves the two path loads to the
+//     target homes relative to the remaining frame gap; calls/CFG/size shape are
+//     otherwise unchanged. Leave the natural source in scratch: the blocker is
+//     one missing VC5 local-frame slot plus header-copy scheduling, not behavior.
+//   Main-agent audit removed the diagnostic volatile/adjacent-stack write and
+//     +4 buffer windows. The living source now uses ordinary buffers and writes
+//     the complete typed ID-directory record; these compiler-steering artifacts
+//     are not retained merely for byte proximity.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,7 +87,7 @@ extern void Log(TDebuggingLog* log, char* fmt, ...);
 
 extern unsigned long BUILDRES_get_files_resource_type(char* filename);
 
-int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, char* target_path, char* param_4, char* param_5, char* param_6, char* param_7)
+int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, char* target_path)
 {
     char build_filename[260];
     char resource_filename[260];
@@ -89,31 +96,31 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
     char rPassword[40];
     resfile_header theHeader;
     resfile_type_dir_node typeDirNode;
-    volatile int resHandle;
     resfile_id_dir_node idDirNode;
-    unsigned long rId;
-    int numResTypes;
-    BuildRes_id_node* buildFile;
-    BuildRes_type_node* iq;
     BuildRes_type_node* ID_List;
+    BuildRes_type_node* iq;
+    FILE* buildFile;
+    int resourceFile;
+    BuildRes_id_node* previous;
+    unsigned long rId;
 
     iq = 0;
     rId = 0;
 
-    sprintf(build_filename + 4, "%s%s", source_path, build_list_file);
+    sprintf(build_filename, "%s%s", source_path, build_list_file);
 
-    numResTypes = (int)fopen(build_filename + 4, "r");
-    if (numResTypes == 0) {
+    buildFile = fopen(build_filename, "r");
+    if (buildFile == 0) {
         Log(L, "Error: could not find resource build file: %s", build_list_file);
         return 0;
     }
 
-    fscanf((FILE*)numResTypes, "%s %s", temp_filename + 4, rPassword + 4);
-    sprintf(resource_filename + 4, "%s%s", param_7, temp_filename + 4);
+    fscanf(buildFile, "%s %s", temp_filename, rPassword);
+    sprintf(resource_filename, "%s%s", target_path, temp_filename);
 
     while (1) {
-        if (fscanf((FILE*)numResTypes, "%s", temp_filename + 4) == -1) break;
-        if (fscanf((FILE*)numResTypes, "%d", &idDirNode.id) == -1) break;
+        if (fscanf(buildFile, "%s", temp_filename) == -1) break;
+        if (fscanf(buildFile, "%d", &idDirNode.id) == -1) break;
         {
             unsigned long typeID;
             BuildRes_type_node* tnode;
@@ -123,11 +130,11 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             int fd;
             long size;
 
-            sprintf(data_filename + 4, "%s%s", param_6, temp_filename + 4);
+            sprintf(data_filename, "%s%s", source_path, temp_filename);
 
-            typeID = BUILDRES_get_files_resource_type(temp_filename + 4);
+            typeID = BUILDRES_get_files_resource_type(temp_filename);
             if (typeID == 0) {
-                Log(L, "Error: could not determine file type of: %s", temp_filename + 4);
+                Log(L, "Error: could not determine file type of: %s", temp_filename);
                 return 0;
             }
 
@@ -164,14 +171,14 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                 rId++;
             }
 
-            buildFile = 0;
+            previous = 0;
             for (pNode = found->idList; pNode; pNode = pNode->next) {
                 if (pNode->id == idDirNode.id) {
-                    Log(L, "Error: duplicate resources: %s & %s", pNode->fName, data_filename + 4);
+                    Log(L, "Error: duplicate resources: %s & %s", pNode->fName, data_filename);
                     return 0;
                 }
                 if (pNode->id < idDirNode.id) {
-                    buildFile = pNode;
+                    previous = pNode;
                 }
             }
 
@@ -185,26 +192,26 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             pNode->resData = 0;
             pNode->resSize = 0;
             pNode->next = 0;
-            strcpy(pNode->fName, data_filename + 4);
+            strcpy(pNode->fName, data_filename);
 
-            fd = _open(data_filename + 4, 0x8000);
+            fd = _open(data_filename, 0x8000);
             if (fd == -1) {
-                Log(L, "Error: unable to open file: %s", data_filename + 4);
+                Log(L, "Error: unable to open file: %s", data_filename);
                 delete pNode;
             } else {
-                if (buildFile == 0) {
+                if (previous == 0) {
                     pNode->next = found->idList;
                     found->idList = pNode;
                 } else {
-                    pNode->next = buildFile->next;
-                    buildFile->next = pNode;
+                    pNode->next = previous->next;
+                    previous->next = pNode;
                 }
                 found->nIds++;
 
                 size = lseek(fd, 0, 2);
                 lseek(fd, 0, 0);
                 if (size <= 0) {
-                    Log(L, "Error: file is empty/NULL: %s", data_filename + 4);
+                    Log(L, "Error: file is empty/NULL: %s", data_filename);
                     return 0;
                 }
                 pNode->resData = (unsigned char*)malloc(size);
@@ -214,7 +221,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                 }
                 pNode->resSize = size;
                 if (read(fd, pNode->resData, size) != size) {
-                    Log(L, "Error: error reading file: %s", data_filename + 4);
+                    Log(L, "Error: error reading file: %s", data_filename);
                     return 0;
                 }
                 close(fd);
@@ -222,10 +229,10 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         }
     }
 
-    fclose((FILE*)numResTypes);
-    numResTypes = _open(resource_filename + 4, 0x8301, 0x180);
-    if (numResTypes == -1) {
-        Log(L, "Error: unable to create resource file file: %s", resource_filename + 4);
+    fclose(buildFile);
+    resourceFile = _open(resource_filename, 0x8301, 0x180);
+    if (resourceFile == -1) {
+        Log(L, "Error: unable to create resource file file: %s", resource_filename);
         return 0;
     }
 
@@ -251,12 +258,12 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         memset(&theHeader, 0, 0x40);
         strcpy(theHeader.banner_msg, "Copyright (c) 1997 Ensemble Studios.\x1a");
         strcpy(theHeader.version, "1.00");
-        strcpy(theHeader.password, rPassword + 4);
+        strcpy(theHeader.password, rPassword);
 
         theHeader.num_res_types = rId;
         theHeader.directory_size = dirSize;
 
-        if (write(numResTypes, &theHeader, 0x40) != 0x40) {
+        if (write(resourceFile, &theHeader, 0x40) != 0x40) {
             Log(L, "Error writing resource file header");
             return 0;
         }
@@ -266,7 +273,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             typeDirNode.type = tnode->type;
             typeDirNode.dirOffset = tnode->idOffset;
             typeDirNode.numID = tnode->nIds;
-            if (write(numResTypes, &typeDirNode, 0xC) != 0xC) {
+            if (write(resourceFile, &typeDirNode, 0xC) != 0xC) {
                 Log(L, "Error writing resource file header: type node");
                 return 0;
             }
@@ -279,10 +286,10 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                 return 0;
             }
             for (pNode = tnode->idList; pNode; pNode = pNode->next) {
-                idDirNode.itemOffset = pNode->id;
-                idDirNode.itemSize = pNode->dataOffset;
-                resHandle = pNode->resSize;
-                if (write(numResTypes, &idDirNode.itemOffset, 0xC) != 0xC) {
+                idDirNode.id = pNode->id;
+                idDirNode.itemOffset = pNode->dataOffset;
+                idDirNode.itemSize = pNode->resSize;
+                if (write(resourceFile, &idDirNode, sizeof(idDirNode)) != sizeof(idDirNode)) {
                     Log(L, "Error writing resource file header: id node");
                     return 0;
                 }
@@ -296,7 +303,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                     Log(L, "Error writing resource file data: pos out of sync 2");
                     return 0;
                 }
-                if (write(numResTypes, pNode->resData, pNode->resSize) != pNode->resSize) {
+                if (write(resourceFile, pNode->resData, pNode->resSize) != pNode->resSize) {
                     Log(L, "Error writing resource file data");
                     return 0;
                 }
@@ -305,19 +312,19 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         }
     }
 
-    close(numResTypes);
+    close(resourceFile);
 
     {
-        BuildRes_type_node* tnode;
         BuildRes_id_node* pNode;
-        for (tnode = iq; tnode; tnode = tnode->next) {
-            for (pNode = tnode->idList; pNode; pNode = pNode->next) {
+        ID_List = iq;
+        for (; ID_List; ID_List = ID_List->next) {
+            for (pNode = ID_List->idList; pNode; pNode = pNode->next) {
                 if (pNode->resData != 0) {
                     free(pNode->resData);
                 }
                 delete pNode;
             }
-            delete tnode;
+            delete ID_List;
         }
     }
 
