@@ -516,3 +516,25 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   oracle reloads that member after a side-effectful list call. This can recover
   the reload/lifetime topology and cold failure tail without raw offsets or
   fake helper calls.
+
+- In a VC5 draw routine with a full-render arm followed by an explored-render
+  tail, write the natural positive `if (render_all) { ... } else { explored; }`
+  form when the oracle jumps forward to the tail. The inverted test can produce
+  the same behavior but reverse the block layout and add a jump. Also prefer
+  direct repeated `this->world` reads when the oracle reloads the member between
+  list passes; a saved world temporary may create an unwanted stack home.
+
+- When two equal byte colors are distinct source locals, assigning each directly
+  from the same typed `map_color` member can make VC5 fold the load while keeping
+  both byte homes and the expected frame. A chained assignment or copying one
+  local into the other may coalesce them and change stack layout.
+
+- For a long same-TU ManagedArray routine, model `contains(const int&)`,
+  `resize`, `add`, and `int& operator[]` with their exact decorated member ABI;
+  use a local array pointer for repeated field accesses but preserve direct
+  `this->array.count` at outer reset/bounds sites when the oracle splits EBX
+  (`this`) from the array register. Reusing an incoming scalar parameter as the
+  `contains` argument can reproduce the original parameter-home address. If VC5
+  schedules one independent member store across the first call setup, a simple
+  reference alias to that real field can recover the exact order; retain it only
+  when the surrounding bytes prove the alias is the minimal readable exact form.

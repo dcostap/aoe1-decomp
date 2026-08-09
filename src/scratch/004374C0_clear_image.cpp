@@ -1,88 +1,161 @@
 // 004374C0 RGE_Diamond_Map::clear_image (diam_map.cpp:519-569)
+// Attempt log (sa-d55a5d35-clear_image, bounded 10-probe pass):
+// - Baseline guessed TDA/DMap offsets, inlined memset, and missed the direct memset call.
+// - Reconstructed the binary-backed TPanel/TDrawArea/RGE_Diamond_Map layouts and external memset;
+//   size/calls became exact and the canonical typed source reached 216 differing bytes (310B).
+// - A typed RGE_Map_Image_Line scan loaded before row bounds improved setup/block alignment;
+//   the remaining 24-byte size gap is a natural VC5 short-branch basin, not accepted drift.
+// - Short clipping intermediates were tested as a binary arithmetic hypothesis; they changed the
+//   frame and cleanup and were rolled back. Best retained source is the typed-record/int-span form.
+// - Paused: orientation register coloring and the compact-vs-near loop branch remain unresolved.
 
-#include <string.h>
+extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
+#pragma function(memset)
 
-struct TDA {
-    unsigned char* Lock(char*, int);
-    void Unlock(char*);
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawArea {
+public:
+    void* draw_system;
+    void* wnd;
     unsigned char* Bits;
-    int _gap[4];
+    void* bitmap_info;
+    void* bitmap;
+    void* old_bitmap;
+    int width;
     int Height;
     int Pitch;
     int Orien;
+
+    unsigned char* Lock(char* name, int flag);
+    void Unlock(char* name);
 };
 
-class DMap {
+class TPanel {
 public:
-    void clear_image();
-    char _0[0x0C];
+    virtual ~TPanel();
+
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
     long pnl_x;
     long pnl_y;
-    char _1[0x10];
-    long clip_l;
-    long clip_t;
-    long clip_r;
-    long clip_b;
-    char _2[0xBB];
-    unsigned char bg;
-    char _3[0x34];
-    short* lines;
-    char _4[8];
-    short w, h, sy, iw, ih;
-    char _5[0x2C];
-    TDA* sa;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panel_name;
+    TDrawArea* render_area;
+    tagRECT clip_rect;
+    char gap_34[0xB8];
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 };
 
-void DMap::clear_image()
+struct RGE_Map_Image_Line {
+    short tile_row;
+    short start_x;
+    short line_len;
+};
+
+class RGE_Diamond_Map : public TPanel {
+public:
+    void clear_image();
+
+    void* world;
+    void* player;
+    void* map;
+    int all_visible;
+    int render_all;
+    long mouse_last_x;
+    long mouse_last_y;
+    int repos_mouse;
+    tagRECT view_rect;
+    void* last_player;
+    RGE_Map_Image_Line* map_image_lines;
+    void* map_tile_rows;
+    short map_wid;
+    short map_hgt;
+    short map_image_start_y;
+    short map_image_wid;
+    short map_image_hgt;
+    short map_tile_row_cnt;
+    float map_row_step;
+    float map_col_ratio;
+    float map_row_ratio;
+    short map_tile_draw_hgt;
+    short map_tile_draw_wid;
+    short view_col;
+    short view_row;
+    void* main_view;
+    int scrolling;
+    unsigned char fog_color;
+    unsigned char pad_159[3];
+    int draw_objects_mode;
+    unsigned long cur_player_bit;
+    int own_save_area;
+    TDrawArea* save_area;
+};
+
+void RGE_Diamond_Map::clear_image()
 {
-    unsigned char* lock_ret = this->sa->Lock("diam_map::clear_image", 1);
-    if (lock_ret == 0)
+    unsigned char* p;
+    TDrawArea* save_area;
+    short start_y;
+    short pi;
+    p = this->save_area->Lock("diam_map::clear_image", 1);
+    if (p == 0)
         return;
 
-    {
-        short start_y = this->sy;
-        unsigned char* p;
-        short pi;
+    save_area = this->save_area;
+    start_y = this->map_image_start_y;
 
-        if (this->sa->Orien == 1) {
-            pi = (short)this->sa->Pitch;
-            p = this->sa->Bits + (int)start_y * this->sa->Pitch;
-        } else {
-            p = this->sa->Bits + ((this->sa->Height - (int)start_y) - 1) * this->sa->Pitch;
-            pi = -(short)this->sa->Pitch;
-        }
-
-        short cur_y = (short)this->pnl_y + start_y;
-        short end_y = this->ih + cur_y;
-
-        if (cur_y < end_y) {
-            short* lp = this->lines + 2;
-            int yv = (int)cur_y;
-            int rm = (int)end_y - yv;
-
-            do {
-                if (yv >= this->clip_t && yv <= this->clip_b) {
-                    short sx = lp[-1];
-                    int s2 = (int)this->pnl_x + (int)sx;
-                    int ex = s2 + (int)*lp - 1;
-
-                    if (s2 < this->clip_l) {
-                        int adj = this->clip_l - s2;
-                        sx = (short)((int)sx + adj);
-                        s2 = this->clip_l;
-                    }
-                    if (ex > this->clip_r) ex = this->clip_r;
-
-                    if (s2 >= this->clip_l && ex <= this->clip_r)
-                        memset(p + (int)sx, this->bg, ex - s2 + 1);
-                }
-                lp += 3;
-                p += (int)pi;
-                yv++;
-                rm--;
-            } while (rm);
-        }
+    if (save_area->Orien == 1) {
+        pi = (short)save_area->Pitch;
+        p = save_area->Bits + (int)start_y * save_area->Pitch;
+    } else {
+        p = save_area->Bits + ((save_area->Height - (int)start_y) - 1) * save_area->Pitch;
+        pi = -(short)save_area->Pitch;
     }
 
-    this->sa->Unlock("diam_map::clear_image");
+    RGE_Map_Image_Line* line = this->map_image_lines;
+    short cur_y = (short)this->pnl_y + start_y;
+    short end_y = this->map_image_hgt + cur_y;
+
+    if (cur_y < end_y) {
+        int yv = (int)cur_y;
+        int rm = (int)end_y - yv;
+
+        do {
+            if (yv >= this->clip_rect.top && yv <= this->clip_rect.bottom) {
+                short sx = line->start_x;
+                int s2 = (int)this->pnl_x + (int)sx;
+                int ex = s2 + (int)line->line_len - 1;
+
+                if (s2 < this->clip_rect.left) {
+                    int adj = this->clip_rect.left - s2;
+                    sx = (short)((int)sx + adj);
+                    s2 = this->clip_rect.left;
+                }
+                if (ex > this->clip_rect.right) ex = this->clip_rect.right;
+
+                if (s2 >= this->clip_rect.left && ex <= this->clip_rect.right)
+                    memset(p + (int)sx, this->color, ex - s2 + 1);
+            }
+            line++;
+            p += (int)pi;
+            yv++;
+            rm--;
+        } while (rm);
+    }
+
+    this->save_area->Unlock("diam_map::clear_image");
 }
