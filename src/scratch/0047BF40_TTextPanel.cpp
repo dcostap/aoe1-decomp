@@ -11,6 +11,10 @@
 //   placement would require the prohibited manual-vtable source shape.
 // - Main-agent audit retained natural base/derived construction and the full
 //   named text-panel field layout; no explicit vptr store is permitted.
+// - Removing the derived destructor declaration was a codegen duplicate;
+//   restored the ABI-proven virtual destructor surface.
+// - An explicit natural `: TPanel()` initializer was also a duplicate;
+//   restored the implicit base-construction spelling.
 
 class TPanel {
 public:

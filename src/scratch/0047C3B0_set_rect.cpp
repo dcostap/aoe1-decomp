@@ -25,6 +25,11 @@
 // - This assignment rechecked a named scrollbar pointer, then a pointer-plus-
 //   width source-order pair; both were codegen duplicates. Restored the direct
 //   typed call because the remaining issue is only VC5 load scheduling.
+// - An int spelling for the proven 4-byte scbar_width field was a codegen
+//   duplicate; restored the period-plausible long geometry type.
+// - A reference receiver for the proven non-null scrollbar and a narrow int
+//   fixed-position width parameter were both duplicates; restored the exact
+//   typed donor ABI and direct member call.
 
 struct tagRECT {
     long left;

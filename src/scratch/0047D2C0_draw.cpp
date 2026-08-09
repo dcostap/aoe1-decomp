@@ -24,6 +24,10 @@
 // - This assignment rechecked C-style top declaration of dc/old_font/line;
 //   it was an emitted-code duplicate. The clean direct-member source remains
 //   the plausible candidate.
+// - Unqualified inherited draw_setup/draw_finish calls were an emitted-code
+//   duplicate; restored explicit member spelling.
+// - A natural for-header declaration for the top-line loop was also an emitted
+//   duplicate; restored the clean while form.
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
