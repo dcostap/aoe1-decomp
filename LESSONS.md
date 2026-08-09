@@ -308,6 +308,8 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   do/while may turn the indexed access into a pointer walk; use this only when
   the original compare order and loop bounds support it.
 - For a proven fixed-size member record whose zeroing must interleave with a later API argument address, `memset(&record, 0, sizeof(record))` can recover VC5's early address/store and `rep stosd` schedule where a scalar field zero emits a later direct store. Keep this only when the record size and byte-level schedule are independently established.
+
+- For VC5 status loggers with a timestamp and a 256-byte formatting buffer, declaring the `long` timestamp before the buffer can reproduce the 0x104 stack window and the buffer's +4 offset across `time` and later API calls. A typed inherited `get_string(int,char*,int)` at the proven vtable slot, combined with direct map/victory helper methods, preserves the natural right-to-left push/evaluation schedule. Do not add a defensive owner-null guard when the oracle dereferences the object before testing its name; that guard changes the CFG and function size.
 - When a virtual position/teleport slot is proven to return `float` and the
   caller ignores it, declare the real return type: VC5 emits the required
   `fstp st0` before the next call. The return-type correction can change the
@@ -323,3 +325,45 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   donor has a different class/return surface. A wrong return declaration may
   leave bytes unchanged but produces the wrong mangled relocation identity and
   can perturb VC5 scheduling.
+
+- For tiled-map setup fills that lower to unconditional `rep stosd`/`rep stosb`,
+  use the natural `memset(map, 1, width * height)` surface rather than a
+  guarded byte loop. In an adjacent-cell prune, repeated direct indexing for
+  the first cell test plus a named cell pointer for neighbor/store accesses can
+  preserve VC5's row-base/cell-pointer topology; spell zero-edge guards as
+  `index <= 0` when the binary shows `test`/`jle` rather than `< 1` (`cmp`/`jl`).
+
+- For tcommand building/research handlers, `TRIBE_Building_Object::work_status`
+  is the period ABI `int work_status(short&, short&, short&, char*, short)`.
+  A natural three-short output surface lets VC5 reuse the incoming command
+  parameter home for the first status and can collapse a large EH-framed
+  mismatch to exact bytes; passing the command pointer is only a decompiler
+  artifact. Likewise, TRIBE_Player slots `0x10C` and `0x118` are the four-int
+  `cancelTrain`/`cancelResearch` surfaces, not short-parameter `make`/`research`
+  guesses; the int signature recovers required `movsx` loads. Finally, source
+  that writes the player fallback separately in the building-status and
+  no-building arms preserves VC5's duplicated lookup blocks instead of allowing
+  common-tail folding to remove them.
+
+- For paired same-TU interpolation routines, mirror the exact donor's
+  declaration/initialization order for integer distances, double steps, and
+  double positions before tuning x87 stores. If the oracle tests an integer
+  distance and only then spills a loop count, declare that count inside the
+  positive-count arm; declaring it before the test can move its stack store
+  ahead of the branch and shift the whole FPU cleanup sequence.
+
+- When a VC5 text-measurement path copies a prefix into a temporary only to
+  obtain its byte length, verify the later extent-call pointer independently:
+  the original may pass the source string with the copied-prefix count, not the
+  temporary buffer. This also lets VC5 share the final text/DC pushes across
+  both arms. For small alignment enums, a source `switch` can recover the
+  original subtract/dec/je dispatch and shared tails where equivalent `if`
+  chains emit cmp/jne blocks.
+
+- In a small VC5 rectangle updater, caching a contiguous member such as
+  `render_rect.left` in a local can change only the late register schedule while
+  preserving size, calls, and every earlier byte. Replacing that cache with the
+  direct named member expression in both format arms restored the original
+  LEA destination and exact suffix. When a localized hunk is an expression
+  scheduling mismatch, test direct canonical member ownership before adding
+  temporaries or compiler-steering scaffolding.
