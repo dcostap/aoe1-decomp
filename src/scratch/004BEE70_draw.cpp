@@ -2,232 +2,692 @@
 // VA: 004BEE70
 // PDB: spnl_obj.cpp:78-325
 //
-// First pass — basin classification
-// Reuses class layout and GDI surface from draw_item
+// Attempt log:
+// - replaced the old vtable-cast scaffold with the period panel, scenario-object,
+//   master-object, sprite, draw-area, and base-game surfaces below
+// - baseline: canonical typed reconstruction reached exact size/frame but had
+//   one merged shape_draw site and mismatched ordered calls
+// - reversed the button-picture guard, put the color-transform arm first, and
+//   used direct master/player member rereads; ordered calls became 41/41 and
+//   the best current result is 826 differing bytes (52.38%)
+// - exhausted 10 meaningful hypotheses; remaining drift is first draw_setup
+//   local-home scheduling, GDI/text stack-slot placement, and the later stat
+//   dispatch block. No inline asm or compiler-steering source retained.
 
-#include "../../include/game_globals.h"
+#include <windows.h>
 #include <stdio.h>
 #include <string.h>
 
-typedef int (__stdcall *GDI_SetBkMode)(int, int);
-typedef int (__stdcall *GDI_SetTextColor)(int, int);
-typedef int (__stdcall *GDI_SelectClipRgn)(int, int);
-typedef int (__stdcall *GDI_SelectObject)(int, int);
-typedef int (__stdcall *GDI_TextOutA)(int, int, int, char*, int);
+typedef unsigned char uchar;
+typedef unsigned long ulong;
 
-extern GDI_SetBkMode _SetBkMode;
-extern GDI_SetTextColor _SetTextColor;
-extern GDI_SelectClipRgn _SelectClipRgn;
-extern GDI_SelectObject _SelectObject;
-extern GDI_TextOutA _TextOutA;
+extern "C" {
+__declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
+__declspec(dllimport) int __stdcall SetBkMode(HDC, int);
+__declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
+__declspec(dllimport) int __stdcall SelectClipRgn(HDC, HRGN);
+__declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
+}
+
+extern "C" void __cdecl _ASMSet_Color_Xform(int);
+
+class TShape;
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Sprite;
+class RGE_Player;
+class RGE_Master_Static_Object;
+class RGE_Master_Combat_Object;
 
 class TDrawArea {
 public:
-    char* Lock(char* a, int b);
-    void Unlock(char* a);
-    void* GetDc(char* a);
-    void ReleaseDc(char* a);
+    char gap_00[0x38];
+    HDC DrawDc;
+
+    void Clear(void* rect, int color);
+    uchar* Lock(char* name, int flag);
+    void Unlock(char* name);
+    void* GetDc(char* name);
+    void ReleaseDc(char* name);
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, uchar);
+    virtual void set_rect(RECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(uchar);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long,
+                                 long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(RECT*);
+    virtual void draw_offset(long, long, RECT*);
+    virtual void draw_rect2(RECT*);
+    virtual void draw_offset2(long, long, RECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(uchar, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(uchar, long, long, int, int);
+    virtual long handle_mouse_dbl_click(uchar, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, ulong, ulong);
+    virtual void get_true_render_rect(RECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual uchar get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+
+    TPanel* previous_panel;             // +0x04
+    TPanel* previous_modal_panel;       // +0x08
+    long pnl_x;                         // +0x0C
+    long pnl_y;                         // +0x10
+    long pnl_wid;                       // +0x14
+    long pnl_hgt;                       // +0x18
+    char* panel_name;                   // +0x1C
+    TDrawArea* render_area;             // +0x20
+    RECT clip_rect;                     // +0x24
+    int position_mode;                  // +0x34
+    int need_redraw;                    // +0x38
+    TPanel* curr_child;                 // +0x3C
+    TPanel* parent_panel;               // +0x40
+    TPanel* left_panel;                 // +0x44
+    TPanel* top_panel;                  // +0x48
+    TPanel* right_panel;                // +0x4C
+    TPanel* bottom_panel;               // +0x50
+    void* node;                         // +0x54
+    void* first_child_node;             // +0x58
+    void* last_child_node;              // +0x5C
+    TPanel* tab_prev_panel;             // +0x60
+    TPanel* tab_next_panel;             // +0x64
+    int mouse_captured;                 // +0x68
+    int active;                         // +0x6C
+    int visible;                        // +0x70
+    int tab_stop;                       // +0x74
+    int have_focus;                     // +0x78
+    int overlapping_children;           // +0x7C
+    int handle_mouse_input;             // +0x80
+    int just_drawn;                     // +0x84
+    HRGN clip_rgn;                      // +0x88
+    RECT render_rect;                   // +0x8C
+    long left_border;                   // +0x9C
+    long top_border;                    // +0xA0
+    long right_border;                  // +0xA4
+    long bottom_border;                // +0xA8
+    long min_wid;                       // +0xAC
+    long max_wid;                       // +0xB0
+    long min_hgt;                       // +0xB4
+    long max_hgt;                       // +0xB8
+    long mouse_hold_interval;           // +0xBC
+    long mouse_move_tolerance;          // +0xC0
+    long mouse_down_x;                  // +0xC4
+    long mouse_down_y;                  // +0xC8
+    int mouse_down_ctrl;                // +0xCC
+    int mouse_down_shift;               // +0xD0
+    ulong mouse_down_time;              // +0xD4
+    int error_code;                     // +0xD8
+    int z_order;                        // +0xDC
+    int display_changed_count;          // +0xE0
+    long help_string_id;                // +0xE4
+    long help_page_id;                  // +0xE8
+    uchar mouse_action;                 // +0xEC
+    uchar mouse_down_button;            // +0xED
+    uchar panel_type;                   // +0xEE
+    uchar color;                        // +0xEF
+    uchar fill_in_background;           // +0xF0
+    uchar clip_to_parent;               // +0xF1
+    uchar draw_rect2_flag;              // +0xF2
+    uchar need_restore;                 // +0xF3
+};
+
+class RGE_Color_Table {
+public:
+    virtual ~RGE_Color_Table();
+    char color_table_name[30];
+    short resource_id;
+    uchar type;
+    uchar map_color;
+    short id;
+    uchar table[0x100];
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x44];
+    uchar type;                          // +0x48
+    uchar gap_49;
+    short id;                            // +0x4A
+    char gap_4C[0xBC];
+    RGE_Color_Table* color_table;        // +0x108
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    uchar master_type;
+    uchar gap_05[3];
+    char* name;
+    short string_id;
+    short string_id2;
+    short id;
+    short copy_id;
+    short object_group;
+    uchar gap_16[2];
+    RGE_Sprite* sprite;
+    RGE_Sprite* death_sprite;
+    RGE_Sprite* undead_sprite;
+    uchar undead_flag;
+    uchar gap_25;
+    short hp;
+    float los;
+    uchar obj_max;
+    uchar gap_2D[3];
+    float radius_x;
+    float radius_y;
+    float radius_z;
+    void* selected_sound;
+    void* created_sound;
+    void* death_sound;
+    short death_spawn_obj_id;
+    uchar sort_number;
+    uchar can_be_built_on;
+    short button_pict;
+    uchar hide_in_scenario_editor;
+    uchar gap_4F;
+    short portrait_pict;
+    uchar available;
+    uchar gap_53;
+    short tile_req1;
+    short tile_req2;
+    short center_tile_req1;
+    short center_tile_req2;
+    float construction_radius_x;
+    float construction_radius_y;
+    uchar elevation_flag;
+    uchar fog_flag;
+    short terrain;
+    uchar movement_type;
+    uchar gap_69;
+    short attribute_type_held[3];
+    float attribute_amount_held[3];
+    short attribute_max_amount;
+    uchar gap_7E[2];
+    float attribute_rot;
+    float multiple_attribute_mod;
+    uchar attribute_flag[3];
+    uchar area_effect_object_level;
+    uchar combat_level;
+    uchar select_level;
+    uchar map_draw_level;
+    uchar unit_level;
+    uchar map_color;
+    uchar attack_reaction;
+    uchar convert_terrain_flag;
+    uchar damage_sprite_num;
+    void* damage_sprites;
+    long help_string_id;
+    long help_page_id;
+    long hotkey_id;
+    uchar recyclable;
+    uchar track_as_resource;
+    uchar create_doppleganger_on_death;
+    uchar resource_group;
+    uchar draw_flag;
+    uchar draw_color;
+    uchar gap_AA[2];
+    float outline_radius_x;
+    float outline_radius_y;
+    float outline_radius_z;
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    RGE_Sprite* move_sprite;
+    RGE_Sprite* run_sprite;
+    float turn_speed;
+    uchar size_class;
+    uchar gap_C9;
+    short obj_trail_id;
+    uchar obj_trail_options;
+    uchar gap_CD[3];
+    float obj_trail_spacing;
+    uchar move_algorithm;
+    uchar gap_D5[3];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    void* tasks;
+    short default_task;
+    uchar gap_DE[2];
+    float search_radius;
+    float work_rate;
+    short drop_site;
+    short backup_drop_site;
+    uchar task_by_group;
+    uchar gap_ED[3];
+    void* command_sound;
+    void* move_sound;
+    uchar run_pattern;
+    uchar gap_F9[3];
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
+    RGE_Sprite* fight_sprite;
+    uchar base_armor;
+    uchar gap_101;
+    short armor_num;
+    void* armor;
+    short weapon_num;
+    uchar gap_10A[2];
+    void* weapon;
+    short defense_terrain_bonus;
+    uchar gap_112[2];
+    float weapon_range;
+    float area_effect_range;
+    uchar area_effect_level;
+    uchar gap_11D[3];
+    float speed_of_attack;
+    short missile_id;
+    short base_hit_chance;
+    uchar break_off_combat;
+    uchar gap_129;
+    short fire_missile_at_frame;
+    float weapon_offset_x;
+    float weapon_offset_y;
+    float weapon_offset_z;
+    float minimum_weapon_range;
+    short orig_armor;
+    short orig_weapon;
+    float orig_weapon_range;
+    float orig_speed_of_attack;
+};
+
+class TRIBE_Master_Building_Object : public RGE_Master_Combat_Object {
+public:
+    uchar gap_13C[0x32];
+    short building_facet;                // +0x16E
+};
+
+class RGE_Sprite {
+public:
+    char pict_name[13];
+    uchar gap_0D[3];
+    long resource_id;
+    uchar loaded;
+    uchar gap_15[3];
+    RGE_Color_Table** color_tables;
+    TShape* shape;
+    long last_time;
+    long delta_time;
+    uchar color_flag;
+    uchar draw_level;
+    short color_table;
+    uchar transparent_picking_flag;
+    uchar gap_2D;
+    short box_x1;
+    short box_y1;
+    short box_x2;
+    short box_y2;
+    short draw_list_num;
+    void* draw_list;
+    void* main_sound;
+    uchar micro_man_sound;
+    uchar gap_43[3];
+    void* sound_list;
+    char name[21];
+    uchar gap_5D;
+    short frame_num;
+    short facet_num;
+    uchar gap_62[2];
+    float base_speed;
+    float duration;
+    float pause_between_loops;
+    uchar flag;
+    uchar gap_71;
+    short id;
+    uchar mirror_flag;
+    uchar gap_75[3];
+
+    int get_size(long& min_x, long& min_y, long& max_x, long& max_y, long facet);
+    void do_draw(long x, long y, long frame, long shade,
+                 RGE_Color_Table* color_table, TDrawArea* draw_area,
+                 uchar color_index);
 };
 
 class TShape {
 public:
-    void shape_draw(void* draw_area, void* src_rect, void* dst_rect, int param, int zero1, int zero2);
+    uchar shape_draw(TDrawArea*, long, long, long, uchar, uchar*);
 };
 
-// Extended class layout for draw function
-class TRIBE_Scenario_Editor_Panel_Object {
+class RGE_Base_Game {
 public:
-    virtual void d0();
-    virtual void draw();
-    virtual void d2(); virtual void d3(); virtual void d4();
-    virtual void d5(); virtual void d6(); virtual void d7();
-    virtual void d8(); virtual void d9(); virtual void d10();
-    virtual void d11(); virtual void d12(); virtual void d13();
-    virtual void d14(); virtual void d15(); virtual void d16();
+    virtual ~RGE_Base_Game();
+    virtual void v4();
+    virtual void v8();
+    virtual void vC();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void vf20(long id, char* buffer, int length);
+    virtual void v24();
+    virtual void vf28(long id, long arg2, long arg3, char* buffer, int length);
+
+    void get_string(long id, char* buffer, int length) {
+        this->vf20(id, buffer, length);
+    }
+    void get_string(long id, long arg2, long arg3,
+                    char* buffer, int length) {
+        this->vf28(id, arg2, arg3, buffer, length);
+    }
+};
+
+extern RGE_Base_Game* rge_base_game;
+extern char default_player_name[];
+extern char replacement_player_name[];
+extern char format_string[];
+extern char format_ratio[];
+
+class TRIBE_Panel_Object : public TPanel {
+public:
     virtual void draw_item(int, int, int, int, int);
 
-    char pad_04[8];
-    void* base_info;       // +0x0C
-    void* str_pos_info;    // +0x10
-    char pad_14_1C[0x20 - 0x14];
-    void* draw_area;       // +0x20
-    char pad_24_38[0x38 - 0x24];
-    int dc_handle;         // +0x38
-    char pad_3C_40[0x40 - 0x3C];
-    void* field_40;        // +0x40
-    char pad_44_6C[0x6C - 0x44];
-    int field_6C;          // +0x6C
-    int field_70;          // +0x70
-    char pad_74_88[0x88 - 0x74];
-    int clip_region;       // +0x88
-    char pad_8C_F4[0xF4 - 0x8C];
-    int font_handle;       // +0xF4
-    char pad_F8_104[0x104 - 0xF8];
-    void* shape_ptr;       // +0x104
-    void* field_108;       // +0x108
-    void* field_10C;       // +0x10C
-    void* field_110;       // +0x110
-    void* field_114;       // +0x114
-    char pad_118_120[0x120 - 0x118];
-    unsigned char field_120; // +0x120
-    char pad_121_214[0x214 - 0x121];
-    void* field_214;       // +0x214
-    void* field_218;       // +0x218
+    void* font;                         // +0xF4
+    long font_wid;                      // +0xF8
+    long font_hgt;                      // +0xFC
+    TShape* health_pic;                 // +0x100
+    TShape* item_pic;                   // +0x104
+    TShape* unit_pics;                  // +0x108
+    TShape** bldg_pics;                 // +0x10C
+    RGE_Player* player;                 // +0x110
+    uchar gap_114[0x0C];                // +0x114..+0x11F
+    uchar mode;                         // +0x120
+    uchar gap_121[0xF3];                // +0x121..+0x213
+
+    void draw_score();
+};
+
+class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
+public:
+    virtual void draw();
+    virtual void draw_item(int, int, int, int, int);
+
+    RGE_Master_Static_Object* master_game_obj; // +0x214
+    int master_culture_id;                     // +0x218
+
+    long get_pierce_armor();
 };
 
 void TRIBE_Scenario_Editor_Panel_Object::draw()
 {
-    if (!this->draw_area || !this->field_70 || !this->field_6C)
-        return;
+    int text_flag;
+    void* old_font;
+    long min_x;
+    long min_y;
+    long max_y;
+    long max_x;
+    char name[100];
+    char str[100];
 
-    if (this->field_120 == 2) {
-        void* vt = *(void**)this;
-        ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*))((void**)vt)[10])(this);
-        return;
-    }
-
-    if (!this->field_214) {
-        void* vt = *(void**)this;
-        ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, void*))((void**)vt)[13])(this, &this->pad_24_38[-0x24 + 0x24]);
-        this->dc_handle = 0;
+    if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
+        this->need_redraw = 0;
         return;
     }
 
-    void* vt = *(void**)this;
-    ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*))((void**)vt)[10])(this);
+    if (this->mode == 2) {
+        this->draw_score();
+        return;
+    }
 
-    ((TDrawArea*)this->draw_area)->Lock((char*)&this->pad_24_38[-0x24 + 0x24], 0);
-
-    char* lock_result = ((TDrawArea*)this->draw_area)->Lock(0, 1);
-    if (lock_result) {
-        void* item = this->field_214;
-        short item_id = *(short*)((char*)item + 0x4C);
-
-        if (item_id != (short)-1) {
-            // Shape drawing path
-            ((TShape*)this->shape_ptr)->shape_draw(
-                this->draw_area,
-                (char*)this->base_info + 2,
-                (char*)this->str_pos_info + 0x21,
-                item_id, 0, 0);
+    if (this->master_game_obj == 0) {
+        if (this->parent_panel != 0) {
+            this->parent_panel->draw_rect(&this->clip_rect);
+            this->need_redraw = 0;
+            return;
         }
-
-        ((TDrawArea*)this->draw_area)->Unlock(0);
+        this->need_redraw = 0;
+        return;
     }
 
-    // GDI text section
-    void* dc = ((TDrawArea*)this->draw_area)->GetDc(0);
-    if (dc) {
-        _SetBkMode(*(int*)((char*)this->draw_area + 0x38), 1);
-        _SetTextColor(*(int*)((char*)this->draw_area + 0x38), 0xFFFFFF);
-        _SelectClipRgn(*(int*)((char*)this->draw_area + 0x38), this->clip_region);
-        int old_font = _SelectObject(*(int*)((char*)this->draw_area + 0x38), this->font_handle);
+    this->draw_setup(0);
+    this->render_area->Clear(&this->clip_rect, 0);
 
-        if (this->field_110) {
-            // Draw resource/player name from vtable
-            char buf[200];
-            void* vt2 = *(void**)this;
-            int pid = *(short*)((char*)this->field_110 + 0x4A);
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, int, char*, int))((void**)vt2)[10])(
-                this, pid, buf, 100);
+    if (this->render_area->Lock(0, 1) != 0) {
+        text_flag = 1;
+        short button_pict = this->master_game_obj->button_pict;
 
-            int len = strlen(buf);
-            if (len) {
-                _TextOutA(*(int*)((char*)this->draw_area + 0x38),
-                    (int)((char*)this->base_info + 2),
-                    (int)((char*)this->str_pos_info + 0x0F),
-                    buf, len);
-            }
-
-            // Second name string
-            char buf2[100];
-            buf2[0] = 0;
-            int len2 = strlen(buf2);
-            if (len2) {
-                _TextOutA(*(int*)((char*)this->draw_area + 0x38),
-                    (int)((char*)this->base_info + 2),
-                    (int)((char*)this->str_pos_info + 0x0F),
-                    buf2, len2);
-            }
-        }
-
-        // Item description text
-        {
-            void* item = this->field_214;
-            char desc_buf[200];
-            short count = *(short*)((char*)item + 0x0C);
-            if (count > 0) {
-                void* vt2 = *(void**)this;
-                ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, int, char*, int))((void**)vt2)[8])(
-                    this, count, desc_buf, 100);
+        if (button_pict != -1) {
+            TShape* shape;
+            if (this->master_game_obj->unit_level == 2) {
+                shape = this->bldg_pics[this->master_culture_id];
+                button_pict +=
+                    ((TRIBE_Master_Building_Object*)this->master_game_obj)->building_facet;
             } else {
-                // Copy from item name
-                char* src = (char*)item + 8;
-                int slen = strlen(src);
-                memcpy(desc_buf, src, slen + 1);
+                shape = this->unit_pics;
             }
 
-            int dlen = strlen(desc_buf);
-            if (dlen) {
-                _TextOutA(*(int*)((char*)this->draw_area + 0x38),
-                    (int)((char*)this->base_info + 2),
-                    (int)((char*)this->str_pos_info + 0x0F),
-                    desc_buf, dlen);
+            TShape* uncolored_shape;
+            TShape* colored_shape;
+            if (this->player != 0 && this->player->color_table->table != 0) {
+                _ASMSet_Color_Xform(
+                    (this->player->color_table->id + 1) * 0x10);
+                colored_shape = shape;
+                colored_shape->shape_draw(this->render_area,
+                                          this->pnl_x + 2,
+                                          this->pnl_y + 0x21,
+                                          button_pict, 1,
+                                          this->player->color_table->table);
+            } else {
+                uncolored_shape = shape;
+                uncolored_shape->shape_draw(this->render_area,
+                                            this->pnl_x + 2,
+                                            this->pnl_y + 0x21,
+                                            button_pict, 0, 0);
+            }
+        } else if (this->master_game_obj->sprite != 0) {
+            text_flag = 0;
+            if (this->master_game_obj->sprite->get_size(min_x, min_y, max_x, max_y, 0) != 0) {
+                this->master_game_obj->sprite->do_draw(
+                    0, 0,
+                    (this->pnl_x - min_x) + 10,
+                    (this->pnl_y - min_y) + 0x28,
+                    this->player->color_table,
+                    this->render_area, 0);
             }
         }
 
-        _SelectObject(*(int*)((char*)this->draw_area + 0x38), old_font);
-        _SelectClipRgn(*(int*)((char*)this->draw_area + 0x38), 0);
-        ((TDrawArea*)this->draw_area)->ReleaseDc(0);
+        this->render_area->Unlock(0);
     }
 
-    // Type dispatch for additional drawing
-    if (dc) {
-        unsigned char type = *(unsigned char*)((char*)this->field_214 + 0x8F);
-        
-        if (type == 1) {
-            // Float comparison
-            float* values = (float*)((char*)this->field_214 + 0x70);
-            int idx = 0;
-            for (int i = 0; i < 3; i++) {
-                if (values[i] <= 1.0f) {
-                    idx = i;
-                    break;
+    void* dc = this->render_area->GetDc(0);
+    if (dc != 0) {
+        SetBkMode(this->render_area->DrawDc, 1);
+        SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
+        SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
+        old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
+
+        if (this->player != 0) {
+            rge_base_game->get_string(0x69, this->player->id, 0, name, 100);
+            if (strcmp(name, default_player_name) == 0) {
+                strcpy(name, replacement_player_name);
+            }
+            TextOutA(this->render_area->DrawDc,
+                     this->pnl_x + 2, this->pnl_y + 0x0F,
+                     name, strlen(name));
+        }
+
+        short string_id = this->master_game_obj->string_id;
+        if (string_id < 1) {
+            str[0] = 0;
+        } else {
+            rge_base_game->get_string((long)string_id, str, 100);
+        }
+        if (str[0] == 0) {
+            strcpy(str, this->master_game_obj->name);
+        }
+        sprintf(name, format_string, str);
+        TextOutA(this->render_area->DrawDc,
+                 this->pnl_x + 2, this->pnl_y + 0x0F,
+                 name, strlen(name));
+
+        if (text_flag != 0) {
+            sprintf(str, format_ratio,
+                    (int)this->master_game_obj->hp,
+                    (int)this->master_game_obj->hp);
+            TextOutA(this->render_area->DrawDc,
+                     this->pnl_x + 5, this->pnl_y + 0x55,
+                     str, strlen(str));
+            SelectObject(this->render_area->DrawDc, (HGDIOBJ)old_font);
+            SelectClipRgn(this->render_area->DrawDc, 0);
+        }
+
+        this->render_area->ReleaseDc(0);
+    }
+
+    if (text_flag == 0) {
+        goto draw_finish;
+    }
+
+    {
+        RGE_Master_Static_Object* master = this->master_game_obj;
+        int item_index = 0;
+        uchar unit_level = master->unit_level;
+
+        if (unit_level == 3) {
+            short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
+            this->draw_item(0, 7, 1, amount, amount);
+            item_index = 1;
+        } else {
+            if (unit_level != 9 && unit_level != 4 && unit_level != 5 &&
+                unit_level != 6 && unit_level != 7) {
+                if (unit_level == 1) {
+                    short attr_type = -1;
+                    int attr_index = 0;
+                    do {
+                        if (0.0f < master->attribute_amount_held[attr_index]) {
+                            attr_type = master->attribute_type_held[attr_index];
+                            break;
+                        }
+                        ++attr_index;
+                    } while (attr_index < 3);
+
+                    int value_type;
+                    switch (attr_type) {
+                    case 0:
+                    case 0x0F:
+                    case 0x10:
+                    case 0x11:
+                        value_type = 2;
+                        break;
+                    case 1:
+                        value_type = 0;
+                        break;
+                    case 2:
+                        value_type = 1;
+                        break;
+                    case 3:
+                        value_type = 3;
+                        break;
+                    default:
+                        goto draw_finish;
+                    }
+
+                    this->draw_item(0, 0, value_type, 0,
+                                    (int)master->attribute_amount_held[attr_index]);
+                    this->draw_finish();
+                    return;
                 }
+
+                if (unit_level == 2) {
+                    RGE_Master_Combat_Object* combat =
+                        (RGE_Master_Combat_Object*)master;
+                    this->draw_item(0, 7, 1, combat->orig_weapon,
+                                    combat->orig_weapon);
+                    this->draw_item(1, 8, 1, combat->orig_armor,
+                                    combat->orig_armor);
+                    this->draw_item(2, 6, 1,
+                                    (int)combat->orig_weapon_range,
+                                    (int)combat->orig_weapon_range);
+                    this->draw_finish();
+                    return;
+                }
+
+                goto draw_finish;
             }
 
-            short sub_type = *(short*)((char*)this->field_214 + idx * 2 + 0x6A);
-            int action = 3;
-            if (sub_type == 2) action = 2;
-            else if (sub_type == 0) action = 0;
-            else if (sub_type == 1) action = 1;
-
-            int val = (int)values[idx];
-            void* vt2 = *(void**)this;
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, int, int, int, int))((void**)vt2)[0xE0/4])(
-                this, 0, action, 0, val);
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*))((void**)vt2)[0x2C/4])(this);
+            if (master->unit_level == 3 || master->unit_level == 4) {
+                short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
+                this->draw_item(0, 7, 1, amount, amount);
+                item_index = 1;
+            }
         }
-        else if (type == 2) {
-            // Direct draw with item fields
-            short val1 = *(short*)((char*)this->field_214 + 0x13E);
-            void* vt2 = *(void**)this;
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, int, int, int, int))((void**)vt2)[0xE0/4])(
-                this, 0, 7, 1, val1);
-            
-            short val2 = *(short*)((char*)this->field_214 + 0x13C);
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, int, int, int, int))((void**)vt2)[0xE0/4])(
-                this, 1, 8, 1, val2);
-            
-            float f3 = *(float*)((char*)this->field_214 + 0x114);
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*, int, int, int, int))((void**)vt2)[0xE0/4])(
-                this, 2, 6, 1, (int)f3);
 
-            ((void (__stdcall *)(TRIBE_Scenario_Editor_Panel_Object*))((void**)vt2)[0x2C/4])(this);
+        if (master->unit_level == 4 || master->unit_level == 6) {
+            RGE_Master_Combat_Object* combat =
+                (RGE_Master_Combat_Object*)master;
+            this->draw_item(item_index, 8, 1,
+                            combat->orig_armor, combat->orig_armor);
+            ++item_index;
+        }
+
+        long pierce_armor = this->get_pierce_armor();
+        short pierce_value = (short)pierce_armor;
+        if (master->unit_level == 4 || master->unit_level == 6) {
+            this->draw_item(item_index, 10, 1,
+                            pierce_value, pierce_value);
+            ++item_index;
+        }
+
+        if (master->unit_level == 4 || master->unit_level == 6) {
+            RGE_Master_Combat_Object* combat =
+                (RGE_Master_Combat_Object*)master;
+            short speed_value = (short)combat->orig_speed_of_attack;
+            this->draw_item(item_index, 6, 1,
+                            speed_value, pierce_value);
         }
     }
 
-    if (dc) {
-        ((TDrawArea*)this->draw_area)->ReleaseDc(0);
-    }
+draw_finish:
+    this->draw_finish();
 }
