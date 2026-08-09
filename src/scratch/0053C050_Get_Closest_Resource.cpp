@@ -1,5 +1,11 @@
 // vis_unit.cpp target: Visible_Resource_Manager::Get_Closest_Resource
 // initial natural reconstruction from packet/decompiler; scans one resource list for closest non-rejected record.
+// Attempt log:
+// - Baseline has exact size/frame and both __ftol calls, but VC5 keeps this in ECX through the guards instead of the original ESI save.
+// - Split versus combined guards and direct versus manager-alias spelling did not change the prologue basin.
+// - Replaced guessed distance constants with the binary-proven DAT_005776D0/DAT_005776D8 double globals; fmul/fsubr sites and several body blocks moved closer.
+// - Named used/list array pointers and register-qualified manager were diagnostic only; both worsened or duplicated codegen, so the clean typed direct-member form is retained.
+// Left in scratch: remaining drift is early this/index scheduling plus loop register/block coloring; behavior, size/frame, and call set are established.
 
 struct VisibleResourceRec {
     int object_id;
@@ -8,6 +14,9 @@ struct VisibleResourceRec {
     unsigned char pos_x;
     unsigned char pos_y;
 };
+
+extern double DAT_005776D0;
+extern double DAT_005776D8;
 
 class Visible_Resource_Manager {
 public:
@@ -21,11 +30,10 @@ public:
 };
 
 VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y, int param3, int type, int* reject_list, int reject_count) {
-    Visible_Resource_Manager* mgr = this;
-    if (type >= 0 && mgr->num_visible_resource_lists != 0 && type < mgr->num_visible_resource_lists) {
-        int count = mgr->VR_ListUsed[type];
+    if (type >= 0 && this->num_visible_resource_lists != 0 && type < this->num_visible_resource_lists) {
+        int count = this->VR_ListUsed[type];
         if (count != 0) {
-            VisibleResourceRec* rec = mgr->VR_List[type];
+            VisibleResourceRec* rec = this->VR_List[type];
             int bestDistance = 9999;
             VisibleResourceRec* best = 0;
             if (count > 0) {
@@ -47,9 +55,9 @@ VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y,
                     }
                     int dist;
                     if (dx > dy) {
-                        dist = (dx - (int)(dy * 0.4142135623730951 + 0.5)) - dy;
+                        dist = (dx - (int)(DAT_005776D8 - dy * DAT_005776D0)) - dy;
                     } else {
-                        dist = (dy - (int)(dx * 0.4142135623730951 + 0.5)) - dx;
+                        dist = (dy - (int)(DAT_005776D8 - dx * DAT_005776D0)) - dx;
                     }
                     if (dist < bestDistance) {
                         if (reject_count && reject_list) {

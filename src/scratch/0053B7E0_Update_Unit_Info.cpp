@@ -1,8 +1,15 @@
 // vis_unit.cpp target: Visible_Unit_Manager::Update_Unit_Info
 // initial reconstruction from packet/decompiler for per-player visible unit bitmask update.
+// Attempt log:
+// - Baseline had exact size/frame but modeled growth cleanup as operator_delete; changing to cdecl free aligned both direct calls.
+// - Reversed the mask XOR operands without codegen movement; mutating the incoming old_mask home was binary-backed but entered a smaller/wrong basin when assigned to new_mask and restored only the old-mask-home family.
+// - Typed memcpy recovered the original rep movsd/rep movsb copy (and is retained); direct short list_size arithmetic improved the best positional diff to 306 bytes, though the frame remains 0x14 versus 0x10.
+// - Hoisting the new-list/old-list pointers was diagnostic only and was rolled back.
+// Left in scratch: broad prologue/stack-home/register coloring and the growth pointer-repair schedule remain; call set, cleanup convention, packed record effects, and copy width are established.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-void operator_delete(void* ptr);
+extern "C" void __cdecl free(void* ptr);
+extern "C" void* __cdecl memcpy(void* dst, const void* src, unsigned int size);
 
 struct VisibleUnitRec {
     int object_id;
@@ -36,31 +43,25 @@ public:
 };
 
 void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, int y, int category, unsigned long old_mask, unsigned long new_mask, VisibleUnitRec** refs) {
-    unsigned long changed = (old_mask ^ new_mask) & 0xffff;
+    old_mask = (new_mask ^ old_mask) & 0xffff;
     if (category < this->Category_Count) {
         int p = 0;
         if (this->Player_Count > 0) {
             int refOffset = 0x194 - (int)refs;
             do {
-                if (changed == 0) {
+                if (old_mask == 0) {
                     return;
                 }
-                if ((changed & 1) == 1) {
+                if ((old_mask & 1) == 1) {
                     VisibleUnitPtr* bucket = &this->PlayerDataPtrs[p][category];
                     if ((new_mask & 1) == 1) {
                         short size = bucket->list_size;
                         if (bucket->used == size) {
-                            int sizeInt = size;
-                            VisibleUnitRec* newList = (VisibleUnitRec*)calloc(sizeInt + sizeInt, 8);
-                            int bytes = sizeInt * 8;
-                            char* dst = (char*)newList;
-                            char* src = (char*)bucket->unit_list;
-                            while (bytes-- != 0) {
-                                *dst++ = *src++;
-                            }
-                            operator_delete(bucket->unit_list);
+                            VisibleUnitRec* newList = (VisibleUnitRec*)calloc(size + size, 8);
+                            memcpy(newList, bucket->unit_list, size * 8);
+                            free(bucket->unit_list);
                             bucket->unit_list = newList;
-                            bucket->list_size = (short)(sizeInt + sizeInt);
+                            bucket->list_size = (short)(size + size);
                             int i = 0;
                             if (bucket->used > 0) {
                                 VisibleUnitRec* r = newList;
@@ -99,7 +100,7 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                 }
                 refs++;
                 new_mask >>= 1;
-                changed >>= 1;
+                old_mask >>= 1;
                 p++;
             } while (p < this->Player_Count);
         }

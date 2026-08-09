@@ -12,6 +12,11 @@
 //   drift is a localized VR_List versus VR_ListUsed scheduling/register basin.
 // - Main-agent audit restored the canonical polymorphic static-object surface;
 //   emitted code and the eight-byte residual are unchanged.
+// - New context lead after the visible-resource record pass: explicit typed
+//   list/used locals, a pointer-to-list slot, a record reference, register
+//   qualifiers, an ordered comma expression, and the same-TU void* list donor
+//   spelling all duplicated the residual. The original BF74 hunk still loads
+//   VR_List before VR_ListUsed; no clean source form recovered that order.
 
 extern "C" void* __cdecl malloc(unsigned int size);
 extern "C" void __cdecl free(void* ptr);
