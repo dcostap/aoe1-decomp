@@ -3327,3 +3327,26 @@ Caveats:
 - the invalid path formally reads uninitialized locals (UB in C++); this is the binary-observed stack-alias behavior — keep a comment documenting it (same quirk as verified sibling 00480610 GetHiLoInfo);
 - the out locals' declaration order and the countdown local placement still matter — keep the countdown assigned inside the guard so it stays homed at the param slot.
 - Verified on 00480570 GetHiLoMaxInfo (146B, exact after 20+ prior attempts across many workers): the remaining 2-byte diff was fixed solely by ordering `out_lo = lo;` before `out_hi = hi;`.
+
+## Lesson: Put coupled loop inductions in the `for` increment in binary order
+
+When an outer loop carries both a scalar index and a pointer cursor, a natural
+`do/while` or a body cursor increment can select a different VC5 prologue and
+bottom-of-loop schedule. A `for` whose increment expression lists both updates
+in the executable's order (`i++` before `cursor++`) can recover the early
+callee-save/guard layout and the final `inc`/pointer-add order together.
+
+Try when:
+- the loop body and calls already align, but the rebuilt function is short and
+  the first mismatch is in counter initialization or the loop tail;
+- the original emits `inc index; add cursor,stride; cmp` while the candidate
+  emits `add cursor,stride; inc index; cmp`.
+
+Why it helps:
+- VC5 treats the `for` header as one induction-update node and preserves its
+  source order, while a body update plus implicit `for` increment can swap the
+  two operations and change live-range/save decisions earlier in the function.
+
+Caveat:
+- use only when both induction variables and their update order are established
+  by the original assembly; do not add a second cursor merely to perturb codegen.

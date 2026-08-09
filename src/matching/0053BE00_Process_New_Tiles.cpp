@@ -12,11 +12,9 @@
 // - Corrected AddResource's second parameter to int (the binary ABI), and
 //   materialized the object id before loading the resource group. This recovered
 //   the zero-extension and original id/group load order.
-// - Final source keeps the canonical typed tile-record cursor and the natural
-//   resource-node walk. Current best check: 161 positional differing bytes,
-//   191 rebuilt bytes vs 195 original; calls and frame size match. Remaining
-//   drift is the early loop-index initialization/prologue scheduling and the
-//   original redundant size guard that VC5 removes from this clean form.
+// - Fresh pass: the outer `for` with both inductions in its increment expression
+//   (`i++` before `tileList++`) restored the early callee-save/guard layout and
+//   the final increment order. Exact match: 195/195 bytes.
 
 struct RGE_Object_Master {
     char gap_00[0xA5];
@@ -79,12 +77,12 @@ public:
 void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* list) {
     int size;
     RGE_Tile_List_Node* tileList;
-    int i = 0;
+    int i;
     list->get_list_info(&tileList, &size);
     if (size > 0 && this->num_visible_resource_lists != 0) {
         if (size > 0) {
             RGE_Tile** rows = this->owner->world2->map->map_row_offset;
-            do {
+            for (i = 0; i < size; i++, tileList++) {
                 RGE_Tile_List_Node* cur = tileList;
                 RGE_Tile* tile = &rows[cur->y][cur->x];
                 int count = tile->objects.number_of_objects;
@@ -103,9 +101,7 @@ void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* list) {
                         count--;
                     }
                 }
-                i++;
-                tileList++;
-            } while (i < size);
+            }
         }
     }
 }
