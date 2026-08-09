@@ -1,12 +1,19 @@
 // VA: 0043B400 TribeAboutDialog::action
 // dlg_abt.cpp lines 174-200
 
-// attempt 1: natural C++ — vf14 at wrong vtable slot, missing push 0
-// attempt 2: removed vf14 decl, direct slot 5 call with push 0 -> slot fixed
-// attempt 3: EH handler addr reloc prevents size match (320 vs 325)
-// Remaining: instruction scheduling differs (param load before/after push esi),
-// register allocation cascade (200+ diff bytes after crude reloc masking).
-// EH prologue present — needs /GX. Deep codegen basin. Left in scratch.
+// Attempt log:
+// - Baseline: named button ownership and typed virtual set_active(0); /GX is
+//   required for the binary-observed new-expression EH frame.
+// - Independent close/credits guards reproduce the natural behavior but VC5
+//   tail-merges the two destroyPanel sites (309 rebuilt vs 325 original).
+// - An outer guard with the shared cleanup shape improved the diagnostic to
+//   289 bytes / 250 differing bytes, but PDB lines 186 and 194 prove two
+//   source destroyPanel sites; that codegen winner was not retained as source.
+// - Canonical TPanel/TEasy/TScreen hierarchy and polymorphic credits layout
+//   were tested; it did not resolve the cleanup-site merge. /O1 was rejected.
+// - Final scratch state restores the readable separate guards. Remaining gap:
+//   VC5 source/control-flow basin around duplicated destroyPanel and EH handler
+//   placement; no inline asm, manual vtable, volatility, or raw-address hacks.
 
 class TPanelSystem;
 class TRIBE_Credits_Screen;
@@ -43,13 +50,14 @@ public:
     virtual long vf08();
     virtual long vf0C();
     virtual long vf10();
-    virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
+    virtual void set_active(int active);
 };
 
 class TEasy_Panel : public TPanel {
 public:
     char _gap_F4[0x39C];
     virtual ~TEasy_Panel();
+    long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
 };
 
 class TDialogPanel : public TEasy_Panel {
@@ -105,7 +113,7 @@ long TribeAboutDialog::action(TPanel* param_1, long param_2, unsigned long param
                 }
             }
             panel_system->setCurrentPanel("Game Screen", 0);
-            ((void (__stdcall *)(int))(*(void***)this)[5])(0);
+            this->set_active(0);
         }
         panel_system->destroyPanel("About Dialog");
         return 1;
