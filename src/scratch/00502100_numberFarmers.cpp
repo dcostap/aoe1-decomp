@@ -84,6 +84,8 @@ public:
     }
 };
 
+// Main-agent audit confirmed canonical ManagedArray/AI ownership and retained
+// the natural farmer count/growth source.
 class TribeTacticalAIModule {
 public:
     virtual ~TribeTacticalAIModule();

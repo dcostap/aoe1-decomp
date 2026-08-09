@@ -52,22 +52,27 @@
 // Main-agent normalization replaced decompiler local names and raw leading
 // gaps with descriptive roles and donor-backed polymorphic ownership; emitted
 // code remains the same 6-byte register-encoding mismatch.
+// Main-agent audit replaced cross-member raw casts with canonical named
+// main-decision submodule ownership.
 
 #include <stdlib.h>
 
 class BuildAIModule {
 public:
+    virtual ~BuildAIModule();
     int numberUnbuiltItemsOfType(int type, int unk);  // 00409D40h, ret 8
     int numberItemsOfType(int type, int unk);          // 00409C70h, ret 8
 };
 
 class TribeResourceAIModule {
 public:
+    virtual ~TribeResourceAIModule();
     int resource(int type);                          // 004E6C70h, ret 4
 };
 
 class TribeInformationAIModule {
 public:
+    virtual ~TribeInformationAIModule();
     int numberAvailableStoragePits(int type);        // 004E3E90h, ret 4
 };
 
@@ -85,6 +90,10 @@ public:
     RGE_Player* player;          // +0xF0
     char gap_F4[0x10];           // +0xF4 to +0x103
     BuildAIModule buildAI;       // +0x104
+    char gap_108[0xCEC - 0x108];
+    TribeInformationAIModule informationAI; // +0xCEC
+    char gap_CF0[0x10D7C - 0xCF0];
+    TribeResourceAIModule resourceAI;       // +0x10D7C
 };
 
 class TribeTacticalAIModule {
@@ -106,13 +115,13 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
     int capacity_or_count;
     unsigned int remaining;
 
-    value = ((BuildAIModule*)((char*)this->md + 0x104))->numberUnbuiltItemsOfType(0x67, 0);
+    value = this->md->buildAI.numberUnbuiltItemsOfType(0x67, 0);
     param2 = value;
     if (value > 0) {
         return 0;
     }
 
-    value = ((TribeResourceAIModule*)((char*)this->md + 0x10D7C))->resource(param3);
+    value = this->md->resourceAI.resource(param3);
     if (this->sn_array_48C[param3] <= value) {
         return 0;
     }
@@ -124,13 +133,13 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
             capacity_or_count = 1;
         }
         product = capacity_or_count * value;
-        capacity_or_count = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
+        capacity_or_count = this->md->buildAI.numberItemsOfType(0x67, 0);
         remaining = product - capacity_or_count;
         param1 = capacity_or_count;
         return ((int)remaining < 0) ? 0 : remaining;
     } else {
-        value = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
+        value = this->md->buildAI.numberItemsOfType(0x67, 0);
         param1 = value;
-        return ((TribeInformationAIModule*)((char*)this->md + 0xCEC))->numberAvailableStoragePits(param3);
+        return this->md->informationAI.numberAvailableStoragePits(param3);
     }
 }

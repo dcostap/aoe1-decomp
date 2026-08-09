@@ -57,6 +57,8 @@ public:
     void setDesiredNumberUnits(int value);
 };
 
+// Main-agent audit confirmed canonical tactical/group/time ownership and kept
+// the natural stale-group scan.
 class TribeTacticalAIModule {
 public:
     char gap_000[0xF0];
