@@ -11,8 +11,12 @@
 // 8: restore z-before-y best shape.
 // 9: local z temp before world/position call; no codegen change.
 // 10: /Ot flag probe no change; removed flag.
-// Boss review: not accepted_drift because missing original fstp st0 after virtual set_position is an unproven FPU-stack side effect.
-// Left in scratch: near miss with localized store/register drift plus unsafe missing x87 pop.
+// Follow-up: the +0x34 virtual is the proven float-returning teleport ABI; an
+// ignored result supplies the original fstp st0.  Keeping the position stores
+// in source order x/y/z restores VC5's original register schedule.
+// Follow-up: source initialization order type/owner/master restores the
+// original type-before-owner store while retaining the expected parameter
+// preload.  Exact 398-byte match; typed period-plausible source, no asm/hack.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -37,7 +41,8 @@ public:
 class RGE_Player_vtable_pad {
 public:
 #define PAD(n) virtual void pad##n();
-    PAD(00) PAD(01) PAD(02) PAD(03) PAD(04) PAD(05) PAD(06) PAD(07)
+    virtual ~RGE_Player_vtable_pad();
+    PAD(01) PAD(02) PAD(03) PAD(04) PAD(05) PAD(06) PAD(07)
     PAD(08) PAD(09) PAD(10) PAD(11) PAD(12) PAD(13) PAD(14) PAD(15)
     PAD(16) PAD(17) PAD(18) PAD(19) PAD(20) PAD(21) PAD(22) PAD(23)
     PAD(24) PAD(25) PAD(26) PAD(27) PAD(28) PAD(29) PAD(30) PAD(31)
@@ -59,7 +64,7 @@ public:
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     char gap_05[0x13];
     void* sprite;
@@ -81,8 +86,8 @@ public:
 
 class RGE_Static_Object : public RGE_Static_Object_vtable_pad {
 public:
-    virtual void set_position(float x, float y, float z); // +34
-    virtual void set_sprite(void* sprite);                // +38
+    virtual float teleport(float x, float y, float z);    // +34
+    virtual void new_sprite(void* sprite);                // +38
 #define VPAD2(n) virtual void v##n();
     VPAD2(000) VPAD2(001) VPAD2(002) VPAD2(003) VPAD2(004) VPAD2(005) VPAD2(006) VPAD2(007)
     VPAD2(008) VPAD2(009) VPAD2(010) VPAD2(011) VPAD2(012) VPAD2(013) VPAD2(014) VPAD2(015)
@@ -142,9 +147,9 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
 {
     int old_debug;
     int seed;
+    this->type = 10;
     this->owner = player;
     this->master_obj = master;
-    this->type = 10;
     this->tile = 0;
     this->inside_obj = 0;
     this->objects = this->create_object_list();
@@ -176,14 +181,13 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
         this->id = this->owner->world->get_next_object_id();
     }
     this->sprite_list = this->create_sprite_list();
-    this->set_sprite(this->master_obj->sprite);
+    this->new_sprite(this->master_obj->sprite);
 
-    float zz = z;
     this->world_x = x;
-    this->world_z = zz;
     this->world_y = y;
+    this->world_z = z;
     this->old_sprite = 0;
-    this->set_position(x, y, zz);
+    this->teleport(x, y, z);
 
     this->player_object_node = this->owner->addObject(this, this->sleep_flag, this->dopple_flag);
 

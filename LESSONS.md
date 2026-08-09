@@ -308,3 +308,18 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   do/while may turn the indexed access into a pointer walk; use this only when
   the original compare order and loop bounds support it.
 - For a proven fixed-size member record whose zeroing must interleave with a later API argument address, `memset(&record, 0, sizeof(record))` can recover VC5's early address/store and `rep stosd` schedule where a scalar field zero emits a later direct store. Keep this only when the record size and byte-level schedule are independently established.
+- When a virtual position/teleport slot is proven to return `float` and the
+  caller ignores it, declare the real return type: VC5 emits the required
+  `fstp st0` before the next call. The return-type correction can change the
+  surrounding integer register coloring, so recover the original source order
+  of adjacent coordinate stores afterward; an ordinary x/y/z assignment order
+  may emit the binary's z-before-y stores. Likewise, an initialization group
+  written as type/owner/master can preserve an observed type-before-owner store
+  while still preloading the second parameter at entry. Use these only when
+  the vslot and store order are established from the executable.
+- When a same-named helper has multiple generated donors, resolve the actual
+  direct-call target before copying its ABI: the Shape.cpp `TDrawArea::AlignedWidth`
+  target is the long-returning method at 00444B40, while another `AlignedWidth`
+  donor has a different class/return surface. A wrong return declaration may
+  leave bytes unchanged but produces the wrong mangled relocation identity and
+  can perturb VC5 scheduling.
