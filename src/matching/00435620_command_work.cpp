@@ -10,6 +10,15 @@
 //   bytes remain). Count/pointer aliases and source-order variants were
 //   codegen duplicates or introduced an 8-byte frame; the remaining mismatch
 //   is the early VC5 prologue/list-pointer coloring and later logging topology.
+// - Probe 14 (new claim) removed the unused world member while comparing the
+//   local command surface with the exact command_order sibling; emitted code
+//   was unchanged, so the actual world field remains in the canonical stub.
+// - Probe 15 split first-unit name selection and owner-id selection into two
+//   ordinary if statements, matching the exact sibling's source topology.
+//   This changed the compiler basin to an exact 256-byte match, including the
+//   original list-pointer prologue and logging sequence.
+// - Main-agent audit replaced the remaining header byte-offset stores with the
+//   canonical typed work-packet fields; emitted code remains exact.
 
 #include <stdlib.h>
 
@@ -38,6 +47,16 @@ public:
     RGE_Player* owner;
 };
 
+struct RGE_Command_Work {
+    unsigned char command;
+    unsigned char gap_01[3];
+    int target;
+    unsigned char recipient_count;
+    unsigned char gap_09[3];
+    float target_x;
+    float target_y;
+};
+
 class RGE_Command {
 public:
     virtual ~RGE_Command();
@@ -61,7 +80,8 @@ void RGE_Command::command_work(RGE_Static_Object** list, short list_num,
 
     if (list != 0 && list_num >= 1) {
         unsigned char* buf = (unsigned char*)calloc(1, size);
-        int* dst = (int*)(buf + 0x14);
+        RGE_Command_Work* packet = (RGE_Command_Work*)buf;
+        int* dst = (int*)(packet + 1);
         if (buf != 0) {
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
@@ -72,14 +92,14 @@ void RGE_Command::command_work(RGE_Static_Object** list, short list_num,
             }
 
             if (target != 0) {
-                *(int*)(buf + 4) = target->id;
+                packet->target = target->id;
             } else {
-                *(int*)(buf + 4) = -1;
+                packet->target = -1;
             }
-            buf[0] = 2;
-            buf[8] = (unsigned char)list_num;
-            *(float*)(buf + 0x0C) = x;
-            *(float*)(buf + 0x10) = y;
+            packet->command = 2;
+            packet->recipient_count = (unsigned char)list_num;
+            packet->target_x = x;
+            packet->target_y = y;
 
             const char* target_name;
             if (target != 0) {
@@ -93,9 +113,12 @@ void RGE_Command::command_work(RGE_Static_Object** list, short list_num,
             int owner;
             if (obj != 0) {
                 unit_name = obj->master_obj->name;
-                owner = obj->owner->id;
             } else {
                 unit_name = STR_X;
+            }
+            if (obj != 0) {
+                owner = obj->owner->id;
+            } else {
                 owner = -1;
             }
 

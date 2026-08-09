@@ -26,6 +26,10 @@
 //   EBP; VC5 emits those two operations in the opposite order here.
 // - Main-agent audit restored canonical polymorphic ownership for command,
 //   player, and static object; emitted code is unchanged.
+// - Probe 13 (new claim) declared the recipient cursor before the loop count
+//   inside the positive guard.  The natural declaration/initialization order
+//   makes VC5 move the cursor into EBP before storing the reused count home,
+//   producing an exact 239-byte match with the canonical typed surfaces.
 
 struct RGE_Obj_Info {
     int id;
@@ -99,8 +103,8 @@ void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
     RGE_Obj_Info* recipient_base = (RGE_Obj_Info*)(command + 1);
 
     if (count > 0) {
-        int loop_count = count;
         RGE_Obj_Info* recipients = recipient_base;
+        int loop_count = count;
         do {
             RGE_Static_Object* object = self->get_obj(*recipients);
             if (object != 0) {
