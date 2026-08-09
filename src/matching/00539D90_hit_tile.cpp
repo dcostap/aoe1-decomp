@@ -16,14 +16,19 @@
 // map load and places the shared success/failure tails 17 bytes later.
 // Main-agent audit replaced numbered/decompiler map and tile types plus the raw
 // vptr field with canonical polymorphic RGE_Map ownership; metrics are unchanged.
+//   continuation: direct this->map tilesize expressions, with the map local
+//   delayed until after the screen bounds, recovered the original movsx-before-
+//   map load.  Explicit labels retain the binary-proven separate shape-success,
+//   outer-success, and shared-failure tails; this source now matches exactly.
 // FLAGS: /nologo /c /O2 /Oy
 
 struct tagPOINT { long x, y; };
 
 struct RGE_Tile {
-    char _gap_00[4];
+    short screen_xpos;
+    short screen_ypos;
     unsigned char tile_type;
-    unsigned char field_5;
+    unsigned char terrain_type;
 };
 
 struct RGE_Tile_Size {
@@ -33,7 +38,7 @@ struct RGE_Tile_Size {
 };
 
 struct TShape {
-    char _gap_00[4];
+    virtual ~TShape();
     unsigned char shape_check(long dx, long dy, int pic);
 };
 
@@ -113,25 +118,36 @@ int RGE_View::hit_tile(RGE_Tile* tile, short sx, short sy,
 
     if (tile) {
         tile_type = tile->tile_type;
-        terrain_type = tile->field_5 & 0x1F;
+        terrain_type = tile->terrain_type & 0x1F;
     } else {
         tile_type = 0;
     }
 
     if (pt->x >= sx) {
-        RGE_Map* map = this->map;
-        if (pt->x < sx + map->tilesizes[tile_type].width &&
+        if (pt->x < sx + this->map->tilesizes[(int)tile_type].width &&
             pt->y >= sy &&
-            pt->y < sy + map->tilesizes[tile_type].height) {
+            pt->y < sy + this->map->tilesizes[(int)tile_type].height) {
+            RGE_Map* map = this->map;
             if (terrain_type < map->num_terrain &&
                 map->terrain_types[terrain_type].loaded) {
                 TShape* sh = map->terrain_types[terrain_type].shape;
                 short pic = this->get_tile_picture(terrain_type, (unsigned char)tile_type, a, b);
 
-                if (sh && pic != -1) {
-                    if (pt->y >= sy + this->map->tilesizes[tile_type].height) return 0;
-                    if (!sh->shape_check(pt->x - sx, pt->y - sy, pic)) return 0;
-                }
+                if (sh == 0 || pic == -1)
+                    goto outer_success;
+
+                if (pt->y >= sy + this->map->tilesizes[(int)tile_type].height)
+                    goto failure;
+                if (!sh->shape_check(pt->x - sx, pt->y - sy, pic))
+                    goto failure;
+                goto shape_success;
+
+            shape_success:
+                return 1;
+            outer_success:
+                return 1;
+            failure:
+                return 0;
             }
             return 1;
         }
