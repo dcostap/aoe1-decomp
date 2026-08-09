@@ -23,6 +23,8 @@
 // new context pass: added the recovered named game/screen/video derived field
 // surface from the now-exact neighboring TU functions; it was a codegen
 // duplicate, so the EDI-this / ESI-elapsed coloring gap remains unexplained.
+// abi probe: corrected debug_timeGetTime's parameter to the PDB's char* form;
+// emitted code and the 16-byte register-color gap were unchanged.
 
 enum COMMSTATUS {
     COMMSTATUS_UNINITIALIZED = 0,
@@ -62,7 +64,7 @@ public:
     char gap_3F8[0xA24 - 0x3F8];
 };
 
-extern unsigned long debug_timeGetTime(const char* file, int line);
+extern unsigned long debug_timeGetTime(char* file, int line);
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
