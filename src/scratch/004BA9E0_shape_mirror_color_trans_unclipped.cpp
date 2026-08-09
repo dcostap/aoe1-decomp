@@ -27,16 +27,30 @@
 // - Reversed common destination address terms was a duplicate. Retained the
 //   canonical shared-offset typed RLE source; unresolved gap is destination
 //   parameter-home scheduling plus the one-byte table SIB encoding.
+// sa-43841f2d-shape-mirror-color-trans probes (2026-08-09):
+// - Direct-call evidence at 00444B40 proves TDrawArea::AlignedWidth returns
+//   long; restored that ABI after an int-return trial changed the basin.
+// - Matched the same-TU CRT source family with <string.h>, pragma function,
+//   and extern-C memset, and restored full TShape/TDrawArea header/clip spans.
+//   Calls now carry the original _memset and long-return AlignedWidth symbols;
+//   emitted source remains a natural shared-offset RLE decoder.
 
-void* __cdecl memset(void* dest, int c, unsigned int count);
+#include <string.h>
+#pragma function(memset)
+extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
 struct TDrawArea {
     char gap_00[0x08];
     /* +0x08 */ unsigned char* Bits;
-    char gap_0C[0x1C - 0x0C];
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
     /* +0x1C */ int Height;
     /* +0x20 */ int Pitch;
     /* +0x24 */ int Orien;
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
 
     long AlignedWidth();
 };
@@ -53,8 +67,14 @@ struct Shape_Header {
 // Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
 // and retained the natural typed RLE decoder.
 struct TShape {
-    char gap_00[0x0C];
+    unsigned char* shape;
+    int load_type;
+    int load_size;
     /* +0x0C */ Shape_Header* shape_header;
+    void* head;
+    void* offsets;
+    void* FShape;
+    void* shape_info;
 
     unsigned char shape_mirror_color_trans_unclipped(
         TDrawArea* draw_area, long x, long y, long shape_idx,

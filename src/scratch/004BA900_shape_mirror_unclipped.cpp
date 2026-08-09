@@ -102,8 +102,20 @@
 // - Retained natural typed RLE source. Remaining blocker is the original VC5
 //   local-home schedule: destination is written/reloaded through x's home and
 //   rows through da's home, while this clean candidate keeps destination in EDI.
+// sa-43841f2d-shape-mirror-unclipped probes (2026-08-09):
+// - Matched the same-TU CRT source family with <string.h>, #pragma function,
+//   and extern-C memset; this restored the original _memset relocation while
+//   preserving the 202-byte/136-diff candidate.
+// - Restored the proven full TDrawArea clip/tail layout; emitted code was
+//   unchanged. The remaining gap is the documented row-base/home and setup
+//   accumulator schedule, not header or clip ownership.
+// - Direct donor 00444B40 was rechecked: AlignedWidth is long-returning, not
+//   the earlier provisional int stub; correcting it preserved bytes and fixes
+//   the mangled call identity to the original TDrawArea method.
 
-void* __cdecl memset(void* dest, int c, unsigned int count);
+#include <string.h>
+#pragma function(memset)
+extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
 struct Shape_Header {
     long bounds;
@@ -124,7 +136,9 @@ struct TDrawArea {
     int Height;
     int Pitch;
     int Orien;
-    int AlignedWidth();
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
+    long AlignedWidth();
 };
 
 struct Shape_Offsets {

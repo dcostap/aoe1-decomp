@@ -23,6 +23,13 @@
 //   a shared byte count, and table-plus-pixel operand spelling were tested;
 //   none beat the normalized source. The old 188-byte metric winner depended
 //   on decompiler-shaped control/parameter reuse and was not retained.
+// sa-43841f2d-shape-mirror-shadow probes (2026-08-09):
+// - Restored the exact TDrawArea::AlignedWidth long-return ABI from direct
+//   donor 00444B40 and the full proven TShape/TDrawArea header, clip, and tail
+//   spans; emitted bytes stayed 230B/203 diff.
+// - No new header/span/clip lead displaced the natural counted backward RLE
+//   source; remaining drift is the known destination/row-home and loop-count
+//   lowering basin.
 
 typedef unsigned char byte;
 
@@ -31,10 +38,15 @@ struct Shape_Header { long bounds, origin, xmin, ymin, xmax, ymax; };
 struct TDrawArea {
     char gap_00[8];
     byte* Bits;
-    char gap_0C[0x10];
-    long Height;
-    char gap_20[4];
-    long Orien;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
     long AlignedWidth(void);
 };
 
@@ -44,9 +56,13 @@ struct TDrawArea {
 class TShape {
 public:
     byte* shape;
-    long load_type;
-    long load_size;
+    int load_type;
+    int load_size;
     Shape_Header* shape_header;
+    void* head;
+    void* offsets;
+    void* FShape;
+    void* shape_info;
     byte shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, byte* table);
 };
 

@@ -51,12 +51,23 @@
 //   natural source remains 234B/208 strict bytes with all three calls and the
 //   RLE block topology aligned; the unresolved gap is VC5 prologue/register
 //   coloring plus swapped destination/row parameter-home assignment.
+// sa-43841f2d-shape-draw-unclipped probes (2026-08-09):
+// - Used the binary-supported int span count; VC5 emitted the same 234-byte
+//   candidate as long height.
+// - Matched exact Shape.cpp donor ABI with <string.h>, pragma function, C-linkage
+//   memcpy/memset, and long-return AlignedWidth; call relocations now identify the
+//   original _memcpy/_memset and TDrawArea::AlignedWidth symbols.
+// - Restored the full proven TDrawArea clip/tail layout; emitted code was
+//   unchanged. Remaining drift is the known early register/local-home basin.
+// - Direct donor 00444B40 was rechecked after the provisional int trial:
+//   AlignedWidth is long-returning, and the living declaration now matches it.
 
+#include <string.h>
 #pragma function(memcpy)
 #pragma function(memset)
 
-void* __cdecl memcpy(void* dest, const void* src, unsigned int count);
-void* __cdecl memset(void* dest, int c, unsigned int count);
+extern "C" void* __cdecl memcpy(void* dest, const void* src, unsigned int count);
+extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
 struct Shape_Header {
     long bounds;    // +0x00
@@ -71,10 +82,15 @@ class TDrawArea {
 public:
     char gap_00[8];
     unsigned char* Bits;    // +0x08
-    char gap_0C[0x10];
+    void* BitmapInfo;       // +0x0C
+    void* Bitmap;           // +0x10
+    void* OldBitmap;        // +0x14
+    int Width;              // +0x18
     int Height;             // +0x1C
     int Pitch;              // +0x20
     int Orien;              // +0x24
+    char ClipRect[0x10];    // +0x28
+    char _tail_38[0xC8];
     long AlignedWidth();
 };
 
@@ -97,7 +113,7 @@ public:
 unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long table)
 {
     Shape_Header* sh = this->shape_header;
-    long height = sh->ymax - sh->ymin + 1;
+    int height = sh->ymax - sh->ymin + 1;
     unsigned char* p = (unsigned char*)(sh + 1);
     long pitch = da->AlignedWidth() * da->Orien;
     long m;

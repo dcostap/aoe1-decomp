@@ -40,6 +40,12 @@
 // - Direct orientation, declaration-order, and x-home assignment probes did
 //   not improve the 188-byte basin. Remaining gap is the original swapped
 //   parameter-home/register schedule, not calls or RLE behavior.
+// sa-43841f2d-shape-shadow-unclipped probes (2026-08-09):
+// - Restored the full proven TShape/TDrawArea header, clip, and tail spans;
+//   the natural source stayed 255B/188 diff with the direct long-return
+//   TDrawArea::AlignedWidth ABI from donor 00444B40.
+// - No new header/span/clip/source-family lead displaced the typed forward
+//   shadow RLE source; remaining drift is the documented prologue/home basin.
 
 typedef unsigned char byte;
 
@@ -55,10 +61,15 @@ struct Shape_Header {
 struct TDrawArea {
     char gap_00[8];
     byte* Bits;
-    char gap_0C[0x10];
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
     int Height;
-    char gap_20[4];
+    int Pitch;
     int Orien;
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
     long AlignedWidth();
 };
 
@@ -69,7 +80,10 @@ struct TShape {
     int load_type;
     int load_size;
     Shape_Header* shape_header;
-    char _gap_10[0xC];
+    void* head;
+    void* offsets;
+    void* FShape;
+    void* shape_info;
 
     byte shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table);
 };
