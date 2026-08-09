@@ -1,148 +1,175 @@
 // TRIBE_Panel_Inven::draw
-// Draws the inventory panel. Renders resource values from player->float_values
-// at fixed column positions, with shadow text using back_color and
-// foreground text using font_color.
-// changed TDrawArea to natural member-call surface; compiles but still short vs original
-// reduced early locals/direct checks; got closer size but prolog still uses ebx=this instead of original esi=this
+// Canonical ownership: TPanel render_area/clip/parent/visibility fields, the
+// TDrawArea DrawDc surface, and TRIBE_Player's inherited attributes table.
+// The four text passes mirror the period inventory-panel drawing idiom.
+// changed the old raw HDC/parent plumbing to typed TPanel/TDrawArea surfaces;
+// baseline still had direct Win32 calls and a 0x20 frame.
+// Worker termination interrupted the session after eight probes. Main-agent
+// validation records 870/859 bytes, exact 32-call parity, 96.47% shape, and
+// 838 differing bytes; the typed direct-member reconstruction is retained.
 
+#include "../../include/game_globals.h"
+#include <windows.h>
 #include <stdio.h>
 #include <string.h>
 
-extern "C" int __stdcall TextOutA(void* hdc, int x, int y, const char* str, int len);
-extern "C" void* __stdcall SelectObject(void* hdc, void* obj);
-extern "C" int __stdcall SetBkMode(void* hdc, int mode);
-extern "C" int __stdcall SetTextColor(void* hdc, int color);
+extern const char s_tpnl_inv_draw[];
+extern const char s_fmt_ld[];
+
+extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
+
+extern "C" {
+__declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC hdc, HGDIOBJ obj);
+__declspec(dllimport) int __stdcall SetBkMode(HDC hdc, int mode);
+__declspec(dllimport) COLORREF __stdcall SetTextColor(HDC hdc, COLORREF color);
+__declspec(dllimport) BOOL __stdcall TextOutA(HDC hdc, int x, int y,
+                                                LPCSTR text, int len);
+}
 
 class TDrawArea {
 public:
     char gap_00[0x38];
-    void* hdc;
-    void* GetDc(const char* name);
-    void ReleaseDc(const char* name);
-};
+    HDC DrawDc;
 
-extern int TRIBE_Panel_Inven_vftable;
+    void* GetDc(char* name);
+    void ReleaseDc(char* name);
+};
 
 class TPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(int mode);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void* rect);
+    enum RedrawMode { NoRedraw = 0, Redraw = 1, RedrawFull = 2 };
+
+    virtual ~TPanel();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void set_redraw(int mode);
+    virtual long handle_idle();
+    virtual void draw_setup(int clear);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(RECT* rect);
+
+    char gap_04[8];
+    long pnl_x;
+    long pnl_y;
+    char gap_14[0x0C];
+    TDrawArea* render_area;
+    RECT clip_rect;
+    char gap_34[0x04];
+    RedrawMode need_redraw;
+    char gap_3C[0x04];
+    TPanel* parent_panel;
+    char gap_44[0x28];
+    int active;
+    int visible;
+    char gap_74[0x80];
 };
 
-class TRIBE_Player {
+class RGE_Player {
 public:
-    char gap_00[0x50];
-    float float_values[4];
+    virtual ~RGE_Player();
+    char gap_04[0x4C];
+    float* attributes;
 };
 
-class TRIBE_Panel_Inven {
+class TRIBE_Player : public RGE_Player {
+};
+
+class TRIBE_Panel_Inven : public TPanel {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(int mode);
-    virtual void vf24(void);
-    virtual void vf28(int mode);
-    virtual void vf2C(void);
-    char gap_04[0xF4];
-    TRIBE_Player* player;       // +0F8h
-    short save_attr_num;        // +0FCh
+    virtual void draw();
+
+    char gap_F4[0x04];
+    TRIBE_Player* player;
+    short save_attr_num;
     short gap_FE;
-    short* save_attr;           // +100h
-    int idle_time;              // +104h
-    int idle_interval;          // +108h
-    void* font;                 // +10Ch
-    int font_color;             // +110h
-    int back_color;             // +114h
-
-    void draw();
+    short* save_attr;
+    int idle_time;
+    int idle_interval;
+    void* font;
+    unsigned long font_color;
+    unsigned long back_color;
 };
 
 void TRIBE_Panel_Inven::draw() {
-    TDrawArea* area;
-    void* old_font;
-    int x;
-    int row_y;
     char str[20];
 
-    if (*(TDrawArea**)((char*)this + 0x20) == 0 || *(int*)((char*)this + 0x70) == 0 || *(int*)((char*)this + 0x6C) == 0) {
-        *(int*)((char*)this + 0x38) = 0;  // need_redraw = 0
-        return;
+    if (this->render_area != 0) {
+        if (this->visible != 0) {
+            if (this->active != 0) {
+                if (this->parent_panel != 0)
+                    this->parent_panel->draw_rect(&this->clip_rect);
+
+                if (this->player != 0) {
+            this->draw_setup(0);
+            if (this->render_area->GetDc((char*)s_tpnl_inv_draw) != 0) {
+                HGDIOBJ old_font = SelectObject(this->render_area->DrawDc,
+                                                 (HGDIOBJ)this->font);
+                SetBkMode(this->render_area->DrawDc, 1);
+
+                long x = this->pnl_x + 0x20;
+                long y = this->pnl_y + 2;
+
+                sprintf(str, s_fmt_ld,
+                        (long)this->player->attributes[1]);
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->back_color);
+                TextOutA(this->render_area->DrawDc, x - 1, y + 1,
+                         str, strlen(str));
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->font_color);
+                TextOutA(this->render_area->DrawDc, x, y,
+                         str, strlen(str));
+
+                x = this->pnl_x + 0x63;
+                sprintf(str, s_fmt_ld,
+                        (long)this->player->attributes[0]);
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->back_color);
+                TextOutA(this->render_area->DrawDc, x - 1, y + 1,
+                         str, strlen(str));
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->font_color);
+                TextOutA(this->render_area->DrawDc, x, y,
+                         str, strlen(str));
+
+                x = this->pnl_x + 0xA6;
+                sprintf(str, s_fmt_ld,
+                        (long)this->player->attributes[3]);
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->back_color);
+                TextOutA(this->render_area->DrawDc, x - 1, y + 1,
+                         str, strlen(str));
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->font_color);
+                TextOutA(this->render_area->DrawDc, x, y,
+                         str, strlen(str));
+
+                x = this->pnl_x + 0xE9;
+                sprintf(str, s_fmt_ld,
+                        (long)this->player->attributes[2]);
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->back_color);
+                TextOutA(this->render_area->DrawDc, x - 1, y + 1,
+                         str, strlen(str));
+                SetTextColor(this->render_area->DrawDc,
+                             (COLORREF)this->font_color);
+                TextOutA(this->render_area->DrawDc, x, y,
+                         str, strlen(str));
+
+                SelectObject(this->render_area->DrawDc, old_font);
+                this->render_area->ReleaseDc((char*)s_tpnl_inv_draw);
+            }
+            this->draw_finish();
+            return;
+                }
+            }
+        }
     }
-
-    TPanel* parent = *(TPanel**)((char*)this + 0x40);
-    if (parent != 0) {
-        parent->vf34((char*)this + 0x24);  // &clip_left
-    }
-
-    if (this->player == 0) {
-        goto do_post_draw;
-    }
-
-    this->vf28(0);
-
-    area = *(TDrawArea**)((char*)this + 0x20);
-    if (area->GetDc("tpnl_inv::draw") == 0) {
-        goto do_post_draw;
-    }
-
-    old_font = SelectObject(area->hdc, this->font);
-    SetBkMode(area->hdc, 1);
-
-    x = *(int*)((char*)this + 0x0C) + 0x20;
-    row_y = *(int*)((char*)this + 0x10) + 2;
-
-    // Column 1: player->float_values[1]
-    sprintf(str, "%ld", (int)this->player->float_values[1]);
-    SetTextColor(area->hdc, this->back_color);
-    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
-    SetTextColor(area->hdc, this->font_color);
-    TextOutA(area->hdc, x, row_y, str, strlen(str));
-
-    // Column 2: player->float_values[0]
-    sprintf(str, "%ld", (int)this->player->float_values[0]);
-    SetTextColor(area->hdc, this->back_color);
-    x = *(int*)((char*)this + 0x0C) + 0x63;
-    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
-    SetTextColor(area->hdc, this->font_color);
-    TextOutA(area->hdc, x, row_y, str, strlen(str));
-
-    // Column 3: player->float_values[3]
-    sprintf(str, "%ld", (int)this->player->float_values[3]);
-    SetTextColor(area->hdc, this->back_color);
-    x = *(int*)((char*)this + 0x0C) + 0xA6;
-    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
-    SetTextColor(area->hdc, this->font_color);
-    TextOutA(area->hdc, x, row_y, str, strlen(str));
-
-    // Column 4: player->float_values[2]
-    sprintf(str, "%ld", (int)this->player->float_values[2]);
-    SetTextColor(area->hdc, this->back_color);
-    x = *(int*)((char*)this + 0x0C) + 0xE9;
-    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
-    SetTextColor(area->hdc, this->font_color);
-    TextOutA(area->hdc, x, row_y, str, strlen(str));
-
-    SelectObject(area->hdc, old_font);
-    area->ReleaseDc("tpnl_inv::draw");
-
-do_post_draw:
-    this->vf2C();
+    this->need_redraw = TPanel::NoRedraw;
 }

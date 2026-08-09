@@ -1,21 +1,25 @@
 // VA: 00442390 RGE_Doppleganger_Creator::perform_doppleganger_checks
 // dpl_obj.cpp lines 628-677
 // Attempt log:
-// 1: natural structured source based on packet/decompiler and sibling add_doppleganger_check types: 416 B, frame 0x18 not original 0x14, index in EBP not EDI; broad branch/register drift.
-// 2: explicit for loop/no `last` local matched configured size but worsened badly: positional 67.5294%, edit 100.7059%, first mismatch offset 2; rolled back.
-// 3: flags /O2 no-/Oy, /Ox, /GX unchanged; /O1 too short (410 B).
-// 4: volatile remove_me: no size/codegen improvement.
-// 5: volatile map_value: no size/codegen improvement.
-// 6: signed int map values/mask: no size improvement.
-// 7: register mask/player_id: no codegen/size improvement.
-// 8: while(mask) loop instead of if+do/while: no size improvement.
-// 9: nonzero low-bit test instead of ==1 shortened to 400 B, worse; rolled back.
-// 10: pointer locals for Objects/Map_Addresses/Last_Map_Value matched configured size but was very broad drift (87.7647% positional), first mismatch 2; rolled back.
-// Left in scratch: behavior/call surface modeled, but standalone VC5 chooses different local frame/register topology and shorter section. Not accepted_drift-safe.
+// - Prior matching work established the typed array/object/world/player surface,
+//   the seven-call behavior, and the default /O2 /Oy context. The current clean
+//   source uses one ordinary scan index, one map-value local, and a persistent
+//   object/remove pointer pair; it remains period-plausible and contains no raw
+//   cursor, manual vtable, volatility, or register-forcing alias.
+// - Removing the cached last-map local and restoring direct Last_Map_Value reads
+//   improved the structural basin but did not recover the original frame.
+// - Positive valid-object spelling, commutative mask operand order, explicit
+//   goto labels, register-local index, and a diagnostic byte-index pointer were
+//   tested. The goto/pointer forms were rolled back; the emitted best remains
+//   407 bytes versus the original 425, with frame 0x18 versus 0x14, the index
+//   colored EBP rather than EDI, and the cold remove-log block laid out inline.
+// - Left in scratch: call behavior is modeled but the remaining frame/block/
+//   register topology is unresolved; do not promote as accepted drift.
 
 #include <stdio.h>
 
 class RGE_Static_Object;
+class RGE_Player;
 
 class RGE_Master_Object {
 public:
@@ -28,16 +32,16 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable;
+    virtual ~RGE_Game_World();
     unsigned long world_time;
     char gap_08[0x38];
-    void** players; // +0x40
+    RGE_Player** players; // +0x40
     RGE_Static_Object* object(int id);
 };
 
 class RGE_Player {
 public:
-    void* vtable;
+    virtual ~RGE_Player();
     char gap_04[0x20];
     RGE_Master_Object** master_objects; // +0x24
     char gap_28[0x14];
@@ -48,7 +52,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Static_Object();
     long id;
     char gap_08[0x30];
     float world_x; // +0x38
@@ -74,26 +78,21 @@ extern FILE* DDlogf;
 
 void RGE_Doppleganger_Creator::perform_doppleganger_checks()
 {
+    unsigned long map_value;
+    int i;
+    RGE_Static_Object* object = 0;
     RGE_Static_Object* remove_me = 0;
 
     if (this->active_size > 0) {
-        int i = 0;
+        i = 0;
         if (this->active_size > 0) {
             do {
-                unsigned long map_value = *this->Map_Addresses[i];
-                unsigned long last = this->Last_Map_Value[i];
-                if (map_value != last) {
-                    RGE_Static_Object* obj = this->Objects[i];
-                    if (obj == 0 || this->owner->world->object(this->Object_ids[i]) != obj) {
-                        remove_me = obj;
-                        if (DDlogf) {
-                            fprintf(DDlogf, "*** REMOVE CHECK (@%d) by p=%d id=%d\n",
-                                this->owner->world->world_time,
-                                (int)this->owner->id,
-                                this->Object_ids[i]);
-                        }
-                    } else {
-                        unsigned long mask = ((map_value ^ last) >> 1) & (last >> 1) & 0x7fff;
+                map_value = *this->Map_Addresses[i];
+                if (map_value != this->Last_Map_Value[i]) {
+                    object = this->Objects[i];
+                    if (object != 0 && this->owner->world->object(this->Object_ids[i]) == object) {
+                        unsigned long mask = ((this->Last_Map_Value[i] ^ map_value) >> 1) &
+                            (this->Last_Map_Value[i] >> 1) & 0x7fff;
                         if (mask != 0) {
                             int player_id = 1;
                             do {
@@ -101,23 +100,31 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
                                     int owner_id = (int)this->owner->id;
                                     if (player_id != owner_id) {
                                         if (DDlogf) {
-                                            obj = this->Objects[i];
+                                            object = this->Objects[i];
                                             fprintf(DDlogf, "NEW DOP (@%d) by p=%d for p=%d of id=%d (x=%d, y=%d)\n",
                                                 this->owner->world->world_time,
                                                 owner_id,
                                                 player_id,
-                                                obj->id,
-                                                (long)obj->world_x,
-                                                (long)obj->world_y);
+                                                object->id,
+                                                (long)object->world_x,
+                                                (long)object->world_y);
                                         }
                                         RGE_Player* player = (RGE_Player*)this->owner->world->players[player_id];
-                                        obj = this->Objects[i];
-                                        player->master_objects[0xf3]->create_doppleganger(player, obj->world_x, obj->world_y, obj->world_z, obj);
+                                        object = this->Objects[i];
+                                        player->master_objects[0xf3]->create_doppleganger(player, object->world_x, object->world_y, object->world_z, object);
                                     }
                                 }
                                 player_id++;
                                 mask >>= 1;
                             } while (mask != 0);
+                        }
+                    } else {
+                        remove_me = object;
+                        if (DDlogf) {
+                            fprintf(DDlogf, "*** REMOVE CHECK (@%d) by p=%d id=%d\n",
+                                this->owner->world->world_time,
+                                (int)this->owner->id,
+                                this->Object_ids[i]);
                         }
                     }
                     this->Last_Map_Value[i] = map_value;

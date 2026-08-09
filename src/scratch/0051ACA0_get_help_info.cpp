@@ -36,6 +36,9 @@
 // variant-lab include/post-context and flag/pragma probes did not find a no-tail-merge optimized basin; /Og-/pragma g-off avoids merging but falls into a wrong EBP-frame 360-byte family
 // variant-lab condition algebra, no-op labels, comma-return forms, volatile param/float-pointer surfaces, and inline wrapper get_string calls also failed to reproduce the original duplicated first/second arms
 // targeted arm2 perturbations (fmt/dst/preassign/read) can break the shared-tail family, but only by adding wrong code/side-effect order or helper/context tails; no behavior-preserving exact source shape found yet
+// tried the proven virtual get_help_info override and inherited RGE_Player::attributes ownership; emitted code unchanged
+// tried the canonical TPanel::is_inside name and per-arm returns with the inherited player surface; emitted code unchanged
+// left in scratch: natural four-arm source is 288 bytes because VC5 tail-merges the first two arms; original is 326 bytes with four duplicated call sites
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" long __cdecl __ftol(void);
@@ -97,11 +100,11 @@ public:
     virtual void vfB0(void);
     virtual void vfB4(void);
     virtual void vfB8(void);
-    virtual int vfBC(long x, long y);
+    virtual int is_inside(long x, long y);
     virtual void vfC0(void);
     virtual void vfC4(void);
     virtual void vfC8(void);
-    virtual void vfCC(void);
+    virtual unsigned char get_help_info(char*& out_str, long& out_val, long x, long y);
     virtual void vfD0(void);
     virtual void vfD4(void);
     virtual void vfD8(void);
@@ -117,10 +120,14 @@ public:
     char* get_string(int string_id);
 };
 
-class TRIBE_Player {
+class RGE_Player {
 public:
-    char gap_00[0x50];
-    float* float_values;
+    virtual ~RGE_Player(void);
+    char gap_04[0x4C];
+    float* attributes;
+};
+
+class TRIBE_Player : public RGE_Player {
 };
 
 class TRIBE_Panel_Inven : public TPanel {
@@ -131,29 +138,29 @@ public:
     short gap_FE;
     short* save_attr;
 
-    unsigned char get_help_info(char*& out_str, long& out_val, long x, long y);
+    virtual unsigned char get_help_info(char*& out_str, long& out_val, long x, long y);
 };
 
 unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str, long& out_val, long x, long y) {
     if (this->active == 0)
         return 0;
 
-    if (!this->vfBC(x, y))
+    if (!this->is_inside(x, y))
         return 0;
 
     long pnl_x = this->pnl_x;
 
     if (x < pnl_x + 0x37) {
-        sprintf(out_str, this->get_string(0x1D4EE), (int)this->player->float_values[1]);
+        sprintf(out_str, this->get_string(0x1D4EE), (int)this->player->attributes[1]);
         out_val = -1;
     } else if (x < pnl_x + 0x6E) {
-        sprintf(out_str, this->get_string(0x1D4ED), (int)this->player->float_values[0]);
+        sprintf(out_str, this->get_string(0x1D4ED), (int)this->player->attributes[0]);
         out_val = -1;
     } else if (x < pnl_x + 0xA5) {
-        sprintf(out_str, this->get_string(0x1D4EF), (int)this->player->float_values[3]);
+        sprintf(out_str, this->get_string(0x1D4EF), (int)this->player->attributes[3]);
         out_val = -1;
     } else {
-        sprintf(out_str, this->get_string(0x1D4F0), (int)this->player->float_values[2]);
+        sprintf(out_str, this->get_string(0x1D4F0), (int)this->player->attributes[2]);
         out_val = -1;
     }
 

@@ -2,15 +2,14 @@
 // PDB source: dpl_obj.cpp
 // Size: 315 bytes (correct)
 // Attempt log:
-// - 27 attempts across: extern vs intrinsic memcpy, variable scope/order, temp vars,
+// - Prior attempts across: extern vs intrinsic memcpy, variable scope/order, temp vars,
 //   calloc argument patterns. All produce correct-size 315B but the register allocation
 //   for calloc 1's "new_size" argument differs:
 //     Original: mov edx,[ebx+4]; ... mov eax,edx; mov [ebx+4],edx; push eax
-//     Rebuilt:  mov eax,[ebx+4]; ... push eax; mov [ebx+4],eax
-//   This 2-byte difference (missing mov eax,edx + reversed push/store order) shifts
-//   all subsequent code by 2 bytes. Edit diff: ~12%, positional diff ~70% (shifted).
-//   Remaining drift is register-allocation / scheduling, NOT behavioral.
-//   Leave in scratch: stable VC5 codegen-family mismatch after many probes.
+//     Rebuilt before the final probe: mov eax,[ebx+4]; ... push eax; mov [ebx+4],eax
+// - Final source-shape probe: direct `allocated_size += grow_size` followed by
+//   `calloc(this->allocated_size, 4)` restores the original store/push schedule and
+//   matches all 315 bytes. This is the natural period source form.
 
 extern "C" void* __cdecl memcpy(void* dst, const void* src, int size);
 #pragma intrinsic(memcpy)
@@ -25,13 +24,14 @@ extern FILE* DDlogf;
 
 class RGE_Game_World {
 public:
-    char gap_00[4];
+    virtual unsigned char data_load_world(void* file);
     int world_time;  // +0x04
 };
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Player();
+    char gap_04[0x38];
     RGE_Game_World* world;  // +0x3C
     char gap_40[0x0A];
     short id;  // +0x4A
@@ -59,10 +59,9 @@ void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
             grow_size);
     }
 
-    int new_sz = this->allocated_size + grow_size;
-    this->allocated_size = new_sz;
+    this->allocated_size += grow_size;
 
-    void* r0 = calloc(new_sz, 4);
+    void* r0 = calloc(this->allocated_size, 4);
     void* r1 = calloc(this->allocated_size, 4);
     void* r2 = calloc(this->allocated_size, 4);
     void* r3 = calloc(this->allocated_size, 4);

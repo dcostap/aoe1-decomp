@@ -3,10 +3,14 @@
 // Size: 319 bytes, virtual, switch-based
 //
 // Attempt log:
-// Probe 1: 319/319, 85% diff — codegen basin (register allocation, jump table layout,
-//   early-return structure, virtual dispatch patterns). All structure correct but
-//   VC5 generates different basin from original.
-// Left in scratch: codegen basin
+// - Baseline retained the typed task/static/player ownership model but used the
+//   wrong case-2/case-3 exits and anonymous float zero; 360B, 328 differing bytes.
+// - Combined the holding-attribute type/amount guard, nested the case-2 positive
+//   owner/id guards, and rebuilt case 5 from the proven action master field at +8.
+// - Final source uses one explicit case-5 failure label because the oracle shares
+//   owner-equality, relation-failure, and combat-failure control flow at one return.
+//   This is a binary-topology-backed period C++ goto, not raw address/compiler asm.
+// - Final default flags: MATCH, 319/319 bytes, 0 differing bytes.
 
 #include "..\..\include\game_globals.h"
 
@@ -22,9 +26,9 @@ public:
     char combat_level;      // +0x0C
     char _gap_0D;
     short terrain_id;       // +0x0E
-    char owner_type;        // +0x10
-    char holding_attr;      // +0x11
-    char state_building;    // +0x12
+    unsigned char owner_type;   // +0x10
+    unsigned char holding_attr; // +0x11
+    unsigned char state_building; // +0x12
 };
 
 class RGE_Master_Static_Object {
@@ -35,14 +39,14 @@ public:
 
 class RGE_Player {
 public:
-    virtual void d0() {}
-    virtual void d1() {}
-    virtual void d2() {}
-    virtual void d3() {}
-    virtual void d4() {}
-    virtual void d5() {}
-    virtual void d6() {}
-    virtual int check_relation(long pid);  // slot 7 (+0x1C)
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char status);
+    virtual void do_resign(int mode);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int mode);
+    virtual int isEnemy(long pid);
+    virtual int isAlly(long pid);          // slot 7 (+0x1C)
     char _gap_04[0x46];
     short id;               // +0x4A
     unsigned char relation(long player_id);
@@ -62,7 +66,8 @@ public:
 
 class RGE_Action_Object {
 public:
-    char _gap_00[0x0C];
+    char _gap_00[0x08];
+    RGE_Master_Static_Object* master_obj; // +0x08
     RGE_Player* action_owner;             // +0x0C
     char _gap_10[0x3E];
 };
@@ -70,21 +75,19 @@ public:
 class RGE_Task_List {
 public:
     virtual RGE_Task* create_task(short, int);
-    virtual void dmy01() {}
-    virtual void dmy02() {}
-    virtual int can_assign_task(RGE_Task*, RGE_Action_Object*, RGE_Static_Object*);
+    virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float);
+    virtual int is_attack_task(RGE_Task*);
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* action_obj, RGE_Static_Object* static_obj);
     RGE_Task** list;        // +0x04
     short list_num;         // +0x08
     void delete_list();
-    virtual int check_task(RGE_Task* task, RGE_Action_Object* action_obj, RGE_Static_Object* static_obj);
 };
 
 int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* action_obj, RGE_Static_Object* static_obj)
 {
     if (task->holding_attr == 1) {
-        if (static_obj->attribute_type_held == -1)
-            return 0;
-        if (static_obj->attribute_amount_held <= 0.0f)
+        if (static_obj->attribute_type_held == -1 ||
+            static_obj->attribute_amount_held <= DAT_00576544)
             return 0;
     }
     switch (task->owner_type) {
@@ -93,37 +96,41 @@ int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* action_obj, RGE
             return 0;
         break;
     case 2:
-        if (static_obj->owner == action_obj->action_owner)
-            return 0;
-        if (static_obj->owner->id == 0)
-            return 0;
-        if (!action_obj->action_owner->relation(static_obj->owner->id))
-            return 0;
+        if (static_obj->owner != action_obj->action_owner) {
+            if (static_obj->owner->id != 0) {
+                if (!action_obj->action_owner->relation(static_obj->owner->id))
+                    return 0;
+                break;
+            }
+        }
         return 0;
     case 3:
-        if (static_obj->owner->id != 0)
+        if (static_obj->owner->id == 0)
             break;
         return 0;
     case 4:
         if (static_obj->owner == action_obj->action_owner)
             return 1;
         if (static_obj->owner->id != 0) {
-            if (action_obj->action_owner->check_relation(static_obj->owner->id)) {
-                if (static_obj->owner->check_relation(action_obj->action_owner->id))
+            if (action_obj->action_owner->isAlly(static_obj->owner->id)) {
+                if (static_obj->owner->isAlly(action_obj->action_owner->id))
                     return 1;
             }
         }
         return 0;
     case 5:
         if (static_obj->owner == action_obj->action_owner)
-            return 0;
+            goto case5_failure;
         if (static_obj->owner->id != 0) {
             if (!action_obj->action_owner->relation(static_obj->owner->id))
-                return 0;
+                goto case5_failure;
         }
-        if (static_obj->owner->id == 0 && static_obj->master_obj->combat_level == 0)
-            return 0;
+        if (static_obj->owner->id == 0 &&
+            action_obj->master_obj->combat_level == 0)
+            goto case5_failure;
         break;
+    case5_failure:
+        return 0;
     }
     return (int)(action_obj != (RGE_Action_Object*)static_obj);
 }
