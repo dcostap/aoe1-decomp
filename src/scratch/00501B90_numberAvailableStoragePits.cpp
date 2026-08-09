@@ -38,6 +38,20 @@
 //   as the real TribeMainDecisionAIModule (0x125C8) or check whether the
 //   original source reused iVar3 for the product with an explicit separate
 //   result variable under a slightly different TU include context.
+//
+// This claim (10 meaningful probes): restoring distinct iVar3/iVar4/uVar5
+// roles and reusing iVar3 for the post-call count moved 27 -> 6 bytes and
+// restored all block/CFG parity. Direct md use, declaration reordering,
+// register qualifiers on md/product/result, signed result storage, and the
+// explicit md-local form all emitted the same 6-byte register-swapped basin.
+// Initializing uVar5 with the product then compound-subtracting the call
+// result regressed to the 27-byte capacity-coalesced basin and was rolled back.
+// Final blocker: original uses EDI for md and ESI for the pre-call product;
+// this canonical source emits the same roles swapped (6 single-byte register
+// encoding differences). Left in scratch for a future TU/context lead.
+// Main-agent normalization replaced decompiler local names and raw leading
+// gaps with descriptive roles and donor-backed polymorphic ownership; emitted
+// code remains the same 6-byte register-encoding mismatch.
 
 #include <stdlib.h>
 
@@ -59,13 +73,15 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x50];
+    virtual ~RGE_Player();
+    char gap_04[0x4C];
     float* attributes;   // +0x50
 };
 
 class MainDecisionAIModule {
 public:
-    char gap_00[0xF0];
+    virtual ~MainDecisionAIModule();
+    char gap_04[0xEC];
     RGE_Player* player;          // +0xF0
     char gap_F4[0x10];           // +0xF4 to +0x103
     BuildAIModule buildAI;       // +0x104
@@ -73,7 +89,8 @@ public:
 
 class TribeTacticalAIModule {
 public:
-    char gap_00[0xF0];
+    virtual ~TribeTacticalAIModule();
+    char gap_04[0xEC];
     MainDecisionAIModule* md;  // +0xF0
     char gap_F4[0x2F8];        // +0xF4 to +0x3EB
     int sn_3EC;                // +0x3EC (storage pit count?)
@@ -84,31 +101,36 @@ public:
 };
 
 int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, int param3) {
-    int unbuilt = ((BuildAIModule*)((char*)this->md + 0x104))->numberUnbuiltItemsOfType(0x67, 0);
-    param2 = unbuilt;
-    if (unbuilt > 0) {
+    int product;
+    int value;
+    int capacity_or_count;
+    unsigned int remaining;
+
+    value = ((BuildAIModule*)((char*)this->md + 0x104))->numberUnbuiltItemsOfType(0x67, 0);
+    param2 = value;
+    if (value > 0) {
         return 0;
     }
 
-    int resource_val = ((TribeResourceAIModule*)((char*)this->md + 0x10D7C))->resource(param3);
-    if (this->sn_array_48C[param3] <= resource_val) {
+    value = ((TribeResourceAIModule*)((char*)this->md + 0x10D7C))->resource(param3);
+    if (this->sn_array_48C[param3] <= value) {
         return 0;
     }
 
-    int storage_pit_count = this->sn_3EC;
-    if (storage_pit_count != -1) {
-        int capacity = (int)this->md->player->attributes[6];
-        if (capacity == 0) {
-            capacity = 1;
+    value = this->sn_3EC;
+    if (value != -1) {
+        capacity_or_count = (int)this->md->player->attributes[6];
+        if (capacity_or_count == 0) {
+            capacity_or_count = 1;
         }
-        capacity *= storage_pit_count;
-        int count = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
-        int result = capacity - count;
-        param1 = count;
-        return result < 0 ? 0 : result;
+        product = capacity_or_count * value;
+        capacity_or_count = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
+        remaining = product - capacity_or_count;
+        param1 = capacity_or_count;
+        return ((int)remaining < 0) ? 0 : remaining;
     } else {
-        int count = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
-        param1 = count;
+        value = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x67, 0);
+        param1 = value;
         return ((TribeInformationAIModule*)((char*)this->md + 0xCEC))->numberAvailableStoragePits(param3);
     }
 }
