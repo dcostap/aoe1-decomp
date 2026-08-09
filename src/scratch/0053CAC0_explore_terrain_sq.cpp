@@ -8,6 +8,12 @@
 // 550-byte size and the best current basin.  Canonical polymorphic surfaces were
 // codegen-neutral; the remaining drift is local-slot/hash operand scheduling and
 // the late result/tile tail.  No call or ownership discrepancy remains.
+// Full typed RGE_Tile/RGE_Map records, top-level typed row cursors, and an unsigned
+// checksum accumulator preserve canonical map ownership but emitted identically.
+// Declaration order, initializer form, and p6/curVis zero-store order were likewise
+// neutral. Remaining drift begins before the hash: the oracle homes Revealed at
+// [ebp-8] and its checksum/visible cursor at [ebp-4], while the default donor basin
+// selects the inverse homes; the later checksum/ally scheduling follows that split.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
@@ -50,16 +56,28 @@ public:
 };
 
 struct RGE_Tile {
-    char gap_00[9];
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
     unsigned char flags_09;
-    char gap_0A[0x18 - 0x0A];
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0C[0x0C];
 };
 
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    char gap_0004[0x8D8C - 4];
+    char gap_0004[0x04];
+    int map_width;
+    int map_height;
+    char gap_0010[0x8D7C];
     RGE_Tile** map_row_offset;
+    char gap_8D90[0x40];
 };
 
 // Main-agent audit replaced raw absolute globals and retained canonical visible
@@ -88,13 +106,13 @@ public:
 int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
                                         int update_tiles, int p6)
 {
+    unsigned char* p;
+    unsigned long* unified;
+    int Revealed = 0;
     RGE_Player* curVisPlayer;
     int isCurPlayer;
-    int Revealed;
-    int checksum;
+    unsigned long checksum;
     RGE_Tile* tile;
-
-    Revealed = 0;
 
     log_map_call(this->world->world_time, (int)this->player->id, 2, p6,
                  x1, y1, x2, y2, Map_Update_Suppresion);
@@ -146,8 +164,8 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     }
 
     for (; y1 <= y2; ++y1) {
-        unsigned char* p = this->map_offsets[y1] + x1;
-        unsigned long* unified = unified_map_offsets[y1] + x1;
+        p = this->map_offsets[y1] + x1;
+        unified = unified_map_offsets[y1] + x1;
         if (update_tiles != 0) {
             tile = this->map->map_row_offset[y1] + x1;
         }

@@ -10,15 +10,30 @@
 // existing narrow /Oy- donor-context flag while this target remains unresolved.
 // Main-agent audit replaced raw absolute globals and byte tile cursors with
 // canonical symbols and typed map/tile ownership.
+// Binary symbol evidence confirms unified_map_offsets is unsigned long*[] and
+// NormalLOS/SquareLOS are LOSTBL*[]; typed those globals/locals and the complete
+// RGE_Tile/RGE_Map layout without changing emitted instructions. Making tile advance
+// unconditional, as the oracle's post-store stride proves, improved the typed source
+// to 466 positional bytes / 90.91% shape / 85.16% resync similarity.
+// A radius_value local was source-plausible but codegen-neutral; a positive
+// suppression-success wrapper worsened CFG and was rolled back. Remaining drift
+// starts at the zero-register suppression cmp (oracle xor/cmp versus rebuilt test)
+// and the checksum parameter-home spill; no raw byte cursor is retained.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
 
 extern int Map_Update_Suppresion;
-extern int* unified_map_offsets[];
+extern unsigned long* unified_map_offsets[256];
 
-extern int* NormalLOS[17];
-extern int* SquareLOS[17];
+struct LOSTBL {
+    int y;
+    int x1;
+    int x2;
+};
+
+extern LOSTBL* NormalLOS[17];
+extern LOSTBL* SquareLOS[17];
 
 void __cdecl log_map_call(int world_time, int player_id, int type,
                           int p6, int x, int y, int radius, int square,
@@ -55,16 +70,28 @@ public:
 };
 
 struct RGE_Tile {
-    char gap_00[9];
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
     unsigned char flags_09;
-    char gap_0A[0x18 - 0x0A];
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0C[0x0C];
 };
 
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    char gap_004[0x8D88];
+    char gap_004[0x04];
+    int map_width;
+    int map_height;
+    char gap_010[0x8D7C];
     RGE_Tile** map_row_offset;
+    char gap_8D90[0x40];
 };
 
 class RGE_Visible_Map {
@@ -93,24 +120,24 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
 {
     int Revealed;
     int checksum;
+    int radius_value;
     RGE_Player* curPlayer;
     int VisibleToCurPlayer;
     RGE_Player* curVisPlayer;
-    int* offsets;
+    LOSTBL* offsets;
     int offY;
     int y2;
     int x1;
     int x2;
     unsigned char* vis;
-    int* unified;
+    unsigned long* unified;
     RGE_Tile* tile;
     unsigned char v;
 
     Revealed = 0;
     log_map_call(this->world->world_time, this->player->id, 1, p6,
                  x, y, radius, square, Map_Update_Suppresion);
-    checksum = 0;
-    if (Map_Update_Suppresion != checksum) {
+    if (Map_Update_Suppresion != 0) {
         return 0;
     }
 
@@ -143,25 +170,26 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
             curVisPlayer = curPlayer;
         }
 
-        if (radius > 0x10) {
-            radius = 0x10;
+        radius_value = radius;
+        if (radius_value > 0x10) {
+            radius_value = 0x10;
         }
 
         if (square != 0) {
-            offsets = SquareLOS[radius];
+            offsets = SquareLOS[radius_value];
         } else {
-            offsets = NormalLOS[radius];
+            offsets = NormalLOS[radius_value];
         }
 
-        offY = offsets[0];
+        offY = offsets->y;
         while (offY != 999) {
             y2 = y + offY;
             if ((y2 >= 0) && (y2 < this->heightValue)) {
-                x1 = x + offsets[1];
+                x1 = x + offsets->x1;
                 if (x1 < 0) {
                     x1 = 0;
                 }
-                x2 = x + offsets[2];
+                x2 = x + offsets->x2;
                 if (x2 >= this->widthValue) {
                     x2 = this->widthValue - 1;
                 }
@@ -197,13 +225,11 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
                     ++vis;
                     ++unified;
                     x1++;
-                    if (update_tiles != 0) {
-                        ++tile;
-                    }
+                    ++tile;
                 }
             }
-            offsets += 3;
-            offY = offsets[0];
+            ++offsets;
+            offY = offsets->y;
         }
     return Revealed;
 }

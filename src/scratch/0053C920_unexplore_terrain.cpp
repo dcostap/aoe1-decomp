@@ -9,14 +9,29 @@
 // Player-id ordering, checksum naming, and LOS skip/control-flow variants were
 // nonproductive.  The remaining gap is the original three-local frame and its
 // parameter-home reuse; no call or field ownership mismatch is indicated.
+// Typed LOSTBL records, sized unified-map rows, and full canonical RGE_Tile/
+// RGE_Map surfaces emitted identically to the clean source. A typed player owner
+// local and a center-y copy likewise produced no codegen movement. The original
+// EBP frame and reuse of the square/p6 homes remain an ABI/codegen-context blocker;
+// diagnostic forms were restored rather than retained as scaffolding.
+// Final source keeps the symbol-backed LOSTBL* declarations and full typed map/tile
+// records even though VC5 emitted the same bytes; the prior validation metrics remain
+// authoritative for this canonical-source correction.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
 
 extern int Map_Update_Suppresion;
 extern unsigned long* unified_map_offsets[];
-extern int* NormalLOS[];
-extern int* SquareLOS[];
+
+struct LOSTBL {
+    int y;
+    int x1;
+    int x2;
+};
+
+extern LOSTBL* NormalLOS[17];
+extern LOSTBL* SquareLOS[17];
 
 extern "C" void __cdecl log_map_call(int world_time, int player_id, int type,
                                      int p6, int x, int y, int radius, int square,
@@ -55,16 +70,28 @@ public:
 };
 
 struct RGE_Tile {
-    char gap_00[9];
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
     unsigned char flags_09;
-    char gap_0A[0x18 - 0x0A];
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0C[0x0C];
 };
 
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    char gap_0004[0x8D8C - 4];
+    char gap_0004[0x04];
+    int map_width;
+    int map_height;
+    char gap_0010[0x8D7C];
     RGE_Tile** map_row_offset;
+    char gap_8D90[0x40];
 };
 
 // Main-agent audit replaced raw absolute LOS/unified-map globals and retained
@@ -93,16 +120,15 @@ public:
 void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                                         int update_tiles, int p6)
 {
-    RGE_Visible_Map* self = this;
     RGE_Tile* tile = 0;
     int player_id;
 
-    log_map_call(self->world->world_time, (int)self->player->id, 3, p6,
+    log_map_call(this->world->world_time, (int)this->player->id, 3, p6,
                  x, y, radius, square, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion == 0) {
-        player_id = (int)self->player->id;
-        p6 = self->input_csum;
+        player_id = (int)this->player->id;
+        p6 = this->input_csum;
         p6 = _rotl(p6, 3);
         p6 ^= 0x20202020;
         p6 = _rotl(p6, 2);
@@ -114,36 +140,36 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
         p6 = _rotl(p6, 3);
         p6 ^= radius;
         p6 += square;
-        self->input_csum = p6;
+        this->input_csum = p6;
 
         if (radius > 0x10) {
             radius = 0x10;
         }
 
-        int* offsets;
+        LOSTBL* offsets;
         if (square != 0) {
             offsets = SquareLOS[radius];
         } else {
             offsets = NormalLOS[radius];
         }
 
-        int off_y = offsets[0];
+        int off_y = offsets->y;
         while (off_y != 999) {
             off_y += y;
-            if ((off_y >= 0) && (off_y < self->heightValue)) {
-                int x1 = offsets[1] + x;
+            if ((off_y >= 0) && (off_y < this->heightValue)) {
+                int x1 = offsets->x1 + x;
                 if (x1 < 0) {
                     x1 = 0;
                 }
-                int x2 = offsets[2] + x;
-                if (x2 >= self->widthValue) {
-                    x2 = self->widthValue - 1;
+                int x2 = offsets->x2 + x;
+                if (x2 >= this->widthValue) {
+                    x2 = this->widthValue - 1;
                 }
 
-                unsigned char* visible = self->map_offsets[off_y] + x1;
+                unsigned char* visible = this->map_offsets[off_y] + x1;
                 unsigned long* explored = unified_map_offsets[off_y] + x1;
                 if (update_tiles != 0) {
-                    tile = self->map->map_row_offset[off_y] + x1;
+                    tile = this->map->map_row_offset[off_y] + x1;
                 }
 
                 if (x1 <= x2) {
@@ -158,7 +184,7 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                             if (update_tiles != 0) {
                                 tile->flags_09 = 0x80;
                             }
-                            *explored &= self->PlayerVisibleMaskInvertValue;
+                            *explored &= this->PlayerVisibleMaskInvertValue;
                         }
                         *visible = value;
                         ++visible;
@@ -169,8 +195,8 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                 }
             }
 
-            offsets += 3;
-            off_y = offsets[0];
+            ++offsets;
+            off_y = offsets->y;
         }
     }
 }
