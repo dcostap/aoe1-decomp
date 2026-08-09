@@ -2677,6 +2677,27 @@ Why it helps:
 Caveat:
 - apply only when the executable's dispatch is a compare chain (no index-table `mov dl,[index]`); genuinely dense/sparse tables use the index-table lowering instead. Example: TRIBE_Game::get_string2 (00522930) case 103.
 
+## Lesson: Direct narrow-parameter switches can preserve VC5's dec/je dispatch
+
+When a one-byte enum/type dispatch has an original `mov full_stack_value; and 0xff;
+dec; je case` sequence, write a direct `switch (type)` with the observed case value
+instead of switching on a local temporary such as `int t = type; switch (--t)`.
+
+Try when:
+- the original jumps with `dec`/`je` to a late case body rather than using `cmp al,
+  immediate`;
+- a temporary-based equivalent hoists the parameter load before EH registration and
+  changes the prologue schedule.
+
+Why it helps:
+- VC5 lowers a direct narrow switch to the original one-based `dec`/`je` chain while
+  keeping the full-width parameter load after EH setup; the temporary form changes
+  both load timing and the surrounding block offsets.
+
+Caveat:
+- preserve the case/default and shared-return topology proved by the executable; a
+  direct `if` or a switch on a decremented temporary is not codegen-neutral here.
+
 ## Lesson: Duplicate the call AND the value expression in branch-local shared-call tails
 
 When a shared member-call tail is reached from two branches that differ only in a

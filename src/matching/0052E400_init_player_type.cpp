@@ -26,6 +26,9 @@
 // plus VC5-small flag classification) found no exact or invariant-eligible variant;
 // restored the prior clean canonical source. Remaining lead is VC5 EH/type-test
 // scheduling at +0x0E, with body/calls/layout aligned and no behavioral blocker.
+// orch-luna-52e400-w1: direct switch(type) with case 1 and a shared success return
+// reproduces the original dec/je dispatch and exact 180-byte output; switching a
+// decremented temporary was codegen-equivalent but hoisted the type load.
 
 class RGE_Game_World {
 public:
@@ -60,13 +63,16 @@ public:
 
 unsigned char TRIBE_World::init_player_type(int player, short index, unsigned char type)
 {
-    int t = type;
-    if (--t != 0) {
+    switch (type) {
+    case 1: {
+        TRIBE_Master_Player* p = new TRIBE_Master_Player(player);
+        this->players[index] = p;
+        this->players[index]->finish_init(player, this->field_38, this->field_30);
+        break;
+    }
+    default:
         return RGE_Game_World::init_player_type(player, index, type);
     }
 
-    TRIBE_Master_Player* p = new TRIBE_Master_Player(player);
-    this->players[index] = p;
-    this->players[index]->finish_init(player, this->field_38, this->field_30);
     return 1;
 }
