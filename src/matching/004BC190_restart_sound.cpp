@@ -24,9 +24,15 @@
 // Probe 9: typed RGE_Sound_Info member accesses; duplicate codegen.
 // Probe 10: opaque void* donor surface; duplicate codegen. Retain the typed
 //   RGE_Sound_Info ownership below as the more plausible source model.
-// Paused: all 68 instructions, four call targets, size, frame, and CFG match;
-//   remaining bytes are only VC5 SIB base/index operand-order choices at
-//   direct byte-record accesses.
+// Probe 11: canonical same-TU array indexing (`this->sounds[i]`) recovered the
+//   original seven SIB base/index operand bytes; all metrics became exact.
+// Probe 12: removed the now-unused decompiler offset cursor; emitted code stayed
+//   exact, leaving the natural indexed loop as the living source.
+// Exact: 215/215 bytes, 68/68 instructions, four calls, and full CFG/block
+//   parity under /GX. The key source shape is the period-plausible indexed
+//   RGE_Sound_Info array surface used by exact Sound.cpp donors.
+// Main-agent audit replaced the explicit destructor/operator-delete pair with
+// natural `delete digital`; VC5 emits identical exact code.
 
 #include "..\..\include\game_globals.h"
 
@@ -68,32 +74,25 @@ public:
     unsigned long time;          // +0x20
 };
 
-extern void* __cdecl operator_new(unsigned int size);
-extern void __cdecl operator_delete(void* ptr);
-
 void RGE_Sound::restart_sound(TSound_Driver* driver)
 {
     int i = 0;
     if (this->sound_num > 0) {
-        int offset = 0;
         do {
-            TDigital* digital =
-                ((RGE_Sound_Info*)((char*)this->sounds + offset))->digital_sound;
+            TDigital* digital = this->sounds[i].digital_sound;
             if (digital != 0) {
-                digital->~TDigital();
-                operator_delete(digital);
+                delete digital;
             }
             if (driver != 0) {
                 digital = new TDigital(driver,
-                    ((RGE_Sound_Info*)((char*)this->sounds + offset))->name,
-                    ((RGE_Sound_Info*)((char*)this->sounds + offset))->resource_id);
-                ((RGE_Sound_Info*)((char*)this->sounds + offset))->digital_sound = digital;
+                    this->sounds[i].name,
+                    this->sounds[i].resource_id);
+                this->sounds[i].digital_sound = digital;
             } else {
-                ((RGE_Sound_Info*)((char*)this->sounds + offset))->digital_sound = 0;
+                this->sounds[i].digital_sound = 0;
             }
-            ((RGE_Sound_Info*)((char*)this->sounds + offset))->loaded = 2;
+            this->sounds[i].loaded = 2;
             ++i;
-            offset += 0x24;
         } while (i < this->sound_num);
     }
 }
