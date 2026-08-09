@@ -20,6 +20,11 @@
 //   overlay and moved the owner declaration; the overlay broadened drift to
 //   225 bytes and the declaration move duplicated the six-byte result, so the
 //   canonical function-scope owner source remains retained.
+// - Reordering the counters before dock_list emitted the same six-byte result;
+//   using dock_list[0] for every post-guard this access broadened drift to 246
+//   bytes and was restored. Moving the transfer countdown declaration first
+//   worsened the localized drift to ten bytes; the clean declaration order is
+//   retained.
 
 #include <stdlib.h>
 

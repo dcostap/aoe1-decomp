@@ -37,6 +37,12 @@
 // setup cluster was also tested; it leaves the emitted code unchanged.
 // The final shared surface includes the proven RGE_Base_Game base for ABI
 // consistency with the difficulty-using siblings; this target is unchanged.
+// - Moving the common 100 store after the mode branch broadened drift to 69
+//   bytes; moving the branch before trailing common stores broadened it to 82.
+// - A late `type = param_2` capture emitted the same 25-byte code as the clean
+//   source. Moving the 20-valued stores before the 70-valued group reduced the
+//   raw drift to 23 but worsened topology and contradicted the PDB store bands;
+//   the canonical direct-store order is retained.
 
 #include <stddef.h>
 

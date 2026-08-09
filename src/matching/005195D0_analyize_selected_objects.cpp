@@ -3,20 +3,23 @@
 // proven RGE_Player/RGE_Static_Object layouts in the generated type dump.
 // Attempt log:
 // - baseline: canonical typed ownership and bounded selected-list scan.
-// - restored the two-counter do/while topology from the original backedge.
+// - restored the two-counter scan and direct cursor topology from the original
+//   backedge; the final form uses a natural for-header increment.
 // - direct cursor dereferences recovered the repeated selected-list reloads.
 // - zero-count early return preserved the original shared epilogue shape.
 // - narrow volatile/count, hoisted-mask, and explicit-label variants were
 //   diagnostic only and were rolled back as compiler-steering scaffolding.
-// - left in scratch: structural drift remains in VC5 scheduling and loop
-//   guard placement; no calls or unknown data ownership remain.
+// - left in scratch during the earlier pass: structural drift remained in VC5
+//   scheduling and loop guard placement; no calls or unknown data ownership
+//   remained.
 // - Main-agent audit restored canonical player/master/object destructor slots;
 //   the validated structural gap is unchanged.
 // - A later same-TU pass restored the full named RGE_Player base through the
 //   selection fields; that canonical context emitted identically to the prior
-//   narrow surface. The worker then exhausted its context before final pause,
-//   so the main agent retained this typed source and closed the lease without
-//   repeating the established liveness/control-flow basin.
+//   narrow surface.
+// - A for-header increment (`++i, ++p`) moved the build to a 2-byte drift;
+//   spelling the inner bound as `j >= sel_count` matched the oracle's
+//   `cmp edi,eax; jge` and produced exact bytes.
 
 extern unsigned int DAT_0086bc88;
 extern unsigned int DAT_0086bc8c;
@@ -113,8 +116,8 @@ void TRIBE_Player::analyize_selected_objects()
 
     int j = 0;
     RGE_Static_Object** p = this->sel_list;
-    do {
-        if (this->sel_count <= j) {
+    for (; i < 25; ++i, ++p) {
+        if (j >= this->sel_count) {
             return;
         }
         if (*p != 0) {
@@ -141,7 +144,5 @@ void TRIBE_Player::analyize_selected_objects()
             }
             ++j;
         }
-        ++i;
-        ++p;
-    } while (i < 25);
+    }
 }
