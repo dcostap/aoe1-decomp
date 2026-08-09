@@ -1,26 +1,60 @@
 // 00431810 AllocateQueue
 // 464 bytes, __thiscall, RGE_Communications_Queue method
-// probe 1: /GX EH, alloc new MsgQueue array, copy old entries, free old
+// Attempt log:
+// - The inherited scratch draft used raw vector helpers/absolute ctor-dtor
+//   addresses and an incorrect 0x24-byte MsgQueue layout; it is not retained.
+// - Baseline reconstruction uses the period C++ surfaces: real MsgQueue
+//   constructor/destructor declarations, new MsgQueue[count], delete[], a
+//   natural counted migration loop, and a typed data copy.
+// - Corrected the queue record to Code/ExecTurn/SeqNo/msgptr/From/Size/
+//   ControlCommand at the proven 0x1C stride; direct indexed migration plus
+//   explicit binary-observed destination zeroing restored size/frame parity.
+// - A named Size/source pair before data allocation restored the old-data
+//   liveness and copy schedule.  Positive result handling restored one shared
+//   return and the 0x14 EH frame, but the remaining EH prologue/block layout
+//   and relocation identity are unresolved after the 10-probe budget.
+
+#include <string.h>
 
 void __cdecl operator delete(void* ptr);
-void* __cdecl operator new(unsigned int size);
-void __cdecl eh_vector_constructor_iterator(void* pBlock, unsigned int elemSize, unsigned int elemCount, void* ctor, void* dtor);
-void __cdecl eh_vector_destructor_iterator(void* pBlock, unsigned int elemSize, unsigned int elemCount, void* dtor);
 
-struct MsgQueue {
-    unsigned int ControlCommand;
+class MsgQueue {
+public:
+    unsigned int Code;
     unsigned int ExecTurn;
-    unsigned char Code;
+    unsigned char SeqNo;
     char gap_09[3];
-    unsigned int DataSize;
-    void* Data;
+    char* msgptr;
     unsigned int From;
-    unsigned int field_14;
-    unsigned int field_18;
+    unsigned int Size;
+    int ControlCommand;
+
+    MsgQueue();
+    ~MsgQueue();
 };
 
-void* MsgQueue_ctor_addr = (void*)0x431F60;
-void* MsgQueue_dtor_addr = (void*)0x431F80;
+MsgQueue::MsgQueue() {
+    this->Code = 0;
+    this->ExecTurn = 0;
+    this->SeqNo = 0;
+    this->From = 0;
+    this->Size = 0;
+    this->ControlCommand = 0;
+    this->msgptr = 0;
+}
+
+MsgQueue::~MsgQueue() {
+    this->Code = 0;
+    this->ExecTurn = 0;
+    this->SeqNo = 0;
+    this->From = 0;
+    this->Size = 0;
+    this->ControlCommand = 0;
+    if (this->msgptr != 0) {
+        operator delete(this->msgptr);
+    }
+    this->msgptr = 0;
+}
 
 class RGE_Communications_Queue {
 public:
@@ -38,55 +72,48 @@ public:
 };
 
 int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
-    if (param_1 < MaxQSize) return 0;
+    int result;
+    result = 0;
+    if (param_1 >= this->MaxQSize) {
+        unsigned int count = param_1 + 1;
+        MsgQueue* newQueue = new MsgQueue[count];
+        if (newQueue != 0) {
+            if (this->Queue != 0) {
+                for (unsigned int i = 0; i <= this->MaxQSize; ++i) {
+                    if (this->Queue[i].Size != 0) {
+                        newQueue[i].Code = 0;
+                        newQueue[i].ExecTurn = 0;
+                        newQueue[i].SeqNo = 0;
+                        newQueue[i].From = 0;
+                        newQueue[i].Size = 0;
+                        newQueue[i].ControlCommand = 0;
 
-    unsigned int count = param_1 + 1;
-    unsigned int* header = (unsigned int*)operator new(count * 0x1C + 4);
-    if (header == 0) return 0;
+                        newQueue[i].Code = this->Queue[i].Code;
+                        newQueue[i].ExecTurn = this->Queue[i].ExecTurn;
+                        newQueue[i].SeqNo = this->Queue[i].SeqNo;
 
-    *header = count;
-    MsgQueue* newQueue = (MsgQueue*)(header + 1);
+                        unsigned int size = this->Queue[i].Size;
+                        char* source = this->Queue[i].msgptr;
+                        char* data = new char[size + 1];
+                        newQueue[i].msgptr = data;
+                        if (data != 0) {
+                            memcpy(data, source, size);
+                        }
 
-    eh_vector_constructor_iterator(newQueue, 0x1C, count, MsgQueue_ctor_addr, MsgQueue_dtor_addr);
-
-    if (Queue != 0) {
-        for (int i = 0; i <= MaxQSize; i++) {
-            if (Queue[i].field_14 != 0) {
-                newQueue[i].ControlCommand = Queue[i].ControlCommand;
-                newQueue[i].ExecTurn = Queue[i].ExecTurn;
-                newQueue[i].Code = Queue[i].Code;
-                newQueue[i].DataSize = Queue[i].DataSize;
-
-                void* newData = operator new(Queue[i].DataSize + 1);
-                newQueue[i].Data = newData;
-                if (newData != 0) {
-                    unsigned char* src = (unsigned char*)Queue[i].Data;
-                    unsigned char* dst = (unsigned char*)newData;
-                    unsigned long bytes = Queue[i].DataSize;
-                    unsigned long dwords = bytes / 4;
-                    unsigned long remainder = bytes % 4;
-                    unsigned int* sd = (unsigned int*)src;
-                    unsigned int* dd = (unsigned int*)dst;
-                    unsigned long k;
-                    for (k = 0; k < dwords; k++) dd[k] = sd[k];
-                    unsigned char* sc = (unsigned char*)sd + dwords * 4;
-                    unsigned char* dc = (unsigned char*)dd + dwords * 4;
-                    unsigned long m;
-                    for (m = 0; m < remainder; m++) dc[m] = sc[m];
+                        newQueue[i].From = this->Queue[i].From;
+                        newQueue[i].Size = this->Queue[i].Size;
+                        newQueue[i].ControlCommand = this->Queue[i].ControlCommand;
+                    }
                 }
 
-                newQueue[i].From = Queue[i].From;
-                newQueue[i].field_14 = Queue[i].field_14;
-                newQueue[i].field_18 = Queue[i].field_18;
+                delete[] this->Queue;
             }
-        }
 
-        eh_vector_destructor_iterator(Queue, 0x1C, *header, MsgQueue_dtor_addr);
-        operator delete(header);
+            this->MaxQSize = param_1;
+            this->Queue = newQueue;
+            result = 1;
+        }
     }
 
-    MaxQSize = param_1;
-    Queue = newQueue;
-
-    return 1;
+    return result;
 }
