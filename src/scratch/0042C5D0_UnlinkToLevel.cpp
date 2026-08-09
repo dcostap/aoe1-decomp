@@ -55,8 +55,22 @@
 // pile (project headers beyond stdio/string/stdlib) or a full-TU compile; class surface
 // and standard headers already tested negative.
 //
+// Attempt log (orch-luna-42c5d0-w1, 2026-08-09):
+// context/layout: full generated TDebuggingLog (0x7B0) fields and the living
+// Windows/game-global header did not change the 179B emission; the complete
+// COMMSTATUS enumerator surface was also neutral.
+// liveness: volatile logger-pointer access and a separate declaration/assignment
+// for the reported status were neutral; eight register-qualified parameter/local
+// variants collapsed to the same 179B group.
+// context/flags: a typed external L pointer worsened relocation/codegen to 52B;
+// /Zd, /Zi, and /Z7 debug-context variants were neutral. Restored the clean raw
+// absolute-global/member-Log source after every diagnostic probe.
+// fresh-pass conclusion: the only remaining drift is the same localized success
+// and failure Log register/push scheduling (46 strict bytes, 95% shape, 9/9 calls);
+// no new source/layout/header/flag lead was found.
+//
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
-// Globals: *(void**)0x62C4FC for debugging log L
+// Globals: extern TDebuggingLog* L (original image address 0x62C4FC)
 // Functions: TDebuggingLog::Log(char*, ...), sprintf
 
 int __cdecl sprintf(char* buffer, const char* format, ...);
@@ -70,6 +84,8 @@ class TDebuggingLog {
 public:
     void __cdecl Log(char* format, ...);
 };
+
+extern TDebuggingLog* L;
 
 struct TCommunications_Handler {
     char gap_00[0xFC5];         // +0x00 to +0xFC4
@@ -92,7 +108,7 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
 
     // line 4669
     CommunicationsStatus = original_status;
-    ((TDebuggingLog*)*(void**)0x62C4FC)->Log("Unlink to level %d desired, currently at level %d",
+    L->Log("Unlink to level %d desired, currently at level %d",
         param_1, original_status);
 
     // lines 4671-4672: clamp param_1 to minimum 1
@@ -107,7 +123,7 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
     // lines 4675-4678: unlink loop with the level check at the top
     do {
         if (new_status <= param_1) {
-            ((TDebuggingLog*)*(void**)0x62C4FC)->Log("AFTER UNLINKING...Status=%d   Reported=%d",
+            L->Log("AFTER UNLINKING...Status=%d   Reported=%d",
                 this->GetCommunicationsStatus(), this->CommunicationsStatus);
             return AnalyzeCommunicationsStatus();
         }
@@ -118,6 +134,6 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
 
     sprintf(TBuff, "Unlink from level [ %d ] Failed.\n Stopping connections",
             original_status);
-    ((TDebuggingLog*)*(void**)0x62C4FC)->Log(TBuff);
+    L->Log(TBuff);
     return AnalyzeCommunicationsStatus();
 }

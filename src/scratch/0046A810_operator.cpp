@@ -10,20 +10,17 @@
 //   instruction shapes and the original frame/register topology.
 // - Normalized the proven class layouts (ostream vbptr, padded Waypoint records,
 //   and Path's Waypoint subobjects) without changing emitted code.
+// - Fresh ABI probe: replaced the local ostream stub/manual float-flag stores
+//   with VC5's period <iostream.h> ostream surface and its natural inline float
+//   overload. The body remains 206 bytes/61 instructions and byte-identical
+//   after relocation masking, proving the remaining mismatch is not caused by
+//   the local stub or float source spelling.
 // - Current bytes are exact after masking the nine direct-call relocations. The
 //   checker still reports those relocations as mismatches because the original
 //   executable labels each overloaded ostream member only as operator<< while
 //   the object necessarily carries the exact MSVC symbols (??6ostream@@...).
 
-class ostream {
-public:
-    void* vbptr;
-    int flags;
-
-    ostream& operator<<(const char* s);
-    ostream& operator<<(double d);
-    ostream& operator<<(int val);
-};
+#include <iostream.h>
 
 class Waypoint {
 public:
@@ -51,16 +48,13 @@ ostream& __cdecl operator<<(ostream& os, const Path& path) {
         float value;
         out = &out->operator<<("(");
         value = path.pathValue[i].x;
-        out->flags = 1;
-        out = &out->operator<<((double)value);
+        out = &out->operator<<(value);
         out = &out->operator<<(", ");
         value = path.pathValue[i].y;
-        out->flags = 1;
-        out = &out->operator<<((double)value);
+        out = &out->operator<<(value);
         out = &out->operator<<(", ");
         value = path.pathValue[i].z;
-        out->flags = 1;
-        out = &(out->operator<<((double)value) << ", ");
+        out = &(out->operator<<(value) << ", ");
         os << (int)path.pathValue[i].facetToNextWaypoint << ") ";
     }
     return os;

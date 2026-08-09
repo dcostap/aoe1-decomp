@@ -45,6 +45,14 @@
 //   or a genuinely different control structure not yet found; a fresh worker should
 //   audit the real class hierarchy (RGE_Master_Static_Object base chain) before more
 //   codegen probes.
+// - orch-luna fresh pass: rebuilt the exact Static->Animated->Moving->Action data
+//   hierarchy (both full-vslot and destructor-only local surfaces); both were codegen
+//   neutral at 42B. Top-level declaration/assignment splitting was also neutral.
+// - Fresh initializer/liveness negatives: weapon-first and total/weapon/count orders
+//   were 47B; a self alias paired with the top-count loop reproduced the known 153B
+//   this->EBP cascade; short armor_count was 162B; register weapon was neutral.
+// - Fresh control-flow negatives: assigning count in the signed guard was 47B, and
+//   moving --count into the do-while condition was 129B. Restored clean do-while.
 
 #include "..\..\include\game_globals.h"
 

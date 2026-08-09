@@ -36,12 +36,23 @@
  * period-plausible virtual source. Remaining lead is TU/compiler register allocation:
  * original assigns r/x1/x2 to EBX/ESI/EDI while the clean rebuild assigns x2/r/x1 to
  * EBX/ESI/EDI. Calls, cleanup, CFG, and 188-byte boundary remain aligned.
+ *
+ * orch-luna-50fdd0-w1 fresh pass (10 meaningful probes): tested Ghidra-shaped int endpoint
+ * locals (145-byte diff), corrected virtual-vtable field/slot surfaces (no codegen change),
+ * a persistent promoted-byte local after the x-axis (80-byte diagnostic, one byte better),
+ * the same promotion before both axes (149-byte diff), x2-only and paired x1/x2 register
+ * qualifiers (no change), and a mixed x-output-local/y-parameter model (141-byte diff).
+ * The canonical direct-parameter virtual source was restored; no exact lead emerged. The
+ * remaining mismatch is still the stable entry register coloring (oracle r/x1/x2 = EBX/ESI/EDI;
+ * clean rebuild = ESI/EDI/EBX roles), with calls, cleanup, CFG, and size aligned.
+ *
+ * Source-plausibility audit: removed the duplicate explicit vtable field and the empty
+ * base/helper definitions. The target now uses the smallest declaration-only polymorphic
+ * surfaces; direct-call and helper symbol declarations remain explicit.
  */
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
-
     virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
 };
 
@@ -77,7 +88,3 @@ unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, lo
     tribe_clean_terrain(x1 - 2, y1 - 2, x2 + 2, y2 + 2, 1, 0);
     return 1;
 }
-
-unsigned char RGE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c) { return 0; }
-void TRIBE_Map::tribe_clean_elevation(long x1, long y1, long x2, long y2) { }
-void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2, int a, int b) { }

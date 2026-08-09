@@ -37,6 +37,16 @@
 // tail-dups, 00401550 (EH, per-arm returns) tail-dups, 0044D1A0 (EH, long arms with calls) shares. The natural
 // if/else reconstruction remains the best period-plausible source; the shared-epilogue layout is not reproducible
 // with local source/type/flag/context changes in this VC5 basin.
+// 2026-08-09 orch-luna-405620-w1 fresh pass (10 probes): early-return, canonical master-object layout, hoisted
+// fallback locals, explicit joins, direct-member destination, full virtual base surface, explicit final return,
+// outer switch, and address-taken destination variants all failed to change the clean 205B/47B basin. The direct
+// member variant reached 186B/35B but introduced an early common sprite store, so it is diagnostic only. Restored
+// the natural named-object/inner if-else source; remaining evidence-backed blocker is the EH tail's duplicated
+// cleanup versus the original's single FS-first shared epilogue.
+// 2026-08-09 normalization-only audit: restored the full polymorphic RGE_Action surface proven by matching/00407A20,
+// removed __declspec(novtable), the raw vtable_ptr field, and the manual 0x56E3A0 store; RGE_Action_Move_To is now a
+// natural derived class and VC5 owns the vptr emission. The prior manual surface's 205B/47B result and the earlier
+// natural-vptr 205B/56B result remain diagnostic evidence, not source-shape justification. No new hypothesis was run.
 
 class RGE_Action_Object;
 class RGE_Sprite;
@@ -64,12 +74,36 @@ public:
 
 class RGE_Action {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Action();
+    virtual int vf04(RGE_Action_Object*);
+    virtual int vf08(int, RGE_Action_Object*);
+    virtual void vf0C(void);
+    virtual void vf10(void);
+    virtual void vf14(int);
+    virtual short vf18(void);
+    virtual void vf1C(unsigned char);
+    virtual unsigned char vf20(void);
+    virtual unsigned char vf24(void);
+    virtual unsigned char vf28(void);
+    virtual int vf2C(void);
+    virtual int vf30(void*, float, float, float);
+    virtual int vf34(void*, float, float, float);
+    virtual unsigned char vf38(void*);
+    virtual unsigned char vf3C(long, unsigned char);
+    virtual void vf40(void*);
+    virtual void vf44(void*, void*, void*);
+    virtual void vf48(char*);
+    virtual void* vf4C(void);
+    virtual void* vf50(void);
+    virtual void set_target_obj(RGE_Static_Object* target);
+    virtual void vf58(void*);
+    virtual void set_state(unsigned char);
+
     short action_type;
-    char gap_06_07[2];
+    char gap_06[2];
     RGE_Action_Object* obj;
     unsigned char state;
-    char pad_0D_0F[3];
+    char gap_0D[3];
     RGE_Static_Object* target_obj;
     RGE_Static_Object* target_obj2;
     int targetID;
@@ -82,14 +116,12 @@ public:
     RGE_Action_List* sub_actions;
     RGE_Sprite* sprite;
     unsigned char subActionValue;
-    char pad_3D_3F[3];
+    char gap_3D[3];
 
-    ~RGE_Action();
     RGE_Action(RGE_Action_Object* obj, int type);
-    void set_target_obj(RGE_Static_Object* target);
 };
 
-class __declspec(novtable) RGE_Action_Move_To : public RGE_Action {
+class RGE_Action_Move_To : public RGE_Action {
 public:
     float range;
 
@@ -99,7 +131,6 @@ public:
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object* target, float range_val, RGE_Sprite* spr)
     : RGE_Action(obj, 1)
 {
-    *(int*)this = 0x56E3A0;
     action_type = 1;
     set_target_obj(target);
 
