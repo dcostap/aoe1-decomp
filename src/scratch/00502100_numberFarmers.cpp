@@ -27,6 +27,9 @@
 //   differs (outer index versus inlined operator[] new_size).
 // Main-agent audit restored canonical polymorphic module/object/master
 // ownership; emitted code and the 15-byte coloring drift are unchanged.
+// Current session probes: hand-expanded the period ManagedArray growth body,
+// then reordered count/index declarations and initialization to match the
+// exact same-TU array donor; both emitted the unchanged 15-byte basin.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);

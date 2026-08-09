@@ -11,6 +11,11 @@
 //   value local for type and desired, and a target alias, were codegen-neutral.
 // - Left in scratch: behavior, calls, frame, and boundary are understood; the
 //   unresolved basin is prologue/local-home/register coloring.
+// Current session probes: named the groups sentinel (both initialization
+// orders), swapped the commutative x/y distance terms, and nested the final
+// distance guards; sentinel/term forms duplicated the 68-byte basin and the
+// nested guards regressed to 296 bytes before restoration. A proven
+// TacticalAIModule base likewise duplicated the basin.
 
 extern "C" double sqrt(double value);
 #pragma intrinsic(sqrt)

@@ -54,6 +54,8 @@
 // code remains the same 6-byte register-encoding mismatch.
 // Main-agent audit replaced cross-member raw casts with canonical named
 // main-decision submodule ownership.
+// Current session probe: a top-level md alias used across both branches
+// regressed to a 197-byte structural basin (209 differing bytes); restored.
 
 #include <stdlib.h>
 
