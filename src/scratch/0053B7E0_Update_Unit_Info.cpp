@@ -5,6 +5,11 @@
 // - Reversed the mask XOR operands without codegen movement; mutating the incoming old_mask home was binary-backed but entered a smaller/wrong basin when assigned to new_mask and restored only the old-mask-home family.
 // - Typed memcpy recovered the original rep movsd/rep movsb copy (and is retained); direct short list_size arithmetic improved the best positional diff to 306 bytes, though the frame remains 0x14 versus 0x10.
 // - Hoisting the new-list/old-list pointers was diagnostic only and was rolled back.
+// - This session tested a named mask delta, ordered object-base arithmetic,
+//   top-tested versus guarded do-loop control flow, and function-scope offset
+//   locals; none improved the canonical 306-byte frontier. Volatile pointer
+//   diagnostics matched the original frame locally but were rolled back as
+//   compiler-steering scaffolding.
 // Left in scratch: broad prologue/stack-home/register coloring and the growth pointer-repair schedule remain; call set, cleanup convention, packed record effects, and copy width are established.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

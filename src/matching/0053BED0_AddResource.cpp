@@ -17,10 +17,11 @@
 //   qualifiers, an ordered comma expression, and the same-TU void* list donor
 //   spelling all duplicated the residual. The original BF74 hunk still loads
 //   VR_List before VR_ListUsed; no clean source form recovered that order.
+// - Restoring the period CRT header context with <stdlib.h> and <string.h>
+//   changed only that localized append schedule and recovered an exact match.
 
-extern "C" void* __cdecl malloc(unsigned int size);
-extern "C" void __cdecl free(void* ptr);
-extern "C" void* __cdecl memcpy(void* dst, const void* src, unsigned int size);
+#include <stdlib.h>
+#include <string.h>
 
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();

@@ -5,7 +5,18 @@
 // - Split versus combined guards and direct versus manager-alias spelling did not change the prologue basin.
 // - Replaced guessed distance constants with the binary-proven DAT_005776D0/DAT_005776D8 double globals; fmul/fsubr sites and several body blocks moved closer.
 // - Named used/list array pointers and register-qualified manager were diagnostic only; both worsened or duplicated codegen, so the clean typed direct-member form is retained.
-// Left in scratch: remaining drift is early this/index scheduling plus loop register/block coloring; behavior, size/frame, and call set are established.
+// - A top-tested reject-list while loop plus a branch-local cursor recovered the
+//   original single compare/backedge topology, stack homes, and persistent
+//   reject_count register; mutating the incoming reject_list did not.
+// - Explicit typed used/resource-list locals recovered the original list-before-
+//   used load order and improved the localized diff to 321 bytes; a register hint
+//   on the list pointer was unchanged and was removed from the living source.
+// Left in scratch: remaining drift is the early receiver-save/index LEA basin
+//   and associated register coloring; behavior, size/frame, calls, and inner
+//   reject-loop CFG are established.
+
+#include <stdlib.h>
+#include <string.h>
 
 struct VisibleResourceRec {
     int object_id;
@@ -31,9 +42,11 @@ public:
 
 VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y, int param3, int type, int* reject_list, int reject_count) {
     if (type >= 0 && this->num_visible_resource_lists != 0 && type < this->num_visible_resource_lists) {
-        int count = this->VR_ListUsed[type];
+        int* usedLists = this->VR_ListUsed;
+        VisibleResourceRec** resourceLists = this->VR_List;
+        int count = usedLists[type];
         if (count != 0) {
-            VisibleResourceRec* rec = this->VR_List[type];
+            VisibleResourceRec* rec = resourceLists[type];
             int bestDistance = 9999;
             VisibleResourceRec* best = 0;
             if (count > 0) {
@@ -61,16 +74,15 @@ VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y,
                     }
                     if (dist < bestDistance) {
                         if (reject_count && reject_list) {
+                            int* reject_cursor = reject_list;
                             int i = 0;
-                            if (reject_count > 0) {
-                                do {
-                                    if (rec->object_id == *reject_list) {
-                                        rejected = 1;
-                                        break;
-                                    }
-                                    i++;
-                                    reject_list++;
-                                } while (i < reject_count);
+                            while (i < reject_count) {
+                                if (rec->object_id == *reject_cursor) {
+                                    rejected = 1;
+                                    break;
+                                }
+                                i++;
+                                reject_cursor++;
                             }
                         }
                         if (!rejected) {
