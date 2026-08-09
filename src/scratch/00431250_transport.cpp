@@ -27,6 +27,17 @@
 //   edge rather than an unconditional goto, or controlling the try-level reset scheduling
 //   (reset is emitted between test and branch in the original; VC5's scheduling of the
 //   /GX end-of-try store relative to the source if-test is the lever).
+// Session sa-10e3eb44-r1:
+//   - ABI evidence identifies action slot +34 as int work(...); changing the local
+//     declaration from void to int was emitted-code neutral.
+//   - Reusing top-level action/transport temporaries and explicit result/goto labels
+//     were codegen duplicates or regressed to 82 diff / 249B; a shared action/owner
+//     work label regressed structurally (210 diff), and a do/while-break wrapper
+//     added an extra vslot call (175 diff / 276B). All were restored.
+//   - Best clean reconstruction remains the result=0; positive transport guard form
+//     at 67 positional diff, exact size/calls, with the tail epilogue aligned.
+// Main-agent normalization replaced the cast-to-helper virtual call with a real
+// inherited virtual surface and direct member call; emitted code is unchanged.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
@@ -77,7 +88,7 @@ public:
     virtual void slot_28();
     virtual void slot_2C();
     virtual void slot_30();
-    virtual void func34(void*, float, float, float);
+    virtual int func34(void*, float, float, float);
 };
 
 class RGE_Action_Transport : public RGE_Action {
@@ -85,22 +96,9 @@ public:
     RGE_Action_Transport(void* obj, void* task, float x, float y, float z);
 };
 
-// RGE_Combat_Object: no virtual functions declared (no vtable pointer shift)
-class RGE_Combat_Object {
-public:
-    void* vtable_ptr;              // +0x00 - real vtable from hierarchy
-    uchar gap_04[0x34];            // +0x04 to +0x37
-    float world_x;                 // +0x38
-    float world_y;                 // +0x3C
-    float world_z;                 // +0x40
-    uchar gap_44[0x140];           // +0x44 to +0x183
-    RGE_Action_List* actions;      // +0x184
-
-    int transport(float x, float y, float z, int w);
-};
-
-// Virtual table call helper for vtable[0x208] (slot 0x82)
-struct VTable208 {
+// Narrow canonical inherited virtual surface through slot 0x208. Keeping it as
+// a real base avoids raw/manual vtable dispatch while preserving the proven ABI.
+struct RGE_Combat_Object_Virtual_Base {
     virtual void s00();
     virtual void s04();
     virtual void s08();
@@ -234,6 +232,18 @@ struct VTable208 {
     virtual void call208(void* arg);  // slot 0x82 (130), offset 0x208
 };
 
+class RGE_Combat_Object : public RGE_Combat_Object_Virtual_Base {
+public:
+    uchar gap_04[0x34];
+    float world_x;
+    float world_y;
+    float world_z;
+    uchar gap_44[0x140];
+    RGE_Action_List* actions;
+
+    int transport(float x, float y, float z, int w);
+};
+
 int RGE_Combat_Object::transport(float x, float y, float z, int w)
 {
     int result;
@@ -252,7 +262,7 @@ int RGE_Combat_Object::transport(float x, float y, float z, int w)
     result = 0;
     if (transport != 0) {
         actions->delete_list();
-        ((VTable208*)this)->call208(transport);
+        this->call208(transport);
         transport->func34(this, x, y, z);
         result = 1;
     }

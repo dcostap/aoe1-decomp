@@ -17,6 +17,11 @@
 //   shifting the three skip-branch displacements by 4 each.
 // Left in scratch: canonical reconstruction matches size/calls/frame/registers/CFG 100%
 //   shape; only the reload block-membership scheduling differs (3 bytes).
+// 2026-08-09 session: nested explored/mask/index guards, an outer-loop player
+//   declaration, an empty else, a post-call no-op mask reread, a repeated map
+//   expression, and a full static-object virtual surface all emitted the same
+//   3-byte mismatch; all were restored. A duplicated advance/continue form grew
+//   17 bytes and was also restored.
 
 typedef unsigned long ulong;
 

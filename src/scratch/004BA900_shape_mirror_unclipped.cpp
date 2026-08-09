@@ -68,6 +68,27 @@
 //   Next leads: force the d home via x-param slot reuse (LESSONS.md
 //   parameter-slot-reuse pattern), or sink rows store by restructuring the
 //   `if (height > 0)` guard / rows assignment site.
+//
+// fresh claim (sa-b1dcad27-shape, 2026-08-09; 10 meaningful hypotheses):
+// - A named odd-byte flag / direct `(b & 1) == 1` comparison changed the
+//   branch basin but did not improve strict bytes; the direct truth test is
+//   retained. A second direct-comparison rerun was codegen-identical.
+// - Moving `rows = height` inside the positive height guard preserved the
+//   natural source model and moved the row-home store to the loop entry;
+//   retained result improved the checker to 136 differing bytes (202/220).
+// - Splitting the destination declaration from its assignment was codegen
+//   identical. A Ghidra-supported row-base/working-destination pair, with and
+//   without the full Shape class surface, added `push ecx` and spilled pitch;
+//   both were rolled back as a worse basin. Mutating x as an address cursor
+//   was optimized to the same code and was rolled back as noncanonical.
+// - The local TShape/TDrawArea declarations now expose the proven full field
+//   surfaces; this did not change codegen, but keeps ownership/layout explicit.
+// - Final retained gap is structural: original stores destination through
+//   [esp+18h] and uses `mov cl,al; and cl,1; cmp cl,1`; rebuilt keeps d in EDI
+//   and lowers the odd test directly. Calls are ordered/aligned (AlignedWidth,
+//   memset), and no behavior-changing source scaffold is retained.
+// - Main-agent normalization restored the canonical TShape/TDrawArea class
+//   names; emitted code is unchanged.
 
 void* __cdecl memset(void* dest, int c, unsigned int count);
 
@@ -80,25 +101,51 @@ struct Shape_Header {
     long ymax;
 };
 
-struct TDrawArea_Shape {
+struct TDrawArea {
     char _gap_00[8];
     unsigned char* Bits;
-    char _gap_0C[0x10];
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
     int Height;
-    char _gap_20[4];
+    int Pitch;
     int Orien;
     int AlignedWidth();
 };
 
-struct TShape_Caller {
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
+
+struct Shape_File_Header;
+struct SLhape_File_Header;
+
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+struct TShape {
     unsigned char* shape;
     int load_type;
     int load_size;
     Shape_Header* shape_header;
-    unsigned char shape_mirror_unclipped(TDrawArea_Shape*, long, long);
+    Shape_File_Header* head;
+    Shape_Offsets* offsets;
+    SLhape_File_Header* FShape;
+    Shape_Info* shape_info;
+    unsigned char shape_mirror_unclipped(TDrawArea*, long, long);
 };
 
-unsigned char TShape_Caller::shape_mirror_unclipped(TDrawArea_Shape* da, long x, long y)
+unsigned char TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
 {
     long pitch = da->AlignedWidth() * da->Orien;
     Shape_Header* sh = this->shape_header;
@@ -109,11 +156,13 @@ unsigned char TShape_Caller::shape_mirror_unclipped(TDrawArea_Shape* da, long x,
         m = (y - da->Height + 1) * pitch;
     else
         m = y * pitch;
-    long rows = height;
-    unsigned char* d = da->Bits + m + x + 1;
+    long rows;
+    unsigned char* d;
+    d = da->Bits + m + x + 1;
     unsigned char c;
 
     if (height > 0) {
+        rows = height;
         do {
             unsigned char done = 0;
             do {

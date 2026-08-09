@@ -25,6 +25,14 @@
 //   while rebuilt merges to add ebp,2. Untried: barrier between the two chunk++
 //   statements (e.g. +=1 forms, comma, or a use of chunk between them); for-loop
 //   spelling of the packet loop; volatile/cast spelling of chunk[1].
+// - This claim: separate success-path counters (`remaining` and `line_remaining`)
+//   move both compiler spills after their guard branches and improve the result to
+//   154 positional bytes / 97.56% shape / 233 emitted bytes. Pointer-local,
+//   +=1, pre/post-increment, subscript-assignment, and payload-pointer variants
+//   did not change that emitted code or improve the remaining header-advance gap.
+//   A focused three-way header variant lab likewise found no exact or size-valid
+//   candidate. Best source retained below; remaining mismatch is the two `inc ebp`
+//   instructions at PDB lines 468-469 versus VC5's `add ebp,2`.
 
 #include <string.h>
 
@@ -55,12 +63,14 @@ void RGE_Flic_Player::delta_fli()
     int count = *(int*)chunk;
     chunk += 8;
     if (count <= 0) return;
+    int remaining = count;
 
     do {
         int lines = (signed char)*chunk;
         int x = 0;
         chunk++;
         if (lines > 0) {
+            int line_remaining = lines;
             do {
                 x += (signed char)*chunk;
                 char cnt = chunk[1];
@@ -75,9 +85,9 @@ void RGE_Flic_Player::delta_fli()
                     chunk += cnt;
                 }
                 x += cnt;
-            } while (--lines != 0);
+            } while (--line_remaining != 0);
         }
         this->window_buffer += this->drawarea_width;
-        count--;
-    } while (count != 0);
+        remaining--;
+    } while (remaining != 0);
 }

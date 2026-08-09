@@ -28,8 +28,20 @@
 //   Calls 3/3 aligned (alignedwidth/memcpy/memset). Next lead: probe source
 //   declaration order rows-before-d and single height counter to flip the
 //   allocator basin; consider variant_lab on the prologue scheduling.
-// Left in scratch: exact matching genuinely close but register-coloring
-//   basin not yet flipped; all call/stack/behavior evidence aligned.
+// sa-a6e9af4c-r1 probes: rows-before-d and height-as-counter were worse;
+//   split header temporaries, delayed declaration/assignment, cursor-before-
+//   height, and named orientation were duplicate/no-op basins. A focused
+//   setup/home variant lab found no better family.
+// sa-a6e9af4c-r1 control-flow probe: spelling both run tests as c == 0 first
+//   put the zero cases inline and nonzero memcpy/memset arms out of line,
+//   matching the original branch topology (232B, 84.21% shape, 212 diff).
+// sa-a6e9af4c-r1 control-flow probe: initializing rows inside the positive
+//   height guard recovered the original parameter homes (rows -> da slot,
+//   d -> y slot) and improved to 234B, 87.10% shape, 208 diff. Register
+//   qualifiers were a duplicate and were removed.
+// Left in scratch: best natural source has aligned RLE blocks/calls/stack
+//   homes; remaining drift is the early callee-save coloring/setup and a
+//   two-byte size/epilogue difference.
 
 #pragma function(memcpy)
 #pragma function(memset)
@@ -76,16 +88,18 @@ unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long t
     Shape_Header* sh = this->shape_header;
     long height = sh->ymax - sh->ymin + 1;
     unsigned char* p = (unsigned char*)(sh + 1);
-    long pitch = da->AlignedWidth() * da->Orien;
+    long orien = da->Orien;
+    long pitch = da->AlignedWidth() * orien;
     long m;
-    if (da->Orien < 1)
+    if (orien < 1)
         m = (x - da->Height + 1) * pitch;
     else
         m = x * pitch;
     unsigned char* d = da->Bits + m + y;
-    long rows = height;
+    long rows;
 
     if (height > 0) {
+        rows = height;
         do {
             unsigned char done = 0;
             unsigned char* w = d;
@@ -94,23 +108,23 @@ unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long t
                 unsigned char c;
                 if ((b & 1) == 1) {
                     c = b >> 1;
-                    if (c) {
+                    if (c == 0) {
+                        w += *p;
+                        p++;
+                    } else {
                         memcpy(w, p, c);
                         w += c;
                         p += c;
-                    } else {
-                        w += *p;
-                        p++;
                     }
                 } else {
                     c = b >> 1;
-                    if (c) {
+                    if (c == 0) {
+                        done = 1;
+                    } else {
                         unsigned char t = *p;
                         memset(w, t, c);
                         w += c;
                         p++;
-                    } else {
-                        done = 1;
                     }
                 }
             } while (!done);
