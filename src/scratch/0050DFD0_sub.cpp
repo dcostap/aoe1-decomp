@@ -37,6 +37,29 @@
 //   unlink temp (the original kills entry at the unlink, reusing edx for p->next).
 // - The volatile read only reproduces the binary-proven else-path stack reload; it
 //   is a codegen steer for the observed mov eax,[esp+0Ch], not a semantic claim.
+//
+// Fresh pass (orch-luna-50dfd0-w1):
+// - Revalidated the clean candidate at 96B/100 (86 positional diff, 95.35% shape);
+//   the only body-byte gap is the original redundant `test esi,esi; je` at +0x0E.
+// - Moving link declaration/init into the outer guard reached 100B but worsened to
+//   88 diff; splitting declaration from init emitted the same 100B basin.
+// - A valid guard-spelling lab (9 variants: aliases, nested/compound/while/comma
+//   forms) produced 5 codegen groups, none size-eligible; the clean current basin
+//   remained best among those forms. Ghidra-backed comma-condition forms likewise
+//   worsened structural shape or collapsed the repeated test.
+// - A 32-bit cast on the repeated null conjunct, nested outer+compound guards, and
+//   compiling the exact find_id sibling before sub all emitted the unchanged clean
+//   96B code. No new TU-context lead was found.
+// - Remaining blocker: VC5 /O2 eliminates the binary's redundant top null test while
+//   preserving all later instructions; prior and fresh natural/context variants do
+//   not retain it. Keep the canonical compound link-walk source below.
+//
+// Normalization (non-probe, main-agent source-plausibility audit):
+// - Removed the fake volatile stack-home reload and duplicated recursive-call arms.
+// - The ordinary source now selects the recursive argument only for command 1, then
+//   performs one shared this->sub(entry) call. This preserves the executable's odd
+//   command-1 tail behavior while leaving the prior scheduling evidence above as
+//   diagnostic history rather than compiler-steering source.
 
 #include <stdlib.h>
 
@@ -105,10 +128,8 @@ void RGE_Timeline::sub(RGE_Time_Entry* entry) {
             entry = this->time_list;
             while (entry != 0)
                 entry = entry->next;
-            this->sub(entry);
-        } else {
-            this->sub(*(RGE_Time_Entry* volatile*)&entry);
         }
+        this->sub(entry);
         free(p);
         this->list_num--;
     }
