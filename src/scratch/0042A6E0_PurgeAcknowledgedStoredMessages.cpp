@@ -20,6 +20,21 @@
 // Left in scratch: remaining drift is inner-loop strength reduction (VC5 codegen artifact)
 // and loop-counter conversion (dword → byte offset). Behavior is fully equivalent.
 
+// Current worker probes:
+//   baseline: retained the prior flat-pointer reconstruction; it emits the right size/frame
+//             and calls but folds the dword-index cursor into a byte-offset cursor.
+//   RESENDER member/anchored access variants and signed cursor: no improvement; reverted.
+//   unsigned acknowledgement `> 0`: restores the original jbe, improving shape only.
+//   named post-call index, flat clear cursor, counted-for spelling: emitted-code duplicate.
+//   243-variant source lab (member/flat access and update-order axes): no exact result.
+//   five index-scope variants: one emitted-code group, no change.
+//   /Og- context: broad EBP frame (437-448 bytes), rejected.
+//   left in scratch: size/frame/call set match; remaining 182 positional bytes are the
+//   independent dword cursor collapsed into a byte-offset induction by VC5.
+// Main-agent normalization removed the compiler-steering flat byte/dword cursors
+// from living source and restored ordinary RESENDER indexing. The cleaner source
+// validates at 255 bytes / 266 differing bytes; behavior and ordered calls remain.
+
 class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
@@ -29,16 +44,24 @@ extern TDebuggingLog* L;
 
 void operator_delete(void* ptr);
 
+struct RESENDER {
+    unsigned long TimeSent;     // +0x00
+    unsigned int Serial;         // +0x04
+    char* ResendMsg;              // +0x08
+    unsigned int Length;         // +0x0C
+    unsigned int DestMap[10];    // +0x10
+};
+
 class TCommunications_Handler {
 public:
     char gap_00[0x12D8];
     unsigned short MaxGamePlayers;   // +0x12D8
     char gap_12DA[0x242];
     int WaitingForAck;               // +0x151C
-    unsigned int* Resend;            // +0x1520 — flat dword array, each slot = 14 dwords (0x38 bytes)
+    RESENDER* Resend;                // +0x1520 — 502 entries, each 14 dwords (0x38 bytes)
 
     // Slot layout (dword offsets from slot base):
-    //   [0] = field_0
+    //   [0] = TimeSent
     //   [1] = serial number
     //   [2] = data pointer (void*)
     //   [3] = field_C
@@ -50,64 +73,48 @@ public:
 
 int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 {
-    int slot = 0;
-    int byte_offset = 0;
-    unsigned int dword_serial = 4;   // flat dword index of current slot's player ack[0]
-
-    // Iterate over 502 stored-message slots (serial range 4..0x1B6A, step 14)
-    do {
+    for (int slot = 0; slot < 502; ++slot) {
+        RESENDER& resend = this->Resend[slot];
         int nonAckCount = 0;
 
-        // Check if slot has a pending message (serial != 0)
-        if (*(unsigned int*)((char*)this->Resend + byte_offset + 4) != 0) {
+        if (resend.Serial != 0) {
             unsigned int player;
 
-            // For each human player, check if they've acknowledged
             for (player = 1; player <= (unsigned int)this->MaxGamePlayers; player++) {
-                if (this->IsPlayerHuman(player)) {
-                    if (this->Resend[dword_serial + player] != 0) {
-                        nonAckCount++;
-                    }
+                if (this->IsPlayerHuman(player) && resend.DestMap[player] > 0) {
+                    nonAckCount++;
                 }
             }
 
-            // If all human players have acknowledged, purge the slot
             if (nonAckCount == 0) {
                 L->Log("GTD: Ser #%d Slot=%d  Ackd by all. (Released)",
-                    *(unsigned int*)((char*)this->Resend + byte_offset + 4), slot);
+                       resend.Serial, slot);
 
-                unsigned int* elem = (unsigned int*)((char*)this->Resend + byte_offset);
-                void* data = *(void**)(elem + 2);
-                elem[0] = 0;
-                if (data != 0) {
-                    operator_delete(data);
+                resend.TimeSent = 0;
+                if (resend.ResendMsg != 0) {
+                    operator_delete(resend.ResendMsg);
                 }
-                elem[2] = 0;
-                elem[1] = 0;
-                elem[3] = 0;
+                resend.ResendMsg = 0;
+                resend.Serial = 0;
+                resend.Length = 0;
 
-                // Zero the 10-dword player ack area
                 for (int i = 0; i < 10; i++) {
-                    elem[4 + i] = 0;
+                    resend.DestMap[i] = 0;
                 }
             }
         }
-
-        dword_serial += 14;
-        slot++;
-        byte_offset += 0x38;
-    } while (dword_serial <= 0x1B6A);
+    }
 
     // Count remaining non-zero serials into WaitingForAck
     {
-        unsigned int* p = this->Resend + 1;  // start at first slot's serial field
+        RESENDER* p = this->Resend;
         int i = 0x1F6;                       // 502 slots
 
         do {
-            if (*p != 0) {
+            if (p->Serial != 0) {
                 this->WaitingForAck++;
             }
-            p += 14;  // next slot's serial field
+            p++;
             i--;
         } while (i != 0);
     }

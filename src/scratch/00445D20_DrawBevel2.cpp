@@ -1,59 +1,64 @@
 // VA: 00445D20 TDrawArea::DrawBevel2 (284 B)
-// PDB source: Drawarea.cpp
-// Packet-grounded: draw 2-line bevel (light on top/left, dark on bottom/right)
+// PDB source: Drawarea.cpp:4144-4185
+// Attempt log:
+// - baseline candidate: natural four-color, two-inner-line bevel reconstructed
+//   from the DrawBevel/DrawBevel21 same-TU family and original call sequence.
+// - named inner-coordinate locals improved instruction-shape similarity but not
+//   the frame/prologue; hoisting their declarations was codegen-identical.
+// - reversed compare operands changed branch shape and was rolled back.
+// - separate original-coordinate swap temporaries reached the best emitted
+//   candidate (284-byte size, 274 positional bytes different); the y swap uses
+//   the packet's observed y2=y1 / y1=old-y2 assignment order.
+// - reverse temporary/assignment order and staged width/height arithmetic were
+//   codegen regressions or duplicates; final source restored to the natural
+//   typed form and left in scratch.
 
-extern int TDrawArea_FillRect(void* self, int x1, int y1, int x2, int y2, unsigned char color);
-
-struct Shim_DrawBevel2_5D20 {
-    char gap00[0x28];
-    int ClipLeft;
-    int ClipTop;
-    int ClipRight;
-    int ClipBottom;
+class TDrawArea {
+public:
+    void DrawHorzLine(long x, long y, long width, unsigned char color);
+    void DrawVertLine(long x, long y, long height, unsigned char color);
+    void DrawBevel2(long x1, long y1, long x2, long y2,
+                    unsigned char c1, unsigned char c2,
+                    unsigned char c3, unsigned char c4);
 };
 
-void TDrawArea_DrawBevel2(Shim_DrawBevel2_5D20* self, int x1, int y1, int x2, int y2,
-                           unsigned char lightColor, unsigned char darkColor)
+void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
+                           unsigned char c1, unsigned char c2,
+                           unsigned char c3, unsigned char c4)
 {
-    // Normalize coordinates: ensure x1 <= y1, x2 <= y2
-    if (x1 > y1) {
-        int temp = x1;
-        x1 = y1;
-        y1 = temp;
+    long original_x1;
+    long original_y2;
+    int width;
+    int height;
+    int x1_plus_one;
+    int y1_plus_one;
+
+    original_y2 = y2;
+    original_x1 = x1;
+    if (x1 > x2) {
+        x1 = x2;
+        x2 = original_x1;
     }
-    
-    if (x2 > y2) {
-        int temp = x2;
-        x2 = y2;
-        y2 = temp;
+    if (y1 > y2) {
+        y2 = y1;
+        y1 = original_y2;
     }
-    
-    // Clip to clip rect
-    if (x1 > self->ClipRight || y1 < self->ClipLeft ||
-        x2 > self->ClipBottom || y2 < self->ClipTop)
+
+    width = x2 - x1 + 1;
+    if (width < 1)
         return;
-    
-    if (x1 < self->ClipLeft) x1 = self->ClipLeft;
-    if (y1 > self->ClipRight) y1 = self->ClipRight;
-    if (x2 < self->ClipTop) x2 = self->ClipTop;
-    if (y2 > self->ClipBottom) y2 = self->ClipBottom;
-    
-    // Clip and compute dimensions
-    int width = y1 - x1 + 1;
-    int height = y2 - x2 + 1;
-    
-    if (width < 2 || height < 2)
+    height = y2 - y1 + 1;
+    if (height < 1)
         return;
-    
-    // Draw light top line
-    TDrawArea_FillRect(self, x1, x1, y1 - 1, x1, lightColor);
-    
-    // Draw light left line
-    TDrawArea_FillRect(self, x1, x2, x1, y2 - 1, lightColor);
-    
-    // Draw dark bottom line
-    TDrawArea_FillRect(self, x1, y1 - 1, y1, y1, darkColor);
-    
-    // Draw dark right line
-    TDrawArea_FillRect(self, y1 - 1, x2, y1 - 1, y2, darkColor);
+
+    x1_plus_one = x1 + 1;
+    DrawHorzLine(x1_plus_one, y1, width - 1, c1);
+    y1_plus_one = y1 + 1;
+    DrawVertLine(x2, y1_plus_one, height - 2, c1);
+    DrawHorzLine(x1 + 2, y1_plus_one, width - 2, c2);
+    DrawVertLine(x2 - 1, y1 + 2, height - 3, c2);
+    DrawHorzLine(x1, y2, width, c4);
+    DrawVertLine(x1, y1, height, c4);
+    DrawHorzLine(x1_plus_one, y2 - 1, width - 1, c3);
+    DrawVertLine(x1_plus_one, y1_plus_one, height - 2, c3);
 }
