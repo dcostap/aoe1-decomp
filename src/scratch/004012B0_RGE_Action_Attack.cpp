@@ -2,7 +2,7 @@
 // PDB source: Act_atak.cpp:145-190
 // Size: 237 bytes
 // PAUSED - exact matching exhausted this bounded pass; remaining drift is
-// confined to initial field-load scheduling and suffix register coloring.
+// confined to initial field-load scheduling.
 
 // Attempt log:
 // - Baseline: wrong local base-call spelling and wrong parameter widths; 36 bytes.
@@ -13,6 +13,13 @@
 //   the best emitted result stayed 33 bytes (91.55% shape; 37/71 exact blocks).
 // - Per-guard object/sprite locals and split p5 source/result locals were also tested;
 //   they either duplicated the result or produced a structural regression.
+// - A 12-variant permutation lab over the three coordinate and two range stores
+//   found no exact codegen; the current x/z/y plus range/min order is the best
+//   plausible family (33 bytes, 91.55% shape).
+// - Restored the proven 0x5C attack tail and typed the action-object/master-combat
+//   inheritance and offsets.  Correcting the inherited gaps preserved the same
+//   33-byte output; retain this canonical ownership rather than the old fake
+//   sprite-at-+8 surface.
 // - Final bounded result: 33 positional bytes (13.9241%), 40 edit bytes (16.88%);
 //   all calls, size, frame, CFG, and the suffix block topology match.
 // Remaining lead: reconstruct the original Act_atak.cpp assignment/declaration
@@ -23,37 +30,69 @@
 //   RGE_Sprite*,RGE_Sprite*,float,float,short,short) → ret 2Ch
 // - Base ctor: __thiscall RGE_Action::ctor(RGE_Action_Object*, int flag)
 // - RGE_Action is 0x20 bytes (vtable +04, type +06, pad, obj +08, fields +0C..+1F)
-// - RGE_Action_Attack fields from +20: field_20, field_24, move_sprite, gap, 
-//   sprite_p5..p7, range, min_range, missile_frame, fire_frame, 3 bytes
-// - Sprite overrides: if null, get from action_obj->sprite->+0xC0/+0xBC(p5),
-//   +0xFC(p6), +0x18(p7)
-// - Range override: if p8==0.0, use sprite->+0x114; if that's 0.0, set to 0.4
+// - RGE_Action_Attack fields from +20: target coordinates, master sprites,
+//   range/min-range, frame shorts, and three flags plus tail padding.
+// - Sprite overrides: if null, get from action_obj->master_obj run/move/fight/
+//   sprite fields at +0xC0/+0xBC, +0xFC, +0x18; range uses +0x114.
 // - vtable=0x56E058, type=9, indirect_fire=2
-// Main-agent audit retained canonical action/sprite ownership and replaced the
-// residual float bit-pun with the natural literal assignment.
+// Main-agent audit retained compiler-owned vptr setup and the natural 0.4f
+// fallback assignment.
 
 struct RGE_Sprite;
-
-struct RGE_Action_Object {
-    unsigned char g0[0x08];
-    RGE_Sprite* sprite;  // +08
-};
-
-struct RGE_Sprite {
-    unsigned char g0[0x08];
-    unsigned char dummy_08[0x10];
-    RGE_Sprite* attack_sprite;       // +18
-    unsigned char g1[0xA0];
-    RGE_Sprite* stand_sprite;        // +BC
-    RGE_Sprite* move_sprite2;        // +C0
-    unsigned char g2[0x38];
-    RGE_Sprite* fight_sprite;        // +FC
-    unsigned char g3[0x14];
-    float attack_range;              // +114
-};
-
 struct RGE_Action_List;
-struct RGE_Static_Object;
+
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    unsigned char gap_04[0x14];
+    RGE_Sprite* sprite;              // +18
+    unsigned char gap_1C[0x9C];
+};
+
+struct RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+    float speed;                     // +B8
+};
+
+struct RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+    RGE_Sprite* move_sprite;         // +BC
+    RGE_Sprite* run_sprite;          // +C0
+    unsigned char gap_C4[0x14];
+};
+
+struct RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+    unsigned char gap_D8[0x24];
+};
+
+struct RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+    RGE_Sprite* fight_sprite;        // +FC
+    unsigned char gap_100[0x14];
+    float weapon_range;              // +114
+};
+
+struct RGE_Static_Object {
+    virtual ~RGE_Static_Object();
+    long id;                         // +04
+    RGE_Master_Static_Object* master_obj; // +08
+    unsigned char gap_0C[0x7C];
+};
+
+struct RGE_Animated_Object : public RGE_Static_Object {
+    float speed;                     // +88
+};
+
+struct RGE_Moving_Object : public RGE_Animated_Object {
+    unsigned char gap_8C[0xF4];
+};
+
+struct RGE_Action_Object : public RGE_Moving_Object {
+    unsigned char waiting;            // +180
+    unsigned char gap_181[3];
+    RGE_Action_List* actions;         // +184
+    unsigned char command_flag;       // +188
+    unsigned char gap_189[3];
+    int last_action_value;            // +18C
+    int last_action_state_value;      // +190
+};
+
 struct RGE_Task;
 
 struct RGE_Action {
@@ -116,6 +155,7 @@ struct RGE_Action_Attack : public RGE_Action {
     unsigned char need_to_attack;
     unsigned char was_same_owner;
     unsigned char indirect_fire;
+    unsigned char gap_5B;
     
     RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3, float p4,
                      RGE_Sprite* p5, RGE_Sprite* p6, RGE_Sprite* p7, float p8, float p9,
@@ -143,35 +183,35 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3,
     was_same_owner = 0;
     indirect_fire = 2;
 
-    RGE_Sprite* move_source;
+    RGE_Master_Combat_Object* move_source;
     RGE_Sprite* move_sprite;
     
     if (p5 == 0) {
         RGE_Action_Object* object = action_obj;
-        move_source = object->sprite;
-        move_sprite = move_source->move_sprite2;
+        move_source = (RGE_Master_Combat_Object*)object->master_obj;
+        move_sprite = move_source->run_sprite;
         if (move_sprite == 0) {
-            move_sprite = move_source->stand_sprite;
+            move_sprite = move_source->move_sprite;
         }
         sprite_p5 = move_sprite;
     }
     
     if (p6 == 0) {
         RGE_Action_Object* object = action_obj;
-        RGE_Sprite* sprite = object->sprite;
-        sprite_p6 = sprite->fight_sprite;
+        RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)object->master_obj;
+        sprite_p6 = master->fight_sprite;
     }
     
     if (p7 == 0) {
         RGE_Action_Object* object = action_obj;
-        RGE_Sprite* sprite = object->sprite;
-        sprite_p7 = sprite->attack_sprite;
+        RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)object->master_obj;
+        sprite_p7 = master->sprite;
     }
     
     if (p8 == 0.0f) {
         RGE_Action_Object* object = action_obj;
-        RGE_Sprite* sprite = object->sprite;
-        range = sprite->attack_range;
+        RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)object->master_obj;
+        range = master->weapon_range;
         if (range == 0.0f) {
             range = 0.4f;
         }

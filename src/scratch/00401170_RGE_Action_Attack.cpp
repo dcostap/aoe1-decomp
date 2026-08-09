@@ -13,6 +13,12 @@
 // - A focused /GX variant lab over local declaration/order forms preserved size/frame/
 //   call-set invariants but found no closer group; the wait load remains EAX instead
 //   of original ECX. Keep the natural typed source, not a register-forcing alias.
+// - Restored complete same-TU static/moving/action inheritance and proven master
+//   object gaps, then added the derived set_state vslot declaration; all emitted
+//   bytes stayed at the 45-byte frontier.
+// - Splitting wait/fight local declarations from initialization was a codegen
+//   duplicate. The remaining first hunk is parameter-load/register coloring after
+//   set_target_obj, with both EH and ordered calls already exact.
 // Main-agent audit restored canonical action-object inheritance and removed the
 // residual downcasts from ordinary master/owner access.
 
@@ -22,14 +28,33 @@ class RGE_Action_List;
 class RGE_Task;
 
 class RGE_Player;
-class RGE_Master_Combat_Object {
+class RGE_Master_Static_Object {
 public:
-    char pad00[0x18];
-    RGE_Sprite* wait_sprite;
-    char pad1C[0xA0];
+    virtual ~RGE_Master_Static_Object();
+    char pad04[0x14];
+    RGE_Sprite* wait_sprite;       // +0x18
+    char pad1C[0x9C];
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;                   // +0xB8
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
     RGE_Sprite* move_sprite;       // +0xBC
     RGE_Sprite* move_sprite2;      // +0xC0
-    char padC4[0x38];
+    char padC4[0x14];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    char padD8[0x24];
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
     RGE_Sprite* fight_sprite;      // +0xFC
     char pad100[0x14];
     float weapon_range;            // +0x114
@@ -38,12 +63,27 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    char pad04[0x04];
+    long id;
     RGE_Master_Combat_Object* master_obj;
     RGE_Player* owner;
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
+    char pad18[0x70];
 };
 
-class RGE_Action_Object : public RGE_Static_Object {
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    float speed;
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    char pad8C[0xF4];
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    char pad180[0x14];
 };
 
 class RGE_Action {
@@ -99,6 +139,7 @@ class RGE_Action_Attack : public RGE_Action {
 public:
     RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_Object* target, RGE_Sprite* move, RGE_Sprite* fight, RGE_Sprite* wait, float range, float min_range, short missile_id, short fire_frame);
     virtual ~RGE_Action_Attack();
+    virtual void set_state(unsigned char);
 
     RGE_Sprite* move_sprite;
     RGE_Sprite* fight_sprite;

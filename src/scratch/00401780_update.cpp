@@ -15,6 +15,13 @@
 //   60.82% exact-block coverage; call set remains one virtual-state-site short.
 // - A positive-arm notification-tail spelling was tested and rolled back because
 //   it added 66 bytes and worsened topology.  Keep this simpler natural source.
+// - Binary-backed local goto/case-order probes improved one branch or call-order
+//   metric in isolation (best local ally return: 571 bytes, best late case order:
+//   93.55% call alignment) but introduced broad size/tail drift; all were rolled
+//   back as compiler-steering diagnostics.
+// - Explicit global target-notify tails and case-4-first handler permutations
+//   remained structurally worse despite better call-site alignment. The clean
+//   canonical switch is retained.
 // Remaining lead: align the nested action-list switch/case placement and the
 //   shared ally/inside-target notification tails; do not restore raw scaffolding.
 // Main-agent audit restored canonical world/action destructor ownership;
