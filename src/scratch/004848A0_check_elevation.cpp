@@ -34,6 +34,10 @@
 // structural first-scan/second-countdown topology.
 // Main-agent audit removed the diagnostic self alias and non-target padding
 // helper; direct member ownership remains authoritative.
+// Current claim: rechecked the full packet, dossier, same-TU donors, and ABI
+// evidence. Prior bounded probes already exhausted first-scan row/count and
+// second-scan liveness/layout families; no new source-supported lead justified
+// replacing this readable 397-byte canonical reconstruction.
 
 typedef unsigned char uchar;
 

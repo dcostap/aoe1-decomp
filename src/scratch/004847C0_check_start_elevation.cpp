@@ -51,6 +51,12 @@
 // were neutral or worse; naming the tile byte regressed to 191 bytes.
 // Keep the readable x-row-counter source; y1/row-pointer home rotation and
 // the original CL-vs-BL predicate coloring remain unresolved.
+// Current claim: x1-before-y1 initialization moved the first mismatch earlier
+// and was rolled back; declaring bounds before row locals was codegen-identical.
+// Inverting the natural all-good tile predicate was also identical, while an
+// explicit initial empty-range return plus do/while row loop broadened the CFG.
+// A four-variant bound-declaration lab reproduced only the 141-byte or worse
+// 146-byte families; no y1 range-home rotation was found.
 
 struct RGE_Tile {
     short screen_xpos;

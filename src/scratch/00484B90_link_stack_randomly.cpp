@@ -82,6 +82,10 @@ public:
 // differing bytes and was rolled back. Keep the natural named-dimension and
 // stack-owner source; the remaining 181-byte drift is the param/stack register
 // swap and one extra loop-home temporary before the already aligned call tail.
+// Current claim: moving the root-prev store ahead of max-limit declarations
+// changed the size/CFG and widened the diff to 206 bytes; the clean source was
+// restored. The remaining first hunk is the param/stack register swap and the
+// product-scale versus max_width scheduling noted above.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();

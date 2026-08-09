@@ -95,6 +95,10 @@ public:
 // 1109 differing bytes, 1287-byte code versus 1273, frame 0x984 versus 0x988,
 // all 23 direct call sites aligned. Remaining gap starts in the prologue/local
 // window and is structural; no asm or opaque register scaffolding retained.
+// Current claim: rechecked the full packet, dossier, ABI donors, and the
+// executable-supported helper surfaces. The prior 10-probe campaign already
+// exhausted natural phase-loop/local-window leads; retain this readable source
+// rather than repeat the 14-byte boundary/frame basin blindly.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
