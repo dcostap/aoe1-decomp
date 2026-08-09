@@ -1,24 +1,23 @@
 // 004BA9E0 TShape::shape_mirror_color_trans_unclipped (Shape.cpp:1878-1939, 265B)
-// RLE color-translated mirror shape rendering. Complex RLE state machine.
+// RLE color-translated mirror shape rendering.
 // FLAGS: /nologo /c /O2 /Oy
 //
 // Attempt notes:
-// - Prologue: push ecx (1 local = stride). My version has sub esp,8 from extra locals.
-//   Stack slot reuse: original reuses param_1 slot for height counter,
-//   param_2 for dest ptr, param_3 for count temp, bl(ebx) for eol flag.
-// - memset inlining: VC5 inlines memset into rep stosd/stosb (~40 bytes setup+fill).
-//   #pragma function(memset) ignored by VC5 optimizer.
-//   Original has: call memset; add esp,0Ch (~11 bytes).
-// - Color-translated multi-pixel loop: original uses ecx for index (direct table lookup),
-//   mine uses memory spill for index. Register pressure different.
-// - Goto control flow partially matches but block layout differs.
-//   The "noInc" (skip in_ptr++) path uses different jump targets.
-// - Remaining ~93% positional diff. Candidate for focused variant lab work:
-//   * Reduce locals to force push ecx / parameter slot reuse
-//   * Fix memset to call via extern function pointer  
-//   * Match color-index through ecx (not dumped to [esp+10h])
+// - Baseline natural reconstruction used the CRT header and a nested goto-shaped
+//   decoder; it was 218B and the optimizer inlined memset (259 differing bytes).
+// - A donor-shaped reconstruction with one shared offset, rows, destination, and
+//   byte-count local, plus a plain external memset declaration, produced the
+//   correct two-call surface and 236B/199 differing bytes after the explicit
+//   `(command & 1) == 1` predicate probe.
+// - Direct destination formation in both orientation arms is period-plausible and
+//   follows the original branch topology, but VC5 drops the expected push-ecx
+//   local and is a worse 235B/262-byte basin. Reverted to the better shared-offset
+//   reconstruction.
+// - Remaining drift is structural setup/home placement (original direct orientation
+//   arms and width local), plus localized table-index SIB operand order; calls,
+//   RLE control flow, stack cleanup, and field ownership are aligned.
 
-#include <string.h>
+void* __cdecl memset(void* dest, int c, unsigned int count);
 
 struct TDrawArea {
     char gap_00[0x08];
@@ -53,58 +52,51 @@ unsigned char TShape::shape_mirror_color_trans_unclipped(
     TDrawArea* draw_area, long x, long y, long shape_idx,
     unsigned char* table)
 {
-    long stride = draw_area->AlignedWidth() * draw_area->Orien;
-    long height = shape_header->ymax - shape_header->ymin + 1;
-    unsigned char* in = (unsigned char*)(shape_header + 1);
-    unsigned char* dest;
+    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+    Shape_Header* sh = this->shape_header;
+    long height = sh->ymax - sh->ymin + 1;
+    unsigned char* p = (unsigned char*)(sh + 1);
+    long m;
+    if (draw_area->Orien < 1)
+        m = (y - draw_area->Height + 1) * pitch;
+    else
+        m = y * pitch;
+    long rows;
+    unsigned char* d;
+    d = draw_area->Bits + m + x + 1;
+    unsigned char c;
 
-    if (draw_area->Orien < 1) {
-        dest = draw_area->Bits + ((y - draw_area->Height) + 1) * stride + x + 1;
-    } else {
-        dest = draw_area->Bits + stride * y + x + 1;
-    }
-
-    while (height > 0) {
-        unsigned char eol = 0;
+    if (height > 0) {
+        rows = height;
         do {
-            unsigned char cmd = *in;
-            in++;
-            if (cmd & 1) {
-                cmd >>= 1;
-                if (cmd == 0) {
-                    dest -= *in;
+            unsigned char done = 0;
+            do {
+                unsigned char b = *p++;
+                if ((b & 1) == 1) {
+                    c = b >> 1;
+                    if (c == 0) {
+                        d -= *p;
+                        p++;
+                    } else {
+                        while (c > 0) {
+                            *--d = table[*p++];
+                            c--;
+                        }
+                    }
                 } else {
-                    do {
-                        dest--;
-                        cmd--;
-                        *dest = table[*in];
-                        in++;
-                    } while (cmd != 0);
-                    goto skip_advance;
+                    c = b >> 1;
+                    if (c == 0) {
+                        done = 1;
+                    } else {
+                        unsigned char t = table[*p];
+                        d -= c;
+                        memset(d, t, c);
+                        p++;
+                    }
                 }
-            } else {
-                cmd >>= 1;
-                if (cmd == 0) {
-                    eol = 1;
-                    goto skip_advance;
-                }
-                dest -= cmd;
-                {
-                    unsigned char val = table[*in];
-                    unsigned int cnt = cmd;
-                    unsigned char* dp = dest;
-                    do {
-                        *dp = val;
-                        dp++;
-                        cnt--;
-                    } while (cnt != 0);
-                }
-            }
-            in++;
-skip_advance:;
-        } while (eol == 0);
-        dest += stride;
-        height--;
+            } while (!done);
+            d += pitch;
+        } while (--rows);
     }
 
     return 1;
