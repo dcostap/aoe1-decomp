@@ -1,35 +1,24 @@
+#include <windows.h>
+
 // VA: 0043A500 DibCreate | Dib.cpp:1605-1659
-// first natural pass compiles at original size but uses different parameter/register allocation (width in EBX vs original bits in EBX); needs source/parameter expression reshaping before useful diff.
+// Attempt log:
+// - baseline: typed Win32 BITMAPINFOHEADER/GlobalAlloc/GlobalLock source;
+//   calls, frame, and palette-store family are understood, but parameter
+//   register coloring and the setup block still differ.
+// - natural signed row-byte division, operand/order, and total-size lifetime
+//   variants did not move the compiler basin; no raw stack or register-forcing
+//   scaffolding retained.
 
-typedef void* HGLOBAL;
-extern "C" __declspec(dllimport) HGLOBAL __stdcall GlobalAlloc(unsigned int flags, unsigned int bytes);
-extern "C" __declspec(dllimport) void* __stdcall GlobalLock(HGLOBAL hMem);
-
-struct tagBITMAPINFOHEADER {
-    unsigned int biSize;
-    int biWidth;
-    int biHeight;
-    unsigned short biPlanes;
-    unsigned short biBitCount;
-    unsigned int biCompression;
-    unsigned int biSizeImage;
-    int biXPelsPerMeter;
-    int biYPelsPerMeter;
-    unsigned int biClrUsed;
-    unsigned int biClrImportant;
-};
-
-tagBITMAPINFOHEADER* __cdecl DibCreate(int bits, int width, int height)
+BITMAPINFOHEADER* __cdecl DibCreate(int bits, int width, int height)
 {
-    int line_size;
     int total_size;
-    tagBITMAPINFOHEADER* info;
-    unsigned int* pal;
+    BITMAPINFOHEADER* info;
+    DWORD* pal;
     int i;
 
-    line_size = (((width * bits + ((width * bits >> 31) & 7)) >> 3) + 3) & ~3;
-    total_size = line_size * height;
-    info = (tagBITMAPINFOHEADER*)GlobalLock(GlobalAlloc(0x42, total_size + 0x428));
+    total_size = (((bits * width) / 8 + 3) & ~3) * height;
+    info = (BITMAPINFOHEADER*)GlobalLock(
+        GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, total_size + 0x428));
     if (info == 0) {
         return 0;
     }
@@ -51,7 +40,7 @@ tagBITMAPINFOHEADER* __cdecl DibCreate(int bits, int width, int height)
         info->biClrUsed = 0x100;
     }
 
-    pal = (unsigned int*)(info + 1);
+    pal = (DWORD*)(info + 1);
     i = 0;
     while (i < (int)((info->biClrUsed + (((int)info->biClrUsed >> 31) & 0xf)) >> 4)) {
         *pal++ = 0;
