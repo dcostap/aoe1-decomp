@@ -6,63 +6,131 @@
 //   field_114 (countdown_victory, byte), field_118 (countdown_clock, float, read if ver >= 5.4)
 //   field_11C (score_displayed, byte, read if ver >= 6.6)
 //   field_11D (controllingComputerPlayer, byte, read if ver >= 6.97)
+// Attempt log:
+// - Replaced the free base shim with the typed RGE_Game_World base call and
+//   restored the proven vtable surface; this aligned all eight direct calls.
+// - Positive version-read guards recover the original inline-read/cold-zero
+//   CFG and 96% instruction-shape similarity.  A direct base-load guard also
+//   removes the decompiler-only result local and reaches the 315-byte basin.
+// - A scoped zero local was codegen-neutral and was removed.  Remaining drift
+//   is the VC5 callee-save basin: rebuilt saves EBX at entry, while the oracle
+//   shrink-wraps push/pop EBX around the first version gate (known SIB/shift
+//   consequences); no ABI, call-set, or field-layout uncertainty remains.
 
-extern unsigned char RGE_Game_World_load_world(void* self, int param);
-extern int rge_read(int handle, void* buf, int size);
+extern "C" void rge_read(int handle, void* buf, int size);
 
 extern float save_game_version;
 
-struct Shim_loadworld_EDF0 {
-    char gap00[0x108];
-    int victory_type;          // +0x108
-    int field_10C;             // +0x10C
-    int field_110;             // +0x110
-    unsigned char field_114;   // +0x114
-    int field_118;             // +0x118 (actually float/4 bytes)
-    unsigned char field_11C;   // +0x11C
-    unsigned char field_11D;   // +0x11D
+class RGE_Game_World {
+public:
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void vf20();
+    virtual void vf24();
+    virtual void vf28();
+    virtual void vf2C();
+    virtual void vf30();
+    virtual void vf34();
+    virtual void vf38();
+    virtual void vf3C();
+    virtual void vf40();
+    virtual void vf44();
+    virtual void vf48();
+    virtual void vf4C();
+    virtual void vf50();
+    virtual void vf54();
+    virtual void vf58();
+    virtual void vf5C();
+    virtual void vf60();
+    virtual void vf64();
+    virtual void vf68();
+    virtual void vf6C();
+    virtual void vf70();
+    virtual void vf74();
+    virtual void vf78();
+    virtual void vf7C();
+    virtual void vf80();
+    virtual void vf84();
+    virtual void vf88();
+    virtual void vf8C();
+    virtual void vf90();
+    virtual void vf94();
+    virtual void vf98();
+    virtual void vf9C();
+    virtual ~RGE_Game_World();
+    virtual void vfA4();
+    virtual void vfA8();
+    virtual void vfAC();
+    virtual void vfB0();
+    virtual void vfB4();
+    virtual void vfB8();
+    virtual void vfBC();
+    virtual void vfC0();
+    virtual void vfC4();
+    virtual unsigned char load_world(int handle);
 };
 
-unsigned char TRIBE_World_load_world(Shim_loadworld_EDF0* self, int handle)
+class TRIBE_World : public RGE_Game_World {
+public:
+    char gap_004[0x100];
+    void* tech;
+    int victory_type;          // +0x108
+    int artifact_count;        // +0x10C
+    int ruin_count;            // +0x110
+    unsigned char countdown_victory; // +0x114
+    char gap_115[3];
+    float countdown_clock;     // +0x118
+    unsigned char score_displayed; // +0x11C
+    unsigned char controllingComputerPlayer; // +0x11D
+
+    virtual unsigned char load_world(int handle);
+};
+
+unsigned char TRIBE_World::load_world(int handle)
 {
-    unsigned char result = RGE_Game_World_load_world(self, handle);
-    if (!result)
+    if (!RGE_Game_World::load_world(handle))
         return 0;
-    
+
     // Version-checked conditional reads
-    if (save_game_version < 5.6f) {
-        self->victory_type = 0;
+    if (save_game_version >= 5.6f) {
+        rge_read(handle, &this->victory_type, 4);
     } else {
-        rge_read(handle, &self->victory_type, 4);
+        this->victory_type = 0;
     }
     
-    if (save_game_version < 5.3f) {
-        self->field_10C = 0;
-        self->field_110 = 0;
+    if (save_game_version >= 5.3f) {
+        rge_read(handle, &this->artifact_count, 4);
+        rge_read(handle, &this->ruin_count, 4);
     } else {
-        rge_read(handle, &self->field_10C, 4);
-        rge_read(handle, &self->field_110, 4);
+        this->artifact_count = 0;
+        this->ruin_count = 0;
     }
     
-    if (save_game_version < 5.4f) {
-        self->field_114 = 0;
-        self->field_118 = 0;
+    if (save_game_version >= 5.4f) {
+        rge_read(handle, &this->countdown_victory, 1);
+        rge_read(handle, &this->countdown_clock, 4);
     } else {
-        rge_read(handle, &self->field_114, 1);
-        rge_read(handle, &self->field_118, 4);
+        this->countdown_victory = 0;
+        this->countdown_clock = 0.0f;
     }
     
-    if (save_game_version < 6.6f) {
-        self->field_11C = 0;
+    if (save_game_version >= 6.6f) {
+        rge_read(handle, &this->score_displayed, 1);
     } else {
-        rge_read(handle, &self->field_11C, 1);
+        this->score_displayed = 0;
     }
-    
+
     if (save_game_version >= 6.97f) {
-        rge_read(handle, &self->field_11D, 1);
+        rge_read(handle, &this->controllingComputerPlayer, 1);
         return 1;
     }
-    
-    self->field_11D = 2;
+
+    this->controllingComputerPlayer = 2;
     return 1;
 }

@@ -13,6 +13,10 @@
 // pointer-parameter forms did not change the emitted code.  The best natural
 // source remains one byte short of exactness: the dispatch load's SIB byte is
 // [ebx+esi+248] instead of the original [esi+ebx+248].
+// probe 15: a scoped type-table pointer was codegen-neutral.
+// probe 16: a focused /GX variant lab over six natural type-table spellings
+//   kept size/frame/call-set invariants but produced only the same three SIB
+//   groups; no living source steering was retained.
 // left in scratch: exact boundary/size/CFG/call set and all other bytes match;
 // remaining drift is a single VC5 address-term encoding with no productive
 // source axis found in this bounded assignment.

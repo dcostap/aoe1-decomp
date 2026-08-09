@@ -14,8 +14,22 @@
 //   RGE_Player base size 0x220, TRIBE_Player size 0x848, world arrays at
 //   +0x40/+0x48.  Remaining structural gap is VC5 call factoring: rebuilt
 //   code is 219 vs 255 bytes with 4/5 calls and 83.13% shape similarity.
+// probes 12-14: the type==4 predicate, a branch-local scalar flag, and
+//   equivalent local name/flag expressions were codegen-neutral.
+// probe 13: six natural local/master/flag spellings grouped into 219B, or
+//   265-268B with extra saved-register liveness; none restored the call site.
+// probe 15: reference/dereference/index expression variants likewise stayed
+//   in the 219B basin; pointer references reached 268B with EBX/EBP saves.
+// probe 16: corrected the inherited array ownership to RGE_Player**; emitted
+//   bytes were unchanged and the canonical declaration is retained.
+// probe 17: explicit placement-new/operator-new diagnostics destroyed the
+//   EH/body basin (143-167B), so they are not source candidates.
+// probe 18: an explicit goto store join was codegen-neutral.
+// probe 19: /Ob0, /O1, and /Od flag variants did not produce the original
+//   255B/5-call basin; only /GX retained the 219B candidate.
 
 class RGE_Master_Player;
+class RGE_Player;
 class TRIBE_World;
 class TRIBE_Player;
 
@@ -23,7 +37,7 @@ class RGE_Game_World {
 public:
     virtual void v0();
     char gap_04[0x3C];
-    TRIBE_Player** players;        // +0x40
+    RGE_Player** players;          // +0x40
     char gap_44[4];
     RGE_Master_Player** master_players; // +0x48
 };
