@@ -1,54 +1,106 @@
 // VA: 0052A510 TRIBE_Game::disconnect_multiplayer_game (279 B)
-// PDB source: tribegam.cpp
-// Packet-grounded: disconnect MP game with timeout wait loop
+// PDB source: tribegam.cpp (lines 5611-5649)
+// Attempt log:
+// baseline (sa83_disconnect): the prior scaffold used free functions and raw
+// offsets; it was retained only as the starting build checkpoint.
+// behavior (typed reconstruction): comm_handler, prog_mode, and world are the
+// proven named fields at +0x18C, +0x1B0, and +0x3F4.  The wait is represented
+// as the nested 500-ms / 15-second loops shown by the original CFG.
+// control-flow: a positive multiplayer arm with an explicit else GameOver
+// reproduces the original shared-tail branches, size, ordered calls, and CFG.
+// liveness/context probes (rolled back): function-scope time locals, qualified
+// base call, reordered declarations, a scoped world local, a base-pointer alias,
+// flat-vs-inherited TRIBE_Game layout, and a top-level mode local all emitted
+// the same 279-byte code.  The remaining 16-byte drift is only register color:
+// rebuilt this/elapsed are ESI/EDI while the original uses EDI/ESI.
+// Main-agent audit restored canonical world polymorphic ownership; the
+// validated 16-byte coloring gap is unchanged.
 
-extern int RGE_Base_Game_multiplayerGame(void* self);
-extern void RGE_Base_Game_disable_input(void* self);
-extern void TRIBE_Game_show_status_message(void* self, int msgId, void* unk1, int unk2);
-extern void TCommunications_Handler_SendIResignMsg(void* comm);
-extern void TCommunications_Handler_ShutdownGameMessages(void* comm);
-extern int TCommunications_Handler_CountWaitingMessages(void* comm);
-extern void TCommunications_Handler_GameOver(void* comm);
-extern void TCommunications_Handler_UnlinkToLevel(void* comm, int level);
+enum COMMSTATUS {
+    COMMSTATUS_UNINITIALIZED = 0,
+    INITIALIZED = 1,
+    SERVICE_AVAILABLE = 5
+};
+
+class TCommunications_Handler {
+public:
+    void SendIResignMsg();
+    void ShutdownGameMessages();
+    int CountWaitingMessages();
+    void GameOver();
+    COMMSTATUS UnlinkToLevel(COMMSTATUS level);
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x19];
+    unsigned char game_status;
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+
+    int multiplayerGame() const;
+    void disable_input();
+
+    char gap_04[0x18C - 0x04];
+    TCommunications_Handler* comm_handler;
+    char gap_190[0x1B0 - 0x190];
+    int prog_mode;
+    char gap_1B4[0x3F4 - 0x1B4];
+    RGE_Game_World* world;
+    char gap_3F8[0xA24 - 0x3F8];
+};
+
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
-void TRIBE_Game_disconnect_multiplayer_game(void* self)
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    void show_status_message(int message, char* parameter, long value);
+    void disconnect_multiplayer_game();
+};
+
+void TRIBE_Game::disconnect_multiplayer_game()
 {
-    if (!RGE_Base_Game_multiplayerGame(self)) {
-        TCommunications_Handler_GameOver(*(void**)((char*)self + 0x18C));
-        return;
-    }
-    
-    int mode = *(int*)((char*)self + 0x1B0);
-    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
-        void* comm = *(void**)((char*)self + 0x18C);
-        TCommunications_Handler_SendIResignMsg(comm);
-        TCommunications_Handler_ShutdownGameMessages(comm);
-        
-        if (TCommunications_Handler_CountWaitingMessages(comm) > 0) {
-            RGE_Base_Game_disable_input(self);
-            TRIBE_Game_show_status_message(self, 0x4C0, 0, -1);
-            
-            unsigned long startTime = debug_timeGetTime("tribegam.cpp", 0x15F8);
-            unsigned long elapsedStart = startTime;
-            
+    if (this->multiplayerGame()) {
+        if (this->prog_mode == 4 || this->prog_mode == 6 ||
+            this->prog_mode == 7 || this->prog_mode == 5) {
+        this->comm_handler->SendIResignMsg();
+        this->comm_handler->ShutdownGameMessages();
+
+        if (this->comm_handler->CountWaitingMessages() > 0) {
+            this->disable_input();
+            this->show_status_message(0x4C0, 0, -1);
+
+            unsigned long start_time = debug_timeGetTime(
+                "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15F8);
+            unsigned long elapsed_start = start_time;
+
             do {
-                void* scenario = *(void**)((char*)self + 0x3F4);
-                if (!scenario || *(unsigned char*)((char*)scenario + 0x1D) == 1)
+                unsigned long now;
+                do {
+                    if (this->world == 0 || this->world->game_status == 1)
+                        goto disconnect_done;
+
+                    this->comm_handler->ShutdownGameMessages();
+                    now = debug_timeGetTime(
+                        "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601);
+                } while (now - elapsed_start < 500);
+
+                if (this->comm_handler->CountWaitingMessages() == 0)
                     break;
-                
-                TCommunications_Handler_ShutdownGameMessages(comm);
-                unsigned long now = debug_timeGetTime("tribegam.cpp", 0x1601);
-                if (now - elapsedStart >= 500) {
-                    if (TCommunications_Handler_CountWaitingMessages(comm) == 0)
-                        break;
-                    elapsedStart = debug_timeGetTime("tribegam.cpp", 0x1605);
-                }
-            } while (elapsedStart - startTime < 15000);
+                elapsed_start = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
+            } while (elapsed_start - start_time < 15000);
         }
-        
-        TCommunications_Handler_GameOver(comm);
-        TCommunications_Handler_UnlinkToLevel(comm, 5);
-        return;
+
+        disconnect_done:
+            this->comm_handler->GameOver();
+            this->comm_handler->UnlinkToLevel(SERVICE_AVAILABLE);
+        }
+    } else {
+        this->comm_handler->GameOver();
     }
 }

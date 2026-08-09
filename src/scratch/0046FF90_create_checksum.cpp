@@ -1,35 +1,157 @@
 // VA: 0046FF90 create_checksum (277B)
-// player.cpp
+// PDB donor: player.cpp, lines 1144-1202
+//
+// Baseline reconstruction uses the canonical player/object/list ownership:
+// attribute values feed an integer checksum, the live object list contributes
+// object and position checksums, and the final checksum packs the four fields.
+// Attempt log:
+// - Scoped the integer attribute countdown inside its positive guard; this
+//   recovered the six-dword frame and the exact five-call sequence.
+// - Tried natural object checksum expression, sequenced waypoint addition,
+//   direct compound steps, explicit temporaries, and a separate current sum.
+//   The split waypoint form is the best source/codegen basin (277B, 5/5 calls,
+//   0x14 frame); the original keeps a 0x18 frame and a loop-carried checksum
+//   stack home that these natural forms do not reproduce.
+// - Prefix operand/declaration reorderings were codegen-neutral. Variant lab
+//   sweep found no size/frame-eligible exact form. Ten meaningful hypotheses
+//   exhausted; left in scratch with no inline asm, fake volatility, or raw
+//   vtable plumbing.
+
+extern "C" long __cdecl __ftol(void);
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x0C];
+    short id;
+};
+
+class RGE_Static_Object;
+
+class RGE_Object_Node {
+public:
+    RGE_Static_Object* node;
+    RGE_Object_Node* next;
+};
+
+class RGE_Object_List {
+public:
+    virtual ~RGE_Object_List();
+    RGE_Object_Node* list;
+    short number_of_objects;
+};
+
+// The two checksum methods are slots 0x1D0 and 0x1D4 in RGE_Static_Object.
+// Keep the intervening virtual surface so these remain real typed calls.
+#define VPAD1(n) virtual void vf_##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    VPAD64(1)
+    VPAD32(2)
+    VPAD16(3)
+    VPAD2(4)
+    VPAD1(5)
+    virtual long get_action_checksum();
+    virtual long get_waypoint_checksum();
+
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    char gap_0C[0x2C];
+    float world_x;
+    float world_y;
+    float world_z;
+    float attribute_amount_held;
+    unsigned char object_state;
+};
+
+#undef VPAD64
+#undef VPAD32
+#undef VPAD16
+#undef VPAD8
+#undef VPAD4
+#undef VPAD2
+#undef VPAD1
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-    char gap4[0x18];
-    int field_1C;
-    char field_20;
-    char gap21[0xB];
-    int field_2C;
-    int field_30;
-    short field_4A;
-    short field_4C;
-    int* field_50;      // +50
-    
-    void create_checksum();
+
+    char gap_04[0x10];
+    long checksum;
+    long position_checksum;
+    long action_checksum;
+    unsigned char checksum_created_this_update;
+    char gap_21[1];
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    void* victory_conditions;
+    void* visible;
+    void* world;
+    void* doppleganger_creator;
+    char* name;
+    unsigned char type;
+    char gap_49[1];
+    short id;
+    short attribute_num;
+    char gap_4E[2];
+    float* attributes;
+
+    long create_checksum(void);
 };
 
-int __cdecl floatToInt(float f);
+long RGE_Player::create_checksum(void) {
+    long result = (long)this->id;
+    this->checksum_created_this_update = 1;
+    this->action_checksum = 0;
 
-void RGE_Player::create_checksum() {
-    field_20 = 1;
-    field_1C = 0;
-    
-    int total = 0;
-    total += *(short*)(*(int*)field_2C + 8);
-    total += *(short*)(*(int*)field_30 + 8);
-    
-    int count = field_4C;
-    int checksum = 0;
-    for (int i = 0; i < count; i++) {
-        checksum += floatToInt(*(float*)((char*)field_50 + i * 4));
+    result += this->sleeping_objects->number_of_objects;
+    int object_checksum = 0;
+    result += this->doppleganger_objects->number_of_objects;
+    int attribute_checksum = 0;
+    float position_checksum = 0.0f;
+    int object_count = 0;
+
+    if ((int)this->attribute_num > 0) {
+        int attribute_count = (int)this->attribute_num;
+        float* attribute = this->attributes;
+        do {
+            attribute_checksum += (int)*attribute;
+            ++attribute;
+            --attribute_count;
+        } while (attribute_count != 0);
     }
+
+    for (RGE_Object_Node* list = this->objects->list;
+         list != 0;
+         list = list->next) {
+        RGE_Static_Object* object = list->node;
+        unsigned char state = object->object_state;
+        object_checksum = (int)state
+            + (int)object->attribute_amount_held
+            + (int)object->master_obj->id
+            + object_checksum;
+        object_checksum += object->get_waypoint_checksum();
+        ++object_count;
+        position_checksum = object->world_x + position_checksum;
+        position_checksum += object->world_y;
+        position_checksum += object->world_z;
+        this->action_checksum += object->get_action_checksum();
+    }
+
+    result = (result * 0x100 + object_count) * 0x100 + object_checksum;
+    result = result * 0x100 + attribute_checksum;
+    this->checksum = result;
+    this->position_checksum = (long)position_checksum;
+    return result;
 }
