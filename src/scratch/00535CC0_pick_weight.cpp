@@ -21,33 +21,87 @@
 // rebuilt bVar1 is ECX while original is EDX; rebuilt dispatch value is EAX while
 // original is ECX; original also hoists XOR EAX,EAX and keeps a branching case-2
 // tail.  No calls, frame, or ABI/layout uncertainty remains.
-// Best source reconstruction retained below; no exact match in this assignment.
+// Fresh pass probe 1 rolled back: the natural nested level/predicate spelling
+// restored the 211-byte size and improved positional diff to 139 bytes, but it
+// changed the dispatch CFG to cmp/jne (72.46% shape, 57.35% blocks), farther
+// from the original sub/dec/je dispatch than the switch basin.
+// Fresh pass probe 2: the full proven TPanel/RGE_View and static-object surfaces
+// were a codegen duplicate of the minimal shells; retained because ownership is
+// more canonical, with no metric change.
+// Fresh pass probe 3: next test mirrors the decompiler's proven source lifetime:
+// save the object pointer, write the level through param_1 before the touched
+// predicate, then use the saved pointer for the id comparison.
+// Probe 3 rolled back: the explicit saved pointer forced an EBX save and a
+// 211-byte/194-diff basin, so the compiler's existing parameter-home reuse is
+// the better source reconstruction.
+// Fresh pass probe 4: add the period RGE_View virtual surface (TPanel slots
+// 0-47, view slots 48-55, pick_through_fog 56, pick_weight 57) without adding
+// any function bodies, testing TU/vtable context rather than body control flow.
+// Fresh pass probe 5: retain the saved object only for the proven id read, but
+// express the observed byte write to the incoming parameter home directly.
+// Probe 5 was a codegen duplicate of the clean 207-byte basin; the explicit
+// byte-home form did not alter VC5's register family.
+// Fresh pass probe 6: test a narrow register-qualified result local because the
+// executable carries the predicate as a full-width EDX value across dispatch.
+// Probe 6 was also a codegen duplicate; register qualification did not move the
+// predicate from ECX or the level key from EAX.
+// Fresh pass probe 7: move the proven zero result initialization to function
+// entry, testing declaration/lifetime placement for the original pre-dispatch
+// XOR EAX,EAX without retaining the duplicate raw alias experiment.
+// Probe 7 was a codegen duplicate. The 108-variant fresh lab over level-home,
+// zero-lifetime, and late predicate spellings produced eight nonexact groups;
+// no exact or invariant-eligible variant was found. Final source below keeps
+// the full proven layout/vtable context and natural nested predicates; remaining
+// drift is the isolated VC5 register/dispatch basin (ECX/EAX vs EDX/ECX) plus
+// the pre-dispatch zero/branch-tail topology.
+// Main-agent normalization replaced the raw static-object vptr field with its
+// canonical virtual destructor surface; emitted code is unchanged.
 
+// Fresh pass probe 2 uses the proven concrete RGE_View/TPanel and
+// RGE_Static_Object data surfaces rather than the prior minimal helper shells.
 struct RGE_Master_Static_Object_Layout {
     char _gap_00[0x8D];
     unsigned char select_level;
 };
 
-struct RGE_Static_Object_Layout {
-    void* vtable;
+class RGE_Static_Object_Layout {
+public:
+    virtual ~RGE_Static_Object_Layout();
     long id;
     RGE_Master_Static_Object_Layout* master_obj;
+    char _gap_0C[0x7C];
 };
 
 class TPanel {
 public:
-    virtual void v00();
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+    virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
+    virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
+    virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43();
+    virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
+    char _gap_04[0xF0];
 };
 
 class RGE_View_Helper : public TPanel {
 public:
-    char _gap_04[0x33C - 4];
+    char _gap_F4[0x33C - 0xF4];
     int UC_ObjectTouched;
     int UC_TouchedObj;
+    virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51();
+    virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
+    virtual void pick_through_fog();
     virtual int pick_weight(RGE_Static_Object_Layout* param_1, int param_2);
 };
 
 int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2) {
+    int zero = 0;
     int bVar1;
     unsigned char select_level = param_1->master_obj->select_level;
 
@@ -59,8 +113,6 @@ int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2)
 
     param_1 = (RGE_Static_Object_Layout*)(unsigned)select_level;
 
-    int zero = 0;
-
     // Switch on select_level (values 2,3,4 handled, default=1)
     switch ((int)(unsigned)param_1) {
         case 4:
@@ -70,13 +122,19 @@ int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2)
             return 2;
         case 3:
             if (bVar1) return 5;
-            if (param_2 == 1 || param_2 == 2) return 3;
-            return zero;
+            if (param_2 != 1) {
+                if (param_2 != 2) return zero;
+            }
+            return 3;
         case 2:
             if (bVar1) return 5;
-            if (param_2 == 1 || param_2 == 2) return 3;
-            if (param_2 != 3) return zero;
-            return 2;
+            if (param_2 != 1) {
+                if (param_2 != 2) {
+                    if (param_2 != 3) return zero;
+                    return 2;
+                }
+            }
+            return 3;
         default:
             return 1;
     }

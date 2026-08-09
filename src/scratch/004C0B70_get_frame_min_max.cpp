@@ -10,6 +10,15 @@
 //   declaration-order, explicit adjusted-bound, and compound-assignment
 //   variants; all emitted the same 110-byte basin or were worse. A six-case
 //   variant lab likewise found one emitted group and no exact result.
+// Fresh pass orch-luna-4c0b70-w3: decompiler local declaration/type ordering,
+// canonical helper parameter ownership, separate swap temp, long accumulators,
+// implicit short stores, unqualified member idioms, and an explicit swap goto
+// were checked; all either duplicated the 110-byte basin or worsened it.
+// A 64-case source-shape lab found no exact result (best diagnostic arm-only
+// spelling was 108 bytes); VC5 /GX/alias/inline/debug flag-context probes were
+// unchanged. Calls, frame, size, and prefix remain exact; first mismatch is
+// the facet-swap block at +005F, with residual register/liveness drift after
+// the second call.
 // Final clean source: retain the natural formal-parameter/temporary form;
 // remaining drift is VC5 register/liveness coloring after the second call.
 
