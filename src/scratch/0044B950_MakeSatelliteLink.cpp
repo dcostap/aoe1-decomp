@@ -1,13 +1,40 @@
 // PointMaker::MakeSatelliteLink
 // VA: 0044B950 - from Ghidra decomp
 
+// Attempt log:
+// - Replaced explicit absolute-value sign tests with the natural signed
+//   remainder predicate `r % 2`, restoring the original branchless parity
+//   lowering and 336-byte size.
+// - Capturing old_x across the horizontal bounds is binary-supported by the
+//   original EBP lifetime and improved the reconstruction to 149 differing
+//   bytes with all four calls and CFG/count parity aligned.  The vertical
+//   source intentionally rereads y, and preserves the original lower-bound
+//   bug `dy = -dx`.
+// - Upper-bound predicates use the binary-supported sum >= limit-3 spelling.
+//   Candidate temporary/compound scheduling, declaration order, and canonical
+//   PrimaryPt/PtToPt point-array layout probes were duplicates or regressed;
+//   retained the clean typed source rather than allocator-only scaffolding.
+
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
+class PrimaryPt {
+public:
+    int x;
+    int y;
+};
+
+class PtToPt {
+public:
+    int x;
+    int y;
+};
+
+// Main-agent audit confirmed canonical point/link ownership and preserved the
+// binary-observed dy=-dx bug.
 class PointMaker {
 public:
-    int Prime_x;
-    int Prime_y;
-    int Point[1000];
+    PrimaryPt Prime;
+    PtToPt Point[500];
     char gap_FA8[0x10];
     int x;
     int y;
@@ -35,27 +62,26 @@ public:
 };
 
 int PointMaker::MakeSatelliteLink() {
-    int dx = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
+    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
     dx = dx % SatelliteDistance + 1;
-    int r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
-    int abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) dx = -dx;
+    int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
+    if (r % 2) dx = -dx;
 
-    int dy = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
+    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
     dy = dy % SatelliteDistance + 1;
-    r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
-    abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) dy = -dy;
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
+    if (r % 2) dy = -dy;
 
-    dx = dx + DirX;
-    dy = dy + DirY;
+    int old_x = x;
+    dx += DirX;
+    dy += DirY;
 
-    if (dx + x < 3) {
+    if (dx + old_x < 3) {
         dx = -dx;
         DirX = -DirX;
     }
 
-    if (Width - 3 <= dx + x) {
+    if (dx + old_x >= Width - 3) {
         dx = -dx;
         DirX = -DirX;
     }
@@ -65,15 +91,15 @@ int PointMaker::MakeSatelliteLink() {
         DirY = -DirY;
     }
 
-    if (Height - 3 <= dy + y) {
+    if (dy + y >= Height - 3) {
         dy = -dy;
         DirY = -DirY;
     }
 
-    x = dx + x;
+    x = dx + old_x;
     y = dy + y;
-    Point[NumNodes * 2] = x;
-    Point[NumNodes * 2 + 1] = y;
+    Point[NumNodes].x = x;
+    Point[NumNodes].y = y;
     int result = NumNodes;
     NumNodes = result + 1;
     return result;

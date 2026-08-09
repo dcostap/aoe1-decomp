@@ -1,8 +1,24 @@
 // PointMaker::MakeFirstLink
 // VA: 0044B610 - from Ghidra decomp
 
+// Attempt log:
+// - Baseline explicit absolute-value ternaries produced a 320-byte function;
+//   the source was structurally short because VC5 lowered the sign test as a
+//   branch instead of the original branchless signed-remainder sequence.
+// - Replaced each sign test with the natural signed remainder predicate
+//   `r % 2`; this restored 332-byte size, 4/4 call-site parity, 89% exact-block
+//   coverage, and the original branchless parity bytes.  The remaining 193
+//   bytes are chiefly the dx/dy callee-save/register roles and the following
+//   liveness schedule.
+// - Register-qualified dx/dy probes were codegen duplicates.  Operand-order
+//   (`dx + x`, `dy + y`) and canonical PrimaryPt/PtToPt array ownership probes
+//   were also duplicates.  Restored the simplest typed/raw surface that keeps
+//   the signed-remainder basin; no allocator-only scaffolding retained.
+
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
+// Main-agent audit confirmed canonical point/link ownership and signed random
+// parity semantics.
 class PointMaker {
 public:
     int Prime_x;
@@ -40,17 +56,15 @@ public:
 };
 
 int PointMaker::MakeFirstLink() {
-    int dx = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
+    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
     dx = dx % BranchDistance + 2;
-    int r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
-    int abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) dx = -dx;
+    int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
+    if (r % 2) dx = -dx;
 
-    int dy = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
+    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
     dy = dy % BranchDistance + 2;
-    r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
-    abs_r = r < 0 ? -r : r;
-    if (abs_r & 1) dy = -dy;
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
+    if (r % 2) dy = -dy;
 
     DirX = dx;
     int nx = x + dx;

@@ -61,6 +61,13 @@
 //   analog: /GX EH-framed ctor 00478F40 loads stack params into ECX, but this
 //   function has no EH frame).
 
+// sa-b1e7d941 fresh same-TU pass (2026-08-09): reused the ground-truth
+// PointMaker/PrimaryPt/PtToPt layout and exact fractal.cpp donor context.  The
+// prior probes already cover direct/chained stores, declaration/liveness,
+// helper-context, flags, and loop-shape axes; no new natural source axis was
+// supported by the binary.  Retained the clean 15-byte mismatch and recorded
+// final validation rather than replacing typed source with allocator scaffolding.
+
 // orch-luna-44b470-w2 fresh pass (2026-08-09):
 // - Claimed the paused target, reran the dossier/donor/ABI evidence, and
 //   revalidated the canonical clean source before experiments.
@@ -84,6 +91,8 @@ public:
     int y;
 };
 
+// Main-agent audit confirmed canonical point-array ownership and retained the
+// natural shape construction flow.
 class PointMaker {
 public:
     PrimaryPt Prime;                     // +0x0000
