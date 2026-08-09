@@ -12,34 +12,27 @@
 // 9: Remaining first mismatch is at offset 3: rebuilt saves EBX and EDI in the prologue, while original shrink-wraps them until after the visible/null check (`push edi; push ebx` at 00476697/98).
 // 10: Current default validation: exact 940 bytes, positional 696 / 74.0426%, edit 177 / 18.8298%, first mismatch offset 3. Drift is broad positional due early callee-save scheduling and shifted branch distances, not accepted-drift quality.
 // GIVEUP: left in scratch for future source-shape/context work to recover VC5 shrink-wrapped EBX/EDI saves and exact branch distances.
+// Current bounded pass:
+// 11: <windows.h> import declarations fixed all 13 indirect API relocations;
+//     current checker result is 940B exact size, 27/27 calls, 38 differing bytes.
+// 12-16: branch/lifetime, virtual draw declaration, and done-label variants
+//     left the emitted code unchanged; canonical TPanel inheritance restored.
+// 17: typed DrawArea->DrawSystem->Pal ownership replaced the diagnostic raw
+//     vtable read with identical bytes. Final gap is prologue shrink-wrapping:
+//     original delays push edi/ebx until the visible path, while VC5 saves them
+//     at entry in this TU; the body is otherwise a 98.19% resynchronized match.
+
+#include <windows.h>
 
 typedef unsigned char uchar;
-typedef void* HWND;
-typedef void* HDC;
-typedef void* HGDIOBJ;
-typedef void* HRGN;
-typedef unsigned int COLORREF;
-typedef unsigned int UINT;
-struct RECT { long left, top, right, bottom; };
 
-extern "C" unsigned int __stdcall GetNearestPaletteIndex(void* pal, unsigned int color);
-extern "C" int __stdcall ShowWindow(HWND, int);
-extern "C" int __stdcall InvalidateRect(HWND, RECT*, int);
-extern "C" HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
-extern "C" int __stdcall SetBkMode(HDC, int);
-extern "C" COLORREF __stdcall SetTextColor(HDC, COLORREF);
-extern "C" int __stdcall DrawTextExA(HDC, char*, int, RECT*, unsigned int, void*);
-extern "C" int __stdcall SelectClipRgn(HDC, HRGN);
+struct TDrawSystem {
+    char gap_00[8];
+    void* Pal;
+};
 
-struct TDrawArea_00476680 {
-    virtual void vf00();
-    virtual void vf04();
-    virtual void* palette();
-    virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C(); virtual void vf30();
-    virtual void border(RECT* r);
-    virtual void vf38();
-    virtual void vf3C(RECT* r);
+struct TDrawArea {
+    TDrawSystem* DrawSystem;
     char gap_04[0x80];
     int field_84;
     void Clear(RECT* r, int color);
@@ -53,13 +46,17 @@ struct TDrawArea_00476680 {
     void DrawBevel3(long x1,long y1,long x2,long y2,uchar c1,uchar c2,uchar c3,uchar c4,uchar c5,uchar c6);
 };
 
-class TEditPanel_00476680 {
+class TPanel {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
+    virtual ~TPanel(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
     virtual void vf20(); virtual void vf24();
     virtual void pre_draw(int);
     virtual void post_draw();
+    virtual void vf30();
+    virtual void border(RECT*);
+    virtual void vf38();
+    virtual void vf3C(RECT*);
 
     char gap_04[8];
     long x;
@@ -67,22 +64,27 @@ public:
     long width;
     long height;
     char gap_1C[4];
-    TDrawArea_00476680* draw_area;
+    TDrawArea* draw_area;
     RECT rect;
     char gap_34[4];
     long dirty;
     char gap_3C[4];
-    TDrawArea_00476680* background;
+    TPanel* background;
     char gap_44[0x28];
-    int use_brush;
-    TDrawArea_00476680* visible;
+    int active;
+    int visible;
     char gap_74[4];
-    int clip_ok;
-    char gap_7C[0x0C];
+    int have_focus;
+    char gap_7C[0x08];
+    int field_84;
     HRGN clip_rgn;
     char gap_8C[0x63];
     uchar back_index;
     char gap_F0[4];
+};
+
+class TEditPanel : public TPanel {
+public:
     HWND edit_wnd;
     char gap_F8[4];
     char* text;
@@ -107,23 +109,24 @@ public:
     uchar bevel_color5;
     uchar bevel_color6;
 
-    void draw();
+    virtual void draw();
 };
 
-void TEditPanel_00476680::draw()
+void TEditPanel::draw()
 {
+    this->dirty = 0;
+    if (this->visible == 0) return;
     RECT r;
     HGDIOBJ old_font;
-    this->dirty = 0;
-    if (this->visible != 0) {
+    TPanel* panel = this;
 
-    this->pre_draw(0);
+    panel->pre_draw(0);
 
-    if (this->brush && this->use_brush && this->clip_ok) {
-        uchar c = (uchar)GetNearestPaletteIndex((*(void***)this->draw_area)[2], this->back_color);
+    if (this->brush && this->active && this->have_focus) {
+        uchar c = (uchar)GetNearestPaletteIndex(this->draw_area->DrawSystem->Pal, this->back_color);
         this->draw_area->Clear(&this->rect, c);
     } else {
-        TDrawArea_00476680* bg = this->background;
+        TPanel* bg = this->background;
         if (bg) {
             if (this->bevel_type >= 2 && this->bevel_type <= 7) {
                 bg->vf3C(&this->rect);
@@ -164,13 +167,13 @@ void TEditPanel_00476680::draw()
         this->draw_area->Unlock("pnl_edit::draw");
     }
 
-    if (this->edit_wnd && this->use_brush) {
-        if (this->clip_ok) {
+    if (this->edit_wnd && this->active) {
+        if (this->have_focus) {
             if (this->hidden) {
                 ShowWindow(this->edit_wnd, 5);
                 InvalidateRect(this->edit_wnd, 0, 1);
                 this->hidden = 0;
-                this->post_draw();
+                panel->post_draw();
                 return;
             }
         } else {
@@ -198,6 +201,5 @@ void TEditPanel_00476680::draw()
         }
     }
 
-    this->post_draw();
-    }
+    panel->post_draw();
 }

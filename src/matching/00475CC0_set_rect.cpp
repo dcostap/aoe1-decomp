@@ -11,19 +11,15 @@
 //   layout-canonical but codegen-neutral.
 // - Variant lab (8 source-shape combinations) selected direct draw_rect stores with
 //   an inline GetSystemMetrics expression: exact size/call set, 47 strict diff bytes.
+// - Replacing the preloaded render_left local with direct render_rect.left member
+//   expressions restored the original register scheduling and produced an exact match.
 //
 // What works:
 // - Prologue through MoveWindow (+0 to +75): byte-exact, including IAT calls.
 // - Format dispatch prefix (+75 to +8C): byte-exact, including delayed bevel load.
 // - Function size/frame/CFG/call set match the 267-byte original.
 //
-// Remaining blockers:
-// - Remaining 47-byte drift begins at 00475D4C: VC5 schedules render_top before
-//   the draw_left LEA, then uses different registers/order in both rectangle arms.
-// - No additional meaningful-hypothesis budget remains in this assignment; source
-//   is left as the best period-plausible reconstruction rather than codegen scaffolding.
-// - Main-agent audit restored canonical TPanel polymorphic ownership at
-//   unchanged offsets; the validated 47-byte scheduling gap is unchanged.
+// Exactness: 267/267 bytes, 3/3 calls, and 100% positional equality.
 
 #include <stddef.h>
 
@@ -49,10 +45,7 @@ public:
     int active;                    // +0x6C
     int visible;                   // +0x70
     char gap_74[0x8C - 0x74];
-    int render_left;               // +0x8C
-    int render_top;                // +0x90
-    int render_right;              // +0x94
-    int render_bottom;             // +0x98
+    tagRECT render_rect;            // +0x8C
     char gap_9C[0xF4 - 0x9C];
 
     void set_rect(int left, int top, int width, int height);
@@ -94,16 +87,15 @@ void TEditPanel::set_rect(int param_1, int param_2, int param_3, int param_4)
     }
 
     int format = this->format;
-    int render_left = this->render_left;
     if (format == 7) {
-        this->draw_rect.left = render_left + 1 + this->bevel_size;
-        this->draw_rect.top = this->render_top + this->bevel_size;
-        this->draw_rect.right = this->render_right - this->bevel_size - GetSystemMetrics(0x15) - 1;
-        this->draw_rect.bottom = this->render_bottom - this->bevel_size;
+        this->draw_rect.left = this->render_rect.left + 1 + this->bevel_size;
+        this->draw_rect.top = this->render_rect.top + this->bevel_size;
+        this->draw_rect.right = this->render_rect.right - this->bevel_size - GetSystemMetrics(0x15) - 1;
+        this->draw_rect.bottom = this->render_rect.bottom - this->bevel_size;
     } else {
-        this->draw_rect.left = render_left + this->bevel_size + 8;
-        this->draw_rect.top = this->render_top + this->bevel_size;
-        this->draw_rect.right = this->render_right - this->bevel_size;
-        this->draw_rect.bottom = this->render_bottom - this->bevel_size;
+        this->draw_rect.left = this->render_rect.left + this->bevel_size + 8;
+        this->draw_rect.top = this->render_rect.top + this->bevel_size;
+        this->draw_rect.right = this->render_rect.right - this->bevel_size;
+        this->draw_rect.bottom = this->render_rect.bottom - this->bevel_size;
     }
 }

@@ -6,30 +6,65 @@
 // 1: first pass - compilation issues with windows.h
 // 2: clean version - 447 bytes match! 63.3% positional, 68.9% edit match
 // 3: fix IAT calls + restructure style computation
+// 4: use the proven render-area -> draw-system -> instance ownership instead
+//    of a raw vtable-shaped pointer; the remaining baseline drift is the
+//    argument-evaluation order at CreateWindowExA.
+// 5: restored FormatType/FormatMultiLine; the ternary -1/0 mask recovered
+//    the original sub/neg/sbb style computation (278 differing bytes).
+// 6-9: named-area/direct-member and declaration-order variants were emitted
+//    identically; no further liveness lead was found in the custom-import TU.
+// 10: switched to the period <windows.h> import surface.  This retained the
+//     typed draw ownership, reached exact size, and reduced the mismatch to
+//     92 bytes with all nine call sites aligned.
+// Left in scratch: remaining drift begins in the CreateWindowExA argument
+// scheduling (render-area/style/instance loads); current source is the best
+// canonical typed reconstruction, not a raw-address or vtable scaffold.
 
+#include <windows.h>
 #include <stdlib.h>
-
-// IAT import thunks
-extern "C" {
-    void* (__stdcall* const CreateWindowExA)(int, const char*, const char*, int, int, int, int, int, void*, void*, void*, void*) = (void* (__stdcall*)(int, const char*, const char*, int, int, int, int, int, void*, void*, void*, void*))0x88A7F8;
-    long (__stdcall* const SetWindowLongA)(void*, int, long) = (long (__stdcall*)(void*, int, long))0x88A8B8;
-    long (__stdcall* const GetWindowLongA)(void*, int) = (long (__stdcall*)(void*, int))0x88A890;
-    void* (__stdcall* const GetStockObject)(int) = (void* (__stdcall*)(int))0x88A5A4;
-    long (__stdcall* const SendMessageA)(void*, unsigned int, unsigned int, long) = (long (__stdcall*)(void*, unsigned int, unsigned int, long))0x88A85C;
-}
 
 long pnl_sub_wnd_proc(void*, unsigned int, unsigned int, long);
 
+class TDrawSystem {
+public:
+    void* Inst;        // +0x00
+};
+
 class TDrawArea {
 public:
-    char gap_00[4];
-    void* Wnd;         // +0x04
+    TDrawSystem* DrawSystem; // +0x00
+    void* Wnd;               // +0x04
+};
+
+enum FormatType {
+    FormatMultiLine = 7
 };
 
 class TPanel {
 public:
-    char gap_00[0x20];
-    void* padding_ptr;  // +0x20
+    virtual ~TPanel();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void vf20();
+    virtual void vf24();
+    virtual void vf28();
+    virtual void vf2C();
+    virtual void vf30();
+    virtual void vf34();
+    virtual void vf38();
+    virtual void vf3C();
+    virtual void vf40();
+    virtual void vf44();
+    virtual void vf48();
+    virtual void vf4C();
+    virtual void vf50();
+    char gap_04[0x1C];
+    TDrawArea* render_area; // +0x20
     long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, long p7);
 };
 
@@ -50,13 +85,13 @@ public:
     int highlight_text_color1;  // +0x11C
     int highlight_text_color2;  // +0x120
     int back_color;             // +0x124
-    int format;                 // +0x128
+    FormatType format;          // +0x128
     void* font;                 // +0x12C
     char gap_130[0x144 - 0x130];
     int draw_format;            // +0x144
     int auto_sel;               // +0x148
 
-    long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, void* p7, short p8, char* p9, int p10, int p11);
+    long setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, void* p7, short p8, char* p9, FormatType p10, int p11);
     void set_text(char* txt);
 };
 
@@ -70,7 +105,7 @@ long TEditPanel::setup(
     void* param_7,
     short param_8,
     char* param_9,
-    int param_10,
+    FormatType param_10,
     int param_11)
 {
     long result;
@@ -90,28 +125,22 @@ long TEditPanel::setup(
         return 0;
     }
 
-    // Get hInstance from vtable (needs padding_ptr loaded early)
-    if (1) {
-        void* hInst = *(void**)*(void**)this->padding_ptr;
-
-        // Create edit window
-        int styleVal = this->format - 7;
-        if (styleVal) styleVal = -1;
-        styleVal &= 0xFFE0003C;
-        styleVal += 0x40200044;
-
-        void* wnd = CreateWindowExA(
-            0, "edit", 0,
-            styleVal,
-            param_3 + 1, param_4 + 1, param_5 - 2, param_6 - 2,
-            param_1->Wnd, (void*)1,
-            hInst,
-            0
-        );
-        this->edit_wnd = wnd;
-        if (wnd == 0) {
-            return 0;
-        }
+    // Create edit window.  The instance is owned by the draw system behind
+    // this panel's render area.  Keep the boolean style mask in the natural
+    // source form used by the original FormatType test.
+    TDrawArea* panel_area = this->render_area;
+    int styleVal = ((this->format != FormatMultiLine ? -1 : 0) & 0xFFE0003C) + 0x40200044;
+    void* hInst = panel_area->DrawSystem->Inst;
+    this->edit_wnd = CreateWindowExA(
+        0, "edit", 0,
+        styleVal,
+        param_3 + 1, param_4 + 1, param_5 - 2, param_6 - 2,
+        param_1->Wnd, (void*)1,
+        hInst,
+        0
+    );
+    if (this->edit_wnd == 0) {
+        return 0;
     }
 
     // SetWindowLongA(edit_wnd, -0x15, this)
