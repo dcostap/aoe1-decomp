@@ -15,6 +15,10 @@
 //   upper-bound comparisons to match the observed cmp direction; this removes
 //   the byte spill and is the best natural source, but local-slot/prologue drift
 //   remains. No asm or raw-layout scaffolding retained.
+// - Reconstructed the binary-backed lower/upper bounds as named XYPoint pairs;
+//   initializing both upper fields before the map clamps restored the target
+//   block topology. Reversed best-distance operands then closed the final
+//   cmp/jcc byte pair. Exact under default flags.
 
 struct XYPoint {
     int x;
@@ -23,7 +27,8 @@ struct XYPoint {
 
 class RGE_Map {
 public:
-    char gap_00[8];
+    virtual ~RGE_Map();
+    char gap_04[4];
     int map_width;
     int map_height;
     unsigned char get_terrain(short x, short y);
@@ -47,51 +52,54 @@ public:
 
 int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint* out, int a, int b, int c)
 {
-    int y_min = point.y - c;
-    int x_min = point.x - c;
-    int x_max;
-    int y_max;
+    int x_value = point.x;
+    int y_value = point.y;
+    XYPoint max;
+    XYPoint min;
 
-    if (x_min < 0) {
-        x_min = 0;
+    min.x = x_value - c;
+    min.y = y_value - c;
+
+    if (min.x < 0) {
+        min.x = 0;
     }
-    if (y_min < 0) {
-        y_min = 0;
+    if (min.y < 0) {
+        min.y = 0;
     }
 
-    x_max = point.x + c;
-    if (x_max > this->map->map_width - 1) {
-        x_max = this->map->map_width - 1;
+    max.x = x_value + c;
+    max.y = y_value + c;
+    if (max.x > this->map->map_width - 1) {
+        max.x = this->map->map_width - 1;
     }
-    y_max = point.y + c;
-    if (y_max > this->map->map_height - 1) {
-        y_max = this->map->map_height - 1;
+    if (max.y > this->map->map_height - 1) {
+        max.y = this->map->map_height - 1;
     }
 
     int best = -1;
-    if (x_min <= x_max) {
-        c = point.x - x_min;
+    if (min.x <= max.x) {
+        c = x_value - min.x;
         do {
-            if (y_min <= y_max) {
-                int y_distance = point.y - y_min;
-                int y = y_min;
+            if (min.y <= max.y) {
+                int y_distance = y_value - min.y;
+                int y = min.y;
                 do {
-                    int terrain = this->map->get_terrain((short)x_min, (short)y);
+                    int terrain = this->map->get_terrain((short)min.x, (short)y);
                     if (terrain == a || terrain == b) {
                         int distance = c * c + y_distance * y_distance;
-                        if (best == -1 || distance < best) {
+                        if (best == -1 || best > distance) {
                             best = distance;
-                            out->x = x_min;
+                            out->x = min.x;
                             out->y = y;
                         }
                     }
                     ++y;
                     --y_distance;
-                } while (y <= y_max);
+                } while (y <= max.y);
             }
-            ++x_min;
+            ++min.x;
             --c;
-        } while (x_min <= x_max);
+        } while (min.x <= max.x);
     }
 
     return best != -1;

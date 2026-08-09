@@ -8,6 +8,8 @@
 // 6: TU-aware pass restored the canonical RGE_Tile bitfield and DAT_00577a20
 //    double comparison; this improves the FPU/global surface and block alignment,
 //    but the tile-row/cell-row register schedule still preserves y in EDI.
+// 7: nested typed row indexing for tile/cell addresses was codegen-duplicate;
+//    restored the simpler pointer-addition form.
 // Main-agent audit restored canonical polymorphic map ownership and retained
 // named tile/zone-row flood-fill traversal.
 
