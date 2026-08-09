@@ -20,6 +20,8 @@
 //   is the retained source reconstruction.
 // - Main-agent audit restored canonical master/player/base-game destructor
 //   ownership; the validated 14-byte scheduling gap is unchanged.
+// - function-scope output declarations, matching the old TU's top-level local
+//   style, reproduce the original zero-store/load order exactly.
 
 #include <stdlib.h>
 #include <string.h>
@@ -109,13 +111,15 @@ public:
 };
 
 int TRIBE_Dialog_List::create_train_list() {
+    Item_Avail* avail_list;
+    short item_num;
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     short i = 0;
 
     if (player != 0 && player->selected_obj != 0) {
         if (player->own_selected()) {
-            Item_Avail* avail_list = 0;
-            short item_num = 0;
+            avail_list = 0;
+            item_num = 0;
             player->interface_item_avail(
                 &avail_list, &item_num,
                 player->selected_obj->master_obj->interface_group);
