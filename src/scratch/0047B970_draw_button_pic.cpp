@@ -19,6 +19,9 @@
 //    `add cx,[esi]`, rebuilt in the opposite order. No behavior or ABI gap found.
 // - Main-agent audit named the canonical TPanel destructor slot; emitted code
 //   and the localized nine-byte drift are unchanged.
+// New worker probe: combined the final x subtract/add expression; VC5 emitted the same 245B/9-byte basin.
+// Binary/Ghidra evidence shows the original writes x_min through the incoming RECT* parameter home before using
+// the saved RECT pointer; parameter-home alias casts are explicitly prohibited, so the natural 9-byte drift is kept.
 
 #include <stdlib.h>
 
@@ -87,12 +90,12 @@ void TScrollBarPanel::draw_button_pic(int param_1, int param_2, tagRECT* param_3
     short x;
     short y;
     long y_min;
-    long local_4;
+    long x_max;
 
     if (this->button_pics != 0 && param_1 != -1) {
         this->draw_area->SetClipRect(param_3);
 
-        this->button_pics->shape_minmax(&y_max, &local_4, &x_min, &y_min,
+        this->button_pics->shape_minmax(&y_max, &x_max, &x_min, &y_min,
                                         param_1);
 
         x = (short)((param_3->right - param_3->left + 1) / 2) -
@@ -100,8 +103,8 @@ void TScrollBarPanel::draw_button_pic(int param_1, int param_2, tagRECT* param_3
         x -= (short)y_max;
         x += (short)param_3->left;
         y = (short)((param_3->bottom - param_3->top + 1) / 2) -
-            (short)((y_min - local_4 + 1) / 2) -
-            (short)local_4 + (short)param_3->top;
+            (short)((y_min - x_max + 1) / 2) -
+            (short)x_max + (short)param_3->top;
 
         if (param_2 != 0) {
             ++x;

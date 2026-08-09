@@ -5,18 +5,37 @@
 // __thiscall: this in ecx, 4 stack params, ret 10h. void return.
 //
 // Calls TPanel::set_rect then updates scrollbar rects based on orientation.
+// Attempt log:
+// 1: baseline natural field reconstruction; exact size/calls but calc_item_rects was a free cdecl helper,
+//    missing EBP and emitted explicit this push/add-esp around both calls.
+// 2: made calc_item_rects a member; call ABI became thiscall, but source still had the wrong register/liveness basin.
+// 3: restored the proven TPanel base size/vptr; emitted code was unchanged.
+// 4: replaced offset aliases with canonical tagRECT members; diff improved to 282 bytes and size/calls stayed exact.
+// 5: compound-update liveness variant moved farther (328 bytes); rolled back to the clean tagRECT candidate.
+// Paused: ordered calls/CFG and exact field offsets are established, but the remaining gap is early register/block
+// topology (not a behavior or call-set uncertainty). Next lead is a natural Pnl_scbr donor/source-order comparison,
+// especially the branch-local declaration order that makes EBP live from the prologue in both orientation arms.
 
-struct TPanel {
-    void set_rect(long param_1, long param_2, long param_3, long param_4);
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
 };
 
-struct TScrollBarPanel {
-    char gap_00[0x0C];
+struct TPanel {
+    virtual ~TPanel();
+    char gap_04[0x0C - 0x04];
     int margin;                // +0x0C (panel edge offset)
     int track_size;            // +0x10 (track dimension in scroll direction)
     int perp_size;             // +0x14 (track dimension perpendicular to scroll)
     int button_size;           // +0x18 (arrow/button dimension)
-    char gap_1C[0x124 - 0x1C];
+    char gap_1C[0xF4 - 0x1C];
+    void set_rect(long param_1, long param_2, long param_3, long param_4);
+};
+
+struct TScrollBarPanel : public TPanel {
+    char gap_F4[0x124 - 0xF4];
     int tab_y;                 // +0x124
     int tab_min_y;             // +0x128
     int tab_max_y;             // +0x12C
@@ -25,81 +44,50 @@ struct TScrollBarPanel {
     int tab_min_x;             // +0x138
     int tab_max_x;             // +0x13C
     char gap_140[0x164 - 0x140];
-    // RECT structs (left, top, right, bottom)
-    int up_rect_left;          // +0x164
-    int up_rect_top;           // +0x168
-    int up_rect_right;         // +0x16C
-    int up_rect_bottom;        // +0x170
-    int down_rect_left;        // +0x174
-    int down_rect_top;         // +0x178
-    int down_rect_right;       // +0x17C
-    int down_rect_bottom;      // +0x180
-    int tab_rect_left;         // +0x184
-    int tab_rect_top;          // +0x188
-    int tab_rect_right;        // +0x18C
-    int tab_rect_bottom;       // +0x190
-    int top_rect_left;         // +0x194
-    int top_rect_top;          // +0x198
-    int top_rect_right;        // +0x19C
-    int top_rect_bottom;       // +0x1A0
-    int bottom_rect_left;      // +0x1A4
-    int bottom_rect_top;       // +0x1A8
-    int bottom_rect_right;     // +0x1AC
-    int bottom_rect_bottom;    // +0x1B0
+    tagRECT up_rect;            // +0x164
+    tagRECT down_rect;          // +0x174
+    tagRECT tab_rect;           // +0x184
+    tagRECT top_rect;           // +0x194
+    tagRECT bottom_rect;        // +0x1A4
     int orientation;           // +0x1B4 (1 = horizontal)
 
     void set_rect(long param_1, long param_2, long param_3, long param_4);
+    void calc_item_rects();
 };
 
-void calc_item_rects(TScrollBarPanel*);
-
 void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
-    ((TPanel*)this)->set_rect(param_1, param_2, param_3, param_4);
+    TPanel::set_rect(param_1, param_2, param_3, param_4);
 
     if (this->orientation == 1) {
         // Horizontal scrollbar layout
-        int v10 = this->track_size;
-        int v18 = this->button_size;
-        int v14 = this->perp_size;
-        int v0C = this->margin;
+        int track = this->track_size;
+        int button = this->button_size;
+        int perp = this->perp_size;
+        int margin = this->margin;
+        int top = track + 2;
+        int bottom = button + track - 5;
+        int up_left = margin + 2;
+        int down_left = perp + margin - button + 2;
+        int down_right = down_left + button - 5;
+        int tab_min = down_right + 1;
 
-        int t1 = v10 + 2;
-        int t2 = v18 + v10 - 5;
-        int t3 = v14 + v0C;
-        t3 = t3 - v18;
-        int t4 = v0C + 2;
-
-        this->up_rect_top = t1;
-        this->down_rect_top = t1;
-        this->tab_rect_top = t1;
-        this->top_rect_top = t1;
-        this->bottom_rect_top = t1;
-
-        this->up_rect_left = t4;
-
-        int t5 = t3 + 2;
-        this->down_rect_left = t5;
-
-        int t6 = t4 + v18 - 5;
-        this->up_rect_bottom = t2;
-        this->up_rect_right = t6;
-
-        int t7 = t5 + v18 - 5;
-        this->down_rect_bottom = t2;
-        this->down_rect_right = t7;
-
-        int t8 = t6 + 1;
-        this->tab_min_x = t8;
-        this->tab_x = t8;
-
-        int t9 = t5 - v18 + 4;
-        this->tab_max_x = t9;
-
-        this->tab_rect_bottom = t2;
-        this->top_rect_bottom = t2;
-        this->bottom_rect_bottom = t2;
-        this->down_rect_bottom = t2;
-        this->down_rect_right = t7;
+        this->up_rect.top = top;
+        this->down_rect.top = top;
+        this->tab_rect.top = top;
+        this->top_rect.top = top;
+        this->bottom_rect.top = top;
+        this->up_rect.left = up_left;
+        this->down_rect.left = down_left;
+        this->up_rect.bottom = bottom;
+        this->up_rect.right = up_left + button - 5;
+        this->down_rect.bottom = bottom;
+        this->down_rect.right = down_right;
+        this->tab_min_x = tab_min;
+        this->tab_x = tab_min;
+        this->tab_max_x = down_left - button + 4;
+        this->tab_rect.bottom = bottom;
+        this->top_rect.bottom = bottom;
+        this->bottom_rect.bottom = bottom;
     } else {
         // Vertical scrollbar layout
         int track = this->track_size;
@@ -112,28 +100,28 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         int scroll_range = total - perp;
         int left = margin + 2;
 
-        this->up_rect_top = top;
+        this->up_rect.top = top;
 
         int down_top = scroll_range + 2;
-        this->down_rect_top = down_top;
+        this->down_rect.top = down_top;
 
         int right = perp + top - 5;
-        this->up_rect_left = left;
-        this->tab_rect_left = left;
-        this->top_rect_left = left;
-        this->bottom_rect_left = left;
-        this->down_rect_left = left;
+        this->up_rect.left = left;
+        this->tab_rect.left = left;
+        this->top_rect.left = left;
+        this->bottom_rect.left = left;
+        this->down_rect.left = left;
 
         int down_right = perp + left - 5;
-        this->up_rect_right = down_right;
-        this->up_rect_bottom = right;
+        this->up_rect.right = down_right;
+        this->up_rect.bottom = right;
 
         int down_bottom = down_top + perp - 5;
-        this->down_rect_right = down_right;
-        this->down_rect_bottom = down_bottom;
-        this->tab_rect_right = down_right;
-        this->top_rect_right = down_right;
-        this->bottom_rect_right = down_right;
+        this->down_rect.right = down_right;
+        this->down_rect.bottom = down_bottom;
+        this->tab_rect.right = down_right;
+        this->top_rect.right = down_right;
+        this->bottom_rect.right = down_right;
 
         int tab_max = scroll_range - perp + 6;
         this->tab_max_y = tab_max;
@@ -143,5 +131,5 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->tab_y = tab_min;
     }
 
-    calc_item_rects(this);
+    this->calc_item_rects();
 }

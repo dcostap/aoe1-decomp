@@ -58,6 +58,8 @@
 // setup with delayed base loads across constant pushes; no plausible non-volatile axis remains.
 
 // Fresh independent pass 2026-08-09 (orch-luna-47b8b0-w1):
+// New worker probe: reversed cursor/base addition terms from the original cursor-copy/add evidence; VC5
+// canonicalized both forms to the same 176B/70-byte basin, so the clean natural spelling below is retained.
 // probe-034 cursor-first compound coordinate locals: duplicate 176B basin; restored.
 // probe-035 inline extent expressions: 164B / 170 positional diff, structural regression; restored.
 // probe-036 declaration-only virtual destructors: duplicate 176B basin; restored.
@@ -89,7 +91,7 @@ struct TShape {
 
 class TPanel {
 public:
-    virtual void vf00();
+    virtual ~TPanel();
     virtual void vf04();
     virtual void vf08();
     virtual void vf0C();

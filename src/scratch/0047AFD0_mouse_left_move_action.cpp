@@ -1,164 +1,245 @@
-// 0047AFD0 TScrollBarPanel::mouse_left_move_action
+// VA: 0047AFD0 TScrollBarPanel::mouse_left_move_action(long, long, int, int)
+// PDB source: Pnl_scbr.cpp lines 400-547 (991 bytes, 286 asm lines)
+// Default flags.
+//
 // Attempt log:
-// try 1: packet-grounded reconstruction. Models mode switch for arrow/page/thumb states, delayed repeat arming/cancel, value clamp, redraw/update calls, thumb position calculation, and last mouse tracking.
-// try 2: modeled state dispatch as switch on byte +0x144 with cases 1..5.
-// try 3: modeled cases 1/2/4/5 as is_inside_rect over rects +0x164/+0x174/+0x194/+0x1a4, arm repeat only when +0x148 is zero, and cancel if active when mouse leaves.
-// try 4: modeled debug_timeGetTime calls with line constants 410/429/448/467 and stores to +0x158, +0x154=2.
-// try 5: modeled shared scroll_action calls for arrow/page cases with pairs (0,0), (1,0), (2,0), (3,0) and repaint(1).
-// try 6: modeled drag state +0x1b4==1 as horizontal branch, using x-last_x and h fields +0x134/+0x138/+0x13c/+0x140.
-// try 7: modeled vertical drag branch using y-last_y and v fields +0x124/+0x128/+0x12c/+0x130.
-// try 8: modeled dead-zone edge checks against min/max plus button span and zeroing delta.
-// try 9: modeled clamping updated value, update_scrollbar call, repaint(1), thumb position = (pos-min)*thumb_span/(max-min) clamped to 0..thumb_span-1, then scroll_action(4,newthumb).
-// try 10: modeled final last_x/last_y update only when state != 0.
-// Current validation: exact configured size 991 but broad mismatch (86.1756% positional / 131.3824% edit). First mismatch: rebuilt saves an extra ECX stack slot and uses shifted param offsets; original has no local frame and keeps EBX zero/ESI this/EBP x.
-// GIVEUP blockers: exact TScrollBarPanel field layout/names, avoiding VC5 local spill in drag arithmetic, source shape for shared arrow/page case tails, and correct signed edge-condition topology around thumb dragging. No inline asm used; no accepted_drift proposal.
+// Baseline prior worker: decompiler-shaped field aliases and wrong helper/virtual surfaces; exact size was not
+// meaningful because calls/offset ownership were broad. Reconstructed here with the proven TPanel base/vtable,
+// canonical scrollbar fields, switch-on-item_down topology, and natural arrow/thumb drag control flow.
+// Probe 1: baseline had exact size/prologue but five extra direct scroll sites because the small arrow cases did
+// not tail-merge; first structural gap was the switch table/case layout.
+// Probe 2: ordered cases 1,2,4,5,3 to follow PDB line order; calls became 19/19 and shape rose to 87.84%, with
+// the remaining drift localized to the two thumb-drag arms.
+// Probe 3: put delta positivity before the first edge-field loads; 453-byte drift and a smaller body.
+// Probe 4: split both edge guards into delta-first nested checks and use x/y >= edge spelling; restored exact size,
+// 19 calls, and the best 428-byte mismatch / 86.33% shape.
+// Probe 5: reversed the first edge equality operands; only a two-byte neutral change.
+// Probes 6-8: current/min locals and a scoped min load moved or left code unchanged; restored probe-4 source.
+// Probe 9: separate new_pos locals were compiler-equivalent and left the 428-byte best unchanged.
+// Paused: canonical ownership, ABI, switch case order, call set, and behavior are established. Remaining drift is
+// localized to VC5 register/field-reload topology in the horizontal/vertical clamp guards and switch-table base;
+// further blind variants are not justified without a new donor/source-order lead.
 
-extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
-extern char pnl_scbr_cpp_path[];
+extern unsigned long debug_timeGetTime(const char* file, int line);
 
-struct Rect { long left, top, right, bottom; };
-
-class TScrollBarPanel {
-public:
-    void* vftable;
-    char gap04[0xf4]; int thumb_span;
-    char gap0fc[0x28]; int h_pos; int h_min; int h_button; int h_max; int h_page; int h_drag;
-    int v_pos; int v_min; int v_button; int v_max; int v_page; unsigned char state; char gap145[3]; int active; int last_x; int last_y; unsigned char repeat_mode; char gap155[3]; unsigned long repeat_time;
-    char gap15c[8]; Rect r1; Rect r2; char gap184[0x10]; Rect r4; Rect thumb;
-    int is_inside_rect(long x, long y, Rect* r);
-    void update_scrollbar();
-    void scroll_action(int part, int value);
-    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void repaint(int);
-    long mouse_left_move_action(long x, long y, int a, int b);
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
 };
 
-long TScrollBarPanel::mouse_left_move_action(long x, long y, int a, int b)
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void redraw(int flag); // vtable slot 8 (+20h)
+
+    int is_inside_rect(long x, long y, tagRECT* rect);
+
+    char gap_04[0xF0]; // TPanel ends at +0xF4
+};
+
+class TScrollBarPanel : public TPanel {
+public:
+    char gap_F4[4];
+    long list_len;              // +0xF8
+    char gap_FC[0x124 - 0xFC];
+    long tab_y;                 // +0x124
+    long tab_min_y;             // +0x128
+    long tab_max_y;             // +0x12C
+    long tab_mouse_y;           // +0x130
+    long tab_x;                 // +0x134
+    long tab_min_x;             // +0x138
+    long tab_max_x;             // +0x13C
+    long tab_mouse_x;           // +0x140
+    unsigned char item_down;    // +0x144
+    char gap_145[3];
+    int item_is_down;           // +0x148
+    long item_x;                // +0x14C
+    long item_y;                // +0x150
+    unsigned char item_mode;    // +0x154
+    char gap_155[3];
+    unsigned long item_last_time; // +0x158
+    char gap_15C[8];
+    tagRECT up_rect;            // +0x164
+    tagRECT down_rect;          // +0x174
+    tagRECT tab_rect;           // +0x184
+    tagRECT top_rect;           // +0x194
+    tagRECT bottom_rect;        // +0x1A4
+    long orientation;           // +0x1B4 (1 = horizontal)
+
+    void scroll(int action, long param);
+    void calc_item_rects();
+    virtual long mouse_left_move_action(long x, long y, int key, int flags);
+};
+
+long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
 {
     int delta;
-    int pos;
-    int minv;
-    int maxv;
-    int range;
-    int newthumb;
+    long value;
 
-    switch (this->state) {
+    switch (this->item_down) {
     case 1:
-        if (this->is_inside_rect(x, y, &this->r1)) {
-            if (this->active == 0) {
-                this->active = 1;
-                this->repeat_mode = 2;
-                this->repeat_time = debug_timeGetTime(pnl_scbr_cpp_path, 410);
-                this->scroll_action(0, 0);
-                this->repaint(1);
+        if (this->is_inside_rect(x, y, &this->up_rect)) {
+            if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x19A);
+                this->scroll(0, 0);
+                this->redraw(1);
             }
-        } else if (this->active != 0) {
-            this->active = 0;
-            this->repeat_mode = 0;
-            this->repaint(1);
+        } else if (this->item_is_down != 0) {
+            this->item_is_down = 0;
+            this->item_mode = 0;
+            this->redraw(1);
         }
         break;
+
     case 2:
-        if (this->is_inside_rect(x, y, &this->r2)) {
-            if (this->active == 0) {
-                this->active = 1;
-                this->repeat_mode = 2;
-                this->repeat_time = debug_timeGetTime(pnl_scbr_cpp_path, 429);
-                this->scroll_action(1, 0);
-                this->repaint(1);
+        if (this->is_inside_rect(x, y, &this->down_rect)) {
+            if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1AD);
+                this->scroll(1, 0);
+                this->redraw(1);
             }
-        } else if (this->active != 0) {
-            this->active = 0;
-            this->repeat_mode = 0;
-            this->repaint(1);
+        } else if (this->item_is_down != 0) {
+            this->item_is_down = 0;
+            this->item_mode = 0;
+            this->redraw(1);
         }
         break;
+
+    case 4:
+        if (this->is_inside_rect(x, y, &this->top_rect)) {
+            if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1C0);
+                this->scroll(2, 0);
+                this->redraw(1);
+            }
+        } else if (this->item_is_down != 0) {
+            this->item_is_down = 0;
+            this->item_mode = 0;
+            this->redraw(1);
+        }
+        break;
+
+    case 5:
+        if (this->is_inside_rect(x, y, &this->bottom_rect)) {
+            if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1D3);
+                this->scroll(3, 0);
+                this->redraw(1);
+            }
+        } else if (this->item_is_down != 0) {
+            this->item_is_down = 0;
+            this->item_mode = 0;
+            this->redraw(1);
+        }
+        break;
+
     case 3:
-        if (this->h_drag == 1) {
-            delta = x - this->last_x;
-            if (delta > 0) this->h_button;
-            pos = this->h_pos;
-            minv = this->h_min;
-            maxv = this->h_max;
-            if (minv == maxv && delta > 0 && x < minv + this->h_page) delta = 0;
-            if (minv == this->h_button && delta < 0 && x >= minv + this->h_page) delta = 0;
-            if (delta != 0) {
-                pos = this->h_pos + delta;
-                this->h_pos = pos;
-                if (pos < maxv) this->h_pos = maxv;
-                else if (pos > this->h_button) this->h_pos = this->h_button;
-                this->update_scrollbar();
-                this->repaint(1);
-                minv = this->h_min;
-                maxv = this->h_button;
-                if (minv == maxv) newthumb = 0;
-                else {
-                    newthumb = (this->h_pos - minv) * this->thumb_span / (maxv - minv);
-                    if (newthumb < 0) newthumb = 0;
-                    else if (newthumb > this->thumb_span - 1) newthumb = this->thumb_span - 1;
+        if (this->orientation == 1) {
+            delta = x - this->item_x;
+            if (delta > 0) {
+                if ((this->tab_x == this->tab_min_x) &&
+                    (x < this->tab_mouse_x + this->tab_x)) {
+                    delta = 0;
                 }
-                this->scroll_action(4, newthumb);
+            }
+            if (this->tab_x == this->tab_max_x) {
+                if ((delta < 0) && (x >= this->tab_mouse_x + this->tab_x)) {
+                    delta = 0;
+                }
+            }
+            if (delta != 0) {
+                int new_pos = this->tab_x + delta;
+                this->tab_x = new_pos;
+                if (new_pos < this->tab_min_x) {
+                    this->tab_x = this->tab_min_x;
+                } else if (this->tab_max_x < new_pos) {
+                    this->tab_x = this->tab_max_x;
+                }
+                this->calc_item_rects();
+                this->redraw(1);
+                if (this->tab_min_x == this->tab_max_x) {
+                    value = 0;
+                } else {
+                    value = ((this->tab_x - this->tab_min_x) * this->list_len) /
+                            (this->tab_max_x - this->tab_min_x);
+                    if (value < 0) {
+                        value = 0;
+                    } else {
+                        long max_value = this->list_len - 1;
+                        if (max_value < value) {
+                            value = max_value;
+                        }
+                    }
+                }
+                this->scroll(4, value);
             }
         } else {
-            delta = y - this->last_y;
-            if (delta > 0) this->v_min;
-            pos = this->v_pos;
-            minv = this->v_min;
-            maxv = this->v_max;
-            if (minv == maxv && delta > 0 && y < minv + this->v_page) delta = 0;
-            if (minv == this->v_button && delta < 0 && y >= minv + this->v_page) delta = 0;
-            if (delta != 0) {
-                pos = this->v_pos + delta;
-                this->v_pos = pos;
-                if (pos < maxv) this->v_pos = maxv;
-                else if (pos > this->v_button) this->v_pos = this->v_button;
-                this->update_scrollbar();
-                this->repaint(1);
-                minv = this->v_min;
-                maxv = this->v_button;
-                if (minv == maxv) newthumb = 0;
-                else {
-                    newthumb = (this->v_pos - minv) * this->thumb_span / (maxv - minv);
-                    if (newthumb < 0) newthumb = 0;
-                    else if (newthumb > this->thumb_span - 1) newthumb = this->thumb_span - 1;
+            delta = y - this->item_y;
+            if (delta > 0) {
+                if ((this->tab_y == this->tab_min_y) &&
+                    (y < this->tab_mouse_y + this->tab_y)) {
+                    delta = 0;
                 }
-                this->scroll_action(4, newthumb);
             }
-        }
-        break;
-    case 4:
-        if (this->is_inside_rect(x, y, &this->r4)) {
-            if (this->active == 0) {
-                this->active = 1;
-                this->repeat_mode = 2;
-                this->repeat_time = debug_timeGetTime(pnl_scbr_cpp_path, 448);
-                this->scroll_action(2, 0);
-                this->repaint(1);
+            if (this->tab_y == this->tab_max_y) {
+                if ((delta < 0) && (y >= this->tab_mouse_y + this->tab_y)) {
+                    delta = 0;
+                }
             }
-        } else if (this->active != 0) {
-            this->active = 0;
-            this->repeat_mode = 0;
-            this->repaint(1);
-        }
-        break;
-    case 5:
-        if (this->is_inside_rect(x, y, &this->thumb)) {
-            if (this->active == 0) {
-                this->active = 1;
-                this->repeat_mode = 2;
-                this->repeat_time = debug_timeGetTime(pnl_scbr_cpp_path, 467);
-                this->scroll_action(3, 0);
-                this->repaint(1);
+            if (delta != 0) {
+                int new_pos = this->tab_y + delta;
+                this->tab_y = new_pos;
+                if (new_pos < this->tab_min_y) {
+                    this->tab_y = this->tab_min_y;
+                } else if (this->tab_max_y < new_pos) {
+                    this->tab_y = this->tab_max_y;
+                }
+                this->calc_item_rects();
+                this->redraw(1);
+                if (this->tab_min_y == this->tab_max_y) {
+                    value = 0;
+                } else {
+                    value = ((this->tab_y - this->tab_min_y) * this->list_len) /
+                            (this->tab_max_y - this->tab_min_y);
+                    if (value < 0) {
+                        value = 0;
+                    } else {
+                        long max_value = this->list_len - 1;
+                        if (max_value < value) {
+                            value = max_value;
+                        }
+                    }
+                }
+                this->scroll(4, value);
             }
-        } else if (this->active != 0) {
-            this->active = 0;
-            this->repeat_mode = 0;
-            this->repaint(1);
         }
         break;
     }
-    if (this->state != 0) {
-        this->last_x = x;
-        this->last_y = y;
+
+    if (this->item_down != 0) {
+        this->item_x = x;
+        this->item_y = y;
     }
     return 0;
 }
