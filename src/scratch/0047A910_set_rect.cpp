@@ -15,6 +15,9 @@
 // Paused: ordered calls/CFG and exact field offsets are established, but the remaining gap is early register/block
 // topology (not a behavior or call-set uncertainty). Next lead is a natural Pnl_scbr donor/source-order comparison,
 // especially the branch-local declaration order that makes EBP live from the prologue in both orientation arms.
+// New worker: function-scope/shared-range and in-place arithmetic variants improved emitted shape only to a duplicate
+// 275-byte basin; virtual-member declaration with an explicit qualified base call preserved the direct ABI but made no
+// body change. Restored the clean canonical tagRECT source; EBP still is not saved in the prologue.
 
 struct tagRECT {
     long left;

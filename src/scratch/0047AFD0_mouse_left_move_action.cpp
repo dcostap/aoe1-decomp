@@ -19,8 +19,12 @@
 // Paused: canonical ownership, ABI, switch case order, call set, and behavior are established. Remaining drift is
 // localized to VC5 register/field-reload topology in the horizontal/vertical clamp guards and switch-table base;
 // further blind variants are not justified without a new donor/source-order lead.
+// New worker: natural member compound updates (`tab_x += delta`, `tab_y += delta`) improved the exact-size basin from
+// 428 to 320 bytes with 92.39% shape and 81.47% exact-block coverage. Current-position and operand-order variants
+// were worse or duplicate; retain the compound-update source as the best plausible candidate. Remaining drift is
+// localized to edge/clamp reload/register topology and the extracted switch-table relocation.
 
-extern unsigned long debug_timeGetTime(const char* file, int line);
+extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 struct tagRECT {
     long left;
@@ -169,11 +173,10 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                 }
             }
             if (delta != 0) {
-                int new_pos = this->tab_x + delta;
-                this->tab_x = new_pos;
-                if (new_pos < this->tab_min_x) {
+                this->tab_x += delta;
+                if (this->tab_x < this->tab_min_x) {
                     this->tab_x = this->tab_min_x;
-                } else if (this->tab_max_x < new_pos) {
+                } else if (this->tab_x > this->tab_max_x) {
                     this->tab_x = this->tab_max_x;
                 }
                 this->calc_item_rects();
@@ -208,11 +211,10 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                 }
             }
             if (delta != 0) {
-                int new_pos = this->tab_y + delta;
-                this->tab_y = new_pos;
-                if (new_pos < this->tab_min_y) {
+                this->tab_y += delta;
+                if (this->tab_y < this->tab_min_y) {
                     this->tab_y = this->tab_min_y;
-                } else if (this->tab_max_y < new_pos) {
+                } else if (this->tab_y > this->tab_max_y) {
                     this->tab_y = this->tab_max_y;
                 }
                 this->calc_item_rects();
