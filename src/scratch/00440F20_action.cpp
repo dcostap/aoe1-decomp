@@ -1,113 +1,396 @@
-// 00440F20 TribeSendMessageDialog::action
+// TribeSendMessageDialog::action
+// VA: 00440F20
+// PDB source: dlg_smsg.cpp
+//
 // Attempt log:
-// 1: behavior reconstruction from packet/Ghidra: send/close/help/filter buttons and fallback base action.
-// 2: initial helper-based copy/send source compiled under-size (1104); inlined COPY_LINE/SEND_CHAT macros grew to 1232.
-// 3: changed COPY_LINE to repeat currentLine() calls like original; reached exact 1264-byte size under default /O2 /Oy.
-// 4: fixed player-button branch to toggle the four filter buttons at +504/+508/+50C/+510 instead of treating them as contiguous playerButtons[8..11].
-// 5: /Od probe reached exact size but wrong EBP/debug-frame basin (81.0127% positional / 164.7943% edit) and was removed.
-// 6: best exact-size /O2 attempt still broad mismatch (75.7911% positional / 90.5854% edit). First mismatch is early branch layout: original sends many cases to shared late epilogues/checkButtons tails, while natural source emits early returns and different block placement. Remaining gap is control-flow factoring/tail-sharing plus exact typed virtual/global surfaces, not accepted_drift-safe.
+// - Rebuilt the decompiler-shaped fastcall/raw-address attempt around the
+//   typed dialog, panel, game/world/player, communications, and debug-log
+//   surfaces evidenced by dlg_smsg.cpp and exact same-TU donors.
+// - Delayed the check-button pointer until dispatch and changed the null
+//   fallback to a natural outer non-null guard; this restored the original
+//   prologue/CFG family and the 0x44 frame.
+// - A diagnostic cross-member check[22] cursor restored the original register
+//   topology and reached 174 differing bytes, but was normalized back to
+//   direct checkButton[i]/commPlayers[i] ownership for living source.
+// - Direct named checkButton members restored the original eight compare
+//   encodings. An explicit radioButton[3] branch produced 154 bytes but added
+//   four entry-reachable bytes beyond the original boundary, so it is not kept.
+// - The remaining documented drift is the compiler's merged no-match tail:
+//   the oracle has a dead radioButton[3] reload and a separate sixth
+//   checkButtons call; the natural typed candidate retains five calls.
 
 #include <string.h>
 
-typedef unsigned long ulong;
-class TPanel {};
-class TEditPanel { public: char* currentLine(); void set_text(char*); };
-class ScreenGame { public: void display_system_message(char*); };
-class PanelSystem { public: int setCurrentPanel(char*, int); int destroyPanel(char*); };
-class Comm { public: void SendGroupChatMsg(char*); };
-class Log { public: void LogMsg(char*, ...); };
-class PlayerObj { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual int canAlly(int); virtual int canEnemy(int); short pad4a; };
-class BaseGame { public: void** vf; char gap[0x1B0-4]; int state; char gap2[0x3F4-0x1B4]; void* player; int chat(short,char*); int multiplayerGame(); int play_sound(int); int playerID(int); };
-class Button { public: virtual void f0(); char gap[0xE0-4]; virtual void set_checked(int); };
+class TDrawArea;
+class TButtonPanel;
+class TEditPanel;
+class TTextPanel;
+class TInputPanel;
+class TDropDownPanel;
+class TListPanel;
+class TScrollBarPanel;
+class TVerticalSliderPanel;
+class THorizontalSliderPanel;
+class TPanel;
 
-extern BaseGame* rge_base_game;
-extern Comm* comm;
-extern Log* L;
-extern PanelSystem panel_system;
-
-class TribeSendMessageDialog {
+class TPanel {
 public:
-    char gap0[0x40];
-    ScreenGame* screen; // +40
-    char gap44[0x4D4-0x44];
-    Button* playerButtons[8]; // +4D4
-    char gap4f4[0x504-0x4F4];
-    TPanel* alliesButton; // +504
-    TPanel* enemiesButton; // +508
-    TPanel* allButton; // +50C
-    TPanel* noneButton; // +510
-    char gap514[4];
-    TEditPanel* edit; // +518
-    char gap51c[4];
-    TPanel* sendButton; // +520
-    TPanel* helpButton; // +524
-    long action(TPanel*, long, ulong, ulong);
-    void checkButtons();
-    void setup_popup_help();
-    long base_action(TPanel*, long, ulong, ulong);
+    virtual ~TPanel();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void v20();
+    virtual void v24();
+    virtual void v28();
+    virtual void v2C();
+    virtual void v30();
+    virtual void v34();
+    virtual void v38();
+    virtual void v3C();
+    virtual void v40();
+    virtual void v44();
+    virtual void v48();
+    virtual void v4C();
+    virtual void v50();
+    virtual void v54();
+    virtual void v58();
+    virtual void v5C();
+    virtual void v60();
+    virtual void v64();
+    virtual void v68();
+    virtual void v6C();
+    virtual void v70();
+    virtual void v74();
+    virtual void v78();
+    virtual void v7C();
+    virtual void v80();
+    virtual void v84();
+    virtual void v88();
+    virtual void v8C();
+    virtual void v90();
+    virtual void v94();
+    virtual void v98();
+    virtual void v9C();
+    virtual void vA0();
+    virtual void vA4();
+    virtual void vA8();
+    virtual void vAC();
+    virtual void vB0();
+    virtual long action(TPanel* panel, long code, unsigned long a,
+                        unsigned long b);
+    virtual void vB8();
+    virtual void vBC();
+    virtual void vC0();
+    virtual void vC4();
+    virtual void vC8();
+    virtual void vCC();
+    virtual void vD0();
+    virtual void vD4();
+    virtual void vD8();
+    virtual void vDC();
+    virtual void draw_background(int enabled);
+
+    char gap_04[0x3C];
+    TPanel* parent_panel; // +0x40
+    char gap_44[0x14];
+    int player_number; // +0x58, the dialog's per-button player id
+    char gap_5C[0x98];
 };
 
+class TTextPanel : public TPanel {
+};
 
-#define COPY_LINE(edit,out) do { if ((edit)->currentLine() && *(edit)->currentLine()) strcpy((out), (edit)->currentLine()); else (out)[0]=0; } while(0)
-#define SEND_CHAT(msg,screen) do {     int player = *(short*)((char*)rge_base_game->player + 0x7c);     if (!rge_base_game->chat((short)player, (msg))) {         if (rge_base_game->multiplayerGame()) {             if (rge_base_game->state != 5) {                 comm->SendGroupChatMsg((msg));                 L->LogMsg((char*)0x584440, *(int*)((char*)rge_base_game->player + 4), (msg));             }         } else {             rge_base_game->play_sound(2);             (screen)->display_system_message((msg));         }     } } while(0)
+class TEditPanel : public TTextPanel {
+public:
+    char* currentLine();
+    void set_text(char* text);
+};
 
-long TribeSendMessageDialog::action(TPanel* panel, long p2, ulong p3, ulong p4)
+class TButtonPanel : public TPanel {
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_F4[0x384];
+    void setup_popup_help();
+};
+
+class TDialogPanel : public TEasy_Panel {
+public:
+    char gap_478[0x18];
+};
+
+class TPanelSystem {
+public:
+    int setCurrentPanel(char* name, int mode);
+    int destroyPanel(char* name);
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual char* aiStatus(int mode);
+    virtual int isEnemy(int player);
+    virtual int isAlly(int player);
+
+    char gap_04[0x46];
+    short id; // +0x4A
+};
+
+class RGE_Game_World {
+public:
+    virtual unsigned char data_load_world(void* file);
+    unsigned int world_time; // +0x04
+    char gap_08[0x38];
+    RGE_Player** players; // +0x40
+    char gap_44[0x38];
+    short curr_player; // +0x7C
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void v20();
+    virtual void v24();
+    virtual void v28();
+    virtual void v2C();
+    virtual void v30();
+    virtual void v34();
+    virtual void v38();
+    virtual void v3C();
+    virtual void v40();
+    virtual void v44();
+    virtual void v48();
+    virtual void v4C();
+    virtual void v50();
+    virtual int processCheatCode(int player, char* text);
+
+    char gap_04[0x1AC];
+    int prog_mode; // +0x1B0
+    char gap_1B4[0x240];
+    RGE_Game_World* world; // +0x3F4
+
+    int multiplayerGame();
+    int play_sound(int sound_id);
+    int playerID(int player);
+};
+
+class TCommunications_Handler {
+public:
+    void SendGroupChatMsg(char* text);
+};
+
+class TDebuggingLog {
+public:
+    void Log(const char* format, ...);
+};
+
+class TRIBE_Screen_Game {
+public:
+    void display_system_message(char* text);
+};
+
+extern TPanelSystem panel_system;
+extern RGE_Base_Game* rge_base_game;
+extern TCommunications_Handler* comm;
+extern TDebuggingLog* L;
+
+class TribeSendMessageDialog : public TDialogPanel {
+public:
+    TTextPanel* title; // +0x490
+    TTextPanel* playerName[8]; // +0x494
+    TTextPanel* playerCivilization[8]; // +0x4B4
+    TButtonPanel* checkButton[8]; // +0x4D4
+    TTextPanel* radioTitle[4]; // +0x4F4
+    TButtonPanel* radioButton[4]; // +0x504
+    void* radioButtonShapes; // +0x514
+    TEditPanel* chatInput; // +0x518
+    TTextPanel* chatTitle; // +0x51C
+    TButtonPanel* okButton; // +0x520
+    TButtonPanel* help_button; // +0x524
+    void* backgroundPics; // +0x528
+    int commPlayers[8]; // +0x52C
+
+    virtual long action(TPanel* panel, long code, unsigned long a,
+                        unsigned long b);
+    void checkButtons();
+};
+
+long TribeSendMessageDialog::action(TPanel* panel, long code,
+                                    unsigned long a, unsigned long b)
 {
-    char save_msg[0x42];
-    if (panel) {
-        if (panel == (TPanel*)this->edit) {
-            if (p2) return 1;
-            ScreenGame* scr = this->screen;
-            COPY_LINE(this->edit, save_msg);
-            if (!*save_msg) return 1;
-            SEND_CHAT(save_msg, scr);
-            this->edit->set_text((char*)0x592A40);
-            return 1;
-        }
-        if (panel == this->sendButton) {
-            if (p2 != 1) { this->checkButtons(); return 1; }
-            this->checkButtons();
-            ScreenGame* scr = this->screen;
-            COPY_LINE(this->edit, save_msg);
-            panel_system.setCurrentPanel((char*)0x5842CC, 0);
-            panel_system.destroyPanel((char*)0x58442C);
-            if (!*save_msg) return 1;
-            SEND_CHAT(save_msg, scr);
-            return 1;
-        }
-        if (panel == this->helpButton) { this->setup_popup_help(); return 1; }
-        Button** buttons = this->playerButtons;
-        if (panel == (TPanel*)buttons[0] || panel == (TPanel*)buttons[1] || panel == (TPanel*)buttons[2] || panel == (TPanel*)buttons[3] || panel == (TPanel*)buttons[4] || panel == (TPanel*)buttons[5] || panel == (TPanel*)buttons[6] || panel == (TPanel*)buttons[7]) {
-            ((Button*)this->alliesButton)->set_checked(0);
-            ((Button*)this->enemiesButton)->set_checked(0);
-            ((Button*)this->allButton)->set_checked(0);
-            ((Button*)this->noneButton)->set_checked(1);
-            this->checkButtons();
-            return 1;
-        }
-        if (panel == this->alliesButton) {
-            PlayerObj* pl = *(PlayerObj**)(*(int*)((char*)rge_base_game->player + 0x40) + (*(short*)((char*)rge_base_game->player + 0x7c))*4);
-            for (int i=0;i<8;i++) if (buttons[i]) {
-                int pid = rge_base_game->playerID(*(int*)((char*)&buttons[i] + 0x58));
-                buttons[i]->set_checked((pid == *(short*)((char*)pl+0x4a) || pl->canAlly(pid)) ? 1 : 0);
+    char save_msg[66];
+
+    if (panel != 0) {
+    if (panel == this->chatInput) {
+        if (code == 0) {
+            TRIBE_Screen_Game* screen =
+                (TRIBE_Screen_Game*)this->parent_panel;
+
+            if (this->chatInput->currentLine() == 0 ||
+                *this->chatInput->currentLine() == 0)
+                save_msg[0] = 0;
+            else
+                strcpy(save_msg, this->chatInput->currentLine());
+
+            if (save_msg[0] == 0)
+                goto done;
+
+            if (rge_base_game->processCheatCode(
+                    (int)rge_base_game->world->curr_player, save_msg) == 0) {
+                if (rge_base_game->multiplayerGame() != 0) {
+                    if (rge_base_game->prog_mode != 5) {
+                        comm->SendGroupChatMsg(save_msg);
+                        L->Log("$$$ SEND CHAT @%u: %s",
+                               rge_base_game->world->world_time, save_msg);
+                    }
+                }
+                else {
+                    rge_base_game->play_sound(2);
+                    screen->display_system_message(save_msg);
+                }
             }
-            this->checkButtons(); return 1;
+
+            this->chatInput->set_text("");
+            return 1;
         }
-        if (panel == this->enemiesButton) {
-            PlayerObj* pl = *(PlayerObj**)(*(int*)((char*)rge_base_game->player + 0x40) + (*(short*)((char*)rge_base_game->player + 0x7c))*4);
-            for (int i=0;i<8;i++) if (buttons[i]) {
-                int pid = rge_base_game->playerID(*(int*)((char*)&buttons[i] + 0x58));
-                buttons[i]->set_checked((pid != *(short*)((char*)pl+0x4a) && pl->canEnemy(pid)) ? 1 : 0);
-            }
-            this->checkButtons(); return 1;
-        }
-        if (panel == this->allButton) {
-            if (p2 != 1) { this->checkButtons(); return 1; }
-            for (int i=0;i<8;i++) if (buttons[i]) buttons[i]->set_checked(1);
-            this->checkButtons(); return 1;
-        }
-        if (panel == this->noneButton) { this->checkButtons(); return 1; }
-        this->checkButtons(); return 1;
     }
-    return this->base_action(panel, p2, p3, p4);
+
+    else {
+    if (panel == this->okButton) {
+        if (code != 1)
+            goto check_buttons_return;
+
+        this->checkButtons();
+        TRIBE_Screen_Game* screen =
+            (TRIBE_Screen_Game*)this->parent_panel;
+
+        if (this->chatInput->currentLine() == 0 ||
+            *this->chatInput->currentLine() == 0)
+            save_msg[0] = 0;
+        else
+            strcpy(save_msg, this->chatInput->currentLine());
+
+        panel_system.setCurrentPanel("Game Screen", 0);
+        panel_system.destroyPanel("Send Message Dialog");
+
+        if (save_msg[0] == 0)
+            goto done;
+
+        if (rge_base_game->processCheatCode(
+                (int)rge_base_game->world->curr_player, save_msg) != 0)
+            goto done;
+
+        if (rge_base_game->multiplayerGame() != 0) {
+            if (rge_base_game->prog_mode == 5)
+                goto done;
+            comm->SendGroupChatMsg(save_msg);
+            L->Log("$$$ SEND CHAT @%u: %s",
+                   rge_base_game->world->world_time, save_msg);
+            return 1;
+        }
+
+        rge_base_game->play_sound(2);
+        screen->display_system_message(save_msg);
+        return 1;
+    }
+
+    if (panel == this->help_button) {
+        this->setup_popup_help();
+        return 1;
+    }
+
+    if (panel == this->checkButton[0] ||
+        panel == this->checkButton[1] ||
+        panel == this->checkButton[2] ||
+        panel == this->checkButton[3] ||
+        panel == this->checkButton[4] ||
+        panel == this->checkButton[5] ||
+        panel == this->checkButton[6] ||
+        panel == this->checkButton[7]) {
+        this->radioButton[0]->draw_background(0);
+        this->radioButton[1]->draw_background(0);
+        this->radioButton[2]->draw_background(0);
+        this->radioButton[3]->draw_background(1);
+        goto check_buttons_return;
+    }
+
+    if (panel == this->radioButton[0]) {
+        RGE_Player* player = rge_base_game->world->players[
+            rge_base_game->world->curr_player];
+        int i = 0;
+        do {
+            if (this->checkButton[i] != 0) {
+                int player_id = rge_base_game->playerID(
+                    this->commPlayers[i]);
+                if (player_id == player->id || player->isAlly(player_id))
+                    this->checkButton[i]->draw_background(1);
+                else
+                    this->checkButton[i]->draw_background(0);
+            }
+            ++i;
+        } while (i < 8);
+        this->checkButtons();
+        return 1;
+    }
+
+    if (panel == this->radioButton[1]) {
+        RGE_Player* player = rge_base_game->world->players[
+            rge_base_game->world->curr_player];
+        int i = 0;
+        do {
+            if (this->checkButton[i] != 0) {
+                int player_id = rge_base_game->playerID(
+                    this->commPlayers[i]);
+                if (player_id == player->id || player->isEnemy(player_id) == 0)
+                    this->checkButton[i]->draw_background(0);
+                else
+                    this->checkButton[i]->draw_background(1);
+            }
+            ++i;
+        } while (i < 8);
+        this->checkButtons();
+        return 1;
+    }
+
+    if (panel == this->radioButton[2]) {
+        if (code == 1) {
+            int i = 0;
+            do {
+                if (this->checkButton[i] != 0)
+                    this->checkButton[i]->draw_background(1);
+                ++i;
+            } while (i < 8);
+            this->checkButtons();
+            return 1;
+        }
+        goto check_buttons_return;
+    }
+
+    this->checkButtons();
+    return 1;
+
+check_buttons_return:
+    this->checkButtons();
+    }
+done:
+    return 1;
+    }
+
+    return TPanel::action(panel, code, a, b);
 }

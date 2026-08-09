@@ -6,6 +6,18 @@
 // 3: split chat-group draw_background predicate into explicit branches; restored missing virtual call (50/50), -9 bytes, 84.78% diff.
 // 4: reordered vtable/field initialization and loop surfaces; no localized improvement; exact code remains broad mismatch.
 // 5: final validated build is size 1615/1623, frame 0x80/0x80, 50/50 calls, 87.8004% strict diff, first mismatch +002F.
+// 6: restored the earlier natural initializer surface (implicit derived
+//     vtable store, literal null title, and late check cursor); this is the
+//     prior 1376-byte best basin and avoids an explicit vtable/raw-zero hack.
+// 7: positive shape guard and an explicit shape-null boolean were optimized
+//     to the same code; no structural movement.
+// 8: hoisting/reordering the row cursor and y local had no codegen effect.
+// 9: raw integer cursor arithmetic for the proven +0x58/player-row relation
+//     also collapsed to the same 1376-byte basin; restored typed cursor form.
+// Main-agent audit replaced fixed string addresses and cross-member pointer
+// arithmetic with literals and direct playerName/playerCivilization/checkButton/
+// commPlayers row ownership. The canonical source validates at 1605 bytes with
+// all 50 calls retained; exact constructor scheduling remains unresolved.
 // Blocker: constructor initialization/register basin and early EH/base-ctor relocation remain broad; left in scratch, not accepted_drift-safe.
 
 class TDrawArea;
@@ -162,21 +174,16 @@ public:
 };
 
 TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
-    : TDialogPanel((char*)0x58442C)
+    : TDialogPanel("Send Message Dialog")
 {
-    TButtonPanel** check;
     int humanity;
     int world_humanity;
     RGE_Game_World* world;
     int id;
-    int offset;
     char temp_str[100];
 
     int n;
-    int zero = 0;
-    *(int*)this = 0x56FFC0;
-    title = (TTextPanel*)zero;
-    check = checkButton;
+    title = 0;
     for (n = 0; n < 8; ++n) {
         playerName[n] = 0;
         playerCivilization[n] = 0;
@@ -193,7 +200,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     help_button = 0;
     backgroundPics = 0;
 
-    TShape* shape = new TShape((char*)0x5842F8, 0xC63A);
+    TShape* shape = new TShape("dlg_plbn.shp", 0xC63A);
     backgroundPics = shape;
     if (shape == 0)
         return;
@@ -208,6 +215,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     humanity = 1;
     world = rge_base_game->world;
     int y = 0x28;
+    int row = 0;
     do {
         id = rge_base_game->playerID(humanity);
         if (id != 0) {
@@ -235,32 +243,31 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
             }
 
             int font = special ? 8 : 11;
-            if (!create_text(this, (TTextPanel**)((char*)check - 0x40),
+            if (!create_text(this, &playerName[row],
                              comm->GetPlayerName(humanity), 0x32, y, 0xBE, 0x1E,
                              font, 0, 1, 0))
                 return;
 
-            offset = id << 2;
             rge_base_game->language(0x69, world->players[id]->master_player_id,
                                     0, temp_str + 4, 100);
-            if (!create_text(this, (TTextPanel**)((char*)check - 0x20),
+            if (!create_text(this, &playerCivilization[row],
                              temp_str + 4, 0x104, y, 0x78, 0x1E, 0x0B, 0, 1, 0))
                 return;
 
             if (humanity != comm->WhoAmI()) {
                 int h = comm->GetPlayerHumanity(humanity);
                 if (h == 2 || comm->GetPlayerHumanity(humanity) == 4) {
-                    if (!create_check_box(this, check, 10, y, 0x1E, 0x1E, 0, 0))
+                    if (!create_check_box(this, &checkButton[row], 10, y, 0x1E, 0x1E, 0, 0))
                         return;
-                    (*check)->set_help_info(0x767F, -1);
+                    checkButton[row]->set_help_info(0x767F, -1);
                     if (chat->inChatGroup(humanity) != 0)
-                        (*check)->draw_background(1);
+                        checkButton[row]->draw_background(1);
                     else
-                        (*check)->draw_background(0);
+                        checkButton[row]->draw_background(0);
                 }
             }
-            (*(int*)((char*)check + 0x58)) = humanity;
-            ++check;
+            commPlayers[row] = humanity;
+            ++row;
             y += 0x1E;
         }
         ++humanity;
@@ -268,7 +275,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
 
     if (!create_text(this, &chatTitle, 0x2668, 10, 0x13B, 0x78, 0x1E, 4, 1, 1, 0))
         return;
-    if (!create_edit(this, &chatInput, (char*)0x592A40, 0x41, 0, 0x82,
+    if (!create_edit(this, &chatInput, "", 0x41, 0, 0x82,
                      0x13B, 0x17C, 0x17, 0x0B, 1, 0))
         return;
     chatInput->set_help_info(0x767A, -1);
