@@ -11,9 +11,15 @@
 //   improvement. Remaining structural drift is the 0x34 target frame and
 //   start-sentinel/register/stack-home topology around Map_Stack cliff; no
 //   register-forcing or opaque local scaffold was retained.
+// - Restored the rolling start-point update proved by the executable after
+//   each draw/invalidate segment. A diagnostic overlap of the stack node with
+//   the float out parameter was rejected; the canonical source keeps distinct
+//   named objects and the original 0x34 frame (754 bytes, 15 aligned calls,
+//   92.80% shape, 577 differing bytes).
+// - The final row-base/column locals preserve the observed cell load order;
+//   remaining drift is early register and block scheduling.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
-static char rmm_clif_cpp[] = "C:\\msdev\\work\\age1_x1\\rmm_clif.cpp";
 
 struct Map_Stack {
     long x;
@@ -23,6 +29,8 @@ struct Map_Stack {
     Map_Stack* next;
     Map_Stack* prev;
 };
+
+struct RGE_Tile;
 
 class RGE_Map {
 public:
@@ -44,7 +52,7 @@ public:
     void* parent;
     void* list;
     RGE_Map* map;
-    void* map_row_offset;
+    RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
     float schedule;
@@ -90,8 +98,8 @@ public:
 
 void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
     long start_x = -1;
+    long variance = this->info.cliff_size_variance;
     long start_y = -1;
-    long x;
     long y;
     long valid_height;
     long index;
@@ -101,11 +109,9 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
     unsigned char first_cliff;
     unsigned char cliff_end_found;
     Map_Stack cliff;
-    float stack_cost;
-
-    cost = ((debug_rand(rmm_clif_cpp, 0xc4) *
-                 this->info.cliff_size_variance * 2) / 0x7fff +
-            this->info.average_cliff_size) - this->info.cliff_size_variance;
+    cost = ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 0xc4) *
+                 variance * 2) / 0x7fff +
+            this->info.average_cliff_size) - variance;
     first_cliff = 1;
     if (this->valid_cliff_sites.next == 0) {
         return;
@@ -114,13 +120,18 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
         return;
     }
 
+    float stack_cost;
     this->init_stack(&cliff);
+    unsigned char* map_row;
+    long column;
     do {
         this->pop_stack(&this->valid_cliff_sites, &y, &valid_height,
                         &stack_cost);
-    } while (this->search_map_rows[valid_height][y] == 0 &&
+        map_row = this->search_map_rows[valid_height];
+        column = y;
+    } while (map_row[column] == 0 &&
              this->valid_cliff_sites.next != 0);
-    if (this->search_map_rows[valid_height][y] == 0) {
+    if (map_row[column] == 0) {
         return;
     }
 
@@ -128,12 +139,12 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
     this->push_stack(&cliff, y, valid_height, 0.0f, 0.0f);
     this->search_map_rows[valid_height][y] = 0;
 
-    direction = (debug_rand(rmm_clif_cpp, 0xdd) * 4) / 0x7fff;
+    direction = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 0xdd) * 4) / 0x7fff;
     this_cliff_size = 0;
     if (cost > 0) {
         do {
             cliff_end_found = 0;
-            long turn = (debug_rand(rmm_clif_cpp, 0xe3) * 100) / 0x7fff;
+            long turn = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 0xe3) * 100) / 0x7fff;
             if (turn < 0x12) {
                 if (direction < 1) {
                     direction = 3;
@@ -175,6 +186,8 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
                              y * 3 + 1, valid_height * 3 + 1, 1, 0x10);
         this->map->draw_rect(start_x * 3 + 1, start_y * 3 + 1,
                              y * 3 + 1, valid_height * 3 + 1, 0, 0);
+        start_x = y;
+        start_y = valid_height;
         this->invalidate_cliff_area(y, valid_height, this->info.cliff_to_cliff_spacing);
     }
 }

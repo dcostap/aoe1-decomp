@@ -12,6 +12,12 @@
 //   eligible improvement; register-qualified parameters and declaration-order
 //   reordering were rolled back. Remaining drift is early parameter-home
 //   coloring plus the row-base/stack-node address schedule.
+// - Bounded follow-up established that reusing x as the clipped right bound is
+//   both natural and required by the executable's parameter-home behavior.
+//   The retained source is 248 bytes with 181 differing bytes and 89.89% shape;
+//   exact base-field types and cursor declaration scope were codegen-neutral.
+//   The cross-axis second clipping comparison is an original behavior defect,
+//   documented at the statement below.
 
 struct Map_Stack {
     long x;
@@ -22,6 +28,8 @@ struct Map_Stack {
     Map_Stack* prev;
 };
 
+struct RGE_Tile;
+
 class RGE_Random_Map_Module {
 public:
     virtual unsigned char generate(void);
@@ -29,10 +37,10 @@ public:
     void* parent;
     void* list;
     void* map;
-    void* map_row_offset;
+    RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
-    char gap_1c[4];
+    float schedule;
     unsigned char* search_map;
     unsigned char** search_map_rows;
     Map_Stack* stack_array;
@@ -89,6 +97,8 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
     if (x > cliff_width2) {
         x = cliff_width2;
     }
+    // The executable compares the clipped horizontal bound here; preserve
+    // this original cross-axis clipping bug.
     if (x > cliff_height2) {
         cliff_y2 = cliff_height2;
     }
