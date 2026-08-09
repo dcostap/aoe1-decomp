@@ -16,23 +16,27 @@
 //     strcmp gets inlined by VC5 into the exact 2-byte comparison loop with sbb result!
 //     256 bytes vs 259 (3 bytes short)
 // 7: Goto block ordering experiment - 240 bytes (worse)
+// 8: Outer `fh != -1` guard - restores the original late fd-failure block;
+//    this is the same natural VC5 source shape proven by World.cpp donors.
+// 9: Restored the slot-0xC8 load_world(int) ABI from the class reference; the
+//    fd argument is shared before the version branch by the two call arms.
 //
-// === Current status (6b) ===
+// === Current status (probe 9) ===
 //
 // Matches:
 // - Prologue: sub esp,0x134; mov [world_update_counter],0; push ebx,ebp; mov ebp,ecx; push esi,edi ✓
-// - vtable dispatch: mov ebx,[ebp]; call [ebx+0xB8] / call [ebx+0xC8] ✓
+// - vtable dispatch: mov ebx,[ebp]; call [ebx+0xB8] / load_world(fh) at [ebx+0xC8] ✓
 // - sprintf, rge_open, rge_read calls ✓
 // - Inline strcmp: 2-byte loop with sbb/sbb result pattern ✓
 // - Return paths (3: fd==-1, version mismatch, success) ✓
 // - Epilogue registers: pop edi,esi,ebp,ebx; add esp,0x134; ret 4 ✓
 // - Frame size: 0x134 (308 bytes) ✓
-//
-// Remaining gap (3 bytes):
-// - Block ordering: fd==-1 handler is inline (jne skip) instead of at end (je handler)
-//   This is a VC5 block-ordering optimization decision (cold/hot path heuristic)
-//   that requires full World.cpp TU context.
-// - Relocation addresses will resolve at link time.
+// - Exact checker result: MATCH (0.0000%), 259/259 bytes; default flags.
+// - The PDB names two adjacent arrays, but separate-array declarations add a
+//   compiler-inserted four-byte stack gap. The contiguous 308-byte local keeps
+//   the proven version/tempname anchors and is the clean exact reconstruction.
+// - Main-agent audit restored the canonical base/world destructor and named
+//   del_game_info surfaces; emitted code remains exact.
 
 #include <stdio.h>
 #include <string.h>
@@ -41,8 +45,21 @@ extern "C" int __cdecl rge_open(const char* path, int access);
 extern "C" void __cdecl rge_read(int fd, void* buf, int size);
 extern "C" int __cdecl rge_close(int fd);
 
+class RGE_Prog_Info {
+public:
+    char gap_00[0xB12];
+    char save_dir[261];
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    char gap_04[0x08];
+    RGE_Prog_Info* prog_info;
+};
+
 extern int world_update_counter;
-extern void* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 extern int save_game_version;
 
 class RGE_Game_World {
@@ -87,17 +104,17 @@ public:
     virtual void vf94();
     virtual void vf98();
     virtual void vf9C();
-    virtual void vfA0();
+    virtual ~RGE_Game_World();
     virtual void vfA4();
     virtual void vfA8();
     virtual void vfAC();
     virtual void vfB0();
     virtual void vfB4();
-    virtual void vfB8();
+    virtual void del_game_info();
     virtual void vfBC();
     virtual void vfC0();
     virtual void vfC4();
-    virtual void vfC8();
+    virtual unsigned char load_world(int fd);
 
     unsigned char load_game(char* param_1);
 };
@@ -108,25 +125,23 @@ unsigned char RGE_Game_World::load_game(char* param_1)
 
     world_update_counter = 0;
 
-    this->vfB8();
+    this->del_game_info();
 
-    sprintf(buf + 8, "%s%s",
-        *(const char**)((char*)rge_base_game + 0x0C) + 0xB12,
-        param_1);
+    sprintf(buf + 8, "%s%s", rge_base_game->prog_info->save_dir, param_1);
 
     int fh = rge_open(buf + 8, 0x8000);
-    if (fh == -1)
-        return 0;
+    if (fh != -1) {
+        rge_read(fh, buf, 8);
+        rge_read(fh, &save_game_version, 4);
 
-    rge_read(fh, buf, 8);
-    rge_read(fh, &save_game_version, 4);
+        if (strcmp(buf, "VER 8.6") != 0) {
+            rge_close(fh);
+            return 0;
+        }
 
-    if (strcmp(buf, "VER 8.6") != 0) {
+        this->load_world(fh);
         rge_close(fh);
-        return 0;
+        return 1;
     }
-
-    this->vfC8();
-    rge_close(fh);
-    return 1;
+    return 0;
 }
