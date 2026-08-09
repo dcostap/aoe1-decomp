@@ -20,6 +20,11 @@
 // - Session probes: caching md for the age/first-object phase either regressed
 //   broadly when used throughout or emitted the same 15-byte basin when its
 //   lifetime was narrowed; restored the direct canonical source.
+// - Session probes: donor declaration order, top-declared zone/object locals,
+//   a register-qualified md alias, inherited AIModule/MainDecision object
+//   surfaces, a named self alias, combined age decrement, and stdlib TU context
+//   all emitted the same 238-byte/15-byte-drift basin (the md/this and second
+//   object register swap remains). Restored the canonical typed source.
 
 class RGE_Static_Object;
 

@@ -18,8 +18,10 @@
 // - Session probe: retaining only the binary-indicated maxX local and inlining
 //   the other bounds removed the proven 8-byte frame and regressed to 258 diff;
 //   restored the natural bound-local source.
-// - Main-agent audit replaced the raw influence-map address and byte-offset
-//   record cursor with canonical symbol ownership and typed array indexing.
+// - A fixed-address/stride-cursor diagnostic reached a 39-byte drift, but it
+//   was restored because raw global addresses and byte-indexed records are not
+//   canonical living source. The typed global and indexed ObjectMemory array
+//   remain authoritative.
 
 typedef unsigned char uchar;
 

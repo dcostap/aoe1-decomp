@@ -37,6 +37,14 @@
 //   canonical inheritance boundary; emitted code is unchanged.
 // - Session probe: natural positive-count if/do-while around the indexed scan
 //   worsened to 204 bytes with an extra CFG return; restored the clean for-loop.
+// - Session probes: a natural positive-count do/while with a carried
+//   AttackMemory pointer worsened to 204 bytes; an indexed nested positive gate
+//   with a short-circuit four-corner expression reached 206 bytes but lost the
+//   original CFG island; both were restored. Grouped coordinate declarations,
+//   a dead target-parameter zero assignment, and an early loop-counter
+//   declaration all emitted the same 211-byte basin. No source/layout/call
+//   lead displaced the canonical indexed scan; remaining drift is the known
+//   VC5 allocator/stack-home basin.
 
 class RGE_Static_Object {
 public:

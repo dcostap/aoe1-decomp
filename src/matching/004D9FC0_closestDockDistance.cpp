@@ -14,6 +14,10 @@
 // Probes 4-9: declaration/assignment order, object scope, explicit self alias,
 // and qualified/unqualified member spelling did not change emitted code.
 // Probe 10: allocation-local declaration variant lab; no emitted-code change.
+// Probe 14: inlined the two coordinate differences into the natural squared-
+// distance expression; VC5 selected the original ESI/EDI allocation and matched
+// all 279 bytes.  The expression remains ordinary typed C++ and preserves the
+// observed one-conversion-per-coordinate evaluation.
 // Best natural reconstruction below keeps named ManagedIntArray ownership,
 // typed object coordinates, and the observed inline growth/scan behavior.
 
@@ -33,9 +37,10 @@ struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
     int id;
     RGE_Master_Static_Object* master_obj; // +0x08
-    char gap_0C[0x2C];                 // +0x0C to +0x37
-    float x;                            // +0x38
-    float y;                            // +0x3C
+    void* owner;                         // +0x0C
+    char gap_10[0x28];                  // +0x10 to +0x37
+    float world_x;                      // +0x38
+    float world_y;                      // +0x3C
 };
 
 struct MainDecisionAIModule {
@@ -93,9 +98,9 @@ int TribeInformationAIModule::closestDockDistance(int x, int y)
         do {
             RGE_Static_Object* obj = this->md->object(this->playerBuildings[i]);
             if (obj != 0 && obj->master_obj->id == 0x2D) {
-                int dx = x - (int)obj->x;
-                int dy = y - (int)obj->y;
-                int distanceSquared = dx * dx + dy * dy;
+                int distanceSquared =
+                    (x - (int)obj->world_x) * (x - (int)obj->world_x) +
+                    (y - (int)obj->world_y) * (y - (int)obj->world_y);
                 int currentDistance = (int)sqrt((float)distanceSquared);
 
                 if (currentDistance != 0 &&
