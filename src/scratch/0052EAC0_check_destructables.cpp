@@ -11,7 +11,16 @@
 // - A typed row/tile do-while is retained as the clean source.  Raw row-table
 //   byte-cursor and explicit world-alias variants were diagnostic only and
 //   regressed or were codegen-neutral; no opaque cursor survives here.
-// - Left in scratch: rebuilt 491B/frame 0x10 versus oracle 560B/frame 0x20;
+// - Sequential pass probes: moving the horizontal-range gate inside the outer
+//   row loop recovered the oracle's per-row branch and raised the candidate to
+//   523 B/frame 0x18; an explicit x_min*0x18 tile offset improved block coverage
+//   without changing size.  Direct parameter-home mutation changed register
+//   coloring but was not kept; the final source uses named short bounds and a
+//   saved master id, while preserving the proven inner gate and tile offset.
+// - A volatile late radius-y home reached frame 0x1c/535 B but worsened shape;
+//   it was removed as codegen-only.  The final canonical candidate is 522 B,
+//   frame 0x18, six aligned calls, and 20.57% exact-block coverage.
+// - Left in scratch: rebuilt 522B/frame 0x18 versus oracle 560B/frame 0x20;
 //   remaining drift is structural local/parameter-home and register topology
 //   around the late tile-list loops, despite exact call set/CFG counts.
 
@@ -192,6 +201,7 @@ public:
 void TRIBE_World::check_destructables(short player_id, short master_id,
                                       float x, float y, unsigned char flag)
 {
+    short target_master_id = master_id;
     RGE_Master_Static_Object* master =
         this->players[player_id]->master_objects[master_id];
 
@@ -204,23 +214,24 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
             short x_max = (short)(x + 0.5f);
             short y_max = (short)(y + 0.5f);
 
-            RGE_Map* map = this->map;
             if (x_min < 0)
                 x_min = 0;
-            if (x_max >= map->map_width)
-                x_max = (short)(map->map_width - 1);
+            if (x_max >= this->map->map_width)
+                x_max = (short)(this->map->map_width - 1);
             if (y_min < 0)
                 y_min = 0;
-            if (y_max >= map->map_height)
-                y_max = map->map_height - 1;
+            if (y_max >= this->map->map_height)
+                y_max = this->map->map_height - 1;
 
             if (y_min <= y_max) {
-                RGE_Tile** row_ptr = map->map_row_offset + y_min;
+                RGE_Tile** row_ptr = this->map->map_row_offset + y_min;
                 int row_count = (int)y_max - (int)y_min + 1;
                 int column_count = (int)x_max - (int)x_min + 1;
-                if (x_min <= x_max) {
-                    do {
-                        RGE_Tile* tile = *row_ptr + x_min;
+                int tile_offset = (int)x_min * (int)sizeof(RGE_Tile);
+                do {
+                    if (x_min <= x_max) {
+                        RGE_Tile* tile =
+                            (RGE_Tile*)((char*)*row_ptr + tile_offset);
                         int columns = column_count;
                         do {
                             RGE_Object_Node* node = tile->objects.list;
@@ -229,7 +240,7 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                                 node = node->next;
                                 RGE_Master_Static_Object* object_master = object->master_obj;
 
-                                if (object_master->id != master_id &&
+                                if (object_master->id != target_master_id &&
                                     object_master->can_be_built_on != 0) {
                                     float dy = object->world_y - y;
                                     float dx = object->world_x - x;
@@ -238,13 +249,15 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                                     if (dx < 0.0f)
                                         dx = -dx;
 
-                                    if (dx < object_master->radius_x + radius_x &&
-                                        dy < object_master->radius_y + radius_y) {
-                                        if (flag != 0) {
-                                            if (object != 0)
-                                                delete object;
-                                        } else {
-                                            object->vf68();
+                                    if (dx < object_master->radius_x + radius_x) {
+                                        float object_radius_y = object_master->radius_y;
+                                        if (dy < object_radius_y + radius_y) {
+                                            if (flag != 0) {
+                                                if (object != 0)
+                                                    delete object;
+                                            } else {
+                                                object->vf68();
+                                            }
                                         }
                                     }
                                 }
@@ -252,10 +265,10 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                             ++tile;
                             --columns;
                         } while (columns != 0);
-                        ++row_ptr;
-                        --row_count;
-                    } while (row_count != 0);
-                }
+                    }
+                    ++row_ptr;
+                    --row_count;
+                } while (row_count != 0);
             }
         }
     }

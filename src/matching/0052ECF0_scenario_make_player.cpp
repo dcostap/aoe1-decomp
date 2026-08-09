@@ -27,6 +27,9 @@
 // probe 18: an explicit goto store join was codegen-neutral.
 // probe 19: /Ob0, /O1, and /Od flag variants did not produce the original
 //   255B/5-call basin; only /GX retained the 219B candidate.
+// probe 21: assigning the player slot directly in each natural branch inhibits
+//   VC5's constructor-call tail factoring while its optimized common store
+//   still reproduces the original 255B/5-call output exactly.
 
 class RGE_Master_Player;
 class RGE_Player;
@@ -35,7 +38,7 @@ class TRIBE_Player;
 
 class RGE_Game_World {
 public:
-    virtual void v0();
+    virtual unsigned char data_load_world(void* file);
     char gap_04[0x3C];
     RGE_Player** players;          // +0x40
     char gap_44[4];
@@ -67,20 +70,16 @@ public:
 void TRIBE_World::scenario_make_player(short player_id, unsigned char master_id,
     unsigned char type, unsigned char civ, char* player_info)
 {
-    TRIBE_Player* player;
-
     if (type == 0) {
-        player = new TRIBE_Player(this, this->master_players[master_id],
+        this->players[player_id] = new TRIBE_Player(this, this->master_players[master_id],
             (unsigned char)player_id, player_info, master_id, 0, 1, 0, 0, 0);
     } else {
         if (type == 4) {
-            player = new TRIBE_Player(this, this->master_players[master_id],
+            this->players[player_id] = new TRIBE_Player(this, this->master_players[master_id],
                 (unsigned char)player_id, player_info, master_id, 1, 1, 0, 0, 0);
         } else {
-            player = new TRIBE_Player(this, this->master_players[master_id],
+            this->players[player_id] = new TRIBE_Player(this, this->master_players[master_id],
                 (unsigned char)player_id, player_info, master_id, 0, 1, 0, 0, 0);
         }
     }
-
-    this->players[player_id] = player;
 }

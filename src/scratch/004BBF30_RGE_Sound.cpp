@@ -21,11 +21,27 @@
 // experiment (relative include caused appended-context artifacts); no lead.
 // Probe 10: moved sound_count declaration to its natural post-header location
 // and reused it for rge_read; emitted code duplicated the six-byte best.
+// Probe 14: scoped calloc result with the member store only in the positive
+// arm reproduced the earlier 315-byte duplicated-compare basin; rolled back.
+// Probe 16: a focused header/source variant lab was invalid without the
+// function's /GX context and produced appended-context artifacts; no lead.
+// Probe 18: standard <stdlib.h> calloc declaration with direct members was a
+// codegen duplicate of the broad direct-member mismatch; rolled back.
+// Probe 19: same-TU <stdio.h>/<string.h> context from the text constructor
+// donor was a codegen duplicate; rolled back.
+// Probe 20 (new worker): aligned the local Sound_Info declaration with the
+// generated 0x24-byte source-of-truth types (unsigned padding/loaded/time).
+// Probe 20 result: declaration alignment was a codegen duplicate and is kept
+// as the canonical typed layout.
 // Best remaining drift: original compares [sound_num] before storing the
 // calloc result to [this+4], while VC5 emits the same two operations reversed.
 // Main-agent audit removed the diagnostic pointer alias for sound_num; direct
 // member reads are the natural constructor source even though they return to a
 // less favorable scheduling basin.
+// Paused: direct-member source is structurally clean as source but VC5 reloads
+// sound_num after calloc, producing a 3-byte post-call expansion and broad
+// shifted drift.  The near-match member-pointer alias is retained only as
+// evidence, not as living source.
 
 #include "..\..\include\game_globals.h"
 
@@ -54,14 +70,14 @@ public:
 class RGE_Sound_Info {
 public:
     char name[13];               // +0x00
-    char _gap_0D[3];
+    unsigned char _gap_0D[3];
     long resource_id;            // +0x10
     short percent;               // +0x14
-    char _gap_16[2];
+    unsigned char _gap_16[2];
     TDigital* digital_sound;     // +0x18
-    char loaded;                 // +0x1C
-    char _gap_1D[3];
-    long time_field;              // +0x20
+    unsigned char loaded;         // +0x1C
+    unsigned char _gap_1D[3];
+    unsigned long time;           // +0x20
 };
 
 extern int __cdecl rge_read(int handle, void* buf, int size);
