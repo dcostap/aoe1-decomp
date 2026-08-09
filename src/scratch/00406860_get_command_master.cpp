@@ -33,69 +33,109 @@
 //   include/declaration context of act_obj.cpp, or an original expression form that
 //   creates a long-lived value in EBX (e.g., first-call result kept live) which
 //   would force z into EBP and i onto the stack home.
-// Best source shape (this session): for-loop + direct return obj (143 pos / 66 edit).
+// Best source shape (this session): canonical owner/task-list types with a natural
+// for-loop and direct candidate return (143 positional / 66 edit).
+// - 2026-08-09 probe: +0x0C is the inherited RGE_Static_Object::owner (RGE_Player*),
+//   not a standalone master-list type; its +0x22/+0x24 fields are
+//   master_object_num/master_objects. This canonical ownership/layout change emitted
+//   identical bytes, but is retained as the plausible source model.
+// - 2026-08-09 probe: modeled +0xD8 as RGE_Master_Action_Object::tasks and +0xEC as
+//   task_by_group, with RGE_Task_List::get_target_task; this also emitted identical
+//   bytes. Remaining mismatch is the previously isolated VC5 register basin.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
+class RGE_Task;
 class RGE_Master_Static_Object;
+class RGE_Master_Action_Object;
+class RGE_Player;
 
-class RGE_Master_Command {
+#define VPAD1(n) virtual void vf##n(void);
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+
+class RGE_Static_Object {
+public:
+    VPAD32(0)
+    VPAD8(32)
+    VPAD4(40)
+    VPAD2(44)
+    VPAD1(46)
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* target,
+                                                          float x, float y, float z);
+
+    int id;                         // +0x04
+    RGE_Master_Static_Object* master_obj; // +0x08
+    RGE_Player* owner;              // +0x0C
+};
+
+class RGE_Moving_Object : public RGE_Static_Object {
+};
+
+class RGE_Task_List {
 public:
     virtual void vf00(void);
-    virtual int get_command_master(RGE_Action_Object* action, RGE_Static_Object* target,
-                                   float x, float y, float z);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action, RGE_Static_Object* target,
+                                       float x, float y, float z);
 };
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[4];                  // +0x00
+    virtual void vf00(void);
     unsigned char master_type;       // +0x04
     char gap_05[0x0F];               // +0x05..+0x13
     short object_group;              // +0x14
-    char gap_16[0xC2];               // +0x16..+0xD7
-    RGE_Master_Command* command;     // +0xD8
+    char gap_16[0xA2];               // +0x16..+0xB7
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Static_Object {
+public:
+    char gap_B8[0x20];               // +0xB8..+0xD7
+    RGE_Task_List* tasks;            // +0xD8
     char gap_DC[0x10];               // +0xDC..+0xEB
-    unsigned char commandable;       // +0xEC
+    unsigned char task_by_group;     // +0xEC
 };
 
-class RGE_Master_List {
+class RGE_Player {
 public:
-    char gap_00[0x22];               // +0x00..+0x21
-    short master_count;              // +0x22
-    RGE_Master_Static_Object** masters; // +0x24
+    virtual void vf00(void);
+    char gap_04[0x1E];                // +0x04..+0x21
+    short master_object_num;         // +0x22
+    RGE_Master_Static_Object** master_objects; // +0x24
 };
 
-class RGE_Action_Object {
+class RGE_Action_Object : public RGE_Moving_Object {
 public:
-    char gap_00[8];                  // +0x00..+0x07
-    RGE_Master_Static_Object* master; // +0x08
-    RGE_Master_List* master_list;    // +0x0C
-
-    RGE_Master_Static_Object* get_command_master(RGE_Static_Object* target, float x, float y, float z);
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* target,
+                                                          float x, float y, float z);
 };
 
 RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Object* target,
                                                                 float x, float y, float z)
 {
-    if ((void*)target == (void*)this || this->master->commandable == 0) {
-        return this->master;
+    if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->task_by_group == 0) {
+        return this->master_obj;
     }
-    if (this->master->command->get_command_master(this, target, x, y, z) != 0) {
-        return this->master;
+    if (((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(this, target, x, y, z) != 0) {
+        return this->master_obj;
     }
-    if (this->master->commandable != 0) {
+    if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
         RGE_Master_Static_Object* obj;
-        for (int i = 0; i < this->master_list->master_count; i++) {
-            obj = this->master_list->masters[i];
+        for (int i = 0; i < this->owner->master_object_num; i++) {
+            obj = this->owner->master_objects[i];
             if (obj != 0 &&
-                obj->object_group == this->master->object_group &&
-                obj->master_type == this->master->master_type &&
-                obj->commandable == this->master->commandable) {
-                if (obj->command->get_command_master(this, target, x, y, z) != 0) {
+                obj->object_group == this->master_obj->object_group &&
+                obj->master_type == this->master_obj->master_type &&
+                ((RGE_Master_Action_Object*)obj)->task_by_group ==
+                    ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
+                if (((RGE_Master_Action_Object*)obj)->tasks->get_target_task(this, target, x, y, z) != 0) {
                     return obj;
                 }
             }
         }
     }
-    return this->master;
+    return this->master_obj;
 }

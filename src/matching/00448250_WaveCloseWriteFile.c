@@ -28,6 +28,9 @@
  *   form where the store is eliminated and the load is rematerialized) while keeping push-then-load order.
  *   Note the original loads [88A934h] into edi AFTER pushing edi, reusing the just-pushed register;
  *   every local-cache variant emits the load BEFORE the pushes and folds the 3rd arg to push 0.
+ * - Probe 15: kept direct IAT views for the guarded early ascends, but used the SDK import declaration
+ *   for the adjacent post-write ascend pair; this reproduces the original push-then-load order exactly.
+ *   -> exact 228 bytes, 10/10 calls, 0.0000% diff.
  */
 
 typedef unsigned int UINT;
@@ -69,6 +72,9 @@ typedef int (__stdcall *MMIOASCEND)(HMMIO, MMCKINFO_LOCAL*, UINT);
 typedef LONG (__stdcall *MMIOWRITE)(HMMIO, const char*, LONG);
 typedef int (__stdcall *MMIOCLOSE)(HMMIO, UINT);
 
+/* The final adjacent pair retains the original SDK import-call surface. */
+__declspec(dllimport) int __stdcall mmioAscend(HMMIO, MMCKINFO_LOCAL*, UINT);
+
 #define mmioSetInfo_abs (*(MMIOSETINFO*)0x88A924)
 #define mmioSeek_abs (*(MMIOSEEK*)0x88A928)
 #define mmioDescend_abs (*(MMIODESCEND*)0x88A92C)
@@ -96,9 +102,9 @@ int __cdecl _WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO_LOCAL* pckOut, MMCKIN
                 if (result == 0) {
                     pckOut->ckid = 0x74636166;
                     if (mmioDescend_abs(*phmmioOut, pckOut, pckOutRIFF, 0x10) == 0) {
-                        mmioWrite_abs(*phmmioOut, (const char*)&cSamples, 4);
-                        mmioAscend_abs(*phmmioOut, pckOut, result);
-                        result = mmioAscend_abs(*phmmioOut, pckOutRIFF, 0);
+                        mmioWrite_abs(*phmmioOut, (const char*)&cSamples, sizeof(DWORD));
+                        mmioAscend(*phmmioOut, pckOut, result);
+                        result = mmioAscend(*phmmioOut, pckOutRIFF, 0);
                     } else {
                         return 1;
                     }

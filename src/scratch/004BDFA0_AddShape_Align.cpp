@@ -1,13 +1,115 @@
 // 004BDFA0 TSpan_List_Manager::AddShape_Align
-// Source: spanlist.cpp
-// Size: 239 bytes
-#include "..\..\include\game_globals.h"
-struct VSpan_Node { VSpan_Node* Next; char _pad[12]; };
-class TSpan_Node_List { public: char _gap_00[0x2C]; };
+// Source: spanlist.cpp:900-953
+//
+// Attempt log:
+// - Reconstructed the Shape_Info outline walk from the original two loop arms;
+//   the non-aligned flag selects which 16-bit edge is the start/end value.
+// - Baseline had exact size/frame/call set but colored this/outline oppositely;
+//   two separate cursor increments moved the allocation to the original
+//   edi=this, esi=outline basin.
+// - Spelling the lower clip test as line >= Min_Line matched the original
+//   register-memory compare; the remaining drift is block scheduling and the
+//   original split cursor-add/pre-branch load order.
+// - Full TSpan_Node_List/manager layout, pointer-local variants, C-style
+//   temporary declarations, and explicit byte advances were codegen duplicates;
+//   no source model reached exactness within the ten-hypothesis budget.
+
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+struct VSpan_Node;
+
+class TSpan_Node_List {
+public:
+    VSpan_Node** Zone_Ptrs;
+    int* Zone_Size_Ptrs;
+    int Used_Zones;
+    int Max_Zones;
+    VSpan_Node* Free_Head;
+    int Free_Pool_Zone;
+    int Free_Pool_Index;
+    int Total_Blocks;
+    int Free_Blocks;
+    int Default_Grow_Size;
+    int Element_Size;
+    int Alloc_Count;
+    int Dealloc_Count;
+    int NewZone_Count;
+    int Reset_Count;
+};
+
 class TSpan_List_Manager : public TSpan_Node_List {
 public:
-    char _gap_2C[0x44];
-    void AddShape_Align(int a, int b, int c, int d, int e, int f, int g, int h);
+    VSpan_Node** Line_Head_Ptrs;
+    VSpan_Node** Line_Tail_Ptrs;
+    int* LeftMostPx;
+    int* RightMostPx;
+    int* Span_Count;
+    int Num_Lines;
+    int Num_Pixels;
+    int Min_Span_Px;
+    int Max_Span_Px;
+    int Min_Line;
+    int Max_Line;
+
+    void AddSpan(int start, int end, int line);
+    void AddShape_Align(unsigned char* data, Shape_Info* shape,
+                        int x, int y, int align);
 };
-void TSpan_List_Manager::AddShape_Align(int a, int b, int c, int d, int e, int f, int g, int h)
-{ (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g; (void)h; }
+
+void TSpan_List_Manager::AddShape_Align(unsigned char* data, Shape_Info* shape,
+                                        int x, int y, int align)
+{
+    if (shape != 0) {
+        unsigned short* outline;
+        int right;
+        int line;
+        unsigned short start;
+        unsigned short end;
+        outline = (unsigned short*)(data + shape->Shape_Outline_Offset);
+        right = shape->Width - 1 + x;
+
+        if (align == 0) {
+            line = y;
+            if (y < y + shape->Height) {
+                do {
+                    start = *outline;
+                    end = outline[1];
+                    outline += 1;
+                    outline += 1;
+                    if (line >= this->Min_Line && line <= this->Max_Line
+                        && (start & 0x8000) == 0) {
+                        AddSpan((short)start + x & 0xfffffffc,
+                                right - (short)end | 3, line);
+                    }
+                    line++;
+                } while (line < y + shape->Height);
+                return;
+            }
+        } else {
+            line = y;
+            if (y < y + shape->Height) {
+                do {
+                    start = *outline;
+                    end = outline[1];
+                    outline += 1;
+                    outline += 1;
+                    if (line >= this->Min_Line && line <= this->Max_Line
+                        && (end & 0x8000) == 0) {
+                        AddSpan((short)end + x & 0xfffffffc,
+                                right - (short)start | 3, line);
+                    }
+                    line++;
+                } while (line < y + shape->Height);
+            }
+        }
+    }
+}

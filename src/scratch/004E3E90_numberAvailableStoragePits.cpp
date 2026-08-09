@@ -1,27 +1,55 @@
 // 004E3E90 TribeInformationAIModule::numberAvailableStoragePits (taiinfmd.cpp:8079-8129)
-// ~7 attempts: register allocation (esi=this, edi=md vs edi=this, esi=md) drifts ~30%. Remaining: uVar1 in [esp+0x14] vs ebp+and masks; missing param_1 reload; 8 nops vs 0. Structurally complete.
+// Attempt log:
+// - baseline decompiler-shaped reconstruction: 109 differing bytes; calls/CFG
+//   were complete but the zone methods were incorrectly modeled as int.
+// - exact same-TU granaries donor supplied unsigned-char currentZone/lookupZone
+//   returns with byte masks: 15 differing bytes, 238/238 bytes and all calls,
+//   blocks, and widths aligned.
+// - flat-vs-inherited class surface, named md alias, combined object guard,
+//   top-declared object locals, proven polymorphic base surface, and reused
+//   decompiler int role all emitted the same 15-byte register-coloring basin
+//   (or regressed structurally for the md alias/positive outer guard).
+// - sibling 00501B90's exhaustive register/source-shape work was not repeated;
+//   its remaining md/product callee-save basin is consistent with this target's
+//   unresolved this/md and second-object register swap.
+// - Best retained reconstruction: canonical typed ownership and donor-backed
+//   byte-return zone ABI; remaining drift is 15 register/address encoding bytes
+//   (original this=EDI/md=ESI/obj2=ESI, rebuilt this=ESI/md=EDI/obj2=EDI).
+// - Main-agent audit replaced the raw +0x1146C cast with the exact-donor-backed
+//   TribeMainDecisionAIModule::tacticalAI member; codegen is unchanged.
 
 class RGE_Static_Object;
 
 class AIModule {
 public:
-    char gap_00[0xF0];
+    virtual ~AIModule();
+    char gap_04[0xEC];
 };
 
 class InformationAIModule : public AIModule {
 public:
+    virtual ~InformationAIModule();
 };
 
 class RGE_Player {
 public:
-    char gap_00[0x50];
+    virtual ~RGE_Player();
+    char gap_04[0x4C];
     float* attributes;
 };
 
-class MainDecisionAIModule {
+class TribeTacticalAIModule {
 public:
-    char gap_00[0xF0];
+    int strategicNumber(int);
+};
+
+class TribeMainDecisionAIModule {
+public:
+    virtual ~TribeMainDecisionAIModule();
+    char gap_04[0xEC];
     RGE_Player* player;   // +0xF0
+    char gap_F4[0x1146C - 0xF4];
+    TribeTacticalAIModule tacticalAI;
 
     RGE_Static_Object* object(int);
     RGE_Static_Object* object(int, int, int, int, int, int, int, int, int, int);
@@ -29,7 +57,7 @@ public:
 
 class ManagedArray_int {
 public:
-    int value;
+    int* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
@@ -38,7 +66,7 @@ public:
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray_int farmsTaskedThisUpdate;       // +0xF0
-    MainDecisionAIModule* md;                     // +0x100
+    TribeMainDecisionAIModule* md;                // +0x100
     char gap_104_to_500[0x500 - 0x104];
     int dropsitesByAge[4][4];                     // +0x500
     int closestDropsiteValue[4];                  // +0x540
@@ -53,13 +81,8 @@ public:
     float field_0x38;
     float field_0x3C;
 
-    int currentZone();
-    int lookupZone(int, int);
-};
-
-class TribeTacticalAIModule {
-public:
-    int strategicNumber(int);
+    unsigned char currentZone();
+    unsigned char lookupZone(int, int);
 };
 
 int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
@@ -83,17 +106,17 @@ int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
         RGE_Static_Object* obj2 = this->md->object(this->closestDropsiteResourceID[param_1]);
 
         if (obj2 != 0) {
-            int uVar1 = obj1->currentZone();
-            int iVar3 = (int)(obj2->field_0x3C);
-            int iVar5 = (int)(obj2->field_0x38);
-            int uVar2 = obj1->lookupZone(iVar5, iVar3);
+            int zone = obj1->currentZone() & 0xff;
+            int y = (int)(obj2->field_0x3C);
+            int x = (int)(obj2->field_0x38);
+            int lookup = obj1->lookupZone(x, y) & 0xff;
 
-            if (uVar1 != uVar2) {
+            if (zone != lookup) {
                 return 0;
             }
         }
     }
 
-    int sn = ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(param_1 + 0xA3);
-    return (this->closestDropsiteValue[param_1] > sn) ? 1 : 0;
+    int strategicN = this->md->tacticalAI.strategicNumber(param_1 + 0xA3);
+    return (this->closestDropsiteValue[param_1] > strategicN) ? 1 : 0;
 }
