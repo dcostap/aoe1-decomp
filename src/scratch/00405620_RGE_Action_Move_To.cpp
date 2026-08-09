@@ -47,6 +47,10 @@
 // removed __declspec(novtable), the raw vtable_ptr field, and the manual 0x56E3A0 store; RGE_Action_Move_To is now a
 // natural derived class and VC5 owns the vptr emission. The prior manual surface's 205B/47B result and the earlier
 // natural-vptr 205B/56B result remain diagnostic evidence, not source-shape justification. No new hypothesis was run.
+// 2026-08-09 sa3cad3b68-ctor pass: explicit inner/outer joins, inverted and direct-member predicates, do/break,
+// hoisted fallback locals, and an explicit derived-destructor declaration all stayed in the 205B/47B basin. The
+// volatile-destination test was codegen-identical but is not source-plausible. Restored this natural named-object /
+// local-sprite if/else; the shared-vs-duplicated EH epilogue remains the only structural blocker.
 
 class RGE_Action_Object;
 class RGE_Sprite;
