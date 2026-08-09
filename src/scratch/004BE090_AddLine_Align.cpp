@@ -6,8 +6,14 @@
 //   but extra mov edi,eax; mov esi,[esp+18h] add 5 bytes, rest is ~12 bytes shorter
 // - Full class + a/b at function scope: 336 bytes (missing push ecx due to inherit)
 // - TODO: eliminate extra mov edi,eax by not saving x1v in vertical case
+// - A direct parameter-mutating reconstruction from the binary's stack-home
+//   topology added a call site and widened the function; restored x1v source.
+// - Removing /GX was a codegen duplicate; full manager context, function-scope
+//   a/b, and direct-x1 nonvertical variants were also duplicates or worse.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
+// Main-agent audit confirmed canonical span-manager ownership and retained the
+// natural aligned Bresenham construction.
 class TSpan_List_Manager {
 public:
     void AddSpan(int left, int right, int line);

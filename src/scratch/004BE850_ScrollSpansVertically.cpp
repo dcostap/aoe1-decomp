@@ -11,6 +11,10 @@
 // attempt 8: <stdlib.h> vs extern abs made no difference in the best local-bound shape.
 // attempt 9: swapping clear_first/clear_last declaration order made no codegen difference.
 // attempt 10: spelling the first walk as a for-loop made no codegen difference.
+// current pass: assigning the lower range to clear_first and upper range to
+// use_regions matches the original parameter homes and aligns the first 0xC4
+// bytes; direct late reuse of use_regions, end_index delays, and register
+// declarations did not remove the remaining 4-byte late branch drift.
 // left in scratch: remaining drift is codegen/source-shape around preserving original dy while mutating bound params,
 // plus VC5 abs lowering/register allocation; no inline asm used.
 
@@ -18,6 +22,8 @@ extern "C" int __cdecl abs(int);
 
 struct VSpan_Node;
 
+// Main-agent audit confirmed canonical span-list ownership and retained the
+// corrected lower/upper bound semantics and natural vertical scroll.
 class TSpan_Node_List {
 public:
     char gap_00[0x3C];
@@ -55,14 +61,14 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
     }
 
     if (use_regions != 0) {
-        use_regions = this->Min_Line;
-        clear_first = this->Max_Line;
+        clear_first = this->Min_Line;
+        use_regions = this->Max_Line;
     } else {
-        use_regions = 0;
-        clear_first = this->Num_Lines - 1;
+        clear_first = 0;
+        use_regions = this->Num_Lines - 1;
     }
 
-    if (abs(dy) > clear_first - use_regions) {
+    if (abs(dy) > use_regions - clear_first) {
         this->ResetAll();
         return;
     }
@@ -71,7 +77,7 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
     src_line = dy;
     while (line < this->Num_Lines) {
         if (this->Line_Head_Ptrs[line] != 0) {
-            if (src_line < use_regions || src_line > clear_first) {
+            if (src_line < clear_first || src_line > use_regions) {
                 this->FreeThread(this->Line_Head_Ptrs[line], this->Line_Tail_Ptrs[line]);
                 this->Line_Head_Ptrs[line] = 0;
                 this->Line_Tail_Ptrs[line] = 0;

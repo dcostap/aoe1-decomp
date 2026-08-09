@@ -15,7 +15,11 @@
 //   register topology differently, uses two 16-bit cursor advances, and loads
 //   height/y before the mirror join. Calls, frame, size, and CFG are aligned;
 //   no exact source-shape lead remains in this bounded pass.
+// - A fresh direct shape_info base-array/indexed reconstruction lost the
+//   selected-record prologue and worsened the block basin; restored this source.
 
+// Main-agent audit confirmed typed selected-record ownership and retained the
+// natural shape insertion path.
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;

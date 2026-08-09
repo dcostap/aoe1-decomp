@@ -13,7 +13,13 @@
 // - Full TSpan_Node_List/manager layout, pointer-local variants, C-style
 //   temporary declarations, and explicit byte advances were codegen duplicates;
 //   no source model reached exactness within the ten-hypothesis budget.
+// - A shared named y+Height limit changed the natural loop topology and shrank
+//   the output by 24 bytes; restored the clean source.
+// - A volatile outline pointer was a codegen duplicate and is not retained;
+//   the two observed add-2 cursor instructions remain unexplained.
 
+// Main-agent audit confirmed typed shape/span ownership and retained the natural
+// aligned outline traversal.
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;

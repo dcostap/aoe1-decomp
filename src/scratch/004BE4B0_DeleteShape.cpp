@@ -19,9 +19,15 @@
 // - Remaining structural gap is localized to height-limit scheduling before
 //   the mirror branch and call/loop register coloring; no further source axis
 //   was justified within this assignment. Left in scratch.
+// - Replacing the selected Shape_Info pointer with a base-array/indexed form
+//   lost the exact prologue and worsened the whole function; restored.
+// - Separate branch-local height locals likewise worsened frame/register
+//   pressure; the retained source still has the compiler's common Height load.
 // - Main-agent audit corrected the local shape-file-header ownership name;
 //   emitted code is unchanged.
 
+// Main-agent audit confirmed typed selected-record ownership and retained the
+// natural shape deletion path.
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;
