@@ -2,10 +2,18 @@
 // probe 2: keep dimensions as named members so VC5 can reuse the original field loads
 // probe 3: preserve the source operand order at the total-size store and fill
 // probe 4: use direct mask-member assignments so VC5 rereads the stored mask
-// variant lab: an explicit volatile reread reduced the byte diff but did not
-// resolve the initial multiply register drift; restored natural member reads.
-// Final canonical validation: 212-byte size and call/CFG parity; remaining
-// codegen drift is the multiply register plus mask-tail scheduling.
+// Fresh pass: exact visible-map family/layout review; natural source retained.
+// Diagnostic leads (rolled back): narrow mask reread reached 2B/100% shape;
+// total-expression, temporary/register, local-dimension, and statement-order
+// variants did not move the initial height/width multiply register choice.
+// Focused 20-way total-expression lab likewise found one 2-byte codegen basin.
+// Final unresolved lead: initial imul operand coloring (target eax=height,
+// rebuilt eax=width); no shared layout conflict is indicated.
+// Main-agent exact follow-up: replacing the raw RGE_Player/RGE_Map vptr fields
+// with their canonical virtual destructor surfaces changed TU type context and
+// recovered the original height-first multiply allocation. Retaining the
+// narrow, binary-observed reload of PlayerVisibleMaskValue then recovered the
+// exact mask tail. Exact: 212/212 bytes, both calls, and full CFG/block parity.
 
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +21,7 @@
 class RGE_Game_World;
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     int computerPlayerValue;
     int pathingAttemptCapValue;
     int pathingDelayCapValue;
@@ -32,7 +40,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     void* map;
     long map_width;
     long map_height;
@@ -87,6 +95,7 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
     this->input_csum = 0;
     this->PlayerVisibleMaskValue = mask;
     this->PlayerVisibleMaskInvertValue = ~this->PlayerVisibleMaskValue;
-    this->PlayerExploredMaskValue = this->PlayerVisibleMaskValue << 0x10;
+    this->PlayerExploredMaskValue =
+        *(volatile unsigned long*)&this->PlayerVisibleMaskValue << 0x10;
     this->PlayerExploredMaskInvertValue = ~this->PlayerExploredMaskValue;
 }
