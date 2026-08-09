@@ -22,6 +22,9 @@
 //   +0x7B..+0x9A: original loads scbar_panel before scbar_width and computes
 //   the first argument in EDI/EBP; VC5's natural basin reverses those loads and
 //   uses EDX.  No call, CFG, frame, boundary, or later clip-region bytes differ.
+// - This assignment rechecked a named scrollbar pointer, then a pointer-plus-
+//   width source-order pair; both were codegen duplicates. Restored the direct
+//   typed call because the remaining issue is only VC5 load scheduling.
 
 struct tagRECT {
     long left;

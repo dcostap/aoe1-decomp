@@ -21,6 +21,9 @@
 //   aligned; no canonical source lead remains within this assignment.
 // - Main-agent audit restored TPanel's canonical destructor slot; the validated
 //   18-byte register-coloring gap is unchanged.
+// - This assignment rechecked C-style top declaration of dc/old_font/line;
+//   it was an emitted-code duplicate. The clean direct-member source remains
+//   the plausible candidate.
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);

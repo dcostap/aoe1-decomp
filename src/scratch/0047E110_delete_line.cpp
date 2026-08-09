@@ -16,6 +16,10 @@
 //   lead is retained. The clean natural source remains the defensible candidate.
 // - Restored clean source after the probes. Remaining drift is the entry
 //   parameter scheduling plus incrementing-versus-countdown loop shape.
+// - This assignment rechecked split negative/upper guards and an int-width
+//   parameter; both were codegen duplicates. Restored the canonical long ABI.
+// - Main-agent audit retained canonical linked-node ownership and the ordinary
+//   bounded traversal; no countdown/codegen steering survives.
 
 extern "C" void __cdecl free(void* block);
 

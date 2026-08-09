@@ -12,6 +12,8 @@
 // it cannot preserve the original boundary/prologue under normal C++ source.
 // Main-agent audit restored the canonical TPanel destructor slot; emitted
 // bytes and the sole __alloca_probe/__chkstk symbol mismatch are unchanged.
+// - /Gs4095 and /Gs4096 were both codegen duplicates. The remaining mismatch
+//   is a direct probe-symbol identity gap, not size, frame, CFG, or body code.
 
 class TDrawArea;
 class TPanel {
