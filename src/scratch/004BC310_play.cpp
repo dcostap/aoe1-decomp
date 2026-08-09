@@ -3,14 +3,33 @@
 // Size: 346 bytes, large stack (0x100)
 //
 // Attempt log:
-// Probe 1: 336/346 bytes — structural probe passes
-//   sub esp, 0x100 for char[256], percent-selection loop, TDigital dispatch,
-//   draw_log instrumentation, debug_timeGetTime. 10 bytes short (likely
-//   format string and register allocation differences).
+// Baseline: period Sound.cpp two-stage count guards, typed 0x24-byte
+// RGE_Sound_Info/TDigital ownership, direct TDigital methods, and a bounded
+// percent scan; 314 differing bytes from incorrect source shape/context.
+// Probe 2: corrected helper linkage/return declarations; no emitted change.
+// Probe 3: old indexed scan improved block coverage but lost the duplicate
+// count gate and remained structurally short; rolled back.
+// Probe 4: natural while((rand -= *percent)>0) with an in-loop count return
+// recovered exact 346-byte size and saved-register set.
+// Probe 5: named int sound_count plus direct member percent owner improved the
+// arithmetic/count basin; this remained the best structural family.
+// Probe 6: split percent into a narrow local recovered EBP's observed reload.
+// Probe 7: valid-index continue/fallthrough return recovered cmp/jl polarity.
+// Probe 8: typed RGE_Sound_Info running cursor was codegen-duplicate.
+// Probe 9: hoisted scan locals were codegen-duplicate.
+// Probe 10: moved char[256] to function scope and removed the long-lived
+// digital pointer, restoring direct member reloads, stack homes, exact size,
+// and the late call blocks.  Current blocker is broad register/base coloring
+// plus remaining source-context drift; the original target keeps EDI=this and
+// EBX=record base while this source keeps those roles reversed.  The direct
+// write_draw_log2 target mismatch was corrected to its known C++ linkage.
+// Main-agent audit removed the diagnostic +4 stack-window addressing from the
+// log buffer; the living source now uses the declared character array directly.
 
 #include "..\..\include\game_globals.h"
 
 class RGE_Sound_Info;
+class TSound_Driver;
 
 class RGE_Sound {
 public:
@@ -25,29 +44,44 @@ public:
 
 class TDigital {
 public:
-    char _gap_00[0x3C];
+    TSound_Driver* sound_system; // +0x00
+    TDigital* owner;             // +0x04
+    unsigned char loaded;        // +0x08
+    unsigned char failed;        // +0x09
+    char sound_file[13];         // +0x0A
+    unsigned char pad_17;        // +0x17
+    long resource_id;            // +0x18
+    long volume;                 // +0x1C
+    unsigned long pitch;         // +0x20
+    long pan;                    // +0x24
+    int loop;                    // +0x28
+    unsigned char* wave_data;    // +0x2C
+    void* wave_info;             // +0x30
+    void* sound_buffer;          // +0x34
+    char gap_38[4];              // +0x38
     int play();
     int add_to_play_list();
 };
 
 class RGE_Sound_Info {
 public:
-    char name[16];               // +0x00
-    int field_10;                // +0x10
+    char name[13];               // +0x00
+    char _gap_0D[3];
+    long resource_id;            // +0x10
     short percent;               // +0x14
     char _gap_16[2];
     TDigital* digital_sound;     // +0x18
-    char loaded;                 // +0x1C
+    unsigned char loaded;        // +0x1C
     char _gap_1D[3];
-    int time_field;              // +0x20
+    unsigned long time_field;    // +0x20
 };
 
-extern int __cdecl debug_rand(const char* file, int line);
-extern int __cdecl sprintf(char* buf, const char* fmt, ...);
-extern int __cdecl debug_timeGetTime(const char* file, int line);
+extern "C" int __cdecl debug_rand(char* file, int line);
+extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
-extern void __cdecl write_draw_log(const char* msg);
-extern void __cdecl write_draw_log2(const char* msg);
+extern void __cdecl write_draw_log(char* msg);
+extern void __cdecl write_draw_log2(char* msg);
 
 // Globals (extern)
 extern int do_draw_log;       // 0x62C498
@@ -56,51 +90,60 @@ extern int debug_timeGetTime_on;  // 0x62C4E8
 
 void RGE_Sound::play(int play_list_param)
 {
-    if (this->sound_num <= 0)
-        return;
-
-    int rand_val = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
-    rand_val = (rand_val * 100) / 0x7FFF;
-
-    int idx;
-    for (idx = 0; idx < this->sound_num; idx++) {
-        rand_val -= this->sounds[idx].percent;
-        if (rand_val <= 0)
-            break;
-    }
-    if (idx >= this->sound_num)
-        return;
-
-    RGE_Sound_Info* info = &this->sounds[idx];
-    TDigital* dig = info->digital_sound;
-    if (!dig)
-        return;
-
     char s[256];
-    if (do_draw_log) {
-        sprintf(s + 4, "{%s", (char*)(this->sounds + idx));
-        if (safe_draw_log)
-            write_draw_log2(s + 4);
-        else
-            write_draw_log(s + 4);
+    int sound_count;
+    int idx;
+    RGE_Sound_Info* sound;
+
+    if (this->sound_num > 0) {
+        int rand_val = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
+        rand_val = (rand_val * 100) / 0x7FFF;
+
+        sound_count = this->sound_num;
+        if (sound_count > 0) {
+            idx = 0;
+            sound = this->sounds;
+            while (1) {
+                short percent = sound->percent;
+                rand_val -= percent;
+                if (rand_val <= 0)
+                    break;
+                ++idx;
+                ++sound;
+                if (idx < sound_count)
+                    continue;
+                return;
+            }
+
+            if (this->sounds[idx].digital_sound != 0) {
+                if (do_draw_log) {
+                    sprintf(s, "{%s", this->sounds[idx].name);
+                    if (safe_draw_log)
+                        write_draw_log2(s);
+                    else
+                        write_draw_log(s);
+                }
+
+                if (play_list_param)
+                    this->sounds[idx].digital_sound->add_to_play_list();
+                else
+                    this->sounds[idx].digital_sound->play();
+
+                if (do_draw_log) {
+                    if (safe_draw_log)
+                        write_draw_log2("}");
+                    else
+                        write_draw_log("}");
+                }
+
+                this->sounds[idx].loaded = 1;
+                int saved_time_get = debug_timeGetTime_on;
+                debug_timeGetTime_on = 0;
+                unsigned long time_val = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
+                this->sounds[idx].time_field = time_val;
+                debug_timeGetTime_on = saved_time_get;
+            }
+        }
     }
-
-    if (play_list_param)
-        dig->add_to_play_list();
-    else
-        dig->play();
-
-    if (do_draw_log) {
-        if (safe_draw_log)
-            write_draw_log2("}");
-        else
-            write_draw_log("}");
-    }
-
-    this->sounds[idx].loaded = 1;
-    int saved_time_get = debug_timeGetTime_on;
-    debug_timeGetTime_on = 0;
-    unsigned long time_val = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
-    this->sounds[idx].time_field = time_val;
-    debug_timeGetTime_on = saved_time_get;
 }
