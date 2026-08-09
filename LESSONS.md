@@ -99,6 +99,11 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
 - Use real VC5 headers/declarations. Header `<stdlib.h>` versus hand-declared `calloc`, `<string.h>` intrinsics, or `<mbstring.h>` MBCS surfaces can change EH and optimization basins.
 - `_mbsncpy(_mbsinc(p),...)` evaluates cdecl args right-to-left; split `p=_mbsinc(p); _mbsncpy(...)` when asm calls `_mbsinc` before pushes.
 - Split chained member calls/argument-producing helpers when nested right-to-left evaluation interleaves pushes unlike the original. Keep expressions inline when the original intentionally evaluates nested varargs before global-chain loads.
+- When a VC5 thiscall shows a literal argument pushed before the call that
+  produces the member-call object, preserve the nested form
+  (`object->unitAI()->hasOrderOnQueue(0x2C1)`); assigning the object to a temp
+  moves the push after that call. Use the split form only when the binary proves
+  the opposite evaluation order.
 - Put a binary-observed width cast inside the call argument to bind extension and push timing; a pre-cast local allows unrelated LEAs to hoist (`0047C560`).
 - Chained-call parameter affiliation matters: attach an argument to the callee that truly consumes it; wrong ownership can enable final-call tail-jump instead of `call` (`0049C540`).
 - Member helpers must be declared as members when ECX must remain `this`; free/static declarations change scheduling. Infer virtual wrapper argument ownership from right-to-left pushes and true signatures, not decompiler labels.
@@ -276,6 +281,23 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   otherwise matching its structure.
 - For a reverse indexed scan whose original setup is `dec index; js cold_return; lea walker`, keep the ordinary loop topology but add a natural `if (index < 0) return;` before initializing `walker = base + index`. A guarded `do/while` can delay the LEA too, but changes the cold/common epilogue and broadens the drift.
 - For a VC5 coordinate swap feeding two float virtual-call arguments, the temporary orientation can control both parameter-home stores and x87 evaluation order. When the binary stores the first post-swap value into the original first home, use `temp = second; second = first; first = temp;`, then name semantic coordinates from the post-swap fields before the call; this can recover exact `fild`/`fstp` slot scheduling without raw offsets.
+
+- When a conditional argument is passed to a chained member call, duplicating the
+  ordinary call in the null and non-null source arms can let VC5 tail-merge the
+  receiver/callee while retaining branch-local `push` order. A common pointer
+  temporary may instead materialize `xor`/`push` and load the receiver too early;
+  use the duplicated form only when the binary shows one merged call site.
+- For old panel hierarchies, model the proven base size and nested vptr-bearing
+  object before tuning body shape: a `TPanel` base ending at `0xF4`, a
+  `TScreenPanel` ending at `0x478`, and a draw-surface vptr can recover otherwise
+  broad field and indirect-call drift. In indexed button scans, a natural
+  `TButtonPanel** slot = &array[i]` plus repeated `(*slot)` member expressions
+  preserves slot-address liveness; an ordinary `button` local may choose the
+  wrong register topology. A `while (i < limit)` header can also emit the
+  original `jl` backedge and cold found-arm jump where `do/while` reverses them.
+- For a sparse key/button dispatch whose binary uses a compressed range-map jump table, an ordinary `switch` with explicit grouped cases can reproduce VC5's map. Express arrow guards as positive combined conditions with one shared success tail, rather than early returns, to preserve the original common-return topology; verify case order and per-case return values.
 - For VC5 map brush-stroke interpolation, declare integer endpoint distances before the double step/position locals, and declare the loop count inside the positive-count guard after testing the distance. Updating the x accumulator before y can recover the target x87 spill order and branch/store placement while keeping a natural typed source.
 - In an EH-framed VC5 `new` path, a proven polymorphic screen/object surface is structural: if the allocation immediate and a member access are both exactly 4 bytes too small, model the vptr with a real virtual destructor (and preserve the named field offset) before changing control flow. With `/GX`, a natural typed `new T(args)` then restores the compiler's constructor/EH state and exact size.
 - For a same-TU class helper whose natural indexed loop has exact size/CFG/calls but only SIB base/index bytes differ, model the proven polymorphic base and full member placement before trying pointer walkers or casts. A real vptr plus the known derived member boundary can flip VC5's encoder choice while leaving the readable indexed source unchanged.
+- When two identical switch arms contain binary-proven separate API call sites, a function-wide result local can make VC5 fold the calls into one site. Scoped result locals inside each natural case can preserve both calls and the original liveness basin without register-forcing tricks.
+- For a proven fixed-size member record whose zeroing must interleave with a later API argument address, `memset(&record, 0, sizeof(record))` can recover VC5's early address/store and `rep stosd` schedule where a scalar field zero emits a later direct store. Keep this only when the record size and byte-level schedule are independently established.
