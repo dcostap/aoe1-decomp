@@ -27,6 +27,10 @@
 //   entry/pp register swap; clean typed source retained.
 // - Main-agent audit restored canonical polymorphic player/world/victory
 //   ownership and removed the raw vftable field.
+// - New TU-context pass: constructor-recovered victory vtable slots (without virtual destructor),
+//   world virtual slot, and read-only attributes field were all codegen duplicates. The
+//   recovered constructor/class context therefore gives no new lead beyond the documented
+//   29-byte entry/pp register-color swap.
 
 class RGE_Game_World;
 
@@ -54,7 +58,8 @@ class RGE_Victory_Point_Entry {
 public:
     unsigned char command;    // +0x00
     unsigned char state;      // +0x01
-    char gap_02[2];
+    unsigned char id;         // +0x02
+    unsigned char group;      // +0x03
     long attribute;           // +0x04
     long amount;              // +0x08
     long points;              // +0x0C
@@ -64,7 +69,10 @@ public:
 
 class RGE_Victory_Conditions {
 public:
-    virtual ~RGE_Victory_Conditions();
+    virtual void handle_point_condition(void* entry);
+    virtual void handle_condition(void* entry);
+    virtual char* condition_description(void* entry);
+    virtual void save(int handle);
     void* victory_list;       // +0x04
     long list_num;            // +0x08
     RGE_Player* player;       // +0x0C
@@ -86,7 +94,7 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
     }
 
     int i = 1;
-    register RGE_Player** pp = this->player->world->players;
+    RGE_Player** pp = this->player->world->players;
     if (i < this->player->world->player_num) {
         pp++;
         do {

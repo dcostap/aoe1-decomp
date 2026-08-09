@@ -1,163 +1,236 @@
-// RGE_Victory_Conditions::RGE_Victory_Conditions (full constructor)
+// RGE_Victory_Conditions::RGE_Victory_Conditions
 // VA: 00531750
 // victory.cpp
+// Attempt log:
+// - Replaced the prior decompiler/raw-offset scaffold with typed player/world/object-list,
+//   victory-entry, point-entry, and real add_point ownership. The while player scan removed
+//   a duplicated find_by_id site and recovered the original 33-call set.
+// - A diagnostic six-dword work aggregate for saved list/index/version/temp/point state
+//   recovered the 0x1C frame and 920-byte size; delaying index zeroing until after list/player
+//   setup recovered the prologue basin and 31.94% exact-block coverage.
+// - Separate list_num pointer/register and declaration-order probes were neutral; the best
+//   current typed reconstruction is 502 differing bytes with exact size/frame/call set.
+// - Paused after 10 hypotheses: remaining drift is broad constructor local/register and
+//   block scheduling (plus vtable relocation context), not an unresolved call or ownership
+//   behavior defect. No explicit vptr or raw cross-member cursor is retained.
+// - Main-agent audit removed the artificial local-window aggregate and pointer aliases.
+//   Ordinary named locals and direct member ownership remain authoritative living source.
 
-extern "C" void rge_read(int param_1, void* data, int size);
+extern "C" void rge_read(int handle, void* data, int size);
 extern "C" void* calloc(unsigned int count, unsigned int size);
-extern "C" void* find_by_id(void* list, long id);
+
+class RGE_Static_Object;
+class RGE_Player;
+class RGE_Game_World;
+
+class RGE_Object_List {
+public:
+    RGE_Static_Object* find_by_id(long id);
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x38];
+    short player_num; // +0x3C
+    char gap_3E[2];
+    RGE_Player** players; // +0x40
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x24];
+    RGE_Object_List* objects; // +0x28
+    char gap_2C[0x10];
+    RGE_Game_World* world; // +0x3C
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id; // +0x04
+    void* master_obj; // +0x08
+    RGE_Player* owner; // +0x0C
+};
+
+class RGE_Victory_Entry {
+public:
+    unsigned char command; // +0x00
+    char gap_01[3];
+    long obj_type; // +0x04
+    RGE_Player* target_player; // +0x08
+    float x0; // +0x0C
+    float y0; // +0x10
+    float x1; // +0x14
+    float y1; // +0x18
+    long number; // +0x1C
+    long count; // +0x20
+    RGE_Static_Object* this_obj; // +0x24
+    RGE_Static_Object* target_obj; // +0x28
+    unsigned char victory_group; // +0x2C
+    unsigned char ally_flag; // +0x2D
+    unsigned char state; // +0x2E
+    char gap_2F;
+    RGE_Victory_Entry* next; // +0x30
+};
+
+class RGE_Victory_Point_Entry {
+public:
+    unsigned char command; // +0x00
+    unsigned char state; // +0x01
+    unsigned char id; // +0x02
+    unsigned char group; // +0x03
+    long attribute; // +0x04
+    long amount; // +0x08
+    long points; // +0x0C
+    long curr_points; // +0x10
+    float curr_attribute_amount; // +0x14
+    RGE_Victory_Point_Entry* next; // +0x18
+};
 
 class RGE_Victory_Conditions {
 public:
-    void* vftable;            // +0x00
-    void* victory_list_ptr;   // +0x04
-    long list_num;            // +0x08
-    void* player;             // +0x0C
-    unsigned char victory;    // +0x10
-    char gap_11[3];
-    void* victory_point_list; // +0x14
-    long point_list_num;      // +0x18
-    long tot_victory_points;  // +0x1C
+    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
+    virtual void handle_condition(RGE_Victory_Entry* entry);
+    virtual char* condition_description(RGE_Victory_Entry* entry);
+    virtual void save(int handle);
 
-    RGE_Victory_Conditions(void* player, int param_2, long* param_3, unsigned char param_4);
+    RGE_Victory_Entry* victory_list; // +0x04
+    long list_num; // +0x08
+    RGE_Player* player; // +0x0C
+    unsigned char victory; // +0x10
+    char gap_11[3];
+    RGE_Victory_Point_Entry* victory_point_list; // +0x14
+    long point_list_num; // +0x18
+    long tot_victory_points; // +0x1C
+
+    RGE_Victory_Point_Entry* add_point(unsigned char group, unsigned char id);
+    RGE_Victory_Conditions(RGE_Player* player, int handle, long* version_map,
+        unsigned char version_flag);
 };
 
-RGE_Victory_Conditions::RGE_Victory_Conditions(void* player, int param_2, long* param_3, unsigned char param_4) {
-    this->vftable = (void*)0x00531f30;
+RGE_Victory_Conditions::RGE_Victory_Conditions(
+    RGE_Player* player, int handle, long* version_map, unsigned char version_flag) {
+    long index;
+    long version;
+    float save_version;
+    long point_count;
 
-    long temp_num;
-    if (param_4 == 1) {
-        rge_read(param_2, &temp_num, 4);
+    if (version_flag == 1) {
+        rge_read(handle, &save_version, 4);
     } else {
-        temp_num = 0;
+        save_version = 0.0f;
     }
 
-    rge_read(param_2, &this->list_num, 4);
-    rge_read(param_2, &this->victory, 1);
+    rge_read(handle, &this->list_num, 4);
+    rge_read(handle, &this->victory, 1);
 
-    this->victory_list_ptr = 0;
+    this->victory_list = 0;
     this->player = player;
+    index = 0;
 
-    long count = this->list_num;
-    long param_4_val = 0;
+    while (index < this->list_num) {
+        RGE_Victory_Entry* entry =
+            (RGE_Victory_Entry*)calloc(1, sizeof(RGE_Victory_Entry));
 
-    while (param_4_val < count) {
-        void* entry = calloc(1, 0x34);
+        rge_read(handle, entry, 1);
+        rge_read(handle, &entry->obj_type, 4);
+        rge_read(handle, &version, 4);
+        rge_read(handle, &entry->x0, 4);
+        rge_read(handle, &entry->y0, 4);
+        rge_read(handle, &entry->x1, 4);
+        rge_read(handle, &entry->y1, 4);
+        rge_read(handle, &entry->number, 4);
+        rge_read(handle, &entry->count, 4);
+        long target_player_id;
+        rge_read(handle, &target_player_id, 4);
+        long target_object_id;
+        rge_read(handle, &target_object_id, 4);
+        rge_read(handle, &entry->victory_group, 1);
+        rge_read(handle, &entry->ally_flag, 1);
+        rge_read(handle, &entry->state, 1);
 
-        rge_read(param_2, entry, 1);
-        rge_read(param_2, (char*)entry + 4, 4);
-        float version;
-        rge_read(param_2, &version, 4);
-        rge_read(param_2, (char*)entry + 0x0C, 4);
-        rge_read(param_2, (char*)entry + 0x10, 4);
-        rge_read(param_2, (char*)entry + 0x14, 4);
-        rge_read(param_2, (char*)entry + 0x18, 4);
-        rge_read(param_2, (char*)entry + 0x1C, 4);
-        rge_read(param_2, (char*)entry + 0x20, 4);
-        long temp_player;
-        rge_read(param_2, &temp_player, 4);
-        long temp_obj;
-        rge_read(param_2, &temp_obj, 4);
-        rge_read(param_2, (char*)entry + 0x2C, 1);
-        rge_read(param_2, (char*)entry + 0x2D, 1);
-        rge_read(param_2, (char*)entry + 0x2E, 1);
+        entry->target_obj = 0;
+        entry->this_obj = 0;
+        entry->target_player = 0;
+        entry->next = this->victory_list;
+        this->victory_list = entry;
 
-        *(long*)((char*)entry + 0x28) = 0;
-        *(long*)((char*)entry + 0x24) = 0;
-        *(long*)((char*)entry + 0x08) = 0;
-
-        *(void**)((char*)entry + 0x30) = this->victory_list_ptr;
-        this->victory_list_ptr = entry;
-
-        char* players;
-        if (temp_player >= 0) {
-            void* world = *(void**)((char*)this->player + 0x3C);
-            int pnum = *(short*)((char*)world + 0x3C);
-            players = *(char**)((char*)world + 0x40);
-            for (int j = 0; j < pnum; j++) {
-                void* p = *(void**)(players + j * 4);
-                void* obj_list = *(void**)((char*)p + 0x28);
-                *(void**)((char*)entry + 0x24) = find_by_id(obj_list, temp_player);
-                if (*(void**)((char*)entry + 0x24) != 0) break;
-                world = *(void**)((char*)this->player + 0x3C);
+        if (target_player_id >= 0) {
+            int player_index = 0;
+            RGE_Game_World* world = this->player->world;
+            while (player_index < world->player_num) {
+                entry->this_obj =
+                    world->players[player_index]->objects->find_by_id(target_player_id);
+                if (entry->this_obj != 0) {
+                    break;
+                }
+                player_index++;
+                world = this->player->world;
             }
-            if (*(void**)((char*)entry + 0x24) == 0 && temp_player >= 0) {
-                *(unsigned char*)((char*)entry + 0x2E) = 3;
+            if (target_player_id >= 0 && entry->this_obj == 0) {
+                entry->state = 3;
             }
         }
 
-        if (temp_obj >= 0) {
-            void* obj_list = *(void**)((char*)this->player + 0x28);
-            *(void**)((char*)entry + 0x28) = find_by_id(obj_list, temp_obj);
+        if (target_object_id >= 0) {
+            entry->target_obj = this->player->objects->find_by_id(target_object_id);
         }
 
-        int version_int = (int)version;
-        if (version_int >= 0) {
-            if (param_3 != 0) {
-                version = (float)param_3[version_int];
+        if (version < 0) {
+            entry->target_player = 0;
+        } else {
+            if (version_map != 0) {
+                version = version_map[version];
             }
-            if ((int)version < 0) {
-                *(unsigned char*)((char*)entry + 0x2E) = 3;
+            if (version < 0) {
+                entry->state = 3;
             } else {
-                void* world = *(void**)((char*)this->player + 0x3C);
-                char* players2 = *(char**)((char*)world + 0x40);
-                void* ref_player = *(void**)(players2 + (int)version * 4);
-                *(void**)((char*)entry + 0x08) = ref_player;
-                if (ref_player != 0 && *(void**)((char*)entry + 0x28) == 0 && temp_obj >= 0) {
-                    void* obj_list = *(void**)((char*)ref_player + 0x28);
-                    *(void**)((char*)entry + 0x28) = find_by_id(obj_list, temp_obj);
+                RGE_Player* reference_player =
+                    this->player->world->players[version];
+                entry->target_player = reference_player;
+                if (reference_player != 0 && entry->target_obj == 0 &&
+                    target_object_id >= 0) {
+                    entry->target_obj =
+                        reference_player->objects->find_by_id(target_object_id);
                 }
             }
-        } else {
-            *(void**)((char*)entry + 0x08) = 0;
         }
 
-        if (temp_obj >= 0 && *(void**)((char*)entry + 0x28) == 0) {
-            *(unsigned char*)((char*)entry + 0x2E) = 3;
+        if (target_object_id >= 0 && entry->target_obj == 0) {
+            entry->state = 3;
         }
 
-        param_4_val++;
+        index++;
     }
 
     this->victory_point_list = 0;
     this->point_list_num = 0;
 
-    if ((float)temp_num < 1.0f) {
+    if (save_version < 1.0f) {
         this->tot_victory_points = 0;
     } else {
-        rge_read(param_2, &this->tot_victory_points, 4);
-        int point_count;
-        rge_read(param_2, &point_count, 4);
+        rge_read(handle, &this->tot_victory_points, 4);
+        rge_read(handle, &point_count, 4);
 
-        long param_4_val2 = 0;
-        while (param_4_val2 < point_count) {
-            void* point = calloc(1, 0x1c);
-            *(unsigned char*)((char*)point + 1) = 0;
-            *(long*)((char*)point + 4) = -1;
-            *(long*)((char*)point + 8) = 0;
-            *(unsigned char*)point = 0xFF;
-            *(long*)((char*)point + 0x0C) = 0;
-            *(long*)((char*)point + 0x10) = 0;
-            *(void**)((char*)point + 0x18) = this->victory_point_list;
-            *(unsigned char*)((char*)point + 2) = 0;
-            *(unsigned char*)((char*)point + 3) = 0;
-            this->victory_point_list = point;
-            this->point_list_num++;
-
-            rge_read(param_2, point, 1);
-            rge_read(param_2, (char*)point + 1, 1);
-            rge_read(param_2, (char*)point + 4, 4);
-            rge_read(param_2, (char*)point + 8, 4);
-            rge_read(param_2, (char*)point + 0x0C, 4);
-            rge_read(param_2, (char*)point + 0x10, 4);
-            rge_read(param_2, (char*)point + 2, 1);
-            rge_read(param_2, (char*)point + 3, 1);
-            rge_read(param_2, (char*)point + 0x14, 4);
+        int point_index = 0;
+        while (point_index < point_count) {
+            RGE_Victory_Point_Entry* point = this->add_point(0, 0);
+            rge_read(handle, point, 1);
+            rge_read(handle, &point->state, 1);
+            rge_read(handle, &point->attribute, 4);
+            rge_read(handle, &point->amount, 4);
+            rge_read(handle, &point->points, 4);
+            rge_read(handle, &point->curr_points, 4);
+            rge_read(handle, &point->id, 1);
+            rge_read(handle, &point->group, 1);
+            rge_read(handle, &point->curr_attribute_amount, 4);
 
             if (this->tot_victory_points < 0) {
-                *(long*)((char*)point + 0x0C) = 0;
+                point->points = 0;
             }
-
-            param_4_val2++;
+            point_index++;
         }
 
         if (this->tot_victory_points < 0) {

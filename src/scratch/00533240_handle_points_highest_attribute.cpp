@@ -23,6 +23,10 @@
 //   curr_amount, id, and count; best rebuild spills only this/attribute-related temporaries).
 // - Main-agent audit restored polymorphic player/world/victory ownership;
 //   emitted code is unchanged.
+// - Constructor/TU context probe: the recovered four-slot victory surface,
+//   polymorphic world/player surfaces, and named point-entry id/group fields
+//   are canonical but emitted the same structural candidate. The remaining
+//   blocker is the original four-dword local window versus the natural 0xC frame.
 
 class RGE_Game_World;
 
@@ -48,13 +52,16 @@ public:
 
 class RGE_Victory_Point_Entry {
 public:
-    unsigned char command; unsigned char state; char gap_02[2];
+    unsigned char command; unsigned char state; unsigned char id; unsigned char group;
     long attribute; long initial_amount; long points; long curr_points;
     float curr_attribute_amount;
 };
 class RGE_Victory_Conditions {
 public:
-    virtual ~RGE_Victory_Conditions();
+    virtual void handle_point_condition(void* entry);
+    virtual void handle_condition(void* entry);
+    virtual char* condition_description(void* entry);
+    virtual void save(int handle);
     void* victory_list; long list_num; RGE_Player* player;
     unsigned char victory; char gap_11[3]; void* victory_point_list;
     long point_list_num; long tot_victory_points;

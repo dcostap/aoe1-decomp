@@ -1,6 +1,21 @@
 // RGE_Victory_Conditions::save
 // VA: 00531B70
 // victory.cpp
+// Attempt log:
+// - Baseline: typed the victory entry, static object, player, and point record ownership and
+//   used natural rge_write serialization loops. Calls, frame, and size were nearly exact;
+//   the null-arm layout and float version-field model remained wrong.
+// - Positive non-null arms for target_player/this_obj/target_obj recovered the original CFG
+//   and left only the target-object version/owner hunk. Binary stores both target_obj->id and
+//   the null sentinel as raw dwords, so version_field is a long, not a float.
+// - A diagnostic volatile pointer lvalue for the second target_obj reread reproduced the original
+//   reload and left 7 differing bytes (571-byte size, 0xC frame, 28/28 calls exact). A
+//   volatile member and volatile pointer local were worse; comma/ordering variants were
+//   emitted-code duplicates.
+// - Paused after the bounded pass with the readable typed source retained. Remaining drift is
+//   the localized VC5 order of the version-field store versus the proven target_obj reread.
+// - Main-agent audit removed that fake-volatile reload control. Direct typed member access is
+//   authoritative in the living source; the seven-byte result remains diagnostic only.
 
 struct RGE_Player {
     char gap_00[0x4A];
@@ -79,25 +94,25 @@ void RGE_Victory_Conditions::save(int param_1) {
     for (RGE_Victory_Entry* entry = this->victory_list; entry != 0; entry = entry->next) {
         long target_player_id;
         long target_obj_id;
-        float version_field;
+        long version_field;
 
-        if (entry->target_player == 0) {
-            target_player_id = -1;
-        } else {
+        if (entry->target_player != 0) {
             target_player_id = entry->target_player->id;
+        } else {
+            target_player_id = -1;
         }
 
-        if (entry->this_obj == 0) {
-            target_obj_id = -1;
-        } else {
+        if (entry->this_obj != 0) {
             target_obj_id = entry->this_obj->id;
+        } else {
+            target_obj_id = -1;
         }
 
-        if (entry->target_obj == 0) {
-            version_field = -1.0f;
-        } else {
-            version_field = (float)entry->target_obj->id;
+        if (entry->target_obj != 0) {
+            version_field = entry->target_obj->id;
             target_player_id = entry->target_obj->owner->id;
+        } else {
+            version_field = -1;
         }
 
         rge_write(param_1, entry, 1);
