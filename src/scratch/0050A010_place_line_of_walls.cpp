@@ -1,105 +1,193 @@
-// VA: 0050A010, TRIBE_Command::place_line_of_walls, 291 bytes
-// Source: tcommand.cpp lines 456-503
-// FLAGS: default
+// VA: 0050A010, TRIBE_Command::place_line_of_walls (tcommand.cpp:456-503)
 //
 // Attempt log:
-// v1-v3: Non-static member. Correct size (291B). 79% match. Main diff:
-//   - Original reads start_x into ecx (overwriting this), mine reads into eax
-//   - Cascading register swap throughout (ecx↔eax, some stack offset shifts)
-// v4-v5: Static member (no this). 288 bytes (3 short), different register alloc.
-// v6-v10: Various approaches to force ecx allocation (goto, sign-trick variants,
-//   removing vtable local var). Best result: 82% match (238/291 bytes equal).
-// 
-// Remaining structural mismatches vs original:
-// 1. REGISTER: Original uses ecx for start_x (overwrites this). VC5 with
-//    modern compiler keeps this alive and uses eax for start_x.
-// 2. BYTE EXTENSION: Original `mov cl,[esi+64h]` doesn't zero-extend the
-//    type byte before push ecx (relies on old ecx hi-bytes). VC5 always
-//    zero-extends via `xor ecx,ecx; mov cl,...` or `movzx`.
-// 3. VTABLE READ: Original reads vtable[0x20] into local [esp+18h],
-//    then reads vtable[0x3C] fresh from [esi] each loop. My code reads
-//    vtable[0x20] once into canPlace local.
-// 4. SUB SIZE: Original sub esp,0Ch (3 local dwords). VC5 generates
-//    sub esp,10h+ due to extra zero-init or vtable temp.
-// All four differences are VC5 codegen policy choices that C++ source
-// cannot control without inline asm (forbidden for real functions).
-
-#include <stddef.h>
+// baseline: clean typed reconstruction using the period class/virtual surface;
+//   retained named master fields, parameter-home coordinate swap, and the
+//   signed unit-step expressions from the original line routine (291B, exact
+//   frame/instruction/call shape, 29 strict bytes).
+// reversed endpoint equality operands: 28 strict bytes; retained because the
+//   resynchronized endpoint compare was closer without changing behavior.
+// modeled pay failure as the binary-proven immediate routine return: 27 bytes;
+//   retained, matching the original far failure branch.
+// named endpoint-copy/local declaration variants forced an extra ESI save and
+//   293B output (261 strict bytes); rolled back. The canonical RGE_Command base
+//   surface was restored from same-TU donors and had no codegen movement.
+// final unresolved drift is the first endpoint register/home coloring and its
+//   resulting FPU stack-slot schedule; call set, CFG, frame, and size are exact.
+// Main-agent audit removed the inline empty destructor body and retained the
+// canonical command/master virtual declarations; output remains at 27 bytes.
 
 typedef unsigned char uchar;
-typedef unsigned short ushort;
 
+class RGE_Game_World;
+class RGE_Player;
 class RGE_Static_Object;
-class TRIBE_Master_Building_Object;
+class RGE_Master_Static_Object;
+class RGE_Master_Combat_Object;
+class RGE_Task_List;
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Sprite;
+class RGE_Sound;
 
-class TRIBE_Player {
+class RGE_Player {
 public:
-    uchar pay_obj_cost(short obj_id, float cost, int zero);
+    virtual ~RGE_Player();
 };
 
-typedef int (__stdcall* CanPlaceFn)(TRIBE_Player*, float, float, int, int, int, int, int, int, int);
-typedef RGE_Static_Object* (__fastcall* BuildFn)(TRIBE_Master_Building_Object*, int, TRIBE_Player*, float, float, int, int);
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* source);
+    virtual void modify(float value, uchar attribute);
+    virtual void modify_delta(float value, uchar attribute);
+    virtual void modify_percent(float value, uchar attribute);
+    virtual void save(int file);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* player,
+                                             float x, float y, float z);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual uchar check_placement(RGE_Player* player, float x, float y,
+                                  int* placement, uchar check_terrain,
+                                  uchar elevation, uchar check_objects,
+                                  uchar check_units, uchar check_buildings,
+                                  uchar check_fog);
+    virtual uchar alignment(float* x, float* y, RGE_Game_World* world,
+                            uchar value);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* object);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea* area, short x, short y,
+                      RGE_Color_Table* colors, long clip_x, long clip_y,
+                      int value, uchar flags);
 
-class TRIBE_Command {
+    uchar gap_04[0x0C];
+    short id;
+    uchar gap_12[0x52];
+    uchar elevation_flag;
+    uchar gap_65[0x53];
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    uchar gap_BC[0x1C];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    uchar gap_D8[0x24];
+    virtual RGE_Task_List* create_task_list();
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
+    uchar gap_FC[0x4C];
+};
+
+class TRIBE_Master_Combat_Object : public RGE_Master_Combat_Object {
+public:
+    uchar gap_148[0x1C];
+};
+
+class TRIBE_Master_Building_Object : public TRIBE_Master_Combat_Object {
+public:
+    uchar gap_164[0x18];
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* player,
+                                             float x, float y, float z,
+                                             int flags);
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    uchar pay_obj_cost(short object_id, float amount, int flag);
+};
+
+class RGE_Command {
+public:
+    virtual void vfunc0() = 0;
+    virtual ~RGE_Command();
+    virtual void vfunc8() = 0;
+    virtual void vfuncC() = 0;
+
+    RGE_Game_World* world;
+    void* last_order;
+    int last_order_size;
+    unsigned int last_order_time;
+    void* com_hand;
+};
+
+class TRIBE_Command : public RGE_Command {
 public:
     void place_line_of_walls(
-        TRIBE_Player* pPlayer,
-        TRIBE_Master_Building_Object* pBuilding,
-        int param_3,
+        TRIBE_Player* player,
+        TRIBE_Master_Building_Object* master,
+        int object_id,
         int start_x,
         int start_y,
         int end_x,
         int end_y,
-        RGE_Static_Object** ppResult
-    );
+        RGE_Static_Object** result);
 };
 
 void TRIBE_Command::place_line_of_walls(
-    TRIBE_Player* pPlayer,
-    TRIBE_Master_Building_Object* pBuilding,
-    int param_3,
+    TRIBE_Player* player,
+    TRIBE_Master_Building_Object* master,
+    int object_id,
     int start_x,
     int start_y,
     int end_x,
     int end_y,
-    RGE_Static_Object** ppResult)
+    RGE_Static_Object** result)
 {
-    int step_x, step_y;
+    int y_skip;
+    int x_skip;
 
-    if (start_x == end_x)
-        step_x = 0;
-    else
-        step_x = (((int)(end_x <= start_x) - 1) & 2) - 1;
+    if (end_x == start_x) {
+        y_skip = 0;
+    } else {
+        y_skip = (((int)(end_x <= start_x) - 1) & 2) - 1;
+    }
 
-    if (start_y == end_y)
-        step_y = 0;
-    else
-        step_y = (((int)(end_y <= start_y) - 1) & 2) - 1;
+    if (end_y == start_y) {
+        x_skip = 0;
+    } else {
+        x_skip = (((int)(end_y <= start_y) - 1) & 2) - 1;
+    }
 
-    // Reuse param slots
-    { int t = start_x; start_x = start_y; start_y = t; }
+    int temp = start_x;
+    start_x = start_y;
+    start_y = temp;
 
-    void* canPlace = ((void***)pBuilding)[0][8];
+    for (;;) {
+        if (master->check_placement(
+                player,
+                (float)start_y + 0.5f,
+                (float)start_x + 0.5f,
+                0, 1, master->elevation_flag, 0, 1, 1, 1) == 0) {
+            if (player->pay_obj_cost(master->id, 1.0f, 0) == 0) {
+                return;
+            }
 
-    while (1) {
-        float fx = (float)start_y - 0.5f;
-        float fy = (float)start_x - 0.5f;
-
-        uchar ot = *(uchar*)((char*)pBuilding + 0x64);
-
-        if (((CanPlaceFn)canPlace)(pPlayer, fx, fy, 0, 1, ot, 0, 1, 1, 1) == 0) {
-            short oi = *(short*)((char*)pBuilding + 0x10);
-            if (pPlayer->pay_obj_cost(oi, 1.0f, 0) != 0) {
-                RGE_Static_Object* obj = ((BuildFn)((void***)pBuilding)[0][15])(pBuilding, 0, pPlayer, fx, fy, 0, param_3);
-                if (obj != 0 && *ppResult == 0)
-                    *ppResult = obj;
+            RGE_Static_Object* object = master->make_new_obj(
+                player,
+                (float)start_y + 0.5f,
+                (float)start_x + 0.5f,
+                0,
+                object_id);
+            if (object != 0 && *result == 0) {
+                *result = object;
             }
         }
 
-        if (start_y == end_x && start_x == end_y)
+        if (start_y == end_x && start_x == end_y) {
             break;
+        }
 
-        start_y += step_x;
-        start_x += step_y;
+        start_y += y_skip;
+        start_x += x_skip;
     }
 }

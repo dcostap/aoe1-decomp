@@ -1,47 +1,86 @@
 // VA: 00422130 RGE_Base_Game::set_game_options (297 B)
 // PDB source: basegame.cpp
 // Packet-grounded: write all game options from RGE_Game_Options struct
+// Attempt log:
+// - Replaced the initial cdecl self shims with the canonical member-setter
+//   ABI and nested RGE_Game_Options layout; size/calls/CFG became exact.
+// - Reversed subscripts, pointer-add/raw-byte offset forms, nested-type and
+//   destructor context, loop declaration/register variants, and a focused
+//   variant lab all emitted the same 2-byte SIB drift: rebuilt [edi+esi+92/9C]
+//   versus original [esi+edi+92/9C].
+// - Left the natural typed reconstruction in scratch; only the address-term
+//   encoding remains unresolved.
 
-extern void setVersion(void* self, float v);
-extern void setScenarioGame(void* self, int v);
-extern void setScenarioName(void* self, const char* name);
-extern void setSinglePlayerGame(void* self, int v);
-extern void setMultiplayerGame(void* self, int v);
-extern void setMapSize(void* self, int x, int y, int z);
-extern void setAllowCheatCodes(void* self, int v);
-extern void setCheatNotification(void* self, int v);
-extern void setFullVisibility(void* self, int v);
-extern void setFogOfWar(void* self, int v);
-extern void setColoredChat(void* self, int v);
-extern void setNumberPlayers(void* self, int v);
-extern void setGameDeveloperMode(void* self, int v);
-extern void setDifficulty(void* self, int v);
-extern void setMpPathFinding(void* self, unsigned char v);
-extern void setPlayerCDAndVersion(void* self, int idx, unsigned char v);
-extern void setPlayerTeam(void* self, int idx, int v);
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
 
-void RGE_Base_Game_set_game_options(void* self, char* opt)
+    struct RGE_Game_Options {
+        float versionValue;
+        unsigned char scenarioGameValue;
+        char scenarioNameValue[0x80];
+        unsigned char singlePlayerGameValue;
+        unsigned char multiplayerGameValue;
+        unsigned char mapXSizeValue;
+        unsigned char mapYSizeValue;
+        unsigned char mapZSizeValue;
+        unsigned char allowCheatCodesValue;
+        unsigned char mpPathFindingValue;
+        unsigned char cheatNotificationValue;
+        unsigned char fullVisibilityValue;
+        unsigned char fogOfWarValue;
+        unsigned char coloredChatValue;
+        unsigned char numberPlayersValue;
+        unsigned char gameDeveloperModeValue;
+        unsigned char playerCDAndVersionValue[9];
+        unsigned char difficultyValue;
+        unsigned char playerTeamValue[9];
+    };
+
+    void setVersion(float v);
+    void setScenarioGame(int v);
+    void setScenarioName(const char* name);
+    void setSinglePlayerGame(int v);
+    void setMultiplayerGame(int v);
+    void setMapSize(int x, int y, int z);
+    void setAllowCheatCodes(int v);
+    void setCheatNotification(int v);
+    void setFullVisibility(int v);
+    void setFogOfWar(int v);
+    void setColoredChat(int v);
+    void setNumberPlayers(int v);
+    void setGameDeveloperMode(int v);
+    void setDifficulty(int v);
+    void setMpPathFinding(unsigned char v);
+    void setPlayerCDAndVersion(int idx, unsigned char v);
+    void setPlayerTeam(int idx, int v);
+
+    void set_game_options(RGE_Game_Options* opt);
+};
+
+void RGE_Base_Game::set_game_options(RGE_Game_Options* opt)
 {
     int i;
-    
-    setVersion(self, *(float*)opt);
-    setScenarioGame(self, (unsigned char)opt[4]);
-    setScenarioName(self, opt + 5);
-    setSinglePlayerGame(self, (unsigned char)opt[0x85]);
-    setMultiplayerGame(self, (unsigned char)opt[0x86]);
-    setMapSize(self, (unsigned char)opt[0x87], (unsigned char)opt[0x88], (unsigned char)opt[0x89]);
-    setAllowCheatCodes(self, (unsigned char)opt[0x8A]);
-    setCheatNotification(self, (unsigned char)opt[0x8C]);
-    setFullVisibility(self, (unsigned char)opt[0x8D]);
-    setFogOfWar(self, (unsigned char)opt[0x8E]);
-    setColoredChat(self, (unsigned char)opt[0x8F]);
-    setNumberPlayers(self, (unsigned char)opt[0x90]);
-    setGameDeveloperMode(self, (unsigned char)opt[0x91]);
-    setDifficulty(self, (unsigned char)opt[0x9B]);
-    setMpPathFinding(self, (unsigned char)opt[0x8B]);
-    
+
+    this->setVersion(opt->versionValue);
+    this->setScenarioGame(opt->scenarioGameValue);
+    this->setScenarioName(opt->scenarioNameValue);
+    this->setSinglePlayerGame(opt->singlePlayerGameValue);
+    this->setMultiplayerGame(opt->multiplayerGameValue);
+    this->setMapSize(opt->mapXSizeValue, opt->mapYSizeValue,
+                     opt->mapZSizeValue);
+    this->setAllowCheatCodes(opt->allowCheatCodesValue);
+    this->setCheatNotification(opt->cheatNotificationValue);
+    this->setFullVisibility(opt->fullVisibilityValue);
+    this->setFogOfWar(opt->fogOfWarValue);
+    this->setColoredChat(opt->coloredChatValue);
+    this->setNumberPlayers(opt->numberPlayersValue);
+    this->setGameDeveloperMode(opt->gameDeveloperModeValue);
+    this->setDifficulty(opt->difficultyValue);
+    this->setMpPathFinding(opt->mpPathFindingValue);
+
     for (i = 0; i < 9; i++) {
-        setPlayerCDAndVersion(self, i, (unsigned char)opt[0x92 + i]);
-        setPlayerTeam(self, i, (unsigned char)opt[0x9C + i]);
+        this->setPlayerCDAndVersion(i, opt->playerCDAndVersionValue[i]);
+        this->setPlayerTeam(i, opt->playerTeamValue[i]);
     }
 }

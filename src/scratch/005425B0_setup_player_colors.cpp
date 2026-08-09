@@ -1,93 +1,115 @@
 // 005425B0 RGE_Game_World::setup_player_colors (World.cpp:1173-1220, 295B)
-// Assigns color tables to players from player info, with fallback search.
 //
-// Left in scratch: VC5 register allocation and comparison structure differences:
-// - colorIdx in ebp instead of ebx (register allocation choice)
-// - info param kept in register (edi) vs reloaded from stack ([esp+20h])
-// - player_num comparison: `mov ax,[esi+3Ch]; cmp ax,1` vs `cmp [esi+3Ch], di`
-// - First loop: adds info+25Ch to ptr vs lea ebp,[ecx+25Ch]
-// - stack local assignment: [esp+14h] vs [esp+18h] for maxIter
-// All field offsets, calloc/free pattern, loop bounds, and color search logic verified.
+// Attempt log:
+// - baseline: natural typed reconstruction with two indexed passes; structural
+//   parity was not yet reached.
+// - canonicalized the period class/type names and reference parameter, moved
+//   color initialization before the first player call, and used explicit
+//   do/while scans to mirror the observed bottom-tested loops.
+// - hoisting one shared index before calloc restored the exact frame and all
+//   structural/call parity; the remaining drift is one VC5 SIB base/index byte
+//   at the used-color compare (original [ecx+eax], rebuild [eax+ecx]).
+// - pointer/addition, boolean, signed-byte, operand-order, and array-overlay
+//   variants were diagnostic duplicates; the natural typed subscript remains
+//   the living source.
+// - Main-agent audit replaced inline empty virtual bodies with canonical
+//   declarations and restored world/player destructor ownership. This exposes
+//   the same SIB-only blocker (two encoded bytes under canonical TU context).
+//
 // FLAGS: /nologo /c /O2 /Oy
+
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
 
 extern "C" void* calloc(int num, int size);
 extern "C" void free(void* ptr);
 
-struct ColorTable2 {
-    char _gap_00[0x24];
-    unsigned char type;   // +0x24
-};
-
-struct RGE_PlayerShort3 {
-    char _gap_00[4];
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
     void set_color_table(unsigned char color);
-    char _gap_04[0x220 - 4];
 };
 
-struct RGE_PlayerInfo2 {
-    char _gap_00[0x25C];
-    short color[9];      // +0x25C
-    char _gap_26E[0x294 - 0x26E];
-    short player_num;    // +0x294
+class RGE_Player_Info {
+public:
+    char gap_00[0x25C];
+    short color[9];             // +0x25C
+    char gap_26E[0x26];
+    short player_num;           // +0x294
 };
 
-struct RGE_GameWorldShort3 {
-    char _gap_00[0x3C];
-    short player_num;
-    char _gap_3E[2];
-    RGE_PlayerShort3** players;
-    char _gap_44[0x60 - 0x44];
-    short color_table_num;
-    char _gap_62[2];
-    ColorTable2** color_tables;
-
-    void setup_player_colors(RGE_PlayerInfo2* info);
+class RGE_Color_Table {
+public:
+    char gap_00[0x24];
+    unsigned char type;         // +0x24
 };
 
-void RGE_GameWorldShort3::setup_player_colors(RGE_PlayerInfo2* info) {
-    players[0]->set_color_table((unsigned char)7);
+class RGE_Game_World {
+public:
+    // The target is the original virtual slot 42.  The declarations also
+    // preserve the real vptr before the data fields.
+    virtual ~RGE_Game_World();
+    VPAD16(1) VPAD8(17)
+    virtual unsigned char new_random_game(RGE_Player_Info& info);
+    VPAD16(26)
+    virtual void setup_player_colors(RGE_Player_Info& info);
 
+    char gap_04[0x38];          // +0x04 through +0x3B
+    short player_num;           // +0x3C
+    char gap_3E[2];
+    RGE_Player** players;       // +0x40
+    char gap_44[0x1C];
+    short color_table_num;      // +0x60
+    char gap_62[2];
+    RGE_Color_Table** color_tables; // +0x64
+};
+
+void RGE_Game_World::setup_player_colors(RGE_Player_Info& info) {
     int colorIdx = -1;
 
-    int maxPlayerNum = player_num + 1;
-    int maxIter = info->player_num;
+    this->players[0]->set_color_table(7);
+
+    int maxPlayerNum = this->player_num + 1;
+    int maxIter = info.player_num;
     if (maxIter > maxPlayerNum) {
         maxIter = maxPlayerNum;
     }
 
-    unsigned char* colorsUsed = (unsigned char*)calloc(color_table_num, 1);
-    unsigned char* playersDone = (unsigned char*)calloc(player_num, 1);
+    int i = 1;
+    unsigned char* colorsUsed = (unsigned char*)calloc(this->color_table_num, 1);
+    unsigned char* playersDone = (unsigned char*)calloc(this->player_num, 1);
 
-    // First pass: use colors from player info
-    if (player_num > 1) {
-        short* colorPtr = info->color;
-        for (int i = 1; i < player_num; i++) {
-            if (i - 1 < maxIter) {
-                short c = *colorPtr;
-                if (c >= 0) {
-                    if (colorsUsed[c] == 0) {
-                        players[i]->set_color_table((unsigned char)c);
-                        colorsUsed[c] = 1;
-                        playersDone[i] = 1;
-                    }
-                }
+    if (this->player_num > 1) {
+        short* colorPtr = info.color;
+        do {
+            if (i - 1 < maxIter && *colorPtr >= 0 &&
+                colorsUsed[*colorPtr] == 0) {
+                this->players[i]->set_color_table((unsigned char)*colorPtr);
+                colorsUsed[*colorPtr] = 1;
+                playersDone[i] = 1;
             }
-            colorPtr++;
-        }
+            ++i;
+            ++colorPtr;
+        } while (i < this->player_num);
     }
 
-    // Second pass: assign remaining colors to unassigned players
-    if (player_num > 1) {
-        for (int i = 1; i < player_num; i++) {
+    i = 1;
+    if (this->player_num > 1) {
+        do {
             if (playersDone[i] == 0) {
                 do {
-                    colorIdx++;
-                } while (colorsUsed[colorIdx] == 1 || color_tables[colorIdx]->type != 1);
+                    ++colorIdx;
+                } while (colorsUsed[colorIdx] == 1 ||
+                         this->color_tables[colorIdx]->type != 1);
 
-                players[i]->set_color_table((unsigned char)colorIdx);
+                this->players[i]->set_color_table((unsigned char)colorIdx);
                 colorsUsed[colorIdx] = 1;
             }
-        }
+            ++i;
+        } while (i < this->player_num);
     }
 
     free(colorsUsed);
