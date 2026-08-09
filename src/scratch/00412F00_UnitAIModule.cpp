@@ -2,21 +2,42 @@
 // aiuaimod.cpp
 // EH frame (/GX)
 //
-// NOTE: Original has C++ EH frame (push -1, FS save/restore, local_4 phase
-// tracking). VC5 only generates this when compiled in a TU with derived
-// classes visible. In isolated compilation the EH frame is omitted.
+// Attempt log:
+// - Existing canonical typed field/allocation reconstruction has the exact
+//   four-call set and correct 0x134 object layout, but the isolated TU emits
+//   no original C++ EH registration and places the automatic vptr at entry.
+// - Added a period-plausible derived UnitAIModule declaration under /GX; VC5
+//   emitted identical code. The remaining gap is a real translation-unit /
+//   constructor-context blocker: the oracle has push -1, FS chaining, a
+//   phase local, delayed vptr store, and caller cleanup ret 8.
+// - Retain the natural typed constructor rather than manual EH/vptr plumbing;
+//   resume with the full aiuaimod.cpp class/constructor context.
 
-class RGE_Static_Object;
 class OrderEvent;
 class NotifyEvent;
 class AIPlayStatus;
+
+class RGE_Master_Static_Object {
+public:
+    char gap_00[0x14];
+    short object_category;                       // +0x14
+    char gap_16[0x12];
+    float defense_buffer;                        // +0x28
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    int id;                                      // +0x04
+    RGE_Master_Static_Object* master_obj;         // +0x08
+};
 
 void __cdecl setAdjustedIdleTimeout(void* this_);
 void* __cdecl operator_new(unsigned int size);
 
 class UnitAIModule {
 public:
-    void* objectValue;                          // +0x04
+    RGE_Static_Object* objectValue;             // +0x04
     int moodValue;                              // +0x08
     int objectCategoryValue;                    // +0x0C
     int orderQueueSizeValue;                    // +0x10
@@ -66,6 +87,8 @@ public:
     virtual ~UnitAIModule();
 };
 
+// The historical aiuaimod.cpp TU exposes derived UnitAIModule classes; this
+// declaration is context only and emits no additional function body.
 UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize) {
     objectValue = obj;
     moodValue = -1;
@@ -109,9 +132,8 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize) {
     stopAfterTargetKilledValue = 0;
 
     if (obj != 0) {
-        void* master = *(void**)((char*)obj + 8);
-        objectCategoryValue = *(short*)((char*)master + 0x14);
-        defenseBufferValue = *(float*)((char*)master + 0x28);
+        objectCategoryValue = obj->master_obj->object_category;
+        defenseBufferValue = obj->master_obj->defense_buffer;
     }
 
     orderQueueValue = operator_new(orderQueueMaxSizeValue * 0x24);

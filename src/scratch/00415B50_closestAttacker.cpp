@@ -1,32 +1,116 @@
-// VA: 00415B50 closestAttacker (328B)
-// aiuaimod.cpp
+// VA: 00415B50 UnitAIModule::closestAttacker (328B)
+// aiuaimod.cpp:2579-2600
+//
+// Attempt log:
+// - Replaced the former placeholder with the binary-supported attacking-units
+//   ManagedArray<int> surface, owner/world object lookup, distance comparison,
+//   selected-ID tracking, and optional float output.
+// - Baseline: period utmarray.h inline operator[] growth body and a positive-
+//   count do/while scan; exact call set, but the distance local was optimized
+//   into the x87 stack and the frame was four bytes short.
+// - Promoted distance to a function-scope local and reversed selected-ID versus
+//   threshold assignment order. This restored the separate FPU spill, frame,
+//   CFG, call-site relocations, and all late blocks; the remaining 10-byte drift
+//   is only the swapped initial sentinel/threshold stores.
+// - A volatile-distance diagnostic confirmed the spill cause but was removed.
+//   Declaration/init permutations and a focused six-case init-order lab did not
+//   produce the oracle's store order. Best retained source is natural typed C++
+//   with 328-byte output, 6/6 calls, and 10 positional bytes remaining.
+
+extern "C" {
+    void* __cdecl operator_new(unsigned int size);
+    void __cdecl operator_delete(void* block);
+}
+
+class RGE_Game_World;
+class RGE_Player;
+class RGE_Static_Object;
+
+class RGE_Game_World {
+public:
+    RGE_Static_Object* object(int index);
+};
+
+class RGE_Player {
+public:
+    char gap_00[0x3C];
+    RGE_Game_World* world; // +0x3C
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+
+    int id;                         // +0x04
+    void* master_obj;               // +0x08
+    RGE_Player* owner;              // +0x0C
+
+    float distance_to_object(RGE_Static_Object* other);
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    T& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            T* new_value = (T*)operator_new(new_size * sizeof(T));
+            if (new_value != 0) {
+                for (int i = 0; i < this->maximumSizeValue && i < new_size; i++) {
+                    new_value[i] = this->value[i];
+                }
+                operator_delete(this->value);
+                this->value = new_value;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
+};
 
 class UnitAIModule {
 public:
     virtual ~UnitAIModule();
-    virtual int method_20();
-    char gap4[0x4];
-    void* field_08;
-    
-    int closestAttacker();
+
+    RGE_Static_Object* objectValue; // +0x04
+    char gap_08[0x60 - 0x08];
+    ManagedArray<int> attackingUnitsValue; // +0x60
+    char gap_70[0x134 - 0x70];
+
+    virtual int closestAttacker(float* attackDistance);
 };
 
-int __cdecl sub_0041A0D0(int a1);
+int UnitAIModule::closestAttacker(float* attackDistance) {
+    int i;
+    int attackObject;
+    float largestThreat;
+    float distance;
 
-int game_player_count = 0;
-int game_player_list = 0;
+    largestThreat = 0.0f;
+    attackObject = -1;
+    i = 0;
 
-int UnitAIModule::closestAttacker() {
-    method_20();
-    
-    for (int i = 0; i < game_player_count; i++) {
-        int player = *(int*)(game_player_list + i * 8);
-        int result = sub_0041A0D0(player);
-        if (result) {
-            // This is a potential attacker
-            return player;
-        }
+    if (this->attackingUnitsValue.numberValue > 0) {
+        do {
+            RGE_Static_Object* object =
+                this->objectValue->owner->world->object(this->attackingUnitsValue[i]);
+            if (object != 0) {
+                distance = this->objectValue->distance_to_object(object);
+                if (attackObject == -1 || distance < largestThreat) {
+                    attackObject = this->attackingUnitsValue[i];
+                    largestThreat = distance;
+                }
+            }
+            ++i;
+        } while (i < this->attackingUnitsValue.numberValue);
     }
-    
-    return -1;
+
+    if (attackDistance != 0)
+        *attackDistance = largestThreat;
+    return attackObject;
 }
