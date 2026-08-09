@@ -57,6 +57,19 @@
 // scheduling broadly; diagnostic-only. Current blocker is the original cursor-copy/add
 // setup with delayed base loads across constant pushes; no plausible non-volatile axis remains.
 
+// Fresh independent pass 2026-08-09 (orch-luna-47b8b0-w1):
+// probe-034 cursor-first compound coordinate locals: duplicate 176B basin; restored.
+// probe-035 inline extent expressions: 164B / 170 positional diff, structural regression; restored.
+// probe-036 declaration-only virtual destructors: duplicate 176B basin; restored.
+// probe-037 same-TU /GX response-file context: duplicate 176B basin; flags removed.
+// probe-038 base TPanel* alias for call-site fields: duplicate 176B basin; restored.
+// probe-039 x-before-y coordinate locals: duplicate 176B basin; restored.
+// probe-040 volatile field_20 pointer read: duplicate 176B basin; restored.
+// probe-041 TPanel& alias for call-site fields: duplicate 176B basin; restored.
+// Fresh-pass conclusion: retain the natural 176B reconstruction. The original 180B
+// call setup still preserves cursor-copy/add instructions and delayed base loads that
+// this TU/compiler basin does not emit; no behavior or call/ABI discrepancy found.
+
 class TDrawArea;
 
 struct TShape {
