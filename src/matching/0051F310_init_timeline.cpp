@@ -13,13 +13,14 @@
 // - v10: reversed line-max assignments to probe late load/store order; edit diff improved to 8.79%.
 // - v11: routed width result through temp1; worsened first mismatch/size family, rolled back.
 // - v12: inverted float compare spelling to `1.0f > bar_thickness`; worsened edit diff, rolled back.
-// - v13: paused in scratch. Best check: 455/455 bytes, positional diff 51.2088%, edit diff 8.7912%, first mismatch +0x69.
-//   Blocker: very small but cascading register-allocation drift after width(): original keeps usable_X in ECX and
-//   num_history_entries in EDX, rebuilt uses EDX/ECX. The math/control flow and field effects are otherwise close;
-//   late line-max assignment order was improved, but the early ECX/EDX swap shifts branch offsets and the drop-rate block.
-//   Likely needs exact original source spelling or donor TU context to force the width-result local register.
-
-extern "C" int __cdecl _ftol(void);
+// - v13: paused in scratch with a 455-byte near-match; the remaining ECX/EDX
+//   lifetime swap was traced to persistent entries/diff/temp copies.
+// - v14: removed those compiler-steering copies and used direct member arithmetic;
+//   the emitted function became an exact 455-byte match.
+// - v15: removed the unused player_off increment scaffold; typed players[i+1]
+//   traversal remained exact and is the cleaner source model.
+// - v16: removed the unused explicit _ftol declaration; natural casts remained exact.
+// Exact: 455/455 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.
 
 class TRIBE_History_Info {
 public:
@@ -34,7 +35,8 @@ public:
 
 class RGE_Game_World {
 public:
-    char gap_00[0x3c];
+    virtual unsigned char data_load_world(void* file);
+    char gap_04[0x38];
     short player_num;
     short pad_3e;
     TRIBE_Player** players;
@@ -42,7 +44,8 @@ public:
 
 class RGE_Base_Game {
 public:
-    char gap_000[0x3f4];
+    virtual ~RGE_Base_Game();
+    char gap_004[0x3f0];
     RGE_Game_World* world;
 };
 
@@ -81,22 +84,17 @@ public:
 
 void Time_Line_Panel::init_timeline()
 {
-    int temp1;
-    int temp2;
-
     int i = 0;
     this->num_history_entries = 0;
     RGE_Game_World* world = rge_base_game->world;
     int count = (int)world->player_num - 1;
     if (count > 0) {
-        int player_off = 4;
         do {
             int n = world->players[i + 1]->history_info->get_history_entry_num();
             if (this->num_history_entries < n) {
                 this->num_history_entries = n;
             }
             i++;
-            player_off += 4;
             world = rge_base_game->world;
         } while (i < (int)world->player_num - 1);
     }
@@ -108,21 +106,17 @@ void Time_Line_Panel::init_timeline()
     }
 
     this->time_slice_drop_rate = 0.0f;
-    temp1 = usable_X;
-    temp2 = this->num_history_entries;
-    this->bar_thickness = (float)temp1 / (float)temp2;
-    int entries = this->num_history_entries;
+    this->bar_thickness = (float)usable_X / (float)this->num_history_entries;
 
     if (this->bar_thickness < 1.0f) {
-        int diff = entries - usable_X;
         this->bar_thickness = 1.0f;
         this->num_entries_page = usable_X;
         this->drop_flag = 1;
-        this->total_slices_to_drop = diff;
-        temp2 = diff;
-        this->time_slice_drop_rate = (float)usable_X / (float)temp2;
+        this->total_slices_to_drop = this->num_history_entries - usable_X;
+        this->time_slice_drop_rate =
+            (float)usable_X / (float)this->total_slices_to_drop;
     } else {
-        this->num_entries_page = entries;
+        this->num_entries_page = this->num_history_entries;
     }
 
     this->X_axis_length = (long)((float)this->num_entries_page * this->bar_thickness) + 4;
@@ -138,7 +132,7 @@ void Time_Line_Panel::init_timeline()
     if (this->num_entries_page < 12) {
         this->pop_reading_rate = 1;
     } else {
-        temp2 = this->num_entries_page - 1;
-        this->pop_reading_rate = (long)((float)temp2 * 0.1f);
+        this->pop_reading_rate =
+            (long)((float)(this->num_entries_page - 1) * 0.1f);
     }
 }

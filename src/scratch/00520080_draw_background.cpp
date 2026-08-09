@@ -11,6 +11,12 @@
 // 8: tried compound assignment draw_y/draw_x spelling to force original register sequence; no codegen change.
 // 9: tried swapping local declaration order; no codegen change.
 // 10: tried short locals and for-loop spelling; worsened diff, reverted.
+// 11: corrected TShape::shape_draw to the executable unsigned-char/long/uchar ABI;
+//     emitted code was unchanged, but the living declaration now has the exact symbol surface.
+// 12: mirrored the same-TU donor's y-then-x named temporaries; VC5 emitted the
+//     same tiled loop, so the direct canonical expressions were restored.
+// 13: made both tile-count locals short without casts; this worsened the height
+//     branch and was restored to the int locals that preserve the observed stack stores.
 // Left in scratch: remaining drift is localized mostly to the tiled shape_draw loop scheduling/argument setup, causing 4-byte shift in the first branch and branch-target displacement drift; fill/bevel tails look behaviorally aligned.
 
 class TDrawArea {
@@ -22,7 +28,8 @@ public:
 
 class TShape {
 public:
-    void shape_draw(TDrawArea* area, long x, long y, int a, int b, void* c);
+    unsigned char shape_draw(TDrawArea* area, long x, long y, long a,
+                             unsigned char b, unsigned char* c);
 };
 
 struct Rect4 { long left; long top; long right; long bottom; };
@@ -68,7 +75,7 @@ public:
 void Time_Line_Panel::draw_background()
 {
     int pic_rows;
-    int local_4;
+    int tile_rows;
 
     if (this->background_pic != 0) {
         if (this->render_area->Lock("tpnl_tml::draw_background", 1) == 0) {
@@ -89,15 +96,15 @@ void Time_Line_Panel::draw_background()
         int pic_h = this->background_pic_hgt;
         int panel_h = this->height;
         if (pic_h >= panel_h) {
-            local_4 = panel_h / pic_h;
-            if ((short)local_4 * pic_h < panel_h) {
-                local_4++;
+            tile_rows = panel_h / pic_h;
+            if ((short)tile_rows * pic_h < panel_h) {
+                tile_rows++;
             }
         }
 
-        if ((short)local_4 > 0) {
+        if ((short)tile_rows > 0) {
             int row = 0;
-            local_4 = (short)local_4;
+            tile_rows = (short)tile_rows;
             do {
                 if ((short)pic_rows > 0) {
                     int col = 0;
@@ -112,8 +119,8 @@ void Time_Line_Panel::draw_background()
                     } while (count != 0);
                 }
                 row++;
-                local_4--;
-            } while (local_4 != 0);
+                tile_rows--;
+            } while (tile_rows != 0);
         }
 
         this->render_area->Unlock("tpnl_tml::draw_background");
