@@ -20,6 +20,12 @@
 //   typed, period-plausible candidate; exact matching remains unresolved.
 // Main-agent audit restored the canonical RGE_Player destructor surface at
 // unchanged offsets; the validated 205-byte codegen gap is unchanged.
+// Current TU pass: moving typed tile/old-terrain computation before the player
+// setup made the function exact-sized but worsened positional drift to 248
+// bytes; restored.  Adding the proven RGE_Map/RGE_Game_World virtual prefixes
+// while preserving field offsets was a codegen duplicate of the clean source.
+// Main-agent audit restored canonical polymorphic world/map ownership and kept
+// natural typed tile and terrain-object operations.
 
 class RGE_Tile_List {
 public:
@@ -36,7 +42,8 @@ public:
 
 class RGE_Game_World {
 public:
-    char gap_00[0x1D];
+    virtual ~RGE_Game_World();
+    char gap_04[0x19];
     unsigned char game_state;
     char gap_1E[0x22];
     RGE_Player** players;
@@ -53,7 +60,8 @@ public:
 
 class RGE_Map {
 public:
-    char gap_00[0x8D8C];
+    virtual ~RGE_Map();
+    char gap_04[0x8D88];
     RGE_Tile** map_row_offset;
     char gap_8D90[0x30];
     RGE_Game_World* game_world;
