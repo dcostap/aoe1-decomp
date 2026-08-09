@@ -3,20 +3,31 @@
 // Size: 251 bytes, no EH
 //
 // Attempt log:
-// Probe 1: 42% diff — param load order, edi save in prologue, strcpy call vs inline
-// Probe 2: 74% diff — register allocation (ebx vs esi for this), codegen basin
-// Probe 3: tried me-> style with local temps, same result
-// Left in scratch: register allocation codegen basin (ebx vs esi/edi for this).
-//   VC5 chooses different callee-save registers based on source ordering.
-//   The original's ebx=this pattern cannot be reproduced without full TU context.
+// - Baseline flat header + manual fallback copied behavior but used _open/_read/_close and
+//   a different global-expression basin (226 differing bytes, 251-byte output).
+// - Restored the observed open/read/close helper identities and typed
+//   rge_base_game->prog_info ownership; the natural fast path then matched size and all
+//   seven ordered calls (86 differing bytes with the manual fallback).
+// - Replaced the manual FILE NOT FOUND loop with natural strcpy. VC5 emitted the observed
+//   REP string copy and EBX=this/ESI=handle allocation, but saved EDI in the prologue and
+//   shifted the cold block (253 bytes, 204 differing bytes).
+// - Nested RGE_Campaign_Header, C-linkage helper declarations, six fallback spelling
+//   variants, and the binary-proven 0x580498 literal did not change that emitted basin.
+// Left in scratch: the remaining drift is the branch-local EDI save/cold-block layout and
+//   its source-line-sensitive scheduling; helper calls, field ownership, and behavior are
+//   aligned, but exact matching is unresolved.
 
-#include "..\..\include\game_globals.h"
+#include <string.h>
 
-class RGE_Campaign {
-public:
+struct RGE_Campaign_Header {
     int version;                // +0x00
     char name[256];             // +0x04
     int scenario_num;           // +0x104
+};
+
+class RGE_Campaign {
+public:
+    RGE_Campaign_Header campaign_header; // +0x00
     void* scenario_offsets;     // +0x108
     char filename[256];         // +0x10C
 
@@ -29,37 +40,40 @@ public:
     char campaign_dir[256];
 };
 
-extern int __cdecl sprintf(char*, const char*, ...);
-extern int __cdecl _open(const char*, int);
-extern int __cdecl _read(int, void*, int);
-extern int __cdecl _close(int);
-extern void* __cdecl calloc(int, int);
+class RGE_Base_Game {
+public:
+    char _gap_00[0x0C];
+    RGE_Prog_Info* prog_info;
+};
+
+#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+
+extern "C" int __cdecl sprintf(char*, const char*, ...);
+extern "C" int __cdecl open(const char*, int);
+extern "C" int __cdecl read(int, void*, int);
+extern "C" int __cdecl close(int);
+extern "C" void* __cdecl calloc(int, int);
 
 RGE_Campaign::RGE_Campaign(char* param1)
 {
-    int rgeBase = *(int*)0x62C574;
-    RGE_Prog_Info* progInfo = *(RGE_Prog_Info**)(rgeBase + 0x0C);
-    sprintf(this->filename, "%s%s", progInfo->campaign_dir, param1);
+    sprintf(this->filename, "%s%s", rge_base_game->prog_info->campaign_dir, param1);
 
-    int handle = _open(this->filename, 0x8000);
+    int handle = open(this->filename, 0x8000);
     if (handle >= 0) {
-        _read(handle, this, 0x108);
-        if (this->scenario_num > 0) {
-            this->scenario_offsets = calloc(this->scenario_num, 0x208);
-            _read(handle, this->scenario_offsets, this->scenario_num * 0x208);
-            _close(handle);
+        read(handle, this, 0x108);
+        if (this->campaign_header.scenario_num > 0) {
+            this->scenario_offsets = calloc(this->campaign_header.scenario_num, 0x208);
+            read(handle, this->scenario_offsets, this->campaign_header.scenario_num * 0x208);
+            close(handle);
         } else {
             this->scenario_offsets = 0;
-            _close(handle);
+            close(handle);
         }
         return;
     }
 
-    const char* err = "FILE NOT FOUND";
-    char* dst = this->name;
-    while (*err) *dst++ = *err++;
-    *dst = 0;
-    this->scenario_num = 0;
-    this->version = 0;
+    strcpy(this->campaign_header.name, "FILE NOT FOUND");
+    this->campaign_header.scenario_num = 0;
+    this->campaign_header.version = 0;
     this->scenario_offsets = 0;
 }
