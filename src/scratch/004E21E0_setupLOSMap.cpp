@@ -15,6 +15,11 @@
 // - Remaining blocker: VC5 register allocation and scheduling in the object-memory entry check plus FPU/int interleaving before incrementValue.
 // - Main-agent audit restored canonical InfluenceMap/master/object/AI destructor
 //   surfaces; the validated 39-byte codegen gap is unchanged.
+// - Session probe: retaining only the binary-indicated maxX local and inlining
+//   the other bounds removed the proven 8-byte frame and regressed to 258 diff;
+//   restored the natural bound-local source.
+// - Main-agent audit replaced the raw influence-map address and byte-offset
+//   record cursor with canonical symbol ownership and typed array indexing.
 
 typedef unsigned char uchar;
 
@@ -27,7 +32,7 @@ public:
     int maxValue(void);
 };
 
-InfluenceMap* const losMap = (InfluenceMap*)0x86BC10;
+extern InfluenceMap* losMap;
 
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
@@ -65,6 +70,7 @@ public:
 
 class MainDecisionAIModule {
 public:
+    virtual ~MainDecisionAIModule();
     RGE_Static_Object* object(int id);
 };
 
@@ -105,9 +111,8 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
 
     int i = 0;
     if (this->maxImportantObjectMemory > 0) {
-        int offset = 0;
         do {
-            ObjectMemory* mem = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+            ObjectMemory* mem = &this->importantObjectMemory[i];
             if ((unsigned int)owner == (unsigned int)mem->owner) {
                 RGE_Static_Object* obj = this->md->object(mem->id);
                 if (obj != 0) {
@@ -128,7 +133,6 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
                 }
             }
             i++;
-            offset += 0x24;
         } while (i < this->maxImportantObjectMemory);
     }
     return losMap->maxValue();

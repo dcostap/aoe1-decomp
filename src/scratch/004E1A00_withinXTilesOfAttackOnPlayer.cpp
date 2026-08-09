@@ -35,6 +35,8 @@
 //   tilesSq/tx register swap), not a known behavior or layout mismatch.
 // - Main-agent normalization retained the proven InformationAIModule base and
 //   canonical inheritance boundary; emitted code is unchanged.
+// - Session probe: natural positive-count if/do-while around the indexed scan
+//   worsened to 204 bytes with an extra CFG return; restored the clean for-loop.
 
 class RGE_Static_Object {
 public:
@@ -68,6 +70,8 @@ public:
     char gap_04[0xEC];
 };
 
+// Main-agent audit confirmed canonical typed attack-memory ownership and kept
+// the ordinary indexed proximity scan.
 class TribeInformationAIModule : public InformationAIModule {
 public:
     char gap_F0[0x1FC - 0xF0];

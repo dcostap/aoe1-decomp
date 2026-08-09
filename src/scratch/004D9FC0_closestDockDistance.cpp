@@ -68,6 +68,8 @@ struct ManagedIntArray {
     }
 };
 
+// Main-agent audit confirmed canonical typed dock/object ownership and retained
+// the natural closest-distance scan.
 struct TribeInformationAIModule {
     virtual ~TribeInformationAIModule();
     char gap_04[0xEC];

@@ -17,6 +17,9 @@
 //   (original this=EDI/md=ESI/obj2=ESI, rebuilt this=ESI/md=EDI/obj2=EDI).
 // - Main-agent audit replaced the raw +0x1146C cast with the exact-donor-backed
 //   TribeMainDecisionAIModule::tacticalAI member; codegen is unchanged.
+// - Session probes: caching md for the age/first-object phase either regressed
+//   broadly when used throughout or emitted the same 15-byte basin when its
+//   lifetime was narrowed; restored the direct canonical source.
 
 class RGE_Static_Object;
 
@@ -63,6 +66,8 @@ public:
     int maximumSizeValue;
 };
 
+// Main-agent audit confirmed canonical AI/player/master ownership and retained
+// the natural storage-pit count.
 class TribeInformationAIModule : public InformationAIModule {
 public:
     ManagedArray_int farmsTaskedThisUpdate;       // +0xF0
