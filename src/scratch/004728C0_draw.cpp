@@ -45,8 +45,13 @@
 //     sharing only the case-2 DrawBevel tail.
 // Disabled-branch, pic/text/GetDc/GDI structure are reconstructed, but the
 // missing call sites and broad structural drift still require exact work.
+// - Binary branch audit: the first bevel switch is selected when
+//   draw_reverse XOR is_down, not when their OR is true; the restored XOR
+//   source preserves the original 00472E7D-00472EA7 predicate topology.
 // Orchestrator layout audit: removed an erroneous 4-byte gap before clip_rgn;
 // just_drawn ends at +0x88, so clip_rgn itself is at the proven +0x88 offset.
+// Main-agent audit confirmed canonical panel/button/draw-area/shape ownership
+// and removed redundant string-address casts; missing call structure remains.
 
 #include <string.h>
 
@@ -222,7 +227,7 @@ void TButtonPanel::draw()
 
     if (this->drawTypeValue == 2 || this->drawTypeValue == 4 ||
         this->drawTypeValue == 6) {
-        if (this->render_area->Lock((char*)&s_pnl_btn_draw[0], 1) != 0) {
+        if (this->render_area->Lock(s_pnl_btn_draw, 1) != 0) {
             TShape* pic = this->pic[this->cur_state];
             if (pic != 0) {
                 if (this->auto_pic_pos != 0) {
@@ -247,13 +252,13 @@ void TButtonPanel::draw()
                 pic->shape_draw(this->render_area, x, y,
                                 this->pic_index[this->cur_state], 0, 0);
             }
-            this->render_area->Unlock((char*)&s_pnl_btn_draw[0]);
+            this->render_area->Unlock(s_pnl_btn_draw);
         }
     }
 
     if (this->drawTypeValue == 3 || this->drawTypeValue == 4 ||
         this->drawTypeValue == 5) {
-        void* dc = this->render_area->GetDc((char*)&s_pnl_btn_draw[0]);
+        void* dc = this->render_area->GetDc(s_pnl_btn_draw);
         if (dc != 0) {
             SelectClipRgn(dc, this->clip_rgn);
             void* old_font = SelectObject(dc, this->font);
@@ -336,13 +341,13 @@ void TButtonPanel::draw()
             }
             SelectObject(dc, old_font);
             SelectClipRgn(dc, 0);
-            this->render_area->ReleaseDc((char*)&s_pnl_btn_draw[0]);
+            this->render_area->ReleaseDc(s_pnl_btn_draw);
         }
     }
 
     if (this->drawTypeValue == 3 || this->drawTypeValue == 4 ||
         this->drawTypeValue == 5 || this->drawTypeValue == 6) {
-        if (this->render_area->Lock((char*)&s_pnl_btn_draw2[0], 1) != 0) {
+        if (this->render_area->Lock(s_pnl_btn_draw2, 1) != 0) {
             if (this->disabled != 0) {
                 this->render_area->DrawRect(this->pnl_x, this->pnl_y,
                         this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
@@ -405,7 +410,7 @@ void TButtonPanel::draw()
                     break;
                 }
             }
-            this->render_area->Unlock((char*)&s_pnl_btn_draw2[0]);
+            this->render_area->Unlock(s_pnl_btn_draw2);
         }
     }
 
