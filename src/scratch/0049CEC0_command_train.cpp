@@ -14,6 +14,18 @@
 //   calls and CFG are aligned, but VC5 keeps this in ESI/parameter in EDI instead of
 //   original this in EDI/parameter in ESI. Next lead is likely the full same-TU
 //   TRIBE_Screen_Game declaration/context or a narrower declaration-order donor.
+// Follow-up session (sa-66340ab1-command_train):
+// - baseline recheck reproduced the pinned 119-byte mismatch with exact frame,
+//   71-instruction shape, calls, and CFG.
+// - one consistent register self alias for queue and message-panel ownership
+//   emitted identical code; restored the clean source.
+// Left unresolved: the remaining difference is entry callee-save coloring
+// (original EDI=this, ESI=player_id; VC5 ESI=this, EDI=player_id) plus the
+// resulting one-byte boundary shift. Prior same-TU base/vptr/layout and
+// declaration/liveness probes did not move this basin; no opaque register
+// forcing is retained.
+// Main-agent audit restored canonical polymorphic game/world/player/screen
+// ownership and retained the natural queue/cost fallback.
 
 struct RGE_Static_Object;
 struct TRIBE_Player;
@@ -27,12 +39,13 @@ struct TRIBE_Command {
 };
 
 struct RGE_Game_World {
-    char gap_00[0x58];
+    virtual ~RGE_Game_World();
+    char gap_04[0x54];
     TRIBE_Command* command;
 };
 
 struct RGE_Base_Game {
-    virtual void vf00();
+    virtual ~RGE_Base_Game();
     virtual void vf04();
     virtual void vf08();
     virtual void vf0C();
@@ -51,6 +64,7 @@ struct RGE_Base_Game {
 };
 
 struct TRIBE_Player {
+    virtual ~TRIBE_Player();
     unsigned char check_obj_cost(short obj_id, short* attr, float factor, int skip_farm);
     unsigned char command_building_make_obj(short obj_id);
 };
@@ -59,9 +73,14 @@ struct TMessagePanel {
     void show_message(int type, char* msg, int code, int z1, int z2, int z3, int z4);
 };
 
-class TRIBE_Screen_Game {
+class TScreenPanel {
 public:
-    char gap_000[0x544];
+    virtual ~TScreenPanel();
+    char gap_004[0x540];
+};
+
+class TRIBE_Screen_Game : public TScreenPanel {
+public:
     TMessagePanel* message_panel;
     char gap_548[0x6C];
     RGE_Game_World* world;
