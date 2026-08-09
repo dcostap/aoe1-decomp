@@ -367,3 +367,13 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   LEA destination and exact suffix. When a localized hunk is an expression
   scheduling mismatch, test direct canonical member ownership before adding
   temporaries or compiler-steering scaffolding.
+
+- For four-neighbor tile checks that convert two float coordinates with `__ftol`,
+  restore the typed world/player/master/map/list surface and the donor's local
+  declaration order before chasing registers: an `int` counter followed by
+  `short h,w,y,max_y` can recover the whole EBX/EBP coordinate and out-pointer
+  coloring. In the final neighbor arm, an ordinary common return with explicit
+  owner-mismatch and boundary clears (but no redundant null-arm assignment) can
+  preserve VC5's counter stack store and shared failure tail; a direct success
+  return or extra null assignment changes the late epilogue. Keep this shape
+  only when the original branch/tail topology proves it.
