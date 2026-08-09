@@ -41,13 +41,52 @@
 // while this basin spills x1 and uses BL; its y1/row/row_ptr home rotation remains unresolved.
 // Main-agent audit retained canonical elevation-map ownership and replaced the
 // residual char casts with a typed byte-row traversal.
+// Continuation (sa-ab4dd300-r1): the exact rmm_base/rmm_elev/rmm_terr base and
+// 24-byte tile declaration surface was restored; emitted code was identical.
+// Deriving the initial row-table pointer from the named row counter was also
+// identical. Reusing the now-dead x parameter as the outer row counter is a
+// binary-supported stack-home hypothesis: it moves the row counter to arg[0]
+// and improves the current reconstruction to 141 differing bytes / 84.38%
+// shape. Reversing bound declaration/assignment order and late-declaring y1
+// were neutral or worse; naming the tile byte regressed to 191 bytes.
+// Keep the readable x-row-counter source; y1/row-pointer home rotation and
+// the original CL-vs-BL predicate coloring remain unresolved.
 
-class RGE_RMM_Elevation_Generator {
+struct RGE_Tile {
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type : 5;
+    unsigned char border_type : 4;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char objects[12];
+};
+
+class RGE_Random_Map_Module_List;
+
+class RGE_Random_Map_Module {
 public:
-    char gap_00[0x10];
-    unsigned char** tiles; // +0x10
-    int width;       // +0x14
-    int height;      // +0x18
+    virtual unsigned char generate() = 0;
+
+    RGE_Random_Map_Module* parent;
+    RGE_Random_Map_Module_List* list;
+    void* map;
+    RGE_Tile** map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    unsigned char* search_map;
+    unsigned char** search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
+};
+
+class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
+public:
 
     unsigned char check_start_elevation(long x, long y, unsigned char terrain, unsigned char elevation, unsigned char range);
 };
@@ -57,11 +96,10 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
     long x0 = x - range;
     long y0 = y - range;
     long offset;
-    long row;
-    unsigned char** row_ptr;
+    RGE_Tile** row_ptr;
     unsigned char* row_base;
-    long x1;
     long y1;
+    long x1;
     y1 = y + range;
     x1 = x + range;
 
@@ -71,18 +109,18 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
     if (y0 < 0) {
         y0 = 0;
     }
-    if (x1 >= this->width) {
-        x1 = this->width - 1;
+    if (x1 >= this->map_width) {
+        x1 = this->map_width - 1;
     }
-    if (y1 >= this->height) {
-        y1 = this->height - 1;
+    if (y1 >= this->map_height) {
+        y1 = this->map_height - 1;
     }
 
     offset = x0 * 24;
-    row = y0;
-    row_ptr = &this->tiles[y0];
-    row_base = *row_ptr + offset;
-    while (row <= y1) {
+    x = y0;
+    row_ptr = this->map_row_offset + x;
+    row_base = (unsigned char*)*row_ptr + offset;
+    while (x <= y1) {
         if (x0 <= x1) {
             unsigned char* cell = row_base + 5;
             long col = x0;
@@ -97,8 +135,8 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
             } while (col <= x1);
         }
         row_ptr++;
-        row++;
-        row_base = *row_ptr + offset;
+        x++;
+        row_base = (unsigned char*)*row_ptr + offset;
     }
     return 1;
 }

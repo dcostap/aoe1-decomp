@@ -84,6 +84,17 @@ public:
 
 // Main-agent audit confirmed canonical elevation/map-stack ownership and kept
 // the natural typed clump-expansion source.
+// Continuation (sa-ab4dd300-r1): rmm_land's verified pop_stack ABI exposed a
+// real row/column transpose in the four neighbor bounds: y is the column and
+// x is the row. Direct map_width/map_height guards replaced unproven carried
+// max-bound locals, improving the frame basin and exact-block coverage. The
+// phase-B source now has a separate stack_ptr plus countdown, matching the
+// original stack[0] cursor and dec/jnz pass. Main-agent audit restored the
+// pop cost output to its natural float owner rather than retaining a diagnostic
+// long-slot type pun. Validation before that audit:
+// 1109 differing bytes, 1287-byte code versus 1273, frame 0x984 versus 0x988,
+// all 23 direct call sites aligned. Remaining gap starts in the prologue/local
+// window and is structural; no asm or opaque register scaffolding retained.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
@@ -104,25 +115,22 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
 {
     long x = 0;
     long y = 0;
-    long max_x = this->map_width - 1;
-    long max_y = this->map_height - 1;
-    long i;
     long chance = 0;
     long clump_size;
-    float cost = 0.0f;
+    float stack_cost;
     float local_chance = 0.0f;
     long base_elevation = line.base_elevation;
     unsigned char done;
-    Map_Stack stack[99];
     Map_Stack local_stack;
+    Map_Stack stack[99];
 
     if (line.clumps > 0) {
-        for (i = 0; i < line.clumps; ++i) {
+        for (long i = 0; i < line.clumps; ++i) {
             this->init_stack(&stack[i]);
         }
     }
 
-    local_stack.x = max_x;
+    local_stack.x = this->map_width - 1;
     local_stack.prev = 0;
     stack[0].x = 0;
     this->link_stack_randomly(&local_stack);
@@ -133,9 +141,11 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
         clump_size = 2;
     }
 
-    i = 0;
-    while (i < line.clumps) {
-        Map_Stack* node = this->pop_stack(&local_stack, &x, &y, &cost);
+    {
+        long i = 0;
+        while (i < line.clumps) {
+            Map_Stack* node = this->pop_stack(&local_stack, &x, &y,
+                &stack_cost);
             if (node == 0) {
                 break;
             }
@@ -158,25 +168,28 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                 if (x > 0) {
                     this->push_stack(&stack[i], y, x - 1, 0.0f, 0.0f);
                 }
-                if (y < max_y) {
+                if (y < this->map_width - 1) {
                     this->push_stack(&stack[i], y + 1, x, 0.0f, 0.0f);
                 }
-                if (x < max_x) {
+                if (x < this->map_height - 1) {
                     this->push_stack(&stack[i], y, x + 1, 0.0f, 0.0f);
                 }
 
                 ++chance;
                 ++i;
             }
+        }
     }
 
     do {
         done = 1;
         if (line.clumps > 0) {
-            i = 0;
+            Map_Stack* stack_ptr = stack;
+            long phase_count = line.clumps;
             do {
                 if (chance < line.elevation_size) {
-                    Map_Stack* node = this->pop_stack(&stack[i], &x, &y, &cost);
+                    Map_Stack* node = this->pop_stack(stack_ptr, &x, &y,
+                        &stack_cost);
                     if (node != 0) {
                         done = 0;
                         unsigned char* mark = &this->search_map_rows[x][y];
@@ -206,17 +219,17 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x17D) * 100) / 0x7FFF;
-                                        this->push_stack(&stack[i], y - 1, x,
+                                        this->push_stack(stack_ptr, y - 1, x,
                                             0.0f,
                                             (float)random_value + local_chance);
                                     }
                                 }
-                                if (y < max_y) {
+                                if (y < this->map_width - 1) {
                                     if ((tile[0x1D] >> 5) == base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x17F) * 100) / 0x7FFF;
-                                        this->push_stack(&stack[i], y + 1, x,
+                                        this->push_stack(stack_ptr, y + 1, x,
                                             0.0f,
                                             (float)random_value + local_chance);
                                     }
@@ -227,18 +240,18 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x181) * 100) / 0x7FFF;
-                                        this->push_stack(&stack[i], y, x - 1,
+                                        this->push_stack(stack_ptr, y, x - 1,
                                             0.0f,
                                             (float)random_value + local_chance);
                                     }
                                 }
-                                if (x < max_x) {
+                                if (x < this->map_height - 1) {
                                     if ((tile[this->map_width * 0x18 + 5] >> 5)
                                         == base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
                                             0x183) * 100) / 0x7FFF;
-                                        this->push_stack(&stack[i], y, x + 1,
+                                        this->push_stack(stack_ptr, y, x + 1,
                                             0.0f,
                                             (float)random_value + local_chance);
                                     }
@@ -249,13 +262,14 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                         }
                     }
                 }
-                ++i;
-            } while (i < line.clumps);
+                ++stack_ptr;
+                --phase_count;
+            } while (phase_count != 0);
         }
     } while (done == 0);
 
     if (line.clumps > 0) {
-        for (i = 0; i < line.clumps; ++i) {
+        for (long i = 0; i < line.clumps; ++i) {
             this->deinit_stack(&stack[i]);
         }
     }

@@ -20,20 +20,60 @@
 // still lacks 11 effective bytes); first-scan row-base carry, result/row-count
 // split, combined predicate, and inherited-class context were rolled back as
 // worse or duplicate. No source-shape path reached the original first-scan
-// stack homes; padding_probe remains non-target scaffolding.
+// stack homes.
 // Left in scratch: behavior modeled, but first/second scan register topology and stack-slot layout remain broad.
-// NOTE: padding_probe below is a non-target helper kept only so check_function can extract a comparable 408-byte window; not for promotion.
+// Continuation (sa-ab4dd300-r1): rmm_base/rmm_terr donors support the full
+// inherited map-row and 24-byte tile surface; it compiled identically to the
+// gap-only surface. A first-scan row_index and explicit self pointer were
+// binary-motivated but formed a 370-byte-diff basin. Declaring the first
+// row-pointer before its row base, while retaining byte-level tile access,
+// improved the clean reconstruction to a 349-byte diff. Carrying the first
+// row offset or swapping the second row-base/pointer order moved into broader
+// structural basins; the latter reached 322 bytes but lost 13 bytes of code
+// and kept the countdown in a register, so it was restored. Remaining gap is
+// structural first-scan/second-countdown topology.
+// Main-agent audit removed the diagnostic self alias and non-target padding
+// helper; direct member ownership remains authoritative.
 
 typedef unsigned char uchar;
 
 // Main-agent audit confirmed canonical elevation-map ownership and retained the
 // natural two-scan bounds check; padding remains non-target scaffolding only.
-class RGE_RMM_Elevation_Generator {
+struct RGE_Tile {
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type : 5;
+    unsigned char border_type : 4;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char objects[12];
+};
+
+class RGE_Random_Map_Module_List;
+
+class RGE_Random_Map_Module {
 public:
-    char gap_00[0x10];
-    char** rows;
-    int width;
-    int height;
+    virtual uchar generate() = 0;
+
+    RGE_Random_Map_Module* parent;
+    RGE_Random_Map_Module_List* list;
+    void* map;
+    RGE_Tile** map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    uchar* search_map;
+    uchar** search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
+};
+
+class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
+public:
 
     uchar check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev);
 };
@@ -41,27 +81,26 @@ public:
 uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev)
 {
     long count = 0;
-
     if (radius > 0) {
         long x1 = x - radius;
         long y1 = y - radius;
         long y2 = y + radius;
-        long x2 = x + radius;
+        long x2 = radius + x;
         if (x1 < 0) {
             x1 = 0;
         }
         if (y1 < 0) {
             y1 = 0;
         }
-        if (x2 >= this->width) {
-            x2 = this->width - 1;
+        if (x2 >= this->map_width) {
+            x2 = this->map_width - 1;
         }
-        if (y2 >= this->height) {
-            y2 = this->height - 1;
+        if (y2 >= this->map_height) {
+            y2 = this->map_height - 1;
         }
         long row_offset = x1 * 24;
-        char* row = this->rows[y1];
-        char** row_ptr = &this->rows[y1];
+        RGE_Tile** row_ptr = &this->map_row_offset[y1];
+        char* row = (char*)*row_ptr;
         for (; y1 <= y2; ++y1) {
             if (x1 <= x2) {
                 unsigned char* cell = (unsigned char*)row + row_offset + 5;
@@ -82,7 +121,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
                 } while (xx <= x2);
             }
             ++row_ptr;
-            row = *row_ptr;
+            row = (char*)*row_ptr;
         }
     }
 
@@ -96,16 +135,16 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
     if (y1b < 0) {
         y1b = 0;
     }
-    if (x2b >= this->width) {
-        x2b = this->width - 1;
+    if (x2b >= this->map_width) {
+        x2b = this->map_width - 1;
     }
-    if (y2b >= this->height) {
-        y2b = this->height - 1;
+    if (y2b >= this->map_height) {
+        y2b = this->map_height - 1;
     }
 
     long row_offset2 = x1b * 24;
-    char** row_ptr2 = &this->rows[y1b];
-    unsigned char* row_base2 = (unsigned char*)this->rows[y1b] + row_offset2;
+    RGE_Tile** row_ptr2 = &this->map_row_offset[y1b];
+    unsigned char* row_base2 = (unsigned char*)this->map_row_offset[y1b] + row_offset2;
     if (y1b <= y2b) {
         long rows_left = y2b - y1b + 1;
         do {
@@ -128,5 +167,3 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
 
     return (uchar)count;
 }
-
-int check_elevation_padding_probe(int x) { return x + 1; }

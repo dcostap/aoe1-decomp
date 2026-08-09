@@ -73,6 +73,15 @@ public:
 
 // Main-agent audit confirmed canonical elevation stack/map ownership and kept
 // the natural randomized linking loop.
+// Continuation (sa-ab4dd300-r1): rmm_base/rmm_terr/rmm_land donor review
+// confirms the inherited random-map base, 0x18-byte Map_Stack stride, and
+// stack_offsets[y][x] ownership. A while-form pointer walk, a named root
+// alias, using the stack local for the root-prev store, and initializing the
+// stack pointer before the dimensions were all codegen-identical. Delaying
+// max_width until after the terminal-node product worsened the result to 200
+// differing bytes and was rolled back. Keep the natural named-dimension and
+// stack-owner source; the remaining 181-byte drift is the param/stack register
+// swap and one extra loop-home temporary before the already aligned call tail.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
@@ -86,15 +95,17 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
     stack = this->stack_array;
     long max_width = width - 1;
     long max_height = height - 1;
-    this->stack_array->prev = param_1;
+    stack->prev = param_1;
     Map_Stack* last = &stack[height * width - 1];
     stack->next = &stack[1];
     last->next = 0;
     last->prev = &last[-1];
 
-    for (Map_Stack* node = &stack[1]; node < last; node++) {
+    Map_Stack* node = &stack[1];
+    while (node < last) {
         node->next = &node[1];
         node->prev = &node[-1];
+        node++;
     }
 
     for (long count = height * width / 16; count > 0; count--) {
