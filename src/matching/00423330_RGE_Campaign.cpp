@@ -20,6 +20,10 @@
 // that selects the original SIB base/index ordering, not broad register tuning.
 // Main-agent audit replaced raw singleton/version addresses and cross-record
 // byte indexing with canonical globals and typed scenario-entry indexing.
+// A later same-TU clean reset and validation found the unchanged canonical
+// source exact in the current pinned build context: 321/321 bytes with all
+// calls and relocations identical. The prior two-byte SIB note is retained as
+// historical compiler-context evidence, not a current blocker.
 
 #include <string.h>
 

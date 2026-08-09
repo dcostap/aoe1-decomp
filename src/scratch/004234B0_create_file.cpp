@@ -18,6 +18,17 @@
 // paused at the documented stack/local and late packed-record codegen gap.
 // Main-agent audit replaced raw singleton/frame/record plumbing with canonical
 // base-game ownership, a typed work aggregate, and indexed scenario entries.
+// Session sa-9f5987e6-campaign-file: after the clean-source reset, a separate named
+// output_offset/current_offset plus direct typed scenario_offsets[current_offset] rereads
+// restored the original 0x13C frame and 466-byte size.  The binary-supported tempname
+// stack overlap is expressed by using the named tempname base (not tempname+4), and the
+// inner open guard is spelled > -1 to preserve cmp -1/jle.  This natural candidate is
+// 35 bytes away with all 16 calls, frame, size, and CFG aligned.  The remaining localized
+// store-order drift is after entry.offset: the original reloads scenario_offsets, adds
+// output_offset, stores entry.size, then writes back output_offset; VC5 currently adds
+// and spills output_offset before the second member reload/store.  Keep this source in
+// scratch; next lead is a natural statement/lifetime form for that proven order, not raw
+// record cursors or register-forcing scaffolding.
 
 #include <string.h>
 
@@ -44,6 +55,7 @@ public:
     char filename[255];
     unsigned char _pad_end;
 
+    RGE_Campaign(char* param1, char* param2, long count, char** names, char** filenames);
     void create_file();
 };
 
@@ -75,42 +87,39 @@ extern "C" int __cdecl close(int);
 
 void RGE_Campaign::create_file()
 {
-    struct Campaign_File_Work {
-        int output_offset;
-        char tempname[296];
-    } work;
     int fd;
-    int index;
+    int output_offset;
+    int current_offset;
+    char tempname[300];
 
     fd = __open(this->filename, 0x8301, 0x180);
     if (fd >= 0) {
         write(fd, this, 0x108);
         if (this->campaign_header.scenario_num > 0) {
             write(fd, this->scenario_offsets, this->campaign_header.scenario_num * 0x208);
-            work.output_offset = this->campaign_header.scenario_num * 0x208 + 0x108;
+            current_offset = 0;
+            output_offset = this->campaign_header.scenario_num * 0x208 + 0x108;
             if (this->campaign_header.scenario_num > 0) {
-                index = 0;
                 do {
-                    RGE_Scenario_Offset& entry = this->scenario_offsets[index];
-                    sprintf(work.tempname, "%s%s",
+                    sprintf(tempname, "%s%s",
                         rge_base_game->prog_info->scenario_dir,
-                        entry.file_name);
-                    int scenario_file = __open(work.tempname, 0x8000);
-                    if (scenario_file >= 0) {
+                        this->scenario_offsets[current_offset].file_name);
+                    int scenario_file = __open(tempname, 0x8000);
+                    if (scenario_file > -1) {
                         lseek(scenario_file, 0, 2);
                         int size = __tell(scenario_file);
                         void* buffer = calloc(size, 1);
                         lseek(scenario_file, 0, 0);
                         read(scenario_file, buffer, size);
                         write(fd, buffer, size);
-                        entry.offset = work.output_offset;
-                        work.output_offset += size;
-                        entry.size = size;
+                        this->scenario_offsets[current_offset].offset = output_offset;
+                        output_offset += size;
+                        this->scenario_offsets[current_offset].size = size;
                         free(buffer);
                         close(scenario_file);
                     }
-                    ++index;
-                } while (index < this->campaign_header.scenario_num);
+                    ++current_offset;
+                } while (current_offset < this->campaign_header.scenario_num);
             }
             lseek(fd, 0x108, 0);
             write(fd, this->scenario_offsets, this->campaign_header.scenario_num * 0x208);

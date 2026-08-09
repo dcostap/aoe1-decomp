@@ -20,6 +20,13 @@
 //   aligned, but exact matching is unresolved.
 // Main-agent audit replaced the raw game singleton address with canonical
 // polymorphic base-game ownership and retained the natural file-load path.
+// Session sa-9f5987e6-campaign: clean-source reset restored the canonical records before
+// testing new context only.  Ground-truth scenario-entry/base-game surfaces, complete
+// campaign member declarations, explicit success/failure else forms, mutable/literal
+// strcpy spellings, and period CRT header context all emitted the same 253-byte basin.
+// The exact __open spelling changed the call identity and was rolled back.  Final clean
+// source remains the natural typed constructor; the unresolved drift is still the
+// branch-local EDI save/cold block (204 positional bytes, +2 code bytes).
 
 #include <string.h>
 
