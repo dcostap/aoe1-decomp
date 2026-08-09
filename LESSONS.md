@@ -443,6 +443,12 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   `old_y >= new_y` versus `new_y <= old_y`, can select the oracle's `cmp` order
   without changing behavior.
 
+- When a float virtual getter feeds two later normalized coordinates, bind the
+  scale at the getter assignment (`float range = getter() * 4.0f`) before the
+  `sqrt` expression. A separate scale local or post-sqrt multiplication can
+  spill an x87 value and move the constant multiply past the sum; keeping the
+  scaled getter live lets VC5 emit the original pre-sum `fmul`/stack topology.
+
 - For a VC5 fixed-stride queue scan, a single index plus a top-tested
   `while (*cursor != 0)` can preserve the compiler's EBP=this/ESI=index basin;
   separate decompiler locals for the same index can swap this and the spill
@@ -466,3 +472,47 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   initialization into the member-initializer sequence can change only the
   localized ordering without aliases or volatility; retain the shape only when
   the original constructor bytes confirm it.
+
+- When VC5 repeatedly reuses a contiguous local window for two floating scales
+  and one integer FPU temporary, separate scalar declarations may rotate the
+  slots by type/lifetime even with identical frame size and code shape. A named
+  typed aggregate matching the proven `[float, float, int]` window can recover
+  the original `[esp+10h, +14h, +18h]` operands without volatile or register
+  aliases; retain it only when the stack offsets and all `fild`/`fmul` accesses
+  independently prove that local ownership.
+
+- For a large same-TU keyboard dispatcher, the PDB line order can reveal the
+  compiler's jump-table handler order even when decompiler output sorts case
+  labels numerically. Keep the natural typed switch in that source order, and
+  place a later numeric switch's handlers before tab/cancel/delete when the
+  original bytes do so; this can recover the entire table/block layout. Also
+  preserve the exact member ABI and virtual slots before tuning registers.
+
+- When a VC5 terrain/byte API result must be compared with a short field after a
+  list-count guard, a natural `short` result local assigned from the unsigned-byte
+  return can preserve the oracle's `movzx` into the low word before the guard;
+  an `unsigned char` local may let optimization sink that materialization past
+  the branch. Keep the widened local only when the emitted order is binary-proven.
+
+- When a switch has several binary-proven failure edges converging on one late
+  zero-return block, a labeled source failure path inside the switch can preserve
+  the shared VC5 tail where separate early returns create duplicate local exits.
+  Use this only for an observed CFG convergence and keep the label free of raw
+  addresses or other compiler-steering machinery.
+
+- For VC5 dynamic-array growth, a direct compound member update followed by
+  allocation from that member (`allocated_size += grow; calloc(allocated_size, ...)`)
+  can preserve the original store/copy/push schedule where a named new-size
+  temporary moves the first allocation argument ahead of the member store.
+
+- In an EH-framed constructor that deserializes through an incoming file handle,
+  naming the input `handle` and reusing one ordinary typed output local can keep
+  the handle in a callee-save while VC5 coalesces the output onto the old
+  parameter home. A natural polymorphic declaration should emit the derived
+  vtable; do not replace it with a manual vptr store.
+
+- In a same-TU child-object constructor, use typed `id`/`sprite`/`sprite_list`
+  ownership and spell post-call reads through the assigned member when the
+  oracle reloads that member after a side-effectful list call. This can recover
+  the reload/lifetime topology and cold failure tail without raw offsets or
+  fake helper calls.
