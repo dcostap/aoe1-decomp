@@ -14,8 +14,10 @@
 //   same 304-byte code.  The remaining gap is structural register/block
 //   layout (target saves EBX/EDI; candidate saves EBX/EBP) rather than calls
 //   or ownership.
-// - Left in scratch: current source is typed and period-plausible, but exact
-//   matching is paused after the 10-hypothesis session budget.
+// - The period ManagedArray::add operation is the missing source boundary:
+//   replacing the hand-expanded duplicate scan/append with the exact donor's
+//   inline add body restored the target's callee-save allocation and matched
+//   all 299 bytes.  This is a real utmarray.h API surface, not a codegen hack.
 
 extern "C" {
     void* operator_new(unsigned int size);
@@ -45,11 +47,42 @@ public:
         }
         return this->value[index];
     }
+
+    int add(T val) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == val)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int new_size = this->numberValue + 1;
+            T* new_data = (T*)operator_new(new_size * sizeof(T));
+            if (new_data != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= new_size)
+                        break;
+                    new_data[j] = this->value[j];
+                }
+                operator_delete(this->value);
+                this->value = new_data;
+                this->maximumSizeValue = new_size;
+            }
+        }
+
+        this->value[this->numberValue] = val;
+        this->numberValue++;
+        return 1;
+    }
 };
 
 class PathingSystem {
 public:
-    char gap_000[0x11DCE4];
+    virtual ~PathingSystem();
+    char gap_04[0x11DCE0];
     ManagedArray<int> currentUnobstructibles;
 
     void copyUnobstructibles(ManagedArray<int>& out);
@@ -57,24 +90,11 @@ public:
 
 void PathingSystem::copyUnobstructibles(ManagedArray<int>& out)
 {
-    int value;
-    int j;
     int i = this->currentUnobstructibles.numberValue;
     if (i >= 0) {
         do {
-            value = this->currentUnobstructibles[i];
-            j = 0;
+            out.add(this->currentUnobstructibles[i]);
 
-            while (j < out.numberValue && j < out.maximumSizeValue) {
-                if (out.value[j] == value)
-                    goto next_value;
-                ++j;
-            }
-
-            out[out.numberValue] = value;
-            ++out.numberValue;
-
-        next_value:
             --i;
         } while (i >= 0);
     }

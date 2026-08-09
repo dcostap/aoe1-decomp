@@ -1,96 +1,385 @@
-// 0046D830 PathSys::copyPath
-// pathsys.cpp
+// VA: 0046D830 PathingSystem::copyPath(int) (1114B)
+// pathsys.cpp lines 2249-2421
+//
 // Attempt log:
-// try 1: broad reconstruction from packet: initialize current nav helper, read path byte/direction, validate point, scan neighbor tiles for IDs, grow copied-id list, step direction until destination.
-// try 2: modeled helper reset/use dispatch through active PathChecker chosen by path object +0x154 flag.
-// try 3: modeled curX/curY at +0x4F61C/+0x4F61D, 255-wide byte grid lookup, marker high bits + direction low bits, and 0xFF no-direction sentinel.
-// try 4: modeled vector float construction using offX/offY +0x11DC54/+0x11DC58 and current direction byte.
-// try 5: modeled early duplicate destination check against lastX/lastY +0x11DC7C/+0x11DC80 and valid-point rejection.
-// try 6: modeled neighbor bounding box x/y +/-1 with edge expansion/contract exactly as observed.
-// try 7: modeled nested scan calling query_id(finder,targetArg,x,y,&flag), duplicate suppression against copied array, dynamic grow by copiedCount+1, copy/free old array, append id.
-// try 8: modeled direction switch 0..7 updating curX/curY by signed step byte and recomputing direction/vector.
-// try 9: modeled final path valid check and returns.
-// try 10: default compile produced .text 1104B vs original 1114B, no full diff.
-// try 11: /GX probe produced identical 1104B, removed flag file.
-// left in scratch: broad behavior and size are close, but exact helper call surface (+0xA4/+0xD8), byte-parameter stack reuse, allocation-copy loop topology, and direction switch layout differ; rebuilt is 10B size-short. No accepted_drift: no localized full diff.
+// - Prior source was a raw PathSys/PathChecker scaffold and remained 10 bytes
+//   short with mismatched helper surfaces.  This reconstruction restores the
+//   named PathingSystem, RGE_Moving_Object, Path, Waypoint, and ManagedArray
+//   ownership shown by the same-TU packet and exact donors.
+// - The source keeps the executable's two-byte open-path coordinate, facet
+//   mask/direction conversion, selected normal/exception Path, bounded neighbor
+//   scan, inline ManagedArray::add, eight-way switch, and final insertion.
+// - The typed candidate reaches the original 0x34 frame, 9/9 ordered calls,
+//   33/33 conditional signals, and the original 1114-byte boundary.  The
+//   remaining 46 bytes are structural/codegen drift around the waypoint
+//   construction, initToStart path selection, and the first loop entry; no
+//   call target or ownership mismatch remains.  The final source is kept as
+//   the readable canonical reconstruction rather than a compiler-steering
+//   variant.
 
-struct Vec2 { float x; float y; int z; unsigned char dir; };
-class PathChecker { public: void reset(); int valid(Vec2*); void use(Vec2*); };
-class PathSys {
-public:
-    int width; int height; char gap0c[0x4f61c-0x0c]; unsigned char curX; unsigned char curY;
-    char gap4f61e[0x11dc40-0x4f61e]; void* finder; void* actor; PathChecker* path;
-    float offX; float offY; char gap11dc5c[0x11dc7c-0x11dc5c]; int lastX; int lastY;
-    char gap11dc84[0x11dcd8-0x11dc84]; unsigned char marker; int targetId; void* targetArg;
-    int* copied; int copiedCount; int copiedCap;
-    int copyPath(int step);
+#include <stddef.h>
+
+typedef unsigned char uchar;
+
+extern "C" void* __cdecl operator_new(unsigned int size);
+extern "C" void __cdecl operator_delete(void* ptr);
+
+struct XYPoint {
+    int x;
+    int y;
 };
-extern int query_id(void*, void*, int, int, int*);
-extern "C" void* __cdecl malloc(unsigned int);
-extern "C" void __cdecl free(void*);
 
-static unsigned char dir_at(PathSys* ps, int x, int y) {
-    unsigned char v = *(unsigned char*)((char*)ps + x*255 + y + 0x0c);
-    if ((v & 0xf8) == ps->marker) return (unsigned char)(v & 7);
-    return 0xff;
-}
-static void make_vec(PathSys* ps, int x, int y, unsigned char d, Vec2* out) {
-    out->x = (float)x + ps->offX; out->y = (float)y + ps->offY; out->dir = d;
-}
+struct BYTEPoint {
+    uchar x;
+    uchar y;
+};
 
-int PathSys::copyPath(int step) {
-    int x,y,i,j,id,k;
-    int x1,x2,y1,y2;
-    Vec2 v;
-    unsigned char d;
-    path->reset();
-    x = curX; y = curY;
-    d = dir_at(this,x,y);
-    make_vec(this,x,y,d,&v);
-    path->use(&v);
-    if (lastX == x && lastY == y) goto final_check;
-    if (d != 0xff) {
-        if (!path->valid(&v)) return 0;
-    }
-    while (targetId != -1) {
-        x1=x-1; x2=x+1; if (x1<0) { x1=0; ++x2; } else if (x2>=width) { --x1; x2=width-1; }
-        y1=y-1; y2=y+1; if (y1<0) { y1=0; ++y2; } else if (y2>=height) { --y1; y2=height-1; }
-        for (i=x1;i<=x2;i++) {
-            for (j=y1;j<=y2;j++) {
-                int flag=0;
-                id = query_id(finder,targetArg,i,j,&flag);
-                if (id != -1) {
-                    for (k=0;k<copiedCount && k<copiedCap;k++) if (copied[k] == id) goto next_cell;
-                    if (copiedCount > copiedCap-1) {
-                        int newCap = copiedCount+1;
-                        int* n = (int*)malloc(newCap*4);
-                        if (n) {
-                            for (k=0;k<copiedCap && k<newCap;k++) n[k]=copied[k];
-                            free(copied); copied=n; copiedCap=newCap;
-                        }
-                    }
-                    copied[copiedCount++] = id;
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+    uchar facetToNextWaypoint;
+    uchar pad[3];
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    int add(T val) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == val)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int new_size = this->numberValue + 1;
+            T* new_data = (T*)operator_new(new_size * sizeof(T));
+            if (new_data != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= new_size)
+                        break;
+                    new_data[j] = this->value[j];
                 }
-next_cell: ;
+                operator_delete(this->value);
+                this->value = new_data;
+                this->maximumSizeValue = new_size;
             }
         }
-        switch (d & 0xff) {
-        case 0: curX += step; curY += step; break;
-        case 1: curY += step; break;
-        case 2: curX -= step; curY += step; break;
-        case 3: curX -= step; break;
-        case 4: curX -= step; curY -= step; break;
-        case 5: curY -= step; break;
-        case 6: curX += step; curY -= step; break;
-        case 7: curX += step; break;
-        }
-        x = curX; y = curY;
-        d = dir_at(this,x,y);
-        make_vec(this,x,y,d,&v);
-        if (lastX == x && lastY == y) break;
-        if (d != 0xff && !path->valid(&v)) return 0;
+
+        this->value[this->numberValue] = val;
+        this->numberValue++;
+        return 1;
     }
-final_check:
-    if (!path->valid(&v)) return 0;
-    return 1;
+};
+
+class Path {
+public:
+    unsigned long timeStampValue;
+    Waypoint startValue;
+    Waypoint goalValue;
+    Waypoint* pathValue;
+    int maxSizeValue;
+    int currentSizeValue;
+    int currentWaypointValue;
+
+    void killPath();
+    void initToStart();
+    int insertAtCurrent(const Waypoint& waypoint);
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;
+    void* master_obj;
+    void* owner;
+    void* sprite;
+    void* old_sprite;
+    void* sprite_list;
+    void* tile;
+    void* inside_obj;
+    void* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
+    float hp;
+    uchar curr_damage_percent;
+    uchar facet;
+    uchar selected;
+    uchar selected_group;
+    float world_x;
+    float world_y;
+    float world_z;
+    float attribute_amount_held;
+    uchar object_state;
+    uchar sleep_flag;
+    uchar dopple_flag;
+    uchar goto_sleep_flag;
+    short attribute_type_held;
+    uchar type;
+    uchar worker_num;
+    void* player_object_node;
+    ManagedArray<int> pathingGroupMembers;
+    ManagedArray<int> groupMembers;
+    void* unitAIValue;
+    int groupCommanderValue;
+    int zoneMapIndex;
+    float groupRangeValue;
+    uchar inObstructionMapValue;
+    uchar lastInObstructionMapValue;
+    uchar underAttackValue;
+    uchar pad_87;
+};
+
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    float speed;
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    float trail_remainder;
+    float velocity_x;
+    float velocity_y;
+    float velocity_z;
+    float angle;
+    float turn_towards_time;
+    Path pathValue;
+    Path exceptionPathValue;
+    Waypoint startValue;
+    Waypoint goalValue;
+    float turnTimer;
+    float collisionAvoidanceDistance;
+    float actionRange;
+    int targetIDValue;
+    float targetRadiusX;
+    float targetRadiusY;
+    int continueCounter;
+    int rangeStatusValue;
+    int currentTerrainException1;
+    int currentTerrainException2;
+    uchar storePathInExceptionPath;
+    uchar waitingToMoveValue;
+    uchar numberWaitDelays;
+    uchar pad_157;
+};
+
+class RGE_Game_World {
+public:
+    char gap_00[0x40];
+
+    int objectGroupOnTile(int playerId, int objectGroup, int tileX, int tileY,
+                          int* objectCountOnTile);
+};
+
+class PathingSystem {
+public:
+    virtual ~PathingSystem();
+    int xSizeValue;
+    int ySizeValue;
+    uchar facetValue[255][255];
+    uchar pad_fe0d[3];
+    int MGP_costValue[255][255];
+
+    struct MGP_FloatHeap {
+        uchar x;
+        uchar y;
+        unsigned short next;
+        int total;
+    };
+
+    MGP_FloatHeap MGP_openPaths[65026];
+    uchar obstructionValue[1020][255];
+    uchar miscValue[255][255];
+    uchar pad_11dc29[3];
+    int numberOpenPathsValue;
+    MGP_FloatHeap MGP_bestTraversedPath;
+    int numberTraversedPathsValue;
+    void* mapValue;
+    RGE_Game_World* worldValue;
+    RGE_Moving_Object* currentObject;
+    int currentObjectInObMap;
+    int currentTargetID;
+    float* currentTerrainTable;
+    float currentXOffset;
+    float currentYOffset;
+    int currentTerrainException1;
+    int currentTerrainException2;
+    ManagedArray<int> initialCollidingObjects;
+    int startOfPath;
+    int checkTerrainOnFirstPass;
+    XYPoint initialTile;
+    XYPoint minTarget;
+    XYPoint maxTarget;
+    XYPoint minInitialPosition;
+    XYPoint maxInitialPosition;
+    float averageNumWaypoints;
+    float averagePathLength;
+    float averagePathIterations;
+    int numAttempts;
+    int numFails;
+    int numSuccesses;
+    int numInitialPathsValue;
+    int numContinuePathsValue;
+    int numCanPathsValue;
+    int MGP_closestTargetDistance;
+    float averageClosestTargetDistance;
+    float averageSuccessTime;
+    float averageFailTime;
+    uchar CurrentFacetMask;
+    uchar pad_11dcd9[3];
+    int currentUnobstructibleGroupID;
+    int currentUnobstructiblePlayerID;
+    ManagedArray<int> currentUnobstructibles;
+
+    int copyPath(int step);
+};
+
+int PathingSystem::copyPath(int step)
+{
+    uchar previousFacet;
+
+    {
+        Path* path;
+        if (this->currentObject->storePathInExceptionPath == 0)
+            path = &this->currentObject->pathValue;
+        else
+            path = &this->currentObject->exceptionPathValue;
+        path->killPath();
+    }
+
+    BYTEPoint currentPoint;
+    currentPoint.x = this->MGP_openPaths[1].x;
+    currentPoint.y = this->MGP_openPaths[1].y;
+    previousFacet = 0xFF;
+    uchar currentFacet = this->facetValue[currentPoint.x][currentPoint.y];
+    int fooX = currentPoint.x;
+    int fooY = currentPoint.y;
+    if ((currentFacet & 0xF8) == this->CurrentFacetMask)
+        currentFacet &= 7;
+    else
+        currentFacet = 0xFF;
+
+    Waypoint waypoint;
+    waypoint.x = (float)fooX + this->currentXOffset;
+    waypoint.y = (float)fooY + this->currentYOffset;
+    waypoint.z = this->currentObject->world_z;
+    waypoint.facetToNextWaypoint = currentFacet;
+
+    {
+        Path* path = this->currentObject->storePathInExceptionPath == 0
+            ? &this->currentObject->pathValue
+            : &this->currentObject->exceptionPathValue;
+        path->initToStart();
+    }
+
+    do {
+        if (this->initialTile.x == fooX && this->initialTile.y == fooY) {
+            if (this->currentObject->storePathInExceptionPath != 0) {
+                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
+                    return 0;
+            } else {
+                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
+                    return 0;
+            }
+            return 1;
+        }
+
+        if (currentFacet != previousFacet) {
+            if (this->currentObject->storePathInExceptionPath != 0) {
+                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
+                    return 0;
+            } else {
+                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
+                    return 0;
+            }
+        }
+
+        if (this->currentUnobstructibleGroupID != -1) {
+            int minX = fooX - 1;
+            int maxX = fooX + 1;
+            if (minX < 0) {
+                minX = 0;
+                maxX = fooX + 2;
+            } else if (this->xSizeValue <= maxX) {
+                minX = fooX - 2;
+                maxX = this->xSizeValue - 1;
+            }
+
+            int minY = fooY - 1;
+            int maxY = fooY + 1;
+            if (minY < 0) {
+                minY = 0;
+                maxY = fooY + 2;
+            } else if (this->ySizeValue <= maxY) {
+                minY = fooY - 2;
+                maxY = this->ySizeValue - 1;
+            }
+
+            for (int tileX = minX; tileX <= maxX; ++tileX) {
+                for (int tileY = minY; tileY <= maxY; ++tileY) {
+                    int objectCountOnTile = 0;
+                    int id = this->worldValue->objectGroupOnTile(
+                        this->currentUnobstructiblePlayerID,
+                        this->currentUnobstructibleGroupID,
+                        tileX, tileY, &objectCountOnTile);
+                    if (id != -1)
+                        this->currentUnobstructibles.add(id);
+                }
+            }
+        }
+
+        switch ((int)currentFacet) {
+        case 0:
+            currentPoint.x += (uchar)step;
+            currentPoint.y += (uchar)step;
+            break;
+        case 1:
+            currentPoint.y += (uchar)step;
+            break;
+        case 2:
+            currentPoint.x -= (uchar)step;
+            currentPoint.y += (uchar)step;
+            break;
+        case 3:
+            currentPoint.x -= (uchar)step;
+            break;
+        case 4:
+            currentPoint.x -= (uchar)step;
+            currentPoint.y -= (uchar)step;
+            break;
+        case 5:
+            currentPoint.y -= (uchar)step;
+            break;
+        case 6:
+            currentPoint.x += (uchar)step;
+            currentPoint.y -= (uchar)step;
+            break;
+        case 7:
+            currentPoint.x += (uchar)step;
+            break;
+        }
+
+        previousFacet = currentFacet;
+        fooX = currentPoint.x;
+        fooY = currentPoint.y;
+        currentFacet = this->facetValue[fooX][fooY];
+        if ((currentFacet & 0xF8) == this->CurrentFacetMask)
+            currentFacet &= 7;
+        else
+            currentFacet = 0xFF;
+        waypoint.x = (float)fooX + this->currentXOffset;
+        waypoint.y = (float)fooY + this->currentYOffset;
+        waypoint.facetToNextWaypoint = currentFacet;
+    } while (true);
 }
