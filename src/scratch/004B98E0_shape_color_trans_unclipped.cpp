@@ -1,43 +1,45 @@
 // VA: 004B98E0, TShape::shape_color_trans_unclipped, 268 bytes
 // Source: Shape.cpp lines 841-905
-// Status: SCRATCH — remaining mismatch is pervasive register allocation,
-// prologue structure, and memset inlining differences.
+// Status: SCRATCH — behavior and call set are reconstructed; remaining drift is
+// the VC5 prologue/local-home/register basin and broad instruction placement.
 //
-// Known correct: function behavior, RLE decoding logic, parameter mapping,
-// field offsets (TShape+0x0C, TDrawArea+0x08/0x1C/0x24), AlignedWidth call,
-// memset library address.
-//
-// Remaining issues:
-// 1. Prologue: original uses `sub esp, 8` (8B locals) + `push ebx; push ebp;
-//    push esi; push edi`. Modern compiler generates different prologue with
-//    `push ecx` equivalence or reordered register saves.
-// 2. Register allocation: completely different register assignments (edi=src,
-//    esi=dst in original; different in rebuilt).
-// 3. Orien loading order: original loads td->Orien into esi BEFORE AlignedWidth
-//    call, but still after ymin/ymax loads. My compiler moves it around.
-// 4. memset inlining: modern MSVC inlines small memset calls as `rep stosd`
-//    instead of calling the library. Manual byte-fill loops generate different
-//    patterns.
-// 5. Copy loop instruction pattern: original uses pre-increment on dst
-//    (`inc esi; mov [esi-1], cl`), modern compiler uses post-increment.
-// 6. Stack slot reuse: original reuses param slots ([esp+1Ch], [esp+20h],
-//    [esp+24h]) for local variables. Compiler allocates independent slots.
+// Known from the executable: TShape+0x0C is the Shape_Header, the payload starts
+// at hdr+1, TDrawArea fields are Bits+0x08/Height+0x1C/Orien+0x24, and the RLE
+// stream has literal, skip, solid, and end-of-row commands.  The repeat arm is
+// a real memset call.  The pretested literal loop is retained because the binary
+// has an initial destination/end compare before its copy body.
 //
 // Attempt log:
-// - v1: wrong Orien order (loaded after AlignedWidth), memset inlined as rep stosd
-// - v2: fixed Orien order, function pointer for memset → 256 bytes, wrong prologue
-// - v3: manual byte loops → 208 bytes, prologue completely restructured
-// - v4: bound-checked copy loop (while dst < end) → same as v3 (208 bytes)
-// - Conclusion: modern VC5 (VS2022) generates fundamentally different
-//   optimization for this function compared to original VC5. Multiple
-//   independent axes (prologue, register alloc, memset, loop pattern) differ
-//   simultaneously, making incremental matching impractical without deeper
-//   compiler version analysis.
+// - baseline: natural typed RLE reconstruction, but manual solid fill omitted
+//   the binary memset call (193B, 259 differing bytes).
+// - restored the external C memset surface with #pragma function(memset): calls
+//   became 2/2 aligned and the candidate grew to 245B (254 differing bytes).
+// - negative-first orientation dispatch improved setup/CFG (247B, 233 diff).
+// - one shared byte count across command arms recovered parameter-slot reuse
+//   (same size, 232 diff); typed Shape_Header and row-guard declaration were
+//   canonical cleanup/duplicate basins.
+// - changed the literal run to a pretested `while (dst < end)` as required by
+//   the observed initial `cmp/jae`; current natural candidate is 251B, 234
+//   differing bytes, 100% ordered calls, 9/9 conditional CFG signals.
+// - setup declaration/order variants were codegen duplicates.  Remaining lead:
+//   recover the original 8-byte local frame and early saved-register coloring;
+//   do not replace this typed source with raw cursor/volatile scaffolding.
 // FLAGS: /nologo /c /O2 /Oy
 
-#include <memory.h>
+extern "C" void* __cdecl memset(void*, int, unsigned int);
+
+#pragma function(memset)
 
 typedef unsigned char uchar;
+
+struct Shape_Header {
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
+};
 
 struct TDrawArea {
     char _pad_00[0x08];
@@ -52,64 +54,64 @@ struct TDrawArea {
 
 struct TShape {
     char _pad_00[0x0C];
-    void* shape_header;    // +0x0C
+    Shape_Header* shape_header;    // +0x0C
 
     uchar shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal);
 };
 
 uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal)
 {
-    int* hdr = (int*)this->shape_header;
-    long ymax = hdr[5];
-    long ymin = hdr[3];
-    long height = (ymax - ymin) + 1;
-    uchar* src = (uchar*)this->shape_header + 0x18;
+    Shape_Header* hdr = this->shape_header;
+    long height = (hdr->ymax - hdr->ymin) + 1;
+    uchar* src = (uchar*)(hdr + 1);
 
-    long Orien = td->Orien;
+    long Orien;
+    Orien = td->Orien;
     long alw = td->AlignedWidth();
     long stride = alw * Orien;
+    long remaining;
 
     long dest_off;
-    if (Orien >= 1) {
-        dest_off = p3 * stride;
-    } else {
+    if (Orien < 1) {
         dest_off = (p3 - td->Height + 1) * stride;
+    } else {
+        dest_off = p3 * stride;
     }
     uchar* dst = td->Bits + p2 + dest_off;
 
-    long remaining = height;
-    while (remaining > 0) {
-        uchar done = 0;
+    if (height > 0) {
+        remaining = height;
         do {
-            uchar b = *src++;
-            if ((b & 1) == 1) {
-                uchar cnt = b >> 1;
-                if (cnt == 0) {
-                    dst += *src;
-                    src++;
+            uchar done = 0;
+            uchar count;
+            do {
+                uchar b = *src++;
+                if ((b & 1) == 1) {
+                    count = b >> 1;
+                    if (count == 0) {
+                        dst += *src;
+                        src++;
+                    } else {
+                        uchar* end = dst + count;
+                        while (dst < end) {
+                            *dst = pal[*src++];
+                            dst++;
+                        }
+                    }
                 } else {
-                    uchar* end = dst + cnt;
-                    do {
-                        *dst = pal[*src++];
-                        dst++;
-                    } while (dst < end);
+                    count = b >> 1;
+                    if (count == 0) {
+                        done = 1;
+                    } else {
+                        memset(dst, pal[*src], count);
+                        dst += count;
+                        src++;
+                    }
                 }
-            } else {
-                uchar cnt = b >> 1;
-                if (cnt == 0) {
-                    done = 1;
-                } else {
-                    uchar val = pal[*src];
-                    src++;
-                    do {
-                        *dst++ = val;
-                    } while (--cnt != 0);
-                }
-            }
-        } while (!done);
+            } while (!done);
 
-        dst += stride;
-        remaining--;
+            dst += stride;
+        } while (--remaining);
     }
 
     return 1;
