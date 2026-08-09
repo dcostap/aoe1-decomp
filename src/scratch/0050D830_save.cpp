@@ -4,18 +4,32 @@
 // Current closest drift is a one-instruction width issue for player id loads:
 // natural signed-short assignment emits movsx, while original does `mov ax,[+4A]`
 // then stores EAX to the temp slot. Unsigned or low-word casts shift the loop.
+// Probe 1 (baseline): natural typed serializer -> 355 B, 4 bytes differ at the
+//   two player-id loads; all 15 calls, frame, loop, and serialization order match.
+// Probe 2 (abi): unsigned id adds xor/zero-extension and shifts the loop (359 B);
+//   rolled back.
+// Probe 3 (restore): signed-id clean source restored, unchanged 4-byte basin.
+// Probe 4 (abi): separate short source_player_id local emitted unchanged code;
+//   removed from living source as diagnostic only. Remaining issue is VC5's
+//   signed-extension choice versus the original low-word parameter-home reuse.
+// Main-agent audit removed the raw vtable field and byte-offset event cursor,
+// restoring canonical polymorphic timeline/player/object ownership.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
+class RGE_Game_World;
+
 class RGE_Player {
 public:
-    char pad_00[0x4A];
+    virtual ~RGE_Player();
+    char pad_04[0x46];
     short id;
 };
 
 class RGE_Static_Object {
 public:
-    char pad_00[0x0C];
+    virtual ~RGE_Static_Object();
+    char pad_04[0x08];
     RGE_Player* owner;
 };
 
@@ -41,8 +55,8 @@ struct RGE_Time_Entry {
 
 class RGE_Timeline {
 public:
-    void* vtable;
-    char pad_04[4];
+    virtual ~RGE_Timeline();
+    RGE_Game_World* world;
     RGE_Time_Entry* time_list;
     short list_num;
     short avail_id;
@@ -57,7 +71,6 @@ void RGE_Timeline::save(int file) {
     short* count_ptr;
     RGE_Timeline* self;
     int i;
-    int offset;
     int save_file;
 
     save_file = file;
@@ -69,9 +82,8 @@ void RGE_Timeline::save(int file) {
 
     i = 0;
     if (*count_ptr > 0) {
-        offset = 0;
         do {
-            entry = (RGE_Time_Entry*)((char*)self->time_list + offset);
+            entry = &self->time_list[i];
             if (entry->source != 0) {
                 file = entry->source->owner->id;
             } else {
@@ -95,7 +107,6 @@ void RGE_Timeline::save(int file) {
             rge_write(save_file, &entry->word_28, 2);
             rge_write(save_file, &target_player_id, 2);
             ++i;
-            offset += 0x30;
         } while (i < *count_ptr);
     }
 }

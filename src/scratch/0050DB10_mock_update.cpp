@@ -9,11 +9,24 @@
 // tried more explicit first scan loop (`while (e->next != 0) { n=e->next; ... }`); worsened diff with extra compare of [edx+2c], rolled back.
 // temporarily added a separate dummy pad function only to let check_function compare the 528B body against 529B original; removed it. Diagnostic with pad: same 529 compare size, 13.23% edit diff, first mismatch at 0x16 due branch target/initial cmp scheduling.
 // left in scratch: current real source is 528B (one byte short, check_function stops with section-size error). Remaining mismatch is small edit-distance but not accepted-drift-safe: early rewind list prologue schedules `cmp edx,ebx; mov esi,edx` instead of original `mov esi,edx; cmp esi,ebx`, first scan loop is shorter, and branch targets shift through both pass blocks.
+// Fresh same-TU pass (sa-ab07d2be-Timeline):
+// - Separate direct time_list reads preserved the original edx-list/esi-cursor
+//   prologue and improved structural coverage; assignment aliases alone were
+//   codegen duplicates.
+// - do/while and comma-guard rewrites reached a 524-byte/460-diff diagnostic
+//   basin but introduced less natural guard blocks; the living source stays the
+//   typed natural scan. A fresh member reread worsened size to 546 B and was
+//   rolled back.
+// - Removing the relink `next` temp improved exact-block coverage (93.53%) but
+//   leaves the same structural 9-byte shortfall. Budget exhausted; retain this
+//   readable source and leave the rewind loop/backedge as the next lead.
+// Main-agent audit restored canonical polymorphic timeline/world/player/master
+// and object ownership while retaining the natural forward/rewind scans.
 
-struct RGE_Static_Object { virtual void destroy(int); };
-struct RGE_Master_Static_Object { virtual void v0(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };
-struct RGE_Player { char gap_00[0x24]; RGE_Master_Static_Object** master_objects; };
-struct RGE_World { char gap_00[0x40]; RGE_Player** players; };
+struct RGE_Static_Object { virtual ~RGE_Static_Object(); virtual void destroy(int); };
+struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };
+struct RGE_Player { virtual ~RGE_Player(); char gap_04[0x20]; RGE_Master_Static_Object** master_objects; };
+struct RGE_World { virtual ~RGE_World(); char gap_04[0x3C]; RGE_Player** players; };
 
 struct RGE_Time_Entry {
     float time;
@@ -36,7 +49,7 @@ struct RGE_Time_Entry {
 
 class RGE_Timeline {
 public:
-    char gap_00[4];
+    virtual ~RGE_Timeline();
     RGE_World* world;
     RGE_Time_Entry* time_list;
     char gap_0C[4];
@@ -53,11 +66,10 @@ void RGE_Timeline::mock_update(float t)
 
     if (t < old_time) {
         list = time_list;
-        if ((e = list) != 0) {
-            while ((n = e->next) != 0) {
-                if (n->time > old_time) break;
-                e = n;
-            }
+        e = time_list;
+        if (e != 0) {
+            while (e->next != 0 && e->next->time <= old_time)
+                e = e->next;
             while (e != 0) {
                 if (e->time <= t) break;
                 if (!(e->time > old_time)) {
@@ -93,9 +105,8 @@ void RGE_Timeline::mock_update(float t)
                 } else {
                     n = list;
                     while (n != 0) {
-                        RGE_Time_Entry* next = n->next;
-                        if (next == e) e = n;
-                        n = next;
+                        if (n->next == e) e = n;
+                        n = n->next;
                     }
                 }
             }
@@ -126,7 +137,7 @@ void RGE_Timeline::mock_update(float t)
                             if (obj == n->this_obj) n->this_obj = 0;
                             if (obj == n->target_obj) n->target_obj = 0;
                         }
-                        if (obj != 0) obj->destroy(1);
+                    if (obj != 0) obj->destroy(1);
                     }
                     break;
                 }
@@ -136,4 +147,3 @@ void RGE_Timeline::mock_update(float t)
     }
     old_time = t;
 }
-

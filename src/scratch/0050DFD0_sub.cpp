@@ -60,6 +60,8 @@
 //   performs one shared this->sub(entry) call. This preserves the executable's odd
 //   command-1 tail behavior while leaving the prior scheduling evidence above as
 //   diagnostic history rather than compiler-steering source.
+// Main-agent audit confirmed canonical timeline/event ownership and retained
+// the ordinary linked-list source without volatile or duplicated-call steering.
 
 #include <stdlib.h>
 
