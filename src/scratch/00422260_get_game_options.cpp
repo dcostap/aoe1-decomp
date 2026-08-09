@@ -18,6 +18,11 @@
 //   [esi+ebp+92/9C]. The paired set_game_options reconstruction reports the same
 //   compiler SIB artifact, so retain the named-field source rather than raw
 //   address or volatile steering.
+// - Rechecked the ground-truth three-byte tail pad and struct spelling against
+//   the paired setter surface; both were codegen duplicates, leaving the SIB
+//   operand order as the only blocker.
+// - Main-agent audit retained the shared named option record used by the paired
+//   setter; no address-expression steering survives.
 
 extern "C" char* strcpy(char* dst, const char* src);
 

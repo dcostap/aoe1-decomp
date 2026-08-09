@@ -10,6 +10,10 @@
 //   versus original [esi+edi+92/9C].
 // - Left the natural typed reconstruction in scratch; only the address-term
 //   encoding remains unresolved.
+// - Rechecked the ground-truth three-byte tail pad against the paired getter;
+//   it is a codegen duplicate, so the natural nested record remains canonical.
+// - Main-agent audit retained the shared named option record and ordinary
+//   indexed loop; no address-expression steering survives.
 
 class RGE_Base_Game {
 public:
