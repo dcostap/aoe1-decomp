@@ -1,58 +1,98 @@
 // VA: 00422260 RGE_Base_Game::get_game_options (296 B)
-// PDB source: basegame.cpp
-// Packet-grounded: read all game options into RGE_Game_Options struct
+// PDB source: basegame.cpp:5032-5059
+//
+// Attempt log:
+// - The prior packet scaffold used free helper shims, raw option offsets, and a
+//   hand-written name loop; it did not model the nested option record or the
+//   original member-call ABI.
+// - Baseline reconstruction: use the PDB-sized nested RGE_Game_Options record,
+//   typed RGE_Base_Game member calls, natural field assignments, strcpy for the
+//   scenario name, and one indexed player loop. The source order follows the
+//   original basegame.cpp line bands, including mpPathFinding after difficulty.
+// - Reversed subscripts, pointer-add/raw-byte offset forms, index-first address
+//   arithmetic, per-array pointer locals, do/while and register-index variants
+//   did not change the two-byte SIB drift; a six-case focused lab likewise put
+//   all variants in the same codegen group.
+// - Best clean result: exact size/frame/CFG and all 19 ordered calls, with only
+//   the two loop stores encoded as [ebp+esi+92/9C] instead of the original
+//   [esi+ebp+92/9C]. The paired set_game_options reconstruction reports the same
+//   compiler SIB artifact, so retain the named-field source rather than raw
+//   address or volatile steering.
 
-extern float version(void* self);
-extern int scenarioGame(void* self);
-extern char* scenarioName(void* self);
-extern int singlePlayerGame(void* self);
-extern int multiplayerGame(void* self);
-extern int mapXSize(void* self);
-extern int mapYSize(void* self);
-extern int mapZSize(void* self);
-extern int allowCheatCodes(void* self);
-extern int cheatNotification(void* self);
-extern int fullVisibility(void* self);
-extern int fogOfWar(void* self);
-extern int coloredChat(void* self);
-extern int numberPlayers(void* self);
-extern int gameDeveloperMode(void* self);
-extern int difficulty(void* self);
-extern unsigned char mpPathFinding(void* self);
-extern unsigned char playerCDAndVersion(void* self, int idx);
-extern int playerTeam(void* self, int idx);
+extern "C" char* strcpy(char* dst, const char* src);
 
-void RGE_Base_Game_get_game_options(void* self, char* opt)
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    class RGE_Game_Options {
+    public:
+        float versionValue;
+        unsigned char scenarioGameValue;
+        char scenarioNameValue[128];
+        unsigned char singlePlayerGameValue;
+        unsigned char multiplayerGameValue;
+        unsigned char mapXSizeValue;
+        unsigned char mapYSizeValue;
+        unsigned char mapZSizeValue;
+        unsigned char allowCheatCodesValue;
+        unsigned char mpPathFindingValue;
+        unsigned char cheatNotificationValue;
+        unsigned char fullVisibilityValue;
+        unsigned char fogOfWarValue;
+        unsigned char coloredChatValue;
+        unsigned char numberPlayersValue;
+        unsigned char gameDeveloperModeValue;
+        unsigned char playerCDAndVersionValue[9];
+        unsigned char difficultyValue;
+        unsigned char playerTeamValue[9];
+    };
+
+    float version() const;
+    int scenarioGame() const;
+    char* scenarioName();
+    int singlePlayerGame() const;
+    int multiplayerGame() const;
+    int mapXSize() const;
+    int mapYSize() const;
+    int mapZSize() const;
+    int allowCheatCodes() const;
+    int cheatNotification() const;
+    int fullVisibility() const;
+    int fogOfWar() const;
+    int coloredChat() const;
+    int numberPlayers() const;
+    int gameDeveloperMode() const;
+    int difficulty();
+    unsigned char mpPathFinding();
+    unsigned char playerCDAndVersion(int index);
+    int playerTeam(int index);
+
+    void get_game_options(RGE_Game_Options* options);
+};
+
+void RGE_Base_Game::get_game_options(RGE_Game_Options* options)
 {
-    char* name;
-    int i;
-    int len;
-    
-    *(float*)opt = version(self);
-    opt[4] = (char)scenarioGame(self);
-    
-    name = scenarioName(self);
-    for (len = 0; name[len]; len++)
-        opt[5 + len] = name[len];
-    opt[5 + len] = 0;
-    
-    opt[0x85] = (char)singlePlayerGame(self);
-    opt[0x86] = (char)multiplayerGame(self);
-    opt[0x87] = (char)mapXSize(self);
-    opt[0x88] = (char)mapYSize(self);
-    opt[0x89] = (char)mapZSize(self);
-    opt[0x8A] = (char)allowCheatCodes(self);
-    opt[0x8C] = (char)cheatNotification(self);
-    opt[0x8D] = (char)fullVisibility(self);
-    opt[0x8E] = (char)fogOfWar(self);
-    opt[0x8F] = (char)coloredChat(self);
-    opt[0x90] = (char)numberPlayers(self);
-    opt[0x91] = (char)gameDeveloperMode(self);
-    opt[0x9B] = (char)difficulty(self);
-    opt[0x8B] = (char)mpPathFinding(self);
-    
-    for (i = 0; i < 9; i++) {
-        opt[0x92 + i] = (char)playerCDAndVersion(self, i);
-        opt[0x9C + i] = (char)playerTeam(self, i);
+    options->versionValue = this->version();
+    options->scenarioGameValue = (unsigned char)this->scenarioGame();
+    strcpy(options->scenarioNameValue, this->scenarioName());
+
+    options->singlePlayerGameValue = (unsigned char)this->singlePlayerGame();
+    options->multiplayerGameValue = (unsigned char)this->multiplayerGame();
+    options->mapXSizeValue = (unsigned char)this->mapXSize();
+    options->mapYSizeValue = (unsigned char)this->mapYSize();
+    options->mapZSizeValue = (unsigned char)this->mapZSize();
+    options->allowCheatCodesValue = (unsigned char)this->allowCheatCodes();
+    options->cheatNotificationValue = (unsigned char)this->cheatNotification();
+    options->fullVisibilityValue = (unsigned char)this->fullVisibility();
+    options->fogOfWarValue = (unsigned char)this->fogOfWar();
+    options->coloredChatValue = (unsigned char)this->coloredChat();
+    options->numberPlayersValue = (unsigned char)this->numberPlayers();
+    options->gameDeveloperModeValue = (unsigned char)this->gameDeveloperMode();
+    options->difficultyValue = (unsigned char)this->difficulty();
+    options->mpPathFindingValue = this->mpPathFinding();
+
+    for (int i = 0; i < 9; i++) {
+        options->playerCDAndVersionValue[i] = this->playerCDAndVersion(i);
+        options->playerTeamValue[i] = (unsigned char)this->playerTeam(i);
     }
 }

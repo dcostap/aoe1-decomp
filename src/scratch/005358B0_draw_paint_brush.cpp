@@ -1,36 +1,51 @@
 // 005358B0 RGE_View::draw_paint_brush (view.cpp:2213-2265, 296B)
 // Paints a terrain brush cursor at the mouse position, with grid snapping in editor mode.
-//
-// Left in scratch: 265/296 bytes match (89.5%), edit diff 11.8%.
-// Remaining differences are VC5 codegen choices:
-// - sub esp: 0x1C vs 0x20 (4-byte stack diff shifts all offsets)
-// - pick result check: `and eax,0FFh; cmp al,33h` vs `movzx ax,al; cmp ax,33h`
-// - LEA operand order: `lea [ecx+eax]` vs `lea [eax+ecx]` (commutative, diff encoding)
-// All logic, bounds checks (+0x8C/0x90/0x94/0x98), pick call, editor_mode (+0x1B4),
-// brush_size (+0x402), grid snapping (1/3f, 1.0f), ftol calls, set_selection_area
-// calls, and register save pattern (esi/ebx after pick check) verified correct.
+// Attempt log:
+// - baseline: natural mouse/pick records had a 0x1C frame and 176 strict diff bytes.
+// - layout: restored the proven 20-byte RGE_Pick_Info; its offset-0x8 word is
+//   also consumed/stored as a float by the original, so retain that narrow union overlay.
+// - ABI: an unsigned-short pick result reproduces the original movzx ax,al and reduced
+//   the mismatch to 8 bytes; named game_mode/brush_size fields are codegen-equivalent.
+// - behavior/liveness probes: point.y address, local scope/order, and point.x temp reuse
+//   did not improve the 8-byte result; the point.y cast and point.x reuse were rolled back.
+// - left in scratch: 8 strict bytes, all localized to six FPU stack displacements and
+//   two equivalent LEA SIB encodings; calls, frame, CFG, and behavior topology align.
+// - Main-agent audit replaced numbered decompiler types with canonical polymorphic
+//   game/view ownership; the binary-proven pick-record union remains explicit.
 // FLAGS: /nologo /c /O2 /Oy
 
 struct tagPOINT { long x, y; };
 
-struct RGE_PickInfo2 {
-    long x;
+struct RGE_Pick_Info {
+    float x;
     float y;
-    float scr_x;
-    float scr_y;
+    union {
+        struct {
+            short scr_x;
+            short scr_y;
+        } screen;
+        float screen_value;
+    };
+    void* object;
+    void* tile;
 };
 
-struct RGE_Base_Game2 {
-    char _gap_00[4];
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    char gap_04[0x1B0];
+    int game_mode;
+    char _gap_1B8[0x24A];
+    short brush_size;
     void get_mouse_pos(tagPOINT* pt);
 };
 
-extern "C" {
-    extern RGE_Base_Game2* rge_base_game;
-}
+extern RGE_Base_Game* rge_base_game;
 
-struct RGE_View3 {
-    char _pad_00[0x8C];
+class RGE_View {
+public:
+    virtual ~RGE_View();
+    char gap_04[0x88];
     int view_left;      // +0x8C
     int view_top;       // +0x90
     int view_right;     // +0x94
@@ -39,43 +54,44 @@ struct RGE_View3 {
     void set_selection_area(int x1, int y1, int x2, int y2);
     unsigned char pick(unsigned char mode, unsigned char param,
                        int mouse_x, int mouse_y,
-                       RGE_PickInfo2* info, int flags);
+                       RGE_Pick_Info* info, int flags);
     void draw_paint_brush();
 };
 
-void RGE_View3::draw_paint_brush() {
+void RGE_View::draw_paint_brush() {
+    tagPOINT mousePos;
+    RGE_Pick_Info pickInfo;
+
     set_selection_area(-1, -1, -1, -1);
 
-    tagPOINT mousePos;
     rge_base_game->get_mouse_pos(&mousePos);
 
     if (mousePos.x < view_left || mousePos.x > view_right ||
         mousePos.y < view_top || mousePos.y > view_bottom)
         return;
 
-    RGE_PickInfo2 pickInfo;
-    int pickResult = pick(0x28, 0, mousePos.x, mousePos.y, &pickInfo, 0);
+    unsigned short pickResult = (unsigned char)pick(0x28, 0, mousePos.x, mousePos.y, &pickInfo, 0);
 
-    if ((unsigned short)(unsigned char)pickResult != '3')
+    if (pickResult != '3')
         return;
 
     short brushSize;
-    if (*(int*)((char*)rge_base_game + 0x1B4) == 0x13) {
+    if (rge_base_game->game_mode == 0x13) {
         int t1 = (int)(pickInfo.y * (1.0f / 3.0f));
         int v1 = -t1 * 3;
-        pickInfo.scr_x = 1.0f - (float)v1;
+        pickInfo.y = 1.0f - (float)v1;
 
-        int t2 = (int)(pickInfo.scr_y * (1.0f / 3.0f));
+        int t2 = (int)(pickInfo.screen_value * (1.0f / 3.0f));
         int v2 = -t2 * 3;
-        pickInfo.scr_y = 1.0f - (float)v2;
+        pickInfo.screen_value = 1.0f - (float)v2;
 
         brushSize = 3;
     } else {
-        brushSize = *(signed short*)((char*)rge_base_game + 0x402);
+        brushSize = rge_base_game->brush_size;
     }
 
-    int cx = (int)pickInfo.scr_x;
-    int cy = (int)pickInfo.scr_y;
+    int cx = (int)pickInfo.y;
+    int cy = (int)pickInfo.screen_value;
     int half = (int)(signed short)brushSize >> 1;
     set_selection_area(cx - half, cy - half, cx + half, cy + half);
 }
