@@ -16,6 +16,15 @@
 //   candidate has 16/17 ordered calls and a localized three-byte size excess:
 //   VC5 places one near jump around the cold failure block where the original
 //   uses a short jump.  No raw-address or register-forcing scaffolding remains.
+// - The proven World vtable declarations with a destructor and setup-color
+//   overload shifted the final virtual call from slot A8 to A4 in this TU, so
+//   that surface was restored to the slot-preserving proxy.  Cleanup-label
+//   order, direct open-failure return, inverted late-version guards, and
+//   explicit version8 gotos were codegen duplicates or farther; the literal
+//   nested decompiler CFG expanded to 453 bytes and was discarded.
+// - Paused after the bounded pass: the clean 443-byte candidate remains the
+//   source reconstruction, with the remaining drift localized to cold-failure
+//   block placement/near-jump encoding rather than behavior or call identity.
 
 extern int world_update_counter;
 

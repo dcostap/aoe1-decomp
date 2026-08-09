@@ -3,8 +3,8 @@
 // FLAGS: /nologo /c /O2 /Oy
 //
 // Attempt notes:
-// - Virtual calls via this->method() with the owning world virtual surface (slots 23,24,30,42,46,60)
-//   generate correct call [ebp+offset] with ecx=this
+// - Virtual calls via this->method() with the owning world virtual surface generate
+//   the expected [ebp+offset] dispatches with ecx=this.
 // - Field offsets verified correct (world_time_delta_seconds at +0x84, random_seed at +0x78, etc.)
 // - Remaining ~85% positional diff is purely instruction scheduling within basic blocks:
 //   * GetRandomSeed return → push order vs store order (mov ecx,eax + push ecx vs push eax)
@@ -30,8 +30,16 @@
 //   assignment as calloc's second argument to force a source dependency on its store.
 // - Final source normalization: the assignment-expression probe was also identical;
 //   retain the ordinary member assignment before calloc for a plausible source form.
+// - Probe 13: restored the proven polymorphic/full-layout RGE_Map surface; no emitted change.
+// - Probes 14-20: split the player count, corrected GetRandomSeed's unsigned-long ABI,
+//   corrected clear_map's uchar/uchar ABI, and completed the generated object layouts;
+//   all were emitted-code duplicates.
+// - Probe 21: load_scenario(char*, RGE_Player_Info*) and setup_player_colors(info) share
+//   the pre-branch info push required by the vslot ABI. This restored the late setup
+//   block and improved shape to 93.41% (50% exact-block coverage), but not bytes.
+// - Probe 22: a named copy of random_seed before debug_srand was codegen-identical.
 // - Main-agent audit removed the proxy-vtable base and empty inline virtual bodies;
-//   canonical world ownership preserves the validated 221-byte scheduling gap.
+//   canonical world ownership preserves the remaining 221-byte scheduling gap.
 
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl debug_srand(char* file, int line, unsigned int seed);
@@ -40,6 +48,7 @@ extern int world_update_counter;
 
 struct RGE_Map_Gen_Info {
     unsigned char base_terrain;
+    char gap_01[0x51F];
 };
 
 struct RGE_Player_Info {
@@ -54,7 +63,7 @@ struct RGE_Player_Info {
 };
 
 struct TCommunications_Handler {
-    unsigned int GetRandomSeed();
+    unsigned long GetRandomSeed();
 };
 
 struct RGE_Command {
@@ -62,9 +71,35 @@ struct RGE_Command {
     TCommunications_Handler* com_hand;
 };
 
+struct RGE_Player;
+struct RGE_Game_World;
+struct RGE_Tile;
+
 struct RGE_Map {
+    virtual ~RGE_Map();
+    virtual void data_load_random_map(int);
+    virtual void load_random_map(char*, char*, char*, char*);
+    virtual unsigned char do_terrain_brush(long, long, long, unsigned char);
+    virtual unsigned char do_terrain_brush_stroke(long, long, long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush(long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush_stroke(long, long, long, long, long, unsigned char);
+    virtual unsigned char do_cliff_brush(long, long, unsigned char, unsigned char);
+    virtual unsigned char do_cliff_brush_stroke(long, long, long, long, unsigned char, unsigned char);
+    virtual void map_generate(RGE_Player*, RGE_Game_World*, RGE_Player_Info*, unsigned char*);
+    virtual void map_generate2(RGE_Game_World*, long, long, unsigned char, long);
+    virtual void save(int);
+    void* map_data;
+    int map_width;
+    int map_height;
+    char gap_10[0x8D7C];
+    RGE_Tile** map_row_offset;
+    char gap_8D90[0x0A];
+    short tile_half_height;
+    short tile_half_width;
+    short elev_height;
+    char gap_8DA0[0x30];
     void new_map(long width, long height);
-    void clear_map(unsigned char terrain, int fill);
+    void clear_map(unsigned char terrain, unsigned char fill);
 };
 
 struct RGE_Player {
@@ -72,7 +107,64 @@ struct RGE_Player {
 };
 
 struct RGE_Game_World {
-    virtual ~RGE_Game_World();    virtual void d1();    virtual void d2();    virtual void d3();    virtual void d4();    virtual void d5();    virtual void d6();    virtual void d7();    virtual void d8();    virtual void d9();    virtual void d10();    virtual void d11();    virtual void d12();    virtual void d13();    virtual void d14();    virtual void d15();    virtual void d16();    virtual void d17();    virtual void d18();    virtual void d19();    virtual void d20();    virtual void d21();    virtual void d22();    virtual void step1();    virtual void step2(RGE_Player_Info&);    virtual void d25();    virtual void d26();    virtual void d27();    virtual void d28();    virtual void d29();    virtual unsigned char load_scenario(char*);    virtual void d31();    virtual void d32();    virtual void d33();    virtual void d34();    virtual void d35();    virtual void d36();    virtual void d37();    virtual void d38();    virtual void d39();    virtual void d40();    virtual void d41();    virtual void step3(RGE_Player_Info&);    virtual void d43();    virtual void d44();    virtual void d45();    virtual void update();    virtual void d47();    virtual void d48();    virtual void d49();    virtual void d50();    virtual void d51();    virtual void d52();    virtual void d53();    virtual void d54();    virtual void d55();    virtual void d56();    virtual void d57();    virtual void d58();    virtual void d59();    virtual void step4(RGE_Game_World*);
+    virtual unsigned char data_load_world(void*);
+    virtual unsigned char data_load_terrain_tables(char*);
+    virtual unsigned char data_load_players(char*);
+    virtual unsigned char data_load_objects(char*);
+    virtual unsigned char data_load_sounds(char*);
+    virtual unsigned char data_load_color_tables(char*);
+    virtual unsigned char data_load_sprites(char*);
+    virtual void data_load_players_type(short, short, void*);
+    virtual void data_load_effects(char*);
+    virtual void data_load_map();
+    virtual void data_load_random_map();
+    virtual unsigned char init_player_type(int, short, unsigned char);
+    virtual unsigned char init_player(int);
+    virtual void load_player(int, unsigned char, short);
+    virtual void color_table_init(int);
+    virtual void terrain_tables_init(int);
+    virtual void init_sounds(int, void*);
+    virtual void init_sprites(int);
+    virtual void map_init(int, void*);
+    virtual void effects_init(int);
+    virtual void master_player_init(int);
+    virtual void command_init(int, void*);
+    virtual void world_init(int, void*, void*);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info&);
+    virtual unsigned char new_random_game(RGE_Player_Info*);
+    virtual void save(int);
+    virtual void scenario_make_player(short, unsigned char, unsigned char,
+                                      unsigned char, char*);
+    virtual void scenario_make_map(int);
+    virtual unsigned char load_scenario(char*, RGE_Player_Info*);
+    virtual unsigned char load_scenario(RGE_Player_Info*);
+    virtual void load_scenario1(); virtual void load_scenario2();
+    virtual void load_scenario3(); virtual void load_scenario4();
+    virtual void load_scenario5(); virtual void load_scenario6();
+    virtual void load_scenario7(); virtual void load_scenario8();
+    virtual void logStatus(void*, int);
+    virtual ~RGE_Game_World();
+    virtual void setup_player_colors(RGE_Player_Info*);
+    virtual void setup_player_colors();
+    virtual unsigned char data_load(char*, char*);
+    virtual unsigned char init(char*, void*, void*);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int);
+    virtual unsigned char load_game(char*);
+    virtual unsigned char new_game(RGE_Player_Info*, int);
+    virtual unsigned char new_scenario(RGE_Player_Info*, int);
+    virtual unsigned char save_game(char*);
+    virtual void base_save(char*);
+    virtual void base_save(int);
+    virtual unsigned char save_scenario(char*);
+    virtual void* get_scenario_info(char*);
+    virtual void pause(unsigned char);
+    virtual void scenario_init(RGE_Game_World*);
     unsigned long world_time;
     unsigned long old_world_time;
     unsigned long world_time_delta;
@@ -94,13 +186,14 @@ struct RGE_Game_World {
     char gap_7E[2];
     char* sound_driver;
     float world_time_delta_seconds;
+    char gap_88[0x7C];
 
     unsigned char new_scenario(RGE_Player_Info& info, int seed);
 };
 
 unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {
     world_update_counter = 0;
-    this->update();
+    this->del_game_info();
 
     curr_player = 0;
 
@@ -117,8 +210,8 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {
     player_num = info.player_num + 1;
     players = (RGE_Player**)calloc(4, player_num);
 
-    this->step1();
-    this->step2(info);
+    this->setup_gaia();
+    this->setup_players(info);
 
     world_time = 0;
     old_world_time = 0;
@@ -130,10 +223,10 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {
 
     unsigned char result;
     if (info.scenario != 0) {
-        result = this->load_scenario(info.scenario);
+        result = this->load_scenario(info.scenario, &info);
     } else {
-        this->step3(info);
-        this->step4(this);
+        this->setup_player_colors(&info);
+        this->scenario_init(this);
         result = 1;
     }
 

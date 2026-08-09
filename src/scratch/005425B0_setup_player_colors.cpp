@@ -15,6 +15,16 @@
 // - Main-agent audit replaced inline empty virtual bodies with canonical
 //   declarations and restored world/player destructor ownership. This exposes
 //   the same SIB-only blocker (two encoded bytes under canonical TU context).
+// - Probe 13: first-pass pointer-addition spelling was a codegen duplicate.
+// - Probes 16-19 and 23: full world/player-info/color-table layout/context
+//   repairs were codegen duplicates; retain only proven layout facts.
+// - Probe 20: a current-used-color pointer caused a 9-byte structural drift;
+//   restored the natural direct table expression.
+// - Probe 24: a typed 256-byte Colors_Used record fixed the store SIB byte and
+//   reduced the diff to one compare byte, but the dynamic calloc source is more
+//   naturally a byte pointer; kept the record as diagnostic evidence only.
+// - Probes 25-26: member pointer-addition and typedef-array spellings did not
+//   fix the compare SIB and the latter restored the second mismatch byte.
 //
 // FLAGS: /nologo /c /O2 /Oy
 
@@ -31,6 +41,7 @@ class RGE_Player {
 public:
     virtual ~RGE_Player();
     void set_color_table(unsigned char color);
+    char gap_04[0x21C];
 };
 
 class RGE_Player_Info {

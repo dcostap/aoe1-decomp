@@ -20,6 +20,16 @@
 // - Main-agent audit removed the player-count pointer and file-parameter byte
 //   reuse. Named count/save-state locals are the plausible serialization source;
 //   prior stack-home proximity remains diagnostic only.
+// - This pass recovered the later 614-byte/31-call basin, with a natural
+//   direct player_num gate leaving only the two-byte `test ax,ax` versus
+//   original `cmp ax,bp` hunk.  Player-index comparisons, narrow-index and
+//   zero aliases, declaration/initialization movement, and explicit signed or
+//   unsigned 16-bit predicates either duplicated that basin or worsened the
+//   tail.  A seven-case focused gate lab found no exact emitted variant.
+// - Final source keeps named member ownership rather than the diagnostic
+//   short-count alias; remaining drift is a compiler comparison/register
+//   scheduling basin with all calls, size, frame, CFG, and memory effects
+//   aligned.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
@@ -155,7 +165,7 @@ unsigned char RGE_Game_World::load_world(int file) {
     int i;
     unsigned long* p;
     int count;
-    int local_4;
+    int player_type;
     int f = file;
     unsigned char saved_game_state;
 
@@ -192,15 +202,14 @@ unsigned char RGE_Game_World::load_world(int file) {
     this->old_time = 0;
     this->map->load_map(f);
     this->initializePathingSystem();
-    short num = this->player_num;
     this->currentUpdateComputerPlayer = -1;
 
-    if (0 < num) {
-        this->players = (RGE_Player**)calloc(4, num);
+    if (0 < this->player_num) {
+        this->players = (RGE_Player**)calloc(4, this->player_num);
         if (0 < this->player_num) {
             do {
-                rge_read(f, &local_4, 1);
-                this->create_player(f, local_4, i);
+                rge_read(f, &player_type, 1);
+                this->create_player(f, player_type, i);
                 i++;
             } while (i < this->player_num);
         }
