@@ -12,6 +12,7 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   with real `float` parameters so `-1.0f` remains a raw `0xBF800000` push;
   all-integer proxies/casts change argument bits and scheduling.
 - VC5 treats declaration scope/order, initialization site, and assignment form as codegen inputs: they alter scheduling, stack homes, callee-save choice, zero-register lifetime, and even prologues. Probe only against observed symptoms.
+- When an old-TU call zeroes two address-taken output locals before loading a later member-valued argument, declaring those locals at function scope and assigning them inside the guard can preserve the original VC5 zero-store/load order; nested declarations let the member load hoist. Prefer the period-plausible top-level declaration style over volatile or aggregate scheduling scaffolding.
 - Moving a counter out of a `for`, declaring before/after a guard, or splitting declaration/assignment moves zeroing/LEAs across calls. An inner-body invariant temp may be hoisted yet color registers differently from the same temp before the inner loop (`0044E900`).
 - Among call-crossing locals competing for one callee-saved register, earlier declarations often win; order locals to match register-versus-stack pushes (`00514720`).
 - A late declaration of an initially-zero value can keep a dedicated zero register live and force another temp into an extra callee-save; a top-level `=0` may be rematerialized and free that register (`0041F030`).
@@ -226,6 +227,7 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
 - Right-to-left pushes reveal vararg/member argument order; transient ESP changes alter every apparent local offset.
 - Before blaming register/frame drift, verify helper out-param ABI and row/column ownership. Transposed indices can preserve CFG/calls yet swap every stack slot (`00485520`).
 - Keep exact-source winners natural and typed. Preserve unusual source only for a real original idiom/bug, exact output, or binary-observed aliasing, width, lifetime, evaluation, fault, or stack-home behavior.
+- For 32-bit byte-row access where the oracle adds a computed row to a pointer member in EAX and uses a width term as the final displacement, a typed array expression may reassociate into extra instructions. When the original arithmetic is binary-proven, a row-first address expression such as `stride * y + (long)Bits - x + Width - 1` can preserve `add eax,[Bits]; sub eax,x; [eax+Width-1]`; keep the named member ownership and avoid absolute-address plumbing.
 - When an `if/else` selects between two same-member integer calls but the original keeps both call sites and converts each result before a common x87 compare, model the branch result as `float`, cast in each arm, and spell the final predicate in the observed direction (for example `dist > threshold`). VC5 can then retain branch-local `fild`/calls and emit the original stack-to-stack `fld`/`fcomp`/`test ah,41h` shape instead of tail-merging to one call plus a memory `fcomp`; use only when the duplicate calls and FPU topology are binary-proven.
 - In virtual child traversals with a captured/non-captured outer split, return a child's nonzero result directly and let the outer `if/else` share the final zero return. Spelling `return 1` for the child can move the literal into the epilogue and leave an otherwise exact VC5 function with a localized mismatch.
 
@@ -377,3 +379,90 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   preserve VC5's counter stack store and shared failure tail; a direct success
   return or extra null assignment changes the late epilogue. Keep this shape
   only when the original branch/tail topology proves it.
+
+- In VC5 switch handlers that initialize two common-tail result locals, source
+  assignment order can choose which immediate lands in EAX versus a callee-save.
+  If the handler topology and values already match but the two stores are
+  reversed, assign the action/result value before the order/selector value; keep
+  this only when the original handler bytes prove that per-case store order.
+
+- When a period utility source body already matches structurally but a persistent
+  pointer pair is colored into the wrong callee-saves, restore the donor TU's
+  plausible headers before adding locals or aliases. For VC5 DIB utilities,
+  adding the original `windowsx.h`, `stdio.h`, and `memory.h` context changed
+  register allocation without changing source semantics and closed a localized
+  seven-byte gap; unused header context can affect the optimizer basin.
+
+- For VC5 scans over fixed-stride memory, a named entry pointer can force a
+  persistent offset into the wrong callee-save and shorten the whole function.
+  Once behavior and stride are proven, mirror an exact same-TU donor's direct
+  indexed member expressions (`records[i].field`) before adding register
+  aliases; this can recover the original late-save loop topology and full size.
+  The declaration order of two result locals can then independently control
+  the initial parameter-home store order.
+
+- When a function repurposes incoming parameter homes across a late register
+  push, track their fixed entry addresses rather than their changing `[esp+N]`
+  labels. A closest-object scan may retain the squared distance in one home,
+  the selected object id in the other, and return the id after the save is
+  popped; this can look like a distance return in the decompiler's renamed
+  locals.
+
+- For a packed-record update with an independent running offset, source order can be
+  counterintuitive: writing `entry.size = size` before `output_offset += size` let VC5
+  emit the oracle's pointer reload/add/size-store/offset-spill sequence exactly, even
+  though the add instruction precedes the store in the final bytes. Use this ordinary
+  statement order only when the accumulator has no intervening observable use and the
+  binary proves the stores are independent.
+
+- In EH-framed VC5 destructors that release several same-type heap members, save each
+  member pointer in a local before the null check and direct `delete`. Reusing that
+  local across the cleanup blocks lets VC5 keep the pointer in a callee-save across
+  the destructor call; accessing the member again makes it reload after the call and
+  can add bytes or change the whole register/lifetime topology.
+
+- In a bounded VC5 coordinate scan, initialize both upper-bound fields before
+  applying map-width/height clamps. This can preserve the original `lea`/`add`
+  schedule, frame, and loop topology; once the remaining hunk is a comparison,
+  reverse equivalent operands (for example `best > distance` versus
+  `distance < best`) to reproduce the oracle's `cmp` direction without changing
+  behavior or resorting to compiler-steering scaffolding.
+
+- In a bounded VC5 scan with a persistent cursor and a conditional match count,
+  a natural `for (; index < limit; ++index, ++cursor)` can emit a materially
+  different and much closer basin than an equivalent `do/while`. After that
+  structural change, reverse the inner bound spelling (`matches >= count`) when
+  the oracle proves the opposite `cmp` operand order; the pair can remove a
+  localized branch hunk without aliases or volatility.
+
+- In a stateful VC5 transition routine, reuse the clipped/result local when a
+  later fallback assigns it (rather than introducing a second `new_*` local).
+  This can keep the value in the expected callee-save register through the
+  branch and eliminate a spill. Once the hunk is localized, equivalent source
+  comparison spellings such as `old_x < new_x` versus `new_x > old_x`, and
+  `old_y >= new_y` versus `new_y <= old_y`, can select the oracle's `cmp` order
+  without changing behavior.
+
+- For a VC5 fixed-stride queue scan, a single index plus a top-tested
+  `while (*cursor != 0)` can preserve the compiler's EBP=this/ESI=index basin;
+  separate decompiler locals for the same index can swap this and the spill
+  home. After the loop topology matches, put the index on the left of
+  equivalent bounds (`index >= limit`, `index > high`) to recover the oracle's
+  `cmp` operand order and branch bytes.
+
+- For a same-TU x87 turn helper whose first angle result is spilled to an
+  incoming float-parameter home, binary-proven literal thresholds/zero can
+  select VC5's `fst`/`fcomp`/`fld` topology where external typed constants keep
+  the value live in ST0. Apply a facet step directly as `this->angle +=/-=` and
+  put the negative case inline when the oracle has a common `fstp` and opposite
+  branch polarity; remove redundant coordinate aliases after checking that
+  ordinary parameter use still preserves the home reuse.
+
+- In an EH-framed VC5 derived constructor with destructible fixed-layout members,
+  model the members with their natural inline default constructors and list
+  scalar initializers before array/member initializers. This can recover the
+  compiler's delayed member-constructor call and derived-vptr placement. If a
+  final scalar store and vptr store are swapped, moving that proven zero
+  initialization into the member-initializer sequence can change only the
+  localized ordering without aliases or volatility; retain the shape only when
+  the original constructor bytes confirm it.
