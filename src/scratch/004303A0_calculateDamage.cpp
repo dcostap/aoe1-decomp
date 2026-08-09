@@ -40,10 +40,15 @@
 // was rolled back. The clean typed candidate remains authoritative.
 // Main-agent audit restored canonical polymorphic master/world/player/static
 // ownership while retaining the natural armor and terrain-table loops.
+// Fresh worker: queried same-TU donors, ABI, and binary globals; replaced the
+// FLOAT_*/DOUBLE_* placeholders with DAT_0056f49c/DAT_0056f4a8/DAT_0056f4a0.
+// This is source-canonical but emitted-code neutral in the isolated TU.
+// Paused: cumulative evidence still isolates the unresolved EBP-versus-EBX
+// armor-pointer allocator basin; no register hint, volatility, or padding kept.
 
-extern float FLOAT_1_0;
-extern float FLOAT_0_0;
-extern double DOUBLE_0_0;
+extern float DAT_0056f49c;
+extern float DAT_0056f4a8;
+extern double DAT_0056f4a0;
 
 struct RGE_Armor_Weapon_Info {
     short type;
@@ -208,7 +213,7 @@ float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* par
                                          float param_3, RGE_Player* param_4, RGE_Static_Object* param_5)
 {
     RGE_Master_Combat_Object* obj = this->master_obj;
-    float mult = FLOAT_1_0;
+    float mult = DAT_0056f49c;
     short weaponKind = obj->defense_terrain_bonus;
     RGE_Armor_Weapon_Info* armorTbl = obj->armor;
     int nArmor = obj->armor_num;
@@ -220,7 +225,7 @@ float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* par
         mult = tbl[weaponKind][cls];
     }
 
-    float total = FLOAT_0_0;
+    float total = DAT_0056f4a8;
 
     if (param_1 > 0) {
         RGE_Armor_Weapon_Info* weapon = param_2;
@@ -244,7 +249,7 @@ float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* par
             float d = (float)weapon->value - (float)attack;
             float dmg = d * mult * param_3;
 
-            if (dmg > DOUBLE_0_0) {
+            if (dmg > DAT_0056f4a0) {
                 total += dmg;
             }
 

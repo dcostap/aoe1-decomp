@@ -35,6 +35,11 @@
 // against the gather/transport EH-tail pattern; they worsened prologue/layout
 // (101 and 243 differing bytes) and were rolled back. Keep the 274-byte natural
 // goto-fail reconstruction with calls/relocations aligned.
+// Fresh session probes: uninitialized integer status still expanded to 316B;
+// a Ghidra-shaped pointer status (including reuse of obj and a self alias) held
+// the shared tail at 257B/101 diff but swapped this/object registers and added
+// an early saved-register ordering change. These alias-shaped diagnostics were
+// rolled back; no opaque status cast survives in the canonical source.
 // Main-agent audit removed inline empty virtual definitions and restored
 // canonical destructor ownership; the shared-EH-tail blocker remains.
 //

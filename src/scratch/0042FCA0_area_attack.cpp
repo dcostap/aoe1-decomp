@@ -10,55 +10,117 @@
 // try 8: modeled random chance via debug_rand path/line and integer division; compiler uses simpler division than original magic multiply sequence.
 // try 9: modeled virtual calc_attack_modifier and target damage call with observed parameter order.
 // try 10: leaving in scratch: clean source is 672B vs 683B and mismatch is broad loop/FPU/register/addressing drift, not accepted_drift-safe.
+// session baseline: frame/CFG and all seven call sites were close, but the local class surface put calc_attack_modifier at vslot +0x70 and damage at +0x6C.
+// session probes: restored Action_Object vtable ownership, player->world->map, master area/weapon fields, 0x18-byte map cells, typed footprint radii, and the fourth/fifth pointer affiliation proved by stack homes.
+// best emitted candidate: 683B/frame 0x24, all seven calls aligned, 96.38% instruction-shape similarity and 207 positional diff bytes after restoring the real source-path literal; remaining drift is localized to the radius-square FPU expression and initial register order.
+// paused after bounded matching: readable typed source retained; no frame padding, fake volatility, raw cursor arithmetic, or register-forcing aliases.
 
 extern "C" long __cdecl _ftol();
 extern "C" int __cdecl debug_rand(char*, int);
+extern double DAT_0056f4a0;
+extern float DAT_0056f4a8;
 
 struct Link { void* object; Link* next; };
-struct MapRow { char gap[0x10]; Link* cell[1]; };
+struct MapCell { char gap[0x10]; Link* objects; char gap_end[4]; };
+struct MapRow { MapCell cell[1]; };
 struct RGE_Map { char gap0[8]; short width; char gapA[2]; short height; char gapE[0x8D7E]; MapRow** rows; };
+
+class RGE_Armor_Weapon_Info;
+class RGE_Player;
 
 class RGE_Static_Object {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
+    virtual ~RGE_Static_Object(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
     virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
     virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
     virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
     virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
     virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void take_damage(int,int,float,void*,float);
-    char gap_04[4];
-    void* master;
-    char gap_0C[0x2C];
+    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C();
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x2C];
+    float radius_x;
+    float radius_y;
+    char gap_38[0x53];
+    unsigned char area_effect_object_level;
+    char gap_8C[0x2C];
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Static_Object {
+public:
+    char gap_B8[0x50];
+    short weapon_num;
+    char gap_10A[2];
+    RGE_Armor_Weapon_Info* weapon;
+    char gap_110[4];
+    float weapon_range;
+    float area_effect_range;
+    unsigned char area_effect_level;
+    char gap_11D[3];
+    char gap_120[4];
+    char gap_124[2];
+    short base_hit_chance;
+};
+
+class RGE_Game_World {
+public:
+    virtual unsigned char data_load_world(void* file);
+    char gap_04[0x24];
+    RGE_Map* map;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+};
+
+#define VPAD(n) virtual void v##n();
+class RGE_Action_Object {
+public:
+    virtual ~RGE_Action_Object(); VPAD(004) VPAD(008) VPAD(00C) VPAD(010) VPAD(014) VPAD(018) VPAD(01C)
+    VPAD(020) VPAD(024) VPAD(028) VPAD(02C) VPAD(030) VPAD(034) VPAD(038) VPAD(03C)
+    VPAD(040) VPAD(044) VPAD(048) VPAD(04C) VPAD(050) VPAD(054) VPAD(058) VPAD(05C)
+    VPAD(060) VPAD(064) VPAD(068) VPAD(06C)
+    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
+    VPAD(074) VPAD(078) VPAD(07C) VPAD(080) VPAD(084) VPAD(088) VPAD(08C) VPAD(090)
+    VPAD(094) VPAD(098) VPAD(09C) VPAD(0A0) VPAD(0A4) VPAD(0A8) VPAD(0AC) VPAD(0B0)
+    VPAD(0B4) VPAD(0B8) VPAD(0BC) VPAD(0C0) VPAD(0C4) VPAD(0C8) VPAD(0CC) VPAD(0D0)
+    VPAD(0D4) VPAD(0D8) VPAD(0DC) VPAD(0E0) VPAD(0E4) VPAD(0E8) VPAD(0EC)
+
+    int id;
+    RGE_Master_Combat_Object* master;
+    RGE_Player* owner;
+    char gap_010[0x28];
     float x;
     float y;
 };
 
-class RGE_Combat_Object : public RGE_Static_Object {
+class RGE_Combat_Object : public RGE_Action_Object {
 public:
-    virtual float calc_attack_modifier(RGE_Combat_Object*);
-    char gap_40[0x48];
-    unsigned char blastLevel;
-    char gap_8C[0x7C];
-    short attack;
-    int damageType;
-    char gap_110[8];
-    float blastRadius;
-    unsigned char minBlastLevel;
-    char gap_11D[9];
-    short blastChance;
+    virtual float calc_attack_modifier(RGE_Static_Object*);
 
-    unsigned char area_attack(float x, float y, float z, RGE_Combat_Object* skip, RGE_Static_Object* source);
+    unsigned char area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignored);
 };
+#undef VPAD
 
-unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* skip, RGE_Static_Object* source)
+unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignored)
 {
-    float radius = this->blastRadius;
-    RGE_Map* map = *(RGE_Map**)((char*)*(void**)((char*)this->master + 0x3C) + 0x28);
+    float attack_modifier;
+    RGE_Master_Combat_Object* master = this->master;
+    RGE_Player* player = this->owner;
+    float radius = master->area_effect_range;
+    RGE_Map* map = player->world->map;
     short maxx = map->width - 1;
     short maxy = map->height - 1;
     float r2 = radius * radius;
-    if (!(radius > 0.0f)) return 0;
+    if (!(radius > DAT_0056f4a0)) return 0;
 
     short x0;
     x0 = (short)((long)(x - radius));
@@ -79,25 +141,30 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
 
     for (short yy = y0; yy < y1; yy++) {
         for (short xx = x0; xx < x1; xx++) {
-            Link* link = map->rows[yy]->cell[xx];
+            Link* link = map->rows[yy]->cell[xx].objects;
             while (link != 0) {
                 RGE_Combat_Object* obj = (RGE_Combat_Object*)link->object;
-                if (obj != this && obj->blastLevel >= this->minBlastLevel && obj != skip) {
+                if (obj != this &&
+                    obj->master->area_effect_object_level >= this->master->area_effect_level &&
+                    obj != (RGE_Combat_Object*)ignored) {
                     float dx = obj->x - x;
                     float dy = obj->y - y;
-                    if (dx < 0.0f) dx = -dx;
-                    if (dy < 0.0f) dy = -dy;
-                    float sx = *(float*)((char*)obj->master + 0x30);
-                    int syi = *(int*)((char*)obj->master + 0x34);
-                    if (dx <= sx) dx = 0.0f; else dx -= sx;
-                    float sy = *(float*)&syi;
-                    if (dy <= sy) dy = 0.0f; else dy -= sy;
+                    if (dx < DAT_0056f4a8) dx = -dx;
+                    if (dy < DAT_0056f4a8) dy = -dy;
+                    float radius_x = obj->master->radius_x;
+                    float radius_y = obj->master->radius_y;
+                    if (dx > radius_x) dx -= radius_x;
+                    else dx = DAT_0056f4a8;
+                    if (dy > radius_y) dy -= radius_y;
+                    else dy = DAT_0056f4a8;
                     if (dy * dy + dx * dx < r2) {
-                        int rnd = debug_rand((char*)0x583580, 0xFA) * 100;
+                        int rnd = debug_rand(
+                            "C:\\msdev\\work\\age1_x1\\com_obj.cpp", 0xFA) * 100;
                         int chance = rnd / 0x7fff;
-                        if ((short)chance <= this->blastChance) {
-                            float mod = this->calc_attack_modifier(obj);
-                            obj->take_damage((int)this->attack, this->damageType, mod, this, z);
+                        if ((short)chance <= this->master->base_hit_chance) {
+                            attack_modifier = this->calc_attack_modifier((RGE_Static_Object*)obj);
+                            obj->damage((int)this->master->weapon_num, this->master->weapon,
+                                        attack_modifier, this->owner, (RGE_Static_Object*)attacker);
                         }
                     }
                 }

@@ -11,29 +11,32 @@
 // attempt 8: changed missile-id branch to positive if (missile_id >= 0) with fallback in trailing else; matches original block order better.
 // attempt 9: volatile-size diagnostic after branch reorder improved only to broad mismatch (87.96% positional); prologue still uses EBX/EBP, unlike original push-ecx/ESI/EDI then late EBX.
 // attempt 10: reverted artificial volatile; left natural 400B scratch. Remaining blocker is source/register shape for target/master lifetimes plus x87 missile math interleave.
+// session probes: canonicalized the missile factory to player->master_objects[]->make_new_obj, tested direct target/master ownership, block-scoped versus function-scoped locals, radius term order, and binary global constants.
+// best emitted candidate: direct member source reaches 392B with all 7 calls aligned and 201-byte edit/resync drift; original still has a distinct x87 radius/trig schedule and shrink-wrapped EBX save.
+// paused after bounded matching: no artificial volatility, aliases, raw offsets, or register-forcing scaffolding retained.
 
 class RGE_Static_Object;
 class RGE_Combat_Object;
 class RGE_Missile_Object;
 class RGE_Player;
 
-class RGE_Object_List_Entry {
+class RGE_Master_Static_Object {
 public:
-    virtual void pad00();
+    virtual ~RGE_Master_Static_Object();
     virtual void pad04();
     virtual void pad08();
     virtual void pad0C();
     virtual void pad10();
     virtual void pad14();
-    virtual RGE_Missile_Object* create_object(void* owner, float x, float y, float z);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
 };
 
 class RGE_Player {
 public:
-    char pad_00[4];
+    virtual ~RGE_Player();
+    char pad_04[0x20];
     int computerPlayer();
-    char pad_08[0x20];
-    RGE_Object_List_Entry** objects; // +0x24
+    RGE_Master_Static_Object** master_objects; // +0x24
 };
 
 class RGE_Master_Combat_Object {
@@ -125,43 +128,41 @@ public:
 #pragma intrinsic(sqrt)
 
 extern "C" long __cdecl _ftol();
+extern float DAT_0056f49c;
+extern float DAT_0056f4ac;
 
 unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* other)
 {
-    RGE_Static_Object* attacked;
-
-    attacked = target;
-    if (attacked == 0) {
+    if (target == 0) {
         return 0;
     }
 
-    RGE_Master_Combat_Object* master = this->master_obj;
-    short missile_id = master->missile_id;
+    short missile_id = this->master_obj->missile_id;
     if (missile_id >= 0) {
-        float len = (float)sqrt(master->radius_y * master->radius_y + master->radius_x * master->radius_x);
         float a1 = this->angle;
         float a2 = this->angle;
         float c = (float)cos(a1);
         RGE_Player* owner = this->owner;
-        RGE_Object_List_Entry* entry = owner->objects[missile_id];
         float s = (float)sin(a2);
-        float range = len + master->weapon_range - 6.0f;
+        float range = (float)sqrt(this->master_obj->radius_y * this->master_obj->radius_y +
+            this->master_obj->radius_x * this->master_obj->radius_x) +
+            this->master_obj->weapon_range - DAT_0056f4ac;
 
-        RGE_Missile_Object* missile = entry->create_object(owner,
-            this->world_x + c * master->weapon_offset_y - s * master->weapon_offset_x,
-            this->world_y + s * master->weapon_offset_y + c * master->weapon_offset_x,
-            this->world_z + master->weapon_offset_z);
-        missile->init_missile(this, attacked, range);
-        this->notify(this->id, this->id, 0x200, 0x258, attacked->id, 0);
-        if (1.0f < master->weapon_range) {
-            if (1 == attacked->owner->computerPlayer()) {
-                int hp = (int)attacked->hp;
-                attacked->notify(this->id, attacked->id, 0x20F, this->id, hp);
+        RGE_Missile_Object* missile = (RGE_Missile_Object*)owner->master_objects[missile_id]->make_new_obj(owner,
+            this->world_x + c * this->master_obj->weapon_offset_y - s * this->master_obj->weapon_offset_x,
+            this->world_y + s * this->master_obj->weapon_offset_y + c * this->master_obj->weapon_offset_x,
+            this->world_z + this->master_obj->weapon_offset_z);
+        missile->init_missile(this, target, range);
+        this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
+        if (this->master_obj->weapon_range > DAT_0056f49c) {
+            if (1 == target->owner->computerPlayer()) {
+                int hp = (int)target->hp;
+                target->notify(this->id, target->id, 0x20F, this->id, hp);
                 return 1;
             }
         }
     } else {
-        this->attack(attacked, this->world_x, other, this->world_y, this->world_z);
+        this->attack(target, this->world_x, other, this->world_y, this->world_z);
     }
     return 1;
 }

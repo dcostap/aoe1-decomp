@@ -41,6 +41,10 @@
 // Fresh worker: explicit null/success result arms reproduced the prior 249-byte
 // two-return basin, while a switch diagnostic grew to 276 bytes; both were rolled
 // back to the natural single-result guard.
+// Fresh session probes: returning the allocation pointer as the final boolean
+// duplicated the shared func34 call; positive guard with an explicit else did
+// the same and expanded the EH exits.  A base-typed transport pointer was
+// codegen-neutral.  Preserve the derived action ownership and clean guard.
 // Main-agent audit retained direct inherited virtual calls and canonical action
 // ownership; no manual dispatch or EH-tail steering survives.
 // FLAGS: /nologo /c /O2 /Oy /GX
