@@ -15,6 +15,8 @@
 //   saved registers, calls, CFG, and all post-constructor bytes.
 // - Adding the proven player vptr is a codegen duplicate; it is retained for
 //   canonical layout.
+// - Restored the donor-proven virtual int setup, virtual set_task, and
+//   TRIBE_Combat_Object destructor declarations; each was codegen-identical.
 // - The only remaining drift is VC5's implicit derived-vptr store: rebuilt
 //   writes offset zero before the queue initializers, while the executable
 //   writes it after them. Explicit vptr assignment and __declspec(novtable)
@@ -65,7 +67,7 @@ public:
 class RGE_Action_Object : public RGE_Moving_Object {
 public:
     char gap_180[0x14];
-    void set_task(short task_id);
+    virtual void set_task(short task_id);
 };
 
 class RGE_Combat_Object : public RGE_Action_Object {
@@ -77,6 +79,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
 public:
     char gap_1C4[0x04];
 
+    virtual ~TRIBE_Combat_Object();
     TRIBE_Combat_Object(TRIBE_Master_Building_Object* master,
                         RGE_Player* player, float x, float y, float z,
                         int do_setup);
@@ -125,8 +128,8 @@ public:
     TRIBE_Building_Object(TRIBE_Master_Building_Object* master,
                           RGE_Player* player, float x, float y, float z,
                           int unique_id, int do_setup);
-    int setup(TRIBE_Master_Building_Object* master, RGE_Player* player,
-              float x, float y, float z);
+    virtual int setup(TRIBE_Master_Building_Object* master, RGE_Player* player,
+                      float x, float y, float z);
 };
 
 TRIBE_Building_Object::TRIBE_Building_Object(

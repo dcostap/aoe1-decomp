@@ -42,6 +42,8 @@
 //   only the derived-vptr timing differs. The earlier novtable/explicit-vptr
 //   experiment was byte-exact but is rejected by source policy. Keep this
 //   canonical polymorphic source in scratch for a later context investigation.
+// - Restored the donor-proven virtual int setup declaration; emitted code and
+//   the vptr hunk were unchanged, so this is retained as the cleaner ABI.
 // FLAGS: /nologo /c /O2 /Oy /GX
 // Main-agent audit restored canonical master/player destructor ownership and
 // retained natural compiler-managed vptr lowering.
@@ -122,8 +124,8 @@ public:
     virtual ~TRIBE_Building_Object();
     TRIBE_Building_Object(TRIBE_Master_Building_Object* mb, RGE_Player* player,
                           float f1, float f2, float f3, int flag);
-    void setup(TRIBE_Master_Building_Object* mb, RGE_Player* player,
-               float f1, float f2, float f3);
+    virtual int setup(TRIBE_Master_Building_Object* mb, RGE_Player* player,
+                      float f1, float f2, float f3);
 };
 
 TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object* mb, RGE_Player* player,

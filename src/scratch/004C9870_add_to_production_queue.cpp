@@ -8,7 +8,17 @@
 // - Tried qcount as int vs short; best current is same-size 669B mismatch, positional 85.5007%, edit 47.9821%, first mismatch at offset 7. Remaining drift is broad source-shape/register allocation around stack bool timing, repeated cost-check loops, and queue growth copy; not accepted_drift-safe.
 // - Replaced both cost do/while loops with pretested while loops; this restored the original 13-call CFG and improved structural coverage.
 // - Recovered short queue count, a short local id, int loop counts, and the natural address-taken master_id argument. A direct id local alone tail-merged the duplicate success notification; the short local preserved both original vslot call sites.
-// - Restored direct master_id only for failure notifications, then spelled queue_changed == 1. Final rebuilt size/CFG/call set match; remaining drift is 13 localized bytes at append-loop setup (count/id register order and downstream encodings).
+// - Restored direct master_id only for failure notifications, then spelled queue_changed == 1. Final rebuilt size/CFG/call set match; the natural declaration order leaves 13 localized bytes at append-loop setup (count/id register order and downstream encodings).
+// - Moving the append unit-count clear before the loop-local declarations
+//   changes the queue-count/parameter register order and reduces the diff to
+//   3 branch/SIB bytes while preserving all size/CFG/call metrics.
+// - An explicit positive qcount guard around the clear loop preserved the same
+//   result but was redundant and was restored to the ordinary while form;
+//   pointer-arithmetic and reversed typed-subscript copy spellings were also
+//   duplicates or did not improve.
+// - Focused six-way lab (append order x typed copy spelling) found no exact
+//   group; field-first variants are the 3-byte frontier. Keep this readable
+//   source; do not replace it with raw cursor or register-forcing scaffolding.
 
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void* p);
@@ -81,9 +91,9 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short count
         this->production_queue_size += 10;
         this->production_queue = newq;
         }
+        this->production_queue[this->production_queue_count].unit_count = 0;
         int i = 0;
         int n = count;
-        this->production_queue[this->production_queue_count].unit_count = 0;
         while (i < n) {
             if (!this->owner->check_obj_cost(id, &master_id, 1.0f, 1)) {
                 rge_base_game->notify(0x7d, this->owner->player_id, master_id, 0, 0);
