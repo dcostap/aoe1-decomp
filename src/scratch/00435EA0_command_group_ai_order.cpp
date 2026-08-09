@@ -17,11 +17,21 @@
 //   target_owner.  The final source keeps issuer for behavioral fidelity; its
 //   current codegen is 38 bytes different and remains in scratch after the
 //   bounded 10-probe assignment.
+// - New claim confirmed that a typed packet-plus-one surface is codegen-neutral
+//   here.  Early player preservation plus delayed target-owner assignment
+//   improved the diagnostic drift to 32 bytes and recovered the original log
+//   register/stack topology, but conflicts with the PDB packet-store line
+//   order; it is not retained as living source.  Other early-player and
+//   late-issuer-local probes were worse or compiler duplicates.
+// - Current canonical source is restored to the typed PDB-plausible packet
+//   order (38-byte drift); remaining mismatch is the packet assignment
+//   scheduling/register basin beginning at 00435F13.
 
 #include <stdlib.h>
 
-#define STR_SEND_CMD_GROUP_AI_ORDER ((const char*)0x00583E78)
-#define STR_X                       ((const char*)0x00583B74)
+static const char STR_SEND_CMD_GROUP_AI_ORDER[] =
+    "      >SEND CMD GRP AI ORD (PLR=%d, TYP=%d, ISS=%d, CNT=%d, REC=%s, TAR=%s)";
+static const char STR_X[] = "X";
 
 class RGE_Master_Static_Object {
 public:
