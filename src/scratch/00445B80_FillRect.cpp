@@ -1,81 +1,92 @@
 // VA: 00445B80 TDrawArea::FillRect (240 B)
 // PDB source: Drawarea.cpp
-// Packet-grounded: clip rect constrained fill with memset, supports bottom-up orientation
+// Attempt log:
+// - The inherited free-function shim had the right size by accident, but its
+//   calling convention and memset relocation were wrong.
+// - A real TDrawArea member plus the binary-observed C memset call recovered
+//   the correct 240-byte size, thiscall cleanup, and one aligned call.
+// - Explicit Bits, running-boundary, register-qualified-parameter, pragma-
+//   placement, and redundant positive-guard probes were either duplicate or
+//   worse. The retained source is the simplest member reconstruction.
+// - Remaining drift is broad VC5 this/register coloring and loop setup; no
+//   behavior-equivalent promotion is proposed.
 
-extern void* memset(void* s, int c, int n);
+extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 
-struct Shim_FillRect_5B80 {
-    char gap00[0x08];
-    unsigned char* Bits;       // +0x08
-    char gap0C[0x18 - 0x0C];
-    int Width;                 // +0x18
-    int Height;                // +0x1C
-    int Pitch;                 // +0x20
-    int Orien;                 // +0x24 (1 = top-down, other = bottom-up)
-    int ClipLeft;              // +0x28
-    int ClipTop;               // +0x2C
-    int ClipRight;             // +0x30
-    int ClipBottom;            // +0x34
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
 };
 
-void TDrawArea_FillRect(Shim_FillRect_5B80* self, int x1, int y1, int x2, int y2, unsigned char color)
+class TDrawArea {
+public:
+    char gap_00[0x08];
+    unsigned char* Bits;       // +0x08
+    char gap_0C[0x0C];
+    long Width;                // +0x18
+    long Height;               // +0x1C
+    long Pitch;                // +0x20
+    long Orien;                // +0x24
+    tagRECT ClipRect;          // +0x28
+
+    void FillRect(long x1, long y1, long x2, long y2, unsigned char color);
+};
+
+#pragma function(memset)
+
+void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
+                         unsigned char color)
 {
-    if (!self->Bits)
+    unsigned char* bits = this->Bits;
+    if (bits == 0)
         return;
-    
-    // Normalize x coordinates
-    int left = x1;
-    int right = x2;
-    if (left > right) {
-        int temp = left;
-        left = right;
-        right = temp;
+
+    if (x1 > x2) {
+        long temp = x1;
+        x1 = x2;
+        x2 = temp;
     }
-    
-    // Normalize y coordinates
-    int top = y1;
-    int bottom = y2;
-    if (top > bottom) {
-        int temp = top;
-        top = bottom;
-        bottom = temp;
+
+    if (y1 > y2) {
+        long temp = y1;
+        y1 = y2;
+        y2 = temp;
     }
-    
-    // Check against clip rect: reject if entirely outside
-    if (left > self->ClipRight || right < self->ClipLeft ||
-        top > self->ClipBottom || bottom < self->ClipTop)
+
+    if (x1 > this->ClipRect.right || x2 < this->ClipRect.left ||
+        y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
         return;
-    
-    // Clip to clip rect
-    if (left < self->ClipLeft) left = self->ClipLeft;
-    if (right > self->ClipRight) right = self->ClipRight;
-    if (top < self->ClipTop) top = self->ClipTop;
-    if (bottom > self->ClipBottom) bottom = self->ClipBottom;
-    
-    int width = right - left + 1;
-    int height = bottom - top + 1;
-    
+
+    if (x1 < this->ClipRect.left)
+        x1 = this->ClipRect.left;
+    if (x2 > this->ClipRect.right)
+        x2 = this->ClipRect.right;
+    if (y1 < this->ClipRect.top)
+        y1 = this->ClipRect.top;
+    if (y2 > this->ClipRect.bottom)
+        y2 = this->ClipRect.bottom;
+
+    long width = x2 - x1 + 1;
+    long height = y2 - y1 + 1;
     if (width < 1 || height < 1)
         return;
-    
-    // Calculate starting pixel address based on orientation
-    unsigned char* ptr;
-    int pitch;
-    
-    if (self->Orien == 1) {
-        // Top-down orientation
-        pitch = self->Pitch;
-        ptr = self->Bits + top * pitch + left;
-    } else {
-        // Bottom-up orientation
-        pitch = -self->Pitch;
-        ptr = self->Bits + ((self->Height - top - 1) * self->Pitch) + left;
+
+    unsigned char* p;
+    long delta;
+    if (this->Orien == 1) {
+        delta = this->Pitch;
+        p = bits + y1 * delta + x1;
     }
-    
-    // Fill each row
-    int y;
-    for (y = 0; y < height; y++) {
-        memset(ptr, color, width);
-        ptr += pitch;
+    else {
+        p = bits + (this->Height - y1 - 1) * this->Pitch + x1;
+        delta = -this->Pitch;
     }
+
+    do {
+        memset(p, color, width);
+        p += delta;
+        --height;
+    } while (height != 0);
 }

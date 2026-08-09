@@ -1,10 +1,20 @@
-// STATUS: active
+// STATUS: paused
 // NOTE: local no-asm probe; best shape recovers the original push-save prolog and size, but still mismatches at the early branch target / later notify-tail layout
+// ATTEMPTS:
+// baseline: named node/current/action ownership, calloc(1, 8), and grouped type scan; 247B, 184 positional diff, 4 activate calls.
+// removed the impossible-null activation fallthrough / used a front-insert goto: call count fixed, but VC5 changed to an 8-byte sub-esp frame and 211 diff.
+// direct parameter, declaration-order, and separate short-result variants were codegen duplicates of baseline.
+// parameter-home word alias worsened to 236B and changed the virtual call surface; rolled back.
+// explicit first/next action locals (function-wide and branch-scoped) added a 0xC frame and 273B; rolled back.
+// final best remains the binary-backed three-tail source; the apparently
+// redundant null tails preserve three observed vf1C call sites. Main-agent
+// audit restored canonical polymorphic ownership only.
 class RGE_Action;
 
 class RGE_Action_Object {
 public:
-    char gap_00[0x48];
+    virtual ~RGE_Action_Object();
+    char gap_04[0x44];
     unsigned char status;
 };
 
@@ -28,7 +38,14 @@ public:
 
 class RGE_Action_List {
 public:
-    void* vftable;
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual ~RGE_Action_List();
     RGE_Action_Object* obj;
     RGE_Action_Node* list;
 

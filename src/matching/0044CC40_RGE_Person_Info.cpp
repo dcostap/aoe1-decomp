@@ -47,15 +47,18 @@ RGE_Person_Info::RGE_Person_Info(int fd, RGE_Campaign** camps, int cnum) {
     // Read scenario_num
     rge_read(fd, &scenario_num, 4);
     
-    // Allocate campaign_info array
+    // Allocate campaign_info array and populate it only on the positive path.
+    // Keeping the loop in this arm preserves the original cold zero path.
     if (scenario_num > 0) {
         campaign_info = (RGE_Campaign_Info**)calloc(scenario_num, 4);
+
+        // Loop to create campaign info entries
+        for (int i = 0; i < scenario_num; i++) {
+            // The serialized person owns the canonical campaign context used
+            // by each child, rather than forwarding the constructor homes.
+            campaign_info[i] = new RGE_Campaign_Info(fd, campaigns, campaign_num);
+        }
     } else {
         campaign_info = 0;
-    }
-    
-    // Loop to create campaign info entries
-    for (int i = 0; i < scenario_num; i++) {
-        campaign_info[i] = new RGE_Campaign_Info(fd, camps, cnum);
     }
 }

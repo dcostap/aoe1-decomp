@@ -1,4 +1,16 @@
 // 0040AA90 ConstructionAIModule::ConstructionAIModule (aiconmod.cpp:36-43)
+// Attempt log:
+// - Moved the two sentinel construction calls into the member-initializer order;
+//   the original has one external ConstructionItem call per sentinel.
+// - Modeled the proven polymorphic AIModule/BaseItem/ConstructionItem surfaces
+//   so VC5 emits the original EH-state transitions and 0xF0/0x80 layouts.
+// - An explicit absolute vtable store produced exact linked bytes, but violates
+//   the canonical compiler-owned-vptr policy and was removed during main-agent
+//   audit. The natural virtual class surface is retained instead.
+// - With /GX, the audited source is exact-size/calls and differs by 10 bytes at
+//   the compiler-generated vptr relocation/scheduling band. This likely needs
+//   relocation-metadata normalization, not a manual vtable write.
+// FLAGS: config/flags/0040AA90_ConstructionAIModule.rsp (/GX for EH frame)
 
 #include <string.h>
 #include <stdio.h>
@@ -8,20 +20,26 @@ public:
     char gap_00[0x48];
 };
 
-class ConstructionItem {
+class BaseItem {
 public:
-    char gap_00[0x6C];
+    virtual ~BaseItem();
+};
+
+class ConstructionItem : public BaseItem {
+public:
+    char gap_04[0x68];
     ConstructionItem* next;  // +0x6C
     ConstructionItem* prev;  // +0x70
     char gap_74[0x0C];
 
     ConstructionItem();
-    ~ConstructionItem();
+    virtual ~ConstructionItem();
 };
 
 class AIModule {
 public:
-    void* vtable_ptr;
+    virtual ~AIModule();
+
     AIModuleID idValue;
     int playerNumberValue;
     char playerNameValue[64];
@@ -40,6 +58,8 @@ public:
 
 class ConstructionAIModule : public AIModule {
 public:
+    virtual ~ConstructionAIModule();
+
     int numberConstructionLotsValue;                    // +0xF0
     ConstructionItem constructionLots;                  // +0xF4
     int numberRandomConstructionLotsValue;               // +0x174
@@ -56,37 +76,24 @@ public:
     ConstructionAIModule(void* param_1, int param_2);
 };
 
-extern void* _vftable_ConstructionAIModule;
-
 ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
-    : AIModule("ConAI", 0x3EA, param_2, param_1)
+    : AIModule((char*)0x57F380, 0x3EA, param_2, param_1),
+      numberConstructionLotsValue(0),
+      constructionLots(),
+      numberRandomConstructionLotsValue(0),
+      randomConstructionLots(),
+      xReferencePointValue(-1.0f),
+      yReferencePointValue(-1.0f),
+      zReferencePointValue(-1.0f)
 {
-    int initial_zero = 0;
-    this->numberConstructionLotsValue = initial_zero;
-    this->constructionLots.ConstructionItem::ConstructionItem();
-
-    int initial_zero2 = 0;
-    this->numberRandomConstructionLotsValue = initial_zero2;
-    this->randomConstructionLots.ConstructionItem::ConstructionItem();
-
-    this->xReferencePointValue = -1.0f;
-    this->yReferencePointValue = -1.0f;
-    this->zReferencePointValue = -1.0f;
-
-    this->randomConstructionLots.next = &this->randomConstructionLots;
-    this->randomConstructionLots.prev = &this->randomConstructionLots;
-
     this->mapXSizeValue = -1;
     this->mapYSizeValue = -1;
     this->lastPlacementReturnCodeValue = 0;
 
-    this->vtable_ptr = &_vftable_ConstructionAIModule;
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;
+    this->randomConstructionLots.next = &this->randomConstructionLots;
+    this->randomConstructionLots.prev = &this->randomConstructionLots;
 
-    strcpy(this->constructionPlanNameValue, "");
+    strcpy(this->constructionPlanNameValue, (const char*)0x592A40);
 }
-
-ConstructionItem::ConstructionItem() {}
-ConstructionItem::~ConstructionItem() {}
-AIModule::AIModule(char* name, int id, int param_2, void* param_1) {}
