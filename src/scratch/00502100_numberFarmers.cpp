@@ -3,96 +3,123 @@
 // Size: 249 bytes
 // NC: no custom flags (default /O2 /Oy)
 //
-// Status: PARKED — VC5 codegen drift
-//
 // Attempt log:
-// Probe 1: initial — 83.9% positional, used ebp as result
-// Probe 2: removed extra master_obj null check — 79.5% positional, 38.6% edit diff
-//
-// Key findings (struct layout correct):
-// - civilians ManagedArray at +0xF4 (value, numberValue=+0xF8, maxSize=+0x100)
-// - md at +0xF0: MainDecisionAIModule* for object lookup
-// - Same copy-on-grow pattern as idleSoldier
-// - master_obj->id at [obj+8]->[+10h] == 0x103 (farmer type)
-// - currentAction checks for 0x261 or 0x262 (farming actions)
-// - Result stored in [esp+8] in original, returned in eax
-//
-// Remaining drift:
-// - Prologue: push ecx+esp+8 vs push ebp (result in register vs memory)
-// - Array expansion check: cmp+jl vs mov+dec+cmp+jle
-// - Copy loop: register allocation (ecx vs edx) same as idleSoldier
+// Probe 1: initial parked reconstruction — 92.3695% positional after rebuild;
+//   manual _new/_delete declarations produced the wrong relocation identities
+//   and a register-held result, so this was not a useful source baseline.
+// Probe 2: use the period ManagedArray<int>::operator[] source shape inline,
+//   with the exact operator_new/operator_delete declarations and positive
+//   loop guard suggested by the PDB line bands.
+// Probe 3: swapped the outer result/index declaration order to test VC5's
+//   callee-save coloring; emitted code was unchanged.
+// Probe 4: use the natural counted-for form with the index declared in the
+//   header, testing whether VC5 assigns the outer induction variable EBX.
+// Probe 5: move the index zeroing into its declaration and restore the
+//   positive-guarded do-while topology while retaining the shared join.
+// Probe 6: variant lab over declaration and new-size spellings; all 12
+//   invariant-eligible variants collapsed to the same 15-byte register drift.
+// Probe 7: restored the period template ManagedArray<T> surface; duplicate.
+// Probe 8: register-qualified the outer index; duplicate.
+// Probe 9: reversed explicit zeroing order; duplicate.
+// Probe 10: variant lab over inner-copy name, owner tail, and declaration
+//   context; all 16 variants collapsed to the same 15-byte drift.
+// Best reconstruction: exact call/CFG/size parity; only EBX/EBP coloring
+//   differs (outer index versus inlined operator[] new_size).
+// Main-agent audit restored canonical polymorphic module/object/master
+// ownership; emitted code and the 15-byte coloring drift are unchanged.
 
-extern "C" void* _new(unsigned int);
-extern "C" void _delete(void*);
+void* operator_new(unsigned int size);
+void __cdecl operator_delete(void* ptr);
 
-struct RGE_Static_Object;
-struct UnitAIModule;
-struct MainDecisionAIModule;
-
-struct RGE_Static_Object {
-    void* vtable;
-    int id;
-    void* master_obj;          // +0x8
-    UnitAIModule* unitAI();
-};
-
-struct UnitAIModule {
+class UnitAIModule {
+public:
+    virtual ~UnitAIModule();
     int currentAction();
 };
 
-struct MainDecisionAIModule {
-    RGE_Static_Object* object(int unitID);
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x0C];
+    short id;
 };
 
-struct ManagedArray {
-    int* value;
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    int id;
+    RGE_Master_Static_Object* master_obj;
+    char gap_0c[0x68];
+    UnitAIModule* unitAI();
+};
+
+class MainDecisionAIModule {
+public:
+    virtual ~MainDecisionAIModule();
+    RGE_Static_Object* object(int objectID);
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    T& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            T* new_data = (T*)operator_new(new_size * 4);
+            if (new_data != 0) {
+                for (int i = 0; i < this->maximumSizeValue && i < new_size; i++) {
+                    new_data[i] = this->value[i];
+                }
+                operator_delete(this->value);
+                this->value = new_data;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
 };
 
-struct TribeTacticalAIModule {
-    char pad_00[0x0F0];
-    MainDecisionAIModule* md;  // +0xF0
-    ManagedArray civilians;    // +0xF4 (value, numberValue=+0xF8, maxSize=+0x100)
+class TribeTacticalAIModule {
+public:
+    virtual ~TribeTacticalAIModule();
+    char gap_04[0xEC];
+    MainDecisionAIModule* md;
+    ManagedArray<int> civilians;
 
     int numberFarmers();
 };
 
 int TribeTacticalAIModule::numberFarmers()
 {
-    int result = 0;
-    int i = 0;
+    int i;
+    int rVal;
 
-    if (civilians.numberValue <= 0)
-        return result;
+    i = 0;
+    rVal = 0;
 
-    do {
-        if (i >= civilians.maximumSizeValue) {
-            int* newArr = (int*)_new((i + 1) * 4);
-            if (newArr != 0) {
-                int j;
-                for (j = 0; j < civilians.maximumSizeValue && j < i + 1; j++)
-                    newArr[j] = civilians.value[j];
-                _delete(civilians.value);
-                civilians.value = newArr;
-                civilians.maximumSizeValue = i + 1;
-            }
-        }
-
-        int unitID = civilians.value[i];
-        RGE_Static_Object* obj = md->object(unitID);
-        if (obj != 0 && obj->unitAI() != 0) {
-            // Check master_obj->id == 0x103 (no null check on master_obj)
-            if (*(unsigned short*)((char*)obj->master_obj + 0x10) == 0x103) {
-                if (obj->unitAI()->currentAction() == 0x261 ||
-                    obj->unitAI()->currentAction() == 0x262) {
-                    result++;
+    if (this->civilians.numberValue > 0) {
+        do {
+            RGE_Static_Object* obj = this->md->object(this->civilians[i]);
+            if ((obj != 0) && (obj->unitAI() != 0) &&
+                (obj->master_obj->id == 0x103)) {
+                UnitAIModule* ai = obj->unitAI();
+                int action = ai->currentAction();
+                if (action != 0x261) {
+                    ai = obj->unitAI();
+                    action = ai->currentAction();
+                    if (action != 0x262)
+                        goto next;
                 }
+                rVal = rVal + 1;
             }
-        }
-        i++;
-    } while (i < civilians.numberValue);
-
-    return result;
+        next:
+            i = i + 1;
+        } while (i < this->civilians.numberValue);
+    }
+    return rVal;
 }
