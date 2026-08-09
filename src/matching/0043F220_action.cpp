@@ -12,20 +12,35 @@
 // 8: a list-arm result local was codegen-identical to 4.
 // 9: /O2 /Oy /Og- produced a 369-byte unoptimized basin; diagnostic response file removed.
 // 10: completing the known TListDialog virtual declaration surface was codegen-identical to 4.
-// Best current reconstruction: 263/248 bytes, 8/8 ordered calls, 90.24% shape; remaining drift is the
-// list-arm branch polarity/shared-success epilogue. Paused after the bounded 10-hypothesis assignment.
-
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+// 11: changed cancel handling to call parent only when non-null and share the success return; 257/248 bytes.
+// 12: applied the same non-null parent call/shared return shape to the list arm; exact 248/248 bytes.
+// Best current reconstruction: exact 248/248 bytes, 8/8 ordered calls, natural named field ownership and
+// the proven +0xB4 parent action slot.
 
 class TPanel {
 public:
     virtual ~TPanel();
-    VPAD32(1) VPAD8(33) VPAD4(41)
+    virtual void setup();
+    virtual void set_rect_1(); virtual void set_rect_2();
+    virtual void set_color(); virtual void set_active();
+    virtual void set_positioning(); virtual void set_fixed_position();
+    virtual void set_redraw(); virtual void set_overlapped_redraw();
+    virtual void draw_setup(); virtual void draw_finish(); virtual void draw();
+    virtual void draw_rect(); virtual void draw_offset();
+    virtual void draw_rect2(); virtual void draw_offset2(); virtual void paint();
+    virtual void wnd_proc(); virtual void handle_idle(); virtual void handle_size();
+    virtual void handle_paint(); virtual void handle_key_down();
+    virtual void handle_char(); virtual void handle_command();
+    virtual void handle_user_command(); virtual void handle_timer_command();
+    virtual void handle_scroll(); virtual void handle_mouse_down();
+    virtual void handle_mouse_move(); virtual void handle_mouse_up();
+    virtual void handle_mouse_dbl_click(); virtual void mouse_move_action();
+    virtual void mouse_left_down_action(); virtual void mouse_left_hold_action();
+    virtual void mouse_left_move_action(); virtual void mouse_left_up_action();
+    virtual void mouse_left_dbl_click_action(); virtual void mouse_right_down_action();
+    virtual void mouse_right_hold_action(); virtual void mouse_right_move_action();
+    virtual void mouse_right_up_action(); virtual void mouse_right_dbl_click_action();
+    virtual void key_down_action(); virtual void char_action();
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
     char gap_04[0x3C];
 };
@@ -95,20 +110,18 @@ long TListDialog::action(TPanel* param_1, long param_2, unsigned long param_3, u
         }
         else if (param_1 == cancel_btn) {
             if (param_2 == 1) {
-                if (parent == 0) {
-                    return 1;
+                if (parent != 0) {
+                    parent->action(this, 2, 0, 0);
                 }
-                parent->action(this, 2, 0, 0);
                 return 1;
             }
         }
         else if (param_1 == list && param_2 == 3) {
             list_id = (short)list->currentLineNumber();
             list_name = list->currentLine();
-            if (parent == 0) {
-                return 1;
+            if (parent != 0) {
+                parent->action(this, 1, 0, 0);
             }
-            parent->action(this, 1, 0, 0);
             return 1;
         }
     }
