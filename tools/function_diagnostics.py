@@ -9,7 +9,7 @@ from typing import Callable, Iterable
 
 from iced_x86 import Decoder, DecoderOptions, FlowControl, Formatter, FormatterSyntax
 
-from common import load_functions, load_pdb_function_line_changes
+from common import CONFIG_DIR, load_functions, load_pdb_function_line_changes
 
 
 _REGISTER_RE = re.compile(
@@ -132,9 +132,47 @@ def clean_symbol_name(name: str) -> str:
     return value.lstrip("~").lower()
 
 
+def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
+    """Compare direct-call symbols without collapsing known overload identity.
+
+    Most original inventory names are undecorated, so they still require the
+    historical normalized comparison.  When both sides have decorated C++
+    names, however, compare the complete symbols: reducing at the first ``@``
+    would make distinct overloads indistinguishable.
+    """
+    original_value = original.strip()
+    rebuilt_value = rebuilt.strip()
+    if original_value.startswith("__imp_"):
+        original_value = original_value[6:]
+    if rebuilt_value.startswith("__imp_"):
+        rebuilt_value = rebuilt_value[6:]
+    if original_value.startswith("?") and rebuilt_value.startswith("?"):
+        return original_value == rebuilt_value
+    return clean_symbol_name(original_value) == clean_symbol_name(rebuilt_value)
+
+
 @lru_cache(maxsize=1)
 def _function_names_by_va() -> dict[int, str]:
     return {int(record["va"], 16): record["name"] for record in load_functions()}
+
+
+@lru_cache(maxsize=1)
+def _original_symbol_overrides() -> dict[int, str]:
+    """Load overload-specific original symbols lost by the inventory export."""
+    path = CONFIG_DIR / "original_symbol_overrides.txt"
+    if not path.exists():
+        return {}
+    result: dict[int, str] = {}
+    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            raise ValueError(f"{path}:{line_number}: expected '<VA> <decorated-symbol>'")
+        va_text, symbol = parts
+        result[int(va_text, 16)] = symbol.strip()
+    return result
 
 
 @lru_cache(maxsize=1)
@@ -145,6 +183,9 @@ def _pdb_line_changes() -> dict[str, list[dict[str, str]]]:
 def original_call_target(instruction: DecodedInstruction, names_by_va: dict[int, str]) -> str:
     if instruction.flow_control != FlowControl.CALL:
         return ""
+    override = _original_symbol_overrides().get(instruction.target)
+    if override:
+        return override
     return names_by_va.get(instruction.target, f"{instruction.target:08X}")
 
 
@@ -954,9 +995,13 @@ def compatible_relocation_masks(
         if rebuilt_instruction.flow_control == FlowControl.CALL:
             original_target = original_call_target(original_instruction, names)
             rebuilt_target = str(relocation.get("symbol_name") or "")
-            original_clean = clean_symbol_name(original_target)
             rebuilt_clean = clean_symbol_name(rebuilt_target)
-            if original_target and not original_target.startswith(tuple("0123456789")) and rebuilt_clean and original_clean != rebuilt_clean:
+            if (
+                original_target
+                and not original_target.startswith(tuple("0123456789"))
+                and rebuilt_clean
+                and not direct_call_symbols_match(original_target, rebuilt_target)
+            ):
                 target_mismatches.append(
                     {
                         "offset": rebuilt_instruction.offset,

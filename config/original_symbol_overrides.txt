@@ -1,0 +1,8 @@
+# Original call-target symbols whose overload identity was lost when the
+# Ghidra/PDB layout was reduced to inventory/all_functions.csv.  Entries must
+# use the exact decorated symbol shown by the original function packet/listing.
+# The checker compares the complete decorated identity when both sides provide
+# one, so a different overload remains a hard relocation mismatch.
+0055A830 ??6ostream@@QAEAAV0@PBD@Z
+0055AFD0 ??6ostream@@QAEAAV0@N@Z
+0055AF00 ??6ostream@@QAEAAV0@H@Z

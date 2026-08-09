@@ -15,10 +15,13 @@
 //   overload. The body remains 206 bytes/61 instructions and byte-identical
 //   after relocation masking, proving the remaining mismatch is not caused by
 //   the local stub or float source spelling.
-// - Current bytes are exact after masking the nine direct-call relocations. The
-//   checker still reports those relocations as mismatches because the original
-//   executable labels each overloaded ostream member only as operator<< while
-//   the object necessarily carries the exact MSVC symbols (??6ostream@@...).
+// - Two independent readiness audits established that the nine direct-call
+//   targets are the exact original VC5 ostream overloads. The original packets
+//   retain their decorated identities, but inventory/all_functions.csv had
+//   reduced all three to generic operator<< names.
+// - After restoring those overload-specific original symbols in checker
+//   metadata, this unchanged natural <iostream.h> source validates exactly:
+//   206/206 bytes, all nine ordered calls, and full CFG/block parity.
 
 #include <iostream.h>
 

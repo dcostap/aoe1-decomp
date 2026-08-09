@@ -17,6 +17,7 @@ from function_diagnostics import (  # noqa: E402
     call_fingerprint,
     call_target_counts,
     clean_symbol_name,
+    direct_call_symbols_match,
     compatible_relocation_masks,
     decode_instruction_ranges,
     decode_instructions,
@@ -77,6 +78,15 @@ class CoffAndDiagnosticTests(unittest.TestCase):
             clean_symbol_name("?eh_vector_destructor_iterator@@YGXPAXHH0@Z"),
             "eh_vector_destructor_iterator",
         )
+
+    def test_direct_call_decorated_overloads_keep_full_identity(self) -> None:
+        string_overload = "??6ostream@@QAEAAV0@PBD@Z"
+        self.assertTrue(direct_call_symbols_match(string_overload, string_overload))
+        self.assertTrue(direct_call_symbols_match(string_overload, "__imp_" + string_overload))
+        self.assertFalse(
+            direct_call_symbols_match(string_overload, "??6ostream@@QAEAAV0@N@Z")
+        )
+        self.assertFalse(direct_call_symbols_match("operator<<", string_overload))
 
     def test_relocation_is_not_masked_across_different_instruction_shapes(self) -> None:
         original = bytes.fromhex("B8 11 22 33 44 C3")  # mov eax,imm32
