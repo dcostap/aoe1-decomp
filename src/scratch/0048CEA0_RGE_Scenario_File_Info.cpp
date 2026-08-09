@@ -7,8 +7,13 @@
 //   topology but moved the zeroing ahead of the filename copy (rolled back).
 // - declaration/context variants were duplicates or lost the second close/reload
 //   paths; the best source initializes the long loop counter after rge_open.
+// - this claim's count-predicate, local-width, allocation-result, and null-store
+//   variants were reverted; none improved the clean typed source. The remaining
+//   drift is structural zero/count scheduling around the two guards and calloc.
 // - final bounded pause: 99 positional bytes remain; all 11 calls and CFG counts
 //   align, with a localized zero-register/second-count scheduling difference.
+// Main-agent audit confirmed canonical base-game/header/scenario-entry ownership
+// and retained the ordinary indexed loader.
 
 #include <stdlib.h>
 #include <string.h>
