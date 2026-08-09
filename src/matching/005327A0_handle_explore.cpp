@@ -22,6 +22,10 @@
 // - left in scratch: 10-byte loop-setup drift; next lead is a source shape
 //   that keeps the explicit walker (for the [ebp+edx] SIB) while initializing
 //   it in the loop preheader after the entry check (players in ecx).
+// - Explicit negative-return probe: delay `players + i` until after an ordinary
+//   signed-count early return while retaining the close while-loop topology.
+// - Main-agent audit restored canonical polymorphic world/player/victory
+//   ownership; exact bytes were revalidated after promotion.
 
 class RGE_Visible_Map {
 public:
@@ -30,7 +34,8 @@ public:
 
 class RGE_Game_World {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Game_World();
+    char gap_04[0x38];
     short player_num;      // +0x3C
     char gap_3E[0x02];
     class RGE_Player** players;  // +0x40
@@ -38,7 +43,8 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x38];
+    virtual ~RGE_Player();
+    char gap_04[0x34];
     RGE_Visible_Map* visible;      // +0x38
     RGE_Game_World* world;         // +0x3C
     char gap_40[0x0A];
@@ -60,8 +66,9 @@ public:
 
 class RGE_Victory_Conditions {
 public:
-    char gap_00[0x0C];
-    void* player;            // +0x0C
+    virtual ~RGE_Victory_Conditions();
+    char gap_04[0x08];
+    RGE_Player* player;      // +0x0C
 
     void handle_explore(RGE_Victory_Entry* entry);
 };
@@ -71,16 +78,17 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
     if (entry->state != 0) return;
 
     if (self->player) {
-        if (entry->ally_flag != 0 && ((RGE_Player*)self->player)->allied_victory != 0) {
-            RGE_Game_World* world = ((RGE_Player*)self->player)->world;
+        if (entry->ally_flag != 0 && self->player->allied_victory != 0) {
+            RGE_Game_World* world = self->player->world;
             int num = world->player_num;
             RGE_Player** players = world->players;
             int i = num - 1;
+            if (i < 0) return;
             RGE_Player** pp = players + i;
             while (i >= 0) {
-                if ((((RGE_Player*)self->player)->relations[i] == 0 &&
-                     (*pp)->relations[((RGE_Player*)self->player)->id] == 0 &&
-                     (*pp)->allied_victory != 0) || i == ((RGE_Player*)self->player)->id) {
+                if ((self->player->relations[i] == 0 &&
+                     (*pp)->relations[self->player->id] == 0 &&
+                     (*pp)->allied_victory != 0) || i == self->player->id) {
                     float explored = (*pp)->visible->percentExplored();
                     if (explored * 100.0f >= (float)entry->count) {
                         entry->state = 2;
@@ -91,7 +99,7 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
                 pp--;
             }
         } else {
-            float explored = ((RGE_Player*)self->player)->visible->percentExplored();
+            float explored = self->player->visible->percentExplored();
             if (explored * 100.0f >= (float)entry->count) {
                 entry->state = 2;
             }

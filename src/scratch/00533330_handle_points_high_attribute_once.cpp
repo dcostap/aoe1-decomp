@@ -22,12 +22,18 @@
 //   frame, size, CFG, block topology, and tail are exact. Next lead: a source/type-surface change
 //   that makes VC5 allocate the loop-invariant pp (not entry) to ebx (donor 00533180 gives ebx to
 //   the loop-invariant scaled attribute; all matched victory.cpp donors keep entry in edi).
+// - A 12-variant natural surface lab (parameter register, guard polarity, and
+//   pointer-array constness) formed one 224-byte codegen group at the same 29-byte
+//   entry/pp register swap; clean typed source retained.
+// - Main-agent audit restored canonical polymorphic player/world/victory
+//   ownership and removed the raw vftable field.
 
 class RGE_Game_World;
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Player();
+    char gap_04[0x38];
     RGE_Game_World* world;    // +0x3C
     char gap_40[0x0A];
     short id;                 // +0x4A
@@ -37,7 +43,8 @@ public:
 
 class RGE_Game_World {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Game_World();
+    char gap_04[0x38];
     short player_num;         // +0x3C
     char gap_3E[2];
     RGE_Player** players;     // +0x40
@@ -57,7 +64,7 @@ public:
 
 class RGE_Victory_Conditions {
 public:
-    void* vftable;            // +0x00
+    virtual ~RGE_Victory_Conditions();
     void* victory_list;       // +0x04
     long list_num;            // +0x08
     RGE_Player* player;       // +0x0C

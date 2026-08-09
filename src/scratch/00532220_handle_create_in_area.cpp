@@ -1,14 +1,32 @@
 // RGE_Victory_Conditions::handle_create_in_area
 // VA: 00532220
 // victory.cpp
+// Attempt log:
+// - Baseline: typed self/player/world/entry ownership with shared object-list
+//   cursor and pointer-walk ally scan; size/frame/CFG are close, but self/count
+//   use EBX/EBP opposite the original and 121 bytes remain.
+// - Declaration-order probe: declare the count before the saved player owner so
+//   VC5 can assign the original EBX count / EBP self register roles.
+// - Cursor-preheader/layout probe: initialize a separate players+1 cursor after
+//   the count guard, advance it in the loop increment, and correct the proven
+//   Victory_Entry ally/state tail gap to place state at +0x2E.
+// - Nested relation guard recovered 97.06% exact-block coverage and a 15-byte
+//   edit/resync gap; a 9-variant owner/cursor surface lab kept this group as the
+//   best natural basin. Direct world->players+1 and base-then-increment variants
+//   regressed the setup; remaining drift is setup register/order plus prologue
+//   self/count coloring.
+// - Main-agent audit restored canonical polymorphic master/static/world/player
+//   and victory ownership while retaining the typed ally/object scans.
 
 struct RGE_Master_Object {
-    char gap_00[0x12];
+    virtual ~RGE_Master_Object();
+    char gap_04[0x0E];
     short copy_id;           // +0x12
 };
 
 struct RGE_Static_Object {
-    char gap_00[8];
+    virtual ~RGE_Static_Object();
+    char gap_04[4];
     RGE_Master_Object* master_obj; // +0x08
     char gap_0C[0x2C];
     float world_x;           // +0x38
@@ -27,14 +45,18 @@ struct RGE_Object_List {
     RGE_Object_Node* list;   // +0x04
 };
 
+struct RGE_Player;
+
 struct RGE_Game_World {
-    char gap_00[0x3C];
+    virtual ~RGE_Game_World();
+    char gap_04[0x38];
     short player_num;         // +0x3C
-    void** players;           // +0x40
+    RGE_Player** players;     // +0x40
 };
 
 struct RGE_Player {
-    char gap_00[0x28];
+    virtual ~RGE_Player();
+    char gap_04[0x24];
     RGE_Object_List* objects; // +0x28
     char gap_2C[0x10];
     RGE_Game_World* world;    // +0x3C
@@ -56,24 +78,24 @@ struct RGE_Victory_Entry {
     float x1;                 // +0x14
     float y1;                 // +0x18
     long number;              // +0x1C
-    char gap_20[0x0A];
+    char gap_20[0x0D];
     unsigned char ally_flag;  // +0x2D
     unsigned char state;      // +0x2E (actually at 0x2E based on save asm)
 };
 
 class RGE_Victory_Conditions {
 public:
-    char gap_00[4];
+    virtual ~RGE_Victory_Conditions();
     void* list_or_thing;      // +0x04
     char gap_08[4];
     RGE_Player* player;       // +0x0C
 
-    void handle_create(RGE_Victory_Entry* entry);
+    void handle_create_in_area(RGE_Victory_Entry* entry);
 };
 
-void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
-    RGE_Player* self = this->player;
+void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
     int count = 0;
+    RGE_Player* self = this->player;
 
     // Count own objects of matching type in area with state==2
     RGE_Object_Node* node = self->objects->list;
@@ -92,28 +114,35 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
 
     // Add allied objects
     if (entry->ally_flag != 0 && self->allied_victory != 0) {
-        short self_id = self->id;
         int num = self->world->player_num;
-        for (int i = 1; i < num; i++) {
-            RGE_Player* p = (RGE_Player*)self->world->players[i];
-            if (self->relations[i] == 0 &&
-                p->relations[self_id] == 0 &&
-                i != self_id &&
-                p->allied_victory != 0) {
-                RGE_Object_Node* an = p->objects->list;
-                while (an != 0) {
-                    RGE_Static_Object* obj = an->node;
-                    if (obj->master_obj->copy_id == entry->obj_type &&
-                        obj->object_state == 2 &&
-                        obj->world_x >= entry->x0 &&
-                        obj->world_x <= entry->x1 &&
-                        obj->world_y >= entry->y0 &&
-                        obj->world_y <= entry->y1) {
-                        count++;
+        RGE_Player** players = self->world->players;
+        int i = 1;
+        if (i < num) {
+            RGE_Player** current = players + 1;
+            do {
+                if (self->relations[i] == 0) {
+                    RGE_Player* p = *current;
+                    if (p->relations[self->id] == 0 &&
+                        i != self->id &&
+                        p->allied_victory != 0) {
+                        node = p->objects->list;
+                        while (node != 0) {
+                            RGE_Static_Object* obj = node->node;
+                            if (obj->master_obj->copy_id == entry->obj_type &&
+                                obj->object_state == 2 &&
+                                obj->world_x >= entry->x0 &&
+                                obj->world_x <= entry->x1 &&
+                                obj->world_y >= entry->y0 &&
+                                obj->world_y <= entry->y1) {
+                                count++;
+                            }
+                            node = node->next;
+                        }
                     }
-                    an = an->next;
                 }
-            }
+                ++i;
+                ++current;
+            } while (i < num);
         }
     }
 

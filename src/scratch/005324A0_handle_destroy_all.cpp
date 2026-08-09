@@ -22,23 +22,28 @@
 //   25, no exact variant).
 // - Paused: remaining drift is entry/callee-save and related register coloring
 //   from offset 0; no call, frame, size, or behavior/layout blocker found.
+// - Main-agent audit restored canonical polymorphic world/player/master/static
+//   and victory ownership; the natural object-list scans remain.
 
 struct RGE_Player;
 
 struct RGE_World {
-    char gap_00[0x3C];
+    virtual ~RGE_World();
+    char gap_04[0x38];
     short player_num;             // +0x3C
     char gap_3E[2];
     RGE_Player** players;         // +0x40
 };
 
 struct RGE_Master_Object {
-    char gap_00[0x12];
+    virtual ~RGE_Master_Object();
+    char gap_04[0x0E];
     short copy_id;                // +0x12
 };
 
 struct RGE_Static_Object {
-    char gap_00[8];
+    virtual ~RGE_Static_Object();
+    char gap_04[4];
     RGE_Master_Object* master_obj; // +0x08
 };
 
@@ -53,7 +58,8 @@ struct RGE_Object_List {
 };
 
 struct RGE_Player {
-    char gap_00[0x28];
+    virtual ~RGE_Player();
+    char gap_04[0x24];
     RGE_Object_List* objects;     // +0x28
     char gap_2C[0x10];
     RGE_World* world;             // +0x3C
@@ -87,6 +93,7 @@ struct RGE_Victory_Point_Entry;
 
 class RGE_Victory_Conditions {
 public:
+    virtual ~RGE_Victory_Conditions();
     virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
     virtual void handle_condition(RGE_Victory_Entry* entry);
     virtual char* condition_description(RGE_Victory_Entry* entry);
