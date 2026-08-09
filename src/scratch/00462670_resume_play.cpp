@@ -11,13 +11,15 @@
 // Probe 8: use unary negation for the three early state checks.
 // Probe 9: split the three early returns so each field has an independent test.
 // Probe 10: split guards worsened CFG/size; restored the combined negative guard and duplicate MCI arms.
+// Fresh pass orch-luna-462670-w3: nested positive guards and a common success block were codegen duplicates.
+// Fresh pass: signed >0 predicates worsened the early CFG (177 diff bytes); restored.
+// Fresh pass: same-TU gap-only TMusic_System layout, bool playing_track, and a common no_resume label were nonproductive.
+// Fresh pass: negated conjunction, narrow volatile/raw guard reads, and named guard locals did not leave the zero-register basin.
+// Fresh pass: period mmsystem.h/MCI_PLAY_PARMS API context compiled but emitted the same 176-byte mismatch and is retained as the canonical SDK surface.
+// Fresh pass result: natural source retained; all 10 hypotheses exhausted. Persistent gap is VC5 zero-register/compare basin in the line-782 guard and zero stores/pushes; call set, size, CFG counts, and field ownership are otherwise aligned.
 
-class tagMCI_PLAY_PARMS {
-public:
-    unsigned long dwCallback;
-    unsigned long dwFrom;
-    unsigned long dwTo;
-};
+#include <windows.h>
+#include <mmsystem.h>
 
 class TSound_Driver {
 public:
@@ -34,7 +36,7 @@ public:
     void* window;
     int device_open;
     unsigned int device_id;
-    tagMCI_PLAY_PARMS play_info;
+    MCI_PLAY_PARMS play_info;
     unsigned char playing_track;
     char file_name[261];
     unsigned char _pad_1[2];
@@ -59,9 +61,6 @@ public:
     int resume_play();
 };
 
-extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(
-    unsigned int, unsigned int, unsigned long, void*);
-
 int TMusic_System::resume_play()
 {
     if (this->device_open == 0 || this->playing_track == 0 || this->paused == 0) {
@@ -78,12 +77,12 @@ int TMusic_System::resume_play()
 
     switch (this->music_type) {
     case 1:
-        if (mciSendCommandA(this->device_id, 0x806, 0, &this->play_info) == 0) {
+        if (mciSendCommandA(this->device_id, 0x806, 0, (DWORD)&this->play_info) == 0) {
             this->notify_waiting++;
         }
         break;
     case 2:
-        if (mciSendCommandA(this->device_id, 0x806, 0, &this->play_info) == 0) {
+        if (mciSendCommandA(this->device_id, 0x806, 0, (DWORD)&this->play_info) == 0) {
             this->notify_waiting++;
         }
         break;

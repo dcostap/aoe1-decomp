@@ -12,6 +12,12 @@
 //   tested and either regressed or produced duplicate codegen.  Best source is
 //   retained here; remaining drift is the original ESI/EBX coloring and
 //   line-offset spill/layout around the rep-string paths.
+// Fresh exact pass (2026-08-09):
+// - Same-TU full-class context, long/int width changes, signed-char opcode,
+//   declaration-order, and register-qualified locals were neutral or worse.
+// - Byte mutation in the negative arm is binary-supported by the observed
+//   `neg al`; direct member access plus that form gives the best current 217-byte
+//   reconstruction (160 differing bytes), but the ESI/EBX basin remains open.
 
 #include <string.h>
 
@@ -31,9 +37,8 @@ struct RGE_Flic_Player {
 };
 
 void RGE_Flic_Player::byte_run() {
-    RGE_Flic_Player* player = this;
-    char* chunk = player->chunk;
-    int count = player->y1 + player->flic_size_y - 1;
+    char* chunk = this->chunk;
+    int count = this->y1 + this->flic_size_y - 1;
     if (count < 0) return;
     count++;
 
@@ -50,19 +55,20 @@ void RGE_Flic_Player::byte_run() {
             
             if ((signed char)opcode >= 0) {
                 copy_count = (signed char)opcode;
-                dst = player->window_buffer + line_offset;
+                dst = this->window_buffer + line_offset;
                 memset(dst, *chunk, copy_count);
                 chunk++;
             } else {
-                copy_count = (signed char)-opcode;
-                dst = player->window_buffer + line_offset;
+                opcode = (unsigned char)-opcode;
+                copy_count = (signed char)opcode;
+                dst = this->window_buffer + line_offset;
                 memcpy(dst, chunk, copy_count);
                 chunk += copy_count;
             }
             line_offset += copy_count;
-        } while (line_offset < player->flic_width);
+        } while (line_offset < this->flic_width);
         
-        player->window_buffer += player->drawarea_width;
+        this->window_buffer += this->drawarea_width;
         count--;
     } while (count != 0);
 }

@@ -10,8 +10,13 @@
 // variant labs: alias placement/result/return and declaration/init surfaces were swept;
 //              no exact or invariant-eligible result. Best emitted basin was alias-after
 //              with a temporary move-sprite result (207-byte target remained 213 bytes).
-// left in scratch: calls and field ownership are understood; remaining drift is primarily
-//                  early sprite-table register preservation and post-fscanf scheduling.
+// fresh pass: separate short outputs for the three scanf values copied into byte fields
+//             recovered the original overlapping parameter-home LEAs; source assignment
+//             order is size_class, move_algorithem, obj_trail_options.
+// tail: a separate run_sprite result local, followed by one common member store/return,
+//       restored the original success/null tail and produced the exact 207-byte body.
+// Main-agent audit restored the canonical RGE_Master_Animated_Object inheritance
+// and qualified base setup call; emitted code remains exact.
 
 #include <stdio.h>
 
@@ -23,8 +28,7 @@ struct RGE_Master_Animated_Object {
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
 };
 
-struct RGE_Master_Moving_Object {
-    char base_000[0xBC];
+struct RGE_Master_Moving_Object : RGE_Master_Animated_Object {
     RGE_Sprite* move_sprite;
     RGE_Sprite* run_sprite;
     float turn_speed;
@@ -41,22 +45,27 @@ struct RGE_Master_Moving_Object {
 int RGE_Master_Moving_Object::setup(FILE* file, RGE_Sprite** sprites,
                                     RGE_Sound** sounds, short count)
 {
-    ((RGE_Master_Animated_Object*)this)->setup(file, sprites, sounds, count);
+    RGE_Master_Animated_Object::setup(file, sprites, sounds, count);
     FILE* input = file;
     RGE_Sprite** sprite_table = sprites;
     short move_sprite_id;
     short run_sprite_id;
+    short size_class_out;
+    short obj_trail_options_out;
+    short move_algorithem_out;
     RGE_Sprite* move_sprite;
+    RGE_Sprite* run_sprite;
 
     *(unsigned char*)((char*)this + 4) = 0x1E;
 
     fscanf(input, "%hd %hd %f %hd %hd %hd %f %hd",
-           &move_sprite_id, &run_sprite_id, &this->turn_speed, &count,
-           &this->obj_trail_id, &sprites, &this->obj_trail_spacing, &sounds);
+           &move_sprite_id, &run_sprite_id, &this->turn_speed, &size_class_out,
+           &this->obj_trail_id, &obj_trail_options_out,
+           &this->obj_trail_spacing, &move_algorithem_out);
 
-    this->obj_trail_options = (unsigned char)sprites;
-    this->size_class = (unsigned char)count;
-    this->move_algorithem = (unsigned char)sounds;
+    this->size_class = (unsigned char)size_class_out;
+    this->move_algorithem = (unsigned char)move_algorithem_out;
+    this->obj_trail_options = (unsigned char)obj_trail_options_out;
 
     if (move_sprite_id >= 0)
         move_sprite = sprite_table[move_sprite_id];
@@ -64,10 +73,10 @@ int RGE_Master_Moving_Object::setup(FILE* file, RGE_Sprite** sprites,
         move_sprite = (RGE_Sprite*)0;
     this->move_sprite = move_sprite;
 
-    if (run_sprite_id >= 0) {
-        this->run_sprite = sprite_table[run_sprite_id];
-        return 1;
-    }
-    this->run_sprite = (RGE_Sprite*)0;
+    if (run_sprite_id >= 0)
+        run_sprite = sprite_table[run_sprite_id];
+    else
+        run_sprite = (RGE_Sprite*)0;
+    this->run_sprite = run_sprite;
     return 1;
 }
