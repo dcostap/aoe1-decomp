@@ -13,6 +13,11 @@
 // flat-vs-inherited TRIBE_Game layout, and a top-level mode local all emitted
 // the same 279-byte code.  The remaining 16-byte drift is only register color:
 // rebuilt this/elapsed are ESI/EDI while the original uses EDI/ESI.
+// follow-up probes (rolled back): full RGE_Base_Game virtual surface, declared
+// TRIBE_Game destructor, complete derived-size gap, TRIBE_Game pointer/reference
+// aliases, and a single natural for-loop wait form.  The typed class/layout
+// context and aliases were codegen duplicates; the for-loop changed CFG/size
+// (289 B) and was discarded.  No natural source probe flipped the ESI/EDI pair.
 // Main-agent audit restored canonical world polymorphic ownership; the
 // validated 16-byte coloring gap is unchanged.
 
@@ -67,34 +72,34 @@ void TRIBE_Game::disconnect_multiplayer_game()
     if (this->multiplayerGame()) {
         if (this->prog_mode == 4 || this->prog_mode == 6 ||
             this->prog_mode == 7 || this->prog_mode == 5) {
-        this->comm_handler->SendIResignMsg();
-        this->comm_handler->ShutdownGameMessages();
+            this->comm_handler->SendIResignMsg();
+            this->comm_handler->ShutdownGameMessages();
 
-        if (this->comm_handler->CountWaitingMessages() > 0) {
-            this->disable_input();
-            this->show_status_message(0x4C0, 0, -1);
+            if (this->comm_handler->CountWaitingMessages() > 0) {
+                this->disable_input();
+                this->show_status_message(0x4C0, 0, -1);
 
-            unsigned long start_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15F8);
-            unsigned long elapsed_start = start_time;
+                unsigned long start_time = debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15F8);
+                unsigned long elapsed_start = start_time;
 
-            do {
-                unsigned long now;
                 do {
-                    if (this->world == 0 || this->world->game_status == 1)
-                        goto disconnect_done;
+                    unsigned long now;
+                    do {
+                        if (this->world == 0 || this->world->game_status == 1)
+                            goto disconnect_done;
 
-                    this->comm_handler->ShutdownGameMessages();
-                    now = debug_timeGetTime(
-                        "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601);
-                } while (now - elapsed_start < 500);
+                        this->comm_handler->ShutdownGameMessages();
+                        now = debug_timeGetTime(
+                            "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601);
+                    } while (now - elapsed_start < 500);
 
-                if (this->comm_handler->CountWaitingMessages() == 0)
-                    break;
-                elapsed_start = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
-            } while (elapsed_start - start_time < 15000);
-        }
+                    if (this->comm_handler->CountWaitingMessages() == 0)
+                        break;
+                    elapsed_start = debug_timeGetTime(
+                        "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
+                } while (elapsed_start - start_time < 15000);
+            }
 
         disconnect_done:
             this->comm_handler->GameOver();

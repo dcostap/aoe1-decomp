@@ -1,10 +1,8 @@
 // VA: 00529100 TRIBE_Game::get_tribe_options (225 B)
 // PDB source: tribegam.cpp:4493-4520
 //
-// Status: paused in scratch. 3-byte strict positional diff remains (SIB
-// encoding on three byte-array stores). Everything else is byte-identical:
-// size 225/225, 77/77 instructions, shape 100%, exact-block coverage 100%,
-// 19/19 ordered calls, frame none, saved regs ebx/ebp/esi/edi all match.
+// Status: MATCH. 225/225 bytes, 77/77 instructions, shape 100%, exact-block
+// coverage 100%, 19/19 ordered calls, frame none, saved regs ebx/ebp/esi/edi.
 //
 // Attempt log:
 //  - Initial scratch (cdecl free-function stubs) was 67% off; calls must be
@@ -39,21 +37,19 @@
 //  - Register roles and loop shape already match exactly (esi=counter,
 //    ebx=opt, ebp=scenarioPlayer walker, edi=this; inc at bottom;
 //    cmp esi,9; jl). Only the encoder's base/index choice differs.
-//
-// Next leads (evidence-backed):
-//  1. Full typed class surface: model TRIBE_Game : RGE_Base_Game with
-//     tribe_game_options member at +0xA7C (size 0x1254) per LESSONS.md
-//     "full typed class surface can steer allocator choices" and the
-//     setters/getters which access this->tribe_game_options.civilizationValue.
-//  2. TU include context from the real game headers (scr_set.cpp matched
-//     caller 004B6230 includes common.h context).
-//  3. Variant lab focused on the three store expressions with reassociation
-//     idioms that survive VC5 canonicalization (e.g., unsigned math,
-//     address built via a local char* base that VC5 re-folds).
-//  4. Check 00529000 set_tribe_options as a sibling target: its reads share
-//     the same SIB pattern; matching one may inform the other.
+//  - Resolution: adding the proven polymorphic RGE_Base_Game base and the
+//    typed TRIBE_Game::tribe_game_options member at +0xA7C flipped all three
+//    SIB bytes to the original counter-in-base encoding without changing the
+//    natural indexed source. No pointer-walker, cast, or flag trick was kept.
+//  - Main-agent audit confirmed the polymorphic game/options ownership and
+//    natural indexed copy; exact bytes were revalidated after promotion.
 
-class TRIBE_Game {
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
 public:
     int mapSize();
     int mapType();
@@ -99,6 +95,9 @@ public:
         unsigned char popLimitValue;         // +0x6A
         unsigned char _pad_end[1];      // +0x6B
     };
+
+    char gap_00[0xA7C - 4];
+    TRIBE_Game_Options tribe_game_options; // +0xA7C
 
     void get_tribe_options(TRIBE_Game_Options* opt);
 };
