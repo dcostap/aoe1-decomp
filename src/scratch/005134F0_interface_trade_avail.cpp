@@ -16,6 +16,10 @@
 //   one-slot dock-list LEA displacements plus late counter/owner coloring.
 // - Main-agent audit restored canonical virtual ownership at unchanged offsets;
 //   the validated six-byte codegen gap is unchanged.
+// - New full-player/TU context probes tested dock_list[0] as the saved-player
+//   overlay and moved the owner declaration; the overlay broadened drift to
+//   225 bytes and the declaration move duplicated the six-byte result, so the
+//   canonical function-scope owner source remains retained.
 
 #include <stdlib.h>
 

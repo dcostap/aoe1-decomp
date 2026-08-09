@@ -12,6 +12,11 @@
 //   guard placement; no calls or unknown data ownership remain.
 // - Main-agent audit restored canonical player/master/object destructor slots;
 //   the validated structural gap is unchanged.
+// - A later same-TU pass restored the full named RGE_Player base through the
+//   selection fields; that canonical context emitted identically to the prior
+//   narrow surface. The worker then exhausted its context before final pause,
+//   so the main agent retained this typed source and closed the lease without
+//   repeating the established liveness/control-flow basin.
 
 extern unsigned int DAT_0086bc88;
 extern unsigned int DAT_0086bc8c;
@@ -19,11 +24,57 @@ extern float DAT_0057682c;
 extern unsigned long tribe_group_properties[];
 extern int tribe_group_properties_num;
 
+class RGE_Static_Object;
+
 class RGE_Player {
 public:
     virtual ~RGE_Player();
+    virtual void set_game_status();
+    virtual void do_resign();
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual void aiStatus();
+    virtual void isEnemy();
+    virtual void isAlly();
+    virtual void isNeutral();
+    virtual void isAllNeutral();
+    virtual void setDiplomaticStance();
+    virtual void loadAIInformation();
+    virtual void sendUnitAIOrder();
+    virtual void processAIOrder();
+    virtual void kickAI();
+    virtual void strategicNumber();
+    virtual void sendGameOrder();
+    virtual void sendAddWaypointCommand();
+    virtual void processAddWaypointCommand();
+    virtual void sendPlayCommand();
+    virtual void sendPlayCommand2();
+    virtual void sendAICommand();
+    virtual void objectCostByType();
+    virtual void trackUnitGather();
+    virtual void make_scenario_obj();
+    virtual void scenario_save();
+    virtual void scenario_load();
+    virtual void scenario_postsave();
+    virtual void scenario_postload();
+    virtual void load();
+    virtual void add_attribute_num();
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save();
+    virtual void save2();
+    virtual void save_info();
+    virtual void random_start();
+    virtual void make_new_object();
+
     char gap_04[0x46];
     short id;
+    char gap_4C[0xE4];
+    RGE_Static_Object* selected_obj;
+    RGE_Static_Object* sel_list[25];
+    unsigned int sel_object_properties;
+    short sel_count;
+    char gap_19E[0x82];
 };
 
 class RGE_Master_Static_Object {
@@ -45,55 +96,9 @@ public:
     float attribute_amount_held;
 };
 
-class TRIBE_Player {
+class TRIBE_Player : public RGE_Player {
 public:
-    virtual ~TRIBE_Player();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
     virtual void analyize_selected_objects();
-
-    char gap_04[0x4A - 0x04];
-    short id;
-    char gap_4C[0x130 - 0x4C];
-    RGE_Static_Object* selected_obj;
-    RGE_Static_Object* sel_list[25];
-    unsigned int sel_object_properties;
-    short sel_count;
 };
 
 void TRIBE_Player::analyize_selected_objects()

@@ -16,6 +16,15 @@
 //   while rebuilt insists on EBX=this and EBP=count, causing early register drift. Later body is behaviorally close
 //   (correct +0x104 master table, count/free/calloc, tech_cost/help calls), but local/parameter temp placement for
 //   tech_cost cost shorts also differs. Likely needs donor TU/source declaration context or a more exact stack-slot model.
+// - v12: removed the cached tech_tree local and the explicit master reload after
+//   each item; direct tech_tree reloads plus one saved master pointer recover the
+//   original EBP=this/EBX=count prologue, exact frame/size/call/relocation parity,
+//   and reduce the mismatch to 30 bytes.
+// - v13-v14: declaration and master-table staging variants did not improve the
+//   remaining initial load order. The original loads tech count in DX before
+//   dereferencing the saved master pointer; rebuilt still loads the master into
+//   ESI before the count in CX. Final validated source keeps the canonical direct
+//   ownership and the narrow count register clue; paused at that localized basin.
 
 typedef unsigned char uchar;
 
@@ -71,9 +80,14 @@ public:
     long get_help_page(short tech_id);
 };
 
-class TRIBE_Player {
+class RGE_Player {
 public:
-    char gap_00[0x3c];
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
     TechSource* tech_source;       // +3c
     char gap_40[0x1e0];
     TRIBE_Player_Tech* tech_tree;  // +220
@@ -83,13 +97,12 @@ public:
 
 void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count, short button_location)
 {
-    register short count = 0;
-    MasterTechEntry* master = *this->tech_source->master_techs;
-    TRIBE_Player_Tech* tech = this->tech_tree;
+    short count = 0;
 
-    short n = tech->tech_player_tree_num;
+    MasterTechEntry* master = *this->tech_source->master_techs;
+    register short n = this->tech_tree->tech_player_tree_num;
     if (n > 0) {
-        TechPlayerEntry* t = tech->tech_player_tree;
+        TechPlayerEntry* t = this->tech_tree->tech_player_tree;
         MasterTechEntry* m = master;
         int i = (int)n;
         do {
@@ -114,27 +127,26 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
 
     *out_items = (Item_Avail*)calloc((int)count, 0x28);
 
-    tech = this->tech_tree;
     short tech_id = 0;
     short out_index = 0;
-    if (tech->tech_player_tree_num <= 0) {
+    if (this->tech_tree->tech_player_tree_num <= 0) {
         return;
     }
 
     do {
         int idx = (int)tech_id;
-        if (tech->tech_player_tree[idx].state == 1) {
+        if (this->tech_tree->tech_player_tree[idx].state == 1) {
             MasterTechEntry* entry = &master[idx];
             if (entry->button_location == button_location) {
                 int avail_index = (int)out_index;
                 Item_Avail* item = *out_items;
                 int off = avail_index * 0x28;
-                ((short*)((char*)item + off))[2] = tech_id;
-                ((short*)((char*)*out_items + off))[3] = entry->pict;
-                *(int*)((char*)*out_items + off) = entry->name;
+                item[avail_index].id = tech_id;
+                (*out_items)[avail_index].pict = entry->pict;
+                (*out_items)[avail_index].name = entry->name;
 
                 short inv1, amt1, inv2, amt2, inv3, amt3;
-                tech->tech_cost(tech_id, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3);
+                this->tech_tree->tech_cost(tech_id, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3);
 
                 (*out_items)[avail_index].inv1 = inv1;
                 (*out_items)[avail_index].cost1 = (float)(int)amt1;
@@ -142,14 +154,12 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
                 (*out_items)[avail_index].cost2 = (float)(int)amt2;
                 (*out_items)[avail_index].inv3 = inv3;
                 (*out_items)[avail_index].cost3 = (float)(int)amt3;
-                (*out_items)[avail_index].help_msg = tech->get_help_message(tech_id);
-                (*out_items)[avail_index].help_page = tech->get_help_page(tech_id);
+                (*out_items)[avail_index].help_msg = this->tech_tree->get_help_message(tech_id);
+                (*out_items)[avail_index].help_page = this->tech_tree->get_help_page(tech_id);
 
                 out_index++;
-                master = *this->tech_source->master_techs;
             }
         }
-        tech = this->tech_tree;
         tech_id++;
-    } while (tech_id < tech->tech_player_tree_num);
+    } while (tech_id < this->tech_tree->tech_player_tree_num);
 }
