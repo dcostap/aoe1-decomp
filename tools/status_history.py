@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from common import classify_corpus_bucket
+from common import REPO_ROOT, classify_corpus_bucket
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -126,7 +126,9 @@ class GitSnapshot:
 
     @classmethod
     def load(cls, commit: str, blob_cache: dict[str, bytes]) -> "GitSnapshot":
-        raw = subprocess.check_output(["git", "ls-tree", "-r", "-z", commit], text=False)
+        raw = subprocess.check_output(
+            ["git", "ls-tree", "-r", "-z", commit], cwd=REPO_ROOT, text=False
+        )
         tree: dict[str, str] = {}
         for record in raw.split(b"\0"):
             if not record:
@@ -150,11 +152,17 @@ class GitSnapshot:
                 # Batch streaming failed even after retries; fall back to a
                 # one-off read, which is reliable for a single object.
                 data = subprocess.check_output(
-                    ["git", "cat-file", "blob", oid], stderr=subprocess.DEVNULL, text=False
+                    ["git", "cat-file", "blob", oid],
+                    cwd=REPO_ROOT,
+                    stderr=subprocess.DEVNULL,
+                    text=False,
                 )
         else:
             data = subprocess.check_output(
-                ["git", "cat-file", "blob", oid], stderr=subprocess.DEVNULL, text=False
+                ["git", "cat-file", "blob", oid],
+                cwd=REPO_ROOT,
+                stderr=subprocess.DEVNULL,
+                text=False,
             )
         self.blob_cache[oid] = data
         return data
@@ -286,6 +294,7 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
 def _commit_metadata(commit: str) -> dict[str, object]:
     raw = subprocess.check_output(
         ["git", "show", "-s", "--format=%H%x00%h%x00%aI%x00%cI%x00%an%x00%ae%x00%P%x00%s", commit],
+        cwd=REPO_ROOT,
         text=False,
     ).decode("utf-8", errors="replace").rstrip("\0\n")
     fields = raw.split("\0")
@@ -334,6 +343,7 @@ class BatchBlobReader:
     def _spawn(self) -> None:
         self.proc = subprocess.Popen(
             ["git", "cat-file", "--batch"],
+            cwd=REPO_ROOT,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
@@ -341,6 +351,10 @@ class BatchBlobReader:
         )
 
     def _respawn(self) -> None:
+        self._shutdown()
+        self._spawn()
+
+    def _shutdown(self) -> None:
         proc = self.proc
         if proc is not None:
             try:
@@ -350,8 +364,12 @@ class BatchBlobReader:
                     proc.stdout.close()
                 proc.wait(timeout=5)
             except Exception:
-                pass
-        self._spawn()
+                proc.kill()
+                try:
+                    proc.wait(timeout=5)
+                except Exception:
+                    pass
+        self.proc = None
 
     def read(self, oid: str) -> bytes | None:
         """Return blob bytes, or None when the object could not be streamed."""
@@ -377,7 +395,7 @@ class BatchBlobReader:
         return None
 
     def close(self) -> None:
-        self._respawn()
+        self._shutdown()
 
 
 def _relevant_change(changed_files: list[dict[str, str]]) -> bool:

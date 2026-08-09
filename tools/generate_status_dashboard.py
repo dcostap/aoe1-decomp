@@ -28,6 +28,8 @@ BUCKET_COLORS = {
 
 
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
+HISTORY_CACHE_VERSION = 5
+DATA_MARKER = "__DASHBOARD_DATA__"
 
 
 def default_header_notes() -> dict[str, str]:
@@ -286,10 +288,11 @@ def write_html_dashboard(
     if include_history:
         commits = subprocess.check_output(
             ["git", "rev-list", "--reverse", "--first-parent", history_ref],
+            cwd=REPO_ROOT,
             text=True,
         ).splitlines()
         history_cache_path = REPO_ROOT / "build" / "status_history_cache.json"
-        cache_key = {"version": 5, "ref": history_ref, "commits": commits}
+        cache_key = {"version": HISTORY_CACHE_VERSION, "ref": history_ref, "commits": commits}
         history = None
         resume = None
         prefix_history = None
@@ -304,7 +307,7 @@ def write_html_dashboard(
                     cached_key = cached.get("key") or {}
                     cached_commits = cached_key.get("commits") or []
                     if (
-                        cached_key.get("version") == 5
+                        cached_key.get("version") == HISTORY_CACHE_VERSION
                         and cached_key.get("ref") == history_ref
                         and len(cached_commits) < len(commits)
                         and commits[: len(cached_commits)] == cached_commits
@@ -328,22 +331,32 @@ def write_html_dashboard(
                 prefix_history=prefix_history,
             )
             history_cache_path.parent.mkdir(parents=True, exist_ok=True)
-            history_cache_path.write_text(
-                json.dumps(
-                    {"key": cache_key, "history": history, "resume": resume},
-                    ensure_ascii=False,
-                    separators=(",", ":"),
-                ),
-                encoding="utf-8",
+            cache_text = json.dumps(
+                {"key": cache_key, "history": history, "resume": resume},
+                ensure_ascii=False,
+                separators=(",", ":"),
             )
+            cache_tmp_path = history_cache_path.with_suffix(".json.tmp")
+            cache_tmp_path.write_text(cache_text, encoding="utf-8")
+            cache_tmp_path.replace(history_cache_path)
         payload["history"] = history
         # The history owns the full snapshots. Keeping another copy of the current
         # treemap here would defeat the point of storing only changes between commits.
         payload.pop("groups", None)
 
     html_template = HTML_TEMPLATE_PATH.read_text(encoding="utf-8")
-    html_text = html_template.replace("__DASHBOARD_DATA__", json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
-    html_path.write_text(html_text, encoding="utf-8")
+    marker_count = html_template.count(DATA_MARKER)
+    if marker_count != 1:
+        raise RuntimeError(f"dashboard template must contain exactly one {DATA_MARKER} marker (found {marker_count})")
+    html_text = html_template.replace(
+        DATA_MARKER,
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+    )
+    # A complete dashboard is tens of megabytes. Replace it atomically so an
+    # interrupted refresh cannot leave project_full_status.html half-written.
+    html_tmp_path = html_path.with_suffix(".html.tmp")
+    html_tmp_path.write_text(html_text, encoding="utf-8")
+    html_tmp_path.replace(html_path)
     return html_path
 
 
@@ -355,7 +368,9 @@ def main() -> None:
 
     rows = build_status_rows()
     output_path = REPO_ROOT / "project_full_status.csv"
-    write_status_csv(rows, output_path)
+    csv_tmp_path = output_path.with_suffix(".csv.tmp")
+    write_status_csv(rows, csv_tmp_path)
+    csv_tmp_path.replace(output_path)
     html_output_path = write_html_dashboard(rows, history_ref=args.history_ref, include_history=not args.no_history)
     counts = status_counts(rows)
 

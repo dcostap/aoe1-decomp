@@ -157,9 +157,10 @@
     .timeline-head {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      align-items: baseline;
-      margin-bottom: 5px;
+      gap: 10px 18px;
+      align-items: center;
+      margin-bottom: 7px;
+      min-width: 0;
     }
 
     .timeline-title {
@@ -167,6 +168,41 @@
       font: 11px var(--mono);
       letter-spacing: 0.1em;
       text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .timeline-heading,
+    .timeline-modes {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .timeline-modes {
+      padding: 2px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .timeline-mode {
+      min-height: 24px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+      font: 10px var(--mono);
+      cursor: pointer;
+    }
+
+    .timeline-mode:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .timeline-mode.active {
+      color: var(--text);
+      background: rgba(139,92,246,0.28);
     }
 
     .timeline-meta {
@@ -177,19 +213,102 @@
       white-space: nowrap;
     }
 
-    #timeline-slider {
+    .timeline-plot {
+      position: relative;
+      height: 70px;
+      overflow: hidden;
+      border-radius: 7px;
+      background: rgba(0,0,0,0.15);
+    }
+
+    #timeline-canvas {
       display: block;
       width: 100%;
-      margin: 0;
-      accent-color: #8b5cf6;
-      cursor: pointer;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #timeline-slider {
+      position: absolute;
+      inset: 0;
+      width: calc(100% - 24px);
+      height: 42px;
+      margin: 5px 12px 0;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      outline: 0;
+      touch-action: none;
+      cursor: ew-resize;
+    }
+
+    #timeline-slider::-webkit-slider-runnable-track {
+      height: 32px;
+      background: transparent;
+    }
+
+    #timeline-slider::-moz-range-track {
+      height: 32px;
+      background: transparent;
+      border: 0;
+    }
+
+    #timeline-slider::-webkit-slider-thumb {
+      width: 12px;
+      height: 32px;
+      margin-top: 0;
+      border: 0;
+      border-radius: 999px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: rgba(237,233,254,0.9);
+      box-shadow: 0 0 0 2px rgba(139,92,246,0.32), 0 2px 8px rgba(0,0,0,0.55);
+    }
+
+    #timeline-slider::-moz-range-thumb {
+      width: 12px;
+      height: 32px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(237,233,254,0.9);
+      box-shadow: 0 0 0 2px rgba(139,92,246,0.32), 0 2px 8px rgba(0,0,0,0.55);
+    }
+
+    #timeline-slider:focus-visible::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px #07090d, 0 0 0 5px #a78bfa;
+    }
+
+    #timeline-slider:disabled {
+      cursor: default;
+      opacity: 0.35;
     }
 
     .timeline-range {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: baseline;
+      gap: 12px;
+      padding-top: 4px;
       color: var(--muted-2);
       font: 10px var(--mono);
+    }
+
+    .timeline-range span:last-child {
+      text-align: right;
+    }
+
+    .timeline-range-note {
+      overflow: hidden;
+      color: var(--muted);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .timeline-latest {
+      min-height: 24px;
+      padding: 0 9px;
+      font-size: 10px;
     }
 
     .search {
@@ -480,6 +599,11 @@
     @media (max-width: 820px) {
       body { padding: 10px; }
       .canvas-wrap { min-height: 420px; }
+      .timeline-head { align-items: flex-start; flex-direction: column; }
+      .timeline-heading { flex-wrap: wrap; }
+      .timeline-meta { width: 100%; }
+      .timeline-range-note { display: none; }
+      .timeline-range { grid-template-columns: 1fr 1fr; }
       .detail-grid,
       .split {
         grid-template-columns: 1fr;
@@ -498,11 +622,25 @@
     </div>
     <div class="timeline" id="timeline">
       <div class="timeline-head">
-        <span class="timeline-title">commit timeline</span>
+        <div class="timeline-heading">
+          <span class="timeline-title">commit timeline</span>
+          <div class="timeline-modes" role="group" aria-label="Timeline scale">
+            <button class="timeline-mode" type="button" data-set-timeline="date">commit date</button>
+            <button class="timeline-mode" type="button" data-set-timeline="linear">linear</button>
+          </div>
+          <button class="button timeline-latest" type="button" data-action="timeline-latest">latest</button>
+        </div>
         <span class="timeline-meta" id="timeline-meta"></span>
       </div>
-      <input id="timeline-slider" type="range" min="0" max="0" value="0" step="1" aria-label="Project commit timeline">
-      <div class="timeline-range"><span id="timeline-start"></span><span id="timeline-end"></span></div>
+      <div class="timeline-plot" id="timeline-plot">
+        <canvas id="timeline-canvas" aria-hidden="true"></canvas>
+        <input id="timeline-slider" type="range" min="0" max="1000000" value="1000000" step="1" aria-label="Project commit timeline">
+      </div>
+      <div class="timeline-range">
+        <span id="timeline-start"></span>
+        <span class="timeline-range-note" id="timeline-range-note"></span>
+        <span id="timeline-end"></span>
+      </div>
     </div>
     <div class="stats-row" id="stats-primary"></div>
     <div class="stats-row" id="stats-secondary"></div>
@@ -599,9 +737,19 @@
       SUMMARY = summary || {};
     }
 
+    const TIMELINE_SCALE_MAX = 1000000;
     let timelineIndex = HISTORY ? HISTORY.commits.length - 1 : -1;
     let timelineRows = new Map();
     const PREVIEW_FIELD_INDEX = HISTORY ? HISTORY.schema.indexOf("sourcePreviewId") : -1;
+    const COMMIT_TIMES = (HISTORY?.commits || []).map((commit, index) => {
+      const parsed = Date.parse(commit?.commitDate || commit?.authorDate || "");
+      return Number.isFinite(parsed) ? parsed : index;
+    });
+    const TIME_POINTS = COMMIT_TIMES
+      .map((time, index) => ({ time, index }))
+      .sort((a, b) => a.time - b.time || a.index - b.index);
+    const TIME_MIN = TIME_POINTS.length ? TIME_POINTS[0].time : 0;
+    const TIME_MAX = TIME_POINTS.length ? TIME_POINTS[TIME_POINTS.length - 1].time : 0;
 
     function resolvePreview(child) {
       if (PREVIEW_FIELD_INDEX >= 0 && child.sourcePreviewId !== undefined) {
@@ -611,13 +759,12 @@
       return child;
     }
 
-    // Timeline rows stay as compact schema arrays end to end. Field patches
-    // mutate the row array in place, so replaying hundreds of commits costs a
-    // few milliseconds instead of hundreds (no per-patch object spreads).
-    // Rows are decoded to plain objects only once per rendered frame in
-    // groupsFromRows; the decoded object is cached per row array and dropped
-    // the moment that row is patched, so steady-state frames re-decode only
-    // the rows a delta actually touched.
+    // History arrays embedded in HISTORY are immutable. Every field patch uses
+    // copy-on-write, which makes resetting to the base snapshot both cheap and
+    // safe. The old in-place approach accidentally mutated HISTORY.base and the
+    // addition records in HISTORY.deltas; repeated backward scrubs therefore
+    // accumulated impossible hybrid snapshots until the final change event.
+    // Rows are decoded once per immutable array and retained in this WeakMap.
     const DECODED_CACHE = new WeakMap();
 
     function decodeRow(row) {
@@ -639,10 +786,11 @@
         if (change.patch) {
           const current = timelineRows.get(change.va);
           if (current) {
-            DECODED_CACHE.delete(current);
+            const patched = current.slice();
             for (const [fieldIndex, value] of change.patch) {
-              current[fieldIndex] = value;
+              patched[fieldIndex] = value;
             }
+            timelineRows.set(change.va, patched);
           }
         } else if (change.value === null || change.value === undefined) {
           timelineRows.delete(change.va);
@@ -696,11 +844,9 @@
       renderTimeline();
     }
 
-    // Live drag: the slider thumb and label follow the pointer instantly; a
-    // requestAnimationFrame loop replays the (cheap, in-place) row deltas under
-    // a time budget and re-renders each frame so the treemap and stats track
-    // the drag instead of waiting for release. Releasing snaps to the exact
-    // commit with a full-quality render.
+    // Coalesce pointer input to one exact snapshot per animation frame. We never
+    // paint a partially replayed history state: that looked like flicker and,
+    // before copy-on-write above, could expose corrupted tiles while scrubbing.
     let dragPending = null;
     let dragFrameScheduled = false;
 
@@ -719,36 +865,184 @@
       if (dragPending === null || !HISTORY || !HISTORY.commits.length) {
         return;
       }
-      const target = clamp(Number(dragPending), 0, HISTORY.commits.length - 1);
-      if (target < timelineIndex) {
-        timelineRows = rowsFromGroups(HISTORY.base?.groups || []);
-        timelineIndex = 0;
-      }
-      const deadline = performance.now() + 30;
-      while (timelineIndex < target && performance.now() < deadline) {
-        applyOneDelta(timelineIndex + 1);
-        timelineIndex += 1;
-      }
+      const requested = clamp(Number(dragPending), 0, HISTORY.commits.length - 1);
+      const target = applyTimelineTo(requested);
       state.liveDrag = true;
-      const commit = HISTORY.commits[timelineIndex] || {};
+      const commit = HISTORY.commits[target] || {};
       installDecodedGroups(groupsFromRows(timelineRows), commit.summary || HISTORY.base?.summary || {});
+      timelineIndex = target;
       state.selected = null;
+      hoveredRegion = null;
       derived = deriveData();
       renderTopStats();
-      renderControls();
-      renderDetail();
       renderTreemap();
-      renderTimeline(dragPending);
-      if (timelineIndex < target) {
+      renderTimeline(target);
+      if (dragPending !== requested) {
         scheduleDragTick();
       }
     }
 
     function historyDate(commit) {
-      const value = commit?.authorDate || commit?.commitDate || "";
+      const value = commit?.commitDate || commit?.authorDate || "";
       if (!value) return "";
       const date = new Date(value);
       return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+
+    function shortHistoryDate(timestamp, includeTime = false) {
+      const date = new Date(timestamp);
+      if (Number.isNaN(date.getTime())) return "";
+      return new Intl.DateTimeFormat(undefined, includeTime
+        ? { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
+        : { year: "numeric", month: "short", day: "numeric" }
+      ).format(date);
+    }
+
+    function timelineMode() {
+      return state.timelineMode === "linear" ? "linear" : "date";
+    }
+
+    function timelinePositionForCommit(index) {
+      if (!HISTORY || HISTORY.commits.length < 2) return 0;
+      if (timelineMode() === "linear") {
+        return clamp(index / (HISTORY.commits.length - 1), 0, 1);
+      }
+      const span = TIME_MAX - TIME_MIN;
+      return span > 0 ? clamp((COMMIT_TIMES[index] - TIME_MIN) / span, 0, 1) : 1;
+    }
+
+    function commitAtTimelinePosition(position) {
+      if (!HISTORY || !HISTORY.commits.length) return -1;
+      const normalized = clamp(Number(position), 0, 1);
+      if (timelineMode() === "linear") {
+        return Math.round(normalized * (HISTORY.commits.length - 1));
+      }
+      const targetTime = TIME_MIN + normalized * (TIME_MAX - TIME_MIN);
+      let low = 0;
+      let high = TIME_POINTS.length;
+      while (low < high) {
+        const middle = (low + high) >> 1;
+        if (TIME_POINTS[middle].time < targetTime) low = middle + 1;
+        else high = middle;
+      }
+      const before = TIME_POINTS[Math.max(0, low - 1)];
+      const after = TIME_POINTS[Math.min(TIME_POINTS.length - 1, low)];
+      const beforeDistance = Math.abs(before.time - targetTime);
+      const afterDistance = Math.abs(after.time - targetTime);
+      const nearest = afterDistance <= beforeDistance ? after : before;
+      // Several commits can share a timestamp. At that exact date the newest
+      // snapshot is the useful one, not the first commit in the tied run.
+      let tied = TIME_POINTS.indexOf(nearest);
+      while (tied + 1 < TIME_POINTS.length && TIME_POINTS[tied + 1].time === nearest.time) tied += 1;
+      return TIME_POINTS[tied].index;
+    }
+
+    function formatTimelineSpan(milliseconds) {
+      const days = Math.max(0, milliseconds) / 86400000;
+      if (days >= 365) return `${(days / 365.2425).toFixed(days >= 730 ? 1 : 2)} years`;
+      if (days >= 1) return `${Math.round(days).toLocaleString()} days`;
+      const hours = Math.max(1, Math.round(days * 24));
+      return `${hours} hours`;
+    }
+
+    function timelineTicks(width) {
+      if (!HISTORY || !HISTORY.commits.length) return [];
+      const targetCount = clamp(Math.floor(width / 150), 2, 9);
+      if (timelineMode() === "linear") {
+        const ticks = [];
+        for (let tick = 0; tick < targetCount; tick += 1) {
+          const position = targetCount === 1 ? 0 : tick / (targetCount - 1);
+          const index = Math.round(position * (HISTORY.commits.length - 1));
+          ticks.push({ position, label: `#${index + 1} · ${shortHistoryDate(COMMIT_TIMES[index])}` });
+        }
+        return ticks;
+      }
+      const span = Math.max(1, TIME_MAX - TIME_MIN);
+      const candidates = [
+        3600000, 3 * 3600000, 6 * 3600000, 12 * 3600000,
+        86400000, 2 * 86400000, 7 * 86400000, 14 * 86400000,
+        30 * 86400000, 60 * 86400000, 90 * 86400000,
+        180 * 86400000, 365 * 86400000, 2 * 365 * 86400000,
+      ];
+      const desired = span / Math.max(1, targetCount - 1);
+      const step = candidates.find((candidate) => candidate >= desired) || candidates[candidates.length - 1];
+      const first = Math.ceil(TIME_MIN / step) * step;
+      const ticks = [];
+      for (let time = first; time <= TIME_MAX; time += step) {
+        ticks.push({
+          position: (time - TIME_MIN) / span,
+          label: shortHistoryDate(time, span < 3 * 86400000),
+        });
+      }
+      return ticks;
+    }
+
+    function renderTimelineCanvas(selectedIndex) {
+      const canvas = document.getElementById("timeline-canvas");
+      const plot = document.getElementById("timeline-plot");
+      if (!canvas || !plot) return;
+      const bounds = plot.getBoundingClientRect();
+      const width = Math.max(1, Math.floor(bounds.width));
+      const height = Math.max(1, Math.floor(bounds.height));
+      const ctx = syncCanvasSize(canvas, width, height, window.devicePixelRatio || 1);
+      ctx.clearRect(0, 0, width, height);
+
+      const left = 12;
+      const right = Math.max(left + 1, width - 12);
+      const trackWidth = right - left;
+      const railY = 26;
+      const selectedPosition = timelinePositionForCommit(selectedIndex);
+
+      ctx.fillStyle = "rgba(255,255,255,0.055)";
+      ctx.fillRect(left, railY - 7, trackWidth, 14);
+      ctx.fillStyle = "rgba(139,92,246,0.19)";
+      ctx.fillRect(left, railY - 7, trackWidth * selectedPosition, 14);
+
+      // A light density band makes clusters readable even when many translucent
+      // commit dots occupy the same one or two device pixels.
+      const binCount = Math.max(1, Math.min(420, Math.floor(trackWidth / 3)));
+      const bins = new Array(binCount).fill(0);
+      for (let index = 0; index < HISTORY.commits.length; index += 1) {
+        const bin = Math.min(binCount - 1, Math.floor(timelinePositionForCommit(index) * binCount));
+        bins[bin] += 1;
+      }
+      const maxBin = Math.max(1, ...bins);
+      ctx.fillStyle = "rgba(167,139,250,0.19)";
+      for (let bin = 0; bin < bins.length; bin += 1) {
+        if (!bins[bin]) continue;
+        const barHeight = 3 + (bins[bin] / maxBin) * 15;
+        const x = left + (bin / binCount) * trackWidth;
+        ctx.fillRect(x, railY - barHeight / 2, Math.max(1, trackWidth / binCount), barHeight);
+      }
+
+      for (let index = 0; index < HISTORY.commits.length; index += 1) {
+        const x = left + timelinePositionForCommit(index) * trackWidth;
+        const changesStatus = Boolean(HISTORY.deltas?.[index]?.changes?.length);
+        const y = railY + ((index % 5) - 2) * 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, changesStatus ? 1.75 : 1.15, 0, Math.PI * 2);
+        ctx.fillStyle = changesStatus ? "rgba(216,180,254,0.42)" : "rgba(203,213,225,0.17)";
+        ctx.fill();
+      }
+
+      ctx.font = '9px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.textBaseline = "top";
+      for (const tick of timelineTicks(trackWidth)) {
+        const x = left + tick.position * trackWidth;
+        ctx.fillStyle = "rgba(255,255,255,0.13)";
+        ctx.fillRect(Math.round(x), 42, 1, 5);
+        ctx.fillStyle = "rgba(154,164,179,0.82)";
+        ctx.textAlign = tick.position < 0.08 ? "left" : (tick.position > 0.92 ? "right" : "center");
+        ctx.fillText(tick.label, x, 51);
+      }
+
+      const selectedX = left + selectedPosition * trackWidth;
+      ctx.fillStyle = "rgba(237,233,254,0.95)";
+      ctx.fillRect(Math.round(selectedX) - 1, 7, 2, 38);
+      ctx.beginPath();
+      ctx.arc(selectedX, railY, 4.2, 0, Math.PI * 2);
+      ctx.fillStyle = "#c4b5fd";
+      ctx.fill();
     }
 
     function renderTimeline(previewIndex = timelineIndex) {
@@ -756,6 +1050,7 @@
       const meta = document.getElementById("timeline-meta");
       const start = document.getElementById("timeline-start");
       const end = document.getElementById("timeline-end");
+      const note = document.getElementById("timeline-range-note");
       if (!HISTORY || !HISTORY.commits.length) {
         slider.disabled = true;
         meta.textContent = "no commit history available";
@@ -763,11 +1058,24 @@
       }
       const displayIndex = clamp(Number(previewIndex), 0, HISTORY.commits.length - 1);
       const commit = HISTORY.commits[displayIndex] || HISTORY.commits[HISTORY.commits.length - 1];
-      slider.max = String(HISTORY.commits.length - 1);
-      slider.value = String(displayIndex);
-      start.textContent = historyDate(HISTORY.commits[0]);
-      end.textContent = historyDate(HISTORY.commits[HISTORY.commits.length - 1]);
+      slider.min = "0";
+      slider.max = String(TIMELINE_SCALE_MAX);
+      slider.step = "1";
+      slider.value = String(Math.round(timelinePositionForCommit(displayIndex) * TIMELINE_SCALE_MAX));
+      document.querySelectorAll("[data-set-timeline]").forEach((button) => {
+        button.classList.toggle("active", button.getAttribute("data-set-timeline") === timelineMode());
+      });
+      if (timelineMode() === "date") {
+        start.textContent = shortHistoryDate(TIME_MIN, true);
+        end.textContent = shortHistoryDate(TIME_MAX, true);
+        note.textContent = `${formatNumber(HISTORY.commits.length)} commits across ${formatTimelineSpan(TIME_MAX - TIME_MIN)} · brighter dots changed project status`;
+      } else {
+        start.textContent = `commit 1 · ${shortHistoryDate(COMMIT_TIMES[0])}`;
+        end.textContent = `commit ${formatNumber(HISTORY.commits.length)} · ${shortHistoryDate(COMMIT_TIMES[HISTORY.commits.length - 1])}`;
+        note.textContent = "even commit spacing · translucent dots are individual commits";
+      }
       meta.textContent = `${displayIndex + 1}/${HISTORY.commits.length} · ${commit.shortHash || commit.hash?.slice(0, 8) || ""} · ${historyDate(commit)} · ${commit.subject || ""}`;
+      renderTimelineCanvas(displayIndex);
     }
 
     function renderCommitDetail() {
@@ -812,11 +1120,13 @@
         viewMode: stored.viewMode || "files",
         metric: stored.metric || "bytes",
         colorMode: stored.colorMode === "attention" ? "complexity" : (stored.colorMode || "status"),
+        timelineMode: stored.timelineMode === "linear" ? "linear" : "date",
         onlyRemaining: Boolean(stored.onlyRemaining),
         onlyBlockers: Boolean(stored.onlyBlockers),
         buckets: { ...defaultBuckets, ...(stored.buckets || {}) },
         zoomGroup: null,
         selected: null,
+        liveDrag: false,
       };
     }
 
@@ -833,6 +1143,7 @@
           viewMode: state.viewMode,
           metric: state.metric,
           colorMode: state.colorMode,
+          timelineMode: state.timelineMode,
           onlyRemaining: state.onlyRemaining,
           onlyBlockers: state.onlyBlockers,
           buckets: state.buckets,
@@ -2026,6 +2337,14 @@
         return;
       }
 
+      const timelineNode = event.target.closest("[data-set-timeline]");
+      if (timelineNode) {
+        state.timelineMode = timelineNode.getAttribute("data-set-timeline") === "linear" ? "linear" : "date";
+        saveState();
+        renderTimeline();
+        return;
+      }
+
       const toggleNode = event.target.closest("[data-toggle]");
       if (toggleNode) {
         const key = toggleNode.getAttribute("data-toggle");
@@ -2059,11 +2378,21 @@
           state.viewMode = "files";
           state.metric = "bytes";
           state.colorMode = "status";
+          state.timelineMode = "date";
           state.onlyRemaining = false;
           state.onlyBlockers = false;
           state.buckets = { ...defaultBuckets };
           state.zoomGroup = null;
           state.selected = null;
+          render();
+          renderTimeline();
+          return;
+        }
+        if (action === "timeline-latest") {
+          if (!HISTORY || !HISTORY.commits.length) return;
+          dragPending = null;
+          state.liveDrag = false;
+          installTimeline(HISTORY.commits.length - 1);
           render();
           return;
         }
@@ -2112,19 +2441,32 @@
     });
 
     document.getElementById("timeline-slider").addEventListener("input", (event) => {
-      // The label follows the thumb instantly; the treemap/stats track the drag
-      // through a requestAnimationFrame loop (dragTick) that replays the cheap
-      // row deltas under a time budget, so the dashboard updates while dragging
-      // instead of only after release.
-      dragPending = Number(event.target.value);
+      const position = Number(event.target.value) / TIMELINE_SCALE_MAX;
+      dragPending = commitAtTimelinePosition(position);
       renderTimeline(dragPending);
       scheduleDragTick();
     });
 
     document.getElementById("timeline-slider").addEventListener("change", (event) => {
+      const position = Number(event.target.value) / TIMELINE_SCALE_MAX;
+      const target = commitAtTimelinePosition(position);
       dragPending = null;
       state.liveDrag = false;
-      installTimeline(event.target.value);
+      installTimeline(target);
+      render();
+    });
+
+    document.getElementById("timeline-slider").addEventListener("keydown", (event) => {
+      if (!HISTORY || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      let target = timelineIndex;
+      if (event.key === "ArrowLeft") target -= 1;
+      if (event.key === "ArrowRight") target += 1;
+      if (event.key === "Home") target = 0;
+      if (event.key === "End") target = HISTORY.commits.length - 1;
+      dragPending = null;
+      state.liveDrag = false;
+      installTimeline(clamp(target, 0, HISTORY.commits.length - 1));
       render();
     });
 
@@ -2202,6 +2544,7 @@
     window.addEventListener("resize", () => {
       fitCanvasHeight();
       renderTreemap();
+      renderTimeline();
     });
 
     if (HISTORY && HISTORY.commits.length) {
