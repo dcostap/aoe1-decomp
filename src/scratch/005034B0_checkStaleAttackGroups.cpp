@@ -9,6 +9,18 @@
 //   but stored the first result before desiredUnits rather than at the observed
 //   post-call site; rolled back. Named time/world and comparison variants did
 //   not improve emitted code. A 24-variant lab found no exact source.
+// - Fresh pass (orch-luna-5034b0-w2): declaration-order, desired/difference
+//   expression, compound-assignment, direct-predicate, full typed-layout, and
+//   initialized-inner-local probes added no exact basin. The best fresh result
+//   was the volatile-number diagnostic at 192 bytes (110 positional diff,
+//   95.38% shape); it still spills before desiredUnits and has the wrong time
+//   register basin. A 270-variant lab over storage/declaration/calculation/
+//   compare/time surfaces found no exact or size-valid candidate. Full binary
+//   TacticalAIGroup/RGE time/player fields were codegen-neutral. Restored the
+//   clean natural source.
+// - Normalization-only audit: replaced raw vtable_ptr with the exact-donor-backed
+//   virtual TacticalAIGroup destructor surface; emitted code was unchanged. No
+//   new matching hypothesis was introduced.
 // - Paused: remaining drift is the VC5 local spill/liveness and time-expression
 //   basin; no ABI/call-set or behavioral uncertainty is known.
 
@@ -32,7 +44,7 @@ public:
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     char gap_0C[0x32C - 0x0C];
