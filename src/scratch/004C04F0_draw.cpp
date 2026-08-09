@@ -11,6 +11,14 @@
 // allocation (original 0xC frame, stack-saved this, cached color/draw pointers).
 // Main-agent audit retained the natural non-polymorphic sprite/picture-list
 // ownership; no codegen-only frame or parameter-mutation probe survives.
+// Follow-up bounded pass: a natural saved-self/count/byte-cursor reconstruction
+// moved to a 0xC frame only when the proven three-dword local window was modeled
+// as a state aggregate; that state reached 287 differing bytes but still missed
+// the original saved-self prologue and cached color/draw argument schedule.
+// Loop-only color/draw caching and aggregate initialization were codegen
+// duplicates. Restored the less opaque natural source; the remaining blocker is
+// source/context recovery for the saved-this spill and callee-save argument
+// caches, not child-list behavior or call set.
 
 class RGE_Color_Table;
 class TDrawArea;
@@ -82,6 +90,7 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                                unsigned char color_index)
 {
     unsigned char result;
+    int count = 0;
 
     if (facet >= (signed short)this->facet_num) {
         facet = 0;
@@ -98,10 +107,11 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
     }
     else {
         result = 0;
-        int index = 0;
+        count = 0;
         if (0 < this->draw_list_num) {
+            facet = 0;
             do {
-                RGE_Picture_List* entry = &this->draw_list[index];
+                RGE_Picture_List* entry = &this->draw_list[count];
                 short entry_facet = entry->facet;
                 if ((entry_facet < 0) || (entry_facet == facet)) {
                     RGE_Sprite* sprite = entry->sprite;
@@ -123,9 +133,9 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                                     param_2, offset_x + base_x, offset_y,
                                     color_table, draw_area, color_index);
                 }
-                index = index + 1;
-            } while (index < this->draw_list_num);
-            return (unsigned char)index;
+                count = count + 1;
+            } while (count < this->draw_list_num);
+            return (unsigned char)count;
         }
     }
     return result;

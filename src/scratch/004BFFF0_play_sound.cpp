@@ -19,6 +19,13 @@
 // register/liveness coloring in the two three-entry loops.
 // Main-agent audit confirmed the 0x14-byte sound-facet record and retained the
 // natural bounded array traversal.
+// Follow-up baseline: binary frame-offset evidence supports a natural `int`
+// byte cursor anchored at the sound-list record base, with both scans written
+// as bounded `while (i < 3)` loops. This reconstruction is exact in size,
+// CFG, calls, and all but two bytes. Reversing address terms, anchoring through
+// the sound array, a loop-local list base, and a four-variant address-shape
+// lab all emitted the same two-byte SIB base/index drift; the typed ownership
+// and proven cursor remain the living source.
 
 class RGE_Sound {
 public:
@@ -58,34 +65,33 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
 
         if (this->micro_man_sound != 0) {
             if (param_1 < param_2) {
-                RGE_Sound_List* facet = &this->sound_list[param_3];
                 int i = 0;
-                while (1) {
-                    int frame = facet->frame[i];
+                int offset = param_3 * 0x14 + 0x0c;
+                while (i < 3) {
+                    int frame = *(short *)((char *)this->sound_list + offset);
                     if (frame <= -1) {
-                        break;
-                    }
-                    if (frame >= param_1 && frame < param_2) {
-                        facet->sound[i]->play(1);
-                    }
-                    i++;
-                    if (2 < i) {
                         return;
                     }
+                    if (frame >= param_1 && frame < param_2) {
+                        this->sound_list[param_3].sound[i]->play(1);
+                    }
+                    i++;
+                    offset += 2;
                 }
             } else {
-                RGE_Sound_List* facet = &this->sound_list[param_3];
                 int i = 0;
-                do {
-                    int frame = facet->frame[i];
+                int offset = param_3 * 0x14 + 0x0c;
+                while (i < 3) {
+                    int frame = *(short *)((char *)this->sound_list + offset);
                     if (frame <= -1) {
                         return;
                     }
                     if (frame >= param_1 || frame < param_2) {
-                        facet->sound[i]->play(1);
+                        this->sound_list[param_3].sound[i]->play(1);
                     }
                     i++;
-                } while (i < 3);
+                    offset += 2;
+                }
             }
         }
     }

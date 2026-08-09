@@ -13,6 +13,15 @@
 // - Final clean source retains named RGE_Picture_List ownership and natural
 //   member calls.  Remaining drift is the outer draw-list guard spelling and
 //   late argument evaluation/block layout; no call-set or frame mismatch.
+// - Continuation: <= 0 and negated-positive outer count guards compiled to a
+//   direct memory compare or a larger structural basin; neither reproduced
+//   the original test-AX/jle sequence.
+// - Shared-result/goto and single-break-loop return forms did not retain the
+//   original shared epilogue; receiver/offset locals were codegen-neutral.
+// - A split raw record cursor/count variant was worse (275-byte diff), so it
+//   was discarded.  Restored final natural typed source: 157-byte diff,
+//   exact frame/call set, with the remaining guard, tail, and argument-order
+//   drift documented for the next worker.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);

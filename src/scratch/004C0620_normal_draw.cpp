@@ -16,6 +16,13 @@
 // the duplicated draw-list guard and VC5 local/register scheduling.
 // Main-agent audit confirmed that drawing belongs to each child sprite and
 // retained ordinary typed picture-entry indexing.
+// Follow-up bounded pass: delayed count initialization, byte result typing,
+// a short draw-count local, explicit base-plus-byte-offset entry expressions,
+// shared result initialization, and a four-way declaration-order lab all
+// preserved or worsened the existing 45-byte basin. The raw cursor version
+// also lost the original prologue. Restored this natural typed source; the
+// remaining lead is the draw-list-count register/local schedule before the
+// otherwise exact child-draw loop.
 
 class RGE_Color_Table;
 class TDrawArea;

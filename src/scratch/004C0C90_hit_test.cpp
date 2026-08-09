@@ -13,6 +13,14 @@
 // denominator, and a typed pointer-increment scan. The normalized typed walk
 // is the living source (137-byte diff); the raw-cursor 124-byte result remains
 // diagnostic history only. Remaining drift starts at child-entry coloring.
+// Follow-up bounded pass: a top-level byte index restored the original early
+// EBX zero and improved the emitted diff to 124 bytes, but all base/member
+// cursor spellings remained in the same VC5 basin. Function-scope pointer and
+// counter declarations, delayed entry materialization, and a byte-buffer
+// cursor were nonproductive or duplicate-codegen probes. A six-variant local
+// shape lab found no exact candidate; its best raw indexing form was rejected
+// as noncanonical. Restored the typed source below; residual drift is the
+// original child-entry register/liveness schedule.
 // Main-agent audit confirmed typed 0x10-byte picture-entry traversal and child
 // sprite ownership; no byte cursor survives.
 
