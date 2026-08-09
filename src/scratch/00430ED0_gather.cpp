@@ -1,9 +1,22 @@
 // attempt 1: natural RGE_Combat_Object::gather with virtual-slot ladders for observed calls; size matched, first 0x2f bytes matched, but early-return epilogues differ from original shared epilogue
 // tried goto/shared-result rewrites; they worsened register allocation (this moved to ESI, target to EDI) or added a result local, so rolled back to the cleaner natural basin
+// Fresh worker probe: use one status pointer for the task/action result, as the
+// original register topology suggests, while retaining a separate target.
+// Follow-up: initialize that status to null instead of copying the target, so
+// target/task failure can share the EAX-zero path without an explicit store.
+// Follow-up 2: bind status to the task result immediately, testing whether the
+// compiler can use the call's zero directly at the shared failure edge.
+// The separate task/action form reduced the rebuild to 333 bytes and 77 strict
+// differing bytes with all calls aligned; combined status/task forms regressed
+// to 257 differing bytes and were rolled back. Remaining drift is the task-null
+// branch's extra zero/jump versus the original direct EAX-zero edge.
+// Main-agent audit restored canonical destructor ownership for action, world,
+// player, static object, and combat object; natural task/action flow remains.
 
 class RGE_Static_Object {
 public:
-    char gap_00[0x38];
+    virtual ~RGE_Static_Object();
+    char gap_04[0x34];
     int world_x;
     int world_y;
     int world_z;
@@ -11,18 +24,20 @@ public:
 
 class RGE_Game_World {
 public:
+    virtual ~RGE_Game_World();
     RGE_Static_Object* object(int id);
 };
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Player();
+    char gap_04[0x38];
     RGE_Game_World* world;
 };
 
 class RGE_Action {
 public:
-    virtual void avf00();
+    virtual ~RGE_Action();
     virtual void avf01();
     virtual void avf02();
     virtual void avf03();
@@ -69,7 +84,7 @@ public:
     char gap_10[0x174];
     RGE_Action_List* action_list;
 
-    virtual void vf000();
+    virtual ~RGE_Combat_Object();
     virtual void vf001();
     virtual void vf002();
     virtual void vf003();
@@ -208,34 +223,42 @@ public:
 
 int RGE_Combat_Object::gather(int object_id, int force) {
     RGE_Static_Object* target = this->player->world->object(object_id);
+    RGE_Static_Object* result = target;
+    RGE_Task* task;
+    RGE_Action_Gather* action;
     if (target == 0) {
-        return 0;
+        goto done;
     }
 
     if (force == 0 &&
         this->action_list->have_action() == 1 &&
         this->action_list->get_action()->get_target() == target &&
         this->action_list->get_action()->action_type() == 5) {
-        return 1;
+        goto success;
     }
 
     if (this->action_list->have_action() == 1 &&
         this->action_list->get_action()->action_type() == 5) {
         this->action_list->get_action()->set_target_pos(target, target->world_x, target->world_y, target->world_z);
-        return 1;
+        goto success;
     }
 
-    RGE_Task* task = this->create_gather_task(target, target->world_x, target->world_y, target->world_z);
+    task = this->create_gather_task(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) {
-        return 0;
+        result = 0;
+        goto done;
     }
 
-    RGE_Action_Gather* action = new RGE_Action_Gather(this, task, target);
+    action = new RGE_Action_Gather(this, task, target);
+    result = (RGE_Static_Object*)action;
     if (action == 0) {
-        return 0;
+        goto done;
     }
 
     this->action_list->delete_list();
     this->add_action(action);
-    return 1;
+success:
+    result = (RGE_Static_Object*)1;
+done:
+    return (int)result;
 }

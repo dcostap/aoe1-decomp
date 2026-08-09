@@ -13,14 +13,18 @@
 // localized drift: after RGE_Action_Move_To ctor, rebuilt zeros eax before EH-state reset and uses test/je to shared epilogue;
 // original tests edi before EH-state reset, uses jne to success body, then xor eax/jmp epilogue on null. Store does not affect flags,
 // eax is overwritten on success, and null path returns 0, so this looks behavior-equivalent but is not exact.
+// Fresh worker: a pointer-as-status diagnostic reached 49 strict differing bytes
+// but added `mov edi,1; mov eax,edi` on success; it was rolled back to the
+// natural int result candidate (54 bytes, exact size/calls).
+// Main-agent audit replaced the proxy cast, raw vptr field, and raw master
+// offsets with canonical inherited virtual and master-object ownership.
 
 #include <stddef.h>
 
 typedef unsigned char uchar;
 
 class RGE_Sprite;
-class RGE_Action_Object {
-};
+class RGE_Action_Object;
 
 class RGE_Action_List {
 public:
@@ -75,8 +79,16 @@ public:
     RGE_Action_Move_To(RGE_Action_Object* obj, float x, float y, float z, float range, RGE_Sprite* spr);
 };
 
-struct VTable208Proxy {
-    virtual void s000(); virtual void s004(); virtual void s008(); virtual void s00C();
+class RGE_Master_Action_Object {
+public:
+    virtual ~RGE_Master_Action_Object();
+    char gap_04[0xB8];
+    RGE_Sprite* sprite;
+    RGE_Sprite* moving_sprite;
+};
+
+struct RGE_Action_Object {
+    virtual ~RGE_Action_Object(); virtual void s004(); virtual void s008(); virtual void s00C();
     virtual void s010(); virtual void s014(); virtual void s018(); virtual void s01C();
     virtual void s020(); virtual void s024(); virtual void s028(); virtual void s02C();
     virtual void s030(); virtual void s034(); virtual void s038(); virtual void s03C();
@@ -109,18 +121,17 @@ struct VTable208Proxy {
     virtual void s1E0(); virtual void s1E4(); virtual void s1E8(); virtual void s1EC();
     virtual void s1F0(); virtual void s1F4(); virtual void s1F8(); virtual void s1FC();
     virtual void s200(); virtual void s204();
-    virtual void call208(void* arg);
+    virtual void add_action(void* action);
+
+    int id;
+    RGE_Master_Action_Object* master_obj;
+    void* owner;
+    char gap_10[0x174];
+    RGE_Action_List* actions;
 };
 
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
-    void* vtable_ptr;
-    char gap_04[4];
-    void* field_08;
-    void* field_0C;
-    char gap_10[0x184 - 0x10];
-    RGE_Action_List* actions;
-
     int moveTo(float x, float y, float z, float range, int force);
 };
 
@@ -156,16 +167,16 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float range, int force)
         }
     }
 
-    sprite = *(RGE_Sprite**)((char*)this->field_08 + 0xC0);
+    sprite = this->master_obj->moving_sprite;
     if (sprite == 0) {
-        sprite = *(RGE_Sprite**)((char*)this->field_08 + 0xBC);
+        sprite = this->master_obj->sprite;
     }
 
     move_action = new RGE_Action_Move_To(this, x, y, z, range, sprite);
     result = 0;
     if (move_action != 0) {
         this->actions->delete_list();
-        ((VTable208Proxy*)this)->call208(move_action);
+        this->add_action(move_action);
 
 success:
         result = 1;

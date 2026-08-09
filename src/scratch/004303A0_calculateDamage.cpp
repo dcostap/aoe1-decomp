@@ -35,6 +35,11 @@
 // is compiler register scheduling: original saves EBP then loads armor into it,
 // while VC5 loads armor into EBX before the EBP save; downstream terrain-index
 // registers follow that choice. Left in scratch after the bounded session.
+// Fresh worker: declaration-after-terrain reached a 76-byte diff by delaying
+// armor loads to loop entry; direct member armor scan worsened to 210 bytes and
+// was rolled back. The clean typed candidate remains authoritative.
+// Main-agent audit restored canonical polymorphic master/world/player/static
+// ownership while retaining the natural armor and terrain-table loops.
 
 extern float FLOAT_1_0;
 extern float FLOAT_0_0;
@@ -46,7 +51,8 @@ struct RGE_Armor_Weapon_Info {
 };
 
 struct RGE_Master_Combat_Object {
-    unsigned char gap_00[0x100];
+    virtual ~RGE_Master_Combat_Object();
+    unsigned char gap_04[0xFC];
     unsigned char base_armor;
     unsigned char gap_101[0x1];
     short armor_num;
@@ -65,17 +71,19 @@ struct RGE_Tile {
 };
 
 struct RGE_Game_World {
-    unsigned char gap_00[0x54];
+    virtual ~RGE_Game_World();
+    unsigned char gap_04[0x50];
     float** terrains;
 };
 
 struct RGE_Player {
-    unsigned char gap_00[0x3C];
+    virtual ~RGE_Player();
+    unsigned char gap_04[0x38];
     RGE_Game_World* world;
 };
 
 struct RGE_Static_Object {
-    virtual void slot_00();
+    virtual ~RGE_Static_Object();
     virtual void slot_04();
     virtual void slot_08();
     virtual void slot_0C();

@@ -31,6 +31,12 @@
 //   ownership are otherwise aligned. Keep this clean, typed reconstruction in scratch.
 // - Main-agent audit replaced the raw VTableProxy cast with a canonical narrow
 //   RGE_Moving_Object base and named virtual calls; emitted code is unchanged.
+// Fresh worker: typed shared-result pointer and integer-result forms were tested
+// against the gather/transport EH-tail pattern; they worsened prologue/layout
+// (101 and 243 differing bytes) and were rolled back. Keep the 274-byte natural
+// goto-fail reconstruction with calls/relocations aligned.
+// Main-agent audit removed inline empty virtual definitions and restored
+// canonical destructor ownership; the shared-EH-tail blocker remains.
 //
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
@@ -62,7 +68,8 @@ class RGE_Task;
 
 class RGE_Game_World {
 public:
-    char gap_00[0x88];
+    virtual ~RGE_Game_World();
+    char gap_04[0x84];
     void** objectsValue;
     int numberObjectsValue;
     int maxNumberObjectsValue;
@@ -75,13 +82,14 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x3C];
+    virtual ~RGE_Player();
+    char gap_04[0x38];
     RGE_Game_World* world;
 };
 
 class RGE_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Static_Object();
     int id;
     void* master_obj;
     RGE_Player* owner;
@@ -153,140 +161,140 @@ public:
 // Narrow inherited surface through the two binary-observed late virtual slots.
 class RGE_Moving_Object {
 public:
-    virtual void d00() {}
-    virtual void d01() {}
-    virtual void d02() {}
-    virtual void d03() {}
-    virtual void d04() {}
-    virtual void d05() {}
-    virtual void d06() {}
-    virtual void d07() {}
-    virtual void d08() {}
-    virtual void d09() {}
-    virtual void d0a() {}
-    virtual void d0b() {}
-    virtual void d0c() {}
-    virtual void d0d() {}
-    virtual void d0e() {}
-    virtual void d0f() {}
-    virtual void d10() {}
-    virtual void d11() {}
-    virtual void d12() {}
-    virtual void d13() {}
-    virtual void d14() {}
-    virtual void d15() {}
-    virtual void d16() {}
-    virtual void d17() {}
-    virtual void d18() {}
-    virtual void d19() {}
-    virtual void d1a() {}
-    virtual void d1b() {}
-    virtual void d1c() {}
-    virtual void d1d() {}
-    virtual void d1e() {}
-    virtual void d1f() {}
-    virtual void d20() {}
-    virtual void d21() {}
-    virtual void d22() {}
-    virtual void d23() {}
-    virtual void d24() {}
-    virtual void d25() {}
-    virtual void d26() {}
-    virtual void d27() {}
-    virtual void d28() {}
-    virtual void d29() {}
-    virtual void d2a() {}
-    virtual void d2b() {}
-    virtual void d2c() {}
-    virtual void d2d() {}
-    virtual void d2e() {}
-    virtual void d2f() {}
-    virtual void d30() {}
-    virtual void d31() {}
-    virtual void d32() {}
-    virtual void d33() {}
-    virtual void d34() {}
-    virtual void d35() {}
-    virtual void d36() {}
-    virtual void d37() {}
-    virtual void d38() {}
-    virtual void d39() {}
-    virtual void d3a() {}
-    virtual void d3b() {}
-    virtual void d3c() {}
-    virtual void d3d() {}
-    virtual void d3e() {}
-    virtual void d3f() {}
-    virtual void d40() {}
-    virtual void d41() {}
-    virtual void d42() {}
-    virtual void d43() {}
-    virtual void d44() {}
-    virtual void d45() {}
-    virtual void d46() {}
-    virtual void d47() {}
-    virtual void d48() {}
-    virtual void d49() {}
-    virtual void d4a() {}
-    virtual void d4b() {}
-    virtual void d4c() {}
-    virtual void d4d() {}
-    virtual void d4e() {}
-    virtual void d4f() {}
-    virtual void d50() {}
-    virtual void d51() {}
-    virtual void d52() {}
-    virtual void d53() {}
-    virtual void d54() {}
-    virtual void d55() {}
-    virtual void d56() {}
-    virtual void d57() {}
-    virtual void d58() {}
-    virtual void d59() {}
-    virtual void d5a() {}
-    virtual void d5b() {}
-    virtual void d5c() {}
-    virtual void d5d() {}
-    virtual void d5e() {}
-    virtual void d5f() {}
-    virtual void d60() {}
-    virtual void d61() {}
-    virtual void d62() {}
-    virtual void d63() {}
-    virtual void d64() {}
-    virtual void d65() {}
-    virtual void d66() {}
-    virtual void d67() {}
-    virtual void d68() {}
-    virtual void d69() {}
-    virtual void d6a() {}
-    virtual void d6b() {}
-    virtual void d6c() {}
-    virtual void d6d() {}
-    virtual void d6e() {}
-    virtual void d6f() {}
-    virtual void d70() {}
-    virtual void d71() {}
-    virtual void d72() {}
-    virtual void d73() {}
-    virtual void d74() {}
-    virtual void d75() {}
-    virtual void d76() {}
-    virtual void d77() {}
-    virtual void d78() {}
-    virtual void d79() {}
-    virtual void d7a() {}
-    virtual void d7b() {}
-    virtual void d7c() {}
-    virtual void d7d() {}
-    virtual void d7e() {}
-    virtual void d7f() {}
-    virtual void d80() {}
-    virtual void d81() {}
+    virtual ~RGE_Moving_Object();
+    virtual void d01();
+    virtual void d02();
+    virtual void d03();
+    virtual void d04();
+    virtual void d05();
+    virtual void d06();
+    virtual void d07();
+    virtual void d08();
+    virtual void d09();
+    virtual void d0a();
+    virtual void d0b();
+    virtual void d0c();
+    virtual void d0d();
+    virtual void d0e();
+    virtual void d0f();
+    virtual void d10();
+    virtual void d11();
+    virtual void d12();
+    virtual void d13();
+    virtual void d14();
+    virtual void d15();
+    virtual void d16();
+    virtual void d17();
+    virtual void d18();
+    virtual void d19();
+    virtual void d1a();
+    virtual void d1b();
+    virtual void d1c();
+    virtual void d1d();
+    virtual void d1e();
+    virtual void d1f();
+    virtual void d20();
+    virtual void d21();
+    virtual void d22();
+    virtual void d23();
+    virtual void d24();
+    virtual void d25();
+    virtual void d26();
+    virtual void d27();
+    virtual void d28();
+    virtual void d29();
+    virtual void d2a();
+    virtual void d2b();
+    virtual void d2c();
+    virtual void d2d();
+    virtual void d2e();
+    virtual void d2f();
+    virtual void d30();
+    virtual void d31();
+    virtual void d32();
+    virtual void d33();
+    virtual void d34();
+    virtual void d35();
+    virtual void d36();
+    virtual void d37();
+    virtual void d38();
+    virtual void d39();
+    virtual void d3a();
+    virtual void d3b();
+    virtual void d3c();
+    virtual void d3d();
+    virtual void d3e();
+    virtual void d3f();
+    virtual void d40();
+    virtual void d41();
+    virtual void d42();
+    virtual void d43();
+    virtual void d44();
+    virtual void d45();
+    virtual void d46();
+    virtual void d47();
+    virtual void d48();
+    virtual void d49();
+    virtual void d4a();
+    virtual void d4b();
+    virtual void d4c();
+    virtual void d4d();
+    virtual void d4e();
+    virtual void d4f();
+    virtual void d50();
+    virtual void d51();
+    virtual void d52();
+    virtual void d53();
+    virtual void d54();
+    virtual void d55();
+    virtual void d56();
+    virtual void d57();
+    virtual void d58();
+    virtual void d59();
+    virtual void d5a();
+    virtual void d5b();
+    virtual void d5c();
+    virtual void d5d();
+    virtual void d5e();
+    virtual void d5f();
+    virtual void d60();
+    virtual void d61();
+    virtual void d62();
+    virtual void d63();
+    virtual void d64();
+    virtual void d65();
+    virtual void d66();
+    virtual void d67();
+    virtual void d68();
+    virtual void d69();
+    virtual void d6a();
+    virtual void d6b();
+    virtual void d6c();
+    virtual void d6d();
+    virtual void d6e();
+    virtual void d6f();
+    virtual void d70();
+    virtual void d71();
+    virtual void d72();
+    virtual void d73();
+    virtual void d74();
+    virtual void d75();
+    virtual void d76();
+    virtual void d77();
+    virtual void d78();
+    virtual void d79();
+    virtual void d7a();
+    virtual void d7b();
+    virtual void d7c();
+    virtual void d7d();
+    virtual void d7e();
+    virtual void d7f();
+    virtual void d80();
+    virtual void d81();
     // vtable[130] = offset 0x208
     virtual void* add_action(void* action) = 0;
     // vtable[131] = offset 0x20C (gap)
-    virtual void d82() {}
+    virtual void d82();
     // vtable[132] = offset 0x210
     virtual void* make_enter_task(void* obj, int x, int y, int z) = 0;
 };

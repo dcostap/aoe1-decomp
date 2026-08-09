@@ -38,6 +38,11 @@
 //     at 67 positional diff, exact size/calls, with the tail epilogue aligned.
 // Main-agent normalization replaced the cast-to-helper virtual call with a real
 // inherited virtual surface and direct member call; emitted code is unchanged.
+// Fresh worker: explicit null/success result arms reproduced the prior 249-byte
+// two-return basin, while a switch diagnostic grew to 276 bytes; both were rolled
+// back to the natural single-result guard.
+// Main-agent audit retained direct inherited virtual calls and canonical action
+// ownership; no manual dispatch or EH-tail steering survives.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
@@ -99,7 +104,7 @@ public:
 // Narrow canonical inherited virtual surface through slot 0x208. Keeping it as
 // a real base avoids raw/manual vtable dispatch while preserving the proven ABI.
 struct RGE_Combat_Object_Virtual_Base {
-    virtual void s00();
+    virtual ~RGE_Combat_Object_Virtual_Base();
     virtual void s04();
     virtual void s08();
     virtual void s0C();
