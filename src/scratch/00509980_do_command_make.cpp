@@ -10,6 +10,11 @@
 // 7: split player fallback into progress-special lookup plus building-missing lookup with common virtual call; edit diff 22.1 but EBP/padding too large.
 // 8: remove p alias again while keeping split fallback: still oversized/truncated and worse; rolled back to smaller merged fallback.
 // Left in scratch: behavior/calls modeled, but first mismatch is EH funclet address/prologue metadata and register/coloring drift remains broad.
+// This pass normalized TRIBE_Command to the shared RGE_Command inheritance;
+// codegen stayed at 366B/318 strict bytes. The final natural typed candidate
+// remains blocked by the EH prologue and duplicated-fallback CFG basin.
+// Main-agent audit removed parameter-home aliasing, restored named work-status
+// outputs, and canonicalized world/player/action ownership.
 
 class UnitAIModule;
 class RGE_Static_Object;
@@ -17,8 +22,9 @@ class TRIBE_Building_Object;
 
 class RGE_Game_World {
 public:
-    char gap_00[0x40];
-    void** players;
+    virtual ~RGE_Game_World();
+    char gap_04[0x3C];
+    class TRIBE_Player** players;
     RGE_Static_Object* object(int id);
 };
 
@@ -31,7 +37,8 @@ public:
 class RGE_Static_Object_VTable208 {
 public:
 #define VPAD(n) virtual void v##n();
-    VPAD(0) VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
+    virtual ~RGE_Static_Object_VTable208();
+    VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
     VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
     VPAD(24) VPAD(25) VPAD(26) VPAD(27) VPAD(28) VPAD(29) VPAD(30) VPAD(31)
@@ -62,10 +69,11 @@ public:
     int work_status(void* command, short* local_76, short* local_78, char* work_name, int len);
 };
 
-class PlayerLike {
+class TRIBE_Player {
 public:
 #define PPAD(n) virtual void p##n();
-    PPAD(0) PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
+    virtual ~TRIBE_Player();
+    PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
     PPAD(8) PPAD(9) PPAD(10) PPAD(11) PPAD(12) PPAD(13) PPAD(14) PPAD(15)
     PPAD(16) PPAD(17) PPAD(18) PPAD(19) PPAD(20) PPAD(21) PPAD(22) PPAD(23)
     PPAD(24) PPAD(25) PPAD(26) PPAD(27) PPAD(28) PPAD(29) PPAD(30) PPAD(31)
@@ -90,14 +98,29 @@ struct TRIBE_Command_Make {
 
 class TRIBE_Action_Make_Obj {
 public:
-    char gap[0x50];
+    virtual ~TRIBE_Action_Make_Obj();
+    char gap_04[0x4C];
     TRIBE_Action_Make_Obj(RGE_Static_Object* obj, short train_id, int unique_id, char flag);
 };
 
-class TRIBE_Command {
+class TCommunications_Handler;
+
+class RGE_Command {
 public:
-    void* vtable;
+    virtual void vfunc0() = 0;
+    virtual ~RGE_Command();
+    virtual void vfunc8() = 0;
+    virtual void vfuncC() = 0;
+
     RGE_Game_World* world;
+    void* last_order;
+    int last_order_size;
+    unsigned int last_order_time;
+    TCommunications_Handler* com_hand;
+};
+
+class TRIBE_Command : public RGE_Command {
+public:
     void do_command_make(TRIBE_Command_Make* cmd);
 };
 
@@ -105,15 +128,12 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* cmd)
 {
     short progress;
     short work_target;
-    short local_78;
-    short local_76;
     char work_name[100];
     TRIBE_Building_Object* building;
 
     building = (TRIBE_Building_Object*)this->world->object(cmd->unit_id);
     if (building != 0) {
-        building->work_status(&cmd, &local_76, &local_78, work_name + 4, 100);
-        progress = *(short*)&cmd;
+        building->work_status(cmd, &progress, &work_target, work_name, 100);
         if (progress != 0x67 && progress != 0x66) {
             TRIBE_Action_Make_Obj* action = new TRIBE_Action_Make_Obj(building, cmd->train_id, cmd->unique_id, 0);
             if (action != 0) {
@@ -128,7 +148,7 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* cmd)
         }
     }
 
-    PlayerLike* player = (PlayerLike*)this->world->players[cmd->player_index];
+    TRIBE_Player* player = this->world->players[cmd->player_index];
     if (player != 0) {
         player->make(0, cmd->train_id, cmd->unit_id, cmd->unique_id);
     }

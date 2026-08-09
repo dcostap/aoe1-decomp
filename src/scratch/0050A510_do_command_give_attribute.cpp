@@ -21,6 +21,12 @@
 // v10: Inline cost=0 inside if-else. BreakS fld/fcom order differently.
 //
 // Remaining gap: 368 bytes vs 389 (21 bytes short).
+// This pass used the positive float guard and fresh typed world-player
+// expressions, aligning all eight calls and reaching a 290-byte strict diff;
+// shared command/player ABI normalization was neutral. The remaining gap is
+// broad frame/register/FPU scheduling, not an accepted-drift-sized hunk.
+// Main-agent audit removed inline empty virtual definitions and restored
+// canonical polymorphic world/player/base-game ownership.
 //
 // Prologue: rebuilt uses `sub esp,0Ch` (3 bytes) + saves `this` to stack slot
 // at [esp+18h] (3 bytes). Original uses `push ecx` (1 byte, allocates 4B local
@@ -54,36 +60,37 @@ struct TRIBE_Command_Give_Attribute {
 
 class RGE_Game_World {
 public:
-    char gap_00[0x40];
-    void** players;
+    virtual ~RGE_Game_World();
+    char gap_04[0x3C];
+    class RGE_Player** players;
 };
 
-#define VPAD(n) virtual void v##n() {}
+#define VPAD(n) virtual void v##n();
 
 class RGE_Player {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Player();
     char gap_04[0x4C];
     float* attributes;
 
-    VPAD(0) VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
+    VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
     VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
     VPAD(24) VPAD(25) VPAD(26) VPAD(27) VPAD(28) VPAD(29)
-    virtual void giveAttr(int id, float v, int z) {}
+    virtual void giveAttr(int id, float v, int z) = 0;
     VPAD(31) VPAD(32) VPAD(33) VPAD(34) VPAD(35) VPAD(36) VPAD(37) VPAD(38)
     VPAD(39) VPAD(40) VPAD(41) VPAD(42) VPAD(43) VPAD(44) VPAD(45) VPAD(46)
     VPAD(47) VPAD(48) VPAD(49) VPAD(50) VPAD(51) VPAD(52) VPAD(53) VPAD(54)
     VPAD(55) VPAD(56) VPAD(57)
-    virtual void sendEvent(int a, int b, int c, int d, int e) {}
+    virtual void sendEvent(int a, int b, int c, int d, int e) = 0;
 };
 
 class RGE_Base_Game {
 public:
-    void* vtable_ptr;
-    VPAD(0) VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
+    virtual ~RGE_Base_Game();
+    VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
-    virtual void gameFn(int a, int b, int c, int d, int e) {}
+    virtual void gameFn(int a, int b, int c, int d, int e);
 };
 
 extern RGE_Base_Game* rge_base_game;
@@ -91,10 +98,24 @@ extern float DAT_00576574;
 extern double DAT_00576578;
 extern long __ftol(float);
 
-class TRIBE_Command {
+class TCommunications_Handler;
+
+class RGE_Command {
 public:
-    char gap_00[0x04];
+    virtual void vfunc0() = 0;
+    virtual ~RGE_Command();
+    virtual void vfunc8() = 0;
+    virtual void vfuncC() = 0;
+
     RGE_Game_World* world;
+    void* last_order;
+    int last_order_size;
+    unsigned int last_order_time;
+    TCommunications_Handler* com_hand;
+};
+
+class TRIBE_Command : public RGE_Command {
+public:
 
     void do_command_give_attribute(TRIBE_Command_Give_Attribute* ca);
 };
@@ -105,10 +126,10 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
     float cost;
     
     cost = 0.0f;
-    if (ca->attr_amount < 0.0f) {
-        v = 0.0f;
-    } else {
+    if (ca->attr_amount >= 0.0f) {
         v = ca->attr_amount;
+    } else {
+        v = 0.0f;
     }
     
     if (v > 0.0) {
@@ -116,9 +137,7 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
     }
     
     {
-        RGE_Player** players = (RGE_Player**)this->world->players;
-        RGE_Player* player = players[ca->player_id];
-        float* attr_ptr = &player->attributes[ca->attr_id];
+        float* attr_ptr = &this->world->players[ca->player_id]->attributes[ca->attr_id];
         
         if (v + cost > *attr_ptr) {
             cost = *attr_ptr * ca->attr_cost;
@@ -126,25 +145,15 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
         }
     }
     
-    {
-        RGE_Player** players = (RGE_Player**)this->world->players;
-        RGE_Player* to_player = players[ca->to_player_id];
-        RGE_Player* player = players[ca->player_id];
-        
-        to_player->giveAttr(ca->attr_id, v, 0);
-        player->giveAttr(ca->attr_id, -(v + cost), 0);
-        player->giveAttr(0x35, v, 0);
-        to_player->giveAttr(0x35, -(v + cost), 0);
-    }
+    this->world->players[ca->to_player_id]->giveAttr(ca->attr_id, v, 0);
+    this->world->players[ca->player_id]->giveAttr(ca->attr_id, -(v + cost), 0);
+    this->world->players[ca->player_id]->giveAttr(0x35, v, 0);
+    this->world->players[ca->to_player_id]->giveAttr(0x35, -(v + cost), 0);
     
     {
         rge_base_game->gameFn(7, ca->player_id, ca->to_player_id, ca->attr_id, (long)v);
     }
     
-    {
-        RGE_Player** players = (RGE_Player**)this->world->players;
-        RGE_Player* to_player = players[ca->to_player_id];
-        
-        to_player->sendEvent(ca->player_id, ca->to_player_id, 0x20A, ca->attr_id, (long)ca->attr_amount);
-    }
+    this->world->players[ca->to_player_id]->sendEvent(
+        ca->player_id, ca->to_player_id, 0x20A, ca->attr_id, (long)ca->attr_amount);
 }

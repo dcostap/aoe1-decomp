@@ -9,6 +9,12 @@
 // tried passing &p versus &cmd to work_status: &p is wrong for original parameter-slot overwrite; &cmd restores the intended stack slot use but still misses original ESI=cmd / EDI=building allocation.
 // tried /Od as a diagnostic: produced 364B but 83% positional mismatch and wrong frame; rolled back.
 // left unresolved: behavior/call set appear modeled, but VC5 register-allocation/TU-context basin is still wrong and check_function reports configured size 364 exceeds rebuilt .text 352 under the kept /GX flags.
+// This pass restored the proven RGE_Action/RGE_Action_Object and shared RGE_Command
+// surfaces; output stayed at 352B/315 strict bytes. A duplicated fallback lookup
+// CFG probe grew to 368B/324 bytes and was rolled back. Final candidate is natural,
+// typed, and validated in scratch; the EH funclet/prologue/register basin remains.
+// Main-agent audit removed parameter-home aliasing, restored named work-status
+// outputs, and canonicalized world/player/static-object ownership.
 
 class RGE_Static_Object;
 class TRIBE_Building_Object;
@@ -17,8 +23,9 @@ class TRIBE_Action_Make_Tech;
 
 class RGE_Game_World {
 public:
-    char gap_00[0x40];
-    void** players; // +0x40
+    virtual ~RGE_Game_World();
+    char gap_04[0x3C];
+    class TRIBE_Player** players; // +0x40
     RGE_Static_Object* object(int id);
 };
 
@@ -31,7 +38,8 @@ public:
 class RGE_Static_Object_VTable208 {
 public:
 #define VPAD(n) virtual void v##n();
-    VPAD(0) VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
+    virtual ~RGE_Static_Object_VTable208();
+    VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
     VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
     VPAD(24) VPAD(25) VPAD(26) VPAD(27) VPAD(28) VPAD(29) VPAD(30) VPAD(31)
@@ -57,15 +65,19 @@ public:
     UnitAIModule* unitAI();
 };
 
-class TRIBE_Building_Object : public RGE_Static_Object {
+class RGE_Action_Object : public RGE_Static_Object {
+};
+
+class TRIBE_Building_Object : public RGE_Action_Object {
 public:
     int work_status(void* command, short* local_76, short* local_78, char* work_name, int len);
 };
 
-class PlayerLike {
+class TRIBE_Player {
 public:
 #define PPAD(n) virtual void p##n();
-    PPAD(0) PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
+    virtual ~TRIBE_Player();
+    PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
     PPAD(8) PPAD(9) PPAD(10) PPAD(11) PPAD(12) PPAD(13) PPAD(14) PPAD(15)
     PPAD(16) PPAD(17) PPAD(18) PPAD(19) PPAD(20) PPAD(21) PPAD(22) PPAD(23)
     PPAD(24) PPAD(25) PPAD(26) PPAD(27) PPAD(28) PPAD(29) PPAD(30) PPAD(31)
@@ -88,16 +100,39 @@ struct TRIBE_Command_Research {
     int unique_id;       // +0C
 };
 
-class TRIBE_Action_Make_Tech {
+class RGE_Action {
 public:
-    char gap[0x48];
-    TRIBE_Action_Make_Tech(RGE_Static_Object* obj, short tech_id, int unique_id);
+    virtual ~RGE_Action();
+    char gap[0x3C];
 };
 
-class TRIBE_Command {
+class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
-    void* vtable;
+    virtual ~TRIBE_Action_Make_Tech();
+    short tech_id;
+    char gap_42[2];
+    int unique_id;
+    TRIBE_Action_Make_Tech(RGE_Action_Object* obj, short tech_id, int unique_id);
+};
+
+class TCommunications_Handler;
+
+class RGE_Command {
+public:
+    virtual void vfunc0() = 0;
+    virtual ~RGE_Command();
+    virtual void vfunc8() = 0;
+    virtual void vfuncC() = 0;
+
     RGE_Game_World* world;
+    void* last_order;
+    int last_order_size;
+    unsigned int last_order_time;
+    TCommunications_Handler* com_hand;
+};
+
+class TRIBE_Command : public RGE_Command {
+public:
     void do_command_research(TRIBE_Command_Research* cmd);
 };
 
@@ -105,15 +140,12 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* cmd)
 {
     short progress;
     short work_target;
-    short local_78;
-    short local_76;
     char work_name[100];
     TRIBE_Building_Object* building;
 
     building = (TRIBE_Building_Object*)this->world->object(cmd->unit_id);
     if (building != 0) {
-        building->work_status(&cmd, &local_76, &local_78, work_name + 4, 100);
-        progress = *(short*)&cmd;
+        building->work_status(cmd, &progress, &work_target, work_name, 100);
         if (progress != 0x67 && progress != 0x66) {
             TRIBE_Action_Make_Tech* action = new TRIBE_Action_Make_Tech(building, cmd->tech_id, cmd->unique_id);
             if (action != 0) {
@@ -128,7 +160,7 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* cmd)
         }
     }
 
-    PlayerLike* player = (PlayerLike*)this->world->players[cmd->player_index];
+    TRIBE_Player* player = this->world->players[cmd->player_index];
     if (player != 0) {
         player->research(cmd->tech_id, cmd->unit_id, -1, cmd->unique_id);
     }

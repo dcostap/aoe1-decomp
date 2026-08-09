@@ -10,6 +10,11 @@
 // 7: local one variable for can_place constant args optimized away/no improvement.
 // 8: flags /O2 no-/Oy, /Ox, and /GX: same 416 B outcome.
 // Left in scratch: behavior/call surface is modeled and early load order is close, but VC5 standalone keeps a 0x08 frame instead of original 0x0C and then broad branch/register displacement drift remains. Not accepted_drift-safe.
+// This pass normalized the shared RGE_Command base and retested declaration
+// order/self-alias context; output stayed at 405B/250 strict bytes, frame
+// 0x08 versus 0x0C. Final candidate is natural and validated in scratch.
+// Main-agent audit restored canonical polymorphic world/static/player/build
+// ownership while retaining the ordinary placement/foundation branches.
 
 typedef unsigned char uchar;
 
@@ -17,21 +22,32 @@ class RGE_Static_Object;
 
 class RGE_Game_World {
 public:
-    char gap_00[0x40];
-    void** players;
+    virtual ~RGE_Game_World();
+    char gap_04[0x3C];
+    class TRIBE_Player** players;
 };
 
 class RGE_Command {
 public:
-    void* vtable;
+    virtual void vfunc0() = 0;
+    virtual ~RGE_Command();
+    virtual void vfunc8() = 0;
+    virtual void vfuncC() = 0;
+
     RGE_Game_World* world;
+    void* last_order;
+    int last_order_size;
+    unsigned int last_order_time;
+    void* com_hand;
+
     RGE_Static_Object* get_obj(int id);
 };
 
 class RGE_Static_Object {
 public:
 #define OPAD(n) virtual void o##n();
-    OPAD(0) OPAD(1) OPAD(2) OPAD(3) OPAD(4) OPAD(5) OPAD(6) OPAD(7)
+    virtual ~RGE_Static_Object();
+    OPAD(1) OPAD(2) OPAD(3) OPAD(4) OPAD(5) OPAD(6) OPAD(7)
     OPAD(8) OPAD(9) OPAD(10) OPAD(11) OPAD(12) OPAD(13) OPAD(14) OPAD(15)
     OPAD(16) OPAD(17) OPAD(18) OPAD(19) OPAD(20) OPAD(21) OPAD(22) OPAD(23)
     OPAD(24) OPAD(25) OPAD(26) OPAD(27) OPAD(28) OPAD(29) OPAD(30) OPAD(31)
@@ -45,7 +61,8 @@ public:
 class TRIBE_Player {
 public:
 #define PPAD(n) virtual void p##n();
-    PPAD(0) PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
+    virtual ~TRIBE_Player();
+    PPAD(1) PPAD(2) PPAD(3) PPAD(4) PPAD(5) PPAD(6) PPAD(7)
     PPAD(8) PPAD(9) PPAD(10) PPAD(11) PPAD(12) PPAD(13) PPAD(14) PPAD(15)
     PPAD(16) PPAD(17) PPAD(18) PPAD(19) PPAD(20) PPAD(21) PPAD(22) PPAD(23)
     PPAD(24) PPAD(25) PPAD(26) PPAD(27) PPAD(28) PPAD(29) PPAD(30) PPAD(31)
@@ -62,7 +79,7 @@ public:
 
 class BuildInfo {
 public:
-    virtual void b0();
+    virtual ~BuildInfo();
     virtual void b1();
     virtual void b2();
     virtual void b3();
@@ -105,7 +122,7 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
     int count;
 
     count = cmd->count;
-    TRIBE_Player* player = (TRIBE_Player*)this->world->players[cmd->player_id];
+    TRIBE_Player* player = this->world->players[cmd->player_id];
     if (player == 0) {
         return;
     }

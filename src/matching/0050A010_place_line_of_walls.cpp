@@ -16,6 +16,11 @@
 //   resulting FPU stack-slot schedule; call set, CFG, frame, and size are exact.
 // Main-agent audit removed the inline empty destructor body and retained the
 // canonical command/master virtual declarations; output remains at 27 bytes.
+// Reversed the swap temporary to start_y/start_x and named the post-swap
+// semantic coordinates (coordinate_x=start_y, coordinate_y=start_x); this
+// recovers the original x87 argument evaluation and is an exact 291B match.
+// Main-agent audit confirmed canonical command/player/master ownership and the
+// natural coordinate swap; exact bytes were revalidated after promotion.
 
 typedef unsigned char uchar;
 
@@ -146,27 +151,29 @@ void TRIBE_Command::place_line_of_walls(
     int y_skip;
     int x_skip;
 
-    if (end_x == start_x) {
+    if (start_x == end_x) {
         y_skip = 0;
     } else {
         y_skip = (((int)(end_x <= start_x) - 1) & 2) - 1;
     }
 
-    if (end_y == start_y) {
+    if (start_y == end_y) {
         x_skip = 0;
     } else {
         x_skip = (((int)(end_y <= start_y) - 1) & 2) - 1;
     }
 
-    int temp = start_x;
-    start_x = start_y;
-    start_y = temp;
+    int temp = start_y;
+    start_y = start_x;
+    start_x = temp;
 
     for (;;) {
+        float coordinate_x = (float)start_y + 0.5f;
+        float coordinate_y = (float)start_x + 0.5f;
         if (master->check_placement(
                 player,
-                (float)start_y + 0.5f,
-                (float)start_x + 0.5f,
+                coordinate_x,
+                coordinate_y,
                 0, 1, master->elevation_flag, 0, 1, 1, 1) == 0) {
             if (player->pay_obj_cost(master->id, 1.0f, 0) == 0) {
                 return;
@@ -174,8 +181,8 @@ void TRIBE_Command::place_line_of_walls(
 
             RGE_Static_Object* object = master->make_new_obj(
                 player,
-                (float)start_y + 0.5f,
-                (float)start_x + 0.5f,
+                coordinate_x,
+                coordinate_y,
                 0,
                 object_id);
             if (object != 0 && *result == 0) {
