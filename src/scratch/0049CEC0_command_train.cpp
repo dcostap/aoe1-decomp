@@ -26,6 +26,14 @@
 // forcing is retained.
 // Main-agent audit restored canonical polymorphic game/world/player/screen
 // ownership and retained the natural queue/cost fallback.
+// Current worker probes:
+// - changed command_building_make_obj to the int spelling from its exact donor
+//   and removed the narrowing cast; emitted bytes were unchanged, so restored.
+// - reversed the local declaration order of msg and attr; emitted bytes were
+//   unchanged, so restored.
+// Remaining lead is the inherited entry callee-save coloring (VC5 keeps this
+// in ESI and player_id in EDI; the oracle keeps this in EDI and player_id in
+// ESI). No natural ABI/layout/source-context axis remains justified here.
 
 struct RGE_Static_Object;
 struct TRIBE_Player;

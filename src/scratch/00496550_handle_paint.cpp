@@ -1,18 +1,192 @@
 // VA: 00496550 handle_paint (425B)
-// scr_game.cpp
+// scr_game.cpp:1440-1521
+//
+// Natural reconstruction of the game-screen paint gate, child-panel refresh,
+// and per-child timing accumulation.  The base-panel fields below preserve
+// the proven offsets from the executable.
+// Attempt log:
+// - baseline matched size/frame/call set but kept this in ESI, the draw flag in
+//   EDI, and a broad block/register drift (361 differing bytes).
+// - materialized gate pointers, self/register aliases, and declaration-order
+//   variants were duplicate or worse codegen; restored named direct fields.
+// - explicit positive/else draw-all assignment recovered the oracle prologue,
+//   42 exact leading instructions, and 369/428 resynchronized bytes.  The
+//   remaining gap is a three-byte size shift around the Help-panel zero-store
+//   and later local/register scheduling.  Further variants exhausted the
+//   current worker budget; source remains the clean typed reconstruction.
 
-class TRIBE_Screen_Game {
+extern unsigned long debug_timeGetTime(const char* file, int line);
+
+class TDrawArea {
 public:
-    char gap4[0x1C];
-    int field_20;
-    char gap24[0x4];
-    int field_28;
-    
-    void handle_paint();
+    void* draw_system;
+    void* hwnd;
 };
 
-void TRIBE_Screen_Game::handle_paint() {
-    if (!field_20) return;
-    field_20 = 0;
-    field_28 = 1;
+class TPanel;
+
+struct PanelNode {
+    TPanel* panel;
+    char gap_04[4];
+    PanelNode* next;
+};
+
+class TPanel {
+public:
+    virtual void v00();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void v20(int mode);
+    virtual void v24(TPanel* first, TPanel* second, int mode);
+    virtual void v28();
+    virtual void v2C();
+    virtual void v30();
+    virtual void v34();
+    virtual void v38();
+    virtual void v3C();
+    virtual void v40();
+    virtual void v44();
+    virtual void v48();
+    virtual void v4C();
+    virtual void v50();
+    virtual void v54();
+
+    char gap_004[0x1C];
+    TDrawArea* render_area;             // +0x20
+    char gap_024[0x14];
+    int panel_mode;                     // +0x38
+    TPanel* curr_child;                 // +0x3C
+    TPanel* panel_40;                   // +0x40
+    char gap_044[0x14];
+    PanelNode* child_list;              // +0x58
+    char gap_05C[0x10];
+    void* field_6C;                     // +0x6C
+    void* field_70;                     // +0x70
+    char gap_074[4];
+    int have_focus;                     // +0x78
+    int field_7C;                       // +0x7C
+    int field_80;                       // +0x80
+    int redraw_needed;                  // +0x84
+    char gap_088[0x6C];
+
+    int get_focus();
+};
+
+class TPanelSystem {
+public:
+    TPanel* panel(char* name);
+};
+
+extern TPanelSystem panel_system;
+
+class RGE_Base_Game {
+public:
+    char gap_000[0x18];
+    int prog_active;                    // +0x18
+
+    void add_to_timing(int slot, unsigned long value);
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+extern "C" __declspec(dllimport) int __stdcall IsIconic(void* hwnd);
+
+static const char s_scr_game_cpp[] =
+    "C:\\msdev\\work\\age1_x1\\scr_game.cpp";
+static char s_Send_Quick_Message_Dialog[] = "Send Quick Message Dialog";
+static char s_Help_Dialog[] = "Help Dialog";
+
+class TScreenPanel : public TPanel {
+public:
+    char gap_0F4[0x384];
+};
+
+class TRIBE_Screen_Game : public TScreenPanel {
+public:
+    char gap_478[0x40];
+    TPanel* main_view;                   // +0x4B8
+    TPanel* map_view;                    // +0x4BC
+
+    virtual long handle_paint();
+};
+
+long TRIBE_Screen_Game::handle_paint() {
+    if (this->render_area == 0) {
+        return 0;
+    }
+    if (this->field_70 == 0) {
+        return 0;
+    }
+    if (this->field_6C == 0) {
+        return 0;
+    }
+    if (rge_base_game->prog_active == 0) {
+        return 0;
+    }
+    if (IsIconic(this->render_area->hwnd) != 0) {
+        return 0;
+    }
+
+    unsigned long first_time =
+        debug_timeGetTime(s_scr_game_cpp, 0x5AA);
+
+    int draw_all_children;
+    if (this->panel_mode != 2 &&
+        this->main_view->get_focus() == 0 &&
+        this->curr_child != panel_system.panel(s_Send_Quick_Message_Dialog)) {
+        draw_all_children = 0;
+        if (this->curr_child == panel_system.panel(s_Help_Dialog)) {
+            draw_all_children = 1;
+        }
+    } else {
+        draw_all_children = 1;
+    }
+
+    if (this->panel_mode != 0) {
+        if (draw_all_children) {
+            for (PanelNode* node = this->child_list;
+                 node != 0;
+                 node = node->next) {
+                node->panel->v20(this->panel_mode);
+            }
+
+            TPanel* panel = this->panel_40;
+            if (panel != 0 && panel->field_7C != 0) {
+                panel->v24(this, this, this->panel_mode);
+            }
+            this->v30();
+        }
+        this->panel_mode = 0;
+        this->redraw_needed = 1;
+    }
+
+    unsigned long other_time =
+        debug_timeGetTime(s_scr_game_cpp, 0x5C2) - first_time;
+
+    for (PanelNode* node = this->child_list;
+         node != 0;
+         node = node->next) {
+        unsigned long child_start =
+            debug_timeGetTime(s_scr_game_cpp, 0x5C9);
+        TPanel* panel = node->panel;
+
+        if (draw_all_children || panel == this->curr_child) {
+            panel->v54();
+        }
+
+        unsigned long child_end =
+            debug_timeGetTime(s_scr_game_cpp, 0x5D0);
+        if (panel != this->main_view && panel != this->map_view) {
+            other_time += child_end - child_start;
+        }
+    }
+
+    rge_base_game->add_to_timing(0x11, other_time);
+    this->redraw_needed = 0;
+    return 0;
 }
