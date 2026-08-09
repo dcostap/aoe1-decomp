@@ -34,6 +34,13 @@
 // restored probe-009 as the best natural reconstruction: named dimensions,
 //   limits, and stack ownership; remaining drift is register/statement order
 //   around stack/param allocation and the first linking block. No inline asm.
+// New claim probe: swap max_width/max_height declaration order; this is the
+// natural x/y use order that moved the size-preserving output one byte closer.
+// Next declaration-order probe: declare the stack pointer before dimensions but
+// initialize it at the same source point, testing pointer/parameter coloring
+// without changing ownership or statement order.
+// Next ownership-expression probe: spell only the root prev store through the
+// canonical member, leaving the persistent stack local for the linked-list walk.
 
 struct Map_Stack {
     long x;                 // +0x00
@@ -64,6 +71,8 @@ public:
     void add_stack_node(Map_Stack* target, Map_Stack* node);
 };
 
+// Main-agent audit confirmed canonical elevation stack/map ownership and kept
+// the natural randomized linking loop.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
@@ -71,12 +80,13 @@ public:
 };
 
 void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
+    Map_Stack* stack;
     long width = this->map_width;
     long height = this->map_height;
-    Map_Stack* stack = this->stack_array;
-    long max_height = height - 1;
+    stack = this->stack_array;
     long max_width = width - 1;
-    stack->prev = param_1;
+    long max_height = height - 1;
+    this->stack_array->prev = param_1;
     Map_Stack* last = &stack[height * width - 1];
     stack->next = &stack[1];
     last->next = 0;

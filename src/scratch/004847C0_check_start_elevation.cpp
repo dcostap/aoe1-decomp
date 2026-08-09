@@ -34,11 +34,18 @@
 //    slot rotations (row arg1->arg2, rowPtr arg2->arg5).
 // Paused: exact matching budget exhausted. Current source keeps canonical named row-base
 // ownership; remaining drift is the y1/row/row_ptr stack-home rotation and first-row setup.
+// Subsequent claim evidence: restoring the exact sibling inherited map/TILE declaration
+// surface was codegen-identical; using y0 directly, typed tile bitfields, predicate byte
+// locals, and alternate natural declaration orders were either worse or duplicate.
+// Keep this clean row-base source. The original keeps x1 in EBX/uses CL for the tile mask,
+// while this basin spills x1 and uses BL; its y1/row/row_ptr home rotation remains unresolved.
+// Main-agent audit retained canonical elevation-map ownership and replaced the
+// residual char casts with a typed byte-row traversal.
 
 class RGE_RMM_Elevation_Generator {
 public:
     char gap_00[0x10];
-    char** tiles;    // +0x10
+    unsigned char** tiles; // +0x10
     int width;       // +0x14
     int height;      // +0x18
 
@@ -51,8 +58,8 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
     long y0 = y - range;
     long offset;
     long row;
-    char** row_ptr;
-    char* row_base;
+    unsigned char** row_ptr;
+    unsigned char* row_base;
     long x1;
     long y1;
     y1 = y + range;
@@ -74,10 +81,10 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
     offset = x0 * 24;
     row = y0;
     row_ptr = &this->tiles[y0];
-    row_base = (char*)*row_ptr + offset;
+    row_base = *row_ptr + offset;
     while (row <= y1) {
         if (x0 <= x1) {
-            unsigned char* cell = (unsigned char*)row_base + 5;
+            unsigned char* cell = row_base + 5;
             long col = x0;
             do {
                 if (terrain == 0xFF
@@ -91,7 +98,7 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
         }
         row_ptr++;
         row++;
-        row_base = (char*)*row_ptr + offset;
+        row_base = *row_ptr + offset;
     }
     return 1;
 }

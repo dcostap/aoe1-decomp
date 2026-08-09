@@ -7,15 +7,31 @@
 // 4: original-asm-inspired loop topology still too short/broad.
 // 5: restore initial source as best behavioral baseline.
 // 6: /Ob0, /O1, and /Gs flag probes did not reach original size/layout; removed flags.
+// New claim: carry the second scan's row base plus x-offset across the row
+// increment, matching the original `mov next_row; add offset` topology instead
+// of recomputing the offset inside each cell LEA.
+// Next ABI/layout probe: reuse the check_start_elevation sibling's byte-row
+// ownership (`char**` plus byte row bases) instead of `int**`/`int*` aliases.
+// Next liveness probe: model the binary-proven `count` stack local as the first
+// scan's row counter, while keeping the second scan's byte result separate.
+// Final source-width probe: use the period code's natural `long` coordinate,
+// offset, and count locals throughout both scans instead of decompiler `int`s.
+// Clean-source result: second-scan row-base carry is retained (408B boundary
+// still lacks 11 effective bytes); first-scan row-base carry, result/row-count
+// split, combined predicate, and inherited-class context were rolled back as
+// worse or duplicate. No source-shape path reached the original first-scan
+// stack homes; padding_probe remains non-target scaffolding.
 // Left in scratch: behavior modeled, but first/second scan register topology and stack-slot layout remain broad.
 // NOTE: padding_probe below is a non-target helper kept only so check_function can extract a comparable 408-byte window; not for promotion.
 
 typedef unsigned char uchar;
 
+// Main-agent audit confirmed canonical elevation-map ownership and retained the
+// natural two-scan bounds check; padding remains non-target scaffolding only.
 class RGE_RMM_Elevation_Generator {
 public:
     char gap_00[0x10];
-    int** rows;
+    char** rows;
     int width;
     int height;
 
@@ -24,13 +40,13 @@ public:
 
 uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev)
 {
-    int count = 0;
+    long count = 0;
 
     if (radius > 0) {
-        int x1 = x - radius;
-        int y1 = y - radius;
-        int y2 = y + radius;
-        int x2 = x + radius;
+        long x1 = x - radius;
+        long y1 = y - radius;
+        long y2 = y + radius;
+        long x2 = x + radius;
         if (x1 < 0) {
             x1 = 0;
         }
@@ -43,13 +59,13 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         if (y2 >= this->height) {
             y2 = this->height - 1;
         }
-        int row_offset = x1 * 24;
-        int* row = this->rows[y1];
-        int** row_ptr = &this->rows[y1];
+        long row_offset = x1 * 24;
+        char* row = this->rows[y1];
+        char** row_ptr = &this->rows[y1];
         for (; y1 <= y2; ++y1) {
             if (x1 <= x2) {
                 unsigned char* cell = (unsigned char*)row + row_offset + 5;
-                int xx = x1;
+                long xx = x1;
                 do {
                     if (terrain == 0xFF) {
                         return 0;
@@ -70,10 +86,10 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         }
     }
 
-    int x1b = x - 2;
-    int y1b = y - 2;
-    int x2b = x + 2;
-    int y2b = y + 2;
+    long x1b = x - 2;
+    long y1b = y - 2;
+    long x2b = x + 2;
+    long y2b = y + 2;
     if (x1b < 0) {
         x1b = 0;
     }
@@ -87,15 +103,15 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         y2b = this->height - 1;
     }
 
-    int row_offset2 = x1b * 24;
-    int** row_ptr2 = &this->rows[y1b];
-    int* row2 = this->rows[y1b];
+    long row_offset2 = x1b * 24;
+    char** row_ptr2 = &this->rows[y1b];
+    unsigned char* row_base2 = (unsigned char*)this->rows[y1b] + row_offset2;
     if (y1b <= y2b) {
-        int rows_left = y2b - y1b + 1;
+        long rows_left = y2b - y1b + 1;
         do {
             if (x1b <= x2b) {
-                unsigned char* cell = (unsigned char*)row2 + row_offset2 + 5;
-                int cols_left = x2b - x1b + 1;
+                unsigned char* cell = row_base2 + 5;
+                long cols_left = x2b - x1b + 1;
                 do {
                     if ((*cell >> 5) == elev) {
                         ++count;
@@ -105,7 +121,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
                 } while (cols_left != 0);
             }
             ++row_ptr2;
-            row2 = *row_ptr2;
+            row_base2 = (unsigned char*)*row_ptr2 + row_offset2;
             --rows_left;
         } while (rows_left != 0);
     }
