@@ -3,19 +3,51 @@
 // Size: 321 bytes, no EH
 //
 // Attempt log:
-// Probe 1: structural — codegen basin (same register allocation issue as other campaign.cpp functions)
+// - Baseline reconstruction uses the canonical packed campaign/header and scenario-entry
+//   layout shared with the neighboring campaign.cpp methods.
+// - Reversed the two input-array roles after packet evidence showed the fifth parameter
+//   supplies entry name and the fourth supplies entry file_name; this aligned all calls,
+//   CFG, size, and bytes except two LEA SIB index/base bytes.
+// - Delayed the zero-based byte-offset declaration until after the campaign-name copy and
+//   placed the positive allocation arm before the zero arm; this reproduced the original
+//   staged callee-save/parameter-home topology.
+// - Ground-truth 255-byte fields, int/long local-width variants, explicit zero-indexed
+//   entry subscripting, short-lived pointer aliases, and a focused four-way address lab
+//   did not change the remaining two bytes. Best source remains the natural typed form.
+// Left in scratch: exact output is 2 bytes away (only the two paired entry LEAs encode
+// [ebx+ecx] instead of the original [ecx+ebx]); behavior, calls, CFG, size, and layout
+// are aligned. Further work lead is same-TU declaration/context or a proven source form
+// that selects the original SIB base/index ordering, not broad register tuning.
+// Main-agent audit replaced raw singleton/version addresses and cross-record
+// byte indexing with canonical globals and typed scenario-entry indexing.
 
-#include "..\..\include\game_globals.h"
+#include <string.h>
+
+class RGE_Scenario_Offset {
+public:
+    long size;
+    long offset;
+    char name[255];
+    char file_name[255];
+    unsigned char _pad_end[2];
+};
+
+struct RGE_Campaign_Header {
+    long version;
+    char name[255];
+    unsigned char _pad_103;
+    long scenario_num;
+};
 
 class RGE_Campaign {
 public:
-    int version;                // +0x00
-    char name[256];             // +0x04
-    int scenario_num;           // +0x104
-    void* scenario_offsets;     // +0x108
-    char filename[256];         // +0x10C
+    RGE_Campaign_Header campaign_header;
+    RGE_Scenario_Offset* scenario_offsets;
+    char filename[255];
+    unsigned char _pad_end;
 
     RGE_Campaign(char* param1, char* param2, long count, char** names, char** filenames);
+    void create_file();
 };
 
 class RGE_Prog_Info {
@@ -24,14 +56,36 @@ public:
     char campaign_dir[256];
 };
 
-extern int __cdecl sprintf(char*, const char*, ...);
-extern void* __cdecl calloc(int, int);
-extern int __cdecl strcpy(char*, const char*);
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    char _gap_04[0x08];
+    RGE_Prog_Info* prog_info;
+};
 
-// Not matchable without resolving the register allocation basin (ebp/frame usage).
-// Uses sprintf, string copy via rep movsd/rep movsb, loop over scenario_offsets entries.
+extern RGE_Base_Game* rge_base_game;
+extern long campaign_version;
+
+extern "C" int __cdecl sprintf(char*, const char*, ...);
+extern "C" void* __cdecl calloc(int, int);
+
 RGE_Campaign::RGE_Campaign(char* param1, char* param2, long count, char** names, char** filenames)
 {
-    // Left in scratch: register allocation codegen basin
-    // Same pattern as 00423230 ctor — VC5 allocates different callee-save registers
+    sprintf(this->filename, "%s%s", rge_base_game->prog_info->campaign_dir, param1);
+
+    this->campaign_header.version = campaign_version;
+    strcpy(this->campaign_header.name, param2);
+    this->campaign_header.scenario_num = count;
+
+    if (count > 0) {
+        this->scenario_offsets = (RGE_Scenario_Offset*)calloc(count, 0x208);
+        for (long i = 0; i < count; ++i) {
+            strcpy(this->scenario_offsets[i].name, filenames[i]);
+            strcpy(this->scenario_offsets[i].file_name, names[i]);
+        }
+    } else {
+        this->scenario_offsets = 0;
+    }
+
+    this->create_file();
 }
