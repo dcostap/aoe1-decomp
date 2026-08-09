@@ -16,6 +16,19 @@
 // 8/9 scoped armor pointer: worsened to a 203-byte diff and was rolled back.
 // 10 inherited static-object field surface: duplicate of the best typed basin.
 //
+// Fresh exact pass (orch-luna-4303a0-w3): same-TU donors 00430320/004304B0/
+// 00430510 and ABI evidence confirmed the virtual five-argument float signature,
+// 4-byte armor records, signed short defense bonus, signed short armor count,
+// and int promoted arithmetic. A widened terrain-class temporary was codegen
+// neutral. Widening the defense bonus to int removed one byte but changed the
+// proven short-load/test and was rolled back. A diagnostic top-level
+// `int weaponIndex = weaponKind` reached 38 strict differing bytes (213 bytes,
+// 71.62% exact-block coverage) but retained an extra promoted index and did not
+// recover the original terrain schedule; declaration reordering and register
+// hints were codegen duplicates. The diagnostic form was rolled back.
+// Final natural reconstruction remains 169 strict differing bytes (214 emitted
+// bytes vs 213), with exact calls/CFG and the localized armor-pointer register
+// basin unresolved; no source-only register steering retained.
 // Best reconstruction: canonical master armor fields at +100/+102/+104/+110,
 // tile terrain bitfield at +1C/+5, owner world at +0C/+3C, and world terrain
 // rows at +54, expressed with named types and ordinary loops. Remaining drift
