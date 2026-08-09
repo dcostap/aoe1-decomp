@@ -10,21 +10,24 @@
 // - session baseline: typed pointer/float ownership preserved the same 42% basin.
 // - session probes: first-field permutations, register-qualified parameters, comma/local zero
 //   variants, and scalar initializer-list forms were unchanged or worse; no exact basin found.
+// - fresh pass: moving next/prev zero assignments ahead of parameter stores reduced the drift to 4 bytes.
+// - fresh pass: category-before-type with that early zero lifetime produced an exact 200-byte match.
 // Best source reconstruction: natural typed fields, direct body assignments, operator_new(4), strncpy.
-// Basin: param read order differences cause register allocation drift.
-// VC5 interleaves push esi between first and second param read; C++ doesn't force this.
+// Exact source shape: next/prev first, then category/type/game; the early zero value steers VC5's
+//   first parameter loads and register roles without raw offsets or compiler-only scaffolding.
+// Main-agent audit: restored the proven virtual destructor surface. VC5's automatic vptr
+// store schedules too early, so the binary-backed delayed store uses the narrow documented
+// novtable fallback; natural `new int` is codegen-identical to the old helper declaration.
 
 #include <string.h>
 #include <stdlib.h>
 
-extern "C" {
-    void* __cdecl operator_new(size_t size);
-}
+void* __cdecl operator new(size_t size);
 
-struct BaseObject {
-    void* vtable;          // +0x00
-    BaseObject* next;      // +0x04
-    BaseObject* prev;      // +0x08
+struct __declspec(novtable) BaseObject {
+    virtual ~BaseObject();
+    BaseObject* next;  // +0x04
+    BaseObject* prev;  // +0x08
     int numberGroupsValue; // +0x0C
     int* groupIDValue;     // +0x10
     int categoryIDValue;   // +0x14
@@ -59,8 +62,10 @@ BaseObject::BaseObject(int a, int category, int type, int game, char* name,
     float xPos, float yPos, float zPos,
     int hitPt, int minHit, int maxHit)
 {
-    typeIDValue = type;
+    next = 0;
+    prev = 0;
     categoryIDValue = category;
+    typeIDValue = type;
     gameIDValue = game;
     xPositionValue = xPos;
     yPositionValue = yPos;
@@ -70,8 +75,6 @@ BaseObject::BaseObject(int a, int category, int type, int game, char* name,
     zSizeValue = zSize;
     hitPointValue = hitPt;
     minHitPointValue = minHit;
-    next = 0;
-    prev = 0;
     numberGroupsValue = 1;
     maxHitPointValue = maxHit;
     busyValue = 0;
@@ -81,9 +84,9 @@ BaseObject::BaseObject(int a, int category, int type, int game, char* name,
     currentTargetXPositionValue = 0;
     currentTargetYPositionValue = 0;
     currentTargetZPositionValue = 0;
-    vtable = (void*)0x56E798;
+    *(void**)this = (void*)0x56E798;
 
-    groupIDValue = (int*)operator_new(4);
+    groupIDValue = new int;
     groupIDValue[0] = a;
 
     strncpy(nameValue, name, 63);
