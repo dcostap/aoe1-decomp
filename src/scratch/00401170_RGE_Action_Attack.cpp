@@ -8,6 +8,13 @@
 // - Tried raw int stores for float fields; no change in load schedule.
 // - Tried introducing fight_local and then moving fight assignment before wait; improved edit diff (about 19% -> 14%) by getting edx=fight live, but wait still loads in eax instead of original ecx and lower master-sprite fallbacks use eax/ecx swapped.
 // - Current best with /GX: exact size 311, call set and behavior match, but MISMATCH 14.47% positional / 14.15% edit; first mismatch offset 75 in post-set_target parameter store schedule.
+// - Removed the nonessential register qualifier and normalized master/combat accesses
+//   to typed direct chains; emitted code stayed at the 45-byte frontier.
+// - A focused /GX variant lab over local declaration/order forms preserved size/frame/
+//   call-set invariants but found no closer group; the wait load remains EAX instead
+//   of original ECX. Keep the natural typed source, not a register-forcing alias.
+// Main-agent audit restored canonical action-object inheritance and removed the
+// residual downcasts from ordinary master/owner access.
 
 class RGE_Sprite;
 class RGE_Action_Object;
@@ -30,9 +37,13 @@ public:
 
 class RGE_Static_Object {
 public:
-    char pad00[0x08];
+    virtual ~RGE_Static_Object();
+    char pad04[0x04];
     RGE_Master_Combat_Object* master_obj;
     RGE_Player* owner;
+};
+
+class RGE_Action_Object : public RGE_Static_Object {
 };
 
 class RGE_Action {
@@ -107,8 +118,9 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_O
 {
     this->action_type = 9;
     this->set_target_obj(target);
-    register RGE_Sprite* wait_reg = wait;
-    this->fight_sprite = fight;
+    RGE_Sprite* wait_reg = wait;
+    RGE_Sprite* fight_local = fight;
+    this->fight_sprite = fight_local;
     this->wait_sprite = wait_reg;
     this->range = range;
     this->min_range = min_range;
@@ -120,27 +132,26 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_O
     this->fire_missile_at_frame = fire_frame;
     this->need_to_attack = 0;
     this->indirect_fire_flag = 0;
-    if (target != 0 && target->owner == ((RGE_Static_Object*)action_obj)->owner) {
+    if (target != 0 && target->owner == action_obj->owner) {
         this->was_same_owner = 1;
     } else {
         this->was_same_owner = 0;
     }
     if (move == 0) {
-        RGE_Master_Combat_Object* master = ((RGE_Static_Object*)this->obj)->master_obj;
-        RGE_Sprite* spr = master->move_sprite2;
+        RGE_Sprite* spr = this->obj->master_obj->move_sprite2;
         if (spr == 0) {
-            spr = master->move_sprite;
+            spr = this->obj->master_obj->move_sprite;
         }
         this->move_sprite = spr;
     }
     if (fight == 0) {
-        this->fight_sprite = ((RGE_Static_Object*)this->obj)->master_obj->fight_sprite;
+        this->fight_sprite = this->obj->master_obj->fight_sprite;
     }
     if (wait == 0) {
-        this->wait_sprite = ((RGE_Static_Object*)this->obj)->master_obj->wait_sprite;
+        this->wait_sprite = this->obj->master_obj->wait_sprite;
     }
     if (range == 0.0f) {
-        this->range = ((RGE_Static_Object*)this->obj)->master_obj->weapon_range;
+        this->range = this->obj->master_obj->weapon_range;
         if (this->range == 0.0f) {
             this->range = 0.4f;
         }
