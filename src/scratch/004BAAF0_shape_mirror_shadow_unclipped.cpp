@@ -13,6 +13,16 @@
 // - Focused variant lab (144 variants; count types/update spellings; size and call-set gated) found no exact. Best group was odd-long/even-uchar, 193 positional / 90 edit bytes, but it retained the same early row-home mismatch and was not adopted.
 // - Direct mutation of y for the even shadow run improved shape to 83.49% with the same 188 strict bytes but changed register coloring and table-load order; restored clean source.
 // - Final retained state: natural typed RLE decoder, 267-byte output, one aligned AlignedWidth call, 188 strict differing bytes (70.4120%), first mismatch at 004BAB1E. Paused: remaining gap is VC5 local-home/block scheduling, not unresolved behavior or call ABI.
+//
+// sa-78979d2a-mshad probes (2026-08-09):
+// - Normalized the living source away from the prior goto/parameter-alias
+//   scaffold to a natural counted backward RLE decoder with separate height
+//   and row-count locals. The clean source is 230B/203 strict bytes, with the
+//   correct call/field behavior and no forbidden cursor or alias hacks.
+// - Direct per-orientation destination formation, a persistent row/work pair,
+//   a shared byte count, and table-plus-pixel operand spelling were tested;
+//   none beat the normalized source. The old 188-byte metric winner depended
+//   on decompiler-shaped control/parameter reuse and was not retained.
 
 typedef unsigned char byte;
 
@@ -28,6 +38,9 @@ struct TDrawArea {
     long AlignedWidth(void);
 };
 
+// Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
+// and retained the normalized typed RLE decoder; alias-heavy diagnostics remain
+// history only.
 class TShape {
 public:
     byte* shape;
@@ -39,66 +52,56 @@ public:
 
 byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, byte* table)
 {
-    long orien = draw_area->Orien;
-    long pitch = draw_area->AlignedWidth() * orien;
+    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
 
     Shape_Header* hdr = this->shape_header;
-    long rows = hdr->ymax - hdr->ymin + 1;
     byte* src = (byte*)(hdr + 1);
+    long height = hdr->ymax - hdr->ymin + 1;
 
-    byte* dst;
-    if (orien < 1) {
-        dst = draw_area->Bits + (y - draw_area->Height + 1) * pitch + x + 1;
-    } else {
-        dst = draw_area->Bits + pitch * y + x + 1;
-    }
+    long m;
+    if (draw_area->Orien < 1)
+        m = (y - draw_area->Height + 1) * pitch;
+    else
+        m = y * pitch;
+    byte* dst = draw_area->Bits + m + x + 1;
+    long rows;
 
-    if (rows > 0) {
+    if (height > 0) {
+        rows = height;
         do {
             byte done = 0;
             do {
                 byte code = *src++;
-                byte low = (byte)(code & 1);
-                if (low == 1) {
+                if ((code & 1) == 1) {
                     code >>= 1;
-                    y = code;
                     if (code == 0) {
-                        dst -= (unsigned char)*src;
-                        goto bump_src;
-                    }
-                    {
-                        unsigned int count = (unsigned char)y;
+                        dst -= *src++;
+                    } else {
+                        unsigned int count = code;
                         do {
                             --dst;
                             --count;
                             *dst = table[*dst];
                         } while (count != 0);
+                        src += code;
                     }
-                    src += (unsigned char)y;
-                    goto row_test;
                 } else {
                     code >>= 1;
-                    y = code;
                     if (code == 0) {
                         done = 1;
-                        goto row_test;
-                    }
-                    if (code != 0) {
-                        unsigned int count2 = (unsigned char)y;
+                    } else {
+                        unsigned int count = code;
                         do {
                             --dst;
-                            --count2;
+                            --count;
                             *dst = table[*dst];
-                        } while (count2 != 0);
+                        } while (count != 0);
+                        src++;
                     }
-bump_src:
-                    ++src;
                 }
-row_test:
-                ;
             } while (!done);
             dst += pitch;
-        } while (--rows != 0);
+        } while (--rows);
     }
     return 1;
 }

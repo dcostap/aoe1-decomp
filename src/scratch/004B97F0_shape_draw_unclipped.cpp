@@ -42,6 +42,15 @@
 // Left in scratch: best natural source has aligned RLE blocks/calls/stack
 //   homes; remaining drift is the early callee-save coloring/setup and a
 //   two-byte size/epilogue difference.
+//
+// sa-78979d2a-draw probes (2026-08-09):
+// - Reordered orientation/payload declarations, used direct orientation
+//   members, split destination declaration, and hoisted the working cursor;
+//   all were codegen duplicates of the clean source.
+// - A split ymax/ymin height calculation was also a duplicate. The best
+//   natural source remains 234B/208 strict bytes with all three calls and the
+//   RLE block topology aligned; the unresolved gap is VC5 prologue/register
+//   coloring plus swapped destination/row parameter-home assignment.
 
 #pragma function(memcpy)
 #pragma function(memset)
@@ -69,6 +78,8 @@ public:
     long AlignedWidth();
 };
 
+// Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
+// and retained the natural typed RLE decoder.
 class TShape {
 public:
     unsigned char* shape;       // +0x00
@@ -88,10 +99,9 @@ unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long t
     Shape_Header* sh = this->shape_header;
     long height = sh->ymax - sh->ymin + 1;
     unsigned char* p = (unsigned char*)(sh + 1);
-    long orien = da->Orien;
-    long pitch = da->AlignedWidth() * orien;
+    long pitch = da->AlignedWidth() * da->Orien;
     long m;
-    if (orien < 1)
+    if (da->Orien < 1)
         m = (x - da->Height + 1) * pitch;
     else
         m = x * pitch;

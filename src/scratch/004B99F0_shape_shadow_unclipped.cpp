@@ -29,6 +29,17 @@
 // stores destination through [esp+1Ch], and stores rows through [esp+18h];
 // current VC5 standalone output keeps the same behavior/calls but differs in
 // that local topology from the Shape.cpp original.
+//
+// sa-78979d2a-shadow probes (2026-08-09):
+// - Separating header height from the post-destination row counter improved
+//   the setup to 210 strict bytes; moving orientation after height improved it
+//   to 209. These are retained as the clean source direction.
+// - Splitting a persistent row base from the per-row working cursor improved
+//   the emitted candidate to 255B/188 strict bytes and 89.00% shape; reusing
+//   save_buffer for the working cursor was codegen-identical.
+// - Direct orientation, declaration-order, and x-home assignment probes did
+//   not improve the 188-byte basin. Remaining gap is the original swapped
+//   parameter-home/register schedule, not calls or RLE behavior.
 
 typedef unsigned char byte;
 
@@ -51,6 +62,8 @@ struct TDrawArea {
     long AlignedWidth();
 };
 
+// Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
+// and retained the natural typed RLE decoder.
 struct TShape {
     byte* shape;
     int load_type;
@@ -65,8 +78,9 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
 {
     Shape_Header* sh = shape_header;
     byte* p = (byte*)(sh + 1);
+    long height = sh->ymax - sh->ymin + 1;
     long orien = da->Orien;
-    long rows = sh->ymax - sh->ymin + 1;
+    long rows;
     long width;
     byte* save_buffer;
 
@@ -79,9 +93,12 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
         tmp = y * width;
 
     save_buffer = da->Bits + tmp + x;
+    byte* row = save_buffer;
 
-    if (rows > 0) {
+    if (height > 0) {
+        rows = height;
         do {
+            save_buffer = row;
             byte done = 0;
 
             do {
@@ -114,7 +131,7 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
                 }
             } while (!done);
 
-            save_buffer += width;
+            row += width;
         } while (--rows);
     }
 

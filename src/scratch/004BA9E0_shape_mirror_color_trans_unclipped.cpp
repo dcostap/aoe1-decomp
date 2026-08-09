@@ -16,6 +16,17 @@
 // - Remaining drift is structural setup/home placement (original direct orientation
 //   arms and width local), plus localized table-index SIB operand order; calls,
 //   RLE control flow, stack cleanup, and field ownership are aligned.
+//
+// sa-78979d2a-color probes (2026-08-09):
+// - `table[*p]` versus explicit pointer addition was codegen-identical; the
+//   localized SIB base/index mismatch remains.
+// - Splitting a persistent row base from a per-row destination worsened strict
+//   bytes (201 versus 199) despite reducing the size gap; rolled back.
+// - Direct destination formation in both orientation arms reproduced the
+//   branch-shaped source hypothesis but fell to 262 strict bytes; rolled back.
+// - Reversed common destination address terms was a duplicate. Retained the
+//   canonical shared-offset typed RLE source; unresolved gap is destination
+//   parameter-home scheduling plus the one-byte table SIB encoding.
 
 void* __cdecl memset(void* dest, int c, unsigned int count);
 
@@ -39,6 +50,8 @@ struct Shape_Header {
     long ymax;
 };
 
+// Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
+// and retained the natural typed RLE decoder.
 struct TShape {
     char gap_00[0x0C];
     /* +0x0C */ Shape_Header* shape_header;

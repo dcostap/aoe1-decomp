@@ -89,6 +89,19 @@
 //   memset), and no behavior-changing source scaffold is retained.
 // - Main-agent normalization restored the canonical TShape/TDrawArea class
 //   names; emitted code is unchanged.
+//
+// sa-78979d2a-shape probes (2026-08-09):
+// - Explicit `(b & 1) == 1` restored the original branch idiom but moved the
+//   candidate to a 208-byte family (143 strict bytes); rolled back.
+// - Splitting a persistent row base from a per-row working destination matched
+//   the size but destroyed the donor prologue/block basin (217 strict bytes);
+//   rolled back.
+// - Reordering/splitting destination address terms and assigning the computed
+//   destination through the dead x parameter were codegen duplicates; rolled
+//   back as noncanonical.
+// - Retained natural typed RLE source. Remaining blocker is the original VC5
+//   local-home schedule: destination is written/reloaded through x's home and
+//   rows through da's home, while this clean candidate keeps destination in EDI.
 
 void* __cdecl memset(void* dest, int c, unsigned int count);
 
@@ -133,6 +146,8 @@ struct Shape_Info {
     long Hotspot_Y;
 };
 
+// Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
+// and retained the natural typed RLE decoder.
 struct TShape {
     unsigned char* shape;
     int load_type;
