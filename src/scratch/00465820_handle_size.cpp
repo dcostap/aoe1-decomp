@@ -1,62 +1,100 @@
 // VA: 00465820 TPanel::handle_size
 // Source: Panel.cpp lines 1558-1670
 // Attempt log:
-// 1: initial direct reconstruction from packet/decompiler with local layout and natural control flow; broad mismatch, compiler made 8-byte frame and kept this in ebp.
-// 2: rewrote with mutable parameters and one explicit local to try original single push-ecx frame; behavior accidentally regressed and frame still 8 bytes, rolled back.
-// 3: added register self local and used it for all member accesses; no register/frame improvement, rolled back.
-// 4: expanded virtual surface for child call; did not improve prologue/frame, rolled back to raw vtable call.
-// 5: tried /Od flag; worse, removed flag.
-// 6: left in scratch: behavior is understood from packet/decompiler, but VC5 codegen basin is wrong from the prologue (rebuilt sub esp,8 / ebp=this vs original push ecx / ebx=this) and drift is broad.
+// baseline: natural geometry source had correct fields/calls but an explicit vptr
+// shifted every TPanel member by four bytes and the raw child call used cdecl.
+// removed explicit vptr in favor of the compiler-owned virtual layout; offsets align.
+// typed child->handle_size(wid,hgt) at vtable slot 0x50 fixes the thiscall ABI and cleanup.
+// removed durable calc_wid and retained only the height bound; frame became push-ecx
+// family and size drift fell from 18 to 8 bytes with exact call/CFG counts.
+// self alias and scalar/panel declaration-order probes were codegen duplicates.
+// swapped fixed-arm bottom/right assignment to follow the original min_hgt load; positional drift improved locally.
+// long coordinate types and canonical named TPanel fields preserve the proven layout but do not change codegen.
+// left unresolved: residual prologue/register coloring and set_rect/centered scheduling drift; source is typed and period-plausible.
+// Main-agent audit restored the canonical virtual destructor surface; typed
+// panel geometry and recursive child ownership remain authoritative. Final
+// audited check: 593/585 bytes, 2/2 ordered calls, 494-byte diff.
 
-struct Rect { int left; int top; int right; int bottom; };
+struct Rect { long left; long top; long right; long bottom; };
 struct PanelNode;
 
 class TPanel {
 public:
-    void* vtbl;
-    char gap_04[0x34 - 0x04];
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panel_name;
+    void* render_area;
+    Rect clip_rect;
     int position_mode;
-    char gap_38[0x40 - 0x38];
+    int need_redraw;
+    TPanel* curr_child;
     TPanel* parent_panel;
     TPanel* left_panel;
     TPanel* top_panel;
     TPanel* right_panel;
     TPanel* bottom_panel;
-    char gap_54[0x58 - 0x54];
+    PanelNode* node;
     PanelNode* first_child_node;
-    char gap_5C[0x6C - 0x5C];
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
     int active;
-    char gap_70[0x8C - 0x70];
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    void* clip_rgn;
     Rect render_rect;
-    int left_border;
-    int top_border;
-    int right_border;
-    int bottom_border;
-    int min_wid;
-    int max_wid;
-    int min_hgt;
-    int max_hgt;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
 
-    virtual void dtor();
+    virtual ~TPanel();
     virtual void setup();
-    virtual void set_rect(int left, int top, int right, int bottom);
-    int handle_size(int wid, int hgt);
+    virtual void set_rect(long left, long top, long right, long bottom);
+    virtual void pad03();
+    virtual void pad04();
+    virtual void pad05();
+    virtual void pad06();
+    virtual void pad07();
+    virtual void pad08();
+    virtual void pad09();
+    virtual void pad0A();
+    virtual void pad0B();
+    virtual void pad0C();
+    virtual void pad0D();
+    virtual void pad0E();
+    virtual void pad0F();
+    virtual void pad10();
+    virtual void pad11();
+    virtual void pad12();
+    virtual void pad13();
+    virtual long handle_size(long wid, long hgt);
 };
 
 struct PanelNode { TPanel* panel; PanelNode* next; };
-typedef int (*ChildFn)(TPanel*, int, int);
 
-int TPanel::handle_size(int wid, int hgt)
+long TPanel::handle_size(long wid, long hgt)
 {
-    TPanel* p;
-    int left;
-    int top;
-    int right;
-    int bottom;
-    int calc_wid;
-    int calc_hgt;
+    TPanel* p = this->parent_panel;
+    long left;
+    long top;
+    long right;
+    long bottom;
+    long calc_hgt;
 
-    p = this->parent_panel;
     if (p != 0) {
         right = p->render_rect.right;
         left = p->render_rect.left;
@@ -74,8 +112,8 @@ int TPanel::handle_size(int wid, int hgt)
     if (this->position_mode == 0) {
         left = this->left_border + left;
         top = this->top_border + top;
-        right = this->min_wid + left - 1;
         bottom = this->min_hgt + top - 1;
+        right = this->min_wid + left - 1;
     } else {
         p = this->left_panel;
         if (p != 0 && p->active != 0) {
@@ -102,14 +140,13 @@ int TPanel::handle_size(int wid, int hgt)
             bottom -= this->bottom_border;
         }
 
-        calc_wid = right - left + 1;
         calc_hgt = bottom - top + 1;
-        int limit = this->min_wid;
-        if (limit != 0 && calc_wid < limit) {
+        long limit = this->min_wid;
+        if (limit != 0 && right - left + 1 < limit) {
             right = left + limit - 1;
         } else {
             limit = this->max_wid;
-            if (limit != 0 && calc_wid > limit) {
+            if (limit != 0 && right - left + 1 > limit) {
                 if (this->position_mode == 3 || this->position_mode == 7 || this->position_mode == 8) {
                     right = left + limit - 1;
                 } else {
@@ -132,9 +169,9 @@ int TPanel::handle_size(int wid, int hgt)
         }
 
         if (this->position_mode == 2) {
-            int real_w = right - left + 1;
-            int real_h = bottom - top + 1;
-            int xoff;
+            long real_w = right - left + 1;
+            long real_h = bottom - top + 1;
+            long xoff;
             if (real_w == wid) {
                 xoff = 0;
             } else {
@@ -157,7 +194,7 @@ int TPanel::handle_size(int wid, int hgt)
         PanelNode* node = this->first_child_node;
         while (node != 0) {
             TPanel* child = node->panel;
-            int r = (*(ChildFn*)((char*)*(int*)child + 0x50))(child, hgt, wid);
+            long r = child->handle_size(wid, hgt);
             if (r != 0) {
                 return r;
             }

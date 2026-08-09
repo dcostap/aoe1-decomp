@@ -1,41 +1,39 @@
 // 004642C0 TPanelSystem::get_palette
 // Panel.cpp:490-532 (155 asm lines, 443 bytes)
 //
-// Status: BLOCKED — multi-axis VC5 codegen basin mismatch.
-// Best result: 26 matching prologue bytes (5.9%), edit diff 30.9%.
-// Axes probed: prologue ordering, strcmp call vs inline, palette access pattern,
-// strupr placement, saved_this pattern, param_1 branch direction.
-// Attempts: ~16 manual + 8 variant lab combinations.
-//
-// Key insights from best variant:
-// - Correct prologue (sub esp, 10Ch, push 4 regs, param_1 in EDI, this in EBX,
-//   saved_this at [esp+14h]) requires: NO file_name[0..3] init,
-//   `if (param_1) { ... } else { file_name[0]=0; }` structure,
-//   `*(void**)((char*)id_i - 0xA78)` for palette[i] access,
-//   and `strcmp()` call (not inline byte comparison).
-//
-// Remaining blockers:
-// 1. Inline strcmp with 2-byte unrolling and BL/CL byte temps is irreproducible
-//    from C source without affecting prologue layout. The call to strcmp()
-//    avoids the inline loop but doesn't match the original's specific byte
-//    comparison pattern (mov bl,[eax]; mov cl,bl; cmp bl,[esi]; ...).
-// 2. Branch targets differ by ~1-2 bytes throughout due to size differences
-//    between call vs inline code.
-// 3. The `strupr()` call placement affects branch offsets — matching the
-//    original's exact if-else layout is fragile.
-// 4. Extra code in sprintf path (lea/structure adjustments).
-//
-// LEFT IN SCRATCH: structural codegen gap unlikely to yield exact match
-// without significantly different source decomposition.
+// Attempt log:
+// baseline: canonical palette arrays and natural filename/cache source; frame and
+// prologue family match, but VC5 duplicates strupr in the sprintf/copy arms.
+// normalized-name alias and self alias emitted the same code; reverse branch order worsened CFG.
+// assigning the strupr return removed the extra call but added a 4-byte frame and broad drift.
+// a separate non-null uppercasing guard aligned call count but changed the prologue; rolled back.
+// explicit common uppercase goto was optimized back to the duplicated-call basin.
+// named TPanelSystem owner/list prefix preserves canonical 0x1C palette ownership; emitted code unchanged.
+// left unresolved: original has one common strupr call and exact inline two-byte compare scheduling;
+// the worker's pre-audit cursor candidate retained the exact frame/call family
+// but had a 48-byte structural drift.
+// Main-agent audit removed cross-member cursor arithmetic and the stack-window
+// `file_name + 4` artifact. Canonical arrays and ordinary filename construction
+// are retained instead of the prior metric-oriented compiler basin. Final
+// audited check: 492/443 bytes, 0x10C frame, 5/4 calls, 423-byte diff.
 
 #include <string.h>
 #include <stdio.h>
 
 extern "C" void* __cdecl ReadPalette(char*, long, int);
 
-class TPanelSystem_004642C0 {
+class TPanel;
+struct PanelNode;
+
+class TPanelSystem {
 public:
-    char _0[0x1C];
+    TPanel* mouse_owner;
+    TPanel* keyboard_owner;
+    TPanel* modal_panel;
+    TPanel* current_panel;
+    PanelNode* panel_list;
+    int number_active_panels;
+    TPanel* previous_current_child;
     void* palette[10];
     char palette_file[10][260];
     int palette_use_count[10];
@@ -44,13 +42,13 @@ public:
     void* get_palette(char* param_1, long param_2);
 };
 
-void* TPanelSystem_004642C0::get_palette(char* param_1, long param_2)
+void* TPanelSystem::get_palette(char* param_1, long param_2)
 {
     char file_name[260];
 
     if (param_1) {
         if (strchr(param_1, '.') == 0) {
-            sprintf(file_name + 4, "%s.pal", param_1);
+            sprintf(file_name, "%s.pal", param_1);
         } else {
             strcpy(file_name, param_1);
         }
@@ -60,26 +58,22 @@ void* TPanelSystem_004642C0::get_palette(char* param_1, long param_2)
     }
 
     int found = -1;
-    long* id_i = this->palette_id;
     int i;
-    char* file_i = (char*)this->palette_file;
 
     for (i = 0; i < 10; i++) {
-        if (*(void**)((char*)id_i - 0xA78) == 0) {
+        if (this->palette[i] == 0) {
             if (found == -1) found = i;
         } else {
-            if (param_2 != -1 && *id_i == param_2) {
+            if (param_2 != -1 && this->palette_id[i] == param_2) {
                 this->palette_use_count[i]++;
                 return this->palette[i];
             }
 
-            if (strcmp(file_i, file_name) == 0) {
+            if (strcmp(this->palette_file[i], file_name) == 0) {
                 this->palette_use_count[i]++;
                 return this->palette[i];
             }
         }
-        file_i += 260;
-        id_i++;
     }
 
     if (found == -1) return 0;
