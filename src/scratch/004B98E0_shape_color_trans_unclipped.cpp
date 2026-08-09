@@ -24,6 +24,15 @@
 // - setup declaration/order variants were codegen duplicates.  Remaining lead:
 //   recover the original 8-byte local frame and early saved-register coloring;
 //   do not replace this typed source with raw cursor/volatile scaffolding.
+// sa508a60b0_shape3 probes (2026-08-09):
+// - Rechecked the clean typed baseline: 251B/234 strict bytes with both calls
+//   and the pretested literal loop aligned, but no local frame.
+// - A natural separate `width` row counter assigned after destination setup
+//   improved the strict metric to 230B without changing behavior or call set;
+//   initializing it earlier instead moved header loads before the save prologue
+//   and produced a worse 249B basin. Retained the after-destination form.
+// - The remaining structural blocker is the oracle's 8-byte frame and its
+//   delayed parameter-home allocation; no ABI or ownership uncertainty remains.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -69,7 +78,7 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
     Orien = td->Orien;
     long alw = td->AlignedWidth();
     long stride = alw * Orien;
-    long remaining;
+    long width;
 
     long dest_off;
     if (Orien < 1) {
@@ -78,9 +87,9 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
         dest_off = p3 * stride;
     }
     uchar* dst = td->Bits + p2 + dest_off;
+    width = height;
 
     if (height > 0) {
-        remaining = height;
         do {
             uchar done = 0;
             uchar count;
@@ -111,7 +120,7 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
             } while (!done);
 
             dst += stride;
-        } while (--remaining);
+        } while (--width);
     }
 
     return 1;

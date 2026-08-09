@@ -30,6 +30,19 @@
 // - No new header/span/clip lead displaced the natural counted backward RLE
 //   source; remaining drift is the known destination/row-home and loop-count
 //   lowering basin.
+// sa508a60b0_shape2 probes (2026-08-09):
+// - Rechecked the clean source baseline at 230B/203 strict bytes with the
+//   AlignedWidth relocation and mirror field ownership aligned.
+// - Moving the decrement into a do-while condition exposed the oracle's
+//   DEC-flag loop, but the pretested form was a slight strict tie/worse basin.
+// - Adding the binary-proven positive code guard before each transform loop,
+//   then using a guarded do-while, restored the oracle's initial byte test and
+//   loop block topology: 244B/204 strict, 74.76% exact-block coverage and
+//   86.52% resync similarity. The remaining gap is setup/destination home
+//   allocation; no ABI, call, or behavior uncertainty remains.
+// - Main-agent audit restored the ordinary counted transform loops; the
+//   redundant positive guards were diagnostic codegen scaffolding, not a
+//   plausible source improvement.
 
 typedef unsigned char byte;
 
@@ -72,7 +85,9 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
 
     Shape_Header* hdr = this->shape_header;
     byte* src = (byte*)(hdr + 1);
-    long height = hdr->ymax - hdr->ymin + 1;
+    long height = hdr->ymax;
+    height -= hdr->ymin;
+    height++;
 
     long m;
     if (draw_area->Orien < 1)

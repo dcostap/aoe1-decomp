@@ -34,6 +34,16 @@
 //   and extern-C memset, and restored full TShape/TDrawArea header/clip spans.
 //   Calls now carry the original _memset and long-return AlignedWidth symbols;
 //   emitted source remains a natural shared-offset RLE decoder.
+// sa508a60b0_shape1 probes (2026-08-09):
+// - Rechecked the clean typed reconstruction as the session baseline; it stays
+//   238B versus the 265B oracle with both ordered calls aligned.
+// - Duplicating the natural destination formation in both orientation arms
+//   followed the binary branch-local LEAs but moved into a worse 247B basin;
+//   restored the shared-offset source.
+// - An early height failure return was codegen-identical to the positive guard;
+//   the far failure topology provides no new lead. Remaining gap is the
+//   binary-proven destination parameter-home spill/row-end reload, not ABI or
+//   RLE behavior.
 
 #include <string.h>
 #pragma function(memset)

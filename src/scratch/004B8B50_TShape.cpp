@@ -12,116 +12,117 @@
 // 8: call surface modeled: color_log, open/lseek/tell/malloc/read/close, resource_load fallback, Shape_Loads, signature check.
 // 9: leaving broad mismatch: file-extension buffer construction and branch factoring produce very different block layout despite similar behavior.
 // 10: not accepted_drift-safe; constructor memory effects/call ordering around file loads and fallback need exact review.
+// sa508a60b0_shape5 probes (2026-08-09):
+// - Rechecked the old wrapper-based candidate: 541B/612 strict with 20 calls
+//   and mismatched helper relocations.
+// - Replaced wrappers with the exact CRT/resource symbols, inlined the natural
+//   strcpy/strlen extension handling, and restored canonical TShape field
+//   ownership; calls became 18/18 aligned and the candidate reached 688B/603.
+// - Reusing the existing SLP filename buffer for SHP (no second filename copy)
+//   reduced the candidate to 641B/559 strict with 93.04% shape similarity and
+//   81.28% resync similarity. A loaded=1 local, including register-qualified
+//   spelling, was codegen-duplicate and removed. Remaining gap is localized
+//   VC5 prologue/constant liveness plus string-copy scheduling; call ABI and
+//   broad constructor behavior are established.
+// - Main-agent audit replaced fixed-address globals and extension pointers with
+//   named symbols and ordinary string literals.
 
 #include <string.h>
 
 extern "C" void __cdecl color_log(int, int, int);
-extern "C" int __cdecl open_file(const char*, int);
-extern "C" int __cdecl lseek_file(int, long, int);
-extern "C" int __cdecl tell_file(int);
-extern "C" void* __cdecl malloc_file(unsigned int);
-extern "C" int __cdecl read_file(int, void*, unsigned int);
-extern "C" int __cdecl close_file(int);
-extern "C" void* __cdecl resource_load(unsigned int, int, int*, int*);
+extern "C" int __cdecl open(const char*, int);
+extern "C" int __cdecl lseek(int, int, int);
+extern "C" int __cdecl tell(int);
+extern "C" void* __cdecl malloc(unsigned int);
+extern "C" int __cdecl read(int, void*, unsigned int);
+extern "C" int __cdecl close(int);
+extern "C" unsigned char* __cdecl RESFILE_load(unsigned long, unsigned long, int&, int&);
 
-#define shape_file_first (*(unsigned char*)0x0086BBFC)
-#define Shape_Loads (*(int*)0x0086BBE8)
-#define shape_signature (*(int*)0x0057FB58)
-#define SLP_EXT ((const char*)0x00586FAC)
-#define SHP_EXT ((const char*)0x00586FA8)
+extern unsigned char shape_file_first;
+extern int Shape_Loads;
+extern int shape_version_110;
 
 class TShape {
 public:
-    void* shp_data;       // +00
-    int loaded;           // +04
-    int size;             // +08
-    int field_0c;         // +0C
-    void* shape;          // +10
-    void* frames;         // +14
-    void* slp_data;       // +18
-    void* slp_frames;     // +1C
+    void* shape;          // +00
+    int load_type;        // +04
+    int load_size;        // +08
+    void* shape_header;   // +0C
+    void* head;           // +10
+    void* offsets;        // +14
+    void* FShape;         // +18
+    void* shape_info;     // +1C
 
-    TShape(const char* filename, int resource_id);
+    TShape(char* filename, long resource_id);
 };
 
-static void append_ext(char* dst, const char* src, const char* ext)
+TShape::TShape(char* filename, long resource_id)
 {
-    strcpy(dst, src);
-    char* p = dst + strlen(dst) - 4;
-    strcpy(p, ext);
-}
-
-TShape::TShape(const char* filename, int resource_id)
-{
-    this->shp_data = 0;
-    this->field_0c = 0;
     this->shape = 0;
-    this->frames = 0;
-    this->slp_data = 0;
+    this->shape_header = 0;
+    this->head = 0;
+    this->offsets = 0;
+    this->FShape = 0;
 
+    long id = resource_id;
     int fd;
-    int id;
-    if (!shape_file_first) {
-        id = resource_id;
-        if (id >= 0) {
-            goto resource_path;
-        }
-    }
+    if (!shape_file_first && id >= 0)
+        goto resource_path;
 
-    this->loaded = 1;
     color_log(0x54, 0x54, 1);
 
     char name[260];
-    append_ext(name, filename, SLP_EXT);
+    strcpy(name, filename);
+    strcpy(name + strlen(name) - 4, ".slp");
     Shape_Loads++;
-    fd = open_file(name, 0x8000);
+    fd = open(name, 0x8000);
     if (fd != -1) {
-        lseek_file(fd, 0, 2);
-        int sz = tell_file(fd);
-        this->slp_data = malloc_file(sz);
-        lseek_file(fd, 0, 0);
-        read_file(fd, this->slp_data, sz);
-        close_file(fd);
-        this->slp_frames = (char*)this->slp_data + 0x20;
-        this->loaded = 1;
-        this->size = sz;
+        lseek(fd, 0, 2);
+        int sz = tell(fd);
+        this->FShape = malloc(sz);
+        lseek(fd, 0, 0);
+        read(fd, this->FShape, sz);
+        close(fd);
+        this->shape_info = (char*)this->FShape + 0x20;
+        this->load_type = 1;
+        this->load_size = sz;
     }
 
-    if (this->slp_data == 0) {
-        append_ext(name, filename, SHP_EXT);
-        fd = open_file(name, 0x8000);
+    if (this->FShape == 0) {
+        strcpy(name + strlen(name) - 4, ".shp");
+        fd = open(name, 0x8000);
         if (fd != -1) {
-            lseek_file(fd, 0, 2);
-            int sz = tell_file(fd);
-            this->shp_data = malloc_file(sz);
-            lseek_file(fd, 0, 0);
-            read_file(fd, this->shp_data, sz);
-            close_file(fd);
-            this->shape = this->shp_data;
-            this->frames = (char*)this->shp_data + 8;
-            this->loaded = 1;
-            this->size = sz;
+            lseek(fd, 0, 2);
+            int sz = tell(fd);
+            this->shape = malloc(sz);
+            lseek(fd, 0, 0);
+            read(fd, this->shape, sz);
+            close(fd);
+            this->head = this->shape;
+            this->offsets = (char*)this->shape + 8;
+            this->load_type = 1;
+            this->load_size = sz;
         }
     }
 
     color_log(0x54, 0x5f, 1);
-    id = resource_id;
+
 resource_path:
-    if (this->slp_data == 0 && this->shp_data == 0 && id >= 0) {
+    if (this->FShape == 0 && this->shape == 0 && id >= 0) {
         Shape_Loads++;
-        this->shp_data = resource_load(0x73687020, id, &this->loaded, &this->size);
-        if (this->shp_data != 0) {
-            if (*(int*)this->shp_data == shape_signature) {
-                this->shape = this->shp_data;
-                this->frames = (char*)this->shp_data + 8;
+        this->shape = RESFILE_load(0x73687020, id, this->load_type, this->load_size);
+        if (this->shape != 0) {
+            if (*(int*)this->shape == shape_version_110) {
+                this->head = this->shape;
+                this->offsets = (char*)this->shape + 8;
                 return;
             }
         } else {
-            this->shp_data = resource_load(0x736c7020, id, &this->loaded, &this->size);
-            if (this->shp_data != 0) {
-                this->slp_data = this->shp_data;
-                this->slp_frames = (char*)this->shp_data + 0x20;
-                this->shp_data = 0;
+            this->shape = RESFILE_load(0x736c7020, id, this->load_type, this->load_size);
+            if (this->shape != 0) {
+                this->FShape = this->shape;
+                this->shape = 0;
+                this->shape_info = (char*)this->FShape + 0x20;
             }
         }
     }

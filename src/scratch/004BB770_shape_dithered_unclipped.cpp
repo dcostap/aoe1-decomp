@@ -8,6 +8,16 @@
 // 5: volatile dummy forced comparable 404-byte output but store before AlignedWidth shifts first mismatch to offset 18; broad drift.
 // tried flags /O1, no /Oy, /Ox, /Ob0: /O1 too short, others same as /O2.
 // left in scratch: behavior modeled, but VC5 register/stack-slot allocation for the RLE+dither loop is still broad; not accepted_drift-safe.
+// sa508a60b0_shape4 probes (2026-08-09):
+// - Replaced the diagnostic volatile dummy with a binary-supported persistent
+//   save_buffer row base and a separate working destination; this preserves the
+//   proven row reset behavior and yields a 0x8 frame, 405B output, and 343
+//   strict differing bytes (versus 404B/364 for the dummy baseline).
+// - A single height counter and delayed save_buffer initialization were tested;
+//   the direct orientation/save-buffer candidate remained the best natural
+//   source. Split pitch arithmetic and a named row-offset temporary worsened
+//   the basin and were discarded. Remaining gap is broad VC5 register/home and
+//   RLE block scheduling, not behavior or the AlignedWidth ABI.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
@@ -16,11 +26,11 @@ class TShape { public: uchar* shape; int load_type; int load_size; Shape_Header*
 
 uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6)
 {
-    volatile long dummy;
     long pitch;
     uchar* dst;
+    uchar* save_buffer;
     uchar* src;
-    long rows;
+    long height;
     long parity;
     long next_parity;
     long run;
@@ -29,9 +39,8 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
     uchar count;
     uchar* end;
 
-    dummy = 0;
     pitch = area->AlignedWidth() * area->Orien;
-    rows = this->shape_header->ymax - this->shape_header->ymin + 1;
+    height = this->shape_header->ymax - this->shape_header->ymin + 1;
     src = (uchar*)(this->shape_header + 1);
 
     if (area->Orien < 1) {
@@ -40,13 +49,15 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
         dst = area->Bits + x + y * pitch;
     }
 
-    parity = (param_5 + x + dummy) & 1;
+    parity = (param_5 + x) & 1;
     if (((param_6 + y) & 1) != 0) {
         parity = (parity != 1);
     }
 
-    if (rows > 0) {
+    save_buffer = dst;
+    if (height > 0) {
         do {
+            dst = save_buffer;
             next_parity = (parity != 1);
             done = 0;
             do {
@@ -95,10 +106,9 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
                     }
                 }
             } while (!done);
-            dst += pitch;
-            rows--;
+            save_buffer += pitch;
             parity = next_parity;
-        } while (rows != 0);
+        } while (--height);
     }
     return 1;
 }
