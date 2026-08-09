@@ -1,25 +1,22 @@
 // RGE_Action_Attack::RGE_Action_Attack (004012B0)
 // PDB source: Act_atak.cpp:145-190
 // Size: 237 bytes
-// PARKED - pure VC5 instruction scheduling/register allocation drift
+// PAUSED - exact matching exhausted this bounded pass; remaining drift is
+// confined to the constructor's initial field-load scheduling.
 
 // Attempt log:
-// - Probe 1 (RGE_Action_Attack constructor, 1st pass): 237 bytes, 84 byte diff (35.4%)
-//   Struct layout issue: RGE_Action padding was 0x16 instead of 0x14, 
-//   causing wrong field offsets in derived class.
-// - Probe 2 (fixed base padding to 0x14): 237 bytes, 42 byte diff (17.7%)
-//   Field offsets now correct. Missing return this (mov eax, esi).
-// - Probe 3 (return RGE_Action_Attack* + return this): 237 bytes, 35 byte diff (14.8%)
-//   mov eax,esi now present. Remaining drift is pure scheduling/registers.
-//
-// Remaining: Pure VC5 scheduling drift:
-// 1. Parameter loading order differs: original interleaves loads then stores 
-//    (eax=p4, edx=p3, then stores to +20/+4C/+50/+24/+28), 
-//    rebuilt loads in statement order (field_20, range, min_range, etc.)
-// 2. Register allocation in override paths: original uses eax->ecx for 
-//    p5-derivation, rebuilt uses eax->ecx->eax; different regs in p6/p7 paths
-// 3. FPU section register choice (ecx/edx vs edx/eax for sprite chain)
-// 4. No difference in stack frame size, field offsets, control flow structure
+// - Baseline: wrong local base-call spelling and wrong parameter widths; 36 bytes.
+// - ABI probe: real RGE_Action constructor call and float/short parameter ABI; 35 bytes.
+// - Full proven RGE_Action ownership was tested, but VC5 selected an EBP frame and
+//   diverged broadly; restored the compact offset-equivalent local stub.
+// - Coordinate grouping/order improved the best result to 33 bytes (91.55% shape;
+//   37/71 instructions in exact blocks); later register/typed-sprite probes duplicated it.
+// - Final bounded result: 33 positional bytes (13.9241%), 40 edit bytes (16.88%);
+//   all calls, size, frame, CFG, and the 37-instruction suffix island match.
+// - Main-agent audit restored compiler-owned polymorphic vptr setup and named
+//   RGE_Sprite fields; the 33-byte mismatch is unchanged.
+// Remaining lead: revisit initial coordinate/range assignment context with the full
+// shared RGE_Action class/TU surface; do not repeat duplicate probes.
 //
 // Key structural insights confirmed:
 // - 11 stack params + this(ecx): (RGE_Action_Object*,float,float,float,RGE_Sprite*,
@@ -33,9 +30,11 @@
 // - Range override: if p8==0.0, use sprite->+0x114; if that's 0.0, set to 0.4
 // - vtable=0x56E058, type=9, indirect_fire=2
 
+struct RGE_Sprite;
+
 struct RGE_Action_Object {
     unsigned char g0[0x08];
-    void* sprite;  // +08
+    RGE_Sprite* sprite;  // +08
 };
 
 struct RGE_Sprite {
@@ -52,19 +51,20 @@ struct RGE_Sprite {
 };
 
 struct RGE_Action {
-    void* vtable;                     // +00
+    virtual ~RGE_Action();
     short action_type;                // +04
     unsigned char g0[2];
     RGE_Action_Object* action_obj;    // +08
     unsigned char g1[0x14];
     
-    void ctor(RGE_Action_Object* obj, int flag);
+    RGE_Action(RGE_Action_Object* obj, int flag);
 };
 
 struct RGE_Action_Attack : public RGE_Action {
-    int field_20;
-    int field_24;
-    void* move_sprite;
+    virtual ~RGE_Action_Attack();
+    float target_x;
+    float target_y;
+    float target_z;
     unsigned char gap_2C[0x14];
     void* sprite_p5;
     void* sprite_p6;
@@ -77,25 +77,22 @@ struct RGE_Action_Attack : public RGE_Action {
     unsigned char was_same_owner;
     unsigned char indirect_fire;
     
-    RGE_Action_Attack* constructor(RGE_Action_Object* obj, int p2, int p3, void* p4,
-                     void* p5, void* p6, void* p7, float p8, int p9,
+    RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3, float p4,
+                     void* p5, void* p6, void* p7, float p8, float p9,
                      short p10, short p11);
 };
 
-RGE_Action_Attack* RGE_Action_Attack::constructor(RGE_Action_Object* obj, int p2, int p3, void* p4,
-                                     void* p5, void* p6, void* p7, float p8, int p9,
+RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3, float p4,
+                                     void* p5, void* p6, void* p7, float p8, float p9,
                                      short p10, short p11)
+    : RGE_Action(obj, 1)
 {
-    this->ctor(obj, 1);
-    
-    field_20 = p2;
+    target_x = p2;
+    target_z = p4;
+    target_y = p3;
     range = p8;
-    min_range = *(float*)&p9;
+    min_range = p9;
     
-    field_24 = p3;
-    move_sprite = p4;
-    
-    vtable = (void*)0x56E058;
     action_type = 9;
     sprite_p5 = p5;
     sprite_p6 = p6;
@@ -107,31 +104,30 @@ RGE_Action_Attack* RGE_Action_Attack::constructor(RGE_Action_Object* obj, int p2
     indirect_fire = 2;
     
     if (p5 == 0) {
-        void* s = action_obj->sprite;
-        void* ms = *(void**)((char*)s + 0xC0);
+        RGE_Sprite* s = action_obj->sprite;
+        void* ms = s->move_sprite2;
         if (ms == 0) {
-            ms = *(void**)((char*)s + 0xBC);
+            ms = s->stand_sprite;
         }
         sprite_p5 = ms;
     }
     
     if (p6 == 0) {
-        void* s = action_obj->sprite;
-        sprite_p6 = *(void**)((char*)s + 0xFC);
+        RGE_Sprite* s = action_obj->sprite;
+        sprite_p6 = s->fight_sprite;
     }
     
     if (p7 == 0) {
-        void* s = action_obj->sprite;
-        sprite_p7 = *(void**)((char*)s + 0x18);
+        RGE_Sprite* s = action_obj->sprite;
+        sprite_p7 = s->attack_sprite;
     }
     
     if (p8 == 0.0f) {
-        void* s = action_obj->sprite;
-        range = *(float*)((char*)s + 0x114);
+        RGE_Sprite* s = action_obj->sprite;
+        range = s->attack_range;
         if (range == 0.0f) {
             *(int*)&range = 0x3ECCCCCD;
         }
     }
     
-    return this;
 }

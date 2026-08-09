@@ -17,6 +17,23 @@
 //   shape so the last-lea/node-lea land at 237 like the original; (2) check
 //   whether `count`/`x`/`y` need to be plain locals rather than loop-scoped;
 //   (3) compare with terrain twin 00488EA0 once it is attempted.
+// probe-003 abi: restored the proven RGE_Random_Map_Module base and inherited
+//   add_stack_node ABI; this changed only one diff byte and worsened shape, so
+//   the base surface is retained for canonical ownership, not as a byte win.
+// probe-004 layout: named height/width locals; size reached 234 and shape 81%.
+// probe-005 control-flow: compute last before the linking stores; resync moved
+//   to 65% and diff 194, showing source statement order is material.
+// probe-006 liveness: an early list alias was optimized away (duplicate code);
+//   rolled back. probe-007 liveness: named max_height/max_width limits exposed
+//   the target 85-instruction basin and 55% exact-block coverage.
+// probe-008 control-flow: put root prev assignment before last declaration;
+//   diff 183, shape 92.9%, and the param load moved to the binary's early band.
+// probe-009 liveness: swapped width/height declaration order; field loads and
+//   94.1% shape aligned, with diff 182. Direct stack_array and late stack-local
+//   variants (probes 010-012) added 2-8 bytes or worsened alignment.
+// restored probe-009 as the best natural reconstruction: named dimensions,
+//   limits, and stack ownership; remaining drift is register/statement order
+//   around stack/param allocation and the first linking block. No inline asm.
 
 struct Map_Stack {
     long x;                 // +0x00
@@ -29,26 +46,39 @@ struct Map_Stack {
 
 int __cdecl debug_rand(char* file, int line);
 
-class RGE_RMM_Elevation_Generator {
+class RGE_Random_Map_Module {
 public:
-    void* vftable;                  // +0x00
-    char gap_04[0x10];              // +0x04..+0x13
+    virtual unsigned char generate() = 0;
+    RGE_Random_Map_Module* parent;  // +0x04
+    void* list;                     // +0x08
+    void* map;                      // +0x0C
+    void* map_row_offset;           // +0x10
     long map_width;                 // +0x14
     long map_height;                // +0x18
-    char gap_1C[0x28 - 0x1C];       // +0x1C..+0x27
+    float schedule;                 // +0x1C
+    void* search_map;               // +0x20
+    void* search_map_rows;          // +0x24
     Map_Stack* stack_array;         // +0x28
     Map_Stack** stack_offsets;      // +0x2C
 
     void add_stack_node(Map_Stack* target, Map_Stack* node);
+};
+
+class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
+public:
+    virtual unsigned char generate();
     void link_stack_randomly(Map_Stack* param_1);
 };
 
 void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
+    long width = this->map_width;
+    long height = this->map_height;
     Map_Stack* stack = this->stack_array;
+    long max_height = height - 1;
+    long max_width = width - 1;
     stack->prev = param_1;
+    Map_Stack* last = &stack[height * width - 1];
     stack->next = &stack[1];
-
-    Map_Stack* last = &stack[this->map_height * this->map_width - 1];
     last->next = 0;
     last->prev = &last[-1];
 
@@ -57,9 +87,9 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
         node->prev = &node[-1];
     }
 
-    for (long count = this->map_height * this->map_width / 16; count > 0; count--) {
-        long x = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFA) * (this->map_width - 1) / 0x7FFF;
-        long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFB) * (this->map_height - 1) / 0x7FFF;
+    for (long count = height * width / 16; count > 0; count--) {
+        long x = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFA) * max_width / 0x7FFF;
+        long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFB) * max_height / 0x7FFF;
         this->add_stack_node(param_1, &this->stack_offsets[y][x]);
     }
 }
