@@ -15,6 +15,9 @@
 // remains blocked by the EH prologue and duplicated-fallback CFG basin.
 // Main-agent audit removed parameter-home aliasing, restored named work-status
 // outputs, and canonicalized world/player/action ownership.
+// 9: duplicated the natural player fallback in the building-status and no-building arms, matching the original separate lookup blocks.
+// 10: applied the proven work_status(short&,short&,short&,char*,short) ABI with three output locals; corrected vslot 0x10C to cancelTrain(int,int,int,int).
+// Current exact candidate: /GX, typed status outputs, duplicated fallback, and the cancelTrain surface reproduce 115/115 instructions, all 11 ordered calls, and 0-byte strict drift.
 
 class UnitAIModule;
 class RGE_Static_Object;
@@ -34,10 +37,10 @@ public:
     void setCurrentTarget(int id, int id2, float x, float y, float z);
 };
 
-class RGE_Static_Object_VTable208 {
+class RGE_Static_Object {
 public:
 #define VPAD(n) virtual void v##n();
-    virtual ~RGE_Static_Object_VTable208();
+    virtual ~RGE_Static_Object();
     VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
     VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
@@ -57,16 +60,12 @@ public:
     VPAD(128) VPAD(129)
 #undef VPAD
     virtual void add_action(void* action);
-};
-
-class RGE_Static_Object : public RGE_Static_Object_VTable208 {
-public:
     UnitAIModule* unitAI();
 };
 
 class TRIBE_Building_Object : public RGE_Static_Object {
 public:
-    int work_status(void* command, short* local_76, short* local_78, char* work_name, int len);
+    int work_status(short& progress, short& local_76, short& local_78, char* work_name, short len);
 };
 
 class TRIBE_Player {
@@ -83,12 +82,12 @@ public:
     PPAD(56) PPAD(57) PPAD(58) PPAD(59) PPAD(60) PPAD(61) PPAD(62) PPAD(63)
     PPAD(64) PPAD(65) PPAD(66)
 #undef PPAD
-    virtual void make(int p0, int train_id, int unit_id, int unique_id); // +0x10C
+    virtual void cancelTrain(int p0, int train_id, int unit_id, int unique_id); // +0x10C
 };
 
 struct TRIBE_Command_Make {
-    short progress;      // +0
-    short work_target;   // +2
+    unsigned char command; // +0
+    char gap_01[3];
     int unit_id;         // +4
     unsigned char player_index; // +8
     char gap_09;
@@ -128,12 +127,13 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* cmd)
 {
     short progress;
     short work_target;
+    short work_state;
     char work_name[100];
     TRIBE_Building_Object* building;
 
     building = (TRIBE_Building_Object*)this->world->object(cmd->unit_id);
     if (building != 0) {
-        building->work_status(cmd, &progress, &work_target, work_name, 100);
+        building->work_status(progress, work_target, work_state, work_name, 100);
         if (progress != 0x67 && progress != 0x66) {
             TRIBE_Action_Make_Obj* action = new TRIBE_Action_Make_Obj(building, cmd->train_id, cmd->unique_id, 0);
             if (action != 0) {
@@ -146,10 +146,14 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* cmd)
             }
             return;
         }
-    }
-
-    TRIBE_Player* player = this->world->players[cmd->player_index];
-    if (player != 0) {
-        player->make(0, cmd->train_id, cmd->unit_id, cmd->unique_id);
+        TRIBE_Player* player = this->world->players[cmd->player_index];
+        if (player != 0) {
+            player->cancelTrain(0, cmd->train_id, cmd->unit_id, cmd->unique_id);
+        }
+    } else {
+        TRIBE_Player* player = this->world->players[cmd->player_index];
+        if (player != 0) {
+            player->cancelTrain(0, cmd->train_id, cmd->unit_id, cmd->unique_id);
+        }
     }
 }

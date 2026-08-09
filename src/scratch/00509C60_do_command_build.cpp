@@ -15,10 +15,20 @@
 // 0x08 versus 0x0C. Final candidate is natural and validated in scratch.
 // Main-agent audit restored canonical polymorphic world/static/player/build
 // ownership while retaining the ordinary placement/foundation branches.
+// 9: ground-truth ABI pass changed command coordinates to float, IDs to RGE_Obj_Info, the player call to cancelBuild, the foundation call to make_new_obj, and the object call to do_command; size moved 405 -> 411 but the frame stayed 0x08.
+// 10: nested the placement/pay/foundation arms to mirror the PDB line topology; it was slightly worse (407 B), so the natural early-return form remains authoritative.
+// 11: tested int placementResult against the proven check_placement int* metadata; it regressed broadly and was rolled back to the binary-supported uchar local.
+// 12-13: local declaration order and named command self alias were tested; emitted code was unchanged at 411 B/250 strict bytes.
+// Current pause: canonical float/object/virtual surfaces and early-return behavior are modeled; remaining structural blocker is VC5's 0x08 standalone frame versus original 0x0C, shifting otherwise aligned stack homes by four bytes. Best output is 411/418 B, 10/10 ordered calls, CFG 12/12, 250 strict bytes.
+// Main-agent audit removed the diagnostic command self-alias; direct member calls
+// remain the canonical source even though the alias was codegen-neutral.
 
 typedef unsigned char uchar;
 
 class RGE_Static_Object;
+struct RGE_Obj_Info {
+    int id;
+};
 
 class RGE_Game_World {
 public:
@@ -40,7 +50,7 @@ public:
     unsigned int last_order_time;
     void* com_hand;
 
-    RGE_Static_Object* get_obj(int id);
+    RGE_Static_Object* get_obj(RGE_Obj_Info id);
 };
 
 class RGE_Static_Object {
@@ -53,7 +63,7 @@ public:
     OPAD(24) OPAD(25) OPAD(26) OPAD(27) OPAD(28) OPAD(29) OPAD(30) OPAD(31)
     OPAD(32) OPAD(33) OPAD(34) OPAD(35) OPAD(36) OPAD(37)
 #undef OPAD
-    virtual void place(void* foundation, long x, long y, int flag);
+    virtual void do_command(RGE_Static_Object* foundation, float x, float y, float z);
     int id;
     void removeAllFromPathingGroup();
 };
@@ -71,7 +81,7 @@ public:
     PPAD(48) PPAD(49) PPAD(50) PPAD(51) PPAD(52) PPAD(53) PPAD(54) PPAD(55)
     PPAD(56) PPAD(57) PPAD(58) PPAD(59) PPAD(60) PPAD(61) PPAD(62) PPAD(63)
 #undef PPAD
-    virtual void build_action(uchar result, int unique_id, int obj_id, long x, long y, long p5, int object_id);
+    virtual void cancelBuild(int result, int count, int obj_id, float x, float y, int unique_id, int object_id);
     char gap_04[0x20];
     int** objects;
     uchar pay_obj_cost(short obj_id, float amount, int flag);
@@ -87,14 +97,14 @@ public:
     virtual void b5();
     virtual void b6();
     virtual void b7();
-    virtual uchar can_place(TRIBE_Player* player, long x, long y, uchar* placement, int a, int b, int c, int d, int e, int f);
+    virtual uchar can_place(TRIBE_Player* player, float x, float y, uchar* placement, int a, int b, int c, int d, int e, int f);
     virtual void b9();
     virtual void b10();
     virtual void b11();
     virtual void b12();
     virtual void b13();
     virtual void b14();
-    virtual int create_foundation(TRIBE_Player* player, long x, long y, int zero, int unique_id);
+    virtual RGE_Static_Object* create_foundation(TRIBE_Player* player, float x, float y, int zero, int unique_id);
 };
 
 struct TRIBE_Command_Build {
@@ -102,12 +112,12 @@ struct TRIBE_Command_Build {
     uchar count;
     uchar player_id;
     uchar pad3;
-    long x;
-    long y;
+    float x;
+    float y;
     short obj_id;
     short padE;
     int unique_id;
-    int ids[1];
+    RGE_Obj_Info ids[1];
 };
 
 class TRIBE_Command : public RGE_Command {
@@ -117,9 +127,10 @@ public:
 
 void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
 {
+    RGE_Static_Object* blockingObject;
     uchar placementResult;
-    int blockingObject;
     int count;
+    RGE_Static_Object* obj;
 
     count = cmd->count;
     TRIBE_Player* player = this->world->players[cmd->player_id];
@@ -140,11 +151,11 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
         if (count <= 0) {
             return;
         }
-        RGE_Static_Object* obj = this->get_obj(cmd->ids[0]);
+        obj = this->get_obj(cmd->ids[0]);
         if (obj == 0) {
             return;
         }
-        player->build_action(placementResult, count, cmd->obj_id, cmd->x, cmd->y, cmd->unique_id, obj->id);
+        player->cancelBuild(placementResult, count, cmd->obj_id, cmd->x, cmd->y, cmd->unique_id, obj->id);
         return;
     }
 
@@ -152,11 +163,11 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
         if (count <= 0) {
             return;
         }
-        RGE_Static_Object* obj = this->get_obj(cmd->ids[0]);
+        obj = this->get_obj(cmd->ids[0]);
         if (obj == 0) {
             return;
         }
-        player->build_action(0, count, cmd->obj_id, cmd->x, cmd->y, cmd->unique_id, obj->id);
+        player->cancelBuild(0, count, cmd->obj_id, cmd->x, cmd->y, cmd->unique_id, obj->id);
         return;
     }
 
@@ -165,13 +176,13 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
         return;
     }
 
-    int* idp = &cmd->ids[0];
+    RGE_Obj_Info* idp = &cmd->ids[0];
     int n = count;
     do {
-        RGE_Static_Object* obj = this->get_obj(*idp);
+        obj = this->get_obj(*idp);
         if (obj != 0) {
             obj->removeAllFromPathingGroup();
-            obj->place((void*)blockingObject, cmd->x, cmd->y, 0);
+            obj->do_command(blockingObject, cmd->x, cmd->y, 0.0f);
         }
         ++idp;
         --n;

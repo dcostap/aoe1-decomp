@@ -15,6 +15,10 @@
 // typed, and validated in scratch; the EH funclet/prologue/register basin remains.
 // Main-agent audit removed parameter-home aliasing, restored named work-status
 // outputs, and canonicalized world/player/static-object ownership.
+// 11: duplicated the natural player fallback in the building-status and no-building arms; this recovered the original separate lookup blocks and exact 364-byte size.
+// 12: replaced the guessed work_status command-pointer surface with the proven short&/short&/short&/char*/short ABI; three local outputs recovered the original parameter-home reuse and 3-byte drift.
+// 13: identified player vslot 0x118 as cancelResearch(int,int,int,int), not research(short,...), and used the natural work_name base; exact 364/364 bytes.
+// Current exact candidate: /GX, typed work-status outputs, duplicated fallback, and the cancelResearch slot reproduce 114/114 instructions, all 11 ordered calls, and 0-byte strict drift.
 
 class RGE_Static_Object;
 class TRIBE_Building_Object;
@@ -35,10 +39,10 @@ public:
     void setCurrentTarget(int id, int id2, float x, float y, float z);
 };
 
-class RGE_Static_Object_VTable208 {
+class RGE_Static_Object {
 public:
 #define VPAD(n) virtual void v##n();
-    virtual ~RGE_Static_Object_VTable208();
+    virtual ~RGE_Static_Object();
     VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
     VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
@@ -58,10 +62,6 @@ public:
     VPAD(128) VPAD(129)
 #undef VPAD
     virtual void add_action(void* action); // +0x208
-};
-
-class RGE_Static_Object : public RGE_Static_Object_VTable208 {
-public:
     UnitAIModule* unitAI();
 };
 
@@ -70,7 +70,7 @@ class RGE_Action_Object : public RGE_Static_Object {
 
 class TRIBE_Building_Object : public RGE_Action_Object {
 public:
-    int work_status(void* command, short* local_76, short* local_78, char* work_name, int len);
+    int work_status(short& progress, short& local_76, short& local_78, char* work_name, short len);
 };
 
 class TRIBE_Player {
@@ -87,12 +87,12 @@ public:
     PPAD(56) PPAD(57) PPAD(58) PPAD(59) PPAD(60) PPAD(61) PPAD(62) PPAD(63)
     PPAD(64) PPAD(65) PPAD(66) PPAD(67) PPAD(68) PPAD(69)
 #undef PPAD
-    virtual void research(short tech_id, int unit_id, int p3, int unique_id); // +0x118
+    virtual void cancelResearch(int tech_id, int unit_id, int p3, int unique_id); // +0x118
 };
 
 struct TRIBE_Command_Research {
-    short progress;      // +0
-    short work_target;   // +2
+    unsigned char command; // +0
+    char gap_01[3];
     int unit_id;         // +4
     unsigned char player_index; // +8
     char gap_09;
@@ -140,12 +140,13 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* cmd)
 {
     short progress;
     short work_target;
+    short work_state;
     char work_name[100];
     TRIBE_Building_Object* building;
 
     building = (TRIBE_Building_Object*)this->world->object(cmd->unit_id);
     if (building != 0) {
-        building->work_status(cmd, &progress, &work_target, work_name, 100);
+        building->work_status(progress, work_target, work_state, work_name, 100);
         if (progress != 0x67 && progress != 0x66) {
             TRIBE_Action_Make_Tech* action = new TRIBE_Action_Make_Tech(building, cmd->tech_id, cmd->unique_id);
             if (action != 0) {
@@ -158,10 +159,14 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* cmd)
             }
             return;
         }
-    }
-
-    TRIBE_Player* player = this->world->players[cmd->player_index];
-    if (player != 0) {
-        player->research(cmd->tech_id, cmd->unit_id, -1, cmd->unique_id);
+        TRIBE_Player* player = this->world->players[cmd->player_index];
+        if (player != 0) {
+            player->cancelResearch(cmd->tech_id, cmd->unit_id, -1, cmd->unique_id);
+        }
+    } else {
+        TRIBE_Player* player = this->world->players[cmd->player_index];
+        if (player != 0) {
+            player->cancelResearch(cmd->tech_id, cmd->unit_id, -1, cmd->unique_id);
+        }
     }
 }
