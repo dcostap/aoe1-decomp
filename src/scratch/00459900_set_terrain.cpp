@@ -26,6 +26,9 @@
 // while preserving field offsets was a codegen duplicate of the clean source.
 // Main-agent audit restored canonical polymorphic world/map ownership and kept
 // natural typed tile and terrain-object operations.
+// Current worker: assigning old_terrain directly in the comparison was a
+// codegen duplicate; VC5 still hoisted the terrain-byte load and kept the
+// same 205-byte structural gap. Restored the clean source.
 
 class RGE_Tile_List {
 public:

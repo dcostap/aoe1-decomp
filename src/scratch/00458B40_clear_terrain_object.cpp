@@ -18,6 +18,11 @@
 //   register coloring, and object-type scan topology.
 // Main-agent audit restored canonical polymorphic map ownership and retained
 // the ordinary typed tile-object scan and destruction paths.
+// Current worker: a named master_obj, object-before-node declaration order,
+// and a for-loop node increment were separately tested; the first two were
+// emitted-code duplicates and the for form widened the body to 358 bytes.
+// Restored the clean natural scan; the original 321-byte prologue/register
+// topology remains unresolved.
 
 class RGE_Game_World;
 class RGE_Player;

@@ -11,6 +11,9 @@
 //   changed the frame.  The clean typed form is retained below.
 // - Left in scratch: all eight calls, bounds, loops, stack homes, and post-load
 //   effects align; only the one-byte overlay load/XOR ordering remains.
+// - Current worker: sequential low-byte accumulators and reusing overlay_info
+//   as the destination were separately tested; both retained the same exact-
+//   size five-byte hunk. Restored the clean typed XOR source.
 
 class RGE_Player;
 class RGE_Game_World;

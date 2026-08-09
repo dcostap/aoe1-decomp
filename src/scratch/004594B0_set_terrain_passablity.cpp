@@ -19,6 +19,10 @@
 //   counters). No calls or behavior/layout facts remain unresolved.
 // - Main-agent audit restored ordinary row/column subscripting and named tile
 //   ownership; byte-offset cursors from the codegen experiments were removed.
+// - Current worker: adding the complete same-TU RGE_Map virtual prefix was a
+//   codegen duplicate; it did not create the target's opening push-ecx/local
+//   home or change the broad 247-byte structural gap. Restored the clean
+//   natural source.
 
 class RGE_Tile {
 public:
