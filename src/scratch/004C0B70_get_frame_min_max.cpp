@@ -19,8 +19,14 @@
 // unchanged. Calls, frame, size, and prefix remain exact; first mismatch is
 // the facet-swap block at +005F, with residual register/liveness drift after
 // the second call.
+// This pass also tested widened/reused coordinate temporaries and commutative
+// x-bound spellings; the emitted basin stayed at 110 bytes. The natural result
+// temporary remains the clean source; the remaining gap is the post-call
+// frame/facet register assignment and branch span.
 // Final clean source: retain the natural formal-parameter/temporary form;
 // remaining drift is VC5 register/liveness coloring after the second call.
+// Main-agent audit confirmed the canonical non-polymorphic 0x78-byte sprite
+// surface and retained named frame-bound ownership.
 
 class RGE_Color_Table;
 class TShape;
@@ -84,7 +90,7 @@ int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
     long calc_max_y;
     long local_4;
     int facet_index;
-    int x1;
+    int result;
     int x2;
     int y1;
     int y2;
@@ -99,18 +105,18 @@ int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
     }
 
     if (facet_index != 0) {
-        x1 = -frame;
+        result = -frame;
         frame = -facet;
-        facet = x1;
+        facet = result;
     }
 
-    x1 = frame + offset_x;
+    result = frame + offset_x;
     x2 = facet + offset_x;
     y1 = calc_max_y + offset_y;
     y2 = local_4 + offset_y;
 
-    if (x1 < min_x) {
-        min_x = (short)x1;
+    if (result < min_x) {
+        min_x = (short)result;
     }
     if (y1 < min_y) {
         min_y = (short)y1;

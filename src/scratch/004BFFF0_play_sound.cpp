@@ -13,6 +13,12 @@
 // - Do-while, facet-local, and declaration-order variants were worse or
 //   duplicated. Final normalized typed source is exact-size with 158 differing
 //   bytes; recover control-flow/source context without restoring raw cursors.
+// This pass retested direct sound_list indexing and a named base pointer; the
+// direct form grew to 259 bytes and the base was codegen-neutral. Keep the
+// period-plausible typed facet-record traversal; residual drift is structural
+// register/liveness coloring in the two three-entry loops.
+// Main-agent audit confirmed the 0x14-byte sound-facet record and retained the
+// natural bounded array traversal.
 
 class RGE_Sound {
 public:

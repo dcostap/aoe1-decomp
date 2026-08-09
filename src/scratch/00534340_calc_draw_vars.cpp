@@ -29,6 +29,11 @@
 // probe 15: exact tagRECT dword aggregate for render_rect — emitted code unchanged.
 // final: retain the period-plausible inherited TPanel/tagRECT ownership; remaining
 //   mismatch is isolated to VC5 register coloring and zero-path save/pop order.
+// Session follow-up: named zero, direct-member width/height, and visible-local
+// probes were rolled back; they were duplicate or farther.  Retain the clean
+// named panel-width/height source and canonical RGE_View/TPanel/tagRECT surface.
+// Main-agent audit confirmed canonical panel/view rectangle ownership and kept
+// the natural visible/geometry branches.
 
 class tagRECT {
 public:

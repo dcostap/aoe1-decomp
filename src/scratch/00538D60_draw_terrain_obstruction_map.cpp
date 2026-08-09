@@ -14,10 +14,17 @@
 // - paused: calls, stack cleanup, size/frame, and loop behavior align; remaining
 //   drift starts at outer-loop LEA scheduling (original LEA/LEA/LEA versus the
 //   compiler's early row add), then register/load ordering in the draw branch.
+// - Session follow-up: canonical polymorphic TPanel context was retained;
+//   named row and dead-frame-home reuse were duplicate probes.  The clean
+//   source below preserves the natural parameter/field ownership and leaves
+//   only the localized VC5 outer-loop LEA scheduling gap.
+// Main-agent audit removed unused fake-size context and restored canonical
+// draw-area ownership while retaining the ordinary nested obstruction loop.
 
 class TDrawArea {
 public:
-    char gap_00[0xD0];
+    virtual ~TDrawArea();
+    char gap_04[0xCC];
     void* CurSpanList;
 };
 
@@ -28,14 +35,12 @@ public:
 
 class RGE_Base_Game {
 public:
-    char gap_00[0x5C];
+    virtual ~RGE_Base_Game();
     TShape* get_shape(int);
 };
 
 class PathingSystem {
 public:
-    char gap_00[0xCE624];
-    unsigned char obstructionValue[1];
     unsigned char obstruction(int, int);
 };
 
@@ -44,7 +49,8 @@ extern PathingSystem pathSystem;
 
 class TPanel {
 public:
-    char gap_00[0xF4];
+    virtual ~TPanel();
+    char gap_04[0xF0];
 };
 
 class RGE_View : public TPanel {
@@ -75,9 +81,10 @@ void RGE_View::draw_terrain_obstruction_map(
         i = 0;
         x_offset = tile_x * 8;
         y_offset = tile_x * 4;
+        frame = tile_x + tile_y;
 
         do {
-            int obstruction = pathSystem.obstruction(i + tile_x4, tile_x + tile_y);
+            int obstruction = pathSystem.obstruction(i + tile_x4, frame);
             if (obstruction > 0) {
                 obstruction_shape->shape_draw(this->cur_render_area,
                     x + 2 + x_offset,

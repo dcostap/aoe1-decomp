@@ -9,6 +9,12 @@
 // - The remaining mismatch is VC5 register/liveness coloring in the scan;
 //   raw cross-member cursor experiments improved bytes only marginally and
 //   were restored to this typed entry form.
+// This pass tested a named draw-list base, a materialized parent facet
+// denominator, and a typed pointer-increment scan. The normalized typed walk
+// is the living source (137-byte diff); the raw-cursor 124-byte result remains
+// diagnostic history only. Remaining drift starts at child-entry coloring.
+// Main-agent audit confirmed typed 0x10-byte picture-entry traversal and child
+// sprite ownership; no byte cursor survives.
 
 class RGE_Sprite;
 
@@ -40,8 +46,6 @@ public:
 };
 
 unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value) {
-    int index = 0;
-
     if (((this->box_x1 != 0) || (this->box_x2 != 0)) &&
         ((this->box_y1 != 0) || (this->box_y2 != 0))) {
         if ((x >= this->box_x1) && (x <= this->box_x2) &&
@@ -52,10 +56,9 @@ unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value) {
 
     if ((this->draw_list_num > 0) && (this->draw_list != 0)) {
         int i = 0;
+        RGE_Picture_List* list = this->draw_list;
         if (this->draw_list_num > 0) {
             while (i < this->draw_list_num) {
-                RGE_Picture_List* list =
-                    (RGE_Picture_List*)((char*)this->draw_list + index);
                 RGE_Sprite* sprite = list->sprite;
                 if (sprite->shape_hit_test(
                         x - list->offset_x,
@@ -64,7 +67,7 @@ unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value) {
                         value)) {
                     return 1;
                 }
-                index += 0x10;
+                list++;
                 i++;
             }
         }

@@ -9,6 +9,13 @@
 //   not change the best emitted basin; raw field-offset cursors were worse.
 // - the remaining drift is VC5 register/statement scheduling around the loop
 //   setup, child argument evaluation, and fallback result register.
+// Corrected the draw-list arm to call sprite->do_draw: original ECX is the
+// child sprite, not the parent. This moved the natural typed source from 189
+// to 45 differing bytes with matching size/calls; result/count and declaration
+// probes did not improve it. Keep the corrected ownership; residual drift is
+// the duplicated draw-list guard and VC5 local/register scheduling.
+// Main-agent audit confirmed that drawing belongs to each child sprite and
+// retained ordinary typed picture-entry indexing.
 
 class RGE_Color_Table;
 class TDrawArea;
@@ -85,7 +92,6 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
         facet = 0;
     }
 
-    result = 0;
     if ((this->draw_list_num <= 0) || (this->draw_list == 0)) {
         if (this->draw_level == 0x14) {
             this->do_draw(facet, param_2, param_3, param_4, param_5, param_6, 0);
@@ -93,6 +99,7 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
         result = 1;
     }
     else {
+        result = 0;
         count = 0;
         if (0 < this->draw_list_num) {
             index = 0;
@@ -101,7 +108,7 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
                 RGE_Sprite* sprite = entry->sprite;
                 if ((sprite->draw_level == 0x14) &&
                     ((entry->facet < 0) || (entry->facet == facet))) {
-                    this->do_draw((sprite->facet_num * facet) / (int)this->facet_num,
+                    sprite->do_draw((sprite->facet_num * facet) / (int)this->facet_num,
                                   param_2,
                                   (long)entry->offset_x + param_3,
                                   (long)entry->offset_y + param_4,

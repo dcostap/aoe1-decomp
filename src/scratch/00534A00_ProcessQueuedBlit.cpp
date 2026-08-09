@@ -42,8 +42,14 @@
 //   render-area ownership despite the slightly worse positional metric; the
 //   shape improves and canonical source remains authoritative over register
 //   steering in this unresolved function.
+// - Session follow-up: the size-left final-bound spelling and a late typed
+//   surface local were rolled back (the former worsened CFG and the latter was
+//   a codegen duplicate).  Keep this canonical COM/RECT source; remaining
+//   drift is the isolated VC5 save/register and argument scheduling basin.
 // FLAGS: none. Inline asm forbidden.
 // Best variant: probe 2 (current source), 219 bytes, frame 0x10, 2/2 calls aligned.
+// Main-agent audit confirmed canonical panel/draw-area/DirectDraw ownership;
+// no dead-store or COM scheduling steering survives.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 

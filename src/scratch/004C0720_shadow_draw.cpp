@@ -13,9 +13,17 @@
 //   no size-valid or exact variant (8 variants, 272/282-byte groups).
 // - loading the child sprite before forming the entry address reproduces the
 //   observed child-load-before-LEA topology and reaches 274 bytes / 32 differing
-//   bytes. This raw view is retained because the binary proves the 16-byte
-//   cursor and the ordering; remaining drift is this/child register coloring
-//   plus the loop-update reload order.
+//   bytes. This raw view remains diagnostic only; it proves the 16-byte stride
+//   and ordering, while the living source uses a typed pointer walk.
+// Corrected the draw-list arm to call sprite->do_draw: original ECX is the
+// child sprite, not the parent. The same binary-proven cursor source then
+// reaches 19 differing bytes with exact size/calls and 91.18% block coverage;
+// typed-entry probes were worse, but the living source is normalized to a
+// typed RGE_Picture_List pointer walk rather than retain a raw cursor solely
+// for metrics (current documented diff: 269 bytes). The 19-byte result is
+// diagnostic history; corrected ownership remains the semantic baseline.
+// Main-agent audit confirmed child-sprite draw ownership and the normalized
+// typed entry traversal; no raw cursor survives.
 
 class RGE_Color_Table;
 class TDrawArea;
@@ -85,7 +93,7 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3,
 {
     RGE_Sprite* sprite;
     long facet = param_1;
-    int local_4;
+    RGE_Picture_List* entry;
     if (param_1 >= this->facet_num) {
         facet = 0;
     }
@@ -99,25 +107,26 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3,
     else {
         param_1 = 0;
         if (0 < this->draw_list_num) {
-            local_4 = 0;
-            do {
-                sprite = *(RGE_Sprite**)((char*)this->draw_list + local_4 + 4);
-                RGE_Picture_List* entry =
-                    (RGE_Picture_List*)((char*)this->draw_list + local_4);
+            entry = this->draw_list;
+            while (1) {
+                sprite = entry->sprite;
                 if ((sprite->draw_level != param_7) &&
                     (sprite->draw_level < 0x14) &&
                     ((entry->facet < 0) || (entry->facet == facet))) {
-                    this->do_draw((sprite->facet_num * facet) /
+                    sprite->do_draw((sprite->facet_num * facet) /
                                       (int)this->facet_num,
                                   param_2,
                                   (long)entry->offset_x + param_3,
                                   (long)entry->offset_y + param_4,
                                   param_5, param_6, 0);
                 }
-                local_4 = local_4 + 0x10;
-                param_1 = param_1 + 1;
-            } while (param_1 < this->draw_list_num);
-            return (unsigned char)param_1;
+                entry++;
+                param_1++;
+                if (param_1 < this->draw_list_num) {
+                    continue;
+                }
+                return (unsigned char)param_1;
+            }
         }
     }
     return (unsigned char)param_1;

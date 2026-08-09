@@ -56,25 +56,32 @@
 // the pre-dispatch zero/branch-tail topology.
 // Main-agent normalization replaced the raw static-object vptr field with its
 // canonical virtual destructor surface; emitted code is unchanged.
+// Session normalization uses the canonical RGE_View, RGE_Static_Object, and
+// RGE_Master_Static_Object names and a real unsigned-char level local; no
+// parameter-home pointer alias remains.  The best natural source is retained
+// below; remaining drift is the VC5 register/dispatch basin described above.
+// Main-agent audit restored polymorphic master/panel ownership; the natural
+// select-level switch remains authoritative.
 
 // Fresh pass probe 2 uses the proven concrete RGE_View/TPanel and
 // RGE_Static_Object data surfaces rather than the prior minimal helper shells.
-struct RGE_Master_Static_Object_Layout {
-    char _gap_00[0x8D];
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    char _gap_04[0x89];
     unsigned char select_level;
 };
 
-class RGE_Static_Object_Layout {
+class RGE_Static_Object {
 public:
-    virtual ~RGE_Static_Object_Layout();
+    virtual ~RGE_Static_Object();
     long id;
-    RGE_Master_Static_Object_Layout* master_obj;
+    RGE_Master_Static_Object* master_obj;
     char _gap_0C[0x7C];
 };
 
 class TPanel {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual ~TPanel(); virtual void v01(); virtual void v02(); virtual void v03();
     virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
     virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
     virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
@@ -89,7 +96,7 @@ public:
     char _gap_04[0xF0];
 };
 
-class RGE_View_Helper : public TPanel {
+class RGE_View : public TPanel {
 public:
     char _gap_F4[0x33C - 0xF4];
     int UC_ObjectTouched;
@@ -97,11 +104,11 @@ public:
     virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51();
     virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
     virtual void pick_through_fog();
-    virtual int pick_weight(RGE_Static_Object_Layout* param_1, int param_2);
+    virtual int pick_weight(RGE_Static_Object* param_1, int param_2);
 };
 
-int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2) {
-    int zero = 0;
+int RGE_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
+    int zero;
     int bVar1;
     unsigned char select_level = param_1->master_obj->select_level;
 
@@ -111,10 +118,10 @@ int RGE_View_Helper::pick_weight(RGE_Static_Object_Layout* param_1, int param_2)
     else
         bVar1 = 0;
 
-    param_1 = (RGE_Static_Object_Layout*)(unsigned)select_level;
+    zero = 0;
 
     // Switch on select_level (values 2,3,4 handled, default=1)
-    switch ((int)(unsigned)param_1) {
+    switch ((int)(unsigned)select_level) {
         case 4:
             if (bVar1) return 5;
             if (param_2 == 1 || param_2 == 2) return 4;
