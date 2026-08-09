@@ -22,6 +22,14 @@
 //   body to 222 bytes / 177 differing bytes; rolled back.
 // - Signed-char opcode with in-place negation reproduced an older 208-byte /
 //   163-byte-diff basin; rolled back as duplicate negative evidence.
+// - Binary CFG confirms the stream header advances once per row after the
+//   line-offset reset; moving `chunk++` into that outer loop improved the
+//   reconstruction to 99 differing bytes and recovered the original ESI=this
+//   basin, at the cost of four extra emitted bytes.
+// - Signed negative-arm, one-byte union, branch-local count, short-count, and
+//   cast-after-negation variants regressed or duplicated; retain the unsigned
+//   opcode source with the per-row advance.  Remaining drift is the negative
+//   arm's `and eax,0xff` versus original `movsx ebp,al` scheduling.
 
 #include <string.h>
 
@@ -48,12 +56,12 @@ void RGE_Flic_Player::byte_run() {
     if (count < 0) return;
     count++;
 
-    chunk++;
     int line_offset;
     unsigned char* dst;
 
     do {
         line_offset = 0;
+        chunk++;
         do {
             unsigned char opcode = (unsigned char)*chunk;
             chunk++;

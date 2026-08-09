@@ -15,6 +15,13 @@
 //   payload-cursor pass were neutral or lower-shape; retain the two-cursor
 //   natural decoder.  The remaining gap is EBP packet-cursor allocation and
 //   the cur_y/line-count stack-home schedule.
+// - Widening the outer line count to int changed the body to 400 bytes; rolled
+//   back because the original boundary is 412 bytes.
+// - Typed char* cursor and base-plus-one pointer spellings were neutral or
+//   lower-shape; retain the natural ushort cursor.
+// - Removing the redundant found-scan value temporary improved the best result
+//   to 376 differing bytes without changing size or calls; this is the clean
+//   source retained for the remaining EBP/prologue basin.
 
 #include <string.h>
 
@@ -49,18 +56,15 @@ void RGE_Flic_Player::delta_flc()
         ushort* scan = p;
         do {
             ushort code = *scan;
-            ushort value = 0;
             p = scan + 1;
             unsigned int top = ((unsigned int)code) >> 14;
             if (top == 0) {
-                value = code;
-                packets = value;
+                packets = code;
                 found = 1;
             } else if (top == 2) {
                 this->window_buffer[this->flic_width - 1] = (uchar)code;
-                value = *p;
+                packets = *p;
                 p = scan + 2;
-                packets = value;
                 found = 1;
             } else if (top == 3) {
                 int skip = -(int)(short)code;

@@ -11,6 +11,11 @@
 // 9: Temporary /O1 flag made function 441 bytes, wrong family; removed flag.
 // 10: Temporary /Ob0 flag no change; removed flag.
 // 11: Temporary /Od produced 91.54% broad mismatch; removed flag.
+// 12: Reordered the natural coordinate stores to x1/x2/drawarea/height/y1/y2; emitted code unchanged.
+// 13: Reused the stored drawarea member for later API/field accesses; this regressed to 248 differing bytes and was restored.
+// 14: Declared height before width while retaining width-then-height loads; emitted code unchanged.
+// 15: Focused four-way lab over natural coordinate order/direct-field forms produced two codegen groups, all at the 36-byte baseline diff.
+// 16: Reversed the natural x2 addition operand order; emitted code unchanged.
 // BLOCKER: behavior and layout appear correct; remaining 7.8091% diff is localized codegen/register scheduling in coordinate setup after frame load. Original uses EBX for width then reuses EBX for drawarea (`movsx ebx,[esi+10] ... mov ebx,ecx`), while VC5 keeps width in ECX and loads drawarea into EBX early. Later switch/tail and frees are structurally aligned.
 
 extern "C" void* calloc(unsigned int count, unsigned int size);

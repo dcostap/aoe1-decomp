@@ -18,6 +18,15 @@
 // - Replaced the raw index1 cursor with the typed FrameHead pointer; emitted
 //   code stayed identical, so the living source now keeps proven header
 //   ownership without decompiler-only offset plumbing.
+// - Added a typed two-byte PalettePacket for the packed skip/count header; this
+//   preserved the natural +6 header anchor and +2 payload step and improved the
+//   emitted result to 243 differing bytes.
+// - Added a natural packet countdown local after each positive packet guard;
+//   this recovered the original movsx/test/copy countdown topology and reached
+//   the best 212-byte result with all seven relocated call sites aligned.
+// - Scoped count/color/skip declaration variants were codegen duplicates; keep
+//   the typed packet plus countdown as the clean source.  Remaining drift is
+//   the FrameHead stack reload and payload count/palette-base register coloring.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
@@ -62,6 +71,11 @@ struct tagRGBQUAD {
     unsigned char rgbReserved;
 };
 
+struct PalettePacket {
+    signed char skip;
+    signed char count;
+};
+
 class RGE_Flic_Player {
 public:
     unsigned char* flic_buffer;
@@ -91,7 +105,6 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
     int* chunk;
     int* frame_buffer = 0;
     int packets;
-    int count;
     int color_index;
 
     if (this->flic_handle > -1) {
@@ -112,16 +125,17 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
             if ((short)chunk[1] == 4) {
                 packets = *(short*)((char*)chunk + 6);
                 color_index = 0;
-                unsigned char* packet = (unsigned char*)chunk + 8;
+                unsigned char* packet = (unsigned char*)chunk + 6;
                 if (0 < packets) {
+                    int packet_count = packets;
                     do {
-                        count = (signed char)packet[1];
-                        color_index += (signed char)packet[0];
-                        packet++;
+                        PalettePacket* packet_header = (PalettePacket*)packet;
+                        int count = packet_header->count;
+                        color_index += packet_header->skip;
+                        packet = (unsigned char*)(packet_header + 1);
                         if (count == 0) {
                             count = 0x100;
                         }
-                        packet++;
                         if (0 < count) {
                             unsigned char* green = &palette[color_index].rgbGreen;
                             color_index += count;
@@ -137,24 +151,25 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                             } while (count != 0);
                             packet = input;
                         }
-                        packets--;
-                    } while (packets != 0);
+                        packet_count--;
+                    } while (packet_count != 0);
                 }
             }
 
             if ((short)chunk[1] == 0x0B) {
                 packets = *(short*)((char*)chunk + 6);
                 color_index = 0;
-                unsigned char* packet = (unsigned char*)chunk + 8;
+                unsigned char* packet = (unsigned char*)chunk + 6;
                 if (0 < packets) {
+                    int packet_count = packets;
                     do {
-                        count = (signed char)packet[1];
-                        color_index += (signed char)packet[0];
-                        packet++;
+                        PalettePacket* packet_header = (PalettePacket*)packet;
+                        int count = packet_header->count;
+                        color_index += packet_header->skip;
+                        packet = (unsigned char*)(packet_header + 1);
                         if (count == 0) {
                             count = 0x100;
                         }
-                        packet++;
                         if (0 < count) {
                             tagRGBQUAD* color = palette + color_index;
                             color_index += count;
@@ -169,8 +184,8 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                                 green += 4;
                             } while (count != 0);
                         }
-                        packets--;
-                    } while (packets != 0);
+                        packet_count--;
+                    } while (packet_count != 0);
                 }
             }
 

@@ -36,6 +36,9 @@
 // - A typed payload pointer spanning the two header bytes reproduced an older
 //   232-byte / 221-byte-diff basin and was rolled back; it did not provide a
 //   useful source-level barrier for the separate increments.
+// - Fresh same-TU validation confirms the clean source remains 233 emitted
+//   bytes / 154 positional differences; the only structural drift is the
+//   compiler's merged `chunk++` pair versus the original two `inc ebp` bytes.
 
 #include <string.h>
 
