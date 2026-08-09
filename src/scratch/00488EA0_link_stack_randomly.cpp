@@ -13,6 +13,8 @@
 //   drift is VC5 local liveness/register coloring, not call set, layout, or CFG.
 // - New worker baseline: same-TU check_terrain recovery confirms the full random-module base surface; next probe names those proven base fields instead of a gap-only prefix.
 // - Full base surface emitted identically to the gap-only donor; no new structural lead. Keep the named canonical base and pause rather than repeat the prior liveness basin.
+// - New claim: direct width-minus-one spelling reached exact size/frame but moved to a different register/CFG basin (216-byte diff, 73.9% shape); restored.
+// - Register-qualified list/width, named height/width temporaries, split list initialization, and const width-bound probes were unchanged or worse; restored.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 

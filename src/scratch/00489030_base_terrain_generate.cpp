@@ -53,6 +53,8 @@
 //    pressure around the grow loop), so fix (1) first, then re-check.
 // 3) Minor: clump-guard lea/jle order and the zero-register (ebx vs edi) at the
 //    link setup still differ with no size cost.
+// - New claim: using loc_stack.x itself for the horizontal bound is binary-natural but dropped the frame to 0xA50 and widened drift; restored the best slot-preserving source.
+// - Reversing bound assignment order, moving the bound declaration, block-scoping the fig_chance float, moving index1 before fair_count, and explicit masked-XOR stores were unchanged or worse; restored.
 
 typedef unsigned char uchar;
 

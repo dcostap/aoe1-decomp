@@ -19,7 +19,12 @@
 // attempt 17: carried a typed self pointer through both scans, reflecting the binary's repeated saved-this reloads rather than relying on an implicit compiler spill.
 // attempt 19: ordered the row-index declaration before the typed self local, probing the remaining four-byte home permutation at the otherwise exact prologue.
 // attempt 20: initialized the spilled first-scan row index directly from y-radius rather than copying min_y; this is the last bounded liveness probe before retaining the best canonical basin.
+// attempt 21: block-scoped the first-scan row index; emitted code was unchanged.
+// attempt 22: restored first-scan induction to clamped min_y; behaviorally natural and exact-size, but drift widened to 353 bytes, so restored the prior basin.
+// attempt 23: register/split self initialization and function-scope first-row locals were compiler duplicates; restored.
 // Left in scratch: canonical typed terrain/map/row ownership, long base-terrain ABI, and both scan CFGs are reconstructed; remaining drift is VC5 stack-home/register coloring and early loop block shape (best current 429B, exact frame, 70.7% positional diff).
+// Main-agent audit removed the codegen-only self alias; direct member ownership
+// is authoritative for the paused canonical source.
 
 typedef unsigned char uchar;
 
@@ -105,9 +110,8 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
     uchar terrain, long x, long y, long radius, uchar avoid_terrain)
 {
     long row_index;
-    RGE_RMM_Terrain_Generator* self = this;
     long count = 1;
-    long base_terrain = self->map->terrain_types[avoid_terrain].impassable_terrain;
+    long base_terrain = this->map->terrain_types[avoid_terrain].impassable_terrain;
 
     if (radius > 0) {
         long min_x = x - radius;
@@ -117,10 +121,10 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
 
         if (min_x < 0) min_x = 0;
         if (min_y < 0) min_y = 0;
-        if (max_x >= self->map_width) max_x = self->map_width - 1;
-        if (max_y >= self->map_height) max_y = self->map_height - 1;
+        if (max_x >= this->map_width) max_x = this->map_width - 1;
+        if (max_y >= this->map_height) max_y = this->map_height - 1;
 
-        RGE_Tile** row_ptr = self->map_row_offset + min_y;
+        RGE_Tile** row_ptr = this->map_row_offset + min_y;
         long x_offset = min_x * 0x18;
         uchar* row = (uchar*)*row_ptr + x_offset;
 
@@ -154,10 +158,10 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
 
     if (min_x < 0) min_x = 0;
     if (min_y < 0) min_y = 0;
-    if (max_x >= self->map_width) max_x = self->map_width - 1;
-    if (max_y >= self->map_height) max_y = self->map_height - 1;
+    if (max_x >= this->map_width) max_x = this->map_width - 1;
+    if (max_y >= this->map_height) max_y = this->map_height - 1;
 
-    RGE_Tile** row_ptr = self->map_row_offset + min_y;
+    RGE_Tile** row_ptr = this->map_row_offset + min_y;
     long x_offset = min_x * 0x18;
     uchar* row = (uchar*)*row_ptr + x_offset;
     if (min_y <= max_y) {
