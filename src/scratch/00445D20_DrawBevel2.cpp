@@ -16,6 +16,9 @@
 //   parameter-home boundary locals, repeated arithmetic, and point-of-use
 //   inner coordinates; none removed the frame or improved the canonical
 //   validated source. Original call targets and color roles remain aligned.
+// - This session retested the decompiler-supported difference arithmetic,
+//   nested positive guards, and reduced local sets; these shortened bytes but
+//   worsened prologue/CFG shape. The audited source below is restored.
 // Main-agent audit confirmed the natural draw-area line ownership and retained
 // the ordinary clipped bevel construction.
 

@@ -16,6 +16,10 @@
 // - Main-agent audit replaced the raw color-table vptr field with its canonical
 //   virtual destructor surface; the validated gap is 48 bytes with unchanged
 //   size, calls, frame, and instruction shape.
+// - This session tested offset/left/Bits address-term order, table-first
+//   assignment, scoped and top-reset pixel cursors, and a Color_Table* local;
+//   cursor variants changed size/prologue or worsened the diff. The clean
+//   source below remains the best natural reconstruction.
 // - This session retested the row address expression, inner cursor scope and
 //   declaration order, plus point-of-use Bits/row-address locals. The natural
 //   canonical source remains the best living reconstruction; residual drift is

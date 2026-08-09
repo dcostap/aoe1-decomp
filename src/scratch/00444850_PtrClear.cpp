@@ -12,6 +12,9 @@
 //   remained noncanonical and still mismatched; restored to the clean memset
 //   source.  Remaining lead: reproduce the original VC5 generic memset
 //   expansion and stack/register basin without fake volatility or raw cursors.
+// - This session rechecked explicit memset intrinsic context, a void* cast,
+//   a frame aggregate, and long coordinate/count locals; all were duplicate
+//   or nonproductive. The clean typed memset source is restored.
 
 #include <string.h>
 

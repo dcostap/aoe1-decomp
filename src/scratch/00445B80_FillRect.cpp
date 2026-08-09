@@ -13,6 +13,10 @@
 //   redundant height guard, running right/bottom locals, and declaration scope.
 //   The pointer-at-join form reached 224 bytes/168 differing bytes but has less
 //   plausible source topology than the retained branch-local form.
+// - This session rechecked an early-return Bits guard, a tagRECT ClipRect
+//   aggregate, a captured Bits pointer, and unqualified member spelling;
+//   each emitted the same 240-byte/218-difference result. The clean member
+//   reconstruction is restored below.
 // - Remaining drift is broad VC5 this/register coloring and loop setup; no
 //   behavior-equivalent promotion is proposed.
 // Main-agent audit confirmed canonical draw-area buffer/clip ownership and kept
@@ -41,10 +45,7 @@ public:
     int Height;                   // +0x1C
     int Pitch;                    // +0x20
     int Orien;                    // +0x24
-    int ClipLeft;                 // +0x28
-    int ClipTop;                  // +0x2C
-    int ClipRight;                // +0x30
-    int ClipBottom;               // +0x34
+    tagRECT ClipRect;             // +0x28
     void* DrawDc;                 // +0x38
     void* DrawSurface;            // +0x3C
     char SurfaceDesc[0x6C];       // +0x40..+0xAB
@@ -90,21 +91,21 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
         y2 = temp;
     }
 
-        if (x1 > this->ClipRight || x2 < this->ClipLeft ||
-            y1 > this->ClipBottom || y2 < this->ClipTop)
-            return;
+    if (x1 > this->ClipRect.right || x2 < this->ClipRect.left ||
+        y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
+        return;
 
-        if (x1 < this->ClipLeft)
-        x1 = this->ClipLeft;
-        if (x2 > this->ClipRight)
-        x2 = this->ClipRight;
-        if (y1 < this->ClipTop)
-        y1 = this->ClipTop;
-        if (y2 > this->ClipBottom)
-        y2 = this->ClipBottom;
+    if (x1 < this->ClipRect.left)
+        x1 = this->ClipRect.left;
+    if (x2 > this->ClipRect.right)
+        x2 = this->ClipRect.right;
+    if (y1 < this->ClipRect.top)
+        y1 = this->ClipRect.top;
+    if (y2 > this->ClipRect.bottom)
+        y2 = this->ClipRect.bottom;
 
-        long width = x2 - x1 + 1;
-        long height = y2 - y1 + 1;
+    long width = x2 - x1 + 1;
+    long height = y2 - y1 + 1;
         if (width < 1 || height < 1)
             return;
 
