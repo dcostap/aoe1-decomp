@@ -1,118 +1,189 @@
-// TListPanel::draw - draw items in visible range
+// TListPanel::draw - draw items in the visible range
+//
+// The inherited panel fields and the TTextPanel line/color fields are kept
+// named here so the proven offsets remain part of the source model.
+//
+// Attempt log:
+// - baseline: the prior gap-based layout and direct GDI declarations built at
+//   the right size but had shifted fields and five direct-call mismatches.
+// - restored the canonical inherited offsets, imported GDI surface, external
+//   draw string, short draw_line ABI, focus/capture predicate, and named
+//   counted line loop; this reached 303 bytes with all 13 ordered calls and
+//   18 positional bytes of remaining drift.
+// - expanded TPanel/TTextPanel/TListPanel ownership to the proven 0x1A0
+//   layout; top-scoped locals, a TPanel receiver alias, do/while, and counted
+//   for-loop spellings all emitted the same 18-byte result.
+// - six natural local-declaration order variants also collapsed to the same
+//   codegen group; no exact variant was found.
+// - left in scratch: the localized register-coloring gap is original EBX for
+//   the saved vtable/current line and EDI for DC, versus rebuilt EDI/EBX.
+// - Main-agent audit confirmed canonical panel inheritance and typed drawing
+//   ownership; no declaration-order steering survives in the source.
 
-typedef void* HDC;
+extern "C" {
+__declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
+__declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* object);
+__declspec(dllimport) int __stdcall SetBkMode(void* hdc, int mode);
+}
+
+extern char s_pnl_lst__draw[];
 
 class TDrawArea {
 public:
-    HDC GetDc(char* name);
+    void* GetDc(char* name);
     void ReleaseDc(char* name);
-    unsigned char* Lock(char* name, int param_2);
-    void Unlock(char* name);
 };
+
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
 
 class TPanel {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20(long a);
-    virtual void v24();
-    virtual void v28(int a);
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    // extra vtable slots up to 0xB4...
+    virtual ~TPanel();
+    VPAD4(v1)
+    VPAD2(v5)
+    VPAD1(v7)
+    VPAD2(v8)
+    virtual void draw_setup(int clear);
+    virtual void draw_finish();
+    virtual void draw();
+
+    char gap_04[0x08];
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char gap_1C[0x04];
+    TDrawArea* render_area;       // +0x20
+    char gap_24[0x14];
+    int need_redraw;              // +0x38
+    char gap_3C[0x2C];
+    int mouse_captured;           // +0x68
+    int active;                   // +0x6C
+    int visible;                  // +0x70
+    int tab_stop;                 // +0x74
+    int have_focus;               // +0x78
+    char gap_7C[0x08];
+    int just_drawn;               // +0x84
+    void* clip_rgn;               // +0x88
+    char gap_8C[0x68];
 };
 
 class TTextPanel : public TPanel {
 public:
+    virtual void draw();
+
+    void* list;                   // +0xF4
+    short num_lines;              // +0xF8
+    short draw_lines;             // +0xFA
+    short top_line;               // +0xFC
+    short bot_line;               // +0xFE
+    short cur_line;               // +0x100
+    short cur_col;                // +0x102
+    void* font;                   // +0x104
+    long font_wid;                // +0x108
+    long font_hgt;                // +0x10C
+    int vert_align;               // +0x110
+    int horz_align;               // +0x114
+    int word_wrap;                // +0x118
+    int text_style;               // +0x11C
+    unsigned long text_color1;    // +0x120
+    unsigned long text_color2;    // +0x124
+    unsigned long highlightTextColor1; // +0x128
+    unsigned long highlightTextColor2; // +0x12C
+    void* scbar_panel;            // +0x130
+    int auto_scbar;               // +0x134
+    short fixed_len;              // +0x138
+    short gap_13A;
+    long text_wid;                // +0x13C
+    long text_hgt;                // +0x140
+    void* back_pic;               // +0x144
+    short back_pic_wid;           // +0x148
+    short back_pic_hgt;           // +0x14A
+    int fill_back;                // +0x14C
+    unsigned char back_color;      // +0x150
+    char gap_151[3];
+    int outline;                  // +0x154
+    unsigned char outline_color;  // +0x158
+    char gap_159[3];
+    int sorted;                   // +0x15C
+    long second_column_pos;       // +0x160
+    long full_width;              // +0x164
+    long scbar_width;             // +0x168
+    int scbar_active;             // +0x16C
+    int bevel_type;               // +0x170
+    unsigned char bevel_color1;   // +0x174
+    unsigned char bevel_color2;   // +0x175
+    unsigned char bevel_color3;   // +0x176
+    unsigned char bevel_color4;   // +0x177
+    unsigned char bevel_color5;   // +0x178
+    unsigned char bevel_color6;   // +0x179
+    char gap_17A[2];
+    void* clip_rgn2;              // +0x17C
+    int border_size;              // +0x180
+    int spacer_size;              // +0x184
+
     void draw_background();
+    void draw_line(void* dc, short line_index, short line,
+                   unsigned long value1, unsigned long value2);
     void draw_border();
-    void draw_line(HDC dc, short line, int idx, int bmp1, int bmp2);
-    void calc_draw_info(int param_1);
 };
 
-struct TListPanel : public TTextPanel {
-    char gap_00[0x20];
-    TDrawArea* draw_area;             // 0x20
-    char gap_24[0x14];
-    int clip_enabled;                 // 0x38
-    char gap_3C[0x2C];
-    int bmp_font;                     // 0x68
-    int bmp_font2;                    // 0x6C
-    int bmp_font3;                    // 0x70
-    char gap_74[0x14];
-    int clip_region;                  // 0x88
-    char gap_8C[0x6C];
-    short num_lines;                  // 0xF8
-    short draw_lines;                 // 0xFA
-    short top_line;                   // 0xFC
-    short bot_line;                   // 0xFE
-    short cur_line;                   // 0x100
-    char gap_102[0x02];
-    int line_font;                    // 0x104
-    char gap_108[0x18];
-    int line_spacing;                 // 0x120
-    int line_height;                  // 0x124
-    int highlight_bmp1;               // 0x128
-    int highlight_bmp2;               // 0x12C
-    char gap_130[0x2C];
-    short num_lines2;                 // 0x15C (padding)
-    char pad[0x20];
-    int scroll_bar_width;             // 0x180
-    int bevel_style;                  // 0x184
-    char gap_188[0x10];
-    int some_field;                   // 0x198
-    int draw_highlight_bar_enabled;   // 0x19C
+class TListPanel : public TTextPanel {
+public:
+    int auto_track;               // +0x188
+    unsigned long mouse_scroll_last_time; // +0x18C
+    unsigned long mouse_scroll_interval;  // +0x190
+    int mouse_scroll_up;           // +0x194
+    int mouse_scroll_down;         // +0x198
+    int drawHighlightBar;          // +0x19C
 
+    virtual void draw();
     void draw_highlight_bar();
-    void draw();
 };
 
-extern "C" int __stdcall SelectClipRgn(HDC dc, int region);
-extern "C" int __stdcall SelectObject(HDC dc, int obj);
-extern "C" int __stdcall SetBkMode(HDC dc, int mode);
+void TListPanel::draw()
+{
+    void* dc;
+    void* old_font;
+    short line;
+    short line_index = 0;
 
-void TListPanel::draw() {
-    this->clip_enabled = 0;
-    if (this->draw_area == 0 || this->bmp_font3 == 0 || this->bmp_font2 == 0)
+    this->need_redraw = 0;
+    if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         return;
+    }
 
     this->draw_background();
-    this->v28(0);
-    HDC dc = this->draw_area->GetDc("pnl_lst::draw");
+    this->draw_setup(0);
 
+    dc = this->render_area->GetDc(s_pnl_lst__draw);
     if (dc != 0) {
-        SelectClipRgn(dc, this->clip_region);
-        int old_font = SelectObject(dc, this->line_font);
+        SelectClipRgn(dc, this->clip_rgn);
+        old_font = SelectObject(dc, this->font);
         SetBkMode(dc, 1);
 
-        for (short line = this->top_line; line <= this->bot_line; line++) {
-            int idx = line - this->top_line;
-            int bmp1, bmp2;
-            if (this->draw_highlight_bar_enabled != 0 && (this->bmp_font != 0 || this->bmp_font2 != 0) && idx + this->top_line == this->cur_line) {
-                bmp1 = this->highlight_bmp1;
-                bmp2 = this->highlight_bmp2;
+        for (line = this->top_line; line <= this->bot_line;
+             ++line, ++line_index) {
+            if (this->drawHighlightBar != 0 &&
+                (this->have_focus != 0 || this->mouse_captured != 0) &&
+                line_index + this->top_line == this->cur_line) {
+                this->draw_line(dc, line_index, line,
+                                this->highlightTextColor1,
+                                this->highlightTextColor2);
             } else {
-                bmp1 = this->line_spacing;
-                bmp2 = this->line_height;
+                this->draw_line(dc, line_index, line,
+                                this->text_color1, this->text_color2);
             }
-            this->draw_line(dc, line, idx, bmp1, bmp2);
         }
 
         SelectObject(dc, old_font);
         SelectClipRgn(dc, 0);
-        this->draw_area->ReleaseDc("pnl_lst::draw");
+        this->render_area->ReleaseDc(s_pnl_lst__draw);
     }
 
     this->draw_border();
     this->draw_highlight_bar();
-    this->v2C();
+    this->draw_finish();
 }
