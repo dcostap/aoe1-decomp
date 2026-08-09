@@ -6,6 +6,9 @@
 // - Tried volatile stack byte for queue_changed: restored push ecx but lost EBX allocation; 86.8460% positional / 61.4350% edit.
 // - Added an int id local to keep the object id in EDI like original; prologue now matches through push edi, but VC5 stores the volatile byte before loading EDI/AX and broad drift remains.
 // - Tried qcount as int vs short; best current is same-size 669B mismatch, positional 85.5007%, edit 47.9821%, first mismatch at offset 7. Remaining drift is broad source-shape/register allocation around stack bool timing, repeated cost-check loops, and queue growth copy; not accepted_drift-safe.
+// - Replaced both cost do/while loops with pretested while loops; this restored the original 13-call CFG and improved structural coverage.
+// - Recovered short queue count, a short local id, int loop counts, and the natural address-taken master_id argument. A direct id local alone tail-merged the duplicate success notification; the short local preserved both original vslot call sites.
+// - Restored direct master_id only for failure notifications, then spelled queue_changed == 1. Final rebuilt size/CFG/call set match; remaining drift is 13 localized bytes at append-loop setup (count/id register order and downstream encodings).
 
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void* p);
@@ -32,39 +35,36 @@ public:
 
 void TRIBE_Building_Object::add_to_production_queue(short master_id, short count)
 {
-    int id = master_id;
-    int qcount = this->production_queue_count;
-    volatile unsigned char queue_changed = 0;
+    short id = master_id;
+    short qcount = this->production_queue_count;
+    unsigned char queue_changed = 0;
     if (qcount > 0 && this->production_queue[qcount - 1].master_id == id) {
         int n = count;
         int i = 0;
-        if (n > 0) {
-            do {
-                if (!this->owner->check_obj_cost((short)id, &master_id, 1.0f, 1)) {
-                    rge_base_game->notify(0x7d, this->owner->player_id, id, 0, 0);
-                    break;
-                }
-                this->owner->pay_obj_cost((short)id, 1.0f, 1);
-                this->production_queue[this->production_queue_count - 1].unit_count++;
-                i++;
-                queue_changed = 1;
-            } while (i < n);
+        while (i < n) {
+            if (!this->owner->check_obj_cost(id, &master_id, 1.0f, 1)) {
+                rge_base_game->notify(0x7d, this->owner->player_id, master_id, 0, 0);
+                break;
+            }
+            this->owner->pay_obj_cost(id, 1.0f, 1);
+            this->production_queue[this->production_queue_count - 1].unit_count++;
+            i++;
+            queue_changed = 1;
         }
-        if (queue_changed) {
+        if (queue_changed == 1) {
             this->production_queue_change_flag++;
             rge_base_game->notify(0x7c, this->owner->player_id, 0, 0, 0);
         }
-        return;
-    }
-    while (qcount > 0) {
-        this->remove_from_production_queue(this->production_queue[0].master_id, 1);
-        qcount = this->production_queue_count;
-    }
-    if (!this->owner->check_obj_cost((short)id, &master_id, 1.0f, 1)) {
-        rge_base_game->notify(0x7d, this->owner->player_id, id, 0, 0);
-        return;
-    }
-    if (this->production_queue_count == this->production_queue_size) {
+    } else {
+        while (qcount > 0) {
+            this->remove_from_production_queue(this->production_queue[0].master_id, 1);
+            qcount = this->production_queue_count;
+        }
+        if (!this->owner->check_obj_cost(id, &master_id, 1.0f, 1)) {
+            rge_base_game->notify(0x7d, this->owner->player_id, master_id, 0, 0);
+            return;
+        }
+        if (this->production_queue_count == this->production_queue_size) {
         Production_Queue_Record* newq = (Production_Queue_Record*)calloc((int)this->production_queue_size + 10, 4);
         if (newq == 0) return;
         if (this->production_queue != 0) {
@@ -80,23 +80,22 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short count
         }
         this->production_queue_size += 10;
         this->production_queue = newq;
-    }
-    int n = count;
-    int i = 0;
-    this->production_queue[this->production_queue_count].unit_count = 0;
-    if (n > 0) {
-        do {
-            if (!this->owner->check_obj_cost((short)id, &master_id, 1.0f, 1)) {
-                rge_base_game->notify(0x7d, this->owner->player_id, id, 0, 0);
+        }
+        int i = 0;
+        int n = count;
+        this->production_queue[this->production_queue_count].unit_count = 0;
+        while (i < n) {
+            if (!this->owner->check_obj_cost(id, &master_id, 1.0f, 1)) {
+                rge_base_game->notify(0x7d, this->owner->player_id, master_id, 0, 0);
                 break;
             }
-            this->owner->pay_obj_cost((short)id, 1.0f, 1);
+            this->owner->pay_obj_cost(id, 1.0f, 1);
             this->production_queue[this->production_queue_count].unit_count++;
             i++;
-        } while (i < n);
+        }
+        this->production_queue[this->production_queue_count].master_id = id;
+        this->production_queue_count++;
+        this->production_queue_change_flag++;
+        rge_base_game->notify(0x7c, this->owner->player_id, 0, 0, 0);
     }
-    this->production_queue[this->production_queue_count].master_id = (short)id;
-    this->production_queue_count++;
-    this->production_queue_change_flag++;
-    rge_base_game->notify(0x7c, this->owner->player_id, 0, 0, 0);
 }

@@ -20,14 +20,16 @@
 //   persistent world_x/world_y EBX/EBP coloring.
 // - v14: declaration/initialization placement of map locals was a codegen
 //   duplicate. Current source remains typed and natural; no inline asm.
+// - v15: restored the earlier int-counter/declaration-order source basin as a
+//   diagnostic rollback while retaining typed virtual class surfaces.
+// - v16: retained the ordinary common return, owner-mismatch clear, and
+//   boundary clear in the final neighbor arm; this restored the original
+//   counter stack store and produced an exact default-flag match.
 //
-// Remaining blocker: localized but cascading EBX/EBP allocation swap for tile
-// x/y after the two __ftol calls. Original keeps world_x in EBX and world_y in
-// EBP, then reuses EBX for out pointer; rebuilt keeps world_x in EBP and
-// world_y in EBX. A separate late-tail difference is the original stack store
-// of the incremented counter before its success epilogue. Control flow, call
-// set, stack cleanup, map/list arithmetic, owner checks, and return behavior
-// are otherwise close. No raw offset plumbing or inline asm is retained.
+// Exact under the repository default flags. The source uses named typed
+// world/player/master/map/list ownership and ordinary neighbor checks; no raw
+// offset plumbing, explicit vptr stores, novtable/manual-vtable surface, or
+// inline asm is retained.
 // Main-agent audit restored canonical polymorphic master/static/map/world/player
 // ownership and retained typed neighboring-tile searches.
 
@@ -55,7 +57,8 @@ public:
 
 class RGE_Object_List {
 public:
-    char gap_00[0x0C];
+    virtual ~RGE_Object_List();
+    char gap_04[0x08];
     RGE_Static_Object* find_by_master_id(int master_id, float x, float y, unsigned char a, unsigned char b, RGE_Static_Object* c);
 };
 
@@ -74,9 +77,9 @@ public:
     RGE_Object_List objects; // +0x0C, tile stride 0x18
 };
 
-class MapRows {
+class RGE_Map {
 public:
-    virtual ~MapRows();
+    virtual ~RGE_Map();
     char gap_04[4];
     short width;
     char gap_0a[2];
@@ -87,9 +90,9 @@ public:
 
 class RGE_Game_World {
 public:
-    virtual ~RGE_Game_World();
+    virtual unsigned char data_load_world(void* file);
     char gap_04[0x24];
-    MapRows* map_rows;
+    RGE_Map* map;
 };
 
 class RGE_Player {
@@ -106,12 +109,15 @@ public:
 
 long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
 {
-    long counter;
-    MapRows* map = this->owner->world->map_rows;
-    short w = (short)(long)this->world_x;
-    short y = (short)(long)this->world_y;
+    int counter;
     short h;
+    short w;
+    short y;
     short max_y;
+
+    RGE_Map* map = this->owner->world->map;
+    w = (short)(long)this->world_x;
+    y = (short)(long)this->world_y;
     h = map->width - 1;
     counter = 0;
     max_y = map->height - 1;
@@ -164,7 +170,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
         if (out[3] != 0) {
             if (out[3]->owner == this->owner) {
                 counter++;
-                return counter;
+            } else {
+                out[3] = 0;
             }
         }
     } else {

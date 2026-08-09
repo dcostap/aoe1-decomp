@@ -5,12 +5,9 @@
 // __thiscall: this in ecx, 2 stack params (short master_id, short max_remove). ret 8 cleanup.
 // Removes up to max_remove units of master_id from the production queue.
 //
-// Current reconstruction is intentionally kept in scratch.  The natural
-// single-index form with top-declared locals recovers the original EBX index,
-// EDI record stride, EBP reimbursement countdown, frame, calls, and most block
-// bytes.  The remaining VC5 drift is the backward-search branch polarity and
-// the source-level schedule of the game counter decrement; it is not a
-// behavior or ownership uncertainty.
+// The natural single-index form with top-declared locals recovers the original
+// EBX index, EDI record stride, EBP reimbursement countdown, frame, calls, and
+// queue ownership. It is now an exact default-flag reconstruction.
 //
 // Attempt log:
 // - Replaced the two-index decompiler-shaped search with one named queue index
@@ -21,9 +18,10 @@
 //   blocks, so the ordinary while form remains the living source.
 // - Recovered the proven RGE_Base_Game virtual surface and named counter field;
 //   raw save_music_file pointer arithmetic was rejected as noncanonical.
-// - Left unresolved: exact VC5 search branch layout and the separate global
-//   load/LEA/decrement schedule.  The current source remains behaviorally typed
-//   and period-plausible rather than retaining metric-only pointer scaffolding.
+// - A natural while(index >= 0) match-arm with break reproduced the oracle's
+//   jge-back search and shared notification tail.
+// - Restored the typed game-global counter array and notification surface.
+//   Exact after validation; no pointer cursor or register-forcing scaffold.
 //
 // Field layout (TRIBE_Building_Object):
 //   owner_player               +0x0C (TRIBE_Player*)
@@ -115,61 +113,57 @@ void TRIBE_Building_Object::remove_from_production_queue(short master_id, short 
     index = this->production_queue_count;
     if (index != 0) {
         index--;
-        if (index >= 0) {
-            while (1) {
-                if (this->production_queue[index].master_id == master_id) {
-                    break;
+        while (index >= 0) {
+            if (this->production_queue[index].master_id == master_id) {
+                remove_count = max_remove;
+                if (this->production_queue[index].unit_count <= max_remove) {
+                    remove_count = this->production_queue[index].unit_count;
                 }
-                index--;
-                if (index >= 0) {
-                    continue;
-                }
-                goto update_game;
-            }
 
-            remove_count = max_remove;
-            if (this->production_queue[index].unit_count <= max_remove) {
-                remove_count = this->production_queue[index].unit_count;
-            }
-
-            if (remove_count > 0) {
-                do {
-                    this->owner_player->reimburse_obj_cost(master_id);
-                    remove_count--;
-                } while (remove_count != 0);
-            }
-
-            this->production_queue[index].unit_count -= max_remove;
-            this->production_queue_change_flag++;
-
-            if (this->production_queue[index].unit_count <= 0) {
-                this->production_queue_count--;
-                copy_index = index;
-                if (index < this->production_queue_count) {
+                if (remove_count > 0) {
                     do {
-                        this->production_queue[copy_index].master_id =
-                            this->production_queue[copy_index + 1].master_id;
-                        this->production_queue[copy_index].unit_count =
-                            this->production_queue[copy_index + 1].unit_count;
-                        copy_index++;
-                    } while (copy_index < this->production_queue_count);
+                        this->owner_player->reimburse_obj_cost(master_id);
+                        remove_count--;
+                    } while (remove_count != 0);
                 }
 
-                if (index == 0) {
-                    if (this->production_queue_need_attr != -1) {
-                        if (this->production_queue_need_attr == 4) {
-                            int pid = (int)(short)this->owner_player->player_id;
-                            rge_base_game->queue_is_waiting_on_pop_counter[pid]--;
-                        }
-                        this->production_queue_need_attr = -1;
+                this->production_queue[index].unit_count -= max_remove;
+                this->production_queue_change_flag++;
+
+                if (this->production_queue[index].unit_count <= 0) {
+                    this->production_queue_count--;
+                    copy_index = index;
+                    if (index < this->production_queue_count) {
+                        do {
+                            this->production_queue[copy_index].master_id =
+                                this->production_queue[copy_index + 1].master_id;
+                            this->production_queue[copy_index].unit_count =
+                                this->production_queue[copy_index + 1].unit_count;
+                            copy_index++;
+                        } while (copy_index < this->production_queue_count);
                     }
-                    this->production_queue_actions->action_stop();
-                    this->production_queue_actions->delete_list();
+
+                    if (index == 0) {
+                        if (this->production_queue_need_attr != -1) {
+                            if (this->production_queue_need_attr == 4) {
+                                int pid = (int)(short)this->owner_player->player_id;
+                                long* counter =
+                                    &rge_base_game->queue_is_waiting_on_pop_counter[pid];
+                                long old_counter = *counter;
+                                long new_counter = old_counter - 1;
+                                *counter = new_counter;
+                            }
+                            this->production_queue_need_attr = -1;
+                        }
+                        this->production_queue_actions->action_stop();
+                        this->production_queue_actions->delete_list();
+                    }
                 }
+                break;
             }
+            index--;
         }
 
-update_game:
         int pid = (int)(short)this->owner_player->player_id;
         rge_base_game->notification(0x7C, pid, 0, 0, 0);
     }
