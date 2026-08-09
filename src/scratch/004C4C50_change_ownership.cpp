@@ -13,6 +13,10 @@
 // localized old-master/sprite register coloring and its branch-span fallout.
 // Main-agent audit restored canonical master/player/static-object destructor
 // slots in place of raw vptr/slot-zero placeholders; emitted code is unchanged.
+// fresh worker: direct this->master_obj lookup before naming old_master widened
+// to 136B/45.2%; restored canonical old-master local.
+// fresh worker: distinct old_sprite declared after old_master preserved 301B/134
+// basin; restored existing clean source.
 
 class RGE_Sprite;
 class RGE_Active_Sprite_List;

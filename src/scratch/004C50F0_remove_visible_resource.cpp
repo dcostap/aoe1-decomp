@@ -19,6 +19,10 @@
 // - Main-agent audit restored canonical destructor slots, symbol-backed map
 //   ownership, and natural player-array indexing. The validated 182-byte gap
 //   remains, without raw absolute addresses or byte-indexed player plumbing.
+// fresh worker: fixed absolute map address improved only the relocation/map
+// operand by 3 bytes; restored symbol-backed clean source.
+// fresh worker: explicit map-word copies and low-mask-first declarations widened
+// to 184B/63.9%; restored canonical map/explored form.
 
 typedef unsigned long ulong;
 

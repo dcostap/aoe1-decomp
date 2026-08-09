@@ -15,6 +15,10 @@
 // - remaining drift is confined to the SDI line register coloring and the
 //   final short y-shadow add order (original: ecx field/eax parameter and
 //   mov ax,di; add ax,[this+2e]).
+// fresh worker: explicit assignment through a short shadow-y temporary emitted
+// the same 255B/7 basin; restored.
+// fresh worker: named int promotion of y before SDI_Draw_Line also duplicated
+// the 255B/7 basin; restored.
 
 class TDrawArea;
 class RGE_Color_Table;

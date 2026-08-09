@@ -9,6 +9,10 @@
 // either widened the function or emitted the same 37-byte codegen basin; rolled back.
 // variant: 32 natural declaration/update variants produced only the same
 // 37-byte basin or a 227-byte context tail; no exact candidate.
+// fresh worker: direct (short) casts of the byte player index widened to 227B/190;
+// restored the canonical compare-index source.
+// fresh worker: register-qualified compare-index local emitted the same 219B/37
+// basin; restored the ordinary local.
 // left in scratch: best source is the readable owner/world/player reconstruction;
 // remaining drift is only owner/compare-index register coloring and the loop tail.
 
