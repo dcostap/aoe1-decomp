@@ -1,9 +1,18 @@
 // VA: 004CB1B0 TRIBE_Combat_Object::convert
-// First pass from packet; same source family as TRIBE_Combat_Object::hunt.
-// Action type 0x68 (convert), sizeof 0x48, TRIBE_Action_Convert ctor.
-// Compiles with /GX; register, vtable, sizeof all correct.
-// Remaining: 12.4% positional diff is (a) SEH handler placeholder (link-time),
-// (b) inline epilogue for last return-0 vs shared epilogue (same issue as hunt).
+// Canonical ownership: owner_data->world resolves the target; actions is the
+// inherited action list at +0x184. The 0x48-byte TRIBE_Action_Convert
+// construction and integer coordinate surface are supported by this TU's
+// exact body/call bytes (the coordinates are pushed, not converted in x87).
+// Attempt log:
+// - baseline: natural convert source; all 16 calls, first 94 instructions,
+//   frame, and size-adjacent body blocks align. Remaining drift is the shared
+//   failure/success epilogue plus the isolated EH-handler address.
+// - adding a typed result-pointer/shared-tail reconstruction improved CFG
+//   shape but changed the long-lived register basin and worsened positional
+//   bytes; rolled back.
+// - explicit success/failure label reordering likewise worsened the prologue
+//   and was rolled back. Keep the baseline source as the canonical candidate.
+// - paused with the remaining lead localized to VC5 tail layout/EH context.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 
 class RGE_Static_Object;
@@ -19,7 +28,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Static_Object();
     char pad_04[0x34];
     float world_x;
     float world_y;

@@ -25,6 +25,8 @@
 // VC5 register/return-tail allocation, not an ownership or behavior gap.
 // Main-agent audit restored canonical master/view polymorphic ownership at
 // unchanged offsets; the validated codegen gap is unchanged.
+// probe 11: made cases 2/3 assign a natural result local and fall through to
+// one shared return, matching the original line-723 zero tail and exact bytes.
 
 class RGE_Master_Static_Object {
 public:
@@ -73,6 +75,7 @@ int TRIBE_Main_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
     else
         touched = 0;
 
+    int result = 0;
     switch (select_level) {
         case 4:
             if (touched)
@@ -87,21 +90,23 @@ int TRIBE_Main_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
             if (touched)
                 return 5;
             if (param_2 == 1 || param_2 == 2)
-                return 3;
-            if (param_2 == 3 && param_1->object_state < 2)
-                return 2;
-            return 0;
+                result = 3;
+            else if (param_2 == 3 && param_1->object_state < 2)
+                result = 2;
+            break;
 
         case 2:
             if (touched)
                 return 5;
             if (param_2 == 1 || param_2 == 2)
-                return 3;
-            if (param_2 == 3)
-                return 2;
-            return 0;
+                result = 3;
+            else if (param_2 == 3)
+                result = 2;
+            break;
 
         default:
             return 1;
     }
+
+    return result;
 }

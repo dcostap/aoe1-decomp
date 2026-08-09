@@ -1,13 +1,15 @@
 // VA: 004CB5C0 TRIBE_Combat_Object::build(int, int)
 // PDB source: t_c_obj.cpp lines 1053-1105
-// EH-framed (SEH), needs /GX
-//
-// attempt 1: SEH prologue + field offsets match. Three remaining issue clusters:
-//   - VC5 generates 3 inline SEH epilogues for early returns instead of shared one
-//   - Register allocation for virtual calls (ebp use) differs
-//   - Need to find right source structure to merge early-return cleanups
-//
-// FLAGS: /nologo /c /O2 /Oy /GX
+// EH-framed (SEH), needs /GX. Canonical ownership: owner/world at +0x0C/+0x3C,
+// actions at +0x184, and the 0x40-byte TRIBE_Action_Build allocation.
+// Attempt log:
+// - baseline: fixed the repeated action-list calls and +0x208/+0x210 slots;
+//   call count became exact but the early-return CFG was broad-drift.
+// - positive target guard plus typed target-result reuse restored exact size,
+//   one-return CFG, all 16 ordered calls, and 97.27% instruction shape.
+// - remaining drift is the paired VC5 result-register basin and isolated
+//   EH-handler address; no compiler-only aliases or volatility retained.
+// FLAGS: config/flags/004CB5C0_build.rsp (/GX)
 
 class RGE_Action;
 class RGE_Action_List;
@@ -17,7 +19,7 @@ class RGE_Task;
 
 class RGE_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Static_Object();
     int id;
     void* master_obj;
     RGE_Player* owner;
@@ -29,13 +31,14 @@ public:
 
 class RGE_Player {
 public:
-    char pad_00[0x3C];
+    virtual ~RGE_Player();
+    char pad_04[0x38];
     RGE_Game_World* world;
 };
 
 class RGE_Game_World {
 public:
-    char pad_00[4];
+    virtual unsigned char data_load_world(void* file);
     RGE_Static_Object* object(int id);
 };
 
@@ -71,7 +74,7 @@ public:
 
 class RGE_Action_List {
 public:
-    void* vtable;
+    virtual ~RGE_Action_List();
     void* obj;
     void* list;
 
@@ -151,39 +154,43 @@ public:
 };
 
 int TRIBE_Combat_Object::build(int id, int flag) {
-    RGE_Action* action;
     void* task;
+    RGE_Static_Object* result;
 
     RGE_Static_Object* obj = this->owner->world->object(id);
-    if (obj == 0) return 0;
-
-    if (flag == 0) {
-        if (this->actions->have_action()) {
-            action = this->actions->get_action();
-            if (action->vf4C() == obj && action->vf18() == 0x65) {
-                return 1;
+    result = obj;
+    if (obj != 0) {
+        if (flag == 0) {
+            if (this->actions->have_action() == 1) {
+                if (this->actions->get_action()->vf4C() == obj &&
+                    this->actions->get_action()->vf18() == 0x65) {
+                    result = (RGE_Static_Object*)1;
+                    goto done;
+                }
             }
         }
-    }
 
-    if (this->actions->have_action()) {
-        action = this->actions->get_action();
-        if (action->vf18() == 0x65) {
-            action->vf34(obj, obj->world_x, obj->world_y, obj->world_z);
-            return 1;
+        if (this->actions->have_action() == 1) {
+            if (this->actions->get_action()->vf18() == 0x65) {
+                this->actions->get_action()->vf34(obj, obj->world_x, obj->world_y, obj->world_z);
+                result = (RGE_Static_Object*)1;
+                goto done;
+            }
         }
-    }
 
-    task = this->vf210(obj, obj->world_x, obj->world_y, obj->world_z);
-    if (task == 0) return 0;
+        task = this->vf210(obj, obj->world_x, obj->world_y, obj->world_z);
+        result = (RGE_Static_Object*)task;
+        if (task == 0) goto done;
 
-    {
         TRIBE_Action_Build* build_action = new TRIBE_Action_Build(this, (RGE_Task*)task, obj);
-        if (build_action == 0) return 0;
+        result = (RGE_Static_Object*)build_action;
+        if (build_action == 0) goto done;
 
         this->actions->delete_list();
         this->vf208(build_action);
+        result = (RGE_Static_Object*)1;
     }
 
-    return 1;
+done:
+    return (int)result;
 }

@@ -11,6 +11,13 @@
 // - A shared DAT_00577450 experiment caused a 20-byte frame/codegen drift and
 //   was rolled back; the remaining unresolved bytes are the two step-predicate
 //   idioms, parameter-home orientation, and the TU's pooled -0.5 constant.
+// - Mirrored the same-TU signed-step mask expression, reducing the drift to 21
+//   bytes and matching both step-predicate blocks exactly.
+// - Named the two per-iteration float coordinate locals. This is a natural
+//   source form supported by the binary's preserved call arguments and reduces
+//   the remaining drift to two parameter-home displacement bytes.
+// - Repeated coordinate declaration/order variants produced identical code;
+//   paused at the 2-byte parameter-home store orientation difference.
 
 class RGE_Player;
 class RGE_Static_Object;
@@ -118,29 +125,32 @@ void TRIBE_Main_View::place_line_of_walls(
     int x2,
     int y2) {
     int x;
+    int y;
     int y_skip;
     int x_skip;
 
     if (x1 == x2) {
         y_skip = 0;
     } else {
-        y_skip = (x2 <= x1) ? -1 : 1;
+        y_skip = (((int)(x2 <= x1) - 1) & 2) - 1;
     }
 
     if (y1 == y2) {
         x_skip = 0;
     } else {
-        x_skip = (y2 <= y1) ? -1 : 1;
+        x_skip = (((int)(y2 <= y1) - 1) & 2) - 1;
     }
 
+    y = x1;
     x = y1;
-    int y = x1;
 
     for (;;) {
+        float coordinate_x = (float)x + 0.5f;
+        float coordinate_y = (float)y + 0.5f;
         if (master->check_placement(
                 player,
-                (float)x + 0.5f,
-                (float)y + 0.5f,
+                coordinate_x,
+                coordinate_y,
                 0,
                 1,
                 master->elevation_flag,
@@ -150,8 +160,8 @@ void TRIBE_Main_View::place_line_of_walls(
                 1) == 0) {
             player->make_new_object(
                 (int)(short)master->id,
-                (float)x + 0.5f,
-                (float)y + 0.5f,
+                coordinate_x,
+                coordinate_y,
                 0,
                 1);
         }
