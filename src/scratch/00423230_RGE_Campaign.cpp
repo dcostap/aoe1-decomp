@@ -20,6 +20,9 @@
 //   aligned, but exact matching is unresolved.
 // Main-agent audit replaced the raw game singleton address with canonical
 // polymorphic base-game ownership and retained the natural file-load path.
+// - New session: moving the open-handle declaration before sprintf and adding a scoped
+//   missing_name destination alias for strcpy both emitted the unchanged 253-byte basin
+//   (204 differing bytes); both probes were rolled back.
 // Session sa-9f5987e6-campaign: clean-source reset restored the canonical records before
 // testing new context only.  Ground-truth scenario-entry/base-game surfaces, complete
 // campaign member declarations, explicit success/failure else forms, mutable/literal

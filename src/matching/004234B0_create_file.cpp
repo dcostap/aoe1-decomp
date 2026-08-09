@@ -14,21 +14,21 @@
 //   store scheduling. Direct typed/raw field variants and a focused local-shape lab did
 //   not improve it; a 304-byte tempname diagnostic fixed the frame but changed the
 //   binary-proven open-failure compare, so it was rolled back and no variant was promoted.
-// Left in scratch: behavior and canonical layout are reconstructed; exact matching is
-// paused at the documented stack/local and late packed-record codegen gap.
+// - Swapping the natural entry.size assignment before output_offset += size made VC5
+//   schedule the proven pointer reload/add/store/spill sequence exactly; this is a
+//   period-plausible statement order and produced an exact 466-byte match.
+// Exact candidate: typed ownership, natural file pipeline, and all 16 ordered calls
+// match; no raw cursor or compiler-steering scaffolding remains.
 // Main-agent audit replaced raw singleton/frame/record plumbing with canonical
 // base-game ownership, a typed work aggregate, and indexed scenario entries.
 // Session sa-9f5987e6-campaign-file: after the clean-source reset, a separate named
 // output_offset/current_offset plus direct typed scenario_offsets[current_offset] rereads
 // restored the original 0x13C frame and 466-byte size.  The binary-supported tempname
 // stack overlap is expressed by using the named tempname base (not tempname+4), and the
-// inner open guard is spelled > -1 to preserve cmp -1/jle.  This natural candidate is
-// 35 bytes away with all 16 calls, frame, size, and CFG aligned.  The remaining localized
-// store-order drift is after entry.offset: the original reloads scenario_offsets, adds
-// output_offset, stores entry.size, then writes back output_offset; VC5 currently adds
-// and spills output_offset before the second member reload/store.  Keep this source in
-// scratch; next lead is a natural statement/lifetime form for that proven order, not raw
-// record cursors or register-forcing scaffolding.
+// inner open guard is spelled > -1 to preserve cmp -1/jle.  This was the 35-byte-away
+// clean-source checkpoint before the final natural statement-order probe; its late
+// store-order note is retained as historical evidence and superseded by the exact
+// candidate above.
 
 #include <string.h>
 
@@ -113,8 +113,8 @@ void RGE_Campaign::create_file()
                         read(scenario_file, buffer, size);
                         write(fd, buffer, size);
                         this->scenario_offsets[current_offset].offset = output_offset;
-                        output_offset += size;
                         this->scenario_offsets[current_offset].size = size;
+                        output_offset += size;
                         free(buffer);
                         close(scenario_file);
                     }
