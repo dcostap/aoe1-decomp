@@ -20,8 +20,10 @@
 //   and mirroring the stable same-TU module fields were codegen-neutral around
 //   that aggregate. Remaining lead is a plausible separate-local layout that
 //   preserves the arithmetic-before-node reload and callee-save coloring.
+// - Main-agent audit replaced cross-element field-pointer stepping with
+//   ordinary paired array indexing; `sub_stacks` remains the canonical owner.
 
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern "C" int __cdecl debug_rand(const char* file, int line);
 
 struct Map_Stack {
     long x;           // +0x00
@@ -59,23 +61,20 @@ void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
         }
 
         // Phase 3: Collect sub_stacks back into param_1's list
-        int offset = 0x18;
-        Map_Stack** first = &sub_stacks[0].next;
+        int stack_index = 0;
+        while (stack_index < 100) {
+            Map_Stack* first = &sub_stacks[stack_index];
+            Map_Stack* second = &sub_stacks[stack_index + 1];
 
-        while (offset < 0x978) {
-            Map_Stack** second = (Map_Stack**)((char*)&sub_stacks[0].next + offset);
-
-            while (*first != 0 || *second != 0) {
-                if (*first != 0) {
-                    add_stack_node(param_1, *first);
+            while (first->next != 0 || second->next != 0) {
+                if (first->next != 0) {
+                    add_stack_node(param_1, first->next);
                 }
-                if (*second != 0) {
-                    add_stack_node(param_1, *second);
+                if (second->next != 0) {
+                    add_stack_node(param_1, second->next);
                 }
             }
-
-            first = (Map_Stack**)((char*)first + 0x30);
-            offset += 0x30;
+            stack_index += 2;
         }
     }
 }

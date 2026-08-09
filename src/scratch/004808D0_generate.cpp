@@ -54,14 +54,27 @@
 //   colors the saved successor/search roles opposite the oracle.  Next lead is
 //   a source-plausible lifetime reconstruction that yields EBP=next, ESI=search
 //   and two stack homes, not more register qualifiers or blind variants.
+// - This pass confirmed the variadic TDebuggingLog::Log member surface and
+//   tested direct successor expressions, scoped search/search_next locals,
+//   declaration order, guarded do/while, and a persistent outer next cursor.
+// - The persistent next/current cursor is the best natural reconstruction:
+//   274 bytes, 0xC frame, 78.10% shape, 240 strict differing bytes.  It is
+//   retained because it mirrors the decompiler's pRVar7/pRVar3 lifetimes;
+//   remaining gap is the real source context that removes one stack slot and
+//   colors EBP as the successor while keeping ESI as the insertion search.
 
 #include <stddef.h>
 
 typedef unsigned char uchar;
 
 extern "C" int __cdecl debug_rand(const char* file, int line);
-extern "C" void __cdecl Log(void* self, const char* msg, int value);
-extern void* L;
+
+class TDebuggingLog {
+public:
+    void Log(const char* msg, ...);
+};
+
+extern TDebuggingLog* L;
 
 class RGE_Random_Map_Module;
 
@@ -95,22 +108,27 @@ protected:
 
 uchar RGE_Random_Map_Module::generate()
 {
-    RGE_Random_Map_Module_List* search;
-    RGE_Random_Map_Module_List* search_next;
-    RGE_Random_Map_Module_List* next;
     RGE_Random_Map_Module_List* sorted = 0;
     RGE_Random_Map_Module_List* current;
+    RGE_Random_Map_Module_List* next;
 
-    current = this->list;
-    while (current != 0) {
+    next = this->list;
+    for (;;) {
+        current = next;
+        if (current == 0)
+            break;
+
         next = current->next;
         if (sorted != 0) {
             if (current->module->get_schedule() >= sorted->module->get_schedule()) {
-                search = sorted;
-                while ((search_next = search->next) != 0) {
-                    if (current->module->get_schedule() < search_next->module->get_schedule())
-                        break;
-                    search = search_next;
+                RGE_Random_Map_Module_List* search = sorted;
+                {
+                    RGE_Random_Map_Module_List* search_next;
+                    while ((search_next = search->next) != 0) {
+                        if (current->module->get_schedule() < search_next->module->get_schedule())
+                            break;
+                        search = search_next;
+                    }
                 }
                 current->next = search->next;
                 search->next = current;
@@ -121,12 +139,11 @@ uchar RGE_Random_Map_Module::generate()
 
         current->next = sorted;
         sorted = current;
-        current = next;
     }
 
     this->list = sorted;
-    Log(L, "RGE_RANDOM_MAP_MODULE::map start",
-        debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A));
+    L->Log("RGE_RANDOM_MAP_MODULE::map start",
+           debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A));
 
     current = this->list;
     if (current == 0)
@@ -136,8 +153,8 @@ uchar RGE_Random_Map_Module::generate()
         if (current->module->generate() == 0)
             return 0;
 
-        Log(L, "RGE_RANDOM_MAP_MODULE::module completed with ret:",
-            debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F));
+        L->Log("RGE_RANDOM_MAP_MODULE::module completed with ret:",
+               debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F));
         current = current->next;
     }
 
