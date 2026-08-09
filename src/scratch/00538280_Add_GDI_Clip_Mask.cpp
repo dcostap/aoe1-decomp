@@ -21,6 +21,16 @@
 // Left in scratch: remaining mismatch is register coloring (ebp vs esi for node)
 // combined with cascading block-shape differences in type 2/3 and type 4 paths.
 // Core insight: function-scope ints (any number >= 2) produce sub esp,8 match.
+// Probe 29: outer non-type-1 structure — 408-byte output/frame loss; rolled back.
+// Probe 30: register-qualified node/span parameters — codegen duplicate; rolled back.
+// Probe 31: cache initial Node_Type — codegen duplicate; rolled back.
+// Probe 32: guarded type2/3 do/while — 398-byte output/frame loss; rolled back.
+// Probe 33: branch-local span-manager aliases — codegen duplicate; rolled back.
+// Probe 34: hoist all integer temporaries to function scope in old-TU style.
+// Current retained source: typed, period-plausible function-scope local surface;
+// 402-byte output, 273 positional bytes, exact 9-call set, 0x8 frame, and 59.74%
+// shape. Remaining lead is TU/register coloring for node versus span manager and
+// the original type2/3/type4 stack-home topology.
 
 struct DClipInfo_Node {
     char gap_00[0x2C];
@@ -50,6 +60,12 @@ void RGE_View::Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* span_
 {
     int xl;
     int xr;
+    int y1v;
+    int y2v;
+    int x1v;
+    int x2v;
+    int tmp;
+    int y;
 
     if (node->Node_Type == 1) {
         span_mgr->AddLine_Align(node->x1, node->y1, node->x2, node->y2);
@@ -59,34 +75,36 @@ void RGE_View::Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* span_
         return;
     }
     if (node->Node_Type == 2 || node->Node_Type == 3) {
-        int y1v = node->y1;
-        int y2v = node->y2;
+        y1v = node->y1;
+        y2v = node->y2;
         if (y1v > y2v) {
-            int tmp = y1v; y1v = y2v; y2v = tmp;
+            tmp = y1v; y1v = y2v; y2v = tmp;
         }
         xl = node->x1 & ~3;
         xr = node->x2 | 3;
-        for (int y = y1v; y <= y2v; y++) {
+        y = y1v;
+        for (; y <= y2v; y++) {
             span_mgr->AddSpan(xl, xr, y);
         }
         return;
     }
     if (node->Node_Type == 4) {
-        int x1v = node->x1;
-        int x2v = node->x2;
+        x1v = node->x1;
+        x2v = node->x2;
         if (x1v > x2v) {
-            int tmp = x1v; x1v = x2v; x2v = tmp;
+            tmp = x1v; x1v = x2v; x2v = tmp;
         }
-        int y1v = node->y1;
-        int y2v = node->y2;
+        y1v = node->y1;
+        y2v = node->y2;
         if (y1v > y2v) {
-            int tmp = y1v; y1v = y2v; y2v = tmp;
+            tmp = y1v; y1v = y2v; y2v = tmp;
         }
         xl = x1v & ~3;
         xr = x2v | 3;
         span_mgr->AddSpan(xl, xr, y1v);
         span_mgr->AddSpan(xl, xr, y2v);
-        for (int y = y1v + 1; y < y2v; y++) {
+        y = y1v + 1;
+        for (; y < y2v; y++) {
             span_mgr->AddSpan(xl, x1v | 3, y);
             span_mgr->AddSpan(x2v & ~3, xr, y);
         }

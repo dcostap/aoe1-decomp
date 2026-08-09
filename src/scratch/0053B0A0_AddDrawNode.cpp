@@ -9,7 +9,23 @@
 // attempt 7: combine clipping predicates made no codegen change.
 // attempt 8: split width/height temps before hotspot expressions; no codegen change.
 // attempt 9: /Ob0 made no codegen change; /O1 produced a too-small 358-byte .text and was discarded.
-// left in scratch: behavior and node/list field effects are reconstructed; best default build is 379 bytes with first mismatch at offset 30. Remaining drift is scheduling/register allocation in bounds/hotspot setup, node-field store order, and Select_Box tail layout.
+// probe 10: inline visible bounds expressions — 343-byte diff; rolled back.
+// probe 11: remove the cached Select_Box pointer so each member access reloads the field.
+// probe 12: remove width/height temporaries but retain named right/bottom bounds.
+// probe 13: split bound/hotspot declarations from assignments in original source order.
+// probe 14: remove redundant Shape_Info* local — 387-byte output; rolled back.
+// probe 15: short hotspot accumulators — 383-byte output; rolled back.
+// probe 16: move the two natural null link stores before scalar node-field stores.
+// probe 17: reverse bound/hotspot assignment order — 340-byte output; rolled back.
+// probe 18: six-way variant lab over bound/hotspot statement order; no exact result,
+// best emitted code unchanged at 38 positional bytes / 97.50% shape.
+// left in scratch: canonical typed source is validated at 379 bytes with exact
+// call set/boundary. Null-link stores before scalar fields and direct Select_Box
+// rereads reproduce the long tail; remaining drift is the localized width/height
+// versus hotspot load order at +0037..+0057. The lab's best order did not improve it.
+// Main-agent audit removed the diagnostic volatile yline qualifier because it
+// expressed no executable behavior; readable canonical source is authoritative
+// over the smaller compiler-steering diff for this unresolved function.
 
 struct Shape_Info {
     char gap_00[0x10];
@@ -68,7 +84,7 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
                                  int draw_flag, unsigned char* color_table, int xform_mask,
                                  int draw_level, int object_id)
 {
-    volatile int yline_tmp = this->YLine_Offset + yline;
+    int yline_tmp = this->YLine_Offset + yline;
     yline = yline_tmp;
 
     if (draw_level > this->Accept_Max_Level)
@@ -77,12 +93,14 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
         return;
 
     Shape_Info* shp = shape;
-    int width = shp->Width;
-    int height = shp->Height;
-    int right = draw_x + width - 1;
-    int bottom = draw_y + height - 1;
-    int hot_x = draw_x + shp->Hotspot_X;
-    int hot_y = draw_y + shp->Hotspot_Y;
+    int right;
+    int bottom;
+    int hot_x;
+    int hot_y;
+    right = draw_x + shp->Width - 1;
+    bottom = draw_y + shp->Height - 1;
+    hot_x = draw_x + shp->Hotspot_X;
+    hot_y = draw_y + shp->Hotspot_Y;
 
     if (!(draw_x <= this->SD_XMax && right >= this->SD_XMin &&
           draw_y <= this->SD_YMax && bottom >= this->SD_YMin &&
@@ -105,13 +123,13 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
         cur->Next = node;
     }
 
+    node->Next = 0;
+    node->NextOnLevel = 0;
     node->Object_ID = object_id;
     node->Draw_Flag = draw_flag;
     node->Shape_Base = shape_base;
     node->Color_Table = color_table;
     node->Xform_Mask = xform_mask;
-    node->Next = 0;
-    node->NextOnLevel = 0;
     node->Shape = shp;
     node->Draw_X = draw_x;
     node->Draw_Y = draw_y;
@@ -119,11 +137,10 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
     node->Node_Type = 0;
 
     if (this->Select_Box != 0) {
-        short* box = this->Select_Box;
-        node->x1 = (short)(hot_x + box[0]);
-        node->y1 = (short)(box[1] + hot_y);
-        node->x2 = (short)(box[2] + hot_x);
-        node->y2 = (short)(box[3] + hot_y);
+        node->x1 = (short)(hot_x + this->Select_Box[0]);
+        node->y1 = (short)(this->Select_Box[1] + hot_y);
+        node->x2 = (short)(this->Select_Box[2] + hot_x);
+        node->y2 = (short)(this->Select_Box[3] + hot_y);
         this->Select_Box = 0;
     } else {
         node->x1 = (short)draw_x;

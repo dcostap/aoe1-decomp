@@ -11,9 +11,18 @@
 // attempt 9: keep swapped local names but use row=first-arg as x and col=second-arg as y; behavior/call-free effects correct but VC5 still chooses first arg in EDX and second in EAX.
 // tried fixed-address macro vs extern row array; macro reduced relocation noise but not register coloring.
 // tried negated-OR guard, explicit locals, register locals, swapped local names, and /O1 probe; /O1 made an EBP frame and was discarded.
-// left in scratch: remaining mismatch is broad x/y register coloring and derived branch distances; default build is 382 bytes, first mismatch offset 2, edit diff 112/382.
+// left in scratch: remaining mismatch is broad x/y register coloring, external
+// row-table relocation/context, and common-tail placement. The retained source
+// uses the canonical typed extern row table (no absolute-address macro) and the
+// natural interior/edge if/else; current default build is 398 bytes, 308
+// positional bytes, 83.87% shape, with call-free behavior/layout reconstructed.
+// probe 10: replace the legacy absolute map macro with the canonical typed row-table declaration.
+// probe 11: remove row/col aliases and use the formal parameters directly.
+// probe 12: register-qualified coordinate parameters — codegen duplicate; rolled back.
+// probe 13: explicit common-tail goto for the binary-proven central-path jump.
+// probe 14: positive interior block first, explicit goto, then boundary block; no change.
 
-#define unified_map_offsets ((unsigned long**)0x886808)
+extern unsigned long* unified_map_offsets[];
 
 class RGE_View {
 public:
@@ -26,58 +35,51 @@ public:
 int RGE_View::get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, unsigned long param_5)
 {
     int iVar1;
-    int iVar2;
     int iVar3;
-    int iVar4;
     unsigned int uVar5;
-    int row = param_1;
-    int col = param_2;
-
     uVar5 = 0;
-    if (0 < row && 0 < col && row < param_3 - 1 && col < param_4 - 1) {
-        iVar3 = (int)unified_map_offsets[col - 1];
-        iVar1 = row * 4;
-        if ((*(unsigned int*)(iVar3 + iVar1) & param_5) == 0)
+    if (0 < param_1 && 0 < param_2 && param_1 < param_3 - 1 && param_2 < param_4 - 1) {
+        iVar1 = param_1 * 4;
+        if ((unified_map_offsets[param_2 - 1][param_1] & param_5) == 0)
             uVar5 = 0x80;
-        iVar2 = row * 4 + 4;
-        if ((unified_map_offsets[col][row + 1] & param_5) == 0)
+        if ((unified_map_offsets[param_2][param_1 + 1] & param_5) == 0)
             uVar5 |= 0x40;
-        iVar4 = (int)unified_map_offsets[col + 1];
-        if ((*(unsigned int*)(iVar4 + iVar1) & param_5) == 0)
+        if ((unified_map_offsets[param_2 + 1][param_1] & param_5) == 0)
             uVar5 |= 0x20;
-        if ((unified_map_offsets[col][row - 1] & param_5) == 0)
+        if ((unified_map_offsets[param_2][param_1 - 1] & param_5) == 0)
             uVar5 |= 0x10;
-        if ((*(unsigned int*)(iVar2 + iVar3) & param_5) == 0)
+        if ((unified_map_offsets[param_2 - 1][param_1 + 1] & param_5) == 0)
             uVar5 |= 0x08;
-        if ((*(unsigned int*)(iVar4 + iVar2) & param_5) == 0)
+        if ((unified_map_offsets[param_2 + 1][param_1 + 1] & param_5) == 0)
             uVar5 |= 0x04;
-        if ((*(unsigned int*)(iVar4 + iVar1 - 4) & param_5) == 0)
+        if ((unified_map_offsets[param_2 + 1][param_1 - 1] & param_5) == 0)
             uVar5 |= 0x02;
-        if ((*(unsigned int*)(iVar3 + iVar1 - 4) & param_5) == 0)
+        if ((unified_map_offsets[param_2 - 1][param_1 - 1] & param_5) == 0)
             uVar5 |= 0x01;
     } else {
-        if (0 < row && (unified_map_offsets[col][row - 1] & param_5) == 0)
-            uVar5 = 0x10;
-        iVar1 = param_3 - 1;
-        if (row < iVar1 && (unified_map_offsets[col][row + 1] & param_5) == 0)
-            uVar5 |= 0x40;
-        if (0 < col && (unified_map_offsets[col - 1][row] & param_5) == 0)
-            uVar5 |= 0x80;
-        iVar3 = param_4 - 1;
-        if (col < iVar3 && (unified_map_offsets[col + 1][row] & param_5) == 0)
-            uVar5 |= 0x20;
-        if (0 < row) {
-            if (0 < col && (unified_map_offsets[col - 1][row - 1] & param_5) == 0)
-                uVar5 |= 0x01;
-            if (col < iVar3 && (unified_map_offsets[col + 1][row - 1] & param_5) == 0)
-                uVar5 |= 0x02;
-        }
-        if (row < iVar1) {
-            if (0 < col && (unified_map_offsets[col - 1][row + 1] & param_5) == 0)
+        if (0 < param_1 && (unified_map_offsets[param_2][param_1 - 1] & param_5) == 0)
+        uVar5 = 0x10;
+    iVar1 = param_3 - 1;
+    if (param_1 < iVar1 && (unified_map_offsets[param_2][param_1 + 1] & param_5) == 0)
+        uVar5 |= 0x40;
+    if (0 < param_2 && (unified_map_offsets[param_2 - 1][param_1] & param_5) == 0)
+        uVar5 |= 0x80;
+    iVar3 = param_4 - 1;
+    if (param_2 < iVar3 && (unified_map_offsets[param_2 + 1][param_1] & param_5) == 0)
+        uVar5 |= 0x20;
+    if (0 < param_1) {
+        if (0 < param_2 && (unified_map_offsets[param_2 - 1][param_1 - 1] & param_5) == 0)
+            uVar5 |= 0x01;
+        if (param_2 < iVar3 && (unified_map_offsets[param_2 + 1][param_1 - 1] & param_5) == 0)
+            uVar5 |= 0x02;
+    }
+        if (param_1 < iVar1) {
+            if (0 < param_2 && (unified_map_offsets[param_2 - 1][param_1 + 1] & param_5) == 0)
                 uVar5 |= 0x08;
-            if (col < iVar3 && (unified_map_offsets[col + 1][row + 1] & param_5) == 0)
+            if (param_2 < iVar3 && (unified_map_offsets[param_2 + 1][param_1 + 1] & param_5) == 0)
                 uVar5 |= 0x04;
         }
     }
+
     return this->EdgeNumber[uVar5];
 }
