@@ -4,22 +4,13 @@
 // Uses /Oy- flag for EBP frame matching (config/flags/00445250_PtrSpanCopy.rsp)
 //
 // Status: SCRATCH - close but not matching
-// Remaining issues:
-// 1. Register allocation: original uses edi for rect*, rebuilt uses esi.
-//    Original pushes all 3 preserved regs (ebx, esi, edi) before any param access,
-//    rebuilt pushes edi after first param load. All attempts to change variable
-//    declaration order/types haven't flipped the allocation.
-// 2. Alignment-optimized inner copy: original uses rep movsb/rep movsd with
-//    alignment computation (-(int)src & 3). Rebuilt while-loops don't produce
-//    rep movs* instructions. The minus_align variant gets sub esp 0Ch but
-//    doesn't produce the exact alignment sequence.
-// 3. Original caches rect->top in param_1 slot and src_y in param_2 slot, then
-//    increments them directly. Rebuilt uses separate stack locals for these.
-//
-// Tried: top-decl vs deferred locals, order of d/s assignments, memcpy,
-//   void** DestP/SrcP patterns, combined || conditions, separate if returns,
-//   with/without block scopes, minus_align vs simple loop copy.
-// Best edit diff: ~66% with memcpy, ~70% with minus_align.
+// Remaining gap: the clean typed source has the correct bounds, Lock call,
+// span ownership, and memcpy behavior, but VC5 chooses a different stack/local
+// basin and emits a simple rep-movsd/movsb copy rather than the original
+// alignment-prefixed expansion.  Diagnostic raw/volatile/register variants
+// were rejected.
+
+#include <string.h>
 
 class TDrawSystem {
 public:
@@ -32,6 +23,13 @@ struct tagRECT {
     long top;
     long right;
     long bottom;
+};
+
+struct TSpan {
+    TSpan* next;
+    char gap_04[4];
+    int left;
+    int right;
 };
 
 class TDrawArea {
@@ -85,36 +83,19 @@ void TDrawArea::PtrSpanCopy(TDrawArea* src, long src_x, long src_y, tagRECT* rec
     SrcP = this->CurDisplayOffsets;
 
     do {
-        unsigned char* d = ((unsigned char**)DestP)[src_y] + src_x;
-        unsigned char* s = ((unsigned char**)SrcP)[top] + XofS;
-        unsigned char* r = list[top];
+        unsigned char* dest_base = (unsigned char*)DestP[src_y] + src_x;
+        unsigned char* src_base = (unsigned char*)SrcP[top] + XofS;
+        TSpan* span = (TSpan*)list[top];
 
-        if (r) {
+        if (span) {
             do {
-                int a = *(int*)(r + 8);
-                int b = *(int*)(r + 12);
-                int n = b - a + 1;
-                unsigned char* d2 = d + a;
-                unsigned char* s2 = s + a;
-
-                {
-                    int align = (-(int)(int)s2) & 3;
-                    int aligned = n - align;
-                    if (aligned > 0) {
-                        while (align-- != 0) *d2++ = *s2++;
-                        {
-                            int dw = aligned >> 2;
-                            int rm = aligned & 3;
-                            while (dw-- != 0) { *(int*)d2 = *(int*)s2; d2 += 4; s2 += 4; }
-                            while (rm-- != 0) *d2++ = *s2++;
-                        }
-                    } else {
-                        while (n-- != 0) *d2++ = *s2++;
-                    }
-                }
-
-                r = *(unsigned char**)r;
-            } while (r);
+                int span_left = span->left;
+                unsigned char* dest_span = dest_base + span_left;
+                unsigned char* src_span = src_base + span_left;
+                int span_count = span->right - span_left + 1;
+                memcpy(dest_span, src_span, span_count);
+                span = span->next;
+            } while (span);
         }
 
         top++;
