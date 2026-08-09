@@ -25,9 +25,17 @@
 //   pressure; the retained source still has the compiler's common Height load.
 // - Main-agent audit corrected the local shape-file-header ownership name;
 //   emitted code is unchanged.
+// - The spanlist <stdlib.h> context improved the setup but left a 9-byte
+//   structural gap; the full manager surface and explicit this-call were
+//   source-plausible but emitted duplicates.
+// - Adding the neighboring <string.h> translation-unit context restored the
+//   original 244-byte schedule exactly; no compiler-only steering is needed.
 
 // Main-agent audit confirmed typed selected-record ownership and retained the
 // natural shape deletion path.
+#include <stdlib.h>
+#include <string.h>
+
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;
@@ -61,8 +69,41 @@ public:
     Shape_Info* shape_info;
 };
 
-class TSpan_List_Manager {
+struct VSpan_Node;
+
+class TSpan_Node_List {
 public:
+    VSpan_Node** Zone_Ptrs;
+    int* Zone_Size_Ptrs;
+    int Used_Zones;
+    int Max_Zones;
+    VSpan_Node* Free_Head;
+    int Free_Pool_Zone;
+    int Free_Pool_Index;
+    int Total_Blocks;
+    int Free_Blocks;
+    int Default_Grow_Size;
+    int Element_Size;
+    int Alloc_Count;
+    int Dealloc_Count;
+    int NewZone_Count;
+    int Reset_Count;
+};
+
+class TSpan_List_Manager : public TSpan_Node_List {
+public:
+    VSpan_Node** Line_Head_Ptrs;
+    VSpan_Node** Line_Tail_Ptrs;
+    int* LeftMostPx;
+    int* RightMostPx;
+    int* Span_Count;
+    int Num_Lines;
+    int Num_Pixels;
+    int Min_Span_Px;
+    int Max_Span_Px;
+    int Min_Line;
+    int Max_Line;
+
     void DeleteSpan(int start, int end, int line);
     void DeleteShape(TShape* shape, int shape_number, int x, int y, int mirror);
 };
@@ -85,12 +126,13 @@ void TSpan_List_Manager::DeleteShape(TShape* shape, int shape_number,
 
         if (mirror == 0) {
             line = y;
-            if (y < y + info->Height) {
+            if (line < y + info->Height) {
                 do {
                     start = *outline++;
                     end = *outline++;
                     if ((start & 0x8000) == 0) {
-                        DeleteSpan(x + (short)start, right - (short)end, line);
+                        this->DeleteSpan(x + (short)start,
+                                         right - (short)end, line);
                     }
                     line++;
                 } while (line < y + info->Height);
@@ -98,12 +140,13 @@ void TSpan_List_Manager::DeleteShape(TShape* shape, int shape_number,
             }
         } else {
             line = y;
-            if (y < y + info->Height) {
+            if (line < y + info->Height) {
                 do {
                     start = *outline++;
                     end = *outline++;
                     if ((end & 0x8000) == 0) {
-                        DeleteSpan(x + (short)end, right - (short)start, line);
+                        this->DeleteSpan(x + (short)end,
+                                         right - (short)start, line);
                     }
                     line++;
                 } while (line < y + info->Height);

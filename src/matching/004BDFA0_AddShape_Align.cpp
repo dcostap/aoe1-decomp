@@ -17,9 +17,16 @@
 //   the output by 24 bytes; restored the clean source.
 // - A volatile outline pointer was a codegen duplicate and is not retained;
 //   the two observed add-2 cursor instructions remain unexplained.
+// - Post-incrementing each 16-bit edge was the natural source form needed for
+//   the binary's two add-2 cursor steps; the standalone form matched the loop
+//   body but still had a setup drift.
+// - Adding the spanlist TU's <stdlib.h> context resolved the remaining setup
+//   and block drift; the resulting typed source is an exact match.
 
 // Main-agent audit confirmed typed shape/span ownership and retained the natural
 // aligned outline traversal.
+#include <stdlib.h>
+
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;
@@ -76,21 +83,18 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* data, Shape_Info* shape,
 {
     if (shape != 0) {
         unsigned short* outline;
-        int right;
         int line;
         unsigned short start;
         unsigned short end;
         outline = (unsigned short*)(data + shape->Shape_Outline_Offset);
-        right = shape->Width - 1 + x;
+        int right = shape->Width - 1 + x;
 
         if (align == 0) {
             line = y;
-            if (y < y + shape->Height) {
+            if (line < y + shape->Height) {
                 do {
-                    start = *outline;
-                    end = outline[1];
-                    outline += 1;
-                    outline += 1;
+                    start = *outline++;
+                    end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (start & 0x8000) == 0) {
                         AddSpan((short)start + x & 0xfffffffc,
@@ -102,12 +106,10 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* data, Shape_Info* shape,
             }
         } else {
             line = y;
-            if (y < y + shape->Height) {
+            if (line < y + shape->Height) {
                 do {
-                    start = *outline;
-                    end = outline[1];
-                    outline += 1;
-                    outline += 1;
+                    start = *outline++;
+                    end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (end & 0x8000) == 0) {
                         AddSpan((short)end + x & 0xfffffffc,

@@ -10,10 +10,18 @@
 //   topology added a call site and widened the function; restored x1v source.
 // - Removing /GX was a codegen duplicate; full manager context, function-scope
 //   a/b, and direct-x1 nonvertical variants were also duplicates or worse.
+// - Spanlist stdlib/string header context, split x1v assignment, scoped y
+//   copies, early-return guards, for-loop rewrites, and a Ghidra-shaped
+//   parameter-mutation source were tested; none improved the retained basin.
+// - Retained natural x1v Bresenham source: exact call set/CFG and 316-byte
+//   output remain, with structural drift concentrated in prologue liveness and
+//   later induction scheduling.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the
 // natural aligned Bresenham construction.
+#include <stdlib.h>
+
 class TSpan_List_Manager {
 public:
     void AddSpan(int left, int right, int line);

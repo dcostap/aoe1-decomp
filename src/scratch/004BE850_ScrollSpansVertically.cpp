@@ -15,6 +15,11 @@
 // use_regions matches the original parameter homes and aligns the first 0xC4
 // bytes; direct late reuse of use_regions, end_index delays, and register
 // declarations did not remove the remaining 4-byte late branch drift.
+// - The standard stdlib context was neutral. Computing the negative-direction
+//   bounds directly from Num_Lines (rather than through clear_last) aligned the
+//   complete 394-byte structure; final-loop/operand/home variants were neutral.
+// - Remaining drift is exactly the final two bound reload encodings (4 bytes):
+//   original loads clear_first then clear_last, rebuilt reverses those loads.
 // left in scratch: remaining drift is codegen/source-shape around preserving original dy while mutating bound params,
 // plus VC5 abs lowering/register allocation; no inline asm used.
 
@@ -24,6 +29,8 @@ struct VSpan_Node;
 
 // Main-agent audit confirmed canonical span-list ownership and retained the
 // corrected lower/upper bound semantics and natural vertical scroll.
+#include <stdlib.h>
+
 class TSpan_Node_List {
 public:
     char gap_00[0x3C];
@@ -97,11 +104,11 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
         clear_first = 0;
         clear_last = dy - 1;
     } else {
-        clear_last = this->Num_Lines;
         src_line = dy;
         step = 1;
-        clear_first = clear_last - dy;
-        line = clear_last - 1;
+        clear_first = this->Num_Lines - dy;
+        line = this->Num_Lines - 1;
+        clear_last = this->Num_Lines;
     }
 
     line += step;
@@ -117,13 +124,12 @@ void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
     }
 
     if (clear_first <= clear_last) {
-        do {
+        for (; clear_first <= clear_last; clear_first++) {
             this->Line_Head_Ptrs[clear_first] = 0;
             this->Line_Tail_Ptrs[clear_first] = 0;
             this->Span_Count[clear_first] = 0;
             this->LeftMostPx[clear_first] = 0;
             this->RightMostPx[clear_first] = 0;
-            clear_first++;
-        } while (clear_first <= clear_last);
+        }
     }
 }

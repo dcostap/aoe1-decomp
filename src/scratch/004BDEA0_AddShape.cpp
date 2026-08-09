@@ -17,9 +17,17 @@
 //   no exact source-shape lead remains in this bounded pass.
 // - A fresh direct shape_info base-array/indexed reconstruction lost the
 //   selected-record prologue and worsened the block basin; restored this source.
+// - The paired spanlist context narrowed the gap: stdlib-only plus natural
+//   post-increment edge reads gives exact size/CFG and only three register
+//   encoding bytes differ; adding string.h or register hints was worse/neutral.
+// - Base-pointer/in-place index, declaration-order, and original type-spelling
+//   variants were codegen duplicates. The remaining evidence-backed lead is
+//   only the shape-index/base register coloring; source remains natural.
 
 // Main-agent audit confirmed typed selected-record ownership and retained the
 // natural shape insertion path.
+#include <stdlib.h>
+
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
     unsigned long Shape_Outline_Offset;
@@ -31,7 +39,7 @@ struct Shape_Info {
     long Hotspot_Y;
 };
 
-struct Shape_File_Header_Data {
+struct SLhape_File_Header {
     char Version[4];
     long Num_Shapes;
     char Comment[24];
@@ -49,7 +57,7 @@ public:
     Shape_Header* shape_header;       // +0x0C
     Shape_File_Header* head;          // +0x10
     Shape_Offsets* offsets;           // +0x14
-    Shape_File_Header_Data* FShape;   // +0x18
+    SLhape_File_Header* FShape;        // +0x18
     Shape_Info* shape_info;           // +0x1C
 };
 
@@ -96,20 +104,21 @@ void TSpan_List_Manager::AddShape(TShape* shape, int shape_number,
                                   int x, int y, int mirror)
 {
     if (shape != 0 && shape->FShape != 0) {
-        Shape_Info* info = &shape->shape_info[shape_number];
+        Shape_Info* info;
+        int right;
+        info = shape->shape_info;
+        info = info + shape_number;
         unsigned short* outline =
             (unsigned short*)(shape->FShape->Version +
                               info->Shape_Outline_Offset);
-        int right = info->Width - 1 + x;
+        right = info->Width - 1 + x;
 
         if (mirror == 0) {
             int line = y;
-            if (y < y + info->Height) {
+            if (line < y + info->Height) {
                 do {
-                    unsigned short start = outline[0];
-                    unsigned short end = outline[1];
-                    outline++;
-                    outline++;
+                    unsigned short start = *outline++;
+                    unsigned short end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (start & 0x8000) == 0) {
                         AddSpan((short)start + x, right - (short)end, line);
@@ -120,12 +129,10 @@ void TSpan_List_Manager::AddShape(TShape* shape, int shape_number,
             }
         } else {
             int line = y;
-            if (y < y + info->Height) {
+            if (line < y + info->Height) {
                 do {
-                    unsigned short start = outline[0];
-                    unsigned short end = outline[1];
-                    outline++;
-                    outline++;
+                    unsigned short start = *outline++;
+                    unsigned short end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (end & 0x8000) == 0) {
                         AddSpan((short)end + x, right - (short)start, line);
