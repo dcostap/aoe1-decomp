@@ -604,6 +604,15 @@ Why it helps:
 - COM interfaces use __stdcall in VC5 (this on stack).
 - Both approaches produce byte-identical call sequences.
 
+When the slot and calling convention are already correct but argument pushes,
+the vtable load, or a nearby aggregate-field store remain misordered, prefer the
+full SDK-shaped pure-virtual interface over a flat hand-written vtable. The
+preceding virtual declarations are real translation-unit context: on VC5 they
+can change scheduling even though the called slot is still the same offset. In
+`0042F190`, replacing a flat slot-`0x78` function-pointer surface with the
+period DirectPlay `IDirectPlay2` virtual surface delayed the `DPNAME::dwSize`
+store until after the interface/player pushes and produced an exact match.
+
 ## Lesson: Chained-call parameter affiliation prevents tail-call optimization
 
 When a function ends with a chained call like `obj->method(arg)->final_call()`,
@@ -3226,7 +3235,12 @@ Try when:
 
 Caveats:
 - the buffer must be 32 bytes for the 17-byte tail-zero pattern; smaller/larger sizes change the zero-store shapes;
-- VC5 still refuses to reproduce *some* schedules regardless of buffer form — e.g. a constant field store (`dpn.dwSize = 16`) placed BEFORE the callee's final argument pushes is emitted before the vtable load in every source shape, while the original emits it after the last two pushes (`mov [esp+10h],10h` at deeper ESP). Both ForceNameChange (0042F190) and its sibling SendPlayerName (00426D50) show this exact 12-byte tail gap; no field order, local form, comma-argument side effect, pointer store, or flag set moves the store.
+- buffer/source-order variants alone may not move a nearby constant aggregate
+  store across COM argument setup. Before declaring that schedule immovable,
+  restore the full SDK-shaped `__stdcall` interface: in ForceNameChange
+  (0042F190), that real virtual surface moved `dpn.dwSize = 16` after the final
+  interface/player pushes and closed the former 12-byte tail gap. Its sibling
+  SendPlayerName (00426D50) may require the same canonical context.
 
 ## Lesson: Split the per-row tile base from the subfield offset to keep the row computation at the loop head
 

@@ -80,26 +80,72 @@
 //   (dwSize after pushes, call [ecx+78h]) and is also paused in scratch for the same reason; its
 //   dp/player-local source moves the dwSize after the pushes but destroys the push-interleaving.
 //   No accepted_drift: the store position changes the memory-write schedule in the call setup.
+//
+// orch-luna-42f190-w1 fresh pass 2026-08-09:
+// - The remaining 12-byte tail gap was caused by the flat function-pointer vtable surface.
+// - Replaced it with the SDK-shaped IDirectPlay2 __stdcall virtual surface, whose
+//   SetPlayerName slot is exactly 0x78 (30 prior slots); the compiler then emits the
+//   binary's vtable load, player/interface pushes, and delayed dwSize store exactly.
+// - The natural literal-array/DPNAME reconstruction is retained; default flags only,
+//   no inline asm or compiler-steering hacks. Exact 148B result validated before promotion.
+// - Main-agent audit restored typed variadic `L->Log(...)` syntax and the SDK DPNAME
+//   ANSI union members; both are codegen-identical and preserve the exact result.
 
 #include "../../include/game_globals.h"
 
-extern void* L;
-extern "C" void __cdecl Log(void* log, char* text, ...);
+class TDebuggingLog {
+public:
+    void Log(char* text, ...);
+};
+
+extern TDebuggingLog* L;
 
 struct DPNAME {
     unsigned long dwSize;
     unsigned long dwFlags;
-    unsigned short* lpszShortName;
-    unsigned short* lpszLongName;
+    union {
+        unsigned short* lpszShortName;
+        char* lpszShortNameA;
+    };
+    union {
+        unsigned short* lpszLongName;
+        char* lpszLongNameA;
+    };
 };
 
-struct IDirectPlayVtbl {
-    void* gap[0x78 / 4];
-    long (__stdcall* SetPlayerName)(void* self, void* player, DPNAME* name, unsigned long flags);
-};
-
-struct IDirectPlay {
-    IDirectPlayVtbl* vtbl;
+class IDirectPlay2 {
+public:
+    virtual long __stdcall QueryInterface(void* riid, void** object) = 0;
+    virtual unsigned long __stdcall AddRef(void) = 0;
+    virtual unsigned long __stdcall Release(void) = 0;
+    virtual long __stdcall AddPlayerToGroup(unsigned long group, unsigned long player) = 0;
+    virtual long __stdcall Close(void) = 0;
+    virtual long __stdcall CreateGroup(void* id, DPNAME* name, void* data, unsigned long size, unsigned long flags) = 0;
+    virtual long __stdcall CreatePlayer(void* id, DPNAME* name, void* event, void* data, unsigned long size, unsigned long flags) = 0;
+    virtual long __stdcall DeletePlayerFromGroup(unsigned long group, unsigned long player) = 0;
+    virtual long __stdcall DestroyGroup(unsigned long group) = 0;
+    virtual long __stdcall DestroyPlayer(unsigned long player) = 0;
+    virtual long __stdcall EnumGroupPlayers(unsigned long group, void* guid, void* callback, void* context, unsigned long flags) = 0;
+    virtual long __stdcall EnumGroups(void* guid, void* callback, void* context, unsigned long flags) = 0;
+    virtual long __stdcall EnumPlayers(void* guid, void* callback, void* context, unsigned long flags) = 0;
+    virtual long __stdcall EnumSessions(void* desc, unsigned long flags, void* callback, void* context, unsigned long timeout) = 0;
+    virtual long __stdcall GetCaps(void* caps, unsigned long flags) = 0;
+    virtual long __stdcall GetGroupData(unsigned long group, void* data, unsigned long* size, unsigned long flags) = 0;
+    virtual long __stdcall GetGroupName(unsigned long group, void* data, unsigned long* size) = 0;
+    virtual long __stdcall GetMessageCount(unsigned long player, unsigned long* count) = 0;
+    virtual long __stdcall GetPlayerAddress(unsigned long player, void* data, unsigned long* size) = 0;
+    virtual long __stdcall GetPlayerCaps(unsigned long player, void* caps, unsigned long flags) = 0;
+    virtual long __stdcall GetPlayerData(unsigned long player, void* data, unsigned long* size, unsigned long flags) = 0;
+    virtual long __stdcall GetPlayerName(unsigned long player, void* data, unsigned long* size) = 0;
+    virtual long __stdcall GetSessionDesc(void* data, unsigned long* size) = 0;
+    virtual long __stdcall Initialize(void* guid) = 0;
+    virtual long __stdcall Open(void* desc, unsigned long flags) = 0;
+    virtual long __stdcall Receive(unsigned long* from, unsigned long* to, unsigned long flags, void* data, unsigned long* size) = 0;
+    virtual long __stdcall Send(unsigned long from, unsigned long to, unsigned long flags, void* data, unsigned long size) = 0;
+    virtual long __stdcall SetGroupData(unsigned long group, void* data, unsigned long size, unsigned long flags) = 0;
+    virtual long __stdcall SetGroupName(unsigned long group, DPNAME* name, unsigned long flags) = 0;
+    virtual long __stdcall SetPlayerData(unsigned long player, void* data, unsigned long size, unsigned long flags) = 0;
+    virtual long __stdcall SetPlayerName(unsigned long player, DPNAME* name, unsigned long flags) = 0;
 };
 
 class TCommunications_Handler {
@@ -110,13 +156,13 @@ public:
 void TCommunications_Handler::ForceNameChange(void) {
     DPNAME dpn;
 
-    Log(L, "Force Name Change");
+    L->Log("Force Name Change");
 
     char test[32] = "TEMPORARY NAME";
 
-    dpn.lpszShortName = (unsigned short*)test;
-    dpn.lpszLongName = (unsigned short*)test;
+    dpn.lpszShortNameA = test;
+    dpn.lpszLongNameA = test;
     dpn.dwSize = 0x10;
 
-    ((IDirectPlay*)DAT_0062c5ec)->vtbl->SetPlayerName((IDirectPlay*)DAT_0062c5ec, (void*)DAT_0062cf04, &dpn, 2);
+    ((IDirectPlay2*)DAT_0062c5ec)->SetPlayerName(DAT_0062cf04, &dpn, 2);
 }
