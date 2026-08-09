@@ -16,13 +16,28 @@
 //   text_size=341 (fails 255-byte target due to inline epilogues).
 // - v8: function-ptr approach (matching unload style) directly. Still 320 bytes, stdcall for vtable.
 //
+// Current bounded session:
+// - baseline rebuilt 314B with all 11 calls aligned, but explicit action vtable casts used stdcall.
+// - restored donor-style RGE_Action and moving-object virtual surfaces; calls
+//   use their original thiscall form without raw vtable plumbing.
+// - top-declared pointers/scalars plus one `goto fail` produced the best 274B reconstruction (65 positional
+//   diff, 90.32% shape, 87.21% exact-block coverage). The object lookup, action checks, task call, allocation,
+//   constructor, delete-list, and add-action bodies are byte-aligned through the constructor-failure test.
+// - nested-positive, direct-return, positive-success, hybrid guard, and exact RGE_Action_Enter ABI surface
+//   probes did not improve the tail; some were codegen duplicates or broadened the CFG.
+// - remaining blocker is structural EH-tail lowering: original routes object/task failures to the single
+//   FS-first epilogue at 0043123A and only emits `xor eax,eax; jmp` for constructor failure; VC5 keeps a
+//   duplicated zero-return epilogue before the success body (+19B). Calls, relocation targets, and field
+//   ownership are otherwise aligned. Keep this clean, typed reconstruction in scratch.
+// - Main-agent audit replaced the raw VTableProxy cast with a canonical narrow
+//   RGE_Moving_Object base and named virtual calls; emitted code is unchanged.
+//
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
 //    cleanup. Original has single cleanup at 0043123A shared by all paths. Shared tail saves
 //    ~60 bytes (3x20 - 20 = 40 bytes of cleanup, plus jumps).
-// 2. VTable proxy needed for thiscall (function-ptr approach generates stdcall for enter's
-//    vtable[0x210] call, but matching unload generates thiscall for vtable[0x208] - the compiler
-//    behavior differs between the two functions for unknown reasons).
+// 2. The narrow RGE_Moving_Object base declares the inherited virtual surface
+//    needed for the two late slots without manual function-pointer dispatch.
 // 3. SEH handler address (55CE7Bh) vs 0 placeholder - masked by relocation system.
 // 4. Register allocation differs from original (original: eax=world_z, ecx=world_y, edx=world_x;
 //    rebuilt varies by version).
@@ -41,6 +56,9 @@
 extern "C" void* __cdecl operator_new(size_t size);
 
 typedef unsigned char uchar;
+
+class RGE_Action_Object;
+class RGE_Task;
 
 class RGE_Game_World {
 public:
@@ -85,7 +103,27 @@ public:
 
 class RGE_Action {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Action();
+    virtual void slot_04();
+    virtual void slot_08();
+    virtual void slot_0C();
+    virtual void slot_10();
+    virtual void slot_14();
+    virtual short func18();
+    virtual void slot_1C();
+    virtual void slot_20();
+    virtual void slot_24();
+    virtual void slot_28();
+    virtual void slot_2C();
+    virtual void slot_30();
+    virtual void slot_34();
+    virtual void slot_38();
+    virtual void slot_3C();
+    virtual void slot_40();
+    virtual void slot_44();
+    virtual void slot_48();
+    virtual void* func4C();
+
     short action_type;
     uchar gap_06[2];
     void* obj;
@@ -108,11 +146,13 @@ public:
 
 class RGE_Action_Enter : public RGE_Action {
 public:
-    RGE_Action_Enter(void* obj, void* task, void* target);
+    virtual ~RGE_Action_Enter();
+    RGE_Action_Enter(RGE_Action_Object* obj, RGE_Task* task, RGE_Action_Object* target);
 };
 
-// VTable proxy matching vtable offsets 0x208 (entry 130) and 0x210 (entry 132)
-struct VTableProxy {
+// Narrow inherited surface through the two binary-observed late virtual slots.
+class RGE_Moving_Object {
+public:
     virtual void d00() {}
     virtual void d01() {}
     virtual void d02() {}
@@ -244,19 +284,15 @@ struct VTableProxy {
     virtual void d80() {}
     virtual void d81() {}
     // vtable[130] = offset 0x208
-    virtual void* vf208(void* ae) = 0;
+    virtual void* add_action(void* action) = 0;
     // vtable[131] = offset 0x20C (gap)
     virtual void d82() {}
     // vtable[132] = offset 0x210
-    virtual void* vf210(void* obj, int x, int y, int z) = 0;
+    virtual void* make_enter_task(void* obj, int x, int y, int z) = 0;
 };
 
-typedef short (__stdcall* ActionVf18)(void* self);
-typedef void* (__stdcall* ActionVf4C)(void* self);
-
-class RGE_Combat_Object {
+class RGE_Combat_Object : public RGE_Moving_Object {
 public:
-    void* vtable;
     uchar gap_04[8];
     RGE_Player* owner;
     uchar gap_10[0x28];
@@ -270,35 +306,47 @@ public:
 
 int RGE_Combat_Object::enter(int param_1, int param_2)
 {
-    RGE_Static_Object* obj = (RGE_Static_Object*)this->owner->world->object(param_1);
+    RGE_Static_Object* obj;
+    void* task;
+    RGE_Action_Enter* action_enter;
+    int x;
+    int y;
+    int z;
+
+    obj = (RGE_Static_Object*)this->owner->world->object(param_1);
     if (obj == 0)
-        return 0;
+        goto fail;
 
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
             RGE_Action* action = (RGE_Action*)this->actions->get_action();
-            void* target = ((ActionVf4C)(*(void***)action)[0x13])(action);
+            void* target = action->func4C();
             if (target == obj) {
                 RGE_Action* action2 = (RGE_Action*)this->actions->get_action();
-                short action_val = ((ActionVf18)(*(void***)action2)[6])(action2);
+                short action_val = action2->func18();
                 if (action_val == 3)
                     return 1;
             }
         }
     }
 
-    int z = obj->world_z;
-    int y = obj->world_y;
-    int x = obj->world_x;
-    void* task = ((VTableProxy*)this)->vf210(obj, x, y, z);
+    z = obj->world_z;
+    y = obj->world_y;
+    x = obj->world_x;
+    task = this->make_enter_task(obj, x, y, z);
     if (task == 0)
-        return 0;
+        goto fail;
 
-    RGE_Action_Enter* action_enter = new RGE_Action_Enter((void*)this, task, obj);
+    action_enter = new RGE_Action_Enter((RGE_Action_Object*)this,
+                                        (RGE_Task*)task,
+                                        (RGE_Action_Object*)obj);
     if (action_enter == 0)
-        return 0;
+        goto fail;
 
     this->actions->delete_list();
-    ((VTableProxy*)this)->vf208(action_enter);
+    this->add_action(action_enter);
     return 1;
+
+fail:
+    return 0;
 }

@@ -6,38 +6,33 @@
 //
 // === Attempt log ===
 //
-// 1-2: Wrong prologue order - compiler saved 'this' before reading shape_header
-//      Fix: read shape_header fields BEFORE any da-> access
-// 3: do-while pattern - 224 bytes after padding, 89% positional diff
-// 4-5: Goto-based control flow attempts
-// 6: extern AlignedWidth call - 240 bytes
-// 7: AND/CMP pattern for bit test ((cmd & 1) == 1) - got shape_header read first!
-//    256 bytes, prologue matches through offset 8 (push ecx; mov eax,[ecx+0Ch]; push ebx; push ebp; push esi)
-//    First mismatch at offset 8: esi vs ebx for ymax register
-// 8-11: Attempted to fix register allocation through:
-//    - Separate ymax/ymin locals
-//    - p-first declaration order
-//    - ymax in-place mutation (ymax -= ymin; ymax++)
-//    - Raw offset access ((byte*)sh + 0x14)
-//    - declare-before-use order variations
-//    All produce ymax→ebx, ymin→esi (original has ymax→esi, ymin→edi)
+// Prior attempts established the RLE ownership and the draw-area layout, but
+// left a broad prologue/register mismatch.
 //
-// Root cause: VC5 register allocator assigns variables to callee-saved regs
-// differently when the function is compiled standalone vs within Shape.cpp TU.
-// Original interleaves register saves with field reads:
-//   push esi; mov esi,[eax+14h]; push edi; mov edi,[eax+0Ch]
-// My version does all 5 pushes first, then all reads.
-// The push-edi between ymax and ymin reads in the original pairs edi with ymin.
-// No C-level declaration/use ordering technique can force this exact scheduling.
+// sa-8a8d0053-r1 probes:
+// - A zero-case-first spelling for both command kinds recovered the original
+//   out-of-line copy-loop topology (shape 79.44%, 228 differing bytes).
+// - Scoping done inside the natural outer row do/while was codegen-identical;
+//   the emitted byte flag remains in AL rather than the original BL.
+// - Reordering orientation before the row-count declaration improved the
+//   emitted basin to 82.24% shape / 227 differing bytes and preserved the
+//   PDB-supported call set; the remaining first hunk is setup register/home
+//   allocation (ymax/ymin/orientation and delayed destination spill).
+// - PDB local evidence was checked: one packed-byte command local, width, and
+//   save_buffer are present. Combining cmd/cnt as command, splitting width
+//   declaration from assignment, declaring save_buffer separately, and
+//   restoring canonical TShape/TDrawArea names were duplicate codegen basins.
 //
-// Remaining diff: 89.37% positional, register allocation cascade throughout.
-// Control flow, stack layout, and semantics are correct.
-//
-// Best source retained below (attempt 7 style, with ymax→ebx/ymin→esi).
+// Best retained reconstruction: typed Shape_Header payload plus ordinary
+// byte-stream RLE decoding, zero-first branch layout, and named destination.
+// Left in scratch: original setup expects ymax->ESI/ymin->EDI/orientation->EBX,
+// stores destination through [esp+1Ch], and stores rows through [esp+18h];
+// current VC5 standalone output keeps the same behavior/calls but differs in
+// that local topology from the Shape.cpp original.
 
 typedef unsigned char byte;
 
-struct SH {
+struct Shape_Header {
     long bounds;
     long origin;
     long xmin;
@@ -46,85 +41,82 @@ struct SH {
     long ymax;
 };
 
-struct TDA {
+struct TDrawArea {
     char gap_00[8];
     byte* Bits;
     char gap_0C[0x10];
     int Height;
     char gap_20[4];
     int Orien;
-    int AlignedWidth();
+    long AlignedWidth();
 };
 
-struct TS {
+struct TShape {
     byte* shape;
     int load_type;
     int load_size;
-    SH* shape_header;
+    Shape_Header* shape_header;
     char _gap_10[0xC];
 
-    byte shape_shadow_unclipped(TDA* da, long x, long y, byte* table);
+    byte shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table);
 };
 
-byte TS::shape_shadow_unclipped(TDA* da, long x, long y, byte* table)
+byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
 {
-    SH* sh = shape_header;
+    Shape_Header* sh = shape_header;
     byte* p = (byte*)(sh + 1);
-    long rows = sh->ymax - sh->ymin + 1;
-
     long orien = da->Orien;
-    long pitch = da->AlignedWidth() * orien;
+    long rows = sh->ymax - sh->ymin + 1;
+    long width;
+    byte* save_buffer;
+
+    width = da->AlignedWidth() * orien;
 
     long tmp;
     if (orien < 1)
-        tmp = ((y - da->Height) + 1) * pitch;
+        tmp = ((y - da->Height) + 1) * width;
     else
-        tmp = y * pitch;
+        tmp = y * width;
 
-    byte* d = da->Bits + tmp + x;
+    save_buffer = da->Bits + tmp + x;
 
-    if (rows <= 0)
-        return 1;
+    if (rows > 0) {
+        do {
+            byte done = 0;
 
-    byte done;
+            do {
+                byte command = *p++;
 
-row_loop:
-    done = 0;
-
-    do {
-        byte cmd = *p++;
-        byte cnt;
-
-        if ((cmd & 1) == 1) {
-            cnt = cmd >> 1;
-            if (cnt) {
-                byte* e = d + (cnt & 0xFF);
-                while (d < e) {
-                    *d = table[*d];
-                    d++;
+                if ((command & 1) == 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        save_buffer += *p++;
+                    } else {
+                        byte* e = save_buffer + (command & 0xFF);
+                        while (save_buffer < e) {
+                            *save_buffer = table[*save_buffer];
+                            save_buffer++;
+                        }
+                        p += command;
+                    }
+                } else {
+                    command >>= 1;
+                    if (command == 0) {
+                        done = 1;
+                    } else {
+                        byte* e = save_buffer + (command & 0xFF);
+                        while (save_buffer < e) {
+                            *save_buffer = table[*save_buffer];
+                            save_buffer++;
+                        }
+                        p++;
+                    }
                 }
-                p += cnt;
-            } else {
-                d += *p++;
-            }
-        } else {
-            cnt = cmd >> 1;
-            if (cnt) {
-                byte* e = d + (cnt & 0xFF);
-                while (d < e) {
-                    *d = table[*d];
-                    d++;
-                }
-                p++;
-            } else {
-                done = 1;
-            }
-        }
-    } while (!done);
+            } while (!done);
 
-    d += pitch;
-    if (--rows)
-        goto row_loop;
+            save_buffer += width;
+        } while (--rows);
+    }
 
     return 1;
 }
