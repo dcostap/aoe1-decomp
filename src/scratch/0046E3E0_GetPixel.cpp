@@ -16,6 +16,17 @@
 //   supported `Height - y - 1` row expression; residual drift is CFG/block
 //   placement and call-tail merging, not an unresolved field or behavior fact.
 //
+// Fresh pass (orch-luna-46e3e0-w2, prior 10 probes not repeated):
+// - Reversing the mode arms to nonzero-first with `Height - y - 1` improved the
+//   structural diff from 129 to 107 bytes and reproduced the original `test/je`
+//   dispatch topology; this is the retained source-level CFG hypothesis.
+// - Pointer-base and row-offset spellings improved edit/resync diagnostics and
+//   exposed the original Bits/row/Width scheduling, but remained nonexact.
+// - A raw 32-bit address variant reached 94 differing bytes, then was rolled
+//   back as compiler-steering scaffolding rather than period-plausible source.
+// - Final fresh-pass state retains the natural nonzero-first four-arm source;
+//   residual drift is the +4-byte arithmetic/register basin in the pixel arms.
+//
 class TPicture {
 public:
     void* Dib;
@@ -41,16 +52,17 @@ unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
         return 0;
     }
 
-    if (param_3 == 0) {
+    if (param_3 != 0) {
         if (orientation == 1) {
-            return this->Bits[x + this->AlignedWidth() * y];
+            return this->Bits[this->Width +
+                              (this->AlignedWidth() * y - x) - 1];
         }
-        return this->Bits[x + this->AlignedWidth() * (this->Height - y - 1)];
+        return this->Bits[this->Width +
+                          (this->AlignedWidth() * (this->Height - y - 1) - x) - 1];
     }
 
     if (orientation == 1) {
-        return this->Bits[this->Width + (this->AlignedWidth() * y - x) - 1];
+        return this->Bits[x + this->AlignedWidth() * y];
     }
-    return this->Bits[this->Width +
-                      (this->AlignedWidth() * (this->Height - y - 1) - x) - 1];
+    return this->Bits[x + this->AlignedWidth() * (this->Height - y - 1)];
 }

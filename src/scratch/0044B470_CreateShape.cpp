@@ -61,6 +61,17 @@
 //   analog: /GX EH-framed ctor 00478F40 loads stack params into ECX, but this
 //   function has no EH frame).
 
+// orch-luna-44b470-w2 fresh pass (2026-08-09):
+// - Claimed the paused target, reran the dossier/donor/ABI evidence, and
+//   revalidated the canonical clean source before experiments.
+// - An inline same-TU SetPoint helper (x/y body) moved both parameter loads
+//   into the original ECX/EAX roles and improved the diagnostic diff to 5
+//   bytes, but placed the x store before the zero stores; it is not retained
+//   as living source because the helper is not a proven original call shape.
+// - Moving/reordering that helper, reversing its member order, direct x-first
+//   assignments, and a bundled helper-store diagnostic all regressed. Restored
+//   the pinned natural source; final validation remains 15 bytes.
+
 class PrimaryPt {
 public:
     int x;
