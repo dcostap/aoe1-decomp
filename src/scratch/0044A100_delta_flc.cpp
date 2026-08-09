@@ -22,6 +22,13 @@
 // - Removing the redundant found-scan value temporary improved the best result
 //   to 376 differing bytes without changing size or calls; this is the clean
 //   source retained for the remaining EBP/prologue basin.
+// - This claim: the binary-proven dword outer count plus a separate
+//   success-path remaining counter improved the clean source to 374 differing
+//   bytes / 61.24% shape / 398 emitted bytes, while register qualification and
+//   pointer declaration/initialization order were codegen duplicates or a
+//   one-byte regression. Retain the natural dword-count candidate below; the
+//   unresolved structural blocker is EBP packet-cursor coloring and the
+//   missing original 14-byte prologue/body basin.
 
 #include <string.h>
 
@@ -44,11 +51,12 @@ public:
 void RGE_Flic_Player::delta_flc()
 {
     long cur_y = 0;
-    short lines = *(short*)this->chunk;
+    int lines = (int)*(short*)this->chunk;
     ushort* p = (ushort*)(this->chunk + 2);
     if (lines <= 0) {
         return;
     }
+    int remaining = lines;
 
     do {
         unsigned char found = 0;
@@ -109,5 +117,5 @@ void RGE_Flic_Player::delta_flc()
         this->window_buffer = this->save_buffer + this->drawarea_width;
         cur_y++;
         this->save_buffer += this->drawarea_width;
-    } while (--lines != 0);
+    } while (--remaining != 0);
 }

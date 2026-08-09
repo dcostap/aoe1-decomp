@@ -30,6 +30,11 @@
 //   cast-after-negation variants regressed or duplicated; retain the unsigned
 //   opcode source with the per-row advance.  Remaining drift is the negative
 //   arm's `and eax,0xff` versus original `movsx ebp,al` scheduling.
+// - This claim: direct signed-byte casts, branch-local negative counts, and an
+//   explicit unsigned-wrap/signed-cast expression all landed in the same
+//   217-byte/107-diff basin with sign extension hoisted before `jl`; restore
+//   the 221-byte/99-diff natural candidate, whose only structural drift is the
+//   negative-arm widening and downstream four-byte displacement shift.
 
 #include <string.h>
 

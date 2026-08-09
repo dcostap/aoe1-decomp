@@ -27,6 +27,11 @@
 // - Scoped count/color/skip declaration variants were codegen duplicates; keep
 //   the typed packet plus countdown as the clean source.  Remaining drift is
 //   the FrameHead stack reload and payload count/palette-base register coloring.
+// - This claim: sequencing/while-loop forms, count register qualification, a
+//   typed count-byte cursor, and a long frame-address alias were duplicates or
+//   regressed.  Retain the 407-byte typed source at 212 diff; the first gap is
+//   the frame-count zero-home/reload order, followed by payload count and
+//   palette-base coloring while all seven call relocations remain aligned.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
