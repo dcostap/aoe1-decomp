@@ -94,6 +94,21 @@
 //   parameter-load/ECX scheduling hunk at +0x1A..+0x2B; no canonical source axis
 //   found in this pass changes it.
 
+// orch-fractal-fresh-04 final lane (2026-08-10):
+// - Independently reran the dossier, same-TU donor ranking, ABI query, and
+//   clean baseline. Prior exact5 inline-SetPoint evidence was inspected rather
+//   than repeated as a winning source; it preloads ECX/EAX but stores x before
+//   the binary's zero stores.
+// - Fresh y-only/helper, early-x-cache, reversed parameter-local, x-only
+//   helper, y-helper-returning-x, and repeated-SetPoint diagnostics all stayed
+//   in the clean 15-byte basin. A six-variant helper lab likewise found no
+//   exact source shape; all size/frame/call gates remained valid.
+// - Restored the canonical natural source. Cumulative evidence leaves a real
+//   compiler allocator/scheduling blocker at +0x1A..+0x2B: param_2 must occupy
+//   ECX and param_1 EAX before the y/Prime.y stores, while the natural source
+//   hoists this into ECX and defers param_1. No behavior/layout/call mismatch
+//   remains.
+
 class PrimaryPt {
 public:
     int x;

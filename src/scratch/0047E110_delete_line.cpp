@@ -1,63 +1,163 @@
 // 0047E110 TTextPanel::delete_line
 // Baseline reconstruction: remove one linked-list text node, update the line
-// counters, and refresh the panel.  The list/node offsets are binary-proven.
+// counters, and refresh the panel. The list/node offsets are binary-proven.
 // Attempt log:
 // - Baseline natural bounded list removal: size/calls/frame matched, but VC5
 //   loaded the parameter after saving this and strength-reduced the index loop.
-// - register-qualified parameter, split guards, function-scope locals, an
+// - Register-qualified parameter, split guards, function-scope locals, an
 //   explicit index copy, and a shared fail label all emitted the same basin.
 // - Natural-source variant lab (54 variants; size/frame/call-set gated) found
 //   no exact group; full proven TPanel/TTextPanel layout also emitted the same
 //   code. A while-loop and const-parameter loop probe were unchanged.
-// - Fresh pass: explicit line decrement forms (predecrement, assignment, and
-//   for-init), long/function-scope loop locals, derived-dtor/CRT-header context,
-//   and a four-variant limit-local lab all stayed in the same countdown basin.
-// - The flag lab found /Og-/Ot-/Ob0 unchanged or structurally wrong; no flag
-//   lead is retained. The clean natural source remains the defensible candidate.
-// - Restored clean source after the probes. Remaining drift is the entry
-//   parameter scheduling plus incrementing-versus-countdown loop shape.
-// - This assignment rechecked split negative/upper guards and an int-width
-//   parameter; both were codegen duplicates. Restored the canonical long ABI.
-// - Main-agent audit retained canonical linked-node ownership and the ordinary
-//   bounded traversal; no countdown/codegen steering survives.
-// - Fresh bounded pass: post-increment with explicit line decrement regressed
-//   to the prior countdown basin; unsigned dword, function-scope initialization,
-//   explicit int-bound cast, and long+decrement combinations were duplicates or
-//   regressed. Short induction was the only prologue-closing lead, but its
-//   required sign-extension added bytes; short+decrement was best at 139 bytes
-//   (205-byte target, rebuilt 208), while unsigned-short and a guarded goto loop
-//   were worse. Restored the natural int-counter source; remaining blocker is
-//   the original pre-save parameter load plus separate dword counter coloring.
+// - Explicit line decrement forms, long/function-scope loop locals, derived-
+//   dtor/CRT-header context, and a four-variant limit-local lab stayed in the
+//   same countdown basin. The flag lab found no usable flag lead.
+// - Fresh bounded pass: short induction was the only prologue-closing lead,
+//   but its required sign-extension added bytes; short+decrement was best at
+//   139 bytes (205-byte target, rebuilt 208). Restored the natural int counter.
+// - Fresh replacement pass: a guarded do-while reached 142 bytes with the
+//   correct parameter-before-save prologue; a pretested do-while reached 134
+//   bytes and reproduced the original count-up body, but VC5 emitted a zero
+//   test at loop entry and an extra bottom compare. Reversed operands,
+//   explicit condition labels, function-scope assignment, and a named bound
+//   did not improve it. Restored the clean natural linked-list traversal.
+// - Final state remains the canonical readable source; the unresolved drift is
+//   the original pre-save parameter load plus incrementing-versus-countdown
+//   loop topology, not a call, layout, or ownership mismatch.
+
+#include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 extern "C" void __cdecl free(void* block);
+
+struct PanelNode;
+
+class TDrawArea {
+public:
+    HDC GetDc(char* unused);
+    void ReleaseDc(char* unused);
+};
+
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
 
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void dummy1();
-    virtual void dummy2();
-    virtual void dummy3();
-    virtual void dummy4();
-    virtual void dummy5();
-    virtual void dummy6();
-    virtual void dummy7();
+    VPAD4(v1)
+    VPAD2(v5)
+    VPAD1(v7)
     virtual void redraw(int);
+    virtual void vpad8_1();
+    virtual void draw_setup(int clear);
+    virtual void draw_finish();
+    virtual void draw();
+
+    TPanel* previous_panel;              // +0x04
+    TPanel* previous_modal_panel;         // +0x08
+    long pnl_x;                           // +0x0C
+    long pnl_y;                           // +0x10
+    long pnl_wid;                         // +0x14
+    long pnl_hgt;                         // +0x18
+    char* panel_name;                     // +0x1C
+    TDrawArea* render_area;               // +0x20
+    long clip_left;                       // +0x24
+    long clip_top;                        // +0x28
+    long clip_right;                      // +0x2C
+    long clip_bottom;                     // +0x30
+    int position_mode;                    // +0x34
+    int need_redraw;                      // +0x38
+    TPanel* curr_child;                   // +0x3C
+    TPanel* parent_panel;                 // +0x40
+    TPanel* left_panel;                   // +0x44
+    TPanel* top_panel;                    // +0x48
+    TPanel* right_panel;                  // +0x4C
+    TPanel* bottom_panel;                 // +0x50
+    PanelNode* node;                      // +0x54
+    PanelNode* first_child_node;          // +0x58
+    PanelNode* last_child_node;           // +0x5C
+    TPanel* tab_prev_panel;               // +0x60
+    TPanel* tab_next_panel;               // +0x64
+    int mouse_captured;                   // +0x68
+    int active;                           // +0x6C
+    int visible;                          // +0x70
+    int tab_stop;                         // +0x74
+    int have_focus;                       // +0x78
+    int overlapping_children;             // +0x7C
+    int handle_mouse_input;               // +0x80
+    int just_drawn;                       // +0x84
+    void* clip_rgn;                       // +0x88
+    char gap_8C[0x68];                    // +0x8C
+};
+
+struct PanelNode {
+    TPanel* panel;
+    PanelNode* prev_node;
+    PanelNode* next_node;
 };
 
 struct TextNode {
     char* text;
     char* text2;
-    void* unknown_08;
+    long id;
     TextNode* next_node;
 };
 
 class TTextPanel : public TPanel {
 public:
-    char gap_04[0xF0];
-    TextNode* list;
-    short num_lines;
-    char gap_FA[6];
-    short cur_line;
+    virtual void draw();
+    TextNode* list;                       // +0xF4
+    short num_lines;                      // +0xF8
+    short draw_lines;                     // +0xFA
+    short top_line;                       // +0xFC
+    short bot_line;                       // +0xFE
+    short cur_line;                       // +0x100
+    short cur_col;                        // +0x102
+    void* font;                           // +0x104
+    long font_wid;                        // +0x108
+    long font_hgt;                        // +0x10C
+    int vert_align;                       // +0x110
+    int horz_align;                       // +0x114
+    int word_wrap;                        // +0x118
+    int text_style;                       // +0x11C
+    unsigned long text_color1;            // +0x120
+    unsigned long text_color2;            // +0x124
+    unsigned long highlight_text_color1;  // +0x128
+    unsigned long highlight_text_color2;  // +0x12C
+    void* scbar_panel;                    // +0x130
+    int auto_scbar;                       // +0x134
+    short fixed_len;                      // +0x138
+    short gap_13A;                        // +0x13A
+    long text_wid;                        // +0x13C
+    long text_hgt;                        // +0x140
+    void* back_pic;                       // +0x144
+    short back_pic_wid;                   // +0x148
+    short back_pic_hgt;                   // +0x14A
+    int fill_back;                        // +0x14C
+    unsigned char back_color;             // +0x150
+    char gap_151[0x03];                   // +0x151
+    int outline;                          // +0x154
+    unsigned char outline_color;          // +0x158
+    char gap_159[0x03];                   // +0x159
+    int sorted;                           // +0x15C
+    long second_column_pos;               // +0x160
+    long full_width;                      // +0x164
+    long scbar_width;                     // +0x168
+    int scbar_active;                     // +0x16C
+    int bevel_type;                       // +0x170
+    unsigned char bevel_color1;           // +0x174
+    unsigned char bevel_color2;           // +0x175
+    unsigned char bevel_color3;           // +0x176
+    unsigned char bevel_color4;           // +0x177
+    unsigned char bevel_color5;           // +0x178
+    unsigned char bevel_color6;           // +0x179
+    char gap_17A[0x02];                   // +0x17A
+    void* clip_rgn2;                      // +0x17C
+    int border_size;                      // +0x180
+    int spacer_size;                      // +0x184
 
     void calc_draw_info(int);
     int delete_line(long line);

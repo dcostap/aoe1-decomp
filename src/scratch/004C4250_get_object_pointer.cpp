@@ -13,6 +13,13 @@
 // restored the canonical compare-index source.
 // fresh worker: register-qualified compare-index local emitted the same 219B/37
 // basin; restored the ordinary local.
+// 2026-08-10 orch-statobj-fresh-03 fresh pass (7 meaningful probes):
+// unsigned-short/explicit-promotion, int-width, comma-update, and decompiler
+// parameter-home/index forms either widened the body or emitted the same 219B/37
+// basin. The unsigned-short Ghidra uVar4 spelling with signed casts was also a
+// codegen duplicate. All six calls and canonical owner/world/player/list accesses
+// remain exact; only ESI-owner versus EDX-compare-index loop-tail coloring and its
+// dependent branch displacements differ.
 // left in scratch: best source is the readable owner/world/player reconstruction;
 // remaining drift is only owner/compare-index register coloring and the loop tail.
 
