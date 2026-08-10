@@ -18,7 +18,7 @@ void __cdecl getstring(char** dest, char* src);
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;           // +0x0
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;  // +0x4
     char pad_05[0x3];
     char* name;                 // +0x8
@@ -176,18 +176,17 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     }
 
     {
-        unsigned char val = src->damage_sprite_num;
-        damage_sprite_num = val;
-        if (val) {
-            damage_sprites = (RGE_Damage_Sprite_Info*)calloc((int)val, 8);
-            if (val) {
-                short i = 0;
+        damage_sprite_num = src->damage_sprite_num;
+        if (damage_sprite_num > 0) {
+            damage_sprites = (RGE_Damage_Sprite_Info*)calloc(damage_sprite_num, 8);
+            short i = 0;
+            if (damage_sprite_num > 0) {
                 do {
                     damage_sprites[i].sprite = src->damage_sprites[i].sprite;
                     damage_sprites[i].damage_percent = src->damage_sprites[i].damage_percent;
                     damage_sprites[i].flag = src->damage_sprites[i].flag;
                     i++;
-                } while (i < (short)val);
+                } while (i < (short)damage_sprite_num);
             }
         } else {
             damage_sprites = 0;

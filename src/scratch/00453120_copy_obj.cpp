@@ -1,16 +1,39 @@
 // VA: 00453120 copy_obj (883B)
 // m_s_obj.cpp lines 534-574
 // RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src)
+//
+// Attempt log:
+// - baseline was a 279-byte field-copy stub: missing free(name), getstring, and
+//   damage-record copy (836-byte diff; 68.42% shape).
+// - restored the observed name lifetime, complete field ownership, positive
+//   damage-sprite allocation/copy, and saved id/available tail; calls and frame
+//   became exact (425-byte diff, 96.54% shape).
+// - pointer cursor declaration order fixed the first type-loop LEA/sub order.
+// - a count loop for the three flags left the original -0x88 bound missing;
+//   naming that proven anchor as an offset recovered size and reduced the
+//   strict diff to 60 bytes with 97.38% shape.
+// - split/reordered delta declarations and direct bound spellings were
+//   negative or codegen duplicates; the best emitted code is retained below.
+// left in scratch: all calls, frame, size, CFG counts, and the long scalar/tail
+// regions match; remaining drift is the localized attribute-loop register and
+// flag-loop bound/block scheduling hunk at 00453258..004532C1.
 
 class RGE_Sprite;
 class RGE_Sound;
-class RGE_Damage_Sprite_Info;
+struct RGE_Damage_Sprite_Info {
+    RGE_Sprite* sprite;
+    unsigned char damage_percent;
+    unsigned char flag;
+    char pad[2];
+};
 
 void* __cdecl calloc(unsigned int count, unsigned int size);
+void __cdecl free(void* block);
+void __cdecl getstring(char** dest, char* src);
 
 class RGE_Master_Static_Object {
 public:
-    void* vtable_ptr;           // +0x0
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;  // +0x4
     char pad_05[0x3];
     char* name;                 // +0x8
@@ -92,13 +115,20 @@ public:
 void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     short id_val = id;
     short copy_id_val = copy_id;
-    unsigned char avail = available;
-    unsigned char hide_val = hide_in_scenario_editor;
+    unsigned char available_val = available;
+    short hide_val = hide_in_scenario_editor;
+    char** name_ptr = &name;
 
-    master_type = 0x0A;
+    if (*name_ptr != 0) {
+        free(*name_ptr);
+    }
+
+    master_type = src->master_type;
+    *name_ptr = src->name;
     string_id = src->string_id;
     string_id2 = src->string_id2;
-    name = src->name;
+    id = src->id;
+    copy_id = src->copy_id;
     object_group = src->object_group;
     sprite = src->sprite;
     death_sprite = src->death_sprite;
@@ -117,7 +147,7 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     sort_number = src->sort_number;
     can_be_built_on = src->can_be_built_on;
     button_pict = src->button_pict;
-    // hide_in_scenario_editor is handled later
+    hide_in_scenario_editor = src->hide_in_scenario_editor;
     portrait_pict = src->portrait_pict;
     available = src->available;
     tile_req1 = src->tile_req1;
@@ -131,38 +161,37 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     terrain = src->terrain;
     movement_type = src->movement_type;
 
-    // Attribute type loop (3 elements * 2 bytes each)
     {
+        short* type = attribute_type_held;
         int diff = (int)src - (int)(RGE_Master_Static_Object*)this;
-        int i = 0;
+        int count = 3;
         do {
-            attribute_type_held[i] = *(short*)((int)&attribute_type_held[i] + diff);
-            i++;
-        } while (i < 3);
-    }
+            *type = *(short*)((int)type + diff);
+            type++;
+            count--;
+        } while (count != 0);
 
-    // Attribute amount loop (3 elements * 4 bytes each)
-    {
-        int diff = (int)src - (int)(RGE_Master_Static_Object*)this;
-        int i = 0;
+        float* amount = attribute_amount_held;
+        count = 3;
         do {
-            attribute_amount_held[i] = *(float*)((int)&attribute_amount_held[i] + diff);
-            i++;
-        } while (i < 3);
+            *amount = *(float*)((int)amount + diff);
+            amount++;
+            count--;
+        } while (count != 0);
     }
 
     attribute_max_amount = src->attribute_max_amount;
     attribute_rot = src->attribute_rot;
     multiple_attribute_mod = src->multiple_attribute_mod;
 
-    // Attribute flag loop (3 elements * 1 byte each)
     {
-        int diff = (int)src - (int)(RGE_Master_Static_Object*)this;
-        int i = 0;
+        unsigned char* flag = attribute_flag;
+        int flag_diff = (int)src - (int)(RGE_Master_Static_Object*)this;
+        int offset = -0x88;
         do {
-            attribute_flag[i] = *(unsigned char*)((int)&attribute_flag[i] + diff);
-            i++;
-        } while (i < 3);
+            *flag = *(unsigned char*)((int)flag + flag_diff);
+            flag++;
+        } while (offset + (int)flag - (int)(RGE_Master_Static_Object*)this < 3);
     }
 
     area_effect_object_level = src->area_effect_object_level;
@@ -188,16 +217,29 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     outline_radius_y = src->outline_radius_y;
     outline_radius_z = src->outline_radius_z;
 
-    if (hide_val == 1) {
-        copy_id = id_val;
+    if (src->hide_in_scenario_editor == 1) {
+        copy_id = copy_id_val;
     }
-
-    hide_in_scenario_editor = src->hide_in_scenario_editor;
+    hide_in_scenario_editor = (unsigned char)hide_val;
     src->hide_in_scenario_editor = 1;
 
-    if (damage_sprite_num) {
-        int count = damage_sprite_num;
-        damage_sprites = (RGE_Damage_Sprite_Info*)calloc(count, 8);
-        // Damage sprite copy loop follows
+    if (damage_sprite_num > 0) {
+        damage_sprites = (RGE_Damage_Sprite_Info*)calloc(damage_sprite_num, 8);
+        int i = 0;
+        if (damage_sprite_num > 0) {
+            do {
+                damage_sprites[i].sprite = src->damage_sprites[i].sprite;
+                damage_sprites[i].damage_percent = src->damage_sprites[i].damage_percent;
+                damage_sprites[i].flag = src->damage_sprites[i].flag;
+                i++;
+            } while (i < (unsigned char)damage_sprite_num);
+        }
+    } else {
+        damage_sprites = 0;
     }
+
+    *name_ptr = 0;
+    getstring(name_ptr, src->name);
+    id = id_val;
+    available = available_val;
 }
