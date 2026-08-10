@@ -5,6 +5,10 @@
 // 3: replaced raw vf pointer with a padded virtual surface so stop_action is slot +0x12c and move_to is slot +0x34; this gives natural thiscall virtual dispatch but still 1152 bytes under /O2.
 // 4: /Op probe grew only to 1168 and remained under-size; /Od produced 1232 bytes but wrong EBP/debug-frame basin (82.3864% positional, 111.5260% edit) and was removed.
 // 5: remaining model is behavior-oriented but incomplete for exact shape: original has aligned /O2 frame, explicit [esp+10]/[esp+14] scratch use, precise __ftol/floor stack choreography, and exact pathing/debug loops not reproduced. Not accepted_drift-safe.
+// 6: direct currentWaypoint() expressions restored the oracle's two call sites per coordinate pair and aligned all 50 calls.
+// 7: the original 0045D76B block is an unreachable compiler-generated vcall-thunk guard; an address-based diagnostic reproduced its CFG/size but was removed from the living source as opaque scaffolding.
+// 8: canonicalized Waypoint and moving-object field ownership (selected +36, actionRange +134, targetID +138); remaining drift is source/VC5 topology, not a proven field offset.
+// 9: paused after the bounded assignment; clean source is frame-exact with 49/50 calls, while the diagnostic guard reached size/CFG/call parity but was not a plausible source reconstruction.
 
 #include <math.h>
 #include <stdio.h>
@@ -16,7 +20,13 @@ extern FILE* actionFile;
 extern int displayPathingFlags;
 extern int displayPathObjectID;
 
-struct Waypoint { float x; float y; float z; float w; };
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+    unsigned char facet;
+    unsigned char pad[3];
+};
 
 class Path {
 public:
@@ -126,11 +136,15 @@ public:
     virtual void vf72();
     virtual void vf73();
     virtual void vf74();
-    virtual void stop_action(int);
+    virtual void setWaitingToMove(unsigned char);
     int id;
     void* master;
     RGE_Player* owner;
-    char gap10[0x28];
+    char gap10[0x24];
+    unsigned char curr_damage_percent;
+    unsigned char facet;
+    unsigned char selected;
+    unsigned char selected_group;
     float x; float y; float z;
     char gap44[0x14];
     int field58;
@@ -139,12 +153,14 @@ public:
     Path exceptionPath;        // +D8
     Waypoint startValue;       // +10C
     Waypoint goalValue;        // +11C
-    char gap12c[8];
-    int targetIDValue;         // +134
-    int targetClass;           // +138
-    char gap13c[8];
+    float turnTimer;           // +12C
+    float collisionAvoidanceDistance; // +130
+    float actionRange;         // +134
+    int targetIDValue;          // +138
+    float targetRadiusX;       // +13C
+    float targetRadiusY;       // +140
     int continueCounter;       // +144
-    char gap148[0xE];
+    char gap148[0xE];          // through +156
     unsigned char numberWaitDelays; // +156
     char gap157[0x11];
     unsigned char* userDefinedWaypoints; // +168
@@ -159,7 +175,7 @@ public:
 int RGE_Moving_Object::findPath()
 {
     if (*(float*)((char*)this->master + 0x38) <= 0.0f) {
-        this->stop_action(0);
+        this->setWaitingToMove(0);
         this->startValue.x = this->x;
         this->startValue.y = this->y;
         this->startValue.z = this->z;
@@ -180,7 +196,7 @@ int RGE_Moving_Object::findPath()
     }
     this->owner->incrementPathingAttempts();
     this->numberWaitDelays = 0;
-    this->stop_action(0);
+    this->setWaitingToMove(0);
     if (!this->owner->computerPlayer()) this->continueCounter = this->numberUserDefinedWaypointsValue + 0x19;
     else this->continueCounter = this->numberUserDefinedWaypointsValue + 0x0f;
     this->startValue.x = this->x;
@@ -199,15 +215,19 @@ int RGE_Moving_Object::findPath()
     }
     int ey = _ftol(this->startValue.y);
     int ex = _ftol(this->startValue.x);
-    int found = pathSystem.findTilePath(ex, ey, sx, sy, this, *(float*)((char*)this + 0x120), this->targetIDValue, 1, 0, 1, 1, 1, 1, -1, -1);
+    int found = pathSystem.findTilePath(ex, ey, sx, sy, this,
+                                        this->actionRange,
+                                        this->targetIDValue,
+                                        1, 0, 1, 1, 1, 1, -1, -1);
 
     if (actionFile != 0) {
         fprintf(actionFile, (const char*)0x584C9C, *(int*)((char*)this->owner->time + 4), this->id, this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y);
         this->path.initToStart();
         int i=0;
         while (i < this->path.numberOfWaypoints()) {
-            Waypoint* w=this->path.currentWaypoint();
-            fprintf(actionFile, (const char*)0x584C84, i, w->x, w->y);
+            fprintf(actionFile, (const char*)0x584C84, i,
+                    this->path.currentWaypoint()->x,
+                    this->path.currentWaypoint()->y);
             i++;
             this->path.moveToNextWaypoint();
         }
@@ -217,9 +237,9 @@ int RGE_Moving_Object::findPath()
     }
 
     if (!found && this->path.numberOfWaypoints() == 1) {
-        float fx = (float)(floor(this->x) + 0.5);
-        float fy = (float)(floor(this->y) + 0.5);
-        if (pathSystem.passable(this, fx, fy, 1)) {
+        if (pathSystem.passable(this,
+                                (float)(floor(this->x) + 0.5),
+                                (float)(floor(this->y) + 0.5), 1)) {
             if ((this->x - floor(this->x)) != 0.5 || (this->y - floor(this->y)) != 0.5) {
                 this->move_to((float)(floor(this->x)+0.5), (float)(floor(this->y)+0.5));
                 return 2;
@@ -228,13 +248,14 @@ int RGE_Moving_Object::findPath()
     }
 
     this->path.setTimeStamp(*(int*)((char*)this->owner->time + 4));
-    if (displayPathingFlags && (((int*)this)[0x0d] & 1)) {
+    if (displayPathingFlags && this->selected) {
         this->path.initToStart();
         int i=0;
         while (i < this->path.numberOfWaypoints()) {
             void* obj = this->owner->objects[displayPathObjectID];
-            Waypoint* w=this->path.currentWaypoint();
-            ((void (*)(void*, RGE_Moving_Object*, float, float, float))(*(void***)obj)[6])(obj, this, w->x, w->y, 1.0f);
+            ((void (*)(void*, RGE_Moving_Object*, float, float, float))(*(void***)obj)[6])(
+                obj, this, this->path.currentWaypoint()->x,
+                this->path.currentWaypoint()->y, 1.0f);
             i++;
             this->path.moveToNextWaypoint();
         }

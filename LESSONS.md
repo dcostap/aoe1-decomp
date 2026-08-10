@@ -545,3 +545,10 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   cursor add then count increment, store both homes, and only then reload the
   invariant bound. Try this ordinary induction spelling before adding aliases or
   volatility when the loop body/calls already match.
+
+- For a packed three-byte record grow/append routine, write the capacity guard
+  with the capacity on the left (`capacity > count`) when the oracle loads and
+  compares capacity before count. A nested `if (count > 0)` around a copy
+  `for` can duplicate the zero-count test; a single top-tested `for (i = 0;
+  i < count; ++i)` preserves VC5's one guard and induction cursor. This keeps
+  natural typed field copies exact without raw byte-cursor scaffolding.
