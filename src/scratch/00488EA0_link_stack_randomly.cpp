@@ -19,6 +19,9 @@
 // - C89-shaped top declarations reached 240 bytes but degraded block/resync shape; split bound initialization reached 239 bytes but worsened to 228 diff; restored.
 // - Late saved-list declaration plus parameter-home count reached the best fresh basin (239 bytes, no frame, 94.2% shape, first mismatch +8), but emitted code duplicated the prior basin: VC5 kept the list in ESI and count in EBX instead of target EBX/parameter-home roles. const/register list, separate cursor, and decompiler local-order variants were unchanged; restored.
 // - Fresh bounded pass exhausted; clean natural source retained. Remaining gap is early saved-register/parameter-home coloring, with calls, layout, and CFG aligned.
+// - New claim: parameter-home count reuse with late list/max-bound declaration combinations reached a 218-byte, exact-size/frame basin (94.2% shape) but still saved the list through ESI/its home and kept the count in EBX; the register-qualified parameter was codegen-identical.
+// - A 16-variant lab over list placement, cached/direct dimensions, cursor shape, and parameter-home count found no exact match; all size/frame/call-eligible groups retained the same early list/register hunk. The best lab groups are diagnostic only and were not promoted over the clean source.
+// - A narrow volatile reference to the proven parameter home worsened the function to 259 bytes; rolled back. Remaining binary lead is the target's early EBX=list, EBP=(width-1), push-ecx=max_y, parameter-home count coloring; canonical ownership and behavior are otherwise aligned.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
