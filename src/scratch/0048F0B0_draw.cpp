@@ -26,6 +26,13 @@
 //   calls/frame remain aligned, with unresolved world/count register scheduling.
 // main-agent normalization restored the donor-backed polymorphic RGE_Player and
 // RGE_Game_World surfaces; emitted code is unchanged.
+// fresh bounded pass (orch-scrach-01): repeated world-chain access lost the
+//   frame; delaying the world fetch, splitting/binding the count decrement,
+//   world reference/const/register qualifiers, cached players, hoisted index,
+//   and old-C declaration order were either duplicates or broader mismatches.
+//   No new codegen basin beat the clean 121-byte result; the clean typed source
+//   remains the defensible reconstruction and the world/count register swap is
+//   still unresolved.
 
 typedef unsigned char uchar;
 
