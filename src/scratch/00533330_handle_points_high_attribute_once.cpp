@@ -38,6 +38,11 @@
 //   and was restored. The remaining gap is still only the EBX/EDI entry-versus-player-array
 //   coloring (original entry=EDI, rebuilt entry=EBX); no call, frame, CFG, layout, or behavior
 //   blocker changed.
+// - wave21-victory-01 probes: a binary-supported entry alias before the state guard, positive
+//   state-guard spelling, pp-first function-scope declarations, and a const attributes pointer
+//   all emitted the same 224-byte/29-byte-diff codegen group; each was restored. The clean
+//   natural do/while source remains authoritative; the unresolved gap is still only entry/pp
+//   callee-save coloring.
 
 class RGE_Game_World;
 
