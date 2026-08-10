@@ -9,22 +9,26 @@
 //   reduced the drift to the late transfer loop and stack cursor LEAs.
 // - A one-past Trade_Avail cursor with output[-1] stores reproduced the
 //   original negative result offsets and transfer ordering.
-// - Hoisting the owner pointer was tested for the original owner-before-store
-//   order; the natural function-scope declaration is the best current basin.
+// - A local owner temporary reproduced the load-before-dock-store schedule but
+//   colored the transfer countdown/owner as EDI/ESI; following the canonical
+//   Trade_Avail field order with direct owner assignment restores ESI/EDI and
+//   reduces the remaining drift to two bytes.
 // - Rolled back a saved-this array alias and a synthetic aggregate layout;
 //   both worsened the prologue/block shape. Current remaining drift is two
 //   one-slot dock-list LEA displacements plus late counter/owner coloring.
 // - Main-agent audit restored canonical virtual ownership at unchanged offsets;
-//   the validated six-byte codegen gap is unchanged.
+//   the direct-owner source remains exact-size with only the two one-slot LEAs.
 // - New full-player/TU context probes tested dock_list[0] as the saved-player
 //   overlay and moved the owner declaration; the overlay broadened drift to
 //   225 bytes and the declaration move duplicated the six-byte result, so the
 //   canonical function-scope owner source remains retained.
-// - Reordering the counters before dock_list emitted the same six-byte result;
-//   using dock_list[0] for every post-guard this access broadened drift to 246
-//   bytes and was restored. Moving the transfer countdown declaration first
-//   worsened the localized drift to ten bytes; the clean declaration order is
-//   retained.
+// - Reordering counters before dock_list emitted the same two-byte result.
+//   A 95-slot array changed the frame, explicit dock_list[0]=this broadened
+//   drift to 225 bytes, and aggregate/union local surfaces were duplicate
+//   codegen. A split input cursor left seven bytes; restored this direct
+//   one-past cursor form. Final gap: rebuilt LEAs use +1C where the oracle uses
+//   +18 at the early dock write and late transfer setup; all other 255 bytes,
+//   calls, frame, and typed ownership are aligned.
 
 #include <stdlib.h>
 
@@ -105,10 +109,9 @@ public:
 void TRIBE_Player::interface_trade_avail(Trade_Avail** out_trade,
                                           short* out_count)
 {
-    RGE_Player* player;
-    RGE_Static_Object* dock_list[96];
     int i = 1;
     int dock_count = 0;
+    RGE_Static_Object* dock_list[96];
 
     if (i < this->world->player_num) {
         do {
@@ -151,9 +154,8 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** out_trade,
                 RGE_Static_Object* dock = *input;
                 ++input;
                 --count;
-                player = dock->owner;
+                output[-1].player = dock->owner;
                 output[-1].dock = dock;
-                output[-1].player = player;
                 output[-1].inventory = dock->attribute_amount_held;
             } while (count != 0);
         }
