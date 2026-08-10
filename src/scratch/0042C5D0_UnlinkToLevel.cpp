@@ -84,6 +84,23 @@
 // success `mov edx; mov ecx; push edx; call; push eax; load L` or failure `L->ecx`
 // setup. Restore the normalized typed logger source; retain the 52B clean checkpoint.
 //
+// Attempt log (orch-comhand-fresh-04, 2026-08-10):
+// baseline: preserved the prior clean typed logger/global source; 179B, 52B diff,
+// 9/9 ordered calls, 95% shape.
+// context: adding the same-TU TDebuggingLog::Time declaration was codegen-neutral.
+// liveness: a success-path status reference alias, a carried handler alias, and a
+// volatile CommunicationsStatus field were each neutral; the natural member field
+// access remains canonical.
+// abi: qualified same-class GetCommunicationsStatus() and a failure-only typed logger
+// local were neutral. Both preserve the same direct call set but do not move the
+// success reported-status register or failure logger load.
+// layout: replacing the gap with the generated same-TU typed prefix/full-size class
+// was neutral. Restore-clean leaves the compact local layout as the best source.
+// bounded-pass conclusion: all five fresh source/layout/ABI/liveness hypotheses stayed
+// in the same 179B/52B compiler basin. Remaining bytes are localized VC5 register and
+// push scheduling at the success/failure Log setup; no evidence supports opaque source
+// steering or accepted drift.
+
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
 // Globals: extern TDebuggingLog* L (original image address 0x62C4FC)
 // Functions: TDebuggingLog::Log(char*, ...), sprintf
