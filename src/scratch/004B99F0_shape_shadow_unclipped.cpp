@@ -60,6 +60,15 @@
 // - Final bounded validation leaves the remaining gap in the standalone VC5
 //   prologue/register basin; next lead is original Shape.cpp TU context, not
 //   further opaque destination-home steering.
+// wave20-shape-01 probes (2026-08-10):
+// - Adding the original Shape.cpp sibling member surface improved the natural
+//   candidate from 176 to 157 strict bytes; this is retained as TU evidence.
+// - Isolated <string.h>, bool done, and a separate command-count local were
+//   unchanged/no-op basins. Reordering row locals to done before dst improved
+//   the retained context basin to 156 bytes.
+// - A natural row-offset temporary enlarged the body to 256 bytes/185 diff and
+//   was rolled back. No call, ownership, or forward shadow-RLE uncertainty
+//   remains; the first hunk is still the standalone VC5 destination/flag basin.
 
 typedef unsigned char byte;
 
@@ -99,7 +108,13 @@ struct TShape {
     void* FShape;
     void* shape_info;
 
+    byte Check_shape(long, char*);
+    byte shape_draw_unclipped(TDrawArea*, long, long, long);
+    byte shape_color_trans_unclipped(TDrawArea*, long, long, long, byte*);
     byte shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table);
+    byte shape_draw_clipped(TDrawArea*, long, long, long, long, long, long);
+    byte shape_color_trans_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
+    byte shape_shadow_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
 };
 
 byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
@@ -121,8 +136,8 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
     if (height > 0) {
         rows = height;
         do {
-            byte* dst = save_buffer;
             byte done = 0;
+            byte* dst = save_buffer;
 
             do {
                 byte command = *p++;
