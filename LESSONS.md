@@ -553,6 +553,13 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   i < count; ++i)` preserves VC5's one guard and induction cursor. This keeps
   natural typed field copies exact without raw byte-cursor scaffolding.
 
+- When an otherwise natural panel/drawing loop remains a few bytes short because
+  VC5 folds coordinate additions, restore both the period Windows header context
+  and the donor-proven reference-output member ABI before adding scheduling
+  locals. The header surface can change register allocation while references
+  restore the correct decorated call identity; keep both only when exact donor
+  and relocation evidence support that TU context.
+
 - When a byte-opcode branch proves `test al` followed by a negative-arm
   `neg al; movsx count,al`, model the run length as a signed-byte local: assign
   the loaded opcode to it and negate that local in place. An unsigned opcode

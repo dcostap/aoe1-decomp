@@ -72,6 +72,21 @@
 // call setup still preserves cursor-copy/add instructions and delayed base loads that
 // this TU/compiler basin does not emit; no behavior or call/ABI discrepancy found.
 
+// Fresh bounded pass 2026-08-10 (orch-pnlscbr-01):
+// probe-047 baseline: the clean natural nested-tiling reconstruction remained 176B/70 diff.
+// probe-048 ABI: PDB/Ghidra's reference-parameter shape_minmax ABI changed no bytes, but is
+// retained because it restores the actual C++ member declaration and relocation spelling.
+// probe-049 liveness: volatile back_frame widened the body to 180B but changed the entry guard
+// and broad scheduling; rolled back. probe-050 long dimension/cursor locals were a duplicate.
+// probe-051 recomputing the x-step at the inner increment was a 165B structural regression.
+// probe-052 coordinate temporaries plus volatile field rereads reached 180B/32 diff, but were
+// compiler-steering diagnostics; probe-053 volatile frame reread was a 188B regression.
+// probe-055: adding the period-plausible windows.h TU context with the reference ABI produced
+// an exact 180B match. Keep the ordinary typed source and header context; no volatile/raw
+// cursor experiment is part of the final reconstruction.
+
+#include <windows.h>
+
 class TDrawArea;
 
 struct TShape {
@@ -84,7 +99,7 @@ struct TShape {
     void* fshape;
     void* shape_info;
 
-    unsigned char shape_minmax(long* y_max, long* pic_hgt, long* x_min, long* y_min, long frame);
+    unsigned char shape_minmax(long& y_max, long& pic_hgt, long& x_min, long& y_min, long frame);
     unsigned char shape_draw(TDrawArea* draw_area, long x, long y, long frame,
                              unsigned char color_flag, unsigned char* color_table);
 };
@@ -183,7 +198,7 @@ protected:
 void TScrollBarPanel::draw_back_pic() {
     if (this->button_pics != 0 && this->back_frame != -1) {
         long x_min, y_max, pic_hgt, y_min;
-        this->button_pics->shape_minmax(&y_max, &pic_hgt, &x_min, &y_min, this->back_frame);
+        this->button_pics->shape_minmax(y_max, pic_hgt, x_min, y_min, this->back_frame);
 
         int row_step = (x_min - y_max) + 1;
         int col_step = (y_min - pic_hgt) + 1;
