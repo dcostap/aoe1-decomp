@@ -25,6 +25,15 @@
 // and explicit index/world-local evaluation all preserved the 11-byte hunk.
 // The clean typed switch remains authoritative; drift is isolated to the case-1
 // player lookup register coloring (oracle keeps world in ECX/index in EAX).
+// Fresh bounded pass (orch-timeline-02):
+// - Nested player-assignment/master-subscript evaluation, short/int obj_type
+//   preloads, a byte player-index local, a scoped register world alias, same-line
+//   player/master statements, and Ghidra-order local declarations all emitted
+//   the unchanged 341B/11-diff group.
+// - A narrow volatile obj_type read expanded to 368B/184 diff; /O2 /Oy /Og-
+//   expanded to 586B/571 diff. Both were diagnostic only and restored.
+// - Final clean candidate remains 341B, frame 0x8, four virtual calls exact;
+//   only the 11-byte case-1 register/order hunk remains.
 
 class RGE_Game_World;
 class RGE_Player;
