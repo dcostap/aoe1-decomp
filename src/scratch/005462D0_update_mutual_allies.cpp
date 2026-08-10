@@ -12,89 +12,152 @@
 // try 9: /GX probe made no code/size change; removed flag file.
 // try 10: current source compiles but rebuilt .text is 896B vs original 1092B, no full diff.
 // try 11: reviewed original: main missing size is exact debug-print punctuation loops and low-level pointer/offset topology (offset loops 0x88/0xAC/0xDC, comma/newline prints) plus exact nested-loop register scheduling.
-// left in scratch: broad behavior is represented, but debug dump formatting loops, bitmask offset topology, and transitive-alliance loop shape are incomplete/collapsed; rebuilt is size-short. No accepted_drift: no localized diff.
+// worker session: restored stdio/DVlogf and the BaseGame/Panel slots, added all
+//   binary-observed comma/newline fprintf sites, and replaced folded clears with
+//   the original 0xdc/0x100 cursors.  The transitive pass now preserves the
+//   executable's three mutualAlly predicates and shared outer byte cursor.
+// final bounded result: 1096 rebuilt vs 1092 original, frame 0xc, 17/17 calls,
+//   93.23% shape, 822 positional bytes (75.0000%), 255 edit bytes.  The remaining
+//   gap is broad VC5 register/block scheduling around the second diplomacy pass,
+//   transitive setup, and final panel null tests; no accepted_drift proposal.
 
-extern "C" void __cdecl debug_printf(void*, const char*, ...);
-extern void* debug_out;
-extern void* gMainView;
+#include <stdio.h>
 
-class Panel { public: virtual void* vf0(); virtual void* vf1(); virtual void* getA(); virtual void* getB(); virtual void setMode(int); };
+extern FILE* DVlogf;
+
+class Panel {
+public:
+    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c();
+    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
+    virtual void setMode(int);
+};
+class RGE_Base_Game {
+public:
+    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c();
+    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
+    virtual void v20(); virtual void v24(); virtual void v28();
+    virtual Panel* getA();
+    virtual Panel* getB();
+};
+extern RGE_Base_Game* rge_base_game;
 struct Player {
-    char gap0[0x84]; unsigned char* diplomacy;
-    int rel0[9];              // +88..+A8-ish
-    int mutual[9];            // +AC..+CC
-    int allyBitsHi;           // +D0
-    int allyBitsLo;           // +D4
-    int mutualBits;           // +D8
-    int rel2[9];              // +DC..+FC
-    int alive;                // +100
+    char gap0[0x84]; unsigned char* relations;
+    int unit_diplomacy[9];    // +88..+A8
+    int mutualAlly[9];        // +AC..+CC
+    int mutualExploredMask;   // +D0
+    int mutualVisibleMask;    // +D4
+    int nonMutualVisibleMask; // +D8
+    int removeVisibleBits[9]; // +DC..+FC
+    int allied_LOS_Enable;    // +100
     unsigned char civ;        // +104
 };
 class RGE_Game_World {
 public:
-    void* vtbl; int id; char gap08[0x3c-0x08]; short playerCount; Player** players;
+    void* vtbl; int world_time; char gap08[0x3c-0x08]; short player_num; Player** players;
     void update_mutual_allies();
 };
 
 void RGE_Game_World::update_mutual_allies() {
     int i,j,k;
-    debug_printf(debug_out,(const char*)0x58EF08,id);
-    for (i=0;i<playerCount;i++) {
-        Player* p=players[i];
-        p->allyBitsHi=0; p->allyBitsLo=0; p->mutualBits=0;
-        for (j=0;j<9;j++) p->rel2[j]=0;
-        for (j=0;j<9;j++) {
+    fprintf(DVlogf,(const char*)0x58EF08,world_time);
+    i=0;
+    if (i < player_num) do {
+        this->players[i]->mutualExploredMask=0;
+        this->players[i]->mutualVisibleMask=0;
+        this->players[i]->nonMutualVisibleMask=0;
+        int offset=0xdc;
+        do {
+            offset += 4;
+            *(int*)((char*)this->players[i]+offset-4)=0;
+        } while (offset < 0x100);
+        int* mutual = this->players[i]->mutualAlly;
+        j=0;
+        do {
             if (j==i) {
-                p->mutual[j]=1;
-                p->allyBitsLo = 1 << i;
-                p->allyBitsHi = 1 << (i+16);
-            } else p->mutual[j]=0;
-        }
-    }
+                *mutual=1;
+                this->players[i]->mutualVisibleMask = 1 << i;
+                this->players[i]->mutualExploredMask = 1 << (i+16);
+            } else *mutual=0;
+            ++j;
+            ++mutual;
+        } while (j < 9);
+        ++i;
+    } while (i < player_num);
 
-    for (i=1;i<playerCount;i++) {
-        Player* p=players[i];
-        if (p->alive==1) {
-            for (j=1;j<playerCount;j++) {
-                if (j==i) continue;
-                if (!p->diplomacy[j] && !players[j]->diplomacy[i]) {
-                    p->mutual[j]=1;
-                    p->allyBitsLo |= 1 << j;
-                    p->allyBitsHi |= 1 << (j+16);
-                }
-            }
-        }
-    }
-
-    for (i=0;i<playerCount;i++) {
-        for (j=1;j<playerCount;j++) {
-            if (j==i) continue;
+    {
+        int one=1;
+        i=one;
+        if (one < player_num) do {
             Player* p=players[i];
-            if (p->mutual[j]==0) {
-                for (k=1;k<playerCount;k++) {
-                    if (p->mutual[k] && players[k]->mutual[j]) {
-                        p->mutualBits |= 1 << j;
-                        p->rel2[j] |= 1 << k;
+            if (p->allied_LOS_Enable==one) {
+                j=one;
+                if (one < player_num) do {
+                    if (j != i) {
+                        if (!p->relations[j] && !players[j]->relations[i]) {
+                            p->mutualAlly[j]=one;
+                            p->mutualVisibleMask |= one << j;
+                            p->mutualExploredMask |= one << (j+16);
+                        }
                     }
-                }
+                } while (++j < player_num);
             }
-        }
+            ++i;
+        } while (i < player_num);
     }
 
-    for (i=0;i<playerCount;i++) {
-        Player* p=players[i];
-        debug_printf(debug_out,(const char*)0x58EEFC,i);
-        debug_printf(debug_out,(const char*)0x58EEA0,p->allyBitsHi,p->allyBitsLo,p->mutualBits);
-        debug_printf(debug_out,(const char*)0x58EE6C,p->alive,p->civ);
-        debug_printf(debug_out,(const char*)0x58EE58);
-        for (j=0;j<9;j++) debug_printf(debug_out,(const char*)0x584610,p->rel0[j]);
-        debug_printf(debug_out,(const char*)0x58EE40);
-        for (j=0;j<9;j++) debug_printf(debug_out,(const char*)0x584610,p->mutual[j]);
-        debug_printf(debug_out,(const char*)0x58EE28);
-        for (j=0;j<9;j++) debug_printf(debug_out,(const char*)0x58EE20,p->rel2[j]);
+    i=0;
+    int player_offset=0;
+    if (i < player_num) do {
+        j=1;
+        if (1 < player_num) {
+            int ally_offset=0xe0;
+            do {
+                if (j != i &&
+                    *(int*)((char*)*(Player**)((char*)this->players+player_offset)+ally_offset-0x30) == 0) {
+                    k=1;
+                    if (k < player_num) do {
+                        if (*(int*)((char*)*(Player**)((char*)this->players+player_offset)+0xac+k*4) == 0 &&
+                            *(int*)((char*)players[k]+ally_offset-0x30) == 1 &&
+                            *(int*)((char*)players[k]->mutualAlly+player_offset) == 1) {
+                            *(int*)((char*)*(Player**)((char*)this->players+player_offset)+0xd8) |= 1 << j;
+                            *(int*)((char*)*(Player**)((char*)this->players+player_offset)+ally_offset) |= 1 << k;
+                        }
+                        ++k;
+                    } while (k < player_num);
+                }
+                ++j;
+                ally_offset += 4;
+            } while (j < player_num);
+        }
+        ++i;
+        player_offset += 4;
+    } while (i < player_num);
+
+    for (i=0;i<player_num;i++) {
+        fprintf(DVlogf,(const char*)0x58EEFC,i);
+        fprintf(DVlogf,(const char*)0x58EEA0,players[i]->mutualExploredMask,players[i]->mutualVisibleMask,players[i]->nonMutualVisibleMask);
+        fprintf(DVlogf,(const char*)0x58EE6C,players[i]->allied_LOS_Enable,players[i]->civ);
+        fprintf(DVlogf,(const char*)0x58EE58);
+        for (j=0x88;j<0xac;j+=4) {
+            fprintf(DVlogf,(const char*)0x584610,*(int*)((char*)players[i]+j));
+            if (j < 0xa8) fprintf(DVlogf,(const char*)0x584ee4);
+            else fprintf(DVlogf,(const char*)0x58ee54);
+        }
+        fprintf(DVlogf,(const char*)0x58EE40);
+        for (j=0xac;j<0xd0;j+=4) {
+            fprintf(DVlogf,(const char*)0x584610,*(int*)((char*)players[i]+j));
+            if (j < 0xcc) fprintf(DVlogf,(const char*)0x584ee4);
+            else fprintf(DVlogf,(const char*)0x58ee54);
+        }
+        fprintf(DVlogf,(const char*)0x58EE28);
+        for (j=0xdc;j<0x100;j+=4) {
+            fprintf(DVlogf,(const char*)0x58EE20,*(int*)((char*)players[i]+j));
+            if (j < 0xfc) fprintf(DVlogf,(const char*)0x584ee4);
+            else fprintf(DVlogf,(const char*)0x58ee54);
+        }
     }
-    Panel* a = (Panel*)((Panel*)gMainView)->getA();
-    if (a) a->setMode(2);
-    Panel* b = (Panel*)((Panel*)gMainView)->getB();
-    if (b) b->setMode(2);
+    Panel* panel = rge_base_game->getA();
+    if (panel) panel->setMode(2);
+    panel = rge_base_game->getB();
+    if (panel) panel->setMode(2);
 }
