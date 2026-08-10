@@ -7,9 +7,11 @@
 // - An explicit absolute vtable store produced exact linked bytes, but violates
 //   the canonical compiler-owned-vptr policy and was removed during main-agent
 //   audit. The natural virtual class surface is retained instead.
-// - With /GX, the audited source is exact-size/calls and differs by 10 bytes at
-//   the compiler-generated vptr relocation/scheduling band. This likely needs
-//   relocation-metadata normalization, not a manual vtable write.
+// - With /GX, the audited source was exact-size/calls but differed by 10 bytes
+//   because VC5 scheduled its compiler-owned vptr before the map/result stores.
+// - Fresh pass: putting map dimensions and the placement result in the natural
+//   member-initializer list delayed that compiler-owned vptr to the original
+//   slot; the result is an exact 242-byte match without raw vptr plumbing.
 // FLAGS: config/flags/0040AA90_ConstructionAIModule.rsp (/GX for EH frame)
 
 #include <string.h>
@@ -84,12 +86,11 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
       randomConstructionLots(),
       xReferencePointValue(-1.0f),
       yReferencePointValue(-1.0f),
-      zReferencePointValue(-1.0f)
+      zReferencePointValue(-1.0f),
+      mapXSizeValue(-1),
+      mapYSizeValue(-1),
+      lastPlacementReturnCodeValue(0)
 {
-    this->mapXSizeValue = -1;
-    this->mapYSizeValue = -1;
-    this->lastPlacementReturnCodeValue = 0;
-
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;
     this->randomConstructionLots.next = &this->randomConstructionLots;
