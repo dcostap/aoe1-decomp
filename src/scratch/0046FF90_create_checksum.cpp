@@ -23,6 +23,15 @@
 // - A diagnostic six-field aggregate reproduced frame 0x18 but added 10B and
 //   worsened the body; it was restored. Separate locals in the binary stack
 //   order likewise collapsed back to the clean 0x14 output.
+// Fresh bounded pass:
+// - Full donor-backed RGE_Player ABI/0x220 layout worsened to 285B; full
+//   RGE_Static_Object 0x88 layout and a natural while(node) form were neutral.
+// - Direct repeated list->node rereads, including the post-waypoint reload
+//   proven by the oracle, improved resync to 182B but shortened the body to
+//   268B; the clean cached-object source remains the current canonical pin.
+// - Separate per-object checksum temporary, named prefix-list pointers, and
+//   combined prefix expression were worse; final prefix declaration ordering
+//   was neutral. No exact frame-0x18 natural candidate emerged.
 
 extern "C" long __cdecl __ftol(void);
 

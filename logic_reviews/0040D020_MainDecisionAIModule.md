@@ -97,10 +97,24 @@ All diagnostics were rolled back; only the inactive canonical constructor ABI wa
 retained. Main-agent validation therefore leaves the round-1 fault/unwind finding
 unchanged and confirms that no new natural compiler/TU mechanism has resolved it.
 
+### Exact-match resolution, 2026-08-10
+
+The newly exact same-TU constructor at `0040CE90` disproved the earlier model
+that `MainDecisionAIModule` directly owned four independently destructed scalar
+fields. It proves that `objects` is a nontrivial inline `ManagedArray<int>`
+member. Modeling that class's ordinary destructor with scalar delete, post-delete
+nulling, and the three zero stores, while leaving the derived destructor body
+empty, makes VC5 generate the member destructor followed by the base destructor.
+
+This natural ownership model reproduces the previously unexplained FS-first
+three-slot EH registration and its exact cleanup funclet/address behavior. The
+result validates at 112/112 bytes, 30/30 instructions, both calls aligned, and
+zero strict differing bytes. No manual EH, vtable plumbing, assembly, or
+fault-path exclusion is used.
+
 ## Final decision
 
-Remain in `src/scratch`; do not promote to `src/verified_logic`. A future
-promotion requires either a natural compiler/TU surface that reproduces the
-original three-slot frame and erroneous cleanup address or a project-level
-decision explicitly excluding this demonstrated fault/unwind behavior. Do not
-encode the bad funclet manually or with forbidden assembly.
+Resolved by exact matching. The source is promoted to
+`src/matching/0040D020_MainDecisionAIModule.cpp`; the prior semantic blocker and
+verified-logic consideration are closed because the rebuilt object now matches
+the executable on all checked bytes, EH topology, calls, and cleanup paths.

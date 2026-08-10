@@ -71,6 +71,13 @@
 //   declaration; emitted code duplicated the clean source and is retained as
 //   canonical same-TU type context. No natural new mechanism selected the
 //   FS-first frame or its erroneous cleanup address; leave in scratch.
+// 2026-08-10 orch-aimdmod-logic-luna-04:
+// - New constructor-backed ownership hypothesis: make ManagedArray<T> a
+//   nontrivial class with its inline scalar-delete/null/zero destructor, and
+//   leave MainDecisionAIModule::~MainDecisionAIModule empty so the compiler
+//   emits the natural member-dtor then base-dtor sequence. This is supported
+//   by exact 0040CE90's nontrivial ManagedArray member/EH surface and matches
+//   the target exactly (112B, 30 instructions, both calls and all bytes).
 
 #include <stdlib.h>
 
@@ -127,6 +134,16 @@ public:
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    ~ManagedArray() {
+        if (this->value != 0) {
+            delete this->value;
+            this->value = 0;
+        }
+        this->numberValue = 0;
+        this->desiredNumberValue = 0;
+        this->maximumSizeValue = 0;
+    }
 };
 
 class MainDecisionAIModule : public AIModule {
@@ -143,12 +160,4 @@ public:
     virtual int canPerformAction(int action, int target);
 };
 
-MainDecisionAIModule::~MainDecisionAIModule() {
-    if (this->objects.value != 0) {
-        delete this->objects.value;
-        this->objects.value = 0;
-    }
-    this->objects.numberValue = 0;
-    this->objects.desiredNumberValue = 0;
-    this->objects.maximumSizeValue = 0;
-}
+MainDecisionAIModule::~MainDecisionAIModule() {}

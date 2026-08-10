@@ -597,3 +597,11 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   derived-vtable surface before tuning the loop. Retain the explicit
   `novtable`/vtable fallback only when the oracle proves the store position and
   the natural compiler-owned-vptr form remains different.
+
+- When an exact same-TU constructor proves a managed member is nontrivial, and a
+  paired destructor's bytes are exactly that member's scalar-delete/null/zero
+  cleanup followed by the base destructor, model the member's ordinary inline
+  destructor and leave the derived destructor body empty. VC5 can then inline the
+  member cleanup while selecting the target's exact destructor EH/call topology;
+  use this only when the constructor's member/EH evidence and the destructor's
+  two-call sequence support ownership, rather than as a codegen-only wrapper.
