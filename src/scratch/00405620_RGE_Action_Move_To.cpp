@@ -58,6 +58,8 @@
 // hoisted fallback locals, and an explicit derived-destructor declaration all stayed in the 205B/47B basin. The
 // volatile-destination test was codegen-identical but is not source-plausible. Restored this natural named-object /
 // local-sprite if/else; the shared-vs-duplicated EH epilogue remains the only structural blocker.
+// 2026-08-10 wave21-actmove-01: same-TU lifetime-context probe (full action-object virtual surface plus the proven
+// derived destructor definition) emitted identical 205B/47B; restored this canonical source before final validation.
 
 class RGE_Action_Object;
 class RGE_Sprite;
