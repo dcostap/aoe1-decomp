@@ -9,6 +9,14 @@
 // final best remains the binary-backed three-tail source; the apparently
 // redundant null tails preserve three observed vf1C call sites. Main-agent
 // audit restored canonical polymorphic ownership only.
+// fresh orch-actlist-01 pass: removing only the outer null-tail call fixed the
+// activation call multiset but changed the prologue to sub-esp/EBX-this (211B);
+// goto/while-next variants were broader (230B). A common notify tail plus the
+// binary-observed inner null call reached 181B with 3 vf1C calls and exact
+// prologue, but omitted the original outer null test, remained 24B short, and
+// kept the calloc/local-store order wrong. curr=node, direct-parameter, and
+// declaration-point node variants were emitted-code duplicates. Restored the
+// pinned canonical source for pause.
 class RGE_Action;
 
 class RGE_Action_Object {

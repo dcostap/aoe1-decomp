@@ -47,17 +47,33 @@
 // codegen-neutral.  Preserve the derived action ownership and clean guard.
 // Main-agent audit retained direct inherited virtual calls and canonical action
 // ownership; no manual dispatch or EH-tail steering survives.
+// Fresh bounded pass (orch-comobj-02): mixed shared-label/null-result,
+// allocation-scoped result, assignment-in-condition, and direct-null-return
+// forms all regressed to 82-97 diff or larger EH tails; no compiler-facing
+// variant was retained. ABI cleanup then modeled the proven RGE_Static_Object ->
+// RGE_Action_Object ownership, typed RGE_Action::work receiver, typed action-list
+// result, and exact RGE_Action_Transport(RGE_Action_Object*, RGE_Task*,...) ABI;
+// these are source-canonical and codegen-neutral, while correcting the ctor
+// relocation identity. Remaining mismatch starts at +0x64: VC5 emits xor eax
+// before the EH reset/test, versus the oracle's post-test null xor and shared
+// epilogue. Current clean reconstruction is 230 bytes with 67 strict differing
+// bytes, 93.90% shape, exact 9-call multiset and exact size.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
 
 typedef unsigned char uchar;
 
+class RGE_Static_Object;
+class RGE_Action_Object;
+class RGE_Task;
+class RGE_Action;
+
 // RGE_Action_List (direct calls)
 class RGE_Action_List {
 public:
     uchar have_action();
-    void* get_action();
+    RGE_Action* get_action();
     void delete_list();
 };
 
@@ -67,7 +83,7 @@ public:
     // vtable pointer at +0x00 from compiler
     short action_type;     // +0x04
     uchar gap_06[2];       // +0x06
-    void* obj;             // +0x08
+    RGE_Action_Object* obj; // +0x08
     uchar state;           // +0x0C
     uchar gap_0D[3];       // +0x0D
     void* target_obj;      // +0x10
@@ -78,7 +94,7 @@ public:
     float target_y;        // +0x24
     float target_z;        // +0x28
     float timer;           // +0x2C
-    void* task;            // +0x30
+    RGE_Task* task;        // +0x30
     void* sub_actions;     // +0x34
     void* sprite;          // +0x38
     uchar subActionValue;  // +0x3C
@@ -97,12 +113,13 @@ public:
     virtual void slot_28();
     virtual void slot_2C();
     virtual void slot_30();
-    virtual int func34(void*, float, float, float);
+    virtual int func34(RGE_Static_Object*, float, float, float);
 };
 
 class RGE_Action_Transport : public RGE_Action {
 public:
-    RGE_Action_Transport(void* obj, void* task, float x, float y, float z);
+    RGE_Action_Transport(RGE_Action_Object* obj, RGE_Task* task,
+                         float x, float y, float z);
 };
 
 // Narrow canonical inherited virtual surface through slot 0x208. Keeping it as
@@ -241,7 +258,16 @@ struct RGE_Combat_Object_Virtual_Base {
     virtual void call208(void* arg);  // slot 0x82 (130), offset 0x208
 };
 
-class RGE_Combat_Object : public RGE_Combat_Object_Virtual_Base {
+class RGE_Static_Object : public RGE_Combat_Object_Virtual_Base {
+};
+
+class RGE_Action_Object : public RGE_Static_Object {
+};
+
+class RGE_Task {
+};
+
+class RGE_Combat_Object : public RGE_Action_Object {
 public:
     uchar gap_04[0x34];
     float world_x;

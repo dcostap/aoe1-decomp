@@ -39,6 +39,18 @@
 // 167-byte/22-diff source. The remaining source-topology gap is still only the
 // binary-observed fsubr [esp+8] between X fcomp and fnstsw, with the other-radius
 // Y memory read after fnstsw; no fake volatility or opaque scheduling was kept.
+// orch-statobj-logic-01 2026-08-10: fresh bounded pass on the fsubr/other-Y ordering blocker.
+// CSE/duplication family (new for this target): duplicating `y = dy - this_radius_y` in both
+// x-clamp arms (S3, or S5 with the y-= also duplicated) CSE-hoists the FUSED fsubr [esp+8] into
+// the fcomp->fnstsw gap: first 0x68 bytes exact (104 equal incl. dy-home read), 14 diff, 98.18%
+// shape, 167B. The other-Y fsub [ecx+34h] is ALWAYS emitted at the if/else join (S3/S5) or sunk
+// into both arms with a jmp (H1/S8 full-expr ternaries, 59 diff) - never between fnstsw and test
+// as the original has it. Full-expr ternaries CSE only the dy-this_ry prefix. Mini-reproducers
+// M1/M2/M3 re-confirmed the y-before-clamp family (eager fld at 2-deep, homes overlay, no push
+// ecx). Diagnostic S3/S5 forms are not period-plausible source, so the clean 167B/22-diff
+// y-after-clamp reconstruction was restored and revalidated; the other-Y fault-order gap (read
+// before the X branch) remains unreachable with this VC5 through source shape.
+
 // sa-62602825-r1 pass 2026-08-06: exhaustive negative result. Mechanism
 // established with mini reproducers: VC5 eagerly loads a volatile minuend (fld)
 // when the y expression is evaluated at 2-deep before a branch, and fuses it into

@@ -28,6 +28,17 @@
 //   sprite-at-+8 surface.
 // - Final bounded result: 33 positional bytes (13.9241%), 40 edit bytes (16.88%);
 //   all calls, size, frame, CFG, and the suffix block topology match.
+// Fresh bounded pass (orch-actatak-01):
+// - Completed the proven RGE_Master_Combat_Object layout through 0x148; emitted
+//   code was unchanged, so the remaining issue is not incomplete tail size.
+// - Direct member-result fallback assignments under the canonical master surface
+//   created a +6-byte structural tail (130 bytes), then were rolled back.
+// - Hoisting fallback pointer declarations, adding the full derived virtual
+//   declaration surface, and typing the p5 owner as RGE_Master_Moving_Object
+//   were codegen duplicates of the clean candidate.
+// - Interleaving range/min before target_z/target_y and adding coordinate aliases
+//   worsened the first block (34 bytes); delaying sprite_p7 until after flags
+//   worsened it to 52 bytes. All were rolled back.
 // Remaining lead: reconstruct the original Act_atak.cpp assignment/declaration
 // context for the first coordinate/range block; do not retain metric-only aliases.
 //

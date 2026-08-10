@@ -22,6 +22,17 @@
 //   preserves the arithmetic-before-node reload and callee-save coloring.
 // - Main-agent audit replaced cross-element field-pointer stepping with
 //   ordinary paired array indexing; `sub_stacks` remains the canonical owner.
+// - Fresh pass: reusing the initialization cursor as a byte offset in the
+//   ordinary array duplicated the prior offset-view basin and was restored.
+// - A narrower diagnostic aggregate (`offset` plus `Map_Stack[100]`) recovered
+//   the 0x968 frame, exact size, and 95.12% shape/44-byte diff, but selected
+//   inverse EBX/EDI colors and hoisted the list-head reload; it is not retained.
+// - Narrow volatile reread, explicit module alias, reference-parameter ABI,
+//   scalar declaration order, and the PDB `char*` debug_rand declaration were
+//   codegen-neutral. Two focused labs collapsed to duplicate groups; no exact.
+// - Final fresh pass restores this clean named-array reconstruction; remaining
+//   lead is the original local declaration/context that selects target register
+//   coloring and delays the second `param_1->next` load.
 
 extern "C" int __cdecl debug_rand(const char* file, int line);
 

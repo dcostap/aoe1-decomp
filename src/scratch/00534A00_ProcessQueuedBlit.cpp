@@ -55,6 +55,17 @@
 // virtual surface was a codegen duplicate.  Retain the clean 219-byte source;
 // the unresolved gap remains the isolated COM vtable/save-register and
 // parameter-home scheduling basin, not call/ABI/layout uncertainty.
+// fresh orch-view-02 pass: a late source-RECT pointer and named destination
+//   coordinate locals were codegen duplicates; restored clean.
+// fresh pass: 16 natural RECT/call-form variants produced four groups and no
+//   exact result; all 12 size-eligible variants retained the extra EBX save.
+// fresh pass: debug-context flag lab (64 variants, /Zd /Zi /Z7) produced no
+//   distinct winning group or exact match; default flags remain authoritative.
+// fresh pass: volatile force preserved a post-call home store and improved
+//   resync by one byte but grew to 221 bytes; diagnostic only, restored.
+// fresh pass: reordered RECT stores, function-scope RECT/entry locals, flat
+//   long[8] queue access, and reference-parameter RECT ABI were duplicates or
+//   worse; canonical typed COM/RECT source retained.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 

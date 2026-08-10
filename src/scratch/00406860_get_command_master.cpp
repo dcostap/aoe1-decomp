@@ -42,6 +42,14 @@
 // - 2026-08-09 probe: modeled +0xD8 as RGE_Master_Action_Object::tasks and +0xEC as
 //   task_by_group, with RGE_Task_List::get_target_task; this also emitted identical
 //   bytes. Remaining mismatch is the previously isolated VC5 register basin.
+// - 2026-08-10 (orch-actobj-01 fresh pass): required dossier, same-TU donor, and ABI
+//   evidence confirmed the two indirect calls, canonical owner/player array, and
+//   task-list ABI. Rolled back nine bounded probes: index-before-candidate declaration;
+//   stdio TU context; master-array pointer alias (246-byte structural drift);
+//   per-iteration candidate scope; reversed initial equality (one compare byte only);
+//   full 0x88/0x180/0x194 object layout; function-scope index; top-level index/candidate
+//   declarations; and /G5. None changed the clean 221-byte register basin except the
+//   documented worse array alias. Default flags and the canonical source are retained.
 
 class RGE_Static_Object;
 class RGE_Action_Object;

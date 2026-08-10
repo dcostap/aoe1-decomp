@@ -154,3 +154,27 @@ review. Other-Y arithmetic and its possible memory/x87 fault still occur after
 the X branch in the candidate rather than between the executable's X `fcomp` and
 status consumption. Consequently the function remains in `src/scratch` and is
 not eligible for either accepted drift or verified-logic promotion.
+
+### Post-round-2 CSE follow-up
+
+A fresh DeepSeek matching pass tested the remaining scheduler question rather
+than repeating the earlier eager-load families. Duplicating
+`y = dy - this_radius_y` in both X-clamp arms causes VC5 to CSE-hoist the fused
+`fsubr [esp+8]` into the executable's `fcomp`-to-`fnstsw` window. This diagnostic
+reaches 167/167 bytes, 98.18% shape, and 14 strict differing bytes, with the
+first 104 bytes exact. It therefore proves that the compiler can recover the
+first missing operation without changing the required binary32 homes.
+
+The second Y operation remains unsolved: VC5 always emits
+`fsub [ecx+34h]` at the arm join, or duplicates it inside both arms with an
+additional jump. It never schedules that other-Y memory read between `fnstsw`
+and `test`, where the executable performs it. Full-expression ternaries and
+three focused mini-reproducer families confirmed the same boundary. The
+duplicated-arm forms are not plausible original source and still preserve the
+wrong other-Y fault order, so none was retained.
+
+The clean 167-byte candidate was restored and revalidated at 22 strict differing
+bytes and 96.36% shape. The semantic blocker is unchanged: the executable can
+perform the other-Y read/x87 operation before the X-clamp branch and scratch
+store, while the candidate performs it afterward. This pass adds strong matching
+exhaustion evidence but does not justify verified-logic promotion.
