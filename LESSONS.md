@@ -538,3 +538,10 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   schedules one independent member store across the first call setup, a simple
   reference alias to that real field can recover the exact order; retain it only
   when the surrounding bytes prove the alias is the minimal readable exact form.
+
+- In a VC5 loop with a byte-stride cursor and a count reused through incoming
+  parameter homes, source update statement order can control the whole late
+  schedule: writing `count++` before `cursor += stride` made VC5 emit the oracle's
+  cursor add then count increment, store both homes, and only then reload the
+  invariant bound. Try this ordinary induction spelling before adding aliases or
+  volatility when the loop body/calls already match.
