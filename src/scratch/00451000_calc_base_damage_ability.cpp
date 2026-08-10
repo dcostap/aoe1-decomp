@@ -56,6 +56,15 @@
 // - Fresh worker checks: target alias, count-first initialization, neighboring
 //   stdlib context, and a register-qualified target parameter were codegen
 //   duplicates at 42B; the clean natural do-while remains authoritative.
+// - orch-mcoobj-01 fresh bounded pass (10 meaningful probes): TU-wide /GX,
+//   unqualified member lookup, an inner top-tested for scan, a separate
+//   weapon-start alias, per-iteration base_armor reload, register-qualified
+//   count, remaining initial declaration orders, and combined declarations
+//   were all neutral or worse. The six-way initial-order lab formed only the
+//   existing 42B group and a worse 47B group.
+// - Final clean source restored and validated; remaining evidence is still
+//   the systematic entry target/count EAX/EDX basin (42 strict bytes), with
+//   exact size/frame/call set and exact +0039..+00BC body island.
 
 #include "..\..\include\game_globals.h"
 
