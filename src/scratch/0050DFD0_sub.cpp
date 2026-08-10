@@ -69,6 +69,20 @@
 // - Unqualified versus `this->sub(entry)` was a codegen duplicate of the clean
 //   94B source. The remaining blocker is the known VC5 redundant head test and
 //   self-call relocation basin; keep the normalized shared-call source.
+// Fresh bounded pass (orch-timeline-01):
+// - Baseline revalidated at 94B/96 compared (99 strict diff, 86.36% shape).
+// - Branch-local recursive-entry locals, with initialized and uninitialized
+//   declaration forms, both compiled to the unchanged clean basin; explicit
+//   command-else assignment was optimized away.
+// - Nested positive guards with link initialization between them and the
+//   compound walk were neutral; moving link initialization into the outer guard
+//   with `while (p != entry)` worsened to 92B/98 and was restored.
+// - Adding donor-used game_globals.h was a context duplicate. A one-case switch
+//   on command improved strict bytes only to 97 but worsened CFG/shape; it is
+//   diagnostic, not living source. Stable-head/moving-link plus branch-local
+//   result likewise duplicated the clean bytes.
+// - Remaining structural blocker is unchanged: default VC5 keeps the compare
+//   parameter live, saves EBX, and folds the binary's redundant head null test.
 
 #include <stdlib.h>
 

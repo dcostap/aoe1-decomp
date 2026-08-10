@@ -23,6 +23,16 @@
 //   new matching hypothesis was introduced.
 // - Paused: remaining drift is the VC5 local spill/liveness and time-expression
 //   basin; no ABI/call-set or behavioral uncertainty is known.
+// - Fresh bounded pass (orch-taitcmd-01): elapsed-first comparison plus the
+//   known volatile stack-home surface reached 192 bytes / 111 positional diff
+//   with target time-chain registers; a PDB-style for loop was codegen-duplicate.
+//   Reused-value, compound-assignment, initializer-scope, and three-local
+//   declaration permutations were duplicate or worse. Adding/removing an
+//   owning-module virtual surface was also codegen-neutral; the donor vtable
+//   word did not improve the remaining local spill. Restored this clean source.
+// - Paused: ten fresh hypotheses exhausted; best diagnostic remains the prior
+//   192-byte / 110-diff volatile-number basin, while the retained source is the
+//   natural 184-byte reconstruction. Calls, layout, and behavior are understood.
 
 class RGE_Game_World {
 public:

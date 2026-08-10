@@ -40,6 +40,10 @@
 //   emitted `cmp al,80h`; both regressed.  Retain the 221-byte / 99-diff
 //   natural unsigned-opcode candidate.  The remaining gap is isolated to
 //   negative-arm `and eax,0xff` versus oracle `movsx ebp,al`.
+// - This claim: make the run length itself a signed-byte local, assign the
+//   opcode to it, and negate that local in place in the negative arm.  This
+//   preserves the binary-proven `neg al; movsx ebp,al` without an unsigned
+//   wrap/mask, producing an exact 217-byte match.
 
 #include <string.h>
 
@@ -75,7 +79,7 @@ void RGE_Flic_Player::byte_run() {
         do {
             unsigned char opcode = (unsigned char)*chunk;
             chunk++;
-            int copy_count;
+            signed char copy_count;
             
             if ((signed char)opcode >= 0) {
                 copy_count = (signed char)opcode;
@@ -83,8 +87,8 @@ void RGE_Flic_Player::byte_run() {
                 memset(dst, *chunk, copy_count);
                 chunk++;
             } else {
-                opcode = (unsigned char)-opcode;
                 copy_count = (signed char)opcode;
+                copy_count = -copy_count;
                 dst = this->window_buffer + line_offset;
                 memcpy(dst, chunk, copy_count);
                 chunk += copy_count;

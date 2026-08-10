@@ -552,3 +552,10 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   `for` can duplicate the zero-count test; a single top-tested `for (i = 0;
   i < count; ++i)` preserves VC5's one guard and induction cursor. This keeps
   natural typed field copies exact without raw byte-cursor scaffolding.
+
+- When a byte-opcode branch proves `test al` followed by a negative-arm
+  `neg al; movsx count,al`, model the run length as a signed-byte local: assign
+  the loaded opcode to it and negate that local in place. An unsigned opcode
+  reassigned after negation can make VC5 emit `and eax,0xff`, while an `int`
+  count can hoist sign extension before the branch; retain the byte-local form
+  only when the observed width and instruction order support it.

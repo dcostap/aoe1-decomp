@@ -21,6 +21,18 @@
 // - Normalization: removed the unused `pad` local that had preserved the old
 //   0x10 frame only as compiler steering; the prior 200-byte/14-byte result
 //   remains diagnostic history, not living source.
+// - Fresh bounded pass: reversed pointer-add operands, added a per-iteration
+//   maximum pointer/reference, reordered inner declarations, and ran a
+//   20-case cursor-init/max-access lab; all retained the same 200-byte,
+//   14-byte result (the lab formed one emitted-code group).
+// - A guarded top-tested `for` regressed to 208 bytes/135 diff; an integer
+//   byte-address cursor and reversed comparison operands regressed structurally
+//   (200/14 after restore and 191/146 respectively). Declaration-order and
+//   pointer-vs-int probes were nonproductive.
+// - Fresh pass exhausted at 10 meaningful hypotheses; clean natural source
+//   restored. Remaining evidence is still the setup order
+//   `mov ebx,[esp+18] / lea ebp,[esi+4]` versus rebuilt cursor-first, plus
+//   the SIB base/index byte at the maximum compare.
 
 class ResourceItem {
 public:
