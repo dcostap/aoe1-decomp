@@ -54,6 +54,13 @@
 // 169 strict differing bytes (79.0%), 94.59% shape, exact CFG/call-count; the
 // historical diagnostic best is 38 bytes but is not source-canonical. Remaining
 // lead is the unresolved VC5 EBP-versus-EBX armor-pointer allocator basin.
+// Bounded follow-up: full Static->Animated->Moving->Action->Combat size gaps,
+// baseline armor-pointer register hint, and function-scope terrain-table
+// declaration were all codegen duplicates (169 bytes, 214 emitted bytes).
+// Keeping armor count hoisted while introducing the armor pointer at the inner
+// scan site changed the basin to 203 bytes and made obj persistent in EBX;
+// hoisted armor pointer with inner-site count was 184 bytes/215 bytes. Both
+// natural-source variants were rolled back. Clean typed source restored.
 
 extern float DAT_0056f49c;
 extern float DAT_0056f4a8;
