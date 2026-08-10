@@ -18,6 +18,13 @@
 // - width - 1 + x, x + width - 1, top-level locals, complete TListPanel size,
 //   TPanel receiver casts, Windows header context, register locals, and a
 //   scoped result local all emitted the same bytes as the clean candidate.
+// - direct xPosition()+width() evaluation was structurally worse (263 bytes);
+//   reversing the width/x local declaration order selected the original LEA SIB
+//   encoding but left the same 15-byte shifted push/LEA schedule, so it was
+//   restored. Named coordinate/receiver/param3 forms were duplicates.
+// - focused 16-variant declaration/expression lab and 10-variant param3-cast
+//   lab preserved size/frame/call-set but collapsed to two nonexact 253-byte
+//   groups; neither delayed the final param3 push. Clean source remains best.
 // - best natural reconstruction: 253 bytes, all 9 calls/CFG/frame aligned;
 //   remaining 15 bytes are only final-call scheduling/SIB operand order.
 
