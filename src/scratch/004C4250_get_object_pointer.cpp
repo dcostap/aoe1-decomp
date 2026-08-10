@@ -20,6 +20,12 @@
 // codegen duplicate. All six calls and canonical owner/world/player/list accesses
 // remain exact; only ESI-owner versus EDX-compare-index loop-tail coloring and its
 // dependent branch displacements differ.
+// 2026-08-10 wave20-statobj-01 fresh pass (9 meaningful probes):
+// a 32-variant declaration/owner-test/update lab, direct owner rereads,
+// function-scope Ghidra local ordering, canonical polymorphic Player/World/List
+// surfaces, explicit byte-to-short conversion, and signed/unsigned width pairs
+// either reproduced the same 219B/37 basin or widened the function. The final
+// unsigned-width variant widened to 247B/237; restored the clean source.
 // left in scratch: best source is the readable owner/world/player reconstruction;
 // remaining drift is only owner/compare-index register coloring and the loop tail.
 
