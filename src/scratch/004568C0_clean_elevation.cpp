@@ -1,48 +1,204 @@
-// VA: 004568C0 RGE_Map::clean_elevation
-// PDB source: map.cpp
+// VA 004568C0 RGE_Map::clean_elevation
+// map.cpp:854-1024
 // Attempt log:
-// - broad reconstruction from packet: clamp input rectangle, expand by two, call pre-clean helper, scan cells and normalize elevation/edge shape bits from neighbors.
-// - default /O2 compiles but .text is 1264 bytes vs target 1478, too short for extraction; broad neighbor logic is present but exact tile-shape case table/bit rules are under-modeled.
-// - tried /Od diagnostically: extracts at target size but 91.95% positional diff from offset 0 due EBP/debug frame, confirming original optimized family.
-// - restored default flags. Give-up: needs faithful reconstruction of all eight-neighbor elevation predicates and exact tile type remapping table/control flow; no accepted_drift proposed.
+// 1: Broad reconstruction used the wrong short-layout class, helper tile/elevation calls, and an under-modeled max/min smoothing pass (1179B, 30 calls vs 1478B, 3 calls).
+// 2: Reconstructed the binary-backed map.cpp owner and direct helper ABI: 24-byte RGE_Tile, dword map_width/map_height at +8/+C, map_row_offset +0x8D8C, direct preclean/postclean/set_elev calls, short width-derived tile offsets, and the full eight-neighbor predicate/update topology.
+// 3: Widened the current elevation to short and reversed neighbor comparisons; this recovered the oracle's AX/CX word-compare topology and raised the best shape to 84.62% (1501B, diff 782).
+// 4: Shortened fix lifetime to the aggregation phase; VC5 kept the transient predicate in CL and aligned the four diagonal decision CFGs substantially.
+// 5: Moving change_flag or changing compass declaration order did not improve the canonical basin; the best form keeps short NW/N/NE/E/SE/S/SW/W flags and a byte fix.
+// 6: A bool NW experiment caused a 0x44 frame and broad register drift; restored the short-flag reconstruction. Remaining drift is flag stack-home coloring/order, the change_flag store schedule, and update block layout.
 
-class Map_4568C0 {
-public:
-    char gap0[8]; short width; short height; char gap10[0x8d8c-0x10]; unsigned char** rows;
-    void preclean(int,int,int,int,int); void clean_elevation(int x1,int y1,int x2,int y2,int mode);
+struct RGE_Tile {
+    char gap_00[5];
+    unsigned char terrain_elevation;
+    char gap_06[0x12];
 };
-static unsigned char* tile(Map_4568C0* m,int x,int y){ return m->rows[y] + (x+x*2)*8; }
-static int elev(unsigned char* t){ return t[5]>>5; }
-static void setelev(unsigned char* t,int e){ t[5]=(unsigned char)((t[5]&0x1f)|((e&7)<<5)); }
 
-void Map_4568C0::clean_elevation(int x1,int y1,int x2,int y2,int mode)
+class RGE_Map {
+public:
+    char gap_00[8];
+    int map_width;
+    int map_height;
+    char gap_10[0x8D7C];
+    RGE_Tile** map_row_offset;
+
+    void preclean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation);
+    unsigned char postclean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation);
+    void set_elev(short x1, short y1, short x2, short y2, unsigned char elevation,
+                  short amount, unsigned char relative);
+    void clean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation);
+};
+
+void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
+                              unsigned char elevation)
 {
-    if(x1<0)x1=0; if(y1<0)y1=0; if(x2>=width)x2=width-1; if(y2>=height)y2=height-1;
-    x1-=2; y1-=2; x2+=2; y2+=2;
-    if(x1<0)x1=0; if(y1<0)y1=0; if(x2>=width)x2=width-1; if(y2>=height)y2=height-1;
-    preclean(x1,y1,x2,y2,mode);
-    int changed=0;
-    for(int y=y1;y<=y2;y++){
-        for(int x=x1;x<=x2;x++){
-            unsigned char* t=tile(this,x,y); int e=elev(t); int mask=0;
-            int n=e,s=e,w=e,ee=e,nw=e,ne=e,sw=e,se=e;
-            if(y>0) n=elev(tile(this,x,y-1)); if(y<height-1) s=elev(tile(this,x,y+1));
-            if(x>0) w=elev(tile(this,x-1,y)); if(x<width-1) ee=elev(tile(this,x+1,y));
-            if(x>0&&y>0) nw=elev(tile(this,x-1,y-1)); if(x<width-1&&y>0) ne=elev(tile(this,x+1,y-1));
-            if(x>0&&y<height-1) sw=elev(tile(this,x-1,y+1)); if(x<width-1&&y<height-1) se=elev(tile(this,x+1,y+1));
-            int hi=e; if(n>hi)hi=n; if(s>hi)hi=s; if(w>hi)hi=w; if(ee>hi)hi=ee; if(nw>hi)hi=nw; if(ne>hi)hi=ne; if(sw>hi)hi=sw; if(se>hi)hi=se;
-            int lo=e; if(n<lo)lo=n; if(s<lo)lo=s; if(w<lo)lo=w; if(ee<lo)lo=ee; if(nw<lo)lo=nw; if(ne<lo)lo=ne; if(sw<lo)lo=sw; if(se<lo)lo=se;
-            if(hi-lo>1){ if(e<hi-1){ setelev(t,hi-1); changed=1; e=hi-1; } }
-            if(n>e)mask|=1; if(ee>e)mask|=2; if(s>e)mask|=4; if(w>e)mask|=8;
-            if(nw>e)mask|=0x10; if(ne>e)mask|=0x20; if(se>e)mask|=0x40; if(sw>e)mask|=0x80;
-            t[4]=(unsigned char)mask;
-        }
+    unsigned char change_flag;
+    short width = (short)this->map_width;
+    short offset_nw = (short)(-1 - width);
+    short offset_n = (short)-width;
+    short offset_ne = (short)(1 - width);
+    short offset_se = (short)(width + 1);
+    short offset_sw = (short)(width - 1);
+
+    if (x1 < 0) {
+        x1 = 0;
     }
-    if(changed){
-        for(int yy=y1;yy<=y2;yy++) for(int xx=x1;xx<=x2;xx++){
-            unsigned char* t=tile(this,xx,yy); int e=elev(t); int m=0;
-            if(yy>0 && elev(tile(this,xx,yy-1))>e)m|=1; if(xx<width-1 && elev(tile(this,xx+1,yy))>e)m|=2;
-            if(yy<height-1 && elev(tile(this,xx,yy+1))>e)m|=4; if(xx>0 && elev(tile(this,xx-1,yy))>e)m|=8; t[4]=(unsigned char)m;
-        }
+    if (y1 < 0) {
+        y1 = 0;
     }
+    if (x2 >= this->map_width) {
+        x2 = this->map_width - 1;
+    }
+    if (y2 >= this->map_height) {
+        y2 = this->map_height - 1;
+    }
+
+    do {
+        x1 -= 2;
+        y1 -= 2;
+        x2 += 2;
+        y2 += 2;
+        change_flag = 0;
+
+        if (x1 < 0) {
+            x1 = 0;
+        }
+        if (y1 < 0) {
+            y1 = 0;
+        }
+        if (x2 >= this->map_width) {
+            x2 = this->map_width - 1;
+        }
+        if (y2 >= this->map_height) {
+            y2 = this->map_height - 1;
+        }
+
+        this->preclean_elevation(x1, y1, x2, y2, elevation);
+
+        for (long row = y1; row <= y2; ++row) {
+            RGE_Tile* tile = this->map_row_offset[row] + x1;
+            for (long col = x1; col <= x2; ++col, ++tile) {
+                short current = (short)(tile->terrain_elevation >> 5);
+                short north_west = 0;
+                short north = 0;
+                short north_east = 0;
+                short east = 0;
+                short south_east = 0;
+                short south = 0;
+                short south_west = 0;
+                short west = 0;
+
+                if (row > 0 && (tile[offset_n].terrain_elevation >> 5) > current) {
+                    north = 1;
+                }
+                if (row < this->map_height - 1 && (tile[width].terrain_elevation >> 5) > current) {
+                    south = 1;
+                }
+                if (col > 0 && (tile[-1].terrain_elevation >> 5) > current) {
+                    west = 1;
+                }
+                if (col < this->map_width - 1 && (tile[1].terrain_elevation >> 5) > current) {
+                    east = 1;
+                }
+                if (row > 0) {
+                    if (col > 0 && (tile[offset_nw].terrain_elevation >> 5) > current) {
+                        north_west = 1;
+                    }
+                    if (col < this->map_width - 1 && (tile[offset_ne].terrain_elevation >> 5) > current) {
+                        north_east = 1;
+                    }
+                }
+                if (row < this->map_height - 1) {
+                    if (col > 0 && (tile[offset_sw].terrain_elevation >> 5) > current) {
+                        south_west = 1;
+                    }
+                    if (col < this->map_width - 1 && (tile[offset_se].terrain_elevation >> 5) > current) {
+                        south_east = 1;
+                    }
+                }
+
+                bool fix = false;
+                if (north_west) {
+                    if ((north_east && !north) || (east && !north_east) ||
+                        (south_west && !west) || (south && !south_west) ||
+                        ((south_east && !south) && !east)) {
+                        fix = 1;
+                    } else if (south_east && !south && !east) {
+                        fix = 1;
+                    }
+                }
+                if (north_east && !fix) {
+                    if ((south_east && !east) || (south && !south_east) ||
+                        (north_west && !north) || (west && !north_west) ||
+                        (south_west && !west && !south)) {
+                        fix = 1;
+                    }
+                }
+                if (south_east && !fix) {
+                    if ((south_west && !south) || (west && !south_west) ||
+                        (north_east && !east) || (north && !north_east) ||
+                        (north_west && !west && !north)) {
+                        fix = 1;
+                    }
+                }
+                if (south_west && !fix) {
+                    if ((north_west && !west) || (north && !north_west) ||
+                        (south_east && !south) || (east && !south_east) ||
+                        (north_east && !east && !north)) {
+                        fix = 1;
+                    }
+                }
+
+                if (fix) {
+                    if (current < elevation) {
+                        ++current;
+                        tile->terrain_elevation = (unsigned char)((current << 5) ^
+                                                                  (tile->terrain_elevation & 0x1f));
+                    } else {
+                        if (north_west) {
+                            tile[offset_nw].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[offset_nw].terrain_elevation & 0x1f));
+                        }
+                        if (north) {
+                            tile[offset_n].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[offset_n].terrain_elevation & 0x1f));
+                        }
+                        if (north_east) {
+                            tile[offset_ne].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[offset_ne].terrain_elevation & 0x1f));
+                        }
+                        if (east) {
+                            tile[1].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[1].terrain_elevation & 0x1f));
+                        }
+                        if (south_east) {
+                            tile[offset_se].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[offset_se].terrain_elevation & 0x1f));
+                        }
+                        if (south) {
+                            tile[width].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[width].terrain_elevation & 0x1f));
+                        }
+                        if (south_west) {
+                            tile[offset_sw].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[offset_sw].terrain_elevation & 0x1f));
+                        }
+                        if (west) {
+                            tile[-1].terrain_elevation =
+                                (unsigned char)((current << 5) | (tile[-1].terrain_elevation & 0x1f));
+                        }
+                    }
+                    change_flag = 1;
+                }
+            }
+        }
+
+        if (this->postclean_elevation(x1, y1, x2, y2, elevation) != 0) {
+            change_flag = 1;
+        }
+        if (!change_flag) {
+            this->set_elev((short)x1, (short)y1, (short)x2, (short)y2, 0, 0, 0);
+            return;
+        }
+    } while (true);
 }

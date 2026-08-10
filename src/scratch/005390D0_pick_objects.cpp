@@ -1,82 +1,326 @@
 // 005390D0 RGE_View::pick_objects
 // Attempt log:
-// try 1: packet-grounded reconstruction of object picking. Models viewport/radius validation, scanline loop, bounds hit tests, mask priority, picked-object buckets and final flattening. Compiles too short (688B vs 1081B).
-// try 2: modeled early validation of radius/min/max and viewport limits +0x8c/+0x90/+0x94/+0x98.
-// try 3: modeled min/max clamp to 0..40 and conversion to view-relative x/y.
-// try 4: modeled zeroing temp bucket locals and view bucket array at +0x314.
-// try 5: modeled scan over player/grid rows and per-object null/id/skip checks.
-// try 6: modeled rough outer padded bounds hit test and inner object bounds hit test.
-// try 7: modeled flag bit 2 changing default hit priority and mask-test helper producing priority 1/2.
-// try 8: modeled priority cutoff against caller priority and append into temporary bucket list.
-// try 9: modeled final flattening from buckets into global Picked_Objects and returning count.
-// try 10: helper/typed high-level model remains far too short; original has large inlined linked-list bucket management and scanline topology.
-// GIVEUP blockers: exact RGE_View/player/grid/object/Picked_Objects layouts, mask helper signature, linked-list/bucket storage topology, and nested scan source shape. No inline asm used; no accepted_drift proposal.
+// try 1-10: prior decompiler-shaped grid/object model was too short (674-688B) and
+// used a fake pick_mask_test call; the binary actually walks prior_objs draw levels
+// and calls RGE_View::sprite_check while maintaining sorted RGE_SPick_Info lists.
+// probe 1 baseline: canonical ownership rewrite pending; prior source was not a
+// behavior-backed reconstruction.
+// probe 2: replaced the grid/object scaffold with the binary-backed draw-level
+// scan, sprite_check call, free-list reuse, sorted insertion, and compact output;
+// call set and size became structurally close.
+// probe 3: removed artificial head[0] initialization; this recovered the
+// compiler's overlapping count/list stack window and improved the diff.
+// probe 4: separate validation guards, explicit level cursor, integer keep flag,
+// and natural for loops recovered the 0x54 frame and many exact blocks.
+// probe 5-7: tested declaration/context and a named pick_list_size[1..4] pointer;
+// the contiguous member initialization improved resync similarity.
+// probe 8: named all rectangle bounds reached exact size but worsened the
+// register basin; restored direct canonical member expressions.
+// probe 10: a named normalized hot_y lifetime worsened strict bytes; restored.
+// probe 12: register total_picked was a codegen duplicate and was not retained.
+// best retained check: 1048B rebuilt vs 1081B, 956 strict diff bytes, 65.98%
+// shape similarity, exact frame/call set; remaining drift is broad prologue,
+// register/liveness, and block-layout scheduling, not a call or layout blocker.
 
-struct PickedObj { int id; short action; short pad; int next; };
-extern PickedObj Picked_Objects[];
-extern "C" int __cdecl pick_mask_test(int,int,int,int);
+struct Shape_Info;
 
-class RGE_Static_Object { public: char gap00[8]; int id; char gap0c[0x10]; int flags; char gap20[0x0c]; short x1; short y1; short x2; short y2; short action; char gap3c[0x20]; };
-struct Row { RGE_Static_Object** objects; };
-struct Grid { char gap[0x5c]; Row** rows; };
-class Player { public: char gap[0x334]; Grid* grid; };
+struct RGE_SPick_Info {
+    int object_id;                 // +0x00
+    short confidence;              // +0x04
+    short draw_level;              // +0x06
+    short draw_x;                  // +0x08
+    short draw_y;                  // +0x0A
+    RGE_SPick_Info* next;          // +0x0C
+    RGE_SPick_Info* prev;          // +0x10
+};
+
+struct Picked_Info {
+    int object_id;
+    short confidence;
+    short draw_level;
+    short draw_x;
+    short draw_y;
+};
+
+extern Picked_Info Picked_Objects[];
+
+struct DClipInfo_Node {
+    DClipInfo_Node* Next;          // +0x00
+    DClipInfo_Node* NextOnLevel;   // +0x04
+    int Object_ID;                 // +0x08
+    Shape_Info* Shape;             // +0x0C
+    int Draw_Level;                // +0x10
+    int Draw_X;                    // +0x14
+    int Draw_Y;                    // +0x18
+    int Draw_Flag;                 // +0x1C
+    unsigned char* Shape_Base;     // +0x20
+    unsigned char* Color_Table;    // +0x24
+    int Xform_Mask;                // +0x28
+    int Node_Type;                 // +0x2C
+    short x1;                      // +0x30
+    short y1;                      // +0x32
+    short x2;                      // +0x34
+    short y2;                      // +0x36
+    short x3;                      // +0x38
+    short y3;                      // +0x3A
+    short x4;                      // +0x3C
+    short y4;                      // +0x3E
+};
+
+class DClipInfo_List {
+public:
+    char gap_00[0x5C];
+    DClipInfo_Node** Draw_Level_Head;
+};
 
 class RGE_View {
 public:
-    char gap00[0x8c]; int view_x1; int view_y1; int view_x2; int view_y2;
-    char gap9c[0x258]; int buckets[4]; char gap304[0x30]; Player* player;
-    int pick_objects(int x, int y, int minr, int maxr, int radius, int priority, int skipNeg);
+    char gap_00[0x8C];
+    int x_min;
+    int y_min;
+    int x_max;
+    int y_max;
+    char gap_9C[0x260];
+    RGE_SPick_Info* pick_lists[5];
+    int pick_list_size[5];
+    char gap_324[0x10];
+    DClipInfo_List* prior_objs;
+
+    int sprite_check(unsigned char* shape_base, Shape_Info* shape, int x, int y);
+    int pick_objects(int x, int y, int min_level, int max_level,
+                     int radius, int priority, int skip_negative);
 };
 
-int RGE_View::pick_objects(int x, int y, int minr, int maxr, int radius, int priority, int skipNeg)
+int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
+                           int radius, int priority, int skip_negative)
 {
-    if (radius < 0) return 0;
-    if (maxr < minr) return 0;
-    if (x < view_x1 || x > view_x2 || y < view_y1 || y > view_y2) return 0;
-    if (minr > 40) return 0;
-    if (maxr < 0) return 0;
-    if (minr < 0) minr = 0;
-    if (maxr > 40) maxr = 40;
-    x -= view_x1;
-    y -= view_y1;
-    buckets[0]=buckets[1]=buckets[2]=buckets[3]=0;
-    int found = 0;
-    int outCount = 0;
-    for (int row = maxr; row >= minr; --row) {
-        Row* r = player->grid->rows[row];
-        if (!r) continue;
-        for (int k=0; k<40; ++k) {
-            RGE_Static_Object* obj = r->objects[k];
-            if (!obj) continue;
-            int hit = 0;
-            if (obj->id >= 0 || !skipNeg) {
-                int ox1=obj->x1-radius, oy1=obj->y1-radius, ox2=obj->x2+radius, oy2=obj->y2+radius;
-                if (x>=ox1 && y>=oy1 && x<=ox2 && y<=oy2) {
-                    hit = 4;
-                    if (x>=obj->x1 && y>=obj->y1 && x<=obj->x2 && y<=obj->y2) {
-                        hit = (obj->flags & 2) ? 3 : 4;
-                        int m = pick_mask_test(obj->gap00[0], obj->gap20[0], x-obj->x1, y-obj->y1);
-                        if (m == 1) hit = 2; else if (m == 2) hit = 1;
+    RGE_SPick_Info* head[5];
+    RGE_SPick_Info* tail[5];
+    RGE_SPick_Info* freep[5];
+    RGE_SPick_Info* found;
+    RGE_SPick_Info* previous;
+    RGE_SPick_Info* current;
+    RGE_SPick_Info** head_ptr;
+    DClipInfo_Node* node;
+    int level;
+    int confidence;
+    int object_id;
+    int selected_level;
+    short draw_level;
+    int i;
+    int keep;
+    int total_picked = 0;
+    int* pick_sizes;
+
+    if (radius < 0) {
+        return 0;
+    }
+    if (max_level < min_level) {
+        return 0;
+    }
+    if (x < this->x_min || this->x_max < x ||
+        y < this->y_min || this->y_max < y) {
+        return 0;
+    }
+    if (0x28 < min_level || max_level < 0) {
+        return 0;
+    }
+
+    if (min_level < 0) {
+        min_level = 0;
+    }
+    if (max_level > 0x28) {
+        max_level = 0x28;
+    }
+
+    y -= this->y_min;
+    x -= this->x_min;
+
+    pick_sizes = this->pick_list_size + 1;
+    pick_sizes[0] = 0;
+    pick_sizes[1] = 0;
+    pick_sizes[2] = 0;
+    pick_sizes[3] = 0;
+
+    freep[1] = 0;
+    freep[2] = 0;
+    freep[3] = 0;
+    freep[4] = 0;
+    tail[1] = 0;
+    tail[2] = 0;
+    tail[3] = 0;
+    tail[4] = 0;
+    head[1] = 0;
+    head[2] = 0;
+    head[3] = 0;
+    head[4] = 0;
+
+    level = max_level;
+    do {
+        if (level < min_level) {
+            int output_level = 1;
+            head_ptr = head + 1;
+            for (; output_level < 5; ++output_level, ++head_ptr) {
+                current = *head_ptr;
+                if (current != 0) {
+                    Picked_Info* output = &Picked_Objects[total_picked];
+                    do {
+                        output->object_id = current->object_id;
+                        output->confidence = current->confidence;
+                        output->draw_level = current->draw_level;
+                        output->draw_x = current->draw_x;
+                        output->draw_y = current->draw_y;
+                        ++total_picked;
+                        ++output;
+                        current = current->next;
+                    } while (current != 0);
+                }
+            }
+            return total_picked;
+        }
+
+        node = this->prior_objs->Draw_Level_Head[level];
+        for (; node != 0; node = node->NextOnLevel) {
+            confidence = 0;
+            if (node->Node_Type == 0 &&
+                (skip_negative == 0 || node->Object_ID >= 0)) {
+                int node_y1 = node->y1;
+                int node_x2 = node->x2;
+                if (x < node->x1 - radius ||
+                    y < node_y1 - radius ||
+                    radius + node_x2 < x ||
+                    node->y2 + radius < y) {
+                    confidence = 0;
+                } else {
+                    confidence = 4;
+                    if (node->x1 <= x && node_y1 <= y &&
+                        x <= node_x2 && y <= node->y2) {
+                        confidence = 3;
+                        if ((node->Draw_Flag & 2) == 2) {
+                            node_x2 -= x;
+                        } else {
+                            node_x2 = x - node->x1;
+                        }
+                        int mask = this->sprite_check(
+                            node->Shape_Base, node->Shape,
+                            node_x2, y - node_y1);
+                        if (mask == 1) {
+                            confidence = 2;
+                        } else if (mask == 2) {
+                            confidence = 1;
+                        }
                     }
                 }
             }
-            if (hit && hit <= priority) {
-                PickedObj* po = &Picked_Objects[outCount++];
-                po->id = obj->id;
-                po->action = obj->action;
-                po->next = buckets[hit-1];
-                buckets[hit-1] = (int)po;
+
+            if (confidence != 0 && confidence <= priority) {
+                draw_level = node->y3;
+                object_id = node->Object_ID;
+                keep = 1;
+                found = 0;
+                int picked_level = 1;
+                head_ptr = head + 1;
+                do {
+                    if (found == 0) {
+                        current = *head_ptr;
+                        if (current != 0) {
+                            do {
+                                if (current->object_id == object_id) {
+                                    found = current;
+                                    selected_level = picked_level;
+                                    break;
+                                }
+                                current = current->next;
+                            } while (current != 0);
+                        }
+                    }
+                    ++picked_level;
+                    ++head_ptr;
+                } while (picked_level < 5);
+
+                if (found != 0) {
+                    if (selected_level < confidence ||
+                        (selected_level == confidence &&
+                         draw_level < found->draw_level)) {
+                        keep = 0;
+                    }
+
+                    if (keep) {
+                        if (head[selected_level] == found) {
+                            head[selected_level] = found->next;
+                        }
+                        if (tail[selected_level] == found) {
+                            tail[selected_level] = found->prev;
+                        }
+                        if (found->next != 0) {
+                            found->next->prev = found->prev;
+                        }
+                        if (found->prev != 0) {
+                            found->prev->next = found->next;
+                        }
+                        found->next = freep[selected_level];
+                        found->prev = 0;
+                        freep[selected_level] = found;
+                    }
+                }
+
+                if (keep) {
+                    current = freep[confidence];
+                    if (current == 0) {
+                        i = this->pick_list_size[confidence];
+                        if (i == 0x40) {
+                            keep = 0;
+                        } else {
+                            current = this->pick_lists[confidence] + i;
+                            this->pick_list_size[confidence] = i + 1;
+                        }
+                    } else {
+                        freep[confidence] = current->next;
+                    }
+
+                    if (keep) {
+                        current->object_id = object_id;
+                        current->confidence = (short)confidence;
+                        current->draw_level = draw_level;
+                        current->draw_x = (short)node->Draw_X;
+                        current->draw_y = (short)node->Draw_Y;
+                        head_ptr = head + confidence;
+                        current->next = 0;
+                        current->prev = 0;
+                        found = *head_ptr;
+                        if (found == 0) {
+                            *head_ptr = current;
+                            tail[confidence] = current;
+                        } else {
+                            do {
+                                if (found->draw_level <= draw_level) {
+                                    current->next = found;
+                                    previous = found->prev;
+                                    current->prev = previous;
+                                    if (previous == 0) {
+                                        *head_ptr = current;
+                                        found->prev = current;
+                                    } else {
+                                        current->prev->next = current;
+                                        found->prev = current;
+                                    }
+                                    break;
+                                }
+                                previous = found->next;
+                                if (previous == 0) {
+                                    found->next = current;
+                                    current->prev = found;
+                                    tail[confidence] = current;
+                                    break;
+                                }
+                                found = previous;
+                            } while (found != 0);
+                        }
+                    }
+                }
             }
+
         }
-    }
-    int n = 0;
-    for (int b=0;b<4;b++) {
-        int p=buckets[b];
-        while (p) {
-            PickedObj* po=(PickedObj*)p;
-            Picked_Objects[n++] = *po;
-            p = po->next;
-        }
-    }
-    return n;
+        --level;
+    } while (true);
 }

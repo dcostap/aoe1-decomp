@@ -1,80 +1,174 @@
 // 00456E90 RGE_Map::clean_terrain
+// map.cpp:1028-1190
 // Attempt log:
-// try 1: packet-grounded reconstruction. Models clamped rectangle expansion, two cleanup passes, 8-neighbor same-terrain tests, and set_terrain calls when edge/corner patterns need cleaning. Compiles too short (976B vs 1127B).
-// try 2: modeled initial clamp of x1/y1 to >=0 and x2/y2 to width-1/height-1.
-// try 3: modeled per-iteration rectangle expansion before each cleanup pass (decrement mins, increment maxes inside bounds).
-// try 4: modeled outer repeat-until-no-change loop using changed/again byte equivalent.
-// try 5: modeled two pass loop; pass 0 checks cardinal neighbors, pass 1 includes diagonals.
-// try 6: modeled map row table at +0x8d8c and 24-byte tile stride with terrain byte at tile+5 masked by 0x1f.
-// try 7: modeled north/south/east/west neighbor checks with edge guards.
-// try 8: modeled diagonal checks in second pass and corner/edge cleanup predicates.
-// try 9: modeled set_terrain call with terrain_system at +0x8dc0 and args (terrain,y/x,0,0) approximation.
-// try 10: tried factoring neighbor test as a static helper first; still too short because original keeps all neighborhood tests inline and has specific stack-slot/word-test topology.
-// GIVEUP blockers: exact original cleanup predicates for pass 0/pass 1, row-vs-linear neighbor addressing (original uses +/- width-derived stride constants and tile offsets), set_terrain signature/argument order, and preserving original stack-slot word-test topology. No inline asm used; no accepted_drift proposal.
+// 1: Packet-grounded baseline modeled the clamp, two-pass neighborhood scan, and repeated cleanup, but used a fake set_terrain helper and a simplified predicate (936B vs 1127B; 9 calls vs 1).
+// 2: Reconstruct the period map.cpp surface: 24-byte RGE_Tile, map_row_offset +0x8D8C, game_world +0x8DC0, direct member set_terrain call, short neighbor offsets, and the packet's natural two-pass predicate topology.
+// 3: A local map alias was a codegen duplicate.
+// 4: Replaced explicit next_col/guard plumbing with natural nested row/column loops; size moved to 1166B, frame 0x48, diff 1077.
+// 5: Restoring direct this member expressions was a codegen duplicate.
+// 6: Reused the incoming y2 parameter for the expanding last-row bound; diff improved to 888 and shape to 75.62%, but frame remained four bytes large.
+// 7: Modeled fix as a byte/bool; diff 875, calls/CFG aligned, frame still 0x48 vs 0x44.
+// 8: Separate target terrain capture was a codegen duplicate.
+// 9: Reusing the terrain parameter home as changed made the frame exact but lost EBX/ESI/EDI lifetime and worsened diff to 1105; rolled back.
+// 10: bool changed was a codegen duplicate of the best separate-flag source. Final blocker is the remaining four-byte VC5 local-home/register basin; direct set_terrain call and all 91 conditional signals now align.
 
-struct MapTile { char gap[5]; unsigned char terrain; char rest[18]; };
-extern void __cdecl set_terrain_00459900(void*, int, int, int, int, int);
+struct RGE_Tile {
+    char gap_00[5];
+    unsigned char terrain_type;
+    char gap_06[0x12];
+};
 
 class RGE_Map {
 public:
-    int vptr; short width; short height; char gap10[0x8d7c]; MapTile** rows; char gap8d90[0x30]; void* terrain_system;
-    void clean_terrain(int x1, int y1, int x2, int y2, int terrain);
+    char gap_00[8];
+    int map_width;
+    int map_height;
+    char gap_10[0x8D7C];
+    RGE_Tile** map_row_offset;
+    char gap_8D90[0x30];
+    void* game_world;
+
+    void set_terrain(void* world, int x, int y, unsigned char terrain, int a, int b);
+    void clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrain);
 };
 
-static int same(MapTile* t, int off, int terrain)
+void RGE_Map::clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrain)
 {
-    return ((t[off].terrain & 0x1f) == (terrain & 0xff));
-}
+    short map_width = (short)this->map_width;
+    short offset_nw = (short)(-1 - map_width);
+    short offset_n = (short)-map_width;
+    short offset_ne = (short)(1 - map_width);
+    short offset_se = (short)(map_width + 1);
+    short offset_sw = (short)(map_width - 1);
 
-void RGE_Map::clean_terrain(int x1, int y1, int x2, int y2, int terrain)
-{
-    if (x1 < 0) x1 = 0;
-    if (y1 < 0) y1 = 0;
-    if (x2 >= this->width) x2 = this->width - 1;
-    if (y2 >= this->height) y2 = this->height - 1;
-    int again;
+    if (x1 < 0) {
+        x1 = 0;
+    }
+    if (y1 < 0) {
+        y1 = 0;
+    }
+    if (x2 >= this->map_width) {
+        x2 = this->map_width - 1;
+    }
+
+    if (y2 >= this->map_height) {
+        y2 = this->map_height - 1;
+    }
+
+    bool changed;
     do {
-        again = 0;
-        if (x1 > 0) --x1;
-        if (y1 > 0) --y1;
-        if (x2 < this->width - 1) ++x2;
-        if (y2 < this->height - 1) ++y2;
-        for (int pass = 0; pass < 2; ++pass) {
-            for (int y = y1; y <= y2; ++y) {
-                MapTile* tile = this->rows[y] + x1;
-                for (int x = x1; x <= x2; ++x, ++tile) {
-                    unsigned char cur = tile->terrain & 0x1f;
-                    if (cur == (unsigned char)terrain) continue;
-                    int n=0,s=0,w=0,e=0,nw=0,ne=0,sw=0,se=0;
-                    if (y > 0) n = same(tile, -this->width, terrain);
-                    if (y < this->height - 1) s = same(tile, this->width, terrain);
-                    if (x > 0) w = same(tile, -1, terrain);
-                    if (x < this->width - 1) e = same(tile, 1, terrain);
-                    if (pass == 1) {
-                        if (y > 0 && x > 0) nw = same(tile, -this->width-1, terrain);
-                        if (y > 0 && x < this->width-1) ne = same(tile, -this->width+1, terrain);
-                        if (y < this->height-1 && x > 0) sw = same(tile, this->width-1, terrain);
-                        if (y < this->height-1 && x < this->width-1) se = same(tile, this->width+1, terrain);
-                    }
-                    int fix = 0;
-                    if (pass == 0) {
-                        if ((n && s) || (w && e)) fix = 1;
-                    } else {
-                        if (nw && (!n || !w)) fix = 1;
-                        if (ne && (!n || !e)) fix = 1;
-                        if (sw && (!s || !w)) fix = 1;
-                        if (se && (!s || !e)) fix = 1;
-                        if (n && e && !ne) fix = 1;
-                        if (e && s && !se) fix = 1;
-                        if (s && w && !sw) fix = 1;
-                        if (w && n && !nw) fix = 1;
-                    }
-                    if (fix) {
-                        set_terrain_00459900(this->terrain_system, x, y, terrain, 0, 0);
-                        again = 1;
-                    }
+        changed = 0;
+
+        if (x1 > 0) {
+            --x1;
+        }
+        if (y1 > 0) {
+            --y1;
+        }
+        if (x2 < this->map_width - 1) {
+            ++x2;
+        }
+        if (y2 < this->map_height - 1) {
+            ++y2;
+        }
+
+        int pass = 0;
+        do {
+            for (int row = y1; row <= y2; ++row) {
+                RGE_Tile* tile = this->map_row_offset[row] + x1;
+                for (int col = x1; col <= x2; ++col, ++tile) {
+                        if ((tile->terrain_type & 0x1f) != terrain) {
+                            short north = 0;
+                            short south = 0;
+                            short west = 0;
+                            short east = 0;
+                            short north_west = 0;
+                            short north_east = 0;
+                            short south_west = 0;
+                            short south_east = 0;
+                            unsigned char fix = 0;
+
+                            if (row > 0 && (tile[offset_n].terrain_type & 0x1f) == terrain) {
+                                north = 1;
+                            }
+                            if (row < this->map_height - 1 && (tile[map_width].terrain_type & 0x1f) == terrain) {
+                                south = 1;
+                            }
+                            if (col > 0 && (tile[-1].terrain_type & 0x1f) == terrain) {
+                                west = 1;
+                            }
+                            if (col < this->map_width - 1 && (tile[1].terrain_type & 0x1f) == terrain) {
+                                east = 1;
+                            }
+
+                            if (pass == 1) {
+                                if (row > 0) {
+                                    if (col > 0 && (tile[offset_nw].terrain_type & 0x1f) == terrain) {
+                                        north_west = 1;
+                                    }
+                                    if (col < this->map_width - 1 &&
+                                        (tile[offset_ne].terrain_type & 0x1f) == terrain) {
+                                        north_east = 1;
+                                    }
+                                }
+                                if (row < this->map_height - 1) {
+                                    if (col > 0 && (tile[offset_sw].terrain_type & 0x1f) == terrain) {
+                                        south_west = 1;
+                                    }
+                                    if (col < this->map_width - 1 &&
+                                        (tile[offset_se].terrain_type & 0x1f) == terrain) {
+                                        south_east = 1;
+                                    }
+                                }
+                            }
+
+                            if (pass == 0) {
+                                if ((north && south) || (east && west)) {
+                                    fix = 1;
+                                }
+                            } else {
+                                if (north_west) {
+                                    if ((north_east && !north) || (east && !north_east) ||
+                                        (south_west && !west) || (south && !south_west) ||
+                                        ((south_east && !south) && !east)) {
+                                        fix = 1;
+                                    }
+                                }
+                                if (north_east && !fix) {
+                                    if ((north_west && !north) || (west && !north_west) ||
+                                        (south_east && !east) || (south && !south_east) ||
+                                        (south_west && !west && !south)) {
+                                        fix = 1;
+                                    }
+                                }
+                                if (south_east && !fix) {
+                                    if ((north_east && !east) || (north && !north_east) ||
+                                        (south_west && !south) || (west && !south_west) ||
+                                        (north_west && !west && !north)) {
+                                        fix = 1;
+                                    }
+                                }
+                                if (south_west && !fix) {
+                                    if ((north_west && !west) || (north && !north_west) ||
+                                        (south_east && !south) || (east && !south_east) ||
+                                        (north_east && !east && !north)) {
+                                        fix = 1;
+                                    }
+                                }
+                            }
+
+                            if (fix) {
+                                this->set_terrain(this->game_world, col, row, terrain, 0, 0);
+                                changed = 1;
+                            }
+                        }
                 }
             }
+            ++pass;
+        } while (pass < 2);
+
+        if (!changed) {
+            return;
         }
-    } while (again);
+    } while (true);
 }

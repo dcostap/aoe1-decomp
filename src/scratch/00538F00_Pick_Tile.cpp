@@ -12,6 +12,12 @@
 // - a focused 32-case natural-shape lab found only a diagnostic local-struct
 //   variant with 301B/frame parity; it still diverged at the early view-top
 //   register load and is not retained as source scaffolding.
+// - this pass rechecked sum/order, map-pointer, declaration-scope, and six-way
+//   local-order variants; they were duplicates or neutral.
+// - a direct contiguous Map_Dims aggregate plus binary-observed output aliases
+//   reached 301B/frame parity and 189B strict drift (88.98% shape), but the
+//   parameter casts were compiler-steering rather than plausible living source;
+//   aggregate initializer/order variants did not improve it and were rolled back.
 // Main-agent audit restored four ordinary named bounding outputs and removed
 // explicit parameter-home alias casts. Remaining gap is broad VC5 register/frame
 // coloring, not an unresolved call set or bounding-box behavior.

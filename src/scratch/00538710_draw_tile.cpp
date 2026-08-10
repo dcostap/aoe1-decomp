@@ -1,81 +1,269 @@
 // 00538710 RGE_View::draw_tile
 // Attempt log:
-// try 1: packet-grounded reconstruction of tile draw. Models terrain lookup, overlay/object image resolution, debug checker flag, draw object/terrain calls, neighbor dirty marking, and fallback overlay draw paths. Compiles too short (848B vs 1135B).
-// try 2: modeled terrain id bounds against map+0x8d90 and terrain info index ter*408.
-// try 3: modeled terrain availability byte at +0x8c and early return when unavailable.
-// try 4: modeled overlay nibble from tile+6, overlay info index overlay*1440, availability, image pointer and simple-vs-composite branch.
-// try 5: modeled resolve1/resolve2 helpers for overlay and terrain picture selection with -1 failure handling.
-// try 6: modeled debug_grid_size checkerboard flag mutation and no_terrain_images clearing terrain draw.
-// try 7: modeled main terrain image draw path and no_terrain_images alternate path.
-// try 8: modeled dirty marking of left/below neighbor tile byte +0xa bit 0x40 when no alt overlay.
-// try 9: modeled overlay draw path for simple and composite variants.
-// try 10: high-level helper/member-call model remains far too short because original duplicates simple/composite draw blocks and preserves many stack locals/outparams inline.
-// GIVEUP blockers: exact RGE_View/RGE_Map terrain/overlay struct layouts, helper signatures and outparam order (00539B90/00539C80/00539AA0/draw paths), globals semantics, and original duplicated block/control-flow topology. No inline asm used; no accepted_drift proposal.
+// try 1-10: the prior raw-offset model used the wrong parameter ABI and fake
+// resolve/draw helpers; it was 842B and missed the two border helpers and five
+// draw_terrain_shape sites.
+// probe 1 baseline: recorded the rough scaffold before replacing it.
+// probe 2: canonicalized RGE_Tile/RGE_Map/RGE_Border_Set ownership, the exact
+// view.cpp helper signatures, duplicated simple/composite border calls, and the
+// two binary-proven neighbor-marking paths.
+// probe 3: removed the persistent map alias; resync similarity improved and the
+// terrain offset became the correct map-relative 0x198 stride.
+// probe 4-6: tested cached border-byte/index widths and edge-output declaration
+// order; the int low-nibble index plus one cached byte recovered exact size,
+// frame, and the broadest exact-block basin.
+// probe 7: moved flag/result/border initialization after the loaded guard and
+// combined the two early failures; this recovered the original shared tail.
+// probe 8: a pTile alias was a codegen duplicate and was removed from living
+// source. probe 9: retained the binary-proven comma assignment in the combined
+// terrain guard.
+// best final check: 1135B rebuilt/original, 0x28 frame, all 11 direct calls and
+// target relocations aligned, 1056 strict diff bytes, 69.90% shape similarity,
+// 33.87% exact-block coverage. Remaining drift is broad entry/local register
+// coloring and duplicated-tail scheduling; no call/layout/ABI blocker remains.
 
-struct Tile { char gap4[4]; unsigned char frame; unsigned char terrain; unsigned char overlay; char gap10[4]; };
-struct Map { char gap0[0xc]; int h; char gap104[0x8d80]; Tile** rows; short terrains; char rest[0x1000]; };
-class RGE_View {
-public:
-    char gap[0x104]; Map* map;
-    short resolve1(int,int,int,int,int);
-    int resolve2(int,int,int,int,int,int*,int*,int*,int*);
-    short resolve3(int,int,int,int);
-    void draw_obj(int,int,void*,int,int,int,int,int);
-    void draw_obj2(int,int,void*,int,int,int,int,int);
-    int draw_tile(Tile* t,int a,int ter,int sx,int sy,int dx,int dy,int flags,int shade);
+struct TShape;
+
+struct RGE_Tile {
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0C[0x0C];
 };
-extern int debug_grid_size;
-extern int no_terrain_images;
 
-int RGE_View::draw_tile(Tile* t,int a,int ter,int sx,int sy,int dx,int dy,int flags,int shade)
+struct RGE_Tile_Set {
+    unsigned char loaded;
+    char gap_01[0x1F];
+    TShape* shape;
+    char gap_24[0x174];
+};
+
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
+};
+
+struct RGE_Border_Set {
+    unsigned char loaded;
+    char gap_01[0x1F];
+    TShape* shape;
+    char gap_24[0x576];
+    unsigned char draw_tile;
+    unsigned char gap_59B;
+    short underlay_terrain;
+    short border_style;
+};
+
+class RGE_Map {
+public:
+    virtual ~RGE_Map();
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    long world_width;
+    long world_height;
+    char gap_18[0x74];
+    RGE_Tile_Set terrain_types[32];
+    RGE_Border_Set border_types[16];
+    RGE_Tile** map_row_offset;
+    short num_terrain;
+    short num_borders;
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0xF0];
+};
+
+class RGE_View : public TPanel {
+public:
+    char gap_F4[0x10];
+    RGE_Map* map;
+
+    short get_border_picture(unsigned char terrain_type,
+                             unsigned char tile_type,
+                             unsigned char border_type,
+                             short x, short y);
+    int get_border_edge_pictures(unsigned char terrain_type,
+                                 unsigned char tile_type,
+                                 unsigned char border_type,
+                                 short x, short y,
+                                 int* left, int* bottom,
+                                 int* right, int* retval);
+    short get_tile_picture(unsigned char terrain_type,
+                           unsigned char tile_type, short x, short y);
+    void draw_terrain_obstruction_map(int x, int y, TShape* shape,
+                                      int frame, int tile_x, int tile_y);
+    void draw_terrain_shape(int x, int y, TShape* shape, int frame,
+                            unsigned char visibility,
+                            unsigned char draw_attribute,
+                            int draw1, int draw2);
+
+    int draw_tile(RGE_Tile* tile, unsigned char terrain_type,
+                  short x, short y, short map_x, short map_y,
+                  unsigned char draw_attribute, int draw1, int draw2);
+};
+
+extern int View_Grid_Mode;
+extern int view_debug_ObstructionMap;
+
+int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
+                        short x, short y, short map_x, short map_y,
+                        unsigned char draw_attribute, int draw1, int draw2)
 {
-    unsigned char origFlags = t->gap10[2];
-    if ((unsigned short)ter >= this->map->terrains) return 0;
-    int index = ter * 408;
-    if (!*((unsigned char*)this->map + index + 0x8c)) return 0;
-    int draw = 1, alt = 0, marked = 0;
-    unsigned char overlay = t->overlay & 0xf;
-    if (overlay) {
-        unsigned char* o = (unsigned char*)this->map + overlay * 1440 + 0x338c;
-        if (o[0] && *(void**)(o+0x20)) {
-            if (*(short*)(o+0x59e)==0) {
-                short id = resolve1(overlay,t->frame,t->overlay>>4,sx,sy);
-                if (id != -1) { alt = 1; draw = o[0x59a]; }
+    unsigned char draw_border = tile->draw_attribute;
+    int terrain_offset;
+    int overlay_available;
+    int terrain_draw;
+    unsigned char border_info;
+    int border_type;
+    int left_index;
+    int right_index;
+    int bottom_index;
+    int retval;
+    int result = 0;
+
+    if (this->map->num_terrain <= (short)terrain_type ||
+        ((terrain_offset = (int)terrain_type * (int)sizeof(RGE_Tile_Set)),
+         this->map->terrain_types[terrain_type].loaded == 0)) {
+        return 0;
+    }
+
+    terrain_draw = 1;
+    result = 0;
+    overlay_available = 0;
+    border_info = tile->border_type;
+    border_type = border_info & 0x0F;
+
+    if (border_type != 0) {
+        RGE_Border_Set* border = &this->map->border_types[border_type];
+        if (border->loaded != 0 && border->shape != 0) {
+            if (border->border_style == 0) {
+                short picture = this->get_border_picture(
+                    border_type, tile->tile_type,
+                    (unsigned char)(border_info >> 4), map_x, map_y);
+                if (picture != -1) {
+                    overlay_available = 1;
+                    terrain_draw = border->draw_tile;
+                }
             } else {
-                int p1=0,p2=0,p3=0,p4=0;
-                if (resolve2(overlay,t->frame,t->overlay>>4,sx,sy,&p1,&p2,&p3,&p4)) { alt=1; draw=1; }
+                if (this->get_border_edge_pictures(
+                        border_type, tile->tile_type,
+                        (unsigned char)(border_info >> 4), map_x, map_y,
+                        &left_index, &bottom_index,
+                        &right_index, &retval) != 0) {
+                    overlay_available = 1;
+                    terrain_draw = 1;
+                }
             }
         }
     }
-    if (debug_grid_size > 0 && !(origFlags & 0xdf)) {
-        if ((((short)sx / debug_grid_size) + ((short)sy / debug_grid_size)) & 1) origFlags |= 0x20;
+
+    if (View_Grid_Mode > 0 && (draw_border & 0xDF) == 0 &&
+        ((((int)map_x / View_Grid_Mode) +
+          ((int)map_y / View_Grid_Mode)) & 1) == 1) {
+        draw_border |= 0x20;
     }
-    if (no_terrain_images) alt = 0;
-    if (draw) {
-        void* img = *(void**)((char*)this->map + index + 0xac);
-        short pic = resolve3(ter,t->frame,sx,sy);
-        if (img && pic != -1) {
-            if (no_terrain_images) { draw_obj2(sx,sy,img,pic,sx,sy,dx,dy); return 1; }
-            draw_obj(sx,sy,img,pic,flags,dx,dy,shade);
-            marked = 1;
-        }
-        if (!alt) {
-            if ((short)sx > 0) this->map->rows[(short)sy][(short)sx-1].gap10[2] |= 0x40;
-            if ((short)sy < this->map->h-1) this->map->rows[(short)sy+1][(short)sx].gap10[2] |= 0x40;
-        }
+
+    if (view_debug_ObstructionMap != 0) {
+        overlay_available = 0;
     }
-    if (alt) {
-        unsigned char* o = (unsigned char*)this->map + overlay * 1440;
-        void* img = *(void**)(o+0x33ac);
-        if (img) {
-            if (*(short*)(o+0x392a)==0) {
-                short id = resolve1(overlay,t->frame,t->overlay>>4,sx,sy);
-                if (id != -1) draw_obj(sx,sy,img,id,flags,dx,dy,shade);
-            } else {
-                int p1=0,p2=0,p3=0,p4=0;
-                if (resolve2(overlay,t->frame,t->overlay>>4,sx,sy,&p1,&p2,&p3,&p4)) draw_obj(sx,sy,img,p1,flags,dx,dy,shade);
+
+    if (terrain_draw != 0) {
+        TShape* shape = this->map->terrain_types[terrain_type].shape;
+        short picture = this->get_tile_picture(
+            terrain_type, tile->tile_type, map_x, map_y);
+        if (shape != 0 && picture != -1) {
+            if (view_debug_ObstructionMap != 0) {
+                this->draw_terrain_obstruction_map(
+                    x, y, shape, picture, map_x, map_y);
+                return 1;
+            }
+            this->draw_terrain_shape(
+                x, y, shape, picture, draw_attribute,
+                draw_border, draw1, draw2);
+            result = 1;
+        }
+
+        if (overlay_available == 0) {
+            if (map_x > 0) {
+                RGE_Tile* left = this->map->map_row_offset[map_y] + map_x - 1;
+                left->draw_attribute |= 0x40;
+            }
+            if (map_y < this->map->map_height - 1) {
+                RGE_Tile* below = this->map->map_row_offset[map_y + 1] + map_x;
+                below->draw_attribute |= 0x40;
             }
         }
     }
-    return marked;
+
+    if (overlay_available == 0) {
+        return result;
+    }
+
+    {
+        RGE_Border_Set* border = &this->map->border_types[border_type];
+        TShape* shape = border->shape;
+        if (shape != 0) {
+            if (border->border_style == 0) {
+                short picture = this->get_border_picture(
+                    border_type, tile->tile_type,
+                    (unsigned char)(border_info >> 4), map_x, map_y);
+                if (picture != -1) {
+                    retval = picture;
+                } else {
+                    goto mark_neighbors;
+                }
+            } else {
+                if (this->get_border_edge_pictures(
+                        border_type, tile->tile_type,
+                        (unsigned char)(border_info >> 4), map_x, map_y,
+                        &left_index, &bottom_index,
+                        &right_index, &retval) == 0) {
+                    goto mark_neighbors;
+                }
+                if (left_index != -1) {
+                    this->draw_terrain_shape(
+                        x, y, shape, left_index, draw_attribute,
+                        draw_border, draw1, draw2);
+                }
+                if (right_index != -1) {
+                    this->draw_terrain_shape(
+                        x, y, shape, right_index, draw_attribute,
+                        draw_border, draw1, draw2);
+                }
+                if (bottom_index != -1) {
+                    this->draw_terrain_shape(
+                        x, y, shape, bottom_index, draw_attribute,
+                        draw_border, draw1, draw2);
+                }
+                if (retval == -1) {
+                    goto mark_neighbors;
+                }
+            }
+            this->draw_terrain_shape(
+                x, y, shape, retval, draw_attribute,
+                draw_border, draw1, draw2);
+        }
+    }
+
+mark_neighbors:
+    if (map_x > 0) {
+        RGE_Tile* left = this->map->map_row_offset[map_y] + map_x - 1;
+        left->draw_attribute |= 0x40;
+    }
+    if (map_y < this->map->map_height - 1) {
+        RGE_Tile* below = this->map->map_row_offset[map_y + 1] + map_x;
+        below->draw_attribute |= 0x40;
+    }
+    return result;
 }

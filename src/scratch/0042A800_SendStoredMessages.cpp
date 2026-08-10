@@ -1,97 +1,347 @@
 // VA: 0042A800 TCommunications_Handler::SendStoredMessages
-// PDB source: Com_hand.cpp
+// Com_hand.cpp:3567-3782
+//
+// Canonical reconstruction: the resend store is an array of 0x38-byte RESENDER
+// records.  Serial/TimeSent/Length/DestMap and the PlayerOptions dcoID array are
+// named owners of the accesses proved by the packet; the DirectPlay call uses
+// the period IDirectPlay3 __stdcall Send surface.
+//
 // Attempt log:
-// - reconstructed high-level flow from packet: send gating, timing throttle, queued-message scan, per-player send/log/update loop.
-// - default /O2 broad reconstruction compiles but .text is 1216 vs target 1285, too short for extraction; missing exact source/helper surfaces around DirectPlay send/log and retry/failure handling.
-// - tried /Od diagnostically: extraction compares but 90.66% positional diff from offset 0 due EBP frame, confirming original is optimized /O2.
-// - restored default flags; give-up. No accepted_drift because current source has broad behavioral uncertainty and no localized diff.
+// - prior scaffold used a synthetic StoredMsg layout, raw absolute helpers, and
+//   incorrect resend fields; it was retained only as evidence and replaced here.
+// - baseline: canonical RESENDER/PlayerOptions/DirectPlay reconstruction; 1232B,
+//   24/24 calls, but frame 0x24 versus original 0x20 and broad CFG drift.
+// - control-flow: shared no-transmit tail removed the extra Log call; calls became
+//   24/24 and edit similarity improved, while the frame/register basin remained.
+// - ABI: proven absolute communications globals restored relocation addresses;
+//   no structural gain, so retained only for globals without living definitions.
+// - control-flow: <=6 and explicit nonzero shutdown branch matched the observed
+//   compare polarity; strict diff improved to 1168B.
+// - behavior: ratio-first float/integer timing spelling recovered fild/fidiv shape;
+//   the remaining x87 compare still uses fcompp rather than the oracle's fcomp.
+// - context: proven error-string addresses recovered the branch immediate; final
+//   current check is 1222B, 24/24 calls, 90.5058% positional diff, frame 0x24.
+// - paused after 9 meaningful hypotheses: remaining gap is broad this/register,
+//   frame, local-home, and source-block topology, not a localized safe drift.
 
-extern unsigned long debug_timeGetTime(char* file, int line);
-extern void logmsg(void* out, char* fmt, ...);
-extern void sprintf(char* dst, char* fmt, ...);
+struct TDebuggingLog;
+struct RGE_Comm_Error;
+struct RGE_Communications_Speed;
+struct IDirectPlay3;
 
-#define COM_FILE ((char*)0x580BF4)
-#define sent_flag (*(unsigned char*)0x62C5E4)
-#define last_send_time (*(unsigned long*)0x62C5A8)
-#define queued_bytes (*(unsigned long*)0x62CF28)
-#define log_stream (*(void**)0x62C4FC)
-#define dword_62CF04 (*(void**)0x62CF04)
-#define dword_62CF08 (*(unsigned long*)0x62CF08)
-#define dword_62CF0C (*(unsigned long*)0x62CF0C)
-#define lobby_obj (*(LobbyObj**)0x62C5EC)
+extern unsigned long debug_timeGetTime(const char* file, int line);
+extern "C" int sprintf(char* buffer, const char* format, ...);
 
-class LobbyObj { public: virtual void v0(); char gap[0x68-4]; virtual int send(void*, void*, int, void*, int, int); };
-struct StoredMsg { unsigned long time; int player; int bytes; int data; int delay; char pad[0x38-0x14]; };
-class TCommunications_Handler_42A800 {
+class TDebuggingLog {
 public:
-    char gap0[0x1c]; int flag1c; char gap20[0xfc5-0x20]; char tmp[0x100]; char gap10c5[0x10c8-0x10c5]; int state10c8; char gap10cc[0x10e0-0x10cc]; int selfPlayer; char gap10e4[0x12a8-0x10e4]; int mode12a8; char gap12ac[0x12c0-0x12ac]; int sentBytes; char gap12c4[0x12d8-0x12c4]; unsigned short maxPlayers; char gap12da[0x132c-0x12da]; int sentCount; char gap1330[0x14d4-0x1330]; void* dpDesc; char gap14d8[0x14e0-0x14d8]; void* logObj; char gap14e4[0x1514-0x14e4]; unsigned char canSend; char gap1515[0x1520-0x1515]; StoredMsg* msgs; char gap1524[0x1568-0x1524]; int perPlayer[256];
-    void resetStored(); int canSendTo(int player); int nameFor(int player); int SendStoredMessages(); int Send(int a, int b, int c, char* d, int e);
+    void Log(const char* format, ...);
 };
 
-int TCommunications_Handler_42A800::SendStoredMessages()
+#define L (*(TDebuggingLog**)0x0062C4FC)
+#define DAT_0062c5ec (*(IDirectPlay3**)0x0062C5EC)
+#define DAT_0062cf04 (*(unsigned int*)0x0062CF04)
+#define DAT_0062cf08 (*(int*)0x0062CF08)
+#define DAT_0062cf0c (*(int*)0x0062CF0C)
+#define DAT_0062cf28 (*(unsigned int*)0x0062CF28)
+#define DAT_0062c5e4 (*(unsigned char*)0x0062C5E4)
+#define DAT_0062c5a8 (*(unsigned int*)0x0062C5A8)
+#define resend_adj1 (*(int*)0x0062CF08)
+#define resend_adj2 (*(int*)0x0062CF0C)
+#define DAT_0056f210 (*(float*)0x0056F210)
+#define s_Com_hand_cpp ((const char*)0x00580BF4)
+#define S_SENDSTORE ((const char*)0x00582264)
+#define S_BAD_DCOID ((const char*)0x005810B0)
+
+class RGE_Comm_Error {
+public:
+    void ShowReturn(long result, const char* text);
+};
+
+class IDirectPlay3 {
+public:
+    virtual long __stdcall QueryInterface(void*, void**) = 0;
+    virtual unsigned long __stdcall AddRef() = 0;
+    virtual unsigned long __stdcall Release() = 0;
+    virtual long __stdcall AddPlayerToGroup() = 0;
+    virtual long __stdcall Close() = 0;
+    virtual long __stdcall CreateGroup() = 0;
+    virtual long __stdcall CreatePlayer() = 0;
+    virtual long __stdcall DeletePlayerFromGroup() = 0;
+    virtual long __stdcall DestroyGroup() = 0;
+    virtual long __stdcall DestroyPlayer() = 0;
+    virtual long __stdcall EnumGroupPlayers() = 0;
+    virtual long __stdcall EnumGroups() = 0;
+    virtual long __stdcall EnumPlayers() = 0;
+    virtual long __stdcall EnumSessions() = 0;
+    virtual long __stdcall GetCaps() = 0;
+    virtual long __stdcall GetGroupData() = 0;
+    virtual long __stdcall GetGroupName() = 0;
+    virtual long __stdcall GetMessageCount() = 0;
+    virtual long __stdcall GetPlayerAddress() = 0;
+    virtual long __stdcall GetPlayerCaps() = 0;
+    virtual long __stdcall GetPlayerData() = 0;
+    virtual long __stdcall GetPlayerName() = 0;
+    virtual long __stdcall GetSessionDesc() = 0;
+    virtual long __stdcall Initialize() = 0;
+    virtual long __stdcall Open() = 0;
+    virtual long __stdcall Receive() = 0;
+    virtual long __stdcall Send(unsigned int from, unsigned int to,
+                                int flags, void* data,
+                                unsigned int size) = 0;
+};
+
+struct RESENDER {
+    unsigned int TimeSent;
+    unsigned int Serial;
+    char* ResendMsg;
+    unsigned int Length;
+    unsigned int DestMap[10];
+};
+
+struct COMMPLAYEROPTIONS {
+    char gap_00[0x14];
+    unsigned int dcoID[10];
+    char gap_3C[0x1D0 - 0x3C];
+};
+
+class RGE_Communications_Speed {
+public:
+    char gap_00[0x20C];
+    unsigned int HighestLatencyMsec;
+};
+
+struct MSGFORMAT_MISSING_PLAYER {
+    unsigned char Command;
+    unsigned char gap_01[3];
+    unsigned int PlayerID;
+};
+
+class TCommunications_Handler {
+public:
+    char gap_00[0x1C];
+    int MeHost;
+    char gap_20[0xFC5 - 0x20];
+    char TBuff[0x101];
+    char gap_10C6[2];
+    int CurrentTurn;
+    char gap_10CC[0x10E0 - 0x10CC];
+    unsigned int Me;
+    char gap_10E4[0x12A8 - 0x10E4];
+    int ShuttingDown;
+    char gap_12AC[0x12C0 - 0x12AC];
+    unsigned int TXPacketLength;
+    char gap_12C4[0x12D8 - 0x12C4];
+    unsigned short MaxGamePlayers;
+    char gap_12DA[0x132C - 0x12DA];
+    unsigned int ResentToOther;
+    char gap_1330[0x149C - 0x1330];
+    int Kicked[10];
+    char gap_14C4[0x14D4 - 0x14C4];
+    RGE_Communications_Speed* Speed;
+    char gap_14D8[0x14E0 - 0x14D8];
+    RGE_Comm_Error* Err;
+    char gap_14E4[0x1514 - 0x14E4];
+    unsigned char RGE_Guaranteed_Delivery;
+    char gap_1515[0x1518 - 0x1515];
+    int IntentionallyDropPackets;
+    unsigned int WaitingForAck;
+    RESENDER* Resend;
+    char gap_1524[0x1550 - 0x1524];
+    COMMPLAYEROPTIONS PlayerOptions;
+    unsigned int LastTurnAck[10];
+    unsigned int HoldCount;
+
+    int PurgeAcknowledgedStoredMessages();
+    int IsPlayerHuman(unsigned int player);
+    char* GetPlayerName(unsigned int player);
+    int Kick(unsigned int player);
+    long FastSend(unsigned long to, void* data, unsigned long size,
+                  int param_4, int param_5);
+
+    int SendStoredMessages();
+};
+
+int TCommunications_Handler::SendStoredMessages()
 {
+    const char* error_text;
+    {
     unsigned long now;
-    unsigned long maxElapsed = 0;
-    unsigned int oldestSlot = 0;
-    unsigned long items = 0;
-    int any = 0;
-    int maxFree = 0;
-    int player;
+    unsigned int items;
+    unsigned int oldest_message_slot;
+    unsigned int resend_slot;
+    unsigned int max_dest_delay;
+    unsigned int player;
+    long hr;
+    MSGFORMAT_MISSING_PLAYER m;
+    RESENDER* resend;
+    RESENDER* selected;
+    unsigned int* dest_map;
+    unsigned int* map;
+    unsigned int* dest;
+    unsigned int* dco;
+    unsigned int slot;
+    unsigned int count;
+    unsigned int elapsed;
+    unsigned int offset;
+    unsigned int limit;
+    unsigned long send_start;
+    unsigned long send_elapsed;
+    char* name;
 
-    if (!this->canSend) { logmsg(log_stream, (char*)0x582264); return 0; }
-    if ((sent_flag & 1) == 0) { sent_flag |= 1; last_send_time = debug_timeGetTime(COM_FILE, 0xe00); }
-    now = debug_timeGetTime(COM_FILE, 0xe02);
-    if ((float)((double)queued_bytes / (double)(now - last_send_time)) <= *(float*)0x56F210) return 0;
-    last_send_time = now;
-    queued_bytes = 0;
-    this->resetStored();
+    if (this->RGE_Guaranteed_Delivery == 0) {
+        error_text = S_SENDSTORE;
+        goto no_transmit;
+    }
 
-    StoredMsg* m = this->msgs;
-    for (int slot = 0; slot <= 0x1f4; ++slot, ++m) {
-        if (m->delay != 0) {
+    if ((DAT_0062c5e4 & 1) == 0) {
+        DAT_0062c5e4 |= 1;
+        DAT_0062c5a8 = debug_timeGetTime(s_Com_hand_cpp, 0xE00);
+    }
+
+    now = debug_timeGetTime(s_Com_hand_cpp, 0xE02);
+    if (!((float)DAT_0062cf28 / (now - DAT_0062c5a8) <=
+          DAT_0056f210)) {
+        return 0;
+    }
+
+    DAT_0062c5a8 = now;
+    DAT_0062cf28 = 0;
+    oldest_message_slot = 0;
+    resend_slot = 0;
+    items = 0;
+    this->PurgeAcknowledgedStoredMessages();
+
+    resend = this->Resend;
+    dest_map = resend->DestMap;
+    slot = 0;
+    max_dest_delay = 0;
+    do {
+        if (resend->Serial != 0) {
             ++items;
-            unsigned long elapsed = now - m->time;
-            if (elapsed > maxElapsed) { maxElapsed = elapsed; oldestSlot = slot; }
-            if (this->maxPlayers >= 1) {
-                for (int p = 1; p <= this->maxPlayers; ++p) {
-                    int free = 0xf0 - m->player;
-                    if (free > maxFree) maxFree = free;
+            elapsed = now - resend->TimeSent;
+            if (elapsed > oldest_message_slot) {
+                oldest_message_slot = elapsed;
+                resend_slot = slot;
+            }
+
+            map = dest_map;
+            count = this->MaxGamePlayers;
+            while (count != 0) {
+                int free_delay = 0xF0 - *map;
+                if (free_delay > (int)max_dest_delay) {
+                    max_dest_delay = free_delay;
+                }
+                ++map;
+                --count;
+            }
+        }
+        ++slot;
+        ++resend;
+        dest_map += 0x0E;
+    } while (slot <= 0x1F5);
+
+    if (items == 0) {
+        return 0;
+    }
+
+    if (this->CurrentTurn <= 6) {
+        if (oldest_message_slot < 2000) {
+            return 0;
+        }
+    } else if (this->ShuttingDown != 0) {
+        if (oldest_message_slot < 0xFA) {
+            return 0;
+        }
+    } else {
+        limit = resend_adj2 + this->Speed->HighestLatencyMsec * 2;
+        if (limit < resend_adj1 + 500U) {
+            limit = resend_adj1 + 500U;
+        }
+        if (oldest_message_slot < limit) {
+            return 0;
+        }
+    }
+
+    offset = resend_slot * 0x38;
+    this->Resend[resend_slot].TimeSent =
+        debug_timeGetTime(s_Com_hand_cpp, 0xE55);
+
+    if (this->MaxGamePlayers == 0) {
+        return this->ResentToOther;
+    }
+
+    selected = (RESENDER*)((char*)this->Resend + offset);
+    dest = selected->DestMap;
+    dco = this->PlayerOptions.dcoID + 1;
+    player = 1;
+
+    do {
+        if (dest[0] != 0 && this->IsPlayerHuman(player) != 0 &&
+            dco[0] != 0 && player != this->Me) {
+            if (dest[0] != 0) {
+                --dest[0];
+            }
+
+            L->Log("Resending #%d to P#%d dcoid=%d Length=%d  (elapsed=%d)",
+                   resend_slot, player, dco[0], selected->Length,
+                   oldest_message_slot,
+                   debug_timeGetTime(s_Com_hand_cpp, 0xE69));
+
+            if (DAT_0062cf04 == 0) {
+                error_text = S_BAD_DCOID;
+                goto no_transmit;
+            }
+
+            send_start = debug_timeGetTime(s_Com_hand_cpp, 0xE76);
+            L->Log("  >TX STOR #%d %d (%d)", player, resend_slot,
+                   selected->Length);
+            hr = DAT_0062c5ec->Send(DAT_0062cf04, dco[0], 0,
+                                    selected->ResendMsg, selected->Length);
+            send_elapsed = debug_timeGetTime(s_Com_hand_cpp, 0xE86) - send_start;
+            if (send_elapsed > 0x32) {
+                L->Log("!!!SendStoredMessages slow - %ld msec",
+                       send_elapsed);
+            }
+
+            if (hr == 0) {
+                ++this->ResentToOther;
+                this->TXPacketLength += selected->Length;
+                DAT_0062cf28 += selected->Length;
+                L->Log("COMM: RESENT TX Ser#%d To=P#%d Len=%d",
+                       selected->Serial, player, selected->Length);
+            } else {
+                this->Err->ShowReturn(hr, "RESEND Transmit");
+            }
+
+            if (dest[0] == 0 && this->IsPlayerHuman(player) != 0 &&
+                dco[0] != 0 && player != this->Me) {
+                name = this->GetPlayerName(player);
+                sprintf(this->TBuff,
+                        "Max resends to Player #%d '%s' ", player, name);
+                L->Log(this->TBuff);
+                if (this->MeHost != 0) {
+                    L->Log("HOST Rcvd MAX TX for player #%d", player);
+                    this->Kicked[player] = 1;
+                    this->Kick(player);
+                } else {
+                    L->Log("TX Missing Player report for player=%d ",
+                           dco[0]);
+                    m.Command = '?';
+                    L->Log("  >TX MP (%d)", 8);
+                    this->FastSend(0, &m, 8, 0, 0);
                 }
             }
         }
-    }
-    if (items == 0) return 0;
-    if (this->state10c8 <= 6) { if (maxElapsed < 2000) return 0; }
-    else if (this->mode12a8) { if (maxElapsed < 250) return 0; }
-    else {
-        unsigned long lim = dword_62CF0C + (unsigned long)this->dpDesc;
-        if (lim < dword_62CF08 + 500) lim = dword_62CF08 + 500;
-        if (maxElapsed < lim) return 0;
+
+        ++player;
+        ++dest;
+        ++dco;
+    } while (player <= this->MaxGamePlayers);
+
+    return this->ResentToOther;
     }
 
-    int byteOffset = oldestSlot * 0x38;
-    this->msgs[oldestSlot].time = debug_timeGetTime(COM_FILE, 0xe55);
-    for (player = 1; player <= this->maxPlayers; ++player) {
-        StoredMsg* sm = (StoredMsg*)((char*)this->msgs + byteOffset);
-        if (sm->delay > 0 && this->canSendTo(player) && this->perPlayer[player-1] != 0 && player != this->selfPlayer) {
-            if (sm->delay) --sm->delay;
-            logmsg(log_stream, (char*)0x582210, player, sm->player, oldestSlot, sm->data, debug_timeGetTime(COM_FILE, 0xe69), sm->delay);
-            if (dword_62CF04 == 0) { logmsg(log_stream, (char*)0x5810B0); return 0; }
-            unsigned long t = debug_timeGetTime(COM_FILE, 0xe76);
-            logmsg(log_stream, (char*)0x5821F8, player, oldestSlot, sm->data);
-            int first = this->perPlayer[0];
-            int hr = lobby_obj->send(lobby_obj, dword_62CF04, first, 0, sm->bytes, sm->data);
-            if (debug_timeGetTime(COM_FILE, 0xe86) - t > 50) logmsg(log_stream, (char*)0x5821D0, debug_timeGetTime(COM_FILE, 0xe86) - t);
-            if (hr == 0) { this->sentCount++; this->sentBytes += sm->data; queued_bytes += sm->data; logmsg(log_stream, (char*)0x5821A8, sm->player, player, sm->data); }
-            else logmsg(this->logObj, (char*)0x582198, hr);
-            if (sm->delay == 0 && this->canSendTo(player) && this->perPlayer[player-1] != 0 && player != this->selfPlayer) {
-                player = this->nameFor(player);
-                sprintf(this->tmp, (char*)0x582178, player);
-                logmsg(log_stream, this->tmp);
-                if (this->flag1c) { logmsg(log_stream, (char*)0x582158, player); this->msgs[oldestSlot].pad[0] = 1; this->Send(player,0,0,0,0); }
-                else { logmsg(log_stream, (char*)0x582130, this->perPlayer[player-1]); char q[8]; q[0]='?'; logmsg(log_stream, (char*)0x582120, 8); this->Send(0,0,8,q,0); }
-            }
-        }
-    }
-    return this->sentCount;
+no_transmit:
+    L->Log(error_text);
+    return 0;
 }

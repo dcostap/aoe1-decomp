@@ -2,7 +2,7 @@
 // Source: Com_hand.cpp lines 5669-5714
 // Attempt log:
 // 1: initial reconstruction from packet: scan player slots, move later occupied slot down, copy two name strings and player metadata columns.
-// 2: changed early numPlayers guard to wrap loop and fall through to final sub_428A70 call like original.
+// 2: changed early numPlayers guard to wrap loop and fall through to final SetSelfPlayer call like original.
 // 3: rewrote inner search with goto move_found/next_player so found branch jumps directly to copy; duplicated first human check.
 // 4: split inner human/computer tests into separate statements inside one do/while.
 // 5: spelled outer tests with numPlayers on left; no improvement.
@@ -11,6 +11,11 @@
 // 8: reordered locals (dst before offset); no codegen change.
 // 9: restored local order; tried source-level helper GetPlayerName/log order is already matching call order.
 // 10: left in scratch: behavior and main copy/log calls are understood, but block layout differs. Rebuilt keeps the no-player final call close, then inner search duplicates/peels the first IsPlayerHuman check and shifts the copy block by +0x0B; original has a compact do-loop with found branches directly to copy and no post-loop recheck. Not accepted_drift-safe due broad shifted mismatch.
+// 11: replacing the inner do-loop with a top-tested while and naming the final
+// SetSelfPlayer call removed the peeled call site and reached 563/563 bytes;
+// the remaining drift is only the two commutative name-destination LEA
+// encodings at +00A0/+00D4. Pointer, array-index, and reversed-add spellings
+// did not change those bytes; named pointer temporaries worsened the frame.
 
 typedef unsigned short ushort;
 extern "C" char* __cdecl strcpy(char* dst, const char* src);
@@ -46,7 +51,7 @@ public:
     int IsPlayerComputer(int i);
     char* GetPlayerName(int i);
     void InitPlayerInformation(int i, int zero, char* s1, char* s2);
-    void sub_428A70();
+    void SetSelfPlayer();
     void PackPlayersDown();
 };
 
@@ -66,16 +71,14 @@ void TCommunications_Handler::PackPlayersDown()
             L->Log((char*)"Position %d *LOCKED*.   Plr=%s", pos, this->GetPlayerName(pos));
         } else {
             int src = pos;
-            if (src <= (int)this->numPlayers) {
-                do {
-                    if (this->IsPlayerHuman(src)) {
-                        goto move_found;
-                    }
-                    if (this->IsPlayerComputer(src)) {
-                        goto move_found;
-                    }
-                    ++src;
-                } while (src <= (int)this->numPlayers);
+            while (src <= (int)this->numPlayers) {
+                if (this->IsPlayerHuman(src)) {
+                    goto move_found;
+                }
+                if (this->IsPlayerComputer(src)) {
+                    goto move_found;
+                }
+                ++src;
             }
             goto next_player;
 
@@ -110,5 +113,5 @@ next_player:
         } while (pos <= (int)this->numPlayers);
     }
 
-    this->sub_428A70();
+    this->SetSelfPlayer();
 }

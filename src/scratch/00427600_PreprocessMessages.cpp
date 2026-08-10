@@ -34,6 +34,15 @@
 // 11-12 validation/context: replaced the legacy dplay.h surface with the
 //    period IDirectPlay2 method order (Send at vslot+0x68); final check remains
 //    structural mismatch, not an ABI/call-target mismatch.
+// 13-20 (current pass): reused the first player index directly, laid out the
+//    missing-DCO failure arm before Send, removed the ready-value byte temp,
+//    and tried pointer/temporary lifetime variants.  These recovered the
+//    original early call order (84/86 sites, 97.67% aligned in the best CFG
+//    layout) and reduced the source to a 3209-byte structural candidate.
+//    The remaining blocker is the broad VC5 local/frame basin (0x184 versus
+//    original 0x180) plus message/parameter temporary coloring; no ABI or
+//    call-target uncertainty remains.  The positive guaranteed-delivery arm
+//    is retained because it matches the oracle's late non-GTD LogRXMsg block.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -308,24 +317,23 @@ int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
     char msg[256];
     char msg_str[100];
     int player;
-    uint next_serial;
 
     if (from != 0) {
-        player = 0;
-        int i = this->PlayerOptions.LowPlayerNumber;
         int high = this->PlayerOptions.HighPlayerNumber;
-        if (i <= high) {
+        player = this->PlayerOptions.LowPlayerNumber;
+        if (player <= high) {
             do {
-                if (this->PlayerOptions.dcoID[i] == from) {
-                    player = i;
-                    break;
+                ulong* dco = this->PlayerOptions.dcoID + player;
+                if (*dco == from) {
+                    goto player_lookup_found;
                 }
-                ++i;
-            } while (i <= high);
+                ++player;
+            } while (player <= high);
         }
-    } else {
-        player = 0;
     }
+    player = 0;
+
+player_lookup_found:
 
     if (*message == 'I') {
         this->UnlinkToLevel(SERVICE_AVAILABLE);
@@ -338,13 +346,13 @@ int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
         MSGFORMAT_ACKNOWLEDGE_GUARANTEED bad_ack;
         L->Log(S(0x5815A4), from);
         bad_ack.Serialno = *(uint*)(message + 8);
-        if (DCO_SELF != 0) {
-            bad_ack.Command = 'A';
-            DIRECT_PLAY->Send(DCO_SELF, from, 0, &bad_ack, 8);
-            this->TXPacketLength += 8;
+        bad_ack.Command = 'A';
+        if (DCO_SELF == 0) {
+            L->Log(S(0x5810B0));
             return 0;
         }
-        L->Log(S(0x5810B0));
+        DIRECT_PLAY->Send(DCO_SELF, from, 0, &bad_ack, 8);
+        this->TXPacketLength += 8;
         return 0;
     }
 
@@ -411,9 +419,8 @@ int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
             return 1;
         }
 
-        uchar ready_value = (uchar)message[1];
-        this->PlayerOptions.PlayerReady[player] = (uint)ready_value;
-        L->Log(S(0x581494), (uint)ready_value, player);
+        this->PlayerOptions.PlayerReady[player] = (uint)(uchar)message[1];
+        L->Log(S(0x581494), (uint)(uchar)message[1], player);
         this->PlayerOptions.User1[player] = *(ulong*)(message + 4);
         this->PlayerOptions.User2[player] = *(ulong*)(message + 8);
         this->PlayerOptions.User3[player] = *(ulong*)(message + 0x0C);
@@ -569,12 +576,7 @@ command_2:
         return 1;
     }
 
-    if (this->RGE_Guaranteed_Delivery == 0) {
-        this->LogRXMsg(*serial, player, *(ulong*)(message + 4),
-                       (uchar)message[0], (uchar)message[1]);
-        RX_MESSAGE_BASE = param_1 - 8;
-        RX_MESSAGE_PTR = (uint*)(message + 0x0C);
-    } else {
+    if (this->RGE_Guaranteed_Delivery != 0) {
         if (this->IntentionallyDropPackets != 0 && this->current_turn > 6) {
             ++DROP_COUNT;
             if (DROP_COUNT > 8) {
@@ -597,7 +599,7 @@ command_2:
             this->PlayerHighSerialNumber[player] = *serial - 1;
         }
 
-        next_serial = this->PlayerHighSerialNumber[player] + 1;
+        uint next_serial = this->PlayerHighSerialNumber[player] + 1;
         if (*serial < next_serial) {
             sprintf(this->TBuff, CS(0x581198), *serial, next_serial, player);
             L->Log(this->TBuff);
@@ -621,6 +623,11 @@ command_2:
         }
         RX_MESSAGE_BASE = param_1 - 0x0C;
         this->PlayerHighSerialNumber[player] = *serial;
+        RX_MESSAGE_PTR = (uint*)(message + 0x0C);
+    } else {
+        this->LogRXMsg(*serial, player, *(ulong*)(message + 4),
+                       (uchar)message[0], (uchar)message[1]);
+        RX_MESSAGE_BASE = param_1 - 8;
         RX_MESSAGE_PTR = (uint*)(message + 0x0C);
     }
 

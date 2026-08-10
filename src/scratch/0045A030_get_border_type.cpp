@@ -14,24 +14,155 @@
 // 11: Probed /Od: exact size 1115 but broad wrong basin from offset 0 (91.7489% positional); removed flag.
 // 12: Probed /O2 /Oy /Og-: exact size 1115 but same broad wrong basin from offset 0; removed flag.
 // 13: Tried removing helper terrain_at and inlining row[offset] loads; default shrank further (944 -> 848), confirming original likely needs source-shaped stack-slot/parameter reuse rather than helper abstraction.
-// GIVEUP: left in scratch. No accepted_drift because default build is size-short and exact-size diagnostic flags are broad from offset 0.
+// 14: Replaced raw displacement table and gap-only class with the period-plausible RGE_Map/RGE_Tile/RGE_Tile_Set/RGE_Border_Set surfaces. The named borders[] access is the canonical owner of +0x14A and +0x338C, while the real virtual-prefix/map layout preserves +0x8/+0xC/+0x8D8C.
+// 15: Reordering persistent row/current declarations was a codegen duplicate.
+// 16: Self-alias, split-boundary, nested/assignment-carry, and shared-goto variants were rejected: they were unchanged or expanded the function to 1509-1568 bytes.
+// 17: Promoting x to an explicit int cursor moved its stack home closer (986 bytes, diff 1016) but still left the saved-this/row register basin and byte-local homes wrong; full virtual-prefix context changed only one byte.
+// 18: Restored the cleaner canonical typed reconstruction as the best current source. Remaining blocker is structural VC5 register/local-home allocation (original this=EDI, rows=ESI, x home +2C, y=EBP; rebuilt this=ESI, rows=EBP and different byte homes), not calls or layout.
+
+struct RGE_Tile {
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0C[0x0C];
+};
+
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
+};
+
+struct RGE_Tile_Size {
+    short width;
+    short height;
+    short y_delta;
+};
+
+class RGE_Sound;
+class TShape;
+
+class RGE_Tile_Set {
+public:
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    TShape* shape;
+    RGE_Sound* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char map_lt_cliff_color;
+    unsigned char map_rt_cliff_color;
+    unsigned char passable_terrain;
+    unsigned char impassable_terrain;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    RGE_TOB_Picts tiles[19];
+    short terrain_to_draw;
+    short rows;
+    short cols;
+    short borders[32];
+    short obj_types[30];
+    short obj_density[30];
+    unsigned char obj_placement_flag[30];
+    short num_obj_type;
+    unsigned char pad_end[2];
+};
+
+class RGE_Border_Set {
+public:
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    TShape* shape;
+    RGE_Sound* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    RGE_TOB_Picts borders[19][12];
+    unsigned char draw_tile;
+    unsigned char pad_0;
+    short underlay_terrain;
+    short border_style;
+};
 
 class RGE_Map {
 public:
-    char gap00[8];
-    int width;   // +8
-    int height;  // +C
-    char gap10[0x8D8C-0x10];
-    unsigned char** rows; // +8D8C
+    virtual ~RGE_Map();
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    long world_width;
+    long world_height;
+    RGE_Tile_Size tilesizes[19];
+    unsigned char pad_8A[2];
+    RGE_Tile_Set terrain_types[32];
+    RGE_Border_Set border_types[16];
+    RGE_Tile** map_row_offset;
+    short num_terrain;
+    short num_borders;
+    short max_terrain;
+    short tile_width;
+    short tile_height;
+    short tile_half_height;
+    short tile_half_width;
+    short elev_height;
+    short cur_row;
+    short cur_col;
+    short block_beg_row;
+    short block_end_row;
+    short block_beg_col;
+    short block_end_col;
+    unsigned char any_frame_change;
+    unsigned char pad_8D[3];
+    unsigned char* search_map;
+    unsigned char** search_map_rows;
+    unsigned char map_visible_flag;
+    unsigned char fog_flag;
+    unsigned char pad_8DBA[2];
+    void* random_map;
+    void* game_world;
+    void* map_zones;
+    void* unified_vis_map;
+    void* unit_manager;
 
     void check_for_border(unsigned char current, unsigned char* other);
     void get_border_type(short x, short y);
 };
 
-
 void RGE_Map::get_border_type(short x, short y)
 {
-    unsigned char top_lft;
+    unsigned char ter_top_lft;
     unsigned char ter_lft;
     unsigned char ter_rgt;
     unsigned char ter_bot;
@@ -43,79 +174,89 @@ void RGE_Map::get_border_type(short x, short y)
     int xi;
     unsigned char ter_top;
 
-    if (x < 0 || x >= this->width || y < 0 || y >= this->height) {
+    if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height) {
         return;
     }
 
-    unsigned char** rows = this->rows;
+    RGE_Tile** rows = this->map_row_offset;
     xi = x;
-    int off = xi * 24;
-    unsigned char* cur = rows[y] + off;
-    top_lft = cur[5] & 0x1f;
+    RGE_Tile* cur = rows[y] + xi;
+    ter_top_lft = cur->terrain_type & 0x1f;
 
-    if (y > 0) ter_lft = rows[y - 1][off + 5] & 0x1f; else ter_lft = top_lft;
-    yMax = this->height - 1;
-    if (y < yMax) tile = rows[y + 1][off + 5] & 0x1f; else tile = top_lft;
-    if (x > 0) ter_rgt = rows[y][off - 19] & 0x1f; else ter_rgt = top_lft;
-    xMax = this->width - 1;
-    if (xi < xMax) ter_bot = rows[y][off + 29] & 0x1f; else ter_bot = top_lft;
-    if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][off - 19] & 0x1f; else ter_bot_lft = top_lft;
-    if (y > 0 && xi < xMax) ter_top = rows[y - 1][off + 29] & 0x1f; else ter_top = top_lft;
-    if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][off - 19] & 0x1f; else ter_bot_rgt = top_lft;
-    if (y < yMax && xi < xMax) xi = rows[y + 1][off + 29] & 0x1f; else xi = top_lft;
+    if (y > 0) ter_lft = rows[y - 1][xi].terrain_type & 0x1f; else ter_lft = ter_top_lft;
+    yMax = this->map_height - 1;
+    if (y < yMax) tile = rows[y + 1][xi].terrain_type & 0x1f; else tile = ter_top_lft;
+    if (x > 0) ter_rgt = rows[y][xi - 1].terrain_type & 0x1f; else ter_rgt = ter_top_lft;
+    xMax = this->map_width - 1;
+    if (xi < xMax) ter_bot = rows[y][xi + 1].terrain_type & 0x1f; else ter_bot = ter_top_lft;
+    if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][xi - 1].terrain_type & 0x1f; else ter_bot_lft = ter_top_lft;
+    if (y > 0 && xi < xMax) ter_top = rows[y - 1][xi + 1].terrain_type & 0x1f; else ter_top = ter_top_lft;
+    if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_type & 0x1f; else ter_bot_rgt = ter_top_lft;
+    if (y < yMax && xi < xMax) xi = rows[y + 1][xi + 1].terrain_type & 0x1f; else xi = ter_top_lft;
 
-    unsigned char current = top_lft;
-    check_for_border(current, &ter_lft);
-    check_for_border(current, &tile);
-    check_for_border(current, &ter_rgt);
-    check_for_border(current, &ter_bot);
-    check_for_border(current, &ter_bot_lft);
-    check_for_border(current, &ter_top);
-    check_for_border(current, &ter_bot_rgt);
-    check_for_border(current, (unsigned char*)&xi);
+    check_for_border(ter_top_lft, &ter_lft);
+    check_for_border(ter_top_lft, &tile);
+    check_for_border(ter_top_lft, &ter_rgt);
+    check_for_border(ter_top_lft, &ter_bot);
+    check_for_border(ter_top_lft, &ter_bot_lft);
+    check_for_border(ter_top_lft, &ter_top);
+    check_for_border(ter_top_lft, &ter_bot_rgt);
+    check_for_border(ter_top_lft, (unsigned char*)&xi);
 
-    unsigned char al = ter_lft;
-    if (al == top_lft && tile == top_lft && ter_rgt == top_lft && ter_bot == top_lft &&
-        ter_bot_lft == top_lft && ter_top == top_lft && ter_bot_rgt == top_lft && (unsigned char)xi == top_lft) {
-        cur[6] = 0;
+    if (ter_lft == ter_top_lft && tile == ter_top_lft && ter_rgt == ter_top_lft && ter_bot == ter_top_lft &&
+        ter_bot_lft == ter_top_lft && ter_top == ter_top_lft && ter_bot_rgt == ter_top_lft && (unsigned char)xi == ter_top_lft) {
+        cur->border_type = 0;
         return;
     }
 
-    short* table = (short*)((char*)this + 0x14A + current * 408);
-    unsigned short border = table[al];
-    if (border == 0xffff || (short)border < 0 || border >= 16 || !*((unsigned char*)this + 0x338C + ((int)(short)border) * 1440)) {
-        cur[6] = 0;
+    short border = this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft];
+    if (border == -1 || border < 0 || border >= 16 || this->border_types[border].loaded == 0) {
+        cur->border_type = 0;
         return;
     }
 
     unsigned char edge;
-    if (table[ter_lft] == (short)border && table[ter_rgt] == (short)border) {
-        edge = 1;
-    } else if (table[ter_lft] == (short)border && table[ter_bot] == (short)border) {
-        edge = 2;
-    } else if (table[tile] == (short)border && table[ter_rgt] == (short)border) {
-        edge = 3;
-    } else if (table[tile] == (short)border && table[ter_bot] == (short)border) {
-        edge = 4;
-    } else if (table[ter_lft] == (short)border) {
-        edge = 9;
-    } else if (table[tile] == (short)border) {
-        edge = 10;
-    } else if (table[ter_rgt] == (short)border) {
-        edge = 11;
-    } else if (table[ter_bot] == (short)border) {
-        edge = 12;
-    } else if (table[ter_bot_lft] == (short)border) {
-        edge = 5;
-    } else if (table[ter_top] == (short)border) {
-        edge = 6;
-    } else if (table[ter_bot_rgt] == (short)border) {
-        edge = 7;
-    } else if (table[(unsigned char)xi] == (short)border) {
-        edge = 8;
-    } else {
-        cur[6] = 0;
+    if (this->border_types[border].border_style == 1) {
+        edge = 0;
+        if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border) edge |= 1;
+        if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border) edge |= 2;
+        if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) edge |= 4;
+        if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) edge |= 8;
+        cur->border_type = (unsigned char)((border & 0xf) | (edge << 4));
         return;
     }
-    cur[6] = (unsigned char)((border & 0xf) | (edge << 4));
+
+    if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border &&
+        this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) {
+        edge = 1;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border &&
+               this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) {
+        edge = 2;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border &&
+               this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) {
+        edge = 3;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border &&
+               this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) {
+        edge = 4;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_lft] == border) {
+        edge = 9;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)tile] == border) {
+        edge = 10;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_rgt] == border) {
+        edge = 11;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot] == border) {
+        edge = 12;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot_lft] == border) {
+        edge = 5;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_top] == border) {
+        edge = 6;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)ter_bot_rgt] == border) {
+        edge = 7;
+    } else if (this->terrain_types[ter_top_lft].borders[(unsigned char)xi] == border) {
+        edge = 8;
+    } else {
+        cur->border_type = 0;
+        return;
+    }
+    cur->border_type = (unsigned char)((border & 0xf) | (edge << 4));
 }
