@@ -47,6 +47,13 @@
 // removed __declspec(novtable), the raw vtable_ptr field, and the manual 0x56E3A0 store; RGE_Action_Move_To is now a
 // natural derived class and VC5 owns the vptr emission. The prior manual surface's 205B/47B result and the earlier
 // natural-vptr 205B/56B result remain diagnostic evidence, not source-shape justification. No new hypothesis was run.
+// 2026-08-10 orch-actmove-01 fresh pass: corrected fallback ownership to the real action-object master hierarchy
+// (RGE_Master_Action_Object::move_sprite/sprite), and replaced the decompiler-shaped local cursor with direct
+// canonical member expressions; corrected +0xBC base sizing restored the same 205B/47B tail basin. Explicit
+// branch-return spellings were codegen-identical. /Og- destroyed the exact 137-byte prefix (256B), and a boolean
+// switch was worse (211B/64B). Restored natural direct master-field if/else; remaining blocker is VC5's duplicated
+// EH cleanup tail versus the original single shared epilogue. Final local layout retains proven 0x194 action-object
+// and 0xFC master-action sizes; these size corrections are codegen-identical.
 // 2026-08-09 sa3cad3b68-ctor pass: explicit inner/outer joins, inverted and direct-member predicates, do/break,
 // hoisted fallback locals, and an explicit derived-destructor declaration all stayed in the 205B/47B basin. The
 // volatile-destination test was codegen-identical but is not source-plausible. Restored this natural named-object /
@@ -58,22 +65,55 @@ class RGE_Static_Object;
 class RGE_Task;
 class RGE_Action_List;
 
+class RGE_Master_Static_Object;
+class RGE_Master_Action_Object;
+
 class RGE_Static_Object {
 public:
-    char gap_00[0x18];
-    RGE_Sprite* sprite18;
+    virtual ~RGE_Static_Object();
+    int id;
+    RGE_Master_Static_Object* master_obj;
+    void* owner;
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
+    void* sprite_list;
     char gap_1C[0x1C];
     float world_x;
     float world_y;
     float world_z;
-    char gap_44[0x78];
-    RGE_Sprite* spriteBC;
+    char gap_44[0x44];
 };
 
 class RGE_Action_Object {
 public:
-    char gap_00[8];
-    RGE_Static_Object* obj;
+    virtual ~RGE_Action_Object();
+    int id;
+    RGE_Master_Action_Object* master_obj;
+    char gap_0C[0x188];
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x14];
+    RGE_Sprite* sprite;
+    char gap_1C[0x9C];
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    RGE_Sprite* move_sprite;
+    char gap_C0[0x18];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    char gap_D8[0x24];
 };
 
 class RGE_Action {
@@ -151,12 +191,10 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
         range = 0.4f;
 
     if (spr == 0) {
-        RGE_Static_Object* o = this->obj->obj;
-        RGE_Sprite* s = o->spriteBC;
-        if (s == 0) {
-            sprite = o->sprite18;
+        if (this->obj->master_obj->move_sprite == 0) {
+            sprite = this->obj->master_obj->sprite;
         } else {
-            sprite = s;
+            sprite = this->obj->master_obj->move_sprite;
         }
     }
 }

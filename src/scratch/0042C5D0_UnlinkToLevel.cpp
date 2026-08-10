@@ -69,6 +69,21 @@
 // and failure Log register/push scheduling (46 strict bytes, 95% shape, 9/9 calls);
 // no new source/layout/header/flag lead was found.
 //
+// Attempt log (orch-comhand-01, 2026-08-10):
+// liveness: swapping the declaration order of original_status/new_status was
+// codegen-neutral (52B); reusing original_status/new_status for split success-path
+// snapshots instead of the inline call was worse (180B/78B), so the clean inline
+// expression remains canonical.
+// abi: an extern typed free cdecl Log(L,...) was neutral at 52B; a pointer-typed
+// absolute L macro with the free call recovered the known 46B diagnostic basin but
+// not the target register order. Mixed member/free logger surfaces were also neutral.
+// context: a five-way TU-header lab (none/windows/windowsx/dplay/full) produced one
+// 179B/46B group; historical VC5 headers do not move this basin. Removing explicit
+// __cdecl from the variadic member declaration was neutral at 52B.
+// bounded-pass conclusion: no fresh source/type/header axis moved the target's
+// success `mov edx; mov ecx; push edx; call; push eax; load L` or failure `L->ecx`
+// setup. Restore the normalized typed logger source; retain the 52B clean checkpoint.
+//
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
 // Globals: extern TDebuggingLog* L (original image address 0x62C4FC)
 // Functions: TDebuggingLog::Log(char*, ...), sprintf

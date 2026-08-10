@@ -53,6 +53,15 @@
  * sa-e4d7ed85-50fdd0 pass: top-level x/y swap temporaries, restored full RGE virtual
  * prefix, and radius register qualification were all codegen duplicates (81-byte diff).
  * Restored clean source; the only remaining lead is the known VC5 entry coloring basin.
+ *
+ * orch-tmap-01 fresh pass: corrected tribe_clean_terrain to the executable two-uchar
+ * EE ABI (no emitted-byte change); reversed x/y comparison operands, parenthesized
+ * explicit endpoint assignments, const-qualified radius, a named cleanup self alias,
+ * and the proven full RGE_Map/TRIBE_Map layout (all duplicates or worse). A 729-variant
+ * natural expression/branch lab found no exact output; its best size-gated group retained
+ * the same entry coloring and had an appended context tail. The clean direct-parameter
+ * source remains the defensible reconstruction; oracle r/x1/x2 are EBX/ESI/EDI while
+ * VC5 emits ESI/EDI/EBX. Calls, corrected relocations, cleanup, CFG, and size align.
  */
 
 class RGE_Map {
@@ -64,7 +73,7 @@ class TRIBE_Map : public RGE_Map {
 public:
     virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
     void tribe_clean_elevation(long x1, long y1, long x2, long y2);
-    void tribe_clean_terrain(long x1, long y1, long x2, long y2, int a, int b);
+    void tribe_clean_terrain(long x1, long y1, long x2, long y2, unsigned char a, unsigned char b);
 };
 
 unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c) {
