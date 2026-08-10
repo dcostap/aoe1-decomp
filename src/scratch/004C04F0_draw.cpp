@@ -19,6 +19,10 @@
 // duplicates. Restored the less opaque natural source; the remaining blocker is
 // source/context recovery for the saved-this spill and callee-save argument
 // caches, not child-list behavior or call set.
+// Worker pass sprite-sa-0aea9221-04f0: retested saved-self/byte-cursor and
+// top-level typed-local forms; they stayed structural (287-297 differing
+// bytes) and did not reproduce the original self spill. Restored this natural
+// canonical source for the documented pause.
 
 class RGE_Color_Table;
 class TDrawArea;

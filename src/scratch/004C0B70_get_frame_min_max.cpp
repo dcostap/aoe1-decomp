@@ -27,6 +27,10 @@
 // remaining drift is VC5 register/liveness coloring after the second call.
 // Main-agent audit confirmed the canonical non-polymorphic 0x78-byte sprite
 // surface and retained named frame-bound ownership.
+// Worker pass sprite-sa-0aea9221: arm-local x bounds plus value-first upper
+// bound predicates reached 108 differing bytes and 78.05% exact-block coverage;
+// long x locals and reversed temporary assignment were neutral/worse. Restored
+// the canonical formal-output source; remaining gap is the swap register basin.
 
 class RGE_Color_Table;
 class TShape;

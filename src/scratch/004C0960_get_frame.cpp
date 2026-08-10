@@ -22,6 +22,10 @@
 //   was discarded.  Restored final natural typed source: 157-byte diff,
 //   exact frame/call set, with the remaining guard, tail, and argument-order
 //   drift documented for the next worker.
+// Worker pass sprite-sa-0aea9221-0960: retested the binary-looking outer
+// `draw_list_num <= 0` spelling; it moved to a 237-byte structural basin.
+// Restored the natural typed `< 1` source; next lead is a source/context form
+// that preserves the test-AX/jle guard without disturbing the EH tail.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
