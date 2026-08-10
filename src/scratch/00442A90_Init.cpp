@@ -1,74 +1,367 @@
-// VA: 00442A90 TDrawSystem::Init (802 B)
-// PDB source: Drawarea.cpp
-// Packet-grounded: initialize TDrawArea with surface, dimensions, orientation, bpp
+// VA: 00442A90 TDrawSystem::Init
+// PDB source: Drawarea.cpp lines 621-839
+// Attempt log:
+// - Replaced the placeholder parameter/offset shim with the period DirectDraw
+//   initialization surface, typed local records, and named TDrawSystem fields.
+// - Removing the persistent DirectDraw value local fixed the 0x610 frame to 0x60C;
+//   a scoped receiver across the cooperative-level branch preserved the original
+//   call set and the closest register/liveness basin.
+// - Typed DDSURFACEDESC/DDCAPS/palette ownership and the natural palette loops
+//   match all calls and CFG; the remaining drift is the entry scheduling and a
+//   small receiver/vtable register basin, so this stays in scratch.
 
-extern void* operator_new(unsigned int size);
-extern void operator_delete(void* p);
-extern int RGE_get_description(char* buf, int size);
-extern int CreateSurface(void* self, int w, int h, int flags);
-extern int LockSurface(void* self, void* rect, int flags);
+#include <string.h>
+#pragma function(memset)
 
-struct Shim_Init_2A90 {
-    char gap00[4];
-    void* field_04;            // +0x04
-    void* field_08;            // +0x08
-    char gap0C[0x0C];
-    int Width;                 // +0x18
-    int Height;                // +0x1C
-    int Pitch;                 // +0x20
-    int Orien;                 // +0x24
-    int field_28;
-    int field_2C;
-    int field_30;
-    char gap34[0x3C - 0x34];
-    void* Surface;             // +0x3C
-    char gap40[0x478 - 0x40];
-    unsigned char surf_type;   // +0x478
-    unsigned char surf_type2;  // +0x479
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
 };
 
-int TDrawSystem_Init(Shim_Init_2A90* self, void* hwnd, int width, int height, 
-                     int bpp, void* palette, int mode, int surf_type,
-                     int surf_type2, int a9, int a10)
+struct tagPALETTEENTRY {
+    unsigned char peRed;
+    unsigned char peGreen;
+    unsigned char peBlue;
+    unsigned char peFlags;
+};
+
+struct _DDCOLORKEY {
+    unsigned long dwColorSpaceLowValue;
+    unsigned long dwColorSpaceHighValue;
+};
+
+struct _DDPIXELFORMAT {
+    unsigned long dwSize;
+    unsigned long dwFlags;
+    unsigned long dwFourCC;
+    unsigned long dwRGBBitCount;
+    unsigned long dwRBitMask;
+    unsigned long dwGBitMask;
+    unsigned long dwBBitMask;
+    unsigned long dwRGBAlphaBitMask;
+};
+
+struct _DDSCAPS {
+    unsigned long dwCaps;
+};
+
+struct _DDSURFACEDESC {
+    unsigned long dwSize;
+    unsigned long dwFlags;
+    unsigned long dwHeight;
+    unsigned long dwWidth;
+    long lPitch;
+    unsigned long dwBackBufferCount;
+    unsigned long dwMipMapCount;
+    unsigned long dwAlphaBitDepth;
+    unsigned long dwReserved;
+    void* lpSurface;
+    _DDCOLORKEY ddckCKDestOverlay;
+    _DDCOLORKEY ddckCKDestBlt;
+    _DDCOLORKEY ddckCKSrcOverlay;
+    _DDCOLORKEY ddckCKSrcBlt;
+    _DDPIXELFORMAT ddpfPixelFormat;
+    _DDSCAPS ddsCaps;
+};
+
+struct _DDBLTFX {
+    unsigned long dwSize;
+    unsigned long dwDDFX;
+    unsigned long dwROP;
+    unsigned long dwDDROP;
+    unsigned long dwRotationAngle;
+    unsigned long dwZBufferOpCode;
+    unsigned long dwZBufferLow;
+    unsigned long dwZBufferHigh;
+    unsigned long dwZBufferBaseDest;
+    unsigned long dwZDestConstBitDepth;
+    unsigned long dwZDestConst;
+    unsigned long dwZSrcConstBitDepth;
+    unsigned long dwZSrcConst;
+    unsigned long dwAlphaEdgeBlendBitDepth;
+    unsigned long dwAlphaEdgeBlend;
+    unsigned long dwReserved;
+    unsigned long dwAlphaDestConstBitDepth;
+    unsigned long dwAlphaDestConst;
+    unsigned long dwAlphaSrcConstBitDepth;
+    unsigned long dwAlphaSrcConst;
+    unsigned long dwFillColor;
+    _DDCOLORKEY ddckDestColorkey;
+    _DDCOLORKEY ddckSrcColorkey;
+};
+
+struct _DDCAPS {
+    unsigned long dwSize;
+    unsigned long dwCaps;
+    unsigned long dwCaps2;
+    unsigned long dwCKeyCaps;
+    unsigned long dwFXCaps;
+    unsigned long dwFXAlphaCaps;
+    unsigned long dwPalCaps;
+    unsigned long dwSVCaps;
+    unsigned long dwAlphaBltConstBitDepths;
+    unsigned long dwAlphaBltPixelBitDepths;
+    unsigned long dwAlphaBltSurfaceBitDepths;
+    unsigned long dwAlphaOverlayConstBitDepths;
+    unsigned long dwAlphaOverlayPixelBitDepths;
+    unsigned long dwAlphaOverlaySurfaceBitDepths;
+    unsigned long dwZBufferBitDepths;
+    unsigned long dwVidMemTotal;
+    unsigned long dwVidMemFree;
+    unsigned long dwMaxVisibleOverlays;
+    unsigned long dwCurrVisibleOverlays;
+    unsigned long dwNumFourCCCodes;
+    unsigned long dwAlignBoundarySrc;
+    unsigned long dwAlignSizeSrc;
+    unsigned long dwAlignBoundaryDest;
+    unsigned long dwAlignSizeDest;
+    unsigned long dwAlignStrideAlign;
+    unsigned long dwRops[8];
+    _DDSCAPS ddsCaps;
+    unsigned long dwMinOverlayStretch;
+    unsigned long dwMaxOverlayStretch;
+    unsigned long dwMinLiveVideoStretch;
+    unsigned long dwMaxLiveVideoStretch;
+    unsigned long dwMinHwCodecStretch;
+    unsigned long dwMaxHwCodecStretch;
+    unsigned long dwReserved1;
+    unsigned long dwReserved2;
+    unsigned long dwReserved3;
+    unsigned long dwSVBCaps;
+    unsigned long dwSVBCKeyCaps;
+    unsigned long dwSVBFXCaps;
+    unsigned long dwSVBRops[8];
+    unsigned long dwVSBCaps;
+    unsigned long dwVSBCKeyCaps;
+    unsigned long dwVSBFXCaps;
+    unsigned long dwVSBRops[8];
+    unsigned long dwSSBCaps;
+    unsigned long dwSSBCKeyCaps;
+    unsigned long dwSSBFXCaps;
+    unsigned long dwSSBRops[8];
+    unsigned long dwReserved4;
+    unsigned long dwReserved5;
+    unsigned long dwReserved6;
+};
+
+class IDirectDrawSurface {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall AddAttachedSurface();
+    virtual long __stdcall AddOverlayDirtyRect();
+    virtual long __stdcall Blt(void*, void*, void*, unsigned long, _DDBLTFX*);
+};
+
+class IDirectDrawPalette {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall GetCaps();
+    virtual long __stdcall GetEntries();
+    virtual long __stdcall Initialize();
+    virtual long __stdcall SetEntries(unsigned long, unsigned long,
+                                      unsigned long, tagPALETTEENTRY*);
+};
+
+class IDirectDrawClipper {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall GetClipList();
+    virtual long __stdcall GetHWnd();
+    virtual long __stdcall Initialize();
+    virtual long __stdcall IsClipListChanged();
+    virtual long __stdcall SetClipList();
+    virtual long __stdcall SetHWnd(unsigned long, void*);
+};
+
+class IDirectDraw {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall Compact();
+    virtual long __stdcall CreateClipper(unsigned long, IDirectDrawClipper**, void*);
+    virtual long __stdcall CreatePalette(unsigned long, tagPALETTEENTRY*,
+                                         IDirectDrawPalette**, void*);
+    virtual long __stdcall CreateSurface();
+    virtual long __stdcall DuplicateSurface();
+    virtual long __stdcall EnumDisplayModes();
+    virtual long __stdcall EnumSurfaces();
+    virtual long __stdcall FlipToGDISurface();
+    virtual long __stdcall GetCaps(_DDCAPS*, _DDCAPS*);
+    virtual long __stdcall GetDisplayMode(_DDSURFACEDESC*);
+    virtual long __stdcall GetFourCCCodes();
+    virtual long __stdcall GetGDISurface();
+    virtual long __stdcall GetMonitorFrequency();
+    virtual long __stdcall GetScanLine();
+    virtual long __stdcall GetVerticalBlankStatus();
+    virtual long __stdcall Initialize();
+    virtual long __stdcall RestoreDisplayMode();
+    virtual long __stdcall SetCooperativeLevel(void*, unsigned long);
+    virtual long __stdcall SetDisplayMode(long, long, long);
+};
+
+class TDrawSystem;
+
+class TDrawArea {
+public:
+    TDrawArea(char*, int);
+    int Init(TDrawSystem*, long, long, int, int);
+};
+
+extern "C" long __stdcall DirectDrawCreate(void*, IDirectDraw**, void*);
+extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
+    void*, unsigned int, unsigned int, tagPALETTEENTRY*);
+extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, tagRECT*);
+
+class TDrawSystem {
+public:
+    void* Inst;                         // +0x00
+    void* Wnd;                          // +0x04
+    void* Pal;                          // +0x08
+    TDrawArea* DrawArea;                // +0x0C
+    TDrawArea* PrimaryArea;             // +0x10
+    void* DrawAreaList;                 // +0x14
+    IDirectDraw* DirDraw;               // +0x18
+    IDirectDrawSurface* PrimarySurface; // +0x1C
+    IDirectDrawClipper* Clipper;        // +0x20
+    IDirectDrawPalette* DirDrawPal;     // +0x24
+    unsigned long Flags;                // +0x28
+    long ScreenWidth;                   // +0x2C
+    long ScreenHeight;                  // +0x30
+    long ColorBits;                     // +0x34
+    long ErrorCode;                     // +0x38
+    long ChangedMode;                   // +0x3C
+    long IsBanked;                      // +0x40
+    long CanSrcBlt;                     // +0x44
+    char gap_48[0x30];                  // +0x48 .. +0x77
+    tagPALETTEENTRY palette[256];       // +0x78 .. +0x477
+    unsigned char DrawType;             // +0x478
+    unsigned char ScreenMode;           // +0x479
+
+    void CheckAvailModes(int);
+    int CreateSurfaces();
+    int Init(void*, void*, void*, unsigned char, unsigned char,
+             long, long, unsigned long);
+};
+
+int TDrawSystem::Init(void* inst, void* wnd, void* pal,
+                      unsigned char draw_type, unsigned char screen_mode,
+                      long width, long height, unsigned long flags)
 {
-    // Store parameters
-    self->field_08 = hwnd;
-    self->field_04 = palette;
-    self->Width = width;
-    self->Height = height;
-    self->Pitch = 0;
-    self->surf_type = (unsigned char)surf_type;
-    self->surf_type2 = (unsigned char)surf_type2;
-    self->field_2C = a9;
-    self->field_30 = a10;
-    
-    // If surf_type == 1 (system memory), return 0 immediately
-    if (surf_type == 1)
+    _DDSURFACEDESC ddsd;
+    _DDBLTFX ddbltfx;
+    _DDCAPS ddcaps;
+    tagPALETTEENTRY color_table[256];
+
+    this->Wnd = wnd;
+    this->Pal = pal;
+    this->Inst = inst;
+    this->ScreenMode = screen_mode;
+    this->ScreenWidth = width;
+    this->DrawType = draw_type;
+    this->ScreenHeight = height;
+    this->Flags = flags;
+    if (draw_type == 1)
         return 0;
-    
-    // Call RGE_get_description for device info
-    // ...
-    
-    // Determine orientation based on bpp
-    if (bpp <= 8) {
-        self->Orien = 1;  // Top-down for palette modes
-    } else {
-        // Calculate pitch from width
+
+    IDirectDraw** direct_draw = &this->DirDraw;
+    if (DirectDrawCreate(0, direct_draw, 0) != 0) {
+        this->ErrorCode = 1;
+        return 0;
     }
-    
-    // Create the surface through the initial DDraw wrapper
-    // ...
-    
-    if (self->Height) {
-        // If height already set, lock the surface to get bits/pitch
-        // ...
+
+    this->CheckAvailModes(1);
+    IDirectDraw* dd = *direct_draw;
+    if (this->ScreenMode == 1) {
+        if (dd->SetCooperativeLevel(this->Wnd, 8) != 0) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+
+        memset(&ddsd, 0, 0x6C);
+        ddsd.dwSize = 0x6C;
+        if ((*direct_draw)->GetDisplayMode(&ddsd) != 0) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+        if (ddsd.dwHeight != 8) {
+            this->ErrorCode = 2;
+            return 0;
+        }
     }
-    
-    // Lock surface to initialize
-    // ...
-    
-    // Set orien based on pitch sign (positive = top-down, negative = bottom-up)
-    // ...
-    
-    return 0;
+    else {
+        if (dd->SetCooperativeLevel(this->Wnd, 0x11) != 0) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+        this->ColorBits = 8;
+        if ((*direct_draw)->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8) != 0) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+        this->ChangedMode = 1;
+    }
+
+    if (this->Pal != 0) {
+        GetPaletteEntries(this->Pal, 0, 0x100, color_table);
+    }
+    else {
+        for (int i = 0; i < 0x100; ++i) {
+            color_table[i].peRed = 0;
+            color_table[i].peGreen = 0;
+            color_table[i].peBlue = 0;
+            color_table[i].peFlags = 0;
+        }
+    }
+
+    for (int i = 0; i < 0x100; ++i) {
+        this->palette[i].peRed = 0;
+        this->palette[i].peGreen = 0;
+        this->palette[i].peBlue = 0;
+        this->palette[i].peFlags = 0;
+    }
+
+    if ((*direct_draw)->CreatePalette(0x44, color_table, &this->DirDrawPal, 0) != 0) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+    this->DirDrawPal->SetEntries(0, 0, 0x100, this->palette);
+
+    if ((*direct_draw)->CreateClipper(0, &this->Clipper, 0) != 0) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+    if (this->Clipper->SetHWnd(0, this->Wnd) != 0) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+    if (this->CreateSurfaces() == 0) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+
+    this->IsBanked = 0;
+    ddcaps.dwSize = sizeof(ddcaps);
+    if ((*direct_draw)->GetCaps(&ddcaps, 0) == 0) {
+        if ((ddcaps.dwCaps & 0x08000000) != 0)
+            this->IsBanked = 1;
+        if ((ddcaps.dwCaps & 0x00400000) != 0 &&
+            (ddcaps.dwCKeyCaps & 0x200) != 0)
+            this->CanSrcBlt = 1;
+    }
+
+    if (this->ScreenMode == 2) {
+        ddbltfx.dwSize = 0x64;
+        ddbltfx.dwFillColor = 0;
+        this->PrimarySurface->Blt(0, 0, 0, 0x1000400, &ddbltfx);
+    }
+    return 1;
 }

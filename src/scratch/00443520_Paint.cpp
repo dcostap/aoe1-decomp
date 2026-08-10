@@ -18,6 +18,9 @@
 // 48+ variant lab trials with different zero patterns and flag presets all produce
 // the same push-ebp-first prologue. Left in scratch pending a breakthrough on
 // eliminating the persistent zero register or finding the exact original source shape.
+// Final bounded pass: the natural positive resource guards, named destination-top
+// accumulator, and typed DirectDrawSurface::Blt are retained; calls/CFG remain
+// aligned, but the saved-register/prologue basin is still unresolved.
 
 struct tagRECT {
     long left;
@@ -27,9 +30,18 @@ struct tagRECT {
 };
 
 extern "C" int (__stdcall * const GetClientRect)(void* hWnd, tagRECT* rect);
-extern "C" int (__stdcall * const ClientToScreen)(void* hWnd, void* point);
+extern "C" int (__stdcall * ClientToScreen)(void* hWnd, void* point);
 
-class IDirectDrawSurface;
+class IDirectDrawSurface {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall AddAttachedSurface();
+    virtual long __stdcall AddOverlayDirtyRect();
+    virtual long __stdcall Blt(tagRECT*, IDirectDrawSurface*, tagRECT*,
+                               unsigned long, void*);
+};
 
 class TDrawArea {
 public:
@@ -68,13 +80,17 @@ void TDrawSystem::Paint(tagRECT* param_1)
 {
     tagRECT dest;
     tagRECT src;
+    long l;
+    long t;
+    long r;
+    long b;
+    long dest_top;
 
-    if (this->DrawType == 1) return;
-    if (!this->PrimarySurface) return;
-    if (!this->DrawArea) return;
-    if (!this->DrawArea->DrawSurface) return;
-
-    if (this->ScreenMode == 1) {
+    if (this->DrawType != 1) {
+        if (this->PrimarySurface) {
+            if (this->DrawArea) {
+                if (this->DrawArea->DrawSurface) {
+        if (this->ScreenMode == 1) {
         GetClientRect(this->Wnd, &src);
         dest.left = src.left;
         dest.top = src.top;
@@ -82,24 +98,24 @@ void TDrawSystem::Paint(tagRECT* param_1)
         dest.bottom = src.bottom;
         ClientToScreen(this->Wnd, &dest.left);
         ClientToScreen(this->Wnd, &dest.right);
-    } else {
-        int w = this->ScreenWidth;
-        int h = this->ScreenHeight;
-        src.left = 0;
-        src.top = 0;
-        src.right = w;
-        src.bottom = h;
-        dest.left = 0;
-        dest.top = 0;
-        dest.right = w;
-        dest.bottom = h;
-    }
+        } else {
+            int w = this->ScreenWidth;
+            int h = this->ScreenHeight;
+            src.left = 0;
+            src.top = 0;
+            src.right = w;
+            src.bottom = h;
+            dest.left = 0;
+            dest.top = 0;
+            dest.right = w;
+            dest.bottom = h;
+        }
 
-    if (param_1) {
-        long l = param_1->left;
-        long t = param_1->top;
-        long r = param_1->right;
-        long b = param_1->bottom;
+        if (param_1) {
+        l = param_1->left;
+        t = param_1->top;
+        r = param_1->right;
+        b = param_1->bottom;
 
         src.left = l;
         src.top = t;
@@ -110,14 +126,20 @@ void TDrawSystem::Paint(tagRECT* param_1)
         if (b >= this->ScreenHeight) b = this->ScreenHeight - 1;
 
         dest.left += l;
-        dest.top += t;
+        dest_top = dest.top;
+        dest_top += t;
+        dest.top = dest_top;
         dest.right = dest.left + r - l + 1;
-        dest.bottom = dest.top + b - t + 1;
+        dest.bottom = dest_top + b - t + 1;
 
         src.right = r + 1;
         src.bottom = b + 1;
-    }
+        }
 
-    ((long (__stdcall*)(IDirectDrawSurface*, tagRECT*, IDirectDrawSurface*, tagRECT*, unsigned long, void*))(*(void***)this->PrimarySurface)[5])(
-        this->PrimarySurface, &dest, this->DrawArea->DrawSurface, &src, 0x1000000, 0);
+        this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface,
+                                  &src, 0x1000000, 0);
+                }
+            }
+        }
+    }
 }

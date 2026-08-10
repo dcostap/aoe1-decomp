@@ -13,7 +13,13 @@
 // 10: mark COM v44 as __stdcall to match pushed-this virtual call.
 // 11: explicit flag/bit locals worsened liveness; rolled back.
 // 12: /Og and /Ob0 flag probes no change; removed flags.
-// Left in scratch: behavior modeled, but frame is 0x0C vs original 0x08 and FPU rate-math/dplay wait register topology remain broad.
+// session: making packet counters/last counters unsigned long recovered the original
+// qword FPU conversions, exact frame/size, and most block topology; direct elapsed
+// arithmetic is the clean surviving reconstruction. Captured dplay-id and named
+// debug-byte variants were codegen-worse; the remaining drift is debug-flag register
+// order plus wait-output initialization scheduling.
+// Left in scratch: behavior modeled with exact frame/size, but debug-flag register
+// order, wait-output initialization scheduling, and relocation-bearing literals remain.
 
 typedef unsigned long ulong;
 
@@ -25,8 +31,8 @@ class IDirectPlay4A;
 
 #define debug_once (*(unsigned char*)0x0062C5D0)
 #define last_time (*(ulong*)0x0062CEF0)
-#define last_rx (*(int*)0x0062CF14)
-#define last_tx (*(int*)0x0062CF18)
+#define last_rx (*(ulong*)0x0062CF14)
+#define last_tx (*(ulong*)0x0062CF18)
 #define dplay_id (*(int*)0x0062CF04)
 #define dplay (*(IDirectPlay4A**)0x0062C5EC)
 #define log_obj (*(TDebuggingLog**)0x0062C4FC)
@@ -49,9 +55,9 @@ public:
     float lastRXDataRate;
     float lastTXDataRate;
     char gap_10F8[0x12B8 - 0x10F8];
-    int RXPacketLength;
+    ulong RXPacketLength;
     char gap_12BC[0x12C0 - 0x12BC];
-    int TXPacketLength;
+    ulong TXPacketLength;
     char gap_12C4[0x14E0 - 0x12C4];
     RGE_Comm_Error* Err;
     char gap_14E4[0x1514 - 0x14E4];
@@ -66,7 +72,6 @@ public:
 
 void TCommunications_Handler::ReceiveGameMessages()
 {
-    unsigned int local_8[2];
     int zero = 0;
 
     if (this->Multiplayer == zero) {
@@ -74,7 +79,7 @@ void TCommunications_Handler::ReceiveGameMessages()
     }
 
     if ((debug_once & 1) == 0) {
-        debug_once = (unsigned char)(debug_once | 1);
+        debug_once |= 1;
         last_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x396);
     }
 
@@ -87,13 +92,8 @@ void TCommunications_Handler::ReceiveGameMessages()
                      elapsed,
                      this->TXPacketLength,
                      this->RXPacketLength);
-        local_8[0] = elapsed;
-        local_8[1] = zero;
-        float elapsed_float = (float)*(__int64*)local_8;
-        this->lastTXDataRate = ((float)(this->TXPacketLength - last_tx) * 1000.0f) / elapsed_float;
-        local_8[0] = this->RXPacketLength - last_rx;
-        local_8[1] = zero;
-        this->lastRXDataRate = ((float)*(__int64*)local_8 * 1000.0f) / elapsed_float;
+        this->lastTXDataRate = ((float)(this->TXPacketLength - last_tx) * 1000.0f) / (float)elapsed;
+        this->lastRXDataRate = ((float)(this->RXPacketLength - last_rx) * 1000.0f) / (float)elapsed;
         last_time = now;
         last_tx = this->TXPacketLength;
         last_rx = this->RXPacketLength;
@@ -104,13 +104,14 @@ void TCommunications_Handler::ReceiveGameMessages()
     }
 
     if (dplay_id != 0) {
-        local_8[0] = 0;
-        long result = dplay->v44(dplay_id, (int*)local_8);
+        int wait_count;
+        wait_count = 0;
+        long result = dplay->v44(dplay_id, &wait_count);
         if (result != zero) {
             this->Err->ShowReturn(result, (char*)"MsgWait");
             goto after_dplay;
         }
-        if (local_8[0] == zero) {
+        if (wait_count == zero) {
             goto after_dplay;
         }
     }

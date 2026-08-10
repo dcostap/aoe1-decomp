@@ -5,14 +5,18 @@
 // 2: explicit self/length locals and pointer-walk scans worsened; duplicate case returned inline and edit diff >116%.
 // 3: declarations delayed until after zero-length log: no prologue improvement; still this=EBX/len=EDI and duplicate inline.
 // tried flags /O2 no-/Oy, /Ox, /Ob0: same; /O1 too short.
+// session: canonical TDebuggingLog member surface plus memcpy restored REP MOVSD/MOVSB,
+// exact prologue/first scans, unsigned jbe/jb bounds, and 99.31% shape. The only
+// remaining codegen hunk is the cold full-table base/offset register coloring (+2B).
 // left in scratch: behavior modeled, but VC5 standalone register allocation won't produce original len=EBX, this=EDI, late duplicate handler; broad drift, not accepted_drift-safe.
+
+#include <string.h>
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
 
-class TDebuggingLog;
-extern TDebuggingLog* g_debug_log;
-extern void Log(TDebuggingLog* log, char* fmt, ...);
+class TDebuggingLog { public: void Log(char* fmt, ...); };
+extern TDebuggingLog* L;
 extern void* operator_new(unsigned int size);
 
 struct HOLDER {
@@ -34,18 +38,18 @@ public:
 
 int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulong from, ulong recv)
 {
-    int i;
-    int off;
     HOLDER* h;
+    unsigned int i;
+    unsigned int off;
 
     if (len == 0) {
-        Log(g_debug_log, "+++StoreIncoming called for zero-length message");
+        L->Log("+++StoreIncoming called for zero-length message");
     }
 
     h = this->OnHold;
     for (i = 0; i <= 0x1F5; i++) {
         if (h[i].Serial == serial && h[i].dcoFromID == from) {
-            Log(g_debug_log, "Future Ser#%d previously stored (Slot#%d)", serial, i);
+            L->Log("Future Ser#%d previously stored (Slot#%d)", serial, i);
             return 1;
         }
     }
@@ -57,19 +61,7 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
             h = (HOLDER*)((char*)this->OnHold + off);
             h->HoldMsg = (char*)operator_new(h->Length);
             if (h->HoldMsg != 0) {
-                unsigned int n = h->Length;
-                char* dst = h->HoldMsg;
-                char* src = msg;
-                unsigned int dwords = n >> 2;
-                while (dwords--) {
-                    *(unsigned int*)dst = *(unsigned int*)src;
-                    dst += 4;
-                    src += 4;
-                }
-                n &= 3;
-                while (n--) {
-                    *dst++ = *src++;
-                }
+                memcpy(h->HoldMsg, msg, h->Length);
                 h->Length = len;
             }
             this->OnHold[i].Serial = serial;
@@ -79,15 +71,16 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
         }
     }
 
-    Log(g_debug_log, "+++ DID NOT STORE:  ");
+    L->Log("+++ DID NOT STORE:  ");
     if (i > 0x1EB) {
-        Log(g_debug_log, "HOLD FULL WARNING.  COUNT=%d", i);
+        L->Log("HOLD FULL WARNING.  COUNT=%d", i);
+        HOLDER* scan_h;
         off = 0;
         i = 0;
         do {
-            h = (HOLDER*)((char*)this->OnHold + off);
-            if (h->Length != 0) {
-                Log(g_debug_log, "S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, h->Serial, h->dcoFromID, h->Length, (int)h->HoldMsg[0], (int)h->HoldMsg[0], (int)h->HoldMsg[1]);
+            scan_h = (HOLDER*)((char*)&this->OnHold->HoldMsg + off);
+            if (scan_h->Length != 0) {
+                L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, scan_h->Serial, scan_h->dcoFromID, scan_h->Length, (int)scan_h->HoldMsg[0], (int)scan_h->HoldMsg[0], (int)scan_h->HoldMsg[1]);
             }
             off += 24;
             i++;
