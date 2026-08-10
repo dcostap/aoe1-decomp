@@ -30,6 +30,15 @@
 //   start-offset and declaration-order rewrites were codegen duplicates.
 // Main-agent audit confirmed canonical draw-area/color-table ownership and kept
 // the natural typed row/pixel traversal.
+// - Fresh pass: the exact-donor full TDrawArea/scalar-clip declaration surface
+//   was codegen-identical to this local gap/ClipRect surface (47 bytes). Adding
+//   the Drawarea stdlib/string header context worsened the result to 78 bytes;
+//   it was removed.
+// - Fresh row-pointer probes (table between pointer assignments and an explicit
+//   x1-first offset assignment) were duplicate or worse. The remaining binary
+//   lead is the original's row-base/pixel register rotation at +00C1, followed
+//   by its two-byte tail layout difference; no further natural source axis was
+//   supported by this pass.
 
 struct tagRECT {
     long left;
