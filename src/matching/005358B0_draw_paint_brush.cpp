@@ -24,7 +24,13 @@
 // The period long selection/pick ABIs and inherited TPanel bounds ownership
 // are now explicit; a focused eight-form final-expression lab also found no
 // exact group. Retain the readable canonical source; only commutative LEA
-// base/index encodings at 005359BE and 005359C4 remain.
+// base/index encodings at 005359BE and 005359C4 remained.
+// - Exact codegen: repeat the signed brush-half shift directly in all
+//   four final long bounds instead of naming a shared half local; VC5 then
+//   emits the original coordinate-base/index SIB bytes at both positive bounds.
+//   Removing the now-unused half declaration preserved the exact result.
+// - Main-agent audit reduced the redundant casts to `brushSize >> 1`; the
+//   natural signed-short promotion remains exact.
 // FLAGS: /nologo /c /O2 /Oy
 
 struct tagPOINT { long x, y; };
@@ -125,6 +131,8 @@ void RGE_View::draw_paint_brush() {
 
     long cx = (long)storage.pick.pick_info.x;
     long cy = (long)storage.pick.pick_info.y;
-    long half = (long)(signed short)brushSize >> 1;
-    set_selection_area(cx - half, cy - half, cx + half, cy + half);
+    set_selection_area(cx - (brushSize >> 1),
+                       cy - (brushSize >> 1),
+                       cx + (brushSize >> 1),
+                       cy + (brushSize >> 1));
 }

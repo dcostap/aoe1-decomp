@@ -634,3 +634,9 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   `Shape_Info` pointer walk, adding the donor-era `<memory.h>` context changed only the
   three-byte scaled-index prologue and closed the match; preserve named ownership and
   test headers before introducing register-steering source.
+
+- When a late VC5 bounds call is structurally exact but a shared signed half-width local
+  leaves only commutative LEA SIB base/index bytes wrong, repeating the ordinary signed
+  half-width shift expression at each bound can select the original coordinate-base SIB
+  encoding while VC5 still folds the emitted arithmetic. Remove any now-unused shared
+  local after checking; retain this only with the proven typed ABI and localized byte result.
