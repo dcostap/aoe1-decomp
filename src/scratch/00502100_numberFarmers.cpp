@@ -42,6 +42,14 @@
 // Final clean reconstruction restored and validated: blocker remains localized
 //   callee-save coloring only; future lead is original TU/compiler register
 //   context or an as-yet-untried natural declaration/lifetime distinction.
+// wave20-taitacmd-01 probes (current bounded assignment):
+// - function-scope obj/ai/action declarations, game_globals.h context, and
+//   operator-scope ManagedArray locals all duplicated the 15-byte basin.
+// - removing new_size or caching civilians.value broke the canonical growth
+//   surface; an out-of-class operator[] definition, civilians reference alias,
+//   long outer index, and combined zero declaration all duplicated the basin.
+// - the clean source remains exact in size/CFG/ordered eight-call surface; the
+//   only unresolved bytes are the EBX/EBP outer-index/new-size coloring swap.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
