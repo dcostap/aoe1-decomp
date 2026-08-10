@@ -566,3 +566,10 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   reassigned after negation can make VC5 emit `and eax,0xff`, while an `int`
   count can hoist sign extension before the branch; retain the byte-local form
   only when the observed width and instruction order support it.
+
+- When a packed stream needs two adjacent byte-cursor advances and the oracle
+  has separate `inc` instructions, express the first advance as part of the
+  packet-byte read (`value = *++cursor`) and keep the payload advance as a
+  separate statement. Two standalone `cursor++` statements may be folded by
+  VC5 into `add cursor,2`; the pre-increment dereference preserves the natural
+  evaluation boundary without a fake barrier.

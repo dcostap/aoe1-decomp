@@ -31,6 +31,19 @@
 // bound predicates reached 108 differing bytes and 78.05% exact-block coverage;
 // long x locals and reversed temporary assignment were neutral/worse. Restored
 // the canonical formal-output source; remaining gap is the swap register basin.
+// Fresh orch-sprite-01 probe 1: mutate the formal frame/facet and output values
+// directly through the final bounds, removing the diagnostic x/y result locals;
+// this tests the natural original source ownership rather than their scheduling.
+// It reached 39 differing bytes, 95.12% shape, and 75.61% exact-block coverage
+// with exact size/frame/calls; the first mismatch moved to +006D (swap register).
+// Plain swap-first, reversed negative-swap, copy-then-negate, and temp-width or
+// scope changes were neutral/worse (45 to 111 differing bytes); do not repeat.
+// A focused 24-case direct-arm/update-order lab found no exact or invariant-valid
+// variant. Register-qualified facet, unqualified same-class idioms, and reordered
+// facet declaration all duplicated the 39-byte emitted basin.
+// Final clean source for orch-sprite-01: retain direct formal frame/facet and
+// get_size-output accumulation; remaining drift is the ESI/EBX post-call coloring
+// and the resulting four bound-update encodings, not behavior/calls/layout.
 
 class RGE_Color_Table;
 class TShape;
@@ -89,47 +102,44 @@ public:
 int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
                                   short& max_y, long frame, long facet,
                                   short offset_x, short offset_y) {
+    int facet_index;
     long frame_index = facet;
     long calc_min_y;
     long calc_max_y;
     long local_4;
-    int facet_index;
-    int result;
-    int x2;
-    int y1;
-    int y2;
 
-    if (facet >= this->frame_num) {
+    if (facet >= frame_num) {
         frame_index = 0;
     }
 
-    facet_index = this->get_facetindex(frame, frame_index, calc_min_y);
-    if (this->get_size(frame, calc_max_y, facet, local_4, calc_min_y) == 0) {
+    facet_index = get_facetindex(frame, frame_index, calc_min_y);
+    if (get_size(frame, calc_max_y, facet, local_4, calc_min_y) == 0) {
         return 0;
     }
 
     if (facet_index != 0) {
-        result = -frame;
+        int swap_temp;
+        swap_temp = -frame;
         frame = -facet;
-        facet = result;
+        facet = swap_temp;
     }
 
-    result = frame + offset_x;
-    x2 = facet + offset_x;
-    y1 = calc_max_y + offset_y;
-    y2 = local_4 + offset_y;
+    frame += offset_x;
+    facet += offset_x;
+    calc_max_y += offset_y;
+    local_4 += offset_y;
 
-    if (result < min_x) {
-        min_x = (short)result;
+    if (frame < min_x) {
+        min_x = (short)frame;
     }
-    if (y1 < min_y) {
-        min_y = (short)y1;
+    if (calc_max_y < min_y) {
+        min_y = (short)calc_max_y;
     }
-    if (max_x < x2) {
-        max_x = (short)x2;
+    if (max_x < facet) {
+        max_x = (short)facet;
     }
-    if (max_y < y2) {
-        max_y = (short)y2;
+    if (max_y < local_4) {
+        max_y = (short)local_4;
     }
     return 1;
 }

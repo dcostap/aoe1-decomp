@@ -43,6 +43,10 @@
 //   identical to the natural char cursor.  Retain the readable 233-byte
 //   source; the remaining evidence-backed blocker is the two separate header
 //   increments at PDB lines 468-469.
+// - This claim: read the signed packet count through `*++chunk`, then perform
+//   the second payload advance as a separate `chunk++`.  VC5 preserves the
+//   pre-increment dereference boundary and emits the oracle's two `inc ebp`
+//   instructions, producing an exact 232-byte match.
 
 #include <string.h>
 
@@ -85,8 +89,7 @@ void RGE_Flic_Player::delta_fli()
             int line_remaining = lines;
             do {
                 x += (signed char)*chunk;
-                char cnt = chunk[1];
-                chunk++;
+                char cnt = *++chunk;
                 chunk++;
                 if (cnt < 0) {
                     cnt = -cnt;
