@@ -23,6 +23,11 @@
 //   branch-tail variants remain productive under this pass.
 // - Final source keeps the period-plausible unary ! guard and explicit failure
 //   return; remaining drift is the duplicated normal EH cleanup epilogue.
+// - Fresh bounded probes: /O1 and /Os left the EH basin (181 bytes plus an
+//   eh_prolog call); explicit labels and a one-shot loop were unchanged or
+//   worse; stdio/string context and volatile field_D8 were unchanged. An
+//   inline success helper virtualized the two calls, while direct
+//   TScreenPanel method declarations left the 91-byte drift unchanged.
 
 struct tagRECT;
 class TPanel {
