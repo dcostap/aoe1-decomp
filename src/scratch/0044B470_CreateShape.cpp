@@ -109,6 +109,15 @@
 //   hoists this into ECX and defers param_1. No behavior/layout/call mismatch
 //   remains.
 
+// wave20-fractal-01 pass (2026-08-10):
+// - Inline reset/coordinate helpers, a first-pair this alias, an inline
+//   reference-output assignment, and a two-helper point/reset sequence all
+//   preserved the 196-byte/15-byte natural basin or worsened it; none is kept.
+// - Focused parameter-pointer/reference and identity/arithmetic variant labs
+//   (32 invariant-eligible variants total) found no ECX-scheduling lead. The
+//   only closer family remains the prior inline SetPoint diagnostic, whose x
+//   store is before the binary zero stores; the clean typed source is restored.
+
 class PrimaryPt {
 public:
     int x;
