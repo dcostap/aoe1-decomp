@@ -13,11 +13,14 @@
 //   reordering were rolled back. Remaining drift is early parameter-home
 //   coloring plus the row-base/stack-node address schedule.
 // - Bounded follow-up established that reusing x as the clipped right bound is
-//   both natural and required by the executable's parameter-home behavior.
-//   The retained source is 248 bytes with 181 differing bytes and 89.89% shape;
-//   exact base-field types and cursor declaration scope were codegen-neutral.
-//   The cross-axis second clipping comparison is an original behavior defect,
-//   documented at the statement below.
+//   binary-proven behavior, not merely compiler steering. The retained source
+//   is 248 rebuilt bytes with 181 differing bytes and 89.89% shape; exact
+//   base-field types and cursor declaration scope were codegen-neutral.
+// - Fresh direct-parameter/declaration-order probes and a 12-variant
+//   input/loop lab did not move the entry register basin. The binary-proven
+//   x-home assignment with the clipped-x second comparison remains the best
+//   behavior-faithful reconstruction; later column/right-lifetime probes were
+//   duplicate or farther and are not retained.
 
 struct Map_Stack {
     long x;
@@ -97,8 +100,8 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
     if (x > cliff_width2) {
         x = cliff_width2;
     }
-    // The executable compares the clipped horizontal bound here; preserve
-    // this original cross-axis clipping bug.
+    // Preserve the executable's cross-axis clipping defect: this compares the
+    // clipped horizontal bound rather than cliff_y2.
     if (x > cliff_height2) {
         cliff_y2 = cliff_height2;
     }

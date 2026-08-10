@@ -35,6 +35,13 @@
 // scheduling swap at 0047B9EC; reproducing it requires the same implausible parameter-home alias cast,
 // so no opaque compiler-steering variant is retained.
 
+// Fresh bounded pass 2026-08-10 (orch-pnlscbr-fresh-04):
+// full Ghidra-style x expression, explicit short x_center/RECT-left locals, comma sequencing, and the complete
+// draw_back_pic TShape data surface all emitted the same 245B/9-byte basin. An explicit binary-proven parameter-home
+// x_min reference broadened drift to 79 bytes; narrow volatile RECT.left broadened it to 122 bytes. Both were rolled
+// back. Clean canonical Windows RECT/TShape/reference ABI source remains authoritative; blocker is the isolated
+// VC5 scheduling order `sub ecx,edi` versus `add cx,[esi]` at 0047B9EC.
+
 #include <windows.h>
 
 class TDrawArea;
