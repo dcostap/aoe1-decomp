@@ -81,6 +81,22 @@ part of the behavior oracle, including on fault/unwind paths.
 
 Before phase entry, the source was normalized from gap-only/nonvirtual stubs to the binary-backed polymorphic layout and natural C++ lifetime operations. The full-TU probe reproduced the same pinned VC5 EH family.
 
+### Post-round matching follow-up, 2026-08-10
+
+A fresh Luna matching worker tested six additional natural same-TU and exception-
+surface hypotheses: destructor `throw()` declarations, the global delete exception
+surface, a reference alias for the managed-array pointer, inline base-destruction
+visibility, and the corrected donor-backed `AIModuleID(char*, int)` declaration.
+The retained canonical source remains 117/112 bytes with 99 strict differing
+bytes, 78.12% instruction shape, and both calls aligned.
+
+The exception specifications could select a 112-byte or no-EH family, but neither
+reproduced the oracle's FS-first three-slot frame, state-store topology, or bad
+cleanup address. The inline base destructor also introduced the wrong extra call.
+All diagnostics were rolled back; only the inactive canonical constructor ABI was
+retained. Main-agent validation therefore leaves the round-1 fault/unwind finding
+unchanged and confirms that no new natural compiler/TU mechanism has resolved it.
+
 ## Final decision
 
 Remain in `src/scratch`; do not promote to `src/verified_logic`. A future

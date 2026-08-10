@@ -14,6 +14,12 @@
 // bytes and the sole __alloca_probe/__chkstk symbol mismatch are unchanged.
 // - /Gs4095 and /Gs4096 were both codegen duplicates. The remaining mismatch
 //   is a direct probe-symbol identity gap, not size, frame, CFG, or body code.
+// - Fresh lane baseline reconfirmed the exact body/frame/call ordering; adding
+//   the likely Windows/CRT/string donor headers was byte-identical. A temporary
+//   VC5 probe matrix confirmed fixed arrays/typedefs/structs use __chkstk while
+//   _alloca uses __alloca_probe but necessarily adds an EBP dynamic frame.
+//   Restored the canonical static-buffer source; this is a toolchain symbol
+//   blocker, not an unresolved ownership or ABI fact.
 
 class TDrawArea;
 class TPanel {

@@ -53,6 +53,25 @@
 // remaining lead is the pinned VC5 EH topology/function-boundary difference;
 // retain this readable source in scratch for logic-readiness assessment.
 
+// Retry 2026-08-10 orch-aimdmod-logic-02 TU-exclusive follow-up:
+// - Baseline revalidated at 117/112 bytes, 99 strict diff bytes, 78.12% shape,
+//   with both calls aligned. The current compiler remains in the push-first
+//   four-slot EH family with a saved-this home; the oracle is FS-first three-slot.
+// - C++ throw() specifications on AIModuleID/AIModule/MainDecision destructors
+//   changed the body to 112 bytes and 93 diff bytes but still emitted push-first
+//   EH and removed the original state-store topology; rolled back.
+// - A destructor function-try-block was rejected by VC5 (C2059 at `try`).
+// - A reference alias for objects.value was an emitted-code duplicate.
+// - An inline empty AIModule destructor exposed an extra AIModuleID destructor
+//   call and wrong relocation/call sequence; rolled back.
+// - A period-style throw() declaration for global operator delete removed the
+//   EH frame entirely (65-byte emission); rolled back. The oracle therefore
+//   needs the potentially-throwing delete state, but VC5 still homes this.
+// - Added the donor-backed inactive AIModuleID(char*, int) constructor ABI
+//   declaration; emitted code duplicated the clean source and is retained as
+//   canonical same-TU type context. No natural new mechanism selected the
+//   FS-first frame or its erroneous cleanup address; leave in scratch.
+
 #include <stdlib.h>
 
 class AIModuleMessage;
@@ -63,6 +82,7 @@ struct _iobuf;
 class AIModuleID {
 public:
     virtual ~AIModuleID();
+    AIModuleID(char* name, int id);
 
     int id;
     char name[0x40];
