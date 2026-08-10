@@ -31,13 +31,14 @@
 //   reversing local declaration order was codegen-duplicate. A redundant
 //   post-orientation height guard produced a 243-byte function/114-byte diff;
 //   it was removed. Best clean source remains the 43-byte candidate.
-// - Remaining first hunk is the width/height register-home split at 00445C04;
-//   the original also has a binary-proven post-orientation height-test block.
-// - Remaining drift is broad VC5 this/register coloring and loop setup; no
-//   behavior-equivalent promotion is proposed.
+// - The prior clean candidate's remaining hunk was the width/height
+//   register-home split at 00445C04 plus the post-orientation height-test
+//   block; it was resolved by the natural top-tested loop below.
+// - Final exact probe: a natural top-tested while (height > 0), rather than an
+//   explicit if plus do/while, reproduced the post-orientation height guard,
+//   width/height stack-home coloring, and loop schedule at 240 exact bytes.
 // Main-agent integration restored the canonical tagRECT ClipRect ownership;
-// this was codegen-identical to the scalar-field probe and preserves the
-// 240-byte/43-byte result. The ordinary clipped row fill remains authoritative.
+// the ordinary clipped row fill remains authoritative.
 
 #include <stdlib.h>
 #include <string.h>
@@ -105,48 +106,47 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
 
     if (this->Bits != 0) {
         if (x1 > x2) {
-        long temp = x1;
-        x1 = x2;
-        x2 = temp;
-    }
+            long temp = x1;
+            x1 = x2;
+            x2 = temp;
+        }
 
         if (y1 > y2) {
-        long temp = y1;
-        y1 = y2;
-        y2 = temp;
-    }
+            long temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
 
-    if (x1 > this->ClipRect.right || x2 < this->ClipRect.left ||
-        y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
-        return;
+        if (x1 > this->ClipRect.right || x2 < this->ClipRect.left ||
+            y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
+            return;
 
-    if (x1 < this->ClipRect.left)
-        x1 = this->ClipRect.left;
-    if (x2 > this->ClipRect.right)
-        x2 = this->ClipRect.right;
-    if (y1 < this->ClipRect.top)
-        y1 = this->ClipRect.top;
-    if (y2 > this->ClipRect.bottom)
-        y2 = this->ClipRect.bottom;
+        if (x1 < this->ClipRect.left)
+            x1 = this->ClipRect.left;
+        if (x2 > this->ClipRect.right)
+            x2 = this->ClipRect.right;
+        if (y1 < this->ClipRect.top)
+            y1 = this->ClipRect.top;
+        if (y2 > this->ClipRect.bottom)
+            y2 = this->ClipRect.bottom;
 
-    width = x2 - x1 + 1;
-    height = y2 - y1 + 1;
+        width = x2 - x1 + 1;
+        height = y2 - y1 + 1;
         if (width < 1 || height < 1)
             return;
 
         if (this->Orien == 1) {
-        p = this->Bits + (y1 * this->Pitch + x1);
-        delta = this->Pitch;
-    }
-        else {
-        p = this->Bits + ((this->Height - y1 - 1) * this->Pitch + x1);
-        delta = -this->Pitch;
-    }
+            p = this->Bits + (y1 * this->Pitch + x1);
+            delta = this->Pitch;
+        } else {
+            p = this->Bits + ((this->Height - y1 - 1) * this->Pitch + x1);
+            delta = -this->Pitch;
+        }
 
-        do {
-        memset(p, color, width);
-        p += delta;
-        --height;
-        } while (height != 0);
+        while (height > 0) {
+            memset(p, color, width);
+            p += delta;
+            --height;
+        }
     }
 }
