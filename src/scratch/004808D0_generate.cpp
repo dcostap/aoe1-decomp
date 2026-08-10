@@ -62,16 +62,38 @@
 //   retained because it mirrors the decompiler's pRVar7/pRVar3 lifetimes;
 //   remaining gap is the real source context that removes one stack slot and
 //   colors EBP as the successor while keeping ESI as the insertion search.
+//
+// Fresh bounded continuation (probes 6-10 for this claim):
+// - Aligned the PDB-proven char* surfaces for debug_rand and variadic Log and
+//   restored the canonical module field order.  The Log relocation became the
+//   non-const member symbol, but emitted structure remained the 0xC-frame,
+//   273-byte basin (243 strict differing bytes); retained as the ABI-correct
+//   source surface.
+// - A six-variant sort-shape lab (persistent cursor, top-tested cursor,
+//   direct successor, do/while, and nested insertion forms) produced no
+//   size/frame/call-set eligible candidate; the closest groups stayed in the
+//   same nonexact basins.
+// - A combined-predicate direct-successor while form improved shape to
+//   86.24% and exact-block coverage to 49.04%, but grew to 289 bytes and 249
+//   strict differing bytes; rolled back as codegen diagnostic evidence.
+// - A pointer-to-pointer `link = &search->next` traversal was codegen
+//   identical to the preceding direct form; no new lead.
+// - The final source uses one outer cursor with a block-scoped current node,
+//   matching the natural pRVar7/pRVar3 ownership.  It emits the same retained
+//   273-byte result (0xC frame, 78.10% shape, 243 strict differing bytes).
+//   The unresolved blocker is still VC5's local/register basin: the oracle
+//   has EBX=sorted, EDI=current, EBP=successor, ESI=this/search and two stack
+//   homes, while the clean rebuild keeps an extra slot and opposite colors.
 
 #include <stddef.h>
 
 typedef unsigned char uchar;
 
-extern "C" int __cdecl debug_rand(const char* file, int line);
+extern "C" int __cdecl debug_rand(char* file, int line);
 
 class TDebuggingLog {
 public:
-    void Log(const char* msg, ...);
+    void Log(char* msg, ...);
 };
 
 extern TDebuggingLog* L;
@@ -86,7 +108,9 @@ public:
 
 class RGE_Random_Map_Module {
 public:
-    virtual ~RGE_Random_Map_Module();
+    // The base vtable's slot zero is generate; the rmm_base destructor is a
+    // nonvirtual helper despite its destructor-shaped symbol.
+    virtual uchar generate();
 
     RGE_Random_Map_Module* parent;      // +0x04
     RGE_Random_Map_Module_List* list;   // +0x08
@@ -96,11 +120,9 @@ public:
     int map_height;                      // +0x18
     float schedule;                      // +0x1C
     unsigned char* search_map;           // +0x20
-    void* stack_array;                    // +0x24
-    unsigned char** search_map_rows;     // +0x28
+    unsigned char** search_map_rows;     // +0x24
+    void* stack_array;                    // +0x28
     void* stack_offsets;                  // +0x2C
-
-    virtual uchar generate();
 
 protected:
     float get_schedule();
@@ -109,16 +131,15 @@ protected:
 uchar RGE_Random_Map_Module::generate()
 {
     RGE_Random_Map_Module_List* sorted = 0;
-    RGE_Random_Map_Module_List* current;
-    RGE_Random_Map_Module_List* next;
+    RGE_Random_Map_Module_List* cursor;
 
-    next = this->list;
+    cursor = this->list;
     for (;;) {
-        current = next;
+        RGE_Random_Map_Module_List* current = cursor;
         if (current == 0)
             break;
 
-        next = current->next;
+        cursor = current->next;
         if (sorted != 0) {
             if (current->module->get_schedule() >= sorted->module->get_schedule()) {
                 RGE_Random_Map_Module_List* search = sorted;
@@ -132,7 +153,6 @@ uchar RGE_Random_Map_Module::generate()
                 }
                 current->next = search->next;
                 search->next = current;
-                current = next;
                 continue;
             }
         }
@@ -145,17 +165,17 @@ uchar RGE_Random_Map_Module::generate()
     L->Log("RGE_RANDOM_MAP_MODULE::map start",
            debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A));
 
-    current = this->list;
-    if (current == 0)
+    cursor = this->list;
+    if (cursor == 0)
         return 1;
 
-    while (current != 0) {
-        if (current->module->generate() == 0)
+    while (cursor != 0) {
+        if (cursor->module->generate() == 0)
             return 0;
 
         L->Log("RGE_RANDOM_MAP_MODULE::module completed with ret:",
                debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F));
-        current = current->next;
+        cursor = cursor->next;
     }
 
     return 1;

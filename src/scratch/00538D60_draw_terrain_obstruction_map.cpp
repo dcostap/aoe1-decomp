@@ -26,6 +26,13 @@
 // x*8 and x*4 LEAs before a separate row-sum LEA into EDX, while VC5 folds the
 // row sum into ECX before those LEAs.  Calls, stack cleanup, layout, and the
 // nested draw behavior remain aligned; retain the clean named-loop source.
+// Fresh continuation: a distinct natural outer counter moves the first hunk
+// past the x/y LEAs and improves the strict diff from 110 to 100 bytes; direct
+// row, const-row, row-local, operand-order, register-hint, scoped-local,
+// counted-for, and declaration-order variants otherwise remain duplicates.
+// Final bounded best keeps the separate outer counter and scoped inner locals;
+// the remaining blocker is the row-sum destination/register coloring at the
+// first obstruction setup (original LEA into EDX versus rebuilt ADD into EAX).
 
 class TDrawArea {
 public:
@@ -71,23 +78,19 @@ public:
 void RGE_View::draw_terrain_obstruction_map(
     int x, int y, TShape* shape, int frame, int tile_x, int tile_y)
 {
+    int outer;
     int tile_x4 = tile_x * 4;
-    int i;
-    int x_offset;
-    int y_offset;
     tile_y *= 4;
 
     this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
     shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0);
 
     TShape* obstruction_shape = rge_base_game->get_shape(0);
-    tile_x = 0;
-
-    do {
-        i = 0;
-        x_offset = tile_x * 8;
-        y_offset = tile_x * 4;
-        frame = tile_x + tile_y;
+    for (outer = 0; outer < 4; ++outer) {
+        int i = 0;
+        int x_offset = outer * 8;
+        int y_offset = outer * 4;
+        frame = tile_y + outer;
 
         do {
             int obstruction = pathSystem.obstruction(i + tile_x4, frame);
@@ -102,6 +105,5 @@ void RGE_View::draw_terrain_obstruction_map(
             y_offset -= 4;
         } while (i < 4);
 
-        ++tile_x;
-    } while (tile_x < 4);
+    }
 }
