@@ -13,6 +13,11 @@
 //   variants do not affect the remaining final-call scheduling hunk.
 // - focused final-dispatch variant lab (direct/base cast/named x/split x/local
 //   receiver) collapsed to one 253-byte group; no variant changed the hunk.
+// - fresh TU lane confirmed the period TPanel/TTextPanel/TListPanel ownership
+//   and virtual mouse ABI from the class/type dumps and Pnl_drop donors.
+// - width - 1 + x, x + width - 1, top-level locals, complete TListPanel size,
+//   TPanel receiver casts, Windows header context, register locals, and a
+//   scoped result local all emitted the same bytes as the clean candidate.
 // - best natural reconstruction: 253 bytes, all 9 calls/CFG/frame aligned;
 //   remaining 15 bytes are only final-call scheduling/SIB operand order.
 
