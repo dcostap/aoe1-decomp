@@ -37,6 +37,15 @@
 // Follow-up worker revalidated the pinned source and confirmed the same basin;
 // no new natural hypothesis is justified without repeating prior register/
 // context probes or introducing forbidden register forcing.
+//
+// Fresh bounded pass (orch-scrgame-02):
+// - Reused the exact scr_game.cpp game/player/screen/global-load surface from
+//   command_building. A branch-local RGE_Base_Game* for the success-arm
+//   master-id store flips the entry callee-save coloring to EDI=this,
+//   ESI=player_id while preserving all call sites and the natural queue/cost
+//   control flow.
+// - The resulting source is an exact 240-byte match under the pinned default
+//   /O2 /Oy flags; the stale per-function /GX override was removed.
 
 struct RGE_Static_Object;
 struct TRIBE_Player;
@@ -111,7 +120,8 @@ void TRIBE_Screen_Game::command_train(int player_id, short train_id) {
             return;
         }
         if (rge_base_game->get_player()->check_obj_cost((short)player_id, &attr, 1.0f, 0)) {
-            rge_base_game->master_obj_id = (short)player_id;
+            RGE_Base_Game* game = rge_base_game;
+            game->master_obj_id = (short)player_id;
             rge_base_game->get_player()->command_building_make_obj((short)player_id);
             return;
         }

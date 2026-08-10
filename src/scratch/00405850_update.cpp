@@ -19,6 +19,12 @@
 //   was codegen-identical. Natural source is restored; remaining drift is switch-table
 //   relocation identity, case-tail placement, x87 bound relocation bytes, and one return
 //   register/epilogue ordering hunk.
+// - 2026-08-10 orch-actmove-02 pass: independently confirmed the paused clean source and
+//   binary evidence. A default-return label, implicit default, case-1-first, target_lost-inside-switch,
+//   sibling-shaped case-1-last, and explicit sparse-default case labels did not reproduce the original
+//   cold case-1 tail (the explicit sparse labels instead made the switch dense). A five-variant case-1
+//   return-spelling lab found no exact group. Retained natural source; blocker remains VC5 switch-handler
+//   placement plus the resulting late x87/return displacement drift.
 
 struct XYZBYTEPoint {
     unsigned char x;

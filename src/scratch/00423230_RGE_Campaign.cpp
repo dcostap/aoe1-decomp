@@ -30,6 +30,13 @@
 // The exact __open spelling changed the call identity and was rolled back.  Final clean
 // source remains the natural typed constructor; the unresolved drift is still the
 // branch-local EDI save/cold block (204 positional bytes, +2 code bytes).
+// - Fresh orch-campaign-01 lane: explicit extern/intrinsic strcpy, positive else,
+//   source-pointer/helper, pooled-string, and mutable-prototype/context variants
+//   were neutral except a second handle guard (218 diff, missing close) and mutable
+//   strcpy folding the literal to stores (93 diff, 261 bytes); all were rolled back.
+// - Focused address-expression variant family (5 size/call-set-gated forms) emitted
+//   one unchanged 253-byte group. Clean source remains canonical; only the original
+//   branch-local EDI save and delayed cold REP-copy layout remain unexplained.
 
 #include <string.h>
 

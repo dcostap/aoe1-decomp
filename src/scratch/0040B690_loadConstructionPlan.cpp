@@ -4,13 +4,13 @@
 // - Modeled sscanf's %d field as int xSize; this removes a spurious __ftol and restores call/CFG parity.
 // - Bound the proven aiconmod string-table addresses (NONE, formats, NULL, .tmp, and messages) so COFF
 //   relocation identities and the inline strcmp/rep-copy paths follow the original symbols.
-// - A dead-float comment-byte overlay, 68-byte name buffer, typed union overlay, scoped pointer, and
-//   declaration-order probes were diagnostic only; the overlay/size forms worsened codegen and the
-//   remaining scopes/order collapsed to the same output.
-// - Kept the clean typed source: original uses name+4 at esp+38 and temp+4 at esp+78, while rebuilt
-//   uses esp+3c/esp+7c. The two widened temp LEAs account for the remaining +6 bytes and branch drift.
-//   A compiler-reused name-prefix/new-result home is suggested by the decompiler but no policy-compliant
-//   natural spelling found it; leave this target in scratch rather than retain an opaque overlay.
+// - A dead-float comment-byte overlay, 68-byte name buffer, typed union/record overlays, scoped pointer,
+//   and declaration-order probes were diagnostic only; they either worsened codegen or duplicated the
+//   64-byte result.
+// - A natural 60-byte item-name payload (the binary writes/reads only name+4's 60 usable bytes) moves
+//   itemName/temp to the original short-LEA offsets and removes all six widened LEA bytes. It leaves a
+//   4-byte frame-size difference (0x164 vs 0x168); adding the decompiler's int id home was a duplicate,
+//   so the 60-byte candidate is retained as the cleanest policy-compliant reconstruction.
 // FLAGS: config/flags/0040B690_loadConstructionPlan.rsp (/GX for EH frame)
 
 #include <stdio.h>
@@ -24,6 +24,7 @@ public:
     int field_74;
     int field_78;
     int field_7c;
+    virtual ~ConstructionItem();
     ConstructionItem(float, float, float, float, float, float, int, const char*);
 };
 
@@ -61,10 +62,11 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     int xSize;
     float ySize;
     float item_arg_5;
-    char itemName[64];
+    char itemName[60];
     char temp[256];
     FILE* fp;
     char* plan;
+    char* saved_plan;
 
     this->setReferencePoint(p2, p3, p4, p5, p6);
     if (this->numberConstructionLotsValue > 0) {
@@ -72,7 +74,7 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     }
 
     plan = this->constructionPlanNameValue;
-    char* saved_plan = plan;
+    saved_plan = plan;
     strncpy(plan, name, 0x3f);
 
     if (strcmp(plan, "NONE") == 0 || plan == 0) {
@@ -94,14 +96,14 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
         do {
             sscanf(temp + 4, " %c%c", &commentTemp1, &commentTemp2);
             if (commentTemp1 != '/' || commentTemp2 != '/') {
-                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &z, &x, &zSize, &ySize, &item_arg_5, &item_arg_6, &xSize, itemName + 4);
+                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &z, &x, &zSize, &ySize, &item_arg_5, &item_arg_6, &xSize, itemName);
                 z = this->xReferencePointValue + z;
                 x = this->yReferencePointValue + x;
                 zSize = this->zReferencePointValue + zSize;
                 if (this->lot(z, x) == 0) {
                     ConstructionItem* item;
                     ConstructionItem* prev;
-                    item = new ConstructionItem(z, x, zSize, ySize, item_arg_5, item_arg_6, xSize, itemName + 4);
+                    item = new ConstructionItem(z, x, zSize, ySize, item_arg_5, item_arg_6, xSize, itemName);
                     item->next = &this->constructionLots;
                     prev = this->constructionLots.prev;
                     item->prev = prev;
