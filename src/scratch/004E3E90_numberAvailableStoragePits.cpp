@@ -25,6 +25,16 @@
 //   surfaces, a named self alias, combined age decrement, and stdlib TU context
 //   all emitted the same 238-byte/15-byte-drift basin (the md/this and second
 //   object register swap remains). Restored the canonical typed source.
+// - Fresh bounded pass: swapped top-level obj1/obj2 declarations; used a
+//   canonical MainDecision base-typed md phase and base-typed md member; all
+//   retained the same 238-byte/15-byte basin.
+// - Reference and const md aliases worsened to a 184-byte diff with a frame;
+//   both were restored. A 48-variant body/source-order lab and a 384-variant
+//   class-surface lab (base/vtable/object/local declaration combinations)
+//   found no exact result; every invariant-eligible group remained 238 bytes
+//   with the same 15 register/address mismatches. The clean typed source is
+//   retained; the remaining blocker is a stable VC5 this/md/second-object
+//   allocator basin rather than behavior, layout, or call-set uncertainty.
 
 class RGE_Static_Object;
 
