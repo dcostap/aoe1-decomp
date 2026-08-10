@@ -22,6 +22,14 @@
 //   expression, and a full static-object virtual surface all emitted the same
 //   3-byte mismatch; all were restored. A duplicated advance/continue form grew
 //   17 bytes and was also restored.
+// 2026-08-10 session (wave21-statobj-01): focused five-variant loop lab,
+//   branch-local/duplicated updates, explicit loop-advance gotos, moved index
+//   declaration, bottom `> 0`, and the ignored virtual-factory `void` return
+//   all failed to move the 3-byte branch-displacement mismatch. The lab's only
+//   size/frame/call-set eligible basin remained the canonical 223-byte source;
+//   restore and retain it. No exact match found; next lead is a genuinely
+//   different period source/control-flow context for placing the post-call mask
+//   reload in the call block rather than the common loop-bottom block.
 
 typedef unsigned long ulong;
 
