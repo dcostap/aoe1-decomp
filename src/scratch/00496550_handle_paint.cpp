@@ -14,6 +14,17 @@
 //   remaining gap is a three-byte size shift around the Help-panel zero-store
 //   and later local/register scheduling.  Further variants exhausted the
 //   current worker budget; source remains the clean typed reconstruction.
+//
+// Fresh bounded pass (orch-scrgame-fresh-04):
+// - naming the Help-dialog lookup result and assigning draw_all_children = 0
+//   after that call reproduced the oracle's delayed zero-store and reduced the
+//   positional diff to 158 bytes; VC5 consistently colors this local basin as
+//   ESI=this/EDI=child cursor instead of the oracle's EDI=this/ESI cursor.
+// - moving declarations, reusing a panel local, reversing comparisons,
+//   explicit inequality arms, and pointer/reference spelling were duplicate
+//   or worse codegen.  The named pointer form is retained as the most natural
+//   source model supported by the PDB line order; the remaining gap is the
+//   entry callee-save swap plus the resulting 5-byte size drift.
 
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
@@ -136,15 +147,16 @@ long TRIBE_Screen_Game::handle_paint() {
         debug_timeGetTime(s_scr_game_cpp, 0x5AA);
 
     int draw_all_children;
-    if (this->panel_mode != 2 &&
-        this->main_view->get_focus() == 0 &&
-        this->curr_child != panel_system.panel(s_Send_Quick_Message_Dialog)) {
+    if (this->panel_mode == 2 ||
+        this->main_view->get_focus() != 0 ||
+        this->curr_child == panel_system.panel(s_Send_Quick_Message_Dialog)) {
+        draw_all_children = 1;
+    } else {
+        TPanel* help_dialog = panel_system.panel(s_Help_Dialog);
         draw_all_children = 0;
-        if (this->curr_child == panel_system.panel(s_Help_Dialog)) {
+        if (this->curr_child == help_dialog) {
             draw_all_children = 1;
         }
-    } else {
-        draw_all_children = 1;
     }
 
     if (this->panel_mode != 0) {
