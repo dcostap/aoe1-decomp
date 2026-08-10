@@ -15,24 +15,42 @@
 // 12: Probed /O2 /Oy /Ob0: identical broad mismatch; removed flag.
 // 13: Probed /Od: exact size but wrong basin from offset 0 (91.5044% positional); removed flag.
 // 14: Probed /O2 /Oy /Og-: exact size but wrong basin from offset 0 (91.5044% positional); removed flag.
+// 15: Replaced the out-of-line tactical() wrapper with direct +0x1146C typed calls and bound the threshold to DAT_00575568; this removes six extra wrapper call sites and restores the original global identity, while retaining the clean reconstruction.
+// 16: Restored canonical RGE_Static_Object/RGE_Master_Static_Object offsets and ResourceMemory/ManagedArray ownership names (vptr, id, gatherValue, farmsTaskedThisUpdate); this is a source/layout reconstruction probe, not a raw-offset workaround.
+// 17: Changed the gatherer gate to a positive outer guard with the shared -1 epilogue, matching the original far JE topology instead of an early negative return.
+// 18: Corrected two binary-proven farm/strategic rejection edges to the shared next-resource path (004D9642/004D9646); removed the decompiler-only skip_restore label.
 // GIVEUP: left in scratch. Behavior is broad but source/register topology is far from original; no accepted_drift because mismatch is broad and begins in prologue/register allocation.
+// Main-agent audit: a donor-backed virtual-destructor replacement for the
+// proven vptr fields was tested and rolled back because it changed the early
+// VC5 prologue/register basin. The typed vptr fields remain explicit binary
+// layout evidence in this unresolved scratch reconstruction.
 
 extern double __cdecl floor(double);
-extern float FLOAT_575568;
+extern float DAT_00575568;
 
-struct UnitType { char gap0[0x10]; short type50; char gap12[2]; short class_id; char gap16[0x4A-0x16]; short civ_id; };
-struct Player { char gap[0x4A]; short civ_id; };
-struct RGE_Static_Object {
-    int id;          // +0
-    int game_id;     // +4
-    UnitType* type;  // +8
-    Player* player;  // +C
-    int resource_id; // +10
-    char gap14[0x38-0x14];
-    float x;         // +38
-    float y;         // +3C
-    char gap40[4];
-    float amount;    // +44
+class RGE_Master_Static_Object {
+public:
+    void* vtable_ptr; // +0
+    char gap04[0x0C];
+    short id;         // +10
+    short object_group; // +14
+};
+struct Player {
+    void* vtable_ptr; // +0
+    char gap04[0x46];
+    short civ_id;     // +4A
+};
+class RGE_Static_Object {
+public:
+    void* vtable_ptr; // +0
+    int id;           // +4
+    RGE_Master_Static_Object* master_obj; // +8
+    Player* player;   // +C
+    char gap10[0x38-0x10];
+    float x;          // +38
+    float y;          // +3C
+    float z;          // +40
+    float amount;     // +44
     unsigned char state; // +48
     unsigned char currentZone();
     unsigned char lookupZone(int x, int y);
@@ -41,21 +59,28 @@ struct ResourceMemory {
     int id;          // +00
     unsigned char x; // +04
     unsigned char y; // +05
-    unsigned char amount; // +06
+    unsigned char gatherAttempts; // +06
     char gap07;
-    int base;        // +08
-    unsigned char delay; // +0C
-    unsigned char dead;  // +0D
-    unsigned char age;   // +0E
-    char gap0F;
-    int resource_id; // +10
+    int gatherValue;  // +08
+    unsigned char valid; // +0C
+    unsigned char gone;  // +0D
+    unsigned char dropDistance; // +0E
+    unsigned char resourceType; // +0F
+    int dropsiteID; // +10
+};
+struct ManagedArray_int {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
 };
 struct MainDecisionAIModule {
     char gap0[0xF0];
     Player* player; // +F0
+    ManagedArray_int objects; // +F4
     int object(int id);
 };
-struct TacticalAI {
+struct TribeTacticalAIModule {
     int numberGatherersWithTarget(int id);
     int strategicNumber(int id);
     int actualGathererCountByRealResourceID(int id);
@@ -64,10 +89,7 @@ struct TacticalAI {
 class TribeInformationAIModule {
 public:
     char gap0[0xF0];
-    int* importantIds; // +F0
-    int importantCount; // +F4
-    char gapF8[4];
-    int importantMax; // +FC
+    ManagedArray_int farmsTaskedThisUpdate; // +F0
     MainDecisionAIModule* md; // +100
     char gap104[0x4D0-0x104];
     ResourceMemory* resources[4]; // +4D0
@@ -82,14 +104,11 @@ public:
     void updateResourceDropsites(int);
 };
 
-static MainDecisionAIModule* as_md(MainDecisionAIModule* p) { return p; }
-static TacticalAI* tactical(MainDecisionAIModule* p) { return (TacticalAI*)((char*)p + 0x1146C); }
-
 int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId, float& outX, float& outY, int& outResourceId, int* exclude, int excludeCount)
 {
     outResourceId = -1;
     RGE_Static_Object* gatherer = (RGE_Static_Object*)this->md->object(gathererId);
-    if (!gatherer) return -1;
+    if (gatherer) {
 
     unsigned char zone = gatherer->currentZone();
     int gx = (int)gatherer->x;
@@ -113,10 +132,10 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
             int score;
             short cls3;
             mem = (ResourceMemory*)((char*)this->resources[resType] + (int)mem);
-            if (mem->dead == 1) goto next;
-            if (mem->delay != 0) {
-                if (mem->dead != 0) goto next;
-                --mem->delay;
+            if (mem->gone == 1) goto next;
+            if (mem->valid != 0) {
+                if (mem->gone != 0) goto next;
+                --mem->valid;
                 goto next;
             }
             excluded = 0;
@@ -126,50 +145,49 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
             if (excluded == 1) goto next;
             obj = (RGE_Static_Object*)this->md->object(mem->id);
             if (!obj) {
-                mem->dead = 1;
+                mem->gone = 1;
                 if (this->dropsiteIds[resType] == mem->id) needUpdateDropsite = 1;
                 goto next;
             }
             if (boat == 1) {
-                short cls = obj->type->class_id;
+                short cls = obj->master_obj->object_group;
                 if (cls != 5 && cls != 0x1f && cls != 0x21) goto next;
             }
             if (boat == 0) {
-                short cls2 = obj->type->class_id;
+                short cls2 = obj->master_obj->object_group;
                 if (cls2 == 5 || cls2 == 0x1f || cls2 == 0x21) goto next;
             }
             dx = gx - mem->x;
             dy = gy - mem->y;
-            score = dx * dx + dy * dy + mem->base * 10;
-            if (obj->type->type50 == 0x3b) {
-                if (mem->age > 0x14) goto next;
-                score += ((int)mem->amount) / 75;
-                if (tactical(this->md)->numberGatherersWithTarget(obj->game_id) > 2) score += 200;
+            score = dx * dx + dy * dy + mem->gatherValue * 10;
+            if (obj->master_obj->id == 0x3b) {
+                if (mem->dropDistance > 0x14) goto next;
+                score += ((int)mem->gatherAttempts) / 75;
+                if (((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->numberGatherersWithTarget(obj->id) > 2) score += 200;
             } else {
-                score += ((int)mem->amount) / 50;
+                score += ((int)mem->gatherAttempts) / 50;
             }
             if (bestObject && score >= bestScore) goto next;
-            cls3 = obj->type->class_id;
-            if ((cls3 == 9 || cls3 == 10) && obj->state > 2 && obj->amount >= FLOAT_575568) score += 25;
+            cls3 = obj->master_obj->object_group;
+            if ((cls3 == 9 || cls3 == 10) && obj->state > 2 && obj->amount >= DAT_00575568) score += 25;
             if (this->withinXTilesOfEnemyTowncenter(obj, 25) == 1) goto next;
             if (this->withinXTilesOfAttackOnPlayer(obj, 15, this->md->player->civ_id) == 1) score += 500;
-            if (obj->type->type50 == 0x32) {
+            if (obj->master_obj->id == 0x32) {
                 if (obj->player->civ_id != this->md->player->civ_id) goto next;
                 if (obj->state != 2) goto next;
-                if (tactical(this->md)->numberGatherersWithTarget(obj->game_id) > 0) goto next;
+                if (((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->numberGatherersWithTarget(obj->id) > 0) goto next;
                 int k = 0;
-                while (k < this->importantCount) {
-                    if (k >= this->importantMax) break;
-                    if (this->importantIds[k] == obj->game_id) goto skip_restore_ebx;
+                while (k < this->farmsTaskedThisUpdate.numberValue) {
+                    if (k >= this->farmsTaskedThisUpdate.maximumSizeValue) break;
+                    if (this->farmsTaskedThisUpdate.value[k] == obj->id) goto next;
                     ++k;
                 }
             }
-skip_restore_ebx:
-            if (resType == 1 && tactical(this->md)->numberGatherersWithTarget(obj->game_id) > 0) goto next;
-            if ((resType == 3 || resType == 2) && tactical(this->md)->numberGatherersWithTarget(obj->game_id) > 3) goto next;
-            if (obj->type->type50 == 0x30 && obj->state == 2) {
-                int want = tactical(this->md)->strategicNumber(0xcc);
-                if (tactical(this->md)->actualGathererCountByRealResourceID(0) < want) goto skip_restore_ebx;
+            if (resType == 1 && ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->numberGatherersWithTarget(obj->id) > 0) goto next;
+            if ((resType == 3 || resType == 2) && ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->numberGatherersWithTarget(obj->id) > 3) goto next;
+            if (obj->master_obj->id == 0x30 && obj->state == 2) {
+                int want = ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0xcc);
+                if (((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->actualGathererCountByRealResourceID(0) < want) goto next;
             }
             if (gatherer->lookupZone(mem->x, mem->y) != zone) goto next;
             if (bestObject && score >= bestScore) goto next;
@@ -183,9 +201,12 @@ next:
         } while (i < this->numResources[resType]);
     }
 
-    if (needUpdateDropsite == 1) this->updateResourceDropsites(resType);
-    if (!bestObject) return -1;
-    bestObject->amount++;
-    outResourceId = bestObject->resource_id;
-    return bestObject->id;
+        if (needUpdateDropsite == 1) this->updateResourceDropsites(resType);
+        if (bestObject) {
+            bestObject->gatherAttempts++;
+            outResourceId = bestObject->dropsiteID;
+            return bestObject->id;
+        }
+    }
+    return -1;
 }
