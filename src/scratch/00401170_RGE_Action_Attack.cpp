@@ -19,6 +19,15 @@
 // - Splitting wait/fight local declarations from initialization was a codegen
 //   duplicate. The remaining first hunk is parameter-load/register coloring after
 //   set_target_obj, with both EH and ordered calls already exact.
+// Fresh bounded pass (orch-actatak-02):
+// - Adding all RGE_Action constructor overloads, the earlier serialized
+//   RGE_Action_Attack overload, and the full derived virtual declaration surface
+//   did not move emitted bytes.
+// - PDB-line-band reorder (direct wait/range/min/missile, fire, then move/fight)
+//   worsened the frontier to 62 bytes; one fight-only alias, top-scope aliases,
+//   and canonical base-master casts were duplicates or no-ops.
+// - Adding period stdio context was a no-op.  Restored the clean /GX candidate;
+//   no new lead remains after the 10-hypothesis budget.
 // Main-agent audit restored canonical action-object inheritance and removed the
 // residual downcasts from ordinary master/owner access.
 

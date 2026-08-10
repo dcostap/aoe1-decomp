@@ -605,3 +605,19 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   member cleanup while selecting the target's exact destructor EH/call topology;
   use this only when the constructor's member/EH evidence and the destructor's
   two-call sequence support ownership, rather than as a codegen-only wrapper.
+
+- For VC5 `__stdcall` COM calls that take an address-taken stack record (DPNAME-style)
+  whose fields are assigned immediately before the call, VC5 emits the two pointer-field
+  stores in the REVERSE of their source order around the argument pushes: the second
+  source assignment's LEA/store lands right after the object load (front), and the first
+  source assignment's store lands interleaved in the push region, with a later size field
+  stored after the final `this` push. The exact-match donor 0042F190 (source `short,long`
+  emitted `long,short`) and 00426D50 (source `short,long` emitted `long,short`) both prove
+  this; choose source field order opposite the desired emitted order. Cache nothing: keep
+  the receiver as a direct global-deref expression in the call
+  (`((IDirectPlay2*)DAT_0062c5ec)->SetPlayerName(DAT_0062cf04, &dpn, 2)`); saving the
+  interface/player in locals destroys the push/vtable-load interleaving and forces a third
+  register (EDI) for the record pointer. The SDK-shaped virtual surface (all 30 prior
+  slots declared) is what lets VC5 defer the `mov ecx,[eax]` vtable load until after the
+  first two argument pushes, reproducing the oracle's invalid-interface fault context
+  byte-for-byte.

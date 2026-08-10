@@ -267,9 +267,29 @@ ledger, prior reports, and Git history.
   is blocked unless a plausible source surface reproduces the original push-before-
   dereference sequence or project policy explicitly narrows the behavioral oracle.
 
+### Exact-match resolution, 2026-08-10
+
+A fresh DeepSeek matching pass found genuinely new same-TU evidence in exact
+donor `0042F190 ForceNameChange`: the same DirectPlay `SetPlayerName` tail is
+written as a direct global-dereference call through the complete SDK-shaped
+`IDirectPlay2` virtual surface. Reusing that natural COM form avoids the cached
+interface/player locals that had forced the earlier vtable-load schedule.
+
+The remaining field schedule follows a reproducible VC5 rule: for this
+address-taken `DPNAME`, short-name then long-name assignments emit in reverse
+order around argument setup. With canonical physical field order, explicit
+`memset`, short then long source assignments, delayed `dwSize`, and the direct
+global COM call, VC5 emits the exact oracle sequence: push `2`, push the record,
+read the player global, store the short name, dereference the interface, store
+`dwSize`, and call slot `+0x78`.
+
+The rebuilt function validates at 105/105 bytes, 33/33 instructions, both calls
+aligned, and zero strict differing bytes. This closes the prior malformed-
+interface fault-context objection without raw vtable plumbing, comma-expression
+scheduling, custom flags, or a narrowed behavior policy.
+
 ## Final decision
 
-Not promoted. The function remains in `src/scratch`. Three cohorts agree that
-normal-path behavior is complete, but the round-2/round-3 transient ESP and
-argument-stack difference at an invalid-interface access violation remains a
-substantive executable-behavior mismatch.
+Resolved by exact matching. The source is promoted to
+`src/matching/00426D50_SendPlayerName.cpp`; all prior semantic-review blockers
+are closed by byte-identical call setup, fault context, calls, and cleanup.
