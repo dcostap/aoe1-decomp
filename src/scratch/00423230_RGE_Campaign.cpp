@@ -37,6 +37,16 @@
 // - Focused address-expression variant family (5 size/call-set-gated forms) emitted
 //   one unchanged 253-byte group. Clean source remains canonical; only the original
 //   branch-local EDI save and delayed cold REP-copy layout remain unexplained.
+// - Wave21 lane: removing the success-path return merged the two close sites and
+//   worsened the structure; an explicit outer else, per-arm returns, inverted guards,
+//   and a source-late goto were rolled back (the canonical 253-byte basin or a worse
+//   structural basin, never branch-local EDI).
+// - Natural 255-byte fields without explicit padding, registered/separately assigned
+//   fallback destination pointers, and the period-plausible `handle > -1` spelling
+//   likewise did not recover the cold save; padding and source were restored.
+// - Final copy-destination lab tested seven direct/member/address/pointer spellings
+//   under size and call-set gates. All emitted one unchanged 253-byte group with
+//   prologue `push edi`; no source-shape lead remains for this bounded lane.
 
 #include <string.h>
 
