@@ -17,6 +17,13 @@
 // two vslot calls need an explicit cached vtable local (orig keeps [esi] in ebx across both calls).
 // Probes so far: attempt-1a (a1+0x100 for pos29, dead popup eliminated, frame 0xBC8) rolled into
 // attempt-1b (popup referenced at pos29, frame 0xCC8, improved +4).
+// worker 2026-08-10: inverted the use_area_size branch to match the original fall-through topology;
+// this recovered the centered-size block and improved structural alignment.
+// worker 2026-08-10: replaced the speculative own_mem2 scalar with the binary-listed 260-byte popup
+// buffer and restored +0x100 ownership for parsed filename strings; frame remains 0xCC8.
+// worker 2026-08-10: corrected text/state packed-color field ownership from the executable's sscanf
+// locals. Current source is the best canonical reconstruction; remaining drift begins at f2g's local
+// home (rebuilt [esp+20h] vs original [esp+18h]) and the large sscanf local-address schedule.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -136,8 +143,6 @@ extern "C" unsigned char* __cdecl RESFILE_load(unsigned long type, unsigned long
 long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
                         long x, long y, long w, long h, int allow_shadow)
 {
-    int own_mem = -1;
-    int own_mem2;
     int f2g;
     int f2r;
     int back_pic_id_b2;
@@ -176,6 +181,7 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     int shad_amt;
     int back_pic_id_b1;
     int resDataSize;
+    int own_mem;
     char temp_label[256];
     char info_file_name2[260];
     char background_pic_file_name_b1[260];
@@ -187,20 +193,12 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     char background_pic_file_name_c1[260];
     char button_pics_file_name[260];
     char background_pic_file_name_a1[260];
-    char popup_info_file_name_in[256];
+    char popup_info_file_name_in[260];
 
+    f2g = -1;
     this->allow_shadow_area = allow_shadow;
     set_info_file(info_file, info_id);
-    if (use_area_size == 0) {
-        if (w > 0 && h > 0 && area != 0) {
-            if (x == -1) {
-                x = area->width / 2 - w / 2;
-            }
-            if (y == -1) {
-                y = area->height / 2 - h / 2;
-            }
-        }
-    } else {
+    if (use_area_size != 0) {
         x = 0;
         y = 0;
         if (area != 0) {
@@ -209,6 +207,13 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         } else {
             w = 0;
             h = 0;
+        }
+    } else if (w > 0 && h > 0 && area != 0) {
+        if (x == -1) {
+            x = area->width / 2 - w / 2;
+        }
+        if (y == -1) {
+            y = area->height / 2 - h / 2;
         }
     }
     if (TPanel::setup(area, parent, x, y, w, h, 0) == 0) {
@@ -268,35 +273,35 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         &resDataSize, &background_color1_in, &button_pic_id, &back_pic_id_c1,
         &resDataSize, &s1r, &cursor_id, &s1g,
         &resDataSize, &back_pic_id_a2, &back_pic_id_c2, &back_pic_id_b2,
-        &resDataSize, &f2g, &own_mem2, &popup_info_id,
+        &resDataSize, &f2g, &own_mem, &popup_info_id,
         &resDataSize, &t2b, &bc2, &bc4,
         &resDataSize, &bc6, &background_pos_in, &pal_id) != -1) {
         set_use_bevels(1);
-        if (this->render_area->width < 800 || stricmp(info_file_name2, "none") == 0) {
-            set_background(button_pics_file_name, bc3);
-            set_background2(background_pic_file_name_c2, f1g);
+        if (this->render_area->width < 800 || stricmp(info_file_name2 + 0x100, "none") == 0) {
+            set_background(button_pics_file_name + 0x100, bc3);
+            set_background2(background_pic_file_name_c2 + 0x100, f1g);
         } else if (this->render_area->width < 0x400) {
-            set_background(info_file_name2, shad_amt);
-            set_background2(palette_file_name, f2r);
+            set_background(info_file_name2 + 0x100, shad_amt);
+            set_background2(palette_file_name + 0x100, f2r);
         } else {
-            set_background(cursor_file_name, t2g);
-            set_background2(background_pic_file_name_b1, f1b);
+            set_background(cursor_file_name + 0x100, t2g);
+            set_background2(background_pic_file_name_b1 + 0x100, f1b);
         }
         set_shadow_amount(t1r);
-        set_palette(background_pic_file_name_a2, f1r);
-        set_cursor(background_pic_file_name_b2, bc1);
+        set_palette(background_pic_file_name_a2 + 0x100, f1r);
+        set_cursor(background_pic_file_name_b2 + 0x100, bc1);
         set_background_pos(s2b);
         set_background_colors((unsigned char)t1b, (unsigned char)t1b);
         set_bevel_colors((unsigned char)back_pic_id_a1, (unsigned char)s1b, (unsigned char)bc5,
                          (unsigned char)s2r, (unsigned char)f2b, (unsigned char)s2g);
-        set_text_colors((unsigned char)bc5 << 16 | (unsigned char)s1b << 8 | (unsigned char)t1r,
-                        (unsigned char)s1g << 16 | (unsigned char)popup_info_id << 8 | (unsigned char)s1r);
+        set_text_colors((unsigned char)back_pic_id_c1 << 16 | (unsigned char)button_pic_id << 8 | (unsigned char)background_color1_in,
+                        (unsigned char)s1g << 16 | (unsigned char)cursor_id << 8 | (unsigned char)s1r);
         set_focus_colors((unsigned char)back_pic_id_b2 << 16 | (unsigned char)back_pic_id_c2 << 8 | (unsigned char)back_pic_id_a2,
-                         (unsigned char)popup_info_id << 16 | (unsigned char)own_mem2 << 8 | (unsigned char)f2g);
-        set_state_colors((unsigned char)bc4 << 16 | (unsigned char)s1g << 8 | (unsigned char)s1r,
+                         (unsigned char)popup_info_id << 16 | (unsigned char)own_mem << 8 | (unsigned char)f2g);
+        set_state_colors((unsigned char)bc4 << 16 | (unsigned char)bc2 << 8 | (unsigned char)t2b,
                          (unsigned char)pal_id << 16 | (unsigned char)background_pos_in << 8 | (unsigned char)bc6);
-        set_button_pics(background_pic_file_name_c1, t2r);
-        set_popup_info_file(background_pic_file_name_a1, t1g);
+        set_button_pics(background_pic_file_name_c1 + 0x100, t2r);
+        set_popup_info_file(background_pic_file_name_a1 + 0x100, t1g);
     }
     if (own_mem == 1) {
         free(data);

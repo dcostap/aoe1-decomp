@@ -1,340 +1,436 @@
 // VA: 0041C270 ~RGE_Base_Game (1136 B)
-// PDB source: basegame.cpp
-// Packet-grounded structural first-pass
+// PDB source: basegame.cpp:877-1083
+// Attempt log:
+// - Baseline packet scaffold used free-function shims and missed the original
+//   member/destructor, CRT, Win32-import, and function-pointer call surfaces.
+// - Reconstructing the typed RGE_Base_Game ownership and ordinary destructor
+//   sequence is the current source-first candidate; exactness remains pending.
+// - Typed member calls, CRT/Win32 imports, and the two natural cleanup loops now
+//   reproduce all 56 ordered call sites and the 0x110 frame.
+// - The rollover conditional, mouse-style if/else, and saved scenario pointer
+//   progressively aligned the early body; the final remaining hunk begins at
+//   the game-info RegGetInt test and leaves 646 positional bytes / +9 bytes.
+// - A manual vptr restore was rejected by source policy; the natural virtual
+//   destructor surface is retained while the remaining codegen drift is paused.
 
-extern void debug_random_write(void);
-extern void dump_vismap_log(void);
-extern int TRegistry_RegSetInt(void* reg, int a, const char* name, int val);
-extern int TRegistry_RegGetInt(void* reg, int a, const char* name);
-extern int sprintf(char* buf, const char* fmt, ...);
-extern int RGE_Base_Game_pathFinding(void* self);
-extern int RGE_Base_Game_mpPathFinding(void* self);
-extern void RGE_Scenario_File_Info_dtor(void* info);
-extern int RGE_Game_Info_save(void* info, const char* name);
-extern void RGE_Game_Info_dtor(void* info);
-extern void TDrawArea_dtor(void* da);
-extern void TMousePointer_dtor(void* mp);
-extern void TCommunications_Handler_dtor(void* ch);
-extern void TChat_dtor(void* ch);
-extern void TDrawSystem_dtor(void* ds);
-extern void TRegistry_dtor(void* reg);
-extern void TDebuggingLog_dtor(void* log);
-extern void TShape_dtor(void* shape);
-extern void TPanelSystem_destroyPanel(void* ps, const char* name);
-extern void TPanelSystem_release_palette(void* ps, void* pal);
-extern void RGE_Base_Game_stop_sound_system(void* self);
-extern void RGE_Base_Game_get_string(void* self, char* buf, int id, int size);
-extern void operator_delete(void* p);
-extern void free(void* p);
-extern int _ftol(double v);
-extern int DeleteObject(void* obj);
-extern int SystemParametersInfoA(int action, int param, void* v, int flags);
-extern int CloseHandle(void* h);
-extern int DestroyWindow(void* hwnd);
-extern void* FindWindowA(const char* cls, const char* name);
-extern int SendMessageA(void* hwnd, int msg, void* wp, void* lp);
-extern int FreeLibrary(void* h);
+#include <stdio.h>
+
+class RGE_Game_Info;
+class RGE_Scenario_File_Info;
+class RGE_Prog_Info {
+public:
+    char gap_00[0x410];
+    void* instance;
+    char gap_414[0x8C8 - 0x414];
+    int scroll_speed;
+    char gap_8CC[0x8DC - 0x8CC];
+    short interface_style;
+};
+class RGE_Game_World {
+public:
+    virtual void vf00(); virtual void vf04(); virtual void vf08();
+    virtual void vf0C(); virtual void vf10(); virtual void vf14();
+    virtual void vf18(); virtual void vf1C(); virtual void vf20();
+    virtual void vf24(); virtual void vf28(); virtual void vf2C();
+    virtual void vf30(); virtual void vf34(); virtual void vf38();
+    virtual void vf3C(); virtual void vf40(); virtual void vf44();
+    virtual void vf48(); virtual void vf4C(); virtual void vf50();
+    virtual void vf54(); virtual void vf58(); virtual void vf5C();
+    virtual void vf60(); virtual void vf64(); virtual void vf68();
+    virtual void vf6C(); virtual void vf70(); virtual void vf74();
+    virtual void vf78(); virtual void vf7C(); virtual void vf80();
+    virtual void vf84(); virtual void vf88(); virtual void vf8C();
+    virtual void vf90(); virtual void vf94(); virtual void vf98();
+    virtual void vf9C(); virtual void vfA0(int value);
+};
+class TDrawSystem;
+class TDrawArea;
+class TShape;
+class TSound_Driver;
+class TMusic_System;
+class TDigital;
+class TCommunications_Handler;
+class TDebuggingLog;
+class TRegistry;
+class TMousePointer;
+class RGE_Font;
+class TChat;
+class TPanelSystem;
+class DriveInformation;
+
+extern void __cdecl debug_random_write(void);
+extern void __cdecl dump_vismap_log(void);
+extern void __cdecl operator delete(void*);
+extern "C" void __cdecl free(void*);
+
+extern "C" __declspec(dllimport) int __stdcall SystemParametersInfoA(
+    unsigned int action, unsigned int param, void* value, unsigned int flags);
+extern "C" __declspec(dllimport) int __stdcall CloseHandle(void* handle);
+extern "C" __declspec(dllimport) int __stdcall DestroyWindow(void* window);
+extern "C" __declspec(dllimport) void* __stdcall FindWindowA(
+    const char* class_name, const char* window_name);
+extern "C" __declspec(dllimport) long __stdcall SendMessageA(
+    void* window, unsigned int message, unsigned int wparam, long lparam);
+extern "C" __declspec(dllimport) int __stdcall FreeLibrary(void* module);
+extern "C" int (__stdcall* const DeleteObject)(void* object);
 
 extern int do_debug_random;
 extern int wrote_debug_random_log;
-extern int actionFile;
-extern int fps_log;
-extern int draw_log;
-extern int g_5B2160;
-extern int g_62C530; // fps_log
-extern int g_62C4CCh; // actionFile
-extern void* rge_base_game;
-extern int g_62C4A0; // StringTable
-extern int g_5B215Ch; // driveInfo
-extern int g_62C4B8; // chat
-extern unsigned long panel_system;
+extern FILE* actionFile;
+extern FILE* fps_log;
+extern FILE* draw_log;
+extern void* StringTable;
+extern DriveInformation* driveInfo;
+extern TChat* chat;
+class RGE_Base_Game;
+extern RGE_Base_Game* rge_base_game;
+extern float DAT_0056f018;
 
-/* Shim - declaration-order (ascending offsets) */
-struct Shim_1C270 {
-    char gap00[4];
-    int game_info;             // +0x04
-    int scenario_info;         // +0x08
-    void* prog_info;           // +0x0C
-    void* prog_window;         // +0x10
-    char gap14[8];             // +0x14..0x1B
-    void* prog_palette;        // +0x1C
-    void* field_20;            // +0x20
-    char gap24[0x38 - 0x24];
-    void* field_38;            // +0x38
-    void* field_3C;            // +0x3C
-    int error_code;            // +0x40
-    char gap44[4];
-    void* draw_system;         // +0x48
-    void* draw_area;           // +0x4C
-    char gap50[8];
-    short shape_count;         // +0x58
-    void* shapes;              // +0x5C
-    void* sound_system;        // +0x60
-    void* music_system;        // +0x64
-    char gap68[0x18C - 0x68];
-    void* comm_handler;        // +0x18C
-    char gap190[0x1A4 - 0x190];
-    int debug_log;             // +0x1A4
-    int field_1A8;             // +0x1A8
-    void* registry;            // +0x1AC
-    int game_mode;             // +0x1B0
-    int field_1B4;             // +0x1B4
-    int field_1B8;             // +0x1B8
-    int field_1BC;             // +0x1BC
-    void* mouse_pointer;       // +0x1C0
-    int field_1C4;             // +0x1C4
-    int field_1C8;             // +0x1C8
-    char gap1CC[0x1E0 - 0x1CC];
-    short font_count;          // +0x1E0
-    int fonts;                 // +0x1E4
-    char work_dir[0x100];      // +0x1E8
-    char gap2E8[0x3F4 - 0x2E8];
-    void* field_3F4;           // +0x3F4
-    int field_3F8;             // +0x3F8
-    char gap3FC[0xA08 - 0x3FC];
-    int field_A08;             // +0xA08
-    int field_A0C;             // +0xA0C
-    int field_A10;             // +0xA10
-    char gapA14[0xA20 - 0xA14];
-    void* draw_area_screen;    // +0xA20
+class RGE_Game_Info {
+public:
+    void save(char* filename);
+    ~RGE_Game_Info();
 };
 
-void RGE_Base_Game_dtor(Shim_1C270* self)
+class RGE_Scenario_File_Info {
+public:
+    ~RGE_Scenario_File_Info();
+};
+
+class TDrawSystem {
+public:
+    char gap_00[0x2C];
+    int screen_size;
+    ~TDrawSystem();
+};
+
+class TDrawArea {
+public:
+    ~TDrawArea();
+};
+
+class TMousePointer {
+public:
+    ~TMousePointer();
+};
+
+class TCommunications_Handler {
+public:
+    ~TCommunications_Handler();
+};
+
+class TChat {
+public:
+    ~TChat();
+};
+
+class TRegistry {
+public:
+    int RegGetInt(int use_user_key, const char* value_name);
+    int RegSetInt(int use_user_key, const char* value_name, int value);
+    ~TRegistry();
+};
+
+class TDebuggingLog {
+public:
+    ~TDebuggingLog();
+};
+
+class TShape {
+public:
+    ~TShape();
+};
+
+class TPanelSystem {
+public:
+    void destroyPanel(char* name);
+    void release_palette(void* palette);
+};
+
+extern TPanelSystem panel_system;
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+
+    RGE_Game_Info* player_game_info;
+    RGE_Scenario_File_Info* scenario_info;
+    RGE_Prog_Info* prog_info;
+    void* prog_window;
+    int prog_ready;
+    int prog_active;
+    void* prog_palette;
+    void* prog_mutex;
+    long window_style;
+    int random_game_seed;
+    int random_map_seed;
+    int save_random_game_seed;
+    int save_random_map_seed;
+    int screen_saver_enabled;
+    int low_power_enabled;
+    int error_code;
+    int is_timer;
+    TDrawSystem* draw_system;
+    TDrawArea* draw_area;
+    unsigned char outline_type;
+    unsigned char pad_51[3];
+    int custom_mouse;
+    short shape_num;
+    unsigned char pad_5A[2];
+    TShape** shapes;
+    TSound_Driver* sound_system;
+    TMusic_System* music_system;
+    short sound_num;
+    unsigned char pad_6A[2];
+    TDigital** sounds;
+    unsigned char save_music_type;
+    unsigned char pad_71[3];
+    int save_music_track_from;
+    int save_music_track_to;
+    int save_music_cur_track;
+    char save_music_file[260];
+    int save_music_loop;
+    unsigned long save_music_pos;
+    TCommunications_Handler* comm_handler;
+    int comm_syncstop;
+    int comm_droppackets;
+    int comm_syncmsg;
+    int comm_stepmode;
+    int comm_speed;
+    TDebuggingLog* debugLog;
+    int log_comm;
+    TRegistry* registry;
+    int prog_mode;
+    int game_mode;
+    int sub_game_mode;
+    int paused;
+    TMousePointer* mouse_pointer;
+    int erase_mouse;
+    int mouse_blit_sync;
+    int is_mouse_on;
+    int windows_mouse;
+    void* mouse_cursor;
+    int input_enabled;
+    void* input_disabled_window;
+    short font_num;
+    unsigned char pad_1E2[2];
+    RGE_Font* fonts;
+    char work_dir[261];
+    char string_dll_name[261];
+    unsigned char pad_3F2[2];
+    RGE_Game_World* world;
+    int render_all;
+    short master_obj_id;
+    short terrain_id;
+    short elevation_height;
+    short brush_size;
+    char timing_text[256];
+    unsigned long frame_count;
+    unsigned long world_update_count;
+    unsigned long view_update_count;
+    unsigned long last_frame_count;
+    unsigned long last_world_update_count;
+    unsigned long last_view_update_count;
+    unsigned long fps;
+    unsigned long world_update_fps;
+    unsigned long view_update_fps;
+    char timings[0x3C0];
+    int do_show_timings;
+    int do_show_comm;
+    int do_show_ai;
+    unsigned long last_view_time;
+    char game_options[0xA8];
+    int campaignGameValue;
+    int savedGameValue;
+    int quick_build;
+    int save_check_for_cd;
+    int playerIDValue[9];
+    int display_selected_ids;
+    long countdown_timer[9];
+    int auto_paused;
+    int save_paused;
+    int non_user_pause;
+    int rollover;
+    float game_speed;
+    int single_player_difficulty;
+    unsigned char pathFindingValue;
+    unsigned char resigned[9];
+    unsigned char pad_A1E[2];
+    TDrawArea* map_save_area;
+
+    unsigned char pathFinding();
+    unsigned char mpPathFinding();
+    void stop_sound_system();
+    void get_string(char* buffer, int string_id, int buffer_size);
+};
+
+RGE_Base_Game::~RGE_Base_Game()
 {
     int i;
-    
-    // Vtable restore
-    *(void**)self = (void*)0x56EED0;
-    
-    // Debug random log dump
+    char filename[13];
+    char str[256];
+
     if (do_debug_random && !wrote_debug_random_log) {
         debug_random_write();
         dump_vismap_log();
     }
-    
-    // Save screen size
-    if (self->draw_system) {
-        TRegistry_RegSetInt(self->registry, 1, "Screen Size",
-            *(int*)((char*)self->draw_system + 0x2C));
+
+    if (this->draw_system != 0) {
+        this->registry->RegSetInt(1, "Screen Size", this->draw_system->screen_size);
     }
-    
-    // Save rollover text setting
-    {
-        int rolloverVal = -(self->field_A08 != 0);
-        rolloverVal = (rolloverVal & 1) + 2;
-        TRegistry_RegSetInt(self->registry, 1, "Rollover Text", rolloverVal);
-    }
-    
-    // Save mouse style
-    if (*(short*)((char*)self->prog_info + 0x8DC) == 2)
-        TRegistry_RegSetInt(self->registry, 1, "Mouse Style", 2);
+
+    this->registry->RegSetInt(1, "Rollover Text",
+        2 + (this->rollover ? -1 : 0));
+
+    if (this->prog_info->interface_style == 2)
+        this->registry->RegSetInt(1, "Mouse Style", 2);
     else
-        TRegistry_RegSetInt(self->registry, 1, "Mouse Style", 1);
-    
-    // Save game speed
-    {
-        float speed = *(float*)&self->field_A0C;
-        int speedInt = _ftol((double)(speed * 1.0f));  /* placeholder, g_56F018 factor */
-        TRegistry_RegSetInt(self->registry, 1, "Game Speed", speedInt);
+        this->registry->RegSetInt(1, "Mouse Style", 1);
+
+    this->registry->RegSetInt(1, "Game Speed",
+        (int)(this->game_speed * DAT_0056f018));
+    this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
+    this->registry->RegSetInt(1, "Path Finding", this->pathFinding() + 1);
+    this->registry->RegSetInt(1, "MP Path Finding", this->mpPathFinding() + 1);
+    this->registry->RegSetInt(1, "Scroll Speed", this->prog_info->scroll_speed);
+
+    if (actionFile != 0) {
+        fclose(actionFile);
+        actionFile = 0;
     }
-    
-    // Save difficulty
-    TRegistry_RegSetInt(self->registry, 1, "Difficulty", self->field_A10);
-    
-    // Save path finding
-    {
-        int pf = RGE_Base_Game_pathFinding(self) & 0xFF;
-        TRegistry_RegSetInt(self->registry, 1, "Path Finding", pf + 1);
+    if (fps_log != 0) {
+        fclose(fps_log);
+        fps_log = 0;
     }
-    
-    // Save MP path finding
-    {
-        int mpf = RGE_Base_Game_mpPathFinding(self) & 0xFF;
-        TRegistry_RegSetInt(self->registry, 1, "MP Path Finding", mpf + 1);
-    }
-    
-    // Save scroll speed
-    TRegistry_RegSetInt(self->registry, 1, "Scroll Speed",
-        *(int*)((char*)self->prog_info + 0x8C8));
-    
-    // Close action file
-    if (g_62C4CCh) {
-        /* fclose((void*)g_62C4CCh); */
-        g_62C4CCh = 0;
-    }
-    
-    // Close FPS log
-    if (g_62C530) {
-        /* fclose((void*)g_62C530); */
-        g_62C530 = 0;
-    }
-    
-    // Close draw log
-    if (draw_log) {
-        /* fclose((void*)draw_log); */
+    if (draw_log != 0) {
+        fclose(draw_log);
         draw_log = 0;
     }
-    
-    // Destroy scenario file info
-    if (self->scenario_info) {
-        RGE_Scenario_File_Info_dtor((void*)self->scenario_info);
-        operator_delete((void*)self->scenario_info);
-        self->scenario_info = 0;
+
+    RGE_Scenario_File_Info* scenario_info = this->scenario_info;
+    if (scenario_info != 0) {
+        scenario_info->~RGE_Scenario_File_Info();
+        operator delete(scenario_info);
+        this->scenario_info = 0;
     }
-    
-    // Save game info
-    if (self->game_info) {
-        int fileNum = TRegistry_RegGetInt(self->registry, 0, "Game File Number");
-        if (fileNum >= 0) {
-            fileNum = TRegistry_RegGetInt(self->registry, 0, "Game File Number");
-            char filename[260];
-            sprintf(filename, "game%d.nfo", fileNum);
-            RGE_Game_Info_save((void*)self->game_info, filename);
+
+    if (this->player_game_info != 0) {
+        int file_number = this->registry->RegGetInt(0, "Game File Number");
+        if (file_number >= 0) {
+            file_number = this->registry->RegGetInt(0, "Game File Number");
+            sprintf(filename, "game%d.nfo", file_number);
+            this->player_game_info->save(filename);
         }
-        
-        if (self->game_info) {
-            RGE_Game_Info_dtor((void*)self->game_info);
-            operator_delete((void*)self->game_info);
-            self->game_info = 0;
+        this->player_game_info->~RGE_Game_Info();
+        operator delete(this->player_game_info);
+        this->player_game_info = 0;
+    }
+
+    this->game_mode = 0;
+    if (this->world != 0) {
+        this->world->vfA0(1);
+        this->world = 0;
+    }
+
+    if (this->map_save_area != 0) {
+        this->map_save_area->~TDrawArea();
+        operator delete(this->map_save_area);
+        this->map_save_area = 0;
+    }
+    if (this->mouse_pointer != 0) {
+        this->mouse_pointer->~TMousePointer();
+        operator delete(this->mouse_pointer);
+        this->mouse_pointer = 0;
+    }
+
+    if (driveInfo != 0) {
+        operator delete(driveInfo);
+        driveInfo = 0;
+    }
+
+    if (this->comm_handler != 0) {
+        this->comm_handler->~TCommunications_Handler();
+        operator delete(this->comm_handler);
+        this->comm_handler = 0;
+    }
+    if (chat != 0) {
+        chat->~TChat();
+        operator delete(chat);
+        chat = 0;
+    }
+
+    if (this->fonts != 0) {
+        for (i = 0; i < this->font_num; ++i) {
+            void* font = ((void**)this->fonts)[i];
+            if (font != 0)
+                DeleteObject(font);
         }
+        free(this->fonts);
+        this->fonts = 0;
     }
-    
-    // Clean up scenario holder
-    self->game_mode = 0;
-    if (self->field_3F4) {
-        void** vt = *(void***)self->field_3F4;
-        ((void(*)(void*, int))vt[0xA0 / 4])(self->field_3F4, 1);
-        self->field_3F4 = 0;
+
+    this->stop_sound_system();
+    panel_system.destroyPanel("Blank Screen");
+
+    if (this->draw_system != 0) {
+        this->draw_system->~TDrawSystem();
+        operator delete(this->draw_system);
+        this->draw_system = 0;
+        this->draw_area = 0;
     }
-    
-    // Destroy screen draw area
-    if (self->draw_area_screen) {
-        TDrawArea_dtor(self->draw_area_screen);
-        operator_delete(self->draw_area_screen);
-        self->draw_area_screen = 0;
-    }
-    
-    // Destroy mouse pointer
-    if (self->mouse_pointer) {
-        TMousePointer_dtor(self->mouse_pointer);
-        operator_delete(self->mouse_pointer);
-        self->mouse_pointer = 0;
-    }
-    
-    // Delete drive info
-    if (g_5B215Ch) {
-        operator_delete((void*)g_5B215Ch);
-        g_5B215Ch = 0;
-    }
-    
-    // Destroy comm handler
-    if (self->comm_handler) {
-        TCommunications_Handler_dtor(self->comm_handler);
-        operator_delete(self->comm_handler);
-        self->comm_handler = 0;
-    }
-    
-    // Destroy chat
-    if (g_62C4B8) {
-        TChat_dtor((void*)g_62C4B8);
-        operator_delete((void*)g_62C4B8);
-        g_62C4B8 = 0;
-    }
-    
-    // Delete font objects
-    if (self->fonts) {
-        for (i = 0; i < (int)self->font_count; i++) {
-            void* hfont = *(void**)((char*)self->fonts + i * 12);
-            if (hfont)
-                DeleteObject(hfont);
-        }
-        free((void*)self->fonts);
-        self->fonts = 0;
-    }
-    
-    // Stop sound system
-    RGE_Base_Game_stop_sound_system(self);
-    
-    // Destroy blank screen panel
-    TPanelSystem_destroyPanel((void*)&panel_system, "Blank Screen");
-    
-    // Destroy draw system
-    if (self->draw_system) {
-        TDrawSystem_dtor(self->draw_system);
-        operator_delete(self->draw_system);
-        self->draw_system = 0;
-        self->draw_area = 0;
-    }
-    
-    // System parameters restore
-    if (self->field_38) {
+
+    if (this->screen_saver_enabled != 0)
         SystemParametersInfoA(0x11, 0, 0, 2);
-    }
-    if (self->field_3C) {
+    if (this->low_power_enabled != 0)
         SystemParametersInfoA(0x55, 0, 0, 2);
+
+    if (this->prog_palette != 0) {
+        panel_system.release_palette(this->prog_palette);
+        this->prog_palette = 0;
     }
-    
-    // Release palette
-    if (self->prog_palette) {
-        TPanelSystem_release_palette((void*)&panel_system, self->prog_palette);
-        self->prog_palette = 0;
+
+    if (this->registry != 0) {
+        this->registry->~TRegistry();
+        operator delete(this->registry);
+        this->registry = 0;
     }
-    
-    // Destroy registry
-    if (self->registry) {
-        TRegistry_dtor(self->registry);
-        operator_delete(self->registry);
-        self->registry = 0;
+
+    if (this->prog_mutex != 0) {
+        CloseHandle(this->prog_mutex);
+        this->prog_mutex = 0;
     }
-    
-    // Close handle
-    if (self->field_20) {
-        CloseHandle(self->field_20);
-        self->field_20 = 0;
-    }
-    
-    // Clear global
+
     rge_base_game = 0;
-    
-    // Destroy window
-    if (self->prog_window) {
-        DestroyWindow(self->prog_window);
+
+    if (this->prog_window != 0)
+        DestroyWindow(this->prog_window);
+
+    this->get_string(str, 0x3EB, 0x100);
+    if (str[0] != 0) {
+        void* help_window = FindWindowA("MS_WINHELP", str);
+        if (help_window != 0)
+            SendMessageA(help_window, 0x10, 0, 0);
     }
-    
-    // Help window cleanup (string 0x3EB)
-    {
-        int strID = 0x3EB;
-        char buf[256];
-        RGE_Base_Game_get_string(self, buf, strID, 0x100);
-        if (buf[0]) {
-            void* hwndHelp = FindWindowA("MS_WINHELP", buf);
-            if (hwndHelp)
-                SendMessageA(hwndHelp, 0x10, 0, 0);
-        }
+
+    if (StringTable != 0 && StringTable != (void*)this->prog_info->instance) {
+        FreeLibrary(StringTable);
+        StringTable = 0;
     }
-    
-    // Free string table library
-    if (g_62C4A0 && g_62C4A0 != *(int*)((char*)self->prog_info + 0x410)) {
-        FreeLibrary((void*)g_62C4A0);
-        g_62C4A0 = 0;
+
+    if (this->debugLog != 0) {
+        this->debugLog->~TDebuggingLog();
+        operator delete(this->debugLog);
+        this->debugLog = 0;
     }
-    
-    // Destroy debug log
-    if (self->debug_log) {
-        TDebuggingLog_dtor((void*)self->debug_log);
-        operator_delete((void*)self->debug_log);
-        self->debug_log = 0;
-    }
-    
-    // Free shapes
-    if (self->shapes) {
-        for (i = 0; i < (int)self->shape_count; i++) {
-            void* shape = *(void**)((char*)self->shapes + i * 4);
-            if (shape) {
-                TShape_dtor(shape);
-                operator_delete(shape);
+
+    if (this->shapes != 0) {
+        for (i = 0; i < this->shape_num; ++i) {
+            TShape* shape = this->shapes[i];
+            if (shape != 0) {
+                shape->~TShape();
+                operator delete(shape);
             }
         }
-        free(self->shapes);
+        free(this->shapes);
     }
 }

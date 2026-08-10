@@ -1,6 +1,9 @@
 // attempt 1: natural vertical slider factory with proportional coordinates, optional button art and bevels
 // size matches; early-return version keeps math/setup block exact, remaining drift is epilogue layout plus bevel color zero-extension/order
 // tried result-local single-exit form and int color formal parameters; result local regressed early register allocation, so keep cleaner early-return basin
+// worker 2026-08-10: a failure-label rewrite was codegen-identical; a result local moved the first
+// mismatch into the allocation math and was restored. Final holdout is the original shared EH cleanup
+// tail (oracle branches to one failure epilogue; this natural source emits separate cleanup tails).
 
 class TPanel {};
 class TShape {};

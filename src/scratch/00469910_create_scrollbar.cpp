@@ -13,6 +13,8 @@
 // left in scratch: behavior/call sequence and first 137 bytes match; remaining drift is VC5 SEH return-tail layout.
 // rebuilt clones success/failure epilogues and leaves failure branch targets 0x13 bytes later than original common tail.
 // FLAGS: config/flags/00469910_create_scrollbar.rsp keeps /GX because default no-/GX build lacks the original EH/new frame and is too small.
+// worker 2026-08-10: confirmed the existing canonical typed reconstruction and /GX response-file context;
+// no new source-shape lead was found beyond the documented shared-SEH-tail blocker.
 
 class TPanel;
 class TShape;

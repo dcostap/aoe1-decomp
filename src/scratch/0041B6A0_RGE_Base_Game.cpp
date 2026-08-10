@@ -1,315 +1,369 @@
 // VA: 0041B6A0 RGE_Base_Game::RGE_Base_Game (988 B)
 // PDB source: basegame.cpp
-// Packet-grounded structural first-pass
+// Attempt log:
+// - Baseline was a packet-grounded free-function/raw-offset scaffold; it rebuilt
+//   with the right call sequence but had a non-member prologue and wrong imported
+//   call surfaces.  The current candidate uses the generated RGE_Base_Game layout,
+//   the real virtual-destructor class context, named member setters, and the
+//   period string/intrinsic surfaces.
+// Source audit: the byte-exact variant used __declspec(novtable) plus an explicit
+// vptr store; that compiler-steering form is rejected.  The natural virtual
+// destructor candidate remains in scratch with a 27-byte prologue drift.
 
-extern void setVersion(void* self, float v);
-extern void setScenarioGame(void* self, int v);
-extern void setCampaignGame(void* self, int v);
-extern void setSavedGame(void* self, int v);
-extern void setSinglePlayerGame(void* self, int v);
-extern void setMultiplayerGame(void* self, int v);
-extern void setMapSize(void* self, int a, int b, int c);
-extern void setAllowCheatCodes(void* self, int v);
-extern void setCheatNotification(void* self, int v);
-extern void setFullVisibility(void* self, int v);
-extern void setFogOfWar(void* self, int v);
-extern void setColoredChat(void* self, int v);
-extern void setGameDeveloperMode(void* self, int v);
-extern void setDifficulty(void* self, int v);
-extern void setPlayerCDAndVersion(void* self, int idx, int v);
-extern void setPlayerHasCD(void* self, int idx, int v);
-extern void setPlayerVersion(void* self, int idx, int v);
-extern void setPlayerTeam(void* self, int idx, int v);
-extern void setPathFinding(void* self, unsigned char v);
-extern void setMpPathFinding(void* self, unsigned char v);
-extern void setNumberPlayers(void* self, int v);
-extern void setScenarioName(void* self, const char* name);
-extern int setup_registry(void* self);
-extern int setup_debugging_log(void* self);
-extern int setup(void* self);
-extern void* LoadCursorA(void* inst, int id);
-extern int GetCurrentDirectoryA(int size, char* buf);
+#include <string.h>
+
+class RGE_Game_Info;
+class RGE_Scenario_File_Info;
+class RGE_Prog_Info {
+public:
+    char gap_00[0x410];
+    void* instance;
+};
+class TDrawSystem;
+class TDrawArea;
+class TShape;
+class TSound_Driver;
+class TMusic_System;
+class TDigital;
+class TCommunications_Handler;
+class TDebuggingLog;
+class TRegistry;
+class TMousePointer;
+class RGE_Font;
+
+class RGE_Timing_Info {
+public:
+    unsigned long accum_time;
+    unsigned long last_time;
+    unsigned long start_time;
+    int include_in_total;
+    int is_summary;
+    unsigned long last_single_time;
+    unsigned long max_time;
+    unsigned long last_max_time;
+};
+
+class RGE_Base_Game;
+
+extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* instance, const char* cursor);
+extern "C" __declspec(dllimport) unsigned long __stdcall GetCurrentDirectoryA(unsigned long size, char* buffer);
 
 extern int do_draw_log;
 extern int safe_draw_log;
 extern char draw_log_name;
 extern int draw_log;
+extern RGE_Base_Game* rge_base_game;
 extern int g_592A58; // AppInst
-extern int g_62C4FCh;
-extern int g_62C4B8; // chat
-extern int g_62C4C0; // comm
+extern int g_62C4A0; // StringTable
 extern int g_62C4A8; // Regs
 extern int g_62C4B0; // sound_driver
+extern int g_62C4B8; // chat
+extern int g_62C4C0; // comm
+extern int g_62C4FC; // L
 extern int g_5B215Ch; // driveInfo
-extern int g_62C4A0; // StringTable?
+extern int g_5B2160; // AppWnd
+extern int g_5B236C; // comm/global window state
+extern int g_62C574; // rge_base_game storage
 
-struct Shim_1B6A0_A {
-    char gap00[4];
-    int field_4;     // +0x04
-    int field_8;     // +0x08
-    void* prog_info; // +0x0C
-    void* prog_window; // +0x10
-    int field_14;    // +0x14
-    int field_18;    // +0x18
-    int field_1C;    // +0x1C
-    int field_20;    // +0x20
-    int field_24;    // +0x24
-    int field_28;    // +0x28 (0xFFFFFFFF)
-    int field_2C;    // +0x2C
-    int field_30;    // +0x30
-    int field_34;    // +0x34
-    int field_38;    // +0x38
-    int field_3C;    // +0x3C
-    int error_code;  // +0x40
-    int field_44;    // +0x44
-    void* draw_system; // +0x48
-    void* draw_area; // +0x4C
-    unsigned char field_50; // +0x50 (2)
-    char gap51[3];
-    int mouse_inactive; // +0x54
-    int field_58;    // +0x58 (short)
-    void* shapes;    // +0x5C
-    void* sound_system; // +0x60
-    void* music_system; // +0x64
-    short field_68;  // +0x68
-    char gap6A[2];
-    int field_6C;
-    unsigned char field_70;
-    char gap71[3];
-    int field_74;
-    int field_78;
-    int field_7C;
-    unsigned char field_80;
-    char gap81[0x184 - 0x81];
-    int field_184;
-    int field_188;
-    void* comm_handler; // +0x18C
-    int field_190;
-    int field_194;
-    int field_198;
-    int field_19C;
-    int field_1A0;
-    int field_1A4;    // +0x1A4
-    int field_1A8;    // +0x1A8
-    void* registry;   // +0x1AC
-    int game_mode;    // +0x1B0
-    int field_1B4;
-    int field_1B8;
-    int field_1BC;
-    void* mouse_pointer; // +0x1C0
-    int field_1C4;
-    int field_1C8;
-    int field_1CC;
-    int field_1D0;
-    int field_1D4;
-    short field_1E0;
-    int field_1E4;
-    char work_dir[0x100]; // +0x1E8
-    char language_dll[0x100]; // +0x2E8 (2ED)
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+
+    RGE_Game_Info* player_game_info;
+    RGE_Scenario_File_Info* scenario_info;
+    RGE_Prog_Info* prog_info;
+    void* prog_window;
+    int prog_ready;
+    int prog_active;
+    void* prog_palette;
+    void* prog_mutex;
+    long window_style;
+    int random_game_seed;
+    int random_map_seed;
+    int save_random_game_seed;
+    int save_random_map_seed;
+    int screen_saver_enabled;
+    int low_power_enabled;
+    int error_code;
+    int is_timer;
+    TDrawSystem* draw_system;
+    TDrawArea* draw_area;
+    unsigned char outline_type;
+    unsigned char pad_51[3];
+    int custom_mouse;
+    short shape_num;
+    unsigned char pad_5A[2];
+    TShape** shapes;
+    TSound_Driver* sound_system;
+    TMusic_System* music_system;
+    short sound_num;
+    unsigned char pad_6A[2];
+    TDigital** sounds;
+    unsigned char save_music_type;
+    unsigned char pad_71[3];
+    int save_music_track_from;
+    int save_music_track_to;
+    int save_music_cur_track;
+    char save_music_file[260];
+    int save_music_loop;
+    unsigned long save_music_pos;
+    TCommunications_Handler* comm_handler;
+    int comm_syncstop;
+    int comm_droppackets;
+    int comm_syncmsg;
+    int comm_stepmode;
+    int comm_speed;
+    TDebuggingLog* debugLog;
+    int log_comm;
+    TRegistry* registry;
+    int prog_mode;
+    int game_mode;
+    int sub_game_mode;
+    int paused;
+    TMousePointer* mouse_pointer;
+    int erase_mouse;
+    int mouse_blit_sync;
+    int is_mouse_on;
+    int windows_mouse;
+    void* mouse_cursor;
+    int input_enabled;
+    void* input_disabled_window;
+    short font_num;
+    unsigned char pad_1E2[2];
+    RGE_Font* fonts;
+    char work_dir[261];
+    char string_dll_name[261];
+    unsigned char pad_3F2[2];
+    void* world;
+    int render_all;
+    short master_obj_id;
+    short terrain_id;
+    short elevation_height;
+    short brush_size;
+    char timing_text[256];
+    unsigned long frame_count;
+    unsigned long world_update_count;
+    unsigned long view_update_count;
+    unsigned long last_frame_count;
+    unsigned long last_world_update_count;
+    unsigned long last_view_update_count;
+    unsigned long fps;
+    unsigned long world_update_fps;
+    unsigned long view_update_fps;
+    RGE_Timing_Info timings[30];
+    int do_show_timings;
+    int do_show_comm;
+    int do_show_ai;
+    unsigned long last_view_time;
+    char game_options[0xA8];
+    int campaignGameValue;
+    int savedGameValue;
+    int quick_build;
+    int save_check_for_cd;
+    int playerIDValue[9];
+    int display_selected_ids;
+    long countdown_timer[9];
+    int auto_paused;
+    int save_paused;
+    int non_user_pause;
+    int rollover;
+    float game_speed;
+    int single_player_difficulty;
+    unsigned char pathFindingValue;
+    unsigned char resigned[9];
+    unsigned char pad_A1E[2];
+    TDrawArea* map_save_area;
+
+    RGE_Base_Game(RGE_Prog_Info* info, int do_setup);
+
+    void setVersion(float v);
+    void setScenarioGame(unsigned char v);
+    void setCampaignGame(int v);
+    void setSavedGame(int v);
+    void setSinglePlayerGame(unsigned char v);
+    void setMultiplayerGame(unsigned char v);
+    void setMapSize(char x, char y, char z);
+    void setAllowCheatCodes(unsigned char v);
+    void setCheatNotification(unsigned char v);
+    void setFullVisibility(unsigned char v);
+    void setFogOfWar(unsigned char v);
+    void setColoredChat(unsigned char v);
+    void setGameDeveloperMode(unsigned char v);
+    void setDifficulty(unsigned char v);
+    void setPlayerCDAndVersion(int player, unsigned char v);
+    void setPlayerHasCD(int player, unsigned char v);
+    void setPlayerVersion(int player, unsigned char v);
+    void setPlayerTeam(int player, unsigned char v);
+    void setPathFinding(unsigned char v);
+    void setMpPathFinding(unsigned char v);
+    void setNumberPlayers(unsigned char v);
+    void setScenarioName(const char* name);
+    int setup_registry();
+    int setup_debugging_log();
+    int setup();
 };
 
-void* RGE_Base_Game_ctor(Shim_1B6A0_A* self, void* prog_info, int param2)
+RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
 {
     int i;
-    
-    self->field_4 = 0;
-    self->field_28 = -1;
-    self->field_2C = -1;
-    self->field_30 = -1;
-    self->field_34 = -1;
-    *(int*)((char*)self + 0x9A8) = 0;
-    *(void**)self = (void*)0x56EED0; // vtable
-    
+
+    this->player_game_info = 0;
+    this->random_game_seed = -1;
+    this->random_map_seed = -1;
+    this->save_random_game_seed = -1;
+    this->save_random_map_seed = -1;
+    this->quick_build = 0;
     do_draw_log = 0;
     safe_draw_log = 0;
     draw_log_name = 0;
     draw_log = 0;
-    
-    setVersion(self, 3.0f);
-    setScenarioGame(self, 0);
-    setCampaignGame(self, 0);
-    setSavedGame(self, 0);
-    setSinglePlayerGame(self, 1);
-    setMultiplayerGame(self, 0);
-    setMapSize(self, 0x60, 0x60, 8);
-    setAllowCheatCodes(self, 0);
-    setCheatNotification(self, 1);
-    setFullVisibility(self, 0);
-    setFogOfWar(self, 1);
-    setColoredChat(self, 1);
-    setGameDeveloperMode(self, 0);
-    setDifficulty(self, 0);
-    
-    // Player loop (0-8)
+
+    this->setVersion(1.0f);
+    this->setScenarioGame(0);
+    this->setCampaignGame(0);
+    this->setSavedGame(0);
+    this->setSinglePlayerGame(1);
+    this->setMultiplayerGame(0);
+    this->setMapSize(0x60, 0x60, 8);
+    this->setAllowCheatCodes(0);
+    this->setCheatNotification(1);
+    this->setFullVisibility(0);
+    this->setFogOfWar(1);
+    this->setColoredChat(1);
+    this->setGameDeveloperMode(0);
+    this->setDifficulty(0);
+
     for (i = 0; i < 9; i++) {
-        setPlayerCDAndVersion(self, i, 0);
-        setPlayerHasCD(self, i, 0);
-        setPlayerVersion(self, i, 0);
-        setPlayerTeam(self, i, 1);
+        this->setPlayerCDAndVersion(i, 0);
+        this->setPlayerHasCD(i, 0);
+        this->setPlayerVersion(i, 0);
+        this->setPlayerTeam(i, 1);
     }
-    
-    setPathFinding(self, 0);
-    setMpPathFinding(self, 0);
-    setNumberPlayers(self, 4);
-    setScenarioName(self, "");
-    
-    // globals
-    extern void* rge_base_game;
-    rge_base_game = self;
-    
-    self->prog_info = prog_info;
-    self->prog_window = 0;
-    self->field_14 = 0;
-    self->field_18 = 1;
-    self->field_1C = 0;
-    self->field_24 = 0;
+
+    this->setPathFinding(0);
+    this->setMpPathFinding(0);
+    this->setNumberPlayers(4);
+    this->setScenarioName((const char*)0x592A40);
+
+    rge_base_game = this;
+    this->prog_info = info;
+    this->prog_window = 0;
+    this->prog_ready = 0;
+    this->prog_active = 1;
+    this->prog_palette = 0;
+    this->window_style = 0;
     g_62C4A0 = 0;
-    self->field_38 = 0;
-    self->error_code = 0;
-    self->field_44 = 0;
-    self->draw_system = 0;
-    self->draw_area = 0;
-    self->field_50 = 2;
-    self->mouse_inactive = 0;
-    *(int*)((char*)self + 0x5C) = 0;
-    self->sound_system = 0;
-    self->music_system = 0;
-    self->field_68 = 0;
-    self->field_6C = 0;
-    self->field_70 = 0;
-    self->field_74 = 0;
-    self->field_78 = 0;
-    self->field_7C = 0;
-    self->field_80 = 0;
-    self->field_184 = 0;
-    self->field_188 = 0;
-    self->comm_handler = 0;
-    self->field_1A4 = 0;
-    self->field_1A8 = 0;
-    self->field_190 = 0;
-    self->field_198 = 0;
-    self->field_19C = 0;
-    self->field_1A0 = 1;
-    self->field_194 = 0;
-    self->registry = 0;
-    self->game_mode = 0;
-    self->field_1B4 = 0;
-    self->field_1B8 = 0;
-    self->field_1BC = 0;
-    self->mouse_pointer = 0;
-    self->field_1C4 = 0;
-    self->field_1C8 = 0;
-    self->field_1CC = 1;
-    self->field_1D0 = 1;
-    
-    self->field_1D4 = (int)LoadCursorA(0, 0x7F00);
-    
-    self->field_1E0 = 0;
-    self->field_1E4 = 0;
-    GetCurrentDirectoryA(0x105, self->work_dir);
-    
-    // Copy "language.dll" into +0x2ED
-    {
-        const char* src = "language.dll";
-        char* dst = self->language_dll;
-        int slen;
-        for (slen = 0; src[slen]; slen++);
-        for (i = 0; i <= slen; i++)
-            dst[i] = src[i];
+    this->screen_saver_enabled = 0;
+    this->error_code = 0;
+    this->is_timer = 0;
+    this->draw_system = 0;
+    this->draw_area = 0;
+    this->outline_type = 2;
+    this->custom_mouse = 0;
+    this->shapes = 0;
+    this->sound_system = 0;
+    this->music_system = 0;
+    this->sound_num = 0;
+    this->sounds = 0;
+    this->save_music_type = 0;
+    this->save_music_track_from = 0;
+    this->save_music_track_to = 0;
+    this->save_music_cur_track = 0;
+    this->save_music_file[0] = 0;
+    this->save_music_loop = 0;
+    this->save_music_pos = 0;
+    this->comm_handler = 0;
+    this->debugLog = 0;
+    this->log_comm = 0;
+    this->comm_syncstop = 0;
+    this->comm_syncmsg = 0;
+    this->comm_stepmode = 0;
+    this->comm_speed = 1;
+    this->comm_droppackets = 0;
+    this->registry = 0;
+    this->prog_mode = 0;
+    this->game_mode = 0;
+    this->sub_game_mode = 0;
+    this->paused = 0;
+    this->mouse_pointer = 0;
+    this->erase_mouse = 0;
+    this->mouse_blit_sync = 0;
+    this->is_mouse_on = 1;
+    this->windows_mouse = 1;
+    this->mouse_cursor = LoadCursorA(0, (const char*)0x7F00);
+    this->font_num = 0;
+    this->fonts = 0;
+    GetCurrentDirectoryA(0x105, this->work_dir);
+
+    strcpy(this->string_dll_name, (const char*)0x57FA10);
+
+    this->master_obj_id = -1;
+    this->terrain_id = -1;
+    this->elevation_height = -1;
+    this->world = 0;
+    this->render_all = 1;
+    this->brush_size = 1;
+    this->timing_text[0] = 0;
+    this->frame_count = 0;
+    this->world_update_count = 0;
+    this->view_update_count = 0;
+    this->last_frame_count = 0;
+    this->last_world_update_count = 0;
+    this->last_view_update_count = 0;
+    this->fps = 0;
+    this->world_update_fps = 0;
+    this->view_update_fps = 0;
+    this->last_view_time = 0;
+
+    for (i = 0; i < 30; i++) {
+        this->timings[i].accum_time = 0;
+        this->timings[i].last_time = 0;
+        this->timings[i].start_time = 0;
+        this->timings[i].last_single_time = 0;
+        this->timings[i].max_time = 0;
+        this->timings[i].last_max_time = 0;
+        this->timings[i].include_in_total = 0;
+        this->timings[i].is_summary = 0;
     }
-    
-    // +0x3FC = -1 (short)
-    *(short*)((char*)self + 0x3FC) = -1;
-    *(short*)((char*)self + 0x3FE) = -1;
-    *(short*)((char*)self + 0x400) = -1;
-    
-    *(int*)((char*)self + 0x3F4) = 0;
-    *(int*)((char*)self + 0x3F8) = 1;
-    *(short*)((char*)self + 0x402) = 1;
-    *(unsigned char*)((char*)self + 0x404) = 0;
-    
-    // Initialize timing slots
-    *(int*)((char*)self + 0x504) = 0;
-    *(int*)((char*)self + 0x508) = 0;
-    *(int*)((char*)self + 0x50C) = 0;
-    *(int*)((char*)self + 0x510) = 0;
-    *(int*)((char*)self + 0x514) = 0;
-    *(int*)((char*)self + 0x518) = 0;
-    *(int*)((char*)self + 0x51C) = 0;
-    *(int*)((char*)self + 0x520) = 0;
-    *(int*)((char*)self + 0x524) = 0;
-    *(int*)((char*)self + 0x8F4) = 0;
-    
-    // Clear 30 timing slots (each 0x20 bytes), starting at +0x528, array starting at +0x52C
-    {
-        int* p = (int*)((char*)self + 0x52C);
-        int j;
-        for (j = 0; j < 30; j++) {
-            *(p - 1) = 0;
-            p[0] = 0;
-            p[1] = 0;
-            p[4] = 0;
-            p[5] = 0;
-            p[6] = 0;
-            p[2] = 0;
-            p[3] = 0;
-            p += 8;
-        }
-    }
-    
-    *(int*)((char*)self + 0x8E8) = 0;
-    *(int*)((char*)self + 0x8EC) = 0;
-    *(int*)((char*)self + 0x8F0) = 0;
-    *(int*)((char*)self + 0x9AC) = 1;
-    g_62C4FCh = 0;
-    
-    g_592A58 = *(int*)((char*)prog_info + 0x410);
-    
-    g_5B215Ch = 0;
+
+    this->do_show_timings = 0;
+    this->do_show_comm = 0;
+    this->do_show_ai = 0;
+    this->save_check_for_cd = 1;
+    g_62C4FC = 0;
+    g_592A58 = (int)this->prog_info->instance;
+    g_5B236C = 0;
     g_62C4B8 = 0;
     g_62C4C0 = 0;
     g_62C4A8 = 0;
     g_62C4B0 = 0;
     g_5B215Ch = 0;
-    
-    self->field_8 = 0;
-    
-    // Per-player global arrays init (9 elements)
-    {
-        int* p_base = (int*)((char*)self + 0x9B0);
-        for (i = 0; i < 9; i++) {
-            p_base[i] = 0;
-            *(unsigned char*)((char*)self + 0xA15 + i) = 0;
+    this->scenario_info = 0;
+    for (i = 0; i < 9; i++) {
+        this->playerIDValue[i] = 0;
+        this->resigned[i] = 0;
+    }
+    this->auto_paused = 0;
+    this->rollover = 1;
+    this->map_save_area = 0;
+    this->game_speed = 1.0f;
+    this->single_player_difficulty = 2;
+
+    if (!this->setup_registry()) {
+        this->error_code = 0x0E;
+        return;
+    }
+    g_62C4A8 = (int)this->registry;
+    if (!this->setup_debugging_log()) {
+        this->error_code = 0x0F;
+        return;
+    }
+    g_62C4FC = (int)this->debugLog;
+    if (do_setup) {
+        if (!this->setup()) {
+            if (!this->error_code)
+                this->error_code = 1;
         }
     }
-    
-    *(int*)((char*)self + 0x9FC) = 0;
-    *(int*)((char*)self + 0xA08) = 1;
-    *(int*)((char*)self + 0xA20) = 0;
-    *(int*)((char*)self + 0xA0C) = 0x3F800000; // 1.0f
-    *(int*)((char*)self + 0xA10) = 2;
-    
-    if (!setup_registry(self)) {
-        self->error_code = 0x0E;
-        return self;
-    }
-    
-    g_62C4A8 = (int)self->registry;
-    
-    if (!setup_debugging_log(self)) {
-        self->error_code = 0x0F;
-        return self;
-    }
-    
-    g_62C4FCh = self->field_1A4;
-    
-    if (param2) {
-        if (!setup(self))
-            if (!self->error_code)
-                self->error_code = 1;
-    }
-    
-    *(int*)((char*)self + 0x9D4) = 0;
-    
-    return self;
+    this->display_selected_ids = 0;
 }

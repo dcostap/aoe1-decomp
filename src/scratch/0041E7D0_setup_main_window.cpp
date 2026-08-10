@@ -13,6 +13,9 @@
 //   all duplicated the 11-byte mismatch; keep the natural expression here.
 // - Main-agent audit confirmed canonical game/program/window ownership and kept
 //   the direct Win32 rectangle arithmetic rather than scheduling scaffolding.
+// - Follow-up top-first and inline-helper spellings, plus a gated nine-way
+//   height-expression lab, all collapsed to the same 11-byte SetWindowPos drift;
+//   restored the pinned natural source.
 
 #include <windows.h>
 

@@ -1,6 +1,9 @@
 // attempt 1: natural horizontal slider factory with proportional coordinates, optional button art and bevels
 // size matches; early-return version keeps math/setup block exact, remaining drift is epilogue layout plus bevel color zero-extension/order
 // tried result-local single-exit form and int color formal parameters; result local regressed early register allocation, so keep cleaner early-return basin
+// worker 2026-08-10: one explicit done label with an initialized result local moved the first mismatch
+// into allocation math and was restored. Final holdout is the original shared EH cleanup tail; the
+// natural source matches all five calls and the complete factory body before that tail.
 
 class TPanel {};
 class TShape {};
