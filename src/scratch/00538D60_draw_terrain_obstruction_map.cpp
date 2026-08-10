@@ -20,6 +20,12 @@
 //   only the localized VC5 outer-loop LEA scheduling gap.
 // Main-agent audit removed unused fake-size context and restored canonical
 // draw-area ownership while retaining the ordinary nested obstruction loop.
+// Matching-worker continuation: for-header, comma-sequenced, reversed-sum,
+// and named row-base probes all emitted the same 250-byte basin.  The first
+// remaining hunk is the outer-loop allocator choice: original computes the
+// x*8 and x*4 LEAs before a separate row-sum LEA into EDX, while VC5 folds the
+// row sum into ECX before those LEAs.  Calls, stack cleanup, layout, and the
+// nested draw behavior remain aligned; retain the clean named-loop source.
 
 class TDrawArea {
 public:

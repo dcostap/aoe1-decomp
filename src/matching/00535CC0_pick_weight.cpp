@@ -62,6 +62,11 @@
 // below; remaining drift is the VC5 register/dispatch basin described above.
 // Main-agent audit restored polymorphic master/panel ownership; the natural
 // select-level switch remains authoritative.
+// Matching-worker probe: mirrored the exact TRIBE_Main_View::pick_weight donor's
+// int touched/result declaration and result-local fallthrough shape.  Cases 2
+// and 3 assign the initialized result and return it after the switch, preserving
+// the original shared zero tail.  This is a natural source form and matches all
+// 211 bytes exactly.
 
 // Fresh pass probe 2 uses the proven concrete RGE_View/TPanel and
 // RGE_Static_Object data surfaces rather than the prior minimal helper shells.
@@ -81,18 +86,55 @@ public:
 
 class TPanel {
 public:
-    virtual ~TPanel(); virtual void v01(); virtual void v02(); virtual void v03();
-    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
-    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-    virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-    virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
-    virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
-    virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43();
-    virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
+    virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long,
+                                 long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(void*);
+    virtual void draw_offset(long, long, void*);
+    virtual void draw_rect2(void*);
+    virtual void draw_offset2(long, long, void*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(void*);
+    virtual int is_inside(long, long);
     char _gap_04[0xF0];
 };
 
@@ -101,48 +143,52 @@ public:
     char _gap_F4[0x33C - 0xF4];
     int UC_ObjectTouched;
     int UC_TouchedObj;
-    virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51();
-    virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
-    virtual void pick_through_fog();
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+    virtual int pick_through_fog(RGE_Static_Object*);
     virtual int pick_weight(RGE_Static_Object* param_1, int param_2);
 };
 
 int RGE_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
-    int zero;
-    int bVar1;
     unsigned char select_level = param_1->master_obj->select_level;
+    int touched;
 
     // Check touched state.
     if (this->UC_ObjectTouched && this->UC_TouchedObj == param_1->id)
-        bVar1 = 1;
+        touched = 1;
     else
-        bVar1 = 0;
+        touched = 0;
 
-    zero = 0;
+    int result = 0;
 
     // Switch on select_level (values 2,3,4 handled, default=1)
     switch ((int)(unsigned)select_level) {
         case 4:
-            if (bVar1) return 5;
+            if (touched) return 5;
             if (param_2 == 1 || param_2 == 2) return 4;
             if (param_2 == 3) return 3;
             return 2;
         case 3:
-            if (bVar1) return 5;
-            if (param_2 != 1) {
-                if (param_2 != 2) return zero;
-            }
-            return 3;
+            if (touched) return 5;
+            if (param_2 == 1 || param_2 == 2)
+                result = 3;
+            break;
         case 2:
-            if (bVar1) return 5;
-            if (param_2 != 1) {
-                if (param_2 != 2) {
-                    if (param_2 != 3) return zero;
-                    return 2;
-                }
-            }
-            return 3;
+            if (touched) return 5;
+            if (param_2 == 1 || param_2 == 2)
+                result = 3;
+            else if (param_2 == 3)
+                result = 2;
+            break;
         default:
             return 1;
     }
+
+    return result;
 }

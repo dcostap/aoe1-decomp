@@ -50,6 +50,11 @@
 // Best variant: probe 2 (current source), 219 bytes, frame 0x10, 2/2 calls aligned.
 // Main-agent audit confirmed canonical panel/draw-area/DirectDraw ownership;
 // no dead-store or COM scheduling steering survives.
+// Matching-worker continuation: an early typed surface cache worsened the
+// resync basin (203 differing bytes), while restoring the full donor TPanel
+// virtual surface was a codegen duplicate.  Retain the clean 219-byte source;
+// the unresolved gap remains the isolated COM vtable/save-register and
+// parameter-home scheduling basin, not call/ABI/layout uncertainty.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 

@@ -34,6 +34,12 @@
 // named panel-width/height source and canonical RGE_View/TPanel/tagRECT surface.
 // Main-agent audit confirmed canonical panel/view rectangle ownership and kept
 // the natural visible/geometry branches.
+// Matching-worker continuation: a nine-variant natural body lab (current,
+// zero-local widths, inner/direct locals, declaration/order, math-order, and
+// truthy guards) preserved the 217-byte size but produced only four codegen
+// groups and no exact result.  The clean current source remains the best
+// reconstruction; the remaining 80-byte gap is the stable EAX/EDX, EBP/EDI,
+// and failure-tail register basin, likely requiring broader view.cpp TU context.
 
 class tagRECT {
 public:
