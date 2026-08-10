@@ -14,14 +14,23 @@
 // - Positive victory-point predicates reproduce the original yes/empty branch
 //   order and align the statistics call stream; remaining drift is prologue/
 //   register coloring plus three late call-site placements.
+// - Next lead: the original switch emits mode 6 before mode 5; keep that
+//   compiler handler order rather than numeric source order.
+// - Removed the loop-local victory pointer: the oracle carries each player
+//   pointer and rereads player->victory_conditions at every helper call.
+// - Plain uninitialized temptxt gives the closest natural register basin;
+//   full zero-init selects the wrong this/zero registers. A packed tail-window
+//   diagnostic improved raw bytes but changed size/relocations, so it is not kept.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 class TDrawArea;
 
 class TPanel {
 public:
+    char gap_00[0xF0];
     virtual ~TPanel();
     virtual void vf_004();
     virtual void vf_008();
@@ -82,7 +91,6 @@ public:
     virtual void set_text(char* text);
     virtual void set_text(long id);
 
-    char gap_04[0xF0];
     void set_curr_child(TPanel* child);
 };
 
@@ -172,7 +180,8 @@ public:
 void TribeAchievementsScreen::set_mode(int mode)
 {
     int player_num = (int)rge_base_game->world->player_num - 1;
-    char temptxt[50] = {0};
+    char temptxt[50];
+    RGE_Player* player;
 
     rge_base_game->disable_input();
 
@@ -240,30 +249,29 @@ void TribeAchievementsScreen::set_mode(int mode)
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
             do {
-            RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
-            RGE_Victory_Conditions* victory = player->victory_conditions;
+            player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
 
-            itoa(victory->get_victory_points_group(0), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
             row[-1]->set_text(temptxt);
-            itoa(victory->get_victory_points_group(1), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
             row[0]->set_text(temptxt);
-            itoa(victory->get_victory_points_group(2), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
             row[1]->set_text(temptxt);
-            itoa(victory->get_victory_points_group(3), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
             row[2]->set_text(temptxt);
 
-            if (victory->get_victory_points_id(0x16) > 0) {
+            if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
                 row[3]->set_text((long)0xFA3);
             } else {
                 row[3]->set_text("");
             }
-            if (victory->get_victory_points_id(0x17) > 0) {
+            if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
                 row[4]->set_text((long)0xFA3);
             } else {
                 row[4]->set_text("");
             }
 
-            itoa(victory->get_victory_points(), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points(), temptxt, 10);
             row[5]->set_text(temptxt);
             player_offset += 4;
             row += 7;
@@ -288,26 +296,25 @@ void TribeAchievementsScreen::set_mode(int mode)
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
             do {
-            RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
-            RGE_Victory_Conditions* victory = player->victory_conditions;
+            player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
 
-            itoa(victory->get_attribute_id(0), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(0), temptxt, 10);
             row[-1]->set_text(temptxt);
-            itoa(victory->get_attribute_id(1), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
             row[0]->set_text(temptxt);
             itoa((long)(player->attributes[19] - player->attributes[11]), temptxt, 10);
             row[1]->set_text(temptxt);
 
-            itoa(victory->get_attribute_id(2), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);
             row[2]->set_text(temptxt);
 
-            if (victory->get_victory_points_id(3) > 0) {
+            if (player->victory_conditions->get_victory_points_id(3) > 0) {
                 row[3]->set_text((long)0xFA3);
             } else {
                 row[3]->set_text("");
             }
 
-            itoa(victory->get_victory_points_group(0), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
             row[4]->set_text(temptxt);
             player_offset += 4;
             row += 7;
@@ -333,32 +340,31 @@ void TribeAchievementsScreen::set_mode(int mode)
             TTextPanel** row = this->statistics[0] + 2;
             int remaining = player_num;
             do {
-            RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
-            RGE_Victory_Conditions* victory = player->victory_conditions;
+            player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
 
-            itoa(victory->get_attribute_id(4), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(4), temptxt, 10);
             row[-2]->set_text(temptxt);
-            itoa(victory->get_attribute_id(5), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(5), temptxt, 10);
             row[-1]->set_text(temptxt);
 
-            if (victory->get_victory_points_id(6) > 0) {
+            if (player->victory_conditions->get_victory_points_id(6) > 0) {
                 row[0]->set_text((long)0xFA3);
             } else {
                 row[0]->set_text("");
             }
 
-            sprintf(temptxt, "%d", victory->get_attribute_id(7));
+            sprintf(temptxt, "%d", player->victory_conditions->get_attribute_id(7));
             row[1]->set_text(temptxt);
 
-            if (victory->get_victory_points_id(8) > 0) {
+            if (player->victory_conditions->get_victory_points_id(8) > 0) {
                 row[2]->set_text((long)0xFA3);
             } else {
                 row[2]->set_text("");
             }
 
-            itoa(victory->get_attribute_id(9), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(9), temptxt, 10);
             row[3]->set_text(temptxt);
-            itoa(victory->get_victory_points_group(1), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
             row[4]->set_text(temptxt);
             player_offset += 4;
             row += 7;
@@ -384,30 +390,29 @@ void TribeAchievementsScreen::set_mode(int mode)
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
             do {
-            RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
-            RGE_Victory_Conditions* victory = player->victory_conditions;
+            player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
 
             this->time_line->set_active(0);
-            itoa(victory->get_attribute_id(10), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(10), temptxt, 10);
             row[-1]->set_text(temptxt);
 
-            if (victory->get_victory_points_id(11) > 0) {
+            if (player->victory_conditions->get_victory_points_id(11) > 0) {
                 row[0]->set_text((long)0xFA3);
             } else {
                 row[0]->set_text("");
             }
 
-            itoa(victory->get_attribute_id(12), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(12), temptxt, 10);
             row[1]->set_text(temptxt);
-            itoa(victory->get_attribute_id(13), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(13), temptxt, 10);
             row[2]->set_text(temptxt);
-            itoa(victory->get_attribute_id(14), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(14), temptxt, 10);
             row[3]->set_text(temptxt);
 
-            itoa(victory->get_victory_points_id(15) +
-                 victory->get_victory_points_id(16), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_id(15) +
+                 player->victory_conditions->get_victory_points_id(16), temptxt, 10);
             row[4]->set_text(temptxt);
-            itoa(victory->get_victory_points_group(2), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
             row[5]->set_text(temptxt);
             player_offset += 4;
             row += 7;
@@ -431,27 +436,26 @@ void TribeAchievementsScreen::set_mode(int mode)
             TTextPanel** row = this->statistics[0] + 1;
             int remaining = player_num;
             do {
-            RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
-            RGE_Victory_Conditions* victory = player->victory_conditions;
+            player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
 
-            itoa(victory->get_attribute_id(17), temptxt, 10);
+            itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
             row[-1]->set_text(temptxt);
-            if (victory->get_victory_points_id(18) > 0) {
+            if (player->victory_conditions->get_victory_points_id(18) > 0) {
                 row[0]->set_text((long)0xFA3);
             } else {
                 row[0]->set_text("");
             }
-            if (victory->get_victory_points_id(19) > 0) {
+            if (player->victory_conditions->get_victory_points_id(19) > 0) {
                 row[1]->set_text((long)0xFA3);
             } else {
                 row[1]->set_text("");
             }
-            if (victory->get_victory_points_id(20) > 0) {
+            if (player->victory_conditions->get_victory_points_id(20) > 0) {
                 row[2]->set_text((long)0xFA3);
             } else {
                 row[2]->set_text("");
             }
-            itoa(victory->get_victory_points_group(3), temptxt, 10);
+            itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
             row[3]->set_text(temptxt);
             player_offset += 4;
             row += 7;
@@ -460,6 +464,13 @@ void TribeAchievementsScreen::set_mode(int mode)
         }
         break;
     }
+
+    case 6:
+        this->size = 0;
+        this->time_line->set_active(0);
+        this->summary_text->set_text((long)0x26D8);
+        this->time->set_active(1);
+        break;
 
     case 5:
         this->size = 0;
@@ -475,13 +486,6 @@ void TribeAchievementsScreen::set_mode(int mode)
             this->backButton2->set_active(1);
             this->set_curr_child(this->backButton2);
         }
-        break;
-
-    case 6:
-        this->size = 0;
-        this->time_line->set_active(0);
-        this->summary_text->set_text((long)0x26D8);
-        this->time->set_active(1);
         break;
     }
 

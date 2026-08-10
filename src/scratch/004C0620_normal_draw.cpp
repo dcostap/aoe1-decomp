@@ -23,10 +23,33 @@
 // also lost the original prologue. Restored this natural typed source; the
 // remaining lead is the draw-list-count register/local schedule before the
 // otherwise exact child-draw loop.
+// Fresh replacement pass: baseline remained 250-byte exact-size with two
+// direct do_draw calls and a 45-byte residual beginning at the duplicate
+// draw-list count compare. Typed shape/sound fields, complete sibling class
+// surfaces, and stdio TU context were codegen-neutral. Dead/shared result
+// locals, delayed result assignment, and a binary-supported byte-cursor entry
+// probe all broadened structural drift; the canonical typed scan is restored.
+// Remaining lead: original reloads draw_list_num into AX while this basin keeps
+// it in CX and zeroes EAX for result=0 before the second guard.
+
+#include <stdio.h>
 
 class RGE_Color_Table;
 class TDrawArea;
 class RGE_Sprite;
+
+class TShape {
+public:
+    char data[0x20];
+    TShape(char* filename, long resource_id);
+    ~TShape();
+};
+
+class RGE_Sound {
+public:
+    char gap_00[0x0C];
+    short id;
+};
 
 class RGE_Picture_List {
 public:
@@ -39,6 +62,13 @@ public:
     char gap_0E[2];
 };
 
+class RGE_Sound_List {
+public:
+    RGE_Sound* sound[3];
+    short frame[3];
+    char gap_12[2];
+};
+
 class RGE_Sprite {
 public:
     char pict_name[13];
@@ -47,7 +77,7 @@ public:
     unsigned char loaded;
     char gap_15[3];
     RGE_Color_Table** color_tables;
-    void* shape;
+    TShape* shape;
     long last_time;
     long delta_time;
     unsigned char color_flag;
@@ -61,10 +91,10 @@ public:
     short box_y2;
     short draw_list_num;
     RGE_Picture_List* draw_list;
-    void* main_sound;
+    RGE_Sound* main_sound;
     unsigned char micro_man_sound;
     char gap_41[3];
-    void* sound_list;
+    RGE_Sound_List* sound_list;
     char name[21];
     char gap_5D[1];
     short frame_num;

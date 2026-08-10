@@ -33,6 +33,23 @@
 //   restored. Remaining evidence is still the setup order
 //   `mov ebx,[esp+18] / lea ebp,[esi+4]` versus rebuilt cursor-first, plus
 //   the SIB base/index byte at the maximum compare.
+// - Fresh TU lane: the direct indexed candidate scan is a period-plausible
+//   alternative to the named cursor; try the oracle's current-value-first
+//   comparison while retaining the natural `j` induction.
+// - The direct form matched every byte except the max-load SIB base/index;
+//   a narrow named array alias changed the pointer/register basin and was
+//   rolled back, so retain direct member ownership.
+// - The direct-address spelling is now isolated to the one SIB byte; a
+//   binary-backed explicit byte-offset max cursor changed frame/control flow,
+//   so restore the simpler named-member expression.
+// - Fresh lane result: direct indexed current-first source is 200 bytes with
+//   exact size/frame/CFG and one mismatch (`3b6c0b` vs oracle `3b6c19` at the
+//   max compare). Five max-address spellings formed one codegen group.
+// - A narrow RHS alias regressed to 204/110 and the explicit byte-offset
+//   cursor to 229/220 with a 0x1C frame; both were rolled back. An int-view
+//   object-base spelling, four exact-offset leading type surfaces, and the
+//   commuted subscript were codegen-neutral. Final clean source stays typed
+//   and direct; remaining drift is only SIB base/index identity.
 
 class ResourceItem {
 public:
@@ -57,16 +74,13 @@ int ResourceItem::sortLarge()
     for (i = 0; i < this->numberValue; i++) {
         int max_idx = i;
 
-        int* current;
         int j = i + 1;
         if (j < this->numberValue) {
-            current = this->sortedValue + i + 1;
             do {
-                if (*current > this->sortedValue[max_idx]) {
+                if (this->sortedValue[j] > this->sortedValue[max_idx]) {
                     max_idx = j;
                 }
                 ++j;
-                ++current;
             } while (j < this->numberValue);
         }
 

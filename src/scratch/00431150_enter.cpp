@@ -42,6 +42,14 @@
 // rolled back; no opaque status cast survives in the canonical source.
 // Main-agent audit removed inline empty virtual definitions and restored
 // canonical destructor ownership; the shared-EH-tail blocker remains.
+// Fresh replacement orch-comobj-fresh-03: direct action-result/truth-return forms
+// expanded to 317B/261 diff and 298B/241 diff. A canonical typed object/result
+// pointer with one shared done label reached 257B/101 diff and the correct CFG,
+// but VC5 colored this=EDI and target/result=ESI, added a result move, and emitted
+// an extra task-null zero/jump. Declaration-order, lookup-assignment-order,
+// separate-target, and narrow register-hint variants were codegen duplicates.
+// Restored the pinned 274B natural typed goto-fail reconstruction; shared EH-tail
+// lowering remains the only structural blocker observed in this assignment.
 //
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared

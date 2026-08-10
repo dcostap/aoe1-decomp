@@ -83,6 +83,21 @@
 //   result likewise duplicated the clean bytes.
 // - Remaining structural blocker is unchanged: default VC5 keeps the compare
 //   parameter live, saves EBX, and folds the binary's redundant head null test.
+//
+// Fresh assignment (orch-timeline-fresh-04):
+// - Exact-decompiler guard with link-before-p declaration order and compound
+//   assignment reached 92B/98 but still folded the repeated test and worsened
+//   CFG/shape; restored.
+// - `*link = (*link)->next` reached 96B/93 and improved size/edit alignment,
+//   but emitted the wrong two-load unlink sequence; it is not the binary-backed
+//   source spelling and was restored.
+// - A short-lived `next = p->next` local was a codegen duplicate of the clean
+//   94B/99 basin.
+// - A 144-case `vc5-small` x `vc5-risky` flag sweep produced no size-eligible
+//   variant; default flags remained the only plausible basin. (Lab probe 106.)
+// - Moving the null return to the top of the `while (p != entry)` body reached
+//   92B/99 with worse CFG/shape; restored. The redundant binary head test and
+//   self-call relocation remain unresolved without compiler-steering scaffolds.
 
 #include <stdlib.h>
 
