@@ -42,6 +42,17 @@
 // back. Clean canonical Windows RECT/TShape/reference ABI source remains authoritative; blocker is the isolated
 // VC5 scheduling order `sub ecx,edi` versus `add cx,[esi]` at 0047B9EC.
 
+// Fresh bounded pass 2026-08-10 (wave20-pnlscbr-01):
+// probe-041: six natural y-term orderings all emitted the same 245B/9-byte basin.
+// probe-042: branch-local binary-proven x_min parameter-home reference was a codegen duplicate.
+// probe-044: five typed x_max surface variants; direct use stayed 245B/9, short/int temps widened to 248B.
+// probe-045: direct Ghidra-style param_3 overlay/expression remained the 245B/9 basin.
+// probe-047: explicit x self-assignment versus compound updates was a duplicate.
+// probe-049: removing the redundant narrow y_max cast was a duplicate.
+// Retain the clean canonical source. The remaining bytes are a single expression-scheduling swap; all natural
+// RECT/TShape/reference ABI and localized liveness axes tried here are exhausted, while parameter-home raw aliasing
+// and side-effect sequencing remain non-plausible compiler-steering forms.
+
 #include <windows.h>
 
 class TDrawArea;
