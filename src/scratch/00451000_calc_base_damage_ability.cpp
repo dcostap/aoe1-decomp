@@ -75,6 +75,18 @@
 // - Session conclusion: 10/10 meaningful probes exhausted; no exact or accepted_drift
 //   candidate. Retain the canonical natural source; unresolved bytes are the known
 //   entry target/count EAX/EDX allocation basin and the dependent reload coloring.
+// - wave20-mcoobj-01 baseline: revalidated the stabilized master-object hierarchy and
+//   exact +0039..+00BC body island before a focused entry-allocation pass.
+// - Combined register hints and target/count field references were codegen-neutral;
+//   scoping weapon inside the positive count arm was worse (51B).
+// - A natural branch-local `remaining = count` copy is a distinct, materially closer
+//   basin: it recovers the original target load/count allocation and exact +0000..+0022
+//   prologue, leaving 12 strict bytes. Declaration/assignment order around
+//   armor_count/base_armor was duplicate; a for-header or function-scope remaining
+//   counter caused the known 153B/190B structural basin.
+// - Final bounded pass: retain the readable branch-local remaining-counter source as
+//   the best reconstruction. Remaining drift is the EAX/EDX base-armor/value coloring
+//   at +0029..+0039 and dependent attack reload; no accepted_drift proposed.
 
 #include "..\..\include\game_globals.h"
 
@@ -186,6 +198,7 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object
     RGE_Armor_Weapon_Info* weapon = target->weapon;
 
     if (count > 0) {
+        int remaining = count;
         int armor_count = this->armor_num;
         int base_armor = this->base_armor;
         do {
@@ -210,8 +223,8 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object
                 total += diff;
             }
             ++weapon;
-            --count;
-        } while (count != 0);
+            --remaining;
+        } while (remaining != 0);
     }
 
     if ((double)total < DAT_00570510) {
