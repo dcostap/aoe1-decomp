@@ -1,7 +1,7 @@
 // VA: 0040CDF0 MainDecisionAIModule::MainDecisionAIModule (113 B)
 // PDB source: aimdmod.cpp lines 34-35
 // FLAGS: /GX
-//
+
 // Status: STUCK — same VC5 EH prologue family mismatch as ~MainDecisionAIModule (0040D020).
 //
 // Original uses FS-first SEH prologue (`mov eax,[fs:0]` before `push -1`) with
@@ -107,22 +107,47 @@
 //   FS-first three-slot frame and original cleanup metadata; no natural tested
 //   source surface selects that family. Leave in scratch, not accepted-drift.
 
-struct ManagedArray_Int {
-    int* value;
+// Follow-up 2026-08-10 orch-aimdmod-logic-luna-05:
+// - Rebuild against the newly exact same-TU CE90 load constructor and D020
+//   destructor surfaces: the 0xF0 AIModule layout, declaration-only
+//   polymorphic AIModule/MainDecision surfaces, and a nontrivial inline
+//   ManagedArray scalar-delete/null/zero destructor. This is a fresh
+//   ownership/EH hypothesis, not another FS-frame spelling variant.
+// - Probes #31-#39 all emitted the same 78-byte no-EH basin: adding the
+//   D020-style AIModuleID/virtual ABI, template ManagedArray<int>, an inline
+//   or declaration-only member destructor, same-TU empty MainDecision dtor,
+//   CE90 explicit objects(), exact include context, and exact named pointer
+//   types changed no target bytes. The single AIModule call remains aligned
+//   and the player/four zero stores/delayed vptr body are present.
+// - Final blocker remains structural: original is 113 bytes with FS-first
+//   handler 55C638, saved ESI, FS restore, and cleanup; VC5 emits 78 bytes
+//   with no EH frame. No natural new surface selected the original family;
+//   keep this canonical typed source in scratch, not accepted-drift.
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
 
-    ManagedArray_Int()
+    ManagedArray()
         : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
+
+    ~ManagedArray();
 };
+
+class AIModuleMessage;
+class RGE_Static_Object;
+struct _iobuf;
 
 class RGE_Player {};
 
-// Binary-backed AIModule surface, matching the exact base constructor donor at
-// 0040E2D0.  This is intentionally an explicit vtable pointer: the donor's
-// living match uses the same pre-vtable VC5 surface rather than a thin virtual
-// stub, and the derived constructor writes its delayed vtable explicitly.
+// Binary-backed AIModule surface, combining the exact CE90 load-constructor
+// layout with the exact D020 destructor's real AIModuleID/member lifetime
+// surface.  The derived constructor still writes its delayed vtable explicitly
+// because CE90 proves that source/context ownership for this TU.
 class AIModuleID {
 public:
     virtual ~AIModuleID();
@@ -133,35 +158,57 @@ public:
 
 class AIModule {
 public:
-    void* vtable;                 // +0x00
-    AIModuleID id;                // +0x04, sizeof 0x48
-    int playerNumber;             // +0x4C
-    char playerName[0x40];        // +0x50
-    int running;                  // +0x90
-    int paused;                   // +0x94
-    int logHistory;               // +0x98
-    int logCommonHistory;          // +0x9C
-    void* historyLogFile;         // +0xA0
-    char historyLogFilename[0x40];// +0xA4
-    int intelligenceLevel;        // +0xE4
-    int priority;                 // +0xE8
-    int processFrame;             // +0xEC
+    AIModuleID idValue;             // +0x04, sizeof 0x48
+    int playerNumberValue;         // +0x4C
+    char playerNameValue[0x40];    // +0x50
+    int runningValue;              // +0x90
+    int pausedValue;               // +0x94
+    int logHistoryValue;           // +0x98
+    int logCommonHistoryValue;     // +0x9C
+    _iobuf* historyLogFile;        // +0xA0
+    char historyLogFilename[0x40]; // +0xA4
+    int intelligenceLevelValue;    // +0xE4
+    int priorityValue;             // +0xE8
+    int processFrameValue;         // +0xEC
 
     AIModule(char* name, int id, int player_number, void* owner);
+    virtual ~AIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* name);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* name);
+    virtual int saveState(char* name);
+    virtual int gleanState(int value);
+    virtual int processMessage(AIModuleMessage* message);
+    virtual int update(int value);
+    virtual void setCallbackMessage(AIModuleMessage* message);
+    virtual int filterOutMessage(AIModuleMessage* message);
 };
 
 extern void* MainDecisionAIModule_vtable;
 
-class MainDecisionAIModule : public AIModule {
+class __declspec(novtable) MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;
-    ManagedArray_Int objects;
+    ManagedArray<int> objects;
+
+    virtual ~MainDecisionAIModule();
+    virtual void setLogHistory(int value);
+    virtual int save(int value);
+    virtual int addObject(RGE_Static_Object* object);
+    virtual int removeObject(int object_id);
+    virtual int objectGroupThatCanPerformAction(int action);
+    virtual int canPerformAction(int action, int target);
 
     MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3);
 };
 
 MainDecisionAIModule::MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3)
-    : AIModule("Main Decision AI", 1000, param_2, param_1), player(param_3)
+    : AIModule("Main Decision AI", 1000, param_2, param_1), player(param_3), objects()
 {
-    this->vtable = &MainDecisionAIModule_vtable;
+    *(void**)this = &MainDecisionAIModule_vtable;
 }

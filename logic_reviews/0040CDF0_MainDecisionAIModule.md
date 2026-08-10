@@ -113,3 +113,14 @@ no-EH output (or incompatible push-first family under forced lifetime surfaces).
 A future promotion requires a natural compiler/TU surface reproducing that frame,
 or a project-level decision explicitly excluding the observable registration and
 fault/unwind behavior already documented above.
+
+### Exact-donor follow-up, 2026-08-10
+
+After `0040CE90` and `0040D020` matched exactly, a fresh bounded matching pass
+rebuilt this constructor against their proven `AIModule`, `AIModuleID`, and
+`ManagedArray<int>` ownership and lifetime surfaces. Ten natural hypotheses,
+including declaration-only and inline member-destructor visibility and the exact
+same-TU header context, all reproduced the same 78-byte no-EH basin. Main-agent
+validation removed the diagnostic empty derived-destructor definition because it
+would contradict the exact nonempty `0040D020` implementation; this was codegen
+neutral. The original-only FS registration remains the sole substantive blocker.

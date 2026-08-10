@@ -2,6 +2,16 @@
 // VA: 0047A3E0
 // PDB: Pnl_pic.cpp:105-147
 // EH-framed (operator new), needs /GX
+// Attempt log:
+// - baseline: natural shape-first/BMP fallback with typed TShape/TPicture ownership;
+//   frame and ordered calls matched, but the missing no-name/-1 early return left a
+//   wrong fallback path and a 10-byte overflow.
+// - corrected the executable's no-name/res_id==-1 early return; size became exact.
+// - use this->shape for the failed-load test/cleanup, recovering the original reload,
+//   destructor/delete call sites and 63-byte strict diff (best codegen checkpoint).
+// - remaining drift is the four-byte file_name stack anchor, one extra shape null
+//   compare before the member store, and the late cleanup tail; no further hypotheses
+//   retained after the 10-probe budget.
 
 #include "..\..\include\game_globals.h"
 #include <string.h>
@@ -55,18 +65,18 @@ int TPicturePanel::load_pic()
     } else if (this->res_id != -1) {
         new_shape = new TShape("", this->res_id);
     } else {
-        new_shape = 0;
+        return 0;
     }
 
     this->shape = new_shape;
-    if (new_shape && new_shape->is_loaded()) {
+    if (this->shape && this->shape->is_loaded()) {
         this->pic_type = 1;
         this->own_pic = 1;
         return 1;
     }
 
-    if (new_shape) {
-        delete new_shape;
+    if (this->shape) {
+        delete this->shape;
         this->shape = 0;
     }
 
