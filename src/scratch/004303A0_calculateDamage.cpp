@@ -45,6 +45,15 @@
 // This is source-canonical but emitted-code neutral in the isolated TU.
 // Paused: cumulative evidence still isolates the unresolved EBP-versus-EBX
 // armor-pointer allocator basin; no register hint, volatility, or padding kept.
+// Fresh bounded pass (orch-comobj-01, 10 hypotheses): short and unsigned-short
+// attack widths regressed or changed the counter basin; direct terrain-chain,
+// const-rdata, function-scope attack, living-global-include, proven master-base
+// hierarchy, inline tile-index, and register-affinity probes were codegen
+// duplicates or ABI regressions. Restored the pinned natural typed source.
+// Final fresh evidence: clean source remains 214 emitted bytes vs 213 original,
+// 169 strict differing bytes (79.0%), 94.59% shape, exact CFG/call-count; the
+// historical diagnostic best is 38 bytes but is not source-canonical. Remaining
+// lead is the unresolved VC5 EBP-versus-EBX armor-pointer allocator basin.
 
 extern float DAT_0056f49c;
 extern float DAT_0056f4a8;

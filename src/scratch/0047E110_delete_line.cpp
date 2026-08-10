@@ -20,6 +20,14 @@
 //   parameter; both were codegen duplicates. Restored the canonical long ABI.
 // - Main-agent audit retained canonical linked-node ownership and the ordinary
 //   bounded traversal; no countdown/codegen steering survives.
+// - Fresh bounded pass: post-increment with explicit line decrement regressed
+//   to the prior countdown basin; unsigned dword, function-scope initialization,
+//   explicit int-bound cast, and long+decrement combinations were duplicates or
+//   regressed. Short induction was the only prologue-closing lead, but its
+//   required sign-extension added bytes; short+decrement was best at 139 bytes
+//   (205-byte target, rebuilt 208), while unsigned-short and a guarded goto loop
+//   were worse. Restored the natural int-counter source; remaining blocker is
+//   the original pre-save parameter load plus separate dword counter coloring.
 
 extern "C" void __cdecl free(void* block);
 
