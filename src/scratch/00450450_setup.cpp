@@ -18,6 +18,20 @@
 //   probes, a contiguous local record, a natural FILE alias, and dead short
 //   count-home reuse did not improve the clean typed source; the aggregate and
 //   byte variants disturbed the prologue or stack topology.
+// - Fresh follow-up reused the exact modify/save/copy combat hierarchy. Raw
+//   FILE/sounds parameter-home outputs were diagnostic compiler steering;
+//   main-agent audit restored ordinary named parser-output locals. Explicit
+//   count-home sprite output was worse, while the natural local sprite form
+//   retained the clean reconstruction.
+// - Using the canonical armor_num member for the inner armor scan guard fixed
+//   the allocator block and reached 181 bytes; moving the parser-output stores
+//   to the observed break/area/fight/base/fire/count order reached 177 bytes.
+// - A four-way natural max-scan lab (shared/separate/pointer-first/scoped
+//   count/pointer locals) emitted one identical nonexact group; the remaining
+//   drift is localized to assignment scheduling and max-scan register
+//   coloring. The 177-byte parameter-home diagnostic is not retained; the
+//   audited named-local source is 557/557 bytes, 182 diff bytes, 92.90% shape,
+//   and preserves all six ordered calls under default /O2 /Oy.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,9 +53,9 @@ public:
     short value;
 };
 
-class RGE_Master_Animated_Object {
+class RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Master_Animated_Object();
+    virtual ~RGE_Master_Static_Object();
     virtual void copy_obj(RGE_Master_Static_Object* object);
     virtual void modify(float value, unsigned char attribute);
     virtual void modify_delta(float value, unsigned char attribute);
@@ -65,10 +79,12 @@ public:
                       int value, unsigned char flags);
 
     unsigned char master_type;
-    char gap_005[0xB7];
+    char gap_005[0xB3];
+};
 
-    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,
-              short count);
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;
 };
 
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
@@ -81,18 +97,8 @@ public:
 
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:
-    RGE_Task_List* tasks;
-    short default_task;
-    float search_radius;
-    float work_rate;
-    short drop_site;
-    short backup_drop_site;
-    unsigned char task_by_group;
-    char gap_ED[3];
-    RGE_Sound* command_sound;
-    RGE_Sound* move_sound;
-    unsigned char run_pattern;
-    char gap_F9[3];
+    char gap_D8[0x24];
+    virtual void modify(float value, unsigned char attribute);
 
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,
               short count);
@@ -135,21 +141,22 @@ public:
 
 int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
                                     RGE_Sound** sounds, short count) {
-    short index;
-    short* armor_count_value;
-    int value_count;
-    short* value_ptr;
-
-    RGE_Master_Action_Object::setup(file, sprites, sounds, count);
-    master_type = 0x32;
-    short sprite_index;
+    FILE* input = file;
     short temp_base_armor;
     short temp_area_effect_level;
     short temp_break_off_combat;
     short temp_fire_missile_at_frame;
+    short index;
+    short* armor_count_value;
+    short* value_ptr;
+    int value_count;
+    short sprite_index;
     RGE_Sprite* selected_sprite;
 
-    fscanf(file,
+    RGE_Master_Action_Object::setup(input, sprites, sounds, count);
+    master_type = 0x32;
+
+    fscanf(input,
            "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
            &sprite_index, &temp_base_armor, &armor_num, &weapon_num,
            &defense_terrain_bonus,
@@ -162,9 +169,9 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     index = 0;
     if (*armor_count_value > 0) {
         armor = (RGE_Armor_Weapon_Info*)calloc((int)*armor_count_value, 4);
-        if (0 < *armor_count_value) {
+        if (0 < armor_num) {
             do {
-                fscanf(file, "%hd %hd", &armor[index].type,
+                fscanf(input, "%hd %hd", &armor[index].type,
                        &armor[index].value);
                 ++index;
             } while (index < *armor_count_value);
@@ -178,7 +185,7 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
         weapon = (RGE_Armor_Weapon_Info*)calloc((int)weapon_num, 4);
         if (0 < weapon_num) {
             do {
-                fscanf(file, "%hd %hd", &weapon[index].type,
+                fscanf(input, "%hd %hd", &weapon[index].type,
                        &weapon[index].value);
                 ++index;
             } while (index < weapon_num);
@@ -191,12 +198,12 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
         selected_sprite = sprites[sprite_index];
     else
         selected_sprite = (RGE_Sprite*)0;
-    fight_sprite = selected_sprite;
     break_off_combat = (unsigned char)temp_break_off_combat;
     area_effect_level = (unsigned char)temp_area_effect_level;
-    value_count = (int)*armor_count_value;
+    fight_sprite = selected_sprite;
     base_armor = (unsigned char)temp_base_armor;
     fire_missile_at_frame = temp_fire_missile_at_frame;
+    value_count = (int)*armor_count_value;
 
     orig_armor = (unsigned char)base_armor;
     if (value_count > 0) {
