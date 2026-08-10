@@ -27,6 +27,15 @@
 //   polymorphic world/player surfaces, and named point-entry id/group fields
 //   are canonical but emitted the same structural candidate. The remaining
 //   blocker is the original four-dword local window versus the natural 0xC frame.
+// - Fresh pass: an entry alias/int-width spelling was codegen-neutral. A four-dword
+//   aggregate with direct attribute expressions improved to diff 141 but added an
+//   implausible 0x18 frame; scalar top-level count/current locals improved to
+//   diff 139 (75.61% shape, 0xC frame, 22.22% blocks). A self alias was
+//   codegen-neutral and was removed during main-agent source audit.
+// - A preheader cursor plus tail increment regressed to diff 178; decompiler-style
+//   top-level declarations regressed to the prior diff 197 basin. Declaration versus
+//   assignment initialization of self was neutral. Remaining gap is the original
+//   four-dword local/register allocation window; calls and CFG are aligned.
 
 class RGE_Game_World;
 
@@ -69,31 +78,30 @@ public:
 };
 
 void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_Entry* entry) {
-    RGE_Player* player;
+    int num;
+    float current;
     if (entry->state == 0) {
-        player = this->player;
-        long attribute = entry->attribute;
-        long val = (long)player->attributes[attribute];
-        long best = entry->points;
-        float curr_amount = (float)val;
-        entry->curr_attribute_amount = curr_amount;
-        RGE_Game_World* world = player->world;
+        int val = (int)this->player->attributes[entry->attribute];
+        int best = entry->points;
+        current = (float)val;
+        entry->curr_attribute_amount = current;
+        RGE_Game_World* world = this->player->world;
         RGE_Player** players = world->players;
         if (val < entry->initial_amount) {
             best = 0;
         } else {
-            int num = world->player_num;
+            num = world->player_num;
             int i = 1;
             if (1 < num) {
-                int my_id = player->id;
+                int my_id = this->player->id;
                 do {
                     ++players;
                     if (i != my_id) {
-                        if ((*players)->attributes[attribute] > curr_amount) {
+                        if ((*players)->attributes[entry->attribute] > current) {
                             best = 0;
                             break;
                         }
-                        if ((*players)->attributes[attribute] == curr_amount) {
+                        if ((*players)->attributes[entry->attribute] == current) {
                             best = entry->curr_points;
                         }
                     }

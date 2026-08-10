@@ -25,6 +25,13 @@
 // Left in scratch: canonical typed terrain/map/row ownership, long base-terrain ABI, and both scan CFGs are reconstructed; remaining drift is VC5 stack-home/register coloring and early loop block shape (best current 429B, exact frame, 70.7% positional diff).
 // Main-agent audit removed the codegen-only self alias; direct member ownership
 // is authoritative for the paused canonical source.
+// Fresh pass: first-scan for/while and clamped-min_y combinations were worse or
+// exact-size but structurally farther; second-scan cursor declaration/update
+// variants were compiler duplicates (focused six-variant lab, 429B/309 diff).
+// Function-scope reuse of all bounds/cursors and local int row cursors did not
+// improve the canonical basin. Restored clean source after the 10-probe budget;
+// remaining lead is the target's early local-home/register assignment and
+// spilled first row-pointer topology.
 
 typedef unsigned char uchar;
 

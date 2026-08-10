@@ -18,6 +18,16 @@
 //   focused four-variant schedule lab all emitted the same 336-byte result.
 //   The remaining first hunk is the target's mov/add candidate-x schedule
 //   versus VC5's equivalent LEA; restored the clean direct bound expressions.
+// - Fresh orch-fractal-fresh-03 probes confirmed direct x reloads, no cached
+//   x, delayed dy accumulation, full PointMaker field declarations, and a
+//   named direct-x candidate either regressed or duplicated the clean 149-byte
+//   result. A 27-variant natural schedule lab likewise found no exact basin.
+// - Moving the old_x snapshot after coordinate updates with direct x guards
+//   changed the first candidate to mov/add and improved shape to 75.73% block
+//   coverage, but left a 152-byte mismatch at the second horizontal guard;
+//   reversing the commutative operands was a codegen duplicate. Restored the
+//   cleaner old_x-before-update source; remaining drift is localized VC5
+//   candidate/second-bound scheduling, not a proven ownership or ABI issue.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
