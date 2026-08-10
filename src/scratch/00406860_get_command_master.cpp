@@ -50,6 +50,15 @@
 //   full 0x88/0x180/0x194 object layout; function-scope index; top-level index/candidate
 //   declarations; and /G5. None changed the clean 221-byte register basin except the
 //   documented worse array alias. Default flags and the canonical source are retained.
+// - 2026-08-10 (wave21-actobj-01): preserved z in a natural local after the guard;
+//   restored the proven RGE_Master_Moving_Object base boundary; register-qualified
+//   target parameter; and <memory.h> TU context. Each stayed at 221 bytes / 143-byte
+//   positional drift (the z and layout forms emitted duplicates); all were rolled back.
+// - 2026-08-10 liveness lab: 216 deliberate combinations of receiver/target/z aliases,
+//   first-call result surfaces, loop/index scopes, and candidate scope produced only
+//   the existing 221-byte basin among 107 valid builds; no target->EBX lead emerged.
+// Left in scratch: canonical typed owner/master/task hierarchy is validated; remaining
+// drift is the stable VC5 target/z/index register allocation basin.
 
 class RGE_Static_Object;
 class RGE_Action_Object;

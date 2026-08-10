@@ -35,6 +35,9 @@
 //   named panel fields and inherited TEasy calls. Remaining drift is the
 //   compiler's duplicated 19-byte EH cleanup tail; no further source lead is
 //   justified in this bounded pass.
+// - Follow-up ABI probe mirrored the exact donor's no-argument TPanel setup
+//   slot while retaining the real TScreenPanel setup overload; emitted code
+//   was unchanged, so the canonical source was restored.
 
 struct tagRECT;
 class TDrawArea;

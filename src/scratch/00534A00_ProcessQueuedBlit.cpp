@@ -47,7 +47,8 @@
 //   a codegen duplicate).  Keep this canonical COM/RECT source; remaining
 //   drift is the isolated VC5 save/register and argument scheduling basin.
 // FLAGS: none. Inline asm forbidden.
-// Best variant: probe 2 (current source), 219 bytes, frame 0x10, 2/2 calls aligned.
+// Best retained source: canonical typed COM/RECT reconstruction, 219 bytes,
+// frame 0x10, 2/2 calls aligned, diff=199.
 // Main-agent audit confirmed canonical panel/draw-area/DirectDraw ownership;
 // no dead-store or COM scheduling steering survives.
 // Matching-worker continuation: an early typed surface cache worsened the
@@ -66,6 +67,13 @@
 // fresh pass: reordered RECT stores, function-scope RECT/entry locals, flat
 //   long[8] queue access, and reference-parameter RECT ABI were duplicates or
 //   worse; canonical typed COM/RECT source retained.
+// wave21 probe: replaced gap-only panel/view declarations with the proven
+//   TPanel/RGE_View field ownership, including Blt_Queue_Allocated and the
+//   render rectangles; emitted code was unchanged (219B, diff=199).
+// wave21 probe: added the proven RGE_View virtual dispatch declarations to
+//   restore the view.h-shaped derived context; emitted code was unchanged.
+// Paused: the remaining mismatch is the extra EBX save and COM argument/source
+//   scheduling basin; no canonical ownership or virtual-slot uncertainty remains.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 
@@ -102,21 +110,122 @@ public:
 class TPanel {
 public:
     virtual ~TPanel();
-    char gap_04[0x1C];
+
+    TPanel* previous_panel;            // +0x04
+    TPanel* previous_modal_panel;      // +0x08
+    long pnl_x;                        // +0x0C
+    long pnl_y;                        // +0x10
+    long pnl_wid;                      // +0x14
+    long pnl_hgt;                      // +0x18
+    char* panel_name;                  // +0x1C
     TDrawArea* render_area;            // +0x20
-    char gap_24[0xF4 - 0x24];
+    tagRECT clip_rect;                 // +0x24
+    char gap_34[0xF4 - 0x34];
 };
 
 class RGE_View : public TPanel {
 public:
-    char gap_F4[0x2D8 - 0xF4];
+    // RGE_View's own virtual surface is part of the original view.h context;
+    // these declarations are not used by ProcessQueuedBlit, but preserve the
+    // derived type's real dispatch boundary for this TU.
+    virtual int do_paint(long, long, long, long, int);
+    virtual void draw_multi_object_outline();
+    virtual void end_scroll_view();
+    virtual int handle_scroll_view(long, long);
+    virtual int pick_through_fog(void*);
+    virtual int pick_weight(void*, int);
+    virtual int start_scroll_view(unsigned char, long, long, int, int);
+
+    TDrawArea* cur_render_area;        // +0xF4
+    int calc_draw_count;               // +0xF8
+    void* world;                        // +0xFC
+    void* player;                       // +0x100
+    void* map;                          // +0x104
+    short tile_wid;                     // +0x108
+    short tile_hgt;                     // +0x10A
+    short tile_half_wid;               // +0x10C
+    short tile_half_hgt;               // +0x10E
+    short elev_hgt;                     // +0x110
+    short render_rect_wid;             // +0x112
+    short render_rect_hgt;             // +0x114
+    short max_col_num;                  // +0x116
+    short max_row_num;                  // +0x118
+    short center_scr_col;               // +0x11A
+    short center_scr_row;               // +0x11C
+    short center_scr_col_offset;        // +0x11E
+    short center_scr_row_offset;        // +0x120
+    short center_map_col;               // +0x122
+    short center_map_row;               // +0x124
+    short start_scr_col;                // +0x126
+    short start_scr_row;                // +0x128
+    short start_map_col;                // +0x12A
+    short start_map_row;                // +0x12C
+    char gap_12E[2];
+    int map_scr_x_offset;               // +0x130
+    int map_scr_y_offset;               // +0x134
+    float last_view_x;                  // +0x138
+    float last_view_y;                  // +0x13C
+    unsigned char function_mode;        // +0x140
+    unsigned char function_parm;        // +0x141
+    unsigned char render_terrain_mode;  // +0x142
+    char gap_143[1];
+    long sel_col1;                      // +0x144
+    long sel_row1;                      // +0x148
+    long sel_col2;                      // +0x14C
+    long sel_row2;                      // +0x150
+    short save_paint_terrain;           // +0x154
+    char gap_156[2];
+    void* white_pen;                    // +0x158
+    void* red_pen;                      // +0x15C
+    void* hollow_brush;                 // +0x160
+    void* border_line_shape;            // +0x164
+    unsigned char scroll_action;        // +0x168
+    char gap_169[3];
+    long mouse_last_x;                  // +0x16C
+    long mouse_last_y;                  // +0x170
+    void* movable_object;               // +0x174
+    void* terrain_clip_mask;            // +0x178
+    void* terrain_fog_clip_mask;        // +0x17C
+    void* master_clip_mask;             // +0x180
+    void* tile_edge_tables;             // +0x184
+    void* black_edge_tables;            // +0x188
+    tagRECT overlaid_panel;              // +0x18C
+    int overlaid_panel_active;           // +0x19C
+    unsigned char edge_number[0x100];   // +0x1A0
+    int limited_render_rect;            // +0x2A0
+    int use_rect2;                      // +0x2A4
+    tagRECT render_rect1;               // +0x2A8
+    tagRECT render_rect2;               // +0x2B8
+    void** float_scroll_offsets;        // +0x2C8
+    int float_scroll_offsets_sz;        // +0x2CC
+    int Float_X_Delta;                  // +0x2D0
+    int Float_Y_Delta;                  // +0x2D4
     int Queued_Blits;                  // +0x2D8
     Blit_Queue_Entry* Blit_Queue;      // +0x2DC
     int Blit_Queue_Size;               // +0x2E0
-    char gap_2E4[4];
+    int Blt_Queue_Allocated;            // +0x2E4
     int Current_Blit;                  // +0x2E8
     int Blit_Offset_X;                 // +0x2EC
     int Blit_Offset_Y;                 // +0x2F0
+    long real_old_map_col;              // +0x2F4
+    long real_old_map_row;              // +0x2F8
+    void* pick_lists[5];                // +0x2FC
+    int pick_list_size[5];              // +0x310
+    TDrawArea* save_area1;              // +0x324
+    unsigned char* LastRenderBits;      // +0x328
+    void** RenderOffsets;               // +0x32C
+    int LastRenderSize;                 // +0x330
+    void* prior_objs;                   // +0x334
+    void* futur_objs;                   // +0x338
+    int UC_ObjectTouched;               // +0x33C
+    int UC_TouchedObj;                  // +0x340
+    unsigned long UC_StartTime;         // +0x344
+    unsigned long UC_ElapsedTime;       // +0x348
+    void* message_panel;                // +0x34C
+    void* extra_sprites;                // +0x350
+    void* DispSel_List;                 // +0x354
+    int DispSel_List_Size;              // +0x358
+    int DispSel_List_Max;               // +0x35C
 
     void ProcessQueuedBlit(int force);
 };
