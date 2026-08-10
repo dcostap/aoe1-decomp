@@ -621,3 +621,10 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   slots declared) is what lets VC5 defer the `mov ecx,[eax]` vtable load until after the
   first two argument pushes, reproducing the oracle's invalid-interface fault context
   byte-for-byte.
+
+- For a guarded indexed scan whose separate countdown already matches the stack home and
+  late loop bytes, putting the countdown assignment in a natural `for` initializer can
+  change only the pre-loop scheduling: VC5 emitted the member-array LEA and pointer-bias
+  subtraction before the countdown store, matching the oracle. Keep the clean indexed
+  player/name ownership; array-reference aliases changed the pointer relation, while
+  natural `for`/`while` initializer forms collapsed to the same exact codegen basin.

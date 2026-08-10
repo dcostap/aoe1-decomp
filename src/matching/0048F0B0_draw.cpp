@@ -41,6 +41,11 @@
 // orch-scrach-fresh-04 final candidate: the separate remaining counter restores
 //   exact size, all calls, and all late body bytes; residual 12-byte drift is
 //   only the LEA/name-base versus count-spill order at the loop setup.
+// exact-loop probe: make the remaining-count copy the initializer of a natural
+//   countdown for loop; VC5 schedules the name-base LEA before that store.
+// setup-order lab: array-reference aliases changed the world/name cursor
+//   relation; no exact output. Natural for/while countdown forms with the
+//   remaining assignment in the loop initializer emitted the exact bytes.
 
 typedef unsigned char uchar;
 
@@ -160,8 +165,7 @@ void TribeAchievementsScreen::draw()
             if (count > 0) {
                 int remaining;
                 int player_index = 0;
-                remaining = count;
-                do {
+                for (remaining = count; remaining != 0; --remaining) {
                     if (world->players[player_index + 1]->active == 1) {
                         this->win_decal->shape_draw(
                             this->render_area,
@@ -170,8 +174,7 @@ void TribeAchievementsScreen::draw()
                             0, 0, 0);
                     }
                     ++player_index;
-                    --remaining;
-                } while (remaining != 0);
+                }
             }
 
             this->render_area->Unlock((char*)"scr_ach::draw");
