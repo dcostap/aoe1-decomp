@@ -26,6 +26,11 @@
 //   calls/frame remain aligned, with unresolved world/count register scheduling.
 // main-agent normalization restored the donor-backed polymorphic RGE_Player and
 // RGE_Game_World surfaces; emitted code is unchanged.
+// retained source reconstruction: a distinct post-guard remaining counter is
+// binary-supported by the persistent stack countdown and preserves the natural
+// typed indexed player/name ownership.
+// final ordering probe: split the remaining declaration from its assignment so
+// the source statement order can place the count copy after loop-address setup.
 // fresh bounded pass (orch-scrach-01): repeated world-chain access lost the
 //   frame; delaying the world fetch, splitting/binding the count decrement,
 //   world reference/const/register qualifiers, cached players, hoisted index,
@@ -33,6 +38,9 @@
 //   No new codegen basin beat the clean 121-byte result; the clean typed source
 //   remains the defensible reconstruction and the world/count register swap is
 //   still unresolved.
+// orch-scrach-fresh-04 final candidate: the separate remaining counter restores
+//   exact size, all calls, and all late body bytes; residual 12-byte drift is
+//   only the LEA/name-base versus count-spill order at the loop setup.
 
 typedef unsigned char uchar;
 
@@ -150,7 +158,9 @@ void TribeAchievementsScreen::draw()
             int count = world->player_num - 1;
 
             if (count > 0) {
+                int remaining;
                 int player_index = 0;
+                remaining = count;
                 do {
                     if (world->players[player_index + 1]->active == 1) {
                         this->win_decal->shape_draw(
@@ -160,8 +170,8 @@ void TribeAchievementsScreen::draw()
                             0, 0, 0);
                     }
                     ++player_index;
-                    --count;
-                } while (count != 0);
+                    --remaining;
+                } while (remaining != 0);
             }
 
             this->render_area->Unlock((char*)"scr_ach::draw");
