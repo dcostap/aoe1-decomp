@@ -46,6 +46,20 @@
 //   TDrawArea::AlignedWidth ABI from donor 00444B40.
 // - No new header/span/clip/source-family lead displaced the typed forward
 //   shadow RLE source; remaining drift is the documented prologue/home basin.
+// orch-shape-fresh-03 probes (2026-08-10):
+// - A focused 18-case lab over orientation, destination, and outer-cursor
+//   spellings found no exact variant; the best invariant-preserving family
+//   was 254B/176 diff but used a duplicated destination expression.
+// - The natural direct-orientation/direct-destination form with one persistent
+//   base pointer and an inner row cursor reached 254B/176 diff, 90% shape,
+//   and exact size; it is retained below as the best readable reconstruction.
+// - Reusing the x parameter as a 32-bit destination accumulator reproduced the
+//   observed x-home and inner-loop topology (254B/106 diff after declaration
+//   ordering), but is decompiler-shaped and was rolled back rather than kept
+//   solely for metrics. No call, RLE, or ownership uncertainty remains.
+// - Final bounded validation leaves the remaining gap in the standalone VC5
+//   prologue/register basin; next lead is original Shape.cpp TU context, not
+//   further opaque destination-home steering.
 
 typedef unsigned char byte;
 
@@ -93,26 +107,21 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
     Shape_Header* sh = shape_header;
     byte* p = (byte*)(sh + 1);
     long height = sh->ymax - sh->ymin + 1;
-    long orien = da->Orien;
     long rows;
     long width;
     byte* save_buffer;
 
-    width = da->AlignedWidth() * orien;
+    width = da->AlignedWidth() * da->Orien;
 
-    long tmp;
-    if (orien < 1)
-        tmp = ((y - da->Height) + 1) * width;
+    if (da->Orien < 1)
+        save_buffer = da->Bits + ((y - da->Height) + 1) * width + x;
     else
-        tmp = y * width;
-
-    save_buffer = da->Bits + tmp + x;
-    byte* row = save_buffer;
+        save_buffer = da->Bits + y * width + x;
 
     if (height > 0) {
         rows = height;
         do {
-            save_buffer = row;
+            byte* dst = save_buffer;
             byte done = 0;
 
             do {
@@ -121,12 +130,12 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
                 if ((command & 1) == 1) {
                     command >>= 1;
                     if (command == 0) {
-                        save_buffer += *p++;
+                        dst += *p++;
                     } else {
-                        byte* e = save_buffer + (command & 0xFF);
-                        while (save_buffer < e) {
-                            *save_buffer = table[*save_buffer];
-                            save_buffer++;
+                        byte* e = dst + (command & 0xFF);
+                        while (dst < e) {
+                            *dst = table[*dst];
+                            dst++;
                         }
                         p += command;
                     }
@@ -135,17 +144,17 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
                     if (command == 0) {
                         done = 1;
                     } else {
-                        byte* e = save_buffer + (command & 0xFF);
-                        while (save_buffer < e) {
-                            *save_buffer = table[*save_buffer];
-                            save_buffer++;
+                        byte* e = dst + (command & 0xFF);
+                        while (dst < e) {
+                            *dst = table[*dst];
+                            dst++;
                         }
                         p++;
                     }
                 }
             } while (!done);
 
-            row += width;
+            save_buffer += width;
         } while (--rows);
     }
 
