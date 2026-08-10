@@ -68,6 +68,16 @@
  * duplicate. Splitting saved-endpoint declarations from assignments and hoisting
  * those saves to function scope were also duplicates. Restored the clean direct
  * parameter source; the 81-byte result and first mismatch at +0x0D remain.
+ *
+ * wave21-tmap-01 bounded endpoint pass: a 4-variant x/y forward-assignment-order
+ * lab and a 16-variant branch-local r+c-span lab found no exact output or entry
+ * coloring change; only the all-inline form kept size/call invariants. A 2-variant
+ * four-result-local declaration-timing lab stayed at 165 bytes, so the natural
+ * direct-parameter source was retained. Materializing c after base delegation
+ * worsened to 149 bytes. Reusing one shared reverse-arm temp and aliasing x1/x2
+ * only in the base call both emitted the clean 81-byte basin (the latter in a
+ * 4-variant lab). Restored the pinned canonical source; endpoint coloring remains
+ * oracle r/x1/x2=EBX/ESI/EDI versus rebuild ESI/EDI/EBX.
  */
 
 class RGE_Map {
