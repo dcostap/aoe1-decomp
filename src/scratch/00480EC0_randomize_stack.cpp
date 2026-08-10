@@ -33,6 +33,18 @@
 // - Final fresh pass restores this clean named-array reconstruction; remaining
 //   lead is the original local declaration/context that selects target register
 //   coloring and delays the second `param_1->next` load.
+// - wave21-01: a real offset local with a natural paired index loop was
+//   codegen-neutral (frame 0x964, diff 145).
+// - wave21-02: the proven polymorphic module field/vtable surface and donor
+//   Windows/global headers were codegen-neutral around this function.
+// - wave21-03: the binary-supported y/prev cursor overlay recovered exact size
+//   and 91.46% shape (diff 47), but its 0x964 frame and decompiler-shaped view
+//   are not retained as living source.
+// - wave21-05: a named offset plus real Map_Stack[100] local state recovered
+//   the 0x968 frame and 95.12% shape (diff 44); it remains diagnostic because
+//   the local aggregate is not established as original ownership. Restored
+//   canonical source; next lead is arithmetic-before-node reload and register
+//   coloring, not synthetic padding.
 
 extern "C" int __cdecl debug_rand(const char* file, int line);
 

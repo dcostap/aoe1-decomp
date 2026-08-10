@@ -39,6 +39,16 @@
 // - Interleaving range/min before target_z/target_y and adding coordinate aliases
 //   worsened the first block (34 bytes); delaying sprite_p7 until after flags
 //   worsened it to 52 bytes. All were rolled back.
+// Fresh bounded pass (wave21-actatak-01):
+// - Direct typed master-member fallback chains were structurally worse (240/243
+//   bytes; 119/130-byte diff) and were rolled back; the separate natural result
+//   local remains the best readable p5 ownership form.
+// - Swapping fallback-local declaration order was a codegen duplicate of the
+//   clean candidate; five register-qualified parameter variants were also one
+//   duplicate codegen group.
+// - Five standard-header context variants were codegen duplicates; a focused
+//   p7 assignment-order lab found no productive source shape. None displaced
+//   the canonical typed constructor.
 // Remaining lead: reconstruct the original Act_atak.cpp assignment/declaration
 // context for the first coordinate/range block; do not retain metric-only aliases.
 //
