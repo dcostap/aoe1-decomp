@@ -19,6 +19,12 @@
 //   Reversed/negative addition spellings were duplicates; retain natural + terms.
 // - Main-agent audit expressed the proven point/pick overlap as a directly
 //   addressable union member, removing the residual pointer-alias cast.
+// Fresh continuation: named final bounds, declaration/type reorderings, and
+// inline/compound arithmetic forms preserved the same 2-byte SIB drift.
+// The period long selection/pick ABIs and inherited TPanel bounds ownership
+// are now explicit; a focused eight-form final-expression lab also found no
+// exact group. Retain the readable canonical source; only commutative LEA
+// base/index encodings at 005359BE and 005359C4 remain.
 // FLAGS: /nologo /c /O2 /Oy
 
 struct tagPOINT { long x, y; };
@@ -59,20 +65,28 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
+struct RGE_Static_Object;
 
-class RGE_View {
+class TPanel {
 public:
-    virtual ~RGE_View();
+    virtual ~TPanel();
     char gap_04[0x88];
     int view_left;      // +0x8C
     int view_top;       // +0x90
     int view_right;     // +0x94
     int view_bottom;    // +0x98
+    char gap_9C[0x58];  // TPanel tail through +0xF4
+};
 
-    void set_selection_area(int x1, int y1, int x2, int y2);
+class RGE_View : public TPanel {
+public:
+    virtual ~RGE_View();
+    char gap_F4[0x26C]; // canonical RGE_View tail through +0x360
+
+    void set_selection_area(long x1, long y1, long x2, long y2);
     unsigned char pick(unsigned char mode, unsigned char param,
-                       int mouse_x, int mouse_y,
-                       RGE_Pick_Info* info, int flags);
+                       long mouse_x, long mouse_y,
+                       RGE_Pick_Info* info, RGE_Static_Object* object);
     void draw_paint_brush();
 };
 
@@ -109,8 +123,8 @@ void RGE_View::draw_paint_brush() {
         brushSize = rge_base_game->brush_size;
     }
 
-    int cx = (int)storage.pick.pick_info.x;
-    int cy = (int)storage.pick.pick_info.y;
-    int half = (int)(signed short)brushSize >> 1;
+    long cx = (long)storage.pick.pick_info.x;
+    long cy = (long)storage.pick.pick_info.y;
+    long half = (long)(signed short)brushSize >> 1;
     set_selection_area(cx - half, cy - half, cx + half, cy + half);
 }
