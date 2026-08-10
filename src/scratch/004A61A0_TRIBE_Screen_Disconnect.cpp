@@ -28,8 +28,16 @@
 //   worse; stdio/string context and volatile field_D8 were unchanged. An
 //   inline success helper virtualized the two calls, while direct
 //   TScreenPanel method declarations left the 91-byte drift unchanged.
+// - Fresh ABI/layout checks used the original TDrawArea* setup signature,
+//   TPanel-owned +0xD8 field, and explicit TEasy_Panel destructor/full virtual
+//   surface; all emitted the same 219-byte basin.
+// - Final validated reconstruction is the ordinary setup-failure return with
+//   named panel fields and inherited TEasy calls. Remaining drift is the
+//   compiler's duplicated 19-byte EH cleanup tail; no further source lead is
+//   justified in this bounded pass.
 
 struct tagRECT;
+class TDrawArea;
 class TPanel {
 public:
     virtual ~TPanel();
@@ -108,7 +116,9 @@ class TButtonPanel;
 
 class TEasy_Panel : public TPanel {
 public:
+    virtual ~TEasy_Panel();
     char gap_F4[0x384];
+
     virtual void draw_background(int mode);
     virtual void set_ideal_size(long width, long height);
     virtual int create_button(TPanel* parent, TButtonPanel** out, long id,
@@ -154,15 +164,24 @@ public:
 
 class TScreenPanel : public TEasy_Panel {
 public:
+    using TEasy_Panel::create_text;
     virtual ~TScreenPanel();
     TScreenPanel(char* name);
-    long setup(void* draw_area, char* info, long id, int value);
+    long setup(TDrawArea* draw_area, char* info, long id, int value);
+    char* get_string(int id);
+    int get_string(int id, char* buffer, int length);
+    int create_text(TPanel* parent, TTextPanel** out, char* text,
+                    long x, long y, long width, long height, long font,
+                    long align, long center, long wrap);
+    int create_button(TPanel* parent, TButtonPanel** out, long id,
+                      long a4, long a5, long a6, long a7, long a8,
+                      long a9, long a10, long a11);
 };
 
 class RGE_Base_Game {
 public:
     char gap_00[0x4C];
-    void* draw_area;
+    TDrawArea* draw_area;
 };
 
 extern RGE_Base_Game* rge_base_game;

@@ -29,6 +29,13 @@
 // Current worker: assigning old_terrain directly in the comparison was a
 // codegen duplicate; VC5 still hoisted the terrain-byte load and kept the
 // same 205-byte structural gap. Restored the clean source.
+// orch-map-01 pass: binary-backed local aggregate {short old_terrain,
+// owner, cur_player} reproduced the +0x10/+0x14/+0x18 stack window and raised
+// shape to 92.93%/60.61% exact blocks, but was 260 bytes and 213 positional
+// differences; restored as diagnostic evidence. A five-body natural-source
+// lab (raw byte, row/column cursors, tile pointer, explicit duplicate border
+// tail) found no size/frame/call-set eligible exact variant. Removing map/world
+// virtual declarations with corrected offsets was an emitted-code duplicate.
 
 class RGE_Tile_List {
 public:
