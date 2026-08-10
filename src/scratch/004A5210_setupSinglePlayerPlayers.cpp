@@ -5,20 +5,26 @@
 // The screen fields and the narrow game/communications setter parameters use
 // the period ABI surfaces established by same-TU donors.
 //
-// Attempt log (sa64f8-single):
-// - Baseline recovered the 0xC frame, four saved registers, and 27 of the 27
-//   ordered call sites after correcting the scenario/game/player surfaces.
-// - Capturing the screen pointer and using dword expressions at the narrow
-//   setter call boundaries removed the extra scenarioPlayer call and brought
-//   the candidate to 561 bytes (original 556), 94.22% shape, with all calls
-//   aligned.  The first remaining hunk is the whole-function saved-this and
-//   induction-register coloring (rebuilt EBP=this/ESI count/EBX scenario vs
-//   original EBX=this/EBP count/ESI scenario).
-// - The first-any spill/reload order and the observed old-value local_4 are
-//   retained as executable behavior; declaration, register, and same-TU
-//   TRIBE_Game-global context probes were codegen duplicates.  No further
-//   blind variants remain in this assignment; leave the readable typed source
-//   in scratch for a later worker to pursue the register basin.
+// Attempt log (orch-scrmps-fresh-03):
+// - Re-established the binary-backed ownership before probing codegen: the
+//   screen owns scenarioPlayerCount (+0x728) and scenarioInfo (+0x848), while
+//   the TRIBE_Game and communications globals provide the player setters.
+// - Fresh baseline: natural scenario-player compaction, first-any selection,
+//   random-game initialization, teams, humanity, and dropdown refresh.  The
+//   first-any locals follow the executable's actual roles: scenario-player
+//   index, civilization, palette color, and the register-only post-loop copy.
+// - Corrected ABI evidence from basegame.cpp, tribegam.cpp, and com_hand.cpp:
+//   setNumberPlayers/setPlayerTeam/setPlayerColor take int values, while
+//   SetPlayerHumanity takes the PLAYERHUMANITY enum.  This reduced the clean
+//   candidate from a 560-byte/400-byte-diff build to 556 bytes with a 20-byte
+//   diff and all 49 relocation identities exact.
+// - Declaration-order, direct-this/ordinary screen-alias, inherited
+//   TScreenPanel, induction-scope, and register-qualification probes were
+//   codegen duplicates.  The remaining localized drift is saved-this/count
+//   register coloring (original EBX=this/EBP=count versus rebuilt
+//   EBP=this/EBX=count) plus the random-loop tail's compare/move order.
+// - Final unresolved source is restored to the simplest typed form; leave in
+//   scratch for a later worker rather than retain compiler-steering aliases.
 
 class RGE_Scenario {
 public:
@@ -31,32 +37,48 @@ public:
 class RGE_Base_Game {
 public:
     int scenarioGame();
-    void setNumberPlayers(unsigned char number);
-    void setPlayerTeam(int player, unsigned char team);
+    void setNumberPlayers(int number);
+    void setPlayerTeam(int player, int team);
 };
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
     void setScenarioPlayer(int player, int scenario_player);
     void setCivilization(int player, int civilization);
-    void setPlayerColor(int player, unsigned char color);
+    void setPlayerColor(int player, int color);
     int scenarioPlayer(int player);
     int civilization(int player);
     int playerColor(int player);
 };
 
-class TCommunications_Handler {
-public:
-    void SetPlayerHumanity(unsigned int player, int humanity);
+enum PLAYERHUMANITY {
+    ME_ABSENT = 0,
+    ME_HUMAN = 2,
+    ME_COMPUTER = 4
 };
 
-class TribeMPSetupScreen {
+class TCommunications_Handler {
 public:
-    virtual ~TribeMPSetupScreen();
-    char gap_04[0x724];
+    void SetPlayerHumanity(unsigned int player, PLAYERHUMANITY humanity);
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+};
+
+class TScreenPanel : public TPanel {
+public:
+    char gap_04[0x474];
+};
+
+class TribeMPSetupScreen : public TScreenPanel {
+public:
+    char gap_478[0x2B0];
     int scenarioPlayerCount; // +0x728
     char gap_72C[0x11C];
     RGE_Scenario* scenarioInfo; // +0x848
+    virtual ~TribeMPSetupScreen();
 
     void setupSinglePlayerPlayers();
     void fillNumberPlayers();
@@ -67,23 +89,20 @@ extern TCommunications_Handler* comm;
 extern "C" int __cdecl debug_rand(char* file, int line);
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
-    int player_count;
-    int scenario_player;
-    int first_any_player;
-    int first_any_civ;
-    int first_any_color;
-    int previous_any_scenario_player;
+    int first_any_scenario_player;
+    int selected_scenario_player;
+    int first_any_civilization;
+    int first_any_player_color;
     TribeMPSetupScreen* screen = this;
-
     if (rge_base_game->scenarioGame() != 0) {
-        first_any_player = -1;
-        first_any_civ = -1;
-        first_any_color = -1;
-        previous_any_scenario_player = -1;
+        first_any_scenario_player = -1;
+        selected_scenario_player = -1;
+        first_any_civilization = -1;
+        first_any_player_color = -1;
 
         if (screen->scenarioInfo != 0) {
-            player_count = 0;
-            scenario_player = 0;
+            int player_count = 0;
+            int scenario_player = 0;
             do {
                 if (screen->scenarioInfo->Get_player_Active(scenario_player) != 0) {
                     ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
@@ -96,13 +115,13 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                         player_count, scenario_player + 1);
 
                     if (screen->scenarioInfo->Get_player_Type(scenario_player) == 1 &&
-                        first_any_player == -1) {
-                        first_any_player = scenario_player;
-                        first_any_color =
+                        first_any_scenario_player == -1) {
+                        first_any_scenario_player = scenario_player;
+                        first_any_civilization =
                             screen->scenarioInfo->Get_player_Civ(scenario_player);
-                        previous_any_scenario_player = first_any_civ;
+                        first_any_player_color = scenario_player + 1;
                     }
-                    first_any_civ = first_any_player;
+                    selected_scenario_player = first_any_scenario_player;
                     ++player_count;
                 }
                 ++scenario_player;
@@ -110,12 +129,12 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         }
 
         rge_base_game->setNumberPlayers(screen->scenarioPlayerCount);
-        if (first_any_civ != -1) {
+        if (selected_scenario_player != -1) {
             int player = 1;
             if (screen->scenarioPlayerCount > 1) {
                 while (player < screen->scenarioPlayerCount) {
                     if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(player) ==
-                        first_any_civ) {
+                        selected_scenario_player) {
                         int scenario_player =
                             ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0);
                         ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
@@ -135,10 +154,10 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             }
 
             ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
-                0, first_any_civ);
-            ((TRIBE_Game*)rge_base_game)->setCivilization(0, first_any_color);
+                0, selected_scenario_player);
+            ((TRIBE_Game*)rge_base_game)->setCivilization(0, first_any_civilization);
             ((TRIBE_Game*)rge_base_game)->setPlayerColor(
-                0, previous_any_scenario_player);
+                0, first_any_player_color);
         }
     } else {
         int player = 0;
@@ -160,12 +179,12 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         ++player;
     } while (player < 8);
 
-    comm->SetPlayerHumanity(1, 2);
+    comm->SetPlayerHumanity(1, ME_HUMAN);
     player = 2;
     do {
-        comm->SetPlayerHumanity(player, 4);
+        comm->SetPlayerHumanity(player, ME_COMPUTER);
         ++player;
     } while (player <= 8);
-    comm->SetPlayerHumanity(9, 0);
+    comm->SetPlayerHumanity(9, ME_ABSENT);
     screen->fillNumberPlayers();
 }
