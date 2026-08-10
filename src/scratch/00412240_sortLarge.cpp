@@ -50,6 +50,16 @@
 //   object-base spelling, four exact-offset leading type surfaces, and the
 //   commuted subscript were codegen-neutral. Final clean source stays typed
 //   and direct; remaining drift is only SIB base/index identity.
+// - Focused SIB lab: fourteen direct/max-address spellings (parentheses,
+//   pointer-add, raw-offset, int-view, and array-view forms) all emitted the
+//   same 200-byte result with 3b6c0b at +0068; no source term-order variant
+//   selected the oracle's 3b6c19 byte.
+// - Declaration/initialization-order, index-width, pointer-arithmetic, and
+//   arithmetic-address labs likewise left the 200-byte group unchanged (the
+//   narrow index and function-style declaration outliers regressed structurally).
+//   Canonical gap/field/virtual and full ResourceItem declaration surfaces were
+//   also codegen-neutral. Keep the direct indexed source authoritative; the
+//   remaining one-byte base/index choice is now an exhausted VC5 encoding axis.
 
 class ResourceItem {
 public:
