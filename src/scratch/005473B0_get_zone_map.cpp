@@ -18,6 +18,11 @@
 // - This TU-aware pass tried a result/goto common label (including reversed hit
 //   assignment order) and a break/post-loop hit branch; both were worse or kept
 //   the same duplicated EH cleanup. Restored the guarded-while reconstruction.
+// - Fresh same-TU layout/EH pass: the full RGE_Zone_Map field surface and
+//   destructor ownership were compiled with the donor /GX context; both emitted
+//   the same 37-byte family. Result/goto, explicit result, cold-label, comma,
+//   old-count, and shared-array-return forms were diagnostic only; the clean
+//   guarded-while allocation source remains the best natural reconstruction.
 // FLAGS: config/flags/005473B0_get_zone_map.rsp (/GX with default /O2 /Oy)
 // Main-agent audit retained the natural typed cache growth and nonvirtual
 // zone-map lifetime surface; no EH-tail steering survives.
@@ -29,7 +34,14 @@ class RGE_Map;
 
 class RGE_Zone_Map {
 public:
-    char _size[0x51c];
+    int numberTilesInZoneValue[257];
+    unsigned char* zone_map;
+    unsigned char** zone_map_rows;
+    unsigned char zone_info[257];
+    char gap_50D[3];
+    float* terrain_passability_rules;
+    long terrain_passability_rules_num;
+    RGE_Map* map;
 
     RGE_Zone_Map(RGE_Map* map, float* terrain_info, long terrain_info_num);
     ~RGE_Zone_Map();
