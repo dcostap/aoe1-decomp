@@ -23,6 +23,12 @@
 // original child-entry register/liveness schedule.
 // Main-agent audit confirmed typed 0x10-byte picture-entry traversal and child
 // sprite ownership; no byte cursor survives.
+// Fresh orch-sprite-02 probe 1 supersedes that paused diagnostic source: retain
+// the original base-plus-byte-index form, but load the draw-list base through
+// repeated direct member expressions. This matches 230/230 bytes exactly.
+// The raw-looking cursor is kept because the oracle proves EBX byte offsets,
+// repeated draw_list base loads, and the source decomp uses the same period
+// pointer-to-member arithmetic; no asm or compiler-only scaffolding is used.
 
 class RGE_Sprite;
 
@@ -54,6 +60,8 @@ public:
 };
 
 unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value) {
+    int index = 0;
+
     if (((this->box_x1 != 0) || (this->box_x2 != 0)) &&
         ((this->box_y1 != 0) || (this->box_y2 != 0))) {
         if ((x >= this->box_x1) && (x <= this->box_x2) &&
@@ -64,18 +72,18 @@ unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value) {
 
     if ((this->draw_list_num > 0) && (this->draw_list != 0)) {
         int i = 0;
-        RGE_Picture_List* list = this->draw_list;
         if (this->draw_list_num > 0) {
             while (i < this->draw_list_num) {
-                RGE_Sprite* sprite = list->sprite;
+                RGE_Sprite* sprite =
+                    *(RGE_Sprite**)((char*)&this->draw_list->sprite + index);
                 if (sprite->shape_hit_test(
-                        x - list->offset_x,
-                        y - list->offset_y,
+                        x - *(short*)((char*)&this->draw_list->offset_x + index),
+                        y - *(short*)((char*)&this->draw_list->offset_y + index),
                         (sprite->facet_num * facet) / (int)this->facet_num,
                         value)) {
                     return 1;
                 }
-                list++;
+                index += 0x10;
                 i++;
             }
         }
