@@ -29,6 +29,14 @@
 //   one-past cursor form. Final gap: rebuilt LEAs use +1C where the oracle uses
 //   +18 at the early dock write and late transfer setup; all other 255 bytes,
 //   calls, frame, and typed ownership are aligned.
+// - Fresh declaration-order and first-element initialization probes were
+//   duplicate or structurally worse; explicit saved-player aliases broadened
+//   drift rather than making the overlay usable.
+// - A natural self pointer plus 95-entry dock array (using dock_list as the
+//   actual list, no synthetic padding) matched all body/LEA bytes but chose a
+//   0x184 frame, leaving four frame/argument displacement bytes; owner/result/
+//   dock lifetime variants did not change that basin. A union overlay returned
+//   to the broad alias basin. Restored the direct canonical 96-entry source.
 
 #include <stdlib.h>
 
