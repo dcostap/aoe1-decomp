@@ -687,6 +687,7 @@
       unclaimed: "#475569",
       conflict: "#ef4444",
     };
+    const COMPLEXITY_COMMENT_LINE_LIMIT = 50;
     const STORAGE_KEY = "aoe1-status-treemap-v5";
 
     function decodeHistoryChild(value, va = "") {
@@ -1652,6 +1653,11 @@
     }
 
     function colorForFunction(item) {
+      // Complexity is only for unfinished work. Keep all considered-done
+      // buckets neutral rather than letting their source comments turn red.
+      if (state.colorMode === "complexity" && COMPLETED_PROGRESS_BUCKETS.has(item.bucket)) {
+        return "#475569";
+      }
       if (state.colorMode === "progress" && COMPLETED_PROGRESS_BUCKETS.has(item.bucket)) {
         return BUCKET_COLORS.matching;
       }
@@ -1664,7 +1670,7 @@
       if (state.colorMode === "progress") {
         return diffColor(item.editDiffPercent ?? item.diffPercent ?? 0, Boolean(item.diffResult));
       }
-      const complexity = clamp((item.sourceCommentLines || 0) / 17, 0, 1);
+      const complexity = clamp((item.sourceCommentLines || 0) / COMPLEXITY_COMMENT_LINE_LIMIT, 0, 1);
       return mixColor("#2563eb", "#ff0000", complexity);
     }
 
