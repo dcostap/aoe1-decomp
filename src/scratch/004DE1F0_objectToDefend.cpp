@@ -11,118 +11,154 @@
 // Returns pointer to ImportantObjectEntry (reuses param_1 slot on stack)
 //
 // === Attempt log ===
-// 1: 304 bytes vs 314 (10 short). sub esp,14h instead of 10h. 
-//    ebx=this vs esi=this. byteOffset reloaded from stack each iteration.
-// 2: 288 bytes (26 short). scanPtr++ approach. sub esp,10h matches.
-//    All diffs are structural, not just register encoding.
-// 3-5: Various loop structures. Consistent at 288 bytes.
-//
-// LEFT IN SCRATCH: Three categories of mismatch:
-// (a) Register allocation: original uses esi=this, ebx=byteOffset;
-//     our VC5 uses ebx=this. Changes every [this+offset] modrm byte.
-// (b) Stack operation interleaving: original has push -1 BEFORE XYPoint
-//     construction — this push serves as bestGroup's param_5. XYPoint
-//     constructed directly at [esp+1Ch] (bestGroup's param_4 slot).
-//     Our code pushes all 5 params fresh for bestGroup call.
-// (c) Instruction ordering: original loads entry->x/y before computing
-//     tacticalAI; our code loads tacticalAI/md first.
-// Function logic is correct. Behavioral equivalence verified.
+// Prior scratch work used packed records, a moving entry pointer, and a
+// separately computed strategic-number temporary; that basin was 26-34 bytes
+// short and had the wrong tactical-call argument schedule.
+// Fresh baseline: canonical ObjectMemory/ManagedArray ownership and the
+// typed MainDecision -> TribeMainDecision -> tacticalAI surface.  The direct
+// indexed scan and nested strategicNumber expression restored the 314-byte
+// structural basin and the original point-argument push/store sequence.
+// Probes then tested outer-index lifetime, local scope/order, comparison
+// spelling, and named record-id/count locals.  The useful result is the
+// canonical typed source below; remaining drift is confined to prologue/early
+// null-return register allocation, the count/id register colors, and branch
+// span placement.  No custom flags, inline asm, or raw layout plumbing kept.
 
 #include <stddef.h>
 
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-
-#pragma pack(push, 1)
-struct ImportantObjectEntry {
-    int id;             // +0x00
-    short type;         // +0x04
-    short group;        // +0x06
-    uchar x;            // +0x08
-    uchar y;            // +0x09
-    uchar gap_0A;       // +0x0A
-    uchar owner;        // +0x0B
-    char pad_0C[4];     // +0x0C to +0x0F
-    int field_10;       // +0x10 (skip if > 0)
-    char rest[0x10];    // +0x14 to +0x23 (total 0x24 = 36 bytes)
+class AIModule {
+public:
+    virtual ~AIModule();
+    char gap_04[0xEC];
 };
-#pragma pack(pop)
+
+class InformationAIModule : public AIModule {
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
+
+struct ObjectMemory {
+    int id;                         // +0x00
+    short type;                     // +0x04
+    short group;                    // +0x06
+    unsigned char x;                // +0x08
+    unsigned char y;                // +0x09
+    unsigned char z;                // +0x0A
+    unsigned char owner;            // +0x0B
+    short hitPoints;                // +0x0C
+    unsigned char pad_0E[2];        // +0x0E
+    int attackAttempts;             // +0x10
+    unsigned char kills;            // +0x14
+    unsigned char pad_15[3];        // +0x15
+    float damageCapability;         // +0x18
+    float rateOfFire;               // +0x1C
+    float range;                    // +0x20
+};
 
 struct XYPoint {
-    int y;              // +0x00
-    int x;              // +0x04
+    int x;
+    int y;
 };
 
 class TacticalAIGroup;
 
-class TribeTacticalAIModule {
+class MainDecisionAIModule : public AIModule {
 public:
-    int strategicNumber(int index);
-    TacticalAIGroup* bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5);
-};
-
-class MainDecisionAIModule {
-public:
-    char gap_00[0xF0];
-    void* missionObj;   // +0xF0
+    void* player;                   // +0xF0
+    ManagedArray<int> objects;      // +0xF4
     void* object(int id);
 };
 
-class TribeInformationAIModule {
+class TribeMainDecisionAIModule;
+
+class TacticalAIModule : public AIModule {
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
 public:
-    char gap_00[0x100];
-    MainDecisionAIModule* md;               // +0x100
-    char gap_104[0x0C];
+    int strategicNumber(int index);
+    TacticalAIGroup* bestGroup(int param_1, int param_2, int param_3,
+                               XYPoint* param_4, int param_5);
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    char gap_104[0x1146C - 0x104];
+    TribeTacticalAIModule tacticalAI;  // +0x1146C
+};
+
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    ManagedArray<int> farmsTaskedThisUpdate; // +0xF0
+    TribeMainDecisionAIModule* md;           // +0x100
+    int mapXSizeValue;                       // +0x104
+    int mapYSizeValue;                       // +0x108
+    int lastUpdateRowValue;                  // +0x10C
     int maxImportantObjectMemory;            // +0x110
-    ImportantObjectEntry* importantObjectMemory; // +0x114
-    char gap_118[0x30];
-    int* itemsToDefend_value;               // +0x148
-    int itemsToDefend_numberValue;          // +0x14C
-    char pad_150[4];
-    int itemsToDefend_maximumSizeValue;     // +0x154
-    
-    ImportantObjectEntry* objectToDefend(int target_obj_id);
+    ObjectMemory* importantObjectMemory;     // +0x114
+    ManagedArray<int> importantObjects;      // +0x118
+    ManagedArray<int> importantUnits;        // +0x128
+    ManagedArray<int> importantMiscs;        // +0x138
+    ManagedArray<int> itemsToDefend;         // +0x148
+
+    ObjectMemory* objectToDefend(int target_obj_id);
     int defendPriority(int type, int group);
 };
 
-ImportantObjectEntry* TribeInformationAIModule::objectToDefend(int target_obj_id)
+ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
 {
-    void* targetObj = this->md->object(target_obj_id);
-    if (targetObj == 0)
+    ObjectMemory* bestEntry;
+    int bestDefendValue;
+    XYPoint pt;
+    int i;
+    int numValues;
+    int objectId;
+
+    if (this->md->object(target_obj_id) == 0)
         return 0;
-    
-    int bestDefendValue = -1;
-    ImportantObjectEntry* bestEntry = 0;
+
+    bestEntry = 0;
+    bestDefendValue = -1;
+    i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
-        ImportantObjectEntry* entry = this->importantObjectMemory;
-        int loopIdx = 0;
-        
         do {
-            if (entry->id != -1) {
-                int numValues = this->itemsToDefend_numberValue;
+            objectId = this->importantObjectMemory[i].id;
+            if (objectId != -1) {
+                numValues = this->itemsToDefend.numberValue;
                 int idx = 0;
-                
+
                 if (numValues > 0) {
                     while (idx < numValues) {
-                        if (idx >= this->itemsToDefend_maximumSizeValue)
+                        if (idx >= this->itemsToDefend.maximumSizeValue)
                             break;
-                        
-                        if (this->itemsToDefend_value[idx] == entry->id) {
-                            if (entry->field_10 <= 0) {
-                                XYPoint pt;
-                                pt.y = (int)entry->y;
-                                pt.x = (int)entry->x;
-                                
-                                TribeTacticalAIModule* tacticalAI = (TribeTacticalAIModule*)((char*)this->md + 0x1146C);
-                                int sn = tacticalAI->strategicNumber(0x5C);
-                                TacticalAIGroup* bestG = tacticalAI->bestGroup(-1, 4, sn, &pt, -1);
+                        if (this->itemsToDefend.value[idx] ==
+                            objectId) {
+                            if (this->importantObjectMemory[i].attackAttempts <= 0) {
+                                pt.x = (int)this->importantObjectMemory[i].x;
+                                pt.y = (int)this->importantObjectMemory[i].y;
+                                idx = -1;
+
+                                TacticalAIGroup* bestG =
+                                    this->md->tacticalAI.bestGroup(
+                                        -1, 4,
+                                        this->md->tacticalAI.strategicNumber(0x5C),
+                                        &pt, idx);
                                 
                                 if (bestG == 0) {
-                                    int priority = this->defendPriority(entry->type, entry->group);
-                                    if (bestEntry == 0 || priority < bestDefendValue) {
+                                    int priority = this->defendPriority(
+                                        (int)this->importantObjectMemory[i].type,
+                                        (int)this->importantObjectMemory[i].group);
+                                    if (bestEntry == 0 || bestDefendValue > priority) {
+                                        bestEntry = &this->importantObjectMemory[i];
                                         bestDefendValue = priority;
-                                        bestEntry = entry;
                                     }
                                 }
                             }
@@ -134,9 +170,8 @@ ImportantObjectEntry* TribeInformationAIModule::objectToDefend(int target_obj_id
                 }
             }
             
-            entry++;
-            loopIdx++;
-        } while (loopIdx < this->maxImportantObjectMemory);
+            i++;
+        } while (i < this->maxImportantObjectMemory);
     }
     
     return bestEntry;
