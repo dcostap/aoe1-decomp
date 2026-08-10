@@ -79,6 +79,21 @@
 //   assignments, and a bundled helper-store diagnostic all regressed. Restored
 //   the pinned natural source; final validation remains 15 bytes.
 
+// orch-fractal-01 pass (2026-08-10):
+// - Adding the original same-TU CreateShape() overload and SetPoint declaration
+//   did not move the 15-byte setup hunk.
+// - Prime.y/Prime.x-from-member, const-qualified parameters, an optimized local
+//   PrimaryPt coordinate aggregate, and explicit this-qualified stores all
+//   emitted the same 196-byte/15-byte basin.
+// - Focused variant lab #39 covered pointer/reference aliases, self aliases,
+//   chained stores, aggregate/array coordinates, and scoped setup; 18/18
+//   invariant-eligible variants remained in the 15-byte basin.
+// - Full preceding same-TU CreateShape() context lab #40 selected the 334-byte
+//   no-arg overload during extraction and supplied no usable target lead.
+// - Restored the pinned natural source. Remaining drift is still only the
+//   parameter-load/ECX scheduling hunk at +0x1A..+0x2B; no canonical source axis
+//   found in this pass changes it.
+
 class PrimaryPt {
 public:
     int x;

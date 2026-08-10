@@ -90,12 +90,31 @@
 // - Integrated probe #15 was an emitted-code duplicate of the clean source.
 //   Restored the canonical single-function source; no flags or sibling files
 //   were changed. Full TU context does not overcome the pinned VC5 EH basin.
+//
+// Follow-up 2026-08-03 orch-aimdmod-logic-01:
+// - Corrected the inactive AIModuleID declaration to the donor-backed (char*, int)
+//   constructor ABI; this target does not call it directly.
+// - The inline ManagedArray default constructor plus natural player member
+//   initializer emits player at +0xF0 before the four zero stores, matching the
+//   original fault/store order (58.62% shape, 106 strict bytes; no EH).
+// - Inline/member lifetime declarations, the full polymorphic header surface,
+//   aggregate objects(), and destructor declarations either duplicated that
+//   no-EH output or worsened size; the aggregate form was restored.
+// - Retain the readable typed AIModuleID fields/vptr and donor-backed ABI, but
+//   retain the explicit AIModule/derived vptr surface because it is the only
+//   tested form preserving the delayed derived-vptr write.
+// - Remaining blocker: VC5 still emits no EH frame, while the oracle has the
+//   FS-first three-slot frame and original cleanup metadata; no natural tested
+//   source surface selects that family. Leave in scratch, not accepted-drift.
 
 struct ManagedArray_Int {
     int* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    ManagedArray_Int()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
 };
 
 class RGE_Player {};
@@ -104,9 +123,12 @@ class RGE_Player {};
 // 0040E2D0.  This is intentionally an explicit vtable pointer: the donor's
 // living match uses the same pre-vtable VC5 surface rather than a thin virtual
 // stub, and the derived constructor writes its delayed vtable explicitly.
-struct AIModuleID {
-    char gap_00[0x48];
-    AIModuleID(int id, char* name);
+class AIModuleID {
+public:
+    virtual ~AIModuleID();
+    int id;
+    char name[0x40];
+    AIModuleID(char* name, int id);
 };
 
 class AIModule {
@@ -139,12 +161,7 @@ public:
 };
 
 MainDecisionAIModule::MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3)
-    : AIModule("Main Decision AI", 1000, param_2, param_1)
+    : AIModule("Main Decision AI", 1000, param_2, param_1), player(param_3)
 {
-    this->player = param_3;
-    this->objects.value = 0;
-    this->objects.numberValue = 0;
-    this->objects.desiredNumberValue = 0;
-    this->objects.maximumSizeValue = 0;
     this->vtable = &MainDecisionAIModule_vtable;
 }

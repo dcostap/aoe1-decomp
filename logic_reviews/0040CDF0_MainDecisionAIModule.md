@@ -87,10 +87,29 @@ FS registration remain unresolved.
 
 The candidate was normalized to full binary-backed field ownership before phase entry. Full-TU validation did not alter the pinned VC5 EH basin.
 
+### Post-round matching follow-up, 2026-08-10
+
+A fresh Luna matching worker tested nine additional natural ABI, member-lifetime,
+aggregate, header-surface, and destructor-declaration hypotheses. Correcting the
+inactive `AIModuleID` declaration to the exact-donor `AIModuleID(char*, int)` ABI
+and using an inline `ManagedArray<int>` default constructor with a natural
+`player(param_3)` initializer preserved the canonical delayed derived-vptr write
+while making the emitted successful-path stores match the executable's order:
+`player` at `+0xF0` now precedes the four zero stores at `+0xF4..+0x100`.
+
+Main-agent validation confirmed the retained candidate remains 78/113 bytes with
+one aligned base-constructor call, 106 strict differing bytes, and no emitted EH
+frame. Thus the prior partial-write/first-fault store-order finding is resolved,
+but the original-only FS-first three-slot registration remains unchanged. The
+worker restored and validated the readable typed source and paused the lease; no
+custom flags or manual EH/vptr machinery were added.
+
 ## Final decision
 
 Remain in `src/scratch`. Do not promote to `src/verified_logic` from this round.
-The next useful lead is a natural, canonical source/TU surface that preserves the
-original `player`-first emitted store order while retaining all verified fields;
-if no such source exists, the orchestrator must explicitly resolve the project's
-fault-observability standard before another blind cohort can converge.
+The player-first emitted store-order issue is now resolved. The remaining blocker
+is the executable's FS-first three-slot registration versus the pinned compiler's
+no-EH output (or incompatible push-first family under forced lifetime surfaces).
+A future promotion requires a natural compiler/TU surface reproducing that frame,
+or a project-level decision explicitly excluding the observable registration and
+fault/unwind behavior already documented above.

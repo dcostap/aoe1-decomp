@@ -28,6 +28,17 @@
 //   new natural source/ABI lead emerged. The remaining 25 bytes begin at entry
 //   register allocation (original EBX home vs rebuilt EDX), with size/frame/CFG
 //   and all typed memory effects already aligned.
+// - Fresh bounded pass: dossier, same-TU donor ranking, and ABI evidence found
+//   no call, frame, size, or ownership blocker.  Ghidra-vtable corrections for
+//   the nonvirtual Victory_Conditions destructor, polymorphic Object_List, and
+//   canonical Game_World surface were each emitted-code duplicates and were
+//   restored to the pinned clean reconstruction.
+// - Fresh probes: Ghidra local declaration-order variants, donor game-global
+//   header context, and an eight-case declaration-order lab all emitted the same
+//   199-byte/25-byte-diff basin.  A natural while-loop was 32 bytes (worse); a
+//   pre-increment for was a codegen duplicate.  No new source-plausible lead
+//   remains; the localized entry/callee-save allocation drift is retained as
+//   the next worker's lead.
 
 struct RGE_Player;
 
