@@ -118,6 +118,16 @@
 //   only closer family remains the prior inline SetPoint diagnostic, whose x
 //   store is before the binary zero stores; the clean typed source is restored.
 
+// ACCEPTED_DRIFT REVIEW (main-drift-0044B470): Direct comparison with the
+// original shows identical size, frame, saved-register set, eight ordered call
+// targets, branch/return structure, field stores, loop bounds, and return
+// value. The only non-zero drift is the localized +0x1A..+0x2B setup hunk:
+// VC5 assigns the two incoming coordinate values to EAX/ECX in the opposite
+// allocation and hoists the `this` setup differently before the same stores.
+// No predicate, call, stack cleanup, memory target, or stored value changes.
+// The closer inline-helper experiment remains diagnostic only; this natural
+// typed PointMaker source is the promoted candidate.
+
 class PrimaryPt {
 public:
     int x;

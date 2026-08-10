@@ -58,6 +58,17 @@
 //   is still the localized original EBX entry home versus rebuilt EDX, with
 //   exact size/frame/CFG and canonical list/victory ownership intact.
 
+// ACCEPTED_DRIFT REVIEW (main-drift-005324A0): Direct comparison with the
+// original confirms identical size, frame, saved-register set, eleven
+// conditional branches, five returns, loop bounds, pointer/field offsets,
+// byte/dword widths, state values, and all list scans. There are no calls or
+// cleanup differences. The remaining 25 bytes are register-allocation and
+// entry-home scheduling drift beginning at the prologue; every rebuilt memory
+// access still targets the same object/list/player fields and produces the
+// same state transitions. No predicate, memory target, copy size, call, or
+// return behavior changes. The canonical typed source is promoted rather than
+// any register-qualified or alias-steering variant.
+
 struct RGE_Player;
 
 struct RGE_World {

@@ -61,6 +61,15 @@
 //   also codegen-neutral. Keep the direct indexed source authoritative; the
 //   remaining one-byte base/index choice is now an exhausted VC5 encoding axis.
 
+// ACCEPTED_DRIFT REVIEW (main-drift-00412240): The original and rebuilt
+// functions are identical in size/frame, all 73 instructions' shape, eight
+// conditional branches, loop bounds, every array read/write, swap value, and
+// return. The sole remaining byte is the SIB base/index encoding of the
+// maximum-element compare (`3b6c19` versus `3b6c0b`), addressing the same
+// `sortedValue[max_idx]` element. No predicate, memory target, call, cleanup,
+// or stored value changes. The direct typed indexed source is promoted; raw
+// cursor and register-steering variants remain diagnostic history only.
+
 class ResourceItem {
 public:
     char gap_0[0x0C];

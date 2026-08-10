@@ -88,6 +88,17 @@
 //   the best reconstruction. Remaining drift is the EAX/EDX base-armor/value coloring
 //   at +0029..+0039 and dependent attack reload; no accepted_drift proposed.
 
+// ACCEPTED_DRIFT REVIEW (main-drift-00451000): Direct comparison with the
+// original confirms identical size/frame, saved registers, one __ftol call,
+// seven conditional branches plus the same jump, all stack homes, nested loop
+// bounds, x87 arithmetic/rounding sequence, global thresholds, and return.
+// The remaining 12 strict bytes are only the zero-extension/register choice
+// for base_armor and the dependent reload (`EDX` versus `EAX`) at +0x29..+0x39;
+// both versions store and consume the same values before the exact body island.
+// There is no changed predicate, call, stack cleanup, memory target, copy size,
+// or FPU event. The readable natural do-while source is the promoted candidate;
+// register hints and allocator scaffolding were not retained.
+
 #include "..\..\include\game_globals.h"
 
 class RGE_Armor_Weapon_Info {

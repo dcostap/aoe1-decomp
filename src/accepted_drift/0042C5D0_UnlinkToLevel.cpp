@@ -123,6 +123,18 @@
 // source remains the period-plausible typed loop at 179B/52B, with 9/9 ordered calls and
 // 95% shape. Remaining drift is localized to VC5 logger register/push scheduling.
 
+// ACCEPTED_DRIFT REVIEW (main-drift-0042C5D0): Direct comparison with the
+// original confirms identical size/frame, saved registers, four conditional
+// branches, two returns, nine ordered call targets, status-store widths, loop
+// termination, sprintf buffer/format, logger arguments, and stack cleanup.
+// The remaining 52 strict bytes are confined to the success/failure logger
+// setup and resulting branch displacement: VC5 chooses different registers
+// and moves an equivalent status/global load across the same argument pushes.
+// The same values reach every call and the same fields are read/written; no
+// predicate, call target, memory target, cleanup, or return value changes.
+// This is reviewed as localized codegen scheduling drift, not a behavior claim
+// based only on the 95% shape metric.
+
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
 // Globals: extern TDebuggingLog* L (original image address 0x62C4FC)
 // Functions: TDebuggingLog::Log(char*, ...), sprintf

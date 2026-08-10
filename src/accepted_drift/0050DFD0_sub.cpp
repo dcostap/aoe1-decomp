@@ -98,6 +98,20 @@
 // - Moving the null return to the top of the `while (p != entry)` body reached
 //   92B/99 with worse CFG/shape; restored. The redundant binary head test and
 //   self-call relocation remain unresolved without compiler-steering scaffolds.
+//
+// ACCEPTED_DRIFT REVIEW (main-accepted-0050DFD0): The normalized source below
+// was reviewed directly against the original 0050DFD0-0050E033 bytes. Its
+// reachable behavior is equivalent: the initial empty/not-found exits, list
+// walk and link update, unlink store, command-1 tail rescan, recursive
+// self-call argument selection, free of the removed node, and word decrement
+// of list_num all agree in address, width, order, and cleanup. The remaining
+// emitted drift is compiler-only: VC5 folds the redundant head null test,
+// retains entry across the walk (saving EBX), and lays out the shared call
+// tail differently. The checker also reports original `internal+0x0` versus
+// rebuilt decorated `sub` for the same recursive self-call; this is a
+// relocation representation difference, not a changed runtime callee.
+// The earlier volatile/duplicated-call source was diagnostic only and is not
+// promoted.
 
 #include <stdlib.h>
 

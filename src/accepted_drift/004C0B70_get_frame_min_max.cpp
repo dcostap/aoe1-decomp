@@ -55,6 +55,17 @@
 // second call. Final clean source: full RGE_Sprite ownership, two-call ABI,
 // direct formal frame/facet accumulation, value-first upper bounds.
 
+// ACCEPTED_DRIFT REVIEW (main-drift-004C0B70): Direct comparison with the
+// original confirms identical size/frame, saved registers, two ordered calls,
+// seven conditional branches plus the same swap jump, early failure return,
+// four bound predicates, short-store widths, and success/failure return values.
+// The remaining 37 bytes are confined to post-call register/liveness coloring
+// and the resulting equivalent arithmetic scheduling in the facet-swap and
+// bound-update block. Both versions read/write the same formal outputs and
+// compute the same frame/facet/offset values; no predicate, call, cleanup,
+// field target, or return behavior changes. The natural direct-formal source
+// is promoted; result-local and register-steering variants remain diagnostic.
+
 class RGE_Color_Table;
 class TShape;
 class RGE_Picture_List;
