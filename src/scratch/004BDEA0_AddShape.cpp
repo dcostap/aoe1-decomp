@@ -23,6 +23,12 @@
 // - Base-pointer/in-place index, declaration-order, and original type-spelling
 //   variants were codegen duplicates. The remaining evidence-backed lead is
 //   only the shape-index/base register coloring; source remains natural.
+// - Fresh lane probes covered direct indexed uses, selected-record/base-pointer
+//   declarations, explicit 0x20 byte stride, register hint, and composition
+//   versus inheritance; all either lost the exact loop basin or emitted the
+//   same three-byte prologue drift. A six-way focused prologue lab also formed
+//   one identical 254-byte group. Restored the clean source; remaining drift is
+//   mov index/base register coloring at 004BDEBD-004BDEC6 only.
 
 // Main-agent audit confirmed typed selected-record ownership and retained the
 // natural shape insertion path.
