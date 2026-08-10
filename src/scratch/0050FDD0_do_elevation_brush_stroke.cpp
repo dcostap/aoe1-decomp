@@ -62,6 +62,12 @@
  * the same entry coloring and had an appended context tail. The clean direct-parameter
  * source remains the defensible reconstruction; oracle r/x1/x2 are EBX/ESI/EDI while
  * VC5 emits ESI/EDI/EBX. Calls, corrected relocations, cleanup, CFG, and size align.
+ *
+ * orch-tmap-fresh-04 continuation: a promoted-byte local before the base call
+ * worsened the build to 162 bytes; a pre-base receiver alias was a codegen
+ * duplicate. Splitting saved-endpoint declarations from assignments and hoisting
+ * those saves to function scope were also duplicates. Restored the clean direct
+ * parameter source; the 81-byte result and first mismatch at +0x0D remain.
  */
 
 class RGE_Map {
