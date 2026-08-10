@@ -1,43 +1,314 @@
-// 00514010 TRIBE_Player::random_start - rough direct reconstruction
-// Attempts:
-// - Packet/decompiler shows two major paths: no existing TC => random TC/three villager placements, otherwise use existing master-id 0x6d; then multiplayer/random-game diplomacy setup.
-// - Modeled key offsets/calls: object list +0x24/+0x28, world +0x3c, player id +0x4a, town-center master +0x1b4, villager master +0x14c, map dimensions via world->map +8/+0xc, find_by_master_id master 0x6d, set_map_loc/set_view_loc, diplomacy chat loop.
-// - VC5 function-pointer surface for the virtual placement calls is still too approximate; using raw cdecl vtable calls compiles but source is far too small (.text 832 vs original 1268).
-// - A real match needs proper typed virtual/member surfaces and exact random-placement arithmetic/liveness. Not accepted-drift quality.
-struct Map { int pad0; int pad4; int h; int w; };
-struct World { char pad[0x28]; Map* map; char pad2[0x10]; short player_count; char gap[2]; void** players; char pad3[0x38]; short local_player; };
-struct ObjList { void* vptr; void* list; };
-struct Game { int multiplayerGame(); int randomGame(); int playerID(int); };
-extern Game* rge_base_game; class TChat { public: void setInChatGroup(int,int); }; extern TChat* chat;
-extern int __cdecl debug_rand(char*, int); extern char s_C__msdev_work_age1_x1_tplayer_cp[]; extern "C" int __cdecl _ftol(float);
-extern "C" void* __cdecl find_by_master_id_004634C0(int,int,int,int,int,int);
-class TRIBE_Player { public:
-    void* vptr; char pad04[0x20]; void* object_list; ObjList* obj_list2; char pad2c[0x10]; World* world; char pad40[0x0a]; short player_id; char pad4c[0xc8]; int locx; int locy; char pad11c[0x30]; void* villager_master; char pad150[0x64]; void* tc_master;
-    int random_start(); void set_map_loc(int,int); void set_view_loc(float,float); int ally(int);
+// 00514010 TRIBE_Player::random_start
+//
+// Attempt log:
+// - The original rough source used a non-inlined rndpos helper, raw vtable
+//   calls, and the wrong +0x24/+0x14c ownership.  The binary identifies those
+//   as RGE_Player::master_objects, RGE_Player::objects,
+//   RGE_Master_Static_Object::check_placement/make_new_obj, and the normal
+//   RGE_Player virtual surface.  This candidate restores those period-shaped
+//   typed owners and keeps the random arithmetic in the function so each of
+//   the eight debug_rand calls remains a real call site.
+// - First clean reconstruction: the prior rough body was 709 rebuilt bytes
+//   versus 1268 original, with eight missing debug_rand calls and several
+//   wrong call relocations.  The typed/inlined reconstruction is the next
+//   structural probe; register tuning is intentionally deferred.
+// - Typed/inlined probe: 1348 bytes initially, frame 0x1c, 32/32 ordered calls
+//   aligned except for one placement-call site; the source now carries all
+//   eight random calls, exact master/object-list ownership, build, object
+//   notification, player-ID, and chat calls.
+// - Direct master lookup plus do/while, goto, split-declaration, and explicit
+//   quotient-delta variants either emitted the same 1354-byte basin or added
+//   a duplicate check_placement site; no variant was retained as a source
+//   improvement.  The remaining structural gap is VC5 placement-call block
+//   sharing and the early push/FPU schedule, not an unresolved field owner.
+// - An absolute-address string/rdata relocation experiment reduced unresolved
+//   relocations but worsened the function and was rolled back; the living
+//   source retains named extern data and the period string expression.
+
+typedef unsigned char uchar;
+
+class RGE_Player;
+class RGE_Game_World;
+class RGE_Static_Object;
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual void* make_new_master();
+    virtual uchar check_placement(RGE_Player*, float, float, int*,
+                                  uchar, uchar, uchar, uchar, uchar, uchar);
 };
-static float rndpos(TRIBE_Player* p, int line, int off) { int r=debug_rand(s_C__msdev_work_age1_x1_tplayer_cp,line); int dim = line==0x631 ? p->world->map->w : p->world->map->h; return (float)((r*(dim-30))/0x7fff + 15) + 0.5f; }
-int TRIBE_Player::random_start() {
-    unsigned char found_ally = 0;
-    if (*(int*)((char*)this->object_list + 4) == 0) {
-        float w1 = rndpos(this,0x631,0); float h = rndpos(this,0x632,0); int tries=1;
-        void* master = *(void**)((char*)this->object_list + 0x1b4);
-        while (((unsigned char(__cdecl*)(void*,TRIBE_Player*,float,float,int,int,int,int,int,int,int))(*(void***)master)[8])(master,this,h+0.5f,w1+0.5f,0,0,1,1,1,1,1)) {
-            w1 = rndpos(this,0x631,0); h = rndpos(this,0x632,0); if (++tries >= 5000) break;
+
+struct RGE_Object_Node {
+    RGE_Static_Object* object;
+    RGE_Object_Node* next;
+};
+
+class RGE_Object_List {
+public:
+    virtual ~RGE_Object_List();
+    RGE_Object_Node* list;
+    RGE_Static_Object* find_by_master_id(long, float, float, uchar, uchar,
+                                         RGE_Static_Object*);
+};
+
+class RGE_Map {
+public:
+    void* vtable_ptr;
+    void* map_tiles;
+    long map_width;
+    long map_height;
+};
+
+class RGE_Game_World {
+public:
+    void* vtable_ptr;
+    char gap_04[0x24];
+    RGE_Map* map;
+    char gap_2c[0x10];
+    short player_num;
+    char gap_3e[2];
+    RGE_Player** players;
+    char gap_44[0x38];
+    short curr_player;
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void v04(); virtual void v08(); virtual void v0c();
+    virtual void v10(); virtual void v14(); virtual void v18();
+    virtual void v1c(); virtual void v20(); virtual void v24();
+    virtual void v28(); virtual void v2c(); virtual void v30();
+    virtual void v34(); virtual void v38(); virtual void v3c();
+    virtual void v40(); virtual void v44(); virtual void v48();
+    virtual void v4c(); virtual void v50(); virtual void v54();
+    virtual void v58(); virtual void v5c(); virtual void v60();
+    virtual void v64(); virtual void v68(); virtual void v6c();
+    virtual void v70(); virtual void v74(); virtual void v78();
+    virtual void v7c(); virtual void v80(); virtual void v84();
+    virtual void v88(); virtual void v8c(); virtual void v90();
+    virtual void v94(); virtual void v98(); virtual void v9c();
+    virtual void va0(); virtual void va4(); virtual void va8();
+    virtual void vac(); virtual void vb0(); virtual void vb4();
+    virtual void vb8(); virtual void vbc(); virtual void vc0();
+    virtual void vc4(); virtual void vc8(); virtual void vcc();
+    virtual void vd0(); virtual void vd4();
+    virtual void vd8(RGE_Player*, int, int);
+    virtual void vdc(RGE_Player*, int, int);
+
+    char gap_04[0x34];
+    float world_x;
+    float world_y;
+};
+
+class TRIBE_Building_Object : public RGE_Static_Object {
+public:
+    uchar build(float);
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float,
+                                 float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float,
+                                float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*,
+                               float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand2(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                 uchar, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, uchar);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
+
+    char gap_04[0x1e];
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    void* victory_conditions;
+    void* visible;
+    RGE_Game_World* world;
+    void* doppleganger_creator;
+    char* name;
+    uchar type;
+    uchar gap_49;
+    short id;
+    char gap_4c[0xc8];
+    float view_x;
+    float view_y;
+
+    void set_map_loc(short, short);
+    void set_view_loc(float, float);
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    virtual void random_start();
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    int multiplayerGame();
+    int randomGame();
+    int playerID(int);
+};
+
+class TChat {
+public:
+    void setInChatGroup(int, int);
+};
+
+extern "C" int __cdecl debug_rand(char*, int);
+extern float DAT_00576828;
+extern float DAT_00576868;
+extern float DAT_0057686c;
+
+#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+#define chat (*(TChat**)0x0062C4B8)
+
+void TRIBE_Player::random_start()
+{
+    uchar found_ally = 0;
+
+    if (this->objects->list == 0) {
+        float w1;
+        float h;
+        w1 = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x631) *
+                      (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
+              - DAT_00576868;
+        h = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x632) *
+                     (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
+             - DAT_00576868;
+        int tries = 1;
+        while (this->master_objects[0x6d]->check_placement(
+                   this, h - DAT_00576868, w1 - DAT_00576868,
+                   0, 0, 1, 1, 1, 1, 1)) {
+            w1 = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x631) *
+                          (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
+                         - DAT_00576868;
+            h = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x632) *
+                         (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
+                - DAT_00576868;
+            ++tries;
+            if (tries >= 5000)
+                break;
         }
+
         if (tries < 5000) {
-            void* obj = ((void*(__cdecl*)(void*,TRIBE_Player*,float,float,int))(*(void***)master)[6])(master,this,h,w1,0);
-            this->set_map_loc(_ftol(h), _ftol(w1)); this->set_view_loc(h,w1);
-            ((void(__cdecl*)(void*,float))(*(void***)obj)[0x25])(obj,10000.0f);
-            for (int n=3;n;n--) {
-                int bad=1; while (bad) { float x=w1, y=h; void* vm=*(void**)((char*)this->object_list+0x14c); if (!((unsigned char(__cdecl*)(void*,TRIBE_Player*,float,float,int,int,int,int,int,int,int))(*(void***)vm)[8])(vm,this,y,x,0,0,1,1,1,1,1)) { ((void(__cdecl*)(void*,TRIBE_Player*,float,float,int))(*(void***)vm)[6])(vm,this,y,x,0); bad=0; } }
-            }
+            TRIBE_Building_Object* town_center_object =
+                (TRIBE_Building_Object*)this->master_objects[0x6d]->make_new_obj(
+                    this, h, w1, 0);
+            this->set_map_loc((short)h, (short)w1);
+            this->set_view_loc(h, w1);
+            town_center_object->build(10000.0f);
+
+            int count = 3;
+            do {
+                uchar bad = 1;
+                do {
+                    int r646 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x646);
+                    int r647 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x647);
+                    int x_delta = (r646 * 6) / 0x7fff - 3;
+                    int y_delta = (r647 * 6) / 0x7fff - 3;
+                    int r648 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x648);
+                    float x = (float)x_delta - (float)r648 * DAT_0057686c + w1;
+                    int r649 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x649);
+                    float y = (float)y_delta - (float)r649 * DAT_0057686c + h;
+
+                    if (x >= DAT_00576828 && x < (float)this->world->map->map_width &&
+                        y >= DAT_00576828 && y < (float)this->world->map->map_height &&
+                        this->master_objects[0x53]->check_placement(
+                            this, y, x, 0, 0, 1, 1, 1, 1, 1) == 0) {
+                        this->master_objects[0x53]->make_new_obj(this, y, x, 0);
+                        bad = 0;
+                    }
+                } while (bad);
+                --count;
+            } while (count != 0);
         }
     } else {
-        void* obj = find_by_master_id_004634C0(0x6d,0,0,0,0,0); if (!obj) obj=**(void***)((char*)this->object_list+4); this->set_map_loc(_ftol(*(float*)((char*)obj+0x3c)), _ftol(*(float*)((char*)obj+0x38))); this->set_view_loc(*(float*)((char*)obj+0x38),*(float*)((char*)obj+0x3c));
+        RGE_Static_Object* town_center_object =
+            this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
+        if (town_center_object == 0) {
+            RGE_Object_Node* first = this->objects->list;
+            town_center_object = first ? first->object : 0;
+        }
+        this->set_map_loc((short)town_center_object->world_y,
+                          (short)town_center_object->world_x);
+        this->set_view_loc(town_center_object->world_x,
+                           town_center_object->world_y);
     }
-    if ((rge_base_game->multiplayerGame() || rge_base_game->randomGame()) && this->world->player_count > 1) {
-        for (int i=1;i<this->world->player_count;i++) if (this->ally(i) && i != this->player_id) found_ally=1;
+
+    if ((rge_base_game->multiplayerGame() || rge_base_game->randomGame()) &&
+        this->world->player_num > 1) {
+        for (int i = 1; i < this->world->player_num; ++i) {
+            if (this->isAlly(i) && i != this->id) {
+                RGE_Static_Object* town_center_object =
+                    this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
+                if (town_center_object == 0) {
+                    RGE_Object_Node* first = this->objects->list;
+                    town_center_object = first ? first->object : 0;
+                }
+                if (town_center_object != 0) {
+                    town_center_object->vd8(this->world->players[i], 0, -1);
+                    town_center_object->vdc(this->world->players[i], 0, -1);
+                }
+                this->world->players[i]->make_new_object(
+                    0x70, this->view_x, this->view_y, 0, 0);
+                found_ally = 1;
+            }
+        }
     }
-    if (this->world->local_player == this->player_id && found_ally) for (int i=1;i<this->world->player_count;i++) if (i != this->player_id) for (int j=1;j<9;j++) if (rge_base_game->playerID(j)==i) chat->setInChatGroup(j,this->ally(i));
-    return 0;
+
+    if (this->world->curr_player == this->id && found_ally) {
+        for (int i = 1; i < this->world->player_num; ++i) {
+            if (i != this->id) {
+                for (int j = 1; j < 9; ++j) {
+                    if (rge_base_game->playerID(j) == i) {
+                        chat->setInChatGroup(j, this->isAlly(i));
+                    }
+                }
+            }
+        }
+    }
 }

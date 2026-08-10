@@ -6,69 +6,200 @@
 // try 4: diagnostic impossible saveRand/save_debug_random_on == -1 log branches only to force exact-size compare; exact-size 1514/1514 but broad mismatch 83.5535% positional / 94.8481% edit, first mismatch +27 around saveRand/save_debug_random_on stack scheduling; diagnostic branches rolled back.
 // try 5: /GX on diagnostic source no change; rolled back.
 // try 6: /Od diagnostic exact-size but worse debug-basin mismatch 86.3276% positional / 169.5509% edit; rolled back.
-// left in scratch: no custom flags retained. Not accepted_drift quality; likely needs exact TRIBE_Player/AI loader class surfaces, original string/strcmp intrinsic context, and exact virtual/member prototypes/source spelling.
+// typed ABI probe: restored the canonical RGE_Player/World/Scenario offsets,
+// AIModule and embedded AI-module surfaces, TRIBE_Game getters, virtual
+// get_string/build-loader calls, direct strategy/emotional/information calls,
+// and the enemy-before-ally diplomacy predicate order.  This recovered exact
+// frame size, all 42 ordered calls, and a 1514-byte rebuilt body; the current
+// structural best is 1281 strict-diff bytes with 89.56% edit/resync similarity.
+// city-plan probe: duplicated the binary-backed custom/no-city construction
+// argument setup in the two source arms, which restored original size and
+// call-site parity; a shared-tail/goto variant was worse and was rolled back.
+// remaining localized drift: VC5 stores the saved debug-random global before
+// the local home (the oracle does the reverse), the map-switch branch spans
+// differ, and the no-city/final learn tails have small block-layout shifts.
+// left in scratch: no custom flags or compiler-steering scaffolding retained.
 
-typedef unsigned int uint;
-typedef int BOOL;
+typedef unsigned char uchar;
 
-extern "C" int __cdecl debug_rand(const char* file, int line);
-extern "C" void __cdecl debug_rand_restore(const char* file, int line, int value);
-extern "C" void __cdecl log_printf(void* log, const char* fmt, ...);
-extern "C" int __cdecl random_func();
+class RGE_Player;
+
+class AIModule {
+public:
+    virtual ~AIModule();
+    char gap_04[0xEC];
+    void logCommonHistory(char* fmt, ...);
+};
+
+class TribeBuildAIModule {
+public:
+    virtual ~TribeBuildAIModule();
+    virtual void v04(); virtual void v08(); virtual void v0C();
+    virtual void v10(); virtual void v14(); virtual void v18();
+    virtual void v1C(); virtual void v20(); virtual void v24();
+    virtual void v28(); virtual void v2C(); virtual void v30();
+    virtual void v34(); virtual void v38(); virtual void v3C();
+    virtual void v40();
+    virtual int load(char*, RGE_Player*);
+    char gap_04[0x5BC];
+};
+
+class TribeConstructionAIModule {
+public:
+    virtual ~TribeConstructionAIModule();
+    virtual void v04(); virtual void v08(); virtual void v0C();
+    virtual void v10(); virtual void v14(); virtual void v18();
+    virtual void v1C(); virtual void v20(); virtual void v24();
+    virtual void v28(); virtual void v2C(); virtual void v30();
+    virtual void v34(); virtual void v38(); virtual void v3C();
+    virtual void load(char*, int, int, int, int, int);
+    char gap_04[0x314];
+};
+
+class DiplomacyAIModule {
+public:
+    virtual ~DiplomacyAIModule();
+    char gap_04[0x14C];
+    void setStance(int, int, int);
+    void setChangeable(int, uchar);
+};
+
+class EmotionalAIModule {
+public:
+    virtual ~EmotionalAIModule();
+    char gap_04[0x1BC];
+    void setOverallState(int);
+};
+
+class TribeInformationAIModule {
+public:
+    virtual ~TribeInformationAIModule();
+    char gap_04[0x1008C];
+    void loadLearnInfo(char*);
+};
+
+class TribeResourceAIModule {
+public:
+    virtual ~TribeResourceAIModule();
+    char gap_04[0xF4];
+};
+
+class TribeStrategyAIModule {
+public:
+    virtual ~TribeStrategyAIModule();
+    char gap_04[0x5F4];
+    int loadRules(char*);
+    void setDifficultyLevel(int);
+};
+
+class TribeMainDecisionAIModule : public AIModule {
+public:
+    char gap_base[0x14];
+    TribeBuildAIModule buildAI;
+    TribeConstructionAIModule constructionAI;
+    DiplomacyAIModule diplomacyAI;
+    EmotionalAIModule emotionalAI;
+    TribeInformationAIModule informationAI;
+    TribeResourceAIModule resourceAI;
+    TribeStrategyAIModule strategyAI;
+
+    void updateBuildAIWithObjects();
+};
+
+class RGE_Map {
+public:
+    void* vtable_ptr;
+    void* tiles;
+    int map_width;
+    int map_height;
+};
+
+class RGE_Scenario {
+public:
+    void* vtable_ptr;
+    char gap_04[0x100C];
+    char* learn_info;
+};
+
+class RGE_Game_World {
+public:
+    void* vtable_ptr;
+    char gap_04[0x24];
+    RGE_Map* map;
+    char gap_2C[0x10];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
+    char gap_44[0x18];
+    RGE_Scenario* scenario;
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual void v04(); virtual void v08(); virtual void v0C();
+    virtual void v10(); virtual void v14(); virtual void v18();
+    virtual void v1C();
+    virtual void get_string(int, char*, int);
+    int difficulty();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    int mapSize();
+    int mapType();
+    int victoryType();
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+
+    char gap_04[0x1E];
+    short master_object_num;
+    void* master_objects;
+    void* objects;
+    void* sleeping_objects;
+    void* doppleganger_objects;
+    void* victory_conditions;
+    void* visible;
+    RGE_Game_World* world;
+    void* doppleganger_creator;
+    char* name;
+    uchar type;
+    uchar gap_49;
+    short id;
+    char gap_4C[0x1D4];
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    char gap_220[0x18];
+    TribeMainDecisionAIModule* playerAI;
+
+    void intelligentBuildListAndRulesSelection(char*, char*, int, int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+};
+
+extern "C" int __cdecl debug_rand(char*, int);
+extern "C" void __cdecl debug_srand(char*, int, int);
 extern "C" void* __cdecl strcpy(void*, const void*);
 extern "C" int __cdecl strcmp(const char*, const char*);
 
 #define debug_random_on (*(int*)0x0062C4D4)
 #define saved_debug2 (*(int*)0x0086BC94)
 #define base_game (*(TRIBE_Game**)0x0062C574)
-
-struct FileReader;
-struct FileReaderVtbl { char pad[0x20]; void (__stdcall *get_string)(FileReader*, int, char*, int); };
-struct FileReader { FileReaderVtbl* vtbl; };
-
-struct Loader;
-struct LoaderVtbl { char pad[0x40]; int (__stdcall *load)(Loader*, char*, int, int, int, int, int); int (__stdcall *load2)(Loader*, char*, void*); };
-struct Loader { LoaderVtbl* vtbl; };
-
-class TRIBE_Game {
-public:
-    void* vtbl;
-    int mapType();
-    int randomMapScript();
-    int terrainType();
-};
-
-class TRIBE_Scenario_Info { public: char gap[0x3C]; short player_count; char gap2[0x20]; void* victory; };
-class TRIBE_Player;
-
-class AIName { public: void load(const char*); void set(int); };
-class Diplomacy { public: void set_stance(int player, int a, int b); void set_visible(int player, int v); };
-class LearnInfo { public: void loadLearnInfo(char*); };
-class Personality { public: void sub_4E6160(); };
-
-class TRIBE_Player {
-public:
-    void* vtbl;
-    char gap0[0x38];
-    TRIBE_Scenario_Info* scenario;
-    char gap1[0x0A];
-    short player_num;
-    char gap2[0x1EA];
-    void* log;
-    char gap3[0x7A0];
-    Diplomacy diplomacy;
-    char gap4[0xB2C-0x9DC-sizeof(Diplomacy)];
-    AIName build_list;
-    char gap5[0xCEC-0xB2C-sizeof(AIName)];
-    LearnInfo learn_info;
-    char gap6[0x10E74-0xCEC-sizeof(LearnInfo)];
-    AIName rules;
-
-    int is_ally(int player);
-    int is_enemy(int player);
-    void setup_ai_info(char* ruleSetName, char* buildListName, int map, int terrain, int script);
-    virtual void loadAIInformation(char* aiFile, char* ruleFile, char* personalityFile, int buildId, int unused);
-};
 
 void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* personalityFile, int buildId, int unused)
 {
@@ -77,23 +208,22 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
     char ruleSetName[256];
     char buildListName[256];
 
-    int save_debug_random_on;
-    int saveRand = debug_rand((const char*)0x58AC44, 0x863);
-    save_debug_random_on = debug_random_on;
+    int saveRand = debug_rand((char*)0x58AC44, 0x863);
+    int save_debug_random_on = debug_random_on;
     saved_debug2 = save_debug_random_on;
     debug_random_on = 0;
 
-    if (this->log) {
+    if (this->playerAI) {
         switch (base_game->mapType()) {
-        case 0: log_printf(this->log, (const char*)0x58B114); break;
-        case 1: log_printf(this->log, (const char*)0x58B0F8); break;
-        case 2: log_printf(this->log, (const char*)0x58B0D8); break;
-        case 3: log_printf(this->log, (const char*)0x58B0BC); break;
-        case 4: log_printf(this->log, (const char*)0x58B0A0); break;
-        default: log_printf(this->log, (const char*)0x58B060); break;
+        case 0: this->playerAI->logCommonHistory((char*)0x58B114); break;
+        case 1: this->playerAI->logCommonHistory((char*)0x58B0F8); break;
+        case 2: this->playerAI->logCommonHistory((char*)0x58B0D8); break;
+        case 3: this->playerAI->logCommonHistory((char*)0x58B0BC); break;
+        case 4: this->playerAI->logCommonHistory((char*)0x58B0A0); break;
+        default: this->playerAI->logCommonHistory((char*)0x58B060); break;
         }
-        ((FileReader*)base_game)->vtbl->get_string((FileReader*)base_game, 0x2775, noneString, 0x100);
-        ((FileReader*)base_game)->vtbl->get_string((FileReader*)base_game, 0x277B, randomString, 0x100);
+        base_game->get_string(0x2775, noneString, 0x100);
+        base_game->get_string(0x277B, randomString, 0x100);
 
         strcpy(buildListName, (const void*)0x592A40);
         strcpy(ruleSetName, (const void*)0x592A40);
@@ -101,71 +231,72 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
         if (aiFile) {
             if (strcmp(aiFile, randomString) == 0) {
                 do {
-                    this->setup_ai_info(ruleSetName, buildListName, base_game->mapType(), base_game->terrainType(), base_game->randomMapScript());
-                    log_printf(this->log, (const char*)0x58B034, buildListName);
-                } while (((Loader*)((char*)this->log + 0x104))->vtbl->load2((Loader*)((char*)this->log + 0x104), buildListName, this) == 0);
+                    this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
+                        base_game->mapType(), base_game->victoryType(), base_game->mapSize());
+                    this->playerAI->logCommonHistory((char*)0x58B034, buildListName);
+                } while (this->playerAI->buildAI.load(buildListName, this) == 0);
             } else {
-                log_printf(this->log, (const char*)0x58B01C, aiFile);
-                ((Loader*)((char*)this->log + 0x104))->vtbl->load2((Loader*)((char*)this->log + 0x104), aiFile, this);
+                this->playerAI->logCommonHistory((char*)0x58B01C, aiFile);
+                this->playerAI->buildAI.load(aiFile, this);
             }
         } else {
             do {
-                this->setup_ai_info(ruleSetName, buildListName, base_game->mapType(), base_game->terrainType(), base_game->randomMapScript());
-                log_printf(this->log, (const char*)0x58AFFC, buildListName);
-            } while (((Loader*)((char*)this->log + 0x104))->vtbl->load2((Loader*)((char*)this->log + 0x104), buildListName, this) == 0);
+                this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
+                    base_game->mapType(), base_game->victoryType(), base_game->mapSize());
+                this->playerAI->logCommonHistory((char*)0x58AFFC, buildListName);
+            } while (this->playerAI->buildAI.load(buildListName, this) == 0);
         }
 
-        if (ruleFile) {
-            if (strcmp(ruleFile, randomString) == 0) log_printf(this->log, (const char*)0x58AFC0);
-            else {
-                log_printf(this->log, (const char*)0x58AFA8, ruleFile);
-                Loader* l = (Loader*)((char*)this->log + 0x6C4);
-                l->vtbl->load(l, ruleFile, ((int**)this->scenario)[0x0A][2], ((int**)this->scenario)[0x0A][3], 0, 0, 0);
-            }
+        if (ruleFile && strcmp(ruleFile, randomString) != 0) {
+            this->playerAI->logCommonHistory((char*)0x58AFA8, ruleFile);
+            this->playerAI->constructionAI.load(ruleFile,
+                this->world->map->map_width, this->world->map->map_height, 0, 0, 0);
         } else {
-            log_printf(this->log, (const char*)0x58AFC0);
-            Loader* l = (Loader*)((char*)this->log + 0x6C4);
-            l->vtbl->load(l, (char*)0x57F350, ((int**)this->scenario)[0x0A][2], ((int**)this->scenario)[0x0A][3], 0, 0, 0);
+            this->playerAI->logCommonHistory((char*)0x58AFC0);
+            this->playerAI->constructionAI.load((char*)0x57F350,
+                this->world->map->map_width, this->world->map->map_height, 0, 0, 0);
         }
 
         if (personalityFile && strcmp(personalityFile, randomString) != 0) {
-            log_printf(this->log, (const char*)0x58AF90, personalityFile);
-            this->rules.load(personalityFile);
+            this->playerAI->logCommonHistory((char*)0x58AF90, personalityFile);
+            this->playerAI->strategyAI.loadRules(personalityFile);
         } else if (strcmp(ruleSetName, (const char*)0x58AF78) != 0) {
-            log_printf(this->log, (const char*)0x58AF4C, ruleSetName);
-            this->rules.load(ruleSetName);
+            this->playerAI->logCommonHistory((char*)0x58AF4C, ruleSetName);
+            this->playerAI->strategyAI.loadRules(ruleSetName);
         } else {
-            log_printf(this->log, (const char*)0x58AF10);
+            this->playerAI->logCommonHistory((char*)0x58AF10);
         }
 
-        int r = random_func();
-        log_printf(this->log, (const char*)0x58AEF0, r);
-        this->rules.set(r);
-        ((Personality*)this->log)->sub_4E6160();
+        int r = base_game->difficulty();
+        this->playerAI->logCommonHistory((char*)0x58AEF0, r);
+        this->playerAI->strategyAI.setDifficultyLevel(r);
+        this->playerAI->updateBuildAIWithObjects();
 
-        for (int i = 1; i < this->scenario->player_count; ++i) {
-            if (i == this->player_num) {
-                this->diplomacy.set_stance(i, 0, 0);
-                this->diplomacy.set_stance(i, 2, 100);
-            } else if (this->is_ally(i)) {
-                this->diplomacy.set_stance(i, 0, 0x4A);
-                this->diplomacy.set_stance(i, 2, 0x18);
-            } else if (this->is_enemy(i)) {
-                this->diplomacy.set_stance(i, 0, 0x18);
-                this->diplomacy.set_stance(i, 2, 0x4A);
+        for (int i = 1; i < this->world->player_num; ++i) {
+            if (i == this->id) {
+                this->playerAI->diplomacyAI.setStance(i, 0, 0);
+                this->playerAI->diplomacyAI.setStance(i, 2, 100);
+            } else if (this->isEnemy(i)) {
+                this->playerAI->diplomacyAI.setStance(i, 0, 0x4A);
+                this->playerAI->diplomacyAI.setStance(i, 2, 0x18);
+            } else if (this->isAlly(i)) {
+                this->playerAI->diplomacyAI.setStance(i, 0, 0x18);
+                this->playerAI->diplomacyAI.setStance(i, 2, 0x4A);
             }
         }
 
-        for (int j = 1; j < this->scenario->player_count; ++j) {
-            if (!this->is_ally(j) && !this->is_enemy(j)) this->diplomacy.set_visible(j, 1);
-            else this->diplomacy.set_visible(j, 0);
+        for (int j = 1; j < this->world->player_num; ++j) {
+            if (!this->isEnemy(j) && !this->isAlly(j))
+                this->playerAI->diplomacyAI.setChangeable(j, 1);
+            else
+                this->playerAI->diplomacyAI.setChangeable(j, 0);
         }
 
-        this->build_list.set(buildId);
-        char* learn = *(char**)((char*)this->scenario->victory + 0x1010);
-        if (learn && *learn) this->learn_info.loadLearnInfo(learn);
+        this->playerAI->emotionalAI.setOverallState(buildId);
+        char* learn = this->world->scenario->learn_info;
+        if (learn && *learn) this->playerAI->informationAI.loadLearnInfo(learn);
     }
 
     debug_random_on = save_debug_random_on;
-    debug_rand_restore((const char*)0x58AC44, 0x8FD, saveRand);
+    debug_srand((char*)0x58AC44, 0x8FD, saveRand);
 }
