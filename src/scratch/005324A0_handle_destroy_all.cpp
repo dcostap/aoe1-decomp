@@ -39,6 +39,11 @@
 //   pre-increment for was a codegen duplicate.  No new source-plausible lead
 //   remains; the localized entry/callee-save allocation drift is retained as
 //   the next worker's lead.
+// - Final worker probes: a reference entry alias, saved-this alias, full object-list
+//   and victory-helper declaration context, canonical master-static naming, a
+//   redundant proven-null guard, explicit target/all-player labels, and a diagnostic
+//   virtual-helper declaration were neutral or worse. Restored the clean natural
+//   source; remaining drift is still the 25-byte entry/callee-save color from offset 0.
 
 struct RGE_Player;
 
