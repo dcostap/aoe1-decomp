@@ -71,6 +71,24 @@
 // row_ptr is homed in the y parameter slot so ECX can mask the tile byte; current
 // natural VC5 allocation rotates those homes/registers despite exact size, CFG
 // counts, and canonical map-row ownership.
+// Continuation (wave21-rmmelev-01):
+// 15: an explicit initial empty-range return plus infinite outer loop with a
+//     bottom success return broadened to 169 bytes; rolled back.
+// 16: carrying the row-table pointer in the dead y parameter home was binary-
+//     motivated but codegen-identical to the clean basin; rolled back.
+// 17: a scoped col_end copy of x1 and 18: separate nested tile-failure guards
+//     were both codegen-identical; no liveness/CFG change.
+// 19: swapped the natural inner induction statements to `++col` then
+//     `cell += 24`, matching the oracle's inc-before-add order. Strict diff
+//     stayed 141, but shape improved 84.38% -> 85.42% and edit diff 95 -> 94;
+//     retain this period-plausible source order.
+// 20: an explicit next_row compare before writing the reused x home broadened
+//     to 174 bytes / 73.00% shape; rolled back.
+// 21: an address-taken y-home alias was codegen-identical to the clean basin;
+//     rolled back. A nine-variant row-pointer type/expression lab (22) found
+//     only the typed duplicate basin; dword/byte cross-type variants did not
+//     compile. Remaining blocker is the original y1/range-home, row_ptr/y-home,
+//     x1/EBX, and CL-vs-BL allocation rotation, not tile/map ownership.
 
 struct RGE_Tile {
     short screen_xpos;
@@ -150,8 +168,8 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
                     || (*cell >> 5) < elevation) {
                     return 0;
                 }
-                cell += 24;
                 col++;
+                cell += 24;
             } while (col <= x1);
         }
         row_ptr++;

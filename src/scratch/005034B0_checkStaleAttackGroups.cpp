@@ -44,6 +44,18 @@
 // - Paused: fresh ten-hypothesis budget exhausted; exact calls and typed
 //   ownership remain established, while the local spill/liveness and time-chain
 //   register basin remain unresolved.
+// - Fresh bounded pass (wave21-taitacmd-01): revalidated the clean source, then
+//   tested the actual AIModule/TacticalAIModule base chain, polymorphic
+//   RGE_Game_World/RGE_Player surfaces, and the inherited
+//   MainDecisionAIModule -> TribeMainDecisionAIModule player ownership; all
+//   were codegen-duplicate. Function-scope desired compound reuse, const
+//   number, full Ghidra iVar1/iVar2 lifetime including the final setter temp,
+//   a named elapsed quotient, and unsigned world_time were duplicate or
+//   repeated prior basins. Restored the natural source.
+// - Paused: canonical ownership, six ordered calls, CFG, and behavior remain
+//   established; the only unresolved gap is the original delayed number spill
+//   ([esp+10] after desiredNumberUnits) plus its associated time-register
+//   basin. No further natural source/layout lead remains in this assignment.
 
 class RGE_Game_World {
 public:
