@@ -8,8 +8,10 @@
 // and goto spellings did not improve the natural loop basin (best transient
 // was 269 bytes / 32 diff, but added a duplicated loop body). A bounded
 // while had only 5 edit-diff bytes but added a redundant initial count test
-// and four bytes past the original boundary. Restored this canonical source;
-// remaining drift is confined to the default-task scan CFG/loop rotation.
+// and four bytes past the original boundary. The exact source shape is a
+// natural do/while whose nondefault arm increments the index/cursor and whose
+// found arm assigns default_task and breaks; this preserves the late found
+// store and the separate exhausted return while emitting the original CFG.
 
 #include <stdio.h>
 
@@ -38,9 +40,9 @@ public:
     void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
 };
 
-class RGE_Master_Animated_Object {
+class RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Master_Animated_Object();
+    virtual ~RGE_Master_Static_Object();
     virtual void copy_obj(RGE_Master_Static_Object* object);
     virtual void modify(float value, unsigned char attribute);
     virtual void modify_delta(float value, unsigned char attribute);
@@ -63,7 +65,12 @@ public:
                       long clip_x, long clip_y, int value, unsigned char flags);
 
     unsigned char master_type;
-    char gap_005[0xB7];
+    char gap_005[0xB3];
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;
 
     int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short count);
 };
@@ -137,13 +144,15 @@ int RGE_Master_Action_Object::setup(FILE* file, RGE_Sprite** sprites,
     list_num = (int)tasks->list_num;
     if (list_num > 0) {
         task = tasks->list;
-        while ((*task)->is_default == 0) {
-            index++;
-            task++;
-            if (list_num <= index)
-                return 1;
-        }
-        default_task = (short)index;
+        do {
+            if ((*task)->is_default == 0) {
+                index++;
+                task++;
+            } else {
+                default_task = (short)index;
+                break;
+            }
+        } while (index < list_num);
     }
     return 1;
 }
