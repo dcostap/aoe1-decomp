@@ -640,3 +640,11 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   half-width shift expression at each bound can select the original coordinate-base SIB
   encoding while VC5 still folds the emitted arithmetic. Remove any now-unused shared
   local after checking; retain this only with the proven typed ABI and localized byte result.
+
+- For a bounded linked-list traversal whose oracle loads the incoming bound before
+  callee-save pushes and emits `xor count; dec bound; cmp count,bound; je; next;
+  inc count`, mirror a same-TU donor's natural `while (true)` with an equality
+  break, and apply the binary-proven `--bound` immediately before the loop.
+  A superficially equivalent `for (i != bound - 1)` can make VC5 strength-
+  reduce to a countdown and delay the parameter load; use the donor-shaped form
+  only when the PDB/assembly proves the top-tested count-up topology.

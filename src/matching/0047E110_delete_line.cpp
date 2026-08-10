@@ -21,9 +21,14 @@
 //   test at loop entry and an extra bottom compare. Reversed operands,
 //   explicit condition labels, function-scope assignment, and a named bound
 //   did not improve it. Restored the clean natural linked-list traversal.
-// - Final state remains the canonical readable source; the unresolved drift is
-//   the original pre-save parameter load plus incrementing-versus-countdown
-//   loop topology, not a call, layout, or ownership mismatch.
+// - Fresh count-up probes (less-than condition, explicit line decrement,
+//   unsigned dword counter, and natural loop variants) either stayed in the
+//   countdown basin or lost the exact prologue; the short-counter lead added
+//   a required sign extension. A natural loop-shape lab confirmed no other
+//   invariant-eligible form was exact.
+// - Mirroring the same-TU get_line donor's while (true) / equality-break
+//   traversal, with the binary-proven --line before it, reproduced the
+//   original parameter load, count-up loop, and all 205 bytes exactly.
 
 #include <windows.h>
 #include <stdio.h>
@@ -174,8 +179,13 @@ int TTextPanel::delete_line(long line)
         } else {
             TextNode* node = this->list;
             int i = 0;
-            for (; i != line - 1; ++i) {
+            --line;
+            while (true) {
+                if (i == line) {
+                    break;
+                }
                 node = node->next_node;
+                ++i;
             }
             deleted = node->next_node;
             node->next_node = deleted->next_node;
