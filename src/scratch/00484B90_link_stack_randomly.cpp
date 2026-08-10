@@ -98,6 +98,15 @@ public:
 // decompiler-style signed-shift formula, and a source-lifetime block did not
 // produce a new exact basin; the last two-byte basin is retained as the clean
 // canonical source. No inline asm or opaque helper was kept.
+// wave20-rmmelev-01 baseline: revalidated the canonical source at 2 differing
+// bytes; all calls, size, frame, CFG, and 90.59% exact-block coverage match.
+// Same-TU typed base context, int/register/top-scoped count forms, stdlib
+// context, and a late base-pointer alias were emitted-code duplicates.
+// A narrow volatile field load widened the result to 150 bytes; reusing the
+// named height/width locals widened it to 181 bytes. A volatile count widened
+// it to 143 bytes and 9 extra bytes of code. Restored the clean source; the
+// remaining drift is only the commutative count-product memory operand order
+// at 00484BE2/00484BE5 (rebuilt width-then-height vs oracle height-then-width).
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
