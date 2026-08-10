@@ -19,6 +19,9 @@
 // - This session retested the decompiler-supported difference arithmetic,
 //   nested positive guards, and reduced local sets; these shortened bytes but
 //   worsened prologue/CFG shape. The audited source below is restored.
+// - This session retested direct DrawBevel21-style swaps, a single persistent
+//   x1+1 local, behavior-correct block-local swaps, and register width/height;
+//   all worsened or duplicated the 293-byte/274-difference clean result.
 // Main-agent audit confirmed the natural draw-area line ownership and retained
 // the ordinary clipped bevel construction.
 

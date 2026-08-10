@@ -21,6 +21,10 @@
 // This session confirmed direct receiver use regresses to 28 bytes; restoring
 // the alias, reusing span_list, and modeling ClipRect as tagRECT all remain at
 // the same 21-byte localized SetSpanRegions setup drift.
+// This session reconfirmed that a direct tagRECT SpanList receiver regresses
+// to 28 bytes, a Height/Num_Lines compare reversal reaches 23 bytes, and
+// bottom/right argument locals are a codegen duplicate. The clean alias form
+// is restored below.
 // Remaining drift is localized register/load scheduling at the comparison, ctor
 // arguments, SetSpanRegions/AddSpan argument setup, and final CurSpanList reload.
 // Main-agent audit confirmed canonical draw-area/span-list ownership and retained

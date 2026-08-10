@@ -24,6 +24,10 @@
 //   declaration order, plus point-of-use Bits/row-address locals. The natural
 //   canonical source remains the best living reconstruction; residual drift is
 //   the row-base/pixel cursor register schedule and a two-byte tail shift.
+// - This session moved the outer pixel declaration beside the row pointers;
+//   it improved the unchanged-size result to 273 bytes/47 differing bytes.
+//   A per-row for-initializer worsened it to 271 bytes/74 bytes. Sequential
+//   start-offset and declaration-order rewrites were codegen duplicates.
 // Main-agent audit confirmed canonical draw-area/color-table ownership and kept
 // the natural typed row/pixel traversal.
 
@@ -99,8 +103,10 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
         {
             long orientation = this->Orien;
             long row_pitch = this->AlignedWidth() * orientation;
+
             unsigned char* row_start;
             unsigned char* row_end;
+            unsigned char* pixel;
             unsigned char* table;
             long row_offset;
 
@@ -117,7 +123,7 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
 
             if (y1 <= y2) {
                 int row_count = (y2 - y1) + 1;
-                unsigned char* pixel = row_start;
+                pixel = row_start;
                 do {
                     for (; pixel <= row_end; pixel++) {
                         *pixel = table[*pixel];

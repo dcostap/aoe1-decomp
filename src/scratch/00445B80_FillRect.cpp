@@ -17,6 +17,12 @@
 //   aggregate, a captured Bits pointer, and unqualified member spelling;
 //   each emitted the same 240-byte/218-difference result. The clean member
 //   reconstruction is restored below.
+// - This session tested the binary-indicated post-orientation height guard;
+//   it moved the prologue into alignment only with an offset-at-join pointer
+//   but produced 248 bytes/205 differing bytes. The guard was restored away.
+// - The offset-at-join pointer without that guard reproduced the prior best
+//   224-byte/168-difference basin, but retained branch-local pointer source is
+//   the more plausible Drawarea reconstruction.
 // - Remaining drift is broad VC5 this/register coloring and loop setup; no
 //   behavior-equivalent promotion is proposed.
 // Main-agent audit confirmed canonical draw-area buffer/clip ownership and kept
