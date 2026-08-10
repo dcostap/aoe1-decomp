@@ -62,6 +62,13 @@
 //   diagnostic history rather than compiler-steering source.
 // Main-agent audit confirmed canonical timeline/event ownership and retained
 // the ordinary linked-list source without volatile or duplicated-call steering.
+// Fresh worker probes (sa-011f8785-r1):
+// - Reintroduced the explicit duplicated null guard and do/while tail scan from
+//   the decompiler evidence; this emitted 92B with worse CFG/shape, so restored.
+// - A comma-assignment guard was a codegen duplicate of that 92B basin.
+// - Unqualified versus `this->sub(entry)` was a codegen duplicate of the clean
+//   94B source. The remaining blocker is the known VC5 redundant head test and
+//   self-call relocation basin; keep the normalized shared-call source.
 
 #include <stdlib.h>
 

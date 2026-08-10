@@ -24,6 +24,13 @@
 // and object ownership while retaining the natural forward/rewind scans.
 // Session sa1-0050db10: binary vslot-0 + delete-flag calls require natural
 // polymorphic delete; retained that behavior and restored the readable scan.
+// Fresh worker probes (sa-011f8785-r1): mirrored update/sub type surfaces, then
+// tested decompiler-supported rewind forms: comma-assigned next, explicit and
+// do/while scans, for-header cursor updates, and a combined short-circuit
+// condition. The best structural basin was 524B/460 diff but still had the
+// wrong assignment/null-test order; restored the natural 520B source. The
+// remaining blocker is the binary's redundant post-next null compare and the
+// resulting rewind block spans; no further blind variants remain in this pass.
 
 struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };

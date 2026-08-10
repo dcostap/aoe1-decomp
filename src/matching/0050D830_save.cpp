@@ -17,6 +17,11 @@
 // Session sa1-0050d830: an inline short player-id accessor was a codegen
 // duplicate; restored direct typed id access. Remaining 4 bytes are the two
 // signed-short-to-int loads versus the original low-word parameter-home reuse.
+// Fresh worker: making the two serialized owner IDs natural short locals (and
+// passing those locals directly to rge_write) recovered the oracle's low-word
+// loads without aliases or raw stack plumbing. Probe 2 fixed the source ID;
+// probe 3 fixed the target ID. Current source is an exact, period-plausible
+// serializer reconstruction.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
@@ -69,7 +74,8 @@ public:
 };
 
 void RGE_Timeline::save(int file) {
-    int target_player_id;
+    short source_player_id;
+    short target_player_id;
     RGE_Time_Entry* entry;
     short* count_ptr;
     int i;
@@ -86,9 +92,9 @@ void RGE_Timeline::save(int file) {
         do {
             entry = &this->time_list[i];
             if (entry->source != 0) {
-                file = entry->source->owner->id;
+                source_player_id = entry->source->owner->id;
             } else {
-                file = -1;
+                source_player_id = -1;
             }
             if (entry->target != 0) {
                 target_player_id = entry->target->owner->id;
@@ -104,7 +110,7 @@ void RGE_Timeline::save(int file) {
             rge_write(save_file, &entry->field_14, 4);
             rge_write(save_file, &entry->word_18, 2);
             rge_write(save_file, &entry->word_20, 2);
-            rge_write(save_file, &file, 2);
+            rge_write(save_file, &source_player_id, 2);
             rge_write(save_file, &entry->word_28, 2);
             rge_write(save_file, &target_player_id, 2);
             ++i;

@@ -20,6 +20,11 @@
 // and object ownership; event processing remains an ordinary typed switch.
 // Session sa1-0050d9a0: eight typed index/declaration-order/liveness variants
 // were codegen duplicates; restored this canonical direct lookup for pause.
+// Fresh worker probes (sa-011f8785-r1): same-TU Timeline declaration expansion,
+// donor world/player header surfaces, declaration reordering, case-scope changes,
+// and explicit index/world-local evaluation all preserved the 11-byte hunk.
+// The clean typed switch remains authoritative; drift is isolated to the case-1
+// player lookup register coloring (oracle keeps world in ECX/index in EAX).
 
 class RGE_Game_World;
 class RGE_Player;
