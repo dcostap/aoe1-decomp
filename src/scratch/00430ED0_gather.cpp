@@ -12,6 +12,16 @@
 // branch's extra zero/jump versus the original direct EAX-zero edge.
 // Main-agent audit restored canonical destructor ownership for action, world,
 // player, static object, and combat object; natural task/action flow remains.
+// Current worker: direct task-null returns (including returning the proven null
+// task value) expanded the EH tail to 350 bytes/122 diff and were rolled back.
+// Rewriting all failures/successes as direct returns or separating an int status
+// expanded the function to 391 bytes; these forms are not the source basin.
+// The prior pointer-status diagnostic remains the codegen frontier at 331/49,
+// but it omits the task-null status assignment and is not retained as the clean
+// behavior reconstruction. Canonical source remains 333/77 with all 16 calls.
+// Remaining blocker is VC5 EH-tail lowering: the oracle branches `je` directly
+// from the task call's zero EAX and, after construction, tests ESI then emits
+// `xor eax,eax`; the natural shared-status source inserts extra zero/return moves.
 
 class RGE_Static_Object {
 public:

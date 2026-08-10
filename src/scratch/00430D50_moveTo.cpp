@@ -18,6 +18,14 @@
 // natural int result candidate (54 bytes, exact size/calls).
 // Main-agent audit replaced the proxy cast, raw vptr field, and raw master
 // offsets with canonical inherited virtual and master-object ownership.
+// Current worker: explicit constructor-null/done-label and direct-return forms
+// expanded the EH tail to 378/382 bytes and were rolled back.
+// A pointer-typed constructor result with canonical ownership reproduced the
+// 359-byte/49-diff basin, but retained opposite `je` polarity and the
+// `mov edi,1; mov eax,edi` success conversion; restored the clean int-result form.
+// The remaining exactness blocker is the VC5 EH-tail lowering around the
+// constructor null test: the clean source hoists `xor eax,eax` before `test edi`
+// while the oracle tests first, resets EH state, then branches `jne` to success.
 
 #include <stddef.h>
 
