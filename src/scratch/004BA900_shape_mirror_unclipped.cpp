@@ -132,6 +132,18 @@
 //   blocker is the VC5 x-parameter home allocation plus localized setup
 //   register coloring; loop/calls/relocations remain aligned.
 
+// wave21-shape-01 bounded pass (2026-08-10):
+// - Reversed the natural orientation-offset multiplication order; VC5 emitted
+//   identical code, so the canonical spelling is retained.
+// - Added period <memory.h> context from the Shape.cpp donor family; emitted
+//   code was identical, so the smaller existing CRT surface is retained.
+// - Reused y for the orientation-adjusted row coordinate, following the
+//   sibling decompiler's parameter-reuse hypothesis; this worsened the basin
+//   to 207B/172 strict bytes and was rolled back.
+// - Final source remains the typed mirrored RLE traversal. The remaining
+//   18-byte structural gap is the oracle's x-home destination spill/reload
+//   plus setup register coloring; x-home and volatile steering are rejected.
+
 #include <string.h>
 #pragma function(memset)
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
