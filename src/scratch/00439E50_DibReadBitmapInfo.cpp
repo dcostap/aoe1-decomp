@@ -1,148 +1,145 @@
 // VA: 00439E50 DibReadBitmapInfo
 // Attempt log:
-// initial natural DIB loader from packet/decompiler with local Win16 bitmap structs: same 544-byte size, but broad mismatch from prologue; rebuilt uses 0x4c frame and keeps file handle in ESI instead of original 0x50 frame with file handle EBX, zero in ESI, _llseek pointer in EDI.
-// tried volatile off/pdib surface; pdib volatile failed compile, off volatile alone no improvement.
-// tried local function-pointer aliases for _llseek/_lread plus zero local to encourage original EDI/ESI allocation; code shrank to 528 bytes and was worse, rolled back.
-// tried explicit padding local and volatile padding local to force 0x50 frame; optimized away or worsened without fixing frame/register basin, rolled back.
-// tried reordering locals to pdib/colorBytes/off/bc/bf/bi to mirror stack layout; no meaningful improvement.
-// tried natural GlobalAlloc(GlobalLock(...)) and explicit colorBytes local; same broad family.
-// left in scratch: behavior is understood, but source/local topology and register allocation are still wrong from function start; not accepted_drift-safe.
+// - initial natural DIB loader from packet/decompiler with local Win16 bitmap
+//   structs had the right 544-byte size but broad prologue/register drift.
+// - restored the period DIBUTILS source family: ordered `off/size/i/nNumColors`
+//   locals, native BITMAPFILEHEADER/BITMAPINFOHEADER/BITMAPCOREHEADER types,
+//   aggregate `*pdib = bi`, and the RGBTRIPLE-to-RGBQUAD conversion loop.
+// - this is the canonical source reconstruction to test before any focused
+//   frame/register probes; no raw stack offsets or register forcing retained.
+// - split/nested color-count guards and exact historical WIDTHBYTES macro
+//   variants did not close the localized post-read scheduling gap; a focused
+//   27-variant lab found no exact output. The best diagnostic volatile reread
+//   moved structure but worsened positional bytes and was rolled back.
+// - left in scratch: frame/saved-register and call topology match, but the
+//   original keeps a second bit-count reload and different late RGB-table
+//   branch/register schedule beginning at 00439F40.
 
-typedef unsigned char BYTE;
-typedef unsigned short WORD;
-typedef unsigned long DWORD;
-typedef long LONG;
-typedef void* HGLOBAL;
+#include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <memory.h>
+#include <stdlib.h>
 
-extern "C" LONG (__stdcall* const _llseek)(int, LONG, int);
-extern "C" unsigned int (__stdcall* const _lread)(int, void*, unsigned int);
-extern "C" HGLOBAL (__stdcall* const GlobalAlloc)(unsigned int, unsigned long);
-extern "C" void* (__stdcall* const GlobalLock)(HGLOBAL);
+#define BFT_BITMAP 0x4d42
+#define WIDTHBYTES(i) ((unsigned)((i + 31) & (~31)) / 8)
+#define DibNumColors(lpbi) \
+    ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 ? \
+        (int)(1 << (int)(lpbi)->biBitCount) : (int)(lpbi)->biClrUsed)
+#define DibColors(lpbi) \
+    ((RGBQUAD FAR *)((LPBYTE)(lpbi) + (int)(lpbi)->biSize))
+#define DibWidthBytesN(lpbi, n) \
+    (UINT)WIDTHBYTES((UINT)(lpbi)->biWidth * (UINT)(n))
+#define DibWidthBytes(lpbi) DibWidthBytesN(lpbi, (lpbi)->biBitCount)
+#define DibSizeImage(lpbi) \
+    ((lpbi)->biSizeImage == 0 ? \
+        ((DWORD)(UINT)DibWidthBytes(lpbi) * \
+            (DWORD)(UINT)(lpbi)->biHeight) : (lpbi)->biSizeImage)
+#define GlobalAllocPtr(flags, cb) \
+    (GlobalLock(GlobalAlloc((flags), (cb))))
 
-#pragma pack(push, 1)
-struct BITMAPFILEHEADER_X {
-    WORD bfType;
-    DWORD bfSize;
-    WORD bfReserved1;
-    WORD bfReserved2;
-    DWORD bfOffBits;
-};
-struct BITMAPCOREHEADER_X {
-    DWORD bcSize;
-    WORD bcWidth;
-    WORD bcHeight;
-    WORD bcPlanes;
-    WORD bcBitCount;
-};
-#pragma pack(pop)
+typedef LPBITMAPINFOHEADER PDIB;
 
-struct BITMAPINFOHEADER_X {
-    DWORD biSize;
-    LONG biWidth;
-    LONG biHeight;
-    WORD biPlanes;
-    WORD biBitCount;
-    DWORD biCompression;
-    DWORD biSizeImage;
-    LONG biXPelsPerMeter;
-    LONG biYPelsPerMeter;
-    DWORD biClrUsed;
-    DWORD biClrImportant;
-};
-
-extern "C" BITMAPINFOHEADER_X* __cdecl DibReadBitmapInfo(int fh)
+PDIB __cdecl DibReadBitmapInfo(HFILE fh)
 {
-    BITMAPINFOHEADER_X* pdib;
-    DWORD colorBytes;
-    volatile DWORD off;
-    BITMAPCOREHEADER_X bc;
-    BITMAPFILEHEADER_X bf;
-    BITMAPINFOHEADER_X bi;
+    DWORD off;
+    int size;
+    int i;
+    int nNumColors;
 
-    if (fh == -1) {
-        return 0;
+    RGBQUAD FAR *pRgb;
+    BITMAPINFOHEADER bi;
+    BITMAPCOREHEADER bc;
+    BITMAPFILEHEADER bf;
+    PDIB pdib;
+
+    if (fh == -1)
+        return NULL;
+
+    off = _llseek(fh, 0L, SEEK_CUR);
+
+    if (sizeof(bf) != _lread(fh, (LPSTR)&bf, sizeof(bf)))
+        return FALSE;
+
+    if (bf.bfType != BFT_BITMAP)
+    {
+        bf.bfOffBits = 0L;
+        _llseek(fh, off, SEEK_SET);
     }
 
-    off = _llseek(fh, 0, 1);
-    if (_lread(fh, &bf, 0x0e) != 0x0e) {
-        return 0;
-    }
-    if (bf.bfType != 0x4d42) {
-        bf.bfOffBits = 0;
-        _llseek(fh, off, 0);
+    if (sizeof(bi) != _lread(fh, (LPSTR)&bi, sizeof(bi)))
+        return FALSE;
+
+    switch (size = (int)bi.biSize)
+    {
+        default:
+        case sizeof(BITMAPINFOHEADER):
+            break;
+
+        case sizeof(BITMAPCOREHEADER):
+            bc = *(BITMAPCOREHEADER*)&bi;
+            bi.biSize = sizeof(BITMAPINFOHEADER);
+            bi.biWidth = (DWORD)bc.bcWidth;
+            bi.biHeight = (DWORD)bc.bcHeight;
+            bi.biPlanes = (UINT)bc.bcPlanes;
+            bi.biBitCount = (UINT)bc.bcBitCount;
+            bi.biCompression = BI_RGB;
+            bi.biSizeImage = 0;
+            bi.biXPelsPerMeter = 0;
+            bi.biYPelsPerMeter = 0;
+            bi.biClrUsed = 0;
+            bi.biClrImportant = 0;
+
+            _llseek(fh, (LONG)sizeof(BITMAPCOREHEADER) -
+                sizeof(BITMAPINFOHEADER), SEEK_CUR);
+            break;
     }
 
-    if (_lread(fh, &bi, 0x28) != 0x28) {
-        return 0;
-    }
+    nNumColors = DibNumColors(&bi);
 
-    if (bi.biSize == 0x0c) {
-        bc.bcSize = bi.biSize;
-        bc.bcWidth = (WORD)bi.biWidth;
-        bc.bcHeight = (WORD)(bi.biWidth >> 16);
-        bc.bcPlanes = (WORD)bi.biHeight;
-        bc.bcBitCount = (WORD)(bi.biHeight >> 16);
+    if (bi.biSizeImage == 0)
+        bi.biSizeImage = DibSizeImage(&bi);
+    if (bi.biClrUsed == 0)
+        bi.biClrUsed = DibNumColors(&bi);
 
-        bi.biSize = 0x28;
-        bi.biWidth = bc.bcWidth;
-        bi.biHeight = bc.bcHeight;
-        bi.biPlanes = bc.bcPlanes;
-        bi.biBitCount = bc.bcBitCount;
-        bi.biCompression = 0;
-        bi.biSizeImage = 0;
-        bi.biXPelsPerMeter = 0;
-        bi.biYPelsPerMeter = 0;
-        bi.biClrUsed = 0;
-        bi.biClrImportant = 0;
-        _llseek(fh, -28, 1);
-    }
+    pdib = (PDIB)GlobalAllocPtr(GMEM_MOVEABLE,
+        (LONG)bi.biSize + nNumColors * sizeof(RGBQUAD));
 
-    DWORD ncolors;
-    if (bi.biClrUsed == 0 && bi.biBitCount <= 8) {
-        ncolors = 1 << (BYTE)bi.biBitCount;
-    } else {
-        ncolors = bi.biClrUsed;
-    }
-
-    if (bi.biSizeImage == 0) {
-        bi.biSizeImage = (((bi.biWidth * bi.biBitCount) + 31) >> 3 & 0x1ffffffc) * bi.biHeight;
-    }
-
-    if (bi.biClrUsed == 0 && bi.biBitCount <= 8) {
-        bi.biClrUsed = 1 << (BYTE)bi.biBitCount;
-    }
-
-    colorBytes = ncolors * 4;
-    pdib = (BITMAPINFOHEADER_X*)GlobalLock(GlobalAlloc(2, bi.biSize + colorBytes));
-    if (pdib == 0) {
-        return 0;
-    }
+    if (!pdib)
+        return NULL;
 
     *pdib = bi;
-    BYTE* bits = (BYTE*)pdib + pdib->biSize;
-    if (ncolors != 0) {
-        if (bi.biSize == 0x0c) {
-            _lread(fh, bits, ncolors * 3);
-            int i = ncolors - 1;
-            if (i >= 0) {
-                BYTE* src = bits + ncolors + i * 2 + 1;
-                DWORD* dst = (DWORD*)(bits + i * 4);
-                do {
-                    BYTE b = src[-1];
-                    BYTE g = src[0];
-                    BYTE r = src[1];
-                    *dst = ((DWORD)r << 16) | ((DWORD)g << 8) | b;
-                    --dst;
-                    src -= 3;
-                    --ncolors;
-                } while (ncolors != 0);
+
+    pRgb = DibColors(pdib);
+
+    if (nNumColors)
+    {
+        if (size == sizeof(BITMAPCOREHEADER))
+        {
+            _lread(fh, (LPVOID)pRgb,
+                nNumColors * sizeof(RGBTRIPLE));
+
+            for (i = nNumColors - 1; i >= 0; i--)
+            {
+                RGBQUAD rgb;
+
+                rgb.rgbRed = ((RGBTRIPLE FAR *)pRgb)[i].rgbtRed;
+                rgb.rgbBlue = ((RGBTRIPLE FAR *)pRgb)[i].rgbtBlue;
+                rgb.rgbGreen = ((RGBTRIPLE FAR *)pRgb)[i].rgbtGreen;
+                rgb.rgbReserved = (BYTE)0;
+
+                pRgb[i] = rgb;
             }
-        } else {
-            _lread(fh, bits, colorBytes);
+        }
+        else
+        {
+            _lread(fh, (LPVOID)pRgb,
+                nNumColors * sizeof(RGBQUAD));
         }
     }
-    if (bf.bfOffBits != 0) {
-        _llseek(fh, bf.bfOffBits + off, 0);
-    }
+
+    if (bf.bfOffBits != 0L)
+        _llseek(fh, off + bf.bfOffBits, SEEK_SET);
+
     return pdib;
 }

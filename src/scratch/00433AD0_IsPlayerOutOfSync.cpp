@@ -1,39 +1,146 @@
 // VA: 00433AD0 IsPlayerOutOfSync (610B)
-// com_sync.cpp
+// com_sync.cpp lines 345-435
+//
+// Attempt log:
+// - Replaced the placeholder with the checksum-record search, comparison,
+//   human-player count, and original diagnostic logging flow.
+// - Mirrored the binary-supported local order and preserved both the base
+//   WTurn cursor and a moving lookup cursor; this restores the 0x28 frame and
+//   the two-scan ownership, but VC5 still colors the opening registers and a
+//   few late tails differently (580B emitted versus 610B original).
+// - Ten hypotheses exhausted. Register-forcing aliases, extra duplicate
+//   checksum homes, and explicit loop-polarity scaffolding were not retained.
+
+class TDebuggingLog {
+public:
+    void Log(const char* format, ...);
+};
+
+extern TDebuggingLog* L;
+
+class TCommunications_Handler {
+public:
+    int GetPlayerHumanity(unsigned int player);
+};
+
+struct RGE_Communications_Check {
+    int PlayerNo;
+    unsigned long WTime;
+    unsigned long WTurn;
+    long cs1;
+    long cs2;
+    long cs3;
+    long cs4;
+    long cs5;
+    unsigned long Random;
+};
 
 class RGE_Communications_Synchronize {
 public:
-    char gap4[0x14];
-    int newData;            // +18
-    int lastResult;         // +1C
-    int offset;             // +20
-    int doChecksums;        // +24
-    int lastWorldRandom;    // +28
-    int gameWorldChecksum;  // +2C
-    char gap30[0x860];
-    // array at +30
-    
-    int IsPlayerOutOfSync();
+    TCommunications_Handler* Comm;
+    int CheckTime;
+    int CheckTurn;
+    int StopOnSyncFail;
+    int DialogOnSyncFail;
+    int SendChatMsgs;
+    int NewData;
+    int LastResult;
+    int Offset;
+    int DoChecksums;
+    int LastWorldRandom;
+    int GameWorldChecksum;
+    RGE_Communications_Check Check[0x37];
+
+    int IsPlayerOutOfSync(unsigned int playerNo, unsigned long commTurn);
 };
 
-extern int* rge_base_game;
+int RGE_Communications_Synchronize::IsPlayerOutOfSync(
+    unsigned int playerNo, unsigned long commTurn) {
+    unsigned long uVar5 = 0;
+    unsigned long* puVar8 = &this->Check[1].WTurn;
+    int NumPlayers = 0;
+    int NumDiff = 0;
+    int bVar1 = 0;
+    long lVar6 = 0;
+    long mycs5 = 0;
+    long mycs2 = 0;
+    long mycs3 = 0;
+    int NumSame = 0;
+    unsigned int local_8 = 0;
+    int foundMine = 0;
 
-int RGE_Communications_Synchronize::IsPlayerOutOfSync() {
-    if (!doChecksums) return 0;
-    
-    // Validate checksums for each entry in the offset range
-    int i;
-    for (i = 0; i < offset; i++) {
-        int* entry = (int*)((char*)this + 0x30 + i * 0x24);
-        int worldRandom = entry[1];
-        int checksum = entry[2];
-        // Compare against expected
-        if (lastWorldRandom != worldRandom) continue;
-        if (gameWorldChecksum != checksum) {
-            // Out of sync
-            return 1;
+    unsigned long* puVar2 = puVar8;
+    unsigned int firstIndex = 1;
+    do {
+        if (puVar2[-2] == playerNo && puVar2[0] == commTurn) {
+            bVar1 = 1;
+            RGE_Communications_Check& mine = this->Check[firstIndex];
+            mycs5 = mine.cs2;
+            mycs2 = mine.cs3;
+            uVar5 = mine.WTime;
+            mycs3 = mine.cs4;
+            NumSame = mine.cs5;
+            lVar6 = mine.cs1;
+            local_8 = mine.Random;
+            break;
         }
+        ++firstIndex;
+        puVar2 += 9;
+    } while (firstIndex <= 0x36);
+
+    if (!bVar1) {
+        L->Log("OUTOFSYNC: DIDN'T FIND MY VALUES");
+        return 0;
     }
-    
+
+    L->Log("OUTOFSYNC: my values: %d %d %d %d %d %d",
+           uVar5, lVar6, mycs5, mycs2, mycs3, NumSame);
+
+    unsigned int i = 1;
+    do {
+        if (puVar8[-2] != playerNo && puVar8[0] == commTurn) {
+            if (uVar5 == puVar8[-1] &&
+                lVar6 == puVar8[1] &&
+                mycs5 == puVar8[2] &&
+                mycs2 == puVar8[3] &&
+                mycs3 == puVar8[4] &&
+                NumSame == puVar8[5] &&
+                local_8 == puVar8[6]) {
+                ++NumDiff;
+                L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
+                       i, uVar5, lVar6, puVar8[0],
+                       mycs2, mycs3, NumSame);
+            } else {
+                ++NumPlayers;
+                L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d",
+                       i, uVar5, lVar6, puVar8[0],
+                       mycs2, mycs3, NumSame);
+            }
+        }
+        ++i;
+        puVar8 += 9;
+    } while (i <= 0x36);
+
+    i = 1;
+    do {
+        if (this->Comm->GetPlayerHumanity(i) == 2) {
+            ++foundMine;
+        }
+        ++i;
+    } while (i <= 9);
+
+    L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
+           foundMine, NumPlayers, NumDiff);
+
+    if (foundMine - 1 <= NumDiff + NumPlayers) {
+        if (NumPlayers <= NumDiff) {
+            L->Log("OUTOFSYNC: return not out 2");
+            return 0;
+        }
+        L->Log("OUTOFSYNC: return out");
+        return 1;
+    }
+
+    L->Log("OUTOFSYNC: return not out");
     return 0;
 }

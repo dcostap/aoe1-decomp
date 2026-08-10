@@ -12,6 +12,15 @@
 // Remaining nonexact drift is localized at scenario-list column arithmetic:
 // VC5 keeps the receiver load/operand order different despite equivalent
 // natural spellings; later branch displacements shift by two bytes.
+// continuation: declaring a receiver local after the arithmetic, naming both
+// width operands, using int temporaries, and calling through the proven
+// TTextPanel base view all emitted the same 779-byte result.
+// A focused /GX arithmetic lab covered inline, sequential, and temporary
+// natural forms; all six variants kept size/frame/call-set parity but retained
+// the localized hunk. The analogous 004B3C90 constructor proves the desired
+// delayed receiver order in the same VC5 family; no natural local/source axis
+// found here reproduces it. Clean source restored; leave the register-order
+// barrier for a later donor/context investigation.
 
 #include <stdio.h>
 

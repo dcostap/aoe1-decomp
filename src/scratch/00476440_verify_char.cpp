@@ -17,6 +17,11 @@
 // flags/common result, one file-colon beep duplication, and branch spans).
 // The typed field ownership and raw status semantics are retained; no opaque
 // register/absolute-address scaffolding is used.
+// New claim: baseline revalidated the 576-byte/285-byte-diff clean source.
+// Probes 1-4 tested signed global ABI and positive file/path equality chains,
+// then direct numeric/percent valid-invalid branches; the latter improved
+// block/call alignment but added a beep site and 12 bytes, so clean source was
+// restored.  Remaining lead is natural switch-tail placement, not layout.
 
 extern "C" int (__stdcall* const MessageBeep)(unsigned int);
 extern "C" int (__stdcall* const IsDBCSLeadByte)(unsigned int);

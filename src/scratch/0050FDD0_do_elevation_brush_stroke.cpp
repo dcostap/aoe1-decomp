@@ -49,6 +49,10 @@
  * Source-plausibility audit: removed the duplicate explicit vtable field and the empty
  * base/helper definitions. The target now uses the smallest declaration-only polymorphic
  * surfaces; direct-call and helper symbol declarations remain explicit.
+ *
+ * sa-e4d7ed85-50fdd0 pass: top-level x/y swap temporaries, restored full RGE virtual
+ * prefix, and radius register qualification were all codegen duplicates (81-byte diff).
+ * Restored clean source; the only remaining lead is the known VC5 entry coloring basin.
  */
 
 class RGE_Map {

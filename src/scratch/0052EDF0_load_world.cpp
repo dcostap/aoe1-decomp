@@ -16,6 +16,11 @@
 //   is the VC5 callee-save basin: rebuilt saves EBX at entry, while the oracle
 //   shrink-wraps push/pop EBX around the first version gate (known SIB/shift
 //   consequences); no ABI, call-set, or field-layout uncertainty remains.
+// sequential pass: donor stdlib context, explicit zero reuse, ground-truth
+// world-tail/member ownership, real destructor surfaces, explicit cdecl, and
+// an explicit base-result zero comparison were all neutral or regressed.  The
+// clean typed source remains the best 315B basin; the remaining structural gap
+// is the entry EBX save versus the oracle's late push/pop EBX schedule.
 
 extern "C" void rge_read(int handle, void* buf, int size);
 
@@ -63,7 +68,7 @@ public:
     virtual void vf94();
     virtual void vf98();
     virtual void vf9C();
-    virtual ~RGE_Game_World();
+    virtual void vfA0();
     virtual void vfA4();
     virtual void vfA8();
     virtual void vfAC();

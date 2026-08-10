@@ -19,6 +19,11 @@
 // Left in scratch: remaining drift begins in the CreateWindowExA argument
 // scheduling (render-area/style/instance loads); current source is the best
 // canonical typed reconstruction, not a raw-address or vtable scaffold.
+// New claim: baseline revalidated the 447-byte/92-byte-diff clean source.
+// Probes 1-8 tested post-style geometry locals, instance/style declaration
+// order, inline versus DWORD style masks, and full TDrawArea/TDrawSystem sizes;
+// only the explicit unary-bool mask was worse (450 bytes), so clean source was
+// restored.  The unresolved lead remains CreateWindowExA argument scheduling.
 
 #include <windows.h>
 #include <stdlib.h>

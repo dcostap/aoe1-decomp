@@ -13,6 +13,13 @@
 // Direct tail-label/goto routing shrank code but destroyed block/call order and
 // was rolled back. Assignment-in-condition and direct-radius expression variants
 // were neutral/worse; retain the readable status structure.
+// - A focused FPU variant family found that naming radius after the distance/min
+//   guard preserves the x87 distance through the first compare; naming the
+//   radius-plus-range threshold then improved the rebuilt frontier to 691 bytes.
+// - Applying the same named radius/max-distance surface to the target-object
+//   branch improved the current frontier to 657 bytes and preserved the natural
+//   field-update/status shape. A direct target in-range return was 662 bytes and
+//   was rolled back; a shared ready label was structurally invalid (895 bytes).
 // Remaining work should preserve these named period-plausible owners rather than
 // returning to raw cursor arithmetic.
 
@@ -308,11 +315,13 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
             range_status = 0;
         } else {
             RGE_Master_Static_Object* master = this->obj->master_obj;
-            if (distance <= sqrt(master->radius_x * master->radius_x + master->radius_y * master->radius_y) + this->range - 0.3f) {
+            float radius = sqrt(master->radius_x * master->radius_x + master->radius_y * master->radius_y);
+            float max_distance = radius + this->range - 0.3f;
+            if (distance <= max_distance) {
                 range_status = 1;
-            } else {
-                range_status = 2;
+                return this->obj->can_attack() != 0;
             }
+            range_status = 2;
         }
     } else {
         if (target->owner->id > 0) {
@@ -343,9 +352,11 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
             } else {
                 float distance = this->obj->distance_to_object(target);
                 RGE_Master_Static_Object* master = this->obj->master_obj;
+                float radius = sqrt(master->radius_x * master->radius_x + master->radius_y * master->radius_y);
+                float max_distance = radius + this->range - 0.3f;
                 if (distance < this->min_range) {
                     range_status = 0;
-                } else if (distance <= sqrt(master->radius_x * master->radius_x + master->radius_y * master->radius_y) + this->range - 0.3f) {
+                } else if (distance <= max_distance) {
                     this->target_x = target->world_x;
                     this->target_y = target->world_y;
                     this->target_z = target->world_z;

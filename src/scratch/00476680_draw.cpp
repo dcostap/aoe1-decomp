@@ -21,6 +21,11 @@
 //     vtable read with identical bytes. Final gap is prologue shrink-wrapping:
 //     original delays push edi/ebx until the visible path, while VC5 saves them
 //     at entry in this TU; the body is otherwise a 98.19% resynchronized match.
+// New claim: baseline revalidated the 940-byte/38-byte-diff clean source.
+// Probes 1-6 scoped RECT/old_font, tried positive visible nesting, removed the
+// redundant panel receiver, reordered stack-local declarations, and completed
+// the same-TU virtual surface; all were codegen duplicates.  Restore clean
+// source for the documented shrink-wrap blocker.
 
 #include <windows.h>
 

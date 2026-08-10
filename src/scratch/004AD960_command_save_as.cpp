@@ -11,6 +11,10 @@
 // blocker: original popup failures jump at 004AD9BD/004AD9EA to one cleanup at
 // 004ADA58; VC5 keeps separate /GX cleanup-and-return blocks for the natural source,
 // leaving +41 bytes past the original boundary despite matching frame and calls.
+// probe: adding the proven polymorphic Save Game Screen base/destructor surface
+// preserved the 313-byte basin; the class model is retained for source plausibility.
+// probe: scoping scenario_name to the success arm was codegen-identical; the
+// function-scope array is retained because the PDB local begins at the function band.
 // FLAGS: config/flags/004AD960_command_save_as.rsp (/GX; original EH frame and
 // same-TU command_save donor both require the historical exception basin).
 // Main-agent audit restored canonical world/panel destructor ownership; emitted
@@ -42,12 +46,6 @@ public:
     T_Scenario* scenario;
 };
 
-class TribeSaveGameScreen {
-public:
-    TribeSaveGameScreen(int mode, char* name, int quit_after_save);
-    char gap_00[0x6A4];
-};
-
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
@@ -56,6 +54,12 @@ public:
 };
 
 class TScreenPanel : public TEasy_Panel {
+};
+
+class TribeSaveGameScreen : public TScreenPanel {
+public:
+    char gap_0478[0x6A4 - 0x478];
+    TribeSaveGameScreen(int mode, char* name, int quit_after_save);
 };
 
 class TRIBE_Screen_Sed : public TScreenPanel {

@@ -1,32 +1,38 @@
 // VA 00438AA0 TransDibBlt
 // Dib.cpp:155-273
 // Attempt log:
-// 1: Direct C implementation from original asm/decompiler, preserving parameter-slot reuse style where practical.
-// 2: Modeled BITMAPINFO256/tagRECT/TRANSINFO/LINEINFO local surfaces and external DibBlt, ClipDibBlt, GetDibDim, SrcXTbl, memcpy.
-// 3: Implemented AnyTrans==0 fast path to DibBlt with 16 pushed args and transparent clamp to zero.
-// 4: Implemented ClipDibBlt path with address-of dx/dy/dw/dh/sx/sy/sw/sh and early return on failed clip.
-// 5: Implemented x/y 8.8 fixed-point steps, GetDibDim calls, flipY sign adjustment, destination base offset for DestTotHgt==1 vs inverted destination.
-// 6: Implemented SrcXTbl generation forward/reverse based on flipX.
-// 7: Implemented TRANSINFO LineInfo optimized path, including line skip, first/last run clipping, yStep==0x100 copy fast path via memcpy, and transparent-color skip.
-// 8: Implemented fallback full-width per-pixel transparent blit path with flipY row mapping and DestTotHgt*stride row advance.
-// 9: Default /O2 /Oy build is size-short by 1 byte: configured 977 exceeds .text 976. It also uses an EBP frame / broad different local topology when inspected, unlike original FPO stack-slot reuse.
-// 10: Probed /Ob0 and /GX: still 976 bytes. Probed /Og- and /Od: both reached exact 977 bytes but produced very broad mismatch (95.4964% positional, first mismatch offset 0); diagnostic flags removed.
-// 11: Remaining blocker is source/stack-frame topology: natural C is behaviorally broad but compiles one byte short and with wrong EBP/local scheduling; exact-size flag variants are worse, not match candidates.
-// GIVEUP: left in scratch; no accepted_drift because no default comparable exact-size build and diagnostic exact-size builds are broad from offset 0.
+// 1-8: Reconstructed the fast path, positive ClipDibBlt gate, fixed-point scaling,
+//      SrcXTbl setup, LineInfo copy/transparent path, and full-width fallback with
+//      typed BITMAPINFO256/RECT/TRANSINFO surfaces.
+// 9: Forced the proven direct memcpy call using the same-TU windows.h/pragma
+//    context; this fixed the call target/count but not the function topology.
+// 10: Named destination-info and original flip-Y values across the clip call;
+//     this recovered the original pre-guard loads and improved the best build to
+//     619 differing bytes (63.3572%), 5/5 calls, 0x10 frame, 956/977 bytes.
+// 11: Function-scope alias hoisting made the prologue broadly worse and was
+//     rolled back; swapping the two out-local declarations was codegen-neutral.
+// GIVEUP: best natural source remains in scratch.  The unresolved gap is VC5
+// parameter-home/local-slot scheduling around GetDibDim and the long blit loops;
+// no accepted_drift because the remaining positional drift is broad.
+
+#include <windows.h>
 
 typedef unsigned char uchar;
-struct tagRECT { long left, top, right, bottom; };
-struct BITMAPINFO256 { int dummy; };
+struct BITMAPINFO256 {
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD bmiColors[256];
+};
 struct LINEINFO_00438AA0 { int skip; int copy; int first; int last; };
 struct TRANSINFO_00438AA0 { int AnyTrans; char gap_04[0x10]; LINEINFO_00438AA0* LineInfo; };
 
 extern long SrcXTbl[];
+#pragma function(memcpy)
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
-void __cdecl DibBlt(BITMAPINFO256*, uchar*, tagRECT*, long,long,long,long, BITMAPINFO256*, uchar*, long,long,long,long,int,int,int);
-int __cdecl ClipDibBlt(BITMAPINFO256*, tagRECT*, long*, long*, long*, long*, long*, long*, long*, long*, int, int);
+void __cdecl DibBlt(BITMAPINFO256*, uchar*, RECT*, long,long,long,long, BITMAPINFO256*, uchar*, long,long,long,long,int,int,int);
+int __cdecl ClipDibBlt(BITMAPINFO256*, RECT*, long*, long*, long*, long*, long*, long*, long*, long*, int, int);
 void __cdecl GetDibDim(BITMAPINFO256*, long*, long*, long*);
 
-void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, tagRECT* dstRect,
+void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                          long dx, long dy, long dw, long dh,
                          BITMAPINFO256* srcInfo, uchar* src, TRANSINFO_00438AA0* trans,
                          long sx, long sy, long sw, long sh,
@@ -35,8 +41,8 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, tagRECT* dstRect,
     long SrcTotHgt;
     long sySkip;
     long DestOrien;
-    long DestTotHgt;
     long local_4;
+    long DestTotHgt;
 
     if (trans != 0 && trans->AnyTrans == 0) {
         DibBlt(dstInfo, dst, dstRect, dx, dy, dw, dh, srcInfo, src, sx, sy, sw, sh, doClip, flipX, flipY);
@@ -46,17 +52,16 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, tagRECT* dstRect,
     if (transparent < 0)
         transparent = 0;
 
-    if (doClip) {
-        if (!ClipDibBlt(dstInfo, dstRect, &dx, &dy, &dw, &dh, &sx, &sy, &sw, &sh, flipX, flipY))
-            return;
-    }
-
+    int clipFlipY = flipY;
+    BITMAPINFO256* clipInfo = dstInfo;
+    if (doClip == 0 ||
+        ClipDibBlt(clipInfo, dstRect, &dx, &dy, &dw, &dh, &sx, &sy, &sw, &sh, flipX, clipFlipY)) {
     long xStep = (sw << 8) / dw;
     DestOrien = (sh << 8) / dh;
 
-    GetDibDim(dstInfo, (long*)&doClip, &local_4, &DestTotHgt);
+    GetDibDim(clipInfo, (long*)&doClip, &local_4, &DestTotHgt);
     GetDibDim(srcInfo, (long*)&dstInfo, &sySkip, (long*)&flipY);
-    if (flipY)
+    if (clipFlipY)
         flipY = -flipY;
 
     long yStep = (dw << 8) / sw;
@@ -165,5 +170,6 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, tagRECT* dstRect,
                 ++flipX;
             } while (flipX < dh);
         }
+    }
     }
 }

@@ -17,6 +17,10 @@
 //    aliases) produced one codegen group, all with the same 8-byte drift.
 // 9-10: Combined positive guard and the same-TU TPanel virtual surface were
 //    restored as the final period-plausible source; no emitted-code change.
+// New claim: baseline revalidated the clean source at 242 bytes/8-byte diff.
+// Probes 1-8 added donor destructor/method declarations, a shared result local,
+// explicit qualified/base-pointer receivers, nonvirtual-base and windows.h API
+// surfaces; all were codegen duplicates, so the clean source was restored.
 //
 // Canonical facts:
 // - TPanel owns active(+0x6C), visible(+0x70), and has size +0xF4.

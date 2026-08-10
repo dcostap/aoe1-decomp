@@ -1,18 +1,23 @@
-// 004AB300 TRIBE_Screen_Sed::set_unit_player
+// VA: 004AB300 TRIBE_Screen_Sed::set_unit_player
 // Attempt log:
-// 1: natural implementation from packet/decompiler.
-// 2: fixed TListPanel vtable padding and empty_list surface after initial compile errors.
-// 3: default /O2 build is too small: .text 784 bytes vs original 879, so no normal comparison possible.
-// 4: probed /Od as diagnostic only; it gives comparable 879 bytes but EBP-frame debug-basin code with 86.92% positional diff, not viable; removed flag.
-// 5: Current source represents broad behavior/calls: save/restore player view/map, switch base-game player, update views/dropdown/list, count enabled master objects, calloc list info, set <None>, copy names or lookup string, qsort, build string array, set list data/scroll selected row, free temps.
-// 6: Main blocker is source shape: natural loops/helpers collapse far below original /O2 size; original has explicit stack-slot reuse and rep string-copy blocks that need a much more literal CFG.
-// GIVEUP: left in scratch; no accepted_drift proposal because default build is size-short and /Od diagnostic drift is broad.
+// baseline: typed player/view/list reconstruction; default VC5 was 102 bytes
+// short with all 20 ordered calls present.
+// probe: float/short saved view/map locals corrected the call ABI and reloads.
+// probe: real strcpy plus string.h reproduced the oracle's REP scan/copy blocks;
+// C++ comparator/global declarations preserve the period linkage surface.
+// probe: countdown/byte-offset master-object scans recovered the original loop
+// topology and raised shape similarity to 83%; a narrow output index improved it.
+// blocker: rebuilt remains 839 bytes (frame 0x10 vs original 0x0C), with broad
+// stack-home/register and later list-copy drift despite matching 20 calls and
+// the binary-proven REP-copy family; /Od was diagnostic-only and broad.
+// FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
-extern void* rge_base_game;
+#include <string.h>
+
 extern "C" void* calloc(unsigned int, unsigned int);
 extern "C" void free(void*);
 extern "C" void qsort(void*, unsigned int, unsigned int, int (__cdecl*)(const void*, const void*));
-extern "C" int __cdecl TRIBE_Screen_Sed_unit_list_compare(const void*, const void*);
+int __cdecl TRIBE_Screen_Sed_unit_list_compare(const void*, const void*);
 
 struct RGE_Master_Static_Object { char gap0[8]; char* name; short string_id; char gap_e[0x40]; char disabled; };
 struct RGE_Player { char gap0[0x22]; short master_object_num; RGE_Master_Static_Object** master_objects; char gap28[0xec]; float view_x; float view_y; short map_x; short map_y; };
@@ -26,6 +31,7 @@ public:
     virtual void get_string(short id, char* out, int len); // +20
     RGE_Player* get_player();
 };
+extern RGE_Base_Game* rge_base_game;
 class RGE_Player_M { public: void set_map_loc(short x, short y); void set_view_loc(float x, float y); };
 class RGE_View { public: void set_player(RGE_Player*); };
 class RGE_Diamond_Map { public: void set_player(RGE_Player*); };
@@ -62,21 +68,21 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
 {
     int is_error;
     float save_view_x;
-    int save_view_y;
-    int save_map_x;
-    int save_map_y;
+    float save_view_y;
+    short save_map_x;
+    short save_map_y;
 
     RGE_Player* oldp = ((RGE_Base_Game*)rge_base_game)->get_player();
     save_view_x = oldp->view_x;
-    save_view_y = *(int*)&oldp->view_y;
+    save_view_y = oldp->view_y;
     save_map_x = oldp->map_x;
     save_map_y = oldp->map_y;
     ((RGE_Base_Game*)rge_base_game)->set_player(p);
     this->player_num = p;
 
     RGE_Player* player = ((RGE_Base_Game*)rge_base_game)->get_player();
-    ((RGE_Player_M*)player)->set_view_loc(save_view_x, *(float*)&save_view_y);
-    ((RGE_Player_M*)player)->set_map_loc((short)save_map_x, (short)save_map_y);
+    ((RGE_Player_M*)player)->set_view_loc(save_view_x, save_view_y);
+    ((RGE_Player_M*)player)->set_map_loc(save_map_x, save_map_y);
     this->main_view->set_player(player);
     this->map_view->set_player(player);
     this->unit_player_list->setCurrentLineNumber((int)p);
@@ -89,10 +95,15 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
 
     this->unit_list_size = 1;
     short n = player->master_object_num;
-    int i;
-    for (i = 0; i < n; i++) {
-        RGE_Master_Static_Object* m = player->master_objects[i];
-        if (m != 0 && m->disabled == 0) this->unit_list_size++;
+    if (n > 0) {
+        int object_offset = 0;
+        int count = n;
+        do {
+            RGE_Master_Static_Object* m = *(RGE_Master_Static_Object**)((char*)player->master_objects + object_offset);
+            if (m != 0 && m->disabled == 0) this->unit_list_size++;
+            object_offset += 4;
+            count--;
+        } while (count != 0);
     }
     if (this->unit_list_size == 0) return;
     this->unit_list_info = (List_Info*)calloc((int)this->unit_list_size, 0x66);
@@ -100,21 +111,23 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
     this->unit_list_info[0].id = -1;
     this->set_string(this->unit_list_info[0].text, 0x2775, 0x14);
 
-    int out = 1;
-    for (i = 0; i < n; i++) {
-        RGE_Master_Static_Object* m = player->master_objects[i];
+    short out = 1;
+    short i = 0;
+    int object_offset = 0;
+    while (i < n) {
+        RGE_Master_Static_Object* m = *(RGE_Master_Static_Object**)((char*)player->master_objects + object_offset);
         if (m != 0 && m->disabled == 0) {
             List_Info* info = &this->unit_list_info[out];
             info->id = (short)i;
             if (m->string_id > 0) {
                 ((RGE_Base_Game*)rge_base_game)->get_string(m->string_id, info->text, 100);
             } else {
-                char* src = m->name;
-                char* dst = info->text;
-                while ((*dst++ = *src++) != 0) {}
-            }
-            out++;
+                strcpy(info->text, m->name);
         }
+        out++;
+        i++;
+        object_offset += 4;
+    }
     }
 
     qsort(this->unit_list_info, (int)this->unit_list_size, 0x66, TRIBE_Screen_Sed_unit_list_compare);
@@ -124,12 +137,9 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
     int cur = 0;
     int selected = 0;
     for (i = 0; i < this->unit_list_size; i++) {
-        char* s = (char*)calloc(100, 1);
-        strings[i] = s;
-        if (s == 0) { is_error = 1; break; }
-        char* src = this->unit_list_info[i].text;
-        char* dst = s;
-        while ((*dst++ = *src++) != 0) {}
+        strings[i] = (char*)calloc(100, 1);
+        if (strings[i] == 0) { is_error = 1; break; }
+        strcpy(strings[i], this->unit_list_info[i].text);
         if (this->unit_list_info[i].id == *(short*)((char*)rge_base_game + 0x3fc)) selected = i;
         cur++;
     }

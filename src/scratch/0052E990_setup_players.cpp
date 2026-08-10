@@ -22,6 +22,11 @@
 // source axis found in this bounded assignment.
 // Main-agent audit confirmed canonical world/player/info ownership and natural
 // switch construction; no address-term steering survives in the source.
+// sequential pass: direct branch-local slot stores, player-result declaration
+// scope/order, short/register loop-index forms, inherited RGE_Player result
+// typing, an input-pointer alias, subscript-term order, an equivalent for-loop,
+// and a const dispatch local were all codegen-neutral or regressed.  The clean
+// natural source remains 304B with one documented dispatch SIB byte differing.
 
 struct RGE_Master_Player;
 
