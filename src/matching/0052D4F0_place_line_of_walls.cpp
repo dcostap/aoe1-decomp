@@ -18,6 +18,9 @@
 //   the remaining drift to two parameter-home displacement bytes.
 // - Repeated coordinate declaration/order variants produced identical code;
 //   paused at the 2-byte parameter-home store orientation difference.
+// - Restored the canonical x/y ownership from the line traversal: x starts at
+//   x1 and y at y1; the original endpoint-home writes then match the typed
+//   traversal instead of the decompiler's apparent parameter swap.
 
 class RGE_Player;
 class RGE_Static_Object;
@@ -141,8 +144,8 @@ void TRIBE_Main_View::place_line_of_walls(
         x_skip = (((int)(y2 <= y1) - 1) & 2) - 1;
     }
 
-    y = x1;
-    x = y1;
+    x = x1;
+    y = y1;
 
     for (;;) {
         float coordinate_x = (float)x + 0.5f;

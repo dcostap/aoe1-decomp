@@ -29,6 +29,17 @@
 // arguments, SetSpanRegions/AddSpan argument setup, and final CurSpanList reload.
 // Main-agent audit confirmed canonical draw-area/span-list ownership and retained
 // the natural clip-region rebuild.
+// Fresh session: the clean EH/GX source remains the best reconstruction at 21
+// bytes: size 279, frame/saved-register shape and all seven direct calls match.
+// Reusing the alias for ResetAll worsened to 107 bytes; localized constructor
+// temporaries reproduced the prior 215-byte basin. A nested Num_Lines local,
+// stdlib.h context, donor int ABI fields/parameters, and split declaration/init
+// were emitted duplicates. An equal-height empty-arm guard reached 22 bytes.
+// A nine-case focused variant lab was invalid without /GX (all variants were
+// 224-byte functions), so it supplied no viable source lead.
+// Paused after the fresh 10-hypothesis budget: strict drift is still localized
+// to compare register bytes at +00444C70/+00444C73, ctor argument coloring near
+// +00444CBC, and SetSpanRegions argument/receiver setup near +00444CE8.
 
 class VSpan_Node;
 

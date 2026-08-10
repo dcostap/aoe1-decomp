@@ -65,6 +65,16 @@
 // - Final clean source restored and validated; remaining evidence is still
 //   the systematic entry target/count EAX/EDX basin (42 strict bytes), with
 //   exact size/frame/call set and exact +0039..+00BC body island.
+// - orch-mcoobj-fresh-04 adopted the stabilized Static->Animated->Moving->Action->Combat
+//   hierarchy and the exact modify donor's Combat override declaration; both remain
+//   codegen-neutral at 42 bytes.
+// - Fresh bounded probes: outer-scope value lifetime, split attack/diff declarations,
+//   a reference target alias, long count, PDB-supported one-line prologue declarations,
+//   register hints on armor locals, and an explicit signed-short count promotion were
+//   all neutral. The clean natural do-while was restored after each diagnostic form.
+// - Session conclusion: 10/10 meaningful probes exhausted; no exact or accepted_drift
+//   candidate. Retain the canonical natural source; unresolved bytes are the known
+//   entry target/count EAX/EDX allocation basin and the dependent reload coloring.
 
 #include "..\..\include\game_globals.h"
 
@@ -83,21 +93,51 @@ class TDrawArea;
 class RGE_Color_Table;
 class RGE_Master_Combat_Object;
 
-class RGE_Master_Action_Object {
+class RGE_Game_World;
+
+class RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Master_Action_Object();
-    virtual void copy_obj(void*);
-    virtual void modify(float, unsigned char);
-    virtual void modify_delta(float, unsigned char);
-    virtual void modify_percent(float, unsigned char);
-    virtual void save(int);
-    virtual void* make_new_obj(void*, float, float, float);
-    virtual void* make_new_master();
-    virtual unsigned char check_placement(void*, float, float, int*, unsigned char,
-        unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
-    virtual unsigned char alignment(float*, float*, void*, unsigned char);
-    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* target);
-    char gap_04[0xF8];
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* object);
+    virtual void modify(float value, unsigned char attribute);
+    virtual void modify_delta(float value, unsigned char attribute);
+    virtual void modify_percent(float value, unsigned char attribute);
+    virtual void save(int file);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x,
+                                             float y, float z);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(RGE_Player* player, float x,
+                                          float y, int* value,
+                                          unsigned char a, unsigned char b,
+                                          unsigned char c, unsigned char d,
+                                          unsigned char e, unsigned char f);
+    virtual unsigned char alignment(float* x, float* y, RGE_Game_World* world,
+                                    unsigned char value);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* object);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void draw(TDrawArea* area, short x, short y,
+                      RGE_Color_Table* colors, long clip_x, long clip_y,
+                      int value, unsigned char flags);
+
+    unsigned char master_type;
+    char gap_005[0xB3];
+};
+
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
+public:
+    float speed;
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    char gap_BC[0x1C];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    char gap_D8[0x24];
+    virtual void modify(float value, unsigned char attribute);
 };
 
 class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
@@ -110,6 +150,7 @@ public:
     short weapon_num;         // +0x108
     RGE_Armor_Weapon_Info* weapon; // +0x10C
 
+    virtual void modify(float value, unsigned char attribute);
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object* target);
     virtual void play_command_sound();
     virtual void play_move_sound();
