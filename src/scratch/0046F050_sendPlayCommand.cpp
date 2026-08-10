@@ -14,6 +14,10 @@
 // - Hoisted AIPlay/object declarations, used a receiver alias, and hinted the selected-list cursor; all stayed unchanged.
 // - Early loop-counter initialization stayed unchanged; function-scope selectedCount initialization worsened to 241 bytes and was restored.
 // - Final clean candidate remains the natural typed reconstruction; unresolved drift is the isolated EBP/EBX coloring swap at 7 bytes.
+// Shutdown follow-up (wave21-player-01):
+// - Exact-donor void/nonvirtual surface probe was unchanged and restored.
+// - Scoped selected locals and counter-first/top-level initialization probes were unchanged and restored.
+// - Final source remains the pinned canonical typed reconstruction; drift is still the isolated EBP/EBX coloring swap.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };
