@@ -9,8 +9,17 @@
 // 4: removing the explicit tempString self overlay is the cleaner source shape and leaves one natural
 //    self home, but VC5 still places tempString+4 at esp+28 (original esp+24) and shifts the first
 //    scratch home by four bytes. Explicit overlay, declaration order, and 261-byte-buffer probes were
-//    diagnostic and did not produce a compliant exact source. Remaining drift is stack/local topology,
-//    not behavior or call set; leave this typed reconstruction in scratch.
+//    diagnostic and did not produce a compliant exact source.
+// 5: top-tested while walks reproduce the oracle's bottom sentinel compare followed by the null test;
+//    the outer-if/do-while form leaves an extra inverted bottom branch.
+// 6: the donor-TU /GX response-file context changed only the frame-family experiment and not emitted
+//    code, so the custom flags file was removed.
+// 7: the initial plan-name payload recomputes strlen for the data write; reusing the stored length was
+//    the major structural mismatch. The natural second strlen reaches exact size/instruction/call/CFG
+//    parity and reduces positional drift from 1108 to 58 bytes.
+// 8: remaining 58 bytes are localized stack displacements: tempString and length/type homes are four
+//    bytes high while the float home is four bytes low. Explicit self overlay worsens size by 4; source
+//    local declaration order is codegen-neutral. Best readable reconstruction remains in scratch.
 
 #include <string.h>
 
@@ -20,6 +29,9 @@ typedef unsigned char uchar;
 
 class BaseItem {
 public:
+    virtual ~BaseItem();
+    char gap_04[0x68];
+
     char* name();
     int typeID();
     int gameID();
@@ -30,19 +42,23 @@ public:
 };
 class ConstructionItem : public BaseItem {
 public:
-    char gap[0x6c];
     ConstructionItem* next;
     ConstructionItem* prev;
     int inProgressValue;
     int builtValue;
     int buildAttemptsValue;
+    virtual ~ConstructionItem();
     int inProgress();
     int built();
     int buildAttempts();
 };
-class ConstructionAIModule {
+class AIModule {
 public:
-    char gap0[0xF0];
+    virtual ~AIModule();
+    char gap_04[0xEC];
+};
+class ConstructionAIModule : public AIModule {
+public:
     int numberConstructionLotsValue; // +F0
     ConstructionItem constructionLots; // +F4 sentinel
     int numberSomething; // +174
@@ -53,24 +69,23 @@ public:
     int zReferencePointValue; // +304
     int mapXSizeValue; // +308
     int mapYSizeValue; // +30C
-    int save(int fd);
+    virtual int save(int fd);
 };
 
 #define WRITE_ITEM(item) do {     strcpy(tempString + 4, (item)->name());     tempInt = strlen(tempString + 4);     rge_write(fd, &tempInt, 4);     rge_write(fd, tempString + 4, tempInt);     tempInt = (item)->typeID(); rge_write(fd, &tempInt, 4);     tempInt = (item)->gameID(); rge_write(fd, &tempInt, 4);     tempInt = (item)->uniqueID(); rge_write(fd, &tempInt, 4);     tempFloat = (item)->x(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->y(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->z(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->xSize(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->ySize(); rge_write(fd, &tempFloat, 4);     tempFloat = (item)->zSize(); rge_write(fd, &tempFloat, 4);     status_value = (item)->skip(); rge_write(fd, &status_value, 4);     status_value = (item)->inProgress(); rge_write(fd, &status_value, 4);     status_value = (item)->built(); rge_write(fd, &status_value, 4);     status_value = (item)->buildAttempts(); rge_write(fd, &status_value, 4); } while(0)
 
 int ConstructionAIModule::save(int fd)
 {
-    float tempFloat;
+    char tempString[257];
     int tempInt;
+    float tempFloat;
     int status_value;
     ConstructionItem* sentinel;
-    char tempString[257];
-
     rge_write(fd, (void*)&this->numberConstructionLotsValue, 4);
     strcpy(tempString + 4, this->constructionPlanNameValue);
     tempInt = strlen(tempString + 4);
     rge_write(fd, &tempInt, 4);
-    rge_write(fd, tempString + 4, tempInt);
+    rge_write(fd, tempString + 4, strlen(tempString + 4));
     rge_write(fd, (void*)&this->xReferencePointValue, 4);
     rge_write(fd, (void*)&this->yReferencePointValue, 4);
     rge_write(fd, (void*)&this->zReferencePointValue, 4);
@@ -79,23 +94,19 @@ int ConstructionAIModule::save(int fd)
 
     ConstructionItem* item = this->constructionLots.next;
     sentinel = &this->constructionLots;
-    if (item != sentinel) {
-        do {
-            if (item == 0) break;
-            WRITE_ITEM(item);
-            item = item->next;
-        } while (item != sentinel);
+    while (item != sentinel) {
+        if (item == 0) break;
+        WRITE_ITEM(item);
+        item = item->next;
     }
 
     rge_write(fd, (void*)&this->numberSomething, 4);
     item = this->secondList.next;
     sentinel = &this->secondList;
-    if (item != sentinel) {
-        do {
-            if (item == 0) return 1;
-            WRITE_ITEM(item);
-            item = item->next;
-        } while (item != sentinel);
+    while (item != sentinel) {
+        if (item == 0) return 1;
+        WRITE_ITEM(item);
+        item = item->next;
     }
     return 1;
 }
