@@ -573,3 +573,10 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   separate statement. Two standalone `cursor++` statements may be folded by
   VC5 into `add cursor,2`; the pre-increment dereference preserves the natural
   evaluation boundary without a fake barrier.
+
+- For a switch that decodes an x87-to-integer packed byte pair, mirror an exact
+  same-TU donor by declaring the masked `unsigned short` high-byte index before
+  the typed table cursor and null-testing that cursor. This can preserve VC5's
+  `mov cl,ah` and delayed mask schedule. If a separate case stores only the low
+  byte into a short field, `(short)(unsigned char)value` can produce the required
+  zero-extension without a union or raw-byte scaffold.

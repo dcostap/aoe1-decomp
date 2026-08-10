@@ -14,12 +14,18 @@
 //   index extraction, case-16 zero-extension, and default-call scheduling.
 // - Main-agent audit restored the canonical base destructor/copy/modify virtual
 //   prefix; the validated codegen gap is unchanged.
-// - Follow-up probes: an int high-byte local improved the packed update by only
-//   2 raw bytes; byte locals, register hints, and repeated conversions expanded
-//   the frame/body or added calls.  A packed-byte union reproduced mov cl,ah and
-//   movzx ax,al locally but changed handler ordering and was not retained.
-// - bounded session exhausted with the clean named-field source restored; the
-//   remaining first hunk is the VC5 packed-byte extraction/relocation schedule.
+// - Earlier follow-up probes found that an int high-byte local improved the
+//   packed update by only 2 raw bytes; byte locals, register hints, repeated
+//   conversions, and a packed-byte union were worse or changed handler order.
+//   That bounded session restored the clean named-field source with the packed
+//   extraction and case-16 conversion still unresolved.
+// - orch-mcoobj-02 exact breakthrough: mirrored the exact modify_delta donor's
+//   packed-byte idiom by declaring the ushort high-byte index before the local
+//   table cursor and testing that cursor for null. This recovered the original
+//   mov cl,ah / deferred ffff-mask schedule in both table cases.
+// - The original case-16 movzx ax,al requires the natural `(short)(unsigned
+//   char)value` conversion before storing into missile_id. With both source
+//   shapes, default /O2 /Oy emits an exact 265-byte match; no custom flags.
 
 class RGE_Sprite;
 
@@ -80,20 +86,22 @@ void RGE_Master_Combat_Object::modify(float value, unsigned char attribute) {
     switch (attribute) {
     case 8: {
         long packed = (long)value;
-        if (armor != 0) {
-            unsigned short index = (unsigned short)(packed >> 8);
+        unsigned short index = (unsigned short)((packed >> 8) & 0xff);
+        RGE_Armor_Weapon_Info* entries = armor;
+        if (entries != 0) {
             if ((int)index < (int)armor_num) {
-                armor[index].value = (short)(packed & 0xff);
+                entries[index].value = (short)(packed & 0xff);
             }
         }
         break;
     }
     case 9: {
         long packed = (long)value;
-        if (weapon != 0) {
-            unsigned short index = (unsigned short)(packed >> 8);
+        unsigned short index = (unsigned short)((packed >> 8) & 0xff);
+        RGE_Armor_Weapon_Info* entries = weapon;
+        if (entries != 0) {
             if ((int)index < (int)weapon_num) {
-                weapon[index].value = (short)(packed & 0xff);
+                entries[index].value = (short)(packed & 0xff);
             }
         }
         break;
@@ -111,7 +119,7 @@ void RGE_Master_Combat_Object::modify(float value, unsigned char attribute) {
         base_armor = (unsigned char)value;
         break;
     case 16:
-        missile_id = (short)value;
+        missile_id = (short)(unsigned char)value;
         break;
     case 18:
         defense_terrain_bonus = (short)value;
