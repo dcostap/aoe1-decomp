@@ -35,6 +35,11 @@
 //   217-byte/107-diff basin with sign extension hoisted before `jl`; restore
 //   the 221-byte/99-diff natural candidate, whose only structural drift is the
 //   negative-arm widening and downstream four-byte displacement shift.
+// - This claim: signed opcode/negative-cast forms hoisted sign extension
+//   before the binary-proven `test al/jl`, and an unsigned high-bit range test
+//   emitted `cmp al,80h`; both regressed.  Retain the 221-byte / 99-diff
+//   natural unsigned-opcode candidate.  The remaining gap is isolated to
+//   negative-arm `and eax,0xff` versus oracle `movsx ebp,al`.
 
 #include <string.h>
 

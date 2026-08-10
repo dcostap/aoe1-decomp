@@ -32,6 +32,11 @@
 //   regressed.  Retain the 407-byte typed source at 212 diff; the first gap is
 //   the frame-count zero-home/reload order, followed by payload count and
 //   palette-base coloring while all seven call relocations remain aligned.
+// - This claim: moving/splitting the outer counter zero assignment, adding a
+//   separate color countdown, reordering locals, and restoring stdlib context
+//   were duplicates or regressed.  A binary-proven `handle > -1` cleanup guard
+//   improved CFG shape but shifted the tail and was restored; a short packet
+//   count widened the body.  Final clean result remains 407 bytes / 212 diff.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);

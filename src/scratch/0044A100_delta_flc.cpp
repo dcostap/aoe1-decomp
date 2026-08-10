@@ -29,6 +29,12 @@
 //   one-byte regression. Retain the natural dword-count candidate below; the
 //   unresolved structural blocker is EBP packet-cursor coloring and the
 //   missing original 14-byte prologue/body basin.
+// - This claim: a positive-run-first branch restored the oracle's late
+//   negative-run topology and improved the clean candidate to 397 bytes / 367
+//   diff / 71.32% shape. Explicit packet cursor increments, per-scan packet
+//   zeroing, and a sparse switch were regressed; retain the positive-first
+//   natural source. Remaining blocker is the original EBP cursor/prologue
+//   allocation and associated stack packet-count schedule.
 
 #include <string.h>
 
@@ -50,9 +56,10 @@ public:
 // the natural packed ushort delta decoder.
 void RGE_Flic_Player::delta_flc()
 {
+    ushort* p;
     long cur_y = 0;
     int lines = (int)*(short*)this->chunk;
-    ushort* p = (ushort*)(this->chunk + 2);
+    p = (ushort*)(this->chunk + 2);
     if (lines <= 0) {
         return;
     }
@@ -90,7 +97,13 @@ void RGE_Flic_Player::delta_flc()
                 this->window_buffer += (signed char)pair;
                 signed char size = *((signed char*)p + 1);
                 ushort* payload = p + 1;
-                if (size < 1) {
+                if (size > 0) {
+                    int bytes = (int)size << 1;
+                    uchar* dst = this->window_buffer;
+                    memcpy(dst, payload, bytes);
+                    this->window_buffer += bytes;
+                    p = payload + size;
+                } else {
                     int bytes = -(int)size << 1;
                     if (bytes > 1) {
                         int n = bytes >> 1;
@@ -105,12 +118,6 @@ void RGE_Flic_Player::delta_flc()
                         this->window_buffer++;
                     }
                     p = payload + 1;
-                } else {
-                    int bytes = (int)size << 1;
-                    uchar* dst = this->window_buffer;
-                    memcpy(dst, payload, bytes);
-                    this->window_buffer += bytes;
-                    p = payload + size;
                 }
             } while (--packet_count != 0);
         }

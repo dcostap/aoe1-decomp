@@ -39,6 +39,10 @@
 // - Fresh same-TU validation confirms the clean source remains 233 emitted
 //   bytes / 154 positional differences; the only structural drift is the
 //   compiler's merged `chunk++` pair versus the original two `inc ebp` bytes.
+// - This claim: an int-cursor/explicit byte-offset spelling was codegen
+//   identical to the natural char cursor.  Retain the readable 233-byte
+//   source; the remaining evidence-backed blocker is the two separate header
+//   increments at PDB lines 468-469.
 
 #include <string.h>
 
