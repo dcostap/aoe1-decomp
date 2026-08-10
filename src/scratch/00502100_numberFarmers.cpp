@@ -30,6 +30,18 @@
 // Current session probes: hand-expanded the period ManagedArray growth body,
 // then reordered count/index declarations and initialization to match the
 // exact same-TU array donor; both emitted the unchanged 15-byte basin.
+// Fresh replacement probes (orch-taitacmd-fresh-03):
+// - baseline rebuilt the pinned canonical source; exact size/CFG/ordered calls,
+//   with the persistent outer-index/new-size EBX/EBP coloring swap.
+// - full AIModule/TacticalAIModule inheritance, chained zero assignment,
+//   canonical TribeMainDecisionAIModule pointer, postfix increments, a named
+//   civilian ID, register-qualified new_size, and exact sibling-style
+//   MainDecision layout all duplicated the 15-byte basin.
+// - volatile rVal worsened the natural stack increment to 254 bytes; ordinary
+//   while topology worsened to 251 bytes and broad drift. Both were rolled back.
+// Final clean reconstruction restored and validated: blocker remains localized
+//   callee-save coloring only; future lead is original TU/compiler register
+//   context or an as-yet-untried natural declaration/lifetime distinction.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);

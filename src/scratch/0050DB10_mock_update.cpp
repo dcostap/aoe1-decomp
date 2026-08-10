@@ -31,6 +31,17 @@
 // wrong assignment/null-test order; restored the natural 520B source. The
 // remaining blocker is the binary's redundant post-next null compare and the
 // resulting rewind block spans; no further blind variants remain in this pass.
+// Fresh replacement (orch-timeline-fresh-03): dossier confirms 4 calls, exact
+// vslot +0x18 create calls and vslot 0 deleting-destructor calls; ABI query has
+// no additional living declarations. Re-tested direct/comma assignment forms,
+// explicit loop bodies, assignment-result continue, and direct n->time >
+// old_time spellings; all landed in the same 524B/460-diff basin. A focused
+// first-scan lab produced only 520B and 524B groups. A second lab was invalid
+// for the intended two-region splice; its generated files are diagnostic only.
+// A moving predecessor cursor (p/n) was a codegen duplicate. Restored the
+// natural typed source: remaining structural gap is the VC5 redundant
+// post-next null compare/move order at the first rewind scan and its shifted
+// predecessor block; no source-quality justification remains for scaffolding.
 
 struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };

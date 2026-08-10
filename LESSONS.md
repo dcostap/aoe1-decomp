@@ -588,3 +588,12 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   `mov cl,ah` and delayed mask schedule. If a separate case stores only the low
   byte into a short field, `(short)(unsigned char)value` can produce the required
   zero-extension without a union or raw-byte scaffold.
+
+- In an EH-framed VC5 constructor whose binary shows a four-word inline managed
+  array, flattening the array into parent fields can lose the compiler's later
+  EH-state transition and reorder the constructor prefix. Model the member with
+  its natural inline zeroing constructor and nontrivial destructor declaration;
+  combine that with the binary-proven incoming-parameter reuse and delayed
+  derived-vtable surface before tuning the loop. Retain the explicit
+  `novtable`/vtable fallback only when the oracle proves the store position and
+  the natural compiler-owned-vptr form remains different.

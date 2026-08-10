@@ -62,6 +62,24 @@
 // - Direct donor 00444B40 was rechecked after the provisional int trial:
 //   AlignedWidth is long-returning, and the living declaration now matches it.
 
+// orch-shape-02 fresh bounded pass (2026-08-10; 10 meaningful hypotheses):
+// - Reused the second long parameter as the outer destination address and
+//   kept a row-local working cursor. This recovered the binary-proven
+//   destination/row parameter homes and improved shape to 92.47%, but stayed
+//   234B/208 strict bytes; natural x/y formal naming was a duplicate.
+// - A named orientation local was a duplicate. Materializing aligned width
+//   first and multiplying it in place improved the diagnostic to 206 strict
+//   bytes with the same 234B size; a compound width update was identical.
+// - Split height statements, payload-before-height declaration order, and a
+//   hoisted working cursor were all duplicates. Declaring payload after the
+//   width call worsened to 225 strict bytes. Widening height back to long was
+//   identical.
+// - Restored the pinned natural two-pointer forward RLE source. The direct
+//   parameter-address form is retained only as diagnostic evidence: it is
+//   decompiler-shaped and did not resolve the original EBP/ESI/EDI prologue
+//   coloring or two-byte size gap. Calls and relocation identities remain
+//   aligned; the blocker is the early VC5 register/local-home basin.
+
 #include <string.h>
 #pragma function(memcpy)
 #pragma function(memset)
