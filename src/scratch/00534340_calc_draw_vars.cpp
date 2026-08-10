@@ -40,6 +40,19 @@
 // groups and no exact result.  The clean current source remains the best
 // reconstruction; the remaining 80-byte gap is the stable EAX/EDX, EBP/EDI,
 // and failure-tail register basin, likely requiring broader view.cpp TU context.
+// fresh orch-view-01 pass: splitting the row-offset zero around max-column
+//   changed size to 222 and 191-byte drift; restored clean.
+// fresh pass: natural nested positive guards emitted the same 217/80-byte
+//   codegen as clean; restored clean.
+// fresh pass: reversed zero-comparison operands, leading short zero sentinel,
+//   and chained offset assignment were duplicate or one byte farther; restored.
+// fresh pass: explicit clear-draw-vars goto tail was 217/197 bytes; restored.
+// fresh pass: one-sided panel-width/height local variants were 217/192 and
+//   217/89 bytes; restored.
+// fresh pass: 24-variant natural setup/math/local lab found 8 codegen groups,
+//   10 size-eligible variants, and no exact match.
+// fresh pass: broad period TPanel virtual surface changed output to 217/150;
+//   retained minimal exact-donor-compatible surface and restored clean.
 
 class tagRECT {
 public:
