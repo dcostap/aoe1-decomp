@@ -1,129 +1,318 @@
 // VA: 0049B080 TRIBE_Screen_Game::reset_score_display
 // PDB source: scr_game.cpp
 // Attempt log:
-// - broad reconstruction from packet: build 9 score records, sort by teams/players, update 8 UI rows.
-// - fixed initial frame by increasing the sprintf/text buffer to 0x204; prologue now has original sub esp,2D4 but still lacks original early mov ebp,ecx and uses different saved-register roles.
-// - tried local self alias and using self-> throughout; VC5 still homes this at [esp+14] instead of keeping it in EBP, no prologue improvement.
-// - current best default /O2: 87.98% positional diff, 66.00% edit diff, first mismatch offset 8. Early zero-record loop and broad helper calls are recognizable, but record indexing/register topology diverges heavily.
-// - give-up: likely needs exact original ScoreRec/local-frame layout and real TRIBE_Game/RGE_Game surfaces; no accepted_drift proposed due broad unexplained drift and likely behavioral uncertainty in late UI/update calls.
+// - baseline was a broad decompiler-shaped reconstruction with the right frame
+//   but the wrong owner/type and helper surfaces.
+// - rebuilt the source around the period PLAYER_SCORE, TRIBE_World,
+//   RGE_Player, communications, font, and message-panel ownership.  The
+//   score records are filled through a cursor, grouped by allied relations,
+//   then sorted and rendered through the eight named score panels.
+// - replacing the fake get_active/player_status/progress/score_value helpers
+//   with the proven base-game, communications, font, latency, and message
+//   surfaces aligned all 24 call sites and exact size; best diff is 1063 bytes.
+// - indexed PLAYER_SCORE references regressed size/shape; restored the natural
+//   cursor form.  Stdio context and function-scope icon locals were codegen
+//   neutral.  Remaining drift is broad local register/home and cursor layout,
+//   beginning with the saved-this stack slot; left in scratch for a later pass.
 
-extern void qsort(void* base, unsigned int num, unsigned int width, int (*cmp)(const void*, const void*));
-extern void sprintf(char* dst, char* fmt, ...);
+#include <stdio.h>
 
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
-#define tribe_game (*(TRIBE_Game**)0x62C4C0)
-#define score_cmp ((int (*)(const void*, const void*))0x0049B000)
+extern "C" int sprintf(char*, const char*, ...);
+extern "C" void qsort(void*, unsigned int, unsigned int,
+                      int (*)(const void*, const void*));
 
-struct ScoreRec { int team_id; int icon_num; int player_id; int player_score; int team_score; };
-class RGE_Base_Game { public: int numberPlayers(); int playerID(int); int get_active(); int get_color(int); };
-class Victory { public: int get_victory_points(); };
-class Player { public: char gap0[0x30]; Victory* victory; char gap34[0x40-0x34]; int list; char gap44[0x80-0x44]; unsigned char type; char gap81[0x104-0x81]; unsigned char active; char gap105[0x108-0x105]; void* civ; int relation(int); };
-class World { public: char gap0[0x3c]; short player_num; char gap3e[2]; Player** players; };
-class StatusObj { public: int progress(int); };
-class TRIBE_Game { public: char gap0[0x14d4]; StatusObj* data14d4; int player_status(int); int score_value(int, int, int); };
-class TPanel { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void set_visible(int); char gap[4]; int a; int b; int c; void set_text(int, char*, int, int, int, int, int, int, int, int, int); };
-class TRIBE_Screen_Game { public: char gap0[0x448]; int color448; char gap44c[0x58c-0x44c]; TPanel* score_panels[8]; char gap5ac[8]; World* world; void reset_score_display(); };
+struct RGE_Color_Table {
+    char gap_00[0x26];
+    short id;
+};
+
+class RGE_Victory_Conditions {
+public:
+    virtual ~RGE_Victory_Conditions();
+    char gap_04[0x18];
+    long total_points;
+    long get_victory_points();
+};
+
+class RGE_Player {
+public:
+    void* vtable_ptr;
+    char gap_04[0x30];
+    RGE_Victory_Conditions* victory_conditions;
+    char gap_38[0x48];
+    unsigned char game_status;
+    unsigned char resigned;
+    char gap_82[2];
+    unsigned char* relations;
+    char gap_88[0x7C];
+    unsigned char allied_victory;
+    unsigned char master_player_id;
+    char gap_106[2];
+    RGE_Color_Table* color_table;
+
+    unsigned char relation(long player_id);
+};
+
+class RGE_Game_World {
+public:
+    void* vtable_ptr;
+    char gap_04[0x38];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
+    char gap_44[0xC0];
+};
+
+class TRIBE_World : public RGE_Game_World {
+public:
+    char gap_104[0x18];
+    unsigned char score_displayed;
+};
+
+class RGE_Font {
+public:
+    void* font;
+    long font_wid;
+    long font_hgt;
+};
+
+class RGE_Communications_Speed {
+public:
+    char gap_00[0x1BC];
+    unsigned long player_avg_frames_msec[10];
+    unsigned long GetPlayerLatency(unsigned int player);
+};
+
+class TCommunications_Handler {
+public:
+    char gap_00[0x14D4];
+    RGE_Communications_Speed* Speed;
+
+    int GetPlayerHumanity(unsigned int player);
+    char* GetPlayerName(unsigned int player);
+};
+
+class RGE_Base_Game {
+public:
+    int numberPlayers();
+    int playerID(int player);
+    int multiplayerGame();
+    RGE_Font* get_font(int font_id);
+};
+
+class TPanel {
+public:
+    virtual void v00();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void set_visible(int visible);
+    char gap_04[0xF0];
+};
+
+class TMessagePanel : public TPanel {
+public:
+    void show_message2(int message_type, char* text,
+                       unsigned long font_color1, unsigned long font_color2,
+                       void* font, long font_wid, long font_hgt,
+                       void* icon1, int icon_frame1,
+                       void* icon2, int icon_frame2);
+};
+
+class TShape {
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_F4[0x354];
+    TShape* button_pics;
+    char gap_44C[0x2C];
+};
+
+class TScreenPanel : public TEasy_Panel {
+};
+
+struct PLAYER_SCORE {
+    int comm_id;
+    int player_id;
+    int team_id;
+    long player_score;
+    long team_score;
+};
+
+class TRIBE_Screen_Game : public TScreenPanel {
+public:
+    char gap_478[0x114];
+    TMessagePanel* score_panel[8];
+    char gap_5AC[8];
+    TRIBE_World* world;
+
+    void reset_score_display();
+};
+
+#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+#define comm (*(TCommunications_Handler**)0x0062C4C0)
+#define score_compare ((int (*)(const void*, const void*))0x0049B000)
+#define score_format ((const char*)0x00586510)
 
 void TRIBE_Screen_Game::reset_score_display()
 {
-    ScoreRec s[9];
-    char buf[0x204];
     int i;
-    int row;
-    int n;
+    int local_2d4;
     int team;
-    int idx;
-    int best;
-    int color;
-    int bg;
-    int marker;
-    int marker_color;
-    int relation;
-    TRIBE_Screen_Game* self = this;
+    int icon_num2;
+    int low_fps_player;
+    TShape* icon1;
+    int icon_frame1;
+    TShape* icon2;
+    int icon_frame2;
+    PLAYER_SCORE player_score[9];
+    char str[512];
 
     for (i = 0; i < 9; ++i) {
-        s[i].team_id = 0; s[i].icon_num = 0; s[i].player_id = 0; s[i].player_score = 0; s[i].team_score = 0;
+        player_score[i].comm_id = 0;
+        player_score[i].player_id = 0;
+        player_score[i].team_id = 0;
+        player_score[i].player_score = 0;
+        player_score[i].team_score = 0;
     }
 
-    n = 0;
-    for (i = 1; i <= rge_base_game->numberPlayers(); ++i) {
-        int pid = rge_base_game->playerID(i);
-        if (pid != 0 && pid < self->world->player_num) {
-            if (s[pid].team_id == 0) { ++n; s[pid].team_id = n; }
-            s[pid].icon_num = i;
-            s[pid].player_id = pid;
-            s[pid].player_score = self->world->players[pid]->victory->get_victory_points();
-            s[pid].team_score = s[pid].player_score;
-            int cnt = 1;
-            if (self->world->players[pid]->active) {
-                for (int j = 1; j <= rge_base_game->numberPlayers(); ++j) {
-                    if (j != i) {
-                        int pid2 = rge_base_game->playerID(j);
-                        if (pid2 != 0 && pid2 < self->world->player_num) {
-                            if (self->world->players[pid]->relation(pid2) == 0 && self->world->players[pid2]->relation(pid) == 0 && self->world->players[pid2]->active) {
-                                if (s[pid2].team_id == 0) s[pid2].team_id = s[pid].team_id;
-                                s[pid].team_score += self->world->players[pid2]->victory->get_victory_points();
-                                ++cnt;
+    i = 0;
+    icon_num2 = 1;
+    PLAYER_SCORE* score = player_score;
+    while (icon_num2 <= rge_base_game->numberPlayers()) {
+        int player_id = rge_base_game->playerID(icon_num2);
+        if (player_id != 0 && player_id < this->world->player_num) {
+            if (score->team_id == 0) {
+                ++i;
+                score->team_id = i;
+            }
+            score->comm_id = icon_num2;
+            score->player_id = player_id;
+            score->player_score =
+                this->world->players[player_id]->victory_conditions->get_victory_points();
+            score->team_score = score->player_score;
+            local_2d4 = 1;
+
+            if (this->world->players[player_id]->allied_victory != 0) {
+                int team_player = 1;
+                PLAYER_SCORE* team_score = player_score;
+                while (team_player <= rge_base_game->numberPlayers()) {
+                    if (team_player != icon_num2) {
+                        int player_id2 = rge_base_game->playerID(team_player);
+                        if (player_id2 != 0 && player_id2 < this->world->player_num &&
+                            this->world->players[player_id]->relation(player_id2) == 0 &&
+                            this->world->players[player_id2]->relation(player_id) == 0 &&
+                            this->world->players[player_id2]->allied_victory != 0) {
+                            if (team_score->team_id == 0) {
+                                team_score->team_id = score->team_id;
                             }
+                            score->team_score +=
+                                this->world->players[player_id2]->victory_conditions->get_victory_points();
+                            ++local_2d4;
                         }
                     }
+                    ++team_player;
+                    ++team_score;
                 }
-                s[pid].team_score /= cnt;
             }
+            score->team_score /= local_2d4;
         }
+        ++icon_num2;
+        ++score;
     }
 
-    qsort(s, rge_base_game->numberPlayers(), sizeof(ScoreRec), score_cmp);
-
-    best = 0;
-    if (rge_base_game->get_active()) {
-        int bestval = 11;
-        ScoreRec* p = &s[0];
+    qsort(player_score, rge_base_game->numberPlayers(), sizeof(PLAYER_SCORE),
+          score_compare);
+    low_fps_player = 0;
+    if (rge_base_game->multiplayerGame() != 0) {
+        int low_fps = 11;
+        PLAYER_SCORE* p = player_score;
         for (i = 0; i < 8; ++i, ++p) {
-            if (p->icon_num && tribe_game->player_status(p->team_id) == 2) {
-                int val = *(int*)((char*)tribe_game->data14d4 + p->team_id * 4 + 0x1bc);
-                int scale;
-                if ((unsigned)val > 999) scale = 1;
-                else if ((unsigned)val < 10) scale = 100;
-                else scale = 1000 / val;
-                if (scale < bestval) { best = p->team_id; bestval = scale; }
+            if (p->team_id != 0 && comm->GetPlayerHumanity(p->comm_id) == 2) {
+                unsigned long average = comm->Speed->player_avg_frames_msec[p->comm_id];
+                int frame_rate;
+                if (average > 999) {
+                    frame_rate = 1;
+                } else if (average < 10) {
+                    frame_rate = 100;
+                } else {
+                    frame_rate = 1000 / average;
+                }
+                if (frame_rate < low_fps) {
+                    low_fps_player = p->comm_id;
+                    low_fps = frame_rate;
+                }
             }
         }
     }
 
-    ScoreRec* p = &s[0];
-    TPanel** panelp = &self->score_panels[0];
-    for (row = 0; row < 8; ++row, ++p, ++panelp) {
-        TPanel* panel = *panelp;
-        if (panel == 0) break;
-        if (p->icon_num == 0) {
-            panel->set_visible(0);
+    PLAYER_SCORE* p = player_score;
+    TMessagePanel** panel = this->score_panel;
+    icon_num2 = 0;
+    for (; icon_num2 < 8; ++icon_num2, ++p, ++panel) {
+        if (*panel == 0) {
+            return;
+        }
+        if (p->player_id == 0) {
+            (*panel)->set_visible(0);
         } else {
-            sprintf(buf, (char*)0x586510, tribe_game->score_value(p->team_id, p->player_score, p->team_score));
-            Player* pl = self->world->players[p->icon_num];
-            switch (*(short*)((char*)pl->civ + 0x26)) {
-            case 0: color = 0xff0000; bg = 0xb3b3b3; break;
-            case 1: color = 0x2139c6; bg = 0; break;
-            case 2: color = 0xffff; bg = 0; break;
-            case 3: color = 0x4f73a3; bg = 0; break;
-            case 4: color = 0xf77f3; bg = 0; break;
-            case 5: color = 0xc700; bg = 0; break;
-            case 6: color = 0x7b90a2; bg = 0; break;
-            case 7: color = 0xadad00; bg = 0; break;
-            default: color = 0xffffff; bg = 0; break;
+            sprintf(str + 4, score_format, comm->GetPlayerName(p->comm_id),
+                    p->player_score, p->team_score);
+
+            RGE_Player* player = this->world->players[p->player_id];
+            int font_color;
+            int back_color;
+            switch (player->color_table->id) {
+            case 0:
+                font_color = 0xFF0000;
+                back_color = 0xB3B3B3;
+                break;
+            case 1: font_color = 0x2139C6; break;
+            case 2: font_color = 0xFFFF; break;
+            case 3: font_color = 0x4F73A3; break;
+            case 4: font_color = 0x0F77F3; break;
+            case 5: font_color = 0xC700; break;
+            case 6: font_color = 0x7B90A2; break;
+            case 7: font_color = 0xADAD00; break;
+            default: font_color = 0xFFFFFF; break;
             }
-            marker = 0;
-            if (pl->type == 2 || (rge_base_game->get_active() && (tribe_game->player_status(p->team_id) != 2 && tribe_game->player_status(p->team_id) != 4))) marker = 1;
-            relation = rge_base_game->get_color(marker ? 8 : 11);
-            bg = marker_color = 0;
-            if (rge_base_game->get_active() && tribe_game->player_status(p->team_id) == 2) {
-                int progress = tribe_game->data14d4->progress(p->team_id);
-                if (p->team_id == best) { marker = 17; marker_color = self->color448; }
-                if ((unsigned)progress >= 300) {
-                    bg = self->color448; marker = ((unsigned)progress > 1000) ? 20 : 19;
+
+            int dimmed = 0;
+            if (player->game_status == 2) {
+                dimmed = 1;
+            } else if (rge_base_game->multiplayerGame() != 0) {
+                int humanity = comm->GetPlayerHumanity(p->comm_id);
+                if (humanity != 2 && humanity != 4) {
+                    dimmed = 1;
                 }
             }
-            panel->set_text(5, buf, color, bg, panel->a, panel->b, panel->c, relation, marker, marker_color, marker);
+            RGE_Font* font = rge_base_game->get_font(dimmed != 0 ? 8 : 11);
+
+            icon1 = 0;
+            icon_frame1 = 0;
+            icon2 = 0;
+            icon_frame2 = 0;
+            if (rge_base_game->multiplayerGame() != 0 &&
+                comm->GetPlayerHumanity(p->comm_id) == 2) {
+                unsigned long latency = comm->Speed->GetPlayerLatency(p->comm_id);
+                if (p->comm_id == low_fps_player) {
+                    icon2 = this->button_pics;
+                    icon_frame2 = 17;
+                }
+                if (latency >= 300) {
+                    icon1 = this->button_pics;
+                    icon_frame1 = 20;
+                    if (latency <= 1000) {
+                        icon_frame1 = 19;
+                    }
+                }
+            }
+
+            (*panel)->show_message2(5, str + 4, font_color, back_color,
+                                    font->font, font->font_wid, font->font_hgt,
+                                    icon1, icon_frame1, icon2, icon_frame2);
         }
     }
 }

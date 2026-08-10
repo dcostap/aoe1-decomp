@@ -34,6 +34,9 @@
 // Remaining lead is the inherited entry callee-save coloring (VC5 keeps this
 // in ESI and player_id in EDI; the oracle keeps this in EDI and player_id in
 // ESI). No natural ABI/layout/source-context axis remains justified here.
+// Follow-up worker revalidated the pinned source and confirmed the same basin;
+// no new natural hypothesis is justified without repeating prior register/
+// context probes or introducing forbidden register forcing.
 
 struct RGE_Static_Object;
 struct TRIBE_Player;

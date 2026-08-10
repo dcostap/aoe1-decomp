@@ -58,6 +58,10 @@
 //   188/225 resynchronized bytes, but VC5 hoists one rge_base_game load before
 //   `test al`; forcing the six-load schedule would require fake volatility or
 //   opaque compiler steering, which is not retained.
+// Follow-up worker: direct absolute-global macro versus the validated extern
+//   global was codegen-close but one byte worse; restored the extern canonical
+//   source.  The remaining global-load hoist is therefore a documented
+//   compiler-basin blocker, not an unresolved call/layout ABI fact.
 // Main-agent audit restored canonical polymorphic game/player/master/screen
 // ownership and removed the residual self register alias.
 
