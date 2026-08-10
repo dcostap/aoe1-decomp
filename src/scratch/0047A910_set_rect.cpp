@@ -18,6 +18,14 @@
 // New worker: function-scope/shared-range and in-place arithmetic variants improved emitted shape only to a duplicate
 // 275-byte basin; virtual-member declaration with an explicit qualified base call preserved the direct ABI but made no
 // body change. Restored the clean canonical tagRECT source; EBP still is not saved in the prologue.
+// Fresh bounded pass (orch-pnlscbr-fresh-03):
+// - Full Pnl_scbr/TPanel/TShape/windows.h context improved shape but added 5-8 bytes and was rolled back.
+// - Direct inherited geometry expressions likewise added bytes; the full-class context was not retained.
+// - Binary/Ghidra store ownership corrected horizontal tab_min_x to up_rect.right + 1 (not down_rect.right + 1).
+// - Six shared temporaries improved the byte diff to 276 but introduced a stack home; four shared temporaries were
+//   equivalent. Long-width and virtual-member ABI declarations were codegen duplicates.
+// - A single shared range temporary was a duplicate/farther result. Final source keeps the natural typed geometry
+//   reconstruction and the corrected tab minimum; remaining gap is prologue EBP/register topology.
 
 struct tagRECT {
     long left;
@@ -29,10 +37,10 @@ struct tagRECT {
 struct TPanel {
     virtual ~TPanel();
     char gap_04[0x0C - 0x04];
-    int margin;                // +0x0C (panel edge offset)
-    int track_size;            // +0x10 (track dimension in scroll direction)
-    int perp_size;             // +0x14 (track dimension perpendicular to scroll)
-    int button_size;           // +0x18 (arrow/button dimension)
+    long pnl_x;                // +0x0C
+    long pnl_y;                // +0x10
+    long pnl_wid;              // +0x14
+    long pnl_hgt;              // +0x18
     char gap_1C[0xF4 - 0x1C];
     void set_rect(long param_1, long param_2, long param_3, long param_4);
 };
@@ -52,7 +60,15 @@ struct TScrollBarPanel : public TPanel {
     tagRECT tab_rect;           // +0x184
     tagRECT top_rect;           // +0x194
     tagRECT bottom_rect;        // +0x1A4
-    int orientation;           // +0x1B4 (1 = horizontal)
+    int orientationValue;      // +0x1B4 (1 = horizontal)
+    int bevel_type;             // +0x1B8
+    unsigned char bevel_color1; // +0x1BC
+    unsigned char bevel_color2; // +0x1BD
+    unsigned char bevel_color3; // +0x1BE
+    unsigned char bevel_color4; // +0x1BF
+    unsigned char bevel_color5; // +0x1C0
+    unsigned char bevel_color6; // +0x1C1
+    unsigned char gap_1C2[2];   // +0x1C2
 
     void set_rect(long param_1, long param_2, long param_3, long param_4);
     void calc_item_rects();
@@ -61,18 +77,19 @@ struct TScrollBarPanel : public TPanel {
 void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     TPanel::set_rect(param_1, param_2, param_3, param_4);
 
-    if (this->orientation == 1) {
+    if (this->orientationValue == 1) {
         // Horizontal scrollbar layout
-        int track = this->track_size;
-        int button = this->button_size;
-        int perp = this->perp_size;
-        int margin = this->margin;
+        int track = this->pnl_y;
+        int button = this->pnl_hgt;
+        int perp = this->pnl_wid;
+        int margin = this->pnl_x;
         int top = track + 2;
         int bottom = button + track - 5;
         int up_left = margin + 2;
         int down_left = perp + margin - button + 2;
+        int up_right = up_left + button - 5;
         int down_right = down_left + button - 5;
-        int tab_min = down_right + 1;
+        int tab_min = up_right + 1;
 
         this->up_rect.top = top;
         this->down_rect.top = top;
@@ -82,7 +99,7 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->up_rect.left = up_left;
         this->down_rect.left = down_left;
         this->up_rect.bottom = bottom;
-        this->up_rect.right = up_left + button - 5;
+        this->up_rect.right = up_right;
         this->down_rect.bottom = bottom;
         this->down_rect.right = down_right;
         this->tab_min_x = tab_min;
@@ -93,14 +110,13 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->bottom_rect.bottom = bottom;
     } else {
         // Vertical scrollbar layout
-        int track = this->track_size;
-        int btn = this->button_size;
-        int perp = this->perp_size;
-        int margin = this->margin;
+        int track = this->pnl_y;
+        int btn = this->pnl_hgt;
+        int perp = this->pnl_wid;
+        int margin = this->pnl_x;
 
-        int total = btn + track;
         int top = track + 2;
-        int scroll_range = total - perp;
+        int scroll_range = btn + track - perp;
         int left = margin + 2;
 
         this->up_rect.top = top;

@@ -86,6 +86,18 @@ public:
 // changed the size/CFG and widened the diff to 206 bytes; the clean source was
 // restored. The remaining first hunk is the param/stack register swap and the
 // product-scale versus max_width scheduling noted above.
+// Continuation (orch-rmmelev-02): direct canonical `this->map_height *
+// this->map_width / 16` for the post-link count restores the terminal reload
+// and collapses the reconstruction from 181 differing bytes to 2, with exact
+// size, CFG, call targets, and 90.59% exact-block coverage. VC5 emits the two
+// remaining displacement differences in the opposite commutative load order:
+// rebuilt `mov [edi+14h]; imul [edi+18h]` versus original `mov [edi+18h];
+// imul [edi+14h]`.
+// Reversing the product, staged/compound/named-width forms, count-expression
+// variant lab, declaration-order changes, volatile/pointer references, a
+// decompiler-style signed-shift formula, and a source-lifetime block did not
+// produce a new exact basin; the last two-byte basin is retained as the clean
+// canonical source. No inline asm or opaque helper was kept.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
@@ -112,7 +124,7 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
         node++;
     }
 
-    for (long count = height * width / 16; count > 0; count--) {
+    for (long count = this->map_height * this->map_width / 16; count > 0; count--) {
         long x = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFA) * max_width / 0x7FFF;
         long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFB) * max_height / 0x7FFF;
         this->add_stack_node(param_1, &this->stack_offsets[y][x]);
