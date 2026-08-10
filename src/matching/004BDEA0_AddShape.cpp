@@ -29,10 +29,17 @@
 //   same three-byte prologue drift. A six-way focused prologue lab also formed
 //   one identical 254-byte group. Restored the clean source; remaining drift is
 //   mov index/base register coloring at 004BDEBD-004BDEC6 only.
+// - A focused typed index/base lab (11 source spellings) also formed one
+//   invariant 254-byte group; function-scope locals, identity arithmetic,
+//   inline selection, and const-view probes were duplicates or broader drift.
+// - Header-context lab: <memory.h> and <malloc.h> both restored exact bytes;
+//   retained the period-plausible <memory.h> context, which closes the
+//   three-byte index/base register coloring gap without changing ownership.
 
 // Main-agent audit confirmed typed selected-record ownership and retained the
 // natural shape insertion path.
 #include <stdlib.h>
+#include <memory.h>
 
 struct Shape_Info {
     unsigned long Shape_Data_Offsets;
@@ -88,8 +95,9 @@ public:
     int Reset_Count;              // +0x38
 };
 
-class TSpan_List_Manager : public TSpan_Node_List {
+class TSpan_List_Manager {
 public:
+    TSpan_Node_List VSList;        // +0x00
     VSpan_Node** Line_Head_Ptrs;  // +0x3C
     VSpan_Node** Line_Tail_Ptrs;  // +0x40
     int* LeftMostPx;              // +0x44

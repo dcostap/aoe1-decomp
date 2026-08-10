@@ -101,6 +101,28 @@
 // push scheduling at the success/failure Log setup; no evidence supports opaque source
 // steering or accepted drift.
 
+// Attempt log (wave20-comhand-01, 2026-08-10):
+// abi: unqualified GetCommunicationsStatus()/CommunicationsStatus in the success logger
+// was codegen-identical at 179B/52B; restored the explicit typed member spelling.
+// abi: int status locals plus an int field (after a syntax repair for enum assignment)
+// were also 179B/52B; the enum field/locals remain the canonical ABI reconstruction.
+// context: exact same-TU logger FlushToDisk/Time declarations, handler-size tail, and
+// additional Com_hand method declarations were neutral at 179B/52B.
+// liveness: branch-local handler reference and pointer captures for the success logger
+// were each codegen-identical at 179B/52B; no receiver scheduling moved.
+// variant: a 20-case size/frame/call-set-gated lab over direct/unqualified/alias success
+// and pointer/reference/parenthesized failure logger surfaces collapsed to one 179B group;
+// no variant improved the localized register/push hunk.
+// abi: parenthesized (*L).Log success syntax was neutral at 179B/52B.
+// abi: const global logger pointer declaration was neutral at 179B/52B.
+// context: raw absolute L macro with the typed member surface reached the known diagnostic
+// 179B/46B basin, but still emitted the wrong success/failure register scheduling and was
+// restored; the raw absolute form is not retained as canonical source.
+// liveness: const branch-local reported-status snapshot regressed back to 179B/52B;
+// restored the clean inline member read. Ten meaningful hypotheses exhausted; the clean
+// source remains the period-plausible typed loop at 179B/52B, with 9/9 ordered calls and
+// 95% shape. Remaining drift is localized to VC5 logger register/push scheduling.
+
 // Struct layout: gap_00[0xFC5], TBuff[257], gap_10C6[0x20E], CommunicationsStatus at +0x12D4
 // Globals: extern TDebuggingLog* L (original image address 0x62C4FC)
 // Functions: TDebuggingLog::Log(char*, ...), sprintf

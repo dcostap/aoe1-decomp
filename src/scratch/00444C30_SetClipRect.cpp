@@ -40,6 +40,15 @@
 // Paused after the fresh 10-hypothesis budget: strict drift is still localized
 // to compare register bytes at +00444C70/+00444C73, ctor argument coloring near
 // +00444CBC, and SetSpanRegions argument/receiver setup near +00444CE8.
+// Wave20 ABI audit: the oracle's spanlist calls are int ABI (HH/HHHH/HHH),
+// while SetClipRect itself remains the long-argument JJ/4 surface; correcting
+// the local declarations fixes the decorated relocation identities but leaves
+// the 21-byte scheduling drift unchanged.
+// Wave20 probes: direct SetSpanRegions under the corrected ABI regressed to 28;
+// carrying span_list through ResetAll regressed to 111; the ground-truth inline
+// VSList composition and int Width/Height surface both emit the same 21-byte
+// source basin. A focused int-ABI argument-shape lab found no closer natural
+// candidate. Retained source is the canonical /GX composition and alias form.
 
 class VSpan_Node;
 
@@ -47,42 +56,43 @@ class TSpan_Node_List {
 public:
     VSpan_Node** Zone_Ptrs;       // +0x00
     int* Zone_Size_Ptrs;          // +0x04
-    long Used_Zones;              // +0x08
-    long Max_Zones;               // +0x0C
+    int Used_Zones;               // +0x08
+    int Max_Zones;                // +0x0C
     VSpan_Node* Free_Head;        // +0x10
-    long Free_Pool_Zone;          // +0x14
-    long Free_Pool_Index;         // +0x18
-    long Total_Blocks;             // +0x1C
-    long Free_Blocks;             // +0x20
-    long Default_Grow_Size;        // +0x24
-    long Element_Size;             // +0x28
-    long Alloc_Count;              // +0x2C
-    long Dealloc_Count;            // +0x30
-    long NewZone_Count;            // +0x34
-    long Reset_Count;              // +0x38
+    int Free_Pool_Zone;           // +0x14
+    int Free_Pool_Index;          // +0x18
+    int Total_Blocks;             // +0x1C
+    int Free_Blocks;              // +0x20
+    int Default_Grow_Size;        // +0x24
+    int Element_Size;             // +0x28
+    int Alloc_Count;              // +0x2C
+    int Dealloc_Count;            // +0x30
+    int NewZone_Count;            // +0x34
+    int Reset_Count;              // +0x38
 
     ~TSpan_Node_List();
 };
 
-class TSpan_List_Manager : public TSpan_Node_List {
+class TSpan_List_Manager {
 public:
+    TSpan_Node_List VSList;        // +0x00
     VSpan_Node** Line_Head_Ptrs;  // +0x3C
     VSpan_Node** Line_Tail_Ptrs;  // +0x40
     long* LeftMostPx;             // +0x44
     long* RightMostPx;            // +0x48
     long* Span_Count;             // +0x4C
-    long Num_Lines;               // +0x50
-    long Num_Pixels;              // +0x54
-    long Min_Span_Px;             // +0x58
-    long Max_Span_Px;             // +0x5C
-    long Min_Line;                // +0x60
-    long Max_Line;                // +0x64
+    int Num_Lines;                // +0x50
+    int Num_Pixels;               // +0x54
+    int Min_Span_Px;              // +0x58
+    int Max_Span_Px;              // +0x5C
+    int Min_Line;                 // +0x60
+    int Max_Line;                 // +0x64
 
-    TSpan_List_Manager(long NumPixels, long NumLines);
+    TSpan_List_Manager(int NumPixels, int NumLines);
     ~TSpan_List_Manager();
     void ResetAll();
-    void SetSpanRegions(long left, long top, long right, long bottom);
-    void AddSpan(long left, long right, long y);
+    void SetSpanRegions(int left, int top, int right, int bottom);
+    void AddSpan(int left, int right, int y);
 };
 
 struct tagRECT {
@@ -100,8 +110,8 @@ public:
     void* BitmapInfo;             // +0x0C
     void* Bitmap;                 // +0x10
     void* OldBitmap;              // +0x14
-    long Width;                   // +0x18
-    long Height;                  // +0x1C
+    int Width;                    // +0x18
+    int Height;                   // +0x1C
     long Pitch;                   // +0x20
     long Orien;                   // +0x24
     tagRECT ClipRect;              // +0x28

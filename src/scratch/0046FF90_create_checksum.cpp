@@ -32,6 +32,19 @@
 // - Separate per-object checksum temporary, named prefix-list pointers, and
 //   combined prefix expression were worse; final prefix declaration ordering
 //   was neutral. No exact frame-0x18 natural candidate emerged.
+// Wave20 bounded pass:
+// - A top-level signed attribute-count test reproduced the original movsx and
+//   delayed countdown store, but remained 270B/0x14 and worsened the body.
+// - Natural function-scope per-object checksum forms and direct list-node
+//   rereads either duplicated prior 268B evidence or regressed; no new source
+//   ownership lead survived review.
+// - A period-plausible register current-checksum variant reproduced the 0x18
+//   frame and stack-local count/prefix shape, but selected EBP=this/EBX-temp
+//   instead of the oracle's EBX=this/EBP-current topology and emitted 285B.
+// - Declaration reordering was codegen-identical. Restored the clean cached
+//   object source; remaining evidence-backed lead is compiler register/lifetime
+//   selection around the loop-carried object checksum, not a layout or call ABI
+//   mismatch.
 
 extern "C" long __cdecl __ftol(void);
 

@@ -35,6 +35,12 @@
 //   with the same 15 register/address mismatches. The clean typed source is
 //   retained; the remaining blocker is a stable VC5 this/md/second-object
 //   allocator basin rather than behavior, layout, or call-set uncertainty.
+// - wave20 bounded pass: target destructor, obj1/obj2 register hints, full
+//   target size, full AIModule virtual slots, self alias, math.h context,
+//   function-scope local declarations, and a scoped tacticalAI alias all
+//   emitted the same 238-byte/15-byte basin. A four-variant canonical
+//   AIModule/MainDecision virtual-surface lab produced two stable groups,
+//   both with the same first mismatch at +3; no exact or structural lead.
 
 class RGE_Static_Object;
 

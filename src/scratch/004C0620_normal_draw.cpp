@@ -31,6 +31,18 @@
 // probe all broadened structural drift; the canonical typed scan is restored.
 // Remaining lead: original reloads draw_list_num into AX while this basin keeps
 // it in CX and zeroes EAX for result=0 before the second guard.
+// Bounded wave20-sprite-01 pass: moving result=0 before the outer guard produced
+// the AX/CX hunk in the wrong direction (60 bytes); direct inner return 0 was
+// structural (253 bytes / 181 diff), and an explicit loop-test/body goto was a
+// codegen duplicate. Restored the clean typed source after each.
+// Parameter-home cursor mutation was also a duplicate. Shared count/result
+// probes did reach AX and EBX=1, but retained the wrong two-byte typed entry
+// address basin (181 positional bytes); list/cursor and child-before-entry
+// variants were structural or broader. An 18-case result/entry/update lab's
+// best was the same shared-count basin (173 bytes, edit diff 21), no exact.
+// Final validation retains the canonical full RGE_Sprite and typed child
+// do_draw ABI; remaining evidence is the localized AX/CX count plus list-entry
+// register/address schedule, with no productive source lead left in this pass.
 
 #include <stdio.h>
 

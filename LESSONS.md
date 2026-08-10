@@ -628,3 +628,9 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   subtraction before the countdown store, matching the oracle. Keep the clean indexed
   player/name ownership; array-reference aliases changed the pointer relation, while
   natural `for`/`while` initializer forms collapsed to the same exact codegen basin.
+
+- An otherwise exact VC5 function can retain a localized index/base register-coloring
+  drift until the period translation-unit header surface is restored. In a typed
+  `Shape_Info` pointer walk, adding the donor-era `<memory.h>` context changed only the
+  three-byte scaled-index prologue and closed the match; preserve named ownership and
+  test headers before introducing register-steering source.
