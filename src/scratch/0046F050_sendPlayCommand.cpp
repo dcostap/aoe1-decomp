@@ -8,6 +8,12 @@
 // - Remaining drift is vtable register EBP versus EBX and loop counter EBX versus EBP; no opaque codegen scaffold retained.
 // - Tried a natural indexed selected-list loop; VC5 canonicalized it to the same 7-byte output.
 // - Corrected the proven unsigned-char return widths of the v_c4/v_d0 command slots; caller output stayed unchanged.
+// Fresh bounded pass:
+// - Restored the donor-backed RGE_Player virtual ABI and canonical 0x220 layout; emitted code stayed unchanged.
+// - Header-context (6), declaration-order (4), and loop-form (4) labs each collapsed to the same 237-byte/7-byte group.
+// - Hoisted AIPlay/object declarations, used a receiver alias, and hinted the selected-list cursor; all stayed unchanged.
+// - Early loop-counter initialization stayed unchanged; function-scope selectedCount initialization worsened to 241 bytes and was restored.
+// - Final clean candidate remains the natural typed reconstruction; unresolved drift is the isolated EBP/EBX coloring swap at 7 bytes.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

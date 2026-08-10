@@ -31,6 +31,13 @@
 //   world virtual slot, and read-only attributes field were all codegen duplicates. The
 //   recovered constructor/class context therefore gives no new lead beyond the documented
 //   29-byte entry/pp register-color swap.
+// - orch-victory-02 bounded pass: constructor/save evidence added the +0x18 next link and
+//   32-bit int temporary surfaces; both were codegen-neutral. Ghidra-shaped attribute/result
+//   reuse, transient player-owner refreshes, and eight declaration-initialization variants all
+//   remained one 29-byte codegen group. A field-only/minimal class surface regressed to 37 bytes
+//   and was restored. The remaining gap is still only the EBX/EDI entry-versus-player-array
+//   coloring (original entry=EDI, rebuilt entry=EBX); no call, frame, CFG, layout, or behavior
+//   blocker changed.
 
 class RGE_Game_World;
 
@@ -65,6 +72,7 @@ public:
     long points;              // +0x0C
     long curr_points;         // +0x10
     float curr_attribute_amount; // +0x14
+    RGE_Victory_Point_Entry* next; // +0x18
 };
 
 class RGE_Victory_Conditions {
@@ -88,7 +96,7 @@ public:
 void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point_Entry* entry) {
     if (entry->state != 0) return;
 
-    long val = (long)this->player->attributes[entry->attribute];
+    int val = (long)this->player->attributes[entry->attribute];
     if (entry->curr_attribute_amount < (float)val) {
         entry->curr_attribute_amount = (float)val;
     }
@@ -106,7 +114,7 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
         } while (i < this->player->world->player_num);
     }
 
-    long result;
+    int result;
     if (entry->curr_attribute_amount >= (float)entry->amount) {
         result = entry->points;
     } else {

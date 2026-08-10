@@ -20,6 +20,21 @@
 //   the cleanest period-plausible source; remaining drift is the early
 //   coordinate block's VC5 scheduling/liveness.
 
+// orch-fractal-02 pass (2026-08-10):
+// - Separate top-scoped coordinate declarations/loads, stored-direction
+//   dependencies, assignment expressions, and a diagnostic volatile DirX
+//   store all reproduced the same 332-byte/187-byte basin.
+// - Coordinate-liveness lab #37 covered direction-seeded locals, field/self
+//   aliases, local point aggregates, assignment-expression stores, and seeded
+//   member updates; all 8 variants kept size/frame/call-set and no variant
+//   improved the +0x86 coordinate hunk.
+// - Long coordinate locals, explicit this-qualified direction-first additions,
+//   the full same-TU PointMaker method declaration surface, and register-
+//   qualified x/y snapshots were codegen duplicates.
+// - Restored the clean signed-remainder source. Remaining drift starts at
+//   +0x86/+0x0085 and is the x/y/direction coordinate register/liveness basin;
+//   the parity block and late bound/store blocks remain aligned.
+
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
 // Main-agent audit confirmed canonical point/link ownership and signed random

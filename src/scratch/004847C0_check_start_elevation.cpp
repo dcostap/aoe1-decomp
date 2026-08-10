@@ -57,6 +57,20 @@
 // explicit initial empty-range return plus do/while row loop broadened the CFG.
 // A four-variant bound-declaration lab reproduced only the 141-byte or worse
 // 146-byte families; no y1 range-home rotation was found.
+// Continuation (orch-rmmelev-01):
+// 11: reusing x as clipped x1 with a separate row counter worsened to 214 bytes.
+// 12: a for-header row increment improved late edit alignment but worsened strict
+//     bytes to 172; the outer empty-range do/while reproduced the prior 169-byte
+//     family and was rolled back.
+// 13: the exact rmm_elev class/TU declarations and full tile/info surface were
+//     restored; codegen was identical. Comma-grouped bound declarations were also
+//     identical.
+// 14: a typed row-pointer seed/base/cell surface lab found no new basin; the clean
+//     141-byte row-base source remains best. Restore it before final validation.
+// Left unresolved: original y1 uses the dead range home, x1 remains in EBX, and
+// row_ptr is homed in the y parameter slot so ECX can mask the tile byte; current
+// natural VC5 allocation rotates those homes/registers despite exact size, CFG
+// counts, and canonical map-row ownership.
 
 struct RGE_Tile {
     short screen_xpos;

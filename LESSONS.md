@@ -567,6 +567,14 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   count can hoist sign extension before the branch; retain the byte-local form
   only when the observed width and instruction order support it.
 
+- In a branch with repeated global receiver uses, a branch-local typed game
+  pointer used for the success-arm member store can block VC5's cross-arm
+  global-load CSE and preserve the oracle's post-test reloads. Naming the
+  fetched record before testing its byte flag can then recover the expected
+  object-pointer/vtable register coloring. Use only when those reloads and
+  register roles are binary-proven; the aliases must remain ordinary and
+  source-plausible, not volatile register-forcing scaffolding.
+
 - When a packed stream needs two adjacent byte-cursor advances and the oracle
   has separate `inc` instructions, express the first advance as part of the
   packet-byte read (`value = *++cursor`) and keep the payload advance as a

@@ -64,6 +64,17 @@
 //   compiler-basin blocker, not an unresolved call/layout ABI fact.
 // Main-agent audit restored canonical polymorphic game/player/master/screen
 // ownership and removed the residual self register alias.
+//
+// Fresh bounded pass (orch-scrgame-01):
+// - Tested the generated RGE_Player base ownership/get_player return surface
+//   and the long/long get_string2 ABI; both emitted the prior 149-byte basin.
+// - A branch-local RGE_Base_Game* used only for the success-arm master-id
+//   store blocked the post-cost global-load CSE and reached a 225-byte,
+//   29-byte-diff basin without changing calls, frame, or CFG.
+// - Naming the fetched master object before testing building_connect_flag then
+//   recovered the oracle's ESI object-pointer/vtable-register coloring exactly.
+// - Removed the stale per-function /GX override; the exact source remains exact
+//   under the pinned default /O2 /Oy flags.
 
 struct RGE_Base_Game;
 struct TRIBE_Player;
@@ -128,8 +139,11 @@ void TRIBE_Screen_Game::command_building(int obj_id) {
     int paused = rge_base_game->get_paused();
     if (paused == 0) {
         if (rge_base_game->get_player()->check_obj_cost(obj_id, &attr, 1.0f, paused)) {
-            rge_base_game->master_obj_id = obj_id;
-            if (rge_base_game->get_player()->master_objects[obj_id]->building_connect_flag) {
+            RGE_Base_Game* game = rge_base_game;
+            game->master_obj_id = obj_id;
+            RGE_Master_Static_Object* object =
+                rge_base_game->get_player()->master_objects[obj_id];
+            if (object->building_connect_flag) {
                 rge_base_game->set_game_mode(0x15, 0);
                 return;
             }

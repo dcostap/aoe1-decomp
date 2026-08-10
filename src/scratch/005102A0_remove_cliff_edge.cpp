@@ -9,6 +9,15 @@
 // order all emitted the same 360-byte structural family (338-byte diff).
 // probe 10: a typed map-plus-info aggregate widened the frame to 0x28 and
 // worsened the topology; rolled back.
+// orch-tmap-02 fresh pass: baseline revalidated the exact donor-derived
+// behavior/call surface. Full RGE_Map/TRIBE_Map virtual context, initialized
+// aggregate return, mixed map aliases, unqualified donor-style calls, long
+// reverse local, and counter/lifetime variants did not recover the saved-this
+// family. The oracle proves case-2/case-3 use test+jle, so the living source
+// keeps x <= 0/y <= 0 and the donor-shaped long-outer/int-inner do/while;
+// this improves aligned blocks but leaves the 360-byte VC5 family. Remaining
+// blocker: oracle homes this in [esp+10] and uses EBP/ESI for outer/inner,
+// while the rebuild keeps this in EBP and spills outer to [esp+10].
 // left in scratch: behavior/calls/CFG are understood; remaining mismatch is
 // VC5 saved-this/register and pre-switch scheduling, not a semantic gap.
 
@@ -73,12 +82,12 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
             return;
         break;
     case 2:
-        if (x < 1)
+        if (x <= 0)
             return;
         --x;
         break;
     case 3:
-        if (y < 1)
+        if (y <= 0)
             return;
         --y;
         break;
@@ -89,13 +98,17 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
     cliff_info = this->get_cliff_info(cliff);
 
     if (cliff != 0) {
-        for (int outer = -1; outer < 2; ++outer) {
-            for (int inner = -1; inner < 2; ++inner) {
+        long outer = -1;
+        do {
+            int inner = -1;
+            do {
                 this->game_world->players[this->game_world->curr_player]
-                    ->tile_list.add_node(outer + (int)cliff->y,
-                                         inner + (int)cliff->z);
-            }
-        }
+                    ->tile_list.add_node(outer + (long)cliff->y,
+                                         inner + (long)cliff->z);
+                ++inner;
+            } while (inner < 2);
+            ++outer;
+        } while (outer < 2);
 
         delete cliff;
 

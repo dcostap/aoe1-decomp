@@ -15,6 +15,10 @@
 // - Full base surface emitted identically to the gap-only donor; no new structural lead. Keep the named canonical base and pause rather than repeat the prior liveness basin.
 // - New claim: direct width-minus-one spelling reached exact size/frame but moved to a different register/CFG basin (216-byte diff, 73.9% shape); restored.
 // - Register-qualified list/width, named height/width temporaries, split list initialization, and const width-bound probes were unchanged or worse; restored.
+// - Fresh pass: height*width operand reversal was compiler-canonicalized with no emitted change; restored.
+// - C89-shaped top declarations reached 240 bytes but degraded block/resync shape; split bound initialization reached 239 bytes but worsened to 228 diff; restored.
+// - Late saved-list declaration plus parameter-home count reached the best fresh basin (239 bytes, no frame, 94.2% shape, first mismatch +8), but emitted code duplicated the prior basin: VC5 kept the list in ESI and count in EBX instead of target EBX/parameter-home roles. const/register list, separate cursor, and decompiler local-order variants were unchanged; restored.
+// - Fresh bounded pass exhausted; clean natural source retained. Remaining gap is early saved-register/parameter-home coloring, with calls, layout, and CFG aligned.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
