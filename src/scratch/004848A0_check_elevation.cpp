@@ -38,17 +38,42 @@
 // evidence. Prior bounded probes already exhausted first-scan row/count and
 // second-scan liveness/layout families; no new source-supported lead justified
 // replacing this readable 397-byte canonical reconstruction.
+// Fresh worker probes (orch-rmmelev-fresh-03):
+// - Reusing the dead radius home for the first-scan clipped upper row bound
+//   improved the diagnostic output to 398 bytes / 322 differing bytes, but
+//   changed the prologue and remained a broad structural basin; rolled back.
+// - Separate row_index declaration/scope and declaration-order variants were
+//   exact-size or duplicate broad basins; none recovered the original
+//   result/row-pointer/saved-this local rotation.
+// - The typed Map_Stack/tile/base surface from the new same-TU two-byte stack
+//   sibling is retained as canonical context; it is codegen-neutral here.
+// Paused: clean source remains 397 bytes / 349 differing bytes. The remaining
+// evidence-backed blocker is the first-scan local-window topology (original
+// row counter [esp+10], result [esp+14], row pointer [esp+18], saved this
+// [esp+1c], and offset [esp+20]) versus the natural compiler allocation;
+// second-scan behavior and canonical map ownership are modeled.
 
 typedef unsigned char uchar;
 
 // Main-agent audit confirmed canonical elevation-map ownership and retained the
 // natural two-scan bounds check; padding remains non-target scaffolding only.
+struct Map_Stack {
+    long x;
+    long y;
+    float cost;
+    float tot_cost;
+    Map_Stack* next;
+    Map_Stack* prev;
+};
+
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
     unsigned char terrain_type : 5;
+    unsigned char elevation : 3;
     unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     unsigned char last_drawn_as;
     unsigned char last_drawn_shape;
     unsigned char draw_as;
@@ -72,8 +97,8 @@ public:
     float schedule;
     uchar* search_map;
     uchar** search_map_rows;
-    void* stack_array;
-    void* stack_offsets;
+    Map_Stack* stack_array;
+    Map_Stack** stack_offsets;
 };
 
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
