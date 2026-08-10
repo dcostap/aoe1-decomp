@@ -56,6 +56,12 @@
 // main-decision submodule ownership.
 // Current session probe: a top-level md alias used across both branches
 // regressed to a 197-byte structural basin (209 differing bytes); restored.
+// Fresh bounded pass (orch-taitacmd-02): derived md typing at size 0x125C8,
+// branch-initialized md lifetime, same-TU math.h context, full proven md
+// subobject sizes, and a branch-local md reference all emitted the same exact
+// 222-byte / six-byte register-swapped basin. A positive-branch BuildAIModule
+// pointer alias regressed structurally to 224 bytes / 113 differing bytes and
+// was restored. No ABI, call, layout, or behavior uncertainty remains.
 
 #include <stdlib.h>
 

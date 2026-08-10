@@ -113,6 +113,25 @@
 //   the earlier provisional int stub; correcting it preserved bytes and fixes
 //   the mangled call identity to the original TDrawArea method.
 
+// orch-shape-01 fresh bounded pass (2026-08-10; 10 meaningful hypotheses):
+// - Directly mutating x as an integer destination cursor changed only the
+//   setup SIB byte (135 strict bytes); an ordinary address-taken x alias was
+//   codegen-identical. A pointer reference overlaid on x was also identical.
+// - Two persistent row/working cursors with a post-row handoff destroyed the
+//   prologue/block basin (220B, 216 strict bytes); independently advancing
+//   both cursors optimized back to the clean 202B candidate. A long integer
+//   address local likewise produced the clean duplicate.
+// - A diagnostic volatile x-home roundtrip reproduced the original 220-byte
+//   size, x-home setup/row-end stores, and all block boundaries (129 strict
+//   bytes). Adding the binary-proven explicit odd-byte compare reduced this
+//   diagnostic to 11 strict bytes / 100% shape; naming the odd temp and
+//   m-first destination expression were duplicates. Volatile home forcing is
+//   not retained because it is compiler-steering scaffolding, not defensible
+//   period source.
+// - Restored the pinned natural typed RLE source. Remaining evidence-backed
+//   blocker is the VC5 x-parameter home allocation plus localized setup
+//   register coloring; loop/calls/relocations remain aligned.
+
 #include <string.h>
 #pragma function(memset)
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
