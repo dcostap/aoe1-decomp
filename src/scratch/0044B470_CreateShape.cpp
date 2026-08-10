@@ -167,19 +167,19 @@ int PointMaker::CreateShape(int param_1, int param_2) {
     DrawPrimaryIntoProbabilityArray();
     ErrorCheckingAndCorrection();
 
-    int iVar1 = MinimumNumTiles;
-    int iVar3 = ProbabilityTiles;
+    int minimum_tiles = MinimumNumTiles;
+    int chosen_tiles = ProbabilityTiles;
     NumTilesActuallyChosen = 0;
-    int iVar2 = 0;
-    while (iVar3 < iVar1 && iVar2++ < 1500) {
-        iVar3 = Prime.y;
+    int attempts = 0;
+    while (chosen_tiles < minimum_tiles && attempts++ < 1500) {
+        chosen_tiles = Prime.y;
         x = Prime.x;
-        y = iVar3;
+        y = chosen_tiles;
         CurrentNumberOfBranchLevels = MaxNumberOfBranchLevels;
         NumNodes = 0;
-        iVar3 = MakeFirstLink();
-        Branch(iVar3);
-        iVar3 = ProbabilityTiles;
+        chosen_tiles = MakeFirstLink();
+        Branch(chosen_tiles);
+        chosen_tiles = ProbabilityTiles;
     }
     CreateMapBasedOnProbabilityArray();
     MapCleanUpEliminatingSinglesOnly();

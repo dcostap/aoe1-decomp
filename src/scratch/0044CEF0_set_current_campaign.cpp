@@ -1,5 +1,16 @@
 // VA: 0044CEF0 RGE_Person_Info::set_current_campaign(long)
 // 337 bytes, EH-framed (/GX)
+//
+// Attempt log:
+// - baseline: named RGE_Person_Info/RGE_Campaign_Info ownership, typed search,
+//   calloc/memcpy growth, and C++ new construction; rebuilt body matches the
+//   original call set through the constructor tail but emits three EH returns
+//   (375 bytes versus the 337-byte oracle).
+// - probes: positive/nested guards, shared result/goto labels, hoisted locals,
+//   and the known destructor declaration all kept the same 77-byte mismatch.
+// - left in scratch: canonical natural source; remaining drift is the VC5 EH
+//   return-tail layout (original shared cleanup versus rebuilt duplicated
+//   cleanup), not an unresolved campaign ownership or call-set issue.
 
 #include <string.h>
 

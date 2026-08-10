@@ -1,5 +1,11 @@
 // VA: 0044C930 RGE_Campaign_Info::rehook_campaigns(RGE_Campaign**, long)
 // gameinfo.cpp lines 156-187, 338 bytes
+//
+// Attempt log:
+// - baseline: named campaign/scenario ownership and a persistent list/count
+//   scan, but cached scenario_number calls and reversed final comparisons.
+// - behavior: mirror the constructor's period source shape with repeated
+//   campaign->scenario_number() expressions and typed memcpy resize copies.
 
 #include <string.h>
 
@@ -34,24 +40,23 @@ void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** list, long count) {
     do {
         if (strcmp((*pp)->get_name(), name) == 0) {
             campaign = *pp;
-            long snum = campaign->scenario_number();
-            if (scenario_num != snum) {
-                snum = campaign->scenario_number();
-                RGE_Scenario_Info* newsi = (RGE_Scenario_Info*)calloc(snum, 1);
-                if (scenario_num < snum) {
+            if (scenario_num != campaign->scenario_number()) {
+                RGE_Scenario_Info* newsi =
+                    (RGE_Scenario_Info*)calloc(campaign->scenario_number(), 1);
+                if (scenario_num < campaign->scenario_number()) {
                     memcpy(newsi, scenario_info, scenario_num);
                 } else {
-                    memcpy(newsi, scenario_info, snum);
+                    memcpy(newsi, scenario_info,
+                           campaign->scenario_number());
                 }
                 free(scenario_info);
                 scenario_info = newsi;
             }
-            snum = campaign->scenario_number();
-            scenario_num = snum;
-            if (snum <= last_scenario) {
-                last_scenario = snum - 1;
+            scenario_num = campaign->scenario_number();
+            if (last_scenario >= scenario_num) {
+                last_scenario = scenario_num - 1;
             }
-            if (last_scenario < current_scenario) {
+            if (current_scenario > last_scenario) {
                 current_scenario = last_scenario;
             }
         }
