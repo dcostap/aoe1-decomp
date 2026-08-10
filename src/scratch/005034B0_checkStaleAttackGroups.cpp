@@ -33,6 +33,17 @@
 // - Paused: ten fresh hypotheses exhausted; best diagnostic remains the prior
 //   192-byte / 110-diff volatile-number basin, while the retained source is the
 //   natural 184-byte reconstruction. Calls, layout, and behavior are understood.
+// - Fresh final pass (orch-taitacmd-fresh-04): inner ordered result
+//   initializers plus elapsed-first comparison were unchanged structurally;
+//   inner volatile-number plus elapsed-first reached 192 bytes / 111 diff.
+//   Desired-before-number declarations, reference alias, comma assignment,
+//   ordinary desired-minus-number reuse, and register-qualified desired were
+//   duplicate or worse. Re-establishing the prior diagnostic best confirmed
+//   192 bytes / 110 diff; its spill still occurs before desiredUnits rather
+//   than at the oracle's post-call site. Restored clean natural source.
+// - Paused: fresh ten-hypothesis budget exhausted; exact calls and typed
+//   ownership remain established, while the local spill/liveness and time-chain
+//   register basin remain unresolved.
 
 class RGE_Game_World {
 public:

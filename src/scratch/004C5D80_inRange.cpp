@@ -23,6 +23,10 @@
 //   - Full-branch/partial/common y forms, y-before-clamp with ternary or explicit homes, and a narrow volatile x reread stayed in no-push/broad 186+ diff basins. A focused radius-type/pointer lab found no exact 199B variant.
 //   - The focused risky-flag lab (default, /GX, /Oa, /Og-, /Ot-, /O1, /Ox combinations) left the 14-byte default group or broke structure; no flag lead.
 //   - A final comma-sequenced y assignment likewise stayed in the no-push basin. Restored the clean natural y-after-clamp reconstruction; blocker remains the binary-observed x87/fault-order gap, shared by 004C5E50 and 004C5F00.
+// 2026-08-10 orch-statobj-fresh-02 fresh pass (6 meaningful probes):
+//   - Materializing other radius_y before the x clamp as double (211B/114 diff) or float (205B/104 diff) disrupted the exact radius prefix; both were rolled back.
+//   - Combining the x clamp and Y assignment with a comma expression, using a natural ternary x clamp, and predeclaring y were codegen duplicates of the clean 199B/22-diff source.
+//   - Reused canonical static/master coordinate and radius ownership; no call, layout, or ABI lead emerged. Clean source retained; remaining gap is the same fused other-Y subtraction/fault-order scheduling hunk at +0062.
 
 class RGE_Master_Static_Object {
 public:
