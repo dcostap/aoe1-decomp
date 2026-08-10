@@ -44,6 +44,19 @@
 //   redundant proven-null guard, explicit target/all-player labels, and a diagnostic
 //   virtual-helper declaration were neutral or worse. Restored the clean natural
 //   source; remaining drift is still the 25-byte entry/callee-save color from offset 0.
+// - Wave20: split entry-alias declaration/assignment and a top-level const
+//   parameter qualifier were emitted-code duplicates. A nine-case targeted
+//   alias lab (target/all branch aliases, declaration timing) produced one
+//   199-byte group, so no entry-home change is supported by those forms.
+// - Wave20: a state-only top-level entry alias and moving the all-player index
+//   out of the for header were neutral. A function-scope obj_type assigned
+//   before the node test swapped entry/player into EBP/EBX but broke size/CFG;
+//   assigning it only inside the proven node loops collapsed back to the clean
+//   25-byte group. Six declaration-order/storage variants found no EBX-home
+//   group; a register-qualified obj_type was also a duplicate.
+// - Wave20 final: restored the pinned natural typed source; remaining evidence
+//   is still the localized original EBX entry home versus rebuilt EDX, with
+//   exact size/frame/CFG and canonical list/victory ownership intact.
 
 struct RGE_Player;
 
