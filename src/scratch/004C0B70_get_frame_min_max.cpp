@@ -44,6 +44,16 @@
 // Final clean source for orch-sprite-01: retain direct formal frame/facet and
 // get_size-output accumulation; remaining drift is the ESI/EBX post-call coloring
 // and the resulting four bound-update encodings, not behavior/calls/layout.
+// Fresh bounded pass wave21-sprite-01: a 96-case result-local lab, named
+// get_size status, scoped/y-only/x2 result locals, inline y-offset expressions,
+// and output-local declaration-order variants did not reproduce the original
+// post-call ESI/EBX coloring; result locals also shortened the proven swap arm.
+// The natural value-first upper predicates (`facet > max_x` and
+// `local_4 > max_y`) alone improve the clean direct-formal basin from 39 to 37
+// differing bytes and restore the original jle block shapes. Retain that
+// readable source; remaining drift is register/liveness coloring after the
+// second call. Final clean source: full RGE_Sprite ownership, two-call ABI,
+// direct formal frame/facet accumulation, value-first upper bounds.
 
 class RGE_Color_Table;
 class TShape;
@@ -135,10 +145,10 @@ int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
     if (calc_max_y < min_y) {
         min_y = (short)calc_max_y;
     }
-    if (max_x < facet) {
+    if (facet > max_x) {
         max_x = (short)facet;
     }
-    if (max_y < local_4) {
+    if (local_4 > max_y) {
         max_y = (short)local_4;
     }
     return 1;
