@@ -15,6 +15,15 @@
 // - Paused with the best clean reconstruction: 618 rebuilt bytes versus 638,
 //   24 versus 25 calls, and one missing duplicate close call caused by VC5
 //   tail-merging the close-button and dialog close paths.
+// fresh bounded pass (orch-scrach-02): return-literal, canonical draw TPanel
+//   virtual-surface, polymorphic RGE_Base_Game, direct/referenced/aliased/
+//   qualified close receivers, direct panelName, and volatile global/id probes
+//   did not change the 618-byte basin; volatile id restored the call count but
+//   broadened the body to 645 bytes. A 16-variant close-receiver lab likewise
+//   collapsed to one group with the missing close call.
+// left in scratch: restored the natural typed action tree; remaining blocker is
+//   the compiler's close-button-to-dialog-close tail merge (one missing direct
+//   close call), with no ABI/call-set or broad CFG uncertainty.
 
 #include <string.h>
 

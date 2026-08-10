@@ -45,6 +45,17 @@
 //   declaration all emitted the same 211-byte basin. No source/layout/call
 //   lead displaced the canonical indexed scan; remaining drift is the known
 //   VC5 allocator/stack-home basin.
+// - Fresh bounded pass: split eligibility guards, signed-char AttackMemory
+//   declarations, a positive combined guard, a reference record alias, and a
+//   Win32-long loop index all emitted the same 211-byte basin; restored.
+// - Canonical full TribeInformation surface (+F0 ManagedArray/md), reversed
+//   first sum terms, and coordinate declaration experiments were nonexact;
+//   swapping y/x improved edit resync only (142 vs 187) while losing an exact
+//   block, so the original x-then-y source was restored.
+// - Variant lab (36 natural declaration/loop/access/sum combinations): no
+//   exact or size/frame/call-set eligible result; emitted groups were 211 or
+//   197 bytes. Clean source remains the typed indexed scan; unresolved drift
+//   is allocator/stack-home coloring (counter, pointer/this, square/x).
 
 class RGE_Static_Object {
 public:

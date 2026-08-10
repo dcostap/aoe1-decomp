@@ -39,6 +39,25 @@
 // dword and byte cursors. Main-agent audit restored the owning RESENDER record
 // array: the flatter form was compiler-steering plumbing, not plausible living
 // source. Its codegen result remains useful evidence for the address-family gap.
+//
+// Attempt log (orch-comhand-02, 2026-08-10):
+// baseline: confirmed the restored natural RESENDER reconstruction at 255B/266B;
+// frame, CFG, and ordered calls are present but the compiler strength-reduces the
+// inner DestMap walk and loses 28 bytes against the 283B oracle.
+// behavior: temporarily reinstated the same-TU CountWaitingMessages-style flat
+// cursor with independent byte and dword indices. This is binary-close (283B,
+// 14B diff, 93.26% shape, 3/3 calls) and confirms the address-family blocker, but
+// it was restored out of living source because it is compiler-steering rather than
+// the canonical RESENDER ownership model.
+// layout: direct flat subscripting, typed RESENDER/DestMap views, and moving the
+// acknowledgment base before the IsPlayerHuman call all worsened the close basin
+// (182-216B diffs). Three focused labs (16 flat forms, 10 typed index orders, and
+// 8 offset-origin forms) found no exact output; the best offset-origin group was
+// 13B only with an incorrect acknowledgment index and still had the wrong inner
+// address shape. A constant-base-plus-index spelling likewise remained 182B.
+// bounded-pass conclusion: the remaining gap is VC5's inner-loop induction/address
+// family (oracle keeps `lea ecx,[esi+edi]; [base+ecx*4]` while natural forms fold
+// one cursor). Restored the normalized RESENDER source; no shared files changed.
 
 class TDebuggingLog {
 public:

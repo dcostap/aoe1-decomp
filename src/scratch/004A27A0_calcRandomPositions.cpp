@@ -22,6 +22,14 @@
 //   bytes versus 366, 94.31% shape, 165 positional diff bytes, 9/9 calls;
 //   remaining structural drift starts at the nested count scan (duplicated
 //   test/LEA layout), followed by the random-loop tail.
+// - Fresh pass isolated guarded do/while scans (pointer, indexed, reused-index,
+//   and declaration-order forms); all added a 0x30 frame and broad drift.
+//   while/short-circuit forms retained the duplicate count test. A for-header
+//   retry loop improved structural shape to 97.54% and resync similarity to
+//   91.08% (370 bytes), but strict drift was 171 bytes; compound random
+//   multiplication was codegen-neutral. Removing only the nested count guard
+//   preserved size but moved the whole local basin (220-byte drift). Restored
+//   the validated 372-byte natural candidate.
 
 class TPanel {
 public:

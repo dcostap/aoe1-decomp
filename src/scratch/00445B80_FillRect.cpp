@@ -23,10 +23,24 @@
 // - The offset-at-join pointer without that guard reproduced the prior best
 //   224-byte/168-difference basin, but retained branch-local pointer source is
 //   the more plausible Drawarea reconstruction.
+// - Fresh pass: the exact Drawarea stdlib/string header context, scalar clip
+//   fields, top-declared row locals, and branch-local direct-Pitch pointer
+//   shape reduced the clean candidate to 43 differing bytes (240 bytes,
+//   94.79% shape, 80.21% exact-block coverage).
+// - Explicit clipped-left reuse through x1 worsened the result to 109 bytes;
+//   reversing local declaration order was codegen-duplicate. A redundant
+//   post-orientation height guard produced a 243-byte function/114-byte diff;
+//   it was removed. Best clean source remains the 43-byte candidate.
+// - Remaining first hunk is the width/height register-home split at 00445C04;
+//   the original also has a binary-proven post-orientation height-test block.
 // - Remaining drift is broad VC5 this/register coloring and loop setup; no
 //   behavior-equivalent promotion is proposed.
-// Main-agent audit confirmed canonical draw-area buffer/clip ownership and kept
-// the ordinary clipped row fill.
+// Main-agent integration restored the canonical tagRECT ClipRect ownership;
+// this was codegen-identical to the scalar-field probe and preserves the
+// 240-byte/43-byte result. The ordinary clipped row fill remains authoritative.
+
+#include <stdlib.h>
+#include <string.h>
 
 extern "C" void* __cdecl memset(void* s, int c, unsigned int n);
 
@@ -84,6 +98,11 @@ public:
 void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
                          unsigned char color)
 {
+    long width;
+    long height;
+    long delta;
+    unsigned char* p;
+
     if (this->Bits != 0) {
         if (x1 > x2) {
         long temp = x1;
@@ -110,19 +129,17 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
     if (y2 > this->ClipRect.bottom)
         y2 = this->ClipRect.bottom;
 
-    long width = x2 - x1 + 1;
-    long height = y2 - y1 + 1;
+    width = x2 - x1 + 1;
+    height = y2 - y1 + 1;
         if (width < 1 || height < 1)
             return;
 
-        unsigned char* p;
-        long delta;
         if (this->Orien == 1) {
+        p = this->Bits + (y1 * this->Pitch + x1);
         delta = this->Pitch;
-        p = this->Bits + y1 * delta + x1;
     }
         else {
-        p = this->Bits + (this->Height - y1 - 1) * this->Pitch + x1;
+        p = this->Bits + ((this->Height - y1 - 1) * this->Pitch + x1);
         delta = -this->Pitch;
     }
 
