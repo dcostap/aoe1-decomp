@@ -9,3 +9,7 @@
 # utmarray.h operator[] used by TribeStrategyAIModule::setVictoryCondition;
 # the inventory packet preserves this decorated overload identity.
 004EA750 ??A?$ManagedArray@H@@QAEAAHH@Z
+# The target destructor is emitted as the explicit ManagedArray<int> template
+# instantiation from utmarray.h; retain its decorated call identity.
+00408D20 ??1?$ManagedArray@H@@QAE@XZ
+0046A9E0 ??4Path@@QAEAAU0@ABU0@@Z
