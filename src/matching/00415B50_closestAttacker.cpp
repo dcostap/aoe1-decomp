@@ -10,12 +10,14 @@
 //   into the x87 stack and the frame was four bytes short.
 // - Promoted distance to a function-scope local and reversed selected-ID versus
 //   threshold assignment order. This restored the separate FPU spill, frame,
-//   CFG, call-site relocations, and all late blocks; the remaining 10-byte drift
-//   is only the swapped initial sentinel/threshold stores.
+//   CFG, call-site relocations, and all late blocks.
 // - A volatile-distance diagnostic confirmed the spill cause but was removed.
 //   Declaration/init permutations and a focused six-case init-order lab did not
-//   produce the oracle's store order. Best retained source is natural typed C++
-//   with 328-byte output, 6/6 calls, and 10 positional bytes remaining.
+//   produce the oracle's store order.
+// - Reordered the local declarations to selected ID, threshold, loop index,
+//   distance, matching the same-TU weakestEnemy donor's declaration style. This
+//   preserved the natural source and emitted the oracle's sentinel-before-zero
+//   stores exactly: MATCH (328/328 bytes, 6/6 calls, default flags).
 
 extern "C" {
     void* __cdecl operator_new(unsigned int size);
@@ -86,13 +88,13 @@ public:
 };
 
 int UnitAIModule::closestAttacker(float* attackDistance) {
-    int i;
     int attackObject;
     float largestThreat;
+    int i;
     float distance;
 
-    largestThreat = 0.0f;
     attackObject = -1;
+    largestThreat = 0.0f;
     i = 0;
 
     if (this->attackingUnitsValue.numberValue > 0) {
