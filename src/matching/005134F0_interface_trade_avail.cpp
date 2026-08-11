@@ -37,6 +37,10 @@
 //   0x184 frame, leaving four frame/argument displacement bytes; owner/result/
 //   dock lifetime variants did not change that basin. A union overlay returned
 //   to the broad alias basin. Restored the direct canonical 96-entry source.
+// - Rechecked the stack ownership: the [esp+14h] home is the saved this pointer,
+//   while the real dock array begins at [esp+18h]. Removing the speculative
+//   one-slot dock-list bias (zero-based collection and transfer) matched all
+//   257 bytes with the canonical 96-entry source.
 
 #include <stdlib.h>
 
@@ -126,7 +130,7 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** out_trade,
             if (i != this->id) {
                 RGE_Object_Node* node = this->world->players[i]->objects->list;
                 if (node != 0) {
-                    RGE_Static_Object** output = dock_list + dock_count + 1;
+                    RGE_Static_Object** output = dock_list + dock_count;
                     do {
                         if (node->node->master_obj->id == 0x2D) {
                             if (this->visible->get_visible(
@@ -154,7 +158,7 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** out_trade,
     if (dock_count != 0) {
         *out_trade = (Trade_Avail*)calloc(dock_count, 0x0C);
         if (dock_count > 0) {
-            RGE_Static_Object** input = dock_list + 1;
+            RGE_Static_Object** input = dock_list;
             Trade_Avail* output = *out_trade;
             int count = dock_count;
             do {
