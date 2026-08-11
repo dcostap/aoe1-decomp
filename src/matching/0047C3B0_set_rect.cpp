@@ -30,17 +30,12 @@
 // - A reference receiver for the proven non-null scrollbar and a narrow int
 //   fixed-position width parameter were both duplicates; restored the exact
 //   typed donor ABI and direct member call.
+// - Restored the period Windows SDK context with <windows.h> for tagRECT,
+//   DeleteObject, and CreateRectRgn instead of local import/type stubs.  The
+//   natural source then emits the original scrollbar receiver-before-width
+//   schedule and matches all 277 bytes under the default flags.
 
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
-extern "C" __declspec(dllimport) int __stdcall DeleteObject(void* object);
-extern "C" __declspec(dllimport) void* __stdcall CreateRectRgn(
-    int left, int top, int right, int bottom);
+#include <windows.h>
 
 class TPanel {
 public:
