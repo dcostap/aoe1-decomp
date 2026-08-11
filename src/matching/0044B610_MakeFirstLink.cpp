@@ -34,16 +34,37 @@
 // - Restored the clean signed-remainder source. Remaining drift starts at
 //   +0x86/+0x0085 and is the x/y/direction coordinate register/liveness basin;
 //   the parity block and late bound/store blocks remain aligned.
+// - A focused period-header context lab found that the donor-era combination
+//   of <stdlib.h> and <string.h> changes only the VC5 coordinate scheduling;
+//   the exact winner restores the original 332-byte body and all 100
+//   instructions. Single-header variants were not exact.
+// - Replaced the flat decompiler Point/Prime view with the donor-proven
+//   PrimaryPt/PtToPt ownership; emitted bytes stayed exact. Final source is
+//   the typed, header-context reconstruction, with no custom flags or hacks.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
+
+#include <stdlib.h>
+#include <string.h>
+
+class PrimaryPt {
+public:
+    int x;
+    int y;
+};
+
+class PtToPt {
+public:
+    int x;
+    int y;
+};
 
 // Main-agent audit confirmed canonical point/link ownership and signed random
 // parity semantics.
 class PointMaker {
 public:
-    int Prime_x;
-    int Prime_y;
-    int Point[1000];
+    PrimaryPt Prime;
+    PtToPt Point[500];
     char gap_FA8[0x10];
     int x;
     int y;
@@ -113,8 +134,8 @@ int PointMaker::MakeFirstLink() {
 
     y = ny;
     x = nx;
-    Point[NumNodes * 2] = nx;
-    Point[NumNodes * 2 + 1] = y;
+    Point[NumNodes].x = nx;
+    Point[NumNodes].y = y;
     int result = NumNodes;
     NumNodes = result + 1;
     return result;
