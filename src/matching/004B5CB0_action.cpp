@@ -1,25 +1,20 @@
 // VA: 004B5CB0 TribeGameSettingsScreen::action
 // PDB source: scr_set.cpp
 // Attempt log:
-// - 8 attempts: goto def pattern fixed shared handler, switch matched sub/dec dispatch
-// - Remaining diff: ~18% edit / 28% positional
-// - Switch generates sub eax,7; je; dec eax; je (correct dispatch form)
-// - But default handler placed BEFORE case8 handler (fall-through to default)
-//   vs original: jne to default AFTER case handler block (2-byte offset cascade)
-// - Also: first okButton check loads into ecx for register-to-register cmp
-//   instead of original's direct memory cmp. CancelButton/help_button are correct (memory form).
-// - Left in scratch: structural VC5 codegen barrier for default/case block placement
-// - SA60574_action baseline: typed switch retained an extra activatePanels call
-//   and the same default-before-case8 layout.
-// - SA60574_action nested positive guards (id!=7, then id==8) restored the
-//   original 13-call topology, 105 instructions, and 95.24% exact-block
-//   coverage; final size is +2 bytes and 114 positional-diff bytes.
-// - Final bounded evidence: the remaining hunk is the dropdown dispatch
-//   spelling (oracle sub eax,7 / dec eax / jne default; rebuilt cmp eax,7 /
-//   cmp eax,8) plus the resulting two-byte block span. Switch label/order,
-//   goto-to-late-label, arithmetic-normalized dispatch, and alternate guard
-//   orders either duplicated code or produced no improvement; restored the
-//   natural nested-guard candidate.
+// - Canonical ownership is the named panel fields at +0x494, +0x4A4, +0x4AC,
+//   +0x4F0, +0x504, +0x544, +0x548, +0x54C, and +0x550; the ordered call set
+//   is the scr_set.cpp action path shown by the original assembly.
+// - Prior natural nested-guard candidate matched all 13 calls and 105
+//   instructions but remained 2 bytes larger with a cmp/cmp dropdown dispatch
+//   instead of the oracle's sub/dec dispatch.
+// - A switch on the original get_id() value supplies the oracle's sub eax,7 /
+//   dec eax sequence.  Placing its default and the scenario fill path on one
+//   explicit late activation tail, with an explicit fall-through to `def` for
+//   unmatched events, reproduces the original shared block topology.
+// - A first late-label probe omitted the fall-through `goto def` and added an
+//   extra activation/call; the retained typed switch plus guarded fall-through
+//   is exact under the default VC5 flags.
+// - Probe 020: MATCH, 329 bytes, 105 instructions, 13 calls, 0 differing bytes.
 
 class TPanel {
 public:
@@ -144,16 +139,15 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned lon
     }
 
     if (param_1 == (TPanel*)this->victoryTypeDrop && param_2 == 0) {
-        long id = this->victoryTypeDrop->get_id();
-        if (id != 7) {
-            if (id == 8) {
-                this->scoreDrop->set_line(7);
-            } else {
-                this->activatePanels();
-                return 1;
-            }
-        } else {
+        switch (this->victoryTypeDrop->get_id()) {
+        case 7:
             this->timeDrop->set_line(3);
+            break;
+        case 8:
+            this->scoreDrop->set_line(7);
+            break;
+        default:
+            goto activate_and_return;
         }
         this->activatePanels();
         return 1;
@@ -164,10 +158,15 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned lon
             return 1;
         if (param_2 == 1) {
             this->fillMissionText();
-            this->activatePanels();
-            return 1;
+            goto activate_and_return;
         }
     }
+
+    goto def;
+
+activate_and_return:
+    this->activatePanels();
+    return 1;
 
 def:
     return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
