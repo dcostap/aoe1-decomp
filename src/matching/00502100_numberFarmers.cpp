@@ -50,6 +50,12 @@
 //   long outer index, and combined zero declaration all duplicated the basin.
 // - the clean source remains exact in size/CFG/ordered eight-call surface; the
 //   only unresolved bytes are the EBX/EBP outer-index/new-size coloring swap.
+// Current worker probe:
+// - Replaced the named ai/action temporaries with the natural short-circuit
+//   action predicate (`currentAction() == 0x261 || == 0x262`), matching the
+//   nearby exact numberObjectsWithAction source idiom.  This flipped the
+//   callee-save coloring to EBX outer index / EBP growth size and reached an
+//   exact 249-byte match without changing ownership, calls, or CFG.
 
 void* operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -132,15 +138,10 @@ int TribeTacticalAIModule::numberFarmers()
             RGE_Static_Object* obj = this->md->object(this->civilians[i]);
             if ((obj != 0) && (obj->unitAI() != 0) &&
                 (obj->master_obj->id == 0x103)) {
-                UnitAIModule* ai = obj->unitAI();
-                int action = ai->currentAction();
-                if (action != 0x261) {
-                    ai = obj->unitAI();
-                    action = ai->currentAction();
-                    if (action != 0x262)
-                        goto next;
+                if (obj->unitAI()->currentAction() == 0x261 ||
+                    obj->unitAI()->currentAction() == 0x262) {
+                    rVal = rVal + 1;
                 }
-                rVal = rVal + 1;
             }
         next:
             i = i + 1;
