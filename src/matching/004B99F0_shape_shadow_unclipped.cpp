@@ -70,6 +70,23 @@
 //   was rolled back. No call, ownership, or forward shadow-RLE uncertainty
 //   remains; the first hunk is still the standalone VC5 destination/flag basin.
 
+// sa-5542e3a2-r1 probes (2026-08-11):
+// - Baseline revalidated the pinned typed forward shadow-RLE reconstruction at
+//   254B/156 strict bytes; the first structural gap was destination allocation.
+// - Direct branch-local assignment of the destination into x improved CFG but
+//   grew the function to 263B/206 diff; rolled back.
+// - A separate row-offset plus x-home accumulator reached 254B/33 diff and
+//   recovered the original BL flag/parameter-home loop topology, but its early
+//   draw-area load was still wrong.
+// - Restoring a named typed save_buffer for initial destination formation, then
+//   carrying that proven row address through the incoming x home, matched the
+//   original 254 bytes exactly. The redundant-looking cast is retained because
+//   the executable proves x's home is the persistent row destination and the
+//   source remains an ordinary typed RLE decoder without raw offsets/asm.
+// - Period-typed TShape member declarations were checked; they preserve exact
+//   bytes for the final x-home form. Natural save_buffer declaration reordering
+//   alone remained the 157-byte basin.
+
 typedef unsigned char byte;
 
 struct Shape_Header {
@@ -96,6 +113,25 @@ struct TDrawArea {
     long AlignedWidth();
 };
 
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
+
+struct Shape_File_Header;
+struct SLhape_File_Header;
+
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
 // Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
 // and retained the natural typed RLE decoder.
 struct TShape {
@@ -103,10 +139,10 @@ struct TShape {
     int load_type;
     int load_size;
     Shape_Header* shape_header;
-    void* head;
-    void* offsets;
-    void* FShape;
-    void* shape_info;
+    Shape_File_Header* head;
+    Shape_Offsets* offsets;
+    SLhape_File_Header* FShape;
+    Shape_Info* shape_info;
 
     byte Check_shape(long, char*);
     byte shape_draw_unclipped(TDrawArea*, long, long, long);
@@ -122,9 +158,9 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
     Shape_Header* sh = shape_header;
     byte* p = (byte*)(sh + 1);
     long height = sh->ymax - sh->ymin + 1;
+    byte* save_buffer;
     long rows;
     long width;
-    byte* save_buffer;
 
     width = da->AlignedWidth() * da->Orien;
 
@@ -133,11 +169,13 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
     else
         save_buffer = da->Bits + y * width + x;
 
+    x = (long)save_buffer;
+
     if (height > 0) {
         rows = height;
         do {
+            byte* dst = (byte*)x;
             byte done = 0;
-            byte* dst = save_buffer;
 
             do {
                 byte command = *p++;
@@ -169,7 +207,7 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y, byte* table)
                 }
             } while (!done);
 
-            save_buffer += width;
+            x += width;
         } while (--rows);
     }
 
