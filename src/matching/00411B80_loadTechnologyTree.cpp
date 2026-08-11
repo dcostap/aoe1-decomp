@@ -15,7 +15,10 @@
 // try 14: restore best name[68]/temp[256] layout.
 // try 15: /GX /Oy- flag probe; too small 608B, rolled back.
 // try 16: /GX /O1 flag probe; too small 468B, rolled back.
-// BLOCKER: best source is exact size with only 4-byte stack-slot offset drift in TechnologyItem allocation/ctor staging: rebuilt stores new ptr/copy-temp homes at [esp+28]/[esp+94]/[esp+9C] where original uses [esp+2C]/[esp+98]/[esp+A0]. Control flow/calls/list insertion otherwise very close. Not accepted_drift-safe due stack layout/EH ctor staging drift.
+// try 17: model the observed 4-byte local immediately before the 64-byte name as a typed aggregate; reduced the gap to two bytes, but EH temporaries stayed four bytes low.
+// try 18: plain 64-byte name plus top-level allocation pointer shrank the frame to 0x1CC and worsened broad codegen; rolled back.
+// try 19: modeling the fifth sscanf integer as rc[4] kept its proven output slot live and restored the plain 64-byte name; exact match.
+// Exact result: rc[5] is the natural source model for the five integer destinations, including the formerly apparent rc+4 overflow; it also reproduces the original local reuse in the allocation/constructor EH staging.
 
 #include <stdio.h>
 #include <string.h>
@@ -49,8 +52,8 @@ public:
 
 int ResearchAIModule::loadTechnologyTree(char* filename)
 {
-    int rc[4];
-    char name[68];
+    int rc[5];
+    char name[64];
     char temp[256];
     FILE* fp;
     TechnologyItem* item;
@@ -72,7 +75,7 @@ int ResearchAIModule::loadTechnologyTree(char* filename)
         if (fgets(temp, 0x100, fp) != 0) {
             tail = &this->techTree;
             do {
-                sscanf(temp, "%*c%d %s %*d %*d %d %d %d %d %*d %*d %*d %*d", rc, name, rc + 1, rc + 2, rc + 3, (int*)((char*)rc + 0x10));
+                sscanf(temp, "%*c%d %s %*d %*d %d %d %d %d %*d %*d %*d %*d", rc, name, rc + 1, rc + 2, rc + 3, rc + 4);
                 ResourceItem newRCost2(4, rc + 1);
                 TechnologyItem* alloc = new TechnologyItem(rc[0], name, newRCost2);
                 item = alloc;
