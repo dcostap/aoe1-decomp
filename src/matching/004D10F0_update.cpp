@@ -10,13 +10,34 @@
 // 8: Kept cdecl debug-log and switch dispatch because they match important original traits; blocker is remaining source-shape/TU register scheduling in success/failure call blocks.
 // 9: Temporary /Od flag probe did not change the 432-byte short .text family; removed flag.
 // 10: Temporary /O2 without /Oy probe also stayed in 432-byte short .text family; removed flag.
-// BLOCKER: current best has correct prologue/dispatch and quick_build offset but `check_function` cannot compare because rebuilt .text is 432 bytes vs configured/original 446. Need recover original's extra reload/call scheduling around player debug/cancel/success blocks without volatile prologue spill.
+// 11: Removed persistent obj/player locals from the completion arms and used direct typed
+//     this->obj / owner expressions; this is the period-plausible source shape for the
+//     binary's repeated obj/owner reloads and tests whether it restores the missing call-block bytes.
+// 12: Hoisting the required-time declaration and inlining the two work-rate factors were
+//     register/liveness probes; the former was unchanged and the latter made the x87 block exact.
+// 13: Restored typed ownership with RGE_Master_Action_Object::work_rate and
+//     RGE_Player::world->world_time_delta_seconds; this fixed the remaining register-color
+//     permutation while preserving the natural direct-member source. Exact 446/446 match.
 
 extern void* rge_base_game;
 
+class TRIBE_Player;
+
+class RGE_Game_World {
+public:
+    char gap_00[0x84];
+    float world_time_delta_seconds;
+};
+
+class RGE_Master_Action_Object {
+public:
+    char gap_00[0xe4];
+    float work_rate;
+};
+
 struct RGE_Master_Static_Object { char gap[0x15a]; short train_time; };
 struct RGE_Static_Object { void* vfptr; int id; char gap08[0x30]; float y; float x; };
-struct RGE_Action_Object { void* vfptr; int id; void* master; void* owner; char gap10[0x28]; float y; float x; };
+struct RGE_Action_Object { void* vfptr; int id; RGE_Master_Action_Object* master; TRIBE_Player* owner; char gap10[0x28]; float y; float x; };
 
 class RGE_Base_Game_Hack {
 public:
@@ -56,7 +77,7 @@ public:
     char gap_04[0x20];
     RGE_Master_Static_Object** objects;
     char gap_28[0x14];
-    void* timing;
+    RGE_Game_World* world;
     char gap_40[0x0A];
     short player_id;
     char gap_4c[0x98];
@@ -124,31 +145,28 @@ unsigned char TRIBE_Action_Make_Obj::update()
     case 1:
         return 1;
     case 6:
+        int needed;
         if (((RGE_Base_Game_Hack*)rge_base_game)->quick_build != 0) {
             this->work_done = 1000.0f;
         } else {
-            RGE_Action_Object* obj = this->obj;
-            TRIBE_Player* player = (TRIBE_Player*)obj->owner;
-            float rate = *(float*)((char*)obj->master + 0xe4);
-            this->work_done = rate * (*(float*)((char*)(*(void***)((char*)player + 0x3c)) + 0x84)) + this->work_done;
+            this->work_done = this->obj->master->work_rate *
+                this->obj->owner->world->world_time_delta_seconds + this->work_done;
         }
-        RGE_Action_Object* obj = this->obj;
-        TRIBE_Player* player = (TRIBE_Player*)obj->owner;
-        int needed = player->objects[this->obj_id]->train_time;
+        needed = this->obj->owner->objects[this->obj_id]->train_time;
         if ((float)needed <= this->work_done) {
             this->set_state(1);
             RGE_Static_Object* newObject;
             if (!this->place_obj(&newObject)) {
-                player->reimburse_obj_cost(this->obj_id);
-                ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x68, player->player_id, this->obj_id, 0, 0);
-                (*(void (__cdecl**)(TRIBE_Player*, const char*, int, int, int))(*(int*)player + 0xe4))(player, (const char*)0x587728, (int)this->obj_id, obj->id, this->unique_id);
-                player->cancel_make(0, (int)this->obj_id, obj->id, this->unique_id);
-                ((RGE_Action_Object_Hack*)obj)->slot148(obj->id, obj->id, 0x1f9, 0x26b, 0, 0);
+                this->obj->owner->reimburse_obj_cost(this->obj_id);
+                ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x68, this->obj->owner->player_id, this->obj_id, 0, 0);
+                (*(void (__cdecl**)(TRIBE_Player*, const char*, int, int, int))(*(int*)this->obj->owner + 0xe4))(this->obj->owner, (const char*)0x587728, (int)this->obj_id, this->obj->id, this->unique_id);
+                this->obj->owner->cancel_make(0, (int)this->obj_id, this->obj->id, this->unique_id);
+                ((RGE_Action_Object_Hack*)this->obj)->slot148(this->obj->id, this->obj->id, 0x1f9, 0x26b, 0, 0);
                 return 1;
             } else {
-                ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x66, player->player_id, (int)this->obj_id, (long)obj->x, (long)obj->y);
-                player->placement_success((int)this->obj_id, obj->id, this->unique_id, newObject->id);
-                ((RGE_Action_Object_Hack*)obj)->slot148(obj->id, obj->id, 0x1fa, 0x26b, 0, 0);
+                ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x66, this->obj->owner->player_id, (int)this->obj_id, (long)this->obj->y, (long)this->obj->x);
+                this->obj->owner->placement_success((int)this->obj_id, this->obj->id, this->unique_id, newObject->id);
+                ((RGE_Action_Object_Hack*)this->obj)->slot148(this->obj->id, this->obj->id, 0x1fa, 0x26b, 0, 0);
                 return 1;
             }
         }
