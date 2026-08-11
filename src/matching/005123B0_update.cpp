@@ -10,6 +10,13 @@
 // 8: main loop known drift: original uses EDX for update_history_count increment and compares after storing update_time; rebuilt uses EAX/C source-scheduled compare/store ordering. Same memory effects.
 // 9: history negative path differs as push ebp in original vs zeroing/pushing eax in one variant; both pass zero. Kept pointer history surface because original loads [esi+83c].
 // 10: potential accepted_drift candidate only if reviewer agrees all remaining hunks are register/scheduling/branch-distance equivalent; otherwise leave in scratch.
+// 11: restored the tplayer.cpp donor ABI: the list-failure call is inherited set_game_status(unsigned char) at vtable slot +4, not a derived +0x0c reset_something slot.
+// 12: replaced compiler-private literal-pool references with the donor TU's named shared constants at 00576824/28/2c/30/38/40; the original uses these relocations throughout the loop and final drain.
+// 13: split the history add into direct negative/converted branches; this mirrors the PDB line split and allows the original push ebp versus __ftol result paths without a merged val local.
+// 14: replaced the local n/count copy with a direct member increment and post-increment threshold test to try to recover the oracle's count store before compare and delayed FPU store.
+// 15: cache the final MouseSystem global in a typed local so the original load/test leaves the receiver in ECX across stack cleanup instead of requiring a late mov ecx,eax.
+// 16: removed the unused zero local as a plausibility audit; VC5's EBP zero register is compiler-derived from the natural null/zero stores.
+// 17: restored the metadata-proven virtual update declarations on RGE_Player and TRIBE_Player; qualified base dispatch remains direct while the source surface reflects the original vtable ownership.
 
 #define rge_base_game (*(RGE_Base_Game**)0x0062C574)
 #define debug_random_on (*(int*)0x0062C4D4)
@@ -19,6 +26,12 @@
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" void __cdecl debug_srand(char* file, int line, int seed);
+extern float DAT_00576824;
+extern float DAT_00576828;
+extern float DAT_0057682c;
+extern double DAT_00576830;
+extern double DAT_00576838;
+extern float DAT_00576840;
 
 class RGE_Base_Game { public: int fullVisibility(); };
 class RGE_Visible_Map { public: float percentExplored(); };
@@ -32,40 +45,42 @@ struct NodeObj { char pad0[8]; NodeObj2* type; char pad1[0x48-0xc]; char state; 
 struct Node { NodeObj* obj; Node* next; };
 struct List { int count; Node* head; };
 struct Stats { float cur; char pad04[0x24-4]; float progress; float add; float visible; char pad30[0x4c-0x30]; float a4c; float a50; char pad54[0x58-0x54]; float explored; char pad5c[0x84-0x5c]; float mult; char pad88[0xb0-0x88]; float diff; float b4; };
-class RGE_Player { public: virtual void dtor(); virtual void update(); };
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char);
+    virtual void update();
+};
 class TRIBE_Player : public RGE_Player {
 public:
     char pad04[0x28-4]; List* list; char pad2c[0x38-0x2c]; RGE_Visible_Map* visibleMap; RGE_Game_World* world; char pad40[0x4a-0x40]; short count; char pad4c[0x50-0x4c]; Stats* stats;
     char pad54[0x228-0x54]; int update_count; int update_history_count; int updateCountNeedHelp; float update_time; AI* playerAI; char pad23c[0x83c-0x23c]; TRIBE_History_Info* history;
-    virtual void vf0();
-    virtual void reset_something(int);
-    void update();
+    virtual void update();
 };
 
 void TRIBE_Player::update()
 {
-    int zero = 0;
     this->update_time = this->world->delta_time + this->update_time;
-    while (this->update_time > 1.0f) {
-        int n = this->update_history_count + 1;
-        this->update_time = this->update_time - 1.0f;
-        this->update_history_count = n;
-        if (n >= 15) {
-            this->update_history_count = n - 15;
-            int val;
-            if (this->stats->visible < 0.0f) val = 0;
-            else val = (int)this->stats->visible;
-            this->history->add_history_entry(0, val);
+    while (this->update_time > DAT_00576824) {
+        this->update_time = this->update_time - DAT_00576824;
+        ++this->update_history_count;
+        if (this->update_history_count >= 15) {
+            this->update_history_count -= 15;
+            if (this->stats->visible < DAT_00576828) {
+                this->history->add_history_entry(0, 0);
+            } else {
+                this->history->add_history_entry(0, (int)this->stats->visible);
+            }
         }
         if (rge_base_game->fullVisibility()) {
             this->stats->explored = 100.0f;
         } else {
-            this->stats->explored = this->visibleMap->percentExplored() * 100.0f;
+            this->stats->explored = this->visibleMap->percentExplored() * DAT_0057682c;
         }
         this->stats->diff = this->stats->a50 - (this->stats->a4c - this->stats->visible);
-        if (this->stats->diff < 0.0) this->stats->diff = 0.0f;
+        if (this->stats->diff < DAT_00576830) this->stats->diff = 0.0f;
         this->stats->progress += this->stats->add;
-        if (this->stats->progress > 100.0) this->stats->progress = 100.0f;
+        if (this->stats->progress > DAT_00576838) this->stats->progress = 100.0f;
         if (this->update_count > 0) --this->update_count;
         if (this->updateCountNeedHelp > 0) --this->updateCountNeedHelp;
         if (this->count > 0) {
@@ -79,14 +94,14 @@ void TRIBE_Player::update()
                 }
                 if (node) goto ok;
             }
-            this->reset_something(2);
+            this->set_game_status(2);
             this->stats->b4 = 0.0f;
         }
 ok:;
     }
     RGE_Player::update();
-    this->stats->cur = this->stats->cur - this->world->delta_time * this->stats->mult * this->stats->visible * 0.016666668f;
-    if (this->stats->cur < 0.0) this->stats->cur = 0.0f;
+    this->stats->cur = this->stats->cur - this->world->delta_time * this->stats->mult * this->stats->visible * DAT_00576840;
+    if (this->stats->cur < DAT_00576830) this->stats->cur = 0.0f;
     int seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x25f);
     int old = debug_random_on;
     global_save_debug_random_on1 = old;
@@ -97,5 +112,6 @@ ok:;
     }
     debug_random_on = old;
     debug_srand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x277, seed);
-    if (MouseSystem) MouseSystem->Poll();
+    TMousePointer* mouse = MouseSystem;
+    if (mouse) mouse->Poll();
 }
