@@ -47,6 +47,10 @@
 // - Final copy-destination lab tested seven direct/member/address/pointer spellings
 //   under size and call-set gates. All emitted one unchanged 253-byte group with
 //   prologue `push edi`; no source-shape lead remains for this bounded lane.
+// - Exact unlock: the PDB maps both emitted close sites to one campaign.cpp:45
+//   statement, so moved close(handle) after the scenario-count if instead of
+//   spelling it in both arms. VC5 tail-duplicated that natural common statement,
+//   restoring the branch-local EDI save and exact 251-byte output.
 
 #include <string.h>
 
@@ -100,11 +104,10 @@ RGE_Campaign::RGE_Campaign(char* param1)
         if (this->campaign_header.scenario_num > 0) {
             this->scenario_offsets = (RGE_Scenario_Offset*)calloc(this->campaign_header.scenario_num, 0x208);
             read(handle, this->scenario_offsets, this->campaign_header.scenario_num * 0x208);
-            close(handle);
         } else {
             this->scenario_offsets = 0;
-            close(handle);
         }
+        close(handle);
         return;
     }
 
