@@ -11,6 +11,7 @@
 // 8: switch id filter with duplicated distance body: much worse (87% positional, changed prologue/frame).
 // 9: remove cap local and read maximumSizeValue directly: big improvement, exact this/obj registers; 15.2% edit diff. Remaining copy-loop branch order/4-byte shift.
 // 10: do/while copy with top j>=newMax break and bottom maximumSizeValue condition.
+// 11: restored the same-TU inline ManagedIntArray::operator[] growth/copy loop; exact 356-byte match.
 
 #include <stddef.h>
 #include <math.h>
@@ -23,6 +24,24 @@ struct ManagedIntArray {
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    int& operator[](int index)
+    {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            int* new_data = (int*)::operator new(new_size * 4);
+            if (new_data != 0) {
+                int i;
+                for (i = 0; i < this->maximumSizeValue && i < new_size; i++) {
+                    new_data[i] = this->value[i];
+                }
+                ::operator delete(this->value);
+                this->value = new_data;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
 };
 
 struct RGE_Master_Static_Object {
@@ -67,25 +86,7 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Stati
 
     if (this->playerBuildings.numberValue > 0) {
         do {
-            if (i > this->playerBuildings.maximumSizeValue - 1) {
-                int newMax = i + 1;
-                int* newArray = (int*)::operator new(newMax * sizeof(int));
-                if (newArray != 0) {
-                    int j = 0;
-                    if (this->playerBuildings.maximumSizeValue > 0) {
-                        do {
-                            if (j >= newMax) break;
-                            newArray[j] = this->playerBuildings.value[j];
-                            j++;
-                        } while (j < this->playerBuildings.maximumSizeValue);
-                    }
-                    ::operator delete(this->playerBuildings.value);
-                    this->playerBuildings.value = newArray;
-                    this->playerBuildings.maximumSizeValue = newMax;
-                }
-            }
-
-            RGE_Static_Object* obj = this->md->object(this->playerBuildings.value[i]);
+            RGE_Static_Object* obj = this->md->object(this->playerBuildings[i]);
             if (obj != 0) {
                 if (unit->lookupZone((int)obj->world_x, (int)obj->world_y) == unitZone) {
                     int id = obj->master_obj->id;
