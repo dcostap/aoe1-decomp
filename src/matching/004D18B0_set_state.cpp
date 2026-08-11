@@ -1,13 +1,14 @@
 // VA: 004D18B0 TRIBE_Action_Repair::set_state
 // FLAGS: config/flags/004D18B0_set_state.rsp (/nologo /c /O2 /Oy /GX)
-// Scratch give-up: natural /GX switch implementation compiles and preserves the
-// EH frame, state store, delete_list call, broad switch cases, allocation paths,
-// and key vtable offsets (+0x38 new_sprite, +0x148 notify, +0x154 move_to), but
-// remains a broad layout mismatch (best observed: 76.1571% positional,
-// 30.8555% edit diff). First mismatch is the switch default `ja` displacement
-// because case bodies differ in size/order; case 1/3 shared notify tail,
-// constructor EH-state scheduling, and several case epilogues need deeper source
-// shape/TU-context work. Left in scratch with no inline asm.
+// Attempt log:
+// - Baseline natural /GX switch preserved the EH frame and broad action paths,
+//   but used the wrong state-1 call and duplicated the notify site.
+// - State 1 calls the inherited virtual set_target_obj(0) at vslot +54; states
+//   1/2/3 then join the natural post-switch new_sprite tail.
+// - The exact layout is RGE_Action_Move_To size 0x44, task sprites/sound at
+//   +34/+38/+44, and action-object data sprite/range at +18/+114.
+// - Exact: 713/713 bytes under the pinned VC5 /O2 /Oy /GX toolchain. No inline
+//   asm or compiler-only source scaffolding.
 
 class RGE_Sprite;
 class RGE_Static_Object;
@@ -15,6 +16,29 @@ class RGE_Action_Object;
 class RGE_Action_List;
 class RGE_Task;
 class RGE_Sound;
+
+class RGE_Action_Object_Data {
+public:
+    char gap_00[0x18];
+    RGE_Sprite* sprite; // +18
+    char gap_1C[0xF8];
+    float work_range; // +114
+};
+
+class RGE_Static_Object_Data {
+public:
+    char gap_00[0x14];
+    short object_type; // +14
+};
+
+class RGE_Task {
+public:
+    char gap_00[0x34];
+    RGE_Sprite* move_sprite; // +34
+    RGE_Sprite* work_sprite; // +38
+    char gap_3C[8];
+    RGE_Sound* work_sound; // +44
+};
 
 class RGE_Action_Object {
 public:
@@ -44,7 +68,7 @@ public:
     virtual void vf14C(); virtual void vf150();
     virtual void move_to(float, float, float, int, int); // +0x154
     int id; // +4
-    void* object_data; // +8, has type at +0x14
+    RGE_Action_Object_Data* object_data; // +8
     char gap_0C[0x2C];
     float x; // +38
     float y; // +3c
@@ -127,7 +151,7 @@ public:
     virtual void vf14C(); virtual void vf150();
     virtual void move_to(float,float,float,int,int); // +154
     char gap_04[4];
-    void* object_data; // +8
+    RGE_Static_Object_Data* object_data; // +8
     char gap_0C[0x2C];
     float x; float y; float z;
     char gap_44[0x144];
@@ -139,6 +163,7 @@ class RGE_Action_Move_To : public RGE_Action {
 public:
     RGE_Action_Move_To(RGE_Action_Object*, float, float, float, float, RGE_Sprite*);
     RGE_Action_Move_To(RGE_Action_Object*, RGE_Static_Object*, float, RGE_Sprite*);
+    float range;
 };
 class RGE_Sound { public: void play(int); };
 
@@ -159,7 +184,7 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
         break;
 
     case 11: {
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->sprite);
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0d);
             return;
@@ -175,7 +200,7 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
             this->target_y = this->target_obj->y;
             this->target_z = this->target_obj->z;
         }
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, *(float*)((char*)this->task + 0x114), this->sprite);
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->obj->object_data->work_range, this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0d);
             return;
@@ -186,11 +211,11 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
     }
 
     case 10: {
-        this->obj->new_sprite(*(RGE_Sprite**)((char*)this->obj->object_data + 0x18));
+        this->obj->new_sprite(this->obj->object_data->sprite);
         this->timer = 1.0f;
         RGE_Static_Object* target = this->target_obj;
         if (target == 0) return;
-        short id = *(short*)((char*)target->object_data + 0x14);
+        short id = target->object_data->object_type;
         if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
         if (target->command_flag != this->save_target_command_flag) return;
         target->move_to(this->obj->x, this->obj->y, this->obj->z, 0, 1);
@@ -201,28 +226,30 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
         this->target_x = this->target_obj->x;
         this->target_y = this->target_obj->y;
         this->target_z = this->target_obj->z;
-        this->obj->new_sprite(*(RGE_Sprite**)((char*)this->task + 0x34));
+        this->obj->new_sprite(this->task->move_sprite);
         return;
 
     case 7:
-        this->obj->new_sprite(*(RGE_Sprite**)((char*)this->task + 0x38));
-        if (*(RGE_Sound**)((char*)this->task + 0x44) != 0) {
-            (*(RGE_Sound**)((char*)this->task + 0x44))->play(1);
+        this->obj->new_sprite(this->task->work_sprite);
+        if (this->task->work_sound != 0) {
+            this->task->work_sound->play(1);
             return;
         }
         return;
 
     case 1:
-        this->setSubAction(0);
+        this->set_target_obj(0);
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1fa, 0x26a, 0, 0);
         }
-        // fallthrough
+        break;
+
     case 2:
-        this->obj->new_sprite(*(RGE_Sprite**)((char*)this->obj->object_data + 0x18));
-        return;
+        break;
 
     default:
         return;
     }
+
+        this->obj->new_sprite(this->obj->object_data->sprite);
 }
