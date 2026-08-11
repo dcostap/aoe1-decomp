@@ -8,6 +8,9 @@
 // - expression/comparison/guard spellings and a focused FPU lab did not change the
 //   remaining four-byte fld-st0 versus fld-resource/fadd-st1 hunk. A resources local
 //   and a named total were rejected as broad or farther codegen.
+// - a second focused arithmetic lab found exact output when the population operand
+//   is explicitly left-associated with a folded zero; both +/- zero forms emit the
+//   oracle's fld st0/fadd-resource pair. Keep the simpler population + 0.0f anchor.
 
 struct ObjectCost {
     short type;
@@ -89,7 +92,7 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
             if (this->resources[type] < amount) {
                 if (type != 4 || skip_farm == 0) {
                     unsigned char paid = *((unsigned char*)amount_ptr + 2);
-                    if (paid == 0 || population + this->resources[type] < amount) {
+                    if (paid == 0 || (population + 0.0f) + this->resources[type] < amount) {
                         if (out == 0) {
                             return 0;
                         }
