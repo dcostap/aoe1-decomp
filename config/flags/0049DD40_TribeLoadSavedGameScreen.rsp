@@ -1,1 +1,1 @@
-/nologo /c /Od /GX
+/nologo /c /O2 /Oy /GX
