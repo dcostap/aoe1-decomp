@@ -5,10 +5,14 @@
 // 2: Implemented null-panel base dispatch; filename dropdown child switching; add/remove on double-click; load dropdown path with dirty-save prompt; ok/save/cancel/add/remove/up/down button handling.
 // 3: Implemented Cancel Dialog and Load Dialog name handling, including panel_system destroyPanel/setCurrentPanel, TRIBE_Screen_Sed_Menu allocation/constructor, make_campaign/load_campaign, and base action fallback.
 // 4: Modeled large local buffers `str[256]` and `text[300]`, popupYesNoCancelDialog string formatting, and panel_system global surface.
-// 5: Default /O2 /Oy build compiles but is size-short: configured 1019 exceeds .text 928. It does not naturally produce the original EH registration despite placement-new/constructor spelling.
-// 6: Probed /GX and /GX /EHsc: still 928 bytes. Probed /Od: exact 1019 bytes but broad mismatch (78.9990% positional, first mismatch offset 0); flag removed.
-// 7: Remaining blocker is exception-frame/constructor context and broad control-flow topology. Original has VC5 EH frame around new/ctor paths plus compact optimized body; current natural source is behaviorally broad but too small, while diagnostic /Od is exact-size but wrong basin.
-// GIVEUP: left in scratch; no accepted_drift because natural build is size-short and exact-size diagnostic build is broad from offset 0.
+// 5: Default /O2 /Oy build was structurally short; same-TU /GX donors established the likely EH flag context.
+// 6: Restored the explicit null-panel base-action return, recovering the original parameter-push block and exact frame/CFG family.
+// 7: Spelled the byte save flag as > 0, selecting the oracle's jbe polarity in both save-prompt guards.
+// 8: Used independent code==0 and code==0-or-1 guards for the Cancel Dialog path, reproducing its post-make retest and shared allocation.
+// 9: Mirrored the same independent guards for Load Dialog; /GX build now MATCHES 1019/1019 bytes.
+// MATCH: natural typed source with direct new, intrinsic strcmp, explicit null return, and period /GX context.
+
+#include <string.h>
 
 class TPanel {
 public:
@@ -41,7 +45,11 @@ void* __cdecl operator new(unsigned int);
 inline void* operator new(unsigned int, void* p) { return p; }
 int __cdecl sprintf(char*, const char*, ...);
 
-class TRIBE_Screen_Sed_Menu { public: TRIBE_Screen_Sed_Menu(); };
+class TRIBE_Screen_Sed_Menu {
+public:
+    char gap_000[0x490];
+    TRIBE_Screen_Sed_Menu();
+};
 
 class TRIBE_Campaign_Editor_Screen : public TEasy_Panel {
 public:
@@ -70,15 +78,6 @@ public:
     long action(TPanel*, long, unsigned long, unsigned long);
 };
 
-static int streq_004905D0(const char* a, const char* b)
-{
-    while (*a == *b) {
-        if (*a == 0) return 1;
-        ++a; ++b;
-    }
-    return 0;
-}
-
 long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned long p3, unsigned long p4)
 {
     char str[256];
@@ -88,8 +87,8 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned lon
         return this->TEasy_Panel::action(panel, code, p3, p4);
 
     if (panel == this->filename_drop && code == 2) {
-        this->filename_drop->set_curr_child(this->filename);
-        this->set_curr_child(this->filename_drop);
+            this->filename_drop->set_curr_child(this->filename);
+            this->set_curr_child(this->filename_drop);
     }
 
     if (code == 3) {
@@ -101,7 +100,7 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned lon
     }
 
     if (panel == this->filename_drop && code == 0) {
-        if (this->need_to_save && this->campaign_scenarios->numberLines() > 0) {
+        if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
             this->get_string(0x2bc9, str, 0x100);
             sprintf(text, str, this->filename->get_text());
             this->popupYesNoCancelDialog(text, "Load Dialog", 0x1c2, 100);
@@ -113,13 +112,12 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned lon
 
     if (code == 1) {
         if (panel == this->ok_button) {
-            if (this->need_to_save && this->campaign_scenarios->numberLines() > 0) {
+            if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
                 this->get_string(0x2bc9, str, 0x100);
                 sprintf(text, str, this->filename->get_text());
                 this->popupYesNoCancelDialog(text, "Cancel Dialog", 0x1c2, 100);
             } else {
-                TRIBE_Screen_Sed_Menu* m = (TRIBE_Screen_Sed_Menu*)operator new(0x490);
-                if (m) new(m) TRIBE_Screen_Sed_Menu;
+                new TRIBE_Screen_Sed_Menu;
                 panel_system.setCurrentPanel("Scenario Editor Menu", 0);
                 panel_system.destroyPanel("Campaign Editor Screen");
                 return 1;
@@ -127,8 +125,7 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned lon
         } else if (panel == this->save_button) {
             this->make_campaign();
         } else if (panel == this->cancel_button) {
-            TRIBE_Screen_Sed_Menu* m = (TRIBE_Screen_Sed_Menu*)operator new(0x490);
-            if (m) new(m) TRIBE_Screen_Sed_Menu;
+            new TRIBE_Screen_Sed_Menu;
             panel_system.setCurrentPanel("Scenario Editor Menu", 0);
             panel_system.destroyPanel("Campaign Editor Screen");
             return 1;
@@ -141,37 +138,31 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code, unsigned lon
         } else if (panel == this->down_button) {
             this->move_scenario_down();
         }
+
     }
 
-    if (panel->panelName() && streq_004905D0(panel->panelName(), "Cancel Dialog")) {
-        panel_system.destroyPanel("Cancel Dialog");
-        if (code == 0) {
-            this->make_campaign();
-            TRIBE_Screen_Sed_Menu* m = (TRIBE_Screen_Sed_Menu*)operator new(0x490);
-            if (m) new(m) TRIBE_Screen_Sed_Menu;
-            panel_system.setCurrentPanel("Scenario Editor Menu", 0);
-            panel_system.destroyPanel("Campaign Editor Screen");
+        if (panel->panelName() && strcmp(panel->panelName(), "Cancel Dialog") == 0) {
+            panel_system.destroyPanel("Cancel Dialog");
+            if (code == 0) {
+                this->make_campaign();
+            }
+            if (code == 0 || code == 1) {
+                new TRIBE_Screen_Sed_Menu;
+                panel_system.setCurrentPanel("Scenario Editor Menu", 0);
+                panel_system.destroyPanel("Campaign Editor Screen");
+            }
             return 1;
         }
-        if (code == 1) {
-            TRIBE_Screen_Sed_Menu* m = (TRIBE_Screen_Sed_Menu*)operator new(0x490);
-            if (m) new(m) TRIBE_Screen_Sed_Menu;
-            panel_system.setCurrentPanel("Scenario Editor Menu", 0);
-            panel_system.destroyPanel("Campaign Editor Screen");
-            return 1;
-        }
-        return 1;
-    }
 
-    if (panel->panelName() && streq_004905D0(panel->panelName(), "Load Dialog")) {
+    if (panel->panelName() && strcmp(panel->panelName(), "Load Dialog") == 0) {
         panel_system.destroyPanel("Load Dialog");
         if (code == 0) {
             this->make_campaign();
-        } else if (code != 1) {
-            return 1;
         }
-        this->filename->set_text(this->filename_drop->get_text());
-        this->load_campaign();
+        if (code == 0 || code == 1) {
+            this->filename->set_text(this->filename_drop->get_text());
+            this->load_campaign();
+        }
         return 1;
     }
 
