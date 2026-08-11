@@ -53,7 +53,18 @@
 // RECT/TShape/reference ABI and localized liveness axes tried here are exhausted, while parameter-home raw aliasing
 // and side-effect sequencing remain non-plausible compiler-steering forms.
 
+// Fresh bounded pass 2026-08-11 (sa-ea9e3c83-r1-0047B970):
+// probe-053: whole-expression final short cast was a codegen duplicate; restored.
+// probe-055: const RECT pointer alias was a duplicate; restored.
+// probe-057: initialized-x compound update was a duplicate; restored.
+// probe-059: implicit final RECT-left narrowing was a duplicate; restored.
+// probe-061: a focused period-header lab found exact 245-byte output when <new.h>
+// is present (new.h alone was a minimal exact context among tested headers).
+// probe-062: retained the ordinary <new.h> TU context; exact match restored without
+// raw aliases, volatility, inline asm, custom flags, or behavior changes.
+
 #include <windows.h>
+#include <new.h>
 
 class TDrawArea;
 
