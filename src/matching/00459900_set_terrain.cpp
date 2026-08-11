@@ -36,6 +36,10 @@
 // lab (raw byte, row/column cursors, tile pointer, explicit duplicate border
 // tail) found no size/frame/call-set eligible exact variant. Removing map/world
 // virtual declarations with corrected offsets was an emitted-code duplicate.
+// sa-b0344ac3-r1 exact breakthrough: preserve named row/column int cursors and
+// initialize the second formal (row_i) before the first (col_i), as indicated
+// by the map.cpp 2575 line band. The canonical [row_i][col_i] tile expression
+// then reproduces the target EBX/EDI coloring, local homes, and all 255 bytes.
 
 class RGE_Tile_List {
 public:
@@ -76,7 +80,7 @@ public:
     char gap_8D90[0x30];
     RGE_Game_World* game_world;
 
-    void set_terrain(RGE_Game_World* gw, short row, short col,
+    void set_terrain(RGE_Game_World* gw, short col, short row,
         unsigned char terrain, int param5, int param6);
     void request_redraw(int x0, int y0, int x1, int y1, unsigned char val);
     int clear_terrain_object(RGE_Game_World* gw, short col, short row,
@@ -86,32 +90,36 @@ public:
     void get_border_type(short row, short col);
 };
 
-void RGE_Map::set_terrain(RGE_Game_World* gw, short row, short col,
+void RGE_Map::set_terrain(RGE_Game_World* gw, short col, short row,
     unsigned char terrain, int param5, int param6)
 {
     RGE_Player* obj_owner;
     RGE_Player* cur_player;
     RGE_Tile* tile;
+    int row_i;
+    int col_i;
     short old_terrain;
 
     obj_owner = *gw->players;
     cur_player = this->game_world->players[this->game_world->curr_player];
-    tile = &this->map_row_offset[col][row];
+    row_i = (int)row;
+    col_i = (int)col;
+    tile = &this->map_row_offset[row_i][col_i];
     old_terrain = (short)(tile->terrain_type & 0x1F);
 
     if (old_terrain != terrain) {
         tile->terrain_type = (terrain ^ tile->terrain_type) & 0x1F ^ tile->terrain_type;
 
         if (obj_owner != 0) {
-            request_redraw((int)row, (int)col, (int)row, (int)col, 0);
+            request_redraw(col_i, row_i, col_i, row_i, 0);
             if (gw->game_state != 3) {
-                cur_player->diam_tile_list.add_node((int)row, (int)col);
+                cur_player->diam_tile_list.add_node(col_i, row_i);
             }
-            int value = clear_terrain_object(gw, col, row, old_terrain,
+            int value = clear_terrain_object(gw, row, col, old_terrain,
                 1, param5, param6);
-            place_terrain_object(obj_owner, gw, col, row, value, 0);
+            place_terrain_object(obj_owner, gw, row, col, value, 0);
         }
     }
 
-    get_border_type(row, col);
+    get_border_type(col, row);
 }
