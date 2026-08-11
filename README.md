@@ -95,7 +95,7 @@ history evidence. There is still exactly one compiler-facing `.cpp` per function
 History's codegen frontier and “assembly closer/farther” language describe emitted
 bytes only; they do not rank source quality.
 
-Parallel late-corpus work also has four advisory agent tools:
+Parallel late-corpus work also has five advisory agent tools:
 
 - `tools\target_session.py` provides shared-tree target leases, meaningful-probe
   bookkeeping, non-budget restore/final-validation checks, emitted-code duplicate
@@ -109,6 +109,8 @@ Parallel late-corpus work also has four advisory agent tools:
 - `tools\find_function_donors.py` ranks exact donor functions using TU, owner
   class, constructor/destructor family, call/vslot, displacement, frame, and
   saved-register evidence.
+- `tools\search_asm_donors.py` searches a selected assembly block against the
+  exact-match bank and shows the matched assembly plus the C/C++ that emitted it.
 
 See `docs\agentic_matching_workflow.md` for their workflow and evidence limits.
 Compact target selection is available through

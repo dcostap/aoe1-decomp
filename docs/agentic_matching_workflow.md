@@ -228,6 +228,37 @@ This is a discovery ranking. It does not prove that two functions shared a sourc
 file declaration surface, and raw displacement similarity is intentionally low
 weight. Read the donor source and packet before reusing its declarations/context.
 
+## Search exact source by assembly block
+
+When one localized block has a distinctive loop, call setup, switch tail, x87
+sequence, or memory-access shape, search the exact-match bank for concrete VC5
+source/codegen examples:
+
+```bat
+python tools\search_asm_donors.py --va 005204A0 --range +0300-+0348
+python tools\search_asm_donors.py --va 005204A0 --at +032C
+python tools\search_asm_donors.py --asm-file build\temp\query.asm
+```
+
+The default `mapped` profile tolerates consistent register-color changes while
+retaining instruction, operand, call, branch-direction, width, and displacement
+evidence. `strict` is useful for near-identical code and `structural` is broader.
+The query function itself is excluded by default. Results come only from
+`src\matching`, show the aligned assembly and source path, and by default require
+a current input fingerprint plus an authoritative checker `MATCH`; this prevents
+old relocation-masking results from being presented as exact donors. Use
+`--validation bank` only for explicitly labeled diagnostic searches that trust
+folder ownership without fresh checker evidence. An existing fresh VC5 listing
+map supplies the source-line excerpt when available. The derived index under
+`build\asm_search\` is rebuilt automatically when matching ownership changes;
+use `--refresh-index` only when deliberately forcing regeneration.
+
+This is localized donor evidence, not source inference: the same emitted block
+can come from different C/C++, and surrounding liveness, layout, headers, and TU
+context remain whole-function inputs. Prefer distinctive queries of roughly
+5-20 instructions; generic prologues, epilogues, and two-instruction fragments
+usually produce weak results.
+
 ## Phase-gated work
 
 Treat large targets as five phases:

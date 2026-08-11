@@ -134,7 +134,10 @@ prompt.
    takeover.
 5. Inspect the function packet, then run the dossier, donor ranking, and ABI
    evidence tools before broad declaration/layout archaeology:
-   `target_dossier.py`, `find_function_donors.py`, and `query_abi.py`.
+   `target_dossier.py`, `find_function_donors.py`, and `query_abi.py`. When a
+   distinctive local assembly block remains unclear, also use
+   `search_asm_donors.py --va <VA> --range <start>-<end>` (or `--at <address>`)
+   to retrieve exact matched C/C++ examples for similar emitted blocks.
 6. Create/edit only the living per-function source in `src/scratch` and use local
    type/global stubs until reuse and proof justify shared changes. Before tuning
    codegen, reconstruct the canonical owning fields/arrays and the simplest
@@ -311,6 +314,21 @@ python tools\find_function_donors.py --va 004407A0 --limit 20
 Donor scores are discovery heuristics, not proof of shared source or canonical
 ABI. Same-TU and same-class exact donors deserve inspection; low-weight raw
 displacement overlap does not prove common fields.
+
+For a distinctive localized instruction block, search exact-match source donors:
+
+```bat
+python tools\search_asm_donors.py --va 004407A0 --range +0080-+00C0
+python tools\search_asm_donors.py --va 004407A0 --at +009A
+```
+
+The default register-mapped search returns matched assembly and source excerpts
+from `src\matching` only when current fingerprinted checker evidence still says
+`MATCH`; use roughly 5-20 informative instructions rather than a generic
+prologue/epilogue. `--validation bank` is a labeled diagnostic fallback, not an
+exactness claim. A hit is empirical VC5 codegen evidence, not proof of common
+original source, layout, or TU context. See
+`docs\agentic_matching_workflow.md` for profiles and evidence limits.
 
 Call **count/target-multiset parity is not ordered call-site parity**. Before
 saying the call set is aligned, inspect the session/checker call similarity and
