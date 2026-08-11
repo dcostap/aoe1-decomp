@@ -1350,25 +1350,37 @@
       const tokens = queryTokens();
       const visibleGroups = [];
       const visibleFns = [];
+      const layoutGroups = [];
+      const layoutFns = [];
 
       for (const group of groups) {
         const groupMatched = tokens.length ? groupSearchPass(group, tokens) : false;
-        const children = group.children.filter((fn) => {
-          if (!functionBasePass(fn)) {
-            return false;
+        const children = [];
+        for (const fn of group.children) {
+          fn.filterMatched = functionBasePass(fn)
+            && (!tokens.length || groupMatched || functionSearchPass(fn, group, tokens));
+          if (fn.filterMatched) {
+            children.push(fn);
+            visibleFns.push(fn);
           }
-          return !tokens.length || groupMatched || functionSearchPass(fn, group, tokens);
-        });
-        if (!children.length) {
-          continue;
+          layoutFns.push(fn);
         }
-        const aggregate = aggregateGroup(group, children);
-        visibleGroups.push(aggregate);
-        visibleFns.push(...children);
+        if (children.length) {
+          visibleGroups.push(aggregateGroup(group, children));
+        }
+        const layoutGroup = aggregateGroup(group, group.children);
+        layoutGroup.filterMatched = children.length > 0;
+        layoutGroups.push(layoutGroup);
       }
 
       visibleGroups.sort((a, b) => metricValue(b) - metricValue(a) || b.remainingBytes - a.remainingBytes || a.name.localeCompare(b.name));
+      layoutGroups.sort((a, b) => metricValue(b) - metricValue(a) || b.remainingBytes - a.remainingBytes || a.name.localeCompare(b.name));
       visibleFns.sort((a, b) => {
+        const aScore = (a.hasBlocker ? 1 : 0) + (a.bucket === "unclaimed" ? 0.4 : 0) + (a.bucket === "scratch" ? 0.2 : 0);
+        const bScore = (b.hasBlocker ? 1 : 0) + (b.bucket === "unclaimed" ? 0.4 : 0) + (b.bucket === "scratch" ? 0.2 : 0);
+        return bScore - aScore || b.sizeBytes - a.sizeBytes || b.asmLines - a.asmLines || a.va.localeCompare(b.va);
+      });
+      layoutFns.sort((a, b) => {
         const aScore = (a.hasBlocker ? 1 : 0) + (a.bucket === "unclaimed" ? 0.4 : 0) + (a.bucket === "scratch" ? 0.2 : 0);
         const bScore = (b.hasBlocker ? 1 : 0) + (b.bucket === "unclaimed" ? 0.4 : 0) + (b.bucket === "scratch" ? 0.2 : 0);
         return bScore - aScore || b.sizeBytes - a.sizeBytes || b.asmLines - a.asmLines || a.va.localeCompare(b.va);
@@ -1410,21 +1422,23 @@
         }
       }
 
-      if (state.selected && state.selected.type === "group" && !visibleGroups.some((group) => group.name === state.selected.name)) {
+      if (state.selected && state.selected.type === "group" && !layoutGroups.some((group) => group.name === state.selected.name)) {
         state.selected = null;
       }
-      if (state.selected && state.selected.type === "function" && !visibleFns.some((fn) => fn.va === state.selected.va)) {
+      if (state.selected && state.selected.type === "function" && !layoutFns.some((fn) => fn.va === state.selected.va)) {
         state.selected = null;
       }
-      if (state.zoomGroup && !visibleGroups.some((group) => group.name === state.zoomGroup)) {
+      if (state.zoomGroup && !layoutGroups.some((group) => group.name === state.zoomGroup)) {
         state.zoomGroup = null;
       }
 
       return {
         visibleGroups,
         visibleFns,
+        layoutGroups,
+        layoutFns,
         stats,
-        zoomGroup: state.zoomGroup ? visibleGroups.find((group) => group.name === state.zoomGroup) || null : null,
+        zoomGroup: state.zoomGroup ? layoutGroups.find((group) => group.name === state.zoomGroup) || null : null,
       };
     }
 
@@ -1830,7 +1844,7 @@
 
     function renderOverviewTreemap(ctx, stageRect) {
       const selected = selectedKey();
-      const groupItems = derived.visibleGroups;
+      const groupItems = derived.layoutGroups;
       for (const group of groupItems) {
         group.type = "group";
         group.id = `group:${group.name}`;
@@ -1880,9 +1894,9 @@
           if (fnRect.width <= 0 || fnRect.height <= 0) {
             continue;
           }
-          const fnFill = colorForFunction(fn);
+          const fnFill = fn.filterMatched ? colorForFunction(fn) : "rgba(28,33,41,0.52)";
           const selectedFn = selected === fn.id;
-          const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.04)";
+          const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : (fn.filterMatched ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.025)");
           const fnStroke = selectedFn ? 1.8 : 0.8;
           const tileArea = fnRect.width * fnRect.height;
           if (state.liveDrag || tileArea < 1500) {
@@ -1909,9 +1923,9 @@
       for (const placement of placements) {
         const fn = placement.item;
         const rect = insetRect(placement.rect, 1.2);
-        const fill = colorForFunction(fn);
+        const fill = fn.filterMatched ? colorForFunction(fn) : "rgba(28,33,41,0.52)";
         const selectedFn = selected === fn.id;
-        const border = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.08)";
+        const border = selectedFn ? "rgba(255,255,255,0.95)" : (fn.filterMatched ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.025)");
         const strokeWidth = selectedFn ? 2 : 1;
         const tileArea = rect.width * rect.height;
 
@@ -1920,13 +1934,15 @@
           ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
         } else {
           fillRoundedRect(ctx, rect, 6, fill, border, strokeWidth);
-          if (!state.liveDrag && tileArea >= 2600) {
+          if (fn.filterMatched && !state.liveDrag && tileArea >= 2600) {
             const sheen = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.height);
             sheen.addColorStop(0, "rgba(255,255,255,0.07)");
             sheen.addColorStop(1, "rgba(255,255,255,0.01)");
             fillRoundedRect(ctx, rect, 6, sheen);
           }
-          drawFunctionLabel(ctx, rect, fn, fill);
+          if (fn.filterMatched) {
+            drawFunctionLabel(ctx, rect, fn, fill);
+          }
         }
         pushHitRegion(rect, fn, { type: "select-function", va: fn.va, group: fn.groupName, insideZoom });
       }
@@ -1978,12 +1994,6 @@
       const stageRect = { x: 4, y: 4, width: width - 8, height: height - 8 };
 
       if (derived.zoomGroup) {
-        if (!derived.zoomGroup.childrenVisible.length) {
-          elements.emptyState.classList.add("visible");
-          elements.emptyState.innerHTML = "<div><strong>No visible functions</strong><div>Relax the current filters.</div></div>";
-          renderHoverOverlay();
-          return;
-        }
         elements.emptyState.classList.remove("visible");
         renderFlatFunctionTreemap(ctx, stageRect, derived.zoomGroup.childrenVisible, true);
         renderHoverOverlay();
@@ -1991,21 +2001,21 @@
       }
 
       if (state.viewMode === "functions") {
-        if (!derived.visibleFns.length) {
+        if (!derived.layoutFns.length) {
           elements.emptyState.classList.add("visible");
-          elements.emptyState.innerHTML = "<div><strong>No visible functions</strong><div>Relax the current filters.</div></div>";
+          elements.emptyState.innerHTML = "<div><strong>No functions</strong></div>";
           renderHoverOverlay();
           return;
         }
         elements.emptyState.classList.remove("visible");
-        renderFlatFunctionTreemap(ctx, stageRect, derived.visibleFns, false);
+        renderFlatFunctionTreemap(ctx, stageRect, derived.layoutFns, false);
         renderHoverOverlay();
         return;
       }
 
-      if (!derived.visibleGroups.length) {
+      if (!derived.layoutGroups.length) {
         elements.emptyState.classList.add("visible");
-        elements.emptyState.innerHTML = "<div><strong>No visible files</strong><div>Relax the current filters.</div></div>";
+        elements.emptyState.innerHTML = "<div><strong>No files</strong></div>";
         renderHoverOverlay();
         return;
       }
@@ -2132,7 +2142,9 @@
     }
 
     function groupByNameVisible(name) {
-      return derived.visibleGroups.find((group) => group.name === name) || null;
+      return derived.visibleGroups.find((group) => group.name === name)
+        || derived.layoutGroups.find((group) => group.name === name)
+        || null;
     }
 
     function renderOverviewDetail() {
@@ -2177,7 +2189,7 @@
     }
 
     function renderGroupDetail(group) {
-      const topFns = group.childrenVisible.filter((fn) => fn.isRemaining).slice(0, 18);
+      const topFns = group.childrenVisible.filter((fn) => fn.filterMatched && fn.isRemaining).slice(0, 18);
       elements.detailContent.innerHTML = `
         <div class="detail-title-row">
           <h2 class="detail-title">${escapeHtml(group.name)}</h2>
@@ -2298,7 +2310,7 @@
         renderGroupDetail(group);
         return;
       }
-      const fn = derived.visibleFns.find((entry) => entry.va === state.selected.va);
+      const fn = derived.layoutFns.find((entry) => entry.va === state.selected.va);
       if (!fn) {
         state.selected = null;
         renderOverviewDetail();
