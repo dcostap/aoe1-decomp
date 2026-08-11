@@ -1,6 +1,6 @@
 // VA: 004C80B0, TRIBE_Building_Object::TRIBE_Building_Object, 282 bytes
 // Source: t_b_obj.cpp lines 93-103
-// Status: SCRATCH
+// Status: MATCH
 //
 // Constructor for TRIBE_Building_Object. Accepts 6 params (this + 6 stack):
 //   TRIBE_Master_Building_Object* mb, RGE_Player* player,
@@ -32,18 +32,17 @@
 //   context emits the original VC5 FS:[0] registration and cleanup.
 // - The root polymorphic base preserves the proven offset-zero vptr and the
 //   named +0x0C owner, +0x38/+0x3C world coordinates, and +0x1C8 fields.
-// - The original delays the derived vptr store until after field initialization.
-//   A novtable/manual-vptr diagnostic matched, but project policy rejects explicit
-//   vptr stores as living source; the canonical polymorphic class is retained.
-// - Probes: adding donor virtual-destructor surfaces enabled /GX EH; replacing
-//   the explicit polymorphic root with a flat/empty-base model broke the call
-//   ABI. Typed player/master/global map ownership is codegen-identical.
-// - The natural candidate is 282 bytes with exact size/frame/call/CFG parity;
-//   only the derived-vptr timing differs. The earlier novtable/explicit-vptr
-//   experiment was byte-exact but is rejected by source policy. Keep this
-//   canonical polymorphic source in scratch for a later context investigation.
-// - Restored the donor-proven virtual int setup declaration; emitted code and
-//   the vptr hunk were unchanged, so this is retained as the cleaner ABI.
+// - The initial body-assignment reconstruction was 282 bytes with exact
+//   size/frame/call/CFG parity but a 33-byte implicit-vptr scheduling hunk.
+// - A diagnostic split of the queue fields into a nonvirtual inline base made
+//   the first mismatch earlier and grew the diff to 55 bytes; it was rolled
+//   back. Moving the virtual declarations before the fields was codegen-neutral.
+// - The period-plausible member-initializer-list form below schedules the
+//   queue/state stores and compiler-managed derived vptr exactly like the
+//   oracle, without an explicit vptr store or novtable workaround. It is an
+//   exact 282-byte match.
+// - Restored the donor-proven virtual int setup declaration; it is part of the
+//   exact ABI surface. Typed player/master/global map ownership is retained.
 // FLAGS: /nologo /c /O2 /Oy /GX
 // Main-agent audit restored canonical master/player destructor ownership and
 // retained natural compiler-managed vptr lowering.
@@ -130,19 +129,18 @@ public:
 
 TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object* mb, RGE_Player* player,
                                               float f1, float f2, float f3, int flag)
-    : TRIBE_Combat_Object(mb, player, f1, f2, f3, 0)
+    : TRIBE_Combat_Object(mb, player, f1, f2, f3, 0),
+      production_queue(0),
+      production_queue_size(0),
+      production_queue_count(0),
+      production_queue_enabled(1),
+      production_queue_actions(0),
+      production_queue_change_flag(0),
+      production_queue_auto_paused(0),
+      production_queue_need_attr(-1),
+      unique_build_id(-1),
+      DoppleInstalled(0)
 {
-    this->production_queue_need_attr = -1;
-    this->unique_build_id = -1;
-
-    this->production_queue = 0;
-    this->production_queue_size = 0;
-    this->production_queue_count = 0;
-    this->production_queue_enabled = 1;
-    this->production_queue_actions = 0;
-    this->production_queue_change_flag = 0;
-    this->production_queue_auto_paused = 0;
-    this->DoppleInstalled = 0;
     if (flag != 0) {
         this->setup(mb, player, f1, f2, f3);
     }
