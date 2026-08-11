@@ -1,142 +1,210 @@
 // VA: 0041E920 RGE_Base_Game::setup_graphics_system (672 B)
-// PDB source: basegame.cpp
-// EH-framed (FS:[0] prolog/epilog). Needs /GX rsp for EH frame.
-// Packet-grounded structural first-pass
+// PDB source: basegame.cpp, lines 2294-2377
+//
+// Attempt log:
+// baseline: packet-grounded free-function shims had the right broad behavior,
+//   but no EH frame, imported Win32 calls, or typed member-call identities.
+// probe 2 (behavior): restored the period typed RGE_Base_Game/RGE_Prog_Info,
+//   TDrawSystem, TDrawArea, and TPanelSystem ownership, the real new-expression,
+//   and the executable's fourth-mode probe bug.  The mode/fallback source stays
+//   direct-member and naturally typed; exact metrics are recorded by the session.
+// probe 3 (layout): int draw_type/draw_mode worsened the register basin; rolled back.
+// probe 5 (control-flow): converging the 1280 rejection and Init failure through
+//   one natural init_fail tail reduced the candidate from 719 to 678 bytes.
+// probes 6-9 (liveness/layout/variant): split boolean increments, declaration
+//   order, and operand-order variants were duplicates or farther; retained the
+//   simple byte locals and combined `(condition != 0) + 1` form.
+// probe 10 (variant lab): the lab's default-flag variants lacked /GX and were
+//   rejected by size/frame gates; no generated variant was adopted.
+// probes 11-12 (context/liveness): full base-game virtual declarations and
+//   post-guard local scope were codegen duplicates.  Best current result is
+//   678 bytes (+6), all 16 ordered calls aligned, with only the early boolean
+//   materialization hunk unresolved (original full-register `inc` versus VC5's
+//   byte `inc` plus zeroing).  Left in scratch as clean typed source.
 
-extern void* operator_new(unsigned int size);
-extern int GetDC(void* hwnd);
-extern int GetDeviceCaps(int dc, int cap);
-extern int ReleaseDC(void* hwnd, int dc);
-extern int TDrawSystem_ctor(void* ds);
-extern void TDrawSystem_CheckAvailModes(void* ds, int fullScreen);
-extern int TDrawSystem_IsModeAvail(void* ds, int w, int unused, int bpp);
-extern int TDrawSystem_Init(void* ds, void* inst, void* hwnd, void* pal, int a, int b, int w, int h, int c);
-extern int TDrawArea_Clear(void* da, void* rect, int flag);
-extern int TDrawSystem_Paint(void* ds, void* rect);
-extern int TPanelSystem_release_palette(void* ps, void* pal);
-extern void* TPanelSystem_get_palette(void* ps, const char* name, int flags);
+#include <new.h>
+#include <windows.h>
 
-extern unsigned long panel_system;
+class TDrawArea;
 
-struct Shim_1E920 {
-    char p0[0x0C];
-    void* prog_info;           // +0x0C
-    void* prog_window;         // +0x10
-    char p14[8];
-    void* prog_palette;        // +0x1C
-    char p20[0x40 - 0x20];
-    int error_code;            // +0x40
-    char p44[0x48 - 0x44];
-    void* draw_system;         // +0x48
-    void* draw_area;           // +0x4C
+class RGE_Prog_Info {
+public:
+    char gap_000[0x410];
+    void* instance;                         // +0x410
+    char gap_414[0x66E - 0x414];
+    char pal_file[0x100];                   // +0x66E
+    char gap_76E[0x894 - 0x76E];
+    long full_screen;                       // +0x894
+    long gap_898;
+    long use_dir_draw;                      // +0x89C
+    long use_sys_mem;                       // +0x8A0
+    char gap_8A4[0x8E0 - 0x8A4];
+    long main_wid;                          // +0x8E0
+    long main_hgt;                          // +0x8E4
 };
 
-int RGE_Base_Game_setup_graphics_system(Shim_1E920* self)
+class TDrawSystem {
+public:
+    char gap_000[0x0C];
+    TDrawArea* DrawArea;                    // +0x0C
+    char gap_010[0x468];
+    unsigned char DrawType;                 // +0x478
+    unsigned char ScreenMode;               // +0x479
+    char gap_47A[2];
+
+    TDrawSystem();
+    void CheckAvailModes(int full_screen);
+    int IsModeAvail(long width, long height, int bpp);
+    int Init(void* instance, void* window, void* palette,
+             unsigned char draw_type, unsigned char screen_mode,
+             long width, long height, unsigned long flags);
+    void Paint(RECT* rect);
+};
+
+class TDrawArea {
+public:
+    void Clear(RECT* rect, int color);
+};
+
+class TPanelSystem {
+public:
+    void release_palette(void* palette);
+    void* get_palette(char* name, long id);
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
+    virtual int reset_comm();
+    virtual void send_game_options();
+    virtual void receive_game_options();
+    virtual char* gameSummary();
+    virtual int processCheatCode(int, char*);
+    virtual int setup_music_system();
+    virtual void shutdown_music_system();
+    virtual int setup();
+    virtual int setup_cmd_options();
+    virtual int setup_class();
+    virtual int setup_main_window();
+    virtual int setup_graphics_system();
+
+    char gap_004[0x08];
+    RGE_Prog_Info* prog_info;              // +0x0C
+    void* prog_window;                     // +0x10
+    char gap_014[0x08];
+    void* prog_palette;                    // +0x1C
+    char gap_020[0x20];
+    int error_code;                        // +0x40
+    char gap_044[0x04];
+    TDrawSystem* draw_system;              // +0x48
+    TDrawArea* draw_area;                  // +0x4C
+};
+
+extern TPanelSystem panel_system;
+
+int RGE_Base_Game::setup_graphics_system()
 {
-    void* prog_info = self->prog_info;
-    
-    if (*(int*)((char*)prog_info + 0x89C)) {
-        int dc = GetDC(0);
+    TDrawSystem* draw_system;
+
+    if (this->prog_info->use_dir_draw != 0) {
+        HDC dc = GetDC(0);
         int bits = GetDeviceCaps(dc, 0x0C);
         ReleaseDC(0, dc);
         if (bits < 8) {
-            self->error_code = 0x13;
+            this->error_code = 0x13;
             return 0;
         }
     }
-    
-    int useDirDraw = *(int*)((char*)prog_info + 0x89C);
-    int useSysMem = *(int*)((char*)prog_info + 0x8A0);
-    int fullScreen = *(int*)((char*)prog_info + 0x894);
-    
-    void* ds = operator_new(0x47C);
-    if (ds) {
-        TDrawSystem_ctor(ds);
-    } else {
-        ds = 0;
-    }
-    self->draw_system = ds;
-    
-    if (!ds)
+
+    unsigned char draw_mode;
+    unsigned char draw_type;
+    int use_sys_mem;
+
+    draw_type = (this->prog_info->use_dir_draw != 0) + 1;
+    draw_mode = (this->prog_info->full_screen != 0) + 1;
+    use_sys_mem = this->prog_info->use_sys_mem != 0;
+
+    draw_system = new TDrawSystem;
+    this->draw_system = draw_system;
+    if (draw_system == 0)
         return 0;
-    
-    TDrawSystem_CheckAvailModes(ds, fullScreen);
-    
-    int targetW = *(int*)((char*)prog_info + 0x8E0);
-    int targetH = *(int*)((char*)prog_info + 0x8E4);
-    
-    if (!TDrawSystem_IsModeAvail(ds, targetW, 0, 8)) {
-        // Try 640x480
-        if (targetW != 0x280) {
-            if (TDrawSystem_IsModeAvail(ds, 0x280, 0, 8)) {
-                *(int*)((char*)prog_info + 0x8E0) = 0x280;
-                *(int*)((char*)prog_info + 0x8E4) = 0x1E0;
-                targetW = 0x280;
-                targetH = 0x1E0;
+
+    draw_system->CheckAvailModes(this->prog_info->full_screen);
+
+    if (!this->draw_system->IsModeAvail(this->prog_info->main_wid, 0, 8)) {
+        if (this->prog_info->main_wid != 0x280) {
+            if (this->draw_system->IsModeAvail(0x280, 0, 8)) {
+                this->prog_info->main_wid = 0x280;
+                this->prog_info->main_hgt = 0x1E0;
                 goto init_step;
             }
         }
-        // Try 800x600
-        if (targetW != 800) {
-            if (TDrawSystem_IsModeAvail(ds, 800, 0, 8)) {
-                *(int*)((char*)prog_info + 0x8E0) = 800;
-                *(int*)((char*)prog_info + 0x8E4) = 600;
-                targetW = 800;
-                targetH = 600;
+
+        if (this->prog_info->main_wid != 800) {
+            if (this->draw_system->IsModeAvail(800, 0, 8)) {
+                this->prog_info->main_wid = 800;
+                this->prog_info->main_hgt = 600;
                 goto init_step;
             }
         }
-        // Try 1024x768
-        if (targetW != 0x400) {
-            if (TDrawSystem_IsModeAvail(ds, 0x400, 0, 8)) {
-                *(int*)((char*)prog_info + 0x8E0) = 0x400;
-                *(int*)((char*)prog_info + 0x8E4) = 0x300;
-                targetW = 0x400;
-                targetH = 0x300;
+
+        if (this->prog_info->main_wid != 0x400) {
+            if (this->draw_system->IsModeAvail(0x400, 0, 8)) {
+                this->prog_info->main_wid = 0x400;
+                this->prog_info->main_hgt = 0x300;
                 goto init_step;
             }
         }
-        // Try 1280x1024
-        if (targetW != 0x500) {
-            if (TDrawSystem_IsModeAvail(ds, 0x400, 0, 8)) {
-                *(int*)((char*)prog_info + 0x8E0) = 0x500;
-                *(int*)((char*)prog_info + 0x8E4) = 0x400;
-                targetW = 0x500;
-                targetH = 0x400;
-                goto init_step;
-            }
-        }
-        return 0;
+
+        if (this->prog_info->main_wid == 0x500)
+            goto init_fail;
+
+        // The original checks 1024x0x0 here before storing 1280x1024.
+        if (!this->draw_system->IsModeAvail(0x400, 0, 8))
+            goto init_fail;
+
+        this->prog_info->main_wid = 0x500;
+        this->prog_info->main_hgt = 0x400;
     }
-    
+
 init_step:
-    {
-        int drawType = (useDirDraw != 0) + 1;
-        int drawMode = (fullScreen != 0) + 1;
-        int useSysMemFlag = (useSysMem != 0);
-        
-        if (!TDrawSystem_Init(ds,
-            *(void**)((char*)prog_info + 0x410),
-            self->prog_window,
-            self->prog_palette,
-            drawType,
-            drawMode,
-            targetW,
-            targetH,
-            useSysMemFlag))
-        {
-            return 0;
-        }
-    }
-    
-    TPanelSystem_release_palette((void*)&panel_system, self->prog_palette);
-    self->prog_palette = TPanelSystem_get_palette((void*)&panel_system,
-        (char*)prog_info + 0x66E, 0xC544);
-    
-    self->draw_area = *(void**)((char*)self->draw_system + 0x0C);
-    
-    TDrawArea_Clear(self->draw_area, 0, 0);
-    TDrawSystem_Paint(self->draw_system, 0);
-    
+    if (this->draw_system->Init(
+            this->prog_info->instance,
+            this->prog_window,
+            this->prog_palette,
+            draw_type,
+            draw_mode,
+            this->prog_info->main_wid,
+            this->prog_info->main_hgt,
+            use_sys_mem) == 0)
+        goto init_fail;
+
+    panel_system.release_palette(this->prog_palette);
+    this->prog_palette = panel_system.get_palette(
+        this->prog_info->pal_file, 0xC544);
+
+    this->draw_area = this->draw_system->DrawArea;
+    this->draw_area->Clear(0, 0);
+    this->draw_system->Paint(0);
+
     return 1;
+
+init_fail:
+    return 0;
 }

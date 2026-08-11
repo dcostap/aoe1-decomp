@@ -8,9 +8,14 @@
 //   (375 bytes versus the 337-byte oracle).
 // - probes: positive/nested guards, shared result/goto labels, hoisted locals,
 //   and the known destructor declaration all kept the same 77-byte mismatch.
+// - follow-up probes: decompiler-shaped do/while introduced two extra calls;
+//   /O1 and /Os destroyed the matching intrinsic/ABI basin; int/signed-char
+//   result locals, named/function-scope new pointers, explicit label order, and
+//   uVar1-style call-result reuse all emitted the same 375-byte body.
 // - left in scratch: canonical natural source; remaining drift is the VC5 EH
 //   return-tail layout (original shared cleanup versus rebuilt duplicated
-//   cleanup), not an unresolved campaign ownership or call-set issue.
+//   cleanup), not an unresolved campaign ownership or call-set issue. Keep
+//   /O2 /Oy /GX; no productive source lead remains in this bounded pass.
 
 #include <string.h>
 

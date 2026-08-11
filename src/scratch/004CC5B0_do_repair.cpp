@@ -1,181 +1,247 @@
 // VA: 004CC5B0 TRIBE_Combat_Object::do_repair
-// PDB: t_c_obj.cpp:1678-1777 (383 bytes, 141 asm lines)
-// Default flags. No inline asm/hacks.
+// PDB: t_c_obj.cpp:1678-1777
+// Attempt log:
+// baseline: replace the prior raw-vtable/inline-asm scaffold with the natural
+// typed action-list/task lookup and UnitAI dispatch supported by the same-TU
+// RGE_Action_Object::work2 donor.
+// probe: an explicit for-loop and a separate task local worsened the prologue;
+// the donor-shaped guarded do/while with the selected task loaded directly
+// recovered exact size/CFG and left only the no-task-list candidate reload.
+// Promotion audit rejected the prior exact diagnostic: it used a volatile,
+// type-punning reload of the target parameter as an RGE_Task*.  Preserve the
+// ordinary no-task-list behavior for further source recovery instead.
 
 class RGE_Master_Static_Object;
-class RepairList {
+class RGE_Player;
+class RGE_Static_Object;
+class RGE_Task;
+class RGE_Action;
+class RGE_Action_List;
+class RGE_Task_List;
+class UnitAIModule;
+
+class RGE_Master_Static_Object {
 public:
     char gap_00[4];
-    class Entry** entries;   // +0x04
-    short count;             // +0x08
+    unsigned char master_type;
+    char gap_05[0x0B];
+    short id;
+    char gap_12[2];
+    short object_group;
+    char gap_16[0xC2];
+    RGE_Task_List* tasks;
 };
 
-class RepairEntry {
+class RGE_Player {
+public:
+    char gap_00[0x24];
+    RGE_Master_Static_Object** master_objects;
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    int id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x28];
+    float world_x;
+    float world_y;
+    float world_z;
+};
+
+class RGE_Task {
 public:
     char gap_00[6];
-    short action_id;         // +0x06
-    short master_id;         // +0x08
+    short action_type;
+    short object_group;
+};
+
+class RGE_Task_List {
+public:
+    char gap_00[4];
+    RGE_Task** list;
+    short list_num;
 };
 
 class RGE_Action {
 public:
     virtual ~RGE_Action();
-    virtual int vt04(void*, void*, float, float, float);
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual short get_type();
+    virtual int setup(RGE_Static_Object* object);
+    virtual int setup(int type, RGE_Static_Object* object);
+    virtual RGE_Action_List* create_action_list(RGE_Static_Object* object);
+    virtual void rehook();
+    virtual void save(int file);
+    virtual short action_id();
+    virtual void first_in_stack(unsigned char value);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char idle_update();
+    virtual unsigned char update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object* target, float x, float y, float z);
+    virtual int work(RGE_Static_Object* target, float x, float y, float z);
 };
 
 class RGE_Action_List {
 public:
-    virtual void v00();
-    virtual void* make_action(void*, void*, float, float, float); // +0x04
+    virtual ~RGE_Action_List();
+    virtual RGE_Action* create_task_action(RGE_Task* task,
+                                             RGE_Static_Object* target,
+                                             float x, float y, float z);
 
-    void* get_current_task();
-    void* get_action();
-    int update_action(void*, float, float, float);
+    int action_work(RGE_Static_Object* target, float x, float y, float z);
+    RGE_Action* get_action();
+    RGE_Task* get_task();
 };
 
-class RGE_Static_Object {
+class UnitAIModule {
 public:
-    void* vtable;
-    int id;                          // +0x04
-    RGE_Master_Static_Object* master_obj;// +0x08
-    void* owner;                     // +0x0C
-    char gap_10[0x28];
-    float world_x;                   // +0x38
-    float world_y;                   // +0x3C
-    float world_z;                   // +0x40
+    void setCurrentOrder(int order);
+    void setCurrentAction(int action);
+    void setCurrentTarget(int id, int group, float x, float y, float z);
+    void setTaskedByPlayer();
 };
 
-class RGE_Master_Static_Object {
-public:
-    char gap_00[4];
-    unsigned char unit_type;         // +0x04
-    char gap_05[0x0B];
-    short id;                        // +0x10
-    short gap_12;
-    short object_group;              // +0x14
-    char gap_16[0xC2];
-    void* repair_list;               // +0xD8
-};
+#define VPAD1(n) virtual void vpad_##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+#define VPAD64(n) VPAD32(n) VPAD32(n##_32)
+#define VPAD15(n) VPAD8(n) VPAD4(n##_8) VPAD2(n##_12) VPAD1(n##_14)
 
-class SoundModule {
+class RGE_Action_Object {
 public:
-    void set_current_order(int id);
-    void set_current_action(int id);
-    void set_current_target(int obj_id, short master_group, float x, float y, float z);
-    void set_tasked_by_player();
-};
+    virtual ~RGE_Action_Object();
+    VPAD15(1)
+    VPAD4(16)
+    VPAD1(20)
+    virtual void transform(RGE_Master_Static_Object* master);
+    VPAD16(22)
+    VPAD1(38)
+    virtual void move_to(RGE_Static_Object* target, float x, float y, float z);
+    VPAD64(40)
+    VPAD16(104)
+    VPAD8(120)
+    VPAD2(128)
+    virtual void set_action(RGE_Action* action);
 
-class TRIBE_Combat_Object : public RGE_Static_Object {
-public:
-    char gap_44[0x30];
-    SoundModule* sound;             // +0x74
+    int id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x64];
+    UnitAIModule* unit_ai;
     char gap_78[0x10C];
-    RGE_Action_List* actions;       // +0x184
+    RGE_Action_List* actions;
+};
 
+class TRIBE_Combat_Object : public RGE_Action_Object {
+public:
     void do_repair(RGE_Static_Object* target);
 };
 
 void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
 {
-    if (target == this)
-        return;
+    RGE_Task* repair_task;
+    RGE_Task_List* repair_list;
+    int i;
+    int task_count;
+    RGE_Task** task_list;
+    RGE_Task* current_task;
+    short action_id;
+    int action_worked;
+    RGE_Action* action;
+    int order;
+    int current_action;
 
-    TRIBE_Combat_Object* self = this;
-
-    if (this->master_obj->id != 0x9C) {
-        void* info = *(void**)((char*)this->owner + 0x24);
-        void* arg = *(void**)((char*)info + 0x270);
-        void** vt = (void**)this;
-        void* fn = *(void**)((char*)vt + 0x54);
-        __asm {
-            mov ecx, self
-            push arg
-            call fn
+    if ((RGE_Action_Object*)target != this) {
+        if (this->master_obj->id != 0x9c) {
+            this->transform(this->owner->master_objects[0x9c]);
         }
-    }
 
-    RepairList* repairs = (RepairList*)this->master_obj->repair_list;
-    RepairEntry* found = (RepairEntry*)target;
-    int i = 0;
-    int cnt = repairs->count;
-
-    if (cnt > 0) {
-        found = 0;
-        RepairEntry** entries = (RepairEntry**)repairs->entries;
-        do {
-            RepairEntry* e = *entries;
-            if (e->action_id == 0x6A) {
-                RGE_Master_Static_Object* master = target->master_obj;
-                if (master->unit_type == 0x50) {
-                    if (e->master_id == -1 || e->master_id == 0) {
-                        found = e;
+        repair_list = this->master_obj->tasks;
+        i = 0;
+        task_count = (int)repair_list->list_num;
+        if (task_count > 0) {
+            repair_task = 0;
+            task_list = repair_list->list;
+            do {
+                repair_task = *task_list;
+                if (repair_task->action_type == 0x6a) {
+                    RGE_Master_Static_Object* target_master = target->master_obj;
+                    if (target_master->master_type == 'P') {
+                        if (repair_task->object_group == -1 ||
+                            repair_task->object_group == 0) {
+                            break;
+                        }
+                    }
+                    if (repair_task->object_group == target_master->object_group) {
                         break;
                     }
                 }
-                if (e->master_id == master->object_group) {
-                    found = e;
-                    break;
-                }
-            }
-            ++i;
-            ++entries;
-        } while (i < cnt);
-    }
-
-    int reused = 0;
-    void* current = this->actions->get_current_task();
-
-    if (current != 0) {
-        if (found == (RepairEntry*)current) {
-            if (this->actions->update_action(target, target->world_x, target->world_y, target->world_z)) {
-                void* act = this->actions->get_action();
-                short t = ((RGE_Action*)act)->get_type();
-                found = (RepairEntry*)(int)t;
-                reused = 1;
-            }
-        }
-    }
-
-    if (!reused) {
-        if (found != 0) {
-            void* new_act = this->actions->make_action(found, target, target->world_x, target->world_y, target->world_z);
-            found = (RepairEntry*)new_act;
-        }
-
-        if (found != 0) {
-            short t = ((RGE_Action*)found)->get_type();
-            void** vt = (void**)self;
-            void* fn = *(void**)((char*)vt + 0x208);
-            __asm {
-                mov ecx, self
-                push found
-                call fn
-            }
-            found = (RepairEntry*)(int)t;
+                repair_task = 0;
+                ++i;
+                ++task_list;
+            } while (i < task_count);
         } else {
-            found = 0;
+            repair_task = 0;
         }
-    }
 
-    if (this->sound != 0) {
-        int sound1 = -1;
-        int sound2 = -1;
-        if ((short)(int)found == 0x6A) {
-            sound2 = 0x26A;
-            sound1 = 0x2CE;
+        current_task = this->actions->get_task();
+        action_id = 0;
+        action_worked = 0;
+        if (current_task != 0 && repair_task == current_task &&
+            this->actions->action_work(target,
+                                       target->world_x,
+                                       target->world_y,
+                                       target->world_z) != 0) {
+            action_id = this->actions->get_action()->action_id();
+            action_worked = 1;
         }
-        this->sound->set_current_order(sound1);
-        this->sound->set_current_action(sound2);
-        this->sound->set_current_target(
-            target->id,
-            target->master_obj->object_group,
-            target->world_x, target->world_y, target->world_z
-        );
-        this->sound->set_tasked_by_player();
+
+        if (action_worked == 0) {
+            if (repair_task != 0) {
+                action = this->actions->create_task_action(
+                    repair_task, target,
+                    target->world_x, target->world_y, target->world_z);
+            } else {
+                action = 0;
+            }
+
+            if (action != 0) {
+                action_id = action->action_id();
+                this->set_action(action);
+            } else {
+                action_id = 0;
+            }
+        }
+
+        if (this->unit_ai != 0) {
+            order = -1;
+            current_action = -1;
+            if (action_id == 0x6a) {
+                current_action = 0x26a;
+                order = 0x2ce;
+            }
+            this->unit_ai->setCurrentOrder(order);
+            this->unit_ai->setCurrentAction(current_action);
+            this->unit_ai->setCurrentTarget(
+                target->id,
+                target->master_obj->object_group,
+                target->world_x,
+                target->world_y,
+                target->world_z);
+            this->unit_ai->setTaskedByPlayer();
+        }
     }
 }
+
+#undef VPAD15
+#undef VPAD64
+#undef VPAD32
+#undef VPAD16
+#undef VPAD8
+#undef VPAD4
+#undef VPAD2
+#undef VPAD1

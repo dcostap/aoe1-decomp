@@ -5,14 +5,23 @@
 // 3: manual temp-ordered RECT stores changed prologue/register pressure badly; rolled back to aggregate copies.
 // 4: declare InvalidateRect as const function pointer to emit original IAT ff15 call length; recovered exact branch distances through offset 0x11E.
 // 5: stopped after near-parity pass: remaining 9.08% diff is localized to restore/save RECT copy scheduling and later shape_draw/DDraw argument register allocation; no inline asm/custom flags.
+// 6: reordered aggregate copies; prologue lost EBP and shrank to 748 bytes (705-byte diff); restored.
+// 7: used SDK windows.h/RECT context; emitted bytes and 69-byte baseline diff were unchanged.
+// 8: direct named mouse_rect aggregate for restore_rect recovered the original +011D block and improved 69 -> 53 bytes; kept.
+// 9: six natural aggregate-copy order variants produced no closer invariant candidate.
+// 10: shape_info/facet declaration, width, direct-member, and typed clipper probes were duplicate or farther; seven shape-expression variants found no exact result.
+// left in scratch: 53-byte nonexact drift begins at 0045BC43 in shape_draw register/argument scheduling; calls, frame, size, CFG, and all 13 call sites match.
+
+#include <windows.h>
 
 typedef unsigned long ulong;
 typedef unsigned char uchar;
 
-struct RECT4 { long left; long top; long right; long bottom; };
+typedef RECT RECT4;
 struct Shape_Info { int a0; int a4; int a8; int aC; int a10; int a14; int Hotspot_X; int Hotspot_Y; };
 
 class IDirectDrawSurface;
+class IDirectDrawClipper;
 
 class TDrawArea {
 public:
@@ -31,7 +40,6 @@ public:
 };
 
 extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
-extern "C" int (__stdcall* const InvalidateRect)(int hwnd, RECT4* rect, int erase);
 #define STR_MOUSEPTR_CPP ((char*)0x00584BD0)
 #define STR_MOUSEPTR_DRAW ((char*)0x00584C38)
 
@@ -60,7 +68,7 @@ public:
 
 void TMousePointer::draw(int forced)
 {
-    void* lplpDDClipper;
+    IDirectDrawClipper* lplpDDClipper;
     lplpDDClipper = 0;
     if (this->active != 0 && this->custom_draw != 0) {
         ulong t = debug_timeGetTime(STR_MOUSEPTR_CPP, 0x2e3);
@@ -78,7 +86,7 @@ void TMousePointer::draw(int forced)
                 long err = CALL_DD_BLT(this->save_area->DrawSurface, &this->new_save_rect, this->renderSurface, ptVar1, 0x1000000, 0);
                 if (err != 0) { this->LastddError = err; return; }
                 this->restoreSurface = this->renderSurface;
-                this->restore_rect = *ptVar1;
+                this->restore_rect = this->mouse_rect;
                 this->save_rect = this->new_save_rect;
                 this->save_area_valid = 1;
                 if (this->Mouse_Mode == 0) {
@@ -93,7 +101,7 @@ void TMousePointer::draw(int forced)
                 if (this->Mouse_Mode == 1) {
                     uchar* p = this->render_area->Lock(STR_MOUSEPTR_DRAW, 1);
                     if (p != 0) {
-                        int f = this->next_facet;
+                        long f = this->next_facet;
                         Shape_Info* si = this->Cursor_Shape->shape_info;
                         this->Cursor_Shape->shape_draw(this->render_area, si[f].Hotspot_X + ptVar1->left, si[f].Hotspot_Y + this->mouse_rect.top, f, 0, 0);
                         this->render_area->Unlock(STR_MOUSEPTR_DRAW);
@@ -113,7 +121,7 @@ void TMousePointer::draw(int forced)
                 this->save_area_valid = 0;
             }
             if (this->GameMode == 0 || this->GameEnabled == 0) {
-                InvalidateRect(*(int*)((char*)this->render_area + 4), &this->mouse_rect, 0);
+                InvalidateRect(*(void**)((char*)this->render_area + 4), &this->mouse_rect, 0);
             }
             this->drawn = 1;
         }

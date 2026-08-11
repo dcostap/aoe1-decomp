@@ -15,6 +15,16 @@
 // preserved the 313-byte basin; the class model is retained for source plausibility.
 // probe: scoping scenario_name to the success arm was codegen-identical; the
 // function-scope array is retained because the PDB local begins at the function band.
+// probe: a named screen result and an explicit success return were codegen-neutral;
+// the 313-byte /GX cleanup-tail basin is independent of those source spellings.
+// probe: the decompiler's merged stack window was split experimentally; a separate
+// 220-byte name tail changed the frame/CFG, while retaining a 224-byte name and
+// zeroing/passing its actual base restored the late constructor/panel blocks and
+// raised exact-block coverage to 59.70% (the binary supports name[0], not name[4]).
+// probe: the natural else-if spelling is codegen-identical to the nested guards.
+// blocker: both popup failure arms still receive duplicated /GX cleanup-and-return
+// blocks instead of the original shared jmp tail at 004ADA58; current source is
+// retained as the best canonical reconstruction with the late stack/name topology.
 // FLAGS: config/flags/004AD960_command_save_as.rsp (/GX; original EH frame and
 // same-TU command_save donor both require the historical exception basin).
 // Main-agent audit restored canonical world/panel destructor ownership; emitted
@@ -79,14 +89,12 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
     this->world->scenario->Save_victory_conditions_into_players(1);
     if (((RGE_Scenario*)this->world->scenario)->active_player_count() < 1) {
         this->popupOKDialog(0x2742, (char*)0, 0x1C2, 100);
+    } else if (((RGE_Scenario*)this->world->scenario)->any_player_count() < 1) {
+        this->popupOKDialog(0x2743, (char*)0, 0x1C2, 100);
     } else {
-        if (((RGE_Scenario*)this->world->scenario)->any_player_count() < 1) {
-            this->popupOKDialog(0x2743, (char*)0, 0x1C2, 100);
-        } else {
-            scenario_name[4] = 0;
-            new TribeSaveGameScreen(2, scenario_name + 4, post_action);
-            panel_system.setCurrentPanel((char*)0x005843B8, 0);
-            panel_system.destroyPanel((char*)0x005843CC);
-        }
+        scenario_name[0] = 0;
+        new TribeSaveGameScreen(2, scenario_name, post_action);
+        panel_system.setCurrentPanel((char*)0x005843B8, 0);
+        panel_system.destroyPanel((char*)0x005843CC);
     }
 }

@@ -1,23 +1,34 @@
 // VA: 004DA1F0 TribeInformationAIModule::addEnemyInfluences
 // Attempt log:
-// try 1: natural reconstruction with helper add_rect compiled helper/out-of-line; text too small (512 vs 547).
-// try 2: inline both rectangle influence loops to match original duplicated loop bodies.
-// try 3: exact-size achieved only after adding a volatile dummy local, but prologue/frame diverges immediately (sub esp 30 vs original sub esp 28).
-// try 4: self local to encourage EBP=this compiled 544 bytes and did not match original prologue.
-// try 5: /Oy- shrank to 512 bytes and introduced EBP frame, wrong for original.
-// try 6: /GX neutral/544 and unjustified; removed.
-// try 7: /O1 shrank to 463 bytes, wrong.
-// try 8: direct typed ObjectMemory stride/owner/id/range fields modeled from type dump; behavior plausible.
-// try 9: direct InfluenceMap calls at 0x62F348 modeled; call sequence/registers still different under rebuilt.
-// try 10: duplicated LOS and range rectangle loops modeled; rebuilt loop family differs and FPU/temp scheduling differs broadly.
-// left in scratch: not accepted-drift-safe; best comparable build is exact size but broad prologue/register/FPU/loop mismatch.
+// Prior work tried helper extraction, a dummy local, self aliases, /Oy-, /GX,
+// /O1, and direct map wrappers.  Those variants either changed the frame or
+// used the wrong call symbols.
+// Session baseline: use the typed 0x24-byte ObjectMemory ownership, the
+// MainDecision::object and aiPathSystem lookup/set surfaces, and the external
+// DAT_00575564 (>1.0) range threshold.  This aligned all 17 calls and the
+// original 0x28 frame, but left broad FPU/register drift.
+// Session probes: moving byte-offset initialization into the positive guard
+// restored the exact prologue.  Typed polymorphic object/master/TU surfaces
+// were codegen-neutral.  A volatile master-pointer diagnostic reproduced the
+// repeated [object+8] reloads and reduced drift to 29 bytes, but is not kept as
+// unsupported compiler steering.  A max-range operand-order probe and a
+// focused master/range lab were unchanged/nonexact.
+// left in scratch: natural source is retained; remaining 29-byte diagnostic
+// basin is the repeated master reload plus four local statement-order swaps.
 
 struct XYPoint { int x; int y; };
 
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x24];
+    float los;
+};
+
 class RGE_Static_Object {
 public:
-    char gap_00[8];
-    void* master;
+    virtual ~RGE_Static_Object();
+    int id;
+    RGE_Master_Static_Object* master_obj;
     char gap_0C[0x38-0x0C];
     float world_x;
     float world_y;
@@ -42,13 +53,24 @@ struct ObjectMemory {
     float range;
 };
 
-class RGE_Player_Object_List { public: RGE_Static_Object* find(int id); };
-class InfluenceMap { public: unsigned char getMapValue(int x, int y); void setMapValue(int x, int y, int v); };
+class MainDecisionAIModule {
+public:
+    virtual ~MainDecisionAIModule();
+    RGE_Static_Object* object(int id);
+};
+class PathingSystem {
+public:
+    unsigned char lookupMisc(int row, int column);
+    void setMisc(int row, int column, unsigned char value);
+};
+
+extern PathingSystem aiPathSystem;
 
 class TribeInformationAIModule {
 public:
-    char gap_000[0x100];
-    RGE_Player_Object_List* objectList;
+    virtual ~TribeInformationAIModule();
+    char gap_004[0x100-0x04];
+    MainDecisionAIModule* md;
     char gap_104[0x110-0x104];
     int maxImportantObjectMemory;
     ObjectMemory* importantObjectMemory;
@@ -56,28 +78,28 @@ public:
     void addEnemyInfluences(int player, int excludeId);
 };
 
+extern float DAT_00575564;
+
 void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
 {
-    int i = 0;
     int index = 0;
-    volatile int dummy = 0;
     if (this->maxImportantObjectMemory <= 0) return;
+    int i = 0;
     do {
-        ObjectMemory* mem = (ObjectMemory*)((char*)this->importantObjectMemory + i);
-        if (mem->owner == player) {
-            int id = mem->id;
+        if (*(unsigned char*)((char*)this->importantObjectMemory + i + 0x0B) == player) {
+            int id = *(int*)((char*)this->importantObjectMemory + i);
             if (id != excludeId) {
-                RGE_Static_Object* obj = this->objectList->find(id);
+                RGE_Static_Object* obj = this->md->object(id);
                 if (obj != 0) {
                     XYPoint minLOS;
                     XYPoint maxLOS;
                     XYPoint minRange;
                     XYPoint maxRange;
-                    minLOS.x = (int)(obj->world_x - *(float*)((char*)obj->master + 0x28));
-                    minLOS.y = (int)(obj->world_y - *(float*)((char*)obj->master + 0x28));
+                    minLOS.x = (int)(obj->world_x - obj->master_obj->los);
+                    minLOS.y = (int)(obj->world_y - obj->master_obj->los);
                     this->mapBound(&minLOS);
-                    maxLOS.x = (int)(*(float*)((char*)obj->master + 0x28) + obj->world_x);
-                    maxLOS.y = (int)(*(float*)((char*)obj->master + 0x28) + obj->world_y);
+                    maxLOS.x = (int)(obj->master_obj->los + obj->world_x);
+                    maxLOS.y = (int)(obj->master_obj->los + obj->world_y);
                     this->mapBound(&maxLOS);
                     int x = minLOS.x;
                     if (x <= maxLOS.x) {
@@ -85,9 +107,9 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
                             int y = minLOS.y;
                             if (y <= maxLOS.y) {
                                 do {
-                                    int v = (int)((InfluenceMap*)0x62F348)->getMapValue(x, y) + 10;
+                                    int v = (int)aiPathSystem.lookupMisc(x, y) + 10;
                                     if (v > 255) v = 255;
-                                    ((InfluenceMap*)0x62F348)->setMapValue(x, y, v);
+                                    aiPathSystem.setMisc(x, y, (unsigned char)v);
                                     y++;
                                 } while (y <= maxLOS.y);
                             }
@@ -95,13 +117,12 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
                         } while (x <= maxLOS.x);
                     }
 
-                    float r = mem->range;
-                    if (r >= 0.0f) {
-                        minRange.x = (int)(obj->world_x - r);
-                        minRange.y = (int)(obj->world_y - r);
+                    if (*(float*)((char*)this->importantObjectMemory + i + 0x20) > DAT_00575564) {
+                        minRange.x = (int)(obj->world_x - *(float*)((char*)this->importantObjectMemory + i + 0x20));
+                        minRange.y = (int)(obj->world_y - *(float*)((char*)this->importantObjectMemory + i + 0x20));
                         this->mapBound(&minRange);
-                        maxRange.x = (int)(r + obj->world_x);
-                        maxRange.y = (int)(r + obj->world_y);
+                        maxRange.x = (int)(obj->world_x + *(float*)((char*)this->importantObjectMemory + i + 0x20));
+                        maxRange.y = (int)(obj->world_y + *(float*)((char*)this->importantObjectMemory + i + 0x20));
                         this->mapBound(&maxRange);
                         int x2 = minRange.x;
                         if (x2 <= maxRange.x) {
@@ -109,9 +130,9 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
                                 int y2 = minRange.y;
                                 if (y2 <= maxRange.y) {
                                     do {
-                                        int v2 = (int)((InfluenceMap*)0x62F348)->getMapValue(x2, y2) + 10;
+                                        int v2 = (int)aiPathSystem.lookupMisc(x2, y2) + 10;
                                         if (v2 > 255) v2 = 255;
-                                        ((InfluenceMap*)0x62F348)->setMapValue(x2, y2, v2);
+                                        aiPathSystem.setMisc(x2, y2, (unsigned char)v2);
                                         y2++;
                                     } while (y2 <= maxRange.y);
                                 }

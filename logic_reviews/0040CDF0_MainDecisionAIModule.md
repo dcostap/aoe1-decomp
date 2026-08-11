@@ -124,3 +124,27 @@ same-TU header context, all reproduced the same 78-byte no-EH basin. Main-agent
 validation removed the diagnostic empty derived-destructor definition because it
 would contradict the exact nonempty `0040D020` implementation; this was codegen
 neutral. The original-only FS registration remains the sole substantive blocker.
+
+### Round 2 — concurrent blind cohort, 2026-08-11
+
+- `sa-27edb2a2` — `openai-codex/gpt-5.6-luna`, max thinking
+- `sa-95d53119` — `deepseek/deepseek-v4-flash`, high thinking
+
+Both fresh reviewers independently verified the `AIModule` call target and
+argument order, `player` at `+0xF0`, the four zeroed `ManagedArray<int>` words,
+the delayed `0x56E8D8` derived vtable value, `this` return, and the
+`__thiscall` three-argument surface. Neither identified a normal-path data,
+call, layout, or return-value defect. The DeepSeek review also directly traced
+the original FuncInfo/unwind map: the state remains `-1`, so its sole state-0
+base-destructor cleanup action is not reached by the visible constructor path.
+
+Main-agent adjudication: this strengthens the conclusion that the unmatched EH
+frame is not an ordinary base-constructor-unwind difference. It does not close
+the existing promotion blocker. The original nevertheless installs an FS-chain
+registration before the base call and removes it on return, while the candidate
+installs none. The cohort did not establish that this registration is
+unobservable for every executable-reachable exceptional/asynchronous or
+FS-chain-inspecting context. Under the project's original-executable behavior
+policy, that remains a substantive open behavioral uncertainty rather than a
+mere byte-codegen difference. No source change is justified; remain in
+`src/scratch` and do not promote to `verified_logic`.

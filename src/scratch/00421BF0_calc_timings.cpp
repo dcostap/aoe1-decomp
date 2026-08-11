@@ -1,148 +1,324 @@
 // VA: 00421BF0 RGE_Base_Game::calc_timings (934 B)
-// PDB source: basegame.cpp
-// Packet-grounded structural first-pass
-// Timing accumulator and debug-print profiler
+// PDB source: basegame.cpp:4767-4914
+// Attempt log:
+// - Baseline used a packet-grounded raw-offset scaffold.  It omitted the real
+//   profiler fprintf/fflush path and duplicated two time probes, producing a
+//   476-byte structural mismatch.
+// - Probe 2: restored the period typed timing/world/player surfaces, the three
+//   single debug_timeGetTime calls, the virtual calc_timing_text call, and the
+//   binary-observed giant conditional fprintf argument list.  The source keeps
+//   timing ownership named while preserving the original zero-count behavior.
+// - Probe 4: explicit pre-loop and post-load player-pointer increments recovered
+//   the original add/dec/load scan topology and reduced the positional drift to
+//   the timer-update block plus relocations.
+// - Probe 7: donor-era stdlib/string/windows header context preserved the late
+//   profiler argument and cleanup blocks; the remaining drift is localized to
+//   VC5 scheduling around the first timer reset call.
+// - Variant lab (probe 8): six plausible timer-field statement orders produced
+//   no exact group.  The natural last/last-max/zero/zero/start order is retained.
+// - Probes 9-10: restoring the known 0xA24 object size and testing the int
+//   debug-time return ABI did not improve emitted bytes.  Final best source is
+//   the typed reconstruction; exact gap is the timer block's first branch.
 
-extern unsigned long debug_timeGetTime(const char* file, int line);
-extern int sprintf(char* buf, const char* fmt, ...);
-extern void debug_printf(void* format, ...);
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
 
-extern int g_62C530; // time counter
-extern int g_62C538;
-extern int g_62C53C;
-extern int g_62C540;
-extern int g_62C544;
-extern int g_62C52C; // profile enable flag
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern int do_fps_log;
+extern FILE* fps_log;
+extern unsigned long start_mem_total;
+extern unsigned long start_mem_high;
+extern unsigned long cur_mem_total;
+extern unsigned long cur_mem_high;
 
-struct Shim_21BF0 {
-    // Start of array of 30 structs at +0x528, each 0x20 bytes
-    // offset fields:
-    //   +0x00: cur_start (dword)
-    //   +0x04: accum (dword)
-    //   +0x08: timer_start (dword)
-    //   +0x0C: cur_total (dword)
-    //   +0x10: running (dword)
-    //   +0x14: pad (dword)
-    //   +0x18: prev_total (dword)
-    //   +0x1C: pad (dword)
-    // End of array at +0x528 + 30*0x20 = +0x528 + 0x3C0 = +0x8E8
-    
-    char p0[0x504];
-    int timer_frame;           // +0x504
-    int timer_game;            // +0x508
-    int timer_idle;            // +0x50C
-    int timer_frame_save;      // +0x510
-    int timer_game_save;       // +0x514
-    int timer_idle_save;       // +0x518
-    int fps_calc;              // +0x51C
-    int ups_calc;              // +0x520
-    int ips_calc;              // +0x524
-    // Array starts at +0x528
+class RGE_Object_List {
+public:
+    char gap_00[8];
+    short number_of_objects;
 };
 
-void RGE_Base_Game_calc_timings(Shim_21BF0* self)
+class RGE_Player;
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    unsigned long world_time;
+    char gap_08[0x34];
+    short player_num;
+    char gap_3E[2];
+    RGE_Player** players;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x24];
+    RGE_Object_List* objects;
+    RGE_Object_List* sleeping_objects;
+};
+
+class RGE_Timing_Info {
+public:
+    unsigned long accum_time;
+    unsigned long last_time;
+    unsigned long start_time;
+    int include_in_total;
+    int is_summary;
+    unsigned long last_single_time;
+    unsigned long max_time;
+    unsigned long last_max_time;
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wp, long lp);
+    virtual void set_prog_mode(int mode);
+    virtual void set_game_mode(int mode, int sub_mode);
+    virtual void set_player(short player);
+    virtual int get_error_code();
+    virtual char* get_string(int a, long b, char* out, int size);
+    virtual char* get_string(long a, char* out, int size);
+    virtual char* get_string(long a);
+    virtual char* get_string2(int a, long b, long c, char* out, int size);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void* scenario);
+    virtual void* new_scenario_header(int value);
+    virtual void* new_scenario_info(int value);
+    virtual void notification(int a, long b, long c, long d, long e);
+    virtual int reset_comm();
+    virtual void send_game_options();
+    virtual void receive_game_options();
+    virtual char* gameSummary();
+    virtual int processCheatCode(int value, char* text);
+    virtual int setup_music_system();
+    virtual void shutdown_music_system();
+    virtual int setup();
+    virtual int setup_cmd_options();
+    virtual int setup_class();
+    virtual int setup_main_window();
+    virtual int setup_graphics_system();
+    virtual int setup_palette();
+    virtual int setup_mouse();
+    virtual int setup_registry();
+    virtual int setup_debugging_log();
+    virtual int setup_chat();
+    virtual int setup_comm();
+    virtual int setup_sound_system();
+    virtual int setup_fonts();
+    virtual int setup_sounds();
+    virtual int setup_shapes();
+    virtual int setup_blank_screen();
+    virtual void setup_timings();
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void stop_music_system();
+    virtual int restart_music_system();
+    virtual RGE_Game_World* create_world();
+    virtual int handle_message(void* msg);
+    virtual int handle_idle();
+    virtual int handle_mouse_move(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_key_down(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_user_command(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_command(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_music_done(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_paint(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_activate(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_init_menu(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_exit_menu(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_size(void* hwnd, unsigned int msg, unsigned int wp, long lp);
+    virtual int handle_palette_changed(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_query_new_palette(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_close(void* a, unsigned int b, unsigned int c, long d);
+    virtual int handle_destroy(void* a, unsigned int b, unsigned int c, long d);
+    virtual int action_update();
+    virtual int action_mouse_move(long a, long b, int c, int d, int e, int f);
+    virtual int action_key_down(unsigned long a, int b, int c, int d, int e);
+    virtual int action_user_command(unsigned long a, unsigned long b);
+    virtual int action_command(unsigned long a, unsigned long b);
+    virtual int action_music_done();
+    virtual int action_activate();
+    virtual int action_deactivate();
+    virtual int action_init_menu();
+    virtual int action_exit_menu();
+    virtual int action_size();
+    virtual int action_close();
+    virtual void calc_timings();
+    virtual void calc_timing_text();
+    virtual void show_timings();
+    virtual void show_comm();
+    virtual void show_ai();
+    virtual int setup_map_save_area();
+    virtual void set_interface_messages();
+
+    char gap_04[0x1B0 - 4];
+    int prog_mode;                         // +0x1B0
+    char gap_1B4[0x3F4 - 0x1B4];
+    RGE_Game_World* world;                 // +0x3F4
+    int render_all;
+    short master_obj_id;
+    short terrain_id;
+    short elevation_height;
+    short brush_size;
+    char timing_text[0x100];               // +0x404
+    unsigned long frame_count;             // +0x504
+    unsigned long world_update_count;      // +0x508
+    unsigned long view_update_count;       // +0x50C
+    unsigned long last_frame_count;        // +0x510
+    unsigned long last_world_update_count; // +0x514
+    unsigned long last_view_update_count;  // +0x518
+    unsigned long fps;                     // +0x51C
+    unsigned long world_update_fps;         // +0x520
+    unsigned long view_update_fps;          // +0x524
+    RGE_Timing_Info timings[30];           // +0x528
+    char gap_8E8[0xA24 - 0x8E8];            // remaining RGE_Base_Game layout
+};
+
+void RGE_Base_Game::calc_timings()
 {
-    int oldAccum = 0;
-    int i;
-    void* slot;
-    int totalTime;
-    
-    // Accumulate all running timers
-    for (i = 0; i < 30; i++) {
-        slot = (char*)self + 0x528 + i * 0x20;
-        if (!*(int*)((char*)slot + 0x10)) { // not running
-            // Store previous and reset start
-            *(int*)((char*)slot + 4) = *(int*)slot;
-            *(int*)((char*)slot + 0x1C) = *(int*)((char*)slot + 0x18);
-            *(int*)slot = 0;
-            *(int*)((char*)slot + 0x18) = 0;
-            debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12B5);
-        } else {
-            oldAccum += *(int*)((char*)slot + 4);
+    unsigned long total_time = 0;
+    RGE_Timing_Info* timing = this->timings;
+    int count = 30;
+
+    do {
+        if (timing->is_summary == 0) {
+            timing->last_time = timing->accum_time;
+            timing->last_max_time = timing->max_time;
+            timing->accum_time = 0;
+            timing->max_time = 0;
+            timing->start_time = debug_timeGetTime(
+                (char*)0x57FB08, 0x12B5);
         }
-    }
-    
-    totalTime = *(int*)((char*)self + 0x530);
-    
-    if (totalTime > 0) {
-        debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12BE);
-        *(int*)((char*)self + 0x52C) = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12BE) - totalTime;
+
+        if (timing->include_in_total != 0)
+            total_time += timing->last_time;
+
+        ++timing;
+    } while (--count != 0);
+
+    if (this->timings[0].start_time > 0) {
+        this->timings[0].last_time = debug_timeGetTime(
+            (char*)0x57FB08, 0x12BE) - this->timings[0].start_time;
     } else {
-        *(int*)((char*)self + 0x52C) = oldAccum;
+        this->timings[0].last_time = total_time;
     }
-    
-    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12C1);
-    int oldTotal = *(int*)((char*)self + 0x52C);
-    *(int*)((char*)self + 0x530) = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12C1);
-    
-    if (oldTotal <= oldAccum)
-        *(int*)((char*)self + 0x5AC) = 0;
+
+    this->timings[0].start_time = debug_timeGetTime(
+        (char*)0x57FB08, 0x12C1);
+
+    if (this->timings[0].last_time > total_time)
+        this->timings[4].last_time =
+            this->timings[0].last_time - total_time;
     else
-        *(int*)((char*)self + 0x5AC) = oldTotal - oldAccum;
-    
-    // Compute idle time
-    int frameTotal = *(int*)((char*)self + 0x5EC);
-    int idleTotal = *(int*)((char*)self + 0x60C);
-    int gameTotal = *(int*)((char*)self + 0x56C);
-    int sumFI = frameTotal + idleTotal;
-    
-    if (gameTotal > sumFI)
-        *(int*)((char*)self + 0x64C) = gameTotal - frameTotal - idleTotal;
+        this->timings[4].last_time = 0;
+
+    if (this->timings[2].last_time >
+        this->timings[6].last_time + this->timings[7].last_time)
+        this->timings[9].last_time =
+            this->timings[2].last_time - this->timings[6].last_time -
+            this->timings[7].last_time;
     else
-        *(int*)((char*)self + 0x64C) = 0;
-    
-    // Calculate FPS
-    if (oldTotal && self->timer_frame && self->timer_frame != 0) {
-        int div = oldTotal / self->timer_frame;
-        if (div) {
-            self->fps_calc = 1000 / div;
-        } else {
-            self->fps_calc = 1000;
-        }
+        this->timings[9].last_time = 0;
+
+    unsigned long total = this->timings[0].last_time;
+    if (total == 0 || this->frame_count == 0 ||
+        total / this->frame_count == 0) {
+        this->fps = 1000;
     } else {
-        self->fps_calc = 1000;
+        this->fps = 1000 / (total / this->frame_count);
     }
-    
-    // Calculate UPS
-    if (oldTotal && self->timer_game && self->timer_game != 0) {
-        int div = oldTotal / self->timer_game;
-        if (div) {
-            self->ups_calc = 1000 / div;
-        } else {
-            self->ups_calc = 0;
-        }
+
+    if (total == 0 || this->world_update_count == 0 ||
+        total / this->world_update_count == 0) {
+        this->world_update_fps = 0;
     } else {
-        self->ups_calc = 0;
+        this->world_update_fps =
+            1000 / (total / this->world_update_count);
     }
-    
-    // Calculate IPS
-    if (oldTotal && self->timer_idle && self->timer_idle != 0) {
-        int div = oldTotal / self->timer_idle;
-        if (div) {
-            self->ips_calc = 1000 / div;
-        } else {
-            self->ips_calc = 0;
-        }
+
+    if (total == 0 || this->view_update_count == 0 ||
+        total / this->view_update_count == 0) {
+        this->view_update_fps = 0;
     } else {
-        self->ips_calc = 0;
+        this->view_update_fps =
+            1000 / (total / this->view_update_count);
     }
-    
-    // Virtual call to gather timings
-    // (vmcall +0x12C) — possibly calc_other_timings or similar
-    void** vtable = *(void***)self;
-    ((void(*)(Shim_21BF0*))vtable[0x12C / 4])(self);
-    
-    // Debug printing if profile mode active
-    if (g_62C52C) {
-        // Complex timing dump
-        // Only executes when mode == 4
+
+    this->calc_timing_text();
+
+    if (do_fps_log != 0 && this->prog_mode == 4) {
+        int object_count = 0;
+        int sleeping_object_count = 0;
+        int player_count = this->world->player_num;
+
+        if (player_count > 1) {
+            RGE_Player** players = this->world->players;
+            --player_count;
+            ++players;
+            do {
+                RGE_Player* player = *players;
+                ++players;
+                object_count += player->objects->number_of_objects;
+                sleeping_object_count +=
+                    player->sleeping_objects->number_of_objects;
+                --player_count;
+            } while (player_count != 0);
+        }
+
+        fprintf(
+            fps_log,
+            (const char*)0x580284,
+            this->world->world_time,
+            start_mem_total,
+            start_mem_high,
+            cur_mem_total,
+            cur_mem_high,
+            (*this->world->players)->objects->number_of_objects,
+            (*this->world->players)->sleeping_objects->number_of_objects,
+            object_count,
+            sleeping_object_count,
+            this->world_update_count,
+            this->view_update_count,
+            this->world_update_fps,
+            this->view_update_fps,
+            this->world_update_count == 0
+                ? 0 : this->timings[6].last_time / this->world_update_count,
+            this->timings[6].last_max_time,
+            this->world_update_count == 0
+                ? 0 : this->timings[7].last_time / this->world_update_count,
+            this->timings[7].last_max_time,
+            this->world_update_count == 0
+                ? 0 : this->timings[3].last_time / this->world_update_count,
+            this->timings[3].last_max_time,
+            this->world_update_count == 0
+                ? 0 : this->timings[1].last_time / this->world_update_count,
+            this->timings[1].last_max_time,
+            this->world_update_count == 0
+                ? 0 : (this->timings[10].last_time +
+                       this->timings[12].last_time) /
+                      this->world_update_count,
+            this->timings[10].last_max_time +
+                this->timings[12].last_max_time,
+            this->world_update_count == 0
+                ? 0 : this->timings[13].last_time / this->world_update_count,
+            this->timings[13].last_max_time,
+            this->world_update_count == 0
+                ? 0 : this->timings[4].last_time / this->world_update_count,
+            this->timings[4].last_max_time,
+            0,
+            -1,
+            -1);
+        fflush(fps_log);
     }
-    
-    // Save and reset timers
-    self->timer_frame_save = self->timer_frame;
-    self->timer_game_save = self->timer_game;
-    self->timer_idle_save = self->timer_idle;
-    self->timer_frame = 0;
-    self->timer_game = 0;
-    self->timer_idle = 0;
+
+    this->last_frame_count = this->frame_count;
+    this->last_world_update_count = this->world_update_count;
+    this->last_view_update_count = this->view_update_count;
+    this->frame_count = 0;
+    this->world_update_count = 0;
+    this->view_update_count = 0;
 }

@@ -10,152 +10,341 @@
 // try 8: modeled indexed table probe plus fallback linear scan over 0x2c-byte entries.
 // try 9: modeled table-mode switch selecting action/var pairs from entry offsets and default -1/-1.
 // try 10: modeled action switch cases 0..9, current-action flags at +0x198, hp/range ftol tests, shared default zero-output path, and recursive clear-current-action retry.
-// Current validation: exact size but broad mismatch (86.6053% positional / 68.3027% edit). First mismatch is prologue/local topology: rebuilt frame 0x18 and early EBX=this, original frame 0x1c and EDI=this with saved self at [esp+2c].
-// GIVEUP blockers: exact TRIBE_Player/object/right-click-entry layout, source shape for two-level switch/tail-sharing, selected-action retry loop without recursion, and local/register allocation preserving EDI=this, ESI=entry/add value, EBP=current bonus. No inline asm used; no accepted_drift proposal.
+// try 11: restored the direct RGE_Static_Object/master/player ownership proven by the packet, the world +0x3c layout, absolute game-global identity, and the original retry_table/redo_mouseFunc loop instead of recursive re-entry.
+// probe 12: corrected the object/master ABI widths and compiler-owned __ftol casts; call count and frame became exact.
+// probe 13: corrected master +0x10/+0x14/+0x26, static-object +0x30/+0x48/+0x4e, world player_count +0x3c, and short target +0x19c ownership; emitted size stayed exact.
+// probe 14: tested the positive outer object guard; VC5 emitted the same code as the prior natural guard.
+// probe 15: moved period-style locals to function scope; instruction count became 268 and exact-block coverage improved, but the saved-this home remained wrong.
+// probe 16: tested a boolean selection local; it worsened CFG/return shape and was rolled back to the integer storage form supported by the dword stores.
+// probe 17: changed table selection to the decompiler-supported negative OR guard; body layout improved but the prologue remained unchanged.
+// probe 18: tested an ordinary self alias for the saved-this lifetime; VC5 emitted duplicate code and it is retained only as readable ownership context.
+// probe 19: tested a shared action-5 label after case 4; it moved the code farther and was rolled back.
+// Final candidate: typed object/master/player ownership, exact field widths/offsets, natural retry-table loop, and 978-byte default-flag build. Remaining drift is broad VC5 local/block topology, not an unresolved call set.
+// GIVEUP blockers: original saved-this home at the top local slot, ESI/EBP/local coloring, and action-switch handler placement remain unresolved after 10 meaningful hypotheses. No inline asm or accepted_drift proposal.
+// Current validation: structural reconstruction probe; no inline asm.
 
-typedef unsigned char byte;
-extern "C" long __cdecl ftol(float);
 extern int DAT_0086bc88;
 extern int DAT_0086bc8c;
+extern float DAT_00576828;
 
-class RGE_Game_World { public: void* object(long id); short player_count; };
-class TRIBE_Game { public: char gap[0xa24]; int sel_action; int sel_var; int norm_action; int norm_var; };
-extern TRIBE_Game* rge_base_game;
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class RGE_Player;
 
-struct ObjDef { char gap00[0x10]; short rightTable; char gap12[2]; short owner; char gap16[0x10]; short masterId; char gap28[8]; float range1; char gap34[0x18]; byte state; char gap4d; byte kind; char gap4f[0x1d]; float f6c; float f70; };
-struct ObjWrap { char gap00[8]; ObjDef* def; void* extra; char gap10[0x84]; ObjDef* inner; void* inner2; };
-struct RightClickEntry { int key; int a; int b; int c; int d; int e; int f; int g; int h; int i; int j; };
-
-class TRIBE_Player {
+class RGE_Game_World {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37();
-    virtual void maybe_update_mouse();
-    char gap04[0x3c-4]; RGE_Game_World* world; char gap40[0x10]; void* policy; char gap54[0x144]; int currentActionFlags; int currentTarget;
-    int get_mouse_pointer_action_vars(long id, int& action, int& var);
+    RGE_Static_Object* object(int id);
+    char gap_00[0x3C];
+    short player_count;
 };
 
-int TRIBE_Player::get_mouse_pointer_action_vars(long id, int& action, int& var)
+class RGE_Master_Static_Object {
+public:
+    char gap_00[0x10];
+    short right_click_table;
+    char gap_12[2];
+    short object_group;
+    char gap_16[0x10];
+    short hp;
+};
+
+class RGE_Player {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+    virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+    virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
+    virtual void v36(); virtual void v37();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
+};
+
+class RGE_Static_Object {
+public:
+    char gap_00[8];
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x20];
+    float range;
+    char gap_34[0x14];
+    unsigned char object_state;
+    char gap_49[5];
+    unsigned char type;
+    char gap_4f[0x45];
+    RGE_Master_Static_Object* special_master;
+    int special_owner;
+};
+
+class RGE_Progress_Info {
+public:
+    char gap_00[0x6C];
+    float field_6c;
+    float field_70;
+};
+
+class TRIBE_Game {
+public:
+    char gap_00[0xA24];
+    RGE_Static_Object** selected_table;
+    int selected_count;
+    RGE_Static_Object** normal_table;
+    int normal_count;
+};
+
+#define rge_base_game (*(TRIBE_Game**)0x0062C574)
+
+struct RightClickEntry {
+    int key;
+    int action_1;
+    int var_1;
+    int action_0;
+    int var_0;
+    int action_2;
+    int var_2;
+    int action_3;
+    int var_3;
+    int action_4;
+    int var_4;
+};
+
+class TRIBE_Player : public RGE_Player {
+public:
+    virtual void redo_mouse_update();
+    virtual int get_mouse_pointer_action_vars(int id, int& action, int& var);
+
+    char gap_4c[4];
+    RGE_Progress_Info* progress_info;
+    char gap_54[0x34];
+    int mouse_actions[68];
+    int current_action_flags;
+    short current_target;
+    short gap_19e;
+};
+
+int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
 {
     TRIBE_Player* self = this;
-    ObjWrap* obj = (ObjWrap*)self->world->object(id);
+    int object_player;
+    int right_click_table;
+    int max_hp;
+    RGE_Master_Static_Object* master;
+    int object_type;
     RightClickEntry* entry = 0;
-    int owner;
-    int table;
-    int master;
-    int maxhp;
+    int use_selection;
+    RightClickEntry* table;
+    int table_count;
+    int action_code;
+    int action_var;
     int current = 0;
+    RGE_Static_Object* object = self->world->object(id);
     action = 0;
     var = 0;
-    if (!obj) return 0;
-
-    if (obj->def->kind == 0x19) {
-        ObjDef* d = obj->inner;
-        owner = d->owner;
-        table = d->rightTable;
-        master = d->masterId;
-        maxhp = (int)obj->inner2;
+    if (object != 0) {
+    if (object->type == 0x19) {
+        master = object->special_master;
+        object_player = (short)master->object_group;
+        right_click_table = (short)master->right_click_table;
+        max_hp = (short)master->hp;
+        object_type = object->special_owner;
     } else {
-        ObjDef* d = obj->def;
-        owner = d->owner;
-        maxhp = (int)obj->extra;
-        table = d->rightTable;
-        master = d->masterId;
+        master = object->master_obj;
+        object_player = (short)master->object_group;
+        object_type = (short)object->owner->id;
+        right_click_table = (short)master->right_click_table;
+        max_hp = (short)master->hp;
     }
-    if (owner < 0 || owner >= self->world->player_count) return 0;
 
-    self->maybe_update_mouse();
-    if (master == 0x9e || master == 0xa3) current = 50;
+    if (object_type < 0 || object_type >= self->world->player_count) {
+        return 0;
+    }
 
-    TRIBE_Game* game = rge_base_game;
-    RightClickEntry* list;
-    int listCount;
-    int useSelection;
-    if (*(short*)&self->currentActionFlags && self->currentTarget) {
-        useSelection = 1; list = (RightClickEntry*)game->sel_action; listCount = game->sel_var;
+    self->redo_mouse_update();
+    if (right_click_table == 0x9e || right_click_table == 0xa3) {
+        current = 50;
+    }
+
+retry_table:
+    entry = 0;
+    if (self->current_target == 0 || self->current_action_flags == 0) {
+        use_selection = 0;
+        table = (RightClickEntry*)rge_base_game->normal_table;
+        table_count = rge_base_game->normal_count;
     } else {
-        useSelection = 0; list = (RightClickEntry*)game->norm_action; listCount = game->norm_var;
+        use_selection = 1;
+        table = (RightClickEntry*)rge_base_game->selected_table;
+        table_count = rge_base_game->selected_count;
     }
-    if (owner >= 0 && owner < listCount) {
-        RightClickEntry* probe = &list[owner];
-        if (probe->key == owner) entry = probe;
-    }
-    if (!entry) {
-        for (int i = 0; i < listCount; ++i) {
-            if (list[i].key == owner) { entry = &list[i]; break; }
+
+    if (object_type >= 0 && object_type < table_count) {
+        RightClickEntry* probe = table + object_type;
+        if (probe->key == object_type) {
+            entry = probe;
         }
     }
-    if (!entry) return 0;
-
-    int code;
-    int add;
-    switch (((int*)self->policy)[table + 34]) {
-    case 0: code = entry->c; add = entry->d; break;
-    case 1: code = entry->a; add = entry->b; break;
-    case 2: code = entry->e; add = entry->f; break;
-    case 3: code = entry->g; add = entry->h; break;
-    case 4: code = entry->i; add = entry->j; break;
-    default: code = -1; add = -1; break;
+    if (entry == 0) {
+        int i = 0;
+        RightClickEntry* scan = table;
+        if (table_count > 0) {
+            do {
+                if (scan->key == object_type) {
+                    entry = table + i;
+                    break;
+                }
+                ++i;
+                ++scan;
+            } while (i < table_count);
+        }
     }
-    if (code == -1) return 0;
+    if (entry == 0) {
+        return 0;
+    }
 
-again:
-    switch (code) {
+    switch (self->mouse_actions[right_click_table]) {
     case 0:
-        if ((self->currentActionFlags & 1) && ((ObjDef*)obj)->state > 2) { action = 4; var = current + add; break; }
-        if (code == 8) { current = 50; code = 7; goto again; }
+        action_code = entry->action_0;
+        action_var = entry->var_0;
         break;
     case 1:
-        action = 0; var = current + add; break;
+        action_code = entry->action_1;
+        action_var = entry->var_1;
+        break;
     case 2:
-        if (self->currentActionFlags & 2) { action = 5; var = current + add; }
+        action_code = entry->action_2;
+        action_var = entry->var_2;
         break;
     case 3:
-        if (self->currentActionFlags & 4) { action = 5; var = current + add; }
+        action_code = entry->action_3;
+        action_var = entry->var_3;
         break;
     case 4:
-        if (self->currentActionFlags & 0x10) {
-            if (!(DAT_0086bc8c == 1 && id == DAT_0086bc88)) {
-                int hp = ftol(obj->def->range1);
-                if (hp > 0 && hp < maxhp) { action = 5; var = current + add; }
-            }
-        }
+        action_code = entry->action_4;
+        action_var = entry->var_4;
         break;
-    case 5:
-        if (self->currentActionFlags & 0x20) {
-            if (!obj->def->state) current = 50;
-            int hp = ftol(obj->def->range1);
-            if (hp > 0 && hp < maxhp) { action = 3; var = current + add; }
-        }
-        break;
-    case 6:
-        if (!(self->currentActionFlags & 0x40)) { if (code == 9) { current = 50; code = 1; goto again; } }
-        else { action = 3; var = current + add; }
-        break;
-    case 7:
-        if (self->currentActionFlags & 0x80) {
-            if (master == 0x12 && obj->def->f6c == 0.0f) break;
-            if (master == 3 && obj->def->f70 == 0.0f) break;
-            if (master != master) break;
-            if (master == 0x6d || master == 0x114) break;
-            action = 5; var = current + add;
-        }
-        break;
-    case 8:
-        current = 50; code = 7; goto again;
-    case 9:
-        if (!(self->currentActionFlags & 0x40)) { current = 50; code = 1; goto again; }
-        action = 3; var = current + add; break;
     default:
-        action = 0; var = 0; break;
+        action_code = -1;
+        action_var = -1;
+        break;
     }
-    int ret = 1;
-    if (useSelection == 1 && action == 0 && var == 0) {
-        self->currentActionFlags = 0;
-        return self->get_mouse_pointer_action_vars(id, action, var);
+    if (action_code == -1) {
+        return 0;
     }
-    return ret;
+
+redo_mouseFunc:
+    do {
+        switch (action_code) {
+        case 0:
+            action = 0;
+            var = current + action_var;
+            goto finish;
+        case 1:
+        case 8:
+            if ((self->current_action_flags & 1) != 0 && object->object_state < 3) {
+                action = 4;
+                var = current + action_var;
+                goto finish;
+            }
+            if (action_code != 8) {
+                goto finish;
+            }
+            action_code = 7;
+            break;
+        case 2:
+            if ((self->current_action_flags & 2) == 0) {
+                goto finish;
+            }
+            goto set_action_5;
+        case 3:
+            if ((self->current_action_flags & 4) == 0) {
+                goto finish;
+            }
+            action = 5;
+            var = current + action_var;
+            goto finish;
+        case 4:
+            if ((self->current_action_flags & 0x10) == 0) {
+                goto finish;
+            }
+            if (DAT_0086bc8c == 1 && id == DAT_0086bc88) {
+                goto finish;
+            }
+            {
+                int hp = (int)object->range;
+                if (hp <= 0 || hp >= max_hp) {
+                    goto finish;
+                }
+            }
+            goto set_action_5;
+        case 5:
+            if ((self->current_action_flags & 0x20) == 0) {
+                goto finish;
+            }
+            if (object->object_state == 0) {
+                current = 50;
+            }
+            {
+                int hp = (int)object->range;
+                if (hp <= 0 || hp >= max_hp) {
+                    goto finish;
+                }
+            }
+            action = 3;
+            var = current + action_var;
+            goto finish;
+        case 6:
+        case 9:
+            if ((self->current_action_flags & 0x40) != 0) {
+                action = 3;
+                var = current + action_var;
+                goto finish;
+            }
+            if (action_code != 9) {
+                goto finish;
+            }
+            action_code = 1;
+            break;
+        case 7:
+            if ((self->current_action_flags & 0x80) == 0) {
+                goto finish;
+            }
+            if (object_player == 0x12 && self->progress_info->field_6c == 0.0f) {
+                goto finish;
+            }
+            if (object_player == 3 && self->progress_info->field_70 == 0.0f) {
+                goto finish;
+            }
+            if (object_player == 3 &&
+                (right_click_table == 0x6d || right_click_table == 0x114)) {
+                goto finish;
+            }
+            action = 5;
+            var = current + action_var;
+            goto finish;
+        default:
+            action = 0;
+            var = 0;
+            goto finish;
+        }
+        current = 50;
+    } while (1);
+
+set_action_5:
+    action = 5;
+    var = current + action_var;
+    goto finish;
+
+finish:
+    if (use_selection == 1 && action == 0 && var == 0) {
+        self->current_action_flags = 0;
+        goto retry_table;
+    }
+    return 1;
+    }
+    return 0;
 }

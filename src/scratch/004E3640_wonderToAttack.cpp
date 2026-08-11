@@ -10,32 +10,44 @@
 // try 9: reviewed loop forms (do/while already matches original bottom test; while would invert/top-check and was not kept).
 // try 10: reviewed condition/floating compare polarity; current source matches original behavior but branch/register allocation remains wrong.
 // left in scratch: best checked form has exact 505B size but persistent first-mismatch at prologue; VC5 keeps this in EBP and offset in EDI, original has this in EBX and offset in EBP. Calls/layout are plausible but broad register-basin diff remains.
+// session probes: moving offset initialization before the guard improved the
+// structural diff, but the period-plausible state/best-state/count declaration
+// order with offset initialized in the positive scan arm was better: 505B,
+// 86.00% shape, 53.38% exact-block coverage, 393 differing bytes. A third
+// get_action result local produced a 479B function and was rolled back;
+// declaration-only virtual surfaces were codegen-neutral. stdlib.h plus
+// string.h matched the nearby taiinfmd CRT context and was retained; a natural
+// self alias was codegen-neutral and was not retained. Remaining mismatch is
+// the EBX-this/EBP-state register basin and associated local load order; all
+// seven calls, frame, size, and observed field/call topology are aligned.
+
+#include <stdlib.h>
+#include <string.h>
 
 class ObjectMemory; class RGE_Static_Object; class RGE_Action; class RGE_Action_List;
 class PlayerLike { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual int playerAlive(int owner); };
-class RGE_Action { public: virtual void av0(); virtual void av1(); virtual void av2(); virtual void av3(); virtual void av4(); virtual void av5(); virtual short actionType(); char gap_04[8]; unsigned char state; char gap_0d[0x1f]; float timer; };
+class RGE_Action { public: virtual ~RGE_Action(); virtual void av0(); virtual void av1(); virtual void av2(); virtual void av3(); virtual void av4(); virtual short actionType(); char gap_04[8]; unsigned char state; char gap_0d[0x1f]; float timer; };
 class RGE_Action_List { public: char gap[0xc]; unsigned char have_action(); RGE_Action* get_action(); };
-class RGE_Static_Object { public: char gap_00[0x30]; float hp; char gap_34[0x14]; unsigned char object_state; char gap_49[0x13b]; RGE_Action_List* action_list; };
-class MainDecisionAIModule { public: char gap_000[0xf0]; PlayerLike* player; char gap_0f4[0x0c]; RGE_Static_Object* object(int id); };
+class RGE_Static_Object { public: virtual ~RGE_Static_Object(); char gap_04[0x2c]; float hp; char gap_34[0x14]; unsigned char object_state; char gap_49[0x13b]; RGE_Action_List* action_list; };
+class MainDecisionAIModule { public: virtual ~MainDecisionAIModule(); char gap_04[0xec]; PlayerLike* player; char gap_0f4[0x0c]; RGE_Static_Object* object(int id); };
 class TribeMainDecisionAIModule : public MainDecisionAIModule {};
 class ObjectMemory { public: int id; short type; short group; unsigned char x; unsigned char y; unsigned char z; unsigned char owner; short hitPoints; char gap_0e[0x16]; };
-class TribeInformationAIModule { public: char gap_000[0x100]; TribeMainDecisionAIModule* md; char gap_104[0x0c]; int maxImportantObjectMemory; ObjectMemory* importantObjectMemory; ObjectMemory* wonderToAttack(int player_id); };
+class TribeInformationAIModule { public: virtual ~TribeInformationAIModule(); char gap_04[0xfc]; TribeMainDecisionAIModule* md; char gap_104[0x0c]; int maxImportantObjectMemory; ObjectMemory* importantObjectMemory; ObjectMemory* wonderToAttack(int player_id); };
 
 ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
 {
     ObjectMemory* bestObject;
-    float bestTimer;
-    float hitpoints;
     int bestState;
-    int i;
+    float bestTimer;
+    float bestHitpoints;
+    int count;
     int offset;
-    int local_4;
 
     bestObject = 0;
-    *(int*)&bestTimer = -1;
-    hitpoints = 0.0f;
-    i = 0;
-    local_4 = 0;
+    bestState = -1;
+    bestTimer = 0.0f;
+    bestHitpoints = 0.0f;
+    count = 0;
     if (this->maxImportantObjectMemory > 0) {
         offset = 0;
         do {
@@ -47,31 +59,31 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                             if (obj->object_state <= 2) {
                                 if (obj->action_list->have_action()) {
                                     if (obj->action_list->get_action()->actionType() == 0x78) {
-                                        bestState = obj->action_list->get_action()->state;
+                                        int state = obj->action_list->get_action()->state;
                                         float timer = obj->action_list->get_action()->timer;
                                         float hp = obj->hp;
                                         if (bestObject == 0) {
                                             bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                            bestState = state;
                                             bestTimer = timer;
-                                            i = bestState;
-                                            hitpoints = hp;
-                                        } else if (i == 6 && bestState == 2) {
-                                        } else if (i == 2 && bestState == 6) {
+                                            bestHitpoints = hp;
+                                        } else if (bestState == 6 && state == 2) {
+                                        } else if (bestState == 2 && state == 6) {
                                             bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                            bestState = state;
                                             bestTimer = timer;
-                                            i = bestState;
-                                            hitpoints = hp;
-                                        } else if (i == bestState) {
-                                            if (i == 2 && hitpoints < hp) {
+                                            bestHitpoints = hp;
+                                        } else if (bestState == state) {
+                                            if (bestState == 2 && bestHitpoints < hp) {
                                                 bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                                bestState = state;
                                                 bestTimer = timer;
-                                                i = bestState;
-                                                hitpoints = hp;
-                                            } else if (i == bestState && i == 6 && bestTimer < timer) {
+                                                bestHitpoints = hp;
+                                            } else if (bestState == state && bestState == 6 && bestTimer < timer) {
                                                 bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                                bestState = state;
                                                 bestTimer = timer;
-                                                i = bestState;
-                                                hitpoints = hp;
+                                                bestHitpoints = hp;
                                             }
                                         }
                                     }
@@ -81,9 +93,9 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                     }
                 }
             }
-            local_4++;
+            count++;
             offset += 0x24;
-        } while (local_4 < this->maxImportantObjectMemory);
+        } while (count < this->maxImportantObjectMemory);
     }
     return bestObject;
 }

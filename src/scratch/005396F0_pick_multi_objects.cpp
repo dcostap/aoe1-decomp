@@ -10,8 +10,21 @@
 // tried register num_picked to force EBP=count; VC5 still used ECX for count and EBP for this.
 // local/global layout facts verified against asm: RGE_View +8c/+90/+94/+98 bounds, +fc world, +334 prior_objs; DClipInfo_Node +4 next, +8 object id, +2c type, +30..+36 bounds, +14/+18 draw coords; object +48 state, master +8d select_level.
 // left in scratch: remaining mismatch is not accepted-drift-safe. Current default build has correct broad behavior but wrong callee-saved register topology and block layout: original starts `push ebx; mov ebx,ecx; push ebp; push esi; xor ebp,ebp`, uses shared far fail epilogue at end, and later restores EBX/EBP around inner loops; rebuilt starts `push ebx; push ebp; mov ebp,ecx; ... xor ecx,ecx`, uses earlier fail block, and cascades broad branch/register differences.
+// matching-worker probes: one short-circuit bounds guard plus the in-loop z<min return improved CFG/shape but not bytes; the typed RGE_Pick_Obj_Info global was codegen-neutral.
+// matching-worker probe: natural RGE_Pick_Obj_Info output ownership recovered EBX=this and exact size, but retained a broad register/global-address mismatch; entry-plus-confidence cursor and field-cursor variants were worse or duplicate.
+// matching-worker probes: reusing max_level as the node object-id home (with local or direct object expressions) caused a larger frame and broad regression; rolled back because the stack write can be compiler local-home reuse rather than source parameter mutation.
+// final bounded best: natural typed record output, combined initial guard, and z check inside the descending loop; 566 rebuilt bytes, 438 strict diff, 74.29% shape, 37.79% exact-block coverage. Remaining drift is broad VC5 register/block topology and global-address relocation, not safe localized drift.
 
-extern int Picked_Objects[];
+class RGE_Pick_Obj_Info {
+public:
+    int object_id;
+    short confidence;
+    short draw_level;
+    short draw_x;
+    short draw_y;
+};
+
+extern RGE_Pick_Obj_Info Picked_Objects[];
 
 struct RGE_Master_Object { char gap_00[0x8d]; unsigned char select_level; };
 struct RGE_Player { char gap_00[0x4a]; short id; };
@@ -59,29 +72,27 @@ public:
 
 int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, int max_level, int player_id, unsigned char select_level, int flag)
 {
-    register int num_picked = 0;
+    int num_picked = 0;
     int z;
-    RGE_View* self = this;
-    if (x2 < self->min_x) goto fail;
-    if (x1 > self->max_x) goto fail;
-    if (y2 < self->min_y) goto fail;
-    if (y1 > self->max_y) goto fail;
-    if (min_level > 40) goto fail;
-    if (max_level < 0) goto fail;
+    if (x2 < this->min_x || x1 > this->max_x ||
+        y2 < this->min_y || y1 > this->max_y ||
+        min_level > 40 || max_level < 0)
+        return 0;
     if (min_level < 0) min_level = 0;
     if (max_level > 40) max_level = 40;
 
-    x1 -= self->min_x;
-    x2 -= self->min_x;
-    y1 -= self->min_y;
-    y2 -= self->min_y;
+    x1 -= this->min_x;
+    x2 -= this->min_x;
+    y1 -= this->min_y;
+    y2 -= this->min_y;
 
     z = max_level;
-    if (max_level < min_level) return num_picked;
     do {
-        DClipInfo_Node* node = self->prior_objs->Draw_Level_Head[z];
+        if (z < min_level)
+            return num_picked;
+        DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[z];
         if (node != 0) {
-            short* out = (short*)((char*)Picked_Objects + 4 + num_picked * 12);
+            RGE_Pick_Obj_Info* out = &Picked_Objects[num_picked];
             do {
                 int ok = 0;
                 if (node->Node_Type == 0) {
@@ -89,7 +100,7 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
                     if (object_id >= 0) {
                         if (x1 <= (int)node->x2 && x2 >= (int)node->x1 &&
                             y1 <= (int)node->y2 && y2 >= (int)node->y1) {
-                            RGE_Static_Object* obj = self->world->objectsValue[object_id];
+                            RGE_Static_Object* obj = this->world->objectsValue[object_id];
                             if (player_id == -1 || obj->owner->id == player_id) {
                                 if (obj->object_state == 2 && obj->master_obj->select_level >= select_level) {
                                     ok = 1;
@@ -100,32 +111,32 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
                 }
                 if (ok != 0) {
                     int add = 1;
-                    if ((int)out > (int)((char*)Picked_Objects + 4)) {
+                    if (out > Picked_Objects) {
                         int i = 0;
-                        int* p = Picked_Objects;
-                        while ((int)out > (int)((char*)Picked_Objects + 4)) {
-                            if (*p == node->Object_ID) {
+                        RGE_Pick_Obj_Info* p = Picked_Objects;
+                        while (out > Picked_Objects) {
+                            if (p->object_id == node->Object_ID) {
                                 add = 0;
-                                if ((short)ok < *((short*)((char*)Picked_Objects + 4 + i * 12))) {
-                                    *((short*)((char*)Picked_Objects + 4 + i * 12)) = (short)ok;
+                                if ((short)ok < Picked_Objects[i].confidence) {
+                                    Picked_Objects[i].confidence = (short)ok;
                                 }
                                 break;
                             }
                             i++;
-                            p += 3;
+                            ++p;
                             if (i >= num_picked) break;
                         }
                     }
                     if (add) {
-                        *(int*)(out - 2) = node->Object_ID;
-                        out[0] = (short)ok;
-                        out[1] = (short)ok;
-                        out[2] = node->Draw_X;
-                        out[3] = node->Draw_Y;
+                        out->object_id = node->Object_ID;
+                        out->confidence = (short)ok;
+                        out->draw_level = (short)ok;
+                        out->draw_x = node->Draw_X;
+                        out->draw_y = node->Draw_Y;
                         num_picked++;
-                        out += 6;
+                        ++out;
                     }
-                    if ((int)out >= (int)((char*)Picked_Objects + 0x304)) return 0x40;
+                    if (out >= Picked_Objects + 64) return 0x40;
                 }
                 node = node->NextOnLevel;
             } while (node != 0);
@@ -133,6 +144,4 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
         z--;
     } while (z >= min_level);
     return num_picked;
-fail:
-    return 0;
 }

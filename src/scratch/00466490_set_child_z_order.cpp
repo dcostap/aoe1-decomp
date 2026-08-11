@@ -12,6 +12,14 @@
 // Main-agent audit restored canonical polymorphic panel ownership and removed
 // the diagnostic self alias; typed node/list traversal remains authoritative.
 // Final audited check: exact 366-byte size, 3/3 ordered calls, 166-byte diff.
+// Session sa-e64ca8aa-r1-00466490: baseline retained the clean typed source.
+// Probed case-0 cursor/local declaration forms, direct member rereads, combined
+// guards, while/for spelling, and reuse of the equality-scan cursor; all emitted
+// the same 366-byte basin. A 9-variant focused scan/update lab likewise found no
+// exact lead. Remaining drift is the localized case-0 register/order hunk:
+// original copies start to EAX before the found-zero/test sequence and uses EAX
+// as the update cursor (EDX as z), while VC5's clean source uses the opposite
+// coloring; leave canonical source authoritative for the next worker.
 
 class TPanel;
 

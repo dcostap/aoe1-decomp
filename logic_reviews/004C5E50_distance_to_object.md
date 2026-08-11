@@ -178,3 +178,26 @@ bytes and 96.36% shape. The semantic blocker is unchanged: the executable can
 perform the other-Y read/x87 operation before the X-clamp branch and scratch
 store, while the candidate performs it afterward. This pass adds strong matching
 exhaustion evidence but does not justify verified-logic promotion.
+
+### Round 3 — concurrent blind cohort, 2026-08-11
+
+- `sa-eb382562` — `openai-codex/gpt-5.6-luna`, max thinking
+- `sa-bc803403` — `deepseek/deepseek-v4-flash`, high thinking
+
+Both reviewers independently located the sole remaining 22-byte window: the
+original performs `fsubr [esp+8]` and the `other_master->radius_y` memory
+subtraction after X's `fcomp` but before consuming its x87 status/branch; the
+candidate performs the X clamp branch and possible stack-home zero store first.
+They agree that ordinary valid, masked-exception numerical results are the same.
+The Luna reviewer identified the changed first-fault, scratch-write, and x87
+exception ordering as a definite behavioral concern. The DeepSeek reviewer
+independently confirmed the narrow fault/EIP/stack-context difference, while
+classifying it as near-equivalent for ordinary inputs.
+
+Main-agent adjudication: the reports corroborate, rather than clear, the
+existing blocker. The reconstructed candidate cannot enter `verified_logic` or
+`accepted_drift`: the original's read/exception occurs before the candidate's
+conditional X clamp and can be distinguished by a fault/exception observer or
+aliasing of the transient stack home. Formal logic review is stopped and the
+function remains a `src/scratch` exact-matching target, with the exact
+pre-branch other-Y scheduling problem documented for any future bounded pass.

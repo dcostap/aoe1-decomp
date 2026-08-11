@@ -9,12 +9,14 @@
 // - corrected local ABI evidence shows GetDibDim takes long references and
 //   canonical LINEINFO/TRANSINFO fields are the right ownership model, but
 //   those changes alone did not move the 333-byte basin.
-// - the binary-proven zero-first transparency predicate and a diagnostic
-//   parameter-home byte cursor improved emitted drift to 219 bytes, while
-//   direct bits[row+x] and explicit entry-offset variants worsened structure;
-//   the cursor form was rolled back as decompiler-shaped scaffolding.
-// - left in scratch: original saves raw bitmap width in EBX, carries the scan
-//   base/entry-offset/register topology differently, and remains non-exact.
+// - PDB local-order evidence (tw, orientation, y, height, width, raw_width)
+//   plus function-scope tw/y and the natural scan-pointer source produced the
+//   best current 219-byte emitted basin; this is retained as the clean source.
+// - direct bits[row+x], an explicit LINEINFO byte-offset cursor, and widening
+//   all_trans changed structure or worsened the match and were rolled back.
+// - left in scratch: the oracle saves raw bitmap width in EBX, uses a direct
+//   EAX scan base with ECX index, and has a different remaining register/
+//   entry-offset topology; calls, frame, size, and scan behavior are aligned.
 
 #include <windows.h>
 #include <stdlib.h>
@@ -45,9 +47,11 @@ extern void __cdecl GetDibDim(BITMAPINFO256*, long&, long&, long&);
 int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
     unsigned char* bits)
 {
-    long width;
-    long height;
+    long tw;
     long orientation;
+    long y;
+    long height;
+    long width;
     long raw_width;
 
     GetDibDim(dib, width, height, orientation);
@@ -56,8 +60,8 @@ int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
     if (info->LineInfo == 0)
         return 1;
 
-    long tw = 0;
-    long y = 0;
+    tw = 0;
+    y = 0;
     if (height > 0) {
         do {
             long row;

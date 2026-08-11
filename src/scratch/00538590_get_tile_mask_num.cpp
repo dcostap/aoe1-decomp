@@ -21,6 +21,19 @@
 // probe 12: register-qualified coordinate parameters — codegen duplicate; rolled back.
 // probe 13: explicit common-tail goto for the binary-proven central-path jump.
 // probe 14: positive interior block first, explicit goto, then boundary block; no change.
+// continuation probes (sa-f0a10d2b-r1): row/col alias initialization order,
+// same-TU polymorphic RGE_View/TPanel layout, nested positive guards, and
+// first-formal register qualification all emitted the same 398-byte basin.
+// Named central row-pointer locals worsened to 397 bytes and were rolled back.
+// Variant labs over common-tail wrappers, row-table declarations, indexed vs
+// pointer-add cell access, and algebraically reordered row expressions found
+// no exact or size-matching candidate. A deliberately transposed access form
+// did flip the entry colors but changed the physical neighbor orientation and
+// is diagnostic only.
+// left in scratch: canonical typed row-table source remains 398 bytes with
+// 308 positional-byte drift (+16 tail), first mismatch at entry parameter
+// coloring; original also retains a shared late return tail that VC5 does not
+// select from the tested natural source forms.
 
 extern unsigned long* unified_map_offsets[];
 

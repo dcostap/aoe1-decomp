@@ -9,6 +9,15 @@
 // - direct parameter/member spelling was retained; no stable shared type/global
 //   fact was found. Paused with the natural source and the remaining lead is the
 //   source-level ordering around the 0x14 versus 0x64 stores.
+// - this session reconfirmed the baseline, then tested direct group reordering;
+//   it worsened the positional diff despite improving resynchronization.
+// - an ordinary local int* alias plus the b_d_c_a group order reached exact size
+//   and 12 positional bytes off; the only remaining hunk was [0x4c] versus
+//   [0xa0]/[0xa4] store order around the param_2 test. Shared tplayer ABI
+//   declarations and a second pointer alias emitted the same bytes.
+// - a focused 24-way permutation of the four individual stores found no exact
+//   variant. The diagnostic alias/order source was restored; remaining evidence
+//   is a localized VC5 scheduling/register basin, not an unknown call or layout.
 
 struct AIModule {
     void __cdecl logCommonHistory(char* msg);

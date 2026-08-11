@@ -15,15 +15,19 @@ struct tagRECT {
 
 struct HRGN__;
 
-struct WorldLike {
+class RGE_Game_World {
+public:
     char gap_00[0x18];
     float game_speed;
 };
 
-struct TDrawSystem {
+class RGE_Base_Game {
+public:
     char gap_00[0x3F4];
-    void* world_ptr;
+    RGE_Game_World* world;
 };
+
+class TDrawSystem;
 
 class TDrawArea {
 public:
@@ -68,10 +72,7 @@ public:
     int field_70;
     char gap_74[0x14];
     void* clip_rgn;
-    long fallback_left;
-    long fallback_top;
-    long fallback_right;
-    long fallback_bottom;
+    tagRECT render_rect;
     char gap_9C[0x44];
     long draw_depth;
     char gap_E4[0x0F];
@@ -80,7 +81,7 @@ public:
     char* get_string(int string_id);
 };
 
-extern TDrawSystem* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 extern const char s_tpnl_tim_draw[];
 extern const char s_clock_hms_fmt[];
 
@@ -154,10 +155,15 @@ public:
 // volatile rect lab produced distinct larger families but none close; volatile right/bottom also broke frame back to 0x12C
 // current near-match is exact target behavior/size except two-byte-short rect setup: VC5 folds original sub/sub/add/add into two LEAs
 // BLOCKER: remaining mismatch is codegen-family drift in rect right/bottom calculation, causing early fail branches to target 0051E0D4 instead of 0051E0D6
+// worker sa48ec2c3f baseline: typed source is 1102 bytes with 32/32 ordered calls, 0x134 frame, and 208 exact instructions before the rectangle hunk
+// worker layout probe: modeled TPanel::render_rect as the proven aggregate at +0x8C; emitted bytes unchanged, but ownership is now canonical
+// worker liveness/context probes: PDB local order (old_font, str, rect) and canonical RGE_Base_Game::world/RGE_Game_World::game_speed surface emitted unchanged bytes
+// worker rectangle probes: initializer/compound/load-order forms and two focused labs all collapse to the same 2-byte-short LEA family; volatile/address-taking forms add unwanted frame/code
+// worker final: kept the simplest typed render_rect source; exactness remains blocked only by VC5 folding (height-2)+top and (width-2)+left into LEAs instead of the oracle's sub/sub/add/add
 
 void TRIBE_Panel_Time::draw() {
-    char str[256];
     void* old_font;
+    char str[256];
     tagRECT rect;
     int text_flags;
     int right, bottom;
@@ -214,7 +220,7 @@ void TRIBE_Panel_Time::draw() {
             }
         }
         {
-            float gs = *((float*)((char*)rge_base_game->world_ptr + 0x18));
+            float gs = rge_base_game->world->game_speed;
             sprintf(str, s_clock_hms_fmt, hours, minutes, seconds, gs);
         }
         text_flags = 0x20;
@@ -240,14 +246,12 @@ void TRIBE_Panel_Time::draw() {
     SetTextColor(this->render_area->DrawDc, this->color2);
 
     {
-        int left = this->fallback_left;
-        int top = this->fallback_top;
-        int width = this->pnl_wid;
-        int height = this->pnl_hgt;
+        int left = this->render_rect.left;
+        int top = this->render_rect.top;
+        int width = this->pnl_wid - 2;
+        int height = this->pnl_hgt - 2;
         ++left;
         ++top;
-        width -= 2;
-        height -= 2;
         right = width + left;
         bottom = height + top;
 

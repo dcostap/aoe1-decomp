@@ -25,6 +25,11 @@
 // duplicate, so the EDI-this / ESI-elapsed coloring gap remains unexplained.
 // abi probe: corrected debug_timeGetTime's parameter to the PDB's char* form;
 // emitted code and the 16-byte register-color gap were unchanged.
+// session probes: declaration/assignment order, split world guards, enum and
+// signedness spellings, inlined timestamp result, and negative/switch/positive
+// control-flow forms all either duplicated the 279-byte output or broke CFG.
+// A 36-case variant lab covering those axes plus derived virtual-surface sizes
+// found no alternate register basin; clean source remains authoritative.
 
 enum COMMSTATUS {
     COMMSTATUS_UNINITIALIZED = 0,

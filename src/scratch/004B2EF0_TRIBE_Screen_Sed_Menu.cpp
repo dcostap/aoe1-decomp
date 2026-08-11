@@ -16,6 +16,22 @@
 // - Remaining issues are mainly register choices (eax vs ebx for zero carrier,
 //   edx vs eax for rge_base_game load) and vtable/string/call relocations.
 // - Left in scratch: needs TU-context / header context work for register basin.
+// - worker baseline after rebuilding: 504-byte body, 14/14 ordered calls, 414
+//   differing bytes; external string symbols and the RGE_Base_Game spelling
+//   changed relocation names but not emitted code.
+// - swapping button[0] before title recovered the original LEA order and
+//   reduced the diff to 411 bytes; a pointer-array alias changed the block
+//   topology/size and was rejected.
+// - restored the proven 0xF4 TPanel / 0x478 TEasy_Panel sizes and TButtonPanel
+//   hotkey offsets (+0x298/+0x29C).  Caching button[3] in `cancel` then made
+//   the late hotkey/tab-order block exact; current clean candidate is 504
+//   bytes, 160 instructions, 14/14 calls, 65.19% exact-block coverage, and
+//   412 differing bytes (81.746%).
+// - stdlib header context was a codegen duplicate.  A title member-initializer
+//   was slightly worse.  The metric-best pointer-alias variant was 12 bytes
+//   short and structurally wrong, so it is not retained.
+// - left in scratch: early constructor zero-carrier/store scheduling and
+//   setup-argument interleaving remain unresolved after the 10-probe budget.
 
 #include "..\..\include\game_globals.h"
 #include <string.h>
@@ -28,7 +44,7 @@ class TTextPanel;
 
 class TPanel {
 public:
-    char gap_00[0x54];
+    char gap_00[0xF0];
     virtual ~TPanel() {}
     virtual long action(TPanel* p1, long p2, unsigned long p3, unsigned long p4) { return 0; }
     void delete_panel(TPanel** panel);
@@ -38,7 +54,7 @@ public:
 
 class TEasy_Panel : public TPanel {
 public:
-    char gap_58[0x420];
+    char gap_F4[0x384];
     void set_ideal_size(long w, long h);
     int create_text(TEasy_Panel* parent, TTextPanel** out, int langId, long x, long y, long w, long h,
                     long a8, long a9, long a10, long a11);
@@ -61,6 +77,7 @@ public:
                                  long a6, long a7, long a8, long a9, long a10,
                                  long a11, long a12, long a13) {}
 
+    char gap_F4[0x1A4];
     long hotkey;
     long hotkey_shift;
     void set_text(short param1, unsigned short langId);
@@ -73,15 +90,17 @@ public:
     ~TScreenPanel();
 };
 
-class RGE_Base_Game_Local {
+class RGE_Base_Game {
 public:
     char gap_00[0x4C];
     TDrawArea* draw_area;
 };
 
-static const char s_Scenario_Editor_Menu[] = "Scenario Editor Menu";
-static const char s_scr4[] = "scr4";
-static const char s_empty[] = "";
+extern RGE_Base_Game* rge_base_game;
+
+extern char s_Scenario_Editor_Menu[];
+extern char s_scr4[];
+extern char s_empty[];
 
 class TRIBE_Screen_Sed_Menu : public TScreenPanel {
 public:
@@ -96,16 +115,16 @@ public:
 };
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
-    : TScreenPanel((char*)s_Scenario_Editor_Menu)
+    : TScreenPanel(s_Scenario_Editor_Menu)
 {
-    title = 0;
     button[0] = 0;
+    title = 0;
     button[1] = 0;
     button[2] = 0;
     button[3] = 0;
     close_button = 0;
 
-    if (!setup(((RGE_Base_Game_Local*)rge_base_game)->draw_area, (char*)s_scr4, 0xC386, 1)) {
+    if (!setup(rge_base_game->draw_area, s_scr4, 0xC386, 1)) {
         *(long*)((char*)this + 0x0D8) = 1;
         return;
     }
@@ -116,7 +135,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(this, &button[i], (char*)s_empty, 0, 0xAA, 0xAA + i * 0x32, 0x12C, 0x28, 0, 0, 0))
+        if (!create_button(this, &button[i], s_empty, 0, 0xAA, 0xAA + i * 0x32, 0x12C, 0x28, 0, 0, 0))
             return;
     }
 
@@ -131,8 +150,9 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
     button[2]->set_text(0, 0x2431);
     button[3]->set_text(0, 0x2430);
 
-    button[3]->hotkey = 0x1B;
-    button[3]->hotkey_shift = 0;
+    TButtonPanel* cancel = button[3];
+    cancel->hotkey = 0x1B;
+    cancel->hotkey_shift = 0;
 
     set_tab_order((TPanel**)button, 4);
     set_curr_child(button[0]);

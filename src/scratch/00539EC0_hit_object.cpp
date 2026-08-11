@@ -11,6 +11,13 @@
 // tried /O2 /Oy /Og- custom flags; produced EBP frame and much worse diff, removed flag.
 // tried combining picked-owner/select-level tests into && expressions; no byte change.
 // left in scratch: behavior/calls/stack cleanup look plausible, but loop prologue scheduling differs: original stores sort result in two stack slots, loads x/y/point params, then enters loop; rebuilt hoists first node load/test before those param loads and uses different save-list stack slots (+1c/+28 vs original +20/+1c).
+// session sa7b331c8e_r1 baseline: current natural candidate rebuilt at 517B/0x1c frame, diff 440; checker stage was structural reconstruction.
+// changed special-mode source to a natural plus/comma-owner if/else; ordered box/select/hit calls then aligned 6/6 and diff reached 384 at 517B.
+// removed the redundant pre-loop cursor guard (duplicate codegen); delayed cursor declaration worsened the prologue and was restored.
+// swapped retained cleanup-head and loop-cursor roles; cursor now uses the oracle's +1c home, but VC5 keeps the retained head at +28 instead of oracle +20.
+// corrected stat_obj donor ABI: hit_test takes five shorts and get_frame takes four short references; call relocation spellings now agree without code movement.
+// modeled the binary-proven get_frame window with dword local_4 and the tile parameter home; the third-output LEA at +12 matches, but the initial node load still precedes oracle parameter preloads.
+// bounded session exhausted at 10 meaningful hypotheses; leave this readable typed reconstruction in scratch. Remaining lead: recover the original list-head +20 home and parameter-preload loop scheduling before any register tuning.
 
 struct tagPOINT { long x; long y; };
 
@@ -33,9 +40,9 @@ struct RGE_Static_Object {
     char gap_2C[0x1C];
     unsigned char object_state;
 
-    unsigned char hit_test(short x, short y, short x2, short y2, int mode);
+    unsigned char hit_test(short x, short y, short x2, short y2, short mode);
     unsigned char box_hit_test(short x, short y, short x2, short y2, short x3, short y3);
-    int get_frame(short* min_x, short* min_y, short* max_x, short* max_y);
+    int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
 };
 
 struct RGE_Object_Node {
@@ -77,14 +84,15 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
                                         RGE_Static_Object* skip, unsigned char through_fog)
 {
     short min_x;
+    int local_4;
+    RGE_Object_Node* first;
     short min_y;
-    short max_x;
     short max_y;
     RGE_Static_Object* picked = 0;
     if (&tile->objects != 0) {
-        RGE_Object_Node* first = tile->objects.sort();
-        RGE_Object_Node* cur = first;
-        if (cur != 0) {
+        RGE_Object_Node* cur = tile->objects.sort();
+        first = cur;
+        if (first != 0) {
             short sx = x;
             short sy = y;
             do {
@@ -93,17 +101,16 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
                 if (obj->object_state < 7) {
                     if ((!through_fog || obj->master_obj->fog_flag) &&
                         this->function_parm <= obj->master_obj->select_level) {
-                        if (this->function_mode == '+' || this->function_mode == ',') {
-                            if (obj->owner != this->player) goto next;
-                            if (this->function_mode != ',') goto normal_hit;
-                            if (!obj->box_hit_test(sx, sy, (short)p2->x, (short)p2->y,
-                                                   (short)p1->x, (short)p1->y)) goto next;
-                            if (!this->player->select_one_object(obj, 0)) break;
-                            picked = obj;
-                            goto next;
-                        }
-normal_hit:
-                        if (obj->hit_test(sx, sy, (short)p1->x, (short)p1->y, 5)) {
+                        if ((this->function_mode == '+' || this->function_mode == ',') &&
+                            obj->owner == this->player) {
+                            if (this->function_mode == ',') {
+                                if (obj->box_hit_test(sx, sy, (short)p2->x, (short)p2->y,
+                                                      (short)p1->x, (short)p1->y)) {
+                                    if (!this->player->select_one_object(obj, 0)) break;
+                                    picked = obj;
+                                }
+                            }
+                        } else if (obj->hit_test(sx, sy, (short)p1->x, (short)p1->y, 5)) {
                             if (skip != 0 && obj == skip && picked != 0) {
                                 return picked;
                             }
@@ -111,12 +118,12 @@ normal_hit:
                             if (picked != 0 && obj->master_obj->select_level < picked->master_obj->select_level) goto next;
                             {
                                 picked = obj;
-                                if (!obj->get_frame(&min_x, &min_y, &max_x, &max_y)) {
+                                if (!obj->get_frame(min_y, (short&)local_4, min_x, max_y)) {
                                     min_y = 0;
-                                    max_x = 0;
+                                    local_4 = 0;
                                 }
                                 *out_x = (short)(obj->screen_x_offset + min_y + sx);
-                                *out_y = (short)(obj->screen_y_offset + max_x + sy);
+                                *out_y = (short)(obj->screen_y_offset + (short)local_4 + sy);
                             }
                         }
                     }

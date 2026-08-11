@@ -23,6 +23,17 @@
 // canonical typed source below; remaining drift is confined to prologue/early
 // null-return register allocation, the count/id register colors, and branch
 // span placement.  No custom flags, inline asm, or raw layout plumbing kept.
+//
+// Fresh session evidence (sa-a7a5bf85-r1): initializing the outer index before
+// md->object() keeps EBX saved at entry and improves the diagnostic diff to
+// 293 bytes, but moves the argument load/zero-store schedule and is not the
+// clean source.  Separate explicit byteOffset/cursor forms, scoped entry
+// pointers, count/id declaration permutations, a reused strategic-number local,
+// and the derived virtual-destructor declaration were either neutral or
+// structurally worse.  A 64-variant natural local/id/count lab found no exact
+// size/frame/call-set candidate.  Restored clean source remains the natural
+// typed indexed scan; unresolved drift is the entry prologue/null-return basin
+// plus EDX/EDI count-versus-id coloring and associated branch spans.
 
 #include <stddef.h>
 

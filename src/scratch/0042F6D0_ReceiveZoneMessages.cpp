@@ -1,19 +1,54 @@
 // 0042F6D0 ReceiveZoneMessages
 // 334 bytes, __thiscall, RGE_Lobby method
-// probe 3: 334/334 bytes, 36.5% diff
-// tried: correct member layout (field_00, glpDPL+4, glpDPL2+8, glpDP+C, glpdplConnection+10, lobby_game+14, Err+18)
-// tried: COM call via vtable slot 9 (0x24/4), raw function pointer cast
-// tried: control flow reordering (result != 0 vs result == 0)
-// BLOCKER: Deep VC5 codegen basin. Stack slot reuse pattern differs (original pushes same [esp+14h] 3x,
-//   VC5 computes 3 distinct addresses). Register basin differs (original uses ecx for vtable, VC5 uses edx).
-//   Stack offsets for COM call params differ ([esp+8]+[esp+14h] vs [esp+8]+[esp+10h]+[esp+14h]).
-//   Core logic correct: lobby_game guard, COM call, ShowReturn, 0x887700BE/dwDataSize guards,
-//   switch jump table with 4 Log cases (settings/failed/successful/terminated).
+// Attempt log (sa6799_r1_ReceiveZone, 10 meaningful hypotheses):
+// - Baseline raw slot-9 call/free logging/explicit unknown check: 177 strict
+//   differing bytes (52.9940%).
+// - SDK-shaped slot-9 ReceiveLobbyMessage, variadic TDebuggingLog member calls,
+//   and PDB case order (3, 0, 1, 2, default): 71 diff; all 9 calls aligned.
+// - Swapped output arguments worsened to 73; declaration order and IUnknown
+//   inheritance were codegen duplicates. A C-style vtable surface worsened to 86.
+//   Aggregate local layouts were diagnostic only (71/72 diff) and were rolled
+//   back in favor of separate period-plausible locals.
+// - The unknown-message vararg is the binary-observed receive-flags value, not
+//   the derived switch index. That behavior restores the whole suffix: 3 strict
+//   differing bytes (0.8982%), 331/334 equal bytes.
+// Remaining localized drift: original output-slot accesses [esp+8], [esp+0Ch],
+// [esp+18h] rebuild as [esp+0Ch], [esp+8], [esp+10h]. Frame 0x808, size 334,
+// CFG, ordered calls, slot 0x24, direct targets, and all 23 relocations match.
+// Next lead is the original COM output-slot cleanup/local ownership, not blind
+// register variants. Default VC5 /O2 /Oy; no inline asm.
 
-class TDebuggingLog;
+class TDebuggingLog {
+public:
+    void Log(char* format, ...);
+};
 extern TDebuggingLog* L;
 
-void __stdcall TDebuggingLog_Log(TDebuggingLog* log, const char* format, ...);
+class IUnknown {
+public:
+    virtual long __stdcall QueryInterface(void* iid, void** object) = 0;
+    virtual unsigned long __stdcall AddRef(void) = 0;
+    virtual unsigned long __stdcall Release(void) = 0;
+};
+
+class IDirectPlayLobby : public IUnknown {
+public:
+    virtual long __stdcall Connect(unsigned long flags, void** dplay, void* unknown) = 0;
+    virtual long __stdcall CreateAddress(void* guidServiceProvider, void* guidDataType,
+                                         const void* data, unsigned long dataSize,
+                                         void* address, unsigned long* addressSize) = 0;
+    virtual long __stdcall EnumAddress(void* callback, const void* data,
+                                       unsigned long dataSize, void* context) = 0;
+    virtual long __stdcall EnumAddressTypes(void* callback, void* guid,
+                                             void* context, unsigned long flags) = 0;
+    virtual long __stdcall EnumLocalApplications(void* callback, void* context,
+                                                  unsigned long flags) = 0;
+    virtual long __stdcall GetConnectionSettings(unsigned long player, void* settings,
+                                                  unsigned long* size) = 0;
+    virtual long __stdcall ReceiveLobbyMessage(unsigned long flags, unsigned long messageFlags,
+                                               unsigned long* messageFlagsOut, void* message,
+                                               unsigned long* messageSize) = 0;
+};
 
 class RGE_Comm_Error {
 public:
@@ -23,7 +58,7 @@ public:
 class RGE_Lobby {
 public:
     void* field_00;
-    void* glpDPL;
+    IDirectPlayLobby* glpDPL;
     void* glpDPL2;
     void* glpDP;
     void* glpdplConnection;
@@ -37,44 +72,43 @@ public:
 long RGE_Lobby::ReceiveZoneMessages() {
     if (lobby_game == 0) return 0;
 
-    char data[2048];
-    unsigned long dwRXFlags = 0x800;
     unsigned long dwDataSize;
+    unsigned long dwRXFlags = 0x800;
+    char data[2048];
 
-    long result = ((long(__stdcall*)(void*, unsigned long, char*, unsigned long*, unsigned long*))(*(unsigned int**)glpDPL + 9))(glpDPL, 0, data, &dwDataSize, &dwRXFlags);
+    long result = glpDPL->ReceiveLobbyMessage(0, 0, &dwDataSize, data, &dwRXFlags);
 
-    Err->ShowReturn(result, "RX Lobby Messages");
+    Err->ShowReturn(result, (char*)"RX Lobby Messages");
 
     if (result == 0x887700BE) return 0;
     if (dwDataSize == 0) return 0;
 
     if (result != 0) {
-        Err->ShowReturn(result, "RxLOBBY MSG");
+        Err->ShowReturn(result, (char*)"RxLOBBY MSG");
         return 0;
     }
 
     if (dwRXFlags != 1) return 0;
 
-    TDebuggingLog_Log(L, "LOBBY: System Message");
+    L->Log((char*)"LOBBY: System Message");
 
     int msgType = (int)dwRXFlags - 1;
-    if (msgType > 3) {
-        TDebuggingLog_Log(L, "!!! Lobby: Unknown message from lobby. %d", msgType);
-        return 0;
-    }
 
     switch (msgType) {
+        case 3:
+            L->Log((char*)"!!! Lobby: Application has been terminated.");
+            break;
         case 0:
-            TDebuggingLog_Log(L, "Lobby connection settings read.");
+            L->Log((char*)"Lobby connection settings read.");
             break;
         case 1:
-            TDebuggingLog_Log(L, "!!! Lobby: Connection failed.");
+            L->Log((char*)"!!! Lobby: Connection failed.");
             break;
         case 2:
-            TDebuggingLog_Log(L, "Lobby: Connection successful.");
+            L->Log((char*)"Lobby: Connection successful.");
             break;
-        case 3:
-            TDebuggingLog_Log(L, "!!! Lobby: Application has been terminated.");
+        default:
+            L->Log((char*)"!!! Lobby: Unknown message from lobby. %d", dwRXFlags);
             break;
     }
 

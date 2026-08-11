@@ -15,22 +15,33 @@
 //   for check_function extraction; keep the comparable non-volatile baseline.
 // - Current comparable baseline: compiles, 68.93% positional / 29.41% edit;
 //   most remaining structural gap is the missing VC5 C++ EH registration prefix.
+// - 2026-08-11: ABI/layout evidence confirms TacticalAIModule inheritance and
+//   virtual destructor surfaces for the module, Group, and ResourceItem.  A
+//   novtable-derived typed base restores the original FS:[0] EH prefix,
+//   base-constructor call, and 0x100C layout; raw group/resource storage is
+//   retained because the oracle places their explicit constructor calls after
+//   the preceding scalar zeroing rather than at automatic member-init entry.
+// - 2026-08-11: a volatile distribution cursor reaches the exact 782-byte
+//   size and compact six-store loop, but changes the prologue/register basin;
+//   removed from the living source as codegen-only evidence.  The remaining
+//   mismatch is structural ordering/state placement around the group call and
+//   the later distribution loop.
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);
 class TribeMainDecisionAIModule;
 
-class TacticalAIModule { public: char base[0xF0]; TacticalAIModule(void* owner, int player); };
+class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
 struct ManagedIntArray { int* value; int numberValue; int desiredNumberValue; int maximumSizeValue; };
 struct UnitData { int id; int data1; int data2; int data3; int data4; int data5; };
-class TacticalAIGroup { public: void* vtable_ptr; TacticalAIGroup* next; TacticalAIGroup* prev; char bytes[0x324]; TacticalAIGroup(); };
-class ResourceItem { public: char bytes[0x70]; ResourceItem(int count); };
+class TacticalAIGroup { public: virtual ~TacticalAIGroup(); TacticalAIGroup* next; TacticalAIGroup* prev; char bytes[0x324]; TacticalAIGroup(); };
+class ResourceItem { public: virtual ~ResourceItem(); char bytes[0x6C]; ResourceItem(int count); };
 struct PlacementState { char pad_000[0x114]; int active; char pad_118[0x18]; };
 struct AttackState { char pad_00[0x28]; int active; };
 
-class TribeTacticalAIModule {
+class __declspec(novtable) TribeTacticalAIModule : public TacticalAIModule {
 public:
-    char base[0xF0]; void* md; ManagedIntArray civilians; ManagedIntArray civilianExplorers; ManagedIntArray soldiers; ManagedIntArray ungroupedSoldiers;
+    void* md; ManagedIntArray civilians; ManagedIntArray civilianExplorers; ManagedIntArray soldiers; ManagedIntArray ungroupedSoldiers;
     ManagedIntArray boats; ManagedIntArray warBoats; ManagedIntArray fishingBoats; ManagedIntArray tradeBoats; ManagedIntArray transportBoats; ManagedIntArray artifacts;
     int sn[226]; UnitData gatherers[50]; int numberGatherersValue; int desiredNumberGatherersValue; char groups[0x330];
     int groupIDValue; int numberGroupsValue; unsigned long lastGroupAttackTime; unsigned long lastGroupRebalanceTime; unsigned long lastAttackResponseTime;
@@ -41,16 +52,17 @@ public:
     PlacementState placementStateValue; int nextCivilianToTaskValue; int nextIdleSoldierGroupToTaskValue; int nextActiveSoldierGroupToTaskValue; int builtFirstStoragePit; int builtFirstGranary;
     unsigned long lastBuildTime; unsigned long lastAttackResponseBuildInsertionTime; unsigned long lastCoopTributeDemandTime; unsigned long lastCoopTributeGiftTime; unsigned long lastCoopAttackDemandTime;
     int zoomingToNextAge; unsigned long lastUngroupedSoldierTaskTime; AttackState attackStateValue; int hitsByPlayer[9]; int lastUpdateAreaTimeValue; int averageUpdateAreaTimeValue; int updateAreaAverageCount; int updateAreaAverageTotal;
+    virtual ~TribeTacticalAIModule();
     TribeTacticalAIModule(void* param_1, int param_2);
 };
 
 TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
+    : TacticalAIModule(param_1, param_2)
 {
     TacticalAIGroup* group;
     int* piVar1;
     int iVar2;
 
-    ((TacticalAIModule*)this)->TacticalAIModule::TacticalAIModule(param_1, param_2);
     this->md = 0;
     this->civilians.value = 0;
     this->civilians.numberValue = 0;
@@ -92,10 +104,10 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     this->artifacts.numberValue = 0;
     this->artifacts.desiredNumberValue = 0;
     this->artifacts.maximumSizeValue = 0;
-    group = (TacticalAIGroup*)this->groups;
     this->numberGatherersValue = 0;
     this->desiredNumberGatherersValue = 0;
-    ((TacticalAIGroup*)this->groups)->TacticalAIGroup::TacticalAIGroup();
+    group = (TacticalAIGroup*)this->groups;
+    group->TacticalAIGroup::TacticalAIGroup();
     this->groupIDValue = 0;
     this->numberGroupsValue = 0;
     this->lastGroupAttackTime = 0;

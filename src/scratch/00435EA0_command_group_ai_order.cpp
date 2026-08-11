@@ -26,12 +26,19 @@
 // - Current canonical source is restored to the typed PDB-plausible packet
 //   order (38-byte drift); remaining mismatch is the packet assignment
 //   scheduling/register basin beginning at 00435F13.
+// - Follow-up claim: allocating through the typed packet, restoring the fuller
+//   same-TU command class surface, nesting the guards, and replacing typed
+//   stores with raw scalar stores were codegen-neutral.  Moving the command
+//   constant or recipient count earlier, and a 24-way issuer/priority/player/
+//   owner order lab, all remained nonexact; the early-count form regressed to
+//   62 bytes.  An explicit vptr/nonvirtual-destructor surface was also neutral.
+//   The clean typed PDB-plausible source is restored; the unresolved hunk is
+//   not justified by compiler-steering scaffolding.
 
 #include <stdlib.h>
 
-static const char STR_SEND_CMD_GROUP_AI_ORDER[] =
-    "      >SEND CMD GRP AI ORD (PLR=%d, TYP=%d, ISS=%d, CNT=%d, REC=%s, TAR=%s)";
-static const char STR_X[] = "X";
+#define STR_SEND_CMD_GROUP_AI_ORDER ((const char*)0x00583E78)
+#define STR_X                       ((const char*)0x00583B74)
 
 class RGE_Master_Static_Object {
 public:

@@ -11,6 +11,17 @@
 //   original VC5 liveness basin. The worker exhausted its context after seven
 //   hypotheses; the main agent retained this canonical direct-arithmetic form
 //   and closed the lease at 293 differing bytes and exact 341-byte size.
+// - Fresh pass: corrected the inner line extents to the executable's
+//   decompiler-supported raw differences (the prior retained candidate was
+//   one pixel too wide/tall on the inner c1/c2/c3/c5 paths).  The natural
+//   typed source now emits 341 bytes/138 instructions and 286 differing bytes.
+// - Repeated x1+1 source expressions emit the observed -4 spill just like an
+//   explicit inner_x local, so the living source keeps the clearer direct form.
+// - Reversed normalization predicates, decompiler-style y swapping, and a
+//   0 < (difference + 1) guard were tested and rolled back.  Two focused
+//   expression labs found a plus-one spelling with a deeper first mismatch,
+//   but it remained nonexact and compiler-steering rather than plausible source;
+//   it was not promoted into the function.
 
 class TDrawArea {
 public:
@@ -39,17 +50,15 @@ void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2,
     }
 
     if (x2 - x1 + 1 >= 1 && y2 - y1 + 1 >= 1) {
-        long inner_x;
-        inner_x = x1 + 1;
-        DrawHorzLine(inner_x, y1, x2 - x1, c1);
-        DrawVertLine(x2, y1 + 1, y2 - y1, c1);
-        DrawHorzLine(x1 + 2, y1 + 1, x2 - x1 - 1, c2);
-        DrawVertLine(x2 - 1, y1 + 2, y2 - y1 - 2, c2);
-        DrawHorzLine(x1 + 2, y1 + 2, x2 - x1 - 2, c3);
-        DrawVertLine(x2 - 2, y1 + 3, y2 - y1 - 3, c3);
+        DrawHorzLine(x1 + 1, y1, x2 - x1, c1);
+        DrawVertLine(x2, y1 + 1, y2 - y1 - 1, c1);
+        DrawHorzLine(x1 + 2, y1 + 1, x2 - x1 - 2, c2);
+        DrawVertLine(x2 - 1, y1 + 2, y2 - y1 - 3, c2);
+        DrawHorzLine(x1 + 2, y1 + 2, x2 - x1 - 3, c3);
+        DrawVertLine(x2 - 2, y1 + 3, y2 - y1 - 4, c3);
         DrawHorzLine(x1, y2, x2 - x1 + 1, c6);
-        DrawVertLine(x1, y1, y2 - y1 + 1, c6);
-        DrawHorzLine(inner_x, y2 - 1, x2 - x1, c5);
-        DrawVertLine(inner_x, y1 + 1, y2 - y1 - 1, c5);
+        DrawVertLine(x1, y1, y2 - y1, c6);
+        DrawHorzLine(x1 + 1, y2 - 1, x2 - x1 - 1, c5);
+        DrawVertLine(x1 + 1, y1 + 1, y2 - y1 - 2, c5);
     }
 }

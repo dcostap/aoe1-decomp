@@ -1,28 +1,120 @@
 // 00502600 TribeTacticalAIModule::checkForCoopTributeDemand
-// scratch give-up: natural reconstruction from packet/decompiler. Tried direct md->world vs md->holder->world
-// (holder is required for the original [md+f0]->[+3c] time/player access), dummy frame local, volatile
-// frame local (regressed by adding a store), and preserving explicit gotos for resource gates. Best check:
-// exact size 788 but broad mismatch 70.94% positional / 38.96% edit; frame remains 0x14 vs original 0x18
-// and later drift is loop/block-shape plus temp-slot allocation around resource/tribute scans.
+// Attempt log:
+// - Baseline was a natural md->holder->world scaffold: 814 bytes, 0x14 frame,
+//   and a direct tribute call instead of the observed player vslot +0x54.
+// - Restored the period md->player->world ownership, RGE/TRIBE layouts, and
+//   the full RGE_Player virtual surface; this fixed the call set and frame.
+// - Split the random-player pick from the later tribute amount so VC5 could
+//   reuse the original stack home for the resource cursor.
+// - The original inner scan uses a positive tempRand guard around the do-loop;
+//   a break/body-skip variant added a bottom tempRand test and was rolled back.
+// - Best validated reconstruction: 792 bytes versus 788, 0x18 frame, all 12
+//   ordered calls/relocations aligned, 96.79% shape, 70-byte edit diff. The
+//   remaining structural hunk is the initial amount spill (VC5 keeps it in
+//   EBX before testing instead of storing/reloading the original stack home),
+//   plus the resulting four-byte tail/branch shift. Paused after the 10-probe
+//   budget; no inline asm or custom flags.
 
 typedef unsigned char uchar;
 
-struct RGE_Player {
-    virtual void pad00(); virtual void pad04(); virtual void pad08(); virtual void pad0c();
-    virtual void pad10(); virtual void pad14(); virtual void pad18();
-    virtual int vf1c(int);
-    char gap04[0x46];
-    short id; // +4a
-    char gap4c[4];
-    float* resources; // +50
-    int computerPlayer();
-    void tribute(short player, int one, int resource, int amount, int zero);
+struct RGE_Player;
+
+struct RGE_Game_World {
+    virtual ~RGE_Game_World();
+    int time;
+    char gap08[0x34];
+    short player_count;
+    char gap3e[2];
+    RGE_Player** players;
+    char gap44[0xC0];
 };
 
-struct World { int pad0; unsigned int time; char gap08[0x34]; short player_count; char gap3e[2]; RGE_Player** players; char gap44[6]; short my_id; char gap4c[0xd1]; uchar coop_tribute_player; };
-struct WorldHolder { char gap0[0x3c]; World* world; };
+struct TRIBE_World : RGE_Game_World {
+    char gap104[0x19];
+    uchar coop_tribute_player;
+};
+
+struct RGE_Player {
+    virtual ~RGE_Player();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float,
+                                 float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float,
+                                float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(void*, void*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual void* make_scenario_obj(float, float, float, short, uchar, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, uchar);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual void* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual uchar command_make_move(void*, float, float);
+    virtual uchar command_make_work(void*, float, float);
+    virtual uchar command_make_do(void*, float, float);
+    virtual uchar command_stop();
+    virtual uchar command_place_object(short, float, float, float);
+    virtual uchar command_add_attribute(int, float);
+    virtual uchar command_give_attribute(int, int, float);
+    virtual uchar command_formation(int);
+    virtual uchar command_stand_ground();
+    virtual uchar command_create_group(int, int*, int, float);
+    virtual uchar command_add_to_group(int, int, float);
+    virtual uchar command_remove_from_group(int, int);
+    virtual uchar command_destroy_group(int);
+    virtual uchar command_resign(int, int);
+    virtual uchar command_add_waypoint(float, float, float);
+    virtual void* addObject(void*, int, int);
+    virtual void removeObject(void*, int, int, void*);
+    virtual void logMessage(char*);
+    virtual void notify(int, int, int, long, long, long);
+    virtual void logStatus(void*, int);
+    virtual void load_victory(int, long*, uchar);
+    virtual void new_victory();
+
+    int computerPlayerValue;
+    char gap08_player[0x20];
+    void* objects;
+    char gap2c[0x10];
+    TRIBE_World* world;
+    char gap40[0x0A];
+    short id;
+    char gap4c[4];
+    float* resources;
+
+    int computerPlayer();
+};
+
 struct ResourceAI { int resource(int); };
-struct MainDecision { char gap0[0xf0]; WorldHolder* holder; char gapf4[0x10c88]; ResourceAI resourceAI; }; 
+struct MainDecision { char gap0[0xf0]; RGE_Player* player; char gapf4[0x10c88]; ResourceAI resourceAI; }; 
 struct TribeTacticalAIModule {
     char gap000[0xf0];
     MainDecision* md;
@@ -43,22 +135,23 @@ extern "C" int __cdecl debug_rand(char*, int);
 void TribeTacticalAIModule::checkForCoopTributeDemand()
 {
     int tempRand;
-    World* world;
+    int pick;
+    TRIBE_World* world;
     int i;
     int j;
     int amountDemandable;
-    int dummy_frame;
     RGE_Player* player;
     int cur;
     int count;
+    int* need;
 
     if (this->coopTributeInterval == -1) return;
-    world = this->md->holder->world;
+    world = this->md->player->world;
     cur = world->time;
     if ((cur - this->lastCoopTributeDemandTime) / 1000 < this->coopTributeInterval) return;
     this->lastCoopTributeDemandTime = cur;
 
-    world = this->md->holder->world;
+    world = this->md->player->world;
     if (world->coop_tribute_player == 0xff) {
         i = 1;
         count = 0;
@@ -69,16 +162,16 @@ void TribeTacticalAIModule::checkForCoopTributeDemand()
             } while (i < world->player_count);
         }
         if (count == 1) {
-            world->coop_tribute_player = (uchar)this->md->holder->world->my_id;
+            world->coop_tribute_player = (uchar)this->md->player->id;
         } else {
-            tempRand = debug_rand("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x31f0) % count + 1;
+            pick = debug_rand("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x31f0) % count + 1;
             j = 1;
             if (world->player_count > 1) {
                 do {
                     player = world->players[j];
                     if (player->computerPlayer() == 1) {
-                        tempRand--;
-                        if (tempRand == 0) world->coop_tribute_player = (uchar)player->id;
+                        pick--;
+                        if (pick == 0) world->coop_tribute_player = (uchar)player->id;
                     }
                     j++;
                 } while (j < world->player_count);
@@ -86,11 +179,11 @@ void TribeTacticalAIModule::checkForCoopTributeDemand()
         }
     }
 
-    if (world->coop_tribute_player != (uchar)this->md->holder->world->my_id) return;
+    if (world->coop_tribute_player != (uchar)this->md->player->id) return;
 
     tempRand = this->coopTributeAmount;
-    int* need = this->neededResourceValue;
     i = 0;
+    need = this->neededResourceValue;
     do {
         if (tempRand <= 0) return;
         if (*need == 0 && this->md->resourceAI.resource(0) >= this->foodMin) goto next;
@@ -100,27 +193,28 @@ void TribeTacticalAIModule::checkForCoopTributeDemand()
         if (need[4] < 0) {
             j = 1;
             if (world->player_count > 1) {
-                do {
-                    if (tempRand <= 0) break;
+                if (tempRand > 0) {
+                    do {
                     player = world->players[j];
-                    if (player->id != this->md->holder->world->my_id && player->computerPlayer() != 0) {
-                        if (this->md->holder->world->players[0]->vf1c(j) != 0) {
-                            if (player->vf1c((int)this->md->holder->world->my_id) != 0) {
-                                short myid = this->md->holder->world->my_id;
+                    if (player->id != this->md->player->id && player->computerPlayer() != 0) {
+                        if (this->md->player->isAlly(j) != 0) {
+                            if (player->isAlly((int)this->md->player->id) != 0) {
+                                short myid = this->md->player->id;
                                 if ((myid < player->id && player->id != (short)world->coop_tribute_player) || myid == (short)world->coop_tribute_player) {
                                     int res = *need;
                                     amountDemandable = (int)player->resources[res];
                                     if (amountDemandable > 50) {
                                         if (amountDemandable > tempRand) amountDemandable = tempRand;
                                         tempRand -= amountDemandable;
-                                        player->tribute(myid, 1, res, amountDemandable, 0);
+                                        player->sendAICommand(myid, 1, res, amountDemandable, 0);
                                     }
                                 }
                             }
                         }
                     }
-                    j++;
-                } while (j < world->player_count);
+                        j++;
+                    } while (j < world->player_count);
+                }
             }
         }
 next:

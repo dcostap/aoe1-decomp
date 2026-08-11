@@ -27,6 +27,12 @@
 //   - Materializing other radius_y before the x clamp as double (211B/114 diff) or float (205B/104 diff) disrupted the exact radius prefix; both were rolled back.
 //   - Combining the x clamp and Y assignment with a comma expression, using a natural ternary x clamp, and predeclaring y were codegen duplicates of the clean 199B/22-diff source.
 //   - Reused canonical static/master coordinate and radius ownership; no call, layout, or ABI lead emerged. Clean source retained; remaining gap is the same fused other-Y subtraction/fault-order scheduling hunk at +0062.
+// 2026-08-11 sa6d8559ad_inRange fresh bounded pass:
+//   - Added a complete donor-era polymorphic declaration; codegen was unchanged (199B/22 diff).
+//   - Split Y subtraction into a pre-clamp this-radius step and post-clamp other-radius step; VC5 fell into the no-push 192-diff basin and was rolled back.
+//   - Retested the best ternary-CSE diagnostic with a volatile radius_y field; it was an emitted-code duplicate of the prior 14-diff diagnostic, not an exact lead.
+//   - Added the complete proven static/master field layouts; codegen remained 199B/22 diff and moved the same localized hunk only, so the clean narrow source was restored.
+//   - No call, ABI, layout, or TU-context lead changed the binary-proven fsubr/fsub fault-order gap. Leave the canonical typed 199B/22-diff source in scratch for the next pass.
 
 class RGE_Master_Static_Object {
 public:

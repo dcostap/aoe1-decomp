@@ -8,6 +8,11 @@
 //   and stdio context. These emitted the same best nonexact code (except <3,
 //   which changed the compare immediate); no source-shape lead remains in this
 //   isolated TU.
+// - Follow-up session probes: a branch-local p2 copy, an address-taken p2 alias,
+//   register/const p2 qualifiers, and /GX all emitted the same code. A natural
+//   switch(p9) worsened size/call alignment and was rolled back. The remaining
+//   structural gap is the original's delayed push edi after the p9 test versus
+//   VC5's entry push edi; no ABI/layout or ordered-call discrepancy was found.
 // - Best canonical source retained: positive state guard, direct p2 use, typed
 //   object/member ownership, real virtual calls, and standard FILE/fprintf ABI.
 

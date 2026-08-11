@@ -22,6 +22,11 @@
 // Remaining blocker is VC5 EH-tail lowering: the oracle branches `je` directly
 // from the task call's zero EAX and, after construction, tests ESI then emits
 // `xor eax,eax`; the natural shared-status source inserts extra zero/return moves.
+// Session sa98e070ea_r1: split result declaration/initialization and base-vs-derived
+// action pointer probes were codegen duplicates; task=result, mixed return, and
+// uninitialized-result variants moved earlier or broadened the mismatch. A 32-case
+// failure-path lab had no exact/invariant-eligible result under its non-/GX context.
+// Final validated source restores the canonical pointer-status reconstruction.
 
 class RGE_Static_Object {
 public:

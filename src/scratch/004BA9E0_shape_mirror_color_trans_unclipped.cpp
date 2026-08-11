@@ -44,6 +44,17 @@
 //   the far failure topology provides no new lead. Remaining gap is the
 //   binary-proven destination parameter-home spill/row-end reload, not ABI or
 //   RLE behavior.
+// sa-1684b218-r1 probes (2026-08-11):
+// - Branch-local destination formation with a named offset produced a 247B
+//   duplicate; declaration-order and split-pitch variants were also duplicates.
+// - The Ghidra-supported row-base plus per-row working destination form improved
+//   the natural candidate to 254B/197 strict bytes and restored the row-end
+//   reload/add/store topology; retained as the best source reconstruction.
+// - Direct orientation-arm row formation reached 273B/194 strict bytes, but
+//   swapped the proven row/counter parameter homes and added stores; rolled back.
+// - Moving the row-count initialization before orientation created an 0x8 frame
+//   and 265B/261 strict bytes; rolled back. Remaining gap is the original
+//   orientation-arm setup/home allocation and branch-local SIB schedule.
 
 #include <string.h>
 #pragma function(memset)
@@ -105,13 +116,13 @@ unsigned char TShape::shape_mirror_color_trans_unclipped(
     else
         m = y * pitch;
     long rows;
-    unsigned char* d;
-    d = draw_area->Bits + m + x + 1;
+    unsigned char* row = draw_area->Bits + m + x + 1;
     unsigned char c;
 
     if (height > 0) {
         rows = height;
         do {
+            unsigned char* d = row;
             unsigned char done = 0;
             do {
                 unsigned char b = *p++;
@@ -138,7 +149,7 @@ unsigned char TShape::shape_mirror_color_trans_unclipped(
                     }
                 }
             } while (!done);
-            d += pitch;
+            row += pitch;
         } while (--rows);
     }
 

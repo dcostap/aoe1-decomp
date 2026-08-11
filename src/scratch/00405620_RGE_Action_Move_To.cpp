@@ -60,6 +60,12 @@
 // local-sprite if/else; the shared-vs-duplicated EH epilogue remains the only structural blocker.
 // 2026-08-10 wave21-actmove-01: same-TU lifetime-context probe (full action-object virtual surface plus the proven
 // derived destructor definition) emitted identical 205B/47B; restored this canonical source before final validation.
+// 2026-08-11 sa6bb323c9 pass (7 meaningful probes): inner default-arm-only goto and no-else goto forms were
+// codegen-identical; positive move-arm/goto and inner pointer-switch forms worsened to 205B/53B. A narrow /Os
+// overlay destroyed the optimized prefix (156B/174B), and a proper numeric #line-band context probe was identical.
+// The focused variant family was not usable because its generated flags omitted required /GX (all variants lost
+// the EH prologue). Restored the canonical typed if/else source; remaining evidence-backed blocker is the VC5
+// duplicated EH cleanup tail versus the original single shared epilogue.
 
 class RGE_Action_Object;
 class RGE_Sprite;

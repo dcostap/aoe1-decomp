@@ -12,10 +12,24 @@
 //   eligible improvement; register-qualified parameters and declaration-order
 //   reordering were rolled back. Remaining drift is early parameter-home
 //   coloring plus the row-base/stack-node address schedule.
-// - Bounded follow-up established that reusing x as the clipped right bound is
-//   binary-proven behavior, not merely compiler steering. The retained source
-//   is 248 rebuilt bytes with 181 differing bytes and 89.89% shape; exact
-//   base-field types and cursor declaration scope were codegen-neutral.
+// - A fresh source-order probe moved the natural x=cliff_x2 assignment before
+//   the negative-bound guards, matching the oracle's unconditional x-home
+//   store before the first test. This is the best current basin (246 rebuilt
+//   bytes, 177 positional differing bytes, 91.01% shape); it improves the
+//   prior clean source by four bytes without changing calls or layout.
+// - Mutating y as the outer countdown, endpoint declaration/addition reorder,
+//   direct x/y endpoint expressions, and equivalent first-clip spellings were
+//   neutral or farther. Keeping a separate right-endpoint local through the
+//   loop removed the required frame and was rolled back. The retained source
+//   therefore keeps typed named ownership and only the binary-supported
+//   x-home scheduling change.
+// - Bounded follow-up probes kept the clean repeated-row source as canonical.
+//   Reusing x as the clipped right bound is the metric-best diagnostic (248
+//   rebuilt bytes, 181 differing bytes, 89.89% shape) but remains nonexact and
+//   was rolled back; exact base-field types and cursor declaration scope were
+//   codegen-neutral. That earlier clean checkpoint remains useful history; the
+//   current source is the later 246-byte basin described above, still with one
+//   ordered remove_stack_node call and structural drift in the entry schedule.
 // - Fresh direct-parameter/declaration-order probes and a 12-variant
 //   input/loop lab did not move the entry register basin. The binary-proven
 //   x-home assignment with the clipped-x second comparison remains the best
@@ -82,26 +96,22 @@ public:
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacing) {
     long cliff_width2 = this->map_width / 3 - 1;
     long cliff_height2 = this->map_height / 3 - 1;
-    long cliff_width = x;
-    long cliff_height = y;
-    long cliff_x = cliff_width - spacing;
-    long cliff_y = cliff_height - spacing;
-    long cliff_x2 = spacing + cliff_width;
-    long cliff_y2 = spacing + cliff_height;
+    long cliff_x = x - spacing;
+    long cliff_y = y - spacing;
+    long cliff_x2 = spacing + x;
+    long cliff_y2 = spacing + y;
 
     spacing = cliff_x;
+    x = cliff_x2;
     if (cliff_x < 0) {
         spacing = 0;
     }
     if (cliff_y < 0) {
         cliff_y = 0;
     }
-    x = cliff_x2;
-    if (x > cliff_width2) {
+    if (cliff_x2 > cliff_width2) {
         x = cliff_width2;
     }
-    // Preserve the executable's cross-axis clipping defect: this compares the
-    // clipped horizontal bound rather than cliff_y2.
     if (x > cliff_height2) {
         cliff_y2 = cliff_height2;
     }

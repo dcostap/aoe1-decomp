@@ -6,34 +6,123 @@
 // v4 /Od: same-size 804B but EBP-frame debug family and 94.9005% positional, rolled back flag.
 // v5 kept v2: it models count pass, special 0x76/0x6d extra item, free/calloc, item fill, obj_cost, help message/page.
 // scratch give-up: remaining gap is broad source-shape/local-layout mismatch; likely needs exact original variable topology for obj_cost out-params and duplicated item-fill scheduling, not accepted-drift-safe.
+// v6 canonicalized the inherited RGE_Player/RGE_Object_List/RGE_Static_Object
+// ownership and corrected obj_cost to its six-short-output ABI.  The previous
+// local list record skipped the static object's master_obj indirection and the
+// previous declaration passed one extra output pointer.
+// v7-v8 narrowed the special-item flag to short and tested declaration order;
+// the width improved the emitted topology, while declaration order was a
+// codegen duplicate.
+// v9 restored the period RGE_Player field surface from exact tplayer.cpp donors;
+// it was a codegen duplicate.  v10 tested a natural self-pointer lifetime and
+// got closer diagnostically, but introduced a shifted direct-call pairing and
+// less canonical base/index spelling; it was rolled back.
+// final validated scratch: direct typed ownership with repeated indexed item
+// stores is 789 rebuilt bytes versus 804, 91.63% shape, 571 positional diff.
+// The remaining gap is a stable callee-save permutation (this/count/zero) plus
+// a 15-byte late item-fill/block-layout difference; all eight calls and the
+// corrected six-output obj_cost relocation are aligned.  Further blind probes
+// are paused after the ten-hypothesis budget.
 
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-extern "C" void __cdecl free(void*);
+#include <stdlib.h>
+
 extern float DAT_00576828;
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[4]; unsigned char type; char gap_05[3]; char* name; char gap_0c[0x40]; short pict; char gap_4e[4]; unsigned char available; char gap_53[0x109]; short interface_group;
+    virtual ~RGE_Master_Static_Object();
+    unsigned char type;
+    char gap_05[3];
+    char* name;
+    char gap_0c[4];
+    short id;
+    char gap_12[0x3a];
+    short pict;
+    char gap_4e[4];
+    unsigned char available;
+    char gap_53[0x109];
+    short interface_group;
     long get_help_message(); long get_help_page();
 };
-struct ObjNodeData { char gap_00[0x10]; short id; };
-struct ObjNode { ObjNodeData* data; ObjNode* next; };
-struct ListHead { ObjNode* head; ObjNode* first; };
-struct PlayerData { char gap_00[0xc0]; float civ_points; };
+
+class RGE_Static_Object {
+public:
+    char gap_00[8];
+    RGE_Master_Static_Object* master_obj;
+};
+
+struct ObjNode { RGE_Static_Object* object; ObjNode* next; };
+
+class RGE_Object_List {
+public:
+    virtual void destroy();
+    ObjNode* list;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    int computer_player_value;
+    int pathing_attempt_cap;
+    int pathing_delay_cap;
+    int current_pathing_attempts;
+    int checksum;
+    int position_checksum;
+    int action_checksum;
+    unsigned char checksum_created_this_update;
+    unsigned char gap_21;
+    short master_count;
+    RGE_Master_Static_Object** masters;
+    RGE_Object_List* object_list;
+    RGE_Object_List* sleeping_objects;
+    RGE_Object_List* doppleganger_objects;
+    void* victory_conditions;
+    void* visible;
+    void* world;
+    void* doppleganger_creator;
+    char* name;
+    unsigned char type;
+    unsigned char gap_49;
+    short id;
+    short attribute_num;
+    char gap_4e[2];
+    float* attributes;
+    unsigned char culture;
+    char gap_55[3];
+    unsigned char tile_list[0x14];
+    unsigned char diam_tile_list[0x14];
+    unsigned char game_status;
+    unsigned char resigned;
+    char gap_82[2];
+    unsigned char* relations;
+    int unit_diplomacy[9];
+    int mutual_ally[9];
+    unsigned int mutual_explored_mask;
+    unsigned int mutual_visible_mask;
+    unsigned int non_mutual_visible_mask;
+    int remove_visible_bits[9];
+    int allied_los_enable;
+    unsigned char allied_victory;
+    unsigned char master_player_id;
+    char gap_106[2];
+    void* color_table;
+    int tribe_effect;
+    void* vr_list;
+};
+
 struct Item_Avail { char* name; short id; short pict; short inv1; float amt1; short inv2; float amt2; short inv3; float amt3; long help_message; long help_page; };
 
-class TRIBE_Player {
+class TRIBE_Player : public RGE_Player {
 public:
-    char gap_00[0x22]; short master_count; RGE_Master_Static_Object** masters; ListHead* object_list; char gap_2c[0x24]; PlayerData* data;
-    void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, short*, float);
+    void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, float);
     void interface_item_avail(Item_Avail**, short*, short);
 };
 
 void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, short group)
 {
+    short add_extra = 0;
     short count = 0;
-    int add_extra = 0;
-    short inv1, amt1, inv2, amt2, inv3, amt3, tribe, amt_tribe;
+    short inv_amt_2, inv_3, inv_amt_3, tribe_flag, local_e;
 
     if (this->master_count > 0) {
         RGE_Master_Static_Object** pp = this->masters;
@@ -46,41 +135,40 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
         } while (n != 0);
     }
 
-    if (group == 0x76 && this->data->civ_points == DAT_00576828 && this->masters[0x6d]->available == 0) {
+    if (group == 0x76 && this->attributes[0x30] == DAT_00576828 && this->masters[0x6d]->available == 0) {
         add_extra = 1;
-        ObjNode* node = this->object_list->first;
+        ObjNode* node = this->object_list->list;
         while (node != 0) {
-            if (node->data->id == 0x6d) add_extra = 0;
+            if (node->object->master_obj->id == 0x6d) add_extra = 0;
             node = node->next;
         }
     }
     if (add_extra != 0) count++;
 
-    if (*out != 0) { free(*out); *out = 0; }
+    Item_Avail** item_list = out;
+    if (*item_list != 0) { free(*item_list); *item_list = 0; }
     *count_out = count;
     if (count == 0) return;
-    *out = (Item_Avail*)calloc((int)count, 0x28);
+    *item_list = (Item_Avail*)calloc((int)count, 0x28);
 
     short out_i = 0;
-    int idx = 0;
+    short idx = 0;
     if (this->master_count > 0) {
         do {
-            RGE_Master_Static_Object* m = this->masters[(short)idx];
-            if (m != 0 && m->type >= 0x46 && m->available != 0 && m->interface_group == group) {
-                int off = (int)out_i * 0x28;
-                Item_Avail* item = (Item_Avail*)((char*)*out + off);
-                item->id = (short)idx;
-                item->pict = m->pict;
-                item->name = m->name;
-                this->obj_cost((short)idx, 0, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3, &amt_tribe, 1.0f);
-                item->inv1 = inv1;
-                item->amt1 = (float)(int)amt1;
-                item->inv2 = inv2;
-                item->amt2 = (float)(int)amt2;
-                item->inv3 = inv3;
-                item->amt3 = (float)(int)amt3;
-                item->help_message = m->get_help_message();
-                item->help_page = m->get_help_page();
+            if (this->masters[idx] != 0 && this->masters[idx]->type >= 0x46 &&
+                this->masters[idx]->available != 0 && this->masters[idx]->interface_group == group) {
+                (*item_list)[out_i].id = idx;
+                (*item_list)[out_i].pict = this->masters[idx]->pict;
+                (*item_list)[out_i].name = this->masters[idx]->name;
+                this->obj_cost((short)idx, 0, (short*)&out, &inv_amt_2, &inv_3, &inv_amt_3, &tribe_flag, &local_e, 1.0f);
+                (*item_list)[out_i].inv1 = (short)out;
+                (*item_list)[out_i].amt1 = (float)(int)inv_amt_2;
+                (*item_list)[out_i].inv2 = inv_3;
+                (*item_list)[out_i].amt2 = (float)(int)inv_amt_3;
+                (*item_list)[out_i].inv3 = tribe_flag;
+                (*item_list)[out_i].amt3 = (float)(int)local_e;
+                (*item_list)[out_i].help_message = this->masters[idx]->get_help_message();
+                (*item_list)[out_i].help_page = this->masters[idx]->get_help_page();
                 out_i++;
             }
             idx++;
@@ -88,20 +176,18 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
     }
 
     if (add_extra != 0) {
-        int off = (int)out_i * 0x28;
-        Item_Avail* item = (Item_Avail*)((char*)*out + off);
         RGE_Master_Static_Object* m = this->masters[0x6d];
-        item->id = 0x6d;
-        item->pict = m->pict;
-        item->name = m->name;
-        this->obj_cost(0x6d, 0, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3, &amt_tribe, 1.0f);
-        item->inv1 = inv1;
-        item->amt1 = (float)(int)amt1;
-        item->inv2 = inv2;
-        item->amt2 = (float)(int)amt2;
-        item->inv3 = inv3;
-        item->amt3 = (float)(int)amt3;
-        item->help_message = m->get_help_message();
-        item->help_page = m->get_help_page();
+        (*item_list)[out_i].id = 0x6d;
+        (*item_list)[out_i].pict = m->pict;
+        (*item_list)[out_i].name = m->name;
+        this->obj_cost(0x6d, 0, (short*)&out, &inv_amt_2, &inv_3, &inv_amt_3, &tribe_flag, &local_e, 1.0f);
+        (*item_list)[out_i].inv1 = (short)out;
+        (*item_list)[out_i].amt1 = (float)(int)inv_amt_2;
+        (*item_list)[out_i].inv2 = inv_3;
+        (*item_list)[out_i].amt2 = (float)(int)inv_amt_3;
+        (*item_list)[out_i].inv3 = tribe_flag;
+        (*item_list)[out_i].amt3 = (float)(int)local_e;
+        (*item_list)[out_i].help_message = m->get_help_message();
+        (*item_list)[out_i].help_page = m->get_help_page();
     }
 }

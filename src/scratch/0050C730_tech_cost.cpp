@@ -1,4 +1,20 @@
 // /Od debug-style no-PDB TRIBE_Player_Tech::tech_cost
+// Attempt log:
+// - Baseline typed Tech_Entry/owner reconstruction: 883 bytes; extra EDI and
+//   total-left arithmetic were the first structural drift.
+// - Reversing the shortage predicate to available < integer cost preserved the
+//   original FPU evaluation order; block-scoped adjusted-cost locals widened
+//   the frame and were rolled back.
+// - Evaluating the cost-minus-available term before total removed EDI and
+//   reached 879 bytes / 602 positional diff; explicit short result casts and
+//   compound short fallback additions reached 875 bytes / 281 instructions,
+//   57-byte edit diff, and are retained as the best clean source shape.
+// - Remaining drift is localized but unresolved: compiler homes tech at
+//   [ebp-4] and carry at [ebp-0xc] instead of the oracle's [ebp-0xc]/[ebp-4],
+//   with associated branch spans; no source-level slot fix was found within
+//   the 10-hypothesis budget. FLAGS: config/flags/0050C730_tech_cost.rsp
+
+#include <stdlib.h>
 
 struct Tech_Player_Tree {
     float research_done;
@@ -45,8 +61,8 @@ public:
 
 void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, short* attr2, short* cost2, short* attr3, short* cost3)
 {
-    unsigned char can_use_carry;
     short total;
+    unsigned char can_use_carry;
     Tech_Entry* tech;
 
     tech = this->base_tech->tech_tree + param_1;
@@ -67,9 +83,9 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, sho
         *attr1 = tech->attribute[0];
         if (*attr1 >= 0) {
             *cost1 = tech->attribute_cost[0];
-            if ((float)(int)*cost1 > this->owner->player_attributes->attributes[*attr1]) {
+            if (this->owner->player_attributes->attributes[*attr1] < (float)(int)*cost1) {
                 if (can_use_carry) {
-                    total = total + (*cost1 - (short)this->owner->player_attributes->attributes[*attr1]);
+                    total = (short)((*cost1 - (short)this->owner->player_attributes->attributes[*attr1]) + total);
                     *cost1 = (short)this->owner->player_attributes->attributes[*attr1];
                 }
             }
@@ -80,9 +96,9 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, sho
         *attr2 = tech->attribute[1];
         if (*attr2 >= 0) {
             *cost2 = tech->attribute_cost[1];
-            if ((float)(int)*cost2 > this->owner->player_attributes->attributes[*attr2]) {
+            if (this->owner->player_attributes->attributes[*attr2] < (float)(int)*cost2) {
                 if (can_use_carry) {
-                    total = total + (*cost2 - (short)this->owner->player_attributes->attributes[*attr2]);
+                    total = (short)((*cost2 - (short)this->owner->player_attributes->attributes[*attr2]) + total);
                     *cost2 = (short)this->owner->player_attributes->attributes[*attr2];
                 }
             }
@@ -93,9 +109,9 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, sho
         *attr3 = tech->attribute[2];
         if (*attr3 >= 0) {
             *cost3 = tech->attribute_cost[2];
-            if ((float)(int)*cost3 > this->owner->player_attributes->attributes[*attr3]) {
+            if (this->owner->player_attributes->attributes[*attr3] < (float)(int)*cost3) {
                 if (can_use_carry) {
-                    total = total + (*cost3 - (short)this->owner->player_attributes->attributes[*attr3]);
+                    total = (short)((*cost3 - (short)this->owner->player_attributes->attributes[*attr3]) + total);
                     *cost3 = (short)this->owner->player_attributes->attributes[*attr3];
                 }
             }
@@ -105,10 +121,10 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, sho
     if (total > 0) {
         if (*attr1 == 3 || *attr1 == -1) {
             *attr1 = 3;
-            *cost1 = *cost1 + total;
+            *cost1 += total;
         } else if (*attr2 == 3 || *attr2 == -1) {
             *attr2 = 3;
-            *cost2 = *cost2 + total;
+            *cost2 += total;
         } else if (*attr3 == 3 || *attr3 == -1) {
             *attr3 = 3;
             *cost3 = total;

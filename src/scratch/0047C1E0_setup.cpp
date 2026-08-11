@@ -20,6 +20,8 @@
 //   _alloca uses __alloca_probe but necessarily adds an EBP dynamic frame.
 //   Restored the canonical static-buffer source; this is a toolchain symbol
 //   blocker, not an unresolved ownership or ABI fact.
+// - Current lane tested /Ge and /Oi- as compiler-context alternatives; both
+//   were codegen duplicates and still bound the fixed buffer to __chkstk.
 
 class TDrawArea;
 class TPanel {

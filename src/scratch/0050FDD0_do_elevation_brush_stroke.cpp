@@ -78,6 +78,15 @@
  * only in the base call both emitted the clean 81-byte basin (the latter in a
  * 4-variant lab). Restored the pinned canonical source; endpoint coloring remains
  * oracle r/x1/x2=EBX/ESI/EDI versus rebuild ESI/EDI/EBX.
+ *
+ * SA84a32a3f pass: same-width int formals, broad register hints, complete RGE/TRIBE
+ * virtual/size context, and reverse-arm expression variants were neutral or worse.
+ * Mutating x1/y1/x2/y2 by +/-2 before the two cleanup calls recovered the oracle
+ * callee-save coloring, exact 188-byte size, and 182/188 bytes (7 effective bytes
+ * remain in reverse-arm instruction ordering). The best source keeps ordinary
+ * direct endpoint expansion and explicit common cleanup-bound mutation; the residual
+ * sub/load ordering is localized to x/y reverse arms. A final explicit unsigned-byte
+ * cast probe worsened to 18 bytes and was rolled back.
  */
 
 class RGE_Map {
@@ -113,7 +122,11 @@ unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, lo
         y2 = oy1 + r + c;
     }
 
-    tribe_clean_elevation(x1 - 2, y1 - 2, x2 + 2, y2 + 2);
-    tribe_clean_terrain(x1 - 2, y1 - 2, x2 + 2, y2 + 2, 1, 0);
+    x1 -= 2;
+    y1 -= 2;
+    x2 += 2;
+    y2 += 2;
+    tribe_clean_elevation(x1, y1, x2, y2);
+    tribe_clean_terrain(x1, y1, x2, y2, 1, 0);
     return 1;
 }

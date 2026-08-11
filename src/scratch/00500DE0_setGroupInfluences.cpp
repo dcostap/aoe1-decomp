@@ -1,138 +1,195 @@
 // 00500DE0 TribeTacticalAIModule::setGroupInfluences
 // taitacmd.cpp
 // Attempt log:
-// try 1: reconstructed group/object influence drawing from packet: group list pass plus object-id array pass.
-// try 2: modeled stack locals as min[2], max[2], clearDistance/float temp matching packet stack slots.
-// try 3: modeled group sentinel at this+0x9D4 and first node at +0x9D8; group iteration skips sentinel/null and advances via node+4.
-// try 4: modeled gatherLocation() at 004EB5F0 and zero-x filter against float constant 0.0.
-// try 5: modeled groupRadius() -> world+0xCEC getClearDistance(radius), half-distance integer divide by 2, then two snapped boxes.
-// try 6: modeled InfluenceMap calls as 5-arg thiscalls: setInfluence(...,255) and setInfluence2(...,10).
-// try 7: modeled dynamic object-id array growth at +0x124/+0x130 using malloc/free and copy loop before per-object pass.
-// try 8: modeled world GetObject(id) call from this+0xF0 and object coordinates at +0x38/+0x3C.
-// try 9: first build used explicit extern `_ftol(double)` helper calls; VC5 emitted EBP frame/alignment prologue (`push ebp; mov ebp,esp; and esp,-8`) unlike original.
-// try 10: changed float-to-int conversions to C casts so VC5 emits FPU expression followed by internal `_ftol`-style calls; prologue family improved but rebuilt .text is now 896B vs original 932B, so no full diff.
-// try 11: reviewed original: many repeated gatherLocation calls are intentionally not CSE'd; current source still likely hoists/reuses object/group coordinate expressions and collapses duplicated snap/set blocks differently.
-// left in scratch: behavior is reconstructed but exact source shape for repeated coordinate conversions/call scheduling is unresolved; rebuilt is 36 bytes short. No accepted_drift: no full-size localized diff.
+// baseline: canonical group sentinel/object-id array ownership; typed group and object influence passes with natural repeated gather and map calls.
+// probe 2: replaced InfluenceHelper/malloc scaffolding with the proven
+//   TribeInformationAIModule::groupInfluenceDimension/mapBound, InfluenceMap,
+//   and inlined ManagedArray<int> surfaces; size, calls, and CFG now match.
+// probe 3: used the binary-supported XYPoint aggregate locals rather than four
+//   untyped integer array elements; this was codegen-neutral.
+// probe 4: reusing one point across both object-bound calls enlarged the frame
+//   and reversed the block basin; rolled back.
+// probe 6: swapping the two point roles globally moved the group hunk and
+//   enlarged the localized drift; rolled back.
+// probe 8: swapped only the two equal-coordinate object point roles; this
+//   reduced the localized drift from 23 to 13 bytes and was retained.
+// probe 9: propagating the object-role swap into the later clear-distance
+//   rectangle moved the group block; rolled back.
+// probe 11: kept group distance live only through the first map update and used
+//   a separate object-clear-distance local; this reduced drift to 11 bytes and
+//   moved the FPU conversion onto the original parameter home.
+// probe 12: swapping clear-rectangle roles while retaining the separate
+//   distance local moved the group block; rolled back.
+// probe 14 variant lab: tested do/for group loops crossed with both clear-point
+//   role orders under size/frame/call-set gates.  The retained do/minmax source
+//   was best at 11 bytes; for changed size and role swap regressed to 41 bytes.
+// left in scratch: exact source scheduling for repeated coordinate conversions
+// and object/group local homes remains to be validated.
+// Final bounded pause: the remaining 11 bytes are localized to the group
+//   back-edge target (E01 versus E09) and the first clear-distance point homes;
+//   all 43 calls, size, frame, CFG count, and relocation identities match.
 
-typedef int BOOL;
-extern "C" void* __cdecl malloc(unsigned int);
-extern "C" void __cdecl free(void*);
+#include <math.h>
 
-struct Waypoint { float x; float y; };
+void* operator_new(unsigned int size);
+void __cdecl operator_delete(void* ptr);
+
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+};
+
+struct XYPoint {
+    int x;
+    int y;
+};
+
 class TacticalAIGroup {
 public:
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
-    char gap_04[0x34];
-    Waypoint* gatherLocation();
-    int groupRadius();
+
+    const Waypoint& gatherLocation() const;
+    int desiredNumberUnits() const;
 };
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    char gap_04[0x34];
+    float world_x;
+    float world_y;
+};
+
+class TribeInformationAIModule {
+public:
+    virtual ~TribeInformationAIModule();
+    int groupInfluenceDimension(int dim);
+    int mapBound(XYPoint* point);
+};
+
+class MainDecisionAIModule {
+public:
+    virtual ~MainDecisionAIModule();
+    char gap_04[0x100];
+    RGE_Static_Object* object(int id);
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    char gap_104[0xCEC - 0x104];
+    TribeInformationAIModule informationAI;
+};
+
 class InfluenceMap {
 public:
-    void setInfluence(int x1,int y1,int x2,int y2,int val);
-    void setInfluence2(int x1,int y1,int x2,int y2,int val);
+    int setValue(int x1, int y1, int x2, int y2, unsigned char value);
+    int decrementValue(int x1, int y1, int x2, int y2, unsigned char amount);
 };
-class InfluenceHelper {
+
+class ManagedArray_int {
 public:
-    int getClearDistance(int);
-    void snapPoint(int* p);
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    int& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            int* new_data = (int*)operator_new(new_size * 4);
+            if (new_data != 0) {
+                for (int i = 0; i < this->maximumSizeValue && i < new_size; i++) {
+                    new_data[i] = this->value[i];
+                }
+                operator_delete(this->value);
+                this->value = new_data;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
 };
-class TUnit { public: char gap_00[0x38]; float x; float y; };
-class World { public: TUnit* GetObject(int id); };
 
 class TribeTacticalAIModule {
 public:
-    char gap_000[0xF0];
-    World* world;           // +f0
-    char gap_0F4[0x124-0x0F4];
-    int* objectIds;         // +124
-    int objectCount;        // +128
-    char gap_12C[4];
-    int objectCapacity;     // +130
-    char gap_134[0x9D4-0x134];
-    TacticalAIGroup groupSentinel; // +9d4, next at +9d8
+    virtual ~TribeTacticalAIModule();
+    char gap_04[0xEC];
+    TribeMainDecisionAIModule* md;
+    char gap_F4[0x30];
+    ManagedArray_int ungroupedSoldiers;
+    char gap_134[0x9D4 - 0x134];
+    TacticalAIGroup groups;
 
     void setGroupInfluences(InfluenceMap& map);
 };
 
-void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map) {
-    int minpt[2];
-    int maxpt[2];
+void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
+{
+    XYPoint minpt;
+    XYPoint maxpt;
     int clearDistance;
     int half;
     TacticalAIGroup* group;
     TacticalAIGroup* end;
-    Waypoint* loc;
-    TUnit* obj;
+    RGE_Static_Object* object;
     int i;
 
-    group = groupSentinel.next;
-    end = &groupSentinel;
+    group = this->groups.next;
+    end = &this->groups;
     if (group != end && group != 0) {
         do {
-            loc = group->gatherLocation();
-            if (loc->x != 0.0f) {
-                clearDistance = ((InfluenceHelper*)((char*)world + 0xCEC))->getClearDistance(group->groupRadius());
+            if (group->gatherLocation().x != -1.0f) {
+                clearDistance = this->md->informationAI.groupInfluenceDimension(
+                    group->desiredNumberUnits());
                 half = clearDistance / 2;
-                minpt[0] = (int)(loc->x - (float)half);
-                minpt[1] = (int)(loc->y - (float)half);
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(minpt);
-                maxpt[0] = (int)(loc->x + (float)half);
-                maxpt[1] = (int)(loc->y + (float)half);
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(maxpt);
-                map.setInfluence(minpt[0], minpt[1], maxpt[0], maxpt[1], 255);
+
+                minpt.x = (int)(group->gatherLocation().x - (float)half);
+                minpt.y = (int)(group->gatherLocation().y - (float)half);
+                this->md->informationAI.mapBound(&minpt);
+                maxpt.x = (int)(group->gatherLocation().x + (float)half);
+                maxpt.y = (int)(group->gatherLocation().y + (float)half);
+                this->md->informationAI.mapBound(&maxpt);
+                map.setValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 255);
 
                 half = clearDistance;
-                minpt[0] = (int)(loc->x - (float)half);
-                minpt[1] = (int)(loc->y - (float)half);
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(minpt);
-                maxpt[0] = (int)(loc->x + (float)half);
-                maxpt[1] = (int)(loc->y + (float)half);
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(maxpt);
-                map.setInfluence2(minpt[0], minpt[1], maxpt[0], maxpt[1], 10);
+                minpt.x = (int)(group->gatherLocation().x - (float)half);
+                minpt.y = (int)(group->gatherLocation().y - (float)half);
+                this->md->informationAI.mapBound(&minpt);
+                maxpt.x = (int)(group->gatherLocation().x + (float)half);
+                maxpt.y = (int)(group->gatherLocation().y + (float)half);
+                this->md->informationAI.mapBound(&maxpt);
+                map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
             }
             group = group->next;
         } while (group != end);
     }
 
     i = 0;
-    if (objectCount > 0) {
+    if (this->ungroupedSoldiers.numberValue > 0) {
         do {
-            if (i > objectCapacity - 1) {
-                int* newIds = (int*)malloc(i * 4 + 4);
-                if (newIds != 0) {
-                    int j = 0;
-                    if (objectCapacity > 0) {
-                        do {
-                            if (j >= i + 1) break;
-                            newIds[j] = objectIds[j];
-                            ++j;
-                        } while (j < objectCapacity);
-                    }
-                    free(objectIds);
-                    objectIds = newIds;
-                    objectCapacity = i + 1;
-                }
-            }
-            obj = world->GetObject(objectIds[i]);
-            if (obj != 0) {
-                minpt[0] = (int)obj->x;
-                minpt[1] = (int)obj->y;
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(minpt);
-                maxpt[0] = (int)obj->x;
-                maxpt[1] = (int)obj->y;
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(maxpt);
-                map.setInfluence(minpt[0], minpt[1], maxpt[0], maxpt[1], 255);
+            object = this->md->object(this->ungroupedSoldiers[i]);
+            if (object != 0) {
+                maxpt.x = (int)object->world_x;
+                maxpt.y = (int)object->world_y;
+                this->md->informationAI.mapBound(&maxpt);
+                minpt.x = (int)object->world_x;
+                minpt.y = (int)object->world_y;
+                this->md->informationAI.mapBound(&minpt);
+                map.setValue(maxpt.x, maxpt.y, minpt.x, minpt.y, 255);
 
-                clearDistance = ((InfluenceHelper*)((char*)world + 0xCEC))->getClearDistance(1);
-                minpt[0] = (int)(obj->x - (float)clearDistance);
-                minpt[1] = (int)(obj->y - (float)clearDistance);
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(minpt);
-                maxpt[0] = (int)((float)clearDistance + obj->x);
-                maxpt[1] = (int)((float)clearDistance + obj->y);
-                ((InfluenceHelper*)((char*)world + 0xCEC))->snapPoint(maxpt);
-                map.setInfluence2(minpt[0], minpt[1], maxpt[0], maxpt[1], 10);
+                int objectClearDistance;
+                objectClearDistance = this->md->informationAI.groupInfluenceDimension(1);
+                minpt.x = (int)(object->world_x - (float)objectClearDistance);
+                minpt.y = (int)(object->world_y - (float)objectClearDistance);
+                this->md->informationAI.mapBound(&minpt);
+                maxpt.x = (int)((float)objectClearDistance + object->world_x);
+                maxpt.y = (int)((float)objectClearDistance + object->world_y);
+                this->md->informationAI.mapBound(&maxpt);
+                map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
             }
-            ++i;
-        } while (i < objectCount);
+            i++;
+        } while (i < this->ungroupedSoldiers.numberValue);
     }
 }

@@ -25,6 +25,14 @@
 // - focused 16-variant declaration/expression lab and 10-variant param3-cast
 //   lab preserved size/frame/call-set but collapsed to two nonexact 253-byte
 //   groups; neither delayed the final param3 push. Clean source remains best.
+// - reverse local-order plus receiver/parameter lifetime labs isolated a
+//   diagnostic lead: reverse declarations select the oracle LEA SIB bytes,
+//   but VC5 still pushes param3 before the receiver load/arithmetic; receiver
+//   aliases instead color the drop pointer into ESI and worsen the prefix.
+// - TTextPanel/TListPanel field surfaces, alternate final expressions,
+//   parameter ABI widths, and narrow volatile/address aliases all collapsed
+//   back to the same 253-byte group; no source-plausible form delayed that
+//   push. Restore the natural typed candidate after each lab.
 // - best natural reconstruction: 253 bytes, all 9 calls/CFG/frame aligned;
 //   remaining 15 bytes are only final-call scheduling/SIB operand order.
 

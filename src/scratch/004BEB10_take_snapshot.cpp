@@ -1,18 +1,31 @@
 // 004BEB10 TSpan_List_Manager::take_snapshot(char*, int&, TDrawArea*, int, TSpan_List_Manager**, int*, int)
 // Source: spanlist.cpp lines 1817-1950
 // Attempt log:
-// - Initial natural reconstruction from packet/decompiler.
-// - First build used bmPAL/thePal as 257-entry arrays because decompiler showed +1 accesses; this made frame 0x890 vs original 0x888.
-// - Corrected palette arrays to 256 entries and pass base pointers; frame size now matches original 0x888 and output is same-size 673B.
-// - Current best same-size mismatch: positional 75.0371%, edit 58.0981%, first mismatch at offset 16 where original zeroes EBX before pushing EDI, rebuilt pushes EDI and zeroes EDI. Remaining drift is broad register/source-shape through null-span validation, bitmap header stack layout/accesses, palette copy loop, open-name loop, and decode/write loop. Not accepted_drift-safe.
+// - Initial natural reconstruction used 256-entry palette arrays; the original
+//   addresses confirm no extra palette entry is part of this frame.
+// - Restored the original direct open/close/write call surfaces and changed the
+//   span precheck to a pointer cursor with a redundant i<count guard. This
+//   makes the complete call multiset/order and the first 0x38 bytes exact.
+// - Replaced hand-written zero loops with memset(line, 0, bmWide), matching the
+//   observed variable-size rep stosd/rep stosb sequence and recovering exact
+//   palette/zero/decode/write islands.
+// - Width-first member initialization is the current best header basin; a
+//   typed packed bitmap-header probe moved the header broadly and was rolled
+//   back. The inverted attempt-limit spelling was codegen-identical.
+// - Final best check: 661 rebuilt bytes vs 673 original, frame 0x888, all 14
+//   calls aligned, 359 strict differing bytes, 85.51% shape, 57.21% exact
+//   block coverage. Remaining drift starts in bitmap-header scheduling/stack
+//   ownership (notably the BMPFile base is +4) and the late open-loop/return
+//   topology. This is unresolved scratch work, not accepted drift.
 
 #include <stdio.h>
+#include <string.h>
 
 void* __cdecl malloc(unsigned int size);
 void __cdecl free(void* p);
-int __cdecl _open(const char* path, int flags, ...);
-int __cdecl _close(int fd);
-int __cdecl _write(int fd, const void* buf, unsigned int count);
+int __cdecl open(const char* path, int flags, ...);
+int __cdecl close(int fd);
+int __cdecl write(int fd, const void* buf, unsigned int count);
 
 struct PALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 struct RGBQUAD { unsigned char rgbBlue, rgbGreen, rgbRed, rgbReserved; };
@@ -29,8 +42,8 @@ public:
 
 void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area, int color, TSpan_List_Manager** spans, int* colors, int count)
 {
-    int Height;
     int Width;
+    int Height;
     int infile;
     int bmWide;
     unsigned char bmFH[0x10];
@@ -41,30 +54,29 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
 
     if (count > 0) {
         int i = 0;
-        if (count > 0) {
-            do {
-                if (spans[i] == 0) return;
+        if (i < count) {
+            TSpan_List_Manager** s = spans;
+            while (i < count) {
+                if (*s == 0) return;
                 i++;
-            } while (i < count);
+                s++;
+            }
         }
     }
 
-    int pixels = this->Num_Pixels;
-    int lines = this->Num_Lines;
-    Width = lines;
-    unsigned int wide = (pixels + 3) & 0xfffc;
-    Height = pixels;
-    bmWide = wide;
+    Width = this->Num_Lines;
+    Height = this->Num_Pixels;
+    bmWide = (Height + 3) & 0xfffc;
 
     *(unsigned short*)(bmFH + 0) = 0x4d42;
-    *(unsigned int*)(bmFH + 2) = lines * wide + 0x436;
+    *(unsigned int*)(bmFH + 2) = Width * bmWide + 0x436;
     *(unsigned short*)(bmFH + 6) = 0;
     *(unsigned short*)(bmFH + 8) = 0;
     *(unsigned int*)(bmFH + 10) = 0x436;
 
     *(unsigned int*)(bmIH + 0) = 0x28;
-    *(unsigned int*)(bmIH + 4) = pixels;
-    *(unsigned int*)(bmIH + 8) = lines;
+    *(unsigned int*)(bmIH + 4) = Height;
+    *(unsigned int*)(bmIH + 8) = Width;
     *(unsigned short*)(bmIH + 12) = 1;
     *(unsigned short*)(bmIH + 14) = 8;
     *(unsigned int*)(bmIH + 16) = 0;
@@ -88,26 +100,24 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
         if (name == 0) sprintf(BMPFile + 4, (char*)0x5845E4, number);
         else sprintf(BMPFile + 4, name, number);
         tries++;
-        int fd = _open(BMPFile + 4, 0);
+        int fd = open(BMPFile + 4, 0);
         if (fd == -1) break;
         number++;
-        _close(fd);
-        if (tries > 1000) return;
+        close(fd);
+        if (tries <= 1000) continue;
+        return;
     }
 
-    unsigned char* line = (unsigned char*)malloc(wide);
-    infile = _open(BMPFile + 4, 0x8301, 0x180);
+    unsigned char* line = (unsigned char*)malloc(bmWide);
+    infile = open(BMPFile + 4, 0x8301, 0x180);
     if (infile != -1) {
-        _write(infile, bmFH, 0x0e);
-        _write(infile, bmIH, 0x28);
-        _write(infile, bmPAL, 0x400);
+        write(infile, bmFH, 0x0e);
+        write(infile, bmIH, 0x28);
+        write(infile, bmPAL, 0x400);
         int y = Width - 1;
         if (y >= 0) {
             do {
-                unsigned char* d = line;
-                unsigned int c = wide;
-                while (c >= 4) { *(unsigned int*)d = 0; d += 4; c -= 4; }
-                while (c != 0) { *d++ = 0; c--; }
+                memset(line, 0, bmWide);
                 this->DecodeLine(line, y, (unsigned char)color, Height);
                 if (count > 0) {
                     TSpan_List_Manager** s = spans;
@@ -119,11 +129,11 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
                         n--;
                     } while (n != 0);
                 }
-                _write(infile, line, wide);
+                write(infile, line, bmWide);
                 y--;
             } while (y >= 0);
         }
-        _close(infile);
+        close(infile);
     }
     free(line);
 }

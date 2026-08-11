@@ -61,6 +61,14 @@
 // scan site changed the basin to 203 bytes and made obj persistent in EBX;
 // hoisted armor pointer with inner-site count was 184 bytes/215 bytes. Both
 // natural-source variants were rolled back. Clean typed source restored.
+// Fresh PDB DIA evidence names the parameters weapon_num (int), damage
+// (RGE_Armor_Weapon_Info*), attack_modifier (float), attacking_player, and
+// attackingObject; tot_armor is the only emitted local and is an int at a
+// reused parameter home. Function-scope tot_armor, declaration-order, direct
+// parameter-mutation, direct-master, terrain-expression, and const-record
+// variants were tested; only direct parameter mutation changed codegen and it
+// lost aligned blocks despite exact size. Variant labs otherwise collapsed to
+// the existing 214-byte basin. Clean typed source remains authoritative.
 
 extern float DAT_0056f49c;
 extern float DAT_0056f4a8;

@@ -12,9 +12,21 @@
 // 10: `radius-zone > 0.0f` worsened edit diff to 31.26%; rolled back.
 // 11: Long range temp no change.
 // 12: Swapped multiply operands: no change.
-// Left in scratch: best shape has correct frame, stack offsets, loop layout, vcall offsets, and calls, but remaining drift is broad. First mismatch is random variance arithmetic: rebuilt emits `imul ecx,edi; shl ecx,1` while original uses `lea edx,[edi+edi]; imul ecx,edx`. Later FPU coordinate/radius code is over-combined versus original line-scheduled `fild/fstp`, `fld radius`, `ftol`, `fcomp [0.0]` sequence.
+// 13: Making the radius truncation scratch an int (rather than a float) restored the
+//     original fild/movsx/fsubr/fcomp/test topology, exact size, and 123-byte aligned run.
+// 14: Five focused random-count source variants (including doubled expressions,
+//     separate temporaries, and *2 spelling) produced only three codegen groups;
+//     none emitted the original LEA-before-IMUL. Compound versus direct self-add was
+//     also a duplicate. The variant lab was diagnostic only and did not replace this source.
+// 15: Restoring the PDB char* debug_rand ABI was a codegen duplicate.
+// Left in scratch: typed ownership, frame, stack homes, loop/call topology, and the
+// radius/FPU sequence now match structurally. Remaining drift is localized to the
+// random variance multiply: rebuilt emits `mov eax,80010003; imul ecx,edi; shl ecx,1`
+// instead of original `lea edx,[edi+edi]; imul ecx,edx`; the current source keeps a
+// natural doubled-range expression. Current best: 467-byte output, 97.47% shape,
+// 379 positional diff bytes, 45-byte edit/resync diagnostic.
 
-extern "C" int __cdecl debug_rand(const char*, int);
+extern "C" int __cdecl debug_rand(char*, int);
 
 struct Map_Stack { char data[0x18]; };
 struct RGE_Tile { char gap[5]; unsigned char terrain; char rest[18]; };
@@ -74,7 +86,9 @@ void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, 
     long x;
     int col;
     RGE_RMM_Object_Generator* self;
-    float zone;
+    int zone;
+    float fx;
+    float fy;
     Map_Stack obj_stack;
 
     self = this;
@@ -83,24 +97,22 @@ void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, 
 
     int count = info.object_number_per_group;
     register int var = info.object_number_varience;
-    long range = var + var;
-    int delta = (range * debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x212)) / 0x7fff - var;
+    int range = var + var;
+    int delta = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x212) * range) / 0x7fff - var;
     count += delta;
     if (count < 1) count = 1;
 
     while (pop_stack(&obj_stack, &col, &x, (Map_Stack*)&y) && count > 0) {
             if (info.terrain < 0 || ((this->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
-                float fx = (float)col;
-                float fy = (float)x;
+                fx = (float)col;
+                fy = (float)x;
                 RGE_Master_Static_Object* master = player->master_objects[info.obj_id];
-                int iz = (short)(int)master->radius_x;
-                zone = (float)iz;
-                if (0.0f < master->radius_x - zone) {
+                zone = (short)(int)master->radius_x;
+                if (0.0f < master->radius_x - (float)zone) {
                     fx = fx - -0.5f;
                 }
-                iz = (short)(int)master->radius_y;
-                zone = (float)iz;
-                if (0.0f < master->radius_y - zone) {
+                zone = (short)(int)master->radius_y;
+                if (0.0f < master->radius_y - (float)zone) {
                     fy = fy - -0.5f;
                 }
                 if (!master->can_place(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {

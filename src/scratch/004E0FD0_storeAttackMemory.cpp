@@ -9,6 +9,13 @@
 // 4: volatile timeOffset + push ecx - 416 bytes
 // 5: moved bestIdx init after quadrant - 416 bytes
 // 6: explicit int locals for params, match exact computation
+// 7: signed `/ 2` quadrant divisions and typed QuadrantLog/RGE_Player ownership
+//    improved structural parity to 441 bytes / 250 positional diff.
+// 8: do/while scan, result-index split, scoped cursor declarations, and a
+//    timestamp pointer were tested; the single-index raw scan remains closer.
+// 9: the ordinary timestamp-pointer variant was rejected (429 bytes / 408 diff)
+//    and restored; remaining drift is scan rotation/liveness plus mapY register
+//    coloring (EBP versus original EBX).
 
 #include <stdlib.h>
 
@@ -29,24 +36,41 @@ struct AttackMemory {
     int play;                   // +0x14
 };
 
+class RGE_Player {
+public:
+    char gap_00[0x4A];
+    unsigned short id;
+};
+
 class MainAIModule {
 public:
     char gap_00[0xF0];
-    void* field_F0;             // +0xF0
+    RGE_Player* player;         // +0xF0
 };
 
-class TribeInformationAIModule {
+struct QuadrantLog {
+    int numberExploredTiles;
+    int numberAttacksOnUs;
+    int numberAttacksByUs;
+};
+
+class InformationAIModule {
 public:
-    char gap_00[0x100];
+    virtual ~InformationAIModule();
+    char gap_04[0xEC];
+};
+
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    char gap_F0[0x100 - 0xF0];
     MainAIModule* md;           // +0x100
     int mapXSizeValue;          // +0x104
     int mapYSizeValue;          // +0x108
     char gap_10C[0x1FC - 0x10C];
     int maxAttackMemories;      // +0x1FC
     AttackMemory* attackMemories; // +0x200
-    char gap_204[0x40C - 0x204];
-    int numberAttacksOnUs;      // +0x40C
-    int numberAttacksByUs;      // +0x410
+    char gap_204[0x408 - 0x204];
+    QuadrantLog quadrantLog[4][4]; // +0x408
 
     int storeAttackMemory(
         unsigned char param_1,
@@ -87,17 +111,17 @@ int TribeInformationAIModule::storeAttackMemory(
         int sum = nMaxX + nMinX;
         int product = sum * 4;
         int cx = product / this->mapXSizeValue;
-        int cy = product / this->mapYSizeValue;
-        cx >>= 1;
-        cy >>= 1;
+        product = product / this->mapYSizeValue;
+        cx /= 2;
+        product /= 2;
         if (cx > 4) cx = 3;
-        if (cy > 4) cy = 3;
+        if (product > 4) product = 3;
 
-        unsigned short playerID = *(unsigned short*)((char*)this->md->field_F0 + 0x4A);
-        if ((int)param_7 == (unsigned char)playerID) {
-            *(int*)((char*)this + cy * 12 + cx * 48 + 0x40C) += 1;
-        } else if ((int)param_6 == (unsigned char)playerID) {
-            *(int*)((char*)this + cy * 12 + cx * 48 + 0x410) += 1;
+        unsigned short playerID = this->md->player->id;
+        if (param_7 == playerID) {
+            this->quadrantLog[cx][product].numberAttacksOnUs += 1;
+        } else if (param_6 == playerID) {
+            this->quadrantLog[cx][product].numberAttacksByUs += 1;
         }
     }
 
@@ -109,7 +133,7 @@ int TribeInformationAIModule::storeAttackMemory(
         int offset = 0;
         AttackMemory* mem = this->attackMemories;
 
-        while (count < this->maxAttackMemories) {
+        do {
             if (*(int*)((char*)mem + offset) == -1) {
                 bestIdx = count;
                 break;
@@ -129,7 +153,7 @@ int TribeInformationAIModule::storeAttackMemory(
 
             count++;
             offset += 0x18;
-        }
+        } while (count < this->maxAttackMemories);
     }
 
     if (bestIdx != -1) {

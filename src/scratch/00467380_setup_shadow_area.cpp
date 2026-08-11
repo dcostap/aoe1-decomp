@@ -18,88 +18,123 @@
 // 16: Third shape arg order matches original LEA sequence [14,20,18,24].
 // 17: Separate flags local no codegen change.
 // 18: Reload draw system pointer inside creation block improved to final 65.04% positional / 25.21% edit.
+// 19: Restored canonical ownership from the ground-truth layouts: +0x20 is TPanel::render_area
+//     (TDrawArea*), whose +0 DrawSystem points at TDrawSystem::Flags, not a synthetic holder.
+//     Used the proven reference-output/long/byte method ABIs and the area_name+4 overlay shown by
+//     the original stack addresses.  This is the clean source reconstruction being tested.
+// 20: The canonical ABI/layout source reached 342 differing bytes before the proven dword overlay
+//     was restored; the overlay is behaviorally required even though its stack home remains shifted.
+// 21: Removing a named DrawSystem alias, assigning new directly to shadow_area, adding a new-area
+//     local, swapping output-local declarations, and restoring windows.h/new.h context were all
+//     duplicate codegen basins (final 356 differing bytes, 472-byte size/frame, 11/11 calls).
+// 22: A named area_name+4 pointer was also a duplicate.  Remaining blocker is the first EH/new
+//     local-layout hunk: original reloads flags through EDX and reuses [esp+10] while VC5 keeps
+//     the canonical candidate's allocation/area homes at different offsets.  Left in scratch.
 // FLAGS: config/flags/00467380_setup_shadow_area.rsp uses /GX; needed for EH prologue around TDrawArea allocation/constructor.
-// Left in scratch: behavior/calls/field offsets mostly understood. Remaining blocker is VC5 EH-new/local layout and scheduling: rebuilt uses hidden new temp at [esp+20] and shifted sprintf/ctor buffer LEAs; original reuses [esp+10]. Flag-mask block is close but still has register/scheduling drift (`mov eax,[eax]` vs original `mov edx,[eax]`, early buffer LEA). Later calls/shape args are much closer after arg-order probe.
 
-extern "C" int __cdecl sprintf(char*, const char*, ...);
+#include <windows.h>
+#include <new.h>
+#include <stdio.h>
 
-class TDrawSystem { public: char pad_00[0x28]; int flags; };
-class TDrawSystemHolder { public: TDrawSystem* sys; };
+class TDrawSystem {
+public:
+    char gap_00[0x28];
+    unsigned long Flags;
+};
+
 class TDrawArea {
 public:
-    char size_pad[0x100];
+    TDrawSystem* DrawSystem;
+    char gap_04[0xFC];
+
     TDrawArea(char* name, int type);
-    int Init(TDrawSystem* sys, int w, int h, int a, int b);
-    void Clear(void* rect, unsigned int color);
+    int Init(TDrawSystem* system, long width, long height, int a, int b);
+    void Clear(tagRECT* rect, int color);
     unsigned char* Lock(char* where, int flag);
-    void SetShadowTable(void* table);
+    void SetShadowTable(class RGE_Color_Table* table);
     void DrawShadowBox(long x1, long y1, long x2, long y2);
     void Unlock(char* where);
 };
+
+class RGE_Color_Table;
+
 class TShape {
 public:
-    unsigned char shape_minmax(long* x_max, long* y_max, long* y_min, long* x_min, int flag);
-    unsigned char shape_draw(TDrawArea* area, int a, int b, int c, int d, int e);
+    unsigned char shape_minmax(long& out_minx, long& out_miny,
+                               long& out_maxx, long& out_maxy,
+                               long frame);
+    unsigned char shape_draw(TDrawArea* area, long x, long y, long frame,
+                             unsigned char color_flag, unsigned char* color_table);
 };
 
-class TEasy_Panel {
+class TPanel {
 public:
-    void* vtbl;                 // +00
-    char pad04[0x14-4];
-    int width;                  // +14
-    int height;                 // +18
-    char* name;                 // +1c
-    TDrawSystemHolder* draw_system; // +20
-    char pad24[0x204-0x24];
-    TShape* background_pic;     // +204
-    char pad208[0x44c-0x208];
-    void* shadow_color_table;   // +44c
-    char pad450[0x454-0x450];
-    unsigned char background_color1; // +454
-    char pad455[0x46c-0x455];
-    TDrawArea* shadow_area;     // +46c
+    virtual ~TPanel();
+
+    char gap_04[0x10];
+    long pnl_wid;                         // +0x14
+    long pnl_hgt;                         // +0x18
+    char* panelNameValue;                 // +0x1C
+    TDrawArea* render_area;               // +0x20
+    char gap_24[0xD0];                     // sizeof(TPanel) == 0xF4
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_F4[0x110];                   // +0xF4 to +0x203
+    TShape* background_pic;               // +0x204
+    char gap_208[0x244];                  // +0x208 to +0x44B
+    RGE_Color_Table* shadow_color_table;  // +0x44C
+    char gap_450[4];                       // +0x450 to +0x453
+    unsigned char background_color1;      // +0x454
+    char gap_455[0x17];                    // +0x455 to +0x46B
+    TDrawArea* shadow_area;               // +0x46C
 
     void setup_shadow_area(int force);
 };
 
 void TEasy_Panel::setup_shadow_area(int force)
 {
-    char area_name[252];
-    long y_min;
+    char area_name[256];
     long y_max;
-    long x_min;
     long x_max;
+    long x_min;
 
     TDrawArea* area = this->shadow_area;
-    if ((area == 0 || force != 0) && this->background_pic != 0 && this->shadow_color_table != 0) {
-        TDrawSystem* ds = this->draw_system->sys;
-        int old_flags = ds->flags;
+    if ((area == 0 || force != 0) &&
+        this->background_pic != 0 && this->shadow_color_table != 0) {
+        int old_flags = this->render_area->DrawSystem->Flags;
+
         if (area == 0) {
-            TDrawSystem* ds2 = this->draw_system->sys;
-            int flags = ds2->flags;
-            flags &= 1;
-            ds2->flags = flags;
-            sprintf(area_name, "%s Shadow Panel", this->name);
-            TDrawArea* p = new TDrawArea(area_name, 0);
-            this->shadow_area = p;
+            this->render_area->DrawSystem->Flags &= 1;
+            sprintf(area_name + 4, "%s Shadow Panel", this->panelNameValue);
+            this->shadow_area = new TDrawArea(area_name + 4, 0);
         }
-        area = this->shadow_area;
-        if (area != 0) {
-            this->background_pic->shape_minmax(&y_max, &x_min, &y_min, &x_max, 0);
-            int w = y_min - y_max + 1;
-            int h = x_min - x_max + 1;
-            if (w > this->width) w = this->width;
-            if (h > this->height) h = this->height;
-            if (this->shadow_area->Init(this->draw_system->sys, w, h, 0, 0)) {
+
+        if (this->shadow_area != 0) {
+            this->background_pic->shape_minmax(
+                x_max, y_max, *(long*)area_name, x_min, 0);
+
+            int width = *(long*)area_name - x_max + 1;
+            int height = x_min - y_max + 1;
+            if (width > this->pnl_wid)
+                width = this->pnl_wid;
+            if (height > this->pnl_hgt)
+                height = this->pnl_hgt;
+
+            if (this->shadow_area->Init(this->render_area->DrawSystem,
+                                        width, height, 0, 0)) {
                 this->shadow_area->Clear(0, this->background_color1);
                 if (this->shadow_area->Lock("panel_ez::setup_shadow_area", 1)) {
-                    this->background_pic->shape_draw(this->shadow_area, 0, 0, 0, 0, 0);
+                    this->background_pic->shape_draw(this->shadow_area,
+                                                     0, 0, 0, 0, 0);
                     this->shadow_area->SetShadowTable(this->shadow_color_table);
-                    this->shadow_area->DrawShadowBox(0, 0, w - 1, h - 1);
+                    this->shadow_area->DrawShadowBox(0, 0, width - 1, height - 1);
                     this->shadow_area->Unlock("panel_ez::setup_shadow_area");
                 }
             }
         }
-        this->draw_system->sys->flags = old_flags;
+
+        this->render_area->DrawSystem->Flags = old_flags;
     }
 }

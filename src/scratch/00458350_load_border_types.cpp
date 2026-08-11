@@ -1,98 +1,220 @@
 // 00458350 RGE_Map::load_border_types
 // Attempt log:
-// 1: packet/decompiler based implementation with local border-type layout and fscanf/fopen/fclose surfaces: compiles same size 679 but broad mismatch starts at prologue (0x54 frame vs original 0x58; EBP=this vs original EDI=this).
-// 2: current behavior model covers clearing 16 border slots, fopen/fscanf/fclose, per-border table reads, string uppercase/copy, sound lookup, timing fields, and nested 19x12 tile table scan.
-// 3: blocker: local variable layout and register basin are wrong from entry; original uses EDI as this and EBP as FILE*, with many exact stack offsets tied to scanf varargs. Rebuilt uses EBP as this and a different frame.
-// 4: struct/local layout likely still imperfect (BorderType field packing and scanf argument order), causing broad mismatch; not accepted_drift-safe.
-// 5: left in scratch after initial honest implementation/probes; no exact match.
+// 1: packet/decompiler based implementation had an approximate border record,
+//    used strupr instead of convert_us, used the wrong tile shape-index store,
+//    and returned before the original unconditional fclose; it was 771 bytes.
+// 2: clean reconstruction: use the binary-proven RGE_Border_Set ownership and
+//    0x5A0 record stride, the original 16-field fscanf format, convert_us and
+//    intrinsic strcpy copies, and the 19x12 RGE_TOB_Picts grid.
+// 3: guard the full record body instead of breaking on malformed/out-of-range
+//    records; this restored the original seven ordered call sites and shared
+//    resource-count tail.  The remaining structural gap is local pointer/frame
+//    placement around the nested grid.
+// 4: tested the binary-proven four-byte input-buffer payload offset
+//    (name+4/pict_name+4 in the giant fscanf); the final clean source keeps
+//    ordinary name/pict copies because that spelling emits the better basin.
+// 5: the clean typed row-anchor pair reached exact size/frame but the anchor
+//    spilled at +0x3C instead of the oracle's +0x24.  Test a binary-backed
+//    pointer/float local overlay to let VC5 classify that proven stack slot.
+// 6: final ABI/local-home probe follows the listing's true ownership: the
+//    second %f is a float local named infile, while local_30 is the FILE* used
+//    by all stream calls (the decompiler had these names crossed).
+// 7: declaration reordering, the period CRT header combination, the 17-byte
+//    prefixed-buffer variant, a typed pointer/float union, and the corrected
+//    FILE*/float naming all either duplicated the 679-byte result or worsened
+//    it.  Best clean reconstruction is exact in size/frame and all seven
+//    ordered calls; remaining drift is VC5 local-home/register/block placement
+//    around the row anchor and downstream field scheduling.
+// 8: left in scratch after the 10-hypothesis budget.  The executable proves
+//    the 0x338C map base, 0x5A0 border stride, +0x42 19x12 record grid, and
+//    +0x28..+0x41 animation fields; do not replace these with raw decompiler
+//    offsets.  Next lead is a fresh map.cpp donor/TU-local declaration-order
+//    reconstruction for the +0x24 row-anchor versus +0x28 frame-rate homes.
+//
+// The border record layout is shared with the exact map.cpp constructors and
+// update routine.  The map file's signed color/index locals intentionally retain
+// their narrow input widths; only the resource id and timing values are widened
+// at the operations where the original ABI requires it.
 
-extern "C" void* __cdecl fopen(char*, char*);
-extern "C" int __cdecl fscanf(void*, char*, ...);
-extern "C" int __cdecl fclose(void*);
-extern "C" void __cdecl strupr(char*);
-extern "C" long __cdecl atol(char*);
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+extern "C" void __cdecl convert_us(char* str);
+extern float DAT_005706ac;
+
+class RGE_Sound;
+class RGE_Tile;
+class RGE_Player;
+class RGE_Game_World;
+class RGE_RMM_Database_Controller;
+class RGE_Zone_Map_List;
+class RGE_Unified_Visible_Map;
+class Visible_Unit_Manager;
+class TShape;
+
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
+};
+
+class RGE_Border_Set {
+public:
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    TShape* shape;
+    RGE_Sound* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    RGE_TOB_Picts borders[19][12];
+    unsigned char draw_tile;
+    unsigned char pad_0;
+    short underlay_terrain;
+    short border_style;
+};
 
 class RGE_Map {
 public:
-    char pad0[0x338c];
-    struct BorderType {
-        unsigned char used; char name[13]; char alt_name[13]; int sound; unsigned char frames; unsigned char animated; unsigned char tile_flag; unsigned char underlay; short terrain; short frame_count; short delay; int width; int height; short zero38; short zero3a; int zero3c; unsigned char b40; unsigned char b41; char pad42[0x59a-0x42]; unsigned char border_style; short sound_id; short extra;
-    } borders[16];
-    char pad8d8c[0x8d92 - 0x338c - 16*sizeof(BorderType)];
-    short border_type_count;
-    void load_border_types(char* filename, void** sounds);
+    virtual ~RGE_Map();
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char*, char*, char*, char*);
+    virtual unsigned char do_terrain_brush(long, long, long, unsigned char);
+    virtual unsigned char do_terrain_brush_stroke(long, long, long, long, long,
+                                                   unsigned char);
+    virtual unsigned char do_elevation_brush(long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush_stroke(long, long, long, long, long,
+                                                     unsigned char);
+    virtual unsigned char do_cliff_brush(long, long, unsigned char, unsigned char);
+    virtual unsigned char do_cliff_brush_stroke(long, long, long, long,
+                                                 unsigned char, unsigned char);
+    virtual void map_generate(RGE_Player*, RGE_Game_World*, void*, unsigned char*);
+    virtual void map_generate2(void*, long, long, unsigned char, long);
+
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    long world_width;
+    long world_height;
+    struct RGE_Tile_Size {
+        short width;
+        short height;
+        short y_delta;
+    } tilesizes[19];
+    char pad_8A[2];
+    char terrain_types[0x3300];
+    RGE_Border_Set border_types[16];
+    RGE_Tile** map_row_offset;
+    short num_terrain;
+    short num_borders;
+
+    void load_border_types(char*, RGE_Sound**);
 };
 
-void RGE_Map::load_border_types(char* filename, void** sounds)
+void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
 {
-    for (int i = 0; i < 16; ++i) {
-        this->borders[15 - i].used = 0;
-    }
-    void* fp = fopen(filename, (char*)"rt");
-    if (!fp) return;
-    fscanf(fp, "%hd", &this->border_type_count);
-    short count = this->border_type_count;
-    if (--count < 0) { fclose(fp); return; }
-    int outer = (int)count + 1;
-    do {
-        short border_num;
-        short sound_id;
-        short low_color;
-        short med_color;
-        short hi_color;
-        short is_animated;
-        short animation_frames;
-        short tile_flag;
-        short underlay_terrain;
-        short border_style;
-        short extra;
-        char name[16];
-        char alt_name[16];
-        int width;
-        int height;
-        float frame_rate;
-        float total_time;
-        if (fscanf(fp, "%hd %s %s %hd %hd %hd %hd %hd %hd %hd %hd %hd %d %d %f %f %hd %hd",
-                   &border_num, name, alt_name, &sound_id, &low_color, &med_color, &hi_color,
-                   &is_animated, &animation_frames, &tile_flag, &underlay_terrain, &border_style,
-                   &width, &height, &frame_rate, &total_time, &extra, &extra) == -1) break;
-        if (border_num >= 16 || border_num < 0) break;
-        BorderType* bt = &this->borders[border_num];
-        int sum = 0;
-        short* p = (short*)((char*)bt + 0x42);
-        for (int row = 0; row < 0x13; ++row) {
-            for (int col = 0; col < 0x0c; ++col) {
-                fscanf(fp, "%hd %hd", p, p + 1);
-                p[1] = 0;
-                sum += p[0] * p[1];
-                p += 3;
-            }
+    short sound_id;
+    short low_color;
+    short med_color;
+    short hi_color;
+    short is_animated;
+    short animation_frames;
+    short tile_flag;
+    short underlay_terrain;
+    short border_style;
+    short random;
+    short local_48;
+    short local_46;
+    RGE_TOB_Picts* p;
+    RGE_TOB_Picts* row_start;
+    float frame_rate;
+    int local_3c;
+    float infile;
+    FILE* local_30;
+    int resource_id;
+    int local_28;
+    char name[13];
+    char pict_name[13];
+
+    int i;
+    for (i = 15; i >= 0; --i)
+        this->border_types[i].loaded = 0;
+
+    local_30 = fopen(filename, "r");
+    if (local_30 != 0) {
+        fscanf(local_30, "%hd", &this->num_borders);
+        short remaining = this->num_borders - 1;
+        if (remaining >= 0) {
+            resource_id = (int)remaining + 1;
+            do {
+                short border_num;
+                short shape_index = 0;
+                if (fscanf(local_30,
+                           "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd",
+                           &border_num, name + 4, pict_name + 4, &local_28,
+                           &local_46, &is_animated, &animation_frames, &hi_color,
+                           &med_color, &tile_flag, &underlay_terrain, &frame_rate,
+                           &infile, &border_style, &random, &local_48) != -1 &&
+                    border_num < 16 && border_num >= 0) {
+                    RGE_Border_Set* border = &this->border_types[border_num];
+                    p = border->borders[0];
+                    for (int row = 0; row < 19; ++row) {
+                        row_start = p;
+                        for (int col = 0; col < 12; ++col) {
+                            fscanf(local_30, "%hd %hd", &p->count,
+                                   &p->animations);
+                            p->shape_index = shape_index;
+                            shape_index += p->count * p->animations;
+                            ++p;
+                        }
+                        p = row_start + 12;
+                    }
+
+                    if (med_color >= 0)
+                        border->sound = sounds[med_color];
+                    else
+                        border->sound = 0;
+                    border->map_low_color = (unsigned char)hi_color;
+                    border->map_med_color = (unsigned char)is_animated;
+                    border->map_hi_color = (unsigned char)animation_frames;
+                    convert_us(name);
+                    strcpy(border->name, name);
+                    strcpy(border->pict_name, pict_name);
+                    border->loaded = 1;
+                    border->resource_id = local_28;
+                    border->is_animated = (unsigned char)tile_flag;
+                    border->animation_frames = underlay_terrain;
+                    if (frame_rate == DAT_005706ac)
+                        border->pause_frames = 0;
+                    else
+                        border->pause_frames = (short)(long)(infile / frame_rate);
+                    border->interval = frame_rate;
+                    border->pause_between_loops = infile;
+                    border->frame = 0;
+                    border->draw_frame = 0;
+                    border->animate_last = 0.0f;
+                    border->frame_changed = 0;
+                    border->drawn = 0;
+                    border->draw_tile = (unsigned char)border_style;
+                    border->underlay_terrain = random;
+                    border->border_style = local_48;
+                }
+            } while (--resource_id != 0);
         }
-        if (sound_id >= 0) bt->sound = (int)sounds[sound_id]; else bt->sound = 0;
-        bt->frames = (unsigned char)is_animated;
-        bt->animated = (unsigned char)animation_frames;
-        bt->tile_flag = (unsigned char)tile_flag;
-        strupr(name);
-        char* dst = bt->name;
-        char* src = name;
-        while ((*dst++ = *src++) != 0) {}
-        dst = bt->alt_name;
-        src = alt_name;
-        while ((*dst++ = *src++) != 0) {}
-        bt->used = 1;
-        bt->width = width;
-        bt->underlay = (unsigned char)underlay_terrain;
-        bt->terrain = border_style;
-        if (frame_rate == 0.0f) bt->delay = 0; else bt->delay = (short)(long)(total_time / frame_rate);
-        bt->height = height;
-        bt->zero38 = 0;
-        bt->zero3a = 0;
-        bt->zero3c = 0;
-        bt->b40 = 0;
-        bt->b41 = 0;
-        bt->border_style = (unsigned char)border_style;
-        bt->sound_id = sound_id;
-        bt->extra = extra;
-    } while (--outer != 0);
-    fclose(fp);
+    }
+    fclose(local_30);
 }

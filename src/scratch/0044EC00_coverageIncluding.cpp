@@ -30,15 +30,26 @@
 // - current assignment: focused setup/access lab (row cursor, scaled offset,
 //   loop and declaration orders) found no exact variant; the typed current
 //   group remained best.
+// - worker probe: spell the second threshold as `value + amount >= minimum`;
+//   this fixes the binary-proven `cmp edx,ecx / jl` direction and reduces the
+//   remaining drift from 6 bytes to 4.
+// - worker variant lab: setup/access, row-index algebra, and standard-header
+//   context axes produced no exact variant; the current typed basin remained
+//   the only size/frame-compatible setup family.
+// - worker diagnostics: explicit scaled row-byte cursors, adjusted row-map
+//   bases, reversed count addition, and donor-shaped inner x-offset scope all
+//   broadened or duplicated the existing basin; restored the clean typed form.
 // Final bounded result: natural typed reconstruction is 275B with the 0x10
 // frame, saved-register set, CFG, and all 94 instruction boundaries aligned;
-// only 6 bytes remain at +0x96 (VC5 emits `inc eax; shl edi,2` instead of the
-// original `shl edi,2; inc eax`).  The row-map cache is retained because it is
-// a plausible persistent map surface and is the closest clean source shape.
+// only 4 bytes remain in one localized hunk at +0x96.  The threshold predicate
+// is retained because it matches the original compare direction; the remaining
+// +0x96 gap is the VC5 setup order `inc eax; shl edi,2` versus
+// the original `shl edi,2; inc eax`.  The row-map cache remains a plausible
+// persistent map surface and the best clean source shape.
 // Next lead: revisit original infmap.cpp declaration/evaluation order around
 // the row-count initialization and y-reference scaling in a fresh assignment.
 // Main-agent audit restored InfluenceMap's canonical destructor ownership; the
-// validated six-byte instruction-order gap is unchanged.
+// validated four-byte instruction-order gap is unchanged.
 
 typedef unsigned char uchar;
 
@@ -84,7 +95,7 @@ int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
 
             do {
                 if (rowsMap[y - this->yReferencePointValue][xOffset] < minimum &&
-                    minimum <= rowsMap[y - this->yReferencePointValue][xOffset] + amount) {
+                    rowsMap[y - this->yReferencePointValue][xOffset] + amount >= minimum) {
                     rVal++;
                 }
                 y++;

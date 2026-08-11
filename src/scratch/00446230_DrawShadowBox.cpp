@@ -39,6 +39,15 @@
 //   lead is the original's row-base/pixel register rotation at +00C1, followed
 //   by its two-byte tail layout difference; no further natural source axis was
 //   supported by this pass.
+// - Bounded fresh pass: mutating row_offset by x1 was a codegen duplicate;
+//   72/96-case row-setup, declaration-order, and loop-shape labs produced only
+//   the existing 273-byte or shorter 271-byte basins. Canonical object-table
+//   locals, predecrement row tails, and the decompiler two-pointer topology
+//   widened the mismatch (76/228/233 bytes); all were rolled back.
+// - Final clean source remains the natural typed byte-table traversal at
+//   273 bytes/47 differing bytes. The unresolved binary lead is specifically
+//   VC5 pointer register coloring (original row base ECX, pixel EDX) plus the
+//   two-byte tail shift; no behavior, call, layout, or ABI uncertainty remains.
 
 struct tagRECT {
     long left;

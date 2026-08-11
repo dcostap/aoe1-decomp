@@ -1,19 +1,60 @@
 // VA: 004C7030 RGE_Static_Object::objectCollisionList
 // Attempt log:
-// 1: direct reconstruction from packet/decompiler; /GX likely required for EH around new RGE_Check_List.
-// 2: fixed MasterObj offsets to radius_x +30, radius_y +34, radius_z +38 and owner->map +3c after dump showed initial field checks shifted.
-// 3: tried parenthesized condition shape, reversed 0.0f compare spelling, delayed result initialization, and manual operator-new/placement-construction spelling; no size/topology improvement (or compile failure for placement new under local context).
-// left in scratch: honest source compiles 768B vs original 776B (with /GX); early EH/prologue present but frame is 0x28 vs original 0x2c, initial radius-test FPU stack choreography differs, and broad loop/FPU topology remains. Not accepted_drift-safe.
+// 1: direct reconstruction from packet/decompiler; /GX is required for the EH-framed new path.
+// 2: canonicalized the proven owner->world->map chain, map row offset, and RGE_Check_List ABI from same-TU donors; frame/size moved to the original basin.
+// 3: a preloaded radius_y local reproduces the binary's fld radius_y / fld radius_x / fcomp x87 guard order; radius_z uses the binary-proven double zero.
+// 4: moved rowOffset into each outer row and computed the typed Tile/Object_List cell before the inner bound guard; VC5 still hoists the row load after that guard.
+// 5: early invalid-radius return with result initialized only in the valid path is behavior-correct but leaves a +18-byte structural drift and a broad later FPU/object-bound mismatch.
+// current best: 794B rebuilt vs 776B original, exact frame 0x2c, all 5 direct calls aligned, 553 strict differing bytes; first meaningful remaining hunk is original row-pointer setup before the minY/maxY test (+00e0). Not accepted_drift-safe.
 
-struct MasterObj { char gap28[0x30]; float radius_x; float radius_y; float radius_z; };
-struct Map { char gap0[8]; int width; int height; char gap10[0x8d7c]; void** rows; };
-struct Owner { char gap0[0x3c]; Map* map; };
+struct MasterObj {
+    virtual ~MasterObj();
+    char gap04[0x24];
+    float los;
+    char gap2c[4];
+    float radius_x;
+    float radius_y;
+    float radius_z;
+};
+struct Map {
+    virtual ~Map();
+    char gap04[4];
+    int width;
+    int height;
+    char gap10[0x8d7c];
+    struct Tile** rows;
+};
+struct World {
+    virtual ~World();
+    char gap04[0x24];
+    Map* map;
+};
+struct Owner {
+    virtual ~Owner();
+    char gap04[0x38];
+    World* world;
+};
 struct Node { void* obj; Node* next; };
-struct RGE_Check_List { RGE_Check_List(); void add_node(void*, float, float, unsigned char); };
+struct RGE_Object_List {
+    virtual ~RGE_Object_List();
+    Node* head;
+    char gap08[4];
+};
+struct Tile {
+    char gap0c[0x0c];
+    RGE_Object_List objects;
+};
+class RGE_Static_Object;
+struct RGE_Check_List {
+    virtual ~RGE_Check_List();
+    RGE_Check_List();
+    void add_node(RGE_Static_Object*, float, float, unsigned char);
+};
 
 class RGE_Static_Object {
 public:
-    char gap0[8];
+    virtual ~RGE_Static_Object();
+    long id;
     MasterObj* master_obj;
     Owner* owner;
     char gap10[0x28];
@@ -25,23 +66,30 @@ public:
 
 RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
 {
-    RGE_Check_List* result = 0;
     MasterObj* mo = this->master_obj;
-    if (mo->radius_x > 0.0f && mo->radius_y > 0.0f && mo->radius_z > 0.0f) {
-        Map* map = this->owner->map;
-        int minY = (int)this->x - 3;
-        int maxY = (int)this->x + 3;
-        int minX = (int)this->y - 3;
-        int maxX = (int)this->y + 3;
-        if (minY < 0) minY = 0;
-        if (maxY >= map->width) maxY = map->width - 1;
-        if (minX < 0) minX = 0;
-        if (maxX >= map->height) maxX = map->height - 1;
-        for (int yy = minX; yy <= maxX; ++yy) {
-            if (minY <= maxY) {
-                Node** cell = (Node**)((char*)map->rows[yy] + minY * 24 + 0x10);
-                int count = maxY - minY + 1;
-                do {
+    float radius_y = mo->radius_y;
+    if (mo->radius_x <= 0.0f || radius_y <= 0.0f || mo->radius_z <= 0.0) {
+        return 0;
+    }
+
+    Map* map = this->owner->world->map;
+    int minY = (int)this->x - 3;
+    int maxY = (int)this->x + 3;
+    int minX = (int)this->y - 3;
+    int maxX = (int)this->y + 3;
+    if (minY < 0) minY = 0;
+    if (maxY >= map->width) maxY = map->width - 1;
+    if (minX < 0) minX = 0;
+    if (maxX >= map->height) maxX = map->height - 1;
+    RGE_Check_List* result = 0;
+    Node** cell;
+    for (int yy = minX; yy <= maxX; ++yy) {
+        int rowOffset = minY * 24;
+        Tile* tile = (Tile*)((char*)map->rows[yy] + rowOffset);
+        cell = &tile->objects.head;
+        if (minY <= maxY) {
+            int count = maxY - minY + 1;
+            do {
                     for (Node* n = *cell; n; n = n->next) {
                         RGE_Static_Object* obj = (RGE_Static_Object*)n->obj;
                         if (obj != this) {
@@ -74,10 +122,9 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
                         }
 skip:;
                     }
-                    cell = (Node**)((char*)cell + 0x18);
-                    --count;
-                } while (count != 0);
-            }
+                cell = (Node**)((char*)cell + 0x18);
+                --count;
+            } while (count != 0);
         }
     }
     return result;

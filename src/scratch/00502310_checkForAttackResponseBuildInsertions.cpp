@@ -17,6 +17,9 @@
 //   the time gate, but the parent boundary overflow remained.
 // - Probes 5-6: inline/split the unit-count subtraction assignment; VC5 kept
 //   the same extra load-before-subtract shape.
+// - Session probe 9: moved the units-to-insert declaration to function scope
+//   to test the decompiler's top-level local lifetime; emitted code was
+//   unchanged and the clean typed source was restored.
 // - Best current reconstruction: typed full parent, 0x78 frame, matching
 //   initial six ordered calls and natural ResourceItem/switch ownership; local
 //   checker remains nonexact because entry-reachable code past the 321-byte

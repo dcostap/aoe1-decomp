@@ -17,6 +17,16 @@
 //   and direct ProbabilityAdd tail casts were either duplicates or regressed;
 //   restored the clean typed baseline.  Current blocker remains the broad
 //   pre-save index/register basin (target loads [esp+0C] before callee saves).
+// - Follow-up worker probes: direct input initializers moved the first paired
+//   hunk four bytes deeper (diff 327) but emitted radius/y/x rather than the
+//   oracle's x/radius/y load order; the declaration-order variants did not
+//   retain that improvement.  An int Point[1000] donor representation and a
+//   full same-TU PointMaker declaration surface were codegen duplicates.
+// - A saved-radius/count loop reproduced the prior 373-byte, 0xC-frame basin.
+//   A six-case variant lab confirmed initialized-radius/y/x as the closest
+//   size/frame candidate, but no exact or source-quality winner emerged.
+//   Restored the clean typed source; unresolved drift starts at the pre-save
+//   parameter-index load and includes the broad register/liveness basin.
 
 class PrimaryPt {
 public:

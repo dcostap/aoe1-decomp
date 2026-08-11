@@ -18,13 +18,49 @@
 //   134 differing bytes, but is not a canonical source model; rolled back.
 // - Final clean source keeps named loaded/object-type/density/placement/count
 //   ownership; remaining gap is count spill/register and body block layout.
+// - Fresh pass: a body-scoped long count after the bound, block-scoped short
+//   count, function-scope long count, declaration-order variants, and an int
+//   count all moved to the 322-325 byte basin (209 differing bytes); restored.
+// - Restored the exact donor's named RGE_Tile_Set prefix, full map virtual
+//   prefix, and stdlib header context.  These are canonical source context but
+//   emitted the clean 354-byte direct-member basin unchanged.
+// - A seven-case count-shape lab found the version-as-count spelling at exact
+//   size with 122 differing bytes, but it reuses the header version for a
+//   terrain count and remains diagnostic rather than the living source.
+// - Final clean candidate is the typed direct-member loop; calls/frame align,
+//   while the remaining structural gap is the target's cached count spill and
+//   associated body block layout.  No exact variant was found in this pass.
 
 #include <stdio.h>
+#include <stdlib.h>
 
 class RGE_Tile_Set {
 public:
     unsigned char loaded;
-    char gap_01[0xFD];
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    void* shape;
+    void* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char map_lt_cliff_color;
+    unsigned char map_rt_cliff_color;
+    unsigned char passable_terrain;
+    unsigned char impassable_terrain;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    char gap_46[0xB8];
     short obj_types[30];
     short obj_density[30];
     unsigned char obj_placement_flags[30];
@@ -35,6 +71,23 @@ public:
 class RGE_Map {
 public:
     virtual ~RGE_Map();
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char* a, char* b, char* c, char* d);
+    virtual unsigned char do_terrain_brush(long x, long y, long radius,
+                                           unsigned char terrain);
+    virtual unsigned char do_terrain_brush_stroke(long x0, long y0, long x1,
+                                                  long y1, long radius,
+                                                  unsigned char terrain);
+    virtual unsigned char do_elevation_brush(long x, long y, long radius,
+                                              unsigned char elevation);
+    virtual unsigned char do_elevation_brush_stroke(long x0, long y0, long x1,
+                                                    long y1, long radius,
+                                                    unsigned char elevation);
+    virtual unsigned char do_cliff_brush(long x, long y, unsigned char a,
+                                         unsigned char b);
+    virtual unsigned char do_cliff_brush_stroke(long x0, long y0, long x1,
+                                                long y1, unsigned char a,
+                                                unsigned char b);
     char gap_04[0x88];
     RGE_Tile_Set terrain_types[32];
     char gap_338C[0x5A00];

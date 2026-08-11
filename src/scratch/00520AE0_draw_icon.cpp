@@ -10,27 +10,226 @@
 // try 9: restore getNearest local best form.
 // try 10: reviewed switch vs if-chain; switch dispatch matches original jump-table family, so kept.
 // BLOCKER: exact 581B size, call set and much of structure plausible, but register allocation remains wrong from prologue (rebuilt EBP=this, original EBX=this with EBP used later for hour quotient). This shifts all this-relative encodings and broad positional diff. Not accepted_drift-safe.
+// worker probe 2: corrected Special_Events ownership/layout, inherited TPanel/TEasy_Panel context, and the six-argument TShape ABI; 315B diff, exact size/frame/call set.
+// worker probe 3: replaced gap-only panel declarations with the ground-truth typed member surfaces; emitted code was unchanged.
+// worker probes 4-5: reordered/widened time-format locals; emitted code was unchanged.
+// worker probe 7: restored the binary-proven seconds -> zero-minute -> optional-hour source semantics; 8 differing bytes remain, all temp_str+4 stack displacement bytes.
+// worker probes 6/8: declaration-order variant families for arithmetic and local declarations collapsed to one emitted group.
+// worker probe 9: minimal RECT/header-context variant emitted the same 8-byte drift.
+// worker probe 10: a synthetic union overlay reduced no bytes and changed the frame to 0x34; rolled back as implausible.
+// Best current reconstruction is the typed period-style source below. Remaining blocker: VC5 places black_color at [esp+10] and temp_str+4 at [esp+18], while the oracle reuses the black-color home as temp_str's unused four-byte prefix ([esp+10]/[esp+14]); no natural declaration/context probe recovered that overlap within the 10-hypothesis budget.
 
+#define GetNearestPaletteIndex draw_icon_windows_GetNearestPaletteIndex
+#include <windows.h>
+#undef GetNearestPaletteIndex
 #include <stdio.h>
 #include <string.h>
 
 typedef unsigned char uchar;
 extern "C" unsigned int (__stdcall* const GetNearestPaletteIndex)(void*, unsigned int);
 
-class TDrawArea { public: void DrawVertLine(long,long,long,uchar); };
-class TShape { public: uchar shape_draw(TDrawArea*, short, long, long, long, long, long); };
-class Special_Events { public: int time_slice; int X_line_pos; int Y_line_pos; int intermediate_y_line_segment; int pop_total; int integer_value_1; int integer_value_2; int start_x; int start_y; int gap24; int gap28; int gap2c; unsigned char event; char gap_31[0x0b]; char text1[0x34]; int text_length1; char text2[0x34]; int text_length2; };
-class Time_Line_Panel { public: void* vtable; char gap_04[0x1c]; TDrawArea* draw_area; char gap_24[0x4b0]; TShape* shape; int get_string(int, char*, int); int calculate_icon_location(Special_Events*, short, uchar); void draw_icon(Special_Events*, short, uchar); };
+class TDrawSystem {
+public:
+    void* instance;
+    void* window;
+    void* palette;
+};
+
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;
+    char gap_04[0x34];
+    void DrawVertLine(long, long, long, uchar);
+};
+
+class TShape {
+public:
+    uchar shape_draw(TDrawArea*, long, long, int, uchar, uchar*);
+};
+
+struct Special_Events {
+    long time_slice;
+    long X_line_pos;
+    long Y_line_pos;
+    long intermediate_y_line_segment;
+    uchar player_id;
+    uchar player_color;
+    uchar event;
+    char gap_13;
+    long pop_total;
+    long integer_value_1;
+    long integer_value_2;
+    long start_x;
+    long start_y;
+    long start_txt_x1;
+    long start_txt_y1;
+    long start_txt_x2;
+    long start_txt_y2;
+    int text_length1;
+    char text1[50];
+    uchar gap_6e[2];
+    int text_length2;
+    char text2[50];
+    uchar gap_a6[2];
+    int icon_flag;
+    Special_Events* next;
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual void setup();
+    virtual void set_rect_1();
+    virtual long set_rect_2();
+    virtual void set_color();
+    virtual void set_active();
+    virtual void set_positioning();
+    virtual void set_fixed_position();
+    virtual void set_redraw(int);
+    virtual long set_overlapped_redraw();
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void get_clip_rect(RECT*);
+
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panel_name;
+    TDrawArea* render_area;
+    RECT clip_rect;
+    int position_mode;
+    int need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    void* node;
+    void* first_child_node;
+    void* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    void* clip_rgn;
+    RECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    uchar mouse_action;
+    uchar mouse_down_button;
+    uchar panel_type;
+    uchar color;
+    uchar fill_in_background;
+    uchar clip_to_parent;
+    uchar draw_rect2_flag;
+    uchar need_restore;
+
+    int get_string(int, char*, int);
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_f4[0x384];
+};
+
+class Time_Line_Panel : public TEasy_Panel {
+public:
+    void* axis_font;
+    long axis_font_wid;
+    long axis_font_hgt;
+    void* body_font;
+    long body_font_wid;
+    long body_font_hgt;
+    int text_style;
+    unsigned long text_color1;
+    unsigned long text_color2;
+    unsigned long highlight_text_color1;
+    unsigned long highlight_text_color2;
+    long text_wid;
+    long text_hgt;
+    TShape* background_pic;
+    short background_pic_wid;
+    short background_pic_hgt;
+    int fill_back;
+    uchar back_color;
+    uchar gap_4b9[3];
+    int outline;
+    uchar outline_color;
+    uchar gap_4c1[3];
+    int sorted;
+    int bevel_type;
+    uchar bevel_color1;
+    uchar bevel_color2;
+    uchar bevel_color3;
+    uchar bevel_color4;
+    uchar bevel_color5;
+    uchar bevel_color6;
+    uchar gap_4d2[2];
+    TShape* special_events_pic;
+    short special_events_pic_wid;
+    short special_events_pic_hgt;
+    long X_start_line_pos;
+    long Y_start_line_pos;
+    long X_line_pos;
+    long Y_line_pos;
+    long X_line_max_width;
+    long Y_line_max_length;
+    long X_axis_length;
+    long Y_axis_length;
+    float bar_thickness;
+    long pop_reading_rate;
+    float time_slice_drop_rate;
+    long total_slices_to_drop;
+    uchar drop_flag;
+    uchar gap_50d[3];
+    long num_entries_page;
+    long num_history_entries;
+    Special_Events* time_slice_events;
+    uchar timeline_flag;
+
+    int calculate_icon_location(Special_Events*, short, uchar);
+    void draw_icon(Special_Events*, short, uchar);
+};
 
 void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3)
 {
     char temp_str[50];
     uchar black_color;
-    int hi_top;
-    int q_top;
+    long total;
+    long hi_top;
+    long q_top;
     unsigned int (__stdcall* getNearest)(void*, unsigned int) = GetNearestPaletteIndex;
-    getNearest((*(void***)this->draw_area)[2], 0xffffff);
-    black_color = (uchar)getNearest((*(void***)this->draw_area)[2], 0);
+    getNearest(this->render_area->DrawSystem->palette, 0xffffff);
+    black_color = (uchar)getNearest(this->render_area->DrawSystem->palette, 0);
 
     switch (ev->event) {
     case 0:
@@ -48,18 +247,18 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
         // fall through
     case 3: {
         sprintf(ev->text1, "%ld", ev->pop_total);
-        ev->text_length1 = strlen(ev->text1);
-        int total = ev->time_slice * 15;
         hi_top = 0;
+        ev->text_length1 = strlen(ev->text1);
+        q_top = 0;
+        total = ev->time_slice * 15;
         if (total > 59) {
             q_top = total / 60;
             if (q_top > 59) {
                 hi_top = q_top / 60;
                 q_top = q_top - hi_top * 60;
             }
-            total = q_top;
         }
-        sprintf(temp_str + 4, "%1ld:%02ld", hi_top, total);
+        sprintf(temp_str + 4, "%1ld:%02ld", hi_top, q_top);
         sprintf(ev->text2, "%s", temp_str + 4);
         ev->text_length2 = strlen(ev->text2);
         break;
@@ -71,17 +270,18 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     int ok = this->calculate_icon_location(ev, param_2, param_3);
     switch (ev->event) {
     case 0:
-        this->draw_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
+            this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
         return;
     case 1:
-        this->draw_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
+        this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
         return;
     case 2:
-        this->draw_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
+        this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
         return;
     default:
         if (ok) {
-            this->shape->shape_draw(this->draw_area, param_2, ev->start_x, ev->start_y, 0, 0, 0);
+            this->special_events_pic->shape_draw(this->render_area, ev->start_x, ev->start_y,
+                                    (int)param_2, 0, (uchar*)0);
         }
         return;
     }

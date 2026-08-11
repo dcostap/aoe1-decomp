@@ -6,35 +6,63 @@
 // - v3: introduced register self local to probe original EBX this allocation and reduced direct this uses.
 // - v4: replaced `delete item` with explicit virtual deleting-dtor-shaped call to reduce compiler delete context.
 // - v5: tried /Ob0 flag; no change, removed. Removed register keyword from self as another allocation probe.
-// BLOCKER: behavior, sizes, field offsets, call set, and compiled length match (495/495), with first 15 bytes equal. Remaining mismatch is a stable VC5 saved-register/prologue basin: original keeps `this` in EBX and delays pushing EBP/ESI/EDI while interleaving parameter stores with the first FPU compare; rebuilt keeps `this` in EDI and pushes EBP/ESI/EDI immediately after the first fcomp. Later body is mostly same but shifted and uses EDI where original uses EBX. Explicit virtual deleting-dtor call improved edit diff vs natural delete, but not the early register basin.
+// - v7/session probe 3: tested the full donor ABI and natural delete; it added an EH/cleanup block and
+//   moved farther, so restored the clean source.
+// - v8/session probe 4: keep the compact slot-0 virtual destroy surface but restore BaseItem ownership of
+//   accessors and the proven 0x80-byte ConstructionItem size, isolating ABI/layout from delete lowering.
+// - v9/session probe 7: add the donor-proven polymorphic AIModule base while preserving all target offsets;
+//   test whether the inherited vptr/class context selects the original EBX/EDI coloring.
+// - v10/session probe 9: replaced the diagnostic slot-0 destroy shim with the donor-proven real BaseItem /
+//   ConstructionItem virtual-destructor surface and natural delete; it added a 4-byte cleanup block and
+//   moved farther, so restored the slot-0 ABI experiment.
+// - v11/session probe 10: reused the incoming mapY home for the two computed upper bounds; this changed
+//   the condition's expression tree and broad block alignment, so restored the direct member expressions.
+// - v12/session variant family: end/item declaration order, branch-local versus top-level next, and /GX
+//   all collapsed to the same 495-byte emitted group; no further source/context lead remained.
+// BLOCKER: behavior, sizes, field offsets, direct-call ABI, and compiled length match (495/495), with
+// first 15 bytes equal. Remaining mismatch is a stable VC5 saved-register/prologue basin: the original
+// captures `this` in EBX after the first fcomp and delays EBP/ESI/EDI pushes while interleaving parameter
+// stores; rebuilt captures `this` in EDI and pushes all three immediately. The later body is mostly the
+// same but shifted and uses EDI where original uses EBX. The observed slot-0 cleanup declaration is kept;
+// natural virtual-destructor/delete lowering added a 4-byte null/cleanup block and moved farther.
 
 typedef unsigned int uint;
 
-class ConstructionItem {
+class BaseItem {
 public:
     virtual void destroy(unsigned int flags);
     char gap_04[0x68];
-    ConstructionItem* next;
-    ConstructionItem* prev;
 
-    float x();
-    float y();
-    float z();
-    float xSize();
-    float ySize();
+    float x() const;
+    float y() const;
+    float z() const;
+    float xSize() const;
+    float ySize() const;
     void setX(float v);
     void setY(float v);
     void setZ(float v);
 };
 
-class ConstructionAIModule {
+class ConstructionItem : public BaseItem {
 public:
-    char gap_000[0x0f0];
+    ConstructionItem* next;
+    ConstructionItem* prev;
+    char gap_74[0x0c];
+};
+
+class AIModule {
+public:
+    virtual ~AIModule();
+    char gap_04[0xEC];
+};
+
+class ConstructionAIModule : public AIModule {
+public:
     int numberConstructionLotsValue;
     ConstructionItem constructionLots;
     int numberRandomConstructionLotsValue;
     ConstructionItem randomConstructionLots;
-    char gap_1e0[0x2fc - 0x1e0];
+    char gap_1f8[0x2fc - 0x1f8];
     float xReferencePointValue;
     float yReferencePointValue;
     float zReferencePointValue;

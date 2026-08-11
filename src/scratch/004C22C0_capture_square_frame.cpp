@@ -21,6 +21,18 @@
 //   ownership or call-set question.
 // - Main-agent audit confirmed canonical static/master/active-sprite ownership
 //   and retained the natural named coordinate reconstruction.
+// - DIA inspection of the original PDB confirms the parameter names render_area,
+//   x, and y, the four short frame outputs, and one direct int local y0; y0 is
+//   the reused y-line value and the first AddGDINode setup writes back an
+//   incoming parameter home.  The current source keeps that ordinary ownership.
+// - This session tried inline x2/direct-coordinate forms, operand reversals,
+//   split arithmetic, declaration/initialization order, and y0 scope.  Inline
+//   and direct forms changed the frame to 0xc/0x10 or expanded the function;
+//   the remaining natural y0 candidate is emitted-code-duplicate with the
+//   prior 207-byte frontier.
+// - Final bounded pause: size/frame/saved-registers and all five ordered calls
+//   remain exact; the first unresolved hunk is coordinate register/liveness at
+//   004C230E, followed by health-bar scheduling.
 
 class TDrawArea;
 class RGE_Sprite;
@@ -98,17 +110,18 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* param_1,
     short min_y;
     short max_y;
     short max_x;
+    int y0;
 
     if (this->sprite != 0 && this->sprite_list != 0) {
         this->sprite_list->get_facetindex(this->sprite, this->facet);
 
         if (this->get_frame(min_x, min_y, max_x, max_y) != 0) {
-            int x1 = min_x + param_2 - 1 + this->screen_x_offset;
-            int y1 = min_y + param_3 - 1 + this->screen_y_offset;
-            int y2 = max_y + param_3 + 1 + this->screen_y_offset;
-            int x2 = max_x + param_2 + 1 + this->screen_x_offset;
+            int x1 = param_2 + min_x - 1 + this->screen_x_offset;
+            int y1 = param_3 + min_y - 1 + this->screen_y_offset;
+            y0 = param_3 + max_y + 1 + this->screen_y_offset;
+            int x2 = param_2 + max_x + 1 + this->screen_x_offset;
 
-            SDI_List->AddGDINode(4, y2, x1, y1, x2, y2,
+            SDI_List->AddGDINode(4, y0, x1, y1, x2, y0,
                                  0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
 
             if (this->object_state <= 2) {
@@ -124,7 +137,7 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* param_1,
                         health_right = x1 + 25;
                     }
 
-                    SDI_List->AddGDINode(2, y2, x1, y1 - 6, x1 + 26,
+                    SDI_List->AddGDINode(2, y0, x1, y1 - 6, x1 + 26,
                                          y1 - 1, health_right, 0,
                                          health_right + 1, 0, 20, 0xff,
                                          SDI_Object_ID);

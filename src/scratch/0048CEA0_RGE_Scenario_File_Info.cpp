@@ -7,11 +7,12 @@
 //   topology but moved the zeroing ahead of the filename copy (rolled back).
 // - declaration/context variants were duplicates or lost the second close/reload
 //   paths; the best source initializes the long loop counter after rge_open.
-// - this claim's count-predicate, local-width, allocation-result, and null-store
-//   variants were reverted; none improved the clean typed source. The remaining
-//   drift is structural zero/count scheduling around the two guards and calloc.
-// - final bounded pause: 99 positional bytes remain; all 11 calls and CFG counts
-//   align, with a localized zero-register/second-count scheduling difference.
+// - this claim's after-read counter, allocation-result, count-pointer, and
+//   volatile-reread probes were reverted; the explicit positive-tail return is
+//   the best plausible source shape found here.
+// - best current emitted code is exact-size with all 11 calls/CFG counts aligned;
+//   15 positional bytes remain at the post-calloc count reload and failure-tail
+//   zero-register choice. The clean audited source remains a 99-byte fallback.
 // Main-agent audit confirmed canonical base-game/header/scenario-entry ownership
 // and retained the ordinary indexed loader.
 
@@ -69,22 +70,28 @@ public:
 
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 {
+    long i;
+
     strcpy(this->filename, path);
 
     int fd = rge_open(this->filename, 0x8000);
-    long i = 0;
     if (fd != -1) {
         rge_read_uncompressed(fd, &this->scenario_num, 4);
+        i = 0;
 
         if (this->scenario_num > 0) {
             this->scenarios = (RGE_Scenario_File_Entry*)calloc(this->scenario_num, 0x10C);
 
-            if (this->scenario_num > 0) {
+            if (this->scenario_num > i) {
                 for (; i < this->scenario_num; i++) {
                     rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
                     rge_read_uncompressed(fd, this->scenarios[i].name, 0x104);
                     this->scenarios[i].scenario_header = rge_base_game->new_scenario_header(fd);
                 }
+
+                rge_close(fd);
+                this->reload_scenarios();
+                return;
             }
         } else {
             this->scenarios = 0;

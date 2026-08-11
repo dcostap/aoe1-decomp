@@ -648,3 +648,258 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   A superficially equivalent `for (i != bound - 1)` can make VC5 strength-
   reduce to a countdown and delay the parameter load; use the donor-shaped form
   only when the PDB/assembly proves the top-tested count-up topology.
+
+- When a VC5 function's typed source, calls, frame, and layout already match but
+  an indirect Windows-API call changes only a late member-load/register schedule,
+  restore the period SDK header surface (`<windows.h>`) before adding source
+  aliases or volatility.  Replacing local `tagRECT`/IAT stubs with the SDK's
+  `tagRECT`, `DeleteObject`, and `CreateRectRgn` declarations can change the
+  optimizer basin while preserving the same import relocation and natural source;
+  verify the exact bytes and keep the header only when donor context supports it.
+
+- When a same-TU VC5 function is exact through its guards and calls but retains a
+  small late register/order hunk, restore a donor-supported standard-header
+  context (for example `<stdlib.h>`) before introducing source aliases or
+  volatility.  In `stat_obj.cpp`, the header changed the final seven bytes to
+  exact without changing the natural typed body; retain it only when nearby
+  exact donors support the original translation-unit context.
+
+- When an inlined VC5 dynamic-array growth loop has exact structure/calls but
+  swaps the outer counter and growth-size callee-saves, replace named
+  action/result temporaries with a direct short-circuit predicate when the
+  result is only tested (for example, `call() == A || call() == B`).  The
+  natural expression can remove artificial liveness and recover the original
+  register coloring without changing the repeated call sites or CFG; use only
+  when the binary proves those calls and evaluation order.
+
+- When a decompiler labels a saved `this` home as element zero of a nearby local
+  pointer array, verify the actual stack addresses before adding a one-slot
+  source bias.  VC5 may keep the saved receiver at `[esp+14]` while the real
+  array begins at `[esp+18]`; natural zero-based collection and transfer then
+  reproduce both LEAs, whereas an inferred `array + 1` leaves a localized
+  displacement mismatch.
+
+- For a polymorphic VC5 constructor whose oracle delays the derived-vptr store
+  until after scalar/member defaults, express those defaults as a natural
+  member-initializer list (with the real declaration order) rather than body
+  assignments.  VC5 can then schedule the compiler-managed vptr after the
+  initializers; body assignments may leave an otherwise exact constructor with
+  only a vptr-order hunk.  This avoids explicit-vptr/novtable scaffolding, but
+  verify ownership and initialization semantics before retaining the form.
+
+- When a natural no-frame VC5 function is structurally exact but a localized
+  register/liveness hunk remains, test the donor translation unit's standard
+  header *combination*, not only each header in isolation.  In one fractal.cpp
+  basin, `<stdlib.h>` plus `<string.h>` changed the optimizer schedule and
+  closed the exact match while either header alone did not; retain the pair
+  only when nearby donor usage and byte validation support that context.
+
+- For a typed two-dimensional row-table access, direct short-parameter use can
+  choose the wrong coordinate registers even when indexing and calls are
+  correct.  Name `int` row/column cursors and initialize the second formal
+  (outer row) before the first formal (inner column) when the PDB line band and
+  asm prove that load order; the natural `[row][column]` expression can then
+  recover VC5's EBX/EDI coloring and exact local homes without register hacks.
+
+- For a VC5 byte-XOR update whose loops, calls, frame, and layout already match
+  but the commutative operand load order is wrong, restore plausible donor-TU
+  header context before adding aliases or volatility.  In the map loader,
+  `<stdlib.h>` alone changed the optimizer basin and recovered the exact
+  `mov dl,[overlay]` / `xor dl,old` sequence; retain the header only when the
+  surrounding translation unit plausibly uses that CRT surface.
+
+- When two emitted calls share one PDB source line, first model one natural
+  common source statement and let VC5 tail-duplicate it before spelling the
+  call separately in each branch.  In a constructor with two `close(handle)`
+  sites, moving `close` after the scenario-count `if` recovered both the
+  branch-local callee-save behavior and exact block layout; duplicated source
+  calls changed the optimizer's save schedule even though call count/CFG
+  appeared identical.
+
+- For old DirectPlay session records, model `_GUID` as four dwords and pass
+  GUID parameters by value before tuning code shape; the canonical 0x238-byte
+  record layout then exposes VC5's whole-struct copies and string intrinsic
+  basin.  If the oracle proves repeated writes to one user slot, preserve that
+  original bug rather than distributing values across the named adjacent
+  fields.
+
+- For a VC5 two-case dispatch whose default shares a later activation/return
+  tail, a natural `switch(get_id())` supplies the required subtract/decrement
+  dispatch, but the default must join the proven late tail rather than remain
+  the switch fall-through.  An explicit late shared label plus an explicit
+  jump to the ordinary base-handler path for unmatched non-dispatch events can
+  reproduce the original block order; retain the gotos only when the binary
+  proves that shared CFG.
+
+- For a VC5 jump-table switch where a hot case falls directly into a shared
+  handler but PDB line bands place that handler after later cases, put the
+  grouped case labels beside a source-local label at the later handler and
+  jump to it from the hot case.  VC5 can then lay the handler immediately
+  after the hot block while retaining the original inline table/default short
+  edge; keep this goto only when the observed CFG and line mapping support it.
+
+- For a typed VC5 player-pointer scan whose oracle advances the cursor before
+  the first guarded body and again after the counter increment, spell the
+  natural loop as `++players; do { ... ++i; ++players; } while (...)`.  Putting
+  the advance at the top of the do-body can schedule the object reload first
+  and select the wrong callee-save coloring; keep the pre-loop/bottom-update
+  form only when the observed add/inc/compare topology proves it.
+
+- When a VC5 update has exact CFG, calls, frame, and size but a late member-scan
+  block is a pure register permutation, replace raw offset casts with the
+  period typed ownership surface before adding liveness tricks.  In particular,
+  naming the proven master `work_rate` field and player `world`/
+  `world_time_delta_seconds` fields restored both x87 operand order and the
+  later register coloring; same offsets through `char*` views did not.  Keep
+  this as canonical layout recovery, not a register-forcing alias.
+
+- When a same-TU Windows routine has exact typed calls and layout but a small
+  late register/arithmetic drift, restore the donor-era `<windows.h>`/`RECT`
+  declaration surface before adding aliases or volatility. VC5's header
+  context can select the original allocator basin; retain it only when the
+  translation-unit/API evidence supports that period context.
+
+- When a VC5 virtual path/task gate reserves `0x0c` and stores three `__ftol`
+  results into the outgoing area, model the first argument as a by-value
+  three-int point (`XYZPoint`), not three scalar integer parameters. If PDB
+  bands separate the distance and priority calls from a later player dispatch,
+  use sequential named locals; VC5 can then delay the player vtable/id loads
+  until after priority. A short player-id field still needs an `int` virtual
+  call ABI when the oracle emits `movsx` followed by dword pushes.
+
+- For a descending VC5 search whose successful arm is laid out after the loop,
+  an ordinary `for (; index >= 0; --index)` with source-local found/next labels
+  can preserve the oracle's `jns` backedge and fall-through exit.  A do/while
+  with `break`, or a post-loop success guard, may invert the signed branch or
+  add a test even when the call set and behavior are identical; use labels only
+  when the binary proves the separate found and skip tails.
+
+- When two mutually exclusive destructor/state branches scan the same player
+  array, retain the original array pointer and use a branch-local cursor for
+  each scan.  A single cursor mutated by the first branch is both semantically
+  wrong for the second scan and changes VC5's EH frame/register basin; the
+  retained base plus local cursors can recover the original spill and callee-
+  save roles without aliases or volatility.
+
+- When a VC5 tile-update routine follows `md -> player -> world -> map`, keep
+  map row ownership on the typed map but keep map dimensions/quadrant logs on
+  the owning AI object when the proven offsets split that way.  A typed
+  x-major quadrant array (`quadrant[x][y]`) can recover the original
+  `qy*12 + qx*48` SIB form.  Also preserve byte-valued visibility locals and
+  widen sign-extended short groups to `int` at integer helper-call boundaries;
+  these width choices can decide the final register/block topology.
+
+- For a VC5 distance helper whose callee reads three stack floats, declare the
+  natural three-float member ABI; adding a fabricated self/z parameter can
+  improve push appearance while changing the decorated relocation and FPU
+  schedule.  When two saved coordinates occupy adjacent homes and only their
+  displacement bytes remain, a typed `XYPoint` aggregate can recover the
+  original initializer/update/load ordering without aliases or volatility.
+
+- When a VC5 update loop must store a counter before comparing it and delay an
+  x87 accumulator store, a direct member increment followed by a member-based
+  threshold/subtraction (`++count; if (count >= limit) count -= limit`) can
+  recover the expected split-register/store order where a derived `next` local
+  makes VC5 compare before store.  For a global pointer used after cdecl stack
+  cleanup, capture it in a typed local before the null test/member call when
+  the oracle keeps the loaded receiver in ECX; this can remove a late
+  `mov ecx,eax` without volatile or raw register plumbing.
+
+- When a VC5 function expands the period `ManagedArray<int>::add` template,
+  mirror the donor's natural `for` scan/copy bodies rather than decompiler-style
+  `do` loops; the former can select indexed `[value+index*4]` code and exact
+  block topology under repeated inlining.  For the growth gate, preserve the
+  donor spelling `numberValue > maximumSizeValue - 1` when the oracle's
+  `cmp number,max_minus_one` operand order matters; the reversed equivalent
+  emits the opposite compare/branch bytes.
+
+- When VC5 emits an x87 min/max clamp from preloaded coordinate locals, assigning
+  the results in min-X, max-X, min-Y, max-Y order can preserve the original
+  stack-pop/store schedule.  For lower-bound clamps, spelling the predicate as
+  `bound > coordinate` rather than `coordinate < bound` can select `fld bound;
+  fcomp` and the oracle's branch polarity; the equivalent `fcom` form may shift
+  the entire suffix.
+
+- When a virtual call passes a typed float member beside an integer-to-float
+  argument, a natural local holding the member value can preserve VC5's
+  `fld`/`fstp` materialization and right-to-left push schedule.  A direct member
+  expression may instead integer-load and push the same bits; retain the local
+  only when the oracle proves the FPU topology and the ownership is canonical.
+
+- When VC5 lowers a signed random offset as `cdq/xor/sub; and mask; xor/sub`,
+  model the source as signed `% 2`/`% 4`, not `abs(value) & mask`: the second
+  sign restoration is the negative-remainder behavior for power-of-two
+  divisors. This preserves both the original jitter semantics and exact x87
+  `fild`/add/sub scheduling; use only when the oracle shows that sequence.
+
+- For a pair of defaulted dropdown values, duplicating the natural `get_line`
+  call in both `if (value != 0)`/`else` arms and placing the nonzero arm first
+  can make VC5 emit `je` to a late immediate-default push, then a shared
+  receiver/call tail. A preassigned fallback local or ternary may instead
+  collapse to `jne` plus `mov` and shift the whole suffix; use the duplicated
+  form only when the oracle proves one shared call site and that branch layout.
+
+- When a VC5 drawing routine's `GetDc` result is only a success status, use the
+  call as the guard and reload the named `DrawDc` member for each GDI call; a
+  saved return-value HDC changes the entire register/frame basin. For a guarded
+  player loop, an outer `player_count > 1` plus `do/while` can preserve the
+  single binary guard. Inline a format-producing member call in `sprintf` when
+  the oracle pushes the later value before that call, and prefer inherited
+  `draw_setup`/`draw_finish` virtuals over raw vtable pointers when their slots
+  are proven.
+
+- For a fixed-stride tile classifier whose raw byte-offset source is edit-close
+  but misses the row-load/LEA/center-load schedule, model the proven tile record
+  and keep separate typed `row` and `tile = row + x` locals while reading the
+  center through `rows[y][x]`; VC5 can then retain the row base plus biased tile
+  pointer used by east/west neighbors. A direct initial member bound followed by
+  caching the width (`if (x >= map_width) return; width = map_width;`) can also
+  recover x-then-width spill stores where caching width before the guard reverses
+  them. Use only when the fixed stride and both binary address patterns are proven.
+
+- For same-TU VC5 logging routines with a frameless callee-save prologue and
+  many varargs calls, model the inherited AIModule logger as the real
+  `void __cdecl logCommonHistory(char*, ...)` surface. Fixed per-arity derived
+  overloads can introduce an EBP/alignment frame and wrong decorated call sites;
+  restore the donor's base and the true helper/object/group ABIs before tuning
+  source shape.
+
+- In EH-framed screen constructors, a final `set_tab_order(tabList + 1, 4)` may
+  consume a fifth contiguous local slot even when decompiler metadata reports a
+  four-element array. Model the complete list and eliminate a dead panel local to
+  preserve the frame; when the late suffix still reloads child fields, natural
+  pointer locals spanning paired stores can recover VC5's one-load-per-child
+  schedule without volatility or raw stack plumbing.
+
+- When two adjacent scans reuse one source index concept but the target has a
+  localized stack-home rotation, separate natural loop locals (for example `i`
+  and `j`) can let VC5 coalesce their non-overlapping lifetimes onto the original
+  index home; a single shared local may rotate neighboring persistent bounds and
+  flag homes. Try this only after ownership, call order, and CFG already match,
+  and retain it only when the separate scans are a plausible source idiom.
+
+- For an inlined VC5 dynamic-array indexer whose binary shows a second growth
+  path before a later raw element copy, a side-effectful `array[i];` ensure
+  followed by direct `array.value[i]` access can preserve the growth and
+  count/load/store interleave. If a `+1` output pointer and the stack window
+  prove a reserved leading word, model the complete local output window rather
+  than adding opaque frame padding; keep the shape only when the frame and
+  addresses are independently binary-backed.
+
+- In an EH-framed VC5 dialog dispatcher, a natural direct `new` with the
+  proven complete object size plus the donor TU's `/GX` context can recover the
+  original registration, allocation, and constructor sites. For result paths
+  that call a helper on code `0` and then also accept code `1`, write two
+  independent guards (`if (code == 0) ...; if (code == 0 || code == 1) ...`)
+  rather than an `else if`/early return: VC5 can then emit the oracle's
+  post-call retest and shared tail. An explicit null-panel base return likewise
+  preserves a dedicated raw-parameter push block while the call site remains
+  shared.
+
+- In an EH-framed screen action with exact `/GX` prologue and a local 256-byte
+  formatting buffer, a decompiler's apparent `buffer + 4` may be an overlay
+  artifact from the compiler's constructor temporary. A natural plain buffer
+  base can place the actual `sprintf`/popup address at the oracle's LEAs while
+  preserving behavior; verify the emitted stack addresses before retaining a
+  raw `+4` spelling. A local `RGE_Game_Info*` loaded from the base-game object
+  can likewise recover the original global-load/line-indexed `get_id` order.

@@ -1,248 +1,354 @@
 // VA: 004D1BB0 TRIBE_Action_Repair::update
 // Attempt log:
-// try 1: natural reconstruction from asm/PDB line map and sibling tact_rep surfaces; compiled after modeling game/world/static-object offsets.
-// try 2: fixed obj->game/world path (+0x0c game, +0x3c world) and target object_data at +0x0c; first validation improved from ~84.7% to ~71.7% diff.
-// try 3: changed object_delta from free/cdecl-ish helper to member call on RGE_Action_Object; removed extra stack cleanup and improved edit diff (~55.4%).
-// try 4: preserved redundant target null-test with local outer check and member inner access; improved edit diff to ~34.4%, but prologue still saves ECX instead of EBX and broad switch/layout remains off.
-// GIVEUP: behavior/call map is only approximate. Remaining mismatch is not localized: switch case mapping/order, exact state/subaction enum source shape, command/send surface, repair_work block liveness (EBX), and several helper declarations need deeper donor-source reconstruction. No inline asm used.
+// baseline: reconstructed the inherited action fields, object/world/player ownership,
+// nested state/sub-action dispatch, and repair-distance paths from tact_rep.cpp evidence.
+// ABI probe: replaced decompiler-shaped object_delta/command shims with the period
+// RGE_Static_Object distance_to_object/heal/notify, RGE_Action_Object turn_towards,
+// RGE_Player isAlly, and RGE_Base_Game notification surfaces; calls became 29/29.
+// control-flow probe: corrected the state table to the binary's source-order handlers
+// 10, 12, 4, 13, 6, 7, 9, 1, 11; state 4 shares the state-13 distance tail.
+// liveness probe: retained the nested target recheck, one heal result for both ==1/==2
+// tests, global-before-threshold FPU comparisons, and direct three-factor repair rate.
+// duplicate probes: state-4 goto versus ordinary inner-switch fall-through and a
+// scoped sub-action pointer/result local emitted the same or a worse basin; rolled back.
+// final best: a named state-13 target alias restores the original target/object load
+// order and leaves 35 positional bytes (96.37% shape, exact call/size/frame parity).
+// remaining localized drift: jump-table relocation bytes, state-4 vtable-register
+// coloring, repair-rate FPU operand/push scheduling, and timer store/compare order.
+// left in scratch after the 10-hypothesis budget; no inline asm or custom flags.
+
+extern float DAT_0057526c;
+extern double DAT_00575270;
+extern float DAT_00575278;
+extern float DAT_0086bc08;
+
+typedef unsigned char uchar;
 
 class RGE_Static_Object;
-class RGE_Action_Object;
-class RGE_Task;
-class RGE_Player;
 class RGE_Game_World;
-class RGE_Master_Static_Object_List;
-class RGE_Game;
+class RGE_Player;
+class RGE_Action_Object;
+class RGE_Action_List;
+class RGE_Master_Action_Object;
+class RGE_Task;
 
-class RGE_Game_World { public: RGE_Static_Object* object(int id); };
-class RGE_Master_Static_Object_List { public: int vf00(); virtual void vf04(); virtual void vf08(); virtual unsigned char get_value(); };
-class RGE_Player { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual int can_build(short); char gap[0x64]; float speed; };
-class RGE_Game {
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+
+class RGE_Game_World {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual int can_build(short);
-    char gap_04[4];
-    RGE_Player* player;       // +8
-    char gap_0C[0x30];
-    RGE_Game_World* world;    // +3c
-    char gap_40[0x0a];
-    short player_id;          // +4a
-    char gap_4C[0x38];
-    float speed;              // +84
+    char gap_00[0x84];
+    float world_time_delta_seconds; // +84
+
+    RGE_Static_Object* object(int id);
 };
-class RGE_CommandManager { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C(); virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C(); virtual void send(int,int,int,int,int); };
-extern RGE_CommandManager* command_manager;
 
-class RGE_Action_Object {
+class RGE_Player {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
-    virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C();
-    virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C();
-    virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual int repair_work(float);
-    char gap_04[4];
-    void* object_data; // +8
-    RGE_Game* game;    // +c
-    char gap_10[0x28];
-    float x; float y; float z;
-    char gap_44[4];
-    unsigned char master_type;
-    char gap_49[0x13f];
-    unsigned char command_flag;
-    virtual unsigned char find_path(RGE_Static_Object*, int, int);
-    virtual void vf190(); virtual void vf194(); virtual void vf198(); virtual void vf19C();
-    virtual void vf1A0(); virtual void vf1A4(); virtual void vf1A8(); virtual void vf1AC();
-    virtual void vf1B0(); virtual void vf1B4(); virtual void vf1B8(); virtual void vf1BC();
-    virtual void vf1C0(); virtual void vf1C4(); virtual void vf1C8(); virtual void vf1CC();
-    virtual void vf1D0(); virtual void vf1D4(); virtual void vf1D8(); virtual void vf1DC();
-    virtual void vf1E0(); virtual void vf1E4(); virtual void vf1E8(); virtual void vf1EC();
-    virtual unsigned char vf1F0(RGE_Static_Object*, int, int);
-    float object_delta(RGE_Static_Object*);
+    virtual ~RGE_Player();
+    VPAD4(1)
+    VPAD2(5)
+    virtual int isAlly(int player_id); // +1C
+
+    char gap_04[0x38];
+    RGE_Game_World* world; // +3C
+    char gap_40[0x0A];
+    short id; // +4A
+};
+
+class RGE_Master_Action_Object {
+public:
+    char gap_00[0xE4];
+    float work_rate; // +E4
 };
 
 class RGE_Static_Object {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual unsigned char get_master_value();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
-    virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
-    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C();
-    virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C();
-    virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual unsigned char repair_work(float);
-    int id;
-    char gap_08[4];
-    void* object_data;
-    char gap_10[0x28];
-    float x; float y; float z;
-    char gap_44[4];
-    unsigned char master_type;
+    virtual ~RGE_Static_Object();
+    VPAD16(1)
+    VPAD8(17)
+    VPAD4(25)
+    VPAD2(29)
+    virtual uchar can_attack(); // +7C
+    virtual void vf80();
+    virtual void vf84();
+    virtual int vf88(int, int); // +88
+    virtual uchar heal(float); // +8C
+    VPAD4(36)
+    VPAD16(40)
+    VPAD16(56)
+    VPAD8(72)
+    VPAD2(80)
+    virtual void notify(int, int, int, long, long, long); // +148
+    VPAD4(83)
+    VPAD8(87)
+    VPAD16(95)
+    VPAD8(111)
+    VPAD2(119)
+    virtual void vpad121(); // +1E4
+
+    long id; // +04
+    RGE_Master_Action_Object* master_obj; // +08
+    RGE_Player* owner; // +0C
+    char gap_10[0x20];
+    float hp; // +30
+    char gap_34[4];
+    float world_x; // +38
+    float world_y; // +3C
+    float world_z; // +40
+    float attribute_amount_held; // +44
+    uchar object_state; // +48
+
+    float distance_to_object(RGE_Static_Object* other);
 };
 
-class RGE_Action_List { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual unsigned char get_value(); };
-
-class TRIBE_Action_Repair {
+class RGE_Action_Object : public RGE_Static_Object {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
-    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
-    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
-    virtual void vf50();
-    virtual void set_target(RGE_Static_Object*); // +54
-    virtual void reset_target(int);              // +58
-    virtual void set_state(int);                 // +5c
-
-    short action_type; char gap_06[2];
-    RGE_Action_Object* obj;
-    unsigned char state; char gap_0D[3];
-    RGE_Static_Object* target;
-    RGE_Static_Object* target2;
-    int targetID;
-    int target2ID;
-    float target_x, target_y, target_z;
-    float timer;
-    RGE_Task* task;
-    RGE_Action_List* sub_actions;
-    void* sprite;
-    unsigned char subActionValue; char gap_3D[3];
-    unsigned char save_target_command_flag;
-
-    unsigned char update();
+    virtual int setup_animated(void*, RGE_Player*, float, float, float); // +1E8
+    virtual void stop_moving(); // +1EC
+    virtual uchar turn_towards(RGE_Static_Object*, float, float); // +1F0
+    virtual int setup_moving(void*, RGE_Player*, float, float, float); // +1F4
+    virtual void work2(RGE_Static_Object*, float, float, float, uchar); // +1F8
+    virtual void set_task(short); // +1FC
 };
 
-extern float repair_epsilon;
-extern float f_575270;
-extern float f_575278;
-extern float g_float_86BC08;
+class RGE_Action_List {
+public:
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual uchar update(); // +0C
+};
 
+class RGE_Task {
+public:
+    char gap_00[0x1C];
+    float work_rate; // +1C
+};
 
-unsigned char TRIBE_Action_Repair::update()
+class RGE_Action {
+public:
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Action_Object*);
+    virtual int setup(int, RGE_Action_Object*);
+    virtual RGE_Action_List* create_action_list(RGE_Action_Object*);
+    virtual void rehook();
+    virtual void save(int);
+    virtual short type();
+    virtual void first_in_stack(uchar);
+    virtual uchar inside_obj_update();
+    virtual uchar idle_update();
+    virtual uchar update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual uchar attack_response(RGE_Static_Object*);
+    virtual uchar relation_response(long, uchar);
+    virtual void copy_obj(void*);
+    virtual void copy_obj_sprites(void*, void*, void*);
+    virtual void get_state_name(char*);
+    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj2();
+    virtual void set_target_obj(RGE_Static_Object*);
+    virtual void set_target_obj2(RGE_Static_Object*);
+    virtual void set_state(uchar);
+
+    short action_type; // +04
+    char gap_06[2];
+    RGE_Action_Object* obj; // +08
+    uchar state; // +0C
+    char gap_0D[3];
+    RGE_Static_Object* target_obj; // +10
+    RGE_Static_Object* target_obj2; // +14
+    int targetID; // +18
+    int target2ID; // +1C
+    float target_x; // +20
+    float target_y; // +24
+    float target_z; // +28
+    float timer; // +2C
+    RGE_Task* task; // +30
+    RGE_Action_List* sub_actions; // +34
+    void* sprite; // +38
+    uchar subActionValue; // +3C
+    char gap_3D[3];
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    VPAD8(1)
+    VPAD4(9)
+    VPAD2(13)
+    virtual void vpad15();
+    virtual void notification(int, long, long, long, long); // +40
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+class TRIBE_Action_Repair : public RGE_Action {
+public:
+    virtual uchar update();
+};
+
+uchar TRIBE_Action_Repair::update()
 {
     RGE_Static_Object* check_target;
+    RGE_Static_Object* target;
+
     if (this->targetID != -1) {
-        if (this->obj->game->world->object(this->targetID) == 0) {
+        if (this->obj->owner->world->object(this->targetID) == 0) {
             goto invalid_target;
         }
     }
+
     if (this->target2ID != -1) {
-        if (this->obj->game->world->object(this->target2ID) == 0) {
-            this->reset_target(0);
+        if (this->obj->owner->world->object(this->target2ID) == 0) {
+            this->set_target_obj2(0);
         }
     }
-    check_target = this->target;
+
+    check_target = this->target_obj;
     if (check_target != 0) {
-        if (check_target->master_type != 2) {
+        if (check_target->object_state != 2) {
             goto invalid_target;
         }
-        if (this->target != 0) {
-            short build_id = *(short*)((char*)this->target->object_data + 0x4a);
-            if (!this->obj->game->can_build(build_id)) {
-                goto invalid_target;
-            }
+        if (this->target_obj != 0 &&
+            this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
+            goto invalid_target;
         }
     }
 
     switch (this->state) {
     case 10:
-        switch (this->sub_actions->get_value()) {
-        case 1:
-            this->set_target(0);
-            this->set_state(11);
+        switch (this->sub_actions->update()) {
+        case 4:
+            this->set_target_obj(0);
+            this->set_state(0x0B);
             return 0;
+        case 1:
         case 2:
+        case 3:
+        case 5:
             this->set_state(1);
             return 0;
-        case 3:
-            goto invalid_target;
-        case 4: {
-            float d = this->obj->object_delta(this->target) - repair_epsilon;
-            g_float_86BC08 = d;
-            if (d < 0.0) this->set_state(6); else this->set_state(10);
-            return 0;
-        }
-        case 5:
-            if (this->target == 0) { this->set_state(1); return 0; }
-            if (this->obj->vf1F0(this->target,0,0)) { this->set_state(7); return 0; }
-            break;
         }
         break;
 
-    case 11:
+    case 12:
         this->set_state(1);
         return 0;
 
-    case 12:
-        switch (this->sub_actions->get_value()) {
-        case 1: this->set_target(0); this->set_state(1); return 0;
-        case 2: this->set_state(1); return 0;
-        case 3: goto invalid_target;
+    case 4:
+        switch (this->sub_actions->update()) {
+        case 1:
+        case 2:
+        case 3:
+            break;
+        case 4:
+        case 5:
+            goto invalid_target;
+        default:
+            goto update_done;
         }
-        break;
 
-    case 4: {
-        float d = this->obj->object_delta(this->target) - repair_epsilon;
-        g_float_86BC08 = d;
-        if (d < 0.0) this->set_state(6); else this->set_state(10);
-        return 0;
-    }
-
-    case 6:
-        if (this->target == 0) { this->set_state(1); return 0; }
-        if (this->obj->vf1F0(this->target,0,0)) { this->set_state(7); return 0; }
-        break;
-
-    case 7:
-        if (this->target == 0) { this->set_state(1); return 0; }
-        if (this->target->x != this->target_x || this->target_y != this->target->y) {
-            float d = this->obj->object_delta(this->target) - repair_epsilon;
-            g_float_86BC08 = d;
-            if (!(d < 0.0)) { this->set_state(3); return 0; }
-            this->target_x = this->target->x;
-            this->target_y = this->target->y;
-            this->target_z = this->target->z;
+    case 13:
+        target = this->target_obj;
+        DAT_0086bc08 = this->obj->distance_to_object(target) - DAT_0057526c;
+        if (DAT_0086bc08 <= DAT_00575270) {
+            this->set_state(6);
             return 0;
         }
-        if (this->target->repair_work(this->task ? *(float*)((char*)this->task+0x1c) * this->obj->game->speed * this->obj->game->player->speed : 0.0f) == 1) {
-            this->set_state(1); return 0;
+        this->set_state(10);
+        return 0;
+
+    case 6:
+        if (this->target_obj == 0) {
+            this->set_state(1);
+            return 0;
         }
-        if (this->target->repair_work(0.0f) == 2) {
-            this->obj->game->player->vf00();
-            this->target->vf00();
-            command_manager->send(0x6b, this->obj->game->player_id, this->target->id, 0, 0);
-            this->set_state(2); return 0;
+        if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
+            this->set_state(7);
+            return 0;
         }
         break;
 
-    case 8:
-        if (this->target == 0) break;
-        this->timer -= this->obj->game->speed;
-        if (!(this->timer < 0.0f)) break;
-        {
-            float d = this->obj->object_delta(this->target) - repair_epsilon;
-            g_float_86BC08 = d;
-            if (d < 0.0) { this->set_state(6); return 0; }
+    case 7: {
+        if (this->target_obj == 0) {
+            this->set_state(1);
+            return 0;
+        }
+        if (this->target_obj->world_x != this->target_x ||
+            this->target_y != this->target_obj->world_y) {
+            DAT_0086bc08 = this->obj->distance_to_object(this->target_obj) - DAT_0057526c;
+            if (DAT_0086bc08 > DAT_00575270) {
+                this->set_state(3);
+                return 0;
+            }
+            this->target_x = this->target_obj->world_x;
+            this->target_y = this->target_obj->world_y;
+            this->target_z = this->target_obj->world_z;
+            return 0;
+        }
+
+        uchar result = this->target_obj->heal(
+                this->task->work_rate *
+                this->obj->owner->world->world_time_delta_seconds *
+                this->obj->master_obj->work_rate);
+        if (result == 1) {
+            this->set_state(1);
+            return 0;
+        }
+        if (result == 2) {
+            this->obj->notify(this->obj->id, this->obj->id,
+                              0x1FB, 0x26A, 0, 0);
+            rge_base_game->notification(0x6B, this->obj->owner->id,
+                                        this->target_obj->id, 0, 0);
+            this->set_state(2);
+            return 0;
+        }
+        break;
+    }
+
+    case 9:
+        if (this->target_obj == 0) {
+            break;
+        }
+        this->timer -= this->obj->owner->world->world_time_delta_seconds;
+        if (this->timer <= DAT_00575278) {
+            DAT_0086bc08 = this->obj->distance_to_object(this->target_obj) - DAT_0057526c;
+            if (DAT_0086bc08 <= DAT_00575270) {
+                this->set_state(6);
+                return 0;
+            }
             this->timer = 1.0f;
             return 0;
         }
+        break;
 
     case 1:
         return 1;
 
-    case 9:
-        this->obj->game->player->vf00();
+    case 11:
+        this->obj->notify(this->obj->id, this->obj->id,
+                          0x1F9, 0x26A, 0, 0);
         this->set_state(2);
         return 3;
     }
+
+update_done:
     return 0;
 
 invalid_target:
-    this->set_target(0);
+    this->set_target_obj(0);
     this->set_state(1);
     return 0;
 }
+
+#undef VPAD16
+#undef VPAD8
+#undef VPAD4
+#undef VPAD2
+#undef VPAD1

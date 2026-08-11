@@ -4,7 +4,33 @@
 // 2: fixed TShape field layout after dump showed +14/+18/+1c were shifted by 4.
 // 3: added explicit case 15 because original switch accepts 0..15 then case 15 returns false; now same-size 701B but broad mismatch.
 // 4: dump shows exact prologue/early field layout through row table, but first real topology divergence is around row-byte pointer setup: original keeps EAX as stream pointer and ESI as row offset/index; rebuilt flips stream into ESI and uses EAX for opcode value, shifting the entire switch decoder and no-data decoder.
-// left in scratch: same-size 701B, first mismatch offset 14 due shifted branch destinations, broad register/control-flow topology mismatch in byte-stream decoder; not accepted_drift-safe.
+// 5: retain the established raw TShape offsets but type the per-frame record;
+//    the original's x parameter home is reused as the stream opcode below.
+// 6: a full typed TShape/SLhape_File_Header surface moved frame into ESI before
+//    the prologue and shortened the function; rolled back to the proven offset
+//    surface while keeping the typed per-frame ownership.
+// 7: typed per-frame ownership plus x-home opcode reuse improved the positional
+//    diff to 505 bytes, but the compiler still chose the wrong stream register.
+// 8: an explicit data-offset row pointer was codegen-equivalent; no new lead.
+// 9: donor-era <memory.h> changed the prologue basin and worsened the diff;
+//    rolled back.
+// 10: opcode variant lab: a scoped local copied through x retained 701 bytes
+//     and reached 441 positional diff bytes, but is compiler-steering scaffolding;
+//     the living source stays the natural typed/x-home form (684-byte output).
+// left in scratch: canonical per-frame Shape_Info decoder and legacy walk are
+// reconstructed; remaining drift is the stream pointer/register basin, switch
+// case reload/coloring, and legacy tail layout. Not accepted_drift-safe.
+
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
 
 class TShape {
 public:
@@ -27,45 +53,47 @@ unsigned char TShape::shape_check(long x, long y, long frame)
     char* base = this->shapeData;
     if (base != 0) {
         char* fr = this->frames + (frame << 5);
-        int px = *(int*)(fr + 0x18) + x;
-        int py = *(int*)(fr + 0x1c) + y;
-        int width = *(int*)(fr + 0x10);
-        if (px < 0 || py < 0 || px >= width || py >= *(int*)(fr + 0x14)) return 0;
-        char* rowtab = base + *(int*)(fr + 4);
+        Shape_Info* info = (Shape_Info*)fr;
+        int px = info->Hotspot_X + x;
+        int py = info->Hotspot_Y + y;
+        int width = info->Width;
+        if (px < 0 || py < 0 || px >= width || py >= info->Height) return 0;
+        char* rowtab = base + info->Shape_Outline_Offset;
         int minx = *(short*)(rowtab + py * 4);
         int span = *(short*)(rowtab + py * 4 + 2);
         if (minx < 0 || px < minx || px > width - span) return 0;
-        unsigned char* p = (unsigned char*)(base + *(int*)(base + *(int*)fr + py * 4));
+        int* row = (int*)(base + info->Shape_Data_Offsets);
+        unsigned char* p = (unsigned char*)(base + row[py]);
         while (minx < width) {
             if (px < minx) return 0;
-            unsigned char code = *p++;
-            switch (code & 0xf) {
+            x = *p++;
+            switch (x & 0xf) {
             case 0: case 4: case 8: case 12: {
-                int n = ((unsigned int)code) >> 2;
+                int n = ((unsigned int)x) >> 2;
                 minx += n;
                 if (px < minx) return 1;
                 p += n;
                 break;
             }
             case 2: {
-                int n = (((unsigned int)code) << 4) | *p++;
+                int n = (((unsigned int)x) << 4) | *p++;
                 minx += n;
                 if (px < minx) return 1;
                 p += n;
                 break;
             }
             case 1: case 5: case 9: case 13: {
-                int n = ((unsigned int)code) >> 2;
+                int n = ((unsigned int)x) >> 2;
                 minx += n;
                 break;
             }
             case 3: {
-                int n = (((unsigned int)code) << 4) | *p++;
+                int n = (((unsigned int)x) << 4) | *p++;
                 minx += n;
                 break;
             }
             case 6: {
-                int n = ((unsigned int)code) >> 4;
+                int n = ((unsigned int)x) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -73,7 +101,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 break;
             }
             case 7: case 10: {
-                int n = ((unsigned int)code) >> 4;
+                int n = ((unsigned int)x) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;
@@ -81,7 +109,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
                 break;
             }
             case 11: case 14: {
-                int n = ((unsigned int)code) >> 4;
+                int n = ((unsigned int)x) >> 4;
                 if (n == 0) n = *p++;
                 minx += n;
                 if (px < minx) return 1;

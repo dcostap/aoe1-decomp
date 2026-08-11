@@ -10,6 +10,13 @@
 //   the latter improved block alignment but widened the body, while the others
 //   were duplicate or worse. Restored the simplest typed reconstruction.
 // - Paused after the bounded 10-hypothesis matching assignment.
+// - Follow-up control-flow probes found that a bounded for-body with
+//   x_distance = from.x - x and an invariant x_squared reproduces the target
+//   loop/tail topology; the direct max.y-then-max.x source order then reduced
+//   the rebuilt function to 247 bytes and a 15-byte localized diff.
+// - A late aggregate max initializer regressed the prologue and was rolled
+//   back. Final best natural source retains named XYPoint ownership and the
+//   bounded scan; remaining drift is the max-construction register/SIB shape.
 
 typedef unsigned char uchar;
 
@@ -52,34 +59,28 @@ int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
     if (min_y < 0)
         min_y = 0;
 
-    max.x = from.x + radius;
     max.y = from.y + radius;
+    max.x = from.x + radius;
 
     if (max.x > this->map->map_width - 1)
         max.x = this->map->map_width - 1;
     if (max.y > this->map->map_height - 1)
         max.y = this->map->map_height - 1;
 
-    int x = min_x;
-    if (x > max.x)
-        return 0;
-
-    int x_distance = from.x - min_x;
-    for (;;) {
+    for (int x = min_x; x <= max.x; ++x) {
+        int x_distance = from.x - x;
         int y = min_y;
         if (y <= max.y) {
+            int x_squared = x_distance * x_distance;
             int y_distance = from.y - min_y;
             do {
-                if (sqrtf((float)(x_distance * x_distance + y_distance * y_distance)) <= range &&
+                if (sqrtf((float)(x_squared + y_distance * y_distance)) <= range &&
                     this->zone_map_rows[y][x] == zone)
                     return 1;
                 ++y;
                 --y_distance;
             } while (y <= max.y);
         }
-        ++x;
-        --x_distance;
-        if (x > max.x)
-            return 0;
     }
+    return 0;
 }

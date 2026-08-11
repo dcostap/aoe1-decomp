@@ -21,8 +21,24 @@
 // Current worker: a named master_obj, object-before-node declaration order,
 // and a for-loop node increment were separately tested; the first two were
 // emitted-code duplicates and the for form widened the body to 358 bytes.
-// Restored the clean natural scan; the original 321-byte prologue/register
-// topology remains unresolved.
+// The original call pushes the second tile coordinate first; testing the
+// source-level get_terrain(row,col) order against the map_row_offset[col][row]
+// ownership is the next structural lead.
+// The tile's +0x10 access is the list member of its inline RGE_Object_List,
+// not an independently owned pointer; the nested typed surface is now tested.
+// The oracle has one initial null guard and a bottom-tested shared tail; test
+// the natural positive if/do-while form instead of a top-tested while.
+// The placement arm reuses the master pointer loaded for the ID test; retain a
+// named local so that this proven cross-branch lifetime can be tested directly.
+// This worker's get_terrain(row,col) order moved the mismatch 334 -> 332 bytes;
+// current-node/master locals, declaration order, and the inline list surface
+// were emitted-code duplicates.  Delayed result initialization worsened the
+// result, while an int accumulator was only a one-byte diagnostic improvement;
+// the period-plausible short result is retained.  A single guarded while scan
+// collapsed two required removal call sites and emitted 301 bytes, so the
+// nested if/do scan was restored.  Final current candidate is 356 bytes with
+// all seven call targets aligned; the 35-byte prologue/register and scan gap
+// remains a structural blocker for this assignment.
 
 class RGE_Game_World;
 class RGE_Player;
@@ -37,11 +53,18 @@ public:
     RGE_Object_Node* next;
 };
 
+class RGE_Object_List {
+public:
+    void* vtable_ptr;
+    RGE_Object_Node* list;
+    short number_of_objects;
+    char gap_0A[0x2];
+};
+
 class RGE_Tile {
 public:
-    char gap_00[0x10];
-    RGE_Object_Node* objects;
-    char gap_14[0x4];
+    char gap_00[0xC];
+    RGE_Object_List objects;
 };
 
 class RGE_Static_Object {
@@ -129,19 +152,24 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short col,
                                   short row, short old_terrain,
                                   int remove_now, int min_id, int max_id)
 {
-    short result = -1;
-    RGE_Object_Node* node;
-    RGE_Static_Object* object;
     short object_id;
+    RGE_Object_Node* node;
+    RGE_Object_Node* current_node;
+    short result = -1;
     short object_type;
+    RGE_Static_Object* object;
+    RGE_Master_Static_Object* master_obj;
 
-    get_terrain(col, row);
-    node = this->map_row_offset[col][row].objects;
+    get_terrain(row, col);
+    node = this->map_row_offset[col][row].objects.list;
 
-    while (node != 0) {
-        object = node->node;
-        node = node->next;
-        object_id = object->master_obj->id;
+    if (node != 0) {
+        do {
+            current_node = node;
+            object = current_node->node;
+            node = current_node->next;
+            master_obj = object->master_obj;
+            object_id = master_obj->id;
 
         if (object_id >= min_id && object_id <= max_id)
             continue;
@@ -177,7 +205,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short col,
             continue;
         }
 
-        if (object->master_obj->check_placement(
+        if (master_obj->check_placement(
                 object->owner, object->world_x, object->world_y, 0,
                 0, 1, 1, 1, 0, 0)) {
             if (remove_now != 0) {
@@ -187,6 +215,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short col,
                 object->destroy_obj();
             }
         }
+        } while (node != 0);
     }
 
     return result;

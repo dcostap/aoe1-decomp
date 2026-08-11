@@ -8,7 +8,13 @@
 // 5: swapped min/max assignment order; worsened local store order, rolled back.
 // 6: tried base2/entry2/max temp to force indexed max reload; still wrong order/length.
 // 7: /O1 too small; removed custom flag.
-// Left in scratch: behavior modeled, but register/load scheduling around attack-memory byte loads and mapBound blocks remains broad.
+// 8: a volatile player read reached exact output, but this was rejected during
+//    promotion audit as unsupported compiler steering; the ordinary typed read is
+//    retained for further source recovery.
+// 9: a localized variant lab also found an exact packed-record access basin, but
+//    its raw offset plumbing is not retained as canonical source.
+// Left in scratch despite a former exact diagnostic: recover a natural typed source
+// that preserves the observed load order without artificial volatility or offsets.
 
 struct XYPoint {
     int x;
@@ -34,10 +40,16 @@ public:
 
 extern PathingSystem aiPathSystem;
 
+class RGE_Player {
+public:
+    char gap_00[0x4A];
+    unsigned short id;
+};
+
 class MainDecisionAIModule {
 public:
     char gap_000[0xF0];
-    void* player; // +F0
+    RGE_Player* player; // +F0
 };
 
 class TribeInformationAIModule {
@@ -68,19 +80,18 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
             AttackMemory* entry = (AttackMemory*)((char*)this->attackMemories + offset);
             if (entry->id != -1 && (int)entry->targetOwner == targetOwner) {
                 MainDecisionAIModule* md = this->md;
-                void* player = md->player;
-                if ((unsigned short)entry->attackingOwner != *(unsigned short*)((char*)player + 0x4A)) {
+                RGE_Player* player = md->player;
+                unsigned short owner = entry->attackingOwner;
+                if (owner != player->id) {
                     goto next_memory;
                 }
                 min.x = entry->minX;
                 min.y = entry->minY;
                 this->mapBound(&min);
 
-                char* base2 = (char*)this->attackMemories;
-                unsigned int mx = *(unsigned char*)(base2 + offset + 0x07);
-                AttackMemory* entry2 = (AttackMemory*)(base2 + offset);
-                max.x = mx;
-                max.y = entry2->maxY;
+                AttackMemory& entry2 = *(AttackMemory*)((char*)this->attackMemories + offset);
+                max.x = *(unsigned char*)((char*)this->attackMemories + offset + 0x07);
+                max.y = entry2.maxY;
                 this->mapBound(&max);
 
                 for (int x = min.x; x <= max.x; ++x) {
@@ -89,8 +100,8 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
                     }
                 }
 
-                min.x -= 5;
-                min.y -= 5;
+                min.x = min.x - 5;
+                min.y = min.y - 5;
                 this->mapBound(&min);
                 max.x += 5;
                 max.y += 5;

@@ -1,87 +1,113 @@
 // VA: 004E02A0 TribeInformationAIModule::storeLot
-// 450 bytes, 135 asm
-// Attempt 15: extern declarations, padding via unreachable infinite loop
+// PDB: taiinfmd.cpp:5774-5841
+// Default flags: /nologo /c /O2 /Oy
+//
+// Baseline reconstruction: BuildingLot is the proven 8-byte record at +0x1F8;
+// the routine scans for an existing lot or a typeID == -1 slot, then doubles
+// the lot array and initializes the new slots when no free slot exists.
+//
+// Attempt log (sa-f4a574e2-r1, 10 meaningful hypotheses):
+// - Baseline: canonical typed BuildingLot fields (+0, +4, +5, +6), max/count
+//   at +0x1F4, array at +0x1F8, field-wise growth copy, and real VC5 new/delete
+//   declarations. 448 emitted bytes, 391 positional diff; calls and frame align.
+// - Reversed coordinate equality operands improved the emitted diff to 381 and
+//   preserved parameter-byte reloads, but VC5 still chose the opposite cmp
+//   encoding and kept the existing-lot return immediately after the scan.
+// - Late-label/goto, explicit alternate-arm, explicit returns, saved-base
+//   pointer, and donor <windows.h> context probes were codegen duplicates.
+// - Negative-disjunction spelling regressed to the baseline group. A natural
+//   break plus post-loop existing-lot arm reached exact size and 347 diff, but
+//   emitted an extra i/max test absent from the oracle; retained only as
+//   diagnostic evidence and restored this simpler source.
+// - Raw cursor/decompiler-shaped field plumbing was worse (444 bytes, 391
+//   diff), so it is not retained. Remaining blocker is structural: the oracle
+//   sends the existing-lot branch to a late handler at 004E044E while default
+//   VC5 lowering places that handler immediately after the scan.
 
-extern void* __cdecl operator_new(unsigned int size);
-extern void __cdecl operator_delete(void* ptr);
+#include <stddef.h>
+
+void* operator new(size_t size);
+void operator delete(void* ptr);
 
 struct BuildingLot {
-    int typeID;
-    unsigned char status;
-    unsigned char x;
-    unsigned char y;
+    int typeID;                 // +0x00
+    unsigned char status;       // +0x04
+    unsigned char x;             // +0x05
+    unsigned char y;             // +0x06
+    unsigned char pad_end;       // +0x07
 };
 
 class TribeInformationAIModule {
 public:
     char gap_000[0x1F4];
-    int maxBuildingLots;
-    BuildingLot* buildingLots;
+    int maxBuildingLots;         // +0x1F4
+    BuildingLot* buildingLots;   // +0x1F8
 
-    void storeLot(int param_1, unsigned char param_2, unsigned char param_3, unsigned char param_4);
+    void storeLot(int typeID, unsigned char x, unsigned char y,
+                 unsigned char built);
 };
 
-void TribeInformationAIModule::storeLot(int param_1, unsigned char param_2, unsigned char param_3, unsigned char param_4)
+void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
+                                        unsigned char y, unsigned char built)
 {
-    int foundIndex = -1;
+    int freeIndex = -1;
     int i = 0;
 
-    if (maxBuildingLots > 0) {
-        BuildingLot* p = buildingLots;
+    if (this->maxBuildingLots > 0) {
+        BuildingLot* lot = this->buildingLots;
         do {
-            if (p->typeID == param_1 && p->x == param_2 && p->y == param_3) {
-                buildingLots[i].status = param_4;
+            if (lot->typeID == typeID && lot->x == x && lot->y == y) {
+                this->buildingLots[i].status = built;
                 return;
             }
-            if (foundIndex == -1 && p->typeID == -1) {
-                foundIndex = i;
+
+            if (freeIndex == -1 && lot->typeID == -1) {
+                freeIndex = i;
             }
-            i++;
-            p++;
-        } while (i < maxBuildingLots);
+
+            ++i;
+            ++lot;
+        } while (i < this->maxBuildingLots);
     }
 
-    if (foundIndex != -1) {
-        buildingLots[foundIndex].typeID = param_1;
-        buildingLots[foundIndex].x = param_2;
-        buildingLots[foundIndex].y = param_3;
-        buildingLots[foundIndex].status = param_4;
-    } else {
-        BuildingLot* newArray = (BuildingLot*)operator_new(maxBuildingLots << 4);
-        if (newArray != 0) {
+    if (freeIndex == -1) {
+        BuildingLot* newLots = (BuildingLot*)::operator new(
+            this->maxBuildingLots << 4);
+        if (newLots != 0) {
             i = 0;
-            if (maxBuildingLots > 0) {
+            if (this->maxBuildingLots > 0) {
                 do {
-                    ((BuildingLot*)((char*)newArray + i * 8 + 6 - 6))->typeID = buildingLots[i].typeID;
-                    *((char*)newArray + i * 8 + 6 - 1) = buildingLots[i].x;
-                    *((char*)newArray + i * 8 + 6) = buildingLots[i].y;
-                    *((char*)newArray + i * 8 + 6 - 2) = buildingLots[i].status;
-                    i++;
-                } while (i < maxBuildingLots);
+                    newLots[i].typeID = this->buildingLots[i].typeID;
+                    newLots[i].x = this->buildingLots[i].x;
+                    newLots[i].y = this->buildingLots[i].y;
+                    newLots[i].status = this->buildingLots[i].status;
+                    ++i;
+                } while (i < this->maxBuildingLots);
             }
 
-            int totalCount = maxBuildingLots * 2;
-            if (i < totalCount) {
+            if (i < this->maxBuildingLots * 2) {
                 do {
-                    ((BuildingLot*)((char*)newArray + i * 8 + 6 - 6))->typeID = -1;
-                    *((char*)newArray + i * 8 + 6 - 1) = 0;
-                    *((char*)newArray + i * 8 + 6) = 0;
-                    *((char*)newArray + i * 8 + 6 - 2) = param_4;
-                    i++;
-                } while (i < totalCount);
+                    newLots[i].typeID = -1;
+                    newLots[i].x = 0;
+                    newLots[i].y = 0;
+                    newLots[i].status = built;
+                    ++i;
+                } while (i < this->maxBuildingLots * 2);
             }
 
-            operator_delete(buildingLots);
-            buildingLots = newArray;
+            ::operator delete(this->buildingLots);
+            this->buildingLots = newLots;
 
-            newArray[maxBuildingLots].typeID = param_1;
-            buildingLots[maxBuildingLots].x = param_2;
-            buildingLots[maxBuildingLots].y = param_3;
-            buildingLots[maxBuildingLots].status = param_4;
-            maxBuildingLots <<= 1;
+            newLots[this->maxBuildingLots].typeID = typeID;
+            this->buildingLots[this->maxBuildingLots].x = x;
+            this->buildingLots[this->maxBuildingLots].y = y;
+            this->buildingLots[this->maxBuildingLots].status = built;
+            this->maxBuildingLots <<= 1;
         }
+    } else {
+        this->buildingLots[freeIndex].typeID = typeID;
+        this->buildingLots[freeIndex].x = x;
+        this->buildingLots[freeIndex].y = y;
+        this->buildingLots[freeIndex].status = built;
     }
 }
-
-// Padding: 2 bytes of unreachable NOP-equivalent
-static void _end_pad(void) { while (1) {} }

@@ -7,6 +7,18 @@
 // 4: delay best initialization until after null check/currentZone: slightly better edit 50.5%, still frame 14.
 // 5: store currentZone into low byte of objId parameter: removed and, edit 41.8%, but EBP became entry pointer.
 // 6: raw importantObjectMemory+offset expressions made this register flip to EDI and regressed (edit 50.3%); rolled back to entry local despite EBP-as-pointer issue.
+// 7: canonical indexed importantObjectMemory[i] outer scan improved positional diff
+//    from 323 to 271 bytes, but retained a 0x14 frame and the wrong base/index
+//    register split; the best source-shaped basin uses a local outer index and
+//    the original numberValue/max-size inner-loop order.
+// 8: moving the outer-index declaration before the initial lookup, explicit
+//    max-size/count inner-loop variants, and a register-qualified offset either
+//    regressed or produced duplicate codegen; restored the indexed form.
+// 9: replaced the manual vtable/cast speed surface with the typed +0x10C virtual
+//    declaration; emitted bytes were unchanged and the source is more canonical.
+// Final pause: ordered calls and size match, but the remaining structural gap is
+//    the 4-byte local frame plus EBP/base versus EDI/entry coloring (271 differing
+//    bytes, 65.55% shape). No inline asm or custom flags retained.
 
 #include <math.h>
 
@@ -31,16 +43,6 @@ struct XYPoint { int x; int y; };
 
 class RGE_Static_Object {
 public:
-    void* vtable;
-    int id;
-    char gap_08[0x30];
-    float world_x;
-    float world_y;
-    unsigned char currentZone();
-    int withinRangeOfZoneAtPoint(unsigned char zone, float range, void* pt);
-};
-
-struct SpeedDispatch {
     virtual void d000(); virtual void d004(); virtual void d008(); virtual void d00C();
     virtual void d010(); virtual void d014(); virtual void d018(); virtual void d01C();
     virtual void d020(); virtual void d024(); virtual void d028(); virtual void d02C();
@@ -59,6 +61,12 @@ struct SpeedDispatch {
     virtual void d0F0(); virtual void d0F4(); virtual void d0F8(); virtual void d0FC();
     virtual void d100(); virtual void d104(); virtual void d108();
     virtual float speed();
+    int id;
+    char gap_08[0x30];
+    float world_x;
+    float world_y;
+    unsigned char currentZone();
+    int withinRangeOfZoneAtPoint(unsigned char zone, float range, void* pt);
 };
 
 class MainDecisionAIModule {
@@ -87,7 +95,6 @@ public:
 ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
 {
     RGE_Static_Object* mainObj = this->md->object(objId);
-    int offset = 0;
     ImportantObjectEntry* best;
     if (mainObj == 0)
         return 0;
@@ -95,11 +102,11 @@ ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int
     *(unsigned char*)&objId = mainObj->currentZone();
     best = 0;
     group = this->defendPriority(type, group);
-    type = 0;
+    int i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            ImportantObjectEntry* entry = (ImportantObjectEntry*)((char*)this->importantObjectMemory + offset);
+            ImportantObjectEntry* entry = &this->importantObjectMemory[i];
             int id = entry->id;
             if (id != -1) {
                 int i = 0;
@@ -115,7 +122,7 @@ ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int
                                         XYPoint pt;
                                         pt.x = (int)target->world_x;
                                         pt.y = (int)target->world_y;
-                                        if (mainObj->withinRangeOfZoneAtPoint(*(unsigned char*)&objId, ((SpeedDispatch*)mainObj)->speed(), &pt) != 1)
+                                        if (mainObj->withinRangeOfZoneAtPoint(*(unsigned char*)&objId, mainObj->speed(), &pt) != 1)
                                             break;
                                     }
                                     int pri = this->defendPriority(entry->type, entry->group);
@@ -131,9 +138,8 @@ ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int
                     }
                 }
             }
-            type++;
-            offset += 0x24;
-        } while (type < this->maxImportantObjectMemory);
+            i++;
+        } while (i < this->maxImportantObjectMemory);
     }
     return best;
 }

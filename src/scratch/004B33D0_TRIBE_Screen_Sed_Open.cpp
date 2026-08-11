@@ -10,6 +10,22 @@
 // - Code is logically correct, left in scratch because register allocation
 //   divergence is structural and not fixable from C++ source alone
 // - Sibling at 004B38A0 also attempted
+//
+// Session sa963259bf_r1 (2026-08-11):
+// - Rebuilt the clean constructor baseline: 683 bytes/frame 0x11c, but the
+//   narrow surface colored EBX to +0x48c and omitted the proven title zero.
+// - Restored title initialization, the five-slot tabList topology (slot 0 is
+//   currentPanel; set_tab_order receives tabList+1), and typed TListPanel /
+//   TScrollBarPanel ABI.  The latter removed the spurious parent push from
+//   create_auto_scrollbar and reduced the strict diff to 293 bytes.
+// - Inlined get_info_id as setup's third argument; the original pushes the
+//   trailing 1 before the right-to-left get_info_id call.  Explicit vptr 573C28
+//   is retained as a binary-proven fallback for this local class surface.
+// - Final best: 687 bytes/frame 0x11c, 19/19 ordered calls, 93.88% shape,
+//   strict diff 293 bytes (42.6492%).  Residual first hunk is EBX=&deleteButton
+//   (+0x48c) versus the oracle's EBX=&list (+0x47c), with a four-byte size
+//   excess and remaining local relocation/register-coloring drift.
+// - Paused after the 10-hypothesis budget; no exact promotion.
 
 #include <string.h>
 
@@ -39,8 +55,8 @@ public:
     long create_button(TPanel* panel, TPanel** btn_field, unsigned short lang_id,
                        int x, int y, int width, int height,
                        int a8, int a9, int a10, int a11);
-    long create_list(TPanel* panel, TPanel** list_field, int x, int y, int width, int height, int a7);
-    long create_auto_scrollbar(TPanel* panel, TPanel** scroll_field, TPanel* list, int a4);
+    long create_list(TPanel* panel, class TListPanel** list_field, int x, int y, int width, int height, int a7);
+    long create_auto_scrollbar(class TScrollBarPanel** scroll_field, class TTextPanel* list, int a4);
     void setup_shadow_area(int val);
     char* get_info_file();
     long get_info_id();
@@ -72,6 +88,12 @@ public:
     char* currentLine();
 };
 
+class TListPanel : public TTextPanel {
+};
+
+class TScrollBarPanel : public TPanel {
+};
+
 class RGE_Base_Game {
 public:
     char gap_00[0x4C];
@@ -81,8 +103,8 @@ public:
 class TRIBE_Screen_Sed_Open : public TScreenPanel {
 public:
     TPanel* title;          // +0x478
-    TPanel* list;           // +0x47C
-    TPanel* scrollbar;      // +0x480
+    TListPanel* list;        // +0x47C
+    TScrollBarPanel* scrollbar; // +0x480
     TButtonPanel* okButton; // +0x484
     TButtonPanel* cancelButton; // +0x488
     TButtonPanel* deleteButton; // +0x48C
@@ -94,8 +116,13 @@ public:
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     : TScreenPanel("Scenario Editor Open")
 {
+    TPanel* tabList[5];
     char info_file[260];
+    TListPanel** listPtr = &list;
 
+    *(unsigned long*)this = 0x573C28;
+
+    title = 0;
     list = 0;
     scrollbar = 0;
     okButton = 0;
@@ -103,13 +130,13 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     deleteButton = 0;
 
     {
-        TEasy_Panel* cur = (TEasy_Panel*)panel_system.currentPanel();
-        strcpy(info_file, cur->get_info_file());
+        tabList[0] = panel_system.currentPanel();
+        strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
 
         void* draw_area = ((RGE_Base_Game*)rge_base_game)->draw_area;
-        long info_id = cur->get_info_id();
 
-        if (!setup(draw_area, info_file + 4, info_id, 1)) {
+        if (!setup(draw_area, info_file + 4,
+                   ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
             *(int*)((char*)this + 0xD8) = 1;
             return;
         }
@@ -120,16 +147,17 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
         if (!create_text(this, &title, 0x24CD, 0x14, 0x14, 600, 0x1E, 1, 1, 0, 0))
             return;
 
-        if (!create_list(this, &list, 0x14, 0x46, 600, 0x154, 0x0B))
+        if (!create_list(this, listPtr, 0x14, 0x46, 600, 0x154, 0x0B))
             return;
 
-        if (!create_auto_scrollbar(this, &scrollbar, (TPanel*)list, 0x14))
+        if (!create_auto_scrollbar(&scrollbar, *listPtr, 0x14))
             return;
 
         if (!create_button(this, (TPanel**)&okButton, 0xFA1, 0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
             return;
 
-        if (!create_button(this, (TPanel**)&deleteButton, 0x24C9, 0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+        TButtonPanel** deletePtr = &deleteButton;
+        if (!create_button(this, (TPanel**)deletePtr, 0x24C9, 0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
             return;
 
         if (!create_button(this, (TPanel**)&cancelButton, 0xFA2, 0, 0x1AE, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
@@ -140,23 +168,22 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
         *(int*)((char*)cancelButton + 0x29C) = 0;
 
         // Set delete button hotkey = '.' (0x2E)
-        *(int*)((char*)deleteButton + 0x29C) = 0;
-        *(int*)((char*)deleteButton + 0x298) = 0x2E;
+        *(int*)((char*)*deletePtr + 0x29C) = 0;
+        *(int*)((char*)*deletePtr + 0x298) = 0x2E;
 
         fillList();
 
-        if (((TTextPanel*)list)->currentLine()[0] == 0) {
+        if (((TTextPanel*)*listPtr)->currentLine()[0] == 0) {
             okButton->set_disabled(1);
-            deleteButton->set_disabled(1);
+            (*deletePtr)->set_disabled(1);
         }
 
-        set_curr_child(list);
+        set_curr_child(*listPtr);
 
-        TPanel* tabList[4];
-        tabList[0] = list;
-        tabList[1] = okButton;
-        tabList[2] = deleteButton;
-        tabList[3] = cancelButton;
-        set_tab_order(tabList, 4);
+        tabList[1] = *listPtr;
+        tabList[2] = okButton;
+        tabList[3] = *deletePtr;
+        tabList[4] = cancelButton;
+        set_tab_order(tabList + 1, 4);
     }
 }

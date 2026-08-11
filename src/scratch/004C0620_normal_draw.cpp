@@ -43,6 +43,14 @@
 // Final validation retains the canonical full RGE_Sprite and typed child
 // do_draw ABI; remaining evidence is the localized AX/CX count plus list-entry
 // register/address schedule, with no productive source lead left in this pass.
+// New bounded pass (sa-26f9ed6b-r1, 10 hypotheses): moving result zeroing
+// inside/after the inner positive guard broadened to 189 bytes and 258 bytes;
+// one shared count/result (including a diagnostic union) preserved AX and
+// EBX=1 but changed the exact child-entry register/address basin to 181 bytes.
+// Positive outer guard, narrow result types, reversed initialization order,
+// and declaration reordering were duplicate or worse (45/51 bytes). Restored
+// the pinned canonical typed source; the remaining gap is the incompatible
+// result/count liveness versus ECX/EDX/LEA child-entry schedule.
 
 #include <stdio.h>
 

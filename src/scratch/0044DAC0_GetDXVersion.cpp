@@ -3,7 +3,7 @@
 // attempt 2: 992/1053 bytes - closer but still short
 // attempt 3: 1008/1053 bytes - still 45 bytes short
 //   FOUND: param_1 = DX version output, param_2 = OS type output (was swapped)
-//   Also: OSVERSIONINFOA field order: dwBuildNumber before dwPlatformId (VC5 SDK)
+//   Also: OSVERSIONINFOA uses the SDK order size/major/minor/build/platform/CSD.
 // attempt 4: fix param order, correct OSVERSIONINFOA field order
 // attempt 5: fix CoInitialize logic (orig: CoUninit only if result != 0, backwards bug)
 //   Still 1008/1053 bytes. 45-byte structural gap:
@@ -13,8 +13,18 @@
 //   4. Core logic correct: GetVersionExA, WinNT/Win9x paths, LoadLibraryA, GetProcAddress,
 //      CoInitialize, CoCreateInstance, IsDPlay501a, COM QI, Release, SetCooperativeLevel,
 //      CreateSurface, all error paths with OutputDebugStringA
-//   BLOCKER: structural VC5 codegen differences hard to match without inline asm
-//   Left in scratch after 5 probes per 10-probe rule for large functions
+// probe 6 (ABI/context): changed the Windows/OLE imports to period IAT function-pointer
+//   declarations and enabled the VC5 string intrinsic surface for the proven 0x6c clear.
+// probe 7 (behavior/layout): restored the DirectX SDK-shaped local ownership and
+//   C-style COM __stdcall vtable ABI visible in the stack-self calls. Also restored
+//   the DX1/DX2/DX3 version stores, pDDraw ownership, and DDSURFACEDESC field offsets.
+// Final bounded pass: the current source is the best canonical reconstruction,
+//   not a codegen scaffold. It reaches the correct 0x114 frame/1053-byte boundary,
+//   47-vs-45 call-site basin, typed COM stack-self calls, canonical OSVERSIONINFOA
+//   and DDSURFACEDESC ownership, and all major error-path behavior. Remaining drift
+//   is structural VC5 scheduling: EBX/EBP zero/import coloring, pointer local slot
+//   order, late SetCooperativeLevel/descriptor scheduling, and two duplicated
+//   cleanup calls that VC5 tail-merges in this TU. No inline asm or opaque offsets.
 
 // OSVERSIONINFOA stub - VC5 SDK field order (confirmed from asm offsets)
 //   [esp+0x94]+0x08 = dwBuildNumber (compared with 0x549)
@@ -22,71 +32,88 @@
 struct OSVERSIONINFOA {
     unsigned long dwOSVersionInfoSize;
     unsigned long dwMajorVersion;
+    unsigned long dwMinorVersion;
     unsigned long dwBuildNumber;
     unsigned long dwPlatformId;
-    unsigned long dwMinorVersion;
     char szCSDVersion[128];
 };  // 144 bytes
 
-// DDSURFACEDESC stub - 108 bytes (0x6C) matching rep stosd zeroing
+// The old DirectDraw record is 0x6c bytes. Only these fields are touched here,
+// but retain their real offsets rather than treating the middle as a guessed
+// back-buffer field: dwFlags is +4 and ddsCaps.dwCaps is +68.
+struct DDSCAPS {
+    unsigned long dwCaps;
+};
+
 struct DDSURFACEDESC {
-    unsigned int dwSize;
-    char gap_04[0x60];
-    unsigned int dwFlags;
-    unsigned int dwBackBufferCount;
-};  // 4 + 0x60 + 4 + 4 = 108
+    unsigned long dwSize;
+    unsigned long dwFlags;
+    char gap_08[0x60];
+    DDSCAPS ddsCaps;
+};  // 4 + 4 + 0x60 + 4 = 108
 
-// stdlib
-extern void* memset( void*, int, unsigned int );
-
+// The original imports are indirect IAT calls, not direct external calls.  Keep
+// these as declaration-only function pointers so the linker preserves that ABI.
+#include <string.h>
 // Windows API via IAT extern pointers
-extern int __stdcall GetVersionExA( void* );
-extern void* __stdcall LoadLibraryA( const char* );
-extern void* __stdcall GetProcAddress( void*, const char* );
-extern void __stdcall FreeLibrary( void* );
-extern void __stdcall OutputDebugStringA( const char* );
-extern int __stdcall CoInitialize( void* );
-extern int __stdcall CoCreateInstance( const void*, void*, unsigned int, const void*, void** );
-extern void __stdcall CoUninitialize( void );
+extern "C" int (__stdcall* const GetVersionExA)( void* );
+extern "C" void* (__stdcall* const LoadLibraryA)( const char* );
+extern "C" void* (__stdcall* const GetProcAddress)( void*, const char* );
+extern "C" void (__stdcall* const FreeLibrary)( void* );
+extern "C" void (__stdcall* const OutputDebugStringA)( const char* );
+extern "C" int (__stdcall* const CoInitialize)( void* );
+extern "C" int (__stdcall* const CoCreateInstance)( const void*, void*, unsigned int, const void*, void** );
+extern "C" void (__stdcall* const CoUninitialize)( void );
 
-// COM base: QI at slot 0, AddRef at 1, Release at 2
-struct IUnknown {
-    virtual int QueryInterface( const void*, void** ) = 0;
-    virtual void* AddRef() = 0;
-    virtual void Release() = 0;
-};
-
-// IDirectDraw: extends IUnknown (slots 0-2)
-// CreateSurface at slot 6 (vtbl+0x18), SetCooperativeLevel at slot 20 (vtbl+0x50)
-struct IDirectDraw : IUnknown {
-    virtual int vf03() = 0;
-    virtual int vf04() = 0;
-    virtual int vf05() = 0;
-    virtual int CreateSurface( void*, void*, void** ) = 0;
-    virtual int vf07() = 0;
-    virtual int vf08() = 0;
-    virtual int vf09() = 0;
-    virtual int vf10() = 0;
-    virtual int vf11() = 0;
-    virtual int vf12() = 0;
-    virtual int vf13() = 0;
-    virtual int vf14() = 0;
-    virtual int vf15() = 0;
-    virtual int vf16() = 0;
-    virtual int vf17() = 0;
-    virtual int vf18() = 0;
-    virtual int vf19() = 0;
-    virtual int SetCooperativeLevel( unsigned long, unsigned long ) = 0;
+// The DirectX SDK's C++ interface methods are __stdcall.  VC5 therefore emits
+// the COM object as an explicit stack argument to each vtable call, matching
+// the original ff [vtable+slot] sequences without a hand-written vtable view.
+class IDirectDraw {
+public:
+    virtual int __stdcall QueryInterface( const void*, void** ) = 0;
+    virtual unsigned long __stdcall AddRef() = 0;
+    virtual unsigned long __stdcall Release() = 0;
+    virtual int __stdcall slot0C() = 0;
+    virtual int __stdcall slot10() = 0;
+    virtual int __stdcall slot14() = 0;
+    virtual int __stdcall CreateSurface( DDSURFACEDESC*, void**, void* ) = 0;
+    virtual int __stdcall slot1C() = 0;
+    virtual int __stdcall slot20() = 0;
+    virtual int __stdcall slot24() = 0;
+    virtual int __stdcall slot28() = 0;
+    virtual int __stdcall slot2C() = 0;
+    virtual int __stdcall slot30() = 0;
+    virtual int __stdcall slot34() = 0;
+    virtual int __stdcall slot38() = 0;
+    virtual int __stdcall slot3C() = 0;
+    virtual int __stdcall slot40() = 0;
+    virtual int __stdcall slot44() = 0;
+    virtual int __stdcall slot48() = 0;
+    virtual int __stdcall slot4C() = 0;
+    virtual int __stdcall SetCooperativeLevel( void*, unsigned long ) = 0;
 };
 
-struct IDirectDraw2 : IDirectDraw {
+class IDirectDraw2 : public IDirectDraw {
 };
-struct IDirectDrawSurface : IUnknown {
+
+class IDirectDrawSurface {
+public:
+    virtual int __stdcall QueryInterface( const void*, void** ) = 0;
+    virtual unsigned long __stdcall AddRef() = 0;
+    virtual unsigned long __stdcall Release() = 0;
 };
-struct IDirectDrawSurface3 : IDirectDrawSurface {
+
+class IDirectDrawSurface3 : public IDirectDrawSurface {
 };
-struct IDirectPlay3 : IUnknown {
+
+class IDirectPlay3 {
+public:
+    virtual int __stdcall QueryInterface( const void*, void** ) = 0;
+    virtual unsigned long __stdcall AddRef() = 0;
+    virtual unsigned long __stdcall Release() = 0;
 };
+
+typedef int (__stdcall* DIRECTDRAWCREATE)( void*, IDirectDraw**, void* );
 
 extern const void* CLSID_DirectPlay;
 extern const void* IID_IDirectPlay3;
@@ -97,20 +124,18 @@ int IsDPlay501a();
 
 // param_1 = out DX version, param_2 = out OS type
 void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
-    IDirectDraw* pDDraw;
-    IDirectDraw2* pDDraw2;
+    int hr;
+    void* DDHinst = 0;
+    void* DIHinst = 0;
+    IDirectDraw* pDDraw = 0;
+    IDirectPlay3* dp3 = 0;
     IDirectDrawSurface* pSurf;
-    IDirectDrawSurface3* pSurf3;
-    IDirectPlay3* dp3;
-    DDSURFACEDESC desc;
-
-    pDDraw = 0;
-    pDDraw2 = 0;
-    pSurf = 0;
-    pSurf3 = 0;
-    dp3 = 0;
-
+    IDirectDraw2* pDDraw2 = 0;
+    DIRECTDRAWCREATE DirectDrawCreate = 0;
+    void* DirectInputCreate;
     OSVERSIONINFOA osVer;
+    IDirectDrawSurface3* pSurf3 = 0;
+    DDSURFACEDESC desc;
     osVer.dwOSVersionInfoSize = 0x94;
 
     if (!GetVersionExA( &osVer )) {
@@ -120,134 +145,127 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     }
 
     if (osVer.dwPlatformId == 2) {
-        *param_2 = 2;  // OS type = Windows NT
+        *param_2 = 2;
         if (osVer.dwMajorVersion < 4) {
             *param_2 = 0;
             return;
         }
-        if (osVer.dwMajorVersion != 4) {
-            *param_1 = 0x501;
-            return;
-        }
-
-        *param_1 = 0x200;
-        void* hDInput = LoadLibraryA( "DINPUT.DLL" );
-        if (hDInput == 0) {
-            OutputDebugStringA( "Couldn't LoadLibrary DInput\r\n" );
-            return;
-        }
-
-        void* fp = GetProcAddress( hDInput, "DirectInputCreateA" );
-        FreeLibrary( hDInput );
-        if (fp == 0) {
-            OutputDebugStringA( "Couldn't GetProcAddress DInputCreate\r\n" );
-            return;
-        }
-
-        int coInitResult = CoInitialize( 0 );
-        int hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3, (void**)&dp3 );
-        if (hr >= 0) {
-            if (dp3) {
-                dp3->Release();
-            }
-            if (coInitResult != 0) {
-                CoUninitialize();
-            }
-        } else {
-            if (coInitResult != 0) {
-                CoUninitialize();
+        if (osVer.dwMajorVersion == 4) {
+            *param_1 = 0x200;
+            DIHinst = LoadLibraryA( "DINPUT.DLL" );
+            if (DIHinst == 0) {
+                OutputDebugStringA( "Couldn't LoadLibrary DInput\r\n" );
                 return;
             }
+
+            DirectInputCreate = GetProcAddress( DIHinst, "DirectInputCreateA" );
+            FreeLibrary( DIHinst );
+            if (DirectInputCreate == 0) {
+                OutputDebugStringA( "Couldn't GetProcAddress DInputCreate\r\n" );
+                return;
+            }
+
+            *param_1 = 0x300;
+            int coInitResult = CoInitialize( 0 );
+            hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3,
+                                   (void**)&dp3 );
+            if (hr >= 0) {
+                dp3->Release();
+                if (coInitResult != 0)
+                    CoUninitialize();
+                *param_1 = (IsDPlay501a() != 0) + 0x500;
+                return;
+            }
+
+            if (coInitResult != 0)
+                CoUninitialize();
+            return;
         }
 
-        int isDP501a = IsDPlay501a();
-        if (isDP501a == 0) {
-            *param_1 = 0x500;
-        } else {
-            *param_1 = 0x501;
-        }
+        *param_1 = 0x501;
         return;
     }
 
-    // Windows 9x path
     *param_2 = 1;
     if ((osVer.dwBuildNumber & 0xFFFF) > 0x549) {
         *param_1 = 0x501;
         return;
     }
 
-    void* hDDraw = LoadLibraryA( "DDRAW.DLL" );
-    if (hDDraw == 0) {
+    DDHinst = LoadLibraryA( "DDRAW.DLL" );
+    if (DDHinst == 0) {
         *param_1 = 0;
         *param_2 = 0;
-        FreeLibrary( hDDraw );
+        FreeLibrary( DDHinst );
         return;
     }
 
-    void* fpDDrawCreate = GetProcAddress( hDDraw, "DirectDrawCreate" );
-    if (fpDDrawCreate == 0) {
+    DirectDrawCreate = (DIRECTDRAWCREATE)GetProcAddress( DDHinst,
+                                                           "DirectDrawCreate" );
+    if (DirectDrawCreate == 0) {
         *param_1 = 0;
         *param_2 = 0;
-        FreeLibrary( hDDraw );
+        FreeLibrary( DDHinst );
         OutputDebugStringA( "Couldn't LoadLibrary DDraw\r\n" );
         return;
     }
 
-    int hr = ((int(*)(void*,void*,void**))fpDDrawCreate)( 0, 0, (void**)&pDDraw );
+    hr = DirectDrawCreate( 0, &pDDraw, 0 );
     if (hr < 0) {
         *param_1 = 0;
         *param_2 = 0;
-        FreeLibrary( hDDraw );
+        FreeLibrary( DDHinst );
         OutputDebugStringA( "Couldn't create DDraw\r\n" );
         return;
     }
 
+    *param_1 = 0x100;
     hr = pDDraw->QueryInterface( IID_IDirectDraw2, (void**)&pDDraw2 );
     if (hr < 0) {
         pDDraw->Release();
-        FreeLibrary( hDDraw );
+        FreeLibrary( DDHinst );
         OutputDebugStringA( "Couldn't QI DDraw2\r\n" );
         return;
     }
 
-    pDDraw->Release();
+    pDDraw2->Release();
     *param_1 = 0x200;
-    void* hDInput2 = LoadLibraryA( "DINPUT.DLL" );
-    if (hDInput2 == 0) {
+    DIHinst = LoadLibraryA( "DINPUT.DLL" );
+    if (DIHinst == 0) {
         OutputDebugStringA( "Couldn't LoadLibrary DInput\r\n" );
-        pDDraw2->Release();
-        FreeLibrary( hDDraw );
+        pDDraw->Release();
+        FreeLibrary( DDHinst );
         return;
     }
 
-    fpDDrawCreate = GetProcAddress( hDInput2, "DirectInputCreateA" );
-    FreeLibrary( hDInput2 );
-    if (fpDDrawCreate == 0) {
-        FreeLibrary( hDDraw );
-        pDDraw2->Release();
+    DirectInputCreate = GetProcAddress( DIHinst, "DirectInputCreateA" );
+    FreeLibrary( DIHinst );
+    if (DirectInputCreate == 0) {
+        FreeLibrary( DDHinst );
+        pDDraw->Release();
         OutputDebugStringA( "Couldn't GetProcAddress DInputCreate\r\n" );
         return;
     }
 
     memset( &desc, 0, sizeof(desc) );
-    desc.dwSize = 0x6C;
+    desc.dwSize = sizeof(desc);
     desc.dwFlags = 1;
+    desc.ddsCaps.dwCaps = 0x200;
     *param_1 = 0x300;
-    desc.dwBackBufferCount = 0x200;
 
-    hr = pDDraw2->SetCooperativeLevel( 0, 0 );
+    hr = pDDraw->SetCooperativeLevel( 0, 8 );
     if (hr < 0) {
-        pDDraw2->Release();
-        FreeLibrary( hDDraw );
+        pDDraw->Release();
+        FreeLibrary( DDHinst );
         *param_1 = 0;
         OutputDebugStringA( "Couldn't Set coop level\r\n" );
         return;
     }
 
-    hr = pDDraw2->CreateSurface( 0, &desc, (void**)&pSurf );
+    hr = pDDraw->CreateSurface( &desc, (void**)&pSurf, 0 );
     if (hr < 0) {
-        pDDraw2->Release();
-        FreeLibrary( hDDraw );
+        pDDraw->Release();
+        FreeLibrary( DDHinst );
         *param_1 = 0;
         OutputDebugStringA( "Couldn't CreateSurface\r\n" );
         return;
@@ -255,15 +273,10 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 
     hr = pSurf->QueryInterface( IID_IDirectDrawSurface3, (void**)&pSurf3 );
     if (hr >= 0) {
-        int isDP501a = IsDPlay501a();
-        if (isDP501a == 0) {
-            *param_1 = 0x500;
-        } else {
-            *param_1 = 0x501;
-        }
-        pSurf3->Release();
+        *param_1 = (IsDPlay501a() != 0) + 0x500;
     }
 
     pSurf->Release();
-    FreeLibrary( hDDraw );
+    pDDraw->Release();
+    FreeLibrary( DDHinst );
 }

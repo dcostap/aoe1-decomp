@@ -90,6 +90,22 @@
 //     compile. Remaining blocker is the original y1/range-home, row_ptr/y-home,
 //     x1/EBX, and CL-vs-BL allocation rotation, not tile/map ownership.
 
+// Continuation (sa-1b774ae7-r1):
+// 23: moving the column initializer before the inner guard broadened to 185 bytes;
+// rolled back. A natural row-base-before-counter update improved late alignment
+// but broadened to 172 bytes; rolled back.
+// 24: a focused 20-variant declaration/predicate lab found no exact group; the
+// closest valid direct-predicate family remained 141 bytes. Invalid nested
+// predicate forms that skip the required terrain==FF failure were not retained.
+// 25: `register long x1` was codegen-identical. A natural long radius promotion
+// worsened to 142 bytes; rolled back. A counted inner for-loop was same-size but
+// no closer. Address-taking row_ptr through a typed pointer alias was duplicate.
+// 26: function-scope column lifetime likewise broadened to 185 bytes; rolled back.
+// Final blocker remains a VC5 allocation basin: original homes y1 in dead range,
+// spills row_ptr to the y home, keeps x1 in EBX, and uses CL for the tile mask;
+// the clean typed row-base source homes y1/x1 oppositely, keeps row_ptr in ECX,
+// and uses BL. Exact size/CFG/canonical map ownership remain stable.
+
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;

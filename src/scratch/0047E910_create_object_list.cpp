@@ -3,14 +3,21 @@
 // PDB: rdlg_lst.cpp:151-207
 //
 // Attempt log:
-// - draft 1: natural for loops, struct offsets → 87% diff, divide instruction in loop
-// - draft 2: j/4 with j+=4 → still divide instructions
-// - draft 3: pointer arithmetic p_obj = master_objects; *p_obj++ → still generates divide
-// - draft 4: unsigned int for index → no change
-// - Remaining: VC5 optimizes array index + increment-by-1 into byte-offset loop with 
-//   divide-by-4. The original uses direct byte offset (add edx,4; [ecx+edx]).
-//   This is a persistent codegen difference in loop shape.
-// Left in scratch.
+// - Initial natural draft had the wrong RGE_Base_Game virtual slot, a 0x0C frame,
+//   and an incorrect constant zero object id; it emitted an indexed record loop.
+// - Restored the period RGE_Base_Game virtual surface (get_string at +0x1C),
+//   canonical master-object/list-info fields, and the binary-proven object id
+//   (short j, incremented for every master-object entry).
+// - Short list index plus typed int unit cursors recovered the original 0x10
+//   frame, 396-byte size, all three ordered calls, and the add-by-four master
+//   object cursor shape. Separate first/second scan cursors are retained as the
+//   cleanest source reconstruction; VC5 still colors the late cursor/id pair
+//   opposite the executable and keeps the player/count homes swapped.
+// - Tried local declaration reordering, a register cursor, induction update
+//   order, and assignment-bound null-guard forms; no further emitted-code gain.
+// - Final bounded result: structural parity is good (size/frame/calls exact),
+//   but byte matching remains unresolved in the initial local schedule and
+//   late cursor/id register/stack-home allocation. Left in scratch.
 
 #include "..\..\include\game_globals.h"
 
@@ -44,15 +51,18 @@ public:
 class RGE_Base_Game {
 public:
     char gap_00[4];
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
+    virtual void set_prog_mode(int mode);
+    virtual void set_game_mode(int mode, int sub_mode);
+    virtual void set_player(short player);
+    virtual int get_error_code();
+    virtual char* get_string(int a, long b, char* c, int d);
     RGE_Player* get_player();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void d5();
-    virtual void d6();
-    virtual void get_name(int a, int b, void* c, int d);
 };
+
+extern RGE_Base_Game* rge_base_game;
 
 class RGE_Dialog_List : public TListDialog {
 public:
@@ -67,24 +77,27 @@ public:
 
 int RGE_Dialog_List::create_object_list()
 {
+    short i;
+    short j;
+    RGE_Player* player;
+    short num_objects;
     int cnt;
-    unsigned int i;
 
-    RGE_Player* player = rge_base_game->get_player();
+    player = rge_base_game->get_player();
     if (!player)
         return 0;
 
     this->list_size = 1;
-    short num_objects = player->master_object_num;
+    num_objects = player->master_object_num;
 
     if (num_objects > 0) {
-        i = 0;
+        int obj_idx = 0;
         cnt = num_objects;
         do {
-            if (player->master_objects[i] &&
-                player->master_objects[i]->field_4E == 0)
+            if (player->master_objects[obj_idx] &&
+                player->master_objects[obj_idx]->field_4E == 0)
                 this->list_size++;
-            i++;
+            obj_idx++;
             cnt--;
         } while (cnt != 0);
     }
@@ -100,23 +113,23 @@ int RGE_Dialog_List::create_object_list()
     strcpy(this->list_info[0].text, " <None> ");
 
     i = 1;
-    {
+    j = 0;
+    if (num_objects > 0) {
         int obj_idx = 0;
-        if (num_objects > 0) {
-            do {
-                RGE_Game_Object* obj = player->master_objects[obj_idx];
-                if (obj && obj->field_4E == 0) {
-                    this->list_info[i].id = 0;
-                    if (obj->icon_id > 0) {
-                        rge_base_game->get_name(2, obj->icon_id, &this->list_info[i], 100);
-                    } else {
-                        strcpy(this->list_info[i].text, obj->name);
-                    }
-                    i++;
+        do {
+            RGE_Game_Object* obj = player->master_objects[obj_idx];
+            if (obj && obj->field_4E == 0) {
+                this->list_info[i].id = j;
+                if (obj->icon_id > 0) {
+                    rge_base_game->get_string(2, obj->icon_id, (char*)&this->list_info[i], 100);
+                } else {
+                    strcpy(this->list_info[i].text, obj->name);
                 }
-                obj_idx++;
-            } while (obj_idx < num_objects);
-        }
+                i++;
+            }
+            j++;
+            obj_idx++;
+        } while (j < num_objects);
     }
 
     return 1;

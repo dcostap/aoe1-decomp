@@ -7,6 +7,13 @@
 // try 5: duplicate success returns in Mouse_Mode/Max_Cursors arms moved first mismatch to prologue guard; rolled back.
 // tried flags /O1, no /Oy, /Ox, /Ob0: worse or same; kept /O2 /Oy /GX.
 // tried NameBuf sizes 24/28/36/40: prologue/frame mismatches, worse; kept 32.
+// session sa24b7b590_r1 probes 1-10: combined/nested guards, for/while/do loops,
+// explicit success/failure labels, a result local, negative gates, and a bottom
+// continue loop. The guarded do/while was the metric-best diagnostic (+6 bytes,
+// diff 173), but emitted jge+jmp with the failure block before success; it did
+// not preserve the oracle's jl backedge/common success tail. Restored this natural
+// for-loop candidate after the 10-hypothesis budget; current rebuilt diff is 189
+// bytes (419 vs 394), exact through offset +0xDB, with all 7 calls aligned.
 // left in scratch: exact through offset 0xDB (save-area path); remaining cursor-loop drift is branch sizing/target selection and cursor-fail epilogue order, not accepted_drift-safe yet.
 
 extern "C" int sprintf(char* buffer, const char* format, ...);

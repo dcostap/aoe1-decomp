@@ -3,19 +3,27 @@
 // Default flags
 //
 // Bresenham line drawing. No this/field access needed.
-// Left in scratch: extensive register allocation and control-flow structure
-// differences from the original VC5 version. Too complex for exact match.
+// Attempt log:
+// - Baseline: the typed parameter ownership/algorithm emitted 10 helper calls
+//   instead of the oracle's 5 and used the wrong C++ helper linkage.
+// - Common y-direction selection plus the C ABI fixed the call target and
+//   shared shallow/steep topology; a steep do/while body was required because
+//   VC5 duplicated calls for the call-first/break and comma-condition forms.
+// - Vertical endpoint locals delayed the original y loads and improved the
+//   prologue; saved endpoint locals and a redundant post-swap guard were worse.
+// - Best checked source below: 348-byte output, 5/5 ordered calls, 83.80%
+//   shape, 55.71% exact-block coverage, 310 differing bytes. Remaining gap is
+//   broad VC5 register/block scheduling beginning in the prologue; leave this
+//   natural reconstruction in scratch rather than retain codegen scaffolding.
 
-extern void _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
+extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 
 struct TDrawArea {
     void DrawLine(int x1, int y1, int x2, int y2, unsigned char color);
 };
 
 void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
-    int t_x2 = x2;
-    int t_x1 = x1;
-    if (t_x1 == t_x2) {
+    if (x1 == x2) {
         int y_start = y1;
         int y_end = y2;
         if (y_start > y_end) {
@@ -28,90 +36,55 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
             _ASMDraw_HLine(x1, x2, y_start, c);
             y_start++;
         } while (y_start <= y_end);
-        return;
-    }
-
-    if (y1 == y2) {
+    } else if (y1 == y2) {
         _ASMDraw_HLine(x1, x2, y1, (unsigned int)color);
-        return;
-    }
-
-    if (x2 < x1) {
-        int t = x2;
-        x2 = x1;
-        x1 = t;
-        t = y2;
-        y2 = y1;
-        y1 = t;
-    }
-
-    int dx = x2 - x1 + 1;
-
-    if (y1 < y2) {
-        int dy = y2 - y1 + 1;
-        if (dy <= dx) {
-            int y = y1;
-            int last_x = x1;
-            unsigned int c = (unsigned int)color;
-            int err = 0;
-            while (x1 < x2) {
-                err += dy;
-                if (err >= dx) {
-                    _ASMDraw_HLine(last_x, x1, y, c);
-                    y++;
-                    err -= dx;
-                    last_x = x1 + 1;
-                }
-                x1++;
-            }
-            _ASMDraw_HLine(last_x, x1, y, c);
-        } else {
-            unsigned int c = (unsigned int)color;
-            int err = 0;
-            int x = x1;
-            for (;;) {
-                _ASMDraw_HLine(x, x, y1, c);
-                if (y1 == y2) break;
-                y1++;
-                err += dx;
-                if (err >= dy) {
-                    x++;
-                    err -= dy;
-                }
-            }
-        }
     } else {
-        int dy = y1 - y2 + 1;
-        if (dy <= dx) {
-            int y = y1;
-            int last_x = x1;
-            unsigned int c = (unsigned int)color;
-            int err = 0;
-            while (x1 < x2) {
-                err += dy;
-                if (err >= dx) {
-                    _ASMDraw_HLine(last_x, x1, y, c);
-                    y--;
-                    err -= dx;
-                    last_x = x1 + 1;
-                }
-                x1++;
-            }
-            _ASMDraw_HLine(last_x, x1, y, c);
+        int step;
+        int dy;
+
+        if (x2 < x1) {
+            int t = x2;
+            x2 = x1;
+            x1 = t;
+            t = y2;
+            y2 = y1;
+            y1 = t;
+        }
+
+        int dx = x2 - x1 + 1;
+        if (y1 < y2) {
+            dy = y2 - y1;
+            step = 1;
         } else {
-            unsigned int c = (unsigned int)color;
-            int err = 0;
-            int x = x1;
-            for (;;) {
-                _ASMDraw_HLine(x, x, y1, c);
-                if (y1 == y2) break;
-                y1--;
-                err += dx;
-                if (err >= dy) {
-                    x++;
-                    err -= dy;
+            dy = y1 - y2;
+            step = -1;
+        }
+        ++dy;
+
+        if (dy <= dx) {
+            int error = 0;
+            int line_start = x1;
+            for (; x1 < x2; ++x1) {
+                error += dy;
+                if (error >= dx) {
+                    _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
+                    y1 += step;
+                    error -= dx;
+                    line_start = x1 + 1;
                 }
             }
+            _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
+        } else {
+            int error = 0;
+            do {
+                _ASMDraw_HLine(x1, x1, y1, (unsigned int)color);
+                error += dx;
+                if (error >= dy) {
+                    ++x1;
+                    error -= dy;
+                }
+                y1 += step;
+            } while (y1 != y2);
         }
     }
 }

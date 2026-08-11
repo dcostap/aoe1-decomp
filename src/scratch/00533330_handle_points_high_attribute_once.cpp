@@ -43,6 +43,11 @@
 //   all emitted the same 224-byte/29-byte-diff codegen group; each was restored. The clean
 //   natural do/while source remains authoritative; the unresolved gap is still only entry/pp
 //   callee-save coloring.
+// - sa-5b01da12-r1 probes: preloading pp before the initial attribute read did select the
+//   oracle's entry=EDI/pp=EBX colors, but forced early world/players loads, a shifted initial
+//   FPU sequence, and 196-214 bytes of structural drift; rolled back. Null-initializing pp,
+//   naming the reused attribute index, and reordering pp/i declarations were neutral or
+//   duplicate 29-byte codegen. Clean source restored; no ABI/call/layout lead remains.
 
 class RGE_Game_World;
 
@@ -107,7 +112,7 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
     }
 
     int i = 1;
-    RGE_Player** pp = this->player->world->players;
+    register RGE_Player** pp = this->player->world->players;
     if (i < this->player->world->player_num) {
         pp++;
         do {

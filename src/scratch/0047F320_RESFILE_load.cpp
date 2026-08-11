@@ -11,9 +11,14 @@
 // - liveness: separate malloc result and the original error-buffer base matched
 //   the full call set and moved the diff to 179 bytes.
 // - declaration/order and pointer-result variants were codegen duplicates.
-//   Best current reconstruction has exact frame/size/call/CFG counts; remaining
-//   drift is the mapped-data success block's load/register order and its short
-//   branch span. Keep typed pointer arithmetic rather than the diagnostic cast.
+// - common-return control flow (return data inside the locate-success arm) moved
+//   the result from 179 to 12 bytes and matched the PDB's shared line-483 return.
+// - interleaving load_type=0, mapped-data address formation, and data_size=
+//   resource_size recovered the original prologue and all 346 bytes of shape;
+//   the remaining drift is one SIB base/index byte in the mapped LEA.
+// - parameter-home alias and integer/pointer-address variants were rolled back:
+//   they either widened the drift or compiled identically. Keep the natural
+//   typed pointer expression as the living reconstruction.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,29 +58,28 @@ uchar* __cdecl RESFILE_load(unsigned long type, unsigned long id,
         }
     } else {
         if (mapped_data != 0) {
-            data = mapped_data + data_offset;
             load_type = 0;
+            data = mapped_data + data_offset;
             data_size = resource_size;
-            return data;
+        } else {
+            load_type = 1;
+            data = (uchar*)malloc(resource_size);
+            data_size = resource_size;
+            if (data == 0) {
+                MessageBoxA(0, "Error: Out of memory in res_read_bin.",
+                    "RESOURCE ERROR", 0x30);
+                return 0;
+            }
+
+            lseek(file_handle, data_offset, 0);
+            if (read(file_handle, data, resource_size) != resource_size) {
+                MessageBoxA(0, "Error: unable to read resource",
+                    "RESOURCE ERROR", 0x30);
+                return 0;
+            }
         }
 
-        load_type = 1;
-        data = (uchar*)malloc(resource_size);
-        data_size = resource_size;
-        if (data == 0) {
-            MessageBoxA(0, "Error: Out of memory in res_read_bin.",
-                "RESOURCE ERROR", 0x30);
-            return 0;
-        }
-
-        lseek(file_handle, data_offset, 0);
-        if (read(file_handle, data, resource_size) == resource_size) {
-            return data;
-        }
-
-        MessageBoxA(0, "Error: unable to read resource",
-            "RESOURCE ERROR", 0x30);
-        return 0;
+        return data;
     }
 
     return 0;

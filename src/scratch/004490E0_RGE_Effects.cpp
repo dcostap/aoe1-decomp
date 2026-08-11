@@ -20,6 +20,16 @@
 // FLAGS: none
 // NOTE: The int ctor and save have the same register allocation problem.
 // A combined-TU compile might fix this but requires infrastructure changes.
+// - corrected the binary-proven outer record ownership: the original rereads
+//   `effects` for the name but applies the running byte offset only to the
+//   count/list fields; the prior indexed `eff` source changed this behavior.
+// - structural reconstruction now matches the 10-call set, exact 352-byte
+//   boundary, frame-size neighborhood, and original zero/list CFG; the
+//   remaining gap is VC5 register/local-home scheduling (this is not an
+//   unresolved field-width or call-ABI question).
+// - final diagnostic used a volatile list-field pointer to reproduce the
+//   stack-lived field address, but that qualifier is not binary-proven source
+//   and was removed from the living candidate; keep the natural typed pointer.
 
 void __cdecl rge_read(int fd, void* buf, int size);
 void* __cdecl calloc(int count, int size);
@@ -36,37 +46,58 @@ struct RGE_Effect {
 };
 
 struct RGE_Effects {
-    void* vtable_ptr; RGE_Effect* effects; long effect_num;
+    void* vtable_ptr;
+    RGE_Effect* effects;
+    long effect_num;
     RGE_Effects(int fd);
 };
 
 RGE_Effects::RGE_Effects(int fd) {
+    int file = fd;
     long* peffect = &effect_num;
+    int outer_count;
+    int index;
+    int inner_count;
+    RGE_Effect_Command** list_ptr;
     vtable_ptr = (void*)0x570430;
-    rge_read(fd, peffect, 4);
+    rge_read(file, peffect, 4);
     if (*peffect > 0) {
         effects = (RGE_Effect*)calloc(*peffect, 0x2C);
-        if (*peffect > 0) {
-            for (int i = 0; i < *peffect; i++) {
-                RGE_Effect* eff = &effects[i];
-                rge_read(fd, eff->name, 0x1F);
-                rge_read(fd, &eff->effect_list_num, 2);
-                if (eff->effect_list_num > 0) {
-                    eff->effect_list = (RGE_Effect_Command*)calloc(eff->effect_list_num, 0x0C);
-                    if (eff->effect_list_num > 0) {
-                        for (int j = 0; j < eff->effect_list_num; j++) {
-                            RGE_Effect_Command* cmd = &eff->effect_list[j];
-                            rge_read(fd, &cmd->command, 1);
-                            rge_read(fd, &cmd->change_num1, 2);
-                            rge_read(fd, &cmd->change_num2, 2);
-                            rge_read(fd, &cmd->change_num3, 2);
-                            rge_read(fd, &cmd->change_amount, 4);
-                        }
+        outer_count = 0;
+        if (outer_count < *peffect) {
+            index = 0;
+            do {
+                RGE_Effect* effect = effects;
+                char* count_ptr;
+                rge_read(file, effect->name, 0x1F);
+                count_ptr = effect->name + index + 0x22;
+                list_ptr = (RGE_Effect_Command**)(count_ptr + 4);
+                rge_read(file, count_ptr, 2);
+                if (*(short*)count_ptr > 0) {
+                    RGE_Effect_Command* allocated =
+                        (RGE_Effect_Command*)calloc(*(short*)count_ptr, 0x0C);
+                    inner_count = 0;
+                    *list_ptr = allocated;
+                    if (*(short*)count_ptr > 0) {
+                        fd = 0;
+                        do {
+                            char* command = (char*)
+                                *list_ptr + fd;
+                            rge_read(file, command, 1);
+                            rge_read(file, command + 2, 2);
+                            rge_read(file, command + 4, 2);
+                            rge_read(file, command + 6, 2);
+                            rge_read(file, command + 8, 4);
+                            inner_count++;
+                            fd += 0x0C;
+                        } while (inner_count < *(short*)count_ptr);
                     }
                 } else {
-                    eff->effect_list = 0;
+                    *list_ptr = 0;
                 }
-            }
+                outer_count++;
+                index += 0x2C;
+            } while (outer_count < *peffect);
         }
     } else {
         effects = 0;

@@ -58,6 +58,14 @@
 // before the EH reset/test, versus the oracle's post-test null xor and shared
 // epilogue. Current clean reconstruction is 230 bytes with 67 strict differing
 // bytes, 93.90% shape, exact 9-call multiset and exact size.
+// Session sa-59d01a08-r1 (bounded pass): allocation-predicate result locals,
+// split/redundant null guards, late result declaration, success-first goto,
+// nested null/positive guards, null-goto, and result propagation through the
+// existing-action arm either regressed structurally or reproduced the known
+// 249-byte duplicated-cleanup basin. A seven-case /GX branch lab found no exact
+// emitted group; its baseline reproduced the current 230-byte/67-byte best.
+// Final lead: the remaining EH-tail difference is compiler block/cleanup
+// placement, not a call, layout, or ABI mismatch; retain the clean typed source.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>

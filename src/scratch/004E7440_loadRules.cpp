@@ -12,6 +12,11 @@
 // and several declaration/argument order variants. The closest two-byte
 // variants reversed the parsed comment-byte tests or otherwise changed the
 // natural local ownership; they were diagnostic only and were rolled back.
+// this session: rechecked reversed declarations, combined declarations,
+// local declaration order, loop-scoped byte locals, and all 2x2x2 combinations
+// of byte declaration/sscanf destination/predicate order; no exact variant.
+// The best two-byte basin is still 2 bytes but semantically reverses the
+// parsed-byte tests; keep the clean first-byte/second-byte source below.
 // left in scratch: canonical behavior and frame/call topology match; the
 // remaining difference is the original VC5 allocation/load order for the two
 // sscanf comment-byte destinations (4 bytes, 1.0152%).

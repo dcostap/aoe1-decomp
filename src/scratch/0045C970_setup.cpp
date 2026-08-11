@@ -18,6 +18,15 @@
 // - Paused at 10 meaningful hypotheses: current clean source is 295B vs 291B,
 //   with five ordered calls aligned; first unresolved block is sprite/facet
 //   guard (original ECX direct short compare/reload vs rebuilt EAX/AX reuse).
+// - Session sa27551fc4: reversed facet compare, reordered zero declaration,
+//   pointer/reference and mixed-alias guard forms, complete RGE_Sprite layout,
+//   multiplication-order variants, a 24-case guard/facing/angle lab, and a
+//   function-scope short facing local were tested. The direct-cmp forms reduced
+//   size in isolation but worsened the FPU/tail drift; no form changed the
+//   rebuilt EAX sprite allocation. Restored the natural int-facing source.
+// - Paused after the 10-hypothesis budget: 295B vs 291B, five ordered calls
+//   aligned, 152 positional diff bytes; remaining lead is original ECX sprite
+//   versus rebuilt EAX/zero-ECX coloring plus the later FPU multiply schedule.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -39,10 +48,43 @@ class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 
 class RGE_Sprite {
 public:
-    char gap_00[0x60];
+    char pict_name[0x0D];
+    char gap_0D[3];
+    long resource_id;
+    unsigned char loaded;
+    char gap_15[3];
+    void* color_tables;
+    void* shape;
+    long last_time;
+    long delta_time;
+    unsigned char color_flag;
+    unsigned char draw_level;
+    short color_table;
+    unsigned char transparent_picking_flag;
+    char gap_2D;
+    short box_x1;
+    short box_y1;
+    short box_x2;
+    short box_y2;
+    short draw_list_num;
+    void* draw_list;
+    void* main_sound;
+    unsigned char micro_man_sound;
+    char gap_41[3];
+    void* sound_list;
+    char name[0x15];
+    char gap_5D;
+    short frame_num;
     short facet_num;
-    char gap_62[0x0E];
+    char gap_62[2];
+    float base_speed;
+    float duration;
+    float pause_between_loops;
     unsigned char flag;
+    char gap_71;
+    short id;
+    unsigned char mirror_flag;
+    char gap_75[3];
 };
 
 // Diagnostic alias: the original reloads facet_num after the guard rather

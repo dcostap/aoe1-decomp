@@ -1,66 +1,280 @@
 // Attempt log for 004F4AA0 TribeTacticalAIModule::taskUngroupedSoldiers
-// try 1: natural reconstruction from packet/decompiler, local managed-array surface; builds 736B vs 740B, close but size stop.
-// try 2: /Oy- probe; too small 720B.
-// try 3: /O1 probe; too small 675B.
-// try 4: reviewed timer magic multiply; source matches observed threshold behavior.
-// try 5: reviewed groupUnitIsIn removal path; broad behavior follows packet.
-// try 6: reviewed missing/duplicate tasked-list membership scans; source likely too high-level.
-// try 7: reviewed ungrouped resize manual allocation path; close but not exact array helper shape.
-// try 8: reviewed finder call args/stack locals; local point ordering uncertain.
-// try 9: reviewed taskSoldier FPU argument order; likely drift.
-// try 10: left in scratch; near-size scaffold but not exact.
-// BLOCKER: rebuilt .text 736B vs original 740B; missing exact managed-array resize/membership scan source shape and finder/taskSoldier stack/FPU scheduling. Not accepted_drift-safe.
+// Prior worker notes: a raw-offset scaffold rebuilt 736B vs 740B but used the
+// wrong array ownership, object/finder shims, and manual removal/growth shape.
+// The current reconstruction restores the same-TU typed ManagedArray surface,
+// soldiers at +0x114, ungroupedSoldiers at +0x124, and informationAI at +0xCEC.
+//
+// Binary-backed oddities retained for this target:
+// - the original passes the second dword of each local XYPoint to
+//   findGatherPosition, as shown by the two LEAs and stack map;
+// - the final moveUnit call consumes an uninitialized int local (the oracle has
+//   an fild from the fixed -4 stack home with no preceding store).
+//
+// Claim sa-7675a699-r1 (10 meaningful hypotheses):
+// - typed baseline aligned all 15 direct calls and the main array/object CFG,
+//   but VC5 saved EDI at entry (760B, frame 0x18 vs 740B/0x1C).
+// - >=60 elapsed spelling, split duplicate-scan labels, and donor-style
+//   reference/pointer aliases were tested; the best emitted basin remains
+//   501 strict-diff bytes / 83.83% shape with exact call-set parity.
+// - explicit manual soldiers growth and volatile local_4 were rolled back as
+//   broader/worse codegen. The remaining structural gap is the callee-save and
+//   local-home topology: oracle uses EBX for the outer index, delays EDI save
+//   until the positive soldiers-count arm, and reads local_4 from -4.
+// BLOCKER: source/layout/callee-save topology remains unresolved; leave this
+// clean typed reconstruction in scratch rather than retain codegen scaffolds.
 
-typedef unsigned char uchar;
-class RGE_Static_Object { public: char pad[0x38]; float x; float y; };
-class MainDecisionAIModule { public: char pad[0xf0]; void* md; RGE_Static_Object* object(int,int,int,int,int,int,int,int,int,int); RGE_Static_Object* object(int); };
-class ManagedArray { public: int* data; int count; int cap; int resize(int); };
-class TribeTacticalAIModule { public: char pad[0xf0]; MainDecisionAIModule* md; char padf4[0x20]; ManagedArray ungrouped; ManagedArray tasked; char pad134[0xE8]; int field1ec; char pad1f0[0xC4]; int field2b4; char pad2b8[0xcf0]; int last_time; void* groupUnitIsIn(int); void taskUngroupedSoldiers(); void taskSoldier(int,float,float,int); };
-class Finder { public: int find(int*,int,int*,int,int*,int,int*,int); };
-extern "C" long __cdecl _ftol(void);
+#include <stdlib.h>
+
+extern "C" {
+    void* __cdecl operator_new(unsigned int size);
+    void __cdecl operator_delete(void* block);
+}
+
+struct XYPoint {
+    int x;
+    int y;
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    T& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            T* new_value = (T*)operator_new(new_size * sizeof(T));
+            if (new_value != 0) {
+                for (int i = 0;
+                     i < this->maximumSizeValue && i < new_size;
+                     i++) {
+                    new_value[i] = this->value[i];
+                }
+                operator_delete(this->value);
+                this->value = new_value;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
+
+    int remove(T valueToRemove) {
+        int i = 0;
+        int max = this->maximumSizeValue;
+        for (; i < max; ++i) {
+            if (this->value[i] == valueToRemove)
+                break;
+        }
+        if (i >= max)
+            return 0;
+
+        --max;
+        if (i < max) {
+            do {
+                this->value[i] = this->value[i + 1];
+                ++i;
+            } while (i < this->maximumSizeValue - 1);
+        }
+
+        int n = this->numberValue - 1;
+        this->numberValue = n;
+        if (n < 0)
+            this->numberValue = 0;
+        return 1;
+    }
+
+    int resize(int new_size);
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    unsigned long world_time;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    char gap_04[0x34];
+    float world_x;
+    float world_y;
+};
+
+class TribeInformationAIModule {
+public:
+    virtual ~TribeInformationAIModule();
+    int findGatherPosition(XYPoint& center, int desiredUnits, int flag,
+                           int sn16, int sn48, RGE_Static_Object* object,
+                           XYPoint& gather);
+};
+
+class MainDecisionAIModule {
+public:
+    virtual ~MainDecisionAIModule();
+    char gap_04[0xEC];
+    RGE_Player* player;
+
+    RGE_Static_Object* object(int objectID);
+    RGE_Static_Object* object(int objectID, int type, int objectClass,
+                              int action, int hasOrderFilter,
+                              int resourceClass, int resourceSubclass,
+                              int state, int minHitPoints,
+                              int civilization);
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    char gap_F4[0xCEC - 0xF4];
+    TribeInformationAIModule informationAI;
+};
+
+class TacticalAIModule {
+public:
+    virtual ~TacticalAIModule();
+    char gap_04[0xEC];
+};
+
+class TacticalAIGroup;
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    TribeMainDecisionAIModule* md;
+    ManagedArray<int> civilians;
+    ManagedArray<int> civilianExplorers;
+    ManagedArray<int> soldiers;
+    ManagedArray<int> ungroupedSoldiers;
+    ManagedArray<int> boats;
+    ManagedArray<int> warBoats;
+    ManagedArray<int> fishingBoats;
+    ManagedArray<int> tradeBoats;
+    ManagedArray<int> transportBoats;
+    ManagedArray<int> artifacts;
+    int sn[226];
+    char gap_51C[0xFA8 - 0x51C];
+    unsigned long lastUngroupedSoldierTaskTime;
+
+    TacticalAIGroup* groupUnitIsIn(int unit);
+    void moveUnit(int unit, float x, float y, int priority);
+    void taskUngroupedSoldiers();
+};
 
 void TribeTacticalAIModule::taskUngroupedSoldiers()
 {
     int i;
-    RGE_Static_Object* soldierObj;
-    int centerPoint_y, gatherPoint_x;
-    int centerPoint_x, gatherPoint_y;
-    int now = *(int*)(*(int*)(*(int*)((char*)this->md + 0xf0) + 0x3c) + 4);
-    if ((unsigned)(((now - this->last_time) * 0x10624dd3) >> 6) < 60) return;
-    RGE_Static_Object* center = this->md->object(-1,0x6d,-1,-1,-1,-1,-1,-1,-1,-1);
-    this->last_time = now;
-    if (!center) return;
-    centerPoint_y = (int)center->x;
-    gatherPoint_x = (int)center->y;
-    if (this->ungrouped.count <= 0) return;
-    for (i = 0; i < this->ungrouped.count; ++i) {
-        if (i > this->ungrouped.cap - 1) this->ungrouped.resize(i+1);
-        int unit = this->ungrouped.data[i];
-        if (this->groupUnitIsIn(unit)) {
-            int j=0;
-            while (j < this->tasked.count && this->tasked.data[j] != unit) ++j;
-            if (j < this->tasked.count) {
-                for (++j; j < this->tasked.count; ++j) this->tasked.data[j-1] = this->tasked.data[j];
-                if (--this->tasked.count < 0) this->tasked.count = 0;
+    int local_1c;
+    XYPoint centerPoint;
+    XYPoint gatherPoint;
+    int local_4;
+
+    unsigned long currentTime = this->md->player->world->world_time;
+    if ((currentTime - this->lastUngroupedSoldierTaskTime) / 1000 >= 60) {
+        this->lastUngroupedSoldierTaskTime = currentTime;
+        RGE_Static_Object* object = this->md->object(
+            -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+        if (object != 0) {
+            centerPoint.y = (int)object->world_x;
+            gatherPoint.x = (int)object->world_y;
+            local_1c = 0;
+            if (0 < this->soldiers.numberValue) {
+                ManagedArray<int>& soldiers = this->soldiers;
+                do {
+                    if (soldiers.maximumSizeValue - 1 < local_1c) {
+                        soldiers.resize(local_1c + 1);
+                    }
+
+                    TacticalAIGroup* group =
+                        this->groupUnitIsIn(soldiers.value[local_1c]);
+                    if (group != 0) {
+                        if (soldiers.maximumSizeValue - 1 < local_1c) {
+                            soldiers.resize(local_1c + 1);
+                        }
+                        this->ungroupedSoldiers.remove(
+                            soldiers.value[local_1c]);
+                    }
+                    else {
+                        if (soldiers.maximumSizeValue - 1 < local_1c) {
+                            soldiers.resize(local_1c + 1);
+                        }
+                        centerPoint.x = (int)this->md->object(
+                            soldiers.value[local_1c]);
+                        if (centerPoint.x != 0) {
+                            if (soldiers.maximumSizeValue - 1 < local_1c) {
+                                soldiers.resize(local_1c + 1);
+                            }
+
+                            ManagedArray<int>* ungrouped =
+                                &this->ungroupedSoldiers;
+                            i = 0;
+                            if (0 < ungrouped->numberValue) {
+                                do {
+                                    if (ungrouped->maximumSizeValue <= i)
+                                        break;
+                                    if (ungrouped->value[i] ==
+                                        soldiers.value[local_1c])
+                                        goto next_soldier;
+                                    i++;
+                                } while (i < ungrouped->numberValue);
+                            }
+
+                            {
+                                int soldier = soldiers[local_1c];
+                                int ungroupedCount = ungrouped->numberValue;
+                                if (0 < ungroupedCount) {
+                                    i = 0;
+                                    do {
+                                        if (ungrouped->maximumSizeValue <= i)
+                                            break;
+                                        if (ungrouped->value[i] == soldier)
+                                            goto find_position;
+                                        i++;
+                                    } while (i < ungroupedCount);
+                                }
+
+                                if (ungrouped->maximumSizeValue - 1 <
+                                    ungroupedCount) {
+                                    ungrouped->resize(ungroupedCount + 1);
+                                }
+                                ungrouped->value[ungrouped->numberValue] = soldier;
+                                ungrouped->numberValue =
+                                    ungrouped->numberValue + 1;
+
+                            find_position:
+                            {
+                                int result =
+                                    this->md->informationAI.findGatherPosition(
+                                        *(XYPoint*)&centerPoint.y, 1, 1,
+                                        this->sn[0x16], this->sn[0x48],
+                                        (RGE_Static_Object*)centerPoint.x,
+                                        *(XYPoint*)&gatherPoint.y);
+                                if (result == 1) {
+                                    if (soldiers.maximumSizeValue - 1 <
+                                        local_1c) {
+                                        soldiers.resize(local_1c + 1);
+                                    }
+                                    this->moveUnit(
+                                        soldiers.value[local_1c],
+                                        (float)gatherPoint.y,
+                                        (float)local_4, 0x32);
+                                }
+                            }
+                            }
+                        }
+                    }
+
+                next_soldier:
+                    local_1c = local_1c + 1;
+                } while (local_1c < this->soldiers.numberValue);
             }
-            continue;
-        }
-        soldierObj = this->md->object(unit);
-        centerPoint_x = (int)soldierObj;
-        if (!soldierObj) continue;
-        int k=0; bool found=false;
-        while (k < this->tasked.count && k < this->tasked.cap) { if (this->tasked.data[k] == unit) { found=true; break; } ++k; }
-        if (found) continue;
-        if (i > this->ungrouped.cap - 1) {
-            int newCount=i+1; int* arr=(int*)operator new(newCount*4); if (arr) { for(int n=0;n<this->ungrouped.count && n<newCount;n++) arr[n]=this->ungrouped.data[n]; operator delete(this->ungrouped.data); this->ungrouped.data=arr; this->ungrouped.cap=newCount; }
-        }
-        unit = this->ungrouped.data[i];
-        k=0; found=false; while(k<this->tasked.count && k<this->tasked.cap){ if(this->tasked.data[k]==unit){found=true;break;} ++k; }
-        if (!found) { if (this->tasked.count > this->tasked.cap-1) this->tasked.resize(this->tasked.count+1); this->tasked.data[this->tasked.count++] = unit; }
-        Finder* f=(Finder*)((char*)this->md + 0xcec);
-        if (f->find(&centerPoint_y,1,&centerPoint_x,1,&this->field1ec,this->field2b4,&gatherPoint_y,unit)==1) {
-            if (i > this->ungrouped.cap-1) this->ungrouped.resize(i+1);
-            this->taskSoldier(this->ungrouped.data[i],(float)gatherPoint_y,(float)centerPoint_x,0x32);
         }
     }
 }

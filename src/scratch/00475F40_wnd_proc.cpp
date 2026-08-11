@@ -27,10 +27,19 @@
 // headers, and parameter-qualifier variants were tested. All plain/context
 // forms stayed at the same 8-byte drift; volatile param_1 alone changed the
 // frame and broad code, so it was rejected.
-// Latest lane: explicit PDB ABI spellings, full donor-header TPanel surface,
+// Latest lane: explicit PDB ABI spellings, full donor-header virtual surfaces,
 // result/edit-window declaration order, canonical WNDPROC field type, and a
 // 16-variant forwarding-argument alias lab all stayed in the same 242-byte
 // codegen group. No natural source form changed the forwarding-only coloring.
+// New claim (sa-f1bb5619-r1, 10 probes): explicit this-qualified/cast base
+// receivers, scoped case-7 forwarding, register-qualified parameters, a
+// decompiler-shaped void* edit-window local, Win32 LOWORD/HIWORD macros, and
+// an HDC receiver local were tested; all ordinary forms were duplicates, while
+// the macros were structurally worse. A 7200-variant all-argument alias lab
+// found no exact output (best diagnostic group was 6 bytes off, with volatile
+// param_1 and aliases); a parameter-qualifier lab likewise found no lead.
+// Restored the pinned clean result-local/TPanel source; the remaining gap is
+// still only the two forwarding-call register-color families.
 //
 // Canonical facts:
 // - TPanel owns active(+0x6C), visible(+0x70), and has size +0xF4.
@@ -212,16 +221,55 @@ struct TEditPanel : TPanel {
     int turn_ime_on;             // +0x168
 
     virtual long wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 };
 
 long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4)
 {
     HWND edit_window = edit_wnd;
+    long result;
 
     if (edit_window != 0 && active != 0 && visible != 0 && hidden == 0) {
         switch (param_2) {
         case 7:
-            return TPanel::wnd_proc(param_1, 7, param_3, param_4);
+            result = TPanel::wnd_proc(param_1, 7, param_3, param_4);
+            return result;
 
         case 0x133:
             if (brush != 0 && (void*)(param_4 & 0xFFFF) == edit_window) {
@@ -239,5 +287,6 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int para
         }
     }
 
-    return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
+    result = TPanel::wnd_proc(param_1, param_2, param_3, param_4);
+    return result;
 }

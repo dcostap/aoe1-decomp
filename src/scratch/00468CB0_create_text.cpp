@@ -1,4 +1,19 @@
 // attempt 1: natural TEasy_Panel text factory from Ghidra/PDB line shape
+// Attempt log:
+// - Baseline matches the natural typed factory through the first 156 bytes,
+//   all 9 ordered calls, saved registers, and 17 exact blocks; rebuilt is 436
+//   bytes versus 413.  The remaining structural gap is the success return
+//   epilogue: the oracle jumps over a cold failure tail at +0x17C, while VC5
+//   emits a success epilogue before that tail.
+// - An initialized result local added an 8-byte frame and broad drift; rolled
+//   back.  Goto/result-join, explicit result assignments, and negative early
+//   failure guards all emitted the same 436-byte basin as the baseline.
+// - Adding a virtual TTextPanel destructor as an extra slot moved the set_text
+//   call to +0xEC; replacing slot zero preserved +0xE8 but did not move the
+//   return tail.  stdio/string header context was also an emitted duplicate.
+// - Making create_text virtual worsened early member offsets/register coloring;
+//   rolled back.  Best source is restored; remaining lead is the original
+//   source's cold failure/common-epilogue topology, not call or layout parity.
 
 class TPanel {};
 class TDrawArea {};

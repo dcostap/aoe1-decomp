@@ -9,6 +9,20 @@
 // - typed target-result reuse restored exact size, one-return CFG, and 97.27%
 //   instruction shape; remaining drift is the VC5 result-register basin and
 //   isolated EH-handler address, matching the paired hunt/convert lead.
+// - bounded follow-up: an uninitialized/int result status expanded to 421B;
+//   scalar int status was byte-identical to the clean pointer source.
+// - explicit success/failure labels improved diagnostic resync to 350B/100
+//   differing bytes but duplicated the EH return path; block-scoped locals did
+//   not change it. Restored the typed result source.
+// - single target/status pointer reuse reached 333B/77 differing bytes and
+//   exact code through the task call; remaining drift is the task-null zero
+//   edge (rebuilt xor-esi/jump) and final status return (mov esi,1; mov eax,esi).
+//   Removing task zeroing reached 331B/48 only by returning the nonzero target
+//   on task failure, so it was diagnostic and rolled back. A scoped constructor
+//   target copy and constructor-result assignment did not improve the basin.
+// - final validated source remains the typed result-pointer reconstruction;
+//   exact size/frame/CFG/call order remain, with localized VC5 result/EH-tail
+//   drift unresolved after the 10-hypothesis budget.
 // FLAGS: config/flags/004CB300_heal.rsp (/GX)
 
 class RGE_Action_Object;

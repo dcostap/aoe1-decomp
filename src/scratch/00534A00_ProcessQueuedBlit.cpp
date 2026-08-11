@@ -72,6 +72,14 @@
 //   render rectangles; emitted code was unchanged (219B, diff=199).
 // wave21 probe: added the proven RGE_View virtual dispatch declarations to
 //   restore the view.h-shaped derived context; emitted code was unchanged.
+// sa-f48fba19-r1 pass: the full inferred TPanel/RGE_View virtual slot surface
+//   was a codegen duplicate; a late TDrawArea receiver local, address-taken
+//   force-result pointer, and named source-left temporary were also duplicates.
+// sa-f48fba19-r1 pass: windows.h/standard RECT context reached the prior
+//   diagnostic 195-byte group but worsened shape and retained EBX; DWORD
+//   BltFast signedness was duplicate. A narrow volatile force-home store
+//   improved resync but grew to 221 bytes, and a late queue-size local plus
+//   short-circuit early guard were duplicates; all were rolled back.
 // Paused: the remaining mismatch is the extra EBX save and COM argument/source
 //   scheduling basin; no canonical ownership or virtual-slot uncertainty remains.
 

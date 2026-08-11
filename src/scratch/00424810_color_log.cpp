@@ -2,15 +2,21 @@
 // Source: Colorlog.cpp lines 13-68
 // void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3)
 // size: 442 bytes (correct), frame: sub esp, 8Ch (matched)
-// First mismatch at byte 17
+//
+// Attempts:
+// - baseline: typed RECT/POINT/DDBLTFX, DrawSystem/DrawArea, and four Blts;
+//   frame/size matched but the imported call and absolute globals were unresolved.
+// - behavior: bound do_color_log (0x62C584), rge_base_game (0x62C574), and
+//   ClientToScreen to their proven IAT/global surfaces; all five calls aligned.
+// - control-flow/liveness: positive guards, scoped DrawSystem, and guard-form
+//   variants left the xor-zero/test and local-slot basin unchanged.
+// - layout: full 0x64 DDBLTFX plus real six-slot DirectDraw virtual Blt improved
+//   the diagnostic diff; removing artificial frame padding was codegen-neutral.
+// - expression/local probes were either duplicates or grew the function to 450
+//   bytes; restored the best 442-byte typed source.
+// - left in scratch: calls/size/frame match, but guard/register coloring and
+//   RECT/DDBLTFX stack-slot scheduling remain nonexact.
 
-// Progress:
-// - DDBLTFX tail[8] padding matched frame to 0x8C
-// - guard chain + struct ops produce correct size
-// - remaining gap: register alloc (xor ecx vs test reg), struct offset shifts
-
-extern unsigned char do_color_log;
-extern void* rge_base_game;
 
 struct tagRECT {
     long left;
@@ -24,24 +30,44 @@ struct tagPOINT {
     long y;
 };
 
-struct IDirectDrawSurface;
-
-struct IDirectDrawSurfaceVtbl {
-    void* gap_00[5];
-    long (__stdcall *Blt)(IDirectDrawSurface* this_, tagRECT* dest, void* src, tagRECT* src_rect, unsigned long flags, void* fx);
-};
-
-struct IDirectDrawSurface {
-    IDirectDrawSurfaceVtbl* lpVtbl;
-};
-
 struct _DDBLTFX {
     unsigned long dwSize;
     unsigned long dwDDFX;
-    char gap_08[0x4C];
+    unsigned long dwROP;
+    unsigned long dwDDROP;
+    unsigned long dwRotationAngle;
+    unsigned long dwZBufferOpCode;
+    unsigned long dwZBufferLow;
+    unsigned long dwZBufferHigh;
+    unsigned long dwZBufferBaseDest;
+    unsigned long dwZDestConstBitDepth;
+    unsigned long dwZDestConst;
+    unsigned long dwZSrcConstBitDepth;
+    unsigned long dwZSrcConst;
+    unsigned long dwAlphaEdgeBlendBitDepth;
+    unsigned long dwAlphaEdgeBlend;
+    unsigned long dwReserved;
+    unsigned long dwAlphaDestConstBitDepth;
+    unsigned long dwAlphaDestConst;
+    unsigned long dwAlphaSrcConstBitDepth;
+    unsigned long dwAlphaSrcConst;
+    unsigned long dwFillColor;
     unsigned long dwColorSpaceLowValue;
     unsigned long dwColorSpaceHighValue;
-    char tail[8];
+    unsigned long dwSrcColorSpaceLowValue;
+    unsigned long dwSrcColorSpaceHighValue;
+};
+
+class IDirectDrawSurface {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall AddAttachedSurface();
+    virtual long __stdcall AddOverlayDirtyRect();
+    virtual long __stdcall Blt(tagRECT* dest, IDirectDrawSurface* src,
+                               tagRECT* src_rect, unsigned long flags,
+                               _DDBLTFX* fx);
 };
 
 struct TDrawArea {
@@ -69,24 +95,17 @@ struct RGE_Base_Game {
     int prog_mode;
 };
 
-extern "C" int __stdcall ClientToScreen(void* hWnd, tagPOINT* point);
+// USER32 import is referenced through the IAT in the original.
+extern "C" int (__stdcall * const ClientToScreen)(void* hWnd, tagPOINT* point);
+
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+#define do_color_log (*(unsigned char*)0x62C584)
 
 void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
-    RGE_Base_Game* game;
-    TDrawSystem* sys;
-    IDirectDrawSurface* surface;
-
-    if (do_color_log == 0) return;
-    game = (RGE_Base_Game*)rge_base_game;
-    if (game == 0) return;
-    if (game->prog_mode < 2) return;
-    sys = game->draw_system;
-    if (sys == 0) return;
-    surface = sys->PrimarySurface;
-    if (surface == 0) return;
-
-    {
-        char frame_pad[8];
+    if (do_color_log != 0 && rge_base_game != 0 &&
+        rge_base_game->prog_mode >= 2) {
+        TDrawSystem* sys = rge_base_game->draw_system;
+        if (sys != 0 && sys->PrimarySurface != 0) {
         tagRECT scr_dest;
         tagRECT back_dest;
         tagPOINT point;
@@ -111,12 +130,12 @@ void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3
         ddbltfx.dwDDFX = 100;
         ddbltfx.dwColorSpaceLowValue = param_1;
 
-        sys->PrimarySurface->lpVtbl->Blt(sys->PrimarySurface, &scr_dest, 0, 0, 0x1000400, &ddbltfx);
+        sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
 
         back_dest.top = 100;
         ddbltfx.dwDDFX = 100;
         ddbltfx.dwColorSpaceLowValue = param_1;
-        sys->DrawArea->DrawSurface->lpVtbl->Blt(sys->DrawArea->DrawSurface, &back_dest, 0, 0, 0x1000400, &ddbltfx);
+        sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
 
         scr_dest.top += 10;
         back_dest.left += 10;
@@ -126,10 +145,11 @@ void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3
         ddbltfx.dwDDFX = 100;
         ddbltfx.dwColorSpaceLowValue = param_2;
 
-        sys->PrimarySurface->lpVtbl->Blt(sys->PrimarySurface, &scr_dest, 0, 0, 0x1000400, &ddbltfx);
+        sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
 
         ddbltfx.dwDDFX = 100;
         ddbltfx.dwColorSpaceLowValue = param_2;
-        sys->DrawArea->DrawSurface->lpVtbl->Blt(sys->DrawArea->DrawSurface, &back_dest, 0, 0, 0x1000400, &ddbltfx);
+        sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
+        }
     }
 }

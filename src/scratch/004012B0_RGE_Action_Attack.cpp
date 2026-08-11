@@ -49,6 +49,18 @@
 // - Five standard-header context variants were codegen duplicates; a focused
 //   p7 assignment-order lab found no productive source shape. None displaced
 //   the canonical typed constructor.
+// Fresh bounded pass (sa-2ceebd29-r1-004012B0):
+// - Explicit `this->` qualification on the initial stores was a codegen duplicate.
+// - A 49-case combined field/init-order lab found the diagnostic 32-byte
+//   x/range/z/min/y order, but it still lost the binary's p4/p3 early loads and
+//   is not a canonical source improvement; all frame/sprite-init alternatives
+//   were farther away.
+// - Moving frame assignments into the early block, removing/reducing fallback
+//   pointer locals, and changing the owner pointer type were duplicate or worse;
+//   replacing the proven zero global with DAT_0056e0b8 worsened to 41 bytes.
+// - Early typed z/y value locals produced 34 bytes and were rolled back. The
+//   clean typed constructor remains the best plausible source; the unresolved
+//   hunk is initial VC5 load/store scheduling and suffix register coloring.
 // Remaining lead: reconstruct the original Act_atak.cpp assignment/declaration
 // context for the first coordinate/range block; do not retain metric-only aliases.
 //

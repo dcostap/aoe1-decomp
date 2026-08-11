@@ -7,18 +7,22 @@
 // 4: Inlined version default /O2 /Oy is still size-short: configured 994 exceeds .text 976. It also uses an EBP frame and many stack locals, unlike original FPO/sub esp 24h schedule.
 // 5: Probed /Ob0: still 976 bytes. Probed /Og- and /Od: exact 994 bytes but broad mismatch, 83.4004% positional, first mismatch offset 0; flags removed.
 // 6: Implemented broad behavior/calls: master outline radii setup, owner->world->map lookup, rge_base_game view test, Unlock/GetDc, SelectClipRgn, stock pen selection based on startLoggingAI/id/groupCommanderValue, six back-cube edge projections, ReleaseDc, and relock.
-// 7: Remaining blocker is FPU/local topology: original keeps precomputed radii in a tight FPO frame and schedules fld/fmul/fstp before GDI setup; natural C spills via EBP and is 18 bytes short under default flags.
-// GIVEUP: left in scratch; no accepted_drift because natural build is size-short and exact-size diagnostic flags are broad from offset 0.
+// 7: Restored the absolute game globals/rdata constants and IAT function-pointer ABI; all 34 calls now align, with the remaining drift localized to prologue/liveness and coordinate scheduling.
+// 8: Mirrored the exact cube-front donor's function-scope output locals and declaration order; corrected the radius_y quarter field used by the final two edges. This reached 998B with 100% ordered-call parity and 79.6% resync similarity.
+// 9: Compound-assignment radius probes introduced broad fmulp/liveness drift and were rolled back.
+// 10: External/const/volatile rdata declaration probes and split coordinate assignments were codegen duplicates or lost absolute relocation identity; restored the natural absolute, direct-member source.
+// GIVEUP: left in scratch; no accepted_drift because the natural source remains 4 bytes over the original boundary and the prologue/liveness drift is broad.
 
 typedef void* HDC;
 typedef void* HGDIOBJ;
 typedef void* HRGN;
-extern "C" int __stdcall SelectClipRgn(HDC, HRGN);
-extern "C" HGDIOBJ __stdcall GetStockObject(int);
-extern "C" HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
-extern "C" int __stdcall MoveToEx(HDC, int, int, void*);
-extern "C" int __stdcall LineTo(HDC, int, int);
-extern int startLoggingAI;
+extern "C" int (__stdcall* const SelectClipRgn)(HDC, HRGN);
+extern "C" HGDIOBJ (__stdcall* const GetStockObject)(int);
+extern "C" HGDIOBJ (__stdcall* const SelectObject)(HDC, HGDIOBJ);
+extern "C" int (__stdcall* const MoveToEx)(HDC, int, int, void*);
+extern "C" int (__stdcall* const LineTo)(HDC, int, int);
+
+#define startLoggingAI (*(int*)0x0062C50C)
 
 class TDrawArea_004C2DF0 {
 public:
@@ -39,7 +43,9 @@ struct RGE_World_004C2DF0 { char gap[0x28]; RGE_Map_004C2DF0* map; };
 struct RGE_Player_004C2DF0 { char gap[0x3C]; RGE_World_004C2DF0* world; };
 struct MasterObj_004C2DF0 { char gap[0xAC]; float rx; float ry; float rz; };
 class BaseGame_004C2DF0 { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void* get_view(); };
-extern BaseGame_004C2DF0* rge_base_game;
+#define rge_base_game (*(BaseGame_004C2DF0**)0x0062C574)
+#define DAT_00574734 (*(float*)0x00574734)
+#define DAT_00574738 (*(float*)0x00574738)
 
 class RGE_Static_Object_004C2DF0 {
 public:
@@ -58,15 +64,17 @@ public:
 
 void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* area, short sx, short sy)
 {
+    short y2, x2, y1, x1;
     MasterObj_004C2DF0* m = this->master_obj;
+    RGE_Player_004C2DF0* owner = this->owner;
+    RGE_Map_004C2DF0* map = owner->world->map;
+    float ry1 = m->rx * DAT_00574734;
+    float rz2 = m->ry * DAT_00574734;
+    float rz3 = m->rz * DAT_00574734;
+    float rz4 = m->rz * DAT_00574738;
     float rx2 = m->rx;
     float ry2 = m->ry;
     float rzFull = m->rz;
-    float rx1 = m->rx * 0.25f;
-    float rz2 = m->rz * 0.25f;
-    float rz3 = m->rz * 0.25f;
-    float rz4 = m->rz * 0.75f;
-    RGE_Map_004C2DF0* map = this->owner->world->map;
 
     void* view = rge_base_game->get_view();
     if (view == 0)
@@ -85,7 +93,6 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
         int py = sy + this->screen_y_offset;
         float negRy = -ry2;
 
-        short x1, y1, x2, y2;
         map->get_point(&x1, &y1, rx2, negRy, 0.0f, px, py);
         map->get_point(&x2, &y2, rx2, negRy, rz3, px, py);
         MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
@@ -93,10 +100,10 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
         map->get_point(&x2, &y2, rx2, negRy, rzFull, px, py);
         MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
         map->get_point(&x1, &y1, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x2, &y2, rx1, negRy, 0.0f, px, py);
+        map->get_point(&x2, &y2, ry1, negRy, 0.0f, px, py);
         MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
         map->get_point(&x1, &y1, -rx2, negRy, 0.0f, px, py);
-        map->get_point(&x2, &y2, -rx1, negRy, 0.0f, px, py);
+        map->get_point(&x2, &y2, -ry1, negRy, 0.0f, px, py);
         MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
         map->get_point(&x1, &y1, rx2, negRy, 0.0f, px, py);
         map->get_point(&x2, &y2, rx2, -rz2, 0.0f, px, py);

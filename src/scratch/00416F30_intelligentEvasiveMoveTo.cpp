@@ -1,106 +1,292 @@
 // VA: 00416F30 UnitAIModule::intelligentEvasiveMoveTo (666 bytes)
-// Combined TU ready - uses include/unit_ai_module.h
-// Facet-based evasion: tries 8 directions with 2-tile offset.
-// Uses pointer-offset arithmetic for game struct access.
-// Uses memcpy workaround for VC5 ICE with function pointer casts.
+// aiuaimod.cpp:3520-3629
 //
-// ACCEPTED_DRIFT candidate.
+// Attempt log:
+// - Reconstructed the binary-supported path probe with the UnitAIModule field
+//   surface and RGE_Static_Object's typed canPath/moveTo virtual ABI.
+// - The point passed to canPath is a by-value XYZPoint. Its z component is
+//   the object's integer world-z; the final move uses that same point.z while
+//   retaining the clamped floating x/y parameters for the current target.
+// - Baseline: natural typed source was 666 bytes with a 0x10 frame, 578
+//   positional differing bytes, and incorrect virtual-slot identities.
+// - Reconstructed the upper clamp as `map_dimension - 0.5f`; this recovered
+//   the original x87 compare/subtract topology and reduced the diff to 462.
+// - Replaced the initial object vtable scaffold with an inherited 85-slot
+//   surface plus explicit slots 0x154/0x198; an explicit slot-0x194
+//   placeholder was needed so the XYZPoint overload calls the observed 0x198
+//   slot. Ordered calls then matched all 10 sites.
+// - A natural do/while with canPath as its condition recovered the original
+//   top switch dispatch and 220-instruction shape. Initializing facet before
+//   baseDistance preserved the source ordering clue; a scoped object pointer
+//   was retained but emitted code was unchanged. Aggregate XYZPoint
+//   initialization was tried and rolled back (diff 644).
+// - Best validated reconstruction: 666 bytes, 0x10 frame, 220 instructions,
+//   all 10 ordered calls/relocations aligned, 414 positional differing bytes
+//   (62.1622%), 74.09% shape. Remaining drift begins in the prologue's frame
+//   size/this-register coloring and propagates through local displacements.
+//   Left in scratch after the 10-hypothesis budget; no inline asm or shared
+//   files changed.
 
 #include "../../include/unit_ai_module.h"
-#include <string.h>
 
-extern "C" float __cdecl distance_to_position(void* obj, float x, float y, float z);
+struct XYZPoint {
+    int x;
+    int y;
+    int z;
+};
 
-int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z, int targetId, int forceFlag)
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+};
+
+class RGE_Map {
+public:
+    virtual ~RGE_Map();
+    char gap_04[4];
+    int map_width;
+    int map_height;
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x24];
+    RGE_Map* map;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+};
+
+// Slots 0..84 are the inherited RGE_Static_Object surface. The moving/path
+// methods below are placed at the packet-proven slots 0x154 and 0x198.
+class RGE_Static_Object_Base {
+public:
+    virtual void vf00();
+    virtual void vf01();
+    virtual void vf02();
+    virtual void vf03();
+    virtual void vf04();
+    virtual void vf05();
+    virtual void vf06();
+    virtual void vf07();
+    virtual void vf08();
+    virtual void vf09();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();
+    virtual void vf17();
+    virtual void vf18();
+    virtual void vf19();
+    virtual void vf20();
+    virtual void vf21();
+    virtual void vf22();
+    virtual void vf23();
+    virtual void vf24();
+    virtual void vf25();
+    virtual void vf26();
+    virtual void vf27();
+    virtual void vf28();
+    virtual void vf29();
+    virtual void vf30();
+    virtual void vf31();
+    virtual void vf32();
+    virtual void vf33();
+    virtual void vf34();
+    virtual void vf35();
+    virtual void vf36();
+    virtual void vf37();
+    virtual void vf38();
+    virtual void vf39();
+    virtual void vf40();
+    virtual void vf41();
+    virtual void vf42();
+    virtual void vf43();
+    virtual void vf44();
+    virtual void vf45();
+    virtual void vf46();
+    virtual void vf47();
+    virtual void vf48();
+    virtual void vf49();
+    virtual void vf50();
+    virtual void vf51();
+    virtual void vf52();
+    virtual void vf53();
+    virtual void vf54();
+    virtual void vf55();
+    virtual void vf56();
+    virtual void vf57();
+    virtual void vf58();
+    virtual void vf59();
+    virtual void vf60();
+    virtual void vf61();
+    virtual void vf62();
+    virtual void vf63();
+    virtual void vf64();
+    virtual void vf65();
+    virtual void vf66();
+    virtual void vf67();
+    virtual void vf68();
+    virtual void vf69();
+    virtual void vf70();
+    virtual void vf71();
+    virtual void vf72();
+    virtual void vf73();
+    virtual void vf74();
+    virtual void vf75();
+    virtual void vf76();
+    virtual void vf77();
+    virtual void vf78();
+    virtual void vf79();
+    virtual void vf80();
+    virtual void vf81();
+    virtual void vf82();
+    virtual void vf83();
+    virtual void vf84();
+};
+
+class RGE_Static_Object : public RGE_Static_Object_Base {
+public:
+    virtual int moveTo(float, float, float, float, int);
+    virtual void vf86();
+    virtual void vf87();
+    virtual void vf88();
+    virtual void vf89();
+    virtual void vf90();
+    virtual void vf91();
+    virtual void vf92();
+    virtual void vf93();
+    virtual void vf94();
+    virtual void vf95();
+    virtual void vf96();
+    virtual void vf97();
+    virtual void vf98();
+    virtual void vf99();
+    virtual void vf100();
+    virtual void vf101();
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+
+    long id;                              // +0x04
+    RGE_Master_Static_Object* master_obj; // +0x08
+    RGE_Player* owner;                    // +0x0C
+    char gap_10[0x28];                    // +0x10..+0x37
+    float world_x;                        // +0x38
+    float world_y;                        // +0x3C
+    float world_z;                        // +0x40
+
+    float distance_to_position(float, float, float);
+};
+
+int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
+                                            int targetId, int forceFlag)
 {
-    if (!forceFlag && this->currentActionValue == -1) {
+    XYZPoint point;
+    float baseDistance;
+    int facet;
+
+    if (forceFlag == 0 && this->currentActionValue != -1) {
         return 0;
     }
-    
-    void* obj = (void*)this->objectValue;
-    
-    // Clamp x to map bounds
+
     if (x < 0.0f) {
         x = 0.0f;
     } else {
-        int mapWidth = *(int*)(*(int*)(*(int*)(*(int*)((char*)obj + 0x0C) + 0x3C) + 0x28) + 0x08);
-        if (x >= (float)mapWidth) {
-            x -= 0.5f;
+        if (x >= (float)this->objectValue->owner->world->map->map_width) {
+            x = (float)this->objectValue->owner->world->map->map_width - 0.5f;
         }
     }
-    
-    // Clamp y to map bounds
+
     if (y < 0.0f) {
         y = 0.0f;
     } else {
-        int mapHeight = *(int*)(*(int*)(*(int*)(*(int*)((char*)obj + 0x0C) + 0x3C) + 0x28) + 0x0C);
-        if (y >= (float)mapHeight) {
-            y -= 0.5f;
+        if (y >= (float)this->objectValue->owner->world->map->map_height) {
+            y = (float)this->objectValue->owner->world->map->map_height - 0.5f;
         }
     }
-    
-    // Convert to ints
-    int xi = (int)x;
-    int yi = (int)y;
-    int zi = (int)(*(float*)((char*)obj + 0x40));
-    
-    // vtable dispatch via memcpy (workaround for VC5 ICE)
-    void** vtbl = *(void***)obj;
-    void* setPosPtr;
-    void* moveFnPtr;
-    memcpy(&setPosPtr, &vtbl[0x198 / 4], 4);
-    memcpy(&moveFnPtr, &vtbl[0x154 / 4], 4);
-    
-    // Try original position
-    int posOk = ((int (*)(void*, int, int, int, float, int))setPosPtr)(obj, xi, yi, zi, 1.0f, -1);
-    
-    // Search facets if blocked
-    if (posOk == 0) {
-        float objZ = *(float*)((char*)obj + 0x40);
-        float bestDist = distance_to_position(obj, (float)xi, (float)yi, objZ);
-        
-        for (int f = 0; f <= 7; f++) {
-            int nx = xi, ny = yi;
-            
-            switch (f) {
-            case 0: nx -= 2; break;
-            case 1: ny -= 2; break;
-            case 2: nx += 2; break;
-            case 3: ny += 2; break;
-            case 4: nx += 2; break;
-            case 5: ny -= 2; break;
-            case 6: nx -= 2; break;
-            case 7: nx -= 2; break;
+
+    point.x = (int)x;
+    point.y = (int)y;
+    RGE_Static_Object* object = this->objectValue;
+    point.z = (int)object->world_z;
+
+    if (object->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
+        facet = -1;
+        baseDistance = this->objectValue->distance_to_position(
+            x, y, this->objectValue->world_z);
+
+        do {
+            ++facet;
+
+            switch (facet) {
+            case 0:
+                point.x -= 2;
+                point.y -= 2;
+                break;
+            case 1:
+            case 2:
+                point.x += 2;
+                break;
+            case 3:
+            case 4:
+                point.y += 2;
+                break;
+            case 5:
+            case 6:
+                point.x -= 2;
+                break;
+            case 7:
+                point.y -= 2;
+                break;
+            default:
+                return 0;
             }
-            
-            // Clamp to map bounds
-            if (nx < 0) nx = 0; else {
-                int mw = *(int*)(*(int*)(*(int*)(*(int*)((char*)obj + 0x0C) + 0x3C) + 0x28) + 0x08);
-                if (nx >= mw) nx = mw - 1;
-            }
-            if (ny < 0) ny = 0; else {
-                int mh = *(int*)(*(int*)(*(int*)(*(int*)((char*)obj + 0x0C) + 0x3C) + 0x28) + 0x0C);
-                if (ny >= mh) ny = mh - 1;
-            }
-            
-            if (targetId != -1) {
-                int r = ((int (*)(void*, int, int, int, float, int))setPosPtr)(obj, nx, ny, zi, 1.0f, -1);
-                if (r == 1) { xi = nx; yi = ny; break; }
+
+            if (point.x < 0) {
+                point.x = 0;
             } else {
-                float d = distance_to_position(obj, (float)nx, (float)ny, objZ);
-                if (d < bestDist) continue;
+                int width = this->objectValue->owner->world->map->map_width;
+                if (point.x >= width) {
+                    point.x = width - 1;
+                }
             }
-        }
+
+            if (point.y < 0) {
+                point.y = 0;
+            } else {
+                int height = this->objectValue->owner->world->map->map_height;
+                if (point.y >= height) {
+                    point.y = height - 1;
+                }
+            }
+
+            if (targetId == 0 &&
+                this->objectValue->distance_to_position(
+                    (float)point.x - 0.5f,
+                    (float)point.y - 0.5f,
+                    this->objectValue->world_z) < baseDistance) {
+                ++facet;
+                continue;
+            }
+
+        } while (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) != 1);
     }
-    
-    // Move to found position
-    int moveOk = ((int (*)(void*, float, float, float, float, int))moveFnPtr)(obj, (float)xi - 0.5f, (float)yi - 0.5f, (float)zi, 0.5f, targetId);
-    
-    if (moveOk == 1) {
+
+    if (this->objectValue->moveTo(
+            (float)point.x - 0.5f,
+            (float)point.y - 0.5f,
+            z, 0.5f, point.z) == 1) {
         this->setCurrentAction(0x262);
-        this->setCurrentTarget((int)-1, (float)xi - 0.5f, (float)yi - 0.5f, (float)zi - 0.5f);
+        this->setCurrentTarget(-1, x, y, z);
         return 1;
     }
-    
+
     return 0;
 }

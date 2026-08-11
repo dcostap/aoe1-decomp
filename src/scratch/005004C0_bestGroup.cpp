@@ -1,50 +1,133 @@
-// VA: 005004C0 TribeTacticalAIModule::bestGroup (430 B)
-// PDB source: taitacmd.cpp
-// __thiscall, returns best group pointer
+// VA: 005004C0 TribeTacticalAIModule::bestGroup (430 bytes)
+// PDB: taitacmd.cpp:11348-11391
+//
+// Attempt log:
+// - Replaced the old decompiler-shaped scaffold (which filtered on desired and
+//   actual unit counts) with the packet-proven type/action, assist-group,
+//   commander-zone, and gather-distance selection logic.
+// - Baseline candidate: natural typed list walk with an explicit sentinel local,
+//   the type-106 assist-group scan, and four direct gatherLocation() reads.
+// - Split id/assist calls restored the oracle's ordered call multiset but moved
+//   the saved-this/point and validity registers; declaration-order and bool/int
+//   variants were duplicates or worse, so they were rolled back.
+// - Swapping sentinel/best declarations improved late block alignment but left
+//   the prologue stack homes wrong and was rolled back.
+// - A 12-variant natural lab over initial-local order, assist-loop form, and
+//   direct versus split id calls found no exact output. The direct do/break
+//   family retained the best clean basin; top-tested variants lost size.
+// - Final clean source: exact size/frame and typed behavior/call set; remaining
+//   drift is the assist id/validity call-order and early local-home/register
+//   basin. No canonical layout or behavioral uncertainty remains.
 
-extern int TacticalAIGroup_type(void* group);
-extern int TacticalAIGroup_subtype(void* group);
-extern int TacticalAIGroup_desiredNumberUnits(void* group);
-extern int TacticalAIGroup_numberUnits(void* group);
+#include <math.h>
 
-void* TribeTacticalAIModule_bestGroup(void* self, int type, int subtype, int a3)
+struct XYPoint {
+    int x;
+    int y;
+};
+
+struct Waypoint {
+    float x;
+    float y;
+};
+
+class TacticalAIGroup {
+public:
+    virtual ~TacticalAIGroup();
+    TacticalAIGroup* next;
+
+    int type() const;
+    int action() const;
+    int id() const;
+    int assistGroupID() const;
+    int commander() const;
+    Waypoint* gatherLocation() const;
+};
+
+class RGE_Static_Object {
+public:
+    unsigned char currentZone();
+};
+
+class MainDecisionAIModule {
+public:
+    RGE_Static_Object* object(int id);
+};
+
+class TribeTacticalAIModule {
+public:
+    virtual ~TribeTacticalAIModule();
+    char gap_004[0xEC];
+    MainDecisionAIModule* md;
+    char gap_0F4[0x8E0];
+    TacticalAIGroup groups;
+
+    TacticalAIGroup* bestGroup(int type, int action, int maxDistance,
+                               XYPoint& point, int zone);
+};
+
+TacticalAIGroup* TribeTacticalAIModule::bestGroup(
+    int type, int action, int maxDistance, XYPoint& point, int zone)
 {
-    void* bestGroup = 0;
-    int bestScore = -1;
-    
-    void* head = *(void**)((char*)self + 0x9D4);
-    void* current = *(void**)((char*)self + 0x9D8);
-    void* listEnd = (void*)((char*)self + 0x9D4);
-    
-    while (current != listEnd && current != 0) {
-        // Check type
-        if (type != -1 && TacticalAIGroup_type(current) != type)
-            goto next;
-        
-        // Check subtype
-        if (subtype != -1 && TacticalAIGroup_subtype(current) != subtype)
-            goto next;
-        
-        // Check desired vs actual units  
-        {
-            int desired = TacticalAIGroup_desiredNumberUnits(current);
-            int actual = TacticalAIGroup_numberUnits(current);
-            if (desired > actual)
-                goto next;
-            
-            // Evaluate group score
-            {
-                int score = desired - actual;
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestGroup = current;
+    TacticalAIGroup* group = this->groups.next;
+    TacticalAIGroup* best = 0;
+    int bestDistance = -1;
+    TacticalAIGroup* sentinel = &this->groups;
+
+    if (group != sentinel) {
+        do {
+            if (group == 0)
+                return best;
+
+            if ((type == -1 || group->type() == type) &&
+                (action == -1 || group->action() == action)) {
+                if (type == 0x6A) {
+                    int valid = 1;
+                    TacticalAIGroup* assist = this->groups.next;
+
+                    if (assist != sentinel) {
+                        do {
+                            if (assist == 0)
+                                break;
+                            if (!valid)
+                                goto next_group;
+                            if (group->id() == assist->assistGroupID())
+                                valid = 0;
+                            assist = assist->next;
+                            sentinel = &this->groups;
+                        } while (assist != sentinel);
+                    }
+
+                    if (!valid)
+                        goto next_group;
+                }
+
+                if (zone != -1) {
+                    RGE_Static_Object* object =
+                        this->md->object(group->commander());
+                    if (object == 0 || object->currentZone() != zone)
+                        goto next_group;
+                }
+
+                int distanceSquared =
+                    (point.y - (int)group->gatherLocation()->y) *
+                    (point.y - (int)group->gatherLocation()->y) +
+                    (point.x - (int)group->gatherLocation()->x) *
+                    (point.x - (int)group->gatherLocation()->x);
+                int distance = (int)sqrt((double)distanceSquared);
+
+                if ((distance < maxDistance && bestDistance == -1) ||
+                    (maxDistance == -1 || distance < bestDistance)) {
+                    best = group;
+                    bestDistance = distance;
                 }
             }
-        }
-        
-        next:
-        current = *(void**)((char*)current + 4);
+
+        next_group:
+            group = group->next;
+            sentinel = &this->groups;
+        } while (group != sentinel);
     }
-    
-    return bestGroup;
+
+    return best;
 }

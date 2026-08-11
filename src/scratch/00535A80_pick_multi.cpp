@@ -10,10 +10,17 @@
 // 8: Hoisting loop index before pick call improved to 40% positional / 21.6% edit and restored xor ESI/count EBP.
 // 9: Register y1 local did not change EBX (still y2).
 // 10: Volatile y2 worsened to 87.68% and first mismatch offset 1; rolled back.
-// Left in scratch: best source has correct object/master offsets, count in EBP and index in ESI after hoisting loop index. Remaining mismatch starts at initial parameter register allocation: rebuilt keeps y2 in EBX where original keeps y1 in EBX and reloads y2 through EAX; this shifts early call setup and later rectangle math. Later second-pass loop/calls are behaviorally close but still have register/block-layout drift.
+// Bounded session probes: exact-source ABI correction fixed the two helper
+// relocations but did not move bytes; parameter-home reuse, declaration-order,
+// natural delta, header-context, and focused score-lifetime variants were
+// codegen duplicates or regressed size. The retained source below is the
+// simplest typed reconstruction: the PDB-proven picked_obj local is function
+// scoped, while the score/count remain ordinary locals.
+// Left in scratch: rebuilt size/calls/frame match, with exact first-pass and
+// later loop islands, but broad register/block-layout drift starts at the
+// initial y-coordinate load (original keeps y1 in EBX; rebuilt keeps y2).
 
 extern int Picked_Objects[];
-extern "C" int __cdecl ftol_dummy(float); // not called; cast uses ftol
 
 class RGE_Static_Object_Master { public: char pad[0x8d]; unsigned char select_level; };
 class RGE_Player;
@@ -54,13 +61,16 @@ public:
     RGE_Map* map; // +104
 
     unsigned char pick_multi(unsigned char p1, long x1, long y1, long x2, long y2);
-    int pick_multi_objects(long x1,long y1,long x2,long y2,int a,int b,int player,unsigned char p1,int flag);
-    int pick_objects(long x,long y,int a,int b,int radius,int c,int d);
+protected:
+    int pick_multi_objects(int x1, int y1, int x2, int y2,
+                           int a, int b, int player, unsigned char p1, int flag);
+    int pick_objects(int x, int y, int a, int b, int radius, int c, int d);
 };
 
 unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, long y2)
 {
     int picked_any = 0;
+    RGE_Static_Object* picked_obj;
     register int i = 0;
     register long y1r = y1;
     register int count = this->pick_multi_objects(x1, y1r, x2, y2, 10, 20, this->player->id, p1, 1);
@@ -81,10 +91,8 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
     }
     if (picked_any) return 1;
 
-    x2 = x2 - x1;
-    y2 = -(y1r - y2);
-    int dx = x2;
-    int dy = y2;
+    int dx = x2 - x1;
+    int dy = y2 - y1;
     int r = dx;
     if (dy <= dx) r = dy;
     if (r < 50) {
@@ -95,7 +103,7 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
     count = this->pick_objects(x1 + dx/2, y1r + dy/2, 10, 20, r, 4, 1);
     if (count) {
         int bestScore = 0;
-        RGE_Static_Object* best = 0;
+        picked_obj = 0;
         if (count > 0) {
             int* pp = Picked_Objects;
             do {
@@ -110,7 +118,7 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
                         }
                         int score = this->pick_score(obj, (short)pp[1]);
                         if (obj->owner == this->player) score += 5;
-                        if (score > bestScore) { best = obj; bestScore = score; }
+                        if (score > bestScore) { picked_obj = obj; bestScore = score; }
                     }
                 }
 next:
@@ -118,7 +126,7 @@ next:
                 count--;
             } while (count != 0);
         }
-        if (best && this->player->select_one_object(best,0)) return 1;
+        if (picked_obj && this->player->select_one_object(picked_obj,0)) return 1;
     }
     return 0;
 }

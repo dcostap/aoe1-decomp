@@ -16,6 +16,13 @@
 // to 59.06% and 354 positional bytes, yet still omitted the original EBP frame and
 // parameter-home topology. Delaying the self owner made no further change.
 // Those source-shape experiments were diagnostic only and were restored.
+// This session: hoisted row cursors, reused a function-scope inner count, and
+// added string.h context; each emitted the clean 356-byte code unchanged.
+// An ordinary self/reference alias for the late mask reload was likewise
+// optimized away. A contiguous typed self/tile local aggregate forced an 8-byte
+// stack allocation and a 363-byte result but not the oracle's EBP frame, and
+// reversing its member order plus old-TU top-level scan locals was unchanged;
+// those layout probes were restored.
 // Left in scratch: default code is 25 bytes short with broad prologue/register
 // drift; canonical behavior and field ownership are stable, but source/ABI context
 // still needs a donor-level explanation for the original EBP/local topology.
@@ -81,13 +88,14 @@ public:
 void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                                            int update_tiles, int p6)
 {
+    RGE_Visible_Map* self = this;
     RGE_Tile* tile = 0;
 
-    log_map_call(this->world->world_time, (int)this->player->id, 4, p6,
+    log_map_call(self->world->world_time, (int)self->player->id, 4, p6,
                  x1, y1, x2, y2, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion == 0) {
-        p6 = this->input_csum;
+        p6 = self->input_csum;
         p6 = _rotl(p6, 3);
         p6 ^= 0x56565656;
         p6 = _rotl(p6, 2);
@@ -98,31 +106,31 @@ void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
         p6 ^= x2;
         p6 = _rotl(p6, 3);
         p6 ^= y2;
-        this->input_csum = p6;
+        self->input_csum = p6;
 
-        if ((x1 >= this->widthValue) || (x2 < 0) ||
-            (y1 >= this->heightValue) || (y2 < 0)) {
+        if ((x1 >= self->widthValue) || (x2 < 0) ||
+            (y1 >= self->heightValue) || (y2 < 0)) {
             return;
         }
         if (x1 < 0) {
             x1 = 0;
         }
-        if (x2 >= this->widthValue) {
-            x2 = this->widthValue - 1;
+        if (x2 >= self->widthValue) {
+            x2 = self->widthValue - 1;
         }
         if (y1 < 0) {
             y1 = 0;
         }
-        if (y2 >= this->heightValue) {
-            y2 = this->heightValue - 1;
+        if (y2 >= self->heightValue) {
+            y2 = self->heightValue - 1;
         }
 
         for (; y1 <= y2; ++y1) {
-                unsigned char* visible = this->map_offsets[y1] + x1;
+                unsigned char* visible = self->map_offsets[y1] + x1;
                 unsigned long* explored = unified_map_offsets[y1] + x1;
 
                 if (update_tiles != 0) {
-                    tile = this->map->map_row_offset[y1] + x1;
+                    tile = self->map->map_row_offset[y1] + x1;
                 }
 
             if (x1 <= x2) {
@@ -137,7 +145,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                         if (update_tiles != 0) {
                             tile->flags_09 = 0x80;
                         }
-                        *explored &= this->PlayerVisibleMaskInvertValue;
+                        *explored &= self->PlayerVisibleMaskInvertValue;
                     }
                     *visible = value;
                     ++visible;

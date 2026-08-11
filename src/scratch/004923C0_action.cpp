@@ -1,52 +1,307 @@
 // Attempt log for 004923C0 TribeMPCreateDialog::action
-// try 1: natural reconstruction from packet/decompiler, /GX for new screen path; exact size but broad mismatch from offset 25.
-// try 2: /Oy- + /GX probe; exact size but worse from offset 0.
-// try 3: /O1 + /GX probe; too small 643B.
-// try 4: reviewed button dispatch predicates; source follows observed action cases.
-// try 5: reviewed currentLine strlen/registry call; high-level RegSetAscii likely wrong scheduling.
-// try 6: reviewed TCPIP GUID compare; source loop differs from original rep cmpsb/local copy.
-// try 7: reviewed CreateMultiplayerGame success/failure branch; broad structure plausible.
-// try 8: reviewed new TribeMPSetupScreen EH state; local surface incomplete.
-// try 9: reviewed fallback base action; declaration likely approximate.
-// try 10: left in scratch; exact-size but broad mismatch.
-// BLOCKER: exact 790B size, but source is behavioral scaffold with broad mismatch from early parameter/EH/local layout and later registry/GUID/new-screen scheduling. Not accepted_drift-safe.
+// baseline (prior worker): behavioral scaffold had exact size but used
+// approximate panel/registry/log/DirectPlay surfaces and diverged from byte 25.
+// probe 1 baseline (sa8d964310_r1): same scaffold rebuilt at 806 bytes;
+// structural reconstruction is required before register tuning.
+// probe 2-3 layout: restored the scr_cj TPanel/TDialogPanel boundary and
+// named +0x20 render-area/+0x40 parent ownership; calls and fields aligned.
+// probe 4-5 control-flow: strlen(currentLine)+1, aggregate ServiceGUID copy,
+// reversed memcmp operands, duplicated status arms, and the typed DirectDraw
+// chain recovered the original GUID/COM block and all 32 call sites.
+// probe 6-7 ABI/liveness: typed PlayerStopTurn[1] clear and variadic
+// TDebuggingLog::Log member ABI; the latter changes only the decorated target.
+// probe 8: initialized result local forced a 0x14 frame and was rolled back.
+// probe 9-10: nested result tree and dead-param result variants were unchanged
+// or broader; restored the typed goto/result reconstruction.
+// left in scratch: rebuilt 865B versus original 790B. Remaining drift is the
+// compiler's duplicated EH epilogues/shared-return topology and one late
+// register/order hunk around the PlayerStopTurn clear; behavior/calls/layout
+// are otherwise binary-backed. No accepted-drift claim.
 
-typedef unsigned long ulong;
-class TPanel { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void v28(); void set_help_info(long,long); };
-class TEditPanel: public TPanel { public: int is_blank(); char* currentLine(); };
-class TEasy_Panel: public TPanel { public: void popupOKDialog(long,int,long,int); long action(TPanel*,long,ulong,ulong); };
-class TribeMPSetupScreen { public: TribeMPSetupScreen(); };
-class TribeMPCreateDialog: public TEasy_Panel { public: char pad20[0x20-sizeof(TEasy_Panel)]; TPanel** pp; char pad24[0x40-0x24]; TEasy_Panel* parent; char pad44[0x498-0x44]; TEditPanel* edit; TPanel* cancel; TPanel* ok; long action(TPanel*,long,ulong,ulong); void set_curr_child(TPanel*); };
-class BaseGame { public: void disable_input(); void draw_window(); void show_status_message(int,char*); }; extern BaseGame* rge_base_game;
-class Regs { public: int RegSetAscii(int,char*,char*,int); }; extern Regs* Reg;
-class Comm { public: char pad[0x12dc]; char guid[16]; int SetGameTitle(char*); int CreateMultiplayerGame(); }; extern Comm* comm;
-class Log { public: void LogMsg(char*); }; extern Log* L;
-class PanelSystem { public: int setCurrentPanel(char*,int); int destroyPanel(char*); }; extern PanelSystem panel_system;
-extern "C" int (__stdcall* const WinExec)(char*,int);
-extern "C" void* (__stdcall* const FindWindowA)(char*,char*);
-extern "C" int (__stdcall* const SendMessageA)(void*,int,int,int);
-static char tcpip[16];
+#include <string.h>
 
-long TribeMPCreateDialog::action(TPanel* panel,long a2,ulong a3,ulong a4)
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawSystem;
+class TDrawArea;
+class TPanel;
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+
+    char gap_04[0x1C];
+    TDrawArea* render_area;               // +0x20
+    char gap_24[0x1C];
+    TPanel* parent_panel;                 // +0x40
+    char gap_44[0xB0];
+
+    void set_curr_child(TPanel* child);
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_F4[0x384];
+
+    virtual ~TEasy_Panel();
+    void popupOKDialog(long, char*, long, long);
+};
+
+class TDialogPanel : public TEasy_Panel {
+public:
+    char gap_478[0x18];
+};
+
+class TEditPanel : public TPanel {
+public:
+    int is_blank();
+    char* currentLine();
+};
+
+class TribeMPCreateDialog : public TDialogPanel {
+public:
+    TPanel* title;                         // +0x490
+    TPanel* input_title;                   // +0x494
+    TEditPanel* inputGamename;             // +0x498
+    TPanel* okButton;                      // +0x49C
+    TPanel* cancelButton;                  // +0x4A0
+
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+};
+
+class RGE_Base_Game {
+public:
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual int get_string(int, char*, int);
+
+    void disable_input();
+    void draw_window();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    void show_status_message(int, char*, long);
+};
+
+extern TRIBE_Game* rge_base_game;
+
+class TRegistry {
+public:
+    int RegSetAscii(int, const char*, unsigned char*, unsigned long);
+};
+
+extern TRegistry* Regs;
+
+struct _GUID {
+    unsigned long Data1;
+    unsigned short Data2;
+    unsigned short Data3;
+    unsigned char Data4[8];
+};
+
+class TCommunications_Handler {
+public:
+    char gap_000[0x12DC];
+    _GUID ServiceGUID;                    // +0x12DC
+    char gap_12EC[0xD0];
+    unsigned long PlayerStopTurn[10];    // +0x13BC
+
+    int SetGameTitle(char*);
+    int CreateMultiplayerGame();
+};
+
+extern TCommunications_Handler* comm;
+
+class TDebuggingLog {
+public:
+    void Log(char*, ...);
+};
+extern TDebuggingLog* L;
+
+class TPanelSystem {
+public:
+    int setCurrentPanel(char*, int);
+    int destroyPanel(char*);
+};
+
+extern TPanelSystem panel_system;
+
+class TribeMPSetupScreen {
+public:
+    TribeMPSetupScreen();
+    char gap[0x890];
+};
+
+class IDirectDraw {
+public:
+    virtual long __stdcall QueryInterface();
+    virtual unsigned long __stdcall AddRef();
+    virtual unsigned long __stdcall Release();
+    virtual long __stdcall Compact();
+    virtual long __stdcall CreateClipper(unsigned long, void**, void*);
+    virtual long __stdcall CreatePalette(unsigned long, void*, void**, void*);
+    virtual long __stdcall CreateSurface();
+    virtual long __stdcall DuplicateSurface();
+    virtual long __stdcall EnumDisplayModes();
+    virtual long __stdcall EnumSurfaces();
+    virtual long __stdcall FlipToGDISurface();
+};
+
+class TDrawSystem {
+public:
+    IDirectDraw* gap_00;
+    char gap_04[0x14];
+    IDirectDraw* DirDraw;                 // +0x18
+    char gap_1C[0x45C];
+    unsigned char DrawType;               // +0x478
+    unsigned char ScreenMode;             // +0x479
+};
+
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;
+};
+
+extern "C" const _GUID DPSPGUID_TCPIP;
+extern "C" int (__stdcall* const WinExec)(char*, int);
+extern "C" void* (__stdcall* const FindWindowA)(char*, char*);
+extern "C" int (__stdcall* const SendMessageA)(void*, int, int, int);
+
+long TribeMPCreateDialog::action(TPanel* panel, long command,
+                                 unsigned long param3, unsigned long param4)
 {
-    if (panel) {
-        if ((panel==ok && a2==1) || (panel==edit && a2==0)) {
-            if (edit->is_blank()) { set_curr_child(edit); return 1; }
+    long result;
+
+    if (panel != 0) {
+        if ((panel == this->okButton && command == 1) ||
+            (panel == this->inputGamename && command == 0)) {
+            if (this->inputGamename->is_blank()) {
+                this->set_curr_child(this->inputGamename);
+                result = 1;
+                goto done;
+            }
+
             rge_base_game->disable_input();
-            char* line=edit->currentLine(); Reg->RegSetAscii(1,"Default Age Of Empires MP Gamename",line,0);
-            comm->SetGameTitle(edit->currentLine());
-            L->LogMsg("$$$ CALLING CreateMultiplayerGame");
-            panel_system.setCurrentPanel("Join Screen",0); rge_base_game->draw_window();
-            int status = 0x4c2; for(int i=0;i<16;i++){ if(comm->guid[i]!=tcpip[i]) { status=0x4c2; goto st; }} status=0x4c3; st:
-            rge_base_game->show_status_message(status,"scr3"); rge_base_game->draw_window(); WinExec("data\\closedpw.exe",0);
-            TPanel* p=*pp; if(*(char*)((char*)p+0x478)==2 && *(char*)((char*)p+0x479)==2){ TPanel* q=*(TPanel**)((char*)p+0x18); q->v28(); }
-            for(int j=0;j<9;j++) ((int*)((char*)comm+0x13c0))[j]=0;
-            int okc=comm->CreateMultiplayerGame(); L->LogMsg("$$$ RETURNED FROM CreateMultiplayerGame");
-            void* w=FindWindowA("closedpw","closedpw"); if(w) SendMessageA(w,0x10,0,0);
-            if(okc){ TribeMPSetupScreen* s=new TribeMPSetupScreen; panel_system.setCurrentPanel("MP Setup Screen",0); panel_system.destroyPanel("Status Screen"); panel_system.destroyPanel("Create Dialog"); panel_system.destroyPanel("Join Screen"); return 1; }
-            TEasy_Panel* parent=this->parent; panel_system.destroyPanel("Create Dialog"); panel_system.setCurrentPanel("Join Screen",0); panel_system.destroyPanel("Status Screen"); parent->popupOKDialog(0x25ad,0,0x1c2,0x64); return 1;
+            Regs->RegSetAscii(1, "Default Age Of Empires MP Gamename",
+                              (unsigned char*)this->inputGamename->currentLine(),
+                              strlen(this->inputGamename->currentLine()) + 1);
+            comm->SetGameTitle(this->inputGamename->currentLine());
+
+            TDrawArea* draw_area = this->render_area;
+            L->Log("$$$ CALLING CreateMultiplayerGame");
+            panel_system.setCurrentPanel("Join Screen", 0);
+            rge_base_game->draw_window();
+
+            _GUID service_guid = comm->ServiceGUID;
+            if (memcmp(&service_guid, &DPSPGUID_TCPIP, sizeof(_GUID)) == 0)
+                rge_base_game->show_status_message(0x4C3, "scr3", 0xC385);
+            else
+                rge_base_game->show_status_message(0x4C2, "scr3", 0xC385);
+            rge_base_game->draw_window();
+            WinExec("data\\closedpw.exe", 0);
+
+            if (draw_area->DrawSystem->DrawType == 2 &&
+                draw_area->DrawSystem->ScreenMode == 2)
+                draw_area->DrawSystem->DirDraw->FlipToGDISurface();
+
+            TCommunications_Handler* communications = comm;
+            memset(&communications->PlayerStopTurn[1], 0,
+                   9 * sizeof(communications->PlayerStopTurn[0]));
+            int create_result = comm->CreateMultiplayerGame();
+            L->Log("$$$ RETURNED FROM CreateMultiplayerGame");
+
+            void* window = FindWindowA("closedpw", "closedpw");
+            if (window != 0)
+                SendMessageA(window, 0x10, 0, 0);
+
+            if (create_result != 0) {
+                new TribeMPSetupScreen;
+                panel_system.setCurrentPanel("MP Setup Screen", 0);
+                panel_system.destroyPanel("Status Screen");
+                panel_system.destroyPanel("Create Dialog");
+                panel_system.destroyPanel("Join Screen");
+                result = 1;
+                goto done;
+            }
+
+            TEasy_Panel* parent = (TEasy_Panel*)this->parent_panel;
+            panel_system.destroyPanel("Create Dialog");
+            panel_system.setCurrentPanel("Join Screen", 0);
+            panel_system.destroyPanel("Status Screen");
+            parent->popupOKDialog(0x25AD, 0, 0x1C2, 100);
+            result = 1;
+            goto done;
         }
-        if ((panel==cancel && a2==1) || (panel==edit && a2==1)) { panel_system.setCurrentPanel("Join Screen",0); panel_system.destroyPanel("Create Dialog"); return 1; }
+
+        if ((panel == this->cancelButton && command == 1) ||
+            (panel == this->inputGamename && command == 1)) {
+            panel_system.setCurrentPanel("Join Screen", 0);
+            panel_system.destroyPanel("Create Dialog");
+            result = 1;
+            goto done;
+        }
     }
-    return TEasy_Panel::action(panel,a2,a3,a4);
+
+    result = TPanel::action(panel, command, param3, param4);
+
+done:
+    return result;
 }

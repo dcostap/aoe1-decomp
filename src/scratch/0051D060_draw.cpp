@@ -1,5 +1,6 @@
 // 0051D060 TRIBE_Panel_Pop::draw
 // tpnl_pop.cpp
+//
 // Attempt log:
 // try 1: broad reconstruction from packet: guard surfaces, animation-state update, optional backing panel draw, text/rect drawing and restore.
 // try 2: modeled early guards for screen(+0x20), palette(+0x70), surface(+0x6C), frame increment, and virtual draw/postDraw calls.
@@ -12,93 +13,239 @@
 // try 9: modeled border text as repeated SetRect + DrawTextA around panel bounds (+8C/+90/+18/+14), then foreground text and GDI restore.
 // try 10: default compile produced .text 928B vs original 1033B, no full diff.
 // try 11: /GX probe produced identical 928B, removed flag file.
-// left in scratch: broad drawing behavior is modeled, but exact class layout, overlay/backing-surface blit calls, HDC/font member surfaces, and repeated rect arithmetic/source order are incomplete; rebuilt is size-short. No accepted_drift: no localized diff.
+// try 12: restored the same-TU TPanel/TRIBE_Panel_Pop layout and real DrawArea/GDI/member-call surfaces from exact tpnl_pop donors; replaced fake lock/roundFloat helpers with draw_begin, get_player, __ftol, SetTrans/Copy, GetDc/ReleaseDc, and imported GDI calls.
+// try 13: changed the byte-mode gate from != 0 to > 0; test/jbe now matches the oracle, with no other structural movement.
+// try 14: tested function-scope rect bounds, height/width declaration order, and in-place right/bottom updates; VC5 stayed in the same LEA family (the oracle uses sub/sub/add/add).
+// try 15: tested foreground color-area assignment/declaration order and a 25-variant focused rect/color lab; no exact variant, with all size/frame/call-set gates stable.
+// final validated scratch state: typed structural reconstruction is retained; only the localized VC5 rectangle scheduling/register family remains nonexact.
 
-typedef unsigned char BYTE;
-struct Rect { int left, top, right, bottom; };
-class Screen { public: void lock(const char*); void unlock(const char*); void* font; };
-class View { public: void draw(); void postDraw(); };
-class Font { public: char gap[0x50]; short lineHeight; void* metrics; };
-class Player { public: char gap[0x50]; void* camera; };
+#include <windows.h>
+#include <stdio.h>
 
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern int roundFloat(float);
-extern void* gPanelMgr;
-extern "C" void* __stdcall SelectObject(void*, void*);
-extern "C" void* __stdcall SetTextColor(void*, unsigned int);
-extern "C" int __stdcall SetBkMode(void*, int);
-extern "C" int __stdcall SetRect(Rect*, int, int, int, int);
-extern "C" int __stdcall DrawTextA(void*, const char*, int, Rect*, unsigned int);
-
-class TRIBE_Panel_Pop {
+class RGE_Game_World {
 public:
-    View* vtblAsView;
-    char gap04[0x14]; int width; int height; Screen* screen;
-    char gap24[0x6c-0x24]; void* surface; void* palette;
-    char gap74[0x88-0x74]; int oldBk; int x; int y;
-    char gap94[0xe0-0x94]; int frame;
-    char gapE4[0xF3-0xE4]; BYTE needsRedraw;
-    void* oldPen; int oldColor; int textColor; int borderColor;
-    void* object; int lastX; int lastY; BYTE animMode; char pad119[3]; float animTime;
-    void* image; char gap128[0x138-0x128]; char label[16]; int labelX; int labelY; void* overlay;
-    void draw();
-    void rebuild();
-    int coordX(int,int,int); int coordY(int,int,int);
+    char gap_000[0x84];
+    float world_time_delta_seconds;
 };
-extern void* getCurrentPlayer(void*);
 
-void TRIBE_Panel_Pop::draw() {
+class RGE_Player {
+public:
+    char gap_000[0x3C];
+    RGE_Game_World* world;
+    char gap_040[0x0A];
+    short player_id;
+    char gap_04C[4];
+    float* attributes;
+};
+
+class RGE_Base_Game {
+public:
+    char gap_000[0x3F4];
+    RGE_Game_World* world;
+    char gap_3F8[0x63C];
+    int mode_counts[0x100];
+
+    RGE_Player* get_player();
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+class TDrawArea {
+public:
+    char gap_000[0x38];
+    HDC DrawDc;
+
+    void* GetDc(char* name);
+    void ReleaseDc(char* name);
+    void SetTrans(int enabled, unsigned char color);
+    void Copy(TDrawArea* area, long x, long y, RECT* rect, int mode);
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual long set_redraw(int);
+    virtual long handle_idle();
+    virtual void draw_begin(int);
+    virtual void finish_up();
+
+    char gap_004[0x08];
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char gap_01C[4];
+    TDrawArea* render_area;
+    char gap_024[0x48];
+    int field_06C;
+    int field_070;
+    char gap_074[0x14];
+    HRGN clip_rgn;
+    long render_left;
+    long render_top;
+    long render_right;
+    long render_bottom;
+    char gap_09C[0x44];
+    long draw_depth;
+    char gap_0E4[0x0F];
+    unsigned char field_0F3;
+
+    char* get_string(int string_id);
+};
+
+class TRIBE_Panel_Pop : public TPanel {
+public:
+    void* font;
+    unsigned long color1;
+    unsigned long color2;
+    unsigned long color3;
+    int player_id;
+    RGE_Game_World* world;
+    RGE_Player* player;
+    int pop;
+    int max_pop;
+    unsigned char mode;
+    unsigned char gap_119[3];
+    float timer;
+    HRGN image_clip_region;
+    TDrawArea* ImageBuffer;
+    RECT ImageRect;
+    RECT UsedImageRect;
+    RECT UsedScreenRect;
+    int ImageTextActive;
+    long LastIBWidth;
+    long LastIBHeight;
+
+    int render_to_image_buffer();
+    virtual void draw();
+};
+
+void TRIBE_Panel_Pop::draw()
+{
     char str[256];
-    Rect r;
-    void* oldFont;
-    int maxx, maxy;
-    int changed;
-    int dx, dy;
-    void* localV;
+    HGDIOBJ old_font;
+    RECT rect;
+    unsigned char changed_mode;
+    long right;
+    long bottom;
 
-    if (!screen || !palette || !surface) return;
-    ++frame;
-    localV = *(void**)this;
-    ((View*)this)->draw();
-    Player* p = (Player*)getCurrentPlayer(gPanelMgr);
-    object = p;
-    changed = 0;
-    if (!animMode) {
-        Font* f = (Font*)p->camera;
-        if (*(int*)((char*)gPanelMgr + ((int)f->lineHeight)*4 + 0xa34) > 0) {
-            animMode = 1; animTime = 0.0f; changed = 1;
+    if (this->render_area == 0)
+        return;
+    if (this->field_070 == 0)
+        return;
+    if (this->field_06C == 0)
+        return;
+
+    this->draw_depth++;
+    this->draw_begin(0);
+
+    RGE_Player* player = rge_base_game->get_player();
+    this->player = player;
+    changed_mode = 0;
+
+    if (this->mode == 0) {
+        if (rge_base_game->mode_counts[player->player_id] > 0) {
+            this->mode = 1;
+            this->timer = 0.0f;
+            changed_mode = 1;
         }
     }
-    if (animMode) {
-        animTime += *(float*)((char*)((Player*)object)->camera + 0x84);
-        if (animTime >= 1.0f) { changed = 1; animTime = 0.0f; if (++animMode > 2) animMode = 0; }
+
+    if (this->mode > 0) {
+        this->timer += player->world->world_time_delta_seconds;
+        if (this->timer > 1.0f) {
+            changed_mode = 1;
+            this->timer = 0.0f;
+            if (++this->mode > 2)
+                this->mode = 0;
+        }
     }
-    void* cam = *(void**)((char*)object + 0x50);
-    dx = roundFloat(*(float*)((char*)cam+0x2c));
-    dy = roundFloat(*(float*)((char*)cam+0x10)) + dx;
-    maxx = roundFloat(*(float*)((char*)cam+0x80));
-    if (dy > maxx) dy = maxx;
-    if (image) {
-        if (changed || needsRedraw || lastX != dx || lastY != dy) { lastX=dx; lastY=dy; rebuild(); if (needsRedraw) { needsRedraw=0; ((View*)this)->postDraw(); return; } }
+
+    {
+        int pop = (int)player->attributes[0x2C / 4];
+        int max_pop = pop + (int)player->attributes[0x10 / 4];
+        int max_available = (int)player->attributes[0x80 / 4];
+        if (max_pop > max_available)
+            max_pop = max_available;
+
+        if (this->ImageBuffer != 0 &&
+            (changed_mode != 0 || this->field_0F3 != 0 ||
+             this->pop != pop || this->max_pop != max_pop)) {
+            this->pop = pop;
+            this->max_pop = max_pop;
+            this->render_to_image_buffer();
+            if (this->field_0F3 != 0) {
+                this->field_0F3 = 0;
+                goto finish;
+            }
+        }
     }
-    if (overlay && image) {
-        screen->lock((const char*)1); overlay = image; screen->unlock((const char*)0); ((View*)this)->postDraw(); return;
+
+    if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
+        this->ImageBuffer->SetTrans(1, 1);
+        this->ImageBuffer->Copy(this->render_area,
+                                this->UsedScreenRect.left,
+                                this->UsedScreenRect.top,
+                                &this->UsedImageRect, 1);
+        this->ImageBuffer->SetTrans(0, 1);
+        goto finish;
     }
-    screen->lock((const char*)0x58B718);
-    oldFont = SelectObject(screen->font, oldPen);
-    oldColor = (int)SetTextColor(screen->font, textColor);
-    oldBk = SetBkMode(screen->font, 1);
-    sprintf(str, (const char*)0x58B70C, coordX(0x2b2a,lastX,lastY));
-    SetTextColor(screen->font, borderColor);
-    int left=x+1, top=y+1, right=x+width-2, bottom=y+height-2;
-    SetRect(&r,left-1,top-1,right-2,bottom-2); DrawTextA(screen->font,str,-1,&r,0x21);
-    SetRect(&r,left,top+1,right-2,bottom); DrawTextA(screen->font,str,-1,&r,0x21);
-    SetRect(&r,left+1,top,right,bottom-2); DrawTextA(screen->font,str,-1,&r,0x21);
-    SetRect(&r,left,top,right,bottom); DrawTextA(screen->font,str,-1,&r,0x21);
-    SetTextColor(screen->font, animMode==1 ? textColor : oldColor);
-    SetRect(&r,left,top,right-1,bottom-1); DrawTextA(screen->font,str,-1,&r,0x21);
-    SetTextColor(screen->font, oldColor);
-    SetBkMode(screen->font, 0);
-    screen->unlock((const char*)0x58B718);
-    ((View*)this)->postDraw();
+
+    if (this->render_area->GetDc((char*)"tpnl_tim::draw") != 0) {
+        SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
+        old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
+        SetBkMode(this->render_area->DrawDc, 1);
+        sprintf(str, "%s%ld/%ld", this->get_string(0x2B2A),
+                this->pop, this->max_pop);
+
+        SetTextColor(this->render_area->DrawDc, this->color2);
+
+        long left = this->render_left;
+        long top = this->render_top;
+        long width = this->pnl_wid;
+        long height = this->pnl_hgt;
+        ++left;
+        ++top;
+        width -= 2;
+        height -= 2;
+        right = width + left;
+        bottom = height + top;
+
+        SetRect(&rect, left - 1, top - 1, right - 2, bottom - 2);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        SetRect(&rect, left - 1, top + 1, right - 2, bottom);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        SetRect(&rect, left + 1, top - 1, right, bottom - 2);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        SetRect(&rect, left + 1, top + 1, right, bottom);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+
+        unsigned long color;
+        TDrawArea* color_area;
+        if (this->mode == 1) {
+            color = this->color3;
+            color_area = this->ImageBuffer;
+        } else {
+            color = this->color1;
+            color_area = this->render_area;
+        }
+        SetTextColor(color_area->DrawDc, color);
+
+        SetRect(&rect, left, top, right - 1, bottom - 1);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+
+        SelectObject(this->render_area->DrawDc, old_font);
+        SelectClipRgn(this->render_area->DrawDc, 0);
+        this->render_area->ReleaseDc((char*)"tpnl_tim::draw");
+    }
+
+finish:
+    this->finish_up();
 }

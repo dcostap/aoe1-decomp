@@ -33,6 +33,15 @@
 // Final bounded best keeps the separate outer counter and scoped inner locals;
 // the remaining blocker is the row-sum destination/register coloring at the
 // first obstruction setup (original LEA into EDX versus rebuilt ADD into EAX).
+// Fresh worker: direct/persistent row locals, inline row arithmetic, stdlib.h
+// context, and a named tile_y4 all failed to improve the 100-byte basin (the
+// named tile_y4 variant regressed to 110).  A focused eight-form natural setup
+// lab found that assigning frame = tile_y + outer before the x/y offsets moves
+// the emitted code to 100% block/call/size parity and only 2 positional bytes.
+// Reordered/parenthesized y-coordinate terms were codegen duplicates; the
+// remaining bytes are only the 00538E20 LEA SIB base/index order ([eax+ebx]
+// original versus [ebx+eax] rebuilt).  Keep the row-first source as the best
+// plausible reconstruction; no opaque register-forcing form was retained.
 
 class TDrawArea {
 public:
@@ -88,9 +97,9 @@ void RGE_View::draw_terrain_obstruction_map(
     TShape* obstruction_shape = rge_base_game->get_shape(0);
     for (outer = 0; outer < 4; ++outer) {
         int i = 0;
+        frame = tile_y + outer;
         int x_offset = outer * 8;
         int y_offset = outer * 4;
-        frame = tile_y + outer;
 
         do {
             int obstruction = pathSystem.obstruction(i + tile_x4, frame);

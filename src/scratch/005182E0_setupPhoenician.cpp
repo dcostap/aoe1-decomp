@@ -43,6 +43,15 @@
 //   source. Moving the 20-valued stores before the 70-valued group reduced the
 //   raw drift to 23 but worsened topology and contradicted the PDB store bands;
 //   the canonical direct-store order is retained.
+// - Fresh session probes: chained 20 stores, zero-offset `*param_1`, separate
+//   twenty/hundred locals, `<stdlib.h>` context, a const mode reference, and
+//   p[0]-value reuse all emitted the same 25-byte basin (or unchanged code).
+// - Chaining all repeated 10/70/20 groups, including reversed operands to retain
+//   store order, worsened the early store topology (31/45-byte drift); rolled
+//   back. The remaining gap is still the EDX=14 versus EDX=64 constant coloring
+//   plus the 12-byte late parameter-reload alignment hunk.
+// - Session sa-f9b73f31-r1 exhausted 9/10 meaningful hypotheses; final clean
+//   source validation is required before pausing for the compiler-basin blocker.
 
 #include <stddef.h>
 

@@ -51,6 +51,14 @@
 // Restored the pinned 274B natural typed goto-fail reconstruction; shared EH-tail
 // lowering remains the only structural blocker observed in this assignment.
 //
+// Fresh bounded pass (sa-4269ae07-r1): initialized int/pointer status and
+// positive-guard/direct-return variants all regressed the exact body basin
+// (187-261 differing bytes); pointer-result form shared the tail only after
+// swapping this/object register ownership (257B/101 diff) and was not kept.
+// Adding stdlib.h was codegen-neutral (274B/65 diff). A 4-case tail lab was
+// diagnostic only and used default flags without the target /GX response file;
+// no variant was promoted. Restored the natural typed goto-fail source.
+
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
 //    cleanup. Original has single cleanup at 0043123A shared by all paths. Shared tail saves

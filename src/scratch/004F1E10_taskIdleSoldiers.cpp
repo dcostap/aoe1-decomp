@@ -1,112 +1,298 @@
 // 004F1E10 TribeTacticalAIModule::taskIdleSoldiers
 // taitacmd.cpp
 // Attempt log:
-// try 1: broad reconstruction from packet: resume from saved group id, walk idle soldier group list, validate states, task/retask by action type.
-// try 2: modeled savedGroupId at +0xF80 and initial search through +0x9D8 list against sentinel +0x9D4.
-// try 3: modeled TacticalAIGroup::id/type/hasTarget repeated-call style and skip for types 0x6A/0x6B/0x6C plus invalid hasTarget.
-// try 4: modeled readyToTask local, canUse(this/player) gate for byte +0x2C8 <= 10, and memberCount/desiredCount comparison.
-// try 5: modeled overfull-group leader/target branch only as placeholder because original uses player object lookups and coordinate comparison.
-// try 6: modeled zero-count and canUse(player,1) early readyToTask clearing.
-// try 7: modeled type 0x66/0x69 and 0x64/0x67 resource/defense target gates, including setMode(0/4) paths.
-// try 8: modeled attack-group readiness for 0x65/0x68 through canAttackNow placeholder.
-// try 9: modeled no-ready command(...,9,1,0,0) path and ready retask setType for 0x66/0x69->8, 0x64/0x67->2, 0x65/0x68->4, 0x6D->0x13.
-// try 10: modeled iteration tail saving next group id and debug_timeGetTime(0x5880C0,0xEA9) time-slice return.
-// try 11: default compile produced .text 704B vs original 989B; /GX probe produced identical 704B, removed flag file.
-// left in scratch: broad list-walk/tasking control is modeled, but exact overfull-group object lookup/coordinate branch, player submodule calls, and command/set-mode source shape are incomplete; rebuilt is far size-short. No accepted_drift: no localized diff.
+// try 1-11: prior broad scaffold used placeholder canUse/object/command
+// helpers and was 704 bytes; it was structurally short and did not preserve
+// the original direct-call set.
+// probe 12: restored the binary-backed TacticalAIGroup, MainDecisionAI,
+// information/strategy subobjects, object/zone APIs, and the nested
+// skip-invalid-group loop from the same-TU decompiler control flow.  This is
+// the clean typed reconstruction to check before any codegen-only probes.
+// probe 13: proper direct method names/layout reached exact size, 0x10 frame,
+// 47/47 conditional CFG, and 51 calls; the first broad result was 777 bytes
+// different.  The remaining call topology is concentrated in the action
+// selection tail (rebuilt 4 setAction/16 type versus original 1 setAction/19
+// type), while the task call is in a relocated cold block.
+// probe 14: moved the invalid-group advance to an out-of-line source label
+// and shared the loop-test; rebuilt remained exact-size/frame and improved to
+// 756 differing bytes with 73.77% exact-block coverage.  Direct-sentinel and
+// positive-predicate variants were codegen duplicates.
+// probe 15: structured/common setAction-tail and action-result liveness
+// variants were codegen duplicates or larger; rolled back to the cleanest
+// typed form.  No inline asm, fake imports, or custom flags retained.
+// left in scratch: exact matching is paused at the 10-hypothesis budget.  The
+// best rebuilt code is 989 bytes, 0x10 frame, 51 calls, 85.08% shape, 756
+// strict differing bytes (76.4408%), and 63.50% bounded edit similarity.
 
-class TacticalAIGroup { public:
-    TacticalAIGroup* prev; TacticalAIGroup* next;
-    int id(); int type(); int memberCount(); int desiredCount(); int leaderId();
-    int currentTask(); int targetId(); int hasTarget(); int canUse(void*, int);
-    void setMode(int); void setType(int); void command(void*, int, int, int, int);
-};
-class TribeTacticalAIModule {
+class RGE_Player;
+class RGE_Static_Object;
+class TribeMainDecisionAIModule;
+class TribeTacticalAIModule;
+
+class AIModule {
 public:
-    char gap0[0xF0]; void* player;
-    char gapF4[0x9D4-0xF4]; TacticalAIGroup sentinel; TacticalAIGroup* head;
-    char gap9DC[0xF80-0x9DC]; int savedGroupId;
-    void taskIdleSoldiers(unsigned int startTicks, unsigned int maxTicks);
-    int findDefenseTarget(); int findAttackTarget(); int findExploreTarget(); int canAttackNow(); int canExploreNow(); int canPatrolNow();
+    virtual ~AIModule();
+    char gap_04[0xEC];
 };
-extern unsigned long debug_timeGetTime(const char*, int);
-extern int roundFloat(float);
 
-void TribeTacticalAIModule::taskIdleSoldiers(unsigned int startTicks, unsigned int maxTicks) {
-    TacticalAIGroup* g;
-    TacticalAIGroup* end;
+class TacticalAIModule : public AIModule {
+public:
+    virtual ~TacticalAIModule();
+};
+
+class MainDecisionAIModule : public AIModule {
+public:
+    RGE_Player* player;
+    char gap_F4[0x10];
+
+    RGE_Static_Object* object(int id);
+    RGE_Static_Object* object(int, int, int, int, int, int, int, int, int,
+                              int);
+};
+
+class InformationAIModule : public AIModule {
+public:
+    virtual ~InformationAIModule();
+};
+
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    char gap_F0[0x10090 - 0xF0];
+
+    int fullyExploredZone(int commander);
+};
+
+class StrategyAIModule : public AIModule {
+public:
+    virtual ~StrategyAIModule();
+};
+
+class TribeStrategyAIModule : public StrategyAIModule {
+public:
+    char gap_F0[0x5F8 - 0xF0];
+
+    int currentVictoryCondition();
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    char gap_104[0xCEC - 0x104];
+    TribeInformationAIModule informationAI;
+    char gap_10D7C[0x10E74 - 0x10D7C];
+    TribeStrategyAIModule strategyAI;
+};
+
+class TacticalAIGroup {
+public:
+    void* vtable_ptr;
+    TacticalAIGroup* next;
+    TacticalAIGroup* prev;
+    char gap_0C[0x2BC];
+    unsigned char consecutiveGatherAttemptsValue;
+    char gap_2C9[3];
+    char gap_2CC[0x64];
+
+    int id();
+    int type();
+    int action();
+    int isGathered(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
+    int desiredNumberUnits();
+    int numberUnits();
+    int commander();
+    int allUnitsIdle(TribeMainDecisionAIModule*, int);
+    void setDesiredNumberUnits(int);
+    void setSubType(int);
+    void setType(int);
+    void setAction(int);
+    int task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int,
+             int);
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    char gap_04[0x34];
+    float world_x;
+    float world_y;
+
+    unsigned char currentZone();
+    unsigned char lookupZone(int, int);
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    TribeMainDecisionAIModule* md;
+    char gap_F4[0x8E0];
+    TacticalAIGroup groups;
+    char gap_D04[0x27C];
+    int nextIdleSoldierGroupToTaskValue;
+
+    int numberItemsToDefend();
+    int numberItemsToAttack();
+    int itemToCapture();
+    int itemToBringToArea();
+
+    void taskIdleSoldiers(unsigned long, unsigned long);
+};
+
+extern unsigned long debug_timeGetTime(const char*, int);
+
+void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
+                                              unsigned long maxTime)
+{
+    TacticalAIGroup* group = this->groups.next;
+
+    if (this->nextIdleSoldierGroupToTaskValue != -1) {
+        while ((group != &this->groups && group != 0) &&
+               (group->id() != this->nextIdleSoldierGroupToTaskValue)) {
+            group = group->next;
+        }
+        if (group->id() != this->nextIdleSoldierGroupToTaskValue) {
+            group = this->groups.next;
+        }
+    }
+
+    TacticalAIGroup* end = &this->groups;
     int readyToTask;
     int isGathered;
-    int savedThis;
-    int savedEnd;
+    int desired;
+    int number;
+    int actionToSet;
+    do {
+        while (1) {
+            if (group == &this->groups || group == 0) {
+                this->nextIdleSoldierGroupToTaskValue = -1;
+                return;
+            }
 
-    savedThis = (int)this;
-    g = head;
-    if (savedGroupId != -1) {
-        end = &sentinel;
-        if (g != end) {
-            while (g) {
-                if (g->id() == savedGroupId) break;
-                g = g->next;
-                if (g == end) break;
+            if (group->type() != 0x6B && group->type() != 0x6C &&
+                group->type() != 0x6A &&
+                (group->action() == 0 || group->action() == 1)) {
+                break;
+            }
+            else {
+                goto skip_invalid_group;
             }
         }
-        if (g->id() != savedGroupId) g = head;
-    }
-    end = &sentinel;
-    savedEnd = (int)end;
-    if (g == end || !g) { savedGroupId = -1; return; }
 
-    while (g != end) {
-        if (g->type() == 0x6b || g->type() == 0x6c || g->type() == 0x6a || (g->hasTarget() && g->hasTarget()!=1)) {
-            g = g->next;
-        } else {
-            readyToTask = 1;
-            if (*(unsigned char*)((char*)g+0x2c8) <= 10) readyToTask = g->canUse(this,1);
-            isGathered = g->memberCount();
-            if (isGathered > g->desiredCount()) {
-                void* a = 0; void* b = 0;
-                int leader = g->leaderId();
-                if (a && b) {
-                    int c1 = roundFloat(*(float*)((char*)b+0x3c));
-                    int c2 = roundFloat(*(float*)((char*)b+0x38));
-                    if (((unsigned char)c1) != ((unsigned char)c2)) {
-                        g->setMode(g->desiredCount());
+        readyToTask = 1;
+        isGathered = 1;
+        if (group->consecutiveGatherAttemptsValue <= 10) {
+            isGathered = group->isGathered(this, this->md);
+        }
+
+        desired = group->desiredNumberUnits();
+        number = group->numberUnits();
+        if (desired > number) {
+            RGE_Static_Object* commanderObj =
+                this->md->object(group->commander());
+            RGE_Static_Object* targetObj =
+                this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1,
+                                 -1);
+            if (commanderObj == 0 || targetObj == 0) {
+                readyToTask = 0;
+            }
+            else {
+                unsigned char zone = commanderObj->currentZone();
+                if (zone == commanderObj->lookupZone(
+                               (int)targetObj->world_x,
+                               (int)targetObj->world_y)) {
+                    readyToTask = 0;
+                }
+                else {
+                    group->setDesiredNumberUnits(group->numberUnits());
+                }
+            }
+        }
+        else if (isGathered == 0) {
+            readyToTask = 0;
+        }
+        else if (group->allUnitsIdle(this->md, 1) == 0) {
+            readyToTask = 0;
+        }
+        else {
+            if (group->type() == 0x66 || group->type() == 0x69) {
+                if (this->md->informationAI.fullyExploredZone(
+                        group->commander()) == 0) {
+                    readyToTask = 0;
+                }
+            }
+
+            if (group->type() == 0x64 || group->type() == 0x67) {
+                if (this->md->strategyAI.currentVictoryCondition() == 0) {
+                    if (this->itemToCapture() == -1 &&
+                        group->type() == 0x64) {
                         readyToTask = 0;
-                    } else readyToTask = 0;
-                } else readyToTask = 0;
-            } else if (isGathered == 0) {
-                readyToTask = 0;
-            } else if (!g->canUse(player,1)) {
-                readyToTask = 0;
-            } else {
-                if ((g->type()==0x66 || g->type()==0x69) && !g->canUse((char*)player+0xcec,0)) readyToTask = 0;
-                if (g->type()==0x64 || g->type()==0x67) {
-                    if (!findDefenseTarget()) {
-                        if (findAttackTarget()==-1 && g->type()==0x64) readyToTask = 0;
-                        else g->setMode(0);
                     }
-                    if (findDefenseTarget()==4) {
-                        if (findExploreTarget()==-1 && g->type()==0x64) readyToTask = 0;
-                        else g->setMode(4);
+                    else {
+                        group->setSubType(0);
                     }
-                } else if ((g->type()==0x65 || g->type()==0x68) && !canAttackNow()) readyToTask = 0;
+                }
+                if (this->md->strategyAI.currentVictoryCondition() == 4) {
+                    if (this->itemToBringToArea() == -1 &&
+                        group->type() == 0x64) {
+                        readyToTask = 0;
+                    }
+                    else {
+                        group->setSubType(4);
+                    }
+                }
             }
-
-            if (!readyToTask) {
-                if (!isGathered) g->command(this, player ? 9 : 9, 1, 0, 0);
-            } else {
-                int t = g->type();
-                if (t==0x66 || t==0x69) g->setType(8);
-                else if (t==0x64 || t==0x67) {
-                    if (!canExploreNow() && t==0x67) g->setType(0x69);
-                    g->setType(2);
-                } else if (t==0x65 || t==0x68) g->setType(4);
-                else if (t==0x6d) g->setType(0x13);
+            else if ((group->type() == 0x65 || group->type() == 0x68) &&
+                     this->numberItemsToDefend() == 0) {
+                readyToTask = 0;
             }
-            g = g->next;
-            savedGroupId = g->id();
-            if (debug_timeGetTime((const char*)0x5880C0,0x0EA9) - startTicks >= maxTicks) return;
         }
-    }
-    savedGroupId = -1;
+
+        if (readyToTask != 0) {
+            actionToSet = group->type();
+            if (actionToSet == 0x66 ||
+                (actionToSet = group->type(), actionToSet == 0x69)) {
+                actionToSet = 8;
+            }
+            else if (actionToSet == 0x64 ||
+                     (actionToSet = group->type(), actionToSet == 0x67)) {
+                if (this->numberItemsToAttack() == 0 &&
+                    group->type() == 0x67) {
+                    group->setType(0x69);
+                }
+                actionToSet = 2;
+            }
+            else if (actionToSet == 0x65 ||
+                     (actionToSet = group->type(), actionToSet == 0x68)) {
+                actionToSet = 4;
+            }
+            else {
+                if (actionToSet != 0x6D) {
+                    goto next_group;
+                }
+                actionToSet = 0x13;
+            }
+            goto set_action;
+        }
+        else if (isGathered == 0) {
+            group->task(this, this->md, 9, 1, 0);
+        }
+
+        goto next_group;
+
+set_action:
+        group->setAction(actionToSet);
+
+next_group:
+        group = group->next;
+        this->nextIdleSoldierGroupToTaskValue = group->id();
+        if (debug_timeGetTime((const char*)0x5880C0, 0xEA9) - startTime >=
+            maxTime) {
+            return;
+        }
+        goto loop_compare;
+
+skip_invalid_group:
+        group = group->next;
+loop_compare:
+        ;
+    } while (group != end);
+
+    this->nextIdleSoldierGroupToTaskValue = -1;
 }

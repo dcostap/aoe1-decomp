@@ -21,6 +21,18 @@
 // Main-agent audit restored four ordinary named bounding outputs and removed
 // explicit parameter-home alias casts. Remaining gap is broad VC5 register/frame
 // coloring, not an unresolved call set or bounding-box behavior.
+// - continuation baseline revalidated the ordinary source at 283B (18B short).
+// - staged dimension declaration/initializer and long-width probes were duplicate
+//   or neutral; a separate named map-width/bx1/map-height order only moved one
+//   diagnostic byte and worsened block shape.
+// - a binary-backed two-int Map_Dims local restored the proven 8B frame and 301B
+//   size; combining it with the observed parameter-home output aliases reached
+//   189B strict drift / 88.98% shape. The alias/aggregate form remains diagnostic
+//   only because it is compiler-steering rather than canonical source.
+// - register-qualified view-top, a local map pointer, and aggregate declaration
+//   reordering were codegen duplicates. Restored the natural named-dimension and
+//   four bounding-output reconstruction; final validated lead is the same-TU
+//   register/frame allocation around the early dimension loads.
 // FLAGS: /nologo /c /O2 /Oy
 
 class RGE_Map {

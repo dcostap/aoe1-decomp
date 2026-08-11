@@ -14,6 +14,14 @@
 //   it is a codegen duplicate, so the natural nested record remains canonical.
 // - Main-agent audit retained the shared named option record and ordinary
 //   indexed loop; no address-expression steering survives.
+// - New worker probes: do/while lowering, integer-address-sum spelling,
+//   signed-byte fields with explicit casts, an inline array wrapper, and an
+//   index-first pointer-cast address all remained the same 2-byte SIB group.
+//   Array references added a 21-byte frame/CFG drift; a non-inlined helper
+//   added two calls; both were restored. The vc5-small flag family (12
+//   variants, including /GX, /Ow, /Oi, /Og, /Ot, /Ob0 combinations) also
+//   collapsed to one 2-byte group. The residual is therefore a backend
+//   address-term encoding basin, not a supported ownership/type lead.
 
 class RGE_Base_Game {
 public:

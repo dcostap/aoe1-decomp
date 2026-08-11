@@ -10,6 +10,15 @@
 // attempt 8: tried explicit angle_local/y2_bits locals to force EDI/EBP; worsened to first mismatch 19.
 // attempt 9: tried for-loop over node->next; worsened loop entry/null-test shape.
 // attempt 10: tried naming lines_intersect result local; worsened call/branch scheduling and reverted.
+// session baseline: default VC5 build is 421 bytes with exact frame/saved-reg/call-set parity;
+//   first mismatch is +0x46, where node/angle/facet/offset color as EBP/EBX/EDI/ESI
+//   instead of the oracle's EBX/EDI/ESI/EAX.  The remaining drift is a broad liveness basin.
+// session ABI probe: PDB's float&/int& output ABI emits the same bytes as pointer proxies;
+//   references are retained as the more plausible source surface.
+// session layout probe: restored the canonical 24-byte RGE_Tile/RGE_Object_List ownership;
+//   objects.list emits the same bytes as the narrow +0x10 tile stub.
+// session probes: direct angle lvalue, byte facet, local declaration-order variants, and
+//   facet/offset order variants did not improve the basin; compare-before-store angle adds 10 bytes.
 // Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
 
 extern "C" double __cdecl atan2(double, double);
@@ -44,13 +53,23 @@ class RGE_Object_List {
 public:
     void* vtable_ptr;
     RGE_Object_Node* list;
+    short number_of_objects;
+    char gap_0A[2];
 };
 
 class RGE_Tile {
 public:
-    char gap_00[0x10];
-    RGE_Object_Node* list;       // objects.list at +0x10
-    char gap_14[4];
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    RGE_Object_List objects;
 };
 
 class RGE_Map {
@@ -73,19 +92,19 @@ public:
     int higher_check_for_cliff(RGE_Static_Object* obj, int col, int row,
                                float x1, float y1, float x2, float y2,
                                RGE_Map* map, RGE_Static_Object* old_obj,
-                               float* angle, int* dir);
+                               float& angle, int& dir);
 };
 
 int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col, int row,
                                                 float x1, float y1, float x2, float y2,
                                                 RGE_Map* map, RGE_Static_Object* old_obj,
-                                                float* angle, int* dir)
+                                                float& angle, int& dir)
 {
     if (row < 0 || row >= map->map_height || col < 0 || col >= map->map_width) {
         return 0;
     }
 
-    RGE_Object_Node* node = map->map_row_offset[row][col].list;
+    RGE_Object_Node* node = map->map_row_offset[row][col].objects.list;
     if (node == 0) {
         return 0;
     }
@@ -93,11 +112,11 @@ int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col,
         RGE_Static_Object* cliff = node->node;
         if (cliff->master_obj->object_group == 0x22 && cliff != old_obj) {
             old_obj = cliff;
-            if (*angle == -1.0f) {
+            if (angle == -1.0f) {
                 double a = atan2((double)(obj->world_y - this->world_y), (double)(obj->world_x - this->world_x));
-                *angle = (float)a;
+                angle = (float)a;
                 if (a < F32(0x00574C98)) {
-                    *angle = (float)(a - F32(0x00574CA4));
+                    angle = (float)(a - F32(0x00574CA4));
                 }
             }
 
@@ -108,12 +127,12 @@ int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* obj, int col,
                                 F32(0x0058726C + off) + y1,
                                 F32(0x00587270 + off) + x2,
                                 F32(0x00587274 + off) + y2)) {
-                if (((0x18 < facet) || (*angle < F32(0x00587258 + off)) || (F32(0x0058725C + off) < *angle)) &&
-                    ((*angle < F32(0x00587260 + off)) || (F32(0x00587264 + off) < *angle))) {
-                    --*dir;
+                if (((0x18 < facet) || (angle < F32(0x00587258 + off)) || (F32(0x0058725C + off) < angle)) &&
+                    ((angle < F32(0x00587260 + off)) || (F32(0x00587264 + off) < angle))) {
+                    --dir;
                     return 1;
                 }
-                ++*dir;
+                ++dir;
                 return 1;
             }
         }

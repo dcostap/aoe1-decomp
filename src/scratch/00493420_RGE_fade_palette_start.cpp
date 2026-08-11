@@ -17,6 +17,14 @@
 // - windows.h context and global declaration-order probes were codegen-neutral;
 //   a binary-backed byte-cursor copy improved resynchronization but was rolled
 //   back as decompiler-shaped scaffolding.
+// - this claim's declaration/initializer splits, source/destination cursor
+//   order, named end pointer, red-channel alias, comma sequencing, and hoisted
+//   destination lifetime were codegen duplicates or structural regressions;
+//   the focused 12-form cursor lab likewise found no improved setup basin.
+// - treating the two palette globals as inventory-backed byte objects expanded
+//   the function to 294 bytes and broke the exact initialization block; the
+//   raw cursor forms were not retained. Moving ++target into the loop condition
+//   kept 277 bytes but lost an exact late block, so it was restored.
 // - left in scratch: ordered destination-cursor setup remains non-exact; calls,
 //   loop CFG, and final timestamp/FPU/flag logic align.
 

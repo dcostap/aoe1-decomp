@@ -10,96 +10,264 @@
 // try 8: implemented middle visible band with literal memcpy and fill memset, including right-edge truncation.
 // try 9: implemented right-side skip band after state transition, preserving packet consumption until end-of-line.
 // try 10: /GX probe had no effect; removed. Current source reaches exact configured size 813B but prologue/frame/local topology is wrong (0x1c frame vs original 0x08), with broad mismatch from offset 2.
-// left in scratch: behavior surface is plausible but over-local/incorrect source topology; not accepted_drift-safe.
+// try 11: restored the Shape.cpp CRT intrinsic context with <string.h> and
+// #pragma function(memcpy)/#pragma function(memset), so the binary-proven
+// memcpy/memset call sites remain out-of-line instead of being inlined.
+// try 12: corrected the period call-site ownership to shape_x/shape_y followed
+// by clip_left/clip_top/clip_right/clip_bottom; the destination and three
+// clipping bands now use the proven argument roles instead of shifted names.
+// try 13: rewrote the loop state to mutate the proven incoming parameter homes
+// (clip_top and clip_bottom) and carried the persistent row destination through
+// save_buffer, matching the period source/decompiler ownership rather than
+// separate skip/row/state locals.
+// try 14: shared one byte command/count local across all RLE bands, mirroring
+// the donor's repeated parameter-home byte reloads instead of block-scoped
+// count declarations.
+// final bounded pass: shared byte state recovered the original 8-byte frame,
+// exact effective size, and all conditional CFG signals. Ten hypotheses are
+// exhausted; the remaining gap is one merged right-band memcpy call plus the
+// broad VC5 register/prologue basin. The goto label was a codegen duplicate
+// and was removed from the retained natural source.
+// left in scratch: behavior and call surface are plausible, but the VC5 frame
+// and register topology still need validation against the 8-byte oracle.
+
+#include <string.h>
+#pragma function(memcpy)
+#pragma function(memset)
+
+extern "C" void* __cdecl memcpy(void* dest, const void* src, unsigned int count);
+extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);
 
 typedef unsigned char uchar;
-extern "C" void* __cdecl memset(void*, int, unsigned int);
-extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 
-class TDrawArea { public: char pad0[8]; uchar* Bits; char padC[0x10]; long Height; char pad20[4]; long Orien; long AlignedWidth(); };
-class TShape { public: void* shape; int load_type; int load_size; uchar* shape_header; unsigned char shape_draw_clipped(TDrawArea*,long,long,long,long,long,long); };
+struct Shape_Header {
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
+};
 
-unsigned char TShape::shape_draw_clipped(TDrawArea* area,long min_y,long min_x,long max_x,long y,long x,long rows)
+class TDrawArea {
+public:
+    char gap_00[8];
+    uchar* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
+
+    long AlignedWidth();
+};
+
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
+
+struct Shape_File_Header;
+struct SLhape_File_Header;
+
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+class TShape {
+public:
+    uchar* shape;
+    int load_type;
+    int load_size;
+    Shape_Header* shape_header;
+    Shape_File_Header* head;
+    Shape_Offsets* offsets;
+    SLhape_File_Header* FShape;
+    Shape_Info* shape_info;
+
+    uchar shape_draw_clipped(TDrawArea*, long, long, long, long, long, long);
+};
+
+uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
+                                  long clip_left, long clip_top,
+                                  long clip_right, long clip_bottom)
 {
     long pitch = area->AlignedWidth() * area->Orien;
-    uchar* src = this->shape_header + 0x18;
-    uchar* dst;
-    if (area->Orien < 1) dst = area->Bits + (y - area->Height + 1) * pitch + x;
-    else dst = area->Bits + y * pitch + x;
+    uchar* src = (uchar*)(this->shape_header + 1);
+    uchar* save_buffer;
+    uchar count;
 
-    long cur_y = min_y;
-    if (cur_y < y) {
-        long skip = y - cur_y;
-        cur_y += skip;
-        while (skip--) {
+    if (area->Orien < 1)
+        save_buffer = area->Bits + (clip_top - area->Height + 1) * pitch;
+    else
+        save_buffer = area->Bits + clip_top * pitch;
+    save_buffer += clip_left;
+
+    if (shape_y < clip_top) {
+        clip_top = clip_top - shape_y;
+        shape_y = shape_y + clip_top;
+        do {
             uchar done = 0;
-            while (!done) {
-                uchar code = *src++;
-                if (code & 1) { uchar n = code >> 1; if (n) src += n; else src++; }
-                else { if ((code & 0xfe) == 0) done = 1; else src++; }
-            }
-        }
-    }
-    if (cur_y > rows) return 1;
-    rows = rows - cur_y + 1;
-    while (rows--) {
-        long xpos = x;
-        uchar state;
-        if (min_x >= xpos) state = 1; else state = 0;
-        while (state == 0) {
-            uchar code = *src++;
-            if (code & 1) {
-                uchar n = code >> 1;
-                if (!n) { n = *src++; xpos += n; if (xpos >= min_x) { if (xpos > max_x) state = 2; else { dst += xpos - min_x; state = 1; } } }
-                else {
-                    xpos += n;
-                    if (xpos >= min_x) {
-                        if (xpos > max_x) {
-                            long cnt = max_x - min_x + 1;
-                            uchar* p = src + min_x - xpos + n;
-                            state = 2;
-                            memcpy(dst, p, cnt);
-                            dst += cnt;
-                            src += n;
-                        } else {
-                            long cnt = xpos - min_x;
-                            state = 1;
-                            memcpy(dst, src + n - cnt, cnt);
-                            dst += cnt;
-                            src += n;
-                        }
-                    } else src += n;
-                }
-            } else {
-                uchar n = code >> 1;
-                if (!n) state = 3;
-                else { xpos += n; if (xpos >= min_x) { long cnt; state = (xpos > max_x) ? 2 : 1; cnt = (xpos > max_x) ? (max_x - min_x + 1) : (xpos - min_x); memset(dst, *src, cnt); dst += cnt; } src++; }
-            }
-        }
-        state--;
-        if (state == 0) {
-            while (state == 0) {
+            do {
                 uchar code = *src++;
                 if (code & 1) {
-                    uchar n = code >> 1;
-                    if (!n) { n = *src++; xpos += n; dst += n; if (xpos > max_x) state = 1; }
-                    else { xpos += n; if (xpos > max_x) { long cnt = n + max_x - xpos + 1; memcpy(dst, src, cnt); dst += n; src += n; state = 1; } else { memcpy(dst, src, n); dst += n; src += n; } }
+                    count = code >> 1;
+                    if (count)
+                        src += count;
+                    else
+                        ++src;
                 } else {
-                    uchar n = code >> 1;
-                    if (!n) state = 3;
-                    else { xpos += n; if (xpos > max_x) { long cnt = n + max_x - xpos + 1; memset(dst, *src, cnt); dst += n; state = 1; } else { memset(dst, *src, n); dst += n; } src++; }
+                    if ((code & 0xfe) == 0)
+                        done = 1;
+                    else
+                        ++src;
+                }
+            } while (!done);
+            --clip_top;
+        } while (clip_top != 0);
+    }
+
+    if (shape_y <= clip_bottom) {
+        clip_bottom = clip_bottom - shape_y + 1;
+        do {
+            long xpos = shape_x;
+            uchar* dst = save_buffer;
+
+            if (shape_x < clip_left) {
+                clip_top = 0;
+                do {
+                    uchar code = *src++;
+                    if (code & 1) {
+                        count = code >> 1;
+                        if (count == 0) {
+                            xpos += *src++;
+                            if (clip_left <= xpos) {
+                                if (clip_right < xpos)
+                                    clip_top = 2;
+                                else {
+                                    clip_top = 1;
+                                    dst += xpos - clip_left;
+                                }
+                            }
+                        } else {
+                            xpos += count;
+                            if (clip_left <= xpos) {
+                                long copy_count;
+                                uchar* copy_source;
+                                if (clip_right < xpos) {
+                                    clip_top = 2;
+                                    copy_count = clip_right - clip_left + 1;
+                                    copy_source = src + count + clip_left - xpos;
+                                } else {
+                                    clip_top = 1;
+                                    copy_count = xpos - clip_left;
+                                    copy_source = src + count - copy_count;
+                                }
+                                memcpy(dst, copy_source, copy_count);
+                                dst += copy_count;
+                            }
+                            src += count;
+                        }
+                    } else {
+                        count = code >> 1;
+                        if (count == 0) {
+                            clip_top = 3;
+                        } else {
+                            xpos += count;
+                            if (clip_left <= xpos) {
+                                long fill_count;
+                                if (clip_right < xpos) {
+                                    clip_top = 2;
+                                    fill_count = clip_right - clip_left + 1;
+                                } else {
+                                    clip_top = 1;
+                                    fill_count = xpos - clip_left;
+                                }
+                                memset(dst, *src, fill_count);
+                                dst += fill_count;
+                            }
+                            ++src;
+                        }
+                    }
+                } while ((uchar)clip_top == 0);
+            } else {
+                clip_top = 1;
+            }
+
+            clip_top = (uchar)clip_top - 1;
+            while ((uchar)clip_top == 0) {
+                uchar code = *src++;
+                if (code & 1) {
+                    count = code >> 1;
+                    if (count == 0) {
+                        count = *src++;
+                        xpos += count;
+                        dst += count;
+                        if (clip_right < xpos)
+                            clip_top = 1;
+                    } else {
+                        xpos += count;
+                        if (clip_right < xpos) {
+                            clip_top = 1;
+                            memcpy(dst, src, clip_right - xpos + 1 + count);
+                            dst += count;
+                            src += count;
+                        } else {
+                            memcpy(dst, src, count);
+                            dst += count;
+                            src += count;
+                        }
+                    }
+                } else {
+                    count = code >> 1;
+                    if (count == 0) {
+                        clip_top = 3;
+                    } else {
+                        long fill_count = count;
+                        xpos += count;
+                        if (clip_right < xpos) {
+                            fill_count = count + clip_right - xpos + 1;
+                            clip_top = 1;
+                        }
+                        memset(dst, *src, fill_count);
+                        dst += count;
+                        ++src;
+                    }
                 }
             }
-        }
-        state--;
-        if (state == 0) {
-            while (state == 0) {
+
+            clip_top = (uchar)clip_top - 1;
+            while ((uchar)clip_top == 0) {
                 uchar code = *src++;
-                if (code & 1) { uchar n = code >> 1; if (n) src += n; else src++; }
-                else { if ((code & 0xfe) == 0) state = 2; else src++; }
+                if (code & 1) {
+                    count = code >> 1;
+                    if (count)
+                        src += count;
+                    else
+                        ++src;
+                } else {
+                    if ((code & 0xfe) == 0)
+                        clip_top = 2;
+                    else
+                        ++src;
+                }
             }
-        }
-        dst = (area->Orien < 1) ? (dst - pitch) : (dst + pitch);
+
+            save_buffer += pitch;
+            --clip_bottom;
+        } while (clip_bottom != 0);
     }
+
     return 1;
 }

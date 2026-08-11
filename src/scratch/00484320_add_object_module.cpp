@@ -10,9 +10,22 @@
 //   recovered the original repeated source-record loads.
 // - A member-anchored pointer diagnostic recovered the original terrain/y
 //   address topology but was rolled back as compiler-steering cursor plumbing.
-// - Current clean candidate retains named map/object/land records; remaining
-//   drift is the initial counter scheduling, two independent store orders, and
-//   the associated two-byte loop-size difference.
+// - The object/land interior-field anchors are retained because their proven
+//   addresses reproduce the original copy-loop topology; the source remains
+//   typed at the owning record boundaries.
+// - Probed the direct map-count terminator, split counter assignment, increment
+//   order, narrow count reread, direct land stores, land-id temporary, and the
+//   same-TU stdlib context; none changed the 327-byte / 192-byte-diff basin.
+// - The executable proves that the map-land cursor advances only when the
+//   post-update player value is zero.  A natural typed map-land cursor restores
+//   that grouped-player behavior; it changes the VC5 basin to 312 bytes, so the
+//   remaining blocker is declaration/register/stack topology rather than an
+//   unresolved field owner.
+// - Paused after 10 new hypotheses: exactness remains blocked by the early EDI
+//   initialization, object-count memory compare, independent store ordering,
+//   and the cursor's register/frame coloring.
+
+#include <stdlib.h>
 
 class RGE_Map;
 class RGE_Game_World;
@@ -194,29 +207,31 @@ void RGE_RMM_Database_Controller::add_object_module()
     this->object_info.object_num = map->object_info.object_num;
 
     if (map->object_info.object_num > 0) {
-        RGE_Object_Info_Line* destination = this->object_info.objects;
+        long* destination = &this->object_info.objects[0].terrain;
         int source_index = 0;
         do {
-            destination->obj_id = map->object_info.objects[source_index].obj_id;
-            destination->terrain = map->object_info.objects[source_index].terrain;
-            destination->group_flag = map->object_info.objects[source_index].group_flag;
-            destination->scale_flag = map->object_info.objects[source_index].scale_flag;
-            destination->object_number_per_group =
+            RGE_Object_Info_Line* object =
+                (RGE_Object_Info_Line*)(destination - 1);
+            object->obj_id = map->object_info.objects[source_index].obj_id;
+            object->terrain = map->object_info.objects[source_index].terrain;
+            object->group_flag = map->object_info.objects[source_index].group_flag;
+            object->scale_flag = map->object_info.objects[source_index].scale_flag;
+            object->object_number_per_group =
                 map->object_info.objects[source_index].object_number_per_group;
-            destination->object_number_varience =
+            object->object_number_varience =
                 map->object_info.objects[source_index].object_number_varience;
-            destination->number_of_groups =
+            object->number_of_groups =
                 map->object_info.objects[source_index].number_of_groups;
-            destination->player_id = map->object_info.objects[source_index].player_id;
-            destination->land_id = map->object_info.objects[source_index].land_id;
-            destination->land_inner_radius =
+            object->player_id = map->object_info.objects[source_index].player_id;
+            object->land_id = map->object_info.objects[source_index].land_id;
+            object->land_inner_radius =
                 map->object_info.objects[source_index].land_inner_radius;
-            destination->land_outer_radius =
+            object->land_outer_radius =
                 map->object_info.objects[source_index].land_outer_radius;
-            destination->group_area = map->object_info.objects[source_index].group_area;
-            destination->object_exclusion_zone = 1;
-            ++destination;
+            object->group_area = map->object_info.objects[source_index].group_area;
+            object->object_exclusion_zone = 1;
             ++object_index;
+            destination += 12;
             ++source_index;
         } while (object_index < map->object_info.object_num);
     }
@@ -229,13 +244,14 @@ void RGE_RMM_Database_Controller::add_object_module()
 
     int land_index = 0;
     if (this->land_info.land_num > 0) {
-        RGE_Land_Point_Info_Line* destination = this->object_info.lands;
         RGE_Land_Info_Line* source = this->land_info.land;
+        long* destination = &this->object_info.lands[0].y;
+        RGE_Land_Data_Entry* map_land = map->land_info.land;
         do {
-            destination->x = source->x;
-            destination->y = source->y;
-            destination->id = map->land_info.land[land_index].land_id;
-            destination->player_id = player;
+            destination[-1] = source->x;
+            destination[0] = source->y;
+            destination[1] = map_land->land_id;
+            destination[2] = player;
 
             if (player > 0) {
                 ++player;
@@ -243,12 +259,14 @@ void RGE_RMM_Database_Controller::add_object_module()
                     player = 0;
                 }
             }
-            if (player == 0 &&
-                map->land_info.land[land_index + 1].by_player_flag != 0) {
-                player = 1;
+            if (player == 0) {
+                ++map_land;
+                if (map_land->by_player_flag != 0) {
+                    player = 1;
+                }
             }
 
-            ++destination;
+            destination += 4;
             ++source;
             ++land_index;
         } while (land_index < this->land_info.land_num);

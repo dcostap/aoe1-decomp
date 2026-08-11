@@ -8,22 +8,43 @@
 // 6: Rewriting priority gates as <5/<3 worsened to 91.01% diff.
 // 7: Naming fpriority before need calculation did not move first mismatch or improve diff.
 // 8: Breaking outer loop then returning at function tail worsened to 89.89% diff.
-// BLOCKER: remaining gap is TU/source-shape register allocation: original keeps this in EBP, bucket table pointer in ESI, object in EDI, and frame 0x1c; current best has self in ESI and frame 0x20. Final check: 445/445 bytes, 89.6629% positional diff, first mismatch offset 2.
+// 9: Reconstructed the single final return with an inner do/while and outer break,
+//    removing cached master/priority/offset locals; 445-byte output, 375 differing bytes.
+// 10: Restored donor TU context/full UnitAIModule ABI and typed object/owner/record
+//     ownership; output was codegen-duplicate (375 differing bytes).
+// 11: Caching the current record-list pointer reached an exact 0x1c frame but
+//     shortened the body and changed reload behavior; rolled back.
+// 12: Reloading the record-list value per iteration also shortened the body;
+//     rolled back because the oracle rereads the bucket slot.
+// 13: Typed HealUnitRecord indexing and char* bucket offset were source-cleanup
+//     probes; both emitted the same 375-byte-diff basin as probe 9.
+// BLOCKER: remaining gap is TU/source-shape register allocation: original keeps this
+// in EBP, bucket-table slot in ESI, object in EDI, and frame 0x1c; current best keeps
+// self in EBX, bucket offset in EBP, and frame 0x18. Calls/CFG/size now match, but
+// checker remains in STRUCTURAL RECONSTRUCTION. Final best: 445/445 bytes,
+// 375 differing bytes (84.2697%), first mismatch offset 2.
 
-extern unsigned int DAT_0087d7cc;
-extern unsigned int DAT_0087d7d0;
-extern unsigned int DAT_0087d7d4;
-extern unsigned int DAT_0087d7d8;
-extern unsigned int DAT_0087d7e4;
-extern unsigned int DAT_0087d7e8;
-extern unsigned int DAT_0087d7ec;
-extern unsigned int DAT_0087d7f0;
+#include <stdlib.h>
+#include "../../include/game_globals.h"
 
 struct RGE_Master_Static_Object {
     char gap_00[0x14];
     short object_group;
     char gap_16[0x10];
     short hp;
+};
+
+class RGE_Player {
+public:
+    virtual void p00();
+    char gap_04[0x4A - 0x04];
+    short id;
+};
+
+struct HealUnitRecord {
+    int object_id;
+    unsigned char priority;
+    unsigned char gap_05[3];
 };
 
 struct RGE_Static_Object {
@@ -131,7 +152,8 @@ struct RGE_Static_Object {
     virtual int canSeeObject(int id, float radius, int, int, int, int);
     int id;
     RGE_Master_Static_Object* master_obj;
-    char gap_0c[0x30 - 0x0c];
+    RGE_Player* owner;
+    char gap_10[0x30 - 0x10];
     float hp;
     char gap_34[0x48 - 0x34];
     unsigned char object_state;
@@ -142,19 +164,71 @@ public:
     virtual ~UnitAIModule();
     virtual void save(int);
     virtual void load(int);
-    virtual void* owner();
-    virtual int order(int,int,int,int,float,float,float,float,int,int,int);
-    virtual int notify(int,int,int,long,long,long);
-    virtual int notifyCommander(int,int,int,long,long,long);
+    virtual RGE_Player* owner();
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
     virtual int notifyCommander(void*);
     virtual void search();
-    RGE_Static_Object* obj;
+    virtual int importantWhenDead(int);
+    virtual int retryableOrder(int);
+    virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*);
+    virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*);
+    virtual int canAttackUnit(void*);
+    virtual int canAttackUnitAtNeutrality(int);
+    virtual int stopObject(int);
+    virtual int attackObject(int, int);
+    virtual int attackRoundupObject(int);
+    virtual int huntObject(int, int);
+    virtual int gatherObject(int, int);
+    virtual int convertObject(int, int);
+    virtual int healObject(int, int);
+    virtual int repairObject(int, int);
+    virtual int buildObject(int, int);
+    virtual int tradeWithObject(int, int);
+    virtual int explore(int, int, int);
+    virtual int enterObject(int, int);
+    virtual int unload(int, float, float);
+    virtual int transportObject(float, float, float, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int evasiveMoveTo(float, float, float, int);
+    virtual int intelligentEvasiveMoveTo(float, float, float, int, int);
+    virtual int runAwayFromAttackers(int);
+    virtual int followObject(int, float, int);
+    virtual int defendObject(int, float, int);
+    virtual int defendPosition(float, float, float, int);
+    virtual int seekAndDestroy(int, int, int, int);
+    virtual int exploreAndDestroy(int, int, int);
+    virtual int importantObject(int);
+    virtual int convertToLOSResourceType(int);
+    virtual int canConvert(int);
+    virtual int processOrder(void*, int);
+    virtual int processNotify(void*, unsigned long);
+    virtual void processGroupNotify(void*);
+    virtual int processIdle(int);
+    virtual int processMisc();
+    virtual int processRetryableOrder();
+    virtual int bestUnitToHeal(int, float*);
+    virtual int bestUnitToConvert(float*);
+
+    RGE_Static_Object* objectValue;
+    char gap_08[0x12C];
     RGE_Static_Object* lookupObject(int unit_id);
 };
 
 class TribePriestUnitAIModule : public UnitAIModule {
 public:
-    int bestUnitToHeal(int param_1, float* param_2);
+protected:
+    virtual int bestUnitToHeal(int param_1, float* param_2);
 };
 
 int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
@@ -164,36 +238,40 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
     int allyToHealID = -1;
     float allyNeed = 0.0f;
     int maxLimit = 2;
+    int a;
+    int i;
+    char* bucketOffset;
 
-    if (*(short*)(*(char**)((char*)this->obj + 0x0c) + 0x4a) == 0) {
+    if (this->objectValue->owner->id == 0) {
         maxLimit = 4;
     }
 
-    int bucketOffset = 0;
-    for (int a = 1; a <= maxLimit; ++a) {
-        int* countPtr = (int*)((char*)&DAT_0087d7cc + bucketOffset);
-        if (*countPtr > 0) {
-            char** listPtr = (char**)((char*)&DAT_0087d7e4 + bucketOffset);
-            for (int i = 0; i < *countPtr; ++i) {
-                int offset = i * 8;
-                int unit_id = *(int*)(*listPtr + offset);
-                if (unit_id != this->obj->id) {
+    a = 1;
+    bucketOffset = (char*)0;
+    for (; a <= maxLimit; ++a) {
+        i = 0;
+        if (*(int*)((char*)&DAT_0087d7cc + (int)bucketOffset) > 0) {
+            HealUnitRecord** listPtr = (HealUnitRecord**)((char*)&DAT_0087d7e4 + (int)bucketOffset);
+            do {
+                int unit_id = (*listPtr)[i].object_id;
+                if (unit_id != this->objectValue->id) {
                     RGE_Static_Object* unit = this->lookupObject(unit_id);
                     if (unit != 0) {
-                        RGE_Master_Static_Object* master = unit->master_obj;
-                        if (master->object_group != 3) {
-                            if ((float)(int)master->hp > unit->hp) {
+                        if (unit->master_obj->object_group != 3) {
+                            if ((float)(int)unit->master_obj->hp > unit->hp) {
                                 if (unit->object_state < 3) {
-                                    unsigned char priority = *(unsigned char*)(*listPtr + offset + 4);
-                                    if (param_1 != 0 || priority <= 4) {
-                                        if (*(short*)(*(char**)((char*)this->obj + 0x0c) + 0x4a) != 0 || priority <= 2) {
-                                            if (this->obj->canSeeObject(unit_id, 1.0f, 0, 0, -1, -1)) {
-                                                float need = (float)(int)master->hp - unit->hp / (float)(int)priority;
+                                    if (param_1 != 0 ||
+                                        (*listPtr)[i].priority <= 4) {
+                                        if (this->objectValue->owner->id != 0 ||
+                                            (*listPtr)[i].priority <= 2) {
+                                            if (this->objectValue->canSeeObject(unit_id, 1.0f, 0, 0, -1, -1)) {
+                                                float need = (float)(int)unit->master_obj->hp -
+                                                    unit->hp / (float)(int)(*listPtr)[i].priority;
                                                 if (allyToHealID == -1 || need < allyNeed) {
                                                     allyNeed = need;
                                                     allyToHealID = unit->id;
                                                     if (param_2 != 0) {
-                                                        *param_2 = (float)(int)priority;
+                                                        *param_2 = (float)(int)(*listPtr)[i].priority;
                                                     }
                                                 }
                                             }
@@ -204,13 +282,14 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
                         }
                     }
                 }
-            }
+                ++i;
+            } while (i < *(int*)((char*)&DAT_0087d7cc + (int)bucketOffset));
         }
         if (allyToHealID != -1) {
-            return allyToHealID;
+            break;
         }
         bucketOffset += 4;
     }
 
-    return -1;
+    return allyToHealID;
 }

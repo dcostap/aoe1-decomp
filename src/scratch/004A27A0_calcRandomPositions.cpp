@@ -30,6 +30,17 @@
 //   multiplication was codegen-neutral. Removing only the nested count guard
 //   preserved size but moved the whole local basin (220-byte drift). Restored
 //   the validated 372-byte natural candidate.
+// - Fresh claim probes: guarded do/while scans with the original polarity
+//   entered a +0x30-frame compiler basin; indexed, infinite, and labeled forms
+//   were duplicate variants of that basin. Removing the guard alone also moved
+//   the frame/register basin. Adding <stdio.h> (and <stdlib.h>) was neutral.
+// - The natural inverted-predicate do/while (`*position != -1` advances,
+//   otherwise records the index) restores the original single count test,
+//   0x2C frame, and nested scan block: 368 bytes, 95.87% shape, 76 diff bytes,
+//   9/9 calls. Swapping/compounding the random product was codegen-neutral;
+//   the remaining 2-byte size/tail drift is in the magic random division.
+
+#include <stdio.h>
 
 class TPanel {
 public:
@@ -120,12 +131,15 @@ void TribeMPSetupScreen::calcRandomPositions() {
                     int count = this->scenarioPlayerCount;
                     if (count > 0) {
                         int* position = &position_used[1];
-                        for (; j < count; ++j, ++position) {
-                            if (*position == -1) {
+                        do {
+                            if (*position != -1) {
+                                ++j;
+                                ++position;
+                            } else {
                                 selected_position = j;
                                 break;
                             }
-                        }
+                        } while (j < count);
                     }
 
                     int tries = 0;
@@ -134,7 +148,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
                         int count = this->scenarioPlayerCount;
                         int random = debug_rand(
                             "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x5E4);
-                        new_position = (count * random) / 0x7FFF;
+                        new_position = (random * count) / 0x7FFF;
                         if (new_position >= count) {
                             new_position = count - 1;
                         } else if (new_position < 0) {
@@ -143,7 +157,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
                         if (position_used[new_position + 1] == -1) {
                             selected_position = new_position;
                             break;
-                        }
+                            }
                     } while (++tries < 1000);
 
                     ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player, selected_position);

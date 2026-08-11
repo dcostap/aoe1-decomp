@@ -38,6 +38,11 @@
 // - Follow-up ABI probe mirrored the exact donor's no-argument TPanel setup
 //   slot while retaining the real TScreenPanel setup overload; emitted code
 //   was unchanged, so the canonical source was restored.
+// - Fresh worker probes: inverted setup if/else, an implicit derived
+//   destructor, an explicit final constructor return, one-shot common labels,
+//   and a setup-result switch all failed to change or improve the EH-tail
+//   basin; the switch worsened the first branch hunk. A diagnostic throw()
+//   declaration surface was also unchanged. All variants were restored.
 
 struct tagRECT;
 class TDrawArea;

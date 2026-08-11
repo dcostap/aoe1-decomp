@@ -28,6 +28,14 @@
 // unsigned-width variant widened to 247B/237; restored the clean source.
 // left in scratch: best source is the readable owner/world/player reconstruction;
 // remaining drift is only owner/compare-index register coloring and the loop tail.
+// 2026-08-11 sa-2ff614d9-r1 fresh pass (9 meaningful probes): reordered the
+// object-id/owner declarations, mixed direct byte-promotion with the named
+// compare local, made the parameter-home reset explicit, restored <stdlib.h>,
+// reversed equality operands, scoped the compare temporary, combined register
+// hints, and tried a const owner pointer; all retained-size variants stayed in
+// the 219B/37 basin or widened. A 24-variant mixed loop-surface lab likewise
+// found no exact candidate. Restored the clean readable source; no probe moved
+// the ESI-owner versus EDX-compare-index loop-tail hunk.
 
 class RGE_Static_Object;
 class RGE_Sprite;

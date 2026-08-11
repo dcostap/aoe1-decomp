@@ -25,21 +25,33 @@
 // size and scheduling, so they were rolled back.
 // Main-agent audit restored canonical destructor slots and a symbol-backed game
 // global; the validated prologue/register-allocation blocker remains.
+//
+// Session sa-ce4cd6c0-r1 (10 meaningful probes, 2026-08-11):
+// - absolute and volatile game-global forms did not reproduce a reload or
+//   change the prologue; restored the ordinary symbol-backed declaration;
+// - restored period field ownership (work_rate, world_time_delta_seconds,
+//   work_val1/work_flag, attribute_amount_held) and full proven object sizes;
+//   output remained unchanged, but this is the cleaner living reconstruction;
+// - register-qualified self, header removal, natural if/guard state flow, and
+//   a named state snapshot all failed to move the EDI=this / eager-save basin;
+// - current source is restored to the switch/direct-state 277-byte basin:
+//   exact size/frame/call set, 182 positional bytes differ from the oracle;
+//   remaining blocker is staged callee-save/register coloring at byte +5.
 
-#include "..\..\include\game_globals.h"
-
-class RGE_Master_Static_Object {
+class RGE_Master_Action_Object {
 public:
-    virtual ~RGE_Master_Static_Object();
+    virtual ~RGE_Master_Action_Object();
     char gap_04[0xE0];
-    float attribute_amount;
+    float work_rate;
+    char gap_E8[0x14];
 };
 
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
     char gap_04[0x80];
-    float attribute_modifier;
+    float world_time_delta_seconds;
+    char gap_88[0x7C];
 };
 
 class RGE_Player {
@@ -60,6 +72,7 @@ public:
     short id;
     char gap_4C[0x04];
     float* attributes;
+    char gap_54[0x1CC];
 };
 
 class RGE_Static_Object {
@@ -77,28 +90,77 @@ public:
     virtual void set_attribute_amount(float, unsigned char, unsigned char);
 
     long id;
-    RGE_Master_Static_Object* master_obj;
+    RGE_Master_Action_Object* master_obj;
     RGE_Player* owner;
     void* sprite;
-    char gap_14[0x24];
+    void* old_sprite;
+    void* sprite_list;
+    void* tile;
+    void* inside_obj;
+    void* objects;
+    short screen_x_offset;
+    short screen_y_offset;
+    short shadow_x_offset;
+    short shadow_y_offset;
+    float hp;
+    unsigned char curr_damage_percent;
+    unsigned char facet;
+    unsigned char selected;
+    unsigned char selected_group;
     float world_x;
     float world_y;
     float world_z;
+    float attribute_amount_held;
+    unsigned char object_state;
+    unsigned char sleep_flag;
+    unsigned char dopple_flag;
+    unsigned char goto_sleep_flag;
+    short attribute_type_held;
+    unsigned char type;
+    unsigned char worker_num;
+    void* player_object_node;
+    char pathingGroupMembers[0x10];
+    char groupMembers[0x10];
+    void* unitAIValue;
+    int groupCommanderValue;
+    int zoneMapIndex;
+    float groupRangeValue;
+    unsigned char inObstructionMapValue;
+    unsigned char lastInObstructionMapValue;
+    unsigned char underAttackValue;
+    unsigned char gap_87;
 };
 
-class RGE_Action_Object : public RGE_Static_Object {
+class RGE_Animated_Object : public RGE_Static_Object {
 public:
-    float hit_points;
+    float speed;
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    char gap_8C[0xF4];
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    unsigned char waiting;
+    char gap_181[0x03];
+    void* actions;
+    unsigned char command_flag;
+    char gap_189[0x03];
+    int lastActionValue;
+    int lastActionStateValue;
 };
 
 class RGE_Task {
 public:
     char gap_00[0x14];
-    short attribute_id;
+    short attribute_type;
     char gap_16[0x06];
-    float work_range;
+    float work_val1;
     char gap_20[0x10];
-    short attribute_mode;
+    short work_flag;
+    char gap_32[0x1A];
 };
 
 class RGE_Base_Game {
@@ -144,6 +206,10 @@ public:
     float target_z;
     float timer;
     RGE_Task* task;
+    void* sub_actions;
+    void* sprite;
+    unsigned char subActionValue;
+    char gap_3D[0x03];
 };
 
 class RGE_Action_Make : public RGE_Action {
@@ -158,7 +224,7 @@ unsigned char RGE_Action_Make::update() {
             RGE_Action_Object* obj = this->obj;
             RGE_Player* owner = obj->owner;
             if (owner->attributes[0x24] > 0.0) {
-                if (obj->hit_points <= 0.0) {
+                if (obj->attribute_amount_held <= 0.0) {
                     rge_base_game->notification(
                         0x7E, owner->id, obj->id,
                         (int)obj->world_x, (int)obj->world_y);
@@ -169,19 +235,20 @@ unsigned char RGE_Action_Make::update() {
         }
 
         {
-            float work = this->obj->owner->world->attribute_modifier
-                       * this->obj->master_obj->attribute_amount;
-            work *= this->task->work_range;
-            float old_hit_points = this->obj->hit_points;
+            float work = this->obj->owner->world->world_time_delta_seconds
+                       * this->obj->master_obj->work_rate;
+            work *= this->task->work_val1;
+            float old_attribute_amount = this->obj->attribute_amount_held;
 
-            if (this->task->attribute_mode != 0) {
+            if (this->task->work_flag != 0) {
                 this->obj->owner->add_attribute_num(
-                    this->task->attribute_id, work, 0);
+                    this->task->attribute_type, work, 0);
             } else {
                 this->obj->set_attribute_amount(work, 1, 1);
             }
-            this->timer -= this->obj->hit_points - old_hit_points;
+            this->timer -= this->obj->attribute_amount_held - old_attribute_amount;
         }
+
         break;
 
     case 1:

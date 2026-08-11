@@ -4,6 +4,14 @@
 // worker 2026-08-10: a failure-label rewrite was codegen-identical; a result local moved the first
 // mismatch into the allocation math and was restored. Final holdout is the original shared EH cleanup
 // tail (oracle branches to one failure epilogue; this natural source emits separate cleanup tails).
+// worker 2026-08-11 (sa02c04fb1_00469AD0): uninitialized result plus an explicit done label was
+// codegen-identical. Positive and negative compound success/failure guards were also identical;
+// all three probes preserved the exact 0x0000-0x014D prefix, five ordered calls, and 46-byte diff.
+// Dossier confirms the only structural gap is the /GX return tail: the oracle joins three failure
+// edges at 00469C24 (xor eax,eax) before one common cleanup, while VC5 clones a failure cleanup
+// after the success epilogue. The paired create_scrollbar target documents the same persistent
+// EH-tail behavior even after result/goto/vptr probes. Keep this natural early-return source in
+// scratch; remaining lead is a compiler/EH-tail blocker, not an unresolved call or field layout.
 
 class TPanel {};
 class TShape {};

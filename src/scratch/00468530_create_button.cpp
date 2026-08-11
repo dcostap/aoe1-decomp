@@ -10,8 +10,13 @@
 // 8: tried volatile sx initialized from x; forced early load but worsened frame to one local and moved allocation later; rolled back.
 // 9: tried /O2 /GX without /Oy; unchanged from best.
 // 10: tried /Ob0 with /GX; unchanged.
+// 11: current-session baseline rebuilt 568 B (not the stale prior 548 B report); calls and frame class match, but first mismatch is the pre-save x load.
+// 12-16: direct/partial scaled-coordinate initializers and x-copy/in-place forms restore an early x read only with a one-slot EH frame; broad drift, rolled back.
+// 17-18: moved sound declaration/zero initialization and tested a separate zero local; compiler basin remained broad or unchanged, rolled back.
+// 19: joined failure/success through a typed result label; VC5 emitted the same split epilogues, rolled back.
+// 20: branch-local null sound assignment plus direct sx initializer worsened the frame and structural diff, rolled back.
 // FLAGS: config/flags/00468530_create_button.rsp uses /GX because original has EH frame and default build is only 496 B/no EH.
-// Left in scratch: current best is same-size 548 B with /GX, improved edit diff after sound local and *out topology, but still broad 50.7% positional diff from early scheduling/stack-slot differences and downstream register allocation. Not accepted_drift-safe.
+// Left in scratch: restored the clean typed candidate after the 10-hypothesis session. Current best is 568 B with /GX, 317 positional diff bytes / 113 edit cost, 100% ordered calls, and 46.96% exact-block coverage; the structural gap starts at the pre-save x load and two-slot EH local topology. Not accepted_drift-safe.
 
 typedef unsigned char uchar;
 

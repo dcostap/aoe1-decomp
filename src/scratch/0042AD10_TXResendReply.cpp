@@ -1,126 +1,251 @@
 // VA: 0042AD10 TCommunications_Handler::TXResendReply
 // Com_hand.cpp
 // Attempt log:
-// try 1: natural reconstruction from packet and sibling TXResendRequest/TXAcknowledgeMessage: GTD guard, per-player throttle, scan TX table, send resend reply, stats/logging.
-// try 2: modeled key fields from packet/siblings: TXPacketLength +0x12C0, resend_serial +0x1434, resend_time +0x145C, Err +0x14E0, guaranteed +0x1514, tx_data +0x1520, state +0x1558, dcoID +0x1564.
-// try 3: modeled initial guards exactly: guaranteed byte, dcoID[player] null log, global dco id null return.
-// try 4: modeled resend throttle using debug_timeGetTime(file,0xEE7), serial compare, time delta <500 log/return.
-// try 5: modeled per-player serial/time update and scan offset `player*4+0x10` with stride 0x38 to mirror original loop.
-// try 6: modeled matched slot path: log via stack buffer, allocate slot length, decrement slot count, second dco guard, debug timing, send through sender vtable +0x68, slow-send log.
-// try 7: modeled good/bad counters and TXPacketLength update vs Err->ShowReturn path.
-// try 8: modeled post-loop no-good/no-bad state==3 fallback with 8-byte 'Y' message, TXAcknowledgeMessage, ClearTXForPlayer, and summary log otherwise.
-// try 9: fixed class layout compile issue from zero-size gap; current source compiles but .text is 816B vs original 901B.
-// try 10: compared packet around send: original uses table slot data pointer/length directly for vtable send and has very specific stack-buffer/log/allocation side effects; current behavioral reconstruction is too compact and likely still has wrong slot struct semantics.
-// left in scratch: broad behavior/call surface is reconstructed, but code is far too small and not diffable. Main blockers are exact TX slot layout/semantics, stack temp use, and original logging/allocation side-effect ordering. No accepted_drift: broad missing code/size gap.
+// baseline: prior worker's broad behavioral scaffold; wrong helper/call surface,
+// local buffers, and non-canonical resend ownership left an 807-byte body.
+// behavior: restored the proven RESENDER/MSGFORMAT_RESEND ownership, DirectPlay
+// Send ABI, FastSend/TXAcknowledge/ClearTX/Purge call family, and exact log text.
+// control-flow: merged the invalid-player and zero-DCOID failures through one
+// binary-proven log/return tail; emitted size became 894B but the compiler still
+// placed the cold tail before the post-scan decision.
+// liveness: removed the persistent RESENDER pointer and used repeated typed
+// slot-relative accesses; this recovered the 0x18 frame and ESI=this basin,
+// reaching 896B with 727 differing bytes, 22/22 call targets, and exact early
+// guard/throttle islands. Register/stack coloring in the scan and send tail
+// remains broad; an explicit positive scan backedge was emitted-code duplicate.
+// liveness: a stable player copy before/after the dco guard, counter declaration
+// order, and early offset initialization were tested; no further useful output.
+// left in scratch after 10 hypotheses: canonical resend behavior/calls and exact
+// string/ABI surfaces are retained, but the original 0x18 local layout, EBP/EBX
+// coloring, cold-tail placement, and late log/delete schedule remain nonexact.
 
 typedef unsigned int uint;
 
+class TDebuggingLog {
+public:
+    void Log(char* fmt, ...);
+};
+
+class RGE_Comm_Error {
+public:
+    void ShowReturn(long result, const char* text);
+};
+
+class IDirectPlay3 {
+public:
+    virtual long __stdcall QueryInterface(void*, void**) = 0;
+    virtual unsigned long __stdcall AddRef() = 0;
+    virtual unsigned long __stdcall Release() = 0;
+    virtual long __stdcall AddPlayerToGroup() = 0;
+    virtual long __stdcall Close() = 0;
+    virtual long __stdcall CreateGroup() = 0;
+    virtual long __stdcall CreatePlayer() = 0;
+    virtual long __stdcall DeletePlayerFromGroup() = 0;
+    virtual long __stdcall DestroyGroup() = 0;
+    virtual long __stdcall DestroyPlayer() = 0;
+    virtual long __stdcall EnumGroupPlayers() = 0;
+    virtual long __stdcall EnumGroups() = 0;
+    virtual long __stdcall EnumPlayers() = 0;
+    virtual long __stdcall EnumSessions() = 0;
+    virtual long __stdcall GetCaps() = 0;
+    virtual long __stdcall GetGroupData() = 0;
+    virtual long __stdcall GetGroupName() = 0;
+    virtual long __stdcall GetMessageCount() = 0;
+    virtual long __stdcall GetPlayerAddress() = 0;
+    virtual long __stdcall GetPlayerCaps() = 0;
+    virtual long __stdcall GetPlayerData() = 0;
+    virtual long __stdcall GetPlayerName() = 0;
+    virtual long __stdcall GetSessionDesc() = 0;
+    virtual long __stdcall Initialize() = 0;
+    virtual long __stdcall Open() = 0;
+    virtual long __stdcall Receive() = 0;
+    virtual int __stdcall Send(unsigned int from, unsigned int to,
+                               int flags, void* data, unsigned int size) = 0;
+};
+
 extern unsigned long debug_timeGetTime(const char* file, int line);
+extern "C" int sprintf(char* buffer, const char* format, ...);
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
-extern const char s_Com_hand_cpp[];
+extern TDebuggingLog* L;
 extern unsigned int DAT_0062cf04;
-extern void* DAT_0062c5ec;
-extern int DAT_0062c4fc;
+extern IDirectPlay3* DAT_0062c5ec;
 
-class TDebuggingLog { public: static void Log(void* log, const char* fmt, ...); };
-class RGE_Comm_Error { public: void ShowReturn(long result, const char* name); };
+struct RESENDER {
+    unsigned long TimeSent;
+    unsigned int Serial;
+    char* ResendMsg;
+    unsigned int Length;
+    unsigned int DestMap[10];
+};
 
-struct SendVTable { char gap[0x68]; int (__stdcall *send)(void*, unsigned int, unsigned int, int, void*, int); };
-struct Sender { SendVTable* vt; };
-extern Sender* sender;
+struct MSGFORMAT_RESEND {
+    unsigned char Command;
+    unsigned char pad[3];
+    unsigned int Serialno;
+};
+
+struct COMMPLAYEROPTIONS {
+    char pad_00[8];
+    int ProgramState;
+    char pad_0c[8];
+    unsigned int dcoID[10];
+    char tail[0x1D0 - 0x3C];
+};
 
 class TCommunications_Handler {
 public:
-    char gap_0000[0x12C0];
-    int TXPacketLength;
-    char gap_12C4[0x1434-0x12C4];
-    unsigned int resend_serial[10];     // +1434
-    unsigned int resend_time[10];       // +145C
-    char gap_1484[0x14E0-0x1484];
+    char gap_0000[0xFC5];
+    char TBuff[0x101];
+    char gap_10C6[0x12C0 - 0x10C6];
+    unsigned int TXPacketLength;
+    char gap_12C4[0x1434 - 0x12C4];
+    unsigned int LastSerialRepliedTX[10];
+    unsigned int LastRequestRepliedTX[10];
+    char gap_1484[0x14E0 - 0x1484];
     RGE_Comm_Error* Err;
-    unsigned int count_limit;           // +14E4
-    char gap_14E8[0x1514-0x14E8];
-    unsigned char guaranteed;
-    char gap_1515[0x1520-0x1515];
-    int* tx_data;                       // +1520
-    char gap_1524[0x1558-0x1524];
-    int state;                          // +1558
-    char gap_155C[0x1564-0x155C];
-    unsigned int dcoID[10];             // +1564
+    unsigned int GTDSerialNo;
+    char gap_14E8[0x1514 - 0x14E8];
+    unsigned char RGE_Guaranteed_Delivery;
+    char gap_1515[0x1520 - 0x1515];
+    RESENDER* Resend;
+    char gap_1524[0x1550 - 0x1524];
+    COMMPLAYEROPTIONS PlayerOptions;
 
     int TXResendReply(uint serial, uint player);
+    long FastSend(unsigned int to, void* data, unsigned int size,
+                  int param_4, int param_5);
     void TXAcknowledgeMessage(uint serial, uint player);
     void ClearTXForPlayer(uint player);
-    void flush();
+    int PurgeAcknowledgedStoredMessages();
 };
 
-int TCommunications_Handler::TXResendReply(uint serial, uint player) {
-    if (!this->guaranteed) return 0;
-    if (this->dcoID[player] == 0) {
-        TDebuggingLog::Log((void*)DAT_0062c4fc, "Invalid player req.");
+int TCommunications_Handler::TXResendReply(uint serial, uint player)
+{
+    char* error_message;
+    register uint playerNumber;
+    unsigned long now;
+    int i;
+    int GoodTransmitCount;
+    long hr;
+    register unsigned int offset;
+    MSGFORMAT_RESEND nosuch;
+
+    if (this->RGE_Guaranteed_Delivery == 0) {
         return 0;
     }
-    if (DAT_0062cf04 == 0) return 0;
 
-    unsigned long now = debug_timeGetTime(s_Com_hand_cpp, 0xEE7);
-    if (serial == this->resend_serial[player]) {
-        unsigned long diff = now - this->resend_time[player];
-        if (diff < 500) {
-            TDebuggingLog::Log((void*)DAT_0062c4fc, "Res reply too soon #%u %u", serial, diff);
+    offset = 0;
+    playerNumber = player;
+    if (this->PlayerOptions.dcoID[player] == 0) {
+        error_message = "Invalid player req.";
+        goto no_transmit;
+    }
+
+    if (DAT_0062cf04 == 0) {
+        return 0;
+    }
+
+    now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xEE7);
+    if (serial == this->LastSerialRepliedTX[player]) {
+        unsigned long elapsed = now - this->LastRequestRepliedTX[player];
+        if (elapsed < 500) {
+            L->Log("Res reply too soon #%u %u", serial, elapsed);
             return 0;
         }
     }
-    this->resend_serial[player] = serial;
-    this->resend_time[player] = now;
 
-    int good = 0;
-    int bad = 0;
-    int hr = 0;
-    int offset = player * 4 + 0x10;
-    for (int i = 0; i <= 0x1F6; i++, offset += 0x38) {
-        int* slot = (int*)((char*)this->tx_data + offset);
-        if (slot[1] == (int)serial) {
-            char buf[64];
-            TDebuggingLog::Log((void*)buf, "Res reply #%d ser %d", player, serial);
-            TDebuggingLog::Log((void*)DAT_0062c4fc, buf);
-            char* msg = (char*)operator new(slot[3]);
-            --slot[0];
+    this->LastSerialRepliedTX[player] = serial;
+    this->LastRequestRepliedTX[player] = now;
+
+    playerNumber = player;
+    hr = 0;
+    i = 0;
+    GoodTransmitCount = 0;
+    player = player * 4 + 0x10;
+
+    do {
+        if (*(unsigned int*)((char*)this->Resend + offset + 4) == serial) {
+            sprintf(this->TBuff, "Found Resend Ser#%d for P#%d",
+                    *(unsigned int*)((char*)this->Resend + offset + 4),
+                    playerNumber);
+            L->Log(this->TBuff);
+
+            nosuch.Serialno = (uint)operator new(
+                *(unsigned int*)((char*)this->Resend + offset + 0xC));
+            (*(unsigned int*)((char*)this->Resend + player))--;
+
             if (DAT_0062cf04 == 0) {
-                TDebuggingLog::Log((void*)DAT_0062c4fc, "+++BAD DCOID=0 NO TX");
-                return 0;
+                error_message = "+++BAD DCOID=0 NO TX";
+                goto no_transmit;
             }
-            unsigned long start = debug_timeGetTime(s_Com_hand_cpp, 0xF19);
-            TDebuggingLog::Log((void*)DAT_0062c4fc, "  >TX RES REPLY #%d %d (%d)", player, serial, slot[3]);
-            Sender* s = sender;
-            hr = s->vt->send(s, DAT_0062cf04, this->dcoID[player], 0, msg, slot[3]);
-            unsigned long elapsed = debug_timeGetTime(s_Com_hand_cpp, 0xF28) - start;
-            if (elapsed > 50) TDebuggingLog::Log((void*)DAT_0062c4fc, "  TX RES REPLY took %d", elapsed);
-            if (hr == 0) {
-                good++;
-                this->TXPacketLength += slot[3];
+
+            unsigned long send_start =
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF19);
+            L->Log("  >TX RES REP #%d %d (%d)", player, serial,
+                   *(unsigned int*)((char*)this->Resend + offset + 0xC));
+            nosuch.Serialno = DAT_0062c5ec->Send(
+                DAT_0062cf04,
+                this->PlayerOptions.dcoID[playerNumber], 0,
+                *(char**)((char*)this->Resend + offset + 8),
+                *(unsigned int*)((char*)this->Resend + offset + 0xC));
+            unsigned long send_elapsed =
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF28)
+                - send_start;
+            if (send_elapsed > 0x32) {
+                L->Log("!!!TXResendReply slow - %ld msec", send_elapsed);
+            }
+
+            if (nosuch.Serialno == 0) {
+                ++hr;
+                this->TXPacketLength +=
+                    *(unsigned int*)((char*)this->Resend + offset + 0xC);
             } else {
-                this->Err->ShowReturn(hr, "GTD RESEND REPLY");
-                bad++;
+                this->Err->ShowReturn(nosuch.Serialno, "Resend TX");
+                ++i;
             }
-            TDebuggingLog::Log((void*)DAT_0062c4fc, "  RES REPLY %d %d %d %d %d %d %d", player, slot[1], slot[3], slot[0], *(char*)slot[2], i, debug_timeGetTime(s_Com_hand_cpp, 0xF42));
-            operator delete(msg);
+
+            nosuch.Serialno = (uint)(signed char)*(
+                *(char**)((char*)this->Resend + offset + 8));
+            unsigned long log_time =
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF42);
+            L->Log("COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
+                   playerNumber,
+                   *(unsigned int*)((char*)this->Resend + offset + 4),
+                   GoodTransmitCount, nosuch.Serialno, nosuch.Serialno,
+                   *(unsigned int*)((char*)this->Resend + offset + 0xC),
+                   *(unsigned int*)((char*)this->Resend + player),
+                   log_time);
+            operator delete((void*)nosuch.Serialno);
         }
-    }
-    if (good == 0 && bad == 0) {
-        if (this->state == 3) {
-            TDebuggingLog::Log((void*)DAT_0062c4fc, "Res reply none #%d %d", player, serial);
-            char no[8];
-            no[0] = 'Y';
-            *(uint*)(no+4) = this->count_limit - 1;
-            TDebuggingLog::Log((void*)DAT_0062c4fc, "res none send %d %d", player, serial, 8);
-            this->TXAcknowledgeMessage(serial, player);
-            TDebuggingLog::Log((void*)DAT_0062c4fc, "clearing tx %d", serial);
-            this->ClearTXForPlayer(player);
+
+        offset += 0x38;
+        ++GoodTransmitCount;
+        player += 0x38;
+    } while (offset <= 0x6D98);
+
+    if ((hr == 0) && (i == 0)) {
+        if (this->PlayerOptions.ProgramState == 3) {
+            L->Log("+++ Did not have requested Ser#%d for P#%d ",
+                   serial, playerNumber);
+            nosuch.Command = 'Y';
+            nosuch.Serialno = this->GTDSerialNo - 1;
+            L->Log("  >TX RNSM #%d %d (%d)",
+                   playerNumber, serial, 8);
+            this->FastSend(this->PlayerOptions.dcoID[playerNumber], &nosuch,
+                           8, 0, 0);
+            L->Log("+++ TX: No such message as #%d..resynchronizing ser#s", serial);
+            this->ClearTXForPlayer(playerNumber);
         }
     } else {
-        TDebuggingLog::Log((void*)DAT_0062c4fc, "RES REPLY summary p%d good %d bad %d total %d", player, good, bad, good + bad);
+        L->Log("RESEND to P#%d FULFILLED:  GoodTX=%d BadTX=%d Total=%d",
+               playerNumber, hr, i, hr + i);
     }
-    this->flush();
+
+    this->PurgeAcknowledgedStoredMessages();
     return 1;
+
+no_transmit:
+    L->Log(error_message);
+    return 0;
 }

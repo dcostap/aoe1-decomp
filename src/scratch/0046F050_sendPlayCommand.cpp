@@ -18,6 +18,12 @@
 // - Exact-donor void/nonvirtual surface probe was unchanged and restored.
 // - Scoped selected locals and counter-first/top-level initialization probes were unchanged and restored.
 // - Final source remains the pinned canonical typed reconstruction; drift is still the isolated EBP/EBX coloring swap.
+// Managed bounded pass (sa3834ca36_r1):
+// - register-qualified counter, scalar/array declaration order, and loop-init ordering all emitted the same 7-byte drift.
+// - A focused width lab over the 25-count and selected-count locals produced one 237-byte/7-byte group; narrow count variants lost invariants.
+// - Reordering selected-id store versus selected-count increment was unchanged.
+// - Proven polymorphic RGE_Game_World and AIPlayBook donor surfaces, plus a partial first-call receiver alias, were unchanged.
+// - Restored this clean natural typed source; no compiler-steering variant is retained. Remaining drift is still EBP vtable versus EBX loop counter.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

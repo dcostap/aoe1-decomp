@@ -19,6 +19,18 @@
 //   VC5 basin rather than a game-type declaration issue.
 // - The direct outer else-if difficulty form used by exact setup donors also
 //   emitted the same bytes; retain it as the cleaner period-plausible shape.
+// - Current claim: focused difficulty/pointer labs (8 + 13 forms), an
+//   early-return whole-outer alias, full tplayer class surface, and small flag
+//   context all retained the 303-byte basin; volatile/wrapper forms were
+//   larger and are not living-source candidates.
+// - A 576-way permutation of the two independent normal-store groups changed
+//   only later scheduling/edit distance; every variant retained the same
+//   first mismatch at the missing pre-jge p load.  The natural observed store
+//   order remains the clean source.
+// - Labeled/goto guard forms likewise retained the 303-byte basin; the one
+//   altered CFG was strictly worse.  The p-load-before-jge gap is therefore
+//   still isolated to a stable VC5 structural/codegen basin after 9 new
+//   hypothesis families; no plausible source lead remains in this claim.
 // FLAGS: /nologo /c /O2 /Oy
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;

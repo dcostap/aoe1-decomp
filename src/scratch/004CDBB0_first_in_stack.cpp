@@ -9,30 +9,12 @@
 // 7: object offsets/call surface are now correct (+8 actor, +10 target, +40 was_same_owner, +44 requiredRange), unlike v1.
 // 8: remaining mismatch includes word-BX class id, branch distances, and all notification/set_state blocks shifted by the early register allocation.
 // 9: left in scratch: behavior is modeled but mismatch is much too broad for accepted_drift.
+// 10: duplicate failure calls fixed the aggregate call count, but the positive/negative tail layouts were still 14 bytes over the boundary; reset to the clean source before the typed-base probe.
+// 11: exact RGE_Action base plus typed master/player/object surfaces reduced positional drift from 561 to 467 bytes and produced the observed movsx EBX object-group load; call set and CFG counts now align.
+// 12: declaration-order, direct-reread, and distinct RGE_Static_Object target probes did not remove the extra EBP save or swap target/actor coloring; emitted code duplicated across several probes.
+// 13: bounded result left in scratch: 604 emitted bytes versus 595, saved EBP versus original EBX/ESI/EDI only, and the remaining broad drift begins at the prologue/register topology. Calls are 19/19 with exact target multiset.
 
 typedef unsigned char uchar;
-
-class RGE_Base_Game { public: void* vtable; };
-extern RGE_Base_Game* rge_base_game;
-
-class ActionV {
-public:
-    virtual void f00(); virtual void f04(); virtual void f08(); virtual void f0c();
-    virtual void f10(); virtual void f14(); virtual void f18(); virtual void f1c();
-    virtual void f20(); virtual void f24(); virtual void f28(); virtual void f2c();
-    virtual void f30(); virtual void f34(); virtual void f38(); virtual void f3c();
-    virtual void f40(); virtual void f44(); virtual void f48(); virtual void f4c();
-    virtual void f50(); virtual void f54(); virtual void f58();
-    virtual void set_state(int);
-};
-class GameV {
-public:
-    virtual void g00(); virtual void g04(); virtual void g08(); virtual void g0c();
-    virtual void g10(); virtual void g14(); virtual void g18(); virtual void g1c();
-    virtual void g20(); virtual void g24(); virtual void g28(); virtual void g2c();
-    virtual void g30(); virtual void g34(); virtual void g38(); virtual void g3c();
-    virtual void notify(int,int,int,int,int);
-};
 
 class RGE_Player {
 public:
@@ -43,18 +25,91 @@ public:
     int computerPlayer();
 };
 
-class MasterObj { public: char gap_00[0x10]; short object_id; char gap_12[2]; short class_id; char gap_16[0x114-0x16]; float range; };
-class UnitObj { public: char gap_00[8]; MasterObj* master; RGE_Player* owner; };
-class ActionObj { public: char gap_00[8]; MasterObj* master; RGE_Player* owner; char gap_10[0x44-0x10]; float field_44; };
-
-class TRIBE_Action_Convert {
+class RGE_Master_Static_Object {
 public:
-    void* vtable;
+    void* vtable_ptr;
+    char gap_04[0x0C];
+    short id;
+    short copy_id;
+    short object_group;
+    char gap_16[0x114 - 0x16];
+    float weapon_range;
+};
+
+class RGE_Static_Object {
+public:
+    virtual void _s0();
+
     char gap_04[4];
-    ActionObj* actor;
-    char gap_0C[4];
-    UnitObj* target;
-    char gap_14[0x40-0x14];
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x34];
+    float attribute_amount_held;
+};
+
+class RGE_Action_Object : public RGE_Static_Object {
+};
+
+class RGE_Action {
+public:
+    virtual ~RGE_Action();
+    virtual int vf04(RGE_Action_Object*);
+    virtual int vf08(int, RGE_Action_Object*);
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14(int);
+    virtual short vf18();
+    virtual void vf1C(uchar);
+    virtual uchar vf20();
+    virtual uchar vf24();
+    virtual uchar vf28();
+    virtual int vf2C();
+    virtual int vf30(void*, float, float, float);
+    virtual int vf34(void*, float, float, float);
+    virtual uchar vf38(void*);
+    virtual uchar vf3C(long, uchar);
+    virtual void vf40(void*);
+    virtual void vf44(void*, void*, void*);
+    virtual void vf48(char*);
+    virtual void* vf4C();
+    virtual void* vf50();
+    virtual void set_target_obj(void*);
+    virtual void set_target_obj2(void*);
+    virtual void set_state(uchar);
+
+    short action_type;
+    char gap_06[2];
+    RGE_Action_Object* obj;
+    uchar state;
+    char gap_0D[3];
+    RGE_Static_Object* target_obj;
+    void* target_obj2;
+    int targetID;
+    int target2ID;
+    float target_x;
+    float target_y;
+    float target_z;
+    float timer;
+    void* task;
+    void* sub_actions;
+    void* sprite;
+    uchar subActionValue;
+    char gap_3D[3];
+};
+
+class RGE_Base_Game {
+public:
+    virtual void g00(); virtual void g04(); virtual void g08(); virtual void g0C();
+    virtual void g10(); virtual void g14(); virtual void g18(); virtual void g1C();
+    virtual void g20(); virtual void g24(); virtual void g28(); virtual void g2C();
+    virtual void g30(); virtual void g34(); virtual void g38(); virtual void g3C();
+    virtual void notify(int, int, int, int, int);
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+class TRIBE_Action_Convert : public RGE_Action {
+public:
     uchar was_same_owner;
     char gap_41[3];
     float requiredRange;
@@ -64,77 +119,74 @@ public:
 
 void TRIBE_Action_Convert::first_in_stack(uchar param_1)
 {
-    UnitObj* target = this->target;
+    RGE_Static_Object* target = this->target_obj;
     if (target != 0) {
-        MasterObj* tm = target->master;
-        ActionObj* actor = this->actor;
-        short cls = tm->class_id;
-        if (target->owner == actor->owner) {
+        RGE_Master_Static_Object* target_master = target->master_obj;
+        int object_group = target_master->object_group;
+        if (target->owner == this->obj->owner) {
             this->was_same_owner = 1;
         } else {
             this->was_same_owner = 0;
         }
-        short oid = tm->object_id;
-        if (oid == 0x6d || cls == 0x1b || oid == 0x9f || oid == 0x9e || oid == 0xa3 || oid == 0x114) {
-            if (actor->owner->computerPlayer() == 1) {
-                ((ActionV*)this)->set_state(0x0b);
+        short target_id = target_master->id;
+        if (target_id == 0x6d || object_group == 0x1b || target_id == 0x9f || target_id == 0x9e || target_id == 0xa3 || target_id == 0x114) {
+            if (this->obj->owner->computerPlayer() == 1) {
+                this->set_state(0x0b);
             } else {
-                ((ActionV*)this)->set_state(0x0d);
+                this->set_state(0x0d);
             }
-            oid = this->target->master->object_id;
-            if (oid == 0x6d) {
-                RGE_Base_Game* game = rge_base_game;
-                ((GameV*)game)->notify(0x79, (int)this->actor->owner->id, 0, 0, 0);
+            target_id = this->target_obj->master_obj->id;
+            if (target_id == 0x6d) {
+                rge_base_game->notify(0x79, (int)this->obj->owner->id, 0, 0, 0);
                 return;
             }
-            if (oid == 0x114) {
-                RGE_Base_Game* game = rge_base_game;
-                ((GameV*)game)->notify(0x7a, (int)this->actor->owner->id, 0, 0, 0);
+            if (target_id == 0x114) {
+                rge_base_game->notify(0x7a, (int)this->obj->owner->id, 0, 0, 0);
                 return;
             }
             return;
         }
-        if (actor->field_44 < 100.0) {
-            ((ActionV*)this)->set_state(0x0d);
-            RGE_Base_Game* game = rge_base_game;
-            ((GameV*)game)->notify(0x76, (int)this->actor->owner->id, 0, 0, 0);
+        if (this->obj->attribute_amount_held < 100.0) {
+            this->set_state(0x0d);
+            rge_base_game->notify(0x76, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
-        if (cls == 3) {
+        if (object_group == 3) {
             this->requiredRange = 1.0f;
         } else {
-            this->requiredRange = actor->master->range;
+            this->requiredRange = this->obj->master_obj->weapon_range;
         }
-        if (cls == 0x1e) {
-            ((ActionV*)this)->set_state(0x0d);
+        if (object_group == 0x1e) {
+            this->set_state(0x0d);
             return;
         }
-        if (cls == 0x12 && actor->owner->attributes[0x1b] <= 0.0f) {
-            if (actor->owner->computerPlayer() == 1) {
-                ((ActionV*)this)->set_state(0x0b);
+        if (object_group == 0x12 && this->obj->owner->attributes[0x1b] <= 0.0f) {
+            if (this->obj->owner->computerPlayer() == 1) {
+                this->set_state(0x0b);
             } else {
-                ((ActionV*)this)->set_state(0x0d);
+                this->set_state(0x0d);
             }
-            RGE_Base_Game* game = rge_base_game;
-            ((GameV*)game)->notify(0x77, (int)this->actor->owner->id, 0, 0, 0);
+            rge_base_game->notify(0x77, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
-        if (cls == 3 && actor->owner->attributes[0x1c] <= 0.0f) {
-            if (actor->owner->computerPlayer() == 1) {
-                ((ActionV*)this)->set_state(0x0b);
+        if (object_group == 3 && this->obj->owner->attributes[0x1c] <= 0.0f) {
+            if (this->obj->owner->computerPlayer() == 1) {
+                this->set_state(0x0b);
             } else {
-                ((ActionV*)this)->set_state(0x0d);
+                this->set_state(0x0d);
             }
-            RGE_Base_Game* game = rge_base_game;
-            ((GameV*)game)->notify(0x78, (int)this->actor->owner->id, 0, 0, 0);
+            rge_base_game->notify(0x78, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
     }
     if (param_1 != 0) {
         if (target != 0) {
-            ((ActionV*)this)->set_state(4);
+            this->set_state(4);
+            return;
+        } else {
+            this->set_state(3);
             return;
         }
     }
-    ((ActionV*)this)->set_state(3);
+    this->set_state(3);
 }

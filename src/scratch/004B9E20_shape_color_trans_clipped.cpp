@@ -11,9 +11,30 @@
 // try 9: validation reaches exact configured size 917B, but broad mismatch (93.2388% positional / 150.0545% edit); first mismatch is frame size 0x28 vs original 0x0c.
 // try 10: compared with sibling clipped/color/mirror scratch attempts; same family problem: behavior surface plausible, but VC5 original uses very tight 3-local frame and specific EBX/EBP/ESI/EDI allocation while natural C state machine creates too much local pressure.
 // try 11: kept helper copy_trans_fwd rather than macro/inlined version because sibling 004BAF20 showed inline translated-copy worsens frame pressure; still broad and not drift-safe.
+// try 12: restored the binary-proven inline translated-copy loops and out-of-line
+// memset surface; the original has only AlignedWidth plus two memset calls.
+// try 13: restored the omitted shape-index parameter from the caller/PDB ABI and
+// mapped the seven long arguments to shape origin plus four clip bounds.
+// sa-c8968b7c-r1 probe 1 baseline: the prior helper-call source rebuilt 1126B
+// with five calls; retained only as history, not as the living reconstruction.
+// probe 2: inlined the translated literal loops and forced the two binary-proven
+// memset calls; call set became exact and the candidate fell to 932B.
+// probe 3: restored the caller-proven nine-stack-argument ABI (shape index plus
+// seven longs); semantics and stack cleanup became exact, with a 949B candidate.
+// probe 4/restore: reusing clip-y homes for skip/row counts worsened the basin.
+// probe 5: one mutable byte command plus direct table indexing reduced the frame
+// to 0x10 and the candidate to 882B, but was retained only as evidence.
+// probe 6: replacing the orientation-dependent row tail with `dst += pitch`
+// recovered the signed-pitch behavior, exact 0x0c frame, 334 instructions,
+// 41 conditional signals, and the best 82.04% shape / 800-byte strict diff.
+// probe 7/restore: a separate save_buffer/row-destination split worsened the
+// prologue and frame; a function-scope command and a post-setup save_buffer alias
+// were likewise rolled back. Current best remains the simple signed-pitch form.
 // GIVEUP blockers: exact clipped RLE source topology, parameter-slot reuse for min/max/x/y counters, state-byte placement at [esp+34], and register allocation for EDI=src/ESI=dst/EBP=xpos/EDX=min_x. No inline asm used; no accepted_drift proposal.
 
 typedef unsigned char byte;
+#include <string.h>
+#pragma function(memset)
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 struct Shape_Header { long bounds, origin, xmin, ymin, xmax, ymax; };
@@ -34,93 +55,89 @@ public:
     long load_type;
     long load_size;
     Shape_Header* shape_header;
-    byte shape_color_trans_clipped(TDrawArea* draw_area, long min_y, long min_x, long max_x, long y, long x, long max_y, byte* table);
+    byte shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* table);
 };
 
-static void copy_trans_fwd(byte*& dst, byte*& src, byte* table, unsigned int n) {
-    while (n-- != 0) { *dst++ = table[*src++]; }
-}
-
-byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long min_y, long min_x, long max_x, long y, long x, long max_y, byte* table)
+byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* table)
 {
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
     byte* src = (byte*)this->shape_header + 0x18;
     byte* dst;
-    if (draw_area->Orien < 1) dst = draw_area->Bits + (y - draw_area->Height + 1) * pitch + x;
-    else dst = draw_area->Bits + y * pitch + x;
+    if (draw_area->Orien < 1) dst = draw_area->Bits + (clip_y0 - draw_area->Height + 1) * pitch + clip_x0;
+    else dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
 
-    if (min_y < y) {
-        long skip = y - min_y;
-        min_y += skip;
+    if (shape_y1 < clip_y0) {
+        long skip = clip_y0 - shape_y1;
+        shape_y1 += skip;
         do {
             byte done = 0;
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n) src += n;
+                byte command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command) src += command;
                     else ++src;
                 } else {
-                    if ((code & 0xfe) == 0) done = 1;
+                    if ((command & 0xfe) == 0) done = 1;
                     else ++src;
                 }
             } while (!done);
         } while (--skip != 0);
     }
 
-    if (min_y > max_y) return 1;
-    long rows = max_y - min_y + 1;
+    if (shape_y1 > clip_y1) return 1;
+    long rows = clip_y1 - shape_y1 + 1;
 
     do {
-        long xpos = x;
+        long xpos = shape_x1;
         byte state;
-        if (xpos < min_x) {
+        if (xpos < clip_x0) {
             state = 0;
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n == 0) {
-                        n = *src++;
-                        xpos += n;
-                        if (xpos >= min_x) {
-                            if (xpos > max_x) state = 2;
-                            else { dst += xpos - min_x; state = 1; }
+                byte command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        command = *src++;
+                        xpos += command;
+                        if (xpos >= clip_x0) {
+                            if (xpos > clip_x1) state = 2;
+                            else { dst += xpos - clip_x0; state = 1; }
                         }
                     } else {
-                        xpos += n;
-                        if (xpos >= min_x) {
-                            if (xpos > max_x) {
-                                unsigned int cnt = max_x - min_x + 1;
-                                long skip2 = min_x - xpos + n;
+                        xpos += command;
+                        if (xpos >= clip_x0) {
+                            if (xpos > clip_x1) {
+                                unsigned int cnt = clip_x1 - clip_x0 + 1;
                                 state = 2;
-                                src += skip2;
-                                copy_trans_fwd(dst, src, table, cnt);
-                                src += n - skip2 - cnt;
+                                src += clip_x0 - xpos + command;
+                                byte* end = dst + cnt;
+                                while (dst < end) *dst++ = table[*src++];
+                                src += command - (clip_x0 - xpos + command) - cnt;
                             } else {
-                                unsigned int cnt = xpos - min_x;
+                                unsigned int cnt = xpos - clip_x0;
                                 state = 1;
-                                src += n - cnt;
-                                copy_trans_fwd(dst, src, table, cnt);
+                                src += command - cnt;
+                                byte* end = dst + cnt;
+                                while (dst < end) *dst++ = table[*src++];
                             }
-                        } else src += n;
+                        } else src += command;
                     }
                 } else {
-                    byte n = code >> 1;
-                    if (n == 0) state = 3;
+                    command >>= 1;
+                    if (command == 0) state = 3;
                     else {
-                        xpos += n;
-                        if (xpos >= min_x) {
-                            byte c = table[*src];
-                            if (xpos > max_x) {
-                                unsigned int cnt = max_x - min_x + 1;
+                        xpos += command;
+                        if (xpos >= clip_x0) {
+                            if (xpos > clip_x1) {
+                                unsigned int cnt = clip_x1 - clip_x0 + 1;
                                 state = 2;
-                                memset(dst, c, cnt);
+                                memset(dst, table[*src], cnt);
                                 dst += cnt;
                             } else {
-                                unsigned int cnt = xpos - min_x;
+                                unsigned int cnt = xpos - clip_x0;
                                 state = 1;
-                                memset(dst, c, cnt);
+                                memset(dst, table[*src], cnt);
                                 dst += cnt;
                             }
                         }
@@ -135,41 +152,43 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long min_y, long mi
         state--;
         if (state == 0) {
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n == 0) {
-                        n = *src++;
-                        xpos += n;
-                        dst += n;
-                        if (xpos > max_x) state = 1;
+                byte command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        command = *src++;
+                        xpos += command;
+                        dst += command;
+                        if (xpos > clip_x1) state = 1;
                     } else {
-                        xpos += n;
-                        if (xpos > max_x) {
-                            unsigned int cnt = n + max_x - xpos + 1;
+                        xpos += command;
+                        if (xpos > clip_x1) {
+                            unsigned int cnt = command + clip_x1 - xpos + 1;
                             state = 1;
-                            copy_trans_fwd(dst, src, table, cnt);
-                            dst += n - cnt;
-                            src += n - cnt;
+                            byte* end = dst + cnt;
+                            while (dst < end) *dst++ = table[*src++];
+                            dst += command - cnt;
+                            src += command - cnt;
                         } else {
-                            copy_trans_fwd(dst, src, table, n);
+                            byte* end = dst + command;
+                            while (dst < end) *dst++ = table[*src++];
                         }
                     }
                 } else {
-                    byte n = code >> 1;
-                    if (n == 0) state = 3;
+                    command >>= 1;
+                    if (command == 0) state = 3;
                     else {
-                        byte c = table[*src++];
-                        xpos += n;
-                        if (xpos > max_x) {
-                            unsigned int cnt = n + max_x - xpos + 1;
+                        xpos += command;
+                        if (xpos > clip_x1) {
+                            unsigned int cnt = command + clip_x1 - xpos + 1;
                             state = 1;
-                            memset(dst, c, cnt);
-                            dst += n;
+                            memset(dst, table[*src], cnt);
+                            dst += command;
                         } else {
-                            memset(dst, c, n);
-                            dst += n;
+                            memset(dst, table[*src], command);
+                            dst += command;
                         }
+                        ++src;
                     }
                 }
             } while (!state);
@@ -178,19 +197,18 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long min_y, long mi
         state--;
         if (state == 0) {
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n) src += n;
+                byte command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command) src += command;
                     else ++src;
                 } else {
-                    if ((code & 0xfe) == 0) state = 2;
+                    if ((command & 0xfe) == 0) state = 2;
                     else ++src;
                 }
             } while (!state);
         }
-        if (draw_area->Orien < 1) dst -= pitch;
-        else dst += pitch;
+        dst += pitch;
     } while (--rows != 0);
     return 1;
 }

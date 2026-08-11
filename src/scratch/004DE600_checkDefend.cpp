@@ -11,6 +11,13 @@
 // try 9: used IntArray::checkObjectInList for group 8/32 and addImportantObject for group 7; call set matches fallback.
 // try 10: kept natural add_to_important helper body to share insertion tail; compiler duplicates/places exits differently.
 // left in scratch: exact size but not safe drift; initial switch range/table and early-return/code layout need source-shape recovery.
+// session sa-a3ad6bc7-r1-Defend baseline: typed candidate was 747 bytes, but used the wrong 0x9e/0xa3 coverage and helper-call surface.
+// corrected master cases and restored the four-word ManagedArray layout plus contains/add/resize ABI; prologue and call alignment improved.
+// inline duplicate-scan append recovered the three resize calls and reduced drift to 597 bytes at the original 747-byte boundary.
+// ordered group if/else and scoped result probes still merged the 0x33/0x32 call paths; shared temporary is the clean retained form.
+// distinct group temporaries preserved all 13 ordered calls but expanded the emitted switch-table/function boundary by 148 bytes.
+// parameter-home pointer reuse expanded the prologue/frame and was rolled back; a distinct-temp group switch kept calls ordered but expanded by 224 bytes.
+// final pause: natural typed candidate remains 747 bytes (597 positional diff, 11/13 calls); missing group contains/resize sites are a compiler tail-merge blocker.
 
 typedef unsigned char uchar;
 
@@ -24,10 +31,11 @@ class TribeMainDecisionAIModule { public: char pad0[0xf0]; RGE_Player* player; c
 struct IntArray {
     int* value;
     int numberValue;
+    int desiredNumberValue;
     int maximumSizeValue;
-    void setSize(int);
-    int checkObjectInList(int, int*);
-    void addImportantObject(int);
+    int resize(int);
+    int contains(const int&) const;
+    int add(int);
 };
 
 class TribeInformationAIModule {
@@ -38,17 +46,6 @@ public:
     IntArray importantObjects;
     int checkDefend(RGE_Static_Object*);
 };
-
-static int add_to_important(IntArray* list, int id)
-{
-    int n = list->numberValue;
-    if (n > list->maximumSizeValue - 1) {
-        list->setSize(n + 1);
-    }
-    list->value[list->numberValue] = id;
-    list->numberValue++;
-    return 1;
-}
 
 int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
 {
@@ -65,7 +62,11 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
         for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
             if (this->importantObjects.value[i] == id) return 1;
         }
-        return add_to_important(&this->importantObjects, id);
+        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
+            this->importantObjects.resize(this->importantObjects.numberValue + 1);
+        this->importantObjects.value[this->importantObjects.numberValue] = id;
+        this->importantObjects.numberValue++;
+        return 1;
     }
     case 45: {
         if (owner != this->mainDecisionAI->player->id) return 0;
@@ -74,42 +75,67 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
         for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
             if (this->importantObjects.value[i] == id) return 1;
         }
-        return add_to_important(&this->importantObjects, id);
+        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
+            this->importantObjects.resize(this->importantObjects.numberValue + 1);
+        this->importantObjects.value[this->importantObjects.numberValue] = id;
+        this->importantObjects.numberValue++;
+        return 1;
     }
-    case 159: {
+    case 0x9f: {
         if (this->mainDecisionAI->tacticalAI.strategicNumber(0x37) <= 0) return 0;
         id = obj->id;
         for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
             if (this->importantObjects.value[i] == id) return 1;
         }
-        return add_to_important(&this->importantObjects, id);
+        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
+            this->importantObjects.resize(this->importantObjects.numberValue + 1);
+        this->importantObjects.value[this->importantObjects.numberValue] = id;
+        this->importantObjects.numberValue++;
+        return 1;
     }
-    case 160: {
+    case 0x9e:
+    case 0xa3: {
         if (this->mainDecisionAI->tacticalAI.strategicNumber(0x36) <= 0) return 0;
         id = obj->id;
         for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
             if (this->importantObjects.value[i] == id) return 1;
         }
-        return add_to_important(&this->importantObjects, id);
+        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
+            this->importantObjects.resize(this->importantObjects.numberValue + 1);
+        this->importantObjects.value[this->importantObjects.numberValue] = id;
+        this->importantObjects.numberValue++;
+        return 1;
     }
     default:
-        switch (group) {
-        case 7:
+        if (group == 7) {
             if (this->mainDecisionAI->tacticalAI.strategicNumber(0x34) <= 0) return 0;
-            this->importantObjects.addImportantObject(obj->id);
+            this->importantObjects.add(obj->id);
             return 1;
-        case 8:
-            if (this->mainDecisionAI->tacticalAI.strategicNumber(0x33) <= 0) return 0;
-            tmp = obj->id;
-            if (this->importantObjects.checkObjectInList(1, &tmp) == 1) return 1;
-            return add_to_important(&this->importantObjects, tmp);
-        case 32:
-            if (this->mainDecisionAI->tacticalAI.strategicNumber(0x32) <= 0) return 0;
-            tmp = obj->id;
-            if (this->importantObjects.checkObjectInList(1, &tmp) == 1) return 1;
-            return add_to_important(&this->importantObjects, tmp);
-        default:
-            return 0;
         }
+        else if (group == 8) {
+            int result8 = this->mainDecisionAI->tacticalAI.strategicNumber(0x33);
+            if (result8 > 0) {
+                tmp = obj->id;
+                if (this->importantObjects.contains(tmp) == 1) return 1;
+                if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
+                    this->importantObjects.resize(this->importantObjects.numberValue + 1);
+                this->importantObjects.value[this->importantObjects.numberValue] = tmp;
+                this->importantObjects.numberValue++;
+                return 1;
+            }
+        }
+        else if (group == 32) {
+            int result32 = this->mainDecisionAI->tacticalAI.strategicNumber(0x32);
+            if (result32 > 0) {
+                tmp = obj->id;
+                if (this->importantObjects.contains(tmp) == 1) return 1;
+                if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
+                    this->importantObjects.resize(this->importantObjects.numberValue + 1);
+                this->importantObjects.value[this->importantObjects.numberValue] = tmp;
+                this->importantObjects.numberValue++;
+                return 1;
+            }
+        }
+        return 0;
     }
 }

@@ -3,46 +3,69 @@
 // - Initial natural missile-spawn source from packet asm/decompiler compiled but used too-small FPU body until math intrinsics were visible.
 // - Added if-positive body with direct returns; got correct sub esp,8 prologue and 305-byte function size, but FPU scheduling still broad drift (~45% edit diff).
 // - Tried explicit rx/ry locals before trig; size matched but compiler used MOV stores and different x87 stack order versus original fld/mov/fld-st3 pattern.
-// - Changed owner/object-list surface: this->owner (+0x0C) has missile table at +0x24 and is also create_object first arg; fixed call receiver/arg register shape around the virtual call.
-// - Current best: collapsed len/range into one natural range local after the angle/owner setup; exact size 305, all 3 call sites aligned, 176 strict-diff bytes.
-// - Tried moving that range declaration before angle locals; size stayed exact but diff worsened to 178. A register-qualified radius_y local worsened to 261, and direct angle-member calls/range-first source caused a structural 237-byte rebuild. Restored the 176-byte candidate.
-// - Remaining mismatch is the radius/trig x87 schedule: original starts `fld radius_y`, spills only radius_x, then uses `fld st3`; rebuilt still materializes radius fields differently. No inline asm or fake volatility retained.
-// - Main-agent audit restored canonical destructor ownership for the player,
-//   master, object-list entry, and combat object; emitted behavior is unchanged.
+// - Canonicalized the missile factory to RGE_Player::master_objects (+0x24) and
+//   RGE_Master_Static_Object::make_new_obj; this is codegen-neutral but matches
+//   the ground-truth owner/table surface.
+// - Modeled the proven Master_Static->Animated->Moving->Action->Combat and
+//   Static->Animated->Moving->Action->Combat base sizes with named inherited
+//   fields; emitted code remained in the same basin.
+// - Inline range and radius-local variants were structural regressions. The
+//   retained range declaration is before trig because PDB line 339 begins at
+//   radius_y; it gives 303 emitted bytes, 260 strict differing bytes, 75.93%
+//   shape, and all 3 ordered calls aligned.
+// - A no-destructor slot-pad diagnostic was codegen-neutral under the proven
+//   inheritance surface and was rolled back. The remaining mismatch is the
+//   radius/trig x87 schedule: original starts `fld radius_y`, spills only
+//   radius_x, then uses `fld st3`; no inline asm or fake volatility retained.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
+class RGE_Player;
+class RGE_Object_List;
 
-class RGE_Object_List_Entry {
+class RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Object_List_Entry();
+    virtual ~RGE_Master_Static_Object();
     virtual void pad04();
     virtual void pad08();
     virtual void pad0C();
     virtual void pad10();
     virtual void pad14();
-    virtual RGE_Missile_Object* create_object(void* owner, float x, float y, float z);
-};
+    virtual RGE_Missile_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
 
-class RGE_Object_List {
-public:
-    RGE_Object_List_Entry** entries;
+    char pad_004[0x2C];
+    float radius_x;        // +0x30
+    float radius_y;        // +0x34
+    float radius_z;        // +0x38
+    char pad_03C[0x7C];
 };
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
     char pad_04[0x20];
-    RGE_Object_List_Entry** objects;
+    RGE_Master_Static_Object** master_objects;
 };
 
-class RGE_Master_Combat_Object {
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Master_Combat_Object();
-    char pad_004[0x2C];
-    float radius_x;        // +0x30
-    float radius_y;        // +0x34
-    char pad_038[0xDC];
+    float speed;           // +0xB8
+    char pad_BC[0x1C];
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    char pad_D8[0x20];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    char pad_F8[0x04];
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
+    char pad_FC[0x18];
     float weapon_range;    // +0x114
     char pad_118[0x0C];
     short missile_id;      // +0x124
@@ -58,9 +81,9 @@ public:
 };
 
 #define VPAD(n) virtual void pad##n();
-class RGE_Combat_Object {
+class RGE_Static_Object {
 public:
-    virtual ~RGE_Combat_Object();
+    virtual ~RGE_Static_Object();
     VPAD(001) VPAD(002) VPAD(003) VPAD(004) VPAD(005) VPAD(006) VPAD(007)
     VPAD(008) VPAD(009) VPAD(010) VPAD(011) VPAD(012) VPAD(013) VPAD(014) VPAD(015)
     VPAD(016) VPAD(017) VPAD(018) VPAD(019) VPAD(020) VPAD(021) VPAD(022) VPAD(023)
@@ -83,8 +106,29 @@ public:
     float world_x;                  // +0x38
     float world_y;                  // +0x3C
     float world_z;                  // +0x40
-    char pad_044[0x58];
+    char pad_044[0x44];
+};
+
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    float speed;                    // +0x88
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    char pad_08C[0x10];
     float angle;                    // +0x9C
+    char pad_0A0[0xE0];
+};
+
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    char pad_180[0x14];
+};
+
+class RGE_Combat_Object : public RGE_Action_Object {
+public:
+    char pad_194[0x30];
 
     virtual unsigned char attack(float x, float y, float z, RGE_Combat_Object* target);
 };
@@ -100,16 +144,16 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
     RGE_Master_Combat_Object* master = this->master_obj;
     short missile_id = master->missile_id;
     if (missile_id >= 0) {
+        float range = (float)sqrt(master->radius_y * master->radius_y + master->radius_x * master->radius_x) +
+            master->weapon_range + 6.0f;
         float angle1 = this->angle;
         float angle2 = this->angle;
         float c = (float)cos(angle1);
         RGE_Player* owner = this->owner;
-        RGE_Object_List_Entry* entry = owner->objects[missile_id];
+        RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
         float s = (float)sin(angle2);
-        float range = (float)sqrt(master->radius_y * master->radius_y + master->radius_x * master->radius_x) +
-            master->weapon_range + 6.0f;
 
-        RGE_Missile_Object* missile = entry->create_object(owner,
+        RGE_Missile_Object* missile = entry->make_new_obj(owner,
             this->world_x + c * master->weapon_offset_y - s * master->weapon_offset_x,
             this->world_y + s * master->weapon_offset_y + c * master->weapon_offset_x,
             this->world_z + master->weapon_offset_z);

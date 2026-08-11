@@ -23,11 +23,25 @@
 // operand by 3 bytes; restored symbol-backed clean source.
 // fresh worker: explicit map-word copies and low-mask-first declarations widened
 // to 184B/63.9%; restored canonical map/explored form.
+// fresh worker baseline: resumed the pinned canonical source at 182 differing
+// bytes; ordered calls, size, frame, and all five call sites are aligned.
+// fresh worker: direct map-cell assignment to the low-mask local plus the
+// binary-proven absolute map address produced the best natural basin (180
+// differing bytes, exact size/frame/calls); it also restored EBX map/EBP
+// explored extraction, but the oracle still spills mask while this build spills
+// explored around the virtual call.
+// fresh worker: explored/mask declaration order, shared player scopes, register
+// qualifier, loop-index placement, and function-scope local placement were
+// unchanged codegen duplicates; a focused 40-variant map/guard/player-scope lab
+// found no exact output. Narrow volatile mask was structural/worse (304 bytes)
+// and was rolled back.
+// final fresh worker: retain the period-plausible direct mask/explored source
+// with absolute unified-map ownership; remaining drift is the EBX/EBP stack
+// spill and the resulting two-byte tail displacement basin.
 
 typedef unsigned long ulong;
 
-extern ulong* DAT_00886808[];
-#define unified_map_offsets DAT_00886808
+#define unified_map_offsets ((ulong**)0x00886808)
 
 class RGE_Game_World;
 class RGE_Player;
@@ -109,24 +123,28 @@ public:
 };
 
 void RGE_Static_Object::remove_visible_resource() {
+    ulong mask;
+    ulong explored;
+    RGE_Player* player;
     if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 &&
         (this->master_obj->create_doppleganger_on_death != 0 ||
          this->master_obj->track_as_resource != 0)) {
-        ulong explored = unified_map_offsets[(int)this->world_y][(int)this->world_x];
-        ulong mask = explored & 0xFFFF;
+        mask = unified_map_offsets[(int)this->world_y][(int)this->world_x];
+        explored = mask;
+        mask &= 0xFFFF;
         explored >>= 16;
         if (explored > 0) {
             int player_index = 0;
             do {
                 if ((explored & 1) == 1) {
                     if (this->master_obj->track_as_resource != 0) {
-                        RGE_Player* player = this->owner->world->players[player_index];
+                        player = this->owner->world->players[player_index];
                         player->VR_List->Remove_Resource(
                             this->id, this->master_obj->resource_group);
                     }
                     if (this->master_obj->create_doppleganger_on_death == 1 &&
                         (mask & 1) == 0 && player_index > 0) {
-                        RGE_Player* player = this->owner->world->players[player_index];
+                        player = this->owner->world->players[player_index];
                         player->master_objects[243]->make_new_obj(
                             player, this->world_x, this->world_y, this->world_z, this);
                     }

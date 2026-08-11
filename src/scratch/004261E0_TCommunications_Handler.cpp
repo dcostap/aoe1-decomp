@@ -13,8 +13,14 @@
 // Left in scratch: the remaining 42 bytes are a localized VC5 callee-save/address family:
 //   rebuilt keeps this in ESI and loop offset/child temporaries in EDI, while original keeps
 //   this in EDI and offset/delete pointers in ESI, including its explicit entry LEA. The
-//   A volatile/raw-offset Resend diagnostic reproduced the reload but was not
-//   retained. Living source uses the owning RESENDER array and named fields.
+//   narrow volatile Resend reread is retained because the oracle visibly reloads +0x1520 at
+//   every loop iteration around the logging call. No inline asm; default /O2 /Oy.
+// Follow-up session: complete RESENDER/DestMap and per-slot typed forms moved to a 370-byte
+// SIB-address basin or a 300-byte register basin; declaration-only full RESENDER and full
+// TCommunications_Handler layouts emitted the same clean 42-byte result. A 12-variant natural
+// loop lab found no exact form; its closest edit basin was the known 370-byte local-resend
+// variant. Restored the clean direct-this source; remaining gap is still the ESI/EDI coloring
+// and entry LEA family, with all 21 ordered calls, size, and frame exact.
 
 class RESENDER;
 class HOLDER;
@@ -28,15 +34,10 @@ public:
     void __cdecl Log(char* fmt, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 };
 extern TDebuggingLog* L;
-extern char s_resender_status[];
 
 class RESENDER {
 public:
-    int state;
-    int active;
-    void* data;
-    int field_0C;
-    int acknowledgements[10];
+    char data[0x38];
     ~RESENDER();
 };
 
@@ -86,18 +87,25 @@ TCommunications_Handler::~TCommunications_Handler() {
     operator_delete(this->FormalName);
 
     int slot = 0;
+    unsigned int offset = 0;
     do {
-        RESENDER* entry = &this->Resend[slot];
-        if (entry->active != 0) {
-            L->Log(s_resender_status, slot, entry->active,
-                entry->field_0C,
-                entry->acknowledgements[1], entry->acknowledgements[2],
-                entry->acknowledgements[3], entry->acknowledgements[4],
-                entry->acknowledgements[5], entry->acknowledgements[6],
-                entry->acknowledgements[7], entry->acknowledgements[8]);
+        char* entry = (char*)*(RESENDER* volatile*)((char*)this + 0x1520) + offset;
+        int active = *(int*)(entry + 4);
+        if (active != 0) {
+            L->Log((char*)0x580D00, slot, active,
+                *(int*)(entry + 0x0C),
+                *(int*)(entry + 0x14),
+                *(int*)(entry + 0x18),
+                *(int*)(entry + 0x1C),
+                *(int*)(entry + 0x20),
+                *(int*)(entry + 0x24),
+                *(int*)(entry + 0x28),
+                *(int*)(entry + 0x2C),
+                *(int*)(entry + 0x30));
         }
+        offset += 0x38;
         slot++;
-    } while (slot < 502);
+    } while (offset <= 0x6D98);
 
     if (this->Resend != 0) {
         void* p = (char*)this->Resend - 4;

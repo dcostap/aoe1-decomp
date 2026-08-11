@@ -16,9 +16,19 @@
 // distance guards; sentinel/term forms duplicated the 68-byte basin and the
 // nested guards regressed to 296 bytes before restoration. A proven
 // TacticalAIModule base likewise duplicated the basin.
+// - This session's 18-variant local declaration/predicate lab produced two
+//   size/frame/call-set-preserving codegen groups, neither closer than 68
+//   bytes; register-qualified point/type parameters and a full self alias
+//   were also codegen duplicates.
+// - Restored the period math-header surface and the generated polymorphic
+//   AIModule/TacticalAIModule/TribeTacticalAIModule and TacticalAIGroup
+//   destructor ownership. These canonical source corrections emit the same
+//   317-byte function and preserve the proven +0xF0/+0x9D4 offsets.
+// Current bounded pass: behavior, calls, frame, boundary, and typed ownership
+// are stable; remaining drift is the first prologue/local-home/register basin
+// (68 bytes, 21.4511%).
 
-extern "C" double sqrt(double value);
-#pragma intrinsic(sqrt)
+#include <math.h>
 
 struct XYPoint {
     int x;
@@ -35,7 +45,7 @@ class TribeTacticalAIModule;
 
 class TacticalAIGroup {
 public:
-    virtual void destroy(int flags);
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
 
@@ -50,14 +60,27 @@ public:
 
 class TribeMainDecisionAIModule {
 public:
+    virtual ~TribeMainDecisionAIModule();
     char gap_00[0xF0];
 };
 
 // Main-agent audit confirmed canonical tactical/group/object ownership and kept
-// the natural ready/idle scan.
-class TribeTacticalAIModule {
+// the natural ready/idle scan.  The module hierarchy is polymorphic in the
+// period class surface; preserve the proven base boundary at +0xF0.
+class AIModule {
 public:
-    char gap_000[0xF0];
+    virtual ~AIModule();
+    char gap_004[0xEC];
+};
+
+class TacticalAIModule : public AIModule {
+public:
+    virtual ~TacticalAIModule();
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    virtual ~TribeTacticalAIModule();
     TribeMainDecisionAIModule* md;
     char gap_0F4[0x8E0];
     TacticalAIGroup groups;

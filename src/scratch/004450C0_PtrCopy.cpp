@@ -11,6 +11,23 @@
 // v7-10: Various struct layouts and local variable ordering — frame always 0x10
 // v11-14: Added more locals, explicit parameter slot reuse — frame fixed at 0x10 still
 // v15: All locals declared at function top as plain ints — still 0x10 vs 0x18
+// v16: Reconstructed the shared aligned byte/dword copy family with typed
+// loops; VC5 emitted scalar loops (443 bytes) and the experiment was rolled
+// back.
+// v17: Mutating src_rect to carry the row index was a codegen duplicate of the
+// clean indexed source; it supplied no parameter-home lead.
+// v18: Adding the exact Drawarea.cpp <stdlib.h> + <string.h> header pair was a
+// codegen duplicate.
+// v19: Restoring the complete donor-backed TDrawArea/TDrawSystem layouts was a
+// codegen duplicate, but is retained below as the canonical ownership surface.
+// v20: Threshold-shaped byte/dword loops gained exact-block islands but became
+// 432 bytes and still scalar; rolled back.
+// v21-22: Two intrinsic memcpys at the destination-alignment split reached the
+// required 0x18 frame and REP phases, but emitted two generic dword/byte pairs
+// (446/449 bytes); the masked variant was rolled back.
+// v23: A byte lead loop plus remainder memcpy stayed 449 bytes with worse CFG;
+// rolled back. The remaining REP sequence/CLD is shared with PtrSpanCopy and
+// PtrSurfaceCopy and is not reproduced by policy-compliant natural C++.
 //
 // Summary of remaining issues:
 // 1. Frame size: ORIG has sub esp,18h (6 stack locals: nLines, self, nWidth, XofS, DestP, SrcP)
@@ -31,18 +48,69 @@ struct tagRECT {
     long bottom;
 };
 
+class TDrawArea;
+
 struct TDrawSystem {
-    char gap_00[0x478];
+    void* Inst;
+    void* Wnd;
+    void* Pal;
+    TDrawArea* DrawArea;
+    TDrawArea* PrimaryArea;
+    void* DrawAreaList;
+    void* DirDraw;
+    void* PrimarySurface;
+    void* Clipper;
+    void* DirDrawPal;
+    unsigned long Flags;
+    int ScreenWidth;
+    int ScreenHeight;
+    int ColorBits;
+    int ErrorCode;
+    char gap_3C[0x43C];
     unsigned char DrawType;  // +0x478
 };
 
-struct TDrawArea {
-    TDrawSystem* DrawSystem;   // +0x00
-    char gap_04[0x14];         // +0x04 to +0x17
-    int Width;                 // +0x18
-    int Height;                // +0x1C
-    char gap_20[0xA0];         // +0x20 to +0xBF
-    void** CurDisplayOffsets;  // +0xC0
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;             // +0x00
+    void* Wnd;                           // +0x04
+    unsigned char* Bits;                 // +0x08
+    void* BitmapInfo;                    // +0x0C
+    void* Bitmap;                        // +0x10
+    void* OldBitmap;                     // +0x14
+    int Width;                           // +0x18
+    int Height;                          // +0x1C
+    int Pitch;                           // +0x20
+    int Orien;                           // +0x24
+    int ClipLeft;                        // +0x28
+    int ClipTop;                         // +0x2C
+    int ClipRight;                       // +0x30
+    int ClipBottom;                      // +0x34
+    void* DrawDc;                        // +0x38
+    void* DrawSurface;                   // +0x3C
+    char SurfaceDesc[0x6C];              // +0x40 .. +0xAB
+    void* Node;                          // +0xAC
+    char* Name;                          // +0xB0
+    unsigned char* LastBits;             // +0xB4
+    int LastPitch;                       // +0xB8
+    void** DisplayOffsets;               // +0xBC
+    void** CurDisplayOffsets;            // +0xC0
+    void** FloatOffsets;                 // +0xC4
+    void* shadow_color_table;            // +0xC8
+    void* SpanList;                      // +0xCC
+    void* CurSpanList;                   // +0xD0
+    int Float_X_Delta;                   // +0xD4
+    int Float_Y_Delta;                   // +0xD8
+    int DisplayOffsetsSz;                // +0xDC
+    int FloatOffsetsSz;                  // +0xE0
+    int SystemMemOnly;                   // +0xE4
+    int UsingVidMem;                     // +0xE8
+    int UseTrans;                        // +0xEC
+    int IsPrimarySurface;                // +0xF0
+    int Restored;                        // +0xF4
+    int ExtendedLines;                   // +0xF8
+    unsigned char TransColor;            // +0xFC
+    unsigned char gap_FD[3];             // +0xFD
 
     unsigned char* Lock(const char* name, int mode);
     void Unlock(const char* name);

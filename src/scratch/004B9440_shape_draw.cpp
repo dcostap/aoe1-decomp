@@ -8,134 +8,274 @@
 // try 5: modeled FShape fast ASM surface setup path: surface info, optional xlate table, ASMDraw_Sprite, ASM_Fast_Count++.
 // try 6: modeled normal shape path: load shape frame from offset table, compute unclipped bounds, clamp against draw-area clip and dimensions, early empty return.
 // try 7: modeled exact high-level dispatch families for mode 0/1/2 and table present/absent to unclipped and clipped shape helper variants.
-// GIVEUP blockers: exact DrawArea/FShape/Shape frame layouts and signatures for ASM helper calls/globals, precise stack-slot reuse for rectangle locals, and source shape for switch/early-return dispatcher tails. No inline asm used; no accepted_drift proposal.
+// try 8: restored the period TShape/TDrawArea/Shape_Info surfaces and the real
+// DClipInfo_List::AddDrawNode thiscall ABI. Corrected the FShape capture/fast
+// fields and all helper argument order/arity from the inventory declarations.
+// The first integrated check after this source correction is the structural
+// baseline for the current ownership model.
+// session sa0400c379_r1 probes 9-10: splitting the result-byte declaration
+// from its zero assignment and adding donor-era stdlib/string headers were
+// both codegen duplicates. The retained natural source has exact ordered call
+// and relocation parity; remaining drift is the broad VC5 prologue/frame and
+// normal-path local/register basin (0x14 rebuilt frame versus 0x1c original),
+// with the first mismatch at the entry register/home schedule.
+// No inline asm used; no accepted_drift proposal.
 
 typedef unsigned char byte;
 
-class TDrawArea;
-class TShape;
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
 
-extern int SDI_Capture_Info;
-extern int SDI_Draw_Level;
-extern int SDI_Object_ID;
-extern int SDI_Draw_Line;
-extern int fog_next_shape;
-extern int SDI_List;
-extern int ASM_Fast_Count;
+struct Shape_Header {
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
+};
 
-extern "C" void* __cdecl ASMGet_Color_Xform(int, int);
-extern "C" void __cdecl ASMSet_Surface_Info(void*, int, int, int, int, int, int);
-extern "C" void __cdecl ASMSet_Xlate_Table(void*);
-extern "C" void __cdecl DClipInfo_List_AddDrawNode(int list, void* fshape, void* shape, int line, int y, int x, int fog, long p6, void* xform);
-extern "C" void __cdecl ASMDraw_Sprite(void* fshape, int y, int x, int a, int b, int c, int d, int fog);
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
 
-struct Rect { long left; long top; long right; long bottom; };
-struct Frame { long a0; long a4; long xmin; long ymin; long xmax; long ymax; long xoff; long yoff; };
-struct ShapeFile { char gap[0x14]; int* offsets; };
-struct FShapeFile { char gap[0xc0]; void* surface; char gap2[8]; int* pcc; int* pd0; };
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+class TSpan_List_Manager {
+public:
+    char gap_00[0x3c];
+    void* Line_Head_Ptrs;       // +3c
+    void* Line_Tail_Ptrs;       // +40
+    char gap_44[0x0c];
+    int Num_Lines;              // +50
+    char gap_54[8];
+    int Max_Span_Px;            // +5c
+};
 
 class TDrawArea {
 public:
-    char gap0[0x18];
-    long width;      // +18
-    long height;     // +1c
-    char gap20[0x08];
-    Rect clip;       // +28
+    void* DrawSystem;           // +00
+    void* Wnd;                  // +04
+    byte* Bits;                 // +08
+    void* BitmapInfo;           // +0c
+    void* Bitmap;               // +10
+    void* OldBitmap;            // +14
+    int Width;                  // +18
+    int Height;                 // +1c
+    int Pitch;                  // +20
+    int Orien;                  // +24
+    tagRECT ClipRect;           // +28
+    void* DrawDc;               // +38
+    void* DrawSurface;           // +3c
+    char SurfaceDesc[0x6c];     // +40
+    void* Node;                 // +ac
+    char* Name;                 // +b0
+    byte* LastBits;             // +b4
+    int LastPitch;              // +b8
+    void** DisplayOffsets;      // +bc
+    void** CurDisplayOffsets;   // +c0
+    void* FloatOffsets;         // +c4
+    void* shadow_color_table;   // +c8
+    TSpan_List_Manager* SpanList;    // +cc
+    TSpan_List_Manager* CurSpanList; // +d0
+    int Float_X_Delta;          // +d4
+    int Float_Y_Delta;          // +d8
+    int DisplayOffsetsSz;       // +dc
+    int FloatOffsetsSz;         // +e0
+    int SystemMemOnly;          // +e4
+    int UsingVidMem;            // +e8
+    int UseTrans;               // +ec
+    int IsPrimarySurface;       // +f0
+    int Restored;               // +f4
+    int ExtendedLines;          // +f8
+    byte TransColor;            // +fc
+    byte gap_fd[3];             // +fd
+};
+
+class DClipInfo_List {
+public:
+    void AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
+                     int draw_x, int draw_y, int draw_flag,
+                     byte* color_table, int xform_mask,
+                     int draw_level, int object_id);
 };
 
 class TShape {
 public:
-    byte* shape;
-    int load_type;
-    int load_size;
-    Frame* shape_header;
-    ShapeFile* head;
-    char gap14[4];
-    FShapeFile* fshape;
+    byte* shape;                // +00
+    int load_type;              // +04
+    int load_size;              // +08
+    Shape_Header* shape_header; // +0c
+    void* head;                 // +10
+    Shape_Offsets* offsets;     // +14
+    void* FShape;               // +18
+    Shape_Info* shape_info;     // +1c
 
     byte Check_shape(long, char*);
     byte shape_draw_unclipped(TDrawArea*, long, long, long);
     byte shape_color_trans_unclipped(TDrawArea*, long, long, long, byte*);
-    byte shape_shadow_unclipped(TDrawArea*, long, long, void*);
+    byte shape_shadow_unclipped(TDrawArea*, long, long, byte*);
     byte shape_draw_clipped(TDrawArea*, long, long, long, long, long, long);
-    byte shape_color_trans_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
-    byte shape_shadow_clipped(TDrawArea*, long, long, long, long, long, long, void*);
-    byte shape_draw(TDrawArea*, long, long, long, byte, void*);
+    byte shape_color_trans_clipped(TDrawArea*, long, long, long, long, long, long, long, byte*);
+    byte shape_shadow_clipped(TDrawArea*, long, long, long, long, long, long, byte*);
+    byte shape_draw(TDrawArea*, long, long, long, byte, byte*);
 };
 
-byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num, byte mode, void* table)
-{
-    byte ret = 0;
-    if (shape_num < 0) return 0;
-    if (this->Check_shape(shape_num, (char*)0x00587058)) return 0;
+extern int SDI_Capture_Info;
+extern int SDI_Draw_Level;
+extern long SDI_Object_ID;
+extern int SDI_Draw_Line;
+extern int fog_next_shape;
+extern DClipInfo_List* SDI_List;
+extern int ASM_Fast_Count;
 
-    if (this->fshape) {
-        if (SDI_Capture_Info) {
-            Frame* f = (Frame*)((char*)this->fshape + ((shape_num + 1) << 5));
-            void* xform = ASMGet_Color_Xform(SDI_Draw_Level, SDI_Object_ID);
-            DClipInfo_List_AddDrawNode(SDI_List, this->fshape, f, SDI_Draw_Line,
-                y - f->yoff, x - f->xoff, fog_next_shape, (long)table, xform);
+extern "C" void* __cdecl ASMGet_Color_Xform(int, long);
+extern "C" void __cdecl ASMSet_Surface_Info(void*, void*, void*, int, int, int, int);
+extern "C" void __cdecl ASMSet_Xlate_Table(void*);
+extern "C" void __cdecl ASMDraw_Sprite(void*, long, long, long, long, long, long, int);
+
+byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
+                        byte mode, byte* table)
+{
+    byte ret;
+    ret = 0;
+
+    if (shape_num >= 0 &&
+        this->Check_shape(shape_num, (char*)0x00587058) == 0) {
+      if (this->FShape != 0) {
+        if (SDI_Capture_Info != 0) {
+            Shape_Info* info = (Shape_Info*)((char*)this->FShape +
+                                             ((shape_num + 1) << 5));
+            int xform = (int)ASMGet_Color_Xform(SDI_Draw_Level, SDI_Object_ID);
+            SDI_List->AddDrawNode(this->FShape, info, SDI_Draw_Line,
+                                  x - info->Hotspot_X, y - info->Hotspot_Y,
+                                  fog_next_shape, table, xform,
+                                  SDI_Draw_Level, SDI_Object_ID);
             return 1;
         }
-        TDrawArea* area = td;
-        FShapeFile* fs = this->fshape;
-        int a = fs->pcc[0x14];
-        int b = fs->pd0[0x14];
-        int last = (a < b) ? (a - 1) : (b - 1);
-        ASMSet_Surface_Info(fs->surface, fs->pd0[0x0f], fs->pd0[0x10], 0, 0, fs->pd0[0x17], last);
-        if (table) ASMSet_Xlate_Table(table);
-        Frame* f = (Frame*)((char*)fs + ((shape_num + 1) << 5));
-        ASMDraw_Sprite(fs, y - f->yoff, x - f->xoff, f->xmin, f->ymin, f->xmax, f->ymax, fog_next_shape);
-        ASM_Fast_Count++;
+
+        TSpan_List_Manager* cur_span_list = td->CurSpanList;
+        int span_lines = td->SpanList->Num_Lines;
+        int cur_lines = cur_span_list->Num_Lines;
+        if (span_lines < cur_lines)
+            cur_lines = span_lines;
+        ASMSet_Surface_Info(td->CurDisplayOffsets,
+                            cur_span_list->Line_Head_Ptrs,
+                            cur_span_list->Line_Tail_Ptrs,
+                            0, 0, cur_span_list->Max_Span_Px,
+                            cur_lines - 1);
+        if (table != 0)
+            ASMSet_Xlate_Table(table);
+
+        Shape_Info* info = (Shape_Info*)((char*)this->FShape +
+                                         ((shape_num + 1) << 5));
+        ASMDraw_Sprite(this->FShape, x - info->Hotspot_X,
+                       y - info->Hotspot_Y, info->Width, info->Height,
+                       info->Shape_Data_Offsets, info->Shape_Outline_Offset,
+                       fog_next_shape);
+        ++ASM_Fast_Count;
         return 1;
-    }
+      }
+      else {
 
-    Rect r = td->clip;
-    if (!this->shape) return 0;
-    Frame* f = (Frame*)((char*)this->shape + this->head->offsets[shape_num * 2]);
-    this->shape_header = f;
+        tagRECT rect = td->ClipRect;
+        if (this->shape != 0) {
+        Shape_Header* frame = (Shape_Header*)
+            (this->shape + this->offsets[shape_num].shape);
+        this->shape_header = frame;
 
-    long sx0 = f->xmin + x;
-    long sy0 = f->ymin + y;
-    long sx1 = f->xmax + x;
-    long sy1 = f->ymax + y;
-    long ox0 = sx0, oy0 = sy0, ox1 = sx1, oy1 = sy1;
+        long x0 = frame->xmin + x;
+        long y0 = frame->ymin + y;
+        long x1 = frame->xmax + x;
+        long y1 = frame->ymax + y;
+        long original_x0 = x0;
+        long original_y0 = y0;
+        long original_x1 = x1;
+        long original_y1 = y1;
 
-    if (sx0 < r.left) sx0 = r.left;
-    if (sy0 < r.top) sy0 = r.top;
-    if (sx1 > r.right) sx1 = r.right;
-    if (sy1 > r.bottom) sy1 = r.bottom;
-    if (sx0 < 0) sx0 = 0;
-    if (sy0 < 0) sy0 = 0;
-    if (sx1 >= td->width) sx1 = td->width - 1;
-    if (sy1 >= td->height) sy1 = td->height - 1;
-    if (sx1 < sx0 || sy1 < sy0) return 0;
+        if (x0 < rect.left)
+            x0 = rect.left;
+        if (y0 < rect.top)
+            y0 = rect.top;
+        if (x1 > rect.right)
+            x1 = rect.right;
+        if (y1 > rect.bottom)
+            y1 = rect.bottom;
+        if (x0 < 0)
+            x0 = 0;
+        if (y0 < 0)
+            y0 = 0;
+        if (x1 >= td->Width)
+            x1 = td->Width - 1;
+        if (y1 >= td->Height)
+            y1 = td->Height - 1;
 
-    if (sx0 == ox0 && sy0 == oy0 && sx1 == ox1 && sy1 == oy1) {
-        switch ((unsigned char)mode) {
-        case 0:
-            return this->shape_draw_unclipped(td, y, x, table ? (long)table : 0);
-        case 1:
-            if (table) return this->shape_color_trans_unclipped(td, y, x, (long)table, (byte*)table);
-            return this->shape_draw_unclipped(td, y, x, table ? (long)table : 0);
-        case 2:
-            if (table) return this->shape_shadow_unclipped(td, y, x, table);
-            return this->shape_draw_unclipped(td, y, x, 0);
-        default:
-            return ret;
+        if (x0 <= x1 && y0 <= y1) {
+            if (x0 == original_x0 && y0 == original_y0 &&
+                x1 == original_x1 && y1 == original_y1) {
+                switch ((unsigned char)mode) {
+                case 2:
+                    if (table == 0) {
+                        long draw_x = x1;
+                        long draw_y = y1;
+                        return this->shape_draw_unclipped(td, draw_x, draw_y,
+                                                           shape_num);
+                    }
+                    return this->shape_shadow_unclipped(
+                        td, original_x0, original_y0, table);
+                case 1:
+                    if (table == 0) {
+                        long draw_x = x0;
+                        long draw_y = y0;
+                        return this->shape_draw_unclipped(td, draw_x, draw_y,
+                                                           shape_num);
+                    }
+                    return this->shape_color_trans_unclipped(
+                        td, original_x0, original_y0, shape_num, table);
+                case 0:
+                    {
+                        long draw_x = original_x0;
+                        long draw_y = original_y0;
+                        return this->shape_draw_unclipped(td, draw_x, draw_y,
+                                                           shape_num);
+                    }
+                default:
+                    return ret;
+                }
+            }
+
+            if (mode == 2) {
+                if (table != 0)
+                    return this->shape_shadow_clipped(
+                        td, original_x0, original_y0, x0, y0, x1, y1, table);
+            } else if (mode == 1) {
+                if (table != 0)
+                    return this->shape_color_trans_clipped(
+                        td, original_x0, original_y0, shape_num,
+                        x0, y0, x1, y1, table);
+            } else if (mode != 0) {
+                return ret;
+            }
+            return this->shape_draw_clipped(td, original_x0, original_y0,
+                                            x0, y0, x1, y1);
         }
+      }
+    }
     }
 
-    switch ((unsigned char)mode) {
-    case 0:
-        return this->shape_draw_clipped(td, sy0, sx0, sx1, y, x, sy1);
-    case 1:
-        if (table) return this->shape_color_trans_clipped(td, sy0, sx0, sx1, y, x, sy1, (byte*)table);
-        return this->shape_draw_clipped(td, sy0, sx0, sx1, y, x, sy1);
-    case 2:
-        if (table) return this->shape_shadow_clipped(td, sy0, sx0, sx1, y, x, sy1, table);
-        return this->shape_draw_clipped(td, sy0, sx0, sx1, y, x, sy1);
-    default:
-        return ret;
-    }
+    return ret;
 }

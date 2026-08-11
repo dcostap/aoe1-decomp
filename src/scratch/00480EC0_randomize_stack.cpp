@@ -45,8 +45,15 @@
 //   the local aggregate is not established as original ownership. Restored
 //   canonical source; next lead is arithmetic-before-node reload and register
 //   coloring, not synthetic padding.
+// - sa854558ad_r1: binary-supported y/prev overlay plus a trailing scalar
+//   reached exact frame/size and diff 44, but retained inverse EBX/EDI colors;
+//   pointer scope/type, receiver aliases, declaration order, and an 8-variant
+//   field-order lab were codegen-neutral. Restored the canonical array source.
+// - sa854558ad_r1 final: the PDB char* debug_rand surface was retained in the
+//   clean source; it did not move emitted code. Remaining gap is structural
+//   receiver/cursor coloring and arithmetic-before-node scheduling.
 
-extern "C" int __cdecl debug_rand(const char* file, int line);
+extern "C" int __cdecl debug_rand(char* file, int line);
 
 struct Map_Stack {
     long x;           // +0x00

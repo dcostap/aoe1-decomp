@@ -8,10 +8,24 @@
 // 6: split players pointer load before mask: no codegen change.
 // 7: store player id in a temp before indexing to probe load scheduling: no codegen change.
 // 8: volatile world local to force load before mask: worsened to 27% edit diff with extra stack store; rolled back.
+// 9: restored the proven Map_Stack/pop_stack ABI, long coordinate outputs, and
+//    natural while(pop_stack && count > 0) tail; this reached exact size/CFG and
+//    a 43-byte positional diff, with only the early setup hunk unresolved.
+// 10: a focused 15-variant pre-loop lab (world/player declaration forms and
+//     loop predicates) collapsed to duplicate codegen groups; reversing the
+//     commutative mask operands was also a duplicate. The remaining drift is
+//     VC5 world/mask/register and pop-argument scheduling, not behavior/calls.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
-struct Map_Stack { char data[0x18]; };
+struct Map_Stack {
+    long x;
+    long y;
+    float cost;
+    float tot_cost;
+    Map_Stack* next;
+    Map_Stack* prev;
+};
 struct RGE_Tile { char gap[5]; unsigned char terrain; char rest[18]; };
 struct RGE_Object_Info_Line {
     int obj_id;                    // +00
@@ -69,7 +83,7 @@ public:
     void init_stack(Map_Stack* s);
     void deinit_stack(Map_Stack* s);
     void make_placement_stack(Map_Stack* s, long x, long y, int unk, int area);
-    Map_Stack* pop_stack(Map_Stack* s, int* out_col, long* out_x, Map_Stack* out_stack);
+    Map_Stack* pop_stack(Map_Stack* s, long* out_col, long* out_x, float* out_cost);
     void remove_area_from_lists(long left, long right, long y);
     void place_group(RGE_Object_Info_Line& info, long x, long y, RGE_Player* player);
     void place_cluster(RGE_Object_Info_Line& info, long x, long y, RGE_Player* player);
@@ -80,29 +94,26 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 {
     long y;
     long x;
-    int col;
-    volatile int count;
+    long col;
+    int count;
     float fx;
     float fy;
     int zone;
     Map_Stack obj_stack;
 
-    RGE_RMM_Object_Generator* self = this;
-
     // clear occupancy byte map to 1
-    memset(self->byte_map, 1, self->width * self->height);
+    memset(this->byte_map, 1, this->width * this->height);
 
-    self->init_stack(&obj_stack);
-    self->make_placement_stack(&obj_stack, -1, -1, -1, -1);
+    this->init_stack(&obj_stack);
+    this->make_placement_stack(&obj_stack, -1, -1, -1, -1);
 
-    RGE_Player** players = self->world->players;
-    int player_id = info.player_id;
-    RGE_Player* player = players[player_id & (player_id <= -1 ? 0 : -1)];
+    RGE_Player* player;
+    player = this->world->players[
+        info.player_id & (info.player_id <= -1 ? 0 : -1)];
     count = info.number_of_groups;
 
-    if (pop_stack(&obj_stack, &col, &x, (Map_Stack*)&y)) {
-        while (count > 0) {
-            if (info.terrain < 0 || ((self->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
+    while (pop_stack(&obj_stack, &col, &x, (float*)&y) && count > 0) {
+            if (info.terrain < 0 || ((this->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
                 fx = (float)col;
                 fy = (float)x;
                 RGE_Master_Static_Object* master = player->master_objects[info.obj_id];
@@ -130,10 +141,6 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
                     count--;
                 }
             }
-            if (!pop_stack(&obj_stack, &col, &x, (Map_Stack*)&y)) {
-                break;
-            }
         }
-    }
-    self->deinit_stack(&obj_stack);
+    this->deinit_stack(&obj_stack);
 }

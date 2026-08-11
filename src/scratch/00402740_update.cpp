@@ -1,285 +1,400 @@
 // RGE_Action_Enter::update (00402740)
-// Flat class layout (no virtual methods, no inheritance)
-// Structural fixes correct. Remaining: vtable calls vs direct calls.
+// Canonical action-object hierarchy restored from the exact act_entr.cpp donors.
+// The target is a virtual RGE_Action update with inherited RGE_Action fields;
+// object/world/player/static-object calls use their period ABI surfaces.
 //
-// probe 1 (flat): 954 bytes, 76.6% diff - clean structural model
-// probe 2 (virtual on this): 954 bytes, 80.2% diff - virtual bodies emit as thunks, shifting everything
-// probe 3 (pure virtual all classes): 954 bytes, 87.8% diff - RTTI/vtable data clutters section
-//
-// Lesson: vtable dispatch requires full-class TU context.
-// Single-function scratch can't match virtual call patterns because:
-//   1. Inline virtual method bodies emit as separate COMDATs before the function
-//   2. Pure virtual still generates RTTI/vtable data that shifts alignment
-//   3. VC5 needs complete class hierarchy to compute correct vtable offsets
-// Fixing this requires broader class definition work (game_types.h / donor TU)
+// Attempt log:
+// - baseline: prior flat-field source compiled to a constant-return stub because
+//   same-TU method stubs let VC5 fold every call; it was not a useful structural
+//   baseline.
+// - typed reconstruction: restored the prior act_entr.cpp donor-shaped source,
+//   real virtual slots, inherited action layout, and declaration-only external
+//   calls. The source-level target validation keeps the binary's redundant null
+//   test and target-object/action-list ownership.
+// - control-flow probes: case-3-first nested dispatch plus positive distance
+//   guards restored 954-byte size/frame, 94.20% shape, and 97.30% ordered-call
+//   alignment. Inclusive distance/operand variants were compared; the current
+//   task-left form is the best structural basin and keeps the real call ABI.
+// - liveness alias probe was codegen-identical and rolled back to the clean
+//   typed form. Remaining binary gap is localized: the second object lookup is
+//   load-first instead of the oracle's push-first schedule, and VC5 merges one
+//   of two proven enter_obj sites (36/37 calls). No productive source lead
+//   remains within this assignment budget.
 
-class RGE_Game_World;
-class RGE_Owner;
-class RGE_Static_Object;
+class RGE_Sprite;
+class RGE_Task;
 class RGE_Action_List;
 class RGE_Action;
+class RGE_Static_Object;
 
-struct XYPoint { int x, y; };
-
-struct Placement_State {
-    char gap_00[0x24];
-    float max_distance;
-};
-
-class RGE_Owner {
+class XYPoint {
 public:
-    int vtable;
-    char gap_04[0x38];
-    RGE_Game_World* world;
-    char gap_40[0xA];
-    short field_4A;
-
-    RGE_Static_Object* object(int index);
-    int vf_1C(int param);
+    int x;
+    int y;
 };
 
 class RGE_Game_World {
 public:
-    int vtable;
-    int field_04;
-    char gap_08[0x8];
-    char gap_10[0x74];
+    char gap_00[0x84];
     float world_time_delta_seconds;
-    char gap_88[0x10];
-    float field_98;
-    float field_9C;
 
-    RGE_Static_Object* object(int index);
+    RGE_Static_Object* object(int param_1);
+};
+
+class RGE_Player {
+public:
+    virtual void vf00(void);
+    virtual void vf04(void);
+    virtual void vf08(void);
+    virtual void vf0C(void);
+    virtual void vf10(void);
+    virtual void vf14(void);
+    virtual void vf18(void);
+    virtual int vf1C(int param_1);
+
+    char gap_04[0x38];
+    RGE_Game_World* world;
+    char gap_40[0x0A];
+    short id;
 };
 
 class RGE_Static_Object {
 public:
-    int vtable;
-    int field_04;
-    char gap_08[0x4];         // owner at 0x0C
-    RGE_Owner* owner;
-    char gap_10[0x28];        // 0x10-0x37
-    float pos_x;              // 0x38
-    float pos_y;              // 0x3C
-    float pos_z;              // 0x40
-    char gap_44[4];
-    unsigned char field_48;
-    char gap_49[0x23];
-    float field_6C;
-    float field_70;
-    float field_74;
-    char gap_78[0x10];
-    int field_88;
-    char gap_8C[0x3C];
-    float field_C4;
-    float field_C8;
-    float field_CC;
-    char gap_D0[0xBC];
-    RGE_Action_List* field_18C;
+    virtual ~RGE_Static_Object();
+    virtual void vf01(void);
+    virtual void vf02(void);
+    virtual void vf03(void);
+    virtual void vf04(void);
+    virtual void vf05(void);
+    virtual void vf06(void);
+    virtual void vf07(void);
+    virtual void vf08(void);
+    virtual void vf09(void);
+    virtual void vf10(void);
+    virtual void vf11(void);
+    virtual void vf12(void);
+    virtual void vf13(void);
+    virtual void vf14(void);
+    virtual void vf15(void);
+    virtual void vf16(void);
+    virtual void vf17(void);
+    virtual void vf18(void);
+    virtual void vf19(void);
+    virtual void vf20(void);
+    virtual void vf21(void);
+    virtual void vf22(void);
+    virtual void vf23(void);
+    virtual void vf24(void);
+    virtual void vf25(void);
+    virtual void vf26(void);
+    virtual void vf27(void);
+    virtual void vf28(void);
+    virtual void vf29(void);
+    virtual void vf30(void);
+    virtual void vf31(void);
+    virtual void vf32(void);
+    virtual void vf33(void);
+    virtual void vf34(void);
+    virtual void vf35(void);
+    virtual void vf36(void);
+    virtual void vf37(void);
+    virtual void vf38(void);
+    virtual void vf39(void);
+    virtual void vf40(void);
+    virtual void vf41(void);
+    virtual void vf42(void);
+    virtual void vf43(void);
+    virtual void vf44(void);
+    virtual void vf45(void);
+    virtual void vf46(void);
+    virtual void vf47(void);
+    virtual void vf48(void);
+    virtual void vf49(void);
+    virtual void vf50(void);
+    virtual void vf51(void);
+    virtual void enter_obj(RGE_Static_Object* param_1);
+    virtual void vf53(void);
+    virtual void vf54(void);
+    virtual void vf55(void);
+    virtual void vf56(void);
+    virtual void vf57(void);
+    virtual void vf58(void);
+    virtual void vf59(void);
+    virtual void vf60(void);
+    virtual void vf61(void);
+    virtual void vf62(void);
+    virtual void vf63(void);
+    virtual void vf64(void);
+    virtual void vf65(void);
+    virtual void vf66(void);
+    virtual void vf67(void);
+    virtual void vf68(void);
+    virtual void vf69(void);
+    virtual void vf70(void);
+    virtual void vf71(void);
+    virtual void vf72(void);
+    virtual void vf73(void);
+    virtual void vf74(void);
+    virtual void vf75(void);
+    virtual void vf76(void);
+    virtual unsigned char actionState(void);
+    virtual void vf78(void);
+    virtual void vf79(void);
+    virtual void vf80(void);
+    virtual void vf81(void);
+    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
+    virtual void vf83(void);
+    virtual void vf84(void);
+    virtual int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5);
+    virtual void vf86(void);
+    virtual void vf87(void);
+    virtual void vf88(void);
+    virtual void vf89(void);
+    virtual void vf90(void);
+    virtual void vf91(void);
+    virtual void vf92(void);
+    virtual void vf93(void);
+    virtual void vf94(void);
+    virtual void vf95(void);
+    virtual void vf96(void);
+    virtual void vf97(void);
+    virtual void vf98(void);
+    virtual void vf99(void);
+    virtual void vf100(void);
+    virtual void vf101(void);
+    virtual void vf102(void);
+    virtual void vf103(void);
+    virtual void vf104(void);
+    virtual void vf105(void);
+    virtual void vf106(void);
+    virtual void vf107(void);
+    virtual void vf108(void);
+    virtual int firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6);
 
-    unsigned char is_dying();
-    float distance_to_object(RGE_Static_Object* other);
-    unsigned char actionState();
-    void enter_obj(RGE_Static_Object* param);
-    int firstTileAlongLine(XYPoint* a, XYPoint* b, XYPoint* c, int d, int e, int f);
-    int moveTo(int x, int y, float z, float w, int a);
-    void notify(int a, int b, int c, long d, long e, long f);
+    int id;
+    void* master_obj;
+    RGE_Player* owner;
+    RGE_Sprite* sprite;
+    char gap_14[0x24];
+    float world_x;
+    float world_y;
+    float world_z;
+    float attribute_amount_held;
+    unsigned char object_state;
+    char gap_49[0x03];
+
+    float distance_to_object(RGE_Static_Object* param_1);
+    unsigned char is_dying(void);
+};
+
+class RGE_Action_Object : public RGE_Static_Object {
+public:
+    char gap_4C[0x138];
+    RGE_Action_List* actions;
 };
 
 class RGE_Action_List {
 public:
-    int vtable;
-    RGE_Action* get_action();
-    unsigned char update();
+    virtual void vf00(void);
+    virtual void vf04(void);
+    virtual unsigned char inside_obj_update(void);
+    virtual unsigned char update(void);
+
+    void delete_list(void);
+    void add_action(RGE_Action* param_1);
+    RGE_Action* get_action(void);
 };
 
 class RGE_Action {
 public:
-    int vtable;
-    char gap_04[4];
+    virtual ~RGE_Action();
+    virtual int vf04(RGE_Action_Object* param_1);
+    virtual int vf08(int param_1, RGE_Action_Object* param_2);
+    virtual RGE_Action_List* vf0C(RGE_Action_Object* param_1);
+    virtual void vf10(void);
+    virtual void vf14(int param_1);
+    virtual short vf18(void);
+    virtual void first_in_stack(unsigned char param_1);
+    virtual unsigned char vf20(void);
+    virtual unsigned char vf24(void);
+    virtual unsigned char vf28(void);
+    virtual int vf2C(void);
+    virtual int vf30(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    virtual int vf34(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    virtual unsigned char vf38(RGE_Static_Object* param_1);
+    virtual unsigned char vf3C(long param_1, unsigned char param_2);
+    virtual void vf40(void* param_1);
+    virtual void vf44(void* param_1, RGE_Task* param_2, RGE_Task* param_3);
+    virtual void vf48(char* param_1);
+    virtual RGE_Static_Object* vf4C(void);
+    virtual RGE_Static_Object* vf50(void);
+    virtual void set_target_obj(RGE_Static_Object* param_1);
+    virtual void set_target_obj2(RGE_Static_Object* param_1);
+    virtual void set_state(unsigned char param_1);
 
-    float targetX();
-    float targetY();
+    unsigned short action_type;
+    unsigned short gap_06;
+    RGE_Action_Object* obj;
+    unsigned char state;
+    char gap_0D[0x03];
+    RGE_Static_Object* target_obj;
+    RGE_Static_Object* target_obj2;
+    int targetID;
+    int target2ID;
+    float target_x;
+    float target_y;
+    float target_z;
+    float timer;
+    RGE_Task* task;
+    RGE_Action_List* sub_actions;
+    RGE_Sprite* sprite;
+    unsigned char subActionValue;
+    char gap_3D[0x03];
+
+    float targetX(void);
+    float targetY(void);
 };
 
-class RGE_Action_Enter {
+class RGE_Task {
 public:
-    int vtable;                    // offset 0x00
-    char gap_04[4];                // offset 0x04
-    RGE_Static_Object* obj;        // offset 0x08
-    unsigned char state;           // offset 0x0C
-    RGE_Static_Object* target;     // offset 0x10
-    int field_14;
-    int object_index_from;         // offset 0x18
-    int object_index_to;           // offset 0x1C
-    float pos_x;                   // offset 0x20
-    int pos_y;                     // offset 0x24
-    char gap_28[0x4];
-    float timer;                   // offset 0x2C
-    Placement_State* field_30;     // offset 0x30
-    RGE_Action_List* action_list;  // offset 0x34
-    char gap_38[4];
-    unsigned char field_3C;        // offset 0x3C
-
-    void set_target_obj(RGE_Static_Object* param);
-    void set_target_obj2(RGE_Static_Object* param);
-    void set_state(unsigned char param);
-
-    unsigned char update();
+    char gap_00[0x24];
+    float work_range;
 };
 
-// Stubs
-RGE_Static_Object* RGE_Owner::object(int index) { return 0; }
-int RGE_Owner::vf_1C(int param) { return 0; }
-RGE_Static_Object* RGE_Game_World::object(int index) { return 0; }
-unsigned char RGE_Static_Object::is_dying() { return 0; }
-float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) { return 0.0f; }
-unsigned char RGE_Static_Object::actionState() { return 0; }
-void RGE_Static_Object::enter_obj(RGE_Static_Object* param) {}
-int RGE_Static_Object::firstTileAlongLine(XYPoint* a, XYPoint* b, XYPoint* c, int d, int e, int f) { return 0; }
-int RGE_Static_Object::moveTo(int x, int y, float z, float w, int a) { return 0; }
-void RGE_Static_Object::notify(int a, int b, int c, long d, long e, long f) {}
-RGE_Action* RGE_Action_List::get_action() { return 0; }
-unsigned char RGE_Action_List::update() { return 0; }
-float RGE_Action::targetX() { return 0.0f; }
-float RGE_Action::targetY() { return 0.0f; }
-void RGE_Action_Enter::set_target_obj(RGE_Static_Object* param) {}
-void RGE_Action_Enter::set_target_obj2(RGE_Static_Object* param) {}
-void RGE_Action_Enter::set_state(unsigned char param) {}
+class RGE_Action_Enter : public RGE_Action {
+public:
+    unsigned char update(void);
+};
 
 extern float DAT_0056e1a0;
 extern float DAT_0056e1a4;
 extern float DAT_0056e1a8;
 
-unsigned char RGE_Action_Enter::update() {
-    RGE_Static_Object* check_obj;
-    XYPoint rVal;
+unsigned char RGE_Action_Enter::update(void) {
+    RGE_Action* action;
     XYPoint start;
     XYPoint dest;
+    XYPoint rVal;
+    RGE_Static_Object* pRVar6;
+    int iVar7;
 
-    if (object_index_from != -1) {
-        RGE_Static_Object* o = obj->owner->world->object(object_index_from);
-        if (o == 0) goto common_path;
+    if (this->targetID != -1) {
+        pRVar6 = this->obj->owner->world->object(this->targetID);
+        if (!pRVar6) goto invalid_target;
     }
-
-    if (object_index_to != -1) {
-        RGE_Static_Object* o = obj->owner->world->object(object_index_to);
-        if (o == 0) {
-            set_target_obj2(0);
+    if (this->target2ID != -1) {
+        pRVar6 = this->obj->owner->world->object(this->target2ID);
+        if (!pRVar6)
+            this->set_target_obj2(pRVar6);
+    }
+    iVar7 = (int)this->target_obj;
+    if ((iVar7 == 0) ||
+        ((((RGE_Static_Object*)iVar7)->object_state < 3) &&
+         ((this->target_obj == 0) ||
+              ((iVar7 = this->obj->owner->vf1C((int)(short)((RGE_Static_Object*)iVar7)->owner->id)),
+               iVar7 != 0)))) {
+            goto handle_state;
         }
-    }
 
-    if (target == 0) goto state_switch;
-    if (target->field_48 >= 3) goto common_path;
-    check_obj = target;
-    if (check_obj == 0) goto state_switch;
-    if (obj->owner->vf_1C((int)(short)check_obj->owner->field_4A) != 0) goto state_switch;
-
-common_path:
-    set_state(1);
-    set_target_obj(0);
-    obj->notify(obj->field_04, obj->field_04, 0x1FB, 0x269, 0, 0);
+invalid_target:
+    this->set_state(1);
+    this->set_target_obj(0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x269, 0, 0);
     return 4;
 
-state_switch:
-    if (state - 1 > 12) return 0;
+handle_state:
+    switch (this->state) {
+    case 4:
+        if ((this->target_obj != 0) && (this->target_obj->is_dying() == 0)) {
+            switch (this->sub_actions->update()) {
+            case 3:
+                this->set_state(2);
+                return 0;
 
-    switch (state) {
-        case 1:
-            return 1;
-
-        case 2:
-        case 3: {
-            timer -= obj->owner->world->world_time_delta_seconds;
-            if (timer > DAT_0056e1a8) return 0;
-
-            float dist = obj->distance_to_object(target) - DAT_0056e1a4;
-            if (dist < field_30->max_distance) {
-                obj->enter_obj(target);
-                goto field_3c_check;
-            }
-
-            if (target->actionState() == 2) {
-                int sx = (int)obj->pos_x;
-                int sy = (int)obj->pos_y;
-                int dx = (int)target->pos_x;
-                int dy = (int)target->pos_y;
-
-                start.x = sx;
-                start.y = sy;
-                dest.x = dx;
-                dest.y = dy;
-
-                if (obj->firstTileAlongLine(&dest, &start, &rVal, 2, 2, 1) == 1) {
-                    if ((float)dest.x - DAT_0056e1a0 != pos_x - DAT_0056e1a0 ||
-                        (float)dest.y - DAT_0056e1a0 != pos_y - DAT_0056e1a0) {
-                        pos_x = target->pos_x;
-                        pos_y = target->pos_y;
-                    }
-                } else {
-                    pos_x = target->pos_x;
-                    pos_y = target->pos_y;
-                    target->moveTo((int)obj->pos_x, (int)obj->pos_y, obj->pos_z, 0.5f, 1);
+            case 1:
+            case 2:
+                if (this->task->work_range >= this->obj->distance_to_object(this->target_obj) - DAT_0056e1a4) {
+                    this->obj->enter_obj(this->target_obj);
+                    goto entered_target;
                 }
-                set_state(4);
+                this->set_state(2);
                 return 0;
-            } else if (target->actionState() == 11) {
-                set_state(4);
+
+            case 4:
+            case 5:
+                break;
+
+            default:
                 return 0;
             }
+        }
 
-            set_state(4);
+        this->set_target_obj(0);
+        this->set_state(0x0D);
+        return 0;
+
+    case 2:
+        this->timer = this->timer - this->obj->owner->world->world_time_delta_seconds;
+        if (this->timer > DAT_0056e1a8) {
             return 0;
         }
 
-field_3c_check:
-            if (field_3C == 0) {
-                obj->notify(obj->field_04, obj->field_04, 0x1FA, 0x269, 0, 0);
-            }
-            set_state(1);
-            return 2;
+        if (this->task->work_range >= this->obj->distance_to_object(this->target_obj) - DAT_0056e1a4) {
+            this->obj->enter_obj(this->target_obj);
+            goto entered_target;
+        }
 
-        case 4:
-            if (target != 0 && !target->is_dying()) {
-                unsigned char t = action_list->update() & 0xFF;
-                if (t > 5) return 0;
+        if (this->target_obj->actionState() == 2) {
+            dest.x = (int)this->obj->world_x;
+            dest.y = (int)this->obj->world_y;
+            start.x = (int)this->target_obj->world_x;
+            start.y = (int)this->target_obj->world_y;
+            if (this->obj->firstTileAlongLine(&dest, &start, &rVal, 2, 2, 1) == 1) {
+                float tile_x;
+                float tile_y;
 
-                switch (t) {
-                    case 1:
-                    case 2: {
-                        float d = obj->distance_to_object(target) - DAT_0056e1a4;
-                        if (d < field_30->max_distance) {
-                            obj->enter_obj(target);
-                            goto field_3c_check;
-                        }
-                        set_state(2);
-                        return 0;
-                    }
-
-                    case 3:
-                        set_state(2);
-                        return 0;
-
-                    default:
-                        set_target_obj(0);
-                        set_state(13);
-                        return 0;
+                tile_x = (float)rVal.x - DAT_0056e1a0;
+                tile_y = (float)rVal.y - DAT_0056e1a0;
+                if ((this->target_x == tile_x) && (tile_y == this->target_y)) {
+                    this->target_x = this->target_obj->world_x;
+                    this->target_y = this->target_obj->world_y;
+                    this->set_state(4);
+                    return 0;
                 }
+
+                this->target_x = tile_x;
+                this->target_y = tile_y;
+                this->target_obj->moveTo((float)rVal.x, (float)rVal.y, this->target_obj->world_z, 0, 1);
             } else {
-                set_target_obj(0);
-                set_state(13);
-                return 0;
+                this->target_x = this->target_obj->world_x;
+                this->target_y = this->target_obj->world_y;
+                this->target_obj->moveTo(this->obj->world_x, this->obj->world_y, this->target_obj->world_z, 0.5f, 1);
             }
-            break;
+        } else if (this->target_obj->actionState() == 0x0B) {
+            action = ((RGE_Action_Object*)this->target_obj)->actions->get_action();
+            this->target_x = action->targetX();
+            action = ((RGE_Action_Object*)this->target_obj)->actions->get_action();
+            this->target_y = action->targetY();
+        }
 
-        case 5:  case 6:  case 7:  case 8:
-        case 9:  case 10: case 11: case 12:
-            return 0;
+        this->set_state(4);
+        return 0;
 
-        case 13:
-            obj->notify(obj->field_04, obj->field_04, 0x1F9, 0x269, 0, 0);
-            return 3;
+entered_target:
+        if (this->subActionValue == 0) {
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x269, 0, 0);
+        }
+        this->set_state(1);
+        return 2;
+
+    case 1:
+        return 1;
+
+    case 0x0D:
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x269, 0, 0);
+        return 3;
+
+    default:
+        return 0;
     }
-
-    return 0;
 }

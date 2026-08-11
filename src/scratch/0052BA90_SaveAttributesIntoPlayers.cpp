@@ -21,6 +21,21 @@
 //   aligned; remaining drift is localized VC5 scheduling/address encoding.
 // - Main-agent audit restored polymorphic player/world/scenario ownership;
 //   emitted code remains in the documented 93-byte scheduling basin.
+// - Fresh claim baseline revalidated the same 93-byte result: all 10 ordered
+//   calls, frame, CFG, and 88/101 instruction island are aligned.
+// - Tested a period-style running relation index, an interior relation-slot
+//   anchor, reversed address terms, raw int-pointer indexing, and a const or
+//   register-qualified offset. The running-index form widened the frame to
+//   0xC; the other forms were emitted-code duplicates and were rolled back.
+// - Two focused relation-expression labs (20260811_090731,
+//   20260811_090918, 20260811_091129) covered typed/flat/raw/address-term
+//   and named-index spellings. Only row-pointer/index-row forms changed the
+//   basin, losing the aligned body; none produced the target EDI-base/EBP-
+//   index SIB or corrected the first prologue store order.
+// - Final clean source is retained: canonical Friendliness rows and
+//   AlliedVictory ownership remain the best period-plausible reconstruction;
+//   unresolved drift is the first setup scheduling swap, relation SIB
+//   encoding, and resulting one-byte branch-span shift.
 
 struct Player_Start_Info {
     int Gold;

@@ -23,6 +23,21 @@
 // top-level typed-local forms; they stayed structural (287-297 differing
 // bytes) and did not reproduce the original self spill. Restored this natural
 // canonical source for the documented pause.
+// Worker pass sa2229d570_r1_004C04F0: materializing the child facet quotient
+// before the draw-level branch moved the source from 298 to 294 differing
+// bytes; removing an unsupported inner facet reset then reached exact size and
+// 284 differing bytes, proving that the normalized facet remains live through
+// the child quotient. A natural saved-self plus call-argument cache form
+// reached 271 differing bytes with the same call set and 0x8 frame; a raw
+// byte-cursor rewrite and function-scope entry locals were codegen duplicates.
+// A diagnostic three-dword state aggregate reproduced the 0xC frame and 60%
+// shape similarity at 270 differing bytes but still kept self in EBP; it was
+// rejected as an opaque metric-only source. Adding sprite.cpp-era stdio context
+// was a duplicate. The clean source below retains named ownership, the
+// binary-proven facet lifetime, and ordinary call-argument caches; residual
+// drift is the saved-self/callee-save scheduling basin.
+
+#include <stdio.h>
 
 class RGE_Color_Table;
 class TDrawArea;
@@ -94,31 +109,38 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                                unsigned char color_index)
 {
     unsigned char result;
+    RGE_Sprite* self = this;
     int count = 0;
+    TDrawArea* loop_draw_area;
+    RGE_Color_Table* loop_color_table;
 
-    if (facet >= (signed short)this->facet_num) {
+    if (facet >= (signed short)self->facet_num) {
         facet = 0;
     }
 
-    if ((this->draw_list_num < 1) || (this->draw_list == 0)) {
-        if (this->draw_level < 0xb) {
+    if ((self->draw_list_num < 1) || (self->draw_list == 0)) {
+        if (self->draw_level < 0xb) {
             param_3 = param_5;
             param_4 = param_6;
         }
-        this->do_draw(facet, param_2, param_3, param_4,
+        self->do_draw(facet, param_2, param_3, param_4,
                       color_table, draw_area, color_index);
         result = 1;
     }
     else {
         result = 0;
         count = 0;
-        if (0 < this->draw_list_num) {
-            facet = 0;
+        if (0 < self->draw_list_num) {
+            loop_draw_area = draw_area;
+            loop_color_table = color_table;
             do {
-                RGE_Picture_List* entry = &this->draw_list[count];
+                RGE_Picture_List* entry = &self->draw_list[count];
                 short entry_facet = entry->facet;
                 if ((entry_facet < 0) || (entry_facet == facet)) {
                     RGE_Sprite* sprite = entry->sprite;
+                    int child_facet =
+                        (sprite->facet_num * facet) /
+                        (int)self->facet_num;
                     long offset_y = entry->offset_y;
                     long offset_x;
                     long base_x;
@@ -132,13 +154,13 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                         offset_x = entry->offset_x;
                         base_x = param_3;
                     }
-                    sprite->do_draw((sprite->facet_num * facet) /
-                                        (int)this->facet_num,
-                                    param_2, offset_x + base_x, offset_y,
-                                    color_table, draw_area, color_index);
+                    sprite->do_draw(child_facet, param_2,
+                                    offset_x + base_x, offset_y,
+                                    loop_color_table, loop_draw_area,
+                                    color_index);
                 }
                 count = count + 1;
-            } while (count < this->draw_list_num);
+            } while (count < self->draw_list_num);
             return (unsigned char)count;
         }
     }

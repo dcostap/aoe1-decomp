@@ -59,6 +59,15 @@
 //   the existing 221-byte basin among 107 valid builds; no target->EBX lead emerged.
 // Left in scratch: canonical typed owner/master/task hierarchy is validated; remaining
 // drift is the stable VC5 target/z/index register allocation basin.
+// - 2026-08-11 (sa-e91dfaa7-r1): DIA inspection of the original PDB confirms the
+//   act_obj.cpp compiland includes only stat_obj.h, ani_obj.h, and move_obj.h; the
+//   function's emitted locals are parameter obj, floats x/y/z, and int i. Fresh
+//   source probes all restored to the clean 221-byte basin: positive nested guard
+//   control flow worsened to 151 bytes; typed candidate, period destructor/create_task
+//   virtual surfaces, full 0xFC master layout, full 0x220 player layout, top-level
+//   z lifetime, z/y/x copies, and action-typed master_obj were unchanged. No source
+//   or proven layout axis moved target=EBP/i=EBX/z-reload toward the oracle's
+//   target=EBX/z=EBP/i-at-target-home allocation.
 
 class RGE_Static_Object;
 class RGE_Action_Object;

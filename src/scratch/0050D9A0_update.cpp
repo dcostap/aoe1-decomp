@@ -34,6 +34,12 @@
 //   expanded to 586B/571 diff. Both were diagnostic only and restored.
 // - Final clean candidate remains 341B, frame 0x8, four virtual calls exact;
 //   only the 11-byte case-1 register/order hunk remains.
+// Session sa-903cf9d3-r1: register-qualified byte/index/player locals, pointer-
+// versus reference-bound world/player, inline/repeated lookup expressions,
+// donor class surfaces, binary-backed world/player field expansion, and a
+// reversed pointer-plus-index spelling all emitted the unchanged 341B/11-diff
+// group. A narrow volatile player-byte read and non-inlined two-argument lookup
+// helper were farther and restored. Clean typed source remains authoritative.
 
 class RGE_Game_World;
 class RGE_Player;

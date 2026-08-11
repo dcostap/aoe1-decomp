@@ -2,15 +2,15 @@
 // No PDB source. 391 bytes. __thiscall, ret 8.
 //
 // Attempt log:
-// - probes 1-5: permutation of declarations → 32 stack offset diffs
-// - probe 6: local struct → 35 diffs (worse)
-// - probe 7: int has_carry → 42% diff (broken, reverted)
-// - probe 8: variant lab template → 24 variants, all fail (syntax)
-// - probes 9-18: brute-force 10 declaration orders → ALL 8.18% diff (same!)
-// CONCLUSION: VC5 assigns stack slots independently of declaration order.
-// Remaining 32 diffs are ALL single-byte [ebp+XX] displacement values that
-// VC5 determines via internal heuristic (type grouping + liveness).
-// Cannot be forced from pure C++ source. Left in scratch.
+// - baseline: typed Tech_Entry scan, default flags, 32 positional diffs.
+// - bool/char predicate and declaration-initializer variants were codegen duplicates.
+// - natural lexical scopes for i/attr/cost improved to 16 diffs (4.09%); this is kept.
+// - for-header i and loop-scope/inner-init cost were duplicates; top-scope cost regressed to 32.
+// - short attr changed size to 401 bytes and was reverted; no ABI evidence supports it.
+// - focused pointer/reference + byte-predicate lab: one malformed extraction basin, no eligible lead.
+// Remaining 16 bytes are local [ebp+XX] displacement coloring only; calls, CFG, size,
+// frame, and all non-stack instruction bytes match. Left in scratch pending a compiler
+// slot-allocation lead; source remains the simplest typed reconstruction.
 
 struct Tech_Player_Tree {
     float research_done;
@@ -52,15 +52,10 @@ public:
 
 unsigned char TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2)
 {
-    Tech_Entry* tech;
-    float carry;
+    Tech_Entry* tech = this->base_tech->tech_tree + param_1;
+    float carry = this->owner->player_attributes->attributes[3];
     unsigned char has_carry;
-    int i;
-    int attr;
-    float cost;
 
-    tech = this->base_tech->tech_tree + param_1;
-    carry = this->owner->player_attributes->attributes[3];
     if (this->owner->player_attributes->attributes[0x1d] < 1.0) {
         carry = 0.0f;
         has_carry = 0;
@@ -68,10 +63,12 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2)
         has_carry = 1;
     }
     if (this->tech_player_tree[param_1].state == 1) {
+        int i;
         for (i = 0; i < 3; i++) {
+            int attr;
             attr = tech->attribute[i];
             if (attr >= 0 && tech->attribute_used[i] != 0) {
-                cost = (float)(int)tech->attribute_cost[i];
+                float cost = (float)(int)tech->attribute_cost[i];
                 if (has_carry && attr == 3) {
                     carry = carry - cost;
                     if (carry < 0.0f) {

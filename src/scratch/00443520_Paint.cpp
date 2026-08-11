@@ -21,6 +21,12 @@
 // Final bounded pass: the natural positive resource guards, named destination-top
 // accumulator, and typed DirectDrawSurface::Blt are retained; calls/CFG remain
 // aligned, but the saved-register/prologue basin is still unresolved.
+// This session: donor/dossier/ABI evidence confirms four calls, vslot+0x14 Blt,
+// and the 0x20 RECT window. Declaration-order, direct src-field, full-class,
+// standard-header, and API-surface labs stayed nonexact; <windows.h> plus direct
+// RECT clipping reached 346 bytes/325 differing bytes and was rolled back.
+// Final clean candidate remains the prior 350-byte/238-difference typed source;
+// unresolved first hunk is the saved-register/zero-constant basin, not calls or CFG.
 
 struct tagRECT {
     long left;

@@ -28,6 +28,11 @@
 //   reversing the commutative operands was a codegen duplicate. Restored the
 //   cleaner old_x-before-update source; remaining drift is localized VC5
 //   candidate/second-bound scheduling, not a proven ownership or ABI issue.
+// - Fresh sa-7af9de30-r1-0044B950 pass: complete same-TU method declarations,
+//   candidate_x copy/compound and expanded forms, old_x declaration placement,
+//   and direct-x reread hybrids were duplicates or regressed (best retained
+//   source remains 149 differing bytes).  A 7-variant candidate-sum lab also
+//   collapsed to the same 149-byte emitted group; no exact natural basin found.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 

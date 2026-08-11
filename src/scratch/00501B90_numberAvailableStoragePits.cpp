@@ -62,6 +62,11 @@
 // 222-byte / six-byte register-swapped basin. A positive-branch BuildAIModule
 // pointer alias regressed structurally to 224 bytes / 113 differing bytes and
 // was restored. No ABI, call, layout, or behavior uncertainty remains.
+// Fresh bounded pass (sa-89b3fb34-r1): declaration-order variants, nested
+// md/self aliases, direct storage-count rereads, stdio context, 32-bit long
+// local widths, and proper TacticalAIModule/MainDecisionAIModule/AIModule
+// virtual-base surfaces all reproduced the same 222-byte six-byte basin.
+// Restored the pinned canonical source; no new codegen lead was found.
 
 #include <stdlib.h>
 

@@ -1,5 +1,12 @@
 // /Od debug-style no-PDB TRIBE_Player_Tech::check_for_new_tech
 // Full behavior rewrite; current mismatch is local-slot topology/control-shape.
+// Attempts: baseline typed scan was 534 bytes/232 diff; direct temp<=research_done
+// plus removal of unsupported changed=1 reached 530 bytes/39 diff.  The natural
+// (float)(int) research cast supplies the hidden -24h FILD home and, with the
+// binary-proven DAT_005766d8 double, reaches 530 bytes/21 diff, 87.10% shape.
+// Reordered/for-header locals were codegen duplicates; function-scope temp was
+// worse.  Remaining drift is five swapped local homes (tech/changed/prereq_done/
+// prereq_count/j; this and the hidden FILD temp now match), with no call/CFG gap.
 
 struct Tech_Player_Tree {
     float research_done;
@@ -42,6 +49,8 @@ struct TRIBE_Tech {
     Tech_Entry* tech_tree;
 };
 
+extern double DAT_005766d8;
+
 class TRIBE_Player_Tech {
 public:
     Tech_Player_Tree* tech_player_tree;
@@ -55,13 +64,12 @@ public:
 
 unsigned char TRIBE_Player_Tech::check_for_new_tech()
 {
-    Tech_Entry* tech;
-    short i;
-    unsigned char changed;
     short active_count;
-    unsigned char prereq_done;
+    short i;
     short prereq_count;
-    short j;
+    unsigned char changed;
+    unsigned char prereq_done;
+    Tech_Entry* tech;
 
     active_count = 0;
     tech = this->base_tech->tech_tree;
@@ -73,7 +81,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
                     active_count++;
                     prereq_done = 0;
                     prereq_count = 0;
-                    for (j = 0; j < 4; j++) {
+                    for (short j = 0; j < 4; j++) {
                         if (tech[i].pre_reqs[j] >= 0) {
                             prereq_count++;
                             if (this->tech_player_tree[tech[i].pre_reqs[j]].state == 3) {
@@ -82,12 +90,9 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
                         }
                     }
                     if ((int)prereq_done >= (int)tech[i].pre_reqs_required) {
-                        int temp;
-                        temp = tech[i].research;
-                        if (!(this->tech_player_tree[i].research_done < (float)temp)) {
+                        if ((float)(int)tech[i].research <= this->tech_player_tree[i].research_done) {
                             do_tech(i);
                             active_count--;
-                            changed = 1;
                         } else {
                             if (this->tech_player_tree[i].state < 1) {
                                 this->tech_player_tree[i].state = 1;
@@ -107,7 +112,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
         }
     } while (changed);
     if (active_count == 0) {
-        if (this->owner->player_attributes->attributes[0x27] == 0.0f) {
+        if (this->owner->player_attributes->attributes[0x27] == DAT_005766d8) {
             this->owner->player_attributes->attributes[0x27] = 1.0f;
         }
     }

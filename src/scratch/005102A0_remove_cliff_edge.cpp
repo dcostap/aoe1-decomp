@@ -20,6 +20,14 @@
 // while the rebuild keeps this in EBP and spills outer to [esp+10].
 // left in scratch: behavior/calls/CFG are understood; remaining mismatch is
 // VC5 saved-this/register and pre-switch scheduling, not a semantic gap.
+// sa-0a6dbc5b-r1 fresh pass: revalidated the clean baseline and tested
+// register-qualified/int-vs-long outer counters, a canonical RGE_Map base,
+// address-taken info, scalar/aggregate saved-this overlays, and a narrow
+// volatile self-pointer. The five-word overlay did force EBP/ESI loop roles
+// but widened the frame to 0x28; volatile self reached exact size but a broad
+// wrong EBX/volatile-reload family. All diagnostic variants were rolled back.
+// final clean source remains the typed donor-shaped reconstruction; blocker is
+// the binary's saved-this [esp+10] versus VC5's EBP=this/outer home choice.
 
 struct TRIBE_Cliff_Info {
     int info[4];

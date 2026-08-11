@@ -14,6 +14,13 @@
 // local and a center-y copy likewise produced no codegen movement. The original
 // EBP frame and reuse of the square/p6 homes remain an ABI/codegen-context blocker;
 // diagnostic forms were restored rather than retained as scaffolding.
+// Follow-up session: swapping checksum/player-id assignment order, retaining a
+// self alias, splitting a checksum temporary, and lifting cursor locals were
+// codegen-duplicates under default /O2 /Oy. Narrow volatile player-id/tile
+// diagnostics moved emitted code but did not recover the EBP frame and were
+// rolled back. A temporary /Oy- response file improved the frame basin to 394
+// bytes/320 strict diff, but still had an 8-byte frame and remained a flag-only
+// diagnostic; it was removed. The clean typed source is restored below.
 // Final source keeps the symbol-backed LOSTBL* declarations and full typed map/tile
 // records even though VC5 emitted the same bytes; the prior validation metrics remain
 // authoritative for this canonical-source correction.
@@ -120,15 +127,16 @@ public:
 void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                                         int update_tiles, int p6)
 {
+    RGE_Visible_Map* self = this;
     RGE_Tile* tile = 0;
     int player_id;
 
-    log_map_call(this->world->world_time, (int)this->player->id, 3, p6,
+    log_map_call(self->world->world_time, (int)self->player->id, 3, p6,
                  x, y, radius, square, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion == 0) {
-        player_id = (int)this->player->id;
-        p6 = this->input_csum;
+        player_id = (int)self->player->id;
+        p6 = self->input_csum;
         p6 = _rotl(p6, 3);
         p6 ^= 0x20202020;
         p6 = _rotl(p6, 2);
@@ -140,7 +148,7 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
         p6 = _rotl(p6, 3);
         p6 ^= radius;
         p6 += square;
-        this->input_csum = p6;
+        self->input_csum = p6;
 
         if (radius > 0x10) {
             radius = 0x10;
@@ -156,20 +164,20 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
         int off_y = offsets->y;
         while (off_y != 999) {
             off_y += y;
-            if ((off_y >= 0) && (off_y < this->heightValue)) {
+            if ((off_y >= 0) && (off_y < self->heightValue)) {
                 int x1 = offsets->x1 + x;
                 if (x1 < 0) {
                     x1 = 0;
                 }
                 int x2 = offsets->x2 + x;
-                if (x2 >= this->widthValue) {
-                    x2 = this->widthValue - 1;
+                if (x2 >= self->widthValue) {
+                    x2 = self->widthValue - 1;
                 }
 
-                unsigned char* visible = this->map_offsets[off_y] + x1;
+                unsigned char* visible = self->map_offsets[off_y] + x1;
                 unsigned long* explored = unified_map_offsets[off_y] + x1;
                 if (update_tiles != 0) {
-                    tile = this->map->map_row_offset[off_y] + x1;
+                    tile = self->map->map_row_offset[off_y] + x1;
                 }
 
                 if (x1 <= x2) {
@@ -184,7 +192,7 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                             if (update_tiles != 0) {
                                 tile->flags_09 = 0x80;
                             }
-                            *explored &= this->PlayerVisibleMaskInvertValue;
+                            *explored &= self->PlayerVisibleMaskInvertValue;
                         }
                         *visible = value;
                         ++visible;

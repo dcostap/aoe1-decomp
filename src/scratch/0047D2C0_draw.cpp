@@ -38,6 +38,13 @@
 // - Narrow register-qualified DC/font locals and a TPanel reference receiver
 //   were emitted-code duplicates.  Removed those compiler-steering probes;
 //   retained the readable typed TU/layout reconstruction in scratch.
+// - Fresh worker pass: generic-versus-destructor TPanel vtable surface,
+//   implicit highlight predicates, canonical unused TPanel link types,
+//   explicit prechecked do/while scan, memory.h context, register-qualified
+//   line, full TDrawArea layout, late TPanel receiver alias, and packet ABI
+//   void* draw_line all emitted the same 18-byte EBX/EDI coloring group.
+//   A seven-header context lab likewise had one 270-byte group; restored the
+//   clean typed source after each diagnostic probe.
 
 #include <windows.h>
 #include <stdio.h>

@@ -7,6 +7,12 @@
 // attempt 5: positive object guard plus a single result variable/common done label; VC5 still cloned success returns and broadened diff.
 // attempt 6: initializing result=0 created a stack local and wrong prologue; rolled back.
 // attempt 7: leaving failure value in EAX did not prevent cloned success epilogues.
+// attempt 8: paired hunt/heal/build typed-result-through-done form reached exact size/one-return CFG, but kept the result in EBX and worsened positional diff; restored.
+// attempt 9: combined result declaration/initialization emitted identical code.
+// attempt 10: int-width result and attempt 11's ABI-proven virtual declaration emitted identical code.
+// attempt 12: scalar 0/1 result introduced a stack local and 366-byte body; restored.
+// variant lab: EH-enabled typed-result form reached 358 bytes (diagnostic diff 257) but still emitted the EBX result copy; plain/combined forms stayed 398 bytes.
+// attempt 13: do/while(0) break convergence changed call order and grew to 406 bytes; restored.
 // left in scratch: behavior/calls/EH/new-action shape are understood; remaining drift is VC5 exit-path cloning/block layout (success returns inline instead of original shared success tail) plus shifted branch distances.
 // FLAGS: /nologo /c /O2 /Oy /GX
 

@@ -13,6 +13,12 @@
 // - Spanlist stdlib/string header context, split x1v assignment, scoped y
 //   copies, early-return guards, for-loop rewrites, and a Ghidra-shaped
 //   parameter-mutation source were tested; none improved the retained basin.
+// - Session sa9f8966ac_r1: direct parameter-home mutation reached 334 bytes
+//   with the same five calls but a worse positional/resync basin; restored.
+// - The same-TU DrawLine donor loop family emitted six AddSpan calls, while a
+//   Ghidra-local-order variant emitted 332 bytes but the same 324-byte diff;
+//   x1v declaration-order changes were codegen duplicates. A 256-variant
+//   local/parameter lab found no exact or structurally useful group.
 // - Retained natural x1v Bresenham source: exact call set/CFG and 316-byte
 //   output remain, with structural drift concentrated in prologue liveness and
 //   later induction scheduling.

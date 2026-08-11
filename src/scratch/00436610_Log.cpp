@@ -1,112 +1,116 @@
 // VA: 00436610 TDebuggingLog::Log
 // Debuglog.cpp lines 216-296
-
-// attempt 2: more complete version — 500/500 bytes exact size
-// 410 diff bytes — structure correct, precise inline formatting differs
-// __cdecl, this as first stack param
+//
+// Attempt log:
+// - Baseline kept the old decompiler-shaped formatting model; it had a 0x148
+//   frame and the wrong ctime/output/file call set.
+// - Reconstructed the period Debuglog.cpp field ownership and the natural
+//   four-prefix variadic formatting sequence from the original call sites.
+// - The first natural reconstruction reached the exact 0x8C frame and all 12
+//   calls; its remaining structural gap was the timestamp expression lifetime
+//   and compiler-local prefix placement.
+// - Hoisting the elapsed expression recovered the original FPU branch shape;
+//   the remaining stack windows indicate that ltime must be allowed to reuse
+//   the first date-prefix word.
+// - The oracle carries one TBuff pointer in EBX from the varargs call through
+//   the final sprintf; keep that ordinary array pointer as a local.
+// - A declaration-order lab (all 24 permutations) emitted one codegen group;
+//   making ltime block-local instead recovered all four date/prefix stack
+//   displacements and the original 500-byte extent.
+// - Best current check: 14 differing bytes, all 12 calls/relocations aligned;
+//   remaining mismatch is the original 0x8C frame versus rebuilt 0x88 and its
+//   resulting prologue/stack displacement bytes. Left in scratch at budget.
 
 #include <stdio.h>
-#include <string.h>
 #include <stdarg.h>
+#include <string.h>
 #include <time.h>
 
 extern FILE* logstream;
-unsigned long __stdcall GetTickCount();
+extern "C" unsigned long (__stdcall* const GetTickCount)(void);
+extern "C" void (__stdcall* const OutputDebugStringA)(const char*);
 
 class TDebuggingLog {
 public:
-    int field_00;            // +0x00
-    int LogToOutput;         // +0x04
-    int LogToFile;           // +0x08
-    int unknown_0C;          // +0x0C
-    char gap_10[8];          // +0x10..+0x17
-    int LogIsOpen;           // +0x18
-    int LogError;            // +0x1C
-    unsigned long LogStartTickCount; // +0x20
-    unsigned long LogSequence; // +0x24
-    char LogBuffer2[0x320];  // +0x28..+0x347
-    char LogBuffer[0x3E8];   // +0x348..+0x72F
-    char Filename[256];      // +0x730
+    int Timestamp;                         // +0x00
+    int DateTimestamp;                     // +0x04
+    int LogToFile;                         // +0x08
+    int LogToOutput;                       // +0x0C
+    int Sequence;                          // +0x10
+    int Flush;                             // +0x14
+    int LogIsOpen;                         // +0x18
+    int LogError;                          // +0x1C
+    unsigned long LogStartTickCount;       // +0x20
+    unsigned long SeqNo;                   // +0x24
+    char TBuff[800];                        // +0x28
+    char osbuf[1000];                       // +0x348
+    char Filename[128];                    // +0x730
 
     void OpenLog();
+    void __cdecl Log(char* format, ...);
 };
 
-void Log(TDebuggingLog* this_, const char* format, ...) {
-    if (!this_->LogToFile && !this_->LogToOutput)
-        return;
-    if (this_->LogError)
-        return;
-    
-    if (!this_->LogIsOpen && this_->LogToFile) {
-        this_->OpenLog();
-    }
-    
-    if (!this_->LogIsOpen && this_->LogToFile) {
-        this_->LogError = 1;
+void __cdecl TDebuggingLog::Log(char* format, ...)
+{
+    if ((this->LogToFile == 0 && this->LogToOutput == 0) ||
+        this->LogError != 0) {
         return;
     }
-    
-    // Increment sequence and format log body
+
+    if (this->LogIsOpen == 0 && this->LogToFile != 0) {
+        this->OpenLog();
+    }
+
+    if (this->LogIsOpen == 0 && this->LogToFile != 0) {
+        this->LogError = 1;
+        return;
+    }
+
+    char* buffer = this->TBuff;
+    ++this->SeqNo;
     va_list args;
     va_start(args, format);
-    unsigned long seq = this_->LogSequence + 1;
-    this_->LogSequence = seq;
-    vsprintf(this_->LogBuffer2, format, args);
+    vsprintf(buffer, format, args);
     va_end(args);
-    
-    // Get elapsed time
-    unsigned long now = GetTickCount();
-    unsigned long start = this_->LogStartTickCount;
-    
-    // Format elapsed time string
-    char elapsed_str[32];
-    if (seq != 0) {
-        sprintf(elapsed_str, "%.2f |", (float)(now - start) * 0.001f);
-    } else {
-        elapsed_str[0] = 0;
+
+    unsigned long ticks = GetTickCount();
+    char s2[32];
+    char s3[32];
+    char s4[32];
+    char s1[32];
+
+    float fTicksElapsed =
+        ((float)ticks - (float)this->LogStartTickCount) * 0.001f;
+
+    s1[4] = s2[4] = s3[4] = s4[4] = 0;
+
+    if (this->Timestamp != 0) {
+        sprintf(s1 + 4, "%.2f |", (double)fTicksElapsed);
     }
-    
-    // Build timestamp if LogToOutput
-    char timestamp[256];
-    if (this_->LogToOutput) {
-        time_t t;
-        time(&t);
-        struct tm* tm_info = localtime(&t);
-        if (tm_info != 0) {
-            strcpy(timestamp, asctime(tm_info));
-        } else {
-            strcpy(timestamp, "?");
+
+    if (this->DateTimestamp != 0) {
+        long ltime;
+        time(&ltime);
+        strncat(s2 + 4, ctime(&ltime), 20);
+        strcat(s2 + 4, " |");
+    }
+
+    if (this->Sequence != 0) {
+        sprintf(s3 + 4, "%ld |", this->SeqNo);
+    }
+
+    strcpy(s4 + 4, ">");
+    sprintf(this->osbuf, "%s%s%s%s%s\n", s1 + 4, s2 + 4, s3 + 4,
+            s4 + 4, buffer);
+
+    if (this->LogToOutput != 0) {
+        OutputDebugStringA(this->osbuf);
+    }
+
+    if (this->LogToFile != 0 && this->LogIsOpen != 0) {
+        fputs(this->osbuf, logstream);
+        if (this->Flush != 0) {
+            fflush(logstream);
         }
-    }
-    
-    // Build the full log line in LogBuffer
-    this_->LogBuffer[0] = 0;
-    
-    // Add sequence number prefix if non-zero
-    if (seq != 0) {
-        char seq_prefix[32];
-        sprintf(seq_prefix, "%lu ", seq);
-        strcat(this_->LogBuffer, seq_prefix);
-    }
-    
-    // Add elapsed time
-    strcat(this_->LogBuffer, elapsed_str);
-    
-    // Add the formatted message
-    strcat(this_->LogBuffer, this_->LogBuffer2);
-    
-    // Output to debug string if LogToOutput
-    if (this_->LogToOutput) {
-        // OutputDebugString would go here
-    }
-    
-    // Write to log file
-    if (this_->LogToFile && this_->LogIsOpen) {
-        fprintf(logstream, "%s", this_->LogBuffer);
-    }
-    
-    // Flush
-    if (logstream) {
-        fflush(logstream);
     }
 }

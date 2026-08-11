@@ -144,6 +144,22 @@
 //   18-byte structural gap is the oracle's x-home destination spill/reload
 //   plus setup register coloring; x-home and volatile steering are rejected.
 
+// sa-d8bc6b4f-r1-shape bounded pass (2026-08-11; 9 meaningful hypotheses):
+// - Same-TU sibling-shaped outer row plus inner working cursor (both cursor/
+//   flag declaration orders, and a narrow register hint) consistently spilled
+//   pitch, added push ecx, and reached 217 strict bytes; rolled back.
+// - A nonvolatile pointer overlay on the dead x home, and a direct x-as-row
+//   cursor with a scoped working pointer, both stayed in the 202/135-byte
+//   family; rolled back as compiler-steering/duplicate codegen.
+// - Reordering destination address terms (Bits + x + m + 1) was a codegen
+//   duplicate. Splitting the aligned-width multiplication worsened to 160
+//   strict bytes; scoping rows inside the positive-height guard was a duplicate.
+// - The remaining binary-backed blocker is structural local-home allocation:
+//   the oracle spills the row destination through incoming x's home at
+//   [esp+18h] and reloads it at each row end, while the clean typed source
+//   keeps the working destination in EDI. Volatile home forcing reached an
+//   11-byte diagnostic but is not retained as period-plausible source.
+
 #include <string.h>
 #pragma function(memset)
 extern "C" void* __cdecl memset(void* dest, int c, unsigned int count);

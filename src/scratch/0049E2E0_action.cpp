@@ -1,103 +1,300 @@
 // 0049E2E0 TribeLoadSavedGameScreen::action
-// scr_load.cpp
+// scr_load.cpp lines 187-275
 // Attempt log:
-// try 1: broad reconstruction from packet: saved-game screen action handler, filename formatting, load/delete/buttons, campaign/browser branches.
-// try 2: modeled stack buffers as filename[260], filenameNoExt[260], findInfo-ish block; original frame is 0x438 plus EH registration.
-// try 3: modeled panel text path: `panel->text()` compared to literal 0x5860E4, ui_set_text, then file-list scanning/enable branch when p4==0.
-// try 4: modeled delete-button branch: get localized string 0x24CA, sprintf with selected filename, then confirmation message.
-// try 5: modeled file-list double-click branch (msg==3) opening load button action.
-// try 6: modeled load-button branch: count check, copy selected filename, sprintf save path, `_findfirst`, choose extension/status string, fileExists, then error message.
-// try 7: modeled campaign/browser branch with 0x5842CC push/pop and optional network setup stub; broad only because direct thiscall casts are not valid under VC5.
-// try 8: initial compile had explicit operator-new and raw `__thiscall` casts rejected by VC5; replaced with declarations/stubs so source builds.
-// try 9: probed /GX and default flags. Both produce same rebuilt text and still lack original EH prologue/state shape; left default rsp (`/O2 /Oy`) because /GX did not improve.
-// try 10: current rebuild is size-matched at 1005B, but broad mismatch from byte 0: original starts with VC5 EH registration and 0x438 frame; rebuilt starts direct `sub esp,348h` with no EH and wrong frame/local layout.
-// try 11: reviewed diff: missing visible destructible/local objects and exact UI/list class surfaces cause broad prologue, call-surface, local-buffer, and branch-layout drift.
-// left in scratch: behavior is broad/partial and size-matched, but exact EH/local-object/source context is unresolved. No accepted_drift: broad prologue/EH/control/call-surface drift.
+// - Prior scratch was a broad decompiler-shaped scaffold: it used fake UI
+//   helpers, the wrong child offsets, no real TEasy_Panel action surface, and
+//   no compiler-owned new/EH path.  It was size-matched only by accident.
+// - Reconstructed the period panel hierarchy and canonical child ownership
+//   from the exact scr_load.cpp constructor/destructor/fillList donors.  The
+//   target has a 0x478 TScreenPanel base and list/OK/cancel/delete at +480,
+//   +488, +48C, +490; the inherited TPanel action slot is +B4.
+// - Replaced fake wrappers with typed TPanel/TPanelSystem/TEasy_Panel and
+//   RGE_Base_Game/TRIBE_Game calls.  The saved-game and single-player paths
+//   retain the binary-observed file buffers, a leading _finddata_t-compatible
+//   scratch window, and the direct new TribeSPMenuScreen expression.
+// - baseline: typed /GX reconstruction was 1005B with all calls present but
+//   a 0x324 frame; the frame/local layout probe identified the extra popup/
+//   find scratch window.
+// - control-flow probes: source-leading list handling plus the existing-Game-
+//   Screen arm first restored the oracle's late virtual action and cold new
+//   block; ordered calls reached 36/36 with no site gaps.
+// - layout: `char fileInfo[0x230]` exposed the binary-backed scratch extent;
+//   reducing it to 0x22C accounts for the compiler new-expression home and
+//   reaches the exact 0x438 frame.  The larger typed window is kept as the
+//   best period-plausible model, with `_finddata_t` used only at the API cast.
+// - ABI/context and event/panel-local aliases were codegen duplicates and
+//   were rolled back.  Final validation remains nonexact: 1005B, 0x438 frame,
+//   36/36 ordered calls, 50.18% exact-block coverage, 898 positional diff
+//   bytes.  The remaining broad gap starts in VC5 callee-save coloring and
+//   the EH prologue (target EBX=event/EDI=panel/EBP=this); left in scratch.
 
-#include <string.h>
+#include <io.h>
 #include <stdio.h>
+#include <string.h>
 
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl strcmp(const char*, const char*);
-extern "C" char* __cdecl strcpy(char*, const char*);
-extern "C" int __cdecl _findfirst(const char*, void*);
-extern void* DAT_0062c574;
+class TDrawArea;
+class TTextPanel;
+class TListPanel;
+class TButtonPanel;
+class TScrollBarPanel;
+class TInputPanel;
+class TEditPanel;
+class TDropDownPanel;
+class TVerticalSliderPanel;
 
-class TPanel { public: char* text(); int count(); int selected(); int empty(); void enable(int); };
-class ScreenBase { public: virtual long action(TPanel*, long, unsigned long, unsigned long); };
-class GlobalUI { public: char gap[0xc]; char* basePath; int mode(); int fileExists(char*); int netMode(); int a00; };
-class Dialog { public: Dialog(); };
-class TribeLoadSavedGameScreen : public ScreenBase {
+// The old panel ABI has action in slot 45 (+0xB4).  Keep the complete slot
+// count here so the recursive action dispatch below is a real virtual call,
+// not a fabricated direct helper.
+class TPanel {
 public:
-    char gap[0x480-4];
-    TPanel* fileList;
-    TPanel* loadButton;
-    TPanel* deleteButton;
-    TPanel* cancelButton;
-    TPanel* campaignButton;
-    virtual void open(TPanel*,int,int,int);
-    void get_string(int,char*,int);
-    void message(char*,char*,int,int);
-    long action(TPanel* panel, long msg, unsigned long p3, unsigned long p4);
+    virtual ~TPanel();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void vf20();
+    virtual void vf24();
+    virtual void vf28();
+    virtual void vf2C();
+    virtual void vf30();
+    virtual void vf34();
+    virtual void vf38();
+    virtual void vf3C();
+    virtual void vf40();
+    virtual void vf44();
+    virtual void vf48();
+    virtual void vf4C();
+    virtual void vf50();
+    virtual void vf54();
+    virtual void vf58();
+    virtual void vf5C();
+    virtual void vf60();
+    virtual void vf64();
+    virtual void vf68();
+    virtual void vf6C();
+    virtual void vf70();
+    virtual void vf74();
+    virtual void vf78();
+    virtual void vf7C();
+    virtual void vf80();
+    virtual void vf84();
+    virtual void vf88();
+    virtual void vf8C();
+    virtual void vf90();
+    virtual void vf94();
+    virtual void vf98();
+    virtual void vf9C();
+    virtual void vfA0();
+    virtual void vfA4();
+    virtual void vfA8();
+    virtual void vfAC();
+    virtual void vfB0();
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+
+    char gap_04[0xF0];
+
+    char* panelName();
+    int get_string(int string_id, char* buffer, int length);
 };
 
-void ui_set_text(const char* s);
-void ui_push(const char* s);
-void ui_pop(const char* a, int b);
-static void* make_dialog() { void* p = operator new(0x49c); return p; }
+class TTextPanel : public TPanel {
+public:
+    char* currentLine();
+    int numberLines();
+    long get_line();
+    long delete_line(long line);
+};
 
-long TribeLoadSavedGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsigned long p4) {
+class TListPanel : public TTextPanel {
+};
+
+class TButtonPanel : public TPanel {
+public:
+    void set_disabled(int disabled);
+};
+
+class TScrollBarPanel : public TPanel {
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_F4[0x384];
+
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    void popupYesNoDialog(char* message, char* title, int style, int timeout);
+    void popupOKDialog(long string_id, char* title, int style, int timeout);
+};
+
+class TScreenPanel : public TEasy_Panel {
+public:
+    virtual ~TScreenPanel();
+};
+
+class TPanelSystem {
+public:
+    TPanel* panel(char* name);
+    int setCurrentPanel(char* name, int mode);
+    int destroyPanel(char* name);
+};
+
+extern TPanelSystem panel_system;
+
+class RGE_Prog_Info {
+public:
+    char gap_00[0xB12];
+    char save_dir[1];
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    char gap_04[8];
+    RGE_Prog_Info* prog_info;
+    char gap_10[0x9F0];
+    int save_paused;
+
+    int singlePlayerGame();
+    void set_paused(int paused, int non_user_pause);
+    void disable_input();
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    int load_game(char* file_name);
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+// The direct new-expression and its 0x49C size are compiler/EH evidence in
+// the oracle, not a hand-written allocation wrapper.
+class TribeSPMenuScreen {
+public:
+    char data[0x49C];
+    TribeSPMenuScreen();
+};
+
+class TribeLoadSavedGameScreen : public TScreenPanel {
+public:
+    TTextPanel* screenTitle;                 // +0x478
+    TTextPanel* listTitle;                   // +0x47C
+    TListPanel* list;                         // +0x480
+    TScrollBarPanel* scrollbar;              // +0x484
+    TButtonPanel* okButton;                  // +0x488
+    TButtonPanel* cancelButton;              // +0x48C
+    TButtonPanel* deleteButton;              // +0x490
+
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+};
+
+long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
+                                      unsigned long p3, unsigned long p4) {
     char fileName[260];
     char fileNameNoExt[260];
-    char findInfo[0x140];
+    // The load API only consumes the leading _finddata_t window, while the
+    // delete confirmation formats text into the same local.  The oracle's
+    // 0x438 frame and contiguous local addresses prove the larger scratch
+    // window rather than a standalone 0x118-byte _finddata_t.  The compiler's
+    // 4-byte new-expression home occupies the remaining dword of the frame.
+    char fileInfo[0x22C];
 
-    if (panel && panel->text() && strcmp(panel->text(), (const char*)0x5860E4) == 0) {
-        ui_set_text((const char*)0x5860E4);
-        if (p4 != 0) return 1;
-        GlobalUI* ui = (GlobalUI*)DAT_0062c574;
-        sprintf(fileName, (const char*)0x586684, ui->basePath + 0xB12, fileList->text());
-        _findfirst(fileName, findInfo);
-        sprintf(fileName, (const char*)0x586678, ui->basePath + 0xB12, fileList->text());
-        _findfirst(fileName, findInfo);
-        fileList->selected();
-        fileList->count();
-        if (*fileList->text() != 0) return 1;
-        loadButton->enable(1);
-        deleteButton->enable(1);
-        return 1;
-    }
-    if (panel == deleteButton && msg == 1) {
-        if (*fileList->text() != 0) {
-            get_string(0x24ca, fileName, 0x100);
-            sprintf(fileNameNoExt, fileName, fileList->text());
-            message(fileNameNoExt, (char*)0x5860E4, 0x1c2, 100);
+    if (panel != 0) {
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), (char*)0x5860E4) == 0) {
+            panel_system.destroyPanel((char*)0x5860E4);
+
+            if (msg == 0) {
+                RGE_Prog_Info* prog_info = rge_base_game->prog_info;
+                char* line = this->list->currentLine();
+                sprintf(fileName, (char*)0x586684, prog_info->save_dir, line);
+                _unlink(fileName);
+
+                prog_info = rge_base_game->prog_info;
+                line = this->list->currentLine();
+                sprintf(fileName, (char*)0x586678, prog_info->save_dir, line);
+                _unlink(fileName);
+
+                long current_line = this->list->get_line();
+                this->list->delete_line(current_line);
+                line = this->list->currentLine();
+                if (*line == 0) {
+                    this->okButton->set_disabled(1);
+                    this->deleteButton->set_disabled(1);
+                    return 1;
+                }
+            }
+            return 1;
         }
-    }
-    if (panel == fileList) {
-        if (msg != 3) return ScreenBase::action(panel,msg,p3,p4);
-        open(loadButton,1,0,0);
-        return 1;
-    }
-    if (panel == loadButton) {
-        if (msg != 1) return ScreenBase::action(panel,msg,p3,p4);
-        if (fileList->count() <= 0) return 1;
-        strcpy(fileNameNoExt, fileList->text());
-        sprintf(fileName, (const char*)0x586678, ((GlobalUI*)DAT_0062c574)->basePath + 0xB12, fileNameNoExt);
-        if (_findfirst(fileName, findInfo) == -1) sprintf(fileName, (const char*)0x586670, fileNameNoExt);
-        else sprintf(fileName, (const char*)0x586668, fileNameNoExt);
-        if (((GlobalUI*)DAT_0062c574)->fileExists(fileName)) return 1;
-        message((char*)0x2501, 0, 0x1c2, 100);
-        return 1;
-    }
-    if (panel == campaignButton) {
-        if (msg != 1) return ScreenBase::action(panel,msg,p3,p4);
-        ui_push((const char*)0x5842CC);
-        if (((GlobalUI*)DAT_0062c574)->netMode() == 1 && ((GlobalUI*)DAT_0062c574)->a00 == 0) {
-            /* network setup stub */
+
+        if (panel == this->deleteButton && msg == 1) {
+            char* line = this->list->currentLine();
+            if (*line != 0) {
+                this->get_string(0x24CA, fileName, 0x100);
+                sprintf(fileInfo, fileName, this->list->currentLine());
+                this->popupYesNoDialog(fileInfo,
+                                       (char*)0x5860E4, 0x1C2, 100);
+            }
         }
-        ui_pop((const char*)0x5842CC,0);
-        ui_set_text((const char*)0x586464);
+
+        if (panel == this->list) {
+            if (msg == 3) {
+                this->action(this->okButton, 1, 0, 0);
+                return 1;
+            }
+            goto fallback;
+        }
+
+        if (panel == this->okButton) {
+            if (msg != 1) {
+                goto fallback;
+            }
+
+            if (this->list->numberLines() > 0) {
+                strcpy(fileNameNoExt, this->list->currentLine());
+                sprintf(fileName, (char*)0x586678,
+                        rge_base_game->prog_info->save_dir,
+                        fileNameNoExt);
+                long handle = _findfirst(fileName,
+                                         (_finddata_t*)fileInfo);
+                char* format;
+                if (handle == -1) {
+                    format = (char*)0x586670;
+                } else {
+                    format = (char*)0x586668;
+                }
+                sprintf(fileName, format, fileNameNoExt);
+                int loaded = ((TRIBE_Game*)rge_base_game)->load_game(fileName);
+                if (loaded == 0) {
+                    this->popupOKDialog(0x2501, 0, 0x1C2, 100);
+                    return 1;
+                }
+            }
+        } else {
+            if (panel != this->cancelButton || msg != 1) {
+                goto fallback;
+            }
+
+            TPanel* game_screen = panel_system.panel((char*)0x5842CC);
+            char* next_panel;
+            if (game_screen != 0) {
+                if (rge_base_game->singlePlayerGame() == msg &&
+                    rge_base_game->save_paused == 0) {
+                        rge_base_game->set_paused(0, 0);
+                }
+                next_panel = (char*)0x5842CC;
+            } else {
+                rge_base_game->disable_input();
+                new TribeSPMenuScreen;
+                next_panel = (char*)0x586638;
+            }
+            panel_system.setCurrentPanel(next_panel, 0);
+            panel_system.destroyPanel((char*)0x586464);
+        }
         return 1;
     }
-    return ScreenBase::action(panel,msg,p3,p4);
+
+fallback:
+    return this->TEasy_Panel::action(panel, msg, p3, p4);
 }

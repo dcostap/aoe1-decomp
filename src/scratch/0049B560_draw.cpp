@@ -5,8 +5,31 @@
 // behavior model includes global mode gate, vtable draw_background/draw_foreground, optional panel fill, 1024/768 vs 800/600 vs small background shape draws, clip rect restore, and alternate non-global path.
 // tried natural virtual declarations and typed TDrawArea/TShape surfaces; calls and size are plausible but register/block topology remains broad (397 positional / 571 edit).
 // left in scratch: not accepted_drift-safe due broad scheduling/register/control drift despite same size.
+// bounded pass sa872fd63f: removed the duplicate explicit vptr and restored the
+// inherited +28/+2c draw_setup/draw_finish slots; this fixed all 21 ordered
+// calls, exact size/frame/CFG, and improved the first pass to 414 positional
+// differing bytes.
+// tried moving the clip copy before draw_setup with scalar locals; VC5 emitted
+// a 708-byte function and broad drift, so restored it.
+// typed the screen clip as tagRECT and modeled TPanel->TEasy_Panel->TScreenPanel
+// ownership plus TPanel::render_rect at +8c; the natural aggregate save/restore
+// gives a 707-byte, 96.67%-shape candidate with 90 edit-diff cost, but the
+// FillRect argument loads remain a localized register/order mismatch.
+// tried panel aliases, split pointer declaration, and four scalar argument
+// locals; scalar locals moved the first prologue hunk and were rolled back.
+// final validated scratch reconstruction retains the typed inherited layout and
+// aggregate clip save/restore; remaining drift is localized to panel FillRect
+// scheduling plus resulting branch displacements (current best codegen before
+// final restore: 558 strict bytes / 90 edit bytes, 707 vs 707, 21/21 calls).
 
 extern unsigned char byte_62C584;
+
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
 
 class TDrawArea {
 public:
@@ -16,49 +39,70 @@ public:
     unsigned char* Lock(char*, int);
     void Unlock(char*);
     void FillRect(long, long, long, long, unsigned char);
-    void SetClipRect(void* r);
+    void SetClipRect(tagRECT* r);
 };
 class TShape { public: unsigned char shape_draw(TDrawArea*, long, long, int, unsigned char, unsigned char*); };
 
-class TRIBE_Screen_Game {
+class TPanel {
 public:
-    void* vtbl;
-    char gap_04[0x14-4];
-    int width;
-    int height;
-    char gap_1c[0x20-0x1c];
-    TDrawArea* area;
-    int rect[4];
-    char gap_34[0x38-0x34];
-    int mode;
-    char gap_3c[0x478-0x3c];
-    TShape* shape478;
-    char gap_47c[0x4c0-0x47c];
-    void* panel4c0;
-
+    virtual ~TPanel();
     virtual void dummy0();
     virtual void dummy1();
     virtual void dummy2();
     virtual void dummy3();
     virtual void dummy4();
-    virtual void draw_background(int flag);
-    virtual void draw_foreground();
+    virtual void dummy5();
+    virtual void dummy6();
+    virtual void dummy7();
+    virtual void dummy8();
+    virtual void draw_setup(int flag);
+    virtual void draw_finish();
+    virtual void draw();
+
+    char gap_04[0x14-4];
+    long width;
+    long height;
+    char gap_1c[0x20-0x1c];
+    TDrawArea* area;
+    tagRECT rect;
+    char gap_34[0x38-0x34];
+    int mode;
+    char gap_3c[0x8c-0x3c];
+    tagRECT render_rect;
+    char gap_9c[0xf4-0x9c];
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_f4[0x478-0xf4];
+};
+
+class TScreenPanel : public TEasy_Panel {
+};
+
+class TRIBE_Screen_Game : public TScreenPanel {
+public:
+    TShape* shape478;
+    char gap_47c[0x4c0-0x47c];
+    TPanel* panel4c0;
+
     void draw();
 };
 
 void TRIBE_Screen_Game::draw()
 {
     if (byte_62C584) {
-        int old[4];
-        int* r = this->rect;
-        this->draw_background(0);
-        old[0] = r[0]; old[1] = r[1]; old[2] = r[2]; old[3] = r[3];
+        tagRECT* r = &this->rect;
+        tagRECT old = *r;
+        this->draw_setup(0);
         if (this->panel4c0) {
             if (this->area->Lock((char*)0x58653c, 1)) {
-                int* pr = (int*)((char*)this->panel4c0 + 0x8c);
-                this->area->FillRect(pr[0], pr[1], pr[2], pr[3], 0x74);
+                TPanel* panel = this->panel4c0;
+                tagRECT* pr;
+                pr = &panel->render_rect;
+                this->area->FillRect(pr->left, pr->top, pr->right, pr->bottom, 0x74);
                 this->area->Unlock((char*)0x58653c);
-                if (this->rect[1] < pr[3]) this->rect[1] = pr[3];
+                if (this->rect.top < pr->bottom) this->rect.top = pr->bottom;
                 this->area->SetClipRect(r);
             }
         }
@@ -77,14 +121,14 @@ void TRIBE_Screen_Game::draw()
                 this->area->Unlock((char*)0x58652c);
             }
         }
-        this->draw_foreground();
-        r[0] = old[0]; r[1] = old[1]; r[2] = old[2]; r[3] = old[3];
+        this->draw_finish();
+        *r = old;
         this->area->SetClipRect(r);
     } else {
         int flag;
         if (this->mode != 2 && this->shape478) flag = 0;
         else flag = 1;
-        this->draw_background(flag);
+        this->draw_setup(flag);
         if (this->shape478) {
             if (this->area->Lock((char*)0x58651c, 1)) {
                 if (this->width >= 0x400 && this->height >= 0x300) {
@@ -100,6 +144,6 @@ void TRIBE_Screen_Game::draw()
                 this->area->Unlock((char*)0x58651c);
             }
         }
-        this->draw_foreground();
+        this->draw_finish();
     }
 }

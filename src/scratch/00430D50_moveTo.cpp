@@ -26,6 +26,16 @@
 // The remaining exactness blocker is the VC5 EH-tail lowering around the
 // constructor null test: the clean source hoists `xor eax,eax` before `test edi`
 // while the oracle tests first, resets EH state, then branches `jne` to success.
+// Follow-up worker: mirrored the exact 00430C30 same-TU allocation tail with direct
+// returns; VC5 produced 382 bytes / 161 diff because it duplicated the EH epilogue.
+// Converted the constructor pointer into an int status, matching the decompiler's
+// iVar4 shape; this reached the known 359-byte / 49-diff diagnostic basin but kept
+// the opposite `je` layout. Negative if/else, goto-done, pointer-only, and switch
+// status forms either duplicated the epilogue or reproduced the 54-byte clean basin.
+// Reordered locals to PDB-like int-before-pointer order; emitted bytes unchanged.
+// Variant lab of six plausible tail forms under /GX found no exact or new invariant
+// basin. Restored the canonical int-result source; blocker remains localized to the
+// constructor null-test/EH-tail branch layout.
 
 #include <stddef.h>
 

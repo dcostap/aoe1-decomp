@@ -1,22 +1,27 @@
 // 00518400 TRIBE_Player::setupSumerian (tplayer.cpp:4292-4340, 309B)
 // Sets up Sumerian civilization parameters based on game mode, difficulty, and game type.
 //
-// Left in scratch: 288/309 bytes match (93.2%), edit diff 12.6%.
-// Remaining diff is VC5 scheduling quirks: (1) p reload (`mov eax,[esp+4]`)
-// is after `jge` in rebuilt vs before `jge` in original, (2) edx=100 loaded
-// too early (before 20-value stores instead of after), (3) ecx vs edx register
-// choice for value 20, (4) type load delayed until after all stores. Deathmatch
-// path (170 bytes) matches perfectly. All field offsets, store values, string
-// refs, and control flow verified correct.
+// Best current reconstruction: 279/309 positional bytes match (90.3%),
+// exact-size build, 27-byte edit diff, and 95.15% resync similarity.
+// Deathmatch path (170 bytes), difficulty gate, all calls, fields, values,
+// string refs, and control flow are verified. Remaining 30-byte drift begins
+// at the non-deathmatch constant group: VC5 loads 100 into EDX where the
+// original loads 20, then schedules the type/20/30/100 stores differently.
 // FLAGS: /nologo /c /O2 /Oy
 // Shared-cluster ABI uses RGE_Base_Game inheritance for the proven difficulty
-// method and the common AIModule/TRIBE_Game/TRIBE_Player surface. Map-type and
-// reused-value locals, plus a positive difficulty guard, did not move codegen;
-// retain the natural direct-store reconstruction.
-// Final validation: 313 rebuilt bytes, 292 equal bytes, 122 strict diff bytes,
-// and 35-byte edit diff; the four-byte excess is the p-load-before-jge basin.
-// Direct outer else-if difficulty syntax (as in exact same-TU donors) also
-// stayed identical; retain this simpler source shape.
+// method and the common AIModule/TRIBE_Game/TRIBE_Player surface.
+// Attempt log:
+// - natural direct-store source: 313 bytes, 122 strict diff bytes; p reload
+//   followed the jge and 100 was live too early.
+// - settings pointer, map-type/result locals, independent constant locals,
+//   donor-style guard forms, and broad group reorder probes were unchanged or
+//   structurally worse.
+// - moving the ordinary p[0x10] = 30 assignment before the ten-valued group
+//   recovered the original p reload/jge schedule and exact 309-byte size;
+//   retain this readable source-order hypothesis as the best reconstruction.
+// - a focused 144-case store-order lab found no exact bytes; delaying the two
+//   common 100 stores worsened the build to 321 bytes and was rolled back.
+// Final validation: 309 rebuilt bytes, 30 strict diff bytes, 27-byte edit diff.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
@@ -69,13 +74,13 @@ void TRIBE_Player::setupSumerian(int* p, int type, int unused1, int unused2) {
     } else if (rge_base_game->difficulty() < 1) {
         p[0x26] = 100;
     } else {
+        p[0x10] = 0x1E;
         p[3] = 10;
         p[9] = 10;
         p[10] = 10;
         p[11] = 10;
         p[4] = 0x14;
         p[0x11] = 0x14;
-        p[0x10] = 0x1E;
         p[0x39] = 100;
         p[0x3A] = 100;
 

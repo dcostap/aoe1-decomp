@@ -30,6 +30,15 @@
 //   restore and retain it. No exact match found; next lead is a genuinely
 //   different period source/control-flow context for placing the post-call mask
 //   reload in the call block rather than the common loop-bottom block.
+// 2026-08-11 session (sa-7f86d46a-r1-004C5210): a focused seven-form reload
+//   lab (nested/conditional/continue/update spellings) found no exact output;
+//   all size/frame/call-set eligible forms stayed at the same 3-byte drift.
+//   Symbol-backed map declaration and full 0x88 static-object field surface
+//   were tested and restored; split map-local initialization and a register
+//   qualifier were codegen duplicates. A full-word explored-local/mask-copy
+//   ownership form widened the mismatch and was restored. Retain the clean
+//   223-byte typed reconstruction; the remaining blocker is VC5 placement of
+//   the post-call mask reload in the call block versus the common loop bottom.
 
 typedef unsigned long ulong;
 

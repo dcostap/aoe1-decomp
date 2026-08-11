@@ -1,9 +1,19 @@
 // 004DFD60 TribeInformationAIModule::findObjectMemoryLimits
-// scratch give-up: natural reconstruction compiles to exact length 731 but remains broad mismatch
-// (86.59% positional / 73.32% edit, first mismatch frame 0x44 vs original 0x3c).
-// Behavior/call surface is reconstructed from packet; persistent gaps are stack-local packing,
-// EBX/ESI this-vs-zero allocation, and ObjectMemory byte/word zero-init shape. Fixed ftol source
-// to casts and corrected vf10c vtable slot to +0x10c; no exact basin found in this pass.
+// Attempt log:
+// - Baseline: the prior source had the right call set but a 0x44 frame and broad
+//   mismatch from blanket ObjectMemory initialization.
+// - Reconstructed canonical 0x24-byte ObjectMemory ownership, the same-TU
+//   polymorphic md/Tribe surfaces, direct byte-offset scan, typed visible-map
+//   access, and the nested weapon-range/zone check.  Frame became 0x3c and the
+//   best diagnostic build reached 734 bytes, 224 instructions, and 83.93% shape.
+// - Binary ABI correction: vslot +0x10c is the no-argument weaponRange(), not a
+//   point-taking helper; this removed the extra pre-call push and aligned the
+//   range-check block.
+// - The oracle retains a localized result-initialization/return-slot packing
+//   hunk and a later field/induction schedule gap.  A raw aggregate-zero alias
+//   reproduced one prologue store diagnostically (510-byte diff) but is not kept
+//   in the living source because it is compiler-steering rather than canonical
+//   source.  Pausing after the ten-hypothesis budget.
 
 typedef unsigned char uchar;
 
@@ -27,7 +37,16 @@ struct ObjectMemory {
 
 struct RGE_Static_Object;
 struct RGE_Visible_Map { uchar get_visible(int x, int y); };
-struct MainDecisionAIModule { char pad[0xF0]; void* map_holder; RGE_Static_Object* object(int id); };
+struct VisibleMapHolder {
+    char gap_00[0x38];
+    RGE_Visible_Map* map;
+};
+struct MainDecisionAIModule {
+    virtual ~MainDecisionAIModule();
+    char gap_04[0xEC];
+    VisibleMapHolder* map_holder;
+    RGE_Static_Object* object(int id);
+};
 
 struct RGE_Static_Object {
     virtual void pad000(); virtual void pad004(); virtual void pad008(); virtual void pad00c();
@@ -47,7 +66,7 @@ struct RGE_Static_Object {
     virtual void pad0e0(); virtual void pad0e4(); virtual void pad0e8(); virtual void pad0ec();
     virtual void pad0f0(); virtual void pad0f4(); virtual void pad0f8(); virtual void pad0fc();
     virtual void pad100(); virtual void pad104(); virtual void pad108();
-    virtual float vf10c(int* pt);
+    virtual float vf10c();
     char gap004[0x34];
     float x; // +38
     float y; // +3c
@@ -57,7 +76,8 @@ struct RGE_Static_Object {
 };
 
 struct TribeInformationAIModule {
-    char pad000[0x100];
+    virtual ~TribeInformationAIModule();
+    char pad004[0xFC];
     MainDecisionAIModule* md;
     char pad104[0x0c];
     int maxImportantObjectMemory;
@@ -68,7 +88,6 @@ struct TribeInformationAIModule {
 ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int object_id, int& c1, int& c2)
 {
     ObjectMemory rVal;
-    float maxRange;
     RGE_Static_Object* target;
     RGE_Static_Object* obj;
     int i;
@@ -79,26 +98,18 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int obj
     int iy;
     int dx;
     int dy;
-    ObjectMemory* mem;
     float dist;
 
     c1 = 0;
     c2 = 0;
-    rVal.id = 0;
     rVal.type = 0;
     rVal.group = 0;
-    rVal.x = 0;
-    rVal.y = 0;
-    rVal.z = 0;
-    rVal.owner = 0;
     rVal.hitPoints = 0;
-    rVal.pad0e = 0;
     rVal.attackAttempts = 0;
     rVal.kills = 0;
-    rVal.pad15[0] = rVal.pad15[1] = rVal.pad15[2] = 0;
     rVal.damageCapability = 0.0f;
     rVal.rateOfFire = 0.0f;
-    maxRange = 0.0f;
+    rVal.range = 0.0f;
 
     target = this->md->object(object_id);
     if (target != 0) {
@@ -107,38 +118,65 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int obj
         if (this->maxImportantObjectMemory > 0) {
             offset = 0;
             do {
-                mem = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
-                if ((int)mem->owner == owner) {
-                    obj = this->md->object(mem->id);
+                if ((int)*(uchar*)((char*)this->importantObjectMemory + offset + 0x0B) == owner) {
+                    obj = this->md->object(
+                        *(int*)((char*)this->importantObjectMemory + offset));
                     if (obj != 0) {
                         if (zone != obj->currentZone()) {
                             pt[0] = (int)obj->x;
                             pt[1] = (int)obj->y;
-                            dist = target->vf10c(pt);
-                            if (target->withinRangeOfZoneAtPoint(zone, dist, pt) != 1)
+                            if (target->withinRangeOfZoneAtPoint(
+                                    zone, target->vf10c(), pt) != 1)
                                 goto next;
                         }
-                        obj = this->md->object(mem->id);
+                        obj = this->md->object(
+                            *(int*)((char*)this->importantObjectMemory + offset));
                         if (obj != 0) {
-                            mem = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
                             ix = (int)obj->x;
-                            dx = (int)mem->x - ix;
+                            dx = (int)*(uchar*)((char*)this->importantObjectMemory + offset + 8) - ix;
                             if (dx < 0) dx = -dx;
                             iy = (int)obj->y;
-                            dy = (int)mem->y - iy;
+                            dy = (int)*(uchar*)((char*)this->importantObjectMemory + offset + 9) - iy;
                             if (dy < 0) dy = -dy;
-                            if ((dx > 5 || dy > 5) && ((RGE_Visible_Map*)(*(int*)(*(int*)((char*)this->md + 0xF0) + 0x38)))->get_visible(ix, iy) != 0x0F)
+                            if ((dx > 5 || dy > 5) &&
+                                this->md->map_holder->map->get_visible(ix, iy) != 0x0F)
                                 goto skip_visible;
-                            if (mem->group != 3 && mem->group != 0x1B) c1++;
-                            if (mem->group != 2 && mem->group != 0x15 && mem->group != 0x16 && mem->group != 0x14 && mem->type != 0x2D) c2++;
-                            dist = target->distance_to_position((float)(int)mem->x, (float)(int)mem->y, (float)(int)mem->z);
+                            if (*(short*)((char*)this->importantObjectMemory + offset + 6) != 3 &&
+                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x1B)
+                                c1++;
+                            if (*(short*)((char*)this->importantObjectMemory + offset + 6) != 2 &&
+                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x15 &&
+                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x16 &&
+                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x14 &&
+                                *(short*)((char*)this->importantObjectMemory + offset + 4) != 0x2D)
+                                c2++;
+                            dist = target->distance_to_position(
+                                (float)*(uchar*)((char*)this->importantObjectMemory + offset + 8),
+                                (float)*(uchar*)((char*)this->importantObjectMemory + offset + 9),
+                                (float)*(uchar*)((char*)this->importantObjectMemory + offset + 0x0A));
                             if ((float)rVal.id < dist) rVal.id = (int)dist;
-                            if (rVal.hitPoints < mem->hitPoints) rVal.hitPoints = mem->hitPoints;
-                            if (mem->attackAttempts > 0) rVal.hitPoints = (short)mem->attackAttempts;
-                            if (mem->kills != 0) rVal.hitPoints = (unsigned short)mem->kills;
-                            if (rVal.damageCapability < mem->damageCapability) rVal.damageCapability = mem->damageCapability;
-                            if (rVal.rateOfFire < mem->rateOfFire) rVal.rateOfFire = mem->rateOfFire;
-                            if (maxRange < mem->range) maxRange = mem->range;
+                            if (rVal.hitPoints <
+                                *(short*)((char*)this->importantObjectMemory + offset + 0x0C))
+                                rVal.hitPoints =
+                                    *(short*)((char*)this->importantObjectMemory + offset + 0x0C);
+                            if (*(int*)((char*)this->importantObjectMemory + offset + 0x10) > 0)
+                                rVal.hitPoints =
+                                    (short)*(int*)((char*)this->importantObjectMemory + offset + 0x10);
+                            if (*(uchar*)((char*)this->importantObjectMemory + offset + 0x14) != 0)
+                                rVal.hitPoints =
+                                    (unsigned short)*(uchar*)((char*)this->importantObjectMemory + offset + 0x14);
+                            if (rVal.damageCapability <
+                                *(float*)((char*)this->importantObjectMemory + offset + 0x18))
+                                rVal.damageCapability =
+                                    *(float*)((char*)this->importantObjectMemory + offset + 0x18);
+                            if (rVal.rateOfFire <
+                                *(float*)((char*)this->importantObjectMemory + offset + 0x1C))
+                                rVal.rateOfFire =
+                                    *(float*)((char*)this->importantObjectMemory + offset + 0x1C);
+                            if (rVal.range <
+                                *(float*)((char*)this->importantObjectMemory + offset + 0x20))
+                                rVal.range =
+                                    *(float*)((char*)this->importantObjectMemory + offset + 0x20);
                         }
                     }
                 }

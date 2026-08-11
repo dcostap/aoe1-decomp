@@ -3,47 +3,56 @@
 // __thiscall, unsigned char, ret 18h
 // FLAGS: default
 //
-// Attempt log (7+ attempts):
-// v0: Skeleton — compiled 352 vs 402, bounds logic incomplete
-// v1: Better bounds logic — 85% diff, register allocation off
-// v2-v6: Various comparison patterns — VC5 generates different short/compare patterns
-//
-// Remaining issues:
-// 1. get_frame call: 4 short* pointers pushed to stack in specific order.
-//    VC5 generates correct call but register setup differs.
-// 2. Short computation: original computes 4 derived values from min_x/max_y/screen_offset.
-//    VC5 generates correct arithmetic but with different register choices.
-// 3. Comparison blocks: 6 blocks each checking bounds against params.
-//    Each has 4 short comparisons (cmp di,dx; cmp di,[esp+34h]; cmp bx,si; cmp bx,[esp+38h]).
-//    The specific jl/jg/jge/jle pattern depends on exact comparison structure.
-// 4. Early-return epilogue: each return 1 has the same 6-instruction cleanup.
-//    VC5 generates these but with branch targets shifted.
-// 5. Frame: original uses sub esp,10h + 4 pushes (ebx, ebp, esi, edi).
-//    VC5 matches this but local variable layout differs.
+// Attempt log:
+// - Baseline kept the old nested-vtable stub and decompiler-shaped geometry;
+//   it was 410 bytes with 68.26% instruction-shape similarity.
+// - Restored the same-TU Active_Sprite_List virtual surface used by the exact
+//   capture/draw donors.  get_facetindex(RGE_Sprite*, short) now emits the
+//   original movzx/push/push/call sequence at 004C60BF.
+// - Restored the polymorphic static-object surface and the reference get_frame
+//   ABI.  The reference spelling is period-plausible and agrees with the
+//   004C5880 PDB symbol and exact same-TU donors.
+// - Corrected ownership/behavior: the first two inputs are screen offsets, the
+//   last four are rectangle bounds, and the four corners/edge tests follow the
+//   executable predicate order.  Parameter-left comparisons plus nested
+//   positive edge checks raised shape similarity to 84.30% and exact-block
+//   coverage to 82.28%.
+// - Grouping x expressions before y expressions worsened the emitted basin;
+//   restored the ordinary v1/v2/v3/v4 assignment order.  Separate declarations
+//   and assignments were emitted-code duplicates.
+// - Final bounded state: 424 rebuilt bytes versus 402, 328 strict differing
+//   bytes, both calls aligned, frame 0x10 and saved registers exact.  Remaining
+//   drift begins in the four derived-coordinate load/register schedule and
+//   shifts the late branch targets; no call-set or ownership uncertainty remains.
 
 #include <stdlib.h>
 
-struct RGE_VTable {
-    virtual void dtor();
-    virtual void _v04();
-    virtual void _v08();
-    virtual void _v0C();
-    virtual void _v10();
-    virtual void _v14();
-    virtual void _v18();
-    virtual void _v1C();
-    virtual void _v20();
-    virtual void _v24();
-    virtual void _v28(void* a, unsigned char b);
-};
+class RGE_Sprite;
 
-struct RGE_Active_Sprite_List {
-    RGE_VTable* vt;
+class RGE_Active_Sprite_List {
+public:
+    virtual ~RGE_Active_Sprite_List();
+    virtual short frame(RGE_Sprite* param_1);
+    virtual void update(float param_1, float param_2);
+    virtual void draw(short param_1, short param_2, short param_3,
+                      short param_4, short param_5, void* param_6,
+                      void* param_7);
+    virtual void normal_draw(short param_1, short param_2, short param_3,
+                             void* param_4, void* param_5);
+    virtual void shadow_draw(short param_1, short param_2, short param_3,
+                             void* param_4, void* param_5,
+                             unsigned char param_6);
+    virtual unsigned char is_animating(RGE_Sprite* param_1);
+    virtual void set_frame(RGE_Sprite* param_1, short param_2);
+    virtual unsigned char frame_passed(RGE_Sprite* param_1, short param_2);
+    virtual unsigned char looped(RGE_Sprite* param_1);
+    virtual short get_facetindex(RGE_Sprite* param_1, short param_2);
 };
 
 struct RGE_Static_Object {
-    char gap_00[0x10];
-    void* sprite;
+    virtual ~RGE_Static_Object();
+    char gap_04[0x0C];
+    RGE_Sprite* sprite;
     char gap_14[0x04];
     RGE_Active_Sprite_List* sprite_list;
     char gap_1C[0x0C];
@@ -52,7 +61,7 @@ struct RGE_Static_Object {
     char gap_2C[0x09];
     unsigned char facet;      // +0x35
 
-    int get_frame(short* min_x, short* min_y, short* max_x, short* max_y);
+    int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
     unsigned char box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6);
 };
 
@@ -60,30 +69,45 @@ unsigned char RGE_Static_Object::box_hit_test(short param_1, short param_2, shor
     if (this->sprite == 0) return 0;
     if (this->sprite_list == 0) return 0;
 
-    this->sprite_list->vt->_v28(this->sprite, this->facet);
+    this->sprite_list->get_facetindex(this->sprite, this->facet);
 
-    short min_x, min_y, max_x, max_y;
-    if (this->get_frame(&min_x, &min_y, &max_x, &max_y) == 0) return 0;
+    short min_x;
+    short min_y;
+    short max_y;
+    short max_x;
+    if (this->get_frame(min_x, min_y, max_x, max_y) == 0) return 0;
 
     short sx = this->screen_x_offset;
     short sy = this->screen_y_offset;
 
-    short v1 = min_x + max_y + sx;
-    short v2 = min_y + max_x + sy;
-    short v3 = max_y + sx;
-    short v4 = max_x + sy;
+    short v1;
+    short v2;
+    short v3;
+    short v4;
+    v1 = min_x + param_1 + sx;
+    v2 = min_y + param_2 + sy;
+    v3 = max_x + param_1 + sx;
+    v4 = max_y + param_2 + sy;
 
-    if (v1 >= param_4 && v1 <= param_6 && v2 >= param_3 && v2 <= param_5) return 1;
-    if (v3 >= param_4 && v3 <= param_6 && v4 >= param_3 && v4 <= param_5) return 1;
-    if (v1 >= param_4 && param_4 >= v3 && v2 >= param_3 && param_3 >= v4) return 1;
-    if (v1 >= param_6 && param_6 >= v3 && v2 >= param_5 && param_5 >= v4) return 1;
-    if (param_4 < v1 && v3 < param_6) {
-        if (v2 < param_3 && param_3 < v4) return 1;
-        if (v2 < param_5 && param_5 < v4) return 1;
+    if (v1 >= param_3 && v1 <= param_5 && v2 >= param_4 && v2 <= param_6) return 1;
+    if (v3 >= param_3 && v3 <= param_5 && v4 >= param_4 && v4 <= param_6) return 1;
+    if (param_3 >= v1 && param_3 <= v3 && param_4 >= v2 && param_4 <= v4) return 1;
+    if (param_5 >= v1 && param_5 <= v3 && param_6 >= v2 && param_6 <= v4) return 1;
+    if (param_3 < v1 && v3 < param_5) {
+        if (param_4 > v2) {
+            if (param_4 < v4) return 1;
+        }
+        if (param_6 > v2) {
+            if (param_6 < v4) return 1;
+        }
     }
-    if (param_3 < v2 && v4 < param_5) {
-        if (v1 < param_4 && param_4 < v3) return 1;
-        if (v1 < param_6 && param_6 < v3) return 1;
+    if (param_4 < v2 && v4 < param_6) {
+        if (param_3 > v1) {
+            if (param_3 < v3) return 1;
+        }
+        if (param_5 > v1) {
+            if (param_5 < v3) return 1;
+        }
     }
 
     return 0;

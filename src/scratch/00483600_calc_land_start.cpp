@@ -1,88 +1,172 @@
 // 00483600 RGE_RMM_Database_Controller::calc_land_start
 // rmm_dbct.cpp
 // Attempt log:
-// try 1: broad reconstruction from packet: compute bounds from map size/radius/type, dispatch land-placement modes, random start generation and spacing checks.
-// try 2: modeled initial debug_rand/log sequence and parameter order for start/radius/count/land.
-// try 3: modeled map width/height at +0x14/+0x18, radius*2 range, and floating bound calculation with count-dependent scale.
-// try 4: modeled central min/max x/y bounds and clamping against radius/map edges.
-// try 5: modeled land->placement switch: 0=random individual starts, 1=copy fixed land x/y, 2=random starts with spacing rejection.
-// try 6: modeled random scaling as debug_rand(file,line) * range / 0x7fff using __int64 helper to compile on VC5.
-// try 7: modeled mode 2 loop with central-bounds test, pairwise squared-distance rejection against prior slots, retry loop, and per-slot log.
-// try 8: modeled slots as 0x34-byte stride entries with x/y at +0x44/+0x48 from controller base +0x48.
-// try 9: fixed VC5 compile issue: replaced unsupported long long with __int64.
-// try 10: default compile produced .text 1008B vs original 1056B, no full diff.
-// try 11: /GX probe produced identical 1008B, removed flag file.
-// left in scratch: broad behavior is close and size gap is only 48B, but exact FPU expression tree, random scaling idiom, log/source-line interleaving, and retry-loop control flow still differ; no accepted_drift because no localized full diff.
+// try 1-11 (prior worker): broad decompiler-shaped reconstruction.  It used
+// roundFloat/rand_scaled helpers and an incorrectly sized local slot record;
+// the resulting 960-byte output had five extra helper calls and a 0x2c frame.
+// try 12: restored the period typed RGE_Land_Info ownership (0x34-byte lines),
+// inline debug_rand scaling, the x87 sqrt/bound expressions, and the binary's
+// retry-on-inner-box / retry-on-close-neighbor control flow.
+// try 13: restored the same-TU polymorphic base/controller surface; emitted
+// bytes were unchanged, confirming the touched offsets are already canonical.
+// try 14: delayed radius+radius until after the first log; this moved the
+// callee-save coloring and improved the positional diff to 970 bytes.
+// try 15: tested a saved original-radius plus typed current/previous cursor
+// mode-2 source; it reached 967 bytes but grew the function to 1067 bytes and
+// lost block coverage, so it was restored to the cleaner 1059-byte candidate.
+// try 16: named map-range and register-qualified radius probes were codegen
+// duplicates; no further source axis was productive within this assignment.
+// final: restored the best clean typed candidate; calls are exact (16/16), the
+// frame is exact (0x30), and remaining drift is structural/register/local-home
+// placement beginning at the saved-this/radius prologue.
 
+#include <math.h>
+
+// The land table is embedded in the controller's land_info member.  Its y
+// field is the cursor used by the original compiler, hence the characteristic
+// controller+0x48 + index*0x34 address in the packet.
 extern "C" int __cdecl debug_rand(const char*, int);
 extern "C" void __cdecl Log(void*, const char*, ...);
-extern int roundFloat(float);
 extern void* L;
-struct LandInfo { char gap0[0x11]; unsigned char placement; char gap12[0x14-0x12]; int x; int y; };
-class RGE_RMM_Database_Controller {
+
+struct LandInfoLine {
+    int land_size;
+    int terrain_type;
+    int x;
+    int y;
+    int base_size;
+    int area;
+    unsigned char zone;
+    unsigned char pad_19[3];
+    int clumpiness_factor;
+    int wall_1;
+    int wall_2;
+    int wall_3;
+    int wall_4;
+    unsigned char wall_fade;
+    unsigned char pad_31[3];
+};
+
+struct LandInfo {
+    char gap0[0x11];
+    unsigned char placement;
+    char gap12[2];
+    int x;
+    int y;
+};
+
+struct LandInfoTable {
+    LandInfoLine land[99];
+    int land_num;
+    unsigned char base_terrain;
+    unsigned char pad_1421[3];
+    int wall_1;
+    int wall_2;
+    int wall_3;
+    int wall_4;
+    unsigned char wall_fade;
+    unsigned char pad_end[3];
+};
+
+class RGE_Random_Map_Module {
 public:
-    char gap0[0x14]; int mapW; int mapH; char gap1c[0x48-0x1c];
-    struct Slot { int pad0[17]; int x; int y; int pad[11]; } slots[64];
+    virtual ~RGE_Random_Map_Module();
+    void* parent;
+    void* list;
+    void* map;
+    void* map_row_offset;
+    int map_width;
+    int map_height;
+    float schedule;
+    void* search_map;
+    void* search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
+};
+
+class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
+public:
+    void* world;
+    int map_type;
+    int number_of_players;
+    LandInfoTable land_info;
     void calc_land_start(int start, int radius, int count, LandInfo* land);
 };
 
-static int rand_scaled(int lo, int range, int line) {
-    int r = debug_rand((const char*)0x585D50, line);
-    return lo + (int)(((__int64)r * range) / 0x7fff);
-}
-
 void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int count, LandInfo* land) {
-    int w = mapW;
-    int h = mapH;
-    int minx, maxx, miny, maxy;
-    int i, j;
-    int x, y;
-    int ok;
-    int two = radius + radius;
-    int range;
+    int i;
+    int j;
+    int x;
+    int y;
+    int retry;
+    int two;
     float bound;
+    float bound_square;
+    int minx;
+    int miny;
+    int maxx;
+    int maxy;
 
     Log(L,(const char*)0x585D20, debug_rand((const char*)0x585D50,0x1c3));
-    bound = (float)(w - two) / (float)roundFloat(1.0f);
-    if (count > 3 && count < 7) bound *= 0.75f;
-    else if (count >= 7) bound *= 0.5f;
-    bound = bound * bound;
-    minx = roundFloat((float)(w/2) - (float)w * 0.35f);
-    miny = roundFloat((float)(h/2) - (float)w * 0.35f);
-    maxx = roundFloat((float)(w/2) + (float)w * 0.35f);
-    maxy = roundFloat((float)(h/2) + (float)w * 0.35f);
+    two = radius + radius;
+    bound = (float)(this->map_width - two) / sqrt((float)count);
+    if (count > 3 && count < 7)
+        bound *= 0.9;
+    else if (count >= 7)
+        bound *= 0.8;
+
+    bound_square = bound * bound;
+    minx = (int)((this->map_width / 2) - (bound * 0.9));
+    miny = (int)((this->map_height / 2) - (bound * 0.9));
+    maxx = (int)((this->map_width / 2) - (bound * -0.9));
+    maxy = (int)((this->map_height / 2) - (bound * -0.9));
     if (minx <= radius) minx = radius + 1;
     if (miny <= radius) miny = radius + 1;
-    if (maxx >= w - radius - 1) maxx = w - radius - 2;
-    if (maxy >= h - radius - 1) maxy = h - radius - 2;
+    if (maxx >= this->map_width - radius - 1) maxx = this->map_width - radius - 2;
+    if (maxy >= this->map_height - radius - 1) maxy = this->map_height - radius - 2;
 
     switch (land->placement) {
     case 0:
         Log(L,(const char*)0x585C68);
         for (i=start;i<start+count;i++) {
-            slots[i].x = rand_scaled(radius, w-two, 0x1e5);
-            slots[i].y = rand_scaled(radius, h-two, 0x1e6);
+            land_info.land[i].x = (debug_rand((const char*)0x585D50,0x1e5) * (this->map_width - two)) / 0x7fff + radius;
+            land_info.land[i].y = (debug_rand((const char*)0x585D50,0x1e6) * (this->map_height - two)) / 0x7fff + radius;
         }
         break;
     case 1:
         Log(L,(const char*)0x585C94);
-        for (i=start;i<start+count;i++) { slots[i].x = land->x; slots[i].y = land->y; }
+        for (i=start;i<start+count;i++) {
+            land_info.land[i].x = land->x;
+            land_info.land[i].y = land->y;
+        }
         break;
     case 2:
         Log(L,(const char*)0x585CF4);
         for (i=start;i<start+count;i++) {
-            ok = 0;
-            while (!ok) {
-                x = rand_scaled(radius, w-two, 0x1fc);
-                y = rand_scaled(radius, h-two, 0x1fd);
-                if (x > minx && x < maxx && y > miny && y < maxy) ok = 1;
-                for (j=start; j<i && ok; ++j) {
-                    int dx=x-slots[j].x; if (dx<0) dx=-dx;
-                    int dy=y-slots[j].y; if (dy<0) dy=-dy;
-                    if ((float)(dx*dx + dy*dy) <= bound) ok = 0;
+            retry = 0;
+            do {
+                x = (debug_rand((const char*)0x585D50,0x1fc) * (this->map_width - two)) / 0x7fff + radius;
+                y = (debug_rand((const char*)0x585D50,0x1fd) * (this->map_height - two)) / 0x7fff + radius;
+                if (x > minx && x < maxx && y > miny && y < maxy) {
+                    retry = 1;
                 }
-            }
-            slots[i].x=x; slots[i].y=y;
+                else {
+                    for (j=start; j<i; ++j) {
+                        int dx=x-land_info.land[j].x; if (dx<0) dx=-dx;
+                        int dy=y-land_info.land[j].y; if (dy<0) dy=-dy;
+                        if ((float)(dx*dx + dy*dy) <= bound_square) {
+                            if (j == i - 1) {
+                                land_info.land[i].x = x;
+                                land_info.land[i].y = y;
+                                Log(L,(const char*)0x585CC0,i,x,y);
+                            }
+                            retry = 1;
+                            break;
+                        }
+                    }
+                }
+            } while (retry);
+            land_info.land[i].x=x; land_info.land[i].y=y;
             Log(L,(const char*)0x585CC0,i,x,y);
         }
         break;

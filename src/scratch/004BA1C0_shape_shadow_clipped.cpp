@@ -3,6 +3,12 @@
 // 1: direct Ghidra-structured clipped shadow decoder with TDrawArea/TShape offsets; helper-call baseline compiled to 864 bytes, too short.
 // 2: macro-inlined copy loops reached exact 906-byte size but 90.07% positional / 66.23% edit diff; first mismatch is frame size sub esp,10 vs original sub esp,8.
 // 3: root issue appears source topology/local allocation: original reuses incoming stack homes for stream pointer/count byte and keeps only two explicit locals, while this clean source keeps extra locals and holds stream pointer in EBP.
+// 4 (shared eager-count diagnostic): keep the original eager count spelling but reuse one command/count pair across all RLE phases, testing a smaller source-local set before any further control-flow tuning.
+// 7 (retained best basin): shared eager command/count/state locals restore the oracle-sized 0x08 frame and improve shape to 78.61%; the remaining gap is the early cursor/home/register schedule.
+// 5 (formal-row probe, rolled back): direct shape_y1 reuse improved shape similarity but shortened the body and worsened positional drift; the clean source retains its explicit current-row copy.
+// 6 (destination-offset probe, rolled back): a separate row-offset temporary improved setup shape but shortened the body and worsened the authoritative positional diff.
+// 10 (delayed named-header probe, rolled back): the named owner was a codegen duplicate of the retained source and did not change the EBX/EBP cursor basin.
+// final retained: shared eager command/count/state plus the original explicit current-row and destination locals; 906 bytes, exact 0x08 frame, 1/1 call identity, 812 strict differing bytes. Remaining evidence-backed blocker is the original p/clip-parameter home and early register schedule.
 // left in scratch: behavior model is close to Ghidra but not an exact/accepted-drift candidate; needs a parameter-home-reuse rewrite mirroring original stack slots.
 
 typedef unsigned char byte;
@@ -48,6 +54,9 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
                                   long clip_x0, long clip_y0, long clip_x1, long clip_y1,
                                   byte* table)
 {
+    byte cmd;
+    byte count;
+    byte state;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
     byte* p = (byte*)(this->shape_header + 1);
     long y = shape_y1;
@@ -66,9 +75,9 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
         do {
             byte done = 0;
             do {
-                byte cmd = *p++;
+                cmd = *p++;
                 if ((cmd & 1) == 1) {
-                    byte count = (byte)(cmd >> 1);
+                    count = (byte)(cmd >> 1);
                     if (count) p += count;
                     else ++p;
                 } else {
@@ -84,12 +93,11 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
         do {
             byte* cur = dst;
             long sx = shape_x1;
-            byte state;
             if (shape_x1 < clip_x0) {
                 state = 0;
                 do {
-                    byte cmd = *p++;
-                    byte count = (byte)(cmd >> 1);
+                    cmd = *p++;
+                    count = (byte)(cmd >> 1);
                     if ((cmd & 1) == 1) {
                         if (count == 0) {
                             sx += *p++;
@@ -137,8 +145,8 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
 
             --state;
             while (state == 0) {
-                byte cmd = *p++;
-                byte count = (byte)(cmd >> 1);
+                cmd = *p++;
+                count = (byte)(cmd >> 1);
                 if ((cmd & 1) == 1) {
                     if (count == 0) {
                         byte n = *p++;
@@ -176,9 +184,9 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
 
             --state;
             while (state == 0) {
-                byte cmd = *p++;
+                cmd = *p++;
                 if ((cmd & 1) == 1) {
-                    byte count = (byte)(cmd >> 1);
+                    count = (byte)(cmd >> 1);
                     if (count) p += count;
                     else ++p;
                 } else {

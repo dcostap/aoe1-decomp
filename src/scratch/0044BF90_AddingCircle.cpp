@@ -1,5 +1,25 @@
 // PointMaker::AddingCircle
 // VA: 0044BF90 - Full implementation from Ghidra decomp
+//
+// Attempt log:
+// - Baseline decompiler-shaped source emitted 438 bytes with a 0x14 frame and
+//   had the circle arithmetic/call order only loosely aligned.
+// - Reconstructed the binary-supported source shape: a cached float Width,
+//   direct sin/cos radius products, signed rand % 2, abs(rand) offsets, and
+//   the two observed probability-array updates. This reached the original
+//   540-byte effective size, 9/9 ordered calls, and 76.85% resync similarity.
+// - Bound checks use the observed `>= 1` spelling; declaring the byte add
+//   before the array pointer recovered the original load order in both arms.
+// - The remaining mismatch is a stable VC5 local topology basin: the rebuilt
+//   frame is 0x18 versus the original 0x1C, the loop increment remains in EBX
+//   rather than the original stack home, and the first index keeps curx with
+//   `fld st0` instead of the oracle's width-load/fmul-st1 form.
+// - Declaration-order, split-initializer, local-topology variant-lab, and
+//   const loop-step probes were nonproductive or codegen duplicates. Kept the
+//   natural typed reconstruction rather than retaining register-steering
+//   scaffolding.
+
+#include <stdlib.h>
 
 int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -59,24 +79,26 @@ public:
 
 void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
     if (param_3 == 0) param_3 = 1;
-    
-    float lasty = 0.0f;
+
+    int angle_step = 360 / (param_3 * 3);
+    float width = (float)Width;
+    float step;
+    float curx;
+    float x;
     float W = 0.0f;
+    float lasty = 0.0f;
     int angle = 0;
-    int step = 360 / (param_3 * 3);
-    
+
     do {
-        float sin_val = trig.sin360(angle);
-        float fVar9 = sin_val * (float)param_3;
-        float cos_val = trig.cos360(angle);
-        float fVar10 = cos_val * (float)param_3;
-        
-        if (fVar9 != lasty || fVar10 != W) {
-            int loc = (int)fVar9;
-            if (loc > 0 && loc < SizeArrays - 1) {
+        float lastx = trig.sin360(angle) * (float)param_3;
+        curx = trig.cos360(angle) * (float)param_3;
+
+        if (lastx != lasty || curx != W) {
+            int loc = (int)(curx * width + lastx);
+            if (loc >= 1 && loc < SizeArrays - 1) {
+                char add = (char)ProbabilityAdd;
                 char* p = ProbArray + loc;
                 char cur = *p;
-                char add = (char)ProbabilityAdd;
                 if (cur == 0) {
                     *p = add;
                     ProbabilityTiles++;
@@ -86,23 +108,21 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
                     *p = (char)-1;
                 }
             }
-            
-            W = fVar10;
-            int r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x1F1);
-            lasty = fVar9;
-            
-            if (r & 1) {
-                trig.sin360(angle);
-                debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499);
-                trig.cos360(angle);
-                debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500);
-                
-                loc = (int)sin_val;
+
+            W = curx;
+            int random = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x1F1);
+            lasty = lastx;
+            if (random % 2) {
+                x = trig.sin360(angle) * (float)param_3;
+                step = abs(debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499)) + x - 1.0f;
+                float y = trig.cos360(angle) * (float)param_3;
+                int random_2 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
+                loc = (int)(width * ((float)random_2 + y - 1.0f) + step);
                 int addp1 = ProbabilityAdd + 1;
-                if (loc > 0 && loc < SizeArrays - 1) {
+                if (loc >= 1 && loc < SizeArrays - 1) {
+                    char add = (char)addp1;
                     char* p = ProbArray + loc;
                     char cur = *p;
-                    char add = (char)addp1;
                     if (cur == 0) {
                         *p = add;
                         ProbabilityTiles++;
@@ -114,6 +134,6 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
                 }
             }
         }
-        angle += step;
+        angle += angle_step;
     } while (angle < 360);
 }

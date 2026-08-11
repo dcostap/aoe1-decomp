@@ -12,6 +12,15 @@
 //   bytes; rolled back.
 // - explicit success/failure label reordering likewise worsened the prologue
 //   and was rolled back. Keep the baseline source as the canonical candidate.
+// - continuation probes: ordinary int result, pointer result, register result,
+//   result-setting labels, target-null return, and success-initialized result
+//   all moved the exact body prefix or broadened the EH/return CFG. The pointer
+//   result reached 331-byte/97.27%-shape output but introduced target/result
+//   preservation in EBX and 255 positional differences; it was diagnostic only.
+// - final clean validation retains the natural early returns and exact 16-call
+//   body. Remaining bytes are the shared success/failure epilogue topology
+//   (67 positional bytes, rebuilt +19 bytes), with no ordered-call or layout
+//   blocker identified.
 // - paused with the remaining lead localized to VC5 tail layout/EH context.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 

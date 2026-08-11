@@ -58,6 +58,18 @@
 // bounded-pass conclusion: the remaining gap is VC5's inner-loop induction/address
 // family (oracle keeps `lea ecx,[esi+edi]; [base+ecx*4]` while natural forms fold
 // one cursor). Restored the normalized RESENDER source; no shared files changed.
+//
+// Attempt log (sa5d6afc9d_r1, 2026-08-11):
+// baseline: confirmed canonical RESENDER ownership at 255B/266B diff; checker
+// remains structural because VC5 folds the current-record and DestMap inductions.
+// layout: a typed RESENDER with a separate proven byte offset, dword DestMap index,
+// and raw outer record accesses reached 283B/182B diff, preserving frame and calls;
+// the compiler still emitted a byte-offset DestMap induction (EDI=14h, add 4).
+// liveness/control-flow: anchored pointers, named per-player indices, pointer aliases,
+// inline record-base dword casts, and reversed sum terms were duplicate or regressed;
+// no variant recovered the oracle's `lea [player+dest_index]; [base+index*4]` family.
+// bounded-pass conclusion: restored the pinned clean normalized RESENDER source;
+// diagnostic 182B typed-flat basin remains history evidence, not living source.
 
 class TDebuggingLog {
 public:

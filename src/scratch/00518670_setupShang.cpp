@@ -31,6 +31,18 @@
 // both emitted the same 285-byte VC5 basin. Keep the ordinary literal source.
 // The final declaration surface also uses the proven RGE_Base_Game base shared
 // by the difficulty-using siblings; Shang's emitted bytes remain unchanged.
+// v11 (sa-a2591ccc-r1): dossier/donor/ABI review confirmed two direct calls,
+// b/mapType/gameType/mapSize stack ABI, playerAI +0x238, and no unknown layout
+// fact.  Reordering the repeated-value groups worsened the same 285-byte basin.
+// v12-v15: 24 group-order variants, register-qualified repeated constants,
+// VC5-small flag sweep, and 24 permutations of the four 10-valued stores found
+// no EDX/ECX split; all viable variants stayed 285 bytes.
+// v16-v17: chained/comma assignment shapes and likely stdio/string/stdlib/
+// windows header contexts also left the direct-store basin unchanged (the mixed
+// expression shape was less plausible and only shifted the mismatch).
+// Final session probe renamed parameters to their original PDB symbols without
+// changing bytes.  The unresolved gap remains the non-deathmatch constant
+// register coloring/7-byte size delta; retain this clean typed reconstruction.
 
 typedef unsigned char uchar;
 
@@ -62,50 +74,50 @@ public:
 
 class TRIBE_Player : public RGE_Player {
 public:
-    void setupShang(int* param_1, int param_2, int param_3, int param_4);
+    void setupShang(int* b, int mapType, int gameType, int mapSize);
 };
 
 extern TRIBE_Game* rge_base_game;  // 0x0062C574
 
-void TRIBE_Player::setupShang(int* param_1, int param_2, int param_3, int param_4)
+void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize)
 {
     this->playerAI->logCommonHistory("Setting up as Shang.");
 
     if (rge_base_game->deathMatch() == 1) {
         // Deathmatch path
-        if (param_2 == 0 || param_2 == 1) {
-            param_1[0x45] = 100;
-        } else if (param_2 == 2 || param_2 == 6) {
-            param_1[0x1F] = 0x3C;
-            param_1[0x45] = 0x28;
-        } else if (param_2 == 5 || param_2 == 8) {
-            param_1[0x1F] = 0x50;
-            param_1[0x45] = 0x14;
+        if (mapType == 0 || mapType == 1) {
+            b[0x45] = 100;
+        } else if (mapType == 2 || mapType == 6) {
+            b[0x1F] = 0x3C;
+            b[0x45] = 0x28;
+        } else if (mapType == 5 || mapType == 8) {
+            b[0x1F] = 0x50;
+            b[0x45] = 0x14;
         } else {
-            param_1[0x1F] = 100;
+            b[0x1F] = 100;
         }
     } else {
         // Non-deathmatch path
-        param_1[0] = 10;
-        param_1[3] = 10;
-        param_1[9] = 10;
-        param_1[10] = 10;
-        param_1[6] = 50;
-        param_1[7] = 50;
-        param_1[0x38] = 50;
+        b[0] = 10;
+        b[3] = 10;
+        b[9] = 10;
+        b[10] = 10;
+        b[6] = 50;
+        b[7] = 50;
+        b[0x38] = 50;
 
-        param_1[11] = 30;
-        param_1[0x14] = 30;
-        param_1[1] = 0x14;
-        param_1[0x10] = 0x14;
-        param_1[0x13] = 0x14;
-        param_1[0x36] = 100;
-        param_1[0x37] = 100;
+        b[11] = 30;
+        b[0x14] = 30;
+        b[1] = 0x14;
+        b[0x10] = 0x14;
+        b[0x13] = 0x14;
+        b[0x36] = 100;
+        b[0x37] = 100;
 
-        if (param_2 == 0 || param_2 == 1) {
-            param_1[0x5D] = 0xA0;
-        } else if (param_2 == 2 || param_2 == 6 || param_2 == 8 || param_2 == 5) {
-            param_1[0x5D] = 0x50;
+        if (mapType == 0 || mapType == 1) {
+            b[0x5D] = 0xA0;
+        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+            b[0x5D] = 0x50;
         }
     }
 }

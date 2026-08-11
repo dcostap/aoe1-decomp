@@ -56,6 +56,19 @@
 //   established; the only unresolved gap is the original delayed number spill
 //   ([esp+10] after desiredNumberUnits) plus its associated time-register
 //   basin. No further natural source/layout lead remains in this assignment.
+// - Fresh bounded pass (sa42836b2c-r1-005034B0): a negative
+//   elapsed<difference guard with a natural for-update reproduced the oracle's
+//   cmp edx,edi / jl branch; combining inner volatile number with the
+//   desired-minus-number local reached the prior 192-byte / 110-diff basin.
+//   A late volatile copy followed by a separate difference local reached exact
+//   size (194) and 27 positional-diff bytes with all six calls and CFG aligned,
+//   but selected the wrong subtraction order and time-chain register coloring.
+//   This compiler-steering diagnostic was not retained; restored the clean
+//   natural source.
+// - Paused: ten meaningful hypotheses exhausted. Best retained source remains
+//   the natural 184-byte reconstruction; next lead is combining the late
+//   post-desired spill topology with the target EDI time-chain basin without
+//   retaining redundant volatile/copy scaffolding.
 
 class RGE_Game_World {
 public:

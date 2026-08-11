@@ -20,6 +20,14 @@
 // FLAGS: /nologo /c /O2 /Oy /GX
 // Main-agent audit retained natural typed cache lookup/growth and nonvirtual
 // zone-map lifetime ownership; no shared-tail steering survives.
+// - SA6731d1e6 bounded probes: assignment plus branch-local return reached a
+//   diagnostic 37-byte diff but emitted a 265-byte late epilogue; block-local
+//   and function-scope goto forms introduced broad prologue/stack-home drift.
+//   Break/sentinel, while, explicit-result/switch, and <new.h> context probes
+//   did not improve the clean source; two VC5 variant labs found no exact case.
+// - final clean reconstruction remains the natural typed cache lookup/growth;
+//   current unresolved drift is the original shared EH teardown versus VC5's
+//   duplicated hit-path cleanup (55 strict bytes, first mismatch at +00D0).
 
 #include <stdlib.h>
 #include <string.h>

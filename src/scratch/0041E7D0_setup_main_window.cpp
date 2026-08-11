@@ -16,6 +16,13 @@
 // - Follow-up top-first and inline-helper spellings, plus a gated nine-way
 //   height-expression lab, all collapsed to the same 11-byte SetWindowPos drift;
 //   restored the pinned natural source.
+// - This pass rechecked int/long field widths, compound updates, custom RECT
+//   overlays, ordinary aliases, and likely basegame.cpp header context; all
+//   remained in the same 11-byte basin.
+// - A narrow volatile lvalue on win_rect.bottom alone reproduces the original
+//   330 bytes exactly by preserving its observed delayed stack load.  It is
+//   diagnostic only: no source/donor evidence supports volatile on a local
+//   Win32 RECT, so the natural typed expression remains the living source.
 
 #include <windows.h>
 

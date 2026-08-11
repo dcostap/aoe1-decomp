@@ -9,6 +9,12 @@
 // basin and emits a simple rep-movsd/movsb copy rather than the original
 // alignment-prefixed expansion.  Diagnostic raw/volatile/register variants
 // were rejected.
+// Follow-up evidence: the adjacent same-TU PtrCopy and PtrSurfaceCopy bodies
+// carry the same explicit `cld`, named Ptr*CpyLoop/LEndBytes labels, and
+// alignment-prefixed REP copy sequence.  This target is part of that
+// hand-coded copy family; ordinary C/memcpy/manual-loop source cannot emit the
+// observed CLD/label topology.  Keep the clean typed reconstruction here and
+// leave exact recovery to an asm-policy-approved workstream.
 
 #include <string.h>
 

@@ -8,6 +8,16 @@
 //   before-base expression. VC5 stayed in the same 10-byte row-index basin; no opaque form kept.
 // - Paused with ordinary `map_tile_rows + row_index - 1`; all calls/relocations, marker branches,
 //   FPU math, and FillRect sites align. Remaining drift is the first row LEA's -24 displacement.
+// Follow-up sa71ab41de_r1 (bounded 10-probe pass):
+// - Revalidated the clean typed reconstruction at 365 bytes, 7/7 ordered calls, and 10 differing
+//   bytes; the only hunk remains the initial row-index LEA (original folds -24 into the LEA).
+// - Split pointer bases, post-decrement/compound cursor forms, explicit byte-span arithmetic,
+//   declaration reordering, and a focused 9-form variant lab; all ordinary typed forms duplicate
+//   the same 10-byte codegen basin or move the mismatch broadly.
+// - Tested the decompiler-supported repeated indexed row fields; it loses the shared row pointer
+//   and broadens drift. Restored the named typed row pointer as the best source reconstruction.
+// - Left paused: canonical row ownership, ratio/draw-step FPU branches, and all FillRect calls
+//   match; remaining evidence points to a VC5 source/context distinction in the first row address.
 
 extern float DAT_0056f604;
 

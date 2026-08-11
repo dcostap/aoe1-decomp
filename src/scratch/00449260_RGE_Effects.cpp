@@ -2,7 +2,27 @@
 // effects.cpp lines 68-129
 // 478 bytes
 
-// attempt 6: vtable after fopen, register short sVar7
+// Attempt log:
+// - Baseline retained the canonical 0x2C RGE_Effect / 0x0C command layout and
+//   natural fscanf/calloc loops, but used a hand-written vtable field and the
+//   command counter as the first %hd destination (552-byte output, extra scan).
+// - Restored the period virtual RGE_Effects surface, reused the incoming path
+//   home for the command opcode scan, kept a typed command pointer across the
+//   inner fscanf, and used the positive effect-list guard.  The inner do-loop
+//   still peeled into a duplicate scan, so the retained form is a top-tested
+//   short loop (probe 003: 464-byte output, 85.45% shape).
+// - Kept the positive fopen guard and opposite initial fscanf predicate so the
+//   successful parse path falls through and the null/error paths are late.  A
+//   separate fclose in each initial-fscanf arm restores all ten call sites.
+//   Best current reconstruction is probe 009: 481-byte output, 100% ordered
+//   call alignment, 97.60% shape, 241 strict differing bytes.
+// - Tried a function-scope inner counter with the explicit do-loop (probe 010);
+//   VC5 peeled/duplicated the scan and regressed to 526 bytes.  Restored the
+//   probe-009 clean-source form before validation.
+// - Remaining localized codegen gap: VC5 saves ESI in the prologue instead of
+//   conditionally at the fopen-success edge, and loads effect_list_num into DX
+//   before the inner guard where the oracle compares the field directly.  The
+//   named ownership, widths, calls, CFG, and stack frame are otherwise aligned.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,45 +40,52 @@ struct RGE_Effect {
     unsigned char _pad_1[2]; RGE_Effect_Command* effect_list;
 };
 
+class RGE_Player;
+
 struct RGE_Effects {
-    void* vtable_ptr; RGE_Effect* effects; long effect_num;
+    virtual ~RGE_Effects();
+    virtual void save(int fd);
+    virtual void do_effect(short effect_id, RGE_Player* player);
+    RGE_Effect* effects; long effect_num;
     RGE_Effects(char* path);
 };
 
 RGE_Effects::RGE_Effects(char* path) {
-    vtable_ptr = (void*)0x570430;
     int local_4, index, count;
 
     FILE* fp = fopen(path, "r");
-    if (fp == 0) {
-        effect_num = 0;
-        effects = 0;
-    } else {
-        if (fscanf(fp, "%d %d", &effect_num, &local_4) == -1) {
-            effect_num = 0;
-            effects = 0;
-        } else {
-            effects = (RGE_Effect*)calloc(effect_num, 0x2C);
+    if (fp != 0) {
+        long* pNum = &effect_num;
+        if (fscanf(fp, "%d %d", pNum, &local_4) != -1) {
+            effects = (RGE_Effect*)calloc(*pNum, 0x2C);
             for (count = 0; count < local_4; count++) {
-                register short sVar7 = 0;
+                short sVar7 = 0;
                 fscanf(fp, "%d", &index);
                 if (fscanf(fp, "%s %hd", effects[index].name, &effects[index].effect_list_num) == -1) break;
                 effects[index].id = (short)index;
-                if (effects[index].effect_list_num < 1) {
-                    effects[index].effect_list = 0;
-                } else {
+                if (effects[index].effect_list_num > 0) {
                     effects[index].effect_list = (RGE_Effect_Command*)calloc(effects[index].effect_list_num, 0x0C);
                     if (effects[index].effect_list_num > 0) {
-                        do {
-                            if (fscanf(fp, "%hd %hd %hd %hd %f", &sVar7, &effects[index].effect_list[sVar7].change_num1, &effects[index].effect_list[sVar7].change_num2, &effects[index].effect_list[sVar7].change_num3, &effects[index].effect_list[sVar7].change_amount) == -1) break;
-                            effects[index].effect_list[sVar7].command = (unsigned char)sVar7;
+                        while (sVar7 < effects[index].effect_list_num) {
+                            RGE_Effect_Command* command = &effects[index].effect_list[sVar7];
+                            if (fscanf(fp, "%hd %hd %hd %hd %f", &path, &command->change_num1, &command->change_num2, &command->change_num3, &command->change_amount) == -1) break;
                             sVar7++;
-                        } while (sVar7 < effects[index].effect_list_num);
+                            command->command = (unsigned char)path;
+                        }
                     }
+                } else {
+                    effects[index].effect_list = 0;
                 }
                 convert_us(effects[index].name);
             }
             fclose(fp);
+        } else {
+            *pNum = 0;
+            effects = 0;
+            fclose(fp);
         }
+    } else {
+        effect_num = 0;
+        effects = 0;
     }
 }

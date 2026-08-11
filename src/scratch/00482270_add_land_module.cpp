@@ -1,90 +1,250 @@
 // 00482270 RGE_RMM_Controller::add_land_module
+// Baseline: period-plausible typed reconstruction from rmm_cntr.cpp's
+// RGE_Land_Info / RGE_Land_Info_Line ownership and the original CFG.
+// The old scratch attempt had the parameter order, return type, and land-line
+// layout wrong; it was a pointer-returning scaffold rather than this void
+// helper that fills an RGE_Land_Info reference.
 // Attempt log:
-// try 1: packet-grounded reconstruction with /GX. Models type switch defaults, land_info parameter block initialization, polar/random placement loop with collision avoidance, and construction of RGE_RMM_Land_Generator. Compiles too short (896B vs 1090B).
-// try 2: modeled mode switch 0..3 initialization of output block fields +0x141c..+0x1434, including terrain bytes 0/0x22/0x14.
-// try 3: modeled radius/scale constants 90/70/50/30 feeding later size math.
-// try 4: modeled center/min/max bounds and clamp to 9 / width-10 / height-10.
-// try 5: modeled outer land count loop and per-entry stride 0x34.
-// try 6: modeled debug_rand line 209/210 random x/y generation with VC-style 0x7fff scaling approximation.
-// try 7: modeled central-rectangle acceptance and collision-distance scan across prior entries.
-// try 8: modeled fallback overwrite of last prior point when no hit and last scan entry.
-// try 9: modeled per-land output x/y and area allocation.
-// try 10: modeled final new RGE_RMM_Land_Generator(0x1468 bytes expected by packet/original ctor) via natural new+ctor surface; still far size-short due math/control topology.
-// GIVEUP blockers: exact LandBlock layout/field offsets, original FPU/sqrt math expression, precise debug_rand scaling, collision loop control flow, and RGE_RMM_Land_Generator ctor signature/size surface. No inline asm used; no accepted_drift proposal.
-// FLAGS: config/flags/00482270_add_land_module.rsp (/GX for original EH/new+ctor prologue)
+// - Corrected the ABI to void add_land_module(RGE_Land_Info&, long, long),
+//   restored the 0x34 RGE_Land_Info_Line layout, and modeled the natural
+//   switch/random-placement/new expression. Baseline: 1090 bytes, 8 calls,
+//   exact CFG/size, but 0x34 frame versus the oracle's 0x30.
+// - An area-field cursor matched two additional addressing bytes (941-byte
+//   diagnostic diff) but spilled the cursor and remained a raw decompiler
+//   anchor; restored the cleaner typed line pointer for the living source.
+// - Volatile dimension rereads, controller/info pointer aliases, header
+//   context, and cursor-carry variants were nonproductive or diagnostic;
+//   cursor-carry worsened the strict diff. No inline asm or status promotion.
+// GIVEUP: remaining broad VC5 register/lifetime and 4-byte local-frame drift;
+// calls, CFG, field ownership, math constants, random scaling, and generator
+// constructor relocation are aligned.
 
-typedef unsigned char byte;
-extern "C" int __cdecl debug_rand(char*, int);
-extern "C" long __cdecl ftol(float);
+#include <math.h>
+#include <new.h>
+
+typedef unsigned char uchar;
+
+class RGE_Map;
+
+class RGE_Random_Map_Module {
+public:
+    virtual uchar generate();
+
+    void* parent;
+    void* list;
+    RGE_Map* map;
+    void* map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    void* search_map;
+    void* search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
+};
+
+class RGE_Land_Info_Line {
+public:
+    long land_size;
+    long terrain_type;
+    long x;
+    long y;
+    long base_size;
+    long area;
+    uchar zone;
+    uchar pad_19[3];
+    long clumpiness_factor;
+    long wall_1_avoidance_line;
+    long wall_2_avoidance_line;
+    long wall_3_avoidance_line;
+    long wall_4_avoidance_line;
+    uchar wall_fade;
+    uchar pad_end[3];
+};
+
+class RGE_Land_Info {
+public:
+    RGE_Land_Info_Line land[99];
+    long land_num;
+    uchar base_terrain;
+    uchar pad_1421[3];
+    long wall_1_avoidance_line;
+    long wall_2_avoidance_line;
+    long wall_3_avoidance_line;
+    long wall_4_avoidance_line;
+    uchar wall_fade;
+    uchar pad_end[3];
+};
+
+class RGE_RMM_Land_Generator : public RGE_Random_Map_Module {
+public:
+    RGE_Land_Info info;
+
+    RGE_RMM_Land_Generator(RGE_Map* map, RGE_Random_Map_Module* parent,
+                           RGE_Land_Info* info);
+};
+
+class RGE_RMM_Controller : public RGE_Random_Map_Module {
+public:
+    void add_land_module(RGE_Land_Info& land_info, long type, long land_num);
+};
+
+extern "C" int __cdecl debug_rand(char* file, int line);
 extern char rmm_cntr_cpp_path[];
 
-struct LandBlock {
-    int area; int x1; int y1; int x2; int y2; byte active; byte terrain; char pad16[0x34-0x16];
-};
-class RGE_RMM_Land_Generator {
-public:
-    RGE_RMM_Land_Generator(int, void*, void*);
-};
-class RGE_RMM_Controller {
-public:
-    char gap00[0x0c]; int id; char gap10[4]; int width; int height;
-    RGE_RMM_Land_Generator* add_land_module(int area, void* out, int mode);
-};
-
-RGE_RMM_Land_Generator* RGE_RMM_Controller::add_land_module(int area, void* outp, int mode)
+void RGE_RMM_Controller::add_land_module(RGE_Land_Info& land_info,
+                                          long type, long land_num)
 {
-    LandBlock* out = (LandBlock*)outp;
-    out->area = area;
-    int radius;
-    int n = 0;
-    switch (mode) {
-    case 0:
-        out->active = 1; out->x1 = 0; out->y1 = 0; out->x2 = 0; out->y2 = 0; out->terrain = 0; radius = 90; break;
-    case 1:
-        out->active = 1; out->x1 = 4; out->y1 = 4; out->x2 = this->width - 5; out->y2 = this->height - 5; out->terrain = 0x22; radius = 70; break;
-    case 2:
-        out->active = 1; out->x1 = 6; out->y1 = 6; out->x2 = this->width - 7; out->y2 = this->height - 7; out->terrain = 0x14; radius = 50; break;
-    case 3:
-        out->active = 1; out->x1 = 8; out->y1 = 8; out->x2 = this->width - 9; out->y2 = this->height - 9; out->terrain = 0x14; radius = 30; break;
+    long radius;
+
+    land_info.land_num = land_num;
+
+    switch (type) {
     default:
-        out->active = 0; out->x1 = out->y1 = out->x2 = out->y2 = 0; out->terrain = 0; radius = 0; break;
+        radius = 0;
+        land_info.base_terrain = 0;
+        land_info.wall_1_avoidance_line = 0;
+        land_info.wall_2_avoidance_line = 0;
+        land_info.wall_3_avoidance_line = 0;
+        land_info.wall_4_avoidance_line = 0;
+        land_info.wall_fade = 0;
+        break;
+    case 3:
+        radius = 90;
+        land_info.base_terrain = 1;
+        land_info.wall_1_avoidance_line = 0;
+        land_info.wall_2_avoidance_line = 0;
+        land_info.wall_3_avoidance_line = 0;
+        land_info.wall_4_avoidance_line = 0;
+        land_info.wall_fade = 0;
+        break;
+    case 2:
+        radius = 70;
+        land_info.base_terrain = 1;
+        land_info.wall_1_avoidance_line = 4;
+        land_info.wall_2_avoidance_line = 4;
+        land_info.wall_3_avoidance_line = this->map_width - 5;
+        land_info.wall_4_avoidance_line = this->map_height - 5;
+        land_info.wall_fade = 0x22;
+        break;
+    case 1:
+        radius = 50;
+        land_info.base_terrain = 1;
+        land_info.wall_1_avoidance_line = 6;
+        land_info.wall_2_avoidance_line = 6;
+        land_info.wall_3_avoidance_line = this->map_width - 7;
+        land_info.wall_4_avoidance_line = this->map_height - 7;
+        land_info.wall_fade = 0x14;
+        break;
+    case 0:
+        radius = 30;
+        land_info.base_terrain = 1;
+        land_info.wall_1_avoidance_line = 8;
+        land_info.wall_2_avoidance_line = 8;
+        land_info.wall_3_avoidance_line = this->map_width - 9;
+        land_info.wall_4_avoidance_line = this->map_height - 9;
+        land_info.wall_fade = 0x14;
+        break;
     }
 
-    int minx, maxx, miny, maxy;
-    int midx = this->width / 2;
-    int midy = this->height / 2;
-    float f = (float)(area);
-    int spread = (radius * this->height * this->width) / 100;
-    int rr = ftol((float)(this->width - 16) / f * 3.1415926535f);
-    minx = midx - rr; maxx = midx + rr;
-    miny = midy - rr; maxy = midy + rr;
-    if (minx <= 8) minx = 9;
-    if (miny <= 8) miny = 9;
-    if (maxx >= this->width - 9) maxx = this->width - 10;
-    if (maxy >= this->height - 9) maxy = this->height - 10;
+    long land_tile_num = radius * this->map_width * this->map_height / 100;
+    float land_radius = ((float)(this->map_width - 16) /
+                         sqrt((float)land_num)) * 0.8;
+    float bound_square = land_radius * land_radius;
+    long mid_x2 = (long)(this->map_width / 2 - land_radius * 0.9);
+    long index2 = (long)(this->map_height / 2 - land_radius * 0.9);
+    long mid_y1 = (long)(this->map_width / 2 + land_radius * 0.9);
+    long mid_y2 = (long)(this->map_height / 2 + land_radius * 0.9);
 
-    int count = 0;
-    LandBlock* p = out + 1;
-    while (count < area) {
-        byte ok = 0;
-        int x = 0, y = 0;
-        while (!ok) {
-            ok = 0;
-            x = debug_rand(rmm_cntr_cpp_path, 209) * (this->width - 16) / 0x7fff + 8;
-            y = debug_rand(rmm_cntr_cpp_path, 210) * (this->height - 16) / 0x7fff + 8;
-            if (x > minx && x < maxx && y > miny && y < maxy) ok = 1;
-            for (int j = 0; j < count; ++j) {
-                int dx = x - out[j+1].x1; if (dx < 0) dx = -dx;
-                int dy = y - out[j+1].y1; if (dy < 0) dy = -dy;
-                if ((float)(dx*dx + dy*dy) < (float)spread) {
-                    if (!ok && j == count - 1) { out[j+1].x1 = x; out[j+1].y1 = y; }
-                    ok = 1;
-                }
+    if (mid_x2 < 9) {
+        mid_x2 = 9;
+    }
+    if (index2 < 9) {
+        index2 = 9;
+    }
+    if (mid_y1 >= this->map_width - 9) {
+        mid_y1 = this->map_width - 10;
+    }
+    if (mid_y2 >= this->map_height - 9) {
+        mid_y2 = this->map_height - 10;
+    }
+
+    long index = 0;
+    if (0 < land_num) {
+        RGE_Land_Info_Line* land = land_info.land;
+        do {
+            switch (type) {
+            case 0:
+                land->land_size = 0;
+                land->terrain_type = 7;
+                goto set_land_defaults;
+            case 1:
+                land->land_size = 0;
+                land->terrain_type = 4;
+            set_land_defaults:
+                land->base_size = 5;
+                land->zone = (uchar)index;
+                break;
+            case 2:
+            case 3:
+            case 4:
+                land->land_size = 0;
+                land->terrain_type = 3;
+                land->base_size = 5;
+                land->zone = 0;
+                break;
+            default:
+                break;
             }
-        }
-        p->x1 = x; p->y1 = y; p->area = spread / area;
-        ++p;
-        ++count;
+
+            uchar found = 0;
+            long x;
+            long y;
+            do {
+                found = 0;
+                x = debug_rand(rmm_cntr_cpp_path, 0xD1) *
+                    (this->map_width - 16) / 0x7fff + 8;
+                y = debug_rand(rmm_cntr_cpp_path, 0xD2) *
+                    (this->map_height - 16) / 0x7fff + 8;
+
+                if ((mid_x2 < x) && (x < mid_y1) &&
+                    (index2 < y) && (y < mid_y2)) {
+                    found = 1;
+                }
+                else {
+                    long inner = 0;
+                    if (0 < index) {
+                        RGE_Land_Info_Line* previous = land_info.land;
+                        do {
+                            long dx = x - previous->x;
+                            if (dx < 0) {
+                                dx = -dx;
+                            }
+                            long dy = y - previous->y;
+                            if (dy < 0) {
+                                dy = -dy;
+                            }
+                            if ((float)(dx * dx + dy * dy) <= bound_square) {
+                                if ((!found) && (inner == index - 1)) {
+                                    previous->y = y;
+                                    previous->x = x;
+                                }
+                                found = 1;
+                            }
+                            ++inner;
+                            ++previous;
+                        } while (inner < index);
+                    }
+                }
+            } while (found);
+
+            land->x = x;
+            land->y = y;
+            land->land_size = land_tile_num / land_num;
+            ++index;
+            ++land;
+        } while (index < land_num);
     }
-    return new RGE_RMM_Land_Generator(this->id, this, out);
+
+    new RGE_RMM_Land_Generator(this->map, this, &land_info);
 }

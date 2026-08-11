@@ -53,6 +53,22 @@
 //   10 size-eligible variants, and no exact match.
 // fresh pass: broad period TPanel virtual surface changed output to 217/150;
 //   retained minimal exact-donor-compatible surface and restored clean.
+// Continuation sa-15c0371c-r1 (10-hypothesis budget):
+// probe 62: removing the height local while keeping the clean statement order
+//   worsened to 192 bytes; direct height rereads alone are not sufficient.
+// probe 64: interleaving col-offset/max-col and row-offset/max-row changed the
+//   zero register to EBX and grew to 222 bytes; restored.
+// probe 66: combining that interleaving with direct typed pnl_hgt rereads gave
+//   a natural 217-byte candidate at 61 differing bytes and 66.13% exact blocks.
+//   It aligns the complete success tail from max-col onward; only zero/divisor
+//   coloring and the clear-tail register lifetime remain.
+// probes 67-75: explicit int/short zero locals, full RGE_View tail layout,
+//   windows.h, declaration-order, and memory.h context were either worse or
+//   codegen duplicates of the 61-byte candidate.
+// final continuation source: retain the PDB-supported width local, direct
+//   height rereads, and interleaved offset/max statements; do not retain
+//   unused zero/header scaffolding. Remaining gap is stable EBP/EDI/EAX
+//   allocation and clear-tail pop ordering.
 
 class tagRECT {
 public:
@@ -97,18 +113,16 @@ public:
 
 void RGE_View::calc_draw_vars() {
     int pw;
-    int ph;
 
     if (this->visible != 0 && this->tile_wid != 0 && this->tile_hgt != 0) {
         pw = this->pnl_wid;
-        ph = this->pnl_hgt;
 
         this->center_scr_col_offset = 0;
-        this->center_scr_row_offset = 0;
         this->max_col_num = (short)(pw / (int)this->tile_wid);
-        this->max_row_num = (short)(ph / (int)this->tile_hgt);
+        this->center_scr_row_offset = 0;
+        this->max_row_num = (short)(this->pnl_hgt / (int)this->tile_hgt);
         this->center_scr_col = (this->render_rect.left - this->tile_half_wid) + (short)(pw / 2);
-        this->center_scr_row = (this->render_rect.top - this->tile_half_hgt) + (short)(ph / 2);
+        this->center_scr_row = (this->render_rect.top - this->tile_half_hgt) + (short)(this->pnl_hgt / 2);
     } else {
         this->max_row_num = 0;
         this->max_col_num = 0;

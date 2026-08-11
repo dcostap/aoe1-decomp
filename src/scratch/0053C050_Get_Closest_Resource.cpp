@@ -11,6 +11,13 @@
 // - Explicit typed used/resource-list locals recovered the original list-before-
 //   used load order and improved the localized diff to 321 bytes; a register hint
 //   on the list pointer was unchanged and was removed from the living source.
+// - Retry session: an explicit manager pointer, same-TU RGE_Static_Object context,
+//   and the canonical RGE_Player owner type were codegen duplicates.
+// - A diagnostic pointer-typed alias for VR_ListUsed preserved the index LEA and
+//   raised shape coverage to 96%, but worsened positional diff by 5 bytes and did
+//   not restore the original early ESI=this save; it was rolled back as opaque.
+// - Member-slot, volatile-manager, function-scope-local, and delayed-count variants
+//   likewise did not move the receiver-save basin; all were restored.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
 //   and associated register coloring; behavior, size/frame, calls, and inner
 //   reject-loop CFG are established.

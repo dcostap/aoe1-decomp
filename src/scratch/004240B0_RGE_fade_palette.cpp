@@ -10,16 +10,24 @@
 // try 8: modeled debug_timeGetTime calls with source path constant and line ids 0x69/0x70/0x88.
 // try 9: modeled quadratic percent calculation with float temporaries; FPU compare/order still differs.
 // try 10: leaving in scratch: clean source is too small and the only exact-size probe used an incorrect oversized frame, so not accepted_drift-safe.
+// try 11: reordered copied palette channels to red/blue/green/flags, following the original byte-store order; checking loop register roles and frame.
+// try 12: changed the binary's byte-sized completion flag to source-level bool, checking whether VC5 restores the post-copy done/draw-area reload order.
+// try 13: used the source-proven double zero guard and delta_time > fade_time operand order in both fade branches; checking x87 compare polarity.
+// try 14: introduced a narrowly scoped draw-area alias after palette acquisition to probe natural receiver lifetime/reload ordering; diagnostic only unless it preserves the exact body.
+// try 15: split the completion-flag declaration from its first-statement false assignment, matching the original line-72 initialization site.
+// try 16: replaced the indexed copy with a typed source/destination cursor loop, following the decompiler's pointer topology; checking whether the tail reload order is source-loop dependent.
+// try 17: restored the period Windows palette type/header surface, checking whether donor TU context selects the original final reload order.
+// try 18: restored the proven TDrawArea DrawSystem member surface from exact GetPalette/SetPalette donors; final context probe for the two reload order.
+// Best reconstruction: typed 256-entry local palettes, red/blue/green/flags copy order, typed cursor ownership, and the source-proven double-zero/x87 guard forms.
+// Final validated gap: 10 positional bytes at the palette-copy tail only; calls, frame/size, CFG, and all later fade code are exact. The remaining order is mov [draw_area] before/after mov [done].
 
-struct tagPALETTEENTRY {
-    unsigned char peRed;
-    unsigned char peGreen;
-    unsigned char peBlue;
-    unsigned char peFlags;
-};
+#include <windows.h>
+
+class TDrawSystem;
 
 class TDrawArea {
 public:
+    TDrawSystem* DrawSystem;
     void GetPalette(tagPALETTEENTRY* entries);
     void SetPalette(tagPALETTEENTRY* entries);
 };
@@ -32,11 +40,13 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color, 
                               unsigned char fade_type, tagPALETTEENTRY* palette, int first, int last)
 {
     float delta_time;
-    unsigned char done = 0;
+    bool done;
     long old_time;
     float fade_time2;
     tagPALETTEENTRY palette1[256];
     tagPALETTEENTRY palette2[256];
+
+    done = false;
 
     for (int i = 0; i < 256; i++) {
         palette1[i].peRed = 0;
@@ -52,11 +62,15 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color, 
     if (palette == 0) {
         draw_area->GetPalette(palette1);
     } else {
+        tagPALETTEENTRY* target = palette1;
+        tagPALETTEENTRY* source = palette;
         for (int j = 0; j < 256; j++) {
-            palette1[j].peRed = palette[j].peRed;
-            palette1[j].peGreen = palette[j].peGreen;
-            palette1[j].peBlue = palette[j].peBlue;
-            palette1[j].peFlags = palette[j].peFlags;
+            target->peRed = source->peRed;
+            target->peBlue = source->peBlue;
+            target->peGreen = source->peGreen;
+            target->peFlags = source->peFlags;
+            ++target;
+            ++source;
         }
     }
 
@@ -68,7 +82,7 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color, 
             long pct;
             long cur_time = debug_timeGetTime((char*)0x5804C8, 0x70);
             delta_time = (float)(cur_time - old_time) * 0.001f;
-            if (fade_time <= 0.0f || fade_time < delta_time || delta_time < 0.0f) {
+            if (fade_time <= 0.0 || delta_time > fade_time || delta_time < 0.0f) {
                 pct = 100;
             } else {
                 pct = (long)((delta_time * delta_time / fade_time2) * 100.0f);
@@ -85,7 +99,7 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color, 
             long pct;
             long cur_time = debug_timeGetTime((char*)0x5804C8, 0x88);
             delta_time = fade_time - ((float)(cur_time - old_time) * 0.001f);
-            if (fade_time <= 0.0f || fade_time < delta_time || delta_time < 0.0f) {
+            if (fade_time <= 0.0 || delta_time > fade_time || delta_time < 0.0f) {
                 pct = 0;
             } else {
                 pct = (long)((delta_time * delta_time / fade_time2) * 100.0f);

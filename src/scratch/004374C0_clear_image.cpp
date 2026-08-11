@@ -8,6 +8,13 @@
 // - Short clipping intermediates were tested as a binary arithmetic hypothesis; they changed the
 //   frame and cleanup and were rolled back. Best retained source is the typed-record/int-span form.
 // - Paused: orientation register coloring and the compact-vs-near loop branch remain unresolved.
+// - Follow-up pass: an interior line_len cursor and declaration-order changes were duplicate or
+//   worse. Compound short clipping arithmetic reproduced the oracle's word-load body but added a
+//   stack slot/frame and broad drift; a scoped widened pitch step reached 346 bytes with better
+//   resynchronization but still had the wrong cursor allocation and was rolled back.
+// - Follow-up pause: clean typed-record/int-span source remains authoritative; ordered calls,
+//   frame, and behavior are aligned, while orientation register coloring and 24-byte loop drift
+//   remain unresolved after 10 additional meaningful hypotheses.
 
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)

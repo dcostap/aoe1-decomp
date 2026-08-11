@@ -11,6 +11,9 @@
 // attempt 9: /GX /Ob0; no codegen change, reverted.
 // attempt 10: reviewed setup arg surface/order and vtable slot declarations; current call order/body matches original through setup/bevel/color calls; remaining drift is tail/return lowering.
 // ACCEPTED_DRIFT suggestion: with volatile result, all functional calls/memory effects match; extra writes are only to this function's stack result slot before common epilogue, and branch distances/tail layout differ. Needs review; not promoted.
+// session 2026-08-11: baseline rebuilt the volatile common-return candidate at 451 bytes; natural direct returns and nonvolatile result/goto joins both rebuilt at 457 bytes with the same 156-byte prefix and the success epilogue before failure.
+// session probes: a register result, a destructor declaration, and the packet-indicated virtual create_input ABI (with the proven gap adjustment) did not change that tail family; /O1 introduced an extra EH helper and broad structural drift.
+// final session source restores the natural typed factory form; remaining blocker is the VC5 /GX shared EH failure-tail placement (oracle success jump over failure block to one epilogue).
 
 class TPanel {};
 class TDrawArea {};
@@ -41,6 +44,7 @@ public:
     long field_D8;
     char gap_0DC[0xDC];
     TInputPanel();
+    ~TInputPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
                char*, long, char, char, int, int, short, TDigital*, char*, int);
     void set_text_color(unsigned long c1, unsigned long c2);
@@ -49,7 +53,7 @@ public:
 
 class TEasy_Panel {
 public:
-    char gap_000[0x14];
+    char gap_000[0x10];
     long base_width;
     long base_height;
     char gap_01C[4];
@@ -73,8 +77,8 @@ public:
     unsigned long focus_color1; // +330
     unsigned long focus_color2; // +334
 
-    int create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
-                     long x, long y, long w, long h, long font_id);
+    virtual int create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
+                             long x, long y, long w, long h, long font_id);
 };
 
 int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
@@ -85,7 +89,6 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, sho
     long ideal_w = (w * this->base_width) / this->ideal_width;
     long ideal_h = (h * this->base_height) / this->ideal_height;
 
-    volatile int result;
     *out = new TInputPanel;
     if (*out != 0 && (*out)->field_D8 == 0) {
         RGE_Font* font;
@@ -104,13 +107,10 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, sho
             }
             (*out)->set_text_color(this->text_color1, this->text_color2);
             (*out)->set_highlight_text_color(this->focus_color1, this->focus_color2);
-            result = 1;
-            goto done;
+            return 1;
         }
     }
-    this->error_flag = 1;
-    result = 0;
 
-done:
-    return result;
+    this->error_flag = 1;
+    return 0;
 }

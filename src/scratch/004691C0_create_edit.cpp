@@ -1,83 +1,95 @@
 // VA: 004691C0 TEasy_Panel::create_edit (442 B)
 // PDB source: Panel_ez.cpp lines 1399-1439
-// Attempt log: see bottom
+// Attempt log:
+// - Baseline decompiler-shaped stubs had the wrong TEditPanel size, error
+//   offset, TEasy_Panel styling offset, setup arity, and font field.
+// - Restored the period typed layouts and /GX context: TPanel owns +14/+18,
+//   +20, and +D8; TEasy_Panel owns +F4/+F8 and +31C onward; TEditPanel is
+//   0x16C bytes.  This moved the check from a 415-byte mismatch to 267.
+// - Restored the real setup(TDrawArea*, TPanel*, ...) ABI, direct out-slot
+//   construction, positive font guard, promoted bevel colors, and
+//   brush/brush-color/background argument order.  The body through all calls
+//   is now byte-aligned; remaining drift is VC5 success/failure epilogue
+//   placement (54 positional bytes, +19 emitted bytes).
+// - Common result/goto, volatile-result, initialized-result, destructor, and
+//   register-result probes did not change the best ordinary codegen basin.
+// Left in scratch: typed source is behaviorally aligned with all 9 calls and
+//   proven field accesses; only the compiler's duplicated return tail remains.
 
-// Forward declarations
-struct TPanel;
-struct TEditPanel;
-struct TDrawArea;
-struct RGE_Font;
-struct RGE_Base_Game;
+// Canonical layouts recovered from the Panel_ez/pnl_edit surfaces.  The base
+// panel owns the width/height/draw-area/error fields; TEasy_Panel owns the
+// ideal dimensions and edit styling fields.
+class TPanel;
+class TEditPanel;
+class TDrawArea;
+class RGE_Font;
+class RGE_Base_Game;
 extern RGE_Base_Game* rge_base_game;
 
-struct TEasy_Panel {
-    void* vtable;
-    int field_04;
-    int field_08;
-    int field_0C;
-    int gap_10[2];
-    int field_14;       // +0x14 = ideal_width?
-    int field_18;       // +0x18 = ideal_height?
-    int field_1C;
-    int field_20;       // +0x20 = TDrawArea*
-    char gap_24[0xD8 - 0x24];
-    int field_D8;       // +0xD8 = some flag
-    char gap_DC[0xF4 - 0xDC];
-    int field_F4;       // +0xF4 = divisor for width?
-    int field_F8;       // +0xF8 = divisor for height?
-    char gap_FC[0x320 - 0xFC];
-    unsigned char bevel_color1;  // +0x320
-    unsigned char bevel_color2;  // +0x321
-    unsigned char bevel_color3;  // +0x322
-    unsigned char bevel_color4;  // +0x323
-    unsigned char bevel_color5;  // +0x324
-    unsigned char bevel_color6;  // +0x325
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0x10];
+    int width;                  // +0x14
+    int height;                 // +0x18
+    char gap_1C[4];
+    TDrawArea* draw_area;       // +0x20
+    char gap_24[0xB4];
+    int error;                  // +0xD8
+    char gap_DC[0x18];
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    int ideal_width;            // +0xF4
+    int ideal_height;           // +0xF8
+    char gap_FC[0x31C - 0xFC];
+    int use_bevels;             // +0x31C
+    unsigned char bevel_color1; // +0x320
+    unsigned char bevel_color2; // +0x321
+    unsigned char bevel_color3; // +0x322
+    unsigned char bevel_color4; // +0x323
+    unsigned char bevel_color5; // +0x324
+    unsigned char bevel_color6; // +0x325
     char gap_326[0x328 - 0x326];
-    int text_color1;    // +0x328
-    int text_color2;    // +0x32C
-    int focus_color1;   // +0x330
-    int focus_color2;   // +0x334
+    int text_color1;            // +0x328
+    int text_color2;            // +0x32C
+    int focus_color1;           // +0x330
+    int focus_color2;           // +0x334
     char gap_338[0x454 - 0x338];
     unsigned char background_color1; // +0x454
     char gap_455[0x464 - 0x455];
-    void* brush;        // +0x464
-    int brush_color;    // +0x468
-    int use_bevels;     // +0x31C
-    char gap_31D_320[3]; // padding
+    void* brush;                // +0x464
+    int brush_color;            // +0x468
 
-    int create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
-                    long p6, long p7, long p8, long p9, long p10,
-                    int p11, int p12);
+    virtual int create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
+                            long p6, long p7, long p8, long p9, long p10,
+                            int p11, int p12);
 };
 
-struct TEditPanel {
-    void* vtable;
-    int field_04;
-    // ... up to 0x16C
-    char whole[0x16C];
-    
+class TEditPanel : public TPanel {
+public:
+    char whole[0x16C - 0xF4];
+
     TEditPanel();
-    int setup(TDrawArea* parent, int x, int y, int w, int h, long p7,
+    virtual ~TEditPanel();
+    int setup(TDrawArea* draw_area, TPanel* parent, int x, int y, int w, int h,
               void* font, short p9, char* p10, int p11, int multiline);
-    void set_bevel_info(int type, unsigned char c1, unsigned char c2,
-                        unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6);
+    void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
     void set_text_color(int c1, int c2);
     void set_highlight_text_color(int c1, int c2);
-    void set_back_color(unsigned char bg, void* brush, int brush_color);
+    void set_back_color(void* brush, int brush_color, unsigned char bg);
     void set_ime_info(int p1, int p2);
 };
 
-struct TPanel {
+class TDrawArea {
+public:
     void* vtable;
 };
 
-struct TDrawArea {
-    void* vtable;
-};
-
-struct RGE_Font {
-    void* vtable;
-    int font;
+class RGE_Font {
+public:
+    void* font;
 };
 
 struct RGE_Base_Game {
@@ -89,53 +101,45 @@ int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, in
                               long p6, long p7, long p8, long p9, long p10,
                               int p11, int p12)
 {
-    int w = this->field_14;
-    int d1 = this->field_F4;
-    int x = (p6 * w) / d1;
-    
-    int h = this->field_18;
-    int d2 = this->field_F8;
-    int y = (h * p7) / d2;
-    
-    int width = (p8 * w) / d1;
-    
-    TEditPanel* edit = new TEditPanel;
-    if (edit) {
-        edit = (TEditPanel*)edit;
-    } else {
-        edit = 0;
-    }
-    
-    *p2 = edit;
-    
-    if (edit && edit->field_04 == 0) {
-        if (p10 < 0)
-            p10 = 10;
-        
-        RGE_Font* font = rge_base_game->get_font(p10);
+    int result;
+    int x = (p6 * this->width) / this->ideal_width;
+    int y = (this->height * p7) / this->ideal_height;
+    int width = (p8 * this->width) / this->ideal_width;
+
+    *p2 = new TEditPanel;
+    if (*p2 != 0 && (*p2)->error == 0) {
+        RGE_Font* font;
+        if (p10 >= 0) {
+            font = rge_base_game->get_font(p10);
+        } else {
+            font = rge_base_game->get_font(10);
+        }
         
         int multiline = (p5 != 7) ? 1 : 0;
         
-        if (edit->setup((TDrawArea*)this->field_20, x, y, width, p9,
-                        0, font->font, p4, p3, p5, multiline)) {
-            ((void)0);
+        if ((*p2)->setup(this->draw_area, p1, x, y, width, p9,
+                         font->font, p4, p3, p5, multiline)) {
             
             if (this->use_bevels) {
-                edit->set_bevel_info(3,
+                (*p2)->set_bevel_info(3,
                     this->bevel_color1, this->bevel_color2,
                     this->bevel_color3, this->bevel_color4,
                     this->bevel_color5, this->bevel_color6);
             }
             
-            edit->set_text_color(this->text_color1, this->text_color2);
-            edit->set_highlight_text_color(this->focus_color1, this->focus_color2);
-            edit->set_back_color(this->background_color1, this->brush, this->brush_color);
-            edit->set_ime_info(p11, p12);
+            (*p2)->set_text_color(this->text_color1, this->text_color2);
+            (*p2)->set_highlight_text_color(this->focus_color1, this->focus_color2);
+            (*p2)->set_back_color(this->brush, this->brush_color, this->background_color1);
+            (*p2)->set_ime_info(p11, p12);
             
-            return 1;
+            result = 1;
+            goto done;
         }
     }
     
-    this->field_D8 = 1;
-    return 0;
+    this->error = 1;
+    result = 0;
+
+done:
+    return result;
 }

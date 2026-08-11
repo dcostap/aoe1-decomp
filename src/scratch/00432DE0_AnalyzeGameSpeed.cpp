@@ -1,13 +1,39 @@
 // VA: 00432DE0 RGE_Communications_Speed::AnalyzeGameSpeed
 // com_spd.cpp lines 451-577
 
-// attempt 1: speed analysis with player loop, division, output params
-// 448/455 bytes (98.5%) — 7 bytes short
-// Register allocation basin issue (ebp vs esi for this)
-// Left in scratch.
+// Matching attempt log:
+// - Baseline raw communication cursor plus pre-call pointer increment: 419
+//   positional diff bytes, effective size 442 versus 455, frame 0x8 versus 0xC.
+// - Explicit self aliases, register hints, and donor stdio/string context were
+//   either codegen duplicates or a worse basin; rolled back.
+// - Recovered the binary's natural cursor topology by starting at
+//   PlayerHighLatencyMsec + 1 and advancing ptr beside i at loop bottom. This
+//   moved the emitted code to 235 diff bytes, effective size 448, and preserved
+//   ESI=this with the observed bottom add esi,4.
+// - Canonicalized TCommunications_Handler ownership for current_turn (+10C8)
+//   and PlayerOptions.CommandTurnIncrement (+1590). Split declarations and
+//   total_turns assignment were codegen duplicates at the final basin.
+// - Reversed min/max declaration order once; it swapped the callee-save values
+//   away from the oracle, so the current source keeps min_avg before max_high.
+// - Best unresolved result: 235 positional diff bytes, 364 equal/resynchronized
+//   bytes, calls 4/4 with exact target identity, effective size 448/455, frame
+//   0x8/0xC. The remaining structural lead is the missing 4-byte local/frame
+//   slot and associated total-turn/cur-gran stack-home schedule.
+// Left in scratch after the bounded 10-hypothesis assignment.
+
+class COMMPLAYEROPTIONS {
+public:
+    unsigned char gap_00[0x40];
+    unsigned char CommandTurnIncrement; // +0x40
+};
 
 class TCommunications_Handler {
 public:
+    unsigned char gap_00[0x10C8];
+    unsigned int current_turn; // +0x10C8
+    unsigned char gap_10CC[0x1550 - 0x10CC];
+    COMMPLAYEROPTIONS PlayerOptions; // +0x1550
+
     int IsHost();
     int IsPlayerHuman(int player_index);
     void SendSpeedChange(int a, int b);
@@ -61,26 +87,30 @@ public:
 int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, unsigned int* out_frames, int param_3) {
     if (!Comm->IsHost()) return 0;
     if (NextLatencyChangeTurn != 0) return 0;
-    
-    char* comm_base = (char*)Comm;
-    unsigned int total_turns = *(unsigned long*)(comm_base + 0x10C8) + (unsigned char)*(comm_base + 0x1590);
+
+    unsigned int total_turns = Comm->current_turn;
+    total_turns += (unsigned char)Comm->PlayerOptions.CommandTurnIncrement;
     if (total_turns < 20) return 0;
     
     LastAdjusted++;
     if (LastAdjusted < 5) return 0;
     
-    unsigned int min_avg = 10;
-    unsigned int max_high = 30;
-    unsigned long* ptr = PlayerHighLatencyMsec; // +0x1E4
-    int i = 1;
+    unsigned int min_avg;
+    unsigned int max_high;
+    unsigned long* ptr;
+    int i;
+    min_avg = 10;
+    max_high = 30;
+    ptr = PlayerHighLatencyMsec + 1; // player 1, +0x1E8
+    i = 1;
     do {
-        ptr++;
         if (Comm->IsPlayerHuman(i)) {
             unsigned long avg = *(ptr - 10);  // PlayerAvgFramesMsec[i]
             if (min_avg <= avg) min_avg = avg;
             if (max_high <= *ptr) max_high = *ptr;
         }
         i++;
+        ptr++;
     } while (i <= 9);
     
     unsigned int new_gran = ((min_avg + 5) / 10) * 10;

@@ -2,6 +2,25 @@
 // m_s_obj.cpp, lines 1021-1088
 // RGE_Master_Static_Object::alignment (vt[9], offset 0x24)
 // Returns uchar, always 1
+//
+// ATTEMPT LOG (sa878e036b_r1):
+// - baseline: natural named edge/map locals; 566B rebuilt, 614 strict diff.
+// - layout: corrected the implicit-vptr gap so radius_x/radius_y are +30/+34;
+//   this moved the first field hunk one byte deeper.
+// - layout: declaration-order probes favored left/top/right/bottom, then the
+//   x-min/x-max/y-min/y-max variant was retained as a small negative check.
+// - behavior: replaced many edge/coordinate temporaries with the binary's
+//   six-float plus short reuse family. This recovered the 4 short-width
+//   __ftol conversions, the four-return topology, 640B rebuilt size, and
+//   66.53% shape; best strict diff is 564B.
+// - variant: four initialization-order cases did not change the best basin.
+// - behavior: a transposed strict-less boundary interpretation was tested and
+//   worsened the emitted CFG/size; restored the six-float reconstruction.
+// - variant: boundary-topology combinations were swept after restoration;
+//   none beat the retained natural six-float source. Remaining mismatch starts
+//   with ESI/EDI parameter coloring and then the initial x87 load order/branch
+//   topology. Paused at the bounded hypothesis budget; likely next lead is
+//   donor TU/class surface or a focused parameter-liveness/context probe.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -31,8 +50,9 @@ public:
     // vt[9]: alignment
     virtual unsigned char alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4);
 
-    // layout: 0xB8 bytes
-    char gap_00[0x30];
+    // The implicit vptr occupies the first dword; the first named field is
+    // therefore reached with a 0x2C-byte post-vptr gap.
+    char gap_00[0x2C];
     float radius_x;       // +0x30
     float radius_y;       // +0x34
     float radius_z;       // +0x38
@@ -54,80 +74,68 @@ public:
 
 unsigned char RGE_Master_Static_Object::alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4)
 {
-    float map_w = (float)param_3->map->map_width - 0.00001f;
-    float map_h = (float)param_3->map->map_height - 0.00001f;
+    float fVar1 = param_1 - radius_x;
+    float fVar3 = param_1 + radius_x;
+    float fVar2 = param_2 - radius_y;
+    float fVar4 = param_2 + radius_y;
+    float fVar5 = (float)param_3->map->map_width - 0.00001f;
+    float fVar6 = (float)param_3->map->map_height - 0.00001f;
+    short sVar7;
 
-    float left = param_1 - radius_x;
-    float right = param_1 + radius_x;
-    float top = param_2 - radius_y;
-    float bottom = param_2 + radius_y;
-
-    if (left < 0.0f) {
-        float adj = -left;
-        param_1 += adj;
-        right += adj;
-        left = 0.0f;
+    if (fVar1 < 0.0f) {
+        fVar1 = -fVar1;
+        fVar3 = fVar3 + fVar1;
+        param_1 = param_1 + fVar1;
     }
-
-    if (top < 0.0f) {
-        float adj = -top;
-        param_2 += adj;
-        bottom += adj;
-        top = 0.0f;
+    if (fVar2 < 0.0f) {
+        fVar2 = -fVar2;
+        fVar4 = fVar4 + fVar2;
+        param_2 = param_2 + fVar2;
     }
-
-    if (right >= map_w) {
-        float adj = map_w - right;
-        param_1 += adj;
-    }
-
-    if (bottom >= map_h) {
-        float adj = map_h - bottom;
-        param_2 += adj;
-    }
+    if (fVar5 <= fVar3)
+        param_1 = param_1 + (fVar5 - fVar3);
+    if (fVar6 <= fVar4)
+        param_2 = param_2 + (fVar6 - fVar4);
 
     if (param_4 == 0)
         return 1;
 
-    // Sub-pixel alignment
-    if (param_1 < 0.0f) param_1 = -param_1;
-    if (param_2 < 0.0f) param_2 = -param_2;
-    if (right < 0.0f) right = -right;
-    if (bottom < 0.0f) bottom = -bottom;
+    if (fVar1 < 0.0f) fVar1 = -fVar1;
+    if (fVar2 < 0.0f) fVar2 = -fVar2;
+    if (fVar3 < 0.0f) fVar3 = -fVar3;
+    if (fVar4 < 0.0f) fVar4 = -fVar4;
 
-    int ix = (int)param_1;
-    float dx = param_1 - (float)ix;
+    sVar7 = (short)(long)fVar1;
+    fVar1 = fVar1 - (float)(int)sVar7;
+    sVar7 = (short)(long)fVar2;
+    fVar2 = fVar2 - (float)(int)sVar7;
+    sVar7 = (short)(long)fVar3;
+    fVar3 = 1.0f - (fVar3 - (float)(int)sVar7);
+    sVar7 = (short)(long)fVar4;
+    fVar4 = 1.0f - (fVar4 - (float)(int)sVar7);
 
-    int iy = (int)param_2;
-    float dy = param_2 - (float)iy;
-
-    int ir = (int)right;
-    float dr = right - (float)ir;
-
-    int ib = (int)bottom;
-    float db = bottom - (float)ib;
-
-    float f1 = 1.0f - dr;
-    float f2 = 1.0f - db;
-
-    float sum1 = f1 + dx;
-    if (sum1 < 1.0f) {
-        param_1 = param_1;
-    } else if (dx <= f1) {
-        param_1 = param_1 - (1.0f - f1);
+    if (fVar3 + fVar1 < 1.0f) {
+        fVar1 = param_1;
+    } else if (fVar1 <= fVar3) {
+        fVar1 = param_1 - (1.0f - fVar3);
     } else {
-        param_1 = (1.0f - dx) + param_1;
+        fVar1 = (1.0f - fVar1) + param_1;
     }
 
-    float sum2 = f2 + dy;
-    if (sum2 >= 1.0f) {
-        if (f2 < dy) {
-            float temp = param_2;
-            param_2 = (1.0f - dy) + temp;
-        } else {
-            param_2 = param_2 - (1.0f - f2);
+    if (1.0f <= fVar4 + fVar2) {
+        if (fVar4 < fVar2) {
+            fVar3 = param_2;
+            param_1 = fVar1;
+            param_2 = (1.0f - fVar2) + fVar3;
+            return 1;
         }
+        fVar2 = param_2;
+        param_1 = fVar1;
+        param_2 = fVar2 - (1.0f - fVar4);
+        return 1;
     }
-
+    fVar2 = param_2;
+    param_1 = fVar1;
+    param_2 = fVar2;
     return 1;
 }

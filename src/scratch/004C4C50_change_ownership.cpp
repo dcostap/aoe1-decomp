@@ -17,6 +17,17 @@
 // to 136B/45.2%; restored canonical old-master local.
 // fresh worker: distinct old_sprite declared after old_master preserved 301B/134
 // basin; restored existing clean source.
+// fresh worker: reversed sprite/master comparison operands changed only cmp
+// encoding and worsened shape; restored canonical current-sprite-left form.
+// fresh worker: function-scope/top-scope local declarations, a named short id,
+// canonical virtual change_ownership slot, and the proven full master class
+// surface all emitted the same 301B/134 basin; no source/layout lead.
+// fresh worker: an 8-way comparison-order lab and a 16-way lookup/sprite-shape
+// lab found no exact or alternate emitted group; all variants retained the
+// same 301B/134 result. Pointer-arithmetic lookup and const old-master probes
+// were also codegen duplicates. Remaining gap is the localized VC5 register
+// coloring at old-master lookup/sprite selection (oracle has mov eax,edx and
+// cmp ecx,[eax+...]; clean source has the swapped color and is retained).
 
 class RGE_Sprite;
 class RGE_Active_Sprite_List;

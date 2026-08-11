@@ -15,13 +15,24 @@
 // FLAGS: config/flags/00469910_create_scrollbar.rsp keeps /GX because default no-/GX build lacks the original EH/new frame and is too small.
 // worker 2026-08-10: confirmed the existing canonical typed reconstruction and /GX response-file context;
 // no new source-shape lead was found beyond the documented shared-SEH-tail blocker.
+// probe 2026-08-11: model the PDB's protected virtual method ABI with a compiler-owned vptr
+// instead of an explicit data member; this preserves the proven +0x14/+0x448 layout while
+// testing whether polymorphic TEasy_Panel context selects the original EH tail.
+// probe 2026-08-11: model TScrollBarPanel's likely polymorphic base surface with a declared
+// virtual destructor and reduce its explicit gap by the compiler-owned vptr; field_D8 and
+// sizeof remain binary-proven while testing constructor/EH type context.
+// probes 1-2 result: both ABI surfaces emitted byte-identical code (47-byte diff, +19 bytes);
+// paired create_vert_slider/create_horz_slider exact donors show the same persistent /GX
+// shared-failure-tail drift, so the remaining gap is compiler/EH block placement rather than
+// unresolved ownership, calls, or layout.
 
 class TPanel;
 class TShape;
 
 class TScrollBarPanel {
 public:
-    char gap_00[0xD8];
+    virtual ~TScrollBarPanel();
+    char gap_04[0xD4];
     int field_D8;
     char gap_DC[0xE8];
     TScrollBarPanel();
@@ -39,7 +50,6 @@ public:
 
 class TEasy_Panel {
 public:
-    void* vptr;
     char gap_04[0x10];
     long field_14;
     long field_18;
@@ -59,7 +69,8 @@ public:
     char gap_326[0x122];
     TShape* button_pics;   // +0x448
 
-    int create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPanel* text, long param_4, long param_5, long param_6, long param_7, long param_8);
+protected:
+    virtual int create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPanel* text, long param_4, long param_5, long param_6, long param_7, long param_8);
 };
 
 int TEasy_Panel::create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPanel* text, long param_4, long param_5, long param_6, long param_7, long param_8) {

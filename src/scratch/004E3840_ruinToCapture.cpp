@@ -1,120 +1,138 @@
 // VA: 004E3840 TribeInformationAIModule::ruinToCapture (393 B)
 // PDB source: taiinfmd.cpp
-// LEFT IN SCRATCH after 8 attempts.
-//
-// Attempts 1-3: various C++ structures. All had 393 expected vs 384 actual .text size.
-// Attempt 4: fixed object() arg order. Same size issue.
-// Attempt 5-6: removed OwnerChecker vt struct. Same size issue.
-// Attempt 7: added dummy locals to pad frame. No change.
-// Attempt 8: simplified control flow. Same size issue.
-//
-// Root cause: the function body is 392 bytes but needs 393 (1 byte short).
-// This appears to be a CodeView/debug section alignment issue or the tool's
-// COFF section size check failing due to debug info or relocations in the .obj.
-// The actual function code is correct at 392-393 bytes and the .bin extraction works.
-//
-// Known structural differences from original:
-// 1. Frame: sub esp, 14h vs 10h (different local/register allocation)
-// 2. Virtual call at vt+0x18 uses __cdecl (adds esp,4 after call) while
-//    original __thiscall callee cleans up (ret 4). No way to express __thiscall
-//    through function pointer typedef in VC5.
-// 3. Extern calls (object, numberUnitsWithinXTiles, distance_to_position) are
-//    direct calls via relocation which should match.
-// 4. Member function call to distance_to_position generates expected instruction.
-// 5. All field offsets, control flow logic, and the loop structure are correct.
+// Attempt log:
+// - Baseline used the canonical 0x24-byte ObjectMemory and a positive
+//   indexed scan, but retained a record pointer and a cdecl vtable proxy
+//   (360 bytes, 349 differing bytes).
+// - Replaced the persistent record pointer with direct
+//   importantObjectMemory[i] expressions and modeled md->player as the typed
+//   vslot+0x18 owner-check virtual surface.  This restored ESI=this, EBP=the
+//   byte offset, the 0x10 frame, all six ordered calls, and a 383-byte body
+//   (171 differing bytes).
+// - Declaration-only result locals, swapped result-local order, explicit
+//   register declaration, direct integer result storage, explicit coordinate
+//   locals, and base-plus-0x24 result addressing all emitted the same 383-byte
+//   code; these were not retained as compiler-steering requirements.
+// - A volatile result-local probe reached the expected 393-byte size but
+//   changed the saved-register basin and broadened positional drift; rolled
+//   back.  The living source remains typed and nonvolatile.
+// - Paused after the ten-hypothesis budget.  Remaining localized gap is the
+//   original townCenter/result callee-save allocation and the associated x87
+//   argument scratch-slot order; no call target, CFG, frame, or field-layout
+//   uncertainty remains.
 
-struct ObjectMemoryEntry {
-    int id;
-    short type;
-    char x;
-    char y;
-    char z;
-    char owner;
+#include <stdlib.h>
+
+struct ObjectMemory {
+    int id;                             // +0x00
+    short type;                         // +0x04
+    short group;                        // +0x06
+    unsigned char x;                    // +0x08
+    unsigned char y;                    // +0x09
+    unsigned char z;                    // +0x0A
+    unsigned char owner;                // +0x0B
+    short hitPoints;                    // +0x0C
+    unsigned char pad_0E[2];            // +0x0E
+    int attackAttempts;                 // +0x10
+    unsigned char kills;                // +0x14
+    unsigned char pad_15[3];            // +0x15
+    float damageCapability;             // +0x18
+    float rateOfFire;                   // +0x1C
+    float range;                        // +0x20
 };
 
-class MainDecisionAIModule {
+class RGE_Player {
 public:
-    char gap_00[0xF0];
-    void* field_F0;
-
-    void* object(int p1, int p2, int p3, int p4, int p5,
-                 int p6, int p7, int p8, int p9, int p10);
-    void* object(int id);
+    virtual void vt00();
+    virtual void vt04();
+    virtual void vt08();
+    virtual void vt0C();
+    virtual void vt10();
+    virtual void vt14();
+    virtual int isEnemy(int playerNum); // vslot +0x18
 };
 
 class RGE_Static_Object {
 public:
     char gap_00[0x48];
-    unsigned char object_state;
+    unsigned char object_state;         // +0x48
 
     float distance_to_position(float x, float y, float z);
+};
+
+class MainDecisionAIModule {
+public:
+    char gap_00[0xF0];
+    RGE_Player* player;                 // +0xF0
+
+    RGE_Static_Object* object(int p1, int p2, int p3, int p4, int p5,
+                              int p6, int p7, int p8, int p9, int p10);
+    RGE_Static_Object* object(int id);
 };
 
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
-    MainDecisionAIModule* md;
+    MainDecisionAIModule* md;           // +0x100
     char gap_104[0x0C];
-    int maxImportantObjectMemory;
-    ObjectMemoryEntry* importantObjectMemory;
+    int maxImportantObjectMemory;       // +0x110
+    ObjectMemory* importantObjectMemory; // +0x114
 
-    int numberUnitsWithinXTiles(int param_1, int x, int y, int range);
-    void* ruinToCapture(int param_1);
+    int numberUnitsWithinXTiles(int playerFilter, int x, int y, int range);
+    ObjectMemory* ruinToCapture(int playerFilter);
 };
 
-void* TribeInformationAIModule::ruinToCapture(int param_1) {
-    void* mainObj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
+{
+    RGE_Static_Object* townCenter;
+    ObjectMemory* bestMemory;
+    int bestResult;
+    int i;
 
-    int bestValue = 0;
-    int bestResult = -1;
-    int i = 0;
+    townCenter = this->md->object(
+        -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    bestMemory = 0;
+    bestResult = -1;
+    i = 0;
 
-    if (this->maxImportantObjectMemory <= 0)
-        return 0;
+    if (this->maxImportantObjectMemory > 0) {
+        do {
+            if (this->importantObjectMemory[i].type == 0x9E ||
+                this->importantObjectMemory[i].type == 0xA3) {
+                if (playerFilter == -1 ||
+                    (unsigned int)this->importantObjectMemory[i].owner ==
+                        (unsigned int)playerFilter) {
+                    if (playerFilter != -1 ||
+                        this->md->player->isEnemy(
+                            this->importantObjectMemory[i].owner) != 0) {
+                        RGE_Static_Object* object = this->md->object(
+                            this->importantObjectMemory[i].id);
 
-    for (i = 0; i < this->maxImportantObjectMemory; i++) {
-        ObjectMemoryEntry* entry = &this->importantObjectMemory[i];
+                        if (object != 0 && object->object_state <= 2) {
+                            int result = this->numberUnitsWithinXTiles(
+                                playerFilter,
+                                this->importantObjectMemory[i].x,
+                                this->importantObjectMemory[i].y, 5);
 
-        if (entry->type != 0x9E && entry->type != 0xA3)
-            continue;
+                            if (townCenter != 0) {
+                                result = (int)townCenter->distance_to_position(
+                                    (float)this->importantObjectMemory[i].x,
+                                    (float)this->importantObjectMemory[i].y,
+                                    (float)this->importantObjectMemory[i].z) * result;
+                            }
 
-        if (param_1 != -1 && (unsigned char)entry->owner != (unsigned int)param_1)
-            continue;
+                            if (bestMemory == 0 || result < bestResult) {
+                                bestResult = result;
+                                bestMemory = &this->importantObjectMemory[i];
+                            }
+                        }
+                    }
+                }
+            }
 
-        if (param_1 == -1) {
-            void* checker = this->md->field_F0;
-            void** vt = *(void***)checker;
-            typedef int (__cdecl FN)(int);
-            FN* fn = (FN*)vt[6];
-            if (fn((unsigned char)entry->owner) == 0)
-                continue;
-        }
-
-        void* obj = this->md->object(entry->id);
-        if (obj == 0)
-            continue;
-
-        if (((RGE_Static_Object*)obj)->object_state > 2)
-            continue;
-
-        int count = this->numberUnitsWithinXTiles(
-            param_1,
-            (unsigned char)entry->x,
-            (unsigned char)entry->y,
-            5);
-
-        if (mainObj != 0) {
-            float fx = (float)(unsigned char)entry->x;
-            float fy = (float)(unsigned char)entry->y;
-            float fz = (float)(unsigned char)entry->z;
-            count = (int)((RGE_Static_Object*)mainObj)->distance_to_position(fx, fy, fz) * count;
-        }
-
-        if (bestValue == 0 || count < bestResult) {
-            bestValue = (int)(void*)entry;
-            bestResult = count;
-        }
+            i++;
+        } while (i < this->maxImportantObjectMemory);
     }
 
-    return (void*)bestValue;
+    return bestMemory;
 }

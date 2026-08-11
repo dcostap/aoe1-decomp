@@ -33,6 +33,23 @@
 //   and produced a worse 249B basin. Retained the after-destination form.
 // - The remaining structural blocker is the oracle's 8-byte frame and its
 //   delayed parameter-home allocation; no ABI or ownership uncertainty remains.
+// sa-1a59a700-r1-004B98E0 probes (2026-08-11):
+// - Collapsing header height and the post-destination counter into one natural
+//   width local recovered the 8-byte frame, but stored width before the call and
+//   remained a broad 254-byte mismatch; an area alias and orientation-first
+//   spelling were emitted-code duplicates.
+// - Split the binary-supported persistent row base from the per-row RLE cursor;
+//   this reached exact effective size/frame (268B/8B) with both ordered calls,
+//   while the standalone candidate remains 255 differing bytes.  Its remaining
+//   mismatch is the setup/home basin: row and byte-count homes are swapped
+//   relative to the oracle and literal/table index registers are oppositely
+//   colored.  Moving count to setup scope and row declaration order were
+//   duplicates.
+// - A scoped literal index added 15 bytes and was rolled back; separate cursor
+//   increment and period <string.h> context were duplicates/worse (261B).
+// - Retained the readable one-width split-row reconstruction.  Calls, RLE CFG,
+//   ownership, and effective size/frame are aligned; remaining lead is the
+//   original Shape.cpp prologue/local-home/register basin, not behavior.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -71,14 +88,15 @@ struct TShape {
 uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal)
 {
     Shape_Header* hdr = this->shape_header;
-    long height = (hdr->ymax - hdr->ymin) + 1;
+    long width = (hdr->ymax - hdr->ymin) + 1;
     uchar* src = (uchar*)(hdr + 1);
 
     long Orien;
     Orien = td->Orien;
     long alw = td->AlignedWidth();
     long stride = alw * Orien;
-    long width;
+    uchar count;
+    uchar* row;
 
     long dest_off;
     if (Orien < 1) {
@@ -86,13 +104,12 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
     } else {
         dest_off = p3 * stride;
     }
-    uchar* dst = td->Bits + p2 + dest_off;
-    width = height;
+    row = td->Bits + p2 + dest_off;
 
-    if (height > 0) {
+    if (width > 0) {
         do {
             uchar done = 0;
-            uchar count;
+            uchar* dst = row;
             do {
                 uchar b = *src++;
                 if ((b & 1) == 1) {
@@ -119,7 +136,7 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
                 }
             } while (!done);
 
-            dst += stride;
+            row += stride;
         } while (--width);
     }
 

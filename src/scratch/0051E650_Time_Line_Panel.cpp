@@ -14,6 +14,14 @@
 //   variants did not improve the emitted code.
 // probe 9: a focused constructor-form lab found no exact variant; the
 //   remaining blocker is VC5 store/vtable scheduling, not size or call shape.
+// current session: body-assignment, full TPanel/TEasy_Panel vtable, member-width,
+// declaration-order, implicit-base, and narrowed initializer/body variants were
+// compiled and restored; none beat the 276-byte/125-diff initializer-list basin.
+//   The body forms moved the compiler vtable store to entry (200-209 diff), while
+//   the full virtual surface and ground-truth widths emitted unchanged bytes.
+// paused: ordered base call and all 47 instructions/size match, but the first
+// mismatch remains +000C (highlightTextColor1 before text_style) with delayed
+// vtable/back-color/tail stores; next lead is original TU/header scheduling.
 
 class TShape;
 class TTextPanel;

@@ -10,30 +10,74 @@
 // 8: modeled optional set_buttons, set_bevel_info, val/list text color, highlight color, and val_panel virtual bevel call.
 // 9: current source compiles but produced .text section only 736B vs configured/original 811B; check_function cannot diff rebuilt bytes.
 // 10: left in scratch as blocker-like scratch give-up: source is structurally close but needs real EH/context/call surface to reach original size; not accepted_drift.
+// 11: replaced the placement-new/byte-copy scaffolding with the natural new/
+// strcpy surfaces and a virtual TPanel/TDropDownPanel ownership model; testing
+// whether the real destructible type supplies the original EH state.
+// 12: restored the binary-proven one-element do/while cleanup instead of
+// hand-written if cleanup; the original retains a countdown and cursor.
+// 13: route first calloc failure through the existing cleanup label; the
+// original has one shared cleanup/SEH epilogue rather than an early return.
+// 14: kept the ignored initial font lookup as two natural branch arms; this
+// tests the original jl/push-font/jmp-call topology instead of a rewritten id.
+// 15: inverted that equivalent guard so the nonnegative source arm remains
+// inline and the negative fallback is the late branch target.
+// 16: /GX plus the typed virtual/destructible surface recovered the original
+// EH prologue, frame, call set, and body; the final stdlib-context check was
+// neutral. Best current output is exact size with 21 strict bytes remaining:
+// early leak exits target the result epilogue differently, and the final free
+// cleanup schedules stack restoration before the failure/result load.
+// FLAGS: config\flags\00469380_create_drop_down.rsp
 
-class TPanel;
+#include <string.h>
+#include <stdlib.h>
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0xd8-0x04];
+    int failure;
+    char gap_dc[0x18];
+};
 class TDrawArea;
 class TShape;
 class TListPanel { public: void set_text_color(unsigned long, unsigned long); void set_highlight_text_color(unsigned long, unsigned long); };
 class RGE_Font { public: void* font; int font_wid; int font_hgt; };
 class RGE_Base_Game { public: RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-extern "C" void __cdecl free(void*);
-void* operator_new(unsigned int);
-inline void* operator new(unsigned int, void* p) { return p; }
 
-class TDropDownPanel {
+class TTextPanel {
 public:
-    char gap_00[4]; int f4; int f8; char gap_0c[0xd8-0x0c]; int failure; char gap_dc[0x20]; TListPanel* list_panel;
+    virtual void vf00(); virtual void vf01(); virtual void vf02(); virtual void vf03();
+    virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
+    virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11();
+    virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
+    virtual void vf16(); virtual void vf17(); virtual void vf18(); virtual void vf19();
+    virtual void vf20(); virtual void vf21(); virtual void vf22(); virtual void vf23();
+    virtual void vf24(); virtual void vf25(); virtual void vf26(); virtual void vf27();
+    virtual void vf28(); virtual void vf29(); virtual void vf30(); virtual void vf31();
+    virtual void vf32(); virtual void vf33(); virtual void vf34(); virtual void vf35();
+    virtual void vf36(); virtual void vf37(); virtual void vf38(); virtual void vf39();
+    virtual void vf40(); virtual void vf41(); virtual void vf42(); virtual void vf43();
+    virtual void vf44(); virtual void vf45(); virtual void vf46(); virtual void vf47();
+    virtual void vf48(); virtual void vf49(); virtual void vf50(); virtual void vf51();
+    virtual void vf52(); virtual void vf53(); virtual void vf54(); virtual void vf55();
+    virtual void vf56(); virtual void vf57(); virtual void vf58();
+    virtual void set_bevel_info(int, int, int, int, int, int, int);
+};
+class TButtonPanel;
+class TDropDownPanel : public TPanel {
+public:
+    virtual ~TDropDownPanel();
+    TTextPanel* val_panel;
+    TButtonPanel* btn_panel;
+    TListPanel* list_panel;
+    char gap_0100[0x144-0x100];
     TDropDownPanel();
     long setup(TDrawArea*, TPanel*, void*, int, int, int, char, int, int, int, int, int, int, int, int, int, int, char*, int, int, char**, int, int, char*, char*, char*, char*, int, int);
     void set_buttons(TShape*, int, int, int, int, int);
     void set_bevel_info(int,int,int,int,int,int,int);
     void set_val_text_color(unsigned long,unsigned long);
 };
-#define VTBL(o) (*(void***)(o))
-#define VPANEL_BEVEL(o,a,b,c,d,e,f,g) ((void (__cdecl*)(void*,int,int,int,int,int,int,int))VTBL(o)[0x3b])((o),(a),(b),(c),(d),(e),(f),(g))
 
 class TEasy_Panel {
 public:
@@ -54,18 +98,18 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** out, long x, 
     long bh = (this->width * 18) / this->ideal_width;
     long px = x * this->width / this->ideal_width;
     long py = y * this->height / this->ideal_height;
-    int fid = font_id;
-    if (fid < 0) fid = 10;
-    rge_base_game->get_font(fid);
+    if (font_id >= 0)
+        rge_base_game->get_font(font_id);
+    else
+        rge_base_game->get_font(10);
     char** list = (char**)calloc(1,4);
-    if (list == 0) { this->failure = 1; return 0; }
+    if (list == 0) { this->failure = 1; goto finish; }
     list[0] = (char*)calloc(0x14,1);
-    if (list[0] == 0) goto done;
+    if (list[0] == 0) goto finish;
     // string literal at 580460 is " "
-    { char* d=list[0]; const char* s=(const char*)0x580460; do { *d++=*s; } while(*s++); }
+    strcpy(list[0], (const char*)0x580460);
     if (this->failure == 0) {
-        TDropDownPanel* p = (TDropDownPanel*)operator_new(0x144);
-        if (p != 0) p = new(p) TDropDownPanel();
+        TDropDownPanel* p = new TDropDownPanel;
         *out = p;
         if (p != 0 && p->failure == 0) {
             RGE_Font* font = rge_base_game->get_font(font_id);
@@ -76,13 +120,23 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** out, long x, 
                 TListPanel* lp = (*out)->list_panel;
                 lp->set_text_color(text_color1,text_color2);
                 lp->set_highlight_text_color(focus_color1,focus_color2);
-                VPANEL_BEVEL((*(void**)((char*)(*out)+0xf4)),3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
-                goto done;
+                (*out)->val_panel->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
+                goto cleanup;
             }
         }
         this->failure = 1;
     }
-done:
-    if (list) { if (list[0]) { free(list[0]); list[0]=0; } free(list); }
+cleanup:
+    {
+        char** p = list;
+        int count = 1;
+        do {
+            if (*p) { free(*p); *p = 0; }
+            ++p;
+            --count;
+        } while (count != 0);
+        free(list);
+    }
+finish:
     return this->failure == 0;
 }

@@ -4,19 +4,16 @@
 // FLAGS: default (/nologo /c /O2 /Oy)
 //
 // Attempt log:
-// - Original scratch: 352 bytes (31 short). No PALETTEENTRY→ missing 3 byte-stores
-//   and sub esp=400h (should be 408h).
-// - Added PALETTEENTRY pe local (3 zero-byte stores for peRed/peGreen/peBlue)
-//   → sub esp=408h, correct size 383, local layout pe at [esp+0Ch]/is_new at [esp+10h]
-//   /pal_entry at [esp+18h]. Focus_copy in register, param_1 on stack.
-// - Tried axes: is_new as unsigned char/int/two-step, durable sys local,
-//   various declaration orders, pointer-typed last_screen, param_1 local.
-//   None produced original's `push ebx; xor ebx,ebx; setne bl` pattern.
-// - Remaining mismatch: backend register-allocation basin.
-//   Original: ebp=param_1, bl=is_new(push ebx), [esp+14h]=focus_copy, [esp+10h]=pe
-//   Rebuilt:  ebx=focus_copy, eax/is_new on stack, no push ebx, pe shifted 4 bytes.
-//   VC5 allocator picks eax/ecx over ebx for is_new given this TU context.
-// Left in scratch — register-allocation shape issue, all semantics/calls correct.
+// - Baseline had the correct 0x408 frame after adding a local PALETTEENTRY, but
+//   used a direct GetPaletteEntries call and reversed the palette-handle arms.
+// - Restored the Windows stdcall import, DAT_0086b248 relocation, null-handle
+//   fall-through, and the binary-proven zeroed PALETTEENTRY dword as every fade's
+//   color argument. Calls/CFG then aligned 11/11; no behavior gap remains known.
+// - Direct draw_area rereads plus bool is_new recover the original saved EBX and
+//   92.42% instruction-shape similarity, but VC5 keeps focus_copy in EBP and
+//   allocates a 0x404 frame instead of the original EBP parameter/0x408 frame.
+// - Tried declaration-order and parameter-local variants; emitted code duplicated.
+// Left in scratch — remaining drift is the documented VC5 register/frame basin.
 
 #include "..\..\include\game_globals.h"
 
@@ -26,10 +23,9 @@ class TEasy_Panel;
 
 typedef struct { unsigned char r,g,b,a; } PE;
 
-extern int last_screen;
+extern int DAT_0086b248;
 
 extern void RGE_fade_palette(TDrawArea*, int, float, int, void*, int, int);
-extern void GetPaletteEntries(void*, int, int, void*);
 
 class TDrawSystem {
 public:
@@ -85,47 +81,45 @@ public:
 
 void TScreenPanel::set_focus(int param_1)
 {
-    int pal_entry[256];
+    PALETTEENTRY pal_entry[256];
     PE pe;
+    bool is_new;
     int focus_copy;
-    int is_new;
 
-    pe.r = 0;
-    pe.g = 0;
-    pe.b = 0;
     focus_copy = this->save_focus;
-    is_new = (this != (TScreenPanel*)last_screen) ? 1 : 0;
-    TDrawArea* area = this->draw_area;
+    is_new = (this != (TScreenPanel*)DAT_0086b248) ? 1 : 0;
 
-    if (area && area->draw_system && param_1 && is_new) {
-        TDrawSystem* sys = area->draw_system;
+    if (this->draw_area && this->draw_area->draw_system && param_1 && is_new) {
+        TDrawSystem* sys = this->draw_area->draw_system;
         if (sys->ScreenMode == 2 || sys->DrawType == 1) {
-            if (this->palette_handle) {
-                GetPaletteEntries(this->palette_handle, 0, 0x100, pal_entry + 1);
+            pe.r = 0;
+            pe.g = 0;
+            pe.b = 0;
+            if (!this->palette_handle) {
+                this->draw_area->GetPalette(pal_entry + 1);
             } else {
-                area->GetPalette(pal_entry + 1);
+                GetPaletteEntries(this->palette_handle, 0, 0x100, pal_entry + 1);
             }
 
-            RGE_fade_palette(area, *(int*)&pe, 0.13f, 1, 0, -1, -1);
-            area->Clear(0, 0, 0);
-            area->draw_system->Paint(0);
+            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.13f, 1, 0, -1, -1);
+            this->draw_area->Clear(0, 0, 0);
+            this->draw_area->draw_system->Paint(0);
         }
     }
 
     this->TEasy_Panel::set_focus(param_1);
 
-    area = this->draw_area;
-    if (area && area->draw_system && param_1 && is_new) {
-        TDrawSystem* sys = area->draw_system;
+    if (this->draw_area && this->draw_area->draw_system && param_1 && is_new) {
+        TDrawSystem* sys = this->draw_area->draw_system;
         if (sys->ScreenMode == 2 || sys->DrawType == 1) {
-            RGE_fade_palette(area, focus_copy, 0.0f, 2, pal_entry + 1, -1, -1);
+            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.0f, 2, pal_entry + 1, -1, -1);
             this->after_set_focus();
-            RGE_fade_palette(area, focus_copy, 0.0f, 1, 0, -1, -1);
-            area->draw_system->Paint(0);
-            RGE_fade_palette(area, focus_copy, 0.13f, 2, pal_entry + 1, -1, -1);
+            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.0f, 1, 0, -1, -1);
+            this->draw_area->draw_system->Paint(0);
+            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.13f, 2, pal_entry + 1, -1, -1);
         }
     }
 
     if (param_1 != focus_copy && focus_copy)
-        last_screen = (int)this;
+        DAT_0086b248 = (int)this;
 }

@@ -40,8 +40,18 @@
 // - Probe 22: a named copy of random_seed before debug_srand was codegen-identical.
 // - Main-agent audit removed the proxy-vtable base and empty inline virtual bodies;
 //   canonical world ownership preserves the remaining 221-byte scheduling gap.
+// - Current assignment: the guarded do/while final scan, signed calloc/debug ABI,
+//   virtual reference declaration, top-level count local, localized volatile store,
+//   and unsigned-long random_seed variants were all emitted-code duplicates except
+//   the top-level seed local (size +2); the clean typed source was restored.
+// - Variant lab: 240 seed/map/count/loop combinations reduced to two emitted groups;
+//   200 preserved size/frame/call-set, none matched. The remaining first hunk is the
+//   seed store/push schedule at +0x2D; later map/count/register drift is shifted from it.
+// - stdlib.h context for the period calloc surface was a duplicate and is retained;
+//   paused after the 10-hypothesis assignment with exact size, CFG, and call parity.
 
-void* __cdecl calloc(unsigned int n, unsigned int size);
+#include <stdlib.h>
+
 void __cdecl debug_srand(char* file, int line, unsigned int seed);
 
 extern int world_update_counter;
@@ -181,7 +191,7 @@ struct RGE_Game_World {
     char gap_44[0x58 - 0x44];
     RGE_Command* commands;
     char gap_5C[0x78 - 0x5C];
-    unsigned int random_seed;
+    int random_seed;
     short curr_player;
     char gap_7E[2];
     char* sound_driver;

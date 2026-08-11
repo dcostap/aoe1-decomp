@@ -6,9 +6,9 @@
 // - Added /GX flag because original has VC5 EH registration around operator new + TButtonPanel ctor.
 // - Corrected TEasy_Panel local layout so ideal_width/height are +0x14/+0x18 and draw_area +0x20; first attempt had a hidden-vptr gap and shifted those fields.
 // - Tried moving `new TButtonPanel` before vs after coordinate scaling. Allocating after scaling gives closer arithmetic order, but EH prologue changes to FS load before EH pushes; allocating before scaling keeps EH order closer but arithmetic/register allocation worse.
-// - Current source compiles and reaches full-size compare, but broad mismatch remains: original allocates 8 explicit local bytes after FS setup and keeps scaled x in a local before `new`; rebuilt uses a different EH prologue/local allocation family and different stack offsets. Later setup/picture/text calls are behaviorally close but shifted. No accepted_drift proposal; no inline asm.
-
-void* __cdecl operator new(unsigned int size);
+// - Modeled the proven TButtonPanel allocation size as 0x2B8 and initialized sound before the scaling/new path; this improved the resynchronized body but still emitted a one-slot local and the wrong prologue family.
+// - Tried explicit ideal-x initialization/compound arithmetic, x capture, a nontrivial destructor declaration, direct out-slot construction, and a common result/goto tail; these emitted the same or farther codegen basin.
+// - Final clean candidate keeps the named field ownership and natural direct factory source. Remaining blocker is structural VC5 EH/local-home placement: original reserves 8 bytes, preloads x before callee-save pushes, and shares one success/failure epilogue; rebuilt reserves one slot, reloads x from its parameter home, and duplicates cleanup. No accepted_drift proposal; no inline asm.
 
 class TPanel;
 class TDrawArea;
@@ -30,6 +30,7 @@ class TButtonPanel {
 public:
     char gap_000[0xD8];
     int error;
+    char gap_DC[0x2B8 - 0xDC];
     TButtonPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, int, TDigital*, int, long);
     void setDrawType(int t);
@@ -72,27 +73,21 @@ public:
 
 int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x, long y, long w, long h, long sound_id, long param8)
 {
-    TDigital* sound;
-    long sx;
-    TButtonPanel* btn;
+    TDigital* sound = 0;
+    long sx = (x * this->ideal_width) / this->screen_width;
 
-    sx = (x * this->ideal_width) / this->screen_width;
     y = (y * this->ideal_height) / this->screen_height;
     w = (w * this->ideal_width) / this->screen_width;
     h = (h * this->ideal_height) / this->screen_height;
 
-    btn = new TButtonPanel;
-    *out = btn;
-    if (btn == 0 || btn->error != 0) {
+    *out = new TButtonPanel;
+    if (*out == 0 || (*out)->error != 0) {
         this->error = 1;
         return 0;
     }
 
     if (sound_id >= 0) {
         sound = rge_base_game->get_sound(sound_id);
-    }
-    else {
-        sound = 0;
     }
 
     if (!(*out)->setup(this->draw_area, parent, sx, y, w, h, 2, sound, 1, param8)) {

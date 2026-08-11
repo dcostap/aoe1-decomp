@@ -2,54 +2,71 @@
 // PDB source: scr_sedo.cpp
 
 // Attempt log:
-// - First pass (2026-04-27): wrote full action function with correct logical control flow
-// - Issue: no EH frame generated (needs /GX + object with destructor to trigger)
-// - Issue: completely different compiled code - compiler rearranged the entire control flow
-// - Left in scratch because:
-//   1. No EH frame - VC5 only adds EH frames when there are stack objects with destructors
-//   2. Compiler completely restructured the control flow (early dispatch vs cascading if/else)
-//   3. The original has 1003 bytes of complex string/file logic with sprintf, OpenFile, strcmp inline
-//   4. Would need dozens of probes to converge
+// - Prior scaffold used an early null return, a 128-byte OFSTRUCT stub, a
+//   direct OpenFile declaration, and a manual operator_new/construct pair.
+//   It had no EH frame, placed fields at +0x43C, and had the wrong OpenFile,
+//   constructor, and virtual-action call surfaces.
+// - Clean reconstruction: use the period TPanel vtable (action at +0xB4),
+//   the proven +0x47C panel ownership, a 0x100-byte OFSTRUCT scratch window,
+//   typed RGE_Base_Game/RGE_Prog_Info ownership, the IAT function-pointer
+//   surface for OpenFile, and natural `new TRIBE_Screen_Sed_Menu()`.
+// - Baseline: 1003 bytes/frame 0x434, but the cached panelName result removed
+//   one binary-proven call.  Repeating the predicate call restored all 38
+//   calls and reduced the strict diff to 678 bytes.
+// - Rejected game-pointer declaration/splitting probes: they did not change
+//   the emitted body or made the first path hunk worse, so the direct typed
+//   global surface was restored.
+// - Positive list-first dispatch restored the original ordered 38-call CFG
+//   and moved the checker to block-shape/liveness work.
+// - A named first-OK-path prog_info pointer improved the path preload shape;
+//   a plain cancel-path scenario_dir local then recovered the original global,
+//   list, path, currentLine, and sprintf ordering.  Best current result is
+//   449 differing bytes (82.84% shape, exact size/frame/calls/CFG).
+// - `register` on scenario_dir was a codegen duplicate and was removed from
+//   the living source.  Remaining drift is localized to stack-home/address
+//   offsets and late source-local scheduling; leave this target in scratch.
 
+#include <new.h>
 #include <string.h>
 #include <stdio.h>
 
-extern void* rge_base_game;
-
-// Minimal _OFSTRUCT for this file (used as temp buffer)
+// The original source uses the OFSTRUCT's Reserved1 field as a general
+// scratch string.  The local surface keeps the observed 0x100-byte window.
 struct _OFSTRUCT {
-    char Reserved1[128];
+    char gap_00[4];
+    char Reserved1[252];
 };
 
 class TPanel {
 public:
-    virtual void d00(); virtual void d04();
-    virtual void d08(); virtual void d0C(); virtual void d10();
-    virtual void addRef(int val);
-    virtual void d1C(); virtual void d20(); virtual void d24();
-    virtual void d28(); virtual void d2C(); virtual void d30();
-    virtual void d34(); virtual void d38(); virtual void d3C();
-    virtual void d40(); virtual void d44(); virtual void d48();
-    virtual void d4C(); virtual void d50(); virtual void d54();
-    virtual void d58(); virtual void d5C(); virtual void d60();
-    virtual void d64(); virtual void d68(); virtual void d6C();
-    virtual void d70(); virtual void d74(); virtual void d78();
-    virtual void d7C(); virtual void d80(); virtual void d84();
-    virtual void d88(); virtual void d8C(); virtual void d90();
-    virtual void d94(); virtual void d98(); virtual void d9C();
-    virtual void dA0(); virtual void dA4(); virtual void dA8();
-    virtual void dAC(); virtual void dB0();
-    virtual void d_B4(long a1, long a2, long a3, long a4);
+    virtual ~TPanel();
+#define VPAD1(n) virtual void v##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
+    VPAD32(1) VPAD8(33) VPAD4(41)
+#undef VPAD32
+#undef VPAD16
+#undef VPAD8
+#undef VPAD4
+#undef VPAD2
+#undef VPAD1
+    virtual long action(TPanel* param_1, long param_2,
+                       unsigned long param_3, unsigned long param_4);
+    char gap_04[0xF0];
     char* panelName();
     int get_string(int id, char* buf, int maxlen);
 };
 
 class TEasy_Panel : public TPanel {
 public:
-    long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
+    char gap_F4[0x384];
+    long action(TPanel* param_1, long param_2, unsigned long param_3,
+                unsigned long param_4);
     void popupYesNoDialog(char* msg, char* dialog_name, int h, int w);
     void popupOKDialog(int msg_id, char* unk, int h, int w);
-    char pad_TEasy[0x434];
 };
 
 class TScreenPanel : public TEasy_Panel {
@@ -85,20 +102,25 @@ class TListPanel : public TPanel {
 
 class RGE_Prog_Info {
 public:
-    char gap_00[0x0C];
-    char* scenario_dir;
+    char gap_00[0xC17];
+    char scenario_dir[261];
 };
 
 class RGE_Base_Game {
 public:
-    RGE_Prog_Info* prog_info; // at +0x0C
+    void* vtable_ptr;
+    void* player_game_info;
+    void* scenario_info;
+    RGE_Prog_Info* prog_info;
     int start_scenario_editor(char* path, int val);
 };
 
+extern RGE_Base_Game* rge_base_game;
+
 class TRIBE_Screen_Sed_Menu {
 public:
-    void construct();
     char pad[0x490];
+    TRIBE_Screen_Sed_Menu();
 };
 
 class TRIBE_Screen_Sed_Open : public TScreenPanel {
@@ -112,116 +134,112 @@ public:
 
     TRIBE_Screen_Sed_Open();
     void fillList();
-    long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
+    long action(TPanel* param_1, long param_2, unsigned long param_3,
+                unsigned long param_4);
 };
 
-extern "C" void* __cdecl operator_new(unsigned long sz);
 extern "C" int __cdecl __unlink(const char* path);
-extern "C" int __cdecl OpenFile(const char* name, void* of, unsigned int mode);
+extern "C" int (__stdcall* const OpenFile)(const char* name, void* of,
+                                             unsigned int mode);
 
-long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
+long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
+                                   unsigned long param_3,
+                                   unsigned long param_4)
 {
     char text[556];
     char fileName[257];
     _OFSTRUCT of;
 
-    if (!param_1) {
-        return TEasy_Panel::action(param_1, param_2, param_3, param_4);
-    }
+    if (param_1 != 0) {
+        if (param_1->panelName() != 0 &&
+            strcmp(param_1->panelName(), "Cancel Dialog") == 0) {
+            panel_system.destroyPanel("Cancel Dialog");
+            if (param_2 == 0) {
+                char* line;
+                char* scenario_dir = rge_base_game->prog_info->scenario_dir;
 
-    char* name = param_1->panelName();
-    if (name && strcmp(name, "Cancel Dialog") == 0) {
-        panel_system.destroyPanel("Cancel Dialog");
-        if (!param_2) {
-            char* line;
-            RGE_Base_Game* game = (RGE_Base_Game*)rge_base_game;
+                sprintf(of.Reserved1, "%s%s.scn",
+                        scenario_dir, ((TTextPanel*)list)->currentLine());
+                __unlink(of.Reserved1);
 
-            line = ((TTextPanel*)list)->currentLine();
-            sprintf(of.Reserved1, "%s%s.scn", game->prog_info->scenario_dir, line);
-            __unlink(of.Reserved1);
+                sprintf(of.Reserved1, "%s%s.scx",
+                        rge_base_game->prog_info->scenario_dir,
+                        ((TTextPanel*)list)->currentLine());
+                __unlink(of.Reserved1);
 
-            line = ((TTextPanel*)list)->currentLine();
-            sprintf(of.Reserved1, "%s%s.scx", game->prog_info->scenario_dir, line);
-            __unlink(of.Reserved1);
+                long curr_line = ((TTextPanel*)list)->get_line();
+                ((TTextPanel*)list)->delete_line(curr_line);
 
-            long curr_line = ((TTextPanel*)list)->get_line();
-            ((TTextPanel*)list)->delete_line(curr_line);
-
-            line = ((TTextPanel*)list)->currentLine();
-            if (!line[0]) {
-                okButton->set_disabled(1);
-                deleteButton->set_disabled(1);
-                return 1;
-            }
-        }
-        return 1;
-    }
-
-    // Delete button
-    if (param_1 == (TPanel*)deleteButton && param_2 == 1) {
-        char* line = ((TTextPanel*)list)->currentLine();
-        if (line[0]) {
-            get_string(0x24CA, of.Reserved1, 0x100);
-            sprintf(text + 4, of.Reserved1, ((TTextPanel*)list)->currentLine());
-            popupYesNoDialog(text + 4, "Cancel Dialog", 0x1C2, 100);
-        }
-    }
-
-    // List panel - double click (param_2 == 3)
-    if (param_1 == (TPanel*)list) {
-        if (param_2 == 3) {
-            d_B4((long)okButton, 1, 0, 0);
-            return 1;
-        }
-        return TEasy_Panel::action(param_1, param_2, param_3, param_4);
-    }
-
-    // OK button
-    if (param_1 == (TPanel*)okButton) {
-        if (param_2 != 1) {
-            return TEasy_Panel::action(param_1, param_2, param_3, param_4);
-        }
-        if (((TTextPanel*)list)->numberLines() <= 0) {
-            return 1;
-        }
-
-        RGE_Base_Game* game = (RGE_Base_Game*)rge_base_game;
-        char* line = ((TTextPanel*)list)->currentLine();
-        sprintf(fileName + 4, "%s%s.scn", game->prog_info->scenario_dir, line);
-
-        if (OpenFile(fileName + 4, &of, 0x4000) != -1) {
-            line = ((TTextPanel*)list)->currentLine();
-            sprintf(fileName + 4, "%s.scn", line);
-        } else {
-            line = ((TTextPanel*)list)->currentLine();
-            sprintf(fileName + 4, "%s%s.scx", game->prog_info->scenario_dir, line);
-            if (OpenFile(fileName + 4, &of, 0x4000) != -1) {
                 line = ((TTextPanel*)list)->currentLine();
-                sprintf(fileName + 4, "%s.scx", line);
-            } else {
-                popupOKDialog(0x24CF, 0, 0x1C2, 100);
+                if (line[0] == 0) {
+                    okButton->set_disabled(1);
+                    deleteButton->set_disabled(1);
+                    return 1;
+                }
+            }
+            return 1;
+        }
+
+        if (param_1 == (TPanel*)deleteButton && param_2 == 1) {
+            char* line = ((TTextPanel*)list)->currentLine();
+            if (line[0] != 0) {
+                get_string(0x24CA, of.Reserved1, 0x100);
+                sprintf(text + 4, of.Reserved1,
+                        ((TTextPanel*)list)->currentLine());
+                popupYesNoDialog(text + 4, "Cancel Dialog", 0x1C2, 100);
+            }
+        }
+
+        if (param_1 == (TPanel*)list) {
+            if (param_2 == 3) {
+                ((TPanel*)this)->action((TPanel*)okButton, 1, 0, 0);
                 return 1;
             }
         }
+        else if (param_1 == (TPanel*)okButton) {
+            if (param_2 == 1) {
+                if (((TTextPanel*)list)->numberLines() > 0) {
+                    RGE_Prog_Info* info = rge_base_game->prog_info;
+                    char* line = ((TTextPanel*)list)->currentLine();
+                    sprintf(fileName + 4, "%s%s.scn",
+                            info->scenario_dir, line);
 
-        game->start_scenario_editor(fileName + 4, 0);
-        return 1;
-    }
+                    if (OpenFile(fileName + 4, &of, 0x4000) != -1) {
+                        line = ((TTextPanel*)list)->currentLine();
+                        sprintf(fileName + 4, "%s.scn", line);
+                    }
+                    else {
+                        line = ((TTextPanel*)list)->currentLine();
+                        sprintf(fileName + 4, "%s%s.scx",
+                                rge_base_game->prog_info->scenario_dir, line);
+                        if (OpenFile(fileName + 4, &of, 0x4000) != -1) {
+                            line = ((TTextPanel*)list)->currentLine();
+                            sprintf(fileName + 4, "%s.scx", line);
+                        }
+                        else {
+                            popupOKDialog(0x24CF, 0, 0x1C2, 100);
+                            return 1;
+                        }
+                    }
 
-    // Cancel button
-    if (param_1 == (TPanel*)cancelButton && param_2 == 1) {
-        TPanel* target = panel_system.panel("Scenario Editor Screen");
-        if (target) {
-            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
-        } else {
-            void* mem = operator_new(0x490);
-            if (mem) {
-                ((TRIBE_Screen_Sed_Menu*)mem)->construct();
+                    rge_base_game->start_scenario_editor(fileName + 4, 0);
+                    return 1;
+                }
+                return 1;
             }
-            panel_system.setCurrentPanel("Scenario Editor Menu", 0);
         }
-        panel_system.destroyPanel("Scenario Editor Open");
-        return 1;
+        else if (param_1 == (TPanel*)cancelButton && param_2 == 1) {
+            TPanel* target = panel_system.panel("Scenario Editor Screen");
+            if (target != 0) {
+                panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            }
+            else {
+                new TRIBE_Screen_Sed_Menu();
+                panel_system.setCurrentPanel("Scenario Editor Menu", 0);
+            }
+            panel_system.destroyPanel("Scenario Editor Open");
+            return 1;
+        }
     }
 
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);

@@ -23,6 +23,16 @@
 //   codegen duplicate; it did not create the target's opening push-ecx/local
 //   home or change the broad 247-byte structural gap. Restored the clean
 //   natural source.
+// - Session sa-f2589ce1-r1 dossier confirms no calls, map_row_offset at +8D8C,
+//   terrain-set stride 0x198, tile stride 0x18, and a distinct outer-count
+//   spill at entry-relative -4. A typed byte-offset/count-loop reconstruction
+//   reached exact size and 70.9% shape (295 positional bytes, 139-byte edit
+//   cost), but remained a broad register/home mismatch and was diagnostic only.
+// - Reordered inner/outer cursor initialization, reused y2 as the inner count,
+//   changed the x-bound predicate, scoped the row locals, and tested a narrow
+//   volatile-count diagnostic; the latter groups were duplicates or worse.
+//   Restored the clean natural tile-row source; final unresolved lead is the
+//   target's compiler-selected stack-home/register basin, not behavior/layout.
 
 class RGE_Tile {
 public:

@@ -16,6 +16,14 @@
 //   both stayed in the same 320-byte basin. Keep the direct stores.
 // - Direct outer else-if difficulty syntax, matching exact setup donors, also
 //   stayed identical; retain the simpler period-plausible branch shape.
+// - This session exhausted 10 meaningful hypotheses: positive difficulty guard
+//   worsened layout (+1 byte); scoped/function/branch-local pointer aliases,
+//   named difficulty, register pointer, and explicit low return were duplicate
+//   320-byte codegen; duplicated common stores grew to 405 bytes; the original
+//   tplayer.cpp-style player_difficulty helper emitted an extra direct call.
+// - Restored the audited clean source. Best current evidence remains 320/323
+//   bytes, first mismatch 0051884A: VC5 keeps the param_1 load after jge and
+//   colors 100/50 plus the map_type reload differently from the oracle.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
