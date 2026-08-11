@@ -10,37 +10,58 @@
 // 8: remaining mismatch is localized/broad scheduling around MouseOnScreen branch and shape_draw address arithmetic; not accepted_drift.
 // 9: no inline asm or custom flags tried.
 // 10: left in scratch after natural source/offset pass; needs source-shape/field-layout refinement.
+// 11: made the MouseOnScreen success body the inline arm and left save_area_valid=0 in the late else arm; this restored the original far zero-save branch topology.
+// 12: pre-indexed Shape_Info from the direct next_facet member (`shape_info + this->next_facet`) and passed next_facet directly; this recovered the original EDX facet/EAX scaled-index schedule and exact 747-byte body.
+// 13: corrected the proven TShape::shape_draw long/long/long/uchar ABI and TDrawArea::SetTrans int/uchar ABI; bytes remained exact and decorated declarations now match the original symbols.
+// 14: replaced opaque shape/custom-draw declarations with canonical field widths/ownership from exact Shape/TMousePointer donors; bytes remained exact.
+// final: exact 747-byte match under default VC5 /O2 /Oy; no inline asm or custom flags.
 
 typedef unsigned long ulong;
 typedef unsigned char uchar;
 
 struct RECT4 { long left; long top; long right; long bottom; };
-struct Shape_Info { int a0; int a4; int a8; int aC; int a10; int a14; int Hotspot_X; int Hotspot_Y; };
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+class IDirectDrawSurface;
 
 class TDrawArea {
 public:
     char gap_00[0x3C];
-    void* DrawSurface;
+    IDirectDrawSurface* DrawSurface;
     uchar* Lock(char* name, int flag);
     void Unlock(char* name);
-    void SetTrans(int a, int b);
+    void SetTrans(int a, uchar b);
 };
 
 class TShape {
 public:
-    char gap_00[0x1C];
+    unsigned char* shape;
+    int load_type;
+    int load_size;
+    void* shape_header;
+    void* head;
+    void* offsets;
+    void* FShape;
     Shape_Info* shape_info;
-    uchar shape_draw(TDrawArea* area, int x, int y, int facet, int a, uchar* b);
+    uchar shape_draw(TDrawArea* area, long x, long y, long facet, uchar a, uchar* b);
 };
 
-class IDirectDrawSurface;
 extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
 #define STR_MOUSEPTR_CPP ((char*)0x00584BD0)
 #define STR_MOUSEPTR_POLL ((char*)0x00584C48)
 
 class TMousePointer {
 public:
-    TDrawArea* custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
+    int custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
     char gap_10[8];
     TDrawArea* cursors[16]; TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
     int cWidth; int cHeight; int gWidth; int gHeight; int mouse_x; int mouse_y; int save_x; int save_y;
@@ -89,9 +110,7 @@ void TMousePointer::Poll()
                         if (err != 0) { this->LastddError = err; return; }
                     }
                 }
-                if (this->MouseOnScreen == 0) {
-                    this->save_area_valid = 0;
-                } else {
+                if (this->MouseOnScreen != 0) {
                     RECT4* ptVar1 = &this->mouse_rect;
                     long err = CALL_DD_BLT(this->save_area->DrawSurface, &this->new_save_rect, this->PrimarySurface, ptVar1, 0x1000000, 0);
                     if (err != 0) { this->LastddError = err; this->LastddError = this->GetDDBltError(err); return; }
@@ -107,13 +126,17 @@ void TMousePointer::Poll()
                     if (this->Mouse_Mode == 1) {
                         uchar* p = this->primary_area->Lock(STR_MOUSEPTR_POLL, 1);
                         if (p != 0) {
-                            int f = this->next_facet;
-                            Shape_Info* si = this->Cursor_Shape->shape_info;
-                            this->Cursor_Shape->shape_draw(this->primary_area, si[f].Hotspot_X + ptVar1->left, this->mouse_rect.top + si[f].Hotspot_Y, f, 0, 0);
+                            Shape_Info* si = this->Cursor_Shape->shape_info + this->next_facet;
+                            this->Cursor_Shape->shape_draw(this->primary_area,
+                                si->Hotspot_X + ptVar1->left,
+                                this->mouse_rect.top + si->Hotspot_Y,
+                                this->next_facet, 0, 0);
                             this->primary_area->Unlock(STR_MOUSEPTR_POLL);
                         }
                     }
                     this->last_facet = this->next_facet;
+                } else {
+                    this->save_area_valid = 0;
                 }
                 if (this->Mouse_Mode == 0 && lplpDDClipper != 0) {
                     long err = CALL_DD_SETCLIP(this->PrimarySurface, lplpDDClipper);
