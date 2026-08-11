@@ -21,10 +21,13 @@
 // - Rechecked the ground-truth three-byte tail pad and struct spelling against
 //   the paired setter surface; both were codegen duplicates, leaving the SIB
 //   operand order as the only blocker.
+// - Restoring the period <string.h> context instead of a hand-declared strcpy
+//   surface flips both loop-store SIB encodings and reaches an exact match;
+//   the typed option record and ordinary indexed loop remain unchanged.
 // - Main-agent audit retained the shared named option record used by the paired
 //   setter; no address-expression steering survives.
 
-extern "C" char* strcpy(char* dst, const char* src);
+#include <string.h>
 
 class RGE_Base_Game {
 public:
