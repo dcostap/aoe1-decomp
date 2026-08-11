@@ -1,4 +1,5 @@
 // VA: 00455FF0 RGE_Map::scenario_load (map.cpp:550-581)
+#include <stdlib.h>
 // Attempt log:
 // - Baseline reconstruction follows the exact scenario_save donor: named map
 //   dimensions, a 24-byte RGE_Tile row table, natural nested short loops, and
@@ -14,6 +15,12 @@
 // - Current worker: sequential low-byte accumulators and reusing overlay_info
 //   as the destination were separately tested; both retained the same exact-
 //   size five-byte hunk. Restored the clean typed XOR source.
+// - Current worker: a focused 63-variant header/expression lab isolated the
+//   donor-era <stdlib.h> context as the smallest tested exact context; the
+//   natural unsigned-char expression then emits the target overlay load/XOR.
+// - Exact with <stdlib.h>, default typed ownership, and the existing /GX flags:
+//   334/334 bytes, all eight calls and all CFG blocks aligned. No volatile,
+//   inline asm, or codegen-only source scaffolding is retained.
 
 class RGE_Player;
 class RGE_Game_World;
@@ -47,12 +54,13 @@ void rge_read(int file, void* data, int size);
 
 void RGE_Map::scenario_load(int file, unsigned char* param2)
 {
-    long map_width;
-    long map_height;
+    int iVar3 = file;
+    long local_4;
+    long width;
 
-    rge_read(file, &map_width, 4);
-    rge_read(file, &map_height, 4);
-    this->new_map(map_width, map_height);
+    rge_read(file, &local_4, 4);
+    rge_read(file, &width, 4);
+    this->new_map(local_4, width);
 
     long height_count = this->map_height;
     long h = 0;
@@ -67,9 +75,9 @@ void RGE_Map::scenario_load(int file, unsigned char* param2)
                     unsigned char height_info;
                     unsigned char unused_info;
 
-                    rge_read(file, &overlay_info, 1);
-                    rge_read(file, &height_info, 1);
-                    rge_read(file, &unused_info, 1);
+                    rge_read(iVar3, &overlay_info, 1);
+                    rge_read(iVar3, &height_info, 1);
+                    rge_read(iVar3, &unused_info, 1);
 
                     this->map_row_offset[x][i].terrain_info =
                         (unsigned char)((overlay_info ^
