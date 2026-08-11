@@ -19,6 +19,17 @@
 // the same 255B/7 basin; restored.
 // fresh worker: named int promotion of y before SDI_Draw_Line also duplicated
 // the 255B/7 basin; restored.
+// fresh worker: corrected SDI_Object_ID from int to the binary's long global
+// symbol; emitted code stayed in the same 255B/7 basin.
+// fresh worker: restored the binary-backed static-object tail and early virtual
+// surfaces, then completed the active-sprite-list vtable surface; both were
+// codegen-neutral while making the local ownership canonical.
+// fresh worker: a 25-variant line/y-shadow expression lab found one emitted
+// 255B/7 group for every natural spelling; no variant was retained.
+// fresh worker: adding the donor-era <stdlib.h> context used by exact stat_obj
+// siblings changed only the localized register/order hunk and produced MATCH.
+
+#include <stdlib.h>
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -27,6 +38,8 @@ class RGE_Tile;
 class RGE_Object_List;
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
+class RGE_Object_Node;
+class UnitAIModule;
 
 class RGE_Game_World {
 public:
@@ -64,6 +77,19 @@ public:
     virtual void draw(short facet, short x, short y, short shadow_x,
                       short shadow_y, RGE_Color_Table* color_table,
                       TDrawArea* area);
+    virtual void normal_draw(short facet, short x, short y,
+                             RGE_Color_Table* color_table,
+                             TDrawArea* area);
+    virtual void shadow_draw(short facet, short x, short y,
+                             RGE_Color_Table* color_table,
+                             TDrawArea* area, unsigned char shadow);
+    virtual unsigned char is_animating(RGE_Sprite* sprite);
+    virtual void set_frame(RGE_Sprite* sprite, short frame);
+    virtual unsigned char frame_passed(RGE_Sprite* sprite, short frame);
+    virtual unsigned char looped(RGE_Sprite* sprite);
+    virtual short get_facetindex(RGE_Sprite* sprite, short facet);
+    virtual unsigned char load_node(int value, unsigned char flag,
+                                    RGE_Sprite** sprite);
 };
 
 class RGE_Static_Object {
@@ -75,6 +101,18 @@ public:
     virtual void recycle_out_of_game();
     virtual void draw(TDrawArea* area, short x, short y,
                       RGE_Color_Table* color_table);
+    virtual void shadow_draw(TDrawArea* area, short x, short y,
+                             unsigned char shadow);
+    virtual void normal_draw(TDrawArea* area, short x, short y);
+    virtual void draw_front_frame(TDrawArea* area, short x, short y);
+    virtual void draw_back_frame(TDrawArea* area, short x, short y);
+    virtual void draw_frame(TDrawArea* area, short x, short y);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int file);
+    virtual float teleport(float x, float y, float z);
+    virtual void new_sprite(RGE_Sprite* sprite);
 
     long id;
     RGE_Master_Static_Object* master_obj;
@@ -105,7 +143,16 @@ public:
     short attribute_type_held;
     unsigned char type;
     unsigned char worker_num;
-    char gap_50[0x38];
+    RGE_Object_Node* player_object_node;
+    char gap_54[0x20];
+    UnitAIModule* unitAIValue;
+    int groupCommanderValue;
+    int zoneMapIndex;
+    float groupRangeValue;
+    unsigned char inObstructionMapValue;
+    unsigned char lastInObstructionMapValue;
+    unsigned char underAttackValue;
+    unsigned char gap_87;
 
     void capture_frame(TDrawArea* area, short x, short y);
 };
@@ -127,7 +174,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-extern int SDI_Object_ID;
+extern long SDI_Object_ID;
 extern int SDI_Draw_Line;
 
 void RGE_Static_Object::draw(TDrawArea* area, short x, short y,
