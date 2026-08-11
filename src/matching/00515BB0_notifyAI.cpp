@@ -10,6 +10,10 @@
 // 8: tried /O2 without /Oy; unchanged.
 // 9: current best same-size 531 B; early guard, object/unitAI call surface, module offsets, and call set are right, but broad dispatch/block-placement mismatch remains.
 // 10: left in scratch: not accepted_drift-safe because many event cases are laid out in different order despite behavior-equivalent source.
+// 11: reordered the ordinary event switch so 0x202/0x209/0x20a precede the shared 0x72/0x74/0x201 notify cases; calls/CFG aligned, but the switch table crossed the original boundary.
+// 12: tried an explicit subtraction expression for the 0x202 parameter gate; it added a compare and worsened the structural basin, then restored the prior source.
+// 13: an ordinary two-case switch on param_4 (0x25d/0x26f) recovers the original sub/sub dispatch, 531-byte boundary, and exact bytes.
+// 14: removed a redundant source label before the grouped notify cases; exact output is unchanged. Current candidate is exact and remains typed/canonical except for proven raw module offsets.
 
 class RGE_Static_Object;
 class UnitAIModule;
@@ -58,11 +62,6 @@ void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4,
     }
 
     switch (param_3) {
-    case 0x72:
-    case 0x74:
-    case 0x201:
-        ((TribeTacticalAIModule*)((char*)this->playerAI + 0x1146c))->notify(param_1, param_2, param_3, param_4, param_5, param_6);
-        return;
     case 0x1f9:
         if (param_4 != 0x25d) return;
         {
@@ -73,7 +72,9 @@ void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4,
             return;
         }
     case 0x202:
-        if (param_4 == 0x25d || param_4 == 0x26f) {
+        switch (param_4) {
+        case 0x25d:
+        case 0x26f:
             if (((TribeInformationAIModule*)((char*)this->playerAI + 0xcec))->fullyExploredZone(param_1) != 0 &&
                 ((TribeInformationAIModule*)((char*)this->playerAI + 0xcec))->closestUnexploredTile(param_1, obj->world_x, obj->world_y, &param_5, &param_4) == 1) {
                 ((TribeTacticalAIModule*)((char*)this->playerAI + 0x1146c))->taskExplorer(param_1, param_5, param_4);
@@ -92,6 +93,11 @@ void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4,
         break;
     case 0x20a:
         ((TribeMainDecisionAIModule*)this->playerAI)->tributeNotify(param_1, param_4, param_5);
+        return;
+    case 0x72:
+    case 0x74:
+    case 0x201:
+        ((TribeTacticalAIModule*)((char*)this->playerAI + 0x1146c))->notify(param_1, param_2, param_3, param_4, param_5, param_6);
         return;
     case 0x20d:
         ((TribeInformationAIModule*)((char*)this->playerAI + 0xcec))->addImportantObject(param_4);
