@@ -1894,17 +1894,22 @@
           if (fnRect.width <= 0 || fnRect.height <= 0) {
             continue;
           }
-          const fnFill = fn.filterMatched ? colorForFunction(fn) : "rgba(28,33,41,0.52)";
+          const fnFill = colorForFunction(fn);
           const selectedFn = selected === fn.id;
-          const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : (fn.filterMatched ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.025)");
+          const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.04)";
           const fnStroke = selectedFn ? 1.8 : 0.8;
           const tileArea = fnRect.width * fnRect.height;
+          ctx.save();
+          if (!fn.filterMatched) {
+            ctx.globalAlpha = 0.3;
+          }
           if (state.liveDrag || tileArea < 1500) {
             ctx.fillStyle = fnFill;
             ctx.fillRect(fnRect.x, fnRect.y, fnRect.width, fnRect.height);
           } else {
             fillRoundedRect(ctx, fnRect, Math.min(4, fnRect.width / 3, fnRect.height / 3), fnFill, fnBorder, fnStroke);
           }
+          ctx.restore();
           pushHitRegion(fnRect, fn, { type: "zoom-group", group: group.name });
         }
       }
@@ -1923,27 +1928,30 @@
       for (const placement of placements) {
         const fn = placement.item;
         const rect = insetRect(placement.rect, 1.2);
-        const fill = fn.filterMatched ? colorForFunction(fn) : "rgba(28,33,41,0.52)";
+        const fill = colorForFunction(fn);
         const selectedFn = selected === fn.id;
-        const border = selectedFn ? "rgba(255,255,255,0.95)" : (fn.filterMatched ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.025)");
+        const border = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.08)";
         const strokeWidth = selectedFn ? 2 : 1;
         const tileArea = rect.width * rect.height;
 
+        ctx.save();
+        if (!fn.filterMatched) {
+          ctx.globalAlpha = 0.3;
+        }
         if (state.liveDrag || tileArea < 1500) {
           ctx.fillStyle = fill;
           ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
         } else {
           fillRoundedRect(ctx, rect, 6, fill, border, strokeWidth);
-          if (fn.filterMatched && !state.liveDrag && tileArea >= 2600) {
+          if (!state.liveDrag && tileArea >= 2600) {
             const sheen = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.height);
             sheen.addColorStop(0, "rgba(255,255,255,0.07)");
             sheen.addColorStop(1, "rgba(255,255,255,0.01)");
             fillRoundedRect(ctx, rect, 6, sheen);
           }
-          if (fn.filterMatched) {
-            drawFunctionLabel(ctx, rect, fn, fill);
-          }
+          drawFunctionLabel(ctx, rect, fn, fill);
         }
+        ctx.restore();
         pushHitRegion(rect, fn, { type: "select-function", va: fn.va, group: fn.groupName, insideZoom });
       }
     }
