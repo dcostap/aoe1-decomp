@@ -8,16 +8,13 @@
 // - draft with new/panel calls: EH frame works, 58% diff
 // - cmp operand order fix + added start_scenario_editor call: 5.98% diff
 // - removed <new.h>, direct operator new decl: same 5.98%
-//
-// Remaining diff (~6%):
-// - Jump target displacements differ by 0x0E (14 bytes) due to cascade from
-//   slightly different end-of-function layout
-// - New-result stack slot at [esp+20h] vs original [esp+14h] (+0xC offset)
-// - All other diffs are relocations (39 masked): exception handler address,
-//   string addresses, call targets, globals (panel_system, rge_base_game)
-//
-// Likely needs TU-context / donor-file include context to fix the stack/scheduling
-// basin. Left in scratch as a near-match.
+// - baseline with the natural new/panel calls rebuilt at 516 bytes; the
+//   constructor-result home was [esp+20h] and the fallback had an extra
+//   parameter-1 block.
+// - enclosing the button dispatch in the source's positive `param_1 != 0 &&
+//   param_2 == 1` guard restored the shared fallback tail and exact 502 bytes.
+// - renamed the local game surface to the period TRIBE_Game pointer shape;
+//   emitted code stayed exact and the source is now less speculative.
 
 #include "..\..\include\game_globals.h"
 #include <new.h>
@@ -57,13 +54,15 @@ public:
 
 extern TPanelSystem panel_system;
 
-class RGE_Base_Game_Local {
+class TRIBE_Game {
 public:
     char gap_00[0x4C];
-    void start_scenario_editor(char*, long);
+    int start_scenario_editor(char*, int);
     void disable_input();
     void close();
 };
+
+extern TRIBE_Game* rge_base_game;
 
 static const char s_Scenario_Editor_Menu[] = "Scenario Editor Menu";
 static const char s_Scenario_Editor_Open[] = "Scenario Editor Open";
@@ -101,39 +100,38 @@ public:
 long TRIBE_Screen_Sed_Menu::action(
     TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {
-    if (!param_1 || param_2 != 1)
-        return TEasy_Panel::action(param_1, param_2, param_3, param_4);
+    if (param_1 != 0 && param_2 == 1) {
+        if (param_1 == (TPanel*)button[0]) {
+            rge_base_game->start_scenario_editor(0, 0);
+            return 1;
+        }
 
-    if (param_1 == (TPanel*)button[0]) {
-        ((RGE_Base_Game_Local*)rge_base_game)->start_scenario_editor(0, 0);
-        return 1;
-    }
+        if (param_1 == (TPanel*)button[1]) {
+            new TRIBE_Screen_Sed_Open();
+            panel_system.setCurrentPanel((char*)s_Scenario_Editor_Open, 0);
+            panel_system.destroyPanel((char*)s_Scenario_Editor_Menu);
+            return 1;
+        }
 
-    if (param_1 == (TPanel*)button[1]) {
-        new TRIBE_Screen_Sed_Open();
-        panel_system.setCurrentPanel((char*)s_Scenario_Editor_Open, 0);
-        panel_system.destroyPanel((char*)s_Scenario_Editor_Menu);
-        return 1;
-    }
+        if (param_1 == (TPanel*)button[2]) {
+            new TRIBE_Campaign_Editor_Screen();
+            panel_system.setCurrentPanel((char*)s_Campaign_Editor_Screen, 0);
+            panel_system.destroyPanel((char*)s_Scenario_Editor_Menu);
+            return 1;
+        }
 
-    if (param_1 == (TPanel*)button[2]) {
-        new TRIBE_Campaign_Editor_Screen();
-        panel_system.setCurrentPanel((char*)s_Campaign_Editor_Screen, 0);
-        panel_system.destroyPanel((char*)s_Scenario_Editor_Menu);
-        return 1;
-    }
+        if (param_1 == (TPanel*)button[3]) {
+            rge_base_game->disable_input();
+            new TRIBE_Screen_Main_Menu();
+            panel_system.setCurrentPanel((char*)s_Main_Menu, 0);
+            panel_system.destroyPanel((char*)s_Scenario_Editor_Menu);
+            return 1;
+        }
 
-    if (param_1 == (TPanel*)button[3]) {
-        ((RGE_Base_Game_Local*)rge_base_game)->disable_input();
-        new TRIBE_Screen_Main_Menu();
-        panel_system.setCurrentPanel((char*)s_Main_Menu, 0);
-        panel_system.destroyPanel((char*)s_Scenario_Editor_Menu);
-        return 1;
-    }
-
-    if (param_1 == (TPanel*)close_button) {
-        ((RGE_Base_Game_Local*)rge_base_game)->close();
-        return 1;
+        if (param_1 == (TPanel*)close_button) {
+            rge_base_game->close();
+            return 1;
+        }
     }
 
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
