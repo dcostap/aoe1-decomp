@@ -2,24 +2,34 @@
 // Source: act_expl.cpp lines 73-133
 //
 // Attempt log:
-// Multiple probes: switch table structure and case handler ordering
-//   are a stable codegen shape from VC5 with /GX EH.
-// Remaining gap: compressed switch table data placed in .rdata by VC5,
-//   original has it inline in .text. Also `ja default` uses rel8 in
-//   original but rel32 in rebuilt (default handler placed at end by VC5).
-// Edit diff: 62 bytes (17.3%) — most from alignment shifts.
-// 313/359 equal bytes (87.2%), 14 relocations masked.
-// Left in scratch: backend code-layout shape issue.
+// - Baseline: reconstructed the typed action/object ownership and switch from
+//   act_expl.cpp; /GX is required by the original EH registration.
+// - Layout probe: the moving master owns sprite at +0x18 and move_sprite at
+//   +0xBC.  Correcting those proven offsets fixed both virtual argument loads.
+// - Control-flow probes: VC5 kept the switch default at the final epilogue
+//   when the new-sprite cases were written in the obvious order.  The PDB puts
+//   the shared new-sprite statement at the later act_expl.cpp line 130, while
+//   the original emits it directly after case 3's notify call.  A source-local
+//   shared label reached by case 3 and cases 1/13/14 reproduces that natural
+//   source ordering and the original fall-through block topology.
+// - Exact: the bottom shared-label switch shape, corrected master offsets, and
+//   typed constructor surface produce all 359 bytes exactly.
+// Left in scratch until final validation/promotion: exact source audit.
 // FLAGS: config\flags\00402C00_set_state.rsp (/nologo /c /O2 /GX)
 
 class RGE_Sprite;
 class RGE_Static_Object;
 
-class RGE_Master_Moving_Object {
+class RGE_Master_Static_Object {
 public:
-    char gap_00[0x14];
+    virtual void vf00(void);
+    char gap_04[0x14];
     RGE_Sprite* sprite;
-    char gap_14[0xA4];
+    char gap_1C[0xA0];
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Static_Object {
+public:
     RGE_Sprite* move_sprite;
 };
 
@@ -116,6 +126,11 @@ public:
 class RGE_Action;
 class RGE_Action_List {
 public:
+    virtual void vf00(void);
+    virtual void vf04(void);
+    virtual void vf08(void);
+    virtual unsigned char update(void);
+
     void delete_list(void);
     void add_action(RGE_Action*);
 };
@@ -191,11 +206,7 @@ void RGE_Action_Explore::set_state(unsigned char param_1)
     switch (param_1) {
     case 3:
         this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x25D, 0, 0);
-    case 1:
-    case 13:
-    case 14:
-        this->obj->new_sprite(this->obj->master_obj->sprite);
-        return;
+        goto new_sprite;
 
     case 2:
         this->obj->new_sprite(this->obj->master_obj->sprite);
@@ -208,6 +219,13 @@ void RGE_Action_Explore::set_state(unsigned char param_1)
 
     case 11:
         break;
+
+    case 1:
+    case 13:
+    case 14:
+    new_sprite:
+        this->obj->new_sprite(this->obj->master_obj->sprite);
+        return;
 
     default:
         return;
