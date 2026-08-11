@@ -8,9 +8,9 @@
 // attempt 6: separate empty-list label still merged.
 // attempt 7: wrap the loop in `if (node != 0) { ... return found; } return found;`; VC5 still merged empty/loop-finished returns.
 // attempt 8: /GX and /Ob0 unchanged; /O1 much smaller. No custom flags kept.
-// left in scratch: behavior/call set understood; default build is 368 bytes vs original 381.
-// remaining issue: original keeps two identical found-object return tails (loop-finished and empty-list) and uses the incoming zone_obj stack slot for best distance;
-// rebuilt merges the found-object tails despite volatile/goto/duplicated-source return probes, leaving branch targets and size short by 13 bytes.
+// baseline candidate: restored the same natural declaration and while-scan shape as exact obj_list.cpp siblings; removed volatile/goto scaffolding.
+// probe 1: baseline emitted the exact frame/calls/size but reversed the x87 square/add tree; try x-square before y-square to mirror the oracle's fmul order.
+
 
 class RGE_Master_Static_Object {
 public:
@@ -47,43 +47,46 @@ public:
 RGE_Static_Object* RGE_Object_List::find_by_master_id(long master_id, float x, float y, unsigned char use_state, unsigned char state, RGE_Static_Object* zone_obj)
 {
     int zone;
+    RGE_Object_Node* node;
+    RGE_Static_Object* found;
+    float best_dist;
+
     if (x > -1.0f && y > -1.0f && zone_obj != 0) {
         zone = zone_obj->lookupZone((int)x, (int)y) & 0xff;
     } else {
         zone = -1;
     }
 
-    RGE_Object_Node* node = this->list;
-    RGE_Static_Object* volatile found_obj = 0;
-    float best_dist = -1.0f;
-    if (node != 0) {
-    do {
+    node = this->list;
+    found = 0;
+    best_dist = -1.0f;
+    while (node != 0) {
         RGE_Static_Object* obj = node->object;
-        if (obj != 0 && obj->master->id == master_id) {
-            if (!use_state || obj->object_state == state) {
-                if (x == -1.0f || y == -1.0f) {
-                    return node->object;
-                }
-                if (zone > -1) {
-                    if ((zone_obj->lookupZone((int)obj->world_x, (int)obj->world_y) & 0xff) != zone) {
-                        goto next_node;
+        if (obj != 0) {
+            if (obj->master->id == master_id) {
+                if (!use_state || obj->object_state == state) {
+                    if (x == -1.0f || y == -1.0f) {
+                        return node->object;
                     }
-                }
-                float diff_x = x - node->object->world_x;
-                float diff_y = y - node->object->world_y;
-                float dist = diff_y * diff_y + diff_x * diff_x;
-                if (best_dist == -1.0f || dist < best_dist) {
-                    best_dist = dist;
-                    found_obj = node->object;
+                    if (zone > -1) {
+                        if ((zone_obj->lookupZone((int)obj->world_x, (int)obj->world_y) & 0xff) != zone) {
+                            goto next_node;
+                        }
+                    }
+                    RGE_Static_Object* current = node->object;
+                    float diff_x = x - current->world_x;
+                    float diff_y = y - current->world_y;
+                    float dist = diff_x * diff_x + diff_y * diff_y;
+                    if (best_dist == -1.0f || best_dist > dist) {
+                        best_dist = dist;
+                        found = current;
+                    }
                 }
             }
         }
 next_node:
         node = node->next;
-    } while (node != 0);
-
-    return found_obj;
     }
 
-    return found_obj;
+    return found;
 }
