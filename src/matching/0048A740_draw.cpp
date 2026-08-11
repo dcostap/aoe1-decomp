@@ -1,16 +1,18 @@
 // 0048A740 RGE_Panel_Time::draw (805 bytes, rpnl_tim.cpp lines 47-138)
 //
 // Attempt log:
-// Probe 1-5: see previous scratch (gap-based layouts, manual strlen loops)
-// Probe 6-8: various experiments (my_strlen, member fcn ptrs)
-// Probe 9-10: class layouts from inventory type dumps, correct TPanel offsets
-// Probe 11: strlen() from <string.h> for inline repne scasb (3 of 3 match)
-// Probe 12: void* vt local for vtable persistence (edi holds vtable, old_font in ebx reg)
-//
-// Status: Layout correct, 3x inline strlen, vtable saved in register.
-// Remaining ~37 bytes: register alloc (edi vs ebx for vtable), stack frame (0x80 vs 0x7C),
-// old_font in register vs stack. Variant_lab candidate for register/scheduling tune.
-// Leaving in scratch.
+// Prior scratch probes established the typed panel offsets and the three inline
+// strlen paths; gap-based layouts and manual strlen loops were inferior.
+// This pass restored the period helper ABI (int get_paused, long countdown
+// reference, and TPanel-owned get_string), and changed the player loop to the
+// binary-proven guarded do/while form.
+// GetDc is a status guard; all GDI calls use the named TDrawArea::DrawDc member,
+// matching the repeated +0x38 reloads.  Inlining get_string in sprintf restores
+// the observed countdown push before the member call.
+// The final source uses inherited draw_setup(0)/draw_finish() calls and the
+// canonical TPanel/RGE_Panel_Time ownership surface.  Unused vtable scaffolding
+// was removed after it proved codegen-neutral.
+// Exact under config/flags/default.rsp: 805/805 bytes, 0.0000% diff.
 
 #include "..\..\include\game_globals.h"
 #include <windows.h>
@@ -54,19 +56,27 @@ public:
     int paused;
     char _gap_1C0[0x234];
     RGE_Game_World* world;
-    bool get_paused();
-    void get_countdown_timer(int player_index, long* result);
+    int get_paused();
+    void get_countdown_timer(long player_index, long& result);
 };
 
-class RGE_Panel_Time {
+class TPanel {
 public:
-    int field_04;
-    int field_08;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panelNameValue;
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void vf20();
+    virtual void vf24();
+    virtual void draw_setup(int value);
+    virtual void draw_finish();
+    virtual void draw();
+
+    char _gap_04[0x1C];
     TDrawArea* render_area;
     char _gap24[0x48];
     int active;
@@ -77,6 +87,11 @@ public:
     char _gap9C[0x44];
     int display_changed_count;
     char _gapE4[0x10];
+    char* get_string(int id);
+};
+
+class RGE_Panel_Time : public TPanel {
+public:
     void* font;
     long game_time;
     long last_game_time;
@@ -85,7 +100,6 @@ public:
 
     virtual void draw();
     virtual long handle_idle();
-    char* get_string(int id);
 };
 
 void RGE_Panel_Time::draw()
@@ -93,30 +107,28 @@ void RGE_Panel_Time::draw()
     if (this->render_area == 0 || this->visible == 0 || this->active == 0)
         return;
 
-    void* vt = *(void**)this;
-    ((void (__stdcall *)(int))(((void**)vt)[10]))(0);
+    this->draw_setup(0);
 
     this->display_changed_count++;
 
-    HDC dc = (HDC)this->render_area->GetDc("rpnl_tim::draw");
-
     HGDIOBJ old_font;
-    if (dc != 0) {
-        SelectClipRgn(dc, (HRGN)this->clip_rgn);
-        old_font = SelectObject(dc, (HGDIOBJ)this->font);
+    if (this->render_area->GetDc("rpnl_tim::draw") != 0) {
+        SelectClipRgn(this->render_area->DrawDc, (HRGN)this->clip_rgn);
+        old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
 
         if (rge_base_game->get_paused()) {
-            SetBkColor(dc, 0xFFFFFF);
-            SetBkMode(dc, 2);
-            SetTextColor(dc, 0xFF);
+            SetBkColor(this->render_area->DrawDc, 0xFFFFFF);
+            SetBkMode(this->render_area->DrawDc, 2);
+            SetTextColor(this->render_area->DrawDc, 0xFF);
             {
                 char str[100];
                 sprintf(str, "Paused");
-                TextOutA(dc, this->render_rect.left, this->render_rect.top - 2, str, strlen(str));
+                TextOutA(this->render_area->DrawDc, this->render_rect.left,
+                         this->render_rect.top - 2, str, strlen(str));
             }
         } else {
-            SetBkMode(dc, 1);
-            SetTextColor(dc, 0xFFFFFF);
+            SetBkMode(this->render_area->DrawDc, 1);
+            SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
 
             int t = this->game_time;
             int m = 0;
@@ -135,7 +147,8 @@ void RGE_Panel_Time::draw()
                 char str[100];
                 sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", h, m, t,
                         (double)rge_base_game->world->game_speed);
-                TextOutA(dc, this->render_rect.left, this->render_rect.top - 2, str, strlen(str));
+                TextOutA(this->render_area->DrawDc, this->render_rect.left,
+                         this->render_rect.top - 2, str, strlen(str));
             }
 
             int pi = 1;
@@ -144,9 +157,9 @@ void RGE_Panel_Time::draw()
             if (pc > 1) {
                 int yo = 13;
 
-                while (pi < pc) {
+                do {
                     long ct;
-                    rge_base_game->get_countdown_timer(pi, &ct);
+                    rge_base_game->get_countdown_timer(pi, ct);
 
                     if (ct >= 0) {
                         PALETTEENTRY pe;
@@ -159,25 +172,25 @@ void RGE_Panel_Time::draw()
                         COLORREF c = (((pe.peBlue & 0xFF) << 8 | (pe.peGreen & 0xFF)) << 8 |
                                        (pe.peRed & 0xFF));
 
-                        SetTextColor(dc, c);
+                        SetTextColor(this->render_area->DrawDc, c);
 
-                        char* ys = this->get_string(0x2C24);
                         {
                             char str[100];
-                            sprintf(str, ys, ct);
-                            TextOutA(dc, this->render_rect.left, yo + this->render_rect.top, str, strlen(str));
+                            sprintf(str, this->get_string(0x2C24), ct);
+                            TextOutA(this->render_area->DrawDc, this->render_rect.left,
+                                     yo + this->render_rect.top, str, strlen(str));
                         }
                         yo += 13;
                     }
                     pi++;
-                }
+                } while (pi < pc);
             }
         }
 
-        SelectObject(dc, old_font);
-        SelectClipRgn(dc, 0);
+        SelectObject(this->render_area->DrawDc, old_font);
+        SelectClipRgn(this->render_area->DrawDc, 0);
         this->render_area->ReleaseDc("rpnl_tim::draw");
     }
 
-    ((void (__stdcall *)())((void**)vt)[11])();
+    this->draw_finish();
 }
