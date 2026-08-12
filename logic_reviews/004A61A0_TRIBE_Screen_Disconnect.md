@@ -34,11 +34,27 @@ compiler steering.
 
 ## Review rounds
 
-No blind review has completed.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-97a14b14` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-a45a6ec8` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers confirmed the complete constructor path: base construction,
+field stores, setup call and arguments, failure flag, success calls, return,
+EH registration, cleanup ownership, partial construction, and malformed-pointer
+fault order.
+
+DeepSeek found no definite difference. Luna found four class-surface ABI risks:
+the parameterless `TPanel::setup`, `set_positioning` declaration identity, a
+spurious `TScreenPanel::create_button` override, and wrong trailing types on a
+`create_text` virtual declaration. These can alter vtable contents outside the
+constructor and require correction before review can continue.
 
 ## Main-agent adjudication
 
-Pending.
+Constructor behavior is confirmed. The virtual declaration findings remain
+open. Return this target to normal source correction. Do not promote it from
+this round.
 
 ## Integrated changes
 
@@ -47,4 +63,5 @@ order before phase entry.
 
 ## Final decision
 
-Pending blind review.
+Hold. Correct and validate the class virtual surface, then start a fresh blind
+cohort on the revised candidate.
