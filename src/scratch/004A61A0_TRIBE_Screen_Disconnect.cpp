@@ -57,19 +57,35 @@
 //   setup conditional, direct period-style calls, and /GX virtual surface.
 //   No unsupported codegen steering remained. Proven layout, four calls,
 //   setup-failure assignment, EH, and partial construction are preserved.
+// - ABI2 corrected TPanel::setup to the seven-argument TDrawArea*/parent
+//   surface and set_positioning to PositionMode plus long parameters.
+//   The executable vtable at 00573518 confirms those slots at +04 and +18.
+//   Its TEasy slots use the inherited create_button and create_text methods;
+//   removed the spurious TScreenPanel child declarations. TEasy create_text
+//   keeps int trailing alignment, centering, and wrap parameters.
+// - ABI2 baseline and child-surface removal were codegen duplicates: 91-byte
+//   positional drift and the 19-byte duplicated EH cleanup remain unchanged.
+// - Added the binary-proven handle_idle (+4C) and action (+B4) overrides to
+//   the local class surface; the constructor code remains unchanged.
 
 struct tagRECT;
 class TDrawArea;
+enum PositionMode {
+    POSITION_MODE_DEFAULT = 0
+};
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup();
+    virtual long setup(TDrawArea* draw_area, TPanel* parent, long left,
+                       long top, long width, long height,
+                       unsigned char value);
     virtual void set_rect(tagRECT rect);
     virtual void set_rect(long left, long top, long right, long bottom);
     virtual void set_color(unsigned char color);
     virtual void set_active(int active);
-    virtual void set_positioning(int mode, int a2, int a3, int a4, int a5,
-                                 int a6, int a7, int a8, int a9,
+    virtual void set_positioning(PositionMode mode, long a2, long a3,
+                                 long a4, long a5, long a6, long a7,
+                                 long a8, long a9,
                                  TPanel* a10, TPanel* a11, TPanel* a12,
                                  TPanel* a13);
     virtual void set_fixed_position(long left, long top, long right, long bottom);
@@ -202,12 +218,6 @@ public:
     long setup(TDrawArea* draw_area, char* info, long id, int value);
     char* get_string(int id);
     int get_string(int id, char* buffer, int length);
-    int create_text(TPanel* parent, TTextPanel** out, char* text,
-                    long x, long y, long width, long height, long font,
-                    long align, long center, long wrap);
-    int create_button(TPanel* parent, TButtonPanel** out, long id,
-                      long a4, long a5, long a6, long a7, long a8,
-                      long a9, long a10, long a11);
 };
 
 class RGE_Base_Game {
@@ -228,6 +238,9 @@ public:
     TButtonPanel* close_button;
 
     virtual ~TRIBE_Screen_Disconnect();
+    virtual long handle_idle();
+    virtual long action(TPanel* panel, long command, unsigned long p3,
+                        unsigned long p4);
     TRIBE_Screen_Disconnect(int mode);
 };
 

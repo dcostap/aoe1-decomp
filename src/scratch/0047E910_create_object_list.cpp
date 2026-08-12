@@ -18,6 +18,13 @@
 // - Final bounded result: structural parity is good (size/frame/calls exact),
 //   but byte matching remains unresolved in the initial local schedule and
 //   late cursor/id register/stack-home allocation. Left in scratch.
+// - Fresh pass: packet, same-TU donors, ABI evidence, dossier, and focused
+//   assembly donors confirm the typed player/master-object/list-info model.
+// - Fresh probes tried pointer/count declaration order, direct initialization,
+//   short counter reuse, shared cursor scope, and ordinary while/for scans.
+//   The while form improved block coverage but worsened positional bytes.
+// - Restored this clean natural candidate. Remaining lead is the original
+//   VC5 local-home and late cursor/id allocation basin, not behavior or ABI.
 
 #include "..\..\include\game_globals.h"
 

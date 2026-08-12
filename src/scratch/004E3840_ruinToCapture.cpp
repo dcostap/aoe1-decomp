@@ -16,6 +16,12 @@
 // - A volatile result-local probe reached the expected 393-byte size but
 //   changed the saved-register basin and broadened positional drift; rolled
 //   back.  The living source remains typed and nonvolatile.
+// - Fresh pass: declaration and initialization order, selected-result store
+//   order, nested candidate branches, and proven polymorphic object surfaces
+//   either duplicated the 383-byte basin or broadened drift; rolled back.
+// - A 12-case lab covering natural local declaration orders and direct versus
+//   indexed result-address forms emitted one identical 383-byte group.  No
+//   new source-shape lead remains in this basin.
 // - Paused after the ten-hypothesis budget.  Remaining localized gap is the
 //   original townCenter/result callee-save allocation and the associated x87
 //   argument scratch-slot order; no call target, CFG, frame, or field-layout

@@ -8,6 +8,16 @@
 //   and case-1/case-3 versus case-2 virtual-call topology are unresolved.
 // - Explicit shared-label and common-tail switch experiments were diagnostic only and rolled
 //   back; retain ordinary nested visibility and switch source in scratch for the next worker.
+// - Fresh pass: testing an int draw-level local. The original zero-extends map_draw_level into
+//   a callee-save register before its jump table, while the prior unsigned-char source lowered
+//   the dispatch into a decrement chain and lost one draw_object call.
+// - int level plus an explicit case 0 produced the closest clean dispatch basin (339 differing
+//   bytes, 384 emitted bytes), but VC5 still folded case 2 into the case-3 draw_object site.
+// - Switch-arm order, case-zero/default exit spelling, and an inline case-3 color assignment
+//   did not change that basin. Int working-color locals and a common call tail added a frame or
+//   widened the function, so those diagnostics were rolled back.
+// - Final validated candidate keeps the ordinary typed switch and separate case-two return;
+//   remaining structural gaps are this/player register coloring and the folded virtual call.
 
 extern unsigned long* unified_map_offsets[];
 
@@ -197,7 +207,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* object,
         (visibility != 0x80 || object->master_obj->fog_flag == 0))
         return;
 
-    unsigned char level;
+    int level;
     if (object->type == 0x19) {
         if (visibility == 0x0F)
             return;
@@ -221,6 +231,8 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* object,
     }
 
     switch (level) {
+    case 0:
+        return;
     case 2:
         this->draw_object(col, (short)row, color1, 2, object);
         return;
