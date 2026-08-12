@@ -1,148 +1,238 @@
-// 004862B0 RGE_RMM_Object_Generator::place_avoid_objects(...)
-// Source: rmm_obj.cpp lines 255-324
+// 004862B0 RGE_RMM_Object_Generator::place_avoid_objects
+// Source: rmm_obj.cpp lines 255-324.
 // Attempt log:
-// - Initial natural source from packet/decompiler.
-// - Fixed RGE_RMM_Object_Generator layout after first compile: scratch is +0x20, map_info +0x30, avoid list +0x12C8, avoid_count +0x18F8.
-// - Replaced manual byte loop with `memset(this->scratch, 1, width*height)`; VC5 inlines it into the original `mov eax,01010101h` / `rep stosd` / `rep stosb` family.
-// - Corrected can_place_on virtual surface to 10 explicit arguments (land, x/y floats, and seven ints) to match the ten pushes before vcall +0x20.
-// - Current build compiles but check_function stops: rebuilt .text is 560 bytes vs original 568. Structure is close after memset/layout fixes, but still different register allocation and frame pressure: rebuilt keeps `this` in EBX and object def in ESI with 0x24 local frame, while original keeps `this` in ESI, object def in EDI, and has 0x30 local frame. Remaining differences affect stack local offsets and later loop layout, not safe accepted drift. No inline asm.
+// - Reconstructed the function from the typed random-map and object surfaces.
+// - The input record is RGE_Object_Info_Line; player_id selects a world player,
+//   and that player's master object supplies radius and placement methods.
+// - The original virtual calls are master_object +0x20 and player +0x94.
+//   The old local stubs used the wrong object ownership and virtual slots.
+// - Restored the inherited random-map layout and the exact RGE_Object_Info
+//   field ownership. This fixed all direct-call and virtual-call identities.
+// - A volatile count home reproduced the observed stack count and gave a
+//   568-byte build with 53 differing bytes. It was diagnostic compiler
+//   steering, so the final source restores the natural plain count.
+// - Pointer stack helpers match the exact random-map ABI donor. Operand and
+//   player-index scheduling variants were codegen duplicates.
+// - Final natural source is 556 bytes with a 0x2C frame and 426 differing
+//   bytes. The closer volatile form remains diagnostic evidence only.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
-class RGE_Map_Object;
-class RGE_Map_Land;
 
-struct Map_Stack { int a; int b; int c; int d; };
-
-struct AvoidArea { int x; int y; char gap[8]; };
-struct ObjectDef {
-    int object_id;      // +0
-    int terrain_mask;   // +4
-    unsigned char type; // +8
-    char gap09[0x14-0x09];
-    int count;          // +14
-    char gap18[4];
-    int land_id;        // +1c
-    char gap20[4];
-    int radius;         // +24
-    char gap28[4];
-    int area_remove;    // +2c
+struct Map_Stack {
+    long x;
+    long y;
+    float cost;
+    float total_cost;
+    Map_Stack* next;
+    Map_Stack* prev;
 };
 
-class RGE_Map_Tile_Object {
-public:
-    char gap[5];
+struct RGE_Tile {
+    char gap_00[5];
     unsigned char terrain;
+    char gap_06[0x18 - 0x06];
 };
 
-class RGE_Map_Row {
+struct RGE_Object_Info_Line {
+    long obj_id;
+    long terrain;
+    unsigned char group_flag;
+    unsigned char scale_flag;
+    unsigned char gap_0a[2];
+    long object_number_per_group;
+    long object_number_varience;
+    long number_of_groups;
+    long group_area;
+    long player_id;
+    long land_id;
+    long land_inner_radius;
+    long land_outer_radius;
+    long object_exclusion_zone;
+};
+
+struct RGE_Land_Point_Info_Line {
+    long x;
+    long y;
+    long id;
+    long player_id;
+};
+
+struct RGE_Object_Info {
+    RGE_Object_Info_Line objects[99];
+    long object_num;
+    RGE_Land_Point_Info_Line lands[99];
+    long land_num;
+};
+
+class RGE_Map;
+class RGE_Random_Map_Module;
+class RGE_Player;
+
+class RGE_Master_Static_Object {
 public:
-    RGE_Map_Tile_Object* tiles;
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual unsigned char can_place(RGE_Player*, float, float, int, int, int, int, int, int, int);
+    char gap_04[0x2c];
+    float radius_x;
+    float radius_y;
 };
 
-class RGE_Map_Object {
+class RGE_Player {
 public:
-    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-    virtual char can_place_on(RGE_Map_Land* land, float x, float y, int, int, int, int, int, int, int);
-    char gap_04[0x30-4];
-    float x;
-    float y;
-    virtual void place(int object_id, float x, float y, int, int);
+    virtual void p00();
+    virtual void p01();
+    virtual void p02();
+    virtual void p03();
+    virtual void p04();
+    virtual void p05();
+    virtual void p06();
+    virtual void p07();
+    virtual void p08();
+    virtual void p09();
+    virtual void p10();
+    virtual void p11();
+    virtual void p12();
+    virtual void p13();
+    virtual void p14();
+    virtual void p15();
+    virtual void p16();
+    virtual void p17();
+    virtual void p18();
+    virtual void p19();
+    virtual void p20();
+    virtual void p21();
+    virtual void p22();
+    virtual void p23();
+    virtual void p24();
+    virtual void p25();
+    virtual void p26();
+    virtual void p27();
+    virtual void p28();
+    virtual void p29();
+    virtual void p30();
+    virtual void p31();
+    virtual void p32();
+    virtual void p33();
+    virtual void p34();
+    virtual void p35();
+    virtual void p36();
+    virtual void place_object(long obj_id, float x, float y, int, int);
+    char gap_04[0x20];
+    RGE_Master_Static_Object** master_objects;
 };
 
-class RGE_Map_Land {
+class RGE_Game_World {
 public:
-    int id;
-    char gap[0x20];
-    RGE_Map_Object*** objects_by_type;
+    char gap_00[0x40];
+    RGE_Player** players;
 };
 
-class RGE_WorldMapInfo { public: char gap[0x40]; RGE_Map_Land** lands; };
-
-class RGE_RMM_Object_Generator {
+class RGE_Random_Map_Module {
 public:
-    char gap_00[0x10];
-    RGE_Map_Row** map_rows;
-    int width;
-    int height;
-    char gap_1C[4];
-    unsigned char* scratch;
-    char gap_24[0x30-0x24];
-    RGE_WorldMapInfo* map_info;
-    char gap_34[0x12C8-0x34];
-    AvoidArea avoid[99];
-    int avoid_count;
-
-    void set_search_area(int x, int y, int radius, int flag);
-    void init_stack(Map_Stack* s);
-    void deinit_stack(Map_Stack* s);
-    void make_placement_stack(Map_Stack* s, int, int, int, int);
-    int pop_stack(Map_Stack* s, int* x, int* tile_x, int* y);
-    void remove_area_from_lists(int x, int y, int radius);
-    void place_group(ObjectDef* def, int x, int y, RGE_Map_Land* land);
-    void place_cluster(ObjectDef* def, int x, int y, RGE_Map_Land* land);
-    void place_avoid_objects(ObjectDef* def, int unused);
+    virtual unsigned char generate();
+    RGE_Random_Map_Module* parent;
+    void* list;
+    RGE_Map* map;
+    void* map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    unsigned char* search_map;
+    void* search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
 };
 
-void RGE_RMM_Object_Generator::place_avoid_objects(ObjectDef* def, int unused)
+class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
+public:
+    RGE_Game_World* world;
+    RGE_Object_Info info;
+
+    void set_search_area(long, long, long, unsigned char);
+    void init_stack(Map_Stack*);
+    void deinit_stack(Map_Stack*);
+    void make_placement_stack(Map_Stack*, long, long, long, long);
+    Map_Stack* pop_stack(Map_Stack*, long*, long*, float*);
+    void remove_area_from_lists(long, long, long);
+    void place_group(RGE_Object_Info_Line&, long, long, RGE_Player*);
+    void place_cluster(RGE_Object_Info_Line&, long, long, RGE_Player*);
+    void place_avoid_objects(RGE_Object_Info_Line&, long);
+};
+
+void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, long unused)
 {
     Map_Stack stack;
-    int x;
-    int tile_x;
-    int y;
-    int count;
+    long x;
+    long tile_x;
+    long y;
+    long count;
     float fx;
     float fy;
-    int tmp;
-    RGE_Map_Land* land;
-    RGE_Map_Object* obj;
+    short zone;
+    RGE_Player* player;
+    RGE_Master_Static_Object* master;
     int i;
 
-    memset(this->scratch, 1, this->width * this->height);
+    memset(this->search_map, 1, this->map_width * this->map_height);
 
-    for (i = 0; i < this->avoid_count; i++) {
-        this->set_search_area(this->avoid[i].x, this->avoid[i].y, def->radius, 0);
+    for (i = 0; i < this->info.land_num; i++) {
+        this->set_search_area(this->info.lands[i].x, this->info.lands[i].y,
+                              info.land_inner_radius, 0);
     }
 
     this->init_stack(&stack);
     this->make_placement_stack(&stack, -1, -1, -1, -1);
 
-    if (def->land_id <= -1) tmp = 0; else tmp = def->land_id;
-    land = this->map_info->lands[tmp];
-    count = def->count;
+    player = this->world->players[
+        info.player_id & (info.player_id <= -1 ? 0 : -1)];
+    count = info.number_of_groups;
 
-    if (this->pop_stack(&stack, &x, &tile_x, &y) && count > 0) {
+    if (this->pop_stack(&stack, &x, &tile_x, (float*)&y) && count > 0) {
         do {
-            if (def->terrain_mask >= 0) {
-                unsigned char terr = this->map_rows[x]->tiles[tile_x].terrain & 0x1F;
-                if ((int)terr != def->terrain_mask) goto next;
+            if (info.terrain >= 0) {
+                if ((((RGE_Tile**)this->map_row_offset)[x][tile_x].terrain & 0x1f) !=
+                    (unsigned int)info.terrain) {
+                    goto next;
+                }
             }
 
             fx = (float)tile_x;
-            obj = land->objects_by_type[def->object_id][0];
             fy = (float)x;
-            tmp = (int)obj->x;
-            if (obj->x - (float)tmp >= 0.5f) fx -= 0.5f;
-            tmp = (int)obj->y;
-            if (obj->y - (float)tmp >= 0.5f) fy -= 0.5f;
+            master = player->master_objects[info.obj_id];
+            zone = (short)(int)master->radius_x;
+            if (master->radius_x - (float)zone > 0.0f) {
+                fx = fx - -0.5f;
+            }
+            zone = (short)(int)master->radius_y;
+            if (master->radius_y - (float)zone > 0.0f) {
+                fy = fy - -0.5f;
+            }
 
-            if (!obj->can_place_on(land, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
-                this->remove_area_from_lists(x, tile_x, def->area_remove);
-                switch (def->type) {
+            if (!master->can_place(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
+                this->remove_area_from_lists(tile_x, x, info.object_exclusion_zone);
+                switch (info.group_flag) {
                 case 0:
-                    land->objects_by_type[def->object_id][0]->place(def->object_id, fx, fy, 0, 1);
+                    player->place_object(info.obj_id, fx, fy, 0, 1);
                     break;
                 case 1:
-                    this->place_group(def, x, tile_x, land);
+                    this->place_group(info, tile_x, x, player);
                     break;
                 case 2:
-                    this->place_cluster(def, x, tile_x, land);
+                    this->place_cluster(info, tile_x, x, player);
                     break;
                 }
                 count--;
             }
 next:
             ;
-        } while (this->pop_stack(&stack, &x, &tile_x, &y));
+        } while (this->pop_stack(&stack, &x, &tile_x, (float*)&y));
     }
     this->deinit_stack(&stack);
 }
