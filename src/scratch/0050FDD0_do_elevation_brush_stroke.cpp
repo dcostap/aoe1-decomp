@@ -93,6 +93,12 @@
  * both reverse arms to apply both r updates before c worsened the result to 27 bytes.
  * Restored the pinned 7-byte clean source; call ABI, behavior, and cleanup calls stay
  * unchanged.
+ * follow-50FDD0-r1 probe 1: explicit long promotion for the reverse-arm byte term,
+ * based on the RGE elevation donor's typed long endpoint arithmetic; codegen duplicate,
+ * so the clean direct-byte source remains authoritative.
+ * follow-50FDD0-r1 probe 2: register-qualified reverse endpoint temporaries, testing
+ * whether the RGE donor's local temporary declaration controls the remaining move order;
+ * codegen duplicate, so ordinary long locals remain authoritative.
  */
 
 class RGE_Map {

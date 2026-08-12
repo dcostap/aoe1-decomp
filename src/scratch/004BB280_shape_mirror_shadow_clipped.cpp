@@ -1,196 +1,265 @@
 // 004BB280 TShape::shape_mirror_shadow_clipped
 // Shape.cpp
 // Attempt log:
-// try 1: reconstructed from asm and sibling mirror clipped/shadow unclipped attempts: mirrored RLE decoder with clipping and shadow table.
-// try 2: modeled TDrawArea Bits +8, Height +0x1C, Orien +0x24 and AlignedWidth() pitch call.
-// try 3: modeled TShape shape_header at +0x0C and RLE source as header + 0x18.
-// try 4: implemented negative-orientation destination formula `(y - Height + 1) * pitch + x + 1` and positive `y * pitch + x + 1`.
-// try 5: implemented top-row skip loop with odd literal runs, zero extended runs, even skip/end packets.
-// try 6: implemented first clipped band (x > max_x) with state values 1/2/3 matching asm's state-style transitions.
-// try 7: implemented middle in-bounds band as backward shadow writes `*--dst = table[*dst]`.
-// try 8: implemented final off-left drain loop to consume remaining RLE packets after clipped span.
-// try 9: used helper function for repeated shadow loop; compiled equal 857B but broad 94.28% diff, first mismatch at frame/prologue (`sub esp,10h` vs `sub esp,8`).
-// try 10: replaced helper with macro/inlined shadow loop; still equal 857B but broad 95.33% diff, first mismatch remains prologue/parameter offsets.
-// tried preserving sibling source style from 004BAC00 and 004BAAF0; this function needs original's two-local frame and precise ESI/EBX/EDI/EBP roles.
-// left in scratch: behavior surface is broad but not exact; no accepted_drift because mismatch is broad from prologue/register allocation and many RLE block layouts.
+// Previous workers reconstructed the RLE state machine with the wrong formal
+// argument order and compiler-steering cursor forms. This pass starts again
+// from the exact mirror and shadow siblings.
+//
+// fresh shape pass:
+// - restored the period clipped-renderer ABI: shape origin, then four clip
+//   bounds, with the shadow table last;
+// - used the same signed-pitch destination and vertical skip structure as the
+//   exact mirror siblings;
+// - kept one shared byte count and ordinary inline shadow loops for each RLE
+//   band. No raw offsets, fake volatility, or inline assembly remain.
+// Probe notes:
+// - Correcting the ABI and row ownership changed the 1073-byte first build
+//   into a 998-byte candidate with the proven single AlignedWidth call.
+// - Moving command/state to shared locals recovered the original 0x8 frame.
+// - Advancing literal source spans before shadow branches reduced the body to
+//   941 bytes and aligned the repeated shadow loops.
+// - Reusing shape_y1 as the row counter was source-plausible but codegen
+//   neutral. The typed SHADOW_BACK idiom then reached 928 bytes and 867
+//   strict differing bytes, the retained codegen best.
+// - A single byte overlay and split pitch assignment were rolled back. They
+//   worsened shape or setup allocation. No behavior or call uncertainty
+//   remains; the unresolved gap is the VC5 prologue/register and home basin.
 
 typedef unsigned char byte;
 
-struct Shape_Header { long bounds, origin, xmin, ymin, xmax, ymax; };
+#define SHADOW_BACK(dst_, table_, count_) do { \
+    unsigned int shadow_count_ = (unsigned int)(count_); \
+    while (shadow_count_-- != 0) { \
+        --(dst_); \
+        *(dst_) = (table_)[*(dst_)]; \
+    } \
+} while (0)
 
-struct TDrawArea {
+struct Shape_Header {
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
+};
+
+class TDrawArea {
+public:
     char gap_00[8];
     byte* Bits;
-    char gap_0C[0x10];
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    char ClipRect[0x10];
+    char _tail_38[0xC8];
+
+    long AlignedWidth();
+};
+
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
+
+struct Shape_File_Header;
+struct SLhape_File_Header;
+
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
     long Height;
-    char gap_20[4];
-    long Orien;
-    long AlignedWidth(void);
+    long Hotspot_X;
+    long Hotspot_Y;
 };
 
 class TShape {
 public:
     byte* shape;
-    long load_type;
-    long load_size;
+    int load_type;
+    int load_size;
     Shape_Header* shape_header;
-    byte shape_mirror_shadow_clipped(TDrawArea* draw_area, long min_y, long max_y, long min_x, long max_x, long y, long x, byte* table);
+    Shape_File_Header* head;
+    Shape_Offsets* offsets;
+    SLhape_File_Header* FShape;
+    Shape_Info* shape_info;
+
+    byte shape_mirror_shadow_clipped(TDrawArea*, long, long, long, long,
+                                     long, long, byte*);
 };
 
-#define SHADOW_BACK(dst, table, n) do { unsigned int _cnt = (unsigned int)(n); while (_cnt-- != 0) { --(dst); *(dst) = (table)[*(dst)]; } } while (0)
-byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area, long min_y, long max_y, long min_x, long max_x, long y, long x, byte* table)
+byte TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area,
+                                         long shape_x1, long shape_y1,
+                                         long clip_x0, long clip_y0,
+                                         long clip_x1, long clip_y1,
+                                         byte* table)
 {
-    long orien = draw_area->Orien;
-    long pitch = draw_area->AlignedWidth() * orien;
-    Shape_Header* hdr = this->shape_header;
-    byte* src = (byte*)(hdr + 1);
+    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+    byte* src = (byte*)(this->shape_header + 1);
+    byte* save_buffer;
     byte* dst;
+    byte count;
+    byte state;
 
-    if (orien < 1) {
-        dst = draw_area->Bits + (y - draw_area->Height + 1) * pitch + x + 1;
-    } else {
-        dst = draw_area->Bits + y * pitch + x + 1;
-    }
+    if (draw_area->Orien < 1)
+        save_buffer = draw_area->Bits
+            + (clip_y0 - draw_area->Height + 1) * pitch + clip_x1 + 1;
+    else
+        save_buffer = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
 
-    // skip rows above clip
-    if (min_y < y) {
-        long skip = y - min_y;
-        min_y += skip;
-        while (skip--) {
+    if (shape_y1 < clip_y0) {
+        long skip = clip_y0 - shape_y1;
+        shape_y1 += skip;
+        do {
             byte done = 0;
-            while (!done) {
-                byte code = *src++;
-                if (code & 1) {
-                    code >>= 1;
-                    if (code) src += code;
-                    else ++src;
+            do {
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    count = command >> 1;
+                    if (count == 0)
+                        ++src;
+                    else
+                        src += count;
                 } else {
-                    if ((code & 0xfe) == 0) done = 1;
-                    else ++src;
+                    if ((command & 0xfe) == 0)
+                        done = 1;
+                    else
+                        ++src;
                 }
-            }
-        }
+            } while (!done);
+        } while (--skip != 0);
     }
 
-    if (min_y > max_y) return 1;
-    long rows = max_y - min_y + 1;
+    if (shape_y1 > clip_y1)
+        return 1;
 
+    dst = save_buffer;
+    shape_y1 = clip_y1 - shape_y1 + 1;
     do {
-        long xpos = x;
-        byte state;
-
-        if (xpos > max_x) {
+        long xpos = shape_x1;
+        if (clip_x1 < xpos) {
             state = 0;
-            while (!state) {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n == 0) {
-                        n = *src++;
-                        xpos -= n;
-                        if (xpos <= max_x) {
-                            if (xpos < min_x) state = 2;
-                            else { dst += xpos - x; state = 1; }
+            do {
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    count = command >> 1;
+                    if (count == 0) {
+                        count = *src++;
+                        xpos -= count;
+                        if (xpos <= clip_x1) {
+                            if (xpos < clip_x0) {
+                                state = 2;
+                            } else {
+                                dst += xpos - clip_x1;
+                                state = 1;
+                            }
                         }
                     } else {
-                        xpos -= n;
-                        if (xpos <= max_x) {
-                            if (xpos < min_x) {
-                                unsigned int cnt = (unsigned char)(max_x - min_x + 1);
+                        xpos -= count;
+                        src += count;
+                        if (xpos <= clip_x1) {
+                            if (xpos < clip_x0) {
+                                count = (byte)(clip_x1 - clip_x0 + 1);
                                 state = 2;
-                                src += xpos - min_x + n - 1;
-                                SHADOW_BACK(dst, table, cnt);
-                                src += min_x - xpos;
+                                SHADOW_BACK(dst, table,
+                                            (byte)(clip_x1 - clip_x0 + 1));
                             } else {
-                                unsigned int cnt = (unsigned char)(x - xpos);
+                                count = (byte)(clip_x1 - xpos);
                                 state = 1;
-                                src += n - cnt;
-                                SHADOW_BACK(dst, table, cnt);
+                                SHADOW_BACK(dst, table,
+                                            (byte)(clip_x1 - xpos));
                             }
-                        } else src += n;
+                        }
                     }
                 } else {
-                    byte n = code >> 1;
-                    if (n == 0) state = 3;
-                    else {
-                        xpos -= n;
-                        if (xpos <= max_x) {
-                            if (xpos < min_x) {
-                                unsigned int cnt = (unsigned char)(max_x - min_x + 1);
+                    count = command >> 1;
+                    if (count == 0) {
+                        state = 3;
+                    } else {
+                        xpos -= count;
+                        if (xpos <= clip_x1) {
+                            if (xpos < clip_x0) {
+                                count = (byte)(clip_x1 - clip_x0 + 1);
                                 state = 2;
-                                SHADOW_BACK(dst, table, cnt);
                             } else {
-                                unsigned int cnt = (unsigned char)(x - xpos);
+                                count = (byte)(clip_x1 - xpos);
                                 state = 1;
-                                SHADOW_BACK(dst, table, cnt);
                             }
+                            SHADOW_BACK(dst, table, count);
                         }
                         ++src;
                     }
                 }
-            }
+            } while (state == 0);
         } else {
             state = 1;
         }
 
         state--;
-        if (state == 0) {
-            while (!state) {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n == 0) {
-                        n = *src++;
-                        xpos -= n;
-                        dst -= n;
-                        if (xpos < min_x) { state = 1; }
-                    } else {
-                        xpos -= n;
-                        if (xpos < min_x) {
-                            unsigned int cnt = (unsigned char)(xpos - min_x + n);
-                            state = 1;
-                            SHADOW_BACK(dst, table, cnt);
-                            src += n;
-                        } else {
-                            SHADOW_BACK(dst, table, n);
-                            src += n;
-                        }
-                    }
+        while (state == 0) {
+            byte command = *src++;
+            if ((command & 1) == 1) {
+                count = command >> 1;
+                if (count == 0) {
+                    count = *src++;
+                    xpos -= count;
+                    dst -= count;
+                    if (xpos < clip_x0)
+                        state = 1;
                 } else {
-                    byte n = code >> 1;
-                    if (n == 0) { state = 3; }
-                    else {
-                        xpos -= n;
-                        if (xpos < min_x) {
-                            unsigned int cnt = (unsigned char)(xpos - min_x + n);
-                            state = 1;
-                            SHADOW_BACK(dst, table, cnt);
-                        } else {
-                            SHADOW_BACK(dst, table, n);
-                        }
-                        ++src;
+                    xpos -= count;
+                    src += count;
+                    if (xpos < clip_x0) {
+                        count = (byte)(xpos - clip_x0 + count);
+                        state = 1;
+                        SHADOW_BACK(dst, table, count);
+                    } else {
+                        SHADOW_BACK(dst, table, count);
                     }
+                }
+            } else {
+                count = command >> 1;
+                if (count == 0) {
+                    state = 3;
+                } else {
+                    xpos -= count;
+                    if (xpos < clip_x0) {
+                        count = (byte)(xpos - clip_x0 + count);
+                        state = 1;
+                    }
+                    SHADOW_BACK(dst, table, count);
+                    ++src;
                 }
             }
         }
 
         state--;
-        if (state == 0) {
-            while (!state) {
-                byte code = *src++;
-                if (code & 1) {
-                    byte n = code >> 1;
-                    if (n) src += n;
-                    else ++src;
-                } else {
-                    if ((code & 0xfe) == 0) state = 2;
-                    else ++src;
-                }
+        while (state == 0) {
+            byte command = *src++;
+            if ((command & 1) == 1) {
+                count = command >> 1;
+                if (count != 0)
+                    src += count;
+                else
+                    ++src;
+            } else {
+                if ((command & 0xfe) == 0)
+                    state = 2;
+                else
+                    ++src;
             }
         }
 
-        dst += pitch;
-    } while (--rows != 0);
+        save_buffer += pitch;
+        dst = save_buffer;
+    } while (--shape_y1 != 0);
 
     return 1;
 }
