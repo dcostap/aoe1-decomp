@@ -9,40 +9,61 @@
 // 7: Removed unsigned channel casts in the typed pointer form; signed VC5 divisions improved resync similarity.
 // 8: Separated the palette index from the three intensity values; 0x14 frame and no positional gain.
 // 9: Reordered locals, counted loops, and pointer declarations; emitted code stayed unchanged.
-// Left in scratch: this is the best period-plausible typed reconstruction. The original uses a 0x10 frame,
+// 10: Restored the binary-backed long index1/intense[3] lifetime shape. The outer loop counter shares
+// intense[0], while the inner counter stays a block local; this tests the original 0x10-frame reuse.
+// 11: Use typed source/target entry pointers and direct member ownership instead of channel cursors;
+// this expanded the frame to 0x24 and broke the exact branch islands, so it was rolled back.
+// 12: Declare the destination cursor, byte delta, and source cursor in the original evidence order.
+// 13: Separate the pointer/delta initializers from their declarations to test source-line scheduling.
+// 14: Split the local4 declaration from its source-channel assignment to test stack home reuse.
+// 15: Keep the two-step sort counter in a register, matching the observed ESI inner-loop lifetime.
+// 16: Widen the inner sort counter to long, matching the long index variables in the source packet.
+// 17: Restore local4 to int; the binary lists it as a 4-byte scratch separate from long intense[].
+// 18: Form the channel cursors from explicit byte offsets; emitted code was unchanged, so the
+// named PALETTEENTRY member addresses remain the living source.
+// Final pass: the long index/intense lifetime reaches the 0x10 frame and 85.53% shape basin;
+// pointer-order, local declaration, counter-width, and cursor-offset variants were duplicates.
+// Left in scratch: the best period-plausible typed reconstruction. The original uses a 0x10 frame,
 // reuses a parameter home for the byte delta, and starts the channel loop seven bytes earlier.
 
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 
 void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst, tagPALETTEENTRY color, long pct, int keep1, int keep2)
 {
-    unsigned char* d = &dst->peFlags;
-    unsigned char* s = &src->peGreen;
-    int diff = (int)dst - (int)src;
-    int index = 0;
-    int intense[3];
+    long index1;
+    long intense[3];
+    unsigned char* d;
+    int diff;
+    unsigned char* s;
+    d = &dst->peFlags;
+    diff = (int)dst - (int)src;
+    s = &src->peGreen;
+    intense[0] = 0;
 
     do {
-        if (index == keep1 || index == keep2) {
+        if (intense[0] == keep1 || intense[0] == keep2) {
             d[-3] = s[-1];
             s[diff] = *s;
             d[-1] = s[1];
             d[0] = s[2];
         } else {
             tagPALETTEENTRY t = *(tagPALETTEENTRY*)(s - 1);
+            int local4;
             intense[1] = t.peRed;
             intense[2] = *s;
-            int local4 = s[1];
+            local4 = s[1];
 
-            for (int index1 = 2; index1 != 0; index1--) {
-                int* p = &intense[2];
+            index1 = 2;
+            do {
+                long* p = &intense[2];
                 for (int n = 2; n != 0; n--) {
-                    int a = p[-1];
-                    int b = p[0];
+                    long a = p[-1];
+                    long b = p[0];
                     if (a < b) { p[-1] = b; p[0] = a; }
                     p++;
                 }
-            }
+                index1--;
+            } while (index1 != 0);
 
             long minv = intense[1];
             long midv = intense[2];
@@ -57,8 +78,8 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst, t
             d[-1] = (unsigned char)(s[1] + (v / 100));
             d[0] = s[2];
         }
-        index++;
+        intense[0]++;
         s += 4;
         d += 4;
-    } while (index < 0x100);
+    } while (intense[0] < 0x100);
 }

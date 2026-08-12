@@ -140,6 +140,25 @@ A second fresh cohort is required before final promotion.
 The main agent validated the unchanged normalized source at 250 bytes and two
 strict differing bytes before and after round 1. No source change was made.
 
+### Round 2 — fresh concurrent blind cohort, 2026-08-12
+
+- `sa-36e2ff4c` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-308ee7c7` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers found no definite behavior difference. They independently
+verified all calls, arguments, field offsets, loop counts, byte promotion,
+coordinate formulas, persistent writes, fault order, and `ret 18h` cleanup.
+
+The Luna reviewer noted theoretical signed-overflow and expression-order risks.
+The DeepSeek reviewer cleared them against the emitted VC5 instructions. The
+candidate and executable use the same wrapping arithmetic and read/store order.
+The two remaining bytes only exchange commutative SIB base and index roles.
+
+No substantive concern remains. The main agent revalidated the unchanged
+normalized source at 250 bytes, with 80/80 instruction-shape parity and two
+strict differing SIB bytes.
+
 ## Final decision
 
-Pending a fresh review round.
+Promote to `src/verified_logic`. Two fresh cohorts found no behavioral
+uncertainty. The remaining two bytes are equivalent address register encoding.

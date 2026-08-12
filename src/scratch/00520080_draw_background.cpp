@@ -17,6 +17,12 @@
 //     same tiled loop, so the direct canonical expressions were restored.
 // 13: made both tile-count locals short without casts; this worsened the height
 //     branch and was restored to the int locals that preserve the observed stack stores.
+// 14: fresh pass reversed the coordinate terms to the exact Pnl_txt donor form;
+//     VC5 emitted the unchanged tiled loop.
+// 15: fresh pass materialized long draw_y/draw_x locals with compound additions;
+//     VC5 optimized them to the unchanged loop.
+// 16: fresh pass declared draw_x before draw_y, following exact terrain-shape
+//     register-coloring evidence; the emitted code was unchanged.
 // Left in scratch: remaining drift is localized mostly to the tiled shape_draw loop scheduling/argument setup, causing 4-byte shift in the first branch and branch-target displacement drift; fill/bevel tails look behaviorally aligned.
 
 class TDrawArea {
@@ -111,8 +117,8 @@ void Time_Line_Panel::draw_background()
                     int count = (short)pic_rows;
                     do {
                         this->background_pic->shape_draw(this->render_area,
-                            this->x + col * this->background_pic_wid,
-                            this->y + row * this->background_pic_hgt,
+                            col * this->background_pic_wid + this->x,
+                            row * this->background_pic_hgt + this->y,
                             0, 0, 0);
                         col++;
                         count--;

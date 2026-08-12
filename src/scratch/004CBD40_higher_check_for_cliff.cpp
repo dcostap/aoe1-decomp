@@ -19,6 +19,11 @@
 //   objects.list emits the same bytes as the narrow +0x10 tile stub.
 // session probes: direct angle lvalue, byte facet, local declaration-order variants, and
 //   facet/offset order variants did not improve the basin; compare-before-store angle adds 10 bytes.
+// fresh pass r2: baseline reconfirmed 421 bytes / 258 positional diff. Named endpoint-y2,
+// reversed endpoint addition, named tile, virtual object/list/map donors, the intermediate
+// combat-object hierarchy, entry-declared node/cliff locals, and entry endpoint-y2 all emitted
+// the same 421-byte basin. Restored the clean typed source; unresolved clue remains oracle
+// EBP=y2 plus EBX=node while this build chooses EBP=node and EBX=angle.
 // Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
 
 extern "C" double __cdecl atan2(double, double);

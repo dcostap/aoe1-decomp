@@ -134,6 +134,22 @@ final promotion.
 The main agent validated the unchanged normalized source at 279 bytes and 16
 strict differing bytes before and after round 1. No source change was made.
 
+### Round 2 — fresh concurrent blind cohort, 2026-08-12
+
+- `sa-7ff19690` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-9bdbfa66` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers found no definite difference. They verified the multiplayer and
+mode gates, all 14 calls, signed message-count tests, world fault order,
+unsigned timer wraparound, and the three distinct exit behaviors.
+
+The DeepSeek reviewer also verified raw call targets, timer constants, field
+offsets, and shared cleanup. The candidate reloads mutable fields at each use.
+No semantic concern remains. The main agent revalidated the unchanged source at
+279 bytes with 82/82 instruction-shape parity. The 16 bytes only exchange ESI
+and EDI allocation.
+
 ## Final decision
 
-Pending a fresh review round.
+Promote to `src/verified_logic`. Two fresh cohorts found no behavioral
+uncertainty. The remaining 16 bytes are equivalent register allocation.
