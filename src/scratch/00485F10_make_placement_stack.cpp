@@ -7,13 +7,21 @@
 // tried early local_c=&stack before stack next/prev stores; fixed initial sub/mov placement but delayed push edi and worsened diff, rolled back.
 // tried explicit zero local/casts for null stores and comparisons; no codegen change.
 // tried natural row/column implementation first; correct size but worse frame/local pressure (0x14 frame) and broad diff.
+// fresh typed rows/stack reconstruction with natural current_y/current_x loops worsened to 494 bytes, 0xC frame, and CFG drift; restored.
+// direct zero spelling duplicated the clean 507-byte output; retained the simpler literal form only where it does not alter codegen.
+// early local_c initialization worsened resync and added five instructions; restored.
+// named search_map_rows/stack_offsets, full 24-byte Map_Stack, and long last bound preserved the 507-byte output; retained as canonical local ownership.
+// explicit self alias was neutral in positional bytes but worsened edit resync; restored.
 // left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern char s_rmm_obj_cpp[];
 
 struct Map_Stack {
-    char gap_00[0x10];
+    long x;
+    long y;
+    long cost;
+    float total_cost;
     Map_Stack* next;
     Map_Stack* prev;
 };
@@ -24,9 +32,9 @@ public:
     long width;
     long height;
     char gap_1c[0x24 - 0x1c];
-    char** map;
-    char gap_28[4];
-    Map_Stack** stack_rows;
+    unsigned char** search_map_rows;
+    Map_Stack* stack_array;
+    Map_Stack** stack_offsets;
 
     void add_stack_node(Map_Stack* last, Map_Stack* node);
     void make_placement_stack(Map_Stack& stack, long x, long y, long unused, long range);
@@ -35,45 +43,44 @@ public:
 void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, long y, long unused, long range)
 {
     long y1;
-    Map_Stack* last;
+    long last;
     Map_Stack* local_c;
     int local_8;
     int local_4;
 
-    int zero = 0;
-    stack.next = (Map_Stack*)zero;
-    stack.prev = (Map_Stack*)zero;
+    stack.next = 0;
+    stack.prev = 0;
 
-    if (x < zero || y < zero || range < zero) {
-        x = zero;
-        y = zero;
+    if (x < 0 || y < 0 || range < 0) {
+        x = 0;
+        y = 0;
         range = this->width - 1;
-        last = (Map_Stack*)(this->height - 1);
+        last = this->height - 1;
     } else {
         int iVar5 = x - range;
         int iVar3 = y - range;
         int iVar1 = x + range;
-        last = (Map_Stack*)(y + range);
+        last = y + range;
         x = iVar5;
         y = iVar3;
         range = iVar1;
-        if (x < zero) x = zero;
-        if (y < zero) y = zero;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
         if (range >= this->width) range = this->width - 1;
-        if ((int)last >= this->height) last = (Map_Stack*)(this->height - 1);
+        if (last >= this->height) last = this->height - 1;
     }
 
     local_c = &stack;
-    if (y <= (int)last) {
+    if (y <= last) {
         local_8 = y * 4;
-        local_4 = (int)last + (1 - y);
+        local_4 = last + (1 - y);
         do {
             if (x <= range) {
                 int off = x * 0x18;
                 y1 = x;
                 do {
-                    if (*(char*)(*(int*)((char*)this->map + local_8) + y1) != 0) {
-                        Map_Stack* node = (Map_Stack*)(*(int*)((char*)this->stack_rows + local_8) + off);
+                    if (*(char*)(*(int*)((char*)this->search_map_rows + local_8) + y1) != 0) {
+                        Map_Stack* node = (Map_Stack*)(*(int*)((char*)this->stack_offsets + local_8) + off);
                         this->add_stack_node(local_c, node);
                         local_c = node;
                     }
@@ -87,7 +94,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, lo
     }
 
     int w = range - x - 1;
-    int h = (int)last - y - 1;
+    int h = last - y - 1;
     if (w > 1 && h > 1) {
         range = (h * w) / 4;
         if (range > 0) {
@@ -95,8 +102,8 @@ void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, lo
                 int rx = (debug_rand(s_rmm_obj_cpp, 0xaf) * w) / 0x7fff + x;
                 int ry = (debug_rand(s_rmm_obj_cpp, 0xb0) * h) / 0x7fff + y;
                 int ry4 = ry * 4;
-                if (*(char*)(*(int*)((char*)this->map + ry4) + rx) != 0) {
-                    this->add_stack_node(&stack, (Map_Stack*)(*(int*)((char*)this->stack_rows + ry4) + rx * 0x18));
+                if (*(char*)(*(int*)((char*)this->search_map_rows + ry4) + rx) != 0) {
+                    this->add_stack_node(&stack, (Map_Stack*)(*(int*)((char*)this->stack_offsets + ry4) + rx * 0x18));
                 }
                 range = range - 1;
             } while (range != 0);
