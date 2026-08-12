@@ -20,6 +20,8 @@
 // - Session probe 9: moved the units-to-insert declaration to function scope
 //   to test the decompiler's top-level local lifetime; emitted code was
 //   unchanged and the clean typed source was restored.
+// - Session probe 13: applied the exact 00501D70 donor's named ResourceItem,
+//   build, information, and main-decision layouts; emitted code was unchanged.
 // - Best current reconstruction: typed full parent, 0x78 frame, matching
 //   initial six ordered calls and natural ResourceItem/switch ownership; local
 //   checker remains nonexact because entry-reachable code past the 321-byte
@@ -30,15 +32,27 @@
 class ResourceItem {
 public:
     virtual ~ResourceItem();
-    char gap_04[0x6C];
+    ResourceItem* next;
+    ResourceItem* previous;
+    int values[8];
+    int sortedValues[8];
+    int sortedIndexes[8];
+    int numberValue;
 
     ResourceItem(int count);
 };
+
+class RGE_Player;
 
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
     long world_time;
+    char gap_08[0x34];
+    short player_count;
+    char gap_3E[2];
+    RGE_Player** players;
+    char gap_44[0xC0];
 };
 
 class RGE_Player {
@@ -69,10 +83,32 @@ struct ManagedIntArray {
     int maximumSize;
 };
 
-class TribeBuildAIModule {
+class BuildAIModule : public AIModule {
 public:
-    virtual ~TribeBuildAIModule();
-    char gap_04[0x5BC];
+};
+
+class TribeBuildAIModule : public BuildAIModule {
+public:
+    char gap_F0[0x5C0 - 0xF0];
+
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* filename);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* filename);
+    virtual int saveState(char* filename);
+    virtual int gleanState(int value);
+    virtual int processMessage(void* message);
+    virtual int update(int value);
+    virtual void setCallbackMessage(void* message);
+    virtual int filterOutMessage(void* message);
+    virtual int save(int value);
+    virtual void displayBuildList();
+    virtual int loadBuildList(char* filename, void* player);
+    virtual int numberBuiltOrInProgressItemsOfType(int type, int mode);
 
     int insert(int type, int count, int priority);
 };
@@ -80,15 +116,18 @@ public:
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
-    char gap_04[0x1008C];
+    char gap_04[0x540 - 0x04];
+    int closestDropsiteValue[4];
+    int closestDropsiteResourceID[4];
+    int numberFoundForestTilesValue;
+    char gap_564[0x10090 - 0x564];
 
     int numberUnitsWithinXTiles(int playerFilter, int x, int y, int radius);
 };
 
-class TribeResourceAIModule {
+class TribeResourceAIModule : public AIModule {
 public:
-    virtual ~TribeResourceAIModule();
-    char gap_04[0xF4];
+    char gap_F0[0x08];
 
     int resource(int type);
     int resourcesAvailable(ResourceItem* item);
@@ -96,8 +135,6 @@ public:
 
 class TRIBE_Player {
 public:
-    virtual ~TRIBE_Player();
-
     int objectAvailable(int type);
     void objectCost(int type, int amount, ResourceItem* item, int flag);
 };
@@ -105,7 +142,7 @@ public:
 class MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;
-    ManagedIntArray objects;
+    char gap_F4[0x10];
 
     RGE_Static_Object* object(int p1, int p2, int p3, int p4, int p5,
                               int p6, int p7, int p8, int p9, int p10);
