@@ -4,10 +4,15 @@
 // 2: added large virtual-slot stubs for target/object virtual calls at +F4/+FC/+100 and module calls at +10/+9C; fixed GameObj/World offsets.
 // 3: converted failure cases to shared fail return, but VC5 still allocates a 0x0C frame instead of original 0x08 and loop topology is broad mismatch.
 // 4: tried defensive null/sentinel branches only as a diagnostic to force compare size; produced 643B but broad 92% mismatch from offset 0, rolled back because it was behavior-altering and not a valid source model.
-// left in scratch: current honest source compiles to 640B (configured/original 643B, check_function stops before compare). Best diagnostic compare with forced-size branch showed broad mismatch; honest rebuilt already has wrong 0x0C frame (original 0x08), early shared-fail layout differs, and array-growth loop topology/register allocation diverges substantially. Not accepted_drift-safe.
+// 5-8: combined guard, object id, same-TU UnitAIModule ABI, float coordinate fields, and natural new[]/delete[] growth restored exact call order and frame size.
+// 9: outer count guard plus while (i < count) reproduced the duplicated entry test and improved shape to 90.95%; the remaining gap is register coloring and late vptr spill.
+// 10: a base-pointer alias was codegen-identical and was removed as unsupported steering.
+// left in scratch: canonical source has exact call multiset, frame 0x08, and 100% call-site alignment, but remains nonexact with 8-byte size drift and broad register/block drift. The main lead is the original order-call register schedule and saved vptr slot. Not accepted_drift-safe.
 
 void* __cdecl operator new(unsigned int);
 void __cdecl operator delete(void*);
+extern const float DAT_005758b0;
+extern const float DAT_005758c4;
 extern "C" double __cdecl sqrt(double);
 
 struct NotifyEvent { char pad[8]; int type; };
@@ -25,12 +30,13 @@ struct RGE_Static_Object {
 struct ObjList { RGE_Static_Object* object(int); };
 struct WorldWrap { char gap0[0x3c]; ObjList* objects; };
 struct GameObj {
-    char pad4[8];
+    int id;
+    char gap08[4];
     WorldWrap* world;
     char pad10[0x28];
     float x;
     float y;
-    int field40;
+    float field40;
     virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7();
     virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual void g15();
     virtual void g16(); virtual void g17(); virtual void g18(); virtual void g19(); virtual void g20(); virtual void g21(); virtual void g22(); virtual void g23();
@@ -42,27 +48,76 @@ struct GameObj {
     virtual float vf_100();
 };
 
-class UnitAIModule { public: int processNotify(NotifyEvent*, unsigned long); };
-
-class TribeRangedUnitAIModule2 {
+class UnitAIModule {
 public:
+    virtual ~UnitAIModule();
+    virtual void save(int);
+    virtual void load(int);
+    virtual void owner();
+    virtual int order(int,int,int,int,float,float,float,float,int,int,int);
+    virtual void notify(int,int,int,long,long,long);
+    virtual void notifyCommander(int,int,int,long,long,long);
+    virtual void notifyCommander(void*);
+    virtual void search();
+    virtual int importantWhenDead(int);
+    virtual int retryableOrder(int);
+    virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int,int,float*);
+    virtual int mostDangerousEnemy(float*);
+    virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int,int,int,int,int*);
+    virtual int closestResourceObject(int,int*);
+    virtual int closestUndiscoveredTile(int*,int*,int);
+    virtual void logDebug(char*);
+    virtual int canAttackUnit(void*);
+    virtual int canAttackUnitAtNeutrality(int);
+    virtual int stopObject(int);
+    virtual int attackObject(int,int);
+    virtual int attackRoundupObject(int);
+    virtual int huntObject(int,int);
+    virtual int gatherObject(int,int);
+    virtual int convertObject(int,int);
+    virtual int healObject(int,int);
+    virtual int repairObject(int,int);
+    virtual int buildObject(int,int);
+    virtual int tradeWithObject(int,int);
+    virtual int explore(int,int,int);
+    virtual int enterObject(int,int);
+    virtual int unload(int,float,float);
+    virtual int transportObject(float,float,float,int);
+    virtual int moveTo(float,float,float,float,int);
+    virtual int moveTo(int,float,int);
+    virtual int moveTo(int,int);
+    virtual int evasiveMoveTo(float,float,float,int);
+    virtual int runAwayFromAttackers(int);
+    virtual int followObject(int,float,int);
+    virtual int defendObject(int,float,int);
+    virtual int defendPosition(float,float,float,int);
+    virtual int seekAndDestroy(int,int,int,int);
+    virtual int exploreAndDestroy(int,int,int);
+    virtual int importantObject(int);
+    virtual int convertToLOSResourceType(int);
+    virtual int canConvert(int);
+    virtual int processOrder(void*,int);
+    int processNotify(NotifyEvent*,unsigned long);
+
     GameObj* obj;
     char gap08[0x24];
     int p2c;
     int state;
     int target_id;
     char gap38[4];
-    int p3c, p40, p44, p48;
+    float p3c, p40, p44, p48;
     char gap4c[0x14];
     int* ids;
     int count;
     char gap68[4];
     int capacity;
-    virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
-    virtual int vf10(int,int,int,int,int,int,int,int,int,int,int);
-    virtual void m5(); virtual void m6(); virtual void m7(); virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11(); virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
-    virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19(); virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23(); virtual void m24(); virtual void m25(); virtual void m26(); virtual void m27(); virtual void m28(); virtual void m29(); virtual void m30(); virtual void m31(); virtual void m32(); virtual void m33(); virtual void m34(); virtual void m35(); virtual void m36(); virtual void m37(); virtual void m38();
-    virtual void vf9c(float,float,TribeRangedUnitAIModule2*,int,int);
+};
+
+class TribeRangedUnitAIModule2 : public UnitAIModule {
+public:
     int processNotify(NotifyEvent*, unsigned long);
 };
 
@@ -77,35 +132,38 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     if (ev->type != 0x200) {
         return ((UnitAIModule*)this)->processNotify(ev, flags);
     }
-    if (this->state != 0x258) goto fail;
+    target = 0;
+    if (this->state != 0x258 ||
+        (target = this->obj->world->objects->object(this->target_id)) == 0 ||
+        target->vf_F4() == DAT_005758c4)
+        return 2;
 
-    target = this->obj->world->objects->object(this->target_id);
-    if (!target) goto fail;
-    if (target->vf_F4() == *(float*)0x005758C4) goto fail;
-
-    this->vf10(this->obj->field40, 0x2bc, this->target_id, -1, this->p3c, this->p40, this->p44, this->p48, 0, 1, this->p2c);
+    this->order(this->obj->id, 0x2bc, this->target_id, -1, this->p3c, this->p40, this->p44, this->p48, 0, 1, this->p2c);
 
     o = this->obj;
-    evasiveMoveDistance = o->vf_100() * o->vf_FC() * *(float*)0x005758B0;
+    evasiveMoveDistance = o->vf_FC() * o->vf_100() * DAT_005758b0;
     dx = target->x - o->x;
     dy = target->y - o->y;
 
     if (this->count > 0) {
         int i = 0;
-        if (this->count > 0) {
-            do {
+        while (i < this->count) {
                 if (i > this->capacity - 1) {
                     int newCount = i + 1;
-                    int* n = (int*)operator new(newCount * 4);
+                    int* n = new int[newCount];
                     if (n) {
                         int j = 0;
                         if (this->capacity > 0) {
-                            while (j < newCount && j < this->capacity) {
-                                ++j;
-                                n[j-1] = this->ids[j-1];
-                            }
+                            do {
+                                if (j < newCount) {
+                                    ++j;
+                                    n[j-1] = this->ids[j-1];
+                                } else {
+                                    break;
+                                }
+                            } while (j < this->capacity);
                         }
-                        operator delete(this->ids);
+                        delete[] this->ids;
                         this->ids = n;
                         this->capacity = newCount;
                     }
@@ -113,16 +171,20 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
                 if (this->ids[i] != this->target_id) {
                     if (i > this->capacity - 1) {
                         int newCount = i + 1;
-                        int* n = (int*)operator new(newCount * 4);
+                        int* n = new int[newCount];
                         if (n) {
                             int j = 0;
                             if (this->capacity > 0) {
-                                while (j < newCount && j < this->capacity) {
-                                    ++j;
-                                    n[j-1] = this->ids[j-1];
-                                }
+                                do {
+                                    if (j < newCount) {
+                                        ++j;
+                                        n[j-1] = this->ids[j-1];
+                                    } else {
+                                        break;
+                                    }
+                                } while (j < this->capacity);
                             }
-                            operator delete(this->ids);
+                            delete[] this->ids;
                             this->ids = n;
                             this->capacity = newCount;
                         }
@@ -133,16 +195,13 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
                         dy += obj2->y - this->obj->y;
                     }
                 }
-                ++i;
-            } while (i < this->count);
+            ++i;
         }
     }
 
     len = (float)sqrt(dx*dx + dy*dy);
-    this->vf9c(this->obj->x - dx / len * evasiveMoveDistance,
-               this->obj->y - dy / len * evasiveMoveDistance,
-               this, this->obj->field40, 1);
+    this->evasiveMoveTo(this->obj->x - dx / len * evasiveMoveDistance,
+                        this->obj->y - dy / len * evasiveMoveDistance,
+                        this->obj->field40, 1);
     return 3;
-fail:
-    return 2;
 }
