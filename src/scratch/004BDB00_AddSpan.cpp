@@ -1,198 +1,260 @@
-// 004BDB00 TSpan_Node_List::AddSpan
+// 004BDB00 TSpan_List_Manager::AddSpan
 // spanlist.cpp
 // Attempt log:
-// try 1: direct reconstruction from asm: bounds clipping, empty row insertion, left/right merge/split cases.
-// try 2: modeled structure offsets from packet: Heads +0x3C, Tails +0x40, MinX +0x44, MaxX +0x48, Counts +0x4C, clip x/y at +0x58..+0x64.
-// try 3: modeled VSpan_Node as 16 bytes: Next, Prev, Start, End; used matched GetNode/FreeNode/FreeThread member calls.
-// try 4: implemented empty-row fast path with head/tail/min/max/count writes; rebuilt size reached original 916B.
-// try 5: implemented insert-before-head case when new span is left of current min with gap.
-// try 6: implemented full-row replacement case via FreeThread(head->Next,0), resetting the original head node.
-// try 7: implemented left-side merge/drain loop, including removal of absorbed old head nodes.
-// try 8: implemented right-side append and tail-merge/drain loop.
-// try 9: implemented middle insertion/merge cases including unlink/free absorbed nodes and tail update.
-// try 10: compared diff: first 15 bytes match, then branch displacements differ; rebuilt uses EBX as scaled row index and EDI as node, while original keeps EDI as scaled row index and EBX as current node.
-// try 11: reviewed initial load/swap shape: original loads x2 into EBP then x1 into EAX and writes back to parameter slots; rebuilt loads x1 into EBP and x2 into EDX despite equivalent source. This register-family mismatch propagates through the whole function.
-// left in scratch: behavior and size are close/broadly reconstructed, but exact VC5 register allocation/source topology is unresolved. No accepted_drift: broad register/layout drift from near prologue onward.
+// baseline: retained the prior broad reconstruction before this fresh typed pass.
+// typed pass: model VSList as the real member object and use named span arrays;
+// positional diff improved, but the first call basin reordered the drain paths.
+// control-flow probe: left-side fallthrough before right-side code restored all
+// nine direct calls in order; an append-first right-side branch kept that order.
+// behavior audit: clipping, empty-row allocation, head/tail insertion, overlap,
+// node draining, count updates, and tail/head ordering follow the original asm.
+// pointer-entry probes did not improve the VC5 setup and were rolled back.
+// retained: natural typed source; unresolved pointer scheduling and late block
+// placement leave a broad non-exact codegen gap, so this target stays scratch.
 
-struct VSpan_Node { VSpan_Node* Next; VSpan_Node* Prev; int Start; int End; };
+#include <stdlib.h>
+
+struct VSpan_Node {
+    VSpan_Node* Next;
+    VSpan_Node* Prev;
+    int StartPx;
+    int EndPx;
+};
 
 class TSpan_Node_List {
 public:
-    char gap_00[0x3C];
-    VSpan_Node** Heads;   // +3c left/head
-    VSpan_Node** Tails;   // +40 right/tail
-    int* MinX;            // +44
-    int* MaxX;            // +48
-    int* Counts;          // +4c
-    char gap_50[8];
-    int ClipMinX;         // +58
-    int ClipMaxX;         // +5c
-    int ClipMinY;         // +60
-    int ClipMaxY;         // +64
+    VSpan_Node** Zone_Ptrs;
+    int* Zone_Size_Ptrs;
+    int Used_Zones;
+    int Max_Zones;
+    VSpan_Node* Free_Head;
+    int Free_Pool_Zone;
+    int Free_Pool_Index;
+    int Total_Blocks;
+    int Free_Blocks;
+    int Default_Grow_Size;
+    int Element_Size;
+    int Alloc_Count;
+    int Dealloc_Count;
+    int NewZone_Count;
+    int Reset_Count;
 
     VSpan_Node* GetNode();
-    void FreeNode(VSpan_Node* n);
+    void FreeNode(VSpan_Node* node);
     int FreeThread(VSpan_Node* first, VSpan_Node* last);
-    void AddSpan(int x1, int x2, int y);
 };
 
-void TSpan_Node_List::AddSpan(int x1, int x2, int y) {
+class TSpan_List_Manager {
+public:
+    TSpan_Node_List VSList;
+    VSpan_Node** Line_Head_Ptrs;
+    VSpan_Node** Line_Tail_Ptrs;
+    int* LeftMostPx;
+    int* RightMostPx;
+    int* Span_Count;
+    int Num_Lines;
+    int Num_Pixels;
+    int Min_Span_Px;
+    int Max_Span_Px;
+    int Min_Line;
+    int Max_Line;
+
+    void AddSpan(int start, int end, int line);
+};
+
+void TSpan_List_Manager::AddSpan(int start, int end, int line)
+{
     VSpan_Node* node;
-    VSpan_Node* cur;
-    VSpan_Node* prev;
+    VSpan_Node* other;
     VSpan_Node* next;
-    int idx;
-    int tmp;
+    int temp;
 
-    if (y < ClipMinY || y > ClipMaxY) return;
-    if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
-    if (x2 < ClipMinX || x1 > ClipMaxX) return;
-    if (x1 < ClipMinX) x1 = ClipMinX;
-    if (x2 > ClipMaxX) x2 = ClipMaxX;
+    if (line < this->Min_Line || line > this->Max_Line) {
+        return;
+    }
 
-    idx = y << 2;
-    node = *(VSpan_Node**)((char*)Heads + idx);
+    if (start > end) {
+        temp = end;
+        end = start;
+        start = temp;
+    }
+
+    if (end < this->Min_Span_Px || start > this->Max_Span_Px) {
+        return;
+    }
+    if (start < this->Min_Span_Px) {
+        start = this->Min_Span_Px;
+    }
+    if (end > this->Max_Span_Px) {
+        end = this->Max_Span_Px;
+    }
+
+    node = this->Line_Head_Ptrs[line];
     if (node == 0) {
-        node = GetNode();
+        node = this->VSList.GetNode();
         node->Prev = 0;
         node->Next = 0;
-        node->Start = x1;
-        node->End = x2;
-        *(VSpan_Node**)((char*)Heads + idx) = node;
-        *(VSpan_Node**)((char*)Tails + idx) = node;
-        *(int*)((char*)MinX + idx) = x1;
-        *(int*)((char*)MaxX + idx) = x2;
-        ++*(int*)((char*)Counts + idx);
+        node->StartPx = start;
+        node->EndPx = end;
+        this->Line_Head_Ptrs[line] = node;
+        this->Line_Tail_Ptrs[line] = node;
+        this->LeftMostPx[line] = start;
+        this->RightMostPx[line] = end;
+        this->Span_Count[line] = this->Span_Count[line] + 1;
         return;
     }
 
-    prev = *(VSpan_Node**)((char*)Tails + idx);
-    tmp = *(int*)((char*)MinX + idx);
-    if (x1 <= tmp) {
-        if (x2 < tmp - 1) {
-            cur = GetNode();
-            cur->Prev = 0;
-            cur->Next = node;
-            node->Prev = cur;
-            cur->Start = x1;
-            cur->End = x2;
-            *(int*)((char*)MinX + idx) = x1;
-            *(VSpan_Node**)((char*)Heads + idx) = cur;
-            ++*(int*)((char*)Counts + idx);
+    temp = this->LeftMostPx[line];
+    other = this->Line_Tail_Ptrs[line];
+    if (start <= temp) {
+        if (end < temp - 1) {
+            other = this->VSList.GetNode();
+            other->Prev = 0;
+            other->Next = node;
+            node->Prev = other;
+            other->StartPx = start;
+            other->EndPx = end;
+            this->LeftMostPx[line] = start;
+            this->Line_Head_Ptrs[line] = other;
+            this->Span_Count[line] = this->Span_Count[line] + 1;
             return;
         }
-        if (x2 >= *(int*)((char*)MaxX + idx)) {
-            int* pc = (int*)((char*)Counts + idx);
-            *pc -= FreeThread(node->Next, 0);
+
+        if (this->RightMostPx[line] <= end) {
+            int* count = this->Span_Count;
+            temp = this->VSList.FreeThread(node->Next, 0);
+            count[line] = count[line] - temp;
             node->Prev = 0;
             node->Next = 0;
-            node->Start = x1;
-            node->End = x2;
-            *(VSpan_Node**)((char*)Tails + idx) = node;
-            *(int*)((char*)MaxX + idx) = x2;
-            *(int*)((char*)MinX + idx) = x1;
+            node->StartPx = start;
+            node->EndPx = end;
+            this->Line_Tail_Ptrs[line] = node;
+            this->RightMostPx[line] = end;
+            this->LeftMostPx[line] = start;
             return;
         }
-        *(int*)((char*)MinX + idx) = x1;
-        tmp = node->Start;
-        ++x2;
-        cur = node;
-        if (x2 < tmp) return;
-        do {
-            if (x2 <= node->End) {
-                cur->Start = x1;
-                return;
-            }
-            node = node->Next;
-            if (x2 < node->Start) {
-                cur->Start = x1;
-                cur->End = tmp;
-                return;
-            }
-            *(VSpan_Node**)((char*)Heads + idx) = node;
-            node->Prev = 0;
-            FreeNode(cur);
-            --*(int*)((char*)Counts + idx);
-            tmp = node->Start;
-            cur = node;
-        } while (x2 >= tmp);
-        return;
-    }
 
-    tmp = *(int*)((char*)MaxX + idx);
-    if (x2 >= tmp) {
-        tmp++;
-        if (x1 > tmp) {
-            cur = GetNode();
-            cur->Prev = prev;
-            cur->Next = 0;
-            prev->Next = cur;
-            cur->Start = x1;
-            cur->End = x2;
-            *(int*)((char*)MaxX + idx) = x2;
-            *(VSpan_Node**)((char*)Tails + idx) = cur;
-            ++*(int*)((char*)Counts + idx);
-            return;
+        this->LeftMostPx[line] = start;
+        temp = end + 1;
+        if (node->StartPx <= temp) {
+            while (1) {
+                if (end <= node->EndPx) {
+                    node->StartPx = start;
+                    return;
+                }
+                other = node->Next;
+                if (temp < other->StartPx) {
+                    break;
+                }
+                this->Line_Head_Ptrs[line] = other;
+                other->Prev = 0;
+                this->VSList.FreeNode(node);
+                this->Span_Count[line] = this->Span_Count[line] - 1;
+                node = other;
+                if (temp < other->StartPx) {
+                    return;
+                }
+            }
+            node->StartPx = start;
+            node->EndPx = end;
         }
-        prev->End = x2;
-        node = prev;
-        tmp = x1 - 1;
-        if (tmp > prev->End) return;
-        do {
-            if (x1 >= prev->Start) {
-                node->End = x2;
+    } else {
+        temp = this->RightMostPx[line];
+        if (end >= temp) {
+            if (temp + 1 < start) {
+                node = this->VSList.GetNode();
+                node->Prev = other;
+                node->Next = 0;
+                other->Next = node;
+                node->StartPx = start;
+                node->EndPx = end;
+                this->RightMostPx[line] = end;
+                this->Line_Tail_Ptrs[line] = node;
+                this->Span_Count[line] = this->Span_Count[line] + 1;
                 return;
             }
-            prev = prev->Prev;
-            if (tmp > prev->End) {
-                node->Start = x1;
-                node->End = x2;
-                return;
-            }
-            *(VSpan_Node**)((char*)Tails + idx) = prev;
-            prev->Next = 0;
-            FreeNode(node);
-            --*(int*)((char*)Counts + idx);
-            x1 = prev->End;
-            node = prev;
-        } while (tmp <= x1);
-        return;
-    }
 
-    while (node->End < x1 - 1) node = node->Next;
-    tmp = x2 + 1;
-    if (node->Start > tmp) {
-        cur = GetNode();
-        cur->Next = node;
-        cur->Prev = node->Prev;
-        node->Prev = cur;
-        cur->Prev->Next = cur;
-        cur->Start = x1;
-        cur->End = x2;
-        ++*(int*)((char*)Counts + idx);
-        return;
-    }
-    if (x1 < node->Start) node->Start = x1;
-    if (node->End >= x2) return;
-    prev = node->Next;
-    if (prev == 0) return;
-    while (tmp >= prev->Start) {
-        if (x2 <= prev->End) {
-            node->End = prev->End;
-            node->Next = prev->Next;
-            FreeNode(prev);
-            --*(int*)((char*)Counts + idx);
-            if (node->Next) node->Next->Prev = node;
-            else *(VSpan_Node**)((char*)Tails + idx) = node;
-            return;
+            this->RightMostPx[line] = end;
+            temp = start - 1;
+            if (temp <= other->EndPx) {
+                while (1) {
+                    if (other->StartPx <= start) {
+                        other->EndPx = end;
+                        return;
+                    }
+                    node = other->Prev;
+                    if (node->EndPx < temp) {
+                        break;
+                    }
+                    this->Line_Tail_Ptrs[line] = node;
+                    node->Next = 0;
+                    this->VSList.FreeNode(other);
+                    this->Span_Count[line] = this->Span_Count[line] - 1;
+                    other = node;
+                    if (node->EndPx < temp) {
+                        return;
+                    }
+                }
+                other->StartPx = start;
+                other->EndPx = end;
+            }
+        } else {
+            while (node->EndPx < start - 1) {
+                node = node->Next;
+            }
+
+            if (end + 1 < node->StartPx) {
+                VSpan_Node* inserted = this->VSList.GetNode();
+                other = node->Prev;
+                inserted->Next = node;
+                inserted->Prev = other;
+                node->Prev = inserted;
+                inserted->Prev->Next = inserted;
+                inserted->StartPx = start;
+                inserted->EndPx = end;
+                this->Span_Count[line] = this->Span_Count[line] + 1;
+                return;
+            }
+
+            if (start < node->StartPx) {
+                node->StartPx = start;
+            }
+            if (node->EndPx < end) {
+                next = node->Next;
+                if (next != 0) {
+                    while (1) {
+                        if (end + 1 < next->StartPx) {
+                            node->EndPx = end;
+                            return;
+                        }
+                        if (end <= next->EndPx) {
+                            break;
+                        }
+                        if (next->Prev != 0) {
+                            next->Prev->Next = next->Next;
+                        }
+                        if (next->Next != 0) {
+                            next->Next->Prev = next->Prev;
+                        }
+                        VSpan_Node* after = next->Next;
+                        this->VSList.FreeNode(next);
+                        this->Span_Count[line] = this->Span_Count[line] - 1;
+                        next = after;
+                        if (next == 0) {
+                            return;
+                        }
+                    }
+                    node->EndPx = next->EndPx;
+                    node->Next = next->Next;
+                    this->VSList.FreeNode(next);
+                    this->Span_Count[line] = this->Span_Count[line] - 1;
+                    if (node->Next != 0) {
+                        node->Next->Prev = node;
+                        return;
+                    }
+                    this->Line_Tail_Ptrs[line] = node;
+                }
+            }
         }
-        next = prev->Next;
-        if (prev->Prev) prev->Prev->Next = prev->Next;
-        if (prev->Next) prev->Next->Prev = prev->Prev;
-        FreeNode(prev);
-        --*(int*)((char*)Counts + idx);
-        prev = next;
-        if (prev == 0) return;
     }
-    node->End = x2;
 }
