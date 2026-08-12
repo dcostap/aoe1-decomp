@@ -30,6 +30,9 @@
 // - current assignment: focused setup/access lab (row cursor, scaled offset,
 //   loop and declaration orders) found no exact variant; the typed current
 //   group remained best.
+// - worker probe: naming yReference before the inclusive row count, then using
+//   that local in the row index, moved register coloring and broadened the
+//   function to 279B/143-byte drift; restored the clean donor-shaped source.
 // - worker probe: spell the second threshold as `value + amount >= minimum`;
 //   this fixes the binary-proven `cmp edx,ecx / jl` direction and reduces the
 //   remaining drift from 6 bytes to 4.
