@@ -26,6 +26,9 @@
 //   virtual surface regressed offsets/registers and was restored. Remaining
 //   drift is the one-byte relation SIB/base-order choice plus resulting branch
 //   displacements and trailing padding.
+// - Combined the self-relation and allied-player guards to test the exact
+//   sibling short-circuit shape; it worsened the block coverage and was
+//   restored. The localized [eax+ebp] versus [ebp+eax] SIB gap remains.
 // - tu-victory-532220 dossier and sibling review: the typed own/allied scans retain
 //   100% exact-block coverage and the 0xC frame. The only source-independent gap is
 //   the behavior-equivalent relation SIB encoding at +0x7F; no natural new lead remains.

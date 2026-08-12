@@ -15,6 +15,13 @@
 //   diff improved to 100 bytes, but size grew by 19 and VC5 cloned the exit.
 // - reordering the natural locals was a codegen duplicate; restored the clean
 //   typed result reconstruction before validation.
+// - one typed result pointer coalesced the target and constructor result and
+//   reached a 49-byte diagnostic diff, but it returned the old target when
+//   vf210 returned null; it was not kept.
+// - restored separate target/result ownership and explicit task propagation;
+//   output returned to the clean 255-byte basin with correct null behavior.
+// - direct success/failure labels reproduced the sibling trade shape but grew
+//   19 bytes and duplicated the cleanup; rolled back.
 // - remaining drift is the paired VC5 result-register basin and isolated
 //   EH-handler address; no compiler-only aliases or volatility retained.
 // FLAGS: config/flags/004CB5C0_build.rsp (/GX)
@@ -164,14 +171,15 @@ public:
 
 int TRIBE_Combat_Object::build(int id, int flag) {
     void* task;
+    RGE_Static_Object* target;
     RGE_Static_Object* result;
 
-    RGE_Static_Object* obj = this->owner->world->object(id);
-    result = obj;
-    if (obj != 0) {
+    target = this->owner->world->object(id);
+    result = target;
+    if (target != 0) {
         if (flag == 0) {
             if (this->actions->have_action() == 1) {
-                if (this->actions->get_action()->vf4C() == obj &&
+                if (this->actions->get_action()->vf4C() == target &&
                     this->actions->get_action()->vf18() == 0x65) {
                     result = (RGE_Static_Object*)1;
                     goto done;
@@ -181,18 +189,19 @@ int TRIBE_Combat_Object::build(int id, int flag) {
 
         if (this->actions->have_action() == 1) {
             if (this->actions->get_action()->vf18() == 0x65) {
-                this->actions->get_action()->vf34(obj, obj->world_x, obj->world_y, obj->world_z);
+                this->actions->get_action()->vf34(target, target->world_x,
+                                                  target->world_y, target->world_z);
                 result = (RGE_Static_Object*)1;
                 goto done;
             }
         }
 
-        task = this->vf210(obj, obj->world_x, obj->world_y, obj->world_z);
+        task = this->vf210(target, target->world_x, target->world_y, target->world_z);
         result = (RGE_Static_Object*)task;
         if (task == 0) goto done;
 
         TRIBE_Action_Build* build_action = new TRIBE_Action_Build(
-            (RGE_Action_Object*)this, (RGE_Task*)task, obj);
+            (RGE_Action_Object*)this, (RGE_Task*)task, target);
         result = (RGE_Static_Object*)build_action;
         if (build_action == 0) goto done;
 

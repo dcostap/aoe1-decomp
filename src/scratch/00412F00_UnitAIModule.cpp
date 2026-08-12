@@ -19,12 +19,44 @@
 //   obj before MOV ESI,this, saves this only before the first allocation, and
 //   keeps push 0x28 after the +0x38..+0x5C stores. VC5 currently moves MOV
 //   ESI,this/EH-local save ahead of PUSH EDI and hoists that argument push.
+// - Added the full UnitAIModule virtual ABI and typed OrderEvent/NotifyEvent
+//   queue surfaces; the emitted constructor stayed identical.
+// - Replaced proven waypoint padding with the typed Waypoint array and last
+//   position aggregate, then typed both queue pointers; both probes stayed
+//   identical. An empty ManagedArray default constructor also had no effect.
 // - Pausing with the best source: remaining evidence points to the original
 //   aiuaimod.cpp ManagedArray/TU lifetime scheduling rather than an unresolved
 //   field ownership or call ABI. No inline asm or compiler-only filler used.
 
-class OrderEvent;
-class NotifyEvent;
+struct OrderEvent {
+    int issuer;
+    int orderType;
+    int priority;
+    int target;
+    int targetOwner;
+    float targetX;
+    float targetY;
+    float targetZ;
+    float range;
+};
+
+struct NotifyEvent {
+    int caller;
+    int recipient;
+    int mType;
+    long p1;
+    long p2;
+    long p3;
+};
+
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+    unsigned char facetToNextWaypoint;
+    unsigned char padding[3];
+};
+
 class AIPlayStatus;
 
 class RGE_Master_Static_Object {
@@ -50,6 +82,8 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 
+    ManagedArray() {}
+
     ~ManagedArray() {
         if (value) {
             delete value;
@@ -65,15 +99,57 @@ void* __cdecl operator new(unsigned int size);
 
 class __declspec(novtable) UnitAIModule {
 public:
+    virtual ~UnitAIModule();
+    virtual void save(int);
+    virtual void load(int);
+    virtual RGE_Static_Object* owner() const;
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
+    virtual int notify(int, int, int, long, long, long);
+    virtual int notifyCommander(int, int, int, long, long, long);
+    virtual int notifyCommander(NotifyEvent*);
+    virtual void search();
+    virtual int importantWhenDead(int);
+    virtual int retryableOrder(int);
+    virtual int actionRequiresLiveTarget(int);
+    virtual int bestUnitToAttack(int, int, float*);
+    virtual int mostDangerousEnemy(float*);
+    virtual int weakestEnemy(float*);
+    virtual int closestAttacker(float*);
+    virtual int closestObject(int, int, int, int, int*);
+    virtual int closestResourceObject(int, int*);
+    virtual int closestUndiscoveredTile(int*, int*, int);
+    virtual void logDebug(char*);
+    virtual int canAttackUnit(RGE_Static_Object*);
+    virtual int canAttackUnitAtNeutrality(int);
+    virtual int stopObject(int);
+    virtual int attackObject(int, int);
+    virtual int attackRoundupObject(int);
+    virtual int huntObject(int, int);
+    virtual int gatherObject(int, int);
+    virtual int convertObject(int, int);
+    virtual int healObject(int, int);
+    virtual int repairObject(int, int);
+    virtual int buildObject(int, int);
+    virtual int tradeWithObject(int, int);
+    virtual int explore(int, int, int);
+    virtual int enterObject(int, int);
+    virtual int unload(int, float, float);
+    virtual int transportObject(float, float, float, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int evasiveMoveTo(float, float, float, int);
+    virtual int runAwayFromAttackers(int);
+
     RGE_Static_Object* objectValue;             // +0x04
     int moodValue;                              // +0x08
     int objectCategoryValue;                    // +0x0C
     int orderQueueSizeValue;                    // +0x10
     int orderQueueMaxSizeValue;                 // +0x14
-    void* orderQueueValue;                      // +0x18
+    OrderEvent* orderQueueValue;                // +0x18
     int notifyQueueSizeValue;                   // +0x1C
     int notifyQueueMaxSizeValue;                // +0x20
-    void* notifyQueueValue;                     // +0x24
+    NotifyEvent* notifyQueueValue;              // +0x24
     int currentOrderValue;                      // +0x28
     int currentOrderPriorityValue;              // +0x2C
     int currentActionValue;                     // +0x30
@@ -89,7 +165,7 @@ public:
     int lastTargetValue;                        // +0x58
     int lastTargetTypeValue;                    // +0x5C
     ManagedArray<int> attackingUnitsValue;      // +0x60
-    char waypointGap[0x80];                     // +0x70 to +0xEF
+    Waypoint waypointQueue[8];                  // +0x70 to +0xEF
     int waypointQueueSizeValue;                 // +0xF0
     unsigned long lastUpdateTimeValue;          // +0xF4
     unsigned long idleTimerValue;               // +0xF8
@@ -98,10 +174,7 @@ public:
     unsigned long secondaryTimerValue;          // +0x104
     unsigned long lookAroundTimerValue;         // +0x108
     unsigned long lookAroundTimeoutValue;       // +0x10C
-    float lastWorldPositionX;                   // +0x110
-    float lastWorldPositionY;                   // +0x114
-    float lastWorldPositionZ;                   // +0x118
-    char gap_11C[0x4];                          // +0x11C
+    Waypoint lastWorldPositionValue;            // +0x110
     float defenseBufferValue;                   // +0x120
     int* importantObjects;                      // +0x124
     int numberImportantObjects;                 // +0x128
@@ -110,7 +183,6 @@ public:
 
     void setAdjustedIdleTimeout();
     UnitAIModule(RGE_Static_Object* obj, int maxQueueSize);
-    virtual ~UnitAIModule();
 };
 
 // The historical aiuaimod.cpp TU exposes derived UnitAIModule classes; this
@@ -164,12 +236,12 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize) {
         defenseBufferValue = obj->master_obj->defense_buffer;
     }
 
-    orderQueueValue = operator new(orderQueueMaxSizeValue * 0x24);
-    notifyQueueValue = operator new(notifyQueueMaxSizeValue * 0x18);
+    orderQueueValue = (OrderEvent*)operator new(orderQueueMaxSizeValue * 0x24);
+    notifyQueueValue = (NotifyEvent*)operator new(notifyQueueMaxSizeValue * 0x18);
 
-    lastWorldPositionX = -1.0f;
-    lastWorldPositionY = -1.0f;
-    lastWorldPositionZ = -1.0f;
+    lastWorldPositionValue.x = -1.0f;
+    lastWorldPositionValue.y = -1.0f;
+    lastWorldPositionValue.z = -1.0f;
 
     setAdjustedIdleTimeout();
 }

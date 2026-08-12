@@ -18,13 +18,30 @@
 //   copy, a single-iteration loop, a common done label, and positive-guard
 //   if/else layout were all codegen duplicates. The delayed EDI save remains
 //   the only actionable gap; the clean direct-parameter source is restored.
+// - Added the full proven UnitAIModule virtual surface and typed 0x24-byte
+//   OrderEvent; corrected the same-TU owner return surface. No bytes changed.
+// - Expanded the local class to the proven UnitAIModule field layout. All
+//   eight ordered calls and the 277-byte mismatch stayed unchanged.
 // - Best canonical source retained: positive state guard, direct p2 use, typed
 //   object/member ownership, real virtual calls, and standard FILE/fprintf ABI.
 
 #include <stdio.h>
 
 class RGE_Static_Object;
-struct OrderEvent;
+class RGE_Player;
+class NotifyEvent;
+
+struct OrderEvent {
+    int issuer;
+    int orderType;
+    int priority;
+    int target;
+    int targetOwner;
+    float targetX;
+    float targetY;
+    float targetZ;
+    float range;
+};
 
 extern FILE* actionFile;
 extern const char str_fmt_stopObject[];
@@ -41,7 +58,7 @@ public:
 class UnitAIModule {
 public:
     virtual ~UnitAIModule();
-    virtual void save(int); virtual void load(int); virtual void* owner() const;
+    virtual void save(int); virtual void load(int); virtual RGE_Player* owner() const;
     virtual int order(int, int, int, int, float, float, float, float, int, int, int);
     virtual int notify(int, int, int, long, long, long);
     virtual int notifyCommander(int, int, int, long, long, long);
@@ -66,26 +83,65 @@ public:
     virtual int evasiveMoveTo(float, float, float, int);
     virtual int runAwayFromAttackers(int);
     virtual int intelligentEvasiveMoveTo(float, float, float, int, int);
-    virtual int followObject(int, float);
+    virtual int followObject(int, float, int);
     virtual int defendObject(int, float, int); virtual int defendPosition(float, float, float, int);
     virtual int seekAndDestroy(int, int, int, int); virtual int exploreAndDestroy(int, int, int);
     virtual int importantObject(int); virtual int convertToLOSResourceType(int);
     virtual int canConvert(int);
     virtual int processOrder(OrderEvent* queue, int flag); // +0xC8
+    virtual int processNotify(NotifyEvent*, unsigned long);
+    virtual void processGroupNotify(NotifyEvent*);
+    virtual int processIdle(int);
+    virtual void processMisc();
+    virtual int processRetryableOrder();
+    virtual int update(unsigned long);
+    virtual void updateGroup(unsigned long);
 
-    RGE_Static_Object* objectValue;  // +0x04
-    char gap_08[0x18 - 0x08];
-    OrderEvent* orderQueueValue;     // +0x18
-    char gap_1C[0x28 - 0x1C];
-    int currentOrderValue;           // +0x28
-    int currentOrderPriorityValue;   // +0x2C
-    char gap_30[0x34 - 0x30];
-    int currentTargetValue;          // +0x34
-    char gap_38[0x3C - 0x38];
-    float currentTargetXValue;       // +0x3C
-    float currentTargetYValue;       // +0x40
-    float currentTargetZValue;       // +0x44
-    float desiredTargetDistanceValue;// +0x48
+    RGE_Static_Object* objectValue;          // +0x04
+    int moodValue;                           // +0x08
+    int objectCategoryValue;                 // +0x0C
+    int orderQueueSizeValue;                 // +0x10
+    int orderQueueMaxSizeValue;              // +0x14
+    OrderEvent* orderQueueValue;             // +0x18
+    int notifyQueueSizeValue;                // +0x1C
+    int notifyQueueMaxSizeValue;             // +0x20
+    NotifyEvent* notifyQueueValue;           // +0x24
+    int currentOrderValue;                   // +0x28
+    int currentOrderPriorityValue;           // +0x2C
+    int currentActionValue;                  // +0x30
+    int currentTargetValue;                  // +0x34
+    int currentTargetTypeValue;              // +0x38
+    float currentTargetXValue;               // +0x3C
+    float currentTargetYValue;               // +0x40
+    float currentTargetZValue;               // +0x44
+    float desiredTargetDistanceValue;        // +0x48
+    int defendTargetValue;                   // +0x4C
+    int lastOrderValue;                      // +0x50
+    int lastActionValue;                     // +0x54
+    int lastTargetValue;                     // +0x58
+    int lastTargetTypeValue;                 // +0x5C
+    int* attackingUnitsValue;                // +0x60
+    int attackingUnitsNumberValue;            // +0x64
+    int attackingUnitsDesiredNumberValue;    // +0x68
+    int attackingUnitsMaximumSizeValue;      // +0x6C
+    char waypointQueue[0x80];                // +0x70 to +0xEF
+    int waypointQueueSizeValue;              // +0xF0
+    unsigned long lastUpdateTimeValue;       // +0xF4
+    unsigned long idleTimerValue;            // +0xF8
+    unsigned long adjustedIdleTimeoutValue;  // +0xFC
+    unsigned long idleTimeoutValue;          // +0x100
+    unsigned long secondaryTimerValue;       // +0x104
+    unsigned long lookAroundTimerValue;      // +0x108
+    unsigned long lookAroundTimeoutValue;    // +0x10C
+    float lastWorldPositionX;                // +0x110
+    float lastWorldPositionY;                // +0x114
+    float lastWorldPositionZ;                // +0x118
+    char lastWorldPositionPadding[4];        // +0x11C
+    float defenseBufferValue;                // +0x120
+    int* importantObjects;                   // +0x124
+    int numberImportantObjects;              // +0x128
+    void* playStatus;                        // +0x12C
+    unsigned char stopAfterTargetKilledValue;// +0x130
 
     int addToOrderQueue(int p1, int p2, int p3, int p4, float p5, float p6, float p7, float p8, int p9, int p10);
     void removeCurrentTarget();

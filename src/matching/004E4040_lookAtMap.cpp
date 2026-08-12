@@ -14,11 +14,12 @@
 // worsened resynchronization, so the persistent typed map local remains.
 // probe 10: direct quadrantLog indexing worsened the localized block and was
 // rolled back.
-// left in scratch: rebuilt size is 379 bytes with 3/3 calls aligned, but the
-// original uses sub esp,20h and only saves EDI before the nested loops. The
-// natural candidate uses sub esp,24h and saves EBX/ESI/EDI; the remaining gap
-// is register/lifetime allocation around the persistent map and induction
-// variables, not an unresolved field or call target.
+// probe 13: map declaration initialization was a codegen duplicate.
+// probe 14: removed the redundant mapYSize local and read the owning field
+// directly for the guard, quadrant divisor, and inner-loop limit; this
+// restored the original frame and all bytes.
+// exact: the typed map/tile-list traversal is natural source and matches the
+// original 379-byte function with all three direct calls aligned.
 
 class RGE_Static_Object;
 
@@ -121,23 +122,20 @@ public:
 
 void TribeInformationAIModule::lookAtMap(void)
 {
-    RGE_Map* map;
+    RGE_Map* map = this->md->player->world->map;
     int x = 0;
-
-    map = this->md->player->world->map;
 
     if (this->mapXSizeValue > 0) {
         do {
-            int mapYSize = this->mapYSizeValue;
             int y = 0;
 
-            if (mapYSize > 0) {
+            if (this->mapYSizeValue > 0) {
                 do {
                     int terrainType = map->mapRowOffset[y][x].terrainType & 0x1F;
 
                     if (this->mapXSizeValue != -1) {
                         int qx = (x * 4) / this->mapXSizeValue;
-                        int qy = (y * 4) / mapYSize;
+                        int qy = (y * 4) / this->mapYSizeValue;
                         this->quadrantLog[qx][qy].numberExploredTiles++;
                     }
 
@@ -165,7 +163,7 @@ void TribeInformationAIModule::lookAtMap(void)
                         this->numberFoundForestTilesValue++;
 
                     ++y;
-                } while (y < mapYSize);
+                } while (y < this->mapYSizeValue);
             }
 
             ++x;

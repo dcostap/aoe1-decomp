@@ -34,6 +34,14 @@
 // - Reordering locals to the same-TU donor family was codegen-identical. The
 //   remaining gap is the early VC5 register/home schedule and height/pitch
 //   coloring; calls, frame size, CFG count, and RLE effects are aligned.
+// sa262083c2-shape probes (2026-08-12):
+// - Splitting orientation and AlignedWidth evaluation, reusing pitch for the
+//   orientation, and initializing shape_header before pitch all worsened the
+//   prologue or frame; restored the clean source.
+// - A while outer loop, explicit row-counter copy, signed int height, and
+//   local declaration reorder were duplicate or worse basins; restored.
+// - Final lead remains the original source's height/pitch register coloring
+//   and save_buffer home, with calls, frame, CFG count, and RLE behavior known.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };

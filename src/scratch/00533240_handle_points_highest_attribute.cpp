@@ -52,6 +52,10 @@
 // - tu-victory-533240 probe: kept a typed player owner only after the point-entry update, so the
 //   same owner feeds world and id in the sibling-backed loop. VC5 emitted the unchanged 221-byte,
 //   139-byte-diff group; the original 0x10 local window and four stack homes remain unresolved.
+// - Short player-id local, threshold-fail no-op, scoped player-count declaration, and split
+//   best declaration probes were tested. The short and no-op forms regressed structure;
+//   the scoped-count and split-best forms were codegen duplicates. Restored the clean scalar
+//   source; the original four-slot local window remains the blocker.
 
 class RGE_Game_World;
 

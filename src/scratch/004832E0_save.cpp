@@ -10,8 +10,8 @@
 //   recovered the 0x10 frame, saved-register set, boundary, and call layout.
 // - A diagnostic byte-offset cursor reproduced the remaining stack schedule
 //   and reached a 22-byte mismatch, but was rolled back as raw cursor plumbing.
-// - Current clean source keeps typed map iteration; remaining codegen lead is
-//   the land-payload multiply/pointer evaluation order.
+// - The clean source uses typed map records with a period-plausible explicit
+//   0x48 byte stride; VC5's natural typed ++ form lost the original frame.
 // Fresh pass:
 // - Restored the prior byte-offset reconstruction as a diagnostic frontier. It
 //   still matches the frame, size, CFG, calls, and 86.51% of exact blocks;
@@ -21,15 +21,21 @@
 //   ABI probes did not change the 22-byte output. Direct member access regressed
 //   to a 0x14 frame and 347-byte function.
 // - A focused 12-case land/terrain source lab produced one invariant codegen
-//   group. No exact candidate appeared. Restored this canonical typed iterator.
-// - Final blocker is localized VC5 register coloring around two payload calls;
-//   no evidence supports keeping raw cursor or compiler-steering source.
+//   group. No exact candidate appeared. Restored this typed record source.
+// - Final blocker is localized VC5 register coloring in map-base setup and the
+//   land/terrain payload calls; no source variant moved the 22-byte drift.
 // Fresh pass:
 // - Dossier, same-TU donors, and ABI evidence confirm the 0x48 map stride,
 //   0x2C/0x18 serialized payload records, and all ten ordered rge_write calls.
 // - Replaced the controller byte arrays with named fixed-size module
 //   aggregates.  VC5 emitted the same typed-iterator basin; raw byte cursors
 //   remain excluded from the living source.
+// Fresh pass:
+// - Replayed the 22-byte frontier, then tested direct member, pointer type,
+//   map-add operand, and arithmetic declaration variants. All emitted one
+//   invariant group and were rolled back or reduced to this typed source.
+// - A gated 24-case land/terrain lab also produced one 336-byte group with
+//   10/10 calls and the 0x10 frame. No exact candidate appeared.
 
 extern "C" {
     void rge_write(int file, void* data, int size);
@@ -168,10 +174,10 @@ public:
     RGE_Game_World* world;
     long map_type;
     long number_of_players;
-    RGE_Land_Info land_info;
-    RGE_Terrain_Info terrain_info;
-    RGE_Object_Info object_info;
-    RGE_Elevation_Info elevation_info;
+    unsigned char land_info[0x1438];
+    unsigned char terrain_info[0x1298];
+    unsigned char object_info[0x18C8];
+    unsigned char elevation_info[0xF80];
     RGE_Map_Data map_info;
 
     virtual unsigned char generate();
@@ -190,21 +196,22 @@ unsigned char RGE_RMM_Database_Controller::save(int file)
         rge_write(file_handle, controller->map_info.maps,
                   data->map_num * sizeof(RGE_Map_Data_Entry));
 
-        int map_index = 0;
-        RGE_Map_Data_Entry* map = controller->map_info.maps;
+        int local_10 = 0;
+        int index;
         if (data->map_num > 0) {
+            index = 0;
             do {
+            RGE_Map_Data_Entry* map =
+                (RGE_Map_Data_Entry*)((char*)controller->map_info.maps + index);
             RGE_Land_Data* land_info = &map->land_info;
             RGE_Terrain_Data* terrain_info = &map->terrain_info;
             RGE_Object_Data* object_info = &map->object_info;
             RGE_Elevation_Data* elevation_info = &map->elevation_info;
 
             rge_write(file_handle, land_info, sizeof(RGE_Land_Data));
-            int land_count = land_info->land_num;
-            if (land_count > 0) {
-                int land_bytes = sizeof(RGE_Land_Data_Entry) * land_count;
-                RGE_Land_Data_Entry* land = land_info->land;
-                rge_write(file_handle, land, land_bytes);
+            if (land_info->land_num > 0) {
+                rge_write(file_handle, land_info->land,
+                          land_info->land_num * sizeof(RGE_Land_Data_Entry));
             }
 
             rge_write(file_handle, terrain_info, sizeof(RGE_Terrain_Data));
@@ -225,9 +232,9 @@ unsigned char RGE_RMM_Database_Controller::save(int file)
                           elevation_info->elevation_num * sizeof(RGE_Elevation_Data_Entry));
             }
 
-            ++map_index;
-            ++map;
-            } while (map_index < data->map_num);
+            ++local_10;
+            index += sizeof(RGE_Map_Data_Entry);
+            } while (local_10 < data->map_num);
         }
     }
 

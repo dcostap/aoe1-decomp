@@ -25,8 +25,13 @@
 //   from int to donor-supported RGE_Task*; emitted code was unchanged, so keep
 //   the canonical pointer/task model and the existing /GX context.
 // - paused with the remaining lead localized to VC5 tail layout/EH context.
-// - A centralized pointer-as-status variant reached a 20-byte diagnostic gap.
-//   Rejected it because target ownership and integer status are separate.
+// - sequential sibling probe: the validated hunt result-pointer source and
+//   centralized task/action failure label reproduce the same 333B frontier.
+//   Calls remain aligned; only the return-register tail and two bytes differ.
+// - direct task-null exit removed the two-byte failure block but returned the
+//   target pointer on a null task; it widened the positional diff to 49 bytes.
+// - assigning the constructor result into the status pointer was codegen
+//   neutral; removed it to retain the natural typed ownership model.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 
 class RGE_Static_Object;
@@ -140,32 +145,37 @@ public:
 };
 
 int TRIBE_Combat_Object::convert(int object_id, int force) {
-    RGE_Static_Object* target;
+    RGE_Static_Object* result;
     RGE_Task* action_id;
-    TRIBE_Action_Convert* new_action;
+    TRIBE_Action_Convert* action;
 
-    target = owner_data->world->object(object_id);
-    if (target == 0) goto end;
+    result = owner_data->world->object(object_id);
+    if (result == 0) goto end;
 
-    if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == target && actions->get_action()->action_type() == 0x68) {
-        return 1;
+    if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == result && actions->get_action()->action_type() == 0x68) {
+        result = (RGE_Static_Object*)1;
+        goto end;
     }
 
     if (actions->have_action() == 1 && actions->get_action()->action_type() == 0x68) {
-        actions->get_action()->set_target(target, target->world_x, target->world_y, target->world_z);
-        return 1;
+        actions->get_action()->set_target(result, result->world_x, result->world_y, result->world_z);
+        result = (RGE_Static_Object*)1;
+        goto end;
     }
 
-    action_id = make_action(target, target->world_x, target->world_y, target->world_z);
-    if (action_id == 0) goto end;
+    action_id = make_action(result, result->world_x, result->world_y, result->world_z);
+    if (action_id == 0) goto fail;
 
-    new_action = new TRIBE_Action_Convert(this, action_id, target);
-    if (new_action == 0) goto end;
+    action = new TRIBE_Action_Convert(this, action_id, result);
+    if (action == 0) goto fail;
 
     actions->delete_list();
-    add_action(new_action);
-    return 1;
+    add_action(action);
+    result = (RGE_Static_Object*)1;
+    goto end;
 
+fail:
+    result = 0;
 end:
-    return 0;
+    return (int)result;
 }

@@ -24,6 +24,13 @@
 //     from the array; frame and size became exact, diff 252, shape 89.57%.
 // 12: declaration reorder, hoisted entry, cached count, and typed reference were
 //     duplicate or regressed; restored the pointer-based hybrid above.
+// probes 22, 24, 28, 30: direct id-before-entry order, a persistent array base,
+// hoisted entry lifetime, and entry scoping after the sentinel all increased
+// the frame or worsened block shape; restored the best pointer hybrid.
+// probe 26: canonical ManagedIntArray ownership preserved the emitted code.
+// probe 27: pointer-addition spelling was a codegen duplicate.
+// probe 32: canonical ObjectMemory and ManagedIntArray surfaces preserved the
+// emitted code and are retained for source ownership.
 // Current pause: calls, CFG counts, frame, size, and late blocks are aligned.
 // Remaining first hunk is base/entry/id register allocation at +0x5D; no new
 // evidence-backed source lead remains in this claim.
@@ -32,22 +39,32 @@
 
 typedef unsigned char uchar;
 
-#pragma pack(push, 1)
-struct ImportantObjectEntry {
+struct ObjectMemory {
     int id;
     short type;
     short group;
     unsigned char x;
     unsigned char y;
-    unsigned char gap_0A;
+    unsigned char z;
     unsigned char owner;
-    char pad_0C[4];
+    short hitPoints;
+    unsigned char pad_0E[2];
     int attackAttempts;
-    char rest[0x10];
+    unsigned char kills;
+    unsigned char pad_15[3];
+    float damageCapability;
+    float rateOfFire;
+    float range;
 };
-#pragma pack(pop)
 
 struct XYPoint { int x; int y; };
+
+struct ManagedIntArray {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
 
 class RGE_Static_Object {
 public:
@@ -89,21 +106,18 @@ public:
     MainDecisionAIModule* md;
     char gap_104[0x0C];
     int maxImportantObjectMemory;
-    ImportantObjectEntry* importantObjectMemory;
+    ObjectMemory* importantObjectMemory;
     char gap_118[0x30];
-    int* itemsToDefend_value;
-    int itemsToDefend_numberValue;
-    char gap_150[4];
-    int itemsToDefend_maximumSizeValue;
+    ManagedIntArray itemsToDefend;
 
-    ImportantObjectEntry* higherPriorityObjectToDefend(int objId, int type, int group);
+    ObjectMemory* higherPriorityObjectToDefend(int objId, int type, int group);
     int defendPriority(int type, int group);
 };
 
-ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
+ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
 {
     RGE_Static_Object* mainObj = this->md->object(objId);
-    ImportantObjectEntry* best;
+    ObjectMemory* best;
     if (mainObj == 0)
         return 0;
 
@@ -113,15 +127,15 @@ ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int
     int i = 0;
     if (this->maxImportantObjectMemory > 0) {
         do {
-            ImportantObjectEntry* entry = &this->importantObjectMemory[i];
+            ObjectMemory* entry = &this->importantObjectMemory[i];
             int id = entry->id;
             if (id != -1) {
                 int j = 0;
-                if (this->itemsToDefend_numberValue > 0) {
-                    while (j < this->itemsToDefend_numberValue) {
-                        if (j >= this->itemsToDefend_maximumSizeValue)
+                if (this->itemsToDefend.numberValue > 0) {
+                    while (j < this->itemsToDefend.numberValue) {
+                        if (j >= this->itemsToDefend.maximumSizeValue)
                             break;
-                        if (this->itemsToDefend_value[j] == id) {
+                        if (this->itemsToDefend.value[j] == id) {
                             if (entry->attackAttempts <= 0) {
                                 RGE_Static_Object* target = this->md->object(id);
                                 if (target != 0) {

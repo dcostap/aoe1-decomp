@@ -27,6 +27,12 @@
 // - Previous pass paused after 10 hypotheses: exactness remains blocked by the early EDI
 //   initialization, object-count memory compare, independent store ordering,
 //   and the cursor's register/frame coloring.
+// Fresh pass:
+// - A typed output-record anchor stayed in the 309-byte basin.  A diagnostic
+//   long-pointer output anchor plus indexed map-land access reached 192 bytes
+//   and 91.82% shape, but it was rolled back as cursor plumbing.
+// - Split counter initialization and separate map/table locals were emitted
+//   duplicates.  The clean source keeps typed object and land-point ownership.
 
 #include <stdlib.h>
 
