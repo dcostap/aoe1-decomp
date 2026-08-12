@@ -11,6 +11,16 @@
 //   bytes with exact call count, but frame/CFG/source scheduling remain open.
 // - Final bounded probes did not close the remaining view/master register and
 //   stack-frame basin; left the readable aggregate reconstruction in scratch.
+// - Fresh pass: matched the original individual short output homes instead of
+//   the synthetic aggregate. The short local order improves the structural
+//   diff, but VC5 still reserves a 0x20 frame instead of the original 0x1C.
+// - Cast world time before the shift and reuse the time local for the shape
+//   transform; this recovers the original SHR and shared EAX branch shape.
+// - Tested separate int centers, dword alignment-tail aliasing, and a split
+//   tail local. They worsened the basin and were rolled back. Removing the
+//   unused x1/y2 names and player alias emitted no change.
+// - Fresh pass ends at 176 strict bytes, exact five-call multiset, 0x20/0x1C
+//   frame, and 73.05% shape. Remaining gap starts at the frame/prologue.
 
 class RGE_Game_World;
 class RGE_Player;
@@ -78,22 +88,6 @@ class TRIBE_Master_Combat_Object : public RGE_Master_Combat_Object {
 class TRIBE_Master_Building_Object : public TRIBE_Master_Combat_Object {
 };
 
-struct Wall_Outline_Short_Values {
-    short x4;
-    short y3;
-    short x2;
-    short y1;
-    short scr_y;
-    short alignment_value_5;
-    short scr_x;
-    short gap_0E;
-    short x3;
-    short gap_12;
-    short y4;
-    short gap_16;
-    short alignment_tail[2];
-};
-
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -134,41 +128,45 @@ public:
 
 int TRIBE_Main_View::draw_wall_outline(
     long x, long y, TRIBE_Master_Building_Object* master, long mode) {
-    Wall_Outline_Short_Values values;
+    short x4;
+    short y3;
+    short x2;
+    short y1;
+    short scr_y;
+    short local_12;
+    short scr_x;
+    short x3;
+    short y4;
+    short local_4[2];
 
     if (this->get_tile_screen_coords(
-            (short)x, (short)y, &values.x3, &values.scr_x, 0) != 0) {
+            (short)x, (short)y, &x3, &scr_x, 0) != 0) {
         master->alignment_box(
             this->world, (float)x + 0.5f, (float)y + 0.5f,
-            values.x4, values.alignment_value_5, values.scr_y, values.y3,
-            values.y4, values.y1, values.x2, values.alignment_tail[0]);
+            x4, local_12, scr_y, y3, y4, y1, x2, local_4[0]);
 
-        RGE_Player* player = this->player;
         if (master->check_placement(
-                player, (float)x + 0.5f, (float)y + 0.5f,
+                this->player, (float)x + 0.5f, (float)y + 0.5f,
                 0, 1, master->elevation_flag, 0, 1, 1, 1) == 0) {
             fog_next_shape = 5;
         } else {
-            unsigned int time = (unsigned int)(this->world->world_time >> 7) & 7;
-            int shape;
+            unsigned int time = ((unsigned int)this->world->world_time >> 7) & 7;
             if (time < 4)
-                shape = (int)time + 0x24;
+                time += 0x24;
             else
-                shape = 0x2C - (int)time;
-            fog_next_shape = (shape << 4) | 9;
+                time = 0x2C - time;
+            fog_next_shape = (time << 4) | 9;
         }
 
         if (master->sprite != 0) {
-            values.x3 = (short)((int)values.alignment_tail[0] +
-                ((int)values.x4 - (int)values.x3) / 2 + values.x3);
-            values.scr_x = (short)(
-                (int)values.scr_x +
-                ((int)values.y3 - (int)values.alignment_tail[0]) / 2 +
-                values.alignment_tail[0]);
-            SDI_Draw_Line = (int)values.scr_x;
+            x3 = (short)((int)local_4[0] +
+                ((int)x4 - (int)x3) / 2 + x3);
+            scr_x = (short)((int)scr_x +
+                ((int)y3 - (int)local_4[0]) / 2 + local_4[0]);
+            SDI_Draw_Line = (int)scr_x;
             master->draw(
                 this->draw_area,
-                values.x3, values.scr_x,
+                x3, scr_x,
                 rge_base_game->get_player()->color_table,
                 mode + 1, 0, 0, 0);
         }
