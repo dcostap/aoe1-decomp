@@ -59,6 +59,11 @@
 // Probe 29: generated unsigned-long cache_time layout was a codegen duplicate.
 // Probe 30: void rge_read ABI from exact same-TU donors was a duplicate.
 // Probe 31: a value sound_count local was a duplicate of the 309-byte basin.
+// Fresh probe 34: reversed the inner alias predicate; it was a codegen
+// duplicate of the six-byte allocator hunk.
+// Fresh probe 35: matched the decompiler's negative outer guard; VC5 emitted
+// a cmp-to-one, an extra branch, and a 320-byte structural mismatch.
+// Fresh probe 37: made the count alias const; it was a codegen duplicate.
 // Final clean source: restored direct typed member reconstruction; best
 // diagnostic codegen remains the 306-byte pointer-alias variant at 6 bytes,
 // while the living source stays canonical and period-plausible.
