@@ -47,6 +47,9 @@
 //   movement. Restored the typed TribeMainDecision ownership.
 // - Fresh context probes: stdlib/string and windows.h header pairs left the
 //   same 238-byte/15-byte basin. VC5 rejects __restrict; no probe was kept.
+// - Added the complete same-TU donor declaration tail from exact donor 004D9970
+//   (the +0x1256C aiPlayer field) without changing the natural function body;
+//   emitted code stayed at 238 bytes with the same 15-byte register basin.
 
 class RGE_Static_Object;
 
@@ -80,6 +83,9 @@ public:
     RGE_Player* player;   // +0xF0
     char gap_F4[0x1146C - 0xF4];
     TribeTacticalAIModule tacticalAI;
+    // Same-TU donor 004D9970 carries the complete class through +0x1256C.
+    char gap_1146D[0x10FF];
+    RGE_Player* aiPlayer;  // +0x1256C, donor 004D9970
 
     RGE_Static_Object* object(int);
     RGE_Static_Object* object(int, int, int, int, int, int, int, int, int, int);

@@ -50,6 +50,9 @@
 //   store order, worsened the early store topology (31/45-byte drift); rolled
 //   back. The remaining gap is still the EDX=14 versus EDX=64 constant coloring
 //   plus the 12-byte late parameter-reload alignment hunk.
+// - Same-TU donor preload probe: an early ordinary twenty local, used for the
+//   three Phoenician 20-valued stores without changing their order, emitted the
+//   identical 25-byte basin. Restored the direct literal source.
 // - Session sa-f9b73f31-r1 exhausted 9/10 meaningful hypotheses; final clean
 //   source validation is required before pausing for the compiler-basin blocker.
 
