@@ -10,17 +10,39 @@
 // 8: broad mismatch is not accepted_drift-safe; although behavior surface is close, register/frame/FPU scheduling differs before the geometry calculations.
 // 9: likely next probes: restructure first half to avoid preserving converted col/row as C locals, and model the two __ftol adjustment results as stack-reused int temporaries rather than named shorts.
 // 10: left in scratch after honest attempts; no exact match.
+// 11: fresh pass restored the period TPanel ownership: pnl_wid/pnl_hgt at +14/+18 and render_rect at +8c.
+// 12: reused the center-map shorts for the projection and viewport bounds; calls, CFG, and all field offsets stayed aligned.
+// 13: direct view_y and (view_x - view_y) projection expressions gave the best current result: 550 bytes, 0x14 frame, 517 strict diff.
+// 14: split fractional terms and an explicit col adjustment improved shape but worsened resync; rolled back as unsupported codegen steering.
+// 15: remaining blocker is the original 0x0c FPU/local lifetime and register coloring (original EBX=player; rebuilt EDI=player); calls and CFG match.
 
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
 struct RGE_Map { unsigned char pad_000[0x8d8c]; RGE_Tile** map_row_offset; };
-class RGE_View {
+struct tagRECT { long left; long top; long right; long bottom; };
+class TPanel {
 public:
-    unsigned char pad_000[0x14]; int screen_w; int screen_h;
-    unsigned char pad_01c[0x8c-0x1c]; short base_col;
-    unsigned char pad_08e[0x90-0x8e]; short base_row;
-    unsigned char pad_092[0x100-0x92]; RGE_Player* player; RGE_Map* map;
-    short scale_x; short scale_y; short tile_half_wid; short tile_half_hgt; short elev_hgt; short pad_112; short pad_114; short max_col_num; short max_row_num;
+    virtual ~TPanel();
+    unsigned char gap_04[0x10];
+    long pnl_wid;                         // +0x14
+    long pnl_hgt;                         // +0x18
+    unsigned char gap_1c[0x70];
+    tagRECT render_rect;                  // +0x8C
+    unsigned char gap_9c[0x58];
+};
+class RGE_View : public TPanel {
+public:
+    unsigned char gap_00f4[0x0c];
+    RGE_Player* player;                   // +0x100
+    RGE_Map* map;                          // +0x104
+    short tile_wid;                        // +0x108
+    short tile_hgt;                        // +0x10A
+    short tile_half_wid;                   // +0x10C
+    short tile_half_hgt;                   // +0x10E
+    short elev_hgt;                        // +0x110
+    unsigned char pad_112[4];
+    short max_col_num;                     // +0x116
+    short max_row_num;                     // +0x118
     short center_scr_col; short center_scr_row; short center_scr_col_offset; short center_scr_row_offset; short center_map_col; short center_map_row; short start_scr_col; short start_scr_row; short start_map_col; short start_map_row;
     int map_scr_x_offset; int map_scr_y_offset; float last_view_x; float last_view_y;
     void update();
@@ -34,34 +56,29 @@ void RGE_View::update()
         this->center_map_col = sVar6;
         short sVar7 = (short)(int)p->view_y;
         this->center_map_row = sVar7;
-        float f0 = p->view_x - (float)(int)sVar6;
-        float f1 = p->view_y - (float)(int)sVar7;
         this->last_view_x = p->view_x;
         this->last_view_y = p->view_y;
-        short sVar9 = (short)(this->base_col + this->screen_w / 2) - this->tile_half_wid;
-        short sVar10 = (short)(this->base_row + this->screen_h / 2) - this->tile_half_hgt;
-        f0 = f0 * 48.0f;
-        f1 = f1 * 48.0f;
-        short sVar11 = (short)-(int)f0;
-        short sVar12 = (short)-(int)(f1 * (float)this->scale_x - f0 * (float)this->scale_y + (float)this->tile_half_hgt);
-        sVar9 += sVar11;
-        sVar10 += sVar12;
+        short sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
+        short sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
+        sVar7 = (short)-(int)(p->view_y * 48.0f * (float)this->tile_wid);
+        short sVar8 = (short)-(int)((p->view_x - p->view_y) * 48.0f * (float)this->tile_hgt + this->tile_half_hgt);
+        sVar9 += sVar7;
+        sVar10 += sVar8;
         this->center_scr_col = sVar9;
         this->center_scr_row = sVar10;
-        RGE_Tile* tile = this->map->map_row_offset[sVar7] + sVar6;
+        RGE_Tile* tile = this->map->map_row_offset[this->center_map_row] + sVar6;
         this->map_scr_x_offset = (int)tile->screen_xpos - (int)sVar9;
         this->map_scr_y_offset = ((int)this->elev_hgt * ((unsigned int)tile->flags >> 5) + (int)tile->screen_ypos) - (int)sVar10;
-        this->center_scr_col_offset = (short)((sVar6 + sVar7) * this->tile_half_wid + sVar11);
-        short h = this->tile_half_hgt;
-        this->center_scr_row_offset = (short)((sVar7 - sVar6) * h + sVar12);
-        short sVar13 = this->max_col_num / 2 + 2;
+        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid + sVar7);
+        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt + sVar8);
+        sVar7 = this->max_col_num / 2 + 2;
         this->start_map_row = this->center_map_row;
-        this->start_map_row -= sVar13;
-        this->start_map_col = sVar6 - sVar13;
-        this->start_scr_col = (short)(sVar9 - sVar13 * this->tile_half_wid * 2);
-        short sVar14 = this->max_row_num / 2 + 1;
-        this->start_map_col += sVar14;
-        this->start_map_row -= sVar14;
-        this->start_scr_row = (short)(sVar10 - sVar14 * h * 2);
+        this->start_map_row -= sVar7;
+        this->start_map_col = sVar6 - sVar7;
+        this->start_scr_col = (short)(sVar9 - sVar7 * this->tile_half_wid * 2);
+        sVar6 = this->max_row_num / 2 + 1;
+        this->start_map_col += sVar6;
+        this->start_map_row -= sVar6;
+        this->start_scr_row = (short)(sVar10 - sVar6 * this->tile_half_hgt * 2);
     }
 }
