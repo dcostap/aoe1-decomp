@@ -78,6 +78,11 @@
 // - Paused: restored and validated the clean natural source. Calls, layout,
 //   CFG, and behavior remain established; delayed number spill and time-chain
 //   allocation remain unresolved.
+// - Current TU pass: dossier and original assembly confirm the only structural
+//   gap is the 4-byte local home (`push ecx`, post-desired spill at [esp+10]).
+//   Same-TU exact donors and the canonical 00501D70 nested layout add no new
+//   source ownership fact. The clean typed source remains authoritative; no
+//   natural, evidence-backed spill lead remains without compiler steering.
 
 class RGE_Game_World {
 public:

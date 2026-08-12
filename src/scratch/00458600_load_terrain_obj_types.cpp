@@ -30,6 +30,9 @@
 // - Final clean candidate is the typed direct-member loop; calls/frame align,
 //   while the remaining structural gap is the target's cached count spill and
 //   associated body block layout.  No exact variant was found in this pass.
+// - Fresh packet/dossier pass confirms the four narrow record fields and the
+//   unconditional fclose. The version-as-count spill remains diagnostic only;
+//   the clean typed direct-member source is retained for semantic clarity.
 
 #include <stdio.h>
 #include <stdlib.h>

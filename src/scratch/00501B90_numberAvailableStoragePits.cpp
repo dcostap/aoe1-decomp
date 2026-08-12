@@ -103,6 +103,11 @@
 // keeps the rebuilt md in ESI and product in EDI. Donor 004F5FB0 shows that
 // post-md this-member liveness can produce the original coloring, but natural
 // forms tested here do not preserve it without a codegen-only alias.
+// - Current TU pass: the dossier confirms exact size, frame, CFG, calls, and
+//   six relocation-safe byte differences. Donor search again identifies the
+//   same post-md this-liveness pattern, but direct strategic-number rereads
+//   already tested in this source produce the same basin. The 00501D70 nested
+//   layout remains canonical; no new natural ABI or ownership lead remains.
 
 #include <stdlib.h>
 

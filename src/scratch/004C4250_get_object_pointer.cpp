@@ -49,6 +49,8 @@
 // Restored the readable clean source. Direct find_by_id calls remain exact;
 // the unresolved drift is still only ESI owner versus EDX compare coloring
 // and its dependent loop-tail branch displacements.
+// - A complete static/master surface and <stdlib.h> context emitted identical
+//   code. Keep the smaller proven local ABI; no new tail lead resulted.
 
 class RGE_Static_Object;
 class RGE_Sprite;

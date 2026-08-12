@@ -67,6 +67,11 @@
 // same overlay difference). Clean 167B/22-diff source retained; remaining gap is
 // the y arithmetic position (fault-order: other-Y read after the X branch).
 
+// tu-statobj-C5E50 2026-08-12: reviewed the sibling's complete stat_obj.cpp
+// class surface and header-context probe. It was codegen-neutral and supplied no
+// new source or ABI lead for the shared fsubr/other-Y fault-order gap. Kept the
+// natural typed reconstruction.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];

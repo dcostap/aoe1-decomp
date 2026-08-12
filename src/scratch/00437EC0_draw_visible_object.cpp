@@ -18,6 +18,11 @@
 //   widened the function, so those diagnostics were rolled back.
 // - Final validated candidate keeps the ordinary typed switch and separate case-two return;
 //   remaining structural gaps are this/player register coloring and the folded virtual call.
+// - Current pass: a byte working color was codegen-identical; one full-width working color
+//   restored four calls but widened the body by 31 bytes. A natural common tail added a frame
+//   and still folded the case-two call; both diagnostics were rolled back.
+// - Current pause: the int-level ordinary switch remains authoritative. The next lead must
+//   explain the this/player register homes and the case-call topology without compiler tricks.
 
 extern unsigned long* unified_map_offsets[];
 

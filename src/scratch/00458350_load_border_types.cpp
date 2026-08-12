@@ -30,6 +30,12 @@
 //    +0x28..+0x41 animation fields; do not replace these with raw decompiler
 //    offsets.  Next lead is a fresh map.cpp donor/TU-local declaration-order
 //    reconstruction for the +0x24 row-anchor versus +0x28 frame-rate homes.
+// Fresh pass: a single cursor with p += 12 reduced the diagnostic diff but
+// removed the target row-anchor spill and frame bytes, so it was restored.
+// Reversed cursor roles, declaration order, and explicit count-down loops did
+// not change or improve the exact-size clean basin. The typed two-cursor source
+// remains the best period-plausible reconstruction; the row-anchor home is the
+// open blocker.
 //
 // The border record layout is shared with the exact map.cpp constructors and
 // update routine.  The map file's signed color/index locals intentionally retain

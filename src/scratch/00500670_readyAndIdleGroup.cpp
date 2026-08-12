@@ -27,6 +27,11 @@
 // Current bounded pass: behavior, calls, frame, boundary, and typed ownership
 // are stable; remaining drift is the first prologue/local-home/register basin
 // (68 bytes, 21.4511%).
+// - Current TU pass: a natural do-while list form added four bytes and a
+//   branch, then was restored. A typed self alias combined with direct type
+//   filtering and ordered desired/number locals was codegen-duplicate. The
+//   dossier and same-TU donors add no new ownership or ABI fact, so the clean
+//   source remains authoritative.
 
 #include <math.h>
 

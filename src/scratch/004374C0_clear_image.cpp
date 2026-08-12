@@ -22,6 +22,10 @@
 //   boundary test was rolled back because the binary's late load is clip-right, not clip-bottom.
 // - Top-up pause: the clean typed-record/int-span reconstruction is restored. The remaining
 //   evidence-backed gap is the original orientation register coloring and 24-byte loop shape.
+// - Current pass: moving the natural scan step and line cursor into the positive-row block
+//   worsened setup and loop topology; a named orientation local was codegen-identical.
+// - Current pause: restored the prior clean source. No new lead remains before the structural
+//   orientation and loop-shape gap is understood.
 
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)

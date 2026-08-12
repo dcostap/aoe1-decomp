@@ -20,6 +20,12 @@
 // derived value; current source is canonical and typed, with 20/20 calls,
 // 88.55% shape and localized remaining drift dominated by the pre-EH word load,
 // parameter scheduling, and final EH-tail topology.
+// current pass: bound val_num to p15, the 15th stack parameter proven by the
+// pre-EH word load and the vals index use; this improves the best diff to 272
+// bytes and restores the canonical selection ownership. Direct button-width
+// arithmetic is retained because it is source-plausible and codegen-equivalent.
+// a typed outline local changed register allocation and broadened drift; rolled
+// back. Remaining mismatch starts in VC5 prologue scheduling and EH tail.
 // left in scratch: exact ABI/call/layout reconstruction is substantially
 // improved but not exact; no accepted_drift for this broad prologue/CFG drift.
 
@@ -125,9 +131,9 @@ long TDropDownPanel::setup(TDrawArea* area, TPanel* parent, void* p3, long p4, l
               long list_hgt_param, char** vals, short p22, long scbar_wid_param, char* p24, char* p25,
               char* p26, char* p27, long scbar_arrow_hgt_param, long scbar_tab_hgt_param)
 {
-    this->val_num = (short)outline;
+    this->val_num = p15;
     this->btn_wid = btn_wid_param;
-    this->val_wid = panel_width - this->btn_wid - 1;
+    this->val_wid = panel_width - btn_wid_param - 1;
     this->btn_hgt = btn_hgt_param;
     this->list_wid = list_wid_param;
     this->list_hgt = list_hgt_param;

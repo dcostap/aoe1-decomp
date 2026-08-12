@@ -11,6 +11,10 @@
 //   variants did not improve the 71-byte result.  The remaining drift is the
 //   localized EBX/EDI direction coloring and max_x/max_y clamp compare shape;
 //   retained the readable source rather than register-forcing scaffolding.
+// - Fresh tu-fractal-44B760 pass: donor <stdlib.h>/<string.h> headers, moving
+//   max_x/r declarations, and period-style top declarations were codegen
+//   duplicates.  The exact-size source still has eight aligned calls and the
+//   same CFG; remaining drift is the EBX/EDI direction swap and clamp compare.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 

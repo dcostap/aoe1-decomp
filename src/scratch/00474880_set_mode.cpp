@@ -58,6 +58,9 @@
 // - L536 fn ptr: original caches vtable[0x1C] into [E0-8] and list_wid into [E0-4]; rebuilt keeps
 //   the fn ptr in ebx for the below path and loads calc_wid into ebp (overwriting parent_x's
 //   register, demoting parent_x to its home).
+// current pass: packet and mangled-name evidence confirm DropdownMode as the natural parameter
+// ABI; changing the int alias to the enum is codegen-neutral. Donor review found no new
+// source-plausible lead for the shrink-wrapped prologue or the two vtable-call encodings.
 
 class TDrawArea {
 public:
@@ -183,6 +186,12 @@ public:
 
 extern TPanelSystem panel_system;
 
+enum DropdownMode {
+    ModeNone = 0,
+    ModeValue = 1,
+    ModeList = 2
+};
+
 class TDropDownPanel : public TPanel {
 public:
     TTextPanel* val_panel;               // +0xF4
@@ -208,16 +217,10 @@ public:
     int draw_style;                      // +0x13C
     int draw_val_rect;                   // +0x140
 
-    void set_mode(int mode);
+    void set_mode(DropdownMode mode);
 };
 
-enum DropdownMode {
-    ModeNone = 0,
-    ModeValue = 1,
-    ModeList = 2
-};
-
-void TDropDownPanel::set_mode(int mode) {
+void TDropDownPanel::set_mode(DropdownMode mode) {
     if (mode == this->mode) {
         return;
     }

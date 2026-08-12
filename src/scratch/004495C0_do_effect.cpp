@@ -1,8 +1,8 @@
 // VA: 004495C0 RGE_Effects::do_effect
 // effects.cpp lines 186-274
 // 301 bytes
-// BLOCKER: 68.8% diff after the ABI and dispatch fixes. First 14 bytes match.
-// The core loop structure and call targets now match; float argument staging remains.
+// BLOCKER: typed dispatch and all seven call targets match, but VC5 emits
+// integer float pushes instead of the oracle's fld/reserved-stack/fstp form.
 // Remaining differences:
 // 1. Float arg passing: rebuilt uses mov edx,[mem];push edx while
 //    original uses fld dword [mem]; push ecx/temp; fstp [esp]
@@ -23,8 +23,15 @@
 // - changed the modify_tobj family's final argument to unsigned char
 // - restored case order 4,5,0,1,2,3 and > -1 predicates; call sites became aligned
 // - per-case float locals did not produce the original FPU staging; rolled back
+// - full effects.cpp ABI and RGE_Player destructor slot did not change emission
+// - explicit float casts and typed-float address expressions were codegen duplicates
+// - an inline float-return accessor reproduced FPU staging but changed load order
+//   and block layout; it was rejected as a compiler-steering helper
+// - first-short locals with the accessor were unchanged; restored direct fields
 // FLAGS: none
-// NOTE: Remaining gap is VC5 float staging and jump-table relocation masking.
+// NOTE: Natural source keeps the proven RGE_Effect layout, full polymorphic ABI,
+// switch order, signed guards, and all call targets. Remaining drift is local
+// float argument staging plus jump-table placement/relocation context.
 
 struct RGE_Effect_Command {
     unsigned char command; unsigned char _pad_0;
@@ -38,7 +45,8 @@ struct RGE_Effect {
 };
 
 struct RGE_Player {
-    virtual void v00();  virtual void v04();  virtual void v08();
+    virtual ~RGE_Player();
+    virtual void v04();  virtual void v08();
     virtual void v0C();  virtual void v10();  virtual void v14();
     virtual void v18();  virtual void v1C();  virtual void v20();
     virtual void v24();  virtual void v28();  virtual void v2C();
@@ -59,8 +67,10 @@ struct RGE_Player {
 };
 
 struct RGE_Effects {
-    void* vtable_ptr; RGE_Effect* effects; long effect_num;
-    void do_effect(short effect_id, RGE_Player* player);
+    virtual ~RGE_Effects();
+    virtual void save(int fd);
+    virtual void do_effect(short effect_id, RGE_Player* player);
+    RGE_Effect* effects; long effect_num;
 };
 
 void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {

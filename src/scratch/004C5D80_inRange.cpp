@@ -56,9 +56,11 @@
 //   - Split ternary-CSE y prefix plus separate other-radius subtraction compiled to 224B/128 diff; restored.
 //   - Split ordinary y subtraction into two statements emitted the same 199B/22 code as the clean source.
 //   - No new binary-backed condition or expression shape moved the +0062 fsubr/fsub fault-order gap. Clean source retained.
-// Main-agent source audit: removed the diagnostic volatile dy home. It changed
-// compiler scheduling but did not express required object behavior. The natural
-// typed source is 202 bytes and remains authoritative despite its broader drift.
+
+// tu-statobj-C5D80 2026-08-12: reused the prior complete static/master surface
+// and stat_obj.cpp-like header evidence. That shared-TU evidence was already
+// codegen-neutral. The volatile diagnostic was rejected because it only steers
+// scheduling. No natural lead exists for the fsubr/other-Y fault-order gap.
 
 class RGE_Master_Static_Object {
 public:

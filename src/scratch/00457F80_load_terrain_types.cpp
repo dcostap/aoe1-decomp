@@ -8,12 +8,14 @@
 // probe 5: one FILE local and the second parsed float as infile; diff 333 bytes.
 // probes 6-10: tested format-width, parameter-home, cursor, and interval-home
 // variants. They did not improve the best source and are not retained.
-// Best reconstruction: the remaining drift is local home/register placement and
-// the first input-field overlay. Calls, cleanup, record stride, and widths match.
+// New pass: one natural forward tile cursor reduced positional drift by 2 bytes,
+// while typed stdio context and cursor declaration scope emitted no new bytes.
+// The positive sound-index guard follows the target branch shape but did not
+// improve positional drift. The remaining gap is the input-field overlay and
+// local home/register placement. Calls, cleanup, record stride, and widths match.
 
-extern "C" void* __cdecl fopen(char*, char*);
-extern "C" int __cdecl fscanf(void*, char*, ...);
-extern "C" int __cdecl fclose(void*);
+#include <stdio.h>
+
 extern "C" void __cdecl convert_us(char*);
 extern "C" void __cdecl strcpy(char*, char*);
 
@@ -80,7 +82,7 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
         this->terrain_types[i].loaded = 0;
     }
 
-    void* local_38 = fopen(filename, (char*)"r");
+    FILE* local_38 = fopen(filename, "r");
     if (local_38 != 0) {
         fscanf(local_38, (char*)"%hd", &this->num_terrain);
         short terrain_count = this->num_terrain - 1;
@@ -111,6 +113,7 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
                 char name[13];
                 char pict_name[13];
                 int i2;
+                RGE_TOB_Picts* tile;
 
                 if (fscanf(local_38, (char*)"%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd",
                            &terrain_id, name, pict_name, &local_28,
@@ -123,13 +126,13 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
                         RGE_Tile_Set* terrain = &this->terrain_types[terrain_id];
                         short shape_index = 0;
                         int tile_count = 19;
+                        tile = terrain->tiles;
                         do {
                             fscanf(local_38, (char*)"%hd %hd",
-                                   &terrain->tiles[19 - tile_count].count,
-                                   &terrain->tiles[19 - tile_count].animations);
-                            terrain->tiles[19 - tile_count].shape_index = shape_index;
-                            shape_index += terrain->tiles[19 - tile_count].count *
-                                           terrain->tiles[19 - tile_count].animations;
+                                   &tile->count, &tile->animations);
+                            tile->shape_index = shape_index;
+                            shape_index += tile->count * tile->animations;
+                            ++tile;
                             --tile_count;
                         } while (tile_count != 0);
 
@@ -142,10 +145,10 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
                             } while (i2 < sound_id);
                         }
 
-                        if (med_color < 0) {
-                            terrain->sound = 0;
-                        } else {
+                        if (med_color >= 0) {
                             terrain->sound = sounds[med_color];
+                        } else {
+                            terrain->sound = 0;
                         }
                         terrain->map_low_color = (unsigned char)hi_color;
                         terrain->map_med_color = (unsigned char)lt_cliff_color;

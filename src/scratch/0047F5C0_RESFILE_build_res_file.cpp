@@ -38,6 +38,8 @@
 //     +4 buffer windows. The living source now uses ordinary buffers and writes
 //     the complete typed ID-directory record; these compiler-steering artifacts
 //     are not retained merely for byte proximity.
+//   Follow-up: an ordinary resHandle local for the ID-record size was a codegen
+//     duplicate and was rolled back; the frame gap remains unresolved.
 
 #include <stdio.h>
 #include <stdlib.h>

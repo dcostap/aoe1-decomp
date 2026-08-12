@@ -33,6 +33,11 @@
 //   and direct-x reread hybrids were duplicates or regressed (best retained
 //   source remains 149 differing bytes).  A 7-variant candidate-sum lab also
 //   collapsed to the same 149-byte emitted group; no exact natural basin found.
+// - Fresh tu-fractal-44B950 pass: donor <stdlib.h>/<string.h> headers worsened
+//   the residual to 153 bytes.  A candidate_x computed before dy += DirY was
+//   a codegen duplicate; computing it without old_x regressed to 319 bytes.
+//   Restored the clean typed source; the first candidate mov/add schedule
+//   remains the only localized mismatch lead.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 

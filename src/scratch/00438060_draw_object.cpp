@@ -18,6 +18,10 @@
 //   and broadens drift. Restored the named typed row pointer as the best source reconstruction.
 // - Left paused: canonical row ownership, ratio/draw-step FPU branches, and all FillRect calls
 //   match; remaining evidence points to a VC5 source/context distinction in the first row address.
+// - Current pass: packet, donor, ABI, and mapped-assembly review confirmed the same localized
+//   gap: VC5 emits dec-plus-scaled LEA, while the oracle folds one row stride into the LEA.
+// - Current pause: the named typed row reconstruction remains authoritative; no new natural
+//   source lead justifies another row-pointer variant.
 
 extern float DAT_0056f604;
 

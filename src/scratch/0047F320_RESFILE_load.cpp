@@ -19,6 +19,8 @@
 // - parameter-home alias and integer/pointer-address variants were rolled back:
 //   they either widened the drift or compiled identically. Keep the natural
 //   typed pointer expression as the living reconstruction.
+// - compound pointer assignment was a duplicate; restore the natural one-line
+//   addition. Leave the one-byte mapped LEA SIB base/index drift unresolved.
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -36,6 +36,10 @@
 //   assignment were duplicate or regressed.  Restored the best separate-
 //   coordinate source; the remaining blocker is the first setup block's
 //   register coloring and liveness.
+// - Fresh tu-fractal-44BB60 pass: donor <stdlib.h>/<string.h> headers were a
+//   codegen duplicate.  The exact PointMaker/Point layout and typed coordinate
+//   source remain stable; the target still differs at the pre-save x/radius/y
+//   register coloring and later tail schedule.
 
 class PrimaryPt {
 public:

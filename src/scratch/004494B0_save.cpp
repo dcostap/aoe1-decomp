@@ -1,9 +1,8 @@
 // VA: 004494B0 RGE_Effects::save(int fd)
 // effects.cpp lines 140-183
 // 265 bytes
-// BLOCKER: the natural candidate has the complete rge_write call set and
-// canonical record widths, but VC5 chooses a different frame/register basin
-// from the original at the prologue and inner-loop stack homes.
+// BLOCKER: the typed reconstruction matches all bytes except the SIB encoding
+// of the count-field LEA at 00449504 (2 bytes).
 //
 // Attempt log:
 // - with RGE_Effect* eff local: first 20 bytes match (best result: 74% diff)
@@ -21,11 +20,18 @@
 // - scoped nested-loop locals: improved diff to 236 and size to 256, but the
 //   frame stayed 0x10 and the original guarded EBP/EBX topology did not return
 // - outer effect/count locals and an explicit self pointer were unchanged
+// - full effects.cpp virtual ABI (destructor, save, do_effect) emitted no change
+// - named RGE_Effect record ownership and typed command-array access reached
+//   the exact 0x14 frame and 0x109-byte body basin (224-byte diff)
+// - named effect_list pointer plus byte cursor aligned the inner serialization
+//   block; initializing inner before its guard recovered 99/99 instructions
+// - reversing address terms, integer-address casts, declaration order, and a
+//   named-name anchor did not change the final 2-byte SIB drift; all rolled back
 // FLAGS: none
-// NOTE: exact calls/targets and record layout are established. Remaining
-// mismatch is structural VC5 frame/register/local-home allocation, not a call
-// or field-width uncertainty. Best current source keeps the corrected ABI and
-// natural nested scopes; further work needs a new structural lead.
+// NOTE: exact calls, frame, record layout, CFG, and serialization order are
+// established. The only remaining drift is the equivalent SIB base/index byte
+// order at the count-field LEA. The source keeps named ownership and the
+// binary-proven base-name serialization bug; no raw-address diagnostic remains.
 
 void __cdecl rge_write(int fd, void* buf, int size);
 
@@ -40,15 +46,19 @@ struct RGE_Effect {
     unsigned char _pad_1[2]; RGE_Effect_Command* effect_list;
 };
 
+class RGE_Player;
+
 struct RGE_Effects {
     RGE_Effect* effects; long effect_num;
+    virtual ~RGE_Effects();
     virtual void save(int fd);
+    virtual void do_effect(short effect_id, RGE_Player* player);
 };
 
 void RGE_Effects::save(int fd) {
     long* num = &this->effect_num;
-    char* count_ptr;
     RGE_Effect* effect;
+    RGE_Effect* record;
     int handle = fd;
     int index;
 
@@ -59,14 +69,15 @@ void RGE_Effects::save(int fd) {
         do {
             effect = this->effects;
             rge_write(handle, effect->name, 0x1F);
-            count_ptr = effect->name + fd + 0x22;
-            rge_write(handle, count_ptr, 2);
-            if (*(short*)count_ptr > 0) {
-                int inner = 0;
+            record = (RGE_Effect*)((char*)effect + fd);
+            rge_write(handle, &record->effect_list_num, 2);
+            int inner = 0;
+            if (record->effect_list_num > 0) {
                 int command_offset = 0;
+                RGE_Effect_Command** list_ptr = &record->effect_list;
                 do {
                     RGE_Effect_Command* command = (RGE_Effect_Command*)
-                        ((char*)*(RGE_Effect_Command**)(count_ptr + 4) + command_offset);
+                        ((char*)*list_ptr + command_offset);
                     rge_write(handle, &command->command, 1);
                     rge_write(handle, &command->change_num1, 2);
                     rge_write(handle, &command->change_num2, 2);
@@ -74,7 +85,7 @@ void RGE_Effects::save(int fd) {
                     rge_write(handle, &command->change_amount, 4);
                     inner++;
                     command_offset += 0x0C;
-                } while (inner < *(short*)count_ptr);
+                } while (inner < record->effect_list_num);
             }
             index++;
             fd += 0x2C;
