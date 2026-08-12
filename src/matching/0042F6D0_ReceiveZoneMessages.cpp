@@ -12,11 +12,13 @@
 // - The unknown-message vararg is the binary-observed receive-flags value, not
 //   the derived switch index. That behavior restores the whole suffix: 3 strict
 //   differing bytes (0.8982%), 331/334 equal bytes.
-// Remaining localized drift: original output-slot accesses [esp+8], [esp+0Ch],
-// [esp+18h] rebuild as [esp+0Ch], [esp+8], [esp+10h]. Frame 0x808, size 334,
-// CFG, ordered calls, slot 0x24, direct targets, and all 23 relocations match.
-// Next lead is the original COM output-slot cleanup/local ownership, not blind
-// register variants. Default VC5 /O2 /Oy; no inline asm.
+// Prior clean candidate had three output-slot bytes left. Frame 0x808, size
+// 334, CFG, ordered calls, slot 0x24, direct targets, and all 23 relocations
+// already matched. Default VC5 /O2 /Oy; no inline asm.
+// sat2-42F6D0-homes: The period DirectPlay ABI initializes the final data-size
+// output to 0x800 and returns message flags through the third output. This
+// declaration/order model moved all three homes to the original offsets.
+// The lobby system message type is the first DWORD in data. Exact at 334/334.
 
 class TDebuggingLog {
 public:
@@ -72,11 +74,11 @@ public:
 long RGE_Lobby::ReceiveZoneMessages() {
     if (lobby_game == 0) return 0;
 
-    unsigned long dwDataSize;
-    unsigned long dwRXFlags = 0x800;
+    unsigned long dwDataSize = 0x800;
+    unsigned long dwRXFlags;
     char data[2048];
 
-    long result = glpDPL->ReceiveLobbyMessage(0, 0, &dwDataSize, data, &dwRXFlags);
+    long result = glpDPL->ReceiveLobbyMessage(0, 0, &dwRXFlags, data, &dwDataSize);
 
     Err->ShowReturn(result, (char*)"RX Lobby Messages");
 
@@ -92,7 +94,8 @@ long RGE_Lobby::ReceiveZoneMessages() {
 
     L->Log((char*)"LOBBY: System Message");
 
-    int msgType = (int)dwRXFlags - 1;
+    unsigned long dwMessageType = *((unsigned long*)data);
+    int msgType = (int)dwMessageType - 1;
 
     switch (msgType) {
         case 3:
@@ -108,7 +111,7 @@ long RGE_Lobby::ReceiveZoneMessages() {
             L->Log((char*)"Lobby: Connection successful.");
             break;
         default:
-            L->Log((char*)"!!! Lobby: Unknown message from lobby. %d", dwRXFlags);
+            L->Log((char*)"!!! Lobby: Unknown message from lobby. %d", dwMessageType);
             break;
     }
 
