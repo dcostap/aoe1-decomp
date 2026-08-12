@@ -49,17 +49,35 @@ source carries one typed record pointer. Neither found evidence that
 `IsPlayerHuman` or `Log` can replace the resend array. This remains the only
 round-one concern.
 
+### Round 2 — fresh concurrent blind cohort, 2026-08-12
+
+- `sa-5b54e3d5` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-4f35352e` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers again confirmed all loops, bounds, record geometry, calls,
+arguments, purge order, faults, final count, cleanup, and return.
+
+Luna retained the cached-record pointer as an adversarial re-entry concern.
+DeepSeek inspected every intervening callee. `IsPlayerHuman` is read-only.
+`Log` receives no handler pointer and only changes logging state. `operator
+delete` only frees its argument. None can replace `this->Resend`. Thus, every
+executable reload returns the pointer carried by the source.
+
 ## Main-agent adjudication
 
 - **Layout, loops, calls, widths, and effects:** confirmed by both reviewers.
 - **Cached record pointer:** no established behavior difference. The two callees
-  do not mutate the resend-array owner in known code. A fresh second cohort must
-  reassess alias and re-entry behavior before promotion.
+  cannot mutate the resend-array owner. Round two cleared this concern.
+- **WaitingForAck signedness:** the executable performs one 32-bit increment per
+  live record, at most 502 times in this function. The pinned VC5 object emits
+  the same dword operation. No open behavior issue remains.
 
 ## Integrated changes
 
-The main agent validated the normalized candidate before phase entry.
+The main agent validated the unchanged normalized candidate before phase entry
+and after both review rounds.
 
 ## Final decision
 
-Round 1 is clean. Pending a fresh second blind cohort.
+Promote to `src/verified_logic`. Two fresh blind cohorts converged with no open
+behavior uncertainty after direct callee inspection.
