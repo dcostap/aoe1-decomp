@@ -2,11 +2,45 @@
 // VA: 00407530
 // PDB: action.cpp:73-121
 // No EH framing
+// Attempt log:
+// - Baseline rebuilt the serialized setup flow but used raw task lookup and a
+//   virtual sprite lookup, leaving a 74-byte mismatch.
+// - Modeled obj->master_obj (+0x08), master_obj->tasks (+0xD8), and the task
+//   list field (+0x04) from the exact copy_obj donor.
+// - Replaced the wrong virtual sprite call with the direct
+//   RGE_Static_Object::get_sprite_pointer(short) donor surface; exact match.
 
 #include "../../include/game_globals.h"
 
 class RGE_Action_List;
+class RGE_Action_Object;
+class RGE_Master_Action_Object;
+class RGE_Task_List;
+class RGE_Task;
 class RGE_Static_Object;
+class RGE_Sprite;
+
+class RGE_Task_List {
+public:
+    virtual RGE_Task* create_task(short task_type, short object_id);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action_object,
+                                      RGE_Static_Object* object,
+                                      float x, float y, float z);
+    virtual int is_attack_task(RGE_Task* task);
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* action_object,
+                           RGE_Static_Object* object);
+    virtual ~RGE_Task_List();
+
+    RGE_Task** list;                // +0x04
+    short list_num;
+    char gap_0A[2];
+};
+
+class RGE_Master_Action_Object {
+public:
+    char gap_00[0xD8];
+    RGE_Task_List* tasks;          // +0xD8
+};
 
 class RGE_Action {
 public:
@@ -25,7 +59,7 @@ public:
 
     short action_type;             // +0x04
     char gap_06[2];
-    void* obj;                     // +0x08
+    RGE_Action_Object* obj;         // +0x08
     unsigned char state;           // +0x0C
     char gap_0D[3];
     RGE_Static_Object* target_obj;    // +0x10
@@ -36,13 +70,13 @@ public:
     float target_y;                // +0x24
     float target_z;                // +0x28
     float timer;                   // +0x2C
-    void* task;                    // +0x30
+    RGE_Task* task;                 // +0x30
     RGE_Action_List* sub_actions;  // +0x34
     void* sprite;                  // +0x38
     unsigned char subActionValue;  // +0x3C
     char gap_3D[3];
 
-    int setup(int param_1, void* param_2);
+    int setup(int param_1, RGE_Action_Object* param_2);
 };
 
 class RGE_Action_List {
@@ -52,51 +86,20 @@ public:
 
 class RGE_Action_Object {
 public:
-    virtual void d0();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void d5();
-    virtual void d6();
-    virtual void d7();
-    virtual void d8();
-    virtual void d9();
-    virtual void d10();
-    virtual void d11();
-    virtual void d12();
-    virtual void d13();
-    virtual void d14();
-    virtual void d15();
-    virtual void d16();
-    virtual void d17();
-    virtual void d18();
-    virtual void d19();
-    virtual void d20();
-    virtual void d21();
-    virtual void d22();
-    virtual void d23();
-    virtual void d24();
-    virtual void d25();
-    virtual void d26();
-    virtual void d27();
-    virtual void d28();
-    virtual void d29();
-    virtual void d30();
-    virtual void d31();
-    virtual void d32();
-    virtual void d33();
-    virtual void d34();
-    virtual void d35();
-    virtual void* get_sprite_pointer(short id);  // slot 0xDC/4 = 55
+    virtual ~RGE_Action_Object();
 
     char gap_04[4];
-    void* field_08;  // +0x08
+    RGE_Master_Action_Object* master_obj; // +0x08
+};
+
+class RGE_Static_Object {
+public:
+    RGE_Sprite* get_sprite_pointer(short index);
 };
 
 void rge_read(int handle, void* buf, int size);
 
-int RGE_Action::setup(int param_1, void* param_2)
+int RGE_Action::setup(int param_1, RGE_Action_Object* param_2)
 {
     short short_val;
     int int_val;
@@ -132,10 +135,8 @@ int RGE_Action::setup(int param_1, void* param_2)
     if (short_val == -1) {
         this->task = 0;
     } else {
-        // Get task from: this->obj->field_08->field_0D8->task_list[short_val]
-        void* field_08 = *(void**)((char*)this->obj + 8);
-        void* tasks = *(void**)((char*)field_08 + 0xD8);
-        this->task = *(void**)((char*)tasks + 4 + short_val * 4);
+        RGE_Task_List* task_list = this->obj->master_obj->tasks;
+        this->task = task_list->list[short_val];
     }
 
     rge_read(param_1, &this->subActionValue, 1);
@@ -143,8 +144,7 @@ int RGE_Action::setup(int param_1, void* param_2)
     this->sub_actions->load(param_1);
 
     rge_read(param_1, &short_val, 2);
-    // call obj->get_sprite_pointer(short_val) — virtual at slot 55 (0xDC/4)
-    this->sprite = ((RGE_Action_Object*)this->obj)->get_sprite_pointer(short_val);
+    this->sprite = ((RGE_Static_Object*)this->obj)->get_sprite_pointer(short_val);
 
     return 1;
 }
