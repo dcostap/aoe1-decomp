@@ -39,6 +39,10 @@
 //   ownership form widened the mismatch and was restored. Retain the clean
 //   223-byte typed reconstruction; the remaining blocker is VC5 placement of
 //   the post-call mask reload in the call block versus the common loop bottom.
+// 2026-08-12 session (orch-004C5210-L): exact source shape found by loading the
+//   map word into the mask local, deriving explored from that local, then
+//   masking the low word in place. This preserves the natural map-word split
+//   and moves the VC5 reload into the call block; exact output is 223 bytes.
 
 typedef unsigned long ulong;
 
@@ -107,9 +111,9 @@ public:
 void RGE_Static_Object::create_doppleganger_when_dying() {
     if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 &&
         this->master_obj->create_doppleganger_on_death == 2) {
-        ulong value = unified_map_offsets[(int)this->world_y][(int)this->world_x];
-        ulong explored = value >> 16;
-        ulong mask = value & 0xFFFF;
+        ulong mask = unified_map_offsets[(int)this->world_y][(int)this->world_x];
+        ulong explored = mask >> 16;
+        mask &= 0xFFFF;
         if (explored > 0) {
             int i = 0;
             do {
