@@ -10,6 +10,10 @@
 // blocker: rebuilt remains 839 bytes (frame 0x10 vs original 0x0C), with broad
 // stack-home/register and later list-copy drift despite matching 20 calls and
 // the binary-proven REP-copy family; /Od was diagnostic-only and broad.
+// probe: reusing the output-index lifetime as the later error flag reduced the
+// emitted body to 846 bytes but kept the 0x10 frame and diff 760; it was rolled back.
+// probe: reusing one player pointer across the saved-view capture and reload,
+// then delaying the error declaration, was codegen-neutral; the player spill remains.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>

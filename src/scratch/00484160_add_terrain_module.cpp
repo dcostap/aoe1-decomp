@@ -23,6 +23,14 @@
 //   without positional gain.  It was rolled back as opaque field plumbing.
 // - Fresh pass remains paused: exact call parity and frame parity hold, but
 //   the terrain-copy topology is still structurally unresolved.
+// Fresh pass:
+// - Dossier, same-TU donors, and ABI evidence confirm controller offsets
+//   0x14/0x18/0x34/0x38, map stride 0x48, and serialized line sizes 0x18/0x2C.
+// - Replaced raw object/elevation module blocks with named fixed aggregates
+//   and typed map records.  The emitted code moved three bytes farther, but
+//   the source now preserves the complete serialized layout.
+// - A typed hot-spot pointer loop regressed structure and was rolled back.
+//   The indexed source remains the clearer behavior reconstruction.
 
 #include "../../include/game_globals.h"
 
@@ -90,12 +98,22 @@ struct RGE_Terrain_Data {
     RGE_Terrain_Data_Entry* terrain;
 };
 
+struct RGE_Object_Data {
+    long object_num;
+    void* objects;
+};
+
+struct RGE_Elevation_Data {
+    long elevation_num;
+    void* elevation;
+};
+
 struct RGE_Map_Data_Entry {
     long map_id;
     RGE_Land_Data land_info;
     RGE_Terrain_Data terrain_info;
-    unsigned char object_info[8];
-    unsigned char elevation_info[8];
+    RGE_Object_Data object_info;
+    RGE_Elevation_Data elevation_info;
 };
 
 struct RGE_Map_Data {
@@ -159,6 +177,14 @@ struct RGE_Land_Info {
     unsigned char pad_end[3];
 };
 
+struct RGE_Object_Info {
+    unsigned char data[0x18C8];
+};
+
+struct RGE_Elevation_Info {
+    unsigned char data[0xF80];
+};
+
 class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
 public:
     RGE_Game_World* world;
@@ -166,8 +192,8 @@ public:
     long number_of_players;
     RGE_Land_Info land_info;
     RGE_Terrain_Info terrain_info;
-    unsigned char object_info[0x18C8];
-    unsigned char elevation_info[0xF80];
+    RGE_Object_Info object_info;
+    RGE_Elevation_Info elevation_info;
     RGE_Map_Data map_info;
 
     virtual void add_terrain_module();

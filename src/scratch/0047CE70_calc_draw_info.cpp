@@ -28,6 +28,9 @@
 //   text_wid tests were duplicates. A six-case focused store/receiver lab also
 //   stayed in the same 14-byte group. The Windows SDK context worsened drift
 //   to 15 bytes at the line-clamp block and was restored.
+// - Fresh mapped-assembly donors confirmed natural virtual-call examples that
+//   use EDX for the vtable and EAX for a following result load.  No same-class
+//   source lead explains this final register color, so the typed source stays.
 
 struct tagRECT {
     long left;

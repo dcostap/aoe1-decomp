@@ -16,6 +16,8 @@
 // worsened the prologue.  Keep the direct cast as the binary-supported source.
 // probe: same-TU virtual base and task-list declarations initially shifted
 // offsets; removing compensating gaps restored the 248-byte codegen basin.
+// fresh pass: dossier, same-TU donors, and stack-home lessons confirm the
+// remaining +0x83 reload as the only natural-source blocker; no new lead.
 
 class RGE_Master_Static_Object;
 class RGE_Player;

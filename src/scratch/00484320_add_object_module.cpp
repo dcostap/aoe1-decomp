@@ -10,9 +10,9 @@
 //   recovered the original repeated source-record loads.
 // - A member-anchored pointer diagnostic recovered the original terrain/y
 //   address topology but was rolled back as compiler-steering cursor plumbing.
-// - The object/land interior-field anchors are retained because their proven
-//   addresses reproduce the original copy-loop topology; the source remains
-//   typed at the owning record boundaries.
+// - Replaced the diagnostic interior-field cursors with typed
+//   RGE_Object_Info_Line and RGE_Land_Point_Info_Line record pointers.  This
+//   preserves serialized array ownership without raw copy cursors.
 // - Probed the direct map-count terminator, split counter assignment, increment
 //   order, narrow count reread, direct land stores, land-id temporary, and the
 //   same-TU stdlib context; none changed the 327-byte / 192-byte-diff basin.
@@ -21,7 +21,10 @@
 //   that grouped-player behavior; it changes the VC5 basin to 312 bytes, so the
 //   remaining blocker is declaration/register/stack topology rather than an
 //   unresolved field owner.
-// - Paused after 10 new hypotheses: exactness remains blocked by the early EDI
+// - Fresh typed-record output pointers improved the current clean source by
+//   two positional bytes without restoring raw cursors; assignment and
+//   increment-order probes were emitted-code duplicates.
+// - Previous pass paused after 10 hypotheses: exactness remains blocked by the early EDI
 //   initialization, object-count memory compare, independent store ordering,
 //   and the cursor's register/frame coloring.
 
@@ -207,11 +210,10 @@ void RGE_RMM_Database_Controller::add_object_module()
     this->object_info.object_num = map->object_info.object_num;
 
     if (map->object_info.object_num > 0) {
-        long* destination = &this->object_info.objects[0].terrain;
+        RGE_Object_Info_Line* destination = this->object_info.objects;
         int source_index = 0;
         do {
-            RGE_Object_Info_Line* object =
-                (RGE_Object_Info_Line*)(destination - 1);
+            RGE_Object_Info_Line* object = destination;
             object->obj_id = map->object_info.objects[source_index].obj_id;
             object->terrain = map->object_info.objects[source_index].terrain;
             object->group_flag = map->object_info.objects[source_index].group_flag;
@@ -231,7 +233,7 @@ void RGE_RMM_Database_Controller::add_object_module()
             object->group_area = map->object_info.objects[source_index].group_area;
             object->object_exclusion_zone = 1;
             ++object_index;
-            destination += 12;
+            ++destination;
             ++source_index;
         } while (object_index < map->object_info.object_num);
     }
@@ -245,13 +247,13 @@ void RGE_RMM_Database_Controller::add_object_module()
     int land_index = 0;
     if (this->land_info.land_num > 0) {
         RGE_Land_Info_Line* source = this->land_info.land;
-        long* destination = &this->object_info.lands[0].y;
+        RGE_Land_Point_Info_Line* destination = this->object_info.lands;
         RGE_Land_Data_Entry* map_land = map->land_info.land;
         do {
-            destination[-1] = source->x;
-            destination[0] = source->y;
-            destination[1] = map_land->land_id;
-            destination[2] = player;
+            destination->x = source->x;
+            destination->y = source->y;
+            destination->id = map_land->land_id;
+            destination->player_id = player;
 
             if (player > 0) {
                 ++player;
@@ -266,7 +268,7 @@ void RGE_RMM_Database_Controller::add_object_module()
                 }
             }
 
-            destination += 4;
+            ++destination;
             ++source;
             ++land_index;
         } while (land_index < this->land_info.land_num);

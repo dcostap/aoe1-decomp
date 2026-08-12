@@ -24,6 +24,12 @@
 //   group. No exact candidate appeared. Restored this canonical typed iterator.
 // - Final blocker is localized VC5 register coloring around two payload calls;
 //   no evidence supports keeping raw cursor or compiler-steering source.
+// Fresh pass:
+// - Dossier, same-TU donors, and ABI evidence confirm the 0x48 map stride,
+//   0x2C/0x18 serialized payload records, and all ten ordered rge_write calls.
+// - Replaced the controller byte arrays with named fixed-size module
+//   aggregates.  VC5 emitted the same typed-iterator basin; raw byte cursors
+//   remain excluded from the living source.
 
 extern "C" {
     void rge_write(int file, void* data, int size);
@@ -141,15 +147,31 @@ struct RGE_Map_Data {
     RGE_Map_Data_Entry* maps;
 };
 
+struct RGE_Land_Info {
+    unsigned char data[0x1438];
+};
+
+struct RGE_Terrain_Info {
+    unsigned char data[0x1298];
+};
+
+struct RGE_Object_Info {
+    unsigned char data[0x18C8];
+};
+
+struct RGE_Elevation_Info {
+    unsigned char data[0xF80];
+};
+
 class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
 public:
     RGE_Game_World* world;
     long map_type;
     long number_of_players;
-    unsigned char land_info[0x1438];
-    unsigned char terrain_info[0x1298];
-    unsigned char object_info[0x18C8];
-    unsigned char elevation_info[0xF80];
+    RGE_Land_Info land_info;
+    RGE_Terrain_Info terrain_info;
+    RGE_Object_Info object_info;
+    RGE_Elevation_Info elevation_info;
     RGE_Map_Data map_info;
 
     virtual unsigned char generate();

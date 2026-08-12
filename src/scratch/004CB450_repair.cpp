@@ -20,6 +20,8 @@
 // fresh pass: real RGE_Action_List and RGE_Static_Object virtual destructor surfaces were codegen duplicates; kept for canonical ABI.
 // fresh pass: switch spelling of the second action-type gate was byte-identical; restored for natural source.
 // left in scratch: behavior/calls/EH/new-action shape are understood; remaining drift is VC5 exit-path cloning/block layout (success returns inline instead of original shared success tail) plus shifted branch distances.
+// fresh pass: dossier and donor evidence confirm all 17 ordered calls and the
+// canonical +0x0C/+0x184 object/list ownership; no new structural lead found.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 class RGE_Action;

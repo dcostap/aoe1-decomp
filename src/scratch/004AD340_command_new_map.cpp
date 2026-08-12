@@ -12,6 +12,8 @@
 // blocker: original begins `mov eax,ecx`, homes this at [esp+10h], and keeps
 // show_status in ESI; VC5 retains this in ESI, zeroes EBX early, and emits a
 // 570-byte/576-compared basin despite matching frame/saved-register set/calls.
+// probe: a typed initial-world snapshot produced the original early load/test
+// shape, but worsened the basin to 576 bytes and diff 559; it was rolled back.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 struct RGE_Scenario { int Get_player_Active(int index); };

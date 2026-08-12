@@ -45,6 +45,8 @@
 // full donor declarations; worsened to 21 bytes, rolled back.
 // Main-agent audit restored direct Waypoint array indexing. The byte-offset
 // cursor was a decompiler artifact and did not express distinct behavior.
+// A complete Path.cpp member declaration surface emitted identical code.
+// Keep the smaller proven local ABI; typed Waypoint indexing remains authoritative.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);

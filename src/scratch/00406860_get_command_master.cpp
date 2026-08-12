@@ -84,12 +84,20 @@
 //   owner, the +0x0C RGE_Player owner, and the +0xD8 task-list action surface. A
 //   function-scope RGE_Task result, suggested by the original line-494 call and
 //   line-495 test split, emitted the same 221-byte basin and was rolled back.
+// - 2026-08-13 (tu-actobj-406860): renaming the incoming target parameter to the
+//   PDB-observed obj name and the candidate to master emitted the same 221-byte
+//   basin. Reused the exact getTask sibling's RGE_Master_Command command surface
+//   at +0xD8 and getTask ABI; this also emitted identical bytes and is retained as
+//   the canonical command-master hierarchy. Remaining drift is target/z/index
+//   register coloring: target=EBP, z reloads, and i=EBX instead of target=EBX,
+//   z=EBP, and i at the target home.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Task;
 class RGE_Master_Static_Object;
 class RGE_Master_Action_Object;
+class RGE_Master_Command;
 class RGE_Player;
 
 #define VPAD1(n) virtual void vf##n(void);
@@ -117,11 +125,11 @@ public:
 class RGE_Moving_Object : public RGE_Static_Object {
 };
 
-class RGE_Task_List {
+class RGE_Master_Command {
 public:
     virtual void vf00(void);
-    virtual RGE_Task* get_target_task(RGE_Action_Object* action, RGE_Static_Object* target,
-                                       float x, float y, float z);
+    virtual RGE_Task* getTask(RGE_Action_Object* action, RGE_Static_Object* target,
+                              float x, float y, float z);
 };
 
 class RGE_Master_Static_Object {
@@ -136,7 +144,7 @@ public:
 class RGE_Master_Action_Object : public RGE_Master_Static_Object {
 public:
     char gap_B8[0x20];               // +0xB8..+0xD7
-    RGE_Task_List* tasks;            // +0xD8
+    RGE_Master_Command* command;     // +0xD8
     char gap_DC[0x10];               // +0xDC..+0xEB
     unsigned char task_by_group;     // +0xEC
 };
@@ -161,7 +169,7 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Objec
     if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->task_by_group == 0) {
         return this->master_obj;
     }
-    if (((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(this, target, x, y, z) != 0) {
+    if (((RGE_Master_Action_Object*)this->master_obj)->command->getTask(this, target, x, y, z) != 0) {
         return this->master_obj;
     }
     if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
@@ -173,7 +181,7 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Objec
                 obj->master_type == this->master_obj->master_type &&
                 ((RGE_Master_Action_Object*)obj)->task_by_group ==
                     ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
-                if (((RGE_Master_Action_Object*)obj)->tasks->get_target_task(this, target, x, y, z) != 0) {
+                if (((RGE_Master_Action_Object*)obj)->command->getTask(this, target, x, y, z) != 0) {
                     return obj;
                 }
             }

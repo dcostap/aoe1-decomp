@@ -24,6 +24,9 @@
 //   matched exactly, confirming that the remaining gap is only deferred vptr
 //   placement.  Restored the natural polymorphic surface: the explicit store
 //   is compiler-steering scaffolding, not a canonical source claim.
+// - A fresh mapped-assembly donor search found only generic constructor field
+//   initialization, with no natural delayed-vptr source lead.  Kept the
+//   canonical polymorphic source and the deferred-vptr issue as the blocker.
 
 struct tagRECT;
 

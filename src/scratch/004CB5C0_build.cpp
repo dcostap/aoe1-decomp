@@ -11,6 +11,10 @@
 //   epilogue; direct returns added 60 bytes. Both were rolled back.
 // - exact tact_bld.cpp constructor parameter types and result declaration
 //   order did not change emitted code. Integer result type was also neutral.
+// - restored the typed top-declared action with natural success/failure labels;
+//   diff improved to 100 bytes, but size grew by 19 and VC5 cloned the exit.
+// - reordering the natural locals was a codegen duplicate; restored the clean
+//   typed result reconstruction before validation.
 // - remaining drift is the paired VC5 result-register basin and isolated
 //   EH-handler address; no compiler-only aliases or volatility retained.
 // FLAGS: config/flags/004CB5C0_build.rsp (/GX)
