@@ -27,4 +27,23 @@ The retained source uses ordinary Win32 types and direct rectangle arithmetic.
 
 ## Review rounds
 
-No review has started.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-4d55bad3` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-24e5c3aa` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers found no behavioral difference. They verified both window-creation
+paths, all ten calls, rectangle arithmetic, success and failure stores, fullscreen
+updates, ignored API return values, and fault order.
+
+Both noted the local height-expression order. The source and executable produce
+the same 32-bit result. The difference does not add a call, memory access, or
+observable side effect.
+
+## Main-agent adjudication
+
+The review found no open behavioral uncertainty. The retained source uses normal
+Win32 types and direct arithmetic. Exact matching remains suspended because only
+unsupported volatile storage reproduced the executable load schedule.
+
+Promote to `src/verified_logic`.
