@@ -34,6 +34,16 @@
 // size/frame/call-set candidate.  Restored clean source remains the natural
 // typed indexed scan; unresolved drift is the entry prologue/null-return basin
 // plus EDX/EDI count-versus-id coloring and associated branch spans.
+//
+// Fresh session evidence (sat-4DE1F0-cursor): corrected MainDecisionAIModule::
+// object() to the canonical RGE_Static_Object* return type.  The first cursor
+// probe used a top-level byte offset, a guarded reset, a separate count, and a
+// scoped entry pointer; it changed the frame to 0x14 and moved to the EDI/ESI
+// prologue basin (diff 289, shape 66.67%).  The second probe removed the
+// scoped pointer and used the raw 004D9970 offset expressions.  It restored
+// the 0x10 frame, EBX/ESI saves, and 77.32% exact-block coverage (diff 293),
+// but the first prologue hunk remained different.  Both diagnostics were
+// rolled back.  The natural indexed scan remains the clean source.
 
 #include <stddef.h>
 
@@ -79,12 +89,13 @@ struct XYPoint {
 };
 
 class TacticalAIGroup;
+class RGE_Static_Object;
 
 class MainDecisionAIModule : public AIModule {
 public:
     void* player;                   // +0xF0
     ManagedArray<int> objects;      // +0xF4
-    void* object(int id);
+    RGE_Static_Object* object(int id);
 };
 
 class TribeMainDecisionAIModule;

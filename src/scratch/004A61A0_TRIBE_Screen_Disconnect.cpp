@@ -50,6 +50,10 @@
 //   initializers worsened the prefix by 15 bytes and were restored to body
 //   assignments. The remaining blocker is the 19-byte compiler EH-tail basin.
 
+// - Exact 004A5610 same-TU stdio/string includes and TPanel/TEasy/TScreen
+//   declarations produced the unchanged 91-byte diff and 219-byte body;
+//   restored the canonical source. The EH-tail lead is negative.
+
 struct tagRECT;
 class TDrawArea;
 class TPanel {
