@@ -22,6 +22,19 @@
 //   is localized to the tiled shape_draw arithmetic/scheduling; size/frame,
 //   ordered calls, and CFG counts match.  No raw text cursors or compiler
 //   steering remain in the living source.
+// - The exact Pnl_scbr tiled-draw donor uses the full TShape data surface and
+//   Windows SDK context.  Added that period ABI context as a focused probe;
+//   the target still keeps named panel fields and direct shape ownership.
+// - With that donor context active, swapped the short count declaration order
+//   and used the period zero-initializer form for pic_rows to test register
+//   ownership without changing the tiled-draw behavior.
+// - Replaced the intermediate dimension locals with direct named panel-member
+//   expressions, matching the compact period source shape for count setup.
+// - The full donor ABI context plus direct named dimensions produced an exact
+//   match.  Kept the ordinary typed source; no raw cursor or fake qualifier is
+//   needed.
+
+#include <windows.h>
 
 class TDrawArea {
 public:
@@ -33,8 +46,17 @@ public:
 
 class TShape {
 public:
+    unsigned char* shape_data;
+    int load_type;
+    int load_size;
+    void* shape_header;
+    void* head;
+    void* offsets;
+    void* fshape;
+    void* shape_info;
+
     unsigned char shape_draw(TDrawArea* area, long x, long y,
-                             int draw_flags, unsigned char palette,
+                             long draw_flags, unsigned char palette,
                              unsigned char* table);
 };
 
@@ -93,32 +115,26 @@ public:
 
 void TTextPanel::draw_background()
 {
-    short pic_rows;
     short pic_cols;
-
-    pic_rows = 0;
+    short pic_rows = 0;
 
     if (this->back_pic != 0) {
         if (this->render_area->Lock("pnl_txt::draw_background", 1) == 0) {
             return;
         }
 
-        int pic_w = this->back_pic_wid;
-        int panel_w = this->width;
-        if (pic_w >= panel_w) {
+        if (this->back_pic_wid >= this->width) {
             pic_cols = 1;
         } else {
-            pic_cols = (short)(panel_w / pic_w);
-            if ((short)pic_cols * pic_w < panel_w) {
+            pic_cols = (short)(this->width / this->back_pic_wid);
+            if ((short)pic_cols * this->back_pic_wid < this->width) {
                 pic_cols++;
             }
         }
 
-        int pic_h = this->back_pic_hgt;
-        int panel_h = this->height;
-        if (pic_h >= panel_h) {
-            pic_rows = (short)(panel_h / pic_h);
-            if ((short)pic_rows * pic_h < panel_h) {
+        if (this->back_pic_hgt >= this->height) {
+            pic_rows = (short)(this->height / this->back_pic_hgt);
+            if ((short)pic_rows * this->back_pic_hgt < this->height) {
                 pic_rows++;
             }
         }

@@ -21,14 +21,19 @@
 // an explicit base-result zero comparison were all neutral or regressed.  The
 // clean typed source remains the best 315B basin; the remaining structural gap
 // is the entry EBX save versus the oracle's late push/pop EBX schedule.
+// - The ordinary C++ rge_read declaration preserved the typed call ABI and
+//   restored all 18 call relocations. Negative guards improved the prologue but
+//   inverted the original branch blocks. The first gate's cold zero label keeps
+//   the observed read-before-zero order and late EBX lifetime; this is exact.
 
-extern "C" void rge_read(int handle, void* buf, int size);
+// Same-TU load donors use the ordinary C++ rge_read declaration.
+void rge_read(int handle, void* buf, int size);
 
 extern float save_game_version;
 
 class RGE_Game_World {
 public:
-    virtual void vf00();
+    virtual ~RGE_Game_World();
     virtual void vf04();
     virtual void vf08();
     virtual void vf0C();
@@ -106,8 +111,12 @@ unsigned char TRIBE_World::load_world(int handle)
     if (save_game_version >= 5.6f) {
         rge_read(handle, &this->victory_type, 4);
     } else {
-        this->victory_type = 0;
+        goto victory_zero;
     }
+    goto victory_done;
+victory_zero:
+    this->victory_type = 0;
+victory_done:;
     
     if (save_game_version >= 5.3f) {
         rge_read(handle, &this->artifact_count, 4);
@@ -133,9 +142,9 @@ unsigned char TRIBE_World::load_world(int handle)
 
     if (save_game_version >= 6.97f) {
         rge_read(handle, &this->controllingComputerPlayer, 1);
-        return 1;
+    } else {
+        this->controllingComputerPlayer = 2;
     }
 
-    this->controllingComputerPlayer = 2;
     return 1;
 }

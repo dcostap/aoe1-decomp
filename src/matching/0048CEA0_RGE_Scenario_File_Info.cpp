@@ -12,9 +12,9 @@
 //   the best plausible source shape found here.
 // - this claim's inverted outer guard was structural and was rolled back;
 //   unqualified strcpy was an emitted duplicate. Reusing i for the failed-open
-//   zero stores removed the tail drift. A natural post-calloc i = 0 keeps the
-//   exact-size source at 12 positional bytes, with all calls and CFG counts
-//   aligned. The remaining drift is the post-calloc count reload scheduling.
+//   zero stores removed the tail drift. Ordinary zero assignments emit the
+//   same exact code. A natural pre-tested counted loop under the outer positive
+//   guard reproduces the original store-before-count-reload schedule.
 // Main-agent audit confirmed canonical base-game/header/scenario-entry ownership
 // and retained the ordinary indexed loader.
 
@@ -83,19 +83,15 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 
         if (this->scenario_num > 0) {
             this->scenarios = (RGE_Scenario_File_Entry*)calloc(this->scenario_num, 0x10C);
-            i = 0;
-
-            if (this->scenario_num > 0) {
-                for (; i < this->scenario_num; i++) {
-                    rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
-                    rge_read_uncompressed(fd, this->scenarios[i].name, 0x104);
-                    this->scenarios[i].scenario_header = rge_base_game->new_scenario_header(fd);
-                }
-
-                rge_close(fd);
-                this->reload_scenarios();
-                return;
+            for (i = 0; i < this->scenario_num; i++) {
+                rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
+                rge_read_uncompressed(fd, this->scenarios[i].name, 0x104);
+                this->scenarios[i].scenario_header = rge_base_game->new_scenario_header(fd);
             }
+
+            rge_close(fd);
+            this->reload_scenarios();
+            return;
         } else {
             this->scenarios = 0;
         }

@@ -957,3 +957,8 @@ only the matching paragraphs and their section heading.
   before the one that goes to the push-ecx home: `max_x = width-1` before
   `max_y = height-1` selected the binary's height-first member loads and
   EBP=max_x coloring in the same function.
+- For VC5 tiled panel drawing, test the period SDK and object ABI context before
+  register variants.  `<windows.h>`, the full `TShape` data surface, and direct
+  named dimension expressions can move the compiler from a 236-byte drift to
+  exact output.  Keep the source typed and period-plausible; do not use raw
+  cursors or volatile qualifiers as substitutes.
