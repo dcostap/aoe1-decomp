@@ -26,6 +26,12 @@
 // FLAGS: config/flags/005473B0_get_zone_map.rsp (/GX with default /O2 /Oy)
 // Main-agent audit retained the natural typed cache growth and nonvirtual
 // zone-map lifetime surface; no EH-tail steering survives.
+// - Follow-up donor pass confirmed the constructor-proven full zone-map layout
+//   and same-TU list ownership; the first 183 bytes remain exact.
+// - Hit return indexing through zone_map_index, initialized/shared result
+//   locals, declaration-order changes, and separate index initialization all
+//   emitted the same 266-byte family. An infinite-loop break widened the
+//   structural drift to 197 bytes and was rolled back.
 
 #include <stdlib.h>
 #include <string.h>

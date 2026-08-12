@@ -15,6 +15,14 @@
 //   improved the body from 264 to 270 bytes and reduced the diff to 199.
 // - A scoped direct-index variant was rolled back: it returned to a 245-byte
 //   diff. The retained source is the typed byte-offset reconstruction.
+// - Recomputing a typed candidate after the object/attribute call preserved the
+//   original record-address reload and improved the body to 195 bytes of drift.
+// - Loading the typed record id before forming the guard pointer reproduced the
+//   original id-plus-address access order and reduced drift to 117 bytes.
+// - An explicit x-conversion order was a codegen duplicate. Inlining the x
+//   record expression worsened drift to 124 bytes and was rolled back.
+// - Main-agent audit restored direct typed array indexing. The raw byte cursor
+//   was diagnostic compiler steering and did not express required behavior.
 
 extern float DAT_00575580;
 
@@ -86,26 +94,25 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
     ObjectMemory* bestDock = 0;
     int bestDockDistance = 0;
     int i = 0;
-    int byte_offset = 0;
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            ObjectMemory* memory = (ObjectMemory*)((char*)this->importantObjectMemory + byte_offset);
-                if (memory->id != -1 && memory->owner != this->md->player->id &&
-                    memory->type == 0x2D) {
-                    RGE_Static_Object* dock = this->md->object(memory->id);
-                    if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
-                        int dx = (int)memory->x - (int)unit->x;
-                        int dy = (int)memory->y - (int)unit->y;
-                        int dist = dx * dx + dy * dy;
-                        if (bestDock == 0 || dist < bestDockDistance) {
-                            bestDock = memory;
-                            bestDockDistance = dist;
-                        }
+            ObjectMemory* memory = &this->importantObjectMemory[i];
+            int id = memory->id;
+            if (id != -1 && memory->owner != this->md->player->id &&
+                memory->type == 0x2D) {
+                RGE_Static_Object* dock = this->md->object(id);
+                if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
+                    int dx = (int)memory->x - (int)unit->x;
+                    int dy = (int)memory->y - (int)unit->y;
+                    int dist = dx * dx + dy * dy;
+                    if (bestDock == 0 || dist < bestDockDistance) {
+                        bestDock = memory;
+                        bestDockDistance = dist;
                     }
+                }
             }
             i++;
-            byte_offset += 0x24;
         } while (i < this->maxImportantObjectMemory);
     }
 

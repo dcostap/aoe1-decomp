@@ -28,6 +28,11 @@
 // - the same-TU donor's scalar-byte globals with one-time typed palette aliases
 //   expanded the function to 294 bytes and moved the first mismatch to the
 //   prologue; this declaration/context lead was rolled back.
+// - corrected byte-cursor and parameter-alias variants both broke the exact
+//   prologue; a byte-array overlay and combined cursor declaration were
+//   codegen duplicates. The exact palette-step scalar surface was not retained.
+// - the exact debug-time donor ABI (C linkage, cdecl, mutable char path) is
+//   retained with the natural source literal; it is codegen-neutral.
 // - left in scratch: ordered destination-cursor setup remains non-exact; calls,
 //   loop CFG, and final timestamp/FPU/flag logic align.
 
@@ -43,7 +48,7 @@ public:
     void GetPalette(tagPALETTEENTRY* entries);
 };
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 extern tagPALETTEENTRY DAT_0086b2a8;
 extern float DAT_0086b290;
