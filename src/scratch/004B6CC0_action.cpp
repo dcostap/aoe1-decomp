@@ -1,5 +1,11 @@
 // VA: 004B6CC0 action
 // PDB source: Scr_sing.cpp
+// Attempt log:
+// baseline: typed button dispatch, game settings, panel transitions, and people-list ownership.
+// removed fallback dialog panel transitions; the original returns after construction.
+// modeled get_people_list as the donor-proven RGE_Game_Info member with a long reference output.
+// separate cleanup and name-screen result checks retain the original redundant test and block shape.
+// best unresolved drift: get_people_list argument scheduling and global/register encoding.
 
 #include <stdlib.h>
 
@@ -30,10 +36,12 @@ public:
     virtual ~TScreenPanel();
 };
 
+class RGE_Game_Info;
+
 class RGE_Base_Game {
 public:
     char gap_00[0x04];
-    void* player_game_info;
+    RGE_Game_Info* player_game_info;
     char gap_08[0x44];
     void setCampaignGame(int val);
     void setSavedGame(int val);
@@ -42,6 +50,11 @@ public:
     void setQuickStartGame(unsigned char val);
     void disable_input();
     void close();
+};
+
+class RGE_Game_Info {
+public:
+    long get_people_list(char*** list, long& count);
 };
 
 class TPanelSystem {
@@ -99,8 +112,6 @@ public:
     virtual long action(TPanel* panel, long code, unsigned long a3, unsigned long a4);
 };
 
-long get_people_list(void* game_info, char*** list, int* count);
-
 long TribeSPMenuScreen::action(TPanel* panel, long code, unsigned long a3, unsigned long a4) {
     if (panel && code == 1) {
         if (panel == button[0]) {
@@ -150,26 +161,24 @@ long TribeSPMenuScreen::action(TPanel* panel, long code, unsigned long a3, unsig
             ((RGE_Base_Game*)rge_base_game)->disable_input();
 
             char** list = 0;
-            int count = 0;
-            long result = get_people_list(((RGE_Base_Game*)rge_base_game)->player_game_info, &list, &count);
+            long count;
+            long result = ((RGE_Base_Game*)rge_base_game)->player_game_info->get_people_list(&list, count);
 
             if (result > 0) {
                 for (int i = 0; i < result; i++) {
                     free(list[i]);
                 }
                 free(list);
+            }
 
-                if (result > 0) {
-                    new TRIBE_Screen_Name();
-                    panel_system.setCurrentPanel("Name Selection Screen", 0);
-                    panel_system.destroyPanel("Single Player Menu");
-                    return 1;
-                }
+            if (result > 0) {
+                new TRIBE_Screen_Name();
+                panel_system.setCurrentPanel("Name Selection Screen", 0);
+                panel_system.destroyPanel("Single Player Menu");
+                return 1;
             }
 
             new TRIBE_Dialog_Name(this);
-            panel_system.setCurrentPanel("Name Selection Screen", 0);
-            panel_system.destroyPanel("Single Player Menu");
             return 1;
         }
         if (panel == button[5]) {
