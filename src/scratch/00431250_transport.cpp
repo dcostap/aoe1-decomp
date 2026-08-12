@@ -47,6 +47,10 @@
 // codegen-neutral.  Preserve the derived action ownership and clean guard.
 // Main-agent audit retained direct inherited virtual calls and canonical action
 // ownership; no manual dispatch or EH-tail steering survives.
+// Session orch2-431250-abi: normalized the +0x208 inherited action-install call
+// to set_action(RGE_Action*) and the +0x34 action call to RGE_Action::work,
+// following exact donors 00406470, 00430A90, and 004308C0. Names and typed
+// surfaces are canonical; VC5 emitted the same 230-byte / 67-diff code.
 // Fresh bounded pass (orch-comobj-02): mixed shared-label/null-result,
 // allocation-scoped result, assignment-in-condition, and direct-null-return
 // forms all regressed to 82-97 diff or larger EH tails; no compiler-facing
@@ -121,7 +125,7 @@ public:
     virtual void slot_28();
     virtual void slot_2C();
     virtual void slot_30();
-    virtual int func34(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object*, float, float, float);
 };
 
 class RGE_Action_Transport : public RGE_Action {
@@ -263,7 +267,7 @@ struct RGE_Combat_Object_Virtual_Base {
     virtual void s1FC();
     virtual void s200();
     virtual void s204();
-    virtual void call208(void* arg);  // slot 0x82 (130), offset 0x208
+    virtual void set_action(RGE_Action* action);  // slot 0x82 (130), offset 0x208
 };
 
 class RGE_Static_Object : public RGE_Combat_Object_Virtual_Base {
@@ -296,7 +300,7 @@ int RGE_Combat_Object::transport(float x, float y, float z, int w)
         if (action->func18() == 0x0C) {
             // Call get_action() AGAIN (original does this)
             RGE_Action* action2 = (RGE_Action*)actions->get_action();
-            action2->func34(0, x, y, z);
+            action2->work(0, x, y, z);
             return 1;
         }
     }
@@ -305,8 +309,8 @@ int RGE_Combat_Object::transport(float x, float y, float z, int w)
     result = 0;
     if (transport != 0) {
         actions->delete_list();
-        this->call208(transport);
-        transport->func34(this, x, y, z);
+        this->set_action(transport);
+        transport->work(this, x, y, z);
         result = 1;
     }
     return result;

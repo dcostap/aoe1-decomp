@@ -84,6 +84,15 @@
 //   The unresolved blocker is still VC5's local/register basin: the oracle
 //   has EBX=sorted, EDI=current, EBP=successor, ESI=this/search and two stack
 //   homes, while the clean rebuild keeps an extra slot and opposite colors.
+// - Retry with the corrected typed class, nonvirtual destructor context,
+//   schedule field, and char* logging ABI: a function-scope next with
+//   current=next for-loop topology grew to 302 bytes and kept a 0xC frame;
+//   rolled back.  The block-scoped current=next spelling emitted the same
+//   273-byte code as the clean source, so no new register-home lead remains.
+// - A scoped for-loop current with function-scope next improved shape to
+//   86.24% and exact-block coverage to 49.04%, but grew to 289 bytes with a
+//   0xC frame; rolled back as the same structural basin as the prior direct
+//   successor retry.
 
 #include <stddef.h>
 

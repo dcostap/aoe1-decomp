@@ -17,12 +17,13 @@
 // 7: Reverse source index scoped to the guarded copy loop — 284-byte output; rolled back.
 // 8: Reverse source index live across the negative guard — 284-byte output; rolled back.
 // 9: Named reverse-copy value — 284-byte output and register cascade; rolled back.
+// 10: Moved the first positive-loop i=0 before YLine_Size-scroll_y and reused i — 166-byte diff, recovering the early xor eax and two exact blocks; remaining drift starts in the negative-loop index setup.
 // BLOCKER: TU-context register allocation cascade (scroll_y in ebx vs edx)
 // Best retained source: typed same-TU DClipInfo layout with direct member arrays,
-// natural do/while copies, and switch fall-through; 175-byte diff, 91.18% shape,
-// exact original boundary. Remaining drift starts at positive-loop init ordering
-// (rebuilt mov size/sub/test vs original mov ESI/xor EAX/sub/test) and reverse-copy
-// source-index addressing. Full view.cpp context or a stronger source donor is the
+// natural do/while copies, and switch fall-through; 166-byte diff, 92.16% shape,
+// exact original boundary. The positive-loop init now matches the early xor and
+// remaining drift starts at negative-loop index setup and reverse-copy addressing.
+// Full view.cpp context or a stronger source donor is the
 // next lead; source-index locals add 23 bytes past the original boundary.
 
 struct DClipInfo_Node {
@@ -70,8 +71,8 @@ public:
 void DClipInfo_List::Scroll(int scroll_x, int scroll_y)
 {
     if (scroll_y > 0) {
+        int i = 0;
         if (this->YLine_Size - scroll_y > 0) {
-            int i = 0;
             do {
                 int next = i + 1;
                 this->Draw_Clip_Nodes[i] = this->Draw_Clip_Nodes[i + scroll_y];
@@ -79,7 +80,7 @@ void DClipInfo_List::Scroll(int scroll_x, int scroll_y)
             } while (i < this->YLine_Size - scroll_y);
         }
 
-        int i = this->YLine_Size - scroll_y;
+        i = this->YLine_Size - scroll_y;
         if (i < this->YLine_Size) {
             do {
                 int next = i + 1;

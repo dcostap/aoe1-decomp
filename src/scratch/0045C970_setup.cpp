@@ -27,6 +27,10 @@
 // - Paused after the 10-hypothesis budget: 295B vs 291B, five ordered calls
 //   aligned, 152 positional diff bytes; remaining lead is original ECX sprite
 //   versus rebuilt EAX/zero-ECX coloring plus the later FPU multiply schedule.
+// - orch2-45C970-rand: inlined debug_rand directly in the facings product,
+//   following exact donor 00488EA0. This moved the diff 152 -> 142 bytes and
+//   shape 92.94% -> 94.12%; calls and CFG stayed aligned. The first structural
+//   hunk remains the sprite/facet guard, so no second blind hypothesis was run.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -140,9 +144,8 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
     if (sprite != 0 && (sprite->flag & 2) != 0 &&
         1 < sprite->facet_num) {
             int facings = sprite->facet_num;
-            int random_value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE);
             float random_angle = (float)(DAT_00570b40 / (float)(int)facings) *
-                (float)((random_value * facings) / 0x7FFF);
+                (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE) * facings) / 0x7FFF);
             this->angle = random_angle;
 
             if (this->angle < DAT_00570b48) {

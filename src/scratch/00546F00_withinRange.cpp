@@ -22,6 +22,9 @@
 //   map dimension locals, stdlib context, declaration order, and post-guard
 //   aggregate initialization. The first four were duplicates; the rest were
 //   worse. Restored the clean 247-byte source; the 15-byte hunk remains local.
+// - Tested donor-backed x_value/y_value aliases for every bound and distance
+//   term, with declarations before max as in 00547080; emitted code was a
+//   duplicate. Restored the clean source.
 
 typedef unsigned char uchar;
 

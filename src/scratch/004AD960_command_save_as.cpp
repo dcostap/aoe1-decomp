@@ -22,6 +22,8 @@
 // zeroing/passing its actual base restored the late constructor/panel blocks and
 // raised exact-block coverage to 59.70% (the binary supports name[0], not name[4]).
 // probe: the natural else-if spelling is codegen-identical to the nested guards.
+// probe: adding the exact 004AD700 same-TU command_save declaration after
+// command_save_as did not change the /GX cleanup basin or any emitted byte.
 // blocker: both popup failure arms still receive duplicated /GX cleanup-and-return
 // blocks instead of the original shared jmp tail at 004ADA58; current source is
 // retained as the best canonical reconstruction with the late stack/name topology.

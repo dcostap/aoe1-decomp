@@ -49,6 +49,8 @@
 //   seed store/push schedule at +0x2D; later map/count/register drift is shifted from it.
 // - stdlib.h context for the period calloc surface was a duplicate and is retained;
 //   paused after the 10-hypothesis assignment with exact size, CFG, and call parity.
+// - Member-based debug_srand seed argument, matching exact World.cpp new_game donor,
+//   was codegen-identical; restored the clean typed source.
 
 #include <stdlib.h>
 
