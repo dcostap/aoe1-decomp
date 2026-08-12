@@ -36,6 +36,11 @@
 // the 219B/37 basin or widened. A 24-variant mixed loop-surface lab likewise
 // found no exact candidate. Restored the clean readable source; no probe moved
 // the ESI-owner versus EDX-compare-index loop-tail hunk.
+// 2026-08-12 orch2-4C4250-tail focused tail pass (3 meaningful probes): moving
+// world reload before compare assignment widened to 227B/190; reusing the dead
+// id home after the byte increment was a 219B/37 duplicate; combining both
+// changes widened to 227B/190. Restored the clean source; the original
+// increment/home/world/word-compare order remains unresolved.
 
 class RGE_Static_Object;
 class RGE_Sprite;
