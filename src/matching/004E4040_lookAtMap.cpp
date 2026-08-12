@@ -95,7 +95,7 @@ public:
     unsigned char unchangeableLimitValue;
     unsigned char gap_25[3];
 
-    void setValue(int x, int y, int value);
+    int setValue(int x, int y, unsigned char value);
 };
 
 class TribeInformationAIModule {
@@ -117,7 +117,7 @@ public:
 
     void lookAtMap(void);
     int importantObject(int group);
-    int addImportantObject(void* object, int value);
+    int addImportantObject(RGE_Static_Object* object, int value);
 };
 
 void TribeInformationAIModule::lookAtMap(void)

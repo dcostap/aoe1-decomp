@@ -22,6 +22,9 @@
 // left in scratch: behavior/calls/EH/new-action shape are understood; remaining drift is VC5 exit-path cloning/block layout (success returns inline instead of original shared success tail) plus shifted branch distances.
 // fresh pass: dossier and donor evidence confirm all 17 ordered calls and the
 // canonical +0x0C/+0x184 object/list ownership; no new structural lead found.
+// fresh continuation: the typed result-tail form matched size and one-return
+// CFG but widened positional drift to 293 bytes; restored direct returns.
+// Typing vf210 as RGE_Task* and moving the action local were codegen-neutral.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 class RGE_Action;
@@ -164,7 +167,7 @@ class TRIBE_Combat_Object : public RGE_Action_Object {
 public:
     virtual void vf208(void* action);
     virtual void d131();
-    virtual void* vf210(void* obj, float x, float y, float z);
+    virtual RGE_Task* vf210(void* obj, float x, float y, float z);
 
     virtual int repair(int id, int flag);
 };
