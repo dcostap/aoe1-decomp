@@ -1,12 +1,10 @@
-// first reconstruction from the Ghidra packet; expected to need layout/control-flow tightening
-// current draft compiles but emitted .text is only 1088 bytes vs original 1147; missing the icon/message subpaths from the full draw body
-// fixed the early guard to match packet tests at +20/+70/+6C/+2F8 instead of incorrectly treating empty text as a fast return
-// added the packet's second GetTextExtent path for ordinary message types and corrected RightInfoMessage to value 5
-// inlined palette lookup instead of helper so draw owns the palette local like the original stack frame; stack moved from 0x38 to 0x3C but original is 0x48
-// current draft is size-aligned after adding the second text-extent path, but still broad control/layout drift (~65%)
-// tried explicit __thiscall vtable function-pointer calls to encourage the original edi vtable carrier; VC5 rejected that syntax, rolled back
-// moved palette/SIZE/RECT/color/font locals to function scope to better match the original fixed 0x48-byte stack frame
-// testing function-scope x/y/w/h-style locals to recover the original 0x48 stack frame
+// Attempt log:
+// baseline: restored the full image-copy and GDI draw paths; frame 0x40, diff 866.
+// layout: added inherited panel width and height ownership; diff 858.
+// control-flow: computed panel bounds before text extent; exact size, frame 0x44, diff 833.
+// context: restored canonical TPanel fields and virtual draw ownership; no code change.
+// remaining drift: VC5 keeps the vtable carrier in EBX, not original EDI, and misses 4 frame bytes.
+// left in scratch: typed period-plausible draw source with 32 aligned calls; no exact lead remains.
 struct tagRECT { long left; long top; long right; long bottom; };
 struct tagSIZE { long cx; long cy; };
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
@@ -47,14 +45,22 @@ public:
     virtual void pv5(int);
     virtual void pv6();
     virtual void pv7();
-    virtual void redraw(int);
+    virtual void pv8();
     virtual void pv9();
-    virtual void draw_begin(int);
-    virtual void draw_end();
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
 
-    char gap_004[0x1C];
+    char gap_004[8];
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char gap_01C[4];
     TDrawArea* render_area;
-    char gap_024[0x48];
+    char gap_024[0x14];
+    int need_redraw;
+    char gap_03C[0x30];
     int field_6C;
     int field_70;
     char gap_074[0x14];
@@ -93,8 +99,8 @@ public:
     int LastIBHeight;
     int ImageTextActive;
 
-    void render_to_image_buffer();
-    void draw();
+    int render_to_image_buffer();
+    virtual void draw();
 };
 
 void TMessagePanel::draw() {
@@ -103,7 +109,6 @@ void TMessagePanel::draw() {
         return;
     }
 
-    void** vt = *(void***)this;
     tagPALETTEENTRY p;
     tagSIZE ts;
     tagRECT rect;
@@ -111,23 +116,23 @@ void TMessagePanel::draw() {
     unsigned long font_rgb;
     unsigned long back_rgb;
     int len;
-    long left;
     long top;
+    long left;
     long right;
     long bottom;
-    this->draw_begin(0);
+    this->draw_setup(0);
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
         if (this->need_restore != 0) {
             this->render_to_image_buffer();
             this->need_restore = 0;
-            this->draw_end();
+            this->draw_finish();
             return;
         }
         this->ImageBuffer->SetTrans(1, 1);
         this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top, &this->UsedImageRect, 1);
         this->ImageBuffer->SetTrans(0, 1);
-        this->draw_end();
+        this->draw_finish();
         return;
     }
 
@@ -154,6 +159,11 @@ void TMessagePanel::draw() {
                 SetBkMode(this->render_area->hdc, 1);
             }
 
+            left = this->draw_left;
+            top = this->draw_top;
+            right = this->pnl_wid + left - 1;
+            bottom = this->pnl_hgt + top - 1;
+
             len = 0;
             while (msg[len] != 0) ++len;
             GetTextExtentPoint32A(this->render_area->hdc, msg, len, &ts);
@@ -167,17 +177,13 @@ void TMessagePanel::draw() {
                 len = 0;
                 while (msg[len] != 0) ++len;
                 GetTextExtentPoint32A(this->render_area->hdc, msg, len, &ts);
-                flags = (this->word_wrap == 0 || ts.cx <= this->font_wid - 2) ? 0x20 : 0x10;
-                if (this->horz_just == 1) flags |= 1;
-                else if (this->horz_just == 2) flags |= 2;
-                if (this->vert_just == 1) flags |= 4;
-                else if (this->vert_just == 2) flags |= 8;
+                flags = (this->word_wrap == 0 || ts.cx <= this->pnl_wid - 2) ? 0x20 : 0x10;
+                if (this->horz_just == 4) flags |= 1;
+                else if (this->horz_just == 3) flags |= 2;
+                if (this->vert_just == 4) flags |= 4;
+                else if (this->vert_just == 1) flags |= 8;
             }
 
-            left = this->draw_left;
-            top = this->draw_top;
-            right = this->font_wid + left - 1;
-            bottom = this->font_hgt + top - 1;
             SetTextColor(this->render_area->hdc, back_rgb);
             SetRect(&rect, left, top, right - 2, bottom - 2);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
@@ -197,5 +203,5 @@ void TMessagePanel::draw() {
         }
     }
 
-    this->draw_end();
+    this->draw_finish();
 }

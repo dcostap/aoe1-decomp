@@ -1,6 +1,10 @@
-// first reconstruction from the Ghidra packet; expected broad layout/codegen drift
-// current draft compiles and is size-aligned, but broad control/layout drift remains (~85%); stack is 0x44 vs original 0x40
-// testing int instead of bool for the wrap/tight flag to see if VC5 keeps it in register and recovers the 0x40 stack
+// Attempt log:
+// baseline: natural render path with local typed Win32 and draw-area stubs; frame 0x44, diff 1552.
+// layout: restored TPanel ownership for width, height, and draw origin; frame 0x48, diff 1526.
+// control-flow: used panel dimensions and original justification enum values; frame 0x40, diff 1506.
+// liveness: retained ImageRect and text pointers and corrected RGB local order; best diff 1361.
+// remaining drift: early pointer register allocation, block placement, and several local homes.
+// left in scratch: source is typed and period-plausible; no exact lead remains in this claim.
 struct tagRECT { long left; long top; long right; long bottom; };
 struct tagSIZE { long cx; long cy; };
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
@@ -20,9 +24,9 @@ struct GameBaseInner { char gap_00[0x48]; DrawSystem* draw_system; };
 extern GameBaseInner* rge_base_game;
 
 struct Shape_Info {
-    char gap_00[8];
+    char gap_00[0x10];
     long Width;
-    long Height;
+    char gap_14[4];
     long Hotspot_X;
     long Hotspot_Y;
 };
@@ -40,18 +44,38 @@ public:
     void ReleaseDc(char* tag);
 };
 
+class TPanel {
+public:
+    virtual void pv0();
+    virtual void pv1();
+    virtual void pv2();
+    virtual void pv3();
+    virtual void pv4();
+    virtual void pv5(int);
+    virtual void pv6();
+    virtual void pv7();
+    virtual void pv8(int);
+
+    char gap_04[0x10];
+    long pnl_wid;
+    long pnl_hgt;
+    char gap_1C[4];
+    TDrawArea* render_area;
+    char gap_24[0x68];
+    long draw_left;
+    long draw_top;
+    char gap_94[0x5F];
+    unsigned char need_restore;
+};
+
 class TShape {
 public:
     Shape_Info* shape_info;
     void shape_draw(TDrawArea* draw_area, long x, long y, long frame, unsigned char transparent, unsigned char* remap);
 };
 
-class TMessagePanel {
+class TMessagePanel : public TPanel {
 public:
-    char gap_000[0x8C];
-    long draw_left;
-    long draw_top;
-    char gap_094[0x60];
     int message_type;
     char text[0x200];
     int showing_message;
@@ -90,9 +114,11 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    this->ImageBuffer->PtrClear(&this->ImageRect, 1);
+    char* text = this->text;
+    tagRECT* image_rect = &this->ImageRect;
+    this->ImageBuffer->PtrClear(image_rect, 1);
 
-    if (this->text[0] == 0) {
+    if (text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         SetRect(&this->UsedScreenRect, this->draw_left, this->draw_top, this->draw_left + 1, this->draw_top + 1);
         this->ImageTextActive = 1;
@@ -104,16 +130,16 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    this->ImageBuffer->SetClipRect(&this->ImageRect);
+    this->ImageBuffer->SetClipRect(image_rect);
     SelectClipRgn(this->ImageBuffer->hdc, this->image_clip_region);
     void* old_font = SelectObject(this->ImageBuffer->hdc, this->font);
 
     tagPALETTEENTRY p;
-    unsigned long font_rgb;
     unsigned long back_rgb;
+    unsigned long font_rgb;
     if (this->index_color == 0) {
-        font_rgb = this->font_color1;
         back_rgb = this->font_color2;
+        font_rgb = this->font_color1;
     } else {
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &p);
         font_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
@@ -128,21 +154,20 @@ int TMessagePanel::render_to_image_buffer() {
         SetBkMode(this->ImageBuffer->hdc, 1);
     }
 
-    long x = this->ImageRect.left;
-    long y = this->ImageRect.top;
-    long text_x = x + 1;
-    long text_y = y + 1;
-    long avail_w = this->font_wid - 2;
-    long avail_h = this->font_hgt;
+    long x = image_rect->left;
+    long display_hgt;
+    long y = image_rect->top;
+    long wid = this->pnl_wid - 2;
+    long hgt = this->pnl_hgt - 2;
 
     tagSIZE ts;
     int len = 0;
-    while (this->text[len] != 0) ++len;
-    int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, this->text, len, &ts);
+    while (text[len] != 0) ++len;
+    int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, text, len, &ts);
 
     tagRECT rect;
     if (ok == 0) {
-        SetRect(&rect, x, y, text_x + avail_w - 4, text_y + avail_h - 4);
+        SetRect(&rect, x, y, x + wid - 2, y + hgt - 2);
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         this->ImageTextActive = 0;
     } else {
@@ -150,45 +175,45 @@ int TMessagePanel::render_to_image_buffer() {
         long used_x = 0;
         long used_y = 0;
         long used_w = ts.cx + 2;
-        long used_h = rect.left + 2;
+        display_hgt = ts.cy + 2;
         int tight = 1;
 
         if (this->message_type == 1) {
             flags = 0x21;
-            used_x = ((this->font_wid - used_w) >> 1) - 1;
+            used_x = ((this->pnl_wid - used_w) >> 1) - 1;
         } else if (this->message_type == 5) {
             flags = 0x22;
-            used_x = (this->font_wid - used_w) - 1;
+            used_x = (this->pnl_wid - used_w) - 1;
             used_y = 0;
         } else {
-            if (this->word_wrap == 0 || ts.cx <= avail_w) {
+            if (this->word_wrap == 0 || ts.cx <= wid) {
                 used_w = ts.cx + 1;
-                used_h = rect.left + 1;
+                display_hgt = ts.cy + 1;
                 flags = 0x20;
                 tight = 1;
             } else {
-                used_w = this->font_wid;
-                used_h = this->font_hgt;
+                used_w = this->pnl_wid;
+                display_hgt = this->pnl_hgt;
                 flags = 0x10;
                 tight = 0;
             }
             used_x = 0;
             used_y = 0;
-            if (this->horz_just == 1) {
+            if (this->horz_just == 4) {
                 flags |= 1;
-                if (tight) used_x = ((this->font_wid - used_w) >> 1) - 1;
-            } else if (this->horz_just == 2) {
+                if (tight) used_x = ((this->pnl_wid - used_w) >> 1) - 1;
+            } else if (this->horz_just == 3) {
                 flags |= 2;
-                if (tight) used_x = (this->font_wid - used_w) - 1;
+                if (tight) used_x = (this->pnl_wid - used_w) - 1;
             } else if (tight) {
                 used_x = 0;
             }
-            if (this->vert_just == 1) {
+            if (this->vert_just == 4) {
                 flags |= 4;
-                if (tight) used_y = ((this->font_hgt - used_h) >> 1) - 1;
-            } else if (this->vert_just == 2) {
+                if (tight) used_y = ((this->pnl_hgt - display_hgt) >> 1) - 1;
+            } else if (this->vert_just == 1) {
                 flags |= 8;
-                if (tight) used_y = (this->font_hgt - used_h) - 1;
+                if (tight) used_y = (this->pnl_hgt - display_hgt) - 1;
             } else if (tight) {
                 used_y = 0;
             }
@@ -200,24 +225,22 @@ int TMessagePanel::render_to_image_buffer() {
         this->UsedImageRect.left = used_x;
         this->UsedImageRect.top = used_y;
         this->UsedImageRect.right = used_x + used_w;
-        this->UsedImageRect.bottom = used_y + used_h;
+        this->UsedImageRect.bottom = used_y + display_hgt;
         if (this->ImageRect.right < this->UsedImageRect.right) this->UsedImageRect.right = this->ImageRect.right;
         if (this->ImageRect.bottom < this->UsedImageRect.bottom) this->UsedImageRect.bottom = this->ImageRect.bottom;
 
         SetTextColor(this->ImageBuffer->hdc, back_rgb);
-        long right = text_x + avail_w;
-        long bottom = text_y + this->font_hgt - 2;
-        SetRect(&rect, x, y, right - 2, bottom - 2);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
-        SetRect(&rect, x, y + 2, right - 2, bottom);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
-        SetRect(&rect, x + 2, y, right, bottom - 2);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
-        SetRect(&rect, x + 2, y + 2, right, bottom);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
+        SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
+        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        SetRect(&rect, x, y + 2, x + wid - 1, y + hgt + 1);
+        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        SetRect(&rect, x + 2, y, x + wid + 1, y + hgt - 1);
+        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        SetRect(&rect, x + 2, y + 2, x + wid + 1, y + hgt + 1);
+        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
         SetTextColor(this->ImageBuffer->hdc, font_rgb);
-        SetRect(&rect, text_x, text_y, right - 1, bottom - 1);
-        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
+        SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
+        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
 
         if (this->Icon1 != 0) {
             Shape_Info* info = this->Icon1->shape_info;
