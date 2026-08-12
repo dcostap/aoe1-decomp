@@ -1,20 +1,66 @@
 // VA: 004FF6E0, TribeTacticalAIModule::numberExtraGroupedWarBoats, 509 bytes
 // Attempt log:
-// - try 1: natural decompiler-shaped C++ with minimal local class surface; exact size but 80.55% diff, group allocated EBP and init/store order wrong.
-// - try 2: declared group as register to probe EBX allocation; no change.
-// - try 3: seeded a zero local for count/working_number to encourage xor eax before push edi; no change.
-// - try 4: compared against 004FD4F0 sibling scratch; same family/register-basin blocker noted there.
-// - try 5: switched to sibling surface: vtable,next layout, raw sentinel bytes, explicit groupNext/workingValue names; edit diff improved to 57.76%, same first mismatch.
-// - try 6: split result initialization from declaration; no change.
-// - try 7: declare group after int locals to probe EBX/EBP allocation; no change.
-// - try 8: /GX flag probe; no change, rolled back.
-// - try 9: /O1 flag probe; object too small (492B), rolled back.
-// - try 10: reviewed while/do loop; kept while(1)+break because it matches sibling and bottom desiredNumberUnits check family best.
-// BLOCKER: exact 509B size, but not accepted-drift-safe. First mismatch remains at offset 8: original emits xor eax; push edi; stores result and workingNumber from eax, and keeps group in EBX. Rebuilt emits push edi then C7 result store and keeps group in EBP. Broad register/stack-slot basin diff remains.
+// - Prior scratch work used raw working-area fields and reached 509 bytes, but
+//   it used a compiler-shaped register basin and did not model array ownership.
+// - Baseline in this session rebuilt at 541 bytes. It had the right 19 calls,
+//   but the working-area scan and list CFG had extra structural blocks.
+//
+// This source models the proven group sentinel and workingArea as their
+// period-plausible typed owners. The inline array method is the same ownership
+// surface used by exact same-TU ManagedArray donors.
+//
+// Probe notes:
+// - ManagedArray::add plus the explicit while loop aligned all 19 calls and
+//   reduced the function to the exact 509-byte boundary.
+// - Left-side comparison spellings aligned the remaining branch opcodes.
+// - A local workingArea reference aligned the prologue order and all body
+//   bytes except stack-home displacements.
+// - Remaining drift is 10 stack-home bytes: VC5 assigns result/rNum/tempCount
+//   to [esp+10]/[esp+18]/[esp+14], while the oracle uses [esp+18]/[esp+14]/
+//   [esp+10]. No behavior or call-set drift remains.
 
-typedef unsigned char uchar;
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    int add(T val)
+    {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == val)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int newSize = this->numberValue + 1;
+            T* newValue = (T*)operator new(newSize * sizeof(T));
+            if (newValue != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= newSize)
+                        break;
+                    newValue[j] = this->value[j];
+                }
+                operator delete(this->value);
+                this->value = newValue;
+                this->maximumSizeValue = newSize;
+            }
+        }
+
+        this->value[this->numberValue] = val;
+        this->numberValue++;
+        return 1;
+    }
+};
 
 class TacticalAIGroup {
 public:
@@ -23,97 +69,68 @@ public:
     TacticalAIGroup* prev;
     int idValue;
     int inUseValue;
+    int typeValue;
+    int subTypeValue;
+    char gap_after_subType[0x330 - 0x1c];
+
     int type();
-    int numberUnits();
-    int unit(int index);
-    int desiredNumberUnits();
-    int commander();
     int action();
+    int numberUnits();
+    int desiredNumberUnits();
+    int unit(int index);
+    int commander();
 };
 
 class TribeTacticalAIModule {
 public:
     char gap_000[0x9d4];
-    char groups_sentinel[4];
-    TacticalAIGroup* groupNext;
-    char gap_after_groups[0xd48 - 0x9dc];
-    int* workingValue;
-    int workingNumber;
-    char gap_d50[4];
-    int workingMax;
+    TacticalAIGroup groups;
+    char gap_after_groups[0xd48 - (0x9d4 + 0x330)];
+    ManagedArray<int> workingArea;
 
     int numberExtraGroupedWarBoats();
 };
 
 int TribeTacticalAIModule::numberExtraGroupedWarBoats()
 {
-    int result;
-    int rNum;
+    ManagedArray<int>& workingArea = this->workingArea;
     int tempCount;
-    int j;
+    int rNum;
+    int result = 0;
+    int numberUnitsValue;
     TacticalAIGroup* group;
 
-    result = 0;
-    this->workingNumber = result;
-    group = this->groupNext;
-    if (group == (TacticalAIGroup*)this->groups_sentinel) {
-        return result;
-    }
-
-    do {
-        if (group == 0) {
+    workingArea.numberValue = result;
+    group = this->groups.next;
+    while (group != &this->groups) {
+        if (group == 0)
             return result;
-        }
-        if ((group->type() == 103 || group->type() == 104 || group->type() == 105 ||
-             group->type() == 106 || group->type() == 107 || group->type() == 108) &&
-            (group->action() == 1 || group->action() == 0)) {
-            if (group->desiredNumberUnits() < group->numberUnits()) {
-                rNum = group->numberUnits();
-                tempCount = 0;
-                if (group->desiredNumberUnits() < rNum) {
-                    while (1) {
-                        if (tempCount >= group->numberUnits()) break;
-                        if (group->unit(tempCount) != group->commander()) {
-                            rNum--;
-                            int u = group->unit(tempCount);
-                            j = 0;
-                            if (this->workingNumber > 0) {
-                                do {
-                                    if (j >= this->workingMax) break;
-                                    if (this->workingValue[j] == u) goto counted;
-                                    j++;
-                                } while (j < this->workingNumber);
+
+            if ((group->type() == 103 || group->type() == 104 ||
+                 group->type() == 105 || group->type() == 106 ||
+                 group->type() == 107 || group->type() == 108) &&
+                (group->action() == 1 || group->action() == 0)) {
+                numberUnitsValue = group->numberUnits();
+                if (numberUnitsValue > group->desiredNumberUnits()) {
+                    rNum = group->numberUnits();
+                    tempCount = 0;
+                    if (rNum > group->desiredNumberUnits()) {
+                        while (1) {
+                            if (tempCount >= group->numberUnits())
+                                break;
+                            if (group->unit(tempCount) != group->commander()) {
+                                rNum--;
+                                workingArea.add(group->unit(tempCount));
+                                result++;
                             }
-                            if (this->workingNumber > this->workingMax - 1) {
-                                int newMax = this->workingNumber + 1;
-                                int* newValue = (int*)operator new(newMax * 4);
-                                if (newValue != 0) {
-                                    j = 0;
-                                    if (this->workingMax > 0) {
-                                        do {
-                                            if (j >= newMax) break;
-                                            j++;
-                                            newValue[j - 1] = this->workingValue[j - 1];
-                                        } while (j < this->workingMax);
-                                    }
-                                    operator delete(this->workingValue);
-                                    this->workingValue = newValue;
-                                    this->workingMax = newMax;
-                                }
-                            }
-                            this->workingValue[this->workingNumber] = u;
-                            this->workingNumber++;
-counted:
-                            result++;
+                            tempCount++;
+                            if (rNum <= group->desiredNumberUnits())
+                                break;
                         }
-                        tempCount++;
-                        if (group->desiredNumberUnits() >= rNum) break;
                     }
                 }
             }
-        }
         group = group->next;
-    } while (group != (TacticalAIGroup*)this->groups_sentinel);
-
+    }
     return result;
 }

@@ -15,6 +15,13 @@
 // A register-qualified palette parameter produced duplicate code and was
 // removed from the living source. Remaining drift is prologue register order,
 // copy-loop topology, and local store scheduling.
+// Retry r2: Reordered base-color byte stores to red, blue, green, flags; this
+// improved shape but worsened positional diff and was restored.
+// Added the binary-listed unused temp_color local; VC5 emitted identical code.
+// Reconstructed the Ghidra pointer-cursor palette copy; it reached exact size
+// but worsened block coverage and was restored. Final validation is the clean
+// indexed channel-copy source above. Calls, frame, and CFG counts are exact;
+// the remaining structural gap starts in parameter-home/prologue scheduling.
 
 #include <string.h>
 

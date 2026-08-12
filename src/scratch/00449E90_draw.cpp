@@ -16,6 +16,11 @@
 // 14: Declared height before width while retaining width-then-height loads; emitted code unchanged.
 // 15: Focused four-way lab over natural coordinate order/direct-field forms produced two codegen groups, all at the 36-byte baseline diff.
 // 16: Reversed the natural x2 addition operand order; emitted code unchanged.
+// Fresh pass: widened width/height locals to int; VC5 emitted the same 36-byte diff, restored.
+// Fresh pass: added a post-coordinate draw-area alias; emitted code unchanged, restored.
+// Fresh pass: register-qualified dimensions and then parameters; emitted code unchanged, restored.
+// Fresh pass: combined AlignedWidth and Orien into one product; emitted code unchanged, restored.
+// Fresh pass: moved dimension declarations and reordered early locals; emitted code unchanged, restored.
 // BLOCKER: behavior and layout appear correct; remaining 7.8091% diff is localized codegen/register scheduling in coordinate setup after frame load. Original uses EBX for width then reuses EBX for drawarea (`movsx ebx,[esi+10] ... mov ebx,ecx`), while VC5 keeps width in ECX and loads drawarea into EBX early. Later switch/tail and frees are structurally aligned.
 
 extern "C" void* calloc(unsigned int count, unsigned int size);

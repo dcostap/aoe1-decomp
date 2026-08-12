@@ -8,10 +8,24 @@
 // 6: int task player parameter + cast improved tail (edit 20.04%).
 // 7: while(1) copy loops improved edit to 14.31 and copy loops match; function still +3/duplicate search tests.
 // 8: Goto-shaped search loops worsened to 23.72 edit; rolled back to for-loop search.
-// Left in scratch: best source (before this rollback note) has matching size under check_function but actual object is a few bytes longer; main remaining drift is search-loop entry shape (rebuilt inserts redundant `test ecx,ecx` after loading max) and slight branch displacement drift. Copy-growth loops and final virtual call are close after while(1) copy and int/movsx task parameter.
+// 9: Removed the decompiler-only positive-count guards from all bounded scans;
+//    exact same-TU donors then recovered the target size and first scan blocks.
+// 10: Reconstructed both lists as ManagedIntArray members at +104 and +d58;
+//     output stayed unchanged and the layout is now canonical.
+// Left in scratch: size, calls, first scan, growth copies, removeGatherer, and
+// final virtual dispatch are aligned. The only known drift is the second
+// civilian scan: VC5 reuses the first count instead of the target's six-byte
+// reload of civilian.numberValue, shifting later branch displacements.
 
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
+
+struct ManagedIntArray {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSize;
+};
 
 class MapThing {
 public:
@@ -29,15 +43,9 @@ public:
     char pad000[0xf0];
     MdHolder* md;               // +f0
     char pad0f4[0x104 - 0x0f4];
-    int* civilian_value;        // +104
-    int civilian_number;        // +108
-    int civilian_pad;           // +10c
-    int civilian_max;           // +110
+    ManagedIntArray civilians;  // +104
     char pad114[0xd58 - 0x114];
-    int* tasked_value;          // +d58
-    int tasked_number;          // +d5c
-    int tasked_pad;             // +d60
-    int tasked_max;             // +d64
+    ManagedIntArray tasked;     // +d58
 
     int taskExplorer(int unit, float x, float y, int flag);
     int removeGatherer(int unit);
@@ -46,72 +54,66 @@ public:
 int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
 {
     int i = 0;
-    int count = this->tasked_number;
-    if (count > 0) {
-        int max = this->tasked_max;
-        for (; i < count && i < max; i++) {
-            if (this->tasked_value[i] == unit) goto tasked_done;
-        }
+    int count = this->tasked.numberValue;
+    for (; i < count; i++) {
+        if (i >= this->tasked.maximumSize) break;
+        if (this->tasked.value[i] == unit) goto tasked_done;
     }
-    if (count > this->tasked_max - 1) {
+    if (count > this->tasked.maximumSize - 1) {
         int newMax = count + 1;
         int* nv = (int*)operator_new(newMax * 4);
         if (nv != 0) {
             i = 0;
-            if (this->tasked_max > 0) {
+            if (this->tasked.maximumSize > 0) {
                 while (1) {
                     if (i >= newMax) break;
-                    nv[i] = this->tasked_value[i];
+                    nv[i] = this->tasked.value[i];
                     i++;
-                    if (i >= this->tasked_max) break;
+                    if (i >= this->tasked.maximumSize) break;
                 }
             }
-            operator_delete(this->tasked_value);
-            this->tasked_value = nv;
-            this->tasked_max = newMax;
+            operator_delete(this->tasked.value);
+            this->tasked.value = nv;
+            this->tasked.maximumSize = newMax;
         }
     }
-    this->tasked_value[this->tasked_number] = unit;
-    this->tasked_number++;
+    this->tasked.value[this->tasked.numberValue] = unit;
+    this->tasked.numberValue++;
 
 tasked_done:
     if (flag == 1) {
+        count = this->civilians.numberValue;
         i = 0;
-        count = this->civilian_number;
-        if (count > 0) {
-            int max = this->civilian_max;
-            for (; i < count && i < max; i++) {
-                if (this->civilian_value[i] == unit) goto haveExplorer;
-            }
+        for (; i < count; i++) {
+            if (i >= this->civilians.maximumSize) break;
+            if (this->civilians.value[i] == unit) goto haveExplorer;
         }
         i = 0;
-        count = this->civilian_number;
-        if (count > 0) {
-            int max = this->civilian_max;
-            for (; i < count && i < max; i++) {
-                if (this->civilian_value[i] == unit) goto haveExplorer;
-            }
+        count = this->civilians.numberValue;
+        for (; i < count; i++) {
+            if (i >= this->civilians.maximumSize) break;
+            if (this->civilians.value[i] == unit) goto haveExplorer;
         }
-        if (count > this->civilian_max - 1) {
+        if (count > this->civilians.maximumSize - 1) {
             int newMax = count + 1;
             int* nv = (int*)operator_new(newMax * 4);
             if (nv != 0) {
                 i = 0;
-                if (this->civilian_max > 0) {
+                if (this->civilians.maximumSize > 0) {
                     while (1) {
                         if (i >= newMax) break;
-                        nv[i] = this->civilian_value[i];
+                        nv[i] = this->civilians.value[i];
                         i++;
-                        if (i >= this->civilian_max) break;
+                        if (i >= this->civilians.maximumSize) break;
                     }
                 }
-                operator_delete(this->civilian_value);
-                this->civilian_value = nv;
-                this->civilian_max = newMax;
+                operator_delete(this->civilians.value);
+                this->civilians.value = nv;
+                this->civilians.maximumSize = newMax;
             }
         }
-        this->civilian_value[this->civilian_number] = unit;
-        this->civilian_number++;
+        this->civilians.value[this->civilians.numberValue] = unit;
+        this->civilians.numberValue++;
 haveExplorer:
         this->removeGatherer(unit);
     }

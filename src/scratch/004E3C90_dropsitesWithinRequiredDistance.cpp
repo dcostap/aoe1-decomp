@@ -1,18 +1,20 @@
 // VA: 004E3C90 TribeInformationAIModule::dropsitesWithinRequiredDistance
 // Source: taiinfmd.cpp lines 8019-8074
 // Attempt log:
-// 1: initial reconstruction from packet/decompiler with local ManagedArray_int and inline add/resize.
-// 2: added /GX flag because original has VC5 EH registration for local destructor cleanup.
-// 3: changed resource loop to separate index+byte-offset instead of offset/0x14 division.
-// 4: rewrote final return as explicit if/else to avoid VC5 setg merge and try original delete branches.
-// 5: moved ManagedArray construction after *param=0 to match original pre-save-register store.
-// 6: inlined ManagedArray add/resize body instead of member call to expose stack-field codegen.
-// 7: removed ManagedArray constructor and manually zeroed fields; worsened early ordering but kept for explicit fields.
-// 8: switched duplicate/add logic to ManagedArray::numberValue as the active count (original stores count at +4); no early change.
-// 9: restored constructor initialization to regain closer first mismatch offset.
-// 10: introduced self local and used it for member accesses; worsened overall diff, rolled back.
-// 11: switched first parameter from reference to pointer to match PDB/decompiler stack use; no codegen change.
-// left in scratch: /GX is required to reproduce the original EH prologue/cleanup shape, but the body is still in the wrong VC5 register-allocation basin. Best current version has correct size but broad mismatch; first mismatch is early stack/local initialization after zeroing *param (rebuilt zeroes ebp/ebx and maps ManagedArray fields to different registers/slots instead of original ebx=this, edi=0, stack ManagedArray fields).
+// 1-11: prior decompiler-shaped and manual ManagedArray growth variants. They
+// matched size but stayed in the wrong register and local-home basin.
+// 12: reset to the period ManagedArray contains/add source family. The binary
+// has both duplicate scans, so use contains followed by add and let VC5 inline
+// both natural member functions.
+// 13: explicit split returns restored the second destructor cleanup site.
+// 14: placing the ManagedArray declaration after the output reset improved the
+// local lifetime schedule; the no-constructor diagnostic was rolled back.
+// 15: PDB reference output parameter was retained; it emitted the same code.
+// 16: rereading resources[type] for every proven field matched the original
+// reload pattern and reduced the diff from 454 to 230 bytes.
+// 17: declaration-order and contains-temporary probes were neutral or worse.
+// 18: moving total initialization before the array and swapping increment order
+// were rolled back. Best current reconstruction is 518 bytes, diff 230.
 
 extern "C" void* __cdecl operator_new(unsigned long sz);
 extern "C" void __cdecl operator_delete(void* p);
@@ -33,15 +35,67 @@ struct ResourceInfo {
     int dropsiteID;
 };
 
-struct ManagedArray_int {
+class ManagedArray_int {
+public:
     int* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
 
-    ManagedArray_int() : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
-    ~ManagedArray_int() { if (value != 0) operator_delete(value); }
+    ManagedArray_int()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
 
+    ~ManagedArray_int() {
+        if (this->value != 0)
+            operator_delete(this->value);
+    }
+
+    int contains(const int& wanted) const {
+        int i;
+        int wantedCopy;
+        int current;
+
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                return 0;
+            current = this->value[i];
+            wantedCopy = wanted;
+            if (current == wantedCopy)
+                return 1;
+        }
+        return 0;
+    }
+
+    int add(int val) {
+        int i;
+
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == val)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int newSize = this->numberValue + 1;
+            int* newValue = (int*)operator_new(newSize * 4);
+            if (newValue != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= newSize)
+                        break;
+                    newValue[j] = this->value[j];
+                }
+                operator_delete(this->value);
+                this->value = newValue;
+                this->maximumSizeValue = newSize;
+            }
+        }
+
+        this->value[this->numberValue] = val;
+        this->numberValue++;
+        return 1;
+    }
 };
 
 class TribeInformationAIModule {
@@ -52,93 +106,49 @@ public:
     ResourceInfo* resources[4];
     int numResources[4];
 
-    int dropsitesWithinRequiredDistance(int* numApplicableResources, int resourceType, int requiredDistance);
+    int dropsitesWithinRequiredDistance(int& numApplicableResources,
+                                        int resourceType,
+                                        int requiredDistance);
 };
 
-int TribeInformationAIModule::dropsitesWithinRequiredDistance(int* numApplicableResources, int resourceType, int requiredDistance)
+int TribeInformationAIModule::dropsitesWithinRequiredDistance(
+    int& numApplicableResources, int resourceType, int requiredDistance)
 {
     int totalApplicable;
-    int offset;
     int index;
+    int byteOffset;
 
-    *numApplicableResources = 0;
+    numApplicableResources = 0;
     ManagedArray_int dropsites;
     totalApplicable = 0;
-    offset = 0;
+    byteOffset = 0;
     index = 0;
+
     if (this->numResources[resourceType] > 0) {
         do {
-            ResourceInfo* res = (ResourceInfo*)((char*)this->resources[resourceType] + offset);
-            if (res->gone != 1) {
-                if (this->md->object(res->id) != 0) {
+            if (*(unsigned char*)((char*)this->resources[resourceType] + byteOffset + 0x0D) != 1) {
+                if (this->md->object(
+                        *(int*)((char*)this->resources[resourceType] + byteOffset)) != 0) {
                     ++totalApplicable;
-                    if ((int)(unsigned int)res->dropDistance <= requiredDistance) {
-                        int i = 0;
-                        if (dropsites.numberValue > 0) {
-                            int* p = dropsites.value;
-                            do {
-                                if (i >= dropsites.maximumSizeValue) {
-                                    break;
-                                }
-                                if (*p == res->dropsiteID) {
-                                    goto next_resource;
-                                }
-                                ++i;
-                                ++p;
-                            } while (i < dropsites.numberValue);
-                        }
-                        ++*numApplicableResources;
-                        {
-                            int dropsiteID = res->dropsiteID;
-                            i = 0;
-                            if (dropsites.numberValue > 0) {
-                                int* p = dropsites.value;
-                                do {
-                                    if (i >= dropsites.maximumSizeValue) {
-                                        break;
-                                    }
-                                    if (*p == dropsiteID) {
-                                        goto next_resource;
-                                    }
-                                    ++i;
-                                    ++p;
-                                } while (i < dropsites.numberValue);
-                            }
-                            if (dropsites.maximumSizeValue - 1 < dropsites.numberValue) {
-                                int newMax = dropsites.numberValue + 1;
-                                int* newValue = (int*)operator_new(newMax * 4);
-                                if (newValue != 0) {
-                                    int copyIndex = 0;
-                                    if (dropsites.maximumSizeValue > 0) {
-                                        int* dst = newValue;
-                                        do {
-                                            if (copyIndex >= newMax) {
-                                                break;
-                                            }
-                                            *dst = *(int*)((char*)dropsites.value + ((char*)dst - (char*)newValue));
-                                            ++copyIndex;
-                                            ++dst;
-                                        } while (copyIndex < dropsites.maximumSizeValue);
-                                    }
-                                    operator_delete(dropsites.value);
-                                    dropsites.value = newValue;
-                                    dropsites.maximumSizeValue = newMax;
-                                }
-                            }
-                            ++dropsites.numberValue;
-                            dropsites.value[dropsites.numberValue - 1] = dropsiteID;
+                    if ((int)(unsigned int)*(unsigned char*)((char*)this->resources[resourceType] + byteOffset + 0x0E)
+                            <= requiredDistance) {
+                        if (dropsites.contains(
+                                *(int*)((char*)this->resources[resourceType] + byteOffset + 0x10)) == 0) {
+                            ++numApplicableResources;
+                            int dropsiteID =
+                                *(int*)((char*)this->resources[resourceType] + byteOffset + 0x10);
+                            dropsites.add(dropsiteID);
                         }
                     }
                 }
             }
-next_resource:
+
             ++index;
-            offset += 0x14;
+            byteOffset += 0x14;
         } while (index < this->numResources[resourceType]);
     }
 
-    if (totalApplicable > 0) {
+    if (totalApplicable > 0)
         return 1;
-    }
     return 0;
 }
