@@ -11,9 +11,13 @@
 //   source destroyPanel sites; that codegen winner was not retained as source.
 // - Canonical TPanel/TEasy/TScreen hierarchy and polymorphic credits layout
 //   were tested; it did not resolve the cleanup-site merge. /O1 was rejected.
-// - Final scratch state restores the readable separate guards. Remaining gap:
-//   VC5 source/control-flow basin around duplicated destroyPanel and EH handler
-//   placement; no inline asm, manual vtable, volatility, or raw-address hacks.
+// - The prior scratch state restored readable separate guards. Its remaining
+//   gap was the VC5 source/control-flow basin around duplicated destroyPanel
+//   and EH handler placement; no inline asm, manual vtable, or volatility.
+// - Fresh ABI probe: panel_system is a proven global TPanelSystem object, not a
+//   pointer. The original loads ECX with 62E870h directly and has 11 calls.
+// - Fresh control-flow probe: wrap both button arms in a positive param2 == 1
+//   guard. This restores the original fallthrough layout and matches 325 bytes.
 
 class TPanelSystem;
 class TRIBE_Credits_Screen;
@@ -73,7 +77,7 @@ public:
     int destroyPanel(char* name);
 };
 
-extern TPanelSystem* panel_system;  // 62E870h
+extern TPanelSystem panel_system;  // 62E870h
 
 class TribeAboutDialog : public TDialogPanel {
 public:
@@ -101,29 +105,28 @@ public:
 };
 
 long TribeAboutDialog::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4) {
-    if (param_2 != 1)
-        return TEasy_Panel::action(param_1, param_2, param_3, param_4);
-
-    if (param_1 == this->close_button) {
-        TPanel* game_screen = panel_system->panel("Game Screen");
-        if (game_screen) {
-            if (rge_base_game->singlePlayerGame() == 1) {
-                if (!rge_base_game->field_A00) {
-                    rge_base_game->set_paused(0, 0);
+    if (param_2 == 1) {
+        if (param_1 == this->close_button) {
+            TPanel* game_screen = panel_system.panel("Game Screen");
+            if (game_screen) {
+                if (rge_base_game->singlePlayerGame() == 1) {
+                    if (!rge_base_game->field_A00) {
+                        rge_base_game->set_paused(0, 0);
+                    }
                 }
+                panel_system.setCurrentPanel("Game Screen", 0);
+                this->set_active(0);
             }
-            panel_system->setCurrentPanel("Game Screen", 0);
-            this->set_active(0);
+            panel_system.destroyPanel("About Dialog");
+            return 1;
         }
-        panel_system->destroyPanel("About Dialog");
-        return 1;
-    }
 
-    if (param_1 == this->credits_button) {
-        TRIBE_Credits_Screen* credits = new TRIBE_Credits_Screen();
-        panel_system->setCurrentPanel("Credits Screen", 0);
-        panel_system->destroyPanel("About Dialog");
-        return 1;
+        if (param_1 == this->credits_button) {
+            TRIBE_Credits_Screen* credits = new TRIBE_Credits_Screen();
+            panel_system.setCurrentPanel("Credits Screen", 0);
+            panel_system.destroyPanel("About Dialog");
+            return 1;
+        }
     }
 
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
