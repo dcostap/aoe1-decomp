@@ -9,7 +9,15 @@
 // try 6: introduced separate volatile number_of_cliffs local to force default reload from [esp+0Ch]; fixed switch dispatch/jump distances through 00487807.
 // try 7: loop source/destination order variants still produce src in ECX/dst in EAX rather than original dst in ECX/src in EAX.
 // try 8: volatile hot_spot_count local produced a store but to wrong stack slot and worsened tail offsets; rolled back.
-// Left in scratch: behavior/calls/frame are close; remaining drift is localized in hot-spot copy loop register/address allocation and tail offsets.
+// fresh dossier: same-TU donors and the RGE_Cliffs_Generator constructor confirm /GX, a 0x508 allocation, and a 0x130-dword by-value copy.
+// fresh probe: canonical RGE_Cliffs_Info field layout changed stack homes and worsened positional diff; restored the binary-proven aggregate home.
+// fresh probe: typed RGE_Cliffs_Hot_Spots records with explicit tail preserved the 0x4C0 aggregate and kept the prior basin.
+// fresh probe: typed source records (three data words plus one stride pad) and a natural x/y/radius copy loop improved diff 186 -> 116; first 351 bytes aligned.
+// fresh probe: volatile loop-count materialization widened the function and worsened all metrics; rolled back.
+// fresh probe: swapped typed cursor declarations returned to the old register basin; rolled back.
+// fresh probe: explicit placement construction removed EH cleanup but lost the original EH frame; rolled back.
+// fresh probe: a typed generator-pointer local changed early parameter reloads and worsened diff; rolled back.
+// Left in scratch: behavior, calls, frame, and size are close; remaining drift is the hot-spot local home/cursor allocation and automatic-new tail cleanup.
 // FLAGS: config/flags/00487710_init.rsp (/nologo /c /O2 /Oy /GX)
 
 class RGE_Map;
@@ -24,13 +32,27 @@ inline void* __cdecl operator new(unsigned int, void* ptr) { return ptr; }
 
 class TRIBE_Game { public: int randomizePositions(); };
 
+struct RGE_Cliffs_Hot_Spots {
+    long x;
+    long y;
+    long radius;
+};
+
+struct RGE_Controller_Hot_Spots {
+    long x;
+    long y;
+    long radius;
+    long pad;
+};
+
 struct RGE_Cliffs_Info {
     long number_of_cliffs_variance;
     long average_cliff_size;
     long cliff_size_variance;
     long cliff_terrain_spacing;
     long cliff_to_cliff_spacing;
-    long hot_spots[0x12B];
+    RGE_Cliffs_Hot_Spots hot_spots[99];
+    long tail[2];
 };
 
 class RGE_RMM_Database_Controller {
@@ -54,7 +76,7 @@ public:
     char gap_18[0x34-0x18];
     long map_type;
     char gap_38[0x20D8-0x38];
-    long hot_spot_data[0x18c];
+    RGE_Controller_Hot_Spots hot_spot_data[99];
     long hot_spot_count;
 };
 
@@ -91,21 +113,21 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
         cliff_info.number_of_cliffs_variance = base_cliff_size;
         cliff_info.average_cliff_size = 2;
         cliff_info.cliff_to_cliff_spacing = 2;
-        cliff_info.hot_spots[0] = 2;
+        cliff_info.hot_spots[0].x = 2;
         if (cliff_size_variance - 3 <= 0) cliff_info.cliff_terrain_spacing = 0;
         else cliff_info.cliff_terrain_spacing = (cliff_size_variance - 3) / 2;
         cliff_info.cliff_size_variance = cliff_size_variance - cliff_info.cliff_terrain_spacing;
 
         long n = this->hot_spot_count;
         if (n > 0) {
-            long* src = &this->hot_spot_data[1];
-            long* dst = &cliff_info.hot_spots[1];
+            RGE_Cliffs_Hot_Spots* dst = &cliff_info.hot_spots[0];
+            RGE_Controller_Hot_Spots* src = &this->hot_spot_data[0];
             do {
-                dst[-1] = src[-1];
-                dst[0] = src[0];
-                dst[1] = src[1];
-                dst += 3;
-                src += 4;
+                dst->x = src->x;
+                dst->y = src->y;
+                dst->radius = src->radius;
+                dst++;
+                src++;
                 n--;
             } while (n != 0);
         }
