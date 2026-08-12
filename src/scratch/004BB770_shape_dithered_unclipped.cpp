@@ -18,6 +18,22 @@
 //   source. Split pitch arithmetic and a named row-offset temporary worsened
 //   the basin and were discarded. Remaining gap is broad VC5 register/home and
 //   RLE block scheduling, not behavior or the AlignedWidth ABI.
+// normal-BB770-r1 probes (2026-08-12):
+// - The exact mirror-sibling row topology without the current dither local
+//   surface lost the call/frame basin (355B, 385 strict bytes); restored.
+// - Making the PDB-proven done flag a byte improved shape, but alone reached
+//   399B/350 strict bytes. Mapping fill length through x's home also worsened
+//   the natural candidate (370B/349); both changes are not retained alone.
+// - Removing save_buffer in favor of x as the row base was a 395B/346-byte
+//   basin and did not recover the target homes; restored the named row base.
+// - Reversing the even-command test to keep the zero terminator inline matched
+//   the oracle block layout and exact 404-byte size (320 strict bytes).
+// - Combining that CFG with byte done reached 398B/326 strict bytes and is
+//   retained because the oracle writes done as a byte. Swapping old/next parity
+//   roles improved edit shape but reached 342 strict bytes and was restored.
+// - Reordering locals to the same-TU donor family was codegen-identical. The
+//   remaining gap is the early VC5 register/home schedule and height/pitch
+//   coloring; calls, frame size, CFG count, and RLE effects are aligned.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };
@@ -27,21 +43,23 @@ class TShape { public: uchar* shape; int load_type; int load_size; Shape_Header*
 uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6)
 {
     long pitch;
+    Shape_Header* sh;
+    long height;
+    uchar* src;
     uchar* dst;
     uchar* save_buffer;
-    uchar* src;
-    long height;
     long parity;
     long next_parity;
     long run;
-    long done;
+    uchar done;
     uchar cmd;
     uchar count;
     uchar* end;
 
     pitch = area->AlignedWidth() * area->Orien;
-    height = this->shape_header->ymax - this->shape_header->ymin + 1;
-    src = (uchar*)(this->shape_header + 1);
+    sh = this->shape_header;
+    height = sh->ymax - sh->ymin + 1;
+    src = (uchar*)(sh + 1);
 
     if (area->Orien < 1) {
         dst = area->Bits + x + (y - area->Height + 1) * pitch;
@@ -87,7 +105,9 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
                     }
                 } else {
                     count = (uchar)(cmd >> 1);
-                    if (count != 0) {
+                    if (count == 0) {
+                        done = 1;
+                    } else {
                         if (parity != 0) {
                             count--;
                             dst++;
@@ -101,8 +121,6 @@ uchar TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y, long par
                         while (dst < end) { *dst = 0; dst += 2; }
                         if (run != 0) { dst--; }
                         src++;
-                    } else {
-                        done = 1;
                     }
                 }
             } while (!done);
