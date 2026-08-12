@@ -21,6 +21,9 @@
 //   unused x1/y2 names and player alias emitted no change.
 // - Fresh pass ends at 176 strict bytes, exact five-call multiset, 0x20/0x1C
 //   frame, and 73.05% shape. Remaining gap starts at the frame/prologue.
+// - Resumed after host interruption and restored the pinned clean source. The
+//   one-short alignment-tail variant was already a byte-identical duplicate;
+//   no new natural source lead justifies retaining it.
 
 class RGE_Game_World;
 class RGE_Player;

@@ -19,16 +19,42 @@
 //   Ghidra-local-order variant emitted 332 bytes but the same 324-byte diff;
 //   x1v declaration-order changes were codegen duplicates. A 256-variant
 //   local/parameter lab found no exact or structurally useful group.
-// - Retained natural x1v Bresenham source: exact call set/CFG and 316-byte
-//   output remain, with structural drift concentrated in prologue liveness and
-//   later induction scheduling.
+// - Corrected the vertical-major loop to stop on the y endpoint and increment
+//   x only on error overflow; this is required by the original y-stop compare.
+//   The corrected typed source reached 335 bytes, 90.91% shape, and diff 288.
+// - Reusing dead endpoint parameters for the proven vertical-major error and
+//   step homes was codegen-identical to the corrected source; retained.
+// - Restored the typed inherited span-list manager surface from exact donors;
+//   context was codegen-identical. Remaining drift is prologue scheduling and
+//   first-argument register coloring, with all five AddSpan sites aligned.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the
 // natural aligned Bresenham construction.
 #include <stdlib.h>
 
-class TSpan_List_Manager {
+struct VSpan_Node;
+
+class TSpan_Node_List {
+public:
+    VSpan_Node** Zone_Ptrs;
+    int* Zone_Size_Ptrs;
+    int Used_Zones;
+    int Max_Zones;
+    VSpan_Node* Free_Head;
+    int Free_Pool_Zone;
+    int Free_Pool_Index;
+    int Total_Blocks;
+    int Free_Blocks;
+    int Default_Grow_Size;
+    int Element_Size;
+    int Alloc_Count;
+    int Dealloc_Count;
+    int NewZone_Count;
+    int Reset_Count;
+};
+
+class TSpan_List_Manager : public TSpan_Node_List {
 public:
     void AddSpan(int left, int right, int line);
 
@@ -70,13 +96,15 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
             }
             AddSpan(span_x & ~3, cur_x | 3, y1);
         } else {
-            int err = 0;
+            int y_stop = y2;
+            y2 = step_y;
+            x2 = 0;
             while (1) {
                 AddSpan(x1v & ~3, x1v | 3, y1);
-                if (x1v == x2) break;
-                err += dy;
-                if (err >= dx) { y1 += step_y; err -= dx; }
-                x1v++;
+                if (y1 == y_stop) break;
+                x2 += dy;
+                if (x2 >= dx) { x1v++; x2 -= dx; }
+                y1 += y2;
             }
         }
     }

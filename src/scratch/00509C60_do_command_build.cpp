@@ -22,10 +22,15 @@
 // Current pause: canonical float/object/virtual surfaces and early-return behavior are modeled; remaining structural blocker is VC5's 0x08 standalone frame versus original 0x0C, shifting otherwise aligned stack homes by four bytes. Best output is 411/418 B, 10/10 ordered calls, CFG 12/12, 250 strict bytes.
 // Main-agent audit removed the diagnostic command self-alias; direct member calls
 // remain the canonical source even though the alias was codegen-neutral.
+// Recovery: rebuilt the clean pinned source after the host crash; output stayed
+// at 411/418 B and 250 strict bytes. No new evidence-backed structural lead
+// remains, so this typed reconstruction stays in scratch.
 
 typedef unsigned char uchar;
 
 class RGE_Static_Object;
+class RGE_Player;
+class RGE_Master_Static_Object;
 struct RGE_Obj_Info {
     int id;
 };
@@ -34,7 +39,7 @@ class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
     char gap_04[0x3C];
-    class TRIBE_Player** players;
+    RGE_Player** players;
 };
 
 class RGE_Command {
@@ -83,7 +88,7 @@ public:
 #undef PPAD
     virtual void cancelBuild(int result, int count, int obj_id, float x, float y, int unique_id, int object_id);
     char gap_04[0x20];
-    int** objects;
+    RGE_Master_Static_Object** master_objects;
     uchar pay_obj_cost(short obj_id, float amount, int flag);
 };
 
@@ -133,7 +138,7 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
     RGE_Static_Object* obj;
 
     count = cmd->count;
-    TRIBE_Player* player = this->world->players[cmd->player_id];
+    TRIBE_Player* player = (TRIBE_Player*)this->world->players[cmd->player_id];
     if (player == 0) {
         return;
     }
@@ -141,7 +146,7 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
         return;
     }
 
-    BuildInfo* info = (BuildInfo*)player->objects[cmd->obj_id];
+    BuildInfo* info = (BuildInfo*)player->master_objects[cmd->obj_id];
     if (info == 0) {
         return;
     }

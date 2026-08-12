@@ -19,13 +19,36 @@
 //   direct indexed array form. Best source is exact-size/frame with all 22
 //   calls aligned; remaining drift is the handle/name stack-home order and
 //   late block placement.
+// - same-corpus VC5 _finddata_t layout was modeled explicitly. Removing the
+//   decompiler-shaped file_info.name + 4 moved the best diff from 277 to 274;
+//   separate file/find-data locals and typed cursor variants regressed frame or
+//   block shape. The unused function-scope version local had no emitted effect
+//   and was removed. Final source keeps the typed aggregate and direct index.
+// - paused after bounded probes: exact size/frame and all 22 calls align. The
+//   remaining drift is the original count/old-entry stack-home swap plus late
+//   block placement.
+// - Main-agent audit corrected a new entry's cached time to time_write. The
+//   executable compares that same timestamp when it decides to reuse a header.
 // Main-agent audit confirmed the binary-proven typed filename/version/find-data
 // work window and retained natural enumeration, ownership transfer, and cleanup.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <io.h>
+
+struct _finddata_t {
+    unsigned attrib;
+    long time_create;
+    long time_access;
+    long time_write;
+    unsigned long size;
+    char name[260];
+};
+
+extern "C" {
+    long _findfirst(const char* pattern, struct _finddata_t* file_info);
+    int _findnext(long handle, struct _finddata_t* file_info);
+}
 
 extern "C" {
     int rge_open(char* filename, int mode);
@@ -101,7 +124,6 @@ void RGE_Scenario_File_Info::reload_scenarios()
     char looped = 0;
     RGE_Scenario_File_Entry* new_scenarios;
     RGE_Scenario_File_Entry* current;
-    long version;
     int index;
     char found_in_list;
 
@@ -143,7 +165,7 @@ void RGE_Scenario_File_Info::reload_scenarios()
         found_in_list = 0;
 
         while (index < this->scenario_num) {
-            if (strcmp(this->scenarios[index].name, work.file_info.name + 4) == 0) {
+            if (strcmp(this->scenarios[index].name, work.file_info.name) == 0) {
                 if (work.file_info.time_write <= this->scenarios[index].time) {
                     strcpy(current->name, this->scenarios[index].name);
                     found_in_list = 1;
@@ -157,12 +179,12 @@ void RGE_Scenario_File_Info::reload_scenarios()
         }
 
         if (!found_in_list) {
-            strcpy(current->name, work.file_info.name + 4);
-            current->time = work.file_info.size;
+            strcpy(current->name, work.file_info.name);
+            current->time = work.file_info.time_write;
 
             sprintf(work.file_name + 4, "%s%s",
                     rge_base_game->prog_info->scenario_dir,
-                    work.file_info.name + 4);
+                    work.file_info.name);
             int fd = rge_open(work.file_name + 4, 0x8000);
             if (fd >= 0) {
                 rge_read_uncompressed(fd, work.file_name, 4);

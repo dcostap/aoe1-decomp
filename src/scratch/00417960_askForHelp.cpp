@@ -11,11 +11,16 @@
 // - Binary evidence fixes the state guard at <= 2 and this routine's outer
 //   scan at the two populated buckets (the emitted byte-offset loop compares
 //   its cursor with 4).  The late scan and final dispatch blocks now align.
-// - Remaining best drift is 20 bytes (4 edit bytes): the first hunk is the
-//   declaration/evaluation order of the target unit-AI pointer versus the
-//   caller Y local at 00417AC5-00417AD5.  A future worker should try declaring
-//   targetAI before `float y = callerObject->world_y`; no further hypothesis
-//   was spent after the ten-probe budget.
+// - Fresh TU pass: declaring targetAI before the caller Y local reproduces the
+//   unitAI call, Y load, and final push schedule. The mismatch falls to two
+//   stack-displacement bytes at 00417AEA and 00417AFF.
+// - An explicit cdecl slot-10c method ABI was tested because the original
+//   post-call homes are 12 bytes higher. It worsened the structural match and
+//   was rolled back. Keep the natural typed thiscall surface.
+// - Direct callerObject->world_y arguments and a top-level uninitialized Y
+//   local both duplicate the two-byte result. Keep direct typed member reads.
+// - Main-agent audit corrected slot +0x10C to weaponRange() and moved the three
+//   pending stack arguments into the complete eleven-argument order ABI.
 
 struct VisibleUnitRecord {
     int object_id;
@@ -65,7 +70,7 @@ public:
     virtual ~RGE_Static_Object();
     RGE_STATIC_VPAD64(0)
     RGE_STATIC_VPAD2(64)
-    virtual float method_10c(int a, int b, int c); // +0x10c
+    virtual float weaponRange(); // +0x10c
 
     int id;                              // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
@@ -86,7 +91,8 @@ public:
     virtual void save(int);
     virtual void load(int);
     virtual RGE_Player* owner();
-    virtual int order(int, int, int, int, float, float, float, float);
+    virtual int order(int, int, int, int, float, float, float, float,
+                      int, int, int);
     virtual int notify(int, int, int, long, long, long);
     virtual int notifyCommander(int, int, int, long, long, long);
     virtual int notifyCommander(void*);
@@ -128,7 +134,6 @@ void UnitAIModule::askForHelp(int caller)
                                             if (object->unitAI()->currentAction() == -1) {
                                                 if (object->unitAI()->currentOrder() == -1) {
                                                     if (object->unitAI()->orderQueueSize() <= 0) {
-                                                        float y = callerObject->world_y;
                                                         UnitAIModule* targetAI = object->unitAI();
                                                         targetAI->order(
                                                             object->owner->id,
@@ -136,9 +141,12 @@ void UnitAIModule::askForHelp(int caller)
                                                             caller,
                                                             callerObject->owner->id,
                                                             callerObject->world_x,
-                                                            y,
-                                                            y,
-                                                            object->method_10c(1, 0, 0x32));
+                                                            callerObject->world_y,
+                                                            callerObject->world_y,
+                                                            object->weaponRange(),
+                                                            -12,
+                                                            0,
+                                                            0x32);
                                                     }
                                                 }
                                             }

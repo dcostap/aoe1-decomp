@@ -16,6 +16,9 @@
 //   codegen duplicate and is omitted from the clean source.
 // bounded pause: calls, ownership, offsets, EH frame, and behavior are aligned;
 //   remaining drift starts at the music_path local/address schedule.
+// - Function-scope music locals, constructor-result-before-path declaration,
+//   and direct assignment to the owned music_system field all duplicated the
+//   218-byte drift; restored the clean branch-local typed source.
 
 #include <stdio.h>
 

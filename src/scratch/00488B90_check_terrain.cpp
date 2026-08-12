@@ -32,18 +32,19 @@
 // improve the canonical basin. Restored clean source after the 10-probe budget;
 // remaining lead is the target's early local-home/register assignment and
 // spilled first row-pointer topology.
+// New claim: the binary clamps the first-scan row index before induction; using
+// y-radius would read extra rows at a map edge, so the typed reconstruction uses
+// the clamped min_y value.
+// New claim: a named 24-byte RGE_Tile terrain_type byte preserves tile ownership
+// and low-five-bit behavior, but VC5 emits a broader 351-byte mismatch. The
+// remaining gap is local-home/register allocation and early block placement.
 
 typedef unsigned char uchar;
 
 struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char elevation : 3;
-    unsigned char border_type : 4;
-    unsigned char border_shape : 4;
-    char objects[12];
+    char gap_00[5];
+    unsigned char terrain_type;
+    char gap_06[0x12];
 };
 
 class RGE_Tile_Set {
@@ -132,28 +133,27 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
         if (max_y >= this->map_height) max_y = this->map_height - 1;
 
         RGE_Tile** row_ptr = this->map_row_offset + min_y;
-        long x_offset = min_x * 0x18;
-        uchar* row = (uchar*)*row_ptr + x_offset;
+        RGE_Tile* row = *row_ptr + min_x;
 
-        row_index = y - radius;
+        row_index = min_y;
         if (row_index <= max_y) {
             do {
                 if (min_x <= max_x) {
                     long xx = min_x;
-                    uchar* tile = row + 5;
+                    RGE_Tile* tile = row;
                     do {
-                        if (((*tile & 0x1f) != avoid_terrain) &&
-                            ((*tile & 0x1f) != base_terrain) &&
-                            ((*tile & 0x1f) != terrain)) {
+                        if (((tile->terrain_type & 0x1f) != avoid_terrain) &&
+                            ((tile->terrain_type & 0x1f) != base_terrain) &&
+                            ((tile->terrain_type & 0x1f) != terrain)) {
                             return 0;
                         }
                         ++xx;
-                        tile += 0x18;
+                        ++tile;
                     } while (xx <= max_x);
                 }
                 ++row_ptr;
                 ++row_index;
-                row = (uchar*)*row_ptr + x_offset;
+                row = *row_ptr + min_x;
             } while (row_index <= max_y);
         }
     }
@@ -169,24 +169,23 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
     if (max_y >= this->map_height) max_y = this->map_height - 1;
 
     RGE_Tile** row_ptr = this->map_row_offset + min_y;
-    long x_offset = min_x * 0x18;
-    uchar* row = (uchar*)*row_ptr + x_offset;
+    RGE_Tile* row = *row_ptr + min_x;
     if (min_y <= max_y) {
         long row_count = max_y - min_y + 1;
         do {
             if (min_x <= max_x) {
-                uchar* tile = row + 5;
+                RGE_Tile* tile = row;
                 long col_count = max_x - min_x + 1;
                 do {
-                    if ((*tile & 0x1f) == terrain) {
+                    if ((tile->terrain_type & 0x1f) == terrain) {
                         ++count;
                     }
-                    tile += 0x18;
+                    ++tile;
                     --col_count;
                 } while (col_count != 0);
             }
             ++row_ptr;
-            row = (uchar*)*row_ptr + x_offset;
+            row = *row_ptr + min_x;
             --row_count;
         } while (row_count != 0);
     }

@@ -25,6 +25,9 @@
 // - A focused six-form natural loop lab, direct char overlay, reversed addition,
 //   inline length, short-lived text alias, and indexed address spelling found no
 //   closer emitted group. The direct typed form remains the clean source.
+// - Directly returning the TListDialog::setup(...) result used the exact-bank
+//   boolean-return pattern, removed the seven-byte tail, and restored 376-byte
+//   size; the first-scan address order remains unresolved.
 // - Remaining structural hunk is original EDI=list_info; rebuilt EAX=list_info,
 //   EDI=offset, then add. It shifts the seven-byte loop suffix; no ABI or call
 //   mismatch remains.
@@ -165,12 +168,10 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
         }
     }
 
-    long result = this->TListDialog::setup(
+    return this->TListDialog::setup(
         screen, popup_file, popup_id,
         0x136, 0x190, 0x0A, 0x0A, 0x122,
         0x19, title, 0x0A, 0x2D, 0x122,
         0x131, this->list_text, this->list_size, this->list_line,
         0x0A, 0xA0, 0x168, 0x8C, 0x1E);
-
-    return result != 0;
 }

@@ -25,6 +25,9 @@
 //   The while form improved block coverage but worsened positional bytes.
 // - Restored this clean natural candidate. Remaining lead is the original
 //   VC5 local-home and late cursor/id allocation basin, not behavior or ABI.
+// - Resumed after the host crash with the clean pin current and no new claim
+//   probes. No evidence-backed natural source lead remains; retain this typed
+//   candidate and pause rather than repeat prior codegen variants.
 
 #include "..\..\include\game_globals.h"
 

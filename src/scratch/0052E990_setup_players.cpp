@@ -27,6 +27,8 @@
 // typing, an input-pointer alias, subscript-term order, an equivalent for-loop,
 // and a const dispatch local were all codegen-neutral or regressed.  The clean
 // natural source remains 304B with one documented dispatch SIB byte differing.
+// sequential TU pass: typed ABI and same-TU donor review found no new source
+// or layout fact for the lone commutative SIB encoding; keep the natural source.
 
 struct RGE_Master_Player;
 

@@ -40,8 +40,20 @@
 // Fresh pass: an IAT function-pointer declaration was codegen-neutral.
 // Fresh pass: direct zero-result jumps shortened the body to 322 bytes and left
 // the closest current metric, but VC5 still duplicates the final tail and return.
-// Final bounded result: retain the typed WinMM surface and explicit success jump;
-// the remaining structural gap is the shared MCI tail.
+// Current worker H1: corrected the standard MCI_STATUS_PARMS query field from dwTrack to dwItem.
+// The original store is record offset +8, and this reduced the diff from 79 to 78 bytes.
+// Current worker H2: matched the original error-first branch polarity; VC5 recovered both
+// original call blocks and 98.92% exact-block coverage, but placed the shared store early.
+// Current worker H3: restored a natural one-result typed switch; VC5 folded the identical
+// MCI calls to one call (67-byte diagnostic), so it was not retained.
+// Current worker H4: kept natural case-local result checks to preserve both typed MCI calls;
+// this returned the 80-byte two-call basin with no raw offsets or compiler-only qualifiers.
+// Current worker H5: reordered the typed switch arms to follow the original PDB call-line
+// order; emitted code was unchanged. MCIERROR unsigned-long return type was also neutral.
+// Final current reconstruction: standard WinMM record, dwItem query, full-record call, and
+// dwReturn read are canonical. Remaining gap is VC5 shared-tail placement and one extra return.
+// Previous bounded result: the typed WinMM surface and explicit success jump formed
+// the prior best structural basin; the remaining gap was the shared MCI tail.
 
 #include <string.h>
 
@@ -53,7 +65,7 @@ public:
     unsigned long dwTrack;
 };
 
-extern "C" __declspec(dllimport) unsigned int __stdcall mciSendCommandA(
+extern "C" __declspec(dllimport) unsigned long __stdcall mciSendCommandA(
     unsigned int, unsigned int, unsigned long, void*);
 
 class TMusic_System {
@@ -104,6 +116,7 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
                                  int* loop_out,
                                  unsigned long* set_pos_out)
 {
+    tagMCI_STATUS_PARMS status_info;
     *music_type_out = this->music_type;
     *start_track_out = 0;
     *end_track_out = 0;
@@ -117,11 +130,8 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
     }
 
     if (this->playing_track == 0) {
-        goto done;
+        return 1;
     }
-
-    {
-    tagMCI_STATUS_PARMS status_info;
 
     *start_track_out = this->start_track;
     *end_track_out = this->end_track;
@@ -131,31 +141,24 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
     *set_pos_out = 0;
 
     switch (this->music_type) {
-    case 1: {
-        status_info.dwTrack = 2;
-        if (mciSendCommandA(this->device_id, 0x814, 0x102,
-                            &status_info) == 0) {
-            goto set_position;
-        }
-        goto done;
-    }
     case 2: {
-        status_info.dwTrack = 2;
-        if (mciSendCommandA(this->device_id, 0x814, 0x102,
-                            &status_info) == 0) {
-            goto set_position;
-        }
-        goto done;
+        status_info.dwItem = 2;
+        int result = mciSendCommandA(this->device_id, 0x814, 0x102,
+                                     &status_info);
+        if (result == 0)
+            *set_pos_out = status_info.dwReturn;
+        break;
+    }
+    case 1: {
+        status_info.dwItem = 2;
+        int result = mciSendCommandA(this->device_id, 0x814, 0x102,
+                                     &status_info);
+        if (result == 0)
+            *set_pos_out = status_info.dwReturn;
         break;
     }
     default:
-        goto done;
+        return 1;
     }
-
-set_position:
-    *set_pos_out = status_info.dwReturn;
-    }
-
-done:
     return 1;
 }

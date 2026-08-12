@@ -15,6 +15,11 @@
 // - This session rechecked explicit memset intrinsic context, a void* cast,
 //   a frame aggregate, and long coordinate/count locals; all were duplicate
 //   or nonproductive. The clean typed memset source is restored.
+// - A typed alignment-prefix/remainder fill matched the 0x14 frame, but grew
+//   to 383 bytes and changed the branch layout; a shorter guarded remainder
+//   form was 372 bytes. Both were rolled back to the natural memset donor.
+// - A byte-pointer type for CurDisplayOffsets was codegen-identical to the
+//   canonical void** surface. The canonical field type is retained.
 // - Branch-local nLines/nWidth/src_p plus a donor-style loop_count kept the
 //   natural do/while, but only changed size (-33 versus -35) and stayed at
 //   299 differing bytes.

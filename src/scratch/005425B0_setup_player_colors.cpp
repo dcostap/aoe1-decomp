@@ -32,6 +32,11 @@
 //   caused structural drift; restore the clean typed source.
 // - An exact Victory.cpp donor confirms VC5 can emit base-first SIB for a
 //   typed member byte array, but it does not establish that ownership here.
+// - Follow-up: direct pointer-addition and reversed integer-plus-pointer
+//   spellings for both used-color accesses were codegen duplicates. Restore
+//   the natural typed subscript; the canonical RGE_Player surface remains.
+// - Current session: the remaining two SIB bytes are localized at the first
+//   used-color compare and store. No new natural source lead remains.
 //
 // FLAGS: /nologo /c /O2 /Oy
 

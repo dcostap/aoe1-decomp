@@ -27,6 +27,13 @@
 // broad frame/register/FPU scheduling, not an accepted-drift-sized hunk.
 // Main-agent audit removed inline empty virtual definitions and restored
 // canonical polymorphic world/player/base-game ownership.
+// Session 2026-08-12: a local attr_id used only for the lookup was codegen-neutral;
+// reusing it through the transfer calls worsened the frame and was rolled back.
+// The generated add_attribute_num(short, float, unsigned char) player ABI moved
+// the first mismatch from +0x53 to +0x63 and reduced strict drift to 202 bytes.
+// The generated RGE_Command and RGE_Base_Game virtual declarations were neutral.
+// Reversing cost-plus-value and materializing a total were neutral or worse;
+// the natural `v + cost` source remains authoritative.
 //
 // Prologue: rebuilt uses `sub esp,0Ch` (3 bytes) + saves `this` to stack slot
 // at [esp+18h] (3 bytes). Original uses `push ecx` (1 byte, allocates 4B local
@@ -77,7 +84,7 @@ public:
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
     VPAD(16) VPAD(17) VPAD(18) VPAD(19) VPAD(20) VPAD(21) VPAD(22) VPAD(23)
     VPAD(24) VPAD(25) VPAD(26) VPAD(27) VPAD(28) VPAD(29)
-    virtual void giveAttr(int id, float v, int z) = 0;
+    virtual void add_attribute_num(short id, float v, unsigned char z) = 0;
     VPAD(31) VPAD(32) VPAD(33) VPAD(34) VPAD(35) VPAD(36) VPAD(37) VPAD(38)
     VPAD(39) VPAD(40) VPAD(41) VPAD(42) VPAD(43) VPAD(44) VPAD(45) VPAD(46)
     VPAD(47) VPAD(48) VPAD(49) VPAD(50) VPAD(51) VPAD(52) VPAD(53) VPAD(54)
@@ -90,7 +97,8 @@ public:
     virtual ~RGE_Base_Game();
     VPAD(1) VPAD(2) VPAD(3) VPAD(4) VPAD(5) VPAD(6) VPAD(7)
     VPAD(8) VPAD(9) VPAD(10) VPAD(11) VPAD(12) VPAD(13) VPAD(14) VPAD(15)
-    virtual void gameFn(int a, int b, int c, int d, int e);
+    virtual void notification(int command, long player_id, long to_player_id,
+                              long attr_id, long amount);
 };
 
 extern RGE_Base_Game* rge_base_game;
@@ -102,10 +110,11 @@ class TCommunications_Handler;
 
 class RGE_Command {
 public:
-    virtual void vfunc0() = 0;
+    virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* ca) = 0;
     virtual ~RGE_Command();
-    virtual void vfunc8() = 0;
-    virtual void vfuncC() = 0;
+    virtual void do_command(void* command) = 0;
+    virtual void command_give_attribute(int player_id, int attr_id,
+                                        int value, float amount) = 0;
 
     RGE_Game_World* world;
     void* last_order;
@@ -117,7 +126,7 @@ public:
 class TRIBE_Command : public RGE_Command {
 public:
 
-    void do_command_give_attribute(TRIBE_Command_Give_Attribute* ca);
+    virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* ca);
 };
 
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
@@ -145,13 +154,14 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
         }
     }
     
-    this->world->players[ca->to_player_id]->giveAttr(ca->attr_id, v, 0);
-    this->world->players[ca->player_id]->giveAttr(ca->attr_id, -(v + cost), 0);
-    this->world->players[ca->player_id]->giveAttr(0x35, v, 0);
-    this->world->players[ca->to_player_id]->giveAttr(0x35, -(v + cost), 0);
+    this->world->players[ca->to_player_id]->add_attribute_num(ca->attr_id, v, 0);
+    this->world->players[ca->player_id]->add_attribute_num(ca->attr_id, -(v + cost), 0);
+    this->world->players[ca->player_id]->add_attribute_num(0x35, v, 0);
+    this->world->players[ca->to_player_id]->add_attribute_num(0x35, -(v + cost), 0);
     
     {
-        rge_base_game->gameFn(7, ca->player_id, ca->to_player_id, ca->attr_id, (long)v);
+        rge_base_game->notification(7, ca->player_id, ca->to_player_id,
+                                    ca->attr_id, (long)v);
     }
     
     this->world->players[ca->to_player_id]->sendEvent(

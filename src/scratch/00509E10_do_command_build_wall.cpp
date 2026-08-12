@@ -15,18 +15,22 @@
 // 12: positive dy>=dx vertical arm with horizontal else matched the original JL block topology and reduced drift to 19 strict bytes; retained.
 // 13: a named world-base local was codegen-duplicate and did not improve the 19-byte result; restored the simpler direct world member form.
 // Current pause: calls, frame, size, CFG, and 73.6% exact blocks are aligned; remaining 19 bytes are localized to initial world/player register scheduling and do not justify opaque forcing.
+// Typed the world player table as RGE_Player** from the shared engine ABI;
+// output was codegen-duplicate at 500/500 B and 19 strict bytes. Retained the
+// natural typed ownership, but kept the clean source as the recovery authority.
 
 typedef unsigned char uchar;
 
 #include <stdlib.h>
 
 class RGE_Static_Object;
+class RGE_Player;
 
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
     char gap_04[0x3C];
-    void** players;
+    RGE_Player** players;
 };
 
 class RGE_Command {

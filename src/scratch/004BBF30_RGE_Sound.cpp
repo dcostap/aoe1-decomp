@@ -76,6 +76,11 @@
 // donors confirm this ownership.  The only near-match needs a short* alias
 // for compiler scheduling, so no natural source lead remains.  Preserve the
 // direct typed member source and pause at the structural compare/store hunk.
+// Worker tu-sound2-BBF30: fresh Sound.cpp donor review confirms the typed
+// RGE_Sound_Info array, 0x24-byte record, and declaration-only 0x3C-byte
+// TDigital constructor surface.  The same-TU allocator block still requires
+// a diagnostic count alias to reverse the post-calloc compare/store order.
+// No period-plausible direct-member source lead changes the living source.
 
 #include "..\..\include\game_globals.h"
 

@@ -27,14 +27,33 @@
 // recovered a single-site scan and improved the diagnostic diff to 454 bytes,
 // but changed the frame-size/CFG basin and used opaque scheduling source; it was
 // rolled back. Declaration reordering and pointer-truth tests were duplicates.
+// Current worker H1: defined named period format strings in this TU; unresolved extern
+// placeholders were codegen-neutral and the named literals are retained for behavior.
+// Current worker H2: corrected the standard MCI_STATUS_PARMS query field from dwTrack to
+// dwItem. The change improved shape and confirms the record offset +8 query ownership.
+// Current worker H3: an if-chain/common-return rewrite was structurally worse and was rolled back.
+// Current worker H4: passed the full MCI_STATUS_PARMS record instead of reusing dwReturn as
+// the status pointer. This aligns the original status base and improves the typed source.
+// Current worker H5: a 260-byte scan buffer was codegen-neutral; the binary-supported 261-byte
+// buffer remains. Full MCI_OPEN_PARMSA and MCI_SET_PARMS records also align their call pointers.
+// Current worker H6: the original stack writes and PDB field labels prove the WinMM calls use
+// &open_info.wDeviceID, &set_info.dwTimeFormat, and &status_info.dwReturn. The original status
+// query writes dwTrack=3 and reads dwItem. The full-record/dwItem variant was codegen-neutral
+// but not behavior-equivalent, so the named field pointers are restored.
+// Current worker H7 audit: the MCI calls use the imported __imp__mciSendCommandA@16 surface,
+// while the three original string targets are the WAV, MID, and "r" literals at 584CF4h,
+// 584CE4h, and 57F320h. Named local literals preserve this source surface without raw addresses.
+// Final current reconstruction: typed WinMM field calls, named format strings, natural
+// bottom-test scans, and device/mixer ownership are retained. Remaining blocker is local-home
+// placement and late failure-tail layout; no safe source lead remains in the audited call surface.
 
 #include <stdio.h>
 #include <windows.h>
 #include <mmsystem.h>
 
-extern const char MUSIC_WAV_FORMAT[];
-extern const char MUSIC_MID_FORMAT[];
-extern const char READ_MODE[];
+static const char MUSIC_WAV_FORMAT[] = "%smusic%d.wav";
+static const char MUSIC_MID_FORMAT[] = "%smusic%d.mid";
+static const char READ_MODE[] = "r";
 
 typedef MCIERROR (WINAPI *MCI_SEND_COMMAND_PROC)(MCIDEVICEID, UINT, DWORD, DWORD);
 

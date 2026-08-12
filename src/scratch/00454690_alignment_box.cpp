@@ -13,6 +13,10 @@
 //   restored below.
 // - A single tx plus reused y home was worse (335-byte diff).  The remaining
 //   blocker is the original 0xC local frame and EDI allocation.
+// - The interrupted explicit-double first-y probe stayed at 314 bytes and
+//   only changed x87 scheduling.  Removed it; retain the natural typed
+//   +1.0/short-dimension reconstruction.  DAT_00570638 is -1.0, and the
+//   original map loads are signed word loads.
 
 class RGE_Map {
 public:
@@ -44,27 +48,31 @@ unsigned char RGE_Master_Static_Object::alignment_box(
     short& x1, short& y1, short& x2, short& y2,
     short& x3, short& y3, short& x4, short& y4)
 {
-    short tile_x = (short)x;
-    short tile_y = (short)y;
-    float x_offset = x - (float)tile_x + this->radius_x;
-    float y_offset = y - (float)tile_y + this->radius_y;
-    int tile_half_width = world->map->tile_half_width;
-    int tile_half_height = world->map->tile_half_height;
+    short tile_x;
+    short tile_y;
+    float x_offset;
+    float y_offset;
+    tile_x = (short)x;
+    tile_y = (short)y;
+    x_offset = x - (float)tile_x + this->radius_x;
+    y_offset = y - (float)tile_y + this->radius_y;
+    short tile_half_width = world->map->tile_half_width;
+    short tile_half_height = world->map->tile_half_height;
 
     x1 = (short)((x_offset + y_offset) * tile_half_width);
-    y1 = (short)((y_offset - 0.5f - x_offset) * tile_half_height);
+    y1 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
     x2 = (short)((x_offset + y_offset - 2.0f * this->radius_x) *
                  tile_half_width);
-    y2 = (short)((y_offset - 0.5f - x_offset +
+    y2 = (short)((y_offset + 1.0 - x_offset +
                   2.0f * this->radius_x) * tile_half_height);
     x3 = (short)((x_offset + y_offset - 2.0f * this->radius_x -
                   2.0f * this->radius_y) * tile_half_width);
-    y3 = (short)((y_offset - 0.5f - x_offset +
+    y3 = (short)((y_offset + 1.0 - x_offset +
                   2.0f * this->radius_x - 2.0f * this->radius_y) *
                  tile_half_height);
     x4 = (short)((x_offset + y_offset - 2.0f * this->radius_y) *
                  tile_half_width);
-    y4 = (short)((y_offset - 0.5f - x_offset -
+    y4 = (short)((y_offset + 1.0 - x_offset -
                   2.0f * this->radius_y) *
                  tile_half_height);
     return 1;

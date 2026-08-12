@@ -55,6 +55,11 @@
 //    link setup still differ with no size cost.
 // - New claim: using loc_stack.x itself for the horizontal bound is binary-natural but dropped the frame to 0xA50 and widened drift; restored the best slot-preserving source.
 // - Reversing bound assignment order, moving the bound declaration, block-scoping the fig_chance float, moving index1 before fair_count, and explicit masked-XOR stores were unchanged or worse; restored.
+// - New claim: typed vertical tile indexing and a real float cost output are
+//   behavior-safe source cleanup; both compile to the same 35-call, 1761-byte
+//   mismatch. A function-scope stack cursor is also codegen-neutral.
+// - Fresh H8: one natural uchar terrain value, matching the decompiler's byte
+//   temporary, was codegen-neutral; restored the clean source.
 
 typedef unsigned char uchar;
 
@@ -165,15 +170,16 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     long index1;
     long clump_size;
     long in_zone;
-    long max_y;
+    float cost;
     long max_x;
     int hot_i;
     int stack_i;
     int fair_i;
     int scan_i;
     int cleanup_i;
-    long loc_stack_x;
     Map_Stack loc_stack;
+    long loc_stack_x;
+    Map_Stack* stack_ptr;
     uchar terrain_fairness_zones_visited[99];
     uchar terrain_fairness_zones[99];
     Map_Stack stack[99];
@@ -211,9 +217,9 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     }
 
     clump_size = 0;
-    Map_Stack* stack_ptr = stack;
+    stack_ptr = stack;
     while (clump_size < line.clumps) {
-            if (this->pop_stack(&loc_stack, &chance, &x, (float*)&max_y) == 0) {
+            if (this->pop_stack(&loc_stack, &chance, &x, &cost) == 0) {
                 break;
             }
 
@@ -260,9 +266,9 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
         }
 
     if (line.avoid_hot_spots == 2 && fair_count < this->info.hot_spot_num) {
-        Map_Stack* stack_ptr = &stack[clump_size];
+        stack_ptr = &stack[clump_size];
         while (fair_count < this->info.hot_spot_num) {
-            if (this->pop_stack(&loc_stack, &chance, &x, (float*)&max_y) == 0) {
+            if (this->pop_stack(&loc_stack, &chance, &x, &cost) == 0) {
                 break;
             }
 
@@ -313,11 +319,11 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     do {
         done = 1;
         if (clump_size > 0) {
-            Map_Stack* stack_ptr = stack;
+            stack_ptr = stack;
             local_a44 = clump_size;
             do {
                 if (in_zone < line.terrain_size &&
-                    this->pop_stack(stack_ptr, &chance, &x, (float*)&max_y) != 0) {
+                    this->pop_stack(stack_ptr, &chance, &x, &cost) != 0) {
                     done = 0;
 
                     if (line.avoid_hot_spots == 0 ||
@@ -348,14 +354,14 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
                                     (float)index1 + fStack_a4c);
                             }
                             if (x > 0 &&
-                                (((RGE_Tile*)((char*)tile - this->map_width * 0x18))->terrain_type & 0x1f) ==
+                                (tile[-this->map_width].terrain_type & 0x1f) ==
                                     line.base_terrain_type) {
                                 index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1d9) * 100) / 0x7fff;
                                 this->push_stack(stack_ptr, chance, x - 1, 0.0f,
                                     (float)index1 + fStack_a4c);
                             }
                             if (x < max_x &&
-                                (((RGE_Tile*)((char*)tile + this->map_width * 0x18))->terrain_type & 0x1f) ==
+                                (tile[this->map_width].terrain_type & 0x1f) ==
                                     line.base_terrain_type) {
                                 index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1db) * 100) / 0x7fff;
                                 this->push_stack(stack_ptr, chance, x + 1, 0.0f,
@@ -372,19 +378,19 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line lin
     } while (done == 0);
 
     if (line.clumps > 0) {
-        Map_Stack* stack_ptr = stack;
+        stack_ptr = stack;
         local_a44 = line.clumps;
         do {
-            while (this->pop_stack(stack_ptr, &chance, &x, (float*)&max_y) != 0) {
+            while (this->pop_stack(stack_ptr, &chance, &x, &cost) != 0) {
                 RGE_Tile* tile = &this->map_row_offset[x][chance];
                 if ((chance > 0 &&
                     (tile[-1].terrain_type & 0x1f) == (uchar)line.terrain_type &&
                     chance < loc_stack_x &&
                     (tile[1].terrain_type & 0x1f) == (uchar)line.terrain_type) ||
                     (x > 0 &&
-                    (((RGE_Tile*)((char*)tile - this->map_width * 0x18))->terrain_type & 0x1f) == (uchar)line.terrain_type &&
+                    (tile[-this->map_width].terrain_type & 0x1f) == (uchar)line.terrain_type &&
                     max_x < x &&
-                    (((RGE_Tile*)((char*)tile + this->map_width * 0x18))->terrain_type & 0x1f) == (uchar)line.terrain_type)) {
+                    (tile[this->map_width].terrain_type & 0x1f) == (uchar)line.terrain_type)) {
                     tile->terrain_type = (uchar)line.terrain_type;
                 }
             }

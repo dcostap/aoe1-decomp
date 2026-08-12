@@ -62,6 +62,10 @@
 //   first uchar, land id second, then column/row longs.  The current source
 //   already uses those roles for map_row_offset/search_map_rows, neighbor
 //   pushes, and the helper call; no blind large-function reshaping was done.
+// - layout(20): reused the natural `index1` pointer for the phase-A land record
+//   and phase-B land_size traversal.  This matches the original reused [esp+1c]
+//   home and improved positional diff 1647 -> 1645 and shape 80.2% -> 81.52%.
+//   Kept because the typed pointer reuse is source-plausible and binary-backed.
 // Phase map (original asm offsets):
 //   A: +0000..+024A  init_stack / bounds / set_terrain / zone fill / 4 edge pushes
 //   B: +024A..+05DD  flood-fill do-while (done flag), chance/check_terrain_and_zone,
@@ -173,14 +177,14 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
     if (this->info.land_num > 0) {
         local_b08 = &stack[0];
         max_y = &land_size[1];
-        long* plVar12 = &this->info.land[0].base_size;
+        index1 = &this->info.land[0].base_size;
         do {
             this->init_stack(local_b08);
 
-            long iVar11 = plVar12[-2];   // land x
-            long iVar10 = plVar12[-1];   // land y
+            long iVar11 = index1[-2];   // land x
+            long iVar10 = index1[-1];   // land y
             *max_y = 0;
-            long iVar9 = *plVar12;       // base_size
+            long iVar9 = *index1;       // base_size
             terrain = iVar11 - iVar9;
             long pRVar8 = iVar10 - iVar9;
             iVar11 += iVar9;
@@ -191,9 +195,9 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             if (iVar10 >= this->map_height) iVar10 = this->map_height - 1;
 
             this->map->set_terrain(0, 0, terrain, pRVar8, iVar11, iVar10,
-                                   *(unsigned char*)(plVar12 - 3), 1, 0);
+                                   *(unsigned char*)(index1 - 3), 1, 0);
 
-            index2 = *(unsigned char*)(plVar12 + 2);
+            index2 = *(unsigned char*)(index1 + 2);
             land_size[index2 + 1] = (iVar11 - terrain + 1) * (iVar10 - pRVar8 + 1);
 
             for (tile = pRVar8; tile <= iVar10; tile++) {
@@ -237,7 +241,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
 
             index3++;
             max_y += 1;
-            plVar12 += 13;
+            index1 += 13;
             local_b08 += 1;
         } while (index3 < this->info.land_num);
     }

@@ -19,6 +19,9 @@
 // - Left in scratch: calls/CFG and instruction count align, but VC5 keeps a
 //   0x3C frame and rotates this/dc/font through ESI/EDI/EBX versus the oracle's
 //   0x40 frame and EDI/EBX/ESI register coloring.
+// - Direct member ownership for the calloc result, generic TEXTMETRIC/GetTextMetrics
+//   spellings, and typed HDC/HFONT handles each duplicated the 50-byte drift;
+//   restored the pinned named-array and explicit-A API source.
 
 #include <windows.h>
 #include <stdlib.h>

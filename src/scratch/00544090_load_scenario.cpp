@@ -25,6 +25,12 @@
 // - Paused after the bounded pass: the clean 443-byte candidate remains the
 //   source reconstruction, with the remaining drift localized to cold-failure
 //   block placement/near-jump encoding rather than behavior or call identity.
+// - Follow-up: an explicit version8 label with a final inequality branch was
+//   codegen-identical. Moving success ahead of shared_80 so late versions fall
+//   through was also identical; restore the clean dispatch source.
+// - The exact get_scenario_header donor confirms related version OR chains,
+//   but its unconditional close does not establish this function's cold-tail
+//   layout. No new natural structural lead remains.
 
 extern int world_update_counter;
 

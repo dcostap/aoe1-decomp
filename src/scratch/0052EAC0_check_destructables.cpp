@@ -23,6 +23,14 @@
 // - Left in scratch: rebuilt 522B/frame 0x18 versus oracle 560B/frame 0x20;
 //   remaining drift is structural local/parameter-home and register topology
 //   around the late tile-list loops, despite exact call set/CFG counts.
+// - Sequential TU pass: a combined overlap predicate and scoped world owners
+//   were neutral. Reordering the inner countdown regressed the loop schedule.
+//   Naming both object radii before coordinate math follows the oracle's early
+//   radius-y load and reaches 538B/frame 0x1c, but leaves the same structural
+//   prologue gap. Map aliases and a world reference changed no useful topology;
+//   direct typed map access remains the clean source form.
+// - Main-agent audit rolled back the radius-preload diagnostic. It changed no
+//   behavior evidence and was compiler steering, not plausible source recovery.
 
 class RGE_Map;
 class RGE_Player;
@@ -213,7 +221,6 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
             short y_min = (short)(y - 0.5f);
             short x_max = (short)(x + 0.5f);
             short y_max = (short)(y + 0.5f);
-
             if (x_min < 0)
                 x_min = 0;
             if (x_max >= this->map->map_width)

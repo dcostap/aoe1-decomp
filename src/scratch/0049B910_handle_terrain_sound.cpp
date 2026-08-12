@@ -18,6 +18,10 @@
 // - byte priority, register hints, direct loop-bound, and for-loop spelling
 //   probes were regressive or emitted duplicates. The remaining gap is the
 //   best-index/count register coloring in the typed scan.
+// - swapped priority/index declarations and routed the interval throttle to
+//   the shared no-log return; diff improved from 8 to 7 bytes.
+// - moved the named map/count loads before the result locals; output was
+//   unchanged. Remaining drift is seven register-encoding bytes in the scan.
 
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 extern unsigned long debug_timeGetTime(const char* file, int line);
@@ -135,16 +139,17 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
 
         if (now - this->last_terrain_sound_time <
             this->terrain_sound_interval) {
-            goto done;
+            goto early_return;
         }
         TRIBE_World* world = this->world;
         this->last_terrain_sound_time = now;
 
+        RGE_Map* map = world->map;
+        short terrain_count = map->num_terrain;
         short best_index = -1;
         short best_drawn = 0;
         short index = 0;
-        RGE_Map* map = world->map;
-        for (; index < map->num_terrain; ++index) {
+        for (; index < terrain_count; ++index) {
             RGE_Tile_Set* terrain = &map->terrain_types[index];
             if (terrain->loaded != 0 &&
                 terrain->drawn > best_drawn &&

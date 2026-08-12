@@ -39,6 +39,10 @@
 //   0x2C frame, and nested scan block: 368 bytes, 95.87% shape, 76 diff bytes,
 //   9/9 calls. Swapping/compounding the random product was codegen-neutral;
 //   the remaining 2-byte size/tail drift is in the magic random division.
+// - Fresh claim: reusing the debug_rand result for the quotient and adding a
+//   natural product temporary were codegen duplicates. A combined retry
+//   predicate improved the retry jump but worsened the local block topology;
+//   restored the pinned inverted-scan source.
 
 #include <stdio.h>
 

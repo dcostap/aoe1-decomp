@@ -58,6 +58,11 @@
 // - Follow-up: comma sequencing, one-line seed statements, explicit this member
 //   spelling, and explicit long map casts were all codegen duplicates; restored
 //   the natural typed source.
+// - Follow-up: a fresh build confirms the first mismatch remains the seed
+//   store/push schedule at +0x2D. Same-TU new_game uses a different statement
+//   context and does not provide a new source lead for this function.
+// - Current session: no evidence-backed natural source axis remains after the
+//   prior seed/map variant family. Keep this clean typed reconstruction.
 
 #include <stdlib.h>
 

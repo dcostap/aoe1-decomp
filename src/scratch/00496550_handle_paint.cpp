@@ -25,6 +25,14 @@
 //   or worse codegen.  The named pointer form is retained as the most natural
 //   source model supported by the PDB line order; the remaining gap is the
 //   entry callee-save swap plus the resulting 5-byte size drift.
+// - restored the period TPanel virtual slots, including its destructor and
+//   named redraw/draw/paint methods; the output stayed unchanged.
+// - tested donor-supported windows.h and stdio.h context; both were neutral.
+// - reused one function-scope panel/node pair with while loops; output was a
+//   duplicate, so the ordinary scoped for loops remain authoritative.
+
+#include <windows.h>
+#include <stdio.h>
 
 extern unsigned long debug_timeGetTime(const char* file, int line);
 
@@ -44,28 +52,29 @@ struct PanelNode {
 
 class TPanel {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
-    virtual void v20(int mode);
-    virtual void v24(TPanel* first, TPanel* second, int mode);
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
-    virtual void v3C();
-    virtual void v40();
-    virtual void v44();
-    virtual void v48();
-    virtual void v4C();
-    virtual void v50();
-    virtual void v54();
+    virtual ~TPanel();
+    virtual void setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_rect2(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int mode);
+    virtual void set_overlapped_redraw(TPanel* first, TPanel* second, int mode);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(void*);
+    virtual void draw_offset(long, long, void*);
+    virtual void draw_rect2(void*);
+    virtual void draw_offset2(long, long, void*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
 
     char gap_004[0x1C];
     TDrawArea* render_area;             // +0x20
@@ -164,14 +173,14 @@ long TRIBE_Screen_Game::handle_paint() {
             for (PanelNode* node = this->child_list;
                  node != 0;
                  node = node->next) {
-                node->panel->v20(this->panel_mode);
+                node->panel->set_redraw(this->panel_mode);
             }
 
             TPanel* panel = this->panel_40;
             if (panel != 0 && panel->field_7C != 0) {
-                panel->v24(this, this, this->panel_mode);
+                panel->set_overlapped_redraw(this, this, this->panel_mode);
             }
-            this->v30();
+            this->draw();
         }
         this->panel_mode = 0;
         this->redraw_needed = 1;
@@ -188,7 +197,7 @@ long TRIBE_Screen_Game::handle_paint() {
         TPanel* panel = node->panel;
 
         if (draw_all_children || panel == this->curr_child) {
-            panel->v54();
+            panel->handle_paint();
         }
 
         unsigned long child_end =

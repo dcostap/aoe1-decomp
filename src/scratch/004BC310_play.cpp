@@ -83,6 +83,9 @@
 // Worker tu-sound-BC310: exact donors and DirectSound declarations confirm
 // typed Sound_Info ownership and declaration-only TDigital methods.  No
 // evidence-backed natural lead remains for the final register-color drift.
+// Probe 41 resumed: the interrupted same-TU declaration-only TDigital context
+// probe is current; rebuild was a codegen duplicate at 346 bytes and 21
+// differing bytes.  Retained the canonical typed source and closed the lead.
 
 #include "..\..\include\game_globals.h"
 

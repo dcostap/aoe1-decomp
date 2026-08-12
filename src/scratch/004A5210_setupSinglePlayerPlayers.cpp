@@ -25,6 +25,9 @@
 //   EBP=this/EBX=count) plus the random-loop tail's compare/move order.
 // - Final unresolved source is restored to the simplest typed form; leave in
 //   scratch for a later worker rather than retain compiler-steering aliases.
+// - Fresh claim: function-scope declarations, assignment in the random-loop
+//   condition, and a flat screen base were codegen duplicates. Keep the clear
+//   role names and pinned natural source.
 
 class RGE_Scenario {
 public:

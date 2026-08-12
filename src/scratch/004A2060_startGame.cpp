@@ -60,6 +60,8 @@
 //   preserved size/frame/call-set but collapsed to one codegen group, still diff=67.
 // - restored the canonical no-VPAD source; remaining drift is the whole-function EBP/
 //   EBX allocator basin plus documented role-register swaps, not a call/layout gap.
+// - Fresh claim: same-TU prologue donor search confirms the remaining gap is
+//   the allocator basin, not a missing call, layout, or declaration identity.
 
 #include <string.h>
 #include <windows.h>

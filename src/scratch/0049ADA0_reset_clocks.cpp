@@ -18,6 +18,9 @@
 //   six-byte codegen gap: both inner scans use `jge exit; jmp body` instead of
 //   the oracle's `jl body; jmp exit`.
 // - zero-based/preincrement inner counters were rolled back (broad drift).
+// - resumed after the host crash, restored the clean pinned source, and
+//   reproduced the 594-byte/frame-0x10 validation. No new natural source lead
+//   remains; the unresolved bytes are the two inner-loop branch pairs.
 
 class TRIBE_Panel_Time {
 public:
