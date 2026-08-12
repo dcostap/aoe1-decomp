@@ -26,6 +26,11 @@
 //   count check before the back-edge; the original has one guard at the tail.
 // - Inverting the post-bound test to `continue` below 0x19 was codegen-identical
 //   and less direct, so the direct while/break form remains the best source.
+// - The exact player.cpp ungroup_objects tail donor uses an index-bound while
+//   with the selected-count guard first; using that natural short index/count
+//   form removed the prior 24-byte tail drift and matched size and CFG.
+// - Spelling the guard as `count >= sel_count` produced the original compare
+//   operand order and closed the final 2-byte mismatch; the source is exact.
 
 #include <string.h>
 
@@ -126,18 +131,18 @@ int RGE_Player::group_objects(int group)
         }
     }
 
-    short count = 0;
     short i = 0;
-    while (count < sel_count) {
+    short count = 0;
+    while (i < 0x19) {
+        if (count >= sel_count) {
+            break;
+        }
         RGE_Static_Object* object = sel_list[i];
         if (object && object->owner == this) {
             ++count;
             object->selected_group = selected_group;
         }
         ++i;
-        if (i >= 0x19) {
-            break;
-        }
     }
 
     return 1;

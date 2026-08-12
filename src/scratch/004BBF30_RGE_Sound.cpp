@@ -67,6 +67,11 @@
 // Final clean source: restored direct typed member reconstruction; best
 // diagnostic codegen remains the 306-byte pointer-alias variant at 6 bytes,
 // while the living source stays canonical and period-plausible.
+// Worker audit: Sound.cpp donors 004BBE40 and 004BC190 use named typed
+// RGE_Sound_Info arrays and direct member access.  The six-byte alias changes
+// only the calloc compare/store order; it does not change constructor behavior.
+// Keep it as diagnostic evidence only.  The direct-member source is the
+// canonical policy-compliant reconstruction despite its 309-byte basin.
 
 #include "..\..\include\game_globals.h"
 
