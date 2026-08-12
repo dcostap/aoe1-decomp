@@ -3,7 +3,19 @@
 // Attempt log:
 // - v1: reconstructed bounds/locking and row byte-copy logic from packet/decompiler.
 // - v2: added /Oy- flag because original has an EBP frame; this improved prologue but broad copy-loop drift remains.
-// BLOCKER: behavior, bounds checks, lock/unlock calls, and dimensions are understood, but source copy loop does not lower to the original hand-shaped REP MOVSB/MOVSD sequence. Rebuilt uses scalar byte/dword loops even with /Oy-, and local/register layout differs (0x0c frame vs original 0x14, different parameter/local reuse). Need source/topology or intrinsic/context that makes VC5 emit the exact alignment check + `rep movsb; rep movsd; rep movsb` sequence without inline asm.
+// - v3: replaced the diagnostic scalar alignment loops with the natural typed
+//   `memcpy` row operation. This tests whether VC5's library intrinsic emits
+//   the original aligned REP family without compiler-steering source. It
+//   remained scalar-free but emitted only generic REP MOVSD/MOVSB.
+// - v4: restored the natural `memcpy` source after the decompiler-shaped loop
+//   emitted scalar code and worsened the frame, CFG, and size.
+// - The original CLD, named copy-loop labels, alignment lead calculation, and
+//   REP MOVSB/MOVSD phases are a shared hand-shaped copy family with PtrCopy
+//   and PtrSpanCopy. Natural VC5 `memcpy` emits generic REP MOVSD/MOVSB, not
+//   that alignment topology. Inline asm is forbidden, so this remains scratch
+//   with the typed `memcpy` reconstruction as the clean source.
+
+#include <string.h>
 
 typedef unsigned char uchar;
 struct tagRECT { long left; long top; long right; long bottom; };
@@ -80,21 +92,7 @@ void TDrawArea::PtrSurfaceCopy(TDrawArea* dst, long xOfD, long yOfD, tagRECT* sr
     do {
         uchar* src = srcP[top] + xOfS;
         uchar* dest = destP[yOfD] + xOfD;
-        int count = nWidth;
-        if ((((int)src ^ (int)dest) & 3) == 0) {
-            int lead = (-(int)dest) & 3;
-            int main = count - lead;
-            if (main > 0) {
-                while (lead != 0) { *dest++ = *src++; lead--; }
-                count = main;
-                int dwords = count >> 2;
-                while (dwords != 0) { *(int*)dest = *(int*)src; dest += 4; src += 4; dwords--; }
-                count &= 3;
-            }
-            while (count != 0) { *dest++ = *src++; count--; }
-        } else {
-            while (count != 0) { *dest++ = *src++; count--; }
-        }
+        memcpy(dest, src, nWidth);
         top++;
         yOfD++;
         nLines--;
