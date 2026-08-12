@@ -8,15 +8,19 @@
 // tried do/while outer and inner loops to mirror original bottom tests.
 // tried stack local order selected_count/selected_objects/j/target_count/master/cur/arrays to force 0x224 frame.
 // tried explicit PickedObjInfo[12-byte] walking so info[-1].picked and info->action match +(-4)/+0 access.
-// tried list fallback as a typed ObjectList at save_player +0x22/+0x24 to match fallback scan.
+// tried list fallback as a typed ObjectList at player +0x22/+0x24 to match fallback scan.
 // tried final best scan with running Picked_Objects pointer and direct out-param guarded store.
-// remaining gap: behavior/call surface is reconstructed, but VC5 emits shorter code (800B) than original 823B;
-// likely source-shape/register/block-layout problem across the nested target/fallback loops. Left in scratch.
+// probe: corrected the view geometry to world (+FC)/player (+100), matching exact vw_main donors;
+// probe: int pick_score is behavior-backed by the original direct EAX add, but is 5B farther than char.
+// probe: typed player object_count/object_list is canonical but changed the frame to 0x220; kept the named fields.
+// final gap: calls, filters, score accumulation, attacking output, and best-object return match the binary;
+// VC5 local lifetime and block layout remain non-exact. Left in scratch.
 
 extern "C" void __cdecl free(void*);
 
 struct RGE_Static_Object;
 struct RGE_Master_Action_Object;
+struct RGE_World;
 
 struct PickedObjInfo {
     int picked;
@@ -29,23 +33,29 @@ extern PickedObjInfo Picked_Objects[];
 
 class RGE_Player {
 public:
-    char gap_000[0x88];
-    RGE_Static_Object** objects; // +88 in nested player/world object used by asm
-    char gap_08C[0xA8];
+    char gap_000[0x22];
+    short object_count; // +22
+    RGE_Static_Object** object_list; // +24
+    char gap_028[0xB0];
     int get_selected_objects_to_command(RGE_Static_Object*** out, short* count, int a, int b, int c, int d);
+};
+
+struct RGE_World {
+    char gap_000[0x88];
+    RGE_Static_Object** objects;
 };
 
 class RGE_View {
 public:
-    void* vftable;
+    virtual void pad_vtable();
     char gap_004[0xF8];
-    RGE_Player* player; // +FC
+    RGE_World* world; // +FC
+    RGE_Player* player; // +100
     RGE_Master_Action_Object* pick_objects(long x, long y, int a, int b, int c, int d, int e);
 };
 
 class RGE_Main_View : public RGE_View {
 public:
-    RGE_Player* save_player; // +100
     virtual char pad00(); virtual char pad01(); virtual char pad02(); virtual char pad03();
     virtual char pad04(); virtual char pad05(); virtual char pad06(); virtual char pad07();
     virtual char pad08(); virtual char pad09(); virtual char pad10(); virtual char pad11();
@@ -60,7 +70,7 @@ public:
     virtual char pad44(); virtual char pad45(); virtual char pad46(); virtual char pad47();
     virtual char pad48(); virtual char pad49(); virtual char pad50(); virtual char pad51();
     virtual char pad52(); virtual char pad53(); virtual char pad54(); virtual char pad55();
-    virtual char pick_score(RGE_Static_Object* obj, int action);
+    virtual int pick_score(RGE_Static_Object* obj, int action);
     RGE_Static_Object* pick_best_target(long x, long y, int* attacking_out, short action_filter);
 };
 
@@ -86,17 +96,11 @@ struct RGE_Static_Object {
     unsigned char flag_ec; // +EC
 };
 
-struct ObjectList {
-    char gap_00[0x22];
-    short count;
-    RGE_Static_Object** list;
-};
-
 RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attacking_out, short action_filter) {
     RGE_Static_Object** selected_objects;
     short selected_count;
-    int j;
     int target_count;
+    int j;
     RGE_Master_Action_Object* master_obj;
     RGE_Static_Object* cur_target;
     int valid_target_count[64];
@@ -111,7 +115,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
         return 0;
     }
 
-    if (!this->save_player->get_selected_objects_to_command(&selected_objects, &selected_count, -1, -1, -1, -1)) {
+    if (!this->player->get_selected_objects_to_command(&selected_objects, &selected_count, -1, -1, -1, -1)) {
         return 0;
     }
 
@@ -130,7 +134,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                 do {
                     int picked = info[-1].picked;
                     if (picked >= 0) {
-                        RGE_Static_Object* obj = this->player->objects[picked];
+                        RGE_Static_Object* obj = this->world->objects[picked];
                         if (obj != 0 && obj->owner_type < 7) {
                             void* action = cur_target->actions->can_do(selected_objects[j], obj, 0, 0, 0);
                             if (action != 0) {
@@ -146,11 +150,10 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                 }
                             }
                             if (cur_target->flag_ec != 0) {
-                                ObjectList* list = (ObjectList*)this->save_player;
                                 int k = 0;
-                                if (list->count > 0) {
+                                if (this->player->object_count > 0) {
                                     do {
-                                        RGE_Static_Object* obj2 = list->list[k];
+                                        RGE_Static_Object* obj2 = this->player->object_list[k];
                                         if (obj2 != 0 && obj2->object_type == cur_target->object_type &&
                                             obj2->kind == cur_target->kind && obj2->flag_ec == cur_target->flag_ec) {
                                             void* action2 = obj2->actions->can_do(selected_objects[j], obj, 0, 0, 0);
@@ -168,7 +171,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                             }
                                         }
                                         k++;
-                                    } while (k < list->count);
+                                    } while (k < this->player->object_count);
                                 }
                             }
                         }
@@ -193,7 +196,7 @@ next_target:
             int score = valid_target_count[i];
             if (score > best) {
                 int picked = info2->picked;
-                best_obj = this->player->objects[picked];
+                best_obj = this->world->objects[picked];
                 if (attacking_out != 0) {
                     *attacking_out = attacking[i];
                 }
