@@ -19,12 +19,14 @@
 //     none emitted the original LEA-before-IMUL. Compound versus direct self-add was
 //     also a duplicate. The variant lab was diagnostic only and did not replace this source.
 // 15: Restoring the PDB char* debug_rand ABI was a codegen duplicate.
-// Left in scratch: typed ownership, frame, stack homes, loop/call topology, and the
-// radius/FPU sequence now match structurally. Remaining drift is localized to the
-// random variance multiply: rebuilt emits `mov eax,80010003; imul ecx,edi; shl ecx,1`
-// instead of original `lea edx,[edi+edi]; imul ecx,edx`; the current source keeps a
-// natural doubled-range expression. Current best: 467-byte output, 97.47% shape,
-// 379 positional diff bytes, 45-byte edit/resync diagnostic.
+// 16: A focused six-form random-math lab found an exact natural source form:
+//     shift the named variance left by one before the debug_rand multiply.
+//     This emits the original LEA-before-IMUL block and the full function matches.
+// 17: ABI audit replaced the fake Map_Stack output cast with the proven
+//     pop_stack(long*, long*, float*) surface. The safe typed source remains exact.
+// The typed ownership, frame, stack homes, loop/call topology, and radius/FPU
+// sequence now match exactly. The shift is a period-plausible integer doubling
+// form and is retained as the canonical source reconstruction.
 
 extern "C" int __cdecl debug_rand(char*, int);
 
@@ -76,15 +78,15 @@ public:
     void init_stack(Map_Stack* s);
     void deinit_stack(Map_Stack* s);
     void make_placement_stack(Map_Stack* s, long x, long y, int unk, int area);
-    Map_Stack* pop_stack(Map_Stack* s, int* out_col, long* out_x, Map_Stack* out_stack);
+    Map_Stack* pop_stack(Map_Stack* s, long* out_col, long* out_x, float* out_cost);
     void place_group(RGE_Object_Info_Line& info, long x, long y, RGE_Player* player);
 };
 
 void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, long py, RGE_Player* player)
 {
-    long y;
     long x;
-    int col;
+    long col;
+    float cost;
     RGE_RMM_Object_Generator* self;
     int zone;
     float fx;
@@ -97,12 +99,12 @@ void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info, long px, 
 
     int count = info.object_number_per_group;
     register int var = info.object_number_varience;
-    int range = var + var;
-    int delta = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x212) * range) / 0x7fff - var;
+    int delta = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x212) *
+                 (var << 1)) / 0x7fff - var;
     count += delta;
     if (count < 1) count = 1;
 
-    while (pop_stack(&obj_stack, &col, &x, (Map_Stack*)&y) && count > 0) {
+    while (pop_stack(&obj_stack, &col, &x, &cost) && count > 0) {
             if (info.terrain < 0 || ((this->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
                 fx = (float)col;
                 fy = (float)x;

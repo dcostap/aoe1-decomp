@@ -962,3 +962,11 @@ only the matching paragraphs and their section heading.
   named dimension expressions can move the compiler from a 236-byte drift to
   exact output.  Keep the source typed and period-plausible; do not use raw
   cursors or volatile qualifiers as substitutes.
+- When several action modes share a success tail, put the invalid-action label
+  on the common return after the shared mode update.  Separate invalid and
+  success returns can duplicate an epilogue and push a late virtual call past
+  the original boundary.  A shared label can recover call count and block
+  layout without changing behavior.
+- For signed random ranges, shift the named variance before multiplication.
+  `(rand * (variance << 1))` can make VC5 emit `lea` before `imul`, while an
+  equivalent doubled product can emit `imul` followed by `shl`.
