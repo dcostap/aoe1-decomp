@@ -17,34 +17,137 @@
 // Compiler-owned vptr surfaces with proven offsets were also a duplicate and were not retained.
 // A natural combined success guard with one trailing failure return remained the same 46-byte
 // mismatch. The common /GX cleanup tail remains the only structural gap.
+// refill-469AD0-r1: test the complete TPanel -> TEasy_Panel and TPanel -> TScrollBarPanel ABI
+// from the exact Panel_ez horizontal/scrollbar donors, including the full virtual surfaces.
+// The first full-ABI pass made setup a virtual call and regressed to 199 bytes; the exact
+// pnl_sld donor keeps this overload nonvirtual, which restored the 46-byte basin.
+// The full ABI, scoped result assignment, and new.h context were then checked; only the
+// initialized result changed code (215 bytes, despite exact size), and all other changes were
+// duplicates. Keep the typed full-ABI source and direct natural returns.
 
-class TPanel {};
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawArea;
+class TButtonPanel;
+class TTextPanel;
+class TInputPanel;
+class TEditPanel;
+class TDropDownPanel;
+class TListPanel;
+class THorizontalSliderPanel;
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
+
+    char gap_04[0x0C - 0x04];
+    long field_0C;
+    long field_10;
+    long base_width;
+    long base_height;
+    char gap_1C[0x20 - 0x1C];
+    TDrawArea* draw_area;
+    char data_24[0xD8 - 0x24];
+    int field_D8;
+    char data_DC[0xF4 - 0xDC];
+};
+
 class TShape {};
 
-class TScrollBarPanel {
+class TScrollBarPanel : public TPanel {
 public:
-    char gap_000[0xD8];
-    int field_D8;
-    void set_buttons(TShape* pics, int a, int b, int c, int d);
-    void set_bevel_info(int count, int c1, int c2, int c3, int c4, int c5, int c6);
+    char data_F4[0x108 - 0xF4];
+    TShape* button_pics;
+    int back_frame;
+    int up_frame;
+    int down_frame;
+    int tab_frame;
+    char data_11C[0x1B8 - 0x11C];
+    int bevel_type;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    char data_1C2[0x1C4 - 0x1C2];
+
+    virtual ~TScrollBarPanel();
+    void set_buttons(TShape*, int, int, int, int);
+    void set_bevel_info(int, int, int, int, int, int, int);
 };
 
 class TVerticalSliderPanel : public TScrollBarPanel {
 public:
-    char data[0x1CC - 0xDC];
+    char data[0x1CC - 0x1C4];
+    virtual ~TVerticalSliderPanel();
     TVerticalSliderPanel();
     long setup(void* draw_area, TPanel* parent, long x, long y, long w, long h,
                char* a, char* b, long c, long p3, long p4, long p5, int one, int zero);
 };
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    char gap_000[0x14];
-    long base_width;
-    long base_height;
-    char gap_01C[0x20 - 0x1C];
-    void* draw_area;
-    char gap_024[0xF4 - 0x24];
     long ideal_width;
     long ideal_height;
     char gap_0FC[0x31C - 0xFC];
@@ -58,7 +161,24 @@ public:
     char gap_326[0x448 - 0x326];
     TShape* button_pics;
 
-    int create_vert_slider(TPanel* parent, TVerticalSliderPanel** out, long p3, long p4, long p5, long p6, long p7, long p8, long p9);
+    virtual void draw_background(int);
+    virtual void set_ideal_size(long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long, long, long, long, long, long, long);
+    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long);
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long, long, int, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long, long, long, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long, long, int, int, int);
+    virtual int create_input(TPanel*, TInputPanel**, char*, short, int, long, long, long, long, long);
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long, long, long, long, long, int, int);
+    virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long, long, long, long);
+    virtual int create_list(TPanel*, TListPanel**, long, long, long, long, long);
+    virtual int create_scrollbar(TPanel*, TScrollBarPanel**, TTextPanel*, long, long, long, long, long);
+    virtual int create_auto_scrollbar(TScrollBarPanel**, TTextPanel*, long);
+    virtual int create_vert_slider(TPanel*, TVerticalSliderPanel**, long, long, long, long, long, long, long);
+    virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long, long, long, long, long, long, long);
+    virtual void position_panel(TPanel*, long, long, long, long);
 };
 
 int TEasy_Panel::create_vert_slider(TPanel* parent, TVerticalSliderPanel** out, long p3, long p4, long p5, long p6, long p7, long p8, long p9) {

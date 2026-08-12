@@ -16,11 +16,19 @@
 //    frame 0x5c vs 0x60, first header-byte home, outer-index parameter-home reuse, the
 //    final rem reread home, and the final short-player bound compare. Kept the typed,
 //    period-plausible candidate in scratch rather than retaining compiler-only aliases.
+// 8: replaced the raw world counter address with its typed global declaration; VC5
+//    moved the local frame and worsened the structural diff, so no address macro remains.
+// 9: C linkage for the typed counter had identical output and was discarded as a
+//    context-only probe.
+// 10: replaced the header type-pun with a named int and 13-byte remainder buffer;
+//     the emitted code stayed in the same basin.
+// 11: grouping those separate values in one record was a codegen duplicate.
+//     Keep their stream ownership separate in the final typed source.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" int __cdecl rge_close(int);
 
-#define world_update_counter (*(int*)0x00886C10)
+extern int world_update_counter;
 class RGE_Scenario {
 public:
     int GetPlayerPosture(int);
@@ -48,7 +56,6 @@ public:
     unsigned char gap_26e[2];
     long player_id[9];
 };
-
 class RGE_Game_World {
 public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
@@ -72,6 +79,7 @@ public:
 void RGE_Game_World::load_scenario2(int handle, RGE_Player_Info& info)
 {
     long player_id_hash[9];
+    int next_object_id;
     char rem[13];
     int obj_id;
     float world_x;
@@ -86,7 +94,7 @@ void RGE_Game_World::load_scenario2(int handle, RGE_Player_Info& info)
     unsigned char master_player_id;
 
     world_update_counter = 0;
-    rge_read(handle, &rem[0], 4);
+    rge_read(handle, &next_object_id, 4);
     this->scenario_init(handle, this);
     this->scenario_make_map(handle);
 
@@ -137,7 +145,7 @@ void RGE_Game_World::load_scenario2(int handle, RGE_Player_Info& info)
         } while (outer < scenario_player_num);
     }
 
-    this->next_object_id = *(int*)rem;
+    this->next_object_id = next_object_id;
     rge_read(handle, rem, 13);
     j = 1;
     if (scenario_player_num > 1) {

@@ -76,6 +76,22 @@
 // - Renamed the attack sprite fields to the type-reference ownership names
 //   move_sprite, fight_sprite, and wait_sprite without changing offsets or stores.
 //   The canonical class surface produced identical code (33-byte diff).
+// Fresh bounded pass (close-4012B0-r1):
+// - A natural p5 fallback local with a repeated typed master chain improved the
+//   diagnostic result to 22 bytes. Removing the guard alias or sharing its master
+//   regressed to 33 bytes; those forms were rolled back.
+// - Combining that p5 local with x/range/z/min/y assignment order reached 21 bytes
+//   and 92.96% shape, but it moved p4/p3 loads away from the original early band.
+//   It remains diagnostic evidence, not the living source.
+// - Final source is the restored canonical typed constructor: 33 bytes, 91.55%
+//   shape, exact size/frame/CFG/call set. Remaining gap is initial block scheduling.
+// Fresh bounded pass (tu-actatak-4012B0):
+// - Rechecked the original Act_atak.cpp line bands, same-TU constructor donor,
+//   ABI, and first paired hunk. The clean typed source still matches size,
+//   frame, calls, CFG, and suffix islands, but not the initial load/store order.
+// - Earlier decompiler-order and local-lifetime probes already covered the
+//   remaining plausible source families. No evidence-backed new lead remains;
+//   retain the canonical sprite and master-object ownership surface.
 //
 // Key structural insights confirmed:
 // - 11 stack params + this(ecx): (RGE_Action_Object*,float,float,float,RGE_Sprite*,

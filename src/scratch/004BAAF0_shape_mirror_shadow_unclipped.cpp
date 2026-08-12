@@ -55,6 +55,16 @@
 //   x after each row. This reached 267 bytes and 120 strict bytes. Calls,
 //   ownership, and backward shadow behavior remain aligned. The remaining
 //   gap starts at the odd-run count test and local loop topology.
+// tu-shape-BAAF0 probes (2026-08-13):
+// - Added the binary-proven positive count guards before both backward table
+//   loops. This restored the oracle's redundant byte test and improved the
+//   candidate to 271B/99 strict bytes, with 98.10% shape similarity.
+// - Reordered the count loops as pretested while, byte-count, preserved-byte,
+//   and for-update forms. These were worse or duplicates; the guarded typed
+//   count form remains the best readable reconstruction.
+// - Remaining drift is the four-byte loop-size excess and the final table-load
+//   scheduling after the exact setup. Calls, ownership, and behavior stay
+//   aligned.
 
 typedef unsigned char byte;
 
@@ -120,12 +130,14 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
                     if (c == 0) {
                         d -= *src++;
                     } else {
-                        unsigned int count = c;
-                        do {
-                            --d;
-                            --count;
-                            *d = table[*d];
-                        } while (count != 0);
+                        if (c > 0) {
+                            unsigned int count = c;
+                            do {
+                                --d;
+                                --count;
+                                *d = table[*d];
+                            } while (count != 0);
+                        }
                         src += c;
                     }
                 } else {
@@ -133,12 +145,14 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
                     if (c == 0) {
                         done = 1;
                     } else {
-                        unsigned int count = c;
-                        do {
-                            --d;
-                            --count;
-                            *d = table[*d];
-                        } while (count != 0);
+                        if (c > 0) {
+                            unsigned int count = c;
+                            do {
+                                --d;
+                                --count;
+                                *d = table[*d];
+                            } while (count != 0);
+                        }
                         src++;
                     }
                 }

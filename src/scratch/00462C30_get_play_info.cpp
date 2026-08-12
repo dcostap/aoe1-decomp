@@ -34,6 +34,14 @@
 // success store from the common tail.
 // Tail worker H2: scoped the status record to the active-track block. This was
 // codegen-identical, so the H1 source remains the best structural reconstruction.
+// Fresh pass: Cdaudio.cpp donors show the natural WinMM surface passes the full
+// MCI_STATUS_PARMS record and reads dwReturn. This improved the current tail
+// reconstruction by one byte; the reordered-field diagnostic was not retained.
+// Fresh pass: an IAT function-pointer declaration was codegen-neutral.
+// Fresh pass: direct zero-result jumps shortened the body to 322 bytes and left
+// the closest current metric, but VC5 still duplicates the final tail and return.
+// Final bounded result: retain the typed WinMM surface and explicit success jump;
+// the remaining structural gap is the shared MCI tail.
 
 #include <string.h>
 
@@ -125,20 +133,19 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
     switch (this->music_type) {
     case 1: {
         status_info.dwTrack = 2;
-        int result = mciSendCommandA(this->device_id, 0x814, 0x102,
-                                     &status_info.dwReturn);
-        if (result != 0) {
-            goto done;
+        if (mciSendCommandA(this->device_id, 0x814, 0x102,
+                            &status_info) == 0) {
+            goto set_position;
         }
-        goto set_position;
+        goto done;
     }
     case 2: {
         status_info.dwTrack = 2;
-        int result = mciSendCommandA(this->device_id, 0x814, 0x102,
-                                     &status_info.dwReturn);
-        if (result != 0) {
-            goto done;
+        if (mciSendCommandA(this->device_id, 0x814, 0x102,
+                            &status_info) == 0) {
+            goto set_position;
         }
+        goto done;
         break;
     }
     default:
@@ -146,7 +153,7 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
     }
 
 set_position:
-    *set_pos_out = status_info.dwItem;
+    *set_pos_out = status_info.dwReturn;
     }
 
 done:

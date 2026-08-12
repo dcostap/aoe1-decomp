@@ -29,6 +29,10 @@
 //   the donor's XYPoint min aggregate; both were duplicates. Natural max.x-
 //   first arithmetic widened the body to 248B with or without that aggregate.
 //   Restored this clean source; no codegen-only alias or aggregate remains.
+// - This TU pass retested direct max.x-then-max.y assignment order against the
+//   clean source; it widened the body to 248B and produced a 196-byte diff.
+//   Restored the clean max.y-then-max.x source; the 15-byte max-bound hunk
+//   remains the only exact-codegen gap.
 
 typedef unsigned char uchar;
 

@@ -28,6 +28,13 @@
 //   and canonical base-master casts were duplicates or no-ops.
 // - Adding period stdio context was a no-op.  Restored the clean /GX candidate;
 //   no new lead remains after the 10-hypothesis budget.
+// Fresh bounded pass (tu-actatak-401170):
+// - Rechecked the original EH frame, constructor/action ABI, PDB line bands,
+//   same-TU donors, and the first post-set_target hunk. The typed source keeps
+//   exact size, EH shape, ordered calls, CFG, and sprite fallback ownership.
+// - The remaining 45-byte drift is parameter-load register coloring after
+//   set_target_obj. Prior natural order, alias, layout, and TU-context probes
+//   covered the plausible source families; retain the canonical /GX source.
 // Main-agent audit restored canonical action-object inheritance and removed the
 // residual downcasts from ordinary master/owner access.
 

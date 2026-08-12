@@ -14,8 +14,12 @@
 // probe 9: direct indexed receiver use improved the late register/liveness basin and shortened the candidate to 729 bytes.
 // probe 11: a top-tested final while loop recovered the oracle's one bottom player-count backedge; current candidate is 723 bytes.
 // current remaining drift: scenario-count/object-loop stack homes (+14 vs oracle +60), object-loop stack/index coloring, and a localized late schedule.
+// probe 13: replaced the raw world counter address with its typed global declaration;
+// the frame moved from 0x4c to 0x48 and the structural diff worsened, but the source
+// now has no absolute-address macro. The typed serialization widths and virtual ABI
+// remain unchanged.
 
-#define world_update_counter (*(int*)0x00886C10)
+extern int world_update_counter;
 
 typedef unsigned char uchar;
 

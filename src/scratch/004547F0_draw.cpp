@@ -17,6 +17,16 @@
 //   aligned, but VC5 moved to a 331-byte, 0x0C-frame codegen basin.
 // - Retested a branch-local receiver alias after the ABI correction; emitted
 //   code was unchanged and the alias was rolled back.
+// - Restored complete m_s_obj field ownership and the three missing virtual
+//   slots; emitted code was unchanged.
+// - A natural sprite local was codegen-identical and was rolled back.
+// - A named y-line local widened the first block and worsened positional diff.
+// - Canonical Base_Game, Game_World, and Map virtual surfaces preserved all
+//   proven offsets but were codegen-neutral.
+// - Loading map before radii improved resync similarity but worsened positional
+//   diff and size; the natural radius-before-map order remains.
+// - Reference outputs were codegen-identical. Promoting AddGDINode coordinates
+//   to int improved shape and size only as an ABI diagnostic; it was rolled back.
 // - Left in scratch: canonical typed outline/map ownership and exact call
 //   set are established; next lead is the original receiver/ESI liveness and
 //   local-home topology at 004547F3, not behavior or call discovery.
@@ -27,6 +37,9 @@ class RGE_Sprite;
 class RGE_Map;
 class RGE_Game_World;
 class DClipInfo_List;
+class RGE_Master_Combat_Object;
+class RGE_Static_Object;
+class RGE_Player;
 
 class RGE_Sprite {
 public:
@@ -37,19 +50,104 @@ public:
 
 class RGE_Map {
 public:
+    virtual ~RGE_Map();
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char* a, char* b, char* c, char* d);
+    virtual unsigned char do_terrain_brush(long a, long b, long c, unsigned char d);
+    virtual unsigned char do_terrain_brush_stroke(long a, long b, long c, long d,
+                                                   long e, unsigned char f);
+    virtual unsigned char do_elevation_brush(long a, long b, long c, unsigned char d);
+    virtual unsigned char do_elevation_brush_stroke(long a, long b, long c, long d,
+                                                     long e, unsigned char f);
+    virtual unsigned char do_cliff_brush(long a, long b, unsigned char c,
+                                         unsigned char d);
+    virtual unsigned char do_cliff_brush_stroke(long a, long b, long c, long d,
+                                                unsigned char e, unsigned char f);
+    virtual void map_generate(void* player, RGE_Game_World* world, void* info,
+                              unsigned char* flags);
+    virtual void map_generate2(RGE_Game_World* world, long w, long h,
+                               unsigned char flag, long value);
+    virtual void save(int file);
     void get_point(short* out_x, short* out_y, float param_3, float param_4,
                    float param_5, int param_6, int param_7);
 };
 
 class RGE_Game_World {
 public:
-    char gap_00[0x28];
+    virtual void data_load_world(void* file);
+    virtual void data_load_terrain_tables(char* file);
+    virtual void data_load_players(char* file);
+    virtual void data_load_objects(char* file);
+    virtual void data_load_sounds(char* file);
+    virtual void data_load_color_tables(char* file);
+    virtual void data_load_sprites(char* file);
+    virtual void data_load_players_type(short a, short b, void* file);
+    virtual void data_load_effects(char* file);
+    virtual void data_load_map(char* a, char* b, char* c, char* d, short e,
+                               short f, short g, void* sounds, char* name);
+    virtual void data_load_random_map(char* a, char* b, char* c, char* d);
+    virtual void init_player_type(int a, short b, unsigned char c);
+    virtual void init_player(int a);
+    virtual void load_player(int a, unsigned char b, short c);
+    virtual void color_table_init(int a);
+    virtual void terrain_tables_init(int a);
+    virtual void init_sounds(int a, void* driver);
+    virtual void init_sprites(int a);
+    virtual void map_init(int a, void* driver);
+    virtual void effects_init(int a);
+    virtual void master_player_init(int a);
+    virtual void command_init(int a, void* handler);
+    virtual void world_init(int a, void* driver, void* handler);
+    virtual void setup_gaia();
+    virtual void setup_players(void* info);
+    virtual unsigned char new_random_game(void* info);
+    virtual void save(int file);
+    virtual void scenario_make_player(short a, unsigned char b, unsigned char c,
+                                      unsigned char d, char* name);
+    virtual void scenario_make_map(int a);
+    virtual unsigned char load_scenario(void* info);
+    virtual unsigned char load_scenario(char* file, void* info);
+    virtual void load_scenario1(int a, void* info);
+    virtual void load_scenario2(int a, void* info);
+    virtual void load_scenario3(int a, void* info);
+    virtual void load_scenario4(int a, void* info);
+    virtual void load_scenario5(int a, void* info);
+    virtual void load_scenario6(int a, void* info);
+    virtual void load_scenario7(int a, void* info);
+    virtual void load_scenario8(int a, void* info);
+    virtual void logStatus(void* file, int a);
+    virtual ~RGE_Game_World();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(void* info);
+    virtual unsigned char data_load(char* a, char* b);
+    virtual unsigned char init(char* a, void* driver, void* handler);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int a);
+    virtual unsigned char load_game(char* file);
+    virtual unsigned char new_game(void* info, int a);
+    virtual unsigned char new_scenario(void* info, int a);
+    virtual unsigned char save_game(char* file);
+    virtual void base_save(char* file);
+    virtual void base_save(int file);
+    virtual unsigned char save_scenario(char* file);
+    virtual void* get_scenario_info(char* file);
+    virtual void pause(unsigned char flag);
+    virtual void scenario_init(RGE_Game_World* world);
+    virtual void scenario_init(int a, RGE_Game_World* world);
+    virtual int addObject(void* object);
+    virtual int removeObject(int id);
+    char gap_04[0x24];
     RGE_Map* map;
 };
 
 class RGE_Base_Game {
 public:
-    char gap_00[0x3F4];
+    virtual ~RGE_Base_Game();
+    char gap_00[0x3F0];
     RGE_Game_World* world;
 };
 
@@ -82,6 +180,9 @@ public:
                                            unsigned char p10);
     virtual unsigned char alignment(float& x, float& y, RGE_Game_World* world,
                                     unsigned char mode);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* object);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
 
     unsigned char master_type;
     char pad_05[3];
@@ -104,7 +205,56 @@ public:
     float radius_x;
     float radius_y;
     float radius_z;
-    char gap_3C[0xAC - 0x3C];
+    void* selected_sound;
+    void* created_sound;
+    void* death_sound;
+    short death_spawn_obj_id;
+    unsigned char sort_number;
+    unsigned char can_be_built_on;
+    short button_pict;
+    unsigned char hide_in_scenario_editor;
+    unsigned char pad_4F;
+    short portrait_pict;
+    unsigned char available;
+    unsigned char pad_53;
+    short tile_req1;
+    short tile_req2;
+    short center_tile_req1;
+    short center_tile_req2;
+    float construction_radius_x;
+    float construction_radius_y;
+    unsigned char elevation_flag;
+    unsigned char fog_flag;
+    short terrain;
+    unsigned char movement_type;
+    unsigned char pad_69;
+    short attribute_type_held[3];
+    float attribute_amount_held[3];
+    short attribute_max_amount;
+    unsigned char pad_7E[2];
+    float attribute_rot;
+    float multiple_attribute_mod;
+    unsigned char attribute_flag[3];
+    unsigned char area_effect_object_level;
+    unsigned char combat_level;
+    unsigned char select_level;
+    unsigned char map_draw_level;
+    unsigned char unit_level;
+    unsigned char map_color;
+    unsigned char attack_reaction;
+    unsigned char convert_terrain_flag;
+    unsigned char damage_sprite_num;
+    void* damage_sprites;
+    long help_string_id;
+    long help_page_id;
+    long hotkey_id;
+    unsigned char recyclable;
+    unsigned char track_as_resource;
+    unsigned char create_doppleganger_on_death;
+    unsigned char resource_group;
+    unsigned char draw_flag;
+    unsigned char draw_color;
+    unsigned char pad_AA[2];
     float outline_radius_x;
     float outline_radius_y;
     float outline_radius_z;

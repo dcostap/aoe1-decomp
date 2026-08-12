@@ -40,6 +40,12 @@
 //   testing matched the exact donor style but emitted no change.
 // - follow-5472B0-r1: a scoped allocation block with one final return restored
 //   the shared-tail shape but caused 203 bytes of broad drift; rolled back.
+// - This TU pass restored the decompiler-supported index assignment before
+//   the hit return. The explicit zero test is codegen-duplicate, but the
+//   natural assignment form reduces the body to 265B and a 37-byte diff.
+//   Kept it as the best readable reconstruction; shared EH teardown remains.
+// - Replaced the equivalent ternary with a failure-only assignment. VC5
+//   emitted the same 265B/37-byte result, so the clearer form remains.
 
 #include <stdlib.h>
 #include <string.h>
@@ -79,7 +85,9 @@ long RGE_Zone_Map_List::create_zone_map(float* table, long count)
 
     for (i = 0; i < this->zone_map_num; i++) {
         if (this->zone_maps[i]->check_info(table, count) != 0) {
-            return this->zone_maps[i]->do_zone_map() ? i : -1;
+            if (this->zone_maps[i]->do_zone_map() == 0)
+                i = -1;
+            return i;
         }
     }
 

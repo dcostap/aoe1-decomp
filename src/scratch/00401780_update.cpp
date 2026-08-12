@@ -22,6 +22,15 @@
 // - Explicit global target-notify tails and case-4-first handler permutations
 //   remained structurally worse despite better call-site alignment. The clean
 //   canonical switch is retained.
+// Fresh bounded pass (tu-actatak-401780):
+// - Rechecked the packet, original dispatch and call map, same-TU update donor,
+//   and action-list ABI. Reordering outer cases 4/6/7/2/1/13 reached call-set
+//   parity but added 74 bytes and was rolled back.
+// - A typed shared 0x1F9 notification tail reached call-count parity but added
+//   66 bytes and reduced block shape. It was diagnostic only and was rolled back.
+// - The clean typed state machine remains the best source reconstruction at
+//   592 bytes of positional drift. The first structural gap is outer dispatch;
+//   the missing vslot+0x5C site remains unresolved without opaque steering.
 // Remaining lead: align the nested action-list switch/case placement and the
 //   shared ally/inside-target notification tails; do not restore raw scaffolding.
 // Main-agent audit restored canonical world/action destructor ownership;
