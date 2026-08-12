@@ -24,6 +24,10 @@
 // - Restored the audited clean source. Best current evidence remains 320/323
 //   bytes, first mismatch 0051884A: VC5 keeps the param_1 load after jge and
 //   colors 100/50 plus the map_type reload differently from the oracle.
+// - Fresh same-TU donor review of setupEgyptian, setupBabylonian, setupHittite,
+//   and setupMacedonian confirms direct int* table ownership and the +0x238
+//   playerAI / deathMatch / difficulty surface. No shared field or type change
+//   is justified; retain the named real fields as direct table indices.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.

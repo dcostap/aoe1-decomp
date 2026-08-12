@@ -18,6 +18,10 @@
 // - a focused 24-way permutation of the four individual stores found no exact
 //   variant. The diagnostic alias/order source was restored; remaining evidence
 //   is a localized VC5 scheduling/register basin, not an unknown call or layout.
+// - Same-TU donor review of setupBabylonian, setupHittite, setupEgyptian, and
+//   setupMacedonian confirms the direct int* build-list array and shared
+//   playerAI/game method surface. The donor-style outer difficulty branch was
+//   retested and was codegen-identical; retain the natural direct source.
 
 struct AIModule {
     void __cdecl logCommonHistory(char* msg);
