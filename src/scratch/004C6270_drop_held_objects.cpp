@@ -10,10 +10,17 @@
 //   find_drop_location call, and moving next-node reload into the retry loop
 //   improved the diagnostic diff, but broad this/index/register and CFG drift
 //   remains;
-// - final validated candidate: 350 rebuilt bytes versus 387 original,
+// - prior validated candidate: 350 rebuilt bytes versus 387 original,
 //   64.06% instruction-shape similarity, four ordered calls. Left in scratch
 //   after the bounded pass; next lead is recovering natural source lifetimes
 //   that reproduce the proven overlapping stack homes without opaque padding.
+// - current pass: declaring the retry index before count improved the
+//   diagnostic diff to 339 bytes and 64.84% shape; no call or frame change.
+// - direct node-object rereads reduced the rebuilt size but moved this into
+//   EBP and worsened block shape; restored the held alias.
+// - embedding count in the local aggregate and adding radius pointer locals
+//   were rejected: the former changed entry ownership, the latter made a
+//   0xBC frame. Natural declaration-scope variants were codegen duplicates.
 
 class RGE_Master_Static_Object { public: char gap_00[0x30]; float radius_x; float radius_y; };
 class RGE_Static_Object;
@@ -56,9 +63,9 @@ struct DropLocals {
 
 unsigned char RGE_Static_Object::drop_held_objects(int mode)
 {
+    int i = 1;
     DropLocals l;
     unsigned char count = 0;
-    register int i = 1;
     l.drop_x[1] = this->world_x;
     l.drop_y[1] = this->world_y;
     l.radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
