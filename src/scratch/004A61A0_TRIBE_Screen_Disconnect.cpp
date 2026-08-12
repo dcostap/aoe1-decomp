@@ -77,11 +77,12 @@
 
 struct tagRECT;
 class TDrawArea;
-enum PositionMode {
-    POSITION_MODE_DEFAULT = 0
-};
 class TPanel {
 public:
+    enum PositionMode {
+        POSITION_MODE_DEFAULT = 0
+    };
+
     virtual ~TPanel();
     virtual long setup(TDrawArea* draw_area, TPanel* parent, long left,
                        long top, long width, long height,
@@ -139,12 +140,12 @@ public:
     virtual long char_action(long key, short repeat);
     virtual long action(TPanel* panel, long command, unsigned long p3,
                         unsigned long p4);
-    virtual void get_true_render_rect(tagRECT* rect);
+    virtual void get_true_render_rect(tagRECT& rect);
     virtual int is_inside(long x, long y);
     virtual void set_focus(int focus);
     virtual void set_tab_order(TPanel** panels, short count);
     virtual void set_tab_order(TPanel* previous, TPanel* next);
-    virtual unsigned char get_help_info(char** text, long* id, long a3, long a4);
+    virtual unsigned char get_help_info(char*& text, long& id, long a3, long a4);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
     virtual void take_snapshot();
@@ -178,6 +179,8 @@ public:
     char gap_F4[0x384];
 
     virtual void draw_background(int mode);
+
+protected:
     virtual void set_ideal_size(long width, long height);
     virtual int create_button(TPanel* parent, TButtonPanel** out, char* name,
                               char* text, long a5, long a6, long a7, long a8,

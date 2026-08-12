@@ -84,12 +84,31 @@ order before phase entry.
 
 After round 2, a matching worker added the five executable-proven inherited
 overrides. The worker also corrected overloaded virtual declaration order.
-It compared all 76 emitted vtable slots with executable vtable `00573518`.
-Every slot now matches the executable owner and target.
+It compared all 74 emitted vtable slots with executable vtable `00573518`.
+Every slot matched by owner and method name. A later review found four
+remaining decorated-symbol differences.
 
 The main agent revalidated the constructor. Its 219-byte output and four calls
 remain unchanged. The known 19-byte EH-tail blocker also remains unchanged.
 
+### Round 3 — fresh blind cohort after override correction, 2026-08-12
+
+- `sa-947bbb6b` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-30a90570-r2` — `deepseek/deepseek-v4-flash`, high, pending
+
+Luna confirmed constructor behavior, cleanup, and the 74-slot table order.
+It found four definite ABI declaration defects:
+
+- `set_positioning` used a global enum instead of `TPanel::PositionMode`;
+- `get_true_render_rect` used a pointer instead of a reference;
+- `get_help_info` used pointers instead of references;
+- slots 57 through 73 used public symbols instead of protected
+  `TEasy_Panel` symbols.
+
+The main agent corrected these declarations. The constructor remains 219 bytes
+with four ordered calls and the same EH-tail drift.
+
 ## Final decision
 
-Pending a fresh blind cohort after the complete vtable correction.
+Hold until the DeepSeek round 3 result arrives and the corrected 74-slot ABI
+surface receives final adjudication.
