@@ -55,6 +55,12 @@
 // - Moving the row-count initialization before orientation created an 0x8 frame
 //   and 265B/261 strict bytes; rolled back. Remaining gap is the original
 //   orientation-arm setup/home allocation and branch-local SIB schedule.
+// orch2-4BA9E0-row probe (2026-08-12):
+// - Applied the exact same-TU donor topology from shape_mirror_unclipped and
+//   shape_shadow_unclipped: assign d in each orientation arm, home it through
+//   x, assign rows inside the positive height guard, and reload d from x at
+//   each row end. The existing color-table RLE body is unchanged. Result:
+//   exact 265B/0-diff match; promote this readable typed reconstruction.
 
 #include <string.h>
 #pragma function(memset)
@@ -111,18 +117,20 @@ unsigned char TShape::shape_mirror_color_trans_unclipped(
     long height = sh->ymax - sh->ymin + 1;
     unsigned char* p = (unsigned char*)(sh + 1);
     long m;
-    if (draw_area->Orien < 1)
-        m = (y - draw_area->Height + 1) * pitch;
-    else
-        m = y * pitch;
     long rows;
-    unsigned char* row = draw_area->Bits + m + x + 1;
+    unsigned char* d;
     unsigned char c;
+
+    if (draw_area->Orien < 1)
+        d = draw_area->Bits + (y - draw_area->Height + 1) * pitch + x + 1;
+    else
+        d = draw_area->Bits + y * pitch + x + 1;
+
+    x = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
-            unsigned char* d = row;
             unsigned char done = 0;
             do {
                 unsigned char b = *p++;
@@ -149,7 +157,8 @@ unsigned char TShape::shape_mirror_color_trans_unclipped(
                     }
                 }
             } while (!done);
-            row += pitch;
+            x += pitch;
+            d = (unsigned char*)x;
         } while (--rows);
     }
 
