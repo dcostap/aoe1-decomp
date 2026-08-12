@@ -44,6 +44,14 @@
 // the 0x10 frame, EBX/ESI saves, and 77.32% exact-block coverage (diff 293),
 // but the first prologue hunk remained different.  Both diagnostics were
 // rolled back.  The natural indexed scan remains the clean source.
+//
+// Fresh session evidence (refill-4DE1F0-r1): naming the md->object result
+// before the null guard matches the binary's explicit RGE_Static_Object local.
+// It restores all 97 instruction shapes and reduces drift from 298 to 6
+// bytes.  The remaining six bytes are only EDX/EDI coloring for the record id
+// and itemsToDefend count.  Scoped typed entry, list aliases, local lifetime
+// changes, and declaration order changes were duplicates or structural losses.
+// The best source keeps named nested ownership and the explicit object result.
 
 #include <stddef.h>
 
@@ -143,7 +151,8 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
     int numValues;
     int objectId;
 
-    if (this->md->object(target_obj_id) == 0)
+    RGE_Static_Object* target = this->md->object(target_obj_id);
+    if (target == 0)
         return 0;
 
     bestEntry = 0;

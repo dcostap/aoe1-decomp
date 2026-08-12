@@ -18,6 +18,9 @@
 // 8: Reverse source index live across the negative guard — 284-byte output; rolled back.
 // 9: Named reverse-copy value — 284-byte output and register cascade; rolled back.
 // 10: Moved the first positive-loop i=0 before YLine_Size-scroll_y and reused i — 166-byte diff, recovering the early xor eax and two exact blocks; remaining drift starts in the negative-loop index setup.
+// refill-r1: Exact view.cpp donors confirm the typed DClipInfo arrays and do/while idiom; the first-index guard `i + scroll_y >= 0` moved the negative block to 163 bytes, 94.00% shape, and 84.69% exact blocks.
+// refill-r1: Member first-index guards and declaration order were tested without adding source-index locals; the focused eight-variant guard lab found no exact result and kept the same 261-byte size.
+// refill-r1: A natural pretest while form reproduced the older 166-byte basin; restored the condition-only do/while reconstruction and retained the 163-byte first-index result.
 // BLOCKER: TU-context register allocation cascade (scroll_y in ebx vs edx)
 // Best retained source: typed same-TU DClipInfo layout with direct member arrays,
 // natural do/while copies, and switch fall-through; 166-byte diff, 92.16% shape,
@@ -94,7 +97,7 @@ void DClipInfo_List::Scroll(int scroll_x, int scroll_y)
         int neg = -scroll_y;
         int i = this->YLine_Size - 1;
 
-        if (i >= neg) {
+        if (i + scroll_y >= 0) {
             do {
                 int next = i - 1;
                 this->Draw_Clip_Nodes[i] = this->Draw_Clip_Nodes[i + scroll_y];

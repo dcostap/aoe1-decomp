@@ -25,6 +25,16 @@
 //   aligned and the ABI/layout corrections are retained as canonical source.
 // - Separate declaration/assignment for both radius temporaries was a
 //   codegen duplicate. Current source keeps the natural initialized order.
+// - Direct master_obj accesses removed the early EDI save and made the guard
+//   block exact; the deferred-range form was 289 bytes and 276-byte diff.
+// - Keeping the natural range temporary before angle/trig with those direct
+//   accesses restored 305 bytes, 178-byte diff, 75.93% shape, and exact guard
+//   and tail blocks. The first hunk now differs only at radius load scheduling:
+//   rebuilt MOVs radius_y to a stack home, while original starts FLD radius_y.
+// - A short-lived radius-master alias and direct radius expression were
+//   codegen duplicates or slightly worse. Rolled both back. Current source
+//   retains direct master_obj ownership, initialized radius locals, and the
+//   pre-trig range lifetime; no compiler-steering source was retained.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
@@ -151,11 +161,12 @@ public:
 
 unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Object* target)
 {
-    RGE_Master_Combat_Object* master = this->master_obj;
-    short missile_id = master->missile_id;
+    short missile_id = this->master_obj->missile_id;
     if (missile_id >= 0) {
-        float radius_y = master->radius_y;
-        float radius_x = master->radius_x;
+        float radius_y = this->master_obj->radius_y;
+        float radius_x = this->master_obj->radius_x;
+        float range = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
+            this->master_obj->weapon_range + 6.0f;
         float angle1 = this->angle;
         float angle2 = this->angle;
         float c = (float)cos(angle1);
@@ -164,13 +175,12 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
         float s = (float)sin(angle2);
 
         RGE_Missile_Object* missile = (RGE_Missile_Object*)entry->make_new_obj(owner,
-            this->world_x + c * master->weapon_offset_y - s * master->weapon_offset_x,
-            this->world_y + s * master->weapon_offset_y + c * master->weapon_offset_x,
-            this->world_z + master->weapon_offset_z);
+            this->world_x + c * this->master_obj->weapon_offset_y - s * this->master_obj->weapon_offset_x,
+            this->world_y + s * this->master_obj->weapon_offset_y + c * this->master_obj->weapon_offset_x,
+            this->world_z + this->master_obj->weapon_offset_z);
 
         missile->init_missile(target, x, y, z,
-            (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
-                master->weapon_range + 6.0f);
+            range);
         this->notify(this->id, this->id, 0x200, 0x258, -1, 0);
         return 1;
     }

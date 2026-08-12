@@ -40,6 +40,8 @@
 // tried the canonical TPanel::is_inside name and per-arm returns with the inherited player surface; emitted code unchanged
 // fresh panel-donor pass: unqualified inherited get_string calls emit the same 288-byte tail-merged basin
 // mixed explicit TPanel qualification in the first arm also emits the same basin; restored one natural unqualified surface
+// corrected the local RGE_Player and TPanel ownership layouts from inventory/type donors; emitted bytes stayed unchanged
+// added the exact TPanel string overload surface and qualified all four inherited calls; emitted bytes stayed unchanged
 // left in scratch: natural four-arm source is 288 bytes because VC5 tail-merges the first two arms; original is 326 bytes with four duplicated call sites
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
@@ -47,13 +49,70 @@ extern "C" long __cdecl __ftol(void);
 
 extern int TRIBE_Panel_Inven_vftable;
 
+struct PanelNode;
+
 class TPanel {
 public:
-    char gap_04[0x08];
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
     long pnl_x;
-    char gap_10[0x5C];
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panelNameValue;
+    void* render_area;
+    long clip_rect[4];
+    int position_mode;
+    int need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
     int active;
-    char gap_70[0x84];
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    void* clip_rgn;
+    long render_rect[4];
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 
     virtual void vf00(void);
     virtual void vf04(void);
@@ -119,13 +178,29 @@ public:
     virtual void vfF4(void);
     virtual void vfF8(void);
 
+    int get_string(int string_id, char* buffer, int length);
     char* get_string(int string_id);
 };
 
 class RGE_Player {
 public:
     virtual ~RGE_Player(void);
-    char gap_04[0x4C];
+    char gap_04[0x1E];
+    short master_object_num;
+    void* master_objects;
+    void* objects;
+    void* sleeping_objects;
+    void* doppleganger_objects;
+    void* victory_conditions;
+    void* visible;
+    void* world;
+    void* doppleganger_creator;
+    char* name;
+    unsigned char type;
+    unsigned char gap_49;
+    short id;
+    short attribute_num;
+    unsigned char gap_4E[0x02];
     float* attributes;
 };
 
@@ -153,16 +228,16 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str, long& out_val, lo
     long pnl_x = this->pnl_x;
 
     if (x < pnl_x + 0x37) {
-        sprintf(out_str, get_string(0x1D4EE), (int)this->player->attributes[1]);
+        sprintf(out_str, TPanel::get_string(0x1D4EE), (int)this->player->attributes[1]);
         out_val = -1;
     } else if (x < pnl_x + 0x6E) {
-        sprintf(out_str, get_string(0x1D4ED), (int)this->player->attributes[0]);
+        sprintf(out_str, TPanel::get_string(0x1D4ED), (int)this->player->attributes[0]);
         out_val = -1;
     } else if (x < pnl_x + 0xA5) {
-        sprintf(out_str, get_string(0x1D4EF), (int)this->player->attributes[3]);
+        sprintf(out_str, TPanel::get_string(0x1D4EF), (int)this->player->attributes[3]);
         out_val = -1;
     } else {
-        sprintf(out_str, get_string(0x1D4F0), (int)this->player->attributes[2]);
+        sprintf(out_str, TPanel::get_string(0x1D4F0), (int)this->player->attributes[2]);
         out_val = -1;
     }
 

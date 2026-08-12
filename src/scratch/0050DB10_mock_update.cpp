@@ -42,6 +42,11 @@
 // natural typed source: remaining structural gap is the VC5 redundant
 // post-next null compare/move order at the first rewind scan and its shifted
 // predecessor block; no source-quality justification remains for scaffolding.
+// TU pass (tu-timeline-50DB10): reused the update function's typed timeline
+// event/list ownership and four-call tail context. A separate next assignment
+// plus post-assignment null test improved the diagnostic to 524B/460 diff, but
+// VC5 still emitted compare-before-move and the source was less natural. Restored
+// the clean 520B typed scan; the structural rewind blocker remains.
 
 struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };

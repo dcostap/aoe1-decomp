@@ -27,6 +27,15 @@
 //   size/frame candidate, but no exact or source-quality winner emerged.
 //   Restored the clean typed source; unresolved drift starts at the pre-save
 //   parameter-index load and includes the broad register/liveness basin.
+// - Separate named point-x/point-y locals moved the first mismatch from +3 to
+//   +4 and improved the positional diff from 331 to 325 bytes.  This retained
+//   the natural PointMaker/Point ownership and produced the pre-save index
+//   load, but VC5 still chose different x/y register roles than the oracle.
+// - Explicit bound copies, initialized derived bounds, const coordinates,
+//   donor header context, coordinate declaration-order, and delayed y
+//   assignment were duplicate or regressed.  Restored the best separate-
+//   coordinate source; the remaining blocker is the first setup block's
+//   register coloring and liveness.
 
 class PrimaryPt {
 public:
@@ -97,19 +106,18 @@ public:
 };
 
 void PointMaker::DrawCurrentBranchIntoProbArray(int point_index) {
+    int point_x = Point[point_index].x;
     int radius;
-    int point_y;
+    int point_y = Point[point_index].y;
     int min_y;
     int max_x;
     int min_x;
     int max_y;
     int ring;
 
-    min_x = Point[point_index].x;
     radius = BranchRadius;
-    point_y = Point[point_index].y;
-    max_x = radius + min_x;
-    min_x = min_x - radius;
+    max_x = radius + point_x;
+    min_x = point_x - radius;
     min_y = point_y - radius;
     max_y = point_y + radius;
 
