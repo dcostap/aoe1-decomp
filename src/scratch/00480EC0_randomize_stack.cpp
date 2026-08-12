@@ -61,6 +61,12 @@
 // - orch-00480EC0-L: adding donor-era <stdlib.h> context was codegen-neutral.
 // - orch-00480EC0-L final: clean named Map_Stack[100] source remains in scratch;
 //   unresolved lead is real local layout plus arithmetic-before-node scheduling.
+// - orch2-480EC0-overlay: test the binary-backed typed overlap: sub_stacks[0].x
+//   owns the collection byte offset, each sub_stacks[i].y is a bucket sentinel,
+//   and sub_stacks[0].prev starts the paired collection cursors.
+//   This restores the 0x968 frame and 237-byte size, reaching diff 44 / 95.12%
+//   shape. The remaining drift is receiver/cursor coloring and random-call
+//   scheduling, so keep this as the best binary-backed reconstruction.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -82,38 +88,45 @@ public:
 
 void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
 {
+    struct Randomize_Stack_State {
+        int outer;
+        Map_Stack sub_stacks[100];
+        int trailer;
+    } state;
     int i;
-    Map_Stack sub_stacks[100];
 
-    // Phase 1: Initialize all 100 sub_stacks
+    // The binary reuses typed fields as overlapping local storage. The y field
+    // starts each bucket sentinel, while x later stores the collection offset.
     for (i = 0; i < 100; i++) {
-        init_stack(&sub_stacks[i]);
+        init_stack((Map_Stack*)&state.sub_stacks[i].y);
     }
 
-    // Phase 2-3: Outer loop (2 iterations)
-    for (int outer = 2; outer != 0; outer--) {
-        // Phase 2: Distribute param_1's linked list into random sub_stacks
+    state.outer = 2;
+    while (state.outer != 0) {
         while (param_1->next != 0) {
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1E8);
             r = (r * 100) / 0x7FFF;
-            add_stack_node(&sub_stacks[r], param_1->next);
+            add_stack_node((Map_Stack*)&state.sub_stacks[r].y, param_1->next);
         }
 
-        // Phase 3: Collect sub_stacks back into param_1's list
-        int stack_index = 0;
-        while (stack_index < 100) {
-            Map_Stack* first = &sub_stacks[stack_index];
-            Map_Stack* second = &sub_stacks[stack_index + 1];
+        state.sub_stacks[0].x = 0x18;
+        Map_Stack** first = &state.sub_stacks[0].prev;
+        while (state.sub_stacks[0].x < 0x978) {
+            Map_Stack** second = (Map_Stack**)((char*)&state.sub_stacks[0].prev + state.sub_stacks[0].x);
 
-            while (first->next != 0 || second->next != 0) {
-                if (first->next != 0) {
-                    add_stack_node(param_1, first->next);
+            while (*first != 0 || *second != 0) {
+                if (*first != 0) {
+                    add_stack_node(param_1, *first);
                 }
-                if (second->next != 0) {
-                    add_stack_node(param_1, second->next);
+                if (*second != 0) {
+                    add_stack_node(param_1, *second);
                 }
             }
-            stack_index += 2;
+
+            first = (Map_Stack**)((char*)first + 0x30);
+            state.sub_stacks[0].x += 0x30;
         }
+
+        state.outer--;
     }
 }

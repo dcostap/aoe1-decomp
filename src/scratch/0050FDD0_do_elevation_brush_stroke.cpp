@@ -87,6 +87,12 @@
  * direct endpoint expansion and explicit common cleanup-bound mutation; the residual
  * sub/load ordering is localized to x/y reverse arms. A final explicit unsigned-byte
  * cast probe worsened to 18 bytes and was rolled back.
+ *
+ * orch2-50FDD0-order pass: sequential r-then-c updates in both reverse arms were
+ * codegen duplicates; a separate computed x1 value was also a duplicate. Reordering
+ * both reverse arms to apply both r updates before c worsened the result to 27 bytes.
+ * Restored the pinned 7-byte clean source; call ABI, behavior, and cleanup calls stay
+ * unchanged.
  */
 
 class RGE_Map {

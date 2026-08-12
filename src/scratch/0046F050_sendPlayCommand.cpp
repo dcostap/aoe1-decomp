@@ -35,10 +35,16 @@
 //   full class surface can alter VC5 coloring); (2) indexed sel_list[i] loop so the countdown counter becomes
 //   strength-reduced IR rather than a source local; (3) top-level n + do/while(--n) with nonvirtual definition,
 //   mirroring the 0046F010/0046F140 donor shapes that put vtable-derived pointers in EBP and counters in EBX.
+// Focused ABI pass (orch2-46F050-abi):
+// - Replaced the dummy prefix with the inventory RGE_Player order through the real +0x50 overload,
+//   including float sendUnitAIOrder parameters and the real group-command declarations.
+// - The focused ABI surface compiled to the same 237-byte function and 7-byte register-coloring drift;
+//   retained the real declarations because they are the canonical class evidence.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };
 class RGE_Game_World { public: char gap_00[0xA0]; AIPlayBook* playbook; };
+struct XYZBYTEPoint;
 
 class RGE_Static_Object {
 public:
@@ -55,12 +61,65 @@ public:
 
 class RGE_Player {
 public:
-    VPAD8(0) VPAD4(8)
-    virtual void send_signal(int player_id, int p1, int cmd, int a, int b, int f1, int f2, int f3, int f4, int one, int zero, int hundred);
-    VPAD32(13) VPAD4(45)
-    virtual unsigned char v_c4(int a, int* p, int b, int flag);
-    VPAD2(50)
-    virtual unsigned char v_d0(int a);
+    virtual ~RGE_Player();
+    virtual void set_game_status(unsigned char value);
+    virtual void do_resign(int value);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int value);
+    virtual int isEnemy(int value);
+    virtual int isAlly(int value);
+    virtual int isNeutral(int value);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int player, int stance);
+    virtual void loadAIInformation(char* a, char* b, char* c, int d, int e);
+    virtual void sendUnitAIOrder(int a, int b, int c, int d, int e,
+                                 float f, float g, float h, float i,
+                                 int j, int k, int l);
+    virtual void processAIOrder(int a, int b, int c, int d, int e,
+                                float f, float g, float h, float i,
+                                int j, int k, int l);
+    virtual void kickAI(int reason);
+    virtual int strategicNumber(int number);
+    virtual void sendGameOrder(RGE_Static_Object* object, RGE_Static_Object* target,
+                               float x, float y);
+    virtual void sendAddWaypointCommand(int count, XYZBYTEPoint* points, int flags);
+    virtual void processAddWaypointCommand(int count, XYZBYTEPoint* points, int flags);
+    virtual void sendPlayCommand(int a, int* b, int c, int d, int e);
+    virtual void sendPlayCommand(int a, int b, int c);
+    virtual int sendAICommand(int a, int b, int c, int d, int e);
+    virtual int objectCostByType(int type);
+    virtual void trackUnitGather(int a, int b, int c);
+    virtual RGE_Static_Object* make_scenario_obj(float x, float y, float z, short id,
+                                                 unsigned char type, float rotation);
+    virtual void scenario_save(int file_handle);
+    virtual void scenario_load(int file_handle, long* data, float version);
+    virtual void scenario_postsave(int file_handle);
+    virtual void scenario_postload(int file_handle, long* data, float version);
+    virtual void load(int file_handle);
+    virtual void add_attribute_num(short attribute, float amount, unsigned char flag);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int file_handle);
+    virtual void save2(int file_handle);
+    virtual void save_info(int file_handle);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long type, float x, float y, float z, int id);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int a, int* b, int* c);
+    virtual unsigned char command_make_move(RGE_Static_Object* object, float x, float y);
+    virtual unsigned char command_make_work(RGE_Static_Object* object, float x, float y);
+    virtual unsigned char command_make_do(RGE_Static_Object* object, float x, float y);
+    virtual unsigned char command_stop();
+    virtual unsigned char command_place_object(short type, float x, float y, float z);
+    virtual unsigned char command_add_attribute(int attribute, float amount);
+    virtual unsigned char command_give_attribute(int player, int attribute, float amount);
+    virtual unsigned char command_formation(int formation);
+    virtual unsigned char command_stand_ground();
+    virtual unsigned char command_create_group(int a, int* p, int count, float flag);
+    virtual unsigned char command_add_to_group(int a, int b, float flag);
+    virtual unsigned char command_remove_from_group(int a, int b);
+    virtual unsigned char command_destroy_group(int a);
 
     char gap_04[0x38];
     RGE_Game_World* world;      // +0x3C
@@ -69,7 +128,6 @@ public:
     char gap_4C[0xE8];
     RGE_Static_Object* sel_list[25]; // +0x134
 
-    virtual void sendPlayCommand(int param_1, int param_2, int param_3);
 };
 
 void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3)
@@ -79,11 +137,11 @@ void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3)
     int* selectedUnit;
     RGE_Static_Object** source;
 
-    this->v_d0(param_1);
+    this->command_destroy_group(param_1);
     AIPlay* play = this->world->playbook->play(param_3);
     if (play == 0) {
-        this->send_signal((int)this->id, param_1, 0x2d7, -1, -1,
-                          0xbf800000, 0xbf800000, 0xbf800000, 0xbf800000, 1, 0, 100);
+        this->sendUnitAIOrder((int)this->id, param_1, 0x2d7, -1, -1,
+                              -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
         return;
     }
 
@@ -100,8 +158,8 @@ void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3)
     }
 
     if (selectedCount != 0) {
-        this->v_c4(param_1, selectedUnits, selectedCount, 0x40000000);
-        this->send_signal((int)this->id, param_1, 0x2d6, param_2, param_3,
-                          0xbf800000, 0xbf800000, 0xbf800000, 0xbf800000, 1, 0, 100);
+        this->command_create_group(param_1, selectedUnits, selectedCount, 2.0f);
+        this->sendUnitAIOrder((int)this->id, param_1, 0x2d6, param_2, param_3,
+                              -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
     }
 }

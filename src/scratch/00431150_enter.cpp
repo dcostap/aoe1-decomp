@@ -58,6 +58,10 @@
 // Adding stdlib.h was codegen-neutral (274B/65 diff). A 4-case tail lab was
 // diagnostic only and used default flags without the target /GX response file;
 // no variant was promoted. Restored the natural typed goto-fail source.
+// Fresh cfg probe (orch2-431150-cfg): combined donor-style `goto success` with
+// the current object/task/constructor `goto fail` paths. This is codegen-identical
+// to the pinned 274B/65-diff source; VC5 still emits separate success/failure
+// epilogues, so the single original FS-first tail remains unresolved.
 
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared
@@ -354,7 +358,7 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
                 RGE_Action* action2 = (RGE_Action*)this->actions->get_action();
                 short action_val = action2->func18();
                 if (action_val == 3)
-                    return 1;
+                    goto success;
             }
         }
     }
@@ -374,6 +378,8 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
 
     this->actions->delete_list();
     this->add_action(action_enter);
+
+success:
     return 1;
 
 fail:

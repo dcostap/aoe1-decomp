@@ -37,7 +37,7 @@
 //   declaration surface, and typing the p5 owner as RGE_Master_Moving_Object
 //   were codegen duplicates of the clean candidate.
 // - Interleaving range/min before target_z/target_y and adding coordinate aliases
-//   worsened the first block (34 bytes); delaying sprite_p7 until after flags
+//   worsened the first block (34 bytes); delaying wait_sprite until after flags
 //   worsened it to 52 bytes. All were rolled back.
 // Fresh bounded pass (wave21-actatak-01):
 // - Direct typed master-member fallback chains were structurally worse (240/243
@@ -47,7 +47,7 @@
 //   clean candidate; five register-qualified parameter variants were also one
 //   duplicate codegen group.
 // - Five standard-header context variants were codegen duplicates; a focused
-//   p7 assignment-order lab found no productive source shape. None displaced
+//   wait-sprite assignment-order lab found no productive source shape. None displaced
 //   the canonical typed constructor.
 // Fresh bounded pass (sa-2ceebd29-r1-004012B0):
 // - Explicit `this->` qualification on the initial stores was a codegen duplicate.
@@ -72,6 +72,10 @@
 // - No new source or layout lead displaced the canonical typed constructor.
 // Remaining lead: reconstruct the original Act_atak.cpp assignment/declaration
 // context for the first coordinate/range block; do not retain metric-only aliases.
+// Fresh bounded pass (orch2-4012B0-fields):
+// - Renamed the attack sprite fields to the type-reference ownership names
+//   move_sprite, fight_sprite, and wait_sprite without changing offsets or stores.
+//   The canonical class surface produced identical code (33-byte diff).
 //
 // Key structural insights confirmed:
 // - 11 stack params + this(ecx): (RGE_Action_Object*,float,float,float,RGE_Sprite*,
@@ -193,9 +197,9 @@ struct RGE_Action {
 
 struct RGE_Action_Attack : public RGE_Action {
     virtual ~RGE_Action_Attack();
-    RGE_Sprite* sprite_p5;
-    RGE_Sprite* sprite_p6;
-    RGE_Sprite* sprite_p7;
+    RGE_Sprite* move_sprite;
+    RGE_Sprite* fight_sprite;
+    RGE_Sprite* wait_sprite;
     float range;
     float min_range;
     short missile_frame;
@@ -222,9 +226,9 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3,
     min_range = p9;
     
     action_type = 9;
-    sprite_p5 = p5;
-    sprite_p6 = p6;
-    sprite_p7 = p7;
+    move_sprite = p5;
+    fight_sprite = p6;
+    wait_sprite = p7;
     missile_frame = p10;
     fire_frame = p11;
     need_to_attack = 0;
@@ -241,19 +245,19 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3,
         if (move_sprite == 0) {
             move_sprite = move_source->move_sprite;
         }
-        sprite_p5 = move_sprite;
+        this->move_sprite = move_sprite;
     }
     
     if (p6 == 0) {
         RGE_Action_Object* object = action_obj;
         RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)object->master_obj;
-        sprite_p6 = master->fight_sprite;
+        this->fight_sprite = master->fight_sprite;
     }
     
     if (p7 == 0) {
         RGE_Action_Object* object = action_obj;
         RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)object->master_obj;
-        sprite_p7 = master->sprite;
+        this->wait_sprite = master->sprite;
     }
     
     if (p8 == 0.0f) {
