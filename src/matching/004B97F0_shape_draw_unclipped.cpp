@@ -12,6 +12,11 @@
 // are included so the /Oi intrinsic pragma never activates; manual extern
 // declarations keep memcpy/memset as real calls with matching relocations.
 //
+// orch2-4B97F0-row (2026-08-12): adapted the exact 004BA900 donor pattern.
+// One d cursor carries the row start through incoming y's home; the row-end
+// reload advances y and restores d. Declaring rows before d preserves the
+// target homes while keeping typed forward RLE operations.
+//
 // baseline (kind=baseline): two-pointer reconstruction (outer d + inner w
 //   cursor), (b&1)==1 idiom, TShape_Caller local class. 239B rebuilt vs 232
 //   orig, shape 68.09%, prologue has sub esp,8 (extra c slot) and
@@ -134,30 +139,31 @@ unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long t
     int height = sh->ymax - sh->ymin + 1;
     unsigned char* p = (unsigned char*)(sh + 1);
     long pitch = da->AlignedWidth() * da->Orien;
-    long m;
-    if (da->Orien < 1)
-        m = (x - da->Height + 1) * pitch;
-    else
-        m = x * pitch;
-    unsigned char* d = da->Bits + m + y;
     long rows;
+    unsigned char* d;
+    unsigned char c;
+
+    if (da->Orien < 1)
+        d = da->Bits + (x - da->Height + 1) * pitch + y;
+    else
+        d = da->Bits + x * pitch + y;
+
+    y = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
             unsigned char done = 0;
-            unsigned char* w = d;
             do {
                 unsigned char b = *p++;
-                unsigned char c;
                 if ((b & 1) == 1) {
                     c = b >> 1;
                     if (c == 0) {
-                        w += *p;
+                        d += *p;
                         p++;
                     } else {
-                        memcpy(w, p, c);
-                        w += c;
+                        memcpy(d, p, c);
+                        d += c;
                         p += c;
                     }
                 } else {
@@ -166,13 +172,14 @@ unsigned char TShape::shape_draw_unclipped(TDrawArea* da, long y, long x, long t
                         done = 1;
                     } else {
                         unsigned char t = *p;
-                        memset(w, t, c);
-                        w += c;
+                        memset(d, t, c);
+                        d += c;
                         p++;
                     }
                 }
             } while (!done);
-            d += pitch;
+            y += pitch;
+            d = (unsigned char*)y;
         } while (--rows);
     }
 
