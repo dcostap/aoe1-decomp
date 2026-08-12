@@ -23,6 +23,16 @@
 // - final validated source remains the typed result-pointer reconstruction;
 //   exact size/frame/CFG/call order remain, with localized VC5 result/EH-tail
 //   drift unresolved after the 10-hypothesis budget.
+// - fresh pass: initialized and uninitialized scalar result forms, reversed
+//   declaration order, TU-style top-scoped task/action locals, and base-action
+//   typing were nonproductive or duplicate codegen.
+// - fresh best: use one result pointer as target through make_action, then
+//   preserve the target with a late action_target alias before reusing result
+//   for task/action status. This reaches 333 bytes, 77 differing bytes, and
+//   93.05% resync similarity with all calls aligned. Moving the alias before
+//   make_action swaps target/task registers and worsens the result to 93 bytes.
+//   Keep the late alias as the bounded source reconstruction; exact drift is
+//   localized to task/result scheduling and the final EH tail.
 // FLAGS: config/flags/004CB300_heal.rsp (/GX)
 
 class RGE_Action_Object;
@@ -82,22 +92,22 @@ public:
 };
 
 int TRIBE_Combat_Object::heal(int id, int flag) {
-    RGE_Static_Object* target = this->game->world->object(id);
-    RGE_Static_Object* result = target;
-    if (target != 0) {
-        if (flag == 0 && this->action_list->have_action() == 1 && this->action_list->get_action()->target_obj() == target && this->action_list->get_action()->action_id() == 0x69) {
+    RGE_Static_Object* result = this->game->world->object(id);
+    if (result != 0) {
+        if (flag == 0 && this->action_list->have_action() == 1 && this->action_list->get_action()->target_obj() == result && this->action_list->get_action()->action_id() == 0x69) {
             result = (RGE_Static_Object*)1;
             goto done;
         }
         if (this->action_list->have_action() == 1 && this->action_list->get_action()->action_id() == 0x69) {
-            this->action_list->get_action()->set_target(target, target->x, target->y, target->z);
+            this->action_list->get_action()->set_target(result, result->x, result->y, result->z);
             result = (RGE_Static_Object*)1;
             goto done;
         }
-        RGE_Task* old = this->make_action(target, target->x, target->y, target->z);
+        RGE_Task* old = this->make_action(result, result->x, result->y, result->z);
+        RGE_Static_Object* action_target = result;
         result = (RGE_Static_Object*)old;
         if (old == 0) goto done;
-        TRIBE_Action_Heal* action = new TRIBE_Action_Heal((RGE_Action_Object*)this, old, target);
+        TRIBE_Action_Heal* action = new TRIBE_Action_Heal((RGE_Action_Object*)this, old, action_target);
         result = (RGE_Static_Object*)action;
         if (action == 0) goto done;
         this->action_list->delete_list();
