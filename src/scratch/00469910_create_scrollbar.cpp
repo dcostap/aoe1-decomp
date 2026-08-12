@@ -25,37 +25,51 @@
 // paired create_vert_slider/create_horz_slider exact donors show the same persistent /GX
 // shared-failure-tail drift, so the remaining gap is compiler/EH block placement rather than
 // unresolved ownership, calls, or layout.
+// probe 2026-08-12: model the proven TPanel base for TEasy_Panel and TScrollBarPanel;
+// inherited field_D8 and draw_area ownership retain all offsets but emit identical bytes.
+// probe 2026-08-12: model TTextPanel as a TPanel-derived type and use implicit base conversion
+// for setup; the typed ABI is natural and byte-identical.
+// probe 2026-08-12: split the three proven success guards into nested positive if statements;
+// VC5 keeps the same 47-byte shared-failure-tail drift.
+// probe 2026-08-12: use declaration-only new TScrollBarPanel syntax; codegen is unchanged.
+// probe 2026-08-12: align set_bevel_info colors with the exact signed-int Pnl_scbr ABI;
+// codegen remains unchanged and the remaining issue is still the /GX cleanup tail.
 
 class TPanel;
 class TShape;
 
-class TScrollBarPanel {
+class TPanel {
 public:
-    virtual ~TScrollBarPanel();
-    char gap_04[0xD4];
+    virtual ~TPanel();
+    char gap_04[0x10];
+    long field_14;
+    long field_18;
+    char gap_1C[4];
+    void* draw_area;
+    char gap_24[0xB4];
     int field_D8;
-    char gap_DC[0xE8];
+    char gap_DC[0x18];
+};
+
+class TScrollBarPanel : public TPanel {
+public:
+    char gap_F4[0xD0];
     TScrollBarPanel();
     long setup(void* draw_area, TPanel* parent, long x, long y, long w, long h,
                char* a, char* b, char* c, char* d, long e, long f,
                TPanel* text_panel, long param_4, int vertical);
     void set_buttons(TShape* pics, int a, int b, int c, int d);
-    void set_bevel_info(int type, unsigned int c1, unsigned int c2, unsigned int c3, unsigned int c4, unsigned int c5, unsigned int c6);
+    void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
 };
 
-class TTextPanel {
+class TTextPanel : public TPanel {
 public:
+    char gap_F4[0x94];
     void set_scrollbar(TScrollBarPanel* sb, int value);
 };
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    char gap_04[0x10];
-    long field_14;
-    long field_18;
-    char gap_1C[4];
-    void* draw_area;       // +0x20
-    char gap_24[0xD0];
     long ideal_width;      // +0xF4
     long ideal_height;     // +0xF8
     char gap_FC[0x220];
@@ -77,24 +91,27 @@ int TEasy_Panel::create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPa
     long x = (this->field_14 * param_5) / this->ideal_width;
     long y = (param_6 * this->field_18) / this->ideal_height;
     long h = (param_8 * this->field_18) / this->ideal_height;
-    TScrollBarPanel* sb = new TScrollBarPanel();
+    TScrollBarPanel* sb = new TScrollBarPanel;
     *out = sb;
 
-    if (sb != 0 && sb->field_D8 == 0 &&
-        sb->setup(this->draw_area, parent, x, y, param_7, h, 0, 0, 0, 0, param_7, param_7, (TPanel*)text, param_4, 0) != 0) {
-        if (text != 0) {
-            text->set_scrollbar(*out, 0);
-        }
+    if (sb != 0) {
+        if (sb->field_D8 == 0) {
+            if (sb->setup(this->draw_area, parent, x, y, param_7, h, 0, 0, 0, 0, param_7, param_7, text, param_4, 0) != 0) {
+                if (text != 0) {
+                    text->set_scrollbar(*out, 0);
+                }
 
-        if (this->button_pics != 0) {
-            (*out)->set_buttons(this->button_pics, -1, 8, 10, 12);
-        }
+                if (this->button_pics != 0) {
+                    (*out)->set_buttons(this->button_pics, -1, 8, 10, 12);
+                }
 
-        if (this->use_bevels != 0) {
-            (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
-        }
+                if (this->use_bevels != 0) {
+                    (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                }
 
-        return 1;
+                return 1;
+            }
+        }
     }
 
     return 0;

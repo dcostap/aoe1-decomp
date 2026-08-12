@@ -18,6 +18,16 @@
 //   casts, and a strlen-only source alias all emitted the same code as the
 //   guarded form. Remaining drift is the first scan's address/register order
 //   and the resulting seven-byte loop/block displacement shift.
+// - Fresh pass baseline from the exact rdlg_lst and panel donors reproduced the
+//   prior 383-byte, 225-diff basin with all six ordered calls aligned.
+// - A source pointer kept for both strlen and strcpy changed the prologue and
+//   worsened the diff. It was rolled back.
+// - A focused six-form natural loop lab, direct char overlay, reversed addition,
+//   inline length, short-lived text alias, and indexed address spelling found no
+//   closer emitted group. The direct typed form remains the clean source.
+// - Remaining structural hunk is original EDI=list_info; rebuilt EAX=list_info,
+//   EDI=offset, then add. It shifts the seven-byte loop suffix; no ABI or call
+//   mismatch remains.
 
 #include <stdlib.h>
 #include <string.h>

@@ -15,6 +15,10 @@
 //    its raw offset plumbing is not retained as canonical source.
 // Left in scratch despite a former exact diagnostic: recover a natural typed source
 // that preserves the observed load order without artificial volatility or offsets.
+// Fresh bounded pass: corrected virtual RGE_Player layout, reference and direct
+// md->player forms, signed owner/id types, TribeMainDecision ownership, typed max
+// access, a combined eligibility condition, and comparison order. These produced
+// the same 281-byte basin or worsened it; the clean typed source is restored.
 
 struct XYPoint {
     int x;
