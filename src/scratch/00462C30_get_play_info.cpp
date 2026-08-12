@@ -27,6 +27,13 @@
 // guard (69-byte diagnostic with one folded call); asymmetric goto/common-store,
 // success-flag, and mixed inline/common-store forms either duplicated the tail,
 // grew the frame body, or returned to the 165-byte baseline.
+// Tail worker H1: applied resume_play's braced switch cases and case-local MCI
+// results to the common status-store goto family, replacing the playing-track
+// early return with done routing. Both MCI calls remained and the diff fell to
+// 82 bytes; VC5 still placed the status pointer at [esp+14] and split case 1's
+// success store from the common tail.
+// Tail worker H2: scoped the status record to the active-track block. This was
+// codegen-identical, so the H1 source remains the best structural reconstruction.
 
 #include <string.h>
 
@@ -89,8 +96,6 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
                                  int* loop_out,
                                  unsigned long* set_pos_out)
 {
-    tagMCI_STATUS_PARMS status_info;
-
     *music_type_out = this->music_type;
     *start_track_out = 0;
     *end_track_out = 0;
@@ -103,31 +108,47 @@ int TMusic_System::get_play_info(unsigned char* music_type_out,
         return 0;
     }
 
-    if (this->playing_track != 0) {
-        *start_track_out = this->start_track;
-        *end_track_out = this->end_track;
-        *current_track_out = this->current_track;
-        strcpy(file_name_out, this->file_name);
-        *loop_out = this->loop;
-        *set_pos_out = 0;
-
-        switch (this->music_type) {
-        case 1:
-            status_info.dwTrack = 2;
-            if (mciSendCommandA(this->device_id, 0x814, 0x102,
-                                &status_info.dwReturn) == 0) {
-                *set_pos_out = status_info.dwItem;
-            }
-            break;
-        case 2:
-            status_info.dwTrack = 2;
-            if (mciSendCommandA(this->device_id, 0x814, 0x102,
-                                &status_info.dwReturn) == 0) {
-                *set_pos_out = status_info.dwItem;
-            }
-            break;
-        }
+    if (this->playing_track == 0) {
+        goto done;
     }
 
+    {
+    tagMCI_STATUS_PARMS status_info;
+
+    *start_track_out = this->start_track;
+    *end_track_out = this->end_track;
+    *current_track_out = this->current_track;
+    strcpy(file_name_out, this->file_name);
+    *loop_out = this->loop;
+    *set_pos_out = 0;
+
+    switch (this->music_type) {
+    case 1: {
+        status_info.dwTrack = 2;
+        int result = mciSendCommandA(this->device_id, 0x814, 0x102,
+                                     &status_info.dwReturn);
+        if (result != 0) {
+            goto done;
+        }
+        goto set_position;
+    }
+    case 2: {
+        status_info.dwTrack = 2;
+        int result = mciSendCommandA(this->device_id, 0x814, 0x102,
+                                     &status_info.dwReturn);
+        if (result != 0) {
+            goto done;
+        }
+        break;
+    }
+    default:
+        goto done;
+    }
+
+set_position:
+    *set_pos_out = status_info.dwItem;
+    }
+
+done:
     return 1;
 }
