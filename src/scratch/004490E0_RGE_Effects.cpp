@@ -51,6 +51,8 @@
 //   source form. Reordering fields before virtual declarations was also duplicate.
 // Main-agent audit replaced the byte-offset record cursor with typed effect
 // indexing. The first effect still owns each name read, as the executable shows.
+// Readiness audit moved the allocated-list store after the repeated count test.
+// This preserves the executable's fault and concurrent-change order.
 // Best current source keeps the natural typed ownership and the binary-proven
 // count reread. Remaining gap is structural outer-entry sharing plus vtable
 // relocation context; no unresolved field layout or call ABI issue remains.
@@ -106,8 +108,8 @@ RGE_Effects::RGE_Effects(int fd) {
                     RGE_Effect_Command* allocated =
                         (RGE_Effect_Command*)calloc(fields->effect_list_num, 0x0C);
                     inner_count = 0;
-                    *list_ptr = allocated;
                     if (fields->effect_list_num > 0) {
+                        *list_ptr = allocated;
                         fd = 0;
                         do {
                             char* command = (char*)

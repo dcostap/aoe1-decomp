@@ -32,6 +32,9 @@
 // NOTE: Natural source keeps the proven RGE_Effect layout, full polymorphic ABI,
 // switch order, signed guards, and all call targets. Remaining drift is local
 // float argument staging plus jump-table placement/relocation context.
+// Readiness audit restored executable field-read behavior: cases 0, 4, and 5
+// read the full change_num3 short before narrowing it for the byte parameter.
+// Case 1 reads both shorts and the float before it tests change_num1.
 
 struct RGE_Effect_Command {
     unsigned char command; unsigned char _pad_0;
@@ -80,27 +83,37 @@ void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
             for (short i = 0; i < eff->effect_list_num; i++) {
                 RGE_Effect_Command* cmd = &eff->effect_list[i];
                 switch (cmd->command) {
-                case 4:
+                case 4: {
+                    short operation = cmd->change_num3;
                     player->modify_tobj_delta(cmd->change_num1, cmd->change_num2, cmd->change_amount,
-                                              (unsigned char)cmd->change_num3);
+                                              (unsigned char)operation);
                     break;
-                case 5:
+                }
+                case 5: {
+                    short operation = cmd->change_num3;
                     player->modify_tobj_percent(cmd->change_num1, cmd->change_num2, cmd->change_amount,
-                                                (unsigned char)cmd->change_num3);
+                                                (unsigned char)operation);
                     break;
-                case 0:
+                }
+                case 0: {
+                    short operation = cmd->change_num3;
                     player->modify_tobj(cmd->change_num1, cmd->change_num2, cmd->change_amount,
-                                        (unsigned char)cmd->change_num3);
+                                        (unsigned char)operation);
                     break;
-                case 1:
-                    if (cmd->change_num1 > -1) {
-                        if (cmd->change_num2 == 0) {
-                            player->new_attribute_num(cmd->change_num1, cmd->change_amount);
+                }
+                case 1: {
+                    short attribute = cmd->change_num1;
+                    short mode = cmd->change_num2;
+                    float amount = cmd->change_amount;
+                    if (attribute > -1) {
+                        if (mode == 0) {
+                            player->new_attribute_num(attribute, amount);
                         } else {
-                            player->add_attribute_num(cmd->change_num1, cmd->change_amount, 0);
+                            player->add_attribute_num(attribute, amount, 0);
                         }
                     }
                     break;
+                }
                 case 2:
                     if (cmd->change_num1 > -1) {
                         player->make_available(cmd->change_num1, (unsigned char)cmd->change_num2);
