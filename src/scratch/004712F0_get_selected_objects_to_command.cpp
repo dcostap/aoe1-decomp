@@ -20,6 +20,14 @@
 // - A diagnostic volatile list_count reproduced the target stack home and
 //   reduced drift to 121B but added reloads and retained wrong register roles;
 //   it was restored. A three-variant init-order lab found no exact candidate.
+// - Corrected the behavior topology: list_count advances only for non-null
+//   selected objects, after the filter chain; cursor and outer-index advances
+//   stay outside that branch. Size became exact and drift fell to 9B.
+// - Spelled the loop bound as list_count >= sel_count to match the target
+//   compare order. Drift fell to 7B with 96.12% exact-block coverage.
+// - Left in scratch: the remaining 7B is localized to prologue/register
+//   coloring and the select-level compare polarity; no evidence-backed probe
+//   remains in this assignment.
 
 class RGE_Player;
 
@@ -102,32 +110,34 @@ unsigned char RGE_Player::get_selected_objects_to_command(
     locals.list_count = 0;
     selected = player->sel_list;
     while (j < 0x19) {
-        if (player->sel_count <= locals.list_count) {
+        if (locals.list_count >= player->sel_count) {
             break;
         }
 
         object = *selected;
-        if (object != 0 && object->object_state == 2 && object->owner == player) {
-            master = object->master_obj;
-            if ((unsigned short)master->select_level >=
-                    (unsigned short)min_select_level || player->id == 0) {
-                if (object_group == -1 ||
-                    master->object_group == (unsigned char)object_group) {
-                    if (object_id == -1 ||
-                        master->id == (unsigned char)object_id) {
-                        if (unit_level == -1 ||
-                            master->unit_level == (unsigned char)unit_level) {
-                            if (master->master_type >= 0x28 &&
-                                master->master_type != 0x5A) {
-                                locals.list[count] = object;
-                                ++count;
+        if (object != 0) {
+            if (object->object_state == 2 && object->owner == player) {
+                master = object->master_obj;
+                if ((unsigned short)master->select_level >=
+                        (unsigned short)min_select_level || player->id == 0) {
+                    if (object_group == -1 ||
+                        master->object_group == (unsigned char)object_group) {
+                        if (object_id == -1 ||
+                            master->id == (unsigned char)object_id) {
+                            if (unit_level == -1 ||
+                                master->unit_level == (unsigned char)unit_level) {
+                                if (master->master_type >= 0x28 &&
+                                    master->master_type != 0x5A) {
+                                    locals.list[count] = object;
+                                    ++count;
+                                }
                             }
                         }
                     }
                 }
             }
+            ++locals.list_count;
         }
-        ++locals.list_count;
         ++j;
         ++selected;
     }

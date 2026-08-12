@@ -30,9 +30,14 @@
 //   and direct forms changed the frame to 0xc/0x10 or expanded the function;
 //   the remaining natural y0 candidate is emitted-code-duplicate with the
 //   prior 207-byte frontier.
+// - Added the exact stat_obj.cpp donor-era <stdlib.h> context from 004C1F30;
+//   strict diff improved to 158 bytes and shape to 84.55%, with the exact
+//   five-call set and coordinate ownership preserved.
 // - Final bounded pause: size/frame/saved-registers and all five ordered calls
 //   remain exact; the first unresolved hunk is coordinate register/liveness at
 //   004C230E, followed by health-bar scheduling.
+
+#include <stdlib.h>
 
 class TDrawArea;
 class RGE_Sprite;
