@@ -25,6 +25,9 @@
 //   the function to 294 bytes and broke the exact initialization block; the
 //   raw cursor forms were not retained. Moving ++target into the loop condition
 //   kept 277 bytes but lost an exact late block, so it was restored.
+// - the same-TU donor's scalar-byte globals with one-time typed palette aliases
+//   expanded the function to 294 bytes and moved the first mismatch to the
+//   prologue; this declaration/context lead was rolled back.
 // - left in scratch: ordered destination-cursor setup remains non-exact; calls,
 //   loop CFG, and final timestamp/FPU/flag logic align.
 

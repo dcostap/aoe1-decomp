@@ -43,6 +43,18 @@
 // - Main-agent audit restored the ordinary counted transform loops; the
 //   redundant positive guards were diagnostic codegen scaffolding, not a
 //   plausible source improvement.
+// orch2-4BAAF0-row probes (2026-08-12):
+// - Copied the 004B99F0 save-buffer/x-home/rows-in-guard topology while
+//   keeping the mirrored destination transform; header-first setup was a
+//   worse 253-byte basin (260 strict bytes), so it was rolled back.
+// - Restoring the target's width-first setup with x-home and row-end reload
+//   reached exact size and 164 strict bytes; the remaining setup mismatch was
+//   register coloring around the header height.
+// - Adopted the exact sibling cursor form: one external `d`, x carries the
+//   row start, rows is assigned inside the positive guard, and d reloads from
+//   x after each row. This reached 267 bytes and 120 strict bytes. Calls,
+//   ownership, and backward shadow behavior remain aligned. The remaining
+//   gap starts at the odd-run count test and local loop topology.
 
 typedef unsigned char byte;
 
@@ -84,54 +96,55 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
 
     Shape_Header* hdr = this->shape_header;
+    long height = hdr->ymax - hdr->ymin + 1;
     byte* src = (byte*)(hdr + 1);
-    long height = hdr->ymax;
-    height -= hdr->ymin;
-    height++;
-
-    long m;
-    if (draw_area->Orien < 1)
-        m = (y - draw_area->Height + 1) * pitch;
-    else
-        m = y * pitch;
-    byte* dst = draw_area->Bits + m + x + 1;
     long rows;
+    byte* d;
+    byte c;
+
+    if (draw_area->Orien < 1)
+        d = draw_area->Bits + ((y - draw_area->Height) + 1) * pitch + x + 1;
+    else
+        d = draw_area->Bits + y * pitch + x + 1;
+
+    x = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
             byte done = 0;
             do {
-                byte code = *src++;
-                if ((code & 1) == 1) {
-                    code >>= 1;
-                    if (code == 0) {
-                        dst -= *src++;
+                byte b = *src++;
+                if ((b & 1) == 1) {
+                    c = b >> 1;
+                    if (c == 0) {
+                        d -= *src++;
                     } else {
-                        unsigned int count = code;
+                        unsigned int count = c;
                         do {
-                            --dst;
+                            --d;
                             --count;
-                            *dst = table[*dst];
+                            *d = table[*d];
                         } while (count != 0);
-                        src += code;
+                        src += c;
                     }
                 } else {
-                    code >>= 1;
-                    if (code == 0) {
+                    c = b >> 1;
+                    if (c == 0) {
                         done = 1;
                     } else {
-                        unsigned int count = code;
+                        unsigned int count = c;
                         do {
-                            --dst;
+                            --d;
                             --count;
-                            *dst = table[*dst];
+                            *d = table[*d];
                         } while (count != 0);
                         src++;
                     }
                 }
             } while (!done);
-            dst += pitch;
+            x += pitch;
+            d = (byte*)x;
         } while (--rows);
     }
     return 1;

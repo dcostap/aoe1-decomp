@@ -69,6 +69,9 @@
 //   height rereads, and interleaved offset/max statements; do not retain
 //   unused zero/header scaffolding. Remaining gap is stable EBP/EDI/EAX
 //   allocation and clear-tail pop ordering.
+// orch2 context probe: adding the exact set_rect donor's <new.h> context
+//   emitted the same 217-byte code; restored because it did not change the
+//   register basin.
 
 class tagRECT {
 public:

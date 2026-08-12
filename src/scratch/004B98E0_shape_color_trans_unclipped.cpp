@@ -50,6 +50,14 @@
 // - Retained the readable one-width split-row reconstruction.  Calls, RLE CFG,
 //   ownership, and effective size/frame are aligned; remaining lead is the
 //   original Shape.cpp prologue/local-home/register basin, not behavior.
+// orch2-4B98E0-home probes (2026-08-12):
+// - Reused td as the persistent row home and p2 as the byte-count home after
+//   setup, while capturing td before the delayed header load.  Size/frame and
+//   calls stayed aligned, but strict diff stayed 255 and shape fell to 77.78%;
+//   rolled back as a worse parameter-reuse basin.
+// - A named td capture with delayed header load but natural row/count locals
+//   was emitted-code identical to the clean source; rolled back.  The donor
+//   home lead is exhausted without a source-quality improvement.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);

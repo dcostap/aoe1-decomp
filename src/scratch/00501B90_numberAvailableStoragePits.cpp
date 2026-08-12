@@ -67,6 +67,10 @@
 // local widths, and proper TacticalAIModule/MainDecisionAIModule/AIModule
 // virtual-base surfaces all reproduced the same 222-byte six-byte basin.
 // Restored the pinned canonical source; no new codegen lead was found.
+// Bounded pass (orch2-501B90-live): natural direct this->sn_3EC use in the
+// main-path product reproduced the prior six-byte basin with no movement.
+// Restored the pinned canonical source; no natural donor-backed liveness lead
+// remains without adding a redundant or non-behavioral member use.
 // Bounded pass (orch-00501B90-D): re-ran dossier/donors/ABI. search_asm_donors
 // on +0053-+0064 found the only same-TU exact donor with the target's exact
 // register topology: 004F5FB0 emits `mov edi,[esi+0F0h]` (md->EDI, this stays

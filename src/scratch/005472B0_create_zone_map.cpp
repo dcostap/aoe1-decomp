@@ -34,15 +34,25 @@
 // - final clean reconstruction remains the natural typed cache lookup/growth;
 //   current unresolved drift is the original shared EH teardown versus VC5's
 //   duplicated hit-path cleanup (55 strict bytes, first mismatch at +00D0).
+// - orch2-5472B0-layout: replaced the opaque 0x51c body with the constructor-
+//   proven named field layout; codegen and structural metrics were unchanged.
 
 #include <stdlib.h>
 #include <string.h>
 
 class RGE_Map;
+typedef unsigned char uchar;
 
 class RGE_Zone_Map {
 public:
-    char data[0x51c];
+    int numberTilesInZoneValue[257];
+    uchar* zone_map;
+    uchar** zone_map_rows;
+    uchar zone_info[257];
+    char gap_50D[3];
+    float* terrain_passability_rules;
+    long terrain_passability_rules_num;
+    RGE_Map* map;
 
     RGE_Zone_Map(RGE_Map* map, float* table, long count);
     ~RGE_Zone_Map();
