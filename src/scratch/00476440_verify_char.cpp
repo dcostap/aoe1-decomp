@@ -22,6 +22,11 @@
 // then direct numeric/percent valid-invalid branches; the latter improved
 // block/call alignment but added a beep site and 12 bytes, so clean source was
 // restored.  Remaining lead is natural switch-tail placement, not layout.
+// Fresh natural-return switch reconstruction widened the body to 624 bytes
+// and dropped a required beep call; it was rejected.  Separating the numeric
+// beep and direct percent comparison improved block alignment but added one
+// beep call and 12 bytes.  A nested file-dot branch added two calls and was
+// also rejected.  The clean typed switch remains authoritative.
 
 extern "C" int (__stdcall* const MessageBeep)(unsigned int);
 extern "C" int (__stdcall* const IsDBCSLeadByte)(unsigned int);

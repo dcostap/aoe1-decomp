@@ -9,6 +9,10 @@
 // 3: natural top-tested while plus one named success result reached exact size/frame,
 //    26/26 calls, and 16 differing bytes; residual drift is local stack-home ordering
 //    and branch-tail displacement around the coordinate temporaries.
+// 4: direct zero returns for early path failures matched the oracle's separate
+//    return tail and reduced drift to 12 bytes. A named contiguous segment
+//    aggregate reached 9 bytes but was not retained; separate XYPoint locals
+//    remain the natural source. Remaining drift is local-home allocation only.
 
 extern float DAT_00570B80;
 
@@ -155,26 +159,26 @@ public:
 
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     int terrain, float* result_x, float* result_y) {
-    XYPoint rVal;
-    XYPoint p2;
     XYPoint p1;
+    XYPoint p2;
+    XYPoint rVal;
     int i;
     Path* path = &this->exceptionPathValue;
 
     if (path->numberOfWaypoints() < 2) {
-        goto fail;
+        return 0;
     }
 
     path->initToStart();
     if (path->currentWaypoint() == 0) {
-        goto fail;
+        return 0;
     }
 
     p1.y = (int)path->currentWaypoint()->x;
     p2.x = (int)path->currentWaypoint()->y;
     path->moveToNextWaypoint();
     if (path->currentWaypoint() == 0) {
-        goto fail;
+        return 0;
     }
 
     p2.y = (int)path->currentWaypoint()->x;
@@ -193,7 +197,7 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
         p2.x = (int)path->currentWaypoint()->y;
         path->moveToNextWaypoint();
         if (path->currentWaypoint() == 0) {
-            goto fail;
+            return 0;
         }
 
         p2.y = (int)path->currentWaypoint()->x;
@@ -201,7 +205,6 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
         ++i;
     }
 
-fail:
     *result_x = -1.0f;
     *result_y = -1.0f;
     return 0;

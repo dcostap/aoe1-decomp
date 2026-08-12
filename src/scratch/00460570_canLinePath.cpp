@@ -12,6 +12,11 @@
 //      qualifiers; the compiler retained the same 0x18-frame basin.
 // 10: restored the natural positive-step do/while and abs-axis predicate;
 //     this improves CFG/size but leaves the receiver/local-home drift.
+// 11: ABI review proved passableTile takes float coordinates. Passing the
+//     current float positions improved the size gap and reduced the diff to
+//     342 bytes. Scoped scan locals improved bytes to 307 but harmed CFG;
+//     restore the natural function-scope source. Remaining blocker is the
+//     original 0x14 frame with EBX=this versus the rebuilt 0x18 frame/home.
 
 #include <math.h>
 
@@ -88,7 +93,7 @@ public:
     virtual void vf66();
     virtual void vf67();
     virtual void vf68();
-    virtual int passableTile(int, int, int);
+    virtual int passableTile(float, float, int);
 
     virtual int canLinePath(int, int, int, int, float, int);
 };
@@ -136,7 +141,7 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
             int tileY = (int)y;
 
             if (tileX != lastX || tileY != lastY) {
-                if (this->passableTile(tileX, tileY, terrain) == 0) {
+                if (this->passableTile(x, y, terrain) == 0) {
                     return 0;
                 }
 

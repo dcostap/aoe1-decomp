@@ -24,6 +24,9 @@
 // order, inline versus DWORD style masks, and full TDrawArea/TDrawSystem sizes;
 // only the explicit unary-bool mask was worse (450 bytes), so clean source was
 // restored.  The unresolved lead remains CreateWindowExA argument scheduling.
+// Fresh direct-expression probe inlined the typed style, geometry, and
+// render-area DrawSystem instance into CreateWindowExA; VC5 emitted the same
+// 447-byte group, so the clean local-based reconstruction remains authoritative.
 
 #include <windows.h>
 #include <stdlib.h>

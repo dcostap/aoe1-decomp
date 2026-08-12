@@ -31,6 +31,12 @@
 //   following exact donor 00488EA0. This moved the diff 152 -> 142 bytes and
 //   shape 92.94% -> 94.12%; calls and CFG stayed aligned. The first structural
 //   hunk remains the sprite/facet guard, so no second blind hypothesis was run.
+// - tu-moveobj-45C970: direct facet use improved size/shape but worsened bytes;
+//   separate debug_rand before facet reload reached 291B and 66-byte diff.
+//   Direct member rereads broke the base-call argument schedule. Reordered
+//   facet assignment before debug_rand returned to the earlier 152-byte basin.
+//   Keep the natural separate-call form; remaining gap is ECX/EDX pointer
+//   coloring and the direct facet compare.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -143,9 +149,11 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
     sprite = this->sprite;
     if (sprite != 0 && (sprite->flag & 2) != 0 &&
         1 < sprite->facet_num) {
+            int random_value =
+                debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE);
             int facings = sprite->facet_num;
-            float random_angle = (float)(DAT_00570b40 / (float)(int)facings) *
-                (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE) * facings) / 0x7FFF);
+            float random_angle = (float)(DAT_00570b40 / (float)facings) *
+                (float)((random_value * facings) / 0x7FFF);
             this->angle = random_angle;
 
             if (this->angle < DAT_00570b48) {
