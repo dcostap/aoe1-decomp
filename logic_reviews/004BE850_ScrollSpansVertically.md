@@ -26,16 +26,24 @@ The retained source uses typed span-list ownership and natural loops.
 
 ## Review rounds
 
-### Round 1 — partial blind cohort, 2026-08-12
+### Round 1 — concurrent blind cohort, 2026-08-12
 
 - `sa-2d10e29e` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
-- DeepSeek review remains pending.
+- `sa-6946de4a` — `deepseek/deepseek-v4-flash`, high
 
 Luna found no source and executable difference for ordinary non-overflowing
 inputs. It confirmed bounds, free calls, all array writes, copy direction, and
 the executable's unsafe negative-movement behavior.
 
-The review also confirmed that the executable wraps `INT_MIN` through its
-absolute-value instruction sequence. The source uses `abs(int)`, which has
-undefined behavior for `INT_MIN`. Keep this question open until the second
-review and main-agent adjudication.
+DeepSeek independently found no behavioral difference. It confirmed signed
+bounds, all five arrays, call arguments, copy order, and clear ranges. It also
+confirmed the executable's unsafe negative indices and wrapped `INT_MIN` path.
+
+## Main-agent adjudication
+
+The candidate matches the pinned VC5 executable, including its unsafe arithmetic
+and out-of-bounds negative-scroll behavior. The source and executable touch the
+same addresses in the same order. The four changed bytes only reverse two
+loop-invariant bound reloads.
+
+Promote to `src/verified_logic`.

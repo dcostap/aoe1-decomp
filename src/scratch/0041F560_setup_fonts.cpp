@@ -22,6 +22,8 @@
 // - Direct member ownership for the calloc result, generic TEXTMETRIC/GetTextMetrics
 //   spellings, and typed HDC/HFONT handles each duplicated the 50-byte drift;
 //   restored the pinned named-array and explicit-A API source.
+// - Blind semantic review found incorrect shifted metric reads. The executable
+//   stores tmOverhang and tmInternalLeading + tmWeight after passing &tmAscent.
 
 #include <windows.h>
 #include <stdlib.h>
@@ -128,9 +130,9 @@ int RGE_Base_Game::setup_fonts()
                                 (LPTEXTMETRICA)&tm.tmAscent);
                 font_index = tm.tmHeight;
                 this->fonts[font_index].font = font;
-                this->fonts[font_index].font_wid = tm.tmMaxCharWidth;
+                this->fonts[font_index].font_wid = tm.tmOverhang;
                 this->fonts[font_index].font_hgt =
-                    tm.tmAscent + tm.tmAveCharWidth;
+                    tm.tmInternalLeading + tm.tmWeight;
                 SelectObject((HDC)dc, old_font);
             }
 

@@ -44,3 +44,20 @@ this because both strings use the same relocation site.
 The format-string finding is valid. The main agent restored the exact executable
 text. One more fresh blind cohort must confirm the corrected candidate before
 promotion.
+
+### Round 2 — fresh corrected-source cohort, 2026-08-12
+
+- `sa-561463a6` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-6df60284` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers found no behavioral difference after the string correction.
+They verified the complete locate, mapped, allocation, seek, read, diagnostic,
+and failure paths. They also verified all output stores, exact strings, call
+arguments, leaks, malformed-value behavior, and fault order.
+
+## Final decision
+
+No behavioral uncertainty remains. The one-byte difference selects the opposite
+SIB base and index for the same pointer addition.
+
+Promote to `src/verified_logic`.

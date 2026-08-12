@@ -27,4 +27,20 @@ interior `GetTextMetricsA` output pointer.
 
 ## Review rounds
 
-No review has started.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-861ea07a` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-ca972dfc` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers found one definite stored-state difference. The source read the
+wrong fields after passing `&tm.tmAscent` to `GetTextMetricsA`.
+
+The executable stores `tm.tmOverhang` as the width. It stores
+`tm.tmInternalLeading + tm.tmWeight` as the height. The main agent corrected
+both expressions. Allocation, font selection, calls, failure leaks, object
+restoration, release, and return paths otherwise matched.
+
+## Main-agent adjudication
+
+The metric finding is valid and corrected. The corrected source needs a fresh
+blind cohort before promotion.
