@@ -45,6 +45,20 @@ DeepSeek identified `text_style` first as a possible original initializer order.
 A subsequent normal matching pass tested that order. It emitted identical code.
 A body assignment worsened the result and was restored.
 
+### Round 2 — fresh concurrent blind cohort, 2026-08-12
+
+- `sa-0de96621` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-5beeeefd` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers independently confirmed every derived store, width, value,
+untouched field, base call, vptr lifetime, EH condition, and final object state.
+No definite difference was found.
+
+DeepSeek also verified the allocation size `0x52C` and the executable vtable.
+`Time_Line_Panel` overrides only the destructor and slot-12 `draw`; this matches
+the candidate's derived override set. No call or observer occurs between the
+independent constant stores.
+
 ## Main-agent adjudication
 
 - **Field state, widths, vptr, base lifetime, and EH:** confirmed by both reviewers.
@@ -52,11 +66,15 @@ A body assignment worsened the result and was restored.
   read, callback, or possible observer. No semantic issue remains.
 - **Color signedness:** 32-bit bit patterns match. The canonical shared surface
   can adopt unsigned names later without changing this constructor.
+- **Minimal local base virtual surface:** no constructor behavior issue. The
+  executable vtable and override set were checked directly in round two.
 
 ## Integrated changes
 
-The main agent validated the canonical-layout candidate before phase entry.
+The main agent validated the canonical-layout candidate before phase entry and
+after both review rounds.
 
 ## Final decision
 
-Round 1 is clean. Pending a fresh second blind cohort.
+Promote to `src/verified_logic`. Two fresh blind cohorts converged with no open
+behavior uncertainty. The remaining drift is independent store scheduling.
