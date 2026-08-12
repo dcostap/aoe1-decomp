@@ -43,17 +43,103 @@ manual vtable calls, raw absolute dereferences, or codegen-only control flow.
 
 ## Review rounds
 
-Pending.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-95c4f007` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-4ef123c1` — `deepseek/deepseek-v4-flash`, high
+
+#### Luna report
+
+The reviewer found no definite difference for normal 32-bit VC5 execution with
+valid objects and ABI calls.
+
+Verified behavior:
+
+- `tile_x * 4` and `tile_y * 4` match `00538D6E` and `00538D75`.
+- The clip-mask write reads `RGE_View +0x178`, reads `cur_render_area`, then
+  writes `TDrawArea +0xD0` at `00538D95`.
+- The first `shape_draw` at `00538DB5` receives the same area, coordinates,
+  frame, and two zero arguments.
+- `get_shape(0)` at `00538DC2` uses the same global and argument.
+- The loops make exactly 16 obstruction calls. The row is
+  `tile_y*4+outer`; the column is `tile_x*4+i`.
+- The unsigned-byte obstruction result matches the mask at `00538E09`.
+  Positive values draw frame `obstruction-1`.
+- Draw coordinates match `x+2+outer*8+i*8` and
+  `y+13+outer*4-i*4` at `00538E22` and `00538E1E`.
+- The second `shape_draw` has the same arguments and order.
+- The function has no extra exit, cleanup, or return-value behavior.
+  `ret 18h` matches the six-argument `__thiscall` surface.
+- Field offsets `cur_render_area +0xF4`, `Terrain_Clip_Mask +0x178`, and
+  `CurSpanList +0xD0` match.
+
+Plausible concerns:
+
+1. The executable wraps 32-bit arithmetic. Source signed `int` overflow is
+   undefined in the language, although VC5 emits the same operations.
+2. The executable reuses incoming parameter homes. Ordinary callers cannot
+   observe these transient writes, but forged stack inspection could.
+3. Invalid pointers or type-punned aliases could expose evaluation/fault order.
+
+Conclusion: ordinary valid-input behavior matches. Strict oracle coverage needed
+adjudication for signed-overflow and deliberately invalid alias cases.
+
+#### DeepSeek report
+
+The reviewer traced all 80 instructions with an entry-relative stack map and
+verified helper ABIs, layouts, globals, caller argument order, and cleanup.
+
+Verified ABI and layout:
+
+- Six stack arguments, `__thiscall`, and `ret 18h` match.
+- `shape_draw` takes `this` plus six arguments and returns `unsigned char`.
+- `get_shape(int)` and `obstruction(int,int)` use the modeled surfaces.
+- `cur_render_area +0xF4`, `Terrain_Clip_Mask +0x178`, and
+  `CurSpanList +0xD0` match.
+- `rge_base_game` is a pointer global; `pathSystem` is an object global.
+
+Verified behavior:
+
+- Outer and inner loops each run four times.
+- Every 32-bit arithmetic expression has the same operand structure and wrap.
+- `and eax,0FFh` proves unsigned-byte promotion. `jle` then skips only zero.
+  All nonzero byte values draw with frame `byte-1`.
+- Memory and fault order match: mask read, area read, `CurSpanList` write,
+  first draw, `get_shape`, obstruction call, then conditional draw.
+- A null obstruction shape is passed as `this` only when a draw occurs, as in
+  the executable.
+- The only game-state write is `CurSpanList`; other writes are stack homes.
+- All branch targets, loop updates, epilogue restores, and cleanup match.
+
+Findings: no definite difference. Original identifier and loop spelling are
+unestablished but have no observable effect. Conclusion: behavior matches for
+all inputs and all byte returns.
 
 ## Main-agent adjudication
 
-Pending.
+- **Calls, arguments, layouts, widths, loops, and state writes:** confirmed.
+  Both reviewers independently traced the same four calls, 16 loop iterations,
+  field offsets, byte promotion, and `ret 18h` cleanup.
+- **Signed-overflow concern:** cleared for this candidate under the pinned VC5
+  execution model. The current rebuilt object emits the same 32-bit arithmetic
+  instructions as the executable. The checker shows 100% instruction shape;
+  only commutative SIB role bytes differ.
+- **Parameter-home concern:** cleared. The current rebuilt object has the same
+  frame, instruction sequence, stack writes, and cleanup. The two differing SIB
+  bytes are in draw-coordinate LEAs, not stack-home accesses.
+- **Fault/order concern:** cleared. Direct assembly comparison and the DeepSeek
+  stack trace show the same memory reads, calls, conditional draw, and only
+  persistent write. Exchanging SIB base/index registers does not change the
+  computed address or fault point.
+
+Round 1 found no substantive open behavior issue. No source change is justified.
+A second fresh cohort is required before final promotion.
 
 ## Integrated changes
 
 The main agent validated the unchanged normalized source at 250 bytes and two
-strict differing bytes before phase entry.
+strict differing bytes before and after round 1. No source change was made.
 
 ## Final decision
 
-Pending.
+Pending a fresh review round.

@@ -43,17 +43,97 @@ no fake volatility, manual vtable calls, raw offsets, or codegen-only aliases.
 
 ## Review rounds
 
-Pending.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-3a6c67fc` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-554537ed` — `deepseek/deepseek-v4-flash`, high
+
+#### Luna report
+
+The reviewer found no definite difference.
+
+Verified behavior:
+
+- `multiplayerGame()` runs first. Zero calls only `GameOver`. Nonzero modes
+  4, 6, 7, and 5 enter the disconnect path. Other modes return without
+  communications calls.
+- Allowed modes call `SendIResignMsg`, `ShutdownGameMessages`, then
+  `CountWaitingMessages`.
+- The initial count test is signed `<=0`. Only positive counts enter the wait.
+- Wait setup disables input and calls
+  `show_status_message(0x4C0,0,-1)`.
+- Each inner iteration tests `world==0` or byte `game_status==1` before shutdown.
+- The 500-ms test uses unsigned subtraction and strict `<`.
+- After each interval, count zero exits. Negative counts continue because the
+  executable tests only zero at this site.
+- The 15,000-ms test uses unsigned subtraction and strict `<`.
+- Timer line arguments `0x15F8`, `0x1601`, and `0x1605` match.
+- Cleanup calls `GameOver`, then `UnlinkToLevel(5)`.
+- The source reloads `comm_handler` for each call, matching the executable.
+- Fault and side-effect order matches, including world-null before status read.
+
+Plausible concerns were limited to Win32 `unsigned long` width, old-style string
+literal conversion, and invalid-pointer C++ rules. The target VC5 ABI resolves
+those concerns. Conclusion: semantic equivalence across gates, loops, timer
+wraparound, calls, arguments, widths, and cleanup.
+
+#### DeepSeek report
+
+The reviewer verified the raw executable bytes, all direct call targets and
+branch displacements, the source string, callee signatures, and field offsets.
+
+Verified control flow:
+
+- Non-multiplayer calls only `GameOver`.
+- Multiplayer with a disallowed mode returns without `GameOver`.
+- Allowed modes execute the three initial communications calls in order.
+- Positive waiting counts enter the nested do-loop; zero or negative counts
+  skip it.
+- World null or status byte 1 exits to shared cleanup.
+- The inner 500-ms subtraction and outer 15,000-ms subtraction are unsigned and
+  preserve wraparound.
+- Only count zero breaks after the 500-ms interval.
+- Every wait exit reaches `GameOver` then `UnlinkToLevel(5)`.
+
+Verified ABI and effects:
+
+- `show_status_message` arguments and cleanup match.
+- `disable_input`, all communications calls, and all timer arguments match.
+- `comm_handler +0x18C`, `prog_mode +0x1B0`, `world +0x3F4`, and status byte
+  `+0x1D` match ground-truth layout.
+- The function writes no memory directly and ignores the unlink return value.
+- Null and malformed pointer access order matches.
+
+Findings: no definite difference. `game_status` versus ground-truth
+`game_state` is a naming-only concern. Original textual spelling is
+unestablished. Conclusion: behavior matches, including timer wraparound and all
+mode paths.
 
 ## Main-agent adjudication
 
-Pending.
+- **Mode gates and no-op paths:** confirmed. Both reviewers independently noted
+  the important distinction between non-multiplayer and disallowed multiplayer
+  modes.
+- **Calls, arguments, and order:** confirmed for all 14 call sites.
+- **Wait loops and timer wraparound:** confirmed. The source uses 32-bit
+  `unsigned long` under VC5 and matches the executable's `sub` plus unsigned
+  `jb` tests.
+- **Count signedness:** confirmed. Initial `>0` and later `==0` tests preserve
+  the executable's negative-count behavior.
+- **Fault and cleanup order:** confirmed, including world checks and shared
+  `GameOver`/`UnlinkToLevel` order.
+- **Field name:** `game_status` is noncanonical naming but does not affect source
+  behavior or auditability. No source change is required for this review.
+
+Round 1 found no substantive open behavior issue. The 16 byte differences are
+only the documented ESI/EDI allocation. A second fresh cohort is required before
+final promotion.
 
 ## Integrated changes
 
 The main agent validated the unchanged normalized source at 279 bytes and 16
-strict differing bytes before phase entry.
+strict differing bytes before and after round 1. No source change was made.
 
 ## Final decision
 
-Pending.
+Pending a fresh review round.
