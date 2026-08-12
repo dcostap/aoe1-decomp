@@ -19,6 +19,14 @@
 // Final pause: ordered calls and size match, but the remaining structural gap is
 //    the 4-byte local frame plus EBP/base versus EDI/entry coloring (271 differing
 //    bytes, 65.55% shape). No inline asm or custom flags retained.
+// 10: direct typed indexed fields improved shape but added 8 bytes; rolled back.
+// 11: retain a typed entry only through id/attack checks and recompute late fields
+//     from the array; frame and size became exact, diff 252, shape 89.57%.
+// 12: declaration reorder, hoisted entry, cached count, and typed reference were
+//     duplicate or regressed; restored the pointer-based hybrid above.
+// Current pause: calls, CFG counts, frame, size, and late blocks are aligned.
+// Remaining first hunk is base/entry/id register allocation at +0x5D; no new
+// evidence-backed source lead remains in this claim.
 
 #include <math.h>
 
@@ -103,18 +111,17 @@ ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int
     best = 0;
     group = this->defendPriority(type, group);
     int i = 0;
-
     if (this->maxImportantObjectMemory > 0) {
         do {
             ImportantObjectEntry* entry = &this->importantObjectMemory[i];
             int id = entry->id;
             if (id != -1) {
-                int i = 0;
+                int j = 0;
                 if (this->itemsToDefend_numberValue > 0) {
-                    while (i < this->itemsToDefend_numberValue) {
-                        if (i >= this->itemsToDefend_maximumSizeValue)
+                    while (j < this->itemsToDefend_numberValue) {
+                        if (j >= this->itemsToDefend_maximumSizeValue)
                             break;
-                        if (this->itemsToDefend_value[i] == id) {
+                        if (this->itemsToDefend_value[j] == id) {
                             if (entry->attackAttempts <= 0) {
                                 RGE_Static_Object* target = this->md->object(id);
                                 if (target != 0) {
@@ -125,16 +132,18 @@ ImportantObjectEntry* TribeInformationAIModule::higherPriorityObjectToDefend(int
                                         if (mainObj->withinRangeOfZoneAtPoint(*(unsigned char*)&objId, mainObj->speed(), &pt) != 1)
                                             break;
                                     }
-                                    int pri = this->defendPriority(entry->type, entry->group);
+                                    int pri = this->defendPriority(
+                                        this->importantObjectMemory[i].type,
+                                        this->importantObjectMemory[i].group);
                                     if (pri < group) {
                                         group = pri;
-                                        best = entry;
+                                        best = &this->importantObjectMemory[i];
                                     }
                                 }
                             }
                             break;
                         }
-                        i++;
+                        j++;
                     }
                 }
             }

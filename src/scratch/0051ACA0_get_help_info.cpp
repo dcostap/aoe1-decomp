@@ -38,6 +38,8 @@
 // targeted arm2 perturbations (fmt/dst/preassign/read) can break the shared-tail family, but only by adding wrong code/side-effect order or helper/context tails; no behavior-preserving exact source shape found yet
 // tried the proven virtual get_help_info override and inherited RGE_Player::attributes ownership; emitted code unchanged
 // tried the canonical TPanel::is_inside name and per-arm returns with the inherited player surface; emitted code unchanged
+// fresh panel-donor pass: unqualified inherited get_string calls emit the same 288-byte tail-merged basin
+// mixed explicit TPanel qualification in the first arm also emits the same basin; restored one natural unqualified surface
 // left in scratch: natural four-arm source is 288 bytes because VC5 tail-merges the first two arms; original is 326 bytes with four duplicated call sites
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
@@ -151,16 +153,16 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str, long& out_val, lo
     long pnl_x = this->pnl_x;
 
     if (x < pnl_x + 0x37) {
-        sprintf(out_str, this->get_string(0x1D4EE), (int)this->player->attributes[1]);
+        sprintf(out_str, get_string(0x1D4EE), (int)this->player->attributes[1]);
         out_val = -1;
     } else if (x < pnl_x + 0x6E) {
-        sprintf(out_str, this->get_string(0x1D4ED), (int)this->player->attributes[0]);
+        sprintf(out_str, get_string(0x1D4ED), (int)this->player->attributes[0]);
         out_val = -1;
     } else if (x < pnl_x + 0xA5) {
-        sprintf(out_str, this->get_string(0x1D4EF), (int)this->player->attributes[3]);
+        sprintf(out_str, get_string(0x1D4EF), (int)this->player->attributes[3]);
         out_val = -1;
     } else {
-        sprintf(out_str, this->get_string(0x1D4F0), (int)this->player->attributes[2]);
+        sprintf(out_str, get_string(0x1D4F0), (int)this->player->attributes[2]);
         out_val = -1;
     }
 
