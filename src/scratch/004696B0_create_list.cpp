@@ -11,6 +11,24 @@
 // 8: first allocation `calloc(4,1)` kept because it slightly improves edit diff and still allocates 4 bytes.
 // 9: remaining first mismatch is EH handler address relocation area/prologue: rebuilt has EH but uses one local (`push ecx`) and this in esi; original has `sub esp,8`, this in ebx, and stores intermediate scaled values in stack slots.
 // 10: left in scratch: behavior/calls mostly understood, but local/register allocation and cleanup/return layout remain broad; not accepted_drift-safe.
+// 11: restored the period TPanel base layout and derived TEasy_Panel/TTextPanel
+// surfaces.  The prior flat stubs placed error and ideal-size fields four bytes
+// early and made the list allocation 0xDC instead of the proven 0x1A0.
+// 12: corrected coordinate ownership to TPanel width/height (+14/+18) scaled
+// by TEasy_Panel ideal dimensions (+F4/+F8).  The old names used the ideal
+// fields as numerators and fabricated screen dimensions.  Also let font_id
+// remain the direct parameter for both observed get_font calls.
+// 13: keep the output slot in a named local alias across allocation and setup;
+// the oracle loads the out parameter before new and carries it in EDI.
+// 14: diagnostic only: make ideal_y volatile to test whether the oracle's
+// distinct second coordinate stack slot is a real lifetime rather than a
+// compiler-reused parameter home.
+// 15: diagnostic only: extend that test to ideal_x so both coordinate results
+// require durable local storage.
+// 16: rolled back both volatile coordinate locals and the no-op output alias;
+// neither reached the oracle frame or register topology.
+// 17: retained /GX after testing the explicit EH frame.  Without it, VC5
+// removes the EH registration and emits a 558-byte non-period function.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -23,14 +41,26 @@ class RGE_Font { public: int font; int font_wid; int font_hgt; };
 class RGE_Base_Game { public: RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
 
-class TPanel {};
+class TDrawArea;
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0x10];
+    int width;
+    int height;
+    char gap_1C[4];
+    TDrawArea* draw_area;
+    char gap_24[0xB4];
+    int error;
+    char gap_DC[0x18];
+};
 class TDrawArea {};
 
-class TTextPanel {
+class TTextPanel : public TPanel {
 public:
-    virtual void v0();
-    char gap_04[0xD8 - 4];
-    int error;
+    virtual ~TTextPanel();
+    char gap_F4[0x188 - 0xF4];
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, int font, int font_wid, int font_hgt, char* text, int a, unsigned char b, int c, int d, int e, char** lines, int f);
     void set_text_color(ulong a, ulong b);
     void set_highlight_text_color(ulong a, ulong b);
@@ -38,23 +68,16 @@ public:
 
 class TListPanel : public TTextPanel {
 public:
+    char gap_188[0x1A0 - 0x188];
     TListPanel();
     void scroll_cur_line(unsigned char a, int b, unsigned char c);
 };
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    void* vtbl;
-    char gap_004[0x14 - 0x04];
     int ideal_width;
     int ideal_height;
-    TDrawArea* draw_area;
-    char gap_024[0xD8 - 0x24];
-    int error;
-    char gap_0DC[0xF4 - 0xDC];
-    int screen_width;
-    int screen_height;
-    char gap_0FC[0x31C - 0x0FC];
+    char gap_FC[0x31C - 0xFC];
     int use_bevels;
     unsigned char bevel_color1;
     unsigned char bevel_color2;
@@ -68,27 +91,25 @@ public:
     ulong focus_color1;
     ulong focus_color2;
 
-    int create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id);
+    virtual int create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id);
 };
 
 typedef void (*BevelFn)(TListPanel*, int, int, int, int, int, int, int);
 
 int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id)
 {
-    long ideal_x;
-    long ideal_y;
+    long ideal_x = (x * this->width) / this->ideal_width;
+    long ideal_y = (y * this->height) / this->ideal_height;
     char** list_items;
 
-    ideal_x = (x * this->ideal_width) / this->screen_width;
-    ideal_y = (y * this->ideal_height) / this->screen_height;
-    w = (w * this->ideal_width) / this->screen_width;
-    h = (h * this->ideal_height) / this->screen_height;
+    w = (w * this->width) / this->ideal_width;
+    h = (h * this->height) / this->ideal_height;
 
-    int use_font = font_id;
-    if (use_font < 0) {
-        use_font = 10;
+    if (font_id >= 0) {
+        rge_base_game->get_font(font_id);
+    } else {
+        rge_base_game->get_font(10);
     }
-    rge_base_game->get_font(use_font);
 
     list_items = (char**)calloc(4, 1);
     if (list_items == 0) {

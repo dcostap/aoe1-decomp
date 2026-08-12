@@ -1,81 +1,164 @@
 // VA: 004579C0 RGE_Map::load_map
 // Attempt log:
-// initial packet reconstruction of old/new map tile formats with EH new zone list.
-// tried /GX for original EH prologue around new RGE_Zone_Map_List; required to get same-size EH frame style.
-// first compile used empty RGE_Zone_Map_List and mismatched operator new size 1 vs original 0x0c; added 0x0c pad and first mismatch moved to old/new-format branch distance.
-// tried reusing fd parameter as one-byte read scratch to mirror original stack-slot-looking byte temp; register basin got much worse (first mismatch offset 31), rolled back to local unsigned char.
-// current best is same-size 643 bytes, first mismatch offset 215, edit diff 15.7076%; remaining drift is broad in inner tile decode scheduling/loop local slots, not accepted_drift-safe.
+// - Baseline uses the proven RGE_Map offsets, 24-byte RGE_Tile layout, old and
+//   new file formats, zone-list replacement, and unified visibility loading.
+// - Swapping row and column declaration order was a codegen duplicate.
+// - Fresh typed reconstruction below follows the map.cpp tile field names and
+//   the executable's error-safe allocation and cleanup path.
+// - A function-scope byte scratch improved the typed source by five positional
+//   bytes; the remaining row-home mismatch stayed structural.
+// - The executable stores tile object counts as words.  Keep the 0x18-byte tile
+//   layout and the old-format bulk read with its post-read list reset.
+// - Ten meaningful probes completed.  The clean typed source is retained in
+//   scratch because the remaining drift is broad loop stack-home scheduling.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern float save_game_version;
 extern float old_map_cutoff;
 
-class RGE_Zone_Map_List { public: char pad[0x0c]; RGE_Zone_Map_List(int, void*); ~RGE_Zone_Map_List(); };
-class RGE_Visibility_Map { public: void load(int); };
-struct Tile { unsigned short a; unsigned short b; unsigned char c,d,e,f,g,h,i,j,k,l; int m; short n; char pad[2]; };
-class RGE_Map {
+class RGE_Map;
+
+class RGE_Zone_Map_List {
 public:
-    char gap0[4]; Tile* tiles; int width; int height; char gap1[0x8d8c-0x10]; Tile** rows; char gap2[0x8db8-0x8d90];
-    unsigned char flag1; unsigned char flag2; char gap3[0x8dc4-0x8dba]; RGE_Zone_Map_List* zone_map; RGE_Visibility_Map* visibility;
-    void new_map(long,long); void load_map(int);
+    void* zone_maps;
+    int zone_map_num;
+    RGE_Map* map;
+
+    RGE_Zone_Map_List(int, RGE_Map*);
+    ~RGE_Zone_Map_List();
 };
 
-void RGE_Map::load_map(int fd)
+class RGE_Unified_Visible_Map {
+public:
+    void load(int);
+};
+
+class RGE_Object_List {
+public:
+    void* list;
+    short number_of_objects;
+    char pad_06[2];
+};
+
+class RGE_Tile {
+public:
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    char gap_0c[4];
+    RGE_Object_List objects;
+};
+
+class RGE_Map {
+public:
+    char gap_00[4];
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    char gap_10[0x8d7c];
+    RGE_Tile** map_row_offset;
+    char gap_8d90[0x28];
+    unsigned char map_visible_flag;
+    unsigned char fog_flag;
+    char gap_8dba[2];
+    char gap_8dbc[8];
+    RGE_Zone_Map_List* map_zones;
+    RGE_Unified_Visible_Map* unified_vis_map;
+
+    void new_map(long, long);
+    void load_map(int);
+};
+
+void RGE_Map::load_map(int file)
 {
-    int local_10, w, x, y;
-    unsigned char b;
-    rge_read(fd, &local_10, 4);
-    rge_read(fd, &w, 4);
-    this->new_map(local_10, w);
-    RGE_Zone_Map_List* old = this->zone_map;
-    if (old != 0) { old->~RGE_Zone_Map_List(); operator delete(old); }
-    RGE_Zone_Map_List* nz = new RGE_Zone_Map_List(fd, this);
-    this->zone_map = nz;
-    rge_read(fd, &this->flag1, 1);
-    rge_read(fd, &this->flag2, 1);
+    long local_10;
+    long width;
+    int x;
+    long y;
+    unsigned char value;
+
+    rge_read(file, &local_10, 4);
+    rge_read(file, &width, 4);
+    this->new_map(local_10, width);
+
+    RGE_Zone_Map_List* old_zones = this->map_zones;
+    if (old_zones != 0) {
+        delete old_zones;
+    }
+
+    RGE_Zone_Map_List* zones = new RGE_Zone_Map_List(file, this);
+    this->map_zones = zones;
+
+    rge_read(file, &this->map_visible_flag, 1);
+    rge_read(file, &this->fog_flag, 1);
+
     if (!(save_game_version < old_map_cutoff)) {
         y = 0;
-        if (this->height > 0) {
+        if (this->map_height > 0) {
             do {
-                Tile* t = this->rows[y];
+                RGE_Tile* tile = this->map_row_offset[y];
                 x = 0;
-                if (this->width > 0) {
+                if (this->map_width > 0) {
                     do {
-                        rge_read(fd, t, 2);
-                        rge_read(fd, ((char*)t)+2, 2);
-                        rge_read(fd, ((char*)t)+4, 1);
-                        rge_read(fd, &b, 1);
-                        t->d = (t->d ^ ((b ^ t->d) & 0x1f));
-                        rge_read(fd, &b, 1);
-                        t->d = (unsigned char)((b << 5) | (t->d & 0x1f));
-                        rge_read(fd, &b, 1);
-                        t->e = (t->e ^ ((b ^ t->e) & 0x0f));
-                        rge_read(fd, &b, 1);
-                        t->f = 0;
-                        t->g = (char)0xff;
-                        t->e = (unsigned char)((b << 4) | (t->e & 0x0f));
-                        t->m = 0; t->n = 0; t->h = 0; t->i = 0; t->j = (char)0xff;
-                        ++x; ++t;
-                    } while (x < this->width);
+                        rge_read(file, tile, 2);
+                        rge_read(file, &tile->screen_ypos, 2);
+                        rge_read(file, &tile->tile_type, 1);
+
+                        rge_read(file, &value, 1);
+                        tile->terrain_type = (unsigned char)
+                            (((value ^ tile->terrain_type) & 0x1f) ^
+                             tile->terrain_type);
+                        rge_read(file, &value, 1);
+                        tile->terrain_type = (unsigned char)
+                            ((value << 5) | (tile->terrain_type & 0x1f));
+
+                        rge_read(file, &value, 1);
+                        tile->border_type = (unsigned char)
+                            (((value ^ tile->border_type) & 0x0f) ^
+                             tile->border_type);
+                        rge_read(file, &value, 1);
+                        tile->last_drawn_as = 0;
+                        tile->last_drawn_shape = 0xff;
+                        tile->border_type = (unsigned char)
+                            ((value << 4) | (tile->border_type & 0x0f));
+
+                        tile->objects.list = 0;
+                        tile->objects.number_of_objects = 0;
+                        tile->draw_as = 0;
+                        tile->draw_attribute = 0;
+                        tile->last_drawn_shape2 = 0xff;
+
+                        ++x;
+                        ++tile;
+                    } while (x < this->map_width);
                 }
                 ++y;
-            } while (y < this->height);
+            } while (y < this->map_height);
         }
     } else {
-        rge_read(fd, this->tiles, this->width * this->height * 24);
+        rge_read(file, this->map,
+                 this->map_width * this->map_height * 0x18);
         y = 0;
-        if (this->height > 0) {
+        if (this->map_height > 0) {
             do {
                 x = 0;
-                if (this->width > 0) {
+                if (this->map_width > 0) {
                     do {
-                        this->rows[y][x].m = 0;
+                        this->map_row_offset[y][x].objects.list = 0;
                         ++x;
-                    } while (x < this->width);
+                    } while (x < this->map_width);
                 }
                 ++y;
-            } while (y < this->height);
+            } while (y < this->map_height);
         }
     }
-    this->visibility->load(fd);
+
+    this->unified_vis_map->load(file);
 }
