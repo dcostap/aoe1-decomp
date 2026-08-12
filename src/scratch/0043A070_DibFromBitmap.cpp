@@ -1,46 +1,61 @@
 // Attempt log for 0043A070 DibFromBitmap
-// try 1: natural Win32 reconstruction from packet/decompiler; compiled 688B too small.
-// try 2: remove mistaken placeholder realloc and simplify; default now 656B too small.
-// try 3: /Oy- flag probe; too small 640B.
-// try 4: /O1 flag probe; too small 586B.
-// try 5: /GX flag probe; unchanged too small 656B.
-// try 6: reviewed allocation/realloc flow vs original; current model missing original GlobalSize/GlobalReAlloc/lock staging.
-// try 7: reviewed BITMAP stack layout; initial GetObject/bit-count setup likely close.
-// try 8: reviewed BI_BITFIELDS masks; branch family likely close.
-// try 9: reviewed DIB bits pointer expression; likely broad mismatch in handle-vs-pointer staging.
-// try 10: left in scratch; current source is behavioral scaffold but not exact-size.
-// BLOCKER: rebuilt .text 656B vs original 694B with broad unvalidated mismatch; missing exact GlobalAlloc/GlobalSize/GlobalReAlloc/GlobalLock handle choreography and cleanup branch shape. Not accepted_drift-safe.
+// baseline: typed Win32 BITMAP/BITMAPINFOHEADER source with the original
+// GlobalHandle/GlobalUnlock/GlobalReAlloc ownership flow.
+// probe 2: restored the period DIB utility call order and retained the old
+// palette result as the GetDIBits usage argument; call parity reached 23/23.
+// probe 3: used assignment expressions for driver-filled color/image defaults
+// and success-first realloc cleanup; size reached +9 with ordered calls exact.
+// probe 4: used typed header-plus-palette DWORD storage and reversed the
+// bitfield gate; size reached 694 and the main code island aligned.
+// probes 5-6: explicit nColors initialization and a bitmap-handle local were
+// codegen duplicates; no source change was retained for either.
+// probes 7-8: a local palette copy removed a 7-byte store but worsened the
+// whole-function result; restored direct hpal ownership as the best source.
+// probe 10: delaying a bitmap-handle local was a codegen duplicate; removed it.
+// blocker: exact bytes still differ in early register coloring and local
+// liveness, while frame, call set, CFG, and emitted size are exact.
 
-typedef unsigned long DWORD; typedef unsigned short WORD; typedef unsigned int UINT; typedef void* HANDLE; typedef void* HBITMAP; typedef void* HPALETTE; typedef void* HDC; typedef void* HGLOBAL; typedef unsigned long ULONG;
-struct BITMAP { int bmType; int bmWidth; int bmHeight; int bmWidthBytes; WORD bmPlanes; WORD bmBitsPixel; void* bmBits; };
-struct BITMAPINFOHEADER { DWORD biSize; int biWidth; int biHeight; WORD biPlanes; WORD biBitCount; DWORD biCompression; DWORD biSizeImage; int biXPelsPerMeter; int biYPelsPerMeter; DWORD biClrUsed; DWORD biClrImportant; };
-extern "C" int (__stdcall* const GetObjectA)(void*, int, void*);
-extern "C" void* (__stdcall* const GetStockObject)(int);
-extern "C" HDC (__stdcall* const CreateCompatibleDC)(HDC);
-extern "C" void* (__stdcall* const SelectPalette)(HDC,HPALETTE,int);
-extern "C" unsigned int (__stdcall* const RealizePalette)(HDC);
-extern "C" int (__stdcall* const SetStretchBltMode)(HDC,int);
-extern "C" int (__stdcall* const GetDIBits)(HDC,HBITMAP,UINT,UINT,void*,BITMAPINFOHEADER*,UINT);
-extern "C" int (__stdcall* const SelectObject)(HDC,void*);
-extern "C" int (__stdcall* const DeleteDC)(HDC);
-extern "C" HGLOBAL (__stdcall* const GlobalAlloc)(UINT, DWORD);
-extern "C" void* (__stdcall* const GlobalLock)(HGLOBAL);
-extern "C" UINT (__stdcall* const GlobalSize)(HGLOBAL);
-extern "C" HGLOBAL (__stdcall* const GlobalReAlloc)(HGLOBAL,DWORD,UINT);
-extern "C" HGLOBAL (__stdcall* const GlobalFree)(HGLOBAL);
-BITMAPINFOHEADER* DibFromBitmap(HBITMAP hbm, DWORD biStyle, UINT biBits, HPALETTE hpal, UINT usage)
+#include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <memory.h>
+
+#define DibNumColors(lpbi) \
+    ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 ? \
+        (int)(1 << (int)(lpbi)->biBitCount) : (int)(lpbi)->biClrUsed)
+
+extern void __cdecl DibFree(BITMAPINFOHEADER* lpbi);
+
+BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
+    UINT biBits, HPALETTE hpal, UINT usage)
 {
-    int nColors = 0;
     BITMAP bm;
-    if (!hbm) return 0;
-    if (!hpal) hpal = GetStockObject(15);
-    GetObjectA(hbm, 24, &bm);
-    GetObjectA(hpal, 4, &nColors);
-    if (!biBits) biBits = (bm.bmPlanes & 0xffff) * (bm.bmBitsPixel & 0xffff);
-    HGLOBAL h = GlobalAlloc(2, 0x428);
-    BITMAPINFOHEADER* lpbi = (BITMAPINFOHEADER*)GlobalLock(h);
-    if (!lpbi) return 0;
-    lpbi->biSize = 40;
+    int nColors;
+    BITMAPINFOHEADER* lpbi;
+    BITMAPINFOHEADER* lpbiNew;
+    HDC hdc;
+    DWORD dwSizeImage;
+    int result;
+
+    nColors = 0;
+    if (!hbm)
+        return NULL;
+
+    if (hpal == NULL)
+        hpal = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
+
+    GetObject(hbm, sizeof(bm), (LPSTR)&bm);
+    GetObject(hpal, sizeof(nColors), (LPSTR)&nColors);
+
+    if (biBits == 0)
+        biBits = bm.bmPlanes * bm.bmBitsPixel;
+
+    lpbi = (BITMAPINFOHEADER*)GlobalLock(GlobalAlloc(
+        GMEM_MOVEABLE, sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)));
+    if (lpbi == NULL)
+        return NULL;
+
+    lpbi->biSize = sizeof(BITMAPINFOHEADER);
     lpbi->biWidth = bm.bmWidth;
     lpbi->biHeight = bm.bmHeight;
     lpbi->biPlanes = 1;
@@ -51,37 +66,85 @@ BITMAPINFOHEADER* DibFromBitmap(HBITMAP hbm, DWORD biStyle, UINT biBits, HPALETT
     lpbi->biYPelsPerMeter = 0;
     lpbi->biClrUsed = 0;
     lpbi->biClrImportant = 0;
-    if (biBits <= 8) lpbi->biClrUsed = 1 << biBits; else lpbi->biClrUsed = 0;
-    if (biStyle == 3) {
-        if (biBits == 16) { ((DWORD*)(lpbi+1))[0]=0xf800; ((DWORD*)(lpbi+1))[1]=0x7e0; ((DWORD*)(lpbi+1))[2]=0x1f; }
-        else if (biBits == 24 || biBits == 32) { ((DWORD*)(lpbi+1))[0]=0xff; ((DWORD*)(lpbi+1))[1]=0xff00; ((DWORD*)(lpbi+1))[2]=0xff0000; }
+
+    lpbi->biClrUsed = (biBits <= 8) ? 1 << biBits : 0;
+
+    if (biStyle == BI_BITFIELDS) {
+        if (biBits != 16) {
+            if (biBits == 24 || biBits == 32) {
+                ((DWORD*)(lpbi + 1))[0] = 0x000000FF;
+                ((DWORD*)(lpbi + 1))[1] = 0x0000FF00;
+                ((DWORD*)(lpbi + 1))[2] = 0x00FF0000;
+            }
+        }
+        else {
+            ((DWORD*)(lpbi + 1))[0] = 0x0000F800;
+            ((DWORD*)(lpbi + 1))[1] = 0x000007E0;
+            ((DWORD*)(lpbi + 1))[2] = 0x0000001F;
+        }
     }
-    HDC hdc = CreateCompatibleDC(0);
-    void* oldPal = SelectPalette(hdc, hpal, 0);
+
+    hdc = CreateCompatibleDC(NULL);
+    usage = (UINT)SelectPalette(hdc, hpal, FALSE);
     RealizePalette(hdc);
     SetStretchBltMode(hdc, 4);
-    GetDIBits(hdc, hbm, 0, lpbi->biHeight, 0, lpbi, usage);
-    if (!lpbi->biClrUsed && lpbi->biBitCount <= 8) lpbi->biClrUsed = 1 << lpbi->biBitCount;
-    if (!lpbi->biSizeImage) {
-        lpbi->biSizeImage = (((lpbi->biBitCount * lpbi->biWidth + 31) >> 3) & 0x1ffffffc) * lpbi->biHeight;
+
+    GetDIBits(hdc, hbm, 0, lpbi->biHeight, NULL,
+        (LPBITMAPINFO)lpbi, usage);
+
+    lpbi->biClrUsed = (lpbi->biClrUsed == 0 && lpbi->biBitCount <= 8) ?
+        1 << lpbi->biBitCount : lpbi->biClrUsed;
+
+    dwSizeImage = (lpbi->biSizeImage == 0) ?
+        ((((DWORD)lpbi->biBitCount * (DWORD)lpbi->biWidth + 31) >> 3) &
+            0x1FFFFFFC) * lpbi->biHeight : lpbi->biSizeImage;
+    lpbi->biSizeImage = dwSizeImage;
+
+    if (dwSizeImage == 0) {
+        dwSizeImage = ((((DWORD)lpbi->biBitCount * (DWORD)lpbi->biWidth + 31) >> 3) &
+            0x1FFFFFFC) * lpbi->biHeight;
+        lpbi->biSizeImage = dwSizeImage;
+        if (biStyle)
+            lpbi->biSizeImage = (dwSizeImage * 3) / 2;
     }
-    if (!lpbi->biSizeImage) {
-        lpbi->biSizeImage = (((lpbi->biBitCount * lpbi->biWidth + 31) >> 3) & 0x1ffffffc) * lpbi->biHeight;
-        if (biStyle) lpbi->biSizeImage = lpbi->biSizeImage * 3 / 2;
+
+    GlobalUnlock(GlobalHandle(lpbi));
+    lpbiNew = (BITMAPINFOHEADER*)GlobalLock(GlobalReAlloc(
+        GlobalHandle(lpbi), lpbi->biSize + lpbi->biClrUsed * sizeof(RGBQUAD) +
+        lpbi->biSizeImage, 0));
+
+    if (lpbiNew != NULL) {
+        BYTE* bits;
+        if (lpbiNew->biCompression == BI_BITFIELDS)
+            bits = (LPBYTE)lpbiNew + lpbiNew->biSize + 3 * sizeof(DWORD);
+        else
+            bits = (LPBYTE)lpbiNew + lpbiNew->biSize +
+                lpbiNew->biClrUsed * sizeof(RGBQUAD);
+
+        result = GetDIBits(hdc, hbm, 0, lpbiNew->biHeight, bits,
+            (LPBITMAPINFO)lpbiNew, usage);
+
+        lpbiNew->biClrUsed =
+            (lpbiNew->biClrUsed == 0 && lpbiNew->biBitCount <= 8) ?
+            1 << lpbiNew->biBitCount : lpbiNew->biClrUsed;
+
+        dwSizeImage = (lpbiNew->biSizeImage == 0) ?
+            ((((DWORD)lpbiNew->biBitCount * (DWORD)lpbiNew->biWidth + 31) >> 3) &
+                0x1FFFFFFC) * lpbiNew->biHeight : lpbiNew->biSizeImage;
+        lpbiNew->biSizeImage = dwSizeImage;
+
+        if (result == 0) {
+            DibFree(lpbiNew);
+            lpbiNew = NULL;
+        }
     }
-    DWORD size = lpbi->biSize + lpbi->biClrUsed * 4 + lpbi->biSizeImage;
-    h = GlobalReAlloc(h, size, 0);
-    BITMAPINFOHEADER* lpbi2 = (BITMAPINFOHEADER*)GlobalLock(h);
-    if (!lpbi2) { GlobalFree(h); lpbi = 0; }
     else {
-        char* bits = (lpbi2->biCompression == 3) ? ((char*)lpbi2 + lpbi2->biSize + 12) : ((char*)lpbi2 + lpbi2->biSize + lpbi2->biClrUsed * 4);
-        GetDIBits(hdc,hbm,0,lpbi2->biHeight,bits,lpbi2,usage);
-        if (!lpbi2->biClrUsed && lpbi2->biBitCount <= 8) lpbi2->biClrUsed = 1 << lpbi2->biBitCount;
-        if (!lpbi2->biSizeImage) lpbi2->biSizeImage = (((lpbi2->biBitCount * lpbi2->biWidth + 31) >> 3) & 0x1ffffffc) * lpbi2->biHeight;
-        if (!bits) { GlobalFree((HGLOBAL)lpbi2); lpbi2 = 0; }
-        lpbi = lpbi2;
+        GlobalUnlock(GlobalHandle(lpbi));
+        GlobalFree(GlobalHandle(lpbi));
+        lpbiNew = NULL;
     }
-    SelectPalette(hdc, hpal, 0);
+
+    SelectPalette(hdc, hpal, FALSE);
     DeleteDC(hdc);
-    return lpbi;
+    return lpbiNew;
 }

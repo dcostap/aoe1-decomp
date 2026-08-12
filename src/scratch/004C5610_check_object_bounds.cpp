@@ -10,6 +10,11 @@
 // 8: fixed overlap predicate to `dy <= ry+ry2` per decompiler/original branch sense; behavior fix, only tiny edit-diff improvement.
 // 9: current best same-size 524 B, first mismatch at initial radius stack slots: original stores rx/ry at [esp+24]/[esp+1C], rebuilt at [esp+28]/[esp+20]. Later FPU/control-flow broadly close but shifted stack-slot topology cascades.
 // 10: left in scratch: behavior/call surface understood, but remaining 55.9% positional diff is too broad for accepted_drift.
+// 11: typed row/tile traversal with a short outer-row index recovered exact
+// map setup, 0x2C frame, and 71.6% exact-block coverage; remaining drift is
+// the x2/y2 spill-home swap and late return-compare block shape.
+// 12: equivalent x-overlap operand reversal was a codegen duplicate; restored
+// the direct `dx <= rx + rx2` spelling for source clarity.
 
 typedef unsigned char uchar;
 
@@ -66,13 +71,11 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
     float ry;
     float rx2;
     float rx;
-    short x2;
     short y1;
+    short x2;
     short y2;
-    int y_index;
-    int dummy;
+    short y_index;
 
-    dummy = 0;
     rx2 = this->master_obj->radius_x;
     ry2 = this->master_obj->radius_y;
     if (!(rx2 <= 0.0f && ry2 <= 0.0f)) {
@@ -82,9 +85,9 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
         y2 = (short)(int)(this->world_y + 0.5f);
         RGE_Map* map = this->owner->world->map;
         if (x1 < 0) x1 = 0;
-        if ((int)x2 >= map->map_width) x2 = (short)map->map_width - 1;
+        if (x2 >= map->map_width) x2 = (short)map->map_width - 1;
         if (y1 < 0) y1 = 0;
-        if ((int)y2 >= map->map_height) y2 = (short)map->map_height - 1;
+        if (y2 >= map->map_height) y2 = (short)map->map_height - 1;
         y_index = y1;
         if (y1 <= y2) {
             RGE_Tile** rows = map->map_row_offset;

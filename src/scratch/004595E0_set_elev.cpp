@@ -1,69 +1,222 @@
 // VA: 004595E0 RGE_Map::set_elev
+//
 // Attempt log:
-// initial reconstruction from packet: clamp rectangle, optionally modify/absolute set elevation nibble, then update terrain/object edges.
-// modeled active player lookup through player list at +0x8dc0 -> +0x40/+0x7c, rectangle endpoint swaps, and bounds clamps.
-// modeled relative-elevation path: per-tile high bits at tile+5, clamp adjusted elevation, clear if >8.
-// modeled absolute-elevation path when delta is zero with relative byte capped to 8 and stored in high bits.
-// modeled expansion by one tile around edited rectangle and terrain_at/update-object loop, plus final clear_area/repaint_area calls.
-// tried direct vtable call syntax for object update; source compiles but call surface/loop details are speculative.
-// current source is 720 bytes vs original 792, so no positional diff; broad/short and not accepted_drift-safe.
+// - Reconstructed the function from the executable packet.  The first four
+//   arguments are a column/row rectangle.  The fifth is an absolute elevation,
+//   the sixth is a relative delta, and the seventh selects relative mode.
+// - The map uses 24-byte RGE_Tile records and a row-offset table.  The update
+//   pass refreshes tile type, teleports each tile object at its current world
+//   position, queues the tile on the current player's diamond list, then calls
+//   set_map_screen_pos and request_redraw for the expanded rectangle.
+// - Reusing short row_i/col_i cursors was a codegen duplicate.  Reversing the
+//   endpoint temporary order matched the original swap stores and moved the
+//   first mismatch into the relative elevation loop.
+// - Naming old_terrain before the relative calculation reduced the gap to 536
+//   positional bytes, with exact frame, calls, and 88.85% exact block coverage.
+// - A separate low-bit local and a reordered terrain read worsened the output;
+//   both were restored.  The remaining gap is VC5 byte-width scheduling in the
+//   relative loop and late register coloring, not a call or layout mismatch.
 
-struct TileObjNode { void* obj; TileObjNode* next; };
-struct Tile { unsigned char terrain; unsigned char pad[4]; unsigned char elev; char gap[10]; TileObjNode* objects; char pad2[4]; };
-class Player { public: char gap[0x1d]; unsigned char mode; char gap2[0x1f]; short id; void* units; };
-class RGE_Map { public:
-    char gap0[8]; int width; int height; char gap10[0x8d8c-0x10]; Tile** rows; char gap2[0x8dc0-0x8d90]; Player* player;
-    void clear_area(short,short,short,short); void repaint_area(short,short,short,short,int); unsigned char terrain_at(short,short);
-    void set_elev(short x1, short y1, short x2, short y2, short delta, unsigned char relative);
+class RGE_Tile;
+class RGE_Static_Object;
+
+class RGE_Object_Node {
+public:
+    RGE_Static_Object* node;
+    RGE_Object_Node* next;
+    RGE_Object_Node* prev;
+    unsigned char centered;
+    unsigned char gap_0D[3];
 };
 
-void RGE_Map::set_elev(short x1, short y1, short x2, short y2, short delta, unsigned char relative)
+class RGE_Object_List {
+public:
+    virtual ~RGE_Object_List();
+    RGE_Object_Node* list;
+    short number_of_objects;
+    unsigned char gap_0A[2];
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game();
+    virtual void recycle_out_of_game();
+    virtual void draw();
+    virtual void shadow_draw();
+    virtual void normal_draw();
+    virtual void draw_front_frame();
+    virtual void draw_back_frame();
+    virtual void draw_frame();
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save();
+    virtual float teleport(float x, float y, float z);
+
+    char gap_04[0x34];
+    float world_x;
+    float world_y;
+};
+
+class RGE_Tile {
+public:
+    short screen_xpos;
+    short screen_ypos;
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    unsigned char border_type;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
+    RGE_Object_List objects;
+};
+
+class RGE_Tile_List {
+public:
+    int list_size;
+    int num_active;
+    int new_count;
+    int collapse_list;
+    void* list;
+
+    void add_node(int col, int row);
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x68];
+    RGE_Tile_List diam_tile_list;
+};
+
+class RGE_Game_World {
+public:
+    virtual ~RGE_Game_World();
+    char gap_04[0x19];
+    unsigned char game_state;
+    char gap_1E[0x22];
+    RGE_Player** players;
+    char gap_44[0x38];
+    short curr_player;
+};
+
+class RGE_Map {
+public:
+    virtual ~RGE_Map();
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    char gap_10[0x8D7C];
+    RGE_Tile** map_row_offset;
+    char gap_8D90[0x30];
+    RGE_Game_World* game_world;
+
+    unsigned char get_tile_type(short col, short row);
+    void set_map_screen_pos(int col0, int row0, int col1, int row1);
+    void request_redraw(int col0, int row0, int col1, int row1,
+                        unsigned char attr);
+    void set_elev(short col0, short row0, short col1, short row1,
+                  unsigned char elevation, short delta,
+                  unsigned char relative);
+};
+
+void RGE_Map::set_elev(short col0, short row0, short col1, short row1,
+                       unsigned char elevation, short delta,
+                       unsigned char relative)
 {
-    Player* cur = ((Player**)(*(int*)((char*)this->player + 0x40)))[*(short*)((char*)this->player+0x7c)];
-    if (x1 > x2) { short t=x1; x1=x2; x2=t; }
-    if (y1 > y2) { short t=y1; y1=y2; y2=t; }
-    if (x1 < 0) x1 = 0;
-    if (x2 >= this->height) x2 = (short)(this->height - 1);
-    if (y1 < 0) y1 = 0;
-    if (y2 >= this->width) y2 = (short)(this->width - 1);
-    if (relative) {
+    short row_i;
+    short col_i;
+    RGE_Tile* tile;
+    RGE_Player* cur_player =
+        this->game_world->players[this->game_world->curr_player];
+
+    if (row0 > row1) {
+        short temp = row1;
+        row1 = row0;
+        row0 = temp;
+    }
+    if (col0 > col1) {
+        short temp = col1;
+        col1 = col0;
+        col0 = temp;
+    }
+
+    if (row0 < 0)
+        row0 = 0;
+    if (row1 >= this->map_height)
+        row1 = (short)this->map_height - 1;
+    if (col0 < 0)
+        col0 = 0;
+    if (col1 >= this->map_width)
+        col1 = (short)this->map_width - 1;
+
+    if (relative != 0) {
         if (delta != 0) {
-            for (short x=x1; x<=x2; ++x) {
-                for (short y=y1; y<=y2; ++y) {
-                    Tile* tile = &this->rows[x][y];
-                    short e = (short)((tile->elev >> 5) + delta);
-                    if (e < 0) e = 0; else if (e > 0xff) e = 0xff;
-                    tile->elev = (unsigned char)((e << 5) | (tile->elev & 0x1f));
-                    if ((tile->elev >> 5) > 8) tile->elev &= 0x1f;
+            for (row_i = row0; row_i <= row1; ++row_i) {
+                for (col_i = col0; col_i <= col1; ++col_i) {
+                    tile = &this->map_row_offset[row_i][col_i];
+                    unsigned char old_terrain = tile->terrain_type;
+                    short new_elevation =
+                        (short)(old_terrain >> 5) + delta;
+
+                    if (new_elevation < 0)
+                        new_elevation = 0;
+                    else if (new_elevation > 0xFF)
+                        new_elevation = 0xFF;
+
+                    tile->terrain_type =
+                        (unsigned char)(new_elevation << 5) |
+                        (old_terrain & 0x1F);
+                    if ((tile->terrain_type >> 5) > 8)
+                        tile->terrain_type &= 0x1F;
                 }
             }
         } else {
-            if (relative > 8) relative = 8;
-            for (short x=x1; x<=x2; ++x) {
-                for (short y=y1; y<=y2; ++y) {
-                    Tile* tile = &this->rows[x][y];
-                    tile->elev = (unsigned char)((relative << 5) | (tile->elev & 0x1f));
+            if (elevation > 8)
+                elevation = 8;
+
+            for (row_i = row0; row_i <= row1; ++row_i) {
+                for (col_i = col0; col_i <= col1; ++col_i) {
+                    tile = &this->map_row_offset[row_i][col_i];
+                    tile->terrain_type =
+                        (unsigned char)(elevation << 5) |
+                        (tile->terrain_type & 0x1F);
                 }
             }
         }
     }
-    if (x1 > 0) --x1;
-    if (x2 < this->height-1) ++x2;
-    if (y1 > 0) --y1;
-    if (y2 < this->width-1) ++y2;
-    for (short x=x1; x<=x2; ++x) {
-        for (short y=y1; y<=y2; ++y) {
-            Tile* tile = &this->rows[x][y];
-            tile->terrain = this->terrain_at(y, x);
-            for (TileObjNode* n=tile->objects; n; n=n->next) {
-                void* o = n->obj;
-                (*(void(***)(void*,int,int,int))o)[13](o, *(int*)((char*)o+0x38), *(int*)((char*)o+0x3c), 0);
+
+    if (row0 > 0)
+        --row0;
+    if (row1 < this->map_height - 1)
+        ++row1;
+    if (col0 > 0)
+        --col0;
+    if (col1 < this->map_width - 1)
+        ++col1;
+
+    for (row_i = row0; row_i <= row1; ++row_i) {
+        for (col_i = col0; col_i <= col1; ++col_i) {
+            tile = &this->map_row_offset[row_i][col_i];
+            tile->tile_type = this->get_tile_type(col_i, row_i);
+
+            RGE_Object_Node* object_node = tile->objects.list;
+            while (object_node != 0) {
+                object_node->node->teleport(object_node->node->world_x,
+                                             object_node->node->world_y, 0.0f);
+                object_node = object_node->next;
             }
-            if (this->player->mode != 3) {
-                // visibility update placeholder
-            }
+
+            if (this->game_world->game_state != 3)
+                cur_player->diam_tile_list.add_node(col_i, row_i);
         }
     }
-    this->clear_area(y1, x1, y2, x2);
-    this->repaint_area(y1, x1, y2, x2, 0);
+
+    this->set_map_screen_pos((int)col0, (int)row0,
+                             (int)col1, (int)row1);
+    this->request_redraw((int)col0, (int)row0,
+                         (int)col1, (int)row1, 0);
 }

@@ -1,15 +1,21 @@
 // VA: 00533AF0 RGE_View::Init_Tile_Edge_Tables()
 // Attempt log:
-// 1: natural implementation from packet/decompiler with CRT open/lseek/tell/read/close/calloc and edge table loops.
-// 2: first local check same-size 799B, exact through 0xE1; file-load/relocation first half very close.
-// 3: kept `_open`/`_lseek`/`_tell`/`_read`/`_close` declarations instead of headers; call set/cleanup matches.
-// 4: used offset globals +0x184/+0x188/+0x1A0; prologue and frame match original `sub esp,18` with EBX/EBP/ESI/EDI saves.
-// 5: natural first pointer-fix loop matches first table exactly; second table differs by small register choice (`edx`/`ecx`) at 0x119 region.
-// 6: black-edge nested pointer loop uses single pointer increment; original uses EDX count and ESI base, our source is semantically right but register allocation drifts.
-// 7: `for` zero-fill compiled to original rep stosd fill of 0xff across 0x100 bytes.
-// 8: first edge-number classification loop shape is broadly close but boolean local/register topology diverges after table loads.
-// 9: second fill pass behavior modeled with bit masks; remaining drift includes real branch/register scheduling in edge-number canonicalization, not accepted-drift-safe.
-// 10: no inline asm/custom flags; left in scratch at 55.8198% positional / 17.5219% edit.
+// 1: initial raw-offset reconstruction from the packet; call set and frame match.
+// 2: typed table ownership and the two file-load/relocation passes are now the
+//    living reconstruction. The downloaded pointer values are file-relative,
+//    so the small integer relocation loop is required by the data format.
+// 3: direct typed fields and indexed table roots introduced division and a
+//    large prologue/layout drift; rolled back.
+// 4: typed record members with fixed byte-offset roots preserved the 806-byte
+//    basin (453 positional bytes, 133 edit bytes, 92.73% shape).
+// 5: a scoped black-table alias reached the original 799-byte size but changed
+//    liveness and raised positional drift to 481 bytes; rolled back.
+// 6: reading through that alias worsened the second file block to 529 bytes;
+//    rolled back.
+// 7: a named black root-entry pointer changed the block shape but gave 455
+//    positional bytes; rolled back as weaker than the typed baseline.
+// 8: direct named RGE_View fields remained a 780-byte, 615-byte-diff basin;
+//    restored the typed fixed-offset lvalues. No fake volatility or asm is used.
 
 extern "C" int __cdecl _open(const char*, int);
 extern "C" int __cdecl _lseek(int, int, int);
@@ -23,37 +29,73 @@ extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
 typedef unsigned char uchar;
 
-class RGE_View { public: char gap[0x2A0]; void Init_Tile_Edge_Tables(); };
-#define EDGE (*(int**)((char*)this + 0x184))
-#define BLACK (*(int**)((char*)this + 0x188))
+struct VSpanMiniList;
+
+struct Tile_FogEdge_Table {
+    VSpanMiniList* normal_draw;
+    VSpanMiniList* fog_draw;
+};
+
+struct Tile_BlackEdge_Table {
+    VSpanMiniList* black_UNdraw;
+};
+
+class RGE_View {
+public:
+    char gap_000[0x184];
+    Tile_FogEdge_Table** Tile_Edge_Tables;
+    Tile_BlackEdge_Table** Black_Edge_Tables;
+    char gap_18C[0x14];
+    uchar EdgeNumber[0x100];
+
+    void Init_Tile_Edge_Tables();
+};
+#define EDGE_TABLES (*(Tile_FogEdge_Table***)((char*)this + 0x184))
+#define BLACK_TABLES (*(Tile_BlackEdge_Table***)((char*)this + 0x188))
 #define EDGENUM ((uchar*)((char*)this + 0x1A0))
 
 void RGE_View::Init_Tile_Edge_Tables()
 {
     int fd, len;
     int i, j;
-    int* p;
+    Tile_FogEdge_Table* fog_table;
+    Tile_BlackEdge_Table* black_table;
     int base;
-    uchar* edge;
     int count;
     int ok;
     int b0,b1,b2,b3,b4,b5,b6,b7;
 
     fd = _open(TILE, 0x8000);
     if (fd != -1) {
-        _lseek(fd,0,2); len = _tell(fd); EDGE = (int*)calloc(1,len); _lseek(fd,0,0); _read(fd,EDGE,len); _close(fd);
-        base = (int)EDGE;
-        for (i=0;i<0x44;i+=4) *(int*)((char*)EDGE+i) += base;
-        for (i=0;i<0x44;i+=4) { p = *(int**)((char*)EDGE+i); for (j=0x2f;j!=0;j--) { if (p[0]) p[0]+=base; if (p[1]) p[1]+=base; p+=2; } }
+        _lseek(fd,0,2); len = _tell(fd); EDGE_TABLES = (Tile_FogEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,EDGE_TABLES,len); _close(fd);
+        base = (int)EDGE_TABLES;
+        for (i=0;i<0x44;i+=4)
+            *(int*)((char*)EDGE_TABLES+i) += base;
+        for (i=0;i<0x44;i+=4) {
+            fog_table = *(Tile_FogEdge_Table**)((char*)EDGE_TABLES+i);
+            for (j=0;j<0x2f;j++) {
+                if (fog_table[j].normal_draw)
+                    fog_table[j].normal_draw = (VSpanMiniList*)((char*)fog_table[j].normal_draw + base);
+                if (fog_table[j].fog_draw)
+                    fog_table[j].fog_draw = (VSpanMiniList*)((char*)fog_table[j].fog_draw + base);
+            }
+        }
     }
     fd = _open(BLK, 0x8000);
     if (fd != -1) {
-        _lseek(fd,0,2); len = _tell(fd); BLACK = (int*)calloc(1,len); _lseek(fd,0,0); _read(fd,BLACK,len); _close(fd);
-        base = (int)BLACK;
-        for (i=0;i<0x44;i+=4) *(int*)((char*)BLACK+i) += base;
-        for (i=0;i<0x44;i+=4) { p = *(int**)((char*)BLACK+i); for (j=0x2f;j!=0;j--) { if (p[0]) p[0]+=base; p++; } }
+        _lseek(fd,0,2); len = _tell(fd); BLACK_TABLES = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,BLACK_TABLES,len); _close(fd);
+        base = (int)BLACK_TABLES;
+        for (i=0;i<0x44;i+=4)
+            *(int*)((char*)BLACK_TABLES+i) += base;
+        for (i=0;i<0x44;i+=4) {
+            black_table = *(Tile_BlackEdge_Table**)((char*)BLACK_TABLES+i);
+            for (j=0;j<0x2f;j++) {
+                if (black_table[j].black_UNdraw)
+                    black_table[j].black_UNdraw = (VSpanMiniList*)((char*)black_table[j].black_UNdraw + base);
+            }
+        }
     }
-    edge = EDGENUM;
+    uchar* edge = EDGENUM;
     for (i=0;i<0x100;i++) edge[i] = 0xff;
     count = 0;
     for (i=0;i<0x100;i++) {
