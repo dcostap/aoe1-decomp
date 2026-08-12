@@ -36,6 +36,10 @@
 //   duplicated hit-path cleanup (55 strict bytes, first mismatch at +00D0).
 // - orch2-5472B0-layout: replaced the opaque 0x51c body with the constructor-
 //   proven named field layout; codegen and structural metrics were unchanged.
+// - follow-5472B0-r1: direct constructor-result assignment and direct truth
+//   testing matched the exact donor style but emitted no change.
+// - follow-5472B0-r1: a scoped allocation block with one final return restored
+//   the shared-tail shape but caused 203 bytes of broad drift; rolled back.
 
 #include <stdlib.h>
 #include <string.h>

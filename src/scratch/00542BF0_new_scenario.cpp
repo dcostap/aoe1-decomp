@@ -51,6 +51,13 @@
 //   paused after the 10-hypothesis assignment with exact size, CFG, and call parity.
 // - Member-based debug_srand seed argument, matching exact World.cpp new_game donor,
 //   was codegen-identical; restored the clean typed source.
+// - Follow-up: corrected world_update_counter ownership to the named World.cpp
+//   global; positional metrics stayed unchanged.
+// - Follow-up: exact loader overload order moved the scenario call to vslot +74;
+//   restored the target's char* loader surface at +78.
+// - Follow-up: comma sequencing, one-line seed statements, explicit this member
+//   spelling, and explicit long map casts were all codegen duplicates; restored
+//   the natural typed source.
 
 #include <stdlib.h>
 

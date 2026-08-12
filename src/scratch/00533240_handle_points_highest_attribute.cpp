@@ -44,6 +44,11 @@
 //   were neutral, duplicate, or worse (diff 139-219). Restored the clean scalar candidate.
 // - Pause lead: the remaining blocker is source/register allocation for the original id and
 //   current stack homes. Calls, relocation identity, and CFG counts are aligned.
+// - Follow-up worker: direct repeated player-id access and direct player->world access,
+//   both matching exact victory.cpp sibling idioms, were codegen-neutral. A preheader plus
+//   tail pointer increment and a for-loop increment clause regressed structural parity
+//   (diff 191/190); an isolated player local reproduced the prior diff-216 basin. Restored
+//   the clean scalar candidate. No new natural structural lead remains in these axes.
 
 class RGE_Game_World;
 

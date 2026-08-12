@@ -55,6 +55,12 @@
 //   destructors widened it to 37 bytes. All were rolled back. The clean source remains the
 //   best canonical reconstruction; the only gap is entry=EBX versus original entry=EDI and
 //   pp=EDI versus original pp=EBX callee-save coloring.
+// - close-533330-r1 probe: mirrored the exact victory.cpp sibling's player and point-entry
+//   aliases inside the positive state guard; frame grew to 0x8 and diff to 236, so restored.
+// - close-533330-r1 probe: made the reused attribute/result local a period long; output was
+//   unchanged at 224 bytes and 29-byte diff, so restored.
+// - close-533330-r1 probe: captured player only for the loop self-id test; frame grew to 0x8
+//   and diff to 230, so restored. No new source or ABI lead remains.
 
 class RGE_Game_World;
 

@@ -1,64 +1,186 @@
 // VA: 00457F80 RGE_Map::load_terrain_types
 // Attempt log:
-// initial rough reconstruction from packet: fopen/fscanf terrain records, fill terrain type table and borders/sounds.
-// modeled initial 32 terrain enabled-byte clear at stride 0x198 and fopen/fclose/fscanf surfaces.
-// modeled first terrain_count read, per-record giant fscanf, id range checks, terrain struct address formula, and 19 border-pair reads.
-// modeled sound-id remap reads, color/passability/name/pict copies, animation/frame fields, and float-to-short frame-rate conversion path.
-// current source reaches same 762B size but has broad frame/layout drift from offset 2: original `sub esp,5c`, rebuilt `sub esp,64`, indicating stack locals/record format are still wrong.
-// many local widths/order and terrain field offsets are approximate; not accepted_drift-safe.
+// baseline: typed terrain record reconstruction used an approximate record.
+// probe 2: canonical RGE_Tile_Set fields, reverse loaded-byte clear, convert_us,
+// direct float conversion, unconditional fclose, and tile shape totals.
+// probe 3: reordered locals toward the binary stack map; diff improved.
+// probe 4: restored count-minus-one loop and full giant fscanf argument surface.
+// probe 5: one FILE local and the second parsed float as infile; diff 333 bytes.
+// probes 6-10: tested format-width, parameter-home, cursor, and interval-home
+// variants. They did not improve the best source and are not retained.
+// Best reconstruction: the remaining drift is local home/register placement and
+// the first input-field overlay. Calls, cleanup, record stride, and widths match.
 
 extern "C" void* __cdecl fopen(char*, char*);
 extern "C" int __cdecl fscanf(void*, char*, ...);
 extern "C" int __cdecl fclose(void*);
-extern "C" int __cdecl atoi(char*);
+extern "C" void __cdecl convert_us(char*);
 extern "C" void __cdecl strcpy(char*, char*);
-extern "C" int __cdecl terrain_name_fix(char*);
-extern "C" short __cdecl float_to_short(float);
 
-struct TerrainType { char enabled; char name[13]; char pict[13]; int slp; int sound; int terrain_to_draw; char low, med, high, cliff1, cliff2, passable, impassable, animated, frames, random; short border[16]; short sound_id; short border_num; short color1; short color2; float frame_rate; int delay; int frame_count; short frame_count2; char pad[0x198-0x48]; };
-class RGE_Map { public:
-    char gap[0x8c]; TerrainType terrain[32]; char gap2[0x8d90-0x32ec]; short terrain_count;
-    void load_terrain_types(char*, void**);
+class RGE_Sound;
+
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
 };
 
-void RGE_Map::load_terrain_types(char* filename, void** sounds)
+class RGE_Tile_Set {
+public:
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    void* shape;
+    RGE_Sound* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char map_lt_cliff_color;
+    unsigned char map_rt_cliff_color;
+    unsigned char passable_terrain;
+    unsigned char impassable_terrain;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    RGE_TOB_Picts tiles[19];
+    short terrain_to_draw;
+    short rows;
+    short cols;
+    short borders[32];
+    short obj_types[30];
+    short obj_density[30];
+    unsigned char obj_placement_flag[30];
+    short num_obj_type;
+    unsigned char pad_end[2];
+};
+
+class RGE_Map {
+public:
+    char gap_00[0x8C];
+    RGE_Tile_Set terrain_types[32];
+    char gap_after_terrain[0x8D90 - 0x338C];
+    short num_terrain;
+
+    void load_terrain_types(char*, RGE_Sound**);
+};
+
+void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
 {
     int i;
-    for (i=0; i<32; ++i) this->terrain[i].enabled = 0;
-    void* f = fopen(filename, (char*)0x0057F320);
-    if (!f) return;
-    fscanf(f, (char*)0x005804E8, &this->terrain_count);
-    if ((short)(this->terrain_count - 1) < 0) { fclose(f); return; }
-    int left = this->terrain_count;
-    while (left--) {
-        short id, sound_id, low, med, hi, lc, rc, pass, impass, anim, frames, random, draw, border_num;
-        int slp, interval, infile;
-        float frame_rate, delay;
-        char name[20], pict[20];
-        if (fscanf(f, (char*)0x00584B44, &id, name, pict, &slp, &sound_id, &low, &med, &hi, &lc, &rc, &pass, &impass, &anim, &frames, &interval, &random, &draw, &infile, &frame_rate, &delay) == -1) break;
-        if (id < 0 || id >= 32) continue;
-        TerrainType* t = &this->terrain[id];
-        t->delay = 19;
-        for (i=0; i<t->delay; ++i) {
-            short a,b;
-            fscanf(f, (char*)0x0058488C, &a, &b);
-            t->border[i*2] = a;
-            t->border[i*2+1] = b;
-            t->border_num = 0;
-        }
-        short count;
-        for (i=0; i<sound_id; ++i) {
-            short idx, snd;
-            fscanf(f, (char*)0x0058488C, &idx, &snd);
-            t->border[idx] = snd;
-        }
-        t->sound = (sound_id >= 0) ? (int)sounds[sound_id] : 0;
-        t->high = (char)hi; t->med = (char)med; t->low = (char)low; t->cliff1 = (char)lc; t->cliff2 = (char)rc;
-        t->passable = (char)pass; t->impassable = (char)impass;
-        terrain_name_fix(name); strcpy(t->name, name); strcpy(t->pict, pict);
-        t->slp = slp; t->sound_id = 0; t->enabled = 1; t->color1 = (short)anim; t->color2 = (short)frames; t->animated=(char)random; t->frame_count=(short)draw;
-        if (frame_rate == 0.0f) t->frame_count2 = 0; else t->frame_count2 = float_to_short(delay / frame_rate);
-        t->frame_rate = frame_rate; t->frame_count = (int)delay; t->border_num = 0; t->random = 0; t->frames = 0; t->sound_id = (short)interval;
+    for (i = 31; i >= 0; --i) {
+        this->terrain_types[i].loaded = 0;
     }
-    fclose(f);
+
+    void* local_38 = fopen(filename, (char*)"r");
+    if (local_38 != 0) {
+        fscanf(local_38, (char*)"%hd", &this->num_terrain);
+        short terrain_count = this->num_terrain - 1;
+        if (terrain_count >= 0) {
+            int resource_id = (int)terrain_count + 1;
+            do {
+                short border_num;
+                short border;
+                short sound_id;
+                short low_color;
+                short med_color;
+                short hi_color;
+                short lt_cliff_color;
+                short rt_cliff_color;
+                short impassable_terrain;
+                short passable_terrain;
+                short row;
+                short col;
+                short is_animated;
+                short animation_frames;
+                short terrain_to_draw;
+                short random;
+                float interval;
+                float infile;
+                float local_30;
+                long local_28;
+                short terrain_id;
+                char name[13];
+                char pict_name[13];
+                int i2;
+
+                if (fscanf(local_38, (char*)"%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd",
+                           &terrain_id, name, pict_name, &local_28,
+                           &border_num, &lt_cliff_color, &rt_cliff_color, &hi_color,
+                           &med_color, &terrain_to_draw, &random, &infile,
+                           &local_30, &interval, &is_animated, &animation_frames,
+                           &impassable_terrain, &passable_terrain, &row, &col,
+                           &sound_id) != -1) {
+                    if (terrain_id < 32 && terrain_id >= 0) {
+                        RGE_Tile_Set* terrain = &this->terrain_types[terrain_id];
+                        short shape_index = 0;
+                        int tile_count = 19;
+                        do {
+                            fscanf(local_38, (char*)"%hd %hd",
+                                   &terrain->tiles[19 - tile_count].count,
+                                   &terrain->tiles[19 - tile_count].animations);
+                            terrain->tiles[19 - tile_count].shape_index = shape_index;
+                            shape_index += terrain->tiles[19 - tile_count].count *
+                                           terrain->tiles[19 - tile_count].animations;
+                            --tile_count;
+                        } while (tile_count != 0);
+
+                        i2 = 0;
+                        if (sound_id > 0) {
+                            do {
+                                fscanf(local_38, (char*)"%hd %hd", &border, &low_color);
+                                terrain->borders[border] = low_color;
+                                ++i2;
+                            } while (i2 < sound_id);
+                        }
+
+                        if (med_color < 0) {
+                            terrain->sound = 0;
+                        } else {
+                            terrain->sound = sounds[med_color];
+                        }
+                        terrain->map_low_color = (unsigned char)hi_color;
+                        terrain->map_med_color = (unsigned char)lt_cliff_color;
+                        terrain->map_hi_color = (unsigned char)rt_cliff_color;
+                        terrain->map_lt_cliff_color = (unsigned char)impassable_terrain;
+                        terrain->map_rt_cliff_color = (unsigned char)passable_terrain;
+                        terrain->impassable_terrain = (unsigned char)row;
+                        terrain->passable_terrain = (unsigned char)col;
+                        convert_us(name);
+                        strcpy(terrain->name, name);
+                        strcpy(terrain->pict_name, pict_name);
+                        terrain->animate_last = 0.0f;
+                        terrain->resource_id = local_28;
+                        terrain->loaded = 1;
+                        terrain->rows = is_animated;
+                        terrain->cols = animation_frames;
+                        terrain->is_animated = (unsigned char)terrain_to_draw;
+                        terrain->animation_frames = random;
+                        if (infile == 0.0f) {
+                            terrain->pause_frames = 0;
+                        } else {
+                            terrain->pause_frames = (short)(local_30 / infile);
+                        }
+                        terrain->interval = infile;
+                        terrain->frame = 0;
+                        terrain->pause_between_loops = local_30;
+                        terrain->draw_frame = 0;
+                        terrain->frame_changed = 0;
+                        terrain->drawn = 0;
+                        terrain->terrain_to_draw = sound_id;
+                    }
+                }
+                --resource_id;
+            } while (resource_id != 0);
+        }
+    }
+    fclose(local_38);
 }

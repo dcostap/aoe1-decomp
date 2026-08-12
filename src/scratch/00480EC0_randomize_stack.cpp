@@ -67,8 +67,13 @@
 //   This restores the 0x968 frame and 237-byte size, reaching diff 44 / 95.12%
 //   shape. The remaining drift is receiver/cursor coloring and random-call
 //   scheduling, so keep this as the best binary-backed reconstruction.
+// - close-480EC0-r1: rmm_base C++ debug_rand linkage and an explicit node reload
+//   after bucket arithmetic were codegen-neutral; no ABI or scheduling gain.
+// - close-480EC0-r1: canonical Map_Stack array ownership and typed pair cursors
+//   widened the drift to 145 and reduced the frame to 0x964; restored the
+//   canonical source below instead of retaining the binary overlay.
 
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 
 struct Map_Stack {
     long x;           // +0x00
@@ -88,45 +93,36 @@ public:
 
 void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
 {
-    struct Randomize_Stack_State {
-        int outer;
-        Map_Stack sub_stacks[100];
-        int trailer;
-    } state;
+    Map_Stack sub_stacks[100];
     int i;
 
-    // The binary reuses typed fields as overlapping local storage. The y field
-    // starts each bucket sentinel, while x later stores the collection offset.
     for (i = 0; i < 100; i++) {
-        init_stack((Map_Stack*)&state.sub_stacks[i].y);
+        init_stack(&sub_stacks[i]);
     }
 
-    state.outer = 2;
-    while (state.outer != 0) {
+    for (int outer = 2; outer != 0; outer--) {
         while (param_1->next != 0) {
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1E8);
             r = (r * 100) / 0x7FFF;
-            add_stack_node((Map_Stack*)&state.sub_stacks[r].y, param_1->next);
+            Map_Stack* node = param_1->next;
+            add_stack_node(&sub_stacks[r], node);
         }
 
-        state.sub_stacks[0].x = 0x18;
-        Map_Stack** first = &state.sub_stacks[0].prev;
-        while (state.sub_stacks[0].x < 0x978) {
-            Map_Stack** second = (Map_Stack**)((char*)&state.sub_stacks[0].prev + state.sub_stacks[0].x);
+        int stack_index = 0;
+        while (stack_index < 100) {
+            Map_Stack* first = &sub_stacks[stack_index];
+            Map_Stack* second = &sub_stacks[stack_index + 1];
 
-            while (*first != 0 || *second != 0) {
-                if (*first != 0) {
-                    add_stack_node(param_1, *first);
+            while (first->next != 0 || second->next != 0) {
+                if (first->next != 0) {
+                    add_stack_node(param_1, first->next);
                 }
-                if (*second != 0) {
-                    add_stack_node(param_1, *second);
+                if (second->next != 0) {
+                    add_stack_node(param_1, second->next);
                 }
             }
 
-            first = (Map_Stack**)((char*)first + 0x30);
-            state.sub_stacks[0].x += 0x30;
+            stack_index += 2;
         }
-
-        state.outer--;
     }
 }

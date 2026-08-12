@@ -61,6 +61,13 @@
 // scan site changed the basin to 203 bytes and made obj persistent in EBX;
 // hoisted armor pointer with inner-site count was 184 bytes/215 bytes. Both
 // natural-source variants were rolled back. Clean typed source restored.
+// Follow-up worker (follow-4303A0-r1): PDB parameter names and inline FPU
+// expression spelling were codegen duplicates. Delaying armor pointer/count
+// declarations until after the terrain lookup reached the known 76-byte
+// diagnostic basin, but contradicted the line-441 declaration band and moved
+// armor loads away from the original prologue. Restored the canonical source.
+// Remaining evidence-backed gap is the VC5 EBP-versus-EBX armor pointer
+// allocator choice; no natural arithmetic or liveness lead remains.
 // Fresh PDB DIA evidence names the parameters weapon_num (int), damage
 // (RGE_Armor_Weapon_Info*), attack_modifier (float), attacking_player, and
 // attackingObject; tot_armor is the only emitted local and is an int at a
