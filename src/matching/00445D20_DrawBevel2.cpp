@@ -7,8 +7,8 @@
 //   the frame/prologue; hoisting their declarations was codegen-identical.
 // - reversed compare operands changed branch shape and was rolled back.
 // - separate original-coordinate swap temporaries reached the best emitted
-//   candidate (284-byte size, 274 positional bytes different); the y swap uses
-//   the packet's observed y2=y1 / y1=old-y2 assignment order.
+//   candidate (284-byte size, 274 positional bytes different); that old
+//   candidate had an incorrect y swap and was not retained.
 // - reverse temporary/assignment order and staged width/height arithmetic were
 //   codegen regressions or duplicates; final source restored to the natural
 //   typed form and left in scratch.
@@ -24,6 +24,12 @@
 //   all worsened or duplicated the 293-byte/274-difference clean result.
 // - Final plausibility audit removed the unconditional original-coordinate
 //   copies; each normalization now uses the ordinary block-local swap form.
+// - Blind semantic review corrected the y swap and the five inner-line spans:
+//   call3 width-3, call4 height-4, call6 height-1, call7 width-2, and
+//   call8 height-3. The eight asm-verified pairs are H(x1+1,y1,w-1,c1),
+//   V(x2,y1+1,h-2,c1), H(x1+2,y1+1,w-3,c2), V(x2-1,y1+2,h-4,c2),
+//   H(x1,y2,w,c4), V(x1,y1,h-1,c4), H(x1+1,y2-1,w-2,c3), and
+//   V(x1+1,y1+1,h-3,c3).
 // Main-agent audit confirmed the natural draw-area line ownership and retained
 // the ordinary clipped bevel construction.
 
@@ -52,8 +58,8 @@ void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
     }
     if (y1 > y2) {
         long temp = y1;
-        y2 = y1;
-        y1 = temp;
+        y1 = y2;
+        y2 = temp;
     }
 
     width = x2 - x1 + 1;
@@ -67,10 +73,10 @@ void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
     DrawHorzLine(x1_plus_one, y1, width - 1, c1);
     y1_plus_one = y1 + 1;
     DrawVertLine(x2, y1_plus_one, height - 2, c1);
-    DrawHorzLine(x1 + 2, y1_plus_one, width - 2, c2);
-    DrawVertLine(x2 - 1, y1 + 2, height - 3, c2);
+    DrawHorzLine(x1 + 2, y1_plus_one, width - 3, c2);
+    DrawVertLine(x2 - 1, y1 + 2, height - 4, c2);
     DrawHorzLine(x1, y2, width, c4);
-    DrawVertLine(x1, y1, height, c4);
-    DrawHorzLine(x1_plus_one, y2 - 1, width - 1, c3);
-    DrawVertLine(x1_plus_one, y1_plus_one, height - 2, c3);
+    DrawVertLine(x1, y1, height - 1, c4);
+    DrawHorzLine(x1_plus_one, y2 - 1, width - 2, c3);
+    DrawVertLine(x1_plus_one, y1_plus_one, height - 3, c3);
 }
