@@ -146,6 +146,11 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
         original_value = original_value[6:]
     if rebuilt_value.startswith("__imp_"):
         rebuilt_value = rebuilt_value[6:]
+    # VC5 LIBC.LIB chkstk.obj exports both names at offset zero for the same
+    # 0x2F-byte helper body. The compiler can select either relocation name.
+    stack_probe_aliases = {"__alloca_probe", "__chkstk"}
+    if {original_value, rebuilt_value} == stack_probe_aliases:
+        return True
     if original_value.startswith("?") and rebuilt_value.startswith("?"):
         return original_value == rebuilt_value
     return clean_symbol_name(original_value) == clean_symbol_name(rebuilt_value)

@@ -22,6 +22,9 @@
 //   blocker, not an unresolved ownership or ABI fact.
 // - Current lane tested /Ge and /Oi- as compiler-context alternatives; both
 //   were codegen duplicates and still bound the fixed buffer to __chkstk.
+// - Toolchain audit proved VC5 LIBC.LIB chkstk.obj exports __alloca_probe and
+//   __chkstk at the same offset for the same 0x2F-byte helper. The checker now
+//   recognizes only this proven alias pair; the static-buffer source matches.
 
 class TDrawArea;
 class TPanel {

@@ -88,6 +88,11 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         )
         self.assertFalse(direct_call_symbols_match("operator<<", string_overload))
 
+    def test_vc5_stack_probe_export_aliases_match(self) -> None:
+        self.assertTrue(direct_call_symbols_match("__alloca_probe", "__chkstk"))
+        self.assertTrue(direct_call_symbols_match("__chkstk", "__alloca_probe"))
+        self.assertFalse(direct_call_symbols_match("__alloca_probe", "__ftol"))
+
     def test_relocation_is_not_masked_across_different_instruction_shapes(self) -> None:
         original = bytes.fromhex("B8 11 22 33 44 C3")  # mov eax,imm32
         rebuilt = bytes.fromhex("68 00 00 00 00 C3")   # push imm32
