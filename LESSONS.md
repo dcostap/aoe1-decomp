@@ -903,3 +903,15 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   preserving behavior; verify the emitted stack addresses before retaining a
   raw `+4` spelling. A local `RGE_Game_Info*` loaded from the base-game object
   can likewise recover the original global-load/line-indexed `get_id` order.
+
+- When two textually identical scans differ from the oracle by a single SIB
+  base/index byte in one loop's indexed word load, spell that load through the
+  typed member access (`list[rec].frame[i]`) instead of a raw pointer-cast
+  cursor address (`*(short*)((char*)list->sound + offset)`). VC5 strength-reduces
+  the typed indexed read into the same moving byte cursor, but can pick the
+  oracle's SIB base/index assignment in both loops; the raw cast form swaps
+  base/index in exactly one loop, and cursor/address surgery or operand
+  reversal does not fix it. Removing the now-dead raw cursor leaves the emitted
+  bytes unchanged (`004BFFF0`). Caveat: the base/index choice is whole-function
+  register-allocation feedback — the two loops respond oppositely to the same
+  spelling change — so re-verify both loops' bytes after touching either loop.

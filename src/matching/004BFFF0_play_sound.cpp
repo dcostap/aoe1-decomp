@@ -34,6 +34,15 @@
 // function-scope-local experiments broadened drift and were rolled back.
 // Best current reconstruction retains the full canonical sprite/sound layout,
 // natural bounded scans, and one localized first-loop SIB mismatch.
+// EXACT MATCH: the two-byte/one-byte SIB drift was the raw cursor spelling.
+// Reading the frame through the typed member `this->sound_list[param_3].frame[i]`
+// (in both loops) lets VC5 strength-reduce to the byte cursor with the oracle's
+// base/index SIB assignment in both loops; the raw cast form
+// `*(short*)((char*)sound_list->sound + offset)` picked the opposite SIB in one
+// loop. The now-dead `offset` cursor was removed; codegen stayed exact.
+// This also proved the sibling hit_test lesson again: when two identical loops
+// differ by one SIB base/index byte, try the typed member-access spelling of the
+// indexed load, not more cursor/address surgery.
 
 class RGE_Sound {
 public:
@@ -111,9 +120,8 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
         if (this->micro_man_sound != 0) {
             if (param_1 < param_2) {
                 int i = 0;
-                int offset = param_3 * 0x14 + 0x0c;
                 while (i < 3) {
-                    int frame = *(short *)((char *)this->sound_list->sound + offset);
+                    int frame = this->sound_list[param_3].frame[i];
                     if (frame <= -1) {
                         return;
                     }
@@ -121,13 +129,11 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
                         this->sound_list[param_3].sound[i]->play(1);
                     }
                     i++;
-                    offset += 2;
                 }
             } else {
                 int i = 0;
-                int offset = param_3 * 0x14 + 0x0c;
                 while (i < 3) {
-                    int frame = *(short *)((char *)this->sound_list->sound + offset);
+                    int frame = this->sound_list[param_3].frame[i];
                     if (frame <= -1) {
                         return;
                     }
@@ -135,7 +141,6 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
                         this->sound_list[param_3].sound[i]->play(1);
                     }
                     i++;
-                    offset += 2;
                 }
             }
         }
