@@ -10,6 +10,12 @@
 // attempt 8: removed /GX; object lost required EH frame and was too small, reverted.
 // attempt 9: tried /Ob0 with /GX; no codegen change.
 // attempt 10: tried /Gy with /GX; no codegen change, reverted.
+// attempt 11: late uninitialized int result with a common return widened the frame slot; 313 bytes, first mismatch 78, rolled back.
+// attempt 12: reused ideal_y as the result; duplicate 313-byte codegen, rolled back.
+// attempt 13: moved the result declaration before coordinate locals; duplicate 313-byte codegen, rolled back.
+// attempt 14: success-only goto done with literal failure return; duplicate natural 53-byte codegen, rolled back.
+// attempt 15: byte result formed one common epilogue but changed EBX/EBP coloring; 262 bytes, first mismatch 102, rolled back.
+// attempt 16: output-pointer alias with byte result; duplicate attempt 15, rolled back.
 // Left in scratch: best source has all functional code and first 156 bytes exact, but tail/failed-path placement is not exact; not accepted_drift because rebuilt failure target lies outside original configured function body.
 
 class TPanel {};

@@ -8,39 +8,95 @@
 // 5: swap local width/height field names and vary second-size expression: no change; expression reverted.
 // tried flags /O2 no-/Oy, /Ox, /Ob0 same; /O1 too short.
 // left in scratch: EH/new path, hot-spot copy loop, and data offsets are modeled; remaining broad drift is switch case tail-merge/load-order and later register scheduling, not accepted_drift-safe.
+// 6: fresh baseline rebuilt the prior source with current inputs: exact size/frame/calls, but the terrain
+//    multiply order, record field declaration order, switch body order, and loop constants differed.
+// 7: canonical RGE terrain/land layouts and controller base offsets; natural switch and generator ownership.
+// 8: canonical field assignment order fixed both first-record stores and improved the diff to 262 bytes.
+// 9: raw dimension and no-op expression variants did not improve emitted code and were removed.
+// 10: block-scoped area locals were a codegen duplicate; restored one natural local.
+// left in scratch: exact size/frame/call parity and canonical field ownership; switch tail merge and
+//    loop constant hoisting remain broad VC5 codegen differences.
 
-struct RGE_Terrain_Record {
-    int terrain_size;        // +0x00
-    int base_terrain_type;   // +0x04
-    int terrain_type;        // +0x08
-    int clumps;              // +0x0C
-    int spacing;             // +0x10
-    int terrain_generated;   // +0x14
-    char pad_18[8];          // stride 0x20
+#include <new.h>
+
+class RGE_Map;
+
+class RGE_Random_Map_Module {
+public:
+    virtual unsigned char generate();
+
+    void* parent;
+    void* list;
+    RGE_Map* map;
+    void* map_row_offset;
+    long map_width;          // +0x14
+    long map_height;         // +0x18
+    float schedule;
+    void* search_map;
+    void* search_map_rows;
+    void* stack_array;
+    void* stack_offsets;
 };
 
-struct RGE_Terrain_HotSpot {
-    int x;
-    int y;
-    int radius1;
-    int radius2;
+class RGE_Terrain_Info_Line {
+public:
+    long terrain_size;
+    long terrain_generated;
+    long terrain_type;
+    long clumps;
+    long spacing;
+    long base_terrain_type;
+    long clumpiness_factor;
+    long avoid_hot_spots;
 };
 
-struct RGE_Terrain_Info {
-    RGE_Terrain_Record terrain[2]; // +0x00,+0x20
-    char gap_40[0xC60 - 0x40];
-    int terrain_num;              // +0xC60
-    RGE_Terrain_HotSpot hot_spots[1]; // +0xC64
-    char gap_after_hotspots[0x1294 - 0xC74];
-    int hot_spot_num;             // +0x1294
+class RGE_Terrain_Hot_Spots {
+public:
+    long x;
+    long y;
+    long radius;
+    long fade;
 };
 
-struct RGE_Land_Info {
-    char gap_00[0x08];
-    int first_x;                  // +0x08
-    int first_y;                  // +0x0C
-    char gap_10[0x141C - 0x10];
-    int land_num;                 // +0x141C
+class RGE_Terrain_Info {
+public:
+    RGE_Terrain_Info_Line terrain[99];
+    long terrain_num;
+    RGE_Terrain_Hot_Spots hot_spots[99];
+    long hot_spot_num;
+};
+
+class RGE_Land_Info_Line {
+public:
+    long land_size;
+    long terrain_type;
+    long x;
+    long y;
+    long base_size;
+    long area;
+    unsigned char zone;
+    unsigned char pad_19[3];
+    long clumpiness_factor;
+    long wall_1_avoidance_line;
+    long wall_2_avoidance_line;
+    long wall_3_avoidance_line;
+    long wall_4_avoidance_line;
+    unsigned char wall_fade;
+    unsigned char pad_31[3];
+};
+
+class RGE_Land_Info {
+public:
+    RGE_Land_Info_Line land[99];
+    long land_num;
+    unsigned char base_terrain;
+    unsigned char pad_1421[3];
+    long wall_1_avoidance_line;
+    long wall_2_avoidance_line;
+    long wall_3_avoidance_line;
+    long wall_4_avoidance_line;
+    unsigned char wall_fade;
+    unsigned char pad_1435[3];
 };
 
 class RGE_RMM_Terrain_Generator {
@@ -49,38 +105,32 @@ public:
     RGE_RMM_Terrain_Generator(void* map, void* module, RGE_Terrain_Info* info);
 };
 
-class RGE_RMM_Controller {
+class RGE_RMM_Controller : public RGE_Random_Map_Module {
 public:
-    char gap_00[0x0C];
-    void* map;          // +0x0C
-    char gap_10[4];
-    int height;         // +0x14
-    int width;          // +0x18
-
-    void add_terrain_module(RGE_Terrain_Info& terrain_info, RGE_Land_Info& land_info, long type);
+    void add_terrain_module(RGE_Terrain_Info& terrain_info,
+                            RGE_Land_Info& land_info, long type);
 };
 
-void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info, RGE_Land_Info& land_info, long type)
+void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info,
+                                              RGE_Land_Info& land_info,
+                                              long type)
 {
     int area;
-    int i;
 
     terrain_info.terrain_num = 2;
 
     switch (type) {
     case 3:
     case 4:
-        area = this->width;
-        area *= this->height;
+        area = this->map_height * this->map_width;
         terrain_info.terrain[0].terrain_type = 10;
         terrain_info.terrain[0].clumps = 30;
-        terrain_info.terrain[0].terrain_generated = 0;
         terrain_info.terrain[0].base_terrain_type = 0;
+        terrain_info.terrain[0].terrain_generated = 0;
         terrain_info.terrain[0].terrain_size = area * 20 / 100;
         terrain_info.terrain[0].spacing = 2;
 
-        area = this->width;
-        area *= this->height;
+        area = this->map_height * this->map_width;
         terrain_info.terrain[1].terrain_type = 6;
         terrain_info.terrain[1].clumps = 17;
         terrain_info.terrain[1].terrain_size = area * 30 / 100;
@@ -89,37 +139,40 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info, RGE_
     case 0:
     case 1:
     case 2:
-        area = this->width;
-        area *= this->height;
+        area = this->map_height * this->map_width;
         terrain_info.terrain[0].terrain_type = 10;
         terrain_info.terrain[0].clumps = 20;
-        terrain_info.terrain[0].terrain_generated = 0;
         terrain_info.terrain[0].base_terrain_type = 0;
+        terrain_info.terrain[0].terrain_generated = 0;
         terrain_info.terrain[0].terrain_size = area * 20 / 100;
         terrain_info.terrain[0].spacing = 2;
 
-        area = this->width;
-        area *= this->height;
+        area = this->map_height * this->map_width;
         terrain_info.terrain[1].terrain_type = 6;
         terrain_info.terrain[1].clumps = 7;
         terrain_info.terrain[1].terrain_size = area * 30 / 100;
         goto terrain_switch_done;
     }
-    goto terrain_switch_default;
 
 terrain_switch_done:
-    terrain_info.terrain[1].terrain_generated = 0;
     terrain_info.terrain[1].base_terrain_type = 0;
+    terrain_info.terrain[1].terrain_generated = 0;
     terrain_info.terrain[1].spacing = 0;
 
-terrain_switch_default:
     terrain_info.hot_spot_num = land_info.land_num;
-    for (i = 0; i < terrain_info.hot_spot_num; i++) {
-        int* land = (int*)((char*)&land_info + 0x0C + i * 0x34);
-        terrain_info.hot_spots[i].x = land[-1];
-        terrain_info.hot_spots[i].y = land[0];
-        terrain_info.hot_spots[i].radius1 = 12;
-        terrain_info.hot_spots[i].radius2 = 20;
+    int i = 0;
+    if (terrain_info.hot_spot_num > 0) {
+        RGE_Land_Info_Line* land = land_info.land;
+        long* hot_spot = &terrain_info.hot_spots[0].y;
+        do {
+            hot_spot[-1] = land->x;
+            ++i;
+            hot_spot[0] = land->y;
+            hot_spot[1] = 12;
+            hot_spot[2] = 20;
+            ++land;
+            hot_spot += 4;
+        } while (i < terrain_info.hot_spot_num);
     }
 
     new RGE_RMM_Terrain_Generator(this->map, this, &terrain_info);
