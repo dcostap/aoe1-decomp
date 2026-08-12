@@ -72,6 +72,9 @@
 // - close-480EC0-r1: canonical Map_Stack array ownership and typed pair cursors
 //   widened the drift to 145 and reduced the frame to 0x964; restored the
 //   canonical source below instead of retaining the binary overlay.
+// - tu-rmmbase-480EC0: dossier and same-TU donors confirm the five-call set and
+//   Map_Stack ownership. The clean typed array remains the best source model.
+//   The binary field-pointer schedule would require the rejected overlay.
 
 extern int __cdecl debug_rand(char* file, int line);
 

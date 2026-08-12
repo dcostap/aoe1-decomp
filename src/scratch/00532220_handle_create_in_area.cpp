@@ -26,6 +26,9 @@
 //   virtual surface regressed offsets/registers and was restored. Remaining
 //   drift is the one-byte relation SIB/base-order choice plus resulting branch
 //   displacements and trailing padding.
+// - tu-victory-532220 dossier and sibling review: the typed own/allied scans retain
+//   100% exact-block coverage and the 0xC frame. The only source-independent gap is
+//   the behavior-equivalent relation SIB encoding at +0x7F; no natural new lead remains.
 
 struct RGE_Master_Object {
     virtual ~RGE_Master_Object();

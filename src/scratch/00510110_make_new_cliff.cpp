@@ -21,6 +21,12 @@
 // left in scratch: exact calls, frame, size, CFG, and preamble are recovered;
 // remaining localized drift is the selected-facet/result stack-home coloring
 // ([esp+18]/[esp+14]) and its cold return epilogue.
+// tu-tmap-510110 probe 1: moving the initialized result pointer before the
+// coordinate locals was codegen-neutral.
+// tu-tmap-510110 probe 2: reversing the negative table-arm assignment order
+// widened the mismatch to 227 bytes; restored the clean source.
+// tu-tmap-510110 probe 3: swapping typed id/facet declaration order was a
+// codegen duplicate; the localized 33-byte stack-home drift remains.
 
 struct TRIBE_Cliff_Info {
     long info[4];

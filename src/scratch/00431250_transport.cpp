@@ -74,6 +74,9 @@
 //     call, and lost the existing-action tail merge. Rolled back.
 // Final lead: the remaining EH-tail difference is compiler block/cleanup
 // placement, not a call, layout, or ABI mismatch; retain the clean typed source.
+// Current bounded pass: ABI/dossier/donor review and a fresh shared action/work
+// tail hypothesis were tested. The shared typed locals grew the body to 250
+// bytes and lost the exact early blocks, so the clean EH reconstruction remains.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>

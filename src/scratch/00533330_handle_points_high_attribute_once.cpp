@@ -61,6 +61,9 @@
 //   unchanged at 224 bytes and 29-byte diff, so restored.
 // - close-533330-r1 probe: captured player only for the loop self-id test; frame grew to 0x8
 //   and diff to 230, so restored. No new source or ABI lead remains.
+// - tu-victory-533330 probe: removed the no-op register qualifier from the natural player-array
+//   cursor; output stayed at 224 bytes and a 29-byte diff. The clean source is now ordinary typed
+//   C++ with the exact sibling loop retained; only EBX/EDI coloring remains.
 
 class RGE_Game_World;
 
@@ -125,7 +128,7 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
     }
 
     int i = 1;
-    register RGE_Player** pp = this->player->world->players;
+    RGE_Player** pp = this->player->world->players;
     if (i < this->player->world->player_num) {
         pp++;
         do {

@@ -45,6 +45,8 @@
 //   object source; remaining evidence-backed lead is compiler register/lifetime
 //   selection around the loop-carried object checksum, not a layout or call ABI
 //   mismatch.
+// - A state-first split checksum statement was tested to mirror the original
+//   state-load/ftol order; it worsened to 228B and was restored.
 
 extern "C" long __cdecl __ftol(void);
 

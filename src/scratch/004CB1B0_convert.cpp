@@ -25,6 +25,8 @@
 //   from int to donor-supported RGE_Task*; emitted code was unchanged, so keep
 //   the canonical pointer/task model and the existing /GX context.
 // - paused with the remaining lead localized to VC5 tail layout/EH context.
+// - A centralized pointer-as-status variant reached a 20-byte diagnostic gap.
+//   Rejected it because target ownership and integer status are separate.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 
 class RGE_Static_Object;

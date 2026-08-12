@@ -48,6 +48,8 @@
 //   promotion were neutral. Direct selectedUnits[selectedCount] storage worsened to 16 bytes.
 // - Clean source remains the natural typed reconstruction. The only drift is the proven EBP vtable /
 //   EBX 25-count register swap at seven bytes.
+// - Extended the proven RGE_Player virtual surface after command_destroy_group; emitted code was
+//   unchanged, so the clean partial surface remains authoritative.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

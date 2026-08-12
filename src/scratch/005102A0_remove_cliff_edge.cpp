@@ -28,6 +28,10 @@
 // wrong EBX/volatile-reload family. All diagnostic variants were rolled back.
 // final clean source remains the typed donor-shaped reconstruction; blocker is
 // the binary's saved-this [esp+10] versus VC5's EBP=this/outer home choice.
+// tu-tmap-5102A0 probe 1: moving the natural info local before the switch was
+// codegen-neutral; the frame still loaded dir before allocation.
+// tu-tmap-5102A0 probe 2: a named map receiver with the donor do/while was also
+// codegen-neutral; restored the clean typed donor reconstruction.
 
 struct TRIBE_Cliff_Info {
     int info[4];

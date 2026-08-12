@@ -67,6 +67,9 @@
 // the original constructor-only `xor eax,eax` block. This expanded to 299B/182
 // diff and lost the aligned task/body basin; rolled back to the donor-style
 // shared fail source.
+// Current bounded pass: ABI/dossier/donor review and a success/failure label
+// order probe were completed. Label reversal worsened to 157 differing bytes;
+// restore the natural typed goto-fail source and preserve the EH-tail lead.
 
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared

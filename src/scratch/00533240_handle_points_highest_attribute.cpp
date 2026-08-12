@@ -49,6 +49,9 @@
 //   tail pointer increment and a for-loop increment clause regressed structural parity
 //   (diff 191/190); an isolated player local reproduced the prior diff-216 basin. Restored
 //   the clean scalar candidate. No new natural structural lead remains in these axes.
+// - tu-victory-533240 probe: kept a typed player owner only after the point-entry update, so the
+//   same owner feeds world and id in the sibling-backed loop. VC5 emitted the unchanged 221-byte,
+//   139-byte-diff group; the original 0x10 local window and four stack homes remain unresolved.
 
 class RGE_Game_World;
 
@@ -98,7 +101,8 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
         int best = entry->points;
         current = (float)val;
         entry->curr_attribute_amount = current;
-        RGE_Game_World* world = this->player->world;
+        RGE_Player* player = this->player;
+        RGE_Game_World* world = player->world;
         RGE_Player** players = world->players;
         if (val < entry->initial_amount) {
             best = 0;
@@ -106,7 +110,7 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
             num = world->player_num;
             int i = 1;
             if (1 < num) {
-                int my_id = this->player->id;
+                int my_id = player->id;
                 do {
                     ++players;
                     if (i != my_id) {

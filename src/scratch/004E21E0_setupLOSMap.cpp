@@ -35,6 +35,9 @@
 //   was restored because raw global addresses and byte-indexed records are not
 //   canonical living source. The typed global and indexed ObjectMemory array
 //   remain authoritative.
+// - Current lease baseline reconfirmed the clean 269-byte basin. The remaining
+//   25 bytes are localized FPU/int bound-scheduling drift after y conversion;
+//   prior natural bound-order probes regressed structurally.
 
 typedef unsigned char uchar;
 

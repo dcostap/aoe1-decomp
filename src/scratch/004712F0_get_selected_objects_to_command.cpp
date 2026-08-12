@@ -33,6 +33,8 @@
 //   stays.
 // - Left in scratch: the remaining 6B is only the prologue zero/register
 //   color gap; the select-level compare and function body are exact.
+// - Drove the initial zero stores from the natural j/count locals; emitted
+//   code was unchanged, so literal zero stores remain the clean source form.
 
 class RGE_Player;
 

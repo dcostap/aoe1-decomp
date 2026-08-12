@@ -80,6 +80,9 @@
 // from exact donors 00430320, 004304B0, and 00430510. The emitted code was an
 // exact duplicate of the clean source; the EBP-versus-EBX armor-pointer basin
 // did not move. Restored the clean typed source.
+// Current bounded pass: baseline validation, ABI/dossier review, and a narrow
+// prologue donor search confirm the natural typed source and the same allocator
+// basin. No new source-backed lead remains; preserve this clean reconstruction.
 
 extern float DAT_0056f49c;
 extern float DAT_0056f4a8;

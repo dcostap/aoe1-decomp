@@ -99,6 +99,9 @@
 // Final retained candidate: typed row/tile ownership, byte flag array, exact
 //   frame/call set, and natural eight-direction search; unresolved drift is
 //   the previously documented VC5 local-slot/register/FPU scheduler basin.
+// - tu-rmmbase-481000: dossier and donors reconfirm the five map fields, ten
+//   ordered calls, exact frame, and typed path ownership. No supported natural
+//   source lead remains for the FPU/local-slot scheduler gap.
 
 #include <string.h>
 

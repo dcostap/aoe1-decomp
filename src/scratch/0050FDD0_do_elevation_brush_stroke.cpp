@@ -99,6 +99,8 @@
  * follow-50FDD0-r1 probe 2: register-qualified reverse endpoint temporaries, testing
  * whether the RGE donor's local temporary declaration controls the remaining move order;
  * codegen duplicate, so ordinary long locals remain authoritative.
+ * tu-tmap-50FDD0 probe 1: two-result reverse-arm locals were natural but moved the
+ * base-call join and widened the mismatch to 126 bytes; restored the clean source.
  */
 
 class RGE_Map {

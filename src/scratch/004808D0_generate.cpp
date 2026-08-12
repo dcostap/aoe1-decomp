@@ -93,6 +93,9 @@
 //   86.24% and exact-block coverage to 49.04%, but grew to 289 bytes with a
 //   0xC frame; rolled back as the same structural basin as the prior direct
 //   successor retry.
+// - tu-rmmbase-4808D0: dossier and same-TU donors confirm the nine calls and
+//   typed list ABI. No new natural source lead removes the extra 0xC-frame
+//   home; the clean list sort remains the retained reconstruction.
 
 #include <stddef.h>
 

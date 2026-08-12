@@ -28,6 +28,9 @@
 // remaining drift starts at negative-loop index setup and reverse-copy addressing.
 // Full view.cpp context or a stronger source donor is the
 // next lead; source-index locals add 23 bytes past the original boundary.
+// continuation: the natural last-index guard `YLine_Size + scroll_y - 1 >= 0`
+// reproduces the best 157-byte negative-block basin; direct `i >= neg` is
+// readable but emits a 166-byte basin. Retain the binary-shaped member guard.
 
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00
@@ -97,7 +100,7 @@ void DClipInfo_List::Scroll(int scroll_x, int scroll_y)
         int neg = -scroll_y;
         int i = this->YLine_Size - 1;
 
-        if (i + scroll_y >= 0) {
+        if (scroll_y + this->YLine_Size - 1 >= 0) {
             do {
                 int next = i - 1;
                 this->Draw_Clip_Nodes[i] = this->Draw_Clip_Nodes[i + scroll_y];

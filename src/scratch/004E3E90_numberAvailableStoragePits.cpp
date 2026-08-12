@@ -60,6 +60,9 @@
 //   codegen duplicates. A phase-local decision alias widened the drift to 133
 //   bytes and was restored. No localized liveness lead changed the stable
 //   this=ESI/md=EDI/obj2=EDI allocator basin.
+// - Current lease baseline reconfirmed the clean 238-byte basin.  The
+//   remaining 15 bytes are the stable this/md/second-object register swap;
+//   no new source or ABI lead is justified without repeating prior probes.
 
 class RGE_Static_Object;
 

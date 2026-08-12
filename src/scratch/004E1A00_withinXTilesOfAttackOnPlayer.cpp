@@ -66,6 +66,10 @@
 // - Refreshed assembly-donor search found the exact taiinfmd.cpp sibling
 //   004E1AF0 prologue and confirmed the remaining gap is the target's distinct
 //   allocator/stack-home basin, not a missing call or known layout fact.
+// - Current lease baseline confirmed the clean 211-byte basin.  A natural
+//   long loop copy inside the positive-count guard worsened to 204 bytes and
+//   changed the loop CFG; it was restored.  No new lead remains within this
+//   bounded pass.
 
 class RGE_Static_Object {
 public:
