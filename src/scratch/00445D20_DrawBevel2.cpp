@@ -22,6 +22,8 @@
 // - This session retested direct DrawBevel21-style swaps, a single persistent
 //   x1+1 local, behavior-correct block-local swaps, and register width/height;
 //   all worsened or duplicated the 293-byte/274-difference clean result.
+// - Final plausibility audit removed the unconditional original-coordinate
+//   copies; each normalization now uses the ordinary block-local swap form.
 // Main-agent audit confirmed the natural draw-area line ownership and retained
 // the ordinary clipped bevel construction.
 
@@ -38,22 +40,20 @@ void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
                            unsigned char c1, unsigned char c2,
                            unsigned char c3, unsigned char c4)
 {
-    long original_x1;
-    long original_y2;
     int width;
     int height;
     int x1_plus_one;
     int y1_plus_one;
 
-    original_y2 = y2;
-    original_x1 = x1;
     if (x1 > x2) {
+        long temp = x1;
         x1 = x2;
-        x2 = original_x1;
+        x2 = temp;
     }
     if (y1 > y2) {
+        long temp = y1;
         y2 = y1;
-        y1 = original_y2;
+        y1 = temp;
     }
 
     width = x2 - x1 + 1;
