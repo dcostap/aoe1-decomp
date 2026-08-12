@@ -33,11 +33,28 @@ ordinary typed indexing.
 
 ## Review rounds
 
-No blind review has completed.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-b8897ac1` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-ece02b72` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers independently traced the complete function and found no definite
+behavior difference. They confirmed the 0x38-byte record layout, 502-record
+loops, one-based player bounds, human-player gate, unsigned `DestMap` test,
+logging arguments, delete and clear order, final accumulating count, ABI, and
+return value.
+
+Both noted that the executable reloads `this->Resend` after calls while the
+source carries one typed record pointer. Neither found evidence that
+`IsPlayerHuman` or `Log` can replace the resend array. This remains the only
+round-one concern.
 
 ## Main-agent adjudication
 
-Pending.
+- **Layout, loops, calls, widths, and effects:** confirmed by both reviewers.
+- **Cached record pointer:** no established behavior difference. The two callees
+  do not mutate the resend-array owner in known code. A fresh second cohort must
+  reassess alias and re-entry behavior before promotion.
 
 ## Integrated changes
 
@@ -45,4 +62,4 @@ The main agent validated the normalized candidate before phase entry.
 
 ## Final decision
 
-Pending blind review.
+Round 1 is clean. Pending a fresh second blind cohort.

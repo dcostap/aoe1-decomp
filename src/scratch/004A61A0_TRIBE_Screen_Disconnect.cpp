@@ -53,6 +53,10 @@
 // - Exact 004A5610 same-TU stdio/string includes and TPanel/TEasy/TScreen
 //   declarations produced the unchanged 91-byte diff and 219-byte body;
 //   restored the canonical source. The EH-tail lead is negative.
+// - Final source-plausibility review retained the named fields, ordinary
+//   setup conditional, direct period-style calls, and /GX virtual surface.
+//   No unsupported codegen steering remained. Proven layout, four calls,
+//   setup-failure assignment, EH, and partial construction are preserved.
 
 struct tagRECT;
 class TDrawArea;
