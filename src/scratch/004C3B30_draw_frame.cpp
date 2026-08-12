@@ -13,6 +13,14 @@
 //   beginning at the lower-left coordinate calculation (219 positional bytes,
 //   66.96% instruction-shape similarity). Left in scratch after the bounded
 //   ten-hypothesis pass.
+// - exact stat_obj draw donors showed that the CRT header and full virtual
+//   method surface are codegen-active context; they reduced the gap to 105
+//   bytes and raised shape similarity to 77.27% while preserving all calls;
+//   the remaining drift is the health-home and callee-saved register basin.
+// - swapped coordinate declaration/assignment and health-local declaration
+//   orders were codegen duplicates or worse under the donor context.
+
+#include <stdlib.h>
 
 class TDrawArea {
 public:
@@ -21,6 +29,12 @@ public:
 };
 
 class RGE_Sprite;
+class RGE_Color_Table;
+class RGE_Player;
+class RGE_Tile;
+class RGE_Object_List;
+class RGE_Object_Node;
+class UnitAIModule;
 
 class RGE_Active_Sprite_List {
 public:
@@ -28,11 +42,12 @@ public:
     virtual short frame(RGE_Sprite* sprite);
     virtual void update(float param_1, float param_2);
     virtual void draw(short facet, short x, short y, short shadow_x,
-                      short shadow_y, void* color_table, TDrawArea* area);
+                      short shadow_y, RGE_Color_Table* color_table,
+                      TDrawArea* area);
     virtual void normal_draw(short facet, short x, short y,
-                             void* color_table, TDrawArea* area);
+                             RGE_Color_Table* color_table, TDrawArea* area);
     virtual void shadow_draw(short facet, short x, short y,
-                             void* color_table, TDrawArea* area,
+                             RGE_Color_Table* color_table, TDrawArea* area,
                              unsigned char param_6);
     virtual unsigned char is_animating(RGE_Sprite* sprite);
     virtual void set_frame(RGE_Sprite* sprite, short frame_number);
@@ -51,14 +66,32 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* master,
+                                    RGE_Player* player, float x, float y,
+                                    float z);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea* area, short x, short y,
+                      RGE_Color_Table* color_table);
+    virtual void shadow_draw(TDrawArea* area, short x, short y,
+                             unsigned char shadow);
+    virtual void normal_draw(TDrawArea* area, short x, short y);
+    virtual void draw_front_frame(TDrawArea* area, short x, short y);
+    virtual void draw_back_frame(TDrawArea* area, short x, short y);
+    virtual void draw_frame(TDrawArea* area, short x, short y);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int file);
+    virtual float teleport(float x, float y, float z);
+    virtual void new_sprite(RGE_Sprite* sprite);
 
     long id;
     RGE_Master_Static_Object* master_obj;
-    void* owner;
+    RGE_Player* owner;
     RGE_Sprite* sprite;
-    void* old_sprite;
+    RGE_Sprite* old_sprite;
     RGE_Active_Sprite_List* sprite_list;
-    void* tile;
+    RGE_Tile* tile;
     char gap_20[0x8];
     short screen_x_offset;
     short screen_y_offset;
@@ -66,11 +99,31 @@ public:
     float hp;
     char gap_34;
     unsigned char facet;
-    char gap_36[0x12];
+    unsigned char selected;
+    unsigned char selected_group;
+    float world_x;
+    float world_y;
+    float world_z;
+    float attribute_amount_held;
     unsigned char object_state;
+    unsigned char sleep_flag;
+    unsigned char dopple_flag;
+    unsigned char goto_sleep_flag;
+    short attribute_type_held;
+    unsigned char type;
+    unsigned char worker_num;
+    RGE_Object_Node* player_object_node;
+    char gap_54[0x20];
+    UnitAIModule* unitAIValue;
+    int groupCommanderValue;
+    int zoneMapIndex;
+    float groupRangeValue;
+    unsigned char inObstructionMapValue;
+    unsigned char lastInObstructionMapValue;
+    unsigned char underAttackValue;
+    unsigned char gap_87;
 
     int get_frame(short& min_x, short& min_y, short& max_x, short& max_y);
-    void draw_frame(TDrawArea* area, short x, short y);
 };
 
 void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
