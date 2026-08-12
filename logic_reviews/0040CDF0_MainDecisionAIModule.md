@@ -148,3 +148,25 @@ FS-chain-inspecting context. Under the project's original-executable behavior
 policy, that remains a substantive open behavioral uncertainty rather than a
 mere byte-codegen difference. No source change is justified; remain in
 `src/scratch` and do not promote to `verified_logic`.
+
+### Round 3 — concurrent blind cohort, 2026-08-12
+
+- `sa-cf3f6e1a` — `openai-codex-secondary/gpt-5.6-luna`, xhigh thinking
+- `sa-6966cae3` — `deepseek/deepseek-v4-flash`, high thinking
+
+Both reviewers directly verified the base call, argument order, player store,
+four managed-array zero stores, derived vptr value/order, and `this` return.
+They agree that normal successful construction matches the executable.
+
+The reviewers differ on the missing original FS-chain registration. DeepSeek
+traced the FuncInfo state to its initial `-1` value and found no visible state
+transition that reaches the base-destructor unwind action. It therefore judged
+the current constructor behavior correct. Luna found the registration is
+installed before the base call and exposes a real handler and unwind metadata
+through `FS:[0]`; the rebuilt function has no equivalent frame.
+
+Main-agent adjudication: retain the stricter conclusion. The registration is a
+definite executable-state difference. The absence of a proved normal cleanup
+path does not establish that nested SEH, asynchronous observation, or exception
+processing cannot observe the frame. Keep the normalized candidate in
+`src/scratch`; do not promote it to `verified_logic` or `accepted_drift`.
