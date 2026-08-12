@@ -7,12 +7,17 @@
 //   call count became exact but the early-return CFG was broad-drift.
 // - positive target guard plus typed target-result reuse restored exact size,
 //   one-return CFG, all 16 ordered calls, and 97.27% instruction shape.
+// - fresh pass: same-TU trade labels added 19 bytes and duplicated the
+//   epilogue; direct returns added 60 bytes. Both were rolled back.
+// - exact tact_bld.cpp constructor parameter types and result declaration
+//   order did not change emitted code. Integer result type was also neutral.
 // - remaining drift is the paired VC5 result-register basin and isolated
 //   EH-handler address; no compiler-only aliases or volatility retained.
 // FLAGS: config/flags/004CB5C0_build.rsp (/GX)
 
 class RGE_Action;
 class RGE_Action_List;
+class RGE_Action_Object;
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Task;
@@ -91,7 +96,7 @@ struct Action_Build_Pad {
 class TRIBE_Action_Build : public RGE_Action {
 public:
     Action_Build_Pad padding;
-    TRIBE_Action_Build(void* obj, RGE_Task* task, void* target);
+    TRIBE_Action_Build(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target);
 };
 
 // Stub base: RGE_Static_Object->RGE_Action_Object layout + 130 dummy virtuals
@@ -182,7 +187,8 @@ int TRIBE_Combat_Object::build(int id, int flag) {
         result = (RGE_Static_Object*)task;
         if (task == 0) goto done;
 
-        TRIBE_Action_Build* build_action = new TRIBE_Action_Build(this, (RGE_Task*)task, obj);
+        TRIBE_Action_Build* build_action = new TRIBE_Action_Build(
+            (RGE_Action_Object*)this, (RGE_Task*)task, obj);
         result = (RGE_Static_Object*)build_action;
         if (build_action == 0) goto done;
 
