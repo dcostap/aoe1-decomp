@@ -25,6 +25,18 @@
 // - Control flow logic (direction setup, early-out, Lock/Unlock guards) is correct.
 //
 // Custom flag: /Oy- (needed for EBP frame; default /Oy omits it).
+//
+// Session normal-445580-r1:
+// - Baseline rebuilt to 445 bytes: calls match, but frame is 0x10 instead of 0x18.
+// - Positive xOff/yOff guard was a codegen duplicate of the early-return form.
+// - Typed memmove improved the byte diff to 339, but added an unobserved direct call.
+//   The VC5 memmove intrinsic pragma warned that memmove is unavailable.
+// - Typed dword loops enlarged the body to 467 bytes and worsened the shape.
+// - A named self pointer, hoisted local order, direct width expression, and stdlib
+//   context were duplicates or unchanged. All were restored.
+// - The original copy blocks use explicit CLD/STD and REP MOVSD labels. Natural
+//   typed C++ did not reproduce this hand-coded copy family without inline asm.
+// Left in scratch: clean typed behavior reconstruction; exact blocker is copy lowering.
 
 #include <string.h>
 
