@@ -4,16 +4,12 @@
 // FLAGS: default (/nologo /c /O2 /Oy)
 //
 // Attempt log:
-// - Baseline had the correct 0x408 frame after adding a local PALETTEENTRY, but
-//   used a direct GetPaletteEntries call and reversed the palette-handle arms.
-// - Restored the Windows stdcall import, DAT_0086b248 relocation, null-handle
-//   fall-through, and the binary-proven zeroed PALETTEENTRY dword as every fade's
-//   color argument. Calls/CFG then aligned 11/11; no behavior gap remains known.
-// - Direct draw_area rereads plus bool is_new recover the original saved EBX and
-//   92.42% instruction-shape similarity, but VC5 keeps focus_copy in EBP and
-//   allocates a 0x404 frame instead of the original EBP parameter/0x408 frame.
-// - Tried declaration-order and parameter-local variants; emitted code duplicated.
-// Left in scratch — remaining drift is the documented VC5 register/frame basin.
+// - The initial typed reconstruction had the right calls but a 0x404 frame and
+//   kept the focus field in EBP. It also passed one extra Clear argument.
+// - A typed local aggregate stores the prior focus dword before 256 palette
+//   entries. It restores the original EBP use and 0x408 frame.
+// - Exact: the focus/palette aggregate and two-argument Clear produce 383/383
+//   bytes with 11/11 calls and 100% block coverage.
 
 #include "..\..\include\game_globals.h"
 
@@ -22,6 +18,10 @@ class TDrawSystem;
 class TEasy_Panel;
 
 typedef struct { unsigned char r,g,b,a; } PE;
+struct FocusPalette {
+    int have_focus;
+    PALETTEENTRY entries[256];
+};
 
 extern int DAT_0086b248;
 
@@ -38,7 +38,7 @@ class TDrawArea {
 public:
     TDrawSystem* draw_system;
     void GetPalette(void*);
-    void Clear(void*, int, int);
+    void Clear(void*, int);
 };
 
 class TEasy_Panel {
@@ -56,7 +56,7 @@ public:
     char gap_04[0x1C];
     TDrawArea* draw_area;
     char gap_24[0x54];
-    int save_focus;
+    int have_focus;
     char gap_7C[0x190];
     void* palette_handle;
 
@@ -81,12 +81,10 @@ public:
 
 void TScreenPanel::set_focus(int param_1)
 {
-    PALETTEENTRY pal_entry[256];
+    FocusPalette palette;
     PE pe;
     bool is_new;
-    int focus_copy;
-
-    focus_copy = this->save_focus;
+    palette.have_focus = this->have_focus;
     is_new = (this != (TScreenPanel*)DAT_0086b248) ? 1 : 0;
 
     if (this->draw_area && this->draw_area->draw_system && param_1 && is_new) {
@@ -96,13 +94,13 @@ void TScreenPanel::set_focus(int param_1)
             pe.g = 0;
             pe.b = 0;
             if (!this->palette_handle) {
-                this->draw_area->GetPalette(pal_entry + 1);
+                this->draw_area->GetPalette(palette.entries);
             } else {
-                GetPaletteEntries(this->palette_handle, 0, 0x100, pal_entry + 1);
+                GetPaletteEntries(this->palette_handle, 0, 0x100, palette.entries);
             }
 
             RGE_fade_palette(this->draw_area, *(int*)&pe, 0.13f, 1, 0, -1, -1);
-            this->draw_area->Clear(0, 0, 0);
+            this->draw_area->Clear(0, 0);
             this->draw_area->draw_system->Paint(0);
         }
     }
@@ -112,14 +110,14 @@ void TScreenPanel::set_focus(int param_1)
     if (this->draw_area && this->draw_area->draw_system && param_1 && is_new) {
         TDrawSystem* sys = this->draw_area->draw_system;
         if (sys->ScreenMode == 2 || sys->DrawType == 1) {
-            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.0f, 2, pal_entry + 1, -1, -1);
+            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.0f, 2, palette.entries, -1, -1);
             this->after_set_focus();
             RGE_fade_palette(this->draw_area, *(int*)&pe, 0.0f, 1, 0, -1, -1);
             this->draw_area->draw_system->Paint(0);
-            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.13f, 2, pal_entry + 1, -1, -1);
+            RGE_fade_palette(this->draw_area, *(int*)&pe, 0.13f, 2, palette.entries, -1, -1);
         }
     }
 
-    if (param_1 != focus_copy && focus_copy)
+    if (param_1 != palette.have_focus && this->have_focus)
         DAT_0086b248 = (int)this;
 }
