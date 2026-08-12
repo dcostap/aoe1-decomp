@@ -105,6 +105,16 @@
 // spills row_ptr to the y home, keeps x1 in EBX, and uses CL for the tile mask;
 // the clean typed row-base source homes y1/x1 oppositely, keeps row_ptr in ECX,
 // and uses BL. Exact size/CFG/canonical map ownership remain stable.
+// Continuation (follow-4847C0-r1):
+// 27: assigning the offset after the row seed worsened to 143 bytes; rolled back.
+// 28: declaring the inner column before cell worsened to 144 bytes; rolled back.
+// 29: carrying a typed RGE_Tile row base worsened to 146 bytes; rolled back.
+// 30: an if-plus-do outer loop broadened to 169 bytes; rolled back.
+// 31: carrying cell across rows worsened to 163 bytes and changed the prologue;
+//     rolled back. 32: seeding row_ptr from y0 directly is codegen-identical.
+// Clean source retained: natural typed byte-row ownership and while/do scan.
+// Validation remains 224 bytes, 141 differing bytes, 85.42% shape. The blocker
+// remains the original y1/range-home and row-pointer/byte-register allocation.
 
 struct RGE_Tile {
     short screen_xpos;
@@ -172,7 +182,7 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
 
     offset = x0 * 24;
     x = y0;
-    row_ptr = this->map_row_offset + x;
+    row_ptr = this->map_row_offset + y0;
     row_base = (unsigned char*)*row_ptr + offset;
     while (x <= y1) {
         if (x0 <= x1) {

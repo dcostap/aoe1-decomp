@@ -50,6 +50,16 @@
 // - Added the complete same-TU donor declaration tail from exact donor 004D9970
 //   (the +0x1256C aiPlayer field) without changing the natural function body;
 //   emitted code stayed at 238 bytes with the same 15-byte register basin.
+// - Fresh nested-layout probe: the minimal typed MainDecision/build/
+//   information/resource/tactical parent surface regressed to 18 bytes;
+//   restore the exact 00501D70 nested shape before further comparison.
+// - Full 00501D70 nested class surface, inherited MainDecision object calls,
+//   and full informationAI size restored the 238-byte/15-byte basin. Adding
+//   TacticalAIModule inheritance also stayed in that basin.
+// - Inlining coordinate conversions and naming the final available count were
+//   codegen duplicates. A phase-local decision alias widened the drift to 133
+//   bytes and was restored. No localized liveness lead changed the stable
+//   this=ESI/md=EDI/obj2=EDI allocator basin.
 
 class RGE_Static_Object;
 
@@ -71,24 +81,57 @@ public:
     float* attributes;
 };
 
-class TribeTacticalAIModule {
-public:
-    int strategicNumber(int);
-};
+class TribeMainDecisionAIModule;
 
-class TribeMainDecisionAIModule {
+class MainDecisionAIModule : public AIModule {
 public:
-    virtual ~TribeMainDecisionAIModule();
-    char gap_04[0xEC];
-    RGE_Player* player;   // +0xF0
-    char gap_F4[0x1146C - 0xF4];
-    TribeTacticalAIModule tacticalAI;
-    // Same-TU donor 004D9970 carries the complete class through +0x1256C.
-    char gap_1146D[0x10FF];
-    RGE_Player* aiPlayer;  // +0x1256C, donor 004D9970
+    RGE_Player* player;
+    char gap_F4[0x10];
 
     RGE_Static_Object* object(int);
     RGE_Static_Object* object(int, int, int, int, int, int, int, int, int, int);
+};
+
+class BuildAIModule : public AIModule {
+public:
+};
+
+class TribeBuildAIModule : public BuildAIModule {
+public:
+    char gap_F0[0x5C0 - 0xF0];
+
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* filename);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* filename);
+    virtual int saveState(char* filename);
+    virtual int gleanState(int value);
+    virtual int processMessage(void* message);
+    virtual int update(int value);
+    virtual void setCallbackMessage(void* message);
+    virtual int filterOutMessage(void* message);
+    virtual int save(int value);
+    virtual void displayBuildList();
+    virtual int loadBuildList(char* filename, void* player);
+    virtual int numberBuiltOrInProgressItemsOfType(int type, int mode);
+};
+
+class TribeResourceAIModule : public AIModule {
+public:
+    char gap_F0[0x08];
+};
+
+class TacticalAIModule : public AIModule {
+public:
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    int strategicNumber(int);
 };
 
 class ManagedArray_int {
@@ -109,8 +152,21 @@ public:
     int dropsitesByAge[4][4];                     // +0x500
     int closestDropsiteValue[4];                  // +0x540
     int closestDropsiteResourceID[4];             // +0x550
+    char gap_560_to_10090[0x10090 - 0x560];
 
     int numberAvailableStoragePits(int param_1);
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    TribeBuildAIModule buildAI;
+    char gap_6C4[0xCEC - 0x6C4];
+    TribeInformationAIModule informationAI;
+    TribeResourceAIModule resourceAI;
+    char gap_10E74[0x1146C - 0x10E74];
+    TribeTacticalAIModule tacticalAI;
+    char gap_11560[0x1256C - 0x11560];
+    RGE_Player* aiPlayer;
 };
 
 class RGE_Static_Object {

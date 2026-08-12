@@ -22,6 +22,10 @@
 //   variants, including /GX, /Ow, /Oi, /Og, /Ot, /Ob0 combinations) also
 //   collapsed to one 2-byte group. The residual is therefore a backend
 //   address-term encoding basin, not a supported ownership/type lead.
+// - Restoring the period <string.h> include used by the exact paired getter
+//   donor changed only the two loop SIB bytes and reached an exact match.
+
+#include <string.h>
 
 class RGE_Base_Game {
 public:

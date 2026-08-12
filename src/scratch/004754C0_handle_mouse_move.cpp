@@ -35,6 +35,10 @@
 //   push. Restore the natural typed candidate after each lab.
 // - best natural reconstruction: 253 bytes, all 9 calls/CFG/frame aligned;
 //   remaining 15 bytes are only final-call scheduling/SIB operand order.
+// - fresh pass: exact Pnl_drop and panel ABI donors confirm the same typed
+//   TPanel/TListPanel ownership and vslot calls; the first mismatch stays at
+//   +00C8 (LEA versus the rebuilt param3 push). No new source-plausible lead
+//   remains without repeating prior receiver, local-order, or ABI probes.
 
 class TPanel {
 public:

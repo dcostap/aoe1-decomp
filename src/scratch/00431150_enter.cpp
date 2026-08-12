@@ -62,6 +62,11 @@
 // the current object/task/constructor `goto fail` paths. This is codegen-identical
 // to the pinned 274B/65-diff source; VC5 still emits separate success/failure
 // epilogues, so the single original FS-first tail remains unresolved.
+// Fresh cfg probe (follow-431150-r1): split constructor allocation failure into
+// a direct return while retaining the shared object/task fail label, based on
+// the original constructor-only `xor eax,eax` block. This expanded to 299B/182
+// diff and lost the aligned task/body basin; rolled back to the donor-style
+// shared fail source.
 
 // Key remaining issues:
 // 1. No shared tail: VC5 generates inline EH epilogues at each return instead of one shared

@@ -10,9 +10,11 @@
 // - this claim's after-read counter, allocation-result, count-pointer, and
 //   volatile-reread probes were reverted; the explicit positive-tail return is
 //   the best plausible source shape found here.
-// - best current emitted code is exact-size with all 11 calls/CFG counts aligned;
-//   15 positional bytes remain at the post-calloc count reload and failure-tail
-//   zero-register choice. The clean audited source remains a 99-byte fallback.
+// - this claim's inverted outer guard was structural and was rolled back;
+//   unqualified strcpy was an emitted duplicate. Reusing i for the failed-open
+//   zero stores removed the tail drift. A natural post-calloc i = 0 keeps the
+//   exact-size source at 12 positional bytes, with all calls and CFG counts
+//   aligned. The remaining drift is the post-calloc count reload scheduling.
 // Main-agent audit confirmed canonical base-game/header/scenario-entry ownership
 // and retained the ordinary indexed loader.
 
@@ -72,7 +74,7 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 {
     long i;
 
-    strcpy(this->filename, path);
+    strcpy(filename, path);
 
     int fd = rge_open(this->filename, 0x8000);
     if (fd != -1) {
@@ -81,8 +83,9 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 
         if (this->scenario_num > 0) {
             this->scenarios = (RGE_Scenario_File_Entry*)calloc(this->scenario_num, 0x10C);
+            i = 0;
 
-            if (this->scenario_num > i) {
+            if (this->scenario_num > 0) {
                 for (; i < this->scenario_num; i++) {
                     rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
                     rge_read_uncompressed(fd, this->scenarios[i].name, 0x104);

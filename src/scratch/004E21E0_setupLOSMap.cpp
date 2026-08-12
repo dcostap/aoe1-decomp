@@ -19,6 +19,15 @@
 //   InfluenceMap object and used direct member calls; emitted code stayed at
 //   269 bytes with the same 39-byte mismatch, so the ABI lead is confirmed but
 //   does not resolve the remaining register/FPU drift.
+// - Direct typed importantObjectMemory[i] owner/id access with the owner byte
+//   on the left corrected the loop-entry register allocation and reduced the
+//   mismatch from 39 to 25 bytes.  This keeps canonical ObjectMemory ownership.
+// - Reversing that typed comparison fixed the remaining compare byte; a local
+//   record pointer after the check emitted the same code.
+// - X-bound-before-y, early objY declaration, bound declaration reordering,
+//   and incrementValue argument-order declarations regressed to 122-185 bytes;
+//   these diagnostics were restored.  A natural ternary flag and maxX term
+//   reversal were codegen duplicates.
 // - Session probe: retaining only the binary-indicated maxX local and inlining
 //   the other bounds removed the proven 8-byte frame and regressed to 258 diff;
 //   restored the natural bound-local source.
@@ -118,9 +127,10 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
     int i = 0;
     if (this->maxImportantObjectMemory > 0) {
         do {
-            ObjectMemory* mem = &this->importantObjectMemory[i];
-            if ((unsigned int)owner == (unsigned int)mem->owner) {
-                RGE_Static_Object* obj = this->md->object(mem->id);
+            if ((unsigned int)this->importantObjectMemory[i].owner ==
+                (unsigned int)owner) {
+                RGE_Static_Object* obj = this->md->object(
+                    this->importantObjectMemory[i].id);
                 if (obj != 0) {
                     int range = (int)obj->master_obj->los;
                     int objX = (int)obj->x;

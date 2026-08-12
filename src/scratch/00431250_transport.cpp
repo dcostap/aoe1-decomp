@@ -68,6 +68,10 @@
 // existing-action arm either regressed structurally or reproduced the known
 // 249-byte duplicated-cleanup basin. A seven-case /GX branch lab found no exact
 // emitted group; its baseline reproduced the current 230-byte/67-byte best.
+// Session follow-431250-r1:
+//   - Positive allocation guard with an explicit null-return else was a new
+//     block-layout axis. It produced 276 bytes/175 diff, added a second work
+//     call, and lost the existing-action tail merge. Rolled back.
 // Final lead: the remaining EH-tail difference is compiler block/cleanup
 // placement, not a call, layout, or ABI mismatch; retain the clean typed source.
 // FLAGS: /nologo /c /O2 /Oy /GX

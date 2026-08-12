@@ -83,25 +83,57 @@
 // the md load (mirroring the donor's liveness) without adding instructions,
 // e.g. a source construct that keeps this live to the product point; prior
 // probes never tested a main-path this read between +005E and +008B.
+// Follow-up 2026-08-12 (follow-501B90-r1): exact 00501D70 nested layout review
+// corrected false ownership. TribeBuildAIModule is the typed build subobject;
+// TribeInformationAIModule is standalone at +0xCEC and TribeResourceAIModule
+// follows at +0x10D7C. Tactical strategicNumbers[226] owns +0x3EC and +0x48C.
+//
+// Probe 1 baseline: current six-byte register basin with the old narrow
+// declarations. Probe 2: full AIModule/TribeMainDecision nested layout moved
+// resourceAI incorrectly because informationAI was falsely derived. Probe 3:
+// standalone informationAI restored the six-byte basin. Probe 4: a branch-local
+// typed decision pointer duplicated it. Probe 5: named strategicNumbers[226]
+// ownership duplicated it. Probe 6: direct post-gate strategic count duplicated
+// it. Probe 7: branch-local tactical reference duplicated it. Probe 8: literal
+// result locals regressed to the known 27-byte basin and was rolled back.
+//
+// Current canonical source is the typed nested layout with named strategic
+// numbers. It is natural and behaviorally complete. Remaining drift is six
+// register-encoding bytes: original md is EDI and the product is ESI; VC5
+// keeps the rebuilt md in ESI and product in EDI. Donor 004F5FB0 shows that
+// post-md this-member liveness can produce the original coloring, but natural
+// forms tested here do not preserve it without a codegen-only alias.
 
 #include <stdlib.h>
 
-class BuildAIModule {
+class AIModule {
 public:
-    virtual ~BuildAIModule();
+    virtual ~AIModule();
+    char gap_04[0xEC];
+};
+
+class BuildAIModule : public AIModule {
+public:
     int numberUnbuiltItemsOfType(int type, int unk);  // 00409D40h, ret 8
     int numberItemsOfType(int type, int unk);          // 00409C70h, ret 8
 };
 
-class TribeResourceAIModule {
+class TribeBuildAIModule : public BuildAIModule {
 public:
-    virtual ~TribeResourceAIModule();
+    char gap_F0[0x5C0 - 0xF0];
+};
+
+class TribeResourceAIModule : public AIModule {
+public:
+    char gap_F0[0x08];
     int resource(int type);                          // 004E6C70h, ret 4
 };
 
 class TribeInformationAIModule {
 public:
     virtual ~TribeInformationAIModule();
+    char gap_04[0x540 - 0x04];
+    char gap_540[0x10090 - 0x540];
     int numberAvailableStoragePits(int type);        // 004E3E90h, ret 4
 };
 
@@ -112,28 +144,31 @@ public:
     float* attributes;   // +0x50
 };
 
-class MainDecisionAIModule {
+class MainDecisionAIModule : public AIModule {
 public:
-    virtual ~MainDecisionAIModule();
-    char gap_04[0xEC];
     RGE_Player* player;          // +0xF0
     char gap_F4[0x10];           // +0xF4 to +0x103
-    BuildAIModule buildAI;       // +0x104
-    char gap_108[0xCEC - 0x108];
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    TribeBuildAIModule buildAI;       // +0x104
+    char gap_6C4[0xCEC - 0x6C4];
     TribeInformationAIModule informationAI; // +0xCEC
-    char gap_CF0[0x10D7C - 0xCF0];
+    // informationAI ends at +0x10D7C; resourceAI follows it in the
+    // original nested decision-module layout.
     TribeResourceAIModule resourceAI;       // +0x10D7C
 };
 
-class TribeTacticalAIModule {
+class TacticalAIModule : public AIModule {
 public:
-    virtual ~TribeTacticalAIModule();
-    char gap_04[0xEC];
-    MainDecisionAIModule* md;  // +0xF0
-    char gap_F4[0x2F8];        // +0xF4 to +0x3EB
-    int sn_3EC;                // +0x3EC (storage pit count?)
-    char gap_3F0[0x9C];        // +0x3F0 to +0x48B
-    int sn_array_48C[1];       // +0x48C indexed by resource type
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    TribeMainDecisionAIModule* md;  // +0xF0
+    char gap_F4[0xA0];         // +0xF4 to +0x193
+    int sn[226];               // +0x194; strategic-number table
 
     int numberAvailableStoragePits(int& param1, int& param2, int param3);
 };
@@ -151,18 +186,19 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
     }
 
     value = this->md->resourceAI.resource(param3);
-    if (this->sn_array_48C[param3] <= value) {
+    if (this->sn[param3 + 0xBE] <= value) {
         return 0;
     }
 
-    value = this->sn_3EC;
+    value = this->sn[0x96];
     if (value != -1) {
-        capacity_or_count = (int)this->md->player->attributes[6];
+        TribeMainDecisionAIModule* decision = this->md;
+        capacity_or_count = (int)decision->player->attributes[6];
         if (capacity_or_count == 0) {
             capacity_or_count = 1;
         }
         product = capacity_or_count * value;
-        capacity_or_count = this->md->buildAI.numberItemsOfType(0x67, 0);
+        capacity_or_count = decision->buildAI.numberItemsOfType(0x67, 0);
         remaining = product - capacity_or_count;
         param1 = capacity_or_count;
         return ((int)remaining < 0) ? 0 : remaining;

@@ -51,6 +51,14 @@
 // and declaration reordering were duplicate or worse (45/51 bytes). Restored
 // the pinned canonical typed source; the remaining gap is the incompatible
 // result/count liveness versus ECX/EDX/LEA child-entry schedule.
+// Follow-up donor pass (follow-C0620-r1): a byte result initialized before the
+// outer guard moved the first mismatch into facet setup and reached 77 bytes;
+// rolled back. Reusing the typed facet parameter as the fallback result made
+// the function structural (256 bytes, 183 differing bytes); rolled back.
+// A function-scope typed child-sprite pointer copied from shadow_draw was
+// codegen-identical at 45 bytes; rolled back. The clean typed source remains
+// the best reconstruction. The first paired hunk is still result/count
+// liveness (AX versus CX), followed by list-base and parameter-home coloring.
 
 #include <stdio.h>
 

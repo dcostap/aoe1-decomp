@@ -25,6 +25,9 @@
 // size and scheduling, so they were rolled back.
 // Main-agent audit restored canonical destructor slots and a symbol-backed game
 // global; the validated prologue/register-allocation blocker remains.
+// Follow-up follow-404A90-r1: split notification coordinate casts into natural
+// locals to test call evaluation order; codegen stayed unchanged at 277/182,
+// so the probe was rolled back.
 //
 // Session sa-ce4cd6c0-r1 (10 meaningful probes, 2026-08-11):
 // - absolute and volatile game-global forms did not reproduce a reload or

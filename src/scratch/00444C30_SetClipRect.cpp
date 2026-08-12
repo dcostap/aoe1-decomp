@@ -49,6 +49,13 @@
 // VSList composition and int Width/Height surface both emit the same 21-byte
 // source basin. A focused int-ABI argument-shape lab found no closer natural
 // candidate. Retained source is the canonical /GX composition and alias form.
+// Close-session probes: reversing the manager-lines/Height compare worsened to
+// 23 bytes; scalar ClipLeft/Top/Right/Bottom ownership was a 21-byte duplicate.
+// The exact pointer-overload declaration was also a duplicate. Direct
+// SetSpanRegions use regressed to 28 bytes, and combining it with an AddSpan
+// alias entered a 218-byte structural basin. Splitting old/new manager aliases
+// and direct member reads were 21-byte duplicates. Typed int constructor locals
+// regressed to 215 bytes. The clean alias/tagRECT source is restored.
 
 class VSpan_Node;
 

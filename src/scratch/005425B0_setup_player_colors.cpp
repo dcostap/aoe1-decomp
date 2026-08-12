@@ -25,6 +25,13 @@
 //   naturally a byte pointer; kept the record as diagnostic evidence only.
 // - Probes 25-26: member pointer-addition and typedef-array spellings did not
 //   fix the compare SIB and the latter restored the second mismatch byte.
+// - New worker probes: nested the nonnegative guard, combined signed-byte and
+//   negation/pointer-addition forms, reversed local declaration order, tested a
+//   named short color, unsigned-count calloc, and signed players_done. All
+//   natural forms either duplicated the two-byte SIB drift or the named short
+//   caused structural drift; restore the clean typed source.
+// - An exact Victory.cpp donor confirms VC5 can emit base-first SIB for a
+//   typed member byte array, but it does not establish that ownership here.
 //
 // FLAGS: /nologo /c /O2 /Oy
 

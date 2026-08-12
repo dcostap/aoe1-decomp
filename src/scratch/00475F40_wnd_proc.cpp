@@ -40,6 +40,13 @@
 // param_1 and aliases); a parameter-qualifier lab likewise found no lead.
 // Restored the pinned clean result-local/TPanel source; the remaining gap is
 // still only the two forwarding-call register-color families.
+// New claim (close-475F40-r1): panel/edit donor audit confirmed the two direct
+// forwards use the decorated virtual TPanel::wnd_proc symbol; the four IAT
+// imports and two direct calls match the panel/edit donor call surface.
+// A nonvirtual base declaration emitted the same bytes but changed that symbol
+// to the Q form, so it was rejected. A TPanel HWND first-parameter spelling
+// preserved the PAX symbol and emitted the same eight-byte drift. Restored the
+// canonical virtual void* declaration; no exact call or tail-symbol lead found.
 //
 // Canonical facts:
 // - TPanel owns active(+0x6C), visible(+0x70), and has size +0xF4.

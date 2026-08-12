@@ -40,6 +40,14 @@
 //   including float sendUnitAIOrder parameters and the real group-command declarations.
 // - The focused ABI surface compiled to the same 237-byte function and 7-byte register-coloring drift;
 //   retained the real declarations because they are the canonical class evidence.
+// Focused ABI/expression pass (close-46F050-r1):
+// - Added the exact-donor command tail after +0xD0; no emitted movement, then restored.
+// - Retested an indexed selected-list loop and a top-level do/while counter with the real ABI; both
+//   stayed at the same 7-byte group, as did a typed player-reference alias.
+// - Void group-command return declarations, a register-qualified first argument, and natural id
+//   promotion were neutral. Direct selectedUnits[selectedCount] storage worsened to 16 bytes.
+// - Clean source remains the natural typed reconstruction. The only drift is the proven EBP vtable /
+//   EBX 25-count register swap at seven bytes.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

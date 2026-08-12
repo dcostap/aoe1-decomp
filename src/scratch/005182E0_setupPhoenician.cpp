@@ -53,6 +53,9 @@
 // - Same-TU donor preload probe: an early ordinary twenty local, used for the
 //   three Phoenician 20-valued stores without changing their order, emitted the
 //   identical 25-byte basin. Restored the direct literal source.
+// - New close-out probes: isolated right-to-left grouping of the 70-valued and
+//   10-valued stores, explicit natural phase scopes, and a local typed table
+//   view all emitted the identical 25-byte basin. Restored the int* donor form.
 // - Session sa-f9b73f31-r1 exhausted 9/10 meaningful hypotheses; final clean
 //   source validation is required before pausing for the compiler-basin blocker.
 
