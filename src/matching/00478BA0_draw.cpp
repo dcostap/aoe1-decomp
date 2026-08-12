@@ -25,6 +25,9 @@
 // - scoping DC/font and the loop line like the exact same-TU donor, and
 //   base-qualifying the inherited draw helpers, all reproduced the same 18-byte
 //   register-coloring group; no natural source lead remained this pass.
+// - mirroring donor 00493070's ten-slot base surface, removing the unused
+//   TTextPanel draw virtual, and scoping the locals like the donor reached an
+//   exact 303-byte match.
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
@@ -43,13 +46,11 @@ public:
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
 #define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
 
 class TPanel {
 public:
-    virtual ~TPanel();
-    VPAD4(v1)
-    VPAD2(v5)
-    VPAD1(v7)
+    VPAD8(v0)
     VPAD2(v8)
     virtual void draw_setup(int clear);
     virtual void draw_finish();
@@ -78,8 +79,6 @@ public:
 
 class TTextPanel : public TPanel {
 public:
-    virtual void draw();
-
     void* list;                   // +0xF4
     short num_lines;              // +0xF8
     short draw_lines;             // +0xFA
@@ -151,11 +150,6 @@ public:
 
 void TListPanel::draw()
 {
-    void* dc;
-    void* old_font;
-    short line;
-    short line_index = 0;
-
     this->need_redraw = 0;
     if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         return;
@@ -164,14 +158,14 @@ void TListPanel::draw()
     this->draw_background();
     this->draw_setup(0);
 
-    dc = this->render_area->GetDc(s_pnl_lst__draw);
+    void* dc = this->render_area->GetDc(s_pnl_lst__draw);
     if (dc != 0) {
         SelectClipRgn(dc, this->clip_rgn);
-        old_font = SelectObject(dc, this->font);
+        void* old_font = SelectObject(dc, this->font);
         SetBkMode(dc, 1);
 
-        for (line = this->top_line; line <= this->bot_line;
-             ++line, ++line_index) {
+        for (short line = this->top_line, line_index = 0;
+             line <= this->bot_line; ++line, ++line_index) {
             if (this->drawHighlightBar != 0 &&
                 (this->have_focus != 0 || this->mouse_captured != 0) &&
                 line_index + this->top_line == this->cur_line) {
