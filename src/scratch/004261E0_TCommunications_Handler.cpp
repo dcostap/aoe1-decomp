@@ -28,6 +28,9 @@
 // Main-agent audit rejected the byte-offset cursor and raw string address. The
 // canonical 0x38-byte RESENDER record and typed array walk rebuild to 364 bytes
 // with all 21 calls aligned; the wider 298-byte diff is accepted in scratch.
+// Follow-up: typed slot indexing with an unsigned bound preserves the observed
+// per-iteration Resend reload and improves shape to 96.85% with 96% exact blocks;
+// declaration order is a codegen duplicate. Keep this natural record form.
 
 class RESENDER;
 class HOLDER;
@@ -97,9 +100,10 @@ TCommunications_Handler::~TCommunications_Handler() {
     operator_delete(this->FriendlyName);
     operator_delete(this->FormalName);
 
-    int slot = 0;
-    RESENDER* resend = this->Resend;
+    unsigned int slot = 0;
+    RESENDER* resend;
     do {
+        resend = this->Resend + slot;
         if (resend->Serial != 0) {
             L->Log("NO MSG Slot#%d  Ser#%d  Len=%d  DEST=%d,%d,%d,%d,%d,%d,%d,%d",
                 slot, resend->Serial, resend->Length,
@@ -107,7 +111,6 @@ TCommunications_Handler::~TCommunications_Handler() {
                 resend->DestMap[4], resend->DestMap[5], resend->DestMap[6],
                 resend->DestMap[7], resend->DestMap[8]);
         }
-        ++resend;
         slot++;
     } while (slot <= 501);
 

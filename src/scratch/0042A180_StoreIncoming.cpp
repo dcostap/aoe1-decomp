@@ -15,6 +15,10 @@
 // schedule, so it was rolled back. The current source keeps the natural named scan cursor.
 // Main-agent audit replaced both byte-offset HOLDER cursors with typed indexing
 // and pointer iteration. Keep canonical 0x18-byte record ownership in scratch.
+// Follow-up: direct typed OnHold Length assignment improves the indexed store
+// encoding by one byte; separate typed entry/base pointers are compiler duplicates.
+// Direct repeated field accesses destroy the earlier CFG, so the simple HOLDER
+// entry form remains. Do not reintroduce byte-offset cursors for the cold report.
 
 #include <string.h>
 
@@ -61,7 +65,7 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
 
     for (i = 0; i < 0x1F5; i++) {
         if (h[i].Length == 0 && len != 0) {
-            h[i].Length = len;
+            this->OnHold[i].Length = len;
             h = &this->OnHold[i];
             h->HoldMsg = (char*)operator_new(h->Length);
             if (h->HoldMsg != 0) {
