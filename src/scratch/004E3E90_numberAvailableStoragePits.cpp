@@ -41,6 +41,12 @@
 //   emitted the same 238-byte/15-byte basin. A four-variant canonical
 //   AIModule/MainDecision virtual-surface lab produced two stable groups,
 //   both with the same first mismatch at +3; no exact or structural lead.
+// - Fresh bounded pass: a direct MainDecision-typed md widened the drift to
+//   19 bytes; inherited MainDecision object surfaces gave 16 bytes. Explicit
+//   MainDecision casts for both object calls stayed at 15 bytes with no code
+//   movement. Restored the typed TribeMainDecision ownership.
+// - Fresh context probes: stdlib/string and windows.h header pairs left the
+//   same 238-byte/15-byte basin. VC5 rejects __restrict; no probe was kept.
 
 class RGE_Static_Object;
 

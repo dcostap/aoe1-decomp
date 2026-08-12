@@ -35,6 +35,11 @@
 //   x-home assignment with the clipped-x second comparison remains the best
 //   behavior-faithful reconstruction; later column/right-lifetime probes were
 //   duplicate or farther and are not retained.
+// - This session tested compound endpoint updates, spacing-first endpoint
+//   seeds, removal of parameter-home mutations, grouped coordinate endpoints,
+//   same-TU <string.h> context, a retained right-endpoint local, and split
+//   bound decrements. None improved the current 246-byte basin; the clean
+//   typed source was restored before final validation.
 
 struct Map_Stack {
     long x;
