@@ -50,11 +50,32 @@ spurious `TScreenPanel::create_button` override, and wrong trailing types on a
 `create_text` virtual declaration. These can alter vtable contents outside the
 constructor and require correction before review can continue.
 
+### Round 2 — fresh blind cohort after ABI correction, 2026-08-12
+
+- `sa-83101145` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-8ed0563d` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers confirmed the constructor calls, arguments, stores, return,
+fault order, partial construction, and EH cleanup.
+
+DeepSeek recommended pass. Luna inspected the emitted vtable and found five
+definite wrong entries. The candidate inherits `TPanel` implementations where
+the executable uses `TEasy_Panel` or `TScreenPanel` overrides:
+
+- `+0x28`: `draw_setup`
+- `+0x30`: `draw`
+- `+0x54`: `handle_paint`
+- `+0x70`: `handle_mouse_down`
+- `+0xC0`: `set_focus`
+
+These methods affect object behavior after construction. The vtable defect is
+therefore a semantic blocker.
+
 ## Main-agent adjudication
 
-Constructor behavior is confirmed. The virtual declaration findings remain
-open. Return this target to normal source correction. Do not promote it from
-this round.
+Constructor behavior is confirmed. Round 1 ABI corrections were valid, but
+round 2 found five additional missing overrides. Return this target to normal
+source correction. Verify the complete emitted vtable before another cohort.
 
 ## Integrated changes
 
@@ -63,5 +84,5 @@ order before phase entry.
 
 ## Final decision
 
-Hold. Correct and validate the class virtual surface, then start a fresh blind
-cohort on the revised candidate.
+Hold. Add the five proven overrides and verify every emitted vtable slot. Start
+a fresh blind cohort only after that correction.
