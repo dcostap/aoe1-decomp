@@ -4,8 +4,35 @@
 //
 // Attempt log:
 // Probe 1: 352/424B — structural probe, too short (need proper palette fade math)
+// Baseline: typed palette reconstruction with the GetPalette and
+// RGE_translate_palette calls, two 256-entry local palettes, and nearest-color
+// search. The constructor owns the inline 0x100-byte table at +0x28.
+// Explicit four-channel copy reached 405/424B and 368 differing bytes.
+// A pointer alias copy and a byte-cursor copy moved code farther or changed
+// saved-register allocation, so both were restored.
+// Initializing the inner scan index before RGB extraction and using <= 0xFF
+// matched the original loop guard and improved block coverage.
+// A register-qualified palette parameter produced duplicate code and was
+// removed from the living source. Remaining drift is prologue register order,
+// copy-loop topology, and local store scheduling.
 
-#include "..\..\include\game_globals.h"
+#include <string.h>
+
+struct tagPALETTEENTRY {
+    unsigned char peRed;
+    unsigned char peGreen;
+    unsigned char peBlue;
+    unsigned char peFlags;
+};
+
+class TDrawArea {
+public:
+    void GetPalette(tagPALETTEENTRY* entries);
+};
+
+void RGE_translate_palette(tagPALETTEENTRY* source, tagPALETTEENTRY* target,
+                           tagPALETTEENTRY color, long amount,
+                           int first, int last);
 
 class RGE_Color_Table {
 public:
@@ -17,45 +44,70 @@ public:
     short id;                    // +0x26
     unsigned char table[256];    // +0x28
 
-    RGE_Color_Table(void* area, long percent, void* base_color, void* palette);
+    RGE_Color_Table(TDrawArea* area, long amount,
+                   tagPALETTEENTRY* base_color,
+                   tagPALETTEENTRY* palette);
 };
 
-struct ColorEntry {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char flags;
-};
-
-RGE_Color_Table::RGE_Color_Table(void* area, long percent, void* base_color, void* palette)
+RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
+                                 tagPALETTEENTRY* base_color,
+                                 tagPALETTEENTRY* palette_source)
 {
-    this->resource_id = 0;
-    this->type = 0;
-    this->map_color = 0;
-    this->id = 0;
-    // Copy palette entries with fade
-    if (palette) {
-        ColorEntry* src = (ColorEntry*)palette;
+    tagPALETTEENTRY palette[256];
+    tagPALETTEENTRY temp_palette[256];
+    tagPALETTEENTRY color;
+    long index;
+
+    if (palette_source == 0) {
+        area->GetPalette(palette + 1);
+    } else {
         for (int i = 0; i < 256; i++) {
-            int r = src[i].r;
-            int g = src[i].g;
-            int b = src[i].b;
-
-            if (base_color) {
-                ColorEntry* bc = (ColorEntry*)base_color;
-                r = (r * percent + bc[i].r * (100 - percent)) / 100;
-                g = (g * percent + bc[i].g * (100 - percent)) / 100;
-                b = (b * percent + bc[i].b * (100 - percent)) / 100;
-            }
-
-            if (r > 255) r = 255;
-            if (g > 255) g = 255;
-            if (b > 255) b = 255;
-            if (r < 0) r = 0;
-            if (g < 0) g = 0;
-            if (b < 0) b = 0;
-
-            this->table[i] = (unsigned char)r;
+            palette[i + 1].peRed = palette_source[i].peRed;
+            palette[i + 1].peGreen = palette_source[i].peGreen;
+            palette[i + 1].peBlue = palette_source[i].peBlue;
+            palette[i + 1].peFlags = palette_source[i].peFlags;
         }
     }
+
+    if (base_color == 0) {
+        color.peRed = 0;
+        color.peGreen = 0;
+        color.peBlue = 0;
+        color.peFlags = 0;
+    } else {
+        color = *base_color;
+    }
+
+    this->resource_id = 0;
+    this->map_color = 0;
+    this->type = 0;
+    memset(this->table, 0, 256);
+
+    RGE_translate_palette(palette + 1, temp_palette + 1, color, amount, -1, -1);
+
+    index = 0;
+    do {
+        int best_color = 0;
+        int i = 0;
+        int best_distance = 20000;
+        int red = temp_palette[index + 1].peRed;
+        int green = temp_palette[index + 1].peGreen;
+        int blue = temp_palette[index + 1].peBlue;
+
+        for (; i < 256; i++) {
+            int red_difference = red - palette[i + 1].peRed;
+            int green_difference = green - palette[i + 1].peGreen;
+            int blue_difference = blue - palette[i + 1].peBlue;
+            int distance = red_difference * red_difference
+                         + green_difference * green_difference
+                         + blue_difference * blue_difference;
+            if (distance < best_distance) {
+                best_distance = distance;
+                best_color = i;
+            }
+        }
+
+        this->table[index] = (unsigned char)best_color;
+        index++;
+    } while (index <= 0xff);
 }

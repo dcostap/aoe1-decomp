@@ -10,32 +10,86 @@
 // - v7: reordered local array declarations so assignedResource occupies low stack offsets like original.
 // - v8: grouped arrays in a local struct to force assigned/tempNeeded/tempDiff contiguous stack layout.
 // - v9: reordered one-time array initialization to match original flag/temp output stack stores.
-// BLOCKER: behavior/call set/field offsets and frame now match closely at the top; first 43 bytes equal and size is exact 478. Remaining mismatch starts in the local array initialization/codegen basin: original uses EDX=-1, EAX=-1, ECX=0 and interleaves stores to stack slots [34]/[24]/[14] etc, while rebuilt uses only EAX=-1 and ESI=0 stores. Later control flow is mostly same shape but shifted/shorter because of this init/register allocation and local-struct layout differences.
+// - v10: tried a fixed four-entry initialization loop; VC5 kept the loop and
+//   lost the original unrolled stores, so it was restored.
+// - v11: replaced raw md subobject casts with canonical buildAI/resourceAI
+//   members and restored the proven AIModule, ResourceItem, and tactical sizes;
+//   emitted code stayed unchanged while source ownership became typed.
+// - v12: reordered initialization to the decompiler/PDB order; block shape
+//   worsened, so the original interleaved source order was restored.
+// - v13: removed the self alias; emitted code stayed unchanged.
+// - v14: initialized the fallback assigned-resource pointer at slot 1; this
+//   changed prologue register coloring and was restored.
+// BLOCKER: the natural typed reconstruction has the exact frame, eight ordered
+// calls, correct field offsets, and 484 rebuilt bytes versus 478 original.
+// The first mismatch is local initialization at +0x2B: original keeps -1 in
+// EDX and EAX and zero in ECX, while VC5 keeps only -1 in EAX and zero in ESI.
+// The source shape still has a 6-byte suffix shift. No evidence remains for a
+// period-plausible register-only change; leave this source in scratch.
 
 class ResourceItem {
 public:
+    virtual ~ResourceItem();
+    char gap_04[0x70 - 0x04];
     int value(int index);
 };
 
-class TribeBuildAIModule {
+class AIModule {
 public:
-    int mostNeededResource(ResourceItem* needed, int sn93);
+    virtual ~AIModule();
+    char gap_04[0xf0 - 0x04];
 };
 
-class TribeResourceAIModule {
+class BuildAIModule : public AIModule {
 public:
-    int resource(int index);
+    char gap_f0[0x5bc - 0xf0];
 };
 
 class TribeMainDecisionAIModule;
 
-class TribeTacticalAIModule {
+class TribeBuildAIModule : public BuildAIModule {
 public:
-    char gap_000[0x0f0];
+    TribeMainDecisionAIModule* md;
+    int mostNeededResource(ResourceItem* needed, int sn93);
+};
+
+class ResourceAIModule : public AIModule {
+public:
+    char gap_f0[0x10c - 0xf0];
+};
+
+class TribeResourceAIModule : public ResourceAIModule {
+public:
+    TribeMainDecisionAIModule* md;
+    int numberResourcesValue;
+    int resource(int index);
+};
+
+class MainDecisionAIModule : public AIModule {
+public:
+    void* player;
+    char gap_f4[0x104 - 0xf4];
+};
+
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    TribeBuildAIModule buildAI;
+    char gap_6c4[0x10d7c - 0x6c4];
+    TribeResourceAIModule resourceAI;
+};
+
+class TacticalAIModule {
+public:
+    virtual ~TacticalAIModule();
+    char gap_04[0xf0 - 0x04];
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
     TribeMainDecisionAIModule* md;       // +0x0f0
     char gap_0f4[0x194 - 0x0f4];
-    int sn[256];                         // +0x194, sn[0x93] at +0x3e0
-    char gap_after_sn[0xd88 - (0x194 + 256 * 4)];
+    int sn[0xe2];                         // +0x194, sn[0x93] at +0x3e0
+    char gap_after_sn[0xd88 - (0x194 + 0xe2 * 4)];
     int neededResourceValue[4];          // +0xd88
     int resourceDifferenceValue[4];      // +0xd98
     ResourceItem neededResources;        // +0xda8
@@ -53,10 +107,8 @@ void TribeTacticalAIModule::updateNeededResources()
     int bestResource;
     int bestDifference;
     int offset;
-    TribeTacticalAIModule* self;
 
-    self = this;
-    ((TribeBuildAIModule*)((char*)self->md + 0x104))->mostNeededResource(&self->neededResources, self->sn[0x93]);
+    this->md->buildAI.mostNeededResource(&this->neededResources, this->sn[0x93]);
 
     i = 0;
     tempResourceDifference[0] = -1;
@@ -74,8 +126,8 @@ void TribeTacticalAIModule::updateNeededResources()
 
     int* diffPtr = this->resourceDifferenceValue;
     do {
-        int resource = ((TribeResourceAIModule*)((char*)self->md + 0x10d7c))->resource(i);
-        int needed = self->neededResources.value(i);
+        int resource = this->md->resourceAI.resource(i);
+        int needed = this->neededResources.value(i);
         i++;
         *diffPtr = resource - needed;
         diffPtr++;
@@ -88,28 +140,28 @@ void TribeTacticalAIModule::updateNeededResources()
         i = 0;
         do {
             if (i == 0) {
-                if (((TribeResourceAIModule*)((char*)self->md + 0x10d7c))->resource(i) >= self->sn[0xbe]) {
+                if (this->md->resourceAI.resource(i) >= this->sn[0xbe]) {
                     goto next_resource;
                 }
             }
             if (i == 1) {
-                if (((TribeResourceAIModule*)((char*)self->md + 0x10d7c))->resource(i) >= self->sn[0xbf]) {
+                if (this->md->resourceAI.resource(i) >= this->sn[0xbf]) {
                     goto next_resource;
                 }
             }
             if (i == 3) {
-                if (((TribeResourceAIModule*)((char*)self->md + 0x10d7c))->resource(i) >= self->sn[0xc1]) {
+                if (this->md->resourceAI.resource(i) >= this->sn[0xc1]) {
                     goto next_resource;
                 }
             }
             if (i == 2) {
-                if (((TribeResourceAIModule*)((char*)self->md + 0x10d7c))->resource(i) >= self->sn[0xc0]) {
+                if (this->md->resourceAI.resource(i) >= this->sn[0xc0]) {
                     goto next_resource;
                 }
             }
-            if (self->neededResources.value(i) > 0) {
-                if ((bestResource == -1 || self->resourceDifferenceValue[i] < bestDifference) && assignedResource[i + 1] == 0) {
-                    bestDifference = self->resourceDifferenceValue[i];
+            if (this->neededResources.value(i) > 0) {
+                if ((bestResource == -1 || this->resourceDifferenceValue[i] < bestDifference) && assignedResource[i + 1] == 0) {
+                    bestDifference = this->resourceDifferenceValue[i];
                     bestResource = i;
                 }
             }
@@ -120,7 +172,7 @@ next_resource:
         if (bestResource == -1) {
             i = 0;
             int* assignedPtr = assignedResource;
-            diffPtr = self->resourceDifferenceValue;
+            diffPtr = this->resourceDifferenceValue;
             do {
                 assignedPtr++;
                 if ((bestResource == -1 || *diffPtr < bestDifference) && *assignedPtr == 0) {
@@ -140,7 +192,7 @@ next_resource:
         assignedResource[0] = offset;
     } while (offset < 0x10);
 
-    int* neededOut = self->neededResourceValue;
+    int* neededOut = this->neededResourceValue;
     offset = 0;
     do {
         int resource = *(int*)((char*)tempNeededResource + offset + 4);
@@ -148,7 +200,7 @@ next_resource:
         *neededOut = resource;
         offset += 4;
         neededOut++;
-        self->resourceDifferenceValue[resource] = difference;
+        this->resourceDifferenceValue[resource] = difference;
     } while (offset < 0x10);
 #undef tempResourceDifference
 #undef tempNeededResource
