@@ -34,11 +34,23 @@
 // emitted code unchanged and retained ordinary count comparison.
 // probe sa-e158994a-r1 #10: restored inline donor method bodies; they moved the
 // constructor register basin away, so retained declarations only and rolled back.
+// probe refill-46A8E0-r1 #1: exact operator<< donor TU context (iostream.h plus
+// class/public Path surface) added four bytes and lost later exact blocks; rolled back.
+// probe refill-46A8E0-r1 #2: isolated class/public Path surface; emitted code unchanged.
+// probe refill-46A8E0-r1 #3: isolated class/public Waypoint surface from operator<<;
+// emitted code unchanged, retained as natural donor context.
+// probe refill-46A8E0-r1 #4: reordered post-constructor offset/count declarations;
+// swapped zero initialization and worsened to five bytes, rolled back.
+// probe refill-46A8E0-r1 #5: retested Ghidra-supported pre-constructor offset with
+// full donor declarations; worsened to 21 bytes, rolled back.
+// Main-agent audit restored direct Waypoint array indexing. The byte-offset
+// cursor was a decompiler artifact and did not express distinct behavior.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
 
-struct Waypoint {
+class Waypoint {
+public:
     float x;
     float y;
     float z;
@@ -46,7 +58,8 @@ struct Waypoint {
     unsigned char pad[3];
 };
 
-struct Path {
+class Path {
+public:
     unsigned long timeStampValue;
     Waypoint startValue;
     Waypoint goalValue;
@@ -68,20 +81,16 @@ struct Path {
 Path Path::operator+(const Path& other) const {
     Path newPath(maxSizeValue + other.maxSizeValue);
     int i = 0;
-    int offset = 0;
     if (0 < currentSizeValue) {
         do {
-            newPath.insertAtEnd(*(Waypoint*)((char*)pathValue + offset));
+            newPath.insertAtEnd(pathValue[i]);
             i++;
-            offset += 16;
         } while (i < currentSizeValue);
     }
     int j = 0;
     if (other.currentSizeValue > 0) {
-        offset = i * 16;
         do {
-            newPath.insertAtEnd(*(Waypoint*)((char*)other.pathValue + offset));
-            offset += 16;
+            newPath.insertAtEnd(other.pathValue[j]);
             j++;
         } while (j < other.currentSizeValue);
     }
