@@ -12,12 +12,19 @@
 //   start-sentinel/register/stack-home topology around Map_Stack cliff; no
 //   register-forcing or opaque local scaffold was retained.
 // - Restored the rolling start-point update proved by the executable after
-//   each draw/invalidate segment. A diagnostic overlap of the stack node with
-//   the float out parameter was rejected; the canonical source keeps distinct
-//   named objects and the original 0x34 frame (754 bytes, 15 aligned calls,
-//   92.80% shape, 577 differing bytes).
+//   each draw/invalidate segment; this moved the clean source to a 0x30 frame,
+//   754 bytes, 15 aligned calls, and 92.80% shape (578 differing bytes).
 // - The final row-base/column locals preserve the observed cell load order;
-//   remaining drift is early register and block scheduling.
+//   remaining drift is a four-byte frame gap plus early register scheduling.
+// - A fresh pass swapped the byte-local declarations to test the target's
+//   first_cliff [esp+13] and cliff_end_found [esp+12] homes; VC5 kept the
+//   existing codegen and remained 577 differing bytes.
+// - An infinite retry loop with an early empty-stack return was rejected: it
+//   added one pop_stack call and 38 bytes. The original do/pop source remains
+//   the best typed reconstruction, with all 15 calls aligned.
+// - Restored distinct Map_Stack and float objects after finding the pinned
+//   source used unsafe overlap casts. The typed form is authoritative even
+//   though it leaves the known four-byte frame gap.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 

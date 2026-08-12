@@ -40,6 +40,13 @@
 //   same-TU <string.h> context, a retained right-endpoint local, and split
 //   bound decrements. None improved the current 246-byte basin; the clean
 //   typed source was restored before final validation.
+// - A new evidence pass restored named x/y aliases and kept the unconditional
+//   x-home endpoint update. This reached exact size with 172 differing bytes,
+//   stronger block coverage, and a cleaner resync than the prior 246-byte
+//   source; the late x-home variant reached 170 bytes but lost that schedule.
+// - Reversing alias declarations, splitting endpoint updates, and capturing
+//   spacing as a local were codegen duplicates. The current aliases remain
+//   readable ownership, not compiler-only scaffolding.
 
 struct Map_Stack {
     long x;
@@ -101,10 +108,12 @@ public:
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacing) {
     long cliff_width2 = this->map_width / 3 - 1;
     long cliff_height2 = this->map_height / 3 - 1;
-    long cliff_x = x - spacing;
-    long cliff_y = y - spacing;
-    long cliff_x2 = spacing + x;
-    long cliff_y2 = spacing + y;
+    long cliff_width = x;
+    long cliff_height = y;
+    long cliff_x = cliff_width - spacing;
+    long cliff_y = cliff_height - spacing;
+    long cliff_x2 = spacing + cliff_width;
+    long cliff_y2 = spacing + cliff_height;
 
     spacing = cliff_x;
     x = cliff_x2;
@@ -117,7 +126,7 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
     if (cliff_x2 > cliff_width2) {
         x = cliff_width2;
     }
-    if (x > cliff_height2) {
+    if (cliff_x2 > cliff_height2) {
         cliff_y2 = cliff_height2;
     }
 
