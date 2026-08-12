@@ -8,9 +8,13 @@
 // - for-header i and loop-scope/inner-init cost were duplicates; top-scope cost regressed to 32.
 // - short attr changed size to 401 bytes and was reverted; no ABI evidence supports it.
 // - focused pointer/reference + byte-predicate lab: one malformed extraction basin, no eligible lead.
+// - fresh pass: function-scope i worsened to 24 bytes; explicit int cost worsened to 26;
+//   nested guard changed size/CFG; compound assignment, stdlib/full-class context, and
+//   complete TRIBE_Tech layout were codegen duplicates and were reverted.
 // Remaining 16 bytes are local [ebp+XX] displacement coloring only; calls, CFG, size,
 // frame, and all non-stack instruction bytes match. Left in scratch pending a compiler
-// slot-allocation lead; source remains the simplest typed reconstruction.
+// slot-allocation lead. Target homes tech/i/cost at -10h/-18h/-8h; rebuilt homes them
+// at -8h/-10h/-18h. Source remains the simplest typed reconstruction.
 
 struct Tech_Player_Tree {
     float research_done;
