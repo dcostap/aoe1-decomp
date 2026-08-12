@@ -13,6 +13,8 @@
 // attempt 10: reverted artificial volatile; left natural 400B scratch. Remaining blocker is source/register shape for target/master lifetimes plus x87 missile math interleave.
 // session probes: canonicalized the missile factory to player->master_objects[]->make_new_obj, tested direct target/master ownership, block-scoped versus function-scoped locals, radius term order, and binary global constants.
 // best emitted candidate: direct member source reaches 392B with all 7 calls aligned and 201-byte edit/resync drift; original still has a distinct x87 radius/trig schedule and shrink-wrapped EBX save.
+// later probe: same-TU inherited Static/Animated/Moving/Action/Combat and Master_* surfaces plus the observed master hp notification argument produced 400B and 361 positional diff; retained as the best canonical source.
+// later probes: named radius locals reproduced the original x87 block shape but not bytes; a named missile-master entry and an initialized c home were nonproductive or worse and were rolled back.
 // paused after bounded matching: no artificial volatility, aliases, raw offsets, or register-forcing scaffolding retained.
 
 class RGE_Static_Object;
@@ -29,6 +31,14 @@ public:
     virtual void pad10();
     virtual void pad14();
     virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
+
+    char pad_004[0x22];
+    short hp;             // +0x26
+    char pad_028[0x08];
+    float radius_x;        // +0x30
+    float radius_y;        // +0x34
+    float radius_z;        // +0x38
+    char pad_03C[0x7C];
 };
 
 class RGE_Player {
@@ -39,12 +49,25 @@ public:
     RGE_Master_Static_Object** master_objects; // +0x24
 };
 
-class RGE_Master_Combat_Object {
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
-    char pad_000[0x30];
-    float radius_x;        // +0x30
-    float radius_y;        // +0x34
-    char pad_038[0xDC];
+    float speed;           // +0xB8
+    char pad_BC[0x1C];
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    char pad_D8[0x20];
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    char pad_F8[0x04];
+};
+
+class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
+public:
+    char pad_FC[0x18];
     float weapon_range;    // +0x114
     char pad_118[0x0C];
     short missile_id;      // +0x124
@@ -57,7 +80,8 @@ public:
 #define SPAD(n) virtual void spad##n();
 class RGE_Static_Object {
 public:
-    SPAD(000) SPAD(001) SPAD(002) SPAD(003) SPAD(004) SPAD(005) SPAD(006) SPAD(007)
+    virtual ~RGE_Static_Object();
+    SPAD(001) SPAD(002) SPAD(003) SPAD(004) SPAD(005) SPAD(006) SPAD(007)
     SPAD(008) SPAD(009) SPAD(010) SPAD(011) SPAD(012) SPAD(013) SPAD(014) SPAD(015)
     SPAD(016) SPAD(017) SPAD(018) SPAD(019) SPAD(020) SPAD(021) SPAD(022) SPAD(023)
     SPAD(024) SPAD(025) SPAD(026) SPAD(027) SPAD(028) SPAD(029) SPAD(030) SPAD(031)
@@ -68,59 +92,58 @@ public:
     SPAD(064) SPAD(065) SPAD(066) SPAD(067) SPAD(068) SPAD(069) SPAD(070) SPAD(071)
     SPAD(072) SPAD(073) SPAD(074) SPAD(075) SPAD(076) SPAD(077) SPAD(078) SPAD(079)
     SPAD(080) SPAD(081)
-    virtual void notify(int id1, int id2, int a, int b, int c);
+    virtual void notify(int id1, int id2, int a, int b, int c, int d);
 
     int id;
-    void* master_obj;
+    RGE_Master_Combat_Object* master_obj;
     RGE_Player* owner;
     char pad_10[0x20];
-    float hp;
-    char pad_34[0x54];
+    float hp;                       // +0x30
+    char pad_34[4];
+    float world_x;                  // +0x38
+    float world_y;                  // +0x3C
+    float world_z;                  // +0x40
+    char pad_44[0x44];
 };
 #undef SPAD
+
+class RGE_Animated_Object : public RGE_Static_Object {
+public:
+    float speed;                    // +0x88
+};
+
+class RGE_Moving_Object : public RGE_Animated_Object {
+public:
+    char pad_08C[0x10];
+    float angle;                    // +0x9C
+    char pad_0A0[0xE0];
+};
+
+#define APAD(n) virtual void apad##n();
+class RGE_Action_Object : public RGE_Moving_Object {
+public:
+    APAD(083) APAD(084) APAD(085) APAD(086) APAD(087) APAD(088) APAD(089) APAD(090)
+    APAD(091) APAD(092) APAD(093) APAD(094) APAD(095) APAD(096) APAD(097) APAD(098)
+    APAD(099) APAD(100) APAD(101) APAD(102) APAD(103) APAD(104) APAD(105) APAD(106)
+    APAD(107) APAD(108) APAD(109) APAD(110) APAD(111) APAD(112) APAD(113) APAD(114)
+    APAD(115) APAD(116) APAD(117) APAD(118) APAD(119) APAD(120) APAD(121) APAD(122)
+    APAD(123) APAD(124) APAD(125) APAD(126) APAD(127) APAD(128) APAD(129) APAD(130)
+    APAD(131) APAD(132) APAD(133) APAD(134) APAD(135) APAD(136) APAD(137)
+    char pad_180[0x14];
+};
+#undef APAD
 
 class RGE_Missile_Object {
 public:
     void init_missile(RGE_Combat_Object* source, RGE_Static_Object* target, float range);
 };
 
-#define VPAD(n) virtual void pad##n();
-class RGE_Combat_Object {
+class RGE_Combat_Object : public RGE_Action_Object {
 public:
-    VPAD(000) VPAD(001) VPAD(002) VPAD(003) VPAD(004) VPAD(005) VPAD(006) VPAD(007)
-    VPAD(008) VPAD(009) VPAD(010) VPAD(011) VPAD(012) VPAD(013) VPAD(014) VPAD(015)
-    VPAD(016) VPAD(017) VPAD(018) VPAD(019) VPAD(020) VPAD(021) VPAD(022) VPAD(023)
-    VPAD(024) VPAD(025) VPAD(026) VPAD(027) VPAD(028) VPAD(029) VPAD(030) VPAD(031)
-    VPAD(032) VPAD(033) VPAD(034) VPAD(035) VPAD(036) VPAD(037) VPAD(038) VPAD(039)
-    VPAD(040) VPAD(041) VPAD(042) VPAD(043) VPAD(044) VPAD(045) VPAD(046) VPAD(047)
-    VPAD(048) VPAD(049) VPAD(050) VPAD(051) VPAD(052) VPAD(053) VPAD(054) VPAD(055)
-    VPAD(056) VPAD(057) VPAD(058) VPAD(059) VPAD(060) VPAD(061) VPAD(062) VPAD(063)
-    VPAD(064) VPAD(065) VPAD(066) VPAD(067) VPAD(068) VPAD(069) VPAD(070) VPAD(071)
-    VPAD(072) VPAD(073) VPAD(074) VPAD(075) VPAD(076) VPAD(077) VPAD(078) VPAD(079)
-    VPAD(080) VPAD(081)
-    virtual void notify(int id1, int id2, int a, int b, int c, int d); // +0x148
-    VPAD(083) VPAD(084) VPAD(085) VPAD(086) VPAD(087) VPAD(088) VPAD(089) VPAD(090)
-    VPAD(091) VPAD(092) VPAD(093) VPAD(094) VPAD(095) VPAD(096) VPAD(097) VPAD(098)
-    VPAD(099) VPAD(100) VPAD(101) VPAD(102) VPAD(103) VPAD(104) VPAD(105) VPAD(106)
-    VPAD(107) VPAD(108) VPAD(109) VPAD(110) VPAD(111) VPAD(112) VPAD(113) VPAD(114)
-    VPAD(115) VPAD(116) VPAD(117) VPAD(118) VPAD(119) VPAD(120) VPAD(121) VPAD(122)
-    VPAD(123) VPAD(124) VPAD(125) VPAD(126) VPAD(127) VPAD(128) VPAD(129) VPAD(130)
-    VPAD(131) VPAD(132) VPAD(133) VPAD(134) VPAD(135) VPAD(136) VPAD(137)
+    char pad_194[0x30];
     virtual unsigned char attack(RGE_Static_Object* target, float x, RGE_Combat_Object* other, float y, float z); // +0x228
-
-    int id;                         // +0x04
-    RGE_Master_Combat_Object* master_obj; // +0x08
-    RGE_Player* owner;              // +0x0C
-    char pad_010[0x28];
-    float world_x;                  // +0x38
-    float world_y;                  // +0x3C
-    float world_z;                  // +0x40
-    char pad_044[0x58];
-    float angle;                    // +0x9C
-
     unsigned char attack(RGE_Static_Object* target, RGE_Combat_Object* other);
 };
-#undef VPAD
 
 #include <math.h>
 #pragma intrinsic(cos)
@@ -157,7 +180,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
         if (this->master_obj->weapon_range > DAT_0056f49c) {
             if (1 == target->owner->computerPlayer()) {
                 int hp = (int)target->hp;
-                target->notify(this->id, target->id, 0x20F, this->id, hp);
+                target->notify(this->id, target->id, 0x20F, this->id, hp, target->master_obj->hp);
                 return 1;
             }
         }

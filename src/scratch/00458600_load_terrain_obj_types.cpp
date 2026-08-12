@@ -33,6 +33,10 @@
 // - Fresh packet/dossier pass confirms the four narrow record fields and the
 //   unconditional fclose. The version-as-count spill remains diagnostic only;
 //   the clean typed direct-member source is retained for semantic clarity.
+// - Fresh worker probes: reusing the header long as a count reduced the gap to
+//   134 bytes at exact size, but changed the count compare and is not natural.
+//   A body-scoped short count and mixed short/long count forms worsened block
+//   layout. Restored the clean direct-member source.
 
 #include <stdio.h>
 #include <stdlib.h>

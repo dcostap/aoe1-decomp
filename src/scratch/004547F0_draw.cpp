@@ -36,6 +36,7 @@ class RGE_Sprite;
 class RGE_Map;
 class RGE_Game_World;
 class DClipInfo_List;
+class DClipInfo_Node;
 class RGE_Master_Combat_Object;
 class RGE_Static_Object;
 class RGE_Player;
@@ -152,10 +153,11 @@ public:
 
 class DClipInfo_List {
 public:
-    void* AddGDINode(int param_1, int param_2, short param_3, short param_4,
-                     short param_5, short param_6, short param_7, short param_8,
-                     short param_9, short param_10, int param_11, int param_12,
-                     int param_13);
+    DClipInfo_Node* AddGDINode(int param_1, int param_2, short param_3,
+                               short param_4, short param_5, short param_6,
+                               short param_7, short param_8, short param_9,
+                               short param_10, int param_11, int param_12,
+                               int param_13);
 };
 
 extern RGE_Base_Game* rge_base_game;

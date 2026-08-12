@@ -36,6 +36,7 @@
 // Variant lab of six plausible tail forms under /GX found no exact or new invariant
 // basin. Restored the canonical int-result source; blocker remains localized to the
 // constructor null-test/EH-tail branch layout.
+// Follow-up worker: retested positive constructor if/else, direct success return, and positive-goto tail forms; all entered the known 378-byte EH basin. Restored the validated 359-byte int-result source.
 
 #include <stddef.h>
 

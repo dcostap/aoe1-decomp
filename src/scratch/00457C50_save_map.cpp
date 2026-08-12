@@ -14,6 +14,10 @@
 // all calls/CFG/relocations exact); probes 8-10 arithmetic/pointer variants
 // were codegen duplicates. Remaining drift is only old-format multiply operand
 // order: original loads height then multiplies width, rebuilt reverses them.
+// 8 common height pointer after the width write: old-format product became
+// exact, but the loop tail swapped the y/map reload order (4 bytes remain).
+// 9-10 direct-this and staged-product variants: codegen duplicates; retained
+// the typed common-height form as the best period-plausible reconstruction.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern float save_game_version;
@@ -65,13 +69,13 @@ void RGE_Map::save_map(int file)
     int* width = &map->map_width;
     rge_write(handle, width, 4);
 
-    rge_write(handle, &map->map_height, 4);
+    int* height = &map->map_height;
+    rge_write(handle, height, 4);
     map->map_zones->save(handle);
     rge_write(handle, &map->map_visible_flag, 1);
     rge_write(handle, &map->fog_flag, 1);
 
     if (!(save_game_version < DAT_005706a8)) {
-        int* height = &map->map_height;
         int y = 0;
         if (*height > 0) {
         do {
@@ -96,14 +100,13 @@ void RGE_Map::save_map(int file)
                     ++x;
                 } while (x < map->map_width);
             }
-            ++y;
+            y++;
         } while (y < *height);
         }
     } else {
-        int* old_height = &map->map_height;
-        int tile_count = *old_height;
-        tile_count *= *width;
-        rge_write(handle, map->map, tile_count * 0x18);
+        int tile_count = *height;
+        tile_count *= this->map_width;
+        rge_write(handle, this->map, tile_count * 0x18);
     }
 
     map->unified_vis_map->save(handle);
