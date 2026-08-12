@@ -31,11 +31,27 @@ and derived-vptr stores. Canonical layout did not alter that basin.
 
 ## Review rounds
 
-No blind review has completed.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-2c36da0c` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-f9afde2c` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers traced the complete constructor and found no definite behavior
+difference. They confirmed the base call, canonical class sizes, all field
+offsets, store widths and values, derived vptr, uninitialized field set, return,
+and partial-construction behavior.
+
+DeepSeek identified `text_style` first as a possible original initializer order.
+A subsequent normal matching pass tested that order. It emitted identical code.
+A body assignment worsened the result and was restored.
 
 ## Main-agent adjudication
 
-Pending.
+- **Field state, widths, vptr, base lifetime, and EH:** confirmed by both reviewers.
+- **Store scheduling:** independent constant stores with no interleaved call,
+  read, callback, or possible observer. No semantic issue remains.
+- **Color signedness:** 32-bit bit patterns match. The canonical shared surface
+  can adopt unsigned names later without changing this constructor.
 
 ## Integrated changes
 
@@ -43,4 +59,4 @@ The main agent validated the canonical-layout candidate before phase entry.
 
 ## Final decision
 
-Pending blind review.
+Round 1 is clean. Pending a fresh second blind cohort.

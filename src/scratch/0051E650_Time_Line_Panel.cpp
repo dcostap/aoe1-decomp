@@ -19,6 +19,9 @@
 // compiled and restored; none beat the 276-byte/125-diff initializer-list basin.
 //   The body forms moved the compiler vtable store to entry (200-209 diff), while
 //   the full virtual surface and ground-truth widths emitted unchanged bytes.
+// order lead: moving text_style to the first initializer-list entry emitted
+// identical 276-byte/125-diff code; moving it to the first body statement was
+// worse (276 bytes/221 diff), so restore the canonical initializer-list source.
 // paused: ordered base call and all 47 instructions/size match, but the first
 // mismatch remains +000C (highlightTextColor1 before text_style) with delayed
 // vtable/back-color/tail stores; next lead is original TU/header scheduling.
