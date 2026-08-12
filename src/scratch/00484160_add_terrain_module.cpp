@@ -12,6 +12,17 @@
 // - Current source retains canonical typed arrays and natural indexed loops;
 //   remaining lead is the source/destination cursor topology and register
 //   roles in the terrain copy, with later hot-spot drift dependent on it.
+// - Fresh dossier and same-TU donor review confirm the map-entry stride 0x48,
+//   terrain record stride 0x18, land stride 0x2C, and the single __ftol call.
+// - Fresh direct-map and shared-counter forms changed frame or size but not
+//   the first structural hunk; explicit controller ownership was a duplicate.
+// - Repeated typed source fields overran the target by 80 bytes.  Hoisted
+//   counters recovered EBX as this but grew the frame to 0x14.  Both were
+//   rolled back.
+// - A terrain_type-anchored output cursor moved shape from 45.71% to 46.43%
+//   without positional gain.  It was rolled back as opaque field plumbing.
+// - Fresh pass remains paused: exact call parity and frame parity hold, but
+//   the terrain-copy topology is still structurally unresolved.
 
 #include "../../include/game_globals.h"
 

@@ -7,9 +7,14 @@
 // - Positive mode-7 layout restored the original long non-mode branch and all
 //   ten ordered call sites; direct player reloads preserve the inherited +100
 //   ownership surface.
-// - Named int endpoint locals and distance spelling variants are codegen
-//   duplicates; remaining drift is the VC5 distance/register/home basin and a
-//   12-byte block-layout gap. Kept the readable typed reconstruction in scratch.
+// - Named int endpoint locals and distance spelling variants were codegen
+//   duplicates in the original branch order.
+// - Matching the original unequal-branch order, typed abs() distances, and
+//   comparison operand order restored the exact wall-call block layout.
+// - A direct success guard around command_make_wall restored the original
+//   byte-result test and completed the exact match.
+
+#include <stdlib.h>
 
 class RGE_Master_Static_Object;
 class TRIBE_Master_Building_Object;
@@ -93,47 +98,42 @@ int TRIBE_Main_View::command_place_multi_object(
             int end_x = (int)param_3;
             int start_x = (int)param_1;
 
-            int row_distance = end_y - start_y;
-            if (row_distance < 0)
-                row_distance = -row_distance;
-
-            int col_distance = end_x - start_x;
-            if (col_distance < 0)
-                col_distance = -col_distance;
+            int row_distance = abs(end_y - start_y);
+            int col_distance = abs(end_x - start_x);
 
             if (row_distance == col_distance) {
                 this->place_line_of_walls(
                     (TRIBE_Player*)this->player, master,
                     start_x, start_y, end_x, end_y);
-            } else if (row_distance < col_distance) {
+            } else if (row_distance >= col_distance) {
                 this->place_line_of_walls(
                     (TRIBE_Player*)this->player, master,
                     start_x, start_y, start_x, end_y);
 
-                if (start_y < end_y) {
+                if (end_x > start_x) {
                     this->place_line_of_walls(
                         (TRIBE_Player*)this->player, master,
                         start_x + 1, end_y, end_x, end_y);
                     result = 1;
-                } else if (end_y < start_y) {
+                } else if (start_x > end_x) {
                     this->place_line_of_walls(
                         (TRIBE_Player*)this->player, master,
-                        end_x, end_y - 1, end_x, start_y);
+                        start_x - 1, end_y, end_x, end_y);
                 }
             } else {
                 this->place_line_of_walls(
                     (TRIBE_Player*)this->player, master,
                     start_x, start_y, end_x, start_y);
 
-                if (start_x < end_x) {
+                if (end_y > start_y) {
                     this->place_line_of_walls(
                         (TRIBE_Player*)this->player, master,
-                        start_x + 1, end_y, end_x, end_y);
+                        end_x, start_y + 1, end_x, end_y);
                     result = 1;
-                } else if (end_x < start_x) {
+                } else if (start_y > end_y) {
                     this->place_line_of_walls(
                         (TRIBE_Player*)this->player, master,
-                        start_x - 1, end_y, end_x, end_y);
+                        end_x, start_y - 1, end_x, end_y);
                 }
             }
 
@@ -143,8 +143,9 @@ int TRIBE_Main_View::command_place_multi_object(
     } else {
         if (master_id != -1 &&
             ((TRIBE_Player*)this->player)->master_objects[master_id] != 0) {
-            result = (((TRIBE_Player*)this->player)->command_make_wall(
-                master_id, param_1, param_2, param_3, param_4) != 0);
+            if (((TRIBE_Player*)this->player)->command_make_wall(
+                    master_id, param_1, param_2, param_3, param_4) != 0)
+                result = 1;
         }
 
         if (mode != 0)

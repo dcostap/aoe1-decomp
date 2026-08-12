@@ -15,6 +15,11 @@
 // - The top-tested-for variant was larger and broadly shifted; restored the
 //   negative guard plus do/while form. A four-case update-expression variant lab
 //   likewise produced one 430-byte group (57 positional differing bytes).
+// - Fresh pass: moving the current-coordinate declarations after the step
+//   declarations recovered the original current homes and improved the diff to
+//   53 bytes, but did not resolve the loop-tail topology. Initialized-for and
+//   positive-guard loop forms shifted the function by 200-245 bytes; restored
+//   the pinned natural source.
 // - Paused after the bounded 10-hypothesis session: size/frame/calls are
 //   430/0x1C/6 versus 441/0x1C/6. Remaining binary lead is the separate
 //   nonpositive/loop-exhaustion epilogue topology and the localized operand
