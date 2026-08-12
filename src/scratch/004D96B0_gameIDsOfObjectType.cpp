@@ -23,6 +23,13 @@
 // size and all CFG/call counts now match.
 // try 15: operand order, scoped aliases, combined relation predicate, and a
 // final objectID local were neutral or worse.  The direct typed source is kept.
+// try 16: a focused natural final-store lab kept the direct member spelling as
+// the only size/frame/call-set eligible variant; pointer/reference/value-member
+// forms changed the frame or broadened the mismatch.
+// try 17: same-TU virtual class surfaces for the object, master, player, and
+// main-decision types preserved offsets but emitted the same 24-byte drift.
+// try 18: equivalent ids[0] indexing and post-increment output storage were
+// neutral; restored the clean explicit count update.
 // left in scratch: 24 localized register/address bytes remain in the -5/-6
 // player filters and final ID store.  Size, frame, calls, CFG, and 89.52% of
 // blocks are exact; the remaining drift is not accepted_drift-safe.
