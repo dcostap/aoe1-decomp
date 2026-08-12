@@ -55,3 +55,21 @@ two arguments before it reads the metrics. Thus, the effective reads are
 The round-one metric finding is invalid. Direct instruction-level stack
 accounting confirms the original source expressions. The main agent restored
 them. A fresh blind cohort must review the restored candidate.
+
+### Round 3 — final restored-source cohort, 2026-08-12
+
+- `sa-a6f616ff` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-03ef04f8` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers tracked ESP across the two pending `SelectObject` arguments.
+They confirmed `tmMaxCharWidth` and `tmAscent + tmAveCharWidth`. They found no
+behavioral difference in allocation, font selection, metric storage, failure
+paths, object restoration, release, or returns.
+
+## Final decision
+
+No behavioral uncertainty remains. The retained source preserves the unusual
+interior metrics pointer and all resulting shifted values. Remaining drift is
+the four-byte frame and register allocation.
+
+Promote to `src/verified_logic`.
