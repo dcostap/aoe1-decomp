@@ -9,12 +9,27 @@
 // stabilized at an exact 0x1c frame with three correctly aligned calls.
 // probes 8-9: <=0 current-player spelling and alias declaration order changed
 // branch/layout families without resolving the saved-this/top scheduling gap.
+// fresh pass: typed RGE_Tile fields and a separate inner col cursor preserved
+// the best structural basin (347 differing bytes, 0x1c frame, 3 aligned calls).
+// Live initial x/y aliases and a retained map-row alias were duplicates or
+// broader. A terrain-byte pointer moved the metric to 337 but was restored as
+// unsupported scheduling scaffolding. The positive player-validity predicate
+// was a duplicate of the older 421-byte basin and was restored.
 // left in scratch: canonical neighborhood behavior and field ownership are
-// reconstructed; remaining drift is VC5 local/register scheduling.
+// reconstructed; remaining drift is VC5 prologue/register scheduling. The
+// rebuilt body remains 12 bytes longer than the 427-byte oracle.
 
 class RGE_Tile_List {
 public:
     void add_node(int x, int y);
+};
+
+class RGE_Tile {
+public:
+    char gap_00[5];
+    unsigned char terrain;
+    unsigned char border;
+    char gap_07[0x11];
 };
 
 class RGE_Player {
@@ -41,7 +56,7 @@ public:
     long map_width;
     long map_height;
     char gap_10[0x8D7C];
-    unsigned char** map_row_offset;
+    RGE_Tile** map_row_offset;
 
     void get_border_type(short row, short col);
 };
@@ -56,18 +71,19 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
                                RGE_Game_World* world)
 {
     RGE_Player* player;
-    unsigned char* tile;
+    RGE_Tile* tile;
     unsigned char old_border;
     short col_start;
     short col_end;
     short row_start;
     short row_end;
+    short col;
 
-    tile = this->map_row_offset[y] + (int)x * 24;
-    old_border = tile[5];
-    tile[5] = (terrain ^ old_border) & 0x1F ^ old_border;
+    tile = this->map_row_offset[y] + x;
+    old_border = tile->terrain;
+    tile->terrain = (terrain ^ old_border) & 0x1F ^ old_border;
 
-    if (world->curr_player <= 0 || world->curr_player >= world->player_num)
+    if (world->curr_player < 1 || world->curr_player >= world->player_num)
         player = 0;
     else
         player = world->players[world->curr_player];
@@ -95,20 +111,20 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
 
     y = row_start;
     for (; y <= row_end; ++y) {
-        x = col_start;
-        for (; x <= col_end; ++x) {
-            tile = this->map_row_offset[y] + (int)x * 24;
-            old_border = tile[6];
+        col = col_start;
+        for (; col <= col_end; ++col) {
+            tile = this->map_row_offset[y] + col;
+            old_border = tile->border;
             terrain = old_border >> 4;
             old_border &= 0x0F;
 
-            this->get_border_type(x, y);
+            this->get_border_type(col, y);
 
             if (player != 0) {
-                if ((tile[6] & 0x0F) != old_border ||
-                    (tile[6] >> 4) != terrain) {
+                if ((tile->border & 0x0F) != old_border ||
+                    (tile->border >> 4) != terrain) {
                     if (world->game_state != 3)
-                        player->diam_tile_list.add_node(x, y);
+                        player->diam_tile_list.add_node(col, y);
                 }
             }
         }
