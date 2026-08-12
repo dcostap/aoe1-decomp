@@ -15,6 +15,13 @@
 // The normalized source validates at 685 bytes with 614 differing bytes,
 // improving on the diagnostic overlap's 656-byte diff despite losing exact
 // size. Remaining drift is primarily VC5 register/stack-slot coloring.
+// - using the short line_index parameter directly, without a long line-number
+//   local, kept the natural ABI and improved the resync diff to 614 bytes;
+//   prologue and size stayed unchanged, so this form is retained.
+// - an explicit typed self alias was codegen-neutral and was removed.
+// - using RECT.left as the computed x local worsened the frame and shape;
+//   the separate text_x local is restored. Primary-text declaration reorder
+//   was also codegen-neutral.
 
 #include <windows.h>
 #include <string.h>
@@ -80,19 +87,17 @@ public:
 void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
                                           short line_index, ulong color1,
                                           ulong color2) {
+    char* text;
+    short text_len;
     char* temp_text2;
     short text2_length;
     RECT line_rect;
-    long line_number;
-    char* text;
-    short text_len;
     long text_x;
     long text_y;
-    line_number = (long)line_index;
     temp_text2 = 0;
     text2_length = 0;
-    text = this->get_text(line_number);
-    temp_text2 = this->get_text2(line_number);
+    text = this->get_text((long)line_index);
+    temp_text2 = this->get_text2((long)line_index);
     if (text == 0) {
         if (temp_text2 == 0) return;
     }
@@ -111,7 +116,7 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
     }
     text_x = this->line_offset + text_x;
     text_y = this->pnl_hgt - this->scroll + line_rect.top;
-    if ((line_number == (short)this->line_count - 1) &&
+    if ((line_index == (short)this->line_count - 1) &&
         (this->line_height + text_y < this->pnl_y)) {
         this->done = 1;
     }

@@ -33,6 +33,9 @@
 //   codegen duplicates. The exact palette-step scalar surface was not retained.
 // - the exact debug-time donor ABI (C linkage, cdecl, mutable char path) is
 //   retained with the natural source literal; it is codegen-neutral.
+// - a typed red-channel cursor alias was a diagnostic liveness probe; it
+//   collapsed the saved-register setup and widened the mismatch to 227 bytes,
+//   so the clean typed cursor reconstruction is restored.
 // - left in scratch: ordered destination-cursor setup remains non-exact; calls,
 //   loop CFG, and final timestamp/FPU/flag logic align.
 
