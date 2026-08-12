@@ -23,13 +23,12 @@
 // - A named y-line local widened the first block and worsened positional diff.
 // - Canonical Base_Game, Game_World, and Map virtual surfaces preserved all
 //   proven offsets but were codegen-neutral.
-// - Loading map before radii improved resync similarity but worsened positional
-//   diff and size; the natural radius-before-map order remains.
-// - Reference outputs were codegen-identical. Promoting AddGDINode coordinates
-//   to int improved shape and size only as an ABI diagnostic; it was rolled back.
-// - Left in scratch: canonical typed outline/map ownership and exact call
-//   set are established; next lead is the original receiver/ESI liveness and
-//   local-home topology at 004547F3, not behavior or call discovery.
+// - A diagnostic narrow get_point surface plus all-int AddGDINode surface and
+//   map-before-radius order produced exact bytes. Exact callee donors reject
+//   those ABIs, so main-agent audit did not retain or promote that form.
+// - Keep the exact-donor pointer/int get_point and short-coordinate AddGDINode
+//   surfaces. The remaining caller drift is an unresolved declaration-context
+//   issue, not permission to use incompatible local prototypes.
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -153,10 +152,10 @@ public:
 
 class DClipInfo_List {
 public:
-    void AddGDINode(int param_1, int param_2, short param_3, short param_4,
-                    short param_5, short param_6, short param_7, short param_8,
-                    short param_9, short param_10, int param_11, int param_12,
-                    int param_13);
+    void* AddGDINode(int param_1, int param_2, short param_3, short param_4,
+                     short param_5, short param_6, short param_7, short param_8,
+                     short param_9, short param_10, int param_11, int param_12,
+                     int param_13);
 };
 
 extern RGE_Base_Game* rge_base_game;
