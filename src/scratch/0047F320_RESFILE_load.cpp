@@ -21,6 +21,9 @@
 //   typed pointer expression as the living reconstruction.
 // - compound pointer assignment was a duplicate; restore the natural one-line
 //   addition. Leave the one-byte mapped LEA SIB base/index drift unresolved.
+// - union pointer/integer, explicit integer operand order, noncommutative add,
+//   and direct offset-cast forms all compiled to the same one-byte drift.
+//   Restore the natural typed pointer addition as the clean candidate.
 
 #include <stdio.h>
 #include <stdlib.h>
