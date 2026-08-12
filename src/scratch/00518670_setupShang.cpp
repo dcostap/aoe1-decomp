@@ -43,6 +43,9 @@
 // Final session probe renamed parameters to their original PDB symbols without
 // changing bytes.  The unresolved gap remains the non-deathmatch constant
 // register coloring/7-byte size delta; retain this clean typed reconstruction.
+// - TU-group closeout: the common civilization-table and TRIBE_Game declaration
+//   context remains canonical; a fresh baseline emitted the same 285-byte basin.
+//   The EDX/ECX split and seven-byte size gap have no new source-backed lead.
 
 typedef unsigned char uchar;
 

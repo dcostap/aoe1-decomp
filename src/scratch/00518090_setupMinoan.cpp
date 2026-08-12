@@ -32,6 +32,9 @@
 //   still isolated to a stable VC5 structural/codegen basin after 9 new
 //   hypothesis families; no plausible source lead remains in this claim.
 // FLAGS: /nologo /c /O2 /Oy
+// - TU-group closeout: the common civilization-table and TRIBE_Game declaration
+//   context remains canonical; a fresh baseline emitted the same 303-byte basin.
+//   The p-load-before-jge schedule remains the only source-shape blocker.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.

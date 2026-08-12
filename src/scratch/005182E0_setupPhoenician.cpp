@@ -58,6 +58,10 @@
 //   view all emitted the identical 25-byte basin. Restored the int* donor form.
 // - Session sa-f9b73f31-r1 exhausted 9/10 meaningful hypotheses; final clean
 //   source validation is required before pausing for the compiler-basin blocker.
+// - TU-group closeout: the common civilization-table and TRIBE_Game declaration
+//   context remains canonical; a fresh baseline emitted the same 25-byte basin.
+//   The remaining EDX=14 versus EDX=64 coloring and late parameter reload have
+//   no evidence-backed source lead in this session.
 
 #include <stddef.h>
 
