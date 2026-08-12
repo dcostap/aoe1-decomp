@@ -68,6 +68,17 @@
 //   z lifetime, z/y/x copies, and action-typed master_obj were unchanged. No source
 //   or proven layout axis moved target=EBP/i=EBX/z-reload toward the oracle's
 //   target=EBX/z=EBP/i-at-target-home allocation.
+// - 2026-08-12 (orch-00406860-L): dossier, donor, ABI, and assembly-donor evidence
+//   reconfirmed the two ordered indirect calls and the same-TU getTask basin. Combined
+//   stdio/memory and stdlib/string header pairs, simultaneous register-qualified
+//   target/z, y/z locals, explicit target casts, a void* target ABI, and nested positive
+//   guards all emitted the clean 221-byte basin (143 positional / 66 edit).
+// - A persistent master local was worse (190 positional / 130 edit). A natural owner
+//   local improved the diagnostic output to 106 positional / 55 edit and 52.94% exact
+//   blocks, but moved owner to [esp+14] and left i in EBX; register-qualified owner was
+//   identical. The binary proves [esp+14] is i, so this source-steering variant was
+//   rolled back. Clean canonical source is restored; residual target/z/index coloring
+//   remains unresolved.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
