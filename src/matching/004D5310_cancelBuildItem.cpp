@@ -18,6 +18,8 @@
 //    remaining mismatch: rebuilt [esp+20] vs original [esp+2c] before lookup.
 // 10: left in scratch; the stack-home difference remains behavior-sensitive and
 //     is not accepted-drift-safe.
+// 11: the caller passes the unique build ID as the sixth argument; using that
+//     typed parameter at the lookup matches the original [esp+2c] home.
 
 typedef unsigned char uchar;
 class RGE_Static_Object;
@@ -61,7 +63,7 @@ public:
     int cancelBuildItem(int,int,int,float,float,int,int);
 };
 
-int TribeBuildAIModule::cancelBuildItem(int action, int objId, int buildId, float x, float y, int status, int taskId)
+int TribeBuildAIModule::cancelBuildItem(int action, int objId, int objectTypeId, float x, float y, int uniqueBuildId, int taskId)
 {
     BuildItem* item;
     if (taskId != -1) this->md->detask(taskId);
@@ -115,7 +117,7 @@ int TribeBuildAIModule::cancelBuildItem(int action, int objId, int buildId, floa
         }
     }
     this->md->constructionAI.removeLot(x, y, lotStatus);
-    item = this->specificBuildListItem(buildId);
+    item = this->specificBuildListItem(uniqueBuildId);
     if (item) {
         item->setInProgress(0);
         this->md->informationAI.removeLot(item->typeID(), (int)x, (int)y, newLotStatus);
