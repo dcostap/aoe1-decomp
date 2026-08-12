@@ -1,101 +1,112 @@
 // 0044E9E0 InfluenceMap::setConnectionCount
 // PDB: infmap.cpp:394-458, 498 bytes
 // Attempt log:
-// - v1: reconstructed from packet/decompiler with explicit loop locals and switch-neighbor walk.
-// - v2: changed validation early returns to shared invalid epilogue and padded locals to 0x24 frame to match original shape.
-// BLOCKER: behavior and core switch/neighbor logic are reconstructed, but rebuilt main .text is 480 bytes vs original 498 so check_function cannot compare. Remaining mismatch is broad source-shape/register-allocation: original loads param_1 before saving registers, keeps `this` in EDI, uses a 0x24 local frame with many named stack slots, and forms row access as `(j - yRef*4 + rowValue)`; rebuilt uses a 0x20 frame, different parameter/register topology, early compact invalid epilogue, and a different inner row-address sequence. Need a closer source topology for validation/setup and inner loop locals before exact matching.
+// - baseline: reconstructed the row scan and eight-direction switch from the
+//   executable, but used explicit gotos and raw row-address arithmetic.
+// - natural typed reconstruction: named the complete InfluenceMap layout,
+//   restored ordinary validation and loops, and kept the switch fall-through
+//   effects shown by the original dispatch table.
+// - hoisted xOffset and signed direction % 2 reproduce the 0x24 frame,
+//   remainder sequence, and most switch block placement.
+// - count-pointer, declaration-order, and virtual-surface probes did not move
+//   codegen. Remaining drift starts at saved-this placement and local slots.
 
 typedef unsigned char uchar;
-typedef unsigned int uint;
-struct XYPoint { int x; int y; };
+
+struct XYPoint {
+    int x;
+    int y;
+};
 
 class InfluenceMap {
 public:
-    int gap0;
-    int xSizeValue;
-    int ySizeValue;
-    int xReferencePointValue;
-    int yReferencePointValue;
-    int gap14;
-    uchar** rowValue;
-    int gap1c;
-    int connectionCountValue;
-    int setConnectionCount(const XYPoint& p1, const XYPoint& p2, int threshold, int p4, int p5, int p6);
+    virtual ~InfluenceMap();                  // +0x00 virtual surface
+    int xSizeValue;                           // +0x04
+    int ySizeValue;                           // +0x08
+    int xReferencePointValue;                 // +0x0C
+    int yReferencePointValue;                 // +0x10
+    uchar* valueValue;                        // +0x14
+    uchar** rowValue;                         // +0x18
+    int coverageCountValue;                   // +0x1C
+    int connectionCountValue;                // +0x20
+    uchar unchangeableLimitValue;             // +0x24
+
+    int setConnectionCount(const XYPoint& from, const XYPoint& to,
+                           int minimum, int edgeHorizontal, int edgeVertical,
+                           int allDirections);
 };
 
-int InfluenceMap::setConnectionCount(const XYPoint& p1, const XYPoint& p2, int threshold, int p4, int p5, int p6)
+int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
+                                     int minimum, int edgeHorizontal,
+                                     int edgeVertical, int allDirections)
 {
+    int rowIndex;
+    int xOffset;
     InfluenceMap* self = this;
-    int xSize;
-    int ySize;
-    int xi;
-    int y;
-    int rowOffset;
-    uchar** rowBase;
-    int dx;
-    int dummy;
 
     self->connectionCountValue = 0;
-    xi = p1.x;
-    if (xi < 0) goto invalid;
-    if (p1.y < 0) goto invalid;
-    xSize = self->xSizeValue;
-    if (xi >= xSize) goto invalid;
-    ySize = self->ySizeValue;
-    if (p1.y >= ySize) goto invalid;
-    if (p2.x < 0) goto invalid;
-    if (p2.y < 0) goto invalid;
-    if (p2.x >= xSize) goto invalid;
-    if (p2.y >= ySize) goto invalid;
 
-    if (xi > p2.x) goto done;
-    do {
-        y = p1.y;
-        if (y > p2.y) goto next_x;
-        rowBase = self->rowValue;
-        dx = xi - self->xReferencePointValue;
-        rowOffset = y * 4;
-        do {
-            uchar* row = *(uchar**)((char*)rowBase + rowOffset - (self->yReferencePointValue << 2));
-            if ((int)(uint)row[dx] >= threshold) {
-                int ny = y;
-                int nx = xi;
-                int nrowOffset = rowOffset;
-                int dir = 0;
-                do {
-                    switch (dir) {
-                    case 0: nx--;
-                    case 7: ny--; nrowOffset -= 4; break;
-                    case 1:
-                    case 2: nx++; break;
-                    case 3:
-                    case 4: ny++; nrowOffset += 4; break;
-                    case 5:
-                    case 6: nx--; break;
-                    }
-                    if (p6 != 0 || (dir % 2) != 0) {
-                        if (nx >= 0 && nx < xSize && ny >= 0 && ny < ySize) {
-                            uchar* nrow = *(uchar**)((char*)rowBase + nrowOffset - (self->yReferencePointValue << 2));
-                            if ((int)(uint)nrow[nx - self->xReferencePointValue] >= threshold) {
-                                self->connectionCountValue++;
+    if (from.x < 0 || from.y < 0 || from.x >= self->xSizeValue ||
+        from.y >= self->ySizeValue || to.x < 0 || to.y < 0 ||
+        to.x >= self->xSizeValue || to.y >= self->ySizeValue) {
+        return 0;
+    }
+
+    for (int x = from.x; x <= to.x; ++x) {
+        int y = from.y;
+        if (y <= to.y) {
+            xOffset = x - self->xReferencePointValue;
+            rowIndex = y * 4;
+            do {
+                if (self->rowValue[y - self->yReferencePointValue]
+                                      [xOffset] >= minimum) {
+                    int neighborX = x;
+                    int neighborY = y;
+                    int neighborRow = rowIndex;
+
+                    for (int direction = 0; direction < 8; ++direction) {
+                        switch (direction) {
+                        case 0:
+                            --neighborX;
+                        case 7:
+                            --neighborY;
+                            neighborRow -= 4;
+                            break;
+                        case 1:
+                        case 2:
+                            ++neighborX;
+                            break;
+                        case 3:
+                        case 4:
+                            ++neighborY;
+                            neighborRow += 4;
+                            break;
+                        case 5:
+                        case 6:
+                            --neighborX;
+                            break;
+                        }
+
+                        if (allDirections || (direction % 2) != 0) {
+                            if (neighborX >= 0 && neighborX < self->xSizeValue &&
+                                neighborY >= 0 && neighborY < self->ySizeValue) {
+                                if (self->rowValue[neighborY - self->yReferencePointValue]
+                                                   [neighborX - self->xReferencePointValue] >= minimum) {
+                                    ++self->connectionCountValue;
+                                }
+                            } else if ((edgeHorizontal == 1 && (direction % 2) == 1) ||
+                                       (edgeVertical == 1 && (direction % 2) == 0)) {
+                                ++self->connectionCountValue;
                             }
-                        } else if ((p4 == 1 && (dir % 2) == 1) || (p5 == 1 && (dir % 2) == 0)) {
-                            self->connectionCountValue++;
                         }
                     }
-                    dir++;
-                } while (dir < 8);
-            }
-            rowOffset += 4;
-            y++;
-        } while (y <= p2.y);
-next_x:
-        xi++;
-    } while (xi <= p2.x);
+                }
 
-done:
+                rowIndex += 4;
+                ++y;
+            } while (y <= to.y);
+        }
+    }
+
     return self->connectionCountValue;
-invalid:
-    dummy = 0;
-    return dummy;
 }
