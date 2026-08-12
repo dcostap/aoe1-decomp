@@ -19,6 +19,8 @@
 // int home and with a union byte view; VC5 coalesced the two tests into a word
 // load and moved the first mismatch to +0x47 (190 bytes), so both forms were
 // diagnostic only and were rolled back.
+// this session: reversed declaration/output names while preserving first-byte
+// predicate semantics; VC5 emitted the same four-byte local-order mismatch.
 // The best two-byte basin is still 2 bytes but semantically reverses the
 // parsed-byte tests; keep the clean first-byte/second-byte source below.
 // left in scratch: canonical behavior and frame/call topology match; the

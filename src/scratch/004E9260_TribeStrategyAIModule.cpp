@@ -20,6 +20,9 @@
 // same-TU context check: the full AIModule/StrategyAIModule virtual surface
 // was added from the class reference. It was a codegen duplicate and is kept
 // as the period-plausible declaration context.
+// this session: reconfirmed the typed constructor and stack map. The remaining
+// seven bytes are local-home displacements at the serialized name/value phase;
+// prior parameter-home and liveness basins remain worse at 20 bytes.
 // direct reuse of the first parameter for the name length was tested from the
 // dossier's entry-relative +4 address evidence; it removed the one-word frame
 // reservation and worsened the result to 20 bytes, so the clean local remains.
