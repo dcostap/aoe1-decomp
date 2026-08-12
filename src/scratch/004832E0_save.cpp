@@ -12,6 +12,18 @@
 //   and reached a 22-byte mismatch, but was rolled back as raw cursor plumbing.
 // - Current clean source keeps typed map iteration; remaining codegen lead is
 //   the land-payload multiply/pointer evaluation order.
+// Fresh pass:
+// - Restored the prior byte-offset reconstruction as a diagnostic frontier. It
+//   still matches the frame, size, CFG, calls, and 86.51% of exact blocks;
+//   drift is 22 bytes in the land and terrain payload arithmetic blocks.
+// - Literal and reversed multiplication, pointer locals, compound byte-count
+//   assignment, direct member access, first-element address, and void-pointer
+//   ABI probes did not change the 22-byte output. Direct member access regressed
+//   to a 0x14 frame and 347-byte function.
+// - A focused 12-case land/terrain source lab produced one invariant codegen
+//   group. No exact candidate appeared. Restored this canonical typed iterator.
+// - Final blocker is localized VC5 register coloring around two payload calls;
+//   no evidence supports keeping raw cursor or compiler-steering source.
 
 extern "C" {
     void rge_write(int file, void* data, int size);
