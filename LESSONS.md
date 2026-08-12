@@ -915,3 +915,20 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   bytes unchanged (`004BFFF0`). Caveat: the base/index choice is whole-function
   register-allocation feedback — the two loops respond oppositely to the same
   spelling change — so re-verify both loops' bytes after touching either loop.
+
+- For VC5 RLE mirror/shadow row decoders whose oracle keeps the row-start
+  destination in a dead incoming parameter home (`[esp+paramN]`) and reloads it
+  at each row end (`mov edi,[esp+..]; add edi,pitch; mov [esp+..],edi`), do NOT
+  model a separate per-row working pointer (`dst`) next to the row-start local:
+  a second pointer SSA value forces an extra `mov edi,ecx` at setup and spills
+  pitch (+`push ecx`), wrecking the prologue basin. Instead keep ONE working
+  cursor `d`, save the row start through the parameter home
+  (`x = (long)d;` after `d = Bits + m + x + 1;`), compute `d` directly inside
+  the orientation `if/else` arms (donor save_buffer shape), and spell the row
+  end as `x += pitch; d = (unsigned char*)x;` — VC5 emits the load/add/store
+  and eliminates the d=x copy because the register already holds the home
+  value. Mirror exact same-TU donor 004B99F0 (`shape_shadow_unclipped`),
+  which wins with the identical x-home pattern. Also restore the explicit
+  `(b & 1) == 1` compare when the oracle shows `mov cl,al; and cl,1; cmp cl,1`
+  rather than `test al,1`, and place `rows = height` inside the positive
+  height guard so the rows-home store sinks past the `jle` (`004BA900`).

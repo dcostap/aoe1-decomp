@@ -4,6 +4,23 @@
 // uchar __thiscall TShape::shape_mirror_unclipped(TDrawArea*, long param_2, long param_3)
 // ret 0Ch cleanup (3 params, thiscall)
 //
+// EXACT MATCH (orch-004BA900-D, 2026-08-12). Breakthrough vs prior 202B/136-diff
+// pin: keep ONE working-cursor variable `d` (no separate dst copy) and carry the
+// row start through the dead x parameter home, exactly like exact donor
+// 004B99F0 shape_shadow_unclipped:
+//   - d computed directly in the if/else arms (donor save_buffer shape),
+//   - x = (long)d after setup, so VC5 stores the row start to x's home
+//     [esp+18h] and reloads it at the row end (mov edi,[esp+18h]; add
+//     edi,ebp; mov [esp+18h],edi),
+//   - row end spelled `x += pitch; d = (unsigned char*)x;` -- the working
+//     cursor reset is emitted as the original load/add/store; VC5 eliminates
+//     the d=x copy because edi already holds the home value,
+//   - rows = height inside the positive guard (store sinks past the jle),
+//   - explicit (b & 1) == 1 idiom restores `mov cl,al; and cl,1; cmp cl,1`.
+// Result: 0.0000% diff, 100% shape, 220/220 bytes. The earlier failed
+// "row/working pair" attempts created a separate dst SSA value, which forced
+// an extra mov edi,ecx at setup and spilled pitch (+push ecx).
+//
 // === Attempt log ===
 // attempts 1-13: all produce 208-byte functions vs required 220.
 // Remaining diff: extra `push ecx` (51) in prologue, 4-byte stack offset shift.
@@ -227,15 +244,16 @@ unsigned char TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
     Shape_Header* sh = this->shape_header;
     long height = sh->ymax - sh->ymin + 1;
     unsigned char* p = (unsigned char*)(sh + 1);
-    long m;
-    if (da->Orien < 1)
-        m = (y - da->Height + 1) * pitch;
-    else
-        m = y * pitch;
     long rows;
     unsigned char* d;
-    d = da->Bits + m + x + 1;
     unsigned char c;
+
+    if (da->Orien < 1)
+        d = da->Bits + ((y - da->Height) + 1) * pitch + x + 1;
+    else
+        d = da->Bits + y * pitch + x + 1;
+
+    x = (long)d;
 
     if (height > 0) {
         rows = height;
@@ -243,7 +261,7 @@ unsigned char TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
             unsigned char done = 0;
             do {
                 unsigned char b = *p++;
-                if (b & 1) {
+                if ((b & 1) == 1) {
                     c = b >> 1;
                     if (c == 0) {
                         d -= *p;
@@ -266,7 +284,8 @@ unsigned char TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
                     }
                 }
             } while (!done);
-            d += pitch;
+            x += pitch;
+            d = (unsigned char*)x;
         } while (--rows);
     }
 
