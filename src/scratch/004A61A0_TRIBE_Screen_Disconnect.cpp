@@ -67,6 +67,13 @@
 //   positional drift and the 19-byte duplicated EH cleanup remain unchanged.
 // - Added the binary-proven handle_idle (+4C) and action (+B4) overrides to
 //   the local class surface; the constructor code remains unchanged.
+// - Executable vtable 00573518 and exact panel donors prove five inherited
+//   owners: TEasy_Panel::draw_setup (+28) and handle_mouse_down (+70), plus
+//   TScreenPanel::draw (+30), handle_paint (+54), and set_focus (+C0).
+//   The complete emitted vtable was checked against every original slot.
+// - Full slot comparison also found VC5 reverses overloaded declarations in
+//   the emitted table. Reversed set_rect, set_tab_order, create_button, and
+//   create_text declarations so every slot follows executable 00573518.
 
 struct tagRECT;
 class TDrawArea;
@@ -79,8 +86,8 @@ public:
     virtual long setup(TDrawArea* draw_area, TPanel* parent, long left,
                        long top, long width, long height,
                        unsigned char value);
-    virtual void set_rect(tagRECT rect);
     virtual void set_rect(long left, long top, long right, long bottom);
+    virtual void set_rect(tagRECT rect);
     virtual void set_color(unsigned char color);
     virtual void set_active(int active);
     virtual void set_positioning(PositionMode mode, long a2, long a3,
@@ -135,8 +142,8 @@ public:
     virtual void get_true_render_rect(tagRECT* rect);
     virtual int is_inside(long x, long y);
     virtual void set_focus(int focus);
-    virtual void set_tab_order(TPanel* previous, TPanel* next);
     virtual void set_tab_order(TPanel** panels, short count);
+    virtual void set_tab_order(TPanel* previous, TPanel* next);
     virtual unsigned char get_help_info(char** text, long* id, long a3, long a4);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
@@ -165,28 +172,31 @@ public:
 class TEasy_Panel : public TPanel {
 public:
     virtual ~TEasy_Panel();
+    virtual void draw_setup(int mode);
+    virtual long handle_mouse_down(unsigned char button, long x, long y,
+                                   int a4, int a5);
     char gap_F4[0x384];
 
     virtual void draw_background(int mode);
     virtual void set_ideal_size(long width, long height);
-    virtual int create_button(TPanel* parent, TButtonPanel** out, long id,
-                              long a4, long a5, long a6, long a7, long a8,
-                              long a9, long a10, long a11);
     virtual int create_button(TPanel* parent, TButtonPanel** out, char* name,
                               char* text, long a5, long a6, long a7, long a8,
+                              long a9, long a10, long a11);
+    virtual int create_button(TPanel* parent, TButtonPanel** out, long id,
+                              long a4, long a5, long a6, long a7, long a8,
                               long a9, long a10, long a11);
     virtual int create_check_box(TPanel* parent, TButtonPanel** out, long id,
                                  long a4, long a5, long a6, long a7, long a8);
     virtual int create_radio_button(TPanel* parent, TButtonPanel** out,
                                     long id, long a4, long a5, long a6,
                                     long a7, long a8);
-    virtual int create_text(TPanel* parent, TTextPanel** out, int string_id,
+    virtual int create_text(TPanel* parent, TTextPanel** out, char* text,
                             long x, long y, long width, long height, long font,
                             int align, int center, int wrap);
     virtual int create_text(TPanel* parent, TTextPanel** out, char** text,
                             long x, long y, long width, long height, long font,
                             long align, int center, int wrap);
-    virtual int create_text(TPanel* parent, TTextPanel** out, char* text,
+    virtual int create_text(TPanel* parent, TTextPanel** out, int string_id,
                             long x, long y, long width, long height, long font,
                             int align, int center, int wrap);
     virtual int create_input(TPanel* parent, void* out, char* text, short len,
@@ -214,6 +224,9 @@ class TScreenPanel : public TEasy_Panel {
 public:
     using TEasy_Panel::create_text;
     virtual ~TScreenPanel();
+    virtual void draw();
+    virtual long handle_paint();
+    virtual void set_focus(int focus);
     TScreenPanel(char* name);
     long setup(TDrawArea* draw_area, char* info, long id, int value);
     char* get_string(int id);

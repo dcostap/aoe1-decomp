@@ -14,6 +14,12 @@
 //   ownership.  Best clean result: 516-byte rebuild, 72 strict differing
 //   bytes, 96.32% shape similarity; residual drift is the shape_minmax local
 //   address/evaluation and one late mirrored-bound jump.
+// - Fresh bounded pass kept the canonical typed source and changed the
+//   shared y bounds to explicit fail checks.  This improved the clean output
+//   to 70 differing bytes and 97.55% shape similarity; direct x and width
+//   variants were worse.  Three focused variant families found no exact
+//   source spelling.  The remaining drift is the mirrored max assignment's
+//   register and branch placement.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
@@ -146,10 +152,16 @@ unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet,
                 }
             }
 
-            if ((x_value <= max_x) && (min_y <= y) &&
-                (y <= max_y)) {
-                return 1;
+            if (x_value > max_x) {
+                goto fail;
             }
+            if (y < min_y) {
+                goto fail;
+            }
+            if (y > max_y) {
+                goto fail;
+            }
+            return 1;
         }
         break;
     }
