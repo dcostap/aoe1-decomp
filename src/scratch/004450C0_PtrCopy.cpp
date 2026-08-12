@@ -28,6 +28,12 @@
 // v23: A byte lead loop plus remainder memcpy stayed 449 bytes with worse CFG;
 // rolled back. The remaining REP sequence/CLD is shared with PtrSpanCopy and
 // PtrSurfaceCopy and is not reproduced by policy-compliant natural C++.
+// v24: Fresh direct CurDisplayOffsets member indexing removed the cached array
+// locals, but produced 366 bytes/374 differing bytes and weaker block coverage;
+// restored the named indexed memcpy source.
+// v25: Fresh baseline confirms the clean typed source and the same 363-byte
+// codegen basin. The original PDB bands and labels prove a hand-coded aligned
+// REP copy family, which is outside this worker's inline-asm policy.
 //
 // Summary of remaining issues:
 // 1. Frame size: ORIG has sub esp,18h (6 stack locals: nLines, self, nWidth, XofS, DestP, SrcP)
