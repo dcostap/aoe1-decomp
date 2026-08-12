@@ -72,6 +72,10 @@
 // only the calloc compare/store order; it does not change constructor behavior.
 // Keep it as diagnostic evidence only.  The direct-member source is the
 // canonical policy-compliant reconstruction despite its 309-byte basin.
+// Worker tu-sound-BBF30: dossier, ABI, same-TU donors, and localized assembly
+// donors confirm this ownership.  The only near-match needs a short* alias
+// for compiler scheduling, so no natural source lead remains.  Preserve the
+// direct typed member source and pause at the structural compare/store hunk.
 
 #include "..\..\include\game_globals.h"
 

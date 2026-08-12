@@ -64,11 +64,25 @@
 // evidence justifies it.
 // Probe 28 result: explicit label lowered identically to the current while
 // form and supplied no late-epilogue lead; rolled back.
-// Best current source: the pre-guard idx initialization preserves the
+// Prior best source: the pre-guard idx initialization preserves the
 // oracle's prefix through the scan setup and yields 346 bytes/235 positional
 // differences.  Remaining drift is the oracle's distinct exhaustion epilogue
 // before the found block (jl fallthrough versus VC5 jge/jmp) plus the shifted
 // close-log call-site alignment; no missing calls or size/frame issue remains.
+// Probe 27: same-TU get_file_name's indexed for with selected work inside the
+// rand-success arm reproduced the target CFG, calls, size, and 21-byte drift.
+// It is the current canonical source.  The residual is register coloring:
+// VC5 keeps this in EBX and the record base in EDI instead of the oracle's
+// EDI/EBX assignment.
+// Probe 28: adding a running typed cursor to that for changed the frame and
+// scan structure; rolled back.  Probe 30: a named array-base local caused a
+// broad size and frame drift; rolled back.  Probe 32: combining the old while
+// scan with the selected arm returned the prior 235-byte basin; rolled back.
+// Probe 36: swapping natural scan-local declaration order was a codegen
+// duplicate.  Probe 38: a per-iteration typed reference was also a duplicate.
+// Worker tu-sound-BC310: exact donors and DirectSound declarations confirm
+// typed Sound_Info ownership and declaration-only TDigital methods.  No
+// evidence-backed natural lead remains for the final register-color drift.
 
 #include "..\..\include\game_globals.h"
 
@@ -137,7 +151,6 @@ void RGE_Sound::play(int play_list_param)
     char s[256];
     int sound_count;
     int idx;
-    RGE_Sound_Info* sound;
 
     if (this->sound_num > 0) {
         int rand_val = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
@@ -146,47 +159,41 @@ void RGE_Sound::play(int play_list_param)
         sound_count = this->sound_num;
         idx = 0;
         if (sound_count > 0) {
-            sound = this->sounds;
-            while (1) {
-                short percent = sound->percent;
+            for (; idx < sound_count; ++idx) {
+                short percent = this->sounds[idx].percent;
                 rand_val -= percent;
-                if (rand_val <= 0)
-                    break;
-                ++idx;
-                ++sound;
-                if (idx < sound_count)
-                    continue;
-                return;
-            }
+                if (rand_val <= 0) {
+                    if (this->sounds[idx].digital_sound != 0) {
+                        if (do_draw_log) {
+                            sprintf(s, "{%s", this->sounds[idx].name);
+                            if (safe_draw_log)
+                                write_draw_log2(s);
+                            else
+                                write_draw_log(s);
+                        }
 
-            if (this->sounds[idx].digital_sound != 0) {
-                if (do_draw_log) {
-                    sprintf(s, "{%s", this->sounds[idx].name);
-                    if (safe_draw_log)
-                        write_draw_log2(s);
-                    else
-                        write_draw_log(s);
+                        if (play_list_param)
+                            this->sounds[idx].digital_sound->add_to_play_list();
+                        else
+                            this->sounds[idx].digital_sound->play();
+
+                        if (do_draw_log) {
+                            if (safe_draw_log)
+                                write_draw_log2("}");
+                            else
+                                write_draw_log("}");
+                        }
+
+                        this->sounds[idx].loaded = 1;
+                        int saved_time_get = debug_timeGetTime_on;
+                        debug_timeGetTime_on = 0;
+                        unsigned long time_val = debug_timeGetTime(
+                            "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
+                        this->sounds[idx].time_field = time_val;
+                        debug_timeGetTime_on = saved_time_get;
+                    }
+                    return;
                 }
-
-                if (play_list_param)
-                    this->sounds[idx].digital_sound->add_to_play_list();
-                else
-                    this->sounds[idx].digital_sound->play();
-
-                if (do_draw_log) {
-                    if (safe_draw_log)
-                        write_draw_log2("}");
-                    else
-                        write_draw_log("}");
-                }
-
-                this->sounds[idx].loaded = 1;
-                int saved_time_get = debug_timeGetTime_on;
-                debug_timeGetTime_on = 0;
-                unsigned long time_val = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
-                this->sounds[idx].time_field = time_val;
-                debug_timeGetTime_on = saved_time_get;
             }
         }
     }

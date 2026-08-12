@@ -26,6 +26,9 @@
 // `draw_list_num <= 0` spelling; it moved to a 237-byte structural basin.
 // Restored the natural typed `< 1` source; next lead is a source/context form
 // that preserves the test-AX/jle guard without disturbing the EH tail.
+// TU-group pass (tu-sprite-C0960): nonzero and reversed-operand inner count
+// guards stayed in the 157-byte basin. Restored the natural typed EH source;
+// the test-AX/jle guard and typed entry scheduling remain unresolved.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);

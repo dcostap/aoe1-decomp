@@ -25,6 +25,9 @@
 //   cold case-1 tail (the explicit sparse labels instead made the switch dense). A five-variant case-1
 //   return-spelling lab found no exact group. Retained natural source; blocker remains VC5 switch-handler
 //   placement plus the resulting late x87/return displacement drift.
+// - 2026-08-13 tu-actmove-405850 pass: case-1-as-post-switch-return worsened to 706 bytes and changed the
+//   dispatch range; an explicit late case-1 goto and equivalent switch(state - 1) spelling were codegen-identical
+//   to the clean 212-byte mismatch. Restored the natural state switch; the sparse case-1 tail remains unresolved.
 
 struct XYZBYTEPoint {
     unsigned char x;

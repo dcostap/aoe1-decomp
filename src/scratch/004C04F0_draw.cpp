@@ -56,6 +56,10 @@
 // Final bounded source retains named ownership, typed entries, proven stride,
 // and ordinary branch-local calls. No exact match; pause for a new source/TU
 // lead rather than adding compiler-only scaffolding.
+// TU-group pass (tu-sprite-C04F0): a typed list pointer walk and a scoped list
+// base both changed the frame to 0x8 and widened the mismatch to 235 bytes.
+// Direct typed facet predicates reproduced the 215-byte result. Restored the
+// documented best source; no new raw list cursor was added.
 
 #include <stdio.h>
 

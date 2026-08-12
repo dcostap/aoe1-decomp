@@ -72,6 +72,9 @@
 // wrong register/field ownership; direct repeated member tests reached 197B/44B. Restored the canonical typed
 // if/else source. The remaining blocker is still the EH tail: original uses branch-local stores and one shared
 // cleanup, while this VC5 source basin duplicates cleanup for the natural inner if/else.
+// 2026-08-13 tu-actmove-405620 pass: fresh block and raw-byte checks confirm a 137-byte exact prefix and the
+// same two branch-local stores; no new period-plausible source lead remains for the shared EH epilogue. Left the
+// canonical typed source unchanged; final mismatch is 47 bytes at the inner fallback join.
 
 class RGE_Action_Object;
 class RGE_Sprite;

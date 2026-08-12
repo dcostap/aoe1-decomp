@@ -59,6 +59,10 @@
 // codegen-identical at 45 bytes; rolled back. The clean typed source remains
 // the best reconstruction. The first paired hunk is still result/count
 // liveness (AX versus CX), followed by list-base and parameter-home coloring.
+// TU-group pass (tu-sprite-C0620): removing the draw-list result zero widened
+// the function to 258 bytes and 189 differing bytes. Coalescing fallback and
+// scan count reproduced the earlier 181-byte basin. Restored the 45-byte
+// canonical typed source; no raw list cursor was retained.
 
 #include <stdio.h>
 

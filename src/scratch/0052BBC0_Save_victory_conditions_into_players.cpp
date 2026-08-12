@@ -17,6 +17,8 @@
 //   rejected because it regressed to 741 differing bytes.
 // - final typed candidate remains structurally close (frame 0x10, 37/37
 //   calls); residual drift is VC5 stack-home/order and tail/register coloring.
+// - a fresh natural typed row cursor (`&sp_victory[row][0]` plus increment)
+//   widened the frame to 0x14 and lost early blocks; it was rolled back.
 
 class RGE_Static_Object;
 class RGE_Game_World;
