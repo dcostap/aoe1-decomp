@@ -125,14 +125,30 @@ unestablished but do not change fidelity.
   the scan that can modify fields through ordinary execution.
 
 Round 1 found no substantive open behavior issue. No source change is justified.
-A second fresh cohort is required before final promotion.
+
+### Round 2 — fresh concurrent blind cohort, 2026-08-12
+
+- `sa-718da62f` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-2ca56fee` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers traced the complete function and found no definite behavior
+difference. Luna confirmed every bound, loop, byte predicate, repeated read,
+return, and ABI path. DeepSeek verified all 94 instructions and the raw
+executable bytes. It confirmed the same translated-address operations, repeated
+reads, and fault order in the pinned VC5 object.
+
+The main agent cleared the abstract overflow concerns against the pinned VC5
+emission. No differing instruction affects arithmetic values, memory, branches,
+or faults. Round 2 has no open substantive finding.
 
 ## Integrated changes
 
 The final donor-order experiment was restored before phase entry. The main agent
 validated the unchanged normalized source at 275 bytes and four strict differing
-bytes before and after round 1.
+bytes before and after both rounds.
 
 ## Final decision
 
-Pending a fresh review round.
+Promote to `src/verified_logic`. Two fresh blind cohorts converged with no open
+behavior uncertainty. The four byte drift is one independent instruction-order
+swap with no memory or control-flow effect.
