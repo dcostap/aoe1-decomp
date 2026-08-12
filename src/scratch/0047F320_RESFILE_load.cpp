@@ -56,7 +56,7 @@ uchar* __cdecl RESFILE_load(unsigned long type, unsigned long id,
             mapped_data, resource_size) == 0) {
         if (DAT_0086B258 != 0) {
             sprintf(error_string,
-                "ERROR: res_read_bin, resource type %4.4c , id %d",
+                "ERROR: res_read_bin, resource type %4.4c , id %d, not found",
                 type, id);
             MessageBoxA(0, error_string, "RESOURCE ERROR", 0x30);
             return 0;

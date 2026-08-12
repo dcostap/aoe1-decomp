@@ -27,4 +27,20 @@ The retained source uses the natural mapped pointer plus byte offset expression.
 
 ## Review rounds
 
-No review has started.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-b646640c` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-6a3dff3b` — `deepseek/deepseek-v4-flash`, high
+
+Both reviewers verified the ABI, output stores, mapped and allocated paths,
+failure leaks, file calls, malformed-size behavior, and fault order.
+
+DeepSeek found one definite data-reference defect. The error format string lacked
+the executable's `, not found` suffix. The function-body check could not detect
+this because both strings use the same relocation site.
+
+## Main-agent adjudication
+
+The format-string finding is valid. The main agent restored the exact executable
+text. One more fresh blind cohort must confirm the corrected candidate before
+promotion.

@@ -1,151 +1,348 @@
-// 00482B70 RGE_RMM_Database_Controller(char*,char*,char*,char*) attempt
-// Natural fscanf/calloc constructor based on packet. Broad attempt log:
-// - modeled base ctor call, vptr/field initialization, land table and three file passes.
-// - first natural compile was .text 1152 vs original 1185; added a temporary unreachable fscanf padding probe only to inspect diff family.
-// - with three extra address-taken locals, prologue reached sub esp,34; first mismatch then saved-this home [esp+2c] vs original [esp+24].
-// - remaining mismatch is broad (about 74% positional / 54% edit); fscanf argument topology and loop/store offsets need a ground-up rewrite from original stack slots.
-// - left in scratch; not an accepted_drift candidate.
+// 00482B70 RGE_RMM_Database_Controller(char*,char*,char*,char*)
+// Clean reconstruction: load the map database and its three owned record tables.
+// The map records use the period RGE data layouts proved by the executable.
+// Attempt log:
+// - Replaced guessed aggregate offsets with the proven RGE map-data layouts.
+// - Positive count guards restored the executable's zero-compare CFG and most
+//   ordered call alignment.
+// - Land, terrain, and object records use their named fields and owned arrays.
+// - Remaining drift is register coloring, stack-home reuse, and one merged
+//   map-file fclose site after ten bounded hypotheses.
 
 extern "C" void* __cdecl fopen(const char*, const char*);
 extern "C" int __cdecl fclose(void*);
 extern "C" int __cdecl fscanf(void*, const char*, ...);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
-struct ObjectSub { int a[6]; };
-struct TerrainTypeSub { int a[11]; };
+class RGE_Map;
+class RGE_Game_World;
+class RGE_Random_Map_Module_List;
+class Map_Stack;
 
-struct LandEntry {
-    int id; unsigned char zone; char pad05[3]; int base_size; int terrain_type; int land_percent; unsigned char placement_type; unsigned char amount_percent; char pad12[2]; int clump; int edge_spacing; int min_placement; unsigned char by_player; unsigned char group; char pad1e[2]; int unk20; int unit_count; ObjectSub* units;
-};
-struct ObjectGroup { int count; ObjectSub* list; };
-struct TerrainGroup { int count; TerrainTypeSub* list; };
-struct MapInfo { int id; char pad04[0x24]; int terrain_group_count; ObjectGroup objects; TerrainGroup terrains; };
-
-class RGE_Random_Map_Module { public: RGE_Random_Map_Module(int,int,int); };
-class RGE_RMM_Database_Controller: public RGE_Random_Map_Module {
+class RGE_Random_Map_Module {
 public:
-    char gap04[0x4f50];
-    int land_count;
-    MapInfo* lands;
-    RGE_RMM_Database_Controller(char*,char*,char*,char*);
+    int vtable_ptr;
+    RGE_Random_Map_Module* parent;
+    RGE_Random_Map_Module_List* list;
+    RGE_Map* map;
+    void* map_row_offset;
+    long map_width;
+    long map_height;
+    float schedule;
+    unsigned char* search_map;
+    Map_Stack* stack_array;
+    unsigned char** search_map_rows;
+    Map_Stack** stack_offsets;
+
+    RGE_Random_Map_Module(RGE_Map*, RGE_Random_Map_Module*, unsigned char);
 };
 
-RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char* terrainFile, char* objectFile, char* terrainTypeFile, char* mapFile)
-    : RGE_Random_Map_Module(0,0,0)
+struct RGE_Land_Data_Entry {
+    long land_id;
+    unsigned char terrain_type;
+    unsigned char pad_04[3];
+    long land_avoidance_tiles;
+    long base_square_radius;
+    unsigned char zone;
+    unsigned char placement_type;
+    unsigned char pad_12[2];
+    long x;
+    long y;
+    unsigned char amount_of_land_used_percent;
+    unsigned char by_player_flag;
+    unsigned char pad_1e[2];
+    long radius;
+    long fade;
+    long clumpiness_factor;
+};
+
+struct RGE_Land_Data {
+    long map_edge_buffer[4];
+    long map_edge_fade;
+    long land_placement_edge;
+    long base_terrain;
+    long grown_land_percent;
+    long id;
+    long land_num;
+    RGE_Land_Data_Entry* land;
+};
+
+struct RGE_Terrain_Data_Entry {
+    long terrain_percent;
+    long terrain_type;
+    long clumps;
+    long spacing;
+    long base_terrain_type;
+    long clumpiness_factor;
+};
+
+struct RGE_Terrain_Data {
+    long terrain_num;
+    RGE_Terrain_Data_Entry* terrain;
+};
+
+struct RGE_Object_Data_Entry {
+    long obj_id;
+    long terrain;
+    unsigned char group_flag;
+    unsigned char scale_flag;
+    unsigned char pad_08[2];
+    long object_number_per_group;
+    long object_number_varience;
+    long number_of_groups;
+    long group_area;
+    long player_id;
+    long land_id;
+    long land_inner_radius;
+    long land_outer_radius;
+};
+
+struct RGE_Object_Data {
+    long object_num;
+    RGE_Object_Data_Entry* objects;
+};
+
+struct RGE_Elevation_Data_Entry {
+    long elevation_percent;
+    long elevation;
+    long clumps;
+    long spacing;
+    long base_terrain_type;
+    long base_elevation_type;
+};
+
+struct RGE_Elevation_Data {
+    long elevation_num;
+    RGE_Elevation_Data_Entry* elevation;
+};
+
+struct RGE_Map_Data_Entry {
+    long map_id;
+    RGE_Land_Data land_info;
+    RGE_Terrain_Data terrain_info;
+    RGE_Object_Data object_info;
+    RGE_Elevation_Data elevation_info;
+};
+
+struct RGE_Map_Data {
+    long map_num;
+    RGE_Map_Data_Entry* maps;
+};
+
+class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
+public:
+    RGE_Game_World* world;
+    long map_type;
+    long number_of_players;
+    char land_info[0x1438];
+    char terrain_info[0x1298];
+    char object_info[0x18C8];
+    char elevation_info[0xF80];
+    RGE_Map_Data map_info;
+
+    RGE_RMM_Database_Controller(char*, char*, char*, char*);
+};
+
+RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
+    char* terrain_file, char* object_file, char* terrain_type_file, char* map_file)
+    : RGE_Random_Map_Module(0, 0, 0)
 {
     void* infile;
-    int map_id;
-    int terrain_num;
-    int object_num;
-    int temp_terrain_type;
-    int land_num;
     int local_30;
-    int tmp1,tmp2,tmp3,tmp4;
-    int pad_a, pad_b, pad_c;
+    int land_index;
+    long terrain_num;
+    long object_num;
+    long temp_terrain_type;
+    long temp_zone;
+    long temp_placement_type;
+    long temp_amount_of_land_used_percent;
+    long temp_by_player_flag;
+    long temp_group_flag;
+    long temp_scale_flag;
+    unsigned char local_4[4];
+    int index;
+    RGE_Land_Data* land_info;
+    RGE_Land_Data_Entry* land;
+    RGE_Terrain_Data* terrain_info;
+    RGE_Terrain_Data_Entry* terrain;
+    RGE_Object_Data* object_info;
+    RGE_Object_Data_Entry* object;
 
-    *(void**)this = (void*)0x571E88;
-    *(int*)((char*)this + 0x30) = 0;
-    *(int*)((char*)this + 0x34) = -1;
-    *(int*)((char*)this + 0x38) = 0;
-
-    infile = fopen(mapFile, "r");
-    map_id = (int)infile;
-    if (infile) {
-        fscanf(infile, " %d", &this->land_count);
-        if (this->land_count > 0) {
-            this->lands = (MapInfo*)calloc(this->land_count, 0x48);
-            if (this->land_count > 0) {
-                int off = 0;
-                int i = 0;
+    this->vtable_ptr = 0x571E88;
+    this->world = 0;
+    this->map_type = -1;
+    this->number_of_players = 0;
+    infile = fopen(map_file, "r");
+    if (infile == 0) {
+        this->map_info.maps = 0;
+        this->map_info.map_num = 0;
+    } else {
+        fscanf(infile, " %d", &this->map_info);
+        if (this->map_info.map_num > 0) {
+            this->map_info.maps = (RGE_Map_Data_Entry*)calloc(this->map_info.map_num, 0x48);
+            if (this->map_info.map_num > 0) {
+                int map_index = 0;
+                int map_offset = 0;
                 do {
-                    fscanf(infile, "%d", (char*)this->lands + off);
-                    ++i; off += 0x48;
-                } while (i < this->land_count);
+                    fscanf(infile, "%d", (char*)this->map_info.maps + map_offset);
+                    ++map_index;
+                    map_offset += 0x48;
+                } while (map_index < this->map_info.map_num);
             }
         } else {
-            this->lands = 0;
+            this->map_info.maps = 0;
         }
         fclose(infile);
-    } else {
-        this->lands = 0;
-        this->land_count = 0;
     }
 
-    if (this->land_count <= 0) {
-        this->land_count = 0;
-        this->lands = 0;
-        return;
-    }
-
-    infile = fopen(terrainFile, "r");
-    map_id = (int)infile;
-    if (infile) {
-        fscanf(infile, "%d", &terrain_num);
-        land_num = 0;
-        if (terrain_num > 0) {
-            do {
-                fscanf(infile, "%d", &local_30);
-                LandEntry* land = (LandEntry*)((char*)this->lands + (local_30 * 9) * 8 + 4);
-                int* unit_count = (int*)((char*)land + 0x24);
-                fscanf(infile, "%d %d %d %d %d %d %d %d %d", unit_count, &land->id, &land->base_size, &land->terrain_type, &land->land_percent, &land->clump, &land->edge_spacing, &land->min_placement, unit_count);
-                if (*unit_count > 0) {
-                    land->units = (ObjectSub*)calloc(*unit_count, 0x2c);
-                    int k = 0;
-                    if (*unit_count > 0) {
-                        int off = 0;
-                        do {
-                            ObjectSub* o = (ObjectSub*)((char*)land->units + off);
-                            fscanf(infile, "%d %d %d %d %d %d %d %d %d %d %d", o, (char*)o+8, &tmp1, (char*)o+12, &tmp2, (char*)o+20, &tmp3, (char*)o+24, &tmp4, (char*)o+32, (char*)o+36);
-                            ++k;
-                            ((char*)land->units)[off+4] = (char)tmp1;
-                            ((char*)land->units)[off+0x10] = (char)tmp2;
-                            ((char*)land->units)[off+0x11] = (char)tmp3;
-                            ((char*)land->units)[off+0x1c] = (char)tmp4;
-                            ((char*)land->units)[off+0x1d] = (char)tmp4;
-                            *(int*)((char*)land->units + off + 0x28) = 8;
-                            off += 0x2c;
-                        } while (k < *unit_count);
+    if (this->map_info.map_num > 0) {
+        infile = fopen(terrain_file, "r");
+        if (infile != 0) {
+            fscanf(infile, "%d", &terrain_num);
+            index = 0;
+            if (terrain_num > 0) {
+                do {
+                    fscanf(infile, "%d", &local_30);
+                    land_info = &this->map_info.maps[local_30].land_info;
+                    fscanf(infile, "%d %d %d %d %d %d %d %d %d",
+                           &land_info->land_num,
+                           &land_info->map_edge_buffer[0],
+                           &land_info->map_edge_buffer[1],
+                           &land_info->map_edge_buffer[2],
+                           &land_info->map_edge_buffer[3],
+                           &land_info->map_edge_fade,
+                           &land_info->land_placement_edge,
+                           &land_info->base_terrain,
+                           &land_info->grown_land_percent);
+                    if (land_info->land_num > 0) {
+                        land_info->land = (RGE_Land_Data_Entry*)calloc(land_info->land_num, 0x2c);
+                        land_index = 0;
+                        if (land_info->land_num > 0) {
+                            int land_offset = 0;
+                            do {
+                                land =
+                                    (RGE_Land_Data_Entry*)((char*)land_info->land + land_offset);
+                                fscanf(infile,
+                                       "%d %d %d %d %d %d %d %d %d %d %d %d",
+                                       &land->land_id,
+                                       &temp_zone,
+                                       &land->land_avoidance_tiles,
+                                       &land->base_square_radius,
+                                       &temp_placement_type,
+                                       &temp_amount_of_land_used_percent,
+                                       &land->x,
+                                       &land->y,
+                                       &temp_by_player_flag,
+                                       &temp_group_flag,
+                                       &land->radius,
+                                       &land->fade);
+                                ++land_index;
+                                land->terrain_type = (unsigned char)temp_zone;
+                                land->zone = (unsigned char)temp_placement_type;
+                                land->placement_type =
+                                    (unsigned char)temp_amount_of_land_used_percent;
+                                land->amount_of_land_used_percent =
+                                    (unsigned char)temp_by_player_flag;
+                                land->by_player_flag = (unsigned char)temp_group_flag;
+                                land->clumpiness_factor = 8;
+                                land_offset += 0x2c;
+                            } while (land_index < land_info->land_num);
+                        }
+                    } else {
+                        land_info->land = 0;
                     }
-                } else land->units = 0;
-                ++land_num;
-            } while (land_num < terrain_num);
+                    ++index;
+                } while (index < terrain_num);
+            }
+            fclose(infile);
         }
-        fclose(infile);
-    }
 
-    infile = fopen(objectFile, "r");
-    if (infile) {
-        fscanf(infile, "%d", &object_num);
-        land_num = 0;
-        if (object_num > 0) do {
-            fscanf(infile, "%d", &local_30);
-            ObjectGroup* grp = (ObjectGroup*)((char*)this->lands + (local_30 * 9) * 8 + 0x30);
-            fscanf(infile, "%d", &grp->count);
-            if (grp->count > 0) {
-                grp->list = (ObjectSub*)calloc(grp->count, 0x18);
-                int off=0; int k=0;
-                do { fscanf(infile, "%d %d %d %d %d", (char*)grp->list+off, (char*)grp->list+off+4, (char*)grp->list+off+8, (char*)grp->list+off+12, (char*)grp->list+off+16); *(int*)((char*)grp->list+off+0x14)=0x14; ++k; off+=0x18; } while(k<grp->count);
-            } else grp->list=0;
-            ++land_num;
-        } while (land_num < object_num);
-        fclose(infile);
-    }
+        infile = fopen(object_file, "r");
+        if (infile != 0) {
+            fscanf(infile, "%d", &object_num);
+            index = 0;
+            if (object_num > 0) {
+                do {
+                    fscanf(infile, "%d", &local_30);
+                    terrain_info = &this->map_info.maps[local_30].terrain_info;
+                    fscanf(infile, "%d", terrain_info);
+                    land_index = 0;
+                    if (terrain_info->terrain_num > 0) {
+                        terrain_info->terrain =
+                            (RGE_Terrain_Data_Entry*)calloc(terrain_info->terrain_num, 0x18);
+                        if (terrain_info->terrain_num > 0) {
+                            int terrain_offset = 0;
+                            do {
+                                terrain =
+                                    (RGE_Terrain_Data_Entry*)((char*)terrain_info->terrain + terrain_offset);
+                                fscanf(infile, "%d %d %d %d %d",
+                                       &terrain->terrain_percent,
+                                       &terrain->terrain_type,
+                                       &terrain->clumps,
+                                       &terrain->spacing,
+                                       &terrain->base_terrain_type);
+                                ++land_index;
+                                terrain->clumpiness_factor = 0x14;
+                                terrain_offset += 0x18;
+                            } while (land_index < terrain_info->terrain_num);
+                        }
+                    } else {
+                        terrain_info->terrain = 0;
+                    }
+                    ++index;
+                } while (index < object_num);
+            }
+            fclose(infile);
+        }
 
-    infile = fopen(terrainTypeFile, "r");
-    if (infile) {
-        fscanf(infile, "%d", &temp_terrain_type);
-        land_num = 0;
-        if (temp_terrain_type > 0) do {
-            fscanf(infile, "%d", &local_30);
-            TerrainGroup* grp = (TerrainGroup*)((char*)this->lands + (local_30 * 9) * 8 + 0x38);
-            fscanf(infile, "%d", &grp->count);
-            if (grp->count > 0) {
-                grp->list = (TerrainTypeSub*)calloc(grp->count, 0x2c);
-                int off=0; int k=0;
-                do { fscanf(infile, "%d %d %d %d %d %d %d %d %d %d %d", (char*)grp->list+off, (char*)grp->list+off+4, &tmp1, &tmp2, (char*)grp->list+off+12, (char*)grp->list+off+16, (char*)grp->list+off+20, (char*)grp->list+off+24, (char*)grp->list+off+28, (char*)grp->list+off+32, (char*)grp->list+off+36); ((char*)grp->list)[off+8]=(char)tmp1; ((char*)grp->list)[off+9]=(char)tmp2; ++k; off+=0x2c; } while(k<grp->count);
-            } else grp->list=0;
-            ++land_num;
-        } while(land_num < temp_terrain_type);
-        fclose(infile);
+        infile = fopen(terrain_type_file, "r");
+        if (infile != 0) {
+            fscanf(infile, "%d", &temp_terrain_type);
+            index = 0;
+            if (temp_terrain_type > 0) {
+                do {
+                    fscanf(infile, "%d", &local_30);
+                    object_info = &this->map_info.maps[local_30].object_info;
+                    fscanf(infile, "%d", object_info);
+                    land_index = 0;
+                    if (object_info->object_num > 0) {
+                        object_info->objects =
+                            (RGE_Object_Data_Entry*)calloc(object_info->object_num, 0x2c);
+                        if (object_info->object_num > 0) {
+                            int object_offset = 0;
+                            do {
+                                object =
+                                    (RGE_Object_Data_Entry*)((char*)object_info->objects + object_offset);
+                                fscanf(infile,
+                                       "%d %d %d %d %d %d %d %d %d %d %d %d",
+                                       &object->obj_id,
+                                       &object->terrain,
+                                       &temp_scale_flag,
+                                       local_4,
+                                       &object->object_number_per_group,
+                                       &object->object_number_varience,
+                                       &object->number_of_groups,
+                                       &object->group_area,
+                                       &object->player_id,
+                                       &object->land_id,
+                                       &object->land_inner_radius,
+                                       &object->land_outer_radius);
+                                ++land_index;
+                                object->group_flag = (unsigned char)temp_scale_flag;
+                                object->scale_flag = local_4[0];
+                                object_offset += 0x2c;
+                            } while (land_index < object_info->object_num);
+                        }
+                    } else {
+                        object_info->objects = 0;
+                    }
+                    ++index;
+                } while (index < temp_terrain_type);
+            }
+            fclose(infile);
+        }
+    } else {
+        this->map_info.map_num = 0;
+        this->map_info.maps = 0;
     }
 }
