@@ -1,7 +1,15 @@
-// /Od debug-style no-PDB TRIBE_Tech text-file constructor
-// Full text-file constructor rewrite. Current best: exact size/frame, 5.3648% diff,
-// first mismatch at 0050BC17; file local fixed at [ebp-18], but scoped loop i/name_buf
-// topology still differs ([ebp-80] loop local vs original outer i [ebp-1C], buffer [ebp-80]).
+// /Od debug-style no-PDB TRIBE_Tech text-file constructor.
+// Layout evidence: this is a 0x0C-byte, non-virtual class. The text-file
+// constructor initializes only tech_tree; the world field belongs to the other
+// constructor and remains untouched here. The target has no base or EH setup.
+// Attempt log:
+// - Added the proven world field at +0x08. It does not affect this constructor.
+// - Tested function-scope and branch-scope loop declarations. Branch scope keeps
+//   the original block shape and frame.
+// - Reordered natural scalar declarations. Best result is 44 differing bytes;
+//   remaining drift starts at the outer index and name-buffer homes.
+// - Restored function-scope tech_id and j experiments because they shortened the
+//   function and changed the original loop topology.
 
 extern "C" void* __cdecl fopen(const char* filename, const char* mode);
 extern "C" int __cdecl fclose(void* file);
@@ -37,6 +45,8 @@ class TRIBE_Tech {
 public:
     Tech_Entry* tech_tree;
     short tech_tree_num;
+    char gap_06[2];
+    void* world;
 
     TRIBE_Tech(char* filename);
 };
@@ -45,20 +55,22 @@ TRIBE_Tech::TRIBE_Tech(char* filename)
 {
     char name_buf[0x64];
     int file;
-    int len;
-    int k;
     unsigned char button_temp;
+    int k;
     short used_read;
     short file_count;
+    int len;
 
     this->tech_tree = 0;
     file = (int)fopen(filename, "r");
     if (file != 0) {
         if (fscanf((void*)file, "%d %d", &this->tech_tree_num, &file_count) != -1) {
             if (this->tech_tree_num > 0) {
+                short i;
                 this->tech_tree = (Tech_Entry*)calloc(0x3c, this->tech_tree_num);
-                { short i; for (i = 0; i < file_count; i++) {
+                for (i = 0; i < file_count; i++) {
                     short tech_id;
+
                     fscanf((void*)file, "%hd", &tech_id);
                     fscanf((void*)file, "%s %hd %hd %hd %hd %hd %hd %hd",
                         name_buf,
@@ -97,7 +109,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename)
                         &this->tech_tree[tech_id].help_string_id,
                         &this->tech_tree[tech_id].help_page_id,
                         &this->tech_tree[tech_id].hotkey_id);
-                } }
+                }
             }
         }
         fclose((void*)file);
