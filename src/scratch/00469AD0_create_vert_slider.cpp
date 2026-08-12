@@ -10,8 +10,13 @@
 // Dossier confirms the only structural gap is the /GX return tail: the oracle joins three failure
 // edges at 00469C24 (xor eax,eax) before one common cleanup, while VC5 clones a failure cleanup
 // after the success epilogue. The paired create_scrollbar target documents the same persistent
-// EH-tail behavior even after result/goto/vptr probes. Keep this natural early-return source in
+// EH-tail behavior even after result/goto/vptr probes. Keep this natural typed source in
 // scratch; remaining lead is a compiler/EH-tail blocker, not an unresolved call or field layout.
+// worker 2026-08-12 (normal-469AD0-r1): exact Panel_ez/pnl_sld donors confirm the int helper
+// values and long setup parameter; changing declarations did not change emitted code.
+// Compiler-owned vptr surfaces with proven offsets were also a duplicate and were not retained.
+// A natural combined success guard with one trailing failure return remained the same 46-byte
+// mismatch. The common /GX cleanup tail remains the only structural gap.
 
 class TPanel {};
 class TShape {};
@@ -20,8 +25,8 @@ class TScrollBarPanel {
 public:
     char gap_000[0xD8];
     int field_D8;
-    void set_buttons(TShape* pics, long a, long b, long c, long d);
-    void set_bevel_info(long count, int c1, int c2, int c3, int c4, int c5, int c6);
+    void set_buttons(TShape* pics, int a, int b, int c, int d);
+    void set_bevel_info(int count, int c1, int c2, int c3, int c4, int c5, int c6);
 };
 
 class TVerticalSliderPanel : public TScrollBarPanel {
@@ -29,7 +34,7 @@ public:
     char data[0x1CC - 0xDC];
     TVerticalSliderPanel();
     long setup(void* draw_area, TPanel* parent, long x, long y, long w, long h,
-               char* a, char* b, int c, long p3, long p4, long p5, int one, int zero);
+               char* a, char* b, long c, long p3, long p4, long p5, int one, int zero);
 };
 
 class TEasy_Panel {
@@ -63,21 +68,18 @@ int TEasy_Panel::create_vert_slider(TPanel* parent, TVerticalSliderPanel** out, 
     long ideal_h = (p9 * this->base_height) / this->ideal_height;
 
     *out = new TVerticalSliderPanel;
-    if (*out == 0 || (*out)->field_D8 != 0) {
-        return 0;
+    if (*out != 0 && (*out)->field_D8 == 0 &&
+        (*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, p3, p4, p5, 1, 0) != 0) {
+        if (this->button_pics != 0) {
+            (*out)->set_buttons(this->button_pics, -1, 8, 10, 12);
+        }
+
+        if (this->use_bevels != 0) {
+            (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+        }
+
+        return 1;
     }
 
-    if ((*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, p3, p4, p5, 1, 0) == 0) {
-        return 0;
-    }
-
-    if (this->button_pics != 0) {
-        (*out)->set_buttons(this->button_pics, -1, 8, 10, 12);
-    }
-
-    if (this->use_bevels != 0) {
-        (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
-    }
-
-    return 1;
+    return 0;
 }
