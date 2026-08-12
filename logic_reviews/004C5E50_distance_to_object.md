@@ -201,3 +201,31 @@ conditional X clamp and can be distinguished by a fault/exception observer or
 aliasing of the transient stack home. Formal logic review is stopped and the
 function remains a `src/scratch` exact-matching target, with the exact
 pre-branch other-Y scheduling problem documented for any future bounded pass.
+
+### Round 4 — concurrent blind cohort, 2026-08-12
+
+- `sa-d7629529` — `openai-codex-secondary/gpt-5.6-luna`, xhigh thinking
+- `sa-e5ce0157` — `deepseek/deepseek-v4-flash`, high thinking
+
+Both reviewers independently disassembled the original executable and current
+VC5 output. They found the same 22-byte window at `+0x62..+0x77`. The original
+performs the `dy - this_radius_y` and `other_radius_y` operations after the X
+`fcomp`, but before it consumes that comparison status and conditionally writes
+the X clamp home. The candidate executes the branch and possible clamp write
+first.
+
+The reviewers verified matching normal numeric results, ABI, object offsets,
+binary32 `dy` and X homes, x87 stack depth, signed-zero behavior, and NaN and
+infinity outcomes. DeepSeek also verified that the arithmetic does not change
+the captured comparison flags. Its report classifies the difference as close
+for ordinary inputs. Luna identifies a concrete exceptional-path difference:
+an `other_radius_y` read fault can occur before the original clamp write, but
+after it in the candidate.
+
+Main-agent adjudication: retain the stricter conclusion. The reordered read
+changes first-fault instruction context and partial stack-home mutation in a
+reachable malformed-pointer or unmasked-exception case. These effects are part
+of executable behavior. No new source change is justified because matching
+work has already isolated the pinned VC5 scheduling limitation. Keep the
+candidate in `src/scratch`; do not promote it to `accepted_drift` or
+`verified_logic`.
