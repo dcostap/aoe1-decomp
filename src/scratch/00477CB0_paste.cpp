@@ -9,6 +9,12 @@
 // 6: split dst_tail initialization before _mbsninc; no change.
 // 7: changed _mbsncpy/_mbsninc count signedness int/long; no change, restored unsigned int.
 // 8: swapped max_len/total_len declaration order; no change.
+// r1 baseline: rebuilt the canonical clipboard and alternating-buffer path; body parity reaches the capacity gate.
+// r1 cached input_len/max_len locals: codegen duplicate; rolled back.
+// r1 len-derived accumulator and typed short max_len probes: codegen duplicates; rolled back.
+// r1 field-first capacity sum and split old-style assignments: no improvement; rolled back.
+// r1 focused capacity variant lab: five natural declaration/expression forms produced two groups and no exact match.
+// r1 local declaration reorder: one-byte farther and rolled back.
 // left in scratch: behavior/calls/stack frame match closely through clipboard path; remaining mismatch starts at capacity-test register allocation (rebuilt computes sum in ecx and max in edx, original uses edx=len+input_len and eax=max), causing 2-byte shift and later scheduling/register-order drift around _mbsninc calls.
 
 typedef unsigned long ulong;

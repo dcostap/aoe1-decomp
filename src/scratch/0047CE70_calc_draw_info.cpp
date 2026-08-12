@@ -20,6 +20,14 @@
 //   set_rect context were codegen duplicates.  Final residual is only the
 //   deactivation virtual-vtable scratch register plus the common text_wid
 //   load register at +0x19A..+0x1F0; source remains canonical and typed.
+// - Fresh Pnl_txt donor pass: the exact base virtual surface, scrollbar size
+//   surface, explicit scrollbar active override, full TTextPanel field order,
+//   and long text_wid type were all emitted-code duplicates; restored the
+//   pinned narrow source surface.
+// - Explicit terminal return, branch-local scrollbar receiver, and volatile
+//   text_wid tests were duplicates. A six-case focused store/receiver lab also
+//   stayed in the same 14-byte group. The Windows SDK context worsened drift
+//   to 15 bytes at the line-clamp block and was restored.
 
 struct tagRECT {
     long left;

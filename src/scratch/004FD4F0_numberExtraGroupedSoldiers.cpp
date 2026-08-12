@@ -1,20 +1,41 @@
 // VA: 004FD4F0, TribeTacticalAIModule::numberExtraGroupedSoldiers, 473 bytes
 // Source: taitacmd.cpp lines 10154-10201
 // Attempt log:
-// - v1: natural reconstruction from packet/decompiler, using TacticalAIGroup member calls and local dynamic int array.
-// - v2: modeled group list sentinel at +0x9d4, next at +0x9d8, working array at +0xd48/+0xd4c/+0xd54.
-// - v3: made list sentinel raw bytes instead of embedding TacticalAIGroup, fixing working-area offsets.
-// - v4: reordered local declarations to probe VC5 stack-slot/register allocation.
-// - v5: changed initial sentinel/null exits from early returns to one shared final return; worse, rolled back.
-// - v6: set workingNumber from result local to encourage xor/store/store initialization.
-// - v7: removed sentinel local; original recomputes lea [esi+9d4] at list checks.
-// - v8: declared group before int locals to probe EBX vs EBP allocation.
-// - v9: initialized result in declaration instead of separate assignment.
-// BLOCKER: behavior/call set and size are close (473/473), but VC5 is in a different register/stack-slot basin from the prologue: original zeroes EAX then stores result at [esp+18] and workingNumber, keeps current group in EBX; rebuilt initializes result with a C7 store at [esp+10] and keeps current group in EBP. This cascades through rNum/tempCount/u slots and inner duplicate-array/copy loops.
+// - v1-v9: raw sentinel/group and hand-inlined array reconstruction. The
+//   output reached 473 bytes but used a different register and stack basin.
+// - clean reconstruction: groups is the embedded 0x330-byte TacticalAIGroup
+//   list sentinel, and workingArea is a ManagedArray<int> at +0xd48.
+//   This removes decompiler cursor scaffolding from the compiler-facing source.
+// - probe 1 baseline: typed reconstruction reached 483 bytes with group in
+//   EBX and all 16 calls present, but the outer count calls were reversed.
+// - probe 2: reversed the outer count predicate; call order did not change.
+// - probe 3: named desiredUnits before the comparison; all 16 call sites then
+//   aligned and the diff fell to 65 bytes.
+// - probe 4: reordered result/rNum/tempCount declarations; code was unchanged.
+// - probe 5: split result and workingArea reset statements; code was unchanged.
+// - probe 6: added the ordinary workingArea reference used by exact array
+//   donors; the best diff fell to 62 bytes.
+// - probe 7: early sentinel return changed CFG and widened the diff; rolled back.
+// - probe 8: used a literal zero for the workingArea reset; code was unchanged.
+// - probe 9: forced a result stack-home store through a pointer; code was
+//   unchanged and the diagnostic form was removed.
+// BLOCKER: current typed source has 477 bytes, all 16 direct calls aligned,
+// and a 62-byte positional diff. The remaining drift is the VC5 prologue and
+// sentinel CFG: original uses xor eax, result at [esp+18], reset, then group;
+// current uses xor ecx, reset, group, then result at [esp+10]. The current
+// source keeps the canonical embedded group and ManagedArray ownership.
 
-typedef unsigned char uchar;
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
+extern "C" {
+    void* operator_new(unsigned int size);
+    void operator_delete(void* ptr);
+}
+
+struct Waypoint {
+    int x;
+    int y;
+    int z;
+    int unk;
+};
 
 class TacticalAIGroup {
 public:
@@ -23,6 +44,41 @@ public:
     TacticalAIGroup* prev;
     int idValue;
     int inUseValue;
+    int typeValue;
+    int subTypeValue;
+    int unitsValue[40];
+    int unitsOriginalHitPointsValue[40];
+    int numberUnitsValue;
+    int desiredNumberUnitsValue;
+    int commanderValue;
+    int originalHitPointsValue;
+    int originalUnitNumberValue;
+    Waypoint locationValue;
+    int actionValue;
+    int targetValue;
+    int targetTypeValue;
+    Waypoint targetLocationValue;
+    Waypoint gatherLocationValue;
+    Waypoint retreatLocationValue;
+    int priorityValue;
+    int waitCodeValue;
+    int assistGroupIDValue;
+    int assistGroupTypeValue;
+    unsigned long consecutiveIdleUnitCountValue;
+    int playNumberValue;
+    unsigned char numberAttackWaypointsValue;
+    unsigned char currentAttackWaypointValue;
+    unsigned char pad_1d6[2];
+    Waypoint attackWaypoints[15];
+    unsigned char consecutiveGatherAttemptsValue;
+    unsigned char pad_2c9[3];
+    int numberObjectsToDestroyValue;
+    int objectsToDestroyValue[20];
+    int objectsToDestroyOwnerValue;
+    int objectsToDestroyCommanderZoneValue;
+    unsigned long lastAttackRoundupTime;
+    unsigned long lastAddedUnitTimeValue;
+
     int type();
     int numberUnits();
     int unit(int index);
@@ -31,88 +87,96 @@ public:
     int action();
 };
 
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    int add(T valueToAdd) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == valueToAdd)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int new_size = this->numberValue + 1;
+            T* new_value = (T*)operator_new(new_size * sizeof(T));
+            if (new_value != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= new_size)
+                        break;
+                    new_value[j] = this->value[j];
+                }
+                operator_delete(this->value);
+                this->value = new_value;
+                this->maximumSizeValue = new_size;
+            }
+        }
+
+        this->value[this->numberValue] = valueToAdd;
+        this->numberValue++;
+        return 1;
+    }
+};
+
 class TribeTacticalAIModule {
 public:
     char gap_000[0x9d4];
-    char groups_sentinel[4];       // +0x9d4
-    TacticalAIGroup* groupNext;    // +0x9d8
-    char gap_after_groups[0xd48 - 0x9dc];
-    int* workingValue;             // +0xd48
-    int workingNumber;             // +0xd4c
-    char gap_d50[4];
-    int workingMax;                // +0xd54
+    TacticalAIGroup groups;
+    char gap_after_groups[0xd48 - 0x9d4 - 0x330];
+    ManagedArray<int> workingArea;
 
     int numberExtraGroupedSoldiers();
 };
 
 int TribeTacticalAIModule::numberExtraGroupedSoldiers()
 {
-    TacticalAIGroup* group;
-    int result = 0;
-    int rNum;
     int tempCount;
-    int j;
+    int rNum;
+    int result;
+    TacticalAIGroup* group;
+    ManagedArray<int>& workingArea = this->workingArea;
 
-    this->workingNumber = result;
-    group = this->groupNext;
-    if (group == (TacticalAIGroup*)this->groups_sentinel) {
-        return result;
-    }
+    result = 0;
+    workingArea.numberValue = 0;
+    group = this->groups.next;
+    if (group != &this->groups) {
+        do {
+            if (group == 0)
+                return result;
 
-    do {
-        if (group == 0) {
-            return result;
-        }
-
-        if ((group->type() == 100 || group->type() == 101 || group->type() == 102) &&
-            (group->action() == 1 || group->action() == 0)) {
-            if (group->desiredNumberUnits() < group->numberUnits()) {
-                rNum = group->numberUnits();
-                tempCount = 0;
-                if (group->desiredNumberUnits() < rNum) {
-                    while (1) {
-                        if (tempCount >= group->numberUnits()) break;
-                        if (group->unit(tempCount) != group->commander()) {
-                            rNum--;
-                            int u = group->unit(tempCount);
-                            j = 0;
-                            if (this->workingNumber > 0) {
-                                do {
-                                    if (j >= this->workingMax) break;
-                                    if (this->workingValue[j] == u) goto counted;
-                                    j++;
-                                } while (j < this->workingNumber);
+            if ((group->type() == 100 || group->type() == 101 ||
+                 group->type() == 102) &&
+                (group->action() == 1 || group->action() == 0)) {
+                int desiredUnits = group->desiredNumberUnits();
+                if (desiredUnits < group->numberUnits()) {
+                    rNum = group->numberUnits();
+                    tempCount = 0;
+                    if (group->desiredNumberUnits() < rNum) {
+                        while (1) {
+                            if (tempCount >= group->numberUnits())
+                                break;
+                            if (group->unit(tempCount) != group->commander()) {
+                                rNum--;
+                                workingArea.add(group->unit(tempCount));
+                                result++;
                             }
-                            if (this->workingNumber > this->workingMax - 1) {
-                                int newMax = this->workingNumber + 1;
-                                int* newValue = (int*)operator new(newMax * 4);
-                                if (newValue != 0) {
-                                    j = 0;
-                                    if (this->workingMax > 0) {
-                                        do {
-                                            if (j >= newMax) break;
-                                            j++;
-                                            newValue[j - 1] = this->workingValue[j - 1];
-                                        } while (j < this->workingMax);
-                                    }
-                                    operator delete(this->workingValue);
-                                    this->workingValue = newValue;
-                                    this->workingMax = newMax;
-                                }
-                            }
-                            this->workingValue[this->workingNumber] = u;
-                            this->workingNumber++;
-counted:
-                            result++;
+                            tempCount++;
+                            if (group->desiredNumberUnits() >= rNum)
+                                break;
                         }
-                        tempCount++;
-                        if (group->desiredNumberUnits() >= rNum) break;
                     }
                 }
             }
-        }
-        group = group->next;
-    } while (group != (TacticalAIGroup*)this->groups_sentinel);
-
+            group = group->next;
+        } while (group != &this->groups);
+    }
     return result;
 }
