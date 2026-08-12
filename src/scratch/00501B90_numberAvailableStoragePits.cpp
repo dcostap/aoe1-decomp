@@ -67,6 +67,18 @@
 // local widths, and proper TacticalAIModule/MainDecisionAIModule/AIModule
 // virtual-base surfaces all reproduced the same 222-byte six-byte basin.
 // Restored the pinned canonical source; no new codegen lead was found.
+// Bounded pass (orch-00501B90-D): re-ran dossier/donors/ABI. search_asm_donors
+// on +0053-+0064 found the only same-TU exact donor with the target's exact
+// register topology: 004F5FB0 emits `mov edi,[esi+0F0h]` (md->EDI, this stays
+// ESI) because its source reads this->sn[0xB0] AFTER the md load
+// (`mov eax,[esi+454h]` at 004F60B5). Liveness theory: original keeps this in
+// ESI through the md load (md->EDI, reusing param3's dead EDI slot LIFO), and
+// kills this only at the product move (+008B, mov esi,eax); the rebuilt kills
+// this at the md load itself (destructive mov esi,[esi+0F0h]; product->EDI).
+// Next lead: spell the main path so a this-based member is still read after
+// the md load (mirroring the donor's liveness) without adding instructions,
+// e.g. a source construct that keeps this live to the product point; prior
+// probes never tested a main-path this read between +005E and +008B.
 
 #include <stdlib.h>
 

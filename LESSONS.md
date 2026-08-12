@@ -932,3 +932,23 @@ Shared reusable exact-match knowledge only; keep per-function attempts in source
   `(b & 1) == 1` compare when the oracle shows `mov cl,al; and cl,1; cmp cl,1`
   rather than `test al,1`, and place `rows = height` inside the positive
   height guard so the rows-home store sinks past the `jle` (`004BA900`).
+
+## Loop-counter copies and natural division spellings
+
+- When the oracle keeps a loop counter in the dead incoming-parameter home
+  (reload/dec/store/jne each iteration) instead of a callee-save, mirror the
+  exact donor's shape: compute `long count = ...;` with a guard-only live
+  range, then declare `long loop_count = count;` inside the positive guard and
+  decrement the copy in the `do/while`. VC5 coalesces the loop-counter copy
+  onto the freed parameter home once the parameter value lives in a saved
+  register (`00488EA0` via donor `00434DC0`; direct `--count` or
+  `param_1 = count` both keep the counter in EBX instead).
+- Spell a signed power-of-two division as the natural `/8` rather than an
+  explicit `(x + ((x >> 31) & 7)) >> 3` correction. The explicit correction
+  makes VC5 keep the product live in a second register (`mov eax,ecx; sar;
+  and; add`), while the natural division emits the compact `cdq; and edx,7;
+  add eax,edx; sar eax,3` sequence (`00488EA0`).
+- When two bounds share the entry block, declare the bound that must claim EBP
+  before the one that goes to the push-ecx home: `max_x = width-1` before
+  `max_y = height-1` selected the binary's height-first member loads and
+  EBP=max_x coloring in the same function.
