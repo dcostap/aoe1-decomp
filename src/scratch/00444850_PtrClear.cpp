@@ -15,6 +15,12 @@
 // - This session rechecked explicit memset intrinsic context, a void* cast,
 //   a frame aggregate, and long coordinate/count locals; all were duplicate
 //   or nonproductive. The clean typed memset source is restored.
+// - Branch-local nLines/nWidth/src_p plus a donor-style loop_count kept the
+//   natural do/while, but only changed size (-33 versus -35) and stayed at
+//   299 differing bytes.
+// - A nonvolatile int alias for the incoming rect home was codegen-identical
+//   to that branch-local variant. Both tests were rolled back; the remaining
+//   lead is the unresolved VC5 frame and generic memset expansion.
 
 #include <string.h>
 

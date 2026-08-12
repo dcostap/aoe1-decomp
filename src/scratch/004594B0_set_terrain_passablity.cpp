@@ -33,6 +33,12 @@
 //   volatile-count diagnostic; the latter groups were duplicates or worse.
 //   Restored the clean natural tile-row source; final unresolved lead is the
 //   target's compiler-selected stack-home/register basin, not behavior/layout.
+// - Exact 004C9360-style row/column offset-count countdown loops with typed
+//   row and tile pointers reached exact size and improved shape to 73.39%, but
+//   positional drift worsened to 293 bytes from the clean 247-byte basin.
+// - Removing the x-bound swap narrowing cast was an emitted-code duplicate.
+//   Restored the clean natural tile-row source; the donor loop pattern is not
+//   a better living reconstruction for this target.
 
 class RGE_Tile {
 public:

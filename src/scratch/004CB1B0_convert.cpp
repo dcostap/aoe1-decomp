@@ -21,6 +21,9 @@
 //   body. Remaining bytes are the shared success/failure epilogue topology
 //   (67 positional bytes, rebuilt +19 bytes), with no ordered-call or layout
 //   blocker identified.
+// - changed make_action/action_id and the convert-action constructor surface
+//   from int to donor-supported RGE_Task*; emitted code was unchanged, so keep
+//   the canonical pointer/task model and the existing /GX context.
 // - paused with the remaining lead localized to VC5 tail layout/EH context.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 
@@ -28,6 +31,7 @@ class RGE_Static_Object;
 class RGE_Game_World;
 class RGE_Action;
 class RGE_Action_List;
+class RGE_Task;
 class TRIBE_Action_Convert;
 
 class RGE_Game_World {
@@ -118,7 +122,7 @@ public:
     virtual void pad204();
     virtual void add_action(RGE_Action* action);
     virtual void pad20C();
-    virtual int make_action(RGE_Static_Object*, float, float, int);
+    virtual RGE_Task* make_action(RGE_Static_Object*, float, float, int);
 
     int convert(int object_id, int force);
 };
@@ -130,12 +134,12 @@ struct OwnerData {
 
 class TRIBE_Action_Convert : public RGE_Action {
 public:
-    TRIBE_Action_Convert(TRIBE_Combat_Object* object, int action_id, RGE_Static_Object* target);
+    TRIBE_Action_Convert(TRIBE_Combat_Object* object, RGE_Task* action_id, RGE_Static_Object* target);
 };
 
 int TRIBE_Combat_Object::convert(int object_id, int force) {
     RGE_Static_Object* target;
-    int action_id;
+    RGE_Task* action_id;
     TRIBE_Action_Convert* new_action;
 
     target = owner_data->world->object(object_id);

@@ -1,18 +1,22 @@
 // VA: 004CB060 TRIBE_Combat_Object::hunt
 // Canonical ownership: owner_data->world resolves the target; actions is the
 // inherited action list at +0x184; RGE_Action_Hunt is the proven 0x44-byte
-// task/action object. The binary uses the positive target guard and one result
-// value through the shared EH epilogue.
+// task/action object. Keep the body in the natural convert-style form: typed
+// task/action locals with direct success and failure returns.
 // Attempt log:
-// - baseline: natural action-list hunt with /GX; early returns caused a broad
-//   shared-tail mismatch and the initial action slots were eight bytes early.
+// - prior baseline: natural action-list hunt with /GX; early returns caused a
+//   broad shared-tail mismatch and the initial action slots were eight bytes
+//   early.
 // - corrected delete_list, +0x208/+0x210 virtual slots, RGE_Action's virtual
 //   destructor, 0x44-byte hunt-action layout, and float x/y/z ABI surfaces.
-// - positive target guard plus a typed result pointer restored exact size,
-//   one-return CFG, and 97% instruction shape; the pointer result is supported
-//   by the decompiler's reused target/result value.
-// - remaining drift: VC5 result/register coloring and the isolated EH-handler
-//   address; call set, order, frame/size, and branch structure are aligned.
+// - natural convert-style normalization removes the persistent result pointer
+//   and keeps typed task/action locals with direct success/failure paths.
+// - baseline result: 350 rebuilt bytes versus 331, diff 67, 90% exact-block
+//   coverage, and all 16 calls aligned. The remaining drift is the failure
+//   tail: the natural direct return emits an early cleanup instead of the
+//   original failure block before the shared epilogue.
+// - review readiness: keep this natural source. Remaining work is localized
+//   tail/EH layout, not ownership, calls, or action ABI.
 // FLAGS: config/flags/004CB060_hunt.rsp
 
 class RGE_Static_Object;
@@ -119,42 +123,31 @@ public:
 
 int TRIBE_Combat_Object::hunt(int object_id, int force) {
     RGE_Static_Object* target;
-    RGE_Action* action;
     RGE_Task* action_id;
     TRIBE_Action_Hunt* new_action;
-    RGE_Static_Object* result;
 
     target = owner_data->world->object(object_id);
-    result = target;
-    if (target != 0) {
-        if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == target && actions->get_action()->action_type() == 0x6E) {
-            result = (RGE_Static_Object*)1;
-            goto done;
-        }
+    if (target == 0) goto end;
 
-        if (actions->have_action() == 1 && actions->get_action()->action_type() == 0x6E) {
-            actions->get_action()->set_target(target, target->world_x, target->world_y, target->world_z);
-            result = (RGE_Static_Object*)1;
-            goto done;
-        }
-
-        action_id = make_action(target, target->world_x, target->world_y, target->world_z);
-        result = (RGE_Static_Object*)action_id;
-        if (action_id == 0) {
-            goto done;
-        }
-
-        new_action = new TRIBE_Action_Hunt(this, action_id, target);
-        result = (RGE_Static_Object*)new_action;
-        if (new_action == 0) {
-            goto done;
-        }
-
-        actions->delete_list();
-        add_action(new_action);
-        result = (RGE_Static_Object*)1;
+    if (force == 0 && actions->have_action() == 1 && actions->get_action()->get_target() == target && actions->get_action()->action_type() == 0x6E) {
+        return 1;
     }
 
-done:
-    return (int)result;
+    if (actions->have_action() == 1 && actions->get_action()->action_type() == 0x6E) {
+        actions->get_action()->set_target(target, target->world_x, target->world_y, target->world_z);
+        return 1;
+    }
+
+    action_id = make_action(target, target->world_x, target->world_y, target->world_z);
+    if (action_id == 0) goto end;
+
+    new_action = new TRIBE_Action_Hunt(this, action_id, target);
+    if (new_action == 0) goto end;
+
+    actions->delete_list();
+    add_action(new_action);
+    return 1;
+
+end:
+    return 0;
 }

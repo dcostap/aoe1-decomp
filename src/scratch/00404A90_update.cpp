@@ -37,6 +37,9 @@
 // - current source is restored to the switch/direct-state 277-byte basin:
 //   exact size/frame/call set, 182 positional bytes differ from the oracle;
 //   remaining blocker is staged callee-save/register coloring at byte +5.
+// Session sat-404A90-order restored master-first work_rate * world_delta;
+// output stayed at 277 bytes / 182-byte diff. A temporary ACT_make.cpp TU
+// context from exact donors 00404A10, 00404A40, and 00404A70 was codegen-neutral.
 
 class RGE_Master_Action_Object {
 public:
@@ -235,8 +238,8 @@ unsigned char RGE_Action_Make::update() {
         }
 
         {
-            float work = this->obj->owner->world->world_time_delta_seconds
-                       * this->obj->master_obj->work_rate;
+            float work = this->obj->master_obj->work_rate
+                       * this->obj->owner->world->world_time_delta_seconds;
             work *= this->task->work_val1;
             float old_attribute_amount = this->obj->attribute_amount_held;
 

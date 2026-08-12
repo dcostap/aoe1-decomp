@@ -25,9 +25,14 @@
 //   stay outside that branch. Size became exact and drift fell to 9B.
 // - Spelled the loop bound as list_count >= sel_count to match the target
 //   compare order. Drift fell to 7B with 96.12% exact-block coverage.
-// - Left in scratch: the remaining 7B is localized to prologue/register
-//   coloring and the select-level compare polarity; no evidence-backed probe
-//   remains in this assignment.
+// - Signed-promotion probe: compare the byte select level with the signed
+//   short threshold without unsigned casts; this preserves byte load width,
+//   emits the target signed jge, and reduces drift to 6B.
+// - Moved Selection_Locals into the local declaration block to test the small
+//   prologue color gap; emitted code was unchanged, so the natural placement
+//   stays.
+// - Left in scratch: the remaining 6B is only the prologue zero/register
+//   color gap; the select-level compare and function body are exact.
 
 class RGE_Player;
 
@@ -92,11 +97,11 @@ unsigned char RGE_Player::get_selected_objects_to_command(
     short count;
     RGE_Static_Object* object;
     RGE_Master_Static_Object* master;
+    Selection_Locals locals;
 
     j = 0;
     *out_list = 0;
     count = 0;
-    Selection_Locals locals;
     *out_count = 0;
     if (player->sel_count == 0) {
         return 0;
@@ -118,8 +123,7 @@ unsigned char RGE_Player::get_selected_objects_to_command(
         if (object != 0) {
             if (object->object_state == 2 && object->owner == player) {
                 master = object->master_obj;
-                if ((unsigned short)master->select_level >=
-                        (unsigned short)min_select_level || player->id == 0) {
+                if (master->select_level >= min_select_level || player->id == 0) {
                     if (object_group == -1 ||
                         master->object_group == (unsigned char)object_group) {
                         if (object_id == -1 ||

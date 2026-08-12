@@ -69,6 +69,10 @@
 // variants were tested; only direct parameter mutation changed codegen and it
 // lost aligned blocks despite exact size. Variant labs otherwise collapsed to
 // the existing 214-byte basin. Clean typed source remains authoritative.
+// Follow-up context probe: merged the declaration order and shared type surface
+// from exact donors 00430320, 004304B0, and 00430510. The emitted code was an
+// exact duplicate of the clean source; the EBP-versus-EBX armor-pointer basin
+// did not move. Restored the clean typed source.
 
 extern float DAT_0056f49c;
 extern float DAT_0056f4a8;

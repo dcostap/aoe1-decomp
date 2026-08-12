@@ -1,8 +1,8 @@
 // VA: 004495C0 RGE_Effects::do_effect
 // effects.cpp lines 186-274
 // 301 bytes
-// BLOCKER: 53.8% diff (best result). First 14 bytes match perfectly.
-// The core loop structure now matches: xor edi, edi; cmp [mem], di; jle
+// BLOCKER: 68.8% diff after the ABI and dispatch fixes. First 14 bytes match.
+// The core loop structure and call targets now match; float argument staging remains.
 // Remaining differences:
 // 1. Float arg passing: rebuilt uses mov edx,[mem];push edx while
 //    original uses fld dword [mem]; push ecx/temp; fstp [esp]
@@ -19,8 +19,12 @@
 // - __declspec(naked) vtable thunk: inline asm forbidden by policy
 // - removed outer if(effect_list_num>0): no change
 // - for(short) with correct loop structure: matches cmp [mem],di pattern
+// - replaced the fake extern with the typed virtual add_attribute_num at vslot 0x78
+// - changed the modify_tobj family's final argument to unsigned char
+// - restored case order 4,5,0,1,2,3 and > -1 predicates; call sites became aligned
+// - per-case float locals did not produce the original FPU staging; rolled back
 // FLAGS: none
-// NOTE: Would need real function addresses or TU context to match calls.
+// NOTE: Remaining gap is VC5 float staging and jump-table relocation masking.
 
 struct RGE_Effect_Command {
     unsigned char command; unsigned char _pad_0;
@@ -34,21 +38,30 @@ struct RGE_Effect {
 };
 
 struct RGE_Player {
-    void* vtable_ptr;
-    void modify_tobj(short a, short b, float c, short d);
+    virtual void v00();  virtual void v04();  virtual void v08();
+    virtual void v0C();  virtual void v10();  virtual void v14();
+    virtual void v18();  virtual void v1C();  virtual void v20();
+    virtual void v24();  virtual void v28();  virtual void v2C();
+    virtual void v30();  virtual void v34();  virtual void v38();
+    virtual void v3C();  virtual void v40();  virtual void v44();
+    virtual void v48();  virtual void v4C();  virtual void v50();
+    virtual void v54();  virtual void v58();  virtual void v5C();
+    virtual void v60();  virtual void v64();  virtual void v68();
+    virtual void v6C();  virtual void v70();  virtual void v74();
+    virtual void add_attribute_num(short a, float b, unsigned char c);
+
+    void modify_tobj(short a, short b, float c, unsigned char d);
     void new_attribute_num(short a, float b);
     void make_available(short a, unsigned char b);
     void copy_obj(short a, short b);
-    void modify_tobj_delta(short a, short b, float c, short d);
-    void modify_tobj_percent(short a, short b, float c, short d);
+    void modify_tobj_delta(short a, short b, float c, unsigned char d);
+    void modify_tobj_percent(short a, short b, float c, unsigned char d);
 };
 
 struct RGE_Effects {
     void* vtable_ptr; RGE_Effect* effects; long effect_num;
     void do_effect(short effect_id, RGE_Player* player);
 };
-
-extern "C" void __fastcall player_vfunc_78(RGE_Player* player, short a, float b, int c);
 
 void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
     if (effect_id < effect_num) {
@@ -57,31 +70,34 @@ void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
             for (short i = 0; i < eff->effect_list_num; i++) {
                 RGE_Effect_Command* cmd = &eff->effect_list[i];
                 switch (cmd->command) {
+                case 4:
+                    player->modify_tobj_delta(cmd->change_num1, cmd->change_num2, cmd->change_amount,
+                                              (unsigned char)cmd->change_num3);
+                    break;
+                case 5:
+                    player->modify_tobj_percent(cmd->change_num1, cmd->change_num2, cmd->change_amount,
+                                                (unsigned char)cmd->change_num3);
+                    break;
                 case 0:
-                    player->modify_tobj(cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
+                    player->modify_tobj(cmd->change_num1, cmd->change_num2, cmd->change_amount,
+                                        (unsigned char)cmd->change_num3);
                     break;
                 case 1:
-                    if (cmd->change_num1 >= 0) {
+                    if (cmd->change_num1 > -1) {
                         if (cmd->change_num2 == 0) {
                             player->new_attribute_num(cmd->change_num1, cmd->change_amount);
                         } else {
-                            player_vfunc_78(player, cmd->change_num1, cmd->change_amount, 0);
+                            player->add_attribute_num(cmd->change_num1, cmd->change_amount, 0);
                         }
                     }
                     break;
                 case 2:
-                    if (cmd->change_num1 >= 0) {
+                    if (cmd->change_num1 > -1) {
                         player->make_available(cmd->change_num1, (unsigned char)cmd->change_num2);
                     }
                     break;
                 case 3:
                     player->copy_obj(cmd->change_num1, cmd->change_num2);
-                    break;
-                case 4:
-                    player->modify_tobj_delta(cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
-                    break;
-                case 5:
-                    player->modify_tobj_percent(cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
                     break;
                 }
             }
