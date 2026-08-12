@@ -7,6 +7,12 @@
 // still colored info/base incorrectly; /O1, /Ox, /Ob0 did not help.
 // probe 1 hypothesis: remove compiler-steering aliases and use the ordinary
 // parameter/member expressions with a top-tested while loop.
+// continuation: the exact Shape.cpp decoder donor uses a width-tested loop
+// with a top x guard, and orders arms as 0-group, 2, 1-group, 3, then 6+.
+// Restoring that source family, plus named rowtab/data-offset pointers,
+// improved the size-preserving result from 303 to 277 strict bytes.
+// register hints and a combined opcode read were duplicates; using shape as
+// the cursor worsened the result. Keep the typed donor-shaped reconstruction.
 // probe 2: combined width/x loop gate plus byte opcode; size moved closer but
 // VC5 added an extra opcode reload and kept the parameter registers swapped.
 // probe 3: split opcode read/increment; emitted code was unchanged.
@@ -48,23 +54,28 @@ int RGE_View::sprite_check(uchar* shape, Shape_Info* info, int x, int y)
     uchar* p;
     uchar code;
     unsigned int n;
+    Shape_Info* shape_info = info;
 
-    if (info != 0) {
+    if (shape_info != 0) {
         if (x >= 0) {
-            width = info->Width;
+                    width = shape_info->Width;
             if (x < width) {
                 if (y >= 0) {
-                    if (y < info->Height) {
-                        start = *(short*)(shape + info->Shape_Outline_Offset + y * 4);
-                        right_pad = *(short*)(shape + info->Shape_Outline_Offset + y * 4 + 2);
+                    if (y < shape_info->Height) {
+                        uchar* outline = shape + shape_info->Shape_Outline_Offset;
+                        start = *(short*)(outline + y * 4);
+                        right_pad = *(short*)(outline + y * 4 + 2);
                         if (start >= 0) {
                             if (x >= start) {
                                 if (x <= width - right_pad) {
-                                    p = shape + *(int*)(shape + info->Shape_Data_Offsets + y * 4);
+                                    int* data_offsets = (int*)(shape + shape_info->Shape_Data_Offsets);
+                                    p = shape + data_offsets[y];
                                     if (start < width) {
-                                        while (start <= x) {
-                                        code = *p;
-                                        ++p;
+                                        while (start < width) {
+                                            if (x < start) {
+                                                return 1;
+                                            }
+                                        code = *p++;
                                         switch (code & 0x0F) {
                                             case 0:
                                             case 4:
@@ -75,18 +86,18 @@ int RGE_View::sprite_check(uchar* shape, Shape_Info* info, int x, int y)
                                                 if (x < start) goto ret2;
                                                 p += n;
                                                 break;
+                                            case 2:
+                                                n = (((unsigned int)code) << 4) | (unsigned int)(*p++);
+                                                start += n;
+                                                if (x < start) goto ret2;
+                                                p += n;
+                                                break;
                                             case 1:
                                             case 5:
                                             case 9:
                                             case 13:
                                                 n = ((unsigned int)code) >> 2;
                                                 start += n;
-                                                break;
-                                            case 2:
-                                                n = (((unsigned int)code) << 4) | (unsigned int)(*p++);
-                                                start += n;
-                                                if (x < start) goto ret2;
-                                                p += n;
                                                 break;
                                             case 3:
                                                 n = (((unsigned int)code) << 4) | (unsigned int)(*p++);
@@ -117,9 +128,6 @@ int RGE_View::sprite_check(uchar* shape, Shape_Info* info, int x, int y)
                                             case 15:
                                                 goto ret0;
                                             default:
-                                                return 1;
-                                            }
-                                            if (start >= width) {
                                                 return 1;
                                             }
                                         }

@@ -27,6 +27,8 @@
 // scalar copy temporaries grew the body to 477-483 bytes and was rolled back.
 // A PDB-guided tail assignment order kept the 357-byte diff but did not improve
 // positional output; the aggregate source order remains the clean basis.
+// Fresh claim probe: binary-observed per-member RECT copy order grew the body
+// by 58 bytes and moved the first mismatch to the prologue; rolled back.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
 
 typedef unsigned long ulong;

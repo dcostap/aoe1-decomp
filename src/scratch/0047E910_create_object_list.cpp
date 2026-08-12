@@ -28,12 +28,19 @@
 // - Resumed after the host crash with the clean pin current and no new claim
 //   probes. No evidence-backed natural source lead remains; retain this typed
 //   candidate and pause rather than repeat prior codegen variants.
+// - Applied the exact list ABI donor: TListDialog ends at +0x4AC and
+//   list_type owns +0x4AC; emitted code stayed unchanged.
+// - Removed the noncanonical RGE_Base_Game pre-vptr gap and used the binary
+//   line-159 combined get_player guard; both emitted the same code.
+// - An int i/j width probe moved the first bytes closer but lost the 0x10
+//   frame and 37 bytes, so the short typed locals were restored.
 
 #include "..\..\include\game_globals.h"
 
 class TListDialog {
 public:
     virtual ~TListDialog();
+    char gap_04[0x4A8];
 };
 
 class rdlg_list_info {
@@ -60,7 +67,6 @@ public:
 
 class RGE_Base_Game {
 public:
-    char gap_00[4];
     virtual ~RGE_Base_Game();
     virtual int run();
     virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
@@ -76,7 +82,7 @@ extern RGE_Base_Game* rge_base_game;
 
 class RGE_Dialog_List : public TListDialog {
 public:
-    char gap_04[0x4AC];
+    int list_type;                // +0x4AC
     short list_size;              // +0x4B0
     short list_line;              // +0x4B2
     rdlg_list_info* list_info;    // +0x4B4
@@ -93,8 +99,7 @@ int RGE_Dialog_List::create_object_list()
     short num_objects;
     int cnt;
 
-    player = rge_base_game->get_player();
-    if (!player)
+    if ((player = rge_base_game->get_player()) == 0)
         return 0;
 
     this->list_size = 1;

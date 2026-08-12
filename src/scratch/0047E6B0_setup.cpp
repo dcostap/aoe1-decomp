@@ -31,6 +31,9 @@
 // - Remaining structural hunk is original EDI=list_info; rebuilt EAX=list_info,
 //   EDI=offset, then add. It shifts the seven-byte loop suffix; no ABI or call
 //   mismatch remains.
+// - Replaced the flattened vtable with the exact panel/list donor hierarchy and
+//   corrected TScreenPanel's TEasy_Panel base; emitted code was unchanged, so
+//   the natural typed hierarchy is retained.
 
 #include <stdlib.h>
 #include <string.h>
@@ -38,39 +41,64 @@
 class TPanel {
 public:
     virtual ~TPanel() {}
-    virtual void vf01() {}  virtual void vf02() {}  virtual void vf03() {}
-    virtual void vf04() {}  virtual void vf05() {}  virtual void vf06() {}
-    virtual void vf07() {}  virtual void vf08() {}  virtual void vf09() {}
-    virtual void vf0A() {}  virtual void vf0B() {}  virtual void vf0C() {}
-    virtual void vf0D() {}  virtual void vf0E() {}  virtual void vf0F() {}
-    virtual void vf10() {}  virtual void vf11() {}  virtual void vf12() {}
-    virtual void vf13() {}  virtual void vf14() {}  virtual void vf15() {}
-    virtual void vf16() {}  virtual void vf17() {}  virtual void vf18() {}
-    virtual void vf19() {}  virtual void vf1A() {}  virtual void vf1B() {}
-    virtual void vf1C() {}  virtual void vf1D() {}  virtual void vf1E() {}
-    virtual void vf1F() {}  virtual void vf20() {}  virtual void vf21() {}
-    virtual void vf22() {}  virtual void vf23() {}  virtual void vf24() {}
-    virtual void vf25() {}  virtual void vf26() {}  virtual void vf27() {}
-    virtual void vf28() {}  virtual void vf29() {}  virtual void vf2A() {}
-    virtual void vf2B() {}  virtual void vf2C() {}  virtual void vf2D() {}
-    virtual void vf2E() {}  virtual void vf2F() {}  virtual void vf30() {}
-    virtual void vf31() {}  virtual void vf32() {}  virtual void vf33() {}
-    virtual void vf34() {}  virtual void vf35() {}  virtual void vf36() {}
-    virtual void vf37() {}  virtual void vf38() {}  virtual void vf39() {}
-    virtual void vf3A() {}  virtual void vf3B() {}  virtual void vf3C() {}
-    virtual void vf3D() {}  virtual void vf3E() {}  virtual void vf3F() {}
-    virtual void vf40() {}  virtual void vf41() {}  virtual void vf42() {}
-    virtual void vf43() {}  virtual void vf44() {}  virtual void vf45() {}
-    virtual void vf46() {}  virtual void vf47() {}  virtual void vf48() {}
-    virtual void vf49() {}  virtual void vf4A() {}  virtual void vf4B() {}
-    virtual void vf4C() {}  virtual void vf4D() {}
+    virtual void setup() {}
+    virtual void set_rect_1() {}  virtual void set_rect_2() {}
+    virtual void set_color() {}  virtual void set_active() {}
+    virtual void set_positioning() {}  virtual void set_fixed_position() {}
+    virtual void set_redraw() {}  virtual void set_overlapped_redraw() {}
+    virtual void draw_setup() {}  virtual void draw_finish() {}
+    virtual void draw() {}  virtual void draw_rect() {}
+    virtual void draw_offset() {}  virtual void draw_rect2() {}
+    virtual void draw_offset2() {}  virtual void paint() {}
+    virtual void wnd_proc() {}  virtual void handle_idle() {}
+    virtual void handle_size() {}  virtual void handle_paint() {}
+    virtual void handle_key_down() {}  virtual void handle_char() {}
+    virtual void handle_command() {}  virtual void handle_user_command() {}
+    virtual void handle_timer_command() {}  virtual void handle_scroll() {}
+    virtual void handle_mouse_down() {}  virtual void handle_mouse_move() {}
+    virtual void handle_mouse_up() {}  virtual void handle_mouse_dbl_click() {}
+    virtual void mouse_move_action() {}  virtual void mouse_left_down_action() {}
+    virtual void mouse_left_hold_action() {}  virtual void mouse_left_move_action() {}
+    virtual void mouse_left_up_action() {}  virtual void mouse_left_dbl_click_action() {}
+    virtual void mouse_right_down_action() {}  virtual void mouse_right_hold_action() {}
+    virtual void mouse_right_move_action() {}  virtual void mouse_right_up_action() {}
+    virtual void mouse_right_dbl_click_action() {}  virtual void key_down_action() {}
+    virtual void char_action() {}
+    virtual long action(TPanel*, long, unsigned long, unsigned long) { return 0; }
+    virtual void vfB8() {}  virtual void vfBC() {}  virtual void vfC0() {}
+    virtual void vfC4() {}  virtual void vfC8() {}  virtual void vfCC() {}
+    virtual void vfD0() {}  virtual void vfD4() {}  virtual void vfD8() {}
+    virtual void vfDC() {}
 
     char gap_04[0xD4];
     int error_code;                 // +0x0D8
     char gap_DC[0x18];
 };
 
-class TDialogPanel : public TPanel {
+class TEasy_Panel : public TPanel {
+public:
+    virtual ~TEasy_Panel() {}
+    virtual void draw_background(int) {}
+    virtual void set_ideal_size(long, long) {}
+    virtual int create_button(TPanel*, void**, long, long, long, long, long, long, long, long, long) { return 0; }
+    virtual int create_button_text(TPanel*, void**, char*, char*, long, long, long, long, long, long, long) { return 0; }
+    virtual int create_check_box(TPanel*, void**, long, long, long, long, long, long) { return 0; }
+    virtual int create_radio_button(TPanel*, void**, long, long, long, long, long, long) { return 0; }
+    virtual int create_text_number(TPanel*, void**, int, long, long, long, long, long, int, int, int) { return 0; }
+    virtual int create_text_list(TPanel*, void**, char**, long, long, long, long, long, long, int, int) { return 0; }
+    virtual int create_text(TPanel*, void**, char*, long, long, long, long, long, int, int, int) { return 0; }
+    virtual int create_input(TPanel*, void**, char*, short, long, long, long, long, long, long) { return 0; }
+    virtual int create_edit(TPanel*, void**, char*, short, long, long, long, long, long, long, int, int) { return 0; }
+    virtual int create_drop_down(TPanel*, void**, long, long, long, long, long, long, long) { return 0; }
+    virtual int create_list(TPanel*, void**, long, long, long, long, long) { return 0; }
+    virtual int create_scrollbar(TPanel*, void**, TPanel*, long, long, long, long, long) { return 0; }
+    virtual int create_auto_scrollbar(void**, TPanel*, long) { return 0; }
+    virtual int create_vert_slider(TPanel*, void**, long, long, long, long, long, long, long) { return 0; }
+    virtual int create_horz_slider(TPanel*, void**, long, long, long, long, long, long, long) { return 0; }
+    virtual void position_panel(TPanel*, long, long, long, long) {}
+};
+
+class TDialogPanel : public TEasy_Panel {
 public:
     char gap_F4[0x384];
     void* dlg_wnd;                  // +0x478
@@ -79,6 +107,9 @@ public:
     int input_font_id;              // +0x484
     int button_font_id;             // +0x488
     int button_sound_id;            // +0x48C
+
+    virtual int setup(TPanel*, TPanel*, long, long, unsigned char, int) { return 0; }
+    virtual int setup(TPanel*, TPanel*, long, long, char*, long, int) { return 0; }
 };
 
 class TListDialog : public TDialogPanel {
@@ -92,6 +123,9 @@ public:
     char gap_4A6[0x02];
     char* list_name;                // +0x4A8
 
+    virtual short get_list_id() { return 0; }
+    virtual char* get_list_name() { return 0; }
+
     long setup(TPanel* param_1, char* param_2, long param_3,
                long param_4, long param_5, long param_6, long param_7,
                long param_8, long param_9, char* param_10,
@@ -101,7 +135,7 @@ public:
                long param_22);
 };
 
-class TScreenPanel : public TPanel {
+class TScreenPanel : public TEasy_Panel {
 };
 
 struct rdlg_list_info {

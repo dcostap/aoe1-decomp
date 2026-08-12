@@ -17,6 +17,10 @@
 //   only changed x87 scheduling.  Removed it; retain the natural typed
 //   +1.0/short-dimension reconstruction.  DAT_00570638 is -1.0, and the
 //   original map loads are signed word loads.
+// - Reordered the x-offset assignment before y conversion; VC5 emitted the
+//   same code, so the clean source shape is unchanged.
+// - Named a repeated double y-base to model the observed qword temporary;
+//   it grew the body by 17 bytes and was rolled back.
 
 class RGE_Map {
 public:

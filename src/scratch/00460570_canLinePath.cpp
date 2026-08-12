@@ -17,6 +17,11 @@
 //     342 bytes. Scoped scan locals improved bytes to 307 but harmed CFG;
 //     restore the natural function-scope source. Remaining blocker is the
 //     original 0x14 frame with EBX=this versus the rebuilt 0x18 frame/home.
+// 12: direct tile casts recovered the 0x14 frame but lost one __ftol call and
+//     changed short-circuit CFG; a volatile numSteps spill reached 292 bytes
+//     but changed call placement and retained diagnostic-only scaffolding.
+// 13: reordered unconditional tile casts; no productive register or frame
+//     change. Restored the natural named tile temporaries.
 
 #include <math.h>
 

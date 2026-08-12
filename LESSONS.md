@@ -156,6 +156,9 @@ only the matching paragraphs and their section heading.
 - Redundant predicates may be real source/codegen: `x==0 || x>=0` preserves adjacent `jz`/`jl`; simplify only if asm has one check.
 - `state<=2` versus `state<3`, member-left versus parameter-left, and `var==1` versus truthy `var` select different immediates, compare operands, and branch polarity. Match per site; one int 0/1 variable can legitimately use both `cmp reg,1` and `test reg,reg`.
 - Boolean/ternary forms select `setcc`, `neg/sbb`, or `sbb/and`; probe natural ternary, guard-return, and explicit `if` rather than handwritten arithmetic.
+- For VC5 rectangle overlap code, update the four output bounds in place. Spell
+  bounds as one boolean expression with `||` for alternate edge hits. This can
+  restore the original coordinate register schedule and shared hit-return tail.
 - Explicit `if/else` byte assignments can yield `setcc byte` without a preceding whole-register zero.
 - Adjacent-constant call-argument ternaries often become branchless `neg/sbb/add`; duplicate the full call in `if/else` arms to retain binary-observed branching and let VC5 merge the common tail.
 - A call+return in each literal dispatcher arm can tail-merge to per-arm `push imm; jmp shared_call`; a selector local instead emits `mov reg,imm`.

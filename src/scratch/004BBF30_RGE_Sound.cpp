@@ -81,6 +81,17 @@
 // TDigital constructor surface.  The same-TU allocator block still requires
 // a diagnostic count alias to reverse the post-calloc compare/store order.
 // No period-plausible direct-member source lead changes the living source.
+// Current worker probe 43: delayed assignment through a calloc-result local
+// added a branch and reached 315 bytes; rolled back.
+// Current worker probe 44: restored the typed short count alias with direct
+// member calloc assignment; reached 306 bytes and six differing bytes, with
+// only compare/store order reversed.  Kept as diagnostic evidence.
+// Current worker probes 45-48: sizeof allocator spelling, a sounds reference,
+// a short count reference, and unsigned calloc declarations were duplicates or
+// compile-invalid.  No probe changed the six-byte hunk.
+// Final clean source: direct typed member reads remain the policy source.  The
+// best diagnostic alias preserves the 0x3C-byte TDigital constructor ABI and
+// all ten call targets, but it is not retained as living source.
 
 #include "..\..\include\game_globals.h"
 

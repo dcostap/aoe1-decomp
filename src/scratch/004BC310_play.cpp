@@ -83,6 +83,18 @@
 // Worker tu-sound-BC310: exact donors and DirectSound declarations confirm
 // typed Sound_Info ownership and declaration-only TDigital methods.  No
 // evidence-backed natural lead remains for the final register-color drift.
+// Probe 44: adding <stdio.h> as period Sound.cpp context was a codegen
+// duplicate; rolled back.
+// Probe 45: a 16-case standard-header context lab over stdio/string/stdlib/
+// malloc produced one 346-byte group, all at the same 21-byte drift.
+// Probe 46: replacing the stable sound_count local with direct member count
+// uses changed size to 358 bytes and introduced a wrong log-call relocation;
+// rolled back.
+// Probe 47: a block-local typed records base for scan percent changed size to
+// 354 bytes and 282 differing bytes; this duplicated an earlier bad basin and
+// was rolled back.
+// Probe 48: a selected-record pointer for the found arm changed size to 320
+// bytes and 321 differing bytes; rolled back to the canonical indexed source.
 // Probe 41 resumed: the interrupted same-TU declaration-only TDigital context
 // probe is current; rebuild was a codegen duplicate at 346 bytes and 21
 // differing bytes.  Retained the canonical typed source and closed the lead.

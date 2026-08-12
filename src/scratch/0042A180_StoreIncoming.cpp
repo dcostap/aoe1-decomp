@@ -19,6 +19,8 @@
 // encoding by one byte; separate typed entry/base pointers are compiler duplicates.
 // Direct repeated field accesses destroy the earlier CFG, so the simple HOLDER
 // entry form remains. Do not reintroduce byte-offset cursors for the cold report.
+// Readiness audit found that each cold-report iteration must reload OnHold after
+// Log returns. This preserves replacement or invalidation by the callback.
 
 #include <string.h>
 
@@ -82,14 +84,12 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
     L->Log("+++ DID NOT STORE:  ");
     if (i > 0x1EB) {
         L->Log("HOLD FULL WARNING.  COUNT=%d", i);
-        HOLDER* scan_h;
         i = 0;
-        scan_h = this->OnHold;
         do {
+            HOLDER* scan_h = &this->OnHold[i];
             if (scan_h->Length != 0) {
                 L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, scan_h->Serial, scan_h->dcoFromID, scan_h->Length, (int)scan_h->HoldMsg[0], (int)scan_h->HoldMsg[0], (int)scan_h->HoldMsg[1]);
             }
-            ++scan_h;
             i++;
         } while (i < 501);
     }

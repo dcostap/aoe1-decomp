@@ -20,6 +20,8 @@
 // restored the natural typed indexed for-loop; current best clean source remains diff 189 with all seven calls aligned.
 // recovery probe: split the two negative cursor gates around a shared success label;
 // the diff stayed 189 but size and CFG shape worsened, so the clean indexed source is restored.
+// Fresh claim probe: an early success return for Mouse_Mode/Max_Cursors moved
+// the first mismatch to the EH prologue and worsened the structural diff; rolled back.
 
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
