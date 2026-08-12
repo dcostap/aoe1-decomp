@@ -1,112 +1,197 @@
 // VA: 0043FD50 TMessageDialog::setup (main)
 // Dlg_msg.cpp lines 71-165
 
-// attempt 1: main setup with text + button creation
-// 464/631 bytes (73.5%)
-// Complex: jump tables, button creation loop, virtual dispatch
-// Left in scratch.
+// attempt 1 baseline: simple panel stubs, but wrong virtual slots and setup order
+// attempt 2: restored the period panel virtual surface; create_text is vt[64]
+// and create_button(char*, char*) is vt[59]. Base setup uses p4/p8; p5 is
+// not read by the original body. Button/text ownership remains named.
+// attempt 3: nested renderArea evaluation kept the base setup call ordered.
+// attempt 4: reserved the two unused text overload slots to select vt[64].
+// attempt 5: shared the button text and hotkey switch tail.
+// attempt 6: a counted for loop hoisted the create_button function pointer.
+// attempt 7: an info_id local had no emitted-code effect; it was removed.
+// attempt 8: the spacing guard variant was rolled back; the original source
+// shape uses the prior < 1 form in this compiler basin.
+// attempt 9: corrected create_button arguments to x, y, button width, height.
+// attempt 10: separate adjacent button fields emitted the same code.
+// Best current result: exact size and ordered call parity; remaining drift is
+// register scheduling and prologue layout, first mismatch at +0005.
+
+#define VPAD1(n) virtual void vpad##n();
+#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
+#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
+#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
+#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
+#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
 class TDrawArea;
+class TTextPanel;
+class TButtonPanel;
 
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
-    TDrawArea* renderArea(TPanel* param);
-    char gap_04[0x3C];
+    VPAD32(1) VPAD8(33) VPAD4(41)
+    virtual long action(TPanel* param_1, long param_2,
+        unsigned long param_3, unsigned long param_4);
+    char gap_04[0x10];
+    int width;                    // +0x14
+    int height;                   // +0x18
+    char gap_1C[0x24];
+    VPAD4(46)
+    virtual void set_tab_order(TPanel* first, TPanel* second);
+    virtual void set_tab_order(TPanel** list, short count);
+
+    TDrawArea* renderArea();
+    void set_curr_child(TPanel* child);
 };
 
 class TEasy_Panel : public TPanel {
 public:
     virtual ~TEasy_Panel();
+    VPAD4(51) VPAD1(55)
+    virtual void draw_background(int param_1);
+    virtual void set_ideal_size(long param_1, long param_2);
+    virtual int create_button(TPanel* parent, TButtonPanel** out,
+        long p3, long p4, long p5, long p6, long p7, long p8,
+        long p9, long p10, long p11);
+    virtual int create_button(TPanel* parent, TButtonPanel** out,
+        char* p3, char* p4, long p5, long p6, long p7, long p8,
+        long p9, long p10, long p11);
+    virtual int create_check_box(TPanel* parent, TButtonPanel** out,
+        long p3, long p4, long p5, long p6, long p7, long p8);
+    virtual int create_radio_button(TPanel* parent, TButtonPanel** out,
+        long p3, long p4, long p5, long p6, long p7, long p8);
+    // The preceding text overloads occupy vt[62] and vt[63].
+    VPAD1(63)
+    virtual int create_text(TPanel* parent, TTextPanel** out, char* text,
+        long p4, long p5, long p6, long p7, long p8,
+        int p9, int p10, int p11);
+    VPAD8(65)
 };
 
 class TDialogPanel : public TEasy_Panel {
 public:
     virtual ~TDialogPanel();
-    virtual int setup(TDrawArea* area, TPanel* p1, long p2, long p3, char* p4, long p5, int p6);
+    virtual int setup(TDrawArea* draw_area, TPanel* parent,
+        long width, long height, char* info_file, long info_id, int flags);
 };
 
 class TButtonPanel : public TPanel {
 public:
-    virtual ~TButtonPanel();
-    void set_text(int id, int zero);
-};
-
-class TTextPanel : public TPanel {
-public:
-    virtual ~TTextPanel();
+    char gap_40[0x258];
+    int hotkey;       // +0x298
+    int hotkey_shift; // +0x29C
+    void set_text(short state, long string_id);
 };
 
 class TMessageDialog : public TDialogPanel {
 public:
-    TPanel* parent;
-    char gap_44[0x44C];
-    unsigned char msg_type;       // +0x490
+    TPanel* parent;       // +0x40
+    char gap_44[0x44C];    // +0x44 to +0x48F
+    unsigned char msg_type; // +0x490
     char gap_491[3];
-    TPanel* text;                 // +0x494
-    TPanel* button[3];            // +0x498, +0x49C, +0x4A0
-
-    int width;     // +0x14
-    int height;    // +0x18
+    TTextPanel* text;      // +0x494
+    TButtonPanel* button0; // +0x498
+    TButtonPanel* button1; // +0x49C
+    TButtonPanel* button2; // +0x4A0
 
     virtual ~TMessageDialog();
-    virtual long setup(TPanel* p1, char* p2, long p3, long p4, long p5,
-        unsigned char p6, int p7, long p8, long p9);
-    virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
-    
-    virtual int create_text(TPanel** out, char* text, long a, long b, long c,
-        long d, long e, int f, int g, int h);
-    virtual int create_button(TPanel** out, int id, int zero, long a, long b,
-        long c, long d, long e, int f, int g, int h);
+    long setup(TPanel* parent, char* info_file, long info_id,
+        long width, long unused, unsigned char dlg_type,
+        char* text, long button_width, long button_height);
 };
 
-long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4, long p5,
-    unsigned char p6, int p7, long p8, long p9) {
-    
-    button[0] = 0;
-    button[1] = 0;
-    button[2] = 0;
-    
-    msg_type = p6;
-    
-    TDrawArea* draw_area = TPanel::renderArea(p1);
-    int result = TDialogPanel::setup(draw_area, p1, p3, p4, p2, p5, 1);
-    if (result == 0) return 0;
-    
-    int h = this->height;
-    int btn_h = h;
-    int w = this->width;
-    
-    result = create_text(&text, (char*)p7, h - 6, w - 3, 1, 3, 3, 0x0B, 1, 1);
-    if (result == 0) return 0;
-    
-    int btn_count;
-    switch (msg_type) {
-        case 0: btn_count = 1; break;
-        case 1: btn_count = 3; break;
-        case 2: btn_count = 2; break;
-        default: return 0;
+long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
+    long p5, unsigned char p6, char* p7, long p8, long p9) {
+    button0 = 0;
+    button1 = 0;
+    button2 = 0;
+
+    if (TDialogPanel::setup(p1->renderArea(), p1, p4, p8, p2, p3, 1) == 0) {
+        return 0;
     }
-    
-    int spacing = 20;
-    
-    for (int i = 0; i < btn_count; i++) {
-        btn_h -= spacing;
-        result = create_button(&button[i], 0xFA1, 0, w, spacing, btn_h, 0x0B, btn_h, 0, 0, 0);
-        if (result == 0) return 0;
-        
-        if (msg_type == 0) {
-            ((TButtonPanel*)button[0])->set_text(0xFA1, 0);
-        } else if (msg_type == 1) {
-            ((TButtonPanel*)button[0])->set_text(0xFA1, 0);
-            ((TButtonPanel*)button[1])->set_text(0xFA2, 0);
-            ((TButtonPanel*)button[2])->set_text(0xFA3, 0);
-        } else if (msg_type == 2) {
-            ((TButtonPanel*)button[0])->set_text(0xFA1, 0);
-            ((TButtonPanel*)button[1])->set_text(0xFA2, 0);
+
+    msg_type = p6;
+    if (create_text((TPanel*)this, &text, p7, 3, 3,
+            width - 3, height - p9 - 6, 0x0B, 1, 1, 1) == 0) {
+        return 0;
+    }
+
+    int num_buttons;
+    switch (msg_type) {
+    case 0:
+        num_buttons = 1;
+        break;
+    case 1:
+    case 2:
+    case 3:
+        num_buttons = 2;
+        break;
+    case 4:
+        num_buttons = 3;
+        break;
+    default:
+        return 0;
+    }
+
+    int space = width - num_buttons * p8;
+    if (space < 1) {
+        space = 0;
+    } else {
+        space /= num_buttons + 1;
+    }
+
+    int y = height - p9 - 7;
+    if (num_buttons > 0) {
+        TButtonPanel** next = &button0;
+        int x = space;
+        for (int i = 0; i < num_buttons; ++i) {
+            if (create_button((TPanel*)this, next, (char*)0, (char*)0,
+                    x, y, p8, p9, 0x0B, 0, 0) == 0) {
+                return 0;
+            }
+            x += space + p8;
+            ++next;
         }
     }
-    
+
+    long button_text;
+    TButtonPanel* hotkey_button;
+    switch (msg_type) {
+    case 0:
+        button0->set_text(0, 0xFA1);
+        goto set_tab_order;
+    case 1:
+        button0->set_text(0, 0xFA1);
+        button_text = 0xFA2;
+        break;
+    case 2:
+        button0->set_text(0, 0xFA3);
+        button_text = 0xFA4;
+        break;
+    case 3:
+        button0->set_text(0, 0xFA5);
+        button_text = 0xFA7;
+        break;
+    case 4:
+        button0->set_text(0, 0xFA3);
+        button1->set_text(0, 0xFA4);
+        button2->set_text(0, 0xFA2);
+        hotkey_button = button2;
+        goto set_hotkey;
+        break;
+    default:
+        goto set_tab_order;
+    }
+
+    button1->set_text(0, button_text);
+    hotkey_button = button1;
+set_hotkey:
+    hotkey_button->hotkey = 0x1B;
+    hotkey_button->hotkey_shift = 0;
+set_tab_order:
+    set_tab_order((TPanel**)&button0, num_buttons);
+    set_curr_child(button0);
     return 1;
 }

@@ -1,112 +1,213 @@
-// 00459A90 RGE_Map::set_terrain
+// VA 00459A90 RGE_Map::set_terrain
+// Fresh typed reconstruction from map.cpp:2636-2705.
+// The rectangle uses short coordinates and clamps before terrain updates.
+// Each eligible tile is updated before its terrain objects are rebuilt.
+// Border recomputation runs before the final redraw request.
 // Attempt log:
-// initial low-level source from asm; model tile rows and terrain tables with raw offsets.
-// first build compiled but rebuilt .text was 640 bytes vs original/configured 649, so check_function stopped before compare.
-// fixed RGE_Map implicit vptr/base offset so width/height/rows/terrain_count landed at +8/+c/+8d8c/+8d90; early disassembly then used correct member offsets but still 640 bytes.
-// tried int source parameters to mirror original stack-slot dword writes and word compares; still 640 bytes and compiler kept EBP=this instead of original EDI=this.
-// tried explicit register map=this and using map throughout; VC5 still chose EBP=this, not original EDI, and size remained 640.
-// fixed final invalidate call to use expanded x2/y2 instead of saved original x2; size changed during experiments but did not reach comparable exact basin.
-// left in scratch: behavior model/calls are plausible, but codegen topology differs from entry (stack frame 0x1c vs original 0x14 and EBP=this vs EDI=this), not accepted_drift-safe.
+// - Replaced the prior raw-offset candidate with typed RGE_Map, RGE_Tile,
+//   terrain-set, and map-row ownership. The target reads tile_type at +4 and
+//   terrain_type at +5; terrain records use 0x198-byte entries.
+// - Direct terrain_types access produced the best typed structural basin:
+//   613 bytes, 0x10 frame, and all three calls aligned.
+// - The call-site bytes push the player home as create_terrain_object's fifth
+//   argument. The source keeps that binary-observed cast; it is not the old
+//   tile terrain value suggested by the decompiler.
+// - Explicit row/tile byte-offset locals were a codegen duplicate. Restored
+//   typed row indexing.
 
 class RGE_Player;
 class RGE_Game_World;
+class TShape;
+class RGE_Sound;
+
+struct RGE_TOB_Picts {
+    short count;
+    short animations;
+    short shape_index;
+};
+
+struct RGE_Tile {
+    char gap_00[4];
+    unsigned char tile_type;
+    unsigned char terrain_type;
+    char gap_06[18];
+};
+
+class RGE_Tile_Set {
+public:
+    unsigned char loaded;
+    unsigned char random;
+    char name[13];
+    char pict_name[13];
+    long resource_id;
+    TShape* shape;
+    RGE_Sound* sound;
+    unsigned char map_hi_color;
+    unsigned char map_med_color;
+    unsigned char map_low_color;
+    unsigned char map_lt_cliff_color;
+    unsigned char map_rt_cliff_color;
+    unsigned char passable_terrain;
+    unsigned char impassable_terrain;
+    unsigned char is_animated;
+    short animation_frames;
+    short pause_frames;
+    float interval;
+    float pause_between_loops;
+    short frame;
+    short draw_frame;
+    float animate_last;
+    unsigned char frame_changed;
+    unsigned char drawn;
+    RGE_TOB_Picts tiles[19];
+    short terrain_to_draw;
+    short rows;
+    short cols;
+    short borders[32];
+    short obj_types[30];
+    short obj_density[30];
+    unsigned char obj_placement_flag[30];
+    short num_obj_type;
+    unsigned char pad_end[2];
+};
 
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    char gap_04[4];
-    int width;              // +08
-    int height;             // +0c
-    char gap_10[0x8c-0x10];
-    char terrain_type[1];   // +8c, records are 0x198 apart
-    char gap_8d[0x8d8c-0x8d];
-    void** rows;            // +8d8c
-    short terrain_count;    // +8d90
+    RGE_Tile* map;
+    long map_width;
+    long map_height;
+    long world_width;
+    long world_height;
+    char tile_size_data[0x74];
+    RGE_Tile_Set terrain_types[32];
+    char border_types[0x5A00];
+    RGE_Tile** map_row_offset;
+    short num_terrain;
+    short num_borders;
+    short max_terrain;
+    short tile_width;
+    short tile_height;
+    short tile_half_height;
+    short tile_half_width;
+    short elev_height;
+    short cur_row;
+    short cur_col;
+    short block_beg_row;
+    short block_end_row;
+    short block_beg_col;
+    short block_end_col;
+    unsigned char any_frame_change;
+    char gap_8DAD[3];
+    unsigned char* search_map;
+    unsigned char** search_map_rows;
+    unsigned char map_visible_flag;
+    unsigned char fog_flag;
+    char gap_8DBA[2];
+    void* random_map;
+    RGE_Game_World* game_world;
+    void* map_zones;
+    void* unified_vis_map;
+    void* unit_manager;
 
-    void set_terrain(RGE_Player* player, RGE_Game_World* world, int x1, int y1, int x2, int y2, unsigned char terrain, unsigned char blend, void* arg9);
-    void sub_00458820(short x, short y, short terrain, RGE_Game_World* world, int a, int b, void* arg9, int c);
-    void sub_0045A030(short x, short y);
-    void sub_00455CB0(short x1, short y1, short x2, short y2, int flag);
+    void create_terrain_object(RGE_Player* player, RGE_Game_World* world,
+                               short row, short col, short old_terrain,
+                               int remove_now, int min_obj_id, int max_obj_id);
+    void get_border_type(short x, short y);
+    void request_redraw(int x0, int y0, int x1, int y1, unsigned char value);
+
+    void set_terrain(RGE_Player* player, RGE_Game_World* world,
+                     short x1, short y1, short x2, short y2,
+                     unsigned char terrain, unsigned char blend, int arg9);
 };
 
-void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, int x1, int y1, int x2, int y2, unsigned char terrain, unsigned char blend, void* arg9)
+void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
+                          short x1, short y1, short x2, short y2,
+                          unsigned char terrain, unsigned char blend, int arg9)
 {
-    register RGE_Map* map = this;
-    unsigned short t = terrain;
-    if ((short)t >= map->terrain_count) return;
+    RGE_Map* map = this;
+    short terrain_id;
 
-    unsigned int ti = terrain;
-    unsigned int idx = ((ti << 4) + ti) * 3;
-    char* trec = (char*)map + idx * 8;
-    if (*(unsigned char*)(trec + 0x8c) == 0) {
-        short base = *(short*)(trec + 0x144);
-        if (base <= -1) return;
-        int bi = base;
-        unsigned int bidx = ((bi << 4) + bi) * 3;
-        if (*(unsigned char*)((char*)map + bidx * 8 + 0x8c) != 1) return;
-    }
+    if ((short)(unsigned char)terrain < map->num_terrain) {
+        terrain_id = (short)(unsigned char)terrain;
+        if (map->terrain_types[(unsigned char)terrain].loaded != 0 ||
+            (map->terrain_types[(unsigned char)terrain].terrain_to_draw >= 0 &&
+             map->terrain_types[
+                 map->terrain_types[(unsigned char)terrain].terrain_to_draw].loaded == 1)) {
+            if (y1 > y2) {
+                short temp = y1;
+                y1 = y2;
+                y2 = temp;
+            }
+            if (x1 > x2) {
+                short temp = x1;
+                x1 = x2;
+                x2 = temp;
+            }
 
-    if ((short)y1 > (short)y2) { int tmp = y1; y1 = y2; y2 = tmp; }
-    if ((short)x1 > (short)x2) { int tmp = x1; x1 = x2; x2 = tmp; }
+            if (y1 < 0)
+                y1 = 0;
+            if ((int)y2 >= map->map_height)
+                y2 = (short)(map->map_height - 1);
+            if (x1 < 0)
+                x1 = 0;
+            if ((int)x2 >= map->map_width)
+                x2 = (short)(map->map_width - 1);
 
-    if (y1 < 0) y1 = 0;
-    if ((short)y2 >= map->height) y2 = (short)(map->height - 1);
-    if (x1 < 0) x1 = 0;
-    if ((short)x2 >= map->width) x2 = (short)(map->width - 1);
-
-    int start_y = y1;
-    int start_x = x1;
-
-    if (blend || player != 0) {
-        int yy = y1;
-        if ((short)yy <= (short)y2) {
-            int rowoff = (int)yy * 4;
-            do {
-                short xx = x1;
-                char* tile = (char*)map->rows[yy] + ((int)x1 * 24) + 5;
-                if (xx <= x2) {
-                    do {
-                        unsigned char old = tile[-1];
-                        int c = old;
-                        int off = (c + ((int)terrain << 2) * 17 + 0x23) * 3;
-                        if (*(short*)((char*)map + off * 2) > 0) {
-                            unsigned char val = tile[0];
-                            unsigned short cur = val & 0x1f;
-                            if (cur != t) {
-                                if (blend) {
-                                    tile[0] = (blend ^ val) & 0x1f ^ val;
+            if ((blend != 0 || player != 0) && y1 <= y2) {
+                short maprow = y1;
+                do {
+                    short mapcol = x1;
+                    RGE_Tile* tile = map->map_row_offset[maprow] + mapcol;
+                    if (mapcol <= x2) {
+                        do {
+                            if (map->terrain_types[(unsigned char)terrain].tiles[
+                                    tile->tile_type].count > 0) {
+                                unsigned char old_value = tile->terrain_type;
+                                short old_terrain = (short)(old_value & 0x1F);
+                                if (old_terrain != terrain_id) {
+                                    if (blend != 0) {
+                                        tile->terrain_type =
+                                            (unsigned char)((blend ^ old_value) & 0x1F) ^ old_value;
+                                    }
+                                }
+                                if (player != 0) {
+                                    map->create_terrain_object(player, world,
+                                        maprow, mapcol, (short)(long)player,
+                                        arg9, -1, -1);
                                 }
                             }
-                            if (player) {
-                                map->sub_00458820(xx, yy, (short)cur, world, 0xffffffff, 0xffffffff, arg9, x1);
-                            }
-                        }
-                        xx++;
-                        tile += 24;
-                    } while (xx <= x2);
-                }
-                yy++;
-            } while ((short)yy <= (short)y2);
+                            ++mapcol;
+                            ++tile;
+                        } while (mapcol <= x2);
+                    }
+                    ++maprow;
+                } while (maprow <= y2);
+            }
+
+            if (y1 > 0)
+                --y1;
+            if ((int)y2 < map->map_height - 1)
+                ++y2;
+            if (x1 > 0)
+                --x1;
+            if ((int)x2 < map->map_width - 1)
+                ++x2;
+
+            short border_row = y1;
+            if (border_row <= y2) {
+                do {
+                    short border_col = x1;
+                    if (border_col <= x2) {
+                        do {
+                            map->get_border_type(border_col, border_row);
+                            ++border_col;
+                        } while (border_col <= x2);
+                    }
+                    ++border_row;
+                } while (border_row <= y2);
+            }
+            map->request_redraw(x1, y1, x2, y2, 0);
         }
     }
-
-    if (y1 > 0) y1--;
-    if ((short)y2 < map->height - 1) y2++;
-    if (x1 > 0) x1--;
-    if ((short)x2 < map->width - 1) x2++;
-
-    short yy2 = y1;
-    if (yy2 <= y2) {
-        do {
-            short xx2 = x1;
-            if (xx2 <= x2) {
-                do {
-                    map->sub_0045A030(xx2, yy2);
-                    xx2++;
-                } while (xx2 <= x2);
-            }
-            yy2++;
-        } while (yy2 <= y2);
-    }
-    map->sub_00455CB0(start_x, start_y, x2, y2, 0);
 }

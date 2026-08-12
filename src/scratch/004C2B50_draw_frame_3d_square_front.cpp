@@ -1,80 +1,169 @@
 // Attempt log for 004C2B50 RGE_Static_Object::draw_frame_3d_square_front
-// try 1: natural reconstruction from packet/decompiler with local stubs and IAT-style extern pointers; exact size but owner/master swapped and sx/sy narrowed.
-// try 2: fix object field order, virtual slot, and use int sx/sy; first mismatch at offset 27 due movsx vs 16-bit add shape.
-// try 3: compute sx/sy from int params in separate statements; int params improved but still movsx offset loads.
-// try 4: make screen offsets unsigned short; much worse, rolled back.
-// try 5: restore signed offsets.
-// try 6: /Oy- flag probe; too small 640B, rolled back.
-// try 7: /O1 flag probe; too small 640B, rolled back.
-// try 8: reviewed draw/get_point ordering; broad structure follows original but register/offset-load basin differs.
-// try 9: reviewed final FillRect formulas; behavior likely approximate, not safe for drift.
-// try 10: kept best exact-size default build.
-// BLOCKER: exact 668B size but broad mismatch from early screen-offset calculation and downstream get_point/FPU scheduling. Original uses partial 16-bit loads into cx/dx then adds to edi/ebx; rebuilt sign-extends offsets before add. Not accepted_drift-safe.
+// Prior attempts matched the 668-byte size but used an approximate geometry
+// surface. The owner, master, and health-bar fields were not canonical.
+// Fresh reconstruction: use the period class fields and the neighboring
+// square-frame source shape before testing code-generation variants.
+// Probe summary: int draw parameters plus short get_point coordinates and
+// parameter mutation reached the best 671B / 104-byte mismatch. The ABI-clean
+// short-parameter form widened the result to 675B / 552 bytes and was rolled
+// back. Remaining mismatch starts in VC5 geometry-load order and register
+// allocation; calls, frame, CFG, and the central draw block are aligned.
 
-class TDrawArea { public: void* pad[14]; void* DrawDc; void Unlock(char*); void* GetDc(char*); void ReleaseDc(char*); unsigned char Lock(char*, int); void FillRect(long,long,long,long,long); };
-class RGE_Map { public: void get_point(short*, short*, float, float, float, short, short); };
-class World { public: char pad[0x28]; RGE_Map* map; };
-class Owner { public: char pad[0x3c]; World* world; };
-class Master { public: char pad[0x38]; float radius_z; char pad3c[0x70]; float outline_radius_x; float outline_radius_y; };
-class RGE_Static_Object { public: void* vt; int id; Master* master_obj; Owner* owner; char pad10[0x18]; short screen_x_offset; short screen_y_offset; char pad2c[4]; float frame; char pad34[0x44]; int groupCommanderValue; void draw_frame_3d_square_front(TDrawArea*, int, int); };
-class Game { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void* get_panel(); };
-extern Game* rge_base_game;
+class TDrawArea {
+public:
+    char gap_00[0x38];
+    void* DrawDc;
+    void Unlock(char* tag);
+    void* GetDc(char* tag);
+    void ReleaseDc(char* tag);
+    unsigned char Lock(char* tag, int wait);
+    void FillRect(long left, long top, long right, long bottom, long color);
+};
+
+class RGE_Map {
+public:
+    void get_point(short* out_x, short* out_y, float x, float y, float z,
+                   short screen_x, short screen_y);
+};
+
+class RGE_Game_World {
+public:
+    char gap_00[0x28];
+    RGE_Map* map;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x38];
+    RGE_Game_World* world;
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x22];
+    short hp;
+    float los;
+    char gap_2c[4];
+    float radius_x;
+    float radius_y;
+    float radius_z;
+    char gap_3c[0x70];
+    float outline_radius_x;
+    float outline_radius_y;
+    float outline_radius_z;
+};
+
+class RGE_Base_Game {
+public:
+    virtual void f00();
+    virtual void f04();
+    virtual void f08();
+    virtual void f0c();
+    virtual void f10();
+    virtual void f14();
+    virtual void f18();
+    virtual void f1c();
+    virtual void f20();
+    virtual void f24();
+    virtual void f28();
+    virtual void* get_panel();
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    char gap_10[0x18];
+    short screen_x_offset;
+    short screen_y_offset;
+    char gap_2c[4];
+    float hp;
+    char gap_34[0x44];
+    int groupCommanderValue;
+
+    void draw_frame_3d_square_front(TDrawArea* area, int x, int y);
+};
+
+extern RGE_Base_Game* rge_base_game;
 extern int startLoggingAI;
+
 extern "C" int (__stdcall* const SelectClipRgn)(void*, void*);
 extern "C" void* (__stdcall* const GetStockObject)(int);
 extern "C" void* (__stdcall* const SelectObject)(void*, void*);
 extern "C" int (__stdcall* const MoveToEx)(void*, int, int, void*);
 extern "C" int (__stdcall* const LineTo)(void*, int, int);
-extern "C" long __cdecl _ftol(void);
+
 static char tag[] = "stat_obj::draw_frame_3d_square_front";
 
-void RGE_Static_Object::draw_frame_3d_square_front(TDrawArea* area, int x, int y)
+void RGE_Static_Object::draw_frame_3d_square_front(
+    TDrawArea* area, int x, int y)
 {
-    short y1, x1, y2, x2;
-    float ry1;
-    float rx1;
-    float local_10;
-    RGE_Static_Object* self;
-    float rz2;
-    float local_4;
-    self = this;
+    short y1;
+    short x1;
+    short y2;
+    short x2;
+    float outline_y;
+    float outline_x;
+    float radius_z;
+    void* panel;
+    short screen_x;
+    short screen_y;
+
     RGE_Map* map = this->owner->world->map;
-    rx1 = this->master_obj->outline_radius_y;
-    local_10 = this->master_obj->outline_radius_x;
-    local_4 = this->master_obj->radius_z;
-    void* panel = rge_base_game->get_panel();
-    if (panel) {
+    outline_y = this->master_obj->outline_radius_y;
+    outline_x = this->master_obj->outline_radius_x;
+    radius_z = this->master_obj->radius_z;
+    panel = rge_base_game->get_panel();
+    if (panel != 0) {
         area->Unlock(tag);
-        int sx = x;
-        int sy = y;
-        sx += this->screen_x_offset;
-        sy += this->screen_y_offset;
-        if (area->GetDc(tag)) {
+        x += this->screen_x_offset;
+        y += this->screen_y_offset;
+        screen_x = x;
+        screen_y = y;
+        if (area->GetDc(tag) != 0) {
             SelectClipRgn(area->DrawDc, *(void**)((char*)panel + 0x88));
-            if (startLoggingAI == 1 && self->groupCommanderValue == self->id && self->id >= 0)
+            if (startLoggingAI == 1 &&
+                this->groupCommanderValue == this->id && this->id >= 0) {
                 SelectObject(area->DrawDc, GetStockObject(7));
-            else
+            } else {
                 SelectObject(area->DrawDc, GetStockObject(6));
-            map->get_point(&x1, &y1, -local_10, -rx1, 0.0f, sx, sy);
-            map->get_point(&x2, &y2, -local_10, rx1, 0.0f, sx, sy);
+            }
+
+            map->get_point(&x1, &y1, -outline_x, -outline_y, 0.0f,
+                          screen_x, screen_y);
+            map->get_point(&x2, &y2, -outline_x, outline_y, 0.0f,
+                          screen_x, screen_y);
             MoveToEx(area->DrawDc, x1, y1, 0);
             LineTo(area->DrawDc, x2, y2);
-            map->get_point(&x1, &y1, local_10, rx1, 0.0f, sx, sy);
-            map->get_point(&x2, &y2, -local_10, rx1, 0.0f, sx, sy);
+
+            map->get_point(&x1, &y1, outline_x, outline_y, 0.0f,
+                          screen_x, screen_y);
+            map->get_point(&x2, &y2, -outline_x, outline_y, 0.0f,
+                          screen_x, screen_y);
             MoveToEx(area->DrawDc, x1, y1, 0);
             LineTo(area->DrawDc, x2, y2);
             SelectClipRgn(area->DrawDc, 0);
             area->ReleaseDc(tag);
         }
+
         area->Lock(tag, 1);
-        int value = (int)this->frame;
+        int value = (int)this->hp;
         if (value > 0) {
-            map->get_point(&x1, &y1, local_10, -rx1, local_4, sx, sy);
-            if (value < 1) value = 0;
-            int denom = *(short*)((char*)self->owner + 0x26);
+            map->get_point(&x1, &y1, outline_x, -outline_y, radius_z,
+                          screen_x, screen_y);
+            if (value < 1)
+                value = 0;
+            int denom = this->master_obj->hp;
             if (denom > 0) {
-                area->FillRect(x1 - 12, y1 - 12 + 24, x1 - 1, y1 - 12 + 24, 0x97);
-                area->FillRect(x1 - 12, y1 - 12, ((value * 24) / denom) + x1 - 12, y1 - 1, 0x4a);
+                area->FillRect(x1 - 12, y1 - 12 + 24, x1 - 1,
+                               y1 - 12 + 24, 0x97);
+                area->FillRect(x1 - 12, y1 - 12,
+                               ((value * 24) / denom) + x1 - 12,
+                               y1 - 1, 0x4a);
             }
         }
     }

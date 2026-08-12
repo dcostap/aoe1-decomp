@@ -15,11 +15,12 @@
 //   final return path.
 // - control-flow: separate command-and-cost and command predicates reproduced
 //   the loaded command byte, duplicate test, and all earlier bytes.
-// - liveness and variant probes did not change the final empty-output tail.
-//   The retained source uses ordinary assignment and return statements.
-// - left in scratch: 15 bytes in the empty-output epilogue. Calls, memory
-//   effects, frame, size, and all earlier blocks match; the remaining lead is
-//   VC5 register choice for the final output pointer.
+// - liveness and per-arm-return probes did not change the final empty-output
+//   tail. A focused natural tail lab found that one if/else-if/else followed
+//   by one return makes VC5 carry the output pointer in ESI, matching all 15
+//   remaining bytes without compiler-steering code.
+// - exact: all 542 bytes, calls, memory effects, frame, and block topology
+//   match the oracle.
 
 #include <stdio.h>
 
@@ -111,12 +112,10 @@ char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
 
     if (command_str[0] != 0 && cost_str1[0] != 0) {
         sprintf(text, "%s %s", command_str, cost_str1);
-        return text;
-    }
-    if (command_str[0] != 0) {
+    } else if (command_str[0] != 0) {
         sprintf(text, "%s", command_str);
-        return text;
+    } else {
+        text[0] = 0;
     }
-    text[0] = 0;
     return text;
 }
