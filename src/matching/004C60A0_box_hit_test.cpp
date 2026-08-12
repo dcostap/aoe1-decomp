@@ -24,6 +24,12 @@
 //   bytes, both calls aligned, frame 0x10 and saved registers exact.  Remaining
 //   drift begins in the four derived-coordinate load/register schedule and
 //   shifts the late branch targets; no call-set or ownership uncertainty remains.
+// - Fresh retry: direct in-place updates of the four frame outputs restored
+//   the original coordinate register schedule and reduced the diff to 125 bytes.
+// - Fresh retry: parameter-left interior bounds matched the original compare
+//   operands and reduced the diff to 123 bytes.
+// - Fresh retry: each edge test as one boolean expression reproduced the
+//   shared hit-return tails.  The natural typed source is an exact 402-byte match.
 
 #include <stdlib.h>
 
@@ -77,38 +83,21 @@ unsigned char RGE_Static_Object::box_hit_test(short param_1, short param_2, shor
     short max_x;
     if (this->get_frame(min_x, min_y, max_x, max_y) == 0) return 0;
 
-    short sx = this->screen_x_offset;
-    short sy = this->screen_y_offset;
+    min_x = min_x + param_1 + this->screen_x_offset;
+    min_y = min_y + param_2 + this->screen_y_offset;
+    max_x = max_x + param_1 + this->screen_x_offset;
+    max_y = max_y + param_2 + this->screen_y_offset;
 
-    short v1;
-    short v2;
-    short v3;
-    short v4;
-    v1 = min_x + param_1 + sx;
-    v2 = min_y + param_2 + sy;
-    v3 = max_x + param_1 + sx;
-    v4 = max_y + param_2 + sy;
-
-    if (v1 >= param_3 && v1 <= param_5 && v2 >= param_4 && v2 <= param_6) return 1;
-    if (v3 >= param_3 && v3 <= param_5 && v4 >= param_4 && v4 <= param_6) return 1;
-    if (param_3 >= v1 && param_3 <= v3 && param_4 >= v2 && param_4 <= v4) return 1;
-    if (param_5 >= v1 && param_5 <= v3 && param_6 >= v2 && param_6 <= v4) return 1;
-    if (param_3 < v1 && v3 < param_5) {
-        if (param_4 > v2) {
-            if (param_4 < v4) return 1;
-        }
-        if (param_6 > v2) {
-            if (param_6 < v4) return 1;
-        }
-    }
-    if (param_4 < v2 && v4 < param_6) {
-        if (param_3 > v1) {
-            if (param_3 < v3) return 1;
-        }
-        if (param_5 > v1) {
-            if (param_5 < v3) return 1;
-        }
-    }
+    if (min_x >= param_3 && min_x <= param_5 && min_y >= param_4 && min_y <= param_6) return 1;
+    if (max_x >= param_3 && max_x <= param_5 && max_y >= param_4 && max_y <= param_6) return 1;
+    if (param_3 >= min_x && param_3 <= max_x && param_4 >= min_y && param_4 <= max_y) return 1;
+    if (param_5 >= min_x && param_5 <= max_x && param_6 >= min_y && param_6 <= max_y) return 1;
+    if (param_3 < min_x && param_5 > max_x &&
+        ((param_4 > min_y && param_4 < max_y) ||
+         (param_6 > min_y && param_6 < max_y))) return 1;
+    if (param_4 < min_y && param_6 > max_y &&
+        ((param_3 > min_x && param_3 < max_x) ||
+         (param_5 > min_x && param_5 < max_x))) return 1;
 
     return 0;
 }

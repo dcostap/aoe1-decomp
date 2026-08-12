@@ -15,7 +15,12 @@
 // - temp[26] is the smallest behavior-safe array: slot zero stores the target
 //   object and at most 25 member IDs follow it.  Larger arrays only steer the
 //   frame and are not retained.
-// - Final bounded pass: 9 meaningful probes.  Calls and CFG behavior remain
+// - A natural member-list pointer, an outer count local, and block-scoped list
+//   pointer all changed the stack basin without reproducing the saved unitObj
+//   home.  A 27-entry temporary restored the 0x70 frame but shifted temp[0].
+// - Reordered declarations and a typed unitObj/local_70 mirror worsened the
+//   prologue or promoted EBP.  Restore the typed 26-entry source below.
+// - This bounded retry used 6 meaningful probes.  Calls and CFG behavior remain
 //   aligned; the remaining gap is VC5 local-slot and block scheduling drift.
 
 void* __cdecl operator_new(unsigned int size);
