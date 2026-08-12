@@ -23,6 +23,12 @@
 //   and still folded the case-two call; both diagnostics were rolled back.
 // - Current pause: the int-level ordinary switch remains authoritative. The next lead must
 //   explain the this/player register homes and the case-call topology without compiler tricks.
+// Follow-up sa012838e7_draw_visible:
+// - Restored the clean candidate before each probe. Byte-width level improved size by 13 bytes
+//   but did not recover the missing case-2 virtual call. A named self receiver was codegen-neutral.
+// - Replaced the switch with ordered if dispatch; it reduced size and still folded case 2.
+// - Donor search confirms the target's case layout is a natural switch-family shape. Paused with
+//   the clean int-level switch; unresolved gap is register-home allocation plus call topology.
 
 extern unsigned long* unified_map_offsets[];
 

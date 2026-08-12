@@ -22,6 +22,11 @@
 //   gap: VC5 emits dec-plus-scaled LEA, while the oracle folds one row stride into the LEA.
 // - Current pause: the named typed row reconstruction remains authoritative; no new natural
 //   source lead justifies another row-pointer variant.
+// Follow-up sa012838e7_draw_object:
+// - Kept the row-array base before the coordinate guard and tried repeated indexed field reads;
+//   both forms moved the branch before the row LEA and broadened structural drift.
+// - Folded the row offset into a direct typed pointer expression without a row-index temporary;
+//   VC5 returned to the same 10-byte codegen basin, so the clean named row source remains best.
 
 extern float DAT_0056f604;
 
