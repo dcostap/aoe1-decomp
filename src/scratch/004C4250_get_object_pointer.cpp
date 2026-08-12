@@ -41,6 +41,14 @@
 // id home after the byte increment was a 219B/37 duplicate; combining both
 // changes widened to 227B/190. Restored the clean source; the original
 // increment/home/world/word-compare order remains unresolved.
+// 2026-08-12 follow-C4250-r1 pass: adding the binary-supported polymorphic
+// surface to RGE_Object_List, then to RGE_Player/RGE_Game_World, left the
+// 219B/37 output unchanged. Routing the tail compare through the dead id
+// parameter widened to 229B/158; swapping compare/index declaration order
+// gave 219B/52; an explicit tail compare zero was a 219B/37 duplicate.
+// Restored the readable clean source. Direct find_by_id calls remain exact;
+// the unresolved drift is still only ESI owner versus EDX compare coloring
+// and its dependent loop-tail branch displacements.
 
 class RGE_Static_Object;
 class RGE_Sprite;

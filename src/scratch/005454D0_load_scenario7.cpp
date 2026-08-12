@@ -1,89 +1,293 @@
 // 005454D0 RGE_Game_World::load_scenario7
-// scratch give-up: packet reconstruction; shares shape with load_scenario6 except version float constant.
-// Tried natural C++ with virtual pads for world/player calls, direct extern rge/malloc/free, stack locals
-// ordered from packet, player_id_hash sized 10 then padding local, version constant 1.08f, explicit
-// early malloc failure return, and scenario setup call chain. Best check: exact size 812 but broad
-// mismatch 70.57% positional / 62.68% edit; first mismatch is frame 0x48 vs original 0x4c and later
-// drift is broad local-slot/register shape in player hash/object loops and virtual call scheduling.
+// Attempt log:
+// - Baseline used the ground-truth World, Player, Scenario, and Player_Info
+//   surfaces with the scenario 1.08 call order.
+// - The first header dword is next_object_id.  The nine-entry player hash
+//   starts after that scalar.  The scenario-player count reuses hash[8].
+// - Separate outer and inner object counts, saved player slots, and the
+//   natural hash-plus-one iterators recovered the ordered 28-call set.
+// - The final object record uses named x/y/z/id/master/state/angle fields.
+//   Its widths are 4,4,4,4,2,1,4 bytes, as observed in the executable.
+// - Final probe: frame and saved-register parity, 816 vs 812 bytes, 535
+//   positional diff, 294 edit diff, and 88.41% shape similarity.  The first
+//   remaining mismatch is the scenario-player-count stack home at 3269.
+// - Main-agent source audit replaced the raw 0x886C10 macro with the established
+//   world_update_counter symbol. The natural source now has a 0x48 frame.
+// Baseline: typed reconstruction of the scenario 1.08 loader.  The scenario
+// record widths follow the executable, including its narrow legacy fields.
+
+extern "C" int world_update_counter;
 
 typedef unsigned char uchar;
+
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" int __cdecl rge_close(int);
 extern "C" void* __cdecl malloc(unsigned int);
 extern "C" void __cdecl free(void*);
-extern "C" int world_update_counter;
 
-struct RGE_Scenario { int GetPlayerPosture(int,int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
-struct RGE_Player {
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c(); virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c(); virtual void v20(); virtual void v24(); virtual void v28(); virtual void setup(char*,char*,char*,int,int); 
-    virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3c(); virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4c(); virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5c(); virtual void create_object(float,float,float,float,short,uchar,int); virtual void v64(); virtual void load1(int, int*, float); virtual void v6c(); virtual void load2(int, int*, float);
+struct RGE_Player_Info {
+    char gap_00[0x270];
+    long player_id[9];
+};
+
+class RGE_Scenario {
+public:
+    int GetPlayerPosture(int, int);
+    char* Get_player_AI(int, int);
+    char* Get_CityPlan(int, int);
+    char* Get_BuildList(int, int);
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    virtual void set_game_status(uchar);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int, float, float, float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(void*, void*, float, float);
+    virtual void sendAddWaypointCommand(int, void*, int);
+    virtual void processAddWaypointCommand(int, void*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual void make_scenario_obj(float, float, float, short, uchar, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
     void remake_visible_map();
 };
-struct RGE_Game_World {
-    virtual void pad00(); virtual void pad04(); virtual void pad08(); virtual void pad0c(); virtual void pad10(); virtual void pad14(); virtual void pad18(); virtual void pad1c();
-    virtual void pad20(); virtual void pad24(); virtual void pad28(); virtual void pad2c(); virtual void pad30(); virtual void pad34(); virtual void pad38(); virtual void pad3c();
-    virtual void pad40(); virtual void pad44(); virtual void pad48(); virtual void pad4c(); virtual void pad50(); virtual void pad54(); virtual void pad58(); virtual void pad5c();
-    virtual void pad60(); virtual void pad64(); virtual void pad68(); virtual void pad6c(); virtual void load_after(int); virtual void pad74();
-    virtual void pad78(); virtual void pad7c(); virtual void pad80(); virtual void pad84(); virtual void pad88(); virtual void pad8c(); virtual void pad90(); virtual void pad94();
-    virtual void pad98(); virtual void pad9c(); virtual void pada0(); virtual void pada4(); virtual void pada8(); virtual void padac(); virtual void padb0(); virtual void padb4();
-    virtual void padb8(); virtual void padbc(); virtual void padc0(); virtual void padc4(); virtual void padc8(); virtual void padcc(); virtual void padd0(); virtual void padd4();
-    virtual void padd8(); virtual void paddc(); virtual void pade0(); virtual void pade4(); virtual void pade8(); virtual void padec(); virtual void padf0(); virtual void load_before(int, RGE_Game_World*);
-    char gap04[0x38]; short player_num; char gap3e[2]; RGE_Player** players; char gap44[0x18]; RGE_Scenario* scenario; char gap60[8]; int next_object_id; int scenario_object_id; uchar scenario_object_flag;
-    void load_scenario7(int file, int& info);
+
+class RGE_Game_World {
+public:
+    virtual uchar data_load_world(void*);
+    virtual uchar data_load_terrain_tables(char*);
+    virtual uchar data_load_players(char*);
+    virtual uchar data_load_objects(char*);
+    virtual uchar data_load_sounds(char*);
+    virtual uchar data_load_color_tables(char*);
+    virtual uchar data_load_sprites(char*);
+    virtual void data_load_players_type(short, short, void*);
+    virtual void data_load_effects(char*);
+    virtual void data_load_map(char*, char*, char*, char*, short, short, short, void*, char*);
+    virtual void data_load_random_map(char*, char*, char*, char*);
+    virtual uchar init_player_type(int, short, uchar);
+    virtual uchar init_player(int);
+    virtual void load_player(int, uchar, short);
+    virtual void color_table_init(int);
+    virtual void terrain_tables_init(int);
+    virtual void init_sounds(int, void*);
+    virtual void init_sprites(int);
+    virtual void map_init(int, void*);
+    virtual void effects_init(int);
+    virtual void master_player_init(int);
+    virtual void command_init(int, void*);
+    virtual void world_init(int, void*, void*);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info*);
+    virtual uchar new_random_game(RGE_Player_Info*);
+    virtual void save(int);
+    virtual void scenario_make_player(short, uchar, uchar, uchar, char*);
+    virtual void scenario_make_map(int);
+    virtual uchar load_scenario(RGE_Player_Info*);
+    virtual uchar load_scenario(char*, RGE_Player_Info*);
+    virtual void load_scenario1(int, RGE_Player_Info*);
+    virtual void load_scenario2(int, RGE_Player_Info*);
+    virtual void load_scenario3(int, RGE_Player_Info*);
+    virtual void load_scenario4(int, RGE_Player_Info*);
+    virtual void load_scenario5(int, RGE_Player_Info*);
+    virtual void load_scenario6(int, RGE_Player_Info*);
+    virtual void load_scenario7(int, RGE_Player_Info*);
+    virtual void load_scenario8(int, RGE_Player_Info*);
+    virtual void logStatus(void*, int);
+    virtual ~RGE_Game_World();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info*);
+    virtual uchar data_load(char*, char*);
+    virtual uchar init(char*, void*, void*);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual uchar update();
+    virtual uchar get_game_state();
+    virtual uchar check_game_state();
+    virtual uchar load_world(int);
+    virtual uchar load_game(char*);
+    virtual uchar new_game(RGE_Player_Info*, int);
+    virtual uchar new_scenario(RGE_Player_Info*, int);
+    virtual uchar save_game(char*);
+    virtual void base_save(char*);
+    virtual void base_save(int);
+    virtual uchar save_scenario(char*);
+    virtual RGE_Scenario* get_scenario_info(char*);
+    virtual void pause(uchar);
+    virtual void scenario_init0(RGE_Game_World*);
+    virtual void scenario_init(int, RGE_Game_World*);
+
+    char gap_04[0x38];
+    short player_num;
+    char gap_3e[2];
+    RGE_Player** players;
+    char gap_44[0x18];
+    RGE_Scenario* scenario;
+    char gap_60[8];
+    int next_object_id;
+    int scenario_object_id;
+    uchar scenario_object_flag;
+
+    void load_scenario7(int, RGE_Player_Info&);
 };
 
-void RGE_Game_World::load_scenario7(int file, int& info)
+void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
 {
-    int count;
-    int header_size;
-    int id;
+    long count;
+    long id;
     float obj_angle;
     uchar obj_state;
     short master_id;
     float world_z;
     float world_y;
     float world_x;
-    int player_id_hash[10];
-    int obj_count;
-    int frame_pad;
-    int i,j;
-    void* buf;
-    RGE_Player* p;
-    frame_pad = 0;
+    long obj_id;
+    long player_id_hash[9];
+    int outer;
+    int i;
+    long next_object_id;
+    int j;
+
     world_update_counter = 0;
     rge_read_uncompressed(file, &count, 4);
     if (count > 0) {
-        buf = malloc(count);
-        if (buf == 0) { rge_close(file); return; }
-        rge_read_uncompressed(file, buf, count);
-        free(buf);
+        void* p = malloc(count);
+        if (p == 0) {
+            rge_close(file);
+            return;
+        }
+        rge_read_uncompressed(file, p, count);
+        free(p);
     }
-    rge_read(file, &player_id_hash[0], 4);
-    this->load_before(file, this);
-    this->load_after(file);
+
+    rge_read(file, &next_object_id, 4);
+    this->scenario_init(file, this);
+    this->scenario_make_map(file);
+
     int n = this->player_num;
     if (n > 0) {
-        do { for (i=0;i<9;i++) player_id_hash[i] = -1; } while (n > 10);
+        do {
+            for (i = 0; i < 9; ++i) player_id_hash[i] = -1;
+        } while (n > 10);
     }
-    for (i=0; i<n; i++) player_id_hash[info + 0x270/4 + i] = i;
-    for (i=0; i<n; i++) this->players[i]->remake_visible_map();
+
+    i = 0;
+    if (n > 0) {
+        long* ids = info.player_id;
+        do {
+            player_id_hash[*ids++] = i++;
+        } while (i < n);
+    }
+
+    i = 0;
+    if (n > 0) {
+        do {
+            this->players[i]->remake_visible_map();
+            ++i;
+        } while (i < this->player_num);
+    }
+
     rge_read(file, &player_id_hash[8], 4);
-    for (i=1; i<player_id_hash[8]; i++) {
-        if (i >= this->player_num || player_id_hash[i] < 0 || (p=this->players[player_id_hash[i]])==0) p=this->players[0];
-        p->load1(file, player_id_hash, 1.08f);
+    i = 1;
+    if (player_id_hash[8] > 1) {
+        long* map = player_id_hash + 1;
+        do {
+            RGE_Player* player;
+            if (i >= this->player_num || *map < 0 ||
+                (player = this->players[*map]) == 0) {
+                player = this->players[0];
+            }
+            player->scenario_load(file, player_id_hash, 1.08f);
+            ++i;
+            ++map;
+        } while (i < player_id_hash[8]);
     }
-    for (i=0; i<player_id_hash[8]; i++) {
-        rge_read(file, &obj_count, 4);
-        for (j=0; j<obj_count; j++) {
-            rge_read(file, &world_z, 4); rge_read(file, &master_id, 4); rge_read(file, &obj_state, 4); rge_read(file, &header_size, 4); rge_read(file, &obj_angle, 2); rge_read(file, &id, 1); rge_read(file, &count, 4);
-            int ph = player_id_hash[i];
-            if (ph >= 0 && this->players[ph] != 0) { this->scenario_object_flag=1; this->scenario_object_id=header_size; this->players[ph]->create_object(world_z, world_y, world_x, obj_angle, master_id, obj_state, count); this->scenario_object_flag=0; }
-        }
+
+    outer = 0;
+    if (player_id_hash[8] > 0) {
+        long* map = player_id_hash;
+        do {
+            rge_read(file, &obj_id, 4);
+            j = 0;
+            if (obj_id > 0) {
+                do {
+                    rge_read(file, &world_z, 4);
+                    rge_read(file, &world_y, 4);
+                    rge_read(file, &world_x, 4);
+                    rge_read(file, &id, 4);
+                    rge_read(file, &master_id, 2);
+                    rge_read(file, &obj_state, 1);
+                    rge_read(file, &obj_angle, 4);
+                    int player_id = *map;
+                    RGE_Player* player = 0;
+                    if (player_id >= 0) player = this->players[player_id];
+                    if (player != 0) {
+                        this->scenario_object_flag = 1;
+                        this->scenario_object_id = id;
+                        player->make_scenario_obj(
+                            world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                        this->scenario_object_flag = 0;
+                    }
+                    ++j;
+                } while (j < obj_id);
+            }
+            ++outer;
+            ++map;
+        } while (outer < player_id_hash[8]);
     }
-    this->next_object_id = player_id_hash[7];
+
+    this->next_object_id = next_object_id;
     rge_read(file, &player_id_hash[8], 4);
-    for (i=1; i<player_id_hash[8]; i++) { if (i >= this->player_num || player_id_hash[i] < 0 || (p=this->players[player_id_hash[i]])==0) p=this->players[0]; p->load2(file, player_id_hash, 1.08f); }
+    i = 1;
+    if (player_id_hash[8] > 1) {
+        long* map = player_id_hash + 1;
+        do {
+            RGE_Player* player;
+            if (i >= this->player_num || *map < 0 ||
+                (player = this->players[*map]) == 0) {
+                player = this->players[0];
+            }
+            player->scenario_postload(file, player_id_hash, 1.08f);
+            ++i;
+            ++map;
+        } while (i < player_id_hash[8]);
+    }
+
     rge_close(file);
-    for (i=1; i<this->player_num && i<player_id_hash[8]; i++) if (this->players[i] && player_id_hash[i] >= 0) { int k=i-1; p=this->players[player_id_hash[i]]; p->setup(this->scenario->Get_BuildList(k,1), this->scenario->Get_CityPlan(k,1), this->scenario->Get_player_AI(k,1), this->scenario->GetPlayerPosture(k,-1), -1); }
+    i = 1;
+    if (i < this->player_num) {
+        do {
+            if (i >= player_id_hash[8]) return;
+            if (this->players[i] != 0 && player_id_hash[i] >= 0) {
+                int player_index = i - 1;
+                this->players[player_id_hash[i]]->loadAIInformation(
+                    this->scenario->Get_BuildList(player_index, 1),
+                    this->scenario->Get_CityPlan(player_index, 1),
+                    this->scenario->Get_player_AI(player_index, 1),
+                    this->scenario->GetPlayerPosture(player_index, -1), -1);
+            }
+            ++i;
+        } while (i < this->player_num);
+    }
 }

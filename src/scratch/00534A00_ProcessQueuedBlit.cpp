@@ -88,6 +88,11 @@
 // orch-00534A00-L pass: windows.h RECT context reached diff=195 but reduced
 //   shape and resync. Restored the canonical local RECT source; blocker is
 //   TU-sensitive VC5 save/register and COM argument scheduling.
+// follow-534A00-r1: exact view.cpp TPanel virtual surface and reduced RGE_View
+//   surface were duplicate; positive status-gate topology was also duplicate.
+// follow-534A00-r1: donor RGE_View destructor, opaque BltFast source pointer,
+//   full TDrawArea extent, and IDirectDrawSurface:IUnknown inheritance were
+//   each codegen duplicates; restored canonical typed ownership after each.
 // Paused: the remaining mismatch is the extra EBX save and COM argument/source
 //   scheduling basin; no canonical ownership or virtual-slot uncertainty remains.
 

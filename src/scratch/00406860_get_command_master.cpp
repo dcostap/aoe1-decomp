@@ -79,6 +79,11 @@
 //   identical. The binary proves [esp+14] is i, so this source-steering variant was
 //   rolled back. Clean canonical source is restored; residual target/z/index coloring
 //   remains unresolved.
+// - 2026-08-13 (follow-406860-r1): original stat_obj.cpp and class dumps confirm the
+//   inherited RGE_Static_Object get_command_master ABI at slot +0xBC, the +0x08 master
+//   owner, the +0x0C RGE_Player owner, and the +0xD8 task-list action surface. A
+//   function-scope RGE_Task result, suggested by the original line-494 call and
+//   line-495 test split, emitted the same 221-byte basin and was rolled back.
 
 class RGE_Static_Object;
 class RGE_Action_Object;

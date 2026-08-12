@@ -49,6 +49,16 @@
 //   - Retested the best ternary-CSE diagnostic with a volatile radius_y field; it was an emitted-code duplicate of the prior 14-diff diagnostic, not an exact lead.
 //   - Added the complete proven static/master field layouts; codegen remained 199B/22 diff and moved the same localized hunk only, so the clean narrow source was restored.
 //   - No call, ABI, layout, or TU-context lead changed the binary-proven fsubr/fsub fault-order gap. Leave the canonical typed 199B/22-diff source in scratch for the next pass.
+// 2026-08-12 follow-C5D80-r1 bounded condition/expression follow-up:
+//   - Assignment-in-condition for y compiled to 201B/99 diff and broke the suffix; restored.
+//   - Reversed x lower-bound spelling (0.0f > x) compiled to 203B/106 diff and changed the radius prefix; restored.
+//   - Assignment-in-condition for x emitted the same 199B/22 code as the clean source; no new lead.
+//   - Split ternary-CSE y prefix plus separate other-radius subtraction compiled to 224B/128 diff; restored.
+//   - Split ordinary y subtraction into two statements emitted the same 199B/22 code as the clean source.
+//   - No new binary-backed condition or expression shape moved the +0062 fsubr/fsub fault-order gap. Clean source retained.
+// Main-agent source audit: removed the diagnostic volatile dy home. It changed
+// compiler scheduling but did not express required object behavior. The natural
+// typed source is 202 bytes and remains authoritative despite its broader drift.
 
 class RGE_Master_Static_Object {
 public:
@@ -72,7 +82,7 @@ public:
 int RGE_Static_Object::inRange(RGE_Static_Object* other, float range)
 {
     float dx = other->world_x - this->world_x;
-    volatile float dy = other->world_y - this->world_y;
+    float dy = other->world_y - this->world_y;
 
     if (dx < 0.0f) {
         dx = -dx;

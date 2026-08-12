@@ -25,6 +25,10 @@
 // - Tested donor-backed x_value/y_value aliases for every bound and distance
 //   term, with declarations before max as in 00547080; emitted code was a
 //   duplicate. Restored the clean source.
+// - Follow-up closeout tested reversed coordinate-alias declaration order and
+//   the donor's XYPoint min aggregate; both were duplicates. Natural max.x-
+//   first arithmetic widened the body to 248B with or without that aggregate.
+//   Restored this clean source; no codegen-only alias or aggregate remains.
 
 typedef unsigned char uchar;
 

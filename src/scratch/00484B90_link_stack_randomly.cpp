@@ -107,6 +107,13 @@ public:
 // it to 143 bytes and 9 extra bytes of code. Restored the clean source; the
 // remaining drift is only the commutative count-product memory operand order
 // at 00484BE2/00484BE5 (rebuilt width-then-height vs oracle height-then-width).
+// close-484B90-r1: exact rmm_elev map_size donor idioms were retested with a
+// staged assignment product and a separate map_size local; both were emitted
+// identically. The untested height-accumulator assignment and explicit base
+// qualification were also emitted identically. The exact terrain loop_count
+// guard/do-while tail remains a duplicate. Restored the natural direct-count
+// source. Source audit: canonical named Map_Stack fields, inherited map fields,
+// direct member calls, and no volatile, raw-address, or codegen-only scaffolding.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();
