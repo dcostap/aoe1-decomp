@@ -5,6 +5,14 @@
 //   packet and the draw_object_outline donor.  The method computes four
 //   isometric box corners from the fractional tile position and the object's
 //   two radius fields.  It writes eight short references and returns 1.
+// - Short tile-half locals produced the closest structural basin (322-byte
+//   diff, 48.57% shape) and restored saved EDI, but grew the body by 3 bytes.
+// - Reusing x/y parameter homes was a codegen duplicate.
+// - Explicit double y-base and +1.0 expression probes moved the x87 block but
+//   grew the body.  They were diagnostic only; the clean semantic source is
+//   restored below.
+// - A single tx plus reused y home was worse (335-byte diff).  The remaining
+//   blocker is the original 0xC local frame and EDI allocation.
 
 class RGE_Map {
 public:
@@ -57,6 +65,7 @@ unsigned char RGE_Master_Static_Object::alignment_box(
     x4 = (short)((x_offset + y_offset - 2.0f * this->radius_y) *
                  tile_half_width);
     y4 = (short)((y_offset - 0.5f - x_offset -
-                  2.0f * this->radius_y) * tile_half_height);
+                  2.0f * this->radius_y) *
+                 tile_half_height);
     return 1;
 }

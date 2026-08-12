@@ -8,13 +8,15 @@
 // v13: variable reuse refactor — VC5 over-optimized to 336B (52B short).
 // v14: fixed sy2_orig/sy2 separation—still 336B, VC5 eliminates redundant
 //   comparisons and bounds checks through constant propagation.
-//
-// BLOCKER: Multiple mismatch sources compound:
-// 1. sub esp, 0x18 vs 0x14 (4B extra locals)
-// 2. VC5 zero-initializes a local (xor ebx; mov [esp+1Ch],ebx) not in original
-// 3. Return-value extension (mov bl,al; and ebx,0FFh; mov al,bl)
-// 4. VC5 over-optimizes bounds checks (shorter code than original)
-// 5. Stack-frame slot assignment differs from original param-slot reuse
+// normal-BB5E0-r1 baseline: the old source rebuilt 335B with a 0x08 frame.
+// Materializing the local tagRECT before Check_shape restored the 0x14 frame,
+// the early ClipRect copy, and the original prologue block.
+// The aggregate tagRECT copy improved the candidate to 380B and 241 strict
+// differing bytes. Direct shape_header member ownership retained this basin.
+// Swapped pointer-add operands and explicit x/y base locals were duplicates.
+// Reordered bound declarations widened register and parameter-home drift.
+// BLOCKER: remaining drift is the coordinate-add and local-home schedule after
+// the exact prologue. All three direct calls and the stack frame are aligned.
 
 typedef unsigned char uchar;
 
@@ -29,7 +31,7 @@ public:
     tagRECT ClipRect;   // +0x28
 };
 
-struct Shape_Info { long shape; long flags; };
+struct Shape_Offsets { long shape; long palette; };
 
 struct Shape_Header {
     char gap_00[8];
@@ -42,7 +44,7 @@ public:
     char gap_04[8];
     Shape_Header* shape_header; // +0x0C
     char gap_10[4];
-    Shape_Info* offsets;        // +0x14
+    Shape_Offsets* offsets;      // +0x14
 
     uchar Check_shape(long shape_num, char* msg);
     uchar shape_dithered_unclipped(TDrawArea* area, long x, long y, long param_5, long param_6);
@@ -54,31 +56,27 @@ extern char s_RGL_shape_draw[];
 
 uchar TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num, long param_5, long param_6)
 {
+    tagRECT rect = area->ClipRect;
+
     if (Check_shape(shape_num, s_RGL_shape_draw) != 0) {
         return 0;
     }
 
-    Shape_Header* header = (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
-    this->shape_header = header;
+    this->shape_header = (Shape_Header*)(this->offsets[shape_num].shape + this->shape);
 
-    long sx1 = x + header->xmin;
-    long sy1 = y + header->ymin;
-    long sx2 = x + header->xmax;
-    long sy2_orig = y + header->ymax;
+    long sx1 = x + this->shape_header->xmin;
+    long sy1 = y + this->shape_header->ymin;
+    long sx2 = x + this->shape_header->xmax;
+    long sy2_orig = y + this->shape_header->ymax;
 
     x = sx1;
     shape_num = sy1;
     y = sx2;
     long sy2 = sy2_orig;
-    long clip_left = area->ClipRect.left;
-    long clip_top = area->ClipRect.top;
-    long clip_right = area->ClipRect.right;
-    long clip_bottom = area->ClipRect.bottom;
-
-    if (x < clip_left) x = clip_left;
-    if (shape_num < clip_top) shape_num = clip_top;
-    if (y > clip_right) y = clip_right;
-    if (sy2 > clip_bottom) sy2 = clip_bottom;
+    if (x < rect.left) x = rect.left;
+    if (shape_num < rect.top) shape_num = rect.top;
+    if (y > rect.right) y = rect.right;
+    if (sy2 > rect.bottom) sy2 = rect.bottom;
     if (x < 0) x = 0;
     if (shape_num < 0) shape_num = 0;
     if (y >= area->Width) y = area->Width - 1;

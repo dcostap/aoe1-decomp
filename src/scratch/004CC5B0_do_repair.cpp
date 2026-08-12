@@ -8,12 +8,19 @@
 // the donor-shaped guarded do/while with the selected task loaded directly
 // recovered exact size/CFG and left only the no-task-list candidate reload.
 // Promotion audit rejected the prior exact diagnostic: it used a volatile,
-// type-punning reload of the target parameter as an RGE_Task*.  Preserve the
-// ordinary no-task-list behavior for further source recovery instead.
+// type-punning reload of the target parameter as an RGE_Task*.  The oracle
+// instead supports a typed target-as-task fallback when the list is empty.
+// Same-TU action declarations now retain the proven object and task offsets.
+// probe: direct typed target fallback improved the mismatch from 249 to 248
+// bytes; non-volatile address, memcpy, and reference aliases stayed at 248 or
+// worsened the prologue.  Keep the direct cast as the binary-supported source.
+// probe: same-TU virtual base and task-list declarations initially shifted
+// offsets; removing compensating gaps restored the 248-byte codegen basin.
 
 class RGE_Master_Static_Object;
 class RGE_Player;
 class RGE_Static_Object;
+class RGE_Action_Object;
 class RGE_Task;
 class RGE_Action;
 class RGE_Action_List;
@@ -22,7 +29,7 @@ class UnitAIModule;
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[4];
+    virtual ~RGE_Master_Static_Object();
     unsigned char master_type;
     char gap_05[0x0B];
     short id;
@@ -34,7 +41,9 @@ public:
 
 class RGE_Player {
 public:
-    char gap_00[0x24];
+    virtual ~RGE_Player();
+    char gap_04[0x1E];
+    short master_object_num;
     RGE_Master_Static_Object** master_objects;
 };
 
@@ -55,11 +64,42 @@ public:
     char gap_00[6];
     short action_type;
     short object_group;
+    short object_id;
+    unsigned char combat_level;
+    unsigned char combat_level_flag;
+    short terrain_id;
+    unsigned char owner_type;
+    unsigned char holding_attr;
+    unsigned char state_building;
+    unsigned char gap_13;
+    short attribute_type;
+    short attribute_type2;
+    short attribute_type3;
+    short attribute_type4;
+    float work_val1;
+    float work_val2;
+    float work_range;
+    unsigned char search_flag;
+    char gap_29[3];
+    float search_wait_time;
+    short work_flag;
+    short work_flag2;
+    void* move_sprite;
+    void* work_sprite;
+    void* work_sprite2;
+    void* carry_sprite;
 };
 
 class RGE_Task_List {
 public:
-    char gap_00[4];
+    virtual RGE_Task* create_task(short task_type, short object_id);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action,
+                                      RGE_Static_Object* target,
+                                      float x, float y, float z);
+    virtual int is_attack_task(RGE_Task* task);
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* action,
+                           RGE_Static_Object* target);
+    virtual ~RGE_Task_List();
     RGE_Task** list;
     short list_num;
 };
@@ -127,7 +167,7 @@ public:
     VPAD2(128)
     virtual void set_action(RGE_Action* action);
 
-    int id;
+    char gap_04[4];
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
     char gap_10[0x64];
@@ -185,7 +225,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
                 ++task_list;
             } while (i < task_count);
         } else {
-            repair_task = 0;
+            repair_task = (RGE_Task*)target;
         }
 
         current_task = this->actions->get_task();
