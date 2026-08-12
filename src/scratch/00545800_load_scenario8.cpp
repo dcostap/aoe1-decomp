@@ -15,7 +15,7 @@ extern "C" int __cdecl rge_close(int);
 extern "C" void* __cdecl malloc(unsigned int);
 extern "C" void __cdecl free(void*);
 
-extern "C" int world_update_counter;
+extern int world_update_counter;
 
 class RGE_Scenario { public: int GetPlayerPosture(int,int); char* Get_player_AI(int,int,int); char* Get_CityPlan(int,int,char*); char* Get_BuildList(int,int,char*); };
 class RGE_Player {
