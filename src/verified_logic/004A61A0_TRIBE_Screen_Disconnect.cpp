@@ -77,10 +77,23 @@
 
 struct tagRECT;
 class TDrawArea;
+class TInputPanel;
+class TEditPanel;
+class TDropDownPanel;
+class TListPanel;
+class TScrollBarPanel;
+class TVerticalSliderPanel;
+class THorizontalSliderPanel;
+enum FormatType {
+    FORMAT_TYPE_DEFAULT = 0
+};
 class TPanel {
 public:
     enum PositionMode {
         POSITION_MODE_DEFAULT = 0
+    };
+    enum RedrawMode {
+        REDRAW_MODE_DEFAULT = 0
     };
 
     virtual ~TPanel();
@@ -97,8 +110,9 @@ public:
                                  TPanel* a10, TPanel* a11, TPanel* a12,
                                  TPanel* a13);
     virtual void set_fixed_position(long left, long top, long right, long bottom);
-    virtual void set_redraw(int mode);
-    virtual void set_overlapped_redraw(TPanel* p1, TPanel* p2, int mode);
+    virtual void set_redraw(RedrawMode mode);
+    virtual void set_overlapped_redraw(TPanel* p1, TPanel* p2,
+                                       RedrawMode mode);
     virtual void draw_setup(int mode);
     virtual void draw_finish();
     virtual void draw();
@@ -202,22 +216,26 @@ protected:
     virtual int create_text(TPanel* parent, TTextPanel** out, int string_id,
                             long x, long y, long width, long height, long font,
                             int align, int center, int wrap);
-    virtual int create_input(TPanel* parent, void* out, char* text, short len,
-                             int format, long x, long y, long width, long height,
-                             long a10);
-    virtual int create_edit(TPanel* parent, void* out, char* text, short len,
-                            int format, long x, long y, long width, long height,
-                            long a10, int a11, int a12);
-    virtual int create_drop_down(TPanel* parent, void* out, long id, long a4,
+    virtual int create_input(TPanel* parent, TInputPanel** out, char* text,
+                             short len, FormatType format, long x, long y,
+                             long width, long height, long a10);
+    virtual int create_edit(TPanel* parent, TEditPanel** out, char* text,
+                            short len, FormatType format, long x, long y,
+                            long width, long height, long a10, int a11,
+                            int a12);
+    virtual int create_drop_down(TPanel* parent, TDropDownPanel** out, long id, long a4,
                                  long a5, long a6, long a7, long a8, long a9);
-    virtual int create_list(TPanel* parent, void* out, long id, long a4,
+    virtual int create_list(TPanel* parent, TListPanel** out, long id, long a4,
                             long a5, long a6, long a7);
-    virtual int create_scrollbar(TPanel* parent, void* out, TTextPanel* text,
+    virtual int create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPanel* text,
                                  long a4, long a5, long a6, long a7, long a8);
-    virtual int create_auto_scrollbar(void* out, TTextPanel* text, long a3);
-    virtual int create_vert_slider(TPanel* parent, void* out, long id, long a4,
+    virtual int create_auto_scrollbar(TScrollBarPanel** out, TTextPanel* text,
+                                      long a3);
+    virtual int create_vert_slider(TPanel* parent, TVerticalSliderPanel** out,
+                                   long id, long a4,
                                    long a5, long a6, long a7, long a8, long a9);
-    virtual int create_horz_slider(TPanel* parent, void* out, long id, long a4,
+    virtual int create_horz_slider(TPanel* parent, THorizontalSliderPanel** out,
+                                   long id, long a4,
                                    long a5, long a6, long a7, long a8, long a9);
     virtual void position_panel(TPanel* parent, long a2, long a3, long a4,
                                 long a5);

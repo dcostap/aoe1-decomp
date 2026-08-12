@@ -108,7 +108,20 @@ It found four definite ABI declaration defects:
 The main agent corrected these declarations. The constructor remains 219 bytes
 with four ordered calls and the same EH-tail drift.
 
+DeepSeek independently confirmed the constructor, EH state, partial-construction
+cleanup, and all 74 slot positions. It found two additional declaration groups:
+
+- slots 8 and 9 required nested `TPanel::RedrawMode`;
+- slots 65 through 72 required their typed panel double-pointer outputs.
+
+The main agent corrected both groups from exact executable and donor ABI
+evidence. These declaration-only corrections do not change the constructor
+output. Final validation remains 219/200 bytes, four ordered calls, and the
+known 19-byte duplicated EH return tail.
+
 ## Final decision
 
-Hold until the DeepSeek round 3 result arrives and the corrected 74-slot ABI
-surface receives final adjudication.
+Promote to `src/verified_logic`. Both reviewers verified constructor behavior,
+EH cleanup, and vtable order. The main agent adjudicated every ABI finding and
+corrected the complete 74-slot callable surface. No behavioral uncertainty
+remains. Exact matching stays suspended only for the VC5 EH-tail sharing basin.
