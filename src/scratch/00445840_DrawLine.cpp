@@ -15,6 +15,12 @@
 //   shape, 55.71% exact-block coverage, 310 differing bytes. Remaining gap is
 //   broad VC5 register/block scheduling beginning in the prologue; leave this
 //   natural reconstruction in scratch rather than retain codegen scaffolding.
+// - Fresh pass: direct vertical parameter mutation worsened the source. A
+//   saved x endpoint and a pre-orientation x-start were duplicate or worse.
+//   Reusing x1 as the y-step collapsed the function and was restored.
+// - Fresh pass: reversing the equal-endpoint compare was neutral. Spelling
+//   the shallow gate as dx >= dy improved shape to 84.51% but not bytes.
+//   The clean typed source remains best after nine meaningful probes.
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 
