@@ -3,10 +3,10 @@
 //
 // Canonical reconstruction: this is the seven-argument load/new constructor.
 // The base and production-queue ownership are named rather than represented by
-// decompiler cursor arithmetic.  The executable stores the derived vftable in
-// the constructor body, but this source deliberately leaves vptr lowering to
-// VC5; an explicit store or __declspec(novtable) is not an acceptable source
-// model.
+// decompiler cursor arithmetic.  The executable stores the derived vftable
+// after the queue initializers. This source uses a member-initializer list and
+// leaves vptr lowering to VC5; an explicit store or __declspec(novtable) is
+// not an acceptable source model.
 //
 // Attempt log:
 // - Typed the complete Static/Moving/Action/Combat base chain, master task
@@ -17,11 +17,9 @@
 //   canonical layout.
 // - Restored the donor-proven virtual int setup, virtual set_task, and
 //   TRIBE_Combat_Object destructor declarations; each was codegen-identical.
-// - The only remaining drift is VC5's implicit derived-vptr store: rebuilt
-//   writes offset zero before the queue initializers, while the executable
-//   writes it after them. Explicit vptr assignment and __declspec(novtable)
-//   diagnostics reached the bytes but are rejected as living source. Keep the
-//   natural polymorphic constructor in scratch.
+// - A natural member-initializer list for unique_build_id and the queue fields
+//   schedules the compiler-managed derived-vptr store after those fields and
+//   reaches an exact 311-byte match. No manual vptr store is used.
 //
 // FLAGS: /nologo /c /O2 /Oy /GX
 // Main-agent audit restored canonical master/player destructor ownership and
@@ -135,19 +133,18 @@ public:
 TRIBE_Building_Object::TRIBE_Building_Object(
     TRIBE_Master_Building_Object* master, RGE_Player* player,
     float x, float y, float z, int unique_id, int do_setup)
-    : TRIBE_Combat_Object(master, player, x, y, z, 0)
+    : TRIBE_Combat_Object(master, player, x, y, z, 0),
+      production_queue(0),
+      production_queue_size(0),
+      production_queue_count(0),
+      production_queue_enabled(1),
+      production_queue_actions(0),
+      production_queue_change_flag(0),
+      production_queue_auto_paused(0),
+      production_queue_need_attr(-1),
+      unique_build_id(unique_id),
+      DoppleInstalled(0)
 {
-    this->unique_build_id = unique_id;
-    this->production_queue = 0;
-    this->production_queue_size = 0;
-    this->production_queue_count = 0;
-    this->production_queue_enabled = 1;
-    this->production_queue_actions = 0;
-    this->production_queue_change_flag = 0;
-    this->production_queue_auto_paused = 0;
-    this->production_queue_need_attr = -1;
-    this->DoppleInstalled = 0;
-
     if (do_setup != 0) {
         this->setup(master, player, x, y, z);
     }

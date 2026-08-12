@@ -33,6 +33,10 @@
 //   reordering were codegen duplicates. Restored the natural named-dimension and
 //   four bounding-output reconstruction; final validated lead is the same-TU
 //   register/frame allocation around the early dimension loads.
+// - ABI audit: declared the protected bounding helper with four int& outputs
+//   and passed named locals by reference. The call now uses the original
+//   ?get_tile_bounding_coords@RGE_View@@IAEXHHAAH000@Z relocation; frame and
+//   emitted bytes stayed unchanged at 283B, so no lifetime variant was kept.
 // FLAGS: /nologo /c /O2 /Oy
 
 class RGE_Map {
@@ -63,9 +67,12 @@ public:
     int map_scr_x_offset;      // +0x130
     int map_scr_y_offset;      // +0x134
 
+protected:
     void get_tile_bounding_coords(int col, int diff_col,
-                                  int* by1, int* row_out,
-                                  int* top_out, int* left_out);
+                                  int& by1, int& row_out,
+                                  int& top_out, int& left_out);
+
+public:
     int Pick_Tile(long px, long py, int* col_out, int* row_out);
 };
 
@@ -112,8 +119,8 @@ int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
         int bound_row;
         int bound_top;
         int bound_left;
-        get_tile_bounding_coords(tcol, diff, &bound_first,
-                                 &bound_row, &bound_top, &bound_left);
+        get_tile_bounding_coords(tcol, diff, bound_first,
+                                 bound_row, bound_top, bound_left);
         if (by1 < bound_row) {
             tcol++;
             diff--;

@@ -71,6 +71,12 @@
 // bounded-pass conclusion: restored the pinned clean normalized RESENDER source;
 // diagnostic 182B typed-flat basin remains history evidence, not living source.
 
+// Attempt log (sat-42A6E0-normalize, 2026-08-12):
+// normalized RESENDER to the proven 0x38-byte donor layout and field names
+// TimeSent, Serial, ResendMsg, Length, and DestMap. Canonical offsets are +0,
+// +4, +8, +0C, and +10. Validation is 255B/266B, 80.90% shape, 0xC frame,
+// and 3/3 ordered calls. No codegen hypothesis was run.
+
 class TDebuggingLog {
 public:
     void Log(const char* fmt, ...);
@@ -81,11 +87,11 @@ extern TDebuggingLog* L;
 void operator_delete(void* ptr);
 
 struct RESENDER {
-    unsigned int state;
-    unsigned int serial;
-    void* data;
-    unsigned int reserved;
-    unsigned int acknowledgements[10];
+    unsigned int TimeSent;
+    unsigned int Serial;
+    char* ResendMsg;
+    unsigned int Length;
+    unsigned int DestMap[10];
 };
 
 class TCommunications_Handler {
@@ -107,12 +113,12 @@ int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
         int nonAckCount = 0;
         RESENDER* resend = &this->Resend[slot];
 
-        if (resend->serial != 0) {
+        if (resend->Serial != 0) {
             unsigned int player;
 
             for (player = 1; player <= (unsigned int)this->MaxGamePlayers; player++) {
                 if (this->IsPlayerHuman(player)) {
-                    if (resend->acknowledgements[player] > 0) {
+                    if (resend->DestMap[player] > 0) {
                         nonAckCount++;
                     }
                 }
@@ -120,19 +126,19 @@ int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 
             if (nonAckCount == 0) {
                 L->Log("GTD: Ser #%d Slot=%d  Ackd by all. (Released)",
-                    resend->serial, slot);
+                    resend->Serial, slot);
 
-                void* data = resend->data;
-                resend->state = 0;
+                char* data = resend->ResendMsg;
+                resend->TimeSent = 0;
                 if (data != 0) {
                     operator_delete(data);
                 }
-                resend->data = 0;
-                resend->serial = 0;
-                resend->reserved = 0;
+                resend->ResendMsg = 0;
+                resend->Serial = 0;
+                resend->Length = 0;
 
                 for (int i = 0; i < 10; i++) {
-                    resend->acknowledgements[i] = 0;
+                    resend->DestMap[i] = 0;
                 }
             }
         }
@@ -146,7 +152,7 @@ int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
         int i = 502;
 
         do {
-            if (resend->serial != 0) {
+            if (resend->Serial != 0) {
                 this->WaitingForAck++;
             }
             resend++;

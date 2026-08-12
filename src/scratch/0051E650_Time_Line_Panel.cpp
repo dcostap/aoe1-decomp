@@ -22,24 +22,139 @@
 // paused: ordered base call and all 47 instructions/size match, but the first
 // mismatch remains +000C (highlightTextColor1 before text_style) with delayed
 // vtable/back-color/tail stores; next lead is original TU/header scheduling.
+// layout hypothesis: use the canonical 0xF4 TPanel and 0x478 TEasy_Panel
+// ownership from the type dumps and the exact 0051E9E0 setup donor.
+// layout probe: the full canonical declarations and handle_mouse_input name
+// emitted the same 276-byte/125-diff constructor; retain them as source truth.
 
 class TShape;
 class TTextPanel;
 struct Special_Events;
+struct PanelNode;
+struct RGE_Color_Table;
+
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawArea;
 
 class TPanel {
 public:
     virtual ~TPanel();
     TPanel();
-    unsigned char gap_04[0x7C];
-    int field_80;
+
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panelNameValue;
+    TDrawArea* render_area;
+    tagRECT clip_rect;
+    int position_mode;
+    int need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    void* clip_rgn;
+    tagRECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 };
 
 class TEasy_Panel : public TPanel {
 public:
     virtual ~TEasy_Panel();
     TEasy_Panel();
-    unsigned char gap_84[0x3F4];
+
+    long ideal_width;
+    long ideal_height;
+    char info_file_name[260];
+    long info_id;
+    TShape* background_pic;
+    TShape* background_pic2;
+    void* palette;
+    char cursor_file[260];
+    long cursor_id;
+    int background_pos;
+    int use_bevels;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    unsigned char gap_326[2];
+    unsigned long text_color1;
+    unsigned long text_color2;
+    unsigned long focus_color1;
+    unsigned long focus_color2;
+    unsigned long state_color1;
+    unsigned long state_color2;
+    char popup_info_file_name[260];
+    long popup_info_id;
+    TShape* button_pics;
+    RGE_Color_Table* shadow_color_table;
+    long shadow_amount;
+    unsigned char background_color1;
+    unsigned char background_color2;
+    unsigned char gap_456[2];
+    int enable_ime;
+    unsigned char help_mode;
+    unsigned char gap_45D[3];
+    int stock_brush;
+    void* brush;
+    unsigned long brush_color;
+    TDrawArea* shadow_area;
+    int allow_shadow_area;
+    int saved_mouse_mode;
 };
 
 class Time_Line_Panel : public TEasy_Panel {
@@ -143,7 +258,7 @@ Time_Line_Panel::Time_Line_Panel()
       total_slices_to_drop(0),
       time_slice_events(0)
 {
-    field_80 = 0;
+    handle_mouse_input = 0;
     timeline_flag = 1;
     drop_flag = 0;
     pop_reading_rate = 0x0C;
