@@ -35,9 +35,13 @@
 // unchanged codegen duplicates; a focused 40-variant map/guard/player-scope lab
 // found no exact output. Narrow volatile mask was structural/worse (304 bytes)
 // and was rolled back.
-// final fresh worker: retain the period-plausible direct mask/explored source
-// with absolute unified-map ownership; remaining drift is the EBX/EBP stack
-// spill and the resulting two-byte tail displacement basin.
+// final fresh worker before donor lead: retained the period-plausible direct
+// mask/explored source with absolute unified-map ownership; EBX/EBP stack
+// spill drift remained.
+// orch2-4C50F0-mask: mirror exact same-TU donor 004C5210 initialization:
+// load mask, derive explored from mask, then mask the low word in place.
+// This restored the original 288-byte output exactly; calls and behavior stay
+// unchanged.
 
 typedef unsigned long ulong;
 
@@ -130,9 +134,8 @@ void RGE_Static_Object::remove_visible_resource() {
         (this->master_obj->create_doppleganger_on_death != 0 ||
          this->master_obj->track_as_resource != 0)) {
         mask = unified_map_offsets[(int)this->world_y][(int)this->world_x];
-        explored = mask;
+        explored = mask >> 16;
         mask &= 0xFFFF;
-        explored >>= 16;
         if (explored > 0) {
             int player_index = 0;
             do {
