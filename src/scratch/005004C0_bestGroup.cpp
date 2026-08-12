@@ -15,6 +15,11 @@
 // - A 12-variant natural lab over initial-local order, assist-loop form, and
 //   direct versus split id calls found no exact output. The direct do/break
 //   family retained the best clean basin; top-tested variants lost size.
+// - Fresh pass: removing the outer sentinel refresh worsened the frame and
+//   CFG. Reversing the assist-id equality was the only small metric gain, but
+//   it did not change VC5 call order. Point aliases, pointer/reference ABI,
+//   declaration splitting, donor constness, and alternate null exits were
+//   codegen duplicates or worse.
 // - Final clean source: exact size/frame and typed behavior/call set; remaining
 //   drift is the assist id/validity call-order and early local-home/register
 //   basin. No canonical layout or behavioral uncertainty remains.
@@ -36,12 +41,12 @@ public:
     virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
 
-    int type() const;
-    int action() const;
-    int id() const;
-    int assistGroupID() const;
-    int commander() const;
-    Waypoint* gatherLocation() const;
+    int type();
+    int action();
+    int id();
+    int assistGroupID();
+    int commander();
+    Waypoint* gatherLocation();
 };
 
 class RGE_Static_Object {
@@ -69,10 +74,15 @@ public:
 TacticalAIGroup* TribeTacticalAIModule::bestGroup(
     int type, int action, int maxDistance, XYPoint& point, int zone)
 {
-    TacticalAIGroup* group = this->groups.next;
-    TacticalAIGroup* best = 0;
-    int bestDistance = -1;
-    TacticalAIGroup* sentinel = &this->groups;
+    TacticalAIGroup* group;
+    TacticalAIGroup* best;
+    int bestDistance;
+    TacticalAIGroup* sentinel;
+
+    group = this->groups.next;
+    best = 0;
+    bestDistance = -1;
+    sentinel = &this->groups;
 
     if (group != sentinel) {
         do {
@@ -91,7 +101,7 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
                                 break;
                             if (!valid)
                                 goto next_group;
-                            if (group->id() == assist->assistGroupID())
+                            if (assist->assistGroupID() == group->id())
                                 valid = 0;
                             assist = assist->next;
                             sentinel = &this->groups;
