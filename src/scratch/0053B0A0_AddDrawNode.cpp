@@ -19,20 +19,24 @@
 // probe 17: reverse bound/hotspot assignment order — 340-byte output; rolled back.
 // probe 18: six-way variant lab over bound/hotspot statement order; no exact result,
 // best emitted code unchanged at 38 positional bytes / 97.50% shape.
+// probe 19: declaration initializers for bound and hotspot locals; codegen duplicate.
+// probe 20: natural while traversal for the linked-node tail; codegen duplicate.
+// probe 21: decompiler-supported for-loop update form for the same traversal; duplicate.
+// probe 22: restored canonical Shape_Info long-field ownership; codegen duplicate.
 // left in scratch: canonical typed source is validated at 379 bytes with exact
 // call set/boundary. Null-link stores before scalar fields and direct Select_Box
 // rereads reproduce the long tail; remaining drift is the localized width/height
 // versus hotspot load order at +0037..+0057. The lab's best order did not improve it.
-// Main-agent audit removed the diagnostic volatile yline qualifier because it
-// expressed no executable behavior; readable canonical source is authoritative
-// over the smaller compiler-steering diff for this unresolved function.
 
 struct Shape_Info {
-    char gap_00[0x10];
-    int Width;      // +0x10
-    int Height;     // +0x14
-    int Hotspot_X;  // +0x18
-    int Hotspot_Y;  // +0x1C
+    unsigned long Shape_Data_Offsets; // +0x00
+    unsigned long Shape_Outline_Offset; // +0x04
+    long Reserved1; // +0x08
+    long Reserved2; // +0x0C
+    long Width;      // +0x10
+    long Height;     // +0x14
+    long Hotspot_X;  // +0x18
+    long Hotspot_Y;  // +0x1C
 };
 
 struct DClipInfo_Node {
