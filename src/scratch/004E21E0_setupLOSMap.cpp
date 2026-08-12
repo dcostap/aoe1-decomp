@@ -15,6 +15,10 @@
 // - Remaining blocker: VC5 register allocation and scheduling in the object-memory entry check plus FPU/int interleaving before incrementValue.
 // - Main-agent audit restored canonical InfluenceMap/master/object/AI destructor
 //   surfaces; the validated 39-byte codegen gap is unchanged.
+// - ABI probe: changed losMap from a pointer global to the binary-backed
+//   InfluenceMap object and used direct member calls; emitted code stayed at
+//   269 bytes with the same 39-byte mismatch, so the ABI lead is confirmed but
+//   does not resolve the remaining register/FPU drift.
 // - Session probe: retaining only the binary-indicated maxX local and inlining
 //   the other bounds removed the proven 8-byte frame and regressed to 258 diff;
 //   restored the natural bound-local source.
@@ -34,7 +38,7 @@ public:
     int maxValue(void);
 };
 
-extern InfluenceMap* losMap;
+extern InfluenceMap losMap;
 
 struct RGE_Master_Static_Object {
     virtual ~RGE_Master_Static_Object();
@@ -108,8 +112,8 @@ public:
 
 int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
 {
-    losMap->initialize(0);
-    losMap->setReferencePoint(refX, refY);
+    losMap.initialize(0);
+    losMap.setReferencePoint(refX, refY);
 
     int i = 0;
     if (this->maxImportantObjectMemory > 0) {
@@ -131,11 +135,11 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
                     } else {
                         flag = 1;
                     }
-                    losMap->incrementValue(minX, minY, maxX, maxY, flag);
+                    losMap.incrementValue(minX, minY, maxX, maxY, flag);
                 }
             }
             i++;
         } while (i < this->maxImportantObjectMemory);
     }
-    return losMap->maxValue();
+    return losMap.maxValue();
 }
