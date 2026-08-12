@@ -13,6 +13,11 @@
 //   switch(p9) worsened size/call alignment and was rolled back. The remaining
 //   structural gap is the original's delayed push edi after the p9 test versus
 //   VC5's entry push edi; no ABI/layout or ordered-call discrepancy was found.
+// - Fresh normal-414D40-r1 pass: baseline reconfirmed the 306-byte, 8-call
+//   canonical source. Separate branch-local copies, a top-level guard-bound
+//   copy, a single-iteration loop, a common done label, and positive-guard
+//   if/else layout were all codegen duplicates. The delayed EDI save remains
+//   the only actionable gap; the clean direct-parameter source is restored.
 // - Best canonical source retained: positive state guard, direct p2 use, typed
 //   object/member ownership, real virtual calls, and standard FILE/fprintf ABI.
 

@@ -13,6 +13,12 @@
 // attempt 12: scalar 0/1 result introduced a stack local and 366-byte body; restored.
 // variant lab: EH-enabled typed-result form reached 358 bytes (diagnostic diff 257) but still emitted the EBX result copy; plain/combined forms stayed 398 bytes.
 // attempt 13: do/while(0) break convergence changed call order and grew to 406 bytes; restored.
+// fresh pass baseline: direct-return source remains the best clean reconstruction at 398 bytes/diff 194.
+// fresh pass: uninitialized scalar status forced a 420-byte four-return basin; restored.
+// fresh pass: delayed typed result after the null-target guard produced 368 bytes but diff 328; restored.
+// fresh pass: exact constructor ABI (RGE_Action_Object*, RGE_Task*, RGE_Static_Object*) fixed the donor call identity with unchanged codegen; kept.
+// fresh pass: real RGE_Action_List and RGE_Static_Object virtual destructor surfaces were codegen duplicates; kept for canonical ABI.
+// fresh pass: switch spelling of the second action-type gate was byte-identical; restored for natural source.
 // left in scratch: behavior/calls/EH/new-action shape are understood; remaining drift is VC5 exit-path cloning/block layout (success returns inline instead of original shared success tail) plus shifted branch distances.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
@@ -21,10 +27,11 @@ class RGE_Action_List;
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Task;
+class RGE_Action_Object;
 
 class RGE_Static_Object {
 public:
-    void* vtable;
+    virtual ~RGE_Static_Object();
     int id;
     void* master_obj;
     RGE_Player* owner;
@@ -84,7 +91,7 @@ public:
 
 class RGE_Action_List {
 public:
-    void* vtable;
+    virtual ~RGE_Action_List();
     void* obj;
     void* list;
 
@@ -100,10 +107,10 @@ struct Action_Repair_Pad {
 class TRIBE_Action_Repair : public RGE_Action {
 public:
     Action_Repair_Pad padding;
-    TRIBE_Action_Repair(void* obj, RGE_Task* task, void* target);
+    TRIBE_Action_Repair(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target);
 };
 
-class RGE_Action_Object_Base {
+class RGE_Action_Object {
 public:
     int id;
     void* master_obj;
@@ -151,13 +158,13 @@ public:
     virtual void d129();
 };
 
-class TRIBE_Combat_Object : public RGE_Action_Object_Base {
+class TRIBE_Combat_Object : public RGE_Action_Object {
 public:
     virtual void vf208(void* action);
     virtual void d131();
     virtual void* vf210(void* obj, float x, float y, float z);
 
-    int repair(int id, int flag);
+    virtual int repair(int id, int flag);
 };
 
 int TRIBE_Combat_Object::repair(int id, int flag) {
