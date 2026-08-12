@@ -12,10 +12,14 @@
 //    exact same-TU donors then recovered the target size and first scan blocks.
 // 10: Reconstructed both lists as ManagedIntArray members at +104 and +d58;
 //     output stayed unchanged and the layout is now canonical.
-// Left in scratch: size, calls, first scan, growth copies, removeGatherer, and
-// final virtual dispatch are aligned. The only known drift is the second
-// civilian scan: VC5 reuses the first count instead of the target's six-byte
-// reload of civilian.numberValue, shifting later branch displacements.
+// 11: Fresh typed baseline retained the known 224-byte second-scan drift.
+// 12: Explicitly assigned civilian.numberValue before both scans; no code change.
+// 13: Guarded do-while repeated scan reduced the byte diff but changed block shape;
+//     restored the natural indexed for-loop.
+// 14: Separate firstCount and secondCount locals did not change emitted code.
+// 15: A canonical civilians ManagedIntArray alias on the repeated scan produced MATCH.
+// 16: Scoped that reference to the civilian scan and growth block; MATCH remained.
+// Final: exact default-flags output, with canonical list ownership and typed dispatch.
 
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
@@ -82,38 +86,40 @@ int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
 
 tasked_done:
     if (flag == 1) {
-        count = this->civilians.numberValue;
         i = 0;
-        for (; i < count; i++) {
+        for (; i < this->civilians.numberValue; i++) {
             if (i >= this->civilians.maximumSize) break;
             if (this->civilians.value[i] == unit) goto haveExplorer;
         }
-        i = 0;
-        count = this->civilians.numberValue;
-        for (; i < count; i++) {
-            if (i >= this->civilians.maximumSize) break;
-            if (this->civilians.value[i] == unit) goto haveExplorer;
-        }
-        if (count > this->civilians.maximumSize - 1) {
-            int newMax = count + 1;
-            int* nv = (int*)operator_new(newMax * 4);
-            if (nv != 0) {
-                i = 0;
-                if (this->civilians.maximumSize > 0) {
-                    while (1) {
-                        if (i >= newMax) break;
-                        nv[i] = this->civilians.value[i];
-                        i++;
-                        if (i >= this->civilians.maximumSize) break;
-                    }
-                }
-                operator_delete(this->civilians.value);
-                this->civilians.value = nv;
-                this->civilians.maximumSize = newMax;
+        {
+            ManagedIntArray& civiliansArray = this->civilians;
+            i = 0;
+            count = civiliansArray.numberValue;
+            for (; i < count; i++) {
+                if (i >= civiliansArray.maximumSize) break;
+                if (civiliansArray.value[i] == unit) goto haveExplorer;
             }
+            if (count > civiliansArray.maximumSize - 1) {
+                int newMax = count + 1;
+                int* nv = (int*)operator_new(newMax * 4);
+                if (nv != 0) {
+                    i = 0;
+                    if (civiliansArray.maximumSize > 0) {
+                        while (1) {
+                            if (i >= newMax) break;
+                            nv[i] = civiliansArray.value[i];
+                            i++;
+                            if (i >= civiliansArray.maximumSize) break;
+                        }
+                    }
+                    operator_delete(civiliansArray.value);
+                    civiliansArray.value = nv;
+                    civiliansArray.maximumSize = newMax;
+                }
+            }
+            civiliansArray.value[civiliansArray.numberValue] = unit;
+            civiliansArray.numberValue++;
         }
-        this->civilians.value[this->civilians.numberValue] = unit;
-        this->civilians.numberValue++;
 haveExplorer:
         this->removeGatherer(unit);
     }
