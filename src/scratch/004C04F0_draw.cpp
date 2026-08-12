@@ -36,6 +36,26 @@
 // was a duplicate. The clean source below retains named ownership, the
 // binary-proven facet lifetime, and ordinary call-argument caches; residual
 // drift is the saved-self/callee-save scheduling basin.
+// Header-context follow-up: replacing stdio with the exact sprite.cpp
+// game_globals.h include surface was a codegen duplicate; restored clean source.
+// Fresh bounded pass normal-C04F0-r2:
+// - Replaced the result local with count-as-return, delayed cursor zeroing
+//   until the positive list arm, and kept a typed 16-byte entry cursor.
+//   This alone stayed in the 0x8-frame basin (293-294 differing bytes).
+// - Duplicating the two natural child do_draw arms let VC5 merge their call
+//   tail. It recovered the original 0xC frame, stack-saved this, EBX facet,
+//   EDI draw-area, EBP color-table, and the original call/loop topology:
+//   255 differing bytes, 84.55% shape.
+// - Spelling both list guards as <= 0 and both draw-level gates as <= 10
+//   recovered the original test/jle and cmp/ja forms. Best is 215 differing
+//   bytes, 87.39% shape, 0xC frame, exact size, calls, and 74.55% blocks.
+// - Raw member views and a direct list-base spelling were rejected. They
+//   either changed the frame or were codegen duplicates. The remaining
+//   structural gap is the entry base load: the oracle emits mov list; add
+//   cursor, while VC5 emits add cursor,[this->draw_list].
+// Final bounded source retains named ownership, typed entries, proven stride,
+// and ordinary branch-local calls. No exact match; pause for a new source/TU
+// lead rather than adding compiler-only scaffolding.
 
 #include <stdio.h>
 
@@ -108,61 +128,56 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                                TDrawArea* draw_area,
                                unsigned char color_index)
 {
-    unsigned char result;
-    RGE_Sprite* self = this;
-    int count = 0;
-    TDrawArea* loop_draw_area;
-    RGE_Color_Table* loop_color_table;
+    int count;
+    int entry_offset;
 
-    if (facet >= (signed short)self->facet_num) {
+    if (facet >= (signed short)this->facet_num) {
         facet = 0;
     }
 
-    if ((self->draw_list_num < 1) || (self->draw_list == 0)) {
-        if (self->draw_level < 0xb) {
+    if ((this->draw_list_num <= 0) || (this->draw_list == 0)) {
+        if (this->draw_level <= 0xa) {
             param_3 = param_5;
             param_4 = param_6;
         }
-        self->do_draw(facet, param_2, param_3, param_4,
+        this->do_draw(facet, param_2, param_3, param_4,
                       color_table, draw_area, color_index);
-        result = 1;
+        count = 1;
     }
     else {
-        result = 0;
         count = 0;
-        if (0 < self->draw_list_num) {
-            loop_draw_area = draw_area;
-            loop_color_table = color_table;
+        if (0 < this->draw_list_num) {
+            TDrawArea* loop_draw_area = draw_area;
+            RGE_Color_Table* loop_color_table = color_table;
+            entry_offset = 0;
             do {
-                RGE_Picture_List* entry = &self->draw_list[count];
+                RGE_Picture_List* entry =
+                    (RGE_Picture_List*)((char*)this->draw_list + entry_offset);
                 short entry_facet = entry->facet;
                 if ((entry_facet < 0) || (entry_facet == facet)) {
                     RGE_Sprite* sprite = entry->sprite;
                     int child_facet =
                         (sprite->facet_num * facet) /
-                        (int)self->facet_num;
-                    long offset_y = entry->offset_y;
-                    long offset_x;
-                    long base_x;
-                    if (sprite->draw_level < 0xb) {
-                        offset_y = offset_y + param_6;
-                        offset_x = entry->offset_x;
-                        base_x = param_5;
+                        (int)this->facet_num;
+                    if (sprite->draw_level <= 0xa) {
+                        sprite->do_draw(child_facet, param_2,
+                                        (long)entry->offset_x + param_5,
+                                        (long)entry->offset_y + param_6,
+                                        loop_color_table, loop_draw_area,
+                                        color_index);
                     }
                     else {
-                        offset_y = offset_y + param_4;
-                        offset_x = entry->offset_x;
-                        base_x = param_3;
+                        sprite->do_draw(child_facet, param_2,
+                                        (long)entry->offset_x + param_3,
+                                        (long)entry->offset_y + param_4,
+                                        loop_color_table, loop_draw_area,
+                                        color_index);
                     }
-                    sprite->do_draw(child_facet, param_2,
-                                    offset_x + base_x, offset_y,
-                                    loop_color_table, loop_draw_area,
-                                    color_index);
                 }
                 count = count + 1;
-            } while (count < self->draw_list_num);
-            return (unsigned char)count;
+                entry_offset = entry_offset + 0x10;
+            } while (count < this->draw_list_num);
         }
     }
-    return result;
+    return (unsigned char)count;
 }
