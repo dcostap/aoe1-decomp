@@ -20,6 +20,8 @@
 // VC5 clones the failure cleanup after the success epilogue in this natural source basin.
 // group-panelez-469C40: retest the complete TPanel -> TEasy_Panel and TPanel -> TScrollBarPanel
 // ABI from the exact Panel_ez sibling and pnl_sld donors before final validation.
+// - A registered result was a codegen duplicate; no stack home or CFG change
+//   appeared.  Restored the full typed ABI source.
 
 struct tagRECT {
     long left;

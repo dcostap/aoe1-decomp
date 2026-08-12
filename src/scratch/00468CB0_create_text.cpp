@@ -14,6 +14,8 @@
 // - Making create_text virtual worsened early member offsets/register coloring;
 //   rolled back.  Best source is restored; remaining lead is the original
 //   source's cold failure/common-epilogue topology, not call or layout parity.
+// - A register result with a common source return was a codegen duplicate; no
+//   stack home or CFG change appeared.  Restored the natural typed factory.
 
 class TPanel {};
 class TDrawArea {};

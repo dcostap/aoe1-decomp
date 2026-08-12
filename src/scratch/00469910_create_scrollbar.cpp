@@ -36,6 +36,8 @@
 // codegen remains unchanged and the remaining issue is still the /GX cleanup tail.
 // group-panelez-469910: retest the complete TPanel -> TEasy_Panel, TPanel -> TScrollBarPanel,
 // and TPanel -> TTextPanel ABI from the exact Panel_ez sibling and scrollbar donors.
+// - A registered result with a common source return was a codegen duplicate;
+//   no stack home or CFG change appeared.  Restored the full typed ABI source.
 
 struct tagRECT {
     long left;
