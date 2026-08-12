@@ -32,15 +32,26 @@ interior `GetTextMetricsA` output pointer.
 - `sa-861ea07a` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
 - `sa-ca972dfc` — `deepseek/deepseek-v4-flash`, high
 
-Both reviewers found one definite stored-state difference. The source read the
-wrong fields after passing `&tm.tmAscent` to `GetTextMetricsA`.
+Both reviewers reported one stored-state difference after passing
+`&tm.tmAscent` to `GetTextMetricsA`. They interpreted the later ESP-relative
+reads without the two arguments already pushed for the restoring
+`SelectObject` call.
 
-The executable stores `tm.tmOverhang` as the width. It stores
-`tm.tmInternalLeading + tm.tmWeight` as the height. The main agent corrected
-both expressions. Allocation, font selection, calls, failure leaks, object
-restoration, release, and return paths otherwise matched.
+Allocation, font selection, calls, failure leaks, object restoration, release,
+and return paths otherwise matched.
+
+### Round 2 — corrected-source check and conflict, 2026-08-12
+
+- `sa-9e9332f2` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-079bf055` — `deepseek/deepseek-v4-flash`, high
+
+Luna accepted the temporary field correction. DeepSeek found the missing stack
+adjustment and rejected it. At `0041F697` and `0041F698`, the executable pushes
+two arguments before it reads the metrics. Thus, the effective reads are
+`tmMaxCharWidth`, `tmAscent`, and `tmAveCharWidth`.
 
 ## Main-agent adjudication
 
-The metric finding is valid and corrected. The corrected source needs a fresh
-blind cohort before promotion.
+The round-one metric finding is invalid. Direct instruction-level stack
+accounting confirms the original source expressions. The main agent restored
+them. A fresh blind cohort must review the restored candidate.
