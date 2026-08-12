@@ -11,6 +11,18 @@
 // 8: rewrote cursor zero loop as explicit pointer do/while; same codegen as for-loop (rep stosd), kept acceptable spelling.
 // 9: split LastDrawTime assignment/subtract into two statements; no codegen change.
 // 10: class-field declaration compaction did not affect emitted code; remaining blocker is broad VC5 store scheduling around RECT copies and zero stores.
+// 11: corrected the constructor's canonical class order: Num_Cursors/Max_Cursors
+// are at +10/+14, the cursor array starts at +18, and the surface pointers are
+// at +11C/+120/+124. This is required by sibling Mouseptr methods and the type dump.
+// 12: reordered RECT zero statements; size improved by four bytes but the copy
+// schedule became less like the target, so restored the source order.
+// 13: an explicit save_rect pointer improved resync metrics but added an early
+// mouse_rect LEA and changed the first hunk; restored aggregate member copies.
+// 14: PDB-guided state-order probes did not improve the canonical source basin.
+// 15: restored the natural indexed cursor loop; VC5 still emits rep stosd.
+// 16: chained RECT zero assignment changed the first hunk and was rolled back.
+// Final: canonical layout and readable aggregate RECT initialization retained;
+// no EH frame, vptr, member lifetime, or destructor work is proven for this body.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
 
 typedef unsigned long ulong;
@@ -31,15 +43,16 @@ extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);
 
 class TMousePointer {
 public:
-    TDrawArea* custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
-    IDirectDrawSurface* restoreSurface; IDirectDrawSurface* renderSurface;
-    TDrawArea* cursors[16]; TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
+    int custom_draw; TDrawArea* render_area; TDrawArea* save_area; TDrawArea* primary_area;
+    int Num_Cursors; int Max_Cursors; TDrawArea* cursors[16];
+    TShape* Cursor_Shape; int Mouse_Mode; int Max_CX; int Max_CY;
     int cWidth; int cHeight; int gWidth; int gHeight; int mouse_x; int mouse_y; int save_x; int save_y;
     int facet; int game_facet; int next_facet; int last_facet; int d_top; int d_left; int d_bottom; int d_right;
     int g_top; int g_left; int g_bottom; int g_right; int save_area_valid;
     RECT4 save_rect; RECT4 mouse_rect; RECT4 cursor_rect; RECT4 new_save_rect; RECT4 restore_rect;
-    char gap_10C[0x10]; int active; int drawn; char gap_124[4]; int Shutdown; int Setup; int GameMode; int GameEnabled;
-    int MouseOnScreen; int Num_Cursors; int Max_Cursors; ulong LastDrawTime; long LastddError; char cursor_file[0x104]; int cursor_file_id;
+    char gap_10C[0x10]; IDirectDrawSurface* restoreSurface; IDirectDrawSurface* renderSurface;
+    IDirectDrawSurface* PrimarySurface; int active; int drawn; int Shutdown; int Setup; int GameMode; int GameEnabled;
+    int MouseOnScreen; ulong LastDrawTime; long LastddError; char cursor_file[0x104]; int cursor_file_id;
     TMousePointer(int mode);
 };
 
@@ -88,19 +101,17 @@ TMousePointer::TMousePointer(int mode)
     Mouse_Mode = mode;
     active = 0;
     drawn = 0;
+    restoreSurface = 0;
+    renderSurface = 0;
     MouseOnScreen = 0;
     Num_Cursors = 0;
     Max_Cursors = 0;
-    restoreSurface = 0;
-    renderSurface = 0;
     cursor_file_id = -1;
     cursor_file[0] = 0;
 
-    TDrawArea** p = cursors;
-    int n = 16;
-    do {
-        *p++ = 0;
-    } while (--n != 0);
+    for (int i = 0; i < 16; ++i) {
+        cursors[i] = 0;
+    }
 
     LastDrawTime = debug_timeGetTime(STR_MOUSEPTR, 100);
     LastDrawTime -= 36;
