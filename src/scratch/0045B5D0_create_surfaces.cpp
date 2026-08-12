@@ -15,6 +15,9 @@
 // for-loop candidate after the 10-hypothesis budget; current rebuilt diff is 189
 // bytes (419 vs 394), exact through offset +0xDB, with all 7 calls aligned.
 // left in scratch: exact through offset 0xDB (save-area path); remaining cursor-loop drift is branch sizing/target selection and cursor-fail epilogue order, not accepted_drift-safe yet.
+// fresh pass: pointer-backed guarded do/while reached diff 173 and +6 bytes, but changed the proven JL backedge to JGE+jmp.
+// direct indexed, bottom-loop, labeled-tail, and result-local variants were tested; each was duplicate or structurally worse.
+// restored the natural typed indexed for-loop; current best clean source remains diff 189 with all seven calls aligned.
 
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
@@ -61,18 +64,16 @@ int TMousePointer::create_surfaces()
         }
     }
 
-    if (this->Mouse_Mode == 0) {
-        if (0 < this->Max_Cursors) {
-            for (i = 0; i < this->Max_Cursors; i++) {
+    if (this->Mouse_Mode == 0 && 0 < this->Max_Cursors) {
+        for (i = 0; i < this->Max_Cursors; i++) {
+            if (this->cursors[i] == 0) {
+                sprintf(NameBuf, "Mouse Cursor #%d", i);
+                this->cursors[i] = new TDrawArea(NameBuf, 0);
                 if (this->cursors[i] == 0) {
-                    sprintf(NameBuf, "Mouse Cursor #%d", i);
-                    this->cursors[i] = new TDrawArea(NameBuf, 0);
-                    if (this->cursors[i] == 0) {
-                        return 0;
-                    }
-                    if (this->cursors[i]->Init(*(void**)this->render_area, this->Max_CX, this->Max_CY, 0, 0) == 0) {
-                        return 0;
-                    }
+                    return 0;
+                }
+                if (this->cursors[i]->Init(*(void**)this->render_area, this->Max_CX, this->Max_CY, 0, 0) == 0) {
+                    return 0;
                 }
             }
         }
