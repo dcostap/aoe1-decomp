@@ -31,6 +31,14 @@
 // 402-byte output, 273 positional bytes, exact 9-call set, 0x8 frame, and 59.74%
 // shape. Remaining lead is TU/register coloring for node versus span manager and
 // the original type2/3/type4 stack-home topology.
+//
+// Probes 35-39: nested else, type2 fallthrough, guarded do/while, and else-if
+// forms either lost the 0x8 frame or reproduced the clean baseline. Rolled back.
+// Probe 40: block-local lifetimes matched more block shapes but lost the frame;
+// rolled back.
+// Probes 41-42: compute type4 edge bounds before y normalization. The best
+// diagnostic diff was 251, but it used a 0xC frame and lost block coverage.
+// Rolled back. Current source is the validated typed baseline.
 
 struct DClipInfo_Node {
     char gap_00[0x2C];
