@@ -3,22 +3,20 @@
 // 523 bytes, __cdecl
 //
 // Attempt log:
-// v1-orig: first draft, 68.6% diff - baseline
-// v7-memcpy: for-loop subtraction memcpy + void* rbuf local, 36.3% - big win
-// 
-// Remaining (~36%):
-// - Early prologue: original reads param_2 into ECX before register saves
-//   (mov ecx,[esp+0Ch] + mov [esp+1Ch],ecx). Rebuilt uses EBX after push ebx.
-//   This is a VC5 register allocation choice (caller-saved vs callee-saved)
-// - Scattered scheduling differences throughout the rest
-// 
-// Key: for-loop subtraction pattern (for(;cnt>=4;cnt-=4)) triggers shr+rep movsd
-// rather than sar+loop. The void* rbuf = buf copy forces early parameter read.
+// baseline: named rbuf cursor and manual dword/byte copies; 574 bytes, 277 diff.
+// ABI: C linkage for Inf32 helpers aligned all seven call targets; retained.
+// control-flow: separate BufSize result from calloc; matched the first helper call order.
+// variant: intrinsic memcpy produced the original REP MOVSD/MOVSB copies and exact size.
+// layout: function-scope fsize before loc matched decode stack homes; best is 528 bytes, 127 diff.
+// rejected: mutating fd or using buf as the cursor broke the original prologue and stack shape.
+// remaining: register and post-decode scheduling drift after the second Inf32Decode call.
 
 extern int __cdecl read(int fd, void* buf, unsigned int size);
 extern void* __cdecl calloc(int count, int size);
-extern int __cdecl _Inf32BufSize();
-extern int __cdecl _Inf32Decode(void* compressed, int offset, void* file_size, void* buf, int zero1, void* local_4, void* decomp_buf, int one);
+extern "C" int __cdecl _Inf32BufSize();
+extern "C" int __cdecl _Inf32Decode(void* compressed, int offset, void* file_size, void* buf, int zero1, void* local_4, void* decomp_buf, int one);
+extern "C" void* __cdecl memcpy(void* dst, const void* src, unsigned int size);
+#pragma intrinsic(memcpy)
 
 extern int ENABLE_COMPRESSION;
 extern int DAT_0086b260;
@@ -33,6 +31,7 @@ extern int DAT_0086b280;
 extern int DAT_0086b25c;
 
 void __cdecl rge_read(int fd, void* buf, int size) {
+    int fsize;
     int loc;
     void* rbuf = buf;
 
@@ -44,8 +43,8 @@ void __cdecl rge_read(int fd, void* buf, int size) {
         }
     } else if (fd >= 0 && fd == DAT_0086b260) {
         if (DAT_0086b264 != 0) {
-            int fsize;
-            DAT_0086b26c = (int)calloc(_Inf32BufSize(), 1);
+            int buf_size = _Inf32BufSize();
+            DAT_0086b26c = (int)calloc(buf_size, 1);
             DAT_0086b280 = (int)calloc(DAT_0086b27c, 1);
             read(fd, (void*)DAT_0086b280, DAT_0086b27c);
             fsize = DAT_0086b27c;
@@ -61,18 +60,10 @@ void __cdecl rge_read(int fd, void* buf, int size) {
             int* ptr = (int*)DAT_0086b278;
             while (remaining + cur > 0x10000) {
                 int copy = 0x10000 - cur;
-                int* dst = (int*)rbuf;
-                int* src = ptr;
-                int cnt = copy;
-                for (; cnt >= 4; cnt -= 4) *dst++ = *src++;
-                {
-                    char* cdst = (char*)dst;
-                    char* csrc = (char*)src;
-                    for (; cnt > 0; cnt--) *cdst++ = *csrc++;
-                }
+                memcpy(rbuf, ptr, copy);
                 
                 {
-                    int fsize;
+                    fsize = DAT_0086b27c;
                     loc = 0x10000;
                     _Inf32Decode((void*)DAT_0086b280, DAT_0086b25c, &fsize, (void*)DAT_0086b270, 0, &loc, (void*)DAT_0086b26c, 1);
                     DAT_0086b25c += fsize;
@@ -86,15 +77,7 @@ void __cdecl rge_read(int fd, void* buf, int size) {
                 cur = 0;
             }
             if (remaining > 0) {
-                int* dst = (int*)rbuf;
-                int* src = ptr;
-                int cnt = remaining;
-                for (; cnt >= 4; cnt -= 4) *dst++ = *src++;
-                {
-                    char* cdst = (char*)dst;
-                    char* csrc = (char*)src;
-                    for (; cnt > 0; cnt--) *cdst++ = *csrc++;
-                }
+                memcpy(rbuf, ptr, remaining);
                 DAT_0086b268 += remaining;
                 DAT_0086b278 += remaining;
             }

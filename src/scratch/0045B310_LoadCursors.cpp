@@ -4,6 +4,11 @@
 // tried explicit zero local/register and replacing literals: did not change early topology until loop shape changed.
 // rewrote first shape-dimension scan to match original offset-counter form (shape in EDI, off in EDX, count in EBX); first mismatch moved to 0045B3B2 and diff improved to 256 positional / 150 edit.
 // tried shared fail label and LoadOk=0/goto-done forms for early failure exits; either unchanged branch-distance drift or object shrank below configured size, rolled back.
+// fresh baseline: 294 positional bytes, exact size, all 16 calls, and 87.37% exact blocks.
+// reversed the validation height comparison; emitted order moved farther, rolled back.
+// tried one shared failed label; emitted code was unchanged, rolled back.
+// tried nested positive success guards; size grew by 14 and block coverage fell, rolled back.
+// tried typed Shape_Info bounds with a combined predicate; no positional gain, then a height temp worsened size, rolled back.
 // left in scratch: behavior/calls/size are close, but post-scan failure-tail placement and validation-loop layout still differ broadly; not accepted_drift-safe.
 
 extern "C" int sprintf(char*, const char*, ...);

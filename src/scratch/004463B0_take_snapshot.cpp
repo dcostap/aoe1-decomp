@@ -14,8 +14,16 @@
 // - Diagnostic predecessor-pointer offsets aligned some palette/filename
 //   displacements but made the local pointer long-lived, changed register
 //   roles, shortened the function, and changed the Unlock call; rolled back.
+// - Fresh pass: using this->Height for bfSize improved the early liveness
+//   basin. Binary pointer evidence then removed decompiler-only +1 palette
+//   and +4 filename offsets, improving the result to 326 differing bytes,
+//   91.62% shape, and 63.64% exact-block coverage.
+// - Tested direct/local product forms, register-qualified height, call
+//   placement, and explicit continue-at-limit spelling. They were duplicate
+//   or worse. The current typed source keeps the natural zero-based buffers.
 // - Best clean reconstruction: exact frame/size/call set, remaining drift is
-//   VC5 local/register/block scheduling around the header and early returns.
+//   VC5 local/register/block scheduling around the header and early returns;
+//   no inline asm or other codegen-only scaffold is retained.
 
 #include <windows.h>
 #include <stdio.h>
@@ -52,11 +60,12 @@ void TDrawArea::take_snapshot(char* name, int& number)
 
     bmIH.biWidth = this->Width;
     bmHeight = this->Height;
-    bmIH.biHeight = bmHeight;
     bmWide = (bmIH.biWidth + 3) & 0xfffc;
 
     bmFH.bfType = 0x4d42;
-    bmFH.bfSize = bmWide * bmHeight + 0x436;
+    int total = this->Height * bmWide;
+    bmFH.bfSize = total + 0x436;
+    bmIH.biHeight = bmHeight;
     bmFH.bfReserved1 = 0;
     bmFH.bfReserved2 = 0;
     bmFH.bfOffBits = 0x436;
@@ -73,41 +82,42 @@ void TDrawArea::take_snapshot(char* name, int& number)
 
     *(int*)BMPFile = 0;
 
-    this->GetPalette(thePal + 1);
+    this->GetPalette(thePal);
     for (int i = 0; i < 256; ++i) {
-        bmPAL[i + 1].rgbBlue = thePal[i + 1].peBlue;
-        bmPAL[i + 1].rgbGreen = thePal[i + 1].peGreen;
-        bmPAL[i + 1].rgbRed = thePal[i + 1].peRed;
-        bmPAL[i + 1].rgbReserved = 0;
+        bmPAL[i].rgbBlue = thePal[i].peBlue;
+        bmPAL[i].rgbGreen = thePal[i].peGreen;
+        bmPAL[i].rgbRed = thePal[i].peRed;
+        bmPAL[i].rgbReserved = 0;
     }
 
     int tries = 0;
     int file;
     while (1) {
         if (name == 0) {
-            sprintf(BMPFile + 4, (char*)0x5845e4, number);
+            sprintf(BMPFile, (char*)0x5845e4, number);
         }
         else {
-            sprintf(BMPFile + 4, name, number);
+            sprintf(BMPFile, name, number);
         }
 
         ++tries;
-        file = __open(BMPFile + 4, 0);
+        file = __open(BMPFile, 0);
         if (file == -1)
             break;
 
         ++number;
         close(file);
-        if (tries > 1000)
-            return;
+        if (tries <= 1000)
+            continue;
+        return;
     }
 
     unsigned char* buffer = (unsigned char*)malloc(bmWide);
-    file = __open(BMPFile + 4, 0x8301, 0x180);
+    file = __open(BMPFile, 0x8301, 0x180);
     if (file != -1) {
         write(file, &bmFH, 0x0e);
         write(file, &bmIH, 0x28);
-        write(file, bmPAL + 1, 0x400);
+        write(file, bmPAL, 0x400);
 
         if (this->Lock("take_snapshot", 1) != 0) {
             int y = bmHeight - 1;

@@ -18,8 +18,19 @@
 // arithmetic is the clean surviving reconstruction. Captured dplay-id and named
 // debug-byte variants were codegen-worse; the remaining drift is debug-flag register
 // order plus wait-output initialization scheduling.
-// Left in scratch: behavior modeled with exact frame/size, but debug-flag register
-// order, wait-output initialization scheduling, and relocation-bearing literals remain.
+// fresh pass baseline: restored the current validated source and confirmed the 285-byte
+// mismatch with the named-byte and cached-wait variants absent.
+// fresh probe: separate debug-byte mask/temp duplicated the old AL basin; rolled back.
+// fresh probe: widened debug flag to int worsened size and liveness; rolled back.
+// fresh probe: named DAT_0062c5d0 extern changed the byte register to oracle CL and
+// recovered the rate and control-flow blocks; retained this natural declaration surface.
+// fresh probes: cached dplay id, changed wait-count declaration/zero spellings, and
+// restored direct initialized output; only the id cache improved, while assignment order
+// stayed unchanged. Cached both id and interface so VC5 emits oracle object-load, LEA,
+// pushes, and vtable load order. Exact match: 409/409 bytes, 10/10 calls, default flags.
+// Exact validated source remains in scratch for the parent to promote. The named byte
+// global and cached DirectPlay id/interface are period-plausible declaration and lifetime
+// surfaces, not compiler-only scaffolding.
 
 typedef unsigned long ulong;
 
@@ -29,13 +40,20 @@ class TDebuggingLog { public: void Log(char* fmt, ...); };
 class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
 class IDirectPlay4A;
 
-#define debug_once (*(unsigned char*)0x0062C5D0)
-#define last_time (*(ulong*)0x0062CEF0)
-#define last_rx (*(ulong*)0x0062CF14)
-#define last_tx (*(ulong*)0x0062CF18)
-#define dplay_id (*(int*)0x0062CF04)
-#define dplay (*(IDirectPlay4A**)0x0062C5EC)
-#define log_obj (*(TDebuggingLog**)0x0062C4FC)
+extern unsigned char DAT_0062c5d0;
+#define debug_once DAT_0062c5d0
+extern ulong DAT_0062cef0;
+extern ulong DAT_0062cf14;
+extern ulong DAT_0062cf18;
+extern unsigned int DAT_0062cf04;
+extern IDirectPlay4A* DAT_0062c5ec;
+extern TDebuggingLog* L;
+#define last_time DAT_0062cef0
+#define last_rx DAT_0062cf14
+#define last_tx DAT_0062cf18
+#define dplay_id DAT_0062cf04
+#define dplay DAT_0062c5ec
+#define log_obj L
 
 class IDirectPlay4A {
 public:
@@ -79,7 +97,7 @@ void TCommunications_Handler::ReceiveGameMessages()
     }
 
     if ((debug_once & 1) == 0) {
-        debug_once |= 1;
+        debug_once = (unsigned char)(debug_once | 1);
         last_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x396);
     }
 
@@ -103,10 +121,11 @@ void TCommunications_Handler::ReceiveGameMessages()
         this->ExecuteIncoming();
     }
 
-    if (dplay_id != 0) {
-        int wait_count;
-        wait_count = 0;
-        long result = dplay->v44(dplay_id, &wait_count);
+    int current_dplay_id = dplay_id;
+    if (current_dplay_id != 0) {
+        IDirectPlay4A* current_dplay = dplay;
+        int wait_count = zero;
+        long result = current_dplay->v44(current_dplay_id, &wait_count);
         if (result != zero) {
             this->Err->ShowReturn(result, (char*)"MsgWait");
             goto after_dplay;
