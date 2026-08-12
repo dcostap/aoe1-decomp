@@ -32,7 +32,23 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
                 "state": "active",
                 "lease_expires_at": future,
                 "probe_start_index": 1,
-                "probes": [{}, {}, {}],
+                "events": [
+                    {"kind": "start", "owner": "AgentA"},
+                    {"kind": "takeover", "from_owner": "AgentOld", "to_owner": "AgentA"},
+                ],
+                "probes": [
+                    {"claim_number": 1},
+                    {
+                        "claim_number": 2,
+                        "number": 2,
+                        "meaningful": True,
+                        "at": "2026-08-02T10:00:00Z",
+                        "metrics": {"diff_bytes": 8},
+                        "metric_delta": {"diff_bytes": {"direction": "improved"}},
+                    },
+                    {"claim_number": 2},
+                ],
+                "last_metric_summary": {"diff_bytes": 9},
             },
             {
                 "va": "00002000",
@@ -44,14 +60,24 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
         ]
 
     def test_annotation_only_treats_unexpired_active_session_as_leased(self) -> None:
-        rows = annotate_leases([{"va": "00001000"}, {"va": "00002000"}, {"va": "00003000"}], self.sessions())
+        rows = annotate_leases(
+            [{"va": "00001000"}, {"va": "00002000"}, {"va": "00003000"}],
+            self.sessions(),
+            include_work_history=True,
+        )
         self.assertEqual(rows[0]["lease_owner"], "AgentA")
         self.assertEqual(rows[0]["lease_probes"], "2")
+        self.assertEqual(rows[0]["lease_probe_total"], "3")
+        self.assertEqual(rows[0]["lease_claim_total"], "2")
+        self.assertEqual(rows[0]["work_best_current_diff"], "8/9")
+        self.assertEqual(rows[0]["work_last_gain"], "#2@2026-08-02")
         self.assertEqual(rows[1]["lease_active"], "no")
         self.assertEqual(rows[2]["lease_state"], "")
 
     def test_filters_support_unleased_active_and_owner(self) -> None:
         rows = annotate_leases([{"va": "00001000"}, {"va": "00002000"}, {"va": "00003000"}], self.sessions())
+        self.assertNotIn("lease_claim_total", rows[0])
+        self.assertNotIn("work_next", rows[0])
         self.assertEqual([row["va"] for row in filter_leases(rows, active_only=True)], ["00001000"])
         self.assertEqual([row["va"] for row in filter_leases(rows, owner="AgentA")], ["00001000"])
         self.assertEqual(

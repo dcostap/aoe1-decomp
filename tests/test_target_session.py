@@ -39,6 +39,15 @@ class TargetSessionTests(unittest.TestCase):
                 self.assertEqual(second["probe_start_index"], len(second["probes"]))
                 self.assertTrue(any(event["kind"] == "takeover" for event in second["events"]))
 
+    def test_active_same_owner_start_renews_without_adding_a_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(target_session, "REPO_ROOT", root):
+                first = target_session.start_session(self.record, "AgentA", 4, 2.0)
+                second = target_session.start_session(self.record, "AgentA", 4, 2.0)
+        self.assertEqual(target_session.session_claim_count(first), 1)
+        self.assertEqual(target_session.session_claim_count(second), 1)
+
     def test_probe_snapshots_current_metrics_and_counts_meaningful_attempts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -482,6 +491,56 @@ class TargetSessionTests(unittest.TestCase):
                 self.assertEqual(len(payload["probes"]), 1)
                 self.assertEqual(payload["probes"][0]["number"], 2)
                 self.assertEqual(payload["checkpoint_count"], 2)
+
+    def test_brief_bounds_notes_and_reports_lifetime_work(self) -> None:
+        session = {
+            "owner": "AgentB",
+            "state": "pause",
+            "probe_start_index": 2,
+            "events": [
+                {"kind": "start", "owner": "AgentA"},
+                {"kind": "takeover", "owner": "AgentB"},
+            ],
+            "probes": [
+                {
+                    "number": 1,
+                    "claim_number": 1,
+                    "kind": "baseline",
+                    "meaningful": True,
+                    "note": "old note",
+                    "metrics": {"diff_bytes": 12},
+                    "outputs": {"emitted_identity_sha256": "a"},
+                },
+                {
+                    "number": 2,
+                    "claim_number": 1,
+                    "kind": "liveness",
+                    "meaningful": True,
+                    "note": "useful gain",
+                    "metrics": {"diff_bytes": 8},
+                    "metric_delta": {"diff_bytes": {"direction": "improved"}},
+                    "outputs": {"emitted_identity_sha256": "b"},
+                },
+                {
+                    "number": 3,
+                    "claim_number": 2,
+                    "kind": "validation",
+                    "meaningful": False,
+                    "note": "final check",
+                    "metrics": {"diff_bytes": 8},
+                },
+            ],
+        }
+        with patch.object(target_session, "current_metric_summary", return_value={}), patch.object(
+            target_session, "preferred_source_path", return_value=Path("missing.cpp")
+        ), patch.object(target_session, "checkpoint_info", side_effect=KeyError("none")):
+            text = target_session.format_brief(self.record, session, note_limit=1)
+        self.assertIn("claims=2 meaningful_probes=2", text)
+        self.assertIn("best_positional_diff=8", text)
+        self.assertIn("last_positional_gain=#2", text)
+        self.assertIn("useful gain", text)
+        self.assertNotIn("old note", text)
+        self.assertNotIn("final check", text)
 
 
 if __name__ == "__main__":

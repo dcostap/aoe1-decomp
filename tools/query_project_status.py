@@ -15,7 +15,14 @@ from status_core import (
     sort_status_rows,
     status_counts,
 )
-from target_session import load_target_sessions, meaningful_probe_count, session_is_active
+from target_session import (
+    classify_next_stage,
+    last_positional_improvement,
+    load_target_sessions,
+    meaningful_probe_count,
+    session_claim_count,
+    session_is_active,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -59,6 +66,13 @@ def parse_args() -> argparse.Namespace:
     leases.add_argument("--active-leases", action="store_true", help="Only functions with an unexpired active target lease")
     parser.add_argument("--owner", help="Only active leases owned by this exact agent/session name")
     parser.add_argument("--leases", action="store_true", help="Include lease owner/state/probe columns in table output")
+    parser.add_argument(
+        "--work-history",
+        action="store_true",
+        help="Include lifetime claims, probes, progress, last worker, and next workflow",
+    )
+    parser.add_argument("--max-lifetime-probes", type=int, help="Maximum lifetime meaningful probes")
+    parser.add_argument("--max-claims", type=int, help="Maximum lifetime target claims")
 
     parser.add_argument("--va", help="Show one VA, e.g. 0047A3A0")
     parser.add_argument("--source", help="Filter by PDB source file/path substring, e.g. Pnl_pic.cpp")
@@ -159,7 +173,12 @@ def limited(rows: list[dict[str, str]], limit: int) -> list[dict[str, str]]:
     return rows
 
 
-def annotate_leases(rows: list[dict[str, str]], sessions: list[dict] | None = None) -> list[dict[str, str]]:
+def annotate_leases(
+    rows: list[dict[str, str]],
+    sessions: list[dict] | None = None,
+    *,
+    include_work_history: bool = False,
+) -> list[dict[str, str]]:
     source_sessions = load_target_sessions() if sessions is None else sessions
     by_va = {str(session.get("va", "")).upper(): session for session in source_sessions}
     for row in rows:
@@ -173,6 +192,30 @@ def annotate_leases(rows: list[dict[str, str]], sessions: list[dict] | None = No
         row["lease_probes"] = str(meaningful_probe_count(session or {})) if session else ""
         row["lease_probe_total"] = str(total_probes) if session else ""
         row["clean_pinned"] = "yes" if session and session.get("clean_baseline") else ""
+        if include_work_history:
+            claim_count = session_claim_count(session or {})
+            improvement = last_positional_improvement(session or {})
+            probe_diffs = [
+                int((probe.get("metrics") or {}).get("diff_bytes"))
+                for probe in (session or {}).get("probes") or []
+                if (probe.get("metrics") or {}).get("diff_bytes") is not None
+            ]
+            current_metrics = (session or {}).get("last_metric_summary") or {}
+            current_diff = current_metrics.get("diff_bytes")
+            row["lease_claim_total"] = str(claim_count)
+            row["work_best_current_diff"] = (
+                f"{min(probe_diffs)}/{current_diff if current_diff is not None else '-'}"
+                if probe_diffs else "-"
+            )
+            row["work_last_gain"] = (
+                f"#{improvement.get('number')}@{str(improvement.get('at') or '')[:10]}"
+                if improvement else "none"
+            )
+            row["work_last_worker"] = str((session or {}).get("owner", ""))
+            recommendation = classify_next_stage(current_metrics)
+            if total_probes >= 30 or claim_count >= 4:
+                recommendation = "readiness/specialist audit; " + recommendation
+            row["work_next"] = recommendation
     return rows
 
 
@@ -318,14 +361,25 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
             ("note", "source_note", 36),
             ("next", "source_next", 36),
         ])
-    if args.leases or args.unleased or args.active_leases or args.owner:
+    if args.leases or args.work_history or args.unleased or args.active_leases or args.owner:
         cols.extend([
             ("lease_owner", "lease_owner", 20),
             ("lease", "lease_state", 10),
-            ("probes", "lease_probes", 7),
+            ("claim", "lease_probes", 7),
+            ("total", "lease_probe_total", 7),
             ("clean", "clean_pinned", 6),
             ("expires", "lease_expires_at", 20),
         ])
+    if args.work_history:
+        cols.extend([
+            ("claims", "lease_claim_total", 6),
+            ("best/cur", "work_best_current_diff", 10),
+            ("last_gain", "work_last_gain", 15),
+            ("last_worker", "work_last_worker", 18),
+        ])
+        if not args.notes:
+            cols.append(("blocker", "source_blocker", 28))
+        cols.append(("next_workflow", "work_next", 42))
     return cols
 
 
@@ -356,8 +410,17 @@ def main() -> None:
     args = parse_args()
     if args.triage and (args.limit <= 0 or args.limit > 50):
         raise SystemExit("--triage requires a bounded --limit between 1 and 50")
+    if args.max_lifetime_probes is not None and args.max_lifetime_probes < 0:
+        raise SystemExit("--max-lifetime-probes must be zero or positive")
+    if args.max_claims is not None and args.max_claims < 0:
+        raise SystemExit("--max-claims must be zero or positive")
     rows = load_rows(args)
-    rows = annotate_leases(rows)
+    include_work_history = (
+        args.work_history
+        or args.max_lifetime_probes is not None
+        or args.max_claims is not None
+    )
+    rows = annotate_leases(rows, include_work_history=include_work_history)
     rows = filter_status_rows(
         rows,
         corpus_bucket=corpus_bucket_from_args(args),
@@ -385,6 +448,16 @@ def main() -> None:
         active_only=args.active_leases,
         owner=args.owner or "",
     )
+    if args.max_lifetime_probes is not None:
+        rows = [
+            row for row in rows
+            if int(row.get("lease_probe_total") or 0) <= args.max_lifetime_probes
+        ]
+    if args.max_claims is not None:
+        rows = [
+            row for row in rows
+            if int(row.get("lease_claim_total") or 0) <= args.max_claims
+        ]
 
     if args.summary:
         print_summary(rows)

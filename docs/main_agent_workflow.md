@@ -76,6 +76,12 @@ Broad initial queues are counterproductive in a shared worktree. Start with the
 smallest useful batch, observe integration cost and compiler contention, and
 expand only within the user contract.
 
+Use `query_project_status.py --work-history` before assigning paused scratch
+targets. Review lifetime probes and claims, not only the current claim. If the
+clean unclaimed queue is empty, do not replace it with a broad smallest-scratch
+wave. Route heavily tested targets to bounded readiness or specialist audits,
+then assign editing work only when an audit finds a new evidence-backed lead.
+
 ## Participant briefings
 
 Every subagent prompt must assign exactly one role and include the relevant
@@ -85,8 +91,12 @@ an ambiguous assignment safe.
 ### Matching worker
 
 - one explicit VA and one unique lease owner;
-- read `README.md`, the complete `LESSONS.md`, `AGENTS.md`, the current attempt
-  log, and target history;
+- use the injected `AGENTS.md`; do not reread it or load `README.md`;
+- search `LESSONS.md` only for terms tied to the target's proven blocker, ABI,
+  owner, source file, or mismatch; never load the complete lessons file;
+- read the current source attempt log and the compact target briefing;
+- open older target history only when the briefing and attempt log do not answer
+  a specific question;
 - follow the ten-hypothesis target-session contract unless given another budget;
 - run dossier, donor, and ABI evidence before broad archaeology;
 - edit only the target source and narrowly justified flags/shared facts;
@@ -133,6 +143,9 @@ each subagent normally stays at or below **300k occupied context tokens**.
 - A blind reviewer receives exactly one candidate.
 - Prefer concise checker maps, focused ranges, and dossier sections over complete
   packet/history dumps.
+- Keep full records on disk. Do not paste raw target-session JSON into a prompt.
+- Use `target_session.py brief --va <VA>` for the initial handoff. Use bounded
+  history or checker views only to answer a specific open question.
 - Remind participants to use `everything_search` for filename/path discovery and
   `rg` for contents; recursive `find` is inappropriate for ordinary indexed repo
   discovery and can stall on large `orig`/`build` trees.
@@ -157,14 +170,15 @@ may occupy metric-best history checkpoints without moving the clean pin. An
 unresolved worker must restore or explicitly repin the defensible final source
 before pausing; the session tool enforces this after final validation.
 
-Ten hypotheses bound one worker assignment. They do not prove that the function
-is exhausted. The main agent may assign fresh workers to the same function many
-times. Before doing so, ensure the next worker reads the existing source attempt
-log and target history and has a plausible way to add new evidence rather than
-repeat an explored compiler basin. When prior workers mainly optimized one raw
-pointer/decompiler form, prefer a clean-source reset using exact donors, PDB line
-bands, canonical arrays/classes, and original API idioms over another register
-allocation pass.
+Ten hypotheses are a maximum, not a quota. Stop earlier when no evidence-backed
+hypothesis remains. They do not prove that the function is exhausted. Before a
+new assignment on a heavily tested target, require at least one new lead: exact
+assembly donor evidence, ABI/layout evidence, TU/header evidence, a focused
+variant family, or a new binary behavior finding. Do not assign another general
+source-shape pass only to occupy a slot. When prior workers optimized one raw
+pointer form, prefer a clean-source reset. Use exact donors, PDB line bands,
+canonical ownership, and original API idioms. Do not repeat register allocation
+experiments without new evidence.
 
 Judge an exact-match stall from cumulative evidence, including:
 

@@ -143,6 +143,22 @@ def meaningful_probe_count(session: dict, *, current_claim_only: bool = True) ->
     return sum(_probe_is_meaningful(probe) for probe in probes)
 
 
+def session_claim_count(session: dict) -> int:
+    """Return lifetime claims without counting pause and probe events."""
+    events = session.get("events") or []
+    event_count = sum(event.get("kind") in {"start", "takeover"} for event in events)
+    return max(event_count, 1 if session else 0)
+
+
+def last_positional_improvement(session: dict) -> dict | None:
+    """Return the latest meaningful probe that lowered positional diff bytes."""
+    for probe in reversed(session.get("probes") or []):
+        delta = (probe.get("metric_delta") or {}).get("diff_bytes") or {}
+        if _probe_is_meaningful(probe) and delta.get("direction") == "improved":
+            return probe
+    return None
+
+
 def _source_bucket(source: Path) -> str:
     if not source.exists():
         return "unclaimed"
@@ -330,7 +346,9 @@ def _new_session(
     continuing_active_claim = bool(
         prior and prior.get("owner") == owner and _lease_active(prior, now)
     )
-    if prior and prior.get("owner") != owner:
+    if continuing_active_claim:
+        pass
+    elif prior and prior.get("owner") != owner:
         events.append(
             {
                 "at": _iso(now),
@@ -775,7 +793,8 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
             baseline_state = "CURRENT" if clean_baseline_is_current(record, session) else "saved"
             lines.append(
                 f"Clean source [{baseline_state}]: {str(baseline.get('checkpoint_id') or '')[:18]} "
-                f"diff={baseline_metrics.get('diff_bytes')} note={baseline.get('note') or '-'}"
+                f"diff={baseline_metrics.get('diff_bytes')} "
+                f"note={str(baseline.get('note') or '-')[:180]}"
             )
         else:
             lines.append("Clean source: <not pinned>")
@@ -1021,6 +1040,62 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
     return "\n".join(lines)
 
 
+def format_brief(record: dict[str, str], session: dict | None, note_limit: int) -> str:
+    """Return a bounded worker handoff without raw checkpoint/session payloads."""
+    status_lines = format_session(record, session).split("\n\nUseful commands:", 1)[0]
+    lines = [status_lines]
+    if session is None:
+        lines.extend(["", "Prior evidence: <no target session>"])
+        return "\n".join(lines)
+
+    probes = list(session.get("probes") or [])
+    meaningful = [probe for probe in probes if _probe_is_meaningful(probe)]
+    improvement = last_positional_improvement(session)
+    identities = {
+        str((probe.get("outputs") or {}).get("emitted_identity_sha256"))
+        for probe in probes
+        if (probe.get("outputs") or {}).get("emitted_identity_sha256")
+    }
+    best_diffs = [
+        int((probe.get("metrics") or {}).get("diff_bytes"))
+        for probe in probes
+        if (probe.get("metrics") or {}).get("diff_bytes") is not None
+    ]
+    lines.extend(
+        [
+            "",
+            "Cumulative work:",
+            f"  claims={session_claim_count(session)} meaningful_probes={len(meaningful)} "
+            f"recorded_checks={len(probes)} emitted_code_groups={len(identities)}",
+            f"  best_positional_diff={min(best_diffs) if best_diffs else '-'} "
+            f"last_positional_gain={('#' + str(improvement.get('number'))) if improvement else 'none recorded'}",
+            "",
+            f"Recent meaningful notes (newest first, max {note_limit}):",
+        ]
+    )
+    if not meaningful:
+        lines.append("  <none recorded>")
+    else:
+        selected = meaningful if note_limit == 0 else meaningful[-note_limit:]
+        for probe in reversed(selected):
+            metrics = probe.get("metrics") or {}
+            duplicate = probe.get("same_emitted_code_as_probe")
+            duplicate_text = f" duplicate=#{duplicate}" if duplicate is not None else ""
+            note = " ".join(str(probe.get("note") or "").split())[:220]
+            lines.append(
+                f"  #{probe.get('number', '?')} claim_probe={probe.get('claim_number', '?')} "
+                f"{probe.get('kind', '?')} diff={metrics.get('diff_bytes', '-')}{duplicate_text}: {note}"
+            )
+    lines.extend(
+        [
+            "",
+            "Read the living source attempt log next. Search LESSONS.md only for narrow blocker terms.",
+            "Do not load raw target-session JSON. Use bounded history only for a specific open question.",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def history_payload(record: dict[str, str], session: dict | None, limit: int) -> dict[str, object]:
     """Structured per-target history (runs and probes, newest first)."""
     index = _history_index(record)
@@ -1056,6 +1131,7 @@ def parse_args() -> argparse.Namespace:
             "  pause/release require --reason (--note is an alias for it)\n"
             "  status      takes --va only; --owner is NOT accepted\n"
             "  list        flags are --active and --json only (there is no --all flag)\n"
+            "  brief       shows a bounded worker handoff with recent meaningful notes\n"
             "  history     shows a target's checker checkpoints and notebook probes\n"
             "\n"
             "Examples:\n"
@@ -1063,6 +1139,7 @@ def parse_args() -> argparse.Namespace:
             '  python tools/target_session.py check --va 00425A40 --owner sa-1234 '
             '--kind abi --note "hypothesis note" -- --detail concise\n'
             '  python tools/target_session.py status --va 00425A40\n'
+            '  python tools/target_session.py brief --va 00425A40\n'
             '  python tools/target_session.py history --va 00425A40\n'
             '  python tools/target_session.py release --va 00425A40 --owner sa-1234 '
             '--reason "exact match"\n'
@@ -1157,6 +1234,16 @@ def parse_args() -> argparse.Namespace:
     status.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     status.add_argument("--json", action="store_true", help="Emit JSON instead of the human summary.")
 
+    brief = subparsers.add_parser(
+        "brief",
+        help="Show a bounded worker handoff. Takes --va only and never emits raw session JSON.",
+    )
+    brief.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
+    brief.add_argument(
+        "--notes", type=int, default=20,
+        help="Maximum recent meaningful notes (0 = all; default 20).",
+    )
+
     history = subparsers.add_parser(
         "history",
         help="Show a target's checker checkpoint runs and notebook probes, newest first.",
@@ -1227,6 +1314,10 @@ def main() -> None:
                 if args.json
                 else format_session(record, session)
             )
+        elif args.command == "brief":
+            if args.notes < 0:
+                raise ValueError("--notes must be zero or positive")
+            print(format_brief(record, _load_session(record), args.notes))
         elif args.command == "history":
             if args.limit < 0:
                 raise ValueError("--limit must be zero or positive")

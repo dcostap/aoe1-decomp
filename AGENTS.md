@@ -1,9 +1,25 @@
-Read the README.md file.
-Read the entire LESSONS.md.
+`AGENTS.md` is the complete operating contract for ordinary subagents. It is
+injected into each repo-local agent session. Do not reread it through a file
+tool unless the injected text is unavailable.
 
-After reading the README, follow these agent-side working rules. README owns the
-repo overview and source-of-truth model; this file owns actionable constraints,
-heuristics, and blocker responses for agents.
+Ordinary matching workers, auditors, and reviewers must not read `README.md` as
+startup work. The main agent reads it once for project orientation. A subagent
+may read a named README section only when its assignment needs that section.
+
+Do not read all of `LESSONS.md` at startup. It is a large lookup bank, not
+required context. After target triage identifies a specific blocker, search it
+with narrow target, owner, ABI, source-file, instruction, or blocker terms. Read
+only the matching paragraphs and nearby section heading. Examples:
+
+```bat
+rg -n -i "RGE_Action|parameter home|stack home" LESSONS.md
+rg -n -i "EH|constructor|/GX" LESSONS.md
+rg -n -i "SIB|base.index|register color" LESSONS.md
+```
+
+Use one or more precise terms. Do not dump broad matches or the complete file
+into the agent context. This file owns actionable constraints. `README.md` owns
+the repo overview. `LESSONS.md` stores optional matching evidence.
 
 ## Non-negotiables
 
@@ -79,7 +95,7 @@ Common examples:
 
 ```bat
 python tools\query_project_status.py --unclaimed --normal --smallest --no-blockers --limit 20
-python tools\query_project_status.py --unclaimed --normal --no-blockers --unleased --smallest --triage --leases --limit 12
+python tools\query_project_status.py --unclaimed --normal --no-blockers --unleased --smallest --triage --work-history --leases --limit 12
 python tools\query_project_status.py --remaining --normal --smallest --limit 20
 python tools\query_project_status.py --va 0047A3A0 --paths
 python tools\query_project_status.py --source Pnl_pic.cpp --remaining
@@ -93,7 +109,14 @@ Useful filters include `--normal`, `--unclaimed`, `--scratch`, `--matching`,
 `--source <file-or-path-substring>`, `--query <tokens>`, `--min-size`,
 `--max-size`, `--smallest`, `--largest`, `--sort size|asm|va|name|source|bucket|diff|edit-diff|first-mismatch`,
 `--paths`, `--notes`, `--unleased`, `--active-leases`, `--owner <agent>`,
-`--leases`, `--triage`, `--json`, and `--csv`.
+`--leases`, `--work-history`, `--max-lifetime-probes`, `--max-claims`,
+`--triage`, `--json`, and `--csv`.
+
+Use `--work-history` before assigning paused scratch targets. It shows lifetime
+probes, claim count, last positional gain, best/current diff, last worker, and a
+workflow recommendation. The current-claim probe count is not lifetime effort.
+Do not fill an empty clean queue with heavily tested scratch targets. Require a
+new evidence-backed lead or assign a read-only readiness/specialist audit.
 
 Use `--triage` before opening several large function packets. It parses compact
 frame/EH/call/vslot/saved-register/PDB/decompiler evidence only for the rows left
@@ -114,18 +137,18 @@ When a user gives a short request such as `match 0043C2B0`, treat this section a
 the complete default task contract; the user does not need to repeat it in the
 prompt.
 
-1. Read `README.md` and the complete `LESSONS.md` as required above. `AGENTS.md`
-   is already injected into the agent system prompt; do not reread it through a
-   file tool unless the user asks or the injected text is unavailable.
+1. Use this injected contract directly. Do not reread `AGENTS.md` or load
+   `README.md`. Search `LESSONS.md` only after target evidence identifies narrow
+   relevant terms, and read only the matching paragraphs.
 2. Preserve unrelated working-tree changes. Never clean/reset another agent's
    files.
 3. Confirm the requested VA is a `normal` function and inspect its live status:
    `python tools/query_project_status.py --va <VA> --paths --notes --leases`.
    For an unassigned target search, use the compact `--triage` command above. If
    it is already exact in `src/matching`, validate/report rather than creating a
-   second owner. If it is paused in `src/scratch`, read its attempt log and target
-   session/history before proposing new experiments so prior negative evidence is
-   not repeated.
+   second owner. If it is paused in `src/scratch`, read its attempt log and
+   `target_session.py brief --va <VA>` before proposing new
+   experiments. Read bounded older history only for a specific open question.
 4. Before editing, claim the target with a short unique owner name for this
    session and a default budget of **10 meaningful hypotheses**:
    `python tools/target_session.py start --va <VA> --owner <unique-owner> --budget 10`.
@@ -180,6 +203,8 @@ prompt.
    blind. A source change that emits the same code as an earlier probe is useful
    negative evidence, but heed the session's `Codegen duplicate` notice and do
    not keep exploring the same compiler basin.
+   Ten is a maximum, not a target. Stop as soon as no evidence-backed hypothesis
+   remains. Do not add generic probes to consume the remaining budget.
    This is a per-worker bound, not a declaration that the function is globally
    exhausted. Preserve enough evidence in the source attempt log for a later
    worker and the project orchestrator to avoid repeating the same hypotheses.
@@ -250,7 +275,7 @@ When multiple agents share a working tree, claim a target before editing it:
 ```bat
 python tools\target_session.py start --va 005204A0 --owner AgentName --budget 10
 python tools\target_session.py list --active
-python tools\query_project_status.py --remaining --normal --unleased --smallest --leases
+python tools\query_project_status.py --remaining --normal --unleased --smallest --work-history --leases
 ```
 
 The lease is advisory local state under ignored `build\target_sessions\`. Record

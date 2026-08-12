@@ -2,6 +2,10 @@
 
 Shared reusable exact-match knowledge only; keep per-function attempts in source logs and semantic reviews in `logic_reviews`. Search/merge before adding; write terse symptom → source shape → codegen reason → caveat bullets, and promote mature general rules to `AGENTS.md`. Prefer binary-supported, period-plausible source and canonical ownership; use casts, volatility, overlays, gotos, manual vptrs, or odd source only when the executable proves the behavior/codegen need. Exactness still requires bytes, boundaries, and relocation identity per `AGENTS.md`.
 
+This file is a lookup bank. Agents must not read it from start to finish. Search
+with narrow target, owner, ABI, source-file, instruction, or blocker terms. Read
+only the matching paragraphs and their section heading.
+
 ## Source shape, scope, and liveness
 
 - When an inline ManagedArray-style scan/grow is present and a same-TU sibling

@@ -21,7 +21,7 @@ normal exact-match and review rules in `AGENTS.md`.
 
 ```bat
 python tools\query_project_status.py --unclaimed --normal --no-blockers ^
-  --unleased --smallest --triage --leases --limit 12
+  --unleased --smallest --triage --work-history --leases --limit 12
 ```
 
 `--triage` adds PDB line span, frame, EH, unique direct-call targets, virtual
@@ -37,6 +37,7 @@ leases to avoid editing the same target concurrently.
 
 ```bat
 python tools\target_session.py start --va 005204A0 --owner AgentName --budget 10
+python tools\target_session.py brief --va 005204A0
 python tools\target_session.py status --va 005204A0
 python tools\target_session.py list --active
 python tools\query_project_status.py --remaining --normal --unleased --leases
@@ -47,6 +48,7 @@ different owner unless they explicitly use `--force`. A paused or released
 session retains its notebook but no longer blocks another owner.
 
 The budget counts **meaningful interpreted hypotheses**, not compiler launches.
+It is a maximum, not a quota. Stop when no evidence-backed hypothesis remains.
 It applies to the current claim; the target's cumulative probe history remains in
 the notebook across pauses and owner changes. The briefing fingerprints source,
 flags, compiler configuration, and repo-local includes before calling recorded
@@ -127,6 +129,10 @@ the scratch header before pausing or releasing a target.
 The attempt log must remain when a function later enters `verified_logic`; it is
 the evidence of how thoroughly exact matching was pursued. Semantic-review
 reports belong in the separate per-function ledger under `logic_reviews\`.
+
+Use `target_session.py brief --va <VA>` for a bounded handoff. It summarizes the
+current state and recent meaningful notes. Do not read raw session JSON. Use
+`history --limit N` only when one older claim or metric change needs inspection.
 
 ## Generate a binary-evidence dossier
 

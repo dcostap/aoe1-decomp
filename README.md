@@ -100,7 +100,7 @@ Parallel late-corpus work also has five advisory agent tools:
 - `tools\target_session.py` provides shared-tree target leases, meaningful-probe
   bookkeeping, non-budget restore/final-validation checks, emitted-code duplicate
   detection, clean-source pin/restore commands, and a checker-stage-aware
-  current-metrics briefing;
+  current-metrics briefing plus a bounded worker handoff;
 - `tools\target_dossier.py` generates a target-local binary-evidence report for
   calls, candidate `this` offsets, globals, conservatively entry-normalized stack
   accesses/parameter homes, and generated-type size conflicts;
