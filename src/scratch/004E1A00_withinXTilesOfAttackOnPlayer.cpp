@@ -56,6 +56,16 @@
 //   exact or size/frame/call-set eligible result; emitted groups were 211 or
 //   197 bytes. Clean source remains the typed indexed scan; unresolved drift
 //   is allocator/stack-home coloring (counter, pointer/this, square/x).
+// - Fresh lease baseline confirmed the clean 211-byte basin. A max local with
+//   a positive cursor guard reached 219 bytes but added a CFG edge; a max plus
+//   cursor for-loop stayed 211 bytes. Both were restored.
+// - Named module owner/max/memory locals reached 214 bytes and lost exact
+//   blocks. A donor-supported <stdlib.h> include, flat class layout, and an
+//   address-taken index were unchanged or worse; the last was optimized away.
+//   Separate max/base locals reached 214 bytes and were restored.
+// - Refreshed assembly-donor search found the exact taiinfmd.cpp sibling
+//   004E1AF0 prologue and confirmed the remaining gap is the target's distinct
+//   allocator/stack-home basin, not a missing call or known layout fact.
 
 class RGE_Static_Object {
 public:

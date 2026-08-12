@@ -48,6 +48,13 @@
 //   FPU sequence, and 196-214 bytes of structural drift; rolled back. Null-initializing pp,
 //   naming the reused attribute index, and reordering pp/i declarations were neutral or
 //   duplicate 29-byte codegen. Clean source restored; no ABI/call/layout lead remains.
+// - orch-00533330-L bounded pass: adding a victory destructor, removing the pp register
+//   qualifier, stdlib/string header context, an inline attribute accessor, and long result
+//   types were duplicate or neutral 29-byte groups. A short index widened the drift to 147
+//   bytes; a persistent player local widened it to 207 bytes; removing player/world
+//   destructors widened it to 37 bytes. All were rolled back. The clean source remains the
+//   best canonical reconstruction; the only gap is entry=EBX versus original entry=EDI and
+//   pp=EDI versus original pp=EBX callee-save coloring.
 
 class RGE_Game_World;
 

@@ -43,14 +43,19 @@
 //   and a setup-result switch all failed to change or improve the EH-tail
 //   basin; the switch worsened the first branch hunk. A diagnostic throw()
 //   declaration surface was also unchanged. All variants were restored.
+// - Current pass restored the exact sibling's no-argument TPanel setup slot
+//   and complete child-panel declarations; bytes were unchanged. Failure-first
+//   setup if/else, unbraced failure assignment, explicit common exits, and
+//   success-first arm order did not remove the duplicated EH cleanup. Member
+//   initializers worsened the prefix by 15 bytes and were restored to body
+//   assignments. The remaining blocker is the 19-byte compiler EH-tail basin.
 
 struct tagRECT;
 class TDrawArea;
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup(void* draw_area, TPanel* parent, long p3, long p4,
-                       long p5, long p6, unsigned char p7);
+    virtual long setup();
     virtual void set_rect(tagRECT rect);
     virtual void set_rect(long left, long top, long right, long bottom);
     virtual void set_color(unsigned char color);
@@ -119,8 +124,19 @@ public:
     char gap_DC[0x18];
 };
 
-class TTextPanel;
-class TButtonPanel;
+class TTextPanel : public TPanel {
+public:
+    virtual void set_text_id(long id);
+    virtual void set_text_string(char* text);
+    virtual void set_text(char* text);
+};
+
+class TButtonPanel : public TPanel {
+public:
+    virtual void set_text_id(long id);
+    virtual void set_text_string(char* text);
+    virtual void set_text(char* text);
+};
 
 class TEasy_Panel : public TPanel {
 public:
@@ -215,12 +231,11 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode)
     this->cancel_button = 0;
     this->close_button = 0;
 
-    if (!this->setup(rge_base_game->draw_area, s_scr3, 0xC385, 0)) {
+    if (this->setup(rge_base_game->draw_area, s_scr3, 0xC385, 0) == 0) {
         this->field_D8 = 1;
-        return;
+    } else {
+        this->set_ideal_size(0x280, 0x1E0);
+        this->create_text((TPanel*)this, &this->message, 0x4C0,
+                          0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
     }
-
-    this->set_ideal_size(0x280, 0x1E0);
-    this->create_text((TPanel*)this, &this->message, 0x4C0,
-                      0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
 }

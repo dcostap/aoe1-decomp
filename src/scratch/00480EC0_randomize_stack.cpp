@@ -52,6 +52,15 @@
 // - sa854558ad_r1 final: the PDB char* debug_rand surface was retained in the
 //   clean source; it did not move emitted code. Remaining gap is structural
 //   receiver/cursor coloring and arithmetic-before-node scheduling.
+// - orch-00480EC0-L: separate offset/outer locals with binary y-bucket views
+//   did not improve the canonical frame or receiver coloring.
+// - orch-00480EC0-L: typed aggregate/overlap source reached exact size and a
+//   44-byte diff, but retained inverse EBX/EDI colors; restored as diagnostic.
+// - orch-00480EC0-L: inline random bucket evaluation moved the block farther;
+//   direct param_1->next and an explicit init cursor were codegen duplicates.
+// - orch-00480EC0-L: adding donor-era <stdlib.h> context was codegen-neutral.
+// - orch-00480EC0-L final: clean named Map_Stack[100] source remains in scratch;
+//   unresolved lead is real local layout plus arithmetic-before-node scheduling.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 

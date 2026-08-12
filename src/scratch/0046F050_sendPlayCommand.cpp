@@ -24,6 +24,17 @@
 // - Reordering selected-id store versus selected-count increment was unchanged.
 // - Proven polymorphic RGE_Game_World and AIPlayBook donor surfaces, plus a partial first-call receiver alias, were unchanged.
 // - Restored this clean natural typed source; no compiler-steering variant is retained. Remaining drift is still EBP vtable versus EBX loop counter.
+// Bounded pass (orch-0046F050-D):
+// - Diff is exactly 7 single-byte register-byte differences: EBP vtable cache vs EBX 25-loop counter swapped
+//   (mov ebp,[esi]/call [ebp+..]/mov ebx,19h/dec ebx positions); every other byte, call, frame, and CFG equal.
+// - Exact sibling donor 0046F140 (5-arg sendPlayCommand, matching) caches the vtable in EDI; shared
+//   send_signal 12-arg virtual surface confirmed at slot 0x30. Real RGE_Player surface: 0x30=sendUnitAIOrder,
+//   0xC4=command_create_group(int,int*,int,float), 0xD0=command_destroy_group(int); this 3-arg overload is at
+//   vtable slot 0x50 (5-arg at 0x4C). Local stub slot offsets already align.
+// - Remaining untried leads: (1) full real 84-slot vtable surface with sendPlayCommand at 0x50 (00435020 lesson:
+//   full class surface can alter VC5 coloring); (2) indexed sel_list[i] loop so the countdown counter becomes
+//   strength-reduced IR rather than a source local; (3) top-level n + do/while(--n) with nonvirtual definition,
+//   mirroring the 0046F010/0046F140 donor shapes that put vtable-derived pointers in EBP and counters in EBX.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

@@ -22,6 +22,25 @@
 // - New claim: parameter-home count reuse with late list/max-bound declaration combinations reached a 218-byte, exact-size/frame basin (94.2% shape) but still saved the list through ESI/its home and kept the count in EBX; the register-qualified parameter was codegen-identical.
 // - A 16-variant lab over list placement, cached/direct dimensions, cursor shape, and parameter-home count found no exact match; all size/frame/call-eligible groups retained the same early list/register hunk. The best lab groups are diagnostic only and were not promoted over the clean source.
 // - A narrow volatile reference to the proven parameter home worsened the function to 259 bytes; rolled back. Remaining binary lead is the target's early EBX=list, EBP=(width-1), push-ecx=max_y, parameter-home count coloring; canonical ownership and behavior are otherwise aligned.
+// - orch-00488EA0-D: H1: no list alias, param used directly; emitted identically to
+//   the pinned clean source (count->EBX basin). Negative: param-live-through-loop keeps
+//   count in EBX.
+// - orch-00488EA0-D: H2: alias used EVERYWHERE (linking and call); param dead after the
+//   copy so its home is free for the count. Emitted identically to pinned clean source.
+// - orch-00488EA0-D: H3: mirror exact donor 00434DC0 do_command_group_ai_order: keep a
+//   separate `loop_count = count` copy inside the positive guard and decrement that
+//   copy in the do/while. Donor evidence shows VC5 then coalesces the loop counter onto
+//   the dead incoming-parameter home instead of a callee-save.
+// - orch-00488EA0-D: H3 reached the target register plan (EBX=list, EBP=max_x,
+//   push-ecx=max_y, count in the param home) but kept the extra mov/count-block bytes
+//   (243 vs 239).
+// - orch-00488EA0-D: H5 EXACT: the explicit correction spelling
+//   `(h*w + ((h*w>>31)&7))>>3` made VC5 keep the product live in ECX; the natural
+//   signed division `this->map_height * this->map_width / 8` emits the target's
+//   cdq/and/add/sar sequence and removes 4 bytes. Declaring max_x before max_y
+//   selects the target's height-first entry loads and EBP=max_x coloring.
+//   Loop_count copy + /8 spelling + max_x-first declaration = exact 239-byte match
+//   with 3/3 ordered calls and 5/5 relocation identity.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -64,14 +83,14 @@ public:
 void RGE_RMM_Terrain_Generator::link_stack_randomly(Map_Stack* param_1, unsigned char param_2)
 {
     Map_Stack* list = param_1;
-    long max_y = this->map_height - 1;
     long max_x = this->map_width - 1;
+    long max_y = this->map_height - 1;
     Map_Stack* first = this->stack_array;
-    Map_Stack* last = first + this->map_width * this->map_height - 1;
+    Map_Stack* last = first + this->map_height * this->map_width - 1;
 
-    first->prev = param_1;
+    first->prev = list;
     first->next = first + 1;
-    param_1->next = first;
+    list->next = first;
     last->next = 0;
     last->prev = last - 1;
 
@@ -82,16 +101,16 @@ void RGE_RMM_Terrain_Generator::link_stack_randomly(Map_Stack* param_1, unsigned
         first = first + 1;
     }
 
-    long count = (this->map_width * this->map_height
-                  + ((this->map_width * this->map_height >> 31) & 7)) >> 3;
+    long count = this->map_height * this->map_width / 8;
     if (count > 0) {
+        long loop_count = count;
         do {
             long x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x10F)
                       * max_x) / 0x7FFF;
             long y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x110)
                       * max_y) / 0x7FFF;
             this->add_stack_node(list, this->stack_offsets[y] + x);
-            --count;
-        } while (count != 0);
+            --loop_count;
+        } while (loop_count != 0);
     }
 }

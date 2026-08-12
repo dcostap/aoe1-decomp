@@ -1,4 +1,20 @@
 // VA: 004C5D80 RGE_Static_Object::inRange
+// orch-004C5D80-D fresh pass 2026-08-12 (3 recorded probes + 1 unrecorded compile-fix):
+//   - Baseline revalidated: 199B/22-diff clean natural source; the only span is the fused
+//     fsubr/fsub fault-order gap at +0062 (y computed after the x branch vs between
+//     fcomp/fnstsw/test as the oracle has it).
+//   - H1 full-y-ternary (both arms hold complete y expr incl. -other_ry): 90 diff/204B,
+//     VC5 sinks the fsub into both arms with a jmp; rolled back. Confirms sibling H1/S8.
+//   - H2 ternary-CSE prefix (dy-this_ry in both arms, -other_ry outside): 14 diff/199B,
+//     exact through +0068 incl. fused fsubr; only the fsub [ecx+34h] placement differs
+//     (oracle: between fnstsw and test; rebuilt: join block). Codegen-best diagnostic.
+//   - H3 (y assignment inside the y<0 test condition) failed compile (missing decl);
+//     not recorded as a probe; clean source already restored before re-test.
+//   - Mechanism confirmed vs sibling 004C5E50/distance_to_position: VC5 hoists only the
+//     CSE-common x87 prefix into the fcomp->fnstsw window; the pointer-read suffix fsub
+//     never lands between fnstsw and test across natural/ternary/duplication forms or
+//     the ~70 sibling shapes + 20+ flag sets. Unreachable gap; clean source retained.
+
 // PDB source: stat_obj.cpp
 // Attempt log:
 // 2026-05-31: Replaced stub with decompiler/natural distance-minus-radii behavior; natural source compiled 192B, too small vs 199B.

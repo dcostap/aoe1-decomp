@@ -80,6 +80,14 @@
 //   BltFast signedness was duplicate. A narrow volatile force-home store
 //   improved resync but grew to 221 bytes, and a late queue-size local plus
 //   short-circuit early guard were duplicates; all were rolled back.
+// orch-00534A00-L pass: baseline after claim remained 219B, diff=199, with
+//   2/2 ordered calls and an extra EBX save from the first paired hunk.
+// orch-00534A00-L pass: assigning the result to src.bottom, using an entry
+//   reference, reversing destination add operands, restoring 51 RGE_View
+//   slots, and using C-interface lpVtbl calls were codegen duplicates.
+// orch-00534A00-L pass: windows.h RECT context reached diff=195 but reduced
+//   shape and resync. Restored the canonical local RECT source; blocker is
+//   TU-sensitive VC5 save/register and COM argument scheduling.
 // Paused: the remaining mismatch is the extra EBX save and COM argument/source
 //   scheduling basin; no canonical ownership or virtual-slot uncertainty remains.
 
