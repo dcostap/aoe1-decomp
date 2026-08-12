@@ -46,18 +46,93 @@ manual vtable calls, raw absolute addresses, or codegen-only control flow.
 
 ## Review rounds
 
-Pending.
+### Round 1 — concurrent blind cohort, 2026-08-12
+
+- `sa-8c41609c` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-85be266b` — `deepseek/deepseek-v4-flash`, high
+
+#### Luna report
+
+The reviewer found no definite difference.
+
+Verified behavior:
+
+- `coverageCountValue` is read before validation at `0044EC03`.
+- The eight validation reads and signed predicates match at
+  `0044EC0B–0044EC70`. Every invalid coordinate returns zero.
+- Reversed X returns the original count. Reversed Y skips map reads but still
+  processes each X, matching `0044EC76–0044ECF7`.
+- Both loop bounds are inclusive.
+- Row and byte indexes use y/y-reference and x/x-reference as modeled.
+- Each qualifying map byte is read twice, at `0044ECA1` and `0044ECB5`, with
+  matching short-circuit order.
+- `minimum`, `amount`, and map values use unsigned-byte promotion. Their sum is
+  at most 510.
+- The count increments only when value is below minimum and adding amount
+  reaches minimum.
+- Return values, cleanup, and `__thiscall` ABI match.
+
+Plausible concerns:
+
+1. Signed overflow in translated x/y indexes, while the executable wraps.
+2. Signed overflow of `rVal++`, while the executable `inc` wraps.
+3. Invalid row pointers and out-of-range indexes are undefined in C++ but raw
+   machine accesses in the executable.
+4. Concurrent or externally changing memory is outside ordinary non-volatile
+   C++ behavior.
+
+Conclusion: ordinary paths match. Machine-specific malformed-state overflow and
+invalid-pointer behavior required main-agent adjudication.
+
+#### DeepSeek report
+
+The reviewer traced all 94 instructions.
+
+Verified ABI and predicates:
+
+- `__thiscall`, four stack arguments, `ret 10h`, and saved-register restoration match.
+- All eight bounds checks occur in exact source order with signed branches.
+- Reversed ranges and inclusive loop conditions match.
+- Inner setup uses the proven fields `+4`, `+8`, `+0C`, `+10`, `+18`, and `+1C`.
+- The row count is `to.y-from.y+1`, with a positive guarded do-loop.
+- Address arithmetic and the two byte reads match exactly.
+- The first compare is unsigned. The second signed compare is equivalent because
+  every operand is nonnegative and the sum is at most 510.
+- Count increment, row advance, loop countdown, returns, and cleanup match.
+
+Access and fault order match: object fields, row pointer, first byte, optional
+second row-pointer and byte read. The source preserves the executable's raw
+translated indexes and repeated expression. The sole scheduling gap at `+0x96`
+contains no memory operation or fault.
+
+Findings: no definite difference and no open semantic concern. Original
+identifier spelling and runtime occurrence of malformed indexes are
+unestablished but do not change fidelity.
 
 ## Main-agent adjudication
 
-Pending.
+- **Bounds, loops, indexes, widths, threshold, return, and ABI:** confirmed by
+  both independent traces.
+- **Signed-overflow concerns:** cleared under the pinned VC5 execution model.
+  The current rebuilt object emits the same 32-bit `sub`, `inc`, scale, and
+  address operations. The four differing bytes only exchange independent
+  `shl edi,2` and `inc eax` scheduling.
+- **Invalid-pointer and translated-index concerns:** cleared as source-difference
+  findings. The current object emits the same memory access instructions and
+  order. The source intentionally retains the executable's unchecked indexes.
+- **Concurrent mutation:** cleared as outside the non-volatile single-threaded
+  surface modeled by both the original and candidate. There is no call inside
+  the scan that can modify fields through ordinary execution.
+
+Round 1 found no substantive open behavior issue. No source change is justified.
+A second fresh cohort is required before final promotion.
 
 ## Integrated changes
 
 The final donor-order experiment was restored before phase entry. The main agent
 validated the unchanged normalized source at 275 bytes and four strict differing
-bytes.
+bytes before and after round 1.
 
 ## Final decision
 
-Pending.
+Pending a fresh review round.
