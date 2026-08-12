@@ -82,7 +82,14 @@ source correction. Verify the complete emitted vtable before another cohort.
 The main agent validated the normalized 219-byte candidate with all four calls in
 order before phase entry.
 
+After round 2, a matching worker added the five executable-proven inherited
+overrides. The worker also corrected overloaded virtual declaration order.
+It compared all 76 emitted vtable slots with executable vtable `00573518`.
+Every slot now matches the executable owner and target.
+
+The main agent revalidated the constructor. Its 219-byte output and four calls
+remain unchanged. The known 19-byte EH-tail blocker also remains unchanged.
+
 ## Final decision
 
-Hold. Add the five proven overrides and verify every emitted vtable slot. Start
-a fresh blind cohort only after that correction.
+Pending a fresh blind cohort after the complete vtable correction.
