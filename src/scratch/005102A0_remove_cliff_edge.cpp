@@ -32,6 +32,14 @@
 // codegen-neutral; the frame still loaded dir before allocation.
 // tu-tmap-5102A0 probe 2: a named map receiver with the donor do/while was also
 // codegen-neutral; restored the clean typed donor reconstruction.
+// sa7b8c14ff-edge baseline: revalidated the clean donor-shaped source at
+// 360 rebuilt bytes versus the 339-byte oracle.
+// sa7b8c14ff-edge probe: a partial map alias used direct this for the switch
+// and find/info calls, then map for the live-cliff arm; codegen was neutral.
+// sa7b8c14ff-edge probe: a late map alias inside the live-cliff arm was also
+// neutral. Restored the clean typed source.
+// sa7b8c14ff-edge final: retain canonical map, cliff-info, and tile ownership.
+// The blocker remains saved-this [esp+10] versus VC5 EBP=this allocation.
 
 struct TRIBE_Cliff_Info {
     int info[4];

@@ -26,6 +26,8 @@
 // - Same-TU AddLine_Align confirms the period typed public span-node base,
 //   inherited manager surface, and stdlib context. The full typed base here
 //   is retained; it emits the pinned 394-byte result without raw ownership.
+// - Reusing the existing line local in the final clear loop while preserving
+//   clear_first and clear_last emitted identical code (4-byte diff, first +013C); restored clean source.
 // left in scratch: remaining drift is codegen/source-shape around preserving original dy while mutating bound params,
 // plus VC5 abs lowering/register allocation; no inline asm used.
 

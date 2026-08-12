@@ -27,6 +27,14 @@
 // widened the mismatch to 227 bytes; restored the clean source.
 // tu-tmap-510110 probe 3: swapping typed id/facet declaration order was a
 // codegen duplicate; the localized 33-byte stack-home drift remains.
+// sa7b8c14ff-cliff probe: explicit cold return 0, uninitialized or scoped
+// result declarations, result/facet declaration reorders, and a direct call
+// initializer were all codegen duplicates.
+// sa7b8c14ff-cliff probe: named y_tile/x_tile locals caused a 382-byte
+// structural mismatch; restored the clean inline-coordinate source.
+// sa7b8c14ff-cliff final: retain the 399-byte typed source. The remaining
+// 33-byte drift is limited to facet/result stack-home coloring and the cold
+// return epilogue. No evidence-backed natural lead remains in this pass.
 
 struct TRIBE_Cliff_Info {
     long info[4];
