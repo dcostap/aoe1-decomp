@@ -46,6 +46,11 @@
 //   resulting clear-entry/loop-update spans; no productive source hypothesis
 //   remained within this bounded pass.  Current source is the clean typed
 //   reconstruction, not the shorter positive-gate diagnostic.
+// Follow-up pass: same-TU zero-local and pno-scope probes were codegen duplicates or
+// worse. A positive guard improved the metric to 398 bytes but lost the separate early
+// return topology. Restored the negative guard. Exact KillAnyMissingPlayers ownership
+// also confirms COMMPLAYEROPTIONS::dcoID; the nested type is retained although bytes stay
+// unchanged. A fully indexed HOLDER scan widened the frame and was rolled back.
 
 typedef unsigned int uint;
 
@@ -64,6 +69,7 @@ static char s_cached[] = "Cached Execute #%d  Slot#%d ";
 static char s_clearing[] = "Clearing OnHold Slot=%d  Len=%d  From=%d  To=%d";
 
 struct HOLDER { char* HoldMsg; uint Serial; uint Length; uint dcoFromID; uint dcoReceiveID; uint fromPlayer; };
+struct COMMPLAYEROPTIONS { char gap_00[0x14]; uint dcoID[10]; };
 
 class TCommunications_Handler {
 public:
@@ -73,7 +79,7 @@ public:
     char gap_10e8[0x12d8 - 0x10e8]; unsigned short MaxGamePlayers;
     char gap_12da[0x1524 - 0x12da]; HOLDER* OnHold;
     uint PlayerHighSerialNumber[10];
-    char gap_1550[0x1564 - 0x1550]; uint dcoID[10];
+    COMMPLAYEROPTIONS PlayerOptions;
     int IsPlayerHuman(uint player);
     int PreprocessMessages(uint len, void* msg, uint from, uint to, int cached);
     uint ExecuteIncoming();
@@ -92,7 +98,7 @@ uint TCommunications_Handler::ExecuteIncoming()
                 uint* dco;
                 uint player = 1;
                 if (this->MaxGamePlayers >= 1) {
-                    dco = this->dcoID + 1;
+                    dco = this->PlayerOptions.dcoID + 1;
                     do {
                         if (this->IsPlayerHuman(player) && player != this->Me) {
                         uint humanSerial = *(dco - 15) + 1;

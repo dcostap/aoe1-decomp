@@ -18,6 +18,8 @@
 // fresh pass: pointer-backed guarded do/while reached diff 173 and +6 bytes, but changed the proven JL backedge to JGE+jmp.
 // direct indexed, bottom-loop, labeled-tail, and result-local variants were tested; each was duplicate or structurally worse.
 // restored the natural typed indexed for-loop; current best clean source remains diff 189 with all seven calls aligned.
+// recovery probe: split the two negative cursor gates around a shared success label;
+// the diff stayed 189 but size and CFG shape worsened, so the clean indexed source is restored.
 
 extern "C" int sprintf(char* buffer, const char* format, ...);
 

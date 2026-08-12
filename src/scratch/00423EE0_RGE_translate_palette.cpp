@@ -25,6 +25,9 @@
 // pointer-order, local declaration, counter-width, and cursor-offset variants were duplicates.
 // Left in scratch: the best period-plausible typed reconstruction. The original uses a 0x10 frame,
 // reuses a parameter home for the byte delta, and starts the channel loop seven bytes earlier.
+// Follow-up TU pass: declaration initializers and split delta subtraction were duplicates.
+// The historical typed entry-pointer form reached 420 bytes but used a 0x24 frame and
+// 42.67% shape; named channel locals reached 431 bytes with a 0x14 frame. Both were restored.
 
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 

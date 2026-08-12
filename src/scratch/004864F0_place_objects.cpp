@@ -15,6 +15,8 @@
 //     loop predicates) collapsed to duplicate codegen groups; reversing the
 //     commutative mask operands was also a duplicate. The remaining drift is
 //     VC5 world/mask/register and pop-argument scheduling, not behavior/calls.
+// 11: ABI audit replaced the fake float cast at pop_stack with the proven
+//     float cost output. Emitted bytes are unchanged; retain the safe typed form.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -92,9 +94,9 @@ public:
 
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 {
-    long y;
     long x;
     long col;
+    float cost;
     int count;
     float fx;
     float fy;
@@ -112,7 +114,7 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
     count = info.number_of_groups;
 
-    while (pop_stack(&obj_stack, &col, &x, (float*)&y) && count > 0) {
+    while (pop_stack(&obj_stack, &col, &x, &cost) && count > 0) {
             if (info.terrain < 0 || ((this->map[x][col].terrain & 0x1f) == (unsigned int)info.terrain)) {
                 fx = (float)col;
                 fy = (float)x;

@@ -12,6 +12,11 @@
 // early local_c initialization worsened resync and added five instructions; restored.
 // named search_map_rows/stack_offsets, full 24-byte Map_Stack, and long last bound preserved the 507-byte output; retained as canonical local ownership.
 // explicit self alias was neutral in positional bytes but worsened edit resync; restored.
+// this-session H1/H2: moving the live tail pointer before stack-link stores,
+// then using it for those stores, worsened the first prologue hunk to 480 bytes;
+// both forms were rolled back.
+// this-session H3: a four-form stack-initialization lab kept the same 507-byte
+// size and 446-byte clean-source diff; no form changed the initial parameter load.
 // left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
 
 extern "C" int __cdecl debug_rand(char* file, int line);

@@ -10,6 +10,11 @@
 //   matched the repeated invalid-action and sound/game-mode tails more closely.
 // - Case-order and natural-default variants were rolled back; current source
 //   keeps the readable typed reconstruction with evidence-backed tail labels.
+// - Correcting mode-101/102 tail ownership alone worsened the diff to 656 bytes
+//   and was rolled back.
+// - Combining the line-backed mode-102-before-mode-101 order with the proven
+//   tail ownership retained a 569-byte diff, improved exact-block coverage to
+//   43.82%, and reduced the size gap to 40 bytes. The ordered tail gap remains.
 
 class TShape;
 class RGE_Tile;
@@ -213,21 +218,37 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
         }
         goto error_b;
 
-    case 101:
-        this->release_mouse();
-        if (this->mouse_action != 1 && this->mouse_action != 2)
-            goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x68) == 0)
-            goto error_a;
-        goto done_a;
-
     case 102:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
         if (this->command_make_do(param_1, param_2, 0, 0x69) == 0)
-            goto error_b;
+            goto error_a;
         goto done_a;
+
+error_a:
+        rge_base_game->play_sound(3);
+done_a:
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+
+default_action:
+        return RGE_Main_View::mouse_left_up_action(
+            param_1, param_2, param_3, param_4);
+
+    case 101:
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            goto invalid_action;
+        if (this->command_make_do(param_1, param_2, 0, 0x68) == 0)
+            goto error_b;
+        goto done_b;
+
+error_b:
+        rge_base_game->play_sound(3);
+done_b:
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
 
     case 103:
         this->release_mouse();
@@ -276,22 +297,6 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
         goto default_action;
     }
 
-error_a:
-    rge_base_game->play_sound(3);
-done_a:
-    rge_base_game->set_game_mode(0, 0);
-    return 1;
-
-error_b:
-    rge_base_game->play_sound(3);
-done_b:
-    rge_base_game->set_game_mode(0, 0);
-    return 1;
-
 invalid_action:
     return 1;
-
-default_action:
-    return RGE_Main_View::mouse_left_up_action(
-        param_1, param_2, param_3, param_4);
 }

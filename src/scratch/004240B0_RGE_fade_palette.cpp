@@ -20,6 +20,8 @@
 // try 18: restored the proven TDrawArea DrawSystem member surface from exact GetPalette/SetPalette donors; final context probe for the two reload order.
 // Best reconstruction: typed 256-entry local palettes, red/blue/green/flags copy order, typed cursor ownership, and the source-proven double-zero/x87 guard forms.
 // Final validated gap: 10 positional bytes at the palette-copy tail only; calls, frame/size, CFG, and all later fade code are exact. The remaining order is mov [draw_area] before/after mov [done].
+// Follow-up TU pass: swapping old_time and done declarations emitted identical code.
+// No new evidence supports an unnatural volatile or aliasing form for this reload order.
 
 #include <windows.h>
 

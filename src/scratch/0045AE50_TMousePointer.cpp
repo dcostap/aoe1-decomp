@@ -23,6 +23,10 @@
 // 16: chained RECT zero assignment changed the first hunk and was rolled back.
 // Final: canonical layout and readable aggregate RECT initialization retained;
 // no EH frame, vptr, member lifetime, or destructor work is proven for this body.
+// Recovery probes: original Ghidra interleaving with a named RECT pointer and
+// scalar copy temporaries grew the body to 477-483 bytes and was rolled back.
+// A PDB-guided tail assignment order kept the 357-byte diff but did not improve
+// positional output; the aggregate source order remains the clean basis.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
 
 typedef unsigned long ulong;

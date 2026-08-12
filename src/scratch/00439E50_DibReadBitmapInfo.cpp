@@ -11,6 +11,10 @@
 //   variants did not close the localized post-read scheduling gap; a focused
 //   27-variant lab found no exact output. The best diagnostic volatile reread
 //   moved structure but worsened positional bytes and was rolled back.
+// - reversed width-times-bitcount operands and removed an unproven stdlib
+//   include; both emitted the same code. A first-guard volatile reread moved
+//   the first mismatch three bytes earlier and worsened the diff, then was
+//   restored.
 // - left in scratch: frame/saved-register and call topology match, but the
 //   original keeps a second bit-count reload and different late RGB-table
 //   branch/register schedule beginning at 00439F40.

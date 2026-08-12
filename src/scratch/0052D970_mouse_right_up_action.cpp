@@ -14,7 +14,14 @@
 //   set_redraw call (173-byte positional diff, 96.15% shape similarity).
 // - reordered/default and nested case-105 guard variants were unchanged or
 //   nonproductive; the remaining drift is localized to the mode-102 argument
-//   register coloring and the case-105 suffix/late set_redraw boundary.
+//   register coloring.
+// - Moving invalid_action onto the shared done_a return removed the duplicate
+//   case-105 epilogue and recovered all 32 calls, exact size, and 89.05% block
+//   coverage. The remaining drift is 14 register-colored bytes in mode 102.
+// - The exact tvw_main ABI uses short for command_make_do's fourth parameter;
+//   the donor-supported declaration and stdlib context do not change bytes.
+
+#include <stdlib.h>
 
 class TShape;
 class RGE_Tile;
@@ -167,7 +174,7 @@ public:
 class RGE_Main_View : public RGE_View {
 public:
     virtual int command_place_object(long, long, int);
-    virtual int command_make_do(long, long, int, int);
+    virtual int command_make_do(long, long, int, short);
     virtual int command_make_move(long, long);
     virtual int command_make_work(long, long);
     virtual int command_place_multi_object(long, long, long, long, int);
@@ -229,11 +236,9 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
 error_a:
         rge_base_game->play_sound(3);
 done_a:
-        rge_base_game->set_game_mode(0, 0);
-        return 1;
-
+    rge_base_game->set_game_mode(0, 0);
 invalid_action:
-        return 1;
+    return 1;
 
     default:
 default_action:

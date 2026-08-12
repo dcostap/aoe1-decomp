@@ -15,6 +15,10 @@
 // this session: rechecked reversed declarations, combined declarations,
 // local declaration order, loop-scoped byte locals, and all 2x2x2 combinations
 // of byte declaration/sscanf destination/predicate order; no exact variant.
+// new TU evidence: the decompiler's ruleIndex byte-overlay was tested with an
+// int home and with a union byte view; VC5 coalesced the two tests into a word
+// load and moved the first mismatch to +0x47 (190 bytes), so both forms were
+// diagnostic only and were rolled back.
 // The best two-byte basin is still 2 bytes but semantically reverses the
 // parsed-byte tests; keep the clean first-byte/second-byte source below.
 // left in scratch: canonical behavior and frame/call topology match; the

@@ -21,6 +21,13 @@
 // loop lab found no exact form; its closest edit basin was the known 370-byte local-resend
 // variant. Restored the clean direct-this source; remaining gap is still the ESI/EDI coloring
 // and entry LEA family, with all 21 ordered calls, size, and frame exact.
+// Follow-up probes: loading active through a local resend pointer and forming the log entry
+// from the direct member gave a 364-byte, full-shape 38-byte diff. Volatile local, typed-record,
+// declaration-order, and register-keyword variants did not improve it. Keep the 38-byte source
+// reconstruction; the remaining drift is the this/offset callee-save assignment.
+// Main-agent audit rejected the byte-offset cursor and raw string address. The
+// canonical 0x38-byte RESENDER record and typed array walk rebuild to 364 bytes
+// with all 21 calls aligned; the wider 298-byte diff is accepted in scratch.
 
 class RESENDER;
 class HOLDER;
@@ -37,7 +44,11 @@ extern TDebuggingLog* L;
 
 class RESENDER {
 public:
-    char data[0x38];
+    unsigned int TimeSent;
+    unsigned int Serial;
+    char* ResendMsg;
+    unsigned int Length;
+    unsigned int DestMap[10];
     ~RESENDER();
 };
 
@@ -87,25 +98,18 @@ TCommunications_Handler::~TCommunications_Handler() {
     operator_delete(this->FormalName);
 
     int slot = 0;
-    unsigned int offset = 0;
+    RESENDER* resend = this->Resend;
     do {
-        char* entry = (char*)*(RESENDER* volatile*)((char*)this + 0x1520) + offset;
-        int active = *(int*)(entry + 4);
-        if (active != 0) {
-            L->Log((char*)0x580D00, slot, active,
-                *(int*)(entry + 0x0C),
-                *(int*)(entry + 0x14),
-                *(int*)(entry + 0x18),
-                *(int*)(entry + 0x1C),
-                *(int*)(entry + 0x20),
-                *(int*)(entry + 0x24),
-                *(int*)(entry + 0x28),
-                *(int*)(entry + 0x2C),
-                *(int*)(entry + 0x30));
+        if (resend->Serial != 0) {
+            L->Log("NO MSG Slot#%d  Ser#%d  Len=%d  DEST=%d,%d,%d,%d,%d,%d,%d,%d",
+                slot, resend->Serial, resend->Length,
+                resend->DestMap[1], resend->DestMap[2], resend->DestMap[3],
+                resend->DestMap[4], resend->DestMap[5], resend->DestMap[6],
+                resend->DestMap[7], resend->DestMap[8]);
         }
-        offset += 0x38;
+        ++resend;
         slot++;
-    } while (offset <= 0x6D98);
+    } while (slot <= 501);
 
     if (this->Resend != 0) {
         void* p = (char*)this->Resend - 4;

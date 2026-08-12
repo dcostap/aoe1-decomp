@@ -17,6 +17,12 @@
 // left in scratch: best canonical source is the parameter-home/ManagedArray
 // reconstruction (7 bytes, 0x10 frame). Remaining drift is the original
 // compiler's one-word local-frame reservation around the name-length home.
+// same-TU context check: the full AIModule/StrategyAIModule virtual surface
+// was added from the class reference. It was a codegen duplicate and is kept
+// as the period-plausible declaration context.
+// direct reuse of the first parameter for the name length was tested from the
+// dossier's entry-relative +4 address evidence; it removed the one-word frame
+// reservation and worsened the result to 20 bytes, so the clean local remains.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
@@ -27,12 +33,41 @@ extern float DAT_00575690;
 class AIModule {
 public:
     virtual ~AIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* filename);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* filename);
+    virtual int saveState(char* filename);
+    virtual int gleanState(int value);
+    virtual int processMessage(void* message);
+    virtual int update(int parameter);
+    virtual void setCallbackMessage(void* message);
+    virtual int filterOutMessage(void* message);
     AIModule(char* name, int id, int parameter, void* object);
 };
 
 class StrategyAIModule : public AIModule {
 public:
     StrategyAIModule(void* object, int parameter);
+    virtual ~StrategyAIModule();
+    virtual int loggingHistory();
+    virtual void setLogHistory(int value);
+    virtual void toggleLogHistory();
+    virtual void setHistoryFilename(char* filename);
+    virtual int loggingCommonHistory();
+    virtual void setLogCommonHistory(int value);
+    virtual void toggleLogCommonHistory();
+    virtual int loadState(char* filename);
+    virtual int saveState(char* filename);
+    virtual int gleanState(int value);
+    virtual int processMessage(void* message);
+    virtual int update(int parameter);
+    virtual void setCallbackMessage(void* message);
+    virtual int filterOutMessage(void* message);
 };
 
 template <class T>

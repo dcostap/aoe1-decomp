@@ -9,6 +9,12 @@
 // exact prologue/first scans, unsigned jbe/jb bounds, and 99.31% shape. The only
 // remaining codegen hunk is the cold full-table base/offset register coloring (+2B).
 // left in scratch: behavior modeled, but VC5 standalone register allocation won't produce original len=EBX, this=EDI, late duplicate handler; broad drift, not accepted_drift-safe.
+// Follow-up: reordered the cold zero assignments to match xor EBP then EBX and used the
+// direct OnHold base expression; this reduced the positional diff from 111 to 109 bytes.
+// A direct Length predicate reduced the metric to 96 bytes but changed the exact log-argument
+// schedule, so it was rolled back. The current source keeps the natural named scan cursor.
+// Main-agent audit replaced both byte-offset HOLDER cursors with typed indexing
+// and pointer iteration. Keep canonical 0x18-byte record ownership in scratch.
 
 #include <string.h>
 
@@ -40,7 +46,6 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
 {
     HOLDER* h;
     unsigned int i;
-    unsigned int off;
 
     if (len == 0) {
         L->Log("+++StoreIncoming called for zero-length message");
@@ -56,9 +61,8 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
 
     for (i = 0; i < 0x1F5; i++) {
         if (h[i].Length == 0 && len != 0) {
-            off = i * 24;
             h[i].Length = len;
-            h = (HOLDER*)((char*)this->OnHold + off);
+            h = &this->OnHold[i];
             h->HoldMsg = (char*)operator_new(h->Length);
             if (h->HoldMsg != 0) {
                 memcpy(h->HoldMsg, msg, h->Length);
@@ -75,16 +79,15 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
     if (i > 0x1EB) {
         L->Log("HOLD FULL WARNING.  COUNT=%d", i);
         HOLDER* scan_h;
-        off = 0;
         i = 0;
+        scan_h = this->OnHold;
         do {
-            scan_h = (HOLDER*)((char*)&this->OnHold->HoldMsg + off);
             if (scan_h->Length != 0) {
                 L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, scan_h->Serial, scan_h->dcoFromID, scan_h->Length, (int)scan_h->HoldMsg[0], (int)scan_h->HoldMsg[0], (int)scan_h->HoldMsg[1]);
             }
-            off += 24;
+            ++scan_h;
             i++;
-        } while (off < 0x2EF8);
+        } while (i < 501);
     }
     return 1;
 }

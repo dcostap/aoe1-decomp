@@ -22,6 +22,10 @@
 // but worsened block coverage and was restored. Final validation is the clean
 // indexed channel-copy source above. Calls, frame, and CFG counts are exact;
 // the remaining structural gap starts in parameter-home/prologue scheduling.
+// Follow-up TU pass: spelling the nearest scan bound as i <= 0xff improved the
+// strict diff from 368 to 355 bytes and aligned the inner branch shape.
+// Typed source/destination cursors, reused loop counters, and declaration-order
+// changes were duplicate or worse. The indexed copy remains the source model.
 
 #include <string.h>
 
@@ -101,7 +105,7 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
         int green = temp_palette[index + 1].peGreen;
         int blue = temp_palette[index + 1].peBlue;
 
-        for (; i < 256; i++) {
+        for (; i <= 0xff; i++) {
             int red_difference = red - palette[i + 1].peRed;
             int green_difference = green - palette[i + 1].peGreen;
             int blue_difference = blue - palette[i + 1].peBlue;
