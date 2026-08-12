@@ -21,6 +21,11 @@
 //   nested count recheck/polarity and a 9-byte late tail beyond the boundary.
 // - Outer-guard/goto, pointer/header, and typed dword-clear variants were
 //   tested and restored; they either changed the whole CFG or worsened output.
+// - A count-controlled `while (count < sel_count)` with an index increment and
+//   post-bound break improved shape to 96.15%, but VC5 still emitted a second
+//   count check before the back-edge; the original has one guard at the tail.
+// - Inverting the post-bound test to `continue` below 0x19 was codegen-identical
+//   and less direct, so the direct while/break form remains the best source.
 
 #include <string.h>
 
@@ -123,18 +128,17 @@ int RGE_Player::group_objects(int group)
 
     short count = 0;
     short i = 0;
-    do {
-        if (sel_count <= count) {
-            return 1;
-        }
-
+    while (count < sel_count) {
         RGE_Static_Object* object = sel_list[i];
         if (object && object->owner == this) {
             ++count;
             object->selected_group = selected_group;
         }
         ++i;
-    } while (i < 0x19);
+        if (i >= 0x19) {
+            break;
+        }
+    }
 
     return 1;
 }

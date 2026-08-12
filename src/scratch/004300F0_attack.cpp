@@ -17,9 +17,18 @@
 //   inheritance surface and was rolled back. The remaining mismatch is the
 //   radius/trig x87 schedule: original starts `fld radius_y`, spills only
 //   radius_x, then uses `fld st3`; no inline asm or fake volatility retained.
+// - Corrected the factory ABI to return RGE_Static_Object* and modeled the
+//   proven RGE_Master_Combat_Object size as 0x148. Two radius temporaries are
+//   assigned before trig, with the ordered sqrt/range expression deferred to
+//   the init_missile argument. This emitted 285 bytes (283 strict diff),
+//   structurally worse than the inherited 303-byte candidate; all calls stay
+//   aligned and the ABI/layout corrections are retained as canonical source.
+// - Separate declaration/assignment for both radius temporaries was a
+//   codegen duplicate. Current source keeps the natural initialized order.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
+class RGE_Static_Object;
 class RGE_Player;
 class RGE_Object_List;
 
@@ -31,7 +40,7 @@ public:
     virtual void pad0C();
     virtual void pad10();
     virtual void pad14();
-    virtual RGE_Missile_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
 
     char pad_004[0x2C];
     float radius_x;        // +0x30
@@ -73,6 +82,7 @@ public:
     float weapon_offset_x; // +0x12C
     float weapon_offset_y; // +0x130
     float weapon_offset_z; // +0x134
+    char pad_138[0x10];
 };
 
 class RGE_Missile_Object {
@@ -144,8 +154,8 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
     RGE_Master_Combat_Object* master = this->master_obj;
     short missile_id = master->missile_id;
     if (missile_id >= 0) {
-        float range = (float)sqrt(master->radius_y * master->radius_y + master->radius_x * master->radius_x) +
-            master->weapon_range + 6.0f;
+        float radius_y = master->radius_y;
+        float radius_x = master->radius_x;
         float angle1 = this->angle;
         float angle2 = this->angle;
         float c = (float)cos(angle1);
@@ -153,12 +163,14 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
         RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
         float s = (float)sin(angle2);
 
-        RGE_Missile_Object* missile = entry->make_new_obj(owner,
+        RGE_Missile_Object* missile = (RGE_Missile_Object*)entry->make_new_obj(owner,
             this->world_x + c * master->weapon_offset_y - s * master->weapon_offset_x,
             this->world_y + s * master->weapon_offset_y + c * master->weapon_offset_x,
             this->world_z + master->weapon_offset_z);
 
-        missile->init_missile(target, x, y, z, range);
+        missile->init_missile(target, x, y, z,
+            (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
+                master->weapon_range + 6.0f);
         this->notify(this->id, this->id, 0x200, 0x258, -1, 0);
         return 1;
     }
