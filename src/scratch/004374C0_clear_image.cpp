@@ -15,6 +15,13 @@
 // - Follow-up pause: clean typed-record/int-span source remains authoritative; ordered calls,
 //   frame, and behavior are aligned, while orientation register coloring and 24-byte loop drift
 //   remain unresolved after 10 additional meaningful hypotheses.
+// - Top-up pass: block-scoped post-lock locals and a scoped line cursor were tested; the former
+//   was duplicate and the latter worsened loop topology. Short x/end arithmetic reproduced a
+//   prior stack-slot basin and was rolled back. FillRect-style pointer-before-pitch ordering
+//   worsened the orientation block. Boundary-local probes were duplicate; a temporary bottom
+//   boundary test was rolled back because the binary's late load is clip-right, not clip-bottom.
+// - Top-up pause: the clean typed-record/int-span reconstruction is restored. The remaining
+//   evidence-backed gap is the original orientation register coloring and 24-byte loop shape.
 
 extern "C" void* __cdecl memset(void* dst, int value, unsigned int count);
 #pragma function(memset)
