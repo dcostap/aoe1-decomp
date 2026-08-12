@@ -27,6 +27,8 @@
 // - Restored the typed inherited span-list manager surface from exact donors;
 //   context was codegen-identical. Remaining drift is prologue scheduling and
 //   first-argument register coloring, with all five AddSpan sites aligned.
+// - This pass retested a carried manager pointer and deferred x1v creation;
+//   both stayed structural mismatches, so the validated x1v source is restored.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the

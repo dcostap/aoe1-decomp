@@ -16,6 +16,11 @@
 // `file_name + 4` artifact. Canonical arrays and ordinary filename construction
 // are retained instead of the prior metric-oriented compiler basin. Final
 // audited check: 492/443 bytes, 0x10C frame, 5/4 calls, 423-byte diff.
+// Session sa-d5b4d7ca-r1: a post-construction non-null strupr guard restored
+// call-count parity but changed the prologue and widened structural drift.
+// Explicit normalize/lookup labels compiled back to the duplicated-call basin.
+// A normalized_name return alias forced a 0x114 frame and broad drift; rolled
+// back. The canonical source remains the best reconstruction.
 
 #include <string.h>
 #include <stdio.h>

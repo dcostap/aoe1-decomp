@@ -20,6 +20,9 @@
 //   complete 394-byte structure; final-loop/operand/home variants were neutral.
 // - Remaining drift is exactly the final two bound reload encodings (4 bytes):
 //   original loads clear_first then clear_last, rebuilt reverses those loads.
+// - This pass tested named final bounds, direct parameter homes, direct and
+//   guarded loop forms, increment spelling, line-bound reuse, and a focused
+//   natural-shape lab; every form stayed at 4 bytes.
 // - Same-TU AddLine_Align confirms the period typed public span-node base,
 //   inherited manager surface, and stdlib context. The full typed base here
 //   is retained; it emits the pinned 394-byte result without raw ownership.

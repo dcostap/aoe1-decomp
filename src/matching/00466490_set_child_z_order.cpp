@@ -12,6 +12,9 @@
 // Main-agent audit restored canonical polymorphic panel ownership and removed
 // the diagnostic self alias; typed node/list traversal remains authoritative.
 // Final audited check: exact 366-byte size, 3/3 ordered calls, 166-byte diff.
+// Session sa-d5b4d7ca-r1: the saved start pointer for the equality scan plus a
+// direct this->first_child_node reload for the case-0 update cursor produced the
+// exact 366-byte function. This natural split preserves the original lifetime.
 // Session sa-e64ca8aa-r1-00466490: baseline retained the clean typed source.
 // Probed case-0 cursor/local declaration forms, direct member rereads, combined
 // guards, while/for spelling, and reuse of the equality-scan cursor; all emitted
@@ -102,26 +105,27 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
     switch (mode) {
     case 0: {
         PanelNode* start = this->first_child_node;
-        PanelNode* scan = start;
         int found = 0;
-        for (; scan != 0; scan = scan->next_node) {
+        for (PanelNode* scan = start;
+             scan != 0;
+             scan = scan->next_node) {
             if (scan->panel->z_order == (int)order) {
                 found = 1;
                 break;
             }
         }
         if (found) {
-            node = start;
-            if (node != 0) {
+            PanelNode* update = this->first_child_node;
+            if (update != 0) {
                 int ord = (int)order;
                 do {
-                    TPanel* p = node->panel;
+                    TPanel* p = update->panel;
                     int z = p->z_order;
                     if (z >= ord) {
                         p->z_order = z + 1;
                     }
-                    node = node->next_node;
-                } while (node != 0);
+                    update = update->next_node;
+                } while (update != 0);
             }
         }
         child->z_order = (int)order;
