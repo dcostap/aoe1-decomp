@@ -66,6 +66,12 @@
 // The focused variant family was not usable because its generated flags omitted required /GX (all variants lost
 // the EH prologue). Restored the canonical typed if/else source; remaining evidence-backed blocker is the VC5
 // duplicated EH cleanup tail versus the original single shared epilogue.
+// 2026-08-12 orch-00405620-L pass: explicit outer/inner labels, typed master/move locals, inner fallback goto,
+// base-constructor throw() context, and constructor early-return forms stayed in the 205B/47B basin or worsened.
+// Early return plus complementary independent inner tests reached 188B/34B with one extra move-sprite test and
+// wrong register/field ownership; direct repeated member tests reached 197B/44B. Restored the canonical typed
+// if/else source. The remaining blocker is still the EH tail: original uses branch-local stores and one shared
+// cleanup, while this VC5 source basin duplicates cleanup for the natural inner if/else.
 
 class RGE_Action_Object;
 class RGE_Sprite;

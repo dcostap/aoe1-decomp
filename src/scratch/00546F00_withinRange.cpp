@@ -17,6 +17,11 @@
 // - A late aggregate max initializer regressed the prologue and was rolled
 //   back. Final best natural source retains named XYPoint ownership and the
 //   bounded scan; remaining drift is the max-construction register/SIB shape.
+// - Follow-up lease probes tested upper-bound assignment order, a map pointer
+//   alias, the donor polymorphic map surface, add-term order, scalar bounds,
+//   map dimension locals, stdlib context, declaration order, and post-guard
+//   aggregate initialization. The first four were duplicates; the rest were
+//   worse. Restored the clean 247-byte source; the 15-byte hunk remains local.
 
 typedef unsigned char uchar;
 

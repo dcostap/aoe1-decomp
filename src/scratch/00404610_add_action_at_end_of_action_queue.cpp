@@ -41,6 +41,16 @@
 // H7-H9 declaration/front-node spellings were emitted-code duplicates. The
 // remaining gap is structural: VC5 still folds the calloc/node spill and
 // short type result into fewer instructions than the 242B oracle.
+// orch-00404610-L H1: predeclaring node before the state guard was a codegen
+// duplicate; restore-clean retained the calloc declaration-point form.
+// H2: combined type assignments and H3: stdlib calloc context were duplicates.
+// H4: an address-taken type pointer and H5: reversed local declaration order
+// were duplicates. H6: volatile short type moved registers and worsened shape.
+// H7: assigning curr before the first type test added a frame and broad drift.
+// H8: sizeof(RGE_Action_Node) was a duplicate. H9: direct type-return
+// comparisons added a frame and 18 bytes past the boundary. Final clean source
+// remains 224B/179-byte diff with 9/9 ordered calls; structural spill/type
+// allocation remains unresolved.
 class RGE_Action_List;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;

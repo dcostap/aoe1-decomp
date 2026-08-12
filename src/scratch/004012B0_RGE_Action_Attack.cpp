@@ -61,6 +61,15 @@
 // - Early typed z/y value locals produced 34 bytes and were rolled back. The
 //   clean typed constructor remains the best plausible source; the unresolved
 //   hunk is initial VC5 load/store scheduling and suffix register coloring.
+// Fresh bounded pass (orch-004012B0-L):
+// - Restoring the decompiler-supported x/range/min/z/y assignment order worsened
+//   to 34 bytes and was rolled back.
+// - Swapping the natural y/z assignment order kept the size but worsened to 34
+//   bytes; it improved shape only, so it was rolled back.
+// - Direct p5 fallback member stores caused a 240-byte structural basin and were
+//   rolled back. A one-local typed p5 fallback was codegen-identical to the clean
+//   source, so it was also rolled back.
+// - No new source or layout lead displaced the canonical typed constructor.
 // Remaining lead: reconstruct the original Act_atak.cpp assignment/declaration
 // context for the first coordinate/range block; do not retain metric-only aliases.
 //

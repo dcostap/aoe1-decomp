@@ -36,6 +36,14 @@
 //   top-level declarations regressed to the prior diff 197 basin. Declaration versus
 //   assignment initialization of self was neutral. Remaining gap is the original
 //   four-dword local/register allocation window; calls and CFG are aligned.
+// - Fresh worker pass: exact-sibling player/entry aliases regressed to diff 216 and were
+//   restored. A narrow volatile id local is binary-supported by the observed stack reload;
+//   it forced the 0x10 frame and improved diagnostic diff to 132 with 87.65% shape, but
+//   changed the early register colors and made the function one byte too long. Named player,
+//   named attribute, self-alias, address-taken nonvolatile id, and while/preheader variants
+//   were neutral, duplicate, or worse (diff 139-219). Restored the clean scalar candidate.
+// - Pause lead: the remaining blocker is source/register allocation for the original id and
+//   current stack homes. Calls, relocation identity, and CFG counts are aligned.
 
 class RGE_Game_World;
 

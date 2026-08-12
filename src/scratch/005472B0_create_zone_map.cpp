@@ -25,6 +25,12 @@
 //   and function-scope goto forms introduced broad prologue/stack-home drift.
 //   Break/sentinel, while, explicit-result/switch, and <new.h> context probes
 //   did not improve the clean source; two VC5 variant labs found no exact case.
+// - orch-005472B0-L: shared done-label forms with block/function-scope,
+//   void, register, and initialized allocation pointers all added an EH
+//   scratch slot and produced a 203-byte drift. A break-based common return
+//   produced 228 bytes. The assignment-plus-return form remains the best
+//   diagnostic at 37 bytes, but its duplicated hit cleanup is less plausible
+//   than the clean natural ternary source.
 // - final clean reconstruction remains the natural typed cache lookup/growth;
 //   current unresolved drift is the original shared EH teardown versus VC5's
 //   duplicated hit-path cleanup (55 strict bytes, first mismatch at +00D0).

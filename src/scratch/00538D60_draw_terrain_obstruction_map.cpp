@@ -42,6 +42,10 @@
 // remaining bytes are only the 00538E20 LEA SIB base/index order ([eax+ebx]
 // original versus [ebx+eax] rebuilt).  Keep the row-first source as the best
 // plausible reconstruction; no opaque register-forcing form was retained.
+// Orch continuation: reversing both coordinate sums, grouping constants,
+// materializing draw coordinates, widening offsets, and reversing each sum
+// separately all emitted the same 250-byte basin.  ABI evidence supports the
+// long shape_draw declaration; the only open drift remains two SIB bytes.
 
 class TDrawArea {
 public:
@@ -52,7 +56,7 @@ public:
 
 class TShape {
 public:
-    unsigned char shape_draw(TDrawArea*, int, int, int, unsigned char, unsigned char*);
+    unsigned char shape_draw(TDrawArea*, long, long, long, unsigned char, unsigned char*);
 };
 
 class RGE_Base_Game {

@@ -69,6 +69,15 @@
 //   the natural 184-byte reconstruction; next lead is combining the late
 //   post-desired spill topology with the target EDI time-chain basin without
 //   retaining redundant volatile/copy scaffolding.
+// - Fresh bounded pass (orch-005034B0-L): ten liveness/context probes tested
+//   split subtraction, address-taken number storage, world caching, and
+//   stdlib/string header context. Inner volatile number plus the natural
+//   inverted elapsed guard reproduced the prior best at 194 bytes / 27 diff;
+//   all other probes were duplicate or worse. The best diagnostic still uses
+//   the wrong desired subtraction order and time-chain register allocation.
+// - Paused: restored and validated the clean natural source. Calls, layout,
+//   CFG, and behavior remain established; delayed number spill and time-chain
+//   allocation remain unresolved.
 
 class RGE_Game_World {
 public:
