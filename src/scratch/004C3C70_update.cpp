@@ -10,6 +10,17 @@
 // 8: tried natural switch with fallthrough case 2->0; switch family still emits too much early callee-save pressure because later virtual calls are visible to optimizer.
 // 9: tried volatile return byte to preserve original stack byte at [esp+7]/[esp+13]/[esp+1f]; this helped frame creation but not delayed EBX/EBP/EDI saves.
 // 10: left in scratch: first mismatch is extra early push ebx/push ebp/push edi after `sub esp,8`; original delays those until after goto_sleep fast path. Remaining broad drift is register/liveness and block placement, not accepted-drift-safe.
+// r1 baseline: canonical owner/master/group fields and the natural group/state update reconstruction built at 836 bytes; first mismatch was the prologue.
+// r1 ABI: removed one speculative virtual slot so the final state helper calls observed vslot +B8, not +BC.
+// r1 layout: used direct operator_new(byte_count)/operator_delete and corrected owner world +3C/id +4A from exact stat_obj donors; rebuilt size fell to 828 bytes.
+// r1 control-flow: inverted inside_obj guard so the null-state switch stays inline and the non-null set_state path is the shared out-of-line tail; calls became fully ordered.
+// r1 diagnostics: named ManagedArray syntax, volatile return/group reads, and
+// an i+1-only capacity expression changed the VC5 basin without exact structure.
+// The final source removes all fake volatility.
+// r1 pause: best retained source is typed owner/allocation plus raw group overlay; remaining drift is broad delayed-save/register allocation and group-loop topology, not accepted-drift-safe.
+// Main-agent policy audit removed fake volatile return storage and named the
+// string/float globals. The natural source is now exactly 757 bytes with all
+// 17 calls, but VC5 omits the original 0x8 frame. It remains in scratch.
 
 typedef unsigned char uchar;
 typedef unsigned long uint;
@@ -17,9 +28,11 @@ typedef unsigned long uint;
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" void __cdecl debug_srand(char* file, int line, int seed);
 extern int debug_random_on;
-#define STR_STAT_OBJ ((char*)0x00587180)
-#define F_ZERO (*(float*)0x00574720)
-#define F_ONE (*(float*)0x0057472C)
+extern void* __cdecl operator_new(unsigned int size);
+extern void __cdecl operator_delete(void* ptr);
+extern char STR_STAT_OBJ[];
+extern const float F_ZERO;
+extern const float F_ONE;
 
 #define VPAD1(n) virtual void vpad##n() {}
 #define VPAD2(n) VPAD1(n) VPAD1(n##_a)
@@ -37,7 +50,7 @@ public:
     VPAD32(o0) VPAD16(o32) VPAD4(o48) VPAD2(o52) VPAD1(o54)
     virtual void* dopple_on(RGE_Static_Object* o, int one, int flag);
     virtual void dopple_off(RGE_Static_Object* o, int zero, int flag, RGE_Static_Object* node);
-    char gap0[0x3C]; RGE_Game_World* world; char gap44[6]; short id;
+    char gap0[0x38]; RGE_Game_World* world; char gap44[0x0A]; short id;
 };
 
 class RGE_Master_Static_Object { public: char gap0[0x1C]; int death_sprite; int undead_sprite; uchar undead_flag; char gap25[0x1B]; RGE_Sound* death_sound; char gap44[0x3C]; float decay; char gap84[0x20]; uchar recyclable; };
@@ -51,7 +64,7 @@ public:
     virtual void set_sprite(int sprite);
     VPAD8(s15)
     virtual void set_state(int state);
-    VPAD16(s24) VPAD4(s40) VPAD2(s44) VPAD1(s46)
+    VPAD16(s24) VPAD4(s40) VPAD2(s44)
     virtual void vf_b8();
 
     RGE_Master_Static_Object* master_obj; // +04? actually after vptr, need +08 target impossible with virtual class if fields begin +4
@@ -69,7 +82,7 @@ struct Raw {
 uchar RGE_Static_Object::update()
 {
     Raw* self = (Raw*)this;
-    volatile uchar ret = 0;
+    uchar ret = 0;
     if (self->goto_sleep_flag != 0) {
         RGE_Owner* own = self->owner;
         self->goto_sleep_flag = 0;
@@ -84,13 +97,13 @@ uchar RGE_Static_Object::update()
             do {
                 if (i > self->group_max - 1) {
                     int newmax = i + 1;
-                    int* nv = new int[bytes/4];
+                    int* nv = (int*)operator_new(bytes);
                     if (nv != 0) {
                         int j = 0;
                         if (self->group_max > 0) {
                             do { if (j >= newmax) break; j++; nv[j-1] = self->group_values[j-1]; } while (j < self->group_max);
                         }
-                        delete [] self->group_values;
+                        operator_delete(self->group_values);
                         self->group_values = nv; self->group_max = newmax;
                     }
                 }
@@ -109,8 +122,8 @@ uchar RGE_Static_Object::update()
             } while (i < self->group_number);
         }
     }
-    if (self->inside_obj != 0) { uchar st = ((Raw*)self->inside_obj)->object_state; if (st > 2) this->set_state(st); return ret; }
-    switch (self->object_state) {
+    if (self->inside_obj == 0) {
+        switch (self->object_state) {
     case 2: this->vf28();
     case 0:
         if (self->hp < F_ONE) {
@@ -127,6 +140,10 @@ uchar RGE_Static_Object::update()
         this->set_state(7); this->vf_b8(); return ret;
     case 7: this->set_state(8); return ret;
     case 8: ret = (self->master_obj->recyclable != 0) + 1; return ret;
+        }
+    } else {
+        uchar st = ((Raw*)self->inside_obj)->object_state;
+        if (st > 2) this->set_state(st);
     }
     return ret;
 }
