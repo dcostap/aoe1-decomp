@@ -20,19 +20,21 @@
 // - variant lab with --flag-preset vc5-debug-context
 //   -> no change in any variant
 // 
-// Remaining gap:
-// Original: 387 bytes. Rebuilt: 384 bytes (3 bytes short).
-// Prologue: original reads param_2 from [esp+8] BEFORE sub esp,10h.
-//           rebuilt allocates sub esp,10h first then reads param from adjusted stack.
-// This appears to be a VC5 scheduling choice that our source cannot override
-// without inline asm or a specific TU context from view.cpp.
-// The 3-byte difference = the original's `mov eax,[esp+8]` (4 bytes) + 
-// `test eax,eax` (2 bytes) = 6 bytes vs rebuilt's `sub esp,10h` (3 bytes) first,
-// so the original interleaves the param read into the prologue before sub.
-// All flag presets tested produce the same prologue scheduling.
-// 
-// Register allocation also differs: original uses ebx=left, edi=top, ebp=bottom,
-// eax=right (spilled to [esp+0x18]). Rebuilt uses different regs.
+// Earlier gap: the first natural forms were 384 bytes and read param_2 after
+// the frame setup. The current best is full size with 46 strict diff bytes.
+
+// Current normal-source pass:
+// - one function-scope tagRECT recovered the 0x10 frame and stack homes;
+//   strict diff improved from 368 to 299 bytes.
+// - compound self-subtraction for the left and top fields reproduced the
+//   original subtract-to-zero code and reached 387 bytes / 53 diff bytes.
+// - direct p2 guards, declaration placement, and a nested local scope were
+//   codegen duplicates. Reversed saved top/bottom assignment was restored.
+// - reversing the source top/bottom update order matched the original register
+//   pair and reduced the best result to 46 diff bytes.
+// - paused: calls, frame, size, CFG, and most body blocks match. Remaining drift
+//   is prologue scheduling, early area-register coloring, one delayed store,
+//   and equivalent call-setup register coloring.
 
 #include <windows.h>
 
@@ -68,37 +70,35 @@ public:
 
 void RGE_View::draw_view(unsigned char p1, TDrawArea* p2)
 {
-    int l4;
-    int tp;
-    int bt;
-    int rt;
-    int lf;
-
     if (p2 == 0)
         p2 = this->render_area;
-    this->cur_render_area = p2;
-    if (this->cur_render_area == this->save_area1) {
-        tp = this->render_rect.left;
-        bt = this->render_rect.right;
-        rt = this->render_rect.top;
-        l4 = this->render_rect.bottom;
 
-        this->render_rect.left = 0;
-        this->render_rect.right -= tp;
-        this->start_scr_col -= (short)tp;
-        this->start_scr_row -= (short)rt;
-        this->render_rect.top = 0;
-        this->render_rect.bottom -= rt;
-        this->map_scr_x_offset += tp;
-        this->map_scr_y_offset += rt;
+    this->cur_render_area = p2;
+
+    {
+        tagRECT save_render_rect;
+        if (p2 == this->save_area1) {
+        save_render_rect.left = this->render_rect.left;
+        save_render_rect.right = this->render_rect.right;
+        save_render_rect.top = this->render_rect.top;
+        save_render_rect.bottom = this->render_rect.bottom;
+
+        this->render_rect.left -= save_render_rect.left;
+        this->render_rect.right -= save_render_rect.left;
+        this->start_scr_col -= (short)save_render_rect.left;
+        this->start_scr_row -= (short)save_render_rect.top;
+        this->render_rect.bottom -= save_render_rect.top;
+        this->render_rect.top -= save_render_rect.top;
+        this->map_scr_x_offset += save_render_rect.left;
+        this->map_scr_y_offset += save_render_rect.top;
     }
     if (this->cur_render_area->Lock("view::draw_view", 1)) {
         if (p1 == 10) {
             tagRECT rect;
-            rect.left = tp;
-            rect.top = rt;
-            rect.right = bt;
-            rect.bottom = l4;
+            rect.left = save_render_rect.left;
+            rect.top = save_render_rect.top;
+            rect.right = save_render_rect.right;
+            rect.bottom = save_render_rect.bottom;
             this->view_function_terrain(10, rect);
         } else {
             this->view_function(p1, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -106,14 +106,15 @@ void RGE_View::draw_view(unsigned char p1, TDrawArea* p2)
         this->cur_render_area->Unlock("view::draw_view");
     }
     if (this->cur_render_area == this->save_area1) {
-        this->start_scr_col += (short)tp;
-        this->start_scr_row += (short)rt;
-        this->render_rect.right += tp;
-        this->render_rect.bottom += rt;
-        this->render_rect.left += tp;
-        this->render_rect.top += rt;
-        this->map_scr_x_offset -= tp;
-        this->map_scr_y_offset -= rt;
+        this->start_scr_col += (short)save_render_rect.left;
+        this->start_scr_row += (short)save_render_rect.top;
+        this->render_rect.right += save_render_rect.left;
+        this->render_rect.bottom += save_render_rect.top;
+        this->render_rect.left += save_render_rect.left;
+        this->render_rect.top += save_render_rect.top;
+        this->map_scr_x_offset -= save_render_rect.left;
+        this->map_scr_y_offset -= save_render_rect.top;
+        }
     }
     this->cur_render_area = 0;
 }
