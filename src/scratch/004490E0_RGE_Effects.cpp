@@ -42,6 +42,15 @@
 //   and eight bytes past the original boundary.
 // - outer while form, self->effect_num as the repeated bound, typed short count,
 //   and function-scope owner locals produced no new codegen.
+// Fresh worker probes:
+// - outer while entry form moved the mismatch to 270 bytes and was restored.
+// - manual vtable storage kept the constant but reordered the prologue and moved
+//   the mismatch to 272 bytes; restored to the polymorphic surface.
+// - direct this ownership plus block-scoped effect/list pointers duplicated the
+//   262-byte codegen basin with a slightly smaller edit diff; kept as the natural
+//   source form. Reordering fields before virtual declarations was also duplicate.
+// Main-agent audit replaced the byte-offset record cursor with typed effect
+// indexing. The first effect still owns each name read, as the executable shows.
 // Best current source keeps the natural typed ownership and the binary-proven
 // count reread. Remaining gap is structural outer-entry sharing plus vtable
 // relocation context; no unresolved field layout or call ABI issue remains.
@@ -64,34 +73,31 @@ class RGE_Player;
 
 class RGE_Effects {
 public:
+    RGE_Effect* effects;
+    long effect_num;
     virtual ~RGE_Effects();
     virtual void save(int fd);
     virtual void do_effect(short effect_id, RGE_Player* player);
-    RGE_Effect* effects;
-    long effect_num;
     RGE_Effects(int fd);
 };
 
 RGE_Effects::RGE_Effects(int fd) {
-    RGE_Effects* self = this;
     int file = fd;
-    long* peffect = &self->effect_num;
+    long* peffect = &this->effect_num;
     int outer_count;
-    int index;
     int inner_count;
-    RGE_Effect_Command** list_ptr;
-    RGE_Effect* effect;
-    RGE_Effect* fields;
-    short* count_ptr;
     rge_read(file, peffect, 4);
     if (*peffect > 0) {
-        self->effects = (RGE_Effect*)calloc(*peffect, 0x2C);
+        this->effects = (RGE_Effect*)calloc(*peffect, 0x2C);
         outer_count = 0;
         if (outer_count < *peffect) {
-            index = 0;
             do {
-                effect = self->effects;
-                fields = (RGE_Effect*)((char*)self->effects + index);
+                RGE_Effect_Command** list_ptr;
+                RGE_Effect* effect;
+                RGE_Effect* fields;
+                short* count_ptr;
+                effect = this->effects;
+                fields = &this->effects[outer_count];
                 rge_read(file, effect->name, 0x1F);
                 count_ptr = &fields->effect_list_num;
                 list_ptr = &fields->effect_list;
@@ -119,11 +125,10 @@ RGE_Effects::RGE_Effects(int fd) {
                     *list_ptr = 0;
                 }
                 outer_count++;
-                index += 0x2C;
-            } while (outer_count < self->effect_num);
+            } while (outer_count < this->effect_num);
         }
     } else {
-        self->effects = 0;
-        self->effect_num = 0;
+        this->effects = 0;
+        this->effect_num = 0;
     }
 }
