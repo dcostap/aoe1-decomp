@@ -5,6 +5,9 @@
 // - validated baseline has exact 1587B size, 0xC frame, and 54/54 call-target counts,
 //   but ordered calls are only 70.37% (-12/+12, 4 replacements), shape is 48.83%,
 //   and strict diff is 1375B (86.6415%). Remains broad STRUCTURAL RECONSTRUCTION.
+// - Direct-state and floating-global probes were no-ops or worse. Restored the
+//   baseline. A late state-1 arm probe improved diff to 1282B but moved calls;
+//   it was diagnostic only and was restored.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
@@ -319,6 +322,7 @@ unsigned char TRIBE_Action_Hunt::update()
         if (this->obj->owner->computerPlayer() == 0)
             this->set_state(2);
         return 1;
+
     case 2:
         if (this->timer < 0.0) {
             this->timer += *(float*)((char*)this->obj->owner->world + 0x84);
@@ -335,10 +339,10 @@ unsigned char TRIBE_Action_Hunt::update()
         case 2:
             this->set_state(6); return 0;
         case 3:
-            if (this->obj->owner->computerPlayer() == 1) {
-                this->set_state(13); return 0;
-            }
-            goto state_default;
+        if (this->obj->owner->computerPlayer() == 1) {
+            this->set_state(13); return 0;
+        }
+        goto state_default;
         case 4:
         case 5:
             this->set_target_obj(0);
@@ -448,9 +452,10 @@ state_default:
     case 12:
         this->obj->notify(this->obj->id, this->obj->id, 0x1f9, 0x265, 0, 0);
         return 3;
+
     }
 computer_fallback:
-    if (this->obj->owner->computerPlayer() == 0) {
+        if (this->obj->owner->computerPlayer() == 0) {
         this->set_state(2);
         return 0;
     }

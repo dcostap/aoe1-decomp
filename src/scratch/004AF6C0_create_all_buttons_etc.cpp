@@ -4,6 +4,12 @@
 // try 1: compiles with /GX; .text is 9056 vs original 9090, manual diff after obj extraction
 //        is 75.30% positional / 39.05% edit. First mismatch is initial button-base register
 //        coloring (original EBP=&scenario_mode_button, rebuilt EDI); declaration/register probes did not move it.
+// - Direct scenario-array cursors and the one-element options-button loop recover the
+//   original frame, size, and early block layout.  The Diplomacy player loop uses i=0
+//   with i+1 because the original reloads that display value from a zero-based counter.
+// - Best validation is 9090/9090 bytes, 358/358 calls, 95.05% exact blocks, and
+//   99.52% shape.  Remaining drift is register/stack scheduling around group-active
+//   locals, indirect relocations, and a one-byte epilogue displacement.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
 
 #include <stdio.h>
@@ -263,38 +269,37 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
 {
     int i;
     int count;
-    int saved_call = 0;
     TPanel* ptr[4];
     char str4[20];
     char str3[20];
     char str1[140];
     char str[100];
     char str2[140];
-    register TButtonPanel** group;
-    TButtonPanel** cur;
+    register TButtonPanel** cur;
     TButtonPanel** pp;
     TTextPanel** tt;
+    TButtonPanel** group;
 
     group = this->scenario_mode_button;
     cur = group;
     OK(this->create_button((TPanel*)this, cur, 0x271A, 1)); HELP(*cur, 0x76C0, -1);
-    cur = group + 1;
+    cur = this->scenario_mode_button + 1;
     OK(this->create_button((TPanel*)this, cur, 0x271B, 1)); HELP(*cur, 0x76C1, -1);
-    cur = group + 2;
+    cur = this->scenario_mode_button + 2;
     OK(this->create_button((TPanel*)this, cur, 0x271C, 1)); HELP(*cur, 0x76C2, -1);
-    cur = group + 3;
+    cur = this->scenario_mode_button + 3;
     OK(this->create_button((TPanel*)this, cur, 0x271D, 1)); HELP(*cur, 0x76C3, -1);
-    cur = group + 4;
+    cur = this->scenario_mode_button + 4;
     OK(this->create_button((TPanel*)this, cur, 0x2722, 1)); HELP(*cur, 0x76C8, -1);
-    cur = group + 5;
+    cur = this->scenario_mode_button + 5;
     OK(this->create_button((TPanel*)this, cur, 0x271E, 1)); HELP(*cur, 0x76C4, -1);
-    cur = group + 6;
+    cur = this->scenario_mode_button + 6;
     OK(this->create_button((TPanel*)this, cur, 0x2723, 1)); HELP(*cur, 0x76C9, -1);
-    cur = group + 7;
+    cur = this->scenario_mode_button + 7;
     OK(this->create_button((TPanel*)this, cur, 0x2721, 1)); HELP(*cur, 0x76C7, -1);
-    cur = group + 8;
+    cur = this->scenario_mode_button + 8;
     OK(this->create_button((TPanel*)this, cur, 0x271F, 1)); HELP(*cur, 0x76C5, -1);
-    cur = group + 9;
+    cur = this->scenario_mode_button + 9;
     OK(this->create_button((TPanel*)this, cur, 0x2720, 1)); HELP(*cur, 0x76C6, -1);
 
     cur = group;
@@ -571,7 +576,8 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
 
     OK(this->create_text(this->bottom_panel, &this->options_label[0], 0x2604));
     OK(this->create_text(this->bottom_panel, &this->options_disable_tech_text, 0x32D7));
-    OK(this->create_check_box(this->bottom_panel, &this->options_button[0])); HELP(this->options_button[0], 0x7729, -1);
+    for (i = 0; i < 1; ++i) OK(this->create_check_box(this->bottom_panel, &this->options_button[i]));
+    HELP(this->options_button[0], 0x7729, -1);
     OK(this->create_drop_down(this->bottom_panel, &this->options_player_list)); HELP(this->options_player_list, 0x772B, -1);
     for (i = 0; i < 16; ++i) OK(this->create_check_box(this->bottom_panel, &this->options_disable_button[i]));
     HELP(this->options_disable_button[0], 0x772C, -1);
@@ -608,10 +614,13 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     OK(this->create_text(this->bottom_panel, &this->options_disable_text[15], 0x32D9));
 
     tt = this->Diplomacy_player_text;
-    for (i = 1; i <= 8; ++i, ++tt) {
-        sprintf(str1, CSTR(0x584610), i);
+    i = 0;
+    do {
+        sprintf(str1, CSTR(0x584610), i + 1);
         OK(this->create_text(this->bottom_panel, tt, str1));
-    }
+        ++i;
+        ++tt;
+    } while (i < 8);
     OK(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list)); HELP(this->Diplomacy_player_list, 0x773D, -1);
 
     pp = this->Diplomacy_AlliedVictory;
