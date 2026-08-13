@@ -11,6 +11,10 @@
 //    canPath overload in this declaration surface to emit those two calls at
 //    the original addresses. No manual virtual-table padding, raw virtual-table
 //    access, inline assembly, or fake volatility is retained.
+//  - Confirmed the original calls push the full six/seven argument surfaces;
+//    shorter int-only declarations improved shape but did not match the binary
+//    call arity and were rolled back. A named resource-base pointer moved the
+//    array register closer but added four bytes and was also rolled back.
 //  - Final matching status: unresolved. Named-surface rebuild is 1758B versus
 //    1712B original, with frame 0x30, 32/32 ordered calls, and first mismatch
 //    at +0x1D (the original homes gathererObj before the null branch). The
