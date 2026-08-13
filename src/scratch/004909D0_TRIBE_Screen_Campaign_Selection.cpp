@@ -25,10 +25,15 @@
 //     candidate was produced, and the lab template lacked the target /GX setup.
 // 17: Reused the existing cancel hotkey local for tabList[3]; frame grew to
 //     0x1C with a 201-byte drift, so the clean source was restored.
-// PAUSED: exact call set, size, frame, CFG, and all earlier blocks match. The
-// remaining 13-byte drift is localized to cancel/ok load scheduling at the
-// array stores (+03D4..+03E3); no further source-plausible lead remains.
+// 18: Swapped the final tab entries to the binary-backed order OK then Cancel;
+//     VC5 emitted the original cancel/OK load schedule and matched exactly.
+// EXACT: 1087 bytes, 0.0000%; direct call relocations and function boundary
+// validated. The five-entry tab order is campaign, scenario, difficulty, OK,
+// then Cancel, matching the original stack writes and source behavior.
 // FLAGS: /GX
+// POLICY HOLD: tab ordering now emits an exact target, but this reconstruction
+// still writes the derived vtable with a literal raw store. Keep it in scratch
+// until a normal compiler-owned vtable surface reproduces that store.
 
 class TPanel {
 public:
@@ -150,8 +155,8 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                     tabList[0] = campaignList;
                                                     tabList[1] = scenarioList;
                                                     tabList[2] = difficultyDrop;
-                                                    tabList[3] = cancelButton;
-                                                    tabList[4] = okButton;
+                                                    tabList[3] = okButton;
+                                                    tabList[4] = cancelButton;
                                                     set_tab_order(tabList, 5);
                                                     set_curr_child(okButton);
                                                     fillCampaigns();
