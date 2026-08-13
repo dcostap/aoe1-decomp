@@ -39,6 +39,11 @@
 //   cursors, typed aliases, explicit string declarations, and a post-allocation
 //   source alias all duplicated the 376-byte basin. Restored the direct typed
 //   source; the EDI versus EAX scan-base allocation remains the next lead.
+// - New bounded block-shape pass: reversed pointer-add order, direct byte-base
+//   casts, dead list_type parameter reuse, a diagnostic char-pointer field,
+//   guarded do-loop form, register-qualified aliases, and inline strlen length
+//   all duplicated the 376-byte basin. The char-pointer and do-loop forms were
+//   diagnostic only and were removed. The clean typed source remains best.
 
 #include <stdlib.h>
 #include <string.h>

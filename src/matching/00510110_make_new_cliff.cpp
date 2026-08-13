@@ -37,6 +37,9 @@
 // return epilogue. No evidence-backed natural lead remains in this pass.
 // shardC5-510110: explicit new_cliff=0 in the negative-id arm followed the
 // line-570 cold store, but widened the drift to 205B; restored the clean form.
+// orch-510110-a: kept the positive-id arm and added an explicit negative-arm
+// zero assignment with one common return; this recovers the target block shape
+// and exact stack homes. The declaration initializer is unnecessary.
 
 struct TRIBE_Cliff_Info {
     long info[4];
@@ -174,7 +177,7 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
         this->cliff_master_table[cliff_index].offset_x;
     float y_pos = (float)(y * 3) +
         this->cliff_master_table[cliff_index].offset_y;
-    RGE_Static_Object* new_cliff = 0;
+    RGE_Static_Object* new_cliff;
     long id;
 
     if (this->cliff_master_table[cliff_index].id2 > -1 &&
@@ -203,7 +206,8 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
             new_cliff->facet = (unsigned char)facet;
 
         this->game_world->check_destructables(0, (short)id, x_pos, y_pos, 1);
-        return new_cliff;
+    } else {
+        new_cliff = 0;
     }
 
     return new_cliff;
