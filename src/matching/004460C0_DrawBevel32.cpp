@@ -22,6 +22,9 @@
 //   expression labs found a plus-one spelling with a deeper first mismatch,
 //   but it remained nonexact and compiler-steering rather than plausible source;
 //   it was not promoted into the function.
+// - Natural DrawBevel3-family int width/height locals preserved the executable
+//   raw extents and recovered the exact first prologue hunk and full 341-byte
+//   function.  This source remains ordinary typed Drawarea code.
 
 class TDrawArea {
 public:
@@ -49,16 +52,21 @@ void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2,
         y2 = temp;
     }
 
-    if (x2 - x1 + 1 >= 1 && y2 - y1 + 1 >= 1) {
-        DrawHorzLine(x1 + 1, y1, x2 - x1, c1);
-        DrawVertLine(x2, y1 + 1, y2 - y1 - 1, c1);
-        DrawHorzLine(x1 + 2, y1 + 1, x2 - x1 - 2, c2);
-        DrawVertLine(x2 - 1, y1 + 2, y2 - y1 - 3, c2);
-        DrawHorzLine(x1 + 2, y1 + 2, x2 - x1 - 3, c3);
-        DrawVertLine(x2 - 2, y1 + 3, y2 - y1 - 4, c3);
-        DrawHorzLine(x1, y2, x2 - x1 + 1, c6);
-        DrawVertLine(x1, y1, y2 - y1, c6);
-        DrawHorzLine(x1 + 1, y2 - 1, x2 - x1 - 1, c5);
-        DrawVertLine(x1 + 1, y1 + 1, y2 - y1 - 2, c5);
-    }
+    int width = x2 - x1 + 1;
+    if (width < 1)
+        return;
+    int height = y2 - y1 + 1;
+    if (height < 1)
+        return;
+
+    DrawHorzLine(x1 + 1, y1, width - 1, c1);
+    DrawVertLine(x2, y1 + 1, height - 2, c1);
+    DrawHorzLine(x1 + 2, y1 + 1, width - 3, c2);
+    DrawVertLine(x2 - 1, y1 + 2, height - 4, c2);
+    DrawHorzLine(x1 + 2, y1 + 2, width - 4, c3);
+    DrawVertLine(x2 - 2, y1 + 3, height - 5, c3);
+    DrawHorzLine(x1, y2, width, c6);
+    DrawVertLine(x1, y1, height - 1, c6);
+    DrawHorzLine(x1 + 1, y2 - 1, width - 2, c5);
+    DrawVertLine(x1 + 1, y1 + 1, height - 3, c5);
 }

@@ -178,11 +178,7 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
     y = (float)a.y;
     map = this->owner->world->map;
 
-    if (numSteps <= 0) {
-        return 0;
-    }
-
-    do {
+    while (i < numSteps) {
             x += xStep;
             y += yStep;
             int tileX = (int)x;
@@ -204,7 +200,7 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
             }
 
         ++i;
-    } while (i < numSteps);
+    }
 
     return 0;
 }

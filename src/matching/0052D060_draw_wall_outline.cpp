@@ -24,6 +24,10 @@
 // - Resumed after host interruption and restored the pinned clean source. The
 //   one-short alignment-tail variant was already a byte-identical duplicate;
 //   no new natural source lead justifies retaining it.
+// - A natural converted-x temporary matches the original FILD/reload pattern,
+//   restoring the 0x1C frame and reducing the strict diff to 143 bytes.
+// - The binary center block uses the tile x3 home plus (x4 - y4) / 2 + y4;
+//   using those named alignment outputs produces an exact 391-byte match.
 
 class RGE_Game_World;
 class RGE_Player;
@@ -144,12 +148,13 @@ int TRIBE_Main_View::draw_wall_outline(
 
     if (this->get_tile_screen_coords(
             (short)x, (short)y, &x3, &scr_x, 0) != 0) {
+        float coordinate_x = (float)x + 0.5f;
         master->alignment_box(
-            this->world, (float)x + 0.5f, (float)y + 0.5f,
+            this->world, coordinate_x, (float)y + 0.5f,
             x4, local_12, scr_y, y3, y4, y1, x2, local_4[0]);
 
         if (master->check_placement(
-                this->player, (float)x + 0.5f, (float)y + 0.5f,
+                this->player, coordinate_x, (float)y + 0.5f,
                 0, 1, master->elevation_flag, 0, 1, 1, 1) == 0) {
             fog_next_shape = 5;
         } else {
@@ -162,8 +167,8 @@ int TRIBE_Main_View::draw_wall_outline(
         }
 
         if (master->sprite != 0) {
-            x3 = (short)((int)local_4[0] +
-                ((int)x4 - (int)x3) / 2 + x3);
+            x3 = (short)((int)x3 +
+                ((int)x4 - (int)y4) / 2 + y4);
             scr_x = (short)((int)scr_x +
                 ((int)y3 - (int)local_4[0]) / 2 + local_4[0]);
             SDI_Draw_Line = (int)scr_x;

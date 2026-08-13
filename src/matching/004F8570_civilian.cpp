@@ -19,11 +19,10 @@
 // immediate zero store and 175-instruction body, but emitted the two entry
 // stores in reverse order and left a six-byte tasked-scan register permutation.
 // probe 10: ordinary civilians/task references around contains fixed that
-// register permutation. Best current source is exact in size/frame/CFG/ordered
-// calls with a 10-byte strict drift only in the two entry initialization stores:
-// the oracle emits bestUnitID=-1 then bestUnitDistance=0, while this clean
-// source spelling emits the same stores in the opposite order. Leaving in
-// scratch after the bounded assignment; no inline asm or opaque scaffolding.
+// register permutation. The clean source was exact in size/frame/CFG/ordered
+// calls with a 10-byte strict drift only in the two entry initialization stores.
+// probe 11: natural sentinel-first initialization (bestUnitID=-1, then
+// bestUnitDistance=0) produced a full MATCH; no inline asm or opaque scaffolding.
 
 void* operator_new(unsigned int);
 void operator_delete(void*);
@@ -117,8 +116,8 @@ int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, in
     ManagedArray_int& civilians = this->civilians;
     ManagedArray_int& tasked = this->unitsTaskedThisUpdate;
 
-    bestUnitDistance = 0;
     bestUnitID = -1;
+    bestUnitDistance = 0;
     i = 0;
     if (this->civilians.numberValue > 0) {
         do {

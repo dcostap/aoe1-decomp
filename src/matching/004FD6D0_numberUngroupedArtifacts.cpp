@@ -26,13 +26,15 @@
 // 649 bytes, while named artifact plus `i`-first was the best group.
 // Final current-claim probes: the element-reference/byte-offset spelling was
 // codegen-duplicate; canonical full inheritance/member context and class (not
-// struct) TacticalAIGroup ABI were also codegen-duplicate. The readable
-// i-first/named-artifact candidate is retained as the best reconstruction.
-// Final metrics before pause: 510-byte size/frame/call-set parity, 7/7 ordered
-// calls, 82.50% shape, 58.17% exact-block coverage, 350 positional diff bytes.
-// Left in scratch: mismatch starts at the second zero-store stack home and then
-// follows the oracle's spilled outer-index/callee-saved artifact topology; no
-// accepted-drift or inline-asm claim.
+// struct) TacticalAIGroup ABI were also codegen-duplicate. The prior readable
+// i-first/named-artifact candidate is retained in history as the old baseline.
+// Probe 14: replaced the explicit duplicate scan and growth path with the
+// typed ManagedArray::add surface used by exact same-TU sibling counters. This
+// restored the original count/loop/lifetime shape and matched all 510 bytes.
+// Prior pause metrics: 510-byte size/frame/call-set parity, 7/7 ordered calls,
+// 82.50% shape, 58.17% exact-block coverage, 350 positional diff bytes.
+// Exact result: 510-byte size/frame/call-set parity and 100% positional match;
+// no accepted-drift or inline-asm claim.
 
 extern void* operator_new(unsigned int size);
 extern void operator_delete(void* ptr);
@@ -62,6 +64,36 @@ struct ManagedArrayInt {
             }
         }
         return this->value[index];
+    }
+
+    int add(int valueToAdd) {
+        int i;
+        for (i = 0; i < this->numberValue; i++) {
+            if (i >= this->maximumSizeValue)
+                break;
+            if (this->value[i] == valueToAdd)
+                return 0;
+        }
+
+        if (this->numberValue > this->maximumSizeValue - 1) {
+            int new_size = this->numberValue + 1;
+            int* new_data = (int*)operator_new(new_size * 4);
+            if (new_data != 0) {
+                int j;
+                for (j = 0; j < this->maximumSizeValue; j++) {
+                    if (j >= new_size)
+                        break;
+                    new_data[j] = this->value[j];
+                }
+                operator_delete(this->value);
+                this->value = new_data;
+                this->maximumSizeValue = new_size;
+            }
+        }
+
+        this->value[this->numberValue] = valueToAdd;
+        this->numberValue++;
+        return 1;
     }
 };
 
@@ -93,34 +125,20 @@ public:
 
 int TribeTacticalAIModule::numberUngroupedArtifacts()
 {
-    int i = 0;
     int rNum = 0;
-    int artifact;
+    int i = 0;
+    ManagedArrayInt& workingArea = this->workingArea;
+    ManagedArrayInt& artifacts = this->artifacts;
 
-    this->workingArea.numberValue = 0;
-    if (this->artifacts.numberValue > 0) {
+    workingArea.numberValue = 0;
+    if (artifacts.numberValue > 0) {
         do {
-            if (this->groupUnitIsIn(this->artifacts[i]) == 0) {
-                artifact = this->artifacts[i];
-                int j = 0;
-                if (this->workingArea.numberValue > 0) {
-                    do {
-                        if (j >= this->workingArea.maximumSizeValue)
-                            break;
-                        if (this->workingArea.value[j] == artifact)
-                            goto counted;
-                        j++;
-                    } while (j < this->workingArea.numberValue);
-                }
-
-                this->workingArea[this->workingArea.numberValue] = artifact;
-                this->workingArea.numberValue =
-                    this->workingArea.numberValue + 1;
-            counted:
-                rNum = rNum + 1;
+            if (this->groupUnitIsIn(artifacts[i]) == 0) {
+                workingArea.add(artifacts[i]);
+                rNum++;
             }
-            i = i + 1;
-        } while (i < this->artifacts.numberValue);
+            i++;
+        } while (i < artifacts.numberValue);
     }
     return rNum;
 }
