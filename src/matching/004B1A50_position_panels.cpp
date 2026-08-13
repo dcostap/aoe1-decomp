@@ -11,6 +11,8 @@
 //   is retained after equivalent register probes produced no exact match.
 // - Tested a TPanel base cursor for the adjacent option fields; emitted bytes
 //   were unchanged, so the canonical TTextPanel cursor was restored.
+// - Swapped the option-loop increment statements: advancing the panel cursor
+//   before the row coordinate reproduces the original EBX/EDI allocation.
 
 class TPanel {
 public:
@@ -376,8 +378,8 @@ void TRIBE_Screen_Sed::position_panels()
     do {
         ((TButtonPanel*)option_panel[1])->set_fixed_position(3, option_y, 0x14, 0x14);
         option_panel[0]->set_fixed_position(0x16, option_y, 0x87, 0x14);
-        option_y += 0x1a;
         option_panel += 1;
+        option_y += 0x1a;
     } while (option_y < 0x46);
     this->options_disable_tech_text->set_fixed_position(0xa0, 3, 0xa0, 0x16);
     this->options_player_list->set_fixed_position(3, 3, 0x96, 0x16);
