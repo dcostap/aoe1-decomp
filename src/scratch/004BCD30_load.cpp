@@ -6,8 +6,10 @@
 // - Separate cleanup branches recovered all 42 original calls and the 0x15C frame.
 // - Matched the positive read gates and split resource Create/Lock failure cleanup.
 // - A late cleanup-label experiment lost frees and was rolled back.
-// - Remaining drift is prologue scheduling, recursive-call relocation identity, and
-//   resource/file block placement. No further evidence-backed lead remains.
+// - Descriptor-only aggregate initialization matches the original zero-store prologue.
+// - The signed -1 resource default gate aligns the original boundary and most blocks.
+// - Remaining drift is read cmp/test form, recursive-call relocation identity, and
+//   resource tail placement; the rebuilt body is 3 bytes shorter.
 #include <string.h>
 #include <stdlib.h>
 
@@ -77,7 +79,7 @@ struct WAVHEADER {
 
 extern "C" int __cdecl __open(const char* path, int flags, int mode);
 extern "C" int __cdecl close(int fd);
-extern "C" int __cdecl read(int fd, void* buf, unsigned int count);
+extern "C" unsigned int __cdecl read(int fd, void* buf, unsigned int count);
 extern "C" int __cdecl strncmp(const char* s1, const char* s2, unsigned int n);
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
@@ -126,21 +128,15 @@ int TDigital::load(char* name, long param) {
     void* mem2;
     void* mem1;
     int load_type;
-    DSBUFFERDESC buffer_desc;
+    DSBUFFERDESC buffer_desc = {0};
     WAVHEADER wave_hdr;
-    int resDataSize;
     char file_with_path[260];
+    int resDataSize;
     int result;
     IDirectSound* direct_sound;
     IDirectSoundBuffer* buffer;
     uchar* resource_data;
     int fd;
-
-    buffer_desc.dwBufferBytes = 0;
-    buffer_desc.dwReserved = 0;
-    buffer_desc.lpwfxFormat = 0;
-    memset(wave_hdr.szRIFF, 0, sizeof(wave_hdr.szRIFF));
-    buffer_desc.dwFlags = 0;
 
     if (this->failed != 0) {
         return 0;
@@ -169,13 +165,13 @@ int TDigital::load(char* name, long param) {
         goto fail_return;
     }
 
-    if (param < 0) {
+    if (param <= -1) {
         param = this->resource_id;
     }
 
     if (sound_file_first != 0 || param < 0) {
-        sprintf(file_with_path + 4, "%s%s", this->sound_system->path, this->sound_file);
-        fd = __open(file_with_path + 4, 0, 0);
+        sprintf(file_with_path, "%s%s", this->sound_system->path, this->sound_file);
+        fd = __open(file_with_path, 0, 0);
         if (fd != -1) {
             if (read(fd, &wave_hdr.szRIFF, 0x2C) <= 0) {
                 this->failed = 1;
@@ -223,10 +219,11 @@ int TDigital::load(char* name, long param) {
             this->wave_info->wBitsPerSample = wave_hdr.wBitsPerSample;
             this->wave_info->cbSize = 0;
 
-            buffer_desc.dwFlags = 0x14;
-            buffer_desc.dwBufferBytes = 0xE2;
-            buffer_desc.dwReserved = this->data_size;
-            buffer_desc.lpwfxFormat = 0;
+            buffer_desc.dwSize = 0x14;
+            buffer_desc.dwFlags = 0xE2;
+            buffer_desc.dwBufferBytes = this->data_size;
+            buffer_desc.dwReserved = 0;
+            buffer_desc.lpwfxFormat = this->wave_info;
             direct_sound = this->sound_system->direct_sound;
             result = direct_sound->vtable->CreateSoundBuffer(
                 direct_sound, &buffer_desc,
@@ -245,28 +242,27 @@ int TDigital::load(char* name, long param) {
             result = buffer->vtable->Lock(
                 buffer, 0, this->data_size, &mem1, &size1,
                 &mem2, &size2, 0);
-            if (result != 0) {
-                this->failed = 1;
-                buffer->vtable->Release(buffer);
-                this->sound_buffer = 0;
+            if (result == 0) {
+                memcpy(mem1, this->wave_data, size1);
+                if (size2 != 0) {
+                    memcpy(mem2, this->wave_data + size1, size2);
+                }
+                buffer->vtable->Unlock(
+                    buffer, mem1, size1, mem2, size2);
                 free(this->wave_info);
                 this->wave_info = 0;
                 free(this->wave_data);
                 this->wave_data = 0;
-                goto fail_return;
+                goto success_return;
             }
-
-            memcpy(mem1, this->wave_data, size1);
-            if (size2 != 0) {
-                memcpy(mem2, this->wave_data + size1, size2);
-            }
-            buffer->vtable->Unlock(
-                buffer, mem1, size1, mem2, size2);
+            this->failed = 1;
+            buffer->vtable->Release(buffer);
+            this->sound_buffer = 0;
             free(this->wave_info);
             this->wave_info = 0;
             free(this->wave_data);
             this->wave_data = 0;
-            goto success_return;
+            goto fail_return;
         }
     }
 
@@ -290,10 +286,12 @@ int TDigital::load(char* name, long param) {
             this->wave_info = (WAVEFORMATEX*)malloc(0x12);
             if (this->wave_info == 0) {
                 this->failed = 1;
-                // The executable frees this owned resource a second time here.
                 if (load_type == 1) {
                     free(resource_data);
+                    color_log(0xBA, 0x5F, 1);
+                    return 0;
                 }
+                goto fail_return;
             } else {
                 this->wave_info->wFormatTag = wave_hdr.wFormatTag;
                 this->wave_info->nChannels = wave_hdr.nChannels;
@@ -303,10 +301,11 @@ int TDigital::load(char* name, long param) {
                 this->wave_info->wBitsPerSample = wave_hdr.wBitsPerSample;
                 this->wave_info->cbSize = 0;
 
-                buffer_desc.dwFlags = 0x14;
-                buffer_desc.dwBufferBytes = 0xE2;
-                buffer_desc.dwReserved = this->data_size;
-                buffer_desc.lpwfxFormat = 0;
+                buffer_desc.dwSize = 0x14;
+                buffer_desc.dwFlags = 0xE2;
+                buffer_desc.dwBufferBytes = this->data_size;
+                buffer_desc.dwReserved = 0;
+                buffer_desc.lpwfxFormat = this->wave_info;
                 direct_sound = this->sound_system->direct_sound;
                 result = direct_sound->vtable->CreateSoundBuffer(
                     direct_sound, &buffer_desc,
