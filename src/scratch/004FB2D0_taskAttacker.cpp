@@ -31,11 +31,12 @@
 // 19: reversed the target/no-target branch order as a natural typed call-order probe;
 //     it moved the no-target calls ahead of target lookup and worsened structural parity,
 //     so the clean canonical branch order is restored.
+// 20: explicit late command if/else after priority restored the original EBP attacker,
+//     EAX target-ID, 545-byte size, and all call/relocation sites; only the no-target
+//     distance temporary home differs (original [esp+20], rebuilt [esp+28]), diff 2.
 // Final bounded state: the canonical typed reconstruction is retained in scratch.
 // The ten-probe run established exact call count/targets, vslot 0x10c weaponRange,
-// the 12-argument player order ABI, and exact size only under the early command
-// selector diagnostic; that diagnostic is not retained as living source because
-// it moves command evaluation ahead of the binary/PDB target-distance band.
+// the 12-argument player order ABI, exact size, and a localized two-byte mismatch.
 
 #include <stddef.h>
 
@@ -192,15 +193,14 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
                                         int arg8, int commandFlag)
 {
     RGE_Static_Object* attacker;
-    UnitAIModule* unitAI;
-    RGE_Static_Object* target;
-    int priority;
-    int command;
     float distance;
+    int priority;
 
-    if (attackerID == -1 ||
-        (attacker = (RGE_Static_Object*)this->md->player->world->object(attackerID)) == 0 ||
-        (unitAI = attacker->unitAI()) == 0) {
+    if (attackerID == -1) {
+        return 0;
+    }
+    attacker = (RGE_Static_Object*)this->md->player->world->object(attackerID);
+    if (attacker == 0 || attacker->unitAI() == 0) {
         return 0;
     }
 
@@ -214,6 +214,7 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
     }
 
     if (targetID != -1) {
+        RGE_Static_Object* target;
         target = (RGE_Static_Object*)this->md->player->world->object(targetID);
         if (target == 0) {
             return 0;
@@ -221,7 +222,11 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
 
         distance = attacker->distance_to_object(target);
         priority = this->calculatePriority(distance);
-        command = (commandFlag == 1) ? 0x2D9 : 0x2BC;
+        int command;
+        if (commandFlag == 1)
+            command = 0x2D9;
+        else
+            command = 0x2BC;
 
         this->md->player->sendUnitAIOrder(
             (int)this->md->player->field_4A,

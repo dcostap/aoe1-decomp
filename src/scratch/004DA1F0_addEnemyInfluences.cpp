@@ -16,8 +16,12 @@
 // This claim tested a typed ObjectMemory* surviving the object lookup and
 // owning owner/id/range reads.  It widened the frame to 0x2C and worsened the
 // structural diff, so it was rolled back.
-// left in scratch: natural source is retained; remaining 29-byte diagnostic
-// basin is the repeated master reload plus four local statement-order swaps.
+// This pass moved the XYPoint locals to function scope, as shown by the
+// original local lifetime.  The diff fell from 427 to 17 bytes at exact size.
+// Separate rectangle counters and reversed range terms were codegen-neutral.
+// Replacing raw ObjectMemory byte-offset expressions with direct indexed named
+// fields both restores canonical ownership and reduces the drift to seven
+// bytes. The remaining minRange x/y FPU-store schedule is localized.
 
 struct XYPoint { int x; int y; };
 
@@ -85,19 +89,18 @@ extern float DAT_00575564;
 
 void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
 {
+    XYPoint maxLOS;
+    XYPoint maxRange;
+    XYPoint minLOS;
+    XYPoint minRange;
     int index = 0;
     if (this->maxImportantObjectMemory <= 0) return;
-    int i = 0;
     do {
-        if (*(unsigned char*)((char*)this->importantObjectMemory + i + 0x0B) == player) {
-            int id = *(int*)((char*)this->importantObjectMemory + i);
+        if (this->importantObjectMemory[index].owner == player) {
+            int id = this->importantObjectMemory[index].id;
             if (id != excludeId) {
                 RGE_Static_Object* obj = this->md->object(id);
                 if (obj != 0) {
-                    XYPoint minLOS;
-                    XYPoint maxLOS;
-                    XYPoint minRange;
-                    XYPoint maxRange;
                     minLOS.x = (int)(obj->world_x - obj->master_obj->los);
                     minLOS.y = (int)(obj->world_y - obj->master_obj->los);
                     this->mapBound(&minLOS);
@@ -120,12 +123,12 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
                         } while (x <= maxLOS.x);
                     }
 
-                    if (*(float*)((char*)this->importantObjectMemory + i + 0x20) > DAT_00575564) {
-                        minRange.x = (int)(obj->world_x - *(float*)((char*)this->importantObjectMemory + i + 0x20));
-                        minRange.y = (int)(obj->world_y - *(float*)((char*)this->importantObjectMemory + i + 0x20));
+                    if (this->importantObjectMemory[index].range > DAT_00575564) {
+                        minRange.x = (int)(obj->world_x - this->importantObjectMemory[index].range);
+                        minRange.y = (int)(obj->world_y - this->importantObjectMemory[index].range);
                         this->mapBound(&minRange);
-                        maxRange.x = (int)(obj->world_x + *(float*)((char*)this->importantObjectMemory + i + 0x20));
-                        maxRange.y = (int)(obj->world_y + *(float*)((char*)this->importantObjectMemory + i + 0x20));
+                        maxRange.x = (int)(obj->world_x + this->importantObjectMemory[index].range);
+                        maxRange.y = (int)(obj->world_y + this->importantObjectMemory[index].range);
                         this->mapBound(&maxRange);
                         int x2 = minRange.x;
                         if (x2 <= maxRange.x) {
@@ -147,6 +150,5 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
             }
         }
         index++;
-        i += 0x24;
     } while (index < this->maxImportantObjectMemory);
 }

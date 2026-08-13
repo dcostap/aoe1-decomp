@@ -18,6 +18,12 @@
 // 12: case-local direct dimension expressions followed the duplicated map loads at 00482757/004827C1 but worsened the diff to 277; restored the natural area local.
 // 13: typed the terrain-generator constructor as RGE_Map*/RGE_Random_Map_Module*; emitted code was unchanged, but the call surface is canonical.
 // 14: modeled the terrain generator as the typed random-map derived object with its proven 0x12CC layout; emitted code was unchanged.
+// 15: direct map-dimension expressions for all four sizes worsened the block shape to 61.19% and diff 331; restored area temporary.
+// 16: separate second-size temporary was codegen-neutral and was removed.
+// 17: moving the first case's second-size assignment before type/clumps duplicated both case bodies and improved diff 262 -> 141, but grew the function to 440 bytes due loop/epilogue changes; diagnostic only.
+// 18: a common defaults label did not change the reordered-case output.
+// 19: reversing hot-spot count and common-default source order worsened the reordered case to diff 168/444 bytes.
+// 20: byte-offset radius store, constant-product parentheses, and function-scope loop-counter variants gave no useful codegen lead; restored typed source.
 // left in scratch: exact size/frame/call parity and canonical field ownership; switch tail merge and
 //    loop constant hoisting remain broad VC5 codegen differences.
 
