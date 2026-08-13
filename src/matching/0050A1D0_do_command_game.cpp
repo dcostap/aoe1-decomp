@@ -14,6 +14,10 @@
 // TRIBE_Game casts; the emitted code was a duplicate, so the direct TRIBE_Game*
 // declaration was restored. Standalone compilation cannot bind this data symbol.
 // 14: removed the unused status-pointer void-use; emitted code was unchanged, so the natural result lifetime is not the remaining drift.
+// 15: hoisted the draw-system receiver before panel palette evaluation; this matched the palette block but exposed a switch-table boundary variant.
+// 16: introduced a local TRIBE_Game* receiver for quick_build; this recovered the original EAX store and the cheat call's DX/AX colors.
+// 17: combined both natural receiver aliases; exact 661-byte output, 185 instructions, and all 57 relocations masked.
+// Current exact candidate: natural local receiver aliases reproduce the original palette evaluation and global quick-build register topology.
 
 #include <stdio.h>
 
@@ -248,7 +252,8 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* cmd)
 
         TEasy_Panel* panel = (TEasy_Panel*)panel_system.currentPanel();
         if (panel != 0) {
-            rge_base_game->draw_system->SetPalette(panel->get_palette());
+            TDrawSystem* draw_system = rge_base_game->draw_system;
+            draw_system->SetPalette(panel->get_palette());
             rge_base_game->set_render_all();
             rge_base_game->draw_window();
             panel->popupOKDialog(0x966, 0, 0x1C2, 100);
@@ -263,8 +268,11 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* cmd)
         break;
 
     case 4:
-        rge_base_game->quick_build = cmd->var1;
+        {
+        TRIBE_Game* game = rge_base_game;
+        game->quick_build = cmd->var1;
         break;
+        }
 
     case 6:
         ((TRIBE_World*)this->world)->cheat(
