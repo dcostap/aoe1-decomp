@@ -23,6 +23,9 @@
 //   initialization order, based on the packet's stack-local ordering; VC5
 //   emitted the clean 811-byte mismatch unchanged, so the branch-scoped form
 //   remains the best source reconstruction.
+// - Mirrored the same-TU do_command_order source shape by computing both
+//   adjusted coordinates before either map clamp; this is the original FPU
+//   interleave at Command.cpp:583-589, not a compiler-steering change.
 
 #include "../../include/game_globals.h"
 
@@ -106,12 +109,12 @@ void RGE_Command::do_command_move(Order* order) {
                 int j = 0; RGE_Obj_Info* q = ids;
                 do { if (j != idx) obj->addToPathingGroup(q->id); ++j; ++q; } while (j < n);
                 float nx = (obj->world_x - avgx) + order->x;
+                float ny = (obj->world_y - avgy) + order->y;
                 if (nx < DAT_0056f4e0) nx = 1.0f;
                 else {
                     float width = (float)obj->owner->world->map->width;
                     if (nx >= width) nx = width - DAT_0056f4e8;
                 }
-                float ny = (obj->world_y - avgy) + order->y;
                 if (ny < DAT_0056f4e0) ny = 1.0f;
                 else {
                     float height = (float)obj->owner->world->map->height;

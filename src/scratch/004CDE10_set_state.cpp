@@ -27,6 +27,10 @@
 //   post-switch call and an explicit shared label stayed at 622 bytes with
 //   three virtual +0x38 calls. Restored the clean source; the tail merge is
 //   not obtained by this source shape.
+// - Reordered the switch to route state 3, state 6, and states 1/2/13/14
+//   through one typed post-switch sprite call. This follows the original
+//   line-302 shared tail and its two total vslot+38 calls. Result: 541 bytes,
+//   16/16 calls, 95.16% shape; retained as the best clean reconstruction.
 
 class RGE_Sprite;
 class RGE_Sound;
@@ -201,17 +205,13 @@ void TRIBE_Action_Convert::set_state(unsigned char param_1)
 {
     this->sub_actions->delete_list();
     this->state = param_1;
+    RGE_Sprite* sprite;
 
     switch (param_1) {
     case 3:
         this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x25C, 0, 0);
-
-    case 1:
-    case 2:
-    case 13:
-    case 14:
-        this->obj->new_sprite(this->obj->master_obj->sprite);
-        return;
+        sprite = this->obj->master_obj->sprite;
+        break;
 
     case 11: {
         RGE_Action_Move_To* action = new RGE_Action_Move_To(
@@ -252,8 +252,8 @@ void TRIBE_Action_Convert::set_state(unsigned char param_1)
         return;
 
     case 6:
-        this->obj->new_sprite(this->task->move_sprite);
-        return;
+        sprite = this->task->move_sprite;
+        break;
 
     case 7:
         this->obj->new_sprite(this->task->work_sprite);
@@ -269,7 +269,16 @@ void TRIBE_Action_Convert::set_state(unsigned char param_1)
     case 9:
     case 10:
     case 12:
+    case 1:
+    case 2:
+    case 13:
+    case 14:
+        sprite = this->obj->master_obj->sprite;
+        break;
+
     default:
         return;
     }
+
+    this->obj->new_sprite(sprite);
 }

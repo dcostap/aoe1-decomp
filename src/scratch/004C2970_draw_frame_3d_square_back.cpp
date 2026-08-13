@@ -27,6 +27,10 @@
 //     the oracle's whole-word parameter-home loads at 004C2A28/004C2A3A;
 //     VC5 changed the prologue and worsened the function to 477B/313 diff,
 //     so the clean int-local source was restored.
+// 11: Widened only the incoming x/y declaration to int. This reproduced the
+//     original 471-byte size and reduced the localized coordinate drift to
+//     95 bytes, confirming the whole-word parameter-home lead; restored the
+//     metadata-supported short signature as the clean source.
 
 extern int dword_0062C50C;
 extern "C" __declspec(dllimport) void* __stdcall SelectClipRgn(void* hdc, void* rgn);

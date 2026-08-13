@@ -20,6 +20,8 @@
 //   Rolled back to the clean direct-coordinate expression.
 // - Moved row/map/tile declarations above the first body statement to mirror
 //   the PDB declaration-only band; VC5 emitted identical code, so restored clean.
+// - Replaced the guarded do-loop with a post-test scan-row while loop, matching
+//   the original loop-exit CFG; VC5 emitted the same code, so restored clean.
 // - Left in scratch after the 10-hypothesis budget; no inline asm or opaque
 //   codegen scaffolding is retained.
 

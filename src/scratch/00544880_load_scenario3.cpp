@@ -27,6 +27,10 @@
 // 18: used distinct typed player_id and master_player_id byte locals, as suggested
 //     by the scenario header read pattern. Frame moved to 0x60, diff to 82, and
 //     shape to 84.01%; this is the retained best source for this session.
+// 19: tested `scenario_player_num <= i` for the final return guard, matching the
+//     original compare operand order; it changed two bytes but gave no positional
+//     gain and reduced shape, so the original `i >= scenario_player_num` spelling
+//     remains retained.
 // Main-agent audit removed compensating stack aliases. The first four-byte
 // value owns next_object_id. Object records use x/y/z/id/master/state/angle.
 

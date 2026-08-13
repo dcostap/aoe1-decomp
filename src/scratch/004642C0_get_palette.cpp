@@ -29,6 +29,8 @@
 // loop from +74 to the epilogue is now byte-exact and the diff is 88.
 // A label-based null arm produced the same bytes and was rolled back to natural
 // structured source. Remaining drift is the early outer branch block only.
+// Combined a non-null-first filename arm with the current loop shape; it added
+// a second strupr call and widened the build to 456 bytes. Restored clean source.
 
 #include <string.h>
 #include <stdio.h>

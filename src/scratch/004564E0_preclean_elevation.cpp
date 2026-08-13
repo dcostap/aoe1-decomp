@@ -24,6 +24,10 @@
 // row lookup; codegen duplicate. Restored the clean typed candidate.
 // paused: original has an isolated mov [esp+4c],ecx before map-row lookup;
 // no natural typed cursor or flag-lifetime variant reproduced this store.
+// luna-r3 probe: used typed row indexing (`map_row_offset[index2] + x1`) instead
+// of the byte-offset cursor; exact clean_terrain donor idiom reproduced the
+// row-entry spill and reduced diff 792->121. Keep this canonical candidate;
+// remaining drift starts in the late neighbor update operand order.
 
 struct RGE_Tile {
     char gap_00[5];
@@ -53,7 +57,6 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
     short offset_southeast = width + 1;
     short offset_southwest = width - 1;
     short offset_south = width;
-    long tile_offset = x1 * sizeof(RGE_Tile);
     long index2;
     long index1;
     unsigned char change_flag;
@@ -62,7 +65,6 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
         change_flag = 0;
         if (x1 > 0) {
             --x1;
-            tile_offset -= sizeof(RGE_Tile);
         }
         if (y1 > 0)
             --y1;
@@ -72,8 +74,7 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
             ++y2;
 
         for (index2 = y1; index2 <= y2; ++index2) {
-            RGE_Tile* row = this->map_row_offset[index2];
-            RGE_Tile* tile = (RGE_Tile*)((char*)row + tile_offset);
+            RGE_Tile* tile = this->map_row_offset[index2] + x1;
             for (index1 = x1; index1 <= x2; ++index1, ++tile) {
                 unsigned char tile_byte = tile->screen_xpos;
                 short northwest = 0;

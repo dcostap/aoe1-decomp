@@ -12,6 +12,8 @@
 //   pop cost output. The frame improved to 0xDC and positional drift fell to 956 bytes.
 // - Tried keeping the water-area row bound live across both natural loops; size grew
 //   by 88 bytes and drift worsened, so restored the prior clean source.
+// - Hoisted the initial y/ty2 carry before the bounds guard; this improved the
+//   structural diff from 956 to 935 bytes and matched more loop blocks.
 
 struct Map_Stack {
     int x;
@@ -97,6 +99,12 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(int param_1, int param_2
     this->find_path(end_x, end_y, &tx1, &ty, &terrain[1]);
 
     if (tx1 != iVar2 || ty != iVar9) return;
+
+    // Keep the first step coordinates live before the bounds guard. The
+    // original loop carries these values across its back edge.
+    ty2 = ty;
+    y = tx1;
+
     if (tx1 < 0 || tx1 >= this->map_width) return;
     if (ty < 0 || ty >= this->map_height) return;
 
@@ -105,9 +113,6 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(int param_1, int param_2
     tx2 = 0;
 
     while (1) {
-        ty2 = ty;
-        y = tx1;
-
         unsigned char** rows = (unsigned char**)this->search_map_rows;
         unsigned char tile_type = rows[ty][tx1];
 

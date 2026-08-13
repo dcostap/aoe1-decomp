@@ -17,6 +17,7 @@
 // attempt 15: byte result formed one common epilogue but changed EBX/EBP coloring; 262 bytes, first mismatch 102, rolled back.
 // attempt 16: output-pointer alias with byte result; duplicate attempt 15, rolled back.
 // attempt 17: natural early failure guards produced duplicate 442-byte codegen; restored nested source because tail topology did not move.
+// attempt 18: modeled the ABI-supported virtual TEasy_Panel surface with a vptr-preserving leading gap; emitted code was unchanged, rolled back.
 // Left in scratch: best source has all functional code and first 156 bytes exact, but tail/failed-path placement is not exact; not accepted_drift because rebuilt failure target lies outside original configured function body.
 
 class TPanel {};

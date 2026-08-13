@@ -14,6 +14,7 @@
 // 11: matched the Ghidra local declaration char[257] while retaining the name+4 payload offset; frame became exact and diff improved 294 -> 287.
 // 12: changed permanentSkip to the Ghidra-proven uchar source type; emitted code was unchanged.
 // 13: tested original initial-store order; emitted bytes did not move and edit/resync worsened, so restored the prior natural order.
+// 14: moved the loop counter initialization before the numberItems read to match Ghidra's iVar9 placement; emitted code was unchanged, so restored the clean source.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
 

@@ -26,6 +26,9 @@
 //   preserves the original spilled candidate value and improved the diff to 833.
 // - Reordered that local and used a play declaration initializer. Both emitted
 //   the same 833-byte result; the simple named-local form remains.
+// - Removed the first minimum-scan unit pointer temporary and used the typed
+//   bucket element directly. VC5 emitted the same 1112-byte code, so it was
+//   rolled back; this access spelling is compiler-neutral in the current TU.
 
 class RGE_Static_Object {};
 

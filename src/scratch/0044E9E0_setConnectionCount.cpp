@@ -20,6 +20,9 @@
 // - named xSize/ySize after the negative from checks moved the first mismatch
 //   no bytes, improved positional diff by 1 byte, but lost block alignment;
 //   restored the clean typed source.
+// - named rows, xReference, and yReference in the inner-loop preheader;
+//   this moved the saved-this slot to [esp+10h] and reduced positional diff
+//   from 479 to 346 bytes, but the remaining block-shape drift is unresolved.
 
 typedef unsigned char uchar;
 
@@ -65,10 +68,13 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
     for (int x = from.x; x <= to.x; ++x) {
         int y = from.y;
         if (y <= to.y) {
-            xOffset = x - self->xReferencePointValue;
+            uchar** rows = self->rowValue;
+            int xReference = self->xReferencePointValue;
+            xOffset = x - xReference;
+            int yReference = self->yReferencePointValue;
             rowIndex = y * 4;
             do {
-                if (self->rowValue[y - self->yReferencePointValue]
+                if (rows[y - yReference]
                                       [xOffset] >= minimum) {
                     int neighborX = x;
                     int neighborY = y;
@@ -100,7 +106,7 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                         if (allDirections || (direction % 2) != 0) {
                             if (neighborX >= 0 && neighborX < self->xSizeValue &&
                                 neighborY >= 0 && neighborY < self->ySizeValue) {
-                                if (self->rowValue[neighborY - self->yReferencePointValue]
+                                if (rows[neighborY - yReference]
                                                    [neighborX - self->xReferencePointValue] >= minimum) {
                                     ++self->connectionCountValue;
                                 }

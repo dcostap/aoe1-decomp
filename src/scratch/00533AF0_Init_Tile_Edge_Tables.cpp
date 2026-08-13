@@ -24,6 +24,9 @@
 //     and 453-455 bytes; rolled back. The typed 0x11-root walk remains best.
 // 11: Restored named file literals and RGE_View fields. The macro lvalues and
 //     raw addresses were diagnostic forms, not living source ownership.
+// 12: changed the edge predicate and bit locals to bool from the decompiler's
+//     bool labels; VC5 expanded the frame to 0x24 and 930 bytes, so restored int
+//     locals. The binary's dword homes are not source-level bool evidence here.
 
 extern "C" int __cdecl _open(const char*, int);
 extern "C" int __cdecl _lseek(int, int, int);
