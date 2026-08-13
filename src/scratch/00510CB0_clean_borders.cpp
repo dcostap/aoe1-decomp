@@ -29,6 +29,10 @@
 // shardA6-510CB0-r1: PDB-shaped do-while scans were duplicate or slightly worse.
 // Typed row/tile cursors aligned all 19 calls but widened the frame and worsened drift.
 // The remaining gap is tail-merged first set_terrain plus x/offset register coloring.
+// orch-510CB0-a: widening the border accumulator and spelling explicit != 1 improved the diff to 593,
+// but the first set_terrain call remained tail-merged; rolled back as non-canonical source.
+// orch-510CB0-a: widening both border accumulators improved the diff to 585 but exceeded the function boundary;
+// the call-count gap remained, so rolled back.
 //
 // The map rows are arrays of 0x18-byte RGE_Tile records. The byte used by
 // clean_borders is terrain at +5, distinct from the passability byte at +4.

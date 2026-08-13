@@ -15,6 +15,11 @@
 // order and leaves 35 positional bytes (96.37% shape, exact call/size/frame parity).
 // timer assignment-in-condition probe: the natural x87 source form emitted the
 // same bytes as the separate decrement statement; restored the cleaner form.
+// focused follow-up: reversed the timer predicate, tested state-4 case-group order,
+// compound-case scope, and an int sub-action result; the first worsened size, the
+// latter three were codegen duplicates or broad negative results and were restored.
+// ABI-width cast and a nine-variant state-4/timer lab produced no EDX vtable match;
+// the direct typed form remains the clean source reconstruction.
 // remaining localized drift: jump-table relocation bytes, state-4 vtable-register
 // coloring, repair-rate FPU operand/push scheduling, and timer store/compare order.
 // left in scratch after the 10-hypothesis budget; no inline asm or custom flags.
