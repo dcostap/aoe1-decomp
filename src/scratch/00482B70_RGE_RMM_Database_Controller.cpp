@@ -15,10 +15,16 @@
 //   map-load jump before the fallback reset/close. This aligns the first map
 //   CFG and all 28 calls; residual drift starts in register coloring and later
 //   loop scheduling.
+// - Reused one offset local across all record scans; this was codegen-neutral.
+// - Kept the map pointer reset in the nonpositive count arm; this moved the
+//   mismatch from 840 to 835 bytes and restored the two map fallback blocks.
+// - Integer and FILE-pointer CRT surfaces were codegen-neutral; keep the
+//   period _iobuf pointer form as the clean source.
 
-extern "C" void* __cdecl fopen(const char*, const char*);
-extern "C" int __cdecl fclose(void*);
-extern "C" int __cdecl fscanf(void*, const char*, ...);
+struct _iobuf;
+extern "C" _iobuf* __cdecl fopen(const char*, const char*);
+extern "C" int __cdecl fclose(_iobuf*);
+extern "C" int __cdecl fscanf(_iobuf*, const char*, ...);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
 class RGE_Map;
@@ -154,7 +160,13 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     char* terrain_file, char* object_file, char* terrain_type_file, char* map_file)
     : RGE_Random_Map_Module(0, 0, 0)
 {
-    void* infile;
+    RGE_Land_Data* land_info;
+    RGE_Land_Data_Entry* land;
+    RGE_Terrain_Data* terrain_info;
+    RGE_Terrain_Data_Entry* terrain;
+    RGE_Object_Data* object_info;
+    RGE_Object_Data_Entry* object;
+    _iobuf* infile;
     int local_30;
     int land_index;
     long terrain_num;
@@ -168,12 +180,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     long temp_scale_flag;
     unsigned char local_4[4];
     int index;
-    RGE_Land_Data* land_info;
-    RGE_Land_Data_Entry* land;
-    RGE_Terrain_Data* terrain_info;
-    RGE_Terrain_Data_Entry* terrain;
-    RGE_Object_Data* object_info;
-    RGE_Object_Data_Entry* object;
+    int offset;
 
     this->vtable_ptr = 0x571E88;
     this->world = 0;
@@ -185,18 +192,19 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
         if (this->map_info.map_num > 0) {
             this->map_info.maps = (RGE_Map_Data_Entry*)calloc(this->map_info.map_num, 0x48);
             if (this->map_info.map_num > 0) {
-                int map_offset = 0;
                 index = 0;
+                offset = 0;
                 do {
-                    fscanf(infile, "%d", (char*)this->map_info.maps + map_offset);
+                    fscanf(infile, "%d", (char*)this->map_info.maps + offset);
                     ++index;
-                    map_offset += 0x48;
+                    offset += 0x48;
                 } while (index < this->map_info.map_num);
                 fclose(infile);
                 goto map_database_loaded;
             }
+        } else {
+            this->map_info.maps = 0;
         }
-        this->map_info.maps = 0;
         fclose(infile);
     } else {
         this->map_info.maps = 0;
@@ -227,10 +235,10 @@ map_database_loaded:
                         land_info->land = (RGE_Land_Data_Entry*)calloc(land_info->land_num, 0x2c);
                         land_index = 0;
                         if (land_info->land_num > 0) {
-                            int land_offset = 0;
+                            offset = 0;
                             do {
                                 land =
-                                    (RGE_Land_Data_Entry*)((char*)land_info->land + land_offset);
+                                    (RGE_Land_Data_Entry*)((char*)land_info->land + offset);
                                 fscanf(infile,
                                        "%d %d %d %d %d %d %d %d %d %d %d %d",
                                        &land->land_id,
@@ -254,7 +262,7 @@ map_database_loaded:
                                     (unsigned char)temp_by_player_flag;
                                 land->by_player_flag = (unsigned char)temp_group_flag;
                                 land->clumpiness_factor = 8;
-                                land_offset += 0x2c;
+                                offset += 0x2c;
                             } while (land_index < land_info->land_num);
                         }
                     } else {
@@ -280,10 +288,10 @@ map_database_loaded:
                         terrain_info->terrain =
                             (RGE_Terrain_Data_Entry*)calloc(terrain_info->terrain_num, 0x18);
                         if (terrain_info->terrain_num > 0) {
-                            int terrain_offset = 0;
+                            offset = 0;
                             do {
                                 terrain =
-                                    (RGE_Terrain_Data_Entry*)((char*)terrain_info->terrain + terrain_offset);
+                                    (RGE_Terrain_Data_Entry*)((char*)terrain_info->terrain + offset);
                                 fscanf(infile, "%d %d %d %d %d",
                                        &terrain->terrain_percent,
                                        &terrain->terrain_type,
@@ -292,7 +300,7 @@ map_database_loaded:
                                        &terrain->base_terrain_type);
                                 ++land_index;
                                 terrain->clumpiness_factor = 0x14;
-                                terrain_offset += 0x18;
+                                offset += 0x18;
                             } while (land_index < terrain_info->terrain_num);
                         }
                     } else {
@@ -318,10 +326,10 @@ map_database_loaded:
                         object_info->objects =
                             (RGE_Object_Data_Entry*)calloc(object_info->object_num, 0x2c);
                         if (object_info->object_num > 0) {
-                            int object_offset = 0;
+                            offset = 0;
                             do {
                                 object =
-                                    (RGE_Object_Data_Entry*)((char*)object_info->objects + object_offset);
+                                    (RGE_Object_Data_Entry*)((char*)object_info->objects + offset);
                                 fscanf(infile,
                                        "%d %d %d %d %d %d %d %d %d %d %d %d",
                                        &object->obj_id,
@@ -339,7 +347,7 @@ map_database_loaded:
                                 ++land_index;
                                 object->group_flag = (unsigned char)temp_scale_flag;
                                 object->scale_flag = local_4[0];
-                                object_offset += 0x2c;
+                                offset += 0x2c;
                             } while (land_index < object_info->object_num);
                         }
                     } else {

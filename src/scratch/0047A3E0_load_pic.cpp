@@ -15,6 +15,12 @@
 //   removed the extra cleanup blocks; size and CFG became exact, with a 20-byte diff.
 // - explicit destructor, union/file-size, and declaration-lifetime probes did not improve
 //   codegen; the remaining drift is the four-byte file_name anchor and cleanup scheduling.
+// - modeled the decompiler's named picture result and member assignment; emitted code
+//   returned to the clean 20-byte result, so the local was not a useful source lead.
+// - modeled a named shape result from the line-120 member assignment; diff widened to
+//   28 bytes and lost the post-constructor block, so the clean direct-member form stays.
+// - dossier, donor, ABI, and call-map evidence still show exact calls, frame, size, and
+//   CFG; remaining drift is localized to file_name stack coloring and store scheduling.
 
 #include "..\..\include\game_globals.h"
 #include <string.h>

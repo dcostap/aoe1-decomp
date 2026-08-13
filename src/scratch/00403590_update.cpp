@@ -12,6 +12,15 @@
 // remaining: jump-table relocation/body placement and one merged +0x1ec stop call; left the typed state-machine reconstruction in scratch.
 // main audit removed volatile scheduling locals and named the player-id and
 // object-info fields that prior source accessed through raw displacements.
+// probe: reordered both nested result switches to the binary body order and
+// joined the two result-3 arms through one named player check; this moved the
+// ordered call prefix from 10 to 35 and reduced the diff to 1082 bytes.
+// probe: inverted the state-7 empty-holder amount test to match the original
+// branch polarity; this restored the missing vslot+0x5c call count.
+// probe: state-8 null guard uses target_obj2 (+0x14), as shown by the original
+// load before distance_to_object; capacity naming had no emitted-code effect.
+// remaining: original state-8 stop-result call is a separate vslot+0x1ec
+// site, while VC5 merges it with the distance-stop path in this reconstruction.
 
 class RGE_Action_Object;
 class RGE_Static_Object;
@@ -307,6 +316,7 @@ unsigned char RGE_Action_Gather::update()
     float give_amount;
     float modifier;
     float max_hold;
+    RGE_Player* check_player;
 
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0)
         this->set_target_obj(0);
@@ -341,33 +351,33 @@ unsigned char RGE_Action_Gather::update()
     case 11:
     case 15:
         switch (this->sub_actions->update()) {
+        case 4:
+            this->set_target_obj(0);
+            if (this->state == 11) { this->set_state(11); return 0; }
+            this->set_state(15); return 0;
+        case 3:
+            check_player = this->obj->owner;
+            goto computer_check;
         case 1:
         case 2:
         case 5:
             if (this->state == 11) { this->set_state(3); return 0; }
             goto computer_fallback;
-        case 3:
-            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
-            this->set_state(3); return 0;
-        case 4:
-            this->set_target_obj(0);
-            if (this->state == 11) { this->set_state(11); return 0; }
-            this->set_state(15); return 0;
         }
         break;
 
     case 4: {
         unsigned char result = this->sub_actions->update();
         switch (result) {
-        case 1:
-        case 2:
-            this->set_state(6); return 0;
-        case 3:
-            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
-            this->set_state(3); return 0;
         case 4:
         case 5:
             this->set_target_obj(0); this->set_state(11); return 0;
+        case 3:
+            check_player = this->obj->owner;
+            goto computer_check;
+        case 1:
+        case 2:
+            this->set_state(6); return 0;
         }
         break;
     }
@@ -385,11 +395,11 @@ unsigned char RGE_Action_Gather::update()
 
     case 7: {
         if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held <= 0.0f) {
-                this->set_state(3);
+            if (this->obj->attribute_amount_held > 0.0f) {
+                this->set_state(8);
                 return 0;
             }
-            this->set_state(8);
+            this->set_state(3);
             return 0;
         }
         RGE_Static_Object* holder = this->target_obj;
@@ -401,7 +411,8 @@ unsigned char RGE_Action_Gather::update()
         short attr = this->task->attribute_type;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attribute_table[attr];
-        max_hold = (float)this->obj->object_data->attribute_type * modifier - this->obj->attribute_amount_held;
+        int capacity = (int)this->obj->object_data->attribute_type;
+        max_hold = (float)capacity * modifier - this->obj->attribute_amount_held;
         if (max_hold < modifier * give_amount)
             give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
         holder->set_attribute_amount(-give_amount, 1, 1);
@@ -429,10 +440,10 @@ unsigned char RGE_Action_Gather::update()
             case 5:
                 this->timer = -1.5f;
                 this->obj->stop_moving();
-                goto done;
+                return 0;
             case 1:
             case 2:
-                if (this->target_obj == 0) { this->set_state(8); return 0; }
+                if (this->target_obj2 == 0) { this->set_state(8); return 0; }
                 if (this->obj->distance_to_object(this->target_obj2) > 1.0f) {
                     this->timer = -1.5f; this->obj->stop_moving(); return 0;
                 }
@@ -453,6 +464,11 @@ computer_fallback:
     else this->set_state(2);
     return 0;
 
+computer_check:
+    if (check_player->computerPlayer() == 1) { this->set_state(13); return 0; }
+    this->set_state(3);
+    return 0;
+
     case 1:
         return 1;
 
@@ -464,6 +480,5 @@ computer_fallback:
     }
     }
 
-done:
     return 0;
 }

@@ -46,6 +46,10 @@
 // 24 using *width in both new-format loop bounds was a codegen duplicate.
 // All six focused probes left the same four-byte y/map load-order gap; restore
 // the clean source because no natural source axis remains evidence-backed.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed the four remaining bytes
+// only reverse independent 32-bit reloads of initialized local y and map homes.
+// Their later uses, call order, CFG, width, and loop control are identical.
+// No alias or flags effect is possible for these valid local-stack loads.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern float save_game_version;

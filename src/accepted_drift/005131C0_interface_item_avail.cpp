@@ -38,6 +38,10 @@
 // Split initialization, inner cursor scope, and a for-header index were
 // farther or duplicate.  Retain the natural swapped declarations; the only
 // remaining bytes are the zero-initialization order at the second-pass start.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed the six remaining bytes
+// only reverse zero-register and distinct local-home stores. The following cmp
+// overwrites flags. Both cursor values are zero before their first use. Size,
+// frame, calls, CFG, and all later address calculations match.
 
 #include <stdlib.h>
 
