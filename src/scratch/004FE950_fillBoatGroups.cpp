@@ -10,6 +10,14 @@
 // exact 0x18 frame and exact 103-call target multiset, but only 87.38% ordered
 // alignment; the remaining issue is broad CFG placement around the best-unit
 // loop and transition back to the group list, not a codegen-only local axis.
+// Later structural probes inverted direct-fill/nearest branches and the final
+// best-group fallback, then scoped the second boat iterator. Ordered calls now
+// align 103/103 with a 2935-byte rebuild; the remaining drift is register and
+// block placement at the second boat pass, not call or memory-effect coverage.
+// The final candidate keeps these natural source shapes and remains in scratch.
+// Integration check: the ordered call map is aligned, but the checker still
+// reports one direct-target difference at +08E7 (desiredNumberUnits versus
+// numberUnits). Treat that site as the next binary-behavior lead.
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
@@ -147,39 +155,39 @@ public:
 
 void TribeTacticalAIModule::fillBoatGroups() {
     int bestUnit;
-    TacticalAIGroup* bestGroup;
 
     this->numberUngroupedWarBoats();
     this->numberExtraGroupedWarBoats();
 
+    TacticalAIGroup* const sentinel = &this->groups;
     TacticalAIGroup* group = this->groups.next;
-    TacticalAIGroup* sentinel = &this->groups;
     while (group != sentinel) {
         if (group == 0) {
             break;
         }
-        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69) &&
-            group->commander() == -1) {
-            int ungrouped = this->numberUngroupedWarBoats();
-            if (group->numberUnits() > 0) {
-                int commander = this->selectBestCommander(group);
-                group->setSpecificCommander(commander, this->md);
-                if (group->action() == 0 || group->action() == 1) {
-                    this->setAllGroupLocations(group);
+        if (group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69) {
+            if (group->commander() == -1) {
+                int ungrouped = this->numberUngroupedWarBoats();
+                if (group->numberUnits() > 0) {
+                    int commander = this->selectBestCommander(group);
+                    group->setSpecificCommander(commander, this->md);
+                    if (group->action() == 0 || group->action() == 1) {
+                        this->setAllGroupLocations(group);
+                    }
                 }
-            }
-            else {
-                if (ungrouped == 0) {
-                    this->numberExtraGroupedWarBoats();
-                }
-                if (this->workingArea.numberValue == 0) {
-                    return;
-                }
-                int commander = this->selectBestCommander(&this->workingArea);
-                group->addUnit(commander, this->md);
-                group->setSpecificCommander(commander, this->md);
-                if (group->action() == 0 || group->action() == 1) {
-                    this->setAllGroupLocations(group);
+                else {
+                    if (ungrouped == 0) {
+                        this->numberExtraGroupedWarBoats();
+                    }
+                    if (this->workingArea.numberValue == 0) {
+                        return;
+                    }
+                    int commander = this->selectBestCommander(&this->workingArea);
+                    group->addUnit(commander, this->md);
+                    group->setSpecificCommander(commander, this->md);
+                    if (group->action() == 0 || group->action() == 1) {
+                        this->setAllGroupLocations(group);
+                    }
                 }
             }
         }
@@ -189,22 +197,34 @@ void TribeTacticalAIModule::fillBoatGroups() {
     if (this->strategicNumbers[0x28] == 0) {
         bestUnit = 0x67;
         do {
-            bestGroup = this->groups.next;
-            while (bestGroup != sentinel) {
-                if (bestGroup == 0) {
+            TacticalAIGroup* boatGroup = this->groups.next;
+            while (boatGroup != sentinel) {
+                if (boatGroup == 0) {
                     break;
                 }
-                if (bestGroup->type() == bestUnit) {
-                    int desired = bestGroup->desiredNumberUnits();
-                    int number = bestGroup->numberUnits();
-                    if (number < desired) {
+                if (boatGroup->type() != bestUnit) {
+                    boatGroup = boatGroup->next;
+                    continue;
+                }
+                int desired = boatGroup->desiredNumberUnits();
+                int number = boatGroup->numberUnits();
+                if (number < desired) {
                         int ungrouped = this->numberUngroupedWarBoats();
-                        int desiredForFill = bestGroup->desiredNumberUnits();
-                        int numberForFill = bestGroup->numberUnits();
+                        int desiredForFill = boatGroup->desiredNumberUnits();
+                        int numberForFill = boatGroup->numberUnits();
                         int missing = desiredForFill - numberForFill;
-                        if (missing < ungrouped) {
-                            int desiredAgain = bestGroup->desiredNumberUnits();
-                            int numberAgain = bestGroup->numberUnits();
+                        if (missing >= ungrouped) {
+                            int i = 0;
+                            if (this->workingArea.numberValue > 0) {
+                                do {
+                                    boatGroup->addUnit(this->workingArea[i], this->md);
+                                    ++i;
+                                } while (i < this->workingArea.numberValue);
+                            }
+                        }
+                        else {
+                            int desiredAgain = boatGroup->desiredNumberUnits();
+                            int numberAgain = boatGroup->numberUnits();
                             if (numberAgain < desiredAgain) {
                                 int i = 0;
                                 float bestDistance = -1.0f;
@@ -214,9 +234,9 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                         RGE_Static_Object* object = this->md->object(this->workingArea[i]);
                                         if (object != 0) {
                                             float distance = object->distance_to_position(
-                                                bestGroup->gatherLocation()->x,
-                                                bestGroup->gatherLocation()->y,
-                                                bestGroup->gatherLocation()->z);
+                                                boatGroup->gatherLocation()->x,
+                                                boatGroup->gatherLocation()->y,
+                                                boatGroup->gatherLocation()->z);
                                             if (bestDistance == -1.0f || distance < bestDistance) {
                                                 bestUnitID = this->workingArea[i];
                                                 bestDistance = distance;
@@ -226,62 +246,63 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                     } while (i < this->workingArea.numberValue);
                                 }
                                 if (bestUnitID != -1) {
-                                    bestGroup->addUnit(bestUnitID, this->md);
+                                    boatGroup->addUnit(bestUnitID, this->md);
 
-                                int max = this->workingArea.maximumSizeValue;
-                                int removeIndex = 0;
-                                if (max > 0) {
-                                    int* value = this->workingArea.value;
-                                    do {
-                                        if (*value == bestUnitID) {
-                                            break;
-                                        }
-                                        ++removeIndex;
-                                        ++value;
-                                    } while (removeIndex < max);
-                                }
-                                if (removeIndex < max) {
-                                    if (removeIndex < max - 1) {
+                                    int max = this->workingArea.maximumSizeValue;
+                                    int removeIndex = 0;
+                                    if (max > 0) {
+                                        int* value = this->workingArea.value;
                                         do {
+                                            if (*value == bestUnitID) {
+                                                break;
+                                            }
                                             ++removeIndex;
-                                            this->workingArea.value[removeIndex - 1] = this->workingArea.value[removeIndex];
-                                        } while (removeIndex < max - 1);
+                                            ++value;
+                                        } while (removeIndex < max);
                                     }
-                                    int count = this->workingArea.numberValue - 1;
-                                    this->workingArea.numberValue = count;
-                                    if (count < 0) {
-                                        this->workingArea.numberValue = 0;
+                                    if (removeIndex < max) {
+                                        if (removeIndex < max - 1) {
+                                            do {
+                                                ++removeIndex;
+                                                this->workingArea.value[removeIndex - 1] = this->workingArea.value[removeIndex];
+                                            } while (removeIndex < max - 1);
+                                        }
+                                        int count = this->workingArea.numberValue - 1;
+                                        this->workingArea.numberValue = count;
+                                        if (count < 0) {
+                                            this->workingArea.numberValue = 0;
+                                        }
                                     }
-                                }
 
-                                desiredAgain = bestGroup->desiredNumberUnits();
-                                numberAgain = bestGroup->numberUnits();
+                                    desiredAgain = boatGroup->desiredNumberUnits();
+                                    numberAgain = boatGroup->numberUnits();
                                     if (numberAgain < desiredAgain) {
                                         continue;
                                     }
                                 }
                             }
                         }
-                        else {
-                            int i = 0;
-                            if (this->workingArea.numberValue > 0) {
-                                do {
-                                    bestGroup->addUnit(this->workingArea[i], this->md);
-                                    ++i;
-                                } while (i < this->workingArea.numberValue);
-                            }
-                        }
 
-                        int desiredAfter = bestGroup->desiredNumberUnits();
-                        int numberAfter = bestGroup->numberUnits();
+                        int desiredAfter = boatGroup->desiredNumberUnits();
+                        int numberAfter = boatGroup->numberUnits();
                         if (numberAfter < desiredAfter) {
                             int extra = this->numberExtraGroupedWarBoats();
-                            int desiredExtra = bestGroup->desiredNumberUnits();
-                            int numberExtra = bestGroup->numberUnits();
+                            int desiredExtra = boatGroup->desiredNumberUnits();
+                            int numberExtra = boatGroup->numberUnits();
                             int missingExtra = desiredExtra - numberExtra;
-                            if (missingExtra < extra) {
-                                int desiredNearest = bestGroup->desiredNumberUnits();
-                                int numberNearest = bestGroup->numberUnits();
+                            if (missingExtra >= extra) {
+                                int i = 0;
+                                if (this->workingArea.numberValue > 0) {
+                                    do {
+                                        this->removeFromGroup(this->workingArea[i]);
+                                        boatGroup->addUnit(this->workingArea[i], this->md);
+                                        ++i;
+                                    } while (i < this->workingArea.numberValue);
+                                }
+                            }
+                            else {
+                                int desiredNearest = boatGroup->desiredNumberUnits();
+                                int numberNearest = boatGroup->numberUnits();
                                 if (numberNearest < desiredNearest) {
                                     do {
                                         int i = 0;
@@ -292,9 +313,9 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                                 RGE_Static_Object* object = this->md->object(this->workingArea[i]);
                                                 if (object != 0) {
                                                     float distance = object->distance_to_position(
-                                                        bestGroup->gatherLocation()->x,
-                                                        bestGroup->gatherLocation()->y,
-                                                        bestGroup->gatherLocation()->z);
+                                                        boatGroup->gatherLocation()->x,
+                                                        boatGroup->gatherLocation()->y,
+                                                        boatGroup->gatherLocation()->z);
                                                     if (bestDistance == -1.0f || distance < bestDistance) {
                                                         bestUnitID = this->workingArea[i];
                                                         bestDistance = distance;
@@ -307,7 +328,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                             break;
                                         }
                                         this->removeFromGroup(bestUnitID);
-                                        bestGroup->addUnit(bestUnitID, this->md);
+                                        boatGroup->addUnit(bestUnitID, this->md);
 
                                         int max = this->workingArea.maximumSizeValue;
                                         int removeIndex = 0;
@@ -334,29 +355,19 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                                 this->workingArea.numberValue = 0;
                                             }
                                         }
-                                    } while (bestGroup->numberUnits() < bestGroup->desiredNumberUnits());
-                                }
-                            }
-                            else {
-                                int i = 0;
-                                if (this->workingArea.numberValue > 0) {
-                                    do {
-                                        this->removeFromGroup(this->workingArea[i]);
-                                        bestGroup->addUnit(this->workingArea[i], this->md);
-                                        ++i;
-                                    } while (i < this->workingArea.numberValue);
+                                    } while (boatGroup->numberUnits() < boatGroup->desiredNumberUnits());
                                 }
                             }
                         }
-                    }
                 }
-                bestGroup = bestGroup->next;
+                boatGroup = boatGroup->next;
             }
             ++bestUnit;
         } while (bestUnit <= 0x6A);
     }
 
     if (this->numberUngroupedWarBoats() != 0 && this->workingArea.numberValue > 0) {
+        TacticalAIGroup* bestGroup;
         int i = 0;
         do {
             bestGroup = 0;
@@ -386,7 +397,10 @@ void TribeTacticalAIModule::fillBoatGroups() {
                 group = group->next;
             }
 
-            if (bestGroup == 0) {
+            if (bestGroup != 0) {
+                bestGroup->addUnit(this->workingArea[i], this->md);
+            }
+            else {
                 TacticalAIGroup* candidate = this->groups.next;
                 bestDifference = 0;
                 while (candidate != sentinel) {
@@ -412,7 +426,8 @@ void TribeTacticalAIModule::fillBoatGroups() {
                             candidate = candidate->next;
                             continue;
                         }
-                        int difference = candidate->numberUnits() - candidate->desiredNumberUnits();
+                        int difference = candidate->numberUnits();
+                        difference -= candidate->desiredNumberUnits();
                         if (bestGroup == 0 || difference < bestDifference) {
                             bestGroup = candidate;
                             bestDifference = difference;
@@ -423,9 +438,6 @@ void TribeTacticalAIModule::fillBoatGroups() {
                 if (bestGroup == 0) {
                     return;
                 }
-                bestGroup->addUnit(this->workingArea[i], this->md);
-            }
-            else {
                 bestGroup->addUnit(this->workingArea[i], this->md);
             }
             ++i;
