@@ -24,6 +24,8 @@
 // luna-4DA680-r3: baseline confirmed the canonical typed while-scan at 431 bytes; declaration-order and split-initializer variants emitted the same bytes.
 // luna-4DA680-r3: using the first-empty register as the duplicate store index moved the diff to 286 bytes but broke broad block shape; binary duplicate path uses scan index, restored.
 // luna-4DA680-r3: exact objectMemory donor declaration order and pointer-first declarations did not move the prologue coloring; clean source remains authoritative.
+// luna-4DA680-r4: localized four-axis scan declaration lab kept size/frame/call gates and grouped all variants at the same 431-byte diff.
+// luna-4DA680-r4: reusing the scan pointer for allocation was byte-identical; delaying the base load with outer guard or early goto broke size and CFG.
 
 typedef unsigned char uchar;
 
