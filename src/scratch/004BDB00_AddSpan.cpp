@@ -18,6 +18,15 @@
 // inheritance-layout probe: the same public TSpan_Node_List base as the
 // constructor and exact siblings emitted the same bytes; restored nested
 // member ownership because this lead did not change the structural hunk.
+// compare-algebra probes: spell each observed boundary in the original
+// operand order (end >= RightMostPx, end+1 < node StartPx, start >= other
+// StartPx, start-1 > previous EndPx, and node StartPx > end+1). These forms
+// expose four more exact blocks and improve shape/resync similarity without
+// changing calls, frame, size, or the first structural hunk.
+// an old-node alias around the left drain moved five positional bytes closer
+// but worsened shape and size; restored the simpler ownership form.
+// memory.h context and function-scope temporary-node declarations were
+// codegen duplicates; retained the period-plausible stdlib-only context.
 // retained: natural typed source; unresolved pointer scheduling and late block
 // placement leave a broad non-exact codegen gap, so this target stays scratch.
 
@@ -129,7 +138,7 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
             return;
         }
 
-        if (this->RightMostPx[line] <= end) {
+        if (end >= this->RightMostPx[line]) {
             int* count = this->Span_Count;
             temp = this->VSList.FreeThread(node->Next, 0);
             count[line] = count[line] - temp;
@@ -145,7 +154,7 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
 
         this->LeftMostPx[line] = start;
         temp = end + 1;
-        if (node->StartPx <= temp) {
+        if (temp >= node->StartPx) {
             while (1) {
                 if (end <= node->EndPx) {
                     node->StartPx = start;
@@ -170,7 +179,7 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
     } else {
         temp = this->RightMostPx[line];
         if (end >= temp) {
-            if (temp + 1 < start) {
+            if (start > temp + 1) {
                 node = this->VSList.GetNode();
                 node->Prev = other;
                 node->Next = 0;
@@ -184,15 +193,14 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
             }
 
             this->RightMostPx[line] = end;
-            temp = start - 1;
-            if (temp <= other->EndPx) {
+            if (start - 1 <= other->EndPx) {
                 while (1) {
-                    if (other->StartPx <= start) {
+                    if (start >= other->StartPx) {
                         other->EndPx = end;
                         return;
                     }
                     node = other->Prev;
-                    if (node->EndPx < temp) {
+                    if (start - 1 > node->EndPx) {
                         break;
                     }
                     this->Line_Tail_Ptrs[line] = node;
@@ -200,7 +208,7 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
                     this->VSList.FreeNode(other);
                     this->Span_Count[line] = this->Span_Count[line] - 1;
                     other = node;
-                    if (node->EndPx < temp) {
+                    if (node->EndPx < start - 1) {
                         return;
                     }
                 }
@@ -212,7 +220,7 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
                 node = node->Next;
             }
 
-            if (end + 1 < node->StartPx) {
+            if (node->StartPx > end + 1) {
                 VSpan_Node* inserted = this->VSList.GetNode();
                 other = node->Prev;
                 inserted->Next = node;

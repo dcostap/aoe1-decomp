@@ -18,6 +18,10 @@
 // tile-before-column increment, and compass local order; size stayed 1562, resync drift worsened, restored.
 // new-worker probe: initialized the packet's BX-held upper-left predicate before the stack flags; no structural gain, restored.
 // left in scratch: remaining drift is the VC5 local/register basin and loop/prologue topology; current source keeps the named tile/neighbor ownership and executable predicate structure.
+// luna-r2 lead: a guarded row do-loop reproduced the oracle's spilled tile cursor,
+// BX-held upper-left flag, and several long exact islands; it grew to 1570 bytes
+// with a 0x40 frame and 1423 positional bytes, so the exact-size row-for source remains best.
+// luna-r2 negative: register x2/y2, row-offset aliases, tile scope, and orthogonal operand order were codegen duplicates.
 
 typedef unsigned char uchar;
 

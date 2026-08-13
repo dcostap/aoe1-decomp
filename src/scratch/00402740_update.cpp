@@ -20,6 +20,13 @@
 //   load-first instead of the oracle's push-first schedule, and VC5 merges one
 //   of two proven enter_obj sites (36/37 calls). No productive source lead
 //   remains within this assignment budget.
+// - direct positive compound target guards, reconstructed from the decompiler's
+//   short-circuit shape, were codegen-identical and rolled back.
+// - a correct distance-first negative inner guard preserved both enter_obj calls
+//   but VC5 merged the two state-2 calls. Task-left and negated compare forms
+//   were either behaviorally inverted or returned to the same 36-call basin.
+//   Explicit else and scoped action aliases were also unchanged. Clean source
+//   restored; the remaining lead is the original call-site scheduling/context.
 
 class RGE_Sprite;
 class RGE_Task;

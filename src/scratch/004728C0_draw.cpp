@@ -52,6 +52,9 @@
 // just_drawn ends at +0x88, so clip_rgn itself is at the proven +0x88 offset.
 // Main-agent audit confirmed canonical panel/button/draw-area/shape ownership
 // and removed redundant string-address casts; missing call structure remains.
+// Binary operand audit: UP bevel case 1 draws from pnl_x+1,pnl_y+1; DOWN
+// case 1 draws from pnl_x,pnl_y. Keeping these distinct restores the fourth
+// DrawRect call and improves structural parity.
 
 #include <string.h>
 
@@ -359,7 +362,7 @@ void TButtonPanel::draw()
                 // UP shape (this placed first in binary)
                 switch (this->bevel_type) {
                 case 1:
-                    this->render_area->DrawRect(this->pnl_x, this->pnl_y,
+                    this->render_area->DrawRect(this->pnl_x + 1, this->pnl_y + 1,
                         this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2, 0xFF);
                     break;
                 case 2:

@@ -11,16 +11,18 @@
 //   this restored all 52 ordered calls, the 0x24 frame, and a +11-byte size gap.
 // - Restored the five missing ManagedArray records before sn; this aligned
 //   sn[0x14] at +0x1E4 and playersToAttack at +0xD28/+0xD34.
-// - Hoisted the binary-proven point local and inlined command results into
-//   canPath calls; this reached the 1450-byte, 0x24-frame, 52-call basin.
+// - Modeled vslot 0x10C as the same-TU weaponRange() call and vslot 0x198
+//   as the full canPath(XYZPoint, float, int, float*, int, int, int) ABI.
+//   The natural trailing id, 0, 1, -1, -1 arguments preserve the original
+//   stack homes and remove the 14-byte command/canPath drift.
 // - Reversed entryCount/count declarations to match the original loop stores.
 // - A natural conjunction (`count < soldiers.numberValue && entryCount < 6`)
 //   restores the binary split loop guard and reduces the gap to 14 bytes.
+// - The proven 0x10 base gap places aiPlayer at +0x1256C. Reversed the owner
+//   comparison operands and shared the binary entryCount label at +0x3A76.
 // - Shared point declaration, aggregate initialization, object-local reuse,
 //   and named command-result probes were duplicate or worse; they were rolled back.
-// - Remaining drift is four one-byte stack displacements at each command/canPath
-//   schedule. The target loads each value 14 bytes above the current home.
-//   No opaque workaround is retained.
+// - Final validation: MATCH, 1450/1450 bytes, 52/52 calls, 0x24 frame.
 
 typedef unsigned long ulong;
 
@@ -116,10 +118,10 @@ public:
     virtual ~RGE_Static_Object();
     VPAD64(0)
     VPAD2(64)
-    virtual float command(int, int, int, int, int);
+    virtual float weaponRange();
     VPAD32(66)
     VPAD2(98)
-    virtual int canPath(XYZPoint, float);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
 
     int id;
     RGE_Master_Static_Object* master_obj;
@@ -137,6 +139,7 @@ class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
     RGE_Player* player;
+    char gap_F4[0x10];
 
     RGE_Static_Object* object(int id);
 };
@@ -218,8 +221,8 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
                 point.y = (int)targetObject->world_y;
                 point.z = (int)targetObject->world_z;
                 if (commanderObject->canPath(
-                        point, commanderObject->command(objectID, 0, 1, -1, -1)) ==
-                    1) {
+                        point, commanderObject->weaponRange(), objectID, 0, 1,
+                        -1, -1) == 1) {
                     group->setTarget(objectID);
                     group->setTargetType(
                         (int)targetObject->master_obj->id);
@@ -250,14 +253,14 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
                             goto trySoldier;
                         if (object->unitAI()->currentTarget() ==
                             targetObject->id)
-                            goto countSoldier;
+                            goto countEntry;
 
                         RGE_Static_Object* currentTarget =
                             this->md->player->world->object(
                                 object->unitAI()->currentTarget());
                         if (currentTarget != 0 &&
-                            this->playersToAttack[0] ==
-                                currentTarget->owner->id)
+                            currentTarget->owner->id ==
+                                this->playersToAttack[0])
                             goto countSoldier;
                     } else {
                         goto trySoldier;
@@ -271,16 +274,17 @@ trySoldier:
                         point.y = (int)targetObject->world_y;
                         point.z = (int)targetObject->world_z;
                         if (object->canPath(
-                                point,
-                                object->command(targetObject->id, 0, 1, -1, -1)) !=
-                            0) {
+                                point, object->weaponRange(), targetObject->id,
+                                0, 1, -1, -1) != 0) {
                             if (this->taskAttacker(
                                     this->soldiers[count],
                                     targetObject->world_x,
                                     targetObject->world_y, targetObject->id,
                                     (int)targetObject->owner->id, 0, 0, -1,
-                                    0) == 1)
+                                    0) == 1) {
+countEntry:
                                 entryCount++;
+                            }
                         }
                     }
                     }
@@ -302,7 +306,7 @@ countSoldier:
             point.y = (int)targetObject->world_y;
             point.z = (int)targetObject->world_z;
             if (object->canPath(
-                    point, object->command(objectID, 0, 1, -1, -1)) == 0)
+                    point, object->weaponRange(), objectID, 0, 1, -1, -1) == 0)
                 return;
 
             this->taskAttacker(unitID, targetObject->world_x,

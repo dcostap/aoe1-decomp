@@ -18,6 +18,11 @@
 // Integration check: the ordered call map is aligned, but the checker still
 // reports one direct-target difference at +08E7 (desiredNumberUnits versus
 // numberUnits). Treat that site as the next binary-behavior lead.
+// Tried the proven same-TU AIModule base surface with md at +0xF0; emitted
+// code was unchanged, so restored the clean source.
+// Tried a natural for-loop increment for the second boat-type scan because
+// the original has separate type-skip and underfilled-false increment blocks;
+// it changed diff 2472 to 2481 and was rolled back.
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);

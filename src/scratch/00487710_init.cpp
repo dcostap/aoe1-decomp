@@ -18,6 +18,9 @@
 // fresh probe: explicit placement construction removed EH cleanup but lost the original EH frame; rolled back.
 // fresh probe: a typed generator-pointer local changed early parameter reloads and worsened diff; rolled back.
 // fresh probe: mirrored exact same-TU add_shallows_module's long* second-field destination cursor with a typed source; diff improved 116 -> 115, but the cursor registers remain reversed.
+// new claim probe: canonical RGE_Cliffs_Info ownership plus y-anchored source/destination cursors exposed the original +20DC/+2C addresses; the natural field form still added a 46-byte structural tail and kept registers reversed, so it was rolled back.
+// new claim probe: naming and assigning the proven trailing hot_spot_num reproduced the original [esp+4CC] count store; combined with y/radius cursors it reached diagnostic diff 85 but retained the 46-byte EH/new tail, so it was rolled back.
+// new claim probe: direct canonical number_of_cliffs ownership removed the decompiler-only variance alias but did not change the structural basin; restored the validated donor-shaped source.
 // Left in scratch: behavior, calls, frame, and size are close; remaining drift is the hot-spot local home/cursor allocation and automatic-new tail cleanup.
 // FLAGS: config/flags/00487710_init.rsp (/nologo /c /O2 /Oy /GX)
 
