@@ -13,6 +13,11 @@
 // 10: lower-x alias and EH-enabled 9-variant lab were nonproductive; lab grouped 3 basins, no size/frame-eligible match.
 // 11: initialized the list result before a positive radius body to seek one common return topology; 806B with one return but 729-byte drift, restored.
 // 12: rewrote the inner collision-node walk as a natural for loop; emitted code was unchanged, restored the clean while form.
+// 13: natural declaration initializers for the four coordinate ftol results were codegen-duplicate.
+// 14: moved the short coordinate declarations to the function declaration group; codegen was unchanged.
+// 15: replaced proven zero, +/-3, and -0.1 constants with the shared DAT_00570934/38/3c/40 globals; codegen metrics were unchanged.
+// 16: assigned an uninitialized list result in the invalid-radius arm and returned once; size became 798B with one return, but structural shape fell to 82.57% and broad drift, restored.
+// 17: moved that result declaration before radius locals; codegen was unchanged, restored.
 // FLAGS: config/flags/0045AB20_make_object_collision_list.rsp (/nologo /c /O2 /Oy /GX)
 // left in scratch: 821B rebuilt vs 802B original, 208 positional bytes, exact frame/call set; remaining gap is coordinate-result register/home assignment plus tail/block layout.
 
