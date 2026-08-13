@@ -19,6 +19,9 @@
 // final bounded result: 917 rebuilt bytes vs 944, 14/14 call targets with one ordered site gap,
 // 885 strict differing bytes, 61.29% shape similarity. Left in scratch: frame/prologue/local-home
 // basin and late dispatch block order; no behavior/call/layout uncertainty remains from this pass.
+// shardB3-BA550 control-flow: reordered the unclipped dispatcher as the original reverse switch;
+// table-null mode-2 and mode-1 arms return to the unclipped helper before shadow/color calls.
+// This restores all 14 ordered call sites; the remaining gap is the known frame/local basin.
 
 typedef unsigned char byte;
 class TDrawArea;
@@ -184,20 +187,22 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mo
                         (long)x, clip_y0, (long)td, y);
                 }
 
-                if (mode == 0)
-                    return this->shape_mirror_unclipped(draw_area, shape_x1, clip_y0);
-                if (mode == 1) {
+                switch ((unsigned char)mode) {
+                case 2:
+                    if (table == 0)
+                        return this->shape_mirror_unclipped(draw_area, shape_x1, clip_y0);
+                    return this->shape_mirror_shadow_unclipped(
+                        draw_area, shape_x1, clip_y0, table);
+                case 1:
                     if (table == 0)
                         return this->shape_mirror_unclipped(draw_area, shape_x1, clip_y0);
                     return this->shape_mirror_color_trans_unclipped(
                         draw_area, shape_x1, clip_y0, shape_num, table);
-                }
-                if (mode != 2)
-                    return ret_num;
-                if (table == 0)
+                case 0:
                     return this->shape_mirror_unclipped(draw_area, shape_x1, clip_y0);
-                return this->shape_mirror_shadow_unclipped(
-                    draw_area, shape_x1, clip_y0, table);
+                default:
+                    return ret_num;
+                }
             }
         }
     }

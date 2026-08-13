@@ -26,6 +26,11 @@
 // arithmetic is retained because it is source-plausible and codegen-equivalent.
 // a typed outline local changed register allocation and broadened drift; rolled
 // back. Remaining mismatch starts in VC5 prologue scheduling and EH tail.
+// shardB3 pass: swapping font_hgt and outline field assignments maps outline to
+// EBP and font_hgt to EBX, matching the donor's early register roles; diff moved
+// to 266 bytes. A single result local was rejected because it caused 833 bytes
+// of drift and a 31-byte oversize. The remaining first hunk loads panel width
+// before button width, and the failure path still duplicates the EH epilogue.
 // left in scratch: exact ABI/call/layout reconstruction is substantially
 // improved but not exact; no accepted_drift for this broad prologue/CFG drift.
 
@@ -141,8 +146,8 @@ long TDropDownPanel::setup(TDrawArea* area, TPanel* parent, void* p3, long p4, l
     this->scbar_arrow_hgt = scbar_arrow_hgt_param;
     this->scbar_tab_hgt = scbar_tab_hgt_param;
     this->val_hgt = panel_height;
-    this->outline_color = outline;
     this->font_hgt = p5;
+    this->outline_color = outline;
 
     TPanel::setup(area, parent, left, top, panel_width, panel_height, 0);
 

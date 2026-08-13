@@ -20,6 +20,13 @@
 // offsets; this is codegen-neutral to the prior short-field stub but is the
 // canonical period layout. The fallback now preserves the oracle's proven
 // `chosen = exclude` behavior and uses the count-indexed picked screen pair.
+// try 14: removed the redundant `self` alias and used direct `this` member
+// calls throughout. Emitted code was unchanged; the wrapper call remains the
+// natural recursive `pick1` call, while the checker labels the oracle target
+// as internal+0x0 because it is the function entry.
+// try 15: qualified the recursive call as `RGE_Main_View::pick1`. Emitted code
+// was unchanged and the source was restored to the ordinary unqualified
+// member-call spelling.
 // Final retained reconstruction: typed TPanel/RGE_View/world/player/map and
 // virtual pick helpers, natural casts/member calls, inline output stores. The
 // remaining 602-byte drift is a broad local-home/frame basin (rebuilt frame

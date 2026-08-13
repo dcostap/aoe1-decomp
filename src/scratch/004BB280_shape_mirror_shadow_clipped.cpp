@@ -24,14 +24,21 @@
 // - A single byte overlay and split pitch assignment were rolled back. They
 //   worsened shape or setup allocation. No behavior or call uncertainty
 //   remains; the unresolved gap is the VC5 prologue/register and home basin.
+// - Restored the donor-shaped positive guard and post-decrement shadow loop.
+//   This reduced the build to 908 bytes and 858 strict differing bytes. The
+//   current source remains a typed clipped shadow decoder; the open gap is
+//   still structural block placement and local-home allocation.
 
 typedef unsigned char byte;
 
 #define SHADOW_BACK(dst_, table_, count_) do { \
-    unsigned int shadow_count_ = (unsigned int)(count_); \
-    while (shadow_count_-- != 0) { \
-        --(dst_); \
-        *(dst_) = (table_)[*(dst_)]; \
+    if ((count_) > 0) { \
+        unsigned int shadow_count_ = (unsigned int)(count_); \
+        do { \
+            --(dst_); \
+            --shadow_count_; \
+            *(dst_) = (table_)[*(dst_)]; \
+        } while (shadow_count_ != 0); \
     } \
 } while (0)
 

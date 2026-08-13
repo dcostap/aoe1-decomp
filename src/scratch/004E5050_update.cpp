@@ -20,6 +20,11 @@
 // behavior; final validation has exact aggregate call counts but four ordered
 // call replacements, a 51-byte size surplus, and persistent entry/prologue
 // and CFG drift.  Left in scratch after the ten-hypothesis budget.
+// inverted the tribute amount branches and factored the guarded tribute-chat
+// control flow from the original call order; one shared tail dropped six real
+// calls, so it was replaced with two duplicated send tails.  The retained
+// form restores all 102 ordered calls and is the best source-model lead, but
+// leaves a 71-byte surplus and the broader entry/prologue CFG drift.
 
 #include <stdlib.h>
 
@@ -535,30 +540,43 @@ tribute_response_done:
             this->lastTributeChatTime = this->aiPlayer->world->world_time;
             int tribute = 0;
             if (tactical->strategicNumber(0x82) == 1) {
-                if (this->tributeAmount < 1) {
-                    rge_base_game->get_string((long)0x903, tempString, 0x100);
-                    tribute = tactical->strategicNumber(0x7C);
-                } else {
+                if (this->tributeAmount > 0) {
                     rge_base_game->get_string((long)0x902, tempString, 0x100);
                     tribute = tactical->strategicNumber(0x7C) - this->tributeAmount;
-                }
-                this->aiPlayer->sendChatMessage(
-                    tactical->strategicNumber(0x80), 0, tempString, tribute);
-                this->setTributeChat();
-            } else {
-                if (tactical->strategicNumber(0x81) == 1) {
-                if (this->tributeAmount < 1) {
-                    rge_base_game->get_string((long)0x905, tempString, 0x100);
-                    tribute = tactical->strategicNumber(0x7C) - this->tributeAmount;
+                    goto tribute_chat_send_one;
                 } else {
+                    rge_base_game->get_string((long)0x903, tempString, 0x100);
+                    tribute = tactical->strategicNumber(0x7C);
+                    goto tribute_chat_send_two;
+                }
+            } else {
+                if (tactical->strategicNumber(0x81) != 1) {
+                    goto tribute_chat_done;
+                }
+                if (this->tributeAmount > 0) {
                     rge_base_game->get_string((long)0x904, tempString, 0x100);
                     tribute = tactical->strategicNumber(0x7C);
+                    goto tribute_chat_send_one;
+                } else {
+                    rge_base_game->get_string((long)0x905, tempString, 0x100);
+                    tribute = tactical->strategicNumber(0x7C) - this->tributeAmount;
+                    goto tribute_chat_send_two;
                 }
-                this->aiPlayer->sendChatMessage(
-                    tactical->strategicNumber(0x80), 0, tempString, tribute);
-                }
-                this->setTributeChat();
             }
+
+tribute_chat_send_one:
+            this->aiPlayer->sendChatMessage(
+                tactical->strategicNumber(0x80), 0, tempString, tribute);
+            this->setTributeChat();
+            goto tribute_chat_done;
+
+tribute_chat_send_two:
+            this->aiPlayer->sendChatMessage(
+                tactical->strategicNumber(0x80), 0, tempString, tribute);
+            this->setTributeChat();
+
+tribute_chat_done:
+            ;
         }
     }
 

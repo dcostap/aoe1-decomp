@@ -24,6 +24,9 @@
 // - An absolute-address string/rdata relocation experiment reduced unresolved
 //   relocations but worsened the function and was rolled back; the living
 //   source retains named extern data and the period string expression.
+// - Moving the tries < 5000 limit to the outer retry guard and keeping
+//   check_placement as the natural break gate removed the duplicated virtual
+//   call site: ordered calls are now 32/32 aligned, with a 1294-byte rebuild.
 
 typedef unsigned char uchar;
 
@@ -220,9 +223,11 @@ void TRIBE_Player::random_start()
                      (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
              - DAT_00576868;
         int tries = 1;
-        while (this->master_objects[0x6d]->check_placement(
-                   this, h - DAT_00576868, w1 - DAT_00576868,
-                   0, 0, 1, 1, 1, 1, 1)) {
+        while (tries < 5000) {
+            if (this->master_objects[0x6d]->check_placement(
+                    this, h - DAT_00576868, w1 - DAT_00576868,
+                    0, 0, 1, 1, 1, 1, 1) == 0)
+                break;
             w1 = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x631) *
                           (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
                          - DAT_00576868;
@@ -230,8 +235,6 @@ void TRIBE_Player::random_start()
                          (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
                 - DAT_00576868;
             ++tries;
-            if (tries >= 5000)
-                break;
         }
 
         if (tries < 5000) {

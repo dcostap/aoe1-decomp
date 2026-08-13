@@ -16,8 +16,8 @@
 // inline duplicate-scan append recovered the three resize calls and reduced drift to 597 bytes at the original 747-byte boundary.
 // ordered group if/else and scoped result probes still merged the 0x33/0x32 call paths; shared temporary is the clean retained form.
 // distinct group temporaries preserved all 13 ordered calls but expanded the emitted switch-table/function boundary by 148 bytes.
-// parameter-home pointer reuse expanded the prologue/frame and was rolled back; a distinct-temp group switch kept calls ordered but expanded by 224 bytes.
-// final pause: natural typed candidate remains 747 bytes (597 positional diff, 11/13 calls); missing group contains/resize sites are a compiler tail-merge blocker.
+// parameter-home pointer reuse expanded the prologue/frame and was rolled back; a distinct-temp group switch kept calls ordered but expanded by 224 bytes; sparse group switches with a shared tmp still merged one contains/resize pair.
+// final pause: natural typed candidate remains 747 bytes (597 positional diff, 11/13 calls); guard order 8, 7, 0x20 recovered 13/13 calls only at 903 bytes, so the clean candidate remains best.
 
 typedef unsigned char uchar;
 

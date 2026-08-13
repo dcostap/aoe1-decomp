@@ -14,6 +14,10 @@
 // - final bounded state: exact frame/size and 22-call set; 21/22 ordered call
 //   sites align.  Remaining drift is a broad VC5 block-layout/register basin,
 //   not a proven ownership or behavior discrepancy.
+// - structural recovery: split the paused and mouse-action failures into two
+//   natural early guards.  This restores the original failure color_log call,
+//   all 22 ordered call sites, and the original 647-byte size.  Remaining
+//   drift starts at the interface-style global load and the unselect tail.
 
 #include <stdlib.h>
 
@@ -311,11 +315,18 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                     pick_info.object->do_right_action(-1);
                 }
             } else {
-                if ((rge_base_game->get_paused() == 0) &&
-                    ((this->mouse_action == 1) ||
-                     (this->mouse_action == 2))) {
-                    mode = rge_base_game->prog_mode;
-                    if (rge_base_game->prog_info->interface_style == 2) {
+                if (rge_base_game->get_paused() != 0) {
+                    color_log(0x4C, 0x5F, 1);
+                    return 0;
+                }
+                if ((this->mouse_action != 1) &&
+                    (this->mouse_action != 2)) {
+                    color_log(0x4C, 0x5F, 1);
+                    return 0;
+                }
+
+                mode = rge_base_game->prog_mode;
+                if (rge_base_game->prog_info->interface_style == 2) {
                     if ((mode != 5) && (mode != 7)) {
                         if (rge_base_game->game_mode == 0) {
                             if (param_4 == 0) {
@@ -356,20 +367,13 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                             this->set_redraw(1);
                         }
                     }
-                    }
-                } else {
-                    goto mouse_action_fail;
                 }
             }
         }
 
         color_log(0x4C, 0x5F, 1);
         return 1;
-    }
-
-    return 0;
-
-mouse_action_fail:
-        color_log(0x4C, 0x5F, 1);
+    } else {
         return 0;
+    }
 }

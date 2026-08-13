@@ -15,6 +15,7 @@
 // differing bytes. Direct shape_header member ownership retained this basin.
 // Swapped pointer-add operands and explicit x/y base locals were duplicates.
 // Reordered bound declarations widened register and parameter-home drift.
+// Split coordinate declarations from their assignments; this was a codegen duplicate and was rolled back.
 // BLOCKER: remaining drift is the coordinate-add and local-home schedule after
 // the exact prologue. All three direct calls and the stack frame are aligned.
 

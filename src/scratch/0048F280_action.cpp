@@ -21,6 +21,10 @@
 //   did not change the 618-byte basin; volatile id restored the call count but
 //   broadened the body to 645 bytes. A 16-variant close-receiver lab likewise
 //   collapsed to one group with the missing close call.
+// shardB3-8F280 bounded call-gap pass: call-map evidence confirms that the
+//   missing rebuilt call is the close-button close at +01D2; the typed source
+//   already contains both behavior-backed close calls. No new natural source
+//   form was supported, so the clean reconstruction remains unchanged.
 // left in scratch: restored the natural typed action tree; remaining blocker is
 //   the compiler's close-button-to-dialog-close tail merge (one missing direct
 //   close call), with no ABI/call-set or broad CFG uncertainty.

@@ -28,6 +28,9 @@
 //   no exact frame and either broadened the shape or lost the best basin.
 // - Remaining blocker is the original two-local VC5 liveness/parameter-home
 //   basin (frame 0x8, width/save-buffer homes), not behavior or call identity.
+// shardB3-BAF20: sharing command/count/state locals and reusing clip-y
+// parameters as skip/row counters worsened the natural candidate to 1064B,
+// removed the frame, and added a third memset call; restored the clean source.
 // tried following sibling scratch shapes 004BAC00/004BB280; this variant needs original's tight two-local frame and exact EBX/EBP/ESI/EDI RLE state allocation.
 // left in scratch: behavior/call surface is broad, but exact VC5 source shape for the clipped RLE state machine is not recovered. No accepted_drift: broad prologue/register/layout drift.
 

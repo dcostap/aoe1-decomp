@@ -15,6 +15,10 @@
 //   max_x/r declarations, and period-style top declarations were codegen
 //   duplicates.  The exact-size source still has eight aligned calls and the
 //   same CFG; remaining drift is the EBX/EDI direction swap and clamp compare.
+// - Reverse top declaration order for dx/dy as a natural liveness probe; the
+//   emitted code was unchanged.  Restored the clean source; the remaining
+//   evidence-backed lead is the early direction register coloring and paired
+//   clamp compare hunk.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 

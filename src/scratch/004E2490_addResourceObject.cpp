@@ -5,7 +5,8 @@
 // probe: removing a max-size local matched the 0xC frame and 90% instruction shape.
 // probe: a natural while scan placed the duplicate-update block after insertion.
 // probes: cursor and source-offset copy variants improved metrics but were not plausible living source.
-// left in scratch: 17 calls and CFG match, with an unresolved 11-byte growth-copy preamble and codegen drift.
+// probe: moved the proven dropDistance cast from duplicate refresh to new-record initialization; original calls ftol for the new record and not the duplicate refresh.
+// left in scratch: 17-call sequence and 0xC frame now match; the growth-copy preamble and remaining CFG/codegen drift remain unresolved.
 
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
@@ -134,7 +135,6 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
         if (this->resources[resourceType][i].id == obj->id) {
                 int dropsiteID = -1;
                 float distance = this->findClosestDropsite(obj, 1, &dropsiteID);
-                this->resources[resourceType][i].dropDistance = (unsigned char)(int)distance;
                 this->resources[resourceType][i].gatherValue =
                     (int)(DAT_005755bc - distance * DAT_005755b8);
                 this->resources[resourceType][i].dropsiteID = dropsiteID;
@@ -198,6 +198,8 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
 
     int dropsiteID = -1;
     float distance = this->findClosestDropsite(obj, 1, &dropsiteID);
+    this->resources[resourceType][this->numResources[resourceType]].dropDistance =
+        (unsigned char)(int)distance;
     this->resources[resourceType][this->numResources[resourceType]].gatherValue =
         (int)(DAT_005755bc - distance * DAT_005755b8);
     this->resources[resourceType][this->numResources[resourceType]].dropsiteID = dropsiteID;

@@ -17,6 +17,10 @@
 // 10: opcode variant lab: a scoped local copied through x retained 701 bytes
 //     and reached 441 positional diff bytes, but is compiler-steering scaffolding;
 //     the living source stays the natural typed/x-home form (684-byte output).
+// 11: canonical full TShape/SLhape ownership with FShape->Version and typed
+//     offsets worsened the prologue and structural coverage; restored.
+// 12: direct nested Shape_Data_Offsets row lookup was codegen-equivalent to the
+//     named row pointer; restored the named typed decoder.
 // left in scratch: canonical per-frame Shape_Info decoder and legacy walk are
 // reconstructed; remaining drift is the stream pointer/register basin, switch
 // case reload/coloring, and legacy tail layout. Not accepted_drift-safe.

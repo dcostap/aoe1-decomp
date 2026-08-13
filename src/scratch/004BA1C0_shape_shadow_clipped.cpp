@@ -8,6 +8,8 @@
 // 5 (formal-row probe, rolled back): direct shape_y1 reuse improved shape similarity but shortened the body and worsened positional drift; the clean source retains its explicit current-row copy.
 // 6 (destination-offset probe, rolled back): a separate row-offset temporary improved setup shape but shortened the body and worsened the authoritative positional diff.
 // 10 (delayed named-header probe, rolled back): the named owner was a codegen duplicate of the retained source and did not change the EBX/EBP cursor basin.
+// shardB3-BA1C0 probe 12 (natural row topology, rolled back): reusing shape_y1 for the vertical skip and save_buffer for the persistent row destination improved block shape but shortened the body by 11 bytes and worsened the strict diff to 836 bytes.
+// shardB3-BA1C0 probe 14 (named owner, retained): naming a TShapeHeader owner before deriving p was codegen-identical and keeps the stream ownership period-plausible; no ABI or call change resulted.
 // final retained: shared eager command/count/state plus the original explicit current-row and destination locals; 906 bytes, exact 0x08 frame, 1/1 call identity, 812 strict differing bytes. Remaining evidence-backed blocker is the original p/clip-parameter home and early register schedule.
 // left in scratch: behavior model is close to Ghidra but not an exact/accepted-drift candidate; needs a parameter-home-reuse rewrite mirroring original stack slots.
 
@@ -57,8 +59,10 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
     byte cmd;
     byte count;
     byte state;
+    TShapeHeader* header;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
-    byte* p = (byte*)(this->shape_header + 1);
+    header = this->shape_header;
+    byte* p = (byte*)(header + 1);
     long y = shape_y1;
     long x = shape_x1;
 

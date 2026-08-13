@@ -14,6 +14,10 @@
 //   1387 bytes (original 1321), with all RLE phase blocks and AlignedWidth
 //   call present.  A natural left-phase loop without the observed shared exit
 //   was worse, so the shared exit is retained.
+// try 8: replaced the synthetic save_y local with direct orientation-specific
+//   destination arms, following the exact Shape.cpp sibling topology.  This
+//   improved the structural basin to 1398 bytes, 1314 differing bytes, and
+//   59.66% shape; it remains a natural source-model lead, not codegen tuning.
 // left in scratch: canonical typed RLE/dither behavior is reconstructed, but
 //   VC5 still chooses a different early register/local-home basin (first
 //   mismatch is the prologue; 1344 strict bytes differ, 56.24% resync).
@@ -30,11 +34,11 @@ uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_
     Shape_Header* header = this->shape_header;
     uchar* src = (uchar*)(header + 1);
     long skip_rows;
-    long save_y = clip_top;
+    uchar* save_buffer;
     if (orientation < 1)
-        save_y = (clip_top - area->Height) + 1;
-
-    uchar* save_buffer = area->Bits + clip_left + save_y * width;
+        save_buffer = area->Bits + clip_left + (clip_top - area->Height + 1) * width;
+    else
+        save_buffer = area->Bits + clip_left + clip_top * width;
     uchar dither;
     uchar b;
     uchar* end;

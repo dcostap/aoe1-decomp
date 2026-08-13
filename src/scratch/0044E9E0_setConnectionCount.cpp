@@ -10,6 +10,10 @@
 //   remainder sequence, and most switch block placement.
 // - count-pointer, declaration-order, and virtual-surface probes did not move
 //   codegen. Remaining drift starts at saved-this placement and local slots.
+// - an explicit vfptr donor surface was codegen-neutral. Restored the natural
+//   virtual class surface because raw vptr modeling adds no evidence.
+// - donor declaration order with abs parity improved positional drift by 7
+//   bytes but lost exact blocks; restored the cleaner signed-parity form.
 
 typedef unsigned char uchar;
 
