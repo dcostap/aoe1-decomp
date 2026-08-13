@@ -36,10 +36,16 @@
 // by one byte but reduced block shape; restored the clean order.
 // shardE-4B8B50: a diagnostic name+4 comma-expression matched more early blocks
 // but worsened strict diff and source plausibility; restored the clean source.
+// orch-4B8B50-a: PDB string evidence lists only filename/resource_file_id/NextFile;
+// positive file guard, direct resource_file_id, and scoped type variants were
+// codegen duplicates. Moving Shape_Loads++ after open reached diff 380 but had
+// worse block shape, so the source-order and PDB-named clean form remains.
+// - Named the resource header version field. The raw dword cast was a file-format
+//   placeholder, not the owning source model.
 
 #include <string.h>
 
-extern "C" void __cdecl color_log(int, int, int);
+extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" int __cdecl open(const char*, int);
 extern "C" int __cdecl lseek(int, int, int);
 extern "C" int __cdecl tell(int);
@@ -51,6 +57,10 @@ extern "C" unsigned char* __cdecl RESFILE_load(unsigned long, unsigned long, int
 extern unsigned char shape_file_first;
 extern int Shape_Loads;
 extern int shape_version_110;
+
+struct Shape_Header {
+    int version;
+};
 
 class TShape {
 public:
@@ -74,17 +84,14 @@ TShape::TShape(char* filename, long resource_id)
     this->offsets = 0;
     this->FShape = 0;
 
-    long id = resource_id;
+    char NextFile[260];
     int fd;
-    if (!shape_file_first && id >= 0)
-        goto resource_path;
+    if (shape_file_first || resource_id < 0) {
+    color_log('T', 'T', 1);
 
-    color_log(0x54, 0x54, 1);
-
-    char name[260];
-    strcpy(name, filename);
+    strcpy(NextFile, filename);
     Shape_Loads++;
-    fd = open(strcpy(name + strlen(name) - 4, ".slp"), 0x8000);
+    fd = open(strcpy(NextFile + strlen(NextFile) - 4, ".slp"), 0x8000);
     if (fd != -1) {
         lseek(fd, 0, 2);
         int sz = tell(fd);
@@ -98,7 +105,7 @@ TShape::TShape(char* filename, long resource_id)
     }
 
     if (this->FShape == 0) {
-        fd = open(strcpy(name + strlen(name) - 4, ".shp"), 0x8000);
+        fd = open(strcpy(NextFile + strlen(NextFile) - 4, ".shp"), 0x8000);
         if (fd != -1) {
             lseek(fd, 0, 2);
             int sz = tell(fd);
@@ -113,20 +120,20 @@ TShape::TShape(char* filename, long resource_id)
         }
     }
 
-    color_log(0x54, 0x5f, 1);
+    color_log('T', '_', 1);
+    }
 
-resource_path:
-    if (this->FShape == 0 && this->shape == 0 && id >= 0) {
+    if (this->FShape == 0 && this->shape == 0 && resource_id >= 0) {
         Shape_Loads++;
-        this->shape = RESFILE_load(0x73687020, id, this->load_type, this->load_size);
+        this->shape = RESFILE_load(0x73687020, resource_id, this->load_type, this->load_size);
         if (this->shape != 0) {
-            if (*(int*)this->shape == shape_version_110) {
+            if (((Shape_Header*)this->shape)->version == shape_version_110) {
                 this->head = this->shape;
                 this->offsets = (char*)this->shape + 8;
                 return;
             }
         } else {
-            this->shape = RESFILE_load(0x736c7020, id, this->load_type, this->load_size);
+            this->shape = RESFILE_load(0x736c7020, resource_id, this->load_type, this->load_size);
             if (this->shape != 0) {
                 this->FShape = this->shape;
                 this->shape = 0;

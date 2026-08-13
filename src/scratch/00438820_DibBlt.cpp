@@ -19,6 +19,8 @@
 //   the scaled/table tails.  Current source keeps the named DIBUTILS behavior
 //   and binary-proven long aliases; it remains in scratch rather than forcing
 //   opaque codegen scaffolding.
+// - A parameter-home alias reached the original frame size. It is diagnostic
+//   evidence only. The living source keeps the named vertical step.
 
 #include <windows.h>
 #include <windowsx.h>

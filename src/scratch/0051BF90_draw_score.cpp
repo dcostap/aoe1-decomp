@@ -16,6 +16,14 @@
 //   coordinate locals; VC5 emitted identical bytes, so no codegen lead remains.
 // - typed the victory-point return as long, matching the exact same-TU score
 //   donor and the decompiler's original long return; this tests score text ABI.
+// - current bounded pass: moving y before y_offset was a codegen duplicate.
+// - direct-y plus a natural base-x local reached the best diagnostic 614B/0x8C
+//   frame basin (diff 437), but it lost the proven 0x94 local topology.
+// - a 32-bit y local reached diff 613 with a 0x94 frame, but kept EDI as the
+//   zero/row register and broadened the structural mismatch.
+// - right-edge coordinate locals produced 0x90 and 0x98 frames (diffs 456/640);
+//   y/x combined declaration, <new.h>, full TPanel fields, and block-scoped y
+//   were duplicates. The readable 0x94 source remains the canonical candidate.
 // - left in scratch: calls/behavior are understood, but VC5 local coloring and
 //   the GDI/string scheduling remain broadly nonexact.
 
