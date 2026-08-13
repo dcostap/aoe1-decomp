@@ -19,6 +19,8 @@
 //   duplicates and were not retained as matching evidence.
 // - corrected all insideGate/storeLot coordinate argument order from the
 //   original push sequence; resync improved to 60.36%.
+// - tested the mode-3 outer counter in the proven param_7 home; VC5 emitted
+//   identical code, so the natural local counter remains retained.
 // Current normalized pause: 2217/2253 bytes, natural 0x30 frame, 62/62 ordered
 // calls. The original 0x34 frame must come from a real lifetime/ownership fact,
 // not a synthetic aggregate. Remaining work is broad gate/perimeter structure

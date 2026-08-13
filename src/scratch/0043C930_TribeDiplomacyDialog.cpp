@@ -21,6 +21,11 @@
 //   distinct set_radio_button call sites.  The source remains a natural guard
 //   followed by the relation-one and fallback arms; validation is 3425 rebuilt
 //   bytes versus 3457 original, 0x12C versus 0x124 frame, and 112/112 calls.
+// - direct world->players[player_id] reloads (instead of a loop-local player)
+//   moved the structural diff from 3062 to 2959 and the frame from 0x12C to
+//   0x128, but allowed VC5 to tail-merge two set_radio_button sites.  Keeping
+//   radio selection on the named group cursor restored the 0x124 frame but
+//   remained 110/112 calls and 2979 bytes.  Restored the validated clean form.
 
 #include <stdio.h>
 

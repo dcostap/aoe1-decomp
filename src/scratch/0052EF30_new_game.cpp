@@ -23,6 +23,10 @@
 //   a register-qualified return local emitted duplicate code.
 // - Buffered difficulty formatting matched the virtual call surface but exceeded
 //   the original boundary by 164 bytes, so it was rolled back.
+// - Restored the victory switch's binary case table: cases 0/9 map to type 0,
+//   1 to type 1, 7 to type 2, and 8 to type 3; cases 2-6 set amount fields.
+//   This moved the switch hunk one byte closer but VC5 still tail-merged the
+//   five source conquest calls into two emitted calls.
 
 #include <stdio.h>
 #include <string.h>
@@ -397,34 +401,34 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
                 this->scenario->Set_Multi_Conquest(1);
                 break;
             case 1:
-                this->victory_type = 0;
-                this->scenario->Set_Multi_Conquest(1);
-                break;
-            case 2:
                 this->victory_type = 1;
                 this->scenario->Set_Multi_Conquest(1);
                 break;
-            case 3:
+            case 2:
                 this->scenario->Set_Multi_Exploration(victoryAmount);
                 break;
-            case 4:
+            case 3:
                 this->scenario->Set_Multi_Ruins(victoryAmount);
                 break;
-            case 5:
+            case 4:
                 this->scenario->Set_Multi_Artifacts(victoryAmount);
                 break;
-            case 6:
+            case 5:
                 this->scenario->Set_Multi_Discoveries(victoryAmount);
                 break;
-            case 7:
+            case 6:
                 this->scenario->Set_Multi_Gold(victoryAmount);
                 break;
-            case 8:
+            case 7:
                 this->victory_type = 2;
                 this->scenario->Set_Multi_Conquest(1);
                 break;
-            case 9:
+            case 8:
                 this->victory_type = 3;
+                this->scenario->Set_Multi_Conquest(1);
+                break;
+            case 9:
+                this->victory_type = 0;
                 this->scenario->Set_Multi_Conquest(1);
                 break;
             }
