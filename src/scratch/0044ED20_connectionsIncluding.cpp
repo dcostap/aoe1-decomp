@@ -24,6 +24,14 @@
 //   but regressed to 686-690 differing bytes; rolled back.
 // - restored direct result updates and switch fall-through; this returns to
 //   the best 579-byte diagnostic basin, but the first prologue hunk remains.
+// - hoisted the natural inner y declaration before the positive guard; this
+//   exposed the target y home and improved the typed source to 485 differing
+//   bytes with 77.34% shape similarity.
+// - split the first neighbor pass into a separate edgeResult accumulator,
+//   supported by the target's EBP result lifetime and spill before pass two.
+//   With the hoisted y, this gives the exact prologue block, 64.26% exact
+//   block coverage, and 84.56% shape similarity; positional drift is 541B.
+//   Retained as the best binary-supported source reconstruction.
 
 #include <stdlib.h>
 
@@ -56,6 +64,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                        uchar minimum, uchar amount,
                                        int mode1, int mode2, int allDirections)
 {
+    int edgeResult;
     int result = this->connectionCountValue;
 
     if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
@@ -65,15 +74,16 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
     }
 
     for (int x = from.x; x <= to.x; ++x) {
+        int y = from.y;
         if (from.y <= to.y) {
             unsigned char** rowsMap = this->rowValue;
             int xOffset = x - this->xReferencePointValue;
-            int y = from.y;
 
-            for (; y <= to.y; ++y) {
+            do {
                 if ((int)rowsMap[y - this->yReferencePointValue][xOffset] +
                         (int)amount >= (int)minimum) {
                     if (rowsMap[y - this->yReferencePointValue][xOffset] >= minimum) {
+                        edgeResult = result;
                         int neighborX = x;
                         int neighborY = y;
 
@@ -104,13 +114,14 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                     neighborY < 0 || neighborY >= this->ySizeValue) {
                                     if ((mode1 == 1 && abs(direction) == 1) ||
                                         (mode2 == 1 && abs(direction) == 0)) {
-                                        --result;
+                                        --edgeResult;
                                     }
-                                    if (result <= 0)
+                                    if (edgeResult <= 0)
                                         break;
                                 }
                             }
                         }
+                        result = edgeResult;
                     }
 
                     int neighborX = x;
@@ -151,7 +162,8 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                         }
                     }
                 }
-            }
+                ++y;
+            } while (y <= to.y);
         }
     }
 
