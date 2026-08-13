@@ -20,6 +20,10 @@
 // - Narrow result state and alternate class layouts changed the call surface
 //   or emitted no new code. The current source keeps the natural long result,
 //   typed ownership, and direct calls.
+// - The button-5 null-scenario path is a success path: it destroys the menu,
+//   sets the shared result, and skips the button-6 test before the fallback.
+// - This probe reduced the positional diff from 929 to 847 bytes and raised
+//   exact-block coverage from 60.25% to 65.98%; shared-tail drift remains.
 
 #include <string.h>
 
@@ -146,6 +150,10 @@ long TRIBE_Dialog_Sed_Menu::action(
                 result = 1;
                 goto action_done;
             }
+
+            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            result = 1;
+            goto action_done;
         }
 
         if (panel == this->buttons[6]) {

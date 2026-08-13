@@ -19,7 +19,17 @@
 //   bytes, calls 4/4 with exact target identity, effective size 448/455, frame
 //   0x8/0xC. The remaining structural lead is the missing 4-byte local/frame
 //   slot and associated total-turn/cur-gran stack-home schedule.
+// - Modeled the binary-named unsigned long SyncTurn local and current-frame
+//   local in the declaration block. Replaced manual signed-difference branches
+//   with stdlib abs and typed both difference locals unsigned long. This
+//   recovered the 0xC frame, the SyncTurn home at [esp+14], branchless abs,
+//   and unsigned threshold branches: 162 positional diff bytes, 456/455
+//   bytes, 0xC/0xC frame, and calls 4/4. Total-turn and product-order probes
+//   were duplicates. Remaining drift is the early register/load schedule,
+//   loop-init order, product coloring, and one-byte size surplus.
 // Left in scratch after the bounded 10-hypothesis assignment.
+
+#include <stdlib.h>
 
 class COMMPLAYEROPTIONS {
 public:
@@ -88,8 +98,8 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, un
     if (!Comm->IsHost()) return 0;
     if (NextLatencyChangeTurn != 0) return 0;
 
-    unsigned int total_turns = Comm->current_turn;
-    total_turns += (unsigned char)Comm->PlayerOptions.CommandTurnIncrement;
+    unsigned char command_increment = Comm->PlayerOptions.CommandTurnIncrement;
+    unsigned int total_turns = Comm->current_turn + command_increment;
     if (total_turns < 20) return 0;
     
     LastAdjusted++;
@@ -99,6 +109,8 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, un
     unsigned int max_high;
     unsigned long* ptr;
     int i;
+    unsigned long SyncTurn;
+    unsigned int cur_frames;
     min_avg = 10;
     max_high = 30;
     ptr = PlayerHighLatencyMsec + 1; // player 1, +0x1E8
@@ -116,25 +128,23 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, un
     unsigned int new_gran = ((min_avg + 5) / 10) * 10;
     if (new_gran > 150) new_gran = 150;
     
-    unsigned int cur_gran = CurrentBufferGranularity;
-    int gran_diff = new_gran - cur_gran;
-    if (gran_diff < 0) gran_diff = -gran_diff;
-    if (gran_diff < 10) new_gran = cur_gran;
+    SyncTurn = CurrentBufferGranularity;
+    unsigned long gran_diff = abs((int)(new_gran - SyncTurn));
+    if (gran_diff < 10) new_gran = SyncTurn;
     
     unsigned int new_frames = max_high / new_gran + 2;
     if (new_frames >= 20) new_frames = 20;
     if (new_frames <= 4) new_frames = 4;
     
-    if (new_gran * new_frames < 250) {
+    if (new_frames * new_gran < 250) {
         new_frames = 250 / new_gran + 1;
     }
     
-    unsigned int cur_frames = CurrentBufferFrames;
-    int throughput_diff = (int)(new_gran * new_frames) - (int)(cur_frames * cur_gran);
-    if (throughput_diff < 0) throughput_diff = -throughput_diff;
-    if ((unsigned int)throughput_diff < 11) return 0;
+    cur_frames = CurrentBufferFrames;
+    unsigned long throughput_diff = abs((int)(new_gran * new_frames) - (int)(cur_frames * SyncTurn));
+    if (throughput_diff <= 10) return 0;
     
-    if (new_gran * new_frames < cur_frames * cur_gran &&
+    if (new_gran * new_frames < cur_frames * SyncTurn &&
         throughput_diff > 100 &&
         cur_frames > 4) {
         new_frames = cur_frames - 1;
