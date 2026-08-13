@@ -14,9 +14,13 @@
 //   the original frame or local homes.
 // - A natural inner for-loop post-expression produced identical code; restored
 //   the while form and left the structural frame gap unchanged.
-// Left in scratch: structural frame/prologue and duplicated inner-save topology
-// remain broad; original spills PDP/count and reloads distance from a parameter
-// home while VC5 keeps the corresponding values in a 0x18-frame basin.
+// - Restoring the natural unsigned-byte distance result recovered the original
+//   0x1c frame and improved the positional diff to 308 with 50.26% resync
+//   similarity; VC5 still spills the byte at -0x1c and emits five extra bytes.
+// - Unsigned count spelling and implicit byte promotion were codegen duplicates.
+// Left in scratch: original prologue zero-register order, PDP/count stack homes,
+// and duplicated inner-save topology remain unresolved; the current source is
+// the clean typed byte-distance reconstruction, not a compiler-steering variant.
 
 struct VisibleUnitRec {
     int object_id;
@@ -48,7 +52,7 @@ public:
 
 int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player, int* categories, int category_count, int* player_map) {
     int found = 0;
-    int count;
+    unsigned int count;
     unsigned char* distTable;
     VisibleUnitPtr* PDP;
     VisibleUnitRec* rec;
@@ -104,7 +108,7 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
                     } else {
                         dy = rx - y;
                     }
-                    int d = distTable[(dx & 0x0f) + ((dy & 0x0f) << 4)];
+                    unsigned char d = distTable[(dx & 0x0f) + ((dy & 0x0f) << 4)];
                     if (d <= distance) {
                         int mapped = player_map[rec->player];
                         int size = VisibleUnitList_Size[mapped];

@@ -38,6 +38,14 @@
 // the diff to 6 bytes; rolled back.
 // 18 no further source-backed axis remains after loop-form and scope probes;
 // preserve the clean typed reconstruction for final validation.
+// 19 direct this ownership for the row lookup was a codegen duplicate.
+// 20 removing the explicit map alias throughout was a codegen duplicate.
+// 21 moving y before the handle and map declarations was a codegen duplicate.
+// 22 passing file directly instead of through handle was a codegen duplicate.
+// 23 declaring width before map was a codegen duplicate.
+// 24 using *width in both new-format loop bounds was a codegen duplicate.
+// All six focused probes left the same four-byte y/map load-order gap; restore
+// the clean source because no natural source axis remains evidence-backed.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern float save_game_version;

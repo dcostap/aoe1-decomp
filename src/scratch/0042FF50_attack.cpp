@@ -16,6 +16,12 @@
 // later probe: same-TU inherited Static/Animated/Moving/Action/Combat and Master_* surfaces plus the observed master hp notification argument produced 400B and 361 positional diff; retained as the best canonical source.
 // later probes: named radius locals reproduced the original x87 block shape but not bytes; a named missile-master entry and an initialized c home were nonproductive or worse and were rolled back.
 // current probe: passed the second attack parameter `other` to typed init_missile; this aligned the reload/push argument shape and improved structural similarity, but positional diff worsened by 10 bytes and size grew to 408B.
+// orch-42FF50-a baseline: retained typed init_missile(this, target, range); the exact donor and original call values support this source ownership.
+// orch-42FF50-a probes: hoisted c/s/range declarations (duplicate); named radius_x/radius_y with direct angle calls improved shape to 75.33% and diff 366B.
+// orch-42FF50-a probe: reversed radius-square terms to match the original fld radius_y, mov radius_x, then x87 square order; shape improved to 76.67%, diff stayed 366B.
+// orch-42FF50-a probe: inlined owner member (duplicate); marking the wrapper virtual changed the fallback call to vslot+22C and was reverted.
+// orch-42FF50-a probe: naming a master local added EBP and widened drift to 386B; restored the named-radius source.
+// orch-42FF50-a pause: source now keeps canonical fields, direct owner/member calls, and exact init_missile argument values. Remaining structural blocker is entry EBX save versus original late EBX save; all seven calls align.
 // paused after bounded matching: no artificial volatility, aliases, raw offsets, or register-forcing scaffolding retained.
 
 class RGE_Static_Object;
@@ -157,26 +163,28 @@ extern float DAT_0056f4ac;
 
 unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* other)
 {
+    float c;
+    float s;
+    float range;
+
     if (target == 0) {
         return 0;
     }
 
     short missile_id = this->master_obj->missile_id;
     if (missile_id >= 0) {
-        float a1 = this->angle;
-        float a2 = this->angle;
-        float c = (float)cos(a1);
-        RGE_Player* owner = this->owner;
-        float s = (float)sin(a2);
-        float range = (float)sqrt(this->master_obj->radius_y * this->master_obj->radius_y +
-            this->master_obj->radius_x * this->master_obj->radius_x) +
+        float radius_x = this->master_obj->radius_x;
+        float radius_y = this->master_obj->radius_y;
+        c = (float)cos(this->angle);
+        s = (float)sin(this->angle);
+        range = (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
             this->master_obj->weapon_range - DAT_0056f4ac;
 
-        RGE_Missile_Object* missile = (RGE_Missile_Object*)owner->master_objects[missile_id]->make_new_obj(owner,
+        RGE_Missile_Object* missile = (RGE_Missile_Object*)this->owner->master_objects[missile_id]->make_new_obj(this->owner,
             this->world_x + c * this->master_obj->weapon_offset_y - s * this->master_obj->weapon_offset_x,
             this->world_y + s * this->master_obj->weapon_offset_y + c * this->master_obj->weapon_offset_x,
             this->world_z + this->master_obj->weapon_offset_z);
-        missile->init_missile(other, target, range);
+        missile->init_missile(this, target, range);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
         if (this->master_obj->weapon_range > DAT_0056f49c) {
             if (1 == target->owner->computerPlayer()) {

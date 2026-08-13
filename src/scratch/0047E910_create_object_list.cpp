@@ -34,6 +34,10 @@
 //   line-159 combined get_player guard; both emitted the same code.
 // - An int i/j width probe moved the first bytes closer but lost the 0x10
 //   frame and 37 bytes, so the short typed locals were restored.
+// - Fresh claim probes split the get_player guard, varied counter/pointer
+//   declaration order, removed this-qualification, and moved the cursor;
+//   all returned the duplicate 358-byte basin. A guarded 9-case lab found
+//   no first-block improvement. Retain this clean source and pause.
 
 #include "..\..\include\game_globals.h"
 

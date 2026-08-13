@@ -28,6 +28,17 @@
 // - Combined the owner and enemy gates into one natural typed predicate,
 //   matching the exact same-TU numberUnitsWithinXTiles donor.  It emitted
 //   the same 383-byte code and 171-byte diff; retained as the clean source.
+// - A scoped per-iteration ObjectMemory pointer followed the decompiler's
+//   record alias, but widened the frame and regressed to the 360-byte basin;
+//   restored the direct indexed ownership.
+// - A virtual RGE_Static_Object destructor with the proven state offset was
+//   an ABI test; it duplicated the 383-byte code and was removed.
+// - A volatile best-memory pointer was optimized to the same 383-byte code;
+//   it gave no spill or register-allocation lead and was removed.
+// - A natural for-loop scan reached the original 393-byte size but added a
+//   saved register and broad drift; restored the do-while structural match.
+// - Inline initialization of townCenter duplicated the 383-byte code; the
+//   separate initialization order remains the clean reconstruction.
 // - Paused after the ten-hypothesis budget.  Remaining localized gap is the
 //   original townCenter/result callee-save allocation and the associated x87
 //   argument scratch-slot order; no call target, CFG, frame, or field-layout

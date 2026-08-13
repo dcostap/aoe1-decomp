@@ -32,6 +32,11 @@
 // - Tested the recovered natural shared tail: case 2 calls and returns, while cases 1 and 3
 //   assign mode and call once after the switch. VC5 added a frame, emitted 416 bytes, and still
 //   folded the case-2 virtual call; restored the clean switch.
+// - Follow-up orch-437EC0-a: rechecked the best self/goto basin and short-row baseline; neither
+//   changed the missing call or the this/player register swap. Splitting case 2 from the switch,
+//   short or branch-local full-width color temporaries, and hoisting map were nonproductive.
+// - Final source restores the clean int-level ordinary switch. The remaining structural gap is
+//   compiler folding of equivalent case-2/case-3 calls; no evidence-backed natural variant remains.
 
 extern unsigned long* unified_map_offsets[];
 

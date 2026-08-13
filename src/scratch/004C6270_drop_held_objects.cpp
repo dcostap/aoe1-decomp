@@ -28,6 +28,11 @@
 // - scoped running radius pointers produced a 0xB8 frame and broad drift;
 //   rolled back because the original pointer-like EBP/EDI evidence is not a
 //   natural fit for this aggregate source.
+// - moving next after the four float arrays reproduced the original array
+//   stack homes, raised shape similarity to 71.09%, and reduced the strict
+//   diff to 331 bytes with the 0xB4 frame; keep this typed layout candidate.
+// - reordering radius_x before world_y and the failure-copy radius stores
+//   preserved that best 331-byte result; register and CFG drift remain.
 
 class RGE_Master_Static_Object { public: char gap_00[0x30]; float radius_x; float radius_y; };
 class RGE_Static_Object;
@@ -61,11 +66,11 @@ struct DropLocals {
     RGE_Object_Node* temp;
     float x;
     float y;
-    RGE_Object_Node* next;
     float drop_y[10];
     float radius_x[10];
     float drop_x[10];
     float radius_y[10];
+    RGE_Object_Node* next;
 };
 
 unsigned char RGE_Static_Object::drop_held_objects(int mode)
@@ -74,8 +79,8 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
     DropLocals l;
     unsigned char count = 0;
     l.drop_x[1] = this->world_x;
-    l.drop_y[1] = this->world_y;
     l.radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
+    l.drop_y[1] = this->world_y;
     l.radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
     l.temp = this->objects->first;
 
@@ -105,8 +110,8 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
                     if (i <= 0) break;
                     l.drop_x[i] = l.drop_x[i + 1];
                     l.drop_y[i] = l.drop_y[i + 1];
-                    l.radius_x[i] = l.radius_x[i + 1];
                     l.radius_y[i] = l.radius_y[i + 1];
+                    l.radius_x[i] = l.radius_x[i + 1];
         } while (i > 0);
         l.temp = l.next;
     }
