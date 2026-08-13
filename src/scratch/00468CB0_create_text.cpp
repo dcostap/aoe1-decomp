@@ -22,6 +22,12 @@
 //   label, and named 0xD8 field were each duplicate or broadly worse; restored.
 // - Modeling the proven TPanel inheritance, virtual destructors, and virtual
 //   create_text with explicit base gaps kept the same 436-byte tail basin.
+// - Inverting the outer validity guard with a typed error field and one result
+//   return kept the 436-byte basin; only edit similarity worsened. Rolled back.
+// - Moving an uninitialized result declaration before coordinate locals and
+//   using one done label was also a 436-byte codegen duplicate. Rolled back.
+// - A /Os overlay reduced size but removed the required EH frame and changed
+//   early code broadly. Restored /O2 /Oy /GX; the shared-tail gap is structural.
 
 class TPanel {};
 class TDrawArea {};
