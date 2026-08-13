@@ -17,10 +17,9 @@ class BuildAIModule { public: char gap0[0xf0]; BuildItem buildList; char gap160[
 #define WRITE_STRING(SRC) { strcpy(tempString, (SRC)); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString)); }
 #define WRITE_I(EXPR) { tempInt = (EXPR); rge_write(file, &tempInt, 4); }
 #define WRITE_I_TO(VAR, EXPR) { VAR = (EXPR); rge_write(file, &VAR, 4); }
-#define WRITE_FF(EXPR) { tempFloat = (EXPR); rge_write(file, &tempFloat, 4); }
 int BuildAIModule::save(int file) {
     char tempString[257];
-    int tempInt; float tempFloat; int tempBOOL; unsigned char tempBYTE;
+    int tempInt; float tempFloat; int tempBOOL; int iStack_110; unsigned char tempBYTE; unsigned char local_109;
     rge_write(file, &this->buildListLengthValue, 4);
     WRITE_STRING(this->buildListNameValue);
     WRITE_STRING(this->lastBuildItemRequestedValue);
@@ -35,27 +34,27 @@ int BuildAIModule::save(int file) {
         WRITE_I(item->typeID());
         WRITE_I(item->gameID());
         WRITE_I(item->uniqueID());
-        WRITE_FF(item->x());
-        WRITE_FF(item->y());
-        WRITE_FF(item->z());
-        WRITE_FF(item->xSize());
-        WRITE_FF(item->ySize());
-        WRITE_FF(item->zSize());
-        WRITE_I_TO(tempBOOL, item->skip());
+        tempFloat = item->x(); rge_write(file, &tempFloat, 4);
+        tempFloat = item->y(); rge_write(file, &tempFloat, 4);
+        tempFloat = item->z(); rge_write(file, &tempFloat, 4);
+        tempFloat = item->xSize(); rge_write(file, &tempFloat, 4);
+        tempFloat = item->ySize(); rge_write(file, &tempFloat, 4);
+        tempFloat = item->zSize(); rge_write(file, &tempFloat, 4);
+        WRITE_I_TO(iStack_110, item->skip());
         WRITE_I(item->buildCategory());
-        WRITE_I(item->inProgress());
-        WRITE_I(item->built());
+        WRITE_I_TO(iStack_110, item->inProgress());
+        WRITE_I_TO(iStack_110, item->built());
         WRITE_I(item->buildAttempts());
         WRITE_I(item->buildFrom());
         WRITE_I(item->terrainSet());
         WRITE_I(item->terrainAdjacency(1));
         WRITE_I(item->terrainAdjacency(2));
-        WRITE_I(item->placeOnElevation());
+        WRITE_I_TO(iStack_110, item->placeOnElevation());
         WRITE_I(item->numberBuilds());
         WRITE_I(item->buildCap());
         WRITE_I(item->skipCycles());
-        tempBYTE = item->permanentSkip();
-        rge_write(file, &tempBYTE, 1);
+        local_109 = item->permanentSkip();
+        rge_write(file, &local_109, 1);
         item = (BuildItem*)item->next;
     }
     return 1;

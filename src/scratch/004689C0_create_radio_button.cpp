@@ -14,6 +14,13 @@
 // - Split the x assignment, named the decompiler-supported ideal_x input, and initialized the result local. All three emitted the same 114-byte code.
 // - The shared-result test was diagnostic. Keep ordinary success and failure
 //   returns in the living source. No accepted-drift proposal; no inline asm.
+// - Delayed the natural sound zero initialization until after coordinate scaling;
+//   this removed the EH frame and widened the mismatch to 531 bytes, so it was rolled back.
+// - Initialized the first scaled coordinate directly and then moved the proven x
+//   input declaration before the object locals. Direct initialization reached 119 bytes;
+//   declaration reordering was a codegen duplicate and remains source-plausible.
+// - Added the proven TEasy_Panel virtual destructor declaration from exact donors;
+//   VC5 emitted the same 114-byte basin, so the canonical class surface is retained.
 
 class TPanel {
 public:
@@ -78,21 +85,21 @@ public:
     char gap_340[0x448 - 0x340];
     TShape* button_pics;
 
+    virtual ~TEasy_Panel();
     virtual int create_radio_button(TPanel* parent, TButtonPanel** out, long x, long y, long w, long h, long sound, long param8);
 };
 
 int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x, long y, long w, long h, long sound_id, long param8)
 {
+    long ideal_x = x;
     TButtonPanel* button;
     TDigital* sound;
     long sx;
     long sy;
     long sw;
     long sh;
-    long ideal_x;
 
     sound = 0;
-    ideal_x = x;
     sx = (ideal_x * this->ideal_width) / this->screen_width;
     sy = (y * this->ideal_height) / this->screen_height;
     sw = (w * this->ideal_width) / this->screen_width;

@@ -13,6 +13,13 @@
 // 8: test direct typed row expressions in the packet's short-circuit neighbor
 //    predicates; this keeps cell ownership named while removing four address
 //    temporaries that may reverse the original tile-row scheduling.
+// 9: parenthesized horizontal offsets and natural nested tile-row indexing were
+//    codegen duplicates; restored the clean pointer form.
+// 10: same-TU C++ linkage declarations for zone_push/zone_pop were a duplicate;
+//     restored the narrow declarations used by the clean build.
+// 11: const map-bound locals were a codegen duplicate; restored mutable locals.
+// Current pass: dossier, donor, ABI, call-map, and local asm evidence confirm
+// exact calls/frame/CFG but leave the x-stride/y-register hunk unresolved.
 // Main-agent audit restored canonical polymorphic map ownership and retained
 // named tile/zone-row flood-fill traversal.
 

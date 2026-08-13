@@ -8,6 +8,9 @@
 // - Restored the binary-shaped c1/c2 text-offset predicate after a direct-XOR probe lost CFG detail.
 // - Replaced hand-written text scans with natural strlen calls; VC5 emitted the original scasb shape and improved positional diff by 5 bytes.
 // - Best emitted code: 1191 differing bytes; current strlen source is 1217 differing bytes.
+// - Hoisted SIZE and msg to function scope from the binary local map; frame grew to 0x38 with no diff gain, then restored.
+// - Tried the Ghidra local map with shared x/y/frame locals and direct state indexing; frame reached 0x28 but diff worsened to 1266, then restored.
+// - Moved center calculations before text selection per original 0051A074 order; shape and diff worsened, then restored.
 // - Left in scratch: call order and memory effects match; VC5 frame and text CFG remain nonexact.
 
 #include "..\..\include\game_globals.h"
