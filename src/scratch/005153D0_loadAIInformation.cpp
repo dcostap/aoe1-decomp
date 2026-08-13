@@ -20,6 +20,12 @@
 // differ, and the no-city/final learn tails have small block-layout shifts.
 // left in scratch: no custom flags or compiler-steering scaffolding retained.
 // shardB6 probe: typed save-local/global assignment chain left emitted order unchanged; restored clean source.
+// luna probe: split save-random declarations and tested volatile/direct-global variants; VC5 kept the
+// saved-global store before the local home or added reload/cleanup code, so all variants were rolled back.
+// luna probe: inverted and nested the construction-rule guard, then tested an explicit custom-arm jump;
+// VC5 retained the same custom-first block layout.  Natural if/else source remains authoritative.
+// luna probe: the oracle scans learn_info with strlen before loadLearnInfo; replacing `*learn` with strlen
+// improved strict diff 1281->1279, exact blocks 78.04%->79.53%, and resync similarity 89.56%->90.62%.
 
 typedef unsigned char uchar;
 
@@ -197,6 +203,7 @@ extern "C" int __cdecl debug_rand(char*, int);
 extern "C" void __cdecl debug_srand(char*, int, int);
 extern "C" void* __cdecl strcpy(void*, const void*);
 extern "C" int __cdecl strcmp(const char*, const char*);
+extern "C" unsigned int __cdecl strlen(const char*);
 
 #define debug_random_on (*(int*)0x0062C4D4)
 #define saved_debug2 (*(int*)0x0086BC94)
@@ -209,8 +216,10 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
     char ruleSetName[256];
     char buildListName[256];
 
-    int saveRand = debug_rand((char*)0x58AC44, 0x863);
-    int save_debug_random_on = debug_random_on;
+    int saveRand;
+    int save_debug_random_on;
+    saveRand = debug_rand((char*)0x58AC44, 0x863);
+    save_debug_random_on = debug_random_on;
     saved_debug2 = save_debug_random_on;
     debug_random_on = 0;
 
@@ -295,7 +304,7 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
 
         this->playerAI->emotionalAI.setOverallState(buildId);
         char* learn = this->world->scenario->learn_info;
-        if (learn && *learn) this->playerAI->informationAI.loadLearnInfo(learn);
+        if (learn && strlen(learn) != 0) this->playerAI->informationAI.loadLearnInfo(learn);
     }
 
     debug_random_on = save_debug_random_on;
