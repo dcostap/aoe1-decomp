@@ -25,6 +25,9 @@
 // liveness: moving the background color declaration after palette/size/rect locals and reordering coordinates were codegen duplicates.
 // variant: 16- and 64-case natural source labs found no size+frame+call-set eligible variant; no lab winner replaced typed source.
 // control-flow: combined pre-incremented origins with SetTextColor-before-bound-updates reached frame 0x48 and 85.64% shape, but size grew 23 bytes and the vtable/message carriers swapped; restored clean source.
+// stack/PDB: original Ghidra locals place y at the lowest frame slot, then x, wid, and hgt; the explicit iStack_28 is the saved virtual carrier. This confirms a real y-home lead, not padding.
+// layout: scoping all draw locals inside the text block was codegen-neutral; restored clean source.
+// layout: declaring x/y/wid/hgt at the PDB line-328 origin block was also codegen-neutral; no new ownership lead remains in this claim.
 // left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
 #include <string.h>
 #include <windows.h>
