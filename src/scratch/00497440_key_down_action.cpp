@@ -19,7 +19,14 @@
 // - reordered developer dispatch labels to the observed player-dispatch body
 //   region, and modeled the post-dispatch value as a result local. The latter
 //   was codegen-neutral; an explicit zero return for developer key 0x20 was
-//   also codegen-neutral and is retained as readable behavior.
+//   also codegen-neutral and was rolled back.
+// - restored the developer 0x20 case's source-level break; VC5 merged the
+//   call with the later normal-mode case and emitted no change.
+// - inverted the final game-mode gate and made its work-key chain return
+//   explicitly. This restored the third command_view_selected call and exact
+//   target-count parity, but the switch body still precedes the work chain.
+// - a duplicated work-chain arm improved block alignment but added duplicate
+//   calls; rolled it back. The current single-chain spelling is retained.
 // - final bounded pause: current source is the best complete period-plausible
 //   reconstruction, not an opaque byte hack. Remaining drift is structural:
 //   early parameter/register scheduling, one compiler-merged
@@ -652,7 +659,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             return result;
         case 0x20:
             this->command_view_selected();
-            return 0;
+            break;
         case 0x45:
             new TribeSaveGameScreen(0, 0, 0);
             panel_system.setCurrentPanel(Save_Game_Screen, 0);
@@ -754,80 +761,8 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             break;
         }
     } else {
-        if (rge_base_game->game_mode == 6 &&
-            rge_base_game->sub_game_mode == 1) {
-            switch (param_1) {
-            case 9:
-                this->command_tab_selected(result);
-                return result;
-            case 0x0D:
-                this->command_quick_chat();
-                break;
-            case 0x20:
-                this->command_view_selected();
-                break;
-            case 0x24:
-                rge_base_game->goto_notification_loc();
-                break;
-            case 0x2E:
-                if (game_over == 0 && allow_user_commands != 0) {
-                    this->command_cancel_building();
-                }
-                break;
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38:
-            case 0x39:
-                param_1 -= 0x30;
-                this->command_select_group((int)param_1, result);
-                break;
-            case 0x73:
-                this->command_score(this->world->score_displayed == 0);
-                break;
-            case 0x74:
-                this->command_fps();
-                break;
-            case 0x75:
-                if (rge_base_game->gameDeveloperMode() != 0) {
-                    this->command_visibility();
-                }
-                break;
-            case 0x76:
-                if (rge_base_game->gameDeveloperMode() != 0) {
-                    this->command_fog_of_war();
-                }
-                break;
-            case 0x77:
-                if (rge_base_game->gameDeveloperMode() != 0) {
-                    this->command_comm_info();
-                }
-                break;
-            case 0x78:
-                if (rge_base_game->gameDeveloperMode() != 0) {
-                    this->command_ai_info();
-                }
-                break;
-            case 0x7A:
-                if (this->time_panel->get_clock_type() == 0) {
-                    this->time_panel->set_clock_type(2, 0);
-                    this->pop_panel->set_active(result);
-                } else {
-                    this->time_panel->set_clock_type(0, 0);
-                    this->pop_panel->set_active(0);
-                }
-                this->reset_clocks();
-                this->main_view->set_redraw(result);
-                break;
-            default:
-                break;
-            }
-        } else {
+        if (rge_base_game->game_mode != 6 ||
+            rge_base_game->sub_game_mode != 1) {
             if (this->work_key != 0 && param_1 == this->work_key &&
                 game_over == 0) {
                 if (allow_user_commands != 0) {
@@ -846,7 +781,81 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             } else if (this->ungroup_key != 0 && param_1 == this->ungroup_key) {
                 this->command_ungroup();
             }
+            return 0;
         }
+
+        switch (param_1) {
+        case 9:
+            this->command_tab_selected(result);
+            return result;
+        case 0x0D:
+            this->command_quick_chat();
+            break;
+        case 0x20:
+            this->command_view_selected();
+            break;
+        case 0x24:
+            rge_base_game->goto_notification_loc();
+            break;
+        case 0x2E:
+            if (game_over == 0 && allow_user_commands != 0) {
+                this->command_cancel_building();
+            }
+            break;
+        case 0x30:
+        case 0x31:
+        case 0x32:
+        case 0x33:
+        case 0x34:
+        case 0x35:
+        case 0x36:
+        case 0x37:
+        case 0x38:
+        case 0x39:
+            param_1 -= 0x30;
+            this->command_select_group((int)param_1, result);
+            break;
+        case 0x73:
+            this->command_score(this->world->score_displayed == 0);
+            break;
+        case 0x74:
+            this->command_fps();
+            break;
+        case 0x75:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                this->command_visibility();
+            }
+            break;
+        case 0x76:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                this->command_fog_of_war();
+            }
+            break;
+        case 0x77:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                this->command_comm_info();
+            }
+            break;
+        case 0x78:
+            if (rge_base_game->gameDeveloperMode() != 0) {
+                this->command_ai_info();
+            }
+            break;
+        case 0x7A:
+            if (this->time_panel->get_clock_type() == 0) {
+                this->time_panel->set_clock_type(2, 0);
+                this->pop_panel->set_active(result);
+            } else {
+                this->time_panel->set_clock_type(0, 0);
+                this->pop_panel->set_active(0);
+            }
+            this->reset_clocks();
+            this->main_view->set_redraw(result);
+            break;
+        default:
+            break;
+        }
+        return 0;
     }
 
     return 0;

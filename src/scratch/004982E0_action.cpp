@@ -14,6 +14,10 @@
 //   the current direct parameter and natural branch-local restart receiver are
 //   retained.  Remaining drift is EH-handler identity and a localized
 //   confirmed-close/global-load schedule; left in scratch for later work.
+// - a typed close-pause receiver moved the global load before confirmed_close,
+//   but worsened the diff from 523 to 533 bytes; rolled back.
+// - limiting that receiver to singlePlayerGame collapsed the tail and lost two
+//   calls (diff 623); rolled back.  The direct global form remains best.
 // FLAGS: config/flags/004982E0_action.rsp (/GX required by original EH setup)
 
 #include <new.h>

@@ -18,6 +18,8 @@
 // try 16: represent the binary-proven group/scale/short flag word as one union dword store while retaining named byte ownership.
 // try 17: corrected the count owner to RGE_Land_Info::land_num at +0x141c; the oracle loads the lands parameter before the copy loop, not world->land_num.
 // try 18: restored the full RGE_Land_Info record layout and canonical interior y-field cursors; the oracle's +0x0c/+0x34 loop is a typed field anchor, not an arbitrary byte buffer.
+// try 19: pass the object-module's proven terrain-record owner directly instead of a raw byte offset; this matches the oracle's &object_info.objects[0].terrain call surface.
+// result 19: no emitted-code change; the first mismatch remains the compiler's __chkstk versus original __alloca_probe call replacement at +0x1f.
 // fresh session: baseline rebuilt 658 effective bytes with no EH/new ABI; typed natural new restored the constructor relocation, EH frame, 0x1920 allocation, exact 137-instruction count, and 0x18d0/0x18dc stack sizes.
 // fresh probes: full object-record ownership plus the group-flag dword union closed the initialization instruction count; correcting land_num to the second parameter at +0x141c recovered the loop owner and 18.98% exact-block coverage.
 // final state: current typed source is 687 effective bytes vs 695 original, 137 instructions, 3 calls, exact frame allocation, and 589 strict differing bytes; the best emitted-code diagnostic was 584 bytes before restoring the full typed land anchors.
@@ -220,5 +222,5 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info*
     }
     object_info.objects[0].obj_id = (long)new RGE_RMM_Object_Generator(
         this->map, this, world,
-        (RGE_Object_Info*)((char*)&object_info + 4), 1);
+        (RGE_Object_Info*)&object_info.objects[0].terrain, 1);
 }

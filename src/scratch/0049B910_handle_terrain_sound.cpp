@@ -22,6 +22,8 @@
 //   the shared no-log return; diff improved from 8 to 7 bytes.
 // - moved the named map/count loads before the result locals; output was
 //   unchanged. Remaining drift is seven register-encoding bytes in the scan.
+// - declaring best_index before terrain_count was a natural ownership-order
+//   probe; output was unchanged, so the clean declaration order remains.
 
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 extern unsigned long debug_timeGetTime(const char* file, int line);

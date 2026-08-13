@@ -6,7 +6,9 @@
 // - corrected TPanel/TTextPanel layout: parent_panel +0x40, num_lines +0xF8, cursor fields +0x100/+0x102, and format fields +0x19C onward.
 // - kept a short cursor local across get_text/mbslen to reproduce the target's saved EDI and 1289-byte boundary; best check is 1067 positional diff, 85.34% shape, and 30/36 ordered calls.
 // - tested shared-label and page-clamp variants; the compiler kept the same nonexact 3/5 calc_input_pos and vslot call sites.
-// - left in scratch: remaining drift is switch-table relocation masking plus two VC5 tail-sharing decisions; next lead is a focused source-order or local-lifetime donor comparison.
+// - separated the right-move success arm and upward-move body; this adds one calc_input_pos/redraw pair and improves the call map to 32/36.
+// - the original page tail conditionally clamps cur_col after get_text/mbslen; duplicating that condition in both page cases expands the function by 178 bytes, so that behavior/layout lead remains open.
+// - left in scratch: remaining drift is switch-table relocation masking, one calc_input_pos/redraw tail pair, and the shared page clamp.
 
 #include <stddef.h>
 
@@ -137,26 +139,26 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             this->cur_col = col + 1;
             this->calc_input_pos();
             this->set_redraw(1);
-            return 1;
+        } else {
+            if (this->cur_line >= this->num_lines - 1)
+                return 1;
+            this->cur_line++;
+            this->cur_col = 0;
+            this->calc_input_pos();
+            this->set_redraw(1);
         }
-        if (this->cur_line >= this->num_lines - 1)
-            return 1;
-        this->cur_line++;
-        this->cur_col = 0;
-        this->calc_input_pos();
-        this->set_redraw(1);
         return 1;
 
     case 0x26:
         if (this->num_lines < 1)
             return 1;
-        if (this->cur_line <= 0)
-            return 1;
-        this->cur_line--;
-        if (this->cur_col > __mbslen(this->get_text(this->cur_line)))
-            this->cur_col = __mbslen(this->get_text(this->cur_line));
-        this->calc_input_pos();
-        this->set_redraw(1);
+        if (this->cur_line > 0) {
+            this->cur_line--;
+            if (this->cur_col > __mbslen(this->get_text(this->cur_line)))
+                this->cur_col = __mbslen(this->get_text(this->cur_line));
+            this->calc_input_pos();
+            this->set_redraw(1);
+        }
         return 1;
 
     case 0x28:

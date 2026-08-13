@@ -15,6 +15,12 @@
 // - Volatile dimension rereads, controller/info pointer aliases, header
 //   context, and cursor-carry variants were nonproductive or diagnostic;
 //   cursor-carry worsened the strict diff. No inline asm or status promotion.
+// - Fresh natural ownership probe: used the period RGE_Random_Map_Module
+//   parent/list and buffer types, plus the polymorphic land-generator surface
+//   from exact same-module donors. The direct new/constructor path and typed
+//   outer loop remained unchanged; emitted code was identical (943-byte diff,
+//   0x34 frame). This is negative evidence against constructor/list context
+//   as the first structural blocker.
 // GIVEUP: remaining broad VC5 register/lifetime and 4-byte local-frame drift;
 // calls, CFG, field ownership, math constants, random scaling, and generator
 // constructor relocation are aligned.
@@ -25,22 +31,25 @@
 typedef unsigned char uchar;
 
 class RGE_Map;
+class RGE_Tile;
+class Map_Stack;
+class RGE_Random_Map_Module_List;
 
 class RGE_Random_Map_Module {
 public:
     virtual uchar generate();
 
-    void* parent;
-    void* list;
+    RGE_Random_Map_Module* parent;
+    RGE_Random_Map_Module_List* list;
     RGE_Map* map;
-    void* map_row_offset;
+    RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
     float schedule;
-    void* search_map;
-    void* search_map_rows;
-    void* stack_array;
-    void* stack_offsets;
+    uchar* search_map;
+    uchar** search_map_rows;
+    Map_Stack* stack_array;
+    Map_Stack** stack_offsets;
 };
 
 class RGE_Land_Info_Line {
@@ -79,6 +88,7 @@ public:
 class RGE_RMM_Land_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Land_Info info;
+    virtual uchar generate();
 
     RGE_RMM_Land_Generator(RGE_Map* map, RGE_Random_Map_Module* parent,
                            RGE_Land_Info* info);

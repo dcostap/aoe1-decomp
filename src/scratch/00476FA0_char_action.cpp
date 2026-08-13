@@ -13,6 +13,7 @@
 // restored the independent file-format dot rejection; this recovered the original +0137/+014F mbschr block.
 // added MessageBeep fallbacks to all invalid tails; the natural compiler basin still merges percent/numeric play tails.
 // final shared-beep goto experiment collapsed play call sites and was rolled back to the #9 codegen-best source.
+// reversed percent _mbscmp operands so VC5 evaluates get_text first and pushes it before the literal, matching the original call order; diff improved 290 to 277.
 // left in scratch: behavior and typed ownership are understood, but the source remains in a 32-byte-short basin with one merged play tail.
 
 typedef unsigned short ushort;
@@ -54,7 +55,7 @@ long TInputPanel::char_action(long ch, short count)
         case 8:
             if (_mbslen(this->get_text()) < 2 && ch >= '0' && ch <= '9') break;
             if (_mbslen(this->get_text()) != 2 || ch != '0') goto invalid1;
-            if (_mbscmp(this->get_text(), (char*)0x00585334) != 0) goto invalid1;
+            if (_mbscmp((char*)"10", this->get_text()) != 0) goto invalid1;
             break;
         case 1:
         case 2:

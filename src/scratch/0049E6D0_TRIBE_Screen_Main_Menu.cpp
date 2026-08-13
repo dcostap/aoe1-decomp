@@ -13,6 +13,9 @@
 //   list.  The remaining drift is compiler register/address scheduling: the
 //   rebuilt button-base/zeroing basin does not retain the original EBX/EAX
 //   coloring and the constructor remains 10 bytes short.
+// - Tested the full typed TPanel/TEasy virtual surface from the constructor
+//   vtable and call evidence; emitted code was unchanged, so the probe was
+//   rolled back.
 // - Left in scratch after the bounded VC5 pass; no inline asm or codegen-only
 //   volatile/offset scaffolding was retained.
 // FLAGS: /GX (EH)

@@ -20,11 +20,13 @@
 //   peeled duplicate dropdown site and aligned the static row call topology.
 // - behavior: spelling the title resource as a conditional -1/0 offset matched
 //   the original neg/sbb/add lowering and moved the first useful frontier deeper.
-// - final control-flow: the settings rows use one guarded loop site, matching
-//   the original single create_text site; the remaining drift is a missing
-//   static create_button site, ordered late-branch gaps, and 57 bytes of size.
-//   Kept this readable cursor/loop reconstruction in scratch after the ten-
-//   hypothesis budget; no exact promotion is claimed.
+// - final control-flow (prior session): the settings rows use one guarded loop
+//   site; the old remaining drift was a missing create_button site and late
+//   branch gaps.
+// - control-flow: reversed the host/nonhost dispatch arms.  The host arm now
+//   follows IsHost in source order, with the nonhost arm as the fallback.  This
+//   restored all 127 ordered calls, exact function size, and the original host
+//   and nonhost block placement; the row setup still differs locally.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
@@ -566,22 +568,7 @@ TribeMPSetupScreen::TribeMPSetupScreen()
             return;
         }
         this->cancelButton->set_help_info(0x7532, -1);
-    } else if (!comm->IsHost()) {
-        if (this->create_check_box(this, &this->ready_button,
-                                   100, 0x1B8, 0x1E, 0x1E, 0, 0) == 0) {
-            return;
-        }
-        if (this->create_text(this, &this->ready_button_label, 0x25BF,
-                              0x87, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0) == 0) {
-            return;
-        }
-        this->ready_button->set_help_info(0x7602, -1);
-        if (this->create_button(this, &this->cancelButton, 0xFA2,
-                                0, 0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0) == 0) {
-            return;
-        }
-        this->cancelButton->set_help_info(0x7532, -1);
-    } else {
+    } else if (comm->IsHost()) {
         if (this->create_check_box(this, &this->ready_button,
                                    10, 0x1B8, 0x1E, 0x1E, 0, 0) == 0) {
             return;
@@ -609,6 +596,21 @@ TribeMPSetupScreen::TribeMPSetupScreen()
         }
         this->netInfoButton->set_help_info(0x7601, -1);
         comm->SetMyReadiness(0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+        if (this->create_check_box(this, &this->ready_button,
+                                   100, 0x1B8, 0x1E, 0x1E, 0, 0) == 0) {
+            return;
+        }
+        if (this->create_text(this, &this->ready_button_label, 0x25BF,
+                              0x87, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0) == 0) {
+            return;
+        }
+        this->ready_button->set_help_info(0x7602, -1);
+        if (this->create_button(this, &this->cancelButton, 0xFA2,
+                                0, 0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0) == 0) {
+            return;
+        }
+        this->cancelButton->set_help_info(0x7532, -1);
     }
 
     if (this->create_button(this, &this->help_button, 0xFA9,

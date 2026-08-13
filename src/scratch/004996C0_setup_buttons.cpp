@@ -14,6 +14,10 @@
 //   0x1D4E3 multi-selection IDs; the remaining drift is compiler CFG/tail
 //   merging and late production/default-button scheduling, not an unknown
 //   pointer-offset scaffold.
+// - moved the packet-backed level-zero selection/button tail outside the
+//   level-two building branch; this restored two set_button sites and the
+//   level-zero any_selected_have_action path, improving the diff by 27 bytes
+//   and matching the original unit-level-zero guard.
 
 extern "C" void __cdecl free(void*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
@@ -828,63 +832,63 @@ void TRIBE_Screen_Game::setup_buttons()
                     }
                 }
 
-                bool special_selection =
-                    (production_queues_is_use == 0) &&
-                    (player->sel_count > 1);
-                bool all_known = true;
-                bool have_action = false;
-                if (special_selection) {
-                    short selected = 0;
-                    for (short i5 = 0;
-                         (i5 < 25) && (selected < player->sel_count); ++i5) {
-                        RGE_Action_Object* object =
-                            (RGE_Action_Object*)player->sel_list[i5];
-                        if (object != 0) {
-                            uchar object_level = object->master_obj->unit_level;
-                            if ((object_level != 3) &&
-                                (object_level != 9) &&
-                                (object_level != 4) &&
-                                (object_level != 5) &&
-                                (object_level != 6) &&
-                                (object_level != 7) &&
-                                (object_level != 8)) {
-                                all_known = false;
-                                break;
-                            }
-                            if (!have_action) {
-                                have_action = object->have_action() != 0;
-                            }
-                            ++selected;
-                        }
-                    }
-                }
+            }
 
-                int group;
-                if (special_selection && all_known) {
-                    group = player->is_group_selected(4);
-                    if (group != 0) {
-                        set_command_button(this, 0, 2, 3, 0x1D4DF);
-                    }
-                    if (have_action) {
-                        set_command_button(this, group != 0, 3, 5,
-                                           0x1D4DD);
-                    }
-                } else {
-                    group = player->is_group_selected(4);
-                    if (group != 0) {
-                        set_command_button(this, 0, 2, 3, 0x1D4DF);
-                    }
-                    if (this->any_selected_have_action()) {
-                        set_command_button(this, group != 0, 3, 5,
-                                           0x1D4DD);
+            bool special_selection =
+                (level == 0) && (player->sel_count > 1);
+            bool all_known = true;
+            bool have_action = false;
+            if (special_selection) {
+                short selected = 0;
+                for (short i5 = 0;
+                     (i5 < 25) && (selected < player->sel_count); ++i5) {
+                    RGE_Action_Object* object =
+                        (RGE_Action_Object*)player->sel_list[i5];
+                    if (object != 0) {
+                        uchar object_level = object->master_obj->unit_level;
+                        if ((object_level != 3) &&
+                            (object_level != 9) &&
+                            (object_level != 4) &&
+                            (object_level != 5) &&
+                            (object_level != 6) &&
+                            (object_level != 7) &&
+                            (object_level != 8)) {
+                            all_known = false;
+                            break;
+                        }
+                        if (!have_action) {
+                            have_action = object->have_action() != 0;
+                        }
+                        ++selected;
                     }
                 }
-                if (player->sel_count > 1) {
-                    set_command_button(this, 6, 7, 8, 0x1D4E1);
-                    set_command_button(this, 7, 8, 9, 0x4E43);
-                } else if (this->game_obj->selected_group != 0) {
-                    set_command_button(this, 6, 8, 9, 0x1D4E3);
+            }
+
+            int group;
+            if (special_selection && all_known) {
+                group = player->is_group_selected(4);
+                if (group != 0) {
+                    set_command_button(this, 0, 2, 3, 0x1D4DF);
                 }
+                if (have_action) {
+                    set_command_button(this, group != 0, 3, 5,
+                                       0x1D4DD);
+                }
+            } else {
+                group = player->is_group_selected(4);
+                if (group != 0) {
+                    set_command_button(this, 0, 2, 3, 0x1D4DF);
+                }
+                if (this->any_selected_have_action()) {
+                    set_command_button(this, group != 0, 3, 5,
+                                       0x1D4DD);
+                }
+            }
+            if (player->sel_count > 1) {
+                set_command_button(this, 6, 7, 8, 0x1D4E1);
+                set_command_button(this, 7, 8, 9, 0x4E43);
+            } else if (this->game_obj->selected_group != 0) {
+                set_command_button(this, 6, 8, 9, 0x1D4E3);
             }
         }
 

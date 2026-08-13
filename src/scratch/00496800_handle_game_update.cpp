@@ -24,6 +24,11 @@
 // - natural outer update-interval/mode guards and explicit initializations did
 //   not change the useful codegen. The current source is the clean canonical
 //   reconstruction, not a compiler-only variant.
+// - tested the behavior-backed rare call region: inlining the game-over and
+//   auto-exit bodies changed size or shape but kept the same -6/+6 call-site
+//   gap, so it was restored. Direct exit logging and a negative multiplayer
+//   guard were also codegen-neutral or worse; the observed shared-exit gotos
+//   remain the best source form.
 //
 // unresolved structural lead: original materializes an early EBX zero and
 // later uses EBP=-1 before the loop, while this basin keeps EBP=0 and the

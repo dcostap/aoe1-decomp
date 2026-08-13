@@ -20,6 +20,9 @@
 //   call count/ordered call targets and total code size now match.
 // - corrected random/scenario change gating from the executable: random mode
 //   changes only when saveRandomGame is zero.
+// - tested one natural shared player_index initialized before the scenarioInfo
+//   lifetime check; this fixed the first xor/cmp null-test block, but added a
+//   4-byte local-stack shift and worsened the total diff, so it was rolled back.
 // - left in scratch: remaining drift begins at the scenarioInfo null-test
 //   (original cmp against the active zero register vs rebuilt test), followed
 //   by source-order/register-coloring differences in the long summary body.

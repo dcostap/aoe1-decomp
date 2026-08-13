@@ -20,6 +20,12 @@
 //   the three size families, reordered their setup, tested declaration order,
 //   register qualification, long coordinate types, and nested size guards;
 //   these variants either emitted identical code or only changed scheduling.
+// - control-flow: tested a natural small-first threshold dispatch with a named
+//   button-16 tail for the medium/large arms; call sites became 82/82 aligned,
+//   but the first threshold moved to the wrong compare order and diff grew to
+//   2237 bytes, so this source was restored.
+// - control-flow: a preliminary tail form kept the first call prefix longer,
+//   but added 70 bytes and worsened structural coverage; it was also restored.
 // - paused: current source is the best natural reconstruction.  Remaining
 //   structural lead is the first button-loop setup at 00495B75: original keeps
 //   row y at [esp+38] and the six-column counter in EBX, while VC5 keeps the

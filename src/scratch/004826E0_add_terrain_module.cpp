@@ -14,6 +14,7 @@
 // 8: canonical field assignment order fixed both first-record stores and improved the diff to 262 bytes.
 // 9: raw dimension and no-op expression variants did not improve emitted code and were removed.
 // 10: block-scoped area locals were a codegen duplicate; restored one natural local.
+// 11: replaced the explicit shared-tail goto with natural switch breaks, matching the packet's line-268 break; emitted code was unchanged.
 // left in scratch: exact size/frame/call parity and canonical field ownership; switch tail merge and
 //    loop constant hoisting remain broad VC5 codegen differences.
 
@@ -134,7 +135,7 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info,
         terrain_info.terrain[1].terrain_type = 6;
         terrain_info.terrain[1].clumps = 17;
         terrain_info.terrain[1].terrain_size = area * 30 / 100;
-        goto terrain_switch_done;
+        break;
 
     case 0:
     case 1:
@@ -151,10 +152,9 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info,
         terrain_info.terrain[1].terrain_type = 6;
         terrain_info.terrain[1].clumps = 7;
         terrain_info.terrain[1].terrain_size = area * 30 / 100;
-        goto terrain_switch_done;
+        break;
     }
 
-terrain_switch_done:
     terrain_info.terrain[1].base_terrain_type = 0;
     terrain_info.terrain[1].terrain_generated = 0;
     terrain_info.terrain[1].spacing = 0;

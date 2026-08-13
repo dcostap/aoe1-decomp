@@ -15,6 +15,7 @@
 // r1 field-first capacity sum and split old-style assignments: no improvement; rolled back.
 // r1 focused capacity variant lab: five natural declaration/expression forms produced two groups and no exact match.
 // r1 local declaration reorder: one-byte farther and rolled back.
+// r2 typed ABI/control-flow reconstruction: used char buffers and the direct max_len <= input_len + len predicate; diff improved to 277, but shape/edit diagnostics worsened and codegen duplicated an earlier group; kept as the best natural typed source.
 // left in scratch: behavior/calls/stack frame match closely through clipboard path; remaining mismatch starts at capacity-test register allocation (rebuilt computes sum in ecx and max in edx, original uses edx=len+input_len and eax=max), causing 2-byte shift and later scheduling/register-order drift around _mbsninc calls.
 
 typedef unsigned long ulong;
@@ -29,9 +30,9 @@ extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(HANDLE hMem);
 extern "C" __declspec(dllimport) int __stdcall CloseClipboard(void);
 extern "C" __declspec(dllimport) int __stdcall MessageBeep(unsigned int type);
 
-extern "C" int __cdecl _mbslen(const unsigned char* str);
-extern "C" unsigned char* __cdecl _mbsncpy(unsigned char* dst, const unsigned char* src, unsigned int count);
-extern "C" unsigned char* __cdecl _mbsninc(const unsigned char* str, unsigned int count);
+extern "C" int __cdecl _mbslen(const char* str);
+extern "C" char* __cdecl _mbsncpy(char* dst, const char* src, unsigned int count);
+extern "C" char* __cdecl _mbsninc(const char* str, unsigned int count);
 extern ulong __cdecl debug_timeGetTime(char* file, int line);
 
 class TDigital { public: int play(); };
@@ -45,9 +46,9 @@ public:
     int draw_caret;
     TDigital* overLengthSound;
     char gap_19C[0x1A0 - 0x19C];
-    unsigned char* input_buffer;
-    unsigned char* input_buffer1;
-    unsigned char* input_buffer2;
+    char* input_buffer;
+    char* input_buffer1;
+    char* input_buffer2;
     short input_len;
     short max_len;
     char gap_1B0[4];
@@ -62,12 +63,12 @@ int TInputPanel::paste()
 {
     int len;
     HANDLE data_handle;
-    unsigned char* locked;
-    unsigned char* old_str;
-    unsigned char* new_cur;
-    unsigned char* old_tail;
-    unsigned char* dst_tail;
-    unsigned char new_str[0x1000];
+    char* locked;
+    char* old_str;
+    char* new_cur;
+    char* old_tail;
+    char* dst_tail;
+    char new_str[0x1000];
 
     len = 0;
     new_str[0] = 0;
@@ -79,7 +80,7 @@ int TInputPanel::paste()
     }
     data_handle = GetClipboardData(1);
     if (data_handle != 0) {
-        locked = (unsigned char*)GlobalLock(data_handle);
+        locked = (char*)GlobalLock(data_handle);
         if (locked != 0) {
             len = _mbslen(locked);
             if (len > 0xfff) {
@@ -95,9 +96,7 @@ int TInputPanel::paste()
     CloseClipboard();
 
     {
-        int max_len = this->max_len;
-        int total_len = len + this->input_len;
-        if (total_len >= max_len) {
+        if (this->max_len <= len + this->input_len) {
             if (this->overLengthSound != 0) {
                 this->overLengthSound->play();
                 return 0;

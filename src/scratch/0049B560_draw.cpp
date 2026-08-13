@@ -17,6 +17,8 @@
 // FillRect argument loads remain a localized register/order mismatch.
 // tried panel aliases, split pointer declaration, and four scalar argument
 // locals; scalar locals moved the first prologue hunk and were rolled back.
+// follow-up direct member expressions for FillRect loaded the render fields in
+// the wrong order and grew the function by 14 bytes; rolled back.
 // final validated scratch reconstruction retains the typed inherited layout and
 // aggregate clip save/restore; remaining drift is localized to panel FillRect
 // scheduling plus resulting branch displacements (current best codegen before
