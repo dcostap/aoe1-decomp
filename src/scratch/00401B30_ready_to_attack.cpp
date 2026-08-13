@@ -20,6 +20,8 @@
 //   branch improved the current frontier to 657 bytes and preserved the natural
 //   field-update/status shape. A direct target in-range return was 662 bytes and
 //   was rolled back; a shared ready label was structurally invalid (895 bytes).
+// - Removed the no-target in-range direct return; it now assigns range_status
+//   and falls through to the single shared can_attack tail.
 // Remaining work should preserve these named period-plausible owners rather than
 // returning to raw cursor arithmetic.
 
@@ -319,9 +321,9 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
             float max_distance = radius + this->range - 0.3f;
             if (distance <= max_distance) {
                 range_status = 1;
-                return this->obj->can_attack() != 0;
+            } else {
+                range_status = 2;
             }
-            range_status = 2;
         }
     } else {
         if (target->owner->id > 0) {

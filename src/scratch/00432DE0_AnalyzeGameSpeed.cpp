@@ -27,6 +27,9 @@
 //   bytes, 0xC/0xC frame, and calls 4/4. Total-turn and product-order probes
 //   were duplicates. Remaining drift is the early register/load schedule,
 //   loop-init order, product coloring, and one-byte size surplus.
+// - Reopened on the auditor lead and initialized i before the latency cursor.
+//   This improved positional diff from 162 to 154 bytes and aligned more of
+//   the initialization block. Size remains 456 versus 455; no broad tuning was attempted.
 // Left in scratch after the bounded 10-hypothesis assignment.
 
 #include <stdlib.h>
@@ -113,8 +116,8 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* out_granularity, un
     unsigned int cur_frames;
     min_avg = 10;
     max_high = 30;
-    ptr = PlayerHighLatencyMsec + 1; // player 1, +0x1E8
     i = 1;
+    ptr = PlayerHighLatencyMsec + 1; // player 1, +0x1E8
     do {
         if (Comm->IsPlayerHuman(i)) {
             unsigned long avg = *(ptr - 10);  // PlayerAvgFramesMsec[i]

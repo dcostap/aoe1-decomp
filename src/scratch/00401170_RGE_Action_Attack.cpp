@@ -35,6 +35,10 @@
 // - The remaining 45-byte drift is parameter-load register coloring after
 //   set_target_obj. Prior natural order, alias, layout, and TU-context probes
 //   covered the plausible source families; retain the canonical /GX source.
+// Fresh bounded pass (shardA-401170-r1):
+// - Removed nonsemantic wait/fight aliases and tested direct parameter stores.
+//   VC5 emitted the same 311-byte function and 45-byte mismatch; keep the
+//   simpler typed source. The register-coloring hunk remains unresolved.
 // Main-agent audit restored canonical action-object inheritance and removed the
 // residual downcasts from ordinary master/owner access.
 
@@ -175,10 +179,8 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* action_obj, RGE_Static_O
 {
     this->action_type = 9;
     this->set_target_obj(target);
-    RGE_Sprite* wait_reg = wait;
-    RGE_Sprite* fight_local = fight;
-    this->fight_sprite = fight_local;
-    this->wait_sprite = wait_reg;
+    this->fight_sprite = fight;
+    this->wait_sprite = wait;
     this->range = range;
     this->min_range = min_range;
     this->missile_id = missile_id;

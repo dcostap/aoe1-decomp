@@ -15,6 +15,7 @@
 // session probes: restored Action_Object vtable ownership, player->world->map, master area/weapon fields, 0x18-byte map cells, typed footprint radii, and the fourth/fifth pointer affiliation proved by stack homes.
 // best emitted candidate: 683B/frame 0x24, all seven calls aligned, 96.38% instruction-shape similarity and 207 positional diff bytes after restoring the real source-path literal; remaining drift is localized to the radius-square FPU expression and initial register order.
 // paused after bounded matching: readable typed source retained; no frame padding, fake volatility, raw cursor arithmetic, or register-forcing aliases.
+// session probe: initialized player before master; emitted code stayed identical, so restored the prior order.
 
 extern "C" long __cdecl _ftol();
 extern "C" int __cdecl debug_rand(char*, int);

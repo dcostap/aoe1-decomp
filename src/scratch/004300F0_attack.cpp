@@ -35,6 +35,9 @@
 //   codegen duplicates or slightly worse. Rolled both back. Current source
 //   retains direct master_obj ownership, initialized radius locals, and the
 //   pre-trig range lifetime; no compiler-steering source was retained.
+// - Tried the audit's natural radius_x-first range expression, with direct
+//   radius_y terms and no cast. It grew to 309 bytes and diff 257; the first
+//   hunk moved to the angle loads. Restored the clean 305-byte source.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
