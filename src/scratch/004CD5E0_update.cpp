@@ -33,6 +33,11 @@
 // locals were codegen duplicates; all were rolled back.
 // current best: 724B, 3 differing bytes at the second sub-action vtable
 // load (EDX versus original EAX); call targets, order, CFG, and size align.
+// r3 probe 1: braces around the state-4 nested switch were a codegen duplicate.
+// r3 probe 2: an explicit state-4 default break was a codegen duplicate.
+// r3 probe 3: unsigned-int promotion of the state-4 update result was a
+// codegen duplicate. Exact donors confirm the same natural switch family;
+// retain the shared-tail candidate and pause at the isolated register drift.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
