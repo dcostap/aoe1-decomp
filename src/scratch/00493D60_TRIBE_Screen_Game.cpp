@@ -60,6 +60,14 @@
 // 2026-08-13 shardA6-493D60-r1: naming the screen draw area before the inventory
 // panel constructor was a natural ownership probe, but added 4 bytes and widened
 // the positional diff from 3154 to 3999. Restored the clean reconstruction.
+// 2026-08-13 orch-493D60-a: named TPanel+0x20 draw_area, used TRIBE_Player for
+// inventory, typed the button array as TRIBE_Panel_Button**, and added stdio;
+// each emitted the baseline code. Restored the clean source.
+// 2026-08-13 orch-493D60-a: draw-loop lab tested baseline, plus4, count-local,
+// buffer-local, split, and comma forms. Baseline, plus4, and split grouped.
+// The count-local form was much worse. No source-backed lead remains.
+// 2026-08-13 orch-493D60-a: proven string-address macros kept strict diff at
+// 3154 and improved resync only. Restored named globals and clean source.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"
