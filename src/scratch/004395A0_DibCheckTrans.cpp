@@ -24,6 +24,12 @@
 // - tried reading the proven bitmap width before GetDibDim to extend its
 //   lifetime; VC5 changed the setup and scan coloring and worsened diff 197
 //   to 324, so it was rolled back. The post-call width read remains canonical.
+// - new claim probes: raw_width declaration initialization/int type, an int
+//   orientation cast, scan declaration order, int height, and long all_trans
+//   were codegen duplicates. Direct bits[row+x] with the corrected branch
+//   widened the frame to 0x1c; initializing tw/y widened it to 0x18.
+// - restored the natural typed candidate; remaining gap is the original EBX
+//   save and EAX/ECX scan register topology despite exact calls/frame/size.
 
 #include <windows.h>
 #include <stdlib.h>

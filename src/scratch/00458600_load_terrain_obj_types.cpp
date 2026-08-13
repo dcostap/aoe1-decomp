@@ -37,6 +37,14 @@
 //   134 bytes at exact size, but changed the count compare and is not natural.
 //   A body-scoped short count and mixed short/long count forms worsened block
 //   layout. Restored the clean direct-member source.
+// - orch-458600-a probe: a short header destination reused as the count gave
+//   341 bytes and 121 differing bytes, with the target spill and first two
+//   stores aligned. It still reuses the file version as a terrain count.
+// - orch-458600-a probes: placement pointer, signed-byte field, raw offset,
+//   and byte temporary forms were duplicates or did not improve the 121-byte
+//   basin. A four-case placement-store lab also found one emitted group.
+// - Restored the canonical long-version typed direct-member source after the
+//   bounded pass. The remaining structural gap is placement-block scheduling.
 
 #include <stdio.h>
 #include <stdlib.h>

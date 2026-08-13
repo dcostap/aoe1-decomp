@@ -18,6 +18,15 @@
 // - probe 034: combined an initialized uchar result with a natural positive
 //   guard and one done label; this also widened positional drift to 307 bytes
 //   despite a closer size, so it was restored.
+// - follow-up probes 039/040/041/044/045: an outer result-setting arm, /Ob0,
+//   <stdlib.h>, /G5, and /Og all reproduced the same 375-byte body and 77-byte
+//   mismatch; none changed the shared EH-tail CFG.
+// - probe 042: replacing the match goto with break plus a post-loop test
+//   reduced size to 360 but destroyed the exact body blocks and widened the
+//   positional diff to 276 bytes, so it was restored.
+// - probe 046: a full decompiler-style result assignment and explicit do-loop
+//   added duplicate get_name/verify calls and widened the diff to 304 bytes,
+//   so it was restored.
 // - left in scratch: canonical natural source; remaining drift is the VC5 EH
 //   return-tail layout (original shared cleanup versus rebuilt duplicated
 //   cleanup), not an unresolved campaign ownership or call-set issue. Keep
