@@ -32,6 +32,12 @@
 //   coloring. The 177-byte parameter-home diagnostic is not retained; the
 //   audited named-local source is 557/557 bytes, 182 diff bytes, 92.90% shape,
 //   and preserves all six ordered calls under default /O2 /Oy.
+// - Exact m_co_obj setup donor evidence supported one persistent count local,
+//   scoped short value pointers, and inner remaining counters for both max
+//   scans. This clean source shape reduced the current positional diff to 150
+//   bytes and made both scan bodies instruction-identical; parser stack-home
+//   scheduling remains the first mismatch. A duplicate scoped-pointer check
+//   confirmed no further codegen change, so no blind variants were retained.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -148,7 +154,6 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     short temp_fire_missile_at_frame;
     short index;
     short* armor_count_value;
-    short* value_ptr;
     int value_count;
     short sprite_index;
     RGE_Sprite* selected_sprite;
@@ -203,29 +208,30 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     fight_sprite = selected_sprite;
     base_armor = (unsigned char)temp_base_armor;
     fire_missile_at_frame = temp_fire_missile_at_frame;
-    value_count = (int)*armor_count_value;
-
     orig_armor = (unsigned char)base_armor;
+    value_count = (int)armor_num;
     if (value_count > 0) {
-        value_ptr = &armor->value;
+        short* value = &armor->value;
+        int left = value_count;
         do {
-            if (*value_ptr > orig_armor)
-                orig_armor = *value_ptr;
-            value_ptr += 2;
-            --value_count;
-        } while (value_count != 0);
+            if (*value > orig_armor)
+                orig_armor = *value;
+            value += 2;
+            --left;
+        } while (left != 0);
     }
 
-    value_count = (int)weapon_num;
     orig_weapon = 0;
+    value_count = (int)weapon_num;
     if (value_count > 0) {
-        value_ptr = &weapon->value;
+        short* value = &weapon->value;
+        int left = value_count;
         do {
-            if (*value_ptr > orig_weapon)
-                orig_weapon = *value_ptr;
-            value_ptr += 2;
-            --value_count;
-        } while (value_count != 0);
+            if (*value > orig_weapon)
+                orig_weapon = *value;
+            value += 2;
+            --left;
+        } while (left != 0);
     }
 
     orig_weapon_range = weapon_range;

@@ -8,8 +8,10 @@
 // try 5: corrected gather state numbering and action virtual slots; no metric improvement.
 // try 6: added typed gather/action methods and natural FPU locals; calls remain 49 vs original 53.
 // try 7: paused at budget; blocker is switch/jump-table body and missing repeated set_state/set_target virtual calls (19/22 slot 0x5c, 1/2 slot 0x138, 1/2 slot 0x1ec).
-
-#define RGE_BASE_GAME (*(RGE_Base_Game**)0x62C574)
+// current pass: restored the ACT_GATH switch handler order, fallback tails, static-object +0x84 setter slot, and state-7/state-8 checks; calls now match by target count and shape reached 78.21%.
+// remaining: jump-table relocation/body placement and one merged +0x1ec stop call; left the typed state-machine reconstruction in scratch.
+// main audit removed volatile scheduling locals and named the player-id and
+// object-info fields that prior source accessed through raw displacements.
 
 class RGE_Action_Object;
 class RGE_Static_Object;
@@ -88,6 +90,15 @@ public:
 
 class RGE_Static_Object {
 public:
+    virtual void s00(); virtual void s04(); virtual void s08(); virtual void s0C();
+    virtual void s10(); virtual void s14(); virtual void s18(); virtual void s1C();
+    virtual void s20(); virtual void s24(); virtual void s28(); virtual void s2C();
+    virtual void s30(); virtual void s34(); virtual void s38(); virtual void s3C();
+    virtual void s40(); virtual void s44(); virtual void s48(); virtual void s4C();
+    virtual void s50(); virtual void s54(); virtual void s58(); virtual void s5C();
+    virtual void s60(); virtual void s64(); virtual void s68(); virtual void s6C();
+    virtual void s70(); virtual void s74(); virtual void s78(); virtual void s7C();
+    virtual void s80();
     int id;
     RGE_Object_Info* object_data;
     RGE_Player* owner;
@@ -223,11 +234,9 @@ public:
     virtual void v78();
     virtual void v79();
     virtual void v7A();
-    virtual void cancel_action();
-    virtual unsigned char can_gather(RGE_Action_Object*, int, int);
-    virtual unsigned char turn_towards(RGE_Static_Object*, int, int);
-    virtual unsigned char a4E();
     virtual void stop_moving();
+    virtual unsigned char turn_towards(RGE_Action_Object*, int, int);
+    virtual unsigned char a4E();
     int id;
     RGE_Object_Info* object_data;
     RGE_Player* owner;
@@ -259,7 +268,8 @@ public:
     virtual void add_attribute_num(short, float, unsigned char);
     char gap_04[0x38];
     RGE_Game_World* world;
-    char gap_40[0x0C];
+    char gap_40[0x0A];
+    short id;
     short fallback_attribute;
     char gap_4E[2];
     float* attribute_table;
@@ -281,6 +291,8 @@ public:
 
 class RGE_Base_Game { public: char gap_00[0x9A8]; int quick_build; };
 
+extern RGE_Base_Game* rge_base_game;
+
 class RGE_Action_Gather : public RGE_Action {
 public:
     unsigned char update();
@@ -292,9 +304,9 @@ extern double DAT_0056E290;
 
 unsigned char RGE_Action_Gather::update()
 {
-    volatile float give_amount;
-    volatile float modifier;
-    volatile float max_hold;
+    float give_amount;
+    float modifier;
+    float max_hold;
 
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0)
         this->set_target_obj(0);
@@ -307,17 +319,14 @@ unsigned char RGE_Action_Gather::update()
         this->set_target_obj2(0);
 
     RGE_Static_Object* check_obj = this->target_obj;
-    if (check_obj != 0 && *(short*)((char*)check_obj->owner + 0x4A) != 0 &&
-        *(short*)((char*)check_obj->owner + 0x4A) != *(short*)((char*)this->obj->owner + 0x4A)) {
+    if (check_obj != 0 && check_obj->owner->id != 0 &&
+        check_obj->owner->id != this->obj->owner->id) {
         this->set_state(1);
         this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x261, 0, 0);
         return 4;
     }
 
     switch ((int)this->state) {
-    case 1:
-        return 1;
-
     case 3:
         if (this->timer < 0.0f) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
@@ -326,6 +335,24 @@ unsigned char RGE_Action_Gather::update()
                 this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
                 return 0;
             }
+        }
+        break;
+
+    case 11:
+    case 15:
+        switch (this->sub_actions->update()) {
+        case 1:
+        case 2:
+        case 5:
+            if (this->state == 11) { this->set_state(3); return 0; }
+            goto computer_fallback;
+        case 3:
+            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
+            this->set_state(3); return 0;
+        case 4:
+            this->set_target_obj(0);
+            if (this->state == 11) { this->set_state(11); return 0; }
+            this->set_state(15); return 0;
         }
         break;
 
@@ -347,7 +374,7 @@ unsigned char RGE_Action_Gather::update()
 
     case 6:
         if (this->obj == 0) { this->set_state(3); return 0; }
-        if (this->obj->can_gather(this->obj, 0, 0)) {
+        if (this->obj->turn_towards(this->obj, 0, 0)) {
             if (this->obj->attribute_amount_held <= 0.0f &&
                 this->obj->check_attribute((short)this->obj->object_data->attribute_type) == 0) {
                 this->set_target_obj(0); this->set_state(3); return 0;
@@ -357,12 +384,16 @@ unsigned char RGE_Action_Gather::update()
         break;
 
     case 7: {
-        RGE_Static_Object* holder = this->target_obj;
-        if (holder == 0) {
-            holder = (RGE_Static_Object*)this->obj;
-            if (holder->attribute_amount_held <= 0.0f) goto done;
+        if (this->target_obj == 0) {
+            if (this->obj->attribute_amount_held <= 0.0f) {
+                this->set_state(3);
+                return 0;
+            }
+            this->set_state(8);
+            return 0;
         }
-        if (RGE_BASE_GAME->quick_build != 0)
+        RGE_Static_Object* holder = this->target_obj;
+        if (rge_base_game->quick_build != 0)
             give_amount = holder->attribute_amount_held;
         else
             give_amount = this->task->gather_amount * this->obj->object_data->gather_multiplier * this->obj->owner->world->world_time_delta_seconds;
@@ -370,13 +401,18 @@ unsigned char RGE_Action_Gather::update()
         short attr = this->task->attribute_type;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attribute_table[attr];
-        max_hold = (float)*(short*)((char*)this->obj->object_data + 0x7C) * modifier - this->obj->attribute_amount_held;
+        max_hold = (float)this->obj->object_data->attribute_type * modifier - this->obj->attribute_amount_held;
         if (max_hold < modifier * give_amount)
             give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
         holder->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(give_amount, 1, 0);
-        if (this->obj->attribute_amount_held < give_amount || this->obj->attribute_amount_held <= 0.0f)
+        if (this->obj->attribute_amount_held < give_amount) {
+            if (this->obj->attribute_amount_held > 0.0f)
+                return 0;
+            if (this->obj->check_attribute((short)this->obj->object_data->attribute_type) != 0)
+                return 0;
             this->set_state(8);
+        }
         break;
     }
 
@@ -384,10 +420,16 @@ unsigned char RGE_Action_Gather::update()
         if (this->timer < 0.0f) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0f) {
-                this->timer = 0.0f; this->set_target_obj2(0); this->set_state(8); return 0;
+                this->timer = 0.0f; this->set_state(8); return 0;
             }
         } else {
             switch (this->sub_actions->update()) {
+            case 3:
+            case 4:
+            case 5:
+                this->timer = -1.5f;
+                this->obj->stop_moving();
+                goto done;
             case 1:
             case 2:
                 if (this->target_obj == 0) { this->set_state(8); return 0; }
@@ -401,49 +443,25 @@ unsigned char RGE_Action_Gather::update()
                 this->obj->set_attribute(-1, 0.0f);
                 if (this->target_obj != 0) { this->set_target_obj2(0); this->set_state(4); return 0; }
                 if (this->target_x != -1.0f && this->target_y != -1.0f) { this->set_state(11); return 0; }
-                goto done;
-            case 3:
-            case 4:
-            case 5:
-                this->timer = -1.5f; this->obj->stop_moving(); return 0;
+                goto computer_fallback;
             }
         }
         break;
 
-    case 11:
-    case 15:
-        switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-        case 5:
-            if (this->state == 11) { this->set_state(3); return 0; }
-            goto done;
-        case 3:
-            if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
-            goto done;
-        case 4:
-            this->set_target_obj(0);
-            if (this->state == 11) { this->set_state(11); return 0; }
-            this->set_state(15); return 0;
-        }
-        break;
+computer_fallback:
+    if (this->obj->owner->computerPlayer() == 1) this->set_state(1);
+    else this->set_state(2);
+    return 0;
 
-    case 13:
-        switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-        case 5:
-            if (this->target_obj2 != 0) { this->set_state(4); return 0; }
-        case 3:
-            this->set_state(3); return 0;
-        case 4:
-            this->set_target_obj(0); this->set_state(11); return 0;
-        }
-        break;
+    case 1:
+        return 1;
 
-    case 14:
+    case 13: {
         this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x261, 0, 0);
+        if (this->obj->owner->computerPlayer() == 1) this->set_state(1);
+        else this->set_state(2);
         return 3;
+    }
     }
 
 done:
