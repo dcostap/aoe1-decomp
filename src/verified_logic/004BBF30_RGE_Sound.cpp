@@ -104,7 +104,7 @@ public:
     short play_at_update_count;  // +0x00
     short sound_num;             // +0x02
     RGE_Sound_Info* sounds;      // +0x04
-    int cache_time;              // +0x08
+    unsigned long cache_time;    // +0x08
     short id;                    // +0x0C
 
     RGE_Sound(int handle, TSound_Driver* driver);
@@ -130,7 +130,7 @@ public:
     unsigned long time;           // +0x20
 };
 
-extern int __cdecl rge_read(int handle, void* buf, int size);
+extern void __cdecl rge_read(int handle, void* buf, int size);
 extern void* __cdecl calloc(int num, int size);
 
 RGE_Sound::RGE_Sound(int handle, TSound_Driver* driver)

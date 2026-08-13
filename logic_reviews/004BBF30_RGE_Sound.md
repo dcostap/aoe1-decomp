@@ -1,0 +1,54 @@
+# Logic review: 004BBF30 `RGE_Sound::RGE_Sound`
+
+## Phase transition
+
+The main agent suspended exact matching after bounded work exhausted natural
+sources for the post-`calloc` compare/store scheduling drift.
+
+Candidate: `src/scratch/004BBF30_RGE_Sound.cpp`.
+
+Current validation:
+
+- original size: 306 bytes; rebuilt size: 309 bytes;
+- all ten calls align in exact order;
+- record layout, loop effects, and branch counts align;
+- the remaining drift is the `calloc` result store and second-count compare.
+
+The main agent normalized `cache_time` to `unsigned long` and `rge_read` to
+the donor-proven `void __cdecl` ABI. This did not change emitted code.
+
+## Semantic questions
+
+1. Verify header reads and signed count behavior.
+2. Verify allocation, failure behavior, and the result store.
+3. Verify record reads, `TDigital` construction, and loaded state.
+4. Verify lifetime and cleanup ownership.
+
+## Review rounds
+
+### Round 1 — concurrent blind cohort, 2026-08-13
+
+- `sa-480bd2c3` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+- `sa-6022620a` — `openai-codex-secondary/gpt-5.6-luna`, xhigh
+
+Both reviewers found no definite behavioral difference.
+
+They verified:
+
+- the reads of ID, header, count, and cache time;
+- signed zero and negative count paths;
+- `calloc(count, 0x24)` and the allocation-result store;
+- the 0x24 record layout and field-read widths;
+- 0x3C-byte `TDigital` allocation and construction;
+- the digital pointer and loaded-byte stores;
+- the lack of normal-path cleanup in this constructor.
+
+The reviewers found that the source-level allocation assignment appears before
+the second count test. The executable schedules the compare first. The observed
+memory result and control behavior are the same.
+
+## Final decision
+
+No behavioral uncertainty remains in the reviewed paths. The three-byte size
+and allocation-hunk scheduling difference is VC5 code generation drift.
+Promote to `src/verified_logic`.
