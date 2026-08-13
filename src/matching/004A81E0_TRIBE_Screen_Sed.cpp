@@ -20,6 +20,20 @@
 // 9: placed typed set_line calls in the two source branches, matching the
 // packet's branch-local line 403 and compiler tail merge; diff improved to 176
 // bytes with 86.26% exact-block coverage, so this natural form is retained.
+// 10: reordered the two cross-link stores; the register schedule worsened the
+// localized gap from 10 to 18 bytes, so the original order was restored.
+// 11: typed RGE_Diamond_Map::main_view as RGE_Main_View*; no emitted change.
+// 12: carried both cross-link pointers as long-lived locals; this removed
+// reloads and caused a broad size/call-basins mismatch, so it was rolled back.
+// 13: retained the canonical RGE_View* type for RGE_Diamond_Map::main_view;
+// the emitted code stayed unchanged.
+// 14-15: base casts around the cross-link stores and help call had no effect.
+// 16: scoped pointer aliases around each independent cross-link store reduced
+// the gap to 6 bytes without changing size, calls, or control flow.
+// 17: one shared short-lived pointer pair improved the first store but removed
+// reloads and caused a broad size mismatch, so it was rolled back.
+// 18: separate short-lived pointer pairs with reversed declaration order for
+// each store reproduce the original ecx/eax schedule; exact match validated.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
@@ -61,6 +75,7 @@ public:
 };
 
 class TRIBE_Main_View;
+class RGE_Main_View;
 class RGE_Diamond_Map_View;
 
 class RGE_View : public TPanel {
@@ -102,7 +117,7 @@ public:
     void* map_image_lines;
     void* map_tile_rows;
     char gap_130[0x20];
-    void* main_view;
+    RGE_View* main_view;
     int scrolling;
     char gap_158[4];
     int draw_objects_mode;
@@ -240,7 +255,7 @@ public:
     void set_unit(short);
 };
 
-TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0x584414)
+TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenario Editor Screen")
 {
     char name[260];
     char temp_name[260];
@@ -259,9 +274,9 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
     this->valid_save_spot_flag = 0;
     this->init_module_variables();
     this->update_interval = 200;
-    this->last_update_time = debug_timeGetTime((char*)0x586CB0, 0x117);
+    this->last_update_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_sed.cpp", 0x117);
     this->map_redraw_interval = 1000;
-    this->last_map_redraw_time = debug_timeGetTime((char*)0x586CB0, 0x11A);
+    this->last_map_redraw_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_sed.cpp", 0x11A);
     this->save_text_color = 0;
     this->save_window_color = 0;
     this->changed_system_colors = 0;
@@ -271,12 +286,12 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
         this->setup_error = 1;
         return;
     }
-    int game_file_number = rge_base_game->registry->RegGetInt(0, (char*)0x57FA58);
-    sprintf(temp_name, (char*)0x586CA0, game_file_number);
+    int game_file_number = rge_base_game->registry->RegGetInt(0, "Game File Number");
+    sprintf(temp_name, "default%d.scx", game_file_number);
     if (file && strcmp(file, temp_name) == 0)
         this->need_to_save_flag = 1;
     if (!this->TScreenPanel::setup(rge_base_game->draw_area,
-                                   (char*)0x586C98, 0xC387, 1)) {
+                                   "scr5", 0xC387, 1)) {
         this->setup_error = 1;
         return;
     }
@@ -288,7 +303,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
     }
     if (!this->main_view->RGE_View::setup(this->render_area, this,
                                           0, 0, 0, 0, 0xA1, 0,
-                                          (char*)0x586334)) {
+                                          "bordline")) {
         this->setup_error = 1;
         return;
     }
@@ -303,9 +318,17 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
         this->setup_error = 1;
         return;
     }
-    this->map_view->set_bitmap((char*)0x586C8C, 0xC4E1);
-    this->map_view->main_view = this->main_view;
-    this->main_view->map_view = this->map_view;
+    this->map_view->set_bitmap("map640.bmp", 0xC4E1);
+    {
+        TRIBE_Main_View* main_view = this->main_view;
+        RGE_Diamond_Map_View* map_view = this->map_view;
+        map_view->main_view = main_view;
+    }
+    {
+        RGE_Diamond_Map_View* map_view = this->map_view;
+        TRIBE_Main_View* main_view = this->main_view;
+        main_view->map_view = map_view;
+    }
     this->main_view->set_help_info(-1, -1);
     RGE_Font* font = rge_base_game->get_font(0x0B);
     this->message_panel = new TMessagePanel(font->font, font->font_wid,
@@ -332,8 +355,8 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
     this->create_all_buttons_etc();
     int idx;
     if (file && *file) {
-        if (strstr(file, (char*)0x586104) != 0 ||
-            strstr(file, (char*)0x586C84) != 0) {
+        if (strstr(file, ".scn") != 0 ||
+            strstr(file, ".SCN") != 0) {
             char* source = file;
             int i = 0;
             do {
@@ -341,7 +364,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
                 source++;
             } while (source[0] != '.');
             name[i] = 0;
-            sprintf(file, (char*)0x586840, name);
+            sprintf(file, "%s.scx", name);
             this->world->scenario->Set_scenario_name(file);
         }
         for (idx = 0; idx < 8; ++idx) {
@@ -359,13 +382,13 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
     this->set_curr_child(this->bottom_panel);
     this->position_panels();
     this->set_panel_info();
-    this->set_map_type(0, 0);
-    this->set_mp_victory_type(0, 0);
+    this->set_map_type(1, 0);
+    this->set_mp_victory_type(1, 0);
     this->set_brush_size(1);
-    this->set_paint_type(0, 0);
+    this->set_paint_type(1, 0);
     this->set_player(1, 0, 0);
     this->set_unit_player(1);
-    this->set_message_type(0, 0);
+    this->set_message_type(1, 0);
     this->set_scenario_mode(1);
     this->set_unit(-1);
     this->world->map->set_map_visible(1);

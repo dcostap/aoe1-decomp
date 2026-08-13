@@ -2,19 +2,18 @@
 // Attempt log:
 // - Recovered the full 0x80-byte ConstructionItem and 0xF0-byte polymorphic AIModule ownership;
 //   /GX now gives the original 0x148 frame and compiler-owned vptr/EH surface.
-// - Reconstructed the binary-proven serialized read order, name+4 buffer, 8-argument constructor,
+// - Reconstructed the binary-proven serialized read order, local name buffer, 8-argument constructor,
 //   setter order, and both sentinel-list link paths. Typed IntFloat wire unions preserve raw float/int
 //   bits without fabricated calls or conversion helpers; all 58 direct calls align.
 // - Moved the proven scalar defaults into member initializers, following the exact same-TU constructor
 //   donor. This recovers the delayed compiler-owned vptr schedule and the first 96-instruction block;
 //   diff improves from 631 to 570 bytes while frame size and all 58 calls remain exact.
-// - Reordered wire locals to the packet's declaration order. The emitted code is unchanged, and the
-//   natural 257-byte shared name buffer remains the best source reconstruction. The 256-byte and
-//   larger diagnostic buffer variants were rejected because they lose the 0x148 frame or do not move
-//   name+4 to the oracle's esp+54 home.
-// - Remaining structural drift starts at the first loop: rebuilt name+4 is esp+58 and wire locals use
-//   different stack homes than the oracle's esp+54/name and proven +10..+44 slots. Do not tune registers;
-//   manual vptr/novtable tricks remain prohibited.
+// - Scoped the serialized wire locals per list loop and carried the sentinel predecessor through the
+//   item link. This restored the original stack homes, register reuse, 0x148 frame, and 1379-byte size;
+//   the remaining six-byte drift was only the decompiler's name-plus-four cursor.
+// - Direct access to the natural local name buffer removes that cursor. The VC5 output is an exact
+//   1379-byte match with all 58 calls aligned. Native scalar and aggregate-local diagnostics were
+//   rejected because they added conversion or frame drift.
 
 extern "C" void rge_read(int fd, void* dst, int size);
 
@@ -75,14 +74,11 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
       mapYSizeValue(-1),
       zero310(0)
 {
-    IntFloat x, y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
-    IntFloat skip;
-    int typeID;
-    int built;
-    IntFloat gameID, i;
+    char name[257];
+    IntFloat x;
     int n;
     ConstructionItem* item;
-    char name[257];
+    ConstructionItem* prev;
 
     this->lots.next = &this->lots;
     this->lots.prev = &this->lots;
@@ -100,9 +96,15 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
     rge_read(fd, &this->mapYSizeValue, 4);
 
     for (n=0; n<this->numberConstructionLotsValue; n++) {
+        IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
+        IntFloat skip;
+        int typeID;
+        int built;
+        IntFloat gameID, i;
+
         rge_read(fd, &x.i, 4);
-        rge_read(fd, name + 4, x.i);
-        name[x.i + 4] = 0;
+        rge_read(fd, name, x.i);
+        name[x.i] = 0;
         rge_read(fd, &typeID, 4);
         rge_read(fd, &inProgress.i, 4);
         rge_read(fd, &skip.i, 4);
@@ -116,7 +118,7 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         rge_read(fd, &z.f, 4);
         rge_read(fd, &uniqueID.i, 4);
         rge_read(fd, &buildAttempts.i, 4);
-        item = new ConstructionItem(y.f, zSize.f, gameID.f, ySize.f, i.f, xSize.f, typeID, name + 4);
+        item = new ConstructionItem(y.f, zSize.f, gameID.f, ySize.f, i.f, xSize.f, typeID, name);
         item->setInProgress(z.i);
         item->setBuilt(uniqueID.i);
         item->setBuildAttempts(buildAttempts.i);
@@ -124,16 +126,23 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         item->setUniqueID(skip.i);
         item->setSkip(built);
         item->next = &this->lots;
-        item->prev = this->lots.prev;
-        this->lots.prev->next = item;
+        prev = this->lots.prev;
+        item->prev = prev;
+        prev->next = item;
         this->lots.prev = item;
     }
 
     rge_read(fd, &this->numberSecondValue, 4);
     for (n=0; n<this->numberSecondValue; n++) {
+        IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
+        IntFloat skip;
+        int typeID;
+        int built;
+        IntFloat gameID, i;
+
         rge_read(fd, &x.i, 4);
-        rge_read(fd, name + 4, x.i);
-        name[x.i + 4] = 0;
+        rge_read(fd, name, x.i);
+        name[x.i] = 0;
         rge_read(fd, &built, 4);
         rge_read(fd, &i.i, 4);
         rge_read(fd, &xSize.i, 4);
@@ -147,7 +156,7 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         rge_read(fd, &zSize.i, 4);
         rge_read(fd, &gameID.i, 4);
         rge_read(fd, &ySize.i, 4);
-        item = new ConstructionItem(y.f, z.f, uniqueID.f, buildAttempts.f, inProgress.f, skip.f, built, name + 4);
+        item = new ConstructionItem(y.f, z.f, uniqueID.f, buildAttempts.f, inProgress.f, skip.f, built, name);
         item->setInProgress(zSize.i);
         item->setBuilt(gameID.i);
         item->setBuildAttempts(ySize.i);
@@ -155,8 +164,9 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         item->setUniqueID(xSize.i);
         item->setSkip(typeID);
         item->next = &this->second;
-        item->prev = this->second.prev;
-        this->second.prev->next = item;
+        prev = this->second.prev;
+        item->prev = prev;
+        prev->next = item;
         this->second.prev = item;
     }
 }

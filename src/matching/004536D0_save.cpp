@@ -11,6 +11,10 @@
 // 9: replaced raw offsets and fake SpriteLike/SoundLike types with the canonical typed RGE_Master_Static_Object owner, virtual save slot, and typed 0x8 damage records; short selector locals, strlen, and positive do/while damage traversal preserve the observed topology. Current check: 219 strict-diff bytes, 99.40% shape, 68 ordered calls, and a 4-byte size gap; retained as the natural typed candidate.
 // 10: changed the outer damage-count guard to typed truth testing; this retained the second positive guard, reached original size, and reduced the diagnostic diff to 11 bytes. Rolled back because it changed the observed outer jbe to je and did not fix the attribute-loop pointer order.
 // 11: tried an unsigned-short positive inner guard with the original outer guard; VC5 returned to the clean 219-byte codegen. Restored the clean double positive guard.
+// 12: declared the attribute-flag cursor before the typed arrays; this recovered the original store-before-LEA schedule and reduced the diff to 209 bytes.
+// 13: combined the reordered cursors with a nonzero outer damage guard and positive inner guard; the result reached a 1-byte diff.
+// 14: local-count, widened-count, alias-pointer, and self-assignment variants did not improve the 1-byte branch gap and were removed.
+// 15: reversed the outer positive comparison to `0 < damage_sprite_num`; this emits the original jbe while retaining the nested positive guard. Exact 1379-byte match.
 
 #include <string.h>
 
@@ -236,9 +240,9 @@ void RGE_Master_Static_Object::save(int fd)
     W(&self->outline_radius_y,4);
     W(&self->outline_radius_z,4);
 
+    unsigned char* soundPtr = self->attribute_flag;
     float* selectedProb = self->attribute_amount_held;
     short* selected = self->attribute_type_held;
-    unsigned char* soundPtr = self->attribute_flag;
     int i = 3;
     do {
         W(selected,2);
@@ -251,7 +255,7 @@ void RGE_Master_Static_Object::save(int fd)
     } while (i);
 
     W(&self->damage_sprite_num,1);
-    if (self->damage_sprite_num > 0) {
+    if (0 < self->damage_sprite_num) {
         short j = 0;
         if (self->damage_sprite_num > 0) {
             do {
