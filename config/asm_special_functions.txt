@@ -12,3 +12,7 @@ _ASMSet_Xlate_Table
 _ASMDraw_HLine
 _ASMDraw_Sprite
 PtrClear
+PtrCopy
+PtrSpanCopy
+PtrSurfaceCopy
+OverlayMemCopy
