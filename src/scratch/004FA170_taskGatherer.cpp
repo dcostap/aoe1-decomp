@@ -15,6 +15,10 @@
 //    shorter int-only declarations improved shape but did not match the binary
 //    call arity and were rolled back. A named resource-base pointer moved the
 //    array register closer but added four bytes and was also rolled back.
+//  - Follow-up probes separated the initial target from dropsite-output locals,
+//    tried assignment-in-condition, and tested five versus six exclusions;
+//    these were unchanged or worse and were rolled back. A function-scope
+//    reused dropsite pointer increased the frame and was also rolled back.
 //  - Final matching status: unresolved. Named-surface rebuild is 1758B versus
 //    1712B original, with frame 0x30, 32/32 ordered calls, and first mismatch
 //    at +0x1D (the original homes gathererObj before the null branch). The

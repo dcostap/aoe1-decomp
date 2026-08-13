@@ -21,6 +21,9 @@
 // luna-4DA680-r1: 15-probe pass exhausted; clean typed while-scan remains authoritative.
 // luna-4DA680-r2: Ghidra's iVar1 reuse for convertUnitToIntType, direct owner access, and one-line initialization matching PDB line 2047 all emitted the same 431-byte drift.
 // luna-4DA680-r2: the exact objectMemory donor's direct-member outer do scan, with and without inline duplicate return, rebuilt 1337 bytes and broke CFG; restored.
+// luna-4DA680-r3: baseline confirmed the canonical typed while-scan at 431 bytes; declaration-order and split-initializer variants emitted the same bytes.
+// luna-4DA680-r3: using the first-empty register as the duplicate store index moved the diff to 286 bytes but broke broad block shape; binary duplicate path uses scan index, restored.
+// luna-4DA680-r3: exact objectMemory donor declaration order and pointer-first declarations did not move the prologue coloring; clean source remains authoritative.
 
 typedef unsigned char uchar;
 
