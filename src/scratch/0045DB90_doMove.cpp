@@ -17,6 +17,9 @@
 // - Remaining structural gap: VC5 emits two extra indirect retry call sites
 //   for removeUserDefinedWaypoint and keeps a 0x10 frame versus the original
 //   0x18; no padding or manual-vtable source was retained.
+// - Ghidra confirms a separate int retry-success flag (bVar4) in both scans.
+//   Its natural form reached a 0x18 frame and diff 3048, but VC5 still used
+//   EAX for the cached vtable and emitted two retry calls. It was rolled back.
 
 struct Waypoint {
     float x;

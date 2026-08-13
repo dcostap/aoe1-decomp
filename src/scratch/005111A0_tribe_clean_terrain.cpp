@@ -14,6 +14,9 @@
 // probe: executable bVar placement predicates (two straight passes plus four staged diagonal tests) recovered 178 bytes and brought the emitted size to 1570 vs 1562; all 21 calls and the 0x44 frame align.
 // probe: long loop cursors and register qualifications were codegen duplicates.
 // probe: grouped the diagonal water checks under top/bottom row guards from the packet; size 1562 and first mismatch moved to 005111F9.
+// new-worker probe: matched the exact RGE_Map::clean_terrain donor's nested int row/column loops,
+// tile-before-column increment, and compass local order; size stayed 1562, resync drift worsened, restored.
+// new-worker probe: initialized the packet's BX-held upper-left predicate before the stack flags; no structural gain, restored.
 // left in scratch: remaining drift is the VC5 local/register basin and loop/prologue topology; current source keeps the named tile/neighbor ownership and executable predicate structure.
 
 typedef unsigned char uchar;
