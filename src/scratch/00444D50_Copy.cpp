@@ -20,6 +20,10 @@
 // - Parenthesized RECT extents, int low-arm locals, and reversed extent
 //   operands emitted duplicate code.  The retained forms follow the decompiler
 //   arithmetic and period scalar types without codegen steering.
+// - This pass initialized source-y before the low-memory RECT split; the
+//   first structural hunk moved farther (726 vs. 716 bytes), so it was
+//   restored.  A top-scope int source-y matched the earlier 0x24-frame basin
+//   (829 bytes) and was also restored.
 
 #include <windows.h>
 
