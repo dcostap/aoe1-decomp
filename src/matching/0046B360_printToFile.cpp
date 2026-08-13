@@ -28,6 +28,9 @@
 //   best natural source reconstruction.
 // - Swapped the natural row/column declaration order to test EDI row and EBX
 //   column coloring; VC5 emitted the same 486 bytes and 22-byte drift.
+// - Restored ordinary `for` headers for the outer row and inner column scans.
+//   PDB line 197 covers the row init/increment and line 203 starts the inner
+//   loop.  This matched the target exactly at 486 bytes.
 
 struct FILE;
 extern "C" FILE* __cdecl fopen(const char* filename, const char* mode);
@@ -78,33 +81,26 @@ void PathingSystem::printToFile(char* filename)
 
             fprintf(file, "\n");
 
-            i = 0;
-            while (i < (this->ySizeValue << 2)) {
+            for (i = 0; i < (this->ySizeValue << 2); ++i) {
                     if (i % 4 == 0) {
                         fprintf(file, "R%03d: ", i / 4);
                     } else {
                         fprintf(file, "      ");
                     }
 
-                    column = 0;
-                    if ((this->xSizeValue << 2) > 0) {
-                        do {
-                            if (column % 4 == 0) {
-                                fprintf(file, " %1d", this->obstruction(column, i));
-                            } else {
-                                fprintf(file, "%1d", this->obstruction(column, i));
-                            }
-                            ++column;
-                        } while (column < (this->xSizeValue << 2));
+                    for (column = 0; column < (this->xSizeValue << 2); ++column) {
+                        if (column % 4 == 0) {
+                            fprintf(file, " %1d", this->obstruction(column, i));
+                        } else {
+                            fprintf(file, "%1d", this->obstruction(column, i));
+                        }
                     }
 
-                    int nextRow = i + 1;
-                    if ((nextRow % 4) == 0) {
+                    if (((i + 1) % 4) == 0) {
                         fprintf(file, "  :R%03d\n\n", i / 4);
                     } else {
                         fprintf(file, "\n", i / 4);
                     }
-                    i = nextRow;
             }
 
             fprintf(file, "\n");
