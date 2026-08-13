@@ -20,6 +20,11 @@
 // Probe luna-50CE68-r2: inner-block j scope and the donor TU stdlib context were
 // exact codegen duplicates; signed byte flags worsened size and CFG. A full
 // declaration-cycle reorder also stayed at 21 bytes. Restored clean source.
+// Probe luna-50CE68-r4: tested function-scope j, late or initialized scalar
+// declarations, explicit changed != 0, and outer-index prefix increment; all
+// were duplicates. Scoping tech or either prerequisite counter, a while-loop
+// rewrite, and a named research temp worsened structure. Restored clean source;
+// no evidence-backed natural lead remains for the five-way local-home rotation.
 
 struct Tech_Player_Tree {
     float research_done;

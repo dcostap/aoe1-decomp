@@ -20,6 +20,11 @@
 //   player_num +0x3C. The source now has 969 differing bytes and 107 edit
 //   bytes. Remaining drift is localized to the farms reset reload and benign
 //   register/block scheduling. No exact match; leave the clean typed source.
+// - Update r2 probes: player/world/tick locals, a function-wide md receiver,
+//   a post-reset player receiver, timestamp temporary, unsigned tick type,
+//   and an information-subobject pointer were codegen duplicates or worse.
+//   A defend-array reference also worsened structure. Restored the clean
+//   typed source; no evidence-backed lead remains for this claim.
 
 class AIModule {
 public:
