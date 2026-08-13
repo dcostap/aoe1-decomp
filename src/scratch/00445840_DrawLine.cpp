@@ -27,6 +27,12 @@
 // - Fresh pass: reversing the vertical endpoint declaration order tested the
 //   first-hunk register coloring; VC5 worsened to 312 differing bytes and
 //   83.10% shape, so the natural declaration order was restored.
+// - Fresh pass: hoisting all natural endpoint and Bresenham locals to function
+//   scope produced identical bytes, so it did not explain the first block.
+// - Fresh pass: moving the steep termination test directly after the helper
+//   improved block shape but made VC5 emit a sixth helper call; both an
+//   explicit break and return were rolled back. The clean five-call source is
+//   retained; the remaining lead is the original parameter/register basin.
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 

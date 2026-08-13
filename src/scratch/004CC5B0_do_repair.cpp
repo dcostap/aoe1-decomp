@@ -16,6 +16,12 @@
 // worsened the prologue.  Keep the direct cast as the binary-supported source.
 // probe: same-TU virtual base and task-list declarations initially shifted
 // offsets; removing compensating gaps restored the 248-byte codegen basin.
+// probe: a focused seven-way lab of non-volatile target casts, address aliases,
+// and local pointer copies collapsed to one 383-byte codegen group; none
+// reproduced the oracle's +0x83 parameter-home reload.
+// probe: using this as the empty-list task candidate improved positional diff
+// by four bytes but lost the shared jump block and worsened shape; restored the
+// typed target fallback because the candidate is not behavior-plausible.
 // fresh pass: dossier, same-TU donors, and stack-home lessons confirm the
 // remaining +0x83 reload as the only natural-source blocker; no new lead.
 

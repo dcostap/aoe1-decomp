@@ -53,6 +53,12 @@
 //   were worse or duplicate basins. Reversed pitch terms were duplicate.
 // - Restored the natural typed byte-RLE source. Remaining gap is the early
 //   pitch/height/source register coloring and save_buffer home allocation.
+// orch-4BB770-a probe (2026-08-13):
+// - Split the command count from the fill count to test the oracle's distinct
+//   byte homes and first structural loop hunk. Exact-block coverage improved
+//   from 32.88% to 42.47%, but size fell to 391B and strict diff worsened to
+//   349B. Restored the clean source. The next lead remains source/TU context
+//   for the early pitch/height and parameter-home schedule.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };

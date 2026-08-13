@@ -27,6 +27,11 @@
 // Typing vf210 as RGE_Task* and moving the action local were codegen-neutral.
 // bounded pass: typed top-scoped task/action locals with the sibling natural
 // direct-return shape widened the body to 420 bytes and diff 291; restored.
+// bounded orch pass: reusing the target pointer as the binary-observed 0/1
+// status reached 360 bytes, one return, and diff 111; it swapped this/target
+// registers and remains diagnostic rather than the canonical source.
+// Assigning the task result before its null test inverted the prologue and
+// widened diff to 321; an explicit update return widened diff to 203; restored.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 class RGE_Action;

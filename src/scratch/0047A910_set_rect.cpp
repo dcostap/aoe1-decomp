@@ -34,6 +34,12 @@
 // - Reordered the horizontal range expression to perp plus margin, then subtract button; VC5 emitted the same
 //   368-byte code as the clean source (diff 275, shape 68.42%), so it was rolled back.
 // - Clean natural typed source retained.  The early EBP save remains the only structural lead.
+// Current bounded pass (orch-47A910-a):
+// - Branch-local range declarations and direct range expressions were codegen duplicates.
+// - Direct vertical geometry reads improved the strict diff from 275 to 272 bytes and shape to 69.47%; retained.
+// - Direct horizontal geometry reads added 5 bytes and worsened shape; rolled back.
+// - Donor virtual method declarations and a shared down_right local were codegen duplicates; removed for source clarity.
+// - Final blocker remains the prologue EBP save and associated register/block topology.
 
 struct tagRECT {
     long left;
@@ -75,8 +81,6 @@ struct TScrollBarPanel : public TPanel {
 };
 
 void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
-    int range;
-
     TPanel::set_rect(param_1, param_2, param_3, param_4);
 
     if (this->orientation == 1) {
@@ -87,9 +91,7 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         int bottom = button + track - 5;
         int margin = this->margin;
 
-        range = this->perp_size;
-        range += margin;
-        range -= button;
+        int range = this->perp_size + margin - button;
         int up_left = margin + 2;
         int down_left = range + 2;
         int down_right = down_left + button - 5;
@@ -114,40 +116,36 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->bottom_rect.bottom = bottom;
     } else {
         // Vertical scrollbar layout
-        int track = this->track_size;
-        int button = this->button_size;
-        int perp = this->perp_size;
-        int margin = this->margin;
-
-        range = button + track;
-        range -= perp;
-        int top = track + 2;
-        int left = margin + 2;
+        int range = this->button_size;
+        range += this->track_size;
+        range -= this->perp_size;
+        int top = this->track_size + 2;
+        int left = this->margin + 2;
 
         this->up_rect.top = top;
 
         int down_top = range + 2;
         this->down_rect.top = down_top;
 
-        int right = perp + top - 5;
+        int right = this->perp_size + top - 5;
         this->up_rect.left = left;
         this->tab_rect.left = left;
         this->top_rect.left = left;
         this->bottom_rect.left = left;
         this->down_rect.left = left;
 
-        int down_right = perp + left - 5;
+        int down_right = this->perp_size + left - 5;
         this->up_rect.right = down_right;
         this->up_rect.bottom = right;
 
-        int down_bottom = down_top + perp - 5;
+        int down_bottom = down_top + this->perp_size - 5;
         this->down_rect.right = down_right;
         this->down_rect.bottom = down_bottom;
         this->tab_rect.right = down_right;
         this->top_rect.right = down_right;
         this->bottom_rect.right = down_right;
 
-        int tab_max = range - perp + 6;
+        int tab_max = range - this->perp_size + 6;
         this->tab_max_y = tab_max;
 
         int tab_min = right + 1;

@@ -46,7 +46,9 @@
 // - Fresh bounded pass: inlining debug_rand in the scaling expression matches
 //   the oracle's ECX-held magic-division schedule and improves diff 76 -> 66.
 //   Combined retry, explicit else, and infinite-loop spellings were worse or
-//   duplicate; keep the natural do/while.  The retry tail still inverts JL.
+//   duplicate; keep the natural do/while.  A bounded for-header retry loop
+//   instead reproduces the oracle's direct JL backedge, exact size, CFG, and
+//   every byte except the final player-count compare (cmp esi,eax vs ebp,eax).
 
 #include <stdio.h>
 
@@ -130,8 +132,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
 
     if (human_players <= available) {
         int player = 0;
-        if (rge_base_game->numberPlayers() > 0) {
-            do {
+        for (; player < rge_base_game->numberPlayers(); player = position_used[0]) {
                 position_used[0] = player + 1;
                 int humanity = comm->GetPlayerHumanity(position_used[0]);
                 if (humanity == 2 || humanity == 4) {
@@ -152,7 +153,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
 
                     int tries = 0;
                     int new_position;
-                    do {
+                    for (; tries < 1000; ++tries) {
                         int count = this->scenarioPlayerCount;
                         new_position =
                             (debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x5E4) * count) /
@@ -166,14 +167,11 @@ void TribeMPSetupScreen::calcRandomPositions() {
                             selected_position = new_position;
                             break;
                         }
-                    } while (++tries < 1000);
+                    }
 
                     ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player, selected_position);
                     position_used[selected_position + 1] = player;
                 }
-                player = position_used[0];
-                players = rge_base_game->numberPlayers();
-            } while (player < players);
         }
     }
 }

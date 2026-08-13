@@ -25,11 +25,16 @@
 //     register-coloring evidence; the emitted code was unchanged.
 // 17: fresh pass declared typed int draw_y before draw_x in shape_draw, following
 //     the exact Pnl_txt donor's source order; emitted code was unchanged.
-// Left in scratch: remaining drift is localized mostly to the tiled shape_draw loop scheduling/argument setup, causing 4-byte shift in the first branch and branch-target displacement drift; fill/bevel tails look behaviorally aligned.
 // 18: natural typed lead from the exact Pnl_txt timeline donor: expose the
 // period TShape data surface and SDK context while retaining the target ABI.
 //    This moved the tiled loop to exact shape and reduced strict drift to 15
 //    register-encoding bytes; the remaining hunk is count-setup register color.
+// 19: narrowed the width tile-count local to short; VC5 emitted the same 15-byte
+//     register-color drift, so the change was not retained as a codegen lead.
+// 20: narrowed the height tile-count local to short; this added four bytes and
+//     changed the loop shape, so it was restored.
+// 21: removed temporary width/height locals and used direct panel members, as in
+//     the exact Pnl_txt donor; this produced an exact 412-byte match.
 
 #include <windows.h>
 
@@ -105,22 +110,18 @@ void Time_Line_Panel::draw_background()
             return;
         }
 
-        int pic_w = this->background_pic_wid;
-        int panel_w = this->width;
-        if (pic_w >= panel_w) {
+        if (this->background_pic_wid >= this->width) {
             pic_rows = 1;
         } else {
-            pic_rows = panel_w / pic_w;
-            if ((short)pic_rows * pic_w < panel_w) {
+            pic_rows = this->width / this->background_pic_wid;
+            if ((short)pic_rows * this->background_pic_wid < this->width) {
                 pic_rows++;
             }
         }
 
-        int pic_h = this->background_pic_hgt;
-        int panel_h = this->height;
-        if (pic_h >= panel_h) {
-            tile_rows = panel_h / pic_h;
-            if ((short)tile_rows * pic_h < panel_h) {
+        if (this->background_pic_hgt >= this->height) {
+            tile_rows = this->height / this->background_pic_hgt;
+            if ((short)tile_rows * this->background_pic_hgt < this->height) {
                 tile_rows++;
             }
         }

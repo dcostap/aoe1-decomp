@@ -36,6 +36,16 @@
 // evidence-backed source lead remains in this claim.
 // probe 34: scoped the canonical array base inside each outer iteration to
 // test the original reload feeding both id and entry address; duplicate codegen.
+// probe 36: read the indexed id before declaring entry; this added 8 bytes and
+// a 0x14 frame, so it was restored.
+// probes 38, 42: hoisted entry declaration and changed assignment timing;
+// both retained the clean emitted code or the same 8-byte regression.
+// probe 40: used a typed entry reference after the id sentinel; same regression.
+// probe 44: cached itemsToDefend.numberValue; duplicate codegen.
+// probe 45: restored the exact same-TU polymorphic parent surface; duplicate.
+// probe 46: removed the id local and reread the indexed field; same regression.
+// Final pause: the clean typed pointer form remains the best source-shaped
+// reconstruction. The first block still differs only in base/id/entry coloring.
 
 #include <math.h>
 
@@ -102,9 +112,17 @@ public:
     RGE_Static_Object* object(int id);
 };
 
-class TribeInformationAIModule {
+struct AIModule {
+    virtual void dummy();
+};
+
+struct InformationAIModule : public AIModule {
+    char gap_EC[0xEC];
+};
+
+class TribeInformationAIModule : public InformationAIModule {
 public:
-    char gap_00[0x100];
+    char farmsPad[0x10];
     MainDecisionAIModule* md;
     char gap_104[0x0C];
     int maxImportantObjectMemory;
@@ -133,8 +151,9 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, 
             int id = entry->id;
             if (id != -1) {
                 int j = 0;
-                if (this->itemsToDefend.numberValue > 0) {
-                    while (j < this->itemsToDefend.numberValue) {
+                int defendCount = this->itemsToDefend.numberValue;
+                if (defendCount > 0) {
+                    while (j < defendCount) {
                         if (j >= this->itemsToDefend.maximumSizeValue)
                             break;
                         if (this->itemsToDefend.value[j] == id) {
