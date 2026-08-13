@@ -12,6 +12,13 @@
 // try 9: used signed int player-id comparison and an explicit bounded while scan; the candidate reached exact size, 98.20% shape, and 431-byte positional drift.
 // try 10: restored the outer guard and bottom-tested scan; this regressed to 1337 bytes, so the best while-scan source is retained.
 // left in scratch: all six calls and 19 conditional edges align. Remaining drift starts in prologue EBP/EDI coloring and one duplicate-store block placement; target has no stack frame.
+// focused probe: local declaration/initialization order variants and a declaration-order lab kept the same 431-byte drift.
+// focused probe: outer-guard, delayed-pointer, indexed-entry, and explicit early-exit scans broke size/CFG parity; rolled back.
+// focused probe: register hints, unsigned-short player number, and direct duplicate return did not improve positional output; rolled back.
+// left in scratch: exact-size typed while-scan remains the clean source; unresolved drift is limited to register coloring and duplicate-block placement.
+// luna-4DA680-r1: guarded cursor scope and direct indexed scan were behavior-backed but broke size/CFG parity; restored.
+// luna-4DA680-r1: for-loop spelling, local declaration/lifetime changes, signed player-number, full same-TU type fields, and pointer/old-count reuse all emitted the same 431-byte drift.
+// luna-4DA680-r1: 15-probe pass exhausted; clean typed while-scan remains authoritative.
 
 typedef unsigned char uchar;
 

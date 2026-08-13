@@ -15,7 +15,15 @@
 // follow-up: removing the pre-guard dcoFromID zero-init shrank code by 4 bytes,
 // but positional diff worsened from 792 to 807; rolled back to the clean source.
 // FLAGS: config/flags/00426FC0_GetDPLAYMessages.rsp (/nologo /c /O2 /Oy)
-// left in scratch: needs real Com_hand.cpp source/context to recover original prologue (global load before saves) and exact local stack topology.
+// left in scratch: the remaining drift is the initial timer-call cleanup and
+// the duplicated player-ID scan register shape; calls and frame are aligned.
+// fresh pass: model the binary's separate peek-size and receive-size homes; the
+// oracle copies the peek result into the receive size before the second call.
+// probe: the peek count, not the receive size, drives the overflow check.
+// probe: the peek Receive preserves the prologue-zeroed from-ID; it is not reset
+// at the top of each loop.
+// probe: loading a guard receiver before ID zeroing reproduces the exact prologue
+// and keeps the repeated global DirectPlay loads in the call sites.
 
 typedef unsigned long ulong;
 extern ulong __cdecl debug_timeGetTime(char* file, int line);
@@ -58,28 +66,31 @@ public:
 };
 
 void TCommunications_Handler::GetDPLAYMessages() {
-    ulong dcoFromID = 0;
-    ulong dcoReceiveID = 0;
-    ulong dwCount = 0;
+    ulong dcoFromID;
+    ulong dcoReceiveID;
+    ulong dwCount;
     ulong dwPreSize;
     ulong dwSize;
-    ulong loopStartTime;
     ulong local_4;
-    if (dplay == 0) return;
+    long hr;
+    IDirectPlay4A* guard_dplay = dplay;
+    dcoFromID = 0;
+    dcoReceiveID = 0;
+    if (guard_dplay == 0) return;
+    dwCount = 4000;
     dwSize = 4000;
-    dcoFromID = 4000;
     char* buf = this->InCommBuff;
     local_4 = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3d4);
     dwPreSize = 0;
-    long hr = dplay->GetMessageCount(dplay_id, &dwPreSize);
+    hr = dplay->GetMessageCount(dplay_id, &dwPreSize);
     if (hr == 0 && dwPreSize > 10) log_obj->Log((char*)"!!! DPMsgCount = %u", dwPreSize);
     while (1) {
         ulong t = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3e1);
-        dcoFromID = 0;
-        hr = dplay->Receive(&dcoFromID, &dcoReceiveID, 8, 0, &dwSize);
+        hr = dplay->Receive(&dcoFromID, &dcoReceiveID, 8, 0, &dwCount);
         ulong elapsed = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3ec) - t;
         if (elapsed > 50) log_obj->Log((char*)"!!! Receive Peek slow - %u msec", elapsed);
-        if (hr == 0 && dwSize >= 4000) { log_obj->Log((char*)"True overflow %d requested.  Max = %d", dwSize, 4000); return; }
+        if (hr == 0 && dwCount >= 4000) { log_obj->Log((char*)"True overflow %d requested.  Max = %d", dwCount, 4000); return; }
+        dwSize = dwCount;
         if (hr != 0) dwSize = 4000;
         t = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x403);
         hr = dplay->Receive(&dcoFromID, &dcoReceiveID, 1, buf, &dwSize);

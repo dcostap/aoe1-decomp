@@ -45,6 +45,10 @@
 //   bytes stayed unchanged at the 2-byte cmp/test basin, so the ABI is kept.
 // - Adding an explicit nonnegative loop-index conjunct regressed to 244 bytes;
 //   reversing the direct comparison operands reproduced the 2-byte basin.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed BP is cleared before the
+// only differing gate and preserved by both preceding calls. `cmp ax,bp` and
+// `test ax,ax` thus give the same jle condition. No memory, width, call, CFG,
+// cleanup, or lifetime effect differs.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
