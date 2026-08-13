@@ -29,8 +29,20 @@
 // kept the max/list locals with that do/while shape; event-pointer allocation returned to the
 // original prologue family and positional diff improved to 89 with all 11 calls aligned.
 // rolled back a direct-value variant; it moved the prologue and worsened the diff to 138.
-// left in scratch: all 11 call targets and the main 0x1f4/0x258 bodies align; remaining
-// mismatch is the dispatch-table relocation and 0x2bb max/list register order.
+// prior best: all 11 call targets and the main 0x1f4/0x258 bodies aligned; remaining
+// drift was the 0x2bb max/list register order and the final removal block.
+// worker probe 21: used a donor-natural bounded search and direct-field compaction block;
+// positional diff stayed 89, but the tail shape improved and the source remained natural.
+// worker probe 22: scoped a ManagedArray reference at the post-hit label; diff reached 23,
+// with the expected max-first tail shape but case-0 LEA scheduling changed.
+// worker probes 23-26: label scoping, pointer aliases, and a named maximum-field pointer
+// were codegen duplicates; retained the natural array-pointer form as the cleaner candidate.
+// worker probe 27: declared the case-0 array owner before count; diff reached 16 and restored
+// the original case-0 LEA/index order without changing calls or the 600-byte boundary.
+// worker probe 28: cached the post-hit caller before index initialization; exact 600-byte match
+// with all 11 ordered calls and the original 0x2bb register/pointer-walk topology.
+// worker probe 29: removed the diagnostic maximum-field pointer; the natural max local stayed
+// exact. Final source uses named ManagedArray ownership and ordinary bounded search/compaction.
 
 // This function uses the period UnitAIModule layout and the same-TU virtual surfaces as
 // the exact transport/fishing processNotify donors.  The target class adds no fields.
@@ -214,11 +226,11 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             obj->owner->notifyCommander(obj->id, obj->id, 0x201, event->caller, 0, 0);
         }
 
-        int count = this->attackingUnitsValue.numberValue;
-        ManagedArray_int& array = this->attackingUnitsValue;
+        ManagedArray_int* array = &this->attackingUnitsValue;
+        int count = array->numberValue;
         int i = 0;
-        for (; i < count && i < array.maximumSizeValue; ++i) {
-            if (array.value[i] == event->caller) goto found_for_help;
+        for (; i < count && i < array->maximumSizeValue; ++i) {
+            if (array->value[i] == event->caller) goto found_for_help;
         }
         if (this->obj->owner->computerPlayer() == 0 &&
             this->currentTarget != event->caller) {
@@ -228,16 +240,16 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 found_for_help:
         i = 0;
         int caller = event->caller;
-        count = array.numberValue;
-        for (; i < count && i < array.maximumSizeValue; ++i) {
-            if (array.value[i] == caller) goto already_in_list;
+        count = array->numberValue;
+        for (; i < count && i < array->maximumSizeValue; ++i) {
+            if (array->value[i] == caller) goto already_in_list;
         }
 
-        if (array.numberValue > array.maximumSizeValue - 1) {
-            array.resize(array.numberValue + 1);
+        if (array->numberValue > array->maximumSizeValue - 1) {
+            array->resize(array->numberValue + 1);
         }
-        array.value[array.numberValue] = caller;
-        array.numberValue++;
+        array->value[array->numberValue] = caller;
+        array->numberValue++;
 
 already_in_list:
         this->obj->setUnderAttack(1);
@@ -286,23 +298,28 @@ changed_258:
         return 2;
 
 found_2bb:
+        ManagedArray_int* array = &this->attackingUnitsValue;
+        int max = array->maximumSizeValue;
+        int caller = event->caller;
         i = 0;
-        int max = this->attackingUnitsValue.maximumSizeValue;
-        int* list = this->attackingUnitsValue.value;
-        while (i < max && list[i] != event->caller) {
-            ++i;
-        }
-        if (i >= max)
-            return 2;
-        if (i < max - 1) {
-            do {
+        if (max > 0) {
+            while (i < max) {
+                if (array->value[i] == caller)
+                    break;
                 ++i;
-                list[i - 1] = list[i];
-            } while (i < max - 1);
+            }
         }
-        this->attackingUnitsValue.numberValue--;
-        if (this->attackingUnitsValue.numberValue < 0)
-            this->attackingUnitsValue.numberValue = 0;
+        if (i < max) {
+            if (i < max - 1) {
+                do {
+                    array->value[i] = array->value[i + 1];
+                    ++i;
+                } while (i < this->attackingUnitsValue.maximumSizeValue - 1);
+            }
+            array->numberValue--;
+            if (array->numberValue < 0)
+                array->numberValue = 0;
+        }
         return 2;
     }
 

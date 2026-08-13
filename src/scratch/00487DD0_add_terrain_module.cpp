@@ -29,6 +29,13 @@
 //   the same output; restored the clean raw-cursor reconstruction.
 // - Call-order probe: split the final debug_rand result into a named value
 //   before the typed log call. VC5 emitted the same 462-byte basin; restored.
+// - Fresh structural probes: the canonical first terrain-line type improved
+//   the basin to 86 differing bytes and 96.84% shape; full typed adjustment
+//   loops regressed broadly and were restored. A volatile flag cursor was a
+//   diagnostic only: it improved to 77 bytes but is not plausible source.
+// - Final clean source uses named terrain-line ownership throughout. The raw
+//   adjustment cursors were diagnostic only. Remaining mismatch is store
+//   scheduling in the type-0d arm, multiply order, and variadic cleanup.
 
 typedef unsigned char uchar;
 
@@ -47,6 +54,18 @@ class MapInfoTable {
 public:
     char gap_00[0x20];
     int vals[1];
+};
+
+class RGE_Terrain_Info_Line {
+public:
+    int terrain_size;
+    int terrain_generated;
+    int terrain_type;
+    int clumps;
+    int spacing;
+    int base_terrain_type;
+    int clumpiness_factor;
+    int avoid_hot_spots;
 };
 
 class RGE_RMM_Database_Controller {
@@ -82,57 +101,60 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
     float scale = (float)land_tile_num * 0.00005f;
     int i = 0;
     if (this->mod_count > 0) {
-        int* p = (int*)((char*)this + 0x1480);
+        RGE_Terrain_Info_Line* line =
+            (RGE_Terrain_Info_Line*)((char*)this + 0x1474);
         do {
-            if (*(p - 1) != 6 && scale > 1.0) {
-                *p = (long)((float)*p * scale);
+            if (line->terrain_type != 6 && scale > 1.0) {
+                line->clumps = (long)((float)line->clumps * scale);
             }
             i++;
-            p += 8;
+            ++line;
         } while (i < this->mod_count);
     }
 
     if (debug_rand(s_file, 0x154) < 0x1fff) {
         i = 0;
         if (this->mod_count > 0) {
-            int* p = (int*)((char*)this + 0x1480);
+            RGE_Terrain_Info_Line* line =
+                (RGE_Terrain_Info_Line*)((char*)this + 0x1474);
             do {
-                int type = *(p - 1);
+                int type = line->terrain_type;
                 if (type == 0x0d) {
-                    *(p - 3) = *(p - 3) * 3;
-                    *p = *p * 3;
-                    p[4] = 2;
+                    line->terrain_size = line->terrain_size * 3;
+                    line->clumps = line->clumps * 3;
+                    line->avoid_hot_spots = 2;
                 } else if (type == 0x14) {
-                    *(p - 3) = *(p - 3) / 2;
-                    *p = *p / 2;
+                    line->terrain_size = line->terrain_size / 2;
+                    line->clumps = line->clumps / 2;
                 } else if (type == 0x13) {
-                    *(p - 3) = *(p - 3) / 2;
-                    *p = *p / 2;
+                    line->terrain_size = line->terrain_size / 2;
+                    line->clumps = line->clumps / 2;
                 } else if (type == 0x0a) {
-                    *(p - 3) = *(p - 3) / 2;
-                    *p = *p / 2;
-                    p[4] = 2;
+                    line->terrain_size = line->terrain_size / 2;
+                    line->clumps = line->clumps / 2;
+                    line->avoid_hot_spots = 2;
                 } else if (type == 6) {
-                    *(p - 3) = *(p - 3) << 1;
-                    p[4] = 0;
+                    line->terrain_size = line->terrain_size << 1;
+                    line->avoid_hot_spots = 0;
                 }
                 i++;
-                p += 8;
+                ++line;
             } while (i < this->mod_count);
         }
     } else {
         i = 0;
         if (this->mod_count > 0) {
-            int* p = (int*)((char*)this + 0x1490);
+            RGE_Terrain_Info_Line* line =
+                (RGE_Terrain_Info_Line*)((char*)this + 0x1474);
             do {
-                int type = *(p - 5);
+                int type = line->terrain_type;
                 if (type == 6) {
-                    *p = 0;
+                    line->avoid_hot_spots = 0;
                 } else if (type == 0x0a || type == 0x0d) {
-                    *p = 2;
+                    line->avoid_hot_spots = 2;
                 }
                 i++;
-                p += 8;
+                ++line;
             } while (i < this->mod_count);
         }
     }

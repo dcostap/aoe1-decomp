@@ -15,10 +15,13 @@
 // final shared-beep goto experiment collapsed play call sites and was rolled back to the #9 codegen-best source.
 // reversed percent _mbscmp operands so VC5 evaluates get_text first and pushes it before the literal, matching the original call order; diff improved 290 to 277.
 // inlined typed error handling in each percent/numeric, file, and path arm; this restored the third play call, exact size, and diff 222.
-// left in scratch: behavior and typed ownership are understood; remaining drift is structural, starting at the jump-table base and early block layout.
+// replaced the guarded do/while with a pretested while; this restored the jl backedge, success fall-through, exact block layout, and reduced diff 222 to 1.
+// declared _mbslen as unsigned int; this restored the original unsigned jae at the percent length guard and produced an exact match.
+// modeled the BX/BP loop counter as a short local; output stayed exact and the source now matches the observed width naturally.
+// exact under the default VC5 flags; source remains a typed switch with named fields and direct period API calls.
 
 typedef unsigned short ushort;
-extern "C" int __cdecl _mbslen(const char*);
+extern "C" unsigned int __cdecl _mbslen(const char*);
 extern "C" int __cdecl _mbscmp(const char*, const char*);
 extern "C" char* __cdecl _mbschr(const char*, unsigned int);
 extern "C" void (__stdcall* const MessageBeep)(unsigned int);
@@ -44,14 +47,14 @@ public:
 
 long TInputPanel::char_action(long ch, short count)
 {
-    int i;
+    short i;
     if (ch == 8 || ch == 9 || ch == 10 || ch == 13 || ch == 27 || ch < 0x1B) {
         return 1;
     }
     if (count == 0) count = 1;
     i = 0;
     if (count <= 0) return 1;
-    do {
+    while (i < count) {
         switch (this->type) {
         case 8:
             if (_mbslen(this->get_text()) < 2 && ch >= '0' && ch <= '9') break;
@@ -98,6 +101,6 @@ long TInputPanel::char_action(long ch, short count)
         }
         if (this->insert_character(ch) == 0) return 1;
         ++i;
-    } while ((short)i < count);
+    }
     return 1;
 }

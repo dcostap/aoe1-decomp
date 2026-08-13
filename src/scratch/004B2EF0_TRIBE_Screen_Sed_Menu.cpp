@@ -36,8 +36,16 @@
 //   to 398-406 bytes but shrank the body by 12 bytes; title-first layout was
 //   415 bytes, and positive success nesting grew the body to 527 bytes. All
 //   variants were rolled back; clean source remains 504 bytes and 412 diff.
+// - orch claim: a natural zero local, typed null carrier, and complete local
+//   virtual method bodies were codegen duplicates. A button-array alias only
+//   shrank the body by 12 bytes and was rolled back.
+// - aligned the factory/panel declarations with exact donors (TPanel parent,
+//   two button strings, long IDs, int setup flag, short tab count). Bytes did
+//   not change, but the living ABI now matches the period surface.
+// - absolute global/string addresses changed relocation diagnostics but did
+//   not improve positional output; restored external string/global symbols.
 // - left in scratch: early constructor zero-carrier/store scheduling and
-//   setup-argument interleaving remain unresolved after the 10-probe budget.
+//   setup-argument interleaving remain unresolved after this focused pass.
 
 #include "..\..\include\game_globals.h"
 #include <string.h>
@@ -54,7 +62,7 @@ public:
     virtual ~TPanel() {}
     virtual long action(TPanel* p1, long p2, unsigned long p3, unsigned long p4) { return 0; }
     void delete_panel(TPanel** panel);
-    void set_tab_order(TPanel** panels, long count);
+    void set_tab_order(TPanel** panels, short count);
     void set_curr_child(TPanel* child);
 };
 
@@ -62,9 +70,9 @@ class TEasy_Panel : public TPanel {
 public:
     char gap_F4[0x384];
     void set_ideal_size(long w, long h);
-    int create_text(TEasy_Panel* parent, TTextPanel** out, int langId, long x, long y, long w, long h,
+    int create_text(TPanel* parent, TTextPanel** out, long langId, long x, long y, long w, long h,
                     long a8, long a9, long a10, long a11);
-    int create_button(TEasy_Panel* parent, TButtonPanel** out, char* name, long flag,
+    int create_button(TPanel* parent, TButtonPanel** out, char* name, char* label,
                       long x, long y, long w, long h,
                       long a9, long a10, long a11);
 };
@@ -86,13 +94,13 @@ public:
     char gap_F4[0x1A4];
     long hotkey;
     long hotkey_shift;
-    void set_text(short param1, unsigned short langId);
+    void set_text(short param1, long langId);
 };
 
 class TScreenPanel : public TEasy_Panel {
 public:
     TScreenPanel(char* name);
-    long setup(TDrawArea*, char*, long, long);
+    long setup(TDrawArea*, char*, long, int);
     ~TScreenPanel();
 };
 
@@ -103,7 +111,6 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-
 extern char s_Scenario_Editor_Menu[];
 extern char s_scr4[];
 extern char s_empty[];
@@ -118,6 +125,7 @@ public:
     virtual long action(TPanel* p1, long p2, unsigned long p3, unsigned long p4);
 
     TRIBE_Screen_Sed_Menu();
+    virtual ~TRIBE_Screen_Sed_Menu();
 };
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
@@ -141,11 +149,13 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(this, &button[i], s_empty, 0, 0xAA, 0xAA + i * 0x32, 0x12C, 0x28, 0, 0, 0))
+        if (!create_button(this, &button[i], s_empty, (char*)0,
+                           0xAA, 0xAA + i * 0x32, 0x12C, 0x28, 0, 0, 0))
             return;
     }
 
-    if (!create_button(this, &close_button, (char*)0x3EA, 0, 0, 0, 0, 0, -1, -1, 0))
+    if (!create_button(this, &close_button, (char*)0x3EA, (char*)0,
+                       0, 0, 0, 0, -1, -1, 0))
         return;
 
     close_button->set_text_size(1);

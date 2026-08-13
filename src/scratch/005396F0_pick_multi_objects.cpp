@@ -15,7 +15,10 @@
 // matching-worker probes: reusing max_level as the node object-id home (with local or direct object expressions) caused a larger frame and broad regression; rolled back because the stack write can be compiler local-home reuse rather than source parameter mutation.
 // matching-worker probe: restored the typed view.cpp donor context with an RGE_View : TPanel surface; VC5 emitted a codegen duplicate, so the prior clean source remains.
 // matching-worker probe: moved the proven z>=min_level test outside the descending loop, matching the original pre-loop compare and shared count-return path; emitted code was an exact duplicate with no metric movement.
-// final bounded best: natural typed record output, combined initial guard, and outer z>=min_level loop guard; 566 rebuilt bytes, 438 strict diff, 74.29% shape, 37.79% exact-block coverage. Remaining drift is broad VC5 register/block topology and global-address relocation, not safe localized drift.
+// matching-worker probe: a natural do-while duplicate scan removed the repeated output-pointer loop test; size reached 566B and strict diff improved to 420B, but register coloring remained broad.
+// matching-worker diagnostics: direct confidence-field cursor plus the do-while scan reached 566B/417B, but raw field-pointer writes were rolled back in favor of the typed record source.
+// matching-worker probes: self alias and register-qualified count were codegen duplicates; split record/confidence aliases regressed to 482B.
+// final bounded best: natural typed record output, combined initial guard, and do-while duplicate scan; 566 rebuilt bytes, 420 strict diff, 72.09% shape, 34.30% exact-block coverage. Remaining drift is broad VC5 register/block topology and global-address relocation, not safe localized drift.
 
 class RGE_Pick_Obj_Info {
 public:
@@ -115,7 +118,7 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
                         if (out > Picked_Objects) {
                             int i = 0;
                             RGE_Pick_Obj_Info* p = Picked_Objects;
-                            while (out > Picked_Objects) {
+                            do {
                                 if (p->object_id == node->Object_ID) {
                                     add = 0;
                                     if ((short)ok < Picked_Objects[i].confidence) {
@@ -125,8 +128,7 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
                                 }
                                 i++;
                                 ++p;
-                                if (i >= num_picked) break;
-                            }
+                            } while (i < num_picked);
                         }
                         if (add) {
                             out->object_id = node->Object_ID;

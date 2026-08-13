@@ -20,6 +20,9 @@
 // 17: restored direct natural member expressions and returns after unchanged alias probes; retained the canonical layout reconstruction.
 // 18: replaced the leading opaque gap with the inventory-supported typed RGE_Scenario prefix; all proven offsets remain unchanged and codegen is a duplicate.
 // 19: flattened the use-temp condition into a natural per-file/fallback if/else; emitted code was unchanged, so restored the nested form.
+// 20: bound rge_base_game to the proven absolute 0x62C574 global; relocations now use the oracle address, but codegen remains the 95-byte late drift.
+// 21: late result local, zero-offset/raw TempText3 address, long parameters, mutable sprintf format, ai_dir width, and explicit pointer casts were all duplicate basins; restored natural typed source.
+// 22: left in scratch: all nine ordered calls, frame, size, and the first 277 bytes align. The remaining block/liveness drift is the compiler's saved TempText3 pointer around the two late sprintf returns (ESI+mov eax,esi versus oracle's delayed LEAs), with an 8-byte padded suffix.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
@@ -48,7 +51,7 @@ public:
     char gap_04[0x0C - 0x04];
     RGE_Prog_Info* prog_info;
 };
-extern RGE_Base_Game* rge_base_game;
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
 class RGE_Scenario {
 public:

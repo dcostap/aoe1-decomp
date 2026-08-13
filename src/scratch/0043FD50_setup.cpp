@@ -19,6 +19,10 @@
 // attempt 12: removed the redundant positive button-count wrapper; the packet
 // shows one loop-entry test before the create_button vtable load. Diff improved
 // 586->563 bytes, but shape and exact-block coverage worsened; kept natural code.
+// claim orch-43FD50-a: result-local and array variants worsened structural shape;
+// chained button initialization retained the original first-hunk basin.
+// Local draw-area staging with p5 base height is the best period-plausible source
+// reconstruction here; it reaches diff 534 with exact size and ordered calls.
 // Best current result: exact size and ordered call parity; remaining drift is
 // register scheduling and prologue layout, first mismatch at +0005.
 
@@ -109,11 +113,10 @@ public:
 
 long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
     long p5, unsigned char p6, char* p7, long p8, long p9) {
-    button0 = 0;
-    button1 = 0;
-    button2 = 0;
+    button0 = button1 = button2 = 0;
 
-    if (TDialogPanel::setup(p1->renderArea(), p1, p4, p8, p2, p3, 1) == 0) {
+    TDrawArea* draw_area = p1->renderArea();
+    if (TDialogPanel::setup(draw_area, p1, p4, p5, p2, p3, 1) == 0) {
         return 0;
     }
 

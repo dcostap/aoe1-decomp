@@ -22,6 +22,18 @@
 // - Same-TU direct maps storage and the full module virtual-slot surface
 //   changed only resync bytes (368 versus 362) with no positional movement;
 //   restored the prior clean source.
+// - Structural lead: make the selected map's land-info aggregate the owning
+//   pointer.  The original keeps `maps + map_type * 0x48 + 4` in ESI, not the
+//   map-entry base, so the source should name the nested land data directly.
+// - Inverted the by-player branch so the player expansion falls through and
+//   the single-entry arm is the jump target; this restored the original CFG.
+// - Natural indexed `map->land[land_index]` access, rather than a saved land
+//   cursor, restored exact size and the original loop blocks (206-byte diff).
+// - Deferring the first elevation literal until after area calculation matched
+//   the remaining store scheduling and reduced the best result to 38 bytes.
+// - The final mismatch is limited to the early area multiply order and count
+//   store scheduling.  A count-before-area probe regressed to 43 bytes; rolled
+//   back.  The current clean source is the 38-byte indexed reconstruction.
 
 struct RGE_Map;
 struct RGE_Random_Map_Module_List;
@@ -172,14 +184,16 @@ struct RGE_RMM_Database_Controller : RGE_Random_Map_Module {
 void RGE_RMM_Database_Controller::add_elevation_module()
 {
     int map_type = this->map_type;
-    RGE_Map_Data_Entry* map = this->map_info.maps + map_type;
-    int land_area = (this->map_width *
-                     map->land_info.grown_land_percent *
+    RGE_Land_Data* map = &this->map_info.maps[map_type].land_info;
+
+    int land_area = (map->grown_land_percent *
+                     this->map_width *
                      this->map_height) / 100;
+
+    this->elevation_info.elevation[0].elevation = 1;
 
     this->elevation_info.elevation_num = 4;
 
-    this->elevation_info.elevation[0].elevation = 1;
     this->elevation_info.elevation[0].clumps = 10;
     this->elevation_info.elevation[0].base_terrain_type = 0;
     this->elevation_info.elevation[0].base_elevation = 0;
@@ -212,22 +226,11 @@ void RGE_RMM_Database_Controller::add_elevation_module()
     this->elevation_info.elevation[3].spacing = 1;
 
     int hot_spot_num = 0;
-    RGE_Land_Data_Entry* map_land = map->land_info.land;
     int land_index = 0;
-    if (map->land_info.land_num > 0) {
+    if (map->land_num > 0) {
         do {
-            if (map_land->radius >= 0) {
-                if (map_land->by_player_flag == 0) {
-                    this->elevation_info.hot_spots[hot_spot_num].x =
-                        this->land_info.land[hot_spot_num].x;
-                    this->elevation_info.hot_spots[hot_spot_num].y =
-                        this->land_info.land[hot_spot_num].y;
-                    this->elevation_info.hot_spots[hot_spot_num].radius =
-                        map_land->radius;
-                    this->elevation_info.hot_spots[hot_spot_num].fade =
-                        map_land->fade;
-                    ++hot_spot_num;
-                } else {
+            if (map->land[land_index].radius >= 0) {
+                if (map->land[land_index].by_player_flag != 0) {
                     int player_index = 0;
                     if (this->number_of_players > 0) {
                         do {
@@ -236,18 +239,27 @@ void RGE_RMM_Database_Controller::add_elevation_module()
                             this->elevation_info.hot_spots[hot_spot_num].y =
                                 this->land_info.land[hot_spot_num].y;
                             this->elevation_info.hot_spots[hot_spot_num].radius =
-                                map_land->radius;
+                                map->land[land_index].radius;
                             this->elevation_info.hot_spots[hot_spot_num].fade =
-                                map_land->fade;
+                                map->land[land_index].fade;
                             ++hot_spot_num;
                             ++player_index;
                         } while (player_index < this->number_of_players);
                     }
+                } else {
+                    this->elevation_info.hot_spots[hot_spot_num].x =
+                        this->land_info.land[hot_spot_num].x;
+                    this->elevation_info.hot_spots[hot_spot_num].y =
+                        this->land_info.land[hot_spot_num].y;
+                    this->elevation_info.hot_spots[hot_spot_num].radius =
+                        map->land[land_index].radius;
+                    this->elevation_info.hot_spots[hot_spot_num].fade =
+                        map->land[land_index].fade;
+                    ++hot_spot_num;
                 }
             }
             ++land_index;
-            ++map_land;
-        } while (land_index < map->land_info.land_num);
+        } while (land_index < map->land_num);
     }
 
     this->elevation_info.hot_spot_num = hot_spot_num;

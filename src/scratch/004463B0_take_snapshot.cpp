@@ -27,6 +27,12 @@
 // - Tried named width and height locals for all header and row uses; the
 //   natural source changed the frame to 0x880 and lost exact blocks. Rolled
 //   back to the prior clean Drawarea form.
+// - Fresh claim probes: named-height product/order, register-qualified
+//   height/width, delayed rounded-width spill, direct-height header reload,
+//   compound total accumulation, and declaration initialization were
+//   duplicate or worse. Removing the BMPFile zero also worsened the basin.
+//   Keep the clean source; the first paired hunk still needs the original
+//   EDI height copy, delayed EDX spill, and header-store schedule.
 
 #include <windows.h>
 #include <stdio.h>
