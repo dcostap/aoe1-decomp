@@ -32,6 +32,10 @@
 //   relocation alignment; no further blind variants remain in this claim.
 // - Fresh ACT_GATH TU switch dispatch probe kept one merged lookup call and
 //   lowered shape/resync similarity; restored the clean typed reconstruction.
+// - Replaced the convergence goto with a natural has_drop_site if/else; VC5
+//   still factored the two proven find/set-target calls, with no emitted change.
+// - Inverted that branch's polarity as a control-flow probe; it changed seven
+//   neutral bytes and lowered shape, so the clean polarity was restored.
 
 #include <stdlib.h>
 
