@@ -9,6 +9,12 @@
 // behavior audit: clipping, empty-row allocation, head/tail insertion, overlap,
 // node draining, count updates, and tail/head ordering follow the original asm.
 // pointer-entry probes did not improve the VC5 setup and were rolled back.
+// structural CFG probe: internal-first right-side source reached diff 606 but
+// reordered the call sites; restored the append-first source for call parity.
+// tail-order probe: loading the tail pointer before LeftMost kept call parity
+// but reached diff 614 and was a duplicate of an earlier codegen group.
+// delayed-entry probe: named LeftMost array/entry after tail load reached diff
+// 619 with no new exact blocks; restored the clean direct-member source.
 // inheritance-layout probe: the same public TSpan_Node_List base as the
 // constructor and exact siblings emitted the same bytes; restored nested
 // member ownership because this lead did not change the structural hunk.

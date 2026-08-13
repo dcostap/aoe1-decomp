@@ -18,6 +18,11 @@
 //   an earlier 800-byte basin; restored the positive tempRand gate.
 // - New claim: declaration order and a scoped tempRand initializer emitted the
 //   same 792-byte code; `< 1` threshold spelling worsened shape to 476 diff.
+// - New claim: the natural resource-gate conjunction worsened positional diff
+//   to 472; restored the four binary-shaped gate jumps.
+// - New claim: first-use initializers, reordered loop initialization, the
+//   period sn[] surface, and the polymorphic tactical base were codegen
+//   duplicates; restored the named clean reconstruction.
 // - Remaining lead: recover the natural VC5 spill that stores coopTributeAmount
 //   to [esp+10] before its first test; calls, frame, and loop body are aligned.
 

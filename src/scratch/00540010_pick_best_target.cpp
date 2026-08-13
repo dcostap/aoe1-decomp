@@ -15,10 +15,15 @@
 // probe: typed player object_count/object_list is canonical but changed the frame to 0x220; kept the named fields.
 // probe: inventory ABI confirms RGE_Pick_Obj_Info is 12 bytes with object_id at +0 and confidence at +4;
 // kept the natural typed record walk, which raises shape similarity to 74.14% without changing calls or size.
+// probe: replaced scalar zero loops with natural memset(..., master_obj * sizeof(int)); this recovers the original
+// byte-count-to-stosd initialization family and improves the strict diff from 678 to 621 bytes.
+// probe: function-scope record cursor, explicit view alias, and j-before-target_count declarations were codegen duplicates.
+// probe: inner for-loop spelling was worse (837B/681-byte diff); restored the natural do/while target scan.
 // final gap: calls, filters, score accumulation, attacking output, and best-object return match the binary;
 // VC5 local lifetime and block layout remain non-exact. Left in scratch.
 
 extern "C" void __cdecl free(void*);
+extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 struct RGE_Static_Object;
 struct RGE_Master_Action_Object;
@@ -123,8 +128,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
     }
 
     if ((int)master_obj > 0) {
-        for (int z = 0; z < (int)master_obj; z++) attacking[z] = 0;
-        for (z = 0; z < (int)master_obj; z++) valid_target_count[z] = 0;
+        memset(attacking, 0, (int)master_obj * sizeof(int));
+        memset(valid_target_count, 0, (int)master_obj * sizeof(int));
     }
 
     j = 0;
@@ -174,7 +179,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                             }
                                         }
                                         k++;
-                                    } while (k < this->player->object_count);
+                                } while (k < this->player->object_count);
                                 }
                             }
                         }

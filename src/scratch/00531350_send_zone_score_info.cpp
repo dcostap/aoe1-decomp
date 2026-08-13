@@ -6,8 +6,8 @@
 // - Replaced the packet scaffold with typed period-plausible ownership for the
 //   TRIBE_Zone_Info/TRIBE_Game_Options buffers and the five score summaries.
 // - Baseline had the exact 15-call multiset but a 0x274 frame and an emitted
-//   sparse-switch table beyond the original boundary.  An if/else mapping for
-//   the sparse game-end values removes that table and reaches an 891 B body.
+//   sparse-switch table beyond the original boundary.  The binary's sparse
+//   game-end switch is required: restoring it reaches the exact 877 B size.
 // - Polymorphic/flattened world stubs were codegen-neutral.  A saved player
 //   array alias and a long-lived player pointer regressed liveness; both were
 //   removed.  The binary reloads this->players[player] for the later history
@@ -23,6 +23,10 @@
 //   exposing a remaining two-byte size/frame-home shift.
 // - A function-scope typed player-info pointer was codegen-neutral.  Restored
 //   its narrower loop lifetime; the first hunk remains the score-field anchor.
+// - Switch dispatch for history events moves the clean candidate to 878 B and
+//   79.84% shape; the sparse game-end switch then reaches 877 B and 86.75%.
+//   Score-relative byte-pointer overlays changed no useful anchor and were
+//   rolled back.  The remaining drift is the player-field EBP anchor.
 
 #include <string.h>
 
@@ -287,12 +291,17 @@ void TRIBE_World::send_zone_score_info()
                 TRIBE_History_Events* event =
                     ((TRIBE_Player*)this->players[player])->history->events;
                 while (event != 0) {
-                    if (event->event == 0)
+                    switch (event->event) {
+                    case 0:
                         player_info->tool_time = event->world_time;
-                    else if (event->event == 1)
+                        break;
+                    case 1:
                         player_info->bronze_time = event->world_time;
-                    else if (event->event == 2)
+                        break;
+                    case 2:
                         player_info->iron_time = event->world_time;
+                        break;
+                    }
                     event = event->next;
                 }
 
@@ -302,24 +311,34 @@ void TRIBE_World::send_zone_score_info()
         }
 
         info.cheats_enabled = (unsigned char)rge_base_game->allowCheatCodes();
-        if (this->game_end_condition == 0) {
+        switch (this->game_end_condition) {
+        case 0:
             info.game_end_condition_code = 0;
-        } else if (this->game_end_condition == 1) {
+            break;
+        case 1:
             info.game_end_condition_code = 1;
-        } else if (this->game_end_condition == 2) {
+            break;
+        case 2:
             info.game_end_condition_code = 6;
-        } else if (this->game_end_condition == 100) {
+            break;
+        case 100:
             info.game_end_condition_code = 2;
-        } else if (this->game_end_condition == 101) {
+            break;
+        case 101:
             info.game_end_condition_code = 3;
-        } else if (this->game_end_condition == 102) {
+            break;
+        case 102:
             info.game_end_condition_code = 4;
-        } else if (this->game_end_condition == 103) {
+            break;
+        case 103:
             info.game_end_condition_code = 5;
-        } else if (this->game_end_condition == 104) {
+            break;
+        case 104:
             info.game_end_condition_code = 7;
-        } else {
+            break;
+        default:
             info.game_end_condition_code = 8;
+            break;
         }
 
         rge_base_game->get_tribe_options(&options);

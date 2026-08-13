@@ -21,12 +21,16 @@
 // 19: Combined the original case order with the frame-correct buffer.
 // 20: Reordered declarations to the packet's proven local order; VC5 emitted the same code.
 // 21: Modeled the proven adjacent four-byte stack slot and 40-byte text buffer as a typed local aggregate; the string LEA now matches.
-// GIVEUP: left in scratch; exact structural surface is recovered, but local stores and late block offsets still differ.
+// 22: Made the adjacent slot an int field used as the itoa value; this restored the original dead local store and reduced the diff to 14 stack-displacement bytes.
+// 23: Typed RGE_Static_Obj pointers and declaration reorders were neutral; reversed aggregate fields moved the string home and worsened the diff.
+// GIVEUP: left in scratch; exact calls, size, frame, CFG, and block topology match. Remaining drift is 14 local stack displacements.
 
 extern "C" char* __cdecl itoa(int, char*, int);
 
+class RGE_Static_Obj;
+
 struct VictoryTextBuffer {
-    char amount_slot[4];
+    int amount;
     char str[40];
 };
 
@@ -38,8 +42,8 @@ class T_Scenario {
 public:
     virtual void v0(); virtual void v1(); virtual void reset();
     int Get_victory_all_flag(); void SetSPWhich(int);
-    int GetSPAmount(int); int GetSPPlayerID(int); int GetSPObjectType(int); void* GetSPObject(int);
-    void* GetSPDestObjectID(int); int GetSPVictoryType(int); int GetSPAttribType(int);
+    int GetSPAmount(int); int GetSPPlayerID(int); int GetSPObjectType(int); RGE_Static_Obj* GetSPObject(int);
+    RGE_Static_Obj* GetSPDestObjectID(int); int GetSPVictoryType(int); int GetSPAttribType(int);
     int GetSPAllFlag(int); void GetSPRectangle(int, float*, float*, float*, float*);
 };
 class World { public: char gap[0x5c]; T_Scenario* scenario; };
@@ -47,8 +51,8 @@ class World { public: char gap[0x5c]; T_Scenario* scenario; };
 class TRIBE_Screen_Sed {
 public:
     char gap0[0x480];
-    void* SelectedObject;
-    void* DestinationObject;
+    RGE_Static_Obj* SelectedObject;
+    RGE_Static_Obj* DestinationObject;
     float px1, py1, px2, py2;
     char gap498[0x4b8-0x498]; short player_num;
     char gap4ba[0x4c8-0x4ba]; RGE_View* main_view;
@@ -63,11 +67,10 @@ public:
 void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
 {
     VictoryTextBuffer text;
-    void* destobj;
-    int Amount;
+    RGE_Static_Obj* destobj;
     int VictoryType;
     long x1, y1, x2, y2;
-    void* obj;
+    RGE_Static_Obj* obj;
 
     int all = this->world->scenario->Get_victory_all_flag();
     if (all != 0) {
@@ -83,8 +86,8 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
     this->DestinationObject = 0;
     this->world->scenario->reset();
     this->world->scenario->SetSPWhich((int)this->player_num - 1);
-    Amount = this->world->scenario->GetSPAmount(index);
-    itoa(Amount, text.str, 10);
+    text.amount = this->world->scenario->GetSPAmount(index);
+    itoa(text.amount, text.str, 10);
     this->victory_amount_input->set_text(text.str);
     this->victory_enemy_player_list->set_line(this->world->scenario->GetSPPlayerID(index) - 1);
     this->victory_object_list->setCurrentLineNumber(this->victory_object_list->get_line(this->world->scenario->GetSPObjectType(index)));

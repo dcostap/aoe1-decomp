@@ -12,6 +12,10 @@
 // probe 11: reordered short neighborhood offsets to the natural northwest,
 // northeast, north declaration/use order; diff improved to 719 bytes, but the
 // first prologue width-home mismatch remains.
+// orch pass: a live row cursor plus byte was_bad matched the original frame and
+// tile-byte parameter-home reuse, but diff rose to 828 bytes; rolled back.
+// moving row initialization and signed elevation predicates changed no useful
+// structure; restored the 719-byte natural typed candidate.
 // Final blocker: VC5 register coloring and local-home reuse differ in the typed
 // candidate. Original reuses the y parameter home for old tile bytes and spills
 // the changed byte at an unaligned local slot; no natural typed variant matched.
