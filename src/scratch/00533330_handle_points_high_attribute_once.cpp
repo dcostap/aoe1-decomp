@@ -71,6 +71,12 @@
 //   VC5 folded it away and kept the 224-byte, 29-byte register-coloring gap.
 // - shardE-533330 delayed and then block-scoped an ordinary player alias around the scan;
 //   both forms created the 0x8 frame and 233-byte structural drift, so both were restored.
+// - sa-ba695c8f-r1 introduced one ordinary point-entry alias and used it throughout; VC5 emitted
+//   the same 224-byte, 29-byte register-coloring group.
+// - sa-ba695c8f-r1 reversed the state guard into a positive body; output stayed unchanged.
+// - sa-ba695c8f-r1 moved the result declaration before val; output stayed unchanged.
+// - sa-ba695c8f-r1 scoped a player alias to the initial attribute conversion; output stayed
+//   unchanged. Clean typed source restored; no source-backed lead remains beyond EBX/EDI coloring.
 
 class RGE_Game_World;
 
