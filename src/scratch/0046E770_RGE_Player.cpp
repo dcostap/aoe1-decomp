@@ -26,6 +26,11 @@
 //   while VC5 emits `store +8` before that setup.  The rest of the function
 //   is byte-identical after resynchronization; leave this readable candidate
 //   in scratch for a later worker.
+// - This claim tested initializer side effects, volatile pathing fields, an
+//   empty base, and reversed scalar initializer spelling.  The side-effect
+//   form worsened the drift to 50 bytes; the other forms reproduced the same
+//   18-byte hunk.  The localized gap remains compiler scheduling, not ABI or
+//   ownership uncertainty.
 
 #include <stdlib.h>
 #include <string.h>

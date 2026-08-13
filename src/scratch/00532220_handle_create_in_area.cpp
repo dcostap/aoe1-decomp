@@ -37,6 +37,12 @@
 // - tu-victory-532220 dossier and sibling review: the typed own/allied scans retain
 //   100% exact-block coverage and the 0xC frame. The only source-independent gap is
 //   the behavior-equivalent relation SIB encoding at +0x7F; no natural new lead remains.
+// - orch-532220-a baseline reconfirmed the pinned clean source at 189 bytes.
+// - Reversed, explicit-pointer, integer-address, and cast-pointer relation
+//   expressions all emitted the same [eax+ebp] SIB. A helper added a call and
+//   regressed structure. A volatile relation pointer was also codegen-neutral.
+// - A four-case focused relation-expression lab produced one emitted-code group;
+//   no natural source spelling changed the +0x7F SIB. Restored the clean source.
 
 struct RGE_Master_Object {
     virtual ~RGE_Master_Object();
