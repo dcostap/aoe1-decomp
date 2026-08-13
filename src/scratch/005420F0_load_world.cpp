@@ -33,6 +33,10 @@
 // - Tested the natural same-TU guard `i < player_num` with the live zero
 //   player-loop index at the first allocation gate; VC5 widened the compare,
 //   shifted the hunk earlier, and regressed to 244 differing bytes. Rolled back.
+// - A separate short initial-index local, a union alias for the 16/32-bit loop
+//   index, and a cached short count all reproduced the 2-byte test basin.
+// - Reusing the cleared old_time field as the zero RHS widened the first load
+//   and regressed to 247 bytes. Restored the natural direct player_num guard.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
