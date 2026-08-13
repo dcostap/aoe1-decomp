@@ -19,6 +19,18 @@
 //   block coverage. Remaining drift starts in bitmap-header scheduling/stack
 //   ownership (notably the BMPFile base is +4) and the late open-loop/return
 //   topology. This is unresolved scratch work, not accepted drift.
+// - Fresh probe: using BMPFile itself for the filename calls moved the pointer
+//   to the observed stack address, improving the result to 356 differing
+//   bytes, 87.44% shape, and 74.63% exact-block coverage. The packed file
+//   header, product operand order, direct Num_Lines product, and a named total
+//   were duplicate codegen or did not improve this basin.
+// - A bounded filename-search loop reproduced the original jle backedge and
+//   near-size, but introduced an extra fd test and broad register drift; it
+//   was rolled back. The remaining structural lead is the early header local
+//   reuse and the original fallthrough return topology.
+// - Restored named bitmap-header fields, the default file-name literal, and
+//   parallel spans/colors indexing. Raw stack-buffer stores and cross-array
+//   cursor arithmetic were diagnostic scaffolding, not living source.
 
 #include <stdio.h>
 #include <string.h>
@@ -31,6 +43,29 @@ int __cdecl write(int fd, const void* buf, unsigned int count);
 
 struct PALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 struct RGBQUAD { unsigned char rgbBlue, rgbGreen, rgbRed, rgbReserved; };
+#pragma pack(push, 2)
+struct BITMAPFILEHEADER {
+    unsigned short bfType;
+    unsigned int bfSize;
+    unsigned short bfReserved1;
+    unsigned short bfReserved2;
+    unsigned int bfOffBits;
+};
+#pragma pack(pop)
+struct BITMAPINFOHEADER {
+    unsigned int biSize;
+    int biWidth;
+    int biHeight;
+    unsigned short biPlanes;
+    unsigned short biBitCount;
+    unsigned int biCompression;
+    unsigned int biSizeImage;
+    int biXPelsPerMeter;
+    int biYPelsPerMeter;
+    unsigned int biClrUsed;
+    unsigned int biClrImportant;
+};
+static const char s_default_snapshot_name[] = "C:\\AOE_%03d.BMP";
 class TDrawArea { public: void GetPalette(PALETTEENTRY* pal); };
 
 class TSpan_List_Manager {
@@ -48,8 +83,8 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
     int Height;
     int infile;
     int bmWide;
-    unsigned char bmFH[0x10];
-    unsigned char bmIH[0x28];
+    BITMAPFILEHEADER bmFH;
+    BITMAPINFOHEADER bmIH;
     char BMPFile[0x3C];
     RGBQUAD bmPAL[256];
     PALETTEENTRY thePal[256];
@@ -70,22 +105,23 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
     Height = this->Num_Pixels;
     bmWide = (Height + 3) & 0xfffc;
 
-    *(unsigned short*)(bmFH + 0) = 0x4d42;
-    *(unsigned int*)(bmFH + 2) = Width * bmWide + 0x436;
-    *(unsigned short*)(bmFH + 6) = 0;
-    *(unsigned short*)(bmFH + 8) = 0;
-    *(unsigned int*)(bmFH + 10) = 0x436;
+    bmFH.bfSize = bmWide * this->Num_Lines + 0x436;
+    bmFH.bfType = 0x4d42;
+    bmFH.bfReserved1 = 0;
+    bmFH.bfReserved2 = 0;
+    bmFH.bfOffBits = 0x436;
 
-    *(unsigned int*)(bmIH + 0) = 0x28;
-    *(unsigned int*)(bmIH + 4) = Height;
-    *(unsigned int*)(bmIH + 8) = Width;
-    *(unsigned short*)(bmIH + 12) = 1;
-    *(unsigned short*)(bmIH + 14) = 8;
-    *(unsigned int*)(bmIH + 16) = 0;
-    *(unsigned int*)(bmIH + 20) = 0;
-    *(unsigned int*)(bmIH + 24) = 0;
-    *(unsigned int*)(bmIH + 28) = 0;
-    *(unsigned int*)(bmIH + 32) = 0;
+    bmIH.biSize = sizeof(bmIH);
+    bmIH.biWidth = Height;
+    bmIH.biHeight = Width;
+    bmIH.biPlanes = 1;
+    bmIH.biBitCount = 8;
+    bmIH.biCompression = 0;
+    bmIH.biSizeImage = 0;
+    bmIH.biXPelsPerMeter = 0;
+    bmIH.biYPelsPerMeter = 0;
+    bmIH.biClrUsed = 0;
+    bmIH.biClrImportant = 0;
     *(unsigned int*)BMPFile = 0;
 
     area->GetPalette(thePal);
@@ -99,10 +135,10 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
     int tries = 0;
     if (number < 0) number = 0;
     while (1) {
-        if (name == 0) sprintf(BMPFile + 4, (char*)0x5845E4, number);
-        else sprintf(BMPFile + 4, name, number);
+        if (name == 0) sprintf(BMPFile, s_default_snapshot_name, number);
+        else sprintf(BMPFile, name, number);
         tries++;
-        int fd = open(BMPFile + 4, 0);
+        int fd = open(BMPFile, 0);
         if (fd == -1) break;
         number++;
         close(fd);
@@ -111,10 +147,10 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
     }
 
     unsigned char* line = (unsigned char*)malloc(bmWide);
-    infile = open(BMPFile + 4, 0x8301, 0x180);
+    infile = open(BMPFile, 0x8301, 0x180);
     if (infile != -1) {
-        write(infile, bmFH, 0x0e);
-        write(infile, bmIH, 0x28);
+        write(infile, &bmFH, 0x0e);
+        write(infile, &bmIH, sizeof(bmIH));
         write(infile, bmPAL, 0x400);
         int y = Width - 1;
         if (y >= 0) {
@@ -122,14 +158,10 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
                 memset(line, 0, bmWide);
                 this->DecodeLine(line, y, (unsigned char)color, Height);
                 if (count > 0) {
-                    TSpan_List_Manager** s = spans;
-                    int n = count;
-                    int delta = (char*)colors - (char*)spans;
-                    do {
-                        (*s)->DecodeLine(line, y, *(unsigned char*)((char*)s + delta), Height);
-                        s++;
-                        n--;
-                    } while (n != 0);
+                    int i;
+                    for (i = 0; i < count; ++i)
+                        spans[i]->DecodeLine(line, y,
+                            (unsigned char)colors[i], Height);
                 }
                 write(infile, line, bmWide);
                 y--;

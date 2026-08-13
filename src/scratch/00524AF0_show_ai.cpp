@@ -21,11 +21,26 @@
 // 18: paused after the bounded pass: current natural source has 9/9 ordered calls, 0x604 frame, 640 emitted bytes versus 636, and broad register/prologue drift.
 // 19: renamed the panel declaration to TRIBE_Screen_Game; relocation identity is now period-canonical with no emitted-byte change.
 // 20: tested the packet's cmp-6/jle loop spelling as i <= 6; only resync cost improved, so restored i < 7.
+// 21: this claim tested a natural contiguous destination cursor at s[1]; it reached 636 bytes and diff 595, but kept this in EBP and was rolled back.
+// 22: register-qualified cursor rooted at s[2] did not change VC5 allocation; rolled back.
+// 23: typed array cursor with destination[-1] was emitted identically to the prior cursor basin.
+// 24: explicit game=this alias with the typed cursor was a codegen duplicate.
+// 25: register-qualified typed cursor was a duplicate; VC5 still kept this in EBP.
+// 26: grouping i and the typed cursor in the for initializer returned the clean 640-byte basin.
+// 27: pairing the typed cursor with i <= 6 changed only resync cost, not structural bytes.
+// 28: mutable char* name ABI matched the binary pointer surface but emitted no new code.
+// 29: Restored the real string literals. The former absolute addresses were
+//     diagnostic data plumbing, not valid source ownership.
 
 #include <string.h>
 #include <stdio.h>
 
-#define EMPTY_AI ((const char*)0x00592A40)
+static const char s_empty_ai[] = "";
+static const char s_player_ai_failed[] =
+    "Player #%d: AI is not functional.";
+static const char s_player_ai_name[] = "Player #%d: %s";
+static const char s_player_not_computer[] =
+    "Player #%d is not a computer player.";
 
 class RGE_Player {
 public:
@@ -79,17 +94,17 @@ void TribeGame::show_ai()
     if (this->playerSlot->providers[this->playerSlot->current]->computerPlayer() == 1) {
         const char* n = this->playerSlot->providers[this->playerSlot->current]->name(1);
         if (n == 0) {
-            sprintf(s[0], (const char*)0x0058BD28,
+            sprintf(s[0], s_player_ai_failed,
                     (int)this->playerSlot->current);
         } else {
-            sprintf(s[0], (const char*)0x0058BD18,
+            sprintf(s[0], s_player_ai_name,
                     (int)this->playerSlot->current, n);
         }
         for (i = 2; i < 7; ++i) {
             const char* p = this->playerSlot->providers[
                 this->playerSlot->current]->name(i);
             if (p == 0) {
-                p = EMPTY_AI;
+                p = s_empty_ai;
             }
             strcpy(s[i - 1], p);
         }
@@ -97,12 +112,12 @@ void TribeGame::show_ai()
         const char* p = this->playerSlot->providers[
             this->playerSlot->current]->name(0);
         strcpy(s[0], p);
-        sprintf(s[1], (const char*)0x0058BCF0,
+        sprintf(s[1], s_player_not_computer,
                 (int)this->playerSlot->current);
-        strcpy(s[2], EMPTY_AI);
-        strcpy(s[3], EMPTY_AI);
-        strcpy(s[4], EMPTY_AI);
-        strcpy(s[5], EMPTY_AI);
+        strcpy(s[2], s_empty_ai);
+        strcpy(s[3], s_empty_ai);
+        strcpy(s[4], s_empty_ai);
+        strcpy(s[5], s_empty_ai);
     }
 
     if (this->panel != 0) {
