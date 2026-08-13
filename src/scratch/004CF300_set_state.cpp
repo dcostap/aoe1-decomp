@@ -29,6 +29,9 @@
 //   strict drift fell to 118 bytes with all 45 calls aligned.
 // - Tested an early-return depletion branch for state 8; it changed call order
 //   and was restored. Keep the natural positive-if form.
+// - Split the state-8 target depletion test into nested typed guards to seek
+//   the original reload and tail branch layout; VC5 emitted no change, so the
+//   canonical combined condition is restored.
 
 class RGE_Sprite;
 class RGE_Static_Object;

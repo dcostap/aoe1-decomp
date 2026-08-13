@@ -29,6 +29,8 @@
 //   named float fields retained, moved the cursor to +0x1AD0 and improved the
 //   diff to 224 bytes with 92.58% exact-block coverage; it remains diagnostic
 //   pointer arithmetic, so the clean named-field source was restored.
+// - a hybrid cursor using typed AttribType values but named tail fields emitted
+//   the same 224-byte result as the prior cursor probe; it was restored.
 
 class RGE_Static_Object;
 class RGE_Game_World;

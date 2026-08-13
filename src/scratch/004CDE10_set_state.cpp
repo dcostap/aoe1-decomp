@@ -31,6 +31,9 @@
 //   through one typed post-switch sprite call. This follows the original
 //   line-302 shared tail and its two total vslot+38 calls. Result: 541 bytes,
 //   16/16 calls, 95.16% shape; retained as the best clean reconstruction.
+// - Tried direct typed new_sprite calls with state 3 fallthrough and binary
+//   no-op states 8/9/10/12. VC5 did not merge the calls: 618 bytes, 17 calls,
+//   and a worse dispatch. Restored the clean shared-tail source.
 
 class RGE_Sprite;
 class RGE_Sound;

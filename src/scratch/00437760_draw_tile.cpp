@@ -22,6 +22,9 @@
 //   the PDB declaration-only band; VC5 emitted identical code, so restored clean.
 // - Replaced the guarded do-loop with a post-test scan-row while loop, matching
 //   the original loop-exit CFG; VC5 emitted the same code, so restored clean.
+// - Tried binary-supported long map_x/map_y locals through tile, visibility,
+//   max-coordinate, and scan bounds, following the original iVar coordinate
+//   topology; size grew 71 bytes and diff worsened to 1161, so restored clean.
 // - Left in scratch after the 10-hypothesis budget; no inline asm or opaque
 //   codegen scaffolding is retained.
 

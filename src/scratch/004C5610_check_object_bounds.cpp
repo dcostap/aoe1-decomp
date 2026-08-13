@@ -22,6 +22,9 @@
 // branch shape; emitted code was unchanged, so the clean predicate is kept.
 // 15: declared the natural outer y_index temp before y2 to test the first
 // spill-home topology; emitted code was unchanged, so the clean order is kept.
+// 16: named the x-overlap sum before the final comparison to test a derived
+// bound matching the original fcompp; rebuilt 524 B with diff 120, so restored
+// the clean direct predicate.
 
 typedef unsigned char uchar;
 

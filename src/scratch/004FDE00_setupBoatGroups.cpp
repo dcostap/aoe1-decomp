@@ -27,8 +27,12 @@
 // - compact arithmetic with a separate retained local, hoisted product and
 //   remainder locals, and the exact setupSoldierGroups scalar declaration order
 //   all emitted the clean 745-byte codegen group; no new structural lead.
-// - current best is still non-exact: 745 positional diff bytes, 94.07% shape,
-//   70.87% exact blocks, 93/93 ordered calls, and frame 0x28 versus 0x2C.
+// - corrected the third balance denominator/cap from sn[0x3d]/sn[0x3c] to
+//   sn[0x3e]/sn[0x3d], matching original offsets 0x28C/0x288; shape improved
+//   from 94.07% to 94.39% and exact blocks from 70.87% to 71.29%, with the
+//   same 745-byte positional diff.
+// - current best is still non-exact: 745 positional diff bytes, 94.39% shape,
+//   71.29% exact blocks, 93/93 ordered calls, and frame 0x28 versus 0x2C.
 //   Remaining lead is the real local-lifetime/register basin around the target
 //   stack homes (especially the saved numPotentialEGroups/numAGroups values).
 
@@ -341,8 +345,8 @@ next_group:
             remaining = this->warBoats.numberValue -
                         product - numEGroups * this->sn[0x44];
             if (remaining > 0) {
-                numDGroups = (int)ceil((double)remaining / (double)this->sn[0x3d]);
-                if (numDGroups > this->sn[0x3c]) numDGroups = this->sn[0x3c];
+                numDGroups = (int)ceil((double)remaining / (double)this->sn[0x3e]);
+                if (numDGroups > this->sn[0x3d]) numDGroups = this->sn[0x3d];
             }
         }
     }
@@ -357,7 +361,7 @@ next_group:
             remaining -= numEGroups;
             if (remaining > 0) {
                 numDGroups = remaining;
-                if (numDGroups >= this->sn[0x3c]) numDGroups = this->sn[0x3c];
+                if (numDGroups >= this->sn[0x3d]) numDGroups = this->sn[0x3d];
             }
         }
     }

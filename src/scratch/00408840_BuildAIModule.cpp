@@ -15,6 +15,7 @@
 // 12: changed permanentSkip to the Ghidra-proven uchar source type; emitted code was unchanged.
 // 13: tested original initial-store order; emitted bytes did not move and edit/resync worsened, so restored the prior natural order.
 // 14: moved the loop counter initialization before the numberItems read to match Ghidra's iVar9 placement; emitted code was unchanged, so restored the clean source.
+// 15: moved the proven scalar defaults into the member-initializer sequence, following the same-TU constructor donor; diff improved 287 -> 272 and delayed the fd load, but the first mismatch remains in constructor scheduling at +0064.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
 
@@ -83,7 +84,8 @@ public:
 };
 
 BuildAIModule::BuildAIModule(int p1, int fd)
-    : AIModule((char*)0x57F158, 0x3e9, p1, 0), buildList()
+    : AIModule((char*)0x57F158, 0x3e9, p1, 0), buildList(),
+      buildListLengthValue(0), numberItemsIntoBuildListValue(0)
 {
     int buildCap;
     int builtValue;
@@ -111,8 +113,6 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     int local_11c;
     char name[257];
 
-    this->numberItemsIntoBuildListValue = 0;
-    this->buildListLengthValue = 0;
     this->typesToIgnore.value = 0;
     this->typesToIgnore.numberValue = 0;
     this->typesToIgnore.desiredNumberValue = 0;
