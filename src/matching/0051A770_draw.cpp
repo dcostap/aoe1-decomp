@@ -2,11 +2,10 @@
 // Canonical ownership: TPanel render_area/clip/parent/visibility fields, the
 // TDrawArea DrawDc surface, and TRIBE_Player's inherited attributes table.
 // The four text passes mirror the period inventory-panel drawing idiom.
-// changed the old raw HDC/parent plumbing to typed TPanel/TDrawArea surfaces;
-// baseline still had direct Win32 calls and a 0x20 frame.
-// Worker termination interrupted the session after eight probes. Main-agent
-// validation records 870/859 bytes, exact 32-call parity, 96.47% shape, and
-// 838 differing bytes; the typed direct-member reconstruction is retained.
+// The source uses typed TPanel/TDrawArea surfaces and four direct text passes.
+// Earlier nested positive guards emitted test instructions and an 11-byte tail.
+// Natural early no-redraw returns reproduce the original zero-compare guard.
+// This source now matches the original function exactly.
 
 #include "../../include/game_globals.h"
 #include <windows.h>
@@ -99,13 +98,20 @@ public:
 void TRIBE_Panel_Inven::draw() {
     char str[20];
 
-    if (this->render_area != 0) {
-        if (this->visible != 0) {
-            if (this->active != 0) {
-                if (this->parent_panel != 0)
-                    this->parent_panel->draw_rect(&this->clip_rect);
+    if (this->render_area == 0 || this->visible == 0 ||
+        this->active == 0) {
+        this->need_redraw = TPanel::NoRedraw;
+        return;
+    }
 
-                if (this->player != 0) {
+    if (this->parent_panel != 0)
+        this->parent_panel->draw_rect(&this->clip_rect);
+
+    if (this->player == 0) {
+        this->need_redraw = TPanel::NoRedraw;
+        return;
+    }
+
             this->draw_setup(0);
             if (this->render_area->GetDc((char*)s_tpnl_inv_draw) != 0) {
                 HGDIOBJ old_font = SelectObject(this->render_area->DrawDc,
@@ -166,10 +172,4 @@ void TRIBE_Panel_Inven::draw() {
                 this->render_area->ReleaseDc((char*)s_tpnl_inv_draw);
             }
             this->draw_finish();
-            return;
-                }
-            }
-        }
-    }
-    this->need_redraw = TPanel::NoRedraw;
 }
