@@ -31,8 +31,21 @@
 // code, so the local was rolled back.
 // 19: Named converted target hp values before notify; VC5 emitted the same code,
 // so the locals were rolled back.
+// 20: Decoded the original absolute inner jump tables. State 4 maps cases
+// 1/2/5 to state 3; state 11 maps 1/2 to state 6 and 4/5 to target reset.
+// Ordered those source cases by the PDB handler bands; diff improved to 43.
+// 21: Direct target member access was a codegen duplicate.
+// 22: Same-class exact donors support int notify parameters; int and long
+// surfaces emitted the same code.
+// 23: A focused notify alias lab found no better emitted group.
+// 24: Reversed the final notify hp arguments. The original pushes master hp,
+// runs __ftol for target hp, then pushes target hp; diff improved to 19.
+// 25: Removed explicit hp casts; emitted code was unchanged.
+// 26: Reversed the work-rate product operands to follow the original FPU
+// operand order; VC5 emitted the same code.
 // PAUSED: exact matching exhausted for this assignment; left in scratch with
-// canonical typed source, 906-byte size, 32/32 calls, and 45 differing bytes.
+// corrected binary-backed switch and notify argument semantics, 906-byte size,
+// 32/32 calls, and 19 differing bytes.
 
 typedef unsigned char uchar;
 
@@ -125,7 +138,7 @@ public:
     V(0F8) V(0FC) V(100) V(104) V(108) V(10C) V(110) V(114)
     V(118) V(11C) V(120) V(124) V(128) V(12C) V(130) V(134)
     V(138) V(13C) V(140) V(144)
-    virtual void notify(int, int, int, long, long, long); // +0x148
+    virtual void notify(int, int, int, int, int, int); // +0x148
     V(14C) V(150) V(154) V(158) V(15C) V(160) V(164) V(168)
     V(16C) V(170) V(174) V(178) V(17C) V(180) V(184) V(188)
     V(18C) V(190) V(194) V(198) V(19C) V(1A0) V(1A4) V(1A8)
@@ -244,17 +257,17 @@ uchar TRIBE_Action_Convert::update()
     switch (this->state) {
     case 4:
         switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-            this->set_state(6);
-            return 0;
         case 3:
             this->set_state(13);
             return 0;
         case 4:
-        case 5:
             this->set_target_obj(0);
             this->set_state(11);
+            return 0;
+        case 1:
+        case 2:
+        case 5:
+            this->set_state(3);
             return 0;
         }
         break;
@@ -262,6 +275,7 @@ uchar TRIBE_Action_Convert::update()
     case 11:
         switch (this->sub_actions->update()) {
         case 4:
+        case 5:
             this->set_target_obj(0);
             this->set_state(11);
             return 0;
@@ -270,8 +284,7 @@ uchar TRIBE_Action_Convert::update()
             return 0;
         case 1:
         case 2:
-        case 5:
-            this->set_state(3);
+            this->set_state(6);
             return 0;
         }
         break;
@@ -288,13 +301,13 @@ uchar TRIBE_Action_Convert::update()
         break;
 
     case 7: {
-        RGE_Static_Object* target = this->target_obj;
-        if (target == 0) {
+        if (this->target_obj == 0) {
             this->set_state(3);
             return 0;
         }
-        target->notify(this->obj->id, target->id, 500, this->obj->id,
-                       (int)target->master_obj->hp, (int)target->hp);
+        this->target_obj->notify(
+            this->obj->id, this->target_obj->id, 500, this->obj->id,
+            this->target_obj->hp, this->target_obj->master_obj->hp);
         this->timer = this->timer - this->obj->owner->world->world_time_delta_seconds;
         if (this->timer <= 0.0f) {
             if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
@@ -315,7 +328,7 @@ uchar TRIBE_Action_Convert::update()
                     chance = chance * DAT_00575004;
                 }
             }
-            if (chance <= this->obj->master_obj->work_rate * this->task->work_val1) {
+            if (chance <= this->task->work_val1 * this->obj->master_obj->work_rate) {
                 rge_base_game->notification(0x7b, this->target_obj->owner->id,
                                              this->obj->owner->id, 0, 0);
                 this->target_obj->change_ownership(this->obj->owner);
