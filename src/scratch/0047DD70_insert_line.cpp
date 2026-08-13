@@ -26,6 +26,18 @@
 //   restored the pre-decrement source.
 // - Restored the readable typed source after diagnostics: no parameter-home
 //   casts, raw text cursors, fake volatility, or register-forcing scaffolding.
+// - Fresh bounded pass: separating sorted previous initialization, moving the
+//   counter to function scope, and a late null-pointer seed were codegen
+//   duplicates. Inverting the sorted previous-link test preserved 184 bytes
+//   while improving block shape from 90.91% to 92.27% and exact blocks from
+//   76.26% to 79.45%; retained the natural source form.
+// - A direct line-minus-one bound, for-loop spelling, reordered sorted arms,
+//   and a proven panel-base declaration gave no positional gain or made the
+//   layout worse. The base declaration is retained because it is the natural
+//   owning class surface and leaves the emitted code unchanged.
+// - Current bounded result: 541-byte size and all 10 ordered calls match;
+//   remaining drift starts at the zero/id register hunk (0047DEB1) and
+//   requires a new allocator or source-context lead.
 
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +54,7 @@ struct TextNode {
     TextNode* next_node;                // +0x0C
 };
 
-class TTextPanel {
+class TPanel {
 public:
     virtual void vf_00();
     virtual void vf_04();
@@ -55,6 +67,10 @@ public:
     virtual void redraw(int flags);     // +0x20
 
     char gap_04[0xF0];                  // list begins at +0xF4
+};
+
+class TTextPanel : public TPanel {
+public:
     TextNode* list;                     // +0xF4
     short num_lines;                    // +0xF8
     char gap_FA[0x3E];
@@ -68,6 +84,8 @@ public:
 
 int TTextPanel::insert_line(long line, char* text, char* text2, long value)
 {
+    int i;
+    TextNode* previous;
     TextNode* node = (TextNode*)calloc(1, sizeof(TextNode));
     if (node == 0) {
         return 0;
@@ -109,25 +127,25 @@ int TTextPanel::insert_line(long line, char* text, char* text2, long value)
     }
 
     node->id = value;
+    i = 0;
     node->next_node = 0;
-    int i = 0;
 
     TextNode* list_node = this->list;
     if (list_node == 0) {
         this->list = node;
     } else if (this->sorted != 0) {
         TextNode* current = list_node;
-        TextNode* previous = 0;
+        previous = 0;
         while (current != 0) {
             int result = CompareStringA(0x400, 1,
                                         node->text, -1,
                                         current->text, -1);
             if (result == 1) {
                 node->next_node = current;
-                if (previous == 0) {
-                    this->list = node;
-                } else {
+                if (previous != 0) {
                     previous->next_node = node;
+                } else {
+                    this->list = node;
                 }
                 break;
             }

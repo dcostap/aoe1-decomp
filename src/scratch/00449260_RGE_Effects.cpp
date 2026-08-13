@@ -29,6 +29,18 @@
 //   conditionally at the fopen-success edge, and loads effect_list_num into DX
 //   before the inner guard where the oracle compares the field directly.  The
 //   named ownership, widths, calls, CFG, and stack frame are otherwise aligned.
+// - Reversed the inner bound to `effect_list_num > sVar7`; this is a natural
+//   field-first spelling and restored the oracle's direct field compare.  It
+//   reduced the strict diff from 241 to 47 bytes and the size gap to 1 byte.
+// - Direct effect-list indexing, a typed count pointer, do-while spelling,
+//   counter reset, donor declaration order, and function-scope command pointer
+//   were tested.  The direct index/count-pointer/do-while forms regressed;
+//   declaration order, reset, and command scope were emitted-code duplicates.
+// - Best current source keeps the field-first top-tested loop.  Remaining
+//   drift is conditional ESI save/restore and the loop back-edge compare
+//   encoding; calls, frame, CFG count, and all named layout accesses align.
+// - Normalized the command scan to its real short local. The former path-home
+//   reuse passed a char** to %hd and was codegen scaffolding, not valid source.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,10 +61,10 @@ struct RGE_Effect {
 class RGE_Player;
 
 struct RGE_Effects {
+    RGE_Effect* effects; long effect_num;
     virtual ~RGE_Effects();
     virtual void save(int fd);
     virtual void do_effect(short effect_id, RGE_Player* player);
-    RGE_Effect* effects; long effect_num;
     RGE_Effects(char* path);
 };
 
@@ -72,11 +84,12 @@ RGE_Effects::RGE_Effects(char* path) {
                 if (effects[index].effect_list_num > 0) {
                     effects[index].effect_list = (RGE_Effect_Command*)calloc(effects[index].effect_list_num, 0x0C);
                     if (effects[index].effect_list_num > 0) {
-                        while (sVar7 < effects[index].effect_list_num) {
+                        while (effects[index].effect_list_num > sVar7) {
                             RGE_Effect_Command* command = &effects[index].effect_list[sVar7];
-                            if (fscanf(fp, "%hd %hd %hd %hd %f", &path, &command->change_num1, &command->change_num2, &command->change_num3, &command->change_amount) == -1) break;
+                            short command_num;
+                            if (fscanf(fp, "%hd %hd %hd %hd %f", &command_num, &command->change_num1, &command->change_num2, &command->change_num3, &command->change_amount) == -1) break;
                             sVar7++;
-                            command->command = (unsigned char)path;
+                            command->command = (unsigned char)command_num;
                         }
                     }
                 } else {

@@ -16,8 +16,16 @@
 // probe 20: inlined the one-use terrain expression in the switch; this
 // natural local-lifetime change improved strict diff 388 -> 384 bytes but
 // left the first prologue hunk and recursive-call relocation unchanged.
+// probe 35: declared the changed flag before object_found; VC5 moved the
+// flag homes and reduced strict diff 384 -> 255 bytes, but did not fix the
+// parameter colors or recursive relocation.
+// probes 36-37: swapped parameter identifiers and used native bool flags;
+// both were codegen duplicates. Probe 38: explicit row/tile pointers made
+// the source less natural and widened the diff to 388 bytes; restored.
+// probe 39: unqualified change_terrain calls were a codegen duplicate.
 // left in scratch: behavior and field ownership are reconstructed; remaining
-// drift is prologue/register scheduling plus recursive-call relocation.
+// drift is prologue/register scheduling plus recursive-call relocation. The
+// best validated source is the flag-order variant at 255 differing bytes.
 
 class RGE_Game_World;
 
@@ -75,8 +83,8 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     short x1 = x + 1;
     short y0 = y - 1;
     short y1 = y + 1;
-    unsigned char object_found = 0;
     unsigned char changed = 0;
+    unsigned char object_found = 0;
     if (x0 < 0)
         x0 = 0;
     if (y0 < 0)
@@ -97,7 +105,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
         }
 
         if (changed)
-            this->change_terrain(x, y, 0x12, world);
+            change_terrain(x, y, 0x12, world);
         break;
     }
     case 0x12: {
@@ -109,7 +117,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
         }
 
         if (!object_found) {
-            this->change_terrain(x, y, 0, world);
+            change_terrain(x, y, 0, world);
             for (short row = y0; row <= y1; ++row) {
                 for (short col = x0; col <= x1; ++col) {
                     if (col != x || row != y)

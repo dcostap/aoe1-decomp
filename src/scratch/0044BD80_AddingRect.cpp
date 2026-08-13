@@ -20,6 +20,8 @@
 //   local were regressive or codegen duplicates and were not retained.
 // - A typed `rowCount = iVar3` second-edge loop-counter copy was also a
 //   codegen duplicate (506 bytes, diff 222); the clean source was restored.
+// - A 16-variant lab of row-advance and vertical-loop spellings produced
+//   only the existing 506-byte group or a 510-byte regressive group.
 //   Remaining drift is the second-edge-row setup and later schedule; no
 //   calls or ABI uncertainties remain.
 

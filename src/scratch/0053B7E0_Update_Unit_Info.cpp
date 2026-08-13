@@ -12,11 +12,15 @@
 //   compiler-steering scaffolding.
 // - Typed VUR_Ptrs field trial recovered the 0x10 frame and reduced the size
 //   gap to 7 bytes, but positional diff worsened from 306 to 409; restored.
+// - Same-TU AddResource uses the period stdlib/string header context; retaining
+//   those headers and the proven polymorphic static-object boundary changed no
+//   bytes, but keeps the ownership model source-plausible.
+// - Normalized the object reference update to its owned +0x194 field. The
+//   cancelling refOffset/raw-cast expression was a decompiler artifact.
 // Left in scratch: broad prologue/stack-home/register coloring and the growth pointer-repair schedule remain; call set, cleanup convention, packed record effects, and copy width are established.
 
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-extern "C" void __cdecl free(void* ptr);
-extern "C" void* __cdecl memcpy(void* dst, const void* src, unsigned int size);
+#include <stdlib.h>
+#include <string.h>
 
 struct VisibleUnitRec {
     int object_id;
@@ -33,7 +37,9 @@ struct VisibleUnitPtr {
 };
 
 struct RGE_Static_Object {
-    char gap_00[0x194];
+    virtual ~RGE_Static_Object();
+    char gap_04[0x190];
+    VisibleUnitRec* visible_unit_ref;
 };
 
 extern RGE_Static_Object** VIS_UNIT_objectsValue;
@@ -54,7 +60,6 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
     if (category < this->Category_Count) {
         int p = 0;
         if (this->Player_Count > 0) {
-            int refOffset = 0x194 - (int)refs;
             do {
                 if (old_mask == 0) {
                     return;
@@ -75,7 +80,7 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                                 do {
                                     RGE_Static_Object* obj = VIS_UNIT_objectsValue[r->object_id];
                                     if (obj != 0) {
-                                        *(VisibleUnitRec**)((char*)obj + refOffset + (int)refs) = r;
+                                        obj->visible_unit_ref = r;
                                     }
                                     i++;
                                     r++;
@@ -98,7 +103,7 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                             *rec = *last;
                             RGE_Static_Object* obj = VIS_UNIT_objectsValue[rec->object_id];
                             if (obj != 0) {
-                                *(VisibleUnitRec**)((char*)obj + refOffset + (int)refs) = rec;
+                                obj->visible_unit_ref = rec;
                             }
                         }
                         *refs = 0;

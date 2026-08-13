@@ -21,6 +21,11 @@
 // - Typed loop probe: replaced the pointer/count do-while with an indexed
 //   DamageSpriteInfo for-loop; diff improved 450 -> 415 and exact-block coverage
 //   improved 25.41% -> 32.60%, but first structural drift remains at the scan gate.
+// - Fresh structural probes tried the binary-looking byte-pointer walk,
+//   counter width, declaration order, and master scope; all were nonexact
+//   duplicates or worse (best fresh diff 432), so restored the 415-byte source.
+// - Removed forced shared-tail labels. Ordinary flag branches express the
+//   observed cases without retaining decompiler-shaped goto control flow.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
@@ -101,37 +106,29 @@ void RGE_Static_Object::check_damage_sprites()
             RGE_Sprite* sprite;
             long add_x;
             long add_y;
-            switch (flag) {
-            case 0:
-                sprite = info->sprite;
-                add_x = 0;
-                add_y = 0;
-                goto add_damage_sprite;
-            case 1: {
-                RGE_Master_Static_Object* m = this->master_obj;
-                float rand_x = (float)debug_rand(s_stat_obj_cpp, 0x774);
-                float fx = (this->world_x - (short)this->world_x) +
-                           (rand_x * m->size_x * 0.000030517578f - m->size_x);
-                rand_x = (float)debug_rand(s_stat_obj_cpp, 0x775);
-                float fy = (this->world_y - (short)this->world_y) +
-                           (rand_x * m->size_y * 0.000030517578f - m->size_y);
-                short sx, sy;
-                this->owner->world->map->get_point(&sx, &sy, fx, fy, this->world_z, 0, 0);
-                sprite = info->sprite;
-                add_x = sx;
-                add_y = sy;
-                goto add_damage_sprite;
-            }
-            case 2:
+            if (flag < 2) {
+                if (flag == 0) {
+                    sprite = info->sprite;
+                    add_x = 0;
+                    add_y = 0;
+                } else {
+                    RGE_Master_Static_Object* m = this->master_obj;
+                    float rand_x = (float)debug_rand(s_stat_obj_cpp, 0x774);
+                    float fx = (this->world_x - (short)this->world_x) +
+                               (rand_x * m->size_x * 0.000030517578f - m->size_x);
+                    rand_x = (float)debug_rand(s_stat_obj_cpp, 0x775);
+                    float fy = (this->world_y - (short)this->world_y) +
+                               (rand_x * m->size_y * 0.000030517578f - m->size_y);
+                    short sx, sy;
+                    this->owner->world->map->get_point(&sx, &sy, fx, fy, this->world_z, 0, 0);
+                    sprite = info->sprite;
+                    add_x = sx;
+                    add_y = sy;
+                }
+                this->sprite_list->add_sprite(sprite, 0x5A, add_x, add_y);
+            } else if (flag == 2) {
                 this->new_sprite(info->sprite);
-                goto damage_sprite_done;
-            default:
-                goto damage_sprite_done;
             }
-
-        add_damage_sprite:
-            this->sprite_list->add_sprite(sprite, 0x5A, add_x, add_y);
-        damage_sprite_done:;
         }
 
         if (old_damage_loc > -1) {
