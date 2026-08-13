@@ -21,6 +21,7 @@
 // 19: direct returns in selected-object cases 6 and 9 were a codegen duplicate; VC5 still merged their call tail.
 // 20: scoped selected-object aliases in both cases separated the object/victory calls, but worsened the positional diff and lost an amount-call alignment; discarded.
 // 21: moving the selector declaration before amount was a codegen duplicate; retain the clean declaration order.
+// 22: ABI audit confirms exact typed SetSPAmount, SetSPVictoryType, and SetSPObject surfaces from matching setter donors; the two missing call counts are VC5's case-6/case-9 tail merge, not invalid declarations. Leave the clean candidate; target-map mismatches after the merged calls are alignment artifacts.
 
 extern "C" int __cdecl atoi(const char*);
 
