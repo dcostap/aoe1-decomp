@@ -40,6 +40,11 @@
 // reversed pointer-plus-index spelling all emitted the unchanged 341B/11-diff
 // group. A narrow volatile player-byte read and non-inlined two-argument lookup
 // helper were farther and restored. Clean typed source remains authoritative.
+// Probe 8 (context): same-TU exact Timeline donors include game_globals.h;
+// retaining that period header context recovered the original world/index
+// register schedule and the exact 341B body without source-shape scaffolding.
+
+#include "..\..\include\game_globals.h"
 
 class RGE_Game_World;
 class RGE_Player;
