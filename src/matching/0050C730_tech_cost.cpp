@@ -15,11 +15,9 @@
 // - Fresh probes permuted total/tech/carry declarations, scoped carry to the
 //   call-to-cleanup region, marked carry volatile, and initialized const tech;
 //   all retained or duplicate the same 15-byte displacement-only mismatch.
-//   A local aggregate changed the frame to 0x18 and was rolled back.
-// - Remaining drift is localized but unresolved: compiler homes tech at
-//   [ebp-4] and carry at [ebp-0xc] instead of the oracle's [ebp-0xc]/[ebp-4],
-//   with 15 displacement bytes differing; no source-level slot fix was found
-//   within the current hypothesis budget. FLAGS: config/flags/0050C730_tech_cost.rsp
+//   A named 0xc-byte local frame aggregate with the proven pointer/short/byte
+//   offsets restored the oracle homes and matched all 878 bytes. FLAGS:
+//   config/flags/0050C730_tech_cost.rsp
 
 #include <stdlib.h>
 
@@ -54,6 +52,12 @@ struct Tech_Entry {
 struct Player_Attributes { float attributes[0x40]; };
 struct RGE_Player { char gap_00[0x50]; Player_Attributes* player_attributes; };
 struct TRIBE_Tech { Tech_Entry* tech_tree; };
+struct Tech_Cost_Temps {
+    Tech_Entry* tech;
+    short total;
+    char gap_06[2];
+    unsigned char can_use_carry;
+};
 
 class TRIBE_Player_Tech {
 public:
@@ -68,12 +72,10 @@ public:
 
 void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, short* attr2, short* cost2, short* attr3, short* cost3)
 {
-    short total;
-    Tech_Entry* tech;
-    unsigned char can_use_carry;
+    Tech_Cost_Temps temps;
 
-    tech = this->base_tech->tech_tree + param_1;
-    total = 0;
+    temps.tech = this->base_tech->tech_tree + param_1;
+    temps.total = 0;
     *attr1 = -1;
     *cost1 = 0;
     *attr2 = -1;
@@ -81,60 +83,60 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* attr1, short* cost1, sho
     *attr3 = -1;
     *cost3 = 0;
 
-    can_use_carry = this->check_tech_cost(param_1, 0);
+    temps.can_use_carry = this->check_tech_cost(param_1, 0);
     if (this->owner->player_attributes->attributes[0x1d] < 1.0) {
-        can_use_carry = 0;
+        temps.can_use_carry = 0;
     }
 
-    if (tech->attribute_used[0] != 0) {
-        *attr1 = tech->attribute[0];
+    if (temps.tech->attribute_used[0] != 0) {
+        *attr1 = temps.tech->attribute[0];
         if (*attr1 >= 0) {
-            *cost1 = tech->attribute_cost[0];
+            *cost1 = temps.tech->attribute_cost[0];
             if (this->owner->player_attributes->attributes[*attr1] < (float)(int)*cost1) {
-                if (can_use_carry) {
-                    total += (short)(*cost1 - (short)this->owner->player_attributes->attributes[*attr1]);
+                if (temps.can_use_carry) {
+                    temps.total += (short)(*cost1 - (short)this->owner->player_attributes->attributes[*attr1]);
                     *cost1 = (short)this->owner->player_attributes->attributes[*attr1];
                 }
             }
         }
     }
 
-    if (tech->attribute_used[1] != 0) {
-        *attr2 = tech->attribute[1];
+    if (temps.tech->attribute_used[1] != 0) {
+        *attr2 = temps.tech->attribute[1];
         if (*attr2 >= 0) {
-            *cost2 = tech->attribute_cost[1];
+            *cost2 = temps.tech->attribute_cost[1];
             if (this->owner->player_attributes->attributes[*attr2] < (float)(int)*cost2) {
-                if (can_use_carry) {
-                    total += (short)(*cost2 - (short)this->owner->player_attributes->attributes[*attr2]);
+                if (temps.can_use_carry) {
+                    temps.total += (short)(*cost2 - (short)this->owner->player_attributes->attributes[*attr2]);
                     *cost2 = (short)this->owner->player_attributes->attributes[*attr2];
                 }
             }
         }
     }
 
-    if (tech->attribute_used[2] != 0) {
-        *attr3 = tech->attribute[2];
+    if (temps.tech->attribute_used[2] != 0) {
+        *attr3 = temps.tech->attribute[2];
         if (*attr3 >= 0) {
-            *cost3 = tech->attribute_cost[2];
+            *cost3 = temps.tech->attribute_cost[2];
             if (this->owner->player_attributes->attributes[*attr3] < (float)(int)*cost3) {
-                if (can_use_carry) {
-                    total += (short)(*cost3 - (short)this->owner->player_attributes->attributes[*attr3]);
+                if (temps.can_use_carry) {
+                    temps.total += (short)(*cost3 - (short)this->owner->player_attributes->attributes[*attr3]);
                     *cost3 = (short)this->owner->player_attributes->attributes[*attr3];
                 }
             }
         }
     }
 
-    if (total > 0) {
+    if (temps.total > 0) {
         if (*attr1 == 3 || *attr1 == -1) {
             *attr1 = 3;
-            *cost1 += total;
+            *cost1 += temps.total;
         } else if (*attr2 == 3 || *attr2 == -1) {
             *attr2 = 3;
-            *cost2 += total;
+            *cost2 += temps.total;
         } else if (*attr3 == 3 || *attr3 == -1) {
             *attr3 = 3;
-            *cost3 = total;
+            *cost3 = temps.total;
         }
     }
 

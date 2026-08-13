@@ -15,6 +15,14 @@
 // the latter two changed size/CFG and were restored.
 // liveness (rolled back): function-scoped join-screen pointer preserved the
 // same 582-byte output and did not move the common flag store before EH restore.
+// liveness (rolled back): bare new expression, label-scope cleanup, and a
+// volatile testing field were codegen-neutral; the pointer-based clean source
+// remains the better reconstruction.
+// control-flow (rolled back): direct returns or an epilogue label after the
+// final flag store changed size/CFG; original direct jumps skip that store.
+// abi/context (rolled back): removing the virtual destructor changed the new
+// size to 0x4AC; an equivalent virtual slot and explicit operator-new decl.
+// kept the 0x4B0 allocation but did not move the 12-byte EH tail gap.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);

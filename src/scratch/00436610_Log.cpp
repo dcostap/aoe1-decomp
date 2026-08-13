@@ -31,6 +31,13 @@
 // - Hoisting long ltime immediately before the prefix arrays reproduced the
 //   0x8C frame but expanded the body to 503 bytes and 310 differing bytes;
 //   restored the block-local candidate.
+// - Moving prefix declarations to function entry was a codegen duplicate.
+// - Top-level ltime, packed/recorded ltime-plus-prefix storage, and an
+//   explicit qword frame record all kept a 503-byte structural drift or
+//   enlarged the frame; none preserved the clean 500-byte body.
+// - A 28-byte prefix-size probe shrank the frame to 0x7C and widened the
+//   mismatch; restored the 32-byte arrays. Current best remains diff 12,
+//   with all calls aligned and only stack/local topology unresolved.
 
 #include <stdio.h>
 #include <stdarg.h>
