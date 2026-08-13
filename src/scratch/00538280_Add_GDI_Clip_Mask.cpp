@@ -41,6 +41,16 @@
 // Rolled back. Current source is the validated typed baseline.
 // Probe 43: natural type2/3 source-order fallthrough with a guarded do/while
 // produced a 400-byte body and lost the required 0x8 frame; rolled back.
+// Probe 44: reordered coordinate declarations; emitted code was unchanged.
+// Probe 45: separate line-manager alias; emitted code was unchanged.
+// Probe 46: switch dispatch; 408 bytes and 397 diff, rolled back.
+// Probe 47: source-order type2 fallthrough with named type4 edge locals; 370
+// bytes and no frame, rolled back.
+// Probes 49-51: named/reused type4 inner edges improved the diagnostic diff to
+// 248-249 and shape to 68.6%, but forced a 0xC frame and only 2% exact blocks;
+// the source also depended on dead-local reuse. Restored the clean 0x8-frame
+// typed baseline. Next lead remains the original node/manager register basin
+// and type2/type4 block topology, not further register tuning at this stage.
 
 struct DClipInfo_Node {
     char gap_00[0x2C];

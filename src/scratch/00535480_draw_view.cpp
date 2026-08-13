@@ -34,9 +34,13 @@
 //   pair and reduced the best result to 46 diff bytes.
 // - named area alias probe: preserving p2 in a typed local made 389 bytes /
 //   318 strict diff bytes and lost call relocation alignment; restored p2 form.
-// - paused: calls, frame, size, CFG, and most body blocks match. Remaining drift
-//   is prologue scheduling, early area-register coloring, one delayed store,
-//   and equivalent call-setup register coloring.
+// - direct cur_render_area assignment arms recovered the exact entry block and
+//   reduced the strict diff to 20 bytes; direct terrain aggregate passing was
+//   a codegen duplicate. A pointer-alias barrier grew the function to 403 bytes
+//   and 313 diff bytes, so it was restored.
+// - current best: calls, frame, size, CFG, and the first 0x24 bytes match.
+//   Remaining drift is one delayed right-rectangle store, terrain call-setup
+//   register coloring, and post-lock area-compare register coloring.
 
 #include <windows.h>
 
@@ -73,13 +77,13 @@ public:
 void RGE_View::draw_view(unsigned char p1, TDrawArea* p2)
 {
     if (p2 == 0)
-        p2 = this->render_area;
-
-    this->cur_render_area = p2;
+        this->cur_render_area = this->render_area;
+    else
+        this->cur_render_area = p2;
 
     {
         tagRECT save_render_rect;
-        if (p2 == this->save_area1) {
+        if (this->cur_render_area == this->save_area1) {
         save_render_rect.left = this->render_rect.left;
         save_render_rect.right = this->render_rect.right;
         save_render_rect.top = this->render_rect.top;
@@ -96,12 +100,7 @@ void RGE_View::draw_view(unsigned char p1, TDrawArea* p2)
     }
     if (this->cur_render_area->Lock("view::draw_view", 1)) {
         if (p1 == 10) {
-            tagRECT rect;
-            rect.left = save_render_rect.left;
-            rect.top = save_render_rect.top;
-            rect.right = save_render_rect.right;
-            rect.bottom = save_render_rect.bottom;
-            this->view_function_terrain(10, rect);
+            this->view_function_terrain(10, save_render_rect);
         } else {
             this->view_function(p1, 0, 0, 0, 0, 0, 0, 0, 0);
         }

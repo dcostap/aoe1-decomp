@@ -29,6 +29,13 @@
 //   farther from the original scan; it was rolled back.
 // - Same-TU declaration-then-assignment initialization was a codegen duplicate
 //   of the clean typed source and was not retained.
+// - Reintroduced the binary-proven byte cursor and post-call candidate pointer;
+//   this restored the 277-byte body and reduced drift from 245 to 117 bytes.
+// - Split coordinate conversions, reordered candidate declaration, and ran a
+//   six-case focused coordinate lab; all stayed in the same 117-byte basin or
+//   worsened size. The remaining hunk starts at the first x/y conversion.
+// - Adding math.h or stdlib.h changed the body to 280 bytes and 193-byte drift;
+//   both contexts were rolled back. A char cursor produced identical bytes.
 
 extern float DAT_00575580;
 
@@ -97,28 +104,33 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
     if (unit == 0)
         return 0;
 
+    int byte_offset = 0;
     ObjectMemory* bestDock = 0;
     int bestDockDistance = 0;
     int i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            ObjectMemory* memory = &this->importantObjectMemory[i];
-            int id = memory->id;
-            if (id != -1 && memory->owner != this->md->player->id &&
-                memory->type == 0x2D) {
-                RGE_Static_Object* dock = this->md->object(id);
-                if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
-                    int dx = (int)memory->x - (int)unit->x;
-                    int dy = (int)memory->y - (int)unit->y;
+            int id = *(int*)((char*)this->importantObjectMemory + byte_offset);
+            ObjectMemory* memory =
+                (ObjectMemory*)((char*)this->importantObjectMemory + byte_offset);
+                if (id != -1 && memory->owner != this->md->player->id &&
+                    memory->type == 0x2D) {
+                    RGE_Static_Object* dock = this->md->object(id);
+                    if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
+                    ObjectMemory* candidate =
+                        (ObjectMemory*)((char*)this->importantObjectMemory + byte_offset);
+                    int dx = (int)candidate->x - (int)unit->x;
+                    int dy = (int)candidate->y - (int)unit->y;
                     int dist = dx * dx + dy * dy;
                     if (bestDock == 0 || dist < bestDockDistance) {
-                        bestDock = memory;
+                        bestDock = candidate;
                         bestDockDistance = dist;
                     }
                 }
             }
             i++;
+            byte_offset += 0x24;
         } while (i < this->maxImportantObjectMemory);
     }
 
