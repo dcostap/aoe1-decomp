@@ -21,8 +21,9 @@
 // - Declared objectID at its first natural use after the item state updates to
 //   test whether its shorter lifetime restored the original object spill home;
 //   emitted code was unchanged, so the probe was rolled back.
-// - Best source keeps named ownership and natural bounded array growth.
-//   It remains in scratch because exact bytes are not complete.
+// - Initializing the entry objectID local to zero selected the original VC5
+//   local-home assignment. The initializer is optimized away; output is exact.
+//   Best source keeps named ownership and natural bounded array growth.
 
 struct ManagedIntArray {
     int* value;
@@ -197,7 +198,7 @@ public:
 
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
-    int objectID;
+    int objectID = 0;
 
     if (item == 0) {
         this->logCommonHistory("Invalid taskResearch item, returning FALSE.");
