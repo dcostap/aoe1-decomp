@@ -13,10 +13,15 @@
 //   clear-loop guard; both were codegen duplicates of the 3-byte frontier.
 // - Tested named copy pointers and aggregate record assignment. Both disturbed
 //   the saved-register/call layout, so they were rolled back.
-// - Current clean source is period-plausible and validated at 669 bytes with
-//   exact CFG, calls, blocks, and size. Remaining bytes are three branch/SIB
-//   encodings: original 0xC5 vs rebuilt 0xE7 at +001C, and 0x03 vs 0x18 at
-//   +019B and +01AA. No evidence-backed source lead remains.
+// - A short-array queue surface from same-TU donors was codegen-equivalent;
+//   the typed record surface remains the clearer ownership model.
+// - Reversing the copy field order worsened the result to 22 bytes. A simple
+//   commuted pointer-add form, (i + newq), reproduces both original copy SIB
+//   bytes without changing size, CFG, calls, or behavior.
+// - Nested duplicate queue-count guards and explicit forward-label control
+//   flow were codegen duplicates or broad structural regressions. The clean
+//   natural guard retains one branch-byte mismatch at +001C; the commuted
+//   copy form is kept as the smallest readable source that matches the copy.
 
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void* p);
@@ -79,8 +84,8 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short count
             short i = 0;
             if (this->production_queue_size > 0) {
                 do {
-                    (newq + i)->master_id = (this->production_queue + i)->master_id;
-                    (newq + i)->unit_count = (this->production_queue + i)->unit_count;
+                    (i + newq)->master_id = (this->production_queue + i)->master_id;
+                    (i + newq)->unit_count = (this->production_queue + i)->unit_count;
                     i++;
                 } while (i < this->production_queue_size);
             }

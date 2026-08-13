@@ -12,8 +12,11 @@
 //   explicit shared drop-popup tail recovered all 49 calls and 1135 bytes.
 // - ABI/layout: world +0x58 owns the command object, RGE_Player::name is
 //   +0x44, and WhoAmI(param2)/IsPlayerOutOfSync(player) are overloaded calls.
-// - final validation: 14 positional bytes remain.  The only open gap is the
-//   VC5 EH/local frame (0x204 versus the oracle's 0x208) and its stack homes.
+// - layout: temp_str is 260 bytes because get_string writes 0x100 bytes at
+//   temp_str + 4.  This restores the oracle's 0x208 frame and leaves four
+//   positional bytes at the msg + 4 stack anchor.
+// - final validation: 4 positional bytes remain.  All 49 calls, the frame,
+//   size, and the remaining body bytes match; only msg's local anchor differs.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
@@ -91,9 +94,13 @@ public:
     void handleChatReceived(int);
 };
 
-class TRIBE_Screen_Status_Message {
+class TScreenPanel {
 public:
-    virtual ~TRIBE_Screen_Status_Message();
+    virtual ~TScreenPanel();
+};
+
+class TRIBE_Screen_Status_Message : public TScreenPanel {
+public:
     char gap_04[0x478];
 
     TRIBE_Screen_Status_Message(char*, char*, char*, long);
@@ -150,9 +157,9 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                                     unsigned long param_2)
 {
     char msg[256];
-    char temp_str[256];
+    char temp_str[260];
     TEasy_Panel* panel;
-    TRIBE_Screen_Status_Message* status;
+    int player;
 
     if (this->prog_mode == 3) {
         switch (param_1) {
@@ -217,11 +224,11 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                     }
                 }
             } else if (out_of_sync == 0) {
-                int player = this->comm_handler->WhoAmI(param_2);
+                player = this->comm_handler->WhoAmI(param_2);
                 if (this->comm_handler->IsPlayerOutOfSync(player) != 0) {
                     out_of_sync = 1;
                     out_of_sync2 = 1;
-                    status = new TRIBE_Screen_Status_Message(
+                    new TRIBE_Screen_Status_Message(
                         "Temp Screen", "", (char*)0, -1);
                     panel_system.setCurrentPanel("Temp Screen", 0);
                     this->close_game_screens(1);
@@ -265,7 +272,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
 
         case 0x17bd:
         {
-            int player = this->playerID(param_2);
+            player = this->playerID(param_2);
             if (player != this->world->player_number &&
                 this->game_screen != 0 &&
                 this->playerID(param_2) > 0 && player_dropped[param_2] == 0) {
