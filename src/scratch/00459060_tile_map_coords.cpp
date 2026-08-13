@@ -13,6 +13,10 @@
 // 9: inverted case 1 to the natural greater-than coordinate test; preserved behavior and improved the first x87 branch hunk, but structural size drift remains.
 // 10: split the branch result from the final normalized output and used a float output local; improved size, FPU output duplication, and exact-block coverage.
 // 11: changed case 4's diagonal guard to the raw y intermediate proven by the original fcomp [esp+8]; added an exact block, with positional drift +5.
+// 12: merged the branch result into the original-looking double z local and
+//     made final normalization self-assignment; diff 650 -> 654, rolled back.
+// 13: replaced shared gotos with natural switch breaks and duplicated outcomes
+//     for compiler tail merging; diff 650 -> 724 and size +64, rolled back.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 
 struct RGE_Tile { int pad0; unsigned char tile_type; };
