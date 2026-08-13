@@ -23,6 +23,7 @@
 // 20: bound rge_base_game to the proven absolute 0x62C574 global; relocations now use the oracle address, but codegen remains the 95-byte late drift.
 // 21: late result local, zero-offset/raw TempText3 address, long parameters, mutable sprintf format, ai_dir width, and explicit pointer casts were all duplicate basins; restored natural typed source.
 // 22: left in scratch: all nine ordered calls, frame, size, and the first 277 bytes align. The remaining block/liveness drift is the compiler's saved TempText3 pointer around the two late sprintf returns (ESI+mov eax,esi versus oracle's delayed LEAs), with an 8-byte padded suffix.
+// 23: added standard stdio/string headers as period scenario.cpp context; emitted code was unchanged, so restored the clean typed source.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);

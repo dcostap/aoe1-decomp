@@ -22,6 +22,7 @@
 // probe 20: replaced the self alias with direct typed this-member access to test the saved-this home; emitted code was unchanged and was rolled back.
 // probe 21: corrected the right-click table key to master->object_group; the original uses +0x10 for table lookup and +0x14 only for the player bound. The codegen basin became structurally worse, but this restores the executable's key behavior.
 // probe 22: reordered the local declarations and removed the explicit self alias after the key correction; both emitted the same 0x18-frame basin.
+// probe 23: declared the fallback scan pointer inside the positive-count block; this follows the original post-test iterator copy at line 5248 and improved CFG/block shape without changing size or calls.
 // Final candidate: typed object/master/player ownership, master-group table key, exact field widths/offsets, natural retry-table loop, and 978-byte default-flag build. Remaining drift is broad VC5 local/block topology, not an unresolved call set.
 // GIVEUP blockers: original saved-this home at the top local slot, 0x1c versus 0x18 frame/local coloring, and action-switch handler placement remain unresolved. No inline asm or accepted_drift proposal.
 // Current validation: pending final unchanged validation; no inline asm.
@@ -193,8 +194,8 @@ retry_table:
     }
     if (entry == 0) {
         int i = 0;
-        RightClickEntry* scan = table;
         if (table_count > 0) {
+            RightClickEntry* scan = table;
             do {
                 if (scan->key == object_player) {
                     entry = table + i;

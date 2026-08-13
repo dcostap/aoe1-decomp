@@ -25,6 +25,9 @@
 //   Ghidra's case-specific map alias; emitted code was an exact duplicate.
 // - Left in scratch: the remaining structural lead is the original source
 //   shape that keeps two set_elev call sites while sharing the failure tail.
+// - Tested the plain Ghidra-backed if/else dispatch without the prior map
+//   temporary; it still merged set_elev (1/2 calls) and worsened shape to
+//   56.97%. Restored the clean outer-positive switch.
 
 typedef unsigned char uchar;
 

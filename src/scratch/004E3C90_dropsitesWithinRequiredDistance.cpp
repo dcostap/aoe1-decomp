@@ -25,6 +25,9 @@
 // 22: moved totalApplicable initialization before ManagedArray construction
 // while retaining guarded byteOffset initialization; the first mismatch moved
 // from entry initialization to the final cleanup branch and diff fell to 75.
+// 23: matched the canonical same-TU ManagedArray destructor body, including
+// post-delete field clearing; emitted code was unchanged, so the missing final
+// EH-state transition is not caused by the local destructor body.
 
 extern "C" void* __cdecl operator_new(unsigned long sz);
 extern "C" void __cdecl operator_delete(void* p);

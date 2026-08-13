@@ -16,6 +16,7 @@
 // session 2026-08-11: baseline rebuilt the volatile common-return candidate at 451 bytes; natural direct returns and nonvolatile result/goto joins both rebuilt at 457 bytes with the same 156-byte prefix and the success epilogue before failure.
 // session probes: a register result, a destructor declaration, and the packet-indicated virtual create_input ABI (with the proven gap adjustment) did not change that tail family; /O1 introduced an extra EH helper and broad structural drift.
 // final session source restores the natural typed factory form; remaining blocker is the VC5 /GX shared EH failure-tail placement (oracle success jump over failure block to one epilogue).
+// luna probe: a typed unsigned-byte status local formed the shared success/failure jump topology, as in the sibling factory, but changed late register coloring and worsened positional diff; restored.
 
 class TPanel {};
 class TDrawArea {};

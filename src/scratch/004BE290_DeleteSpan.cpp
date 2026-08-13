@@ -23,6 +23,7 @@
 // tried typed bound refresh: source now matches the original retained-list metadata, but VC5 moved the prologue and shrank output to 524 bytes; keep this behavior-faithful reconstruction and pause.
 // shardA6 control-flow: combined the full-span deletion predicates into the while guard; emitted code was unchanged, so restored the typed retained-bound candidate.
 // luna-r2 layout: exact spanlist.cpp manager donors use an embedded offset-zero VSList and qualified node-list calls; composition was tested and emitted code was unchanged.
+// luna-r3 layout: restored the public TSpan_Node_List inheritance used by the exact constructor/DeleteShape donors; inherited calls emitted the same 524-byte code, so restored composition.
 
 #include <stdlib.h>
 
