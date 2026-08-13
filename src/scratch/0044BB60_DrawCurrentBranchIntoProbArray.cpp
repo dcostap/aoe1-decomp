@@ -40,6 +40,9 @@
 //   codegen duplicate.  The exact PointMaker/Point layout and typed coordinate
 //   source remain stable; the target still differs at the pre-save x/radius/y
 //   register coloring and later tail schedule.
+// - Grouping the point_x, BranchRadius, and point_y initial declarations was a
+//   clean typed probe, but worsened the diff from 325 to 331 bytes and moved
+//   the first mismatch to +3.  Restored the separate declarations.
 
 class PrimaryPt {
 public:

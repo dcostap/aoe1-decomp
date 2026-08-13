@@ -18,6 +18,9 @@
 //   const loop-step probes were nonproductive or codegen duplicates. Kept the
 //   natural typed reconstruction rather than retaining register-steering
 //   scaffolding.
+// - Tested an unscaled cosine with radius multiplication at each observed use.
+//   It widened the positional diff and repeated one source-level calculation.
+//   Restored the natural scaled cosine value retained across compare/index/W use.
 
 #include <stdlib.h>
 

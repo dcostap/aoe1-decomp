@@ -20,6 +20,14 @@
 // - Best current check: 14 differing bytes, all 12 calls/relocations aligned;
 //   remaining mismatch is the original 0x8C frame versus rebuilt 0x88 and its
 //   resulting prologue/stack displacement bytes. Left in scratch at budget.
+// - The exact 0041A100 varargs donor uses the direct parameter-home address;
+//   both direct-cast spellings were codegen duplicates here.
+// - Swapping the two anonymous prefix roles preserved sequence-then-">"
+//   output and reduced the best diff from 14 to 12 bytes. Declaration order
+//   did not change that result.
+// - Hoisting ltime made the 0x8C frame exact but caused a 503-byte structural
+//   drift; the explicit dead-prefix-word model was also a duplicate. Restored
+//   the natural block-local ltime candidate.
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -96,12 +104,12 @@ void __cdecl TDebuggingLog::Log(char* format, ...)
     }
 
     if (this->Sequence != 0) {
-        sprintf(s3 + 4, "%ld |", this->SeqNo);
+        sprintf(s4 + 4, "%ld |", this->SeqNo);
     }
 
-    strcpy(s4 + 4, ">");
-    sprintf(this->osbuf, "%s%s%s%s%s\n", s1 + 4, s2 + 4, s3 + 4,
-            s4 + 4, buffer);
+    strcpy(s3 + 4, ">");
+    sprintf(this->osbuf, "%s%s%s%s%s\n", s1 + 4, s2 + 4, s4 + 4,
+            s3 + 4, buffer);
 
     if (this->LogToOutput != 0) {
         OutputDebugStringA(this->osbuf);
