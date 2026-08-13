@@ -21,6 +21,10 @@
 //   declaration reordering was a codegen duplicate and remains source-plausible.
 // - Added the proven TEasy_Panel virtual destructor declaration from exact donors;
 //   VC5 emitted the same 114-byte basin, so the canonical class surface is retained.
+// - Tested early failure checks, an explicit if/else result assignment, declaration-initialized sound,
+//   and an int ideal_x against the PDB/CFG and stack-home evidence; each was a codegen duplicate.
+//   Restored the natural typed source. The remaining lead is the unresolved pre-save x load and
+//   compiler-selected success/failure epilogue layout.
 
 class TPanel {
 public:

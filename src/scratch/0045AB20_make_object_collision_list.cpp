@@ -18,6 +18,9 @@
 // 15: replaced proven zero, +/-3, and -0.1 constants with the shared DAT_00570934/38/3c/40 globals; codegen metrics were unchanged.
 // 16: assigned an uninitialized list result in the invalid-radius arm and returned once; size became 798B with one return, but structural shape fell to 82.57% and broad drift, restored.
 // 17: moved that result declaration before radius locals; codegen was unchanged, restored.
+// 18: modeled the proven virtual master/map/player surfaces and RGE_Combat_Object base; codegen was unchanged, restored.
+// 19: grouped the four coordinate initializers; diff improved to 170B and the x homes matched, but the required ownership use was wrong, restored.
+// 20: reordered row/tile locals, tried typed row-pointer traversal, and moved bounds declarations; each worsened or duplicated codegen, restored.
 // FLAGS: config/flags/0045AB20_make_object_collision_list.rsp (/nologo /c /O2 /Oy /GX)
 // left in scratch: 821B rebuilt vs 802B original, 208 positional bytes, exact frame/call set; remaining gap is coordinate-result register/home assignment plus tail/block layout.
 

@@ -20,8 +20,13 @@
 //   remaining drift is the imported-call cache and loop register coloring.
 // - A local cached DeleteObject pointer inside the positive-count guard added
 //   8 bytes to the frame and worsened the match; restored the direct call.
+// - An explicit positive font-count guard is a natural binary-supported source
+//   shape and reduced the localized drift from 413 to 266 bytes.
+// - The Windows header/HGDIOBJ surface and a const local API pointer were
+//   codegen duplicates; the local pointer was removed from the final source.
 
 #include <stdio.h>
+#include <windows.h>
 
 class RGE_Game_Info;
 class RGE_Scenario_File_Info;
@@ -63,8 +68,9 @@ class TRegistry;
 class TMousePointer;
 class RGE_Font {
 public:
-    void* handle;
-    char gap_04[8];
+    HGDIOBJ font;
+    int font_wid;
+    int font_hgt;
 };
 class TChat;
 class TPanelSystem;
@@ -84,8 +90,6 @@ extern "C" __declspec(dllimport) void* __stdcall FindWindowA(
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* window, unsigned int message, unsigned int wparam, long lparam);
 extern "C" __declspec(dllimport) int __stdcall FreeLibrary(void* module);
-extern "C" int (__stdcall* const DeleteObject)(void* object);
-
 extern int do_debug_random;
 extern int wrote_debug_random_log;
 extern FILE* actionFile;
@@ -378,9 +382,11 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 
     if (this->fonts != 0) {
-        for (i = 0; i < this->font_num; ++i) {
-            if (this->fonts[i].handle != 0)
-                DeleteObject(this->fonts[i].handle);
+        if (this->font_num > 0) {
+            for (i = 0; i < this->font_num; i++) {
+                if (this->fonts[i].font)
+                    DeleteObject(this->fonts[i].font);
+            }
         }
         free(this->fonts);
         this->fonts = 0;

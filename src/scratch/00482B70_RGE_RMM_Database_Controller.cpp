@@ -20,6 +20,12 @@
 //   mismatch from 840 to 835 bytes and restored the two map fallback blocks.
 // - Integer and FILE-pointer CRT surfaces were codegen-neutral; keep the
 //   period _iobuf pointer form as the clean source.
+// - Replaced persistent record-entry pointer locals with direct typed array
+//   members. The original reloads each record base before its stores.
+// - Moved record-count increments after the named field stores. This restores
+//   the original 395-instruction topology, 97.22% shape, and +8-byte size.
+// - A separate map handle, virtual declaration surface, and counter reset
+//   were codegen-neutral or worse; the direct typed-array form is retained.
 
 struct _iobuf;
 extern "C" _iobuf* __cdecl fopen(const char*, const char*);
@@ -34,7 +40,8 @@ class Map_Stack;
 
 class RGE_Random_Map_Module {
 public:
-    int vtable_ptr;
+    virtual unsigned char generate();
+    virtual ~RGE_Random_Map_Module();
     RGE_Random_Map_Module* parent;
     RGE_Random_Map_Module_List* list;
     RGE_Map* map;
@@ -144,6 +151,7 @@ struct RGE_Map_Data {
 
 class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
 public:
+    virtual unsigned char generate();
     RGE_Game_World* world;
     long map_type;
     long number_of_players;
@@ -160,13 +168,12 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     char* terrain_file, char* object_file, char* terrain_type_file, char* map_file)
     : RGE_Random_Map_Module(0, 0, 0)
 {
-    RGE_Land_Data* land_info;
-    RGE_Land_Data_Entry* land;
-    RGE_Terrain_Data* terrain_info;
-    RGE_Terrain_Data_Entry* terrain;
-    RGE_Object_Data* object_info;
-    RGE_Object_Data_Entry* object;
+    int index;
+    index = 0;
     _iobuf* infile;
+    RGE_Land_Data* land_info;
+    RGE_Terrain_Data* terrain_info;
+    RGE_Object_Data* object_info;
     int local_30;
     int land_index;
     long terrain_num;
@@ -179,10 +186,8 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     long temp_group_flag;
     long temp_scale_flag;
     unsigned char local_4[4];
-    int index;
     int offset;
 
-    this->vtable_ptr = 0x571E88;
     this->world = 0;
     this->map_type = -1;
     this->number_of_players = 0;
@@ -199,6 +204,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
                     ++index;
                     offset += 0x48;
                 } while (index < this->map_info.map_num);
+                index = 0;
                 fclose(infile);
                 goto map_database_loaded;
             }
@@ -235,34 +241,30 @@ map_database_loaded:
                         land_info->land = (RGE_Land_Data_Entry*)calloc(land_info->land_num, 0x2c);
                         land_index = 0;
                         if (land_info->land_num > 0) {
-                            offset = 0;
                             do {
-                                land =
-                                    (RGE_Land_Data_Entry*)((char*)land_info->land + offset);
                                 fscanf(infile,
                                        "%d %d %d %d %d %d %d %d %d %d %d %d",
-                                       &land->land_id,
+                                       &land_info->land[land_index].land_id,
                                        &temp_zone,
-                                       &land->land_avoidance_tiles,
-                                       &land->base_square_radius,
+                                       &land_info->land[land_index].land_avoidance_tiles,
+                                       &land_info->land[land_index].base_square_radius,
                                        &temp_placement_type,
                                        &temp_amount_of_land_used_percent,
-                                       &land->x,
-                                       &land->y,
+                                       &land_info->land[land_index].x,
+                                       &land_info->land[land_index].y,
                                        &temp_by_player_flag,
                                        &temp_group_flag,
-                                       &land->radius,
-                                       &land->fade);
-                                ++land_index;
-                                land->terrain_type = (unsigned char)temp_zone;
-                                land->zone = (unsigned char)temp_placement_type;
-                                land->placement_type =
+                                       &land_info->land[land_index].radius,
+                                       &land_info->land[land_index].fade);
+                                land_info->land[land_index].terrain_type = (unsigned char)temp_zone;
+                                land_info->land[land_index].zone = (unsigned char)temp_placement_type;
+                                land_info->land[land_index].placement_type =
                                     (unsigned char)temp_amount_of_land_used_percent;
-                                land->amount_of_land_used_percent =
+                                land_info->land[land_index].amount_of_land_used_percent =
                                     (unsigned char)temp_by_player_flag;
-                                land->by_player_flag = (unsigned char)temp_group_flag;
-                                land->clumpiness_factor = 8;
-                                offset += 0x2c;
+                                land_info->land[land_index].by_player_flag = (unsigned char)temp_group_flag;
+                                land_info->land[land_index].clumpiness_factor = 8;
+                                ++land_index;
                             } while (land_index < land_info->land_num);
                         }
                     } else {
@@ -288,19 +290,15 @@ map_database_loaded:
                         terrain_info->terrain =
                             (RGE_Terrain_Data_Entry*)calloc(terrain_info->terrain_num, 0x18);
                         if (terrain_info->terrain_num > 0) {
-                            offset = 0;
                             do {
-                                terrain =
-                                    (RGE_Terrain_Data_Entry*)((char*)terrain_info->terrain + offset);
                                 fscanf(infile, "%d %d %d %d %d",
-                                       &terrain->terrain_percent,
-                                       &terrain->terrain_type,
-                                       &terrain->clumps,
-                                       &terrain->spacing,
-                                       &terrain->base_terrain_type);
+                                       &terrain_info->terrain[land_index].terrain_percent,
+                                       &terrain_info->terrain[land_index].terrain_type,
+                                       &terrain_info->terrain[land_index].clumps,
+                                       &terrain_info->terrain[land_index].spacing,
+                                       &terrain_info->terrain[land_index].base_terrain_type);
+                                terrain_info->terrain[land_index].clumpiness_factor = 0x14;
                                 ++land_index;
-                                terrain->clumpiness_factor = 0x14;
-                                offset += 0x18;
                             } while (land_index < terrain_info->terrain_num);
                         }
                     } else {
@@ -326,28 +324,24 @@ map_database_loaded:
                         object_info->objects =
                             (RGE_Object_Data_Entry*)calloc(object_info->object_num, 0x2c);
                         if (object_info->object_num > 0) {
-                            offset = 0;
                             do {
-                                object =
-                                    (RGE_Object_Data_Entry*)((char*)object_info->objects + offset);
                                 fscanf(infile,
                                        "%d %d %d %d %d %d %d %d %d %d %d %d",
-                                       &object->obj_id,
-                                       &object->terrain,
+                                       &object_info->objects[land_index].obj_id,
+                                       &object_info->objects[land_index].terrain,
                                        &temp_scale_flag,
                                        local_4,
-                                       &object->object_number_per_group,
-                                       &object->object_number_varience,
-                                       &object->number_of_groups,
-                                       &object->group_area,
-                                       &object->player_id,
-                                       &object->land_id,
-                                       &object->land_inner_radius,
-                                       &object->land_outer_radius);
+                                       &object_info->objects[land_index].object_number_per_group,
+                                       &object_info->objects[land_index].object_number_varience,
+                                       &object_info->objects[land_index].number_of_groups,
+                                       &object_info->objects[land_index].group_area,
+                                       &object_info->objects[land_index].player_id,
+                                       &object_info->objects[land_index].land_id,
+                                       &object_info->objects[land_index].land_inner_radius,
+                                       &object_info->objects[land_index].land_outer_radius);
+                                object_info->objects[land_index].group_flag = (unsigned char)temp_scale_flag;
+                                object_info->objects[land_index].scale_flag = local_4[0];
                                 ++land_index;
-                                object->group_flag = (unsigned char)temp_scale_flag;
-                                object->scale_flag = local_4[0];
-                                offset += 0x2c;
                             } while (land_index < object_info->object_num);
                         }
                     } else {

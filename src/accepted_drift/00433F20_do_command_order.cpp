@@ -21,6 +21,16 @@
 //   same clean 8-byte drift. The remaining lead is allocator/TU context.
 // - Paused with the clean typed source. Remaining lead: a translation-unit or
 //   VC5 allocator distinction that changes only the two post-call reloads.
+// - New claim probes reversed the outer comparison operands, moved the target
+//   initializer before the unit-array alias, used an unsigned count, reversed
+//   the target-radius and map-bound comparisons, and restored the clean source.
+//   The declaration/type probe regressed the prologue; all other probes were
+//   codegen duplicates or regressed the FPU/control-flow blocks. The two
+//   post-call reloads remain the only drift.
+// ACCEPTED_DRIFT: main-agent review confirmed both pairs only swap
+// MOV EBX,[ESP+18h] and MOV EDI,[ESP+30h] after virtual calls. The frame homes
+// are distinct and no write occurs between the loads. MOV does not change
+// flags. Each later use sees the same value. All later bytes match.
 
 #include "../../include/game_globals.h"
 

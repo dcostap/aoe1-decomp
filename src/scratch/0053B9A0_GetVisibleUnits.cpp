@@ -18,6 +18,10 @@
 //   0x1c frame and improved the positional diff to 308 with 50.26% resync
 //   similarity; VC5 still spills the byte at -0x1c and emits five extra bytes.
 // - Unsigned count spelling and implicit byte promotion were codegen duplicates.
+// - A natural pre-decrement outer category loop was tested against the original
+//   direct parameter-home decrement; VC5 retained the same load/decrement/store.
+// - Reordering y2 before y1 was tested against the proven stack homes; VC5
+//   emitted the same code, so both structural leads were rolled back.
 // Left in scratch: original prologue zero-register order, PDP/count stack homes,
 // and duplicated inner-save topology remain unresolved; the current source is
 // the clean typed byte-distance reconstruction, not a compiler-steering variant.
