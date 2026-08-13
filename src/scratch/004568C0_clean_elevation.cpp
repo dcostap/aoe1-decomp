@@ -21,7 +21,15 @@
 // 18: Cast-after-product, cast-before-shift, split temporaries, reversed OR operands, and a shared shifted value were duplicates or worse.
 // 19: Matching the preclean donor's pointer-add update spelling was a codegen duplicate; it remains a natural typed form.
 // 20: A byte current local broke the exact word-compare topology; restored the short current reconstruction.
-// paused: remaining 121B drift is update-block operand scheduling; calls, frame, size, CFG, and early blocks are aligned.
+// 21: An NW-only low-bit temporary was a codegen duplicate.
+// 22: The same-TU <stdlib.h> context used by exact map.cpp donors reduced the
+// diff from 121B to 29B and aligned seven of eight update blocks; retain it.
+// 23: SW tile[index] spelling was a codegen duplicate under the donor context.
+// 24: Reversed SW OR operands were also a duplicate. The remaining 29B is one
+// SW update block plus the current increment block.
+// paused: 29B localized drift remains after the focused four-probe pass.
+
+#include <stdlib.h>
 
 struct RGE_Tile {
     char gap_00[5];
