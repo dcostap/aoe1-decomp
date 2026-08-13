@@ -22,6 +22,11 @@
 //   clean source with k initialized inside the guarded loop.
 // - final: calls, layout, frame, CFG, and all 418 bytes of size align. Remaining
 //   drift is five scheduling bytes: mov edi,ebp before jge and cmp ebx,eax.
+// - new claim: pre-guard k assignment reproduced the target block order but
+//   caused VC5 to swap the initial i/j colors (diff 6); restored clean source.
+// - new claim: guarded-for, comma-guard, inner declaration, declaration-order,
+//   register, unguarded-inner-for, and outer-while variants stayed in the same
+//   two codegen groups; no source-backed lead remains for the five-byte drift.
 
 class RGE_Map;
 class RGE_Random_Map_Module_List;
