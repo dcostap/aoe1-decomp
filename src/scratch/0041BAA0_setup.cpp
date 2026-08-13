@@ -40,6 +40,10 @@
 // - Kept the memory-success body before the error 0x16 tail.  PDB line 629 and
 //   the oracle's far branch support this source order; it improves CFG coverage
 //   but leaves a six-byte size gap and the unresolved four-byte EH frame gap.
+// - Reused ms.dwLength for the first GetDXVersion output and compared that
+//   field.  The oracle passes the game-speed home as the first output, then
+//   reads that same home.  This removes the four-byte frame gap and aligns the
+//   EH record home; the remaining drift is not a frame-ownership mismatch.
 
 #include <windows.h>
 #include <stdio.h>
@@ -325,8 +329,8 @@ int RGE_Base_Game::setup()
                     this->error_code = 4;
                 }
                 else if (this->check_prog_argument((char*)0x57FA6C) == 0 &&
-                         (GetDXVersion(&DXVersion, &DXPlatform),
-                          DXVersion < 0x501)) {
+                         (GetDXVersion(&ms.dwLength, &DXVersion),
+                          ms.dwLength < 0x501)) {
                     this->error_code = 0x14;
                 }
                 else {
