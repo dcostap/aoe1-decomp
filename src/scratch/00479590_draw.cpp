@@ -12,6 +12,11 @@
 // context: imported GDI declarations and the period Windows header restore the repeated palette-call shape; diff reaches 633.
 // behavior: corrected the four early guard exits to clear TPanel::need_redraw (+0x38), matching the original write; diff stayed 633 and shape improved 72.49% -> 72.75%.
 // control-flow: tested SetTextColor before the rectangle bound updates, matching original line/call order; rolled back because strict diff worsened 633 -> 635.
+// layout: modeled the proven +0x8C/+0x90 panel rectangle as tagRECT; diff worsened 633 -> 656 and was rolled back.
+// liveness: hoisted the Ghidra function-scope flags local; emitted code duplicated the clean source.
+// abi: changed the background COLORREF local to the Ghidra signed-int surface; emitted code duplicated the clean source.
+// control-flow: assembly-donor evidence showed +1 origin loads before text extent; pre-added origin locals reached frame 0x48 and 85.17% shape, but added 27 bytes and changed the vtable carrier to EBX, so restored clean source.
+// control-flow: split the same proven +1 operations into separate increments; output remained the 1174-byte variant, so restored clean source.
 // left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
 #include <string.h>
 #include <windows.h>

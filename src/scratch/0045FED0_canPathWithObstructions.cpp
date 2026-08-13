@@ -19,6 +19,10 @@
 //   changed the first result to BL.  Restored the named typed results.
 // - Declared the typed zone-map handle before target lookup but assigned it at
 //   the existing path point; emitted code stayed in the same 17-byte basin.
+// - Matched the exact canBidirectionPath donor's function-scope declarations
+//   for target, zone map, zone results, and points; emitted code stayed equal.
+// - Tested the Ghidra/PDB reference ABI for unobstructibles; pointer and
+//   reference spellings emitted the same bytes. Restored the pointer form.
 
 struct XYPoint {
     int x;

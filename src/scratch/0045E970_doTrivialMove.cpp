@@ -22,6 +22,14 @@
 //   three evidence-backed hypotheses;
 //   remaining evidence points to original local-frame/register topology and VC5
 //   tail/block scheduling, not a missing call or virtual-surface declaration.
+// - reintroduced the decompiler's zero-initialized first-turn temporary; it
+//   improved exact-block coverage but worsened positional bytes, so rolled back.
+// - swapped the commutative master-radius terms; shape improved without a
+//   positional change, so kept the radius_y/radius_x source order.
+// - restored named target-distance and radius temporaries from the original
+//   stack hunk; size moved 6 bytes closer and positional diff improved to 2826.
+// - naming the owner world and radius components was emitted-code duplicate or
+//   worse; kept only the natural target-distance temporaries.
 
 #include <math.h>
 #include <stdio.h>
@@ -411,17 +419,19 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     }
 
     if (this->targetIDValue != -1) {
-        RGE_Static_Object* target = this->owner->world->object(this->targetIDValue);
+        RGE_Game_World* world = this->owner->world;
+        RGE_Static_Object* target = world->object(this->targetIDValue);
         if (target != 0) {
             RGE_Master_Static_Object* master =
                 (RGE_Master_Static_Object*)this->master_obj;
-            if ((float)sqrt((target->world_y - this->world_y) *
-                            (target->world_y - this->world_y) +
-                            (target->world_x - this->world_x) *
-                            (target->world_x - this->world_x)) <
+            float radius =
                 (float)sqrt(master->radius_y * master->radius_y +
-                            master->radius_x * master->radius_x) +
-                this->actionRange - DAT_00570ba8) {
+                            master->radius_x * master->radius_x);
+            float targetDX = target->world_x - this->world_x;
+            float targetDY2 = target->world_y - this->world_y;
+            float targetDistance =
+                (float)sqrt(targetDY2 * targetDY2 + targetDX * targetDX);
+            if (targetDistance < radius + this->actionRange - DAT_00570ba8) {
                 return 5;
             }
         }

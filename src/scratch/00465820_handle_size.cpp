@@ -12,6 +12,10 @@
 // long coordinate types and canonical named TPanel fields preserve the proven layout but do not change codegen.
 // tried one shared calc_hgt for fixed and centered bottom ownership; diff worsened 494->498, so restored.
 // restored proven PanelNode::prev_node; original next_node load is at +8, not +4.
+// direct typed edge-panel member tests improved exact-block coverage without changing size.
+// modeled the vslot+8 set_rect call as a 16-byte Rect-by-value argument; original sub-esp call setup now matches and diff is 440/592 bytes.
+// full TPanel virtual overload declarations shifted the call to vslot+0xC, so the minimal slot-preserving surface remains authoritative.
+// a scoped active temporary for one edge panel was a codegen duplicate; restored the direct condition.
 // left unresolved: residual prologue/register coloring and set_rect/centered scheduling drift; source is typed and period-plausible.
 // Main-agent audit restored the canonical virtual destructor surface; typed
 // panel geometry and recursive child ownership remain authoritative. Final
@@ -65,7 +69,7 @@ public:
 
     virtual ~TPanel();
     virtual void setup();
-    virtual void set_rect(long left, long top, long right, long bottom);
+    virtual void set_rect(Rect rect);
     virtual void pad03();
     virtual void pad04();
     virtual void pad05();
@@ -121,27 +125,23 @@ long TPanel::handle_size(long wid, long hgt)
         bottom = this->min_hgt + top - 1;
         right = this->min_wid + left - 1;
     } else {
-        p = this->left_panel;
-        if (p != 0 && p->active != 0) {
-            left = this->left_border + p->render_rect.right + 1;
+        if (this->left_panel != 0 && this->left_panel->active != 0) {
+            left = this->left_border + this->left_panel->render_rect.right + 1;
         } else {
             left = this->left_border + left;
         }
-        p = this->top_panel;
-        if (p != 0 && p->active != 0) {
-            top = this->top_border + p->render_rect.bottom + 1;
+        if (this->top_panel != 0 && this->top_panel->active != 0) {
+            top = this->top_border + this->top_panel->render_rect.bottom + 1;
         } else {
             top = this->top_border + top;
         }
-        p = this->right_panel;
-        if (p != 0 && p->active != 0) {
-            right = p->render_rect.left - this->right_border - 1;
+        if (this->right_panel != 0 && this->right_panel->active != 0) {
+            right = this->right_panel->render_rect.left - this->right_border - 1;
         } else {
             right -= this->right_border;
         }
-        p = this->bottom_panel;
-        if (p != 0 && p->active != 0) {
-            bottom = p->render_rect.top - this->bottom_border - 1;
+        if (this->bottom_panel != 0 && this->bottom_panel->active != 0) {
+            bottom = this->bottom_panel->render_rect.top - this->bottom_border - 1;
         } else {
             bottom -= this->bottom_border;
         }
@@ -194,7 +194,12 @@ long TPanel::handle_size(long wid, long hgt)
         }
     }
 
-    this->set_rect(left, top, right, bottom);
+    Rect rect;
+    rect.left = left;
+    rect.top = top;
+    rect.right = right;
+    rect.bottom = bottom;
+    this->set_rect(rect);
     int pass = 0;
     do {
         PanelNode* node = this->first_child_node;

@@ -33,6 +33,10 @@
 //   clamp expressions were tested and restored; they reduced source clarity or
 //   structural coverage.  One phaseValue1 local now names the shared phase
 //   parser value; it emits the same code as the prior value1 spelling.
+// - original asm resets currentPhase to -1 before copying the EndPlay name;
+//   this behavior correction is retained despite its small codegen regression.
+// - reusing the quote end counter and adding the unmapped temp3 local did not
+//   change emitted code; the narrow char comment locals remain preferred.
 
 #include <stdio.h>
 #include <string.h>
@@ -204,6 +208,7 @@ int AIPlayBook::loadPlays(char* filename) {
     int fileValue;
     FILE* file;
 
+
     if (filename == 0 || strcmp(filename, s_NONE) == 0) {
         strcpy(this->nameValue, filename != 0 ? s_NONE : s_NULL);
         return 0;
@@ -269,8 +274,8 @@ int AIPlayBook::loadPlays(char* filename) {
 
         sscanf(temp + 4, s_format_percent_s_space, temp2 + 4);
         if (strcmp(temp2 + 4, s_Play) == 0) {
-            i = 0;
             temp4 = 0;
+            i = 0;
             // `temp` reserves four bytes before the fgets destination.  The
             // original parser starts its quote scan at that destination.
             char current = temp[4];
@@ -410,6 +415,7 @@ int AIPlayBook::loadPlays(char* filename) {
             }
         } else if (strcmp(temp2 + 4, s_EndPlay) == 0 && refPhase != -1) {
             int oldPhase = refPhase;
+            currentPhase = -1;
             strcpy(temp2 + 4, this->plays[oldPhase].nameValue);
             if (temp2[4] == 'H' && temp2[5] == 'P') {
                 this->numberPlaysValue -= 7;

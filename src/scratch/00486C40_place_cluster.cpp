@@ -18,6 +18,11 @@
 //   but widened positional drift to 895-897 bytes; restored the clean source.
 // - Zero-value, self-alias, row-pointer, declaration-order, and master-scope
 //   probes were duplicates or worse; retained the named-node reconstruction.
+// - Ghidra's initial stack-store lead was isolated: next-only moved the first
+//   mismatch to the second store, while pair and chained forms colored zero in
+//   EBP and widened drift to 895 bytes; no form reproduced EBX zero.
+// - A focused seven-form initialization lab and a proven base-class context
+//   were diagnostic only; the clean typed source remains the best reconstruction.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);
