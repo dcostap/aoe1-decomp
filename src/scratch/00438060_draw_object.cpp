@@ -34,6 +34,13 @@
 // - Donor review of draw_view_rect confirms the same 0x24 row stride, but its separate inline
 //   expression does not change this target's emitted row address. Restored the clean named-row
 //   source; the first hunk remains dec eax versus the oracle's final LEA -24 displacement.
+// Follow-up orch-438060-a:
+// - Delayed row selection, explicit byte-span arithmetic, prior-row field accesses, and
+//   computed-index decrement forms either broadened drift or duplicated the 10-byte basin.
+// - Narrowing the row index to short and folding -1 into its expression regressed prologue or
+//   size parity. Restored the named int index and direct typed prior-row pointer.
+// - Final validation: 365 bytes, 7/7 ordered calls, and 10 differing bytes; the only gap is
+//   the first row address, where VC5 emits dec-plus-scaled LEA instead of folded -24.
 
 extern float DAT_0056f604;
 
