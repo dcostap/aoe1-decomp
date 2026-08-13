@@ -26,6 +26,9 @@
 //   probes were rolled back to the clean shared-tail reconstruction.
 // - Splitting the group-A and group-B selector values into separate typed
 //   locals did not change emitted code; restored the shared selector source.
+// - Isolating only the 0x7D body was a binary-guided call-tail probe; VC5
+//   emitted three vslot+0x28 calls and four show_message calls, so it was
+//   rolled back.  The clean source still has the documented five count gaps.
 
 #include <stdio.h>
 

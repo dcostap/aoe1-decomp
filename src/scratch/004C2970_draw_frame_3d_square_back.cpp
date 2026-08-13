@@ -31,6 +31,10 @@
 //     original 471-byte size and reduced the localized coordinate drift to
 //     95 bytes, confirming the whole-word parameter-home lead; restored the
 //     metadata-supported short signature as the clean source.
+// 12: Narrowed only the coordinate locals to short while retaining the short
+//     draw-parameter ABI, using the square-front donor's 16-bit offset shape.
+//     This duplicated an earlier short-local basin and worsened the prologue
+//     to 475B/300; restored the clean typed source.
 
 extern int dword_0062C50C;
 extern "C" __declspec(dllimport) void* __stdcall SelectClipRgn(void* hdc, void* rgn);

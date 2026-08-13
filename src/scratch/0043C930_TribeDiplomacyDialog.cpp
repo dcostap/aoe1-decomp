@@ -26,6 +26,11 @@
 //   0x128, but allowed VC5 to tail-merge two set_radio_button sites.  Keeping
 //   radio selection on the named group cursor restored the 0x124 frame but
 //   remained 110/112 calls and 2979 bytes.  Restored the validated clean form.
+// - structural lead: use the named per-row ally cursor as the radio group and
+//   reuse the existing loop index.  This follows the original tabCount cursor,
+//   which advances by 0xc, and removes the separate group-offset home.  The
+//   rebuilt frame moved to 0x128 and the positional diff improved to 2997;
+//   keep this natural cursor topology as the best current reconstruction.
 
 #include <stdio.h>
 
@@ -410,7 +415,6 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     int i;
     TButtonPanel** tab_buttons;
     int tab_count;
-    int group_offset;
     int disable_buttons;
     tagPALETTEENTRY palette_color;
     char temp_str[100];
@@ -512,7 +516,6 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     if (world->player_num - 1 > 0) {
         player_id = 1;
         y = 0x50;
-        group_offset = 0;
         disable_buttons = 0;
         button = this->woodTributeButton;
         tab_buttons = this->allyButton;
@@ -584,11 +587,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 }
                 tab_buttons[2]->set_help_info(0x7686, -1);
 
-                TButtonPanel** group = &tab_buttons[group_offset];
-                for (int j = 0; j < 3; ++j) {
-                    group[j]->set_radio_info(group, 3);
+                TButtonPanel** group = tab_buttons;
+                for (i = 0; i < 3; ++i) {
+                    group[i]->set_radio_info(group, 3);
                     if (rge_base_game->prog_mode == 5) {
-                        group[j]->set_disabled(1);
+                        group[i]->set_disabled(1);
                     }
                 }
 
@@ -636,7 +639,6 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 button[16]->set_help_info(0x768A, -1);
             }
 
-            group_offset += 3;
             y += 0x1E;
             ++button;
             tab_buttons += 3;
