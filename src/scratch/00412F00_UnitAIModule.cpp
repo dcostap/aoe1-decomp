@@ -1,6 +1,9 @@
 // VA: 00412F00 UnitAIModule ctor (356B)
 // aiuaimod.cpp
 // EH frame (/GX)
+
+#include <stdlib.h>
+#include <string.h>
 //
 // Attempt log:
 // - The first isolated typed candidate had the right four calls and layout but
@@ -10,9 +13,10 @@
 //   destructor restored the original EH frame, 356-byte size, phase local,
 //   delayed vptr position, call-site cleanup, and exact 34-instruction tail.
 // - The current natural source uses the binary-proven novtable/delayed-vptr
-//   surface and the real standard operator new/member-call ABIs. Current
-//   best: 356/356 bytes, 4/4 ordered calls, 92.71% shape, 121 positional
-//   differing bytes; the tail from +0xF4 through +0x164 is exact.
+//   surface, scalar initializer list, real managed-array destructor, and
+//   standard new/member-call ABIs. Current best: 356/356 bytes, 4/4 ordered
+//   calls, 95.83% shape, 88 positional differing bytes; the tail from
+//   +0xF4 through +0x164 is exact.
 // - Tried natural compiler-owned vptr, a declaration-only member destructor,
 //   a local allocation result, register-qualified obj, and the template
 //   spelling; none changed the remaining hunk. Original pushes EDI and loads
@@ -24,9 +28,12 @@
 // - Replaced proven waypoint padding with the typed Waypoint array and last
 //   position aggregate, then typed both queue pointers; both probes stayed
 //   identical. An empty ManagedArray default constructor also had no effect.
-// - Pausing with the best source: remaining evidence points to the original
-//   aiuaimod.cpp ManagedArray/TU lifetime scheduling rather than an unresolved
-//   field ownership or call ABI. No inline asm or compiler-only filler used.
+// - Split initializer-list prefixes, a natural zeroing member constructor,
+//   new int[10], and the likely standard-header pair. The split lab found no
+//   exact source; new int[10] and headers emitted the same 88-byte result.
+// - Pausing with the best source: remaining drift is the constructor's first
+//   block liveness/EH scheduling. Calls, layout, size, and tail are aligned.
+//   No inline asm or compiler-only filler used.
 
 struct OrderEvent {
     int issuer;
@@ -74,19 +81,16 @@ public:
     RGE_Master_Static_Object* master_obj;         // +0x08
 };
 
-template <class T>
-class ManagedArray {
+class ManagedIntArray {
 public:
-    T* value;
+    int* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
 
-    ManagedArray() {}
-
-    ~ManagedArray() {
+    ~ManagedIntArray() {
         if (value) {
-            delete value;
+            delete[] value;
             value = 0;
         }
         numberValue = 0;
@@ -164,7 +168,7 @@ public:
     int lastActionValue;                        // +0x54
     int lastTargetValue;                        // +0x58
     int lastTargetTypeValue;                    // +0x5C
-    ManagedArray<int> attackingUnitsValue;      // +0x60
+    ManagedIntArray attackingUnitsValue;        // +0x60
     Waypoint waypointQueue[8];                  // +0x70 to +0xEF
     int waypointQueueSizeValue;                 // +0xF0
     unsigned long lastUpdateTimeValue;          // +0xF4
@@ -187,34 +191,34 @@ public:
 
 // The historical aiuaimod.cpp TU exposes derived UnitAIModule classes; this
 // declaration is context only and emits no additional function body.
-UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize) {
-    objectValue = obj;
-    moodValue = -1;
-    objectCategoryValue = -1;
-    orderQueueSizeValue = 0;
-    orderQueueMaxSizeValue = maxQueueSize;
-    notifyQueueSizeValue = 0;
-    notifyQueueMaxSizeValue = maxQueueSize;
-    currentOrderValue = -1;
-    currentOrderPriorityValue = -1;
-    currentActionValue = -1;
-    currentTargetValue = -1;
-    currentTargetTypeValue = -1;
-    currentTargetXValue = -1.0f;
-    currentTargetYValue = -1.0f;
-    currentTargetZValue = -1.0f;
-    desiredTargetDistanceValue = 2.0f;
-    defendTargetValue = -1;
-    lastOrderValue = -1;
-    lastActionValue = -1;
-    lastTargetValue = -1;
-    lastTargetTypeValue = -1;
+UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize)
+    : objectValue(obj),
+      moodValue(-1),
+      objectCategoryValue(-1),
+      orderQueueSizeValue(0),
+      orderQueueMaxSizeValue(maxQueueSize),
+      notifyQueueSizeValue(0),
+      notifyQueueMaxSizeValue(maxQueueSize),
+      currentOrderValue(-1),
+      currentOrderPriorityValue(-1),
+      currentActionValue(-1),
+      currentTargetValue(-1),
+      currentTargetTypeValue(-1),
+      currentTargetXValue(-1.0f),
+      currentTargetYValue(-1.0f),
+      currentTargetZValue(-1.0f),
+      desiredTargetDistanceValue(2.0f),
+      defendTargetValue(-1),
+      lastOrderValue(-1),
+      lastActionValue(-1),
+      lastTargetValue(-1),
+      lastTargetTypeValue(-1) {
 
     attackingUnitsValue.value = 0;
     attackingUnitsValue.numberValue = 0;
     attackingUnitsValue.desiredNumberValue = 0;
     attackingUnitsValue.maximumSizeValue = 10;
-    attackingUnitsValue.value = (int*)operator new(0x28);
+    attackingUnitsValue.value = new int[10];
 
     waypointQueueSizeValue = 0;
     lastUpdateTimeValue = 0;
