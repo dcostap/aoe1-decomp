@@ -36,6 +36,10 @@
 //   invariant group and were rolled back or reduced to this typed source.
 // - A gated 24-case land/terrain lab also produced one 336-byte group with
 //   10/10 calls and the 0x10 frame. No exact candidate appeared.
+// - Fresh claim: named payload locals worsened to 29 bytes; reversed size
+//   operands, opaque payload pointers, map-expression operand order, TU
+//   stdlib context, and long index type did not change the 22-byte frontier.
+//   Using data->maps regressed the frame to 0x0C. Restored this clean source.
 
 extern "C" {
     void rge_write(int file, void* data, int size);

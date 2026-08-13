@@ -33,6 +33,11 @@
 //   and 91.82% shape, but it was rolled back as cursor plumbing.
 // - Split counter initialization and separate map/table locals were emitted
 //   duplicates.  The clean source keeps typed object and land-point ownership.
+// - Fresh structural pass: a named byte-offset map-land cursor improved the
+//   typed candidate to 204 bytes, while interior field anchors and reversed
+//   land stores reached a diagnostic 192-byte basin.  Those anchors are raw
+//   cursor plumbing, so they were rolled back.  The clean typed source stays
+//   at 309 bytes; the remaining lead is early EDI setup and loop scheduling.
 
 #include <stdlib.h>
 

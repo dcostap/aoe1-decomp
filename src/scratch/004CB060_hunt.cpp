@@ -22,6 +22,12 @@
 // - direct success-label and scalar-status variants were worse; rolled back.
 // - Typed the constructed action as RGE_Action to follow add_action ownership;
 //   emitted code was unchanged, so restored the derived action type.
+// - direct returns for every failure path expanded the body to 391 bytes;
+//   split return labels also widened the CFG, so both were rolled back.
+// - routing make_action null to the final exit while keeping a constructor
+//   failure tail reached a 331-byte/49-byte diagnostic, but returned the old
+//   target on task failure; explicit zeroing widened it to 333 bytes/77 diff.
+//   Neither status-pointer form is kept.
 // FLAGS: config/flags/004CB060_hunt.rsp
 
 class RGE_Static_Object;

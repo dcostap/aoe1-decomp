@@ -44,6 +44,7 @@
 // added the exact TPanel string overload surface and qualified all four inherited calls; emitted bytes stayed unchanged
 // left in scratch: natural four-arm source is 288 bytes because VC5 tail-merges the first two arms; original is 326 bytes with four duplicated call sites
 // independent guarded returns preserve the natural per-arm termination suggested by the original no-jump CFG; testing once in this claim
+// claim probe: explicit lower bounds on the second and third bands changed the CFG and lowered structural coverage; restored the clean typed else-if source
 
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" long __cdecl __ftol(void);
