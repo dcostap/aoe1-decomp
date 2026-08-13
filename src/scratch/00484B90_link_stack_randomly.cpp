@@ -53,22 +53,49 @@ struct Map_Stack {
 
 int __cdecl debug_rand(char* file, int line);
 
+class RGE_Map;
+class RGE_Random_Map_Module_List;
+struct RGE_Tile;
+
 class RGE_Random_Map_Module {
 public:
     virtual unsigned char generate() = 0;
     RGE_Random_Map_Module* parent;  // +0x04
-    void* list;                     // +0x08
-    void* map;                      // +0x0C
-    void* map_row_offset;           // +0x10
+    RGE_Random_Map_Module_List* list; // +0x08
+    RGE_Map* map;                   // +0x0C
+    RGE_Tile** map_row_offset;      // +0x10
     long map_width;                 // +0x14
     long map_height;                // +0x18
     float schedule;                 // +0x1C
-    void* search_map;               // +0x20
-    void* search_map_rows;          // +0x24
+    unsigned char* search_map;      // +0x20
+    unsigned char** search_map_rows; // +0x24
     Map_Stack* stack_array;         // +0x28
     Map_Stack** stack_offsets;      // +0x2C
 
     void add_stack_node(Map_Stack* target, Map_Stack* node);
+};
+
+struct RGE_Elevation_Info_Line {
+    long elevation_size;
+    long elevation;
+    long clumps;
+    long spacing;
+    long base_elevation;
+    long base_terrain_type;
+};
+
+struct RGE_Elevation_Hot_Spots {
+    long x;
+    long y;
+    long radius;
+    long fade;
+};
+
+struct RGE_Elevation_Info {
+    RGE_Elevation_Info_Line elevation[99];
+    long elevation_num;
+    RGE_Elevation_Hot_Spots hot_spots[99];
+    long hot_spot_num;
 };
 
 // Main-agent audit confirmed canonical elevation stack/map ownership and kept
@@ -120,8 +147,18 @@ public:
 // width expression and separate product/division statement were codegen
 // duplicates. Restored the canonical for-loop source; no new natural lead
 // remains beyond the opposite commutative load order at 00484BE2/00484BE5.
+// orch-484B90-a: zero-subtraction, CRT-header-pair, nested-product, comma,
+// height-pointer, full-info-layout, and typed-base probes were emitted-code
+// duplicates or worse. A typed overlay of the proven adjacent width/height
+// fields reached an exact 234-byte match, but it is raw layout plumbing and
+// was not retained as living source. A named dimensions aggregate restored
+// canonical ownership but returned to the two-byte mismatch. Clean source
+// keeps direct named map fields, full typed base context, and the proven
+// elevation-info layout; the remaining gap is the commutative product load
+// order at 00484BE2/00484BE5.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
+    RGE_Elevation_Info info;
     virtual unsigned char generate();
     void link_stack_randomly(Map_Stack* param_1);
 };

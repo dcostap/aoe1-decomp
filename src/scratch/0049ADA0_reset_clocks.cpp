@@ -23,6 +23,10 @@
 // - resumed after the host crash, restored the clean pinned source, and
 //   reproduced the 594-byte/frame-0x10 validation. No new natural source lead
 //   remains; the unresolved bytes are the two inner-loop branch pairs.
+// - this session re-tested for-header, while, explicit continue/break, post-
+//   increment, inverted-predicate, labeled-backedge, and <=-bound spellings;
+//   all either broadened the function or canonicalized to the same six-byte
+//   gap. The clean do/while source remains the best reconstruction.
 
 class TRIBE_Panel_Time {
 public:

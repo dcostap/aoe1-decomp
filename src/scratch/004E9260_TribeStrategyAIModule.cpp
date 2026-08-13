@@ -29,6 +29,11 @@
 // scoped the name-length local through loadRules only; VC5 shrank the frame to
 // 0xC and worsened the mismatch to 19 bytes, so this lifetime variant was
 // restored. The unresolved lead remains the original parameter-home hunk.
+// continuation: a local serialized value plus parameter-home name/loop reads
+// reached the same 7-byte basin; an address-taken value pointer was a codegen
+// duplicate. A four-way /GX variant lab confirmed the local-name form is the
+// best invariant-preserving source; parameter-name forms either lose the frame
+// slot or retain the same later drift. Restored this clean typed source.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
