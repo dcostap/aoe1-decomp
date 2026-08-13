@@ -26,6 +26,8 @@
 // VC5 retained the same custom-first block layout.  Natural if/else source remains authoritative.
 // luna probe: the oracle scans learn_info with strlen before loadLearnInfo; replacing `*learn` with strlen
 // improved strict diff 1281->1279, exact blocks 78.04%->79.53%, and resync similarity 89.56%->90.62%.
+// luna-r2 probe: a donor-backed local RGE_Base_Game pointer for both get_string calls improved strict diff
+// 1279->1274 but changed a direct call target and worsened shape; restored the clean source.
 
 typedef unsigned char uchar;
 

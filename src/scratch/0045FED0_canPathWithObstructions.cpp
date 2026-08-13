@@ -23,6 +23,9 @@
 //   for target, zone map, zone results, and points; emitted code stayed equal.
 // - Tested the Ghidra/PDB reference ABI for unobstructibles; pointer and
 //   reference spellings emitted the same bytes. Restored the pointer form.
+// - Tested a mixed API-width hypothesis with unsigned-char start_zone and int
+//   goal_zone; it added 7 bytes and broke the zone-gate block. Restored int
+//   locals; the original 17-byte register-coloring gap remains.
 
 struct XYPoint {
     int x;

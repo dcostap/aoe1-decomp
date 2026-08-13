@@ -18,6 +18,8 @@
 // - Tested natural long map_y/map_x locals before tile-row setup; this moved
 //   the first mismatch to the callee-save pushes and worsened diff to 1091.
 //   Rolled back to the clean direct-coordinate expression.
+// - Moved row/map/tile declarations above the first body statement to mirror
+//   the PDB declaration-only band; VC5 emitted identical code, so restored clean.
 // - Left in scratch after the 10-hypothesis budget; no inline asm or opaque
 //   codegen scaffolding is retained.
 

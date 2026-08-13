@@ -22,6 +22,9 @@
 // worsened the result to 713 bytes with a 0x3C frame, so it was restored.
 // A common positive-radius result path improved shape but lost 33 bytes and
 // was restored; an explicit invalid-radius else block was also a duplicate.
+// fresh structural lead: an exact stat_obj-era nested short-loop donor uses
+// direct map_row_offset[row][col].objects.list.  This reduced positional drift
+// by 20 bytes, but lost the 0x40 frame and 20 bytes of code, so it was restored.
 // left in scratch: all nine calls and frame/size match, but initial float/local
 // homes, coordinate register coloring, and the late x/y FPU schedule remain
 // broad positional drift (final validation records the restored metrics).

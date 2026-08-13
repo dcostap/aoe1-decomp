@@ -24,6 +24,9 @@
 //   duplicate; narrowed result type was also duplicate.
 // - Proven polymorphic declarations for allocated screen types kept the
 //   715-byte output unchanged; restored the simpler size stubs.
+// - Tested assigning the validated event value to the shared success result;
+//   output changed by one byte farther from the original, so restored the
+//   clean result assignment. The per-arm EAX move gap remains unresolved.
 // FLAGS: /GX (EH)
 
 #include <string.h>

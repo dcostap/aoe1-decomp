@@ -25,6 +25,12 @@
 // Shard B5: the donor-shaped positive playbook do-scan worsened CFG coverage;
 // restored the direct bounded scan. The first hunk remains this/play register
 // coloring plus merged early epilogues; no ABI or call-set issue was found.
+// luna-4DC490-r2 probe: returning the proven null target value on the
+// target-null branch was emitted identically; original EAX preservation alone
+// does not prevent VC5 from merging the null exits.
+// luna-4DC490-r2 probe: changing the phase-invalid flag from int to bool
+// removed some stack traffic and moved 3 positional bytes closer, but worsened
+// CFG shape and exact-block coverage; restored the int source reconstruction.
 
 extern int debug_rand(char* file, int line);
 
