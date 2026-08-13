@@ -13,10 +13,13 @@
 // - ABI/layout: world +0x58 owns the command object, RGE_Player::name is
 //   +0x44, and WhoAmI(param2)/IsPlayerOutOfSync(player) are overloaded calls.
 // - layout: temp_str is 260 bytes because get_string writes 0x100 bytes at
-//   temp_str + 4.  This restores the oracle's 0x208 frame and leaves four
-//   positional bytes at the msg + 4 stack anchor.
-// - final validation: 4 positional bytes remain.  All 49 calls, the frame,
-//   size, and the remaining body bytes match; only msg's local anchor differs.
+//   temp_str + 4.  This restores the oracle's 0x208 frame.
+// - layout: msg[260] or msg[252] changed the frame or moved temp_str; the
+//   period-plausible msg[256]/temp_str[260] pair is the stable layout.
+// - behavior: save_game uses the msg base.  The matching source uses msg as
+//   the output buffer; the old msg + 4 forms were decompiler stack aliases.
+// - exact: natural msg-base uses match all 1135 bytes, 49 calls, and the EH
+//   frame under /GX.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
@@ -177,7 +180,6 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                 break;
             }
             goto dropped_from_game;
-            break;
 
         case 0x17ac:
         case 0x17b7:
@@ -237,8 +239,8 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                         dump_vismap_log();
                     }
                     player = this->comm_handler->WhoAmI();
-                    sprintf(msg + 4, "syncerr%d.gam", player);
-                    this->save_game(msg + 4);
+                    sprintf(msg, "syncerr%d.gam", player);
+                    this->save_game(msg);
                     this->world->players[this->world->player_number]
                         ->loss_if_game_on();
                     this->do_game_over();
@@ -279,9 +281,9 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                 this->play_sound(2);
                 this->get_string(0x4c1, temp_str + 4, 0x100);
                 player = this->playerID(param_2);
-                sprintf(msg + 4, temp_str + 4,
+                sprintf(msg, temp_str + 4,
                         this->world->players[player]->name);
-                this->game_screen->display_system_message(msg + 4);
+                this->game_screen->display_system_message(msg);
                 player = this->playerID(param_2);
                 L->Log("$$$ PROBLEM COMMUNICATING WITH %s",
                        this->world->players[player]->name);
