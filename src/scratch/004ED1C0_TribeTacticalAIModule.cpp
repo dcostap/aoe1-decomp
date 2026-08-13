@@ -33,6 +33,11 @@
 //   vptr emission.  VC5 emitted the derived vptr at entry and produced 849
 //   bytes; rolled back because the original stores its vptr after resource
 //   setup.
+// - 2026-08-13: corrected +0xD88 to the proven resourceMapping field and used
+//   a natural indexed initialization for mapping, distributions, differences,
+//   and build counts.  VC5 now emits the compact six-store loop and 782 bytes;
+//   keep this readable source.  The remaining structural gap is the early
+//   Group receiver LEA and delayed EH-state store near the first field zero.
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);
@@ -54,7 +59,7 @@ public:
     int groupIDValue; int numberGroupsValue; unsigned long lastGroupAttackTime; unsigned long lastGroupRebalanceTime; unsigned long lastAttackResponseTime;
     unsigned long lastBoatAttackResponseTime; unsigned long lastScalingUpdateValue; int numberBuildUpdatesSkipped; int randomizedAttackSeparationTime;
     ManagedIntArray playersToAttack; ManagedIntArray playersToDefend; ManagedIntArray workingArea; ManagedIntArray unitsTaskedThisUpdate;
-    int actualGathererDistribution[4]; int desiredGathererDistribution[4]; int neededResourceValue[4]; int resourceDifferenceValue[4]; char neededResources[0x70];
+    int actualGathererDistribution[4]; int desiredGathererDistribution[4]; int resourceMappingValue[4]; int resourceDifferenceValue[4]; char neededResources[0x70];
     int attackEnabledValue; int updateArea; int firstNeededResourceUpdateDone; int numberStoragePitsBuilt[4]; int numberGranariesBuilt[4]; int wonderInProgressValue; int wonderBuiltValue;
     PlacementState placementStateValue; int nextCivilianToTaskValue; int nextIdleSoldierGroupToTaskValue; int nextActiveSoldierGroupToTaskValue; int builtFirstStoragePit; int builtFirstGranary;
     unsigned long lastBuildTime; unsigned long lastAttackResponseBuildInsertionTime; unsigned long lastCoopTributeDemandTime; unsigned long lastCoopTributeGiftTime; unsigned long lastCoopAttackDemandTime;
@@ -164,18 +169,14 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     this->updateAreaAverageTotal = 0;
     *(int*)this = 0x575788;
 
-    piVar1 = this->desiredGathererDistribution;
-    iVar2 = 4;
-    do {
-        piVar1[4] = -1;
-        *piVar1 = 0;
-        piVar1[-4] = 0;
-        piVar1[8] = 0;
-        piVar1[0x2b] = 0;
-        piVar1[0x2f] = 0;
-        piVar1 = piVar1 + 1;
-        iVar2 = iVar2 - 1;
-    } while (iVar2 != 0);
+    for (iVar2 = 0; iVar2 != 4; iVar2 = iVar2 + 1) {
+        this->resourceMappingValue[iVar2] = -1;
+        this->desiredGathererDistribution[iVar2] = 0;
+        this->actualGathererDistribution[iVar2] = 0;
+        this->resourceDifferenceValue[iVar2] = 0;
+        this->numberStoragePitsBuilt[iVar2] = 0;
+        this->numberGranariesBuilt[iVar2] = 0;
+    }
 
     piVar1 = this->sn;
     for (iVar2 = 0xe2; iVar2 != 0; iVar2 = iVar2 - 1) {

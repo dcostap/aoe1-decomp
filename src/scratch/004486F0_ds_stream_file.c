@@ -22,7 +22,16 @@
 //     second post-buffer virtual call reads entry arg +0x0C, not param_2.
 // 15: ABI lead improves 828B to 830B and aligns the third argument's call;
 //     no further structural source lead is supported by the current packet.
-// PAUSED: remaining drift is a broad VC5 ABI/layout basin (EBX zero vs EDI,
+// 16: Original Unlock passes the second Lock output pointer from its stack home
+//     as the third argument; restore that period API argument instead of the
+//     previous 0 placeholder to test the remaining Lock/Unlock structure.
+// 17: Reversed explicit zero/one register declaration order; VC5 emitted the
+//     same code, so the diagnostic source was rolled back.
+// 18: Reordered the first Lock output declarations to match the inferred homes;
+//     VC5 emitted the same code, so the declaration order was rolled back.
+// 19: Best source now passes lpWrite2 to Unlock. It reaches exact 835-byte size,
+//     all 20 ordered calls, and diff 732; register and block drift remains broad.
+// PAUSED: remaining drift is a broad VC5 ABI/layout basin (EBX zero vs ESI,
 //     EBP one/save, descriptor/output stack homes, and Lock argument scheduling),
 //     not a localized behavior-equivalent difference; no accepted_drift proposal.
 // FLAGS: config/flags/004486F0_ds_stream_file.rsp = /Oi- (direct memset calls)
@@ -135,7 +144,7 @@ int ds_stream_file(char* filename, int param_2, long param_3)
         }
     }
 
-    (*(int (__stdcall **)(unsigned int, void*, unsigned int, unsigned int, int))(*(unsigned int*)_lpDSBStreamBuffer + 0x4C))(_lpDSBStreamBuffer, lpWrite1, dwLen1, 0, 0);
+    (*(int (__stdcall **)(unsigned int, void*, unsigned int, void*, unsigned int))(*(unsigned int*)_lpDSBStreamBuffer + 0x4C))(_lpDSBStreamBuffer, lpWrite1, dwLen1, lpWrite2, 0);
 
     DAT_008884a4 = 0;
     DAT_008884a0 = 0;

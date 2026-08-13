@@ -17,6 +17,11 @@
 // 12: confirmed the one-argument GetPlayerPosture ABI from the class packet; the early -1 belongs to loadAIInformation.
 // 13: removed the saved cleanup-player local and used a positive scenario bound guard; this recovered the original cleanup CFG and reduced the size gap to 2 bytes.
 // 14: a pointer-first cleanup local regressed register lifetime; restored the direct player lookup, which remains the cleanest candidate.
+// 15: object-loop slot-pointer and direct-map spellings were compiler duplicates; retained the named mapped index.
+// 16: a typed player local removed the two-byte size gap but changed body scheduling and worsened resync; rolled back.
+// 17: a players-array alias changed the frame to 0x50; rolled back. The donor-backed make_scenario_obj pointer return emits unchanged code.
+// 18: the prior cleanup player local reached diff 341 but added two bytes and lost structural islands; restored the clean cleanup form.
+// 19: an integer slot-value cast was compiler-equivalent. Final clean source remains 814 bytes versus the 812-byte target.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int file, void* dst, int size);
@@ -25,6 +30,7 @@ extern "C" int __cdecl rge_close(int file);
 extern "C" void* __cdecl malloc(unsigned int size);
 extern "C" void __cdecl free(void* ptr);
 extern "C" int world_update_counter;
+class RGE_Static_Object;
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -51,7 +57,7 @@ public:
     virtual int sendAICommand(int, int, int, int, int);
     virtual int objectCostByType(int);
     virtual void trackUnitGather(int, int, int);
-    virtual void make_scenario_obj(float, float, float, short, uchar, float);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short, uchar, float);
     virtual void scenario_save(int);
     virtual void scenario_load(int, long*, float);
     virtual void scenario_postsave(int);

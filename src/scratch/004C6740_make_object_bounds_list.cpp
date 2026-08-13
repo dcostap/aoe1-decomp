@@ -17,6 +17,11 @@
 // int lower-x home did not improve the structural basin.  A precomputed extent
 // pair improved x87 shape but grew the function to 876 bytes, so it was
 // restored to the typed inline sums.
+// structural retry: moving map/check-list/result declarations before the
+// radii was a codegen duplicate.  A row-pointer plus byte-offset tile cursor
+// worsened the result to 713 bytes with a 0x3C frame, so it was restored.
+// A common positive-radius result path improved shape but lost 33 bytes and
+// was restored; an explicit invalid-radius else block was also a duplicate.
 // left in scratch: all nine calls and frame/size match, but initial float/local
 // homes, coordinate register coloring, and the late x/y FPU schedule remain
 // broad positional drift (final validation records the restored metrics).

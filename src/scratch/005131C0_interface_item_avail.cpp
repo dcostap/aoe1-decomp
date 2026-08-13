@@ -32,6 +32,12 @@
 // v13 preincrement spelling was a codegen duplicate.  An int output cursor
 // and a compound source-index increment were farther or duplicate; reverted.
 // v14 a for-loop rewrite was farther; the natural do/while source is retained.
+// orch-5131C0-a: a guarded while spelling was a codegen duplicate.
+// Swapping the second-pass cursor declarations reduced the mismatch from 281
+// bytes to 6 and matched the late counter schedule and exact function size.
+// Split initialization, inner cursor scope, and a for-header index were
+// farther or duplicate.  Retain the natural swapped declarations; the only
+// remaining bytes are the zero-initialization order at the second-pass start.
 
 #include <stdlib.h>
 
@@ -176,10 +182,9 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
     if (count == 0) return;
     *item_list = (Item_Avail*)calloc((int)count, 0x28);
 
-    short out_i = 0;
     short idx = 0;
-    if (this->master_count > 0) {
-        do {
+    short out_i = 0;
+    while (idx < this->master_count) {
             if (this->masters[idx] != 0 && this->masters[idx]->type >= 0x46 &&
                 this->masters[idx]->available != 0 && this->masters[idx]->interface_group == group) {
                 (*item_list)[out_i].id = idx;
@@ -197,7 +202,6 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
                 ++out_i;
             }
             idx++;
-        } while ((short)idx < this->master_count);
     }
 
     if (add_extra != 0) {
