@@ -3,11 +3,11 @@
 // layout: restored TPanel ownership for width, height, and draw origin; frame 0x48, diff 1526.
 // control-flow: used panel dimensions and original justification enum values; frame 0x40, diff 1506.
 // liveness: retained ImageRect and text pointers and corrected RGB local order; best diff 1361.
-// current claim: tested pointer declaration/order and direct member forms; no gain.
-// current claim: replaced the hand-written text scan with CRT strlen; target uses repne scasb.
-// strlen source is more period-plausible, but its current layout basin is diff 1452.
-// remaining drift: early pointer register allocation, block placement, and several local homes.
-// left in scratch: typed source with the binary-supported strlen path; structural work remains.
+// current claim: moving text/ImageRect declarations and testing direct text forms did not improve codegen.
+// current claim: pointer-walk length form reaches exact size and 78.24% shape, but positional diff is 1443.
+// current claim: explicit first-byte local and CRT strlen return to diff 1452; rolled back.
+// restored best: typed source with text pointer after PtrClear and natural index scan, diff 1361.
+// remaining drift: target keeps text in EDI and ImageRect in EBX before the empty-text gate; source keeps ImageRect in EDI.
 #include <string.h>
 
 struct tagRECT { long left; long top; long right; long bottom; };
@@ -122,7 +122,8 @@ int TMessagePanel::render_to_image_buffer() {
     tagRECT* image_rect = &this->ImageRect;
     this->ImageBuffer->PtrClear(image_rect, 1);
 
-    if (this->text[0] == 0) {
+    char* text = this->text;
+    if (text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         SetRect(&this->UsedScreenRect, this->draw_left, this->draw_top, this->draw_left + 1, this->draw_top + 1);
         this->ImageTextActive = 1;
@@ -165,7 +166,10 @@ int TMessagePanel::render_to_image_buffer() {
     long hgt = this->pnl_hgt - 2;
 
     tagSIZE ts;
-    int len = strlen(this->text);
+    int len = 0;
+    while (text[len] != 0) {
+        ++len;
+    }
     int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, text, len, &ts);
 
     tagRECT rect;
