@@ -21,6 +21,10 @@
 // diagnostic only and were rolled back.
 // this session: reversed declaration/output names while preserving first-byte
 // predicate semantics; VC5 emitted the same four-byte local-order mismatch.
+// this session: reversed predicate order or sscanf destination order independently
+// reached the prior two-byte basin but swapped parsed-byte semantics; the full
+// natural ordering matrix, erased-use, dword/byte overlay, and volatile-array
+// probes did not produce an exact or plausible source. Restored clean.
 // The best two-byte basin is still 2 bytes but semantically reverses the
 // parsed-byte tests; keep the clean first-byte/second-byte source below.
 // left in scratch: canonical behavior and frame/call topology match; the
