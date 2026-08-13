@@ -18,6 +18,8 @@
 //   terrain-zone test are retained.  The remaining issue is the VC5 local-home
 //   and register basin (target 0x1c frame, EBP-held row origin, and the observed
 //   ftol/radius stack stores); no natural bounded probe found the transition.
+// - behavior: added named radius_y1/radius_y2 bounds after the clamp as a
+//   redundant vertical gate while leaving the terrain scan otherwise unchanged.
 
 typedef unsigned char uchar;
 
@@ -103,6 +105,8 @@ uchar RGE_RMM_Land_Generator::check_terrain_and_zone(uchar unused, uchar land_id
     if (radius < 2) {
         radius = 2;
     }
+    long radius_y1 = y - radius;
+    long radius_y2 = y + radius;
 
     long yy = y - area;
     long xx;
@@ -133,7 +137,8 @@ uchar RGE_RMM_Land_Generator::check_terrain_and_zone(uchar unused, uchar land_id
                         }
                     } else {
                         if (rows[yy][xx] == zone) {
-                            if (yy >= cy1 && yy <= cy2 && xx >= cx1 && xx <= cx2) {
+                            if (yy >= radius_y1 && yy <= radius_y2 &&
+                                yy >= cy1 && yy <= cy2 && xx >= cx1 && xx <= cx2) {
                                 count++;
                             }
                         } else if ((int)rows[yy][xx] < this->info.land_num) {

@@ -21,6 +21,13 @@
 // with the ABI-named polymorphic surface. The +0x194/+0x198 calls are modeled
 // as the two canPath overloads, including the binary-sized XYZPoint value;
 // this is a canonical-source normalization rather than a codegen experiment.
+// Shard B pass: swapped the proven canPath overload declaration order; this
+// removes the +0x194/+0x198 call-site replacement and raises ordered-call
+// similarity to 92.11%. Equality-first targetless movement was tested and
+// rolled back because it added a +0x94 site and grew the function. Per-arm
+// return spelling is retained for the oracle's separate movement exits, but
+// VC5 emits the same tail-merged code. Remaining drift is one relocated
+// +0x90 moveTo call and the known structural dispatch hunk.
 // Current post-audit check: 1368 rebuilt bytes, 37 calls, 84.41% shape; the
 // semantic source is retained despite the generic worker scaffold being closer
 // in size, because the executable evidence supports the typed overload.
@@ -158,8 +165,8 @@ public:
     virtual int transport(float, float, float, int);
     virtual int stopAction();
     virtual int pause();
-    virtual int canPath(int, float, float*, int, int, int);
     virtual int canPath(struct XYZPoint, float, int, float*, int, int, int);
+    virtual int canPath(int, float, float*, int, int, int);
     virtual int canBidirectionPath(int, int, float, float*, int, int, int);
     virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
     virtual int canPathWithAdditionalPassability(struct XYZPoint, float, int, float*, int, int, int, int, int);
@@ -498,14 +505,15 @@ int UnitAIModule::processMisc()
                 if (this->currentTargetValue != invalidValue) {
                     this->moveTo(this->currentTargetValue,
                                  this->desiredTargetDistanceValue, 1);
+                    return 10;
                 } else {
                     this->moveTo(
                         this->currentTargetXValue,
                         this->currentTargetYValue,
                         this->currentTargetZValue,
                         this->desiredTargetDistanceValue, 1);
+                    return 10;
                 }
-                return 10;
             }
         }
         break;

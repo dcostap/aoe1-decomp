@@ -21,6 +21,11 @@
 // - Tested an unscaled cosine with radius multiplication at each observed use.
 //   It widened the positional diff and repeated one source-level calculation.
 //   Restored the natural scaled cosine value retained across compare/index/W use.
+// - Tested loading a full-width ProbabilityAdd local after the first __ftol
+//   and before the bounds check, then keeping it through the first cell update.
+//   It moved the load as intended but changed pointer/byte register topology,
+//   shrank the code to 525 bytes, and worsened the positional diff to 447.
+//   Restored the clean scaled-cosine source.
 
 #include <stdlib.h>
 

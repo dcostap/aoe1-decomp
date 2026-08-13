@@ -13,6 +13,8 @@
 // - Nested positive guards with shared fail/success labels improved the
 //   diagnostic diff to 320 bytes and three returns, but used non-natural goto
 //   scaffolding and remained 50 bytes short. Restored the clean switch.
+// - A shared map receiver assigned after each set_elev call worsened size,
+//   call count, and CFG; restored the clean direct map calls.
 // - Left in scratch: the remaining structural lead is the original source
 //   shape that keeps two set_elev call sites while sharing the failure tail.
 

@@ -42,6 +42,10 @@
 //   block.  Strict diff rose to 254, but exact-block coverage rose to 60.39%.
 // - A separate payload color countdown was an emitted-code duplicate; retain
 //   it because the oracle keeps packet count and payload countdown distinct.
+// - Reopen claim: typed FrameHead aliases, a chunks reference, a scoped decoder
+//   alias, an initialized header pointer, and a char storage view were all
+//   codegen duplicates.  Restore the clean signed-byte candidate; the first
+//   unresolved gap remains the FrameHead reload and zero-home order.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);

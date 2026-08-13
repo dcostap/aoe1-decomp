@@ -12,6 +12,10 @@
 // - Corrected switch labels from the original jump table: notify is state 3,
 //   coordinate Move_To is states 11 and 15, Attack is state 12, and the
 //   wait-sprite tail is states 1, 13, and 14.
+// - Reopened the two missing direct get_move_sprite call sites: coordinate
+//   Move_To and state 6 new_sprite now use the typed helper.
+// - Placed state 6 before state 7 to retain the original emitted block order;
+//   ordered calls now align with no site gaps. One virtual-slot mismatch remains.
 // - Validation: the source now matches the packet's state-to-block mapping;
 //   VC5 emitted the prior body unchanged because the jump table is relocated
 //   outside the compared function bytes. Leave register tuning for later.
@@ -232,7 +236,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
     case 15: {
         RGE_Action_Move_To* action = new RGE_Action_Move_To(
             this->obj, this->target_x, this->target_y, this->target_z,
-            0.0f, this->task->move_sprite);
+            0.0f, this->get_move_sprite());
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -283,6 +287,11 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         return;
     }
 
+    case 6:
+        this->timer = 0.0f;
+        this->obj->new_sprite(this->get_move_sprite());
+        return;
+
     case 7:
         this->timer = 0.0f;
         if (this->task->attribute_type != this->obj->facet) {
@@ -292,11 +301,6 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         if (this->task->work_sound != 0) {
             this->task->work_sound->play(1);
         }
-        return;
-
-    case 6:
-        this->timer = 0.0f;
-        this->obj->new_sprite(this->task->work_sprite);
         return;
 
     case 8:

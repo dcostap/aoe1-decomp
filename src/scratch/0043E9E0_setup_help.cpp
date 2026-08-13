@@ -8,11 +8,13 @@
 //   x/y local reuse, the absolute global pointer, and split text-height arithmetic.
 //   Only the typed font/global surfaces changed emitted bytes; duplicate/liveness
 //   probes were rolled back to the clean natural form.
+// - Swapping the height/yPosition operand order did not change codegen. Splitting
+//   that expression into ordered statements aligned all 27 calls with the oracle.
 // - Best current source is period-plausible typed ownership with abs() and direct
 //   absolute rge_base_game; it remains structurally nonexact: 833 emitted bytes
-//   versus 849, 0x8 versus 0xC frame, 27 calls with one ordered site gap, and
-//   564 strict differing bytes. The first unresolved basin is the separate
-//   RGE_Font stack home plus geometry register/block scheduling, not behavior.
+//   versus 849, 0x8 versus 0xC frame, and 564 strict differing bytes. The first
+//   unresolved basin is the separate RGE_Font stack home plus geometry scheduling,
+//   not a call-order or behavior gap.
 
 #include <stdlib.h>
 
@@ -131,7 +133,8 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
         if (parent->yPosition() <= y - 10) {
             y = abs(y - parent->yPosition() - 10);
         } else {
-            y = parent->height() + parent->yPosition();
+            y = parent->height();
+            y += parent->yPosition();
             if (text_h + y_limit + 10 <= y) {
                 y = abs(y_limit - parent->yPosition() + 10);
             } else {

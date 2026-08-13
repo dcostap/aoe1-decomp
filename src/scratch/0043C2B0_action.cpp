@@ -8,6 +8,8 @@
 // 8: entry action/value locals improved the strict diff, but VC5 still homes param_3
 //    in EDI instead of the original EBP; reversing the event comparison and register
 //    qualifiers (9-10) made no further change.
+// 11: corrected the typed RGE_Base_Game layout: prog_mode is +0x1B0, with world at
+//     +0x3F4 and save_paused at +0xA00; emitted size stayed 1642B and shape rose to 78.21%.
 // Best bounded state: frame 0x104 and saved regs match; call target counts are 47/47
 // but ordered alignment is only 95.74% with -2/+2 site gaps. Meaningful code is 17B
 // short, exact-block coverage is 48.15%, and strict diff is 1465B (88.3062%).
@@ -126,12 +128,13 @@ public:
     char gap_10[0x50];
     TSound_Driver* sound_system;
     TMusic_System* music_system;
-    char gap_68[0x38C];
+    char gap_68[0x148];
+    int prog_mode;
+    char gap_1B4[0x240];
     RGE_Game_World* world;
     char gap_3F8[0x608];
     int save_paused;
     char gap_A04[0x1AC];
-    int prog_mode;
 
     int singlePlayerGame();
     int multiplayerGame();

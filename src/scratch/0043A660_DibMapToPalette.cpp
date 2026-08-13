@@ -12,9 +12,12 @@
 // - Kept the natural one-call transparent search and separate transparent/nontransparent
 //   table branches after the executable showed that the raw nearest-index zero is not
 //   replaced by zeroIndex on the nontransparent path.
-// left in scratch: final validated reconstruction is 952 differing bytes (53.12% shape,
-// 21/21 calls by target count, frame 0x124 vs 0x128); remaining drift is structural
-// (local-home/lifetime and resize/dispatch block layout), not an established behavior gap.
+// - Moved the binary-proven grow-branch memmove before compression dispatch; this
+//   restores the original ordered 21-call surface and improves the structural diff.
+// left in scratch: the current reconstruction is 942 differing bytes (55.49% shape,
+// 21/21 ordered calls, frame 0x124 vs 0x128, code size 959 vs 1017); remaining drift
+// is structural (local-home/lifetime and resize/dispatch block layout), not an
+// established behavior gap.
 
 typedef unsigned char BYTE;
 typedef unsigned short WORD;
@@ -103,6 +106,7 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
         else
             newBits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
         bits = newBits;
+        memmove(bits, oldBits, sizeImage);
     } else if (nPalColors > nDibColors) {
         BYTE* newBits;
         if (bih->biCompression == 3)
@@ -113,11 +117,6 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
         GlobalUnlock(GlobalHandle(bih));
         GlobalLock(GlobalReAlloc(GlobalHandle(bih),
             bih->biSize + nDibColors * 4 + sizeImage, 0));
-    }
-    if (nPalColors < nDibColors) {
-        memmove(bits, oldBits, sizeImage);
-        if (bih->biCompression == 3)
-            bits = (BYTE*)bih + bih->biSize + 12;
     }
     if (bih->biCompression == 3)
         bits = (BYTE*)bih + bih->biSize + 12;

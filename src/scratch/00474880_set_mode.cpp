@@ -42,6 +42,8 @@
 //   ordinary local declarations and direct self calls for source plausibility.
 // - reversed the initial equality operands: one byte farther with no structural change; restored
 //   `mode == this->mode`.
+// - typed `mode` and `old_mode` as the PDB-proven DropdownMode; emitted code was unchanged,
+//   so the L536 indirect/vslot+1C replacement remains an encoding-local call-cache difference.
 //
 // Left in scratch, remaining drift (all localized codegen):
 // - current best is 1395 bytes (63.84%), shape 87.17%, size 2142 vs 2185, frame 0xC vs 0x10;
@@ -198,7 +200,7 @@ public:
     TPanel* btn_panel;                   // +0xF8
     TTextPanel* list_panel;              // +0xFC
     TScrollBarPanel* scbar_panel;        // +0x100
-    int mode;                            // +0x104
+    DropdownMode mode;                   // +0x104
     short val_num;                       // +0x108
     char gap_10A[2];
     long val_wid;                        // +0x10C
@@ -229,7 +231,7 @@ void TDropDownPanel::set_mode(DropdownMode mode) {
     long parent_x = 0;
     long parent_w = 0;
     long parent_h = 0;
-    int old_mode;
+    DropdownMode old_mode;
 
     if (this->parent_panel) {
         parent_x = this->parent_panel->xPosition();

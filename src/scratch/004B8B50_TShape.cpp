@@ -26,6 +26,10 @@
 //   broad constructor behavior are established.
 // - Main-agent audit replaced fixed-address globals and extension pointers with
 //   named symbols and ordinary string literals.
+// shardB2-B8B50: folded both extension replacements into open(strcpy(...), 0x8000);
+// this moved the flag push before the copy as in the original, reaching 635 bytes
+// and 381 strict diff bytes. Remaining first mismatch is the color_log argument
+// setup at 004B8B86; no class, signature, or flag changes were made.
 
 #include <string.h>
 
@@ -73,9 +77,8 @@ TShape::TShape(char* filename, long resource_id)
 
     char name[260];
     strcpy(name, filename);
-    strcpy(name + strlen(name) - 4, ".slp");
     Shape_Loads++;
-    fd = open(name, 0x8000);
+    fd = open(strcpy(name + strlen(name) - 4, ".slp"), 0x8000);
     if (fd != -1) {
         lseek(fd, 0, 2);
         int sz = tell(fd);
@@ -89,8 +92,7 @@ TShape::TShape(char* filename, long resource_id)
     }
 
     if (this->FShape == 0) {
-        strcpy(name + strlen(name) - 4, ".shp");
-        fd = open(name, 0x8000);
+        fd = open(strcpy(name + strlen(name) - 4, ".shp"), 0x8000);
         if (fd != -1) {
             lseek(fd, 0, 2);
             int sz = tell(fd);

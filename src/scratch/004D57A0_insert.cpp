@@ -13,6 +13,8 @@
 //    improving jump-table coverage but not positional bytes.
 // 6-9: explicit base-call, result-local, base-pointer, and non-derived-class
 //    spellings were codegen duplicates or failed to restore the second call.
+// 10: reordered the natural p3 branches so p3 == -1 scans first and the
+//     indexed insertItem call follows, restoring the original call order.
 // Best current reconstruction: typed fields and calls are correct, but VC5
 //    still merges the two insertItem sites and keeps this/category allocation
 //    in a different basin than the original.
@@ -164,11 +166,7 @@ L_case_negative:
     flags = 0;
 
 L_after_switch:
-    if (p3 != -1) {
-        return this->insertItem(this->md->player, p1, 1, flags, buildCat, p2, p3);
-    }
-
-    {
+    if (p3 == -1) {
         BuildItem* item = this->buildList.next;
         BuildItem* sentinel = &this->buildList;
         int count = 0;
@@ -183,4 +181,6 @@ L_after_switch:
 
         return this->insertItem(this->md->player, p1, 1, flags, buildCat, p2, count);
     }
+
+    return this->insertItem(this->md->player, p1, 1, flags, buildCat, p2, p3);
 }

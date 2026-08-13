@@ -18,6 +18,8 @@
 // - signed modulo-2 parity and a hoisted edge accumulator were tested; the
 //   former grew the body to 828B and the latter to a 0x38 frame, so both were
 //   rolled back.
+// - first-direction locals declared neighborY, neighborX, edgeResult in that
+//   order; this changed 4 bytes without improving alignment, so it was rolled back.
 
 #include <stdlib.h>
 

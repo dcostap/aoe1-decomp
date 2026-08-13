@@ -9,6 +9,7 @@
 // try 8: /O1 flag probe; too small 592B, rolled back.
 // try 9: reviewed final repair if/else structure; source matches original branch family, kept.
 // try 10: reviewed parameter order and initialization; early init now matches prologue exactly through offset 180.
+// try 11 (shardB2-512C30): replaced flattened cost fields with ObjectCost costs[3] at +0x148; emitted code was unchanged, so the typed layout is retained without a loop or raw cursor.
 // BLOCKER: exact 642B with correct prologue/initialization, but cost blocks remain in a different narrow-vs-int codegen basin: original keeps __ftol result in BP then sign-extends BP for fild; rebuilt sign-extends AX into EBP directly and schedules fild/lea differently. Broad downstream positional drift remains, not accepted_drift-safe.
 //
 // Bounded retry sa274ecf51_objcost (2026-08-11, 10 hypotheses):
@@ -27,14 +28,17 @@
 
 typedef unsigned char uchar;
 class TRIBE_Player;
+struct ObjectCost {
+    short type;
+    short amount;
+    uchar used;
+    char pad;
+};
 class ObjectInfo {
 public:
     virtual ~ObjectInfo();
     unsigned char type; char pad5[3]; char* name;
-    char pad0c[0x148-0x0c];
-    short cost1_type; short cost1_amount; unsigned char cost1_used;
-    char pad14d; short cost2_type; short cost2_amount; unsigned char cost2_used;
-    char pad153; short cost3_type; short cost3_amount; unsigned char cost3_used;
+    char pad0c[0x148-0x0c]; ObjectCost costs[3];
 };
 class TRIBE_Player {
 public:
@@ -57,10 +61,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1, sho
     if (info == 0 || info->type < 0x46) return;
     if (nameOut) *nameOut = info->name;
 
-    if (info->cost1_used) {
-        t1 = info->cost1_type;
+    if (info->costs[0].used) {
+        t1 = info->costs[0].type;
         if (t1 >= 0) {
-            cost = (short)(int)(info->cost1_amount * factor);
+            cost = (short)(int)(info->costs[0].amount * factor);
             a1 = cost;
             if ((float)cost > this->resources[t1] && can) {
                 avail = (short)(long)this->resources[t1];
@@ -69,10 +73,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1, sho
             }
         }
     }
-    if (info->cost2_used) {
-        t2 = info->cost2_type;
+    if (info->costs[1].used) {
+        t2 = info->costs[1].type;
         if (t2 >= 0) {
-            cost = (short)(int)(info->cost2_amount * factor);
+            cost = (short)(int)(info->costs[1].amount * factor);
             a2 = cost;
             if ((float)cost > this->resources[t2] && can) {
                 avail = (short)(long)this->resources[t2];
@@ -81,10 +85,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1, sho
             }
         }
     }
-    if (info->cost3_used) {
-        t3 = info->cost3_type;
+    if (info->costs[2].used) {
+        t3 = info->costs[2].type;
         if (t3 >= 0) {
-            cost = (short)(int)(info->cost3_amount * factor);
+            cost = (short)(int)(info->costs[2].amount * factor);
             a3 = cost;
             if ((float)cost > this->resources[t3] && can) {
                 avail = (short)(long)this->resources[t3];

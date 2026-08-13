@@ -15,6 +15,8 @@
 //   colored EBP rather than EDI, and the cold remove-log block laid out inline.
 // - Left in scratch: call behavior is modeled but the remaining frame/block/
 //   register topology is unresolved; do not promote as accepted drift.
+// - Natural negative invalid-object guard spelling was codegen-identical; the
+//   remove-log fprintf remains an out-of-order cold call before the remove call.
 
 #include <stdio.h>
 

@@ -19,6 +19,9 @@
 // and relocation parity; remaining drift is the broad VC5 prologue/frame and
 // normal-path local/register basin (0x14 rebuilt frame versus 0x1c original),
 // with the first mismatch at the entry register/home schedule.
+// session shardB2-B9440 probe 1: captured draw_level and object_id locals
+// through AddDrawNode; the typed local-liveness lead worsened the frame and
+// structural diff, so the clean direct-global form is retained.
 // No inline asm used; no accepted_drift proposal.
 
 typedef unsigned char byte;

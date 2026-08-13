@@ -20,6 +20,14 @@
 // waitingToMove) and replaced the remaining numeric slot labels through the
 // proven +0x130 surface. Current post-audit check is 1469 bytes, 39 calls,
 // and 76.66% shape; the queue-callback topology remains unresolved.
+// Shard B pass: direct purge-and-return on notify result 4 is the natural
+// oracle-supported form and improved the best diff from 1325 to 1314 bytes.
+// Pointer-to-virtual-member callbacks emitted direct thunks and four extra
+// calls, so they were rolled back. A raw vtable callback kept the same call
+// map but changed cleanup and worsened the shape, so it was also rolled back.
+// Remaining call-map gaps are diagnostic: processNotify/processOrder are
+// behavior-backed but the rebuilt vtable calls are classified separately;
+// the error purge is emitted before the normal tail instead of at its end.
 
 #include <stdio.h>
 
@@ -470,7 +478,8 @@ int UnitAIModule::update(unsigned long param_1)
             int result = this->processNotify(
                 (char*)this->notifyQueueValue + offset, param_1);
             if (result == 4) {
-                goto update_error;
+                this->purgeNotifyQueue(param_1);
+                return 0;
             }
             if (result == 3) {
                 break;
@@ -544,10 +553,6 @@ update_tail:
     }
 
     return 1;
-
-update_error:
-    this->purgeNotifyQueue(param_1);
-    return 0;
 }
 
 #undef taskedThisUpdate

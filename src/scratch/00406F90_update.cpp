@@ -11,6 +11,9 @@
 // - A binary-backed int sentinel local preserves the target-x dword compare and
 //   map/x87 order. Preloading the drop pointer or swapping fallback declarations
 //   was rolled back: each added 63 bytes and two virtual calls.
+// - Tried the proven drop-result/object-local order with corrected long notify
+//   trailing parameters; the direct form was unchanged, while the stored-result
+//   form added 63 bytes and two calls. Restored the clean direct-call form.
 // - Left in scratch: the generated switch-table COFF relocations are unresolved
 //   in the standalone extraction, and the remaining live source hunk is the
 //   drop-failure load-before-branch plus owner-notify argument scheduling.
@@ -110,7 +113,7 @@ public:
     virtual void vfE0(void);
     virtual void vfE4(void);
     virtual void notify(int param_1, int param_2, int param_3,
-                        int param_4, int param_5, int param_6);
+                        long param_4, long param_5, long param_6);
 
     char gap_04[0x38];
     RGE_Game_World* world;
