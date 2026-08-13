@@ -24,6 +24,9 @@
 //   to 530 bytes; it was rolled back because the first structural hunk moved to the setup call.
 // - A natural typed field assignment in each low-count arm reproduced the 539-byte, two-extra-call
 //   basin; it was rolled back because it split the shared call tail.
+// - Tried the PDB-shaped low-count order: store explorers before the sn[3] gate and use a common
+//   cap tail. This restored 514-byte size and 144 instructions, but VC5 hoisted the sn[3] load
+//   before the explorer store and left 75 differing bytes; rolled back.
 // - Left in scratch: current source is the best natural typed reconstruction. No inline asm or custom flags.
 
 extern "C" double __cdecl ceil(double);

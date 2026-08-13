@@ -20,6 +20,8 @@
 // orch probe 2: hoisted row and tile cursors; codegen duplicate.
 // orch probe 3: hoisted short neighbor flags to match Ghidra local topology;
 // codegen duplicate. Restored the clean typed candidate.
+// luna probe 1: copied the persistent byte tile offset into a row-local before
+// row lookup; codegen duplicate. Restored the clean typed candidate.
 // paused: original has an isolated mov [esp+4c],ecx before map-row lookup;
 // no natural typed cursor or flag-lifetime variant reproduced this store.
 

@@ -25,6 +25,11 @@
 // strict differing bytes (76.4408%), and 63.50% bounded edit similarity.
 // - Named the debug source file. The previous literal address was not valid
 //   source ownership.
+// probe 24: reordered the ready/task arms to follow the original PDB line
+// order, with task before action selection. This moved task into the original
+// inline block and improved shape, calls, and exact blocks, but removed three
+// type calls, shortened the function by 34 bytes, and worsened strict diff;
+// restored the clean source.
 
 static const char s_taitacmd_cpp[] =
     "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";

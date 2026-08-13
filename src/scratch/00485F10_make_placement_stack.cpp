@@ -23,6 +23,10 @@
 // shardD10 H1: hoisted the typed Map_Stack node local to function scope to
 // mirror its binary-persistent value across add_stack_node; codegen was an
 // unchanged 507-byte/446-diff duplicate, so restored the clean source.
+// luna-r2 H1: hoisted the packet's iVar1/iVar2/iVar3/lVar4/iVar5/pMVar6
+// temporaries to function scope to test its local-lifetime and declaration-order
+// evidence; codegen was an unchanged 507-byte/446-diff duplicate, so restored
+// the clean typed source.
 // left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
 
 extern "C" int __cdecl debug_rand(char* file, int line);

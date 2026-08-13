@@ -20,6 +20,11 @@
 // function-scope tile conversions all emitted the same 705-byte code.
 // precomputing both neighbor pairs was worse: 0x50 frame and 723 bytes; restored.
 // donor polymorphic static/player declarations were codegen-neutral; restored.
+// fresh pass r2: period <stdlib.h> context and several natural neighbor-pair
+// lifetime forms were codegen duplicates. Reusing tile coordinates for the
+// secondary calls improved size and block coverage but worsened positional
+// drift; restored. The remaining source/codegen gap is the oracle's stack-load
+// plus ADD sequence versus VC5's equivalent LEA in the second and third calls.
 
 #include <math.h>
 

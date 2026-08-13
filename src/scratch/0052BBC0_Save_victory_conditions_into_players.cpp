@@ -23,6 +23,8 @@
 //   not change emitted code; using condition->x1 for the rectangle calls was
 //   natural but changed the frame to 0x0C and widened the structural drift, so
 //   it was rolled back.
+// - removing the local AttribType copy and testing the named field directly
+//   was a codegen duplicate; the cursor stayed at +0x1AD8, so it was rolled back.
 
 class RGE_Static_Object;
 class RGE_Game_World;

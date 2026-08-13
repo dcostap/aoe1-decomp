@@ -18,7 +18,10 @@
 //   used by the neighboring Dib.cpp donors; this improves the diff from 942 to 911.
 // - Typed SizeImage as the packet-proven unsigned DWORD; VC5 emitted the same code,
 //   so the source-backed type correction is retained without a metric change.
-// left in scratch: the current reconstruction is 911 differing bytes (56.68% shape,
+// - Reversed the palette-flags branch: the original takes the zero-index path
+//   when flags are nonzero and reads the bottom-row byte otherwise; diff improved
+//   from 911 to 910 bytes and the branch opcode now matches.
+// left in scratch: the current reconstruction is 910 differing bytes (56.97% shape,
 // 21/21 ordered calls, frame 0x124 vs 0x128, code size 963 vs 1017); remaining drift
 // is structural (local-home/lifetime and resize/dispatch block layout), not an
 // established behavior gap.
@@ -75,7 +78,7 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
         bits = (BYTE*)bih + bih->biSize + nPalColors * 4;
 
     if (transparent) {
-        if (!zero) transIndex = 0; else transIndex = bits[((bih->biWidth + 3) & ~3) * (bih->biHeight - 1)];
+        if (zero) transIndex = 0; else transIndex = bits[((bih->biWidth + 3) & ~3) * (bih->biHeight - 1)];
         int r=rgb[0].rgbRed, g=rgb[0].rgbGreen, b=rgb[0].rgbBlue;
         int dir=1, pass=0;
         while (!hitEnd) {
