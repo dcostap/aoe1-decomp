@@ -5,7 +5,16 @@
 // 3: a preloaded radius_y local reproduces the binary's fld radius_y / fld radius_x / fcomp x87 guard order; radius_z uses the binary-proven double zero.
 // 4: moved rowOffset into each outer row and computed the typed Tile/Object_List cell before the inner bound guard; VC5 still hoists the row load after that guard.
 // 5: early invalid-radius return with result initialized only in the valid path is behavior-correct but leaves a +18-byte structural drift and a broad later FPU/object-bound mismatch.
-// current best: 794B rebuilt vs 776B original, exact frame 0x2c, all 5 direct calls aligned, 553 strict differing bytes; first meaningful remaining hunk is original row-pointer setup before the minY/maxY test (+00e0). Not accepted_drift-safe.
+// 6: direct typed row indexing, integer cell addresses, and an early range continue were codegen duplicates.
+// 7: volatile row-entry access kept the row load before the range guard and reduced the diagnostic diff to 224B, but is not plausible living source.
+// 8: delaying the typed cell address until after that guard improved the volatile diagnostic topology; restored nonvolatile ownership for the final source.
+// 9: candidate radius_z uses the binary-proven double-zero comparison; this is retained in the clean source.
+// 10: nested dz guards and reversed coordinate compare operands are source-backed natural forms; the former was a duplicate, while the latter only improved edit alignment.
+// - Normalized the living source to typed tile indexing and ordinary overlap
+//   predicates. This is farther from current bytes, but it removes raw cursor
+//   arithmetic and decompiler labels.
+// Current typed source: 812B rebuilt vs 776B original, five direct calls, and
+// 587 strict differing bytes. It is not accepted-drift-safe.
 
 struct MasterObj {
     virtual ~MasterObj();
@@ -82,50 +91,42 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
     if (minX < 0) minX = 0;
     if (maxX >= map->height) maxX = map->height - 1;
     RGE_Check_List* result = 0;
-    Node** cell;
     for (int yy = minX; yy <= maxX; ++yy) {
-        int rowOffset = minY * 24;
-        Tile* tile = (Tile*)((char*)map->rows[yy] + rowOffset);
-        cell = &tile->objects.head;
-        if (minY <= maxY) {
-            int count = maxY - minY + 1;
-            do {
-                    for (Node* n = *cell; n; n = n->next) {
+        for (int xx = minY; xx <= maxY; ++xx) {
+            for (Node* n = map->rows[yy][xx].objects.head; n; n = n->next) {
                         RGE_Static_Object* obj = (RGE_Static_Object*)n->obj;
                         if (obj != this) {
                             MasterObj* om = obj->master_obj;
-                            if (om->radius_z > 0.0f) {
+                            if (om->radius_z > 0.0) {
                                 float rx = om->radius_x;
                                 float ry = om->radius_y;
                                 if (rx > 0.0f && ry > 0.0f) {
                                     float dz = obj->z - this->z;
-                                    if ((dz <= 0.0f || dz <= this->master_obj->radius_z) && (dz >= 0.0f || -om->radius_z <= dz)) {
-                                        MasterObj* tm = this->master_obj;
-                                        if (obj->x <= this->x) {
-                                            if (!(-extra <= (rx + obj->x) - (this->x - tm->radius_x))) goto skip;
-                                        } else {
-                                            if (!((obj->x - rx) - (tm->radius_x + this->x) <= extra)) goto skip;
+                                    if (dz <= 0.0f || dz <= this->master_obj->radius_z) {
+                                        if (dz >= 0.0f || -om->radius_z <= dz) {
+                                            MasterObj* tm = this->master_obj;
+                                            if ((this->x >= obj->x
+                                                    ? -extra <= (rx + obj->x) -
+                                                                (this->x - tm->radius_x)
+                                                    : (obj->x - rx) -
+                                                          (tm->radius_x + this->x) <= extra) &&
+                                                (this->y >= obj->y
+                                                    ? -extra <= (ry + obj->y) -
+                                                                (this->y - tm->radius_y)
+                                                    : (obj->y - ry) -
+                                                          (tm->radius_y + this->y) <= extra)) {
+                                                if (result == 0) {
+                                                    result = new RGE_Check_List;
+                                                }
+                                                result->add_node(obj, 0.0f, 0.0f, 0);
+                                            }
                                         }
-                                        if (obj->y <= this->y) {
-                                            if (!(-extra <= (ry + obj->y) - (this->y - tm->radius_y))) goto skip;
-                                        } else {
-                                            if (!((obj->y - ry) - (tm->radius_y + this->y) <= extra)) goto skip;
-                                        }
-                                        if (result == 0) {
-                                            RGE_Check_List* p = new RGE_Check_List;
-                                            result = p;
-                                        }
-                                        result->add_node(obj, 0.0f, 0.0f, 0);
                                     }
                                 }
                             }
-                        }
-skip:;
                     }
-                cell = (Node**)((char*)cell + 0x18);
-                --count;
-            } while (count != 0);
         }
+    }
     }
     return result;
 }

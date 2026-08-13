@@ -20,6 +20,12 @@
 // 18: direct center-map assignments with a short cached column improved strict diff to 498 and shape to 50.9%; retained.
 // 19: explicit int col_adj for map indexing was a codegen duplicate; removed.
 // 20: natural fractional isometric projections from center-map deltas reduced strict diff to 495, but frame remains 0x1c and structural shape is unresolved.
+// 21: positive __ftol temporaries and decompiler-style short lifetimes improved shape but worsened strict diff to 535; rolled back.
+// 22: a typed three-slot fraction aggregate improved size by 2 bytes but worsened strict diff to 509; rolled back.
+// 23: moving tile-half-height outside the second __ftol reduced the frame to 0x18 but widened strict diff to 510; retained only as behavior evidence.
+// 24: term-wise x87 products reached size 620 and strict diff 489, but the half-height remained inside __ftol; diagnostic only.
+// 25: term-wise products with the post-__ftol half-height matched size 619, strict diff 507, and preserved the observed truncation behavior.
+// 26: positive term-wise projection temporaries with explicit subtract-half source form are the current clean candidate: 607 bytes, strict diff 494, 0x18 frame.
 
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
@@ -65,21 +71,23 @@ void RGE_View::update()
         this->last_view_y = p->view_y;
         short sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
         short sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
-        sVar7 = (short)-(int)(((p->view_x - (float)sVar6) +
-                               (p->view_y - (float)this->center_map_row)) *
-                              48.0f * (float)this->tile_wid);
-        short sVar8 = (short)-(int)(((p->view_x - (float)sVar6) -
-                                     (p->view_y - (float)this->center_map_row)) *
-                                    48.0f * (float)this->tile_hgt + this->tile_half_hgt);
-        sVar9 += sVar7;
-        sVar10 += sVar8;
+        sVar7 = (short)(int)(((p->view_y - (float)this->center_map_row) *
+                              (float)this->tile_wid * 48.0f) +
+                             ((p->view_x - (float)sVar6) *
+                              (float)this->tile_wid * 48.0f));
+        short sVar8 = (short)(int)(((p->view_y - (float)this->center_map_row) *
+                                    (float)this->tile_hgt * 48.0f) -
+                                   ((p->view_x - (float)sVar6) *
+                                    (float)this->tile_hgt * 48.0f));
+        sVar9 -= sVar7;
+        sVar10 -= sVar8 + this->tile_half_hgt;
         this->center_scr_col = sVar9;
         this->center_scr_row = sVar10;
         RGE_Tile* tile = this->map->map_row_offset[this->center_map_row] + sVar6;
         this->map_scr_x_offset = (int)tile->screen_xpos - (int)sVar9;
         this->map_scr_y_offset = ((int)this->elev_hgt * ((unsigned int)tile->flags >> 5) + (int)tile->screen_ypos) - (int)sVar10;
-        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid + sVar7);
-        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt + sVar8);
+        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid - sVar7);
+        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt - sVar8 - this->tile_half_hgt);
         sVar7 = this->max_col_num / 2 + 2;
         this->start_map_row = this->center_map_row;
         this->start_map_row -= sVar7;

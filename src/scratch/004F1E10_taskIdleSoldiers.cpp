@@ -23,6 +23,11 @@
 // left in scratch: exact matching is paused at the 10-hypothesis budget.  The
 // best rebuilt code is 989 bytes, 0x10 frame, 51 calls, 85.08% shape, 756
 // strict differing bytes (76.4408%), and 63.50% bounded edit similarity.
+// - Named the debug source file. The previous literal address was not valid
+//   source ownership.
+
+static const char s_taitacmd_cpp[] =
+    "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
 class RGE_Player;
 class RGE_Static_Object;
@@ -282,7 +287,7 @@ set_action:
 next_group:
         group = group->next;
         this->nextIdleSoldierGroupToTaskValue = group->id();
-        if (debug_timeGetTime((const char*)0x5880C0, 0xEA9) - startTime >=
+        if (debug_timeGetTime(s_taitacmd_cpp, 0xEA9) - startTime >=
             maxTime) {
             return;
         }

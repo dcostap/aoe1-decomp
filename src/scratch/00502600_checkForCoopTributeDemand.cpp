@@ -14,6 +14,12 @@
 //   EBX before testing instead of storing/reloading the original stack home),
 //   plus the resulting four-byte tail/branch shift. Paused after the 10-probe
 //   budget; no inline asm or custom flags.
+// - New claim: restored the binary-shaped inner break form, but VC5 duplicated
+//   an earlier 800-byte basin; restored the positive tempRand gate.
+// - New claim: declaration order and a scoped tempRand initializer emitted the
+//   same 792-byte code; `< 1` threshold spelling worsened shape to 476 diff.
+// - Remaining lead: recover the natural VC5 spill that stores coopTributeAmount
+//   to [esp+10] before its first test; calls, frame, and loop body are aligned.
 
 typedef unsigned char uchar;
 

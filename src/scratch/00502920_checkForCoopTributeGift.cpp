@@ -11,6 +11,12 @@
 //   receiver/attribute pointer locals, and a focused 12-variant lab.  The
 //   closest natural form uses an int delta plus a float current-attribute local
 //   (71 positional bytes; 30-byte edit drift); no variant was exact.
+// - Corrected the current attribute from element 0xb8 to element 0x2e because
+//   the oracle loads byte offset +0xb8; positional diff stayed 71 and edit drift
+//   improved to 28 bytes.
+// - Direct receiver/raw-pointer/direct-delta and assignment/reference probes
+//   did not reproduce the oracle's fild-before-fld order; restored the clean
+//   typed local form.
 // - Replaced temporary offset aliases with the canonical sn[0xba]/sn[0xbe]
 //   ownership and full managed-array prefix; emitted code stayed unchanged.
 // left in scratch: size/frame/call/CFG parity is exact, but the final call's
@@ -273,7 +279,7 @@ void TribeTacticalAIModule::checkForCoopTributeGift()
                 int amount =
                     this->md->resourceAI.resource(i) - *minimum;
                 TRIBE_Player* aiPlayer = this->md->aiPlayer;
-                float current = aiPlayer->attributes[0xb8];
+                float current = aiPlayer->attributes[0x2e];
                 aiPlayer->command_give_attribute(
                     bestCP, i,
                     (float)amount,

@@ -12,6 +12,12 @@
 //   placement and register-sized branch displacements in the final tail.
 // - Probes for an explicit second-pass guard, found labels, and for-loop form
 //   did not improve emitted code.  The natural direct-return form is retained.
+// - Follow-up probes mirrored the original positive loop edge with an explicit
+//   return, goto, sibling-overload guard topology, reordered empty/found labels,
+//   an explicit empty else, and ~0 failure spelling.  All were codegen duplicates.
+//   The remaining structural lead is the original near JL fallthrough to its
+//   own -1 epilogue, followed by the found-object epilogue; VC5 keeps an inverted
+//   short JGE plus JMP and merges the failure epilogues in this source basin.
 
 #include <stdlib.h>
 

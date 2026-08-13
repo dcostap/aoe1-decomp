@@ -14,6 +14,12 @@
 //   emits unresolved global/IAT placeholders in this standalone TU.  Kept the
 //   source as ordinary typed Drawarea code rather than retaining register-
 //   forcing or unused-local scaffolding.
+// - This pass tested top-scope and uninitialized source-y forms, local order,
+//   and int-width low-memory locals.  Top-scope forms widened the frame;
+//   uninitialized source-y removed the extra xor but worsened the basin.
+// - Parenthesized RECT extents, int low-arm locals, and reversed extent
+//   operands emitted duplicate code.  The retained forms follow the decompiler
+//   arithmetic and period scalar types without codegen steering.
 
 #include <windows.h>
 
@@ -83,10 +89,10 @@ void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
 {
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 1) {
         if (this->Bits != 0 && area != 0 && area->Bits != 0) {
-            long width;
-            long height;
-            long source_x;
-            long source_y;
+            int width;
+            int height;
+            int source_x;
+            int source_y;
 
             if (rect == 0) {
                 width = this->Width;
@@ -148,8 +154,8 @@ void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
         ++src_rect2.bottom;
 
         SetRect(&dest_rect2, x, y,
-                x + src_rect2.right - src_rect2.left,
-                y + src_rect2.bottom - src_rect2.top);
+                (src_rect2.right - src_rect2.left) + x,
+                (src_rect2.bottom - src_rect2.top) + y);
 
         if (src_rect2.left < 0) {
             dest_rect2.left -= src_rect2.left;

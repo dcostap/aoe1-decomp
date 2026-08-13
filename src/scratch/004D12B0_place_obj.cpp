@@ -20,11 +20,23 @@
 // reversed the can_place condition so the retry path is the positive arm and
 // creation is its else target; this restored the original failure-before-success CFG.
 // reordered doubled-radius declarations before single-radius declarations; VC5 emitted the same code.
-// left in scratch: exact size, frame, and call set; remaining drift is localized in radius-slot ordering and later block liveness.
+// the three floating constants have stable shared identities at 00575190,
+// 00575198, and 0057519C. Keep those globals rather than local literals.
+// split doubled-radius copies before compound adds; VC5 emitted the same code, so kept the simpler expressions.
+// interleaved doubled-radius declarations before each single radius; this moved to a 565-byte mismatch, so restored the natural order.
+// swapped create coordinates to match the original push order; diff stayed 156 and the create block became source-plausible.
+// restored the x87-proven expansion behavior: single radii add two prototype radii and doubled radii add four times each radius.
+// testing the shared fourfold constant enlarged the function to 672 bytes; the
+// original global remains the canonical source surface.
+// left in scratch: correct expansion and create argument order; remaining drift is local radius-slot coloring, literal pool context, and block liveness.
+// - Replaced the raw debug-file address with the period source-file string and
+//   named the random scale. Raw addresses were not valid source ownership.
 
 #include "../../include/game_globals.h"
 
 extern "C" int __cdecl debug_rand(char*, int);
+
+static char s_tact_mob_cpp[] = "C:\\msdev\\work\\age1_x1\\tact_mob.cpp";
 
 class RGE_Player;
 class RGE_Static_Object;
@@ -85,44 +97,40 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
     short expand = 0;
     RGE_Master_Static_Object* proto =
         this->obj->owner->master_objects[this->obj_id];
-    float rx;
-    float ry;
-    float r2x;
-    float r2y;
-    rx = this->obj->master_obj->radius_x + proto->radius_x - DAT_00575190;
-    r2x = rx + rx;
-    ry = this->obj->master_obj->radius_y + proto->radius_y - DAT_00575190;
-    r2y = ry + ry;
+    float rx = this->obj->master_obj->radius_x + proto->radius_x - DAT_00575190;
+    float r2x = rx + rx;
+    float ry = this->obj->master_obj->radius_y + proto->radius_y - DAT_00575190;
+    float r2y = ry + ry;
     short tries;
     for (;;) {
         tries = 0;
         do {
             short dir;
             if (tries < 40) {
-                dir = (short)((debug_rand((char*)0x00587764, 0xc0) * 2) / 0x7fff);
+                dir = (short)((debug_rand(s_tact_mob_cpp, 0xc0) * 2) / 0x7fff);
             } else {
-                dir = (short)(((debug_rand((char*)0x00587764, 0xc2) * 2) / 0x7fff) + 2);
+                dir = (short)(((debug_rand(s_tact_mob_cpp, 0xc2) * 2) / 0x7fff) + 2);
             }
             switch (dir) {
             case 0:
                 this->place_y = this->obj->world_y + r2y;
                 this->place_x = this->obj->world_x +
-                    ((float)debug_rand((char*)0x00587764, 0xc7) * r2x * DAT_00575198 - rx);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xc7) * r2x * DAT_00575198 - rx);
                 break;
             case 1:
                 this->place_x = this->obj->world_x - r2x;
                 this->place_y = this->obj->world_y +
-                    ((float)debug_rand((char*)0x00587764, 0xcb) * r2y * DAT_00575198 - ry);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xcb) * r2y * DAT_00575198 - ry);
                 break;
             case 2:
                 this->place_x = this->obj->world_x + r2x;
                 this->place_y = this->obj->world_y +
-                    ((float)debug_rand((char*)0x00587764, 0xcf) * r2y * DAT_00575198 - ry);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xcf) * r2y * DAT_00575198 - ry);
                 break;
             case 3:
                 this->place_y = this->obj->world_y - r2y;
                 this->place_x = this->obj->world_x +
-                    ((float)debug_rand((char*)0x00587764, 0xd3) * r2x * DAT_00575198 - rx);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xd3) * r2x * DAT_00575198 - rx);
                 break;
             }
             if (proto->can_place(
@@ -130,14 +138,14 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
                 ++tries;
             } else {
                 *out = this->obj->owner->master_objects[this->obj_id]->create(
-                    this->obj->owner, this->place_y, this->place_x, this->obj->world_z);
+                    this->obj->owner, this->place_x, this->place_y, this->obj->world_z);
                 return 1;
             }
         } while (tries < 60);
-        rx = proto->radius_x + rx + proto->radius_x * DAT_0057519c;
-        ry = proto->radius_y + ry + proto->radius_y * DAT_0057519c;
-        r2x += proto->radius_x;
-        r2y += proto->radius_y;
+        rx += proto->radius_x + proto->radius_x;
+        ry += proto->radius_y + proto->radius_y;
+        r2x += proto->radius_x * DAT_0057519c;
+        r2y += proto->radius_y * DAT_0057519c;
         ++expand;
         if (expand >= 3) break;
     }

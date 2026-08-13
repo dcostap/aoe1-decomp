@@ -14,8 +14,17 @@
 // - Structural probe: kept the local-player and scenario-player placement
 //   arms separate.  This restored both alignment and command-place call sites,
 //   exact size, and call-target parity.  Broader block order still differs.
-// - Final: retained this natural typed candidate.  Remaining drift is broad,
-//   starting at the shared false-return path and switch block order.
+// - Nested the paused and allowed-mode guards to restore the shared false
+//   return path used by the original.
+// - Ordered switch arms by the PDB line bands: selection, placement, scroll,
+//   drag, then the default capture path.  This restored all ordered calls.
+// - Binary stack offsets identify player+0x130 as the selected object and
+//   pick_info.object as the picked static object.  The decompiler tile label
+//   was not canonical ownership.
+// - Direct object reloads improve the case-15 and case-18 block shape.  The
+//   exact donor reference ABI for get_frame produced no useful movement.
+// - Final: retained this period-plausible typed candidate.  Remaining drift
+//   starts at the local switch-table relocation and register/local coloring.
 
 extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void*, void*);
@@ -78,7 +87,7 @@ public:
     char gap_1C[0x2C];
     unsigned char object_state;
 
-    int get_frame(short*, short*, short*, short*);
+    int get_frame(short&, short&, short&, short&);
 };
 
 class RGE_Master_Static_Object {
@@ -238,138 +247,139 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
     tagPOINT point;
     RGE_Pick_Info pick_info;
 
-    if (rge_base_game->get_paused()) {
-        return 0;
-    }
+    if (rge_base_game->get_paused() == 0) {
+        int mode = rge_base_game->prog_mode;
+        if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+            mode = rge_base_game->game_mode;
+            color_log(0x4C, 0xBA, 1);
 
-    int mode = rge_base_game->prog_mode;
-    if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
-        return 0;
-    }
-
-    mode = rge_base_game->game_mode;
-    color_log(0x4C, 0xBA, 1);
-
-    switch (mode) {
-    case 1:
-        if (this->pick1(0x28, 0, param_1, param_2,
-                        &pick_info, 0, 1) == 0x33) {
-            this->fixup_pick_info(&pick_info);
-            short object_id = rge_base_game->master_obj_id;
-            if (object_id != -1 &&
-                this->player->master_objects[object_id] != 0) {
-                RGE_Master_Static_Object* master =
-                    this->player->master_objects[object_id];
-                master->alignment(&pick_info.x, &pick_info.y,
-                                  this->world, 0);
-                this->player->command_place_object(
-                    object_id, pick_info.x, pick_info.y, 0.0f);
-            } else if (object_id != -1 && this->world->players[0]
-                       ->master_objects[object_id] != 0) {
-                RGE_Player* command_player = this->world->players[0];
-                RGE_Master_Static_Object* master =
-                    command_player->master_objects[object_id];
-                master->alignment(&pick_info.x, &pick_info.y,
-                                  this->world, 0);
-                command_player->command_place_object(
-                    object_id, pick_info.x, pick_info.y, 0.0f);
-            }
-        }
-        break;
-
-    case 2:
-    case 3:
-    case 17:
-        if (this->player->selected_obj != 0) {
-            this->player->unselect_object();
-            this->set_redraw(1);
-        }
-        // Fall through.  These modes use the same scroll command as 21.
-    case 21:
-        this->start_scroll_view(3, param_1, param_2, param_3, param_4);
-        break;
-
-    case 9:
-    case 10:
-    case 19:
-        if (this->player->selected_obj != 0) {
-            this->player->unselect_object();
-            this->set_redraw(1);
-        }
-        if (mode == 19) {
-            rge_base_game->set_game_mode(19, 0);
-        }
-        this->start_scroll_view(9, param_1, param_2, param_3, param_4);
-        break;
-
-    case 15:
-        if (this->pick1(0x29, 0, param_1, param_2,
-                        &pick_info, this->movable_object, 1) == 0x34) {
-            RGE_Static_Object* object =
-                (RGE_Static_Object*)pick_info.tile;
-            if (object->master_obj->object_group != 0x22) {
-                unsigned char draw_level;
-                if (object->sprite_list != 0) {
-                    draw_level = object->sprite_list->get_lowest_draw_level();
-                } else if (object->sprite != 0) {
-                    draw_level = object->sprite->get_lowest_draw_level();
-                } else {
-                    draw_level = 0x14;
-                }
-
-                this->save_player = rge_base_game->get_player();
-                rge_base_game->set_player(object->owner->id);
-                rge_base_game->master_obj_id = object->master_obj->id;
-                this->movable_object = object;
-                object->object_state = 7;
-                if (draw_level == 0) {
-                    this->set_redraw(2);
-                }
-                rge_base_game->set_game_mode(8, 1);
-                if (this->movable_object->sprite != 0) {
-                    this->movable_object->get_frame(
-                        &min_x, &min_y, &max_y, &max_x);
-                    point.x = max_y - min_y;
-                    point.y = max_x - min_x;
-                    if (this->render_area->draw_system->screen_mode == 1) {
-                        ClientToScreen(this->render_area->wnd, &point);
+            switch (mode) {
+            case 18:
+                if (this->pick1(0x29, 0, param_1, param_2,
+                                &pick_info, this->player->selected_obj, 1) == 0x34) {
+                    this->player->unselect_object();
+                    this->player->select_one_object(
+                        (RGE_Static_Object*)pick_info.object, 1);
+                    this->set_redraw(1);
+                    if (((RGE_Static_Object*)pick_info.object)->sprite != 0) {
+                        ((RGE_Static_Object*)pick_info.object)->get_frame(
+                            min_x, min_y, max_x, max_y);
+                        point.x = max_y - min_y;
+                        point.y = max_x - min_x;
+                        if (this->render_area->draw_system->screen_mode == 1) {
+                            ClientToScreen(this->render_area->wnd, &point);
+                        }
+                        if (this->render_area->draw_system->screen_mode == 1) {
+                            ScreenToClient(this->render_area->wnd, &point);
+                        }
+                        this->start_scroll_view(
+                            4, point.x, point.y, param_3, param_4);
                     }
                 }
-                this->start_scroll_view(
-                    9, param_1, param_2, param_3, param_4);
-            }
-        }
-        break;
+                break;
 
-    case 18:
-        if (this->pick1(0x29, 0, param_1, param_2,
-                        &pick_info, this->movable_object, 1) == 0x34) {
-            RGE_Static_Object* object =
-                (RGE_Static_Object*)pick_info.tile;
-            this->player->unselect_object();
-            this->player->select_one_object(object, 1);
-            this->set_redraw(1);
-            if (object->sprite != 0) {
-                object->get_frame(&min_x, &min_y, &max_y, &max_x);
-                point.x = max_y - min_y;
-                point.y = max_x - min_x;
-                if (this->render_area->draw_system->screen_mode == 1) {
-                    ClientToScreen(this->render_area->wnd, &point);
+            case 1:
+                if (this->pick1(0x28, 0, param_1, param_2,
+                                &pick_info, 0, 1) == 0x33) {
+                    this->fixup_pick_info(&pick_info);
+                    short object_id = rge_base_game->master_obj_id;
+                    if (object_id != -1 &&
+                        this->player->master_objects[object_id] != 0) {
+                        RGE_Master_Static_Object* master =
+                            this->player->master_objects[object_id];
+                        master->alignment(&pick_info.x, &pick_info.y,
+                                          this->world, 0);
+                        this->player->command_place_object(
+                            object_id, pick_info.x, pick_info.y, 0.0f);
+                    } else if (object_id != -1 && this->world->players[0]
+                               ->master_objects[object_id] != 0) {
+                        RGE_Player* command_player = this->world->players[0];
+                        RGE_Master_Static_Object* master =
+                            command_player->master_objects[object_id];
+                        master->alignment(&pick_info.x, &pick_info.y,
+                                          this->world, 0);
+                        command_player->command_place_object(
+                            object_id, pick_info.x, pick_info.y, 0.0f);
+                    }
                 }
-                if (this->render_area->draw_system->screen_mode == 1) {
-                    ScreenToClient(this->render_area->wnd, &point);
-                }
-                this->start_scroll_view(
-                    4, point.x, point.y, param_3, param_4);
-            }
-        }
-        break;
+                break;
 
-    default:
-        this->capture_mouse();
-        break;
+            case 9:
+            case 10:
+            case 19:
+                if (this->player->selected_obj != 0) {
+                    this->player->unselect_object();
+                    this->set_redraw(1);
+                }
+                if (mode == 19) {
+                    rge_base_game->set_game_mode(19, 0);
+                }
+                this->start_scroll_view(9, param_1, param_2, param_3, param_4);
+                break;
+
+            case 2:
+            case 3:
+            case 17:
+                if (this->player->selected_obj != 0) {
+                    this->player->unselect_object();
+                    this->set_redraw(1);
+                }
+                // Fall through.  These modes use the same scroll command as 21.
+            case 21:
+                this->start_scroll_view(3, param_1, param_2, param_3, param_4);
+                break;
+
+            case 15:
+                if (this->pick1(0x29, 0, param_1, param_2,
+                                &pick_info, this->player->selected_obj, 1) == 0x34) {
+                    if (((RGE_Static_Object*)pick_info.object)
+                            ->master_obj->object_group != 0x22) {
+                        unsigned char draw_level;
+                        if (((RGE_Static_Object*)pick_info.object)->sprite_list != 0) {
+                            draw_level = ((RGE_Static_Object*)pick_info.object)
+                                ->sprite_list->get_lowest_draw_level();
+                        } else if (((RGE_Static_Object*)pick_info.object)->sprite != 0) {
+                            draw_level = ((RGE_Static_Object*)pick_info.object)
+                                ->sprite->get_lowest_draw_level();
+                        } else {
+                            draw_level = 0x14;
+                        }
+
+                        this->save_player = rge_base_game->get_player();
+                        rge_base_game->set_player(
+                            ((RGE_Static_Object*)pick_info.object)->owner->id);
+                        rge_base_game->master_obj_id =
+                            ((RGE_Static_Object*)pick_info.object)->master_obj->id;
+                        this->movable_object =
+                            (RGE_Static_Object*)pick_info.object;
+                        ((RGE_Static_Object*)pick_info.object)->object_state = 7;
+                        if (draw_level == 0) {
+                            this->set_redraw(2);
+                        }
+                        rge_base_game->set_game_mode(8, 1);
+                        if (this->movable_object->sprite != 0) {
+                            this->movable_object->get_frame(
+                                min_x, min_y, max_x, max_y);
+                            point.x = max_y - min_y;
+                            point.y = max_x - min_x;
+                            if (this->render_area->draw_system->screen_mode == 1) {
+                                ClientToScreen(this->render_area->wnd, &point);
+                            }
+                        }
+                        this->start_scroll_view(
+                            9, param_1, param_2, param_3, param_4);
+                    }
+                }
+                break;
+
+            default:
+                this->capture_mouse();
+                break;
+            }
+
+            color_log(0x4C, 0x5F, 1);
+            return 1;
+        }
     }
-
-    color_log(0x4C, 0x5F, 1);
-    return 1;
+    return 0;
 }
