@@ -23,10 +23,14 @@
 // probe 14 variant lab: tested do/for group loops crossed with both clear-point
 //   role orders under size/frame/call-set gates.  The retained do/minmax source
 //   was best at 11 bytes; for changed size and role swap regressed to 41 bytes.
+// probe 33: replaced the do-loop with a natural while loop and an in-body null
+//   break; this matched the original null-check back edge and reduced drift to 10.
+// probe 34: swapped clear-point roles with the improved loop; drift regressed to
+//   40 bytes and disturbed the exact group block, so it was rolled back.
 // left in scratch: exact source scheduling for repeated coordinate conversions
 // and object/group local homes remains to be validated.
-// Final bounded pause: the remaining 11 bytes are localized to the group
-//   back-edge target (E01 versus E09) and the first clear-distance point homes;
+// Final bounded pause: the remaining 10 bytes are localized to the first
+//   clear-distance point homes;
 //   all 43 calls, size, frame, CFG count, and relocation identities match.
 
 #include <math.h>
@@ -138,8 +142,10 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
 
     group = this->groups.next;
     end = &this->groups;
-    if (group != end && group != 0) {
-        do {
+    if (group != end) {
+        while (group != end) {
+            if (group == 0)
+                break;
             if (group->gatherLocation().x != -1.0f) {
                 clearDistance = this->md->informationAI.groupInfluenceDimension(
                     group->desiredNumberUnits());
@@ -163,7 +169,7 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
                 map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
             }
             group = group->next;
-        } while (group != end);
+        }
     }
 
     i = 0;
