@@ -156,6 +156,10 @@ struct RGE_Elevation_Info {
 // keeps direct named map fields, full typed base context, and the proven
 // elevation-info layout; the remaining gap is the commutative product load
 // order at 00484BE2/00484BE5.
+// orch-484B90-b: re-tested the prior adjacent-field overlay and reproduced an
+// exact 234-byte match. A natural local dimensions aggregate returned to the
+// same two-byte mismatch. Restored the direct map-field product: the overlay
+// remains diagnostic because it is not a plausible source model.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Elevation_Info info;

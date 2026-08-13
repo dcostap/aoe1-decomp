@@ -15,6 +15,10 @@
 //   explicit self alias, register hints, and a shared cursor declaration.
 //   None changed the clean 8-byte drift; the shared cursor and reversed
 //   updates regressed structural bytes and were restored.
+// - New claim probes marked the count, unit-array base, and target as register;
+//   shared the loop index; hoisted cursor/object declarations; reversed nested
+//   declarations; and restored the canonical command layout. All emitted the
+//   same clean 8-byte drift. The remaining lead is allocator/TU context.
 // - Paused with the clean typed source. Remaining lead: a translation-unit or
 //   VC5 allocator distinction that changes only the two post-call reloads.
 

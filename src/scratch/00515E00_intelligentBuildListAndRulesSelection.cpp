@@ -14,6 +14,10 @@
 //   (7657 strict-diff bytes, 8336 body); no shared files changed.
 // - 2026-08-13: restored the common final difficulty rule call and retained the original
 //   no-call path for difficulty values outside 0..3. The emitted call-count gap remains.
+// - 2026-08-13: diagnostic raw tplayer pointer/module declarations improved the strict
+//   diff to 7560 and size to 8320, but kept the same missing setRule call and broad CFG
+//   drift. A player alias emitted identical code. Both were rolled back to this typed
+//   source because the raw form did not prove canonical ownership or exact behavior.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.

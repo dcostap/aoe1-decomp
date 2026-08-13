@@ -24,6 +24,10 @@
 //   the same [edi+ebp-1] LEA.  A decompiler-style one-field `cy` size changed
 //   the frame; an eight-byte padded alias was a duplicate.  A named width
 //   alias worsened structural output.  Restored the clean typed source.
+// - Fresh probes repeated direct/grouped right-edge forms and an eight-variant
+//   focused lab.  All preserved 555 bytes and emitted [edi+ebp-1]; the original
+//   remains [ebp+edi-1].  A `text_size.cy` alias changed an earlier null-width
+//   store and broke structure.  No source-backed lead remains for this byte.
 
 struct SIZE;
 

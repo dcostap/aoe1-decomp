@@ -37,6 +37,9 @@
 // - Function-scope sprite declaration also emitted unchanged code. Restored
 //   the clean direct-expression source; only quotient sign-adjust coloring
 //   remains unresolved.
+// - orch-45C790-b tested local comparison, reversed integer product, scope and
+//   const lifetime, explicit volatile reads, long quotient typing, and math
+//   header context. All reproduced the same 3-byte EAX/ECX drift; restored.
 
 class RGE_Master_Static_Object;
 class RGE_Player;
