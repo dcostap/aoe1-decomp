@@ -24,6 +24,8 @@
 //   build, information, and main-decision layouts; emitted code was unchanged.
 // - Session probe 15: moved the unit-count assignment into its guard condition
 //   to seek the original `sub eax,[ebx+118h]`; VC5 emitted identical code.
+// - Session probe 19: split the count call from a compound soldiers subtraction
+//   to seek the original direct memory subtract; VC5 emitted identical code.
 // - Best current reconstruction: typed full parent, 0x78 frame, matching
 //   initial six ordered calls and natural ResourceItem/switch ownership; local
 //   checker remains nonexact because entry-reachable code past the 321-byte

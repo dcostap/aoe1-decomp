@@ -49,6 +49,13 @@
 //   the later resource threshold and scoped counter. Both variants grew to 534
 //   instructions and diff 1088, while the clean source stays at 532/1076; rolled
 //   back. The first paired hunk still shows the same local-slot permutation.
+// - Ghidra marks the three research-presence locals as bool; changing the int
+//   flags to bool moved the entry allocation and worsened diff to 1587. Restored.
+// - Ghidra shows the tool-age loop as an outer positive guard with an inner
+//   do-while. That form restored a second guard but worsened diff to 1104 and
+//   reduced exact-block coverage. Restored the clean while form.
+// - Ghidra also names a separate requiredPop local for strategic 0x9B + 4;
+//   separating it from the reused ironAge flag worsened diff to 1084. Restored.
 //
 // LEFT IN SCRATCH: semantically faithful natural reconstruction with correct
 // class surface (/GX EH frame, 0xB0 BuildItem), 100%% call parity (61/61), and

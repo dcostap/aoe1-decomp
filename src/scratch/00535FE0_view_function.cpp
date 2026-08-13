@@ -41,6 +41,21 @@
 //     2529 -> 2526 bytes, but edit/resync diff worsened. Rolled back to the
 //     clean natural source; the structural stage and corpus-boundary block
 //     remain unresolved.
+//   continuation claim #1 layout: short list_size matched the observed
+//     16-bit max-row arithmetic but enlarged the code; restored int.
+//   claim #2 control-flow: direction-before-cur order was a codegen duplicate.
+//   claim #3 layout: max_row_num2 = picked_type improved the short-list basin
+//     to 2451 bytes; the alias is retained.
+//   claim #4 layout: int list_size with that alias reached 2433 bytes.
+//   claim #5 layout: reversing the two max-col assignments regressed to 2526;
+//     restored the alias direction.
+//   claim #6 abi: modeled the binary/decompiler bounds predicate as bool
+//     in_bounds; this improved strict diff to 2424 bytes and is retained.
+//   claim #7 abi: bool draw_flag was a 2448-byte regression; restored int.
+//   claim #8 layout: short list_size with the bool/alias surface was 2432 bytes;
+//     restored int.
+//   claim #9 layout: cast the short max-row sum before the shift, matching the
+//     observed 16-bit add/shift and reaching the current best, 2423 bytes.
 //   Status: structurally faithful (frame/saved-regs/calls/prologue exact, 65% shape,
 //     ~42% exact-block coverage); remaining drift is VC5 local-slot permutation
 //     (picked_type/fog_flag/tile/tile_ptr/start_map_row2/direction/tile_screen_row/
@@ -276,11 +291,11 @@ long RGE_View::view_function(register unsigned char a1, register unsigned char a
 
     start_scr_row2 = this->start_scr_col;
     start_map_row2 = this->start_map_col;
-    cur_col_num = this->start_scr_row;
     direction = this->start_map_row;
-    list_size = (this->max_row_num + 6) << 1;
+    cur_col_num = this->start_scr_row;
+    list_size = (short)(this->max_row_num + 6) << 1;
     picked_type = this->max_col_num + 4;
-    max_row_num2 = this->max_col_num + 4;
+    max_row_num2 = picked_type;
     tile_screen_row = 4;
     calc_sel_col1 = 0;
 
@@ -292,7 +307,7 @@ long RGE_View::view_function(register unsigned char a1, register unsigned char a
             row_num = 0;
             if (picked_type > 0) {
                 do {
-                    int in_bounds;
+                    bool in_bounds;
                     int draw_flag;
                     if (start_scr_col2 >= 0 && start_scr_col2 < this->map->map_width &&
                         map_col >= 0 && map_col < this->map->map_height) {

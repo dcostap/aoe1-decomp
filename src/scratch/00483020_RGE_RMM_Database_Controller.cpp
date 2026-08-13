@@ -13,14 +13,21 @@
 //   32-byte emitted-code mismatch. It is not a valid living source surface.
 // - The living source uses ordinary typed map-entry iteration. The remaining
 //   codegen lead is the original stack-home/register schedule at the loop tail.
+// - A typed indexed access (maps[map_index]) restored the 0x10 frame and 466-byte
+//   size without raw cursor source; it leaves a localized 45-byte register/tail
+//   gap and is retained as the clean source frontier.
+// - A local RGE_Map_Data owner widened the gap to 130 bytes; rolled back.
+// - For-loop spelling and a named land-size temporary produced unchanged code.
+// - Reversing the map-count comparison made a 46-byte mismatch; the original
+//   map_index < map_num spelling is retained.
 // - Making the base destructor virtual to match the same-TU donor did not
 //   change emitted code; the EH frame and first prologue hunk remain open.
 // - Adding the derived virtual-destructor declaration to the same fresh TU
 //   also left emitted code unchanged; no EH handler or frame appeared.
 // - Naming a local RGE_Map_Data* for the aggregate moved 336 bytes and made
 //   the size three bytes shorter, so the member-based clean form is restored.
-// - The byte-cursor form is diagnostic evidence only. Keep typed pointer
-//   iteration even though it is farther from the current bytes.
+// - The byte-cursor form is diagnostic evidence only. Keep typed indexed
+//   iteration even though the localized register gap remains.
 
 #include <stdlib.h>
 
@@ -180,50 +187,46 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int file)
         rge_read(file, this->map_info.maps,
                  this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
 
-        int map_index = 0;
-        if (this->map_info.map_num > 0) {
-            RGE_Map_Data_Entry* map = this->map_info.maps;
-            do {
-                RGE_Land_Data* land_info = &map->land_info;
-                RGE_Terrain_Data* terrain_info = &map->terrain_info;
-                RGE_Object_Data* object_info = &map->object_info;
-                RGE_Elevation_Data* elevation_info = &map->elevation_info;
+        for (int map_index = 0;
+             map_index < this->map_info.map_num;
+             ++map_index) {
+            RGE_Map_Data_Entry* map = &this->map_info.maps[map_index];
+            RGE_Land_Data* land_info = &map->land_info;
+            RGE_Terrain_Data* terrain_info = &map->terrain_info;
+            RGE_Object_Data* object_info = &map->object_info;
+            RGE_Elevation_Data* elevation_info = &map->elevation_info;
 
-                rge_read(file, land_info, sizeof(RGE_Land_Data));
-                if (land_info->land_num > 0) {
-                    land_info->land = (RGE_Land_Data_Entry*)calloc(
-                        land_info->land_num, sizeof(RGE_Land_Data_Entry));
-                    rge_read(file, land_info->land,
-                             land_info->land_num * sizeof(RGE_Land_Data_Entry));
-                }
+            rge_read(file, land_info, sizeof(RGE_Land_Data));
+            if (land_info->land_num > 0) {
+                land_info->land = (RGE_Land_Data_Entry*)calloc(
+                    land_info->land_num, sizeof(RGE_Land_Data_Entry));
+                rge_read(file, land_info->land,
+                         land_info->land_num * sizeof(RGE_Land_Data_Entry));
+            }
 
-                rge_read(file, terrain_info, sizeof(RGE_Terrain_Data));
-                if (terrain_info->terrain_num > 0) {
-                    terrain_info->terrain = (RGE_Terrain_Data_Entry*)calloc(
-                        terrain_info->terrain_num, sizeof(RGE_Terrain_Data_Entry));
-                    rge_read(file, terrain_info->terrain,
-                             terrain_info->terrain_num * sizeof(RGE_Terrain_Data_Entry));
-                }
+            rge_read(file, terrain_info, sizeof(RGE_Terrain_Data));
+            if (terrain_info->terrain_num > 0) {
+                terrain_info->terrain = (RGE_Terrain_Data_Entry*)calloc(
+                    terrain_info->terrain_num, sizeof(RGE_Terrain_Data_Entry));
+                rge_read(file, terrain_info->terrain,
+                         terrain_info->terrain_num * sizeof(RGE_Terrain_Data_Entry));
+            }
 
-                rge_read(file, object_info, sizeof(RGE_Object_Data));
-                if (object_info->object_num > 0) {
-                    object_info->objects = (RGE_Object_Data_Entry*)calloc(
-                        object_info->object_num, sizeof(RGE_Object_Data_Entry));
-                    rge_read(file, object_info->objects,
-                             object_info->object_num * sizeof(RGE_Object_Data_Entry));
-                }
+            rge_read(file, object_info, sizeof(RGE_Object_Data));
+            if (object_info->object_num > 0) {
+                object_info->objects = (RGE_Object_Data_Entry*)calloc(
+                    object_info->object_num, sizeof(RGE_Object_Data_Entry));
+                rge_read(file, object_info->objects,
+                         object_info->object_num * sizeof(RGE_Object_Data_Entry));
+            }
 
-                rge_read(file, elevation_info, sizeof(RGE_Elevation_Data));
-                if (elevation_info->elevation_num > 0) {
-                    elevation_info->elevation = (RGE_Elevation_Data_Entry*)calloc(
-                        elevation_info->elevation_num, sizeof(RGE_Elevation_Data_Entry));
-                    rge_read(file, elevation_info->elevation,
-                             elevation_info->elevation_num * sizeof(RGE_Elevation_Data_Entry));
-                }
-
-                ++map_index;
-                ++map;
-            } while (map_index < this->map_info.map_num);
+            rge_read(file, elevation_info, sizeof(RGE_Elevation_Data));
+            if (elevation_info->elevation_num > 0) {
+                elevation_info->elevation = (RGE_Elevation_Data_Entry*)calloc(
+                    elevation_info->elevation_num, sizeof(RGE_Elevation_Data_Entry));
+                rge_read(file, elevation_info->elevation,
+                         elevation_info->elevation_num * sizeof(RGE_Elevation_Data_Entry));
+            }
         }
     }
 }

@@ -21,6 +21,14 @@
 // Explicit normalize/lookup labels compiled back to the duplicated-call basin.
 // A normalized_name return alias forced a 0x114 frame and broad drift; rolled
 // back. The canonical source remains the best reconstruction.
+// Combined the id and filename cache-hit tests into one short-circuit condition;
+// this restored the original shared increment/return island and cut the diff to 386.
+// Reversed the outer null-name test; this restored one common strupr call, exact
+// size, and exact call order, cutting the diff to 179.
+// Made the occupied palette arm fall through and the empty-slot arm cold; the
+// loop from +74 to the epilogue is now byte-exact and the diff is 88.
+// A label-based null arm produced the same bytes and was rolled back to natural
+// structured source. Remaining drift is the early outer branch block only.
 
 #include <string.h>
 #include <stdio.h>
@@ -51,33 +59,29 @@ void* TPanelSystem::get_palette(char* param_1, long param_2)
 {
     char file_name[260];
 
-    if (param_1) {
+    if (param_1 == 0) {
+        file_name[0] = 0;
+    } else {
         if (strchr(param_1, '.') == 0) {
             sprintf(file_name, "%s.pal", param_1);
         } else {
             strcpy(file_name, param_1);
         }
         strupr(file_name);
-    } else {
-        file_name[0] = 0;
     }
 
     int found = -1;
     int i;
 
     for (i = 0; i < 10; i++) {
-        if (this->palette[i] == 0) {
-            if (found == -1) found = i;
-        } else {
-            if (param_2 != -1 && this->palette_id[i] == param_2) {
+        if (this->palette[i] != 0) {
+            if ((param_2 != -1 && this->palette_id[i] == param_2) ||
+                strcmp(this->palette_file[i], file_name) == 0) {
                 this->palette_use_count[i]++;
                 return this->palette[i];
             }
-
-            if (strcmp(this->palette_file[i], file_name) == 0) {
-                this->palette_use_count[i]++;
-                return this->palette[i];
-            }
+        } else if (found == -1) {
+            found = i;
         }
     }
 
