@@ -25,9 +25,6 @@
 // - Reconstructed the minimization predicate as `score < bestScore + random`
 //   from the fcompp/test-ah topology; this reduced the remaining positional
 //   drift to 126 bytes with exact call/relocation identity.
-// - The zone-map output index intentionally overlaps the first dword of the
-//   binary-proven zoneCounter array; retain the narrow cast because the EXE
-//   demonstrably passes that array base as the output home.
 // - Left in scratch after the bounded pass: current size/call set/relocations
 //   match, but the prologue frame/register basin and a localized stack/FPU
 //   scheduling suffix remain non-exact.  Best source is natural typed C++;
@@ -35,6 +32,14 @@
 // - Added the binary-proven separate zone-map output home before zoneCounter
 //   and passed it by reference; the distinct LEA homes restored the 0x134 frame
 //   and reduced the positional diff from 126 to 116 bytes.
+// - Declaration-time md/player aliases were a codegen duplicate.  Making map
+//   and visible declaration-time locals improved the diff by one byte.
+// - Declaring map before visible preserved the 0x134 frame and reduced the
+//   diff to 107 bytes.  Direct zoneCounter indexing was codegen-equivalent.
+// - Restoring the overlapping zoneCounter[0] output home reduced the frame to
+//   0x130 and worsened the diff; the separate output home remains.
+// - A dock-count value home increased the frame and broke the block shape;
+//   it was rolled back.  The remaining lead is early register/liveness order.
 
 void* operator new(unsigned int size);
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -209,24 +214,21 @@ ConstructionItem* TribeInformationAIModule::placeDock(
     int zoneMapIndex;
     unsigned char zoneCounter[256];
     int i;
-    RGE_Player* player;
-    RGE_Player* aiPlayer;
-    RGE_Visible_Map* visible;
-    RGE_Map* map;
+    RGE_Player* aiPlayer = this->md->aiPlayer;
+    RGE_Player* player = this->md->player;
+    RGE_Map* map = aiPlayer->world->map;
+    RGE_Visible_Map* visible = aiPlayer->visible;
     RGE_Zone_Map* zoneMap;
-    int bestX = -1;
-    int bestY = -1;
-    float bestScore = -1.0f;
-    int randomOffset = -1;
+    int bestX;
+    int bestY;
+    float bestScore;
+    int randomOffset;
     int y;
 
-    {
-        TribeMainDecisionAIModule* md = this->md;
-        aiPlayer = md->aiPlayer;
-        player = md->player;
-    }
-    visible = aiPlayer->visible;
-    map = aiPlayer->world->map;
+    bestX = -1;
+    bestY = -1;
+    bestScore = -1.0f;
+    randomOffset = -1;
 
     for (i = 0; i < 64; i++) {
         ((int*)zoneCounter)[i] = -1;
@@ -270,16 +272,14 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                         float distanceY = (float)y - targetY;
                                         float score = distanceX * distanceX +
                                                       distanceY * distanceY;
-                                        unsigned char* count =
-                                            &zoneCounter[(unsigned char)zone + 4];
-
-                                        if (*count == 0xFF) {
-                                            *count = (unsigned char)
+                                        if (zoneCounter[(unsigned char)zone + 4] == 0xFF) {
+                                            zoneCounter[(unsigned char)zone + 4] = (unsigned char)
                                                 this->numberDocksInZone(
                                                     (int)zone, zoneMap);
                                         }
-                                        if (*count != 0) {
-                                            int zonePenalty = (int)*count * 1000;
+                                        if (zoneCounter[(unsigned char)zone + 4] != 0) {
+                                            int zonePenalty =
+                                                (int)zoneCounter[(unsigned char)zone + 4] * 1000;
                                             score += (float)zonePenalty;
                                         }
 

@@ -19,6 +19,9 @@
 //   found no invariant-eligible exact output; clean source remains authoritative.
 // - Tried a branch-local typed long alias for the late action code; emitted code
 //   was unchanged at 311 bytes, so restored the clean source.
+// - Focused follow-up: a pointer alias, named strcmp result, ABI-equivalent int
+//   parameter, and const long reference all emitted the same 311-byte diff;
+//   the late parameter-home reload remains unresolved.
 
 #include <string.h>
 
