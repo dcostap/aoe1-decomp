@@ -27,6 +27,11 @@
 // named count and pointer variants were rolled back.  The clean do-while reconstruction remains best.
 // left in scratch after the 10-hypothesis budget: typed period-plausible source,
 // no inline asm; exact promotion remains unresolved.
+// resumed structural probes: an outer-guard for duplicated the count test and
+// grew to 879/981B; an explicit positive bottom branch duplicated the clean
+// 645B output.  The no-outer for and while forms reproduced the prior 605B
+// diagnostic basin, but moved lea esi before the initial jle and lost blocks.
+// Restored the clean do-while reconstruction; no structural lead remains.
 
 #include <stdlib.h>
 
