@@ -23,6 +23,14 @@
 // declarations and direct player-id expressions reached positional 1141 but
 // grew to 1225 bytes. Restored this 1212-byte canonical source; first hunk is
 // still the suffix register assignment (original EBX, current EBP).
+// orch-4E1260-a probe 18: removed the explicit player-id vararg from the suffix
+// filename branch; suffix moved to EBX but cleanup fell from 20 to 16 and diff
+// worsened to 1154. Rolled back because the original stack surface has 20-byte cleanup.
+// probe 19: kept that branch shape and narrowed the hoisted id to short; diff reached
+// 1115, but the load used AX then sign-extended and cleanup stayed 16. Rolled back.
+// probe 20: removed the explicit cast on the int id; duplicate of probe 18.
+// probe 21: restored both id varargs and made the id local const; duplicate of clean.
+// probe 22: split the id declaration from its assignment; duplicate of clean.
 
 #include <stdio.h>
 

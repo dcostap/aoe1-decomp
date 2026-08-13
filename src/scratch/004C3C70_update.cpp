@@ -22,6 +22,27 @@
 // Main-agent policy audit removed fake volatile return storage and named the
 // string/float globals. The natural source is now exactly 757 bytes with all
 // 17 calls, but VC5 omits the original 0x8 frame. It remains in scratch.
+// orch-4C3C70-a probe: a preconditioned inner group guard improved the first
+// structural hunk; the original duplicate group-number test is now represented
+// by the outer guard plus `i < group_number`.
+// orch-4C3C70-a probe: removed the byte-count induction local and used the
+// natural `i * 4 + 4` allocation expression. VC5 kept EBX as i and EBP as the
+// allocation bound, matching the original register topology and exact size.
+// orch-4C3C70-a pause: original still stores the byte count at [esp+14h] and
+// updates it around removals. Current source has exact size, 17 ordered calls,
+// and 89.75% shape similarity, but remains a broad non-exact group-loop drift.
+// orch-4C3C70-b probe: replaced the raw group overlay with the donor-proven
+// ManagedArray indexer and named ownership; tests canonical inline growth code.
+// orch-4C3C70-b probe: changed removal search to the original post-tested
+// pointer loop; removes the extra bound break seen in the paired block.
+// orch-4C3C70-b probe: combined the search bounds and value test in one natural
+// while predicate; tests the original loop's jl-back layout without break.
+// orch-4C3C70-b probe: removed the redundant outer n>0 guard so VC5 can emit
+// one entry test before loading the search pointer, as in the original.
+// orch-4C3C70-b final: ManagedArray ownership plus one bounded search predicate
+// moved the mismatch from 642 to 255 bytes; calls, CFG count, and group growth
+// now align. Left in scratch: remaining drift starts at removal-search layout
+// and later state blocks; exact promotion is not justified.
 
 typedef unsigned char uchar;
 typedef unsigned long uint;
@@ -56,6 +77,28 @@ public:
 
 class RGE_Master_Static_Object { public: char gap0[0x1C]; int death_sprite; int undead_sprite; uchar undead_flag; char gap25[0x1B]; RGE_Sound* death_sound; char gap44[0x3C]; float decay; char gap84[0x20]; uchar recyclable; };
 
+struct ManagedArray_int {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    int& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            int* new_value = (int*)operator_new(new_size * 4);
+            if (new_value != 0) {
+                for (int i = 0; i < this->maximumSizeValue && i < new_size; ++i)
+                    new_value[i] = this->value[i];
+                operator_delete(this->value);
+                this->value = new_value;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
+};
+
 class RGE_Static_Object {
 public:
     VPAD8(s0) VPAD1(s8)
@@ -77,7 +120,7 @@ struct Raw {
     void** vtbl; char gap04[4]; RGE_Master_Static_Object* master_obj; RGE_Owner* owner; char gap10[0x10];
     RGE_Static_Object* inside_obj; char gap24[0x0c]; float hp; char gap34[0x10]; float attribute_amount_held;
     uchar object_state; char gap49; uchar dopple_flag; uchar goto_sleep_flag; short attribute_type_held; RGE_Static_Object* player_object_node;
-    char gap54[0x10]; int* group_values; int group_number; char gap6c[4]; int group_max;
+    char gap54[0x10]; ManagedArray_int groupMembers;
 };
 
 uchar RGE_Static_Object::update()
@@ -91,36 +134,24 @@ uchar RGE_Static_Object::update()
         self->player_object_node = (RGE_Static_Object*)self->owner->dopple_on(this, 1, self->dopple_flag);
         return 0;
     }
-    if (self->group_number > 0) {
+    if (self->groupMembers.numberValue > 0) {
         int i = 0;
-        if (self->group_number > 0) {
-            uint bytes = 4;
-            do {
-                if (i > self->group_max - 1) {
-                    int newmax = i + 1;
-                    int* nv = (int*)operator_new(bytes);
-                    if (nv != 0) {
-                        int j = 0;
-                        if (self->group_max > 0) {
-                            do { if (j >= newmax) break; j++; nv[j-1] = self->group_values[j-1]; } while (j < self->group_max);
-                        }
-                        operator_delete(self->group_values);
-                        self->group_values = nv; self->group_max = newmax;
-                    }
-                }
-                int id = self->group_values[i];
+        if (i < self->groupMembers.numberValue) {
+            while (i < self->groupMembers.numberValue) {
+                int id = self->groupMembers[i];
                 RGE_Static_Object* obj = self->owner->world->object(id);
                 if (obj == 0 || ((Raw*)obj)->object_state > 2) {
-                    int n = self->group_max; int k = 0;
-                    if (n > 0) { int* p = self->group_values; while (*p != id) { k++; p++; if (k >= n) break; } }
+                    int n = self->groupMembers.maximumSizeValue; int k = 0;
+                    int* p = self->groupMembers.value;
+                    while (k < n && *p != id) { k++; p++; }
                     if (k < n) {
-                        if (k < n - 1) { do { int* p = self->group_values; k++; p[k-1] = p[k]; } while (k < self->group_max - 1); }
-                        int gn = self->group_number - 1; self->group_number = gn; if (gn < 0) self->group_number = 0;
+                        if (k < n - 1) { do { int* p = self->groupMembers.value; k++; p[k-1] = p[k]; } while (k < self->groupMembers.maximumSizeValue - 1); }
+                        int gn = self->groupMembers.numberValue - 1; self->groupMembers.numberValue = gn; if (gn < 0) self->groupMembers.numberValue = 0;
                     }
-                    i--; bytes -= 4;
+                    i--;
                 }
-                i++; bytes += 4;
-            } while (i < self->group_number);
+                i++;
+            }
         }
     }
     if (self->inside_obj == 0) {

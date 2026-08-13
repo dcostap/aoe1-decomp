@@ -15,6 +15,11 @@
 // - Paused in scratch: remaining drift starts with early register/coloring and
 //   FPU operand order; later status-time block placement also remains broad.
 //   Default flags only.
+// - Structural follow-up: direct indexed player-time access and a cached local
+//   status handle align the update loop and status-log entry blocks. Signed long
+//   status counters reproduce the original signed divide-by-60 blocks.
+// - Current validated source remains nonexact: player-update register coloring
+//   differs, and the status open path is three bytes past the original boundary.
 
 #include <stdio.h>
 
@@ -184,11 +189,9 @@ unsigned char RGE_Game_World::update()
     unsigned long start_time;
     unsigned long end_time;
     unsigned long now;
-    unsigned long old_world_time;
-    unsigned long* player_time_delta;
-    unsigned long seconds;
-    unsigned long minutes;
-    unsigned long hours;
+    long seconds;
+    long minutes;
+    long hours;
     unsigned long elapsed;
     unsigned char first_update = 0;
 
@@ -225,17 +228,16 @@ unsigned char RGE_Game_World::update()
     }
 
     this->old_time = now;
-    old_world_time = this->world_time;
-    this->old_world_time = old_world_time;
+    this->old_world_time = this->world_time;
     if (this->temp_pause != 0) {
         if (cycle != -1) {
-            this->world_time = old_world_time +
-                (unsigned long)((double)elapsed * this->game_speed);
+            this->world_time = this->old_world_time +
+                (unsigned long)(elapsed * this->game_speed);
         }
         this->temp_pause = 0;
     } else {
-        this->world_time = old_world_time +
-            (unsigned long)((double)elapsed * this->game_speed);
+        this->world_time = this->old_world_time +
+            (unsigned long)(elapsed * this->game_speed);
     }
     this->world_time_delta = this->world_time - this->old_world_time;
 
@@ -245,10 +247,10 @@ unsigned char RGE_Game_World::update()
         this->world_time_delta_seconds =
             (float)((double)this->world_time_delta * *(float*)0x577A14);
         world_update_counter = world_update_counter + 1;
-        player_time_delta = this->player_time_delta;
-        for (i = 0; i < this->player_num; ++i, ++player_time_delta) {
+        for (i = 0; i < this->player_num; ++i) {
             if (this->players[i] != 0) {
-                *player_time_delta = *player_time_delta + this->world_time_delta;
+                this->player_time_delta[i] =
+                    this->player_time_delta[i] + this->world_time_delta;
                 this->players[i]->update();
                 this->players[i]->tile_list.del_list();
             }
@@ -279,13 +281,15 @@ unsigned char RGE_Game_World::update()
     this->commands->com_hand->LastWorldRandom(this->random_seed);
 
     if (logStatusOn == 1 && this->game_state != 1) {
-        if ((unsigned int)(this->world_time - lastStatusLogTime) > 30000 ||
+        if (30000 < this->world_time - lastStatusLogTime ||
             lastStatusLogTime == 0) {
-            if (logStatusFile == 0) {
+            FILE* statusFile = logStatusFile;
+            if (statusFile == 0) {
                 sprintf(fileName, "AILog\\%s.log",
                         rge_base_game->player_game_info->get_current_player_name());
-                logStatusFile = (FILE*)fopen(fileName, "a");
-                if (logStatusFile == 0) return this->game_state;
+                statusFile = (FILE*)fopen(fileName, "a");
+                logStatusFile = statusFile;
+                if (statusFile == 0) return this->game_state;
             }
             seconds = this->world_time / 1000;
             minutes = 0;
@@ -299,9 +303,9 @@ unsigned char RGE_Game_World::update()
                 }
             }
             if (lastStatusLogTime == 0) {
-                this->logStatus(logStatusFile, 1);
+                this->logStatus(statusFile, 1);
             } else {
-                fprintf(logStatusFile,
+                fprintf(statusFile,
                         "\nStatus Log at GameTime %02ld:%02ld:%02ld\n",
                         hours, minutes, seconds);
             }

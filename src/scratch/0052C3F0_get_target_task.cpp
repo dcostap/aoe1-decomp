@@ -25,6 +25,13 @@
 // emitted change. Shared iVar8 loop state matched the decompiler evidence.
 // Left in scratch: structural drift is 44 bytes, with the first hunk at the
 // param_2 home/register load (original ESI, rebuilt EDI); all eight calls align.
+// Follow-up probe: guarded do/while scans removed the 44-byte size gap but
+// changed induction-register coloring and worsened the positional diff; restored.
+// Follow-up probe: removing only the first scan guard also worsened the basin;
+// the original single gate is not enough without the matching source context.
+// Follow-up probe: materializing the target master id through short/int locals
+// and an independent group-0x15 gate exposed one oracle block but worsened CFG;
+// restored. Remaining lead is TU/source lifetime context, not register forcing.
 #include "..\..\include\game_globals.h"
 class TRIBE_Task_List;
 class RGE_Action_Object;

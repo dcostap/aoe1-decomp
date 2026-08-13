@@ -18,6 +18,14 @@
 // - Probe 12 split each footprint bound into ordinary multiply, subtraction,
 //   and -400 statements.  It improved resync similarity but worsened strict
 //   diff by 7 bytes, so restore the validated typed reconstruction.
+// - Structural follow-up: split the fast obstruction scan into the original
+//   zero-mask and two-word-mask loops, with the DAT_00584F24 word loaded first.
+//   This improved the structural diff from 1016 to 1003 bytes.
+// - Kept explicit scaled tile variables and bound subtraction statements.
+//   The rebuilt size moved from -131 to -10 bytes, with 66.27% shape match.
+// - Named the fixed tile-row byte offset used by the terrain scan.  The best
+//   restored checkpoint is 837 bytes of positional diff, frame 0x1C, and
+//   9.88% exact-block coverage; the remaining gap is stack-home/CFG layout.
 
 extern "C" double floor(double value);
 extern "C" long __ftol(void);
@@ -221,22 +229,32 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
     float radiusY = object->master_obj->radius_y;
 
     int xTile = (int)x;
+    xTile *= 4;
     int xRadius = (int)(((xFraction - DAT_00570e68) - radiusX) *
                         DAT_00570e74);
-    int xMin = xTile * 4 - xRadius - 400;
+    int xMin = xTile;
+    xMin -= xRadius;
+    xMin -= 400;
 
     int yTile = (int)y;
+    yTile *= 4;
     int yRadius = (int)(((yFraction - DAT_00570e68) - radiusY) *
                         DAT_00570e74);
-    int yMin = yTile * 4 - yRadius - 400;
+    int yMin = yTile;
+    yMin -= yRadius;
+    yMin -= 400;
 
     int xOtherRadius = (int)(((xFraction + radiusX) - DAT_00570e68) *
                              DAT_00570e74);
-    int xMax = xTile * 4 - xOtherRadius - 400;
+    int xMax = xTile;
+    xMax -= xOtherRadius;
+    xMax -= 400;
 
     int yOtherRadius = (int)(((yFraction + radiusY) - DAT_00570e68) *
                              DAT_00570e74);
-    int yMax = yTile * 4 - yOtherRadius - 400;
+    int yMax = yTile;
+    yMax -= yOtherRadius;
+    yMax -= 400;
 
     if (xMin < 0)
         ++xMin;
@@ -253,13 +271,15 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             (int)maxY >= this->mapValue->map_height)
             return 0;
 
+        int tileOffset = minX * (int)sizeof(RGE_Tile);
         if (minY <= maxY) {
             uchar row = minY;
             do {
                 uchar col = minX;
                 if (col <= maxX) {
-                    RGE_Tile* tile =
-                        &this->mapValue->map_row_offset[row][minX];
+                    RGE_Tile* tile = (RGE_Tile*)
+                        ((char*)this->mapValue->map_row_offset[row] +
+                         tileOffset);
                     do {
                         local_14 = col;
                         if (this->initialTile.x != local_14 ||
@@ -295,20 +315,33 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             (this->maxTarget.x < xMin || this->maxTarget.y < yMin ||
              xMax < this->minTarget.x || yMax < this->minTarget.y)) {
             int maskIndex = (yMin & 3) + height * 4;
-            uint maskA = ObstructionMasks[maskIndex * 2];
-            uint maskB = ObstructionMasks[maskIndex * 2 + 1];
 
-            if (xMin < xMax) {
-                uchar* obstruction = this->obstructionValue[xMin] + (yMin >> 2);
-                int row = xMin;
-                do {
-                    if ((*(uint*)obstruction & maskA) != 0 ||
-                        (maskB != 0 && (*(uint*)(obstruction + 4) & maskB) != 0)) {
-                        goto blocked;
-                    }
-                    ++row;
-                    obstruction += 0xFF;
-                } while (row < xMax);
+            uint maskB = ObstructionMasks[maskIndex * 2 + 1];
+            uint maskA = ObstructionMasks[maskIndex * 2];
+            if (maskB == 0) {
+                if (xMin < xMax) {
+                    uchar* obstruction =
+                        this->obstructionValue[xMin] + (yMin >> 2);
+                    int row = xMin;
+                    do {
+                        if ((*(uint*)obstruction & maskA) != 0)
+                            goto blocked;
+                        ++row;
+                        obstruction += 0xFF;
+                    } while (row < xMax);
+                }
+            } else if (xMin < xMax) {
+                    uchar* obstruction =
+                        this->obstructionValue[xMin] + (yMin >> 2);
+                    int row = xMin;
+                    do {
+                        if ((*(uint*)obstruction & maskA) != 0 ||
+                            (*(uint*)(obstruction + 4) & maskB) != 0) {
+                            goto blocked;
+                        }
+                        ++row;
+                        obstruction += 0xFF;
+                    } while (row < xMax);
             }
         } else if (xMin < xMax) {
             int row = xMin;

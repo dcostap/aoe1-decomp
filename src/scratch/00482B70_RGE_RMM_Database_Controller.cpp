@@ -11,6 +11,10 @@
 // - Independent positive-load and nonpositive-fallback guards restore all 28
 //   ordered calls, including both map-file fclose sites; the extra predicate
 //   leaves a 13-byte size overrun and one CFG edge mismatch.
+// - Structural probes inverted the initial fopen guard and moved the positive
+//   map-load jump before the fallback reset/close. This aligns the first map
+//   CFG and all 28 calls; residual drift starts in register coloring and later
+//   loop scheduling.
 
 extern "C" void* __cdecl fopen(const char*, const char*);
 extern "C" int __cdecl fclose(void*);
@@ -176,29 +180,30 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     this->map_type = -1;
     this->number_of_players = 0;
     infile = fopen(map_file, "r");
-    if (infile == 0) {
-        this->map_info.maps = 0;
-    } else {
+    if (infile != 0) {
         fscanf(infile, " %d", &this->map_info);
         if (this->map_info.map_num > 0) {
             this->map_info.maps = (RGE_Map_Data_Entry*)calloc(this->map_info.map_num, 0x48);
             if (this->map_info.map_num > 0) {
-                int map_index = 0;
                 int map_offset = 0;
+                index = 0;
                 do {
                     fscanf(infile, "%d", (char*)this->map_info.maps + map_offset);
-                    ++map_index;
+                    ++index;
                     map_offset += 0x48;
-                } while (map_index < this->map_info.map_num);
+                } while (index < this->map_info.map_num);
                 fclose(infile);
+                goto map_database_loaded;
             }
         }
-        if (this->map_info.map_num <= 0) {
-            this->map_info.maps = 0;
-            fclose(infile);
-        }
+        this->map_info.maps = 0;
+        fclose(infile);
+    } else {
+        this->map_info.maps = 0;
+        this->map_info.map_num = 0;
     }
 
+map_database_loaded:
     if (this->map_info.map_num > 0) {
         infile = fopen(terrain_file, "r");
         if (infile != 0) {

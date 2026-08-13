@@ -13,6 +13,8 @@
 // Main-agent audit: replaced the generated VPAD padding with the named
 // UnitAIModule ABI surface through the binary-proven +0xC4 can_attack_mem
 // override. No codegen-only volatility or inline assembly is retained.
+// Structural probe: the original nonzero wonderToAttack branch returns its
+// result; the zero return belongs only to the later null-commander paths.
 // Continuation probe: moved hp-over-damage before timeToBeKilled to match the
 // original FPU statement order; structure improved, bytes worsened.
 
@@ -185,7 +187,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
     int byteOffset;
     ObjectMemory* wonder = this->wonderToAttack(-1);
     if (wonder != 0) {
-        return 0;
+        return wonder;
     }
 
     if (count != 0) {
