@@ -20,6 +20,13 @@
 //   binary-supported return-home lead while the shared-tail return remains.
 // - Replacing all handled-tail predicates with mouse_down matched the later
 //   [esp+10] loads but collapsed four log calls.  Restored the 80-call source.
+// - Kept the WM_SIZE handled tail on mouse_down: it recovers the binary's
+//   [esp+10] load and one exact block without changing the 80-call surface.
+// - Corrected WM_ACTIVATE to use wparam's high word.  Named int word values
+//   recover the binary's shared extraction and reduce the diff to 1118 bytes;
+//   the remaining cost is a 17-byte size increase and tail placement drift.
+// - Inlined the thread-id comparison and reversed its operands to match the
+//   original call-result homes and cmp operand order.
 
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
 extern "C" __declspec(dllimport) long __stdcall SetClassLongA(void* hwnd,
@@ -40,14 +47,17 @@ extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 extern void color_log(unsigned char a, unsigned char b, int c);
 
-#define system_ignore_size_messages (*(int*)0x62E63C)
-#define MouseCursorInChildContol (*(int*)0x62C558)
-#define mouse_cursor_in_child_control (*(int*)0x62C4C4)
-#define save_active_wnd (*(void**)0x62C570)
-#define do_restore_palette (*(int*)0x62C504)
-#define restore_palette_timer (*(unsigned long*)0x62C508)
-#define restore_mouse_after_paint (*(int*)0x62C55C)
-#define debug_timeGetTime_on (*(int*)0x62C4E8)
+// Named typed storage follows the committed fixed-storage pattern used for
+// the process-wide base-game pointer.  It avoids unresolved global symbols.
+static int* const system_ignore_size_messages_storage = (int*)0x0062E63C;
+static int* const MouseCursorInChildContol_storage = (int*)0x0062C558;
+static int* const mouse_cursor_in_child_control_storage = (int*)0x0062C4C4;
+static void** const save_active_wnd_storage = (void**)0x0062C570;
+static int* const do_restore_palette_storage = (int*)0x0062C504;
+static unsigned long* const restore_palette_timer_storage =
+    (unsigned long*)0x0062C508;
+static int* const restore_mouse_after_paint_storage = (int*)0x0062C55C;
+static int* const debug_timeGetTime_on_storage = (int*)0x0062C4E8;
 
 class TSound_Driver {
 public:
@@ -262,30 +272,28 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         goto panel_return_alt;
 
     case 5:
-        if (system_ignore_size_messages != 0)
+        if (*system_ignore_size_messages_storage != 0)
             goto default_window_proc;
         color_log(0x32, 0xBA, 3);
         if (self->handle_size(hwnd, 5, wparam, lparam) != 0)
             goto default_window_proc;
-        if (panel_result == 0) {
-            color_log(0x24, 0x5F, 3);
-            return (long)wparam;
-        }
-        color_log(0x4C, 0x5F, 4);
+        if (mouse_down != 0)
+            color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
         return (long)wparam;
 
     case 6:
         if (self->prog_ready != 0) {
-            if ((wparam & 0xFFFF) == 0) {
-                unsigned long process_id = GetWindowThreadProcessId(
-                    self->prog_window, 0);
-                if (GetWindowThreadProcessId((void*)lparam, 0) == process_id)
-                    save_active_wnd = (void*)lparam;
+            int active_state = wparam & 0xFFFF;
+            int minimized = wparam >> 16;
+            if (active_state == 0) {
+                if (GetWindowThreadProcessId((void*)lparam, 0) ==
+                    GetWindowThreadProcessId(self->prog_window, 0))
+                    *save_active_wnd_storage = (void*)lparam;
             }
-            if (hwnd == self->prog_window && (wparam & 0xFFFF) != 0 &&
-                ((unsigned int)lparam >> 16) != 0 && save_active_wnd != 0) {
-                save_active_wnd = 0;
+            if (hwnd == self->prog_window && active_state != 0 &&
+                minimized != 0 && *save_active_wnd_storage != 0) {
+                *save_active_wnd_storage = 0;
             }
         }
         goto default_window_proc;
@@ -299,12 +307,12 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
     case 0x1C:
         if (self->prog_ready != 0) {
             if (wparam == 1) {
-                if (MouseCursorInChildContol != 0) {
+                if (*MouseCursorInChildContol_storage != 0) {
                     SetCursor(0);
                     SetClassLongA(self->prog_window, -12, 0);
                     if (self->prog_mode != 1)
                         self->restart_sound_system();
-                    MouseCursorInChildContol = 0;
+                    *MouseCursorInChildContol_storage = 0;
                     if (self->draw_system != 0) {
                         self->draw_system->CheckSurfaces();
                         self->draw_system->ClearRestored();
@@ -318,17 +326,17 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
                         }
                         self->set_render_all();
                         InvalidateRect(self->prog_window, 0, 1);
-                        do_restore_palette = 10;
-                        restore_palette_timer = debug_timeGetTime(
+                        *do_restore_palette_storage = 10;
+                        *restore_palette_timer_storage = debug_timeGetTime(
                             (char*)0x57FB08, 0xE9B);
-                        restore_mouse_after_paint = 1;
+                        *restore_mouse_after_paint_storage = 1;
                     }
                 }
-            } else if (MouseCursorInChildContol == 0) {
+            } else if (*MouseCursorInChildContol_storage == 0) {
                 SetClassLongA(self->prog_window, -12, 0);
                 if (self->prog_mode != 1)
                     self->stop_sound_system();
-                MouseCursorInChildContol = 1;
+                *MouseCursorInChildContol_storage = 1;
                 if (self->prog_mode != 1 && self->mouse_pointer != 0)
                     self->mouse_pointer->Shutdown_Mouse();
             }
@@ -389,15 +397,15 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
     case 0x200:
         color_log(0x24, 0x54, 3);
         if (self->handle_mouse_move(hwnd, 0x200, wparam, lparam) != 0) {
-            if (mouse_cursor_in_child_control != 0) {
+            if (*mouse_cursor_in_child_control_storage != 0) {
                 if (self->windows_mouse == 0) {
                     SetCursor(0);
                     SetClassLongA(self->prog_window, -12, 0);
                     self->mouse_on();
-                    mouse_cursor_in_child_control = 0;
+                    *mouse_cursor_in_child_control_storage = 0;
                 } else {
                     SetCursor(self->mouse_cursor);
-                    mouse_cursor_in_child_control = 0;
+                    *mouse_cursor_in_child_control_storage = 0;
                 }
             }
             goto default_window_proc;
@@ -442,16 +450,16 @@ panel_return_after_exit_menu:
     case 0x400:
         color_log(0x24, 0x24, 3);
         {
-            int old_time = debug_timeGetTime_on;
-            debug_timeGetTime_on = 0;
+            int old_time = *debug_timeGetTime_on_storage;
+            *debug_timeGetTime_on_storage = 0;
             if (self->handle_user_command(hwnd, 0x400, wparam, lparam) == 0) {
                 if (mouse_down != 0)
                     color_log(0x4C, 0x5F, 4);
                 color_log(0x24, 0x5F, 3);
-                debug_timeGetTime_on = old_time;
+                *debug_timeGetTime_on_storage = old_time;
                 return (long)panel_result;
             }
-            debug_timeGetTime_on = old_time;
+            *debug_timeGetTime_on_storage = old_time;
         }
         goto default_window_proc;
 
