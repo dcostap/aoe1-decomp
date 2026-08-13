@@ -29,6 +29,13 @@
 //   structure and remained 310 bytes different; not retained.
 // - A named copied member value is natural and preserves the observed
 //   compare/store/reread order, but duplicates the direct typed codegen basin.
+// - A natural scoped temp-base pointer promoted EBP and worsened the basin to
+//   337 bytes; a typed byte-offset cursor reached 313 bytes but changed CFG
+//   and size, so both were rolled back.
+// - A diagnostic volatile temp-base pointer restored the 0x70 frame and the
+//   spilled base reload, reaching 98.03% shape and 97.35% exact-block coverage.
+//   Its only localized mismatch was initialization order at 004C7A19; volatile
+//   and byte-address variants did not improve positional diff and are not kept.
 // - Final pause: the clean typed ManagedArray source remains authoritative.
 
 void* __cdecl operator_new(unsigned int size);
