@@ -31,6 +31,12 @@
 //   loads now encode 0062C574 instead of an unresolved extern relocation.
 // - r5 selection-home probe: let get_selection_area fill main_row as the
 //   third coordinate and carry that x-end directly through the outline paths.
+// - r6 moved the sentinel stores before distance selection, matching PDB lines
+//   71/74 without changing the frame or call set.
+// - r6 removed the compiler-only row_end alias and reused point.x for the
+//   binary-proven horizontal row boundary; this removed the 20-byte excess.
+// - r6 diagonal guard and operand forms were codegen duplicates. Best current
+//   source is exact-size/frame with 28 calls and a 1081-byte strict diff.
 
 #include <stdlib.h>
 #include "../../include/rge_base_game_global.h"
@@ -189,7 +195,6 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     long calc_col1;
     long start_col;
     long calc_col2;
-    long row_start;
     long main_row;
     long main_col;
     long calc_row1;
@@ -231,6 +236,8 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         end_row = start_row;
     }
 
+    calc_row1 = -1;
+    main_col = -1;
     end_col = main_row;
     col_distance = end_col - start_col;
     if (col_distance < 0)
@@ -254,14 +261,16 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             }
             col = start_col;
             row = start_row;
-            if (end_col <= start_col) {
-                while (col >= end_col) {
-                    this->draw_wall_outline(col, row, master, 2);
-                    --col;
-                    ++row;
+            if (start_col > end_col) {
+                if (col >= end_col) {
+                    while (col >= end_col) {
+                        this->draw_wall_outline(col, row, master, 2);
+                        --col;
+                        ++row;
+                    }
+                    this->render_area->SetClipRect(0);
+                    return;
                 }
-                this->render_area->SetClipRect(0);
-                return;
             }
         }
 
@@ -291,12 +300,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     }
 
     if (col_distance > row_distance) {
-        long row_end;
-
-        calc_row1 = -1;
-        main_col = -1;
         calc_row2 = end_row;
-        row_end = calc_row2;
         end_row = end_col;
         calc_col2 = start_col;
         if (start_col < end_col) {
@@ -305,34 +309,34 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         }
 
         if (start_row < calc_row2) {
-            row_start = start_row + 1;
+            point.x = start_row + 1;
             calc_row1 = end_col;
             calc_col1 = calc_row2;
             main_col = start_row;
         } else if (calc_row2 < start_row) {
-            row_start = calc_row2;
+            point.x = calc_row2;
             calc_row1 = end_col;
             calc_col1 = start_row;
             main_col = start_row;
         }
 
-        if (calc_row1 == -1 || start_row < row_start) {
+        if (calc_row1 == -1 || start_row < point.x) {
             if (end_row <= calc_col2) {
                 for (col = calc_col2; col >= end_row; --col) {
                     endpoint = (col == start_col || col == end_col) ? 2 : 0;
                     this->draw_wall_outline(col, start_row, master, endpoint);
                 }
             }
-            if (calc_row1 != -1 && row_start <= calc_col1) {
-                for (row = row_start; row <= calc_col1; ++row) {
-                    endpoint = (row == start_row || row == row_end) ? 2 : 1;
+            if (calc_row1 != -1 && point.x <= calc_col1) {
+                for (row = point.x; row <= calc_col1; ++row) {
+                    endpoint = (row == start_row || row == calc_row2) ? 2 : 1;
                     this->draw_wall_outline(calc_row1, row, master, endpoint);
                 }
             }
         } else {
-            if (calc_row1 != -1 && row_start <= calc_col1) {
-                for (row = row_start; row <= calc_col1; ++row) {
-                    endpoint = (row == start_row || row == row_end) ? 2 : 1;
+            if (calc_row1 != -1 && point.x <= calc_col1) {
+                for (row = point.x; row <= calc_col1; ++row) {
+                    endpoint = (row == start_row || row == calc_row2) ? 2 : 1;
                     this->draw_wall_outline(calc_row1, row, master, endpoint);
                 }
             }
