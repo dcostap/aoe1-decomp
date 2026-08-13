@@ -17,6 +17,20 @@
 //     the remaining first mismatch is the shared early-return epilogue.
 // [4] Tried moving the shared result label after the action body. That worsened
 //     the first block and was rolled back; the TPanel-destructor candidate stays.
+// [5] Direct return and outer non-null guard probes did not reproduce the
+//     original null-path epilogue; the direct-return body remains the clean form.
+// [6] Modeled InvalidateRect as its proven IAT pointer and new_random_map as the
+//     world virtual at +0x28; both restore binary-backed call identities.
+// [7] Removed cached GAME_PLAYER results in the two unit branches. The original
+//     reloads the player for the master and tribe arguments; call-count parity
+//     improved by two.
+// [8] Restored the full TPanel virtual surface, TTextPanel E8 text dispatch,
+//     and the direct TEditPanel/TPanel ownership. Modeled the victory-button
+//     +0xE0 call as a local virtual slot.
+// [9] Kept map-center arithmetic as an integer before the float view calls;
+//     this removes the rebuilt-only center ftol and is the current best.
+// Remaining structural gap: VC5 merges the five TPanel::set_help_info arms and
+// the two unit-panel tails, while the original keeps separate call sites.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stdlib.h>
@@ -44,6 +58,53 @@ struct TPanel {
     virtual void vf18();
     virtual void vf1C();
     virtual void redraw(int flags);             // +0x20
+    virtual void vf24();
+    virtual void vf28();
+    virtual void vf2C();
+    virtual void vf30();
+    virtual void vf34();
+    virtual void vf38();
+    virtual void vf3C();
+    virtual void vf40();
+    virtual void vf44();
+    virtual void vf48();
+    virtual void vf4C();
+    virtual void vf50();
+    virtual void vf54();
+    virtual void vf58();
+    virtual void vf5C();
+    virtual void vf60();
+    virtual void vf64();
+    virtual void vf68();
+    virtual void vf6C();
+    virtual void vf70();
+    virtual void vf74();
+    virtual void vf78();
+    virtual void vf7C();
+    virtual void vf80();
+    virtual void vf84();
+    virtual void vf88();
+    virtual void vf8C();
+    virtual void vf90();
+    virtual void vf94();
+    virtual void vf98();
+    virtual void vf9C();
+    virtual void vfA0();
+    virtual void vfA4();
+    virtual void vfA8();
+    virtual void vfAC();
+    virtual void vfB0();
+    virtual void vfB4();
+    virtual void vfB8();
+    virtual void vfBC();
+    virtual void vfC0();
+    virtual void vfC4();
+    virtual void vfC8();
+    virtual void vfCC();
+    virtual void vfD0();
+    virtual void vfD4();
+    virtual void vfD8();
+    virtual void vfDC();
     char* panelName();
     void set_curr_child(TPanel* child);
     void set_help_info(long string_id, long param_2);
@@ -54,21 +115,25 @@ struct TRIBE_Main_View : public TPanel {
 };
 
 struct TButtonPanel : public TPanel {
+    virtual void vfE0(int flags);
     int get_state();
     void set_radio_button();
 };
 struct TTextPanel : public TPanel {
     int currentLineNumber();
-    void set_text(char* text);
+    virtual void set_text(char* text);
+    virtual void set_text(long text);
+    virtual void set_text(char** text, short count);
 };
 struct TListPanel : public TTextPanel {};
 struct TDropDownPanel : public TTextPanel {
     int get_line();
     void setCurrentLineNumber(int line);
 };
-struct TEditPanel : public TTextPanel {
+struct TEditPanel : public TPanel {
     char* currentLine();
     char* get_input_buffer();
+    void set_text(char* text);
 };
 
 struct TPanelSystem {
@@ -101,14 +166,23 @@ struct RGE_Map {
 };
 
 struct RGE_Game_World {
-    void* vtable_ptr;
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void vf20();
+    virtual void vf24();
+    virtual void new_random_map(float size_x, float size_y, float style, long players);
     char gap_04[0x28 - 0x04];
     RGE_Map* map;
     char gap_2C[0x40 - 0x2C];
     RGE_Player** players;
     char gap_44[0x5C - 0x44];
     RGE_Scenario* scenario;
-    void new_random_map(float size_x, float size_y, float style, long players);
 };
 
 struct TRIBE_World : public RGE_Game_World {};
@@ -179,7 +253,7 @@ extern char s_Scenario_Editor_Screen[];
 extern char s_Scenario_Editor_Open[];
 extern char s_C__msdev_work_age1_x1_scr_sed_cp[];
 
-extern int __stdcall InvalidateRect(void* hwnd, void* rect, int erase);
+extern int (__stdcall* const InvalidateRect)(void* hwnd, void* rect, int erase);
 extern "C" void __cdecl debug_rand(char* file, int line);
 
 #define GAME_REDRAW0() (((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0, 0))
@@ -378,9 +452,9 @@ struct TRIBE_Screen_Sed : public TPanel {
 
 long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {
-    long result;
     int i;
     int map_size;
+    int center;
     long line;
     char random_val[28];
     long x2;
@@ -395,12 +469,9 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     unsigned char* lit;
     unsigned char ch;
     int cmp_value;
-    TRIBE_Player* tribe_player;
-    RGE_Master_Static_Object* master;
 
     if (param_1 == 0) {
-        result = 0;
-        goto early_return;
+        return 0;
     }
 
     if (param_1 != (TPanel*)this->main_view) {
@@ -435,19 +506,12 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
             SELECT_IF_PRESENT(this->SelectedObject);
             SELECT_IF_PRESENT(this->DestinationObject);
             GAME_REDRAW0();
-            goto early_return_one;
+            return 1;
         }
         if (param_2 == 0x11 && rge_base_game->game_mode == 0x11) {
             GAME_REDRAW0();
         }
     }
-
-    goto after_early_return;
-early_return_one:
-    result = 1;
-early_return:
-    return result;
-after_early_return:
 
     if (param_2 == 1) {
         for (i = 0; i < 10; i++) {
@@ -564,10 +628,10 @@ after_early_return:
                     this->random_seed_used_text->set_text(random_val);
                     debug_rand(s_C__msdev_work_age1_x1_scr_sed_cp, 0xB58);
                 }
-                f1 = (float)(map_size / 2);
+                center = map_size / 2;
                 for (i = 0; i < 8; i++) {
-                    this->world->players[i]->set_map_loc((short)f1, (short)f1);
-                    this->world->players[i]->set_view_loc(f1, f1);
+                    this->world->players[i]->set_map_loc((short)center, (short)center);
+                    this->world->players[i]->set_view_loc((float)center, (float)center);
                 }
                 for (i = 0; i < 8; i++) {
                     this->world->players[i]->tile_list.del_list();
@@ -642,15 +706,17 @@ after_early_return:
                 this->set_unit_player((short)line);
                 line = this->unit_player_list->get_line();
                 if (line != 0) {
+                    RGE_Master_Static_Object* player_master;
+                    TRIBE_Player* player_tribe;
                     GAME_REDRAW0();
-                    if (rge_base_game->master_obj_id == -1 || (player = GAME_PLAYER()) == 0) {
-                        tribe_player = 0;
-                        master = 0;
+                    if (rge_base_game->master_obj_id == -1 || GAME_PLAYER() == 0) {
+                        player_tribe = 0;
+                        player_master = 0;
                     } else {
-                        master = player->master_objects[rge_base_game->master_obj_id];
-                        tribe_player = (TRIBE_Player*)GAME_PLAYER();
+                        player_master = GAME_PLAYER()->master_objects[rge_base_game->master_obj_id];
+                        player_tribe = (TRIBE_Player*)GAME_PLAYER();
                     }
-                    this->object_panel->set_master_info(master, tribe_player);
+                    this->object_panel->set_master_info(player_master, player_tribe);
                     this->set_paint_object_mode();
                     this->object_panel->redraw(2);
                     return 1;
@@ -660,12 +726,14 @@ after_early_return:
         }
         if (param_2 == 2 || param_2 == 1) {
             if (param_1 == this->unit_list) {
+                RGE_Master_Static_Object* list_master;
+                TRIBE_Player* list_tribe;
                 i = ((TTextPanel*)this->unit_list)->currentLineNumber();
                 this->set_unit((short)i);
                 if (rge_base_game->game_mode != 8 && rge_base_game->game_mode != 0x15) this->unit_mode_select[0]->set_radio_button();
-                if (rge_base_game->master_obj_id == -1 || (player = GAME_PLAYER()) == 0) { tribe_player = 0; master = 0; }
-                else { master = player->master_objects[rge_base_game->master_obj_id]; tribe_player = (TRIBE_Player*)GAME_PLAYER(); }
-                this->object_panel->set_master_info(master, tribe_player);
+                if (rge_base_game->master_obj_id == -1 || GAME_PLAYER() == 0) { list_tribe = 0; list_master = 0; }
+                else { list_master = GAME_PLAYER()->master_objects[rge_base_game->master_obj_id]; list_tribe = (TRIBE_Player*)GAME_PLAYER(); }
+                this->object_panel->set_master_info(list_master, list_tribe);
                 this->set_paint_object_mode();
                 this->object_panel->redraw(2);
                 return 1;
@@ -772,7 +840,7 @@ after_early_return:
             for (i = 0; i < 5; i++) {
                 if (param_1 == this->victory_cond_type[i]) {
                     this->set_mp_victory_type(i + VictoryTypeStandard, 1);
-                    if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->redraw(1); }
+                    if (i != 4) { this->world->scenario->Set_Multi_Conquest(1); this->victory_cond_on[0]->vfE0(1); }
                     return 1;
                 }
             }
@@ -799,11 +867,11 @@ after_early_return:
             for (i = 0; i < 5; i++) if (param_1 == this->message_button[i]) { this->current_message = i; break; }
             this->message_input->set_text(this->world->scenario->Get_message(this->current_message));
             switch (this->current_message) {
-            case 0: this->message_input->set_help_info(0x7770, -1); break;
-            case 1: this->message_input->set_help_info(0x7771, -1); break;
-            case 2: this->message_input->set_help_info(0x7772, -1); break;
-            case 3: this->message_input->set_help_info(0x7773, -1); break;
-            case 4: this->message_input->set_help_info(0x7774, -1); break;
+            case 0: ((TTextPanel*)this->message_input)->set_help_info(0x7770, -1); break;
+            case 1: ((TTextPanel*)this->message_input)->set_help_info(0x7771, -1); break;
+            case 2: ((TTextPanel*)this->message_input)->set_help_info(0x7772, -1); break;
+            case 3: ((TTextPanel*)this->message_input)->set_help_info(0x7773, -1); break;
+            case 4: ((TTextPanel*)this->message_input)->set_help_info(0x7774, -1); break;
             }
         }
         break;
@@ -885,6 +953,5 @@ after_early_return:
         }
     }
 
-    result = 0;
-    return result;
+    return 0;
 }
