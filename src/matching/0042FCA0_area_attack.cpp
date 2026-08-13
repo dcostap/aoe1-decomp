@@ -16,6 +16,7 @@
 // best emitted candidate: 683B/frame 0x24, all seven calls aligned, 96.38% instruction-shape similarity and 207 positional diff bytes after restoring the real source-path literal; remaining drift is localized to the radius-square FPU expression and initial register order.
 // paused after bounded matching: readable typed source retained; no frame padding, fake volatility, raw cursor arithmetic, or register-forcing aliases.
 // session probe: initialized player before master; emitted code stayed identical, so restored the prior order.
+// session probe: initialized owner/map before master/radius; exact 683B match and expected entry register colors.
 
 extern "C" long __cdecl _ftol();
 extern "C" int __cdecl debug_rand(char*, int);
@@ -115,10 +116,10 @@ public:
 unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignored)
 {
     float attack_modifier;
-    RGE_Master_Combat_Object* master = this->master;
     RGE_Player* player = this->owner;
-    float radius = master->area_effect_range;
     RGE_Map* map = player->world->map;
+    RGE_Master_Combat_Object* master = this->master;
+    float radius = master->area_effect_range;
     short maxx = map->width - 1;
     short maxy = map->height - 1;
     float r2 = radius * radius;
