@@ -34,6 +34,14 @@
 // duplicate. A four-way /GX variant lab confirmed the local-name form is the
 // best invariant-preserving source; parameter-name forms either lose the frame
 // slot or retain the same later drift. Restored this clean typed source.
+// this session: parameter-home length/value reuse plus one named serialized
+// value local fell to a 0xC frame and the prior 20-byte basin; restored.
+// moving count/index declarations to function entry, then declaring length
+// with them, produced the same 7-byte codegen and no new stack layout.
+// a declaration-order lab produced only the known 11-byte and 20-byte groups;
+// a debug-context flag lab lacked the EH frame and was not a valid lead.
+// left in scratch: clean typed constructor remains 7 bytes off in seven
+// stack-home displacement bytes at the length and add-value temporary sites.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
