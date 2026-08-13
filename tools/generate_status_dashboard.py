@@ -10,7 +10,7 @@ from pathlib import Path
 
 from common import REPO_ROOT
 from status_core import build_status_rows, count_comment_lines, status_counts, write_status_csv
-from status_history import build_history
+from status_history import append_live_snapshot, build_history, upgrade_history_diff_metrics
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -28,7 +28,7 @@ BUCKET_COLORS = {
 
 
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
-HISTORY_CACHE_VERSION = 6
+HISTORY_CACHE_VERSION = 8
 DATA_MARKER = "__DASHBOARD_DATA__"
 
 
@@ -288,6 +288,7 @@ def write_html_dashboard(
         history = None
         resume = None
         prefix_history = None
+        migrated_cache = False
         if history_cache_path.exists():
             try:
                 cached = json.loads(history_cache_path.read_text(encoding="utf-8"))
@@ -298,11 +299,31 @@ def write_html_dashboard(
                     # commit list is a strict extension of the cached one.
                     cached_key = cached.get("key") or {}
                     cached_commits = cached_key.get("commits") or []
-                    if (
-                        cached_key.get("version") == HISTORY_CACHE_VERSION
-                        and cached_key.get("ref") == history_ref
-                        and len(cached_commits) < len(commits)
+                    cache_is_prefix = (
+                        cached_key.get("ref") == history_ref
+                        and len(cached_commits) <= len(commits)
                         and commits[: len(cached_commits)] == cached_commits
+                    )
+                    if cached_key.get("version") in {6, 7} and cache_is_prefix:
+                        candidate_history = cached.get("history")
+                        candidate = cached.get("resume")
+                        if (
+                            isinstance(candidate_history, dict)
+                            and isinstance(candidate, dict)
+                            and candidate.get("processed") == len(cached_commits)
+                        ):
+                            upgrade_history_diff_metrics(candidate_history, candidate)
+                            migrated_cache = True
+                            if len(cached_commits) == len(commits):
+                                history = candidate_history
+                                resume = candidate
+                            else:
+                                resume = candidate
+                                prefix_history = candidate_history
+                    elif (
+                        cached_key.get("version") == HISTORY_CACHE_VERSION
+                        and len(cached_commits) < len(commits)
+                        and cache_is_prefix
                     ):
                         candidate = cached.get("resume")
                         if isinstance(candidate, dict) and candidate.get("processed") == len(cached_commits):
@@ -322,6 +343,8 @@ def write_html_dashboard(
                 resume=resume,
                 prefix_history=prefix_history,
             )
+            migrated_cache = True
+        if migrated_cache:
             history_cache_path.parent.mkdir(parents=True, exist_ok=True)
             cache_text = json.dumps(
                 {"key": cache_key, "history": history, "resume": resume},
@@ -331,7 +354,12 @@ def write_html_dashboard(
             cache_tmp_path = history_cache_path.with_suffix(".json.tmp")
             cache_tmp_path.write_text(cache_text, encoding="utf-8")
             cache_tmp_path.replace(history_cache_path)
-        payload["history"] = history
+        payload["history"] = append_live_snapshot(
+            history,
+            build_group_list([row for row in rows if row["corpus_bucket"] == "normal"]),
+            payload["summary"],
+            str(payload["generatedAt"]),
+        )
         # The history owns the full snapshots. Keeping another copy of the current
         # treemap here would defeat the point of storing only changes between commits.
         payload.pop("groups", None)

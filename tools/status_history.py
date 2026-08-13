@@ -27,6 +27,13 @@ CHILD_FIELDS = (
     "editInsertBytes", "editDeleteBytes", "editReplaceBytes", "editEqualBytes",
     "likelyShiftedAlignment", "firstMismatchOffset", "usesCustomFlags", "customFlagsPath",
     "isRemaining", "remainingSizeRank", "remainingAsmRank", "hasBlocker", "groupName", "groupPath",
+    "diffResult",
+)
+DIFF_CHILD_FIELDS = (
+    "diffPercent", "diffBytes", "diffSpans", "positionalDiffPercent",
+    "positionalDiffBytes", "positionalDiffSpans", "editDiffPercent",
+    "editDiffBytes", "editInsertBytes", "editDeleteBytes", "editReplaceBytes",
+    "editEqualBytes", "likelyShiftedAlignment", "firstMismatchOffset", "diffResult",
 )
 
 
@@ -119,6 +126,43 @@ def _zero_diff(record: dict[str, str]) -> dict[str, object]:
     }
 
 
+def _to_int(value: object) -> int:
+    return int(value) if value not in (None, "") else 0
+
+
+def _to_float(value: object) -> float:
+    return float(value) if value not in (None, "") else 0.0
+
+
+def _csv_diff_values(row: dict[str, str]) -> dict[str, object]:
+    result = row.get("diff_result", "")
+    return {
+        "diffPercent": _to_float(row.get("diff_percent")),
+        "diffBytes": _to_int(row.get("diff_bytes")),
+        "diffSpans": _to_int(row.get("diff_spans")),
+        "positionalDiffPercent": _to_float(row.get("positional_diff_percent") or row.get("diff_percent")),
+        "positionalDiffBytes": _to_int(row.get("positional_diff_bytes") or row.get("diff_bytes")),
+        "positionalDiffSpans": _to_int(row.get("positional_diff_spans") or row.get("diff_spans")),
+        "editDiffPercent": _to_float(row.get("edit_diff_percent") or row.get("diff_percent")),
+        "editDiffBytes": _to_int(row.get("edit_diff_bytes") or row.get("diff_bytes")),
+        "editInsertBytes": _to_int(row.get("edit_insert_bytes")),
+        "editDeleteBytes": _to_int(row.get("edit_delete_bytes")),
+        "editReplaceBytes": _to_int(row.get("edit_replace_bytes")),
+        "editEqualBytes": _to_int(row.get("edit_equal_bytes")),
+        "likelyShiftedAlignment": row.get("likely_shifted_alignment", "") == "yes",
+        "firstMismatchOffset": row.get("first_mismatch_offset", ""),
+        "diffResult": result,
+    }
+
+
+def _unknown_diff_values(bucket: str) -> dict[str, object]:
+    values = {field: 0 for field in DIFF_CHILD_FIELDS}
+    values["likelyShiftedAlignment"] = False
+    values["firstMismatchOffset"] = ""
+    values["diffResult"] = "MATCH" if bucket == "matching" else ""
+    return values
+
+
 @dataclass
 class GitSnapshot:
     commit: str
@@ -206,6 +250,11 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
         "asm": _manifest_regions(snapshot.read_text("config/asm_special_regions.txt")),
     }
     fragments = _manifest_fragments(snapshot.read_text("config/parent_owned_fragments.txt"))
+    status_csv_text = snapshot.read_text("project_full_status.csv")
+    status_csv_rows = {
+        row.get("va", "").upper(): row
+        for row in csv.DictReader(io.StringIO(status_csv_text))
+    } if status_csv_text else {}
     rows: list[dict[str, str]] = []
     remaining: list[dict[str, str]] = []
 
@@ -244,7 +293,27 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
         custom_flags_path = f"config/flags/{slug}.rsp"
         has_flags = snapshot.read_bytes(custom_flags_path) is not None
         parent = fragments.get(int(record["va"], 16))
-        diff = _zero_diff(record) if source_bucket == "matching" else {}
+        status_csv_row = status_csv_rows.get(record["va"].upper())
+        if status_csv_row and status_csv_row.get("source_bucket") == source_bucket:
+            diff = {
+                "result": status_csv_row.get("diff_result", ""),
+                "diff_percent": _to_float(status_csv_row.get("diff_percent")),
+                "diff_bytes": _to_int(status_csv_row.get("diff_bytes")),
+                "diff_spans": _to_int(status_csv_row.get("diff_spans")),
+                "positional_diff_percent": _to_float(status_csv_row.get("positional_diff_percent") or status_csv_row.get("diff_percent")),
+                "positional_diff_bytes": _to_int(status_csv_row.get("positional_diff_bytes") or status_csv_row.get("diff_bytes")),
+                "positional_diff_spans": _to_int(status_csv_row.get("positional_diff_spans") or status_csv_row.get("diff_spans")),
+                "edit_diff_percent": _to_float(status_csv_row.get("edit_diff_percent") or status_csv_row.get("diff_percent")),
+                "edit_diff_bytes": _to_int(status_csv_row.get("edit_diff_bytes") or status_csv_row.get("diff_bytes")),
+                "edit_insert_bytes": _to_int(status_csv_row.get("edit_insert_bytes")),
+                "edit_delete_bytes": _to_int(status_csv_row.get("edit_delete_bytes")),
+                "edit_replace_bytes": _to_int(status_csv_row.get("edit_replace_bytes")),
+                "edit_equal_bytes": _to_int(status_csv_row.get("edit_equal_bytes")),
+                "likely_shifted_alignment": status_csv_row.get("likely_shifted_alignment", "") == "yes",
+                "first_mismatch_offset": status_csv_row.get("first_mismatch_offset", ""),
+            }
+        else:
+            diff = _zero_diff(record) if source_bucket == "matching" else {}
         rows.append({
             "va": record["va"], "name": record["name"], "slug": slug,
             "size_bytes": record["size_bytes"], "asm_lines": record["asm_lines"],
@@ -326,6 +395,7 @@ RELEVANT_PATHS = (
     "config/asm_special_functions.txt",
     "config/asm_special_regions.txt",
     "config/parent_owned_fragments.txt",
+    "project_full_status.csv",
 )
 
 
@@ -467,6 +537,239 @@ def build_history(
         return _build_history_inner(commits, group_builder, summary_builder, state, blob_cache)
     finally:
         batch_reader.close()
+
+
+def append_live_snapshot(
+    history: dict[str, object],
+    groups: list[dict[str, object]],
+    summary: dict[str, object],
+    generated_at: str,
+) -> dict[str, object]:
+    """Append current live rows without storing them in the commit cache."""
+    schema = list(history.get("schema") or [])
+    for field in CHILD_FIELDS:
+        if field not in schema:
+            schema.append(field)
+    history["schema"] = schema
+
+    previews: list[str] = list(history.get("sourcePreviews") or [])
+    preview_ids = {preview: index for index, preview in enumerate(previews)}
+
+    current_rows: dict[str, list[object]] = {}
+    for group in groups:
+        for raw_child in group.get("children", []):  # type: ignore[union-attr]
+            child = dict(raw_child)  # type: ignore[arg-type]
+            child["groupName"] = group.get("name", "")
+            child["groupPath"] = group.get("path", "")
+            preview = str(child.pop("sourcePreview", ""))
+            if preview:
+                if preview not in preview_ids:
+                    preview_ids[preview] = len(previews)
+                    previews.append(preview)
+                child["sourcePreviewId"] = preview_ids[preview]
+            row = [child.get(field) for field in schema]
+            current_rows[str(child.get("va", ""))] = row
+
+    previous_rows: dict[str, list[object]] = {}
+    for group in (history.get("base") or {}).get("groups", []):  # type: ignore[union-attr]
+        for child in group.get("children", []):
+            previous_rows[str(child[0])] = list(child)
+    for delta in history.get("deltas", []):  # type: ignore[union-attr]
+        for change in delta.get("changes", []):
+            va = str(change.get("va", ""))
+            if "patch" in change:
+                row = previous_rows.get(va)
+                if row is None:
+                    continue
+                for field_index, value in change["patch"]:
+                    while len(row) <= field_index:
+                        row.append(None)
+                    row[field_index] = value
+            elif change.get("value") is None:
+                previous_rows.pop(va, None)
+            else:
+                previous_rows[va] = list(change["value"])
+
+    changes: list[dict[str, object]] = []
+    for va in sorted(set(previous_rows) | set(current_rows)):
+        old = previous_rows.get(va)
+        current = current_rows.get(va)
+        if current is None:
+            changes.append({"va": va, "value": None})
+        elif old is None:
+            changes.append({"va": va, "value": current})
+        else:
+            patch = [
+                [index, value]
+                for index, value in enumerate(current)
+                if (old[index] if index < len(old) else None) != value
+            ]
+            if patch:
+                changes.append({"va": va, "patch": patch})
+
+    commits = history.setdefault("commits", [])
+    commits.append({  # type: ignore[union-attr]
+        "hash": "WORKTREE",
+        "shortHash": "working tree",
+        "authorDate": generated_at,
+        "commitDate": generated_at,
+        "author": "",
+        "email": "",
+        "parents": [],
+        "subject": "Current live project status",
+        "index": len(commits),  # type: ignore[arg-type]
+        "changedFiles": [],
+        "summary": summary,
+        "workingTree": True,
+    })
+    history.setdefault("deltas", []).append({"changes": changes})  # type: ignore[union-attr]
+    history["sourcePreviews"] = previews
+    return history
+
+
+def upgrade_history_diff_metrics(
+    history: dict[str, object],
+    resume: dict[str, object] | None = None,
+    csv_loader: Callable[[str], str] | None = None,
+) -> None:
+    """Add committed dashboard diff metrics to a version-6 history cache."""
+    schema: list[str] = list(history.get("schema") or [])
+    for field in CHILD_FIELDS:
+        if field not in schema:
+            schema.append(field)
+    history["schema"] = schema
+    field_indexes = {field: schema.index(field) for field in DIFF_CHILD_FIELDS}
+    bucket_index = schema.index("bucket")
+
+    rows: dict[str, list[object]] = {}
+    base = history.get("base") or {}
+    for group in base.get("groups", []):  # type: ignore[union-attr]
+        for child in group.get("children", []):
+            while len(child) < len(schema):
+                child.append(None)
+            rows[str(child[0])] = child
+
+    def set_values(va: str, values: dict[str, object], delta: dict[str, object] | None) -> None:
+        row = rows.get(va)
+        if row is None:
+            return
+        if delta is not None:
+            row = row.copy()
+            rows[va] = row
+        changed = {
+            field_indexes[field]: value
+            for field, value in values.items()
+            if row[field_indexes[field]] != value
+        }
+        if not changed:
+            return
+        for index, value in changed.items():
+            row[index] = value
+        if delta is None:
+            return
+
+        changes = delta.setdefault("changes", [])
+        existing = next((change for change in changes if change.get("va") == va), None)
+        if existing is None:
+            changes.append({"va": va, "patch": [[index, changed[index]] for index in sorted(changed)]})
+        elif existing.get("value") is not None:
+            value_row = existing["value"]
+            while len(value_row) < len(schema):
+                value_row.append(None)
+            for index, value in changed.items():
+                value_row[index] = value
+        elif "patch" in existing:
+            patch = {int(index): value for index, value in existing["patch"]}
+            patch.update(changed)
+            existing["patch"] = [[index, patch[index]] for index in sorted(patch)]
+
+    for va, row in rows.items():
+        set_values(va, _unknown_diff_values(str(row[bucket_index] or "")), None)
+
+    batch_reader = None
+    if csv_loader is None:
+        batch_reader = BatchBlobReader()
+
+        def csv_loader(commit: str) -> str:
+            try:
+                oid = subprocess.check_output(
+                    ["git", "rev-parse", f"{commit}:project_full_status.csv"],
+                    cwd=REPO_ROOT,
+                    stderr=subprocess.DEVNULL,
+                    text=True,
+                ).strip()
+            except subprocess.CalledProcessError:
+                return ""
+            data = batch_reader.read(oid)
+            if data is None:
+                try:
+                    data = subprocess.check_output(
+                        ["git", "cat-file", "blob", oid],
+                        cwd=REPO_ROOT,
+                        stderr=subprocess.DEVNULL,
+                    )
+                except subprocess.CalledProcessError:
+                    return ""
+            return "" if data is None else data.decode("utf-8", errors="replace")
+
+    commits = history.get("commits", [])
+    deltas = history.get("deltas", [])
+    try:
+        for commit_index, commit in enumerate(commits):
+            delta = deltas[commit_index]
+            if commit_index:
+                prior_buckets: dict[str, object] = {}
+                for change in list(delta.get("changes", [])):
+                    va = str(change.get("va", ""))
+                    old_row = rows.get(va)
+                    prior_buckets[va] = old_row[bucket_index] if old_row else None
+                    if "patch" in change:
+                        if old_row is None:
+                            continue
+                        new_row = old_row.copy()
+                        for index, value in change["patch"]:
+                            while len(new_row) <= index:
+                                new_row.append(None)
+                            new_row[index] = value
+                        while len(new_row) < len(schema):
+                            new_row.append(None)
+                        rows[va] = new_row
+                    elif change.get("value") is None:
+                        rows.pop(va, None)
+                    else:
+                        new_row = list(change["value"])
+                        while len(new_row) < len(schema):
+                            new_row.append(None)
+                        rows[va] = new_row
+                for va, prior_bucket in prior_buckets.items():
+                    row = rows.get(va)
+                    if row is not None and row[bucket_index] != prior_bucket:
+                        set_values(va, _unknown_diff_values(str(row[bucket_index] or "")), delta)
+
+            changed_files = commit.get("changedFiles", [])
+            if not any(item.get("path") == "project_full_status.csv" for item in changed_files):
+                continue
+            text = csv_loader(str(commit.get("hash", "")))
+            if not text:
+                continue
+            for csv_row in csv.DictReader(io.StringIO(text)):
+                va = csv_row.get("va", "").upper()
+                row = rows.get(va)
+                if row is None or csv_row.get("source_bucket") != row[bucket_index]:
+                    continue
+                set_values(va, _csv_diff_values(csv_row), None if commit_index == 0 else delta)
+    finally:
+        if batch_reader is not None:
+            batch_reader.close()
+
+    if resume is not None:
+        previous_children = resume.get("previous_children") or {}
+        for va, child in previous_children.items():
+            row = rows.get(str(va))
+            if row is None:
+                continue
+            for field in DIFF_CHILD_FIELDS:
+                child[field] = row[field_indexes[field]]
 
 
 def _build_history_inner(

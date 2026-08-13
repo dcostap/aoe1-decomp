@@ -206,11 +206,35 @@
     }
 
     .timeline-meta {
+      display: grid;
+      grid-template-columns: 11ch 10ch 25ch 42ch;
+      gap: 0 1.5ch;
+      width: 92.5ch;
+      max-width: 100%;
+      min-width: 0;
+      overflow: hidden;
       color: var(--muted);
       font: 12px/1.45 var(--mono);
+    }
+
+    .timeline-meta-column {
+      position: relative;
+      min-width: 0;
+      padding-right: 1.5ch;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .timeline-meta-column:last-child {
+      padding-right: 0;
+    }
+
+    .timeline-meta-column:not(:last-child)::after {
+      position: absolute;
+      right: 0.25ch;
+      content: "·";
+      color: var(--muted-2);
     }
 
     .timeline-plot {
@@ -601,7 +625,7 @@
       .canvas-wrap { min-height: 420px; }
       .timeline-head { align-items: flex-start; flex-direction: column; }
       .timeline-heading { flex-wrap: wrap; }
-      .timeline-meta { width: 100%; }
+      .timeline-meta { width: 92.5ch; max-width: 100%; }
       .timeline-range-note { display: none; }
       .timeline-range { grid-template-columns: 1fr 1fr; }
       .detail-grid,
@@ -688,6 +712,7 @@
       conflict: "#ef4444",
     };
     const COMPLEXITY_COMMENT_LINE_LIMIT = 50;
+    const DIFF_UNAVAILABLE_COLOR = "#722f37";
     const STORAGE_KEY = "aoe1-status-treemap-v5";
 
     function decodeHistoryChild(value, va = "") {
@@ -1075,7 +1100,12 @@
         end.textContent = `commit ${formatNumber(HISTORY.commits.length)} · ${shortHistoryDate(COMMIT_TIMES[HISTORY.commits.length - 1])}`;
         note.textContent = "even commit spacing · translucent dots are individual commits";
       }
-      meta.textContent = `${displayIndex + 1}/${HISTORY.commits.length} · ${commit.shortHash || commit.hash?.slice(0, 8) || ""} · ${historyDate(commit)} · ${commit.subject || ""}`;
+      meta.innerHTML = [
+        `${displayIndex + 1}/${HISTORY.commits.length}`,
+        commit.shortHash || commit.hash?.slice(0, 8) || "",
+        historyDate(commit),
+        commit.subject || "",
+      ].map((value) => `<span class="timeline-meta-column">${escapeHtml(value)}</span>`).join("");
       renderTimelineCanvas(displayIndex);
     }
 
@@ -1310,7 +1340,7 @@
         if (fn.usesCustomFlags) {
           customFlagsCount += 1;
         }
-        if (fn.diffResult) {
+        if (fn.isRemaining && fn.diffResult) {
           diffKnownCount += 1;
           diffPercentTotal += toNumber(fn.positionalDiffPercent ?? fn.diffPercent);
           editDiffPercentTotal += toNumber(fn.editDiffPercent ?? fn.diffPercent);
@@ -1629,7 +1659,7 @@
 
     function diffColor(diffPercent, hasDiff) {
       if (!hasDiff) {
-        return "#475569";
+        return DIFF_UNAVAILABLE_COLOR;
       }
       const diff = clamp(toNumber(diffPercent), 0, 25);
       const t = diff / 25;
@@ -1673,7 +1703,7 @@
         return "#475569";
       }
       if (state.colorMode === "progress" && COMPLETED_PROGRESS_BUCKETS.has(item.bucket)) {
-        return BUCKET_COLORS.matching;
+        return "#475569";
       }
       if (item.bucket === "matching") {
         return state.colorMode === "complexity" ? "#475569" : BUCKET_COLORS.matching;
@@ -1901,7 +1931,7 @@
           const tileArea = fnRect.width * fnRect.height;
           ctx.save();
           if (!fn.filterMatched) {
-            ctx.globalAlpha = 0.3;
+            ctx.globalAlpha = 0.15;
           }
           if (state.liveDrag || tileArea < 1500) {
             ctx.fillStyle = fnFill;
@@ -1936,7 +1966,7 @@
 
         ctx.save();
         if (!fn.filterMatched) {
-          ctx.globalAlpha = 0.3;
+          ctx.globalAlpha = 0.15;
         }
         if (state.liveDrag || tileArea < 1500) {
           ctx.fillStyle = fill;
@@ -2049,9 +2079,12 @@
           <div class="tooltip-sub">${formatNumber(item.functionCount)} fn · ${formatPercent(item.progressBytes, 1)} completed bytes · ${formatBytes(item.remainingBytes)} remaining</div>
           <div class="tooltip-note">${escapeHtml(item.path || "(no PDB path)")}</div>`;
       }
+      const diffText = item.diffResult
+        ? `edit ${formatPercent(item.editDiffPercent ?? item.diffPercent ?? 0, 4)} · positional ${formatPercent(item.positionalDiffPercent ?? item.diffPercent ?? 0, 4)}`
+        : "diff unavailable";
       return `
         <div class="tooltip-title"><span class="mono">${escapeHtml(item.va)}</span> ${escapeHtml(item.name)}</div>
-        <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)} · edit ${formatPercent(item.editDiffPercent ?? item.diffPercent ?? 0, 4)} · positional ${formatPercent(item.positionalDiffPercent ?? item.diffPercent ?? 0, 4)} · ${formatNumber(item.sourceCommentLines || 0)} comment lines</div>
+        <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)} · ${diffText} · ${formatNumber(item.sourceCommentLines || 0)} comment lines</div>
         ${(item.sourceBlocker || item.sourceNext || item.sourceNote) ? `<div class="tooltip-note">${escapeHtml(item.sourceBlocker || item.sourceNext || item.sourceNote)}</div>` : ""}`;
     }
 
@@ -2082,7 +2115,7 @@
     function renderTopStats() {
       const activeCommit = HISTORY?.commits?.[timelineIndex];
       elements.generated.textContent = activeCommit
-        ? `commit ${activeCommit.shortHash || activeCommit.hash?.slice(0, 8) || ""} · ${historyDate(activeCommit)}`
+        ? `${activeCommit.workingTree ? "working tree" : `commit ${activeCommit.shortHash || activeCommit.hash?.slice(0, 8) || ""}`} · ${historyDate(activeCommit)}`
         : `generated ${DATA.generatedAt}`;
 
       elements.statsPrimary.innerHTML = [
@@ -2255,6 +2288,12 @@
       if (!state.zoomGroup || state.zoomGroup !== fn.groupName) {
         actions.push(`<button class="button active" data-focus-function="${escapeHtml(fn.va)}">zoom to file</button>`);
       }
+      const editDiffValue = fn.diffResult
+        ? `${formatPercent(fn.editDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.editDiffBytes ?? fn.diffBytes ?? 0)} bytes`
+        : "unavailable";
+      const positionalDiffValue = fn.diffResult
+        ? `${formatPercent(fn.positionalDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.positionalDiffBytes ?? fn.diffBytes ?? 0)} / ${formatNumber(fn.positionalDiffSpans ?? fn.diffSpans ?? 0)} spans`
+        : "unavailable";
 
       elements.detailContent.innerHTML = `
         <div class="detail-title-row">
@@ -2270,8 +2309,8 @@
         <div class="detail-grid">
           <div class="detail-block"><div class="detail-label">Size</div><div class="detail-value">${formatBytes(fn.sizeBytes)}</div></div>
           <div class="detail-block"><div class="detail-label">Asm lines</div><div class="detail-value">${formatNumber(fn.asmLines)}</div></div>
-          <div class="detail-block"><div class="detail-label">Edit diff</div><div class="detail-value">${formatPercent(fn.editDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.editDiffBytes ?? fn.diffBytes ?? 0)} bytes</div></div>
-          <div class="detail-block"><div class="detail-label">Positional diff</div><div class="detail-value">${formatPercent(fn.positionalDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.positionalDiffBytes ?? fn.diffBytes ?? 0)} / ${formatNumber(fn.positionalDiffSpans ?? fn.diffSpans ?? 0)} spans</div></div>
+          <div class="detail-block"><div class="detail-label">Edit diff</div><div class="detail-value">${editDiffValue}</div></div>
+          <div class="detail-block"><div class="detail-label">Positional diff</div><div class="detail-value">${positionalDiffValue}</div></div>
           <div class="detail-block"><div class="detail-label">Edit ins/del/repl</div><div class="detail-value">${formatNumber(fn.editInsertBytes || 0)} / ${formatNumber(fn.editDeleteBytes || 0)} / ${formatNumber(fn.editReplaceBytes || 0)}</div></div>
           <div class="detail-block"><div class="detail-label">First mismatch</div><div class="detail-value">${escapeHtml(fn.firstMismatchOffset || "-")}${fn.likelyShiftedAlignment ? " · shifted" : ""}</div></div>
           <div class="detail-block"><div class="detail-label">Comment lines</div><div class="detail-value">${formatNumber(fn.sourceCommentLines || 0)}</div></div>
