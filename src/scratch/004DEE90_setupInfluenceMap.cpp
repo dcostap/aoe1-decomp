@@ -17,6 +17,11 @@
 //   compiler-steering scaffolding.
 // - Final clean candidate remains non-exact: frame is 0x6c vs 0x70 and six
 //   repeated building-coordinate ftol sites are still CSE'd by VC5.
+// - Direct cast-plus-offset expressions did not change emitted code.
+// - Named coordinate temporaries changed bytes only and did not restore ftol calls.
+// - Shared labels for observed radius paths reduced ftol calls and worsened structure;
+//   the diagnostic was rolled back because the source was not natural.
+// - Long casts for radius-2.5 coordinates emitted the same bytes as int casts.
 
 #include <stdlib.h>
 
