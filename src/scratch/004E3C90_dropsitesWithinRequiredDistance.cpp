@@ -22,6 +22,9 @@
 // 21: restored a natural boolean return as a cleanup-shape probe; it removed
 // one final delete call and shortened the function, so the clean split returns
 // remain the best structural reconstruction.
+// 22: moved totalApplicable initialization before ManagedArray construction
+// while retaining guarded byteOffset initialization; the first mismatch moved
+// from entry initialization to the final cleanup branch and diff fell to 75.
 
 extern "C" void* __cdecl operator_new(unsigned long sz);
 extern "C" void __cdecl operator_delete(void* p);
@@ -126,8 +129,8 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     int byteOffset;
 
     numApplicableResources = 0;
-    ManagedArray_int dropsites;
     totalApplicable = 0;
+    ManagedArray_int dropsites;
     index = 0;
 
     if (this->numResources[resourceType] > 0) {

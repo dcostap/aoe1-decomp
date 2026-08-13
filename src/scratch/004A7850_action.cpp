@@ -37,6 +37,8 @@
 // probe 34: canonical RGE_Base_Game/RGE_Prog_Info ownership and inherited base calls; emitted code unchanged, kept
 // probe 35: mode local with direct prog_info expressions; diff 1703 and branch basin worsened, rolled back
 // probe 36: named second-extension directory locals; emitted code unchanged, rolled back
+// probe 37: direct modeValue/prog_info expressions followed the original decomp but duplicated probe 14 at diff 1703; rolled back
+// probe 38: branch-local second-extension list aliases matched the clean 747-byte codegen; no new emitted-code lead, rolled back
 
 #include <stdio.h>
 #include <string.h>

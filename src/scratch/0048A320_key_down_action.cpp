@@ -21,6 +21,8 @@
 //   original jne-to-failure branch; diff improved 474 -> 431 and shape
 //   72.58% -> 76.51%, but the frame shrank 0x10 -> 0xC and set_elev stayed
 //   merged. Kept as the best natural branch reconstruction.
+// - Tested a case-specific named map receiver only in the 0x21 arm, based on
+//   Ghidra's case-specific map alias; emitted code was an exact duplicate.
 // - Left in scratch: the remaining structural lead is the original source
 //   shape that keeps two set_elev call sites while sharing the failure tail.
 

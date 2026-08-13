@@ -18,9 +18,18 @@
 // control-flow: direct Log-and-return branches restore the original invalid-player
 // push/jump block and improve the diff by 25 bytes; the inner BAD-DCOID log remains
 // a relocated shared cold block, so the ordered call gap is still -1/+1.
-// left in scratch after 10 hypotheses: canonical resend behavior/calls and exact
-// string/ABI surfaces are retained, but the original 0x18 local layout, EBP/EBX
-// coloring, cold-tail placement, and late log/delete schedule remain nonexact.
+// behavior: corrected the TX RES REP log to pass the preserved player number,
+// not the transformed resend-slot offset; the oracle pushes the player register.
+// This improved edit/resync shape and exact block coverage, but widened the byte
+// diff because VC5 changed the early register and local layout basin.
+// layout: indexing the early dcoID guard through the preserved player number was
+// source-canonical but emitted-code duplicate.
+// control-flow: shared error-tail and post-scan error-state forms were tested;
+// both moved farther than the direct typed branches and were rolled back.
+// liveness/ABI: ordinary loop locals and unsigned counter types were tested;
+// both emitted identical code and are kept as the natural typed declarations.
+// left in scratch: the corrected player argument is retained. The original 0x18
+// local layout, cold-tail placement, and late log/delete schedule remain nonexact.
 
 typedef unsigned int uint;
 
@@ -125,12 +134,12 @@ public:
 
 int TCommunications_Handler::TXResendReply(uint serial, uint player)
 {
-    register uint playerNumber;
+    uint playerNumber;
     unsigned long now;
-    int i;
-    int GoodTransmitCount;
+    uint i;
+    uint GoodTransmitCount;
     long hr;
-    register unsigned int offset;
+    unsigned int offset;
     MSGFORMAT_RESEND nosuch;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
@@ -139,7 +148,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
     offset = 0;
     playerNumber = player;
-    if (this->PlayerOptions.dcoID[player] == 0) {
+    if (this->PlayerOptions.dcoID[playerNumber] == 0) {
         L->Log("Invalid player req.");
         return 0;
     }
@@ -184,7 +193,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
             unsigned long send_start =
                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0xF19);
-            L->Log("  >TX RES REP #%d %d (%d)", player, serial,
+            L->Log("  >TX RES REP #%d %d (%d)", playerNumber, serial,
                    *(unsigned int*)((char*)this->Resend + offset + 0xC));
             nosuch.Serialno = DAT_0062c5ec->Send(
                 DAT_0062cf04,
