@@ -22,6 +22,9 @@
 //   was a codegen duplicate, so restored the direct typed addition.
 // - swapped bottom's natural operand order to spacer_size + rect.bottom;
 //   emitted code was unchanged, so restored the clean source.
+// - shared spacer and rect-bottom locals were codegen duplicates. Two focused
+//   ten-case geometry labs kept the one-byte LEA mismatch; one reverse local
+//   order widened the function. Left the natural direct expressions in place.
 
 struct tagRECT {
     long left;
