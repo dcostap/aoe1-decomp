@@ -19,7 +19,12 @@
 // r3 rolled back: sum-first guard matched the original jl direction and improved shape, but diff grew to 278; clean direct guard remains best overall.
 // r1-2 rolled back: negated sum-first capacity predicate kept the original jl direction and improved shape, but diff grew to 278; register order stayed wrong.
 // r2 rolled back: typed remaining-capacity expression worsened diff to 280 and did not change chkstk/alloca_probe identity; direct guard restored.
-// left in scratch: behavior/calls/stack frame match closely through clipboard path; remaining mismatch starts at capacity-test register allocation (rebuilt computes sum in ecx and max in edx, original uses edx=len+input_len and eax=max), causing 2-byte shift and later scheduling/register-order drift around _mbsninc calls.
+// r3 ABI lead: same-TU Pnl_inp donors prove TInputPanel derives from TTextPanel;
+// restoring the TPanel/TTextPanel base surface recovered the original capacity
+// register basin and an exact 472-byte match.
+// r3 final: typed TPanel/TTextPanel inheritance plus separate total_len/max_len
+// locals restored the original EDX sum, EAX max, and full 472-byte body.
+// exact under the default VC5 flags; no inline asm or custom flags.
 
 typedef unsigned long ulong;
 typedef void* HANDLE;
@@ -40,11 +45,27 @@ extern ulong __cdecl debug_timeGetTime(char* file, int line);
 
 class TDigital { public: int play(); };
 
-class TInputPanel {
+struct TPanelOwner {
+    char gap_00[4];
+    HWND hwnd;
+};
+
+class TPanel {
 public:
-    char gap_000[0x20];
-    struct Owner { char gap[4]; HWND hwnd; }* owner;
-    char gap_024[0x190 - 0x24];
+    virtual ~TPanel();
+    char gap_004[0x1C];
+    TPanelOwner* owner;
+    char gap_024[0xF4 - 0x24];
+};
+
+class TTextPanel : public TPanel {
+public:
+    char gap_0F4[0x188 - 0xF4];
+};
+
+class TInputPanel : public TTextPanel {
+public:
+    char gap_188[0x190 - 0x188];
     ulong caret_last_time;
     int draw_caret;
     TDigital* overLengthSound;
@@ -99,7 +120,12 @@ int TInputPanel::paste()
     CloseClipboard();
 
     {
-        if (this->max_len <= len + this->input_len) {
+        int total_len;
+        int max_len;
+        total_len = len;
+        total_len += this->input_len;
+        max_len = this->max_len;
+        if (total_len >= max_len) {
             if (this->overLengthSound != 0) {
                 this->overLengthSound->play();
                 return 0;
