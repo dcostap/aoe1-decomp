@@ -16,6 +16,15 @@
 // 9: the ordinary timestamp-pointer variant was rejected (429 bytes / 408 diff)
 //    and restored; remaining drift is scan rotation/liveness plus mapY register
 //    coloring (EBP versus original EBX).
+// 10: testing one natural counted loop with one index and a first-body sentinel
+//     check; typed memory fields and the existing store tail remain unchanged.
+// 11: removed the redundant positive-count wrapper so the counted loop owns the
+//     single max-memory test; this keeps the natural one-index scan shape.
+// 12: the counted loop without the wrapper matches all 441 bytes under default
+//     flags; the scan and store tail remain typed and free of cursor scaffolding.
+// Main audit: the original reads both narrow coordinate parameter homes as
+// dwords before masking them to bytes. Keep that binary-observed access width;
+// ordinary unsigned conversions reverse the two loads and differ by two bytes.
 
 #include <stdlib.h>
 
@@ -99,7 +108,6 @@ int TribeInformationAIModule::storeAttackMemory(
     unsigned int param_10,
     int param_11)
 {
-    volatile int timeOffset;
     int bestIdx;
     int count;
 
@@ -126,34 +134,19 @@ int TribeInformationAIModule::storeAttackMemory(
     }
 
     bestIdx = -1;
-    timeOffset = 0xFFFFFFE8;
     count = 0;
 
-    if (this->maxAttackMemories > 0) {
-        int offset = 0;
-        AttackMemory* mem = this->attackMemories;
+    for (count = 0; count < this->maxAttackMemories; ++count) {
+        if (this->attackMemories[count].id == -1) {
+            bestIdx = count;
+            break;
+        }
 
-        do {
-            if (*(int*)((char*)mem + offset) == -1) {
-                bestIdx = count;
-                break;
-            }
-
-            if (bestIdx == -1) {
-                bestIdx = count;
-                timeOffset = offset;
-            } else {
-                int bestTime = *(int*)((char*)mem + timeOffset + 0x10);
-                int curTime = *(int*)((char*)mem + offset + 0x10);
-                if (bestTime < curTime) {
-                    bestIdx = count;
-                    timeOffset = offset;
-                }
-            }
-
-            count++;
-            offset += 0x18;
-        } while (count < this->maxAttackMemories);
+        if (bestIdx == -1 ||
+            this->attackMemories[bestIdx].timeStamp <
+                this->attackMemories[count].timeStamp) {
+            bestIdx = count;
+        }
     }
 
     if (bestIdx != -1) {
