@@ -11,6 +11,9 @@
 // 8: added the same-TU AIModule base layout, virtual BuildItem/BuildAIModule destructors, destructible ManagedArray<int>, and natural BuildItem allocation; corrected virtual padding back to the proven 0xB0 object size. Diff improved, but frame and five float conversions remain.
 // 9: corrected serialized scalar types from direct int/float call evidence; removed five __ftol calls and three int-to-float conversions. Size and call set now match; +4 frame and constructor topology remain.
 // 10: removed the explicit fd local and used the constructor parameter directly; original keeps the file descriptor in the parameter-derived EBP path, and the local may account for the +4 frame.
+// 11: matched the Ghidra local declaration char[257] while retaining the name+4 payload offset; frame became exact and diff improved 294 -> 287.
+// 12: changed permanentSkip to the Ghidra-proven uchar source type; emitted code was unchanged.
+// 13: tested original initial-store order; emitted bytes did not move and edit/resync worsened, so restored the prior natural order.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
 
@@ -100,12 +103,12 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     int ySize;
     float numberSkipCycles;
     int typeID;
-    int permanentSkip;
+    uchar permanentSkip;
     int terrainSet;
     int placeOnElevation;
     int buildFrom;
     int local_11c;
-    char name[261];
+    char name[257];
 
     this->numberItemsIntoBuildListValue = 0;
     this->buildListLengthValue = 0;
