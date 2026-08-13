@@ -15,15 +15,41 @@
 // follow-up session: inlined both global fill loops, restored RGE_Communications_Speed's direct method ABI, and corrected Speed/LastPlayerCommunication offsets; ordered calls became 23/23 exact.
 // follow-up session: signed fill-loop bounds, explicit host/client strcpy arms, and TX/RX argument order reproduced the original copy/FPU topology; the 0x100-byte temporary restored the 0x118 frame.
 // follow-up session: removed the DirectPlay global null guard after the oracle showed an unconditional vslot +0x44 call. Best rebuilt size/frame are exact (902B/0x118), with 100% ordered call parity and 436 positional-diff bytes remaining.
-// paused: remaining drift is concentrated in the DirectPlay out-local/late latency-local stack topology and shifted late block placement; source remains the clean typed reconstruction rather than compiler-steering scaffolding.
+// current probe: the oracle passes the DirectPlay output to the speed-info sprintf while the speed method remains parameterless; test that typed call surface.
+// exact: the `%s DPMsgs%d` argument order evaluates the parameterless speed
+// method after dpid, matching the original push and cleanup topology. Main
+// review replaced the manual dispatch struct with the period IDirectPlay2
+// GetMessageCount surface; the typed COM call remains byte exact.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 #include <string.h>
 extern unsigned long debug_timeGetTime(const char* file, int line);
-struct DPVtbl { char gap[0x44]; int (__stdcall *get_id)(void*, unsigned int, unsigned int*); };
-struct DPObj { DPVtbl* vt; };
-extern DPObj* DAT_0062c5ec;
-extern unsigned int DAT_0062cf04;
+typedef unsigned long ulong;
+
+class IDirectPlay2 {
+public:
+    virtual long __stdcall QueryInterface(void*, void**) = 0;
+    virtual ulong __stdcall AddRef() = 0;
+    virtual ulong __stdcall Release() = 0;
+    virtual long __stdcall AddPlayerToGroup(ulong, ulong) = 0;
+    virtual long __stdcall Close() = 0;
+    virtual long __stdcall CreateGroup(void*, void*, void*, ulong, ulong) = 0;
+    virtual long __stdcall CreatePlayer(void*, void*, void*, void*, ulong, ulong) = 0;
+    virtual long __stdcall DeletePlayerFromGroup(ulong, ulong) = 0;
+    virtual long __stdcall DestroyGroup(ulong) = 0;
+    virtual long __stdcall DestroyPlayer(ulong) = 0;
+    virtual long __stdcall EnumGroupPlayers(ulong, void*, void*, void*, ulong) = 0;
+    virtual long __stdcall EnumGroups(void*, void*, void*, ulong) = 0;
+    virtual long __stdcall EnumPlayers(void*, void*, void*, ulong) = 0;
+    virtual long __stdcall EnumSessions(void*, ulong, void*, void*, ulong) = 0;
+    virtual long __stdcall GetCaps(void*, ulong) = 0;
+    virtual long __stdcall GetGroupData(ulong, void*, ulong*, ulong) = 0;
+    virtual long __stdcall GetGroupName(ulong, void*, ulong*) = 0;
+    virtual long __stdcall GetMessageCount(ulong, ulong*) = 0;
+};
+
+extern IDirectPlay2* DAT_0062c5ec;
+extern ulong DAT_0062cf04;
 extern const char s_Com_hand_cpp[];
 
 class RGE_Communications_Speed {
@@ -89,9 +115,9 @@ char* TCommunications_Handler::GetCommInfo(unsigned char which) {
     sprintf((char*)0x62C7F0, (const char*)0x57F718, this->Speed->GetLatencyInfo());
     sprintf((char*)0x62C8F0, (const char*)0x5828CC, this->Speed->GetMachineSpeedInfo(), this->Speed->GetAdjustmentCount());
 
-    unsigned int dpid = 0;
-    DAT_0062c5ec->vt->get_id(DAT_0062c5ec, DAT_0062cf04, &dpid);
-    sprintf((char*)0x62C9F0, (const char*)0x5828BC, this->Speed->GetSelfPlayerOptimalSpeedStr());
+    ulong dpid = 0;
+    DAT_0062c5ec->GetMessageCount(DAT_0062cf04, &dpid);
+    sprintf((char*)0x62C9F0, (const char*)0x5828BC, this->Speed->GetSelfPlayerOptimalSpeedStr(), dpid);
     sprintf((char*)0x62CAF0, (const char*)0x57F718, this->Speed->GetPlayerSpeedStatusStr(0));
 
     unsigned long now = debug_timeGetTime(s_Com_hand_cpp, 0x1468);

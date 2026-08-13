@@ -1,8 +1,7 @@
 // VA: 004494B0 RGE_Effects::save(int fd)
 // effects.cpp lines 140-183
 // 265 bytes
-// BLOCKER: the typed reconstruction matches all bytes except the SIB encoding
-// of the count-field LEA at 00449504 (2 bytes).
+// STATUS: exact match after typed array ownership for the outer record.
 //
 // Attempt log:
 // - with RGE_Effect* eff local: first 20 bytes match (best result: 74% diff)
@@ -27,11 +26,15 @@
 //   block; initializing inner before its guard recovered 99/99 instructions
 // - reversing address terms, integer-address casts, declaration order, and a
 //   named-name anchor did not change the final 2-byte SIB drift; all rolled back
+// - typed effect[index] record ownership removed both residual SIB bytes and
+//   produced an exact match
+// - main review replaced the inner byte cursor with natural typed command
+//   indexing; the function remains byte exact
 // FLAGS: none
 // NOTE: exact calls, frame, record layout, CFG, and serialization order are
-// established. The only remaining drift is the equivalent SIB base/index byte
-// order at the count-field LEA. The source keeps named ownership and the
-// binary-proven base-name serialization bug; no raw-address diagnostic remains.
+// established. The typed effect[index] form also matches the oracle's SIB
+// base/index order. The source keeps named ownership and the binary-proven
+// base-name serialization bug; no raw-address diagnostic remains.
 
 void __cdecl rge_write(int fd, void* buf, int size);
 
@@ -69,22 +72,18 @@ void RGE_Effects::save(int fd) {
         do {
             effect = this->effects;
             rge_write(handle, effect->name, 0x1F);
-            record = (RGE_Effect*)((char*)effect + fd);
+            record = &effect[index];
             rge_write(handle, &record->effect_list_num, 2);
             int inner = 0;
             if (record->effect_list_num > 0) {
-                int command_offset = 0;
-                RGE_Effect_Command** list_ptr = &record->effect_list;
                 do {
-                    RGE_Effect_Command* command = (RGE_Effect_Command*)
-                        ((char*)*list_ptr + command_offset);
+                    RGE_Effect_Command* command = &record->effect_list[inner];
                     rge_write(handle, &command->command, 1);
                     rge_write(handle, &command->change_num1, 2);
                     rge_write(handle, &command->change_num2, 2);
                     rge_write(handle, &command->change_num3, 2);
                     rge_write(handle, &command->change_amount, 4);
                     inner++;
-                    command_offset += 0x0C;
                 } while (inner < record->effect_list_num);
             }
             index++;
