@@ -15,6 +15,12 @@
 // - Probe: direct repeated world/player expressions remove cached object homes and improve shape
 //   to 65.5%; the candidate is 1616 bytes with a 0x5C frame and 19 aligned calls.
 // - Probe: reusing local_38 as the inner player cursor is codegen-duplicate evidence.
+// - Probe: modeled history samples as a float time_slice and kept the returned sample in a signed dword temp;
+//   this reached the original 0x50/0x54 frame basin and reduced strict drift to 1337 bytes.
+// - Probe: separated the 32-bit switch palette input from the byte palette-index result; this preserved the
+//   original EAX switch constants and reduced strict drift to 1300 bytes with 73.7% shape similarity.
+// - Probe: ordered the Y-line total load before the explicit sample conversion; the current clean source is
+//   1600 bytes with a 0x50 frame, 19 aligned calls, and 1299-byte strict drift.
 // - Left in scratch: original 0x54 frame and early CFG still differ. Next lead is exact local-home
 //   recovery around the initial zeroing and player-loop induction, not register scheduling.
 
@@ -95,7 +101,7 @@ void Time_Line_Panel::draw_timeline()
     unsigned char event;
     float pop_total;
     float temp_pop_num;
-    long time_slice;
+    float time_slice;
     long next_pop_total;
     float float_remainder;
     float cntr_droped_slice_rate;
@@ -111,7 +117,7 @@ void Time_Line_Panel::draw_timeline()
     long error_correction_time_slice_thickness;
     int local_10;
     long y_line_segment_length;
-    unsigned char temp_color;
+    long temp_color;
     long segment;
 
     if (this->timeline_flag == 0) return;
@@ -140,11 +146,12 @@ void Time_Line_Panel::draw_timeline()
                 do {
                     temp_color = (*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
                         ->history_info->get_history_entry(0, (long)next_pop_total);
+                    time_slice = (float)temp_color;
                     if ((*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
                             ->history_info->get_history_event((long)next_pop_total, event) != 0) {
                         error_correction_time_slice_thickness = 1;
                     }
-                    temp_pop_num = (float)temp_color + temp_pop_num;
+                    temp_pop_num = time_slice + temp_pop_num;
                     i++;
                     player_offset += 4;
                 } while (i < (int)rge_base_game->world->player_num - 1);
@@ -169,10 +176,9 @@ void Time_Line_Panel::draw_timeline()
                     i = 0;
                     if ((int)rge_base_game->world->player_num - 1 > 0) {
                         int player_offset = 4;
-                        long next_index = next_pop_total + 1;
                         do {
                             temp_color = (*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
-                                ->history_info->get_history_entry(0, next_index);
+                                ->history_info->get_history_entry(0, next_pop_total + 1);
                             float_remainder = (float)temp_color + float_remainder;
                             i++;
                             player_offset += 4;
@@ -207,40 +213,42 @@ void Time_Line_Panel::draw_timeline()
                         if ((int)rge_base_game->world->player_num - 1 > 0) {
                             local_38 = 4;
                             do {
-                                unsigned long color;
+                                unsigned long palette_color;
+                                unsigned char color;
                                 switch ((*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
                                             ->details->civilization) {
-                                case 0: color = 0x00C40000; break;
-                                case 1: color = 0x000000C8; break;
-                                case 2: color = 0x0000EAEA; break;
-                                case 3: color = 0x00215A8C; break;
-                                case 4: color = 0x000080FF; break;
-                                case 5: color = 0x00008000; break;
-                                case 6: color = 0x00808080; break;
-                                case 7: color = 0x00808040; break;
-                                default: color = 0x00FFFFFF; break;
+                                case 0: palette_color = 0x00C40000; break;
+                                case 1: palette_color = 0x000000C8; break;
+                                case 2: palette_color = 0x0000EAEA; break;
+                                case 3: palette_color = 0x00215A8C; break;
+                                case 4: palette_color = 0x000080FF; break;
+                                case 5: palette_color = 0x00008000; break;
+                                case 6: palette_color = 0x00808080; break;
+                                case 7: palette_color = 0x00808040; break;
+                                default: palette_color = 0x00FFFFFF; break;
                                 }
-                                color = (unsigned long)GetNearestPaletteIndex((*(void***)this->draw_area)[2], color);
-                                time_slice = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
+                                color = GetNearestPaletteIndex((*(void***)this->draw_area)[2], palette_color);
+                                temp_color = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
                                     ->history_info->get_history_entry(0, next_pop_total);
                                 Y_line_total = this->Y_line_max_length;
-                                temp_pop_num = (float)time_slice / temp_pop_num * (float)Y_line_total;
+                                time_slice = (float)temp_color;
+                                temp_pop_num = time_slice / temp_pop_num * (float)Y_line_total;
                                 segment = (long)temp_pop_num;
-                                if ((time_slice >= 1) && (segment < 1)) segment = 1;
+                                if ((time_slice >= 1.0f) && (segment < 1)) segment = 1;
 
                                 if (this->bar_thickness != 1.0f) {
                                     if (next_pop_total != this->num_entries_page - 1) {
-                                        time_slice = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
+                                        time_slice = (float)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
                                             ->history_info->get_history_entry(0, y_line_segment_length);
                                     }
                                     Y_line_total = this->Y_line_max_length;
-                                    long next_segment = (long)((float)time_slice /
+                                    long next_segment = (long)(time_slice /
                                                                float_remainder *
                                                                (float)Y_line_total);
                                     long difference = next_segment - segment;
                                     temp_pop_num = (float)difference / this->bar_thickness + (float)segment;
                                     segment = (long)temp_pop_num;
-                                    if ((time_slice >= 1) && (segment < 1)) segment = 1;
+                                    if ((time_slice >= 1.0f) && (segment < 1)) segment = 1;
                                     cntr_droped_slice_rate += temp_pop_num - (float)segment;
                                     if (cntr_droped_slice_rate > 1.0f) {
                                         cntr_droped_slice_rate -= 1.0f;

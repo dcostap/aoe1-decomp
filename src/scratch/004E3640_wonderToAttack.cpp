@@ -20,6 +20,11 @@
 // self alias was codegen-neutral and was not retained. Remaining mismatch is
 // the EBX-this/EBP-state register basin and associated local load order; all
 // seven calls, frame, size, and observed field/call topology are aligned.
+// r2 probe: direct typed importantObjectMemory[i] indexing followed exact
+// same-TU donors; it improved block shape but gave 397 differing bytes.
+// r2 probes: the proven InformationAIModule base, full RGE_Player vtable
+// surface, hoisted locals, and a two-induction for loop were tested; the
+// ABI/liveness forms were codegen duplicates and the for loop regressed.
 
 #include <stdlib.h>
 #include <string.h>
@@ -40,21 +45,19 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
     int bestState;
     float bestTimer;
     float bestHitpoints;
-    int count;
-    int offset;
+    int i;
 
     bestObject = 0;
     bestState = -1;
     bestTimer = 0.0f;
     bestHitpoints = 0.0f;
-    count = 0;
+    i = 0;
     if (this->maxImportantObjectMemory > 0) {
-        offset = 0;
         do {
-            if (((ObjectMemory*)((char*)this->importantObjectMemory + offset))->type == 0x114) {
-                if (player_id == -1 || ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->owner == player_id) {
-                    if (player_id != -1 || this->md->player->playerAlive(((ObjectMemory*)((char*)this->importantObjectMemory + offset))->owner)) {
-                        RGE_Static_Object* obj = this->md->object(((ObjectMemory*)((char*)this->importantObjectMemory + offset))->id);
+            if (this->importantObjectMemory[i].type == 0x114) {
+                if (player_id == -1 || this->importantObjectMemory[i].owner == player_id) {
+                    if (player_id != -1 || this->md->player->playerAlive(this->importantObjectMemory[i].owner)) {
+                        RGE_Static_Object* obj = this->md->object(this->importantObjectMemory[i].id);
                         if (obj != 0) {
                             if (obj->object_state <= 2) {
                                 if (obj->action_list->have_action()) {
@@ -63,24 +66,24 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                                         float timer = obj->action_list->get_action()->timer;
                                         float hp = obj->hp;
                                         if (bestObject == 0) {
-                                            bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                            bestObject = &this->importantObjectMemory[i];
                                             bestState = state;
                                             bestTimer = timer;
                                             bestHitpoints = hp;
                                         } else if (bestState == 6 && state == 2) {
                                         } else if (bestState == 2 && state == 6) {
-                                            bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                            bestObject = &this->importantObjectMemory[i];
                                             bestState = state;
                                             bestTimer = timer;
                                             bestHitpoints = hp;
                                         } else if (bestState == state) {
                                             if (bestState == 2 && bestHitpoints < hp) {
-                                                bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                                bestObject = &this->importantObjectMemory[i];
                                                 bestState = state;
                                                 bestTimer = timer;
                                                 bestHitpoints = hp;
                                             } else if (bestState == state && bestState == 6 && bestTimer < timer) {
-                                                bestObject = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                                bestObject = &this->importantObjectMemory[i];
                                                 bestState = state;
                                                 bestTimer = timer;
                                                 bestHitpoints = hp;
@@ -93,9 +96,8 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                     }
                 }
             }
-            count++;
-            offset += 0x24;
-        } while (count < this->maxImportantObjectMemory);
+            i++;
+        } while (i < this->maxImportantObjectMemory);
     }
     return bestObject;
 }

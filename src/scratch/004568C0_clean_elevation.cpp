@@ -13,6 +13,9 @@
 // 10: Declared current after the eight zeroed neighbor flags; this delayed the AL reload and improved the exact-block frontier without changing size or calls.
 // 11: Inverted the fix update branch so neighbor propagation is fall-through; this matched the oracle's jl topology and improved the structural basin.
 // 12: A swapped final SW compare order worsened the late update blocks; restored the east-then-north guard. Remaining drift starts at the loop branch displacement and a relocated two-instruction SW block.
+// 13: Ordered the final south-east guard as north-then-west, matching the oracle's compare order; diff improved 255B to 253B and the cold block aligned.
+// 14: The exact generator donor's *32 spelling was a codegen duplicate here; restored the shift form.
+// 15: A local byte value temporary for the first neighbor write was also a duplicate; restored the direct typed assignment.
 
 struct RGE_Tile {
     char gap_00[5];
@@ -141,7 +144,7 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
                 if (south_east && !fix) {
                     if ((south_west && !south) || (west && !south_west) ||
                         (north_east && !east) || (north && !north_east) ||
-                        (north_west && !west && !north)) {
+                        (north_west && !north && !west)) {
                         fix = 1;
                     }
                 }

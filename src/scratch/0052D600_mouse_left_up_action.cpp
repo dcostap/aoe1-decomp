@@ -19,6 +19,26 @@
 //   dropped the packet's unload and redraw calls; it was rolled back.
 // - An inline default arm kept the call multiset but moved the first switch
 //   block and worsened the diff to 753 bytes; it was rolled back.
+// - Inlining only mode-102's packet-backed play_sound/set_game_mode tail
+//   reduced the diff to 192 bytes and restored the original 844-byte size;
+//   the remaining call gap is the final mode-105 redraw past the boundary.
+// - Moving the shared done label before error_a preserved the original
+//   +014D/+015C tail and reduced the diff to 176 bytes; mode-105's invalid
+//   guard still receives a local return block 10 bytes larger than the
+//   original shared branch, so its final redraw call is truncated.
+// - The exact same-TU donor's short command_make_do ABI was applied; VC5
+//   emitted identical bytes. Invalid-label placement and a positive mode-105
+//   guard were also duplicates and were rolled back.
+// - Routing invalid_action through the shared return_one label tail-merged
+//   the +015C return and recovered the final mode-105 redraw; diff fell to
+//   17 bytes with all 32 calls, size, frame, and CFG exact.
+// - Reversing mode-103's success guard to match its jne/jmp block reduced the
+//   remaining diff to 14 bytes. The target-local declaration, short
+//   pick_best_target ABI, case-104 scope removal, and positive mode-102 guard
+//   emitted duplicates.
+// - Paused in EXACT CODEGEN: remaining 14 bytes are localized register
+//   coloring at mode-102 (+0124) and repair mode-104 (+0240/+0273); no new
+//   source-backed lead remains within this claim.
 
 class TShape;
 class RGE_Tile;
@@ -171,7 +191,7 @@ public:
 class RGE_Main_View : public RGE_View {
 public:
     virtual int command_place_object(long, long, int);
-    virtual int command_make_do(long, long, int, int);
+    virtual int command_make_do(long, long, int, short);
     virtual int command_make_move(long, long);
     virtual int command_make_work(long, long);
     virtual int command_place_multi_object(long, long, long, long, int);
@@ -180,7 +200,7 @@ public:
                         RGE_Pick_Info*, RGE_Static_Object*, int);
     void fixup_pick_info(RGE_Pick_Info*);
     void reset_display_object_selection(int);
-    RGE_Static_Object* pick_best_target(long, long, int*, int);
+    RGE_Static_Object* pick_best_target(long, long, int*, short);
 
     virtual long mouse_left_up_action(long, long, int, int);
 };
@@ -194,6 +214,7 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
                                            int param_3, int param_4) {
     int mode = rge_base_game->prog_mode;
     RGE_Pick_Info pick_info;
+    RGE_Static_Object* object;
 
     if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
         return 0;
@@ -226,15 +247,19 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x69) == 0)
-            goto error_a;
+        if (this->command_make_do(param_1, param_2, 0, 0x69) != 0)
+            goto done_a;
+        rge_base_game->play_sound(3);
         goto done_a;
+
+done_a:
+        rge_base_game->set_game_mode(0, 0);
+return_one:
+        return 1;
 
 error_a:
         rge_base_game->play_sound(3);
-done_a:
-        rge_base_game->set_game_mode(0, 0);
-        return 1;
+        goto done_a;
 
 default_action:
         return RGE_Main_View::mouse_left_up_action(
@@ -258,23 +283,20 @@ done_b:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 7) == 0)
-            goto error_a;
-        goto done_a;
+        if (this->command_make_do(param_1, param_2, 0, 7) != 0)
+            goto done_a;
+        goto error_a;
 
     case 104:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        {
-            RGE_Static_Object* object = this->pick_best_target(
-                param_1, param_2, 0, -1);
-            if (object != 0 && this->player->command_make_repair(object) != 0) {
-                this->display_object_selection(object->id, 0x5DC, 2, 2);
-                this->reset_overlay_sprites();
-                this->set_redraw(1);
-                goto done_a;
-            }
+        object = this->pick_best_target(param_1, param_2, 0, -1);
+        if (object != 0 && this->player->command_make_repair(object) != 0) {
+            this->display_object_selection(object->id, 0x5DC, 2, 2);
+            this->reset_overlay_sprites();
+            this->set_redraw(1);
+            goto done_a;
         }
         goto error_a;
 
@@ -302,5 +324,5 @@ done_b:
     }
 
 invalid_action:
-    return 1;
+    goto return_one;
 }

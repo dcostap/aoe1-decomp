@@ -19,6 +19,11 @@
 // - Moved invalid-placement logging before zone/strategy dispatch; the call
 //   prefix improved to 25, then reordered availableLot before setupInfluenceMap
 //   to match the original branch layout (53 aligned calls, -2/+2 sites).
+// - Used state.builderID, rather than the incoming builderID, for the builder
+//   lookup while resuming an active placement; original asm branches on active
+//   and pushes the state field.  This improved the size gap and diff.
+// - Kept positive outer guards for placement object and master object, matching
+//   the original null paths and shared final active cleanup.
 
 #include <math.h>
 #include <stdlib.h>
@@ -350,14 +355,13 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     RGE_Static_Object* coordinateObject;
     RGE_Static_Object* placementObject;
     ConstructionItem* result;
+    int actualBuilderID;
 
     placementObject = this->md->object(-1, -1, 4, -1, -1,
                                        -1, -1, -1, -1, -1);
     if (placementObject == 0) {
         state.active = 0;
-        return 0;
-    }
-
+    } else {
     if (state.active == 1) {
         x = state.buildingTypeID;
         buildingSize = state.buildingSize;
@@ -377,14 +381,13 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     y = buildingType * buildingType * 0x14;
 
     masterObj = this->md->player->master_objects[x];
-    if (masterObj == 0) {
-        state.active = 0;
-        return 0;
-    }
-
-    townCenter = this->md->object(-1, 0x6d, -1, -1, -1,
-                                  -1, -1, -1, -1, -1);
-    builderObject = this->md->object(builderID);
+    if (masterObj != 0) {
+        townCenter = this->md->object(-1, 0x6d, -1, -1, -1,
+                                      -1, -1, -1, -1, -1);
+        actualBuilderID = builderID;
+        if (state.active == 1)
+            actualBuilderID = state.builderID;
+        builderObject = this->md->object(actualBuilderID);
 
     if (item == 0 && state.active != 1) {
         centerPoint.x = centerX;
@@ -408,10 +411,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         logCommonHistory(this,
                          "Invalid influence placement type id (%d), bombing.",
                          x);
-        state.active = 0;
-        return 0;
-    }
-
+    } else {
     if (item == 0 && state.active != 1) {
         placementObject->lookupZone(centerY, maxClearX);
     } else {
@@ -814,7 +814,10 @@ candidate_done:
             this->lastWallPosition.y = -1;
         }
     }
+    }
 
+    }
     state.active = 0;
+    }
     return 0;
 }
