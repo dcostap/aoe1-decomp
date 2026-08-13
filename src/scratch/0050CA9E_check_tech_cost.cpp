@@ -17,6 +17,15 @@
 // at -8h/-10h/-18h. Source remains the simplest typed reconstruction.
 // - loop-scope cost declaration before attr with delayed assignment was a codegen duplicate;
 //   it did not rotate the target cost/index homes and was reverted.
+// - a typed loop-temporary aggregate with fields for i, attr, tech, carry,
+//   cost, and has_carry reached 10 bytes but swapped the this and conversion homes.
+// - restoring the natural anonymous integer-to-float cast with that aggregate
+//   placed the compiler temporary at the target -20h home and matched all 391 bytes.
+// - an explicit self alias regressed to 398 bytes and was reverted; the final
+//   source keeps direct member ownership and the typed local aggregate.
+// POLICY HOLD: the anonymous Check_Tech_Temps aggregate only controls local
+// homes. It has no proven source ownership. Keep this exact diagnostic in
+// scratch until a normal local declaration model emits the same code.
 
 struct Tech_Player_Tree {
     float research_done;
@@ -46,6 +55,15 @@ struct TRIBE_Tech {
     Tech_Entry* tech_tree;
 };
 
+struct Check_Tech_Temps {
+    int i;
+    int attr;
+    Tech_Entry* tech;
+    float carry;
+    float cost;
+    unsigned char has_carry;
+};
+
 class TRIBE_Player_Tech {
 public:
     Tech_Player_Tree* tech_player_tree;
@@ -58,40 +76,39 @@ public:
 
 unsigned char TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2)
 {
-    Tech_Entry* tech = this->base_tech->tech_tree + param_1;
-    float carry = this->owner->player_attributes->attributes[3];
-    unsigned char has_carry;
+    Check_Tech_Temps temps;
+
+    temps.tech = this->base_tech->tech_tree + param_1;
+    temps.carry = this->owner->player_attributes->attributes[3];
 
     if (this->owner->player_attributes->attributes[0x1d] < 1.0) {
-        carry = 0.0f;
-        has_carry = 0;
+        temps.carry = 0.0f;
+        temps.has_carry = 0;
     } else {
-        has_carry = 1;
+        temps.has_carry = 1;
     }
     if (this->tech_player_tree[param_1].state == 1) {
-        int i;
-        for (i = 0; i < 3; i++) {
-            int attr;
-            attr = tech->attribute[i];
-            if (attr >= 0 && tech->attribute_used[i] != 0) {
-                float cost = (float)(int)tech->attribute_cost[i];
-                if (has_carry && attr == 3) {
-                    carry = carry - cost;
-                    if (carry < 0.0f) {
+        for (temps.i = 0; temps.i < 3; temps.i++) {
+            temps.attr = temps.tech->attribute[temps.i];
+            if (temps.attr >= 0 && temps.tech->attribute_used[temps.i] != 0) {
+                temps.cost = (float)(int)temps.tech->attribute_cost[temps.i];
+                if (temps.has_carry && temps.attr == 3) {
+                    temps.carry = temps.carry - temps.cost;
+                    if (temps.carry < 0.0f) {
                         if (param_2) {
-                            *param_2 = (short)attr;
+                            *param_2 = (short)temps.attr;
                         }
                         return 0;
                     }
                 }
-                if (this->owner->player_attributes->attributes[attr] < cost) {
-                    if (carry + this->owner->player_attributes->attributes[attr] < cost) {
+                if (this->owner->player_attributes->attributes[temps.attr] < temps.cost) {
+                    if (temps.carry + this->owner->player_attributes->attributes[temps.attr] < temps.cost) {
                         if (param_2) {
-                            *param_2 = (short)attr;
+                            *param_2 = (short)temps.attr;
                         }
                         return 0;
                     }
-                    carry = carry - (cost - this->owner->player_attributes->attributes[attr]);
+                    temps.carry = temps.carry - (temps.cost - this->owner->player_attributes->attributes[temps.attr]);
                 }
             }
         }
