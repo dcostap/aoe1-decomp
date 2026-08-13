@@ -26,6 +26,11 @@
 //   probe; output was unchanged, so the clean declaration order remains.
 // - named the typed terrain sound before get_file_name() as a natural dispatch
 //   probe; output was unchanged, so the seven scan register bytes remain.
+// - declaration/init and natural for/while variants all collapsed to the same
+//   seven-byte group; register/const hints and a selected-terrain pointer also
+//   had no emitted effect.
+// - signed no-selection guard variants changed the branch or layout, but did
+//   not recover the oracle; restored the clean == -1 guard after the budget.
 
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 extern unsigned long debug_timeGetTime(const char* file, int line);
