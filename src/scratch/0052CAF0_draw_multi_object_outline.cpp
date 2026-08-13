@@ -14,6 +14,12 @@
 //   reduced code shape.  Restored the baseline source.
 // - Left in scratch: call order is exact, but branch topology, frame locals,
 //   and the global relocation remain unresolved.
+// - Fresh r2 layout probe: restored the same-TU proven TPanel and RGE_View
+//   offsets (+8C/+90 and +FC/+100); this changed only early field accesses.
+// - Fresh r2 control-flow probe: tested the binary sentinel edge setup; it
+//   reduced the byte diff but removed four real draw calls, so it was rolled back.
+// - Fresh r2 liveness probe: named the binary boundary aliases while keeping
+//   all 28 calls; size moved closer but shape moved farther, so it was rolled back.
 
 struct tagPOINT {
     long x;
@@ -128,7 +134,7 @@ public:
     char gap_04[0x1C];
     TDrawArea* render_area;
     tagRECT clip_rect;
-    char gap_30[0x5C];
+    char gap_34[0x58];
     long left;
     long top;
     long right;
@@ -137,12 +143,9 @@ public:
 
 class RGE_View : public TPanel {
 public:
-    TDrawArea* cur_render_area;
-    int calc_draw_count;
+    char gap_9C[0x60];
     RGE_Game_World* world;
     RGE_Player* player;
-    void* map;
-    char gap_108[0x6C];
 
     int get_selection_area(
         long* col1, long* row1, long* col2, long* row2, int normalize);

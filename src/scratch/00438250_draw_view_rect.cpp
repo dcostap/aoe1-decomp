@@ -15,6 +15,10 @@
 // - Re-tested a natural typed player-pointer local across coordinate recomputation;
 //   it deleted one ftol and worsened the first hunk, so the clean direct-access
 //   reconstruction remains preferred.
+// - This pass tested declaration/initialization splits, narrow/full coordinate
+//   locals, function-scope map/tile locals, and explicit panel-x loads. These
+//   forms were codegen duplicates or worsened structure; no new source-backed
+//   lead displaced the clean direct-access reconstruction.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056F604 (*(float*)0x0056F604)
