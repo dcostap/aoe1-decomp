@@ -16,6 +16,13 @@
 // Binary facts: terrain_types records use this+0x8C, stride 0x198, obj_types +0x18A, obj_density +0x1C6, placement flags +0x202, and num_obj_type +0x220. Player master_objects is +0x24.
 // Binary behavior: get_terrain(col,row) selects each terrain set; mode 0 performs density-weighted placement and mode 1 tries one placement. Coordinates are (col - random, row - random) or (col + 0.5, row + 0.5). Failed can_place calls invoke place.
 // GIVEUP: left in scratch; calls, tile ownership, coordinates, and effects are reconstructed, but VC5 still colors this as ESI and the master object as EDI instead of the oracle's EDI/ESI pair.
+// 14: widened the terrain selector and object count to int; this moved the
+// first block 8 bytes closer and restored the oracle's ECX selector home.
+// 15: a pretested for loop without an outer count guard restored 66.27% exact
+// blocks and 688 positional bytes at exact size; while/do-while forms were worse.
+// 16: declaration order, map alias, and cursor initializer were emitted-code
+// duplicates. Remaining drift is the EDI-this/ESI-master register basin and
+// the initial pointer-setup order; calls, widths, effects, and CFG are stable.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -118,22 +125,24 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world,
                                    short row, short col, int object_id,
                                    int single_placement)
 {
-    unsigned char terrain = get_terrain(col, row);
-    short num_obj_type = terrain_types[terrain].num_obj_type;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Map* map = this;
+    int num_obj_type;
+    int terrain;
+    terrain = map->get_terrain(col, row);
+    num_obj_type = map->terrain_types[terrain].num_obj_type;
     int terrain_i = 0;
     float x;
     float y;
     short* obj_types;
 
-    if (num_obj_type > 0) {
-        obj_types = terrain_types[terrain].obj_types;
-        do {
+    for (obj_types = map->terrain_types[terrain].obj_types;
+         terrain_i < num_obj_type; ++terrain_i, ++obj_types) {
             if (*obj_types != -1) {
-                RGE_Master_Static_Object* master_obj =
-                    player->master_objects[*obj_types];
-                short obj_density = terrain_types[terrain].obj_density[terrain_i];
+                master_obj = player->master_objects[*obj_types];
+                short obj_density = map->terrain_types[terrain].obj_density[terrain_i];
                 unsigned char obj_flag =
-                    terrain_types[terrain].obj_placement_flag[terrain_i];
+                    map->terrain_types[terrain].obj_placement_flag[terrain_i];
 
                 if (master_obj != 0) {
                     if (single_placement == 0) {
@@ -202,8 +211,5 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world,
                 }
             }
 
-            ++terrain_i;
-            ++obj_types;
-        } while (terrain_i < num_obj_type);
     }
 }
