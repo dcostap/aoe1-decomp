@@ -1,6 +1,6 @@
 // 004BAAF0 TShape::shape_mirror_shadow_unclipped
 // Shape.cpp:1943-2006
-// Status: scratch / not exact.
+// Status: exact / validated.
 // Attempt log:
 // - Built natural mirror-shadow RLE decoder from packet/decompiler. Prologue/setup through header reads matches, behavior/call set/ret 10h are understood.
 // - Plain natural source: 70.41% positional / 53.93% edit diff. First drift is VC5 storing row count [esp+18] before the orientation branch; original delays it until after dst calculation/table load and stores dst in [esp+1C].
@@ -15,6 +15,7 @@
 // - Final retained state: natural typed RLE decoder, 267-byte output, one aligned AlignedWidth call, 188 strict differing bytes (70.4120%), first mismatch at 004BAB1E. Paused: remaining gap is VC5 local-home/block scheduling, not unresolved behavior or call ABI.
 // - Fresh claim: moving the copy-count decrement into the do-while condition preserved the original DEC-flag loop and reduced the natural candidate to 267B/2 strict bytes.
 // - Explicit table-plus-index, typed index, table pointee, array-parameter, alias, and reversed pointer-index spellings all emitted the same two SIB-byte mismatch; no source-shape lead remains.
+// - A typed 256-byte payload view over the proven byte-table parameter selects the original table SIB order without changing the byte-pointer ABI. Exact: 267B/0.
 //
 // sa-78979d2a-mshad probes (2026-08-09):
 // - Normalized the living source away from the prior goto/parameter-alias
@@ -87,6 +88,11 @@ struct TDrawArea {
     long AlignedWidth(void);
 };
 
+// The incoming table points to a 256-byte table payload.
+struct Byte_Table {
+    byte table[256];
+};
+
 // Main-agent audit confirmed canonical non-polymorphic shape/draw-area ownership
 // and retained the normalized typed RLE decoder; alias-heavy diagnostics remain
 // history only.
@@ -105,6 +111,7 @@ public:
 
 byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, byte* table)
 {
+    Byte_Table* table_view = (Byte_Table*)table;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
 
     Shape_Header* hdr = this->shape_header;
@@ -136,7 +143,7 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
                             unsigned int count = c;
                             do {
                                 --d;
-                                *d = table[*d];
+                                *d = table_view->table[*d];
                             } while (--count);
                         }
                         src += c;
@@ -150,7 +157,7 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
                             unsigned int count = c;
                             do {
                                 --d;
-                                *d = table[*d];
+                                *d = table_view->table[*d];
                             } while (--count);
                         }
                         src++;

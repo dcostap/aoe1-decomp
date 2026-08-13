@@ -18,6 +18,10 @@
 // - Reordered the natural buffer and named checksum declarations to test the
 //   binary-proven tmp[0]/tmp[4] stack adjacency; emitted code was unchanged.
 //   Restored the clean declaration order; the two-byte tmp-home drift remains.
+// - The original chat destination is the report-buffer base, not tmp + 4;
+//   removing that offset closes both stack-home bytes and gives an exact match.
+//   A function-scope buffer is the natural exact source form; a block-scoped
+//   buffer emitted the same exact code and was not retained.
 
 #include <stdio.h>
 
@@ -127,9 +131,9 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
     rge_base_game->GetWorldChecksums(cs4, cs2, cs3);
 
     if (this->sendChatMsgs) {
-        sprintf(tmp + 4, "Worldtime=%ld Random=%d Checksum=%d",
+        sprintf(tmp, "Worldtime=%ld Random=%d Checksum=%d",
                 worldTime, this->lastWorldRandom, this->gameWorldChecksum);
-        this->comm->SendChatMsgAll(tmp + 4);
+        this->comm->SendChatMsgAll(tmp);
     }
 
     DAT_0062D230 = rge_base_game->world->players[0]->visible->checksumUnifiedVisible();
