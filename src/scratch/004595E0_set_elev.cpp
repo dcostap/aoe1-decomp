@@ -19,6 +19,13 @@
 // - Replacing the relative-loop tile local with repeated typed row-tile member
 //   access was a natural pointer-order hypothesis, but it changed the prologue
 //   and broad layout (536 to 673 positional bytes); restored the clean source.
+// - This pass tested a retained terrain-byte pointer, row-pointer-plus-index
+//   access, declaration-order changes, accumulator guard spellings, and split
+//   zero initialization.  The byte pointer changed the basin to 559 bytes;
+//   the other forms were duplicates or worsened structure.  A focused ten-form
+//   relative update lab found no size/frame/call-set eligible variant.  Restored
+//   the clean typed candidate; the first structural mismatch remains at the
+//   relative terrain load (+0x97), with exact frame and calls.
 
 class RGE_Tile;
 class RGE_Static_Object;
