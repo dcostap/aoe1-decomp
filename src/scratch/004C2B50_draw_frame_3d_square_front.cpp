@@ -3,17 +3,20 @@
 // surface. The owner, master, and health-bar fields were not canonical.
 // Fresh reconstruction: use the period class fields and the neighboring
 // square-frame source shape before testing code-generation variants.
-// Probe summary: int draw parameters plus short get_point coordinates and
-// parameter mutation reached the best 671B / 104-byte mismatch. The ABI-clean
-// short-parameter form widened the result to 675B / 552 bytes and was rolled
-// back. Remaining mismatch starts in VC5 geometry-load order and register
-// allocation; calls, frame, CFG, and the central draw block are aligned.
+// Probe summary: short draw parameters plus direct coordinate mutation now
+// reach the best 671B / 83-byte mismatch. Remaining mismatch is the health
+// rectangle argument schedule and final padding; calls, frame, and CFG align.
 // Probe 15: assign the canonical x outline radius before y, matching the
 // neighboring square-frame geometry source order; test the original B0/AC
 // load order without changing the typed ownership model.
 // Result: geometry prologue now matches through the panel guard; 671B / 100
 // bytes, up from 104. The remaining structural hunk is the front-face
 // coordinate-offset expression and its 16-bit VC5 scheduling.
+// Probe 17: short draw parameters improved the central offset block to 83B;
+// direct x/y use preserved it. Unsigned offsets, aliases, cached offsets, and
+// alternate health-bar spellings did not improve the clean source.
+// The panel clip region is a named field. The prior raw offset expression was
+// only a diagnostic form.
 
 class TDrawArea {
 public:
@@ -77,6 +80,13 @@ public:
     virtual void* get_panel();
 };
 
+class RGE_Panel {
+public:
+    virtual ~RGE_Panel();
+    char gap_04[0x84];
+    void* clip_region;
+};
+
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
@@ -91,7 +101,7 @@ public:
     char gap_34[0x44];
     int groupCommanderValue;
 
-    void draw_frame_3d_square_front(TDrawArea* area, int x, int y);
+    void draw_frame_3d_square_front(TDrawArea* area, short x, short y);
 };
 
 extern RGE_Base_Game* rge_base_game;
@@ -106,7 +116,7 @@ extern "C" int (__stdcall* const LineTo)(void*, int, int);
 static char tag[] = "stat_obj::draw_frame_3d_square_front";
 
 void RGE_Static_Object::draw_frame_3d_square_front(
-    TDrawArea* area, int x, int y)
+    TDrawArea* area, short x, short y)
 {
     short y1;
     short x1;
@@ -115,23 +125,19 @@ void RGE_Static_Object::draw_frame_3d_square_front(
     float outline_y;
     float outline_x;
     float radius_z;
-    void* panel;
-    short screen_x;
-    short screen_y;
+    RGE_Panel* panel;
 
     RGE_Map* map = this->owner->world->map;
     outline_x = this->master_obj->outline_radius_x;
     outline_y = this->master_obj->outline_radius_y;
     radius_z = this->master_obj->radius_z;
-    panel = rge_base_game->get_panel();
+    panel = (RGE_Panel*)rge_base_game->get_panel();
     if (panel != 0) {
         area->Unlock(tag);
         x += this->screen_x_offset;
         y += this->screen_y_offset;
-        screen_x = x;
-        screen_y = y;
         if (area->GetDc(tag) != 0) {
-            SelectClipRgn(area->DrawDc, *(void**)((char*)panel + 0x88));
+            SelectClipRgn(area->DrawDc, panel->clip_region);
             if (startLoggingAI == 1 &&
                 this->groupCommanderValue == this->id && this->id >= 0) {
                 SelectObject(area->DrawDc, GetStockObject(7));
@@ -140,16 +146,16 @@ void RGE_Static_Object::draw_frame_3d_square_front(
             }
 
             map->get_point(&x1, &y1, -outline_x, -outline_y, 0.0f,
-                          screen_x, screen_y);
+                          x, y);
             map->get_point(&x2, &y2, -outline_x, outline_y, 0.0f,
-                          screen_x, screen_y);
+                          x, y);
             MoveToEx(area->DrawDc, x1, y1, 0);
             LineTo(area->DrawDc, x2, y2);
 
             map->get_point(&x1, &y1, outline_x, outline_y, 0.0f,
-                          screen_x, screen_y);
+                          x, y);
             map->get_point(&x2, &y2, -outline_x, outline_y, 0.0f,
-                          screen_x, screen_y);
+                          x, y);
             MoveToEx(area->DrawDc, x1, y1, 0);
             LineTo(area->DrawDc, x2, y2);
             SelectClipRgn(area->DrawDc, 0);
@@ -160,7 +166,7 @@ void RGE_Static_Object::draw_frame_3d_square_front(
         int value = (int)this->hp;
         if (value > 0) {
             map->get_point(&x1, &y1, outline_x, -outline_y, radius_z,
-                          screen_x, screen_y);
+                          x, y);
             if (value < 1)
                 value = 0;
             int denom = this->master_obj->hp;

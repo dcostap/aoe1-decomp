@@ -22,6 +22,11 @@
 //   332-byte mismatch or moved to 338 bytes, so restored the clean source.
 // - The remaining first hunk is the ESI/EDI assignment swap. No tested
 //   natural alias or declaration-order lead changed that prologue.
+// - A binary-guided facet cursor experiment recovered the original ESI/EDI
+//   prologue and improved the diagnostic diff to 286 bytes, but added 8 bytes
+//   and retained opaque cursor arithmetic. It was restored as diagnostic only.
+// - Final clean source keeps typed facet ownership. The blocker is the VC5
+//   allocation and branch topology after the serialized header.
 
 extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

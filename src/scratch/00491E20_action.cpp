@@ -25,6 +25,11 @@
 //   stack-relative local addresses, and one exception-handler offset.
 // - liveness: moving the formatting arrays to function scope was neutral;
 //   VC5 kept the same first hunk and local addresses, so it was rolled back.
+// - liveness: moving the arrays before the result declaration was also neutral.
+// - control-flow: flattening the list guard and direct-returning fallback both
+//   broke the matched block topology; both were restored.
+// - context/ABI: <new.h>, named new-expression results, and removing derived
+//   destructors were neutral; initializing result was neutral as well.
 // - left in scratch: exact frame/size, saved-register set, CFG, and all 22
 //   ordered calls now match; 16 bytes remain in parameter-home/EH setup and
 //   two stack-relative local addresses.

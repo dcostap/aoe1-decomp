@@ -29,6 +29,17 @@
 //   else-if chain and direct failure tail; emitted code was byte-identical, so
 //   restored the clean typed source.  The first divergence remains allocation
 //   setup at +006D, not a graphics call or fallback CFG issue.
+// probe 19 (layout): removed the mode locals and passed direct predicates to Init;
+//   lost the EH frame and fell to 650 bytes (diff 610), so restored.
+// probe 21 (layout): cached raw use_dir_draw/use_sys_mem values and converted them
+//   at Init; shape improved but the first hunk stayed at +006D (676 bytes, diff 536).
+// probe 23 (layout): followed the decompiler's raw iVar2/iVar3/iVar5 cache through
+//   Init; diff reached 513, but argument materialization moved to the call and
+//   destroyed the structural block, so restored.
+// probes 25/29 (liveness): int predicate temporaries produced the original full
+//   register increments, but VC5 emitted dword stack stores and diff 552; explicit
+//   unsigned-char casts were identical.  Raw int flag caches with byte locals were
+//   a duplicate of the clean 678-byte source.  Restored clean typed source.
 
 #include <new.h>
 #include <windows.h>
