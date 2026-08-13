@@ -20,11 +20,41 @@
 //   follow the first binary hunk; this moved the parameter load before the
 //   saved-register prologue and worsened the block shape, so it was rolled
 //   back.
+// - Tested an id initializer, a short id holding local, and delayed id
+//   assignment.  The initializer moved the load before saved registers;
+//   the local was codegen-neutral; delayed assignment worsened the shape.
+// - Reordered the initial statements to color_tables, id, last_time, and
+//   delta_time.  This aligns the first block through the fscanf setup while
+//   keeping immediate format addresses and exact call relocation identity.
+// - Used a local main-sound result and positive-arm guards for main sound,
+//   mirror, and draw count.  This moved the first structural hunk to draw
+//   allocation and raised exact-block coverage to 76.37%.
+// - Final bounded pass: 341 strict differing bytes, 89.11% shape, 76.37%
+//   exact-block coverage, exact size/frame/call set.  Remaining drift starts
+//   at the draw allocation store and continues through sound-loop topology.
+// - Delaying the draw-list member store until its redundant positive-count
+//   guard improved the positional diff to 337, but changed the loop topology;
+//   the clean member-store form remains the source baseline.
+// - Pointer-plus-index spelling, loop-index declaration order, and a named
+//   draw allocation pointer were codegen duplicates.  A materialized guard
+//   worsened the diff to 346 and was rolled back.
+// - The binary loads the parsed sound-record count into the slot counter after
+//   the positive guard.  Initializing `sound_count` there improved the result
+//   to 335 bytes, 92.12% shape, and 91.44% resync similarity; this is retained.
+// - A four-byte alias of the short parser home changed the stack layout and
+//   worsened the result to 354 bytes; it was rolled back.
+// - Restored named sprite-parser format strings. The raw string addresses were
+//   diagnostic data plumbing.
 
 #include <stdio.h>
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl convert_us(char* str);
+
+static const char s_sprite_format[] =
+    " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";
+static const char s_picture_format[] = " %hd %hd %hd %hd";
+static const char s_sound_format[] = "%hd %hd %hd";
 
 class RGE_Color_Table;
 class RGE_Sprite;
@@ -99,9 +129,9 @@ public:
 RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
 {
     this->color_tables = 0;
+    this->id = sprite_id;
     this->last_time = 0;
     this->delta_time = 0;
-    this->id = sprite_id;
 
     short* draw_count = &this->draw_list_num;
     short* facet_count = &this->facet_num;
@@ -120,7 +150,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     int local_4;
 
     int result = fscanf(infile,
-        (const char*)0x005870D8,
+        s_sprite_format,
         this->name,
         this->pict_name,
         &this->resource_id,
@@ -154,17 +184,19 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     this->shape = 0;
     convert_us(this->name);
 
-    if (temp_color_flag < 0) {
-        this->main_sound = 0;
+    RGE_Sound* parsed_main_sound;
+    if (temp_color_flag >= 0) {
+        parsed_main_sound = sounds[temp_color_flag];
     } else {
-        this->main_sound = sounds[temp_color_flag];
+        parsed_main_sound = 0;
     }
+    this->main_sound = parsed_main_sound;
 
-    if (temp_draw_level < 1) {
-        this->mirror_flag = 0;
-    } else {
+    if (temp_draw_level > 0) {
         this->mirror_flag = (char)((this->facet_num >> 1) +
                                    (this->facet_num >> 2));
+    } else {
+        this->mirror_flag = 0;
     }
 
     this->color_flag = (unsigned char)temp_transparent_picking_flag;
@@ -183,16 +215,14 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         this->flag = (unsigned char)(this->flag + 8);
     }
 
-    if (*draw_count < 1) {
-        this->draw_list = 0;
-    } else {
+    if (*draw_count > 0) {
         this->draw_list = (RGE_Picture_List*)calloc(
             (unsigned int)*draw_count, 0x10);
         short i = 0;
         if (*draw_count > 0) {
             do {
                 RGE_Picture_List* entry = &this->draw_list[i];
-                fscanf(infile, (const char*)0x005870C4,
+                fscanf(infile, s_picture_format,
                        &entry->picture_num,
                        &entry->offset_x,
                        &entry->offset_y,
@@ -200,6 +230,8 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
                 ++i;
             } while (i < *draw_count);
         }
+    } else {
+        this->draw_list = 0;
     }
 
     if (this->micro_man_sound == 0) {
@@ -218,15 +250,16 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
             } while (i < *facet_count);
         }
 
-        int sound_count = 0;
+        int sound_count;
         local_4 = 0;
         if (temp_micro_man_sound > 0) {
+            sound_count = temp_micro_man_sound;
             do {
                 short index1;
                 short local_e;
                 short last_facet;
                 short sound_slot;
-                int scan = fscanf(infile, (const char*)0x0058491C,
+                int scan = fscanf(infile, s_sound_format,
                                    &index1, &local_e, &last_facet);
                 if (scan != -1) {
                     if (sound_facet == index1) {
