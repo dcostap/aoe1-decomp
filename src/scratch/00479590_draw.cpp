@@ -17,6 +17,9 @@
 // abi: changed the background COLORREF local to the Ghidra signed-int surface; emitted code duplicated the clean source.
 // control-flow: assembly-donor evidence showed +1 origin loads before text extent; pre-added origin locals reached frame 0x48 and 85.17% shape, but added 27 bytes and changed the vtable carrier to EBX, so restored clean source.
 // control-flow: split the same proven +1 operations into separate increments; output remained the 1174-byte variant, so restored clean source.
+// layout: tested the live wid local in the word-wrap comparison; original 00479825 reads a stack width home, but VC5 kept wid in EBX and diff worsened 633 -> 639, so restored clean source.
+// control-flow: reversed the dimension assignment order against the original x/y/wid/hgt load order; emitted bytes were unchanged, so restored clean source.
+// liveness: initialized configured colors before the palette override to test the original EBX background carrier; CFG changed and diff worsened 633 -> 732, so restored clean source.
 // left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
 #include <string.h>
 #include <windows.h>
