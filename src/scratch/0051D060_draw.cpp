@@ -21,6 +21,10 @@
 // try 17: reused adjusted width/height as right/bottom, following the original EBX/EAX sub/sub/add/add block and the decompiler's lack of named right/bottom locals; emitted duplicate bytes, so restored.
 // try 18: spelled width/height decrements as explicit assignments to test compound-assignment lowering; emitted duplicate bytes, so restored.
 // try 19: changed the binary-proven one-byte changed_mode flag to bool, following the decompiler's bool source candidate; emitted duplicate bytes, so restored.
+// r5 probe: function-scoped rectangle locals, reordered color declarations, and hoisted color locals were codegen duplicates.
+// r5 probe: reversed bound expression order improved shape only (97.55%) but worsened positional diff; restored clean source.
+// r5 probe: branch-local duplicate SetTextColor calls reproduced the oracle's branch-specific push shape but changed early register coloring; restored.
+// r5 probe: int rectangle/panel fields, direct bound expressions, and direct right/bottom accumulators were codegen duplicates.
 // final validated scratch state: typed structural reconstruction is retained; only the localized VC5 rectangle scheduling/register family remains nonexact.
 
 #include <windows.h>
