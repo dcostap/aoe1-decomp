@@ -13,6 +13,11 @@
 // 10: Split the clear-color conditional into explicit use_alt branches recovered original clear blocks and shape, but remained non-exact; restored.
 // GIVEUP: left in scratch; no accepted_drift because natural build is size-short and diagnostic exact-size variants are broad/prologue-different.
 // shardE-4675C0: direct shadow_area calls plus reuse of pic_hgt as the shadow tile height improved structural coverage; centered-width swap was rolled back.
+// luna-4675C0-r1: donor-proven ten-slot TPanel virtual prefix, named y/x loop temporaries,
+// centered y-before-x declarations, and offset-plus-field additions were codegen duplicates.
+// An explicit clear-color branch moved to diff 826 and size 964; restored the clean source.
+// luna-4675C0-r1: remaining structural lead is the shadow/picture tiled-call scheduling;
+// the clean typed reconstruction remains best at diff 786, size 965/979, frame 0x1C.
 
 typedef unsigned char uchar;
 

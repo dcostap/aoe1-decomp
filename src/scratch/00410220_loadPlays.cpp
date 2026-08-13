@@ -25,6 +25,14 @@
 // - do-while reconstruction moved the positional diff to 4001 bytes, but it
 //   emitted a second-pass extra fgets (73/72 calls); rolled back to the exact
 //   ordered-call candidate.  The remaining lead is local lifetime/frame shape.
+// - corrected the Play-name quote scan to use the proven temp[4] fgets
+//   destination and the existing i/temp4 counters; diff improved to 4090.
+// - parsed Phase into temp4, then assigned currentPhase; original data flow
+//   stores the parsed value through that temporary.  Diff improved to 4073.
+// - high-byte comment aliases, a separate Group minimum local, and direct
+//   clamp expressions were tested and restored; they reduced source clarity or
+//   structural coverage.  One phaseValue1 local now names the shared phase
+//   parser value; it emits the same code as the prior value1 spelling.
 
 #include <stdio.h>
 #include <string.h>
@@ -183,7 +191,7 @@ int AIPlayBook::loadPlays(char* filename) {
     char temp[0x100];
     char temp6[0x100];
     int temp4;
-    int value1;
+    int phaseValue1;
     char commentSecond;
     int currentPhase;
     char commentFirst;
@@ -246,7 +254,7 @@ int AIPlayBook::loadPlays(char* filename) {
         strcpy(temp2 + 4, s_592A40);
         strcpy(temp6 + 4, s_592A40);
         temp4 = 0;
-        value1 = 0;
+        phaseValue1 = 0;
         i = 0;
         fileValue = 0;
         temp7 = 0;
@@ -261,20 +269,22 @@ int AIPlayBook::loadPlays(char* filename) {
 
         sscanf(temp + 4, s_format_percent_s_space, temp2 + 4);
         if (strcmp(temp2 + 4, s_Play) == 0) {
-            int start = 0;
-            int end = 0;
-            char current = temp[0];
+            i = 0;
+            temp4 = 0;
+            // `temp` reserves four bytes before the fgets destination.  The
+            // original parser starts its quote scan at that destination.
+            char current = temp[4];
 
             while (current != '"') {
-                ++start;
-                ++end;
-                current = temp[start];
+                current = temp[i + 5];
+                ++i;
+                ++temp4;
             }
-            ++start;
-            ++end;
+            ++i;
+            ++temp4;
 
-            char* source = temp + start;
-            int length = end;
+            char* source = temp + i + 4;
+            int length = temp4;
             if (*source != '"') {
                 do {
                     ++source;
@@ -282,10 +292,10 @@ int AIPlayBook::loadPlays(char* filename) {
                 } while (*source != '"');
             }
 
-            if (start < length) {
-                memcpy(temp2 + 4, temp + start, length - start);
+            if (temp4 < length) {
+                memcpy(temp2 + 4, temp + temp4 + 4, length - temp4);
             }
-            temp2[4 + (length - start)] = 0;
+            temp2[4 + (length - temp4)] = 0;
 
             ++refPhase;
             if (refPhase >= 0x3E80) {
@@ -347,11 +357,11 @@ int AIPlayBook::loadPlays(char* filename) {
             this->plays[refPhase].numberGroupsValue = (unsigned char)temp4;
         } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && currentPhase == -1) {
             sscanf(temp + 4, s_format_group_range,
-                   &temp4, temp6 + 4, &value1, &i);
+                   &temp4, temp6 + 4, &phaseValue1, &i);
             if (temp4 >= 0 && temp4 < 5) {
                 int groupType = this->convertUnitNameToIntType(temp6 + 4);
                 if (groupType != -1) {
-                    int minimumValue = value1;
+                    int minimumValue = phaseValue1;
                     if (minimumValue < 0) {
                         minimumValue = 0;
                     }
@@ -367,33 +377,34 @@ int AIPlayBook::loadPlays(char* filename) {
                 }
             }
         } else if (strcmp(temp2 + 4, s_Phase) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &currentPhase);
+            sscanf(temp + 4, s_format_skip_string_int, &temp4);
+            currentPhase = temp4;
         } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && currentPhase != -1) {
             sscanf(temp + 4, s_format_command,
-                   &temp4, temp6 + 4, &value1, &i, &fileValue);
+                   &temp4, temp6 + 4, &phaseValue1, &i, &fileValue);
             if (temp4 >= 0 && temp4 < 5) {
                 AIPlayPhase* phase = this->plays[refPhase].phase(currentPhase);
-                AIPlayPhaseCommand command(
-                    (unsigned char)temp4, temp6 + 4, value1, i, fileValue);
+                    AIPlayPhaseCommand command(
+                    (unsigned char)temp4, temp6 + 4, phaseValue1, i, fileValue);
                 phase->addCommand(&command);
             }
         } else if (strcmp(temp2 + 4, s_Trigger) == 0 && refPhase != -1 && currentPhase != -1) {
             sscanf(temp + 4, s_format_trigger,
-                   &temp4, temp6 + 4, &value1, &temp7);
+                   &temp4, temp6 + 4, &phaseValue1, &temp7);
             if (temp4 >= 0 && temp4 < 5) {
                 AIPlayPhase* phase = this->plays[refPhase].phase(currentPhase);
                 AIPlayPhaseTrigger trigger(
-                    temp6 + 4, value1, temp7,
+                    temp6 + 4, phaseValue1, temp7,
                     (unsigned char)currentPhase, (unsigned char)temp4, 0);
                 phase->addTrigger(&trigger);
             }
         } else if (strcmp(temp2 + 4, s_RTrigger) == 0 && refPhase != -1 && currentPhase != -1) {
             sscanf(temp + 4, s_format_command,
-                   &temp4, temp6 + 4, &value1, &temp7, &fileValue);
+                   &temp4, temp6 + 4, &phaseValue1, &temp7, &fileValue);
             if (temp4 >= 0 && temp4 < 5) {
                 AIPlayPhase* phase = this->plays[refPhase].phase(currentPhase);
                 AIPlayPhaseTrigger trigger(
-                    temp6 + 4, value1, temp7,
+                    temp6 + 4, phaseValue1, temp7,
                     (unsigned char)currentPhase, (unsigned char)temp4, fileValue);
                 phase->addTrigger(&trigger);
             }
