@@ -24,6 +24,11 @@
 //   `cmp eax,ebp/jge`; the late suffix is otherwise an exact aligned island.
 // - Pausing in scratch after the bounded 10 meaningful hypotheses; next lead
 //   is a natural two-bound copy-loop spelling, not frame padding or volatility.
+// - Replaced the grow-copy do/while with the same-TU matched ManagedArray
+//   for-loop: a separate capacity guard and new-size guard reproduce the
+//   binary's `cmp eax,ebp/jge` block and exact 949-byte function.
+// - Exact candidate: frame, 39 ordered calls, CFG, boundary, and all 949 bytes
+//   match under the existing /GX response file.
 
 extern float save_game_version;
 
@@ -187,12 +192,9 @@ void UnitAIModule::load(int fd) {
                 int* newArr = (int*)::operator new(newSize * 4);
                 if (newArr != 0) {
                     j = 0;
-                    if (attackingUnitsValue_maximumSizeValue > 0) {
-                        do {
-                            if (newSize <= j) break;
-                            newArr[j] = attackingUnitsValue_value[j];
-                            ++j;
-                        } while (j < attackingUnitsValue_maximumSizeValue);
+                    for (j = 0; j < attackingUnitsValue_maximumSizeValue; j++) {
+                        if (j >= newSize) break;
+                        newArr[j] = attackingUnitsValue_value[j];
                     }
                     ::operator delete(attackingUnitsValue_value);
                     attackingUnitsValue_value = newArr;
@@ -216,6 +218,6 @@ attacking_unit_already_present:
 
     // stopAfterTargetKilled added in version 7.02
     if (save_game_version >= 7.02f) {
-        rge_read(fd, (char*)this + 0x130, 1);
+        rge_read(fd, &stopAfterTargetKilledValue, 1);
     }
 }

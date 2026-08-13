@@ -5,11 +5,13 @@
 // removed fallback dialog panel transitions; the original returns after construction.
 // modeled get_people_list as the donor-proven RGE_Game_Info member with a long reference output.
 // separate cleanup and name-screen result checks retain the original redundant test and block shape.
-// best unresolved drift: get_people_list argument scheduling and global/register encoding.
+// shardB4-B6CC0 exact: typed rge_base_game plus a cached player_game_info local mirrors
+// the exact Scr_sing-family donor call setup and reaches the original 1138 bytes.
 
 #include <stdlib.h>
 
-extern void* rge_base_game;
+class RGE_Base_Game;
+extern RGE_Base_Game* rge_base_game;
 
 class TPanel {
 public:
@@ -160,9 +162,10 @@ long TribeSPMenuScreen::action(TPanel* panel, long code, unsigned long a3, unsig
         if (panel == button[1]) {
             ((RGE_Base_Game*)rge_base_game)->disable_input();
 
+            RGE_Game_Info* info = rge_base_game->player_game_info;
             char** list = 0;
             long count;
-            long result = ((RGE_Base_Game*)rge_base_game)->player_game_info->get_people_list(&list, count);
+            long result = info->get_people_list(&list, count);
 
             if (result > 0) {
                 for (int i = 0; i < result; i++) {
