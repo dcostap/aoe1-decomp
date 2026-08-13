@@ -16,6 +16,19 @@
 //   Remaining codegen drift is the x87 pair of redundant fxch instructions
 //   and the quotient sign-adjust register; the Path call identity is recorded
 //   by the target-specific original-symbol override.
+// - Removed the explicit float cast from the double angle quotient. This
+//   removed both fxch instructions and restored the exact 471-byte structure;
+//   only three quotient sign-adjust register bytes differ.
+// - A named quotient temp was much worse (123 bytes). A named debug_rand
+//   result with the no-fxch expression reached 13 bytes but changed the
+//   original multiply setup. Restored the direct period expression.
+// - Tried the natural temporary assignment `this->pathValue = Path(10);` to
+//   test the original Path lifetime. It lost the exact block topology (407
+//   bytes); restored the scoped named Path source.
+// - Tried a natural `short facings` declaration to mirror the sprite member;
+//   VC5 emitted the same 3-byte quotient-register drift, so restored `int`.
+// - Tried natural copy-initialization `Path path = Path(10)`; VC5 emitted
+//   unchanged code, so restored direct named construction.
 
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -166,7 +179,7 @@ void RGE_Moving_Object::recycle_in_to_game(
             if (sprite->facet_num > 1) {
                 int facings = sprite->facet_num;
                 this->angle =
-                    (float)(DAT_00570b40 / (float)(int)facings) *
+                    (DAT_00570b40 / (float)(int)facings) *
                     (float)((debug_rand(
                         (char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xC5) *
                              facings) / 0x7FFF);

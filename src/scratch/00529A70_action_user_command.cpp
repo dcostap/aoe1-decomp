@@ -1,116 +1,288 @@
 // 00529A70 TRIBE_Game::action_user_command
-// tribegam.cpp
+// tribegam.cpp:5115-5280
+//
 // Attempt log:
-// try 1: broad reconstruction from packet: /GX framed user command dispatch, quit/wait-screen commands, chat/taunt/create-message paths, observe/view selection commands.
-// try 2: modeled /GX EH frame and two 256-byte local buffers msg/temp.
-// try 3: modeled gameMode==3 command switch around 0x17A8..0x17B7 with quit/destroyPanel/currentPanel send paths.
-// try 4: modeled gameMode 4/5/6 gate and second command switch around 0x17A2..0x17B0.
-// try 5: modeled status/current-player update path for 0x17A2 including update_ui and current-panel send.
-// try 6: modeled chat/message creation path: chat_mode, clear/popup, globals 0x62C560/0x62C564, Dialog new, panel send, sounds, sprintf/build_message, panel destroy.
-// try 7: modeled chat previous/next/send text paths and selected-player observe path with temp string and log.
-// try 8: fixed compile issues: removed explicit operator new declaration, avoided __thiscall cast, corrected stub padding, and split invalid comma/! expression.
-// try 9: /GX and default both compile to .text 1072B vs original 1135B; /GX retained because original has EH registration/local object state.
-// try 10: reviewed missing size: exact switch table density, dialog constructor/new EH shape, panel-system call surface, sound/global branches, and selected-player name/log sequence.
-// try 11: current source remains size-short by 63B and no full diff is available.
-// left in scratch: broad behavior is modeled but command-switch topology, dialog/EH local-object shape, panel-system call ordering, and selected-player message path are incomplete. No accepted_drift: no localized full diff.
+// - baseline: the old scratch used unrelated panel/chat helpers and missed
+//   most of the packet calls.  Rebuilt the dispatcher from the source bands.
+// - behavior: restored the reset-communications drop path, game-over path,
+//   sync-save path, chat-received path, and player communication warning.
+//   The fields remain named through the period base-game, world, and screen
+//   surfaces.
+// - control-flow: packet source-line order for the second switch and an
+//   explicit shared drop-popup tail recovered all 49 calls and 1135 bytes.
+// - ABI/layout: world +0x58 owns the command object, RGE_Player::name is
+//   +0x44, and WhoAmI(param2)/IsPlayerOutOfSync(player) are overloaded calls.
+// - final validation: 14 positional bytes remain.  The only open gap is the
+//   VC5 EH/local frame (0x204 versus the oracle's 0x208) and its stack homes.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" void __cdecl Log(void*, const char*, ...);
-extern void* L;
-extern int g_in_message;
-extern int g_in_chat;
-extern int* g_seenObjects;
 
-class Panel { public: void destroy(const char*); void* current(); void send(int,int,int,int); };
-class Comm { public: int ready(); void post(int,int,int,int); };
-class Chat { public: void print(const char*); void clear(const char*); void prev(); void next(); void sendText(const char*); };
-class Player { public: char gap[0x40]; void** objects; char gap44[0x38]; short selected; char gap7e[0x44]; const char* name; };
-class Scenario { public: char gap[0x40]; Player** players; char gap44[0x58-0x44]; void* map; };
-class Dialog { public: Dialog(const char*, const char*, void*, int); };
-extern Panel panel_system;
-extern int sound_stop(void*);
-extern void sound_update();
+extern int do_debug_random;
+extern int out_of_sync;
+extern int out_of_sync2;
+extern int player_dropped[9];
+extern void debug_random_write();
+extern void dump_vismap_log();
 
-class TRIBE_Game {
+class TDebuggingLog {
 public:
-    void* vtbl; char gap04[0x18c-4]; Comm* comm; char gap190[0x1b0-0x190]; int gameMode;
-    char gap1b4[0x3f4-0x1b4]; Scenario* scenario; char gap3f8[0xc24-0x3f8]; Chat* chat;
-    int action_user_command(unsigned long cmd, unsigned long arg);
-    void quit_game(); void close_dialog(); void set_pause(int); void chat_mode(int); void command_mode(int); void update_ui(); void popup(const char*); int getPlayerIndex(unsigned long); int getLocalPlayer(); void build_message(const char*); void show_status(int);
+    void __cdecl Log(char*, ...);
 };
 
-int TRIBE_Game::action_user_command(unsigned long cmd, unsigned long arg) {
+extern TDebuggingLog* L;
+
+class RGE_Player {
+public:
+    virtual void vf00();
+    virtual void set_game_status(unsigned char);
+    char gap_08[0x40];
+    char* name; // +0x44
+
+    void loss_if_game_on();
+};
+
+class TRIBE_Command;
+
+class RGE_Game_World {
+public:
+    char gap_00[0x40];
+    RGE_Player** players; // +0x40
+    char gap_44[0x14];
+    TRIBE_Command* commands; // +0x58
+    char gap_5C[0x20];
+    short player_number; // +0x7C
+};
+
+class TRIBE_Command {
+public:
+    void command_save_game();
+};
+
+class TCommunications_Handler {
+public:
+    char gap_00[0x58];
+    TRIBE_Command* command; // +0x58
+
+    int IsHost();
+    int WhoAmI();
+    int WhoAmI(int);
+    int IsPlayerOutOfSync(int);
+};
+
+class TEasy_Panel {
+public:
+    void popupOKDialog(int, char*, int, int);
+};
+
+class TPanelSystem {
+public:
+    int destroyPanel(char*);
+    TEasy_Panel* currentPanel();
+    int setCurrentPanel(char*, int);
+};
+
+extern TPanelSystem panel_system;
+
+class TRIBE_Screen_Game {
+public:
+    void handle_pause();
+    void handle_resume();
+    void display_system_message(char*);
+    void handleChatReceived(int);
+};
+
+class TRIBE_Screen_Status_Message {
+public:
+    virtual ~TRIBE_Screen_Status_Message();
+    char gap_04[0x478];
+
+    TRIBE_Screen_Status_Message(char*, char*, char*, long);
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
+    virtual int reset_comm();
+
+    char gap_04[0x188];
+    TCommunications_Handler* comm_handler; // +0x18C
+    char gap_190[0x20];
+    int prog_mode; // +0x1B0
+    char gap_1B4[0x240];
+    RGE_Game_World* world; // +0x3F4
+    char gap_3F8[0x62C];
+
+    void setSinglePlayerGame(int);
+    int play_sound(int);
+    unsigned char check_prog_argument(char*);
+    int playerID(int);
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    char gap_A24[0x200];
+    TRIBE_Screen_Game* game_screen; // +0xC24
+
+    virtual int action_user_command(unsigned long, unsigned long);
+    void quit_game();
+    void close_game_screens(int);
+    int save_game(char*);
+    void do_game_over();
+};
+
+int TRIBE_Game::action_user_command(unsigned long param_1,
+                                    unsigned long param_2)
+{
     char msg[256];
-    char temp[256];
-    if (gameMode == 3) {
-        switch (cmd) {
+    char temp_str[256];
+    TEasy_Panel* panel;
+    TRIBE_Screen_Status_Message* status;
+
+    if (this->prog_mode == 3) {
+        switch (param_1) {
         case 0x17a8:
         case 0x17a9:
         case 0x17aa:
-            quit_game();
-            panel_system.destroy((const char*)0x586C2C);
-            panel_system.destroy((const char*)0x586218);
-            if (panel_system.current()) panel_system.send(0x25c9,0,0x1c2,100);
-            return 1;
-        case 0x17b7:
+        case 0x17ab:
+        case 0x17b2:
+        case 0x17b6:
+            this->quit_game();
+            panel_system.destroyPanel("Multiplayer Wait Screen");
+            panel_system.destroyPanel("Status Screen");
+            panel = panel_system.currentPanel();
+            if (panel == 0) {
+                break;
+            }
+            goto dropped_from_game;
+            break;
+
         case 0x17ac:
-            close_dialog();
-            set_pause(1);
-            quit_game();
-            panel_system.destroy((const char*)0x586C2C);
-            panel_system.destroy((const char*)0x586218);
-            if (panel_system.current()) panel_system.send(0x25c9,0,0x1c2,100);
-            return 1;
-        default: return 1;
+        case 0x17b7:
+            this->reset_comm();
+            this->setSinglePlayerGame(1);
+            this->quit_game();
+            panel_system.destroyPanel("Multiplayer Wait Screen");
+            panel_system.destroyPanel("Status Screen");
+            panel = panel_system.currentPanel();
+            if (panel == 0) {
+                break;
+            }
+        dropped_from_game:
+            panel->popupOKDialog(0x25c9, 0, 0x1c2, 100);
+            break;
+        }
+    } else if (this->prog_mode == 4 || this->prog_mode == 6 ||
+               this->prog_mode == 5) {
+        switch (param_1) {
+        case 0x17b2:
+            if (this->game_screen == 0) {
+                break;
+            }
+            this->world->players[this->world->player_number]
+                ->loss_if_game_on();
+            this->do_game_over();
+            panel = panel_system.currentPanel();
+            if (panel != 0) {
+                panel->popupOKDialog(0x25c9, 0, 0x1c2, 100);
+            }
+            break;
+
+        case 0x17b0:
+            if (this->game_screen != 0) {
+                this->play_sound(2);
+                this->game_screen->display_system_message(
+                    "Out of sync detected by communications.");
+            }
+            if (this->check_prog_argument("SKIPSYNCSAVE") == 0) {
+                if (out_of_sync == 0) {
+                    out_of_sync = 1;
+                    if (this->comm_handler->IsHost() != 0) {
+                        this->world->commands->command_save_game();
+                    }
+                }
+            } else if (out_of_sync == 0) {
+                int player = this->comm_handler->WhoAmI(param_2);
+                if (this->comm_handler->IsPlayerOutOfSync(player) != 0) {
+                    out_of_sync = 1;
+                    out_of_sync2 = 1;
+                    status = new TRIBE_Screen_Status_Message(
+                        "Temp Screen", "", (char*)0, -1);
+                    panel_system.setCurrentPanel("Temp Screen", 0);
+                    this->close_game_screens(1);
+                    if (do_debug_random != 0) {
+                        debug_random_write();
+                        dump_vismap_log();
+                    }
+                    player = this->comm_handler->WhoAmI();
+                    sprintf(msg + 4, "syncerr%d.gam", player);
+                    this->save_game(msg + 4);
+                    this->world->players[this->world->player_number]
+                        ->loss_if_game_on();
+                    this->do_game_over();
+                    panel = panel_system.currentPanel();
+                    if (panel != 0) {
+                        panel->popupOKDialog(0x966, 0, 0x1c2, 100);
+                    }
+                    panel_system.destroyPanel("Temp Screen");
+                }
+            }
+            break;
+
+        case 0x17a2:
+            if (this->game_screen != 0) {
+                this->game_screen->handle_pause();
+            }
+            break;
+
+        case 0x17a3:
+            if (this->game_screen != 0) {
+                this->game_screen->handle_resume();
+            }
+            break;
+
+        case 0x17d5:
+            if (this->game_screen != 0) {
+                this->play_sound(2);
+                this->game_screen->handleChatReceived(param_2);
+            }
+            break;
+
+        case 0x17bd:
+        {
+            int player = this->playerID(param_2);
+            if (player != this->world->player_number &&
+                this->game_screen != 0 &&
+                this->playerID(param_2) > 0 && player_dropped[param_2] == 0) {
+                this->play_sound(2);
+                this->get_string(0x4c1, temp_str + 4, 0x100);
+                player = this->playerID(param_2);
+                sprintf(msg + 4, temp_str + 4,
+                        this->world->players[player]->name);
+                this->game_screen->display_system_message(msg + 4);
+                player = this->playerID(param_2);
+                L->Log("$$$ PROBLEM COMMUNICATING WITH %s",
+                       this->world->players[player]->name);
+            }
+            break;
+        }
         }
     }
-    if (gameMode != 4 && gameMode != 5 && gameMode != 6) return 1;
-    switch (cmd) {
-    case 0x17a2:
-        if (!chat) return 1;
-        scenario->players[scenario->players[0]->selected]->objects[0];
-        update_ui();
-        if (panel_system.current()) panel_system.send(0x25c9,0,0x1c2,100);
-        return 1;
-    case 0x17a4:
-        if (chat) { chat_mode(2); chat->clear((const char*)0x58C410); }
-        popup((const char*)0x58C400);
-        if (g_in_message) return 1;
-        if (!g_in_chat) {
-            g_in_chat = 1;
-            if (comm->ready()) scenario->map = 0;
-            return 1;
-        }
-        if (!g_in_message) {
-            unsigned long p = arg;
-            if (!comm->ready()) return 1;
-            g_in_chat = 1; g_in_message = 1;
-            Dialog* d = new Dialog((const char*)0x588BD0,(const char*)0x592A40,0,-1);
-            panel_system.send(0,(int)0x588BD0,0,0);
-            show_status(1);
-            if (L) { sound_stop(L); sound_update(); }
-            sprintf(msg,(const char*)0x588BC0,comm->ready());
-            build_message(msg);
-            update_ui();
-            if (panel_system.current()) panel_system.send(0x966,0,0x1c2,100);
-            panel_system.destroy((const char*)0x588BD0);
-        }
-        return 1;
-    case 0x17a5: if (chat) chat->prev(); return 1;
-    case 0x17a6: if (chat) chat->next(); return 1;
-    case 0x17a7: if (chat) { chat_mode(2); chat->sendText((const char*)arg); } return 1;
-    case 0x17b0: {
-        int p = getPlayerIndex(arg);
-        if (p == scenario->players[0]->selected) return 1;
-        if (!chat || p <= 0 || g_seenObjects[p]) return 1;
-        chat_mode(2);
-        ((void (*)(TRIBE_Game*,char*,int,int))(*(void***)this)[8])(this,temp,0x4c1,0x100);
-        sprintf(msg,(const char*)0x58C3DC, scenario->players[p]->name);
-        chat->print(msg);
-        Log(L,(const char*)0x58C3DC, scenario->players[p]->name);
-        return 1;
-    }
-    default:
-        return 1;
-    }
+
+    return 1;
 }

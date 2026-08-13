@@ -15,6 +15,11 @@
 // - Left-side comparison spellings aligned the remaining branch opcodes.
 // - A local workingArea reference aligned the prologue order and all body
 //   bytes except stack-home displacements.
+// - A natural do-while spelling for the inner predicate added one
+//   numberUnits call and 11 bytes; restored the while/break reconstruction.
+// - A direct typed count predicate reversed the initial numberUnits/
+//   desiredNumberUnits call order and increased the diff to 19 bytes; restored
+//   the explicit count temporary.
 // - Remaining drift is 10 stack-home bytes: VC5 assigns result/rNum/tempCount
 //   to [esp+10]/[esp+18]/[esp+14], while the oracle uses [esp+18]/[esp+14]/
 //   [esp+10]. No behavior or call-set drift remains.

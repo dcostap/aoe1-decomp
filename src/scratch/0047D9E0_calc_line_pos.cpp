@@ -15,10 +15,10 @@
 //   recovered the original shared tails.
 // - A shared short byte-length local and, importantly, measuring the original
 //   text with the copied-prefix byte count recovered exact size, all calls,
-//   97.92% shape similarity, and 75.52% exact-block coverage (255 positional
-//   bytes remain).  A later width-lifetime probe was worse and was restored.
-// - Remaining drift is localized to the post-extent width/zero lifetime and
-//   compiler scheduling; source is left typed and period-plausible.
+//   and the original control flow.  Initializing the null-text width recovered
+//   all 192 instructions and left one operand-order byte in the final RECT
+//   right-edge LEA.  Bottom-alignment term and right-edge expression variants
+//   were duplicate; source is left typed and period-plausible.
 
 struct SIZE;
 
@@ -113,6 +113,7 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
         GetTextExtentPoint32A(dc, text, byte_len, &text_size);
     } else {
         col_offset = 0;
+        text_size.cx = 0;
     }
 
     long horizontal = this->horz_align;
@@ -141,7 +142,6 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
     }
 
     long row_size = this->spacer_size;
-    long y_extra;
     if (row_size == 0) {
         row_size = this->text_hgt;
     } else {
@@ -151,25 +151,22 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
     long y;
     switch (this->vert_align) {
     case 3:
-        y = line * row_size + this->pnl_y + this->border_size;
-        y_extra = this->spacer_size;
+        y = line * row_size + this->pnl_y + this->border_size
+            + this->spacer_size;
         break;
     case 4:
-        y = this->pnl_y - (this->num_lines - line) * row_size
-            + this->pnl_hgt - this->border_size - this->spacer_size - 1;
-        y_extra = this->spacer_size;
+        y = this->pnl_y - (this->num_lines - line) * row_size;
+        y += this->pnl_hgt - this->border_size - this->spacer_size - 1;
         break;
     default:
         y = line * row_size - (this->num_lines * row_size) / 2
-            + this->pnl_y;
-        y_extra = this->pnl_hgt / 2;
+            + this->pnl_y + this->pnl_hgt / 2;
         break;
     }
-    y += y_extra;
 
     rect->left = x;
     rect->top = y;
-    rect->right = text_size.cx - 1 + x;
+    rect->right = x - 1 + text_size.cx;
     rect->bottom = y + this->text_hgt;
     if (out != 0) {
         *out = col_offset;

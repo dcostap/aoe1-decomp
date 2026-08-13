@@ -19,14 +19,37 @@
 //   emitted code was unchanged.  Restored the clean source; the remaining
 //   evidence-backed lead is the early direction register coloring and paired
 //   clamp compare hunk.
+// - Moved all coordinate and bound locals to one top declaration block as a
+//   natural period-style lifetime probe; codegen was unchanged and the clean
+//   source was restored.
+// - A typed PtToPt local carrying the link coordinates was codegen-identical;
+//   restored it and kept the simpler scalar coordinate source.
+// - Spelled final coordinate clamps with the coordinate on the left; this
+//   recovered the target compare polarity and reduced the diff to 69 bytes.
+// - Replaced the raw Point integer array with the canonical typed PtToPt
+//   array, and stored its fields from the updated x/y members.  This preserved
+//   the natural ownership and reduced the diff to 44 bytes with 156 emitted
+//   instructions.  The remaining drift is the early EBX/EDI direction swap;
+//   the late store block is otherwise aligned except for that register role.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
+class PrimaryPt {
+public:
+    int x;
+    int y;
+};
+
+class PtToPt {
+public:
+    int x;
+    int y;
+};
+
 class PointMaker {
 public:
-    int Prime_x;
-    int Prime_y;
-    int Point[1000];
+    PrimaryPt Prime;
+    PtToPt Point[500];
     char gap_FA8[0x10];
     int x;
     int y;
@@ -97,9 +120,9 @@ int PointMaker::MakeNewLink() {
     dy += old_y;
 
     if (dx < 5) dx = 5;
-    if (Width - 5 <= dx) dx = Width - 5;
+    if (dx >= Width - 5) dx = Width - 5;
     if (dy < 5) dy = 5;
-    if (Height - 5 <= dy) dy = Height - 5;
+    if (dy >= Height - 5) dy = Height - 5;
 
     r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15a);
     if (r % 2) {
@@ -115,8 +138,8 @@ int PointMaker::MakeNewLink() {
 
     x = dx;
     y = dy;
-    Point[NumNodes * 2] = dx;
-    Point[NumNodes * 2 + 1] = dy;
+    Point[NumNodes].x = x;
+    Point[NumNodes].y = y;
     int result = NumNodes;
     NumNodes = result + 1;
     return result;

@@ -10,7 +10,9 @@
 // - v7: removed the transient record pointer and used typed ObjectMemory cursor expressions; reused the objectId home for currentZone. This restored the 0x18 frame, cursor EDI, object EBX, and best EBP.
 // - v8: nested the nonzero-object and nonnull-best paths under one final zero return. This restored the original 167-instruction CFG and shared failure tail.
 // - v9: compared the max-memory gate against the zero cursor. This improved the setup to the original cmp/register family; alternate zero-initialization orders were duplicate or worse.
-// BLOCKER: behavior, call set, field ownership, frame, and full typed LOS ABI are reconstructed. Best current codegen is 495 bytes versus 499 original, 98.20% shape, 133 strict differing bytes, and 30 edit cost. Remaining drift is localized to initial zero/register setup and shifted failure/success tails; no behavior lead remains in this pass. Original uses ESI=this, EBX=obj, EDI=byte cursor, EBP=best entry, and the dead objectId home for current zone.
+// - v10: replaced raw important-memory cursor arithmetic with direct indexed ObjectMemory ownership and typed player/master fields. This improved the structural match to 130 differing bytes.
+// - v11: modeled the ignored canPath output as a local float. VC5 reused the dead parameter home and produced an exact 499-byte match.
+// EXACT: canonical ObjectMemory ownership, typed player/master ABI, 0x24 scan stride, parameter-home zone reuse, and canPath output lifetime are reconstructed. Original uses ESI=this, EBX=obj, EDI=byte cursor, EBP=best entry, and the dead parameter home for the canPath result.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
@@ -22,8 +24,15 @@ struct ObjectMemory {
     float damageCapability; float rateOfFire; float range;
 };
 
-class MainDecisionAIModule { public: void* object(int id); char gap[0xf0]; void* player; };
+class PlayerWorld { public: char gap[0x3c]; short player_num; };
+class RGE_Player {
+public:
+    char gap_00[0x3c]; PlayerWorld* world; char gap_40[0x0a]; short id;
+};
+class MainDecisionAIModule { public: void* object(int id); char gap[0xf0]; RGE_Player* player; };
 class InfluenceMap { public: int setValue(int x, int y, int v); };
+
+class RGE_Master_Static_Object { public: char gap[0x28]; float los; };
 
 #define LOS_VPAD1(n) virtual void los_vpad##n();
 #define LOS_VPAD2(n) LOS_VPAD1(n) LOS_VPAD1(n##_1)
@@ -41,7 +50,7 @@ public:
     LOS_VPAD2(100)
     virtual int canPath(XYZPoint, float, int, float*, int, int, int);
 
-    char gap04[4]; void* master_obj; char gap0c[0x34]; float z;
+    char gap04[4]; class RGE_Master_Static_Object* master_obj; char gap0c[0x34]; float z;
     uchar lookupZone(int x, int y);
     uchar currentZone();
     float distance_to_position(float x, float y, float z);
@@ -79,32 +88,30 @@ int TribeInformationAIModule::unexploredPlayerLocation(int objectId, XYPoint& ou
         int bestDistance;
         ObjectMemory* best;
         int index;
-        int offset;
-        offset = 0;
         best = 0;
         bestDistance = -1;
         index = 0;
 
-        if (this->maxImportantObjectMemory > index) {
+        if (this->maxImportantObjectMemory > 0) {
             do {
-                if (((ObjectMemory*)((char*)this->importantObjectMemory + offset))->id != -1) {
+                if (this->importantObjectMemory[index].id != -1) {
                     unsigned short owner =
-                        ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->owner;
-                    if (owner != *(unsigned short*)((char*)this->md->player + 0x4a) &&
-                        ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->owner != 0) {
+                        this->importantObjectMemory[index].owner;
+                    if (owner != this->md->player->id &&
+                        this->importantObjectMemory[index].owner != 0) {
                         if (this->tileUncovered(
-                                ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->x,
-                                ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->y) != 1) {
+                                this->importantObjectMemory[index].x,
+                                this->importantObjectMemory[index].y) != 1) {
                             if (obj->lookupZone(
-                                    ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->x,
-                                    ((ObjectMemory*)((char*)this->importantObjectMemory + offset))->y) ==
+                                    this->importantObjectMemory[index].x,
+                                    this->importantObjectMemory[index].y) ==
                                 (uchar)objectId) {
                                 int dist = (int)obj->distance_to_position(
-                                    (float)((ObjectMemory*)((char*)this->importantObjectMemory + offset))->x,
-                                    (float)((ObjectMemory*)((char*)this->importantObjectMemory + offset))->y,
-                                    (float)((ObjectMemory*)((char*)this->importantObjectMemory + offset))->z);
+                                    (float)this->importantObjectMemory[index].x,
+                                    (float)this->importantObjectMemory[index].y,
+                                    (float)this->importantObjectMemory[index].z);
                                 if (best == 0 || bestDistance > dist) {
-                                    best = (ObjectMemory*)((char*)this->importantObjectMemory + offset);
+                                    best = &this->importantObjectMemory[index];
                                     bestDistance = dist;
                                 }
                             }
@@ -112,7 +119,6 @@ int TribeInformationAIModule::unexploredPlayerLocation(int objectId, XYPoint& ou
                     }
                 }
                 index++;
-                offset += 0x24;
             } while (index < this->maxImportantObjectMemory);
         }
 
@@ -121,12 +127,13 @@ int TribeInformationAIModule::unexploredPlayerLocation(int objectId, XYPoint& ou
             out.y = best->y;
 
             int objZ = (int)obj->z;
-            float los = *(float*)((char*)obj->master_obj + 0x28) - 1.0f;
             XYZPoint pt;
             pt.x = out.x;
             pt.y = out.y;
             pt.z = objZ;
-            int ok = obj->canPath(pt, los, -1, (float*)&out, 1, -1, -1);
+            float pathResult;
+            int ok = obj->canPath(pt, obj->master_obj->los - 1.0f,
+                                  -1, &pathResult, 1, -1, -1);
             if (ok == 0) {
                 this->pathMap.setValue(out.x, out.y, 1);
                 return 0;

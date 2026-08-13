@@ -14,6 +14,22 @@
 //   for loop with header increment. This restores the oracle's two-jump CFG
 //   shape and improves positional diff 557 -> 544 bytes and shape 69.12% ->
 //   70.18%; the prologue and later typed-record layout still differ.
+// - Replaced the local record reference with direct typed Check[firstIndex]
+//   field accesses. The packet-backed +0x30 record base and 0x24 stride now
+//   reproduce the saved-this prologue and original indexed load topology;
+//   diff improves 544 -> 523 bytes and shape 70.18% -> 73.83%. Keep this
+//   natural typed form; remaining drift is local-home initialization order.
+// - Replaced the first raw PlayerNo/WTurn predicate with named Check[index]
+//   fields. This is closer to the period-typed ownership and improves the
+//   current diff 523 -> 517 bytes and shape 73.83% -> 74.30%.
+// - Split local declarations from their ordered zero assignments, corrected
+//   checksum field widths, and changed declaration order. VC5 emitted the
+//   same code; retain the simpler declaration order and typed record widths.
+// - Tried the final-gate operand rewrite and an early-return layout. The
+//   operand rewrite was neutral. The early-return form dropped one Log call
+//   and widened structural drift, so it was rolled back.
+// - Tried a typed checksum-record cursor for the first search. It changed the
+//   prologue, dropped one Log call, and widened drift; the WTurn cursor stays.
 
 class TDebuggingLog {
 public:
@@ -28,7 +44,7 @@ public:
 };
 
 struct RGE_Communications_Check {
-    int PlayerNo;
+    unsigned int PlayerNo;
     unsigned long WTime;
     unsigned long WTurn;
     long cs1;
@@ -36,7 +52,7 @@ struct RGE_Communications_Check {
     long cs3;
     long cs4;
     long cs5;
-    unsigned long Random;
+    unsigned int Random;
 };
 
 class RGE_Communications_Synchronize {
@@ -60,32 +76,44 @@ public:
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
-    unsigned long uVar5 = 0;
+    unsigned long uVar5;
     unsigned long* puVar8 = &this->Check[1].WTurn;
-    int NumPlayers = 0;
-    int NumDiff = 0;
-    int bVar1 = 0;
-    long lVar6 = 0;
-    long mycs5 = 0;
-    long mycs2 = 0;
-    long mycs3 = 0;
-    int NumSame = 0;
-    unsigned int local_8 = 0;
-    int foundMine = 0;
+    int NumPlayers;
+    int NumDiff;
+    int bVar1;
+    long lVar6;
+    long mycs5;
+    long mycs2;
+    long mycs3;
+    int NumSame;
+    unsigned int local_8;
+    int foundMine;
+
+    uVar5 = 0;
+    NumPlayers = 0;
+    NumDiff = 0;
+    bVar1 = 0;
+    lVar6 = 0;
+    mycs5 = 0;
+    mycs2 = 0;
+    mycs3 = 0;
+    NumSame = 0;
+    local_8 = 0;
+    foundMine = 0;
 
     unsigned long* puVar2 = puVar8;
     unsigned int firstIndex = 1;
     for (; firstIndex <= 0x36; ++firstIndex, puVar2 += 9) {
-        if (puVar2[-2] == playerNo && puVar2[0] == commTurn) {
+        if (this->Check[firstIndex].PlayerNo == playerNo &&
+            this->Check[firstIndex].WTurn == commTurn) {
             bVar1 = 1;
-            RGE_Communications_Check& mine = this->Check[firstIndex];
-            mycs5 = mine.cs2;
-            mycs2 = mine.cs3;
-            uVar5 = mine.WTime;
-            mycs3 = mine.cs4;
-            NumSame = mine.cs5;
-            lVar6 = mine.cs1;
-            local_8 = mine.Random;
+            mycs5 = this->Check[firstIndex].cs2;
+            mycs2 = this->Check[firstIndex].cs3;
+            uVar5 = this->Check[firstIndex].WTime;
+            mycs3 = this->Check[firstIndex].cs4;
+            NumSame = this->Check[firstIndex].cs5;
+            lVar6 = this->Check[firstIndex].cs1;
+            local_8 = this->Check[firstIndex].Random;
             break;
         }
     }
@@ -134,7 +162,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
            foundMine, NumPlayers, NumDiff);
 
-    if (foundMine - 1 <= NumDiff + NumPlayers) {
+    if (NumDiff + NumPlayers >= foundMine - 1) {
         if (NumPlayers <= NumDiff) {
             L->Log("OUTOFSYNC: return not out 2");
             return 0;

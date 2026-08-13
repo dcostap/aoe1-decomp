@@ -19,11 +19,13 @@
 // - probe 8: used a literal zero for the workingArea reset; code was unchanged.
 // - probe 9: forced a result stack-home store through a pointer; code was
 //   unchanged and the diagnostic form was removed.
-// BLOCKER: current typed source has 477 bytes, all 16 direct calls aligned,
-// and a 62-byte positional diff. The remaining drift is the VC5 prologue and
-// sentinel CFG: original uses xor eax, result at [esp+18], reset, then group;
-// current uses xor ecx, reset, group, then result at [esp+10]. The current
-// source keeps the canonical embedded group and ManagedArray ownership.
+// - probe 11: changed the outer list walk to a natural while loop and scoped
+//   rNum/tempCount inside the counted-group block; output reached 473 bytes
+//   with a 16-byte diff and exact outer CFG, leaving only the result home.
+// BLOCKER: current typed source has 473 bytes, all 16 direct calls aligned,
+// and a 16-byte positional diff. The remaining drift is the result home in
+// the VC5 prologue: original stores result at [esp+18], while current stores
+// it at [esp+10]. The source keeps canonical group and ManagedArray ownership.
 
 extern "C" {
     void* operator_new(unsigned int size);
@@ -138,45 +140,40 @@ public:
 
 int TribeTacticalAIModule::numberExtraGroupedSoldiers()
 {
-    int tempCount;
-    int rNum;
-    int result;
-    TacticalAIGroup* group;
+    int result = 0;
     ManagedArray<int>& workingArea = this->workingArea;
+    TacticalAIGroup* group;
 
-    result = 0;
     workingArea.numberValue = 0;
     group = this->groups.next;
-    if (group != &this->groups) {
-        do {
-            if (group == 0)
-                return result;
+    while (group != &this->groups) {
+        if (group == 0)
+            return result;
 
-            if ((group->type() == 100 || group->type() == 101 ||
-                 group->type() == 102) &&
-                (group->action() == 1 || group->action() == 0)) {
-                int desiredUnits = group->desiredNumberUnits();
-                if (desiredUnits < group->numberUnits()) {
-                    rNum = group->numberUnits();
-                    tempCount = 0;
-                    if (group->desiredNumberUnits() < rNum) {
-                        while (1) {
-                            if (tempCount >= group->numberUnits())
-                                break;
-                            if (group->unit(tempCount) != group->commander()) {
-                                rNum--;
-                                workingArea.add(group->unit(tempCount));
-                                result++;
-                            }
-                            tempCount++;
-                            if (group->desiredNumberUnits() >= rNum)
-                                break;
+        if ((group->type() == 100 || group->type() == 101 ||
+             group->type() == 102) &&
+            (group->action() == 1 || group->action() == 0)) {
+            int desiredUnits = group->desiredNumberUnits();
+            if (desiredUnits < group->numberUnits()) {
+                int rNum = group->numberUnits();
+                int tempCount = 0;
+                if (group->desiredNumberUnits() < rNum) {
+                    while (1) {
+                        if (tempCount >= group->numberUnits())
+                            break;
+                        if (group->unit(tempCount) != group->commander()) {
+                            rNum--;
+                            workingArea.add(group->unit(tempCount));
+                            result++;
                         }
+                        tempCount++;
+                        if (group->desiredNumberUnits() >= rNum)
+                            break;
                     }
                 }
             }
-            group = group->next;
-        } while (group != &this->groups);
+        }
+        group = group->next;
     }
     return result;
 }

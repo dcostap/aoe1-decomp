@@ -21,6 +21,8 @@
 // Fresh pass: register-qualified dimensions and then parameters; emitted code unchanged, restored.
 // Fresh pass: combined AlignedWidth and Orien into one product; emitted code unchanged, restored.
 // Fresh pass: moved dimension declarations and reordered early locals; emitted code unchanged, restored.
+// Fresh pass: moved the typed height load before x2, matching the original flics.cpp frame setup order; emitted code unchanged.
+// Fresh pass: moved the natural height load after x2 and y1 to test the paired coordinate register order; emitted code unchanged, restored.
 // BLOCKER: behavior and layout appear correct; remaining 7.8091% diff is localized codegen/register scheduling in coordinate setup after frame load. Original uses EBX for width then reuses EBX for drawarea (`movsx ebx,[esi+10] ... mov ebx,ecx`), while VC5 keeps width in ECX and loads drawarea into EBX early. Later switch/tail and frees are structurally aligned.
 
 extern "C" void* calloc(unsigned int count, unsigned int size);
@@ -103,8 +105,8 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* area, long x, long y)
     short width = this->flichead.width;
     this->x1 = x;
     this->drawarea = area;
-    this->x2 = (long)width + x;
     short height = this->flichead.height;
+    this->x2 = (long)width + x;
     this->y1 = y;
     this->y2 = (long)height + y;
 

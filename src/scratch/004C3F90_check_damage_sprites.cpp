@@ -15,6 +15,12 @@
 //   90% ordered-call alignment, frame 0x18); remaining drift is structural in
 //   saved-register/index coloring, dispatch/local stack homes, and the second
 //   coordinate x87 schedule.  Left in scratch; no inline asm or accepted_drift.
+// - Binary-backed branch-layout probe: test the natural flag==2 branch before
+//   the flag<2 removal branch, matching the original virtual-call then remove
+//   call order while preserving behavior for flags above 2.
+// - Typed loop probe: replaced the pointer/count do-while with an indexed
+//   DamageSpriteInfo for-loop; diff improved 450 -> 415 and exact-block coverage
+//   improved 25.41% -> 32.60%, but first structural drift remains at the scan gate.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
@@ -81,16 +87,11 @@ void RGE_Static_Object::check_damage_sprites()
     if (new_percent == this->curr_damage_percent) return;
 
     if (new_percent < 100 && master->damage_sprite_num > 0) {
-        DamageSpriteInfo* info = master->damage_sprites;
-        int i = 0;
-        int n = master->damage_sprite_num;
-        do {
+        for (int i = 0; i < master->damage_sprite_num; i++) {
+            DamageSpriteInfo* info = &master->damage_sprites[i];
             if (info->damage_percent < new_percent) new_damage_loc = i;
             if (info->damage_percent < this->curr_damage_percent) old_damage_loc = i;
-            i++;
-            info++;
-            n--;
-        } while (n != 0);
+        }
     }
 
     if (new_damage_loc != old_damage_loc) {
@@ -135,13 +136,13 @@ void RGE_Static_Object::check_damage_sprites()
 
         if (old_damage_loc > -1) {
             DamageSpriteInfo* oldInfo = &this->master_obj->damage_sprites[old_damage_loc];
-            if (oldInfo->flag <= 1) {
-                this->sprite_list->remove_sprite(oldInfo->sprite);
-            }
-            else if (oldInfo->flag == 2) {
+            if (oldInfo->flag == 2) {
                 if (new_damage_loc < 0 || this->master_obj->damage_sprites[new_damage_loc].flag != 2) {
                     this->new_sprite(this->master_obj->sprite);
                 }
+            }
+            else if (oldInfo->flag < 2) {
+                this->sprite_list->remove_sprite(oldInfo->sprite);
             }
         }
     }
