@@ -19,6 +19,11 @@
 // 9: replaced the black serialized-root byte-offset loop with a typed
 //    Tile_BlackEdge_Table** walk; the diff fell to 341 bytes and size to 800,
 //    but the first structural hunk remains at the second relocation loop.
+// 10: typed-base, do-while, separate-index, and array-index byte-offset
+//     variants restored the original relocation block but stayed at 806 bytes
+//     and 453-455 bytes; rolled back. The typed 0x11-root walk remains best.
+// 11: Restored named file literals and RGE_View fields. The macro lvalues and
+//     raw addresses were diagnostic forms, not living source ownership.
 
 extern "C" int __cdecl _open(const char*, int);
 extern "C" int __cdecl _lseek(int, int, int);
@@ -27,8 +32,8 @@ extern "C" int __cdecl _read(int, void*, unsigned int);
 extern "C" int __cdecl _close(int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
-#define TILE ((char*)0x0058CD44)
-#define BLK  ((char*)0x0058CD30)
+static const char s_tile_file[] = "DATA2\\TILEEDGE.DAT";
+static const char s_black_tile_file[] = "DATA2\\BLKEDGE.DAT";
 
 typedef unsigned char uchar;
 
@@ -53,10 +58,6 @@ public:
 
     void Init_Tile_Edge_Tables();
 };
-#define EDGE_TABLES (*(Tile_FogEdge_Table***)((char*)this + 0x184))
-#define BLACK_TABLES (*(Tile_BlackEdge_Table***)((char*)this + 0x188))
-#define EDGENUM ((uchar*)((char*)this + 0x1A0))
-
 void RGE_View::Init_Tile_Edge_Tables()
 {
     int fd, len;
@@ -69,14 +70,14 @@ void RGE_View::Init_Tile_Edge_Tables()
     int b0,b1,b2,b3,b4,b5,b6,b7;
     Tile_BlackEdge_Table** black_roots;
 
-    fd = _open(TILE, 0x8000);
+    fd = _open(s_tile_file, 0x8000);
     if (fd != -1) {
-        _lseek(fd,0,2); len = _tell(fd); EDGE_TABLES = (Tile_FogEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,EDGE_TABLES,len); _close(fd);
-        base = (int)EDGE_TABLES;
+        _lseek(fd,0,2); len = _tell(fd); this->Tile_Edge_Tables = (Tile_FogEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,this->Tile_Edge_Tables,len); _close(fd);
+        base = (int)this->Tile_Edge_Tables;
         for (i=0;i<0x44;i+=4)
-            *(int*)((char*)EDGE_TABLES+i) += base;
+            *(int*)((char*)this->Tile_Edge_Tables+i) += base;
         for (i=0;i<0x44;i+=4) {
-            fog_table = *(Tile_FogEdge_Table**)((char*)EDGE_TABLES+i);
+            fog_table = *(Tile_FogEdge_Table**)((char*)this->Tile_Edge_Tables+i);
             for (j=0;j<0x2f;j++) {
                 if (fog_table[j].normal_draw)
                     fog_table[j].normal_draw = (VSpanMiniList*)((char*)fog_table[j].normal_draw + base);
@@ -85,22 +86,22 @@ void RGE_View::Init_Tile_Edge_Tables()
             }
         }
     }
-    fd = _open(BLK, 0x8000);
+    fd = _open(s_black_tile_file, 0x8000);
     if (fd != -1) {
-        _lseek(fd,0,2); len = _tell(fd); BLACK_TABLES = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,BLACK_TABLES,len); _close(fd);
-        base = (int)BLACK_TABLES;
-        black_roots = BLACK_TABLES;
+        _lseek(fd,0,2); len = _tell(fd); this->Black_Edge_Tables = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,this->Black_Edge_Tables,len); _close(fd);
+        base = (int)this->Black_Edge_Tables;
+        black_roots = this->Black_Edge_Tables;
         for (i=0;i<0x11;i++,black_roots++)
             *black_roots = (Tile_BlackEdge_Table*)((char*)*black_roots + base);
         for (i=0;i<0x44;i+=4) {
-            black_table = *(Tile_BlackEdge_Table**)((char*)BLACK_TABLES+i);
+            black_table = *(Tile_BlackEdge_Table**)((char*)this->Black_Edge_Tables+i);
             for (j=0;j<0x2f;j++) {
                 if (black_table[j].black_UNdraw)
                     black_table[j].black_UNdraw = (VSpanMiniList*)((char*)black_table[j].black_UNdraw + base);
             }
         }
     }
-    uchar* edge = EDGENUM;
+    uchar* edge = this->EdgeNumber;
     for (i=0;i<0x100;i++) edge[i] = 0xff;
     count = 0;
     for (i=0;i<0x100;i++) {
