@@ -28,6 +28,12 @@
 // - Full Windows header context, direct-width spelling, declaration reordering, and virtual-only surfaces were
 //   nonproductive or worse.  Final blocker remains the original early EBP save/register topology; no behavior,
 //   layout, boundary, or call-set uncertainty remains.
+// Bounded pass (sa-e2d0dd53-r1):
+// - Tested function-scope top/bottom/left/right/range/tab locals with chained shared top assignments; this grew
+//   the body to 374 bytes, diff 332, shape 63.16%, and was rolled back.
+// - Reordered the horizontal range expression to perp plus margin, then subtract button; VC5 emitted the same
+//   368-byte code as the clean source (diff 275, shape 68.42%), so it was rolled back.
+// - Clean natural typed source retained.  The early EBP save remains the only structural lead.
 
 struct tagRECT {
     long left;

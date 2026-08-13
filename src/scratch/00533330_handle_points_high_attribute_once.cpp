@@ -64,6 +64,9 @@
 // - tu-victory-533330 probe: removed the no-op register qualifier from the natural player-array
 //   cursor; output stayed at 224 bytes and a 29-byte diff. The clean source is now ordinary typed
 //   C++ with the exact sibling loop retained; only EBX/EDI coloring remains.
+// - sa-1ed6a47a-r1 ABI probe: normalized RGE_Game_World slot 0 to the exact-donor
+//   virtual unsigned char data_load_world(void*) surface instead of a virtual destructor;
+//   codegen stayed unchanged at 224 bytes and a 29-byte diff. No new ABI lead remains.
 
 class RGE_Game_World;
 
@@ -80,7 +83,7 @@ public:
 
 class RGE_Game_World {
 public:
-    virtual ~RGE_Game_World();
+    virtual unsigned char data_load_world(void* file);
     char gap_04[0x38];
     short player_num;         // +0x3C
     char gap_3E[2];

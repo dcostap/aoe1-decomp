@@ -5,11 +5,8 @@
 // - Replaced explicit absolute-value sign tests with the natural signed
 //   remainder predicate `r % 2`, restoring the original branchless parity
 //   lowering and 336-byte size.
-// - Capturing old_x across the horizontal bounds is binary-supported by the
-//   original EBP lifetime and improved the reconstruction to 149 differing
-//   bytes with all four calls and CFG/count parity aligned.  The vertical
-//   source intentionally rereads y, and preserves the original lower-bound
-//   bug `dy = -dx`.
+// - The vertical source intentionally rereads y, and preserves the original
+//   lower-bound bug `dy = -dx`.
 // - Upper-bound predicates use the binary-supported sum >= limit-3 spelling.
 //   Candidate temporary/compound scheduling, declaration order, and canonical
 //   PrimaryPt/PtToPt point-array layout probes were duplicates or regressed;
@@ -38,6 +35,10 @@
 //   a codegen duplicate; computing it without old_x regressed to 319 bytes.
 //   Restored the clean typed source; the first candidate mov/add schedule
 //   remains the only localized mismatch lead.
+// - Removed the codegen-steering old_x snapshot.  Direct named x reads in the
+//   second horizontal guard and final assignment are cleaner, but VC5 dropped
+//   the saved EBP role and regressed the byte diff from 149 to 319.  The
+//   x + dx spelling was a codegen duplicate; retained the cleaner source.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -96,16 +97,15 @@ int PointMaker::MakeSatelliteLink() {
     r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
     if (r % 2) dy = -dy;
 
-    int old_x = x;
     dx += DirX;
     dy += DirY;
 
-    if (dx + old_x < 3) {
+    if (dx + x < 3) {
         dx = -dx;
         DirX = -DirX;
     }
 
-    if (dx + old_x >= Width - 3) {
+    if (dx + x >= Width - 3) {
         dx = -dx;
         DirX = -DirX;
     }
@@ -120,7 +120,7 @@ int PointMaker::MakeSatelliteLink() {
         DirY = -DirY;
     }
 
-    x = dx + old_x;
+    x = x + dx;
     y = dy + y;
     Point[NumNodes].x = x;
     Point[NumNodes].y = y;

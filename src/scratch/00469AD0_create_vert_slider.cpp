@@ -24,6 +24,8 @@
 // The full ABI, scoped result assignment, and new.h context were then checked; only the
 // initialized result changed code (215 bytes, despite exact size), and all other changes were
 // duplicates. Keep the typed full-ABI source and direct natural returns.
+// refill-469AD0-r2: explicit success-else-failure arms with a trailing success return were
+// codegen-identical (46-byte drift); VC5 still emits a cloned failure cleanup after success.
 
 struct tagRECT {
     long left;

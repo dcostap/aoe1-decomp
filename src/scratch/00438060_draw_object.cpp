@@ -27,6 +27,13 @@
 //   both forms moved the branch before the row LEA and broadened structural drift.
 // - Folded the row offset into a direct typed pointer expression without a row-index temporary;
 //   VC5 returned to the same 10-byte codegen basin, so the clean named row source remains best.
+// Follow-up sa-c5d3f59c_draw_object (bounded pass):
+// - Rechecked array-subscript, element-pointer decrement, inline -1 index, max conditional,
+//   direct repeated row fields, and fully inlined typed row-index forms. The common typed
+//   compiler basin stayed at 10 bytes; delaying row selection broadened drift to 320 bytes.
+// - Donor review of draw_view_rect confirms the same 0x24 row stride, but its separate inline
+//   expression does not change this target's emitted row address. Restored the clean named-row
+//   source; the first hunk remains dec eax versus the oracle's final LEA -24 displacement.
 
 extern float DAT_0056f604;
 

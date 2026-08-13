@@ -22,6 +22,10 @@
 //   setupMacedonian confirms the direct int* build-list array and shared
 //   playerAI/game method surface. The donor-style outer difficulty branch was
 //   retested and was codegen-identical; retain the natural direct source.
+// - Packet audit disproved the reported default-deathmatch error: 00517FB2 is
+//   the param_2 == 0/1 target and writes +0xF0 (param_1[0x3c]); the true
+//   default block at 00517F74 writes +0x58 (param_1[0x16]). Restored the
+//   candidate source unchanged. A fresh blind review is still required later.
 
 struct AIModule {
     void __cdecl logCommonHistory(char* msg);

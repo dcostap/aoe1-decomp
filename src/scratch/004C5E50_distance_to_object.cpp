@@ -72,6 +72,15 @@
 // new source or ABI lead for the shared fsubr/other-Y fault-order gap. Kept the
 // natural typed reconstruction.
 
+// sa26d9938f_distance 2026-08-13: modeled the proven static/master layouts,
+// removed volatile dy, double radius temporaries, and saved master aliases,
+// then tested the natural stat_obj.cpp shape that computes complete Y before
+// the X clamp. This preserves the source-level other-Y evaluation order, but
+// VC5 emitted a 151-byte no-push basin (164 differing bytes, first mismatch at
+// entry) and did not preserve the oracle's fsubr/fsub x87 status/fault order.
+// Retain this readable typed reconstruction; the old 167-byte codegen result
+// depended on unsupported scheduling scaffolding.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
@@ -93,28 +102,15 @@ public:
 
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
     float dx = other->world_x - this->world_x;
-    // The executable stores this delta to a 32-bit stack slot before reuse.
-    // Volatility is behavioral here: it preserves binary32 rounding and the
-    // corresponding x87 overflow/underflow flags instead of retaining 80-bit
-    // excess precision.
-    volatile float dy = other->world_y - this->world_y;
+    float dy = other->world_y - this->world_y;
 
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    // Preserve the proven other-X, this-X, then this-Y ownership/order.
-    RGE_Master_Static_Object* this_master = this->master_obj;
-    RGE_Master_Static_Object* other_master = other->master_obj;
-    // The executable carries this Y radius on the x87 stack while it rounds and
-    // clamps x, then subtracts it from the binary32 dy home. The remaining
-    // unresolved machine-order gap is the other-Y read documented above.
-    double other_radius_x = other_master->radius_x;
-    double this_radius_x = this_master->radius_x;
-    float x = dx - this_radius_x - other_radius_x;
-    double this_radius_y = this_master->radius_y;
+    float x = (dx - this->master_obj->radius_x) - other->master_obj->radius_x;
+    float y = (dy - this->master_obj->radius_y) - other->master_obj->radius_y;
 
     if (x < 0.0f) x = 0.0f;
-    float y = dy - this_radius_y - other_master->radius_y;
     if (y < 0.0f) y = 0.0f;
 
     return (float)sqrt(x * x + y * y);

@@ -34,6 +34,11 @@
 // - Replaced the flattened vtable with the exact panel/list donor hierarchy and
 //   corrected TScreenPanel's TEasy_Panel base; emitted code was unchanged, so
 //   the natural typed hierarchy is retained.
+// - Fresh bounded pass: dossier, same-TU donors, ABI evidence, and focused scan
+//   donors confirm the typed record model. Zero-index record spelling, separate
+//   cursors, typed aliases, explicit string declarations, and a post-allocation
+//   source alias all duplicated the 376-byte basin. Restored the direct typed
+//   source; the EDI versus EAX scan-base allocation remains the next lead.
 
 #include <stdlib.h>
 #include <string.h>

@@ -14,13 +14,13 @@
 //   64.06% instruction-shape similarity, four ordered calls. Left in scratch
 //   after the bounded pass; next lead is recovering natural source lifetimes
 //   that reproduce the proven overlapping stack homes without opaque padding.
-// - current pass: declaring the retry index before count improved the
-//   diagnostic diff to 339 bytes and 64.84% shape; no call or frame change.
-// - direct node-object rereads reduced the rebuilt size but moved this into
-//   EBP and worsened block shape; restored the held alias.
-// - embedding count in the local aggregate and adding radius pointer locals
-//   were rejected: the former changed entry ownership, the latter made a
-//   0xBC frame. Natural declaration-scope variants were codegen duplicates.
+// - current pass: direct node-object rereads at find_drop_location with a
+//   success-block held alias improved the candidate to 336 differing bytes,
+//   65.62% shape, 0xB4 frame, and four ordered calls; this remains natural
+//   typed source but still selects EBP for this and EDI for the retry index.
+// - removing register from the index and changing the outer traversal to a
+//   pretested while were codegen duplicates; retain the success-block alias
+//   candidate as the best source reconstruction for this pause.
 
 class RGE_Master_Static_Object { public: char gap_00[0x30]; float radius_x; float radius_y; };
 class RGE_Static_Object;
@@ -72,15 +72,14 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
     l.radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
     l.temp = this->objects->first;
 
-    if (l.temp != 0) {
+    while (l.temp != 0) {
         do {
-            do {
                 l.next = l.temp->next;
                 if (i <= 0) {
                     break;
                 }
-                    RGE_Static_Object* held = l.temp->object;
-                    if (this->find_drop_location(mode, &l.x, &l.y, held->master_obj, held, l.drop_x[1], l.drop_y[1], l.radius_x[1], l.radius_y[1])) {
+                    if (this->find_drop_location(mode, &l.x, &l.y, l.temp->object->master_obj, l.temp->object, l.drop_x[1], l.drop_y[1], l.radius_x[1], l.radius_y[1])) {
+                        RGE_Static_Object* held = l.temp->object;
                         held->set_location(this->world_x, this->world_y, this->world_z);
                         held->release_from_holder();
                         held->teleport(l.x, l.y, this->world_z);
@@ -101,9 +100,8 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
                     l.drop_y[i] = l.drop_y[i + 1];
                     l.radius_x[i] = l.radius_x[i + 1];
                     l.radius_y[i] = l.radius_y[i + 1];
-            } while (i > 0);
-            l.temp = l.next;
-        } while (l.temp != 0);
+        } while (i > 0);
+        l.temp = l.next;
     }
     return count;
 }

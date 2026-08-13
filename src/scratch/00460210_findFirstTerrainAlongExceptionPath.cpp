@@ -13,6 +13,12 @@
 //    return tail and reduced drift to 12 bytes. A named contiguous segment
 //    aggregate reached 9 bytes but was not retained; separate XYPoint locals
 //    remain the natural source. Remaining drift is local-home allocation only.
+// 5: testing the evidence-backed contiguous segment with pointer ABI and
+//    explicit y-field addresses; the loop counter remains separate.
+// 6: the segment/pointer form kept size, frame, and ordered calls aligned but
+//    emitted the same 12-byte local-home drift; retained as the clean lead.
+// Main-agent audit restored the exact-donor XYPoint* virtual ABI. The casts
+// document the executable's overlapping point windows. Emitted code is unchanged.
 
 extern float DAT_00570B80;
 
@@ -27,6 +33,12 @@ struct Waypoint {
 struct XYPoint {
     int x;
     int y;
+};
+
+struct ExceptionSegment {
+    XYPoint p1;
+    XYPoint p2;
+    XYPoint rVal;
 };
 
 class Path {
@@ -149,7 +161,7 @@ public:
     virtual void vf106();
     virtual void vf107();
     virtual void vf108();
-    virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int, int, int);
+    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
 
     char gap04[0xD4];
     Path exceptionPathValue; // +D8
@@ -159,10 +171,8 @@ public:
 
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     int terrain, float* result_x, float* result_y) {
-    XYPoint p1;
-    XYPoint p2;
-    XYPoint rVal;
     int i;
+    ExceptionSegment segment;
     Path* path = &this->exceptionPathValue;
 
     if (path->numberOfWaypoints() < 2) {
@@ -174,34 +184,38 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
         return 0;
     }
 
-    p1.y = (int)path->currentWaypoint()->x;
-    p2.x = (int)path->currentWaypoint()->y;
+    segment.p1.y = (int)path->currentWaypoint()->x;
+    segment.p2.x = (int)path->currentWaypoint()->y;
     path->moveToNextWaypoint();
     if (path->currentWaypoint() == 0) {
         return 0;
     }
 
-    p2.y = (int)path->currentWaypoint()->x;
-    rVal.x = (int)path->currentWaypoint()->y;
+    segment.p2.y = (int)path->currentWaypoint()->x;
+    segment.rVal.x = (int)path->currentWaypoint()->y;
     i = 1;
     while (i < path->numberOfWaypoints()) {
-        if (this->firstTileAlongLine(p1, p2, rVal,
+        // The executable passes three overlapping point windows. The first
+        // window starts at each named point's y field.
+        if (this->firstTileAlongLine((XYPoint*)&segment.p1.y,
+                                     (XYPoint*)&segment.p2.y,
+                                     (XYPoint*)&segment.rVal.y,
                                      terrain, terrain, 1) == 1) {
-            float result = (float)rVal.y - DAT_00570B80;
+            float result = (float)segment.rVal.y - DAT_00570B80;
             *result_x = result;
             *result_y = result;
             return 1;
         }
 
-        p1.y = (int)path->currentWaypoint()->x;
-        p2.x = (int)path->currentWaypoint()->y;
+        segment.p1.y = (int)path->currentWaypoint()->x;
+        segment.p2.x = (int)path->currentWaypoint()->y;
         path->moveToNextWaypoint();
         if (path->currentWaypoint() == 0) {
             return 0;
         }
 
-        p2.y = (int)path->currentWaypoint()->x;
-        rVal.x = (int)path->currentWaypoint()->y;
+        segment.p2.y = (int)path->currentWaypoint()->x;
+        segment.rVal.x = (int)path->currentWaypoint()->y;
         ++i;
     }
 

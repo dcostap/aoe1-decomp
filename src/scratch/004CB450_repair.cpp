@@ -25,6 +25,8 @@
 // fresh continuation: the typed result-tail form matched size and one-return
 // CFG but widened positional drift to 293 bytes; restored direct returns.
 // Typing vf210 as RGE_Task* and moving the action local were codegen-neutral.
+// bounded pass: typed top-scoped task/action locals with the sibling natural
+// direct-return shape widened the body to 420 bytes and diff 291; restored.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 class RGE_Action;

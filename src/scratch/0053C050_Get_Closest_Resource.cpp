@@ -18,6 +18,9 @@
 //   not restore the original early ESI=this save; it was rolled back as opaque.
 // - Member-slot, volatile-manager, function-scope-local, and delayed-count variants
 //   likewise did not move the receiver-save basin; all were restored.
+// - Direct member indexing worsened the positional diff by 6 bytes and emitted
+//   a shifted count/list block; a named VR_ListUsed element pointer duplicated
+//   that result. Both natural typed probes were restored.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
 //   and associated register coloring; behavior, size/frame, calls, and inner
 //   reject-loop CFG are established.

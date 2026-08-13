@@ -92,6 +92,14 @@
 // - Earlier decompiler-order and local-lifetime probes already covered the
 //   remaining plausible source families. No evidence-backed new lead remains;
 //   retain the canonical sprite and master-object ownership surface.
+// Fresh bounded pass (sa-8e837474-r1):
+// - The period type surface confirms RGE_Static_Object::master_obj is the
+//   RGE_Master_Static_Object base pointer. The same-TU copy-sprite donor's
+//   narrower RGE_Master_Action_Object pointer was a codegen duplicate.
+// - A named RGE_Master_Moving_Object source plus direct member fallback
+//   removed the shadow local but created a 240-byte structural tail; rolled
+//   back. Direct member fallback through the combat surface produced the same
+//   structural drift. The typed result local remains the best source shape.
 //
 // Key structural insights confirmed:
 // - 11 stack params + this(ecx): (RGE_Action_Object*,float,float,float,RGE_Sprite*,

@@ -43,6 +43,10 @@
 //   natural product temporary were codegen duplicates. A combined retry
 //   predicate improved the retry jump but worsened the local block topology;
 //   restored the pinned inverted-scan source.
+// - Fresh bounded pass: inlining debug_rand in the scaling expression matches
+//   the oracle's ECX-held magic-division schedule and improves diff 76 -> 66.
+//   Combined retry, explicit else, and infinite-loop spellings were worse or
+//   duplicate; keep the natural do/while.  The retry tail still inverts JL.
 
 #include <stdio.h>
 
@@ -150,9 +154,9 @@ void TribeMPSetupScreen::calcRandomPositions() {
                     int new_position;
                     do {
                         int count = this->scenarioPlayerCount;
-                        int random = debug_rand(
-                            "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x5E4);
-                        new_position = (random * count) / 0x7FFF;
+                        new_position =
+                            (debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x5E4) * count) /
+                            0x7FFF;
                         if (new_position >= count) {
                             new_position = count - 1;
                         } else if (new_position < 0) {
@@ -161,7 +165,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
                         if (position_used[new_position + 1] == -1) {
                             selected_position = new_position;
                             break;
-                            }
+                        }
                     } while (++tries < 1000);
 
                     ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player, selected_position);

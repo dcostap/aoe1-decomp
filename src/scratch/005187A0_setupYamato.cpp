@@ -28,6 +28,10 @@
 //   and setupMacedonian confirms direct int* table ownership and the +0x238
 //   playerAI / deathMatch / difficulty surface. No shared field or type change
 //   is justified; retain the named real fields as direct table indices.
+// - Specialist pass tested duplicated common stores, delayed common stores,
+//   delayed only the 100-valued store, and the compact setupEgyptian game
+//   declaration. All were worse or codegen duplicates; restore the canonical
+//   RGE_Base_Game/TRIBE_Game surface.
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.

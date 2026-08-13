@@ -21,6 +21,9 @@
 // - left in scratch: the oracle saves raw bitmap width in EBX, uses a direct
 //   EAX scan base with ECX index, and has a different remaining register/
 //   entry-offset topology; calls, frame, size, and scan behavior are aligned.
+// - tried reading the proven bitmap width before GetDibDim to extend its
+//   lifetime; VC5 changed the setup and scan coloring and worsened diff 197
+//   to 324, so it was rolled back. The post-call width read remains canonical.
 
 #include <windows.h>
 #include <stdlib.h>

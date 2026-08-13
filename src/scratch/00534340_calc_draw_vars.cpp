@@ -72,6 +72,11 @@
 // orch2 context probe: adding the exact set_rect donor's <new.h> context
 //   emitted the same 217-byte code; restored because it did not change the
 //   register basin.
+// continuation sa61_calc_draw_vars: exact same-TU view.cpp donor
+//   0053F6B0_handle_scroll_view confirms TPanel::pnl_wid/pnl_hgt are long;
+//   normalized both local fields from int to long.  The rebuilt function
+//   remains 217 bytes with the same 61-byte mismatch, CFG, memory effects,
+//   and saved-register set.  Retain the canonical typed surface.
 
 class tagRECT {
 public:
@@ -85,8 +90,8 @@ class TPanel {
 public:
     virtual ~TPanel();
     char gap_04[0x10];
-    int pnl_wid;                           // +0x14
-    int pnl_hgt;                           // +0x18
+    long pnl_wid;                          // +0x14; same-TU TPanel donor type
+    long pnl_hgt;                          // +0x18; same-TU TPanel donor type
     char gap_1C[0x54];                     // +0x1C to +0x6F
     int visible;                           // +0x70
     char gap_74[0x18];                     // +0x74 to +0x8B
