@@ -15,6 +15,10 @@
 //   every instruction and left only two ModRM operand-order bytes at the
 //   important-object scan.  A base local, narrow record alias, and int-width
 //   id probe were rolled back or retained only when they produced no change.
+// - Follow-up probes tested integer casts, Ghidra-style member-address arithmetic,
+//   non-associative addition, raw byte pointers, and pointer locals.  The first
+//   four emitted the same two-byte SIB drift; pointer locals widened the drift.
+//   The clean typed source remains the best reconstruction.
 
 extern "C" int rge_open(char*, int, int);
 extern "C" void rge_write(int, void*, int);
