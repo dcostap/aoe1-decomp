@@ -11,3 +11,4 @@ _ASMGet_Color_Xform
 _ASMSet_Xlate_Table
 _ASMDraw_HLine
 _ASMDraw_Sprite
+PtrClear
