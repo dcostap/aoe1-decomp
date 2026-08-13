@@ -12,6 +12,10 @@
 //   were codegen-neutral.  Final source remains typed and period-plausible;
 //   residual drift is the outer offset/register topology and first-iteration
 //   loop jump, with all 26 calls and the 0x10 frame aligned.
+// - Split the micro-sound and positive-facet guards into nested natural ifs;
+//   this recovered the original pre-loop count store and improved the strict
+//   diff from 130 to 126 bytes.  The remaining first hunk is the outer
+//   iteration's typed list-address topology.
 
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 
@@ -108,21 +112,23 @@ void RGE_Sprite::save(int handle)
                   ((int)this->draw_list_num) << 4);
     }
 
-    if ((this->micro_man_sound != 0) && (this->facet_num > 0)) {
+    if (this->micro_man_sound != 0) {
         int i = 0;
-        do {
-            RGE_Sound_List* facet = &this->sound_list[i];
-            for (int j = 0; j < 3; ++j) {
-                short* frame = &facet->frame[j];
-                RGE_Sound* sound = facet->sound[j];
-                int sound_id = -1;
-                if (sound != 0) {
-                    sound_id = sound->id;
+        if (this->facet_num > 0) {
+            do {
+                RGE_Sound_List* facet = &this->sound_list[i];
+                for (int j = 0; j < 3; ++j) {
+                    short* frame = &facet->frame[j];
+                    RGE_Sound* sound = facet->sound[j];
+                    int sound_id = -1;
+                    if (sound != 0) {
+                        sound_id = sound->id;
+                    }
+                    rge_write(handle, frame, 2);
+                    rge_write(handle, &sound_id, 2);
                 }
-                rge_write(handle, frame, 2);
-                rge_write(handle, &sound_id, 2);
-            }
-            ++i;
-        } while (i < this->facet_num);
+                ++i;
+            } while (i < this->facet_num);
+        }
     }
 }

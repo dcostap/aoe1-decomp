@@ -11,6 +11,8 @@
 //   pointer spellings emitted the same 5-byte result.
 // - a four-case focused variant lab (raw/header/base/shifted pointer forms)
 //   preserved size/frame/call-set but collapsed to the same code group.
+// - tested the Ghidra-derived color-table ownership expressions for both
+//   transparency scans; VC5 emitted the same five-byte register drift.
 // - left in scratch: natural typed source, 5 differing bytes at the two
 //   transparency scan address/register sequences.
 

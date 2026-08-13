@@ -26,7 +26,13 @@
 // restored.  The unresolved lead remains CreateWindowExA argument scheduling.
 // Fresh direct-expression probe inlined the typed style, geometry, and
 // render-area DrawSystem instance into CreateWindowExA; VC5 emitted the same
-// 447-byte group, so the clean local-based reconstruction remains authoritative.
+// 447-byte group, so the clean typed reconstruction remains authoritative.
+// 11: inlined only the typed DrawSystem instance argument; VC5 kept the same
+//     447-byte/92-byte group, so the direct expression is retained as natural source.
+// 12: replaced the boolean style mask with a natural format-minus-enum branch;
+//     this produced 448 bytes and a 300-byte diff, then was rolled back.
+// 13: a gated eight-way typed area/style/instance lifetime lab had one emitted
+//     447-byte group for all valid variants; no scheduling lead remained.
 
 #include <windows.h>
 #include <stdlib.h>
@@ -138,13 +144,12 @@ long TEditPanel::setup(
     // source form used by the original FormatType test.
     TDrawArea* panel_area = this->render_area;
     int styleVal = ((this->format != FormatMultiLine ? -1 : 0) & 0xFFE0003C) + 0x40200044;
-    void* hInst = panel_area->DrawSystem->Inst;
     this->edit_wnd = CreateWindowExA(
         0, "edit", 0,
         styleVal,
         param_3 + 1, param_4 + 1, param_5 - 2, param_6 - 2,
         param_1->Wnd, (void*)1,
-        hInst,
+        panel_area->DrawSystem->Inst,
         0
     );
     if (this->edit_wnd == 0) {

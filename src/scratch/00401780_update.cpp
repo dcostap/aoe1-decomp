@@ -28,6 +28,9 @@
 //   parity but added 74 bytes and was rolled back.
 // - A typed shared 0x1F9 notification tail reached call-count parity but added
 //   66 bytes and reduced block shape. It was diagnostic only and was rolled back.
+// - Reordered nested cases so case 3 fell through naturally to outer case 13;
+//   positional drift improved by 5 bytes, but shape and call-site topology worsened.
+//   Restored the canonical switch.
 // - The clean typed state machine remains the best source reconstruction at
 //   592 bytes of positional drift. The first structural gap is outer dispatch;
 //   the missing vslot+0x5C site remains unresolved without opaque steering.

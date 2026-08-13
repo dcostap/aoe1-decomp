@@ -25,6 +25,9 @@
 //   is structural VC5 scheduling: EBX/EBP zero/import coloring, pointer local slot
 //   order, late SetCooperativeLevel/descriptor scheduling, and two duplicated
 //   cleanup calls that VC5 tail-merges in this TU. No inline asm or opaque offsets.
+// probe 13 (control-flow): made the CoCreateInstance failure an early negative-result guard;
+//   this places its CoUninitialize block before the success path, matching the original first
+//   call-map hunk and improving the ordered call prefix from 8 to 27.
 
 // OSVERSIONINFOA stub - VC5 SDK field order (confirmed from asm offsets)
 //   [esp+0x94]+0x08 = dwBuildNumber (compared with 0x549)
@@ -169,16 +172,16 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             int coInitResult = CoInitialize( 0 );
             hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3,
                                    (void**)&dp3 );
-            if (hr >= 0) {
-                dp3->Release();
+            if (hr < 0) {
                 if (coInitResult != 0)
                     CoUninitialize();
-                *param_1 = (IsDPlay501a() != 0) + 0x500;
                 return;
             }
 
+            dp3->Release();
             if (coInitResult != 0)
                 CoUninitialize();
+            *param_1 = (IsDPlay501a() != 0) + 0x500;
             return;
         }
 

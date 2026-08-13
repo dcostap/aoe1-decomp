@@ -20,6 +20,8 @@
 // restored the natural typed indexed for-loop; current best clean source remains diff 189 with all seven calls aligned.
 // recovery probe: split the two negative cursor gates around a shared success label;
 // the diff stayed 189 but size and CFG shape worsened, so the clean indexed source is restored.
+// probe: use the donor-proven mutable TDrawArea name ABI for both surface allocations;
+// no emitted bytes moved; retain the canonical typed constructor, with cursor-tail drift unchanged.
 // Fresh claim probe: an early success return for Mouse_Mode/Max_Cursors moved
 // the first mismatch to the EH prologue and worsened the structural diff; rolled back.
 
@@ -28,7 +30,7 @@ extern "C" int sprintf(char* buffer, const char* format, ...);
 class TDrawArea {
 public:
     char gap[0x100];
-    TDrawArea(const char* name, int height);
+    TDrawArea(char* name, int height);
     int Init(void* draw_system, int width, int height, int x, int y);
 };
 

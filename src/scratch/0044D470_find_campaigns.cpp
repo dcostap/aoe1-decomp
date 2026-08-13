@@ -10,9 +10,11 @@
 // - probes: scoped/reused indices, explicit positive guards, long versus int
 //   counters, a live-zero experiment, and typed stack aggregates all kept the
 //   same 609-byte mismatch (21 calls and the 0x220 frame aligned).
+// - current probe: expressed each scan as a guarded do/while whose condition
+//   calls _findnext with the stable _findfirst handle; this matches the
+//   original API use and reduces the drift to 298 bytes with exact size.
 // - left in scratch: natural typed enumeration is retained; the remaining
-//   drift is source-order/register scheduling in the cleanup and file-scan
-//   blocks, plus the 16-byte total-size gap.
+//   drift begins at the filename local layout and includes later block shape.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* file_info);
@@ -93,16 +95,18 @@ void RGE_Game_Info::find_campaigns() {
     sprintf(file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
     handle = _findfirst(file_name + 4, &file_info);
     campaign_num = 0;
-    while (handle != -1) {
-        ++campaign_num;
-        handle = _findnext(handle, &file_info);
+    if (handle != -1) {
+        do {
+            ++campaign_num;
+        } while (_findnext(handle, &file_info) != -1);
     }
 
     sprintf(file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
     handle = _findfirst(file_name + 4, &file_info);
-    while (handle != -1) {
-        ++campaign_num;
-        handle = _findnext(handle, &file_info);
+    if (handle != -1) {
+        do {
+            ++campaign_num;
+        } while (_findnext(handle, &file_info) != -1);
     }
 
     if (campaign_num > 0) {
@@ -111,18 +115,20 @@ void RGE_Game_Info::find_campaigns() {
 
         sprintf(file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
         handle = _findfirst(file_name + 4, &file_info);
-        while (handle != -1) {
-            campaigns[i] = new RGE_Campaign(file_info.name + 4);
-            ++i;
-            handle = _findnext(handle, &file_info);
+        if (handle != -1) {
+            do {
+                campaigns[i] = new RGE_Campaign(file_info.name + 4);
+                ++i;
+            } while (_findnext(handle, &file_info) != -1);
         }
 
         sprintf(file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
         handle = _findfirst(file_name + 4, &file_info);
-        while (handle != -1) {
-            campaigns[i] = new RGE_Campaign(file_info.name + 4);
-            ++i;
-            handle = _findnext(handle, &file_info);
+        if (handle != -1) {
+            do {
+                campaigns[i] = new RGE_Campaign(file_info.name + 4);
+                ++i;
+            } while (_findnext(handle, &file_info) != -1);
         }
     } else {
         campaigns = 0;

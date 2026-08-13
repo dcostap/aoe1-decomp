@@ -10,6 +10,12 @@
 // layout: function-scope fsize before loc matched decode stack homes; best is 528 bytes, 127 diff.
 // rejected: mutating fd or using buf as the cursor broke the original prologue and stack shape.
 // remaining: register and post-decode scheduling drift after the second Inf32Decode call.
+// probe: let the local zero own DAT_0086b268 after the second decode; output fell to 3 bytes.
+// probe: use the binary-supported >= 0x10000 chunk boundary; output fell to 1 byte.
+// probe: materialized total as a loop local; emitted code was unchanged at 1 byte.
+// left in scratch: one LEA SIB operand-order byte at the initial chunk boundary.
+// ACCEPTED_DRIFT: the sole differing byte selects [eax+ebx] instead of
+// [ebx+eax] for the same LEA. All behavior, calls, branches, and other bytes match.
 
 extern int __cdecl read(int fd, void* buf, unsigned int size);
 extern void* __cdecl calloc(int count, int size);
@@ -57,8 +63,9 @@ void __cdecl rge_read(int fd, void* buf, int size) {
         {
             int remaining = size;
             int cur = DAT_0086b268;
+            int total = size + cur;
             int* ptr = (int*)DAT_0086b278;
-            while (remaining + cur > 0x10000) {
+            while (total >= 0x10000) {
                 int copy = 0x10000 - cur;
                 memcpy(rbuf, ptr, copy);
                 
@@ -69,12 +76,13 @@ void __cdecl rge_read(int fd, void* buf, int size) {
                     DAT_0086b25c += fsize;
                 }
                 
-                rbuf = (char*)rbuf + copy;
-                DAT_0086b268 = 0;
                 remaining -= copy;
+                cur = 0;
+                DAT_0086b268 = cur;
+                rbuf = (char*)rbuf + copy;
                 DAT_0086b278 = DAT_0086b270;
                 ptr = (int*)DAT_0086b270;
-                cur = 0;
+                total = remaining;
             }
             if (remaining > 0) {
                 memcpy(rbuf, ptr, remaining);

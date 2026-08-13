@@ -24,6 +24,8 @@
 //   sets the shared result, and skips the button-6 test before the fallback.
 // - This probe reduced the positional diff from 929 to 847 bytes and raised
 //   exact-block coverage from 60.25% to 65.98%; shared-tail drift remains.
+// - Initializing the long result to zero emitted identical code; retain the
+//   natural initialized declaration while the shared-tail drift remains.
 
 #include <string.h>
 
@@ -98,7 +100,7 @@ long TRIBE_Dialog_Sed_Menu::action(
     TPanel* panel, long event, ulong param_3, ulong param_4)
 {
     TRIBE_Screen_Sed* sed = this->scenario_editor;
-    long result;
+    long result = 0;
 
     if (event == 1) {
         if (panel == this->buttons[0]) {

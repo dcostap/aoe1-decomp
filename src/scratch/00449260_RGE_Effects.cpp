@@ -19,6 +19,9 @@
 // - Tried a function-scope inner counter with the explicit do-loop (probe 010);
 //   VC5 peeled/duplicated the scan and regressed to 526 bytes.  Restored the
 //   probe-009 clean-source form before validation.
+// - Tested the guarded infinite-loop form with a post-increment termination
+//   test (probe 012); it added a duplicate fscanf, grew to 526 bytes, and was
+//   restored.  The top-tested loop remains the best CFG.
 // - Remaining localized codegen gap: VC5 saves ESI in the prologue instead of
 //   conditionally at the fopen-success edge, and loads effect_list_num into DX
 //   before the inner guard where the oracle compares the field directly.  The

@@ -14,6 +14,8 @@
 //    matches all calls, branch counts, frame size, and most emitted blocks.
 //    Remaining drift is 61 positional bytes, centered on the allocation-store
 //    order and the no-scenario cleanup tail. Budget exhausted; left in scratch.
+// 6: swapped the natural calloc assignments so campaign_filename received the
+//    first allocation. This worsened the first block and was restored.
 
 typedef unsigned int uint;
 

@@ -29,6 +29,9 @@
 // positional output; the aggregate source order remains the clean basis.
 // Fresh claim probe: binary-observed per-member RECT copy order grew the body
 // by 58 bytes and moved the first mismatch to the prologue; rolled back.
+// Fresh claim probe: moved the natural mouse_rect aggregate copy before the
+// independent custom_draw/render_area stores; diff improved 357 -> 354 bytes,
+// but the first mismatch stayed at save_rect scheduling. Kept this source order.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
 
 typedef unsigned long ulong;
@@ -69,9 +72,9 @@ TMousePointer::TMousePointer(int mode)
     save_rect.left = 0;
     save_rect.bottom = 0;
 
+    mouse_rect = save_rect;
     custom_draw = 0;
     render_area = 0;
-    mouse_rect = save_rect;
     save_area = 0;
     primary_area = 0;
     Cursor_Shape = 0;

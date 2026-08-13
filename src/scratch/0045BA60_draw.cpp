@@ -10,6 +10,13 @@
 // 8: direct named mouse_rect aggregate for restore_rect recovered the original +011D block and improved 69 -> 53 bytes; kept.
 // 9: six natural aggregate-copy order variants produced no closer invariant candidate.
 // 10: shape_info/facet declaration, width, direct-member, and typed clipper probes were duplicate or farther; seven shape-expression variants found no exact result.
+// 11: matched the exact same-TU Poll shape_info pre-index and direct-facet expression; structural drift grew to 713 bytes, so rolled back.
+// 12: corrected TShape::shape_draw to the exact Shape.cpp long/long/long/uchar ABI from Poll and the target packet.
+// 13: promoted the real facet and Shape_Info locals to function scope, matching the period decompiler local surface; testing lifetime-driven register coloring.
+// 14: replaced the single-use RECT alias in shape coordinates with direct named mouse_rect fields; testing the natural draw expression.
+// 15: kept the indexed facet local but passed the canonical next_facet member directly as the shape_draw facet argument.
+// 16: replaced the narrow TShape gap stub with the proven period data members before shape_info; testing canonical class context.
+// 17: corrected TDrawArea::SetTrans's second parameter to the proven uchar ABI used by the exact Poll donor.
 // left in scratch: 53-byte nonexact drift begins at 0045BC43 in shape_draw register/argument scheduling; calls, frame, size, CFG, and all 13 call sites match.
 
 #include <windows.h>
@@ -18,7 +25,16 @@ typedef unsigned long ulong;
 typedef unsigned char uchar;
 
 typedef RECT RECT4;
-struct Shape_Info { int a0; int a4; int a8; int aC; int a10; int a14; int Hotspot_X; int Hotspot_Y; };
+struct Shape_Info {
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
 
 class IDirectDrawSurface;
 class IDirectDrawClipper;
@@ -29,14 +45,20 @@ public:
     IDirectDrawSurface* DrawSurface;
     uchar* Lock(char* name, int flag);
     void Unlock(char* name);
-    void SetTrans(int a, int b);
+    void SetTrans(int a, uchar b);
 };
 
 class TShape {
 public:
-    char gap_00[0x1C];
+    uchar* shape;
+    int load_type;
+    int load_size;
+    void* shape_header;
+    void* head;
+    void* offsets;
+    void* FShape;
     Shape_Info* shape_info;
-    uchar shape_draw(TDrawArea* area, int x, int y, int facet, int a, uchar* b);
+    uchar shape_draw(TDrawArea* area, long x, long y, long facet, uchar a, uchar* b);
 };
 
 extern "C" ulong __cdecl debug_timeGetTime(char* file, int line);

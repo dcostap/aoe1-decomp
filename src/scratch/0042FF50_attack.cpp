@@ -15,6 +15,7 @@
 // best emitted candidate: direct member source reaches 392B with all 7 calls aligned and 201-byte edit/resync drift; original still has a distinct x87 radius/trig schedule and shrink-wrapped EBX save.
 // later probe: same-TU inherited Static/Animated/Moving/Action/Combat and Master_* surfaces plus the observed master hp notification argument produced 400B and 361 positional diff; retained as the best canonical source.
 // later probes: named radius locals reproduced the original x87 block shape but not bytes; a named missile-master entry and an initialized c home were nonproductive or worse and were rolled back.
+// current probe: passed the second attack parameter `other` to typed init_missile; this aligned the reload/push argument shape and improved structural similarity, but positional diff worsened by 10 bytes and size grew to 408B.
 // paused after bounded matching: no artificial volatility, aliases, raw offsets, or register-forcing scaffolding retained.
 
 class RGE_Static_Object;
@@ -175,7 +176,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
             this->world_x + c * this->master_obj->weapon_offset_y - s * this->master_obj->weapon_offset_x,
             this->world_y + s * this->master_obj->weapon_offset_y + c * this->master_obj->weapon_offset_x,
             this->world_z + this->master_obj->weapon_offset_z);
-        missile->init_missile(this, target, range);
+        missile->init_missile(other, target, range);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
         if (this->master_obj->weapon_range > DAT_0056f49c) {
             if (1 == target->owner->computerPlayer()) {

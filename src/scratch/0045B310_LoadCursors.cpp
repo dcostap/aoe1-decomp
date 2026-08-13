@@ -10,6 +10,7 @@
 // tried nested positive success guards; size grew by 14 and block coverage fell, rolled back.
 // tried typed Shape_Info bounds with a combined predicate; no positional gain, then a height temp worsened size, rolled back.
 // tried typed Shape_Info validation records with an explicit shared failure label; the tail moved to the end, but the validation field schedule changed and the diff worsened to 304/91%, rolled back.
+// tried a positive Num_Cursors <= Max_Cursors guard with LoadOk failure assignment; size grew 41 bytes and a call crossed the boundary, rolled back.
 // left in scratch: behavior/calls/size are close, but post-scan failure-tail placement and validation-loop layout still differ broadly; not accepted_drift-safe.
 
 extern "C" int sprintf(char*, const char*, ...);

@@ -12,6 +12,9 @@
 //   /O1 and /Os destroyed the matching intrinsic/ABI basin; int/signed-char
 //   result locals, named/function-scope new pointers, explicit label order, and
 //   uVar1-style call-result reuse all emitted the same 375-byte body.
+// - probe 031: initialized a uchar result and used a natural positive guard;
+//   this removed the EH handler relocation, changed the prologue, and widened
+//   positional drift to 307 bytes, so it was restored.
 // - left in scratch: canonical natural source; remaining drift is the VC5 EH
 //   return-tail layout (original shared cleanup versus rebuilt duplicated
 //   cleanup), not an unresolved campaign ownership or call-set issue. Keep

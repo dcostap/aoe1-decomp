@@ -11,6 +11,7 @@
 // 8: coordinate declaration/role swaps and a zero flag local were duplicate codegen; no emitted change.
 // 9: positive valid-body/invalid-return control-flow forms were duplicate at the best 821B basin; a result-local form changed tail layout but not diff.
 // 10: lower-x alias and EH-enabled 9-variant lab were nonproductive; lab grouped 3 basins, no size/frame-eligible match.
+// 11: initialized the list result before a positive radius body to seek one common return topology; 806B with one return but 729-byte drift, restored.
 // FLAGS: config/flags/0045AB20_make_object_collision_list.rsp (/nologo /c /O2 /Oy /GX)
 // left in scratch: 821B rebuilt vs 802B original, 208 positional bytes, exact frame/call set; remaining gap is coordinate-result register/home assignment plus tail/block layout.
 

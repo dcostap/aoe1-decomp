@@ -16,6 +16,8 @@
 //    emitted code (196 strict diff bytes, 758 rebuilt bytes); retain that source order.
 // 10: a top temporary moved a few late stores but did not improve positional bytes;
 //     rolled back to direct member source.
+// 11: tested direct bottom-clipping expressions without the temporary; VC5 rewrote
+//     the subtraction into reverse add arithmetic, worsened CFG alignment, and was rolled back.
 // left in scratch: remaining work, if any, should be localized source/declaration or
 // TU-context probes after validating the member-function baseline.
 

@@ -26,6 +26,9 @@
 //   (+0x48c) versus the oracle's EBX=&list (+0x47c), with a four-byte size
 //   excess and remaining local relocation/register-coloring drift.
 // - Paused after the 10-hypothesis budget; no exact promotion.
+// - Probe: initialized list through the existing output pointer local to test
+//   an early list-address lifetime; output worsened to 317 strict-diff bytes.
+//   Restored the clean source; no source-shape lead remains in this pass.
 
 #include <string.h>
 

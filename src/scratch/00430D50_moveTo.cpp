@@ -37,6 +37,7 @@
 // basin. Restored the canonical int-result source; blocker remains localized to the
 // constructor null-test/EH-tail branch layout.
 // Follow-up worker: retested positive constructor if/else, direct success return, and positive-goto tail forms; all entered the known 378-byte EH basin. Restored the validated 359-byte int-result source.
+// Current worker: tested a same-TU-style nested allocation scope for the Move_To pointer; emitted code was unchanged and the scope was rolled back.
 
 #include <stddef.h>
 
