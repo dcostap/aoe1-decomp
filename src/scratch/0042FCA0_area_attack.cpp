@@ -10,6 +10,7 @@
 // try 8: modeled random chance via debug_rand path/line and integer division; compiler uses simpler division than original magic multiply sequence.
 // try 9: modeled virtual calc_attack_modifier and target damage call with observed parameter order.
 // try 10: leaving in scratch: clean source is 672B vs 683B and mismatch is broad loop/FPU/register/addressing drift, not accepted_drift-safe.
+// try 11: reversed the radius predicate to r2 > dx * dx + dy * dy; this reduced the mismatch to 5 bytes with full block and call alignment.
 // session baseline: frame/CFG and all seven call sites were close, but the local class surface put calc_attack_modifier at vslot +0x70 and damage at +0x6C.
 // session probes: restored Action_Object vtable ownership, player->world->map, master area/weapon fields, 0x18-byte map cells, typed footprint radii, and the fourth/fifth pointer affiliation proved by stack homes.
 // best emitted candidate: 683B/frame 0x24, all seven calls aligned, 96.38% instruction-shape similarity and 207 positional diff bytes after restoring the real source-path literal; remaining drift is localized to the radius-square FPU expression and initial register order.
@@ -157,7 +158,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
                     else dx = DAT_0056f4a8;
                     if (dy > radius_y) dy -= radius_y;
                     else dy = DAT_0056f4a8;
-                    if (dy * dy + dx * dx < r2) {
+                    if (r2 > dx * dx + dy * dy) {
                         int rnd = debug_rand(
                             "C:\\msdev\\work\\age1_x1\\com_obj.cpp", 0xFA) * 100;
                         int chance = rnd / 0x7fff;

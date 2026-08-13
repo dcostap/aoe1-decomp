@@ -13,6 +13,10 @@
 //   context; those either duplicated or expanded the frame.  The retained
 //   natural source is 465 bytes with all five calls and the 0x78 frame aligned;
 //   remaining drift begins in coordinate register/lifetime coloring.
+// - Replaced the software reuse of dest.left with block-local width and row
+//   count values, while retaining the late top <= bottom guard.  This moved
+//   the best check to 439 bytes, 217 differing bytes, and 85.39% shape; the
+//   DirectDraw temporary homes still shift, so the target remains unresolved.
 
 #include <string.h>
 
@@ -171,7 +175,7 @@ void TDrawArea::Clear(tagRECT* rect, int color)
             }
 
             if (x1 < x2 && y1 < y2) {
-                dest.left = x2 - x1 + 1;
+                int width = x2 - x1 + 1;
 
                 int step;
                 int offset;
@@ -187,12 +191,12 @@ void TDrawArea::Clear(tagRECT* rect, int color)
                 p = p + offset + x1;
 
                 if (y1 <= y2) {
-                    y2 = y2 - y1 + 1;
+                    int rows = y2 - y1 + 1;
                     do {
-                        memset(p, color, dest.left);
+                        memset(p, color, width);
                         p += step;
-                        --y2;
-                    } while (y2 != 0);
+                        --rows;
+                    } while (rows != 0);
                 }
             }
         }
