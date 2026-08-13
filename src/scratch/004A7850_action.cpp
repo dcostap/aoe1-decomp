@@ -30,6 +30,13 @@
 // attempt 16: declared get_string directly on TribeSaveGameScreen; worsened diff, rolled back
 // attempt 17: made TPanel polymorphic; object shrank to 2048/.text extraction failed, rolled back
 // attempt 31: inverted YesNoDialog msg branch; restored original 71-call topology and reduced size gap to 2 bytes
+// attempt 32: restored canonical RGE_Base_Game/RGE_Prog_Info ownership; codegen duplicate, kept as source cleanup
+
+// probe 32: direct second-extension expressions; diff 1703 and branch basin worsened, rolled back
+// probe 33: branch-local currentLine result; emitted code unchanged, rolled back
+// probe 34: canonical RGE_Base_Game/RGE_Prog_Info ownership and inherited base calls; emitted code unchanged, kept
+// probe 35: mode local with direct prog_info expressions; diff 1703 and branch basin worsened, rolled back
+// probe 36: named second-extension directory locals; emitted code unchanged, rolled back
 
 #include <stdio.h>
 #include <string.h>
@@ -79,24 +86,29 @@ public:
 
 extern TPanelSystem panel_system;
 
-class ProgramInfo {
+class RGE_Prog_Info {
 public:
     char gap_0[0xB12];
     char save_dir[0x105];
     char scenario_dir[1];
 };
 
-class TRIBE_Game {
+class RGE_Base_Game {
 public:
-    char gap_0[0x0C];
-    ProgramInfo* prog_info;
+    virtual ~RGE_Base_Game();
+    char gap_4[0x08];
+    RGE_Prog_Info* prog_info;
     char gap_10[0xA00 - 0x10];
     int save_paused;
 
-    int save_game(char* name);
-    int save_scenario(char* name);
     int singlePlayerGame();
     void set_paused(int a, int b);
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
+    int save_game(char* name);
+    int save_scenario(char* name);
 };
 
 extern TRIBE_Game* rge_base_game;
@@ -139,7 +151,7 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                 _unlink(tempFileName + 4);
                 int mode2 = this->modeValue;
                 TRIBE_Game* game2 = rge_base_game;
-                ProgramInfo* prog2 = game2->prog_info;
+                RGE_Prog_Info* prog2 = game2->prog_info;
                 if (mode2 == 0) {
                     sprintf(tempFileName + 4, "%s%s.gmx", ((char*)prog2) + 0xB12, this->list->currentLine());
                 } else {
