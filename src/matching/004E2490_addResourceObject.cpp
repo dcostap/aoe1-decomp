@@ -12,19 +12,20 @@
 // probe: uchar/int dropDistance and gatherValue temporaries regressed scheduling and were rolled back.
 // probe: reversed duplicate closest-value comparisons to value >= closest; recovered four cmp byte pairs, kept.
 // probe: implicit float-to-uchar dropDistance conversion emitted the same bytes as the explicit int cast.
-// left in scratch: 17-call order, 0xC frame, and 1392-byte size match; 44 bytes remain in one localized formula span.
+// probe: period float literals -2.0f and 10.0f reproduced the rdata constants and exact x87 schedule.
+// exact: 17-call order, 0xC frame, 1392-byte function, and all 1392 bytes match.
 
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
 
 struct RGE_Master_Static_Object {
-    void* vtable;
+    virtual ~RGE_Master_Static_Object();
     char gap04[0x10];
     short object_group;
 };
 
 struct RGE_Static_Object {
-    void* vtable;
+    virtual ~RGE_Static_Object();
     int id;
     RGE_Master_Static_Object* master_obj;
     char gap0c[0x2c];
@@ -210,7 +211,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
         (unsigned char)distance;
     this->resources[resourceType][this->numResources[resourceType]].dropsiteID = dropsiteID;
     this->resources[resourceType][this->numResources[resourceType]].gatherValue =
-        (int)(DAT_005755bc - distance * DAT_005755b8);
+        (int)(10.0f - distance * -2.0f);
     this->numResources[resourceType]++;
 
     int objectGroup = obj->master_obj->object_group;
