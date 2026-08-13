@@ -12,6 +12,10 @@
 // - Recovered the original word-add topology with total += (short)(cost -
 //   (short)available): size 878, 15-byte positional diff, and exact call/block
 //   regions. Declaration order and a reference owner did not move local homes.
+// - Fresh probes permuted total/tech/carry declarations, scoped carry to the
+//   call-to-cleanup region, marked carry volatile, and initialized const tech;
+//   all retained or duplicate the same 15-byte displacement-only mismatch.
+//   A local aggregate changed the frame to 0x18 and was rolled back.
 // - Remaining drift is localized but unresolved: compiler homes tech at
 //   [ebp-4] and carry at [ebp-0xc] instead of the oracle's [ebp-0xc]/[ebp-4],
 //   with 15 displacement bytes differing; no source-level slot fix was found

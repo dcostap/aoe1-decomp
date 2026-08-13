@@ -10,6 +10,13 @@
 // - Final validated drift is limited to callee-save reload order after the two
 //   virtual command calls: original reloads count before this, rebuilt this
 //   before count. Calls, frame, size, CFG, and all other bytes align.
+// - This claim tested narrow-only and paired loop-update spellings, guarded
+//   for loops, cursor/counter declaration order, standard-header context, an
+//   explicit self alias, register hints, and a shared cursor declaration.
+//   None changed the clean 8-byte drift; the shared cursor and reversed
+//   updates regressed structural bytes and were restored.
+// - Paused with the clean typed source. Remaining lead: a translation-unit or
+//   VC5 allocator distinction that changes only the two post-call reloads.
 
 #include "../../include/game_globals.h"
 
