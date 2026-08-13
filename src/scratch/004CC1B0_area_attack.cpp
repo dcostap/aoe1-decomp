@@ -14,7 +14,12 @@
 // 10: radius-first comparison produced 100% instruction-shape and 771/776 positional bytes.
 // 11: restored same-TU polymorphic player/world declarations with proven offsets;
 //     emitted code was unchanged, so rolled back and retained the clean source.
-// left in scratch: five positional bytes differ only in initial register coloring and relocations.
+// 12: direct-member early master/player accesses were codegen-neutral.
+// 13: function-scope modifier local, split initialization, reference/const/register
+//     aliases, separate static-object surface, and standard-header context were
+//     all codegen-neutral in focused variants.
+// left in scratch: five positional bytes differ only in initial register coloring
+// and relocations; clean typed source remains authoritative.
 // Behavior retained: ignored-target filtering, special owner gate, level gate, footprint distance,
 // random hit chance, modifier calculation, typed damage argument order, and post-damage death call.
 

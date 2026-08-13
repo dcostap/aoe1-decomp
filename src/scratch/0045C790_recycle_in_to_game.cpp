@@ -29,6 +29,14 @@
 //   VC5 emitted the same 3-byte quotient-register drift, so restored `int`.
 // - Tried natural copy-initialization `Path path = Path(10)`; VC5 emitted
 //   unchanged code, so restored direct named construction.
+// - This claim tested a natural named random_angle, function-scope short
+//   facings, register-qualified facings, reversed product operands, and an
+//   explicit long product cast; all kept the same 3-byte ECX/EAX drift.
+// - Function-scope or register-qualified random-result locals were worse
+//   (134B and 13B); a six-case quotient variant lab had no invariant lead.
+// - Function-scope sprite declaration also emitted unchanged code. Restored
+//   the clean direct-expression source; only quotient sign-adjust coloring
+//   remains unresolved.
 
 class RGE_Master_Static_Object;
 class RGE_Player;

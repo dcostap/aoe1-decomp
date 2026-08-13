@@ -18,6 +18,13 @@
 //     screen donor; this is the direct first-hunk type lead for cancel/ok loads.
 //     Result: unchanged 13-byte mismatch and unchanged +03D4 load order; keep
 //     the typed form as the more canonical source reconstruction.
+// 14: Tested a late tabCancel alias; VC5 emitted the same 13-byte mismatch.
+// 15: Tested named tabCancel/tabOk aliases through tab order and current-child;
+//     this caused a broad 569-byte drift and was restored.
+// 16: Ran a focused direct/aggregate/typed tab-array variant lab; no invariant
+//     candidate was produced, and the lab template lacked the target /GX setup.
+// 17: Reused the existing cancel hotkey local for tabList[3]; frame grew to
+//     0x1C with a 201-byte drift, so the clean source was restored.
 // PAUSED: exact call set, size, frame, CFG, and all earlier blocks match. The
 // remaining 13-byte drift is localized to cancel/ok load scheduling at the
 // array stores (+03D4..+03E3); no further source-plausible lead remains.
