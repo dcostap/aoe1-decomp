@@ -48,12 +48,15 @@
 //   promotion were neutral. Direct selectedUnits[selectedCount] storage worsened to 16 bytes.
 // - Clean source remains the natural typed reconstruction. The only drift is the proven EBP vtable /
 //   EBX 25-count register swap at seven bytes.
-// - Extended the proven RGE_Player virtual surface after command_destroy_group; emitted code was
-//   unchanged, so the clean partial surface remains authoritative.
+// - Completed the binary-proven RGE_Player virtual surface through slot 0xF4 before the function,
+//   including donor-proven pointer types; emitted code was unchanged, so it remains the clean candidate.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };
 class RGE_Game_World { public: char gap_00[0xA0]; AIPlayBook* playbook; };
+class RGE_Object_Node;
+struct _iobuf;
+typedef struct _iobuf FILE;
 struct XYZBYTEPoint;
 
 class RGE_Static_Object {
@@ -130,6 +133,15 @@ public:
     virtual unsigned char command_add_to_group(int a, int b, float flag);
     virtual unsigned char command_remove_from_group(int a, int b);
     virtual unsigned char command_destroy_group(int a);
+    virtual unsigned char command_resign(int player, int reason);
+    virtual unsigned char command_add_waypoint(float x, float y, float z);
+    virtual RGE_Object_Node* addObject(RGE_Static_Object* object, int a, int b);
+    virtual void removeObject(RGE_Static_Object* object, int a, int b, RGE_Object_Node* extra);
+    virtual void logMessage(char* message);
+    virtual void notify(int a, int b, int c, long d, long e, long f);
+    virtual void logStatus(FILE* status, int value);
+    virtual void load_victory(int file_handle, long* data, unsigned char value);
+    virtual void new_victory();
 
     char gap_04[0x38];
     RGE_Game_World* world;      // +0x3C
