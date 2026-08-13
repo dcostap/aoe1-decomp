@@ -39,6 +39,9 @@
 //   used-color compare and store. No new natural source lead remains.
 // - Indexed typed color access (`info.color[i - 1]`) preserved structure and
 //   removed the compare SIB byte, leaving only the store SIB operand order.
+// - Follow-up probes: signed-byte, named-color, record/member, volatile-cast,
+//   pointer-alias, and reversed pointer-addition forms all emitted duplicates;
+//   restore the canonical byte-table source and retain the one-byte SIB drift.
 //
 // FLAGS: /nologo /c /O2 /Oy
 

@@ -8,18 +8,15 @@
 // - Tried qcount as int vs short; best current is same-size 669B mismatch, positional 85.5007%, edit 47.9821%, first mismatch at offset 7. Remaining drift is broad source-shape/register allocation around stack bool timing, repeated cost-check loops, and queue growth copy; not accepted_drift-safe.
 // - Replaced both cost do/while loops with pretested while loops; this restored the original 13-call CFG and improved structural coverage.
 // - Recovered short queue count, a short local id, int loop counts, and the natural address-taken master_id argument. A direct id local alone tail-merged the duplicate success notification; the short local preserved both original vslot call sites.
-// - Restored direct master_id only for failure notifications, then spelled queue_changed == 1. Final rebuilt size/CFG/call set match; the natural declaration order leaves 13 localized bytes at append-loop setup (count/id register order and downstream encodings).
-// - Moving the append unit-count clear before the loop-local declarations
-//   changes the queue-count/parameter register order and reduces the diff to
-//   3 branch/SIB bytes while preserving all size/CFG/call metrics.
-// - An explicit positive qcount guard around the clear loop is binary-plausible
-//   and preserves the same 3-byte result; pointer-arithmetic and reversed
-//   typed-subscript copy spellings were codegen duplicates or did not improve.
-// - Focused six-way lab (append order x typed copy spelling) found no exact
-//   group; field-first variants are the 3-byte frontier. Keep this readable
-//   source; do not replace it with raw cursor or register-forcing scaffolding.
-// - Replaced the cached queue count with direct production_queue_count use in
-//   the initial guard and clear loop; emitted code was unchanged, then restored.
+// - Restored direct master_id only for failure notifications, then spelled queue_changed == 1. Final rebuilt size/CFG/call set match; remaining drift is 13 localized bytes at append-loop setup (count/id register order and downstream encodings).
+// - Rechecked the natural pointer-arithmetic queue copy and direct queue-count
+//   clear-loop guard; both were codegen duplicates of the 3-byte frontier.
+// - Tested named copy pointers and aggregate record assignment. Both disturbed
+//   the saved-register/call layout, so they were rolled back.
+// - Current clean source is period-plausible and validated at 669 bytes with
+//   exact CFG, calls, blocks, and size. Remaining bytes are three branch/SIB
+//   encodings: original 0xC5 vs rebuilt 0xE7 at +001C, and 0x03 vs 0x18 at
+//   +019B and +01AA. No evidence-backed source lead remains.
 
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void* p);
@@ -67,11 +64,9 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short count
             rge_base_game->notify(0x7c, this->owner->player_id, 0, 0, 0);
         }
     } else {
-        if (qcount > 0) {
-            while (qcount > 0) {
-                this->remove_from_production_queue(this->production_queue[0].master_id, 1);
-                qcount = this->production_queue_count;
-            }
+        while (qcount > 0) {
+            this->remove_from_production_queue(this->production_queue[0].master_id, 1);
+            qcount = this->production_queue_count;
         }
         if (!this->owner->check_obj_cost(id, &master_id, 1.0f, 1)) {
             rge_base_game->notify(0x7d, this->owner->player_id, master_id, 0, 0);
@@ -84,8 +79,8 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short count
             short i = 0;
             if (this->production_queue_size > 0) {
                 do {
-                    newq[i].master_id = this->production_queue[i].master_id;
-                    newq[i].unit_count = this->production_queue[i].unit_count;
+                    (newq + i)->master_id = (this->production_queue + i)->master_id;
+                    (newq + i)->unit_count = (this->production_queue + i)->unit_count;
                     i++;
                 } while (i < this->production_queue_size);
             }
