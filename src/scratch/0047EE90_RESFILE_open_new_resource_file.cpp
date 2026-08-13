@@ -41,6 +41,9 @@
 // - shardE pass: rechecked the canonical source and donor evidence; the first
 //   mismatch remains the manifest-excluded 0047F00C error fragment, so no
 //   behavior-changing probe was kept.
+// - luna-r2 probe 12: inverted the header-read guard into a natural success
+//   block; error layout moved, but size grew 4 bytes, exact-block coverage
+//   fell 8.2%, and diff grew 5 bytes. Restored the clean negative guard.
 
 #include <stdlib.h>
 #include <string.h>

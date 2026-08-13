@@ -19,6 +19,16 @@
 //   executable. Separate loop indices and distance locals were negative.
 // - Remaining gap: early stack-local ownership differs at +0125. Calls and
 //   frame match, but broad loop/block scheduling still differs.
+// - Reordered the setup to match the oracle: save world and range state before
+//   current-target lookup, then initialize scan counters after that lookup.
+//   This reduced the positional diff from 1704 to 1473 bytes.
+// - Binary compares use object_state <= 2 in both scans, not the equivalent
+//   source spelling < 3. The current-target score adds attackValue * 100,
+//   divides after hit-point normalization, then updates the damage count and
+//   threat count. The second scan tests the threat-count gate first.
+// - Shared the function-scope distance temporary for the first scan and
+//   current-target score. Remaining drift is structural and local-stack order;
+//   calls and frame remain exact.
 
 extern int DAT_0087d7c8[5];
 extern int DAT_0087d7d8[5];
@@ -167,6 +177,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     float numberMovingTargets;
     int numberDamagingUnits;
     int largestThreatIsBuilding;
+    int currentTargetIsBuilding;
     int i;
     int j;
     RGE_Game_World* world;
@@ -178,8 +189,8 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     int numberObjectsInRange;
     float closestEnemyDistance;
     float enemyDistance;
+    float distance;
     int currentTarget;
-    int currentTargetIsBuilding;
 
     this->search();
     difficulty = this->objectValue->owner->world->difficultyLevel();
@@ -209,17 +220,11 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
         modifier = ((int)this->objectValue->master_obj->field_28) * 2;
     }
 
-    world = this->objectValue->owner->world;
     numberNonCurrentTargets = -1;
+    world = this->objectValue->owner->world;
     numberMovingTargets = 0;
-    numberDamagingUnits = 0;
-    largestThreatIsBuilding = 0;
-    currentTargetIsWall = 0;
-    numberObjectsInRange = 0;
-    closestEnemyDistance = 0.0f;
-    enemyDistance = 100000.0f;
-    currentTarget = -1;
     currentTargetIsBuilding = 0;
+    numberObjectsInRange = 0;
 
     if (this->currentTargetValue != -1) {
         RGE_Static_Object* target =
@@ -229,13 +234,20 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
         }
     }
 
+    numberDamagingUnits = 0;
+    largestThreatIsBuilding = 0;
+    currentTargetIsWall = 0;
+    enemyDistance = 100000.0f;
+    closestEnemyDistance = 0.0f;
+    currentTarget = -1;
+
     for (i = 4; i > 1; --i) {
         j = 0;
         if (DAT_0087d7c8[i] > 0) {
             do {
                 RGE_Static_Object* target =
                     world->object(DAT_0087d7e0[i][j].object_id);
-                if (target != 0 && target->object_state < 3 &&
+                if (target != 0 && target->object_state <= 2 &&
                     this->objectValue->owner->relation(target->owner->id) != 1 &&
                     target->inside_obj == 0 &&
                     ((param_1 != 0 && numberObjectsInRange != 0) ||
@@ -248,7 +260,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     (i != 3 ||
                      this->canAttackUnitAtNeutrality(
                          target->master_obj->object_group) != 0)) {
-                    float distance = this->objectValue->distance_to_object(target);
+                    distance = this->objectValue->distance_to_object(target);
                     if (this->objectValue->maxReactDistance() <= distance &&
                         DAT_0087d7e0[i][j].distance <= modifier) {
                         if (target->id != this->currentTargetValue) {
@@ -305,24 +317,26 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                 numberMovingTargets = target->threat() * 50.0f;
                 numberObjectsInRange =
                     target->master_obj->attackValue(this->objectValue->master_obj);
-                float targetDistance = target->distance_to_object(this->objectValue);
+                numberMovingTargets =
+                    (float)numberObjectsInRange * 100.0f + numberMovingTargets;
+                if (target->hitPoints > 0.0f) {
+                    numberMovingTargets /= target->hitPoints;
+                }
+                distance = target->distance_to_object(this->objectValue);
+                if (numberDamagingUnits < 2) {
+                    numberMovingTargets /= distance;
+                } else {
+                    numberMovingTargets /=
+                        (float)numberDamagingUnits * distance * 3.0f;
+                }
                 if (target->master_obj->object_group != 3) {
-                    ++numberMovingTargets;
+                    ++numberDamagingUnits;
                     currentTargetIsBuilding = 0;
                 } else {
                     currentTargetIsBuilding = 1;
                 }
                 if (target->threat() > 0.0f) {
                     ++largestThreatIsBuilding;
-                }
-                if (target->hitPoints > 0.0f) {
-                    numberMovingTargets /= target->hitPoints;
-                }
-                if (numberDamagingUnits < 2) {
-                    numberMovingTargets /= targetDistance;
-                } else {
-                    numberMovingTargets /=
-                        (float)numberDamagingUnits * targetDistance * 3.0f;
                 }
             }
         }
@@ -348,7 +362,7 @@ skipCurrentTarget:
             do {
                 RGE_Static_Object* target =
                     world->object(DAT_0087d7e0[i][j].object_id);
-                if (target != 0 && target->object_state < 3 &&
+                if (target != 0 && target->object_state <= 2 &&
                     this->objectValue->owner->relation(target->owner->id) != 1 &&
                     target->inside_obj == 0 &&
                     ((param_1 != 0 && numberObjectsInRange != 0) ||
@@ -372,10 +386,10 @@ skipCurrentTarget:
                             goto skipTarget;
                         }
                         float threat = target->threat() * 50.0f;
-                        if (threat != 0.0f || largestThreatIsBuilding < 1) {
+                        if (largestThreatIsBuilding < 1 || threat != 0.0f) {
                             float score =
-                                (float)(target->master_obj->attackValue(
-                                    this->objectValue->master_obj) * 100) +
+                                (float)target->master_obj->attackValue(
+                                    this->objectValue->master_obj) * 100.0f +
                                 threat;
                             if (target->hitPoints > 0.0f) {
                                 score /= target->hitPoints;

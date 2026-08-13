@@ -17,6 +17,11 @@
 // - A narrower explicit arm set for 602-698 also worsened the same basin and
 //   was rolled back. The binary labels confirm shared jump-table targets, but
 //   source case spelling is not the remaining structural fix.
+// - Restored the binary order-notify predicate topology: test the non-minus
+//   current-action offset before the minus-order/p1 test, and removed the
+//   unsupported notifyCommander call from the 0x2d4 stop arm. This improved
+//   shape from 51.29% to 60.94%, reduced the positional diff by 14 bytes, and
+//   resolved three extra callback sites.
 // Left in scratch: structural call-site and frame drift remain broad.
 
 #if 0
@@ -351,26 +356,22 @@ extern "C" {
         this->stopObject(stopFlag); \
         return 2; \
     } \
-    if (order == -1) { \
-        if (this->currentActionValue == event->p1) { \
-            this->removeCurrentTarget(); \
-            LOG_STOP(lineC); \
-            this->stopObject(stopFlag); \
-            return 2; \
-        } \
-    } else if (this->currentActionValue + 100 == order) { \
-        if (this->currentActionValue == event->p1) { \
-            this->removeCurrentTarget(); \
-            LOG_STOP(lineD); \
-            this->stopObject(stopFlag); \
-            return 2; \
-        } \
+    if (order != -1 && this->currentActionValue + 100 == order) { \
+        this->removeCurrentTarget(); \
+        LOG_STOP(lineD); \
+        this->stopObject(stopFlag); \
+        return 2; \
+    } \
+    if (order == -1 && this->currentActionValue == event->p1) { \
+        this->removeCurrentTarget(); \
+        LOG_STOP(lineC); \
+        this->stopObject(stopFlag); \
+        return 2; \
     } \
     if (order == 0x2D4 && event->p1 == 0x262) { \
         this->removeCurrentTarget(); \
         LOG_STOP(lineE); \
         this->stopObject(0); \
-        this->notifyCommander(event); \
         return 2; \
     } \
     if (order == 0x2BD && event->p1 == 0x262) { \
