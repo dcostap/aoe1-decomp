@@ -23,6 +23,18 @@
 // probe 11: reordered the switch cases toward the original handler order;
 // call-site alignment improved to 86.36%, but size grew by 36 bytes and the
 // positional diff worsened, so restored the clean case order.
+// probe 14 baseline: current canonical source measured diff 895, frame 0x10
+// versus 0xC, and one rebuilt free versus four original free sites.
+// probe 15: one natural release tail reached exact size and diff 874; it still
+// merged all free calls and left the switch handler layout unresolved.
+// probe 16: direct free/update returns raised size to 1000 and worsened diff;
+// rolled back.
+// probe 17: PDB-backed switch order 0,3,2,4,5,6,1 improved diff to 854 and
+// shape to 64.44%, but expanded to five free calls and 1044 bytes.
+// probes 18-19: split and then fall-through release labels; emitted code stayed
+// at diff 850, with five free calls, so retained the simpler single-tail form.
+// probe 20: reused the incoming player home for DirectPlay size with a saved
+// index local; frame grew to 0x14 and diff regressed to 937, so rolled back.
 // left in scratch: canonical typed behavior/call surface is reconstructed, but
 // the VC5 frame/parameter-home reuse, switch handler placement, and four
 // distinct free call sites remain structurally unresolved.
@@ -141,19 +153,15 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
         this->PlayerOptions.PlayerReady[player] = 0;
         goto update;
 
-    case ME_CLOSED:
-        TDebuggingLog::Log(L, (char*)0x582BB0, player);
-        goto closed_cleanup;
-
-    case ME_HUMAN:
-        TDebuggingLog::Log(L, (char*)0x582CA4, player);
-        goto get_name_log;
-
     case ME_ELIMINATED:
         TDebuggingLog::Log(L, (char*)0x582CB0, player);
         this->PlayerOptions.dcoID[player] = 0;
         this->PlayerOptions.PlayerReady[player] = 0;
         goto update;
+
+    case ME_HUMAN:
+        TDebuggingLog::Log(L, (char*)0x582CA4, player);
+        goto get_name_log;
 
     case ME_COMPUTER:
         TDebuggingLog::Log(L, (char*)0x582C94, player);
@@ -167,6 +175,10 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
         this->PlayerOptions.PlayerReady[player] = 1;
         TDebuggingLog::Log(L, (char*)0x582C78, player);
         break;
+
+    case ME_CLOSED:
+        TDebuggingLog::Log(L, (char*)0x582BB0, player);
+        goto closed_cleanup;
 
     default:
         strcpy(this->FriendlyName[player].Text, (char*)0x582BA8);
@@ -219,12 +231,10 @@ get_name_log:
                             m.PlayerID = dcoID;
                             TDebuggingLog::Log(L, (char*)0x582C04, dcoID, 8);
                             this->FastSend(0, &m, 8, 0, 0);
-                            free(lpData);
-                            goto update;
+                            goto release_data;
                         }
                     }
-                    free(lpData);
-                    goto update;
+                    goto release_data;
                 }
                 if (result == 0) {
                     strcpy(this->FriendlyName[player].Text,
@@ -232,23 +242,24 @@ get_name_log:
                     strcpy(this->FormalName[player].Text,
                            ((DPNAME*)lpData)->lpszLongName);
                     this->PlayerOptions.Humanity[player] = ME_HUMAN;
-                    free(lpData);
-                    goto update;
+                    goto release_data;
                 }
                 TDebuggingLog::Log(L, (char*)0x582C48);
                 this->PlayerOptions.Humanity[player] = ME_ABSENT;
                 this->PlayerOptions.dcoID[player] = 0;
-                free(lpData);
-                goto update;
+                goto release_data;
             }
         }
 
         TDebuggingLog::Log(L, (char*)0x582BE8, result);
         strcpy(this->FriendlyName[player].Text, (char*)0x582BE0);
         this->PlayerOptions.Humanity[player] = ME_ABSENT;
-        free(lpData);
-        goto update;
+        goto release_data;
     }
+
+release_data:
+    free(lpData);
+    goto update;
 
 closed_cleanup:
     this->PlayerOptions.dcoID[player] = 0;

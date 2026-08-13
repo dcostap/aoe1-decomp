@@ -15,6 +15,13 @@
 // final clean candidate. Remaining drift starts at the original row-offset spill.
 // shard baseline: packet, dossier, same-TU donors, and ABI evidence confirm the
 // natural owner model and the 0x48 frame; no codegen tuning started in this pass.
+// orch probe 1: function-scope tile cursor, then split row lookup and offset;
+// codegen duplicate, so the row-entry spill is not caused by cursor scope.
+// orch probe 2: hoisted row and tile cursors; codegen duplicate.
+// orch probe 3: hoisted short neighbor flags to match Ghidra local topology;
+// codegen duplicate. Restored the clean typed candidate.
+// paused: original has an isolated mov [esp+4c],ecx before map-row lookup;
+// no natural typed cursor or flag-lifetime variant reproduced this store.
 
 struct RGE_Tile {
     char gap_00[5];
