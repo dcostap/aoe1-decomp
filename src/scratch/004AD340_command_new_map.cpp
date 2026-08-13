@@ -13,6 +13,8 @@
 // direct-this shape in same-TU command donors, was codegen-neutral.
 // probe: an explicit unsigned-byte cast on the typed new-map dispatch preserved
 // the source model but emitted the same code; rolled back.
+// probe: direct scenario-status branch calls tail-merge to the original single
+// call site with branch-specific 44e/44f pushes; retained as the best source.
 // blocker: original begins `mov eax,ecx`, homes this at [esp+10h], and keeps
 // show_status in ESI; VC5 retains this in ESI, zeroes EBX early, and emits a
 // 570-byte/576-compared basin despite matching frame/saved-register set/calls.
@@ -132,7 +134,11 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
 
     tribe->world = rge_base_game->world;
     if (show_status != 0) {
-        rge_base_game->show_status_message(scenario_name != 0 ? 0x44f : 0x44e, 0, -1);
+        if (scenario_name == 0) {
+            rge_base_game->show_status_message(0x44e, 0, -1);
+        } else {
+            rge_base_game->show_status_message(0x44f, 0, -1);
+        }
     }
 
     player_info.scenario = scenario_name;

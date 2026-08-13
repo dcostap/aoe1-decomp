@@ -18,6 +18,7 @@
 // try 14: tested function-scope rect bounds, height/width declaration order, and in-place right/bottom updates; VC5 stayed in the same LEA family (the oracle uses sub/sub/add/add).
 // try 15: tested foreground color-area assignment/declaration order and a 25-variant focused rect/color lab; no exact variant, with all size/frame/call-set gates stable.
 // try 16: modeled the canonical same-TU TPanel render bounds as one RECT; VC5 emitted identical code, so the typed aggregate is retained.
+// try 17: reused adjusted width/height as right/bottom, following the original EBX/EAX sub/sub/add/add block and the decompiler's lack of named right/bottom locals; emitted duplicate bytes, so restored.
 // final validated scratch state: typed structural reconstruction is retained; only the localized VC5 rectangle scheduling/register family remains nonexact.
 
 #include <windows.h>

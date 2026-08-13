@@ -20,6 +20,16 @@
 // Current typed source: 776B rebuilt vs 776B original, five direct calls, and
 // 17 strict differing bytes. Remaining drift is localized to the EH handler
 // relocation and the shared invalid-return tail; it is not exact yet.
+// r3-1: returning the invalid zero assignment directly duplicated the EH
+// epilogue and grew the function by 19 bytes; restored.
+// r3-2: removing the enclosing invalid/valid else while keeping the typed body
+// was the same 19-byte duplicate; restored.
+// r3-3: moving the result declaration before the master/radius locals was an
+// emitted-code duplicate; restored.
+// r3-4: initializing result before the radius gate changed the prologue and
+// broad liveness (682-byte drift); restored.
+// r3-5: removing the master-object alias in the radius gate was an emitted-code
+// duplicate; restored. The binary tail still requires a new source lead.
 
 struct MasterObj {
     virtual ~MasterObj();
