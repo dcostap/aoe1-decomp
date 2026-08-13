@@ -18,6 +18,13 @@
 // attempt 16: output-pointer alias with byte result; duplicate attempt 15, rolled back.
 // attempt 17: natural early failure guards produced duplicate 442-byte codegen; restored nested source because tail topology did not move.
 // attempt 18: modeled the ABI-supported virtual TEasy_Panel surface with a vptr-preserving leading gap; emitted code was unchanged, rolled back.
+// continuation probe: nested allocation/error guards were a codegen duplicate.
+// continuation probe: reusing center_v for the common return widened early liveness to 448 bytes / 313 diff, rolled back.
+// continuation probe: naming setup's return before its guard was a codegen duplicate.
+// continuation probe: making create_text virtual shifted proven field accesses and worsened to 62 diff, rolled back.
+// continuation probe: hoisting font selection before the allocation/error guard widened drift to 143 diff, rolled back.
+// continuation probe: exact sibling nested factory guard shape was a codegen duplicate.
+// Remaining evidence: 9 ordered calls, first 156 bytes, and all body blocks stay exact; only /GX success/failure cleanup-tail placement differs. Same-TU create_input, create_edit, create_scrollbar, and slider factories show the same duplicated-tail basin after typed control-flow/result probes.
 // Left in scratch: best source has all functional code and first 156 bytes exact, but tail/failed-path placement is not exact; not accepted_drift because rebuilt failure target lies outside original configured function body.
 
 class TPanel {};
