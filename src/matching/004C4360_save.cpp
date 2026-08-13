@@ -16,6 +16,9 @@
 //   the loop index and EBP for the growth pointer, while the original swaps
 //   those registers.  Calls, widths, loop guards, allocation null paths, and
 //   serialized sentinel behavior are aligned.
+// - Replaced the hand-expanded growth blocks with the natural ManagedArray
+//   operator[] donor surface.  This preserves the period array ownership form
+//   and restores the original EBX/EBP allocation, producing an exact match.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
@@ -51,11 +54,28 @@ public:
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    int& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int new_size = index + 1;
+            int* new_value = new int[new_size];
+            if (new_value != 0) {
+                for (int i = 0;
+                     i < this->maximumSizeValue && i < new_size; ++i) {
+                    new_value[i] = this->value[i];
+                }
+                delete[] this->value;
+                this->value = new_value;
+                this->maximumSizeValue = new_size;
+            }
+        }
+        return this->value[index];
+    }
 };
 
 class RGE_Static_Object {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Static_Object();
     long id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;
@@ -104,10 +124,8 @@ void RGE_Static_Object::save(int file)
 {
     short sprite_id;
     int inside_id;
-    int* new_value;
     int saved_file = file;
     int i;
-    int j;
 
     rge_write(saved_file, &this->type, 1);
     rge_write(saved_file, &this->owner->id, 1);
@@ -152,20 +170,7 @@ void RGE_Static_Object::save(int file)
     rge_write(saved_file, &file, 4);
     i = 0;
     if (this->groupMembers.numberValue > 0) do {
-        if (i > this->groupMembers.maximumSizeValue - 1) {
-            new_value = new int[i + 1];
-            if (new_value != 0) {
-                for (j = 0; j < this->groupMembers.maximumSizeValue &&
-                            j < i + 1; ++j) {
-                    new_value[j] = this->groupMembers.value[j];
-                }
-                delete[] this->groupMembers.value;
-                this->groupMembers.value = new_value;
-                this->groupMembers.maximumSizeValue = i + 1;
-            }
-        }
-
-        file = this->groupMembers.value[i];
+        file = this->groupMembers[i];
         rge_write(saved_file, &file, 4);
         ++i;
     } while (i < this->groupMembers.numberValue);
@@ -174,20 +179,7 @@ void RGE_Static_Object::save(int file)
     rge_write(saved_file, &file, 4);
     int k = 0;
     if (this->pathingGroupMembers.numberValue > 0) do {
-        if (k > this->pathingGroupMembers.maximumSizeValue - 1) {
-            new_value = new int[k + 1];
-            if (new_value != 0) {
-                for (j = 0; j < this->pathingGroupMembers.maximumSizeValue &&
-                            j < k + 1; ++j) {
-                    new_value[j] = this->pathingGroupMembers.value[j];
-                }
-                delete[] this->pathingGroupMembers.value;
-                this->pathingGroupMembers.value = new_value;
-                this->pathingGroupMembers.maximumSizeValue = k + 1;
-            }
-        }
-
-        file = this->pathingGroupMembers.value[k];
+        file = this->pathingGroupMembers[k];
         rge_write(saved_file, &file, 4);
         ++k;
     } while (k < this->pathingGroupMembers.numberValue);

@@ -29,6 +29,8 @@
 // natural source remains 304B with one documented dispatch SIB byte differing.
 // sequential TU pass: typed ABI and same-TU donor review found no new source
 // or layout fact for the lone commutative SIB encoding; keep the natural source.
+// probe 40: restored the same-TU world's proven virtual surface and declared
+// setup_players at slot 24; this natural context fixes the lone SIB byte.
 
 struct RGE_Master_Player;
 
@@ -69,9 +71,38 @@ struct RGE_Player_Info {
     char gap_2A9[3];
 };
 
+class RGE_Sound;
+class TCommunications_Handler;
+
 class RGE_Game_World {
 public:
-    virtual ~RGE_Game_World();
+    // The same-TU world donor places setup_players at virtual slot 24 (+0x60).
+    virtual unsigned char data_load_world(void*);
+    virtual unsigned char data_load_terrain_tables(char*);
+    virtual unsigned char data_load_players(char*);
+    virtual unsigned char data_load_objects(char*);
+    virtual unsigned char data_load_sounds(char*);
+    virtual unsigned char data_load_color_tables(char*);
+    virtual unsigned char data_load_sprites(char*);
+    virtual void data_load_players_type(short, short, void*);
+    virtual void data_load_effects(char*);
+    virtual unsigned char data_load_map(char*, char*, char*, char*, short,
+                                        short, short, RGE_Sound**, char*);
+    virtual void data_load_random_map(char*, char*, char*, char*);
+    virtual unsigned char init_player_type(int, short, unsigned char);
+    virtual unsigned char init_player(int);
+    virtual void load_player(int, unsigned char, short);
+    virtual void color_table_init(int);
+    virtual void terrain_tables_init(int);
+    virtual void init_sounds(int, void*);
+    virtual void init_sprites(int);
+    virtual void map_init(int, void*);
+    virtual void effects_init(int);
+    virtual void master_player_init(int);
+    virtual void command_init(int, TCommunications_Handler*);
+    virtual void world_init(int, void*, TCommunications_Handler*);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info& info);
     char gap_04[0x38];
     short player_num;
     char gap_3E[2];
@@ -82,7 +113,7 @@ public:
 
 class TRIBE_World : public RGE_Game_World {
 public:
-    void setup_players(RGE_Player_Info& info);
+    virtual void setup_players(RGE_Player_Info& info);
 };
 
 extern "C" int useComputerPlayers;
