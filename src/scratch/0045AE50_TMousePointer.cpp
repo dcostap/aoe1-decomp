@@ -32,6 +32,10 @@
 // Fresh claim probe: moved the natural mouse_rect aggregate copy before the
 // independent custom_draw/render_area stores; diff improved 357 -> 354 bytes,
 // but the first mismatch stayed at save_rect scheduling. Kept this source order.
+// Fresh claim probe: a named RECT4* save_rect_ptr for all aggregate copies
+// follows the target's long-lived save_rect base and Ghidra's ptVar1 alias;
+// diff improved 354 -> 340 bytes, size 425 -> 416, and shape 52.29 -> 53.21.
+// Kept as the best typed reconstruction; first mismatch remains save_rect init.
 // Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
 
 typedef unsigned long ulong;
@@ -67,12 +71,14 @@ public:
 
 TMousePointer::TMousePointer(int mode)
 {
-    save_rect.top = 0;
-    save_rect.right = 0;
-    save_rect.left = 0;
-    save_rect.bottom = 0;
+    RECT4* save_rect_ptr = &this->save_rect;
 
-    mouse_rect = save_rect;
+    save_rect_ptr->top = 0;
+    save_rect_ptr->right = 0;
+    save_rect_ptr->left = 0;
+    save_rect_ptr->bottom = 0;
+
+    mouse_rect = *save_rect_ptr;
     custom_draw = 0;
     render_area = 0;
     save_area = 0;
@@ -80,7 +86,7 @@ TMousePointer::TMousePointer(int mode)
     Cursor_Shape = 0;
     Max_CX = 0;
     Max_CY = 0;
-    cursor_rect = save_rect;
+    cursor_rect = *save_rect_ptr;
     cWidth = 0;
     cHeight = 0;
     gWidth = 0;
@@ -91,7 +97,7 @@ TMousePointer::TMousePointer(int mode)
     game_facet = 0;
     next_facet = 0;
     last_facet = 0;
-    new_save_rect = save_rect;
+    new_save_rect = *save_rect_ptr;
     d_top = 0;
     d_left = 0;
     d_bottom = 0;
@@ -100,7 +106,7 @@ TMousePointer::TMousePointer(int mode)
     g_left = 0;
     g_bottom = 0;
     g_right = 0;
-    restore_rect = save_rect;
+    restore_rect = *save_rect_ptr;
     Shutdown = 0;
     Setup = 0;
     GameMode = 0;
