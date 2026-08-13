@@ -41,6 +41,15 @@
 //   size parity. Restored the named int index and direct typed prior-row pointer.
 // - Final validation: 365 bytes, 7/7 ordered calls, and 10 differing bytes; the only gap is
 //   the first row address, where VC5 emits dec-plus-scaled LEA instead of folded -24.
+// Follow-up orch-438060-b:
+// - Baseline recheck confirmed the clean typed source at 365 bytes, 7/7 calls, and 10 differing
+//   bytes. Moving row formation after the coordinate guard broadened drift to 320 bytes.
+// - Splitting the early row-array load from post-guard row formation improved the local hunk but
+//   still broadened drift to 311 bytes and moved the branch before the row LEA.
+// - Repeated typed pRVar1[index-1] field accesses with either direct or local row-array ownership
+//   broadened drift to 283 and 270 bytes. Restored the named typed row source.
+// - Current pause: natural ownership and all later blocks remain matched; only the first row
+//   address differs, with VC5 emitting dec-plus-scaled LEA instead of the oracle's folded -24.
 
 extern float DAT_0056f604;
 

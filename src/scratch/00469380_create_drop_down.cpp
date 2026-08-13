@@ -57,6 +57,8 @@
 // 33: function-scope uninitialized int carrier duplicated the 32-byte basin.
 // 34: function-scope char* carrier assigned directly from second calloc was
 // a codegen duplicate of the clean 21-byte basin; restored.
+// 35: direct return only on the second calloc failure grew the function by
+// 17 bytes and duplicated the EH return path; restored the clean goto form.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>

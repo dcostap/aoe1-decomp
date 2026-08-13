@@ -16,6 +16,12 @@
 // 783-byte match, but this is codegen-only steering and not plausible source.
 // Restored the clean typed expression; final validated drift remains two
 // commutative allocator-product operand bytes at 00455A1E/00455A25.
+// orch-455910-b: long and int height-first compound area temporaries were
+// codegen duplicates; an unsigned-long first-operand cast and a local map alias
+// were also duplicates. An adjacent dimensions view moved the store and worsened
+// the diff to 12 bytes; /Oa changed broad structure and worsened it to 719 bytes.
+// Restored the direct typed expression and default flags. Validation remains a
+// 783-byte function with 24 calls aligned and only the two product bytes wrong.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
