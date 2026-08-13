@@ -23,6 +23,11 @@
 // - Same-TU save/read x/y/z order improved the best source to 295 bytes and
 //   93.05% shape. Direct object-guard and players-array variants were tested,
 //   then rolled back because they increased size or positional drift.
+// - Current claim restored the proven World gap at 0x6c, placing the scenario
+//   object id and flag at +0x70/+0x74. A typed players-array slot for the
+//   object guard reduced the positional diff to 167 bytes without changing
+//   calls. The final mapped-id guard as > -1 reduced it to 164 bytes; the
+//   rebuilt body remains 820 bytes versus 812 and structural drift remains.
 // Baseline: typed reconstruction of the scenario 1.08 loader.  The scenario
 // record widths follow the executable, including its narrow legacy fields.
 
@@ -156,6 +161,7 @@ public:
     RGE_Scenario* scenario;
     char gap_60[8];
     int next_object_id;
+    char gap_6c[4];
     int scenario_object_id;
     uchar scenario_object_flag;
 
@@ -252,12 +258,11 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
                     rge_read(file, &obj_state, 1);
                     rge_read(file, &obj_angle, 4);
                     int player_id = *map;
-                    RGE_Player* player = 0;
-                    if (player_id >= 0) player = this->players[player_id];
-                    if (player != 0) {
+                    RGE_Player** player = this->players + player_id;
+                    if (player_id >= 0 && *player != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = id;
-                        player->make_scenario_obj(
+                        (*player)->make_scenario_obj(
                             world_x, world_y, world_z, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
@@ -291,7 +296,7 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
     if (i < this->player_num) {
         do {
             if (i >= scenario_player_count) return;
-            if (this->players[i] != 0 && player_id_hash[i] >= 0) {
+            if (this->players[i] != 0 && player_id_hash[i] > -1) {
                 int player_index = i - 1;
                 this->players[player_id_hash[i]]->loadAIInformation(
                     this->scenario->Get_BuildList(player_index, 1),

@@ -14,6 +14,13 @@
 //   named from the generated TDrawSystem dump rather than an anonymous gap.
 // - A focused six-way first-store variant lab preserved size/frame/call-set but
 //   found no exact prologue. The best clean source remains the typed form.
+// - Moving long-lived DirectDraw declarations to function entry was a codegen
+//   duplicate; the first-block preload stayed unchanged.
+// - Reverse comma-grouping and Wnd/Inst/Pal order probes reached diff 450 but
+//   worsened source order or edit shape; both were rolled back.
+// - One-line initial stores, combined register hints, and <stdlib.h> context
+//   were codegen duplicates. The first paired hunk remains the ABI/liveness
+//   frontier.
 
 #include <string.h>
 #pragma function(memset)

@@ -29,6 +29,16 @@
 // restored the positive outer guard.
 // probe 19 control-flow: Ghidra's failure-first create-result source order
 // moved four call sites and was rejected; restored success-first order.
+// probe 23 control-flow: a single-iteration break join grew the function by
+// 27 bytes and broke the ordered-call prefix; restored the binary-backed goto
+// result topology.
+// probe 26 ABI: model the generated TScreenPanel base and setup-screen virtual
+// destructor while preserving sizeof(TribeMPSetupScreen)==0x890; emitted code
+// was identical, so restored the narrow constructor-only local surface.
+// probe 28 context: include <new.h> for the period operator-new declaration;
+// emitted code was identical and the EH tail remained cloned.
+// probe 30 variant: explicit default-constructor parentheses on new
+// TribeMPSetupScreen emitted identical code; restored the clean spelling.
 
 #include <string.h>
 
