@@ -988,3 +988,8 @@ only the matching paragraphs and their section heading.
   Direct `this->object->method()` calls can preserve the original object and
   vtable reload schedule.  This can fix both a late size gap and register
   coloring without volatile qualifiers or artificial temporaries.
+
+- In large VC5 serializers, a fixed-array cursor assignment may belong inside
+  the positive-count guard.  This preserves the original test-before-`lea`
+  block order.  Also compare adjacent scalar write offsets, not only field
+  names: source declaration order can differ from emitted serialization order.

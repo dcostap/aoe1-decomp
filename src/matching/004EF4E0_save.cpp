@@ -17,11 +17,11 @@
 // - Reused the matched ManagedArray donor's `newMax` plus bounded `for` copy
 //   form across all ten manual growth blocks. Current: 3230B, 94/94 calls,
 //   0x0 frame, 99.41% shape, 822 positional bytes / 187 edit bytes.
-// - Remaining first mismatch is the fixed `sn[226]` count loop: the source
-//   initializes its write pointer before the count test, while original asm
-//   tests the count before `lea [this+194h]`. A later unitsTasked growth tail
-//   is one byte short and changes the final scalar-call alignment. Budget
-//   exhausted; leave this readable period-plausible reconstruction in scratch.
+// - Moving the fixed `sn[226]` write-pointer assignment inside its positive
+//   count guard reproduced the original test-before-`lea` block order.
+// - Original tail serialization writes `zoomingToNextAge` before the adjacent
+//   `lastCoopAttackDemandTime` field. Swapping those natural statements gives
+//   an exact 3230B / 94-call match.
 
 void __cdecl rge_write(int file, void* data, int size);
 void* __cdecl operator new(unsigned int size);
@@ -414,9 +414,9 @@ int TribeTacticalAIModule::save(int file)
     {
     tempInt = 0xE2;
     rge_write(file, &tempInt, 4);
-    writePtr = this->sn;
     writeCount = 0;
     if (writeCount < tempInt) {
+        writePtr = this->sn;
         do {
             rge_write(file, writePtr, 4);
             writeCount++;
@@ -638,8 +638,8 @@ int TribeTacticalAIModule::save(int file)
     rge_write(file, &this->lastAttackResponseBuildInsertionTime, 4);
     rge_write(file, &this->lastCoopTributeDemandTime, 4);
     rge_write(file, &this->lastCoopTributeGiftTime, 4);
-    rge_write(file, &this->lastCoopAttackDemandTime, 4);
     rge_write(file, &this->zoomingToNextAge, 4);
+    rge_write(file, &this->lastCoopAttackDemandTime, 4);
     rge_write(file, &this->lastUngroupedSoldierTaskTime, 4);
     rge_write(file, &this->attackStateValue, 0x2C);
     rge_write(file, this->hitsByPlayer, 0x24);
