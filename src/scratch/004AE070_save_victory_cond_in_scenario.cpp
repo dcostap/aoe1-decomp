@@ -14,6 +14,13 @@
 // 12: an eight-variant direct/alias lab over cases 3, 5, and 9 found no exact call set; alias forms were less plausible and were discarded.
 // 13: direct SetSPAmount in case 3 moved the diff to 764 bytes but broke the original shared amount-tail shape; restored the clean goto source.
 // 14: paused with exact size/frame and canonical field ownership; structural blocker is VC5 merging two equivalent switch-arm call tails.
+// 15: positive selected-object guards and direct returns were codegen duplicates; restored the clean guards.
+// 16: a case-6 selected-object alias separated its object/victory tail, but changed case-3/5 amount and object-type sharing; diff worsened to 802.
+// 17: dedicated case-3 object-type/amount labels and a case-5 amount alias did not recover the clean call sequence; discarded.
+// 18: follow-up structural work found no evidence-backed exact lead; retain the clean typed reconstruction.
+// 19: direct returns in selected-object cases 6 and 9 were a codegen duplicate; VC5 still merged their call tail.
+// 20: scoped selected-object aliases in both cases separated the object/victory calls, but worsened the positional diff and lost an amount-call alignment; discarded.
+// 21: moving the selector declaration before amount was a codegen duplicate; retain the clean declaration order.
 
 extern "C" int __cdecl atoi(const char*);
 

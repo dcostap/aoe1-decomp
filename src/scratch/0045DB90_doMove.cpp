@@ -20,6 +20,13 @@
 // - Ghidra confirms a separate int retry-success flag (bVar4) in both scans.
 //   Its natural form reached a 0x18 frame and diff 3048, but VC5 still used
 //   EAX for the cached vtable and emitted two retry calls. It was rolled back.
+// - A donor-backed raw member-pointer cache removed the two extra indirect
+//   call sites only when it loaded through an explicit saved vtable pointer;
+//   direct-this loading classified them as virtual calls and kept the frame
+//   at 0x10. The saved-vtable form reached a 0x18 frame and four new exact
+//   blocks, but duplicated vtable homes in the prologue, worsened diff to
+//   3359, and left the structural call gap. Both forms were rolled back as
+//   codegen steering rather than source reconstruction.
 
 struct Waypoint {
     float x;

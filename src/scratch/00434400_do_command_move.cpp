@@ -16,6 +16,13 @@
 // - Kept the six bounding/total locals inside the n > 1 branch, matching the
 //   original line-521 initialization band; this is a natural scope lead for
 //   the remaining target and accumulator stack-home mismatch.
+// - Tried evaluating the target lookup before count and unit-cursor setup,
+//   matching the original initial load order; this moved the first mismatch
+//   to the prologue and worsened the diff, so it was restored.
+// - Reordered top-level total and bound declarations while keeping binary
+//   initialization order, based on the packet's stack-local ordering; VC5
+//   emitted the clean 811-byte mismatch unchanged, so the branch-scoped form
+//   remains the best source reconstruction.
 
 #include "../../include/game_globals.h"
 
