@@ -14,7 +14,12 @@
 //   duplicates. The remaining drift starts at difficulty-string scheduling.
 // - A const MapType return from the same-TU/PDB ABI donor was also a codegen
 //   duplicate; restored the natural int helper surface.
-// - Paused: the natural source has 46 aligned calls and 0x834 frame parity.
+// - Ghidra's original-source block shows diff_str initialized to "Unknown"
+//   before the difficulty get_string call; testing that missing natural copy.
+// - The original mouse gate checks prog_active between mouse_pointer and the
+//   window handle; restored that binary-proven condition.
+// - Using RGE_Game_World::curr_player at +0x7C and the two binary-proven
+//   guards produced an exact 1779-byte match after four new probes.
 
 #include <stdio.h>
 #include <string.h>
@@ -56,6 +61,8 @@ class RGE_Game_World {
 public:
     char gap_00[0x3C];
     short player_num;
+    char gap_3E[0x3E];
+    short curr_player; // +0x7C
 };
 
 class RGE_Base_Game {
@@ -256,6 +263,7 @@ void TRIBE_Game::let_game_begin()
         break;
     }
 
+    strcpy(diff_str, "Unknown");
     this->get_string(0x2BD0 + this->difficulty(), &diff_str[0], 0x100);
     sprintf(str, "    resources=%s, age=%s, victory=%s, difficulty=%s",
             res_str, age_str, vic_str, diff_str);
@@ -304,8 +312,8 @@ void TRIBE_Game::let_game_begin()
     }
     this->auto_paused = 0;
     chat->ClearChat();
-    chat->setInChatGroup(this->world->player_num - 1, 1);
-    if (this->mouse_pointer != 0 && this->prog_window != 0) {
+    chat->setInChatGroup(this->world->curr_player, 1);
+    if (this->mouse_pointer != 0 && this->prog_active != 0) {
         if (IsIconic(this->prog_window) == 0) {
             this->mouse_pointer->center();
         }

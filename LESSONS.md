@@ -993,3 +993,13 @@ only the matching paragraphs and their section heading.
   the positive-count guard.  This preserves the original test-before-`lea`
   block order.  Also compare adjacent scalar write offsets, not only field
   names: source declaration order can differ from emitted serialization order.
+
+## Binary-supported fallback and adjacent world fields
+
+- When a localized `get_string` call follows a switch of copied text, check
+  for a binary-proven fallback copy before the call.  VC5 can interleave that
+  natural `strcpy(buffer, "Unknown")` with the later call argument setup.
+  Also distinguish `RGE_Game_World::player_num` at `+0x3C` from
+  `curr_player` at `+0x7C`; chat-group setup can use the latter without
+  subtracting one.  Preserve nearby binary-proven guards: a mouse gate may
+  test `prog_active` but pass `prog_window` without a separate null test.
