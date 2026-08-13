@@ -16,6 +16,10 @@
 // - shardC5-4B5E00: tested a natural for-header guard/increment to remove the
 //   rebuilt extra get_scenario_name site; VC5 emitted the same 29-call code,
 //   so restored the ordinary while reconstruction.
+// - orch-4B5E00-a: used the same-TU donor's explicit body call and break; this
+//   restored the original single get_scenario_name site and exact CFG/size.
+// - orch-4B5E00-a: removed decompiler-only +4 biases from all three buffers;
+//   the natural buffer bases produce an exact 864-byte match.
 
 extern "C" char* strncpy(char* dst, const char* src, unsigned int count);
 extern "C" char* strcpy(char* dst, const char* src);
@@ -126,14 +130,18 @@ void TribeGameSettingsScreen::fillScenarios()
         i = 0;
         this->scenarioList->sorted = 1;
         this->scenarioCount = 0;
-        while ((name = info->get_scenario_name(i)) != 0) {
+        while (1) {
+            name = info->get_scenario_name(i);
+            if (name == 0) {
+                break;
+            }
             len = (int)strlen(name) - 4;
-            strncpy(file_name + 4, name, len);
-            file_name[len + 4] = 0;
+            strncpy(file_name, name, len);
+            file_name[len] = 0;
 
             if (rge_base_game->multiplayerGame() ||
-                strcmp(file_name + 4, rge_base_game->scenarioName()) == 0) {
-                this->scenarioList->append_line(file_name + 4, i);
+                strcmp(file_name, rge_base_game->scenarioName()) == 0) {
+                this->scenarioList->append_line(file_name, i);
                 this->scenarioCount++;
             }
             i++;
@@ -159,14 +167,14 @@ void TribeGameSettingsScreen::fillScenarios()
                         int players = entry->player_count;
                         if (players > 0) {
                             if (this->scenarioFixed[i] == 0 && players >= 3) {
-                                sprintf(player_str + 4, "%d - %d", 2, players);
+                                sprintf(player_str, "%d - %d", 2, players);
                             } else {
-                                sprintf(player_str + 4, "%d", players);
+                                sprintf(player_str, "%d", players);
                             }
-                            strcpy(scenario_file + 4,
+                            strcpy(scenario_file,
                                    this->scenarioList->get_text(i));
                             this->scenarioList->change_line(
-                                i, scenario_file + 4, player_str + 4, 0);
+                                i, scenario_file, player_str, 0);
                         }
                     }
                     i++;
