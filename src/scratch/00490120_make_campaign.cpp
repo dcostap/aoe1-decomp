@@ -21,6 +21,13 @@
 // 9: moved the name declaration after the arrays; VC5 emitted the same homes.
 // 10: tested loop-scoped indices for pointer-home coloring; VC5 rejects the
 //    second declaration with C2374, so the shared top-level index was restored.
+// 11: tested the reversed RGE_Campaign array arguments; it improves the metric
+//    by 2 bytes but violates the matched constructor's file_name ownership.
+//    Restored the canonical campaign_filename, scenarios_text argument order.
+// 12: replaced the explicit invalid-name gotos with a natural if/else form; VC5
+//    emitted the same bytes, so the readable branch shape remains in scratch.
+// 13: scoped the paired array declarations inside the positive-count block; VC5
+//    emitted the same bytes, so the top-level declarations remain in the source.
 
 typedef unsigned int uint;
 
@@ -105,8 +112,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
     name = this->filename->get_text();
     if (name != 0) {
         if (*name == 0 || *name == ' ') {
-            goto invalid_name;
-        }
+            this->popupOKDialog(0x2BCC, 0, 0x1C2, 100);
+        } else {
 
             addstring(&text, name, (char*)".cpx");
             count = this->campaign_scenarios->numberLines();
@@ -150,15 +157,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
             free(text);
             this->fill_campaign_drop();
             rge_base_game->find_campaigns();
+        }
     }
-
-    goto done;
-
-done:
     this->need_to_save = 0;
     return;
-
-invalid_name:
-    this->popupOKDialog(0x2BCC, 0, 0x1C2, 100);
-    goto done;
 }
