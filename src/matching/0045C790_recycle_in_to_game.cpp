@@ -10,8 +10,8 @@
 // - Restored the typed start waypoint and its x/y/z zeroing; this recovered
 //   the original 471-byte structural basin through the base recycle call.
 // - The oracle compares facet_num in memory and sign-extends it again after
-//   the guard.  A narrow volatile member preserves those binary-observed
-//   accesses; nested positive guards retain the common set_angle tail.
+//   the guard.  A narrow member preserves those binary-observed accesses;
+//   nested positive guards retain the common set_angle tail.
 // - Inlined debug_rand into the angle expression (best 99 strict diff bytes).
 //   Remaining codegen drift is the x87 pair of redundant fxch instructions
 //   and the quotient sign-adjust register; the Path call identity is recorded
@@ -40,6 +40,12 @@
 // - orch-45C790-b tested local comparison, reversed integer product, scope and
 //   const lifetime, explicit volatile reads, long quotient typing, and math
 //   header context. All reproduced the same 3-byte EAX/ECX drift; restored.
+// - orch-45C790-c tested long facet storage, direct nonvolatile facet use,
+//   long debug_rand return typing, and redundant cast removal. Each kept the
+//   same 3-byte quotient-register drift.
+// - Direct this->sprite ownership removed the pointer local and selected the
+//   original ECX sign-adjust register. The natural direct-member source is an
+//   exact 471-byte match; keep it for promotion.
 
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -47,7 +53,7 @@ class RGE_Player;
 class RGE_Sprite {
 public:
     char gap_00[0x60];
-    volatile short facet_num;
+    short facet_num;
     char gap_62[0x0E];
     unsigned char flag;
 };
@@ -184,16 +190,14 @@ void RGE_Moving_Object::recycle_in_to_game(
     this->turn_towards_time = 0.0f;
     this->trail_remainder = 0.0f;
 
-    RGE_Sprite* sprite = this->sprite;
-    if (sprite != 0) {
-        if ((sprite->flag & 2) != 0) {
-            if (sprite->facet_num > 1) {
-                int facings = sprite->facet_num;
+    if (this->sprite != 0) {
+        if ((this->sprite->flag & 2) != 0) {
+            if (this->sprite->facet_num > 1) {
                 this->angle =
-                    (DAT_00570b40 / (float)(int)facings) *
+                    (DAT_00570b40 / (float)this->sprite->facet_num) *
                     (float)((debug_rand(
-                        (char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xC5) *
-                             facings) / 0x7FFF);
+                            (char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xC5) *
+                             this->sprite->facet_num) / 0x7FFF);
 
                 if (this->angle < DAT_00570b48) {
                     this->angle = this->angle - DAT_00570b4c;
