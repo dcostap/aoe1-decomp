@@ -27,6 +27,9 @@
 // - new claim: guarded-for, comma-guard, inner declaration, declaration-order,
 //   register, unguarded-inner-for, and outer-while variants stayed in the same
 //   two codegen groups; no source-backed lead remains for the five-byte drift.
+// - new claim: int loop variables, renamed outer/next roles, mixed int/long k,
+//   an initialized outer declaration, and a for increment clause all reproduced
+//   the pre-guard six-byte group; restored the clean five-byte source.
 
 class RGE_Map;
 class RGE_Random_Map_Module_List;

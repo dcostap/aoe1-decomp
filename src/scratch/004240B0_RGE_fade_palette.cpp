@@ -36,6 +36,10 @@
 // follow-up claim: reversing source/destination cursor updates was codegen-identical; rolled back.
 // follow-up claim: register-qualified draw_area was codegen-identical; rolled back.
 // paused: clean typed reconstruction remains 661B/0x810 with 10 bytes of localized post-copy reload drift.
+// follow-up claim b: moving done initialization after palette acquisition widened the diff to 615 bytes and changed the frame; rolled back.
+// follow-up claim b: hoisting loop cursors and fade temporaries to function scope preserved the same 661B/0x810, 10-byte basin; rolled back to the clean pin.
+// follow-up claim b: moving the fade-time square before the start-time call widened the localized drift to 68 bytes; rolled back.
+// follow-up claim b: no source-backed form changed the final two reloads; the remaining blocker is mov done before/after mov draw_area.
 
 #include <windows.h>
 

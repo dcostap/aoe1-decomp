@@ -19,6 +19,11 @@
 //   non-associative addition, raw byte pointers, and pointer locals.  The first
 //   four emitted the same two-byte SIB drift; pointer locals widened the drift.
 //   The clean typed source remains the best reconstruction.
+// - New claim probes tested inline id-address arithmetic, typed record locals,
+//   reversed pointer arithmetic, unsigned offsets, and a focused eight-form
+//   SIB variant lab.  All either duplicated the two-byte drift or lost structure.
+//   A VC5 flag sweep found no exact default-compatible variant.  Clean source
+//   restored; the remaining bytes are only SIB base/index operand encoding.
 
 extern "C" int rge_open(char*, int, int);
 extern "C" void rge_write(int, void*, int);

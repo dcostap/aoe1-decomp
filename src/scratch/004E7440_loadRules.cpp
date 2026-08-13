@@ -25,6 +25,11 @@
 // reached the prior two-byte basin but swapped parsed-byte semantics; the full
 // natural ordering matrix, erased-use, dword/byte overlay, and volatile-array
 // probes did not produce an exact or plausible source. Restored clean.
+// follow-up session: declaration-only changes were codegen duplicates. Original
+// string-address constants plus natural byte mapping stayed at 4 bytes; reversing
+// sscanf destinations reached the known 2-byte basin. Refs and hoisted pointers
+// duplicated that basin. A direct int upper-byte overlay widened drift to 190.
+// restored the clean typed parser; remaining drift is still the sscanf byte order.
 // The best two-byte basin is still 2 bytes but semantically reverses the
 // parsed-byte tests; keep the clean first-byte/second-byte source below.
 // left in scratch: canonical behavior and frame/call topology match; the

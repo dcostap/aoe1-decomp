@@ -28,6 +28,8 @@
 //   decompiler local declaration order all compiled to the same 14-byte diff.
 // - Focused mode-102 and mode-104 variant labs found no new emitted-code basin;
 //   the remaining bytes are localized register coloring in those two paths.
+// - Declaring the known TRIBE_Main_View command_make_do override and testing
+//   qualified and unqualified calls did not change the remaining 14 bytes.
 
 #include <stdlib.h>
 
@@ -198,6 +200,7 @@ public:
 
 class TRIBE_Main_View : public RGE_Main_View {
 public:
+    virtual int command_make_do(long, long, int, short);
     virtual long mouse_right_up_action(long, long, int, int);
 };
 

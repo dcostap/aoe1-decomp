@@ -27,6 +27,10 @@
 // - Remaining drift is 10 stack-home bytes: VC5 assigns result/rNum/tempCount
 //   to [esp+10]/[esp+18]/[esp+14], while the oracle uses [esp+18]/[esp+14]/
 //   [esp+10]. No behavior or call-set drift remains.
+// - This claim tested direct declaration permutations and three zero-init forms;
+//   an 18-variant sweep produced only two codegen groups, neither exact.
+// - Partial rNum/tempCount scopes and hoisting add's copy index j were duplicates.
+// - Restored this clean typed source; the remaining lead is TU or allocator context.
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);

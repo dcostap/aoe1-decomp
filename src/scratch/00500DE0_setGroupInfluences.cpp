@@ -27,6 +27,21 @@
 //   break; this matched the original null-check back edge and reduced drift to 10.
 // probe 34: swapped clear-point roles with the improved loop; drift regressed to
 //   40 bytes and disturbed the exact group block, so it was rolled back.
+// probe 36: separate clearMinpt/clearMaxpt aggregates enlarged the frame to
+//   0x20 and reached 75 bytes; rolled back.
+// probes 38/40: pointer and reference aliases for swapped clear roles kept the
+//   frame but disturbed the exact group block at 40 bytes; rolled back.
+// probe 42: hoisted objectClearDistance declaration was codegen-duplicate at
+//   10 bytes; rolled back.
+// probe 44: reusing clearDistance moved the conversion home and regressed to
+//   12 bytes; rolled back.
+// probe 46 variant lab: natural/reversed-term forms stayed at 10 bytes,
+//   y-first reached 14, and swapped roles reached 40; no exact variant.
+// probe 47: swapped clear roles with hoisted distance declaration duplicated
+//   the 40-byte basin; rolled back.
+// probe 49: declaration initialization was codegen-duplicate at 10 bytes.
+// probes 50/52: Ghidra-natural min-then-max object ownership reached 20 bytes
+//   with a separate distance and 22 bytes when reusing clearDistance; rolled back.
 // left in scratch: exact source scheduling for repeated coordinate conversions
 // and object/group local homes remains to be validated.
 // Final bounded pause: the remaining 10 bytes are localized to the first

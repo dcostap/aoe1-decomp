@@ -31,6 +31,15 @@
 //   had no emitted effect.
 // - signed no-selection guard variants changed the branch or layout, but did
 //   not recover the oracle; restored the clean == -1 guard after the budget.
+// - nested, direct-member, and early-continue eligibility forms all emitted
+//   the same seven-byte group; the typed pointer/combined guard remains clean.
+// - widening the selected index changed the map-load topology and regressed to
+//   66 bytes; a scoped loop index and reversed assignments also did not swap
+//   the count/index colors, so the clean short locals remain authoritative.
+// - unsigned best-drawn changed the signed branch to jbe and regressed to eight
+//   bytes; split sentinel initialization regressed to eleven bytes.
+// - declaring the result locals before the map load changed scheduling but
+//   still emitted the same seven-byte group; the remaining gap is EBX/EBP color.
 
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 extern unsigned long debug_timeGetTime(const char* file, int line);
