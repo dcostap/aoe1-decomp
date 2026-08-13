@@ -16,6 +16,12 @@
 //   source.  The prior worker paused after the ten-hypothesis budget.
 // - Rechecked the first result hunk: the returned max-distance field is also
 //   initialized to zero before the scan.
+// - This pass removed unused type/group result initialization, restored direct
+//   coordinate-expression order, and named signed group temporaries. It then
+//   reversed equivalent max comparisons to recover the original compare and
+//   x87 block shapes.
+// - The byte-cursor exact candidate was not promoted. The living source keeps
+//   named ObjectMemory ownership. It needs a later typed codegen pass.
 
 typedef unsigned char uchar;
 
@@ -93,20 +99,16 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int obj
     RGE_Static_Object* target;
     RGE_Static_Object* obj;
     int i;
-    int offset;
     uchar zone;
     int pt[2];
-    int ix;
-    int iy;
     int dx;
     int dy;
+    int group;
     float dist;
 
     c1 = 0;
     c2 = 0;
     rVal.id = 0;
-    rVal.type = 0;
-    rVal.group = 0;
     rVal.hitPoints = 0;
     rVal.attackAttempts = 0;
     rVal.kills = 0;
@@ -119,11 +121,10 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int obj
         zone = target->currentZone();
         i = 0;
         if (this->maxImportantObjectMemory > 0) {
-            offset = 0;
             do {
-                if ((int)*(uchar*)((char*)this->importantObjectMemory + offset + 0x0B) == owner) {
-                    obj = this->md->object(
-                        *(int*)((char*)this->importantObjectMemory + offset));
+                ObjectMemory* memory = &this->importantObjectMemory[i];
+                if ((int)memory->owner == owner) {
+                    obj = this->md->object(memory->id);
                     if (obj != 0) {
                         if (zone != obj->currentZone()) {
                             pt[0] = (int)obj->x;
@@ -132,61 +133,50 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int obj
                                     zone, target->vf10c(), pt) != 1)
                                 goto next;
                         }
-                        obj = this->md->object(
-                            *(int*)((char*)this->importantObjectMemory + offset));
+                        obj = this->md->object(memory->id);
                         if (obj != 0) {
-                            ix = (int)obj->x;
-                            dx = (int)*(uchar*)((char*)this->importantObjectMemory + offset + 8) - ix;
+                            dx = (int)memory->x - (int)obj->x;
                             if (dx < 0) dx = -dx;
-                            iy = (int)obj->y;
-                            dy = (int)*(uchar*)((char*)this->importantObjectMemory + offset + 9) - iy;
+                            dy = (int)memory->y - (int)obj->y;
                             if (dy < 0) dy = -dy;
                             if ((dx > 5 || dy > 5) &&
-                                this->md->map_holder->map->get_visible(ix, iy) != 0x0F)
+                                this->md->map_holder->map->get_visible(
+                                    (int)obj->x, (int)obj->y) != 0x0F)
                                 goto skip_visible;
-                            if (*(short*)((char*)this->importantObjectMemory + offset + 6) != 3 &&
-                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x1B)
+                            group = memory->group;
+                            if (group != 3 && group != 0x1B)
                                 c1++;
-                            if (*(short*)((char*)this->importantObjectMemory + offset + 6) != 2 &&
-                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x15 &&
-                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x16 &&
-                                *(short*)((char*)this->importantObjectMemory + offset + 6) != 0x14 &&
-                                *(short*)((char*)this->importantObjectMemory + offset + 4) != 0x2D)
+                            group = memory->group;
+                            if (group != 2 &&
+                                group != 0x15 &&
+                                group != 0x16 &&
+                                group != 0x14 &&
+                                memory->type != 0x2D)
                                 c2++;
                             dist = target->distance_to_position(
-                                (float)*(uchar*)((char*)this->importantObjectMemory + offset + 8),
-                                (float)*(uchar*)((char*)this->importantObjectMemory + offset + 9),
-                                (float)*(uchar*)((char*)this->importantObjectMemory + offset + 0x0A));
-                            if ((float)rVal.id < dist) rVal.id = (int)dist;
-                            if (rVal.hitPoints <
-                                *(short*)((char*)this->importantObjectMemory + offset + 0x0C))
+                                (float)memory->x, (float)memory->y,
+                                (float)memory->z);
+                            if (dist > (float)rVal.id) rVal.id = (int)dist;
+                            if (memory->hitPoints > rVal.hitPoints)
+                                rVal.hitPoints = memory->hitPoints;
+                            if (memory->attackAttempts > 0)
                                 rVal.hitPoints =
-                                    *(short*)((char*)this->importantObjectMemory + offset + 0x0C);
-                            if (*(int*)((char*)this->importantObjectMemory + offset + 0x10) > 0)
+                                    (short)memory->attackAttempts;
+                            if (memory->kills > 0)
                                 rVal.hitPoints =
-                                    (short)*(int*)((char*)this->importantObjectMemory + offset + 0x10);
-                            if (*(uchar*)((char*)this->importantObjectMemory + offset + 0x14) != 0)
-                                rVal.hitPoints =
-                                    (unsigned short)*(uchar*)((char*)this->importantObjectMemory + offset + 0x14);
-                            if (rVal.damageCapability <
-                                *(float*)((char*)this->importantObjectMemory + offset + 0x18))
-                                rVal.damageCapability =
-                                    *(float*)((char*)this->importantObjectMemory + offset + 0x18);
-                            if (rVal.rateOfFire <
-                                *(float*)((char*)this->importantObjectMemory + offset + 0x1C))
-                                rVal.rateOfFire =
-                                    *(float*)((char*)this->importantObjectMemory + offset + 0x1C);
-                            if (rVal.range <
-                                *(float*)((char*)this->importantObjectMemory + offset + 0x20))
-                                rVal.range =
-                                    *(float*)((char*)this->importantObjectMemory + offset + 0x20);
+                                    (unsigned short)memory->kills;
+                            if (memory->damageCapability > rVal.damageCapability)
+                                rVal.damageCapability = memory->damageCapability;
+                            if (memory->rateOfFire > rVal.rateOfFire)
+                                rVal.rateOfFire = memory->rateOfFire;
+                            if (memory->range > rVal.range)
+                                rVal.range = memory->range;
                         }
                     }
                 }
 skip_visible:
 next:
                 i++;
-                offset += 0x24;
             } while (i < this->maxImportantObjectMemory);
         }
     }
