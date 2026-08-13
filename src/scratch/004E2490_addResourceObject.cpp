@@ -10,7 +10,9 @@
 // probe: stored new-record dropsiteID before gatherValue, matching taiinfmd statement order.
 // probe: used int object-group temporaries for later sign-extended field reloads; this reached a 52-byte best.
 // probe: uchar/int dropDistance and gatherValue temporaries regressed scheduling and were rolled back.
-// left in scratch: 17-call order, 0xC frame, and 1392-byte size match; 52 bytes remain in five localized spans.
+// probe: reversed duplicate closest-value comparisons to value >= closest; recovered four cmp byte pairs, kept.
+// probe: implicit float-to-uchar dropDistance conversion emitted the same bytes as the explicit int cast.
+// left in scratch: 17-call order, 0xC frame, and 1392-byte size match; 44 bytes remain in one localized formula span.
 
 extern void* operator new(unsigned int size);
 extern void operator delete(void* ptr);
@@ -148,7 +150,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                 int objectGroup = obj->master_obj->object_group;
                 if (objectGroup == 0x0f) {
                     int value = (int)distance;
-                    if (this->closestDropsiteValue[1] <= value &&
+                    if (value >= this->closestDropsiteValue[1] &&
                         this->closestDropsiteValue[1] != -1) {
                         return 1;
                     }
@@ -158,7 +160,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                 }
                 if (objectGroup == 0x20) {
                     int value = (int)distance;
-                    if (this->closestDropsiteValue[3] <= value &&
+                    if (value >= this->closestDropsiteValue[3] &&
                         this->closestDropsiteValue[3] != -1) {
                         return 1;
                     }
@@ -168,7 +170,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                 }
                 if (objectGroup == 8) {
                     int value = (int)distance;
-                    if (this->closestDropsiteValue[2] <= value &&
+                    if (value >= this->closestDropsiteValue[2] &&
                         this->closestDropsiteValue[2] != -1) {
                         return 1;
                     }
@@ -178,7 +180,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                 }
                 if (objectGroup == 7) {
                     int value = (int)distance;
-                    if (this->closestDropsiteValue[0] <= value &&
+                    if (value >= this->closestDropsiteValue[0] &&
                         this->closestDropsiteValue[0] != -1) {
                         return 1;
                     }
@@ -205,7 +207,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
     int dropsiteID = -1;
     float distance = this->findClosestDropsite(obj, 1, &dropsiteID);
     this->resources[resourceType][this->numResources[resourceType]].dropDistance =
-        (unsigned char)(int)distance;
+        (unsigned char)distance;
     this->resources[resourceType][this->numResources[resourceType]].dropsiteID = dropsiteID;
     this->resources[resourceType][this->numResources[resourceType]].gatherValue =
         (int)(DAT_005755bc - distance * DAT_005755b8);
