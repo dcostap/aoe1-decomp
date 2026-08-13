@@ -10,6 +10,9 @@
 //   aligns all 26 ordered calls and the CFG; the remaining structural gap is
 //   the target/local stack-home basin (10 code bytes, target at [esp+1c]
 //   instead of the original [esp+24]).
+// - Declared the packet cursor and resolved target before the accumulator
+//   locals, matching the exact do_command_work ownership order; VC5 emitted
+//   identical code, so the target-home lead remains unconfirmed.
 
 #include "../../include/game_globals.h"
 
@@ -57,14 +60,14 @@ class RGE_Command { public: virtual ~RGE_Command(); char pad4[4]; void* world; R
 
 void RGE_Command::do_command_move(Order* order) {
     int n = order->unit_num;
+    RGE_Obj_Info* ids = order->ids;
+    RGE_Static_Object* target = this->get_obj(order->target);
     float minx;
     float maxx;
     float miny;
     float maxy;
     float totalx;
     float totaly;
-    RGE_Obj_Info* ids = order->ids;
-    RGE_Static_Object* target = this->get_obj(order->target);
     if (n > 1) {
         minx = 10000.0f;
         maxx = 0.0f;

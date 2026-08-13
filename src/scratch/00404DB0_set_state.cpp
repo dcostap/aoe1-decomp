@@ -17,6 +17,9 @@
 // - final source keeps canonical vector ownership: cos contributes x+d and
 //   sin contributes y+dx.  Validated best source remains in scratch: drift is
 //   localized to VC5 temporary homes/FPU scheduling and the ballistic spill.
+// - reordered the guided-distance terms to evaluate x+d before y+dx, matching
+//   the original x87 sequence; this worsened positional diff 436 -> 448, so
+//   restored the clean source.
 
 #include <math.h>
 

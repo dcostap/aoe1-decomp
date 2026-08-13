@@ -16,6 +16,9 @@
 // - Current source is a natural typed reconstruction with exact frame, CFG
 //   signals, and six-call multiset; 709 strict bytes remain, beginning in the
 //   prologue/register basin at 00434A03 and extending through shifted blocks.
+// - Reused one typed unit cursor across both scans to mirror the original
+//   EDI cursor and saved-base lifetime; codegen was unchanged, so the clean
+//   separate-cursor source remains the best reconstruction.
 
 #include <math.h>
 #pragma intrinsic(sqrt)

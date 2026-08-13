@@ -35,15 +35,20 @@
 //   exact-block 78.6%, calls 75/75.
 // - Left in scratch: unresolved but structurally strong; next lead is steering the
 //   default block to the end (block-layout probe) and matching the L-load register.
+// - ABI probe: the original 00436610 target is the static class member
+//   TDebuggingLog::Log(TDebuggingLog*, const char*, ...), not a free helper
+//   or non-static member. The class tag produces the original PAV1 binding.
+//   The corrected relocation is exact, but whole-function bytes are unchanged.
 
 #include <stdio.h>
 #include <string.h>
 
-struct TDebuggingLog {
+class TDebuggingLog {
+public:
+    static void __cdecl Log(TDebuggingLog* log, const char* fmt, ...);
     void FlushLog();
 };
 extern TDebuggingLog* L;                          // 62C4FCh
-extern void Log(TDebuggingLog* log, const char* fmt, ...);
 extern "C" int g_DirectPlayConversation;          // 62C5ECh
 
 struct MSGFORMAT_KILL_PLAYER {
@@ -133,11 +138,11 @@ public:
 void TCommunications_Handler::EvaluateSystemMessage(unsigned long p1, char* p2, unsigned long p3, unsigned long p4)
 {
     if (this->Multiplayer == 0) {
-        Log(L, S(0x581CD8));          // "!MP in DPANALYSIS"
+        TDebuggingLog::Log(L, S(0x581CD8));          // "!MP in DPANALYSIS"
         return;
     }
 
-    Log(L, S(0x581CC8), *(unsigned long*)p2);         // "DP Sys Msg %d"
+    TDebuggingLog::Log(L, S(0x581CC8), *(unsigned long*)p2);         // "DP Sys Msg %d"
 
     switch (*(unsigned long*)p2) {
     case 5: {                         // DPSYS_DESTROYPLAYERORGROUP
@@ -157,10 +162,10 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long p1, char* p2, 
         }
         i = 0;
 found2:
-        Log(L, S(0x581C90));          // "DPMSG_DESTRPYPLAYERORGROUP  (to debug drop player)"
-        Log(L, S(0x581C78), *(unsigned long*)(p2 + 8));  // "FROM Player ID =..."
-        Log(L, S(0x581C5C), i);       // "Equates to our player # %d "
-        Log(L, S(0x581C40), this->PlayerOptions.ProgramState);  // "Program state is..."
+        TDebuggingLog::Log(L, S(0x581C90));          // "DPMSG_DESTRPYPLAYERORGROUP  (to debug drop player)"
+        TDebuggingLog::Log(L, S(0x581C78), *(unsigned long*)(p2 + 8));  // "FROM Player ID =..."
+        TDebuggingLog::Log(L, S(0x581C5C), i);       // "Equates to our player # %d "
+        TDebuggingLog::Log(L, S(0x581C40), this->PlayerOptions.ProgramState);  // "Program state is..."
         L->FlushLog();
         if (this->IsPlayerHuman(i) != 0 && this->PlayerStopTurn[i] == 0) {
             if (i == this->Me)
@@ -174,8 +179,8 @@ found2:
         kp.dcoID = i;
         kp.CurrentTurn = *(unsigned long*)(p2 + 8);
         kp.current_turn = this->current_turn;
-        Log(L, S(0x581C14), i, kp.CurrentTurn);  // "HOST Send to all - drop player %d ID=%d "
-        Log(L, S(0x581C00), i, 0xC);             // "  >TX KP2 #%d (%d)"
+        TDebuggingLog::Log(L, S(0x581C14), i, kp.CurrentTurn);  // "HOST Send to all - drop player %d ID=%d "
+        TDebuggingLog::Log(L, S(0x581C00), i, 0xC);             // "  >TX KP2 #%d (%d)"
         this->CommOut(0, 'K', &kp, 0xC, 0);
         if (i <= 0)
             return;
@@ -190,13 +195,13 @@ found2:
         unsigned int i;
         newid = *(unsigned long*)(p2 + 8);
         p3 = newid;
-        Log(L, S(0x581BEC), newid);   // "RX NEW PLR ID=%d"
-        Log(L, S(0x581BCC));          // "COMM: Create Player Request."
+        TDebuggingLog::Log(L, S(0x581BEC), newid);   // "RX NEW PLR ID=%d"
+        TDebuggingLog::Log(L, S(0x581BCC));          // "COMM: Create Player Request."
         sprintf(this->TBuff, S(0x581B8C), this->MeHost, this->PlayerOptions.ProgramState, newid);
-        Log(L, this->TBuff);
+        TDebuggingLog::Log(L, this->TBuff);
         if (this->PlayerOptions.ProgramState == 5 || this->current_turn > 6) {
             *this->TBuff = 'I';
-            Log(L, S(0x581B64), *(unsigned long*)(p2 + 8));   // "  >TX GIP %u (1)"
+            TDebuggingLog::Log(L, S(0x581B64), *(unsigned long*)(p2 + 8));   // "  >TX GIP %u (1)"
             this->FastSend(*(unsigned long*)(p2 + 8), this->TBuff, 1, 0, 0);
             return;
         }
@@ -224,7 +229,7 @@ found:
             return;
         }
         *this->TBuff = 'I';
-        Log(L, S(0x581B78), *(unsigned long*)(p2 + 8));   // "  >TX GIP2 %u (1)"
+        TDebuggingLog::Log(L, S(0x581B78), *(unsigned long*)(p2 + 8));   // "  >TX GIP2 %u (1)"
         this->FastSend(*(unsigned long*)(p2 + 8), this->TBuff, 1, 0, 0);
         this->UpdatePlayers();
         return;
@@ -232,20 +237,20 @@ found:
 
     case 7:
     case 0x105:
-        Log(L, S(0x581B30));          // "Add/delete player of group."
+        TDebuggingLog::Log(L, S(0x581B30));          // "Add/delete player of group."
         return;
 
     case 0x109:
-        Log(L, S(0x581B24));          // "DP Chat Msg"
+        TDebuggingLog::Log(L, S(0x581B24));          // "DP Chat Msg"
         return;
 
     case 0x21:
-        Log(L, S(0x581B4C));          // "delete player of group."
+        TDebuggingLog::Log(L, S(0x581B4C));          // "delete player of group."
         return;
 
     case 0x101:
         if (this->PlayerOptions.ProgramState != 3 && this->current_turn >= 6) {
-            Log(L, S(0x581B14));      // "Assumed host"
+            TDebuggingLog::Log(L, S(0x581B14));      // "Assumed host"
             this->MeHost = 1;
             this->PlayerOptions.HostPlayerNumber = this->Me;
             this->CheckPingTime(1);
@@ -256,13 +261,13 @@ found:
             this->KillAnyMissingPlayers();
             return;
         }
-        Log(L, S(0x581AF0));          // "Host (other) Exit before game start"
+        TDebuggingLog::Log(L, S(0x581AF0));          // "Host (other) Exit before game start"
         this->NotifyWindow(0x17A9);
         this->EnableNewPlayers(g_DirectPlayConversation, 1);
         return;
 
     case 0x31:
-        Log(L, S(0x581AD8));          // "COMM:Host session lost."
+        TDebuggingLog::Log(L, S(0x581AD8));          // "COMM:Host session lost."
         this->PlayerOptions.NeedsToBeSent = 1;
         this->UpdatePlayers();
         this->NotifyWindow(0x17A9);
@@ -274,7 +279,7 @@ found:
                 this->PlayerOptions.dcoID[3], this->PlayerOptions.dcoID[4],
                 this->PlayerOptions.dcoID[5], this->PlayerOptions.dcoID[6],
                 this->PlayerOptions.dcoID[7], this->PlayerOptions.dcoID[8]);
-        Log(L, this->TBuff);
+        TDebuggingLog::Log(L, this->TBuff);
         unsigned int i = 1;
         if (this->MaxGamePlayers >= i) {
             unsigned int ser = 2000;
@@ -283,7 +288,7 @@ found:
                 if (*p == 0 && *(p + 15) != 0) {
                     this->ClearRXTXForPlayer(i);
                     *p = ser;
-                    Log(L, S(0x581A70), i, ser + 1);
+                    TDebuggingLog::Log(L, S(0x581A70), i, ser + 1);
                 }
                 i++;
                 p++;
@@ -291,13 +296,13 @@ found:
             } while (i <= this->MaxGamePlayers);
         }
         if (this->MeHost != 0) {
-            Log(L, S(0x581A5C));      // "Host - no rcv opts."
+            TDebuggingLog::Log(L, S(0x581A5C));      // "Host - no rcv opts."
             return;
         }
-        Log(L, S(0x581A30));          // "Checking state for options rcvd from host."
+        TDebuggingLog::Log(L, S(0x581A30));          // "Checking state for options rcvd from host."
         if (this->PlayerOptions.ProgramState != 3)
             return;
-        Log(L, S(0x581A10));          // "Group options rcvd from host."
+        TDebuggingLog::Log(L, S(0x581A10));          // "Group options rcvd from host."
         if (*(unsigned long*)(p2 + 0x10) >= 0x1D0) {
             memcpy(&this->PlayerOptions, *(void**)(p2 + 0xC), 0x1D0);
             if (*(unsigned long*)(p2 + 0x10) >= this->PlayerOptions.DataSizeToFollow + 0x1D0) {
@@ -309,9 +314,9 @@ found:
         this->current_turn = this->PlayerOptions.CurrentTurn;
         this->SetSelfPlayer();
         if (this->PlayerOptions.GameHasStarted != 0) {
-            Log(L, S(0x5819FC));      // "Host Launched game"
+            TDebuggingLog::Log(L, S(0x5819FC));      // "Host Launched game"
             this->CalculatePlayerRange();
-            Log(L, S(0x5819D8), this->PlayerOptions.ProgramState);  // "OPTIONS SET - program state = %d"
+            TDebuggingLog::Log(L, S(0x5819D8), this->PlayerOptions.ProgramState);  // "OPTIONS SET - program state = %d"
             this->PlayerOptions.ProgramState = 5;
             this->ResetLastCommunicationTimes();
             this->ClearRXandTX();
@@ -325,7 +330,7 @@ found:
                     do {
                         if (*(p2 + 15) != 0) {
                             *p2 = ser2;
-                            Log(L, S(0x581A70), k, ser2 + 1);
+                            TDebuggingLog::Log(L, S(0x581A70), k, ser2 + 1);
                         }
                         k++;
                         p2++;
@@ -334,15 +339,15 @@ found:
                 }
             }
             this->GTDSerialNo = this->Me * 2000 + 1;
-            Log(L, S(0x5819BC), this->GTDSerialNo);  // "Set my serial number to %d"
+            TDebuggingLog::Log(L, S(0x5819BC), this->GTDSerialNo);  // "Set my serial number to %d"
             this->NotifyWindow(0x17A6);
             this->NotifyWindow(0x17A7);
         } else {
-            Log(L, S(0x5819A4));      // "Game not yet started."
+            TDebuggingLog::Log(L, S(0x5819A4));      // "Game not yet started."
         }
         if (this->PlayerOptions.GameHasStarted == 0 && this->GTDSerialNo == 0 && this->Me != 0) {
             this->GTDSerialNo = this->Me * 2000 + 1;
-            Log(L, S(0x581974), this->GTDSerialNo);  // "Serial # was 0, setting my serial number to %d"
+            TDebuggingLog::Log(L, S(0x581974), this->GTDSerialNo);  // "Serial # was 0, setting my serial number to %d"
         }
         this->UpdatePlayers();
         this->NotifyWindow(0x17A6);
@@ -351,22 +356,22 @@ found:
 
     case 0x103:
         this->UpdatePlayers();
-        Log(L, S(0x581958));          // "Set player or group name"
+        TDebuggingLog::Log(L, S(0x581958));          // "Set player or group name"
         this->NotifyWindow(0x17A6);
         return;
 
     case 0x107:
-        Log(L, S(0x581944));          // "Secure message dp"
+        TDebuggingLog::Log(L, S(0x581944));          // "Secure message dp"
         return;
 
     case 0x104:
-        Log(L, S(0x58192C));          // "Set Sessino Description"
+        TDebuggingLog::Log(L, S(0x58192C));          // "Set Sessino Description"
         return;
 
     case 0x108:
-        Log(L, S(0x58190C));          // "START SESSION MESSAGE RCVD. "
-        Log(L, S(0x5818FC));          // " *** NOTICE ***"
+        TDebuggingLog::Log(L, S(0x58190C));          // "START SESSION MESSAGE RCVD. "
+        TDebuggingLog::Log(L, S(0x5818FC));          // " *** NOTICE ***"
         return;
     }
-    Log(L, S(0x5818DC), *(unsigned long*)p2);     // "COMM:Unknown system message. %d"
+    TDebuggingLog::Log(L, S(0x5818DC), *(unsigned long*)p2);     // "COMM:Unknown system message. %d"
 }

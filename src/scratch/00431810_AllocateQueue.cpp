@@ -13,6 +13,11 @@
 //   liveness and copy schedule.  Positive result handling restored one shared
 //   return and the 0x14 EH frame, but the remaining EH prologue/block layout
 //   and relocation identity are unresolved after the 10-probe budget.
+// - Reversed the outer growth guard to `param_1 < MaxQSize` with an allocation
+//   else arm, matching the original short `jae` allocate edge.  This improved
+//   the first mismatch from +0000 to +0029 and diff 425 to 395 bytes; the
+//   destructor block remains six bytes early and the checker flags its delete
+//   relocation at the paired site.
 
 #include <string.h>
 
@@ -73,8 +78,10 @@ public:
 
 int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
     int result;
-    result = 0;
-    if (param_1 >= this->MaxQSize) {
+    if (param_1 < this->MaxQSize) {
+        result = 0;
+    }
+    else {
         unsigned int count = param_1 + 1;
         MsgQueue* newQueue = new MsgQueue[count];
         if (newQueue != 0) {
@@ -112,6 +119,9 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
             this->MaxQSize = param_1;
             this->Queue = newQueue;
             result = 1;
+        }
+        else {
+            result = 0;
         }
     }
 

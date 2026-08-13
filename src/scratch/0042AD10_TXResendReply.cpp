@@ -15,6 +15,9 @@
 // remains broad; an explicit positive scan backedge was emitted-code duplicate.
 // liveness: a stable player copy before/after the dco guard, counter declaration
 // order, and early offset initialization were tested; no further useful output.
+// control-flow: direct Log-and-return branches restore the original invalid-player
+// push/jump block and improve the diff by 25 bytes; the inner BAD-DCOID log remains
+// a relocated shared cold block, so the ordered call gap is still -1/+1.
 // left in scratch after 10 hypotheses: canonical resend behavior/calls and exact
 // string/ABI surfaces are retained, but the original 0x18 local layout, EBP/EBX
 // coloring, cold-tail placement, and late log/delete schedule remain nonexact.
@@ -122,7 +125,6 @@ public:
 
 int TCommunications_Handler::TXResendReply(uint serial, uint player)
 {
-    char* error_message;
     register uint playerNumber;
     unsigned long now;
     int i;
@@ -138,8 +140,8 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
     offset = 0;
     playerNumber = player;
     if (this->PlayerOptions.dcoID[player] == 0) {
-        error_message = "Invalid player req.";
-        goto no_transmit;
+        L->Log("Invalid player req.");
+        return 0;
     }
 
     if (DAT_0062cf04 == 0) {
@@ -176,8 +178,8 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
             (*(unsigned int*)((char*)this->Resend + player))--;
 
             if (DAT_0062cf04 == 0) {
-                error_message = "+++BAD DCOID=0 NO TX";
-                goto no_transmit;
+                L->Log("+++BAD DCOID=0 NO TX");
+                return 0;
             }
 
             unsigned long send_start =
@@ -244,8 +246,4 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
     this->PurgeAcknowledgedStoredMessages();
     return 1;
-
-no_transmit:
-    L->Log(error_message);
-    return 0;
 }

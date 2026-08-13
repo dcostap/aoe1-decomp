@@ -18,6 +18,9 @@
 //   global load and improved the call-site basin; signed count temporaries were
 //   codegen-neutral.  Initializing hr before the second scan was rolled back
 //   because it expanded the frame to 0x28.
+// - removing the post-scan hr initialization let EBX carry the count and
+//   improved block coverage, but worsened strict diff and produced a -5-byte
+//   function; restored the defined hr initialization.
 // - left in scratch: current best is a broad local-home/CFG mismatch.  The
 //   rebuilt OutCommBuff home remains [esp+1c] versus original [esp+18], while
 //   the original outgoing count home is [esp+20] versus rebuilt [esp+14].

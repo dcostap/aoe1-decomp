@@ -9,6 +9,9 @@
 //   donor standard-header context emitted the same code; no source hack retained.
 // Remaining mismatch is the VC5 EBX zero-carrier versus button-base allocation
 // basin (original uses BL and push EBX for zeroes); calls/CFG/frame are aligned.
+// - A single typed running y-state reached 43 positional bytes and 98.6% shape,
+//   but used the wrong final scheduling basin; a separate base/post-row state
+//   worsened the output to 775 bytes. Both probes were rolled back.
 // Left in scratch after the bounded 10-hypothesis session.
 
 #include "..\..\include\game_globals.h"

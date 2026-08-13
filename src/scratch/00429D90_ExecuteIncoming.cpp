@@ -51,6 +51,10 @@
 // return topology. Restored the negative guard. Exact KillAnyMissingPlayers ownership
 // also confirms COMMPLAYEROPTIONS::dcoID; the nested type is retained although bytes stay
 // unchanged. A fully indexed HOLDER scan widened the frame and was rolled back.
+// fresh shardC3 probe: the first checker hunk and PDB 3080/3142 bands led to a
+// positive Multiplayer guard with one natural common return. It reached the prior
+// 398-byte diagnostic basin but emitted one return instead of the oracle's two;
+// restored the negative guard and kept the typed owner-lifetime reconstruction.
 
 typedef unsigned int uint;
 

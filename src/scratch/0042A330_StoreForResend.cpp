@@ -10,6 +10,8 @@
 // try 8: /GX tried because of allocation paths; no EH in original and text stayed too small/wrong, removed flag.
 // try 9: natural memcpy-like loops compile as scalar loop family, not original rep movsd/rep movsb sequence.
 // try 10: slot/off loop modeled as slot*0x38 and off+=0x38; compiler keeps different slot register/liveness than original (edi vs ebp/esi).
+// fresh session: flattened active/delivery guards to explicit early returns; emitted code was unchanged, so restored the nested source.
+// fresh session: direct typed resendTable[slot] ownership grew the body to 650B/frame 0x10; restored the smaller entry-alias basin.
 // session: corrected the entry's +0 timestamp and canonical TDebuggingLog ABI, and
 // rebuilt occupied diagnostics with the oracle's 13-vararg push order/8 recipient
 // dwords. Parameter-mutating copy loops retain the exact 0x8 frame and near-size

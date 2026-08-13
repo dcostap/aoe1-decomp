@@ -20,7 +20,11 @@
 //     improved edit alignment; main-agent audit restored the actual literals.
 // P10: inlined picture y/x arithmetic to avoid compiler-carried temporaries;
 //      edit diff improved, with the same 1390-byte result.
-// Left in scratch after 10 probes: canonical source is retained. The remaining
+// P11: moved the natural background null initialization after credits, close,
+//      and circle-picture initialization to match the ordered member stores;
+//      diff improved 782 -> 710 bytes and exact-block coverage 74.50% -> 85.81%.
+// Left in scratch after the prior bounded session: canonical source is retained.
+// The remaining
 // hard blocker is VC5 emitting __chkstk where the original names __alloca_probe;
 // residual drift is prologue/register scheduling plus a two-byte downstream
 // shift, not an unresolved panel-layout fact. Main-agent normalization of
@@ -260,10 +264,10 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* param_1) : TDialogPanel("About 
     pid_label_text = 0;
     pid_text = 0;
     warning_text = 0;
-    background = 0;
     credits_button = 0;
     close_button = 0;
     circle_p_pic = 0;
+    background = 0;
 
     if (!TDialogPanel::setup(param_1->renderArea(), param_1, 0x208, 0x19c,
                              param_1->get_popup_info_file(),

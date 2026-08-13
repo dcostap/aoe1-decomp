@@ -23,6 +23,9 @@
 //   current check is 1222B, 24/24 calls, 90.5058% positional diff, frame 0x24.
 // - paused after 9 meaningful hypotheses: remaining gap is broad this/register,
 //   frame, local-home, and source-block topology, not a localized safe drift.
+// - control-flow: replaced the error-text goto with direct Log returns to test
+//   compiler tail merging at the first push/jump hunk; this added one Log call
+//   and worsened the diff, so it was restored.
 
 struct TDebuggingLog;
 struct RGE_Comm_Error;

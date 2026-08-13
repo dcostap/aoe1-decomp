@@ -10,6 +10,8 @@
 // CFG. Unsigned HighPlayerNumber(+1710)/LowPlayerNumber(+1712) bounds recover the
 // zero-extend loop shape; explicit persistent COM caching and raw vtable surfaces
 // were worse. Remaining drift is frame/local-home and COM argument scheduling.
+// probe: use signed loop indices with unsigned-short bounds; original scan branches
+// use signed JG after zero-extension, unlike the current unsigned JA branches.
 // FLAGS: config/flags/00426FC0_GetDPLAYMessages.rsp (/nologo /c /O2 /Oy)
 // left in scratch: needs real Com_hand.cpp source/context to recover original prologue (global load before saves) and exact local stack topology.
 
@@ -91,8 +93,8 @@ void TCommunications_Handler::GetDPLAYMessages() {
         if (hr != 0) { this->Err->ShowReturn(hr, (char*)"Rcv MSG"); return; }
         int pno;
         if (dcoFromID != 0) {
-            unsigned int i = this->LowPlayerNumber;
-            unsigned int hi = this->HighPlayerNumber;
+            int i = this->LowPlayerNumber;
+            int hi = this->HighPlayerNumber;
             if (i <= hi) {
                 ulong* p = this->dcoID + i;
                 do {
@@ -108,8 +110,8 @@ found_first_player:
         } else pno = 0;
         log_obj->Log((char*)"  >RX #%d %c-%d (%u)", pno, (int)*buf, (int)*buf, dwSize);
         if (dcoFromID != 0) {
-            unsigned int i = this->LowPlayerNumber;
-            unsigned int hi = this->HighPlayerNumber;
+            int i = this->LowPlayerNumber;
+            int hi = this->HighPlayerNumber;
             if (i <= hi) {
                 ulong* p = this->dcoID + i;
                 do {

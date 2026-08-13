@@ -14,6 +14,10 @@
 // 8: hoisting/reordering the row cursor and y local had no codegen effect.
 // 9: raw integer cursor arithmetic for the proven +0x58/player-row relation
 //     also collapsed to the same 1376-byte basin; restored typed cursor form.
+// 10: assigned the new shape directly to the proven +0x528 owner; strict drift
+//     improved by 73 bytes, but the size and block topology stayed structural.
+// 11: used the binary-supported positive shape guard around setup; emitted code
+//     was unchanged, so no further control-flow lead remains in this basin.
 // Main-agent audit replaced fixed string addresses and cross-member pointer
 // arithmetic with literals and direct playerName/playerCivilization/checkButton/
 // commPlayers row ownership. The canonical source validates at 1605 bytes with
@@ -200,14 +204,11 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     help_button = 0;
     backgroundPics = 0;
 
-    TShape* shape = new TShape("dlg_plbn.shp", 0xC63A);
-    backgroundPics = shape;
-    if (shape == 0)
-        return;
-
-    if (!setup(parent->renderArea(), parent, 0x208, 0x1D1,
-               parent->get_popup_info_file(), parent->get_popup_info_id(), 1))
-        return;
+    backgroundPics = new TShape("dlg_plbn.shp", 0xC63A);
+    if (backgroundPics != 0) {
+        if (!setup(parent->renderArea(), parent, 0x208, 0x1D1,
+                   parent->get_popup_info_file(), parent->get_popup_info_id(), 1))
+            return;
 
     if (!create_text(this, &title, 0x2667, 5, 10, width - 0x28, 0x1E, 1, 1, 1, 0))
         return;
@@ -307,5 +308,6 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     okButton->set_help_info(0x7531, -1);
     okButton->hotkey = 0x1B;
     okButton->hotkey_shift = 0;
-    set_curr_child(chatInput);
+        set_curr_child(chatInput);
+    }
 }

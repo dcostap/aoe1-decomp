@@ -21,6 +21,9 @@
 // - left in scratch: frame/local-home drift (collision_list uses an extra
 //   [esp+28] home instead of the oracle's reused [esp+24]) and VC5 tail-merging
 //   one pair of mode-3 do_attack/set_state sites. Default flags retained.
+// - outer post-move dispatch is owned by missile_type at +0x148; missile_hit_info
+//   at +0x14A remains the collision-mode switch. Reordering the natural mode-3
+//   branch before the <=2 collision-list branch aligned all 24 ordered calls.
 
 extern float DAT_0056e380;
 extern double DAT_0056e388;
@@ -456,7 +459,21 @@ unsigned char RGE_Action_Missile::update()
         hit_ground = ((RGE_Missile_Object*)this->obj)->missile_move();
     }
 
-    if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_hit_info <= 2) {
+    if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 3) {
+        RGE_Combat_Object* target =
+            (RGE_Combat_Object*)this->target_obj2;
+        if (target != 0) {
+            target->do_attack(this->target_obj, target,
+                              *(float*)&this->obj, this->obj->world_y,
+                              this->obj->world_z);
+        } else {
+            ((RGE_Missile_Object*)this->obj)->do_attack(
+                this->target_obj, (RGE_Combat_Object*)this->obj,
+                this->obj->world_x, this->obj->world_y,
+                this->obj->world_z);
+        }
+        this->set_state(1);
+    } else if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type <= 2) {
             RGE_Check_List* collision_list =
                 ((RGE_Missile_Object*)this->obj)->make_object_collision_list(time);
             if (collision_list != 0) {
@@ -545,20 +562,6 @@ unsigned char RGE_Action_Missile::update()
                 }
                 delete collision_list;
             }
-        } else if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_hit_info == 3) {
-            RGE_Combat_Object* target =
-                (RGE_Combat_Object*)this->target_obj2;
-            if (target != 0) {
-                target->do_attack(this->target_obj, target,
-                                  *(float*)&this->obj, this->obj->world_y,
-                                  this->obj->world_z);
-            } else {
-                ((RGE_Missile_Object*)this->obj)->do_attack(
-                    this->target_obj, (RGE_Combat_Object*)this->obj,
-                    this->obj->world_x, this->obj->world_y,
-                    this->obj->world_z);
-            }
-            this->set_state(1);
         }
 
         if (hit_ground != 0 && this->state != 1) {

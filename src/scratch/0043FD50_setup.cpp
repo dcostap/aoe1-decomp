@@ -14,6 +14,8 @@
 // shape uses the prior < 1 form in this compiler basin.
 // attempt 9: corrected create_button arguments to x, y, button width, height.
 // attempt 10: separate adjacent button fields emitted the same code.
+// attempt 11: passed p5 as the dialog height to base setup per the original
+// stack load; this grew the body to 676 bytes and worsened the first hunk.
 // Best current result: exact size and ordered call parity; remaining drift is
 // register scheduling and prologue layout, first mismatch at +0005.
 
