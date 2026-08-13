@@ -16,6 +16,15 @@
 // rolled back. Best current source is 1196 bytes, frame 0x6C, 902-byte diff.
 // shardB6: restored ObjectMemory z at +0x0A and owner at +0x0B from the
 // taiinfmd first-hunk byte loads; natural typed ownership improved 902 to 900.
+// orch-4E1D10-a: explicit outer good gating with a bound-first inner scan
+// improved the current reconstruction to 1204 bytes, 867-byte diff, and
+// 72.54% shape. This is the retained structural best.
+// orch-4E1D10-a: combining distance, random, and findDrop in one expression
+// kept findDrop before random and introduced two call replacements; rolled back.
+// orch-4E1D10-a: explicit main do/while scans followed the Ghidra back-edges
+// and improved shape to 75.53%, but shrank the body to 1178 bytes; rolled back.
+// orch-4E1D10-a: parameter-home reuse, explicit sqrt intrinsic context, and
+// removing the unused third point were codegen duplicates.
 // left in scratch: behavior skeleton likely has the right major call set and nested scan, but not exact/accepted_drift quality; needs precise original source expression for inner passability and scoring to recover the missing 19+ bytes under default /O2.
 
 typedef unsigned char uchar;
@@ -83,9 +92,11 @@ public:
 
 int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, int p4, int targetID, int radius, int objID)
 {
-    ObjectMemory* target = this->objectMemory(targetID);
+    RGE_Static_Object* unit;
+    ObjectMemory* target;
+    target = this->objectMemory(targetID);
     if (!target) return 0;
-    RGE_Static_Object* unit = this->md->object(objID);
+    unit = this->md->object(objID);
     if (!unit) return 0;
 
     int terrainType, terrain;
@@ -128,11 +139,13 @@ int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, 
                 passMin.x = y - 2; passMin.y = x - 2; this->mapBound(&passMin);
                 passMax.x = y + 2; passMax.y = x + 2; this->mapBound(&passMax);
                 int good = 1;
-                for (int yy = passMin.x; good && yy <= passMax.x; ++yy) {
-                    int off = yy * 0x18;
-                    for (int xx = passMin.y; good && xx <= passMax.y; ++xx) {
+                for (int yy = passMin.x; yy <= passMax.x; ++yy) {
+                    if (good) {
+                        int off = yy * 0x18;
+                        for (int xx = passMin.y; xx <= passMax.y && good; ++xx) {
                         unsigned char t = (unsigned char)(*((unsigned char*)map->rows[xx] + off + 5) & 0x1f);
-                        if (t != 1 && t != 0x16 && unit->canPlace((float)xx, (float)yy, 1) == 0) good = 0;
+                            if (t != 1 && t != 0x16 && unit->canPlace((float)xx, (float)yy, 1) == 0) good = 0;
+                        }
                     }
                 }
                 if (!good) continue;
@@ -141,9 +154,9 @@ int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, 
             int dy = target->y - x;
             int d2 = dx * dx + dy * dy;
             int dist = (int)sqrt((double)d2);
-            int rnd = debug_rand((char*)0x5878DC, 0x1b3f) % (radius * 3);
-            XYPoint a, b, c;
-            a.x = y; a.y = x; c.x = rnd;
+            int rnd = debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1b3f) % (radius * 3);
+            XYPoint a, b;
+            a.x = y; a.y = x;
             int found = unit->findDrop(&a, &targetPoint, 1.0f, &b, 1);
             int v = (found != 1 ? radius : 0) + rnd + dist;
             if (maxLOSValue > 0) v -= losMap.lookupValue(y, x) * radius / maxLOSValue;

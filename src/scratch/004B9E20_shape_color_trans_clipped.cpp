@@ -34,6 +34,10 @@
 // destination cursor duplicated prior evidence and worsened to 883 bytes with
 // a 0x10 frame; restored the clean signed-pitch source.
 // GIVEUP blockers: exact clipped RLE source topology, parameter-slot reuse for min/max/x/y counters, state-byte placement at [esp+34], and register allocation for EDI=src/ESI=dst/EBP=xpos/EDX=min_x. No inline asm used; no accepted_drift proposal.
+// luna-4B9E20-r2 control-flow probe: spelling all four parity tests as
+// `(command & 1) == 1` matched the original masked compare branches and
+// improved block coverage (49.40% to 60.48%) and size (866B to 900B), but
+// worsened strict diff (800B to 813B); restored the pinned natural source.
 
 typedef unsigned char byte;
 #include <string.h>

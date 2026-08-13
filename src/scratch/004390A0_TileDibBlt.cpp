@@ -21,6 +21,12 @@
 // - Remaining blocker is broad VC5 stack-home/loop-body scheduling. Calls are
 //   aligned 8/8, but the first mismatch is the yscale home and CFG topology
 //   still differs. No accepted_drift quality.
+// - Separating the saved flip arguments from the param_18/param_19 loop
+//   counters, and reusing param_5 for fallback source Y, gives the best
+//   structural candidate: 1254/1265 bytes, 75.42% shape, and 8/8 calls.
+// - The saved-argument declarations changed the early register carriers, but
+//   the binary supports their distinct lifetime from the loop counters.
+//   Direct parameter-home and declaration-order probes were rolled back.
 #include <windows.h>
 #include <windowsx.h>
 #include <stdio.h>
@@ -41,6 +47,11 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     long tileHeight = param_16;
     long xscale = (tileWidth << 8) / param_8;
     long yscale = (tileHeight << 8) / param_9;
+    int iVar7;
+    int iVar9;
+    int iVar11;
+    int iVar10;
+    int iVar12;
     long lVar15;
     long SrcBotHgt;
     long SrcRtWid;
@@ -54,12 +65,11 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     while (param_14 >= tileHeight) param_14 -= tileHeight;
     DestBotHgt = tileWidth - param_13;
     SrcLtWid = tileHeight - param_14;
-    int iVar7 = tileWidth - DestBotHgt;
-    int iVar9 = param_13 - iVar7;
-    int iVar11 = tileHeight - SrcLtWid;
-    int iVar10 = param_14 - iVar11;
-    int iVar12 = ((DestBotHgt << 16) / xscale) >> 8;
-    int src2;
+    iVar7 = tileWidth - DestBotHgt;
+    iVar9 = param_13 - iVar7;
+    iVar11 = tileHeight - SrcLtWid;
+    iVar10 = param_14 - iVar11;
+    iVar12 = ((DestBotHgt << 16) / xscale) >> 8;
     SrcRtWid = param_8 - iVar12;
     SrcBotHgt = ((SrcLtWid << 16) / yscale) >> 8;
     SrcTopHgt = param_9 - SrcBotHgt;
@@ -75,6 +85,8 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
         param_6 = 1;
     }
     if (param_17) {
+        int iVar1 = param_18;
+        int iVar3 = param_19;
         if (0 < param_7) {
             param_17 = param_7;
             do {
@@ -83,12 +95,12 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
                     lVar15 = param_4;
                     do {
                         if (SrcBotHgt != 0) {
-                            if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcBotHgt,param_10,param_11,param_12,param_13,param_14,DestBotHgt,SrcLtWid,1,param_18,param_19,0);
-                            if (SrcRtWid != 0) TransDibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5,SrcRtWid,SrcBotHgt,param_10,param_11,param_12,iVar9,param_14,iVar7,SrcLtWid,1,param_18,param_19,0);
+                            if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcBotHgt,param_10,param_11,param_12,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3,0);
+                            if (SrcRtWid != 0) TransDibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5,SrcRtWid,SrcBotHgt,param_10,param_11,param_12,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3,0);
                         }
                         if (SrcTopHgt != 0) {
-                            if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5+SrcBotHgt,iVar12,SrcTopHgt,param_10,param_11,param_12,param_13,iVar10,DestBotHgt,iVar11,1,param_18,param_19,0);
-                            if (SrcRtWid != 0) TransDibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5+SrcBotHgt,SrcRtWid,SrcTopHgt,param_10,param_11,param_12,iVar9,iVar10,iVar7,iVar11,1,param_18,param_19,0);
+                            if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5+SrcBotHgt,iVar12,SrcTopHgt,param_10,param_11,param_12,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3,0);
+                            if (SrcRtWid != 0) TransDibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5+SrcBotHgt,SrcRtWid,SrcTopHgt,param_10,param_11,param_12,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3,0);
                         }
                         lVar15 += param_8;
                         --param_18;
@@ -100,22 +112,24 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
             return param_7 * param_6;
         }
     } else {
+        int iVar1 = param_18;
+        int iVar3 = param_19;
         param_12 = (TRANSINFO*)param_5;
         if (0 < param_7) {
             param_17 = param_7;
             do {
-                src2 = (int)param_12 + SrcBotHgt;
+                param_5 = (long)param_12 + SrcBotHgt;
                 if (0 < param_6) {
                     param_19 = param_6;
                     lVar15 = param_4;
                     do {
                         if (SrcBotHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,(long)param_12,iVar12,SrcBotHgt,param_10,param_11,param_13,param_14,DestBotHgt,SrcLtWid,1,param_18,param_19);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12, (long)param_12,SrcRtWid,SrcBotHgt,param_10,param_11,iVar9,param_14,iVar7,SrcLtWid,1,param_18,param_19);
+                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcBotHgt,param_10,param_11,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3);
+                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12, param_5,SrcRtWid,SrcBotHgt,param_10,param_11,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3);
                         }
                         if (SrcTopHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,src2,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,param_18,param_19);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,src2,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,param_18,param_19);
+                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3);
+                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3);
                         }
                         lVar15 += param_8;
                         --param_19;

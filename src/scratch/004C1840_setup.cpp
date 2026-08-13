@@ -13,6 +13,13 @@
 // - Natural first-read handle split (incoming file for the first read, then a
 //   local handle for later reads) moved the result farther to 1161 bytes, so
 //   it was rolled back.
+// - Corrected the proven world players offset to +0x40 and modeled the two
+//   serialized member counts as int; the latter removed 12 bytes of mask code
+//   and improved the strict diff to 883 bytes.
+// - A do-while scan rewrite expanded the CFG and lost exact loop islands; it
+//   was rolled back to the bounded for-loop form.
+// - Direct branch add_node calls improved the tail placement but moved the
+//   whole-function diff to 904 bytes; the selected-list form remains best.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -81,7 +88,8 @@ public:
 #undef WORLD_PAD
     char gap_04[0x34];
     RGE_Sprite** sprites;                    // +0x38
-    RGE_Player** players;                    // +0x3C
+    char gap_3C[4];
+    RGE_Player** players;                    // +0x40
 };
 
 class RGE_Player {
@@ -188,7 +196,7 @@ public:
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     int save_file = file;
     long long_val;
-    unsigned char byte_val;
+    int byte_val;
     int numberUnits;
     int tempInt;
     int tempInt_fffffff8;

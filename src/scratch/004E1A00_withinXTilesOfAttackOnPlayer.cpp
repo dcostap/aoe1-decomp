@@ -66,6 +66,15 @@
 // - Refreshed assembly-donor search found the exact taiinfmd.cpp sibling
 //   004E1AF0 prologue and confirmed the remaining gap is the target's distinct
 //   allocator/stack-home basin, not a missing call or known layout fact.
+// - Reassessment probes: a positive do/while with a carried cursor worsened
+//   to 204 bytes and changed the CFG; top-level counter initialization inside
+//   the positive guard added a duplicate bound test (219 bytes).  Restored.
+// - Reassessment probes: moving the squared-range declaration after the
+//   coordinate conversions reached 211 bytes with diff 218 but did not improve
+//   structure; direct repeated member indexing, explicit this-based pointer
+//   arithmetic, and top-level declaration reordering were codegen duplicates.
+//   A for update ordered cursor before counter kept 211 bytes but lost an exact
+//   block.  Restored the clean indexed scan.
 // - Current lease baseline confirmed the clean 211-byte basin.  A natural
 //   long loop copy inside the positive-count guard worsened to 204 bytes and
 //   changed the loop CFG; it was restored.  No new lead remains within this

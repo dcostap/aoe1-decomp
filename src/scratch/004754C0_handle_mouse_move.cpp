@@ -39,6 +39,11 @@
 //   TPanel/TListPanel ownership and vslot calls; the first mismatch stays at
 //   +00C8 (LEA versus the rebuilt param3 push). No new source-plausible lead
 //   remains without repeating prior receiver, local-order, or ABI probes.
+// - reassessed exact Panel.cpp width/xPosition donors: int/non-const method
+//   declarations and int result locals were codegen duplicates; restored the
+//   period PDB long/const ABI.
+// - restored the six PDB-proven TListPanel data fields after TTextPanel; this
+//   layout correction is codegen-neutral and keeps the local model canonical.
 
 class TPanel {
 public:
@@ -124,6 +129,13 @@ public:
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
     virtual long handle_mouse_up(unsigned char, long, long, int, int);
     virtual int is_inside(long, long);
+
+    int auto_track;
+    unsigned long mouse_scroll_last_time;
+    unsigned long mouse_scroll_interval;
+    int mouse_scroll_up;
+    int mouse_scroll_down;
+    int drawHighlightBar;
 };
 
 class TScrollBarPanel : public TPanel {

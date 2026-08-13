@@ -53,6 +53,13 @@
 // - shardE-5472B0: removing the destructor declaration was codegen-duplicate.
 //   Function-scope pointer/goto and void-result/goto forms both produced the
 //   known 203-byte prologue/stack-home drift; restored the clean source.
+// - sa47e4-create-zone-map: inverted single-final-return hit/create condition
+//   changed the loop body and produced 226 bytes of drift; restored.
+// - sa47e4-create-zone-map: one function-scope allocation pointer with a
+//   shared goto reproduced the known 203-byte alternate EH basin; restored.
+// - sa47e4-create-zone-map: clean source remains best; original CFG requires
+//   a shared EH epilogue, while all natural shared-return forms perturb the
+//   prologue or allocation body.
 
 #include <stdlib.h>
 #include <string.h>

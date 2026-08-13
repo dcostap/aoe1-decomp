@@ -14,6 +14,11 @@
 // - Kept one typed result initialized at entry for the early return and switch
 //   default; the original zero spill supports this lifetime, but VC5 emitted
 //   the same code (no positional gain, edit/resync 45.84%).
+// - Leaving the initialized result unchanged in switch default produced the
+//   binary frame/size (0x10 / 1285) and raised shape to 67.76%; keep this
+//   natural default path while the entry block and FPU switch still drift.
+// - Inverted-guard, declaration-order, global-constant, and constant-left
+//   predicate variants did not improve the 1199-byte structural best.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -332,7 +337,6 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         }
         break;
     default:
-        result = 0.0f;
         break;
     }
 

@@ -80,6 +80,14 @@
 //   scheduling. Separate cursor declarations, receiver alias, counter types,
 //   and declaration order were duplicate or worse. Restored the clean named
 //   Map_Stack array reconstruction; no evidence-backed exact lead remains.
+// - sa9675-r1-480EC0: a typed diagnostic state with outer, byte offset, and
+//   Map_Stack[100], plus `int r = (debug_rand(...) * 100) / 0x7FFF`, reached
+//   exact size, CFG, and 100% block shape with a 10-byte diff. The remaining
+//   bytes are only inverse EBX/EDI receiver, counter, and cursor colors.
+//   Inline random evaluation, pending-pointer reloads, declaration order,
+//   self aliases, and the init_stack reference ABI did not improve it.
+//   Restored the clean named-array source because the aggregate is not proven
+//   original ownership; the exact-size result is diagnostic evidence.
 
 extern int __cdecl debug_rand(char* file, int line);
 

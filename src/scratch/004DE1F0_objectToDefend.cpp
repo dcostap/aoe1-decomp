@@ -60,6 +60,14 @@
 // gap.  One deliberate strategic-number local reuse worsened the call block
 // to 35 bytes; all other probes were duplicates or structural losses.  Restored
 // and validated the clean typed indexed scan; no evidence-backed lead remains.
+// Session sa408a7236-e1f0: an explicit max-size loop with a bottom count break,
+// typed record references, count-first evaluation, id-field lvalues, long-sized
+// count declarations, a named list element, and an inline contains surface
+// either preserved the six-byte duplicate or lost the structural basin.  The
+// count-first forms reached the original EDI count color but changed the
+// entry-address block and widened drift to 152 bytes.  Restored clean source
+// remains the natural typed indexed scan; no further evidence-backed lead was
+// found within this claim.
 //
 // Session orch-4DE1F0-b: a persistent typed entry pointer changed the frame
 // to 0x14 and widened the mismatch to 291 bytes, so it was rolled back.

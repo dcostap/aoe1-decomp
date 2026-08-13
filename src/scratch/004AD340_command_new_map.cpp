@@ -34,6 +34,14 @@
 // frame, size, and CFG signals.
 // probe: replaced the unresolved external global with the committed storage
 // accessor and a local typed TRIBE_Game pointer; this should restore [62C574].
+// r5 probe: moving typed game initialization after the initial this store
+// improved accessor-source diff 511 to 489, but kept a 0x7DC frame and homes
+// game at [esp+18] instead of the original receiver [esp+10].
+// r5 probes: repeated typed accessor use removed the extra frame slot but
+// worsened diff to 554; scoped game/reference forms and declaration-order swaps
+// were unchanged or worse. The after-store game pointer is the best clean lead.
+// blocker: accessor policy and canonical TRIBE typing prevent the original
+// global-variable basin; no further evidence-backed declaration lead remains.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include "../../include/rge_base_game_global.h"
@@ -126,8 +134,6 @@ struct RGE_Player_Info {
 
 int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int param_3, int param_4, int param_5, int show_status)
 {
-    TRIBE_Game* game = (TRIBE_Game*)rge_base_game_at_storage();
-    TRIBE_Screen_Sed* tribe = this;
     int i;
     int current_tribe;
     int result;
@@ -135,7 +141,9 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     RGE_Player_Info player_info;
     RGE_Map_Gen_Info map_info;
 
-    tribe->need_to_save_flag = 0;
+    this->need_to_save_flag = 0;
+    TRIBE_Game* const game = (TRIBE_Game*)rge_base_game_at_storage();
+    TRIBE_Screen_Sed* tribe = this;
     if (game->world == 0) {
         if (show_status != 0) {
             game->show_status_message(0x44d, 0, -1);

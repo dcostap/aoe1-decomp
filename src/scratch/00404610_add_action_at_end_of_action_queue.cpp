@@ -53,6 +53,16 @@
 // allocation remains unresolved.
 // shardB-00404610-scale: branch-scoped typed first_action and next_action
 // locals before each new action type call added a 0xC frame and 262B; rolled back.
+// sa-cc2bb81b-r1 reassess: first-type initializer was a duplicate; a named
+// first action added a frame and 243B; both were rolled back.
+// sa-cc2bb81b-r1 reassess: int action_type reached 234B and retained 179
+// positional diff, but changed signed-return codegen; unsigned short reached
+// 244B/146 diff but changed the signed type ABI and prologue; both rolled back.
+// An explicit 16-bit cast returned to the clean 224B basin. The natural
+// while-next guard added a frame and 233B; an owner alias was optimized away.
+// Final clean source retains the typed three-tail reconstruction at 224B/179;
+// the unresolved structural gap is the calloc/node spill and short-result
+// home, not calls or behavior-backed control-flow topology.
 class RGE_Action_List;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;

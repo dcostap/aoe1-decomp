@@ -21,6 +21,8 @@
 //   original push sequence; resync improved to 60.36%.
 // - tested the mode-3 outer counter in the proven param_7 home; VC5 emitted
 //   identical code, so the natural local counter remains retained.
+// - tested using the mapped mode-2 realMinDC.x for the perimeter start; size
+//   moved 4 bytes closer but positional diff worsened, so rolled it back.
 // Current normalized pause: 2217/2253 bytes, natural 0x30 frame, 62/62 ordered
 // calls. The original 0x34 frame must come from a real lifetime/ownership fact,
 // not a synthetic aggregate. Remaining work is broad gate/perimeter structure

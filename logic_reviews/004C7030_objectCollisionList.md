@@ -1,0 +1,33 @@
+# Logic review: 004C7030 `objectCollisionList`
+
+## Phase transition
+
+Exact matching is suspended. The current candidate has exact size and frame,
+5/5 ordered calls, and 99.59% instruction shape. It differs by 17 bytes.
+
+The remaining output differences are the local EH handler relocation and the
+invalid-return tail register schedule.
+
+## Blind review cohort — 2026-08-13
+
+Three independent reviewers compared the candidate with the executable.
+
+- `sa-feaee2b9`: verified equivalent handler metadata, cleanup thunk, FPU
+  cleanup, zero returns, and valid-path list return.
+- `sa-76db6171`: verified equivalent allocation, constructor cleanup, scan,
+  overlap tests, node insertion, and invalid-radius return paths.
+- `sa-dcf0f952`: verified equivalent EH flow, cleanup, return values,
+  registers, FS restoration, and FPU state.
+
+All reviewers found no definite behavior difference. All noted that final link
+integration must retain the candidate local EH handler and xdata sections.
+
+## Main-agent adjudication
+
+The EH handler relocation has equivalent frame data and cleanup flow. The
+invalid-return tail clears `EBP` before moving it to `EAX`, instead of clearing
+`EAX` directly. Both forms return zero and restore the same state. The FPU pop
+also remains on the same invalid-radius path.
+
+Promote the normalized candidate to `src/verified_logic`. This is not an exact
+match. The remaining drift is compiler EH and tail lowering.

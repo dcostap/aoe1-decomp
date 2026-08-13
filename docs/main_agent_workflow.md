@@ -344,6 +344,16 @@ and important memory/call effects to be accounted for, and no substantive open
 finding. Every supposedly irrelevant finding needs an evidence-backed resolution
 in the ledger.
 
+Judge reachability in the shipped executable, not through every theoretical
+observer. A debugger, injected handler, external stack walker, or hypothetical
+routine that reads compiler bookkeeping does not block promotion when bounded
+review finds no such in-program observer. The main agent may clear dead EH states,
+unused unwind records, or transient frame-chain differences after proving they
+change no reachable cleanup, handler choice, call, state, result, exception, or
+fault outcome. Record the search scope and proof in the ledger. Do not clear real
+cleanup, destructor, catch, fault-order, ABI, or program-visible memory changes
+under this rule. Exact-match promotion remains byte-strict.
+
 When satisfied, the main agent:
 
 1. reads the complete source and ledger;

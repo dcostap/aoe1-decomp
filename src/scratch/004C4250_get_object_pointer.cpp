@@ -1,5 +1,7 @@
 // VA: 004C4250 RGE_Static_Object::get_object_pointer
 // PDB source: stat_obj.cpp lines 1978-2011
+#include <stdlib.h>
+
 // Attempt log:
 // baseline: natural owner/object-list search with the binary-proven
 // player-index and world/player layouts; exact size/call set, 139 bytes differ.
@@ -49,8 +51,14 @@
 // Restored the readable clean source. Direct find_by_id calls remain exact;
 // the unresolved drift is still only ESI owner versus EDX compare coloring
 // and its dependent loop-tail branch displacements.
-// - A complete static/master surface and <stdlib.h> context emitted identical
-//   code. Keep the smaller proven local ABI; no new tail lead resulted.
+
+// tu-statobj-C4250 2026-08-12: retained the complete static/master surface and
+// stat_obj.cpp header context. The layout/context ABI probe was codegen-neutral;
+// the readable typed source still differs only in the owner/compare tail basin.
+// 2026-08-13 sa-e39fccc4-r1-tail2 reassessment: direct owner rereads were a
+// 219B/37 codegen duplicate. Unsigned or byte compare-index types widened the
+// body (227B-238B); dead parameter-home update/order variants widened it to
+// 241B-247B. Restored the clean typed source; no new tail lead was found.
 
 class RGE_Static_Object;
 class RGE_Sprite;
@@ -61,6 +69,85 @@ class RGE_Game_World;
 class RGE_Object_List {
 public:
     RGE_Static_Object* find_by_id(long id);
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    unsigned char master_type; // +0x04
+    unsigned char gap_05[3];
+    char* name; // +0x08
+    short string_id; // +0x0C
+    short string_id2; // +0x0E
+    short id; // +0x10
+    short copy_id; // +0x12
+    short object_group; // +0x14
+    unsigned char gap_16[2];
+    void* sprite; // +0x18
+    void* death_sprite; // +0x1C
+    void* undead_sprite; // +0x20
+    unsigned char undead_flag; // +0x24
+    unsigned char gap_25;
+    short hp; // +0x26
+    float los; // +0x28
+    unsigned char obj_max; // +0x2C
+    unsigned char gap_2D[3];
+    float radius_x; // +0x30
+    float radius_y; // +0x34
+    float radius_z; // +0x38
+    void* selected_sound; // +0x3C
+    void* created_sound; // +0x40
+    void* death_sound; // +0x44
+    short death_spawn_obj_id; // +0x48
+    unsigned char sort_number; // +0x4A
+    unsigned char can_be_built_on; // +0x4B
+    short button_pict; // +0x4C
+    unsigned char hide_in_scenario_editor; // +0x4E
+    unsigned char gap_4F;
+    short portrait_pict; // +0x50
+    unsigned char available; // +0x52
+    unsigned char gap_53;
+    short tile_req1; // +0x54
+    short tile_req2; // +0x56
+    short center_tile_req1; // +0x58
+    short center_tile_req2; // +0x5A
+    float construction_radius_x; // +0x5C
+    float construction_radius_y; // +0x60
+    unsigned char elevation_flag; // +0x64
+    unsigned char fog_flag; // +0x65
+    short terrain; // +0x66
+    unsigned char movement_type; // +0x68
+    unsigned char gap_69;
+    short attribute_type_held[3]; // +0x6A
+    float attribute_amount_held[3]; // +0x70
+    short attribute_max_amount; // +0x7C
+    unsigned char gap_7E[2];
+    float attribute_rot; // +0x80
+    float multiple_attribute_mod; // +0x84
+    unsigned char attribute_flag[3]; // +0x88
+    unsigned char area_effect_object_level; // +0x8B
+    unsigned char combat_level; // +0x8C
+    unsigned char select_level; // +0x8D
+    unsigned char map_draw_level; // +0x8E
+    unsigned char unit_level; // +0x8F
+    unsigned char map_color; // +0x90
+    unsigned char attack_reaction; // +0x91
+    unsigned char convert_terrain_flag; // +0x92
+    unsigned char damage_sprite_num; // +0x93
+    void* damage_sprites; // +0x94
+    long help_string_id; // +0x98
+    long help_page_id; // +0x9C
+    long hotkey_id; // +0xA0
+    unsigned char recyclable; // +0xA4
+    unsigned char track_as_resource; // +0xA5
+    unsigned char create_doppleganger_on_death; // +0xA6
+    unsigned char resource_group; // +0xA7
+    unsigned char draw_flag; // +0xA8
+    unsigned char draw_color; // +0xA9
+    unsigned char gap_AA[2];
+    float outline_radius_x; // +0xAC
+    float outline_radius_y; // +0xB0
+    float outline_radius_z; // +0xB4
 };
 
 class RGE_Game_World {
@@ -140,8 +227,46 @@ public:
     virtual int explore_terrain(RGE_Player* player, unsigned char mode, int value);
     virtual void unexplore_terrain(RGE_Player* player, unsigned char mode, int value);
 
-    char gap_04[0x08];
-    RGE_Player* owner;
+    long id; // +0x04
+    RGE_Master_Static_Object* master_obj; // +0x08
+    RGE_Player* owner; // +0x0C
+    void* sprite; // +0x10
+    void* old_sprite; // +0x14
+    void* sprite_list; // +0x18
+    void* tile; // +0x1C
+    RGE_Static_Object* inside_obj; // +0x20
+    void* objects; // +0x24
+    short screen_x_offset; // +0x28
+    short screen_y_offset; // +0x2A
+    short shadow_x_offset; // +0x2C
+    short shadow_y_offset; // +0x2E
+    float hp; // +0x30
+    unsigned char curr_damage_percent; // +0x34
+    unsigned char facet; // +0x35
+    unsigned char selected; // +0x36
+    unsigned char selected_group; // +0x37
+    float world_x; // +0x38
+    float world_y; // +0x3C
+    float world_z; // +0x40
+    float attribute_amount_held; // +0x44
+    unsigned char object_state; // +0x48
+    unsigned char sleep_flag; // +0x49
+    unsigned char dopple_flag; // +0x4A
+    unsigned char goto_sleep_flag; // +0x4B
+    short attribute_type_held; // +0x4C
+    unsigned char type; // +0x4E
+    unsigned char worker_num; // +0x4F
+    void* player_object_node; // +0x50
+    unsigned char pathing_group_members[0x10]; // +0x54
+    unsigned char group_members[0x10]; // +0x64
+    void* unit_ai_value; // +0x74
+    int group_commander_value; // +0x78
+    int zone_map_index; // +0x7C
+    float group_range_value; // +0x80
+    unsigned char in_obstruction_map_value; // +0x84
+    unsigned char last_in_obstruction_map_value; // +0x85
+    unsigned char under_attack_value; // +0x86
+    unsigned char gap_87;
 
     RGE_Static_Object* get_object_pointer(long id);
 };

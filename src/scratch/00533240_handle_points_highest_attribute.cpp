@@ -61,6 +61,10 @@
 //   declarations, and an inner current initializer were duplicate or neutral. Restored the
 //   validated natural scalar source. No new structural lead; the original id spill and frame
 //   remain unresolved.
+// - Reassessment: direct player/world ownership, a distinct points local, exact-sibling
+//   non-polymorphic player/world declarations, and function-scope owner declarations were
+//   duplicate codegen. A bottom-increment cursor reproduced the older diff-191 basin.
+//   The original parameter-home best, four-slot frame, and spilled id remain unresolved.
 
 class RGE_Game_World;
 

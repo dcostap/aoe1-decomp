@@ -77,6 +77,8 @@
 // canonical typed source unchanged; final mismatch is 47 bytes at the inner fallback join.
 // 2026-08-13 shardE-405620: reversed the natural inner arm order; VC5 kept the duplicated EH tail and worsened to
 // 205B/53B. Restored the canonical zero-first if/else; no new source lead remains.
+// 2026-08-14 sa224b14d6-actmove: typed the action object's master as its moving-master base; VC5 emitted the
+// same 205B/47B tail. Restored the canonical action-master type; the shared EH epilogue remains unresolved.
 
 class RGE_Action_Object;
 class RGE_Sprite;

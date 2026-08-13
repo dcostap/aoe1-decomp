@@ -2,14 +2,15 @@
 // PDB source: aimdmod.cpp lines 34-35
 // FLAGS: /GX
 
-// Status: STUCK — same VC5 EH prologue family mismatch as ~MainDecisionAIModule (0040D020).
+// Status: VERIFIED LOGIC — user-approved semantic promotion on 2026-08-13.
 //
 // Original uses FS-first SEH prologue (`mov eax,[fs:0]` before `push -1`) with
 // interleaved parameter load before `mov [fs:0],esp`. Our VC5 uses no EH frame for
 // the constructor body unless extra synthetic deleting-dtor/code is visible; the
 // best exact-size build fills the configured 113 bytes with a neighboring deleting
 // destructor and has no original FS-first frame. Same root cause as sibling dtor.
-// No accepted_drift: broad prologue/frame/function-boundary mismatch.
+// The missing FS registration is a broad compiler EH-frame difference. The
+// verified normal construction result has no practical difference.
 //
 // Retry 2026-05-18 top-20 mode:
 // - Revalidated baseline /GX: exact size 113, positional 75.2212%, first mismatch 0.

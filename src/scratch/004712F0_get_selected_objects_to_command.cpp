@@ -35,6 +35,10 @@
 //   color gap; the select-level compare and function body are exact.
 // - Drove the initial zero stores from the natural j/count locals; emitted
 //   code was unchanged, so literal zero stores remain the clean source form.
+// - Delaying count initialization matched the target prologue bytes but
+//   swapped j/count register roles through the exact filter body; restored.
+// - j-based zero-store, pointer-cursor, declaration-order, and equivalent
+//   out-list ABI probes were unchanged or less plausible; no exact lead.
 
 class RGE_Player;
 

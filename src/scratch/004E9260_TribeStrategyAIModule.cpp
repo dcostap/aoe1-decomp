@@ -47,6 +47,16 @@
 // loop-scoped value locals were a codegen duplicate of the clean source.
 // a two-element value-buffer diagnostic reached 2 bytes but changed the
 // base self-home and one indexed name terminator byte; it was not plausible.
+// new focused labs: combined /GX with /Zd, /Zi, and /Z7; varied the indexed
+// terminator spelling; all produced the same two-byte aggregate candidate.
+// Moving ManagedArray::add outside the class, changing its inline spelling,
+// reducing the base virtual surface, adding likely CRT headers, moving local
+// declarations, and using pointer/reference self aliases did not fix the home.
+// Pair structs behave like int[2]; scalar chains collapse to the 0xC frame.
+// Risky VC5 optimization flags produced no exact invariant-preserving group.
+// The remaining fact is one uncolored frame word: natural parameter reuse has
+// the correct physical hidden-self home but a 0xC frame, while an 8-byte value
+// aggregate restores 0x10 and moves that hidden home to the loop-index slot.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);

@@ -18,6 +18,8 @@
 // - A volatile radio-button array plus a no-effect radioButton[3] expression
 //   produced exact bytes. Main review rejected both codegen-only forms. The
 //   natural array and generic checkButtons tail remain authoritative.
+// - A nonvolatile standalone radioButton[3] expression was optimized away;
+//   it did not restore the binary's late load or sixth checkButtons call.
 
 #include <string.h>
 

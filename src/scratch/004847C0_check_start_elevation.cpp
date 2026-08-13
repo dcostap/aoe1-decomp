@@ -119,6 +119,10 @@
 // with an explicit 0xFF mask duplicated an earlier ABI probe and worsened the
 // strict diff to 142 bytes; rolled back.
 
+// Fresh reassessment: spelling the initial row seed with x0 * 24 instead of
+// the named offset, and swapping the row-base/table local declarations, both
+// rebuilt to the same 224-byte/141-difference code. Both were rolled back.
+
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;

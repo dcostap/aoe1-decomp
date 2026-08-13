@@ -18,6 +18,13 @@
 //   rolled back.
 // - Left in scratch after the bounded VC5 pass; no inline asm or codegen-only
 //   volatile/offset scaffolding was retained.
+// - Structural follow-up: reordered local declarations, reused one button
+//   cursor, reused the loop index, and tested the pointer base type. These
+//   forms emitted the same 1271-byte function.
+// - A 0x204-byte temp buffer changed the frame to 0x234 and was rolled back.
+//   The unresolved structural lead is VC5's zero-register choice: the rebuilt
+//   code uses EBX for zero and ESI for the button base, while the original
+//   uses EAX for zero and EBX for the button base. This saves ten bytes.
 // FLAGS: /GX (EH)
 
 #include <string.h>

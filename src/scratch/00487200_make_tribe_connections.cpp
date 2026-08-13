@@ -14,6 +14,8 @@
 //   by 88 bytes and drift worsened, so restored the prior clean source.
 // - Hoisted the initial y/ty2 carry before the bounds guard; this improved the
 //   structural diff from 956 to 935 bytes and matched more loop blocks.
+// - Reordered stack_cost before Map_Stack to model the original separate cost
+//   home; VC5 kept the same frame and bytes, so the lead was rolled back.
 
 struct Map_Stack {
     int x;

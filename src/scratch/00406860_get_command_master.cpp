@@ -91,6 +91,9 @@
 //   the canonical command-master hierarchy. Remaining drift is target/z/index
 //   register coloring: target=EBP, z reloads, and i=EBX instead of target=EBX,
 //   z=EBP, and i at the target home.
+// - 2026-08-14 (sa-c107dda1-r1): removed the candidate local and repeated the
+//   canonical owner-array expression. Shape improved, but positional drift grew
+//   to 146 bytes and the call setup gained an extra object load; rolled back.
 
 class RGE_Static_Object;
 class RGE_Action_Object;

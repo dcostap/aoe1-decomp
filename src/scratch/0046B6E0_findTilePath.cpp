@@ -26,6 +26,32 @@
 // - Removed badBounds and reversed the tolerance comparison for direct guard
 //   and FPU order.  A local optimize-y pragma was tested and rolled back:
 //   it improved bytes but produced an implausible 0x68 frame.
+// - Direct integer zero stores for the two early costOut exits reduced the
+//   candidate by 4 bytes and matched the original store form.
+// - Moved the shared success restore tail before heap exhaustion.  This
+//   restored the original 75-call order and raised shape similarity to 60%.
+// - Reused the dead goalY parameter home for repeated path-group resize
+//   pointers, matching the original allocation scratch without a new local.
+// - Reduced the distance estimate to signed deltas and absolute values.
+//   This reached the original 0x7c frame and exact function size.
+// - Tested and rolled back ordered estimate swaps, unobPlayerID scratch,
+//   shared direction-Y goto, and display-mask temporary variants when they
+//   worsened structural output.  The current source remains typed and plain.
+// - luna-46B6E0-r2 tested spelling the initial tolerance gate with tolerance
+//   on the left.  It matched the original FPU load order and improved shape
+//   by 0.14 points, but worsened positional diff by 6 bytes; restored clean.
+// - luna-46B6E0-r4 tested the exact named global surface: DAT_00570e54..78
+//   from game_globals.h, plus Ghidra-proven MapPathsDisplay,
+//   numberPathingIterations, rge_base_game, DiagionalDistance, FacetSkipMask,
+//   ObstructionValueShift, and ObstructionMasks declarations.  The named
+//   surface changed the prologue, frame, call order, and size by 118-126
+//   bytes.  It was restored.  This scratch candidate still has a global-surface
+//   blocker: the best codegen requires the original globals to remain bound by
+//   address until a matching shared declaration context is found.
+// - Tested delaying the display-mask store until after the typed tile-pointer
+//   increment.  It reduced positional diff by 129 bytes but made the source
+//   decompiler-shaped and worsened CFG/edit similarity.  Restored the direct
+//   typed store; the original source evidence supports that form.
 
 #include <math.h>
 #include <string.h>
@@ -61,22 +87,12 @@ class RGE_View;
 #define VPAD32(n) VPAD16(n) VPAD16(n##_16)
 
 #define ESTIMATE_DISTANCE(out, ax, ay, bx, by) do { \
-    int _ed_xa = (ax); \
-    int _ed_ya = (ay); \
-    int _ed_xb = (bx); \
-    int _ed_yb = (by); \
-    int _ed_minx = _ed_xa; \
-    int _ed_maxx = _ed_xb; \
-    int _ed_miny = _ed_ya; \
-    int _ed_maxy = _ed_yb; \
-    int _ed_dx; \
-    int _ed_dy; \
+    int _ed_dx = (ax) - (bx); \
+    int _ed_dy = (ay) - (by); \
     int _ed_diag; \
     int _ed_straight; \
-    if (_ed_maxx < _ed_minx) { int _ed_t = _ed_minx; _ed_minx = _ed_maxx; _ed_maxx = _ed_t; } \
-    if (_ed_maxy < _ed_miny) { int _ed_t2 = _ed_miny; _ed_miny = _ed_maxy; _ed_maxy = _ed_t2; } \
-    _ed_dx = _ed_maxx - _ed_minx; \
-    _ed_dy = _ed_maxy - _ed_miny; \
+    if (_ed_dx < 0) _ed_dx = -_ed_dx; \
+    if (_ed_dy < 0) _ed_dy = -_ed_dy; \
     if (_ed_dx < _ed_dy) { _ed_diag = _ed_dx; _ed_straight = _ed_dy - _ed_dx; } \
     else { _ed_diag = _ed_dy; _ed_straight = _ed_dx - _ed_dy; } \
     (out) = DiagionalDistance[_ed_diag & 0xff] + _ed_straight * 4; \
@@ -382,15 +398,15 @@ public:
     while (_rc_i < _rc_obj->pathingGroupMembers.numberValue) { \
         int _rc_index = _rc_i; \
         if (_rc_obj->pathingGroupMembers.maximumSizeValue - 1 < _rc_i) { \
-            int* _rc_newv = (int*)operator_new(_rc_i * 4 + 4); \
-            if (_rc_newv != 0) { \
+            goalY = (int)operator_new(_rc_i * 4 + 4); \
+            if (goalY != 0) { \
                 int _rc_j = 0; \
                 while (_rc_j < _rc_obj->pathingGroupMembers.maximumSizeValue && _rc_j < _rc_i + 1) { \
-                    _rc_newv[_rc_j] = _rc_obj->pathingGroupMembers.value[_rc_j]; \
+                    ((int*)goalY)[_rc_j] = _rc_obj->pathingGroupMembers.value[_rc_j]; \
                     ++_rc_j; \
                 } \
                 operator_delete(_rc_obj->pathingGroupMembers.value); \
-                _rc_obj->pathingGroupMembers.value = _rc_newv; \
+                _rc_obj->pathingGroupMembers.value = (int*)goalY; \
                 _rc_obj->pathingGroupMembers.maximumSizeValue = _rc_i + 1; \
             } \
         } \
@@ -409,7 +425,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                                 int step, int unobPlayerID, int unobGroupID)
 {
     int dist;
-    int initialEstimate;
     int currentEstimate;
     int bestLimit;
     int iterationCap;
@@ -501,7 +516,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     if (FADDR(0x570E54) < tolerance) {
         ESTIMATE_DISTANCE(dist, goalX, goalY, startX, startY);
         if ((float)dist < tolerance * FADDR(0x570E58)) {
-            if (costOut != 0) *costOut = FADDR(0x570E5C);
+            if (costOut != 0) *costOut = 0;
             if (mode == 1) {
                 path = ACTIVE_PATH(obj);
                 path->killPath();
@@ -509,7 +524,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             return 1;
         }
         if (obj->vf_fc() == FADDR(0x570E5C)) {
-            if (costOut != 0) *costOut = FADDR(0x570E5C);
+            if (costOut != 0) *costOut = 0;
             if (mode == 1) {
                 path = ACTIVE_PATH(obj);
                 path->killPath();
@@ -534,7 +549,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             if (col < map->map_width) {
                 tile = map->map_row_offset[row];
                 while (col < map->map_width) {
-                    tile[col].draw_attribute = (unsigned char)(tile[col].draw_attribute & 0x70);
+                    tile->draw_attribute = (unsigned char)(tile->draw_attribute & 0x70);
+                    ++tile;
                     ++col;
                 }
             }
@@ -633,10 +649,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->numberOpenPathsValue = 1;
     this->numberTraversedPathsValue = 0;
 
-    ESTIMATE_DISTANCE(initialEstimate, goalX, goalY, startX, startY);
-    this->MGP_costValue[startX][startY] = initialEstimate;
-    this->MGP_openPaths[1].total = initialEstimate;
-    this->MGP_bestTraversedPath.total = initialEstimate;
+    ESTIMATE_DISTANCE(startY, goalX, goalY, startX, startY);
+    this->MGP_costValue[startX][startY] = startY;
+    this->MGP_openPaths[1].total = startY;
+    this->MGP_bestTraversedPath.total = startY;
     this->MGP_openPaths[1].x = (unsigned char)startX;
     this->MGP_openPaths[1].y = (unsigned char)startY;
     this->MGP_openPaths[0].total = -2000000000;
@@ -1010,6 +1026,15 @@ next_direction:
         this->startOfPath = 0;
     }
 
+    goto path_exhausted;
+
+final_success_restore:
+    if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
+        this->currentObject->addToObstructionMap(this->aiPS);
+    }
+    return 1;
+
+path_exhausted:
     openIndex = this->numberOpenPathsValue + 1;
     this->numberOpenPathsValue = openIndex;
     this->MGP_openPaths[openIndex].x = this->MGP_bestTraversedPath.x;
@@ -1042,12 +1067,6 @@ next_direction:
         RESTORE_COLLIDING_OBJECTS(this);
         restoreResult = 0;
     }
-
-final_success_restore:
-    if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
-        this->currentObject->addToObstructionMap(this->aiPS);
-    }
-    return 1;
 
 final_failure_restore:
     if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {

@@ -63,6 +63,11 @@
 // - Current lease baseline reconfirmed the clean 238-byte basin.  The
 //   remaining 15 bytes are the stable this/md/second-object register swap;
 //   no new source or ABI lead is justified without repeating prior probes.
+// - Reassessment probes: flat and non-polymorphic information surfaces,
+//   collapsed/direct main-decision surfaces, complete inherited virtual slots,
+//   polymorphic object layout, base-typed md, scoped/reused md locals, and
+//   combined minimal class surfaces all reproduced the same 238-byte/15-byte
+//   basin. Restored the canonical typed source; no new ABI or liveness lead.
 
 class RGE_Static_Object;
 

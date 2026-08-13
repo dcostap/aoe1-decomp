@@ -29,6 +29,13 @@ Each ledger should contain:
    substantive finding remains open, and the rationale for promotion or return
    to scratch work.
 
+Use practical executable reachability when classifying a finding. Theoretical
+observation by a debugger, injected code, or an absent runtime-introspection
+routine does not make compiler bookkeeping substantive. Clear such a difference
+only after bounded review finds no reachable shipped observer and shows no
+cleanup, handler, call, state, result, exception, or fault outcome changes.
+Record that evidence and its search scope. Exact matching remains byte-strict.
+
 Before the first formal round, the main agent should normalize the candidate away
 from exact-matching experiment residue and toward plausible original-developer
 C/C++: canonical types and fields, explicit statements, natural control flow,

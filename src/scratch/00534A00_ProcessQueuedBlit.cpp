@@ -95,6 +95,11 @@
 //   each codegen duplicates; restored canonical typed ownership after each.
 // Paused: the remaining mismatch is the extra EBX save and COM argument/source
 //   scheduling basin; no canonical ownership or virtual-slot uncertainty remains.
+// sa09-ProcessQueuedBlit reassessment: pointer arithmetic, RECT/entry declaration
+//   order, aggregate and zero RECT initialization, late surface/entry aliases,
+//   discarded BltFast result, explicit queued guard, reversed bound terms, and
+//   SDK DWORD coordinate types were duplicates or worse. Restored this clean
+//   typed source; the first mismatch remains the extra EBX save at +0003.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 

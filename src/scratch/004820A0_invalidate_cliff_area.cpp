@@ -47,6 +47,12 @@
 // - Reversing alias declarations, splitting endpoint updates, and capturing
 //   spacing as a local were codegen duplicates. The current aliases remain
 //   readable ownership, not compiler-only scaffolding.
+// - Follow-up direct endpoint locals, y-first declaration order, deferred
+//   endpoint assignments, and parameter mutation were either duplicates or
+//   structurally worse. The target's initial y home in EBP remains unresolved.
+// - A four-case endpoint/input and x-home variant lab kept the 243-byte frame
+//   basin but did not recover EBP; the aliases with early x-home update remain
+//   the cleanest source. No exact policy-clean lead remains in this pass.
 
 struct Map_Stack {
     long x;
@@ -110,10 +116,15 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
     long cliff_height2 = this->map_height / 3 - 1;
     long cliff_width = x;
     long cliff_height = y;
-    long cliff_x = cliff_width - spacing;
-    long cliff_y = cliff_height - spacing;
-    long cliff_x2 = spacing + cliff_width;
-    long cliff_y2 = spacing + cliff_height;
+    long cliff_x;
+    long cliff_y;
+    long cliff_x2;
+    long cliff_y2;
+
+    cliff_x = cliff_width - spacing;
+    cliff_y = cliff_height - spacing;
+    cliff_x2 = spacing + cliff_width;
+    cliff_y2 = spacing + cliff_height;
 
     spacing = cliff_x;
     x = cliff_x2;
@@ -131,8 +142,8 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
     }
 
     if (cliff_y <= cliff_y2) {
-        long row_count = cliff_y2 - cliff_y + 1;
         long row = cliff_y;
+        long row_count = cliff_y2 - cliff_y + 1;
         do {
             if (spacing <= x) {
                 long column = spacing;
@@ -142,7 +153,7 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacin
                         this->remove_stack_node(this->stack_offsets[row] + column);
                     }
                     column++;
-                } while (column <= x);
+                    } while (column <= x);
             }
             row++;
             row_count--;

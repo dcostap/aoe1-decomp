@@ -36,6 +36,14 @@
 // - Tested a computed XYPoint max aggregate initializer from the same-TU
 //   donor-backed point ownership; it widened the body to 248B and produced a
 //   196-byte diff. Restored the direct field assignments.
+// - Reassessment retested the same-TU max.x-then-max.y source with max-first
+//   declaration, coordinate aliases, mixed/compound additions, reversed terms,
+//   and long radius. Each widened to 248B and a 196-byte diff; the comma lower
+//   declaration was a duplicate of that basin.
+// - Reversed lower-bound declaration order moved the first mismatch to the
+//   parameter loads and reached 214B diff. Donor-polymorphic RGE_Map context,
+//   including get_terrain, did not change the x-first basin. Restored the clean
+//   direct max.y-then-max.x source; no policy-clean lead remains.
 
 typedef unsigned char uchar;
 

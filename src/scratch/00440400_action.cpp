@@ -31,6 +31,9 @@
 //   identical code and still merged the button-6 cleanup into a shared call.
 // - Made button 6 an else-if continuation of button 5; VC5 emitted identical
 //   code, retaining one shared cleanup call and one missing button cleanup site.
+// - Tried a typed shared destroy label for button-5 null and event-2 paths,
+//   based on the original CFG; VC5 kept the missing destroy call and grew the
+//   function, so restored the clean typed source.
 
 #include <string.h>
 

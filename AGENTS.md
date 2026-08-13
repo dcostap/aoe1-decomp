@@ -759,9 +759,21 @@ owned by the designated main agent and documented in
 `docs\main_agent_workflow.md`. Promotion requires a per-function ledger under
 `logic_reviews\`, repeated fresh read-only review cohorts, evidence-backed
 adjudication of every substantive finding, direct main-agent integration of
-bounded fixes, and no open behavioral uncertainty. The original executable is
-the oracle, including its bugs, odd edge cases, unintended side effects, and
-incorrect-looking formulas.
+bounded fixes, and no open substantive uncertainty about reachable program
+behavior. The original executable is the oracle, including its bugs, odd edge
+cases, unintended side effects, and incorrect-looking formulas.
+
+Use a practical reachability standard for `verified_logic`. A difference is not
+substantive only because an injected observer, debugger, external stack walker,
+or hypothetical runtime-introspection routine could detect it. Compiler-owned
+bookkeeping can be cleared when bounded executable review finds no in-program
+observer and proves that the difference changes no reachable call, cleanup,
+handler choice, state, result, memory effect, exception result, or fault result.
+Examples include dead EH states, unused unwind records, and transient frame-chain
+records that no executable code reads. Record the evidence and review scope in
+the ledger. Do not use this rule to dismiss a real cleanup, destructor, catch,
+fault-order, ABI, or program-visible memory difference. Exact matching remains
+byte-strict; this rule applies only to semantic review and `verified_logic`.
 
 ### Source shape after exact matching is suspended
 

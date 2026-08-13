@@ -77,6 +77,18 @@
 //   normalized both local fields from int to long.  The rebuilt function
 //   remains 217 bytes with the same 61-byte mismatch, CFG, memory effects,
 //   and saved-register set.  Retain the canonical typed surface.
+// Continuation sa1853792c_calc_draw_vars:
+// probes 96-98: moving the proven width local into the success arm, changing
+//   its type to long, and moving it to function scope were codegen duplicates.
+// probe 99: truthy guards were a duplicate; probe 100: protected access and
+//   the canonical RGE_View virtual surface were duplicates.
+// probe 102: a natural height local after the row-offset store was a duplicate.
+// probe 105: ungrouped center arithmetic was a duplicate; probe 106: long zero
+//   literals were a duplicate; probe 107: natural implicit promotions were a
+//   duplicate.  Restored the clean typed source after each diagnostic probe.
+// final continuation: validated clean source remains 217 bytes with 61 strict
+//   mismatches (66.13% exact blocks).  The first mismatch is the stable VC5
+//   EBP/EDI zero-versus-divisor coloring and failure-tail pop order.
 
 class tagRECT {
 public:

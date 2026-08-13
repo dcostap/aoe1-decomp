@@ -66,6 +66,14 @@
 // Current claim: a volatile stack-read alias for param_1 improved the diagnostic
 // diff to 6 bytes, but it rotated only the forwarding registers and was not a
 // plausible source form. Restored the canonical source; no exact lead remains.
+// Reassessment (sa-feaf5159-r1): direct-return, switch-default, const-result,
+// nested-guard, Win32-constant, and ordinary forward-parameter-alias forms
+// were tested. Direct returns and the alias were duplicates; if/else and an
+// explicit switch default broke the original CFG or call count. The Win32
+// constants and nested guards were duplicates. Restored this clean source.
+// Validation: remaining drift is only eight bytes in the two qualified base
+// forwarding call register-color families. The best six-byte diagnostic used
+// volatile parameter aliasing and is not retained as source.
 
 #include <windows.h>
 

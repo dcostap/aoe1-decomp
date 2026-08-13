@@ -15,8 +15,23 @@
 // probe 11: initializing bm.bmType before the null guard was a natural typed
 // local/control reconstruction; it changed one byte and worsened resync, so
 // it was rolled back. The clean source remains the best reconstruction.
+// probe 12: a local BITMAPINFOHEADER copied into the allocated header changed
+// the frame to 44h and worsened the structural result; rolled back.
+// probe 13: moving a bitmap alias to the first local declaration was a codegen
+// duplicate; rolled back.
+// probe 14: using bm.bmType as the palette GetObject destination reduced the
+// frame and worsened the local topology; rolled back.
+// probe 15: a WORD bit-depth parameter matched the early BX comparisons but
+// changed later bitfield compares and size; restored the UINT ABI.
+// probe 16: DibNumColors(lpbi) restored the header-field width and improved
+// block shape. A local palette handle kept the caller hpal home unchanged.
+// probe 17: delaying that palette copy until after the bitmap null guard moved
+// the first mismatch to the SelectPalette usage store and is retained.
+// probe 18: keeping the local palette for final restoration worsened size;
+// probe 19: a separate paletteUsage local did not match the usage home.
 // blocker: exact bytes still differ in early register coloring and local
-// liveness, while frame, call set, CFG, and emitted size are exact.
+// liveness and the SelectPalette result store, while frame, call set, CFG, and
+// emitted size are exact.
 
 #include <windows.h>
 #include <windowsx.h>
@@ -36,6 +51,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     int nColors;
     BITMAPINFOHEADER* lpbi;
     BITMAPINFOHEADER* lpbiNew;
+    HPALETTE palette;
     HDC hdc;
     DWORD dwSizeImage;
     int result;
@@ -44,11 +60,12 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     if (!hbm)
         return NULL;
 
-    if (hpal == NULL)
-        hpal = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
+    palette = hpal;
+    if (palette == NULL)
+        palette = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
 
     GetObject(hbm, sizeof(bm), (LPSTR)&bm);
-    GetObject(hpal, sizeof(nColors), (LPSTR)&nColors);
+    GetObject(palette, sizeof(nColors), (LPSTR)&nColors);
 
     if (biBits == 0)
         biBits = bm.bmPlanes * bm.bmBitsPixel;
@@ -70,7 +87,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     lpbi->biClrUsed = 0;
     lpbi->biClrImportant = 0;
 
-    lpbi->biClrUsed = (biBits <= 8) ? 1 << biBits : 0;
+    lpbi->biClrUsed = DibNumColors(lpbi);
 
     if (biStyle == BI_BITFIELDS) {
         if (biBits != 16) {
@@ -88,15 +105,14 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     }
 
     hdc = CreateCompatibleDC(NULL);
-    usage = (UINT)SelectPalette(hdc, hpal, FALSE);
+    usage = (UINT)SelectPalette(hdc, palette, FALSE);
     RealizePalette(hdc);
     SetStretchBltMode(hdc, 4);
 
     GetDIBits(hdc, hbm, 0, lpbi->biHeight, NULL,
         (LPBITMAPINFO)lpbi, usage);
 
-    lpbi->biClrUsed = (lpbi->biClrUsed == 0 && lpbi->biBitCount <= 8) ?
-        1 << lpbi->biBitCount : lpbi->biClrUsed;
+    lpbi->biClrUsed = DibNumColors(lpbi);
 
     dwSizeImage = (lpbi->biSizeImage == 0) ?
         ((((DWORD)lpbi->biBitCount * (DWORD)lpbi->biWidth + 31) >> 3) &
@@ -127,9 +143,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
         result = GetDIBits(hdc, hbm, 0, lpbiNew->biHeight, bits,
             (LPBITMAPINFO)lpbiNew, usage);
 
-        lpbiNew->biClrUsed =
-            (lpbiNew->biClrUsed == 0 && lpbiNew->biBitCount <= 8) ?
-            1 << lpbiNew->biBitCount : lpbiNew->biClrUsed;
+        lpbiNew->biClrUsed = DibNumColors(lpbiNew);
 
         dwSizeImage = (lpbiNew->biSizeImage == 0) ?
             ((((DWORD)lpbiNew->biBitCount * (DWORD)lpbiNew->biWidth + 31) >> 3) &

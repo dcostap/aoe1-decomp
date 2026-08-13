@@ -27,13 +27,15 @@
 //     0x1C with a 201-byte drift, so the clean source was restored.
 // 18: Swapped the final tab entries to the binary-backed order OK then Cancel;
 //     VC5 emitted the original cancel/OK load schedule and matched exactly.
+// 19: Declared the proven virtual derived destructor surface and removed the
+//     raw vtable store; VC5 emitted its compiler-owned derived vtable store
+//     with unchanged exact output.
 // EXACT: 1087 bytes, 0.0000%; direct call relocations and function boundary
 // validated. The five-entry tab order is campaign, scenario, difficulty, OK,
 // then Cancel, matching the original stack writes and source behavior.
 // FLAGS: /GX
-// POLICY HOLD: tab ordering now emits an exact target, but this reconstruction
-// still writes the derived vtable with a literal raw store. Keep it in scratch
-// until a normal compiler-owned vtable surface reproduces that store.
+// POLICY: the derived vtable is now compiler-owned through the virtual
+// destructor declaration proven by same-class exact donors.
 
 class TPanel {
 public:
@@ -107,6 +109,7 @@ public:
     int campaignsLoaded;         // +0x4C8
 
     TRIBE_Screen_Campaign_Selection();
+    virtual ~TRIBE_Screen_Campaign_Selection();
     void init_vars();
     void fillCampaigns();
     void fillScenarios();
@@ -115,7 +118,6 @@ public:
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     : TEasy_Panel("Campaign Selection Screen")
 {
-    *(int*)this = 0x5723D0;
     init_vars();
     if (!setup(rge_base_game->draw_area, "scr2", 0xC384, 1)) {
         *(int*)((char*)this + 0xD8) = 1;

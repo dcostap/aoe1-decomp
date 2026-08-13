@@ -101,6 +101,12 @@
  * codegen duplicate, so ordinary long locals remain authoritative.
  * tu-tmap-50FDD0 probe 1: two-result reverse-arm locals were natural but moved the
  * base-call join and widened the mismatch to 126 bytes; restored the clean source.
+ * sa99_elevation_brush probes: splitting reverse-arm radius and byte updates on both
+ * axes worsened the localized mismatch to 27 bytes; x-only splitting worsened it to
+ * 17 bytes. Grouped and explicitly long-promoted reverse expressions, int saved-endpoint
+ * locals, and a 9-case x/y expression lab all kept the same clean 7-byte output.
+ * Restored the pinned direct typed source. The remaining bytes are the x/y reverse-arm
+ * subtraction ordering: the oracle subtracts r before c, while VC5 emits c before r.
  */
 
 class RGE_Map {

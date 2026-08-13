@@ -36,6 +36,20 @@
 //   element access; removed the byte-stride cursor and excess owner alias.
 //   Result: size moved 833->832 and exact-block coverage improved, but the
 //   frame stayed 0x10 and the first structural hunk remained unchanged.
+// probe 19: delayed the soldiers pointer until after the count guard; frame
+//   stayed exact, but the natural branch source moved to 808B and diff 719.
+// probe 20: retained a local byte-size expression for the zero-arm growth;
+//   it broke tail merging and added a seventh resize call. Rolled back.
+// probe 22: changed busy and working duplicate scans to bounded for loops;
+//   frame stayed 0xC, calls stayed aligned, and size moved to 688B with diff
+//   649. Probe 23 kept the pre-loop index initialization and reached diff 647.
+// probe 24: restored one shared append tail; size became exactly 726B, but
+//   compiler layout moved one resize call before the positive arm.
+// probe 25: placed that tail in the positive PDB band; shape improved to
+//   76.10%, but the label-crossing source was not a clean original model.
+// left in scratch: natural branch-local append source, 688B vs 726B, diff
+//   647, exact calls and frame. The remaining structural gap is register
+//   coloring, block placement, and the original shared append tail order.
 
 extern "C" {
     void* __cdecl operator_new(unsigned int size);
@@ -123,138 +137,117 @@ public:
 
 int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
 {
+    TribeTacticalAIModule* self = this;
+    ManagedArrayInt& soldiers = self->soldiers;
+    ManagedArrayInt& workingArea = self->workingArea;
     int rNum = 0;
-    ManagedArrayInt* soldierArray;
-    RGE_Static_Object* object;
-    UnitAIModule* ai;
-    int action;
-    int order;
-    int taskedNumber;
-    int taskedIndex;
-    int number;
-    int value;
-    int index;
-    int* newValue;
-    int copyIndex;
 
     if (reset == 1)
-        this->workingArea.numberValue = 0;
+        workingArea.numberValue = 0;
 
     reset = 0;
-    if (0 < this->soldiers.numberValue) {
-        soldierArray = &this->soldiers;
+    if (0 < soldiers.numberValue) {
         do {
-            if (reset > soldierArray->maximumSizeValue - 1)
-                soldierArray->resize(reset + 1);
+            if (reset > soldiers.maximumSizeValue - 1)
+                soldiers.resize(reset + 1);
 
-            object = this->md->aiPlayer->world->object(soldierArray->value[reset]);
+            RGE_Static_Object* object =
+                self->md->aiPlayer->world->object(soldiers.value[reset]);
             if ((object != 0) && (object->unitAI() != 0)) {
-                if (reset > soldierArray->maximumSizeValue - 1)
-                    soldierArray->resize(reset + 1);
+                if (reset > soldiers.maximumSizeValue - 1)
+                    soldiers.resize(reset + 1);
 
-                taskedNumber = this->unitsTaskedThisUpdate.numberValue;
-                taskedIndex = 0;
+                int taskedNumber = self->unitsTaskedThisUpdate.numberValue;
+                int taskedIndex = 0;
                 if (0 < taskedNumber) {
-                    do {
-                        if (taskedIndex >= this->unitsTaskedThisUpdate.maximumSizeValue)
-                            break;
-                        if (this->unitsTaskedThisUpdate.value[taskedIndex] ==
-                            soldierArray->value[reset])
+                    for (;
+                         taskedIndex < taskedNumber &&
+                         taskedIndex < self->unitsTaskedThisUpdate.maximumSizeValue;
+                         taskedIndex++) {
+                        if (self->unitsTaskedThisUpdate.value[taskedIndex] ==
+                            soldiers.value[reset])
                             goto nextSoldier;
-                        taskedIndex = taskedIndex + 1;
-                    } while (taskedIndex < taskedNumber);
+                    }
                 }
 
                 if (priority < 0) {
-                    ai = object->unitAI();
-                    action = ai->currentAction();
-                    if (action != -1) {
-                        ai = object->unitAI();
-                        order = ai->currentOrderPriority();
-                        if (threshold <= order)
+                    if (object->unitAI()->currentAction() != -1) {
+                        if (object->unitAI()->currentOrderPriority() >= threshold)
                             goto nextSoldier;
                     }
 
-                    if (reset > soldierArray->maximumSizeValue - 1)
-                        soldierArray->resize(reset + 1);
-
-                    number = this->workingArea.numberValue;
-                    value = soldierArray->value[reset];
-                    index = 0;
+                    if (reset > soldiers.maximumSizeValue - 1)
+                        soldiers.resize(reset + 1);
+                    int value = soldiers.value[reset];
+                    int number = workingArea.numberValue;
+                    int index = 0;
                     if (0 < number) {
-                        do {
-                            if (index >= this->workingArea.maximumSizeValue)
-                                break;
-                            if (this->workingArea.value[index] == value)
+                        for (;
+                             index < number && index < workingArea.maximumSizeValue;
+                             index++) {
+                            if (workingArea.value[index] == value)
                                 goto countedSoldier;
-                            index = index + 1;
-                        } while (index < number);
+                        }
                     }
-
-                    goto appendSoldier;
+                    if (number > workingArea.maximumSizeValue - 1)
+                        workingArea.resize(number + 1);
+                    workingArea.value[workingArea.numberValue] = value;
+                    workingArea.numberValue = workingArea.numberValue + 1;
+                    goto countedSoldier;
                 }
                 else if (priority > 0) {
-                    ai = object->unitAI();
-                    action = ai->currentAction();
-                    if (action != -1) {
-                        ai = object->unitAI();
-                        order = ai->currentOrderPriority();
-                        if (threshold < order) {
-                            if (reset > soldierArray->maximumSizeValue - 1)
-                                soldierArray->resize(reset + 1);
-
-                            value = soldierArray->value[reset];
-                            number = this->workingArea.numberValue;
-                            index = 0;
+                    if (object->unitAI()->currentAction() != -1) {
+                        if (object->unitAI()->currentOrderPriority() > threshold) {
+                            if (reset > soldiers.maximumSizeValue - 1)
+                                soldiers.resize(reset + 1);
+                            int value = soldiers.value[reset];
+                            int number = workingArea.numberValue;
+                            int index = 0;
                             if (0 < number) {
-                                do {
-                                    if (index >= this->workingArea.maximumSizeValue)
-                                        break;
-                                    if (this->workingArea.value[index] == value)
+                                for (;
+                                     index < number && index < workingArea.maximumSizeValue;
+                                     index++) {
+                                    if (workingArea.value[index] == value)
                                         goto countedSoldier;
-                                    index = index + 1;
-                                } while (index < number);
+                                }
                             }
-
-                            goto appendSoldier;
+                            if (number > workingArea.maximumSizeValue - 1)
+                                workingArea.resize(number + 1);
+                            workingArea.value[workingArea.numberValue] = value;
+                            workingArea.numberValue = workingArea.numberValue + 1;
+                            goto countedSoldier;
                         }
                     }
                     goto nextSoldier;
                 }
                 else {
-                    ai = object->unitAI();
-                    action = ai->currentAction();
-                    if (action != -1) {
-                        ai = object->unitAI();
-                        order = ai->currentOrderPriority();
-                        if (order == threshold) {
-                            if (reset > soldierArray->maximumSizeValue - 1) {
-                                newValue = (int*)operator_new(reset * 4 + 4);
+                    if (object->unitAI()->currentAction() != -1) {
+                        if (object->unitAI()->currentOrderPriority() == threshold) {
+                            if (reset > soldiers.maximumSizeValue - 1) {
+                                int* newValue = (int*)operator_new(reset * 4 + 4);
                                 if (newValue != 0) {
-                                    copyIndex = 0;
-                                    if (0 < soldierArray->maximumSizeValue) {
+                                    int copyIndex = 0;
+                                    if (0 < soldiers.maximumSizeValue) {
                                         do {
                                             if (reset + 1 <= copyIndex)
                                                 break;
-                                            newValue[copyIndex] =
-                                                soldierArray->value[copyIndex];
+                                            newValue[copyIndex] = soldiers.value[copyIndex];
                                             copyIndex = copyIndex + 1;
-                                        } while (copyIndex < soldierArray->maximumSizeValue);
+                                        } while (copyIndex < soldiers.maximumSizeValue);
                                     }
-                                    operator_delete(soldierArray->value);
-                                    soldierArray->value = newValue;
-                                    soldierArray->maximumSizeValue = reset + 1;
+                                    operator_delete(soldiers.value);
+                                    soldiers.value = newValue;
+                                    soldiers.maximumSizeValue = reset + 1;
                                 }
                             }
 
-                            value = soldierArray->value[reset];
-                            if (this->workingArea.contains(value) != 1) {
-                                number = this->workingArea.numberValue;
-                                if (number > this->workingArea.maximumSizeValue - 1)
-                                    this->workingArea.resize(number + 1);
-                                this->workingArea.value[this->workingArea.numberValue] = value;
-                                this->workingArea.numberValue =
-                                    this->workingArea.numberValue + 1;
+                            int value = soldiers.value[reset];
+                            if (workingArea.contains(value) != 1) {
+                                int number = workingArea.numberValue;
+                                if (number > workingArea.maximumSizeValue - 1)
+                                    workingArea.resize(number + 1);
+                                workingArea.value[workingArea.numberValue] = value;
+                                workingArea.numberValue = workingArea.numberValue + 1;
                             }
                             rNum = rNum + 1;
                         }
@@ -262,17 +255,11 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                     goto nextSoldier;
                 }
             }
-appendSoldier:
-                    if (number > this->workingArea.maximumSizeValue - 1)
-                        this->workingArea.resize(number + 1);
-                    this->workingArea.value[this->workingArea.numberValue] = value;
-                    this->workingArea.numberValue = this->workingArea.numberValue + 1;
-            goto countedSoldier;
 countedSoldier:
             rNum = rNum + 1;
 nextSoldier:
             reset = reset + 1;
-        } while (reset < soldierArray->numberValue);
+        } while (reset < soldiers.numberValue);
     }
     return rNum;
 }

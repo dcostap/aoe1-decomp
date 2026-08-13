@@ -16,7 +16,25 @@
 // call sites, code is 13B short, and strict diff is 1518B (91.5009%).
 // Checker stage remains STRUCTURAL RECONSTRUCTION. The remaining lead is the
 // entry parameter-home and early block layout mismatch, not register coloring.
+// r2: explicit null-panel return/goto and a flattened dispatch worsened frame,
+//     size, or saved-register parity; restored the clean wrapper.
+// r2: returning event from speed buttons, nested speed gates, an ok predicate,
+//     and direct duplicate slider calls produced no improvement or large drift.
+// r3: replaced all seven fixed-address global macros with typed externs.  Exact
+//     donors confirm C++ linkage for rge_base_game, comm, Regs, panel_system,
+//     allow_user_commands, and do_color_log, plus C linkage for the path counter.
+// r3: adding the same-TU game_globals.h include was a codegen duplicate.
+// Left the clean typed reconstruction in place. The remaining evidence is the
+// original event/p3 parameter homes and separate speed-return blocks.
+// r4: restored param_3 for the interface-style write; this made the code size
+//     exact and moved the diff one byte closer, but VC5 still delayed the home.
+// r4: returned event from the three speed-button arms to mirror original mov
+//     eax,edi return blocks; retained the typed-data surfaces unchanged.
+// r4: restored the binary-documented register parameter qualifiers while
+//     keeping direct param_3/event use; this tests parameter homes without an
+//     alias or a typed-data address replacement.
 
+#include "..\..\include\game_globals.h"
 #include <stdio.h>
 
 #define VPAD1(n) virtual void vpad##n();
@@ -182,16 +200,18 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
-#define comm (*(TCommunications_Handler**)0x62C4C0)
-#define Regs (*(TRegistry**)0x62C4A8)
-#define panel_system (*(TPanelSystem*)0x62E870)
-#define allow_user_commands (*(int*)0x58631C)
-#define do_color_log (*(unsigned char*)0x62C584)
-#define numberPathingIterations (*(int*)0x57F9F4)
+// These declarations follow the exact dlg_conf/basegame donor linkage.  The
+// object build keeps each image-global relocation named, rather than embedding
+// a local address view in this translation unit.
+extern TCommunications_Handler* comm;
+extern TRegistry* Regs;
+extern TPanelSystem panel_system;
+extern int allow_user_commands;
+extern unsigned char do_color_log;
+extern "C" int numberPathingIterations;
 
-long TribeConfigDialog::action(TPanel* panel, long event,
-    unsigned long param_3, unsigned long param_4)
+long TribeConfigDialog::action(TPanel* panel, register long event,
+    register unsigned long param_3, unsigned long param_4)
 {
     char msg[256];
     float new_speed;
@@ -206,7 +226,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 if (this->mouseButton[0]->get_state() != 0) {
                     rge_base_game->prog_info->interface_style = 2;
                 } else {
-                    rge_base_game->prog_info->interface_style = event;
+                    rge_base_game->prog_info->interface_style = param_3;
                 }
                 rge_base_game->vf140();
 
@@ -307,13 +327,13 @@ long TribeConfigDialog::action(TPanel* panel, long event,
             }
         } else {
             if ((TButtonPanel*)panel == this->speedButton[0] && event == 1) {
-                return 1;
+                return event;
             }
             if ((TButtonPanel*)panel == this->speedButton[1] && event == 1) {
-                return 1;
+                return event;
             }
             if ((TButtonPanel*)panel == this->speedButton[2] && event == 1) {
-                return 1;
+                return event;
             }
             if ((TButtonPanel*)panel == this->sizeButton[0]) {
                 return 1;

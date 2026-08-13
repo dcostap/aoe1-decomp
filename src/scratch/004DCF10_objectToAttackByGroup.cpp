@@ -25,6 +25,9 @@
 //   cleanup epilogue, matching the original single-return CFG family.
 // - probe 10: reused the function-level wonder/result slot; size is exact,
 //   calls and boundary are exact, but bytes remain nonexact.
+// - probe 15: moved result-slot zeroing to the binary-observed pre-isBoat
+//   point; positional diff improved by one byte, but shape and resync drift
+//   worsened, so restored the clean source.
 
 #include "../../include/game_globals.h"
 #include <math.h>

@@ -67,6 +67,12 @@
 // source order, and chained zero assignment were nonproductive (45-65-byte
 // diffs or duplicates). Restored the canonical typed source; the AX/CX
 // duplicate-guard register gap remains the only local codegen lead.
+// Shard F reassessment: shared count/result with a typed list base duplicated
+// the earlier 181-byte basin; child-first typed entry access reached 201 bytes.
+// A period-plausible byte cursor with the proven 0x10 stride also reached 201;
+// byte-result initialization after facet normalization reached 65. Restored
+// the canonical typed source. No new source-backed lead beats the 45-byte
+// clean checkpoint; calls, size, frame, and the later draw loop remain aligned.
 
 #include <stdio.h>
 

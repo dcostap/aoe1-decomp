@@ -77,6 +77,13 @@
 // Current bounded pass: ABI/dossier/donor review and a fresh shared action/work
 // tail hypothesis were tested. The shared typed locals grew the body to 250
 // bytes and lost the exact early blocks, so the clean EH reconstruction remains.
+// Session sa65-431250: reassessed the 67-byte frontier with dossier, ABI, and
+// same-TU donors. Natural null/success arms, shared done labels, mixed return
+// placement, top-level transport declaration, comparison operand order, and
+// result initialization placement were tested. They either reproduced the
+// 82-byte duplicated-cleanup basin, changed size/calls, or were codegen-neutral.
+// Restored this typed positive-guard source; remaining lead is VC5 EH-tail
+// block placement between the post-constructor test and shared epilogue.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>

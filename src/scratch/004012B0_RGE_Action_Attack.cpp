@@ -101,6 +101,18 @@
 //   back. Direct member fallback through the combat surface produced the same
 //   structural drift. The typed result local remains the best source shape.
 //
+// Fresh bounded pass (sa-b8d4f6c9-r1):
+// - Restoring the scoped p5 result local improved the current source from 33
+//   to 22 bytes without changing size, calls, CFG, or the exact suffix.
+// - The natural x/range/z/min/y assignment order reached 21 bytes and 92.96%
+//   shape. It preserves the original range/min/z/y store topology; retain it
+//   as the best readable source despite the p4/p3 load-order drift.
+// - x/range/min/z/y reached 23 bytes, x/z/range/min/y reached 22 bytes, and
+//   x/z/range/y/min reached 23 bytes. Guard-alias, shared-master, and local
+//   coordinate variants were worse or duplicates and were rolled back.
+// - Remaining drift starts at +0015 in the initial load schedule. No further
+//   evidence-backed source lead remains in this bounded pass.
+
 // Key structural insights confirmed:
 // - 11 stack params + this(ecx): (RGE_Action_Object*,float,float,float,RGE_Sprite*,
 //   RGE_Sprite*,RGE_Sprite*,float,float,short,short) → ret 2Ch
@@ -244,10 +256,10 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3,
     : RGE_Action(obj, 1)
 {
     target_x = p2;
-    target_z = p4;
-    target_y = p3;
     range = p8;
+    target_z = p4;
     min_range = p9;
+    target_y = p3;
     
     action_type = 9;
     move_sprite = p5;
@@ -259,15 +271,13 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* obj, float p2, float p3,
     was_same_owner = 0;
     indirect_fire = 2;
 
-    RGE_Master_Combat_Object* move_source;
-    RGE_Sprite* move_sprite;
-    
     if (p5 == 0) {
         RGE_Action_Object* object = action_obj;
-        move_source = (RGE_Master_Combat_Object*)object->master_obj;
-        move_sprite = move_source->run_sprite;
+        RGE_Sprite* move_sprite =
+            ((RGE_Master_Combat_Object*)object->master_obj)->run_sprite;
         if (move_sprite == 0) {
-            move_sprite = move_source->move_sprite;
+            move_sprite =
+                ((RGE_Master_Combat_Object*)object->master_obj)->move_sprite;
         }
         this->move_sprite = move_sprite;
     }

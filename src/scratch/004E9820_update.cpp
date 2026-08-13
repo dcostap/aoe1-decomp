@@ -32,6 +32,9 @@
 // share one source-level owner.
 // shardA6 result: the typed final rule-set alias was a codegen duplicate; restored
 // the direct state spelling because it did not move the first structural hunk.
+// luna-r2 probe: collapsed second-phase selected-rule aliases to one typed rule;
+// stack-slot evidence supported it, but positional diff worsened 1144 -> 1171,
+// so restored the clean source.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);

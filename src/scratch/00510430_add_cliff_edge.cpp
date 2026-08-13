@@ -16,6 +16,13 @@
 // early-return/goto variants, and a truthy existing guard did not improve the
 // canonical 1262-byte family. Calls/frame/cleanup are exact; remaining drift is
 // local-slot coloring and cold block placement around candidate validation.
+// orch-510430-a: full-width int `found` follows the oracle's ESI xor/set/test
+// shape and improves structural size to 1286 bytes, but positional diff worsens;
+// keep the clean bool source. Candidate initialization order, int candidate
+// locals, typed field pointers, and tile operand order were codegen duplicates.
+// orch-510430-a: the oracle returns the existing parameter (zero) when the
+// requested facing already exists and existing is zero; keep that behavior in
+// the final clean source despite the common-return codegen gap.
 
 struct TRIBE_Cliff_Info {
     int info[4];
@@ -78,7 +85,7 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
 
     if (cliff_info.info[facing] != 0) {
         if (existing == 0)
-            return cliff_info.info[facing];
+            return existing;
         if (existing == cliff_info.info[facing])
             return existing;
     }

@@ -21,6 +21,16 @@
 //   exact ordered call set, and 3.56% bounded edit diff.  Remaining drift is
 //   a localized prologue/local-slot and block-shape mismatch; left in scratch
 //   after the ten-hypothesis budget.
+// - Continuation: explicit data/non-data player_id arms reproduced the original
+//   relation block and reduced drift to 19 bytes.
+// - Continuation: a positive final version gate reproduced the original
+//   load_victory block and reduced drift to 16 bytes.
+// - Tested and rolled back an int high-half overlay for the two serialized
+//   counts.  It matched stack addresses but changed full-width load scheduling
+//   and moved 625 bytes.  Tested and rolled back LOS-reset source reordering;
+//   it moved the attribute block and broke the best basin.
+// - Current residual: 16 bytes in stack displacements and the
+//   fcomp/LOS-reset scheduling.  Calls, size, frame, and late blocks align.
 // - Continuation probes: short declaration reordering was codegen-neutral;
 //   reversing the final version gate improved block shape but not bytes. Restored
 //   this pinned clean source for a documented pause.
@@ -218,9 +228,12 @@ void RGE_Player::scenario_postload(int file, long* data, float version)
         do {
             rge_read(file_handle, &temp_byte, 1);
             if (has_human_team == 0) {
-                short player_id = i;
+                short player_id;
                 if (data != 0) {
                     player_id = (short)data[i];
+                }
+                else {
+                    player_id = i;
                 }
                 if (player_id < this->world->player_num && player_id >= 0) {
                     this->relations[player_id] = temp_byte;
@@ -254,9 +267,10 @@ void RGE_Player::scenario_postload(int file, long* data, float version)
         delete victory;
     }
 
-    if (version < DAT_00570eb8) {
-        this->load_victory(file_handle, data, 0);
-        return;
+    if (version >= DAT_00570eb8) {
+        this->load_victory(file_handle, data, 1);
     }
-    this->load_victory(file_handle, data, 1);
+    else {
+        this->load_victory(file_handle, data, 0);
+    }
 }

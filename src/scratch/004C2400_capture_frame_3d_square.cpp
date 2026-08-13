@@ -16,8 +16,14 @@
 //   frame fell to 0x44 and positional diff grew to 1275; restored the clean
 //   source. The first hunk still points to local-home lifetime and geometry
 //   temporary layout, not a call or CFG gap.
-// - Paused: current code is 1345 vs 1382 bytes, frame 0x48 vs 0x54, 100%
-//   ordered-call alignment, 70.45% shape, and 1168 positional diff bytes.
+// - Loaded owner/world/map before the master alias. This improved the local
+//   register basin to 1158 bytes without changing the call set.
+// - Widened only the shared y screen-coordinate temporary to int. The best
+//   result was 1344 bytes, 0x48 frame, and 1107 positional diff bytes.
+//   Widening both coordinates, narrowing the yline, and reloading master
+//   fields regressed; those forms were rolled back.
+// - Paused: current code is 1344 vs 1382 bytes, frame 0x48 vs 0x54, 100%
+//   ordered-call alignment, 71.15% shape, and 1107 positional diff bytes.
 //   Remaining structural lead is original local-home/register allocation and
 //   map/yline lifetime; no call-target or CFG-count gap remains.
 
@@ -167,20 +173,20 @@ void RGE_Static_Object::capture_frame_3d_square(
     unsigned int uVar6;
     int iVar7;
     short sVar8;
-    short sVar9;
+    int sVar9;
     unsigned char draw_color;
     unsigned char y2;
     float rx1;
     float x3_radius;
-    float radius_y;
-    float radius_z;
     short x4;
     short y3;
     float ry1;
+    float radius_y;
     int local_3c;
     short y1;
     int local_34;
     int tot_hp;
+    float radius_z;
     float neg_x3;
     TShape* group_num_shape;
     short x0;
@@ -191,8 +197,8 @@ void RGE_Static_Object::capture_frame_3d_square(
 
     base = rge_base_game;
     outline_type = base->outline_type;
-    pRVar1 = this->master_obj;
     this_00 = this->owner->world->map;
+    pRVar1 = this->master_obj;
     if (outline_type == 3) {
         x3_radius = pRVar1->radius_x;
         radius_y = pRVar1->radius_y;

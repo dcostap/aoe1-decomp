@@ -101,6 +101,11 @@
 //   tested and rolled back. They stayed nonexact or worsened structural size.
 //   Final validation restores the clean typed list sort; blocker remains the
 //   0xC VC5 frame and opposite local/register basin versus the 0x8 oracle.
+// - Reassessment: direct search->next loop spellings reproduced the 289-byte
+//   / 0xC basin; explicit successor initialization reproduced the clean
+//   273-byte basin. Persistent cursor, scoped sort locals, hoisted locals,
+//   declaration order, destructor context, and a common outer tail gave no
+//   new codegen. The clean typed list sort remains the plausible source.
 
 #include <stddef.h>
 

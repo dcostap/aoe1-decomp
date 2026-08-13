@@ -80,6 +80,14 @@
 // entry) and did not preserve the oracle's fsubr/fsub x87 status/fault order.
 // Retain this readable typed reconstruction; the old 167-byte codegen result
 // depended on unsupported scheduling scaffolding.
+// sa32c93f25_distance fresh reassessment: restored the prior typed x87
+// high-parity candidate (volatile binary32 dy plus ordered double radius
+// expressions), which rebuilt at 167B/22 diff with one mismatch span at
+// +0062. Natural complete-Y-before-X and split-Y probes fell to 158/163
+// differing bytes. Top-declared locals were a codegen duplicate. The clean
+// candidate remains the readable source because the high-parity form still
+// needs compiler-steering volatility and cannot move the other-Y fsub into
+// the pending X-status window. No exact natural lead remains.
 
 class RGE_Master_Static_Object {
 public:

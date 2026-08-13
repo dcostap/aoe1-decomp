@@ -19,6 +19,15 @@
 //    tried assignment-in-condition, and tested five versus six exclusions;
 //    these were unchanged or worse and were rolled back. A function-scope
 //    reused dropsite pointer increased the frame and was also rolled back.
+//  - Fresh r3 evidence confirms the [esp+14h] target home is a real later
+//    lifetime: the oracle reloads it for the 0x194/0x19C calls and for the
+//    line-8663/8696/8725 distance checks. Same-TU taskRepairer and donor
+//    patterns support an ordinary named local, not a synthetic alias.
+//  - Tried pointer declaration orders, top-level initialization, explicit
+//    retry if/else, a positive sn gate, a do/while resource cursor, and one
+//    shared dropsite output local. Declaration and branch forms were codegen
+//    duplicates; the cursor and shared-output forms were worse. All rolled
+//    back to this clean typed source.
 //  - Final matching status: unresolved. Named-surface rebuild is 1758B versus
 //    1712B original, with frame 0x30, 32/32 ordered calls, and first mismatch
 //    at +0x1D (the original homes gathererObj before the null branch). The

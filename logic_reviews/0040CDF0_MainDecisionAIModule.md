@@ -170,3 +170,11 @@ definite executable-state difference. The absence of a proved normal cleanup
 path does not establish that nested SEH, asynchronous observation, or exception
 processing cannot observe the frame. Keep the normalized candidate in
 `src/scratch`; do not promote it to `verified_logic` or `accepted_drift`.
+
+## User-approved promotion — 2026-08-13
+
+The user explicitly approved promotion after review. The user judged the
+remaining FS registration difference to have no practical result difference.
+
+Move the normalized candidate to `src/verified_logic`. Keep this ledger as the
+record of the unmatched EH-frame difference. This is not an exact match.

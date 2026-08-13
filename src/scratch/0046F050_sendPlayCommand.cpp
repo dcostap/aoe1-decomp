@@ -69,6 +69,15 @@
 // - left in scratch: canonical typed source. A new lead must change the real
 //   vtable-versus-countdown score before coloring. It must preserve the loop,
 //   calls, frame, and 237-byte boundary.
+// Reassessment (sa-f307ef0d):
+// - Expanded the nested AIPlayBook, RGE_Game_World, and RGE_Static_Object
+//   declarations and replaced RGE_Player gaps with the proven named layout;
+//   emitted code stayed in the same 237-byte/7-byte group. Restored the
+//   minimal local surfaces because they do not explain the allocator choice.
+// - Moved the source-cursor increment into the loop body, tried signed and
+//   unsigned fixed-count types, unqualified member expressions, and the
+//   proven long object-id type; all emitted the same 7-byte drift. Restored
+//   the pinned natural source. The EBP/EBX coloring blocker remains.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

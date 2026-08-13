@@ -108,6 +108,15 @@
 //   same post-md this-liveness pattern, but direct strategic-number rereads
 //   already tested in this source produce the same basin. The 00501D70 nested
 //   layout remains canonical; no new natural ABI or ownership lead remains.
+//
+// Fresh bounded pass (sa-d6fdf820-r1): named attributes pointer, storage-count
+// reference, original scalar declaration order, direct post-call md use,
+// inline storage-count accessor, branch-local capacity declaration, decision
+// pointer declaration order, and TRIBE_Player-derived player typing all kept
+// exact size/CFG/call parity but reproduced the six-byte md/product register
+// basin. The reference and derived-player forms were rolled back because they
+// are not canonical source facts here. The current source is restored to the
+// pinned natural nested-layout reconstruction.
 
 #include <stdlib.h>
 

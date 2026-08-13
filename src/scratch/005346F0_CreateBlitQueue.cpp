@@ -20,7 +20,15 @@
 // and lost an exact block; rolled back to probe 9.
 // probe 12: removing the local yd copy and using the typed param_4 directly
 // left the first hunk and all metrics unchanged; restored the clean source.
-// scratch give-up: first-pass source understands clipping, allocation, one-blit, queue loop, and final fields, but VC5 local/frame and block-shape basin is still wrong.
+// probe 14: swapped loop counter initialization; output grew to 783B and was rolled back.
+// probe 15: inlined boundary loads into the overlap predicate; VC5 emitted duplicate code.
+// probe 16: used the binary's outside-marker slot directly; duplicate code.
+// probe 18: boundary declaration order was duplicate; probe 19 sentinel order was worse and rolled back.
+// probe 22: initialized the outside one-blit RECT from the already loaded boundary values;
+// best current result is 780B, 0x24 frame, 671-byte positional diff, 61.44% shape.
+// probe 23: a distinct outside marker was codegen-duplicate; retained for readable ownership.
+// paused: calls, CFG counts, queue fields, clipping behavior, and output size align; frame and
+// local/register topology remain structurally different. Next lead is expanded original locals.
 
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" void __cdecl free(void*);
@@ -67,18 +75,17 @@ public:
 
 void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, int param_4)
 {
-    int One_Blit;
     int vBlits;
-    int blt_deltaY = 0;
+    int One_Blit;
     int blt_deltaX;
     int local_24;
     tagRECT blt_src;
     int local_4;
     int outside;
-    int iVar6;
     int iVar1;
     int iVar2;
     int iVar3;
+    int iVar6;
     int yd_abs;
     int xd_abs;
     int off;
@@ -86,17 +93,16 @@ void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, 
     int yd = param_4;
     outside = 0;
     if ((param_3 != 0) || (yd != 0)) {
-        iVar6 = param_1.top;
-        if ((param_2.bottom < iVar6) ||
+        if ((param_2.bottom < (iVar6 = param_1.top)) ||
             (((iVar1 = param_1.left, param_2.right < iVar1 ||
               (iVar2 = param_1.bottom, iVar2 < param_2.top)) ||
              (iVar3 = param_1.right, iVar3 < param_2.left)))) {
             outside = 1;
             vBlits = 1;
-            blt_src.left = param_1.left;
-            blt_src.top = param_1.top;
-            blt_src.right = param_1.right;
-            local_4 = param_1.bottom;
+            blt_src.left = iVar1;
+            blt_src.top = iVar6;
+            blt_src.right = iVar3;
+            local_4 = iVar2;
         } else {
             yd_abs = yd;
             if (yd_abs < 0) yd_abs = -yd_abs;

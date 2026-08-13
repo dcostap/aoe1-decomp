@@ -67,6 +67,19 @@
 //   terms, and direct-formal aliases produced duplicates or a 283B/263 diff.
 //   Restored the clean typed split-row reconstruction; calls and ownership
 //   remain exact, while the setup/register basin is unresolved.
+// sa7d813de0-r1-shape probes (2026-08-13):
+// - Rechecked the paused source and exact Shape.cpp siblings.  Full proven
+//   TShape/TDrawArea field surfaces were codegen duplicates; retained them.
+// - The natural split statement `*dst = pal[*src]; src++;` and the matching
+//   solid-arm cursor order reduce strict drift to 159 bytes at exact size and
+//   frame.  Calls, RLE effects, and ownership stay aligned.
+// - A diagnostic persistent-row cast through td reached 155 bytes and 91.18%
+//   shape, but it is decompiler-shaped parameter-home steering.  The living
+//   source keeps the ordinary row pointer instead.
+// - Stride-first setup, p2 count reuse, index temporaries, pointer-add table
+//   spelling, and redundant area aliases gave duplicates or worse basins.
+// - Remaining drift is the original Shape.cpp prologue/register basin and
+//   table index/value coloring.  No behavior or call uncertainty remains.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -85,19 +98,30 @@ struct Shape_Header {
 };
 
 struct TDrawArea {
-    char _pad_00[0x08];
+    char gap_00[0x08];
     uchar* Bits;           // +0x08
-    char _pad_0C[0x10];
+    void* BitmapInfo;      // +0x0C
+    void* Bitmap;          // +0x10
+    void* OldBitmap;       // +0x14
+    int Width;             // +0x18
     int Height;            // +0x1C
     int Pitch;             // +0x20
     int Orien;             // +0x24
+    char ClipRect[0x10];   // +0x28
+    char _tail_38[0xC8];
 
     long AlignedWidth();
 };
 
 struct TShape {
-    char _pad_00[0x0C];
-    Shape_Header* shape_header;    // +0x0C
+    uchar* shape;                   // +0x00
+    int load_type;                  // +0x04
+    int load_size;                  // +0x08
+    Shape_Header* shape_header;     // +0x0C
+    void* head;                     // +0x10
+    void* offsets;                  // +0x14
+    void* FShape;                   // +0x18
+    void* shape_info;               // +0x1C
 
     uchar shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal);
 };
@@ -137,7 +161,8 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
                     } else {
                         uchar* end = dst + count;
                         while (dst < end) {
-                            *dst = pal[*src++];
+                            *dst = pal[*src];
+                            src++;
                             dst++;
                         }
                     }
@@ -147,8 +172,8 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
                         done = 1;
                     } else {
                         memset(dst, pal[*src], count);
-                        dst += count;
                         src++;
+                        dst += count;
                     }
                 }
             } while (!done);

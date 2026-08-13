@@ -31,6 +31,9 @@
 //     original compare operand order; it changed two bytes but gave no positional
 //     gain and reduced shape, so the original `i >= scenario_player_num` spelling
 //     remains retained.
+// 20: separated the initial compressed-size count from the per-player object
+//     record count.  This restored the original 0x64 frame and shifted the
+//     object-record locals to their binary-proven +4 stack homes; diff fell to 47.
 // Main-agent audit removed compensating stack aliases. The first four-byte
 // value owns next_object_id. Object records use x/y/z/id/master/state/angle.
 
@@ -116,6 +119,7 @@ void RGE_Game_World::load_scenario3(int file, RGE_Player_Info& info)
     long scenario_player_num;
     long next_object_id;
     long count;
+    long object_count;
     long id;
     float obj_angle;
     uchar obj_state;
@@ -175,9 +179,9 @@ void RGE_Game_World::load_scenario3(int file, RGE_Player_Info& info)
     if (scenario_player_num > 0) {
         long* map = player_id_hash;
         do {
-            rge_read(file, &count, 4);
+            rge_read(file, &object_count, 4);
             int j = 0;
-            if (count > 0) {
+            if (object_count > 0) {
                 do {
                     rge_read(file, &world_z, 4);
                     rge_read(file, &world_y, 4);
@@ -196,7 +200,7 @@ void RGE_Game_World::load_scenario3(int file, RGE_Player_Info& info)
                         this->scenario_object_flag = 0;
                     }
                     j++;
-                } while (j < count);
+                } while (j < object_count);
             }
             outer++;
             map++;

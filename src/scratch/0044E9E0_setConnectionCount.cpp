@@ -23,6 +23,8 @@
 // - named rows, xReference, and yReference in the inner-loop preheader;
 //   this moved the saved-this slot to [esp+10h] and reduced positional diff
 //   from 479 to 346 bytes, but the remaining block-shape drift is unresolved.
+// - removed the explicit self alias while retaining the named rows and
+//   coordinate references; codegen was unchanged, so restored the clean alias.
 
 typedef unsigned char uchar;
 

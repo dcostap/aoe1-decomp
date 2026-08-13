@@ -28,6 +28,9 @@
 // codegen-identical (46-byte drift); VC5 still emits a cloned failure cleanup after success.
 // shardE-469AD0: nested status/setup blocks with an explicit result join were also a duplicate;
 // restored the direct natural guard. The only gap remains the shared /GX failure cleanup tail.
+// abi-fix-469AD0: corrected TVerticalSliderPanel::setup's first parameter from void* to
+// TDrawArea*, matching the executable's setup ABI. VC5 emitted identical bytes and kept all
+// five direct call targets aligned; retain the natural typed declaration.
 
 struct tagRECT {
     long left;
@@ -146,7 +149,7 @@ public:
     char data[0x1CC - 0x1C4];
     virtual ~TVerticalSliderPanel();
     TVerticalSliderPanel();
-    long setup(void* draw_area, TPanel* parent, long x, long y, long w, long h,
+    long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long w, long h,
                char* a, char* b, long c, long p3, long p4, long p5, int one, int zero);
 };
 

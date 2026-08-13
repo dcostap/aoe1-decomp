@@ -42,11 +42,10 @@
 // probe 49: declaration initialization was codegen-duplicate at 10 bytes.
 // probes 50/52: Ghidra-natural min-then-max object ownership reached 20 bytes
 //   with a separate distance and 22 bytes when reusing clearDistance; rolled back.
-// left in scratch: exact source scheduling for repeated coordinate conversions
-// and object/group local homes remains to be validated.
-// Final bounded pause: the remaining 10 bytes are localized to the first
-//   clear-distance point homes;
-//   all 43 calls, size, frame, CFG count, and relocation identities match.
+// probe 66: matched the PDB's separate group/object min/max scopes and its
+//   shadowed clearDistance locals.  The object scope uses min first, which
+//   restores the target clear-distance point homes and reaches an exact match.
+// Exact candidate: 932/932 bytes, 43/43 calls, 0x14 frame, default flags.
 
 #include <math.h>
 
@@ -146,9 +145,6 @@ public:
 
 void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
 {
-    XYPoint minpt;
-    XYPoint maxpt;
-    int clearDistance;
     int half;
     TacticalAIGroup* group;
     TacticalAIGroup* end;
@@ -158,6 +154,9 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
     group = this->groups.next;
     end = &this->groups;
     if (group != end) {
+        int clearDistance;
+        XYPoint minpt;
+        XYPoint maxpt;
         while (group != end) {
             if (group == 0)
                 break;
@@ -189,24 +188,26 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
 
     i = 0;
     if (this->ungroupedSoldiers.numberValue > 0) {
+        XYPoint minpt;
+        XYPoint maxpt;
         do {
             object = this->md->object(this->ungroupedSoldiers[i]);
             if (object != 0) {
-                maxpt.x = (int)object->world_x;
-                maxpt.y = (int)object->world_y;
-                this->md->informationAI.mapBound(&maxpt);
                 minpt.x = (int)object->world_x;
                 minpt.y = (int)object->world_y;
                 this->md->informationAI.mapBound(&minpt);
-                map.setValue(maxpt.x, maxpt.y, minpt.x, minpt.y, 255);
+                maxpt.x = (int)object->world_x;
+                maxpt.y = (int)object->world_y;
+                this->md->informationAI.mapBound(&maxpt);
+                map.setValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 255);
 
-                int objectClearDistance;
-                objectClearDistance = this->md->informationAI.groupInfluenceDimension(1);
-                minpt.x = (int)(object->world_x - (float)objectClearDistance);
-                minpt.y = (int)(object->world_y - (float)objectClearDistance);
+                int clearDistance;
+                clearDistance = this->md->informationAI.groupInfluenceDimension(1);
+                minpt.x = (int)(object->world_x - (float)clearDistance);
+                minpt.y = (int)(object->world_y - (float)clearDistance);
                 this->md->informationAI.mapBound(&minpt);
-                maxpt.x = (int)((float)objectClearDistance + object->world_x);
-                maxpt.y = (int)((float)objectClearDistance + object->world_y);
+                maxpt.x = (int)((float)clearDistance + object->world_x);
+                maxpt.y = (int)((float)clearDistance + object->world_y);
                 this->md->informationAI.mapBound(&maxpt);
                 map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
             }

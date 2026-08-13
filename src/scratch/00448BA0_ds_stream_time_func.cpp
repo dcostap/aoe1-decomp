@@ -18,6 +18,16 @@
 // with all 18 calls still aligned.
 // probe 12: sent busy and paused guards to the shared cleanup label shown by
 // the original CFG; diff improved by one byte, but the first hunk stayed open.
+// probe 13: switching the TU to a C extension did not change emitted code.
+// probe 14: split partial-read silence from full-buffer silence so the base
+// write pointer is tested before adding uChkErr; this saved EBX and improved
+// the diff to 1264 bytes.
+// probe 15: kept end-of-stream silence's wave/length checks inside a separate
+// fill form; this reached exact 1332-byte size and diff 1248.
+// probe 16: mutating retry pointers and uChkErr to model stack-home reuse grew
+// the body to 1345 bytes; rolled back. A p1-only version also regressed shape.
+// probe 17: separating the p2 end-silence branch and a register zero/one form
+// both regressed or duplicated the 1248-byte result; rolled back.
 // Current source uses named legacy globals, typed DirectSound calls, the
 // unused output home, and direct imported PostMessageA. Remaining drift starts
 // at prologue save/zero scheduling and continues through Lock output homes,
@@ -61,6 +71,22 @@ extern WAVEFORMATEX_L* _wiWave;
 #define CLEAR_AUDIO(P,N) do { \
     WAVEFORMATEX_L* wf_ = _wiWave; \
     if (wf_ && (P)) { \
+        if (wf_->wBitsPerSample == 8) memset((P), 0x80, (N)); \
+        else if (wf_->wBitsPerSample == 16) memset((P), 0, (N)); \
+    } \
+} while (0)
+
+#define CLEAR_AUDIO_OFFSET(P,O,N) do { \
+    WAVEFORMATEX_L* wf_ = _wiWave; \
+    if (wf_ && (P)) { \
+        if (wf_->wBitsPerSample == 8) memset((BYTE*)(P) + (O), 0x80, (N)); \
+        else if (wf_->wBitsPerSample == 16) memset((BYTE*)(P) + (O), 0, (N)); \
+    } \
+} while (0)
+
+#define CLEAR_AUDIO_LENGTH(P,N) do { \
+    WAVEFORMATEX_L* wf_ = _wiWave; \
+    if (wf_ && (N)) { \
         if (wf_->wBitsPerSample == 8) memset((P), 0x80, (N)); \
         else if (wf_->wBitsPerSample == 16) memset((P), 0, (N)); \
     } \
@@ -125,7 +151,7 @@ extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWOR
         WaveReadFile(DAT_00888464, dwLen1, lpWrite1, DAT_00888468, &uChkErr);
         if (uChkErr < dwLen1) {
             if (!DAT_008884ac) {
-                CLEAR_AUDIO((BYTE*)lpWrite1 + uChkErr, dwLen1 - uChkErr);
+                CLEAR_AUDIO_OFFSET(lpWrite1, uChkErr, dwLen1 - uChkErr);
                 if (DAT_0088849c <= dwLen2) DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
                 else DAT_008884b4 = (DAT_0088849c - dwLen2) / DAT_00888498;
                 DAT_008884b0 = 1;
@@ -136,8 +162,8 @@ extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWOR
                 } while (uChkErr < dwLen1);
             }
         }
-    } else if (lpWrite1 && DAT_008884a8 && _wiWave && dwLen1) {
-        CLEAR_AUDIO(lpWrite1, dwLen1);
+    } else if (lpWrite1 && DAT_008884a8) {
+        CLEAR_AUDIO_LENGTH(lpWrite1, dwLen1);
     }
 
     if (lpWrite2) {
@@ -145,7 +171,7 @@ extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWOR
             WaveReadFile(DAT_00888464, dwLen2, lpWrite2, DAT_00888468, &uChkErr);
             if (uChkErr < dwLen2) {
                 if (!DAT_008884ac) {
-                    CLEAR_AUDIO((BYTE*)lpWrite2 + uChkErr, dwLen2 - uChkErr);
+                    CLEAR_AUDIO_OFFSET(lpWrite2, uChkErr, dwLen2 - uChkErr);
                     if (DAT_0088849c <= dwLen2) DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
                     else DAT_008884b4 = (DAT_0088849c - dwLen2) / DAT_00888498;
                     DAT_008884b0 = 1;
@@ -156,8 +182,8 @@ extern "C" void __stdcall ds_stream_time_func(HWND hwnd, UINT msg, UINT id, DWOR
                     } while (uChkErr < dwLen2);
                 }
             }
-        } else if (DAT_008884a8 && _wiWave && dwLen2) {
-            CLEAR_AUDIO(lpWrite2, dwLen2);
+        } else if (DAT_008884a8) {
+            CLEAR_AUDIO_LENGTH(lpWrite2, dwLen2);
         }
     }
 

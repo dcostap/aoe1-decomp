@@ -8,6 +8,8 @@
 // - tested shared-label and page-clamp variants; the compiler kept the same nonexact 3/5 calc_input_pos and vslot call sites.
 // - separated the right-move success arm and upward-move body; this adds one calc_input_pos/redraw pair and improves the call map to 32/36.
 // - the original page tail conditionally clamps cur_col after get_text/mbslen; duplicating that condition in both page cases expands the function by 178 bytes, so that behavior/layout lead remains open.
+// - tested binary-shaped shared labels for left/down/page cursor tails; VC5 merged the calc/redraw blocks, lost call sites, or grew 150 bytes, so rolled back.
+// - tested the prior early-guard/local-column variant; it reaches 1067 positional bytes but changes a direct-call target and loses structural call alignment, so rolled back.
 // - left in scratch: remaining drift is switch-table relocation masking, one calc_input_pos/redraw tail pair, and the shared page clamp.
 
 #include <stddef.h>
@@ -250,8 +252,10 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         return 1;
 
     case 0x2D:
-        if (param5 != 0)
-            goto paste;
+        if (param5 != 0) {
+            this->paste();
+            return 1;
+        }
         if (param4 != 0)
             return 1;
         this->insert_mode = (this->insert_mode == 0);
@@ -278,7 +282,6 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
     case 0x56:
         if (param4 == 0)
             return 0;
-    paste:
         this->paste();
         return 1;
     }
