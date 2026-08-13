@@ -21,6 +21,10 @@
 //   678 bytes (+6), all 16 ordered calls aligned, with only the early boolean
 //   materialization hunk unresolved (original full-register `inc` versus VC5's
 //   byte `inc` plus zeroing).  Left in scratch as clean typed source.
+// probe 14 (control-flow): replaced the goto-based mode fallback with a natural
+//   else-if chain and direct failure tail; emitted code was byte-identical, so
+//   restored the clean typed source.  The first divergence remains allocation
+//   setup at +006D, not a graphics call or fallback CFG issue.
 
 #include <new.h>
 #include <windows.h>

@@ -43,6 +43,8 @@
 // Current worker H7 audit: the MCI calls use the imported __imp__mciSendCommandA@16 surface,
 // while the three original string targets are the WAV, MID, and "r" literals at 584CF4h,
 // 584CE4h, and 57F320h. Named local literals preserve this source surface without raw addresses.
+// Shard D2 H1: shared one FILE* local across both scans, with fopen-tested-before-fclose
+// do-loop bodies and the original unconditional back-edge; VC5 emitted the prior code unchanged.
 // Final current reconstruction: typed WinMM field calls, named format strings, natural
 // bottom-test scans, and device/mixer ownership are retained. Remaining blocker is local-home
 // placement and late failure-tail layout; no safe source lead remains in the audited call surface.
@@ -108,6 +110,7 @@ int TMusic_System::open_device()
     MCI_SET_PARMS set_info;
     MCI_OPEN_PARMSA open_info;
     char file_name[261];
+    FILE* scan_file;
 
     switch (this->music_type) {
     case 1: {
@@ -155,31 +158,29 @@ int TMusic_System::open_device()
         }
 
         this->track_count = 0;
-        FILE* midi_file;
         do {
             sprintf(file_name + 4, MUSIC_MID_FORMAT, this->path,
                     this->track_count + 1);
-            midi_file = fopen(file_name + 4, READ_MODE);
-            if (midi_file != 0) {
-                fclose(midi_file);
+            scan_file = fopen(file_name + 4, READ_MODE);
+            if (scan_file != 0) {
+                fclose(scan_file);
                 ++this->track_count;
             }
-        } while (midi_file != 0);
+        } while (scan_file != 0);
         this->device_open = 1;
         return 1;
 
     case 3:
         this->track_count = 0;
-        FILE* wav_file;
         do {
             sprintf(file_name + 4, MUSIC_WAV_FORMAT, this->path,
                     this->track_count + 1);
-            wav_file = fopen(file_name + 4, READ_MODE);
-            if (wav_file != 0) {
-                fclose(wav_file);
+            scan_file = fopen(file_name + 4, READ_MODE);
+            if (scan_file != 0) {
+                fclose(scan_file);
                 ++this->track_count;
             }
-        } while (wav_file != 0);
+        } while (scan_file != 0);
         this->volume = 0;
         this->device_open = 1;
         return 1;

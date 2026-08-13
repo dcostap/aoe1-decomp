@@ -14,6 +14,9 @@
 //   the diagnostic diff; removing artificial frame padding was codegen-neutral.
 // - expression/local probes were either duplicates or grew the function to 450
 //   bytes; restored the best 442-byte typed source.
+// - serial natural null guards improved the structural diff to 349 bytes and
+//   54.35% shape similarity; truthiness spelling and a guard-only surface local
+//   were duplicates, so the serial guard form remains the best source shape.
 // - left in scratch: calls/size/frame match, but guard/register coloring and
 //   RECT/DDBLTFX stack-slot scheduling remain nonexact.
 
@@ -102,54 +105,61 @@ extern "C" int (__stdcall * const ClientToScreen)(void* hWnd, tagPOINT* point);
 #define do_color_log (*(unsigned char*)0x62C584)
 
 void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
-    if (do_color_log != 0 && rge_base_game != 0 &&
-        rge_base_game->prog_mode >= 2) {
-        TDrawSystem* sys = rge_base_game->draw_system;
-        if (sys != 0 && sys->PrimarySurface != 0) {
-        tagRECT scr_dest;
-        tagRECT back_dest;
-        tagPOINT point;
-        _DDBLTFX ddbltfx;
+    if (!do_color_log)
+        return;
+    if (!rge_base_game)
+        return;
+    if (rge_base_game->prog_mode < 2)
+        return;
 
-        back_dest.right = 0;
-        point.x = 10;
-        back_dest.top = (sys->DrawArea->Width / 2) + (2 - param_3) * 20;
-        back_dest.bottom = back_dest.top + 10;
-        ddbltfx.dwSize = 0;
-        point.y = back_dest.top;
+    TDrawSystem* sys = rge_base_game->draw_system;
+    if (!sys)
+        return;
+    if (!sys->PrimarySurface)
+        return;
 
-        if (sys->ScreenMode == 2) {
-            ClientToScreen(sys->Wnd, &point);
-        }
+    tagRECT scr_dest;
+    tagRECT back_dest;
+    tagPOINT point;
+    _DDBLTFX ddbltfx;
 
-        scr_dest.top = point.y;
-        scr_dest.right = ddbltfx.dwSize;
-        scr_dest.bottom = point.y + 10;
-        back_dest.left = ddbltfx.dwSize + 10;
+    back_dest.right = 0;
+    point.x = 10;
+    back_dest.top = (sys->DrawArea->Width / 2) + (2 - param_3) * 20;
+    back_dest.bottom = back_dest.top + 10;
+    ddbltfx.dwSize = 0;
+    point.y = back_dest.top;
 
-        ddbltfx.dwDDFX = 100;
-        ddbltfx.dwColorSpaceLowValue = param_1;
-
-        sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
-
-        back_dest.top = 100;
-        ddbltfx.dwDDFX = 100;
-        ddbltfx.dwColorSpaceLowValue = param_1;
-        sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
-
-        scr_dest.top += 10;
-        back_dest.left += 10;
-        back_dest.top = 100;
-        scr_dest.bottom += 10;
-
-        ddbltfx.dwDDFX = 100;
-        ddbltfx.dwColorSpaceLowValue = param_2;
-
-        sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
-
-        ddbltfx.dwDDFX = 100;
-        ddbltfx.dwColorSpaceLowValue = param_2;
-        sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
-        }
+    if (sys->ScreenMode == 2) {
+        ClientToScreen(sys->Wnd, &point);
     }
+
+    scr_dest.top = point.y;
+    scr_dest.right = ddbltfx.dwSize;
+    scr_dest.bottom = point.y + 10;
+    back_dest.left = ddbltfx.dwSize + 10;
+
+    ddbltfx.dwDDFX = 100;
+    ddbltfx.dwColorSpaceLowValue = param_1;
+
+    sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
+
+    back_dest.top = 100;
+    ddbltfx.dwDDFX = 100;
+    ddbltfx.dwColorSpaceLowValue = param_1;
+    sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
+
+    scr_dest.top += 10;
+    back_dest.left += 10;
+    back_dest.top = 100;
+    scr_dest.bottom += 10;
+
+    ddbltfx.dwDDFX = 100;
+    ddbltfx.dwColorSpaceLowValue = param_2;
+
+    sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
+
+    ddbltfx.dwDDFX = 100;
+    ddbltfx.dwColorSpaceLowValue = param_2;
+    sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
 }

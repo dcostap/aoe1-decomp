@@ -29,6 +29,9 @@
 // - Replaced the switch with ordered if dispatch; it reduced size and still folded case 2.
 // - Donor search confirms the target's case layout is a natural switch-family shape. Paused with
 //   the clean int-level switch; unresolved gap is register-home allocation plus call topology.
+// - Tested the recovered natural shared tail: case 2 calls and returns, while cases 1 and 3
+//   assign mode and call once after the switch. VC5 added a frame, emitted 416 bytes, and still
+//   folded the case-2 virtual call; restored the clean switch.
 
 extern unsigned long* unified_map_offsets[];
 

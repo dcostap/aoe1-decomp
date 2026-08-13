@@ -10,6 +10,10 @@
 //   few late tails differently (580B emitted versus 610B original).
 // - Ten hypotheses exhausted. Register-forcing aliases, extra duplicate
 //   checksum homes, and explicit loop-polarity scaffolding were not retained.
+// - Fresh bounded pass: changed the first checksum search to a natural bounded
+//   for loop with header increment. This restores the oracle's two-jump CFG
+//   shape and improves positional diff 557 -> 544 bytes and shape 69.12% ->
+//   70.18%; the prologue and later typed-record layout still differ.
 
 class TDebuggingLog {
 public:
@@ -71,7 +75,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
 
     unsigned long* puVar2 = puVar8;
     unsigned int firstIndex = 1;
-    do {
+    for (; firstIndex <= 0x36; ++firstIndex, puVar2 += 9) {
         if (puVar2[-2] == playerNo && puVar2[0] == commTurn) {
             bVar1 = 1;
             RGE_Communications_Check& mine = this->Check[firstIndex];
@@ -84,9 +88,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             local_8 = mine.Random;
             break;
         }
-        ++firstIndex;
-        puVar2 += 9;
-    } while (firstIndex <= 0x36);
+    }
 
     if (!bVar1) {
         L->Log("OUTOFSYNC: DIDN'T FIND MY VALUES");

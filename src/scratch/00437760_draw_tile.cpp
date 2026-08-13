@@ -11,6 +11,10 @@
 //   use. Final: 1145 bytes, 0x1C frame, 12/12 ordered calls, 69.33% shape,
 //   1040 differing bytes. Remaining drift is the prologue/register coloring,
 //   local-home layout, ratio x87 expression order, and object-scan CFG.
+// - Inverted the fog height test into the same natural single-row/multi-row
+//   branch shape as regular tiles; shape rose to 76.98% and exact blocks to
+//   35.22%, but positional drift rose to 1054 bytes. Kept as the structural
+//   lead; the first mismatch remains the prologue local/register topology.
 // - Left in scratch after the 10-hypothesis budget; no inline asm or opaque
 //   codegen scaffolding is retained.
 
@@ -318,43 +322,43 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2,
         x += this->pnl_x;
         y += this->pnl_y;
         short width = row->draw_wid;
-        if (this->map_tile_draw_hgt != 1) {
-            short dy = 0;
-            if (this->map_tile_draw_hgt < 1) {
+        if (this->map_tile_draw_hgt == 1) {
+            if (width == 1) {
+                this->render_area->SetPixel(x, y, this->fog_color);
                 return;
             }
+            if (width == 2) {
+                this->render_area->SetPixel(x, y, this->fog_color);
+                this->render_area->SetPixel(x + 1, y, this->fog_color);
+                return;
+            }
+            if (width < 1) {
+                return;
+            }
+            int count = width;
             do {
-                if (width > 0) {
-                    int count = width;
-                    int px = x;
-                    do {
-                        this->render_area->SetPixel(px, y + dy, this->fog_color);
-                        ++px;
-                        --count;
-                    } while (count != 0);
-                }
-                ++dy;
-            } while (dy < this->map_tile_draw_hgt);
+                this->render_area->SetPixel(x, y, this->fog_color);
+                ++x;
+                --count;
+            } while (count != 0);
             return;
         }
-        if (width == 1) {
-            this->render_area->SetPixel(x, y, this->fog_color);
+        short dy = 0;
+        if (this->map_tile_draw_hgt < 1) {
             return;
         }
-        if (width == 2) {
-            this->render_area->SetPixel(x, y, this->fog_color);
-            this->render_area->SetPixel(x + 1, y, this->fog_color);
-            return;
-        }
-        if (width < 1) {
-            return;
-        }
-        int count = width;
         do {
-            this->render_area->SetPixel(x, y, this->fog_color);
-            ++x;
-            --count;
-        } while (count != 0);
+            if (width > 0) {
+                int count = width;
+                int px = x;
+                do {
+                    this->render_area->SetPixel(px, y + dy, this->fog_color);
+                    ++px;
+                    --count;
+                } while (count != 0);
+            }
+            ++dy;
+        } while (dy < this->map_tile_draw_hgt);
         return;
     }
 }

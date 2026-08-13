@@ -9,6 +9,10 @@
 // Source audit: the byte-exact variant used __declspec(novtable) plus an explicit
 // vptr store; that compiler-steering form is rejected.  The natural virtual
 // destructor candidate remains in scratch with a 27-byte prologue drift.
+// Declaration probe: packet symbols require _iobuf* and char[260]. The full
+// binary-backed virtual surface through +0x140 changed no bytes. Exact setter
+// donors preserve their real narrow and wide parameter types. The remaining
+// drift starts at the natural implicit vptr store.
 
 #include <string.h>
 
@@ -30,6 +34,7 @@ class TDebuggingLog;
 class TRegistry;
 class TMousePointer;
 class RGE_Font;
+struct _iobuf;
 
 class RGE_Timing_Info {
 public:
@@ -50,8 +55,8 @@ extern "C" __declspec(dllimport) unsigned long __stdcall GetCurrentDirectoryA(un
 
 extern int do_draw_log;
 extern int safe_draw_log;
-extern char draw_log_name;
-extern int draw_log;
+extern char draw_log_name[260];
+extern _iobuf* draw_log;
 extern RGE_Base_Game* rge_base_game;
 extern int g_592A58; // AppInst
 extern int g_62C4A0; // StringTable
@@ -68,6 +73,86 @@ extern int g_62C574; // rge_base_game storage
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual void* get_view_panel();
+    virtual void* get_map_panel();
+    virtual void* new_scenario_header(void*);
+    virtual void* new_scenario_header(int);
+    virtual void* new_scenario_info(int);
+    virtual void notification(int, long, long, long, long);
+    virtual int reset_comm();
+    virtual void send_game_options();
+    virtual void receive_game_options();
+    virtual char* gameSummary();
+    virtual int processCheatCode(int, char*);
+    virtual int setup_music_system();
+    virtual void shutdown_music_system();
+    virtual int setup();
+    virtual int setup_cmd_options();
+    virtual int setup_class();
+    virtual int setup_main_window();
+    virtual int setup_graphics_system();
+    virtual int setup_palette();
+    virtual int setup_mouse();
+    virtual int setup_registry();
+    virtual int setup_debugging_log();
+    virtual int setup_chat();
+    virtual int setup_comm();
+    virtual int setup_sound_system();
+    virtual int setup_fonts();
+    virtual int setup_sounds();
+    virtual int setup_shapes();
+    virtual int setup_blank_screen();
+    virtual void setup_timings();
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void stop_music_system();
+    virtual int restart_music_system();
+    virtual void* create_world();
+    virtual int handle_message(void*);
+    virtual int handle_idle();
+    virtual int handle_mouse_move(void*, unsigned int, unsigned int, long);
+    virtual int handle_key_down(void*, unsigned int, unsigned int, long);
+    virtual int handle_user_command(void*, unsigned int, unsigned int, long);
+    virtual int handle_command(void*, unsigned int, unsigned int, long);
+    virtual int handle_music_done(void*, unsigned int, unsigned int, long);
+    virtual int handle_paint(void*, unsigned int, unsigned int, long);
+    virtual int handle_activate(void*, unsigned int, unsigned int, long);
+    virtual int handle_init_menu(void*, unsigned int, unsigned int, long);
+    virtual int handle_exit_menu(void*, unsigned int, unsigned int, long);
+    virtual int handle_size(void*, unsigned int, unsigned int, long);
+    virtual int handle_palette_changed(void*, unsigned int, unsigned int, long);
+    virtual int handle_query_new_palette(void*, unsigned int, unsigned int, long);
+    virtual int handle_close(void*, unsigned int, unsigned int, long);
+    virtual int handle_destroy(void*, unsigned int, unsigned int, long);
+    virtual int action_update();
+    virtual int action_mouse_move(long, long, int, int, int, int);
+    virtual int action_key_down(unsigned long, int, int, int, int);
+    virtual int action_user_command(unsigned long, unsigned long);
+    virtual int action_command(unsigned long, unsigned long);
+    virtual int action_music_done();
+    virtual int action_activate();
+    virtual int action_deactivate();
+    virtual int action_init_menu();
+    virtual int action_exit_menu();
+    virtual int action_size();
+    virtual int action_close();
+    virtual void calc_timings();
+    virtual void calc_timing_text();
+    virtual void show_timings();
+    virtual void show_comm();
+    virtual void show_ai();
+    virtual int setup_map_save_area();
+    virtual void set_interface_messages();
 
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
@@ -180,8 +265,8 @@ public:
     void setScenarioGame(unsigned char v);
     void setCampaignGame(int v);
     void setSavedGame(int v);
-    void setSinglePlayerGame(unsigned char v);
-    void setMultiplayerGame(unsigned char v);
+    void setSinglePlayerGame(int v);
+    void setMultiplayerGame(int v);
     void setMapSize(char x, char y, char z);
     void setAllowCheatCodes(unsigned char v);
     void setCheatNotification(unsigned char v);
@@ -198,9 +283,6 @@ public:
     void setMpPathFinding(unsigned char v);
     void setNumberPlayers(unsigned char v);
     void setScenarioName(const char* name);
-    int setup_registry();
-    int setup_debugging_log();
-    int setup();
 };
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
@@ -215,7 +297,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
     this->quick_build = 0;
     do_draw_log = 0;
     safe_draw_log = 0;
-    draw_log_name = 0;
+    draw_log_name[0] = 0;
     draw_log = 0;
 
     this->setVersion(1.0f);

@@ -9,6 +9,9 @@
 //   instruction-shape similarity.  Reciprocal draw-step spelling, early
 //   image-line store, and float row-state reuse were retained; local width /
 //   height and merged-home variants were tested and rolled back.
+// - Reintroduced a natural local map owner so width used world->map while
+//   height reloaded this->map; this followed the oracle's ordered accesses,
+//   but worsened the positional diff from 971 to 989 bytes and was rolled back.
 // - Remaining broad drift starts in the dimension-store/x87 local-home basin;
 //   the oracle reloads [esp+14] before each row and preserves a longer FPU
 //   expression tree.  No raw cursor, fake volatility, or manual vtable form

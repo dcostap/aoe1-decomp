@@ -8,8 +8,13 @@
 //   surface, sound/music forwarding, and all observed message handlers.
 // - Corrected the WM_CLOSE fallthrough and shared the 0x10/0x30F and
 //   0x3B9/0x500 handler tails.  The child-cursor state is at 0062C4C4.
-// - Remaining drift is structural: VC5 merges six handled-return log calls
-//   and the two key-down virtual sites that the original keeps separate.
+// - Packet tests at 0042084D, 00420D04, and 00420DF4 show that handled-return
+//   logging tests panel_result, not mouse_down.  This recovers the close and
+//   music-return regions; the remaining gap is the merged 00420D16/24 pair.
+// - An explicit mouse_down pair in the destroy, exit-menu, and music paths was
+//   rolled back after VC5 proved it away or merged it without adding calls.
+// - Inlining the panel-result tails for exit-menu and music-done raised the
+//   call surface from 74 to 78 calls and the shape score to 89.33 percent.
 
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
 extern "C" __declspec(dllimport) long __stdcall SetClassLongA(void* hwnd,
@@ -261,7 +266,7 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         color_log(0x32, 0xBA, 3);
         if (self->handle_size(hwnd, 5, wparam, lparam) != 0)
             goto default_window_proc;
-        if (mouse_down != 0) {
+        if (panel_result != 0) {
             color_log(0x4C, 0x5F, 4);
             color_log(0x24, 0x5F, 3);
             return (long)panel_result;
@@ -401,7 +406,11 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         color_log(0x32, 0xBA, 3);
         if (self->handle_exit_menu(hwnd, 0x212, wparam, lparam) != 0)
             goto default_window_proc;
-        goto panel_return;
+        if (panel_result == 0)
+            goto panel_return_alt;
+        color_log(0x4C, 0x5F, 4);
+        color_log(0x24, 0x5F, 3);
+        return (long)panel_result;
 
     case 0x218:
         if (wparam == 0)
@@ -449,7 +458,7 @@ close_message:
     color_log(0x32, 0xBA, 3);
     if (self->handle_close(hwnd, msg, wparam, lparam) != 0)
         goto default_window_proc;
-    if (mouse_down != 0) {
+    if (panel_result != 0) {
         color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
         return (long)panel_result;
@@ -460,14 +469,25 @@ music_done_message:
     color_log(0x32, 0x4C, 3);
     if (self->handle_music_done(hwnd, msg, wparam, lparam) != 0)
         goto default_window_proc;
-    goto panel_return_alt;
+    if (panel_result == 0)
+        goto panel_return_alt;
+    color_log(0x4C, 0x5F, 4);
+    color_log(0x24, 0x5F, 3);
+    return (long)panel_result;
 
     default:
         goto default_window_proc;
     }
 
 panel_return:
-    if (mouse_down != 0)
+    if (panel_result == 0)
+        goto panel_return_alt;
+    color_log(0x4C, 0x5F, 4);
+    color_log(0x24, 0x5F, 3);
+    return (long)panel_result;
+
+panel_return_alt:
+    if (panel_result != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
     return (long)panel_result;
@@ -482,9 +502,4 @@ default_window_proc:
         return result;
     }
 
-panel_return_alt:
-    if (mouse_down != 0)
-        color_log(0x4C, 0x5F, 4);
-    color_log(0x24, 0x5F, 3);
-    return (long)panel_result;
 }

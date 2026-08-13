@@ -12,6 +12,9 @@
 //   A player-pointer CSE variant deleted one required ftol and was rolled back;
 //   a 16-bit coordinate-lifetime variant crossed the exact function boundary
 //   and was rolled back. Left in scratch after the bounded pass.
+// - Re-tested a natural typed player-pointer local across coordinate recomputation;
+//   it deleted one ftol and worsened the first hunk, so the clean direct-access
+//   reconstruction remains preferred.
 
 extern "C" long __cdecl __ftol(void);
 #define DAT_0056F604 (*(float*)0x0056F604)

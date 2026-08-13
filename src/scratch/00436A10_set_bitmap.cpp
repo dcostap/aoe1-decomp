@@ -12,6 +12,9 @@
 //   VC5 keeps the picture in EBX and duplicates two failure epilogues, while
 //   the oracle keeps it in EBP/width in BX and jumps to one shared epilogue.
 //   No opaque register forcing or parameter-home cast is retained.
+// - Tested one typed ownership scope: one postcondition delete and a result-
+//   gated set_world.  It reduced size to 528 and diff to 387, but merged the
+//   two observed TPicture cleanup call sites (11/13 ordered calls); rolled back.
 // FLAGS: config/flags/00436A10_set_bitmap.rsp (/nologo /c /O2 /Oy /GX)
 
 #include <stdlib.h>

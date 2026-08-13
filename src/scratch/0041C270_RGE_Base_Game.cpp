@@ -9,9 +9,15 @@
 //   reproduce all 56 ordered call sites and the 0x110 frame.
 // - The rollover conditional, mouse-style if/else, and saved scenario pointer
 //   progressively aligned the early body; the final remaining hunk begins at
-//   the game-info RegGetInt test and leaves 646 positional bytes / +9 bytes.
+//   the fonts loop and leaves 413 positional bytes with exact size.
 // - A manual vptr restore was rejected by source policy; the natural virtual
 //   destructor surface is retained while the remaining codegen drift is paused.
+// - The original clears the +0x1B0 prog-mode slot before world cleanup; the
+//   generated field map does not support clearing game_mode at +0x1B4 here.
+// - Direct RegGetInt testing, nested player-info cleanup ownership, and local
+//   destructor pointers reproduce the original block structure through fonts.
+// - RGE_Font is a 0xC record with its DeleteObject handle at offset zero; the
+//   remaining drift is the imported-call cache and loop register coloring.
 
 #include <stdio.h>
 
@@ -53,7 +59,11 @@ class TCommunications_Handler;
 class TDebuggingLog;
 class TRegistry;
 class TMousePointer;
-class RGE_Font;
+class RGE_Font {
+public:
+    void* handle;
+    char gap_04[8];
+};
 class TChat;
 class TPanelSystem;
 class DriveInformation;
@@ -315,31 +325,35 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 
     if (this->player_game_info != 0) {
-        int file_number = this->registry->RegGetInt(0, "Game File Number");
-        if (file_number >= 0) {
-            file_number = this->registry->RegGetInt(0, "Game File Number");
+        if (this->registry->RegGetInt(0, "Game File Number") >= 0) {
+            int file_number = this->registry->RegGetInt(0, "Game File Number");
             sprintf(filename, "game%d.nfo", file_number);
             this->player_game_info->save(filename);
         }
-        this->player_game_info->~RGE_Game_Info();
-        operator delete(this->player_game_info);
+        RGE_Game_Info* player_game_info = this->player_game_info;
+        if (player_game_info != 0) {
+            player_game_info->~RGE_Game_Info();
+            operator delete(player_game_info);
+        }
         this->player_game_info = 0;
     }
 
-    this->game_mode = 0;
+    this->prog_mode = 0;
     if (this->world != 0) {
         this->world->vfA0(1);
         this->world = 0;
     }
 
-    if (this->map_save_area != 0) {
-        this->map_save_area->~TDrawArea();
-        operator delete(this->map_save_area);
+    TDrawArea* map_save_area = this->map_save_area;
+    if (map_save_area != 0) {
+        map_save_area->~TDrawArea();
+        operator delete(map_save_area);
         this->map_save_area = 0;
     }
-    if (this->mouse_pointer != 0) {
-        this->mouse_pointer->~TMousePointer();
-        operator delete(this->mouse_pointer);
+    TMousePointer* mouse_pointer = this->mouse_pointer;
+    if (mouse_pointer != 0) {
+        mouse_pointer->~TMousePointer();
+        operator delete(mouse_pointer);
         this->mouse_pointer = 0;
     }
 
@@ -348,22 +362,23 @@ RGE_Base_Game::~RGE_Base_Game()
         driveInfo = 0;
     }
 
-    if (this->comm_handler != 0) {
-        this->comm_handler->~TCommunications_Handler();
-        operator delete(this->comm_handler);
+    TCommunications_Handler* comm_handler = this->comm_handler;
+    if (comm_handler != 0) {
+        comm_handler->~TCommunications_Handler();
+        operator delete(comm_handler);
         this->comm_handler = 0;
     }
-    if (chat != 0) {
-        chat->~TChat();
-        operator delete(chat);
+    TChat* chat_object = chat;
+    if (chat_object != 0) {
+        chat_object->~TChat();
+        operator delete(chat_object);
         chat = 0;
     }
 
     if (this->fonts != 0) {
         for (i = 0; i < this->font_num; ++i) {
-            void* font = ((void**)this->fonts)[i];
-            if (font != 0)
-                DeleteObject(font);
+            if (this->fonts[i].handle != 0)
+                DeleteObject(this->fonts[i].handle);
         }
         free(this->fonts);
         this->fonts = 0;
@@ -372,9 +387,10 @@ RGE_Base_Game::~RGE_Base_Game()
     this->stop_sound_system();
     panel_system.destroyPanel("Blank Screen");
 
-    if (this->draw_system != 0) {
-        this->draw_system->~TDrawSystem();
-        operator delete(this->draw_system);
+    TDrawSystem* draw_system = this->draw_system;
+    if (draw_system != 0) {
+        draw_system->~TDrawSystem();
+        operator delete(draw_system);
         this->draw_system = 0;
         this->draw_area = 0;
     }
@@ -389,9 +405,10 @@ RGE_Base_Game::~RGE_Base_Game()
         this->prog_palette = 0;
     }
 
-    if (this->registry != 0) {
-        this->registry->~TRegistry();
-        operator delete(this->registry);
+    TRegistry* registry = this->registry;
+    if (registry != 0) {
+        registry->~TRegistry();
+        operator delete(registry);
         this->registry = 0;
     }
 
@@ -417,9 +434,10 @@ RGE_Base_Game::~RGE_Base_Game()
         StringTable = 0;
     }
 
-    if (this->debugLog != 0) {
-        this->debugLog->~TDebuggingLog();
-        operator delete(this->debugLog);
+    TDebuggingLog* debug_log = this->debugLog;
+    if (debug_log != 0) {
+        debug_log->~TDebuggingLog();
+        operator delete(debug_log);
         this->debugLog = 0;
     }
 

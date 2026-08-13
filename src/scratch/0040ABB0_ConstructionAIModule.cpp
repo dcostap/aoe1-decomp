@@ -5,13 +5,16 @@
 // - Reconstructed the binary-proven serialized read order, name+4 buffer, 8-argument constructor,
 //   setter order, and both sentinel-list link paths. Typed IntFloat wire unions preserve raw float/int
 //   bits without fabricated calls or conversion helpers; all 58 direct calls align.
-// - Moved count/sentinel construction into member initializers and kept the observed first-list,
-//   reference-field, vptr, and second-list statement order. Reference fields are real floats and the
-//   local serialized name buffer is 257 bytes, matching the observed stack window.
-// - Remaining mismatch is compiler-owned vptr scheduling: rebuilt stores the derived vptr at 0040AC50
-//   before the reference-field stores, while the oracle stores it at 0040AC8C after those stores; the
-//   current source is exact-frame/call-set but 1391 vs 1379 bytes. Manual vptr/novtable tricks are
-//   prohibited, so retain this readable canonical reconstruction in scratch.
+// - Moved the proven scalar defaults into member initializers, following the exact same-TU constructor
+//   donor. This recovers the delayed compiler-owned vptr schedule and the first 96-instruction block;
+//   diff improves from 631 to 570 bytes while frame size and all 58 calls remain exact.
+// - Reordered wire locals to the packet's declaration order. The emitted code is unchanged, and the
+//   natural 257-byte shared name buffer remains the best source reconstruction. The 256-byte and
+//   larger diagnostic buffer variants were rejected because they lose the 0x148 frame or do not move
+//   name+4 to the oracle's esp+54 home.
+// - Remaining structural drift starts at the first loop: rebuilt name+4 is esp+58 and wire locals use
+//   different stack homes than the oracle's esp+54/name and proven +10..+44 slots. Do not tune registers;
+//   manual vptr/novtable tricks remain prohibited.
 
 extern "C" void rge_read(int fd, void* dst, int size);
 
@@ -64,11 +67,17 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
       numberConstructionLotsValue(0),
       lots(),
       numberSecondValue(0),
-      second()
+      second(),
+      xReferencePointValue(-1.0f),
+      yReferencePointValue(-1.0f),
+      zReferencePointValue(-1.0f),
+      mapXSizeValue(-1),
+      mapYSizeValue(-1),
+      zero310(0)
 {
-    IntFloat x, y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, skip;
+    IntFloat x, y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
+    IntFloat skip;
     int typeID;
-    IntFloat zSize;
     int built;
     IntFloat gameID, i;
     int n;
@@ -77,12 +86,6 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
 
     this->lots.next = &this->lots;
     this->lots.prev = &this->lots;
-    this->xReferencePointValue = -1.0f;
-    this->yReferencePointValue = -1.0f;
-    this->zReferencePointValue = -1.0f;
-    this->mapXSizeValue = -1;
-    this->mapYSizeValue = -1;
-    this->zero310 = 0;
     this->second.next = &this->second;
     this->second.prev = &this->second;
 

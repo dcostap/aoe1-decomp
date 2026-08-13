@@ -19,6 +19,8 @@
 // - Probes 9-10: restoring the known 0xA24 object size and testing the int
 //   debug-time return ABI did not improve emitted bytes.  Final best source is
 //   the typed reconstruction; exact gap is the timer block's first branch.
+// - Probe 12: a natural per-iteration reference alias for the timing record
+//   produced identical code; the typed pointer form remains the clean source.
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -16,6 +16,11 @@
 //   exact-block coverage, 12/12 ordered calls, and frame 0x10.  Remaining
 //   drift is localized to title/input register coloring, hotkey reload, and
 //   the three-byte size/tail boundary.
+// - Tested a zero-based typed tab_list with name_input, ok_button, and
+//   cancel_button, then passed tab_list to set_tab_order.  It changed the
+//   field register allocation and worsened the clean 86-byte diff to 173
+//   bytes at 485B; rolled back.  The original stack stores remain better
+//   represented by the omitted tab_list[0] source shape.
 // FLAGS: config/flags/004A6D50_TRIBE_Dialog_Name.rsp uses /GX; required for
 // the observed EH registration frame.
 // Left in scratch after the bounded pass: natural typed source is retained;

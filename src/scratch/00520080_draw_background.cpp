@@ -23,6 +23,8 @@
 //     VC5 optimized them to the unchanged loop.
 // 16: fresh pass declared draw_x before draw_y, following exact terrain-shape
 //     register-coloring evidence; the emitted code was unchanged.
+// 17: fresh pass declared typed int draw_y before draw_x in shape_draw, following
+//     the exact Pnl_txt donor's source order; emitted code was unchanged.
 // Left in scratch: remaining drift is localized mostly to the tiled shape_draw loop scheduling/argument setup, causing 4-byte shift in the first branch and branch-target displacement drift; fill/bevel tails look behaviorally aligned.
 
 class TDrawArea {

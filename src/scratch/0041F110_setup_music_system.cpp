@@ -19,6 +19,8 @@
 // - Function-scope music locals, constructor-result-before-path declaration,
 //   and direct assignment to the owned music_system field all duplicated the
 //   218-byte drift; restored the clean branch-local typed source.
+// probe 16: declaring music_path before music_type was a codegen duplicate;
+//   restored the clean declaration order after the local-address probe.
 
 #include <stdio.h>
 
@@ -107,6 +109,7 @@ int RGE_Base_Game::setup_music_system()
         }
         else if (this->music_system == 0) {
             unsigned char music_type;
+            char music_path[260];
 
             if (this->prog_info->use_cd_audio != 0)
                 music_type = 1;
@@ -117,7 +120,6 @@ int RGE_Base_Game::setup_music_system()
             else
                 music_type = this->prog_info->use_wave_music != 0 ? 3 : 1;
 
-            char music_path[260];
             sprintf(music_path + 4, "%s\\%s", this->work_dir,
                     this->prog_info->sounds_dir);
 

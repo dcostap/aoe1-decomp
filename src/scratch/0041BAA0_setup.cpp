@@ -15,6 +15,16 @@
 // - Paused after the 10-hypothesis budget: current drift is 1263 positional bytes;
 //   remaining evidence points to a +4 frame/local-home mismatch and the memory
 //   predicate's block shape, not an unresolved call set.
+// - Removing the game_info local and assigning player_game_info at each
+//   allocation matched the no-break path clue but moved a later call target;
+//   restored the clean source before the next structural probe.
+// - Recast the proven memory-pressure test as the natural if-bad/else-success
+//   setup shape; the oracle places the bad-path assignment in the final tail.
+// - Reordered the reused MEMORYSTATUS and DirectX locals to match the original
+//   contiguous local window reported by the packet; this is a declaration-order probe.
+// - Current shard probes left the natural memory nesting and local order in place:
+//   both emitted the clean-source code.  Remaining structural drift is the +4
+//   frame/local home and the original memory branch's far tail placement.
 
 #include <windows.h>
 #include <stdio.h>
@@ -200,9 +210,9 @@ public:
 
 int RGE_Base_Game::setup()
 {
-    unsigned long DXPlatform;
-    unsigned long DXVersion;
     MEMORYSTATUS ms;
+    unsigned long DXVersion;
+    unsigned long DXPlatform;
     char filename[260];
     char s[256];
     OFSTRUCT of;
@@ -287,10 +297,10 @@ int RGE_Base_Game::setup()
     if (((ms.dwTotalPageFile < 0x1400000 || ms.dwTotalVirtual < 0xA00000) &&
          (ms.dwTotalPageFile < 0xA00000 || ms.dwTotalVirtual < 0x1400000)) &&
         ms.dwTotalVirtual < 0x1E00000) {
-        goto setup_memory_fail;
+        this->error_code = 0x16;
     }
-
-    this->set_interface_messages();
+    else {
+        this->set_interface_messages();
 
     if (debugActions == 1)
         actionFile = fopen((char*)0x57FA78, (char*)0x57FA88);
@@ -439,10 +449,8 @@ int RGE_Base_Game::setup()
             do_fps_log = 0;
     }
 
-    return 1;
-
-setup_memory_fail:
-    this->error_code = 0x16;
+        return 1;
+    }
 setup_fail:
     return 0;
 }

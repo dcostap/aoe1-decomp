@@ -11,6 +11,9 @@
 //   itemName/temp to the original short-LEA offsets and removes all six widened LEA bytes. It leaves a
 //   4-byte frame-size difference (0x164 vs 0x168); adding the decompiler's int id home was a duplicate,
 //   so the 60-byte candidate is retained as the cleanest policy-compliant reconstruction.
+// - Address-taken float comment storage reproduced neither the frame nor the body; restored named byte locals.
+// - A 64-byte name with an explicit four-byte prefix reproduced the frame but shifted temp and widened the body.
+// - A copied item width and a late xSize declaration were nonproductive; restored the direct parser argument.
 // FLAGS: config/flags/0040B690_loadConstructionPlan.rsp (/GX for EH frame)
 
 #include <stdio.h>

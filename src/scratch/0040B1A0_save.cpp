@@ -17,6 +17,8 @@
 // 7: the initial plan-name payload recomputes strlen for the data write; reusing the stored length was
 //    the major structural mismatch. The natural second strlen reaches exact size/instruction/call/CFG
 //    parity and reduces positional drift from 1108 to 58 bytes.
+// 9: scoped the initial plan-name length to test natural temporary lifetime reuse; emitted code stayed
+//    unchanged, so the localized stack-home drift is not controlled by that lifetime.
 // 8: remaining 58 bytes are localized stack displacements: tempString and length/type homes are four
 //    bytes high while the float home is four bytes low. Explicit self overlay worsens size by 4; source
 //    local declaration order is codegen-neutral. Best readable reconstruction remains in scratch.
