@@ -26,6 +26,8 @@
 // luna-4DA680-r3: exact objectMemory donor declaration order and pointer-first declarations did not move the prologue coloring; clean source remains authoritative.
 // luna-4DA680-r4: localized four-axis scan declaration lab kept size/frame/call gates and grouped all variants at the same 431-byte diff.
 // luna-4DA680-r4: reusing the scan pointer for allocation was byte-identical; delaying the base load with outer guard or early goto broke size and CFG.
+// luna-4DA680-r5: inspected the original duplicate block; EAX carries scan index i, while EDI is only the first-empty index for normal insertion. The 286-byte STORE(empty) diagnostic was not an original duplicate write and remains discarded.
+// luna-4DA680-r5: the remaining source-backed discrepancy is saved-register coloring at the scan prologue; no fresh natural axis remains after the eligible declaration lab.
 
 typedef unsigned char uchar;
 
