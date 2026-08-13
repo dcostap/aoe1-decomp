@@ -27,6 +27,9 @@
 // uninitialized-result variants moved earlier or broadened the mismatch. A 32-case
 // failure-path lab had no exact/invariant-eligible result under its non-/GX context.
 // Final validated source restores the canonical pointer-status reconstruction.
+// orch-430ED0-a: task-edge result assignment and combined task assignment were codegen duplicates (333/77).
+// orch-430ED0-a: nested task-nonnull control flow widened to 338/141; zero-before-task widened to 333/251.
+// orch-430ED0-a: task declaration initialization was a codegen duplicate; clean source restored.
 
 class RGE_Static_Object {
 public:
