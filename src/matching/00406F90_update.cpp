@@ -8,15 +8,19 @@
 // - Natural switch and typed call surfaces reached exact size/frame/CFG/call
 //   parity; correcting action field ownership and keeping zero-count cleanup
 //   outside the owner notification reduced the diagnostic diff to 28 bytes.
-// - A binary-backed int sentinel local preserves the target-x dword compare and
-//   map/x87 order. Preloading the drop pointer or swapping fallback declarations
-//   was rolled back: each added 63 bytes and two virtual calls.
+// - The natural target-x `-1.0f` sentinel preserves the target dword compare
+//   and map/x87 order. Preloading the drop pointer or swapping fallback
+//   declarations was rolled back: each added 63 bytes and two virtual calls.
 // - Tried the proven drop-result/object-local order with corrected long notify
 //   trailing parameters; the direct form was unchanged, while the stored-result
 //   form added 63 bytes and two calls. Restored the clean direct-call form.
-// - Left in scratch: the generated switch-table COFF relocations are unresolved
-//   in the standalone extraction, and the remaining live source hunk is the
-//   drop-failure load-before-branch plus owner-notify argument scheduling.
+// - Spelled sub-action success as `result > 0`; this recovered the original
+//   unsigned-byte branch and reduced the live mismatch to the drop block.
+// - Made a zero drop result notify 0x207 and break before the 0x206 success
+//   check. VC5 then hoisted the object reload and tail-merged the notify block.
+//   Removing a redundant scope kept the exact bytes in ordinary source form.
+// - The source now matches all function bytes. The standalone extraction still
+//   reports local switch-table relocations, but they do not affect exact bytes.
 
 class RGE_Action;
 class RGE_Action_List;
@@ -289,7 +293,7 @@ unsigned char RGE_Action_Transport::update(void)
     switch (this->state) {
     case 4: {
         unsigned char result = this->sub_actions->update();
-        if (result != 0 && result <= 5) {
+        if (result > 0 && result <= 5) {
             this->set_state(2);
             return 0;
         }
@@ -298,7 +302,7 @@ unsigned char RGE_Action_Transport::update(void)
 
     case 0x0B: {
         unsigned char result = this->sub_actions->update();
-        if (result != 0 && result <= 5) {
+        if (result > 0 && result <= 5) {
             this->set_state(6);
             return 0;
         }
@@ -318,20 +322,23 @@ unsigned char RGE_Action_Transport::update(void)
         if (this->obj->objects->number_of_objects > 0) {
             if (this->next_to_drop_off_terrain() != 0) {
                 zone = this->targetZone();
-                if (this->obj->drop_held_objects(zone) != 0) {
-                    if (this->obj->objects->number_of_objects > 0) {
-                        this->obj->owner->notify(
-                            this->obj->id, this->obj->id, 0x206, 0x266, 0, 0
-                        );
-                    }
+                if (this->obj->drop_held_objects(zone) == 0) {
+                    this->obj->owner->notify(
+                        this->obj->id, this->obj->id, 0x207, 0x266, 0, 0
+                    );
                     break;
                 }
+                if (this->obj->objects->number_of_objects > 0) {
+                    this->obj->owner->notify(
+                        this->obj->id, this->obj->id, 0x206, 0x266, 0, 0
+                    );
+                }
+                break;
             } else {
                 RGE_Action_Object* object = this->obj;
                 RGE_Player* owner = object->owner;
                 RGE_Map* map = owner->world->map;
-                int target_x_bits = *(int*)&this->target_x;
-                if (target_x_bits != 0xBF800000) {
+                if (this->target_x != -1.0f) {
                     if (map->get_terrain((short)this->target_x,
                                          (short)this->target_y) == 1 ||
                         map->get_terrain((short)this->target_x,
@@ -340,9 +347,8 @@ unsigned char RGE_Action_Transport::update(void)
                     }
                 }
             }
-            RGE_Action_Object* object = this->obj;
-            RGE_Player* owner = object->owner;
-            int id = object->id;
+            RGE_Player* owner = this->obj->owner;
+            int id = this->obj->id;
             owner->notify(id, id, 0x207, 0x266, 0, 0);
         }
         break;
