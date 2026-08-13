@@ -15,7 +15,12 @@
 // - restored the case-3 decrement before the scroll call; the oracle stores the
 //   decremented current line before invoking scroll, reducing positional drift
 //   to 245 bytes but moving the build into a +32-byte structural basin.
-//   Left in scratch: localized case-5/6 tail/block layout and branch-span drift.
+// - a case-4 explicit arm store matched the oracle's separate no-call endpoint
+//   store and call-path store, restoring the shared case-6 tail and exact size.
+// - duplicated the same endpoint store in case 5's call and no-call arms; the
+//   oracle has a distinct no-call branch to the shared set-top tail.
+// - exact: both page actions retain endpoint stores in each arm because scroll
+//   is a call that can change member state before the final store.
 
 class TPanel {
 public:
@@ -147,8 +152,10 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         }
         if (this->cur_line == this->bot_line) {
             this->scroll(4, 0, flag);
+            this->cur_line = this->bot_line;
+        } else {
+            this->cur_line = this->bot_line;
         }
-        this->cur_line = this->bot_line;
         break;
     }
     case 5: {
@@ -158,8 +165,10 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         }
         if (this->cur_line == this->top_line) {
             this->scroll(5, 0, flag);
+            this->cur_line = this->top_line;
+        } else {
+            this->cur_line = this->top_line;
         }
-        this->cur_line = this->top_line;
         break;
     }
     case 6:
