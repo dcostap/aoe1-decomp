@@ -14,6 +14,9 @@
 // 11: Reordered neighbor flags to the compass order used by exact clean_elevation; shape rose but size and positional diff worsened, so restored.
 // 12: Declared per-tile fix before the neighbor flags to test the original AL fix and terrain-home changed split; emitted code was unchanged.
 // 13: Moved changed before width and offset declarations to match the clean_elevation lifetime order; emitted code was unchanged.
+// 14: Delayed per-tile fix initialization until after all neighbor loads; this matched the original AL zeroing, exact frame, and 1127-byte size.
+// 15: Ordered neighbor declarations NW,N,NE,E,SE,S,SW,W to match the original zero-store order; positional diff fell to 4 bytes.
+// 16: Reversed the inner loop increments to advance tile before col; exact 1127-byte match.
 
 struct RGE_Tile {
     char gap_00[5];
@@ -79,17 +82,17 @@ void RGE_Map::clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrai
         do {
             for (int row = y1; row <= y2; ++row) {
                 RGE_Tile* tile = this->map_row_offset[row] + x1;
-                for (int col = x1; col <= x2; ++col, ++tile) {
+                for (int col = x1; col <= x2; ++tile, ++col) {
                         if ((tile->terrain_type & 0x1f) != terrain) {
-                            short north = 0;
-                            short south = 0;
-                            short west = 0;
-                            short east = 0;
                             short north_west = 0;
+                            short north = 0;
                             short north_east = 0;
-                            short south_west = 0;
+                            short east = 0;
                             short south_east = 0;
-                            unsigned char fix = 0;
+                            short south = 0;
+                            short south_west = 0;
+                            short west = 0;
+                            unsigned char fix;
 
                             if (row > 0 && (tile[offset_n].terrain_type & 0x1f) == terrain) {
                                 north = 1;
@@ -125,6 +128,7 @@ void RGE_Map::clean_terrain(int x1, int y1, int x2, int y2, unsigned char terrai
                                 }
                             }
 
+                            fix = 0;
                             if (pass == 0) {
                                 if ((north && south) || (east && west)) {
                                     fix = 1;
