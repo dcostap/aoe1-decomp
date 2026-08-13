@@ -20,6 +20,9 @@
 //     all codegen-neutral in focused variants.
 // 14: after a clean-source reset, declaring owner->world->map before the master
 //     radius preserves the original initial register coloring and closes all five bytes.
+// Policy repair: RGE_Static_Object is the real base of RGE_Action_Object. The
+// prior typedef was a temporary narrow stub. Use the true class relation and
+// weapon pointer type before promotion.
 // exact candidate: natural typed source, proven ownership, default VC5 flags, 776B.
 // Behavior retained: ignored-target filtering, special owner gate, level gate, footprint distance,
 // random hit chance, modifier calculation, typed damage argument order, and post-damage death call.
@@ -31,8 +34,12 @@ extern "C" int __cdecl debug_rand(char*, int);
 
 class RGE_Player;
 class RGE_Combat_Object;
-class RGE_Action_Object;
-typedef RGE_Action_Object RGE_Static_Object;
+class RGE_Armor_Weapon_Info;
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+};
 
 class RGE_Master_Static_Object {
 public:
@@ -52,7 +59,7 @@ public:
     char gap_B8[0x50];
     short weapon_num;
     char gap_10A[2];
-    void* weapon;
+    RGE_Armor_Weapon_Info* weapon;
     char gap_110[4];
     float weapon_range;
     float area_effect_range;
@@ -91,7 +98,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     void* map;
     long map_width;
     long map_height;
@@ -100,7 +107,7 @@ public:
 };
 
 #define ACTION_SLOT(n) virtual void slot_##n();
-class RGE_Action_Object {
+class RGE_Action_Object : public RGE_Static_Object {
 public:
     virtual ~RGE_Action_Object();
     ACTION_SLOT(04) ACTION_SLOT(08) ACTION_SLOT(0C) ACTION_SLOT(10)
