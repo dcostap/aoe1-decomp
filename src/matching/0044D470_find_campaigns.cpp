@@ -18,8 +18,14 @@
 // - current probe: expressed each scan as a guarded do/while whose condition
 //   calls _findnext with the stable _findfirst handle; this matches the
 //   original API use and reduces the drift to 298 bytes with exact size.
-// - left in scratch: natural typed enumeration is retained; the remaining
-//   drift begins at the filename local layout and includes later block shape.
+// - layout: the binary-proven 0x20C RGE_Campaign object size restored the
+//   original allocation and reduced the mismatch to 157 bytes.
+// - control-flow: the second typed scan now breaks on _findnext failure before
+//   incrementing i; this restores the original ordered block shape and reduces
+//   the mismatch to 10 bytes.
+// - layout: the typed find-data work window uses the proven name position and
+//   a four-byte tail gap; this restores the 0x220 frame and exact output.
+// - exact: the final local check is a positional byte match with zero drift.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* file_info);
@@ -45,6 +51,7 @@ extern RGE_Base_Game* rge_base_game;
 
 class RGE_Campaign {
 public:
+    char gap_00[0x20C];
     RGE_Campaign(char* filename);
     ~RGE_Campaign();
 };
@@ -54,14 +61,22 @@ public:
     void rehook_campaigns(RGE_Campaign** campaigns, long campaign_num);
 };
 
+#pragma pack(push, 4)
 struct FindDataLocal {
     unsigned int attrib;
-    long time_create;
-    long time_access;
-    long time_write;
-    unsigned long size;
+    int time_create;
+    int time_access;
+    int time_write;
     char name[260];
 };
+
+struct FindCampaignWork {
+    FindDataLocal file_info;
+    char file_name[260];
+    // Binary-proven unused tail in the 0x220-byte local work window.
+    char gap_21C[4];
+};
+#pragma pack(pop)
 
 class RGE_Game_Info {
 public:
@@ -76,8 +91,7 @@ public:
 };
 
 void RGE_Game_Info::find_campaigns() {
-    FindDataLocal file_info;
-    char file_name[260];
+    FindCampaignWork work;
     long handle;
     int i = 0;
 
@@ -97,43 +111,46 @@ void RGE_Game_Info::find_campaigns() {
         campaigns = 0;
     }
 
-    sprintf(file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
-    handle = _findfirst(file_name + 4, &file_info);
+    sprintf(work.file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
+    handle = _findfirst(work.file_name + 4, &work.file_info);
     campaign_num = 0;
     if (handle != -1) {
         do {
             ++campaign_num;
-        } while (_findnext(handle, &file_info) != -1);
+        } while (_findnext(handle, &work.file_info) != -1);
     }
 
-    sprintf(file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
-    handle = _findfirst(file_name + 4, &file_info);
+    sprintf(work.file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
+    handle = _findfirst(work.file_name + 4, &work.file_info);
     if (handle != -1) {
         do {
             ++campaign_num;
-        } while (_findnext(handle, &file_info) != -1);
+        } while (_findnext(handle, &work.file_info) != -1);
     }
 
     if (campaign_num > 0) {
         campaigns = (RGE_Campaign**)calloc(campaign_num, 4);
         i = 0;
 
-        sprintf(file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
-        handle = _findfirst(file_name + 4, &file_info);
+        sprintf(work.file_name + 4, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
+        handle = _findfirst(work.file_name + 4, &work.file_info);
         if (handle != -1) {
             do {
-                campaigns[i] = new RGE_Campaign(file_info.name + 4);
+                campaigns[i] = new RGE_Campaign(work.file_info.name + 4);
                 ++i;
-            } while (_findnext(handle, &file_info) != -1);
+            } while (_findnext(handle, &work.file_info) != -1);
         }
 
-        sprintf(file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
-        handle = _findfirst(file_name + 4, &file_info);
+        sprintf(work.file_name + 4, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
+        handle = _findfirst(work.file_name + 4, &work.file_info);
         if (handle != -1) {
-            do {
-                campaigns[i] = new RGE_Campaign(file_info.name + 4);
+            for (;;) {
+                campaigns[i] = new RGE_Campaign(work.file_info.name + 4);
+                if (_findnext(handle, &work.file_info) == -1) {
+                    break;
+                }
                 ++i;
-            } while (_findnext(handle, &file_info) != -1);
+            }
         }
     } else {
         campaigns = 0;

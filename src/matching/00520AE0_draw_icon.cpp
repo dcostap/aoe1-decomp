@@ -17,7 +17,10 @@
 // worker probes 6/8: declaration-order variant families for arithmetic and local declarations collapsed to one emitted group.
 // worker probe 9: minimal RECT/header-context variant emitted the same 8-byte drift.
 // worker probe 10: a synthetic union overlay reduced no bytes and changed the frame to 0x34; rolled back as implausible.
-// Best current reconstruction is the typed period-style source below. Remaining blocker: VC5 places black_color at [esp+10] and temp_str+4 at [esp+18], while the oracle reuses the black-color home as temp_str's unused four-byte prefix ([esp+10]/[esp+14]); no natural declaration/context probe recovered that overlap within the 10-hypothesis budget.
+// worker probe 11: scoped temp_str to the event switch as a natural lifetime/scheduling lead; emitted code stayed unchanged at 8 bytes, rolled back.
+// current worker probe 1: stored the palette result in typed temp_str[0]; the frame fell to 0x34 while the same eight displacement bytes remained.
+// current worker probe 2: widened temp_str to 54 bytes for its four-byte palette prefix and 0x32-byte text destination; exact 581-byte match.
+// Best current reconstruction is the typed period-style source below. The 54-byte temporary models the four-byte palette prefix and 0x32-byte text destination.
 
 #define GetNearestPaletteIndex draw_icon_windows_GetNearestPaletteIndex
 #include <windows.h>
@@ -222,14 +225,13 @@ public:
 
 void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3)
 {
-    char temp_str[50];
-    uchar black_color;
+    char temp_str[54];
     long total;
     long hi_top;
     long q_top;
     unsigned int (__stdcall* getNearest)(void*, unsigned int) = GetNearestPaletteIndex;
     getNearest(this->render_area->DrawSystem->palette, 0xffffff);
-    black_color = (uchar)getNearest(this->render_area->DrawSystem->palette, 0);
+    temp_str[0] = (char)getNearest(this->render_area->DrawSystem->palette, 0);
 
     switch (ev->event) {
     case 0:
@@ -270,13 +272,13 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     int ok = this->calculate_icon_location(ev, param_2, param_3);
     switch (ev->event) {
     case 0:
-            this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
+            this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, (uchar)temp_str[0]);
         return;
     case 1:
-        this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
+        this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, (uchar)temp_str[0]);
         return;
     case 2:
-        this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, black_color);
+        this->render_area->DrawVertLine(ev->X_line_pos, ev->Y_line_pos, ev->intermediate_y_line_segment, (uchar)temp_str[0]);
         return;
     default:
         if (ok) {

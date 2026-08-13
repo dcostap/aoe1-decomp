@@ -21,6 +21,8 @@
 //   the strict diff to 68 bytes.  Reversed sound/frame materialization and a
 //   direct frame expression were worse and were restored.  The remaining
 //   hunk is the inner address/register schedule at the typed facet base.
+// - Materialized the typed sound entry before the frame entry, then used an
+//   explicit null else for sound_id.  This matches the original 561-byte body.
 
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 
@@ -122,12 +124,14 @@ void RGE_Sprite::save(int handle)
         if (this->facet_num > 0) {
             do {
                 for (int j = 0; j < 3; ++j) {
-                    short* frame = &this->sound_list[i].frame[j];
                     RGE_Sound* sound = this->sound_list[i].sound[j];
-                    int sound_id = -1;
+                    int sound_id;
                     if (sound != 0) {
                         sound_id = sound->id;
+                    } else {
+                        sound_id = -1;
                     }
+                    short* frame = &this->sound_list[i].frame[j];
                     rge_write(handle, frame, 2);
                     rge_write(handle, &sound_id, 2);
                 }

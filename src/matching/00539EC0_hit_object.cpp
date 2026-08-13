@@ -18,6 +18,13 @@
 // corrected stat_obj donor ABI: hit_test takes five shorts and get_frame takes four short references; call relocation spellings now agree without code movement.
 // modeled the binary-proven get_frame window with dword local_4 and the tile parameter home; the third-output LEA at +12 matches, but the initial node load still precedes oracle parameter preloads.
 // bounded session exhausted at 10 meaningful hypotheses; leave this readable typed reconstruction in scratch. Remaining lead: recover the original list-head +20 home and parameter-preload loop scheduling before any register tuning.
+// tried splitting the natural mode/owner collision predicate; call sites and block shape diverged badly, rolled back to the clean source.
+// moved natural x/y aliases before the first-node guard; VC5 emitted duplicate code, so restored the clean reconstruction.
+// natural for-condition with typed node assignment recovered 96% exact blocks but shifted the select-level compare; kept as the new source shape.
+// reversed the select-level comparison to load the master object first; diff fell to 10 bytes with exact CFG and calls.
+// direct comma-mode gating was behavior-plausible but lost size and block parity; rolled back.
+// duplicated the ordinary hit arm was structurally poor; rolled back.
+// retained the binary-backed ordinary-hit label join for mode '+' and non-special modes; exact 517B match.
 
 struct tagPOINT { long x; long y; };
 
@@ -90,27 +97,30 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
     short max_y;
     RGE_Static_Object* picked = 0;
     if (&tile->objects != 0) {
-        RGE_Object_Node* cur = tile->objects.sort();
-        first = cur;
-        if (first != 0) {
-            short sx = x;
-            short sy = y;
-            do {
-                RGE_Static_Object* obj = cur->node;
-                if (obj == 0) break;
+        first = tile->objects.sort();
+        RGE_Object_Node* cur = first;
+        short sx = x;
+        short sy = y;
+        RGE_Static_Object* obj;
+        for (; cur != 0 && (obj = cur->node) != 0; cur = cur->next) {
                 if (obj->object_state < 7) {
                     if ((!through_fog || obj->master_obj->fog_flag) &&
-                        this->function_parm <= obj->master_obj->select_level) {
-                        if ((this->function_mode == '+' || this->function_mode == ',') &&
-                            obj->owner == this->player) {
+                        obj->master_obj->select_level >= this->function_parm) {
+                        if (this->function_mode == '+' || this->function_mode == ',') {
+                            if (obj->owner == this->player) {
                             if (this->function_mode == ',') {
                                 if (obj->box_hit_test(sx, sy, (short)p2->x, (short)p2->y,
                                                       (short)p1->x, (short)p1->y)) {
                                     if (!this->player->select_one_object(obj, 0)) break;
                                     picked = obj;
                                 }
+                            } else {
+                                goto ordinary_hit;
                             }
-                        } else if (obj->hit_test(sx, sy, (short)p1->x, (short)p1->y, 5)) {
+                            }
+                        } else {
+ordinary_hit:
+                            if (obj->hit_test(sx, sy, (short)p1->x, (short)p1->y, 5)) {
                             if (skip != 0 && obj == skip && picked != 0) {
                                 return picked;
                             }
@@ -125,12 +135,12 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
                                 *out_x = (short)(obj->screen_x_offset + min_y + sx);
                                 *out_y = (short)(obj->screen_y_offset + (short)local_4 + sy);
                             }
+                            }
                         }
                     }
                 }
 next:
-                cur = cur->next;
-            } while (cur != 0);
+                ;
         }
         while (first != 0) {
             RGE_Object_Node* next_node = first->next;
