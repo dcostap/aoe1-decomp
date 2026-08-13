@@ -22,6 +22,9 @@
 // 20: scoped selected-object aliases in both cases separated the object/victory calls, but worsened the positional diff and lost an amount-call alignment; discarded.
 // 21: moving the selector declaration before amount was a codegen duplicate; retain the clean declaration order.
 // 22: ABI audit confirms exact typed SetSPAmount, SetSPVictoryType, and SetSPObject surfaces from matching setter donors; the two missing call counts are VC5's case-6/case-9 tail merge, not invalid declarations. Leave the clean candidate; target-map mismatches after the merged calls are alignment artifacts.
+// r4: compound scopes, mixed return/break placement, null-return variants, and the Ghidra-backed positive success-return form for cases 6 and 9 all emitted the same merged setter tail.
+// r4: applying the Ghidra/PDB success-return topology to cases 1, 2, 5, 7, and 8 also emitted duplicate code; canonical class/vtable context and direct typed world->scenario spelling were neutral.
+// r4: explicit !=0/truthy predicate variants and mixed predicate spelling were neutral. Restore the clean negative guards; no natural source lead remains for the two missing call sites.
 
 extern "C" int __cdecl atoi(const char*);
 
