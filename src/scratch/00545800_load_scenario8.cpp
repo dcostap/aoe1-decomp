@@ -13,6 +13,18 @@
 // 8: Reusing the dead compressed-count local for the delayed next-object-id header kept the 0x4c frame and improved shape to 85.94%.
 // 9: A typed player pointer local for the object guard restored the original saved-register prologue and reached the best natural diff (564 bytes); assignment-in-condition was worse and was rolled back.
 // Left in scratch: ordered calls and frame match, but structural drift remains in the header-count home, mapped-player guard, and final setup block.
+// 10: Separating the pre-scenario header dword into a named next-object-id local
+// added stack pressure and worsened the frame; restored the clean reused-home
+// candidate. The packet still proves a distinct semantic value, but this source
+// shape is not codegen-compatible without a better lifetime model.
+// 11: A named pointer-to-player-slot object guard improved resynchronization but
+// added one byte and worsened positional diff; restored direct typed player use.
+// 12: Binary-proven <= -1 guards in both info passes reduced positional diff to
+// 382 bytes, but the cleaner direct object guard combination regressed to 716;
+// restored the best natural clean candidate. No call or cleanup mismatch exists.
+// 13: Removing the cleanup receiver local changed the call target surface and
+// enlarged the footer; rolled back. The remaining blocker is structural local
+// coloring and stack-home reuse, not behavior or ABI.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);

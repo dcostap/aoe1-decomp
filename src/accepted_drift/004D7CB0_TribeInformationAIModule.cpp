@@ -24,6 +24,10 @@
 //   SIB variant lab.  All either duplicated the two-byte drift or lost structure.
 //   A VC5 flag sweep found no exact default-compatible variant.  Clean source
 //   restored; the remaining bytes are only SIB base/index operand encoding.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed the two remaining bytes
+// only commute EDI and ECX in one LEA and one same-address dword load. LEA has
+// no memory or flags effect. The load has identical address, width, segment,
+// ordering, and fault behavior. All calls, cleanup, CFG, and boundary match.
 
 extern "C" int rge_open(char*, int, int);
 extern "C" void rge_write(int, void*, int);

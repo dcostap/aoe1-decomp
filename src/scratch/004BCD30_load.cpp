@@ -4,6 +4,8 @@
 // - Rebuilt the file and resource paths from the original call order and stack homes.
 // - Kept the five-field DSBUFFERDESC and named DirectSound vtable slots.
 // - Separate cleanup branches recovered all 42 original calls and the 0x15C frame.
+// - Matched the positive read gates and split resource Create/Lock failure cleanup.
+// - A late cleanup-label experiment lost frees and was rolled back.
 // - Remaining drift is prologue scheduling, recursive-call relocation identity, and
 //   resource/file block placement. No further evidence-backed lead remains.
 #include <string.h>
@@ -137,7 +139,7 @@ int TDigital::load(char* name, long param) {
     buffer_desc.dwBufferBytes = 0;
     buffer_desc.dwReserved = 0;
     buffer_desc.lpwfxFormat = 0;
-    load_type = 0;
+    memset(wave_hdr.szRIFF, 0, sizeof(wave_hdr.szRIFF));
     buffer_desc.dwFlags = 0;
 
     if (this->failed != 0) {
@@ -175,7 +177,7 @@ int TDigital::load(char* name, long param) {
         sprintf(file_with_path + 4, "%s%s", this->sound_system->path, this->sound_file);
         fd = __open(file_with_path + 4, 0, 0);
         if (fd != -1) {
-            if (read(fd, &wave_hdr.szRIFF, 0x2C) == 0) {
+            if (read(fd, &wave_hdr.szRIFF, 0x2C) <= 0) {
                 this->failed = 1;
                 close(fd);
                 goto fail_return;
@@ -196,7 +198,7 @@ int TDigital::load(char* name, long param) {
                 goto fail_return;
             }
 
-            if (read(fd, this->wave_data, this->data_size) == 0) {
+            if (read(fd, this->wave_data, this->data_size) <= 0) {
                 this->failed = 1;
                 free(this->wave_data);
                 this->wave_data = 0;
@@ -325,10 +327,10 @@ int TDigital::load(char* name, long param) {
                         this->wave_info = 0;
                         goto success_return;
                     }
-                }
-                this->failed = 1;
-                if (result != 0 && this->sound_buffer != 0) {
-                    this->sound_buffer->vtable->Release(this->sound_buffer);
+                    this->failed = 1;
+                    buffer->vtable->Release(buffer);
+                } else {
+                    this->failed = 1;
                 }
                 this->sound_buffer = 0;
                 free(this->wave_info);
