@@ -13,6 +13,7 @@
 // tried a positive Num_Cursors <= Max_Cursors guard with LoadOk failure assignment; size grew 41 bytes and a call crossed the boundary, rolled back.
 // tried typed Shape_Info field iteration; direct Width/Height fields changed the first paired hunk and worsened the diff to 304, rolled back.
 // kept a typed Shape_Info height pointer and field-first Width/Height predicates; the validation memory schedule now matches, but the failure tail remains misplaced.
+// tried routing the same typed validation failures and early exits through a source-level load_failed tail; VC5 emitted the identical early return block (294-byte diff), rolled back.
 // left in scratch: behavior/calls/size are close, but post-scan failure-tail placement and validation-loop layout still differ broadly; not accepted_drift-safe.
 
 extern "C" int sprintf(char*, const char*, ...);

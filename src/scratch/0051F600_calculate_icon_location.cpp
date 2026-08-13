@@ -25,6 +25,9 @@
 // current claim probe: reversed the three text-fit predicates so the overflow
 // arm stays inline and the fit arm branches to the later block; this reduced
 // the strict diff by one byte and improved block topology, so it is retained.
+// current claim probe: nested the post-shape-bounds ok guard as suggested by
+// the decompiler's proven nested source structure; it worsened size by 8 bytes
+// and lost the exact block at +00a4, so it was restored.
 // Paused blocker: the typed ABI/layout, frame, saved-register set, and three
 // direct calls are exact, but VC5 still chooses the wrong centered-bound
 // register/reload topology and omits the oracle's case-0 stack stores and

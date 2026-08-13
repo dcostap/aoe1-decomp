@@ -28,6 +28,10 @@
 // - Removed the top-level game_info local and assigned player_game_info directly
 //   in each new-expression arm.  This reduced the size gap to +2 bytes but left
 //   the +4 frame and moved one later operator-new call target; restored clean.
+// - Reversed the memory guard to the binary's positive success predicate.  This
+//   improved CFG/block coverage and size (+6 bytes) but worsened positional diff;
+//   restored the validated clean source.  The original low-memory jump tail is
+//   evidence for a separate early-failure layout lead.
 
 #include <windows.h>
 #include <stdio.h>

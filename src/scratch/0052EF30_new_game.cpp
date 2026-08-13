@@ -27,6 +27,8 @@
 //   1 to type 1, 7 to type 2, and 8 to type 3; cases 2-6 set amount fields.
 //   This moved the switch hunk one byte closer but VC5 still tail-merged the
 //   five source conquest calls into two emitted calls.
+// - Tested the period VictoryType enum return surface from the Ghidra source;
+//   VC5 emitted identical bytes and the enum surface was rolled back.
 
 #include <stdio.h>
 #include <string.h>

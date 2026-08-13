@@ -21,6 +21,13 @@
 // - Reversed the palette-flags branch: the original takes the zero-index path
 //   when flags are nonzero and reads the bottom-row byte otherwise; diff improved
 //   from 911 to 910 bytes and the branch opcode now matches.
+// - R3 tested the packet's dword HitEnd local. Moving its initialization into
+//   the transparent-search block restored the 0x128 frame and improved shape,
+//   but positional diff worsened; the clean BYTE/prologue form is retained.
+// - R3 tested the exact Dib.cpp header context. It split the common memmove
+//   into two calls and was rolled back; the custom IAT surface remains required.
+// - R3 tested the one-state do/while transparent search suggested by the
+//   HitEnd/zeroIndex branches. It shortened the function and worsened shape.
 // left in scratch: the current reconstruction is 910 differing bytes (56.97% shape,
 // 21/21 ordered calls, frame 0x124 vs 0x128, code size 963 vs 1017); remaining drift
 // is structural (local-home/lifetime and resize/dispatch block layout), not an
