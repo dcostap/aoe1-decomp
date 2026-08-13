@@ -11,11 +11,16 @@
 //   this restored all 52 ordered calls, the 0x24 frame, and a +11-byte size gap.
 // - Restored the five missing ManagedArray records before sn; this aligned
 //   sn[0x14] at +0x1E4 and playersToAttack at +0xD28/+0xD34.
-// - Hoisted the binary-proven point locals and inlined command results into
-//   move calls; this reached the 1450-byte, 0x24-frame, 52-call best basin.
+// - Hoisted the binary-proven point local and inlined command results into
+//   canPath calls; this reached the 1450-byte, 0x24-frame, 52-call basin.
 // - Reversed entryCount/count declarations to match the original loop stores.
-// - Final gap is the first virtual move-call stack schedule. The source keeps
-//   the natural typed move(point, command(...)) form; no opaque workaround is retained.
+// - A natural conjunction (`count < soldiers.numberValue && entryCount < 6`)
+//   restores the binary split loop guard and reduces the gap to 14 bytes.
+// - Shared point declaration, aggregate initialization, object-local reuse,
+//   and named command-result probes were duplicate or worse; they were rolled back.
+// - Remaining drift is four one-byte stack displacements at each command/canPath
+//   schedule. The target loads each value 14 bytes above the current home.
+//   No opaque workaround is retained.
 
 typedef unsigned long ulong;
 
@@ -114,7 +119,7 @@ public:
     virtual float command(int, int, int, int, int);
     VPAD32(66)
     VPAD2(98)
-    virtual int move(XYZPoint, float);
+    virtual int canPath(XYZPoint, float);
 
     int id;
     RGE_Master_Static_Object* master_obj;
@@ -189,6 +194,9 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
     ulong entryTime = debug_timeGetTime((char*)0x5880C0, 0x3420);
     RGE_Static_Object* targetObject;
     XYPoint objectPosition;
+    int entryCount;
+    int count;
+    XYZPoint point;
     targetObject = this->md->object(objectID);
 
     if (targetObject != 0) {
@@ -206,11 +214,10 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
             RGE_Static_Object* commanderObject =
                 this->md->player->world->object(commanderID);
             if (commanderObject != 0) {
-                XYZPoint point;
                 point.x = (int)targetObject->world_x;
                 point.y = (int)targetObject->world_y;
                 point.z = (int)targetObject->world_z;
-                if (commanderObject->move(
+                if (commanderObject->canPath(
                         point, commanderObject->command(objectID, 0, 1, -1, -1)) ==
                     1) {
                     group->setTarget(objectID);
@@ -226,12 +233,10 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
             }
         }
 
-        int entryCount = 0;
-        int count = 0;
+        entryCount = 0;
+        count = 0;
         if (this->soldiers.numberValue > 0) {
-            do {
-                if (entryCount > 5)
-                    break;
+            while (count < this->soldiers.numberValue && entryCount < 6) {
                 if (count > 1 &&
                     debug_timeGetTime((char*)0x5880C0, 0x3447) -
                             entryTime > 10)
@@ -262,11 +267,10 @@ trySoldier:
                     {
                         if (object->distance_to_object(targetObject) <
                             25.0f) {
-                        XYZPoint point;
                         point.x = (int)targetObject->world_x;
                         point.y = (int)targetObject->world_y;
                         point.z = (int)targetObject->world_z;
-                        if (object->move(
+                        if (object->canPath(
                                 point,
                                 object->command(targetObject->id, 0, 1, -1, -1)) !=
                             0) {
@@ -284,7 +288,7 @@ trySoldier:
 
 countSoldier:
                 count++;
-            } while (count < this->soldiers.numberValue);
+            }
         }
 
         int unitID = this->civilian(
@@ -294,11 +298,10 @@ countSoldier:
             if (object == 0)
                 return;
 
-            XYZPoint point;
             point.x = (int)targetObject->world_x;
             point.y = (int)targetObject->world_y;
             point.z = (int)targetObject->world_z;
-            if (object->move(
+            if (object->canPath(
                     point, object->command(objectID, 0, 1, -1, -1)) == 0)
                 return;
 

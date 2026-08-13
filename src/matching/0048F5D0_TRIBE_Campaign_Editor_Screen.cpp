@@ -14,8 +14,12 @@
 //   vptr setup and keeps the exact call set, frame, and code size.
 // - modeled a tab-list sentinel from the decompiler; frame grew to 0x28 and
 //   diff worsened to 911 bytes, so restored the clean eight-entry list.
-// - focused range still diverges at +002C on alias LEA scheduling; no clean
-//   source-backed lead remains after the natural alias-order probe.
+// - replaced decompiler-derived output-pointer aliases with direct member
+//   addresses; diff improved to 695 bytes while preserving frame and calls.
+// - inlined get_string in create_edit argument evaluation; diff improved to
+//   663 bytes and matched the original push/call order.
+// - corrected create_edit's parent to filename_drop from this; exact 1104-byte
+//   match. Direct members and inline evaluation remain period-plausible source.
 // FLAGS: config/flags/0048F5D0_TRIBE_Campaign_Editor_Screen.rsp (/GX)
 
 struct tagRECT;
@@ -211,20 +215,12 @@ public:
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     : TScreenPanel((char*)"Campaign Editor Screen")
 {
-    TListPanel** scenarios;
-    TListPanel** campaign_scenarios;
-    TDropDownPanel** filename_drop;
-
-    scenarios = &this->scenarios;
-    campaign_scenarios = &this->campaign_scenarios;
-    filename_drop = &this->filename_drop;
-
     this->title = 0;
     this->scenarios_title = 0;
-    *scenarios = 0;
+    this->scenarios = 0;
     this->scenarios_bar = 0;
     this->campaign_scenarios_title = 0;
-    *campaign_scenarios = 0;
+    this->campaign_scenarios = 0;
     this->campaign_scenarios_bar = 0;
     this->filename_title = 0;
     this->filename = 0;
@@ -232,7 +228,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->save_button = 0;
     this->ok_button = 0;
     this->campaign = 0;
-    *filename_drop = 0;
+    this->filename_drop = 0;
     this->add_button = 0;
     this->remove_button = 0;
     this->move_scenario_up_button = 0;
@@ -250,12 +246,12 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
                       10, 10, 0x26C, 0x32, 1, 3, 0, 0);
     this->create_text(this, &this->filename_title, 0x2BC2,
                       0x14, 0x28, 0x104, 0x14, 4, 0, 0, 0);
-    this->create_drop_down(this, filename_drop,
+    this->create_drop_down(this, &this->filename_drop,
                            0x17C, 0xC8, 0x14, 0x3C, 0x17C,
                            (this->ideal_width * 30) / this->height, 0xB);
 
-    char* default_campaign = this->get_string(0x2BCA);
-    this->create_edit(this, &this->filename, default_campaign,
+    this->create_edit(this->filename_drop, &this->filename,
+                      this->get_string(0x2BCA),
                       100, 5, 0, 0, 0x168, 0x1E, 0xB, 1, 1);
 
     this->create_button(this, &this->save_button, 0x2BC4,
@@ -266,14 +262,16 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
                         0, 0x1CC, 0x104, 0xA0, 0x1E, 0, 0, 0);
     this->create_text(this, &this->scenarios_title, 0x2BC7,
                       0x14, 0x64, 0xC8, 0x14, 4, 0, 0, 0);
-    this->create_list(this, scenarios, 0x14, 0x78, 0x258, 0x82, 0xB);
-    this->create_auto_scrollbar(&this->scenarios_bar, *scenarios, 0x14);
+    this->create_list(this, &this->scenarios,
+                      0x14, 0x78, 0x258, 0x82, 0xB);
+    this->create_auto_scrollbar(&this->scenarios_bar,
+                                this->scenarios, 0x14);
     this->create_text(this, &this->campaign_scenarios_title, 0x2BC8,
                       0x14, 0x118, 0xC8, 0x14, 4, 0, 0, 0);
-    this->create_list(this, campaign_scenarios,
+    this->create_list(this, &this->campaign_scenarios,
                       0x14, 0x12C, 0x1F4, 0x82, 0xB);
     this->create_auto_scrollbar(&this->campaign_scenarios_bar,
-                                *campaign_scenarios, 0x14);
+                                this->campaign_scenarios, 0x14);
 
     this->create_button(this, &this->ok_button, 0xFA1,
                         0, 0x14, 0x1BD, 0x118, 0x1E, 0, 0, 0);
@@ -289,21 +287,21 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
                         0, 0x212, 0x154, 0x5A, 0x1E, 0, 0, 0);
 
     TPanel* tab_list[8];
-    tab_list[0] = *filename_drop;
+    tab_list[0] = this->filename_drop;
     tab_list[1] = this->save_button;
-    tab_list[2] = *scenarios;
+    tab_list[2] = this->scenarios;
     tab_list[3] = this->add_button;
     tab_list[4] = this->remove_button;
-    tab_list[5] = *campaign_scenarios;
+    tab_list[5] = this->campaign_scenarios;
     tab_list[6] = this->ok_button;
     tab_list[7] = this->cancel_button;
     this->set_tab_order(tab_list, 8);
 
-    (*filename_drop)->set_curr_child(this->filename);
-    this->set_curr_child(*filename_drop);
+    this->filename_drop->set_curr_child(this->filename);
+    this->set_curr_child(this->filename_drop);
     this->fill_scenario_list();
     this->fill_campaign_drop();
-    (*campaign_scenarios)->empty_list();
+    this->campaign_scenarios->empty_list();
     this->load_campaign();
     this->need_to_save = 0;
 }
