@@ -20,6 +20,11 @@
 // layout: tested the live wid local in the word-wrap comparison; original 00479825 reads a stack width home, but VC5 kept wid in EBX and diff worsened 633 -> 639, so restored clean source.
 // control-flow: reversed the dimension assignment order against the original x/y/wid/hgt load order; emitted bytes were unchanged, so restored clean source.
 // liveness: initialized configured colors before the palette override to test the original EBX background carrier; CFG changed and diff worsened 633 -> 732, so restored clean source.
+// layout: retested the binary-proven inner width in word-wrap; it repeated the 639-byte basin and was restored.
+// abi: COLORREF/HGDIOBJ/HDC and unsigned text length matched the clean 633-byte output; kept the clean source instead.
+// liveness: moving the background color declaration after palette/size/rect locals and reordering coordinates were codegen duplicates.
+// variant: 16- and 64-case natural source labs found no size+frame+call-set eligible variant; no lab winner replaced typed source.
+// control-flow: combined pre-incremented origins with SetTextColor-before-bound-updates reached frame 0x48 and 85.64% shape, but size grew 23 bytes and the vtable/message carriers swapped; restored clean source.
 // left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
 #include <string.h>
 #include <windows.h>
