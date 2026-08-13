@@ -3,8 +3,13 @@
 // layout: restored TPanel ownership for width, height, and draw origin; frame 0x48, diff 1526.
 // control-flow: used panel dimensions and original justification enum values; frame 0x40, diff 1506.
 // liveness: retained ImageRect and text pointers and corrected RGB local order; best diff 1361.
+// current claim: tested pointer declaration/order and direct member forms; no gain.
+// current claim: replaced the hand-written text scan with CRT strlen; target uses repne scasb.
+// strlen source is more period-plausible, but its current layout basin is diff 1452.
 // remaining drift: early pointer register allocation, block placement, and several local homes.
-// left in scratch: source is typed and period-plausible; no exact lead remains in this claim.
+// left in scratch: typed source with the binary-supported strlen path; structural work remains.
+#include <string.h>
+
 struct tagRECT { long left; long top; long right; long bottom; };
 struct tagSIZE { long cx; long cy; };
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
@@ -114,11 +119,10 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    char* text = this->text;
     tagRECT* image_rect = &this->ImageRect;
     this->ImageBuffer->PtrClear(image_rect, 1);
 
-    if (text[0] == 0) {
+    if (this->text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         SetRect(&this->UsedScreenRect, this->draw_left, this->draw_top, this->draw_left + 1, this->draw_top + 1);
         this->ImageTextActive = 1;
@@ -161,8 +165,7 @@ int TMessagePanel::render_to_image_buffer() {
     long hgt = this->pnl_hgt - 2;
 
     tagSIZE ts;
-    int len = 0;
-    while (text[len] != 0) ++len;
+    int len = strlen(this->text);
     int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, text, len, &ts);
 
     tagRECT rect;
@@ -231,16 +234,16 @@ int TMessagePanel::render_to_image_buffer() {
 
         SetTextColor(this->ImageBuffer->hdc, back_rgb);
         SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetRect(&rect, x, y + 2, x + wid - 1, y + hgt + 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetRect(&rect, x + 2, y, x + wid + 1, y + hgt - 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetRect(&rect, x + 2, y + 2, x + wid + 1, y + hgt + 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetTextColor(this->ImageBuffer->hdc, font_rgb);
         SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
 
         if (this->Icon1 != 0) {
             Shape_Info* info = this->Icon1->shape_info;

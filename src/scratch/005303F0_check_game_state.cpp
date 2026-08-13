@@ -5,7 +5,14 @@
 // 2: corrected world/player offsets, float constants, and direct victory/message call surfaces; call set aligned but body remained structurally broad.
 // 3: tried source loop/local-shape reductions and external float constants; no exact basin, frame/size still drift.
 // 4: replaced the raw volatile game-state guard with the named game_state field; emitted code was unchanged, so the natural form remains.
-// Budget end: left in scratch. Best raw check remains MISMATCH, 1694 rebuilt bytes vs 1653 original, frame 0x1A8 vs 0x1A4, 14 vs 16 calls (missing two virtual vslot+0x40 message calls), first mismatch at +0002. Remaining divergence is broad team-array loop/block scheduling, not a localized safe drift.
+// 5: threshold-left and negated-less countdown guards changed FPU order but did not match; kept the period guard form.
+// 6: removing the positive array-init guard changed the call prefix and worsened the body; restored it.
+// 7-8: local base-game aliases prevented message-call tail merging and aligned all virtual calls, but added code.
+// 9: removed the grouping p local and used direct player expressions; frame reached 0x1A4 and team arrays reached original homes.
+// 10: removed the outer team-building guard; one loop entry test now matches the original and size dropped to +22 bytes.
+// 11: cached player_count across team setup; size reached +11 bytes, but register/block shape worsened.
+// 12: kept a local base-game alias for the ruin-start message; all 16 calls now align, with 1668 rebuilt bytes vs 1653 original.
+// Budget end: left in scratch. Current mismatch is 1549 bytes, frame 0x1A4 vs 0x1A4, 16 vs 16 calls, and first mismatch at +0014 (saved this home). Remaining divergence is team-array and victory-block scheduling, not a call-set or layout blocker.
 
 class RGE_Victory_Conditions {
 public:
@@ -110,7 +117,7 @@ unsigned char TRIBE_World::check_game_state()
 
     if (this->game_state == 0) {
         if (this->victory_type == 2 && this->countdown_victory != 0 &&
-            this->countdown_clock >= DAT_00577578) {
+            !(this->countdown_clock < DAT_00577578)) {
             this->countdown_clock = this->countdown_clock - (this->delta_time + this->delta_time);
             if (this->countdown_clock < DAT_00577578) {
                 for (i = 0; i < 9; ++i)
@@ -147,43 +154,39 @@ unsigned char TRIBE_World::check_game_state()
         }
 
         if (this->artifact_count > 0 || this->ruin_count > 0) {
-            if (this->player_num > 0) {
-                for (i = 0; i < this->player_num; ++i)
+            int player_count = this->player_num;
+            if (player_count > 0) {
+                for (i = 0; i < player_count; ++i)
                     team_size[i] = 0;
-                for (i = 0; i < this->player_num; ++i)
+                for (i = 0; i < player_count; ++i)
                     player_team[i] = -1;
             }
             local_198 = 0;
             held_time = 1;
-            if (this->player_num > 1) {
-                team_count = 0;
-                for (i = 1; i < this->player_num; ++i) {
-                    if (player_team[i] == -1) {
-                        player_team[i] = local_198;
-                        int count = team_size[local_198];
-                        TRIBE_Player* p = this->players[i];
-                        team_player[local_198][count] = p;
-                        ++count;
-                        team_size[local_198] = count;
-                        if (p->allied_victory != 0) {
-                            local_1a0 = 1;
-                            if (this->player_num > 1) {
-                                for (; local_1a0 < this->player_num; ++local_1a0) {
-                                    if (player_team[local_1a0] == -1 &&
-                                        this->players[local_1a0]->allied_victory != 0 &&
-                                        p->relation(local_1a0) == 0 &&
-                                        this->players[local_1a0]->relation(i) == 0) {
-                                        ++count;
-                                        player_team[local_1a0] = local_198;
-                                        team_player[local_198][count - 1] = this->players[local_1a0];
-                                        team_size[local_198] = count;
-                                    }
-                                }
+            team_count = 0;
+            for (i = 1; i < player_count; ++i) {
+                if (player_team[i] == -1) {
+                    player_team[i] = local_198;
+                    int count = team_size[local_198];
+                    team_player[local_198][count] = this->players[i];
+                    ++count;
+                    team_size[local_198] = count;
+                    if (this->players[i]->allied_victory != 0) {
+                        local_1a0 = 1;
+                        for (; local_1a0 < player_count; ++local_1a0) {
+                            if (player_team[local_1a0] == -1 &&
+                                this->players[local_1a0]->allied_victory != 0 &&
+                                this->players[i]->relation(local_1a0) == 0 &&
+                                this->players[local_1a0]->relation(i) == 0) {
+                                ++count;
+                                player_team[local_1a0] = local_198;
+                                team_player[local_198][count - 1] = this->players[local_1a0];
+                                team_size[local_198] = count;
                             }
                         }
-                        ++local_198;
-                        team_count += 9;
                     }
+                    ++local_198;
+                    team_count += 9;
                 }
             }
 
@@ -202,7 +205,8 @@ unsigned char TRIBE_World::check_game_state()
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = 2000.0f;
-                                rge_base_game->send_message(0x72, p->player_id, 0, 0, 0);
+                                rge_base_game->send_message(0x72,
+                                    team_player[i][0]->player_id, 0, 0, 0);
                             }
                         }
                         else if (held >= DAT_00577578 && this->victory_type == 0) {
@@ -223,7 +227,8 @@ unsigned char TRIBE_World::check_game_state()
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = -1.0f;
-                                rge_base_game->send_message(0x73, p->player_id, 0, 0, 0);
+                                rge_base_game->send_message(0x73,
+                                    team_player[i][0]->player_id, 0, 0, 0);
                             }
                         }
                     }
@@ -245,7 +250,8 @@ unsigned char TRIBE_World::check_game_state()
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->ruin_held_time = 2000.0f;
-                                rge_base_game->send_message(0x74, p->player_id, 0, 0, 0);
+                                RGE_Base_Game* game = rge_base_game;
+                                game->send_message(0x74, p->player_id, 0, 0, 0);
                             }
                         }
                         else if (held >= DAT_00577578 && this->victory_type == 0) {
