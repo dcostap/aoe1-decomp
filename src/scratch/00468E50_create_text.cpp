@@ -24,18 +24,20 @@
 // continuation probe: making create_text virtual shifted proven field accesses and worsened to 62 diff, rolled back.
 // continuation probe: hoisting font selection before the allocation/error guard widened drift to 143 diff, rolled back.
 // continuation probe: exact sibling nested factory guard shape was a codegen duplicate.
+// continuation r5 probe: replaced the slot-zero dummy with the ABI-proven TTextPanel virtual destructor; duplicate.
+// continuation r5 probe: modeled TTextPanel:TPanel inheritance and the proven base layout through +F4; duplicate.
+// continuation r5 probe: used a natural panel owner local before publishing the output; duplicate.
+// continuation r5 probe: corrected set_text's proven short id ABI; duplicate.
+// continuation r5 probe: used explicit new TTextPanel() syntax; duplicate.
+// r5 conclusion: same-TU factory donors and PDB bands support the remaining source order, but all natural lifetime/ABI variants preserve the +19-byte /GX cleanup-tail clone. No non-synthetic control-flow lead remains.
 // Remaining evidence: 9 ordered calls, first 156 bytes, and all body blocks stay exact; only /GX success/failure cleanup-tail placement differs. Same-TU create_input, create_edit, create_scrollbar, and slider factories show the same duplicated-tail basin after typed control-flow/result probes.
 // Left in scratch: best source has all functional code and first 156 bytes exact, but tail/failed-path placement is not exact; not accepted_drift because rebuilt failure target lies outside original configured function body.
 
-class TPanel {};
-class TDrawArea {};
-class RGE_Font { public: void* font; long font_wid; long font_hgt; };
-class RGE_Base_Game { public: RGE_Font* get_font(int id); };
-extern RGE_Base_Game* rge_base_game;
-
-class TTextPanel {
+class TDrawArea;
+class TPanel {
 public:
-    virtual void vf00(); virtual void vf01(); virtual void vf02(); virtual void vf03();
+    virtual ~TPanel();
+    virtual void vf01(); virtual void vf02(); virtual void vf03();
     virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
     virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11();
     virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
@@ -49,10 +51,25 @@ public:
     virtual void vf44(); virtual void vf45(); virtual void vf46(); virtual void vf47();
     virtual void vf48(); virtual void vf49(); virtual void vf50(); virtual void vf51();
     virtual void vf52(); virtual void vf53(); virtual void vf54(); virtual void vf55();
-    virtual void set_text(char** text, long id); // vt +0xE0
-    char gap_004[0xD4];
-    long field_D8;
-    char gap_0DC[0xAC];
+    char gap_004[0x10];
+    long base_width;
+    long base_height;
+    char gap_01C[4];
+    TDrawArea* draw_area;
+    char gap_024[0xB4];
+    long error_flag;
+    char gap_0DC[0x18];
+};
+class TDrawArea {};
+class RGE_Font { public: void* font; long font_wid; long font_hgt; };
+class RGE_Base_Game { public: RGE_Font* get_font(int id); };
+extern RGE_Base_Game* rge_base_game;
+
+class TTextPanel : public TPanel {
+public:
+    virtual ~TTextPanel();
+    virtual void set_text(char** text, short id); // vt +0xE0
+    char gap_F4[0x188 - 0xF4];
     TTextPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, long, char, long, char, long, char*);
     void scroll(int a, int b, int c);
@@ -61,16 +78,8 @@ public:
     void set_highlight_text_color(unsigned long c1, unsigned long c2);
 };
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    char gap_000[0x14];
-    long base_width;       // +14
-    long base_height;      // +18
-    char gap_01C[4];
-    TDrawArea* draw_area;  // +20
-    char gap_024[0xB4];
-    long error_flag;       // +D8
-    char gap_0DC[0x18];
     long ideal_width;      // +F4
     long ideal_height;     // +F8
     char gap_0FC[0x22C];
@@ -93,8 +102,9 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
     long ideal_w = (w * this->base_width) / this->ideal_width;
     long ideal_h = (h * this->base_height) / this->ideal_height;
 
-    *out = new TTextPanel;
-    if (*out != 0 && (*out)->field_D8 == 0) {
+    TTextPanel* panel = new TTextPanel();
+    *out = panel;
+    if (panel != 0 && panel->error_flag == 0) {
         RGE_Font* font;
         if (font_id >= 0) {
             font = rge_base_game->get_font(font_id);
