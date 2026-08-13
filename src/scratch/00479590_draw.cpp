@@ -10,6 +10,8 @@
 // source-shape: use inline strlen for both text extents; CFG parity improves and diff reaches 811.
 // layout: retain inner width/height locals, then add the origin before rectangle draws; diff reaches 775.
 // context: imported GDI declarations and the period Windows header restore the repeated palette-call shape; diff reaches 633.
+// behavior: corrected the four early guard exits to clear TPanel::need_redraw (+0x38), matching the original write; diff stayed 633 and shape improved 72.49% -> 72.75%.
+// control-flow: tested SetTextColor before the rectangle bound updates, matching original line/call order; rolled back because strict diff worsened 633 -> 635.
 // left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
 #include <string.h>
 #include <windows.h>
@@ -100,7 +102,7 @@ public:
 
 void TMessagePanel::draw() {
     if (this->render_area == 0 || this->field_70 == 0 || this->field_6C == 0 || this->showing_message == 0) {
-        this->need_restore = 0;
+        this->need_redraw = 0;
         return;
     }
 

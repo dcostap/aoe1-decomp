@@ -27,6 +27,19 @@
 // paths; it lost a call and was rolled back.
 // Current reconstruction keeps the corrected labels and the two proven shared
 // tails. Remaining gap is VC5 block placement and the real local frame.
+// Luna probe 1: moved max_hold and take_amount to function scope; VC5 reused
+// the same code and frame, so the source stayed natural but gave no lead.
+// Luna probe 2: tested nested object-state guards and equivalent >6 forms;
+// nested guards were codegen-neutral, while mixed compare forms worsened CFG.
+// Luna probe 3: named capacity once for both the max_hold calculation and the
+// later amount-capacity test. Frame became the original 8 bytes and shape
+// improved; keep this source reconstruction.
+// Luna probe 4: retried the original shared state-3 tail in the new frame;
+// it removed one required set_state call and was rolled back.
+// Luna probe 5: carried current_target through states 6/7; it added EBP, one
+// call, and 120 bytes, so it was rolled back.
+// Luna probe 6: named facet and the owner max-resource array pointer; both
+// retained the wrong register basin and were rolled back.
 
 #define V_DUMMY(N) virtual void v##N()
 
@@ -220,17 +233,24 @@ public:
 
 unsigned char TRIBE_Action_Trade::update()
 {
+    float max_hold;
+    float take_amount;
+
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
     }
     if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
-    if (this->target_obj != 0 && this->target_obj->object_state >= 7) {
-        this->set_target_obj(0);
+    if (this->target_obj != 0) {
+        if (this->target_obj->object_state >= 7) {
+            this->set_target_obj(0);
+        }
     }
-    if (this->target_obj2 != 0 && this->target_obj2->object_state >= 7) {
-        this->set_target_obj2(0);
+    if (this->target_obj2 != 0) {
+        if (this->target_obj2->object_state >= 7) {
+            this->set_target_obj2(0);
+        }
     }
 
     if (this->target_obj != 0 &&
@@ -334,8 +354,8 @@ unsigned char TRIBE_Action_Trade::update()
             this->obj->facet = 1;
         }
         {
-            float max_hold;
-            max_hold = (float)this->obj->master_obj->capacity - this->obj->amount;
+            float capacity = (float)this->obj->master_obj->capacity;
+            max_hold = capacity - this->obj->amount;
             if (this->obj->owner->resource_store->max_resource[this->obj->facet] < max_hold) {
                 max_hold = this->obj->owner->resource_store->max_resource[this->obj->facet];
             }
@@ -345,7 +365,7 @@ unsigned char TRIBE_Action_Trade::update()
             this->obj->owner->trade_action(this->obj->facet, -max_hold, 1);
             this->obj->resource_store->amount -= max_hold;
             this->obj->amount += max_hold;
-            if (this->obj->amount >= (float)this->obj->master_obj->capacity) {
+            if (this->obj->amount >= capacity) {
                 goto update_state_8;
             }
             if (this->obj->resource_store->amount <= DAT_00575348 &&
@@ -377,7 +397,6 @@ unsigned char TRIBE_Action_Trade::update()
                 if (trade_task->sound != 0) {
                     trade_task->sound->play(1);
                 }
-                float take_amount;
                 if (this->pick_up_x < trade_update_zero || this->pick_up_y < trade_update_zero) {
                     take_amount = DAT_00575360;
                 } else {
