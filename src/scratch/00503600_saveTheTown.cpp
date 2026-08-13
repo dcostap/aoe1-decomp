@@ -9,8 +9,13 @@
 //   sites because the executable contains all three growth blocks.
 // - Shared the binary LAB_00503954 soldier attack path with a count-only label;
 //   this restored all 52 ordered calls, the 0x24 frame, and a +11-byte size gap.
-// - Final gap is local coordinate-conversion scheduling at the first mismatch;
-//   no further source-shape lead is retained in this bounded pass.
+// - Restored the five missing ManagedArray records before sn; this aligned
+//   sn[0x14] at +0x1E4 and playersToAttack at +0xD28/+0xD34.
+// - Hoisted the binary-proven point locals and inlined command results into
+//   move calls; this reached the 1450-byte, 0x24-frame, 52-call best basin.
+// - Reversed entryCount/count declarations to match the original loop stores.
+// - Final gap is the first virtual move-call stack schedule. The source keeps
+//   the natural typed move(point, command(...)) form; no opaque workaround is retained.
 
 typedef unsigned long ulong;
 
@@ -162,7 +167,11 @@ public:
     ManagedArrayInt soldiers;
     ManagedArrayInt ungroupedSoldiers;
     ManagedArrayInt boats;
-    char gap_138[0x194 - 0x138];
+    ManagedArrayInt warBoats;
+    ManagedArrayInt fishingBoats;
+    ManagedArrayInt tradeBoats;
+    ManagedArrayInt transportBoats;
+    ManagedArrayInt artifacts;
     int sn[0xE2];
     char gap_51C[0xD28 - 0x51C];
     ManagedArrayInt playersToAttack;
@@ -178,10 +187,11 @@ public:
 void TribeTacticalAIModule::saveTheTown(int objectID)
 {
     ulong entryTime = debug_timeGetTime((char*)0x5880C0, 0x3420);
-    RGE_Static_Object* targetObject = this->md->object(objectID);
+    RGE_Static_Object* targetObject;
+    XYPoint objectPosition;
+    targetObject = this->md->object(objectID);
 
     if (targetObject != 0) {
-        XYPoint objectPosition;
         objectPosition.x = (int)targetObject->world_x;
         objectPosition.y = (int)targetObject->world_y;
 
@@ -200,9 +210,9 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
                 point.x = (int)targetObject->world_x;
                 point.y = (int)targetObject->world_y;
                 point.z = (int)targetObject->world_z;
-                float commandResult = commanderObject->command(
-                    objectID, 0, 1, -1, -1);
-                if (commanderObject->move(point, commandResult) == 1) {
+                if (commanderObject->move(
+                        point, commanderObject->command(objectID, 0, 1, -1, -1)) ==
+                    1) {
                     group->setTarget(objectID);
                     group->setTargetType(
                         (int)targetObject->master_obj->id);
@@ -216,8 +226,8 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
             }
         }
 
-        int count = 0;
         int entryCount = 0;
+        int count = 0;
         if (this->soldiers.numberValue > 0) {
             do {
                 if (entryCount > 5)
@@ -256,9 +266,10 @@ trySoldier:
                         point.x = (int)targetObject->world_x;
                         point.y = (int)targetObject->world_y;
                         point.z = (int)targetObject->world_z;
-                        float commandResult = object->command(
-                            targetObject->id, 0, 1, -1, -1);
-                        if (object->move(point, commandResult) != 0) {
+                        if (object->move(
+                                point,
+                                object->command(targetObject->id, 0, 1, -1, -1)) !=
+                            0) {
                             if (this->taskAttacker(
                                     this->soldiers[count],
                                     targetObject->world_x,
@@ -287,9 +298,8 @@ countSoldier:
             point.x = (int)targetObject->world_x;
             point.y = (int)targetObject->world_y;
             point.z = (int)targetObject->world_z;
-            float commandResult = object->command(
-                objectID, 0, 1, -1, -1);
-            if (object->move(point, commandResult) == 0)
+            if (object->move(
+                    point, object->command(objectID, 0, 1, -1, -1)) == 0)
                 return;
 
             this->taskAttacker(unitID, targetObject->world_x,
