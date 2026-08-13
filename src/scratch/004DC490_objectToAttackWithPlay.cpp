@@ -31,6 +31,12 @@
 // luna-4DC490-r2 probe: changing the phase-invalid flag from int to bool
 // removed some stack traffic and moved 3 positional bytes closer, but worsened
 // CFG shape and exact-block coverage; restored the int source reconstruction.
+// luna-4DC490-r3 probes: byte-sized invalid state plus binary-supported top-entry
+// stops for both nested scans recovered exact size, 45.45% block coverage, and
+// diff 639; kept as the best clean reconstruction. Per-iteration play scope,
+// top-level score locals, and score-term order were emitted-code duplicates.
+// A named death-value temporary added 19 bytes and was rolled back. Remaining
+// drift is the early shared epilogues and callee-save rotation (this/play/flag).
 
 extern int debug_rand(char* file, int line);
 
@@ -199,10 +205,13 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
 {
     int targetNumber;
     ObjectMemory* target;
-    AIPlay* play;
     int worldNumber;
     RGE_Game_World* world;
     AIPlayBook* playbook;
+    int variation;
+    int randomValue;
+    int strategicValue;
+    int score;
 
     if (count == 0) {
         return (ObjectMemory*)count;
@@ -219,7 +228,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     *playNumber = -1;
 
     for (; targetNumber < playbook->numberPlaysValue; ++targetNumber) {
-            play = playbook->play(targetNumber);
+            AIPlay* play = playbook->play(targetNumber);
             if (play == 0) {
                 continue;
             }
@@ -234,11 +243,17 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                 continue;
             }
 
-            int invalid = 0;
+            bool invalid = false;
             worldNumber = 0;
             do {
+                if (invalid != 0) {
+                    break;
+                }
                 int phase = 0;
                 do {
+                    if (invalid != 0) {
+                        break;
+                    }
                     AIPlayPhaseCommand* command =
                         play->phase(worldNumber)->command(phase);
                     if (command->typeValue == 1) {
@@ -254,43 +269,41 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                         }
                     }
                     ++phase;
-                } while (phase < 5 && invalid == 0);
+                } while (phase < 5);
                 ++worldNumber;
-            } while (worldNumber < 10 && invalid == 0);
+            } while (worldNumber < 10);
 
-            if (invalid != 0) {
-                continue;
-            }
-
-            int variation = this->calculatePlayVariation(targetNumber);
-            int randomValue =
-                debug_rand((char*)0x5878dc, 0xd49) % 0x32;
-            int strategicValue = 0;
-
-            switch (play->typeValue) {
-            case 1:
-                strategicValue =
-                    this->md->tacticalAI.strategicNumber(0xbd);
-                break;
-            case 2:
-                strategicValue =
-                    this->md->tacticalAI.strategicNumber(0xc6);
-                break;
-            case 3:
-                strategicValue =
-                    this->md->tacticalAI.strategicNumber(0xc7);
-                break;
-            }
-
-            int score = strategicValue +
-                (100 - (int)play->deathPercentageValue + variation) * 2 +
-                randomValue;
-            if (*playNumber == -1 || score > 0) {
-                *playNumber = targetNumber;
-                playStatus.copyUnits(outputUnits, *outputCount);
+            if (invalid == 0) {
+                variation = this->calculatePlayVariation(targetNumber);
                 randomValue =
-                    debug_rand((char*)0x5878dc, 0xd6a);
-                *outputUnit = outputUnits[randomValue % *outputCount];
+                    debug_rand((char*)0x5878dc, 0xd49) % 0x32;
+                strategicValue = 0;
+
+                switch (play->typeValue) {
+                case 1:
+                    strategicValue =
+                        this->md->tacticalAI.strategicNumber(0xbd);
+                    break;
+                case 2:
+                    strategicValue =
+                        this->md->tacticalAI.strategicNumber(0xc6);
+                    break;
+                case 3:
+                    strategicValue =
+                        this->md->tacticalAI.strategicNumber(0xc7);
+                    break;
+                }
+
+                score =
+                    (100 - (int)play->deathPercentageValue + variation) * 2 +
+                    strategicValue + randomValue;
+                if (*playNumber == -1 || score > 0) {
+                    *playNumber = targetNumber;
+                    playStatus.copyUnits(outputUnits, *outputCount);
+                    randomValue =
+                        debug_rand((char*)0x5878dc, 0xd6a);
+                    *outputUnit = outputUnits[randomValue % *outputCount];
+                }
             }
     }
 
