@@ -32,6 +32,11 @@
 // is diagnostic only.
 // continuation probe: an explicit jump from the final interior mask test to
 // the shared return tail emitted the same 398-byte code; restored clean source.
+// continuation probe (orch-538590-a): an explicit jump after the arms was a
+// codegen duplicate and kept the 398-byte duplicated epilogue.
+// continuation probe (orch-538590-a): a separate complementary edge guard
+// reached the exact 382-byte size, but expanded CFG drift to 362 bytes and
+// lost the strong central/body islands; restored the canonical if/else.
 // left in scratch: canonical typed row-table source remains 398 bytes with
 // 308 positional-byte drift (+16 tail), first mismatch at entry parameter
 // coloring; original also retains a shared late return tail that VC5 does not

@@ -30,6 +30,32 @@
 // Probe shardD8_443520: flatten the four resource guards into one short-circuit
 // condition, matching the original's four common-exit tests without nested
 // lifetime blocks.
+// Probe orch-443520-a-1: moved the rectangle's left/top fields to direct named
+// RECT ownership while retaining right/bottom as local bounds, to test the
+// original EBX/EDX color split without decompiler cursor arithmetic.
+// Probe orch-443520-a-2: swapped declaration order for the independent right
+// and bottom bounds, preserving the canonical field ownership and behavior.
+// Probe orch-443520-a-3: used natural pointer truth tests in the resource guard
+// to remove explicit zero comparisons before the full-screen zero stores.
+// Probe orch-443520-a-4: used paired RECT assignments for the two zero-valued
+// coordinates, matching the original's two volatile zero registers naturally.
+// Probe orch-443520-a-5: removed the decompiler-shaped destination-top alias
+// and kept the arithmetic on the named RECT field directly.
+// Probe orch-443520-a-6: kept all clipped bounds in the named source RECT,
+// matching the natural API record ownership without separate aliases.
+// Probe orch-443520-a-7: restored local right/bottom bounds while testing
+// explicit destination assignments for the original EAX/EBP arithmetic roles.
+// Probe orch-443520-a-8: restored the source-shaped nested DrawType/resource
+// guards, preserving the four common-exit tests while changing block scope.
+// Restored the named source-RECT clipped bounds after the local-bound probe;
+// it keeps the original right/bottom register roles and the cleaner resync.
+// Fresh pass result: direct named RECT ownership improved the positional diff
+// from 238 to 227 bytes and kept all four calls and the 0x20 frame aligned.
+// The remaining structural blocker is VC5's persistent EBP zero register:
+// it emits cmp-against-EBP guards, delays EBX/EDI saves, and adds eight bytes.
+// Local-bound and paired-zero assignment variants did not remove that basin.
+// Leave this readable source in scratch; the next lead is compiler context or
+// a proven original declaration shape that prevents zero-register hoisting.
 
 struct tagRECT {
     long left;
@@ -89,16 +115,12 @@ void TDrawSystem::Paint(tagRECT* param_1)
 {
     tagRECT dest;
     tagRECT src;
-    long l;
-    long t;
-    long r;
-    long b;
     long dest_top;
 
-    if (this->DrawType != 1 &&
-        this->PrimarySurface != 0 &&
-        this->DrawArea != 0 &&
-        this->DrawArea->DrawSurface != 0) {
+    if (this->DrawType != 1) {
+    if (this->PrimarySurface &&
+        this->DrawArea &&
+        this->DrawArea->DrawSurface) {
         if (this->ScreenMode == 1) {
         GetClientRect(this->Wnd, &src);
         dest.left = src.left;
@@ -121,31 +143,31 @@ void TDrawSystem::Paint(tagRECT* param_1)
         }
 
         if (param_1) {
-        l = param_1->left;
-        t = param_1->top;
-        r = param_1->right;
-        b = param_1->bottom;
+        src.left = param_1->left;
+        src.top = param_1->top;
+        src.right = param_1->right;
+        src.bottom = param_1->bottom;
 
-        src.left = l;
-        src.top = t;
+        if (src.left < 0) src.left = 0;
+        if (src.top < 0) src.top = 0;
+        if (src.right >= this->ScreenWidth)
+            src.right = this->ScreenWidth - 1;
+        if (src.bottom >= this->ScreenHeight)
+            src.bottom = this->ScreenHeight - 1;
 
-        if (l < 0) { src.left = 0; l = 0; }
-        if (t < 0) { src.top = 0; t = 0; }
-        if (r >= this->ScreenWidth) r = this->ScreenWidth - 1;
-        if (b >= this->ScreenHeight) b = this->ScreenHeight - 1;
-
-        dest.left += l;
+        dest.left = dest.left + src.left;
         dest_top = dest.top;
-        dest_top += t;
+        dest_top = dest_top + src.top;
         dest.top = dest_top;
-        dest.right = dest.left + r - l + 1;
-        dest.bottom = dest_top + b - t + 1;
+        dest.right = dest.left + src.right - src.left + 1;
+        dest.bottom = dest_top + src.bottom - src.top + 1;
 
-        src.right = r + 1;
-        src.bottom = b + 1;
+        src.right += 1;
+        src.bottom += 1;
         }
 
         this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface,
                                   &src, 0x1000000, 0);
+    }
     }
 }

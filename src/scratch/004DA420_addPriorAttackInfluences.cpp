@@ -19,6 +19,11 @@
 // md->player forms, signed owner/id types, TribeMainDecision ownership, typed max
 // access, a combined eligibility condition, and comparison order. These produced
 // the same 281-byte basin or worsened it; the clean typed source is restored.
+// Retry orch-4DA420-b: direct md/player chains, a player reference, explicit md
+// liveness, negated equality, and reversed comparison all duplicated the 281-byte
+// basin or worsened it to 282 bytes. A volatile player pointer restored 381 exact
+// bytes, but this is compiler steering, so the ordinary typed pointer is retained.
+// A donor-era <stdlib.h> context changed the basin to 384 bytes and was removed.
 
 struct XYPoint {
     int x;
