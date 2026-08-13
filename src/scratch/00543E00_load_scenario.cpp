@@ -27,6 +27,11 @@
 // - Grouping the v1.09/v1.11 transfer and letting v1.10 fall through also
 //   emitted no change.  The current source keeps both natural forms and the
 //   proven v1.10 success behavior.
+// - This claim tried positive, negative, labelled, and explicit-else late
+//   guards; VC5 emitted the same close-before-load_110 block in each form.
+// - A scenario-name alias and the donor's stdio/stdlib headers also emitted
+//   duplicates; neither changed the initial parameter register coloring.
+// - Restored the clean natural source after these duplicate structural probes.
 // - Remaining drift is structural block placement and the initial parameter
 //   register coloring; the historic best is 145 strict bytes.
 

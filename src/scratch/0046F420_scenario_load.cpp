@@ -20,6 +20,14 @@
 //   with the first name-length read on the parameter. This saved EBP before
 //   ESI, but lost exact prologue blocks and raised strict drift to 403 bytes;
 //   restored the clean guarded handle form.
+// - Tested direct parameter use, delayed handle assignment, function-scope
+//   aliases, and the proven overlapping count home. These widened or left the
+//   strict diff unchanged; restored the 653-byte guarded-handle source.
+// - Reused the human-team variable for relation player IDs with a saved flag,
+//   matching more block islands and 95.24% shape, but strict drift worsened to
+//   467 bytes and the source was less plausible. Rolled it back.
+// - Final lead: the remaining 386-byte drift starts at the delayed EBP save;
+//   calls, frame, size, and canonical field ownership are already aligned.
 
 #include <stdlib.h>
 
