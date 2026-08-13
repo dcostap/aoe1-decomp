@@ -148,8 +148,8 @@ prompt.
    `target_session.py brief --va <VA>` before proposing new
    experiments. Read bounded older history only for a specific open question.
 4. Before editing, claim the target with a short unique owner name for this
-   session and a default budget of **10 meaningful hypotheses**:
-   `python tools/target_session.py start --va <VA> --owner <unique-owner> --budget 10`.
+   session and a default budget of **15 meaningful hypotheses**:
+   `python tools/target_session.py start --va <VA> --owner <unique-owner> --budget 15`.
    Do not force-take an active lease. If the exact requested VA is leased by
    someone else, report the conflict unless the user explicitly authorizes a
    takeover.
@@ -196,13 +196,15 @@ prompt.
    block topology before register coloring or broad variants. `EXACT CODEGEN`
    means focused source-shape work is appropriate. Do not override the checker
    stage merely because frame size or call counts happen to match.
-9. Stop after 10 meaningful hypotheses by default, or earlier when exact, when a
+9. Stop after 15 meaningful hypotheses by default, or earlier when exact, when a
    real ABI/layout blocker is identified, or when further variants would be
    blind. A source change that emits the same code as an earlier probe is useful
    negative evidence, but heed the session's `Codegen duplicate` notice and do
    not keep exploring the same compiler basin.
-   Ten is a maximum, not a target. Stop as soon as no evidence-backed hypothesis
-   remains. Do not add generic probes to consume the remaining budget.
+   Fifteen is a maximum, not a target. Stop as soon as no evidence-backed
+   hypothesis remains. Do not add generic probes to consume the remaining budget.
+   A worker can use a 20-hypothesis budget when size, frame, ordered calls, and
+   CFG are aligned, and a localized evidence-backed codegen lead remains.
    This is a per-worker bound, not a declaration that the function is globally
    exhausted. Preserve enough evidence in the source attempt log for a later
    worker and the project orchestrator to avoid repeating the same hypotheses.
@@ -271,7 +273,7 @@ Use `rg --files` for newly generated or potentially unindexed workspace files.
 When multiple agents share a working tree, claim a target before editing it:
 
 ```bat
-python tools\target_session.py start --va 005204A0 --owner AgentName --budget 10
+python tools\target_session.py start --va 005204A0 --owner AgentName --budget 15
 python tools\target_session.py list --active
 python tools\query_project_status.py --remaining --normal --unleased --smallest --work-history --leases
 ```
