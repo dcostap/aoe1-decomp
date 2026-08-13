@@ -20,12 +20,27 @@
 //   and a narrow volatile member-pointer reload were codegen duplicates.  The
 //   remaining gap is the original EBX zero/prologue allocation and associated
 //   block placement; calls, frame, boundary, and size are otherwise aligned.
+// - Removing the outer count guards reduced the CFG count but regressed to 744
+//   bytes and 730 diff bytes; rolled back.  Reset do/while scans reached the
+//   exact 765-byte size and saved EBX, but used EBX for the count and regressed
+//   to 659 diff bytes and 67.74% shape; rolled back.
+// - Zero locals derived from objectId or the scan index, and explicit stage-skip
+//   gotos, all emitted the clean candidate unchanged; no new structural lead.
 // - Tested natural inline ManagedArray contains/remove calls with early
 //   returns.  EBX and several structural blocks aligned, but size fell to 632
 //   bytes and one removeFromGroup call site disappeared; restored.
 // - Tested natural inline contains iteration for the first three list gates.
 //   The compiler inlined auxiliary contains calls too, losing four call sites
 //   and growing to 804 bytes; restored the clean candidate.
+// - Reconstructed the decompiler's shared count/pointer scan topology.  It
+//   recovered the saved-EBX prologue but grew to 839 bytes, with a broad CFG
+//   shift; restored the clean candidate.
+// - Corrected the boat-removal continuation into the war-boat scan.  This
+//   restored the ten-call sequence, but the shared scan source remained far
+//   outside the clean structural basin; restored.
+// - Tried a no-reinitialization scan-index form and a first-scan do-while
+//   form.  They improved some block counts, but moved strict diff to 710 and
+//   682 bytes; restored the 607-byte clean source.
 
 class TacticalAIModule {
 public:
