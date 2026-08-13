@@ -20,8 +20,14 @@
 //   coverage. The remaining drift is 14 register-colored bytes in mode 102.
 // - The exact tvw_main ABI uses short for command_make_do's fourth parameter;
 //   the donor-supported declaration and stdlib context do not change bytes.
+// - query_abi/inventory also identifies pick_best_target's action_filter as a
+//   short; corrected the local declaration, with no emitted-code change.
 // - A natural mode-102 inline failure-action spelling moved the diff from 14
 //   to 98 bytes and lost shared block islands; restored the labeled-tail form.
+// - Branch-local parameter aliases, function-scope target declarations, and
+//   decompiler local declaration order all compiled to the same 14-byte diff.
+// - Focused mode-102 and mode-104 variant labs found no new emitted-code basin;
+//   the remaining bytes are localized register coloring in those two paths.
 
 #include <stdlib.h>
 
@@ -185,7 +191,7 @@ public:
                         RGE_Pick_Info*, RGE_Static_Object*, int);
     void fixup_pick_info(RGE_Pick_Info*);
     void reset_display_object_selection(int);
-    RGE_Static_Object* pick_best_target(long, long, int*, int);
+    RGE_Static_Object* pick_best_target(long, long, int*, short);
 
     virtual long mouse_right_up_action(long, long, int, int);
 };
