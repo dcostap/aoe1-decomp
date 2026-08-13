@@ -18,6 +18,10 @@
 //   level-two building branch; this restored two set_button sites and the
 //   level-zero any_selected_have_action path, improving the diff by 27 bytes
 //   and matching the original unit-level-zero guard.
+// - tested the null-object cancel set_button, the empty level-two production
+//   tail, a master_type == 'P' building guard, a level-three action temporary,
+//   and declaration/pointer-walk ordering; each was rolled back or codegen-
+//   neutral. The clean source remains the best structural reconstruction.
 
 extern "C" void __cdecl free(void*);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
@@ -440,9 +444,9 @@ extern uchar production_queues_is_use;
 
 void TRIBE_Screen_Game::setup_buttons()
 {
+    TRIBE_Player* player;
     char name[512];
     char msg_str[512];
-    TRIBE_Player* player;
     int culture;
     TShape* final_pic;
     short final_frame;
@@ -451,8 +455,10 @@ void TRIBE_Screen_Game::setup_buttons()
     this->item_cnt = 0;
     this->last_item = -1;
 
+    TRIBE_Panel_Button** button = this->button_panel;
     for (int i0 = 0; i0 < 12; ++i0) {
-        this->button_panel[i0]->in_use = 0;
+        (*button)->in_use = 0;
+        ++button;
     }
 
     this->mouse_last_x = -1;
