@@ -23,6 +23,9 @@
 // the size gap from -21 to -13 but worsened positional diff to 649; rolled back.
 // 15: Reusing the dead dst parameter as the byte temporary collapsed the frame
 // to 0x0C and worsened the diff to 668; rolled back.
+// 16: Matched the same-TU DibBlt donor's int fixed-point step locals for xStep
+//     and yStep; the emitted code was unchanged, so the clean long-typed source
+//     remains the best period-plausible reconstruction.
 // GIVEUP: best natural source remains in scratch.  The unresolved gap is VC5
 // parameter-home/local-slot scheduling around GetDibDim and the long blit loops;
 // no accepted_drift because the remaining positional drift is broad.
