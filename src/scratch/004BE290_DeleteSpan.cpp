@@ -25,6 +25,12 @@
 // luna-r2 layout: exact spanlist.cpp manager donors use an embedded offset-zero VSList and qualified node-list calls; composition was tested and emitted code was unchanged.
 // luna-r3 layout: restored the public TSpan_Node_List inheritance used by the exact constructor/DeleteShape donors; inherited calls emitted the same 524-byte code, so restored composition.
 // luna-r4 control-flow: the original zeroes the carried next-node register on the non-delete arm before testing it; replaced the break flag with a typed next-node do/while. This restored the missing CFG edge, grew to 532 bytes, and cut strict drift from 497 to 322 bytes.
+// luna-r5 declaration-order probes: tail/first/saved-head permutations, an explicit first-end local, and function-scope head were codegen duplicates.
+// luna-r5 unlink probe: direct typed neighbor expressions changed the prologue and widened drift to 500 bytes; restored named prev/next locals.
+// luna-r5 head-liveness probe: comparing against original head forced an 8-byte frame and 525-byte drift; restored the retained-head comparison.
+// luna-r5 source-surface probes: inherited calls and direct full-span tail expression were codegen-neutral and retained as canonical typed ownership.
+// luna-r5 structural lead: binary compares left against first->StartPx before trimming and advancing; corrected the old EndPx guard. This reduced drift to 301 bytes and 528 bytes.
+// luna-r5 count probes: explicit count assignment, count local, count-array alias, and line-index alias were neutral or smaller but not closer; restored direct typed decrement.
 
 #include <stdlib.h>
 
@@ -58,9 +64,8 @@ public:
     int FreeThread(VSpan_Node* first, VSpan_Node* second);
 };
 
-class TSpan_List_Manager {
+class TSpan_List_Manager : public TSpan_Node_List {
 public:
-    TSpan_Node_List VSList;
     VSpan_Node** Line_Head_Ptrs;
     VSpan_Node** Line_Tail_Ptrs;
     int* LeftMostPx;
@@ -95,8 +100,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
             if (left <= this->RightMostPx[line]) {
                 if (left <= this->LeftMostPx[line]
                     && right >= this->RightMostPx[line]) {
-                    VSpan_Node* tail = this->Line_Tail_Ptrs[line];
-                    this->VSList.FreeThread(head, tail);
+                    this->FreeThread(head, this->Line_Tail_Ptrs[line]);
                     this->Line_Head_Ptrs[line] = 0;
                     this->Line_Tail_Ptrs[line] = 0;
                     this->Span_Count[line] = 0;
@@ -105,9 +109,9 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                     return;
                 }
 
+                VSpan_Node* last = this->Line_Tail_Ptrs[line];
                 VSpan_Node* first = head;
                 VSpan_Node* savedHead = head;
-                VSpan_Node* last = this->Line_Tail_Ptrs[line];
 
                 if (first->EndPx < left) {
                     do {
@@ -116,7 +120,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 }
 
                 if (left > first->StartPx && right < first->EndPx) {
-                    VSpan_Node* node = this->VSList.GetNode();
+                    VSpan_Node* node = this->GetNode();
                     node->Prev = first;
                     node->Next = first->Next;
                     first->Next = node;
@@ -129,7 +133,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                     return;
                 }
 
-                if (left > first->EndPx) {
+                if (left > first->StartPx) {
                     first->EndPx = left - 1;
                     first = first->Next;
                 }
@@ -143,7 +147,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                         if (prev != 0) prev->Next = first->Next;
                         next = first->Next;
                         if (next != 0) next->Prev = first->Prev;
-                        this->VSList.FreeNode(first);
+                        this->FreeNode(first);
                         this->Span_Count[line]--;
                         first = next;
                     } else {
