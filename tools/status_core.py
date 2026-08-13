@@ -144,7 +144,78 @@ def count_comment_lines(path: Path | None) -> int:
         return 0
 
     text = path.read_text(encoding="utf-8", errors="replace")
-    return sum(1 for line in text.splitlines() if line.startswith("//"))
+    return count_comment_lines_text(text)
+
+
+def count_comment_lines_text(text: str) -> int:
+    """Count physical source lines that contain C or C++ comments.
+
+    The scanner ignores comment-looking text in ordinary character and string
+    literals. It counts both line comments and every line covered by a block
+    comment, including mixed code/comment lines.
+    """
+    comment_lines: set[int] = set()
+    line = 0
+    index = 0
+    state = "code"
+    quote = ""
+    escaped = False
+
+    while index < len(text):
+        char = text[index]
+        next_char = text[index + 1] if index + 1 < len(text) else ""
+
+        if state == "block":
+            comment_lines.add(line)
+            if char == "*" and next_char == "/":
+                state = "code"
+                index += 2
+                continue
+            if char == "\n":
+                line += 1
+            index += 1
+            continue
+
+        if state == "line":
+            comment_lines.add(line)
+            if char == "\n":
+                line += 1
+                state = "code"
+            index += 1
+            continue
+
+        if state == "string":
+            if char == "\n":
+                line += 1
+            elif escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                state = "code"
+            index += 1
+            continue
+
+        if char == "\n":
+            line += 1
+            index += 1
+        elif char in ("'", '"'):
+            quote = char
+            state = "string"
+            escaped = False
+            index += 1
+        elif char == "/" and next_char == "/":
+            comment_lines.add(line)
+            state = "line"
+            index += 2
+        elif char == "/" and next_char == "*":
+            comment_lines.add(line)
+            state = "block"
+            index += 2
+        else:
+            index += 1
+
+    return len(comment_lines)
 
 
 def rank_map(records: list[dict[str, str]], field: str) -> dict[str, int]:
@@ -459,6 +530,9 @@ def sort_status_rows(rows: Iterable[dict[str, str]], *, sort: str = "size", desc
         "first_mismatch": "first_mismatch_offset",
         "remaining-rank": "remaining_size_rank",
         "remaining_rank": "remaining_size_rank",
+        "comment-lines": "source_comment_lines",
+        "comment_lines": "source_comment_lines",
+        "comments": "source_comment_lines",
     }
     float_keys = {
         "diff": "positional_diff_percent",
@@ -475,7 +549,15 @@ def sort_status_rows(rows: Iterable[dict[str, str]], *, sort: str = "size", desc
     rows_list = list(rows)
     if sort_key in integer_keys:
         field = integer_keys[sort_key]
-        rows_list.sort(key=lambda row: (to_int(row.get(field, "") or 0), row["va"]), reverse=descending)
+        tie_breaker = "size_bytes" if field == "source_comment_lines" else "va"
+        rows_list.sort(
+            key=lambda row: (
+                to_int(row.get(field, "") or 0),
+                to_int(row.get(tie_breaker, "") or 0) if tie_breaker == "size_bytes" else row["va"],
+                row["va"],
+            ),
+            reverse=descending,
+        )
     elif sort_key in float_keys:
         field = float_keys[sort_key]
         rows_list.sort(key=lambda row: (to_float(row.get(field, "") or 0.0), row["va"]), reverse=descending)

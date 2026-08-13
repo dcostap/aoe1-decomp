@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from common import REPO_ROOT
-from status_core import build_status_rows, status_counts, write_status_csv
+from status_core import build_status_rows, count_comment_lines, status_counts, write_status_csv
 from status_history import build_history
 
 
@@ -28,7 +28,7 @@ BUCKET_COLORS = {
 
 
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
-HISTORY_CACHE_VERSION = 5
+HISTORY_CACHE_VERSION = 6
 DATA_MARKER = "__DASHBOARD_DATA__"
 
 
@@ -94,14 +94,6 @@ def read_source_preview(path: Path | None, max_lines: int = 140, max_chars: int 
         lines = lines[:max_lines]
         lines.append("// ... truncated ...")
     return "\n".join(lines)
-
-
-def count_comment_lines(path: Path | None) -> int:
-    if path is None or not path.exists():
-        return 0
-
-    text = path.read_text(encoding="utf-8", errors="replace")
-    return sum(1 for line in text.splitlines() if line.startswith("//"))
 
 
 def rank_map(records: list[dict[str, str]], field: str) -> dict[str, int]:

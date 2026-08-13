@@ -416,7 +416,8 @@ attempt log and restore the clean candidate.
 ## Normal function workflow
 
 1. If choosing a target, use `python tools\query_project_status.py` and usually
-   pick from `--unclaimed --normal --no-blockers`; avoid non-normal buckets.
+   pick from `--unclaimed --normal --no-blockers --least-comments`. This sorts
+   by source comment lines, then function size. Avoid non-normal buckets.
 2. In a shared agent workspace, claim the VA with `tools\target_session.py` before
    editing. For a large/broad target, generate `tools\target_dossier.py --va <VA>`.
 3. Read the function packet in `inventory\functions\...`.

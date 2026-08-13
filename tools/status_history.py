@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Callable
 
 from common import REPO_ROOT, classify_corpus_bucket
+from status_core import count_comment_lines_text
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -63,7 +64,7 @@ def _source_preview(text: str, max_lines: int = 140, max_chars: int = 12000) -> 
 
 
 def _comment_lines(text: str) -> int:
-    return sum(1 for line in text.splitlines() if line.startswith("//"))
+    return count_comment_lines_text(text)
 
 
 def _manifest_names(text: str) -> set[str]:

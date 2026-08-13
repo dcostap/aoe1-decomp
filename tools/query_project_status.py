@@ -83,10 +83,15 @@ def parse_args() -> argparse.Namespace:
     sort = parser.add_mutually_exclusive_group()
     sort.add_argument("--smallest", action="store_true", help="Sort by size ascending")
     sort.add_argument("--largest", action="store_true", help="Sort by size descending")
+    sort.add_argument(
+        "--least-comments",
+        action="store_true",
+        help="Sort by source comment lines ascending, then function size",
+    )
     parser.add_argument(
         "--sort",
         default="size",
-        choices=["size", "bytes", "asm", "va", "name", "source", "bucket", "diff", "edit-diff", "first-mismatch", "remaining-rank"],
+        choices=["size", "bytes", "asm", "va", "name", "source", "bucket", "diff", "edit-diff", "first-mismatch", "remaining-rank", "comment-lines"],
         help="Sort key (default: size)",
     )
     parser.add_argument("--desc", action="store_true", help="Descending sort")
@@ -164,6 +169,8 @@ def sort_from_args(args: argparse.Namespace) -> tuple[str, bool]:
         return "size", False
     if args.largest:
         return "size", True
+    if args.least_comments:
+        return "comment-lines", False
     return args.sort, args.desc
 
 
