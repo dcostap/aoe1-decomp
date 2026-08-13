@@ -8,14 +8,21 @@
 // above 5028 bytes so check_function now reports a real diff instead of size-stop.
 // Remaining early mismatch: VC5 stores base new_game result from AL to [esp+17]
 // and frees EBX for a hoisted strlen mask; original keeps AL in BL, stores BL,
-// and later tests BL. Tried register/result-holder forms; they were worse.
+// and later tests BL. Tried register/result-holder forms; they were unchanged.
 // Attempt log:
 // - Replaced the description-path goto with one negated guard; VC5 emitted the
 //   same bytes, so the natural guard remains the source form.
 // - Collapsed duplicate base-new-game result locals; VC5 emitted the same bytes.
 // - Cached the post-save victory getter; this changed the call schedule and was
-//   rolled back. A standalone difficulty getter also matched the call count but
-//   worsened layout, so it was rolled back.
+//   rolled back.
+// - Modeled the generator's binary-proven 0x1920 object size with derived padding;
+//   this fixed the allocation ABI and improved the structural call surface.
+// - Restored explicit branches for the Yes/No description selectors; this fixed
+//   the condition count and one exact description block.
+// - Retained the binary-proven standalone difficulty getter despite local drift;
+//   a register-qualified return local emitted duplicate code.
+// - Buffered difficulty formatting matched the virtual call surface but exceeded
+//   the original boundary by 164 bytes, so it was rolled back.
 
 #include <stdio.h>
 #include <string.h>
@@ -200,6 +207,7 @@ public:
 
 class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
 public:
+    char gap_04[0x191c];
     virtual void generate();
     RGE_RMM_Object_Generator(RGE_Map* map, void* module, RGE_Game_World* world, void* info, int flag);
     void add_quick_obj(short object_id, int count, int spacing);
@@ -329,18 +337,35 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
     }
     append_line(description, str2, "%s", 0x25e5, str1);
 
+    rge_base_game->difficulty();
     rge_base_game->get_string(rge_base_game->difficulty() + 0x2bd0, str1, 0x100);
     append_line(description, (char*)str3, "%s", 0x25e0, str1);
 
-    rge_base_game->get_string(rge_base_game->randomizePositions() ? 0x0fa4 : 0x0fa3, str1, 0x100);
+    if (rge_base_game->randomizePositions() == 0) {
+        rge_base_game->get_string(0x0fa3, str1, 0x100);
+    } else {
+        rge_base_game->get_string(0x0fa4, str1, 0x100);
+    }
     append_line(description, str2, "%s", 0x25e9, str1);
-    strcpy(str1, rge_base_game->get_string(rge_base_game->fullVisibility() ? 0x0fa3 : 0x0fa4));
+    if (rge_base_game->fullVisibility() == 0) {
+        strcpy(str1, rge_base_game->get_string(0x0fa4));
+    } else {
+        strcpy(str1, rge_base_game->get_string(0x0fa3));
+    }
     append_line(description, str2, "%s", 0x25b8, str1);
-    rge_base_game->get_string(rge_base_game->fullTechTree() ? 0x0fa3 : 0x0fa4, str1, 0x100);
+    if (rge_base_game->fullTechTree() == 0) {
+        rge_base_game->get_string(0x0fa4, str1, 0x100);
+    } else {
+        rge_base_game->get_string(0x0fa3, str1, 0x100);
+    }
     append_line(description, str2, "%s", 0x25ec, str1);
 
     if (rge_base_game->multiplayerGame()) {
-        strcpy(str1, rge_base_game->get_string(rge_base_game->allowCheatCodes() ? 0x0fa3 : 0x0fa4));
+        if (rge_base_game->allowCheatCodes() == 0) {
+            strcpy(str1, rge_base_game->get_string(0x0fa4));
+        } else {
+            strcpy(str1, rge_base_game->get_string(0x0fa3));
+        }
         append_line(description, str2, "%s", 0x25bb, str1);
     }
 
@@ -368,6 +393,9 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
             victoryAmount = rge_base_game->victoryAmount();
             switch (rge_base_game->victoryType()) {
             case 0:
+                this->victory_type = 0;
+                this->scenario->Set_Multi_Conquest(1);
+                break;
             case 1:
                 this->victory_type = 0;
                 this->scenario->Set_Multi_Conquest(1);

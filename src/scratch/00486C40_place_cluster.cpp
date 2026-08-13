@@ -14,6 +14,10 @@
 // - Named the binary-observed pop result and used one natural pop/count loop;
 //   this reached exact size, 19/19 calls, and 649 differing bytes.
 //   The checker now reports BLOCK SHAPE AND LIVENESS.
+// - Diagnostic explicit next/prev zero stores matched the extra early stores
+//   but widened positional drift to 895-897 bytes; restored the clean source.
+// - Zero-value, self-alias, row-pointer, declaration-order, and master-scope
+//   probes were duplicates or worse; retained the named-node reconstruction.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);
@@ -149,8 +153,8 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
     float tile_y_float;
     float cost;
     Map_Stack* node;
-    Map_Stack obj_stack;
 
+    Map_Stack obj_stack;
     this->init_stack(&obj_stack);
     this->add_stack_node(&obj_stack, &this->stack_offsets[y][x]);
 

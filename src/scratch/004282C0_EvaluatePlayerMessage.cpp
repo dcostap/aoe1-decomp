@@ -24,6 +24,11 @@
 // try 16: rolled back a named advancing pointer; it added 105 bytes and reduced shape similarity.
 // try 17: rolled back a shared success goto; it added 101 bytes and reduced shape similarity.
 // try 18: dispatch on the wire opcode relative to the first protocol message; no emitted change, so retain the clean sparse switch.
+// try 19: named COMMPLAYEROPTIONS ownership; codegen unchanged and retained as canonical layout.
+// try 20: split turn subtraction; codegen unchanged.
+// try 21: volatile packet-turn load forced the original arithmetic registers and reduced the diagnostic diff to 44 bytes; not retained as source without behavioral evidence.
+// try 22: signed scan index/high bound improved the diagnostic diff to 42 bytes.
+// try 23: delayed scan-index zero arm improved the diagnostic diff to 31 bytes; the remaining gap is DCO register coloring and switch-table relocation.
 
 struct TDebuggingLog { void Log(char*, ...); };
 extern TDebuggingLog* L;
@@ -46,6 +51,23 @@ public:
 
 class TChat { public: int AddChatMsg(char*, char*, int); };
 
+struct MSGFORMAT_KILL_PLAYER {
+    unsigned long player;
+    unsigned long dco_id;
+};
+
+struct COMMPLAYEROPTIONS {
+    char gap_00[8];
+    int ProgramState;
+    char gap_0C[0x14 - 0x0C];
+    unsigned long dcoID[10];
+    char gap_3C[0x40 - 0x3C];
+    unsigned char CommandTurnIncrement;
+    char gap_41[0x1C0 - 0x41];
+    unsigned short HighPlayerNumber;
+    unsigned short LowPlayerNumber;
+};
+
 class TCommunications_Handler {
 public:
     char gap_0000[0x18];
@@ -63,15 +85,8 @@ public:
     char gap_13FC[0x14D4 - 0x13FC];
     RGE_Communications_Speed* Speed;
     RGE_Communications_Synchronize* Sync;
-    char gap_14DC[0x1558 - 0x14DC];
-    int ProgramState;
-    char gap_155C[0x1564 - 0x155C];
-    unsigned long dcoID[10];
-    char gap_158C[0x1590 - 0x158C];
-    unsigned char commandTurnIncrement;
-    char gap_1591[0x1710 - 0x1591];
-    unsigned short HighPlayerNumber;
-    unsigned short LowPlayerNumber;
+    char gap_14DC[0x1550 - 0x14DC];
+    COMMPLAYEROPTIONS PlayerOptions;
     char gap_1714[0x1720 - 0x1714];
     unsigned long LastTurnAck[16];
 
@@ -98,12 +113,12 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned in
     case 0x44: {
         this->Speed->SetPlayerTurnSpeed(player, (unsigned char)data[9],
                                         (unsigned char)data[8]);
-        if ((this->ProgramState < 5 || this->current_turn < 6) &&
+        if ((this->PlayerOptions.ProgramState < 5 || this->current_turn < 6) &&
             *(unsigned int*)(data + 4) < this->current_turn) {
             L->Log(S(0x5816D0), this->current_turn, *(unsigned int*)(data + 4));
             return 0;
         }
-        unsigned int v = *(unsigned int*)(data + 4) - this->commandTurnIncrement;
+        unsigned int v = *(unsigned int*)(data + 4) - this->PlayerOptions.CommandTurnIncrement;
         if (v <= this->LastTurnAck[player]) v = this->LastTurnAck[player];
         this->LastTurnAck[player] = v;
         return 1;
@@ -131,7 +146,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned in
         char* text = data + 0x11;
         L->Log(S(0x58167C), player, p8, p9, text,
                *(int*)(data + 0x0C), p7, (unsigned char)data[0x10]);
-        if (data[this->Me + 1] == 'Y' || this->ProgramState == 3)
+        if (data[this->Me + 1] == 'Y' || this->PlayerOptions.ProgramState == 3)
             this->Chat->AddChatMsg(this->FriendlyName[(unsigned char)data[0]],
                                    text, 0);
         return 1;
@@ -161,15 +176,20 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned in
         }
         break;
     case 0x4B: {
-        L->Log(S(0x58160C), player, *(unsigned long*)data);
-        unsigned long dco_id = *(unsigned long*)(data + 4);
-        unsigned int i = 0;
+        MSGFORMAT_KILL_PLAYER* message = (MSGFORMAT_KILL_PLAYER*)data;
+        L->Log(S(0x58160C), player, message->player);
+        unsigned long dco_id = message->dco_id;
+        int high;
+        int i;
         if (dco_id != 0) {
-            i = this->LowPlayerNumber;
-            while (i <= this->HighPlayerNumber && this->dcoID[i] != dco_id)
+            i = this->PlayerOptions.LowPlayerNumber;
+            high = this->PlayerOptions.HighPlayerNumber;
+            while (i <= high && this->PlayerOptions.dcoID[i] != dco_id)
                 ++i;
-            if (i > this->HighPlayerNumber)
+            if (i > high)
                 i = 0;
+        } else {
+            i = 0;
         }
         if (i != 0) {
             if (this->PlayerStopTurn[i] == 0)
