@@ -13,15 +13,16 @@
 //   661-byte constructor shape.  A named pathing-cap value plus persistent
 //   pointer also reproduces the accumulator global load and final read ABI.
 // - Positive save-version guard reproduces the oracle's jne-to-zero,
-//   fallthrough-read topology.  Current best is same size/frame/instructions,
-//   all 28 ordered calls and 36/36 relocation identities, with 12 bytes left
-//   in one prologue scheduling hunk: original `mov ecx,esi; state=1; store
-//   pathing; store world`, rebuilt `store world; mov ecx,esi; state=1; store
-//   pathing`.  Leave this readable candidate in scratch for the next worker.
+//   fallthrough-read topology.  The candidate has the original size, frame,
+//   instructions, 28 ordered calls, and 36/36 relocation identities.
 // - Reordered the natural pathing-cap and world assignments to match the
 //   decompiler-supported source order.  This moved the rebuilt pathing store
 //   before the call setup and reduced strict drift from 12 to 9 bytes; VC5
 //   still schedules `mov ecx,esi; state=1` after that store.
+// - Kept a named pathing pointer for the final serialized read, but used the
+//   named member for the initial global assignment.  This restores the
+//   oracle's `mov ecx=esi; state=1; pathing store; world store` order and
+//   matches 661/661.
 
 #include <stdlib.h>
 
@@ -124,11 +125,11 @@ RGE_Player::RGE_Player(int file, RGE_Game_World* world_arg,
                        unsigned char player_id)
     : computerPlayerValue(0), pathingAttemptCapValue(5),
       pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
-    register int* pathing = &this->pathingAttemptCapValue;
+    int* pathing = &this->pathingAttemptCapValue;
     int pathing_cap = pathingCapValue;
 
     this->id = player_id;
-    *pathing = pathing_cap;
+    this->pathingAttemptCapValue = pathing_cap;
     this->world = world_arg;
     this->reset_selected();
 
