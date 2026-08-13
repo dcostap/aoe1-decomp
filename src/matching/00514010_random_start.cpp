@@ -73,7 +73,7 @@ public:
 
 class RGE_Map {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Map();
     void* map_tiles;
     long map_width;
     long map_height;
@@ -81,7 +81,7 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
+    virtual ~RGE_Game_World();
     char gap_04[0x24];
     RGE_Map* map;
     char gap_2c[0x10];
@@ -216,8 +216,8 @@ extern float DAT_00576828;
 extern float DAT_00576868;
 extern float DAT_0057686c;
 
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
-#define chat (*(TChat**)0x0062C4B8)
+extern RGE_Base_Game* rge_base_game;
+extern TChat* chat;
 
 void TRIBE_Player::random_start()
 {
