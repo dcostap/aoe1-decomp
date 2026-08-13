@@ -3,19 +3,19 @@
 // Attempt log:
 // 1: natural reconstruction from the binary/decompiler, with the proven dialog layout,
 //    typed member-call surfaces, and local absolute views for fixed globals.
-// 2-7: restored concrete button/slider comparisons, the third size-button arm, and
-//    a single play_tracks/sound-slider call site; call set reached 47/47.
-// 8: entry action/value locals improved the strict diff, but VC5 still homes param_3
-//    in EDI instead of the original EBP; reversing the event comparison and register
-//    qualifiers (9-10) made no further change.
-// 11: corrected the typed RGE_Base_Game layout: prog_mode is +0x1B0, with world at
-//     +0x3F4 and save_paused at +0xA00; emitted size stayed 1642B and shape rose to 78.21%.
-// Best bounded state: frame 0x104 and saved regs match; call target counts are 47/47
-// but ordered alignment is only 95.74% with -2/+2 site gaps. Meaningful code is 17B
-// short, exact-block coverage is 48.15%, and strict diff is 1465B (88.3062%).
-// Paused after 10 hypotheses. Checker stage remains STRUCTURAL RECONSTRUCTION: locate
-// the unmatched ordered calls and size/CFG divergence before tuning entry liveness.
-// EBP=param_3 / EDI=param_2 at the +000D prologue remains a secondary codegen clue.
+// Earlier work restored the typed dialog layout and concrete button/slider
+// comparisons. The clean checkpoint had 47/47 calls, but two ordered call gaps.
+// Reversed mouse-state assignment to match the original constant-2/event stores.
+// Ordered the >=99 music-disable arm before the enable arm; this aligns vf5C.
+// Used direct play_tracks arms for music types 1 and 2; VC5 merges their tail.
+// Reconstructed slider behavior: music changes also apply newSoundVolume, while
+// sound changes apply param_3 through one shared sound-slider tail.
+// Removed aliases and register qualifiers. A base-action label relocation aligned
+// all calls but introduced EBX and a 37-byte overflow, so it was rolled back.
+// Current clean source: frame 0x104, saved regs match, 47/47 calls, -1/+1 ordered
+// call sites, code is 13B short, and strict diff is 1518B (91.5009%).
+// Checker stage remains STRUCTURAL RECONSTRUCTION. The remaining lead is the
+// entry parameter-home and early block layout mismatch, not register coloring.
 
 #include <stdio.h>
 
@@ -190,28 +190,23 @@ public:
 #define do_color_log (*(unsigned char*)0x62C584)
 #define numberPathingIterations (*(int*)0x57F9F4)
 
-long TribeConfigDialog::action(TPanel* panel, register long event,
-    register unsigned long param_3, unsigned long param_4)
+long TribeConfigDialog::action(TPanel* panel, long event,
+    unsigned long param_3, unsigned long param_4)
 {
     char msg[256];
     float new_speed;
     TSound_Driver* slider_sound;
-    int start_track;
-    int end_track;
-    long action_event = event;
-    unsigned long action_value = param_3;
-
     if (panel != 0) {
-        if ((TButtonPanel*)panel == this->okButton && action_event == 1) {
+        if ((TButtonPanel*)panel == this->okButton && event == 1) {
             if (this->modeValue == 0) {
-                if (rge_base_game->singlePlayerGame() == action_event && rge_base_game->save_paused == 0) {
+                if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
 
-                if (this->mouseButton[0]->get_state() == 0) {
-                    rge_base_game->prog_info->interface_style = 1;
-                } else {
+                if (this->mouseButton[0]->get_state() != 0) {
                     rge_base_game->prog_info->interface_style = 2;
+                } else {
+                    rge_base_game->prog_info->interface_style = event;
                 }
                 rge_base_game->vf140();
 
@@ -260,29 +255,23 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 if (this->newMusicVolume != this->musicVolume) {
                     RGE_Prog_Info* info = rge_base_game->prog_info;
                     TMusic_System* music;
-                    if (this->newMusicVolume < 99) {
-                        if (info->use_music == 0) {
-                            info->use_music = 1;
-                            Regs->RegSetInt(1, (const char*)0x5801D0, this->newMusicVolume * 100);
-                            rge_base_game->vf58();
-                            music = rge_base_game->music_system;
-                            if (music != 0) {
-                                start_track = 0;
-                                if (music->music_type == 1) {
-                                    end_track = music->track_count;
-                                    start_track = 5;
-                                } else if (music->music_type == 2) {
-                                    end_track = music->track_count;
-                                    start_track = 1;
-                                }
-                                if (start_track != 0) {
-                                    music->play_tracks(start_track, end_track, 1, 0, 0);
-                                }
+                    if (this->newMusicVolume >= 99) {
+                        if (info->use_music != 0) {
+                            info->use_music = 0;
+                            rge_base_game->vf5C();
+                        }
+                    } else if (info->use_music == 0) {
+                        info->use_music = 1;
+                        Regs->RegSetInt(1, (const char*)0x5801D0, this->newMusicVolume * 100);
+                        rge_base_game->vf58();
+                        music = rge_base_game->music_system;
+                        if (music != 0) {
+                            if (music->music_type == 1) {
+                                music->play_tracks(5, music->track_count, 1, 0, 0);
+                            } else if (music->music_type == 2) {
+                                music->play_tracks(1, music->track_count, 1, 0, 0);
                             }
                         }
-                    } else if (info->use_music != 0) {
-                        info->use_music = 0;
-                        rge_base_game->vf5C();
                     }
 
                     if (rge_base_game->sound_system != 0) {
@@ -317,13 +306,13 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 goto destroy;
             }
         } else {
-            if ((TButtonPanel*)panel == this->speedButton[0] && action_event == 1) {
+            if ((TButtonPanel*)panel == this->speedButton[0] && event == 1) {
                 return 1;
             }
-            if ((TButtonPanel*)panel == this->speedButton[1] && action_event == 1) {
+            if ((TButtonPanel*)panel == this->speedButton[1] && event == 1) {
                 return 1;
             }
-            if ((TButtonPanel*)panel == this->speedButton[2] && action_event == 1) {
+            if ((TButtonPanel*)panel == this->speedButton[2] && event == 1) {
                 return 1;
             }
             if ((TButtonPanel*)panel == this->sizeButton[0]) {
@@ -335,35 +324,35 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
             if ((TButtonPanel*)panel == this->sizeButton[2]) {
                 return 1;
             }
-            if ((TVerticalSliderPanel*)panel == this->musicSlider && action_event == 4) {
-                this->newMusicVolume = action_value;
+            if ((TVerticalSliderPanel*)panel == this->musicSlider && event == 4) {
+                this->newMusicVolume = param_3;
                 TMusic_System* music = rge_base_game->music_system;
                 if (music == 0) {
                     return 1;
                 }
-                music->set_volume(action_value * -100, 1);
+                music->set_volume(param_3 * -100, 1);
                 TSound_Driver* sound = rge_base_game->sound_system;
                 if (sound == 0) {
                     return 1;
                 }
                 slider_sound = sound;
-                action_value = this->newSoundVolume;
+                param_3 = this->newSoundVolume;
                 goto slider_sound_call;
             }
-            if ((TVerticalSliderPanel*)panel == this->soundSlider && action_event == 4) {
-                this->newSoundVolume = action_value;
+            if ((TVerticalSliderPanel*)panel == this->soundSlider && event == 4) {
+                this->newSoundVolume = param_3;
                 slider_sound = rge_base_game->sound_system;
                 if (slider_sound == 0) {
                     return 1;
                 }
                 goto slider_sound_call;
             }
-            if ((TVerticalSliderPanel*)panel == this->scrollSpeedSlider && action_event == 4) {
-                rge_base_game->prog_info->mouse_scroll_interval = action_value + 10;
-                rge_base_game->prog_info->key_scroll_interval = action_value + 10;
+            if ((TVerticalSliderPanel*)panel == this->scrollSpeedSlider && event == 4) {
+                rge_base_game->prog_info->mouse_scroll_interval = param_3 + 10;
+                rge_base_game->prog_info->key_scroll_interval = param_3 + 10;
                 goto base_action;
             }
-            if ((TButtonPanel*)panel == this->cancelButton && action_event == 1) {
+            if ((TButtonPanel*)panel == this->cancelButton && event == 1) {
                 if (rge_base_game->music_system != 0) {
                     rge_base_game->music_system->set_volume(this->musicVolume * -100, 1);
                 }
@@ -373,7 +362,7 @@ long TribeConfigDialog::action(TPanel* panel, register long event,
                 rge_base_game->prog_info->mouse_scroll_interval = this->scrollSpeed;
                 rge_base_game->prog_info->key_scroll_interval = this->scrollSpeed;
                 if (this->modeValue == 0) {
-                    if (rge_base_game->singlePlayerGame() == action_event && rge_base_game->save_paused == 0) {
+                    if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
                         rge_base_game->set_paused(0, 0);
                     }
                     panel_system.setCurrentPanel((char*)0x5842CC, 0);
@@ -395,5 +384,5 @@ destroy:
     return 1;
 
 base_action:
-    return TPanel::action(panel, action_event, action_value, param_4);
+    return TPanel::action(panel, event, param_3, param_4);
 }

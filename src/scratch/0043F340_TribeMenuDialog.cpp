@@ -7,15 +7,14 @@
 //   LEA-old-index/INC-before-call topology and raised shape similarity to 83.2%.
 // - Indexed clear/memset/pointer-clear forms, a named zero, register hints, and
 //   donor standard-header context emitted the same code; no source hack retained.
-// Remaining mismatch is the VC5 EBX zero-carrier versus button-base allocation
-// basin (original uses BL and push EBX for zeroes); calls/CFG/frame are aligned.
-// - A single typed running y-state reached 43 positional bytes and 98.6% shape,
-//   but used the wrong final scheduling basin; a separate base/post-row state
-//   worsened the output to 775 bytes. Both probes were rolled back.
-// - Probe 17: one natural y-state following the original EBP add-23 schedule
-//   improved the diagnostic diff from 766 to 306 bytes and size gap to +4;
-//   restored because the final three button block still diverged.
-// Left in scratch after the bounded 10-hypothesis session.
+// Probes 13 and 17 found the one-state y schedule that reproduces the original
+// button rows. A second state changed the allocator basin and was rolled back.
+// Corrected the final hotkey target to button[bi - 1] and passed bi to tab order.
+// The best emitted-code frontier is a one-byte immediate mismatch: an extra
+// source increment reaches the original register basin but shifts button rows.
+// The current source keeps the behavior-correct single y state instead.
+// Current gap: 124 bytes with the clean semantic source; no further evidence-
+// backed source-shape lead remains in this claim.
 
 #include "..\..\include\game_globals.h"
 
@@ -113,10 +112,10 @@ public:
 
 TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent) : TDialogPanel("Menu Dialog")
 {
-    int bi;
-    for (bi = 0; bi < 11; ++bi)
-        this->button[bi] = 0;
-    bi = 0;
+    int i;
+    for (i = 0; i < 11; ++i)
+        this->button[i] = 0;
+    int bi = 0;
 
     int y = 300;
 
@@ -151,37 +150,38 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent) : TDialogPanel("Menu Dial
     if (!this->create_button(this, &this->button[bi++], 0x243E, 0, 0x14, by, 0x168, 0x1E, 0, 0, 9))
         return;
     by += 0x23;
-    int by2 = by;
 
     if (rge_base_game->singlePlayerGame()) {
-        if (!this->create_button(this, &this->button[bi++], 0x2438, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 1))
+        if (!this->create_button(this, &this->button[bi++], 0x2438, 0, 0x14, by, 0x168, 0x1E, 0, 0, 1))
             return;
-        if (!this->create_button(this, &this->button[bi++], 0x243C, 0, 0x14, by + 0x69, 0x168, 0x1E, 0, 0, 3))
+        by += 0x23;
+        if (!this->create_button(this, &this->button[bi++], 0x243C, 0, 0x14, by, 0x168, 0x1E, 0, 0, 3))
             return;
-        if (!this->create_button(this, &this->button[bi++], 0x243F, 0, 0x14, by + 0x8C, 0x168, 0x1E, 0, 0, 0x0B))
+        by += 0x23;
+        if (!this->create_button(this, &this->button[bi++], 0x243F, 0, 0x14, by, 0x168, 0x1E, 0, 0, 0x0B))
             return;
-        by2 = by + 0xAF;
+        by += 0x23;
     }
 
-    if (!this->create_button(this, &this->button[bi++], 0x243A, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 5))
+    if (!this->create_button(this, &this->button[bi++], 0x243A, 0, 0x14, by, 0x168, 0x1E, 0, 0, 5))
         return;
-    by2 += 0x23;
+    by += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x23F5, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 8))
+    if (!this->create_button(this, &this->button[bi++], 0x23F5, 0, 0x14, by, 0x168, 0x1E, 0, 0, 8))
         return;
-    by2 += 0x23;
+    by += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x23F9, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 10))
+    if (!this->create_button(this, &this->button[bi++], 0x23F9, 0, 0x14, by, 0x168, 0x1E, 0, 0, 10))
         return;
-    by2 += 0x23;
+    by += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x243B, 0, 0x14, by2 + 0x0F, 0x168, 0x1E, 0, 0, 6))
+    if (!this->create_button(this, &this->button[bi++], 0x243B, 0, 0x14, by + 0x0F, 0x168, 0x1E, 0, 0, 6))
         return;
 
-    TButtonPanel* p = this->button[bi];
+    TButtonPanel* p = this->button[bi - 1];
     p->hotkey_shift = 0;
     p->hotkey = 0x1B;
 
     this->set_curr_child(this->button[0]);
-    this->set_tab_order((TPanel**)this->button, bi + 1);
+    this->set_tab_order((TPanel**)this->button, bi);
 }

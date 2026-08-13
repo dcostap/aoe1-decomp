@@ -58,6 +58,9 @@
 //   and the VC5 small flag basin. Each preserved 365 bytes and 7/7 calls but stayed at diff 10.
 // - No evidence-backed source or flag lead remains. Keep the natural named row source; the
 //   unresolved bytes are the first row address (oracle folded -24 LEA versus VC5 dec-plus-scale).
+// ACCEPTED_DRIFT: main-agent adjudication confirmed both address forms produce
+// `row_base + 36 * row - 36`. DEC flags are replaced by the following CMP.
+// The address operations do not access memory. Calls, CFG, and later bytes match.
 
 extern float DAT_0056f604;
 

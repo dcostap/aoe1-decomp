@@ -49,6 +49,9 @@
 //   duplicate; keep the natural do/while.  A bounded for-header retry loop
 //   instead reproduces the oracle's direct JL backedge, exact size, CFG, and
 //   every byte except the final player-count compare (cmp esi,eax vs ebp,eax).
+// ACCEPTED_DRIFT: main-agent adjudication confirmed EBP is copied from ESI
+// before numberPlayers. That call preserves ESI. Both compares therefore use
+// the same value and set identical flags. No memory or call effect differs.
 
 #include <stdio.h>
 

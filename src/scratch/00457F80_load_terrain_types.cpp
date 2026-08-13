@@ -16,6 +16,13 @@
 // Fresh shard probe: moved shape_index initialization before the giant fscanf to
 // match the oracle's pre-call EBX clear; this worsened the diff by 2 bytes and
 // was restored. The input-field overlay remains the next structural blocker.
+// Luna pass: the oracle overlays both scan ids on the dead filename home, but a
+// direct source overlay worsened the structural diff. A short border counter
+// improved local compare shape but worsened positional bytes. Function-scope
+// declaration and merged-counter probes were also nonproductive. The natural
+// negative-first sound guard is retained; it reaches the best 331-byte diff.
+// Paused: frame remains 0x60 versus 0x5C, with the scan-id home and tile-pointer
+// topology still differing. Calls, cleanup, record stride, and widths match.
 
 #include <stdio.h>
 
@@ -148,10 +155,10 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
                             } while (i2 < sound_id);
                         }
 
-                        if (med_color >= 0) {
-                            terrain->sound = sounds[med_color];
-                        } else {
+                        if (med_color < 0) {
                             terrain->sound = 0;
+                        } else {
+                            terrain->sound = sounds[med_color];
                         }
                         terrain->map_low_color = (unsigned char)hi_color;
                         terrain->map_med_color = (unsigned char)lt_cliff_color;

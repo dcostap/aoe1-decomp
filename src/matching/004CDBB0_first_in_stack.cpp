@@ -17,6 +17,7 @@
 // 15: scoped a typed actor local after target-master load; target/actor register order matched the oracle, but positional diff worsened to 489 bytes and code shrank to 589; rolled back.
 // 16: reread this->obj in notification arguments while retaining the scoped actor local; emitted code returned exactly to the clean 604-byte baseline; restored direct typed source.
 // 17: changing object_group from int to its proven short field width grew code to 609 bytes and worsened diff to 575; restored the clean 604-byte source.
+// 18: used direct target->master_obj expressions for the group and id, then declared the actor after the group load; this preserves the target-master reload and late actor lifetime from the oracle. Exact 595-byte match.
 
 typedef unsigned char uchar;
 
@@ -125,16 +126,16 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
 {
     RGE_Static_Object* target = this->target_obj;
     if (target != 0) {
-        RGE_Master_Static_Object* target_master = target->master_obj;
-        int object_group = target_master->object_group;
+        int object_group = target->master_obj->object_group;
+        RGE_Action_Object* object = this->obj;
         if (target->owner == this->obj->owner) {
             this->was_same_owner = 1;
         } else {
             this->was_same_owner = 0;
         }
-        short target_id = target_master->id;
+        short target_id = target->master_obj->id;
         if (target_id == 0x6d || object_group == 0x1b || target_id == 0x9f || target_id == 0x9e || target_id == 0xa3 || target_id == 0x114) {
-            if (this->obj->owner->computerPlayer() == 1) {
+            if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
                 this->set_state(0x0d);
@@ -150,7 +151,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
             }
             return;
         }
-        if (this->obj->attribute_amount_held < 100.0) {
+        if (object->attribute_amount_held < 100.0) {
             this->set_state(0x0d);
             rge_base_game->notify(0x76, (int)this->obj->owner->id, 0, 0, 0);
             return;
@@ -158,14 +159,14 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
         if (object_group == 3) {
             this->requiredRange = 1.0f;
         } else {
-            this->requiredRange = this->obj->master_obj->weapon_range;
+            this->requiredRange = object->master_obj->weapon_range;
         }
         if (object_group == 0x1e) {
             this->set_state(0x0d);
             return;
         }
-        if (object_group == 0x12 && this->obj->owner->attributes[0x1b] <= 0.0f) {
-            if (this->obj->owner->computerPlayer() == 1) {
+        if (object_group == 0x12 && object->owner->attributes[0x1b] <= 0.0f) {
+            if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
                 this->set_state(0x0d);
@@ -173,8 +174,8 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
             rge_base_game->notify(0x77, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
-        if (object_group == 3 && this->obj->owner->attributes[0x1c] <= 0.0f) {
-            if (this->obj->owner->computerPlayer() == 1) {
+        if (object_group == 3 && object->owner->attributes[0x1c] <= 0.0f) {
+            if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
                 this->set_state(0x0d);
