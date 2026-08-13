@@ -18,6 +18,9 @@
 //   value comes from terrain, while create_terrain_object gets old terrain.
 //   The current source preserves both effects. The remaining gap is the
 //   target's 0x14 local frame and EDI/EBP allocation basin.
+// - Added the PDB/decompiler-supported terrain index local for repeated
+//   terrain_types indexing. It is a codegen duplicate; no missing local
+//   ownership resolves the 0x14 versus 0x18 frame gap.
 
 class RGE_Player;
 class RGE_Game_World;
@@ -130,13 +133,15 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                           unsigned char terrain, unsigned char blend, int arg9)
 {
     short terrain_id;
+    unsigned int terrain_index;
 
     if ((short)(unsigned char)terrain < this->num_terrain) {
         terrain_id = (short)(unsigned char)terrain;
-        if (this->terrain_types[(unsigned char)terrain].loaded != 0 ||
-            (this->terrain_types[(unsigned char)terrain].terrain_to_draw > -1 &&
+        terrain_index = (unsigned char)terrain;
+        if (this->terrain_types[terrain_index].loaded != 0 ||
+            (this->terrain_types[terrain_index].terrain_to_draw > -1 &&
              this->terrain_types[
-                 this->terrain_types[(unsigned char)terrain].terrain_to_draw].loaded == 1)) {
+                 this->terrain_types[terrain_index].terrain_to_draw].loaded == 1)) {
             if (y1 > y2) {
                 short temp = y1;
                 y1 = y2;
@@ -168,7 +173,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                          tile_offset + 5);
                     if (mapcol <= x2) {
                         do {
-                            if (this->terrain_types[(unsigned char)terrain].tiles[
+                            if (this->terrain_types[terrain_index].tiles[
                                     tile_terrain[-1]].count > 0) {
                                 unsigned char old_value = *tile_terrain;
                                 short old_terrain = (short)(old_value & 0x1F);

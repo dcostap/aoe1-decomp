@@ -864,7 +864,6 @@ notify_after_owner:
             }
             numberToRespond = this->civilians.numberValue;
         }
-
     }
     else {
         int available;
