@@ -20,6 +20,10 @@
 // r3 final: PDB-ordered dimension assignments were neutral; remaining structural gap is target EBX ImageRect and EDI scan-text carriers.
 // r4 ABI: added the shared typed rge_base_game pointer declaration/definition with its proven 0062C574 seed; target codegen is unchanged at diff 1260.
 // r4 audit: use the shared typed fixed-storage accessor for the two palette reads; it emits [62C574] loads without a raw macro, but its natural source shape is farther from the current VC5 basin.
+// r5 layout: restored a named ImageRect pointer before PtrClear; the fixed-storage source reaches diff 1426 but still colors it EDI.
+// r5 liveness: text gate, declaration order, explicit first-element address, array reference, and full text-local call lifetime were neutral.
+// r5 behavior: CRT strlen enlarged the frame to 0x44; restored the indexed scan. Pointer-walk subtraction worsened diff to 1514.
+// r5 final: clean source keeps named ImageRect pointer and text view with direct typed storage access; +0031 remains a register-coloring gap.
 #include <string.h>
 #include "..\..\include\rge_base_game_global.h"
 
@@ -131,6 +135,7 @@ public:
 };
 
 int TMessagePanel::render_to_image_buffer() {
+    tagRECT* image_rect;
     void* dc;
     void* old_font;
     tagPALETTEENTRY p;
@@ -154,8 +159,8 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-
+    image_rect = &this->ImageRect;
+    this->ImageBuffer->PtrClear(image_rect, 1);
     char* text = this->text;
     if (this->text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
@@ -169,7 +174,7 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    this->ImageBuffer->SetClipRect(&this->ImageRect);
+    this->ImageBuffer->SetClipRect(image_rect);
     SelectClipRgn(this->ImageBuffer->hdc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->hdc, this->font);
 
@@ -191,9 +196,9 @@ int TMessagePanel::render_to_image_buffer() {
     }
 
     wid = this->pnl_wid - 2;
-    x = this->ImageRect.left;
+    x = image_rect->left;
     hgt = this->pnl_hgt - 2;
-    y = this->ImageRect.top;
+    y = image_rect->top;
 
     len = 0;
     while (text[len] != 0) {
