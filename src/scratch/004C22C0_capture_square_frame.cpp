@@ -33,6 +33,12 @@
 // - Added the exact stat_obj.cpp donor-era <stdlib.h> context from 004C1F30;
 //   strict diff improved to 158 bytes and shape to 84.55%, with the exact
 //   five-call set and coordinate ownership preserved.
+// - Fresh bounded retry: the complete stat_obj virtual surface, direct
+//   coordinate expressions, alternate output identities, local declaration
+//   scopes, assignment order, arithmetic grouping, and the canonical long
+//   SDI_Object_ID global were checked.  Only direct expressions and swapped
+//   output identities changed structure; the remaining natural forms emitted
+//   the same 158-byte frontier.
 // - Final bounded pause: size/frame/saved-registers and all five ordered calls
 //   remain exact; the first unresolved hunk is coordinate register/liveness at
 //   004C230E, followed by health-bar scheduling.
@@ -53,7 +59,7 @@ public:
 };
 
 extern DClipInfo_List* SDI_List;
-extern int SDI_Object_ID;
+extern long SDI_Object_ID;
 
 class RGE_Active_Sprite_List {
 public:
