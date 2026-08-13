@@ -37,6 +37,11 @@
 //   were duplicates or regressed.  A binary-proven `handle > -1` cleanup guard
 //   improved CFG shape but shifted the tail and was restored; a short packet
 //   count widened the body.  Final clean result remains 407 bytes / 212 diff.
+// - Replaced the typed packet-header advance with signed-byte cursor reads and
+//   two separate post-increments, matching the original movsx-byte/two-inc
+//   block.  Strict diff rose to 254, but exact-block coverage rose to 60.39%.
+// - A separate payload color countdown was an emitted-code duplicate; retain
+//   it because the oracle keeps packet count and payload countdown distinct.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
@@ -79,11 +84,6 @@ struct tagRGBQUAD {
     unsigned char rgbGreen;
     unsigned char rgbRed;
     unsigned char rgbReserved;
-};
-
-struct PalettePacket {
-    signed char skip;
-    signed char count;
 };
 
 class RGE_Flic_Player {
@@ -139,16 +139,17 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                 if (0 < packets) {
                     int packet_count = packets;
                     do {
-                        PalettePacket* packet_header = (PalettePacket*)packet;
-                        int count = packet_header->count;
-                        color_index += packet_header->skip;
-                        packet = (unsigned char*)(packet_header + 1);
+                        int count = (signed char)packet[1];
+                        color_index += (signed char)packet[0];
+                        packet++;
                         if (count == 0) {
                             count = 0x100;
                         }
+                        packet++;
                         if (0 < count) {
                             unsigned char* green = &palette[color_index].rgbGreen;
                             color_index += count;
+                            int color_count = count;
                             unsigned char* input = packet;
                             do {
                                 unsigned char* next = input + 3;
@@ -156,9 +157,9 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                                 green[0] = input[1];
                                 ((tagRGBQUAD*)(green - 1))->rgbBlue = input[2];
                                 green += 4;
-                                count--;
+                                color_count--;
                                 input = next;
-                            } while (count != 0);
+                            } while (color_count != 0);
                             packet = input;
                         }
                         packet_count--;
@@ -173,16 +174,17 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                 if (0 < packets) {
                     int packet_count = packets;
                     do {
-                        PalettePacket* packet_header = (PalettePacket*)packet;
-                        int count = packet_header->count;
-                        color_index += packet_header->skip;
-                        packet = (unsigned char*)(packet_header + 1);
+                        int count = (signed char)packet[1];
+                        color_index += (signed char)packet[0];
+                        packet++;
                         if (count == 0) {
                             count = 0x100;
                         }
+                        packet++;
                         if (0 < count) {
                             tagRGBQUAD* color = palette + color_index;
                             color_index += count;
+                            int color_count = count;
                             unsigned char* green = &color->rgbGreen;
                             do {
                                 green[1] = (unsigned char)(packet[0] << 2);
@@ -190,9 +192,9 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                                 ((tagRGBQUAD*)(green - 1))->rgbBlue =
                                     (unsigned char)(packet[2] << 2);
                                 packet += 3;
-                                count--;
+                                color_count--;
                                 green += 4;
-                            } while (count != 0);
+                            } while (color_count != 0);
                         }
                         packet_count--;
                     } while (packet_count != 0);

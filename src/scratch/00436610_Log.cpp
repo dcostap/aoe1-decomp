@@ -28,6 +28,9 @@
 // - Hoisting ltime made the 0x8C frame exact but caused a 503-byte structural
 //   drift; the explicit dead-prefix-word model was also a duplicate. Restored
 //   the natural block-local ltime candidate.
+// - Hoisting long ltime immediately before the prefix arrays reproduced the
+//   0x8C frame but expanded the body to 503 bytes and 310 differing bytes;
+//   restored the block-local candidate.
 
 #include <stdio.h>
 #include <stdarg.h>

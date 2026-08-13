@@ -9,6 +9,12 @@
 //   remaining structural gap is the switch table and two move-sprite calls.
 // - Two state-split probes worsened the ordered calls and size. Restored the
 //   baseline. Leave this natural reconstruction in scratch for the next pass.
+// - Corrected switch labels from the original jump table: notify is state 3,
+//   coordinate Move_To is states 11 and 15, Attack is state 12, and the
+//   wait-sprite tail is states 1, 13, and 14.
+// - Validation: the source now matches the packet's state-to-block mapping;
+//   VC5 emitted the prior body unchanged because the jump table is relocated
+//   outside the compared function bytes. Leave register tuning for later.
 
 class RGE_Sprite;
 class RGE_Static_Object;
@@ -205,7 +211,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
     this->state = param_1;
 
     switch (param_1) {
-    case 1:
+    case 3:
         this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265,
                           this->targetType, 0);
         this->obj->new_sprite(this->get_wait_sprite());
@@ -222,7 +228,6 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         this->target_z = -1.0f;
         return;
 
-    case 3:
     case 11:
     case 15: {
         RGE_Action_Move_To* action = new RGE_Action_Move_To(
@@ -262,7 +267,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         return;
     }
 
-    case 5: {
+    case 12: {
         RGE_Action_Attack* action = new RGE_Action_Attack(
             this->obj, this->target_obj, this->get_move_sprite(),
             this->task->work_sprite, 0, this->task->work_range_at_end,
@@ -278,7 +283,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         return;
     }
 
-    case 6:
+    case 7:
         this->timer = 0.0f;
         if (this->task->attribute_type != this->obj->facet) {
             this->obj->set_facet(this->task->attribute_type, 0);
@@ -289,7 +294,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         }
         return;
 
-    case 7:
+    case 6:
         this->timer = 0.0f;
         this->obj->new_sprite(this->task->work_sprite);
         return;
@@ -334,7 +339,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         this->set_state(3);
         return;
 
-    case 12:
+    case 1:
     case 13:
     case 14:
         this->timer = 0.0f;

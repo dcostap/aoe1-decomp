@@ -10,6 +10,8 @@
 //   9 ordered calls, and 10/10 CFG signals with 267 positional bytes differing.
 // - shared endpoint locals and explicit common-tail goto probes were broader
 //   regressions or emitted duplicates; restored the natural scoped-source best.
+// - removed redundant case-4/case-5 endpoint assignments from the range arms;
+//   VC5 emitted the existing code unchanged, so the natural source is retained.
 //   Left in scratch: localized case-5/6 tail/block layout and branch-span drift.
 
 class TPanel {
@@ -138,7 +140,6 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         short cur = this->cur_line;
         if (cur < this->top_line || cur > this->bot_line) {
             this->cur_line = this->bot_line;
-            cur = this->bot_line;
         }
         if (this->cur_line == this->bot_line) {
             this->scroll(4, 0, flag);
@@ -150,7 +151,6 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         short cur = this->cur_line;
         if (cur < this->top_line || cur > this->bot_line) {
             this->cur_line = this->top_line;
-            cur = this->top_line;
         }
         if (this->cur_line == this->top_line) {
             this->scroll(5, 0, flag);

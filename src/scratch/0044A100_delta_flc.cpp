@@ -35,6 +35,9 @@
 //   zeroing, and a sparse switch were regressed; retain the positive-first
 //   natural source. Remaining blocker is the original EBP cursor/prologue
 //   allocation and associated stack packet-count schedule.
+// - This claim: char* stream cursor plus sparse switch improved size to 400 B
+//   and shape to 72.09%, but worsened positional diff to 383 B and frame to
+//   0x10; restored the clean ushort-cursor source.
 
 #include <string.h>
 
