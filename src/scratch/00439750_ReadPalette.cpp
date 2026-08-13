@@ -18,8 +18,16 @@
 // - Delayed the loop-index and parse-success homes until after the allocation
 //   check.  The precheck do-while and nested result guard were tested and rolled
 //   back because they added an extra strtok or widened the structural drift.
+// - Restored the binary-proven draw-system DrawType/ScreenMode guard before the
+//   identity-palette call; this recovered the original 698-byte function size.
+// - Moved the parse-success reset before the palette allocation check; this
+//   recovered the original pre-compare zero/store topology and reduced drift.
+// - Tested a natural successful-palette scope, absolute global spelling, nested
+//   draw guard, declaration order, and a result alias; only the reset changed code.
 // left in scratch: remaining drift is literal relocation, branch displacement,
 // allocation-block scheduling, and gamma-table register coloring; not accepted-drift.
+// The gamma-table record has a binary-proven packed link at byte three and an
+// eight-byte stride. Keep this odd layout named rather than using raw casts.
 
 #include <string.h>
 
@@ -40,8 +48,26 @@ extern "C" void* (__stdcall* const CreatePalette)(void*);
 void __cdecl CreateIdentityPalette(void*);
 extern unsigned char shape_file_first;
 extern int global_gamma_index;
-extern int gamma_table[];
-extern void* rge_base_game;
+#pragma pack(push, 1)
+struct GammaEntry {
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+    int next_index;
+    unsigned char pad_07;
+};
+#pragma pack(pop)
+extern GammaEntry gamma_table[];
+struct DrawSystem {
+    char gap_000[0x478];
+    unsigned char DrawType;
+    unsigned char ScreenMode;
+};
+struct RGEBaseGame {
+    char gap_000[0x48];
+    DrawSystem* draw_system;
+};
+extern RGEBaseGame* rge_base_game;
 
 void* ReadPalette(char* filename, long res_id, int do_gamma)
 {
@@ -53,8 +79,8 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
     int n = 0;
     struct LOGPAL { unsigned short ver; unsigned short cnt; unsigned char e[1]; };
     LOGPAL* lp = 0;
-    unsigned char* out = 0;
     int i = 0;
+    unsigned char* out = 0;
     sizes.resSize = 0;
     if (filename && *filename && shape_file_first) {
         int fd = _open(filename, 0x8000);
@@ -90,37 +116,41 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
     if (tok == 0) goto cleanup;
     n = (int)atol(tok);
     lp = (LOGPAL*)malloc(n * 4 + 8);
-    if (!lp) goto cleanup;
-    i = 0;
     res_id = 0;
-    lp->cnt = (unsigned short)n;
-    lp->ver = 0x300;
-    out = lp->e + 1;
-    for (; i<n; ++i) {
-        tok = strtok(0, seps); if (!tok) break; out[-1] = (unsigned char)atoi(tok);
-        tok = strtok(0, seps); if (!tok) break; out[0] = (unsigned char)atoi(tok);
-        tok = strtok(0, seps); if (!tok) break; out[1] = (unsigned char)atoi(tok);
-        out[2] = 0;
-        if (i == n-1) res_id = 1;
-        out += 4;
-    }
-    if (res_id && n == 0x100 && global_gamma_index >= 0) {
-        int idx = global_gamma_index;
-        int* g = gamma_table;
-        while (idx >= 0) {
-            ((unsigned char*)lp)[idx*4+4] = ((unsigned char*)g)[0];
-            ((unsigned char*)lp)[idx*4+5] = ((unsigned char*)g)[1];
-            ((unsigned char*)lp)[idx*4+6] = ((unsigned char*)g)[2];
-            ((unsigned char*)lp)[idx*4+7] = 0;
-            idx = *(int*)((char*)g+3);
-            g += 2;
+    if (lp) {
+        i = 0;
+        lp->cnt = (unsigned short)n;
+        lp->ver = 0x300;
+        out = lp->e + 1;
+        for (; i<n; ++i) {
+            tok = strtok(0, seps); if (!tok) break; out[-1] = (unsigned char)atoi(tok);
+            tok = strtok(0, seps); if (!tok) break; out[0] = (unsigned char)atoi(tok);
+            tok = strtok(0, seps); if (!tok) break; out[1] = (unsigned char)atoi(tok);
+            out[2] = 0;
+            if (i == n-1) res_id = 1;
+            out += 4;
         }
+        if (res_id && n == 0x100 && global_gamma_index >= 0) {
+            int idx = global_gamma_index;
+            GammaEntry* g = gamma_table;
+            while (idx >= 0) {
+                ((unsigned char*)lp)[idx*4+4] = g->red;
+                ((unsigned char*)lp)[idx*4+5] = g->green;
+                ((unsigned char*)lp)[idx*4+6] = g->blue;
+                ((unsigned char*)lp)[idx*4+7] = 0;
+                idx = g->next_index;
+                ++g;
+            }
+        }
+        if (res_id) {
+            sizes.resSize = (int)CreatePalette(lp);
+            if (do_gamma &&
+                (rge_base_game->draw_system->DrawType == 1 ||
+                 rge_base_game->draw_system->ScreenMode == 1))
+                CreateIdentityPalette((void*)sizes.resSize);
+        }
+        free(lp);
     }
-    if (res_id) {
-        sizes.resSize = (int)CreatePalette(lp);
-        if (do_gamma) CreateIdentityPalette((void*)sizes.resSize);
-    }
-    free(lp);
 cleanup:
     if (hpal == (void*)1) free(own_mem);
     return (void*)sizes.resSize;

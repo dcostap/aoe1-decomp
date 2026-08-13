@@ -27,6 +27,20 @@
 // - context: typed the existing virtual surface through the same-TU/class
 //   donor methods after alignment; emitted code was unchanged. No scheduling
 //   locals or behavior changes were retained.
+// - layout: left/top/right/bottom initialization improved the structural diff
+//   from 564 to 553 bytes; reference ABI and top declarations were unchanged.
+// - layout: literal-pool externs and x-min/x-max assignment order were rolled
+//   back; both increased size or returned to the 564-byte basin.
+// - behavior: explicit zeroing of each corrected negative minimum matched the
+//   original zero-home/x87 topology; diff improved to 465 bytes and 15.51%
+//   exact-block coverage.
+// - control-flow: direct `right > map_width` and `bottom > map_height`
+//   predicates improved the structural diff to 458 bytes and 73.88% shape.
+// - liveness: reverse local declaration order worsened the structural result;
+//   restored the natural fVar1..fVar6 order. ESI/EDI parameter coloring remains.
+// - paused: best clean reconstruction keeps zeroed edge minima and direct
+//   bound predicates; remaining drift is parameter register coloring, stack
+//   home ordering, and later branch/x87 topology.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -56,7 +70,7 @@ public:
         unsigned char p5, unsigned char p6, unsigned char p7, unsigned char p8,
         unsigned char p9, unsigned char p10);
     // vt[9]: alignment
-    virtual unsigned char alignment(float* param_1, float* param_2, RGE_Game_World* param_3, unsigned char param_4);
+    virtual unsigned char alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4);
     virtual long calc_base_damage_ability(void* object);
     virtual void play_command_sound();
 
@@ -82,30 +96,39 @@ public:
     int map_height;       // +0xC
 };
 
-unsigned char RGE_Master_Static_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, unsigned char param_4)
+unsigned char RGE_Master_Static_Object::alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4)
 {
-    float fVar1 = *param_1 - radius_x;
-    float fVar3 = *param_1 + radius_x;
-    float fVar2 = *param_2 - radius_y;
-    float fVar4 = *param_2 + radius_y;
-    float fVar5 = (float)param_3->map->map_width - 0.00001f;
-    float fVar6 = (float)param_3->map->map_height - 0.00001f;
+    float fVar1;
+    float fVar2;
+    float fVar3;
+    float fVar4;
+    float fVar5;
+    float fVar6;
     short sVar7;
+
+    fVar1 = param_1 - radius_x;
+    fVar2 = param_2 - radius_y;
+    fVar3 = param_1 + radius_x;
+    fVar4 = param_2 + radius_y;
+    fVar5 = (float)param_3->map->map_width - 0.00001f;
+    fVar6 = (float)param_3->map->map_height - 0.00001f;
 
     if (fVar1 < 0.0f) {
         fVar1 = -fVar1;
         fVar3 = fVar3 + fVar1;
-        *param_1 = *param_1 + fVar1;
+        param_1 = param_1 + fVar1;
+        fVar1 = 0.0f;
     }
     if (fVar2 < 0.0f) {
         fVar2 = -fVar2;
         fVar4 = fVar4 + fVar2;
-        *param_2 = *param_2 + fVar2;
+        param_2 = param_2 + fVar2;
+        fVar2 = 0.0f;
     }
-    if (fVar5 <= fVar3)
-        *param_1 = *param_1 + (fVar5 - fVar3);
-    if (fVar6 <= fVar4)
-        *param_2 = *param_2 + (fVar6 - fVar4);
+    if (fVar3 > fVar5)
+        param_1 = param_1 + (fVar5 - fVar3);
+    if (fVar4 > fVar6)
+        param_2 = param_2 + (fVar6 - fVar4);
 
     if (param_4 == 0)
         return 1;
@@ -125,27 +148,27 @@ unsigned char RGE_Master_Static_Object::alignment(float* param_1, float* param_2
     fVar4 = 1.0f - (fVar4 - (float)(int)sVar7);
 
     if (fVar3 + fVar1 < 1.0f) {
-        fVar1 = *param_1;
+        fVar1 = param_1;
     } else if (fVar1 <= fVar3) {
-        fVar1 = *param_1 - (1.0f - fVar3);
+        fVar1 = param_1 - (1.0f - fVar3);
     } else {
-        fVar1 = (1.0f - fVar1) + *param_1;
+        fVar1 = (1.0f - fVar1) + param_1;
     }
 
     if (1.0f <= fVar4 + fVar2) {
         if (fVar4 < fVar2) {
-            fVar3 = *param_2;
-            *param_1 = fVar1;
-            *param_2 = (1.0f - fVar2) + fVar3;
+            fVar3 = param_2;
+            param_1 = fVar1;
+            param_2 = (1.0f - fVar2) + fVar3;
             return 1;
         }
-        fVar2 = *param_2;
-        *param_1 = fVar1;
-        *param_2 = fVar2 - (1.0f - fVar4);
+        fVar2 = param_2;
+        param_1 = fVar1;
+        param_2 = fVar2 - (1.0f - fVar4);
         return 1;
     }
-    fVar2 = *param_2;
-    *param_1 = fVar1;
-    *param_2 = fVar2;
+    fVar2 = param_2;
+    param_1 = fVar1;
+    param_2 = fVar2;
     return 1;
 }

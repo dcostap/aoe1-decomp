@@ -16,6 +16,10 @@
 // final best: retain the clean typed source and direct secondary-call offsets;
 // remaining drift is localized to VC5 scheduling of the two secondary helper
 // call argument additions and the resulting late tail displacement.
+// fresh pass: coordinate temporaries, operand/order variants, aliases, and
+// function-scope tile conversions all emitted the same 705-byte code.
+// precomputing both neighbor pairs was worse: 0x50 frame and 723 bytes; restored.
+// donor polymorphic static/player declarations were codegen-neutral; restored.
 
 #include <math.h>
 

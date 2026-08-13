@@ -21,6 +21,12 @@
 //   also codegen duplicates; they remain diagnostic evidence only.
 // - /GX balance-shape lab: a named product temporary plus compact positive
 //   clamps produced the exact 2887-byte size and exact balance focus range.
+// - explicit remainder guards with a separate retained type-68 local restored
+//   the 730-byte diagnostic basin but added 16 bytes after the target boundary;
+//   rolled back because structural size is authoritative.
+// - compact arithmetic with a separate retained local, hoisted product and
+//   remainder locals, and the exact setupSoldierGroups scalar declaration order
+//   all emitted the clean 745-byte codegen group; no new structural lead.
 // - current best is still non-exact: 745 positional diff bytes, 94.07% shape,
 //   70.87% exact blocks, 93/93 ordered calls, and frame 0x28 versus 0x2C.
 //   Remaining lead is the real local-lifetime/register basin around the target
@@ -193,13 +199,13 @@ public:
 
 void TribeTacticalAIModule::setupBoatGroups()
 {
+    ManagedArray_int groupsToRemove;
     int i;
     int numEGroups;
-    int numPotentialAGroups;
     int numPotentialEGroups;
+    int numPotentialAGroups;
     int numDGroups;
     int numAGroups;
-    ManagedArray_int groupsToRemove;
     TacticalAIGroup* sentinel;
     TacticalAIGroup* group;
 
@@ -342,7 +348,9 @@ next_group:
     }
     else {
         numPotentialEGroups = this->warBoats.numberValue;
-        if (numPotentialEGroups >= this->sn[0x3a]) numPotentialEGroups = this->sn[0x3a];
+        if (numPotentialEGroups >= this->sn[0x3a]) {
+            numPotentialEGroups = this->sn[0x3a];
+        }
         int remaining = this->warBoats.numberValue - numPotentialEGroups;
         if (remaining > 0) {
             numEGroups = remaining < this->sn[0x43] ? remaining : this->sn[0x43];
