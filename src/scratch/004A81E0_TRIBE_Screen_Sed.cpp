@@ -5,91 +5,366 @@
 // 3: /Od /GX probe reaches exact 1381-byte size but is wrong debug-frame basin (EBP frame prologue, 85.2281% positional / 123.7509% edit) and was rolled back to /O2 /GX.
 // 4: current behavior surface includes original major effects: TScreenPanel base ctor, vtable/member initialization, init_module_variables, debug_timeGetTime probes, global world age/state call, setup and failure d8 path, name compare for autosave-ish flag, UI panel allocations, scenario name handling, setup page calls, final scenario mode and game panel calls.
 // 5: remaining gap is broad constructor/source-context mismatch: original is hand-scheduled VC5 /O2 EH constructor with 0x210 frame, two 260-byte stack buffers, precise allocation temp/EH states, inline string compare/copy loops and many concrete typed calls; current source collapses much of that through high-level/fake helper surfaces, leaving /O2 far under-size. Not accepted_drift-safe.
+// 6: replaced unsupported panel/view/world facades with the proven
+// TScreenPanel, TRIBE_Main_View, RGE_Diamond_Map_View, TMessagePanel, TPanel,
+// RGE_Base_Game, and RGE_Game_World ownership surfaces.  The baseline restored
+// the original 0x210 EH frame, 0x380/0x16C/0x380/0xF4 allocation sizes, and
+// all 49 ordered calls.
+// 7: corrected the RGE_Base_Game and RGE_Diamond_Map field offsets from binary
+// evidence.  This restored the draw area, registry, map-save area, and view
+// links without adding raw offset plumbing.
+// 8: changed the scenario player scan to a natural bounded for loop.  This
+// removed the compiler-generated duplicate call site and restored 1381 bytes,
+// 49 calls, and the original call order.  Remaining drift is localized around
+// EH/vtable relocation bytes and the branch before the default-player path.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
-extern "C" int __cdecl stricmp(const char*, const char*);
-
-class TScreenPanel { public: int fieldD8; TScreenPanel(char*); int setup(void*,int,int,int,int,void*,char*); };
-class TObjectPanel { public: int fieldD8; int setup(int,int,int,int,int,void*,void*,char*); int link(int,int,int,int,int,int); };
-class TView { public: int fieldD8; int setup(void*,void*,void*,void*,void*,void*,void*); };
-class RGE_View { public: int fieldD8; int setup(int,int,int,int,int,void*,void*); void load_map(int,int); };
-class PanelF4 { public: int fieldD8; int setup(void*,void*,void*,void*,void*,void*,void*); };
-class ScenarioInfo { public: void setName(char*); int playerValid(int); };
-class P5B8 { public: void set_line(int); };
-class GamePanel { public: void a(int); void b(int); };
-class Scenario { public: char gap[0x5c]; void* info; };
-class World { public: char gap28[0x28]; void* thing28; char gap4c[0x4c-0x2c]; void* thing4c; char gap1ac[0x1ac-0x50]; void* thing1ac; char gapA20[0xA20-0x1B0]; void* thingA20; virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(int); void* make(int); };
-extern World* g_world;
+extern "C" char* __cdecl strstr(const char*, const char*);
 extern "C" unsigned long debug_timeGetTime(char*, int);
+
+class TDrawArea;
+class TRegistry;
+class RGE_Font;
+class RGE_Game_World;
+class RGE_Scenario;
+class RGE_Map;
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    char gap_04[0x1C];
+    TDrawArea* render_area;
+    char gap_24[0xB4];
+    int setup_error;
+    char gap_DC[0x18];
+    TPanel();
+    void set_help_info(long, long);
+    void set_curr_child(TPanel*);
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_F4[0x384];
+    void setup_shadow_area(int);
+};
+
+class TScreenPanel : public TEasy_Panel {
+public:
+    TScreenPanel(char*);
+    virtual ~TScreenPanel();
+    long setup(TDrawArea*, char*, long, int);
+};
+
+class TRIBE_Main_View;
+class RGE_Diamond_Map_View;
+
+class RGE_View : public TPanel {
+public:
+    char gap_F4[0x26C];
+    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char,
+               int, char*);
+};
+
+class RGE_Main_View : public RGE_View {
+public:
+    RGE_Diamond_Map_View* map_view;
+    unsigned long last_mouse_scroll_time;
+    int mouse_scrolling;
+    long mouse_last_x;
+    long mouse_last_y;
+    unsigned long last_key_scroll_time;
+    int key_scrolling;
+    void* save_player;
+    RGE_Main_View();
+    virtual ~RGE_Main_View();
+};
+
+class TRIBE_Main_View : public RGE_Main_View {
+};
+
+class RGE_Diamond_Map : public TPanel {
+public:
+    void* world;
+    void* player;
+    void* map;
+    int all_visible;
+    int render_all;
+    long mouse_last_x;
+    long mouse_last_y;
+    int repos_mouse;
+    char gap_114[0x10];
+    void* last_player;
+    void* map_image_lines;
+    void* map_tile_rows;
+    char gap_130[0x20];
+    void* main_view;
+    int scrolling;
+    char gap_158[4];
+    int draw_objects_mode;
+    unsigned long cur_player_bit;
+    int own_save_area;
+    TDrawArea* save_area;
+    virtual ~RGE_Diamond_Map();
+    long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char,
+               int, TDrawArea*);
+    int set_bitmap(char*, long);
+};
+
+class RGE_Diamond_Map_View : public RGE_Diamond_Map {
+public:
+    RGE_Diamond_Map_View();
+    virtual ~RGE_Diamond_Map_View();
+};
+
+class RGE_Font {
+public:
+    void* font;
+    long font_wid;
+    long font_hgt;
+};
+
+class TMessagePanel : public TPanel {
+public:
+    char gap_F4[0x28C];
+    TMessagePanel(void*, long, long);
+};
+
+class TDropDownPanel : public TPanel {
+public:
+    void set_line(long);
+};
+
+class RGE_Scenario {
+public:
+    void Set_scenario_name(char*);
+    int Get_player_Active(int);
+};
+
+class RGE_Map {
+public:
+    void set_map_visible(unsigned char);
+    void set_map_fog(unsigned char);
+};
+
+class RGE_Game_World {
+public:
+    char gap_00[0x28];
+    RGE_Map* map;
+    char gap_2C[0x30];
+    RGE_Scenario* scenario;
+};
+
+class RGE_Base_Game {
+public:
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void set_game_mode(int);
+    char gap_04[0x48];
+    TDrawArea* draw_area;
+    char gap_50[0x15C];
+    TRegistry* registry;
+    char gap_1B0[0x244];
+    RGE_Game_World* world;
+    char gap_3F8[0x628];
+    TDrawArea* map_save_area;
+    RGE_Font* get_font(int);
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+class TRegistry {
+public:
+    int RegGetInt(int, char*);
+};
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
-    char gap0[0x478-sizeof(TScreenPanel)];
-    int field478; char gap47c[4]; void* selectedObj; void* destObj; float px1,py1,px2,py2; int field498; int field49c; char gap4a0[4]; int field4a4,field4a8,currentVictory,field4b0,field4b4; short field4b8; int field4bc; char flag4c0,flag4c1; char gap4c2[6]; TObjectPanel* main_view; TView* view2; RGE_View* view3; PanelF4* panel4;
-    char gap4d8[0x5B8-0x4D8]; void* p5b8; char gap5bc[0x928-0x5BC]; Scenario* scenario; int t0,t1,t2,t3,t4,t5,t6;
-    TRIBE_Screen_Sed(char* file, int mode);
-    void init_module_variables(); int setup(int,int,int,int,int,void*,void*); void setup_popup_help(int); void init_view_stuff();
-    void setup_multi_pages(int,int); void setup_player_pages(int,int); void setup_map_pages(int); void setup_victory_pages(int,int); void setup_diplomacy_pages(int,int); void set_player(int,int,int); void setup_tech_pages(int); void setup_unit_pages(int,int); void setup_options_page(int); void set_scenario_mode(int); void post_setup(void*); void final_setup(); void load_victory_cond_from_scenario();
+    int is_multi_player;
+    char gap_47C[4];
+    void* SelectedObject;
+    void* DestinationObject;
+    float px1, py1, px2, py2;
+    int CurrentVictory;
+    int CurrentPlayer;
+    char gap_4A0[4];
+    int scenario_mode;
+    int map_type;
+    int mp_victory_type;
+    int brush_size;
+    int paint_type;
+    short player_num;
+    char gap_4BA[2];
+    int message_type;
+    unsigned char need_to_save_flag;
+    unsigned char valid_save_spot_flag;
+    char gap_4C2[6];
+    TRIBE_Main_View* main_view;
+    RGE_Diamond_Map_View* map_view;
+    TMessagePanel* message_panel;
+    TPanel* bottom_panel;
+    char gap_4D8[0x5B8 - 0x4D8];
+    TDropDownPanel* player_number_list;
+    char gap_5BC[0x928 - 0x5BC];
+    RGE_Game_World* world;
+    int update_interval;
+    unsigned long last_update_time;
+    int map_redraw_interval;
+    unsigned long last_map_redraw_time;
+    int changed_system_colors;
+    int save_text_color;
+    int save_window_color;
+
+    virtual ~TRIBE_Screen_Sed();
+    TRIBE_Screen_Sed(char*, int);
+    void init_module_variables();
+    int command_new_map(char*, int, int, int, int, int);
+    void create_all_buttons_etc();
+    void set_player_active(short, int);
+    void SavePlayerActiveStatus();
+    void position_panels();
+    void set_panel_info();
+    void set_map_type(int, int);
+    void set_mp_victory_type(int, int);
+    void set_brush_size(int);
+    void set_paint_type(int, int);
+    void set_player(short, unsigned char, unsigned char);
+    void set_unit_player(short);
+    void set_message_type(int, int);
+    void set_scenario_mode(int);
+    void set_unit(short);
 };
 
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0x584414)
 {
     char name[260];
     char temp_name[260];
-    this->fieldD8 = 0;
-    this->field478 = 0;
-    this->field4a4 = 0; this->field4a8 = 0; this->currentVictory = 2;
-    this->field4b0 = 0; this->field4b4 = 0; this->field4b8 = 1; this->field4bc = 0;
-    this->selectedObj = 0; this->destObj = 0; this->field49c = 0; this->flag4c0 = 0; this->flag4c1 = 0;
-    *(int*)this = 0x5739C0;
+    this->is_multi_player = 0;
+    this->scenario_mode = 0;
+    this->map_type = 0;
+    this->mp_victory_type = 2;
+    this->brush_size = 0;
+    this->paint_type = 0;
+    this->player_num = 1;
+    this->message_type = 0;
+    this->SelectedObject = 0;
+    this->DestinationObject = 0;
+    this->CurrentPlayer = 0;
+    this->need_to_save_flag = 0;
+    this->valid_save_spot_flag = 0;
     this->init_module_variables();
-    this->t0 = debug_timeGetTime((char*)0x586CB0,0x117);
-    this->t1 = 1000;
-    this->t2 = debug_timeGetTime((char*)0x586CB0,0x11a);
-    this->t4 = this->t5 = this->t3 = this->field498 = 0;
-    g_world->f3(7);
-    if (!this->setup(mode,0,0,0x90,0x90,(void*)1,(void*)1)) { this->fieldD8 = 1; return; }
-    sprintf(name,(char*)0x586CA0, ((char*)g_world->thing1ac));
-    if (file && strcmp(file,name)==0) this->flag4c0 = 1;
-    if (!this->TScreenPanel::setup(g_world->thing4c,0,0xC387,1,0,(void*)0x586C98,(char*)0)) { this->fieldD8 = 1; return; }
-    this->setup_popup_help(0);
-    TObjectPanel* p = new TObjectPanel;
-    this->main_view = p;
-    if (!p || p->fieldD8) { this->fieldD8 = 1; return; }
-    if (!p->setup((int)this->gap0,0,0,0,0xA1,this,g_world->thing28,(char*)0x586334)) { this->fieldD8 = 1; return; }
-    TView* v = new TView;
-    this->view2 = v;
-    if (!v || v->fieldD8) { this->fieldD8 = 1; return; }
-    if (!v->setup(g_world->thingA20,0,0,0,(void*)0xA1,this,g_world->thing28)) { this->fieldD8 = 1; return; }
-    v->setup((void*)0x586C8C,(void*)0xC4E1,0,0,0,0,0);
-    this->main_view->link((int)this->view2, -1, -1, 0,0,0);
-    void* made = g_world->make(0xb);
-    RGE_View* rv = new RGE_View;
-    this->view3 = rv;
-    if (!rv || rv->fieldD8) { this->fieldD8 = 1; return; }
-    if (!rv->setup(0,0,0,0,0,this->main_view,g_world->thing28)) { this->fieldD8 = 1; return; }
-    PanelF4* f = new PanelF4;
-    this->panel4 = f;
-    if (!f || f->fieldD8) { this->fieldD8 = 1; return; }
-    if (!f->setup(0,0,0,0,0,this,g_world->thing28)) { this->fieldD8 = 1; return; }
-    this->init_view_stuff();
-    if (file && *file) {
-        if (stricmp(file,(char*)0x586104)==0 || stricmp(file,(char*)0x586C84)!=0) {
-            char* pch=file; int i=0; while (*pch!='.') temp_name[i++]=*pch++; temp_name[i]=0;
-            sprintf(file,(char*)0x586840,temp_name);
-            ((ScenarioInfo*)this->scenario->info)->setName(file);
-        }
-        int idx=0; while (((ScenarioInfo*)this->scenario->info)->playerValid(idx)) { if (++idx>=8) break; }
-        ((P5B8*)this->p5b8)->set_line(idx-1);
-        this->final_setup();
-    } else {
-        this->setup_multi_pages(0,1); this->setup_multi_pages(1,1); ((P5B8*)this->p5b8)->set_line(1); this->final_setup();
+    this->update_interval = 200;
+    this->last_update_time = debug_timeGetTime((char*)0x586CB0, 0x117);
+    this->map_redraw_interval = 1000;
+    this->last_map_redraw_time = debug_timeGetTime((char*)0x586CB0, 0x11A);
+    this->save_text_color = 0;
+    this->save_window_color = 0;
+    this->changed_system_colors = 0;
+    this->CurrentVictory = 0;
+    rge_base_game->set_game_mode(7);
+    if (!this->command_new_map(file, mode, 0, 0x90, 0x90, 1)) {
+        this->setup_error = 1;
+        return;
     }
-    this->post_setup(this->panel4);
-    this->load_victory_cond_from_scenario();
-    this->setup_player_pages(1,0); this->setup_map_pages(1); this->setup_victory_pages(1,0); this->setup_diplomacy_pages(1,0); this->set_player(1,0,0); this->setup_tech_pages(1); this->setup_unit_pages(1,0); this->setup_options_page(1);
-    this->set_scenario_mode(-1);
-    ((GamePanel*)*(void**)((char*)this->scenario+0x28))->a(1);
-    ((GamePanel*)*(void**)((char*)this->scenario+0x28))->b(0);
+    int game_file_number = rge_base_game->registry->RegGetInt(0, (char*)0x57FA58);
+    sprintf(temp_name, (char*)0x586CA0, game_file_number);
+    if (file && strcmp(file, temp_name) == 0)
+        this->need_to_save_flag = 1;
+    if (!this->TScreenPanel::setup(rge_base_game->draw_area,
+                                   (char*)0x586C98, 0xC387, 1)) {
+        this->setup_error = 1;
+        return;
+    }
+    this->TEasy_Panel::setup_shadow_area(0);
+    this->main_view = new TRIBE_Main_View;
+    if (this->main_view == 0 || this->main_view->setup_error != 0) {
+        this->setup_error = 1;
+        return;
+    }
+    if (!this->main_view->RGE_View::setup(this->render_area, this,
+                                          0, 0, 0, 0, 0xA1, 0,
+                                          (char*)0x586334)) {
+        this->setup_error = 1;
+        return;
+    }
+    this->map_view = new RGE_Diamond_Map_View;
+    if (this->map_view == 0 || this->map_view->setup_error != 0) {
+        this->setup_error = 1;
+        return;
+    }
+    if (!this->map_view->RGE_Diamond_Map::setup(
+            this->render_area, this, 0, 0, 0, 0, 0xA1, 0,
+            rge_base_game->map_save_area)) {
+        this->setup_error = 1;
+        return;
+    }
+    this->map_view->set_bitmap((char*)0x586C8C, 0xC4E1);
+    this->map_view->main_view = this->main_view;
+    this->main_view->map_view = this->map_view;
+    this->main_view->set_help_info(-1, -1);
+    RGE_Font* font = rge_base_game->get_font(0x0B);
+    this->message_panel = new TMessagePanel(font->font, font->font_wid,
+                                             font->font_hgt);
+    if (this->message_panel == 0 || this->message_panel->setup_error != 0) {
+        this->setup_error = 1;
+        return;
+    }
+    if (!this->message_panel->setup(this->render_area, this->main_view,
+                                    0, 0, 0, 0, 0)) {
+        this->setup_error = 1;
+        return;
+    }
+    this->bottom_panel = new TPanel;
+    if (this->bottom_panel == 0 || this->bottom_panel->setup_error != 0) {
+        this->setup_error = 1;
+        return;
+    }
+    if (!this->bottom_panel->setup(this->render_area, this,
+                                   0, 0, 0, 0, 0)) {
+        this->setup_error = 1;
+        return;
+    }
+    this->create_all_buttons_etc();
+    int idx;
+    if (file && *file) {
+        if (strstr(file, (char*)0x586104) != 0 ||
+            strstr(file, (char*)0x586C84) != 0) {
+            char* source = file;
+            int i = 0;
+            do {
+                name[i++] = source[0];
+                source++;
+            } while (source[0] != '.');
+            name[i] = 0;
+            sprintf(file, (char*)0x586840, name);
+            this->world->scenario->Set_scenario_name(file);
+        }
+        for (idx = 0; idx < 8; ++idx) {
+            if (this->world->scenario->Get_player_Active(idx) == 0)
+                break;
+        }
+        --idx;
+    } else {
+        this->set_player_active(0, 1);
+        this->set_player_active(1, 1);
+        idx = 1;
+    }
+    this->player_number_list->set_line(idx);
+    this->SavePlayerActiveStatus();
+    this->set_curr_child(this->bottom_panel);
+    this->position_panels();
+    this->set_panel_info();
+    this->set_map_type(0, 0);
+    this->set_mp_victory_type(0, 0);
+    this->set_brush_size(1);
+    this->set_paint_type(0, 0);
+    this->set_player(1, 0, 0);
+    this->set_unit_player(1);
+    this->set_message_type(0, 0);
+    this->set_scenario_mode(1);
+    this->set_unit(-1);
+    this->world->map->set_map_visible(1);
+    this->world->map->set_map_fog(0);
 }

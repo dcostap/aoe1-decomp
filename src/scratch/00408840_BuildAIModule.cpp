@@ -8,26 +8,55 @@
 // 5: adjusted local name buffer to recover original 0x16C EH frame; first mismatch moved after base/sentinel construction.
 // 6: tried staging fd into a local after header initialization; VC5 still schedules fd load before zero/vptr/list-link stores.
 // 7: remaining mismatch is broad constructor scheduling/EH-state and local-slot order: original zeroes list fields before loading fd, then writes vptr/list links and calls rge_read; rebuilt hoists fd/load/read setup earlier and interleaves differently despite exact size. Not accepted_drift-safe.
+// 8: added the same-TU AIModule base layout, virtual BuildItem/BuildAIModule destructors, destructible ManagedArray<int>, and natural BuildItem allocation; corrected virtual padding back to the proven 0xB0 object size. Diff improved, but frame and five float conversions remain.
+// Main review removed the old manual derived-vptr store and kept compiler-owned
+// constructor setup. ManagedArray now uses its natural array-delete form.
 
 #include <string.h>
+#include <stdlib.h>
 
 typedef unsigned char uchar;
 void* __cdecl operator new(unsigned int);
-inline void* operator new(unsigned int, void* p) { return p; }
 extern "C" void rge_read(int fd, void* dst, int size);
 extern "C" float save_game_version;
 extern "C" float version_3_1;
 extern "C" float version_2_2;
 
-class AIModule { public: AIModule(char*, int, int, void*); virtual ~AIModule(); };
-class ManagedArray { public: int* value; int numberValue; int desiredNumberValue; int maximumSizeValue; };
+class AIModule {
+public:
+    virtual ~AIModule();
+    AIModule(const char*, int, int, void*);
+    char gap_04[0xEC];
+};
+
+template <class T>
+class ManagedArray {
+public:
+    T* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+
+    ManagedArray() {}
+    ~ManagedArray() {
+        if (value != 0) {
+            delete[] value;
+            value = 0;
+        }
+        numberValue = 0;
+        desiredNumberValue = 0;
+        maximumSizeValue = 0;
+    }
+};
+
 class BuildItem {
 public:
-    char pad[0x6C];
+    char pad[0x68]; // vptr at +0, next/prev remain at +0x6C/+0x70
     BuildItem* next;
     BuildItem* prev;
     char pad_tail[0x3C];
     BuildItem();
+    virtual ~BuildItem();
     BuildItem(int z, uchar permanentSkip, int y, int a, int b, int local, char* name, float x, float nskip, float gameID, int place, int skip, int num, int from);
     void setBuilt(int); void setInProgress(int); void setBuildAttempts(int); void setNumberBuilds(int); void setBuildCap(int); void setSkipCycles(int); void setPermanentSkip(uchar);
     void setSkip(int); void setGameID(int); void setX(float); void setY(float); void setZ(float);
@@ -35,7 +64,6 @@ public:
 
 class BuildAIModule : public AIModule {
 public:
-    char gap04[0xEC];
     BuildItem buildList; // +F0
     int buildListLengthValue; // +1A0
     char buildListNameValue[0x101]; // +1A4
@@ -43,8 +71,9 @@ public:
     char currentBuildItemRequestedValue[0x101]; // +3A6
     char nextBuildItemRequestedValue[0x101]; // +4A7
     int numberItemsIntoBuildListValue; // +5A8
-    ManagedArray typesToIgnore; // +5AC-ish
+    ManagedArray<int> typesToIgnore; // +5AC-ish
     BuildAIModule(int p1, int fd);
+    virtual ~BuildAIModule();
 };
 
 BuildAIModule::BuildAIModule(int p1, int fd)
@@ -82,7 +111,6 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     this->typesToIgnore.numberValue = 0;
     this->typesToIgnore.desiredNumberValue = 0;
     this->typesToIgnore.maximumSizeValue = 0;
-    *(void**)this = (void*)0x56E738;
     this->buildList.next = &this->buildList;
     this->buildList.prev = &this->buildList;
     int file = fd;
@@ -138,8 +166,7 @@ BuildAIModule::BuildAIModule(int p1, int fd)
             }
             rge_read(file, &typeID, 4);
             rge_read(file, &terrainSet, 1);
-            BuildItem* item = (BuildItem*)operator new(0xb0);
-            if (item != 0) item = new (item) BuildItem((int)z, (uchar)permanentSkip, (int)y, 1, 0, local_11c, name + 4, x, (float)numberSkipCycles, (float)gameID, placeOnElevation, skipValue, numberBuilds, buildFrom);
+            BuildItem* item = new BuildItem((int)z, (uchar)permanentSkip, (int)y, 1, 0, local_11c, name + 4, x, (float)numberSkipCycles, (float)gameID, placeOnElevation, skipValue, numberBuilds, buildFrom);
             item->setBuilt(inProgressValue);
             item->setInProgress(buildAttemptsValue);
             item->setBuildAttempts(terrainAdjOne);

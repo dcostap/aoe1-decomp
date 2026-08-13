@@ -14,6 +14,7 @@
 // try 13: restored direct natural returns and member access after the shared-exit experiment.
 // try 14: used a natural for-loop; bottom jl shape improved and size fell to 566B.
 // try 15: modeled BaseItem inheritance so inherited setters use the original BaseItem symbols; bytes stayed unchanged.
+// try 16: normal-object branch first increased size to 571B; shape improved but positional diff worsened, so restored the clean candidate.
 // BLOCKER: current natural source is 566B versus 542B. Original starts push -1/handler then mov fs and uses EBX=this with a stack home. VC5 emits mov fs first and uses EBP=this. The remaining EH/return topology and register basin are broad.
 
 #include <string.h>

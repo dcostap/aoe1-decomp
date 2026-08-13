@@ -14,6 +14,8 @@
 // natural shape tests OK directly and assigns the cancel result; it reaches 420/420 bytes,
 // 10/10 ordered calls, 97.14% shape, 88 differing bytes.  Remaining drift starts at the
 // three button-argument stack displacements after scroll_cur_line and the downstream cancel tail.
+// attempt 7: conditional result assignment around the cancel create_button emitted duplicate
+// code; restored the separate result assignment and retained the clean source.
 
 class TDrawArea;
 

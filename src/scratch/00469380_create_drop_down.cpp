@@ -26,6 +26,12 @@
 // neutral. Best current output is exact size with 21 strict bytes remaining:
 // early leak exits target the result epilogue differently, and the final free
 // cleanup schedules stack restoration before the failure/result load.
+// 17: direct allocation-failure returns duplicated the EH epilogue and grew
+// the function by 33 bytes; restored the shared leak exits.
+// 18: a natural initialized result local also duplicated the epilogue and
+// grew the frame; carrying the second calloc value had the same blocker.
+// 19: negated and ternary failure predicates emitted the unchanged 21-byte
+// tail; restored the clean == 0 spelling.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>

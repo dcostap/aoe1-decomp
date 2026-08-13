@@ -10,6 +10,9 @@
 // Current pause: remaining drift is dominated by standalone unresolved data/string relocations (extern globals and literals emit zero-address placeholders instead of original absolute data); raw absolute-address macros are disallowed by policy. A localized short-register difference remains in TRIBE_World::cheat.
 // Main-agent audit removed the diagnostic +4 formatting-buffer window and restored
 // compiler-owned polymorphic world ownership. The direct buffer is authoritative.
+// 13: tested the repeated donor RGE_Base_Game* type for 0062C574 with explicit
+// TRIBE_Game casts; the emitted code was a duplicate, so the direct TRIBE_Game*
+// declaration was restored. Standalone compilation cannot bind this data symbol.
 
 #include <stdio.h>
 

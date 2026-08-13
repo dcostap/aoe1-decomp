@@ -31,6 +31,9 @@
 //   diff from 250 to 12 bytes and aligned every field store, but VC5 still
 //   emitted the derived vptr before highlight_text_color1; restored the
 //   canonical body form.  The remaining gap is compiler-only vptr scheduling.
+// - Mirrored donor 00436830 with inline empty TPanel/TTextPanel destructors
+//   and an out-of-line TPanel constructor after the derived body; codegen was
+//   unchanged, so the full virtual surface remains the evidence-backed lead.
 
 struct tagRECT;
 

@@ -14,6 +14,9 @@
 // - liveness: top-declared i/j/k reduced the gap to 5 bytes; moving k's copy
 //   before the guard reverted to the 6-byte basin.
 // - context: top-declared random x/y locals retain the 5-byte basin.
+// - control-flow: reversing the inner bound to `shallows_num > j` emitted
+//   cmp eax,ebp / jle and widened the gap to 6 bytes; restored the canonical
+//   `j < shallows_num` form.
 // - final: calls, layout, frame, CFG, and all 418 bytes of size align. Remaining
 //   drift is five scheduling bytes: mov edi,ebp before jge and cmp ebx,eax.
 

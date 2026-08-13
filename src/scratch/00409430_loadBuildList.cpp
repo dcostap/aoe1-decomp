@@ -1,106 +1,215 @@
-// 00409430 TribeBuildAIModule::loadBuildList
-// aibldmod.cpp
-// Attempt log:
-// try 1: broad reconstruction from packet: copy filename, open/parse build-list file, create build items.
-// try 2: modeled VC5 constructor-like EH context with /GX because original has EH registration and operator-new state for BuildItem allocations.
-// try 3: modeled filename copy to this+0x1A4 via strncpy(...,0x3F), empty/default filename rejection, and initial log/open path.
-// try 4: modeled local stack buffers line/token/label around 260 bytes each, matching original's large 0x168 frame only approximately.
-// try 5: modeled file open/read loop with getline(line,0x100,file), comment line check for `//`, sscanf dispatch, and command switch.
-// try 6: modeled command cases mapping to build item type 0/1/2/3/4/5/6 and optional extra-field sscanf.
-// try 7: modeled duplicate seen-id scan at +0x5AC/+0x5B0/+0x5B8 for type 0 entries.
-// try 8: modeled object-rules lookup adjustment only as a placeholder; exact unit-def size/range and float fields remain missing.
-// try 9: modeled BuildItem allocation (0xB0), constructor-like args, list linking at +0x6C/+0x70, buildCount increment, and setName call.
-// try 10: fixed VC5 compile issues: removed explicit operator-new declaration and scoped loop variable to avoid goto crossing initialization.
-// try 11: /GX and default flags both compile to .text 1008B vs original 1015B; left default rsp because /GX did not improve size. No full byte diff available.
-// left in scratch: broad parser/allocator behavior exists, but exact local/EH/object surfaces and rule lookup are unresolved; rebuilt is 7B size-short. No accepted_drift: no comparable localized diff.
+// 00409430 BuildAIModule::loadBuildList
+// aibldmod.cpp:313-480
+//
+// Clean typed reset: use the original BuildAIModule parser surface, FILE
+// streams, RGE master-object radii, and the BuildItem sentinel links.
+//
+// Baseline lead: the previous file used a TribeBuildAIModule owner, a fake
+// LineFile, wrong numeric opcodes, and a fake setName call.  The executable
+// instead parses A/B/C/E/G/L/R/T/U and calls BuildItem::setBuildCap.
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <io.h>
 
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" int __cdecl sscanf(const char*, const char*, ...);
-extern "C" char* __cdecl strncpy(char*, const char*, unsigned int);
-extern "C" void __cdecl free(void*);
-
-class BuildItem { public: char gap[0xB0]; BuildItem(int,int,float,float,int,int,int,int,int,int,int,int,int,int,int); void setName(char*); };
-class LineFile { public: int getline(char*, int, void*); };
-class TribeBuildAIModule {
+class RGE_Master_Static_Object {
 public:
-    char gap0[0xF0];
-    char listHook[0x70];    // +f0 roughly
-    void* tail;             // +160
-    char gap164[0x1A0-0x164];
-    int buildCount;         // +1a0
-    char fileName[0x40];    // +1a4
-    char gap1e4[0x5AC-0x1E4];
-    int* seenIds; int seenCount; char gap5b4[4]; int seenCap;
-
-    int loadBuildList(const char* name, void* rules, int, int, int);
-    void log(const char*, ...);
-    void clearBuildList();
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x2C];
+    float radius_x;                         // +0x30
+    float radius_y;                         // +0x34
 };
 
-int TribeBuildAIModule::loadBuildList(const char* name, void* rules, int p3, int p4, int p5) {
-    char line[260];
-    char token[260];
-    char label[260];
-    char c1,c2;
-    int id, count, type, extra;
-    float x,y;
-    void* file;
-    char* p;
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+    char gap_04[0x1E];
+    short master_object_num;                // +0x22
+    RGE_Master_Static_Object** master_objects; // +0x24
+};
 
-    strncpy(fileName, name, 0x3f);
-    if (strcmp(fileName, (const char*)0x57F350) == 0 || !name || !*name) return 0;
-    log((const char*)0x57F328, name);
-    sprintf(line, (const char*)0x57F324, name);
-    file = (void*)sscanf(line, (const char*)0x57F320);
-    if (!file) { log((const char*)0x57F308); return 0; }
-    log((const char*)0x57F2D8);
-    if (buildCount > 0) clearBuildList();
-    buildCount = 0;
+class BaseItem {
+public:
+    virtual ~BaseItem();
+    char gap_04[0x68];
+};
 
-    while (((LineFile*)file)->getline(line, 0x100, 0)) {
-        x = y = 1.5f;
-        id = -1;
-        if (sscanf(line, (const char*)0x57F2D0, &c2, &c1) == 2 && c2 == '/' && c1 == '/') continue;
-        count = 1; type = 0; extra = 0;
-        if (sscanf(line, (const char*)0x57F2C0, &c1, &id, &count, &x, &y, &extra, &type) < 2) continue;
-        switch (c1) {
-        case '0': type = 0; break;
-        case '1': sscanf(line, (const char*)0x57F2A8, &extra); type = 0; break;
-        case '2': type = 1; break;
-        case '3': type = 4; break;
-        case '4': type = 2; break;
-        case '5': sscanf(line, (const char*)0x57F2A8, &extra); type = 2; break;
-        case '6': type = 3; break;
-        case '7': type = 5; break;
-        case '8': type = 6; break;
-        default: continue;
+class BuildItem : public BaseItem {
+public:
+    BuildItem* next;                         // +0x6C
+    BuildItem* prev;                         // +0x70
+    char gap_74[0x3C];
+
+    BuildItem(int category, int typeID, int uniqueID, int number, int priority,
+              int buildFrom, char* name, float xSize, float ySize, float zSize,
+              int terrainSet, int adj0, int adj1, int elevation);
+    void setBuildCap(int value);
+};
+
+struct TypesToIgnore {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
+
+class AIModule {
+public:
+    virtual ~AIModule();
+    char gap_04[0xEC];
+    void logCommonHistory(char*, ...);
+};
+
+class BuildAIModule : public AIModule {
+public:
+    BuildItem buildList;                     // +0xF0
+    int buildListLengthValue;                // +0x1A0
+    char buildListNameValue[0x101];          // +0x1A4
+    char gap_2A5[0x307];                     // through +0x5AB
+    TypesToIgnore typesToIgnore;             // +0x5AC
+
+    void removeOldList();
+    virtual int loadBuildList(char*, RGE_Player*);
+};
+
+int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
+{
+    int typeID;
+    int quantity;
+    int buildFrom;
+    int fileIn;
+    char* buildListName;
+    char name[64];
+    char temp[256];
+    FILE* fp;
+    float ySize;
+    float xSize;
+    char commentTemp1;
+    char buildCategoryAsChar;
+    char commentTemp2;
+
+    buildListName = this->buildListNameValue;
+    strncpy(buildListName, filename, 0x3F);
+    if (strcmp(buildListName, "NONE") == 0 ||
+        filename == 0 || strlen(filename) == 0) {
+        goto no_build_list;
+    }
+
+    this->logCommonHistory("Trying to load build list in file '%s'.", filename);
+    sprintf(temp, "%s", buildListName);
+    fp = fopen(temp, "r");
+    if (fp == 0) {
+        this->logCommonHistory("  I cannot do it cap'n!");
+        return 0;
+    }
+
+    this->logCommonHistory("  File open successful, nuking any old items.");
+    if (this->buildListLengthValue > 0) {
+        this->removeOldList();
+    }
+    this->buildListLengthValue = 0;
+
+    while (fgets(temp, 0x100, fp) != 0) {
+        xSize = 1.5f;
+        ySize = 1.5f;
+        typeID = -1;
+        sscanf(temp, " %c%c", &commentTemp1, &commentTemp2);
+        if (commentTemp1 == '/' && commentTemp2 == '/') {
+            continue;
         }
-        if (type == 0) {
-            for (int i=0;i<seenCount && i<seenCap;i++) if (seenIds[i] == id) goto next;
+
+        sscanf(temp, " %c%d %s %d %d ", &buildCategoryAsChar,
+               &quantity, name, &buildFrom, &fileIn);
+
+        int buildCategory;
+        switch (buildCategoryAsChar) {
+        case '\n':
+            continue;
+        default:
+            continue;
+        case 'A':
+            buildCategory = 0;
+            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
+            break;
+        case 'B':
+            buildCategory = 0;
+            break;
+        case 'C':
+            buildCategory = 4;
+            break;
+        case 'E':
+            buildCategory = 5;
+            break;
+        case 'G':
+            buildCategory = 6;
+            break;
+        case 'L':
+            buildCategory = 3;
+            break;
+        case 'R':
+            buildCategory = 1;
+            break;
+        case 'T':
+            buildCategory = 2;
+            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
+            break;
+        case 'U':
+            buildCategory = 2;
+            break;
         }
-        if ((type == 0 || type == 2) && id >= 0) {
-            // rules lookup would adjust x/y from object data
-        }
-        {
-            int k;
-            for (k=0; k<count; ++k) {
-                BuildItem* item = new BuildItem(type, buildCount, 1, 0, id, (int)x, (int)y, extra, -1, -1, -1, 0, 0, 0, 0);
-                if (item) {
-                    ++buildCount;
-                    *(void**)((char*)item+0x6c) = &listHook;
-                    *(void**)((char*)item+0x70) = tail;
-                    *(void**)((char*)tail+0x6c) = item;
-                    tail = item;
-                    item->setName(token);
+
+        if (buildCategory == 0) {
+            int i;
+            for (i = 0; i < this->typesToIgnore.numberValue; ++i) {
+                if (i >= this->typesToIgnore.maximumSizeValue) {
+                    break;
+                }
+                if (this->typesToIgnore.value[i] == quantity) {
+                    goto next_line;
                 }
             }
         }
-next: ;
+
+        if ((buildCategory == 0 || buildCategory == 2) && quantity >= 0 &&
+            quantity < player->master_object_num &&
+            player->master_objects[quantity] != 0) {
+            RGE_Master_Static_Object* master = player->master_objects[quantity];
+            ySize = master->radius_y;
+            xSize = master->radius_x;
+        }
+        xSize += xSize;
+        ySize += ySize;
+
+        int i;
+        for (i = 0; i < buildFrom; ++i) {
+            BuildItem* item = new BuildItem(
+                buildCategory, quantity, this->buildListLengthValue,
+                1, 0, fileIn, name, xSize, ySize, 0.0f,
+                -1, -1, -1, 0);
+
+            ++this->buildListLengthValue;
+            item->next = &this->buildList;
+            BuildItem* oldTail = this->buildList.prev;
+            item->prev = oldTail;
+            oldTail->next = item;
+            item->setBuildCap(typeID);
+            this->buildList.prev = item;
+        }
+
+    next_line:
+        ;
     }
-    free(file);
-    if (strcmp(name, (const char*)0x57F2A0) == 0) return 0;
+
+    fclose(fp);
+    if (strstr(buildListName, ".tmp") != 0) {
+        unlink(buildListName);
+    }
+    return 1;
+
+no_build_list:
+    if (buildListName[0] == 0) {
+        strcpy(buildListName, "NULL");
+    }
+    this->logCommonHistory("There is no build list to load.");
     return 1;
 }

@@ -14,6 +14,9 @@
 //   the same 17-byte basin.  Narrow byte zone locals lost 10 bytes of size;
 //   a shared PathingSystem/goto tail widened the localized drift.  Restored
 //   the clean typed reconstruction; no ABI/call/behavior blocker found.
+// - Tried a natural direct comparison of the two zone-map results, supported
+//   by the decompiler's immediate uchar result evidence; it lost 10 bytes and
+//   changed the first result to BL.  Restored the named typed results.
 
 struct XYPoint {
     int x;

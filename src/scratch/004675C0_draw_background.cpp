@@ -3,113 +3,246 @@
 // Attempt log:
 // 1: Natural source from packet/decompiler, local TDrawArea/TShape surfaces.
 // 2: First natural build compiled but was size-short: configured 979 exceeds .text 976.
-// 3: Fixed TEasy_Panel layout by adding post-RECT gap so background_pos is +0x38, background_pic +0x204, background_pic2 +0x208, picture_style +0x318, use_bevels +0x31c, colors +0x320/+0x454/+0x455, shadow_area +0x46c.
-// 4: Implemented pre_draw/post_draw, shadow-area path with clear/copy/center/tile modes, fallback pic selection, background clear colors, shape Lock/minmax/draw, shadow-table/DrawShadowBox, and bevel Lock/DrawBevel3/Unlock.
+// 3: Initial layout scaffold used +0x38 as background_pos and +0x318 as picture_style, with the remaining TEasy_Panel fields at their proven offsets.
+// 4: Implemented the shadow-area path with clear/copy/center/tile modes, fallback pic selection, background clear colors, shape Lock/minmax/draw, shadow-table/DrawShadowBox, and bevel Lock/DrawBevel3/Unlock.
 // 5: Probed /GX and /Ob0: still size-short 976 bytes. Probed /Og- and /Od: exact 979 bytes but broad mismatch (~91.6% positional, first mismatch offset 0); flags removed.
 // 6: Added temporary volatile pad to recover exact size under /O2 for diagnostics; got exact 979 bytes but first mismatch offset 4 and broad 87.0% positional due artificial early stores; removed before final because it is not a valid match path.
 // 7: Remaining blocker is broad VC5 frame/local topology: natural C has the right field offsets and broad call surface but compiles 3 bytes short; exact-size diagnostic forms are broad from prologue.
+// 8: Reconstructed named TPanel -> TEasy_Panel ownership and typed TDrawArea/TShape/RGE_Color_Table surfaces. Corrected need_redraw at +0x38 and background_pos at +0x318, and renamed draw_setup/draw_finish virtual slots. Baseline is 973 bytes with the original control flow preserved.
 // GIVEUP: left in scratch; no accepted_drift because natural build is size-short and diagnostic exact-size variants are broad/prologue-different.
 
 typedef unsigned char uchar;
-struct RECT { long left, top, right, bottom; };
 
-class TDrawArea_004675C0 {
+struct tagRECT { long left, top, right, bottom; };
+typedef tagRECT RECT;
+
+class TDrawSystem;
+class DrawAreaNode;
+class IDirectDrawSurface;
+class TSpan_List_Manager;
+class RGE_Color_Table;
+class TShape;
+class TPanel;
+
+class TDrawArea {
 public:
-    char gap_00[0x18];
-    long Width;
-    long Height;
-    void Clear(RECT*, int);
+    TDrawSystem* DrawSystem;
+    void* Wnd;
+    uchar* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    int Width;
+    int Height;
+    int Pitch;
+    int Orien;
+    tagRECT ClipRect;
+    void* DrawDc;
+    IDirectDrawSurface* DrawSurface;
+    char SurfaceDesc[0x6C];
+    DrawAreaNode* Node;
+    char* Name;
+    uchar* LastBits;
+    int LastPitch;
+    void** DisplayOffsets;
+    void** CurDisplayOffsets;
+    void** FloatOffsets;
+    RGE_Color_Table* shadow_color_table;
+    TSpan_List_Manager* SpanList;
+    TSpan_List_Manager* CurSpanList;
+    int Float_X_Delta;
+    int Float_Y_Delta;
+    int DisplayOffsetsSz;
+    int FloatOffsetsSz;
+    int SystemMemOnly;
+    int UsingVidMem;
+    int UseTrans;
+    int IsPrimarySurface;
+    int Restored;
+    int ExtendedLines;
+    uchar TransColor;
+    uchar gap_FD[3];
+
+    void Clear(tagRECT*, int);
     uchar* Lock(char*, int);
     void Unlock(char*);
-    void Copy(TDrawArea_004675C0*, long, long, RECT*, int);
-    void SetShadowTable(void*);
-    void DrawShadowBox(long,long,long,long);
-    void DrawBevel3(long,long,long,long,uchar,uchar,uchar,uchar,uchar,uchar);
+    void Copy(TDrawArea*, long, long, tagRECT*, int);
+    void SetShadowTable(RGE_Color_Table*);
+    void DrawShadowBox(long, long, long, long);
+    void DrawBevel3(long, long, long, long, uchar, uchar, uchar, uchar, uchar, uchar);
 };
 
-class TShape_004675C0 {
+class TShape {
 public:
-    uchar shape_minmax(long*, long*, long*, long*, int);
-    uchar shape_draw(TDrawArea_004675C0*, long, long, int, uchar, uchar*);
+    uchar shape_minmax(long*, long*, long*, long*, long);
+    uchar shape_draw(TDrawArea*, long, long, long, uchar, uchar*);
 };
 
-class TEasy_Panel_004675C0 {
+class TPanel {
 public:
-    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24();
-    virtual void pre_draw(int);
-    virtual void post_draw();
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, uchar);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(uchar);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
 
-    char gap_04[8];
-    long x;
-    long y;
-    long width;
-    long height;
-    char gap_1C[4];
-    TDrawArea_004675C0* draw_area;
-    RECT rect;
-    char gap_34[4];
-    long background_pos; // +38
-    char gap_3C[0x1C8];
-    TShape_004675C0* background_pic; // +204
-    TShape_004675C0* background_pic2; // +208
-    char gap_20C[0x10C];
-    int picture_style; // +318
-    int use_bevels; // +31C
-    uchar bevel_color1; uchar bevel_color2; uchar bevel_color3; uchar bevel_color4; uchar bevel_color5; uchar bevel_color6;
-    char gap_326[0x126];
-    void* shadow_color_table; // +44C
-    char gap_450[4];
-    uchar background_color1; // +454
-    uchar background_color2; // +455
-    char gap_456[0x16];
-    TDrawArea_004675C0* shadow_area; // +46C
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panelNameValue;
+    TDrawArea* render_area;
+    tagRECT clip_rect;
+    int position_mode;
+    int need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    DrawAreaNode* node;
+    DrawAreaNode* first_child_node;
+    DrawAreaNode* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    void* clip_rgn;
+    tagRECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    uchar mouse_action;
+    uchar mouse_down_button;
+    uchar panel_type;
+    uchar color;
+    uchar fill_in_background;
+    uchar clip_to_parent;
+    uchar draw_rect2_flag;
+    uchar need_restore;
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    long ideal_width;
+    long ideal_height;
+    char info_file_name[260];
+    long info_id;
+    TShape* background_pic;
+    TShape* background_pic2;
+    void* palette;
+    char cursor_file[260];
+    long cursor_id;
+    int background_pos;
+    int use_bevels;
+    uchar bevel_color1;
+    uchar bevel_color2;
+    uchar bevel_color3;
+    uchar bevel_color4;
+    uchar bevel_color5;
+    uchar bevel_color6;
+    uchar pad_326[2];
+    unsigned long text_color1;
+    unsigned long text_color2;
+    unsigned long focus_color1;
+    unsigned long focus_color2;
+    unsigned long state_color1;
+    unsigned long state_color2;
+    char popup_info_file_name[260];
+    long popup_info_id;
+    TShape* button_pics;
+    RGE_Color_Table* shadow_color_table;
+    long shadow_amount;
+    uchar background_color1;
+    uchar background_color2;
+    uchar pad_456[2];
+    int enable_ime;
+    uchar help_mode;
+    uchar pad_45D[3];
+    int stock_brush;
+    void* brush;
+    unsigned long brush_color;
+    TDrawArea* shadow_area;
+    int allow_shadow_area;
+    int saved_mouse_mode;
 
     void draw_background(int use_alt);
 };
 
-void TEasy_Panel_004675C0::draw_background(int use_alt)
+void TEasy_Panel::draw_background(int use_alt)
 {
     long y_max;
     long x_min;
     long y_min;
     long x_max;
     long pic_hgt;
-    TShape_004675C0* pic;
+    TShape* pic;
 
-    this->pre_draw(0);
+    this->draw_setup(0);
 
     if (use_alt && this->shadow_area) {
-        if (this->background_pos == 2)
-            this->draw_area->Clear(&this->rect, this->background_color2);
+        if (this->need_redraw == 2)
+            this->render_area->Clear(&this->clip_rect, this->background_color2);
 
-        TDrawArea_004675C0* sarea = this->shadow_area;
+        TDrawArea* sarea = this->shadow_area;
         int tile_h = sarea->Height;
         int tile_w = sarea->Width;
-        switch (this->picture_style) {
+        switch (this->background_pos) {
         case 0:
-            sarea->Copy(this->draw_area, this->x, this->y, 0, 0);
+            sarea->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
             break;
         case 1: {
-            short xx = (short)this->x + (short)(this->width / 2) - (short)(tile_w / 2);
-            short yy = (short)this->y + (short)(this->height / 2) - (short)(tile_h / 2);
-            sarea->Copy(this->draw_area, (long)xx, (long)yy, 0, 0);
+            short xx = (short)this->pnl_x + (short)(this->pnl_wid / 2) - (short)(tile_w / 2);
+            short yy = (short)this->pnl_y + (short)(this->pnl_hgt / 2) - (short)(tile_h / 2);
+            sarea->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
             break;
         }
         case 2: {
             long yy = 0;
-            if (this->height >= 0) {
+            if (this->pnl_hgt >= 0) {
                 do {
                     long xx = 0;
-                    if (this->width >= 0) {
+                    if (this->pnl_wid >= 0) {
                         do {
-                            sarea->Copy(this->draw_area, xx + this->x, yy + this->y, 0, 0);
+                            sarea->Copy(this->render_area, xx + this->pnl_x, yy + this->pnl_y, 0, 0);
                             xx += tile_w;
-                        } while (xx <= this->width);
+                        } while (xx <= this->pnl_wid);
                     }
                     yy += tile_h;
-                } while (yy <= this->height);
+                } while (yy <= this->pnl_hgt);
             }
             break;
         }
@@ -122,66 +255,66 @@ void TEasy_Panel_004675C0::draw_background(int use_alt)
     else
         pic = this->background_pic;
 
-    if (this->background_pos == 2 || pic == 0) {
-        this->draw_area->Clear(&this->rect, use_alt ? this->background_color2 : this->background_color1);
+    if (this->need_redraw == 2 || pic == 0) {
+        this->render_area->Clear(&this->clip_rect, use_alt ? this->background_color2 : this->background_color1);
         if (pic == 0)
             goto bevels;
     }
 
-    if (this->draw_area->Lock("panel_ez::draw_background", 1)) {
+    if (this->render_area->Lock("panel_ez::draw_background", 1)) {
         pic->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0);
         long pic_w = x_max - x_min + 1;
         pic_hgt = y_max - y_min + 1;
-        switch (this->picture_style) {
+        switch (this->background_pos) {
         case 1: {
-            short xx = (short)this->x + (short)(this->width / 2) - (short)(pic_w / 2);
-            short yy = (short)this->y + (short)(this->height / 2) - (short)(pic_hgt / 2);
-            pic->shape_draw(this->draw_area, (long)xx, (long)yy, 0, 0, 0);
+            short xx = (short)this->pnl_x + (short)(this->pnl_wid / 2) - (short)(pic_w / 2);
+            short yy = (short)this->pnl_y + (short)(this->pnl_hgt / 2) - (short)(pic_hgt / 2);
+            pic->shape_draw(this->render_area, (long)xx, (long)yy, 0, 0, 0);
             if (use_alt && this->shadow_color_table) {
-                this->draw_area->SetShadowTable(this->shadow_color_table);
-                this->draw_area->DrawShadowBox((long)xx, (long)yy, xx + pic_w - 1, yy + pic_hgt - 1);
+                this->render_area->SetShadowTable(this->shadow_color_table);
+                this->render_area->DrawShadowBox((long)xx, (long)yy, xx + pic_w - 1, yy + pic_hgt - 1);
             }
             break;
         }
         case 2: {
             long yy = 0;
-            if (this->height >= 0) {
+            if (this->pnl_hgt >= 0) {
                 do {
                     long xx = 0;
-                    if (this->width >= 0) {
+                    if (this->pnl_wid >= 0) {
                         do {
-                            pic->shape_draw(this->draw_area, xx + this->x, yy + this->y, 0, 0, 0);
+                            pic->shape_draw(this->render_area, xx + this->pnl_x, yy + this->pnl_y, 0, 0, 0);
                             xx += pic_w;
-                        } while (xx <= this->width);
+                        } while (xx <= this->pnl_wid);
                     }
                     yy += pic_hgt;
-                } while (yy <= this->height);
+                } while (yy <= this->pnl_hgt);
             }
             if (use_alt && this->shadow_color_table) {
-                this->draw_area->SetShadowTable(this->shadow_color_table);
-                this->draw_area->DrawShadowBox(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1);
+                this->render_area->SetShadowTable(this->shadow_color_table);
+                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1);
             }
             break;
         }
         default:
-            pic->shape_draw(this->draw_area, this->x, this->y, 0, 0, 0);
+            pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0);
             if (use_alt && this->shadow_color_table) {
-                this->draw_area->SetShadowTable(this->shadow_color_table);
-                this->draw_area->DrawShadowBox(this->x, this->y, this->x + pic_w - 1, this->y + pic_hgt - 1);
+                this->render_area->SetShadowTable(this->shadow_color_table);
+                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + pic_w - 1, this->pnl_y + pic_hgt - 1);
             }
             break;
         }
-        this->draw_area->Unlock("panel_ez::draw_background");
+        this->render_area->Unlock("panel_ez::draw_background");
     }
 
 bevels:
     if (this->use_bevels) {
-        if (this->draw_area->Lock("panel_ez::draw_background2", 1)) {
-            this->draw_area->DrawBevel3(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1,
+        if (this->render_area->Lock("panel_ez::draw_background2", 1)) {
+            this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                                         this->bevel_color1, this->bevel_color2, this->bevel_color3,
                                         this->bevel_color4, this->bevel_color5, this->bevel_color6);
-            this->draw_area->Unlock("panel_ez::draw_background2");
+            this->render_area->Unlock("panel_ez::draw_background2");
         }
     }
-    this->post_draw();
+    this->draw_finish();
 }

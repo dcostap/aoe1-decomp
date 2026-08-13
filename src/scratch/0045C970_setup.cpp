@@ -37,6 +37,8 @@
 //   facet assignment before debug_rand returned to the earlier 152-byte basin.
 //   Keep the natural separate-call form; remaining gap is ECX/EDX pointer
 //   coloring and the direct facet compare.
+// - shardC2-45C970: moved the existing typed sprite assignment immediately
+//   after base setup, before reset stores; emitted code stayed unchanged.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -137,6 +139,7 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
                              RGE_Player* player, float x, float y, float z) {
     RGE_Sprite* sprite;
     this->RGE_Animated_Object::setup(master_obj, player, x, y, z);
+    sprite = this->sprite;
 
     this->type = 0x1E;
     this->velocity_x = 0.0f;
@@ -146,7 +149,6 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
     this->turn_towards_time = 0.0f;
     this->trail_remainder = 0.0f;
 
-    sprite = this->sprite;
     if (sprite != 0 && (sprite->flag & 2) != 0 &&
         1 < sprite->facet_num) {
             int random_value =

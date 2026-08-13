@@ -25,6 +25,7 @@
 // shard C ABI probe: unsigned long old_time, with signed cur_time, widened the frame to 0x818 and the body to 678B; rolled back.
 // shard C ABI probe: unsigned long old_time and cur_time produced the same widened family; rolled back.
 // No new evidence supports an unnatural volatile or aliasing form for this reload order.
+// scope probe: reused one function-scope int for both palette loops; emitted identical code, so rolled back.
 
 #include <windows.h>
 

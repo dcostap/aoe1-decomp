@@ -21,6 +21,9 @@
 //   same code, so the clean source shape is unchanged.
 // - Named a repeated double y-base to model the observed qword temporary;
 //   it grew the body by 17 bytes and was rolled back.
+// - Tried typed parenthesized repeated-add radii across all corner expressions;
+//   strict diff improved to 282 bytes but shape fell to 45.37% and the source
+//   was 334 bytes, so the clean reconstruction was restored.
 
 class RGE_Map {
 public:

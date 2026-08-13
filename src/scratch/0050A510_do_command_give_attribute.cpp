@@ -32,8 +32,13 @@
 // The generated add_attribute_num(short, float, unsigned char) player ABI moved
 // the first mismatch from +0x53 to +0x63 and reduced strict drift to 202 bytes.
 // The generated RGE_Command and RGE_Base_Game virtual declarations were neutral.
-// Reversing cost-plus-value and materializing a total were neutral or worse;
-// the natural `v + cost` source remains authoritative.
+// Reversing cost-plus-value and a comparison-only total were neutral or worse;
+// the direct `v + cost` source remained authoritative until the call lifetime
+// probe below.
+// This pass kept a natural post-cap `total = v + cost` lifetime across the
+// source-player virtual call, then reused total for the 0x35 transfer and -v
+// for the destination transfer. It removed the EBP float spill and restored
+// the original 389-byte size; strict drift fell from 202 to 80 bytes.
 //
 // Prologue: rebuilt uses `sub esp,0Ch` (3 bytes) + saves `this` to stack slot
 // at [esp+18h] (3 bytes). Original uses `push ecx` (1 byte, allocates 4B local
@@ -155,9 +160,10 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
     }
     
     this->world->players[ca->to_player_id]->add_attribute_num(ca->attr_id, v, 0);
-    this->world->players[ca->player_id]->add_attribute_num(ca->attr_id, -(v + cost), 0);
-    this->world->players[ca->player_id]->add_attribute_num(0x35, v, 0);
-    this->world->players[ca->to_player_id]->add_attribute_num(0x35, -(v + cost), 0);
+    float total = v + cost;
+    this->world->players[ca->player_id]->add_attribute_num(ca->attr_id, -total, 0);
+    this->world->players[ca->player_id]->add_attribute_num(0x35, total, 0);
+    this->world->players[ca->to_player_id]->add_attribute_num(0x35, -v, 0);
     
     {
         rge_base_game->notification(7, ca->player_id, ca->to_player_id,
