@@ -277,10 +277,12 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         color_log(0x32, 0xBA, 3);
         if (self->handle_size(hwnd, 5, wparam, lparam) != 0)
             goto default_window_proc;
-        if (mouse_down != 0)
+        if (mouse_down != 0) {
             color_log(0x4C, 0x5F, 4);
-        color_log(0x24, 0x5F, 3);
-        return (long)wparam;
+            color_log(0x24, 0x5F, 3);
+            return (long)wparam;
+        }
+        goto wparam_return;
 
     case 6:
         if (self->prog_ready != 0) {
@@ -490,6 +492,10 @@ music_done_message:
     default:
         goto default_window_proc;
     }
+
+ wparam_return:
+    color_log(0x24, 0x5F, 3);
+    return (long)wparam;
 
 panel_return:
     if (panel_result == 0)
