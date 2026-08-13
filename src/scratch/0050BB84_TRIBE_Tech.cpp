@@ -67,7 +67,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename)
     short used_read;
     short file_count;
     int len;
-    
+
     this->tech_tree = 0;
     file = (int)fopen(filename, "r");
     if (file != 0) {
@@ -79,7 +79,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename)
                 for (i = 0; i < file_count; i++) {
                     short j;
                     short tech_id;
-                    
+
                     fscanf((void*)file, "%hd", &tech_id);
                     fscanf((void*)file, "%s %hd %hd %hd %hd %hd %hd %hd",
                         name_buf,
