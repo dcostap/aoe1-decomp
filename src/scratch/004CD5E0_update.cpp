@@ -23,8 +23,16 @@
 // codegen duplicates; retained the natural direct switch spelling.
 // probe 15: moving the state-0x0B target-reset arm before its status-3 arm
 // was a codegen duplicate; restored the clean natural switch order.
-// final best: 724B, 64 differing bytes; remaining drift is nested VC5 switch
-// handler placement/table relocation, with behavior and call set aligned.
+// retry 18: making the state-0x0B status-3 arm fall through was a duplicate.
+// retry 19: an incorrect shared-tail label layout grew the function to 824B;
+// it was rolled back.
+// retry 21: explicit state-3 and reset/state-0x0B tails reduced drift to 24B.
+// retry 24: placing state-4 reset cases before state-6 cases aligned all 24
+// calls and reduced drift to 3B; this is the current source candidate.
+// retries 25-31: named list/status locals, moved work scope, and register
+// locals were codegen duplicates; all were rolled back.
+// current best: 724B, 3 differing bytes at the second sub-action vtable
+// load (EDX versus original EAX); call targets, order, CFG, and size align.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
@@ -215,6 +223,8 @@ extern RGE_Base_Game* rge_base_game;
 
 unsigned char TRIBE_Action_Build::update()
 {
+    float work;
+
     if (this->targetID != -1) {
         if (this->obj->owner->world->object(this->targetID) == 0) {
             this->set_target_obj(0);
@@ -268,28 +278,22 @@ unsigned char TRIBE_Action_Build::update()
             this->set_state(3);
             return 0;
         case 3:
-            this->set_state(3);
-            return 0;
+            goto state3_common;
         case 4:
-            this->set_target_obj(0);
-            this->set_state(0x0B);
-            return 0;
+            goto reset_common;
         }
         break;
 
     case 4:
         switch (this->sub_actions->update()) {
+        case 4:
+        case 5:
+            goto reset_common;
+        case 3:
+            goto state3_common;
         case 1:
         case 2:
             this->set_state(6);
-            return 0;
-        case 3:
-            this->set_state(3);
-            return 0;
-        case 4:
-        case 5:
-            this->set_target_obj(0);
-            this->set_state(0x0B);
             return 0;
         }
         break;
@@ -313,7 +317,6 @@ unsigned char TRIBE_Action_Build::update()
             return 0;
         }
 
-        float work;
         if (rge_base_game->quick_build != 0) {
             work = 1000.0f;
         } else {
@@ -329,8 +332,7 @@ unsigned char TRIBE_Action_Build::update()
                 this->timer = -1.0f;
                 return 0;
             }
-            this->set_state(3);
-            return 0;
+            goto state3_common;
         }
         break;
 
@@ -344,5 +346,15 @@ unsigned char TRIBE_Action_Build::update()
         return 3;
     }
 
+return_zero:
     return 0;
+
+state3_common:
+    this->set_state(3);
+    goto return_zero;
+
+reset_common:
+    this->set_target_obj(0);
+    this->set_state(0x0B);
+    goto return_zero;
 }
