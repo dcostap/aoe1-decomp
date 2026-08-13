@@ -25,6 +25,14 @@
 //      diff improved 782 -> 710 bytes and exact-block coverage 74.50% -> 85.81%.
 // P12: tested a named picture-y local before setup as a natural typed source
 //      shape; VC5 emitted identical code, so the inline expression remains.
+// P16/P18/P20: sequential x arithmetic, qualified render-area access, and
+//      widened setup scalars were codegen duplicates; restored clean source.
+// P23: a named draw-area local was also a codegen duplicate; restored.
+// P25-P30: named picture-width temporaries moved the diagnostic to 708 bytes,
+//      but reversed the final add direction and were not retained as source.
+// P28: typing pnl_y as long was a codegen duplicate; restored int layout.
+// P32: matched the exact TPicturePanel::setup donor ABI (long geometry and
+//      resource arguments, int flags); bytes stayed unchanged, retained.
 // Left in scratch after the prior bounded session: canonical source is retained.
 // The remaining
 // hard blocker is VC5 emitting __chkstk where the original names __alloca_probe;
@@ -210,7 +218,7 @@ public:
     char gap_F4[0x28];
     virtual ~TPicturePanel();
     TPicturePanel();
-    long setup(TDrawArea* draw_area, TPanel* parent, int y, int p4, int p5, int p6, char* name, int p8, int p9, int p10);
+    long setup(TDrawArea* draw_area, TPanel* parent, long y, long p4, long p5, long p6, char* name, long p8, int p9, int p10);
 };
 
 class TButtonPanel : public TPanel {
