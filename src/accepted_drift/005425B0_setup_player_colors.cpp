@@ -52,6 +52,10 @@
 //   not change the localized store SIB; pointer-based store and post-call color
 //   pointer forms were also codegen duplicates. Restore the clean byte-table
 //   source; the remaining one-byte drift has no evidence-backed source lead.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed the sole byte difference at
+// +00AD encodes `mov byte [ecx+edx],1` instead of `[edx+ecx]`. Both use the
+// same default-segment byte address and value. Neither base is EBP or ESP.
+// The store has no flags effect. Size, frame, calls, CFG, and boundary match.
 //
 // FLAGS: /nologo /c /O2 /Oy
 

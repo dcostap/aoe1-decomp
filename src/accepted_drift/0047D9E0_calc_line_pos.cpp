@@ -28,6 +28,10 @@
 //   focused lab.  All preserved 555 bytes and emitted [edi+ebp-1]; the original
 //   remains [ebp+edi-1].  A `text_size.cy` alias changed an earlier null-width
 //   store and broke structure.  No source-backed lead remains for this byte.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed the sole byte difference at
+// +01F8 encodes `lea edx,[edi+ebp-1]` instead of `[ebp+edi-1]`. LEA has no
+// memory access or flags effect. Both forms compute the same 32-bit value.
+// Size, frame, calls, CFG, blocks, and function boundary match.
 
 struct SIZE;
 
