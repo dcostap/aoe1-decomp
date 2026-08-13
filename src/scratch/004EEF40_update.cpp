@@ -12,10 +12,14 @@
 //   at +0xF0, placing numberValue at md+0xDE0.
 // - Corrected enableAttack to the target's __thiscall member ABI and made the
 //   tick/1000 guard unsigned, restoring the target magic-multiply sequence.
-// - Validation: 1224 rebuilt bytes versus 1421, frame 0x8, all 22 calls in
-//   order, and 76.64% shape. Structural CFG/size remains unresolved.
-//   Stop before register or codegen tuning. Next lead is direct md ownership
-//   and reload topology around the reset/attack guard block.
+// - Restored the duplicate-aware ManagedArray::add donor surface for all
+//   player-list insertions. This recovered the original scan and growth CFG.
+// - Removed the cached md receiver. Direct this->md reloads recover 1421-byte
+//   size, 0x8 frame, 22 ordered calls, and 98.19% instruction shape.
+// - Corrected player_id ownership to RGE_Player +0x4A, with world +0x3C and
+//   player_num +0x3C. The source now has 969 differing bytes and 107 edit
+//   bytes. Remaining drift is localized to the farms reset reload and benign
+//   register/block scheduling. No exact match; leave the clean typed source.
 
 class AIModule {
 public:
@@ -23,11 +27,41 @@ public:
     char gap_04[0xEC];
 };
 
+void* operator new(unsigned int size);
+void operator delete(void* ptr);
+
 struct ManagedArrayInt {
     int* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    int add(int valueToAdd) {
+        int i;
+        int* newValue;
+        int newSize;
+
+        for (i = 0; i < numberValue; i++) {
+            if (i >= maximumSizeValue) break;
+            if (value[i] == valueToAdd) return 0;
+        }
+        if (numberValue > maximumSizeValue - 1) {
+            newSize = numberValue + 1;
+            newValue = (int*)operator new(newSize * sizeof(int));
+            if (newValue != 0) {
+                for (i = 0; i < maximumSizeValue; i++) {
+                    if (i >= newSize) break;
+                    newValue[i] = value[i];
+                }
+                operator delete(value);
+                value = newValue;
+                maximumSizeValue = newSize;
+            }
+        }
+        value[numberValue] = valueToAdd;
+        numberValue = numberValue + 1;
+        return 1;
+    }
 };
 
 class DiplomacyAIModule {
@@ -51,7 +85,6 @@ public:
     char gap_08[0x34];
     short player_num;
     char gap_3E[0x0C];
-    short player_id;
 };
 
 class RGE_Player {
@@ -59,6 +92,8 @@ public:
     virtual ~RGE_Player();
     char gap_04[0x38];
     RGE_Game_World* world;
+    char gap_40[0x0A];
+    short player_id;
 };
 
 class InformationAIModule {
@@ -132,23 +167,20 @@ public:
 
 int TribeTacticalAIModule::update(int)
 {
-    TribeMainDecisionAIModule* md = this->md;
-
-    if ((unsigned int)(md->player->world->tick -
+    if ((unsigned int)(this->md->player->world->tick -
                        this->lastScalingUpdateValue) >
         (unsigned int)(this->sn[0x63] * 60000)) {
-        int value = this->sn[0x1A] + this->sn[0x5E];
-        this->sn[0x1A] = value;
-        if (value < 0) {
+        this->sn[0x1A] += this->sn[0x5E];
+        if (this->sn[0x1A] < 0) {
             this->sn[0x1A] = 0;
         }
 
-        value = this->sn[0x10] + this->sn[0x5D];
-        this->sn[0x10] = value;
-        if (value < 0) {
+        this->sn[0x10] += this->sn[0x5D];
+        if (this->sn[0x10] < 0) {
             this->sn[0x10] = 0;
         }
 
+        int value;
         if (this->sn[0x10] > this->sn[0x1A]) {
             this->sn[0x10] = this->sn[0x1A];
         }
@@ -184,126 +216,65 @@ int TribeTacticalAIModule::update(int)
             this->sn[0x5B] = 100;
         }
 
-        this->lastScalingUpdateValue = md->player->world->tick;
+        this->lastScalingUpdateValue = this->md->player->world->tick;
     }
 
     this->unitsTaskedThisUpdate.numberValue = 0;
-    md->informationAI.farmsTaskedThisUpdate.numberValue = 0;
+    this->md->informationAI.farmsTaskedThisUpdate.numberValue = 0;
 
-    if ((unsigned int)this->sn[0x68] <=
-        (unsigned int)md->player->world->tick / 1000U) {
+    if ((unsigned int)this->md->player->world->tick / 1000U >=
+        (unsigned int)this->sn[0x68]) {
         this->enableAttack(2);
     }
 
-    int mostHatedPlayer = md->diplomacyAI.mostHated(
+    int mostHatedPlayer = this->md->diplomacyAI.mostHated(
         this->sn[0x7C], this->sn[0x80], this->sn[0xBC], this->sn[0xC3]);
-    int mostLikedPlayer = md->diplomacyAI.mostLiked(
+    int mostLikedPlayer = this->md->diplomacyAI.mostLiked(
         this->sn[0x7C], this->sn[0x80]);
 
     this->playersToAttack.numberValue = 0;
-    if (this->playersToAttack.numberValue >
-        this->playersToAttack.maximumSizeValue - 1) {
-        int newSize = this->playersToAttack.numberValue + 1;
-        int* newArray = new int[newSize];
-        if (newArray != 0) {
-            for (int i = 0; i < this->playersToAttack.maximumSizeValue &&
-                         i < newSize; i++) {
-                newArray[i] = this->playersToAttack.value[i];
-            }
-            delete[] this->playersToAttack.value;
-            this->playersToAttack.value = newArray;
-            this->playersToAttack.maximumSizeValue = newSize;
-        }
-    }
-    this->playersToAttack.value[this->playersToAttack.numberValue] =
-        mostHatedPlayer;
-    this->playersToAttack.numberValue++;
+    this->playersToAttack.add(mostHatedPlayer);
 
     this->playersToDefend.numberValue = 0;
-    short playerID = md->player->world->player_id;
-    if (this->playersToDefend.numberValue >
-        this->playersToDefend.maximumSizeValue - 1) {
-        int newSize = this->playersToDefend.numberValue + 1;
-        int* newArray = new int[newSize];
-        if (newArray != 0) {
-            for (int i = 0; i < this->playersToDefend.maximumSizeValue &&
-                         i < newSize; i++) {
-                newArray[i] = this->playersToDefend.value[i];
-            }
-            delete[] this->playersToDefend.value;
-            this->playersToDefend.value = newArray;
-            this->playersToDefend.maximumSizeValue = newSize;
-        }
-    }
-    this->playersToDefend.value[this->playersToDefend.numberValue] = playerID;
-    this->playersToDefend.numberValue++;
+    this->playersToDefend.add(this->md->player->player_id);
 
     if (mostHatedPlayer != mostLikedPlayer) {
-        int count = this->playersToDefend.numberValue;
-        int i = 0;
-        if (count > 0) {
-            do {
-                if (i >= this->playersToDefend.maximumSizeValue) {
-                    break;
-                }
-                if (this->playersToDefend.value[i] == mostLikedPlayer) {
-                    goto diplomacy;
-                }
-                i++;
-            } while (i < count);
-        }
-        if (count > this->playersToDefend.maximumSizeValue - 1) {
-            int newSize = count + 1;
-            int* newArray = new int[newSize];
-            if (newArray != 0) {
-                for (i = 0; i < this->playersToDefend.maximumSizeValue &&
-                            i < newSize; i++) {
-                    newArray[i] = this->playersToDefend.value[i];
-                }
-                delete[] this->playersToDefend.value;
-                this->playersToDefend.value = newArray;
-                this->playersToDefend.maximumSizeValue = newSize;
-            }
-        }
-        this->playersToDefend.value[this->playersToDefend.numberValue] =
-            mostLikedPlayer;
-        this->playersToDefend.numberValue++;
+        this->playersToDefend.add(mostLikedPlayer);
     }
 
 diplomacy:
     {
         int player = 1;
-        if (1 < md->player->world->player_num) {
+        if (1 < this->md->player->world->player_num) {
             do {
-                if (player != md->player->world->player_id) {
+                if (player != this->md->player->player_id) {
                     if (player == mostHatedPlayer) {
-                        if (md->diplomacyAI.isEnemy(player) == 0 &&
-                            md->diplomacyAI.isChangeable(player) != 0 &&
-                            md->diplomacyAI.stance(player, 0) > 0x4A) {
-                            md->diplomacyAI.setRelation(player, 3);
+                        if (this->md->diplomacyAI.isEnemy(player) == 0 &&
+                            this->md->diplomacyAI.isChangeable(player) != 0 &&
+                            this->md->diplomacyAI.stance(player, 0) > 0x4A) {
+                            this->md->diplomacyAI.setRelation(player, 3);
                         }
                     } else if (player == mostLikedPlayer) {
-                        if (md->diplomacyAI.isAlly(player) == 0 &&
-                            md->diplomacyAI.isChangeable(player) != 0 &&
-                            md->diplomacyAI.stance(player, 2) > 0x4A) {
-                            md->diplomacyAI.setRelation(player, 0);
+                        if (this->md->diplomacyAI.isAlly(player) == 0 &&
+                            this->md->diplomacyAI.isChangeable(player) != 0 &&
+                            this->md->diplomacyAI.stance(player, 2) > 0x4A) {
+                            this->md->diplomacyAI.setRelation(player, 0);
                         }
                     } else {
-                        int stance = md->diplomacyAI.stance(player, 2);
-                        if (this->sn[0x1D] < stance &&
-                            md->diplomacyAI.isChangeable(player) != 0) {
-                            if (md->diplomacyAI.isAlly(player) == 0) {
-                                md->diplomacyAI.setRelation(player, 0);
+                        int stance = this->md->diplomacyAI.stance(player, 2);
+                        if (stance > this->sn[0x1D] &&
+                            this->md->diplomacyAI.isChangeable(player) != 0) {
+                            if (this->md->diplomacyAI.isAlly(player) == 0) {
+                                this->md->diplomacyAI.setRelation(player, 0);
                             }
-                        } else if (md->diplomacyAI.isNeutral(player) == 0 &&
-                                   md->diplomacyAI.isChangeable(player) != 0) {
-                            md->diplomacyAI.setRelation(player, 1);
+                        } else if (this->md->diplomacyAI.isNeutral(player) == 0 &&
+                                   this->md->diplomacyAI.isChangeable(player) != 0) {
+                            this->md->diplomacyAI.setRelation(player, 1);
                         }
                     }
                 }
-                md = this->md;
                 player++;
-            } while (player < md->player->world->player_num);
+            } while (player < this->md->player->world->player_num);
         }
     }
 
