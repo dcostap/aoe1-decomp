@@ -19,12 +19,22 @@
 // locals; scalar locals moved the first prologue hunk and were rolled back.
 // follow-up direct member expressions for FillRect loaded the render fields in
 // the wrong order and grew the function by 14 bytes; rolled back.
-// final validated scratch reconstruction retains the typed inherited layout and
-// aggregate clip save/restore; remaining drift is localized to panel FillRect
-// scheduling plus resulting branch displacements (current best codegen before
-// final restore: 558 strict bytes / 90 edit bytes, 707 vs 707, 21/21 calls).
+// prior validated scratch reconstruction retained the typed inherited layout
+// and aggregate clip save/restore; its remaining drift was localized to panel
+// FillRect scheduling (558 strict bytes / 90 edit bytes, 707 vs 707).
+// probe orch-49B560-a #1: copy panel->render_rect as a typed aggregate before
+// FillRect, testing whether VC5 preserves the oracle's left-to-bottom load
+// order while retaining bottom for the later clip comparison.
+// exact: the typed aggregate copy reproduces all 707 bytes, calls, frame, and
+// block topology without compiler-steering code.
+// Named the three draw lock tags. The raw absolute string addresses were
+// diagnostic data plumbing and are not part of the source model.
 
 extern unsigned char byte_62C584;
+
+static char s_scr_game_draw[] = "scr_game::draw";
+static char s_scr_game_draw2[] = "scr_game::draw2";
+static char s_scr_game_draw3[] = "scr_game::draw3";
 
 struct tagRECT {
     long left;
@@ -98,18 +108,19 @@ void TRIBE_Screen_Game::draw()
         tagRECT old = *r;
         this->draw_setup(0);
         if (this->panel4c0) {
-            if (this->area->Lock((char*)0x58653c, 1)) {
+            if (this->area->Lock(s_scr_game_draw, 1)) {
                 TPanel* panel = this->panel4c0;
-                tagRECT* pr;
-                pr = &panel->render_rect;
-                this->area->FillRect(pr->left, pr->top, pr->right, pr->bottom, 0x74);
-                this->area->Unlock((char*)0x58653c);
-                if (this->rect.top < pr->bottom) this->rect.top = pr->bottom;
+                tagRECT panel_rect = panel->render_rect;
+                this->area->FillRect(panel_rect.left, panel_rect.top,
+                                     panel_rect.right, panel_rect.bottom, 0x74);
+                this->area->Unlock(s_scr_game_draw);
+                if (this->rect.top < panel_rect.bottom)
+                    this->rect.top = panel_rect.bottom;
                 this->area->SetClipRect(r);
             }
         }
         if (this->shape478) {
-            if (this->area->Lock((char*)0x58652c, 1)) {
+            if (this->area->Lock(s_scr_game_draw2, 1)) {
                 if (this->width >= 0x400 && this->height >= 0x300) {
                     this->shape478->shape_draw(this->area, 0, 0, 0, 0, 0);
                     this->shape478->shape_draw(this->area, 0, 0x282, 1, 0, 0);
@@ -120,7 +131,7 @@ void TRIBE_Screen_Game::draw()
                     this->shape478->shape_draw(this->area, 0, 0, 0, 0, 0);
                     this->shape478->shape_draw(this->area, 0, 0x162, 1, 0, 0);
                 }
-                this->area->Unlock((char*)0x58652c);
+                this->area->Unlock(s_scr_game_draw2);
             }
         }
         this->draw_finish();
@@ -132,7 +143,7 @@ void TRIBE_Screen_Game::draw()
         else flag = 1;
         this->draw_setup(flag);
         if (this->shape478) {
-            if (this->area->Lock((char*)0x58651c, 1)) {
+            if (this->area->Lock(s_scr_game_draw3, 1)) {
                 if (this->width >= 0x400 && this->height >= 0x300) {
                     this->shape478->shape_draw(this->area, 0, 0, 0, 0, 0);
                     this->shape478->shape_draw(this->area, 0, 0x282, 1, 0, 0);
@@ -143,7 +154,7 @@ void TRIBE_Screen_Game::draw()
                     this->shape478->shape_draw(this->area, 0, 0, 0, 0, 0);
                     this->shape478->shape_draw(this->area, 0, 0x162, 1, 0, 0);
                 }
-                this->area->Unlock((char*)0x58651c);
+                this->area->Unlock(s_scr_game_draw3);
             }
         }
         this->draw_finish();
