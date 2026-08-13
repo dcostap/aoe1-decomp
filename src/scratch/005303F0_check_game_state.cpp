@@ -12,7 +12,14 @@
 // 10: removed the outer team-building guard; one loop entry test now matches the original and size dropped to +22 bytes.
 // 11: cached player_count across team setup; size reached +11 bytes, but register/block shape worsened.
 // 12: kept a local base-game alias for the ruin-start message; all 16 calls now align, with 1668 rebuilt bytes vs 1653 original.
-// Budget end: left in scratch. Current mismatch is 1549 bytes, frame 0x1A4 vs 0x1A4, 16 vs 16 calls, and first mismatch at +0014 (saved this home). Remaining divergence is team-array and victory-block scheduling, not a call-set or layout blocker.
+// 13: tested the proven 00577580 global for held == -1 comparisons; kept it because the original has two absolute references.
+// 14: tested scoped base-game aliases at each message site and direct player_num bounds; call and block shape improved, but the source was compiler-steering and was rolled back.
+// 15: restored the clean cached-player reconstruction; remaining drift is team-array scheduling and the saved this home.
+// Main-agent audit replaced raw-address macros with named extern globals. The
+// same typed source now emits 1653 bytes with 1494 differing bytes.
+// Budget end: left in scratch. Frame is 0x1A4 and all 16 calls align. The
+// first mismatch is the saved-this home. Team-array and victory-block
+// scheduling remain divergent.
 
 class RGE_Victory_Conditions {
 public:
@@ -21,8 +28,8 @@ public:
 
 class RGE_Game_World;
 
-#define DAT_00577578 (*(float*)0x00577578)
-#define DAT_00577580 (*(float*)0x00577580)
+extern float DAT_00577578;
+extern float DAT_00577580;
 
 class RGE_Player {
 public:
@@ -89,7 +96,7 @@ public:
     virtual void send_message(int msg, int player, int zero1, int zero2, int zero3);
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+extern RGE_Base_Game* rge_base_game;
 
 class TRIBE_World : public RGE_Game_World {
 public:
@@ -199,14 +206,14 @@ unsigned char TRIBE_World::check_game_state()
                     if (total == this->artifact_count) {
                         TRIBE_Player* p = team_player[i][0];
                         float held = p->artifact_held_time;
-                        if (held == -1.0f) {
+                        if (held == DAT_00577580) {
                             for (int j = 0; j < count; ++j)
                                 team_player[i][j]->artifact_held_time = 1.0f;
                             if (this->victory_type == 0) {
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = 2000.0f;
                                 rge_base_game->send_message(0x72,
-                                    team_player[i][0]->player_id, 0, 0, 0);
+                                    p->player_id, 0, 0, 0);
                             }
                         }
                         else if (held >= DAT_00577578 && this->victory_type == 0) {
@@ -228,7 +235,7 @@ unsigned char TRIBE_World::check_game_state()
                                 for (int j = 0; j < count; ++j)
                                     team_player[i][j]->artifact_held_time = -1.0f;
                                 rge_base_game->send_message(0x73,
-                                    team_player[i][0]->player_id, 0, 0, 0);
+                                    p->player_id, 0, 0, 0);
                             }
                         }
                     }
@@ -244,7 +251,7 @@ unsigned char TRIBE_World::check_game_state()
                     if (total == this->ruin_count) {
                         TRIBE_Player* p = team_player[i][0];
                         float held = p->ruin_held_time;
-                        if (held == -1.0f) {
+                        if (held == DAT_00577580) {
                             for (int j = 0; j < count; ++j)
                                 team_player[i][j]->ruin_held_time = 1.0f;
                             if (this->victory_type == 0) {
