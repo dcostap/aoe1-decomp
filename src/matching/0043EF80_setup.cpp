@@ -16,6 +16,10 @@
 // three button-argument stack displacements after scroll_cur_line and the downstream cancel tail.
 // attempt 7: conditional result assignment around the cancel create_button emitted duplicate
 // code; restored the separate result assignment and retained the clean source.
+// attempt 8: the prior best ABI basin used binary-supported button argument ownership and a
+// named cancel receiver; both stayed natural but left a localized list/create-register mismatch.
+// attempt 9: removing the create_list result temporary and guarding its call directly restored the
+// original vslot +0x110 register color and produced an exact 420-byte match.
 
 class TDrawArea;
 
@@ -161,9 +165,9 @@ long TListDialog::setup(TPanel* param_1, char* param_2, long param_3, long param
         if (result == 0) return 0;
     }
     
-    result = create_list((TPanel*)this, &list,
-        param_11, param_12, param_13, param_14, 0xB);
-    if (result == 0) return 0;
+    if (create_list((TPanel*)this, &list,
+        param_11, param_12, param_13, param_14, 0xB) == 0)
+        return 0;
     
     result = create_auto_scrollbar((TPanel**)&extra_scroll, list, 0x14);
     if (result == 0) return 0;
@@ -176,15 +180,16 @@ long TListDialog::setup(TPanel* param_1, char* param_2, long param_3, long param
     list->scroll_cur_line(1, param_17, 1);
     
     if (create_button((TPanel*)this, &ok_btn, 0xFA1, 0,
-        param_18, param_19, param_20, param_21, 0, 0, 0) == 0)
+        param_18, param_20, param_21, param_22, 0, 0, 0) == 0)
         return 0;
     
     result = create_button((TPanel*)this, &cancel_btn, 0xFA2, 0,
-        param_19, param_19, param_20, param_21, 0, 0, 0);
+        param_19, param_20, param_21, param_22, 0, 0, 0);
     if (result == 0) return 0;
     
-    cancel_btn->field_298 = 0x1B;
-    cancel_btn->field_29C = 0;
+    TButtonPanel* cancel = cancel_btn;
+    cancel->field_298 = 0x1B;
+    cancel->field_29C = 0;
     
     TPanel::set_curr_child(list);
     return 1;

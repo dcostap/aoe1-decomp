@@ -28,6 +28,14 @@
 // - Tested the plain Ghidra-backed if/else dispatch without the prior map
 //   temporary; it still merged set_elev (1/2 calls) and worsened shape to
 //   56.97%. Restored the clean outer-positive switch.
+// - Duplicated clean_elevation inside both elevation branches while keeping
+//   the shared redraw tail; VC5 retained both set_elev sites and merged the
+//   clean tail. Calls reached 13/13, but the body grew to 533 bytes.
+// - Changed the object arm to a natural common-success path (`object != 0`)
+//   and kept branch-local elevation cleanup. This reached exact size, calls,
+//   return count, and CFG; remaining drift is 43 bytes and a 0xC/0x10 frame.
+// - Left in scratch: source-backed call topology is solved; remaining blocker
+//   is stack/local topology around the fifth selection local and frame home.
 
 typedef unsigned char uchar;
 
@@ -185,6 +193,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
         this->view->get_selection_area(&local_4, &x1, &y1, &x2, 1);
         rge_base_game->world->map->set_elev(
             (short)local_4, (short)x1, (short)y1, (short)x2, 0, 1, 1);
+        rge_base_game->world->map->clean_elevation(local_4, x1, y1, x2, 8);
         break;
 
     case 0x22:
@@ -194,6 +203,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
         this->view->get_selection_area(&local_4, &x1, &y1, &x2, 1);
         rge_base_game->world->map->set_elev(
             (short)local_4, (short)x1, (short)y1, (short)x2, 0, -1, 1);
+        rge_base_game->world->map->clean_elevation(local_4, x1, y1, x2, 8);
         break;
 
     case 0x2E:
@@ -202,22 +212,20 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
         {
             RGE_Player* player = rge_base_game->get_player();
             RGE_Static_Object* object = player->selected_obj;
-            if (object == 0)
-                return 1;
+            if (object != 0) {
+                uchar draw_level;
+                if (object->sprite_list != 0) {
+                    draw_level = object->sprite_list->get_lowest_draw_level();
+                } else if (object->sprite != 0) {
+                    draw_level = object->sprite->get_lowest_draw_level();
+                } else {
+                    draw_level = 0x14;
+                }
 
-            uchar draw_level;
-            if (object->sprite_list != 0) {
-                draw_level = object->sprite_list->get_lowest_draw_level();
-            } else if (object->sprite != 0) {
-                draw_level = object->sprite->get_lowest_draw_level();
-            } else {
-                draw_level = 0x14;
+                object->vf68();
+                if (draw_level == 0)
+                    this->view->set_redraw(2);
             }
-
-            object->vf68();
-            if (draw_level != 0)
-                return 1;
-            this->view->set_redraw(2);
             return 1;
         }
 
@@ -225,7 +233,6 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
         return 0;
     }
 
-    rge_base_game->world->map->clean_elevation(local_4, x1, y1, x2, 8);
     this->view->set_redraw(2);
     if (this->map != 0)
         this->map->set_redraw(2);
