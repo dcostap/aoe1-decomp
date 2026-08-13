@@ -25,13 +25,13 @@
 //     period source shape; this replaces the prior raw-link diagnostic for one codegen check.
 // 22: changed oldTail to a named reference to techHead.prev; diff improved to 322 bytes, but vptr and
 //     sentinel initialization moved earlier, so the reference form was not kept as the natural source.
-// Final natural candidate restores the same-TU donor's explicit oldTail form. The raw +4/+8 and +F8/+FC
-// stores remain exact-only diagnostic evidence; named fields are required in the living reconstruction.
-// The previous exact diagnostic source used the proven 0xF0 AIModule base, 0x54 TechnologyItem,
-// 0x70 ResourceItem, 0x19C EH frame, ordinary nullable VC5 allocation path, and for-loop lifetime
-// that destroys newRCost before the counter increment. Its raw link stores are not kept here.
-// The final natural candidate keeps those lifetime and ABI facts but uses named list fields; VC5
-// emits a 402-byte mismatch because typed links change vptr scheduling and register coloring.
+// 23: direct named this->techHead.next/prev initialization restored the original register schedule
+//     and exact bytes while retaining typed ownership; the redundant self alias was then removed.
+// 24: removed the register hint from the named head pointer; emitted bytes stayed exact.
+// Final source uses the proven 0xF0 AIModule base, 0x54 TechnologyItem, 0x70 ResourceItem, 0x19C
+// EH frame, ordinary nullable VC5 allocation path, and for-loop lifetime that destroys newRCost
+// before the counter increment. List links use named typed fields. The raw +4/+8 and +F8/+FC stores
+// were diagnostic evidence only and are not retained.
 
 extern "C" int __cdecl rge_read(int file, void* dst, int size);
 
@@ -86,23 +86,22 @@ ResearchAIModule::ResearchAIModule(int file, int arg2)
       techHead(),
       numTechs(0)
 {
-    ResearchAIModule* self = this;
-    register TechnologyItem* head = &this->techHead;
+    TechnologyItem* head = &this->techHead;
     int i;
     int tempInt;
     int typeID;
     int rc[4];
     char name[0x104];
 
-    head->next = head;
-    head->prev = head;
-    rge_read(arg2, &self->numTechs, 4);
+    this->techHead.next = &this->techHead;
+    this->techHead.prev = &this->techHead;
+    rge_read(arg2, &this->numTechs, 4);
 
     rge_read(arg2, &i, 4);
-    rge_read(arg2, &self->techTreeNames[0], i);
-    self->techTreeNames[i] = 0;
+    rge_read(arg2, &this->techTreeNames[0], i);
+    this->techTreeNames[i] = 0;
 
-    for (typeID = 0; typeID < self->numTechs; ++typeID) {
+    for (typeID = 0; typeID < this->numTechs; ++typeID) {
             rge_read(arg2, &i, 4);
             rge_read(arg2, name, i);
             name[i] = 0;
@@ -119,10 +118,10 @@ ResearchAIModule::ResearchAIModule(int file, int arg2)
             TechnologyItem* item = new TechnologyItem(tempInt, name, newRCost);
 
             item->next = head;
-            TechnologyItem* oldTail = self->techHead.prev;
+            TechnologyItem* oldTail = this->techHead.prev;
             item->prev = oldTail;
             oldTail->next = item;
-            self->techHead.prev = item;
+            this->techHead.prev = item;
 
     }
 }
