@@ -4,24 +4,25 @@
 //
 // Attempt log:
 // - Replaced the raw-pointer placeholder with typed playbook, phase-command,
-//   group-member, and UnitAIModule ownership. Baseline follows the packet's
-//   five-command phase scan and common order-dispatch tail.
-// - Factored all recognized order arms through one common virtual order tail;
-//   this fixed the call count and ordered call-site identity (25/25).
-// - Mirrored the original member-pointer loop reset, parameter-home target
-//   reuse, and case-5 found-object scan. A two-case switch reproduces the
-//   original type-6/type-7 sub/dec dispatch.
-// - Paused after the bounded ten-hypothesis session. Current source is a
-//   typed reconstruction; remaining drift is structural/codegen (1248 vs
-//   1298 bytes, frame 0x38 vs 0x44, 1188 positional diff bytes) with all
-//   25 calls aligned. No inline asm or raw vtable plumbing is used.
-// Main-agent source audit: replaced raw vtable/gap-only World/Player/master/
-// object surfaces with donor-backed virtual destructors at unchanged offsets.
-// Revalidation is codegen-unchanged; the frame and phase-scan topology remain
-// unresolved.
-// - Initialized the function-scope member pointer to null to test the original
-//   EBP-zero first hunk. VC5 emitted the same 1248-byte code and 1188-byte
-//   positional diff, so the initialization was restored.
+//   group-member, and UnitAIModule ownership.
+// - Used direct typed order calls in each recognized switch arm. VC5 merges
+//   their final virtual call into the observed common tail and preserves all
+//   25 ordered calls.
+// - Replaced the explicit member reset with a natural for loop. This matches
+//   the observed group-member increment and next-iteration object reload.
+// - Reused the incoming phase parameter for the distance result and kept the
+//   case-5 grouping scan over the 0x190-byte status grouping array.
+// - Tested early and delayed phase-counter initialization, point temporaries,
+//   declaration order, and explicit unitAI aliases. These did not close the
+//   frame or size gap.
+// - A typed common-tail reconstruction with the binary-observed member reset
+//   loop reaches 1268 vs 1298 bytes, frame 0x3C vs 0x44, and 1186 positional
+//   diff bytes. It keeps all 25 ordered calls and no compiler-only steering.
+// - A binary-supported unused local home and a no-flag common-tail variant had
+//   no useful gain and were rolled back.
+//
+// Current status: structural reconstruction remains incomplete. Keep this
+// readable common-tail source as the best evidence-backed candidate.
 
 void __cdecl operator delete(void* block);
 
@@ -160,28 +161,11 @@ public:
 
 int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 {
-    AIPlay* play;
-    AIPlayPhase* phase;
-    RGE_Static_Object* target;
-    RGE_Static_Object* member;
-    int phaseCommandIndex;
-    int i;
-    int sendOrder;
-    int orderAction;
-    int orderTargetOwner;
-    float orderX;
-    float orderY;
-    float orderZ;
-    UnitAIModule* memberAI;
-    int distance;
-    int groupingOffset;
-    RGE_Static_Object* found;
-
     if (this->playStatus == 0) {
         return 0;
     }
 
-    play = this->objectValue->owner->world->playbook->play(
+    AIPlay* play = this->objectValue->owner->world->playbook->play(
         this->playStatus->playNumberValue);
     if (play == 0) {
         return 0;
@@ -193,12 +177,12 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
         return 1;
     }
 
-    phase = play->phase(param_1);
-    if (phase == 0) {
+    AIPlayPhase* phaseObject = play->phase(param_1);
+    if (phaseObject == 0) {
         return 0;
     }
 
-    target =
+    RGE_Static_Object* target =
         this->lookupObject(this->playStatus->targetValue);
     if (target == 0) {
         return 0;
@@ -206,9 +190,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 
     this->playStatus->currentPhaseValue = (unsigned char)param_1;
 
-    phaseCommandIndex = 0;
+    int phase = 0;
     do {
-        AIPlayPhaseCommand* command = phase->command(phaseCommandIndex);
+        AIPlayPhaseCommand* command = phaseObject->command(phase);
         if (command != 0 && command->typeValue != 0) {
             if ((command->typeValue == 6 || command->typeValue == 7) &&
                 param_2 == 0) {
@@ -223,8 +207,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                     break;
                 }
             } else {
-                i = 0;
-                member = this->objectValue;
+                int i = 0;
+                RGE_Static_Object* member = this->objectValue;
                 if (member->groupMembers.numberValue > 0) {
                     do {
                         if (i > member->groupMembers.maximumSizeValue - 1) {
@@ -237,17 +221,17 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 command->groupValue &&
                             (param_2 != 1 ||
                              member->unitAI()->currentAction() == -1)) {
-                            sendOrder = 0;
-                            orderAction = 0;
-                            orderTargetOwner = -1;
-                            orderX = -1.0f;
-                            orderY = -1.0f;
-                            orderZ = -1.0f;
-                            memberAI = 0;
+                            int sendOrder = 0;
+                            int orderAction = 0;
+                            int orderTargetOwner = -1;
+                            float orderX = -1.0f;
+                            float orderY = -1.0f;
+                            float orderZ = -1.0f;
+                            UnitAIModule* memberAI = 0;
 
                             switch (command->typeValue) {
                             case 1: {
-                                distance = (int)member->distance_to_position(
+                                int distance = (int)member->distance_to_position(
                                     (float)command->value1Value + target->world_x,
                                     (float)command->value2Value + target->world_y,
                                     (float)command->value3Value + target->world_z);
@@ -287,9 +271,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 orderZ = (float)this->playStatus->originalPointZ;
                                 break;
                             case 5: {
-                                found = 0;
+                                int foundId = -1;
                                 param_1 = -1;
-                                for (groupingOffset = 0;
+                                for (int groupingOffset = 0;
                                      groupingOffset < 0x190;
                                      groupingOffset += 8) {
                                     AIPlayGrouping* grouping =
@@ -300,15 +284,16 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                         if (found != 0 &&
                                             (int)found->master_obj->hitPoints + 1 <
                                                 found->master_obj->maximumHitPoints) {
-                                            param_1 = found->id;
+                                            foundId = found->id;
                                             break;
                                         }
                                     }
                                 }
-                                if (param_1 != -1) {
+                                if (foundId != -1) {
                                     memberAI = member->unitAI();
                                     sendOrder = 1;
                                     orderAction = 0x2BF;
+                                    param_1 = foundId;
                                 }
                                 break;
                             }
@@ -327,10 +312,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 
                             if (sendOrder) {
                                 memberAI->order(
-                                    this->objectValue->id, orderAction,
-                                    param_1, orderTargetOwner,
-                                    orderX, orderY, orderZ, 1.0f,
-                                    1, 0, 100);
+                                    this->objectValue->id, orderAction, param_1,
+                                    orderTargetOwner, orderX, orderY, orderZ,
+                                    1.0f, 1, 0, 100);
                             }
                         }
 
@@ -341,8 +325,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
             }
         }
 
-        ++phaseCommandIndex;
-    } while (phaseCommandIndex < 5);
+        ++phase;
+    } while (phase < 5);
 
     return 1;
 }
