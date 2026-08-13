@@ -17,6 +17,17 @@
 //     made final normalization self-assignment; diff 650 -> 654, rolled back.
 // 13: replaced shared gotos with natural switch breaks and duplicated outcomes
 //     for compiler tail merging; diff 650 -> 724 and size +64, rolled back.
+// 14: split the float branch result from the double qword tile result.  Store
+//     the branch value only at z_result, matching the original fstp join;
+//     diff 650 -> 393 and code size/frame now match.
+// 15: spelled case 2 as fx > half; this matched the original fld st1/fcomp
+//     order and improved the structural diff to 383.
+// 16: moved case 3's diagonal gate before its result load; this recovered the
+//     original compare line band and improved the diff to 356.
+// 17: typed diagonal/y temporaries and a negative-first case-10 branch were
+//     tested for block placement; both worsened positional output and rolled back.
+// 18: reversing the case-3 comparison operands was a codegen duplicate; kept
+//     the period-plausible fx*half < raw_y spelling.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 
 struct RGE_Tile { int pad0; unsigned char tile_type; };
@@ -35,11 +46,10 @@ public:
 
 void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, float* out2) {
     double fx = (double)(int)x / (double)(int)this->tile_width;
-    register double result;
+    register float result;
     double raw_y = (double)(int)y;
-    result = 0.0;
     double fy = raw_y / (double)(int)this->tile_height;
-    float z;
+    double z = 0.0;
 
     switch (tile->tile_type) {
     case 1:
@@ -47,11 +57,11 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
         else result = (fy + fy) - ((DAT_005706c0 - fx) + (DAT_005706c0 - fx));
         goto z_result;
     case 2:
-        if (DAT_005706c0 < fx) { result = fx * DAT_005706d0 - (fy - DAT_005706c0); goto z_result; }
+        if (fx > DAT_005706c0) { result = fx * DAT_005706d0 - (fy - DAT_005706c0); goto z_result; }
         goto tile_case8;
     case 3:
+        if (fx * DAT_005706c0 < raw_y) { result = (DAT_005706d8 - fx) * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
         result = DAT_005706d8 - fx;
-        if (fx * DAT_005706c0 < raw_y) { result = result * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
         fy = fy + fy;
         result = (result + result) - DAT_005706d8;
         goto add_fy;
@@ -59,7 +69,7 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
         if ((DAT_005706d8 - fx) * DAT_005706c0 < raw_y) { result = fx * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
         goto tile_case7;
     case 10:
-        if (DAT_005706d8 <= fy) result = -1.0;
+        if (DAT_005706d8 <= fy) z = -1.0;
         else { result = -fy; goto z_result; }
         goto default_result;
     case 11:
@@ -70,7 +80,7 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
     case 0:
     case 9:
  tile_case0:
-        result = 0.0;
+        z = 0.0;
         goto default_result;
     case 13:
         if (fx <= DAT_005706c0) result = ((DAT_005706c0 - fx) + fy) + ((DAT_005706c0 - fx) + fy);
@@ -106,11 +116,14 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
         fy = DAT_005706d8 - (fx + fx);
         goto add_fy;
  z_result:
+    z = result;
  default_result:
-    default:
-        z = (float)((((fx + fx) - (DAT_005706d8 - (fy + fy))) + result) * DAT_005706c0);
+ default:
+        {
+            float normalized = (float)((((fx + fx) - (DAT_005706d8 - (fy + fy))) + z) * DAT_005706c0);
+            *out2 = normalized;
+            *out1 = (float)((fx + fx) - normalized);
+        }
         break;
     }
-    *out2 = (float)z;
-    *out1 = (float)((fx + fx) - z);
 }

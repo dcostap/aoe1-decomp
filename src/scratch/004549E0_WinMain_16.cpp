@@ -15,6 +15,18 @@
 // 159-byte mismatch and 94.01% resync similarity. Other parameter orders were
 // worse. Explicit dword stores regressed and were removed. The remaining drift
 // is local parameter scheduling plus one delayed zone GUID dword.
+// probe: matched the original option-store order: defer use_cd_audio through
+// use_wave_music until after the scroll values, and retain use_dir_draw=1.
+// probe: moved the zone GUID aggregate after scalar setup; this delayed its
+// final dword store and reduced the mismatch to 24 bytes.
+// probe: ordered paths as data, sound, graphics, save, scenario, campaign,
+// resource, AI, and AVI; this reduced the mismatch to 14 bytes.
+// probe: the executable returns the run() result and discards the following
+// get_error_code() result. Modeling that bug reduced the mismatch to 4 bytes.
+// probe: pointer field ABI changed to void* with no codegen change. Instance
+// assignment permutations and late aliases did not reproduce the final order.
+// left in scratch: four bytes are only the hPrev/hInst load and store order;
+// the canonical source, calls, size, and all behavior-backed stores match.
 
 #include <stdio.h>
 #include <string.h>
@@ -34,8 +46,8 @@ public:
     unsigned long vol_ser_num;
     int verify_cd;
     int max_players_per_cd;
-    HINSTANCE instance;
-    HINSTANCE prev_instance;
+    void* instance;
+    void* prev_instance;
     char registry_key[256];
     char cmd_line[256];
     int show_wnd_flag;
@@ -156,15 +168,14 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     strcpy(info.vol_name, "AOE");
     info.vol_ser_num = 0;
     info.verify_cd = 1;
-    info.prev_instance = hPrev;
     info.max_players_per_cd = 3;
+    info.prev_instance = hPrev;
     info.instance = hInst;
     info.show_wnd_flag = nShow;
 
     info.mouse_scroll_interval = 0x54;
     info.key_scroll_interval = 0x54;
     info.game_guid = guid_pair.game;
-    info.zone_guid = guid_pair.zone;
 
     info.max_players = 8;
     info.check_expiration = 0;
@@ -180,10 +191,6 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     info.use_sys_mem = 0;
     info.use_music = 1;
     info.use_sound = 1;
-    info.use_cd_audio = 0;
-    info.use_ima = 0;
-    info.use_midi = 0;
-    info.use_wave_music = 0;
     info.fast_view = 1;
     info.auto_scroll = 1;
     info.mouse_scroll_edge = 3;
@@ -191,15 +198,20 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     info.key_scroll_max_dist = 4.0f;
     info.key_scroll_object_move = 0.05f;
     info.interface_style = 2;
+    info.use_cd_audio = 0;
+    info.use_ima = 0;
+    info.use_midi = 0;
+    info.use_wave_music = 0;
     info.main_wid = 800;
     info.main_hgt = 600;
+    info.zone_guid = guid_pair.zone;
 
     strcpy(info.data_dir, "data2\\");
+    strcpy(info.sounds_dir, "sound\\");
     strcpy(info.graphics_dir, "");
     strcpy(info.save_dir, "savegame\\");
     strcpy(info.scenario_dir, "scenario\\");
     strcpy(info.campaign_dir, "campaign\\");
-    strcpy(info.sounds_dir, "sound\\");
     strcpy(info.resource_dir, "data2\\");
     strcpy(info.ai_dir, "data2\\");
     strcpy(info.avi_dir, "avi\\");
@@ -210,8 +222,8 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     if (game != 0) {
         int result = game->get_error_code();
         if (result == 0) {
-            game->run();
-            error_code = game->get_error_code();
+            error_code = game->run();
+            game->get_error_code();
             delete game;
         }
         else if (result != 4) {

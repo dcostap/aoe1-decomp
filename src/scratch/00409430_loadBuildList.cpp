@@ -7,6 +7,11 @@
 // Baseline lead: the previous file used a TribeBuildAIModule owner, a fake
 // LineFile, wrong numeric opcodes, and a fake setName call.  The executable
 // instead parses A/B/C/E/G/L/R/T/U and calls BuildItem::setBuildCap.
+// The binary PDB line order and jump table put the arms in B, A, R, C, U,
+// T, L, E, G order.  This order is retained in the living source.
+// Switch-order probe: diff 456 -> 420 -> 386 bytes; five cold blocks aligned.
+// Field-pointer null/strlen probes followed Ghidra ownership but worsened
+// codegen, so the parameter-based guard remains the best source basin.
 
 #include <stdio.h>
 #include <string.h>
@@ -127,34 +132,34 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
             continue;
         default:
             continue;
+        case 'B':
+            buildCategory = 0;
+            break;
         case 'A':
             buildCategory = 0;
             sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
             break;
-        case 'B':
-            buildCategory = 0;
+        case 'R':
+            buildCategory = 1;
             break;
         case 'C':
             buildCategory = 4;
+            break;
+        case 'U':
+            buildCategory = 2;
+            break;
+        case 'T':
+            buildCategory = 2;
+            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
+            break;
+        case 'L':
+            buildCategory = 3;
             break;
         case 'E':
             buildCategory = 5;
             break;
         case 'G':
             buildCategory = 6;
-            break;
-        case 'L':
-            buildCategory = 3;
-            break;
-        case 'R':
-            buildCategory = 1;
-            break;
-        case 'T':
-            buildCategory = 2;
-            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
-            break;
-        case 'U':
-            buildCategory = 2;
             break;
         }
 
