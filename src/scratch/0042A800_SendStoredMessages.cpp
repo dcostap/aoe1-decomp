@@ -21,6 +21,12 @@
 //   the remaining x87 compare still uses fcompp rather than the oracle's fcomp.
 // - context: proven error-string addresses recovered the branch immediate; final
 //   current check is 1222B, 24/24 calls, 90.5058% positional diff, frame 0x24.
+// - ABI: replaced all raw-address macros with typed extern globals and string
+//   declarations. The ABI surface changed the codegen basin, but did not match.
+// - cleanup: removed the stale raw-address macro surface that remained in the
+//   paused file; all globals and strings now use named typed extern declarations.
+// - layout: indexed RESENDER fields improved size to 1266B and shape to 79.90%,
+//   but derived map ownership moved the scan topology. Restored the clean source.
 // - paused after 9 meaningful hypotheses: remaining gap is broad this/register,
 //   frame, local-home, and source-block topology, not a localized safe drift.
 // - layout: removed the cross-record dest_map cursor and derived map from each
@@ -28,6 +34,9 @@
 // - control-flow: replaced the error-text goto with direct Log returns to test
 //   compiler tail merging at the first push/jump hunk; this added one Log call
 //   and worsened the diff, so it was restored.
+// - layout: original LEA record+14 before both player scans proves DestMap+1;
+//   retained the natural index-1 skip, with unchanged strict diff and a small
+//   shape gain.
 
 struct TDebuggingLog;
 struct RGE_Comm_Error;
@@ -42,20 +51,18 @@ public:
     void Log(const char* format, ...);
 };
 
-#define L (*(TDebuggingLog**)0x0062C4FC)
-#define DAT_0062c5ec (*(IDirectPlay3**)0x0062C5EC)
-#define DAT_0062cf04 (*(unsigned int*)0x0062CF04)
-#define DAT_0062cf08 (*(int*)0x0062CF08)
-#define DAT_0062cf0c (*(int*)0x0062CF0C)
-#define DAT_0062cf28 (*(unsigned int*)0x0062CF28)
-#define DAT_0062c5e4 (*(unsigned char*)0x0062C5E4)
-#define DAT_0062c5a8 (*(unsigned int*)0x0062C5A8)
-#define resend_adj1 (*(int*)0x0062CF08)
-#define resend_adj2 (*(int*)0x0062CF0C)
-#define DAT_0056f210 (*(float*)0x0056F210)
-#define s_Com_hand_cpp ((const char*)0x00580BF4)
-#define S_SENDSTORE ((const char*)0x00582264)
-#define S_BAD_DCOID ((const char*)0x005810B0)
+extern TDebuggingLog* L;
+extern IDirectPlay3* DAT_0062c5ec;
+extern unsigned int DAT_0062cf04;
+extern int DAT_0062cf08;
+extern int DAT_0062cf0c;
+extern unsigned int DAT_0062cf28;
+extern unsigned char DAT_0062c5e4;
+extern unsigned int DAT_0062c5a8;
+extern float DAT_0056f210;
+extern const char s_Com_hand_cpp[];
+extern const char s_RGEGTD_SendStore[];
+extern const char s_BAD_DCOID_0_NO_TX[];
 
 class RGE_Comm_Error {
 public:
@@ -194,7 +201,7 @@ int TCommunications_Handler::SendStoredMessages()
     char* name;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
-        error_text = S_SENDSTORE;
+        error_text = s_RGEGTD_SendStore;
         goto no_transmit;
     }
 
@@ -217,7 +224,7 @@ int TCommunications_Handler::SendStoredMessages()
     this->PurgeAcknowledgedStoredMessages();
 
     resend = this->Resend;
-    dest_map = resend->DestMap;
+    dest_map = resend->DestMap + 1;
     slot = 0;
     max_dest_delay = 0;
     do {
@@ -258,9 +265,9 @@ int TCommunications_Handler::SendStoredMessages()
             return 0;
         }
     } else {
-        limit = resend_adj2 + this->Speed->HighestLatencyMsec * 2;
-        if (limit < resend_adj1 + 500U) {
-            limit = resend_adj1 + 500U;
+        limit = DAT_0062cf0c + this->Speed->HighestLatencyMsec * 2;
+        if (limit < DAT_0062cf08 + 500U) {
+            limit = DAT_0062cf08 + 500U;
         }
         if (oldest_message_slot < limit) {
             return 0;
@@ -276,7 +283,7 @@ int TCommunications_Handler::SendStoredMessages()
     }
 
     selected = (RESENDER*)((char*)this->Resend + offset);
-    dest = selected->DestMap;
+    dest = selected->DestMap + 1;
     dco = this->PlayerOptions.dcoID + 1;
     player = 1;
 
@@ -293,7 +300,7 @@ int TCommunications_Handler::SendStoredMessages()
                    debug_timeGetTime(s_Com_hand_cpp, 0xE69));
 
             if (DAT_0062cf04 == 0) {
-                error_text = S_BAD_DCOID;
+                error_text = s_BAD_DCOID_0_NO_TX;
                 goto no_transmit;
             }
 
