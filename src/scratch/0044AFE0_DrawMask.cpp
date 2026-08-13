@@ -21,6 +21,9 @@
 // - A single typed running mask pointer replaced the base-plus-cursor pair;
 //   this added 35 bytes and worsened the first structural hunk, so it was
 //   restored. The two-pointer source remains the best natural reconstruction.
+// - Named the probability pointer before its byte load and stores, matching
+//   the binary-proven pcVar2 shape. This reached diff 482 but left the same
+//   structural gap; retained as the clearer typed source.
 
 class PointMaker {
 public:
@@ -121,16 +124,17 @@ void PointMaker::DrawMask(int param_1, int param_2, int param_3) {
             int pos = write_index;
             int remaining = mask_width;
             do {
-                char mask_val = *(char*)((int)mask_cursor + (pos - write_index));
+                char mask_val = mask_cursor[pos - write_index];
                 if (pos > 0 && pos < SizeArrays - 1) {
-                    char prob_val = ProbArray[pos];
+                    char* prob_ptr = ProbArray + pos;
+                    char prob_val = *prob_ptr;
                     if (prob_val == 0) {
-                        ProbArray[pos] = mask_val;
+                        *prob_ptr = mask_val;
                         ProbabilityTiles++;
                     } else if ((int)mask_val + (int)prob_val < 0xFF) {
-                        ProbArray[pos] = mask_val + prob_val;
+                        *prob_ptr = mask_val + prob_val;
                     } else {
-                        ProbArray[pos] = (char)-1;
+                        *prob_ptr = (char)-1;
                     }
                 }
                 pos++;

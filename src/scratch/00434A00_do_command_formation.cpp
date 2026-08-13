@@ -22,6 +22,8 @@
 // - Reordered the first switch's natural 2/3 and 1/4/5 case groups to follow
 //   the original jump-table block placement; strict bytes stayed at 709 and
 //   the edit/resync diagnostic improved only, so restored the clean order.
+// - Moved unit_num and units into the unit-count guard to mirror the original
+//   post-compare home stores; this worsened strict diff to 718 and was restored.
 
 #include <math.h>
 #pragma intrinsic(sqrt)

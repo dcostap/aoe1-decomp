@@ -23,6 +23,10 @@
 // - Tried a typed state enum with a sprite local declared after state storage;
 //   VC5 kept the extra virtual +0x38 call, grew to 622 bytes, and worsened the
 //   first dispatch hunk. Restored the clean direct-call source.
+// - Tried a typed shared sprite tail in the existing switch order; both a
+//   post-switch call and an explicit shared label stayed at 622 bytes with
+//   three virtual +0x38 calls. Restored the clean source; the tail merge is
+//   not obtained by this source shape.
 
 class RGE_Sprite;
 class RGE_Sound;

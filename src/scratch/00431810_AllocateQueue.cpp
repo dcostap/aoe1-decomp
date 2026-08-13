@@ -24,6 +24,9 @@
 // - A natural early return for the outer growth guard worsened the first
 //   mismatch, grew code by 15 bytes, and changed saved-register pressure; it
 //   was rolled back.  The clean result-variable form remains best.
+// - Retried the PDB-supported early return with `result = 0` initialized before
+//   the guard.  VC5 still delayed the saved-register pushes, producing the
+//   same 15-byte growth and worse first mismatch; restored the clean form.
 
 #include <string.h>
 

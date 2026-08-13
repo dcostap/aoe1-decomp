@@ -22,6 +22,13 @@
 // and was rolled back. The clean direct world member form remains authoritative.
 // Reordered natural early declarations to evaluate player before ids; this widened the
 // first hunk to 40 bytes and was rolled back. The clean declaration order remains best.
+// Tested exact-TU world/player ABI surfaces, split declarations, an explicit byte index,
+// and named pointer arithmetic; these all stayed at 19 bytes or worsened the first hunk.
+// Restored the clean source before the final ownership pass.
+// Final ownership pass: modeled the proven 0x10-byte command header with trailing
+// RGE_Obj_Info records and the player master_objects table; output stayed at 19 bytes.
+// Current pause: exact calls, frame, size, CFG, and 73.6% exact blocks remain aligned;
+// the only drift is the initial world/player register-color schedule.
 
 typedef unsigned char uchar;
 
@@ -29,6 +36,10 @@ typedef unsigned char uchar;
 
 class RGE_Static_Object;
 class RGE_Player;
+class RGE_Master_Static_Object;
+struct RGE_Obj_Info {
+    int id;
+};
 
 class RGE_Game_World {
 public:
@@ -44,7 +55,7 @@ public:
     virtual void vfunc8();
     virtual void vfuncC();
     RGE_Game_World* world;
-    RGE_Static_Object* get_obj(int id);
+    RGE_Static_Object* get_obj(RGE_Obj_Info id);
 };
 
 class RGE_Static_Object {
@@ -69,7 +80,7 @@ class TRIBE_Player {
 public:
     virtual ~TRIBE_Player();
     char gap_04[0x20];
-    void** objects;
+    RGE_Master_Static_Object** master_objects;
 };
 class TRIBE_Master_Building_Object;
 
@@ -85,7 +96,6 @@ struct TRIBE_Command_Build_Wall {
     short obj_id;
     short padA;
     int unique_id;
-    int ids[1];
 };
 
 class TRIBE_Command : public RGE_Command {
@@ -97,11 +107,11 @@ public:
 void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
 {
     int count = cmd->count;
-    int* ids = &cmd->ids[0];
+    RGE_Obj_Info* ids = (RGE_Obj_Info*)(cmd + 1);
     TRIBE_Player* player = (TRIBE_Player*)this->world->players[cmd->player_id];
     if (player == 0) return;
     if (cmd->obj_id == -1) return;
-    TRIBE_Master_Building_Object* info = (TRIBE_Master_Building_Object*)player->objects[cmd->obj_id];
+    TRIBE_Master_Building_Object* info = (TRIBE_Master_Building_Object*)player->master_objects[cmd->obj_id];
     if (info == 0) return;
 
     RGE_Static_Object* foundation = 0;
@@ -143,7 +153,7 @@ void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
     if (foundation != 0) {
         if (count > 0) {
             int n = count;
-            int* idp = ids;
+            RGE_Obj_Info* idp = ids;
             do {
                 RGE_Static_Object* obj = this->get_obj(*idp);
                 if (obj != 0) {

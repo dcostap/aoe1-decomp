@@ -21,6 +21,14 @@
 // - Validation: the source now matches the packet's state-to-block mapping;
 //   VC5 emitted the prior body unchanged because the jump table is relocated
 //   outside the compared function bytes. Leave register tuning for later.
+// - Restored timer writes before the coordinate and attack allocations from
+//   the original +2C stores; the coordinate block became exact.
+// - Corrected typed master offsets (+124, +12A, +138), attack size (0x5C),
+//   and task range offset (+24) from constructor access evidence.
+// - Modeled object facet as a word at +4C, matching the state-7 compare;
+//   strict drift fell to 118 bytes with all 45 calls aligned.
+// - Tested an early-return depletion branch for state 8; it changed call order
+//   and was restored. Keep the natural positive-if form.
 
 class RGE_Sprite;
 class RGE_Static_Object;
@@ -36,7 +44,7 @@ public:
     char gap_00[0xE8];
     short drop_site;
     short backup_drop_site;
-    char gap_EC[0x34];
+    char gap_EC[0x38];
     short missile_id;                 // +124
     char gap_126[4];
     short fire_missile_at_frame;      // +12A
@@ -62,7 +70,8 @@ public:
     float world_z;
     float attribute_amount_held;
     unsigned char object_state;
-    unsigned char facet;
+    char gap_49[3];
+    short facet;
 };
 
 class RGE_Action_Object {
@@ -108,21 +117,23 @@ public:
     float world_z;
     float attribute_amount_held;
     unsigned char object_state;
-    unsigned char facet;
+    char gap_49[3];
+    short facet;
 };
 
 class RGE_Task {
 public:
     char gap_00[0x14];
     short attribute_type;
-    char gap_16[0x1E];
+    char gap_16[0x0E];
+    float work_range_at_end;
+    char gap_28[0x0C];
     RGE_Sprite* move_sprite;
     RGE_Sprite* work_sprite;
     RGE_Sprite* work_sprite2;
     RGE_Sprite* carry_sprite;
     RGE_Sound* work_sound;
     RGE_Sound* work_sound2;
-    float work_range_at_end;
 };
 
 class RGE_Action {
@@ -186,6 +197,7 @@ class RGE_Action_Attack : public RGE_Action {
 public:
     RGE_Action_Attack(RGE_Action_Object*, RGE_Static_Object*, RGE_Sprite*,
                       RGE_Sprite*, RGE_Sprite*, float, float, short, short);
+    char gap_40[0x1C];
 };
 
 class RGE_Sound {
@@ -236,9 +248,10 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 
     case 11:
     case 15: {
+        this->timer = 0.0f;
         RGE_Action_Move_To* action = new RGE_Action_Move_To(
             this->obj, this->target_x, this->target_y, this->target_z,
-            0.0f, this->get_move_sprite());
+            this->task->work_range_at_end, this->get_move_sprite());
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -274,6 +287,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
     }
 
     case 12: {
+        this->timer = 0.0f;
         RGE_Action_Attack* action = new RGE_Action_Attack(
             this->obj, this->target_obj, this->get_move_sprite(),
             this->task->work_sprite, 0, this->task->work_range_at_end,

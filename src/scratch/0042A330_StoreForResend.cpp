@@ -22,6 +22,8 @@
 // follow-up: retested typed memcpy lowering for the payload after the recipient-map
 // copy reached the REP family; rebuilt size fell 497->467 and the frame disappeared,
 // so restored the clean typed-map source.
+// follow-up: hoisted scan-state declarations before the delivery gates while keeping
+// initialization after the gates; emitted code was unchanged, so restored the clean source.
 // left in scratch: behavior and layout modeled, but logging argument order/register allocation and copy-loop lowering remain broad; not accepted-drift-safe.
 
 #include <string.h>
