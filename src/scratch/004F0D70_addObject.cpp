@@ -26,6 +26,11 @@
 //   the 822-byte body and first prologue mismatch remained.
 // - A preincrement resize capacity form was also a codegen duplicate and was
 //   restored to the clearer `number + 1` spelling.
+// - Same-TU AIModule base spelling and a full base gap were codegen duplicates
+//   at 822 bytes; the structural prologue and four ID spill gaps were unchanged.
+// - Restoring the binary-supported persistent object alias in the current
+//   virtual-base context was also a duplicate.  A register-ID diagnostic was
+//   unchanged, so the clean typed candidate remains authoritative.
 
 class RGE_Master_Static_Object {
 public:
