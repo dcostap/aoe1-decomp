@@ -1,75 +1,155 @@
 // 004564E0 RGE_Map::preclean_elevation
 // map.cpp
 // Attempt log:
-// try 1: reconstructed elevation preclean pass: clamp rectangle, scan tiles, compare 8 neighbors, raise/lower center or neighbors when slopes conflict.
-// try 2: modeled RGE_Map fields: width +0x08, height +0x0C, row pointer table +0x8D8C, tile stride 0x18, elevation in byte +5 high 3 bits.
-// try 3: modeled edge expansion/clamping of x1/y1/x2/y2 and repeated do-while until no change.
-// try 4: modeled per-tile neighbor comparisons for N/S/E/W and diagonals against current elevation.
-// try 5: modeled conflict detection when opposite high neighbors exist and maxElev threshold decides whether to raise current tile or lower neighbors.
-// try 6: factored elevation get/set into local helpers; rebuild still exact size 985B but broad mismatch.
-// try 7: reviewed first mismatch: original has 0x48 frame and precomputes signed neighbor offsets (`-width-1`, `-width`, `1-width`, `width+1`, etc.) before loops; rebuilt has 0x38 frame and recomputes via pointer arithmetic.
-// try 8: original stores neighbor flags as stack dwords but tests them with word compares, and manually writes each neighbor byte with preserved low 5 bits; current source's int flags/helper calls produce different register/topology.
-// try 9: behavior likely close for central smoothing, but exact source shape would need fully inlined per-neighbor checks/writes and original offset-local topology rather than helpers.
-// try 10: validation after broad model: size matches 985B, but positional diff 884 / 89.75%, edit diff 1446 / 146.80%, first mismatch at frame size/local layout offset 2.
-// left in scratch: size-matched broad reconstruction, but exact local layout, precomputed offsets, and inlined byte-write topology are unresolved. No accepted_drift: broad frame/control/data-layout drift.
+// try 1: replaced elevation helpers and int flags with typed tile access, short
+// neighbor offsets, and direct byte updates; first clean reconstruction probe.
+// try 2: changed the elevation temporaries to unsigned short, made the conflict
+// result explicit, and used function-scope loop indices to mirror stack homes.
+// try 3: ordered the eight short flag locals by their observed stack homes and
+// reversed neighbor comparisons; this reached the original frame and size.
+// try 4: split the tile byte from the signed short elevation; this moved all
+// loop setup registers into the original coloring and reduced edit drift.
+// try 5: changed elevation and neighbor levels to signed short; all comparison
+// branch conditions now match the original signed word branches.
+// try 6: redundant row-offset copies were codegen duplicates; removed for the
+// final clean candidate. Remaining drift starts at the original row-offset spill.
 
-struct MapTile { char b[24]; };
-class RGE_Map {
-public:
-    char gap0[8];
-    short width;
-    short height;
-    char gap0c[0x8D8C-0x0C];
-    MapTile** rows;
-    void preclean_elevation(long x1,long y1,long x2,long y2,unsigned char maxElev);
+struct RGE_Tile {
+    char gap_00[5];
+    unsigned char screen_xpos;
+    char gap_06[0x12];
 };
 
-static unsigned char elev(MapTile* t) { return (unsigned char)(t->b[5] >> 5); }
-static void set_elev(MapTile* t, unsigned char e) { t->b[5] = (unsigned char)((t->b[5] & 0x1f) | (e << 5)); }
+class RGE_Map {
+public:
+    char gap_00[8];
+    long map_width;
+    long map_height;
+    char gap_10[0x8d8c - 0x10];
+    RGE_Tile** map_row_offset;
 
-void RGE_Map::preclean_elevation(long x1,long y1,long x2,long y2,unsigned char maxElev) {
-    long oldx1;
-    long changed;
-    long x,y;
-    unsigned char e;
-    MapTile* row;
+    void preclean_elevation(long x1, long y1, long x2, long y2,
+                            unsigned char max_elevation);
+};
+
+void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
+                                  unsigned char max_elevation)
+{
+    short width = (short)this->map_width;
+    short offset_northwest = -1 - width;
+    short offset_north = -width;
+    short offset_northeast = 1 - width;
+    short offset_southeast = width + 1;
+    short offset_southwest = width - 1;
+    short offset_south = width;
+    long tile_offset = x1 * sizeof(RGE_Tile);
+    long index2;
+    long index1;
+    unsigned char change_flag;
 
     do {
-        changed = 0;
-        if (x1 > 0) --x1;
-        if (y1 > 0) --y1;
-        if (x2 < width - 1) ++x2;
-        if (y2 < height - 1) ++y2;
+        change_flag = 0;
+        if (x1 > 0) {
+            --x1;
+            tile_offset -= sizeof(RGE_Tile);
+        }
+        if (y1 > 0)
+            --y1;
+        if (x2 < this->map_width - 1)
+            ++x2;
+        if (y2 < this->map_height - 1)
+            ++y2;
 
-        for (y = y1; y <= y2; ++y) {
-            row = rows[y] + x1;
-            for (x = x1; x <= x2; ++x, ++row) {
-                e = elev(row);
-                int n=0,s=0,w=0,ee=0,nw=0,ne=0,sw=0,se=0;
-                if (y > 0 && elev(row - width) > e) n=1;
-                if (y < height-1 && elev(row + width) > e) s=1;
-                if (x > 0 && elev(row - 1) > e) w=1;
-                if (x < width-1 && elev(row + 1) > e) ee=1;
-                if (y > 0 && x > 0 && elev(row - width - 1) > e) nw=1;
-                if (y > 0 && x < width-1 && elev(row - width + 1) > e) ne=1;
-                if (y < height-1 && x > 0 && elev(row + width - 1) > e) sw=1;
-                if (y < height-1 && x < width-1 && elev(row + width + 1) > e) se=1;
-                if ((n && s) || (w && ee)) {
-                    if (e >= maxElev) {
-                        set_elev(row, (unsigned char)(e + 1));
+        for (index2 = y1; index2 <= y2; ++index2) {
+            RGE_Tile* row = this->map_row_offset[index2];
+            RGE_Tile* tile = (RGE_Tile*)((char*)row + tile_offset);
+            for (index1 = x1; index1 <= x2; ++index1, ++tile) {
+                unsigned char tile_byte = tile->screen_xpos;
+                short northwest = 0;
+                short northeast = 0;
+                short east = 0;
+                short southeast = 0;
+                short south = 0;
+                short southwest = 0;
+                short west = 0;
+                short north = 0;
+                short elevation = (short)(tile_byte >> 5);
+
+                if (index2 > 0 &&
+                    ((tile + offset_north)->screen_xpos >> 5) > elevation)
+                    north = 1;
+                if (index2 < this->map_height - 1 &&
+                    ((tile + offset_south)->screen_xpos >> 5) > elevation)
+                    south = 1;
+                if (index1 > 0 &&
+                    (tile[-1].screen_xpos >> 5) > elevation)
+                    west = 1;
+                if (index1 < this->map_width - 1 &&
+                    (tile[1].screen_xpos >> 5) > elevation)
+                    east = 1;
+                if (index2 > 0) {
+                    if (index1 > 0 &&
+                        ((tile + offset_northwest)->screen_xpos >> 5) > elevation)
+                        northwest = 1;
+                    if (index1 < this->map_width - 1 &&
+                        ((tile + offset_northeast)->screen_xpos >> 5) > elevation)
+                        northeast = 1;
+                }
+                if (index2 < this->map_height - 1) {
+                    if (index1 > 0 &&
+                        ((tile + offset_southwest)->screen_xpos >> 5) > elevation)
+                        southwest = 1;
+                    if (index1 < this->map_width - 1 &&
+                        ((tile + offset_southeast)->screen_xpos >> 5) > elevation)
+                        southeast = 1;
+                }
+
+                unsigned char conflict = 0;
+                if (north && south)
+                    conflict = 1;
+                if (east && west)
+                    conflict = 1;
+                if (conflict) {
+                    if (elevation >= max_elevation) {
+                        if (northwest)
+                            (tile + offset_northwest)->screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                ((tile + offset_northwest)->screen_xpos & 0x1f);
+                        if (north)
+                            (tile + offset_north)->screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                ((tile + offset_north)->screen_xpos & 0x1f);
+                        if (northeast)
+                            (tile + offset_northeast)->screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                ((tile + offset_northeast)->screen_xpos & 0x1f);
+                        if (east)
+                            tile[1].screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                (tile[1].screen_xpos & 0x1f);
+                        if (southeast)
+                            (tile + offset_southeast)->screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                ((tile + offset_southeast)->screen_xpos & 0x1f);
+                        if (south)
+                            (tile + offset_south)->screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                ((tile + offset_south)->screen_xpos & 0x1f);
+                        if (southwest)
+                            (tile + offset_southwest)->screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                ((tile + offset_southwest)->screen_xpos & 0x1f);
+                        if (west)
+                            tile[-1].screen_xpos =
+                                (unsigned char)(elevation << 5) |
+                                (tile[-1].screen_xpos & 0x1f);
                     } else {
-                        if (nw) set_elev(row-width-1, e);
-                        if (n)  set_elev(row-width, e);
-                        if (ne) set_elev(row-width+1, e);
-                        if (w)  set_elev(row-1, e);
-                        if (ee) set_elev(row+1, e);
-                        if (sw) set_elev(row+width-1, e);
-                        if (s)  set_elev(row+width, e);
-                        if (se) set_elev(row+width+1, e);
+                        tile->screen_xpos = (unsigned char)((elevation + 1) << 5) ^
+                                               (tile->screen_xpos & 0x1f);
                     }
-                    changed = 1;
+                    change_flag = 1;
                 }
             }
         }
-    } while (changed);
+    } while (change_flag);
 }

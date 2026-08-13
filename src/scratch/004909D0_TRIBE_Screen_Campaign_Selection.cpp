@@ -11,7 +11,9 @@
 // 8: Found tab-order source needs five entries plus a cancel-button value in the adjacent local slot; array[6]/out-of-bounds tabList[5] improved body to 2.6679% but forced stack frame sub esp,1C instead of original sub esp,18.
 // 9: Tried removing cancel local/direct cancelButton hotkey stores; stack stayed 1C or broad block regressed.
 // 10: Tried separate cancelTab local instead of tabList[5]; restored sub esp,18 but lost the near-exact tab-order block, leaving 12.5115% mismatch, first mismatch offset 202.
-// GIVEUP: current kept variant has correct /GX EH prologue/frame and main widget creation topology but remaining drift is localized around first failure branch displacement and late cancel/tab-order local topology. Best variant was 2.6679% but wrong frame size; current variant preserves original frame size. No accepted_drift because branch displacements/local topology and late tab-order memory layout are not exact.
+// 11: Replaced cancelTab and the decompiler index order with one late five-element TPanel array in campaign, scenario, dropdown, cancel, ok slot order; set_tab_order now receives its base. This restored the original frame and reduced the mismatch to 13 bytes.
+// 12: Aggregate initialization, assignment permutations, and late declaration checks did not change the 13-byte result or improve the clean source model.
+// PAUSED: exact call set, size, frame, CFG, and all earlier blocks match. Remaining drift is the localized cancel/ok load scheduling at the array stores (+03D4..+03E3); no source-plausible lead remains in this session.
 // FLAGS: /GX
 
 class TPanel {
@@ -94,8 +96,6 @@ public:
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     : TEasy_Panel("Campaign Selection Screen")
 {
-    TPanel* tabList[5];
-    TPanel* cancelTab;
     *(int*)this = 0x5723D0;
     init_vars();
     if (!setup(rge_base_game->draw_area, "scr2", 0xC384, 1)) {
@@ -132,12 +132,13 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                 if (create_button((TPanel*)this, &close_button, 0x03EA, 0, 0, 0, 0, 0, -1, -1, 0)) {
                                                     close_button->enable(1);
                                                     close_button->setup_colours(9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
-                                                    tabList[2] = scenarioList;
-                                                    tabList[3] = difficultyDrop;
-                                                    tabList[1] = campaignList;
-                                                    cancelTab = cancelButton;
+                                                    TPanel* tabList[5];
+                                                    tabList[0] = campaignList;
+                                                    tabList[1] = scenarioList;
+                                                    tabList[2] = difficultyDrop;
+                                                    tabList[3] = cancelButton;
                                                     tabList[4] = okButton;
-                                                    set_tab_order(tabList + 1, 5);
+                                                    set_tab_order(tabList, 5);
                                                     set_curr_child(okButton);
                                                     fillCampaigns();
                                                     fillScenarios();
