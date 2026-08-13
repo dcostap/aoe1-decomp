@@ -19,6 +19,13 @@
 // suppression-success wrapper worsened CFG and was rolled back. Remaining drift
 // starts at the zero-register suppression cmp (oracle xor/cmp versus rebuilt test)
 // and the checksum parameter-home spill; no raw byte cursor is retained.
+// Follow-up probes: wrapping the full success body in the binary je-to-body
+// guard reproduced the prior 457-byte basin and was restored. Direct player-id
+// hashing, an unsigned checksum accumulator, local declaration reordering, and
+// a dedicated zero guard local were all emitted-code duplicates of the clean
+// source. The new blocker lead is therefore the old-TU local-lifetime/context
+// split that spills checksum to [ebp-14] and reuses the p6 home; do not retain
+// artificial stack or volatile steering.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
