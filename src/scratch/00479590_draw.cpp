@@ -5,6 +5,7 @@
 // context: restored canonical TPanel fields and virtual draw ownership; no code change.
 // remaining drift: VC5 keeps the vtable carrier in EBX, not original EDI, and misses 4 frame bytes.
 // left in scratch: typed period-plausible draw source with 32 aligned calls; no exact lead remains.
+// shared-local lifetime probe: reordered x/y/wid/hgt with the original coordinate ownership; codegen unchanged, so keep the natural form.
 struct tagRECT { long left; long top; long right; long bottom; };
 struct tagSIZE { long cx; long cy; };
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
@@ -109,17 +110,17 @@ void TMessagePanel::draw() {
         return;
     }
 
+    long y;
+    long x;
+    long wid;
+    long hgt;
+    unsigned long font_rgb;
+    void* old_font;
+    unsigned long back_rgb;
     tagPALETTEENTRY p;
     tagSIZE ts;
     tagRECT rect;
-    void* old_font;
-    unsigned long font_rgb;
-    unsigned long back_rgb;
     int len;
-    long top;
-    long left;
-    long right;
-    long bottom;
     this->draw_setup(0);
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
@@ -159,10 +160,10 @@ void TMessagePanel::draw() {
                 SetBkMode(this->render_area->hdc, 1);
             }
 
-            left = this->draw_left;
-            top = this->draw_top;
-            right = this->pnl_wid + left - 1;
-            bottom = this->pnl_hgt + top - 1;
+            x = this->draw_left;
+            y = this->draw_top;
+            wid = this->pnl_wid + x - 1;
+            hgt = this->pnl_hgt + y - 1;
 
             len = 0;
             while (msg[len] != 0) ++len;
@@ -185,16 +186,16 @@ void TMessagePanel::draw() {
             }
 
             SetTextColor(this->render_area->hdc, back_rgb);
-            SetRect(&rect, left, top, right - 2, bottom - 2);
+            SetRect(&rect, x, y, wid - 2, hgt - 2);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
-            SetRect(&rect, left, top + 2, right - 2, bottom);
+            SetRect(&rect, x, y + 2, wid - 2, hgt);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
-            SetRect(&rect, left + 2, top, right, bottom - 2);
+            SetRect(&rect, x + 2, y, wid, hgt - 2);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
-            SetRect(&rect, left + 2, top + 2, right, bottom);
+            SetRect(&rect, x + 2, y + 2, wid, hgt);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
             SetTextColor(this->render_area->hdc, font_rgb);
-            SetRect(&rect, left + 1, top + 1, right - 1, bottom - 1);
+            SetRect(&rect, x + 1, y + 1, wid - 1, hgt - 1);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);
 
             SelectObject(this->render_area->hdc, old_font);

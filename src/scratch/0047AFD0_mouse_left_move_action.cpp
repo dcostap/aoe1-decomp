@@ -23,6 +23,10 @@
 // 428 to 320 bytes with 92.39% shape and 81.47% exact-block coverage. Current-position and operand-order variants
 // were worse or duplicate; retain the compound-update source as the best plausible candidate. Remaining drift is
 // localized to edge/clamp reload/register topology and the extracted switch-table relocation.
+// Probe 25: reversed both upper clamp operands to max < updated tab; diff worsened 320 to 321 with lower shape,
+// so restored the clean compound-update source.
+// Probe 27: reversed both lower clamp operands to min > updated tab; positional diff stayed 320 but shape fell,
+// so restored the clean compound-update source. No bound-update spelling improved the first paired hunk.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
@@ -77,7 +81,7 @@ public:
     tagRECT tab_rect;           // +0x184
     tagRECT top_rect;           // +0x194
     tagRECT bottom_rect;        // +0x1A4
-    long orientation;           // +0x1B4 (1 = horizontal)
+    long orientationValue;      // +0x1B4 (1 = horizontal)
 
     void scroll(int action, long param);
     void calc_item_rects();
@@ -95,8 +99,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
             if (this->item_is_down == 0) {
                 this->item_is_down = 1;
                 this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x19A);
+                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x19A);
                 this->scroll(0, 0);
                 this->redraw(1);
             }
@@ -112,8 +115,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
             if (this->item_is_down == 0) {
                 this->item_is_down = 1;
                 this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1AD);
+                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x1AD);
                 this->scroll(1, 0);
                 this->redraw(1);
             }
@@ -129,8 +131,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
             if (this->item_is_down == 0) {
                 this->item_is_down = 1;
                 this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1C0);
+                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x1C0);
                 this->scroll(2, 0);
                 this->redraw(1);
             }
@@ -146,8 +147,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
             if (this->item_is_down == 0) {
                 this->item_is_down = 1;
                 this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1D3);
+                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x1D3);
                 this->scroll(3, 0);
                 this->redraw(1);
             }
@@ -159,7 +159,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
         break;
 
     case 3:
-        if (this->orientation == 1) {
+        if (this->orientationValue == 1) {
             delta = x - this->item_x;
             if (delta > 0) {
                 if ((this->tab_x == this->tab_min_x) &&
@@ -198,7 +198,8 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                 this->scroll(4, value);
             }
         } else {
-            delta = y - this->item_y;
+            delta = y;
+            delta -= this->item_y;
             if (delta > 0) {
                 if ((this->tab_y == this->tab_min_y) &&
                     (y < this->tab_mouse_y + this->tab_y)) {

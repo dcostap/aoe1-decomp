@@ -17,6 +17,8 @@
 //     VC5 world/mask/register and pop-argument scheduling, not behavior/calls.
 // 11: ABI audit replaced the fake float cast at pop_stack with the proven
 //     float cost output. Emitted bytes are unchanged; retain the safe typed form.
+// 12: direct typed world local before the player-id mask plus swapped pop_stack
+//     output order moved 10 bytes farther and lost aligned blocks; rolled back.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 

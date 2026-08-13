@@ -17,6 +17,7 @@
 // 15: kept the indexed facet local but passed the canonical next_facet member directly as the shape_draw facet argument.
 // 16: replaced the narrow TShape gap stub with the proven period data members before shape_info; testing canonical class context.
 // 17: corrected TDrawArea::SetTrans's second parameter to the proven uchar ABI used by the exact Poll donor.
+// 18: removed the facet temporary and used direct typed next_facet indexing/argument; emitted code was unchanged, so restored.
 // left in scratch: 53-byte nonexact drift begins at 0045BC43 in shape_draw register/argument scheduling; calls, frame, size, CFG, and all 13 call sites match.
 
 #include <windows.h>

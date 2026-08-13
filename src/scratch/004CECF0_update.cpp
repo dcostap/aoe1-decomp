@@ -20,6 +20,10 @@
 // from +0x88 to +0x8C without changing behavior or size.
 // Probe 11: a separate declaration-only state view did not prevent VC5 tail
 // merging; removed from the living source after recording the negative result.
+// Current topology probe: direct state-3/state-D case actions in the nested
+// switches left the first form unchanged; expanding both switches duplicated
+// one +0x5C call and grew output to 840 bytes past the original boundary.
+// Restored the clean labeled CFG; the natural case form is not a lead.
 // Best current check: 739-byte output, 469 positional diff bytes, 26/27 calls;
 // remaining structural gap is one merged +0x5C state-3 call and local switch data
 // placement. Leave in scratch for a later worker rather than forcing a match.

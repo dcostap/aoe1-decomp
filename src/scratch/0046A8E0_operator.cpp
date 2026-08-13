@@ -47,6 +47,9 @@
 // cursor was a decompiler artifact and did not express distinct behavior.
 // A complete Path.cpp member declaration surface emitted identical code.
 // Keep the smaller proven local ABI; typed Waypoint indexing remains authoritative.
+// probe shardA3-46A8E0-r1 #1: compared currentSizeValue to the existing zero-
+// initialized loop index; VC5 folded it to the same test and left the natural
+// direct-indexing source unchanged.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);

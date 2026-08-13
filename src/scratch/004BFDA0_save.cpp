@@ -16,6 +16,11 @@
 //   this recovered the original pre-loop count store and improved the strict
 //   diff from 130 to 126 bytes.  The remaining first hunk is the outer
 //   iteration's typed list-address topology.
+// - Replaced the facet alias with direct typed sound-list member indexing;
+//   this restored the original pre-body jump and exact 561-byte size, reducing
+//   the strict diff to 68 bytes.  Reversed sound/frame materialization and a
+//   direct frame expression were worse and were restored.  The remaining
+//   hunk is the inner address/register schedule at the typed facet base.
 
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 
@@ -116,10 +121,9 @@ void RGE_Sprite::save(int handle)
         int i = 0;
         if (this->facet_num > 0) {
             do {
-                RGE_Sound_List* facet = &this->sound_list[i];
                 for (int j = 0; j < 3; ++j) {
-                    short* frame = &facet->frame[j];
-                    RGE_Sound* sound = facet->sound[j];
+                    short* frame = &this->sound_list[i].frame[j];
+                    RGE_Sound* sound = this->sound_list[i].sound[j];
                     int sound_id = -1;
                     if (sound != 0) {
                         sound_id = sound->id;

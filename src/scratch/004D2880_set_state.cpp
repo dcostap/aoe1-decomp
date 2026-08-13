@@ -26,8 +26,12 @@
 // Probe 10 restored direct member calls.  A positive equality/goto form for the
 // target_obj2 comparison (Probe 11) was codegen-identical, so the cleaner
 // target-id-first expression remains the living source.
+// Probe 12 (shardA3): changed the low-energy target guard to <=; the original
+// fcomp/test branch and Ghidra behavior evidence both enter vf138 when the
+// held amount is not above the threshold.  This improved one exact block and
+// reduced edit/resync drift by one byte.
 // Final residual: exact calls, size, frame, CFG counts, and ordered call map;
-// 74 edit/resync bytes remain from a jump-table/EH relocation surface and
+// 73 edit/resync bytes remain from a jump-table/EH relocation surface and
 // localized EAX/EDX choices in states 6/7 and the target comparison.
 // FLAGS: config\\flags\\004D2880_set_state.rsp (/nologo /c /O2 /Oy /GX)
 
@@ -375,7 +379,7 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
         }
 
         if (this->target_obj != 0 &&
-            this->target_obj->attribute_amount_held > DAT_00575348 &&
+            this->target_obj->attribute_amount_held <= DAT_00575348 &&
             this->obj->vf138(this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
             this->set_state(3);

@@ -10,6 +10,11 @@
 // - probes: scoped/reused indices, explicit positive guards, long versus int
 //   counters, a live-zero experiment, and typed stack aggregates all kept the
 //   same 609-byte mismatch (21 calls and the 0x220 frame aligned).
+// - layout: a natural 256-byte filename local shrank the frame to 0x21C and
+//   worsened the diff; restored the 260-byte local.
+// - layout: swapping the natural filename/find-data declaration order emitted
+//   identical 671-byte code and retained the +130 filename home; restored the
+//   original declaration order.
 // - current probe: expressed each scan as a guarded do/while whose condition
 //   calls _findnext with the stable _findfirst handle; this matches the
 //   original API use and reduces the drift to 298 bytes with exact size.

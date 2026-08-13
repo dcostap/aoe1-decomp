@@ -28,6 +28,7 @@
 // - an inline float-return accessor reproduced FPU staging but changed load order
 //   and block layout; it was rejected as a compiler-steering helper
 // - first-short locals with the accessor were unchanged; restored direct fields
+// - typed command reference ownership emitted a codegen duplicate; restored the pointer form
 // FLAGS: none
 // NOTE: Natural source keeps the proven RGE_Effect layout, full polymorphic ABI,
 // switch order, signed guards, and all call targets. Remaining drift is local

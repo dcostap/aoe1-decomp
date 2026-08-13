@@ -28,6 +28,9 @@
 // probe 13 (control-flow): made the CoCreateInstance failure an early negative-result guard;
 //   this places its CoUninitialize block before the success path, matching the original first
 //   call-map hunk and improving the ordered call prefix from 8 to 27.
+// probe 15 (control-flow): made the surface QI failure an explicit cleanup path;
+//   typed pDDraw ownership now emits both missing Release/FreeLibrary calls and restores
+//   the original 47-call surface, but the separate path adds 16 bytes past the boundary.
 
 // OSVERSIONINFOA stub - VC5 SDK field order (confirmed from asm offsets)
 //   [esp+0x94]+0x08 = dwBuildNumber (compared with 0x549)
@@ -275,10 +278,13 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     }
 
     hr = pSurf->QueryInterface( IID_IDirectDrawSurface3, (void**)&pSurf3 );
-    if (hr >= 0) {
-        *param_1 = (IsDPlay501a() != 0) + 0x500;
+    if (hr < 0) {
+        pDDraw->Release();
+        FreeLibrary( DDHinst );
+        return;
     }
 
+    *param_1 = (IsDPlay501a() != 0) + 0x500;
     pSurf->Release();
     pDDraw->Release();
     FreeLibrary( DDHinst );

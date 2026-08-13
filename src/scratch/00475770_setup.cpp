@@ -33,6 +33,9 @@
 //     this produced 448 bytes and a 300-byte diff, then was rolled back.
 // 13: a gated eight-way typed area/style/instance lifetime lab had one emitted
 //     447-byte group for all valid variants; no scheduling lead remained.
+// 14: inlined the typed format expression as the CreateWindowExA style
+//     argument; VC5 emitted the same 447-byte group, so the clean source is
+//     restored.
 
 #include <windows.h>
 #include <stdlib.h>

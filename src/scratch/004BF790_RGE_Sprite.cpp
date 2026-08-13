@@ -11,6 +11,9 @@
 //   ordinary typed deserializer and guarded three-entry facet loop; the
 //   remaining blocker is the constructor's ESI/EDI allocation context and
 //   downstream loop register topology.
+// - Reordered the first assignments to last_time, delta_time, then
+//   color_tables; the prologue moved farther from the oracle, so restored the
+//   clean assignment order.
 
 extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

@@ -25,6 +25,8 @@
 // - Restored distinct Map_Stack and float objects after finding the pinned
 //   source used unsafe overlap casts. The typed form is authoritative even
 //   though it leaves the known four-byte frame gap.
+// - Tested moving the natural Map_Stack declaration below the early guards
+//   to shorten its lifetime; VC5 emitted the same 754-byte code and frame.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -41,7 +43,7 @@ struct RGE_Tile;
 
 class RGE_Map {
 public:
-    virtual ~RGE_Map();
+    virtual void vf00(void);
     virtual void vf04(void);
     virtual void vf08(void);
     virtual void vf0c(void);

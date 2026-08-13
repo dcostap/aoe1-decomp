@@ -30,6 +30,8 @@
 // - Reopened on the auditor lead and initialized i before the latency cursor.
 //   This improved positional diff from 162 to 154 bytes and aligned more of
 //   the initialization block. Size remains 456 versus 455; no broad tuning was attempted.
+// - Reopened on the one-byte boundary lead; array-index terminal stores were
+//   codegen-identical, so the canonical dereference stores remain.
 // Left in scratch after the bounded 10-hypothesis assignment.
 
 #include <stdlib.h>

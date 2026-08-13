@@ -13,6 +13,9 @@
 // - The remaining blocker is VC5 commoning one of the two original indirect
 //   Release sites and associated register/frame coloring; no productive lead
 //   remains in this bounded pass.
+// - A natural typed DirectSound local for the cooperative-level failure kept
+//   both Release call sites and aligned all 12 calls, but grew the function by
+//   26 bytes; restored the clean member-based source.
 #include <string.h>
 #include <dsound.h>
 

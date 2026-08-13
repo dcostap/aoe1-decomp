@@ -20,6 +20,9 @@
 //   variants were worse.  Three focused variant families found no exact
 //   source spelling.  The remaining drift is the mirrored max assignment's
 //   register and branch placement.
+// - Duplicated the typed upper x comparison inside both mirror arms to test
+//   the original paired compare hunk; this widened the function to 522 bytes
+//   and worsened the positional diff to 189 bytes.  Restored the clean arm.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
