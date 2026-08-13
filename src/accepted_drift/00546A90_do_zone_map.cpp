@@ -15,6 +15,12 @@
 //   `test reg, reg` regardless of source structure. No C++ source
 //   change can prevent this without larger structural changes that
 //   would cascade into other mismatches.
+// - control-flow probe: natural outer and inner for loops worsened the
+//   hunk by 10 bytes, so the nested do-while form remains the clean source.
+// - guard probes: reversed comparison, widened x, and group-group x all
+//   emitted the same 2-byte drift.
+// - variant labs: five guard spellings and five zero-valued x initializers
+//   all formed one 287-byte group with the same cmp/test mismatch.
 // FLAGS: /nologo /c /O2 /Oy
 
 #include <stddef.h>
