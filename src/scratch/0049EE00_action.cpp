@@ -19,6 +19,11 @@
 //   result variants were rolled back: they widened the body or duplicated
 //   the EH epilogue. Remaining gap is localized VC5 tail/liveness scheduling,
 //   with calls, offsets, frame, and behavior aligned.
+// - Direct fallback return widened to 852 bytes and nine returns; restored.
+// - Direct return or live-result return on one CD-popup arm was codegen
+//   duplicate; narrowed result type was also duplicate.
+// - Proven polymorphic declarations for allocated screen types kept the
+//   715-byte output unchanged; restored the simpler size stubs.
 // FLAGS: /GX (EH)
 
 #include <string.h>

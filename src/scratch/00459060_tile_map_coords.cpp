@@ -11,6 +11,8 @@
 // 7: moving the final normalization into/around the switch default emitted the same code.
 // 8: duplicating switch arms without shared labels moved farther; restored the shared-label source.
 // 9: inverted case 1 to the natural greater-than coordinate test; preserved behavior and improved the first x87 branch hunk, but structural size drift remains.
+// 10: split the branch result from the final normalized output and used a float output local; improved size, FPU output duplication, and exact-block coverage.
+// 11: changed case 4's diagonal guard to the raw y intermediate proven by the original fcomp [esp+8]; added an exact block, with positional drift +5.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 
 struct RGE_Tile { int pad0; unsigned char tile_type; };
@@ -29,45 +31,46 @@ public:
 
 void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, float* out2) {
     double fx = (double)(int)x / (double)(int)this->tile_width;
-    register double z;
+    register double result;
     double raw_y = (double)(int)y;
-    z = 0.0;
+    result = 0.0;
     double fy = raw_y / (double)(int)this->tile_height;
+    float z;
 
     switch (tile->tile_type) {
     case 1:
-        if (fx > DAT_005706c0) z = (fy + fy) - ((fx - DAT_005706c0) + (fx - DAT_005706c0));
-        else z = (fy + fy) - ((DAT_005706c0 - fx) + (DAT_005706c0 - fx));
+        if (fx > DAT_005706c0) result = (fy + fy) - ((fx - DAT_005706c0) + (fx - DAT_005706c0));
+        else result = (fy + fy) - ((DAT_005706c0 - fx) + (DAT_005706c0 - fx));
         goto z_result;
     case 2:
-        if (DAT_005706c0 < fx) { z = fx * DAT_005706d0 - (fy - DAT_005706c0); goto z_result; }
+        if (DAT_005706c0 < fx) { result = fx * DAT_005706d0 - (fy - DAT_005706c0); goto z_result; }
         goto tile_case8;
     case 3:
-        z = DAT_005706d8 - fx;
-        if (fx * DAT_005706c0 < raw_y) { z = z * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
+        result = DAT_005706d8 - fx;
+        if (fx * DAT_005706c0 < raw_y) { result = result * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
         fy = fy + fy;
-        z = (z + z) - DAT_005706d8;
+        result = (result + result) - DAT_005706d8;
         goto add_fy;
     case 4:
-        if ((DAT_005706d8 - fx) * DAT_005706c0 < fy) { z = fx * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
+        if ((DAT_005706d8 - fx) * DAT_005706c0 < raw_y) { result = fx * DAT_005706c0 - (fy - DAT_005706c0); goto z_result; }
         goto tile_case7;
     case 10:
-        if (DAT_005706d8 <= fy) z = -1.0;
-        else { z = -fy; goto z_result; }
+        if (DAT_005706d8 <= fy) result = -1.0;
+        else { result = -fy; goto z_result; }
         goto default_result;
     case 11:
-        if (fx <= DAT_005706c0) { z = (DAT_005706c0 - fx) + (DAT_005706c0 - fx); goto z_result; }
+        if (fx <= DAT_005706c0) { result = (DAT_005706c0 - fx) + (DAT_005706c0 - fx); goto z_result; }
         goto tile_case0;
     case 12:
-        if (DAT_005706c0 < fx) { z = (fx - DAT_005706c0) + (fx - DAT_005706c0); goto z_result; }
+        if (DAT_005706c0 < fx) { result = (fx - DAT_005706c0) + (fx - DAT_005706c0); goto z_result; }
     case 0:
     case 9:
-tile_case0:
-        z = 0.0;
+ tile_case0:
+        result = 0.0;
         goto default_result;
     case 13:
-        if (fx <= DAT_005706c0) z = ((DAT_005706c0 - fx) + fy) + ((DAT_005706c0 - fx) + fy);
-        else z = ((fx - DAT_005706c0) + fy) + ((fx - DAT_005706c0) + fy);
+        if (fx <= DAT_005706c0) result = ((DAT_005706c0 - fx) + fy) + ((DAT_005706c0 - fx) + fy);
+        else result = ((fx - DAT_005706c0) + fy) + ((fx - DAT_005706c0) + fy);
         goto z_result;
     case 14:
         if (fx <= DAT_005706c0) goto tile_case6;
@@ -76,32 +79,32 @@ tile_case0:
         if (raw_y <= DAT_005706d8 - fx * DAT_005706c0) goto tile_case7;
         goto tile_case8;
     case 8:
-tile_case8:
-        z = (DAT_005706d8 - fx) * DAT_005706d0 - (fy - DAT_005706c0);
+ tile_case8:
+        result = (DAT_005706d8 - fx) * DAT_005706d0 - (fy - DAT_005706c0);
         goto z_result;
     case 7:
-tile_case7:
+ tile_case7:
         fy = fy + fy;
-        z = (fx + fx) - DAT_005706d8;
-add_fy:
-        z = z + fy;
+        result = (fx + fx) - DAT_005706d8;
+ add_fy:
+        result = result + fy;
         goto z_result;
     case 16:
         if (DAT_005706d8 - (DAT_005706d8 - fx) * DAT_005706c0 < raw_y) goto tile_case6;
         goto tile_case5;
     case 6:
-tile_case6:
-        z = fx * DAT_005706d0 - (fy - DAT_005706c0);
+ tile_case6:
+        result = fx * DAT_005706d0 - (fy - DAT_005706c0);
         goto z_result;
     case 5:
-tile_case5:
-        z = fy + fy;
+ tile_case5:
+        result = fy + fy;
         fy = DAT_005706d8 - (fx + fx);
         goto add_fy;
-z_result:
-default_result:
+ z_result:
+ default_result:
     default:
-    z = (((fx + fx) - (DAT_005706d8 - (fy + fy))) + z) * DAT_005706c0;
+        z = (float)((((fx + fx) - (DAT_005706d8 - (fy + fy))) + result) * DAT_005706c0);
         break;
     }
     *out2 = (float)z;

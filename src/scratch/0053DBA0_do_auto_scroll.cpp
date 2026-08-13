@@ -24,6 +24,13 @@
 //   branch forms. The retained branch-local addition reduces the size gap to 2
 //   bytes and keeps the original call set and CFG; other forms were duplicates
 //   or widened the structural gap. The remaining lead is the x87 faddp block.
+// - Reversing the threshold predicate to test fractional < threshold restores
+//   the original fcomp branch polarity and raises exact-block coverage; keep it.
+// - Reordering the commutative whole-plus-fraction expression is codegen-neutral.
+//   Moving the addition after the branch, or using a separate whole accumulator,
+//   widens the function to 779 bytes; those probes were rolled back. The live
+//   source remains the natural branch-local typed addition, with a localized
+//   fxch before faddp still unresolved.
 
 typedef void* HWND;
 
@@ -181,14 +188,14 @@ int RGE_Main_View::do_auto_scroll()
                 {
                     long whole = (long)scroll_dist2;
                     scroll_dist2 -= whole;
-                    if (scroll_dist2 >= DAT_00577904)
+                    if (scroll_dist2 < DAT_00577904)
                     {
-                        scroll_dist2 = DAT_00577904;
+                        scroll_dist2 = DAT_00577908;
                         scroll_dist2 += (float)whole;
                     }
                     else
                     {
-                        scroll_dist2 = DAT_00577908;
+                        scroll_dist2 = DAT_00577904;
                         scroll_dist2 += (float)whole;
                     }
                 }

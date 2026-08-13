@@ -8,11 +8,14 @@
 // Attempt 6: if(code != 0) wrapper instead of early return -> slight change but same jle vs jg/je issue
 // Attempt 7: goto-based flow -> no improvement
 // Attempt 8: TU-context bundle with all 4 com_err functions -> still 65% diff
-//
 // Attempt 9: one typed sparse switch corrected the observed error messages and notifications.
-// It matched size and call counts, and reduced positional drift to 329 bytes (15.0641%).
-// Remaining drift is a localized dense-switch table and case-block placement difference.
-// Do not preserve the earlier nested-comparison source as the clean reconstruction.
+// It matched size and call counts, and reduced positional drift to 329 bytes.
+// Attempt 10: nested threshold guards were farther from the original switch lowering.
+// Attempt 11: reordered the four dense HRESULT case bodies; diff improved to 221 bytes.
+// Attempts 12-13: final-tail source variants did not improve; restored Attempt 11.
+// Final clean reconstruction: typed sparse dispatch, one canonical LastReportedError
+// store, original call order, and original EXE message text. Remaining drift is the
+// compiler's switch table/case placement and the final two equality tests.
 
 class TDebuggingLog;
 extern TDebuggingLog* L;
@@ -35,8 +38,6 @@ enum {
     COMM_CANCEL_GAME = 0x17B9,
 };
 
-// Attempt 9 lead: the binary tree and the dense HRESULT cluster are the VC5
-// lowering of one sparse switch, not source-level nested comparisons.
 void RGE_Comm_Error::ShowReturn(long code, char* context) {
     if (code == 0) {
         return;
@@ -55,6 +56,10 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
     case (long)0x80040110:
         Log(L, "!!! COMM: CLASS NO AGGREGATION.");
         return;
+    case (long)0x80004005:
+        Log(L, "!!! GENERIC (Undefined) ERROR ");
+        this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
+        return;
     case (long)0x80004002:
         this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
         Log(L, "!!! No Interface");
@@ -64,10 +69,6 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         return;
     case (long)0x80004004:
         Log(L, "COM Aborted");
-        return;
-    case (long)0x80004005:
-        Log(L, "!!! GENERIC (Undefined) ERROR ");
-        this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
         return;
     case (long)0x8007000E:
         Log(L, "!!! Out Of Memory");
@@ -86,10 +87,10 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         Log(L, "!!! Invalid Params");
         return;
     case (long)0x88770014:
-        Log(L, "!!! Active Players - command invalid");
+        Log(L, "!!! Active Players - command invalid with active players.");
         return;
     case (long)0x8877000A:
-        Log(L, "!!! Access Denied - busy service provider");
+        Log(L, "!!! Access Denied - busy service or invalid use of host commands.");
         this->NotifyWindowParam(COMM_NO_LINK, 0);
         return;
     case (long)0x88770028:
@@ -106,8 +107,8 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         Log(L, "!!! Can't Create Group");
         return;
     case (long)0x88770050:
-        Log(L, "!!! Device caps are not available");
-        Log(L, "!!! ERROR ");
+        Log(L, "!!! Device caps are not available.");
+        Log(L, "!!! ERROR!");
         return;
     case (long)0x88770046:
         Log(L, "!!! Can't create session.");
@@ -125,7 +126,7 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         Log(L, "!!! Invalid Object");
         return;
     case (long)0x887700A0:
-        Log(L, "!!! Not able to do multipayer.");
+        Log(L, "!!! Not able to do multipayer!");
         return;
     case (long)0x8877009B:
         Log(L, "!!! Invalid Group");
@@ -137,13 +138,13 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         Log(L, "!!! No Connection");
         return;
     case (long)0x887700D2:
-        Log(L, "!!! No players are connected.");
+        Log(L, "!!! No players are connected!");
         return;
     case (long)0x887700C8:
-        Log(L, "!!! No name server running.");
+        Log(L, "!!! No name server running!");
         return;
     case (long)0x887700E6:
-        Log(L, "!!! Send overflow.");
+        Log(L, "!!! Send overflow!");
         return;
     case (long)0x887700DC:
         Log(L, "!!! No sessions are available");
@@ -153,7 +154,7 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
         return;
     case (long)0x887700F0:
-        Log(L, "!!! COMM_TIMEOUT Rcvd from HOST.");
+        Log(L, "!!! COMM TIMEOUT Rcvd from HOST connection.");
         this->NotifyWindowParam(COMM_CANCEL_GAME, 0);
         return;
     case (long)0x88770118:
@@ -178,20 +179,20 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         this->NotifyWindowParam(COMM_HOST_BUSY, 0);
         return;
     case (long)0x88770154:
-        Log(L, "!!! The secure password is invalid");
+        Log(L, "!!! The secure password is invalid.");
         return;
     case (long)0x8877014A:
         this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
-        Log(L, "!!! The session is in the process of starting.");
+        Log(L, "!!! The session is in the process of connecting");
         return;
     case (long)0x887703E8:
         Log(L, "!!! Buffer size failure (LARGE)");
         return;
     case (long)0x8877015E:
-        Log(L, "!!! The session is in the process of starting.");
+        Log(L, "!!! The session is in the process of connecting");
         return;
     case (long)0x887703FC:
-        Log(L, "!!! Application has not been started");
+        Log(L, "!!! Application has not been started yet.");
         return;
     case (long)0x887703F2:
         Log(L, "!!! Can't start the application.");
@@ -226,7 +227,7 @@ void RGE_Comm_Error::ShowReturn(long code, char* context) {
         Log(L, "!!! The secure logon failed.");
         return;
     default:
-        Log(L, "+++ %s: Unhandled DP ERROR exception(Code %u) (0x%08X)", context, code, code);
+        Log(L, "!!! %s: Unhandled DP ERROR/exception in call.  Result=%ld  (%d)", context, code, code);
         return;
     }
 }
