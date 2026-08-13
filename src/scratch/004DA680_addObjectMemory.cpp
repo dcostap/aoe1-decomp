@@ -19,6 +19,8 @@
 // luna-4DA680-r1: guarded cursor scope and direct indexed scan were behavior-backed but broke size/CFG parity; restored.
 // luna-4DA680-r1: for-loop spelling, local declaration/lifetime changes, signed player-number, full same-TU type fields, and pointer/old-count reuse all emitted the same 431-byte drift.
 // luna-4DA680-r1: 15-probe pass exhausted; clean typed while-scan remains authoritative.
+// luna-4DA680-r2: Ghidra's iVar1 reuse for convertUnitToIntType, direct owner access, and one-line initialization matching PDB line 2047 all emitted the same 431-byte drift.
+// luna-4DA680-r2: the exact objectMemory donor's direct-member outer do scan, with and without inline duplicate return, rebuilt 1337 bytes and broke CFG; restored.
 
 typedef unsigned char uchar;
 

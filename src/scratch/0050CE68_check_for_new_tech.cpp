@@ -89,8 +89,8 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
     do {
         changed = 0;
         for (i = 0; i < this->tech_player_tree_num; i++) {
-            if (this->tech_player_tree[i].state < 2) {
-                if (this->tech_player_tree[i].state > -1) {
+            if (this->tech_player_tree[i].state < 2 &&
+                this->tech_player_tree[i].state > -1) {
                     active_count++;
                     prereq_done = 0;
                     prereq_count = 0;
@@ -116,7 +116,6 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
                             this->tech_player_tree[i].state = 0;
                         }
                     }
-                }
             } else {
                 if (this->tech_player_tree[i].state == 2) {
                     active_count++;
