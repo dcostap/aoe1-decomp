@@ -13,15 +13,25 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 import query_project_status  # noqa: E402
-from query_project_status import annotate_leases, annotate_triage, filter_leases  # noqa: E402
+from query_project_status import (  # noqa: E402
+    annotate_leases,
+    annotate_triage,
+    filter_leases,
+    lease_prefilter_vas,
+)
 
 
 class QueryProjectStatusLeaseTests(unittest.TestCase):
     def test_live_va_query_requests_the_status_core_fast_path(self) -> None:
-        args = argparse.Namespace(from_csv=None, with_preview=False, va="00400000")
+        with patch.object(sys, "argv", ["query_project_status.py", "--va", "00400000"]):
+            args = query_project_status.parse_args()
         with patch.object(query_project_status, "build_status_rows", return_value=[]) as build_rows:
             self.assertEqual(query_project_status.load_rows(args), [])
-        build_rows.assert_called_once_with(include_source_preview=False, va="00400000")
+        call = build_rows.call_args.kwargs
+        self.assertEqual(call["va"], "00400000")
+        self.assertFalse(call["include_source_preview"])
+        self.assertFalse(call["include_diff_metrics"])
+        self.assertFalse(call["include_comment_lines"])
 
     def sessions(self) -> list[dict]:
         future = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat().replace("+00:00", "Z")
@@ -84,6 +94,18 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
             [row["va"] for row in filter_leases(rows, unleased=True)],
             ["00002000", "00003000"],
         )
+
+    def test_lease_prefilter_excludes_rows_before_source_loading(self) -> None:
+        args = argparse.Namespace(
+            active_leases=False,
+            owner=None,
+            unleased=True,
+            max_lifetime_probes=2,
+            max_claims=1,
+        )
+        include_vas, exclude_vas = lease_prefilter_vas(args, self.sessions())
+        self.assertIsNone(include_vas)
+        self.assertEqual(exclude_vas, {"00001000"})
 
     def test_compact_triage_extracts_packet_features_for_selected_rows(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

@@ -100,12 +100,15 @@ def source_files(path: Path) -> dict[str, Path]:
 
 
 def parse_header_notes(path: Path) -> dict[str, str]:
-    notes = default_header_notes()
     if not path.exists():
-        return notes
+        return default_header_notes()
 
-    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    for line in lines:
+    return parse_header_notes_text(path.read_text(encoding="utf-8", errors="replace"))
+
+
+def parse_header_notes_text(text: str) -> dict[str, str]:
+    notes = default_header_notes()
+    for line in text.splitlines():
         stripped = line.strip()
         if not stripped:
             continue
@@ -130,6 +133,10 @@ def read_source_preview(path: Path | None, max_lines: int = 140, max_chars: int 
         return ""
 
     text = path.read_text(encoding="utf-8", errors="replace")
+    return read_source_preview_text(text, max_lines=max_lines, max_chars=max_chars)
+
+
+def read_source_preview_text(text: str, max_lines: int = 140, max_chars: int = 12000) -> str:
     if len(text) > max_chars:
         text = text[:max_chars]
     lines = text.splitlines()
@@ -243,7 +250,16 @@ def build_status_rows(
     *,
     include_source_preview: bool = True,
     include_diff_metrics: bool = True,
+    include_comment_lines: bool = True,
     va: str | None = None,
+    source_bucket_filter: str | None = None,
+    corpus_bucket_filter: str | None = None,
+    remaining_filter: bool | None = None,
+    pdb_source_file: str | None = None,
+    min_size: int | None = None,
+    max_size: int | None = None,
+    include_vas: set[str] | None = None,
+    exclude_vas: set[str] | None = None,
 ) -> list[dict[str, str]]:
     """Build current project status rows from live repo state.
 
@@ -275,6 +291,9 @@ def build_status_rows(
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
     va_norm = va.upper() if va else None
+    pdb_norm = pdb_source_file.lower() if pdb_source_file else None
+    include_vas_norm = {value.upper() for value in include_vas} if include_vas is not None else None
+    exclude_vas_norm = {value.upper() for value in exclude_vas or set()}
 
     for record in records:
         slug = record["slug"]
@@ -325,12 +344,34 @@ def build_status_rows(
         is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
         if is_remaining == "yes":
             remaining_records.append(record)
-        if va_norm is not None and record["va"].upper() != va_norm:
+        record_va = record["va"].upper()
+        if va_norm is not None and record_va != va_norm:
+            continue
+        if include_vas_norm is not None and record_va not in include_vas_norm:
+            continue
+        if record_va in exclude_vas_norm:
+            continue
+        if source_bucket_filter is not None and source_bucket != source_bucket_filter:
+            continue
+        if corpus_bucket_filter is not None and corpus_bucket != corpus_bucket_filter:
+            continue
+        if remaining_filter is not None and (is_remaining == "yes") != remaining_filter:
+            continue
+        if pdb_norm and pdb_norm not in record.get("pdb_source_file", "").lower() and pdb_norm not in record.get("pdb_source_path", "").lower():
+            continue
+        if min_size is not None and int(record.get("size_bytes") or 0) < min_size:
+            continue
+        if max_size is not None and int(record.get("size_bytes") or 0) > max_size:
             continue
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
         logic_review_path = logic_reviews_dir / f"{slug}.md"
-        header_notes = parse_header_notes(note_path) if note_path is not None else default_header_notes()
+        source_text = (
+            note_path.read_text(encoding="utf-8", errors="replace")
+            if note_path is not None
+            else ""
+        )
+        header_notes = parse_header_notes_text(source_text) if note_path is not None else default_header_notes()
         if source_bucket == "verified_logic" and not logic_review_path.exists():
             missing_ledger = "verified_logic source has no logic-review ledger"
             header_notes["BLOCKER"] = (
@@ -338,7 +379,6 @@ def build_status_rows(
                 if header_notes["BLOCKER"]
                 else missing_ledger
             )
-        preview_path = scratch_path or verified_logic_path or accepted_drift_path or matching_path
         diff_metrics: dict[str, object] = {}
         if include_diff_metrics:
             diff_metrics_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
@@ -405,8 +445,8 @@ def build_status_rows(
             "source_risk": header_notes["RISK"],
             "source_why": header_notes["WHY"],
             "source_next": header_notes["NEXT"],
-            "source_preview": read_source_preview(preview_path) if include_source_preview else "",
-            "source_comment_lines": str(count_comment_lines(preview_path)),
+            "source_preview": read_source_preview_text(source_text) if include_source_preview else "",
+            "source_comment_lines": str(count_comment_lines_text(source_text)) if include_comment_lines else "",
             "has_blocker": "yes" if header_notes["BLOCKER"] else "no",
             "diff_result": str(diff_metrics.get("result", "")),
             "diff_percent": f"{float(diff_metrics.get('diff_percent', 0.0)):.4f}" if diff_metrics else "",

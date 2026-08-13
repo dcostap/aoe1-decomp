@@ -123,11 +123,31 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_rows(args: argparse.Namespace) -> list[dict[str, str]]:
+def load_rows(
+    args: argparse.Namespace,
+    *,
+    include_vas: set[str] | None = None,
+    exclude_vas: set[str] | None = None,
+) -> list[dict[str, str]]:
     if args.from_csv:
         with args.from_csv.open("r", encoding="utf-8", errors="replace", newline="") as handle:
             return list(csv.DictReader(handle))
-    return build_status_rows(include_source_preview=args.with_preview, va=args.va)
+    sort_key, _descending = sort_from_args(args)
+    preserve_all_fields = args.json or args.csv
+    return build_status_rows(
+        include_source_preview=args.with_preview,
+        include_diff_metrics=preserve_all_fields or sort_key in {"diff", "edit-diff", "first-mismatch"},
+        include_comment_lines=preserve_all_fields or sort_key == "comment-lines",
+        va=args.va,
+        source_bucket_filter=source_bucket_from_args(args),
+        corpus_bucket_filter=corpus_bucket_from_args(args),
+        remaining_filter=remaining_from_args(args),
+        pdb_source_file=args.source,
+        min_size=args.min_size,
+        max_size=args.max_size,
+        include_vas=include_vas,
+        exclude_vas=exclude_vas,
+    )
 
 
 def source_bucket_from_args(args: argparse.Namespace) -> str | None:
@@ -241,6 +261,39 @@ def filter_leases(
             if row.get("lease_active") == "yes" and row.get("lease_owner") == owner
         ]
     return result
+
+
+def lease_prefilter_vas(
+    args: argparse.Namespace,
+    sessions: list[dict],
+) -> tuple[set[str] | None, set[str]]:
+    """Return safe VA filters that can run before source files are read."""
+    include_vas: set[str] | None = None
+    exclude_vas: set[str] = set()
+    active_sessions = [session for session in sessions if session_is_active(session)]
+
+    if args.active_leases or args.owner:
+        include_vas = {
+            str(session.get("va", "")).upper()
+            for session in active_sessions
+            if not args.owner or session.get("owner") == args.owner
+        }
+    elif args.unleased:
+        exclude_vas.update(str(session.get("va", "")).upper() for session in active_sessions)
+
+    if args.max_lifetime_probes is not None:
+        exclude_vas.update(
+            str(session.get("va", "")).upper()
+            for session in sessions
+            if meaningful_probe_count(session, current_claim_only=False) > args.max_lifetime_probes
+        )
+    if args.max_claims is not None:
+        exclude_vas.update(
+            str(session.get("va", "")).upper()
+            for session in sessions
+            if session_claim_count(session) > args.max_claims
+        )
+    return include_vas, exclude_vas
 
 
 def annotate_triage(rows: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -421,13 +474,15 @@ def main() -> None:
         raise SystemExit("--max-lifetime-probes must be zero or positive")
     if args.max_claims is not None and args.max_claims < 0:
         raise SystemExit("--max-claims must be zero or positive")
-    rows = load_rows(args)
     include_work_history = (
         args.work_history
         or args.max_lifetime_probes is not None
         or args.max_claims is not None
     )
-    rows = annotate_leases(rows, include_work_history=include_work_history)
+    sessions = load_target_sessions()
+    include_vas, exclude_vas = lease_prefilter_vas(args, sessions)
+    rows = load_rows(args, include_vas=include_vas, exclude_vas=exclude_vas)
+    rows = annotate_leases(rows, sessions, include_work_history=include_work_history)
     rows = filter_status_rows(
         rows,
         corpus_bucket=corpus_bucket_from_args(args),

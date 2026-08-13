@@ -67,11 +67,29 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                     include_diff_metrics=False,
                     va="FFFFFFFF",
                 )
+                filtered_rows = status_core.build_status_rows(
+                    include_source_preview=False,
+                    include_diff_metrics=False,
+                    source_bucket_filter="scratch",
+                    corpus_bucket_filter="normal",
+                    min_size=16,
+                    max_size=48,
+                )
 
         self.assertEqual(target_rows, [row for row in full_rows if row["va"] == "00400000"])
         self.assertEqual(target_rows[0]["remaining_size_rank"], "2")
         self.assertEqual(target_rows[0]["remaining_asm_rank"], "2")
         self.assertEqual(missing_rows, [])
+        self.assertEqual(
+            filtered_rows,
+            status_core.filter_status_rows(
+                full_rows,
+                source_bucket="scratch",
+                corpus_bucket="normal",
+                min_size=16,
+                max_size=48,
+            ),
+        )
 
 
 if __name__ == "__main__":
