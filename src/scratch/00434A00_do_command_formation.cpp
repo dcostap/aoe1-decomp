@@ -24,6 +24,9 @@
 //   the edit/resync diagnostic improved only, so restored the clean order.
 // - Moved unit_num and units into the unit-count guard to mirror the original
 //   post-compare home stores; this worsened strict diff to 718 and was restored.
+// - Reused the named units cursor itself across both scans and reset it from
+//   command->units; this moved the outer cursor into the original EDI/base-save
+//   topology and reduced strict diff from 709 to 363 bytes.
 
 #include <math.h>
 #pragma intrinsic(sqrt)
@@ -95,10 +98,9 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
         RGE_Static_Object* reference_unit = 0;
         float distance;
         int i = 0;
-        RGE_Obj_Info* first_unit = units;
         if (i < unit_num) {
             do {
-                RGE_Static_Object* object = this->get_obj(*first_unit);
+                RGE_Static_Object* object = this->get_obj(*units);
                 if (object != 0) {
                     float object_distance =
                         (float)sqrt(object->world_x * object->world_x +
@@ -109,7 +111,7 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
                     }
                 }
                 ++i;
-                ++first_unit;
+                ++units;
             } while (i < unit_num);
         }
 
@@ -135,16 +137,16 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
         }
 
         int index = 0;
-        RGE_Obj_Info* unit = units;
+        units = command->units;
         if (index < unit_num) {
             do {
-                RGE_Static_Object* object = this->get_obj(*unit);
+                RGE_Static_Object* object = this->get_obj(*units);
                 if (object != 0) {
                     object->removeAllFromPathingGroup();
                     object->setWaitingToMove(1);
 
                     int other_index = 0;
-                    RGE_Obj_Info* other_unit = units;
+                    RGE_Obj_Info* other_unit = command->units;
                     do {
                         if (other_index != index)
                             object->addToPathingGroup(other_unit->id);
@@ -207,7 +209,7 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
                     }
                 }
                 ++index;
-                ++unit;
+                ++units;
             } while (index < unit_num);
         }
     }

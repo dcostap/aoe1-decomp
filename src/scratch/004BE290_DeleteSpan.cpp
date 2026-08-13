@@ -24,6 +24,7 @@
 // shardA6 control-flow: combined the full-span deletion predicates into the while guard; emitted code was unchanged, so restored the typed retained-bound candidate.
 // luna-r2 layout: exact spanlist.cpp manager donors use an embedded offset-zero VSList and qualified node-list calls; composition was tested and emitted code was unchanged.
 // luna-r3 layout: restored the public TSpan_Node_List inheritance used by the exact constructor/DeleteShape donors; inherited calls emitted the same 524-byte code, so restored composition.
+// luna-r4 control-flow: the original zeroes the carried next-node register on the non-delete arm before testing it; replaced the break flag with a typed next-node do/while. This restored the missing CFG edge, grew to 532 bytes, and cut strict drift from 497 to 322 bytes.
 
 #include <stdlib.h>
 
@@ -133,25 +134,22 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                     first = first->Next;
                 }
 
-                while (first != 0) {
-                    int cont;
+                VSpan_Node* next;
+                if (first != 0) do {
                     if (left <= first->StartPx && right >= first->EndPx) {
                         if (first == savedHead) savedHead = first->Next;
                         if (first == last) last = first->Prev;
                         VSpan_Node* prev = first->Prev;
                         if (prev != 0) prev->Next = first->Next;
-                        VSpan_Node* next = first->Next;
+                        next = first->Next;
                         if (next != 0) next->Prev = first->Prev;
-                        VSpan_Node* n = first->Next;
                         this->VSList.FreeNode(first);
                         this->Span_Count[line]--;
-                        first = n;
-                        cont = 1;
+                        first = next;
                     } else {
-                        cont = 0;
+                        next = 0;
                     }
-                    if (cont == 0) break;
-                }
+                } while (next != 0);
                 if (first != 0 && right >= first->StartPx) {
                     first->StartPx = right + 1;
                 }

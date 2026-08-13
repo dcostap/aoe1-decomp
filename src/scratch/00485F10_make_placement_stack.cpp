@@ -27,6 +27,9 @@
 // temporaries to function scope to test its local-lifetime and declaration-order
 // evidence; codegen was an unchanged 507-byte/446-diff duplicate, so restored
 // the clean typed source.
+// luna-r3 H1: split the bound copies and arithmetic to mirror the original
+// move/sub/sub/add/add line-band order; codegen stayed an unchanged 507-byte/
+// 446-diff duplicate, so restored the clean typed source.
 // left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
 
 extern "C" int __cdecl debug_rand(char* file, int line);

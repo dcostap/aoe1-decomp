@@ -21,6 +21,9 @@
 // 12: materialized a named background-missing result after direct +0x528
 //     ownership; emitted code and structural metrics were unchanged. Restored
 //     the clean candidate; the first unresolved hunk remains the null decision.
+// 13: added the same-TU TShape destructor declaration used by the exact
+//     destructor donor; emitted code was unchanged, so restored the clean
+//     constructor surface. The null-lowering hunk remains structural.
 // Main-agent audit replaced fixed string addresses and cross-member pointer
 // arithmetic with literals and direct playerName/playerCivilization/checkButton/
 // commPlayers row ownership. The canonical source validates at 1605 bytes with

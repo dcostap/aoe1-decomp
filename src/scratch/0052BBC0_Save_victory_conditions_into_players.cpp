@@ -25,6 +25,10 @@
 //   it was rolled back.
 // - removing the local AttribType copy and testing the named field directly
 //   was a codegen duplicate; the cursor stayed at +0x1AD8, so it was rolled back.
+// - an isolated typed AttribType cursor, with natural player selection and
+//   named float fields retained, moved the cursor to +0x1AD0 and improved the
+//   diff to 224 bytes with 92.58% exact-block coverage; it remains diagnostic
+//   pointer arithmetic, so the clean named-field source was restored.
 
 class RGE_Static_Object;
 class RGE_Game_World;

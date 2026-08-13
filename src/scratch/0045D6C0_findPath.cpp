@@ -11,6 +11,7 @@
 // 9: paused after the bounded assignment; clean source is frame-exact with 49/50 calls, while the diagnostic guard reached size/CFG/call parity but was not a plausible source reconstruction.
 // 10: tested the natural pre-gate waiting-state reset from the ordered call map; it improved size but changed the later virtual call to an indirect register call, so it was restored.
 // 11: named a local start waypoint pointer to follow the original EBP-preserved address; first mismatch shifted earlier and diff worsened to 1120, so it was restored.
+// 12: donor-backed typed member-pointer null guard plus canonical ManagedArray ownership restored the missing vcall and matched 50/50 calls and CFG, but worsened positional diff to 1106; rolled back as opaque compiler steering.
 
 #include <math.h>
 #include <stdio.h>
