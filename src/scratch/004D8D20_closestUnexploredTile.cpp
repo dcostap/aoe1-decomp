@@ -11,6 +11,14 @@
 //   sets the path value to zero. This source order recovers all 16 call sites.
 // - Best current codegen is 968 bytes versus 977, with a 0x38 frame and
 //   72.92% shape similarity. The remaining drift starts in register setup.
+// - Structural probes kept the clean source as the canonical candidate. A
+//   self-alias plus nested do-style scan reached 977 bytes and diff 877 with
+//   75.62% shape similarity, but it changed block topology and byte semantics.
+// - The unsigned-byte lookupValue ABI probe regressed to diff 905. A nested
+//   nonnull guard reached diff 893 but reduced shape similarity to 70.72%.
+// - The clean candidate still has all 16 ordered calls. Its first hunk is the
+//   prologue: original saves all registers then uses EDI=this, while VC5 saves
+//   this in EBX before the remaining pushes and uses different stack homes.
 // - Left in scratch: no exact match. The remaining gap is broad register,
 //   stack-home, and block-layout drift after the clean typed reconstruction.
 

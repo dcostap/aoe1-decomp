@@ -21,6 +21,10 @@
 //   outer loop remained unchanged; emitted code was identical (943-byte diff,
 //   0x34 frame). This is negative evidence against constructor/list context
 //   as the first structural blocker.
+// - Structural follow-up: direct indexed lines, register-qualified typed
+//   cursors, indexed collision scans, declaration-order changes, and hoisted
+//   locals were all codegen duplicates. The raw area cursor still gives the
+//   diagnostic best (941 bytes, 73.25% shape) but retains the 0x34 frame.
 // GIVEUP: remaining broad VC5 register/lifetime and 4-byte local-frame drift;
 // calls, CFG, field ownership, math constants, random scaling, and generator
 // constructor relocation are aligned.

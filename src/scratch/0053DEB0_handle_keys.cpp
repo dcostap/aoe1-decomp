@@ -18,6 +18,10 @@
 // 15: A positive active-view block with the sibling scroll routine's short-circuit guard moved the first structural mismatch to the keyboard local and reduced the positional diff to 447 bytes.
 // 16: The natural 256-byte direct keyboard buffer keeps source ownership clear but leaves the VC5 frame four bytes short; over-allocation and pointer-offset variants were diagnostic only and rolled back.
 // 17: Explicit elapsed-time locals were optimized to the same x87 form; the remaining structural lead is VC5 local-home allocation, not call or behavior topology.
+// 18: The proven unsigned key-scroll interval changes the frame to 0x114, emits the original qword/fidiv stack topology, and improves the diff to 446.
+// 19: A named key-state pointer at keys+4 aligns all four keyboard tests and the API home; with a diagnostic 260-byte buffer it reaches diff 437 and 71.64% exact-block coverage.
+// 20: The 260-byte buffer is allocation scaffolding, not canonical source; the normalized 256-byte alias source remains diff 438 with frame 0x114.
+// 21: The remaining structural lead is a four-byte local-home shift: current shorts are at esp+14/+18 while the original uses esp+10/+14; all calls and key accesses align.
 // GIVEUP: left in scratch for future source-shape/stack-local topology work.
 
 typedef unsigned char uchar;
@@ -39,7 +43,7 @@ extern RGE_Base_Game_0053DEB0* rge_base_game;
 
 struct ProgInfo_0053DEB0 {
     char gap_00[0x8D0];
-    int key_scroll_time_divisor;
+    unsigned long key_scroll_time_divisor;
     float key_scroll_max_dist;
     float key_scroll_object_move;
 };
@@ -99,13 +103,16 @@ int RGE_Main_View_0053DEB0::handle_keys()
     float scroll_dist2;
     int changed;
     ProgInfo_0053DEB0* info;
+    unsigned long now;
+    unsigned long elapsed;
+    uchar* key_state = keys + 4;
 
     if (rge_base_game->get_paused() == 0 &&
         (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
          rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) &&
         GetForegroundWindow() == this->host->wnd && this->active != 0) {
         changed = 0;
-        GetKeyboardState(keys);
+        GetKeyboardState(key_state);
         horz_scroll = 0;
         vert_scroll = 0;
 
@@ -113,63 +120,67 @@ int RGE_Main_View_0053DEB0::handle_keys()
 
     if (rge_base_game->game_mode == 0x12 && this->player != 0 && this->player->selected_obj != 0) {
         Obj_0053DEB0* obj = (Obj_0053DEB0*)this->player->selected_obj;
-        if (keys[0x26] > 1) {
+        if (key_state[0x26] > 1) {
             obj->move_to(obj->x + info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
             changed = 1;
         }
-        if (keys[0x28] > 1) {
+        if (key_state[0x28] > 1) {
             Obj_0053DEB0* obj2 = (Obj_0053DEB0*)this->player->selected_obj;
             obj2->move_to(obj->x - info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
             changed = 1;
         }
-        if (keys[0x25] > 1) {
+        if (key_state[0x25] > 1) {
             Obj_0053DEB0* obj2 = (Obj_0053DEB0*)this->player->selected_obj;
             obj2->move_to(obj->x - info->key_scroll_object_move, obj->y - info->key_scroll_object_move, 0);
             changed = 1;
         }
-        if (keys[0x27] > 1) {
+        if (key_state[0x27] > 1) {
             Obj_0053DEB0* obj2 = (Obj_0053DEB0*)this->player->selected_obj;
             obj2->move_to(obj->x + info->key_scroll_object_move, obj->y + info->key_scroll_object_move, 0);
             changed = 1;
         }
     } else if (this->player != 0) {
-        if (keys[0x25] > 1)
+        if (key_state[0x25] > 1)
             horz_scroll = -1;
-        else if (keys[0x27] > 1)
+        else if (key_state[0x27] > 1)
             horz_scroll = 1;
 
-        if (keys[0x26] > 1)
+        if (key_state[0x26] > 1)
             vert_scroll = -1;
-        else if (keys[0x28] > 1)
+        else if (key_state[0x28] > 1)
             vert_scroll = 1;
 
         if (horz_scroll != 0 || vert_scroll != 0) {
-            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x153);
-            float scroll_dist;
+            now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x153);
             if (this->key_scrolling == 0) {
-                scroll_dist = 1.0f;
+                scroll_dist2 = 1.0f;
                 this->key_scrolling = 1;
             } else {
-                scroll_dist = (float)(now - this->last_key_scroll_time) / info->key_scroll_time_divisor;
-                int whole = (int)scroll_dist;
-                if (scroll_dist - whole >= 0.5f)
-                    scroll_dist = whole + 0.5f;
-                else
-                    scroll_dist = (float)whole;
+                elapsed = now - this->last_key_scroll_time;
+                scroll_dist2 = (float)elapsed / info->key_scroll_time_divisor;
+                long whole = (long)scroll_dist2;
+                scroll_dist2 -= whole;
+                if (scroll_dist2 < 0.5f) {
+                    scroll_dist2 = 0.0f;
+                    scroll_dist2 += (float)whole;
+                } else {
+                    scroll_dist2 = 0.5f;
+                    scroll_dist2 += (float)whole;
+                }
             }
-            if (scroll_dist > info->key_scroll_max_dist)
-                scroll_dist = info->key_scroll_max_dist;
-            if (scroll_dist > 0.0f) {
-                scroll_dist2 = scroll_dist + scroll_dist;
+            if (scroll_dist2 > info->key_scroll_max_dist)
+                scroll_dist2 = info->key_scroll_max_dist;
+            if (scroll_dist2 > 0.0f) {
+                float scroll_dist = scroll_dist2 + scroll_dist2;
                 if (horz_scroll == -1) {
-                    this->player->set_view_loc(this->player->view_x - scroll_dist, this->player->view_y - scroll_dist);
+                    this->player->set_view_loc(this->player->view_x - scroll_dist2, this->player->view_y - scroll_dist2);
                 } else if (horz_scroll == 1) {
-                    this->player->set_view_loc(this->player->view_x + scroll_dist, this->player->view_y + scroll_dist);
+                    this->player->set_view_loc(this->player->view_x + scroll_dist2, this->player->view_y + scroll_dist2);
                 }
                 if (vert_scroll == -1) {
-                    this->player->set_view_loc(this->player->view_x + scroll_dist2, this->player->view_y - scroll_dist2);
+                    this->player->set_view_loc(this->player->view_x + scroll_dist, this->player->view_y - scroll_dist);
                 } else if (vert_scroll == 1) {
-                    this->player->set_view_loc(this->player->view_x - scroll_dist2, this->player->view_y + scroll_dist2);
+                    this->player->set_view_loc(this->player->view_x - scroll_dist, this->player->view_y + scroll_dist);
                 }
                 this->last_key_scroll_time = now;
                 changed = 1;

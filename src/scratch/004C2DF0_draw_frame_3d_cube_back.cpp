@@ -12,7 +12,15 @@
 // 9: Compound-assignment radius probes introduced broad fmulp/liveness drift and were rolled back.
 // 10: External/const/volatile rdata declaration probes and split coordinate assignments were codegen duplicates or lost absolute relocation identity; restored the natural absolute, direct-member source.
 // 11: Reversed each projected segment to the binary's natural endpoint order: get_point x2/y2 first, then x1/y1, followed by MoveToEx(x2,y2) and LineTo(x1,y1).
+// 12: Followed the first structural hunk by testing direct master-member radius expressions; emitted code was unchanged.
+// 13: Moved view preparation before the radii; it changed scheduling but called get_view too early and worsened block alignment, so it was reverted.
+// 14: Matched cube-front declaration topology and delayed map derivation; both emitted duplicates.
+// 15: Restored master-before-owner declaration order; duplicate.
+// 16: Added the proven virtual class surface, typed view ownership, and CRT header; all were codegen duplicates.
+// 17: Tested int coordinate parameters against raw original stack loads; size improved by 2 bytes but structural drift worsened, so restored short ABI.
 // GIVEUP: left in scratch; no accepted_drift because the natural source remains 4 bytes over the original boundary and the prologue/liveness drift is broad.
+
+#include <stdlib.h>
 
 typedef void* HDC;
 typedef void* HGDIOBJ;
@@ -43,14 +51,15 @@ public:
 struct RGE_World_004C2DF0 { char gap[0x28]; RGE_Map_004C2DF0* map; };
 struct RGE_Player_004C2DF0 { char gap[0x3C]; RGE_World_004C2DF0* world; };
 struct MasterObj_004C2DF0 { char gap[0xAC]; float rx; float ry; float rz; };
-class BaseGame_004C2DF0 { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void* get_view(); };
+struct RGE_View_004C2DF0 { char gap[0x88]; HRGN clip_rgn; };
+class BaseGame_004C2DF0 { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual RGE_View_004C2DF0* get_view(); };
 #define rge_base_game (*(BaseGame_004C2DF0**)0x0062C574)
 #define DAT_00574734 (*(float*)0x00574734)
 #define DAT_00574738 (*(float*)0x00574738)
 
 class RGE_Static_Object_004C2DF0 {
 public:
-    char gap_00[4];
+    virtual ~RGE_Static_Object_004C2DF0();
     int id;
     MasterObj_004C2DF0* master_obj;
     RGE_Player_004C2DF0* owner;
@@ -66,33 +75,36 @@ public:
 void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* area, short sx, short sy)
 {
     short y2, x2, y1, x1;
+    int px, py;
+    float negRy;
+    float ry1, rz2, rz3, rz4, rx2, ry2, rzFull;
     MasterObj_004C2DF0* m = this->master_obj;
     RGE_Player_004C2DF0* owner = this->owner;
+    ry1 = m->rx * DAT_00574734;
+    rz2 = m->ry * DAT_00574734;
+    rz3 = m->rz * DAT_00574734;
+    rz4 = m->rz * DAT_00574738;
+    rx2 = m->rx;
+    ry2 = m->ry;
+    rzFull = m->rz;
     RGE_Map_004C2DF0* map = owner->world->map;
-    float ry1 = m->rx * DAT_00574734;
-    float rz2 = m->ry * DAT_00574734;
-    float rz3 = m->rz * DAT_00574734;
-    float rz4 = m->rz * DAT_00574738;
-    float rx2 = m->rx;
-    float ry2 = m->ry;
-    float rzFull = m->rz;
+    RGE_View_004C2DF0* view = rge_base_game->get_view();
 
-    void* view = rge_base_game->get_view();
     if (view == 0)
         return;
 
     area->Unlock(0);
     HDC dc = area->GetDc(0);
     if (dc != 0) {
-        SelectClipRgn(area->DrawDc, *(HRGN*)((char*)view + 0x88));
+        SelectClipRgn(area->DrawDc, view->clip_rgn);
         if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0)
             SelectObject(area->DrawDc, GetStockObject(7));
         else
             SelectObject(area->DrawDc, GetStockObject(6));
 
-        int px = sx + this->screen_x_offset;
-        int py = sy + this->screen_y_offset;
-        float negRy = -ry2;
+        px = sx + this->screen_x_offset;
+        py = sy + this->screen_y_offset;
+        negRy = -ry2;
 
         map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
         map->get_point(&x1, &y1, rx2, negRy, rz3, px, py);

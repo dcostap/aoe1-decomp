@@ -15,6 +15,14 @@
 // parameters (AAJ in the original symbols), not long-pointer parameters (PAJ).
 // Switched these local declarations and calls to the period reference surface;
 // the parameter-home aliases for dstInfo and flipY remain binary-proven.
+// 13: Initializing DestTotHgt changed the prologue and worsened the diff to 892;
+// rolled back.  Mirroring the decompiler's dead dstRect y-scale home changed
+// the first block and worsened the diff to 912; rolled back.
+// 14: Removing the post-table trans alias and matching the decompiler local
+// declaration order were emitted-code duplicates.  A volatile DestTotHgt moved
+// the size gap from -21 to -13 but worsened positional diff to 649; rolled back.
+// 15: Reusing the dead dst parameter as the byte temporary collapsed the frame
+// to 0x0C and worsened the diff to 668; rolled back.
 // GIVEUP: best natural source remains in scratch.  The unresolved gap is VC5
 // parameter-home/local-slot scheduling around GetDibDim and the long blit loops;
 // no accepted_drift because the remaining positional drift is broad.
