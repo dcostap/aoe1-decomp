@@ -13,7 +13,13 @@
 // - Moved center calculations before text selection per original 0051A074 order; shape and diff worsened, then restored.
 // - Tested explicit same-TU DLL-import declarations for the GDI and sprintf calls; VC5 output was unchanged, then restored.
 // - Tested /GX from the exact same-TU constructor; VC5 output was unchanged, then removed the custom flag file.
-// - Left in scratch: call order and memory effects match; VC5 frame and text CFG remain nonexact.
+// - Removed the cached state index; direct cur_state indexing improved frame and block shape but worsened positional diff.
+// - Reloaded text2 after the first line; original reloads it before the second extent call.
+// - Reused one x/y local for both text lines; this improved resync similarity without changing size.
+// - Kept the first text2 layout test separate from the later text2[0] fallback, matching original branch behavior.
+// - Applied the text offset predicate unconditionally; original converges both text2 layout paths before that test.
+// - Function-scope center_y, frame, and text declarations matched no new emitted code; kept as natural local-map reconstruction.
+// - Left in scratch: ordered calls and memory effects match; VC5 frame and text CFG remain nonexact.
 
 #include "..\..\include\game_globals.h"
 #include <windows.h>
@@ -159,6 +165,10 @@ extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 void TRIBE_Panel_Button::draw()
 {
+    int center_y;
+    short frame;
+    char* text;
+
     if (this->tribe_button_type == 3) {
         this->TButtonPanel::draw();
         return;
@@ -196,10 +206,9 @@ void TRIBE_Panel_Button::draw()
             SetBkMode(dc, 1);
 
             int center_x = this->pnl_cx / 2;
-            int center_y = this->pnl_cy / 2;
+            center_y = this->pnl_cy / 2;
 
-            int idx = (int)this->cur_state;
-            char* text = this->text1[idx];
+            text = this->text1[this->cur_state];
             if (text == 0) text = this->text1[0];
 
             if (text) {
@@ -210,48 +219,45 @@ void TRIBE_Panel_Button::draw()
 
                 int text_x_pos = center_x - text_size.cx / 2 + this->pnl_x;
 
-                char* text2 = this->text2[idx];
-                if (text2 == 0) text2 = this->text2[0];
-
                 int text_y_pos;
-                if (text2) {
+                if (this->text2[this->cur_state]) {
                     text_y_pos = center_y - this->font_hgt + this->pnl_y;
                 } else {
                     text_y_pos = center_y - this->font_hgt / 2 + this->pnl_y;
                 }
 
-                if (text2) {
-                    int c1 = (this->draw_reverse == 0 && this->is_down == 0);
-                    int c2 = (this->draw_reverse != 0 && this->is_down != 0);
-                    if (!(c1 || c2)) {
-                        text_x_pos++;
-                        text_y_pos++;
-                    }
+                int c1 = (this->draw_reverse == 0 && this->is_down == 0);
+                int c2 = (this->draw_reverse != 0 && this->is_down != 0);
+                if (!(c1 || c2)) {
+                    text_x_pos++;
+                    text_y_pos++;
                 }
 
-                int sc = this->text_color2[idx];
-                int tc = this->text_color1[idx];
+                int sc = this->text_color2[this->cur_state];
+                int tc = this->text_color1[this->cur_state];
 
                 SetTextColor(dc, sc);
                 TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, tlen);
                 SetTextColor(dc, tc);
                 TextOutA(dc, text_x_pos, text_y_pos, text, tlen);
 
+                char* text2 = this->text2[this->cur_state];
+                if (text2 == 0) text2 = this->text2[0];
                 if (text2) {
                     int t2len = strlen(text2);
                     
                     GetTextExtentPoint32A(dc, text2, t2len, &text_size);
 
-                    int t2_x = center_x - text_size.cx / 2 + this->pnl_x;
-                    int t2_y = center_y + this->pnl_y;
+                    text_x_pos = center_x - text_size.cx / 2 + this->pnl_x;
+                    text_y_pos = center_y + this->pnl_y;
 
-                    int sc = this->text_color2[idx];
-                    int tc = this->text_color1[idx];
+                    int sc = this->text_color2[this->cur_state];
+                    int tc = this->text_color1[this->cur_state];
 
                     SetTextColor(dc, sc);
-                    TextOutA(dc, t2_x - 1, t2_y + 1, text2, t2len);
+                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text2, t2len);
                     SetTextColor(dc, tc);
-                    TextOutA(dc, t2_x, t2_y, text2, t2len);
+                    TextOutA(dc, text_x_pos, text_y_pos, text2, t2len);
                 }
             }
 
@@ -261,7 +267,7 @@ void TRIBE_Panel_Button::draw()
         }
     } else if (this->pic[0] && this->pic_index[0] >= 0) {
         if (this->render_area->Lock(s_tpnl_btn_draw3, 1)) {
-            short frame = this->pic_index[0];
+            frame = this->pic_index[0];
             int draw_x = this->pnl_x;
             int draw_y = this->pnl_y;
 
