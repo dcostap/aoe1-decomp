@@ -19,6 +19,11 @@
 //   all 192 instructions and left one operand-order byte in the final RECT
 //   right-edge LEA.  Bottom-alignment term and right-edge expression variants
 //   were duplicate; source is left typed and period-plausible.
+// - In this assignment, width-minus-one-plus-x, grouped subtraction,
+//   sequential right temporaries, and equivalent algebraic forms all emitted
+//   the same [edi+ebp-1] LEA.  A decompiler-style one-field `cy` size changed
+//   the frame; an eight-byte padded alias was a duplicate.  A named width
+//   alias worsened structural output.  Restored the clean typed source.
 
 struct SIZE;
 
