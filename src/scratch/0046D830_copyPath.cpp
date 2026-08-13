@@ -20,6 +20,13 @@
 //   the target loads the facet before its floating-point coordinate stores;
 //   it moved 25 positional bytes farther from the clean candidate and was
 //   rolled back.  The clean x/y/z/facet order remains the best reconstruction.
+// - Matched the neighbor-bound structure with incremented max and decremented
+//   min values; this reduced the rebuilt size to the original 1114 bytes.
+// - A declaration initializer for previousFacet preserves the original EBX
+//   sentinel liveness and reduced the best strict diff to 229 bytes.
+//   A currentObject local also matches the original pointer carry into the
+//   waypoint and initToStart code.  Row-pointer and foo-order variants emitted
+//   identical code and were rolled back to the direct natural expressions.
 
 #include <stddef.h>
 
@@ -251,7 +258,7 @@ public:
 
 int PathingSystem::copyPath(int step)
 {
-    uchar previousFacet;
+    uchar previousFacet = 0xFF;
 
     {
         Path* path;
@@ -265,7 +272,6 @@ int PathingSystem::copyPath(int step)
     BYTEPoint currentPoint;
     currentPoint.x = this->MGP_openPaths[1].x;
     currentPoint.y = this->MGP_openPaths[1].y;
-    previousFacet = 0xFF;
     uchar currentFacet = this->facetValue[currentPoint.x][currentPoint.y];
     int fooX = currentPoint.x;
     int fooY = currentPoint.y;
@@ -274,16 +280,17 @@ int PathingSystem::copyPath(int step)
     else
         currentFacet = 0xFF;
 
+    RGE_Moving_Object* object = this->currentObject;
     Waypoint waypoint;
     waypoint.x = (float)fooX + this->currentXOffset;
     waypoint.y = (float)fooY + this->currentYOffset;
-    waypoint.z = this->currentObject->world_z;
+    waypoint.z = object->world_z;
     waypoint.facetToNextWaypoint = currentFacet;
 
     {
-        Path* path = this->currentObject->storePathInExceptionPath == 0
-            ? &this->currentObject->pathValue
-            : &this->currentObject->exceptionPathValue;
+        Path* path = object->storePathInExceptionPath == 0
+            ? &object->pathValue
+            : &object->exceptionPathValue;
         path->initToStart();
     }
 
@@ -314,9 +321,9 @@ int PathingSystem::copyPath(int step)
             int maxX = fooX + 1;
             if (minX < 0) {
                 minX = 0;
-                maxX = fooX + 2;
+                ++maxX;
             } else if (this->xSizeValue <= maxX) {
-                minX = fooX - 2;
+                --minX;
                 maxX = this->xSizeValue - 1;
             }
 
@@ -324,9 +331,9 @@ int PathingSystem::copyPath(int step)
             int maxY = fooY + 1;
             if (minY < 0) {
                 minY = 0;
-                maxY = fooY + 2;
+                ++maxY;
             } else if (this->ySizeValue <= maxY) {
-                minY = fooY - 2;
+                --minY;
                 maxY = this->ySizeValue - 1;
             }
 

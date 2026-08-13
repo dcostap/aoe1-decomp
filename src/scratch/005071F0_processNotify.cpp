@@ -21,6 +21,10 @@
 // 18: Reusing evasiveMoveDistance for the 0x200 range delta kept size/diff but worsened shape and exact-block coverage; reverted.
 // 19: Moving both guards into the decompiler's if/else-if form matched the earlier broad 1055-byte basin; reverted.
 // 20: Modeling one explicit 0x200 case with a default 0x20F guard changed dispatch to cmp and worsened the diff to 944; reverted.
+// 21: Replaced switch breaks with an if/else dispatch and one late base label; 1055-byte diff and 6/+6 call-site gaps; reverted.
+// 22: Swapped the switch arm order; emitted code was identical to the clean 855-byte candidate; reverted.
+// 23: Replaced rejected switch breaks with direct base returns; added ten processNotify calls and worsened the diff to 1225; reverted.
+// 24: Explicit 0x200-to-0x20F labels kept the fallback late but changed the dispatch/body basin to 1062 bytes and 6/+6 call gaps; reverted.
 // Best emitted checkpoint: typed switch candidate, 1084 bytes, 77.92% shape, 19/19 calls, 855 strict diff bytes; remaining frame is 0xC vs original 0x8 and fallback is a relocated cold block.
 // GIVEUP: left in scratch. Main blockers are the remaining true TU/local declaration shape and late FPU/list-growth topology; preserve this typed candidate for the next worker.
 

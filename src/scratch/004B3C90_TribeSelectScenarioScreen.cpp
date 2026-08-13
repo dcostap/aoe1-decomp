@@ -12,10 +12,19 @@
 // probe 4: cached the game object; diff fell to 622 bytes, but the early
 // setup schedule and later field scheduling moved. Restored this basin.
 // probe 5: explicit second-column temporary did not improve codegen; restored.
+// probe 14: hoisted draw_area as a local and kept the second multiplayer call
+// direct; the original setup block became byte-exact, but the narrow bevel
+// stub made the rebuilt body 14 bytes short.
+// probe 15: restored the exact int bevel ABI; six zero extensions returned,
+// size became exact, and exact-block coverage rose to 84.97%.
+// probes 16-20: reversed the multiply, used sequential arithmetic, qualified
+// the list call, and varied the output-pointer type; VC5 emitted duplicates.
+// probe 21: delayed a named list reload; it worsened the block shape. Restored
+// the natural member-call form.
 // blockers: original setup hoists draw-area into EDI and calls multiplayerGame
 // after pushing setup args; current typed source preserves calls and behavior
-// but does not reproduce that early register schedule. Field writes around
-// scenarioList and missionText also differ in harmless VC5 liveness order.
+// and now reproduces that setup block. The remaining first paired hunk is the
+// second-column register schedule; later field writes differ in VC5 liveness.
 // No inline asm or shared-surface changes.
 // FLAGS: config/flags/004B3C90_TribeSelectScenarioScreen.rsp (/GX)
 
@@ -107,9 +116,8 @@ public:
 class TTextPanel : public TPanel {
 public:
     virtual void set_text(char* text);       // vslot +0xE8
-    virtual void set_bevel_info(int mode, unsigned char c1, unsigned char c2,
-                                unsigned char c3, unsigned char c4,
-                                unsigned char c5, unsigned char c6); // +0xEC
+    virtual void set_bevel_info(int mode, int c1, int c2, int c3, int c4,
+                                int c5, int c6); // +0xEC
     void set_second_column_pos(int position);
     void set_alignment(int horizontal, int vertical);
 };
@@ -210,7 +218,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
     : TScreenPanel((char*)0x005868B0)
 {
     char* setup_file;
-    RGE_Base_Game* game;
+    TDrawArea* draw_area;
     int multiplayer;
 
     this->init_vars();
@@ -220,10 +228,10 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
     if (multiplayer == 0)
         setup_file = (char*)0x00586138;
 
-    game = rge_base_game;
+    draw_area = rge_base_game->draw_area;
 
-    if (!this->TEasy_Panel::setup(game->draw_area, 0, setup_file,
-                                  (game->multiplayerGame() != 0) +
+    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file,
+                                  (rge_base_game->multiplayerGame() != 0) +
                                       0xC384,
                                   1, 0, 0, 0, 0, 1)) {
         this->setup_error = 1;
@@ -324,7 +332,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                                 this->fillMissionText();
                                                 this->activatePanels();
                                                 this->set_curr_child(
-                                                    this->scenarioList);
+                                                this->scenarioList);
                                             }
                                         }
                                     }

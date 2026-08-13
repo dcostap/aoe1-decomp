@@ -12,6 +12,10 @@
 //   positional diff to 733 bytes, but later context probes were duplicates.
 // - restored the clean typed source; remaining drift starts after base ctor
 //   vptr setup and keeps the exact call set, frame, and code size.
+// - modeled a tab-list sentinel from the decompiler; frame grew to 0x28 and
+//   diff worsened to 911 bytes, so restored the clean eight-entry list.
+// - focused range still diverges at +002C on alias LEA scheduling; no clean
+//   source-backed lead remains after the natural alias-order probe.
 // FLAGS: config/flags/0048F5D0_TRIBE_Campaign_Editor_Screen.rsp (/GX)
 
 struct tagRECT;
