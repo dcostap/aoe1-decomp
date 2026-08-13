@@ -77,10 +77,7 @@ smallest useful batch, observe integration cost and compiler contention, and
 expand only within the user contract.
 
 Use `query_project_status.py --work-history` before assigning paused scratch
-targets. Review lifetime probes and claims, not only the current claim. If the
-clean unclaimed queue is empty, do not replace it with a broad smallest-scratch
-wave. Route heavily tested targets to bounded readiness or specialist audits,
-then assign editing work only when an audit finds a new evidence-backed lead.
+targets. Review lifetime probes and claims, not only the current claim.
 
 ## Participant briefings
 

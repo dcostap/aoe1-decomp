@@ -115,8 +115,6 @@ Useful filters include `--normal`, `--unclaimed`, `--scratch`, `--matching`,
 Use `--work-history` before assigning paused scratch targets. It shows lifetime
 probes, claim count, last positional gain, best/current diff, last worker, and a
 workflow recommendation. The current-claim probe count is not lifetime effort.
-Do not fill an empty clean queue with heavily tested scratch targets. Require a
-new evidence-backed lead or assign a read-only readiness/specialist audit.
 
 Use `--triage` before opening several large function packets. It parses compact
 frame/EH/call/vslot/saved-register/PDB/decompiler evidence only for the rows left
