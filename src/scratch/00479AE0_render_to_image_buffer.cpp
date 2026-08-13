@@ -24,6 +24,10 @@
 // r5 liveness: text gate, declaration order, explicit first-element address, array reference, and full text-local call lifetime were neutral.
 // r5 behavior: CRT strlen enlarged the frame to 0x44; restored the indexed scan. Pointer-walk subtraction worsened diff to 1514.
 // r5 final: clean source keeps named ImageRect pointer and text view with direct typed storage access; +0031 remains a register-coloring gap.
+// r6 liveness: using the named text view for the empty gate was codegen-neutral.
+// r6 layout: direct ImageRect.top matched the target's direct load but worsened strict diff to 1461; restored pointer ownership.
+// r6 liveness: making text function-scope live across PtrClear was neutral.
+// r6 behavior: combining that lifetime with strlen enlarged the frame to 0x44 and worsened diff to 1551; restored clean source.
 #include <string.h>
 #include "..\..\include\rge_base_game_global.h"
 
