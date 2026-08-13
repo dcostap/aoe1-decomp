@@ -14,6 +14,9 @@
 //   strict diff to 60 bytes with 97.38% shape.
 // - split/reordered delta declarations and direct bound spellings were
 //   negative or codegen duplicates; the best emitted code is retained below.
+// - inline source-delta arithmetic perturbed the whole function (586-byte
+//   diff); same-TU cursor declaration and shared-block probes moved only
+//   isolated encodings, not the target register basin, and were rolled back.
 // left in scratch: all calls, frame, size, CFG counts, and the long scalar/tail
 // regions match; remaining drift is the localized attribute-loop register and
 // flag-loop bound/block scheduling hunk at 00453258..004532C1.

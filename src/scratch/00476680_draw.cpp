@@ -26,6 +26,11 @@
 // redundant panel receiver, reordered stack-local declarations, and completed
 // the same-TU virtual surface; all were codegen duplicates.  Restore clean
 // source for the documented shrink-wrap blocker.
+// New claim probes: a focused guard/receiver variant lab (4 cases), a TPanel
+// reference receiver, a shared hidden-exit goto label, and a braced invisible
+// guard all preserved the 940-byte/38-byte-diff result.  Restored the clean
+// pointer receiver and early-return source.  The only lead remains VC5's
+// entry-save choice versus the original delayed EBX/EDI saves.
 
 #include <windows.h>
 

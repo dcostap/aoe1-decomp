@@ -18,6 +18,12 @@
 // was retained; target remains scratch pending a later source/context pass.
 // Resumed lease: a direct-return structural edit was not compiled and was
 // restored; the pinned clean reconstruction remains the validated candidate.
+// Follow-up structural pass: made the type-2 error copy conditional, used direct
+// failure returns for the early guards, and used a positive start>0 seek gate.
+// These recover the original CFG, exact size, and 97.48% resync similarity;
+// current positional drift is 24 bytes. The remaining bytes are the uniform
+// four-byte local stack-window offset for MCI/format buffers. Direct switch and
+// inlined error-result variants were codegen duplicates and are retained clean.
 
 #include <stdio.h>
 #include <string.h>
@@ -83,29 +89,25 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
     char track_name[261];
     char error_message[256];
     MCIERROR result;
-    MCIERROR error_result;
-    char* source_name = name;
-    int device_open = this->device_open;
-    int music_type;
 
-    if (!device_open) {
-        goto finish;
+    if (!this->device_open) {
+        return 0;
     }
 
     if (this->playing_track != 0) {
         this->stop_playing();
     }
 
-    if (!source_name || !*source_name) {
+    if (!name || !*name) {
         int count = this->track_count;
         if (!count) {
-            goto finish;
+            return 0;
         }
         if (from > count) {
-            goto finish;
+            return 0;
         }
         if (!from) {
-            goto finish;
+            return 0;
         }
         if (current) {
             this->current_track = current;
@@ -114,21 +116,20 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
         }
     }
 
-    music_type = this->music_type;
-    switch (music_type) {
+    switch (this->music_type) {
     case 1: {
         MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
         this->play_info.dwCallback = (unsigned long)this->window;
         unsigned int flags = 1;
 
-        if (!start) {
-            flags = 5;
-            this->play_info.dwFrom = (unsigned char)this->current_track;
-        } else {
+        if (start > 0) {
             open_info.dwCallback = start;
             seek_info.dwTo = 0;
             mci(this->device_id, 0x807, 10,
                 (unsigned long)&seek_info.dwTo);
+        } else {
+            flags = 5;
+            this->play_info.dwFrom = (unsigned char)this->current_track;
         }
 
         if (from < this->track_count && to < this->track_count) {
@@ -142,9 +143,7 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
             this->playing_track = 1;
             ++this->notify_waiting;
         } else {
-            error_result = mciGetErrorStringA(result, error_message + 4,
-                                              0x100);
-            if (!error_result) {
+            if (!mciGetErrorStringA(result, error_message + 4, 0x100)) {
                 strcpy(error_message + 4, s_Unknow_Error);
             }
         }
@@ -152,12 +151,12 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
     }
 
     case 2: {
-        if (!source_name || !*source_name) {
+        if (!name || !*name) {
             sprintf(track_name + 4, MUSIC_MID_FORMAT,
                     this->path, this->current_track);
         } else {
             sprintf(track_name + 4, MUSIC_NAME_FORMAT,
-                    this->path, source_name);
+                    this->path, name);
             if (strchr(track_name + 4, '.') == 0) {
                 strcat(track_name + 4, MUSIC_MID_SUFFIX);
             }
@@ -173,15 +172,12 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
             result = mci(0, 0x803, 0x3200,
                          (unsigned long)&open_info.wDeviceID);
             if (result) {
-                error_result = mciGetErrorStringA(result, error_message + 4,
-                                                  0x100);
-                if (error_result) {
-                    goto finish;
+                if (!mciGetErrorStringA(result, error_message + 4, 0x100)) {
+                    strcpy(error_message + 4, s_Unknow_Error);
                 }
-                strcpy(error_message + 4, s_Unknow_Error);
-                if (result) {
-                    goto finish;
-                }
+            }
+            if (result) {
+                goto finish;
             }
 
             this->device_id = (unsigned int)open_info.lpstrDeviceType;
@@ -205,17 +201,17 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
 
     case 3:
         if (this->sound_system) {
-            if (!source_name || !*source_name) {
+            if (!name || !*name) {
                 sprintf(track_name + 4, MUSIC_WAV_FORMAT,
                         this->path, this->current_track);
             } else {
                 sprintf(track_name + 4, MUSIC_NAME_FORMAT,
-                        this->path, source_name);
+                        this->path, name);
             }
 
             if (!this->sound_system->stream_file(track_name + 4, 0,
                                                  this->volume)) {
-                goto finish;
+                return 0;
             }
             this->playing_track = 1;
         }
@@ -223,15 +219,11 @@ int TMusic_System::play(int from, int to, char* name, int current, unsigned long
     }
 
 finish:
-    if (!this->playing_track) {
-        goto failure;
+    if (this->playing_track) {
+        this->paused = 0;
+        this->auto_paused = 0;
+        this->inactivated = 0;
+        return 1;
     }
-
-    this->paused = 0;
-    this->auto_paused = 0;
-    this->inactivated = 0;
-    return 1;
-
-failure:
     return 0;
 }
