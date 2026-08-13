@@ -18,6 +18,13 @@
 //   diff to 7560 and size to 8320, but kept the same missing setRule call and broad CFG
 //   drift. A player alias emitted identical code. Both were rolled back to this typed
 //   source because the raw form did not prove canonical ownership or exact behavior.
+// - 2026-08-14: modeled the binary local packet as 125 weights followed by the
+//   adjacent most-built output slot. This restores the observed +0x18/+0x20c layout
+//   and raises shape similarity to 55.0%; the remaining register allocation is broad.
+// - 2026-08-14: evaluated each goal rule before its random adjustment. Ordered calls
+//   now match all 131 original calls; this is retained as natural source order.
+// - 2026-08-14: changed the three count gates from `< 1` to `<= 0`, matching the
+//   original zero compare and improving the early CFG. Current best remains nonexact.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.
@@ -52,6 +59,11 @@ typedef unsigned char uchar;
 #define S_I_AM_THE_CIV ((char*)0x0058B16C)
 
 extern int __cdecl debug_rand(char* file, int line);
+
+struct BuildListPacket_00515E00 {
+    int weights[125];
+    int mostBuiltUnit;
+};
 
 class RGE_Base_Game_00515E00 {
 public:
@@ -170,6 +182,7 @@ public:
 #define SET_RULE(rule_id, value) this->playerAI->strategyAI.setRule((rule_id), (value))
 #define GET_RULE(rule_id) this->playerAI->strategyAI.rule((rule_id))
 #define BL(n) buildLists[(n) - 1]
+#define buildLists packet.weights
 #define DIV3_POS(x) do { if ((x) > 0) { (x) = (x) / 3; } } while (0)
 #define SIGN_MASK_MOD(v, mask) ((((((v) ^ ((v) >> 31)) - ((v) >> 31)) & (mask)) ^ ((v) >> 31)) - ((v) >> 31))
 
@@ -178,8 +191,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
 {
     int difficultyLevel;
     int gameDifficulty;
-    int buildLists[125];
-    int mostBuiltUnit1;
+    BuildListPacket_00515E00 packet;
     char tempString[256];
 
     if (this->playerAI == 0) {
@@ -187,7 +199,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     }
 
     gameDifficulty = rge_base_game->difficulty();
-    memset(buildLists, 0, sizeof(buildLists));
+    memset(packet.weights, 0, sizeof(packet.weights));
 
     switch (this->civ_id) {
     case 1:  this->setupEgyptian(buildLists, mapType, victoryType, mapSize); break;
@@ -213,7 +225,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 ||
             civ == 6 || civ == 7 || civ == 10) {
             if (mapType == 0) {
-                if (DAT_00886c44 < 1) {
+                if (DAT_00886c44 <= 0) {
                     BL(0x0E) = 0;
                     BL(0x0F) = 0;
                 } else if (DAT_00886c48 == 0) {
@@ -225,7 +237,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
                 }
             }
             if (mapType == 1) {
-                if (DAT_00886c44 < 1) {
+                if (DAT_00886c44 <= 0) {
                     BL(0x0E) = 0;
                     BL(0x0F) = 0;
                 } else if (DAT_00886c48 == 0) {
@@ -237,7 +249,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
                 }
             }
             if (mapType == 2 || mapType == 6 || mapType == 8) {
-                if (DAT_00886c44 < 1) {
+                if (DAT_00886c44 <= 0) {
                     BL(0x0E) = 0;
                     BL(0x0F) = 0;
                 } else if (DAT_00886c48 == 0) {
@@ -255,9 +267,9 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
 
     if (rge_base_game->deathMatch() == 0) {
         difficultyLevel = -1;
-        mostBuiltUnit1 = -1;
+        packet.mostBuiltUnit = -1;
         this->playerAI->informationAI.loadUnitHistory();
-        this->playerAI->informationAI.unitsThatAreMostBuilt(&difficultyLevel, &mostBuiltUnit1);
+        this->playerAI->informationAI.unitsThatAreMostBuilt(&difficultyLevel, &packet.mostBuiltUnit);
         switch (difficultyLevel) {
         case 0:
             BL(7) += 25;
@@ -728,39 +740,46 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     case -1:
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEA2);
         SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x0E);
+        nextGoal = GET_RULE(0x49);
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEA4);
-        nextGoal = GET_RULE(0x49) + 1 + SIGN_MASK_MOD(randomValue, 3);
+        nextGoal += 1 + SIGN_MASK_MOD(randomValue, 3);
         break;
     case 0:
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEA7);
         SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x0F);
+        nextGoal = GET_RULE(0x49);
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEA9);
-        nextGoal = GET_RULE(0x49) + 1 + SIGN_MASK_MOD(randomValue, 3);
+        nextGoal += 1 + SIGN_MASK_MOD(randomValue, 3);
         break;
     case 1:
         SET_RULE(0x49, debug_rand(S_TPLAYER_CPP, 0xEAC) % 3 + 0x10);
-        nextGoal = GET_RULE(0x49) + 1 + debug_rand(S_TPLAYER_CPP, 0xEAE) % 5;
+        nextGoal = GET_RULE(0x49);
+        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEAE) % 5;
         break;
     case 2:
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEB1);
         SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x11);
-        nextGoal = GET_RULE(0x49) + 1 + debug_rand(S_TPLAYER_CPP, 0xEB3) % 6;
+        nextGoal = GET_RULE(0x49);
+        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEB3) % 6;
         break;
     case 3:
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEB6);
         SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x12);
-        nextGoal = GET_RULE(0x49) + 1 + debug_rand(S_TPLAYER_CPP, 0xEB8) % 7;
+        nextGoal = GET_RULE(0x49);
+        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEB8) % 7;
         break;
     case 4:
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEBB);
         SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 3) + 0x12);
+        nextGoal = GET_RULE(0x49);
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEBD);
-        nextGoal = GET_RULE(0x49) + 1 + SIGN_MASK_MOD(randomValue, 7);
+        nextGoal += 1 + SIGN_MASK_MOD(randomValue, 7);
         break;
     default:
         randomValue = debug_rand(S_TPLAYER_CPP, 0xEC1);
         SET_RULE(0x49, SIGN_MASK_MOD(randomValue, 1) + 0x12);
-        nextGoal = GET_RULE(0x49) + 1 + debug_rand(S_TPLAYER_CPP, 0xEC3) % 9;
+        nextGoal = GET_RULE(0x49);
+        nextGoal += 1 + debug_rand(S_TPLAYER_CPP, 0xEC3) % 9;
         break;
     }
     SET_RULE(0x4A, nextGoal);

@@ -12,7 +12,14 @@
 //   the original 0x2C frame and leaves broad positional drift.
 // - reversed the first turnTimer guard to the original negative-first source shape;
 //   this closed the first local CFG hunk and improved the diff by 26 bytes.
-// - final bounded pause: exact matching remains unresolved after 10 hypotheses;
+// - promoting one Waypoint* across the repeated path scans collapsed the frame to
+//   0x1C and worsened the structural diff; rolled back.
+// - reordering the real arithmetic locals to the dossier order was emitted-code
+//   duplicate evidence; rolled back.
+// - cached displayPathObjectID before the display gate, matching its original
+//   pre-gate load; size moved 18 bytes closer, but positional diff worsened by 1.
+// - current bounded pause: exact matching remains unresolved after this claim's
+//   three evidence-backed hypotheses;
 //   remaining evidence points to original local-frame/register topology and VC5
 //   tail/block scheduling, not a missing call or virtual-surface declaration.
 
@@ -496,12 +503,13 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
     }
 
+    int displayObjectID = displayPathObjectID;
     if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
         path->initToStart();
         i = 0;
         while (i < path->numberOfWaypoints()) {
             RGE_Master_Static_Object* master =
-                this->owner->master_objects[displayPathObjectID];
+                this->owner->master_objects[displayObjectID];
             float waypointY = path->currentWaypoint()->y;
             float waypointX = path->currentWaypoint()->x;
             master->make_new_obj(this->owner, waypointX, waypointY, 1.0f);
