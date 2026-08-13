@@ -73,6 +73,8 @@ extern int g_5B2160; // AppWnd
 extern int g_5B236C; // comm/global window state
 extern int g_62C574; // rge_base_game storage
 
+#define IDC_ARROW ((const char*)32512)
+
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
@@ -328,7 +330,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
     this->setPathFinding(0);
     this->setMpPathFinding(0);
     this->setNumberPlayers(4);
-    this->setScenarioName((const char*)0x592A40);
+    this->setScenarioName("");
 
     rge_base_game = this;
     this->prog_info = info;
@@ -375,12 +377,12 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
     this->mouse_blit_sync = 0;
     this->is_mouse_on = 1;
     this->windows_mouse = 1;
-    this->mouse_cursor = LoadCursorA(0, (const char*)0x7F00);
+    this->mouse_cursor = LoadCursorA(0, IDC_ARROW);
     this->font_num = 0;
     this->fonts = 0;
     GetCurrentDirectoryA(0x105, this->work_dir);
 
-    strcpy(this->string_dll_name, (const char*)0x57FA10);
+    strcpy(this->string_dll_name, "language.dll");
 
     this->master_obj_id = -1;
     this->terrain_id = -1;

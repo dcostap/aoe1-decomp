@@ -173,19 +173,19 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
     int objectID;
 
     if (item == 0) {
-        this->logCommonHistory((char*)0x00588514);
+        this->logCommonHistory("Invalid taskTrain item, returning FALSE.");
         return 0;
     }
 
     RGE_Static_Object* object =
         this->md->object(-1, item->buildFrom(), -1, 0x26B, 0x26C, 2);
     if (object == 0 || object->unitAI() == 0) {
-        this->logCommonHistory((char*)0x00588488,
+        this->logCommonHistory("Could not find a building to train type %d (UniqueID=%d) at, returning FALSE.",
                                item->typeID(), item->uniqueID());
         return 0;
     }
 
-    this->logCommonHistory((char*)0x005884D8,
+    this->logCommonHistory("Training ID #%d (UniqueID=%d) from building with gameID=%d.",
                            item->typeID(), item->uniqueID(), object->id);
     item->setInProgress(1);
     item->setBuilt(0);
