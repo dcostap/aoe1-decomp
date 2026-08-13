@@ -17,12 +17,27 @@
 // - initialized back_color to mirror the target's zeroed color register; this
 //   kept size and calls but worsened the diff from 1063 to 1078 bytes and did
 //   not move the saved-this home, so restored the clean source.
+// - structural pass tried declaration/local order, explicit player-count
+//   guards, indexed records, and for-loop cursor spelling.  These either
+//   emitted the same 1063-byte result or broke size; the target's EDI byte
+//   stride and saved-this home remain unresolved.
+// - binary low-fps scan checks player_id, not team_id; corrected that guard.
+//   A separate low-fps loop counter was codegen-neutral and remains natural.
+// - ABI audit: used the committed rge_base_game storage accessor and a typed
+//   communication storage accessor.  This removes unresolved global data
+//   symbols while preserving direct loads from 0062C574 and 0062C4C0.
+// - ABI audit: declared scr_game_score_compare with its C++ function ABI.
+//   The qsort relocation names the exact comparator instead of using an
+//   address cast.  These audit changes are byte-neutral in the clean basin.
 
 #include <stdio.h>
+#include "../../include/rge_base_game_global.h"
 
 extern "C" int sprintf(char*, const char*, ...);
 extern "C" void qsort(void*, unsigned int, unsigned int,
                       int (*)(const void*, const void*));
+
+int scr_game_score_compare(const void*, const void*);
 
 struct RGE_Color_Table {
     char gap_00[0x26];
@@ -154,14 +169,17 @@ public:
     void reset_score_display();
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
-#define comm (*(TCommunications_Handler**)0x0062C4C0)
-#define score_compare ((int (*)(const void*, const void*))0x0049B000)
-#define score_format ((const char*)0x00586510)
+#define score_format "%s: %d/%d"
+
+static __inline TCommunications_Handler* communications_at_storage()
+{
+    return *(TCommunications_Handler**)0x0062C4C0;
+}
 
 void TRIBE_Screen_Game::reset_score_display()
 {
     int i;
+    int j;
     int local_2d4;
     int team;
     int icon_num2;
@@ -184,8 +202,8 @@ void TRIBE_Screen_Game::reset_score_display()
     i = 0;
     icon_num2 = 1;
     PLAYER_SCORE* score = player_score;
-    while (icon_num2 <= rge_base_game->numberPlayers()) {
-        int player_id = rge_base_game->playerID(icon_num2);
+    while (icon_num2 <= rge_base_game_at_storage()->numberPlayers()) {
+        int player_id = rge_base_game_at_storage()->playerID(icon_num2);
         if (player_id != 0 && player_id < this->world->player_num) {
             if (score->team_id == 0) {
                 ++i;
@@ -201,9 +219,9 @@ void TRIBE_Screen_Game::reset_score_display()
             if (this->world->players[player_id]->allied_victory != 0) {
                 int team_player = 1;
                 PLAYER_SCORE* team_score = player_score;
-                while (team_player <= rge_base_game->numberPlayers()) {
+                while (team_player <= rge_base_game_at_storage()->numberPlayers()) {
                     if (team_player != icon_num2) {
-                        int player_id2 = rge_base_game->playerID(team_player);
+                        int player_id2 = rge_base_game_at_storage()->playerID(team_player);
                         if (player_id2 != 0 && player_id2 < this->world->player_num &&
                             this->world->players[player_id]->relation(player_id2) == 0 &&
                             this->world->players[player_id2]->relation(player_id) == 0 &&
@@ -226,15 +244,15 @@ void TRIBE_Screen_Game::reset_score_display()
         ++score;
     }
 
-    qsort(player_score, rge_base_game->numberPlayers(), sizeof(PLAYER_SCORE),
-          score_compare);
+    qsort(player_score, rge_base_game_at_storage()->numberPlayers(), sizeof(PLAYER_SCORE),
+          scr_game_score_compare);
     low_fps_player = 0;
-    if (rge_base_game->multiplayerGame() != 0) {
+    if (rge_base_game_at_storage()->multiplayerGame() != 0) {
         int low_fps = 11;
         PLAYER_SCORE* p = player_score;
-        for (i = 0; i < 8; ++i, ++p) {
-            if (p->team_id != 0 && comm->GetPlayerHumanity(p->comm_id) == 2) {
-                unsigned long average = comm->Speed->player_avg_frames_msec[p->comm_id];
+        for (j = 0; j < 8; ++j, ++p) {
+            if (p->player_id != 0 && communications_at_storage()->GetPlayerHumanity(p->comm_id) == 2) {
+                unsigned long average = communications_at_storage()->Speed->player_avg_frames_msec[p->comm_id];
                 int frame_rate;
                 if (average > 999) {
                     frame_rate = 1;
@@ -261,7 +279,7 @@ void TRIBE_Screen_Game::reset_score_display()
         if (p->player_id == 0) {
             (*panel)->set_visible(0);
         } else {
-            sprintf(str + 4, score_format, comm->GetPlayerName(p->comm_id),
+            sprintf(str + 4, score_format, communications_at_storage()->GetPlayerName(p->comm_id),
                     p->player_score, p->team_score);
 
             RGE_Player* player = this->world->players[p->player_id];
@@ -285,21 +303,21 @@ void TRIBE_Screen_Game::reset_score_display()
             int dimmed = 0;
             if (player->game_status == 2) {
                 dimmed = 1;
-            } else if (rge_base_game->multiplayerGame() != 0) {
-                int humanity = comm->GetPlayerHumanity(p->comm_id);
+            } else if (rge_base_game_at_storage()->multiplayerGame() != 0) {
+                int humanity = communications_at_storage()->GetPlayerHumanity(p->comm_id);
                 if (humanity != 2 && humanity != 4) {
                     dimmed = 1;
                 }
             }
-            RGE_Font* font = rge_base_game->get_font(dimmed != 0 ? 8 : 11);
+            RGE_Font* font = rge_base_game_at_storage()->get_font(dimmed != 0 ? 8 : 11);
 
             icon1 = 0;
             icon_frame1 = 0;
             icon2 = 0;
             icon_frame2 = 0;
-            if (rge_base_game->multiplayerGame() != 0 &&
-                comm->GetPlayerHumanity(p->comm_id) == 2) {
-                unsigned long latency = comm->Speed->GetPlayerLatency(p->comm_id);
+            if (rge_base_game_at_storage()->multiplayerGame() != 0 &&
+                communications_at_storage()->GetPlayerHumanity(p->comm_id) == 2) {
+                unsigned long latency = communications_at_storage()->Speed->GetPlayerLatency(p->comm_id);
                 if (p->comm_id == low_fps_player) {
                     icon2 = this->button_pics;
                     icon_frame2 = 17;
