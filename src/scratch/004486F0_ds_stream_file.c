@@ -31,6 +31,19 @@
 //     VC5 emitted the same code, so the declaration order was rolled back.
 // 19: Best source now passes lpWrite2 to Unlock. It reaches exact 835-byte size,
 //     all 20 ordered calls, and diff 732; register and block drift remains broad.
+// 20: Removing lpwfxFormat worsened the size to 824B and diff to 789; restored.
+// 21: Named WAVEFORMATEX fields preserved size and diff but lost a small shape
+//     tie; restored the binary-supported offset reads.
+// 22: Naming the fourth descriptor word dwReserved preserved size but did not
+//     improve codegen; restored the period DSBUFFERDESC lpwfxFormat surface.
+// 23: Passing dwLen2 to the initial Unlock grew the body to 838B and worsened
+//     diff; restored the binary call's zero fifth argument.
+// 24: The source-level 0x78/600 sample formula produced 824B and diff 789;
+//     restored the binary-supported +8/120/100/6 expression.
+// 25: Positive empty-success format branching removed a required close call
+//     and reduced the body to 800B; restored the negative cleanup guard.
+// 26: Removing the format-pointer store again produced 824B and diff 789;
+//     restored the clean typed descriptor source.
 // PAUSED: remaining drift is a broad VC5 ABI/layout basin (EBX zero vs ESI,
 //     EBP one/save, descriptor/output stack homes, and Lock argument scheduling),
 //     not a localized behavior-equivalent difference; no accepted_drift proposal.

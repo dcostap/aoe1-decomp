@@ -20,8 +20,25 @@
 // Main-agent audit restored the canonical virtual destructor surface; typed
 // panel geometry and recursive child ownership remain authoritative. Final
 // audited check: 593/585 bytes, 2/2 ordered calls, 494-byte diff.
+// this claim: local tagRECT plus PositionMode enum is period-plausible and
+// reaches exact size with a 437-byte diff; keep it over the 592-byte int basin.
+// this claim: reused the Ghidra-supported edge-panel cursor under the enum
+// surface; codegen stayed at 437 bytes, so the typed cursor remains source.
+// this claim: full trailing TPanel fields through +0xF3 are layout-canonical;
+// VC5 output was unchanged.
+// this claim: common calc_wid/calc_hgt and SDK windows.h context were tested;
+// both returned larger or older basins, so direct width and local tagRECT stay.
 
-struct Rect { long left; long top; long right; long bottom; };
+struct tagRECT { long left; long top; long right; long bottom; };
+enum PositionMode {
+    PositionFixed = 0,
+    PositionLeft = 3,
+    PositionCentered = 2,
+    PositionTop = 4,
+    PositionLeftTop = 7,
+    PositionLeftBottom = 8,
+    PositionRightTop = 9
+};
 struct PanelNode;
 
 class TPanel {
@@ -34,8 +51,8 @@ public:
     long pnl_hgt;
     char* panel_name;
     void* render_area;
-    Rect clip_rect;
-    int position_mode;
+    tagRECT clip_rect;
+    PositionMode position_mode;
     int need_redraw;
     TPanel* curr_child;
     TPanel* parent_panel;
@@ -57,7 +74,7 @@ public:
     int handle_mouse_input;
     int just_drawn;
     void* clip_rgn;
-    Rect render_rect;
+    tagRECT render_rect;
     long left_border;
     long top_border;
     long right_border;
@@ -66,10 +83,30 @@ public:
     long max_wid;
     long min_hgt;
     long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 
     virtual ~TPanel();
     virtual void setup();
-    virtual void set_rect(Rect rect);
+    virtual void set_rect(tagRECT rect);
     virtual void pad03();
     virtual void pad04();
     virtual void pad05();
@@ -119,29 +156,33 @@ long TPanel::handle_size(long wid, long hgt)
         bottom = hgt - 1;
     }
 
-    if (this->position_mode == 0) {
+    if (this->position_mode == PositionFixed) {
         left = this->left_border + left;
         top = this->top_border + top;
         bottom = this->min_hgt + top - 1;
         right = this->min_wid + left - 1;
     } else {
-        if (this->left_panel != 0 && this->left_panel->active != 0) {
-            left = this->left_border + this->left_panel->render_rect.right + 1;
+        p = this->left_panel;
+        if (p != 0 && p->active != 0) {
+            left = this->left_border + p->render_rect.right + 1;
         } else {
             left = this->left_border + left;
         }
-        if (this->top_panel != 0 && this->top_panel->active != 0) {
-            top = this->top_border + this->top_panel->render_rect.bottom + 1;
+        p = this->top_panel;
+        if (p != 0 && p->active != 0) {
+            top = this->top_border + p->render_rect.bottom + 1;
         } else {
             top = this->top_border + top;
         }
-        if (this->right_panel != 0 && this->right_panel->active != 0) {
-            right = this->right_panel->render_rect.left - this->right_border - 1;
+        p = this->right_panel;
+        if (p != 0 && p->active != 0) {
+            right = p->render_rect.left - this->right_border - 1;
         } else {
             right -= this->right_border;
         }
-        if (this->bottom_panel != 0 && this->bottom_panel->active != 0) {
-            bottom = this->bottom_panel->render_rect.top - this->bottom_border - 1;
+        p = this->bottom_panel;
+        if (p != 0 && p->active != 0) {
+            bottom = p->render_rect.top - this->bottom_border - 1;
         } else {
             bottom -= this->bottom_border;
         }
@@ -153,7 +194,7 @@ long TPanel::handle_size(long wid, long hgt)
         } else {
             limit = this->max_wid;
             if (limit != 0 && right - left + 1 > limit) {
-                if (this->position_mode == 3 || this->position_mode == 7 || this->position_mode == 8) {
+                if (this->position_mode == PositionLeft || this->position_mode == PositionLeftTop || this->position_mode == PositionLeftBottom) {
                     right = left + limit - 1;
                 } else {
                     left = right - limit + 1;
@@ -166,7 +207,7 @@ long TPanel::handle_size(long wid, long hgt)
         } else {
             limit = this->max_hgt;
             if (limit != 0 && calc_hgt > limit) {
-                if (this->position_mode == 4 || this->position_mode == 7 || this->position_mode == 9) {
+                if (this->position_mode == PositionTop || this->position_mode == PositionLeftTop || this->position_mode == PositionRightTop) {
                     bottom = top + limit - 1;
                 } else {
                     top = bottom - limit + 1;
@@ -174,7 +215,7 @@ long TPanel::handle_size(long wid, long hgt)
             }
         }
 
-        if (this->position_mode == 2) {
+        if (this->position_mode == PositionCentered) {
             long real_w = right - left + 1;
             long real_h = bottom - top + 1;
             long xoff;
@@ -194,22 +235,16 @@ long TPanel::handle_size(long wid, long hgt)
         }
     }
 
-    Rect rect;
-    rect.left = left;
-    rect.top = top;
-    rect.right = right;
-    rect.bottom = bottom;
+    tagRECT rect = { left, top, right, bottom };
     this->set_rect(rect);
     int pass = 0;
     do {
-        PanelNode* node = this->first_child_node;
-        while (node != 0) {
+        for (PanelNode* node = this->first_child_node; node != 0; node = node->next) {
             TPanel* child = node->panel;
             long r = child->handle_size(wid, hgt);
             if (r != 0) {
                 return r;
             }
-            node = node->next;
         }
         ++pass;
     } while (pass < 2);
