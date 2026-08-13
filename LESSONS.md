@@ -980,3 +980,11 @@ only the matching paragraphs and their section heading.
 - For signed random ranges, shift the named variance before multiplication.
   `(rand * (variance << 1))` can make VC5 emit `lea` before `imul`, while an
   equivalent doubled product can emit `imul` followed by `shl`.
+
+## Direct member calls can preserve VC5 virtual-pointer reloads
+
+- When VC5 reuses one vtable pointer across two calls on a saved object alias,
+  but the oracle reloads the vtable between calls, remove the alias first.
+  Direct `this->object->method()` calls can preserve the original object and
+  vtable reload schedule.  This can fix both a late size gap and register
+  coloring without volatile qualifiers or artificial temporaries.

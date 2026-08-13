@@ -17,6 +17,11 @@
 // - serial natural null guards improved the structural diff to 349 bytes and
 //   54.35% shape similarity; truthiness spelling and a guard-only surface local
 //   were duplicates, so the serial guard form remains the best source shape.
+// - fresh structural probes for explicit == 0 guards, a volatile base pointer,
+//   positive base scope, extern global declarations, a polymorphic base class,
+//   and assignment-in-guard draw-system ownership were codegen duplicates.
+//   Combining the draw-system and primary-surface guards worsened to 374 bytes;
+//   all variants were restored.
 // - left in scratch: calls/size/frame match, but guard/register coloring and
 //   RECT/DDBLTFX stack-slot scheduling remain nonexact.
 

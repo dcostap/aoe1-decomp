@@ -25,6 +25,9 @@
 // probe 9: register annotation on info was codegen-neutral.
 // probe 10: opcode type/read/switch variant lab found no exact or register-color
 // lead; best invariant group retained the same info=ESI/shape=EDI basin.
+// continuation probes: a separate next-cursor across each decoder arm worsened
+// the structural diff; direct-info ownership, local declaration reordering, and
+// parameter-home byte-store variants all emitted the 277-byte clean basin.
 // probe 11: an early named shape_base alias was a natural liveness test for
 // the oracle's ESI base/EDI info ownership; VC5 emitted identical code, so it
 // was rolled back.

@@ -20,6 +20,16 @@
 // - Declaring the persistent remove candidate before scan locals, as the
 //   packet's line 632 zeroing precedes the line 634 active-size test, produced
 //   identical code; the structural frame and first hunk remain unresolved.
+// - A shared cold remove block was a structural diagnostic only. The living
+//   source uses an ordinary invalid-object branch.
+// - Reusing map_value as the shifted mask reached the original frame, but it
+//   saved the shifted mask instead of the observed map value; rolled back.
+// - Removing the artificial object local improved source ownership but left a
+//   larger frame; the natural mask for-loop restored frame 0x14 and gave EDI
+//   the scan index and EBP the mask, with diff 381; it remains the best clean
+//   reconstruction.
+// - Hoisting mask and reordering locals were codegen duplicates; kept the
+//   simpler inner mask declaration.
 
 #include <stdio.h>
 
@@ -83,10 +93,9 @@ extern FILE* DDlogf;
 
 void RGE_Doppleganger_Creator::perform_doppleganger_checks()
 {
-    RGE_Static_Object* remove_me = 0;
     unsigned long map_value;
     int i;
-    RGE_Static_Object* object = 0;
+    RGE_Static_Object* remove_me = 0;
 
     if (this->active_size > 0) {
         i = 0;
@@ -94,37 +103,34 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
             do {
                 map_value = *this->Map_Addresses[i];
                 if (map_value != this->Last_Map_Value[i]) {
-                    object = this->Objects[i];
-                    if (object != 0 && this->owner->world->object(this->Object_ids[i]) == object) {
+                    if (this->Objects[i] != 0 &&
+                        this->owner->world->object(this->Object_ids[i]) == this->Objects[i]) {
                         unsigned long mask = ((this->Last_Map_Value[i] ^ map_value) >> 1) &
                             (this->Last_Map_Value[i] >> 1) & 0x7fff;
-                        if (mask != 0) {
-                            int player_id = 1;
-                            do {
-                                if ((mask & 1) == 1) {
+                        for (int player_id = 1; mask != 0; player_id++, mask >>= 1) {
+                            if ((mask & 1) == 1) {
                                     int owner_id = (int)this->owner->id;
                                     if (player_id != owner_id) {
                                         if (DDlogf) {
-                                            object = this->Objects[i];
                                             fprintf(DDlogf, "NEW DOP (@%d) by p=%d for p=%d of id=%d (x=%d, y=%d)\n",
                                                 this->owner->world->world_time,
                                                 owner_id,
                                                 player_id,
-                                                object->id,
-                                                (long)object->world_x,
-                                                (long)object->world_y);
+                                                this->Objects[i]->id,
+                                                (long)this->Objects[i]->world_x,
+                                                (long)this->Objects[i]->world_y);
                                         }
                                         RGE_Player* player = (RGE_Player*)this->owner->world->players[player_id];
-                                        object = this->Objects[i];
-                                        player->master_objects[0xf3]->create_doppleganger(player, object->world_x, object->world_y, object->world_z, object);
+                                        player->master_objects[0xf3]->create_doppleganger(player,
+                                            this->Objects[i]->world_x,
+                                            this->Objects[i]->world_y,
+                                            this->Objects[i]->world_z,
+                                            this->Objects[i]);
                                     }
                                 }
-                                player_id++;
-                                mask >>= 1;
-                            } while (mask != 0);
                         }
                     } else {
-                        remove_me = object;
+                        remove_me = this->Objects[i];
                         if (DDlogf) {
                             fprintf(DDlogf, "*** REMOVE CHECK (@%d) by p=%d id=%d\n",
                                 this->owner->world->world_time,
@@ -141,4 +147,6 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
             this->remove_doppleganger_check(remove_me);
         }
     }
+
+    return;
 }

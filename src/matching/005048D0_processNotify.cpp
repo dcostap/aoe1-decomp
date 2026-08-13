@@ -8,7 +8,8 @@
 // 9: outer count guard plus while (i < count) reproduced the duplicated entry test and improved shape to 90.95%; the remaining gap is register coloring and late vptr spill.
 // 10: a base-pointer alias was codegen-identical and was removed as unsupported steering.
 // 11: rewrote the typed evasive result tail as coordinate plus explicit negated displacement; restored the original fchs/fadd tail family, reducing the size gap to 4 bytes and positional diff to 521; first order-call hunk remains.
-// left in scratch: canonical source has exact call multiset, frame 0x08, and 100% call-site alignment, but remains nonexact with 4-byte size drift and broad register/block drift. The main lead is the original order-call register schedule and saved vptr slot. Not accepted_drift-safe.
+// 12: removed the saved object alias and used direct this->obj member calls; this restored the original vptr reload and exact 643-byte output.
+// exact: direct member accesses preserve the original object/vptr reload schedule and produce all 643 bytes.
 
 void* __cdecl operator new(unsigned int);
 void __cdecl operator delete(void*);
@@ -125,7 +126,6 @@ public:
 int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags)
 {
     RGE_Static_Object* target;
-    GameObj* o;
     float evasiveMoveDistance;
     float dx;
     float dy;
@@ -141,10 +141,9 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
 
     this->order(this->obj->id, 0x2bc, this->target_id, -1, this->p3c, this->p40, this->p44, this->p48, 0, 1, this->p2c);
 
-    o = this->obj;
-    evasiveMoveDistance = o->vf_FC() * o->vf_100() * DAT_005758b0;
-    dx = target->x - o->x;
-    dy = target->y - o->y;
+    evasiveMoveDistance = this->obj->vf_FC() * this->obj->vf_100() * DAT_005758b0;
+    dx = target->x - this->obj->x;
+    dy = target->y - this->obj->y;
 
     if (this->count > 0) {
         int i = 0;

@@ -22,6 +22,18 @@
 // - Tried the same-TU donor's flat typed building surface with named sprite
 //   and radius fields; it emitted identical code, so inheritance context is
 //   not the first self-home structural cause. Restored the canonical layout.
+// - Moving the self alias to function entry, splitting its declaration, and
+//   reordering map/radius declarations reproduced the older 403B basin; all
+//   were rolled back.
+// - Short coordinate aliases and direct sprite/member/map expressions were
+//   codegen duplicates. Explicit sprite-coordinate locals widened the gap.
+// - A volatile self alias moved the size to 410B and diff to 386B, but added
+//   repeated stack loads and is not plausible source; it was rolled back.
+// - Raw 32-bit reads of short coordinate homes changed the frame and broad
+//   CFG, so target raw EDI/EBX pushes are not a reason to retain pointer casts.
+// - Current clean reconstruction remains the best plausible source. The
+//   unresolved structural lead is VC5 self-home/register scheduling before
+//   the first field load; calls and behavior remain aligned.
 
 #include "..\..\include\game_globals.h"
 
