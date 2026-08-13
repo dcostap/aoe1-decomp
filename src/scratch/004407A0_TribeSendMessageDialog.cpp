@@ -24,6 +24,22 @@
 // 13: added the same-TU TShape destructor declaration used by the exact
 //     destructor donor; emitted code was unchanged, so restored the clean
 //     constructor surface. The null-lowering hunk remains structural.
+// 14: made shape allocation an assignment-in-condition positive guard; this
+//     recovered the oracle's sete/test block family and cut strict drift.
+// 15: inverted that guard to test allocation failure directly; null lowering
+//     became an exact block through the member store and early exit.
+// 16: used the live humanity index for the first player-scan bound; the
+//     oracle's cmp/jl gate became exact instead of test/jle.
+// 17-18: moved the language buffer around scalar locals; VC5 emitted no
+//     change, so the typed declaration order was restored.
+// 19-22: named radio-array cursors and varied their lifetimes; the donor-like
+//     radio-link block improved in one basin, but the whole function worsened.
+//     Restored direct member creation and linking.
+// 23-24: block-scoped and separate radio-link indices were codegen duplicates.
+// 25: held the created OK panel in a named local; this matched the oracle's
+//     one-object reload and improved strict drift to 546 bytes.
+// 26: a narrow radio-array alias for the first help call was unchanged; retain
+//     it as the binary-supported pointer ownership form.
 // Main-agent audit replaced fixed string addresses and cross-member pointer
 // arithmetic with literals and direct playerName/playerCivilization/checkButton/
 // commPlayers row ownership. The canonical source validates at 1605 bytes with
@@ -210,8 +226,9 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     help_button = 0;
     backgroundPics = 0;
 
-    backgroundPics = new TShape("dlg_plbn.shp", 0xC63A);
-    if (backgroundPics != 0) {
+    if ((backgroundPics = new TShape("dlg_plbn.shp", 0xC63A)) == 0)
+        return;
+    else {
         if (!setup(parent->renderArea(), parent, 0x208, 0x1D1,
                    parent->get_popup_info_file(), parent->get_popup_info_id(), 1))
             return;
@@ -234,7 +251,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
                 world_humanity = 0;
                 int j = 1;
                 int count = rge_base_game->numberPlayers();
-                if (count > 0) {
+                if (j <= count) {
                     do {
                         if (rge_base_game->playerID(j) == id) {
                             int h = comm->GetPlayerHumanity(j);
@@ -303,8 +320,9 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
 
     for (n = 0; n < 4; ++n)
         radioButton[n]->set_radio_info(radioButton, 4);
+    TButtonPanel** radio_buttons = radioButton;
     radioButton[3]->draw_background(1);
-    radioButton[0]->set_help_info(0x767B, -1);
+    radio_buttons[0]->set_help_info(0x767B, -1);
     radioButton[1]->set_help_info(0x767C, -1);
     radioButton[2]->set_help_info(0x767D, -1);
     radioButton[3]->set_help_info(0x767E, -1);
@@ -312,8 +330,9 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     if (!create_button(this, &okButton, 0x266C, 0, 100, 0x1A9, 0x12C, 0x1E, 0, 0, 0))
         return;
     okButton->set_help_info(0x7531, -1);
-    okButton->hotkey = 0x1B;
-    okButton->hotkey_shift = 0;
+    TButtonPanel* ok = okButton;
+    ok->hotkey = 0x1B;
+    ok->hotkey_shift = 0;
         set_curr_child(chatInput);
     }
 }
