@@ -15,6 +15,11 @@
 //   rolled back after VC5 proved it away or merged it without adding calls.
 // - Inlining the panel-result tails for exit-menu and music-done raised the
 //   call surface from 74 to 78 calls and the shape score to 89.33 percent.
+// - A WM_SIZE tail returning wparam kept a separate 4C/24 log pair: 80/80
+//   calls and +1 byte versus 80/80 and -9 bytes with panel_result.  Keep this
+//   binary-supported return-home lead while the shared-tail return remains.
+// - Replacing all handled-tail predicates with mouse_down matched the later
+//   [esp+10] loads but collapsed four log calls.  Restored the 80-call source.
 
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
 extern "C" __declspec(dllimport) long __stdcall SetClassLongA(void* hwnd,
@@ -243,12 +248,8 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         color_log(0x24, 0x32, 3);
         panel = panel_system.currentPanel();
         panel_result = (void*)panel->wnd_proc(hwnd, msg, wparam, lparam);
-        if (panel_result != 0 && msg != 0x200 && msg != 0x113) {
-            if (mouse_down != 0)
-                color_log(0x4C, 0x5F, 4);
-            color_log(0x24, 0x5F, 3);
-            return (long)panel_result;
-        }
+        if (panel_result != 0 && msg != 0x200 && msg != 0x113)
+            goto panel_return_after_exit_menu;
     }
 
     color_log(0x24, 0x45, 3);
@@ -266,12 +267,13 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         color_log(0x32, 0xBA, 3);
         if (self->handle_size(hwnd, 5, wparam, lparam) != 0)
             goto default_window_proc;
-        if (panel_result != 0) {
-            color_log(0x4C, 0x5F, 4);
+        if (panel_result == 0) {
             color_log(0x24, 0x5F, 3);
-            return (long)panel_result;
+            return (long)wparam;
         }
-        goto panel_return_alt;
+        color_log(0x4C, 0x5F, 4);
+        color_log(0x24, 0x5F, 3);
+        return (long)wparam;
 
     case 6:
         if (self->prog_ready != 0) {
@@ -406,9 +408,11 @@ long __stdcall RGE_Base_Game_wnd_proc(RGE_Base_Game* self, void* hwnd,
         color_log(0x32, 0xBA, 3);
         if (self->handle_exit_menu(hwnd, 0x212, wparam, lparam) != 0)
             goto default_window_proc;
-        if (panel_result == 0)
-            goto panel_return_alt;
-        color_log(0x4C, 0x5F, 4);
+        goto panel_return_after_exit_menu;
+
+panel_return_after_exit_menu:
+        if (panel_result != 0)
+            color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
         return (long)panel_result;
 
