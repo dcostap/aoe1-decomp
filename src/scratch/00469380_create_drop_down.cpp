@@ -59,19 +59,26 @@
 // a codegen duplicate of the clean 21-byte basin; restored.
 // 35: direct return only on the second calloc failure grew the function by
 // 17 bytes and duplicated the EH return path; restored the clean goto form.
+// 36: restored canonical TEasy_Panel inheritance over the proven TPanel layout;
+// VC5 emits the same 21-byte tail mismatch as the flattened equivalent.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>
 #include <stdlib.h>
 
+class TDrawArea;
 class TPanel {
 public:
     virtual ~TPanel();
-    char gap_04[0xd8-0x04];
+    char gap_04[0x10];
+    int width;
+    int height;
+    char gap_1c[4];
+    TDrawArea* draw_area;
+    char gap_24[0xb4];
     int failure;
     char gap_dc[0x18];
 };
-class TDrawArea;
 class TShape;
 class TListPanel { public: void set_text_color(unsigned long, unsigned long); void set_highlight_text_color(unsigned long, unsigned long); };
 class RGE_Font { public: void* font; int font_wid; int font_hgt; };
@@ -112,10 +119,9 @@ public:
     void set_val_text_color(unsigned long,unsigned long);
 };
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    char gap_00[0x14]; int width; int height; char gap_1c[4]; TDrawArea* draw_area; char gap_24[0xb4]; int failure;
-    char gap_dc[0x18]; int ideal_width; int ideal_height; char gap_fc[0x220]; int use_bevels;
+    int ideal_width; int ideal_height; char gap_fc[0x220]; int use_bevels;
     unsigned char bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6;
     char gap_326[2]; unsigned long text_color1; unsigned long text_color2; unsigned long focus_color1; unsigned long focus_color2;
     char gap_338[0x110]; TShape* button_pics;

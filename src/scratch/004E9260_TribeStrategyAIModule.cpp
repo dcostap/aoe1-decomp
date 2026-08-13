@@ -42,6 +42,11 @@
 // a debug-context flag lab lacked the EH frame and was not a valid lead.
 // left in scratch: clean typed constructor remains 7 bytes off in seven
 // stack-home displacement bytes at the length and add-value temporary sites.
+// explicit function-level value local reached a 4-byte diff and exact loop
+// bodies, but moved the base self-home and name-length homes by one word.
+// loop-scoped value locals were a codegen duplicate of the clean source.
+// a two-element value-buffer diagnostic reached 2 bytes but changed the
+// base self-home and one indexed name terminator byte; it was not plausible.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);
@@ -204,6 +209,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(int a, int file)
         rge_read(file, &this->difficultyLevel, 4);
     }
 
+    int value;
     int length;
     rge_read(file, &length, 4);
     rge_read(file, this->ruleSetNameValue, length);
@@ -216,16 +222,19 @@ TribeStrategyAIModule::TribeStrategyAIModule(int a, int file)
     rge_read(file, &count, 4);
     for (i = 0; i < count; ++i) {
         rge_read(file, &a, 4);
-        this->vcRuleSet.add(a);
+        value = a;
+        this->vcRuleSet.add(value);
     }
     rge_read(file, &count, 4);
     for (i = 0; i < count; ++i) {
         rge_read(file, &a, 4);
-        this->executingRules.add(a);
+        value = a;
+        this->executingRules.add(value);
     }
     rge_read(file, &count, 4);
     for (i = 0; i < count; ++i) {
         rge_read(file, &a, 4);
-        this->idleRules.add(a);
+        value = a;
+        this->idleRules.add(value);
     }
 }
