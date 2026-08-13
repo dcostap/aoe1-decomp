@@ -43,6 +43,9 @@
 //    original 0x180) plus message/parameter temporary coloring; no ABI or
 //    call-target uncertainty remains.  The positive guaranteed-delivery arm
 //    is retained because it matches the oracle's late non-GTD LogRXMsg block.
+// 21 control-flow: wrote the missing-DCO ProgramState test as a positive
+//    success arm with a failure else arm; all 86 call sites now align and the
+//    structural diff improved to 2943 bytes.  Keep this natural guard shape.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -519,17 +522,17 @@ player_lookup_found:
                 } while (i <= high);
             }
         }
-        if (this->PlayerOptions.ProgramState != 3) {
+        if (this->PlayerOptions.ProgramState == 3) {
+            sprintf(this->TBuff, CS(0x5812E0), player, missing_player, missing_dco);
+            L->Log(this->TBuff);
+            L->Log(S(0x5812A0), missing_player, missing_dco, player);
+            this->PlayerOptions.PlayerReady[missing_player] = 0;
+            this->PlayerOptions.InvalidPlayer[missing_player] = 1;
+            this->PlayerOptions.NeedsToBeSent = 1;
+        } else {
             L->Log(S(0x581268), missing_player, missing_dco, player);
             this->Kick(missing_player);
-            return 1;
         }
-        sprintf(this->TBuff, CS(0x5812E0), player, missing_player, missing_dco);
-        L->Log(this->TBuff);
-        L->Log(S(0x5812A0), missing_player, missing_dco, player);
-        this->PlayerOptions.PlayerReady[missing_player] = 0;
-        this->PlayerOptions.InvalidPlayer[missing_player] = 1;
-        this->PlayerOptions.NeedsToBeSent = 1;
         return 1;
     }
 

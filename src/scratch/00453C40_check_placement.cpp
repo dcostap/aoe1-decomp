@@ -68,6 +68,9 @@
 // probe24 (layout): -0.001 back in the edge declarations (left,right(y),top,bottom(x)) keeping
 //   byte anchors + mrx staging — 1731. FPU block closer but center-check region worse; restored
 //   the condition-form.
+// probe26 (layout): one shared perimeter counter declared before the short box coordinates
+//   (a natural declaration-order lead from the first-hunk evidence) changed only 14 emitted
+//   bytes, with no positional or shape gain; restored the scoped counters.
 //
 // LEFT IN SCRATCH: semantically faithful, period-plausible reconstruction reproducing the
 //   original transposed-axis placement box. Best recorded state: 1720B strict diff, 67.31%

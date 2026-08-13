@@ -17,6 +17,9 @@
 // probe 8: a pTile alias was a codegen duplicate and was removed from living
 // source. probe 9: retained the binary-proven comma assignment in the combined
 // terrain guard.
+// probe 11: reversed the terrain-count guard operands to match the original
+// AX-versus-memory compare; diff improved 1056 -> 1054 bytes and first-hunk
+// compare shape now matches, but the EBX tile load still follows the pushes.
 // best final check: 1135B rebuilt/original, 0x28 frame, all 11 direct calls and
 // target relocations aligned, 1056 strict diff bytes, 69.90% shape similarity,
 // 33.87% exact-block coverage. Remaining drift is broad entry/local register
@@ -132,7 +135,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
     int retval;
     int result = 0;
 
-    if (this->map->num_terrain <= (short)terrain_type ||
+    if ((short)terrain_type >= this->map->num_terrain ||
         ((terrain_offset = (int)terrain_type * (int)sizeof(RGE_Tile_Set)),
          this->map->terrain_types[terrain_type].loaded == 0)) {
         return 0;

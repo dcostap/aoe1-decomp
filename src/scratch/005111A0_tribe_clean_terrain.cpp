@@ -13,6 +13,7 @@
 // probe: function-scope tile/neighbor locals and packet-derived short offset order did not change the initial basin.
 // probe: executable bVar placement predicates (two straight passes plus four staged diagonal tests) recovered 178 bytes and brought the emitted size to 1570 vs 1562; all 21 calls and the 0x44 frame align.
 // probe: long loop cursors and register qualifications were codegen duplicates.
+// probe: grouped the diagonal water checks under top/bottom row guards from the packet; size 1562 and first mismatch moved to 005111F9.
 // left in scratch: remaining drift is the VC5 local/register basin and loop/prologue topology; current source keeps the named tile/neighbor ownership and executable predicate structure.
 
 typedef unsigned char uchar;
@@ -123,18 +124,22 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                             if (x < this->map_width - 1 &&
                                 this->water((tile + 1)->terrain & 0x1f))
                                 right = 1;
-                            if (y > 0 && x > 0 &&
-                                this->water((tile[up_left_offset]).terrain & 0x1f))
-                                upper_left = 1;
-                            if (y > 0 && x < this->map_width - 1 &&
-                                this->water((tile[up_right_offset]).terrain & 0x1f))
-                                upper_right = 1;
-                            if (y < this->map_height - 1 && x > 0 &&
-                                this->water((tile[down_left_offset]).terrain & 0x1f))
-                                lower_left = 1;
-                            if (y < this->map_height - 1 && x < this->map_width - 1 &&
-                                this->water((tile[down_right_offset]).terrain & 0x1f))
-                                lower_right = 1;
+                            if (y > 0) {
+                                if (x > 0 &&
+                                    this->water((tile[up_left_offset]).terrain & 0x1f))
+                                    upper_left = 1;
+                                if (x < this->map_width - 1 &&
+                                    this->water((tile[up_right_offset]).terrain & 0x1f))
+                                    upper_right = 1;
+                            }
+                            if (y < this->map_height - 1) {
+                                if (x > 0 &&
+                                    this->water((tile[down_left_offset]).terrain & 0x1f))
+                                    lower_left = 1;
+                                if (x < this->map_width - 1 &&
+                                    this->water((tile[down_right_offset]).terrain & 0x1f))
+                                    lower_right = 1;
+                            }
 
                             uchar place = 0;
                             if (pass == 0) {

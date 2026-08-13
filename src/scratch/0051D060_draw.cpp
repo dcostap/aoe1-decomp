@@ -17,6 +17,7 @@
 // try 13: changed the byte-mode gate from != 0 to > 0; test/jbe now matches the oracle, with no other structural movement.
 // try 14: tested function-scope rect bounds, height/width declaration order, and in-place right/bottom updates; VC5 stayed in the same LEA family (the oracle uses sub/sub/add/add).
 // try 15: tested foreground color-area assignment/declaration order and a 25-variant focused rect/color lab; no exact variant, with all size/frame/call-set gates stable.
+// try 16: modeled the canonical same-TU TPanel render bounds as one RECT; VC5 emitted identical code, so the typed aggregate is retained.
 // final validated scratch state: typed structural reconstruction is retained; only the localized VC5 rectangle scheduling/register family remains nonexact.
 
 #include <windows.h>
@@ -88,10 +89,7 @@ public:
     int field_070;
     char gap_074[0x14];
     HRGN clip_rgn;
-    long render_left;
-    long render_top;
-    long render_right;
-    long render_bottom;
+    RECT render_rect;
     char gap_09C[0x44];
     long draw_depth;
     char gap_0E4[0x0F];
@@ -207,8 +205,8 @@ void TRIBE_Panel_Pop::draw()
 
         SetTextColor(this->render_area->DrawDc, this->color2);
 
-        long left = this->render_left;
-        long top = this->render_top;
+        long left = this->render_rect.left;
+        long top = this->render_rect.top;
         long width = this->pnl_wid;
         long height = this->pnl_hgt;
         ++left;

@@ -10,6 +10,8 @@
 // restored the natural direct bounds form.
 // liveness probe: using str as the old-font spill was an unsupported compiler hack;
 // it changed the frame and was restored.
+// layout probe: original RECT/old_font/str declaration order was a codegen duplicate;
+// restored the clean source.
 // BLOCKER: exact 668B remains blocked at the sprintf destination and downstream
 // rectangle scheduling. Calls, ABI, pixel layout, cleanup, and frame are understood.
 

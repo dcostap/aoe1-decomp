@@ -33,6 +33,9 @@
 //   clean source; it widened the body to 248B and produced a 196-byte diff.
 //   Restored the clean max.y-then-max.x source; the 15-byte max-bound hunk
 //   remains the only exact-codegen gap.
+// - Tested a computed XYPoint max aggregate initializer from the same-TU
+//   donor-backed point ownership; it widened the body to 248B and produced a
+//   196-byte diff. Restored the direct field assignments.
 
 typedef unsigned char uchar;
 
@@ -65,7 +68,6 @@ public:
 
 int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
 {
-    XYPoint max;
     int radius = (int)range;
     int min_x = from.x - radius;
     int min_y = from.y - radius;
@@ -75,6 +77,7 @@ int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
     if (min_y < 0)
         min_y = 0;
 
+    XYPoint max;
     max.y = from.y + radius;
     max.x = from.x + radius;
 

@@ -40,6 +40,9 @@
 // neutral. Restored the clean typed source.
 // sa7b8c14ff-edge final: retain canonical map, cliff-info, and tile ownership.
 // The blocker remains saved-this [esp+10] versus VC5 EBP=this allocation.
+// shardC5-5102A0 baseline: revalidated the typed donor-shaped source and its
+// 8-call ABI surface. A natural pre-switch cliff_info.info[0] = (long)this
+// lead, supported by add_cliff_edge, was codegen-neutral and was rolled back.
 
 struct TRIBE_Cliff_Info {
     int info[4];

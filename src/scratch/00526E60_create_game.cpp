@@ -16,6 +16,8 @@
 //   a pointer cursor and color index for computer colors. This restores the
 //   binary-observed multi-color behavior and all 100 call targets, but is 67 bytes
 //   larger than the exact-size codegen basin. No further blind codegen probes remain.
+// - notification_y pointer-cursor probe followed the original LEA/store shape,
+//   but grew the function by 16 bytes and worsened the first-hunk metrics; restored.
 
 #include <io.h>
 #include <stdio.h>
@@ -101,7 +103,7 @@ public:
 
 class RGE_Player {
 public:
-    virtual ~RGE_Player();
+    void* vtable_ptr;
     char gap_04[0x34];
     RGE_Visible_Map* visible;
 
@@ -118,7 +120,7 @@ public:
 
 class RGE_Game_World {
 public:
-    virtual ~RGE_Game_World();
+    virtual void v0();
     virtual void v1();
     virtual void v2();
     virtual void v3();
@@ -164,13 +166,13 @@ public:
     virtual void v43();
     virtual void v44();
     virtual void v45();
-    virtual void del_game_info();
+    virtual void v46();
     virtual void v47();
     virtual void v48();
     virtual void v49();
     virtual void v50();
     virtual void v51();
-    virtual unsigned char new_game(RGE_Player_Info* info, int player);
+    virtual unsigned char v52(char* name, int player);
 
     char gap_04[0x38];
     short player_num; // +0x3C
@@ -591,11 +593,11 @@ int TRIBE_Game::create_game(int param_1)
     else {
         local_player = 1;
     }
-    result = ((RGE_Game_World*)this->world)->new_game(&player_info,
-                                                       this->playerID(local_player));
+    result = ((RGE_Game_World*)this->world)->v52(player_info.name[0],
+                                                  this->playerID(local_player));
     if (result != 0 && this->world->player_num < 2) {
         result = 0;
-        this->world->del_game_info();
+        this->world->v46();
     }
 
     if (this->sound_system != 0) {

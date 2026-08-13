@@ -10,6 +10,8 @@
 // - inlined the target-radius predicate as one typed expression; this is the cleanest
 //   source reconstruction, although the compiler still reserves an 0x24 rather than
 //   the original 0x2C frame and leaves broad positional drift.
+// - reversed the first turnTimer guard to the original negative-first source shape;
+//   this closed the first local CFG hunk and improved the diff by 26 bytes.
 // - final bounded pause: exact matching remains unresolved after 10 hypotheses;
 //   remaining evidence points to original local-frame/register topology and VC5
 //   tail/block scheduling, not a missing call or virtual-surface declaration.
@@ -314,10 +316,10 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     }
 
     if (((RGE_Master_Moving_Object*)this->master_obj)->turn_speed > DAT_00570b98) {
-        if (this->turnTimer >= DAT_00570b98) {
-            this->turnTimer = this->turnTimer - this->owner->world->world_time_delta_seconds;
-        } else {
+        if (this->turnTimer < DAT_00570b98) {
             this->turnTimer = 0.0f;
+        } else {
+            this->turnTimer = this->turnTimer - this->owner->world->world_time_delta_seconds;
         }
     }
 

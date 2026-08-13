@@ -12,13 +12,14 @@
 // - Moving the append unit-count clear before the loop-local declarations
 //   changes the queue-count/parameter register order and reduces the diff to
 //   3 branch/SIB bytes while preserving all size/CFG/call metrics.
-// - An explicit positive qcount guard around the clear loop preserved the same
-//   result but was redundant and was restored to the ordinary while form;
-//   pointer-arithmetic and reversed typed-subscript copy spellings were also
-//   duplicates or did not improve.
+// - An explicit positive qcount guard around the clear loop is binary-plausible
+//   and preserves the same 3-byte result; pointer-arithmetic and reversed
+//   typed-subscript copy spellings were codegen duplicates or did not improve.
 // - Focused six-way lab (append order x typed copy spelling) found no exact
 //   group; field-first variants are the 3-byte frontier. Keep this readable
 //   source; do not replace it with raw cursor or register-forcing scaffolding.
+// - Replaced the cached queue count with direct production_queue_count use in
+//   the initial guard and clear loop; emitted code was unchanged, then restored.
 
 void* __cdecl calloc(unsigned int n, unsigned int size);
 void __cdecl free(void* p);
@@ -66,9 +67,11 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short count
             rge_base_game->notify(0x7c, this->owner->player_id, 0, 0, 0);
         }
     } else {
-        while (qcount > 0) {
-            this->remove_from_production_queue(this->production_queue[0].master_id, 1);
-            qcount = this->production_queue_count;
+        if (qcount > 0) {
+            while (qcount > 0) {
+                this->remove_from_production_queue(this->production_queue[0].master_id, 1);
+                qcount = this->production_queue_count;
+            }
         }
         if (!this->owner->check_obj_cost(id, &master_id, 1.0f, 1)) {
             rge_base_game->notify(0x7d, this->owner->player_id, master_id, 0, 0);

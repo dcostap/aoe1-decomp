@@ -15,6 +15,11 @@
 // 13: direct view_y and (view_x - view_y) projection expressions gave the best current result: 550 bytes, 0x14 frame, 517 strict diff.
 // 14: split fractional terms and an explicit col adjustment improved shape but worsened resync; rolled back as unsupported codegen steering.
 // 15: remaining blocker is the original 0x0c FPU/local lifetime and register coloring (original EBX=player; rebuilt EDI=player); calls and CFG match.
+// 16: direct typed this->player ownership was a codegen duplicate; retained the cached player local and clean candidate.
+// 17: direct center-map field reload improved strict diff to 507 but widened the frame to 0x18; rolled back.
+// 18: direct center-map assignments with a short cached column improved strict diff to 498 and shape to 50.9%; retained.
+// 19: explicit int col_adj for map indexing was a codegen duplicate; removed.
+// 20: natural fractional isometric projections from center-map deltas reduced strict diff to 495, but frame remains 0x1c and structural shape is unresolved.
 
 struct RGE_Player { unsigned char pad_000[0x114]; float view_x; float view_y; };
 struct RGE_Tile { short screen_xpos; short screen_ypos; unsigned char field_4; unsigned char flags; unsigned char pad[0x12]; };
@@ -52,16 +57,20 @@ void RGE_View::update()
 {
     RGE_Player* p = this->player;
     if (p && (p->view_x != this->last_view_x || p->view_y != this->last_view_y)) {
-        short sVar6 = (short)(int)p->view_x;
-        this->center_map_col = sVar6;
-        short sVar7 = (short)(int)p->view_y;
-        this->center_map_row = sVar7;
+        this->center_map_col = (short)(int)p->view_x;
+        this->center_map_row = (short)(int)p->view_y;
+        short sVar6 = this->center_map_col;
+        short sVar7;
         this->last_view_x = p->view_x;
         this->last_view_y = p->view_y;
         short sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
         short sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
-        sVar7 = (short)-(int)(p->view_y * 48.0f * (float)this->tile_wid);
-        short sVar8 = (short)-(int)((p->view_x - p->view_y) * 48.0f * (float)this->tile_hgt + this->tile_half_hgt);
+        sVar7 = (short)-(int)(((p->view_x - (float)sVar6) +
+                               (p->view_y - (float)this->center_map_row)) *
+                              48.0f * (float)this->tile_wid);
+        short sVar8 = (short)-(int)(((p->view_x - (float)sVar6) -
+                                     (p->view_y - (float)this->center_map_row)) *
+                                    48.0f * (float)this->tile_hgt + this->tile_half_hgt);
         sVar9 += sVar7;
         sVar10 += sVar8;
         this->center_scr_col = sVar9;

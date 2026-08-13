@@ -29,6 +29,8 @@
 //   first-argument register coloring, with all five AddSpan sites aligned.
 // - This pass retested a carried manager pointer and deferred x1v creation;
 //   both stayed structural mismatches, so the validated x1v source is restored.
+// - Fresh spanlist loop-shape lead: the vertical axis uses a guarded do/while,
+//   matching the original compare-before-body and same-TU span traversal.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the

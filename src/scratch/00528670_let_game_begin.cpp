@@ -12,6 +12,8 @@
 //   +0x248. This fixed the music field accesses.
 // - Pointer, array-address, and declaration-order probes were codegen
 //   duplicates. The remaining drift starts at difficulty-string scheduling.
+// - A const MapType return from the same-TU/PDB ABI donor was also a codegen
+//   duplicate; restored the natural int helper surface.
 // - Paused: the natural source has 46 aligned calls and 0x834 frame parity.
 
 #include <stdio.h>

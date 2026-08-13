@@ -38,6 +38,10 @@
 //   bytes and made both scan bodies instruction-identical; parser stack-home
 //   scheduling remains the first mismatch. A duplicate scoped-pointer check
 //   confirmed no further codegen change, so no blind variants were retained.
+// - Reused the dead sounds parameter home for the short area-level parser
+//   output from the first paired hunk; the first mismatch moved 31 bytes later,
+//   but positional diff stayed 150 and one later span worsened. Restored the
+//   named local; this is a first-hunk scheduling clue, not a retained source.
 
 #include <stdio.h>
 #include <stdlib.h>

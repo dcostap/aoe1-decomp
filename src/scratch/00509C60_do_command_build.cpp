@@ -25,6 +25,9 @@
 // Recovery: rebuilt the clean pinned source after the host crash; output stayed
 // at 411/418 B and 250 strict bytes. No new evidence-backed structural lead
 // remains, so this typed reconstruction stays in scratch.
+// Ownership probe: the same-TU make_new_obj donor supports TRIBE_Master_Building_Object;
+// its canonical hierarchy with the observed uchar placement ABI was codegen-neutral.
+// Restored the clean BuildInfo-shaped surface; the frame remains 0x08 versus 0x0C.
 
 typedef unsigned char uchar;
 

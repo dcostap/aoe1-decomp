@@ -16,6 +16,9 @@
 //    positional bytes; rolled back as weaker than the typed baseline.
 // 8: direct named RGE_View fields remained a 780-byte, 615-byte-diff basin;
 //    restored the typed fixed-offset lvalues. No fake volatility or asm is used.
+// 9: replaced the black serialized-root byte-offset loop with a typed
+//    Tile_BlackEdge_Table** walk; the diff fell to 341 bytes and size to 800,
+//    but the first structural hunk remains at the second relocation loop.
 
 extern "C" int __cdecl _open(const char*, int);
 extern "C" int __cdecl _lseek(int, int, int);
@@ -64,6 +67,7 @@ void RGE_View::Init_Tile_Edge_Tables()
     int count;
     int ok;
     int b0,b1,b2,b3,b4,b5,b6,b7;
+    Tile_BlackEdge_Table** black_roots;
 
     fd = _open(TILE, 0x8000);
     if (fd != -1) {
@@ -85,8 +89,9 @@ void RGE_View::Init_Tile_Edge_Tables()
     if (fd != -1) {
         _lseek(fd,0,2); len = _tell(fd); BLACK_TABLES = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,BLACK_TABLES,len); _close(fd);
         base = (int)BLACK_TABLES;
-        for (i=0;i<0x44;i+=4)
-            *(int*)((char*)BLACK_TABLES+i) += base;
+        black_roots = BLACK_TABLES;
+        for (i=0;i<0x11;i++,black_roots++)
+            *black_roots = (Tile_BlackEdge_Table*)((char*)*black_roots + base);
         for (i=0;i<0x44;i+=4) {
             black_table = *(Tile_BlackEdge_Table**)((char*)BLACK_TABLES+i);
             for (j=0;j<0x2f;j++) {

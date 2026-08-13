@@ -31,6 +31,10 @@
 // continuation: the natural last-index guard `YLine_Size + scroll_y - 1 >= 0`
 // reproduces the best 157-byte negative-block basin; direct `i >= neg` is
 // readable but emits a 166-byte basin. Retain the binary-shaped member guard.
+// shardC5-53B370: natural reverse-copy for-loop source grew 23 bytes and moved
+// the checker to structural reconstruction; restored the do/while body.
+// shardC5-53B370: explicit `YLine_Size - 1 >= neg` reproduces the prior
+// 166-byte direct-bound basin; restored the 157-byte member-bound source.
 
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00

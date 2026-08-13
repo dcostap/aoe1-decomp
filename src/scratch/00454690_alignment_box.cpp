@@ -24,6 +24,8 @@
 // - Tried typed parenthesized repeated-add radii across all corner expressions;
 //   strict diff improved to 282 bytes but shape fell to 45.37% and the source
 //   was 334 bytes, so the clean reconstruction was restored.
+// - Binary x87 reuse supports mutating the x/y offsets between corner pairs;
+//   the next probe tests that natural sequential source shape.
 
 class RGE_Map {
 public:
@@ -68,19 +70,14 @@ unsigned char RGE_Master_Static_Object::alignment_box(
 
     x1 = (short)((x_offset + y_offset) * tile_half_width);
     y1 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
-    x2 = (short)((x_offset + y_offset - 2.0f * this->radius_x) *
-                 tile_half_width);
-    y2 = (short)((y_offset + 1.0 - x_offset +
-                  2.0f * this->radius_x) * tile_half_height);
-    x3 = (short)((x_offset + y_offset - 2.0f * this->radius_x -
-                  2.0f * this->radius_y) * tile_half_width);
-    y3 = (short)((y_offset + 1.0 - x_offset +
-                  2.0f * this->radius_x - 2.0f * this->radius_y) *
-                 tile_half_height);
-    x4 = (short)((x_offset + y_offset - 2.0f * this->radius_y) *
-                 tile_half_width);
-    y4 = (short)((y_offset + 1.0 - x_offset -
-                  2.0f * this->radius_y) *
-                 tile_half_height);
+    x_offset -= 2.0f * this->radius_x;
+    x2 = (short)((x_offset + y_offset) * tile_half_width);
+    y2 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
+    y_offset -= 2.0f * this->radius_y;
+    x3 = (short)((x_offset + y_offset) * tile_half_width);
+    y3 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
+    x_offset += 2.0f * this->radius_x;
+    x4 = (short)((x_offset + y_offset) * tile_half_width);
+    y4 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
     return 1;
 }

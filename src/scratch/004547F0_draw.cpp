@@ -32,6 +32,8 @@
 // - Keep the exact-donor pointer/int get_point and short-coordinate AddGDINode
 //   surfaces. The remaining caller drift is an unresolved declaration-context
 //   issue, not permission to use incompatible local prototypes.
+// - An entry self alias modeled the original this home at [esp+0C], but VC5
+//   emitted the same 331-byte code; rolled back as neutral evidence.
 
 class TDrawArea;
 class RGE_Color_Table;

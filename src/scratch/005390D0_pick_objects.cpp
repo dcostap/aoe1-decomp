@@ -18,6 +18,10 @@
 // register basin; restored direct canonical member expressions.
 // probe 10: a named normalized hot_y lifetime worsened strict bytes; restored.
 // probe 12: register total_picked was a codegen duplicate and was not retained.
+// probe 14: paired entry hunk proved the original first test is x < 0; replacing
+// the radius guard improved shape but worsened strict bytes and did not recover
+// the pre-save x load. Restored the clean canonical source; first-hunk lead is
+// exhausted without a natural typed declaration-order explanation.
 // best retained check: 1048B rebuilt vs 1081B, 956 strict diff bytes, 65.98%
 // shape similarity, exact frame/call set; remaining drift is broad prologue,
 // register/liveness, and block-layout scheduling, not a call or layout blocker.

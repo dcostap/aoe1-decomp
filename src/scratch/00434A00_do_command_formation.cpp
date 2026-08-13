@@ -19,6 +19,9 @@
 // - Reused one typed unit cursor across both scans to mirror the original
 //   EDI cursor and saved-base lifetime; codegen was unchanged, so the clean
 //   separate-cursor source remains the best reconstruction.
+// - Reordered the first switch's natural 2/3 and 1/4/5 case groups to follow
+//   the original jump-table block placement; strict bytes stayed at 709 and
+//   the edit/resync diagnostic improved only, so restored the clean order.
 
 #include <math.h>
 #pragma intrinsic(sqrt)

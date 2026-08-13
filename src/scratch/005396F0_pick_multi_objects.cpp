@@ -13,7 +13,9 @@
 // matching-worker probes: one short-circuit bounds guard plus the in-loop z<min return improved CFG/shape but not bytes; the typed RGE_Pick_Obj_Info global was codegen-neutral.
 // matching-worker probe: natural RGE_Pick_Obj_Info output ownership recovered EBX=this and exact size, but retained a broad register/global-address mismatch; entry-plus-confidence cursor and field-cursor variants were worse or duplicate.
 // matching-worker probes: reusing max_level as the node object-id home (with local or direct object expressions) caused a larger frame and broad regression; rolled back because the stack write can be compiler local-home reuse rather than source parameter mutation.
-// final bounded best: natural typed record output, combined initial guard, and z check inside the descending loop; 566 rebuilt bytes, 438 strict diff, 74.29% shape, 37.79% exact-block coverage. Remaining drift is broad VC5 register/block topology and global-address relocation, not safe localized drift.
+// matching-worker probe: restored the typed view.cpp donor context with an RGE_View : TPanel surface; VC5 emitted a codegen duplicate, so the prior clean source remains.
+// matching-worker probe: moved the proven z>=min_level test outside the descending loop, matching the original pre-loop compare and shared count-return path; emitted code was an exact duplicate with no metric movement.
+// final bounded best: natural typed record output, combined initial guard, and outer z>=min_level loop guard; 566 rebuilt bytes, 438 strict diff, 74.29% shape, 37.79% exact-block coverage. Remaining drift is broad VC5 register/block topology and global-address relocation, not safe localized drift.
 
 class RGE_Pick_Obj_Info {
 public:
@@ -87,61 +89,61 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
     y2 -= this->min_y;
 
     z = max_level;
-    do {
-        if (z < min_level)
-            return num_picked;
-        DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[z];
-        if (node != 0) {
-            RGE_Pick_Obj_Info* out = &Picked_Objects[num_picked];
-            do {
-                int ok = 0;
-                if (node->Node_Type == 0) {
-                    int object_id = node->Object_ID;
-                    if (object_id >= 0) {
-                        if (x1 <= (int)node->x2 && x2 >= (int)node->x1 &&
-                            y1 <= (int)node->y2 && y2 >= (int)node->y1) {
-                            RGE_Static_Object* obj = this->world->objectsValue[object_id];
-                            if (player_id == -1 || obj->owner->id == player_id) {
-                                if (obj->object_state == 2 && obj->master_obj->select_level >= select_level) {
-                                    ok = 1;
+    if (z >= min_level) {
+        do {
+            DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[z];
+            if (node != 0) {
+                RGE_Pick_Obj_Info* out = &Picked_Objects[num_picked];
+                do {
+                    int ok = 0;
+                    if (node->Node_Type == 0) {
+                        int object_id = node->Object_ID;
+                        if (object_id >= 0) {
+                            if (x1 <= (int)node->x2 && x2 >= (int)node->x1 &&
+                                y1 <= (int)node->y2 && y2 >= (int)node->y1) {
+                                RGE_Static_Object* obj = this->world->objectsValue[object_id];
+                                if (player_id == -1 || obj->owner->id == player_id) {
+                                    if (obj->object_state == 2 && obj->master_obj->select_level >= select_level) {
+                                        ok = 1;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                if (ok != 0) {
-                    int add = 1;
-                    if (out > Picked_Objects) {
-                        int i = 0;
-                        RGE_Pick_Obj_Info* p = Picked_Objects;
-                        while (out > Picked_Objects) {
-                            if (p->object_id == node->Object_ID) {
-                                add = 0;
-                                if ((short)ok < Picked_Objects[i].confidence) {
-                                    Picked_Objects[i].confidence = (short)ok;
+                    if (ok != 0) {
+                        int add = 1;
+                        if (out > Picked_Objects) {
+                            int i = 0;
+                            RGE_Pick_Obj_Info* p = Picked_Objects;
+                            while (out > Picked_Objects) {
+                                if (p->object_id == node->Object_ID) {
+                                    add = 0;
+                                    if ((short)ok < Picked_Objects[i].confidence) {
+                                        Picked_Objects[i].confidence = (short)ok;
+                                    }
+                                    break;
                                 }
-                                break;
+                                i++;
+                                ++p;
+                                if (i >= num_picked) break;
                             }
-                            i++;
-                            ++p;
-                            if (i >= num_picked) break;
                         }
+                        if (add) {
+                            out->object_id = node->Object_ID;
+                            out->confidence = (short)ok;
+                            out->draw_level = (short)ok;
+                            out->draw_x = node->Draw_X;
+                            out->draw_y = node->Draw_Y;
+                            num_picked++;
+                            ++out;
+                        }
+                        if (out >= Picked_Objects + 64) return 0x40;
                     }
-                    if (add) {
-                        out->object_id = node->Object_ID;
-                        out->confidence = (short)ok;
-                        out->draw_level = (short)ok;
-                        out->draw_x = node->Draw_X;
-                        out->draw_y = node->Draw_Y;
-                        num_picked++;
-                        ++out;
-                    }
-                    if (out >= Picked_Objects + 64) return 0x40;
-                }
-                node = node->NextOnLevel;
-            } while (node != 0);
-        }
-        z--;
-    } while (z >= min_level);
+                    node = node->NextOnLevel;
+                } while (node != 0);
+            }
+            z--;
+        } while (z >= min_level);
+    }
     return num_picked;
 }

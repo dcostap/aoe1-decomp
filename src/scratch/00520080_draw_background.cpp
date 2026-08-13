@@ -26,6 +26,12 @@
 // 17: fresh pass declared typed int draw_y before draw_x in shape_draw, following
 //     the exact Pnl_txt donor's source order; emitted code was unchanged.
 // Left in scratch: remaining drift is localized mostly to the tiled shape_draw loop scheduling/argument setup, causing 4-byte shift in the first branch and branch-target displacement drift; fill/bevel tails look behaviorally aligned.
+// 18: natural typed lead from the exact Pnl_txt timeline donor: expose the
+// period TShape data surface and SDK context while retaining the target ABI.
+//    This moved the tiled loop to exact shape and reduced strict drift to 15
+//    register-encoding bytes; the remaining hunk is count-setup register color.
+
+#include <windows.h>
 
 class TDrawArea {
 public:
@@ -36,6 +42,15 @@ public:
 
 class TShape {
 public:
+    unsigned char* shape_data;
+    int load_type;
+    int load_size;
+    void* shape_header;
+    void* head;
+    void* offsets;
+    void* fshape;
+    void* shape_info;
+
     unsigned char shape_draw(TDrawArea* area, long x, long y, long a,
                              unsigned char b, unsigned char* c);
 };

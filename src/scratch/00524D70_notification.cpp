@@ -19,6 +19,11 @@
 //   the original's third playerID call.  Final unresolved drift is structural:
 //   the jump-table/table-base encoding and several compiler tail merges leave
 //   3298 differing bytes (85.29% shape; 89/92 calls; frame and size exact).
+// - The call map shows one shared get_string2/show_message block for 0x7D/0x68
+//   and a separate block for 0x6B/1/2/3.  Unsharing only the first pair was
+//   natural and improved the diff to 2796, but over-emitted one call of each.
+//   Separating the second group as well over-emitted five vslot calls; both
+//   probes were rolled back to the clean shared-tail reconstruction.
 
 #include <stdio.h>
 

@@ -35,6 +35,8 @@
 // sa7b8c14ff-cliff final: retain the 399-byte typed source. The remaining
 // 33-byte drift is limited to facet/result stack-home coloring and the cold
 // return epilogue. No evidence-backed natural lead remains in this pass.
+// shardC5-510110: explicit new_cliff=0 in the negative-id arm followed the
+// line-570 cold store, but widened the drift to 205B; restored the clean form.
 
 struct TRIBE_Cliff_Info {
     long info[4];

@@ -31,6 +31,8 @@
 //   executable compares that same timestamp when it decides to reuse a header.
 // Main-agent audit confirmed the binary-proven typed filename/version/find-data
 // work window and retained natural enumeration, ownership transfer, and cleanup.
+// - first-hunk layout probe: moving the typed reload-work aggregate after the
+//   scalar declarations emitted an exact duplicate; restored the clean order.
 
 #include <stdio.h>
 #include <stdlib.h>

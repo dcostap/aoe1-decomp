@@ -29,6 +29,7 @@
 //   and block layout; it was rejected as a compiler-steering helper
 // - first-short locals with the accessor were unchanged; restored direct fields
 // - typed command reference ownership emitted a codegen duplicate; restored the pointer form
+// - naming the first short argument in cases 4, 5, and 0 was a codegen duplicate; restored clean source
 // FLAGS: none
 // NOTE: Natural source keeps the proven RGE_Effect layout, full polymorphic ABI,
 // switch order, signed guards, and all call targets. Remaining drift is local

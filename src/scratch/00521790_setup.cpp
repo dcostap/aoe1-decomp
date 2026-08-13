@@ -94,6 +94,12 @@
 //     front-end block formation / remaining import-register scheduling, not
 //     another VPAD or raw-offset experiment.
 
+// Worker shardC5-521790 (2026-08-13):
+//   control-flow: changed the three natural integer-result zero tests to
+//     truthiness because the original repeats test eax,eax at startup exits.
+//     VC5 emitted an exact codegen duplicate (diff 1635, 80% ordered calls).
+//     Restored the canonical explicit comparisons; no first-hunk movement.
+
 #include <string.h>
 
 typedef void* HWND;
