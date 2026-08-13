@@ -19,6 +19,17 @@
 //   back.  All typed variants kept the complete 32-call multiset/site order.
 // - Left in scratch: canonical typed baseline, unresolved broad VC5 block
 //   layout and duplicated-epilogue topology; no accepted drift.
+// - Direct indexed/typed gatherer fields recovered the original folded
+//   this-relative addressing and raised shape to 66.39%; a named gatherer
+//   pointer had better register coloring but wrong field displacements.
+// - Initializing taskResult with triedTasking[1..3] removed the unsupported
+//   fifth flag slot and recovered most structural islands.  A shared null
+//   tail improved this to 1030B/916 diff, with all 32 ordered calls aligned.
+// - A shared success-tail variant was diagnostic only (937B/936 diff) and was
+//   rolled back.  Remaining blocker: 0x1C versus 0x18 frame and stack-home/
+//   register-color differences; checker remains in STRUCTURAL RECONSTRUCTION.
+// - Replaced the raw debug-file address with the named source string. This does
+//   not change code generation.
 
 #include "..\..\include\game_globals.h"
 
@@ -26,6 +37,9 @@ typedef unsigned char uchar;
 typedef unsigned long ulong;
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+
+static const char s_taitacmd_cpp[] =
+    "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 
 struct RGE_Static_Object;
 struct UnitAIModule;
@@ -110,44 +124,41 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 {
     int i;
     int task;
-    int taskResult;
     int remaining;
     int* tried;
     int* desired;
     UnitData* gatherer;
     RGE_Static_Object* gathererObj;
-    int triedTasking[5];
+    UnitAIModule* ai;
+    unsigned long now;
+    int triedTasking[4];
+    int taskResult;
 
     i = 0;
+    taskResult = 0;
     triedTasking[1] = 0;
     triedTasking[2] = 0;
     triedTasking[3] = 0;
-    triedTasking[4] = 0;
-    if (this->numberGatherersValue > 0) {
-        gatherer = this->gatherers;
-        do {
-            if (gatherer->id == id)
-                break;
-            ++i;
-            ++gatherer;
-        } while (i < this->numberGatherersValue);
+    gatherer = this->gatherers;
+    for (i = 0; i < this->numberGatherersValue; ++i, ++gatherer) {
+        if (gatherer->id == id)
+            break;
     }
     if (i >= this->numberGatherersValue)
-        return 0;
+        goto fail;
 
-    unsigned long now = debug_timeGetTime((const char*)0x5880C0, 0x1F5C);
-    gatherer = &this->gatherers[i];
-    if (now - gatherer->lastTaskTime < 5000)
+    now = debug_timeGetTime(s_taitacmd_cpp, 0x1F5C);
+    if (now - this->gatherers[i].lastTaskTime < 5000)
         return 1;
-    gatherer->lastTaskTime = now;
+    this->gatherers[i].lastTaskTime = now;
 
     gathererObj = this->md->player->world->object(id);
     if (gathererObj == 0)
-        return 0;
+        goto fail;
     if (gathererObj->unitAI() == 0)
-        return 0;
+        goto fail;
 
-    UnitAIModule* ai = gathererObj->unitAI();
+    ai = gathererObj->unitAI();
     if (ai->currentAction() == 0x258)
         return 1;
     ai = gathererObj->unitAI();
@@ -177,18 +188,18 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     if (ai->currentOrder() == 0x2BE)
         return 1;
 
-    if (gatherer->data3 < gatherer->data2) {
+    if (this->gatherers[i].data3 < this->gatherers[i].data2) {
         ai = gathererObj->unitAI();
         if (ai->currentAction() != -1)
             return 1;
-        task = gatherer->data1;
+        task = this->gatherers[i].data1;
         triedTasking[task + 1] = 1;
-        taskResult = this->taskGatherer(gatherer->id, task, 0, param, 0);
+        taskResult = this->taskGatherer(this->gatherers[i].id, task, 0, param, 0);
         if (taskResult == 1)
             return 1;
-        gatherer->data1 = -1;
-        gatherer->data2 = -1;
-        gatherer->data3 = -1;
+        this->gatherers[i].data1 = -1;
+        this->gatherers[i].data2 = -1;
+        this->gatherers[i].data3 = -1;
     }
 
     tried = triedTasking + 1;
@@ -197,7 +208,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     task = 0;
     do {
         if (*tried != 1 && this->actualGathererDistribution[task] < *desired) {
-            if (gatherer->data1 == task) {
+            if (this->gatherers[i].data1 == task) {
                 ai = gathererObj->unitAI();
                 if (ai->currentAction() == 0x265)
                     return 1;
@@ -206,7 +217,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
                     return 1;
             }
             *tried = 1;
-            taskResult = this->taskGatherer(gatherer->id, task, 0, param, 0);
+            taskResult = this->taskGatherer(this->gatherers[i].id, task, 0, param, 0);
             if (taskResult == 1)
                 return 1;
         }
@@ -216,7 +227,6 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         ++i;
     } while (i < 4);
 
-    taskResult = 0;
     task = 0;
     if (this->inAge(1) != 0 && this->age2Enabled == 1) {
         triedTasking[1] = 1;
@@ -225,7 +235,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         triedTasking[1] = 1;
     } else if (this->inAge(3) != 0 && this->age4Enabled == 1) {
         if (triedTasking[1] == 0) {
-            taskResult = this->taskGatherer(gatherer->id, 0, 1, param, 0);
+            taskResult = this->taskGatherer(this->gatherers[i].id, 0, 1, param, 0);
             triedTasking[1] = 1;
         }
         if (taskResult != 0)
@@ -236,8 +246,12 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         triedTasking[1] = 1;
     }
 
-    taskResult = this->taskGatherer(gatherer->id, task, 1, param, 0);
+    taskResult = this->taskGatherer(this->gatherers[i].id, task, 1, param, 0);
     if (taskResult == 0)
-        this->taskGatherer(gatherer->id, -1, 1, param, triedTasking + 1);
+        this->taskGatherer(this->gatherers[i].id, -1, 1, param, triedTasking + 1);
+
     return 1;
+
+fail:
+    return 0;
 }

@@ -15,6 +15,9 @@
 // 12: Clean-source reset removed the diagnostic pad; keep the typed key and scroll model as the baseline before import or guard probes.
 // 13: Binary-backed import correction: Win32 foreground and keyboard-state calls use the period DLL-import surface, matching the two original indirect call sites.
 // 14: Import correction aligned all 13 ordered calls and removed the target-count gap; remaining drift is frame/local topology and early block layout, not key-call identity.
+// 15: A positive active-view block with the sibling scroll routine's short-circuit guard moved the first structural mismatch to the keyboard local and reduced the positional diff to 447 bytes.
+// 16: The natural 256-byte direct keyboard buffer keeps source ownership clear but leaves the VC5 frame four bytes short; over-allocation and pointer-offset variants were diagnostic only and rolled back.
+// 17: Explicit elapsed-time locals were optimized to the same x87 form; the remaining structural lead is VC5 local-home allocation, not call or behavior topology.
 // GIVEUP: left in scratch for future source-shape/stack-local topology work.
 
 typedef unsigned char uchar;
@@ -90,34 +93,23 @@ public:
 
 int RGE_Main_View_0053DEB0::handle_keys()
 {
-    uchar keys[260];
+    uchar keys[256];
     short horz_scroll;
     short vert_scroll;
     float scroll_dist2;
     int changed;
     ProgInfo_0053DEB0* info;
 
-    if (rge_base_game->get_paused() != 0)
-        goto fail;
+    if (rge_base_game->get_paused() == 0 &&
+        (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
+         rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) &&
+        GetForegroundWindow() == this->host->wnd && this->active != 0) {
+        changed = 0;
+        GetKeyboardState(keys);
+        horz_scroll = 0;
+        vert_scroll = 0;
 
-    {
-        int mode = rge_base_game->prog_mode;
-        if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
-            goto fail;
-    }
-
-    if (GetForegroundWindow() != this->host->wnd)
-        goto fail;
-
-    changed = 0;
-    if (this->active == 0)
-        goto fail;
-
-    GetKeyboardState(keys + 4);
-    horz_scroll = 0;
-    vert_scroll = 0;
-
-    info = (ProgInfo_0053DEB0*)rge_base_game->prog_info;
+        info = (ProgInfo_0053DEB0*)rge_base_game->prog_info;
 
     if (rge_base_game->game_mode == 0x12 && this->player != 0 && this->player->selected_obj != 0) {
         Obj_0053DEB0* obj = (Obj_0053DEB0*)this->player->selected_obj;
@@ -193,6 +185,7 @@ int RGE_Main_View_0053DEB0::handle_keys()
             this->map_view->repaint(1);
     }
     return changed;
+    }
 
 fail:
     this->key_scrolling = 0;

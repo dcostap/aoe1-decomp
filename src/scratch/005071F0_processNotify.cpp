@@ -15,6 +15,12 @@
 // 12: Rebuilt the canonical taiuaimd class surfaces: switched to the original 0x200/0x20F dispatch order, typed owner/master/world access, UnitAIModule::order/intelligentEvasiveMoveTo, weaponRange, and the inline ManagedArray indexer.
 // 13: Common-fallback goto/positive-guard rewrites moved the fallback block early and degraded the otherwise aligned call/body basin; reverted.
 // 14: Scoping jitter locals, splitting modulo into a temporary, adding stdio context, and reusing the jitter local for the range delta did not improve emitted code; reverted.
+// 15: Explicit goto-to-base paths in the switch were codegen-identical; the compiler still relocated the fallback before the 0x200 body.
+// 16: A positive compound 0x20F guard inside the switch was codegen-identical; Ghidra's guard shape did not change the VC5 basin.
+// 17: Reusing param_1's dead stack home for the second jitter float worsened the diff and did not reduce the 0x0C frame; reverted.
+// 18: Reusing evasiveMoveDistance for the 0x200 range delta kept size/diff but worsened shape and exact-block coverage; reverted.
+// 19: Moving both guards into the decompiler's if/else-if form matched the earlier broad 1055-byte basin; reverted.
+// 20: Modeling one explicit 0x200 case with a default 0x20F guard changed dispatch to cmp and worsened the diff to 944; reverted.
 // Best emitted checkpoint: typed switch candidate, 1084 bytes, 77.92% shape, 19/19 calls, 855 strict diff bytes; remaining frame is 0xC vs original 0x8 and fallback is a relocated cold block.
 // GIVEUP: left in scratch. Main blockers are the remaining true TU/local declaration shape and late FPU/list-growth topology; preserve this typed candidate for the next worker.
 

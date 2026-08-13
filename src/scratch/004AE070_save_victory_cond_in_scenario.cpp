@@ -9,6 +9,11 @@
 // 7: remaining mismatch is broad switch-case register and block-layout drift despite behavior-like call sequence and exact size; not accepted_drift-safe.
 // 8: replaced the decompiler temporary with direct int locals for amount, kind, player, and object type; size and strict diff stayed unchanged, with only neutral block-shape movement.
 // 9: changed switch arms to natural breaks with one final return and guarded the selected-object arms; VC5 emitted duplicate code, so the missing case-6/case-9 call sites remain.
+// 10: explicit early returns and direct null returns in selected-object arms were codegen duplicates; rolled back.
+// 11: long dropdown/object locals and case-local aliases did not change the clean emission; a case-9 alias changed layout but left two merged calls, so rolled back.
+// 12: an eight-variant direct/alias lab over cases 3, 5, and 9 found no exact call set; alias forms were less plausible and were discarded.
+// 13: direct SetSPAmount in case 3 moved the diff to 764 bytes but broke the original shared amount-tail shape; restored the clean goto source.
+// 14: paused with exact size/frame and canonical field ownership; structural blocker is VC5 merging two equivalent switch-arm call tails.
 
 extern "C" int __cdecl atoi(const char*);
 

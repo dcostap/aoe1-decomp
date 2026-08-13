@@ -26,8 +26,16 @@
 // - Removed the first text length initializer because text_len is read only
 //   after the non-null text branch.  This worsened the diff to 602 bytes and
 //   reduced shape similarity; restored the initialized local.
-// - Left in scratch: original frame 0x20 versus rebuilt 0x1C and early
-//   register/local topology drift.
+// - A local aggregate containing the saved receiver and RECT recovered the
+//   original 0x20 frame, 99.6% shape similarity, and 98.4% exact-block
+//   coverage.  The receiver-plus-RECT lifetime is binary-supported, not
+//   padding.  The remaining drift is the late receiver reload and call
+//   relocation masking; no exact source lead remains in this pass.
+// - Direct receiver aliases, typed receiver storage, and split receiver/RECT
+//   locals were duplicates or regressed the structural match.  Kept the
+//   aggregate source as the best period-plausible reconstruction.
+// - Corrected the shadow TextOut coordinates to x - 1 and y + 1 from the
+//   original instruction order.
 
 #include <windows.h>
 
@@ -63,24 +71,32 @@ public:
                    unsigned long color1, unsigned long color2);
 };
 
+struct DrawLineRect {
+    TTextPanel* receiver;
+    RECT rect;
+};
+
 void TTextPanel::draw_line(void* dc, short line_index, short line,
                            unsigned long color1, unsigned long color2)
 {
     char* text;
-    char* text2 = 0;
-    short text_len = 0;
-    short text2_len = 0;
-    RECT line_rect;
+    char* text2;
+    short text_len;
+    short text2_len;
+    DrawLineRect line_rect;
+    TTextPanel* panel;
 
-    line_rect.left = (long)this;
+    line_rect.receiver = this;
+    text_len = 0;
+    text2_len = 0;
     text = this->get_text((long)line);
     text2 = this->get_text2((long)line);
 
-    if (text == 0) {
-        if (text2 == 0) {
-            return;
-        }
-    } else {
+    if (text == 0 && text2 == 0) {
+        return;
+    }
+
+    if (text != 0) {
         text_len = (short)strlen(text);
     }
 
@@ -88,15 +104,14 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
         text2_len = (short)strlen(text2);
     }
 
-    this->calc_line_pos(dc, line_index, line,
-                        (RECT*)&line_rect.top, 0);
+    this->calc_line_pos(dc, line_index, line, &line_rect.rect, 0);
 
-    long text_x = line_rect.top;
+    long text_x = line_rect.rect.left;
     if (this->horz_align != 0 && this->horz_align != 6) {
         text_x += 5;
     }
     long second_text_x = this->second_column_pos + text_x;
-    long text_y = line_rect.right;
+    long text_y = line_rect.rect.top;
 
     if (this->clip_rgn2 != 0) {
         SelectClipRgn(dc, this->clip_rgn2);
@@ -112,7 +127,7 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
     case 1:
         SetTextColor(dc, color1);
         if (text != 0) {
-            TextOutA(dc, text_x + 1, text_y - 1,
+            TextOutA(dc, text_x - 1, text_y + 1,
                      text, (int)text_len);
         }
         SetTextColor(dc, color2);
@@ -123,7 +138,7 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
     case 2:
         SetTextColor(dc, color2);
         if (text != 0) {
-            TextOutA(dc, text_x + 1, text_y - 1,
+            TextOutA(dc, text_x - 1, text_y + 1,
                      text, (int)text_len);
         }
         SetTextColor(dc, color1);
@@ -139,7 +154,7 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
         return;
     }
 
-    TTextPanel* panel = (TTextPanel*)line_rect.left;
+    panel = line_rect.receiver;
     if (panel->clip_rgn2 != 0) {
         SelectClipRgn(dc, panel->clip_rgn);
     }
@@ -152,7 +167,7 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
         return;
     case 1:
         SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x + 1, text_y - 1,
+        TextOutA(dc, second_text_x - 1, text_y + 1,
                  text2, (int)text2_len);
         SetTextColor(dc, color2);
         TextOutA(dc, second_text_x, text_y,
@@ -160,7 +175,7 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
         return;
     case 2:
         SetTextColor(dc, color2);
-        TextOutA(dc, second_text_x + 1, text_y - 1,
+        TextOutA(dc, second_text_x - 1, text_y + 1,
                  text2, (int)text2_len);
         SetTextColor(dc, color1);
         TextOutA(dc, second_text_x, text_y,

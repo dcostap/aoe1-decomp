@@ -9,6 +9,11 @@
 // - Typed DDSURFACEDESC/DDCAPS/palette ownership and the natural palette loops
 //   match all calls and CFG; the remaining drift is the entry scheduling and a
 //   small receiver/vtable register basin, so this stays in scratch.
+// - Early store-order, register-qualified parameter, top-level receiver, and
+//   layout probes did not move the first block; the mode-field layout is now
+//   named from the generated TDrawSystem dump rather than an anonymous gap.
+// - A focused six-way first-store variant lab preserved size/frame/call-set but
+//   found no exact prologue. The best clean source remains the typed form.
 
 #include <string.h>
 #pragma function(memset)
@@ -241,7 +246,18 @@ public:
     long ChangedMode;                   // +0x3C
     long IsBanked;                      // +0x40
     long CanSrcBlt;                     // +0x44
-    char gap_48[0x30];                  // +0x48 .. +0x77
+    long Restored;                      // +0x48
+    long ModeAvail640;                  // +0x4C
+    long ModeAvail800;                  // +0x50
+    long ModeAvail1024;                 // +0x54
+    long ModeAvail1280;                 // +0x58
+    long ModeAvail320_200;              // +0x5C
+    long ModeAvail320_240;              // +0x60
+    long ModeAvail320_200_16;           // +0x64
+    long ModeAvail320_240_16;           // +0x68
+    long ModeAvail640_16;               // +0x6C
+    long ModeAvail800_16;               // +0x70
+    long ModeAvail1024_16;              // +0x74
     tagPALETTEENTRY palette[256];       // +0x78 .. +0x477
     unsigned char DrawType;             // +0x478
     unsigned char ScreenMode;           // +0x479
@@ -252,7 +268,7 @@ public:
              long, long, unsigned long);
 };
 
-int TDrawSystem::Init(void* inst, void* wnd, void* pal,
+int TDrawSystem::Init(register void* inst, void* wnd, void* pal,
                       unsigned char draw_type, unsigned char screen_mode,
                       long width, long height, unsigned long flags)
 {

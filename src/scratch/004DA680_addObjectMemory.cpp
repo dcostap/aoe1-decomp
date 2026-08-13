@@ -7,6 +7,11 @@
 // try 5: tested /Od only for diagnosis: exact-size comparable but broad debug-basin mismatch (93.6170% positional, first mismatch prologue), rolled back.
 // left in scratch: behavior skeleton covers duplicate update, empty-slot reuse, growth/fill, history side effect, and return paths, but not accepted_drift quality. Need exact original source/layout/codegen basin for ObjectMemory copy/store (likely real struct declarations and source-level field order) before further matching.
 // try 6: replaced the decompiler pointer-holder surface with typed player/world ownership and restored the proven map-field layout; direct member access is the bounded structural probe. Rebuilt size rose to 1221, shape rose to 65.66%, and the positional diff improved by 6 bytes; structural drift remains.
+// try 7: moved duplicate update to a tail label; VC5 kept the same block order and codegen.
+// try 8: reused the empty-count and scan-index locals through growth; copy/fill islands aligned and the candidate reached 1339 bytes with 75.95% shape.
+// try 9: used signed int player-id comparison and an explicit bounded while scan; the candidate reached exact size, 98.20% shape, and 431-byte positional drift.
+// try 10: restored the outer guard and bottom-tested scan; this regressed to 1337 bytes, so the best while-scan source is retained.
+// left in scratch: all six calls and 19 conditional edges align. Remaining drift starts in prologue EBP/EDI coloring and one duplicate-store block placement; target has no stack frame.
 
 typedef unsigned char uchar;
 
@@ -97,26 +102,24 @@ public:
 
 ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, short group, uchar x, uchar y, uchar z, uchar owner, short hp, int attempts, uchar kills, float dmg, float rof, float range, RGE_Static_Object* obj)
 {
+    int maxMemory = this->maxImportantObjectMemory;
     int empty = -1;
     int i = 0;
-    if (this->maxImportantObjectMemory > 0) {
-        ObjectMemory* p = this->importantObjectMemory;
-        do {
-            if (p->id == id) {
-                STORE(this->importantObjectMemory, i);
-                return this->importantObjectMemory + i;
-            }
-            if (p->id == -1 && empty == -1) empty = i;
-            ++i;
-            ++p;
-        } while (i < this->maxImportantObjectMemory);
+    ObjectMemory* p = this->importantObjectMemory;
+    while (i < maxMemory) {
+        if (p->id == id) {
+            goto duplicate;
+        }
+        if (p->id == -1 && empty == -1) empty = i;
+        ++i;
+        ++p;
     }
 
     if (obj) {
         unsigned int playerNum = this->md->player->world->playerNumber;
         if (this->md->tacticalAI.strategicNumber(0xc9) == 1) {
-            short myNum = this->md->player->id;
-            if (playerNum == (unsigned short)myNum || playerNum == 0xff) {
+            int myNum = this->md->player->id;
+            if (playerNum == (unsigned int)myNum || playerNum == 0xff) {
                 RGE_Player* op = obj->owner;
                 if (op->id > 0 && op->computerPlayer() == 0 && rge_base_game->singlePlayerGame() == 1) {
                     int t = this->convertUnitToIntType(obj);
@@ -129,39 +132,45 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, shor
     if (empty == -1) {
         ObjectMemory* mem = (ObjectMemory*)operator new(this->maxImportantObjectMemory * 0x48);
         if (!mem) return 0;
-        int oldCount = this->maxImportantObjectMemory;
-        int j = 0;
-        if (oldCount > 0) {
+        empty = 0;
+        if (this->maxImportantObjectMemory > 0) {
+            i = 0;
             do {
-                COPY_ONE(mem, this->importantObjectMemory, j);
-                ++j;
-            } while (j < oldCount);
+                COPY_ONE(mem, this->importantObjectMemory, i);
+                ++empty;
+                ++i;
+            } while (empty < this->maxImportantObjectMemory);
         }
-        if (j < oldCount * 2) {
+        if (empty < this->maxImportantObjectMemory * 2) {
             do {
-                mem[j].id = -1;
-                mem[j].type = -1;
-                mem[j].group = -1;
-                mem[j].x = 0;
-                mem[j].y = 0;
-                mem[j].z = 0;
-                mem[j].owner = 0;
-                mem[j].hitPoints = 0;
-                mem[j].attackAttempts = 0;
-                mem[j].kills = 0;
-                mem[j].damageCapability = 0.0f;
-                mem[j].rateOfFire = 0.0f;
-                mem[j].range = 0.0f;
-                ++j;
-            } while (j < oldCount * 2);
+                mem[empty].id = -1;
+                mem[empty].type = -1;
+                mem[empty].group = -1;
+                mem[empty].x = 0;
+                mem[empty].y = 0;
+                mem[empty].z = 0;
+                mem[empty].owner = 0;
+                mem[empty].hitPoints = 0;
+                mem[empty].attackAttempts = 0;
+                mem[empty].kills = 0;
+                mem[empty].damageCapability = 0.0f;
+                mem[empty].rateOfFire = 0.0f;
+                mem[empty].range = 0.0f;
+                ++empty;
+            } while (empty < this->maxImportantObjectMemory * 2);
         }
         operator delete(this->importantObjectMemory);
         this->importantObjectMemory = mem;
-        STORE(this->importantObjectMemory, oldCount);
+        STORE(this->importantObjectMemory, this->maxImportantObjectMemory);
+        int oldCount = this->maxImportantObjectMemory;
         this->maxImportantObjectMemory = oldCount * 2;
         return this->importantObjectMemory + oldCount;
     }
 
     STORE(this->importantObjectMemory, empty);
     return this->importantObjectMemory + empty;
+
+duplicate:
+    STORE(this->importantObjectMemory, i);
+    return this->importantObjectMemory + i;
 }

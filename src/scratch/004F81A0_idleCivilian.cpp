@@ -22,6 +22,9 @@
 // ordered calls, and 95.17% exact-block coverage (645 positional diff bytes).
 // Remaining localized leads are the four contains inner-loop register permutations,
 // the first-pass near success jump/epilogue, and the distance-selection x87 tail.
+// resumed claim: direct first-pass return and pointer/reference aliases were codegen duplicates.
+// natural first-pass for-loop forms moved the success epilogue late, but added a guard or broadened drift;
+// named count and pointer variants were rolled back.  The clean do-while reconstruction remains best.
 // left in scratch after the 10-hypothesis budget: typed period-plausible source,
 // no inline asm; exact promotion remains unresolved.
 

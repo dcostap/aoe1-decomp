@@ -17,6 +17,18 @@
 // compiler's duplicated EH epilogues/shared-return topology and one late
 // register/order hunk around the PlayerStopTurn clear; behavior/calls/layout
 // are otherwise binary-backed. No accepted-drift claim.
+// probe 14 control-flow: direct returns instead of goto done were codegen
+// identical; restored the shared result form.
+// probe 15 control-flow: nested else-if and explicit fallback label were
+// codegen identical; restored the simpler sibling guards.
+// probe 16 liveness: a function-scope setup-screen pointer around new was
+// codegen identical; restored the direct new expression.
+// probe 17 ABI: adding a setup-screen virtual destructor worsened block shape;
+// restored the narrow constructor-only class surface.
+// probe 18 control-flow: explicit early null fallback was codegen identical;
+// restored the positive outer guard.
+// probe 19 control-flow: Ghidra's failure-first create-result source order
+// moved four call sites and was rejected; restored success-first order.
 
 #include <string.h>
 
