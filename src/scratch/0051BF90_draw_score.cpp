@@ -12,6 +12,10 @@
 //   stack-home topology. A direct-expression variant reached the original size
 //   but lost the 0x94 frame and block alignment; the readable named-coordinate
 //   source is retained here.
+// - restored the PDB-local declaration order by placing y_offset before the
+//   coordinate locals; VC5 emitted identical bytes, so no codegen lead remains.
+// - typed the victory-point return as long, matching the exact same-TU score
+//   donor and the decompiler's original long return; this tests score text ABI.
 // - left in scratch: calls/behavior are understood, but VC5 local coloring and
 //   the GDI/string scheduling remain broadly nonexact.
 
@@ -81,7 +85,7 @@ public:
 
 class RGE_Victory_Conditions {
 public:
-    int get_victory_points();
+    long get_victory_points();
 };
 
 class RGE_Player {
@@ -130,11 +134,11 @@ void TRIBE_Panel_Object::draw_score()
     short x_val;
     HGDIOBJ old_font;
     RGE_Player* temp_player;
+    int y_offset = 0;
     short x;
     short y;
     RECT rect;
     char str[100];
-    int y_offset = 0;
 
     if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         this->need_redraw = 0;

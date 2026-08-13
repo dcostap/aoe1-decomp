@@ -39,6 +39,8 @@
 // Probes 41-42: compute type4 edge bounds before y normalization. The best
 // diagnostic diff was 251, but it used a 0xC frame and lost block coverage.
 // Rolled back. Current source is the validated typed baseline.
+// Probe 43: natural type2/3 source-order fallthrough with a guarded do/while
+// produced a 400-byte body and lost the required 0x8 frame; rolled back.
 
 struct DClipInfo_Node {
     char gap_00[0x2C];

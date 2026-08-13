@@ -27,6 +27,10 @@
 // parity; remaining drift is localized nested-handler layout/FPU scheduling.
 // 17: An explicit cross-switch state-3 failure goto removed one required call
 // and broadly worsened layout; rolled back. Best clean source remains here.
+// 18: Named target master ownership before the notify call; VC5 emitted the same
+// code, so the local was rolled back.
+// 19: Named converted target hp values before notify; VC5 emitted the same code,
+// so the locals were rolled back.
 // PAUSED: exact matching exhausted for this assignment; left in scratch with
 // canonical typed source, 906-byte size, 32/32 calls, and 45 differing bytes.
 

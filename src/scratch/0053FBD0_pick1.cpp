@@ -36,6 +36,11 @@
 // 404 edit-diff bytes (41.14%), with 13/13 ordered calls aligned except the
 // self-call relocation classification. Frame remains 0xc versus original 0x8;
 // no inline asm or accepted-drift proposal.
+// try 16: shared selected-object and screen-pair ownership across both 0x29
+// branches reduced the frame to 0x8 but worsened the strict diff to 896 bytes;
+// rolled back to the clean branch-local reconstruction.
+// try 17: express successful output as the positive selected-object branch,
+// matching the oracle's `cmp selected,0; je return32` block shape.
 
 typedef unsigned char byte;
 
@@ -226,13 +231,15 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
                     }
                 }
             }
-            if (!best) return 0x32;
-            out->obj = best;
-            out->sx = bestx;
-            out->sy = besty;
-            out->x = best->x;
-            out->y = best->y;
-            return 0x34;
+            if (best) {
+                out->obj = best;
+                out->sx = bestx;
+                out->sy = besty;
+                out->x = best->x;
+                out->y = best->y;
+                return 0x34;
+            }
+            return 0x32;
         } else {
             int seenExclude = 0;
             RGE_Static_Object* chosen = 0;
@@ -260,13 +267,15 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
                 cx = self->render_rect.left + Picked_Objects[count].sx;
                 cy = self->render_rect.top + Picked_Objects[count].sy;
             }
-            if (!chosen) return 0x32;
-            out->obj = chosen;
-            out->sx = cx;
-            out->sy = cy;
-            out->x = chosen->x;
-            out->y = chosen->y;
-            return 0x34;
+            if (chosen) {
+                out->obj = chosen;
+                out->sx = cx;
+                out->sy = cy;
+                out->x = chosen->x;
+                out->y = chosen->y;
+                return 0x34;
+            }
+            return 0x32;
         }
     }
     if (cmd == 0x2a) {

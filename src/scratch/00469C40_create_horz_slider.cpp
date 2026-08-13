@@ -22,6 +22,12 @@
 // ABI from the exact Panel_ez sibling and pnl_sld donors before final validation.
 // - A registered result was a codegen duplicate; no stack home or CFG change
 //   appeared.  Restored the full typed ABI source.
+// probe 2026-08-13: explicit failure-edge result assignments plus a done label worsened the
+// body (251-byte diff); restored the combined guard.
+// probe 2026-08-13: a failure-only goto, a post-allocation result declaration, a long result,
+// a do-while join, and direct per-arm returns were all codegen duplicates (46-byte diff).
+// The remaining drift is a compiler-owned duplicated /GX cleanup tail; no source-shape lead
+// remains without changing the exact body prefix.
 
 struct tagRECT {
     long left;

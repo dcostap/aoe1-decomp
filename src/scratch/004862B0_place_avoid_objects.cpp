@@ -15,6 +15,9 @@
 //   player-index scheduling variants were codegen duplicates.
 // - Final natural source is 556 bytes with a 0x2C frame and 426 differing
 //   bytes. The closer volatile form remains diagnostic evidence only.
+// - Changed the placement scan from an initial-pop do/while to a typed
+//   while(pop_stack && count > 0). The original reloads count after each
+//   pop, so this is the natural source form for the observed loop topology.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -194,8 +197,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
         info.player_id & (info.player_id <= -1 ? 0 : -1)];
     count = info.number_of_groups;
 
-    if (this->pop_stack(&stack, &x, &tile_x, (float*)&y) && count > 0) {
-        do {
+    while (this->pop_stack(&stack, &x, &tile_x, (float*)&y) && count > 0) {
             if (info.terrain >= 0) {
                 if ((((RGE_Tile**)this->map_row_offset)[x][tile_x].terrain & 0x1f) !=
                     (unsigned int)info.terrain) {
@@ -230,9 +232,8 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
                 }
                 count--;
             }
-next:
-            ;
-        } while (this->pop_stack(&stack, &x, &tile_x, (float*)&y));
+    next:
+        ;
     }
     this->deinit_stack(&stack);
 }

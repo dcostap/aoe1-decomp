@@ -16,6 +16,11 @@
 // - Entry-local, assignment-in-condition, and object-alias variants emitted
 //   duplicate code. The remaining gap is the object spill slot at 004FB75E
 //   and 004FB843: target [esp+18], rebuilt [esp+10].
+// - Reused the scan index for the array-copy loop, matching the original EAX
+//   loop topology; emitted code was unchanged, so the spill-home gap remains.
+// - Declared objectID at its first natural use after the item state updates to
+//   test whether its shorter lifetime restored the original object spill home;
+//   emitted code was unchanged, so the probe was rolled back.
 // - Best source keeps named ownership and natural bounded array growth.
 //   It remains in scratch because exact bytes are not complete.
 
@@ -229,9 +234,8 @@ int TribeTacticalAIModule::taskResearch(BuildItem* item)
         int newSize = arr.numberValue + 1;
         int* newArray = new int[newSize];
         if (newArray != 0) {
-            int j;
-            for (j = 0; j < arr.maximumSize && j < newSize; j++) {
-                newArray[j] = arr.value[j];
+            for (i = 0; i < arr.maximumSize && i < newSize; i++) {
+                newArray[i] = arr.value[i];
             }
             delete[] arr.value;
             arr.value = newArray;

@@ -28,6 +28,13 @@
 //   This reduced the build to 908 bytes and 858 strict differing bytes. The
 //   current source remains a typed clipped shadow decoder; the open gap is
 //   still structural block placement and local-home allocation.
+// - Reading orientation first, splitting the width assignment, delaying the
+//   shadow-table alias, and using signed state were codegen duplicates.
+// - A byte shadow-loop counter reached 878 bytes/823 differing bytes, but it
+//   added repeated counter homes and was rolled back as a codegen-only basin.
+// - Moving literal source advances after the clipped branch enlarged the
+//   frame to 0xC and 884 differing bytes; delaying source setup reached 853
+//   differing bytes but lost shape and was also rolled back.
 
 typedef unsigned char byte;
 

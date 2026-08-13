@@ -21,6 +21,15 @@
 // - Direct member indexing worsened the positional diff by 6 bytes and emitted
 //   a shifted count/list block; a named VR_ListUsed element pointer duplicated
 //   that result. Both natural typed probes were restored.
+// - This pass tested the packet's pointer/index reject-loop coloring with the
+//   natural indexed form `reject_list[i]`; it preserved the exact inner loop
+//   register/CFG topology and improved edit similarity, but positional bytes
+//   stayed at 321. It is retained as the cleanest source spelling.
+// - Reusing the incoming type parameter for the distance bound emitted the
+//   same 321-byte code and was rolled back. Three explicit early returns grew
+//   the function by 12 bytes and were also rolled back.
+// - Taking explicit addresses of the used/list elements emitted a duplicate
+//   327-byte result and was rolled back.
 // Left in scratch: remaining drift is the early receiver-save/index LEA basin
 //   and associated register coloring; behavior, size/frame, calls, and inner
 //   reject-loop CFG are established.
@@ -84,15 +93,13 @@ VisibleResourceRec* Visible_Resource_Manager::Get_Closest_Resource(int x, int y,
                     }
                     if (dist < bestDistance) {
                         if (reject_count && reject_list) {
-                            int* reject_cursor = reject_list;
                             int i = 0;
                             while (i < reject_count) {
-                                if (rec->object_id == *reject_cursor) {
+                                if (rec->object_id == reject_list[i]) {
                                     rejected = 1;
                                     break;
                                 }
                                 i++;
-                                reject_cursor++;
                             }
                         }
                         if (!rejected) {

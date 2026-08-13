@@ -10,8 +10,11 @@
 // - Canonical candidate now has the original 31-call set, frame 0x108, and
 //   typed player/list/status ownership. The best diagnostic 64-bit conversion
 //   experiment reached 1167 bytes but was rolled back as compiler steering.
-// - Paused in scratch: remaining drift begins at elapsed-time cap/FPU lowering;
-//   later status-time block placement also remains broad. Default flags only.
+// - Tested the period-plausible unsigned-long elapsed guard. It restores the
+//   original qword FPU conversion and exact cap blocks; 1183 bytes remain.
+// - Paused in scratch: remaining drift starts with early register/coloring and
+//   FPU operand order; later status-time block placement also remains broad.
+//   Default flags only.
 
 #include <stdio.h>
 
@@ -186,7 +189,7 @@ unsigned char RGE_Game_World::update()
     unsigned long seconds;
     unsigned long minutes;
     unsigned long hours;
-    int elapsed;
+    unsigned long elapsed;
     unsigned char first_update = 0;
 
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
@@ -216,7 +219,7 @@ unsigned char RGE_Game_World::update()
         } else {
             elapsed = now - this->old_time;
         }
-        if ((unsigned int)elapsed > 100) elapsed = 100;
+        if (elapsed > 100) elapsed = 100;
     } else {
         elapsed = cycle;
     }

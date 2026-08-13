@@ -22,6 +22,12 @@
 // - A 12-case lab covering natural local declaration orders and direct versus
 //   indexed result-address forms emitted one identical 383-byte group.  No
 //   new source-shape lead remains in this basin.
+// - Tested ordinary typed initialization of the result locals before the
+//   townCenter lookup; it duplicated the 383-byte basin and worsened the
+//   first hunk to 182 differing bytes.  Rolled back.
+// - Combined the owner and enemy gates into one natural typed predicate,
+//   matching the exact same-TU numberUnitsWithinXTiles donor.  It emitted
+//   the same 383-byte code and 171-byte diff; retained as the clean source.
 // - Paused after the ten-hypothesis budget.  Remaining localized gap is the
 //   original townCenter/result callee-save allocation and the associated x87
 //   argument scratch-slot order; no call target, CFG, frame, or field-layout
@@ -105,32 +111,31 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
         do {
             if (this->importantObjectMemory[i].type == 0x9E ||
                 this->importantObjectMemory[i].type == 0xA3) {
-                if (playerFilter == -1 ||
-                    (unsigned int)this->importantObjectMemory[i].owner ==
-                        (unsigned int)playerFilter) {
-                    if (playerFilter != -1 ||
-                        this->md->player->isEnemy(
-                            this->importantObjectMemory[i].owner) != 0) {
-                        RGE_Static_Object* object = this->md->object(
-                            this->importantObjectMemory[i].id);
+                if ((playerFilter == -1 ||
+                     (unsigned int)this->importantObjectMemory[i].owner ==
+                         (unsigned int)playerFilter) &&
+                    (playerFilter != -1 ||
+                     this->md->player->isEnemy(
+                         this->importantObjectMemory[i].owner) != 0)) {
+                    RGE_Static_Object* object = this->md->object(
+                        this->importantObjectMemory[i].id);
 
-                        if (object != 0 && object->object_state <= 2) {
-                            int result = this->numberUnitsWithinXTiles(
-                                playerFilter,
-                                this->importantObjectMemory[i].x,
-                                this->importantObjectMemory[i].y, 5);
+                    if (object != 0 && object->object_state <= 2) {
+                        int result = this->numberUnitsWithinXTiles(
+                            playerFilter,
+                            this->importantObjectMemory[i].x,
+                            this->importantObjectMemory[i].y, 5);
 
-                            if (townCenter != 0) {
-                                result = (int)townCenter->distance_to_position(
-                                    (float)this->importantObjectMemory[i].x,
-                                    (float)this->importantObjectMemory[i].y,
-                                    (float)this->importantObjectMemory[i].z) * result;
-                            }
+                        if (townCenter != 0) {
+                            result = (int)townCenter->distance_to_position(
+                                (float)this->importantObjectMemory[i].x,
+                                (float)this->importantObjectMemory[i].y,
+                                (float)this->importantObjectMemory[i].z) * result;
+                        }
 
-                            if (bestMemory == 0 || result < bestResult) {
-                                bestResult = result;
-                                bestMemory = &this->importantObjectMemory[i];
-                            }
+                        if (bestMemory == 0 || result < bestResult) {
+                            bestResult = result;
+                            bestMemory = &this->importantObjectMemory[i];
                         }
                     }
                 }

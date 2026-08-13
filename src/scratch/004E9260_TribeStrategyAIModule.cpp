@@ -26,6 +26,9 @@
 // direct reuse of the first parameter for the name length was tested from the
 // dossier's entry-relative +4 address evidence; it removed the one-word frame
 // reservation and worsened the result to 20 bytes, so the clean local remains.
+// scoped the name-length local through loadRules only; VC5 shrank the frame to
+// 0xC and worsened the mismatch to 19 bytes, so this lifetime variant was
+// restored. The unresolved lead remains the original parameter-home hunk.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern "C" void* __cdecl operator_new(unsigned int size);

@@ -19,6 +19,9 @@
 // object surfaces with donor-backed virtual destructors at unchanged offsets.
 // Revalidation is codegen-unchanged; the frame and phase-scan topology remain
 // unresolved.
+// - Initialized the function-scope member pointer to null to test the original
+//   EBP-zero first hunk. VC5 emitted the same 1248-byte code and 1188-byte
+//   positional diff, so the initialization was restored.
 
 void __cdecl operator delete(void* block);
 

@@ -25,6 +25,16 @@
 //   821 emitted bytes / 393 differing bytes, with all 23 ordered calls and
 //   the 0x10C frame matching.  Remaining drift begins in saved-register/zero
 //   coloring, local buffer placement, and block spans.  No inline asm.
+// - follow-up: delaying the typed filename initialization until the lazy-load
+//   arm changed the EH prologue and widened the result to 765 bytes; restored.
+// - follow-up: a direct get_facetindex predicate and swapped natural local
+//   declaration order were codegen duplicates of the clean source.
+// - follow-up: passing color_flag directly merged the two mirror calls and
+//   lost one binary call site (421 bytes); restored the branch-local color.
+// - layout: use the typed draw-log buffer directly instead of s + 4; this
+//   matches the original local-base LEAs and improves the structural basin to
+//   390 differing bytes / 88.60% shape similarity.  The prologue allocation
+//   remains the first structural mismatch.
 
 #include <stdio.h>
 
@@ -164,13 +174,13 @@ void RGE_Sprite::do_draw(long frame, long facet, long x, long y,
     uchar mirrored = this->get_facetindex(frame, facet, facetindex);
     if (mirrored == 0) {
         if (do_draw_log != 0) {
-            sprintf(s + 4, "<%s,%d,%d,%d,%d,m", this, x, y,
+            sprintf(s, "<%s,%d,%d,%d,%d,m", this, x, y,
                     facetindex, this->color_flag);
             if (safe_draw_log != 0) {
-                write_draw_log2(s + 4);
+                write_draw_log2(s);
             }
             else {
-                write_draw_log(s + 4);
+                write_draw_log(s);
             }
         }
 
@@ -203,13 +213,13 @@ void RGE_Sprite::do_draw(long frame, long facet, long x, long y,
     }
     else {
         if (do_draw_log != 0) {
-            sprintf(s + 4, "<%s,%d,%d,%d,%d,u", this, x, y,
+            sprintf(s, "<%s,%d,%d,%d,%d,u", this, x, y,
                     facetindex, this->color_flag);
             if (safe_draw_log != 0) {
-                write_draw_log2(s + 4);
+                write_draw_log2(s);
             }
             else {
-                write_draw_log(s + 4);
+                write_draw_log(s);
             }
         }
 

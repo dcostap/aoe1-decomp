@@ -31,6 +31,9 @@
 //   (original: 16-bit member loads into ax/dx + 32-bit param loads + adds with
 //   garbage-high bits; rebuilt: movsx-based). Frame, FPU prologue, output LEAs,
 //   all 82 calls, and all 36 get_point float args now match the original.
+// r2 (2026-08-13):
+// - mirrored the neighboring cube-back render guard with an early return for
+//   a null view; CFG, size, calls, and all emitted bytes were unchanged.
 
 extern "C" {
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* rgn);
@@ -134,8 +137,10 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
     float rx1 = master->outline_radius_z;
     RGE_View* view = rge_base_game->get_view();
 
-    if (view != 0) {
-        area->Unlock(0);
+    if (view == 0)
+        return;
+
+    area->Unlock(0);
         if (area->GetDc(0) != 0) {
             SelectClipRgn(area->DrawDc, view->clip_rgn);
             if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
@@ -243,6 +248,5 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
             SelectClipRgn(area->DrawDc, 0);
             area->ReleaseDc(0);
         }
-        area->Lock(0, 1);
-    }
+    area->Lock(0, 1);
 }

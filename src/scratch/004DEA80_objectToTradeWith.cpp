@@ -23,6 +23,12 @@
 //   record expression worsened drift to 124 bytes and was rolled back.
 // - Main-agent audit restored direct typed array indexing. The raw byte cursor
 //   was diagnostic compiler steering and did not express required behavior.
+// - Reordering the natural result declarations before the unit changed saved
+//   registers and worsened the first prologue hunk; it was rolled back.
+// - A persistent typed ObjectMemory pointer walk reduced the frame and moved
+//   farther from the original scan; it was rolled back.
+// - Same-TU declaration-then-assignment initialization was a codegen duplicate
+//   of the clean typed source and was not retained.
 
 extern float DAT_00575580;
 

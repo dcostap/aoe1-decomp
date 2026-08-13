@@ -11,6 +11,14 @@
 // - Corrected the current-target denominator to damaging-units * distance * 3.
 // - Nine probes reached exact call-set and frame parity. Remaining drift is a
 //   broad source-layout and block-scheduling gap, not an open call or ABI gap.
+// - Structural lead: the executable reloads world for difficulty, then saves
+//   it only before the visible-unit loops. Use that direct ownership shape.
+// - Reused the original function-scope difficulty setting temporary; this
+//   moved the first mismatch to the target setup and raised block coverage.
+// - Confirmed the >=3 difficulty gate and the OR setting predicate from the
+//   executable. Separate loop indices and distance locals were negative.
+// - Remaining gap: early stack-local ownership differs at +0125. Calls and
+//   frame match, but broad loop/block scheduling still differs.
 
 extern int DAT_0087d7c8[5];
 extern int DAT_0087d7d8[5];
@@ -160,8 +168,10 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     int numberDamagingUnits;
     int largestThreatIsBuilding;
     int i;
+    int j;
     RGE_Game_World* world;
     int difficulty;
+    int maxReactDistance;
     int modifier;
     int numberNonCurrentTargets;
     int currentTargetIsWall;
@@ -172,27 +182,25 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     int currentTargetIsBuilding;
 
     this->search();
-    world = this->objectValue->owner->world;
-    difficulty = world->difficultyLevel();
-    modifier = 0;
+    difficulty = this->objectValue->owner->world->difficultyLevel();
 
     if (((rge_base_game->scenarioGame() == 1) &&
          (rge_base_game->singlePlayerGame() == 1) &&
-         (difficulty > 2) && (this->objectValue->owner->id != 1)) ||
+         (difficulty >= 3) && (this->objectValue->owner->id != 1)) ||
         ((rge_base_game->singlePlayerGame() == 1) &&
-         (difficulty > 2) && (this->objectValue->owner->type == 3) &&
-         ((this->objectValue->owner->setting(0xDB) == 100) &&
+         (difficulty >= 3) && (this->objectValue->owner->type == 3) &&
+         ((this->objectValue->owner->setting(0xDB) != 100) ||
           (this->objectValue->owner->setting(0xDA) != 100)))) {
         if (this->objectValue->owner->id > 1) {
             if (difficulty == 3) {
-                modifier = this->objectValue->owner->setting(0xDB);
+                maxReactDistance = this->objectValue->owner->setting(0xDB);
             } else {
-                modifier = this->objectValue->owner->setting(0xDA);
+                maxReactDistance = this->objectValue->owner->setting(0xDA);
             }
         } else {
-            modifier = difficulty >= 3 ? 75 : 32;
+            maxReactDistance = difficulty == 3 ? 75 : 50;
         }
-        modifier = (int)((float)modifier *
+        modifier = (int)((float)maxReactDistance *
                          this->objectValue->master_obj->field_28 * 10.0f);
         if (modifier < 1) {
             modifier = 1;
@@ -201,6 +209,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
         modifier = ((int)this->objectValue->master_obj->field_28) * 2;
     }
 
+    world = this->objectValue->owner->world;
     numberNonCurrentTargets = -1;
     numberMovingTargets = 0;
     numberDamagingUnits = 0;
@@ -221,7 +230,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     }
 
     for (i = 4; i > 1; --i) {
-        int j = 0;
+        j = 0;
         if (DAT_0087d7c8[i] > 0) {
             do {
                 RGE_Static_Object* target =
@@ -296,7 +305,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                 numberMovingTargets = target->threat() * 50.0f;
                 numberObjectsInRange =
                     target->master_obj->attackValue(this->objectValue->master_obj);
-                float targetDistance = this->objectValue->distance_to_object(target);
+                float targetDistance = target->distance_to_object(this->objectValue);
                 if (target->master_obj->object_group != 3) {
                     ++numberMovingTargets;
                     currentTargetIsBuilding = 0;
@@ -334,7 +343,7 @@ skipCurrentTarget:
     }
 
     for (i = 4; i > 1; --i) {
-        int j = 0;
+        j = 0;
         if (DAT_0087d7c8[i] > 0) {
             do {
                 RGE_Static_Object* target =

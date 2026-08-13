@@ -14,6 +14,8 @@
 // neutral. Remaining drift begins before the hash: the oracle homes Revealed at
 // [ebp-8] and its checksum/visible cursor at [ebp-4], while the default donor basin
 // selects the inverse homes; the later checksum/ally scheduling follows that split.
+// split the x-axis and y-axis rejection tests to mirror the two original source
+// line bands and preserve the height value for the following y clamp.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
@@ -146,8 +148,10 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             this->world->players[this->world->curr_player];
     }
 
-    if ((x1 >= this->widthValue) || (x2 < 0) ||
-        (y1 >= this->heightValue) || (y2 < 0)) {
+    if ((x1 >= this->widthValue) || (x2 < 0)) {
+        return 0;
+    }
+    if ((y1 >= this->heightValue) || (y2 < 0)) {
         return 0;
     }
     if (x1 < 0) {

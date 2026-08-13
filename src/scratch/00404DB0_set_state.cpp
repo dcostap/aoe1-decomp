@@ -20,6 +20,8 @@
 // - reordered the guided-distance terms to evaluate x+d before y+dx, matching
 //   the original x87 sequence; this worsened positional diff 436 -> 448, so
 //   restored the clean source.
+// - block-scoped target_distance to model the packet's guided stack reuse;
+//   emitted code was unchanged at diff 436, so restored the top-level local.
 
 #include <math.h>
 

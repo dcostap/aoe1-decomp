@@ -14,6 +14,14 @@
 // - Reordered the first assignments to last_time, delta_time, then
 //   color_tables; the prologue moved farther from the oracle, so restored the
 //   clean assignment order.
+// - Tested the binary-proven parameter-home sound-ID writes with a file
+//   alias; the direct-home form changed cleanup and grew by 70 bytes, while
+//   a typed short materialization stayed in the same nonexact basin.
+// - Hoisted the natural deserializer locals and split or reordered the file
+//   alias assignment using the exact-TU donor pattern; output stayed at the
+//   332-byte mismatch or moved to 338 bytes, so restored the clean source.
+// - The remaining first hunk is the ESI/EDI assignment swap. No tested
+//   natural alias or declaration-order lead changed that prologue.
 
 extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

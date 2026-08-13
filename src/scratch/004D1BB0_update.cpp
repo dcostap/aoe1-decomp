@@ -13,6 +13,8 @@
 // scoped sub-action pointer/result local emitted the same or a worse basin; rolled back.
 // final best: a named state-13 target alias restores the original target/object load
 // order and leaves 35 positional bytes (96.37% shape, exact call/size/frame parity).
+// timer assignment-in-condition probe: the natural x87 source form emitted the
+// same bytes as the separate decrement statement; restored the cleaner form.
 // remaining localized drift: jump-table relocation bytes, state-4 vtable-register
 // coloring, repair-rate FPU operand/push scheduling, and timer store/compare order.
 // left in scratch after the 10-hypothesis budget; no inline asm or custom flags.

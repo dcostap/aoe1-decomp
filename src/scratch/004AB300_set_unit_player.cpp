@@ -14,6 +14,8 @@
 // emitted body to 846 bytes but kept the 0x10 frame and diff 760; it was rolled back.
 // probe: reusing one player pointer across the saved-view capture and reload,
 // then delaying the error declaration, was codegen-neutral; the player spill remains.
+// probe: reload the typed master object after storing the list id; this follows
+// the original second scan's repeated master_objects load and reduced diff to 754.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>
@@ -123,6 +125,7 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
         if (m != 0 && m->disabled == 0) {
             List_Info* info = &this->unit_list_info[out];
             info->id = (short)i;
+            m = *(RGE_Master_Static_Object**)((char*)player->master_objects + object_offset);
             if (m->string_id > 0) {
                 ((RGE_Base_Game*)rge_base_game)->get_string(m->string_id, info->text, 100);
             } else {

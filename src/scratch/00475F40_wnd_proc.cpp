@@ -63,6 +63,9 @@
 // (original ECX/EDX/EAX, rebuilt EAX/ECX/EDX). The fresh bounded lane exhausted
 // the bounded lane without a productive emitted-code lead; keep this canonical
 // readable source in scratch for a later worker.
+// Current claim: a volatile stack-read alias for param_1 improved the diagnostic
+// diff to 6 bytes, but it rotated only the forwarding registers and was not a
+// plausible source form. Restored the canonical source; no exact lead remains.
 
 #include <windows.h>
 
@@ -274,9 +277,10 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int para
 
     if (edit_window != 0 && active != 0 && visible != 0 && hidden == 0) {
         switch (param_2) {
-        case 7:
+        case 7: {
             result = TPanel::wnd_proc(param_1, 7, param_3, param_4);
             return result;
+        }
 
         case 0x133:
             if (brush != 0 && (void*)(param_4 & 0xFFFF) == edit_window) {
@@ -292,7 +296,7 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int para
                 InvalidateRect(edit_window, 0, 1);
             break;
         }
-    }
+        }
 
     result = TPanel::wnd_proc(param_1, param_2, param_3, param_4);
     return result;

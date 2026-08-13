@@ -23,6 +23,9 @@
 // stack allocation and a 363-byte result but not the oracle's EBP frame, and
 // reversing its member order plus old-TU top-level scan locals was unchanged;
 // those layout probes were restored.
+// Direct this-member ownership in the coordinate loop, guided by the binary's
+// saved this while EBX is reused for tile access, was codegen-identical and
+// restored; the persistent alias is not the EBP/local-home cause.
 // Left in scratch: default code is 25 bytes short with broad prologue/register
 // drift; canonical behavior and field ownership are stable, but source/ABI context
 // still needs a donor-level explanation for the original EBP/local topology.

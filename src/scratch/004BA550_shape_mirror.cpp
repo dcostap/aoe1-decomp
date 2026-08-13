@@ -22,6 +22,12 @@
 // shardB3-BA550 control-flow: reordered the unclipped dispatcher as the original reverse switch;
 // table-null mode-2 and mode-1 arms return to the unclipped helper before shadow/color calls.
 // This restores all 14 ordered call sites; the remaining gap is the known frame/local basin.
+// shardE-4BA550 baseline: prior clean typed dispatcher remains the canonical source reconstruction.
+// Probed draw-area alias removal, clipped-bound local modeling, span-local declaration order,
+// alias/return declaration order, and explicit FShape else-if topology. All were duplicate or
+// worse. Restored the clean source. Remaining binary-backed gap is the entry frame/local-home
+// basin: original 0x1c frame, parameter homes, and late local dispatch schedule versus rebuilt
+// 0x18 frame. Calls and direct target order remain exact (14/14).
 
 typedef unsigned char byte;
 class TDrawArea;

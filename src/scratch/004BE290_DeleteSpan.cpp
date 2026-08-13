@@ -19,6 +19,9 @@
 // session context: <stdlib.h> matched the period spanlist translation-unit context but was codegen-neutral for this function.
 // session liveness: reusing head as the mutable saved-head value inserted a premature stack store before the null test and widened the diff to 392 bytes; restored.
 // final best: canonical inherited manager and named span arrays retain 531-byte size/frame/saves and all three ordered calls; unresolved broad VC5 register/liveness coloring begins at 004BE2FE (299 strict bytes, 56.3089%).
+// typed ownership lead: the original final partial-delete path refreshes LeftMostPx/RightMostPx from the retained head/tail; it does not write boundary links here.
+// tried typed bound refresh: source now matches the original retained-list metadata, but VC5 moved the prologue and shrank output to 524 bytes; keep this behavior-faithful reconstruction and pause.
+// shardA6 control-flow: combined the full-span deletion predicates into the while guard; emitted code was unchanged, so restored the typed retained-bound candidate.
 
 #include <stdlib.h>
 
@@ -151,8 +154,8 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 }
                 this->Line_Head_Ptrs[line] = savedHead;
                 this->Line_Tail_Ptrs[line] = last;
-                if (savedHead != 0) savedHead->Prev = 0;
-                if (last != 0) last->Next = 0;
+                this->LeftMostPx[line] = savedHead->StartPx;
+                this->RightMostPx[line] = last->EndPx;
             }
         }
     }

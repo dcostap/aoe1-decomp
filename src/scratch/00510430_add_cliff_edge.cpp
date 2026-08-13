@@ -6,6 +6,8 @@
 // try 4: /O1 too small (.text 987 vs 1317), rolled back.
 // try 5: /Od exact-size comparable but debug-basin mismatch (92.4070% positional), rolled back.
 // left in scratch: broad but useful behavior skeleton; remaining mismatch is not accepted_drift quality and likely needs the exact original high-level cliff-info control-flow topology and real TRIBE_Cliff_Info/TRIBE_Map declarations.
+// shardA4-510430-r1: removed the named old-edge temporary and used direct typed
+// cliff_info[facing] guards/returns; VC5 emitted the unchanged 1262-byte family.
 //
 // sa-e4d7ed85-10430 baseline: restored the proven struct-return cliff-info ABI,
 // RGE_Game_World/player/tile-list ownership, scalar-deleting destructor surface,
@@ -74,11 +76,10 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing, long 
     possible_direction2 = 0;
     possible_facing2 = -1;
 
-    long old = cliff_info.info[facing];
-    if (old != 0) {
+    if (cliff_info.info[facing] != 0) {
         if (existing == 0)
-            return old;
-        if (existing == old)
+            return cliff_info.info[facing];
+        if (existing == cliff_info.info[facing])
             return existing;
     }
 

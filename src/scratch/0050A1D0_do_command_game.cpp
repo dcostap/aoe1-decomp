@@ -13,6 +13,7 @@
 // 13: tested the repeated donor RGE_Base_Game* type for 0062C574 with explicit
 // TRIBE_Game casts; the emitted code was a duplicate, so the direct TRIBE_Game*
 // declaration was restored. Standalone compilation cannot bind this data symbol.
+// 14: removed the unused status-pointer void-use; emitted code was unchanged, so the natural result lifetime is not the remaining drift.
 
 #include <stdio.h>
 

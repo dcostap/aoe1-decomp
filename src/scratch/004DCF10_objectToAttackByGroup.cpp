@@ -64,7 +64,7 @@ class TacticalAIGroup;
 
 class RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Master_Static_Object();
+    void* vtable_ptr;
     unsigned char master_type;
     unsigned char _pad_0[3];
     char* name;
@@ -211,7 +211,7 @@ public:
 
 class RGE_Game_World {
 public:
-    virtual ~RGE_Game_World();
+    void* vtable_ptr;
     unsigned long world_time;
     unsigned long old_world_time;
     unsigned long world_time_delta;

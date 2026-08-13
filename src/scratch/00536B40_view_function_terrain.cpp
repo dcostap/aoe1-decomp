@@ -149,6 +149,18 @@
 // probed `register long rows_2_scan`; no prologue/register/frame change (still
 // sub esp,0xF4 and this in esi), so the ebp-this basin likely needs broader
 // liveness/source topology changes rather than a single register hint.
+// continuation 2026-08-13: corrected the tile-box visibility guard against
+// render_rect and restored both black-mask subtraction lanes in full redraw;
+// these are binary-backed behavior fixes, although the source remains nonexact.
+// continuation: restored the TPanel +0xB4 virtual slot and modeled the
+// RGE_View virtual surface through +0xF8. Calls now have exact 83/83 target
+// parity, including virtual mode-15 and panel get-rect dispatch.
+// continuation: the cyclic overlay draw uses the typed +0x20 render-area
+// owner. A post-relink MapVis-order probe was rolled back after worse CFG and
+// size metrics. Removing the unsupported base-game null guard improved size.
+// current validated reconstruction remains in scratch: 5896-byte text versus
+// the original 5760, frame 0xF4 versus 0x110, strict diff 5471 bytes, with
+// structural reconstruction still blocked by early local/register topology.
 
 #include <windows.h>
 #include <string.h>
@@ -258,7 +270,71 @@ class TPanel_Prefix;
 
 class RGE_View {
 public:
-    char gap_000[0x20];
+    virtual void v00();
+    virtual void v04();
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void v20();
+    virtual void v24();
+    virtual void v28();
+    virtual void v2C();
+    virtual void v30();
+    virtual void v34();
+    virtual void v38();
+    virtual void v3C();
+    virtual void v40();
+    virtual void v44();
+    virtual void v48();
+    virtual void v4C();
+    virtual void v50();
+    virtual void v54();
+    virtual void v58();
+    virtual void v5C();
+    virtual void v60();
+    virtual void v64();
+    virtual void v68();
+    virtual void v6C();
+    virtual void v70();
+    virtual void v74();
+    virtual void v78();
+    virtual void v7C();
+    virtual void v80();
+    virtual void v84();
+    virtual void v88();
+    virtual void v8C();
+    virtual void v90();
+    virtual void v94();
+    virtual void v98();
+    virtual void v9C();
+    virtual void vA0();
+    virtual void vA4();
+    virtual void vA8();
+    virtual void vAC();
+    virtual void vB0();
+    virtual void vB4();
+    virtual void vB8();
+    virtual void vBC();
+    virtual void vC0();
+    virtual void vC4();
+    virtual void vC8();
+    virtual void vCC();
+    virtual void vD0();
+    virtual void vD4();
+    virtual void vD8();
+    virtual void vDC();
+    virtual void vE0();
+    virtual void vE4();
+    virtual void vE8();
+    virtual void vEC();
+    virtual void vF0();
+    virtual void vF4();
+    virtual void game_mode_15_hook(); // +0xF8
+
+    char gap_000[0x1C];
     TDrawArea_Prefix* render_area;  // +0x20
     char gap_024[0x58 - 0x24];
     Panel_List_Node* panel_list;    // +0x58
@@ -333,7 +409,6 @@ public:
     void reset_cyclic_overlay_sprites();
     void Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* mask);
     void draw_object_outline();
-    void game_mode_15_hook();
     long Get_Cursor_Position(POINT* pt, long xoff, long yoff);
     long pick_touched_object(void* list, long x, long y, long a, long b, long* out_id);
     void get_string(long id, char* out, long lang_id);
@@ -467,7 +542,8 @@ public:
     virtual void vA8();
     virtual void vAC();
     virtual void vB0();
-    virtual void get_rect(RECT* out); // +0xB4-ish donor; exact slot likely +0xB8
+    virtual void vB4();
+    virtual void get_rect(RECT* out); // +0xB8
     char gap_04[0x38 - 4];
     long visible;                   // +0x38
     char gap_3C[0x6C - 0x3C];
@@ -644,7 +720,10 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                 if (draw_as != 0) {
                     long screen_right = screen_x + this->tile_wid;
                     long screen_bottom = screen_y + this->map->tilesizes[tile->tile_type].height;
-                    if (screen_x <= 0 && screen_y <= 0 && screen_right > 0 && screen_bottom > 0) {
+                    if (screen_x <= this->render_rect.right &&
+                        screen_y <= this->render_rect.bottom &&
+                        screen_right > this->render_rect.left &&
+                        screen_bottom > this->render_rect.top) {
                         if (this->calc_draw_count != 0 && terrain < this->map->num_terrain) {
                             ((RGE_Terrain_Type_Prefix*)((char*)this->map))[terrain].drawn++;
                         }
@@ -776,6 +855,14 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                                 if (fog_draw) {
                                     this->Terrain_Fog_Clip_Mask->AddMiniList(fog_list, screen_x, screen_y);
                                 }
+                                if (black_mask_num > 0 && black_list != 0) {
+                                    if (normal_draw) {
+                                        this->Terrain_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
+                                    }
+                                    if (fog_draw) {
+                                        this->Terrain_Fog_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
+                                    }
+                                }
                             }
                         }
                         {
@@ -859,14 +946,12 @@ TileOffScreen:
             0, 0, 0, 0, 0, 0x28, 0xFF, 0);
     }
 
-    if (rge_base_game != 0) {
-        long gm = rge_base_game->game_mode;
-        if (gm == 1 || (gm > 6 && gm < 9)) {
-            this->draw_object_outline();
-        }
-        if (gm == 0x15) {
-            this->game_mode_15_hook();
-        }
+    long gm = rge_base_game->game_mode;
+    if (gm == 1 || (gm > 6 && gm < 9)) {
+        this->draw_object_outline();
+    }
+    if (gm == 0x15) {
+        this->game_mode_15_hook();
     }
 
     // Extra/cyclic overlay sprites. This keeps the natural linked-list mutation
@@ -901,7 +986,7 @@ TileOffScreen:
                     if (!remove_sprite) {
                         SDI_Draw_Level = sprite->drawLevel;
                         SDI_Object_ID = -1;
-                        sprite->theShape->shape_draw(this->save_area1,
+                        sprite->theShape->shape_draw(this->render_area,
                             sprite->world_x - this->map_scr_x_offset,
                             sprite->world_y - this->map_scr_y_offset,
                             sprite->thefacet,

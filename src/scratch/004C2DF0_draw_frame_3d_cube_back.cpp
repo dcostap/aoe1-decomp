@@ -11,6 +11,7 @@
 // 8: Mirrored the exact cube-front donor's function-scope output locals and declaration order; corrected the radius_y quarter field used by the final two edges. This reached 998B with 100% ordered-call parity and 79.6% resync similarity.
 // 9: Compound-assignment radius probes introduced broad fmulp/liveness drift and were rolled back.
 // 10: External/const/volatile rdata declaration probes and split coordinate assignments were codegen duplicates or lost absolute relocation identity; restored the natural absolute, direct-member source.
+// 11: Reversed each projected segment to the binary's natural endpoint order: get_point x2/y2 first, then x1/y1, followed by MoveToEx(x2,y2) and LineTo(x1,y1).
 // GIVEUP: left in scratch; no accepted_drift because the natural source remains 4 bytes over the original boundary and the prologue/liveness drift is broad.
 
 typedef void* HDC;
@@ -93,24 +94,24 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
         int py = sy + this->screen_y_offset;
         float negRy = -ry2;
 
-        map->get_point(&x1, &y1, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x2, &y2, rx2, negRy, rz3, px, py);
-        MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
-        map->get_point(&x1, &y1, rx2, negRy, rz4, px, py);
-        map->get_point(&x2, &y2, rx2, negRy, rzFull, px, py);
-        MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
-        map->get_point(&x1, &y1, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x2, &y2, ry1, negRy, 0.0f, px, py);
-        MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
-        map->get_point(&x1, &y1, -rx2, negRy, 0.0f, px, py);
-        map->get_point(&x2, &y2, -ry1, negRy, 0.0f, px, py);
-        MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
-        map->get_point(&x1, &y1, rx2, negRy, 0.0f, px, py);
-        map->get_point(&x2, &y2, rx2, -rz2, 0.0f, px, py);
-        MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
-        map->get_point(&x1, &y1, rx2, ry2, 0.0f, px, py);
-        map->get_point(&x2, &y2, rx2, rz2, 0.0f, px, py);
-        MoveToEx(area->DrawDc, x1, y1, 0); LineTo(area->DrawDc, x2, y2);
+        map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
+        map->get_point(&x1, &y1, rx2, negRy, rz3, px, py);
+        MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
+        map->get_point(&x2, &y2, rx2, negRy, rz4, px, py);
+        map->get_point(&x1, &y1, rx2, negRy, rzFull, px, py);
+        MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
+        map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
+        map->get_point(&x1, &y1, ry1, negRy, 0.0f, px, py);
+        MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
+        map->get_point(&x2, &y2, -rx2, negRy, 0.0f, px, py);
+        map->get_point(&x1, &y1, -ry1, negRy, 0.0f, px, py);
+        MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
+        map->get_point(&x2, &y2, rx2, negRy, 0.0f, px, py);
+        map->get_point(&x1, &y1, rx2, -rz2, 0.0f, px, py);
+        MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
+        map->get_point(&x2, &y2, rx2, ry2, 0.0f, px, py);
+        map->get_point(&x1, &y1, rx2, rz2, 0.0f, px, py);
+        MoveToEx(area->DrawDc, x2, y2, 0); LineTo(area->DrawDc, x1, y1);
 
         SelectClipRgn(area->DrawDc, 0);
         area->ReleaseDc(0);

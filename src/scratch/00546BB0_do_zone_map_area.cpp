@@ -10,6 +10,9 @@
 //    but the tile-row/cell-row register schedule still preserves y in EDI.
 // 7: nested typed row indexing for tile/cell addresses was codegen-duplicate;
 //    restored the simpler pointer-addition form.
+// 8: test direct typed row expressions in the packet's short-circuit neighbor
+//    predicates; this keeps cell ownership named while removing four address
+//    temporaries that may reverse the original tile-row scheduling.
 // Main-agent audit restored canonical polymorphic map ownership and retained
 // named tile/zone-row flood-fill traversal.
 

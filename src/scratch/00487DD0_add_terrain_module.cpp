@@ -24,6 +24,11 @@
 //   88 strict differing bytes (60 raw edit cost), first mismatch +0x1f. The
 //   unresolved structural stage is the multiply order plus late independent
 //   store scheduling/receiver evaluation. No inline asm.
+// - Fresh hypothesis: swapped the natural land-tile product to height then
+//   width, matching the binary operand order. VC5 canonicalized it back to
+//   the same output; restored the clean raw-cursor reconstruction.
+// - Call-order probe: split the final debug_rand result into a named value
+//   before the typed log call. VC5 emitted the same 462-byte basin; restored.
 
 typedef unsigned char uchar;
 

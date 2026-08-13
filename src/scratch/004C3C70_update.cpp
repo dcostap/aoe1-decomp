@@ -18,6 +18,7 @@
 // an i+1-only capacity expression changed the VC5 basin without exact structure.
 // The final source removes all fake volatility.
 // r1 pause: best retained source is typed owner/allocation plus raw group overlay; remaining drift is broad delayed-save/register allocation and group-loop topology, not accepted-drift-safe.
+// shardD5_4C3C70 control-flow: made non-sleep state arms assign ret and break to one final return, matching the original shared epilogue and stack-byte home; diff improved to 668/812 bytes with exact frame/saved-esi, but the first structural gap is the group-loop duplicate guard at +005C and the rebuilt body is 55 bytes too large.
 // Main-agent policy audit removed fake volatile return storage and named the
 // string/float globals. The natural source is now exactly 757 bytes with all
 // 17 calls, but VC5 omits the original 0x8 frame. It remains in scratch.
@@ -130,16 +131,16 @@ uchar RGE_Static_Object::update()
             this->set_state(3); this->set_sprite(self->master_obj->death_sprite);
             int r = debug_rand(STR_STAT_OBJ, 0x704); int old = debug_random_on; debug_random_on = 0;
             if (self->master_obj->death_sound != 0 && self->owner->id == self->owner->world->curr_player) self->master_obj->death_sound->play(1);
-            debug_random_on = old; debug_srand(STR_STAT_OBJ, 0x70e, r); return ret;
+            debug_random_on = old; debug_srand(STR_STAT_OBJ, 0x70e, r);
         } break;
     case 3: case 5:
         if (self->attribute_type_held != -1 && self->attribute_amount_held > F_ZERO) {
-            if (self->master_obj->decay > F_ZERO) { self->attribute_amount_held = self->attribute_amount_held - self->owner->world->attr_rate * self->master_obj->decay; if (self->attribute_amount_held < F_ZERO) { self->attribute_amount_held = F_ZERO; return ret; } break; }
+            if (self->master_obj->decay > F_ZERO) { self->attribute_amount_held = self->attribute_amount_held - self->owner->world->attr_rate * self->master_obj->decay; if (self->attribute_amount_held < F_ZERO) { self->attribute_amount_held = F_ZERO; } break; }
         }
-        if (self->master_obj->undead_flag != 0) { this->set_state(6); this->set_sprite(self->master_obj->undead_sprite); return ret; }
-        this->set_state(7); this->vf_b8(); return ret;
-    case 7: this->set_state(8); return ret;
-    case 8: ret = (self->master_obj->recyclable != 0) + 1; return ret;
+        if (self->master_obj->undead_flag != 0) { this->set_state(6); this->set_sprite(self->master_obj->undead_sprite); break; }
+        this->set_state(7); this->vf_b8(); break;
+    case 7: this->set_state(8); break;
+    case 8: ret = (self->master_obj->recyclable != 0) + 1; break;
         }
     } else {
         uchar st = ((Raw*)self->inside_obj)->object_state;

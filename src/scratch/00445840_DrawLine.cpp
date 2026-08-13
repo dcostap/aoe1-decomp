@@ -21,6 +21,12 @@
 // - Fresh pass: reversing the equal-endpoint compare was neutral. Spelling
 //   the shallow gate as dx >= dy improved shape to 84.51% but not bytes.
 //   The clean typed source remains best after nine meaningful probes.
+// - Fresh pass: lifting the shared Bresenham error declaration before the
+//   orientation branch was a natural test for the oracle's EBX error/EBP x2
+//   coloring; VC5 emitted duplicate bytes, so the clean source was restored.
+// - Fresh pass: reversing the vertical endpoint declaration order tested the
+//   first-hunk register coloring; VC5 worsened to 312 differing bytes and
+//   83.10% shape, so the natural declaration order was restored.
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 

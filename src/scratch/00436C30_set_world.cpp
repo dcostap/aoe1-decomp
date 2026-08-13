@@ -12,6 +12,9 @@
 // - Reintroduced a natural local map owner so width used world->map while
 //   height reloaded this->map; this followed the oracle's ordered accesses,
 //   but worsened the positional diff from 971 to 989 bytes and was rolled back.
+// - Recast the early return as a positive world/image-line guard with the
+//   normal path returning before the common null-map tail; emitted code was
+//   identical, but this source shape follows the oracle's control flow.
 // - Remaining broad drift starts in the dimension-store/x87 local-home basin;
 //   the oracle reloads [esp+14] before each row and preserves a longer FPU
 //   expression tree.  No raw cursor, fake volatility, or manual vtable form
@@ -109,12 +112,8 @@ public:
 void RGE_Diamond_Map::set_world(RGE_Game_World* world)
 {
     this->world = world;
-    if (world == 0 || this->map_image_lines == 0) {
-        this->map = 0;
-        return;
-    }
-
-    this->map = world->map;
+    if (world != 0 && this->map_image_lines != 0) {
+        this->map = world->map;
     this->map_wid = (short)this->map->map_width;
     short map_hgt = (short)this->map->map_height;
     this->map_hgt = map_hgt;
@@ -230,5 +229,9 @@ void RGE_Diamond_Map::set_world(RGE_Game_World* world)
 
     this->view_col = -1;
     this->view_row = -1;
-    this->update_view(2);
+        this->update_view(2);
+        return;
+    }
+
+    this->map = 0;
 }

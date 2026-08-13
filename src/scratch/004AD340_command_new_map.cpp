@@ -9,6 +9,10 @@
 // map payload uses its binary-proven land anchor at offset zero.
 // probes: captured-this alias, declaration-order swaps, result lifetime, and
 // TScreenPanel base context were codegen-neutral; field-home padding was neutral.
+// probe: delaying the receiver alias until after the status gate, following the
+// direct-this shape in same-TU command donors, was codegen-neutral.
+// probe: an explicit unsigned-byte cast on the typed new-map dispatch preserved
+// the source model but emitted the same code; rolled back.
 // blocker: original begins `mov eax,ecx`, homes this at [esp+10h], and keeps
 // show_status in ESI; VC5 retains this in ESI, zeroes EBX early, and emits a
 // 570-byte/576-compared basin despite matching frame/saved-register set/calls.

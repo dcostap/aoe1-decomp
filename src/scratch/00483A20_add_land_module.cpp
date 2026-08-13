@@ -36,6 +36,9 @@
 //    27.5% exact blocks, frame 0x190) with diff 1561; remaining drift is
 //    register/slot coloring (this-home slot position, index/index1 slot
 //    permutation) plus loop-shape details in the allocation block.
+// 6 (shardC5-483A20): moved the natural map-entry declaration before the scalar
+//    locals to follow the same-TU/decompiler declaration order; codegen was
+//    unchanged, so restored the clean cursor-form source.
 // Left in scratch: phase A is byte-close (only this-home [esp+18h] vs
 // [esp+10h] and a few slot permutations); phase B is correct and close but
 // not exact. Probe 4's miscompile is documented negative evidence.

@@ -20,6 +20,11 @@
 //    for-loop is the cleaner source reconstruction (684 bytes, exact frame,
 //    exact call set), with remaining drift localized to register coloring,
 //    loop-test/tail layout, and the two early shared-return paths.
+// Shard B5: changing the zero-count return to null, reordering declarations,
+// and using positive count/target guards were codegen duplicates.
+// Shard B5: the donor-shaped positive playbook do-scan worsened CFG coverage;
+// restored the direct bounded scan. The first hunk remains this/play register
+// coloring plus merged early epilogues; no ABI or call-set issue was found.
 
 extern int debug_rand(char* file, int line);
 

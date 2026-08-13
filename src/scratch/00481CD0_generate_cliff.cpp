@@ -27,6 +27,13 @@
 //   though it leaves the known four-byte frame gap.
 // - Tested moving the natural Map_Stack declaration below the early guards
 //   to shorten its lifetime; VC5 emitted the same 754-byte code and frame.
+// - Reversed the natural turn predicates to `direction <= 0` and
+//   `direction >= 3`; this matches the target test/jg and cmp/jl branch
+//   orientations, improving the best check to 570 bytes, 94.70% shape, and
+//   47.53% exact-block coverage with all 15 calls aligned.
+// - Direct search-map expressions and explicit retry break/return loops were
+//   tested for the early map branch; they worsened codegen or duplicated
+//   pop_stack. Restored the typed do/pop retry as the best source.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -155,16 +162,16 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
             cliff_end_found = 0;
             long turn = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 0xe3) * 100) / 0x7fff;
             if (turn < 0x12) {
-                if (direction < 1) {
+                if (direction <= 0) {
                     direction = 3;
                 } else {
                     direction--;
                 }
             } else if (turn < 0x24) {
-                if (direction < 3) {
-                    direction++;
-                } else {
+                if (direction >= 3) {
                     direction = 0;
+                } else {
+                    direction++;
                 }
             }
 

@@ -19,6 +19,7 @@
 // probe 17: changed table selection to the decompiler-supported negative OR guard; body layout improved but the prologue remained unchanged.
 // probe 18: tested an ordinary self alias for the saved-this lifetime; VC5 emitted duplicate code and it is retained only as readable ownership context.
 // probe 19: tested a shared action-5 label after case 4; it moved the code farther and was rolled back.
+// probe 20: replaced the self alias with direct typed this-member access to test the saved-this home; emitted code was unchanged and was rolled back.
 // Final candidate: typed object/master/player ownership, exact field widths/offsets, natural retry-table loop, and 978-byte default-flag build. Remaining drift is broad VC5 local/block topology, not an unresolved call set.
 // GIVEUP blockers: original saved-this home at the top local slot, ESI/EBP/local coloring, and action-switch handler placement remain unresolved after 10 meaningful hypotheses. No inline asm or accepted_drift proposal.
 // Current validation: structural reconstruction probe; no inline asm.

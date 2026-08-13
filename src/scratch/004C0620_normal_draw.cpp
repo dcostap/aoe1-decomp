@@ -63,6 +63,10 @@
 // the function to 258 bytes and 189 differing bytes. Coalescing fallback and
 // scan count reproduced the earlier 181-byte basin. Restored the 45-byte
 // canonical typed source; no raw list cursor was retained.
+// Shard E bounded pass: count-first/result-from-count, byte/int zero-result
+// source order, and chained zero assignment were nonproductive (45-65-byte
+// diffs or duplicates). Restored the canonical typed source; the AX/CX
+// duplicate-guard register gap remains the only local codegen lead.
 
 #include <stdio.h>
 

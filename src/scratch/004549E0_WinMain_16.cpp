@@ -7,6 +7,7 @@
 // probe: the error dialog passes the initial result to get_string2.
 // probe: error_code is initialized after the early string setup to preserve
 // the original zero register and stack-home schedule.
+// probe: moved error_code initialization after vol_name copy; original xor ebx at 00454BCA follows the AOE length scan.
 
 #include <stdio.h>
 #include <string.h>
@@ -135,8 +136,8 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     strcpy(info.menu_name, "");
     strcpy(info.pal_file, "palette");
     strcpy(info.cursor_file, "mcursors");
-    error_code = 0;
     strcpy(info.vol_name, "AOE");
+    error_code = 0;
 
     info.instance = hInst;
     info.prev_instance = hPrev;

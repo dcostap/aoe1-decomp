@@ -1,145 +1,375 @@
 // VA 0053E340 RGE_Main_View::mouse_left_down_action
 // vw_main.cpp:461-630
+//
+// Behavior-first reconstruction from the original switch and same-TU donors.
+// The render area, pick record, world/player ownership, and virtual command
+// surfaces use the period layout.  The source does not use decompiler offsets.
+//
 // Attempt log:
-// 1: Broad natural reconstruction from packet/decompiler, preserving main switch cases and call surfaces.
-// 2: Modeled BaseGame paused/mode/submode gates, color_log entry/exit, switch on submode, and default capture_mouse path.
-// 3: Implemented case 18 pick/select path with pick1 type 0x29, unselect/select_one_object, frame bounds, ClientToScreen/ScreenToClient, and command_action(4).
-// 4: Implemented case 1 terrain/object placement path with pick1 type 0x28, fixup_pick_info, selected type lookup, object-list vf24, and player/view command dispatch.
-// 5: Implemented command cases 9/10/19 and 2/3/17/21 with optional unselect/capture and command_action 9/3.
-// 6: Implemented case 15 object-pick path: reject class 0x22, sprite/active draw-level selection, player switch, selected type/object/state, mouse mode, frame conversion, and command_action.
-// 7: Initial PickInfo size was too large and BaseGame field offsets were wrong, producing sub esp,2C and mode offset +0x19C.
-// 8: Reduced PickInfo to 16 bytes and fixed BaseGame padding so default frame is original sub esp,24 and mode/submode offsets +0x1B0/+0x1B4.
-// 9: Default /O2 /Oy exact-size build compares but is broad: 904 bytes / 79.3679% positional, first mismatch offset 22. First drift is early-return layout: rebuilt emits inline paused/mode failure returns while original branches to shared false epilogue at the end.
-// 10: Probed /O2 /Oy /Ob0: identical broad mismatch; removed flag.
-// 11: Probed /Od: exact size but wrong basin from offset 0 (81.7384% positional); removed flag.
-// 12: Probed /O2 /Oy /Og-: exact size but wrong basin from offset 0 (81.7384% positional); removed flag.
-// GIVEUP: left in scratch. Main blockers are broad switch/source topology and early false-epilogue layout; no accepted_drift because mismatch is broad.
+// - Prior scratch source had direct helper calls and incorrect player/object
+//   fields.  It was not a canonical behavior baseline.
+// - Current baseline: restored RGE_View/TPanel render-area ownership, the
+//   master-object placement path, selected-object checks, and start-scroll
+//   command dispatch from the original ordered call list.
+// - Structural probe: kept the local-player and scenario-player placement
+//   arms separate.  This restored both alignment and command-place call sites,
+//   exact size, and call-target parity.  Broader block order still differs.
+// - Final: retained this natural typed candidate.  Remaining drift is broad,
+//   starting at the shared false-return path and switch block order.
 
-extern void __cdecl color_log(unsigned char, unsigned char, unsigned char);
-extern int __stdcall ClientToScreen(void*, void*);
-extern int __stdcall ScreenToClient(void*, void*);
+extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
+extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void*, void*);
+extern "C" __declspec(dllimport) int __stdcall ScreenToClient(void*, void*);
 
-struct POINT { int x; int y; };
-struct PickInfo { int y; int tile; int scr_x; int scr_y; };
-struct UnitType { char gap[0x10]; short type; char gap12[2]; short cls; };
-struct Player { char gap[0x4A]; short civ; };
-struct SpriteList { unsigned char get_lowest_draw_level(); };
-struct Sprite { unsigned char get_lowest_draw_level(); };
-struct StaticObj {
-    void* vtbl; int id; UnitType* type; Player* player; int resource; Sprite* sprite; SpriteList* active; char gap1C[0x48-0x1C]; unsigned char state;
-    void get_frame(short*, short*, short*, short*);
+struct tagPOINT {
+    long x;
+    long y;
 };
-struct ObjectList { virtual void v0(); char gap[0x20]; virtual void vf24(short*, short*, void*, int); };
-struct PlayerObj {
-    void* vtbl; char gap4[0x20]; ObjectList** objects; char gap28[0x108]; void* fog;
-    void unselect_object(); int select_one_object(StaticObj*, int);
-    void vfB0(int idx, int sx, int sy, int zero);
-};
-struct ViewSub { void* vtbl; char gap04[0x40-4]; ObjectList** lists; void vfB0(int idx, int sx, int sy, int zero); };
-struct BaseGame {
-    virtual void v0(); virtual void v4(); virtual void v8(); virtual void vC();
-    virtual void set_mouse_mode(int, int); virtual void set_player(short);
-    char gap04[0x1B0-4]; int mode; int submode; char gap1B8[0x3FC-0x1B8]; short selectedType;
-    int get_paused(); PlayerObj* get_player();
-};
-extern BaseGame* rge_base_game;
 
-class RGE_Main_View {
+class TDrawSystem {
 public:
-    void* vtbl; char gap04[0x20-4]; void** hwndPair; char gap24[0xFC-0x24]; void* viewObj; PlayerObj* player; char gap104[0x174-0x104]; StaticObj* selected; char gap178[0x37C-0x178]; PlayerObj* clickedPlayer;
-    long mouse_left_down_action(long x, long y, short a, short b);
-    unsigned char pick1(unsigned char, int, long, long, PickInfo*, void*, int);
-    void fixup_pick_info(PickInfo*);
-    void capture_mouse();
-    void set_capture(int);
-    void command_action(int, long, long, long, long);
+    char gap_00[0x479];
+    unsigned char screen_mode;
 };
 
-long RGE_Main_View::mouse_left_down_action(long x, long y, short a, short b)
+class TDrawArea {
+public:
+    TDrawSystem* draw_system;
+    void* wnd;
+};
+
+class RGE_Game_World;
+class RGE_Player;
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class RGE_Tile;
+class RGE_Sprite;
+class RGE_Active_Sprite_List;
+
+struct RGE_Pick_Info {
+    float x;
+    float y;
+    short scr_x;
+    short scr_y;
+    RGE_Static_Object* object;
+    RGE_Tile* tile;
+};
+
+class RGE_Active_Sprite_List {
+public:
+    unsigned char get_lowest_draw_level();
+};
+
+class RGE_Sprite {
+public:
+    unsigned char get_lowest_draw_level();
+};
+
+class RGE_Static_Object {
+public:
+    virtual ~RGE_Static_Object();
+
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
+    RGE_Sprite* sprite;
+    RGE_Sprite* old_sprite;
+    RGE_Active_Sprite_List* sprite_list;
+    char gap_1C[0x2C];
+    unsigned char object_state;
+
+    int get_frame(short*, short*, short*, short*);
+};
+
+class RGE_Master_Static_Object {
+public:
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object*);
+    virtual void modify(float, unsigned char);
+    virtual void modify_delta(float, unsigned char);
+    virtual void modify_percent(float, unsigned char);
+    virtual void save(int);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual RGE_Master_Static_Object* make_new_master();
+    virtual unsigned char check_placement(
+        RGE_Player*, float, float, int*, unsigned char, unsigned char,
+        unsigned char, unsigned char, unsigned char, unsigned char);
+    virtual unsigned char alignment(
+        float*, float*, RGE_Game_World*, unsigned char);
+
+    char gap_04[0x0C];
+    short id;
+    short copy_id;
+    short object_group;
+};
+
+class RGE_Game_World {
+public:
+    void* vtable_ptr;
+    char gap_04[0x3C];
+    RGE_Player** players;
+};
+
+class RGE_Player {
+public:
+    virtual ~RGE_Player();
+#define PLAYER_VIRTUAL(n) virtual void player_v##n();
+    PLAYER_VIRTUAL(01) PLAYER_VIRTUAL(02) PLAYER_VIRTUAL(03)
+    PLAYER_VIRTUAL(04) PLAYER_VIRTUAL(05) PLAYER_VIRTUAL(06)
+    PLAYER_VIRTUAL(07) PLAYER_VIRTUAL(08) PLAYER_VIRTUAL(09)
+    PLAYER_VIRTUAL(10) PLAYER_VIRTUAL(11) PLAYER_VIRTUAL(12)
+    PLAYER_VIRTUAL(13) PLAYER_VIRTUAL(14) PLAYER_VIRTUAL(15)
+    PLAYER_VIRTUAL(16) PLAYER_VIRTUAL(17) PLAYER_VIRTUAL(18)
+    PLAYER_VIRTUAL(19) PLAYER_VIRTUAL(20) PLAYER_VIRTUAL(21)
+    PLAYER_VIRTUAL(22) PLAYER_VIRTUAL(23) PLAYER_VIRTUAL(24)
+    PLAYER_VIRTUAL(25) PLAYER_VIRTUAL(26) PLAYER_VIRTUAL(27)
+    PLAYER_VIRTUAL(28) PLAYER_VIRTUAL(29) PLAYER_VIRTUAL(30)
+    PLAYER_VIRTUAL(31) PLAYER_VIRTUAL(32) PLAYER_VIRTUAL(33)
+    PLAYER_VIRTUAL(34) PLAYER_VIRTUAL(35) PLAYER_VIRTUAL(36)
+    PLAYER_VIRTUAL(37) PLAYER_VIRTUAL(38) PLAYER_VIRTUAL(39)
+    PLAYER_VIRTUAL(40) PLAYER_VIRTUAL(41) PLAYER_VIRTUAL(42)
+    PLAYER_VIRTUAL(43)
+#undef PLAYER_VIRTUAL
+    virtual unsigned char command_place_object(
+        short, float, float, float);
+
+    char gap_04[0x20];
+    RGE_Master_Static_Object** master_objects;
+    char gap_28[0x22];
+    short id;
+    char gap_4C[0xE4];
+    RGE_Static_Object* selected_obj;
+
+    void unselect_object();
+    int select_one_object(RGE_Static_Object*, int);
+};
+
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    virtual void run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+
+    char gap_04[0x1AC];
+    int prog_mode;
+    int game_mode;
+    int sub_game_mode;
+    char gap_1BC[0x240];
+    short master_obj_id;
+
+    int get_paused();
+    RGE_Player* get_player();
+};
+
+class TPanel {
+public:
+    virtual ~TPanel();
+    virtual void panel_v1();
+    virtual void panel_v2();
+    virtual void panel_v3();
+    virtual void panel_v4();
+    virtual void panel_v5();
+    virtual void panel_v6();
+    virtual void panel_v7();
+    virtual void set_redraw(int);
+
+    char gap_04[0x1C];
+    TDrawArea* render_area;
+    char gap_24[0xD0];
+
+    void capture_mouse();
+};
+
+class RGE_View : public TPanel {
+public:
+#define VIEW_VIRTUAL(n) virtual void view_v##n();
+    VIEW_VIRTUAL(09) VIEW_VIRTUAL(10) VIEW_VIRTUAL(11)
+    VIEW_VIRTUAL(12) VIEW_VIRTUAL(13) VIEW_VIRTUAL(14)
+    VIEW_VIRTUAL(15) VIEW_VIRTUAL(16) VIEW_VIRTUAL(17)
+    VIEW_VIRTUAL(18) VIEW_VIRTUAL(19) VIEW_VIRTUAL(20)
+    VIEW_VIRTUAL(21) VIEW_VIRTUAL(22) VIEW_VIRTUAL(23)
+    VIEW_VIRTUAL(24) VIEW_VIRTUAL(25) VIEW_VIRTUAL(26)
+    VIEW_VIRTUAL(27) VIEW_VIRTUAL(28) VIEW_VIRTUAL(29)
+    VIEW_VIRTUAL(30) VIEW_VIRTUAL(31) VIEW_VIRTUAL(32)
+    VIEW_VIRTUAL(33) VIEW_VIRTUAL(34) VIEW_VIRTUAL(35)
+    VIEW_VIRTUAL(36) VIEW_VIRTUAL(37) VIEW_VIRTUAL(38)
+    VIEW_VIRTUAL(39) VIEW_VIRTUAL(40) VIEW_VIRTUAL(41)
+    VIEW_VIRTUAL(42) VIEW_VIRTUAL(43) VIEW_VIRTUAL(44)
+    VIEW_VIRTUAL(45) VIEW_VIRTUAL(46) VIEW_VIRTUAL(47)
+    VIEW_VIRTUAL(48) VIEW_VIRTUAL(49) VIEW_VIRTUAL(50)
+    VIEW_VIRTUAL(51) VIEW_VIRTUAL(52) VIEW_VIRTUAL(53)
+    VIEW_VIRTUAL(54) VIEW_VIRTUAL(55) VIEW_VIRTUAL(56)
+    VIEW_VIRTUAL(57)
+#undef VIEW_VIRTUAL
+    virtual int start_scroll_view(unsigned char, long, long, int, int);
+
+    TDrawArea* cur_render_area;
+    int calc_draw_count;
+    RGE_Game_World* world;
+    RGE_Player* player;
+    char gap_104[0x70];
+    RGE_Static_Object* movable_object;
+    char gap_178[0x1E8];
+};
+
+extern RGE_Base_Game* rge_base_game;
+
+class RGE_Main_View : public RGE_View {
+public:
+    char gap_360[0x1C];
+    RGE_Player* save_player;
+
+    long mouse_left_down_action(long, long, int, int);
+    unsigned char pick1(unsigned char, unsigned char, long, long,
+                        RGE_Pick_Info*, RGE_Static_Object*, int);
+    void fixup_pick_info(RGE_Pick_Info*);
+};
+
+long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
+                                           int param_3, int param_4)
 {
-    short min_x, min_y, max_y, max_x;
-    POINT pt;
-    PickInfo pick;
+    short min_x;
+    short min_y;
+    short max_y;
+    short max_x;
+    tagPOINT point;
+    RGE_Pick_Info pick_info;
 
-    if (rge_base_game->get_paused()) return 0;
-    int mode = rge_base_game->mode;
-    if (!(mode == 4 || mode == 6 || mode == 7 || mode == 5)) return 0;
-    int sub = rge_base_game->submode;
-    color_log(0x4c, 0xba, 1);
+    if (rge_base_game->get_paused()) {
+        return 0;
+    }
 
-    switch (sub) {
-    case 18:
-        if (pick1(0x29, 0, x, y, &pick, this->player->fog, 1) == 0x34) {
-            this->player->unselect_object();
-            this->player->select_one_object((StaticObj*)pick.tile, 1);
-            set_capture(1);
-            if (((StaticObj*)pick.tile)->resource) {
-                ((StaticObj*)pick.tile)->get_frame(&min_x, &min_y, &max_y, &max_x);
-                pt.x = max_y - min_y;
-                pt.y = max_x - min_x;
-                if (*(unsigned char*)(*(int*)this->hwndPair + 0x479) == 1) ClientToScreen(this->hwndPair[1], &pt);
-                if (*(unsigned char*)(*(int*)this->hwndPair + 0x479) == 1) ScreenToClient(this->hwndPair[1], &pt);
-                command_action(4, pt.x, pt.y, a, b);
+    int mode = rge_base_game->prog_mode;
+    if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
+        return 0;
+    }
+
+    mode = rge_base_game->game_mode;
+    color_log(0x4C, 0xBA, 1);
+
+    switch (mode) {
+    case 1:
+        if (this->pick1(0x28, 0, param_1, param_2,
+                        &pick_info, 0, 1) == 0x33) {
+            this->fixup_pick_info(&pick_info);
+            short object_id = rge_base_game->master_obj_id;
+            if (object_id != -1 &&
+                this->player->master_objects[object_id] != 0) {
+                RGE_Master_Static_Object* master =
+                    this->player->master_objects[object_id];
+                master->alignment(&pick_info.x, &pick_info.y,
+                                  this->world, 0);
+                this->player->command_place_object(
+                    object_id, pick_info.x, pick_info.y, 0.0f);
+            } else if (object_id != -1 && this->world->players[0]
+                       ->master_objects[object_id] != 0) {
+                RGE_Player* command_player = this->world->players[0];
+                RGE_Master_Static_Object* master =
+                    command_player->master_objects[object_id];
+                master->alignment(&pick_info.x, &pick_info.y,
+                                  this->world, 0);
+                command_player->command_place_object(
+                    object_id, pick_info.x, pick_info.y, 0.0f);
             }
         }
         break;
-    case 1:
-        if (pick1(0x28, 0, x, y, &pick, 0, 1) == 0x33) {
-            fixup_pick_info(&pick);
-            int idx = rge_base_game->selectedType;
-            if (idx != -1) {
-                ObjectList* list = this->player->objects[idx];
-                if (list) {
-                    list->vf24((short*)&pick.scr_x, (short*)&pick.scr_x, this->viewObj, 0);
-                    this->player->vfB0(idx, pick.scr_x, pick.scr_y, 0);
+
+    case 2:
+    case 3:
+    case 17:
+        if (this->player->selected_obj != 0) {
+            this->player->unselect_object();
+            this->set_redraw(1);
+        }
+        // Fall through.  These modes use the same scroll command as 21.
+    case 21:
+        this->start_scroll_view(3, param_1, param_2, param_3, param_4);
+        break;
+
+    case 9:
+    case 10:
+    case 19:
+        if (this->player->selected_obj != 0) {
+            this->player->unselect_object();
+            this->set_redraw(1);
+        }
+        if (mode == 19) {
+            rge_base_game->set_game_mode(19, 0);
+        }
+        this->start_scroll_view(9, param_1, param_2, param_3, param_4);
+        break;
+
+    case 15:
+        if (this->pick1(0x29, 0, param_1, param_2,
+                        &pick_info, this->movable_object, 1) == 0x34) {
+            RGE_Static_Object* object =
+                (RGE_Static_Object*)pick_info.tile;
+            if (object->master_obj->object_group != 0x22) {
+                unsigned char draw_level;
+                if (object->sprite_list != 0) {
+                    draw_level = object->sprite_list->get_lowest_draw_level();
+                } else if (object->sprite != 0) {
+                    draw_level = object->sprite->get_lowest_draw_level();
                 } else {
-                    ViewSub* subview = *(ViewSub**)((char*)this->viewObj + 0x40);
-                    ObjectList* list2 = subview->lists[idx];
-                    if (list2) {
-                        list2->vf24((short*)&pick.scr_x, (short*)&pick.scr_x, this->viewObj, 0);
-                        subview->vfB0(idx, pick.scr_x, pick.scr_y, 0);
+                    draw_level = 0x14;
+                }
+
+                this->save_player = rge_base_game->get_player();
+                rge_base_game->set_player(object->owner->id);
+                rge_base_game->master_obj_id = object->master_obj->id;
+                this->movable_object = object;
+                object->object_state = 7;
+                if (draw_level == 0) {
+                    this->set_redraw(2);
+                }
+                rge_base_game->set_game_mode(8, 1);
+                if (this->movable_object->sprite != 0) {
+                    this->movable_object->get_frame(
+                        &min_x, &min_y, &max_y, &max_x);
+                    point.x = max_y - min_y;
+                    point.y = max_x - min_x;
+                    if (this->render_area->draw_system->screen_mode == 1) {
+                        ClientToScreen(this->render_area->wnd, &point);
                     }
                 }
+                this->start_scroll_view(
+                    9, param_1, param_2, param_3, param_4);
             }
         }
         break;
-    case 9: case 10: case 19:
-        if (this->player->fog) { this->player->unselect_object(); set_capture(1); }
-        if (sub == 19) rge_base_game->set_mouse_mode(sub, 0);
-        command_action(9, x, y, a, b);
-        break;
-    case 2: case 3: case 17: case 21:
-        if (this->player->fog) { this->player->unselect_object(); set_capture(1); }
-        command_action(3, x, y, a, b);
-        break;
-    case 15:
-        if (pick1(0x29, 0, x, y, &pick, this->player->fog, 1) == 0x34) {
-            StaticObj* obj = (StaticObj*)pick.tile;
-            if (obj->type->cls != 0x22) {
-                unsigned char level;
-                if (obj->active) level = obj->active->get_lowest_draw_level();
-                else if (obj->sprite) level = obj->sprite->get_lowest_draw_level();
-                else level = 0x14;
-                this->clickedPlayer = rge_base_game->get_player();
-                rge_base_game->set_player(obj->player->civ);
-                rge_base_game->selectedType = obj->type->type;
-                this->selected = obj;
-                obj->state = 7;
-                if (!level) set_capture(2);
-                rge_base_game->set_mouse_mode(8, 1);
-                if (this->selected->resource) {
-                    this->selected->get_frame(&min_x, &min_y, &max_y, &max_x);
-                    pt.x = max_y - min_y; pt.y = max_x - min_x;
-                    if (*(unsigned char*)(*(int*)this->hwndPair + 0x479) == 1) ClientToScreen(this->hwndPair[1], &pt);
+
+    case 18:
+        if (this->pick1(0x29, 0, param_1, param_2,
+                        &pick_info, this->movable_object, 1) == 0x34) {
+            RGE_Static_Object* object =
+                (RGE_Static_Object*)pick_info.tile;
+            this->player->unselect_object();
+            this->player->select_one_object(object, 1);
+            this->set_redraw(1);
+            if (object->sprite != 0) {
+                object->get_frame(&min_x, &min_y, &max_y, &max_x);
+                point.x = max_y - min_y;
+                point.y = max_x - min_x;
+                if (this->render_area->draw_system->screen_mode == 1) {
+                    ClientToScreen(this->render_area->wnd, &point);
                 }
-                command_action(9, x, y, sub, (short)x);
+                if (this->render_area->draw_system->screen_mode == 1) {
+                    ScreenToClient(this->render_area->wnd, &point);
+                }
+                this->start_scroll_view(
+                    4, point.x, point.y, param_3, param_4);
             }
         }
         break;
+
     default:
-        capture_mouse();
+        this->capture_mouse();
         break;
     }
-    color_log(0x4c, 0x5f, 1);
+
+    color_log(0x4C, 0x5F, 1);
     return 1;
 }

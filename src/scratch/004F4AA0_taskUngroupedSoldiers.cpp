@@ -20,6 +20,9 @@
 //   broader/worse codegen. The remaining structural gap is the callee-save and
 //   local-home topology: oracle uses EBX for the outer index, delays EDI save
 //   until the positive soldiers-count arm, and reads local_4 from -4.
+// shardA6 probe: moved a natural soldier-value load before the first ungrouped
+// scan; this lost operator_new/operator_delete and two ordered calls, so it
+// was rolled back to the clean typed source.
 // BLOCKER: source/layout/callee-save topology remains unresolved; leave this
 // clean typed reconstruction in scratch rather than retain codegen scaffolds.
 

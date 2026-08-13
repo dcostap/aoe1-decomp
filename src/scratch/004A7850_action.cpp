@@ -29,6 +29,7 @@
 // attempt 26: used zero-offset facade only for dialog set_curr_child; object shrank to 2048/.text extraction failed, rolled back
 // attempt 16: declared get_string directly on TribeSaveGameScreen; worsened diff, rolled back
 // attempt 17: made TPanel polymorphic; object shrank to 2048/.text extraction failed, rolled back
+// attempt 31: inverted YesNoDialog msg branch; restored original 71-call topology and reduced size gap to 2 bytes
 
 #include <stdio.h>
 #include <string.h>
@@ -246,37 +247,37 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
 
         panel_name = panel->panelName();
         if (panel_name != 0 && strcmp(panel->panelName(), "YesNoDialog") == 0) {
-            if (msg != 0) {
+            if (msg == 0) {
+                panel_system.destroyPanel("YesNoDialog");
+                int mode = this->modeValue;
+                if (mode == 0) {
+                    this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+                    sprintf(tempFileName + 4, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
+                    _unlink(tempFileName + 4);
+                    if (!rge_base_game->save_game(this->fileName)) {
+                        this->popupOKDialog(0x962, 0, 0x1C2, 100);
+                    }
+                    return 1;
+                }
+                if (mode == 1) {
+                    this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+                    sprintf(tempFileName + 4, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
+                    _unlink(tempFileName + 4);
+                    if (!rge_base_game->save_scenario(this->fileName)) {
+                        this->popupOKDialog(0x963, 0, 0x1C2, 100);
+                    }
+                    return 1;
+                }
+                if (mode == 2) {
+                    this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+                    sprintf(tempFileName + 4, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
+                    _unlink(tempFileName + 4);
+                    this->save_for_scenario_editor();
+                    return 1;
+                }
+            } else {
                 panel_system.destroyPanel("YesNoDialog");
                 this->set_curr_child(this->input);
-                return 1;
-            }
-            panel_system.destroyPanel("YesNoDialog");
-            int mode = this->modeValue;
-            if (mode == 0) {
-                this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                sprintf(tempFileName + 4, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
-                _unlink(tempFileName + 4);
-                if (!rge_base_game->save_game(this->fileName)) {
-                    this->popupOKDialog(0x962, 0, 0x1C2, 100);
-                }
-                return 1;
-            }
-            if (mode == 1) {
-                this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                sprintf(tempFileName + 4, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
-                _unlink(tempFileName + 4);
-                if (!rge_base_game->save_scenario(this->fileName)) {
-                    this->popupOKDialog(0x963, 0, 0x1C2, 100);
-                }
-                return 1;
-            }
-            if (mode == 2) {
-                this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                sprintf(tempFileName + 4, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
-                _unlink(tempFileName + 4);
-                this->save_for_scenario_editor();
-                return 1;
             }
             return 1;
         }

@@ -23,6 +23,13 @@
 // - Final clean source: exact size/frame and typed behavior/call set; remaining
 //   drift is the assist id/validity call-order and early local-home/register
 //   basin. No canonical layout or behavioral uncertainty remains.
+// - Tried the natural id-first equality spelling; VC5 kept the call-site order
+//   mismatch and moved one byte farther from the oracle, so the assist-first
+//   clean form remains selected.
+// - Tried a natural outer while sentinel walk in place of the if/do form; it
+//   improved shape but worsened positional drift from 350 to 372 bytes and did
+//   not change the first local-home hunk or assist call order, so it was rolled
+//   back.
 
 #include <math.h>
 

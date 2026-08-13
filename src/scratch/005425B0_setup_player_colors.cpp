@@ -37,6 +37,8 @@
 //   the natural typed subscript; the canonical RGE_Player surface remains.
 // - Current session: the remaining two SIB bytes are localized at the first
 //   used-color compare and store. No new natural source lead remains.
+// - Indexed typed color access (`info.color[i - 1]`) preserved structure and
+//   removed the compare SIB byte, leaving only the store SIB operand order.
 //
 // FLAGS: /nologo /c /O2 /Oy
 
@@ -106,16 +108,14 @@ void RGE_Game_World::setup_player_colors(RGE_Player_Info& info) {
     unsigned char* playersDone = (unsigned char*)calloc(this->player_num, 1);
 
     if (this->player_num > 1) {
-        short* colorPtr = info.color;
         do {
-            if (i - 1 < maxIter && *colorPtr >= 0 &&
-                colorsUsed[*colorPtr] == 0) {
-                this->players[i]->set_color_table((unsigned char)*colorPtr);
-                colorsUsed[*colorPtr] = 1;
+            if (i - 1 < maxIter && info.color[i - 1] >= 0 &&
+                colorsUsed[info.color[i - 1]] == 0) {
+                this->players[i]->set_color_table((unsigned char)info.color[i - 1]);
+                colorsUsed[info.color[i - 1]] = 1;
                 playersDone[i] = 1;
             }
             ++i;
-            ++colorPtr;
         } while (i < this->player_num);
     }
 

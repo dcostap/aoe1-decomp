@@ -27,6 +27,16 @@
 // so restored the clean compound-update source.
 // Probe 27: reversed both lower clamp operands to min > updated tab; positional diff stayed 320 but shape fell,
 // so restored the clean compound-update source. No bound-update spelling improved the first paired hunk.
+// Probe 30: used the typed scrollbar edge-event short-circuit form from the original paired blocks; horizontal
+// lower-or-upper and vertical lower-else-upper guards improved shape to 93.81% but worsened positional diff to 443.
+// Probe 32: isolated the vertical lower-else-upper guard with the clean horizontal guard; diff worsened to 327 and
+// shape fell to 91.38%, so restored the clean compound-update source. This branch-layout lead did not beat clean.
+// Probe 35: scoped lower-edge min locals in both orientations were compiler-equivalent; the switch-table relocation
+// and 320-byte clean result did not move.
+// Probe 36: paired scoped min/current locals were also compiler-equivalent; the relocation stayed unchanged.
+// Probe 37: added the explicit binary-supported switch default arm; VC5 emitted identical code and relocation.
+// Probe 38: carried current/min locals through each orientation while keeping compound updates; this added a stack
+// home and worsened the mismatch to 894 bytes, so restored the clean source.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 

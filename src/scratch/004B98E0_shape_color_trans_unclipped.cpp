@@ -58,6 +58,15 @@
 // - A named td capture with delayed header load but natural row/count locals
 //   was emitted-code identical to the clean source; rolled back.  The donor
 //   home lead is exhausted without a source-quality improvement.
+// shardE-4B98E0 probes (2026-08-13):
+// - Applied the exact same-TU sibling cursor topology with a persistent typed
+//   destination home and byte count.  It improved shape to 92.16% and exact
+//   blocks to 73.27%, but remained 255 bytes different; the direct-address
+//   variant was 269B/246 diff and retained no canonical source advantage.
+// - Reordering pitch/header declarations, palette-index spelling, address
+//   terms, and direct-formal aliases produced duplicates or a 283B/263 diff.
+//   Restored the clean typed split-row reconstruction; calls and ownership
+//   remain exact, while the setup/register basin is unresolved.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);

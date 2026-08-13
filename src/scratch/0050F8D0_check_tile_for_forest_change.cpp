@@ -10,6 +10,12 @@
 // shape, 388-byte strict diff).
 // probe 9: explicit pointer/count neighborhood loops were rejected; they
 // increased the code to 454 bytes. Restored the natural nested loops.
+// probes 11-13, 17: unqualified/qualified recursive calls, a reversed tile
+// address, and an explicit zero guard were codegen duplicates. Probes 14-16
+// changed bound declaration/address order but worsened the structural basin.
+// probe 20: inlined the one-use terrain expression in the switch; this
+// natural local-lifetime change improved strict diff 388 -> 384 bytes but
+// left the first prologue hunk and recursive-call relocation unchanged.
 // left in scratch: behavior and field ownership are reconstructed; remaining
 // drift is prologue/register scheduling plus recursive-call relocation.
 
@@ -80,8 +86,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     if (y1 >= this->map_height)
         y1 = (short)this->map_height - 1;
 
-    unsigned char terrain = tile->terrain & 0x1F;
-    switch (terrain) {
+    switch (tile->terrain & 0x1F) {
     case 0x0A: {
         for (short row = y0; row <= y1; ++row) {
             for (short col = x0; col <= x1; ++col) {

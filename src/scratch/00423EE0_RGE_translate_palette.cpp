@@ -28,6 +28,12 @@
 // Follow-up TU pass: declaration initializers and split delta subtraction were duplicates.
 // The historical typed entry-pointer form reached 420 bytes but used a 0x24 frame and
 // 42.67% shape; named channel locals reached 431 bytes with a 0x14 frame. Both were restored.
+// New pass: the original writes the destination-minus-source delta into the incoming source
+// parameter home. Reusing the saved source cursor and mutating that parameter reached 384 bytes,
+// 86.58% shape, and 455 bytes, but the parameter-as-integer form is not a clean source baseline.
+// Scoping the sort counter, moving local4, and widening local4 were codegen duplicates. Restored
+// the clean typed channel-cursor source; remaining blocker is structural VC5 stack/register
+// allocation around the proven parameter-home reuse and local4/inner-counter overlap.
 
 struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 

@@ -12,6 +12,8 @@
 // - Volatile-pointer diagnostics improved emitted metrics locally (313 bytes)
 //   but were rolled back as compiler-steering scaffolding; they did not recover
 //   the original frame or local homes.
+// - A natural inner for-loop post-expression produced identical code; restored
+//   the while form and left the structural frame gap unchanged.
 // Left in scratch: structural frame/prologue and duplicated inner-save topology
 // remain broad; original spills PDP/count and reloads distance from a parameter
 // home while VC5 keeps the corresponding values in a 0x18-frame basin.

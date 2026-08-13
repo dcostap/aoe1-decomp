@@ -18,6 +18,8 @@
 //   849 positional diff bytes. Remaining drift starts at the play local home
 //   ([esp+10] versus original [esp+14]) and includes bucket index shape and
 //   late register allocation. Source keeps named period-plausible ownership.
+// - Store each accepted unit before incrementing its type count. This natural
+//   order matches the original memory effects and improved the diff to 834.
 
 class RGE_Static_Object {};
 
@@ -127,8 +129,8 @@ int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
                     minUnits = 0;
                 } else {
                     count = unitsByTypeCount[type];
-                    unitsByTypeCount[type] = count + 1;
                     unitsByType[type][count] = units[i];
+                    unitsByTypeCount[type] = count + 1;
                 }
             }
         }

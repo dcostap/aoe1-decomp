@@ -17,6 +17,15 @@
 //   alignment.  It was restored.  Current source is the 822-byte candidate:
 //   all calls and list offsets align, but register ownership and several
 //   subtype blocks still differ.
+// - Session shardA4: direct `this`/parameter use, declaration reordering, and
+//   the donor-backed TacticalAIModule virtual base were natural ABI probes;
+//   each was a codegen duplicate.
+// - The original has a dedicated boat-chain return before the shared
+//   civilian/soldier append.  Added that return and the fishing early-return
+//   form; returns became 3/3 and exact-block coverage improved to 60.66%, but
+//   the 822-byte body and first prologue mismatch remained.
+// - A preincrement resize capacity form was also a codegen duplicate and was
+//   restored to the clearer `number + 1` spelling.
 
 class RGE_Master_Static_Object {
 public:
@@ -65,9 +74,14 @@ public:
     int add(T value);
 };
 
-class TribeTacticalAIModule {
+class TacticalAIModule {
 public:
-    char gap_00[0xf0];
+    virtual ~TacticalAIModule();
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    char gap_04[0xec];
     TribeMainDecisionAIModule* md;
     ManagedArray<int> civilians;
     ManagedArray<int> civilianExplorers;
@@ -85,18 +99,16 @@ public:
 
 void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
 {
-    TribeTacticalAIModule* self = this;
-    RGE_Static_Object* object = obj;
-    short group = object->master_obj->object_group;
-    ManagedArray<int>* list;
-    int number;
+    short group = obj->master_obj->object_group;
     int id;
+    int number;
     int i;
+    ManagedArray<int>* list;
 
     if (group == 4) {
-        number = self->civilians.numberValue;
-        id = object->id;
-        list = &self->civilians;
+        number = this->civilians.numberValue;
+        id = obj->id;
+        list = &this->civilians;
         for (i = 0; i < number; i++) {
             if (i >= list->maximumSizeValue)
                 break;
@@ -111,9 +123,9 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
             group == 0x1a || group == 0x0c || group == 0x23 ||
             group == 0x17 || group == 0x24 || group == 0x1c ||
             group == 0x12 || group == 0x0d || group == 0x27) {
-            number = self->soldiers.numberValue;
-            id = object->id;
-            list = &self->soldiers;
+            number = this->soldiers.numberValue;
+            id = obj->id;
+            list = &this->soldiers;
             for (i = 0; i < number; i++) {
                 if (i >= list->maximumSizeValue)
                     break;
@@ -125,17 +137,17 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
         }
         else {
             if (group != 2 && group != 0x14 && group != 0x16 && group != 0x15) {
-                if (object->master_obj->id != 0x9f)
+                if (obj->master_obj->id != 0x9f)
                     return;
-                if (self->md->player->world->difficultyLevel() >= 4)
+                if (this->md->player->world->difficultyLevel() >= 4)
                     return;
-                self->artifacts.add(object->id);
+                this->artifacts.add(obj->id);
                 return;
             }
 
-            number = self->boats.numberValue;
-            id = object->id;
-            list = &self->boats;
+            number = this->boats.numberValue;
+            id = obj->id;
+            list = &this->boats;
             for (i = 0; i < number; i++) {
                 if (i >= list->maximumSizeValue)
                     break;
@@ -148,10 +160,10 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
             list->numberValue++;
 
 boat_done:
-            if (object->master_obj->object_group == 2) {
-                number = self->tradeBoats.numberValue;
-                id = object->id;
-                list = &self->tradeBoats;
+            if (obj->master_obj->object_group == 2) {
+                number = this->tradeBoats.numberValue;
+                id = obj->id;
+                list = &this->tradeBoats;
                 for (i = 0; i < number; i++) {
                     if (i >= list->maximumSizeValue)
                         break;
@@ -165,9 +177,9 @@ boat_done:
             }
 
 trade_done:
-            if (object->master_obj->object_group == 0x14) {
-                id = object->id;
-                list = &self->transportBoats;
+            if (obj->master_obj->object_group == 0x14) {
+                id = obj->id;
+                list = &this->transportBoats;
                 if (list->contains(id) != 1) {
                     number = list->numberValue;
                     if (number > list->maximumSizeValue - 1)
@@ -177,9 +189,9 @@ trade_done:
                 }
             }
 
-            if (object->master_obj->object_group == 0x16) {
-                id = object->id;
-                list = &self->warBoats;
+            if (obj->master_obj->object_group == 0x16) {
+                id = obj->id;
+                list = &this->warBoats;
                 if (list->contains(id) != 1) {
                     number = list->numberValue;
                     if (number > list->maximumSizeValue - 1)
@@ -189,17 +201,19 @@ trade_done:
                 }
             }
 
-            if (object->master_obj->object_group == 0x15) {
-                id = object->id;
-                list = &self->fishingBoats;
-                if (list->contains(id) != 1) {
-                    number = list->numberValue;
-                    if (number > list->maximumSizeValue - 1)
-                        list->resize(number + 1);
-                    list->value[list->numberValue] = id;
-                    list->numberValue++;
-                }
+            if (obj->master_obj->object_group == 0x15) {
+                id = obj->id;
+                list = &this->fishingBoats;
+                if (list->contains(id) == 1)
+                    return;
+                number = list->numberValue;
+                if (number > list->maximumSizeValue - 1)
+                    list->resize(number + 1);
+                list->value[list->numberValue] = id;
+                list->numberValue++;
+                return;
             }
+            return;
         }
     }
 

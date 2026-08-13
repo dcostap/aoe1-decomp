@@ -11,6 +11,9 @@
 // - Volatile-result and parameter-home/goto diagnostics were rolled back; the
 //   remaining structural lead is the original zero-temporary spill and VC5
 //   switch block placement (best rebuilt size 1208 vs 1285).
+// - Kept one typed result initialized at entry for the early return and switch
+//   default; the original zero spill supports this lifetime, but VC5 emitted
+//   the same code (no positional gain, edit/resync 45.84%).
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -152,19 +155,17 @@ public:
 };
 
 float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
-    float temp_float;
+    float result;
     RGE_Map* map;
     float rx;
     float rz;
     int tx;
     int ty;
     RGE_Tile* new_tile;
-    float result;
-
-    temp_float = ZERO_F;
+    result = ZERO_F;
     map = this->owner->world->map;
     if (this->inside_obj != 0) {
-        return temp_float;
+        return result;
     }
 
     if (0.0 < this->master_obj->radius_z) {
@@ -231,7 +232,6 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         this->addToObstructionMap(2);
     }
 
-    result = 0.0f;
     switch (new_tile->tile_type) {
     case 1:
         if (rx + rz < ONE_F) {

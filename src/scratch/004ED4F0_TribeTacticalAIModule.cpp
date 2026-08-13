@@ -76,6 +76,15 @@
 // - Rewriting ManagedArray grow checks as `count > max - 1` instead of
 //   `max + -1 < count` preserves the original jle-skip compare family and trims
 //   edit diff slightly.
+// - Natural-lifetime probe: made TacticalAIModule, TacticalAIGroup, and
+//   ResourceItem typed bases/members, and moved their construction to the
+//   initializer list. Removed the manual derived-vptr store. This is retained
+//   as the one constructor-order test for the current session.
+// - Kept the typed TacticalAIModule base but restored raw placement storage for
+//   group/resource objects. This retained compiler EH setup, removed automatic
+//   lifetime reordering, and improved the structural diff to 5325 bytes.
+// - A novtable derived-class context removed the compiler's early vptr store,
+//   but moved the first mismatch and worsened the structural diff. Rolled back.
 
 #include "..\..\include\game_globals.h"
 
@@ -85,19 +94,19 @@ extern "C" void __cdecl operator_delete(void* p);
 extern float save_game_version;
 class TribeMainDecisionAIModule;
 
-class TacticalAIModule { public: char base[0xF0]; TacticalAIModule(void* owner, int player); };
+class TacticalAIModule { public: virtual ~TacticalAIModule(); char base[0xEC]; TacticalAIModule(void* owner, int player); };
 struct ManagedIntArray { int* volatile value; volatile int numberValue; volatile int desiredNumberValue; int maximumSizeValue; };
 struct UnitData { int id; int data1; int data2; int data3; int data4; int data5; };
 struct OldUnitData { int data1; int data2; int data3; int data4; int data5; };
-class TacticalAIGroup { public: void* vtable_ptr; TacticalAIGroup* next; TacticalAIGroup* prev; char bytes[0x324]; TacticalAIGroup(); static void load(TacticalAIGroup* self, int file); };
-class ResourceItem { public: char bytes[0x70]; ResourceItem(int count); static void setValue(ResourceItem* self, int index, int value); };
+class TacticalAIGroup { public: virtual ~TacticalAIGroup(); TacticalAIGroup* next; TacticalAIGroup* prev; char bytes[0x324]; TacticalAIGroup(); static void load(TacticalAIGroup* self, int file); };
+class ResourceItem { public: virtual ~ResourceItem(); char bytes[0x6C]; ResourceItem(int count); static void setValue(ResourceItem* self, int index, int value); };
 TacticalAIGroup* createGroup(void* self, int arg);
 struct PlacementState { char pad_000[0x114]; int active; char pad_118[0x18]; };
 struct AttackState { char pad_00[0x28]; int active; };
 
-class TribeTacticalAIModule {
+class TribeTacticalAIModule : public TacticalAIModule {
 public:
-    char base[0xF0]; void* md; ManagedIntArray civilians; ManagedIntArray civilianExplorers; ManagedIntArray soldiers; ManagedIntArray ungroupedSoldiers;
+    void* md; ManagedIntArray civilians; ManagedIntArray civilianExplorers; ManagedIntArray soldiers; ManagedIntArray ungroupedSoldiers;
     ManagedIntArray boats; ManagedIntArray warBoats; ManagedIntArray fishingBoats; ManagedIntArray tradeBoats; ManagedIntArray transportBoats; ManagedIntArray artifacts;
     int sn[226]; UnitData gatherers[50]; int numberGatherersValue; int desiredNumberGatherersValue; char groups[0x330];
     int groupIDValue; int numberGroupsValue; unsigned long lastGroupAttackTime; unsigned long lastGroupRebalanceTime; unsigned long lastAttackResponseTime;
@@ -112,6 +121,7 @@ public:
 };
 
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
+    : TacticalAIModule(0, param_1)
 {
   int iVar1;
   int *piVar2;
@@ -127,7 +137,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   OldUnitData tempUD;
   
   tempUD.data1 = (int)this;
-  ((TacticalAIModule *)this)->TacticalAIModule::TacticalAIModule(0, param_1);
   this->md = (TribeMainDecisionAIModule *)0x0;
   (this->civilians).value = (int *)0x0;
   (this->civilians).numberValue = 0;
@@ -169,9 +178,9 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   (this->artifacts).numberValue = 0;
   (this->artifacts).desiredNumberValue = 0;
   (this->artifacts).maximumSizeValue = 0;
-  pTVar5 = (TacticalAIGroup *)this->groups;
-  ((TacticalAIGroup *)this->groups)->TacticalAIGroup::TacticalAIGroup();
   this->lastGroupRebalanceTime = 0;
+  TacticalAIGroup *group = (TacticalAIGroup *)this->groups;
+  group->TacticalAIGroup::TacticalAIGroup();
   (this->playersToAttack).value = (int *)0x0;
   (this->playersToAttack).numberValue = 0;
   (this->playersToAttack).desiredNumberValue = 0;
@@ -191,8 +200,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   iVar6 = param_2;
   iVar1 = 4;
   ((ResourceItem *)this->neededResources)->ResourceItem::ResourceItem(iVar1);
-  ((TacticalAIGroup *)this->groups)->next = pTVar5;
-  ((TacticalAIGroup *)this->groups)->prev = pTVar5;
+  ((TacticalAIGroup *)this->groups)->next = group;
+  ((TacticalAIGroup *)this->groups)->prev = group;
   this->attackEnabledValue = 0;
   this->updateArea = 0;
   this->firstNeededResourceUpdateDone = 0;
@@ -214,7 +223,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   this->averageUpdateAreaTimeValue = -1;
   this->updateAreaAverageCount = 0;
   this->updateAreaAverageTotal = 0;
-  *(int*)this = 0x575788;
   file = param_2;
   rge_read(file,&param_1,4);
   tempInt = 0;

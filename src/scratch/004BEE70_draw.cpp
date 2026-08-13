@@ -13,6 +13,8 @@
 // - exhausted 10 meaningful hypotheses; remaining drift is first draw_setup
 //   local-home scheduling, GDI/text stack-slot placement, and the later stat
 //   dispatch block. No inline asm or compiler-steering source retained.
+// - typed font and old_font as HGDIOBJ and removed SelectObject casts from the
+//   exact draw_item donor; emitted code moved one byte farther, so restored.
 
 #include <windows.h>
 #include <stdio.h>

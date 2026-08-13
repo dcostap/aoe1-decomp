@@ -56,6 +56,11 @@
 //   starting at 00425C01 (stack-home selection [esp+48] vs [esp+4C]); no EH or
 //   call-target blocker remains. Next lead: preserve the frame-0x20 shared-count
 //   basin while restoring the original count/pointer parameter-home assignments.
+// shardC5-425A40 baseline: current source keeps canonical named ownership and
+//   natural typed allocation loops; exact size/frame/calls remain aligned.
+// shardC5-425A40 control-flow lead: separate typed remaining counters with
+//   do/while loops changed the build to 1676B, removed two CFG conditions, and
+//   introduced wrong EH call relocation; restored the clean while-loop source.
 
 #include <string.h>
 

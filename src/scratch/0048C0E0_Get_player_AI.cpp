@@ -18,6 +18,8 @@
 // 15: saved the program AI directory as a second formatting argument; checking local argument lifetime and register order.
 // 16: restored the known RGE_Scenario virtual surface and adjusted the leading gap to keep TempText3 at +11E8.
 // 17: restored direct natural member expressions and returns after unchanged alias probes; retained the canonical layout reconstruction.
+// 18: replaced the leading opaque gap with the inventory-supported typed RGE_Scenario prefix; all proven offsets remain unchanged and codegen is a duplicate.
+// 19: flattened the use-temp condition into a natural per-file/fallback if/else; emitted code was unchanged, so restored the nested form.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
@@ -35,6 +37,9 @@ public:
     char ai_dir[0x100];
 };
 
+class RGE_Timeline;
+class RGE_Game_World;
+
 class RGE_Base_Game {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
@@ -51,7 +56,19 @@ public:
     virtual ~RGE_Scenario();
     virtual void rehook();
     virtual void save(int);
-    char gap_0004[0x11E4];
+    RGE_Timeline* time_line;
+    RGE_Game_World* world;
+    unsigned char victory_conquest;
+    char player_name[16][0x100];
+    unsigned char gap_100D[3];
+    char* scenario_name;
+    char* description;
+    char* hints;
+    char* win_message;
+    char* loss_message;
+    char* historicle_notes;
+    char TempText1[0xE0];
+    char TempText2[0xE0];
     char TempText3[0xE0];
     char* BuildList[16];
     char* CityPlan[16];

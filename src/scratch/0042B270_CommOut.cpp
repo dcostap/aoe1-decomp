@@ -21,6 +21,8 @@
 // - removing the post-scan hr initialization let EBX carry the count and
 //   improved block coverage, but worsened strict diff and produced a -5-byte
 //   function; restored the defined hr initialization.
+// - restored the typed packet-header owner for the four binary-proven fields;
+//   emitted code was unchanged, so kept the natural typed source.
 // - left in scratch: current best is a broad local-home/CFG mismatch.  The
 //   rebuilt OutCommBuff home remains [esp+1c] versus original [esp+18], while
 //   the original outgoing count home is [esp+20] versus rebuilt [esp+14].
@@ -143,7 +145,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 {
     uint full_length;
     uint header_length;
-    char* out;
+    MSGFORMAT_HEADER_GUARANTEED* out;
     char* packet;
     int outgoing_count;
     ulong sync_turn;
@@ -167,20 +169,20 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         return 0;
     }
 
-    out = (char*)operator new(0x0C);
+    out = (MSGFORMAT_HEADER_GUARANTEED*)operator new(0x0C);
 
     if (type == '1' || type == '2' || type == '?' || type == 'A') {
         L->Log("+++BAD Msg type -- ASSERT");
     }
 
     if (this->RGE_Guaranteed_Delivery != 0) {
-        ((MSGFORMAT_HEADER_GUARANTEED*)out)->Serialno = this->GTDSerialNo;
+        out->Serialno = this->GTDSerialNo;
         this->PlayerHighSerialNumber[this->Me] = this->GTDSerialNo;
         ++this->GTDSerialNo;
         header_length = 0x0C;
     } else {
         header_length = 8;
-        ((MSGFORMAT_HEADER_GUARANTEED*)out)->Serialno = 0;
+        out->Serialno = 0;
     }
 
     full_length = header_length + length;
@@ -189,8 +191,8 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
                0xFA0, header_length, length);
     }
 
-    ((MSGFORMAT_HEADER_GUARANTEED*)out)->Sequence = 0;
-    ((MSGFORMAT_HEADER_GUARANTEED*)out)->Command = 0;
+    out->Sequence = 0;
+    out->Command = 0;
     sync_turn = this->current_turn +
                 (uint)this->PlayerOptions.CommandTurnIncrement;
     ((MSGFORMAT_HEADER_GUARANTEED*)out)->ExecuteOnTurn = sync_turn;
@@ -209,16 +211,15 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
     if (type == '1' || type == '2' || type == '?' || type == 'A') {
         L->Log("ASSERT - BAD MSG TYPE");
     } else {
-        ((MSGFORMAT_HEADER_GUARANTEED*)out)->Sequence =
-            this->GetNextSequence(sync_turn);
+        out->Sequence = this->GetNextSequence(sync_turn);
         if (this->PlayerOptions.ProgramState != 5 &&
-            ((MSGFORMAT_HEADER_GUARANTEED*)out)->Sequence == 0) {
+            out->Sequence == 0) {
             operator delete(out);
             return (long)0x8877010E;
         }
     }
 
-    ((MSGFORMAT_HEADER_GUARANTEED*)out)->Command = type;
+    out->Command = type;
     packet = (char*)operator new(full_length + 1);
     memcpy(packet, out, header_length);
     if (length != 0) {
@@ -279,7 +280,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
             if (hr == 0) {
                 this->TXPacketLength += recipient_count * full_length;
                 this->StoreForResend(
-                    ((MSGFORMAT_HEADER_GUARANTEED*)out)->Serialno, packet,
+                    out->Serialno, packet,
                     full_length,
                                      this->DestMap);
             } else {
@@ -332,11 +333,11 @@ sent:
             strcpy(GTDString, "!GTD");
         }
         L->Log("COMM: Ser#%d %s TX To=%d Len=%d+%d HDR> Seq=%d",
-               ((MSGFORMAT_HEADER_GUARANTEED*)out)->Serialno,
+               out->Serialno,
                GTDString + 4, to, length, header_length,
-               ((MSGFORMAT_HEADER_GUARANTEED*)out)->Sequence, sync_turn,
-               ((MSGFORMAT_HEADER_GUARANTEED*)out)->Command,
-               ((MSGFORMAT_HEADER_GUARANTEED*)out)->Command,
+               out->Sequence, sync_turn,
+               out->Command,
+               out->Command,
                (int)(char)packet[header_length],
                (int)(char)packet[header_length], outgoing_count, hr,
                debug_timeGetTime(COM_HAND_CPP, 0x112B));
@@ -348,7 +349,7 @@ sent:
         ++this->TXPackets;
         if (type == '>') {
             this->AddCommand(sync_turn, data, length, this->Me,
-                             ((MSGFORMAT_HEADER_GUARANTEED*)out)->Sequence,
+                             out->Sequence,
                              0);
         }
     }

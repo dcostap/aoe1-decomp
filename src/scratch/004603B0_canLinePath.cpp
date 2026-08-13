@@ -25,6 +25,14 @@
 //     under the current loop shape, so the PDB-decorated references remain.
 // 14: tested the adjacent do/while source family; it lost 12 code bytes and
 //     one CFG return, so the counted for loop is retained.
+// 15: computed both point deltas directly before scan locals; this changed only
+//     relocation bytes and did not move the first paired hunk.
+// 16: named natural start/end coordinate locals; VC5 emitted the same code,
+//     so the clean counted-loop source is retained.  The first gap remains the
+//     receiver/local-home ordering before the saved-register prologue.
+// 17: reversed the natural distance-stop predicate to maxDistance >= distance;
+//     VC5 added 12 bytes and worsened the loop tail, so the original distance <=
+//     maxDistance form is retained.
 
 #include <math.h>
 

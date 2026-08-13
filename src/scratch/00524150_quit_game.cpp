@@ -13,6 +13,8 @@
 // return, moving the common testing flag clear before destroyPanel, and placing
 // the clear before the finish label did not improve the 12-byte suffix gap;
 // the latter two changed size/CFG and were restored.
+// liveness (rolled back): function-scoped join-screen pointer preserved the
+// same 582-byte output and did not move the common flag store before EH restore.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" long __cdecl _findfirst(const char* filespec, void* fileinfo);

@@ -15,6 +15,14 @@
 //    is the VC5 screen-offset/FPU schedule and two-byte tail size drift.
 // 6: Swapped x/y assignment order and split compound additions were either
 //    slightly worse or codegen duplicates; retaining the best int-local form.
+// 7: Reversed each screen-offset addition to follow the original field-load
+//    order; VC5 emitted the same code, so restored the best natural form.
+// 8: Replaced the decompiler union output aliases with four typed short
+//    corner locals and kept the two draw calls in the natural corner order;
+//    this kept the size and call set but worsened instruction shape, so the
+//    best union-backed source was restored.
+// 9: Changed only RGE_Map::get_point screen-coordinate formals from int to
+//    signed short; emitted code was unchanged, so the ABI probe was restored.
 
 extern int dword_0062C50C;
 extern "C" __declspec(dllimport) void* __stdcall SelectClipRgn(void* hdc, void* rgn);

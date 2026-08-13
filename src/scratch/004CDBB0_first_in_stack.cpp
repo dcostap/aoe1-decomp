@@ -13,6 +13,10 @@
 // 11: exact RGE_Action base plus typed master/player/object surfaces reduced positional drift from 561 to 467 bytes and produced the observed movsx EBX object-group load; call set and CFG counts now align.
 // 12: declaration-order, direct-reread, and distinct RGE_Static_Object target probes did not remove the extra EBP save or swap target/actor coloring; emitted code duplicated across several probes.
 // 13: bounded result left in scratch: 604 emitted bytes versus 595, saved EBP versus original EBX/ESI/EDI only, and the remaining broad drift begins at the prologue/register topology. Calls are 19/19 with exact target multiset.
+// 14: direct typed target_obj traversal and tail guard produced identical codegen; restored the retained target alias as the clean source.
+// 15: scoped a typed actor local after target-master load; target/actor register order matched the oracle, but positional diff worsened to 489 bytes and code shrank to 589; rolled back.
+// 16: reread this->obj in notification arguments while retaining the scoped actor local; emitted code returned exactly to the clean 604-byte baseline; restored direct typed source.
+// 17: changing object_group from int to its proven short field width grew code to 609 bytes and worsened diff to 575; restored the clean 604-byte source.
 
 typedef unsigned char uchar;
 

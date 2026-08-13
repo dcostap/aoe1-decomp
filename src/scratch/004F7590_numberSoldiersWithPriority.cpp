@@ -32,6 +32,10 @@
 //   test the original EBX=this, EDI=result, EBP=offset callee-save coloring.
 // probe 17: corrected the positive-arm threshold ownership and mirrored the
 //   original compare operand spellings for bounds/duplicate scans.
+// probe 18: restored a natural typed count loop with direct ManagedArray
+//   element access; removed the byte-stride cursor and excess owner alias.
+//   Result: size moved 833->832 and exact-block coverage improved, but the
+//   frame stayed 0x10 and the first structural hunk remained unchanged.
 
 extern "C" {
     void* __cdecl operator_new(unsigned int size);
@@ -119,8 +123,7 @@ public:
 
 int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
 {
-    int rNum;
-    TribeTacticalAIModule* tactical;
+    int rNum = 0;
     ManagedArrayInt* soldierArray;
     RGE_Static_Object* object;
     UnitAIModule* ai;
@@ -133,36 +136,30 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
     int index;
     int* newValue;
     int copyIndex;
-    int byteOffset;
-
-    tactical = this;
-    rNum = 0;
 
     if (reset == 1)
-        tactical->workingArea.numberValue = 0;
+        this->workingArea.numberValue = 0;
 
     reset = 0;
-    if (0 < tactical->soldiers.numberValue) {
-        soldierArray = &tactical->soldiers;
+    if (0 < this->soldiers.numberValue) {
+        soldierArray = &this->soldiers;
         do {
-            byteOffset = reset * 4;
             if (reset > soldierArray->maximumSizeValue - 1)
                 soldierArray->resize(reset + 1);
 
-            object = tactical->md->aiPlayer->world->object(
-                *(int*)((char*)soldierArray->value + byteOffset));
+            object = this->md->aiPlayer->world->object(soldierArray->value[reset]);
             if ((object != 0) && (object->unitAI() != 0)) {
                 if (reset > soldierArray->maximumSizeValue - 1)
                     soldierArray->resize(reset + 1);
 
-                taskedNumber = tactical->unitsTaskedThisUpdate.numberValue;
+                taskedNumber = this->unitsTaskedThisUpdate.numberValue;
                 taskedIndex = 0;
                 if (0 < taskedNumber) {
                     do {
-                        if (taskedIndex >= tactical->unitsTaskedThisUpdate.maximumSizeValue)
+                        if (taskedIndex >= this->unitsTaskedThisUpdate.maximumSizeValue)
                             break;
-                        if (tactical->unitsTaskedThisUpdate.value[taskedIndex] ==
-                            *(int*)((char*)soldierArray->value + byteOffset))
+                        if (this->unitsTaskedThisUpdate.value[taskedIndex] ==
+                            soldierArray->value[reset])
                             goto nextSoldier;
                         taskedIndex = taskedIndex + 1;
                     } while (taskedIndex < taskedNumber);
@@ -181,14 +178,14 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                     if (reset > soldierArray->maximumSizeValue - 1)
                         soldierArray->resize(reset + 1);
 
-                    number = tactical->workingArea.numberValue;
-                    value = *(int*)((char*)soldierArray->value + byteOffset);
+                    number = this->workingArea.numberValue;
+                    value = soldierArray->value[reset];
                     index = 0;
                     if (0 < number) {
                         do {
-                            if (index >= tactical->workingArea.maximumSizeValue)
+                            if (index >= this->workingArea.maximumSizeValue)
                                 break;
-                            if (tactical->workingArea.value[index] == value)
+                            if (this->workingArea.value[index] == value)
                                 goto countedSoldier;
                             index = index + 1;
                         } while (index < number);
@@ -206,14 +203,14 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                             if (reset > soldierArray->maximumSizeValue - 1)
                                 soldierArray->resize(reset + 1);
 
-                            value = *(int*)((char*)soldierArray->value + byteOffset);
-                            number = tactical->workingArea.numberValue;
+                            value = soldierArray->value[reset];
+                            number = this->workingArea.numberValue;
                             index = 0;
                             if (0 < number) {
                                 do {
-                                    if (index >= tactical->workingArea.maximumSizeValue)
+                                    if (index >= this->workingArea.maximumSizeValue)
                                         break;
-                                    if (tactical->workingArea.value[index] == value)
+                                    if (this->workingArea.value[index] == value)
                                         goto countedSoldier;
                                     index = index + 1;
                                 } while (index < number);
@@ -232,14 +229,15 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                         order = ai->currentOrderPriority();
                         if (order == threshold) {
                             if (reset > soldierArray->maximumSizeValue - 1) {
-                                newValue = (int*)operator_new(byteOffset + 4);
+                                newValue = (int*)operator_new(reset * 4 + 4);
                                 if (newValue != 0) {
                                     copyIndex = 0;
                                     if (0 < soldierArray->maximumSizeValue) {
                                         do {
                                             if (reset + 1 <= copyIndex)
                                                 break;
-                                            newValue[copyIndex] = soldierArray->value[copyIndex];
+                                            newValue[copyIndex] =
+                                                soldierArray->value[copyIndex];
                                             copyIndex = copyIndex + 1;
                                         } while (copyIndex < soldierArray->maximumSizeValue);
                                     }
@@ -249,14 +247,14 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                                 }
                             }
 
-                            value = *(int*)((char*)soldierArray->value + byteOffset);
-                            if (tactical->workingArea.contains(value) != 1) {
-                                number = tactical->workingArea.numberValue;
-                                if (number > tactical->workingArea.maximumSizeValue - 1)
-                                    tactical->workingArea.resize(number + 1);
-                                tactical->workingArea.value[tactical->workingArea.numberValue] = value;
-                                tactical->workingArea.numberValue =
-                                    tactical->workingArea.numberValue + 1;
+                            value = soldierArray->value[reset];
+                            if (this->workingArea.contains(value) != 1) {
+                                number = this->workingArea.numberValue;
+                                if (number > this->workingArea.maximumSizeValue - 1)
+                                    this->workingArea.resize(number + 1);
+                                this->workingArea.value[this->workingArea.numberValue] = value;
+                                this->workingArea.numberValue =
+                                    this->workingArea.numberValue + 1;
                             }
                             rNum = rNum + 1;
                         }
@@ -265,10 +263,10 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                 }
             }
 appendSoldier:
-                    if (number > tactical->workingArea.maximumSizeValue - 1)
-                        tactical->workingArea.resize(number + 1);
-                    tactical->workingArea.value[tactical->workingArea.numberValue] = value;
-                    tactical->workingArea.numberValue = tactical->workingArea.numberValue + 1;
+                    if (number > this->workingArea.maximumSizeValue - 1)
+                        this->workingArea.resize(number + 1);
+                    this->workingArea.value[this->workingArea.numberValue] = value;
+                    this->workingArea.numberValue = this->workingArea.numberValue + 1;
             goto countedSoldier;
 countedSoldier:
             rNum = rNum + 1;

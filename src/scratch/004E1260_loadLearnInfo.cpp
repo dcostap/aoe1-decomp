@@ -18,6 +18,11 @@
 // Base_Game and Player polymorphic boundaries without changing emitted bytes;
 // the remaining uninitialized local warning reflects an unresolved serialized
 // argument/stack-slot reconstruction, not a promoted exact candidate.
+// shard B6 tranche 6: dossier, same-TU donors, and ABI query confirm exact size,
+// frame, calls, and list ownership. Short civ grew to 1215 bytes. Temp-first
+// declarations and direct player-id expressions reached positional 1141 but
+// grew to 1225 bytes. Restored this 1212-byte canonical source; first hunk is
+// still the suffix register assignment (original EBX, current EBP).
 
 #include <stdio.h>
 

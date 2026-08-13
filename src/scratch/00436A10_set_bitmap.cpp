@@ -15,6 +15,14 @@
 // - Tested one typed ownership scope: one postcondition delete and a result-
 //   gated set_world.  It reduced size to 528 and diff to 387, but merged the
 //   two observed TPicture cleanup call sites (11/13 ordered calls); rolled back.
+// - Tested a declaration-initialized TPicture* at the allocation site to model
+//   the bitmap lifetime in the fresh diam_map TU; VC5 emitted the same first
+//   hunk and full 572-byte body, so the natural typed form is retained.
+// - Tested result = 0 before construction and one outer constructor-result
+//   guard, while retaining both natural picture deletes.  This reached the
+//   original 541-byte size, 95.12% shape, and diff 379; the cleanup block is
+//   six bytes early, so the checker pairs its operator delete with the oracle's
+//   destructor call.  Retain this source as the best natural reconstruction.
 // FLAGS: config/flags/00436A10_set_bitmap.rsp (/nologo /c /O2 /Oy /GX)
 
 #include <stdlib.h>
@@ -74,9 +82,8 @@ void operator delete(void*);
 
 int RGE_Diamond_Map::set_bitmap(char* name, long param_2)
 {
-    int result;
+    int result = 0;
     short pic_wid;
-    TPicture* picture;
     short pic_hgt;
     char* pic_line;
     short pic_pitch;
@@ -91,13 +98,10 @@ int RGE_Diamond_Map::set_bitmap(char* name, long param_2)
         this->map_tile_rows = 0;
     }
 
-    picture = new TPicture(name, param_2, 0, 0, 0);
-    if (picture == 0) {
-        result = 0;
-    } else {
+    TPicture* picture = new TPicture(name, param_2, 0, 0, 0);
+    if (picture != 0) {
         if (picture->Dib == 0) {
             delete picture;
-            result = 0;
         } else {
             pic_hgt = (short)picture->Height;
             pic_wid = (short)picture->Width;

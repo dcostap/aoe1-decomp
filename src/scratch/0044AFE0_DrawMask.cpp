@@ -10,6 +10,17 @@
 // - Remaining gap is the VC5 frame/register basin and loop parameter-home
 //   reuse (original 0x10 frame, rebuilt 0xC); no opaque pointer/int alias is
 //   retained as living source.
+// - An independent size-3 test reproduced the original inline dispatch and
+//   raised shape similarity, but added 17 bytes and worsened positional diff;
+//   rolled back to the clean else-if source.
+// - Row-local pointer subtraction, parameter-home reuse, and width/height
+//   snapshots did not improve positional matching; retained the natural typed
+//   mask traversal as the best source reconstruction.
+// - An int-typed mask sample reproduced the early sign extension but shrank
+//   the frame and worsened the positional diff; rolled back to char sampling.
+// - A single typed running mask pointer replaced the base-plus-cursor pair;
+//   this added 35 bytes and worsened the first structural hunk, so it was
+//   restored. The two-pointer source remains the best natural reconstruction.
 
 class PointMaker {
 public:

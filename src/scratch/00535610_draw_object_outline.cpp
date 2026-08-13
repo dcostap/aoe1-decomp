@@ -15,6 +15,7 @@
 // 12: direct absolute global surfaces restored the original fixed-address relocations and 0x3C frame; typed call order/target multiset became exact (12/12), with the remaining gap localized after the alignment call.
 // 13: removing the named draw_flag temporary let VC5 retain the master vtable in EBX as in the oracle; widening the placement result to short recovered the oracle's xor-cx/mov-cl/test-cx sequence and reduced the strict gap to 225 bytes.
 // 14: donor-shaped output reconstruction uses get_tile screen coordinates plus alignment_box x4/y2/scr_x/y3/y4/y1/x2/tail and the proven y4/tail midpoint formulas. Final source is size/frame exact with 12/12 calls and 54.42% exact-block coverage; remaining drift starts at the screen-coordinate output LEAs and late local-home/register scheduling. Duplicate final x3/scr_y spelling was rolled forward as the same canonical basin.
+// 15: tried the natural view.cpp line-order lead by computing outline centers before the sprite gate; size matched, but the first hunk moved earlier and diff worsened from 239 to 275, so rolled back.
 
 struct tagPOINT {
     long x;

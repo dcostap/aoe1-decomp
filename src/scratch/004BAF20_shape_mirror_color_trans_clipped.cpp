@@ -33,6 +33,13 @@
 // removed the frame, and added a third memset call; restored the clean source.
 // tried following sibling scratch shapes 004BAC00/004BB280; this variant needs original's tight two-local frame and exact EBX/EBP/ESI/EDI RLE state allocation.
 // left in scratch: behavior/call surface is broad, but exact VC5 source shape for the clipped RLE state machine is not recovered. No accepted_drift: broad prologue/register/layout drift.
+// shardE-4BAF20 bounded pass:
+// - Explicit odd-packet comparisons improved block shape but widened strict
+//   drift from 848 to 882 bytes and were restored.
+// - One function-scope packet byte reduced the frame to 0xC but widened drift
+//   to 905 bytes and was restored. The clean typed candidate remains best.
+// - left in scratch: original frame is 0x8 with two locals; current source
+//   retains the canonical typed decoder and exact three-call surface.
 
 typedef unsigned char byte;
 #include <string.h>

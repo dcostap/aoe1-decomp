@@ -16,6 +16,31 @@
 // - A natural typed DirectSound local for the cooperative-level failure kept
 //   both Release call sites and aligned all 12 calls, but grew the function by
 //   26 bytes; restored the clean member-based source.
+// - Replaced the goto around cooperative-level setup with a natural nested
+//   if/else: failed priority setup falls through to normal setup, while the
+//   successful priority path sets the format flag after that call site.
+// - Made the cooperative success flag an int; VC5 now keeps it in EBP and the
+//   primary-buffer field address in EBX, as in the original register lifetime.
+// - Removed the fmt memset; the binary writes each WAVEFORMATEX field directly
+//   after the primary-buffer call, unlike the zero-fill path used by dsbd.
+// - Tried a positive cooperative-level outer branch with a separate failure
+//   cleanup arm; it made the first CFG hunk worse, so it was rolled back.
+// - A branch-local typed DirectSound receiver for cooperative cleanup was
+//   optimized away and did not split the Release site; restored member access.
+// - Reordered the natural WAVEFORMATEX assignments to average rate, block
+//   align, then bit depth, matching the binary's post-push store order.
+// - Captured the created DirectSound interface before capability setup and
+//   used that typed receiver only for cooperative failure cleanup.
+// - Used the binary-supported shared buffer-failure cleanup edge: CreateSoundBuffer
+//   jumps to it on failure, while successful Play jumps over it to initialization.
+// - The explicit buffer-failure labels changed the call sequence and were
+//   rolled back; retain the natural CreateSoundBuffer success body.
+// - A typed pointer-to-member slot did not retain the separate Release site;
+//   restored the captured receiver, which gives 12-call parity and the best
+//   structural result in this claim.
+// - Moved the natural DirectSound receiver initialization below GetCaps; this
+//   worsened the first mismatch to the capability flag and raised the diff to
+//   310 bytes, so restored the captured receiver before final validation.
 #include <string.h>
 #include <dsound.h>
 
@@ -42,10 +67,11 @@ public:
 };
 
 int TSound_Driver::init(void* hwnd, char* path) {
+    int has_secondary;
     DSCAPS dscaps;
     DSBUFFERDESC dsbd;
     WAVEFORMATEX fmt;
-    bool has_secondary;
+    IDirectSound* sound;
 
     this->set_path(path);
     this->main_wnd = hwnd;
@@ -54,6 +80,8 @@ int TSound_Driver::init(void* hwnd, char* path) {
     this->dsrval = DirectSoundCreate(0, &this->direct_sound, 0);
     if (this->dsrval != 0) return 0;
 
+    sound = this->direct_sound;
+
     dscaps.dwSize = 0x60;
     this->direct_sound->GetCaps(&dscaps);
 
@@ -61,17 +89,17 @@ int TSound_Driver::init(void* hwnd, char* path) {
 
     if ((dscaps.dwFlags & 8) != 0) {
         this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, 2);
-        if (this->dsrval == 0) {
+        if (this->dsrval != 0) {
+            this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, 1);
+        } else {
             has_secondary = 1;
-            goto after_level;
         }
+    } else {
+        this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, 1);
     }
 
-    this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, 1);
-
-after_level:
     if (this->dsrval != 0) {
-        this->direct_sound->Release();
+        sound->Release();
         this->direct_sound = 0;
         return 0;
     }
@@ -82,13 +110,12 @@ after_level:
     this->dsrval = this->direct_sound->CreateSoundBuffer(&dsbd, &this->primary_buffer, 0);
     if (this->dsrval == 0) {
         if (has_secondary) {
-            memset(&fmt, 0, sizeof(fmt));
             fmt.wFormatTag = 1;
             fmt.nChannels = 1;
             fmt.nSamplesPerSec = 0x5622;
-            fmt.wBitsPerSample = 0x10;
-            fmt.nBlockAlign = 2;
             fmt.nAvgBytesPerSec = 0xAC44;
+            fmt.nBlockAlign = 2;
+            fmt.wBitsPerSample = 0x10;
             fmt.cbSize = 0;
             this->dsrval = this->primary_buffer->SetFormat(&fmt);
         }

@@ -10,6 +10,8 @@
 // - Paused: frame is 0xD8 versus 0xE0, with broad register and block-layout drift remaining.
 // - Main-agent ABI audit restored typed Map_Stack helper calls and a separate
 //   pop cost output. The frame improved to 0xDC and positional drift fell to 956 bytes.
+// - Tried keeping the water-area row bound live across both natural loops; size grew
+//   by 88 bytes and drift worsened, so restored the prior clean source.
 
 struct Map_Stack {
     int x;

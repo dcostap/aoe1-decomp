@@ -13,6 +13,8 @@
 // Main-agent audit: replaced the generated VPAD padding with the named
 // UnitAIModule ABI surface through the binary-proven +0xC4 can_attack_mem
 // override. No codegen-only volatility or inline assembly is retained.
+// Continuation probe: moved hp-over-damage before timeToBeKilled to match the
+// original FPU statement order; structure improved, bytes worsened.
 
 #include "../../include/game_globals.h"
 #include <math.h>
@@ -226,9 +228,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                         if (commanderIsPriest == 0 ||
                                             commanderObj->unitAI()->can_attack_mem(memory) != 0) {
                                             float damage = this->damageInflictedPerSecond(group, ids, object);
+                                            float hpOverDamage = object->hp / damage;
                                             float time = this->timeToBeKilled(group, ids, object);
                                             if (damage != DAT_00575580 && time != DAT_00575580) {
-                                                float hpOverDamage = object->hp / damage;
                                                 float targetTime = time / hpOverDamage;
                                                 int targetX = (int)commanderObj->world_x;
                                                 int targetY = (int)commanderObj->world_y;

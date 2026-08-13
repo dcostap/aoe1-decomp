@@ -25,15 +25,21 @@
 // - `register` on scenario_dir was a codegen duplicate and was removed from
 //   the living source.  Remaining drift is localized to stack-home/address
 //   offsets and late source-local scheduling; leave this target in scratch.
+// - The decomp local order is `_OFSTRUCT`, fileName, then text.  A 252-byte
+//   Reserved1 surface plus text[560] restores the target frame and local
+//   addresses; text[556] drops the frame by four bytes.  fileName[260] is the
+//   period +4 buffer form and emits the same bytes as the inferred 257 size.
+// - Reusing function-scope prog_info/line and curr_line follows the decomp
+//   pointer lifetimes.  A first-block scenario_dir alias fixes that paired
+//   hunk.  Best is now 393 differing bytes, 95.52% shape, exact frame and
+//   calls.  The next mismatch is the second cancel-path add/call schedule.
 
 #include <new.h>
 #include <string.h>
 #include <stdio.h>
 
-// The original source uses the OFSTRUCT's Reserved1 field as a general
-// scratch string.  The local surface keeps the observed 0x100-byte window.
+// The original source passes Reserved1 as the OFSTRUCT scratch surface.
 struct _OFSTRUCT {
-    char gap_00[4];
     char Reserved1[252];
 };
 
@@ -146,28 +152,33 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                                    unsigned long param_3,
                                    unsigned long param_4)
 {
-    char text[556];
-    char fileName[257];
     _OFSTRUCT of;
+    char fileName[260];
+    char text[560];
+    char* line;
+    RGE_Prog_Info* prog_info;
+    long curr_line;
 
     if (param_1 != 0) {
         if (param_1->panelName() != 0 &&
             strcmp(param_1->panelName(), "Cancel Dialog") == 0) {
             panel_system.destroyPanel("Cancel Dialog");
             if (param_2 == 0) {
-                char* line;
-                char* scenario_dir = rge_base_game->prog_info->scenario_dir;
+                prog_info = rge_base_game->prog_info;
+                char* scenario_dir = prog_info->scenario_dir;
+                line = ((TTextPanel*)list)->currentLine();
 
                 sprintf(of.Reserved1, "%s%s.scn",
-                        scenario_dir, ((TTextPanel*)list)->currentLine());
+                        scenario_dir, line);
                 __unlink(of.Reserved1);
 
+                prog_info = rge_base_game->prog_info;
+                line = ((TTextPanel*)list)->currentLine();
                 sprintf(of.Reserved1, "%s%s.scx",
-                        rge_base_game->prog_info->scenario_dir,
-                        ((TTextPanel*)list)->currentLine());
+                        prog_info->scenario_dir, line);
                 __unlink(of.Reserved1);
 
-                long curr_line = ((TTextPanel*)list)->get_line();
+                curr_line = ((TTextPanel*)list)->get_line();
                 ((TTextPanel*)list)->delete_line(curr_line);
 
                 line = ((TTextPanel*)list)->currentLine();
@@ -181,7 +192,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
         }
 
         if (param_1 == (TPanel*)deleteButton && param_2 == 1) {
-            char* line = ((TTextPanel*)list)->currentLine();
+            line = ((TTextPanel*)list)->currentLine();
             if (line[0] != 0) {
                 get_string(0x24CA, of.Reserved1, 0x100);
                 sprintf(text + 4, of.Reserved1,
@@ -199,20 +210,21 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
         else if (param_1 == (TPanel*)okButton) {
             if (param_2 == 1) {
                 if (((TTextPanel*)list)->numberLines() > 0) {
-                    RGE_Prog_Info* info = rge_base_game->prog_info;
-                    char* line = ((TTextPanel*)list)->currentLine();
+                    prog_info = rge_base_game->prog_info;
+                    line = ((TTextPanel*)list)->currentLine();
                     sprintf(fileName + 4, "%s%s.scn",
-                            info->scenario_dir, line);
+                            prog_info->scenario_dir, line);
 
-                    if (OpenFile(fileName + 4, &of, 0x4000) != -1) {
+                    if (OpenFile(fileName + 4, &of.Reserved1, 0x4000) != -1) {
                         line = ((TTextPanel*)list)->currentLine();
                         sprintf(fileName + 4, "%s.scn", line);
                     }
                     else {
                         line = ((TTextPanel*)list)->currentLine();
+                        prog_info = rge_base_game->prog_info;
                         sprintf(fileName + 4, "%s%s.scx",
-                                rge_base_game->prog_info->scenario_dir, line);
-                        if (OpenFile(fileName + 4, &of, 0x4000) != -1) {
+                                prog_info->scenario_dir, line);
+                        if (OpenFile(fileName + 4, &of.Reserved1, 0x4000) != -1) {
                             line = ((TTextPanel*)list)->currentLine();
                             sprintf(fileName + 4, "%s.scx", line);
                         }

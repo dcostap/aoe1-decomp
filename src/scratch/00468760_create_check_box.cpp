@@ -14,6 +14,25 @@
 // typed ownership, and the natural nested success/failure arms.
 // probe 12: changed the typed success path to goto a shared failure tail, matching
 // the oracle's success jump over one failure block; VC5 emitted identical code.
+// probe 14: keep the first coordinate as a named initialized local before scaling;
+// VC5 emitted the clean-source code unchanged.
+// probe 15: move sound initialization into its declaration, testing the oracle's
+// early zero store before the coordinate loads; VC5 emitted the same code.
+// probe 16: initialize one result and apply the error flag after the guarded
+// success body, matching the oracle's single shared failure/return tail; this
+// expanded the frame and moved the body, so it is rolled back.
+// probe 17: use one uninitialized result with a single post-guard failure arm,
+// matching the original's success jump over its shared failure block; VC5 emitted
+// the clean code unchanged.
+// probe 18: diagnostic only; force an x home with volatile storage to test whether
+// the early parameter load is the sole remaining prologue cause; it worsened the
+// frame-body alignment and was rolled back.
+// probe 19: model the original protected virtual method surface, testing whether
+// the class context changes VC5's early register schedule; it worsened block
+// alignment and was rolled back.
+// probe 20: declare the button object with the other long-lived locals, matching
+// the original decompiler/PDB local ordering before its later allocation; this is
+// a codegen duplicate and remains as a plausible source form.
 // left in scratch: original is 604 bytes vs rebuilt 623; calls, frame, and most
 // body blocks align, but the early x-load/arithmetic scheduling and duplicated
 // success/failure EH epilogues remain broad enough to block promotion.
@@ -49,6 +68,7 @@ class TEasy_Panel { public:
 
 int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, long y, long w, long h, long sound, long id)
 {
+    TButtonPanel* b;
     TDigital* snd;
     long sx;
     long sy;
@@ -61,7 +81,7 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
     sy = y * this->screen_h / this->base_h;
     sw = w * this->screen_w / this->base_w;
     sh = h * this->screen_h / this->base_h;
-    TButtonPanel* b = new TButtonPanel;
+    b = new TButtonPanel;
     *out = b;
     if (*out != 0 && (*out)->init_error == 0) {
         if (sound >= 0) snd = rge_base_game->get_sound(sound);
@@ -86,13 +106,11 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
             (*out)->set_text_color(1, this->text2, this->text3);
             (*out)->set_highlight_text_color(1, this->hi0, this->hi1);
             result = 1;
-        } else {
-            this->error_flag = 1;
-            result = 0;
+            goto done;
         }
-    } else {
-        this->error_flag = 1;
-        result = 0;
     }
+    this->error_flag = 1;
+    result = 0;
+done:
     return result;
 }

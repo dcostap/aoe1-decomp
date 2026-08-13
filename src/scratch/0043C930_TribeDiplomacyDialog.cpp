@@ -16,11 +16,11 @@
 //   resource views are the proven contiguous gold/wood/food/stone arrays, not
 //   an invented object layout.  The row's humanity gate is kept separate from
 //   the per-row disable-font flag and the radio-group cursor.
-// - final bounded pass: 10 meaningful hypotheses.  The best canonical source
-//   remains in scratch; validation metrics are 3415 rebuilt bytes versus 3457
-//   original, 0x12C versus 0x124 frame, and 110/112 calls.  The only remaining
-//   call-count gap is two merged set_radio_button sites; no behavior-backed
-//   source uncertainty remains in the reconstructed setup/row ownership.
+// - final bounded pass: the nested current-player guard did not change codegen.
+//   Combining the current-player and relation-zero cases restored all three
+//   distinct set_radio_button call sites.  The source remains a natural guard
+//   followed by the relation-one and fallback arms; validation is 3425 rebuilt
+//   bytes versus 3457 original, 0x12C versus 0x124 frame, and 112/112 calls.
 
 #include <stdio.h>
 
@@ -588,14 +588,14 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 }
 
                 unsigned char relation = rge_base_game->get_player()->relation(player_id);
-                if (player_id == world->curr_player) {
+                if (player_id == world->curr_player || relation == 0) {
                     tab_buttons[0]->set_radio_button();
-                } else if (relation == 0) {
-                    tab_buttons[0]->set_radio_button();
-                } else if (relation == 1) {
-                    tab_buttons[1]->set_radio_button();
                 } else {
-                    tab_buttons[2]->set_radio_button();
+                    if (relation == 1) {
+                        tab_buttons[1]->set_radio_button();
+                    } else {
+                        tab_buttons[2]->set_radio_button();
+                    }
                 }
             }
 

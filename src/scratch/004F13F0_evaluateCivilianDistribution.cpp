@@ -14,6 +14,16 @@
 //   differing bytes, with the remaining drift localized to the low-count register and shared-tail shape.
 // - A goto-based shared-tail spelling added a stack slot and caused broad drift, so it was rolled back.
 //   Reloading gatherers, reversing the sn5 comparison, and naming the sn5 limit produced duplicate codegen.
+// - A focused direct explorer-result assignment with a live one-count predicate added two final-call
+//   sites and widened the function by 25 bytes, so it was rolled back.
+// - A typed low-count field-order spelling assigned explorer and gatherer results in separate arms;
+//   it reproduced that earlier 539-byte basin with two extra calls and was rolled back.
+// - An initialized shared-tail result restored exact size, CFG, and call parity, but strict drift was
+//   75 bytes versus the clean 73-byte source; reordering the sn5 read was codegen-duplicate, so rolled back.
+// - A direct low-count field-order rewrite added a second civilian-count test and widened the function
+//   to 530 bytes; it was rolled back because the first structural hunk moved to the setup call.
+// - A natural typed field assignment in each low-count arm reproduced the 539-byte, two-extra-call
+//   basin; it was rolled back because it split the shared call tail.
 // - Left in scratch: current source is the best natural typed reconstruction. No inline asm or custom flags.
 
 extern "C" double __cdecl ceil(double);

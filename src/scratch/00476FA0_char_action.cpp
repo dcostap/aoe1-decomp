@@ -14,7 +14,8 @@
 // added MessageBeep fallbacks to all invalid tails; the natural compiler basin still merges percent/numeric play tails.
 // final shared-beep goto experiment collapsed play call sites and was rolled back to the #9 codegen-best source.
 // reversed percent _mbscmp operands so VC5 evaluates get_text first and pushes it before the literal, matching the original call order; diff improved 290 to 277.
-// left in scratch: behavior and typed ownership are understood, but the source remains in a 32-byte-short basin with one merged play tail.
+// inlined typed error handling in each percent/numeric, file, and path arm; this restored the third play call, exact size, and diff 222.
+// left in scratch: behavior and typed ownership are understood; remaining drift is structural, starting at the jump-table base and early block layout.
 
 typedef unsigned short ushort;
 extern "C" int __cdecl _mbslen(const char*);
@@ -54,28 +55,39 @@ long TInputPanel::char_action(long ch, short count)
         switch (this->type) {
         case 8:
             if (_mbslen(this->get_text()) < 2 && ch >= '0' && ch <= '9') break;
-            if (_mbslen(this->get_text()) != 2 || ch != '0') goto invalid1;
-            if (_mbscmp((char*)"10", this->get_text()) != 0) goto invalid1;
+            if (_mbslen(this->get_text()) != 2 || ch != '0' ||
+                _mbscmp((char*)"10", this->get_text()) != 0) {
+                if (this->bad_sound != 0) this->bad_sound->play();
+                else MessageBeep(0xFFFFFFFF);
+                return 1;
+            }
             break;
         case 1:
         case 2:
         case 3:
             if (ch >= '0' && ch <= '9') break;
             if (ch == '-' && this->text[0] == 0 && this->type != 3) break;
-            if (ch != '.') goto invalid2;
-            if (_mbschr(this->text, ch) == 0) goto invalid2;
-            if (this->type == 1) break;
-            goto invalid2;
+            if (ch == '.' && _mbschr(this->text, ch) != 0 && this->type == 1) break;
+            if (this->bad_sound != 0) this->bad_sound->play();
+            else MessageBeep(0xFFFFFFFF);
+            return 1;
         case 4:
         case 5:
             if (ch == '.') {
                 if (this->type == 4 && _mbschr(this->text, ch) == 0) break;
             }
-            if (ch == '.' || ch == '\\' || ch == ':' || ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') goto invalid2;
+            if (ch == '.' || ch == '\\' || ch == ':' || ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') {
+                if (this->bad_sound != 0) this->bad_sound->play();
+                else MessageBeep(0xFFFFFFFF);
+                return 1;
+            }
             break;
         case 6:
-            if (ch == ':' && this->path_drive_flag != 1) goto invalid3;
-            if (ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') goto invalid3;
+            if ((ch == ':' && this->path_drive_flag != 1) || ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') {
+                if (this->bad_sound != 0) this->bad_sound->play();
+                else MessageBeep(0xFFFFFFFF);
+                return 1;
+            }
             break;
         case 0:
             break;
@@ -87,18 +99,5 @@ long TInputPanel::char_action(long ch, short count)
         if (this->insert_character(ch) == 0) return 1;
         ++i;
     } while ((short)i < count);
-    return 1;
-
-invalid1:
-    if (this->bad_sound != 0) this->bad_sound->play();
-    else MessageBeep(0xFFFFFFFF);
-    return 1;
-invalid2:
-    if (this->bad_sound != 0) this->bad_sound->play();
-    else MessageBeep(0xFFFFFFFF);
-    return 1;
-invalid3:
-    if (this->bad_sound != 0) this->bad_sound->play();
-    else MessageBeep(0xFFFFFFFF);
     return 1;
 }

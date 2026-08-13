@@ -15,6 +15,12 @@
 //   scaffolding and remained 50 bytes short. Restored the clean switch.
 // - A shared map receiver assigned after each set_elev call worsened size,
 //   call count, and CFG; restored the clean direct map calls.
+// - A natural if/else dispatch with the binary-backed post-call map owner
+//   shortened the body to 448 bytes and lost calls; restored the switch.
+// - Tried an outer positive pause guard (get_paused() == 0) to match the
+//   original jne-to-failure branch; diff improved 474 -> 431 and shape
+//   72.58% -> 76.51%, but the frame shrank 0x10 -> 0xC and set_elev stayed
+//   merged. Kept as the best natural branch reconstruction.
 // - Left in scratch: the remaining structural lead is the original source
 //   shape that keeps two set_elev call sites while sharing the failure tail.
 
@@ -155,18 +161,16 @@ extern RGE_Base_Game* rge_base_game;
 long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
                                          int a5)
 {
-    if (rge_base_game->get_paused() != 0)
-        return 0;
+    if (rge_base_game->get_paused() == 0) {
+        if (rge_base_game->prog_mode != 4 &&
+            rge_base_game->prog_mode != 6 &&
+            rge_base_game->prog_mode != 7)
+            return 0;
 
-    if (rge_base_game->prog_mode != 4 &&
-        rge_base_game->prog_mode != 6 &&
-        rge_base_game->prog_mode != 7)
-        return 0;
-
-    long local_4;
-    long x1;
-    long y1;
-    long x2;
+        long local_4;
+        long x1;
+        long y1;
+        long x2;
 
     switch (key) {
     case 0x21:
@@ -220,5 +224,8 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
     this->view->set_redraw(2);
     if (this->map != 0)
         this->map->set_redraw(2);
-    return 1;
+        return 1;
+    }
+
+    return 0;
 }

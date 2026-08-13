@@ -155,11 +155,13 @@ public:
 // volatile rect lab produced distinct larger families but none close; volatile right/bottom also broke frame back to 0x12C
 // current near-match is exact target behavior/size except two-byte-short rect setup: VC5 folds original sub/sub/add/add into two LEAs
 // BLOCKER: remaining mismatch is codegen-family drift in rect right/bottom calculation, causing early fail branches to target 0051E0D4 instead of 0051E0D6
+// shardB6-51DC90 natural tpnl_tim rectangle load/subtract variant emitted unchanged bytes; restored canonical source
 // worker sa48ec2c3f baseline: typed source is 1102 bytes with 32/32 ordered calls, 0x134 frame, and 208 exact instructions before the rectangle hunk
 // worker layout probe: modeled TPanel::render_rect as the proven aggregate at +0x8C; emitted bytes unchanged, but ownership is now canonical
 // worker liveness/context probes: PDB local order (old_font, str, rect) and canonical RGE_Base_Game::world/RGE_Game_World::game_speed surface emitted unchanged bytes
 // worker rectangle probes: initializer/compound/load-order forms and two focused labs all collapse to the same 2-byte-short LEA family; volatile/address-taking forms add unwanted frame/code
 // worker final: kept the simplest typed render_rect source; exactness remains blocked only by VC5 folding (height-2)+top and (width-2)+left into LEAs instead of the oracle's sub/sub/add/add
+// shardB5-51DC90 probe: direct tpnl_tim-style right/bottom initializers worsened the frame to 0x128 and size to 1074; restored the canonical rectangle source
 
 void TRIBE_Panel_Time::draw() {
     void* old_font;

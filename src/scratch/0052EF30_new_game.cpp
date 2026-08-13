@@ -9,6 +9,13 @@
 // Remaining early mismatch: VC5 stores base new_game result from AL to [esp+17]
 // and frees EBX for a hoisted strlen mask; original keeps AL in BL, stores BL,
 // and later tests BL. Tried register/result-holder forms; they were worse.
+// Attempt log:
+// - Replaced the description-path goto with one negated guard; VC5 emitted the
+//   same bytes, so the natural guard remains the source form.
+// - Collapsed duplicate base-new-game result locals; VC5 emitted the same bytes.
+// - Cached the post-save victory getter; this changed the call schedule and was
+//   rolled back. A standalone difficulty getter also matched the call count but
+//   worsened layout, so it was rolled back.
 
 #include <stdio.h>
 #include <string.h>
@@ -237,7 +244,6 @@ static __inline void append_line(char* description, char* temp, const char* fmt,
 uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
     RGE_RMM_Object_Generator* generator;
     int victoryAmount;
-    uchar result;
     uchar ret_num;
     char str1[256];
     char str2[256];
@@ -251,20 +257,16 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
 
     this->score_displayed = 0;
     this->controllingComputerPlayer = 0xff;
-    result = RGE_Game_World::new_game(param_1, param_2);
-    ret_num = result;
+    ret_num = RGE_Game_World::new_game(param_1, param_2);
 
     for (i = 0; i < this->player_num; ++i) {
         rge_base_game->reset_countdown_timer(i);
     }
 
-    if ((rge_base_game->campaignGame() || !rge_base_game->randomGame()) && rge_base_game->victoryType() == 0) {
-        goto after_description;
-    }
-
-    if (!rge_base_game->campaignGame() && rge_base_game->randomGame()) {
+    if (!((rge_base_game->campaignGame() || !rge_base_game->randomGame()) && rge_base_game->victoryType() == 0)) {
+        if (!rge_base_game->campaignGame() && rge_base_game->randomGame()) {
         this->scenario->Set_scenario_name(S_EMPTY);
-    }
+        }
 
     switch (rge_base_game->victoryType()) {
     case 0:
@@ -347,10 +349,10 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
 
     sprintf(str2, rge_base_game->get_string(0x25f0), (int)rge_base_game->popLimit());
     sprintf(description, S_NEWLINE_JOIN, description, str2);
-    this->scenario->add_description(description);
+        this->scenario->add_description(description);
+    }
 
-after_description:
-    if (result) {
+    if (ret_num) {
         this->victory_type = 4;
         this->countdown_victory = 0;
         this->countdown_clock = 0.0f;

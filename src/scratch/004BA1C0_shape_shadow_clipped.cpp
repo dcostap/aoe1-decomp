@@ -10,7 +10,16 @@
 // 10 (delayed named-header probe, rolled back): the named owner was a codegen duplicate of the retained source and did not change the EBX/EBP cursor basin.
 // shardB3-BA1C0 probe 12 (natural row topology, rolled back): reusing shape_y1 for the vertical skip and save_buffer for the persistent row destination improved block shape but shortened the body by 11 bytes and worsened the strict diff to 836 bytes.
 // shardB3-BA1C0 probe 14 (named owner, retained): naming a TShapeHeader owner before deriving p was codegen-identical and keeps the stream ownership period-plausible; no ABI or call change resulted.
-// final retained: shared eager command/count/state plus the original explicit current-row and destination locals; 906 bytes, exact 0x08 frame, 1/1 call identity, 812 strict differing bytes. Remaining evidence-backed blocker is the original p/clip-parameter home and early register schedule.
+// shardE-4BA1C0 probe 16 (ABI, rolled back): retyped the draw-area formal as a byte stream home and used a typed area alias; 861 diff, worse.
+// shardE-4BA1C0 probe 18 (control-flow, retained): delayed the current-row assignment until after destination setup; 805 diff, 79.77% shape.
+// shardE-4BA1C0 probe 19 (ABI, rolled back): reused the draw-area formal itself as the stream cursor; 856 diff and lost call relocation identity.
+// shardE-4BA1C0 probe 21 (liveness, duplicate): declared the current-row local before pitch but assigned it after setup; same 805-byte output.
+// shardE-4BA1C0 probe 22 (liveness, duplicate): hoisted a typed table alias into the visible-row phase; same 805-byte output.
+// shardE-4BA1C0 probe 23 (layout, duplicate): removed the separate header owner and derived the stream directly from shape_header; same 805-byte output.
+// shardE-4BA1C0 probe 24 (liveness, rolled back): restored early row initialization; 900 diff and +21 bytes.
+// shardE-4BA1C0 probe 26 (liveness, rolled back): removed the unused x local; restored the 812-byte clean basin.
+// shardE-4BA1C0 probe 28 (layout, retained): direct stream derivation plus delayed row declaration and table alias; 805 diff, 79.77% shape.
+// final retained: shared eager command/count/state plus direct stream derivation, delayed row declaration, and explicit destination locals; 906 bytes, exact 0x08 frame, 1/1 call identity, 805 strict differing bytes. Remaining evidence-backed blocker is the original p/clip-parameter home and early register schedule.
 // left in scratch: behavior model is close to Ghidra but not an exact/accepted-drift candidate; needs a parameter-home-reuse rewrite mirroring original stack slots.
 
 typedef unsigned char byte;
@@ -59,12 +68,9 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
     byte cmd;
     byte count;
     byte state;
-    TShapeHeader* header;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
-    header = this->shape_header;
-    byte* p = (byte*)(header + 1);
-    long y = shape_y1;
-    long x = shape_x1;
+    byte* p = (byte*)(this->shape_header + 1);
+    byte* shadow_table = table;
 
     byte* dst;
     if (draw_area->Orien < 1) {
@@ -72,6 +78,8 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
     } else {
         dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
     }
+
+    long y = shape_y1;
 
     if (y < clip_y0) {
         long skip_rows = clip_y0 - y;
@@ -115,11 +123,11 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
                                 if (sx > clip_x1) {
                                     state = 2;
                                     byte* end = cur + (clip_x1 - clip_x0) + 1;
-                                    SHADOW_COPY(cur, end, table);
+                                    SHADOW_COPY(cur, end, shadow_table);
                                 } else {
                                     state = 1;
                                     byte* end = cur + (sx - clip_x0);
-                                    SHADOW_COPY(cur, end, table);
+                                    SHADOW_COPY(cur, end, shadow_table);
                                 }
                             }
                             p += count;
@@ -132,11 +140,11 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
                                 if (sx > clip_x1) {
                                     state = 2;
                                     byte* end = cur + (clip_x1 - clip_x0) + 1;
-                                    SHADOW_COPY(cur, end, table);
+                                    SHADOW_COPY(cur, end, shadow_table);
                                 } else {
                                     state = 1;
                                     byte* end = cur + (sx - clip_x0);
-                                    SHADOW_COPY(cur, end, table);
+                                    SHADOW_COPY(cur, end, shadow_table);
                                 }
                             }
                             ++p;
@@ -162,10 +170,10 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
                         if (sx > clip_x1) {
                             state = 1;
                             byte* end = cur + count + (clip_x1 - sx) + 1;
-                            SHADOW_COPY(cur, end, table);
+                            SHADOW_COPY(cur, end, shadow_table);
                         } else {
                             byte* end = cur + count;
-                            SHADOW_COPY(cur, end, table);
+                            SHADOW_COPY(cur, end, shadow_table);
                         }
                         p += count;
                     }
@@ -176,10 +184,10 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shap
                         if (sx > clip_x1) {
                             state = 1;
                             byte* end = cur + count + (clip_x1 - sx) + 1;
-                            SHADOW_COPY(cur, end, table);
+                            SHADOW_COPY(cur, end, shadow_table);
                         } else {
                             byte* end = cur + count;
-                            SHADOW_COPY(cur, end, table);
+                            SHADOW_COPY(cur, end, shadow_table);
                         }
                         ++p;
                     }

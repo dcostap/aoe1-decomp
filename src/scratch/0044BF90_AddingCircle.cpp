@@ -26,6 +26,9 @@
 //   It moved the load as intended but changed pointer/byte register topology,
 //   shrank the code to 525 bytes, and worsened the positional diff to 447.
 //   Restored the clean scaled-cosine source.
+// - Tested a named float radius local for the circle loop and all four trig
+//   products. VC5 emitted the same 540-byte code and retained the 0x18 frame;
+//   restored the clean direct parameter conversion.
 
 #include <stdlib.h>
 

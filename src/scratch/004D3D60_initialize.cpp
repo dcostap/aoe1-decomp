@@ -45,6 +45,10 @@
 //   ironAgeIndex register home. Declaration order, branch nesting, and chained
 //   initializers were all probed; VC5's slot allocation is not source-order
 //   driven here.
+// - direct natural lifetime probes: split the early research-presence flags from
+//   the later resource threshold and scoped counter. Both variants grew to 534
+//   instructions and diff 1088, while the clean source stays at 532/1076; rolled
+//   back. The first paired hunk still shows the same local-slot permutation.
 //
 // LEFT IN SCRATCH: semantically faithful natural reconstruction with correct
 // class surface (/GX EH frame, 0xB0 BuildItem), 100%% call parity (61/61), and
@@ -65,7 +69,7 @@ public:
 
 class ResourceItem {
 public:
-    virtual ~ResourceItem();
+    void* vtable_ptr;                 // +0x00
     ResourceItem* next;               // +0x04
     ResourceItem* prev;               // +0x08
     int valueValue[8];                // +0x0C
@@ -74,6 +78,7 @@ public:
     int numberValue;                  // +0x6C
 
     ResourceItem(int count);
+    ~ResourceItem();
     void setAllValues(int value);
     int value(int index);
 };

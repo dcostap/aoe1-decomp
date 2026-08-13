@@ -12,12 +12,15 @@
 // 9: Implemented map scrolling fallback: horz/vert short locals, debug_timeGetTime, key_scrolling/last_key_scroll_time, divisor quantization to 0/0.5/whole, max-distance clamp, set_view_loc calls, and repaint of main/map views.
 // 10: Remaining blocker is broad stack/local/FPU topology mismatch. Original uses FPO `sub esp,118h` with keys at esp+28, horz/vert at esp+10/+14 and qword fild temp at +18; current C either compiles too short or needs artificial pad that shifts prologue and early layout.
 // 11: No accepted_drift proposal: diff is broad and current exact-size build contains diagnostic volatile padding, while natural builds are size-short.
+// 12: Clean-source reset removed the diagnostic pad; keep the typed key and scroll model as the baseline before import or guard probes.
+// 13: Binary-backed import correction: Win32 foreground and keyboard-state calls use the period DLL-import surface, matching the two original indirect call sites.
+// 14: Import correction aligned all 13 ordered calls and removed the target-count gap; remaining drift is frame/local topology and early block layout, not key-call identity.
 // GIVEUP: left in scratch for future source-shape/stack-local topology work.
 
 typedef unsigned char uchar;
 typedef void* HWND;
-extern "C" HWND __stdcall GetForegroundWindow(void);
-extern "C" int __stdcall GetKeyboardState(uchar* keys);
+extern "C" __declspec(dllimport) HWND __stdcall GetForegroundWindow(void);
+extern "C" __declspec(dllimport) int __stdcall GetKeyboardState(uchar* keys);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 class RGE_Base_Game_0053DEB0 {
@@ -93,11 +96,6 @@ int RGE_Main_View_0053DEB0::handle_keys()
     float scroll_dist2;
     int changed;
     ProgInfo_0053DEB0* info;
-    volatile int pad = 0;
-    pad++;
-    pad--;
-    if (pad == 12345)
-        this->key_scrolling = pad;
 
     if (rge_base_game->get_paused() != 0)
         goto fail;

@@ -21,6 +21,10 @@
 //   678 bytes (+6), all 16 ordered calls aligned, with only the early boolean
 //   materialization hunk unresolved (original full-register `inc` versus VC5's
 //   byte `inc` plus zeroing).  Left in scratch as clean typed source.
+// probe 17 (layout): changed the two byte mode locals to period-plausible
+//   signed `char` declarations, matching the packet's byte stores.  VC5 emitted
+//   identical code; retained the signed-byte source with the same unresolved
+//   allocation hunk.
 // probe 14 (control-flow): replaced the goto-based mode fallback with a natural
 //   else-if chain and direct failure tail; emitted code was byte-identical, so
 //   restored the clean typed source.  The first divergence remains allocation
@@ -136,8 +140,8 @@ int RGE_Base_Game::setup_graphics_system()
         }
     }
 
-    unsigned char draw_mode;
-    unsigned char draw_type;
+    char draw_mode;
+    char draw_type;
     int use_sys_mem;
 
     draw_type = (this->prog_info->use_dir_draw != 0) + 1;

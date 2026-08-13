@@ -18,6 +18,9 @@
 //     improved by 73 bytes, but the size and block topology stayed structural.
 // 11: used the binary-supported positive shape guard around setup; emitted code
 //     was unchanged, so no further control-flow lead remains in this basin.
+// 12: materialized a named background-missing result after direct +0x528
+//     ownership; emitted code and structural metrics were unchanged. Restored
+//     the clean candidate; the first unresolved hunk remains the null decision.
 // Main-agent audit replaced fixed string addresses and cross-member pointer
 // arithmetic with literals and direct playerName/playerCivilization/checkButton/
 // commPlayers row ownership. The canonical source validates at 1605 bytes with

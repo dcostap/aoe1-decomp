@@ -11,6 +11,8 @@
 // differing bytes and a 4-byte size excess.
 // probes: direction-plus-tile operand reversal and branch-local offset temps
 // were emitted-code duplicates; one-shot direction mutation worsened broadly.
+// probe: a natural short-circuit && guard for the sequential helper calls was
+// an emitted-code duplicate; restored the nested source form.
 // final best: retain the clean typed source and direct secondary-call offsets;
 // remaining drift is localized to VC5 scheduling of the two secondary helper
 // call argument additions and the resulting late tail displacement.

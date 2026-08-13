@@ -31,6 +31,9 @@
 // - The exact get_scenario_header donor confirms related version OR chains,
 //   but its unconditional close does not establish this function's cold-tail
 //   layout. No new natural structural lead remains.
+// - Reordered the final natural version OR chain to the same-TU donor's
+//   1.09, 1.11, 1.10 order; emitted code was unchanged, so the cold-tail
+//   placement remains the structural blocker.
 
 extern int world_update_counter;
 
@@ -152,8 +155,8 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto success;
     }
     if (header_size == version_109 ||
-        header_size == version_110 ||
-        header_size == version_111) {
+        header_size == version_111 ||
+        header_size == version_110) {
         this->load_scenario8(file, info);
         goto success;
     } else {

@@ -2,12 +2,12 @@
 // Attempt log:
 // 1: source-level reconstruction from packet/PDB line map using typed fields and fscanf/calloc/getstring.
 // 2: pulled exact fscanf format strings from original EXE and corrected the 51-field first fscanf argument order from Ghidra comments.
-// 3: corrected temp_name+4, the elevation/damage byte buffers, damage-sprite
-// semantics, post-scan byte assignments, and zero-outline fallback checks.
+// 3: corrected temp_name+4, local_84/local_82 byte buffers, damage-sprite semantics, post-scan byte assignments, and zero-outline fallback checks.
 // 4: adjusted temp_name to 128 bytes to recover the original 0xC4 frame and exact 1183-byte size; first mismatch moved past the first local LEA.
 // 5-8: restored the pointer-based attribute loop, >0 damage guards, and original temporary declaration/lifetime evidence; stack packing remained broad.
 // Attempt 9: typed local aggregate follows the proven C4 frame offsets; reduced the strict drift from 835 to 205 bytes and made the first 574 bytes exact.
 // Attempt 10: scoping the final sprite result was codegen-duplicate; no further productive hypotheses remain in this assignment.
+// Attempt 11: direct member stores for the three sprite lookups moved the first hunk earlier, enlarged the drift to 493, and were rolled back.
 // left in scratch: 205-byte strict drift begins at 00452D3E in scalar-store scheduling after the final lookup; calls, size, frame, and CFG match.
 
 #include <stdio.h>
@@ -58,8 +58,8 @@ struct RGE_Master_Static_Object_Setup_Locals {
     short temp_can_be_built_on;        // +0x3A
     short temp_elevation_flag;         // +0x3C
     short temp_damage_percent;         // +0x3E
-    unsigned char elevation_bytes[2];  // +0x40
-    unsigned char damage_bytes[2];     // +0x42
+    unsigned char local_84[2];         // +0x40
+    unsigned char local_82[2];         // +0x42
     int count;                         // +0x44
     char temp_name[120];               // +0x48
     unsigned char tail[4];             // +0xC0
@@ -67,8 +67,7 @@ struct RGE_Master_Static_Object_Setup_Locals {
 
 class RGE_Master_Static_Object {
 public:
-    virtual ~RGE_Master_Static_Object();
-    unsigned char master_type; char pad05[3]; char* name;
+    void* vtable_ptr; unsigned char master_type; char pad05[3]; char* name;
     short string_id; short string_id2; short id; short copy_id; short object_group; char pad16[2];
     RGE_Sprite* sprite; RGE_Sprite* death_sprite; RGE_Sprite* undead_sprite; unsigned char undead_flag; char pad25;
     short hp; float los; unsigned char obj_max; char pad2d[3]; float radius_x; float radius_y; float radius_z;
@@ -97,12 +96,12 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
     master_type = 10;
     id = object_id;
 
-    fscanf(fp, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd %f %f %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %d %d %d %hd %hd %hd %hd %hd %f %f %f", local.temp_name + 4, &string_id, &string_id2, &object_group, &local.temp_undead_sprite,
+    fscanf(fp, (char*)0x584934, local.temp_name + 4, &string_id, &string_id2, &object_group, &local.temp_undead_sprite,
            &local.temp_obj_max, &local.temp_fog_flag, &local.temp_hide, &hp, &los, &local.temp_movement, &radius_x,
            &radius_y, &radius_z, &death_spawn_obj_id, &local.temp_available, &local.temp_damage_percent,
            &button_pict, &local.temp_attack_reaction, &portrait_pict, &local.temp_attribute_flag, &tile_req1,
            &tile_req2, &center_tile_req1, &center_tile_req2, &construction_radius_x,
-           &construction_radius_y, local.elevation_bytes, &local.temp_sort_number, &local.temp_undead_flag,
+           &construction_radius_y, local.local_84, &local.temp_sort_number, &local.temp_undead_flag,
            &local.temp_can_be_built_on, &local.temp_created_sound, &attribute_max_amount,
            &multiple_attribute_mod, &attribute_rot, &local.temp_damage_sprite, &local.temp_select_level,
            &local.temp_map_draw_level, &local.temp_command_level, &local.temp_terrain, &local.temp_track_as_resource,
@@ -115,7 +114,7 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
     attribute_amounts = this->attribute_amount_held;
     local.count = 3;
     do {
-        fscanf(fp, "%hd %f %hd", attribute_types, attribute_amounts, &local.temp_selected_sound);
+        fscanf(fp, (char*)0x584928, attribute_types, attribute_amounts, &local.temp_selected_sound);
         *attribute_flags = (unsigned char)local.temp_selected_sound;
         attribute_amounts++;
         attribute_types++;
@@ -123,19 +122,19 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
         local.count--;
     } while (local.count != 0);
 
-    fscanf(fp, "%hd", local.temp_name);
+    fscanf(fp, (char*)0x5804E8, local.temp_name);
     damage_sprite_num = (unsigned char)*(int*)local.temp_name;
     if (damage_sprite_num > 0) {
         damage_sprites = (RGE_Damage_Sprite_Info*)calloc((int)damage_sprite_num, 8);
         short i = 0;
         if (damage_sprite_num > 0) {
             do {
-                fscanf(fp, "%hd %hd %hd", &local.temp_flag, local.damage_bytes, &local.temp_death_sound);
+                fscanf(fp, (char*)0x58491C, &local.temp_flag, local.local_82, &local.temp_death_sound);
                 RGE_Sprite* damage_sprite;
                 if (local.temp_flag >= 0) damage_sprite = sprites[local.temp_flag];
                 else damage_sprite = 0;
                 damage_sprites[i].sprite = damage_sprite;
-                damage_sprites[i].damage_percent = local.damage_bytes[0];
+                damage_sprites[i].damage_percent = local.local_82[0];
                 damage_sprites[i].flag = (unsigned char)local.temp_death_sound;
                 i++;
             } while (i < (short)damage_sprite_num);
@@ -144,7 +143,7 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
         damage_sprites = 0;
     }
 
-    fscanf(fp, "%hd %hd %hd %hd", &local.temp_death_sprite, &local.temp_sprite,
+    fscanf(fp, (char*)0x58490C, &local.temp_death_sprite, &local.temp_sprite,
            &local.temp_convert_terrain_flag, &local.temp_map_color);
 
     if (local.temp_death_sprite >= 0) sound_value = sounds[local.temp_death_sprite];
@@ -169,7 +168,7 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
         undead_sprite = sprite_value;
     }
 
-    elevation_flag = local.elevation_bytes[0];
+    elevation_flag = local.local_84[0];
     sort_number = (unsigned char)local.temp_available;
     movement_type = (unsigned char)local.temp_created_sound;
     fog_flag = (unsigned char)local.temp_sort_number;
@@ -193,10 +192,9 @@ int RGE_Master_Static_Object::setup(FILE* fp, RGE_Sprite** sprites, RGE_Sound** 
     resource_group = (unsigned char)local.temp_draw_flag;
     draw_color = (unsigned char)local.temp_elevation_flag;
 
-    extern float DAT_00570618;
-    if (outline_radius_x == DAT_00570618) outline_radius_x = radius_x;
-    if (outline_radius_y == DAT_00570618) outline_radius_y = radius_y;
-    if (outline_radius_z == DAT_00570618) outline_radius_z = radius_z;
+    if (outline_radius_x == *(float*)0x570618) outline_radius_x = radius_x;
+    if (outline_radius_y == *(float*)0x570618) outline_radius_y = radius_y;
+    if (outline_radius_z == *(float*)0x570618) outline_radius_z = radius_z;
 
     recyclable = 0;
     copy_id = id;

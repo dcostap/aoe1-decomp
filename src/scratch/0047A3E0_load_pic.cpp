@@ -9,9 +9,11 @@
 // - corrected the executable's no-name/res_id==-1 early return; size became exact.
 // - use this->shape for the failed-load test/cleanup, recovering the original reload,
 //   destructor/delete call sites and 63-byte strict diff (best codegen checkpoint).
+// - direct member assignment in both TShape constructor arms removed the named pointer;
+//   this improved the strict diff to 55 bytes and recovered the post-constructor block.
 // - remaining drift is the four-byte file_name stack anchor, one extra shape null
-//   compare before the member store, and the late cleanup tail; no further hypotheses
-//   retained after the 10-probe budget.
+//   compare before the member store, and the late cleanup tail; no further evidence-backed
+//   source hypothesis is retained for this pass.
 
 #include "..\..\include\game_globals.h"
 #include <string.h>
@@ -55,20 +57,17 @@ public:
 int TPicturePanel::load_pic()
 {
     char file_name[80];
-    TShape* new_shape;
-
     this->free_pic();
 
     if (this->pic_name[0] != 0) {
         sprintf(file_name + 4, "%s.shp", this->pic_name);
-        new_shape = new TShape(file_name + 4, this->res_id);
+        this->shape = new TShape(file_name + 4, this->res_id);
     } else if (this->res_id != -1) {
-        new_shape = new TShape("", this->res_id);
+        this->shape = new TShape("", this->res_id);
     } else {
         return 0;
     }
 
-    this->shape = new_shape;
     if (this->shape && this->shape->is_loaded()) {
         this->pic_type = 1;
         this->own_pic = 1;

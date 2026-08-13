@@ -7,6 +7,8 @@
 // 5: tried `register` on amount/player; no codegen change.
 // 6: best exact-size source still has local/register topology mismatch after atoi/dropdowns: original keeps amount in EBX, selected-player+1 in EBP, and object type in the incoming parameter home, while rebuilt keeps amount in the param home, player in EBX, and object type in EBP.
 // 7: remaining mismatch is broad switch-case register and block-layout drift despite behavior-like call sequence and exact size; not accepted_drift-safe.
+// 8: replaced the decompiler temporary with direct int locals for amount, kind, player, and object type; size and strict diff stayed unchanged, with only neutral block-shape movement.
+// 9: changed switch arms to natural breaks with one final return and guarded the selected-object arms; VC5 emitted duplicate code, so the missing case-6/case-9 call sites remain.
 
 extern "C" int __cdecl atoi(const char*);
 
@@ -68,16 +70,14 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
 
     if (index < 0) return;
 
-    register int amount;
-    long kind;
-    long tmp;
-    register int player;
+    int amount;
+    int kind;
+    int player;
     int objectType;
     long x1, y1, x2; int y2;
     amount = atoi(this->victory_amount_input->currentLine());
     kind = this->victory_drop_down->get_line();
-    tmp = this->victory_enemy_player_list->get_line();
-    player = tmp + 1;
+    player = this->victory_enemy_player_list->get_line() + 1;
     objectType = this->victory_object_list->get_id();
     this->main_view->get_selection_area(&x1, &y1, &x2, &y2, 1);
     this->px1 = (float)x1;
@@ -88,21 +88,21 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
 
     switch (kind) {
     case 0:
-        return;
+        break;
     case 1:
         if (this->SelectedObject && this->DestinationObject) {
             SCEN->SetSPVictoryType(index,3);
             SCEN->SetSPObject(index,this->SelectedObject);
             SCEN->SetSPDestObjectID(index,this->DestinationObject);
         }
-        return;
+        break;
     case 2:
         if (this->SelectedObject) {
             SCEN->SetSPVictoryType(index,3);
             SCEN->SetSPObject(index,this->SelectedObject);
             SCEN->SetSPRectangle(index,this->px1,this->py1,this->px2,this->py2);
         }
-        return;
+        break;
     case 3:
         SCEN->SetSPVictoryType(index,2);
         SCEN->SetSPObjectType(index,objectType);
@@ -112,7 +112,7 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
         SCEN->SetSPObjectType(index,objectType);
         SCEN->SetSPAmount(index,amount);
         SCEN->SetSPRectangle(index,this->px1,this->py1,this->px2,this->py2);
-        return;
+        break;
     case 5:
         if (player >= 1 && player <= 8 && amount) {
             SCEN->SetSPVictoryType(index,1);
@@ -120,13 +120,12 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
             SCEN->SetSPObjectType(index,objectType);
             SCEN->SetSPAmount(index,amount);
         }
-        return;
+        break;
     case 6:
-        if (this->SelectedObject) {
-            SCEN->SetSPVictoryType(index,1);
-            SCEN->SetSPObject(index,this->SelectedObject);
-        }
-        return;
+        if (!this->SelectedObject) break;
+        SCEN->SetSPVictoryType(index,1);
+        SCEN->SetSPObject(index,this->SelectedObject);
+        break;
     case 7:
         if (player >= 1 && player <= 8) {
             SCEN->SetSPVictoryType(index,1);
@@ -134,19 +133,18 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
             SCEN->SetSPObjectType(index,objectType);
             SCEN->SetSPAllFlag(index,1);
         }
-        return;
+        break;
     case 8:
         if (player >= 1 && player <= 8) {
             SCEN->SetSPVictoryType(index,1);
             SCEN->SetSPPlayerID(index,player);
         }
-        return;
+        break;
     case 9:
-        if (this->SelectedObject) {
-            SCEN->SetSPVictoryType(index,5);
-            SCEN->SetSPObject(index,this->SelectedObject);
-        }
-        return;
+        if (!this->SelectedObject) break;
+        SCEN->SetSPVictoryType(index,5);
+        SCEN->SetSPObject(index,this->SelectedObject);
+        break;
     case 10: SCEN->SetSPVictoryType(index,4); objectType = 0; goto attrib_amount;
     case 11: SCEN->SetSPVictoryType(index,4); objectType = 3; goto attrib_amount;
     case 12: SCEN->SetSPVictoryType(index,4); objectType = 1; goto attrib_amount;
@@ -156,7 +154,7 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
         SCEN->SetSPVictoryType(index,4);
         SCEN->SetSPAttribType(index,5);
         SCEN->SetSPAmount(index,this->victory_ages_list->get_line()+1);
-        return;
+        break;
     case 16: SCEN->SetSPVictoryType(index,4); objectType = 6; goto attrib_amount;
     case 17:
         SCEN->SetSPVictoryType(index,6);
@@ -165,13 +163,15 @@ attrib_amount:
         SCEN->SetSPAttribType(index,objectType);
 set_amount:
         SCEN->SetSPAmount(index,amount);
-        return;
+        break;
     case 18:
         SCEN->SetSPVictoryType(index,7);
         objectType = this->victory_tech_list->get_id();
         SCEN->SetSPAttribType(index,objectType);
-        return;
+        break;
     default:
-        return;
+        break;
     }
+
+    return;
 }

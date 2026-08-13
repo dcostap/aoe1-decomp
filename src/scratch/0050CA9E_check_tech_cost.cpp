@@ -15,6 +15,8 @@
 // frame, and all non-stack instruction bytes match. Left in scratch pending a compiler
 // slot-allocation lead. Target homes tech/i/cost at -10h/-18h/-8h; rebuilt homes them
 // at -8h/-10h/-18h. Source remains the simplest typed reconstruction.
+// - loop-scope cost declaration before attr with delayed assignment was a codegen duplicate;
+//   it did not rotate the target cost/index homes and was reverted.
 
 struct Tech_Player_Tree {
     float research_done;

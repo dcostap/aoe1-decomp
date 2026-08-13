@@ -33,6 +33,16 @@
 // 23: Retaining a natural TDrawSystem pointer across flags, allocation, Init, and restoration
 //     improved positional diff to 348 but grew the frame to 0x114 and worsened block shape;
 //     rolled back to the clean direct-access reconstruction.
+// 24: Scoping a natural TDrawSystem pointer only across the flag mask and TDrawArea allocation
+//     lifetime produced duplicate codegen (356 differing bytes, 0x110 frame); rolled back.
+// 25: Scoping the three shape output locals inside the post-allocation block reused the EH
+//     allocation home at [esp+10] and recovered the original output stack homes, but reduced
+//     the frame to 0x10C.
+// 26: Hoisting width and height did not change codegen; restored their natural inner scope.
+// 27: Increasing area_name to 260 bytes recovered the original 0x110 frame and raised shape
+//     similarity to 94.48%; the positional diff remained 356 bytes.
+// 28: A scoped DrawSystem pointer, explicit field-mask assignment, and area_name+4 pointer
+//     were duplicate codegen basins; restored the simplest direct member expressions.
 // FLAGS: config/flags/00467380_setup_shadow_area.rsp uses /GX; needed for EH prologue around TDrawArea allocation/constructor.
 
 #include <windows.h>
@@ -98,10 +108,7 @@ public:
 
 void TEasy_Panel::setup_shadow_area(int force)
 {
-    char area_name[256];
-    long y_max;
-    long x_max;
-    long x_min;
+    char area_name[260];
 
     TDrawArea* area = this->shadow_area;
     if ((area == 0 || force != 0) &&
@@ -115,6 +122,10 @@ void TEasy_Panel::setup_shadow_area(int force)
         }
 
         if (this->shadow_area != 0) {
+            long y_max;
+            long x_min;
+            long x_max;
+
             this->background_pic->shape_minmax(
                 x_max, y_max, *(long*)area_name, x_min, 0);
 

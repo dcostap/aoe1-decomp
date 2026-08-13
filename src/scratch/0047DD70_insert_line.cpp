@@ -20,6 +20,10 @@
 //   group remained 181 positional bytes different with exact size/call set.
 // - Moving the positional insertion counter into its natural non-sorted
 //   branch-local lifetime left the emitted code unchanged; restored the clean source.
+// - Pre-decrementing line before the natural positional equality loop improved
+//   the best positional diff by 2 bytes, but kept the first zero/id hunk.
+//   A same-TU equality-break loop improved CFG coverage but added one byte;
+//   restored the pre-decrement source.
 // - Restored the readable typed source after diagnostics: no parameter-home
 //   casts, raw text cursors, fake volatility, or register-forcing scaffolding.
 
@@ -105,8 +109,8 @@ int TTextPanel::insert_line(long line, char* text, char* text2, long value)
     }
 
     node->id = value;
-    int i = 0;
     node->next_node = 0;
+    int i = 0;
 
     TextNode* list_node = this->list;
     if (list_node == 0) {
@@ -138,7 +142,8 @@ int TTextPanel::insert_line(long line, char* text, char* text2, long value)
             node->next_node = list_node;
             this->list = node;
         } else if (line < this->num_lines) {
-            while (i != line - 1) {
+            --line;
+            while (i != line) {
                 list_node = list_node->next_node;
                 i++;
             }

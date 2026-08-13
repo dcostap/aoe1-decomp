@@ -16,6 +16,12 @@
 //   source's cold failure/common-epilogue topology, not call or layout parity.
 // - A register result with a common source return was a codegen duplicate; no
 //   stack home or CFG change appeared.  Restored the natural typed factory.
+// - An outer negative typed branch with one final failure return was also a
+//   codegen duplicate; rolled back and kept the natural lifetime surface.
+// - A named panel local, late common-result declaration, explicit failure
+//   label, and named 0xD8 field were each duplicate or broadly worse; restored.
+// - Modeling the proven TPanel inheritance, virtual destructors, and virtual
+//   create_text with explicit base gaps kept the same 436-byte tail basin.
 
 class TPanel {};
 class TDrawArea {};

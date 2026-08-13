@@ -39,6 +39,10 @@
 //   TDebuggingLog::Log(TDebuggingLog*, const char*, ...), not a free helper
 //   or non-static member. The class tag produces the original PAV1 binding.
 //   The corrected relocation is exact, but whole-function bytes are unchanged.
+// - ABI probe: inventory marks CalculatePlayerRange and ClearRXTXForPlayer as
+//   protected (IAEH/IAEX). Updated the local declarations; emitted bytes and
+//   positional metrics are unchanged because the remaining call-map gaps are
+//   caused by the shifted cold default block, not these relocation bindings.
 
 #include <stdio.h>
 #include <string.h>
@@ -116,10 +120,14 @@ public:
     int IsPlayerHuman(unsigned int player);
     void InitPlayerInformation(unsigned int player, int human, char* status, char* info);
     void UpdatePlayers();
+protected:
     int CalculatePlayerRange();
+public:
     void DropDeadPlayer(unsigned int player, unsigned long dpid);
     void UpdatePlayer(unsigned int player, int param);
+protected:
     void ClearRXTXForPlayer(unsigned int player);
+public:
     long SendSharedData(int force);
     long FastSend(unsigned long to, void* data, unsigned long size, int param_4, int param_5);
     void CheckPingTime(int param_1);

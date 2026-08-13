@@ -37,6 +37,10 @@
 //   turn field (`CommandTurnIncrement + current_turn`). This removed an actual
 //   missing memory effect, improved frame 0x7C->0x88 (target 0x8C), size -49->+15,
 //   shape 82.83%->84.51%, and strict diff 1639->1622.
+// - [probe8 control-flow] kept the threshold check as a separate `if` after the
+//   count==3 arm, matching the original's separate division path. This moved the
+//   timeout calls before the drop-self calls, reduced size to +3, and improved
+//   strict diff 1622->1595 and shape 84.51%->85.28%; retain as the best source.
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
@@ -276,7 +280,8 @@ int TCommunications_Handler::DoCycle(ulong param_1)
             if (lastAnyPlayerMessage < 2) {
                 goto checkTimeout;
             }
-        } else if (lastAnyPlayerMessage < (selfTimedOutCount + 1) / 2) {
+        }
+        if (lastAnyPlayerMessage < (selfTimedOutCount + 1) / 2) {
             goto checkTimeout;
         }
 

@@ -13,6 +13,9 @@
 // repeated [object+8] reloads and reduced drift to 29 bytes, but is not kept as
 // unsupported compiler steering.  A max-range operand-order probe and a
 // focused master/range lab were unchanged/nonexact.
+// This claim tested a typed ObjectMemory* surviving the object lookup and
+// owning owner/id/range reads.  It widened the frame to 0x2C and worsened the
+// structural diff, so it was rolled back.
 // left in scratch: natural source is retained; remaining 29-byte diagnostic
 // basin is the repeated master reload plus four local statement-order swaps.
 

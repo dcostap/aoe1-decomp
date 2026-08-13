@@ -18,6 +18,8 @@
 //   destructor pointers reproduce the original block structure through fonts.
 // - RGE_Font is a 0xC record with its DeleteObject handle at offset zero; the
 //   remaining drift is the imported-call cache and loop register coloring.
+// - A local cached DeleteObject pointer inside the positive-count guard added
+//   8 bytes to the frame and worsened the match; restored the direct call.
 
 #include <stdio.h>
 

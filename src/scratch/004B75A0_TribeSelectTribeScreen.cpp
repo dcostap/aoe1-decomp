@@ -15,6 +15,9 @@
 // Probe 10: reordered loop initialization; improved 5 bytes.
 // Main-agent ABI audit restored the canonical rge_base_game global and the
 // short set_tab_order count. Calls remain aligned; positional diff improved by one byte.
+// Probe 14: used the scr_trb button draw-type enum 3 instead of the decompiler's
+// DrawTextA label; improved size and structural coverage, but the loop setup
+// still diverges at the zero-register/first button allocation hunk.
 // Best unresolved source: all 34 calls and CFG match, frame is 0x54, but the
 // constructor remains 81 bytes too large. The remaining drift starts at the
 // button-loop setup and later local/register scheduling.
@@ -125,8 +128,6 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-extern int __stdcall DrawTextA(void*, const char*, int, void*, unsigned int);
-
 enum { NotifyAction = 1 };
 
 class TribeSelectTribeScreen : public TScreenPanel {
@@ -231,7 +232,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
                 secondHeight * this->pnl_hgt * 0x73 / 0x1E0,
             this->pnl_wid * 200 / 0x280,
             this->pnl_hgt * 0x6E / 0x1E0,
-            (long)&DrawTextA, buttonSound, NotifyAction, 0);
+            3, buttonSound, NotifyAction, 0);
         (*button)->set_text_info(this->tribeName(i), font->font,
                                  font->font_wid, font->font_hgt, -1, -1);
 
@@ -271,7 +272,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 400 / 0x1E0,
         this->pnl_wid * 0x78 / 0x280,
         this->pnl_hgt * 0x1E / 0x1E0,
-        (long)&DrawTextA, buttonSound, NotifyAction, 0);
+        3, buttonSound, NotifyAction, 0);
     this->okButton->set_text_info("Previous Screen", font->font,
                                   font->font_wid, font->font_hgt, -1, -1);
 
@@ -286,7 +287,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 0x1B8 / 0x1E0,
         this->pnl_wid * 0x78 / 0x280,
         this->pnl_hgt * 0x1E / 0x1E0,
-        (long)&DrawTextA, buttonSound, NotifyAction, 0);
+        3, buttonSound, NotifyAction, 0);
     this->cancelButton->set_text_info("Cancel", font->font,
                                       font->font_wid, font->font_hgt, -1, -1);
 

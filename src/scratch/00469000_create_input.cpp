@@ -11,6 +11,7 @@
 // attempt 9: /GX /Ob0; no codegen change, reverted.
 // attempt 10: reviewed setup arg surface/order and vtable slot declarations; current call order/body matches original through setup/bevel/color calls; remaining drift is tail/return lowering.
 // attempt 11: typed the PDB/SDK FormatType enum through create_input and setup; emitted code is unchanged, confirming the remaining first hunk is tail CFG placement.
+// shardE probe: a switch around setup produced a 38-byte diagnostic basin, but only by falling into the failure return; restoring success return restored the natural 180-byte basin.
 // ACCEPTED_DRIFT suggestion: with volatile result, all functional calls/memory effects match; extra writes are only to this function's stack result slot before common epilogue, and branch distances/tail layout differ. Needs review; not promoted.
 // session 2026-08-11: baseline rebuilt the volatile common-return candidate at 451 bytes; natural direct returns and nonvolatile result/goto joins both rebuilt at 457 bytes with the same 156-byte prefix and the success epilogue before failure.
 // session probes: a register result, a destructor declaration, and the packet-indicated virtual create_input ABI (with the proven gap adjustment) did not change that tail family; /O1 introduced an extra EH helper and broad structural drift.

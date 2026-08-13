@@ -30,6 +30,9 @@
 //   short-count alias; remaining drift is a compiler comparison/register
 //   scheduling basin with all calls, size, frame, CFG, and memory effects
 //   aligned.
+// - Tested the natural same-TU guard `i < player_num` with the live zero
+//   player-loop index at the first allocation gate; VC5 widened the compare,
+//   shifted the hunk earlier, and regressed to 244 differing bytes. Rolled back.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);

@@ -75,6 +75,11 @@
 // - tu-rmmbase-480EC0: dossier and same-TU donors confirm the five-call set and
 //   Map_Stack ownership. The clean typed array remains the best source model.
 //   The binary field-pointer schedule would require the rejected overlay.
+// - shardE-480EC0 wave: the typed overlap/aggregate recovered exact frame and
+//   size with diff 44, but retained inverse receiver colors and random-call
+//   scheduling. Separate cursor declarations, receiver alias, counter types,
+//   and declaration order were duplicate or worse. Restored the clean named
+//   Map_Stack array reconstruction; no evidence-backed exact lead remains.
 
 extern int __cdecl debug_rand(char* file, int line);
 

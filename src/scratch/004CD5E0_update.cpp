@@ -21,6 +21,8 @@
 // the source guard reproduced the original cold work-rate branch.
 // probes 9-10: explicit shared-label and nested-case-order variants were
 // codegen duplicates; retained the natural direct switch spelling.
+// probe 15: moving the state-0x0B target-reset arm before its status-3 arm
+// was a codegen duplicate; restored the clean natural switch order.
 // final best: 724B, 64 differing bytes; remaining drift is nested VC5 switch
 // handler placement/table relocation, with behavior and call set aligned.
 

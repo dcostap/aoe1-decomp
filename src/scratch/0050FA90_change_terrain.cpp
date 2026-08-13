@@ -15,6 +15,13 @@
 // broader. A terrain-byte pointer moved the metric to 337 but was restored as
 // unsupported scheduling scaffolding. The positive player-validity predicate
 // was a duplicate of the older 421-byte basin and was restored.
+// shardA4-50FA90-r1: declaration-initialized the first typed tile, but VC5
+// emitted the same 439-byte basin; restored to the clean assignment form.
+// shardA4-50FA90-r1: used the direct terrain XOR expression from the exact
+// map donor; VC5 again emitted the same basin, so kept the named old byte.
+// shardD10_50FA90: gave RGE_Player its canonical polymorphic surface while
+// preserving diam_tile_list at +0x6C for the typed notification call; this
+// was a codegen duplicate, so restored the narrow local surface.
 // left in scratch: canonical neighborhood behavior and field ownership are
 // reconstructed; remaining drift is VC5 prologue/register scheduling. The
 // rebuilt body remains 12 bytes longer than the 427-byte oracle.

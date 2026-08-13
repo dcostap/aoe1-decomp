@@ -24,6 +24,9 @@
 // - outer post-move dispatch is owned by missile_type at +0x148; missile_hit_info
 //   at +0x14A remains the collision-mode switch. Reordering the natural mode-3
 //   branch before the <=2 collision-list branch aligned all 24 ordered calls.
+// - state-gate switch probe improved the block from 337 to 348 instructions;
+//   diff 717B, size 920B, and exact-block coverage 46.74%; retained as the
+//   best natural state/update reconstruction, but it still adds one return.
 
 extern float DAT_0056e380;
 extern double DAT_0056e388;
@@ -427,10 +430,12 @@ unsigned char RGE_Action_Missile::update()
             this->set_target_obj2(0);
         }
 
-        if (this->state == 1) {
+        switch (this->state) {
+        case 1:
             return 1;
-        }
-        if (this->state != 4) {
+        case 4:
+            break;
+        default:
             return 0;
         }
 

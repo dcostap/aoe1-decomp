@@ -7,6 +7,7 @@
 // 5: modeled special cases for advancing ages/research readiness and the 5-priority retask stamping loops for nonzero/non-minus-one gatherers.
 // 6: modeled default weighted distribution using integer percent division and late negative distribution correction/remainder split.
 // 7: remaining mismatch is broad source/layout: original is highly ordered around explicit stack locals at esp+10/14/18, duplicated age2/age3/age4 blocks, magic multiply divisions, and shared tails; current source has behavior-like structure but wrong register/liveness/block layout. Not accepted_drift-safe.
+// 8: replaced the first resource-ID boolean temporary with the bounded scan index as the natural not-found guard; frame reached 0x0C and positional diff improved, but the research call surface remains unresolved.
 
 typedef unsigned char uchar;
 
@@ -58,9 +59,9 @@ void TribeTacticalAIModule::updateGathererDistribution()
             task=g->task;
             g->target=o->unitAI()->currentTarget();
             if (action==0x261 && o->type->id==0x103 && task) {
-                int found=0;
-                for (j=0;j<numberResourceIds && j<maxResourceIds;j++) if (resourceIds[j]==o->gameID) { found=1; break; }
-                if (!found) { g->task=0; task=0; }
+                for (j=0;j<numberResourceIds && j<maxResourceIds;j++)
+                    if (resourceIds[j]==o->gameID) break;
+                if (j==numberResourceIds || j==maxResourceIds) { g->task=0; task=0; }
             }
             if (task>=0 && task<=3) {
                 if (action==0x261 || action==0x265) ++((&desiredFood)[task]);

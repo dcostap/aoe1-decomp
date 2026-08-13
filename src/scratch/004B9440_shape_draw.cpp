@@ -22,6 +22,9 @@
 // session shardB2-B9440 probe 1: captured draw_level and object_id locals
 // through AddDrawNode; the typed local-liveness lead worsened the frame and
 // structural diff, so the clean direct-global form is retained.
+// session shardB6-B9440 probe 1: used a typed shared line-count local with
+// branch-local subtraction for the Shape.cpp span-list gate; this follows the
+// first non-prologue structural hunk and tests the donor-era branch topology.
 // No inline asm used; no accepted_drift proposal.
 
 typedef unsigned char byte;
@@ -172,15 +175,15 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
         }
 
         TSpan_List_Manager* cur_span_list = td->CurSpanList;
-        int span_lines = td->SpanList->Num_Lines;
-        int cur_lines = cur_span_list->Num_Lines;
-        if (span_lines < cur_lines)
-            cur_lines = span_lines;
+        int line_count;
+        if (td->SpanList->Num_Lines < cur_span_list->Num_Lines)
+            line_count = td->SpanList->Num_Lines - 1;
+        else
+            line_count = cur_span_list->Num_Lines - 1;
         ASMSet_Surface_Info(td->CurDisplayOffsets,
                             cur_span_list->Line_Head_Ptrs,
                             cur_span_list->Line_Tail_Ptrs,
-                            0, 0, cur_span_list->Max_Span_Px,
-                            cur_lines - 1);
+                            0, 0, cur_span_list->Max_Span_Px, line_count);
         if (table != 0)
             ASMSet_Xlate_Table(table);
 

@@ -17,6 +17,12 @@
 // both forms were rolled back.
 // this-session H3: a four-form stack-initialization lab kept the same 507-byte
 // size and 446-byte clean-source diff; no form changed the initial parameter load.
+// this-session H4: modeled the ABI-proven RGE_Random_Map_Module base with typed
+// inherited stack rows and list fields; codegen was unchanged at 446 bytes, so
+// restored the clean local surface.
+// shardD10 H1: hoisted the typed Map_Stack node local to function scope to
+// mirror its binary-persistent value across add_stack_node; codegen was an
+// unchanged 507-byte/446-diff duplicate, so restored the clean source.
 // left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
 
 extern "C" int __cdecl debug_rand(char* file, int line);

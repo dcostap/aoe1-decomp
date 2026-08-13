@@ -12,6 +12,8 @@
 // - Width-first member initialization is the current best header basin; a
 //   typed packed bitmap-header probe moved the header broadly and was rolled
 //   back. The inverted attempt-limit spelling was codegen-identical.
+// - Reordered the natural BMP file-size assignment before bfType, as shown by
+//   the first paired hunk and the spanlist source order; codegen was identical.
 // - Final best check: 661 rebuilt bytes vs 673 original, frame 0x888, all 14
 //   calls aligned, 359 strict differing bytes, 85.51% shape, 57.21% exact
 //   block coverage. Remaining drift starts in bitmap-header scheduling/stack

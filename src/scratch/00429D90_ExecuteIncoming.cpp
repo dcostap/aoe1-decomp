@@ -55,6 +55,9 @@
 // positive Multiplayer guard with one natural common return. It reached the prior
 // 398-byte diagnostic basin but emitted one return instead of the oracle's two;
 // restored the negative guard and kept the typed owner-lifetime reconstruction.
+// shardC5 probe: a typed HOLDER cursor and PlayerHighSerialNumber cursor preserved
+// the two clear/process branches and eight calls, but widened the frame to 0x10 and
+// worsened the positional diff; restored the clean byte-offset reconstruction.
 
 typedef unsigned int uint;
 

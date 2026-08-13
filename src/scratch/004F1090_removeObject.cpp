@@ -20,6 +20,12 @@
 //   and a narrow volatile member-pointer reload were codegen duplicates.  The
 //   remaining gap is the original EBX zero/prologue allocation and associated
 //   block placement; calls, frame, boundary, and size are otherwise aligned.
+// - Tested natural inline ManagedArray contains/remove calls with early
+//   returns.  EBX and several structural blocks aligned, but size fell to 632
+//   bytes and one removeFromGroup call site disappeared; restored.
+// - Tested natural inline contains iteration for the first three list gates.
+//   The compiler inlined auxiliary contains calls too, losing four call sites
+//   and growing to 804 bytes; restored the clean candidate.
 
 class TacticalAIModule {
 public:

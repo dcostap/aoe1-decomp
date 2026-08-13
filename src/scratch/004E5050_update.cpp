@@ -25,6 +25,9 @@
 // calls, so it was replaced with two duplicated send tails.  The retained
 // form restores all 102 ordered calls and is the best source-model lead, but
 // leaves a 71-byte surplus and the broader entry/prologue CFG drift.
+// behavior probe: the initial world guard, diplomacy loop, and four attribute
+// commands now use inherited player (+0xF0), matching the original early block;
+// code size grew to 3472 and strict diff to 3186, so no codegen gain was kept.
 
 #include <stdlib.h>
 
@@ -416,12 +419,12 @@ int TribeMainDecisionAIModule::update(int param_1)
     int neutralList[9];
     char tempString[256];
 
-    if (this->aiPlayer->world->game_state == zero && this->firstUpdate == one) {
+    if (this->player->world->game_state == zero && this->firstUpdate == one) {
         this->firstUpdate = zero;
         this->logCommonHistory("Initial Diplomacy Settings:");
 
         DiplomacyAIModule* diplomacy = &this->diplomacyAI;
-        for (int playerIndex = 1; playerIndex < this->aiPlayer->world->player_num; playerIndex++) {
+        for (int playerIndex = 1; playerIndex < this->player->world->player_num; playerIndex++) {
             int dislike = diplomacy->stance(playerIndex, 1);
             int like = diplomacy->stance(playerIndex, 2);
             int ambivalence = diplomacy->stance(playerIndex, zero);
@@ -442,19 +445,19 @@ int TribeMainDecisionAIModule::update(int param_1)
 
     int amount = tactical->strategicNumber(0x8A);
     if (amount != zero) {
-        this->aiPlayer->command_add_attribute(zero, (float)amount);
+        this->player->command_add_attribute(zero, (float)amount);
     }
     amount = tactical->strategicNumber(0x8B);
     if (amount != zero) {
-        this->aiPlayer->command_add_attribute(3, (float)amount);
+        this->player->command_add_attribute(3, (float)amount);
     }
     amount = tactical->strategicNumber(0x8C);
     if (amount != zero) {
-        this->aiPlayer->command_add_attribute(2, (float)amount);
+        this->player->command_add_attribute(2, (float)amount);
     }
     amount = tactical->strategicNumber(0x8D);
     if (amount != zero) {
-        this->aiPlayer->command_add_attribute(1, (float)amount);
+        this->player->command_add_attribute(1, (float)amount);
     }
 
     }

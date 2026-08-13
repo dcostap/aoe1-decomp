@@ -21,6 +21,8 @@
 //   this is semantically distinct from the diagnostic signed -1 spelling and
 //   improved the strict diff from 687 to 402 bytes (77.27% shape), while
 //   exposing a remaining two-byte size/frame-home shift.
+// - A function-scope typed player-info pointer was codegen-neutral.  Restored
+//   its narrower loop lifetime; the first hunk remains the score-field anchor.
 
 #include <string.h>
 

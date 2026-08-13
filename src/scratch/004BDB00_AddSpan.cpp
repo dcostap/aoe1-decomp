@@ -9,6 +9,9 @@
 // behavior audit: clipping, empty-row allocation, head/tail insertion, overlap,
 // node draining, count updates, and tail/head ordering follow the original asm.
 // pointer-entry probes did not improve the VC5 setup and were rolled back.
+// inheritance-layout probe: the same public TSpan_Node_List base as the
+// constructor and exact siblings emitted the same bytes; restored nested
+// member ownership because this lead did not change the structural hunk.
 // retained: natural typed source; unresolved pointer scheduling and late block
 // placement leave a broad non-exact codegen gap, so this target stays scratch.
 

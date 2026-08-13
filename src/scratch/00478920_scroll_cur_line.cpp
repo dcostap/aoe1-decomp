@@ -12,6 +12,9 @@
 //   regressions or emitted duplicates; restored the natural scoped-source best.
 // - removed redundant case-4/case-5 endpoint assignments from the range arms;
 //   VC5 emitted the existing code unchanged, so the natural source is retained.
+// - restored the case-3 decrement before the scroll call; the oracle stores the
+//   decremented current line before invoking scroll, reducing positional drift
+//   to 245 bytes but moving the build into a +32-byte structural basin.
 //   Left in scratch: localized case-5/6 tail/block layout and branch-span drift.
 
 class TPanel {
@@ -131,6 +134,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
             cur--;
             this->cur_line = cur;
         } else if (cur > 0) {
+            cur--;
             this->cur_line = cur;
             this->scroll(3, 0, flag);
         }

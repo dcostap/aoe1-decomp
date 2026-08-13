@@ -17,6 +17,8 @@
 // - Tried a natural direct comparison of the two zone-map results, supported
 //   by the decompiler's immediate uchar result evidence; it lost 10 bytes and
 //   changed the first result to BL.  Restored the named typed results.
+// - Declared the typed zone-map handle before target lookup but assigned it at
+//   the existing path point; emitted code stayed in the same 17-byte basin.
 
 struct XYPoint {
     int x;

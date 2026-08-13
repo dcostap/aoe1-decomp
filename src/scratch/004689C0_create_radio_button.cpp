@@ -9,6 +9,7 @@
 // - Modeled the proven TButtonPanel allocation size as 0x2B8 and initialized sound before the scaling/new path; this improved the resynchronized body but still emitted a one-slot local and the wrong prologue family.
 // - Tried explicit ideal-x initialization/compound arithmetic, x capture, a nontrivial destructor declaration, direct out-slot construction, and a common result/goto tail; these emitted the same or farther codegen basin.
 // - Restated TButtonPanel as the period TPanel-derived type with inherited error and virtual destructor declarations from exact constructor/destructor donors; first-hunk codegen was unchanged.
+// - Tested declaring ideal_x before initialized sound and assigning it as a separate named local; emitted code was unchanged, so restored the clean candidate.
 // - Final clean candidate keeps the named field ownership and natural direct factory source. Remaining blocker is structural VC5 EH/local-home placement: original reserves 8 bytes, preloads x before callee-save pushes, and shares one success/failure epilogue; rebuilt reserves one slot, reloads x from its parameter home, and duplicates cleanup. No accepted_drift proposal; no inline asm.
 
 class TPanel {

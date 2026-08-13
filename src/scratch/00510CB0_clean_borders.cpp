@@ -24,6 +24,11 @@
 // differing bytes; direct/qualified call forms and int-vs-long x were duplicates.
 // Remaining structural gap is the original two distinct set_terrain sites plus
 // x/offset register and parameter-home scheduling; no safe final exact lead remains.
+// shardA6-510CB0-r1: removing continue, branch-local world/value copies, and
+// direct/base call qualification were codegen duplicates; restored canonical source.
+// shardA6-510CB0-r1: PDB-shaped do-while scans were duplicate or slightly worse.
+// Typed row/tile cursors aligned all 19 calls but widened the frame and worsened drift.
+// The remaining gap is tail-merged first set_terrain plus x/offset register coloring.
 //
 // The map rows are arrays of 0x18-byte RGE_Tile records. The byte used by
 // clean_borders is terrain at +5, distinct from the passability byte at +4.

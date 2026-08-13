@@ -13,9 +13,16 @@
 // Probes 6 and 9 changed pointer lifetime and returned to the same basin.
 // Probe 10 added the decompiler Data prefix store; it widened the diff and was
 // restored to probe 5.
+// New session probe: removed the named cancel object and reloaded the result
+// through cancel_button after its factory call; diff improved to 560 and the
+// cancel-button register stayed live through the factory arm. Initializing the
+// output pointers at declaration emitted the same code.
+// Probe 17 separate Data/temp_str/str arrays followed the binary local names;
+// size fell to 1263 and diff widened to 562. Restored the contiguous typed
+// local window.
 // Left in scratch: frame, size, CFG, and call set match. Remaining drift is
 // VC5 local-home and register assignment around the constructor prologue and
-// registry window. No evidence-backed source lead remains in this session.
+// registry window. The best source keeps the natural output-pointer lifetime.
 // FLAGS: config/flags/0049F370_TribeMPStartupScreen.rsp (/GX for EH cleanup).
 
 #include <string.h>
@@ -201,8 +208,8 @@ extern RGE_Base_Game* rge_base_game;
 TribeMPStartupScreen::TribeMPStartupScreen()
     : TScreenPanel("MP Startup Screen")
 {
-    TButtonPanel** cancel_button;
-    TListPanel** list;
+    TButtonPanel** cancel_button = &this->cancelButton;
+    TListPanel** list = &this->list;
     TButtonPanel** ok_button;
     HKEY ghUserKey;
     unsigned long dwSize;
@@ -217,8 +224,6 @@ TribeMPStartupScreen::TribeMPStartupScreen()
         char str[256];
     } strings;
 
-    cancel_button = &this->cancelButton;
-    list = &this->list;
     this->help_button = 0;
     this->okButton = 0;
     *cancel_button = 0;
@@ -260,13 +265,12 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                                         0, 0x46, 0x1B8, 0xF0, 0x1E,
                                         0, 0, 0)) {
                     (*ok_button)->set_help_info(0x7531, -1);
-                    TButtonPanel* cancel = *cancel_button;
                     if (this->create_button(this, cancel_button, 0x0FA2,
                                             0, 0x14A, 0x1B8, 0xF0, 0x1E,
                                             0, 0, 0)) {
-                        cancel->set_help_info(0x7532, -1);
-                        cancel->hotkey = 0x1B;
-                        cancel->hotkey_shift = 0;
+                        (*cancel_button)->set_help_info(0x7532, -1);
+                        (*cancel_button)->hotkey = 0x1B;
+                        (*cancel_button)->hotkey_shift = 0;
                         if (this->create_button(this, &this->help_button,
                                                 0x0FA9, 0, 0x244, 0x1B8,
                                                 0x1E, 0x1E, 0, 0, 0)) {

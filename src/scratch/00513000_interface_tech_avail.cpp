@@ -25,6 +25,11 @@
 //   dereferencing the saved master pointer; rebuilt still loads the master into
 //   ESI before the count in CX. Final validated source keeps the canonical direct
 //   ownership and the narrow count register clue; paused at that localized basin.
+// - v15: moved the natural tech-count declaration before the master dereference;
+//   VC5 scheduled the tech-tree load before the master load and widened the diff
+//   to 45 bytes. Rolled back; the 30-byte clean source remains best.
+// - v16: adopted the exact tplayer tech_cost output order and typed call surface
+//   from researchCost; emitted code was unchanged (30-byte diff), so restored.
 
 typedef unsigned char uchar;
 

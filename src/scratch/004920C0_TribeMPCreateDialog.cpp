@@ -13,6 +13,8 @@
 //     the exact post-setup body. This is a normal factory-output idiom.
 // 9: the proven TPanel set_tab_order overload takes a short count.
 // 10: child panel data surfaces need no speculative virtual destructors.
+// 11: restored the same-TU TPanel virtual surface; it compiled identically,
+//     so the first constructor hunk is not controlled by that lifetime ABI.
 //
 // Recovered constructor facts:
 // - TPanel is 0xF4, TEasy_Panel is 0x478, and TDialogPanel is 0x490.

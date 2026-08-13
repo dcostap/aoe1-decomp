@@ -115,6 +115,9 @@
 // Clean source retained: natural typed byte-row ownership and while/do scan.
 // Validation remains 224 bytes, 141 differing bytes, 85.42% shape. The blocker
 // remains the original y1/range-home and row-pointer/byte-register allocation.
+// Continuation (shardE-4847C0): promoting the uchar range parameter to long
+// with an explicit 0xFF mask duplicated an earlier ABI probe and worsened the
+// strict diff to 142 bytes; rolled back.
 
 struct RGE_Tile {
     short screen_xpos;

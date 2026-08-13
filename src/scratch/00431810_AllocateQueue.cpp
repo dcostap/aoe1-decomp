@@ -18,6 +18,12 @@
 //   the first mismatch from +0000 to +0029 and diff 425 to 395 bytes; the
 //   destructor block remains six bytes early and the checker flags its delete
 //   relocation at the paired site.
+// - Split the old-queue copy guard from a second typed delete guard to mirror
+//   the binary's repeated Queue null test; this worsened the diff from 395 to
+//   396 bytes without changing the structural mismatch, so it was rolled back.
+// - A natural early return for the outer growth guard worsened the first
+//   mismatch, grew code by 15 bytes, and changed saved-register pressure; it
+//   was rolled back.  The clean result-variable form remains best.
 
 #include <string.h>
 

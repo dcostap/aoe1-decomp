@@ -20,6 +20,8 @@
 //   coverage. The remaining drift is 14 register-colored bytes in mode 102.
 // - The exact tvw_main ABI uses short for command_make_do's fourth parameter;
 //   the donor-supported declaration and stdlib context do not change bytes.
+// - A natural mode-102 inline failure-action spelling moved the diff from 14
+//   to 98 bytes and lost shared block islands; restored the labeled-tail form.
 
 #include <stdlib.h>
 

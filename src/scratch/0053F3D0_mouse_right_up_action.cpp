@@ -18,6 +18,9 @@
 //   natural early guards.  This restores the original failure color_log call,
 //   all 22 ordered call sites, and the original 647-byte size.  Remaining
 //   drift starts at the interface-style global load and the unselect tail.
+// - liveness probe: removed the second mode local and used direct program-mode
+//   member tests.  This sinks the shared load after the interface-style compare;
+//   the result is 9 bytes different with the same size, frame, and call order.
 
 #include <stdlib.h>
 
@@ -325,9 +328,9 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                     return 0;
                 }
 
-                mode = rge_base_game->prog_mode;
                 if (rge_base_game->prog_info->interface_style == 2) {
-                    if ((mode != 5) && (mode != 7)) {
+                    if ((rge_base_game->prog_mode != 5) &&
+                        (rge_base_game->prog_mode != 7)) {
                         if (rge_base_game->game_mode == 0) {
                             if (param_4 == 0) {
                                 this->command_make_do(param_1, param_2, 1, -1);
@@ -359,7 +362,7 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                         }
                     }
                 } else {
-                    if (mode != 7) {
+                    if (rge_base_game->prog_mode != 7) {
                         if (rge_base_game->game_mode != 0) {
                             rge_base_game->set_game_mode(0, 0);
                         } else {

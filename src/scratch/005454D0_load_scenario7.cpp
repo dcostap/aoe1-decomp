@@ -13,6 +13,16 @@
 //   remaining mismatch is the scenario-player-count stack home at 3269.
 // - Main-agent source audit replaced the raw 0x886C10 macro with the established
 //   world_update_counter symbol. The natural source now has a 0x48 frame.
+// - Fresh baseline confirmed the typed global and natural compressed-header
+//   guard, but emitted a 0x48 frame and 547-byte positional diff.
+// - Function-scope buffer and int/char stream types, plus a volatile counter,
+//   were codegen duplicates and were not retained as matching leads.
+// - A named serialized scenario-player count restored the 0x4c frame and
+//   improved the positional diff to 533 bytes; <= -1 remap guards improved it
+//   to 297 bytes with the original legacy compare shape.
+// - Same-TU save/read x/y/z order improved the best source to 295 bytes and
+//   93.05% shape. Direct object-guard and players-array variants were tested,
+//   then rolled back because they increased size or positional drift.
 // Baseline: typed reconstruction of the scenario 1.08 loader.  The scenario
 // record widths follow the executable, including its narrow legacy fields.
 
@@ -159,26 +169,28 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
     float obj_angle;
     uchar obj_state;
     short master_id;
-    float world_z;
-    float world_y;
     float world_x;
+    float world_y;
+    float world_z;
     long obj_id;
     long player_id_hash[9];
     int outer;
     int i;
     long next_object_id;
     int j;
+    long scenario_player_count;
+    void* buffer;
 
     world_update_counter = 0;
     rge_read_uncompressed(file, &count, 4);
     if (count > 0) {
-        void* p = malloc(count);
-        if (p == 0) {
+        buffer = malloc(count);
+        if (buffer == 0) {
             rge_close(file);
             return;
         }
-        rge_read_uncompressed(file, p, count);
-        free(p);
+        rge_read_uncompressed(file, buffer, count);
+        free(buffer);
     }
 
     rge_read(file, &next_object_id, 4);
@@ -208,33 +220,33 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
         } while (i < this->player_num);
     }
 
-    rge_read(file, &player_id_hash[8], 4);
+    rge_read(file, &scenario_player_count, 4);
     i = 1;
-    if (player_id_hash[8] > 1) {
+    if (scenario_player_count > 1) {
         long* map = player_id_hash + 1;
         do {
             RGE_Player* player;
-            if (i >= this->player_num || *map < 0 ||
+            if (i >= this->player_num || *map <= -1 ||
                 (player = this->players[*map]) == 0) {
                 player = this->players[0];
             }
             player->scenario_load(file, player_id_hash, 1.08f);
             ++i;
             ++map;
-        } while (i < player_id_hash[8]);
+        } while (i < scenario_player_count);
     }
 
     outer = 0;
-    if (player_id_hash[8] > 0) {
+    if (scenario_player_count > 0) {
         long* map = player_id_hash;
         do {
             rge_read(file, &obj_id, 4);
             j = 0;
             if (obj_id > 0) {
                 do {
-                    rge_read(file, &world_z, 4);
-                    rge_read(file, &world_y, 4);
                     rge_read(file, &world_x, 4);
+                    rge_read(file, &world_y, 4);
+                    rge_read(file, &world_z, 4);
                     rge_read(file, &id, 4);
                     rge_read(file, &master_id, 2);
                     rge_read(file, &obj_state, 1);
@@ -254,31 +266,31 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
             }
             ++outer;
             ++map;
-        } while (outer < player_id_hash[8]);
+        } while (outer < scenario_player_count);
     }
 
     this->next_object_id = next_object_id;
-    rge_read(file, &player_id_hash[8], 4);
+    rge_read(file, &scenario_player_count, 4);
     i = 1;
-    if (player_id_hash[8] > 1) {
+    if (scenario_player_count > 1) {
         long* map = player_id_hash + 1;
         do {
             RGE_Player* player;
-            if (i >= this->player_num || *map < 0 ||
+            if (i >= this->player_num || *map <= -1 ||
                 (player = this->players[*map]) == 0) {
                 player = this->players[0];
             }
             player->scenario_postload(file, player_id_hash, 1.08f);
             ++i;
             ++map;
-        } while (i < player_id_hash[8]);
+        } while (i < scenario_player_count);
     }
 
     rge_close(file);
     i = 1;
     if (i < this->player_num) {
         do {
-            if (i >= player_id_hash[8]) return;
+            if (i >= scenario_player_count) return;
             if (this->players[i] != 0 && player_id_hash[i] >= 0) {
                 int player_index = i - 1;
                 this->players[player_id_hash[i]]->loadAIInformation(

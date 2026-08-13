@@ -19,6 +19,9 @@
 //   the remaining drift is the health-home and callee-saved register basin.
 // - swapped coordinate declaration/assignment and health-local declaration
 //   orders were codegen duplicates or worse under the donor context.
+// - tested exact same-TU box_hit_test-style guard clauses for sprite/frame
+//   dispatch and object-state/max-health exits; emitted code was unchanged,
+//   so restored the combined natural source form.
 
 #include <stdlib.h>
 

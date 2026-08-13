@@ -32,6 +32,8 @@
 //   codegen duplicates. Reversed saved top/bottom assignment was restored.
 // - reversing the source top/bottom update order matched the original register
 //   pair and reduced the best result to 46 diff bytes.
+// - named area alias probe: preserving p2 in a typed local made 389 bytes /
+//   318 strict diff bytes and lost call relocation alignment; restored p2 form.
 // - paused: calls, frame, size, CFG, and most body blocks match. Remaining drift
 //   is prologue scheduling, early area-register coloring, one delayed store,
 //   and equivalent call-setup register coloring.

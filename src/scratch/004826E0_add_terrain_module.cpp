@@ -15,6 +15,9 @@
 // 9: raw dimension and no-op expression variants did not improve emitted code and were removed.
 // 10: block-scoped area locals were a codegen duplicate; restored one natural local.
 // 11: replaced the explicit shared-tail goto with natural switch breaks, matching the packet's line-268 break; emitted code was unchanged.
+// 12: case-local direct dimension expressions followed the duplicated map loads at 00482757/004827C1 but worsened the diff to 277; restored the natural area local.
+// 13: typed the terrain-generator constructor as RGE_Map*/RGE_Random_Map_Module*; emitted code was unchanged, but the call surface is canonical.
+// 14: modeled the terrain generator as the typed random-map derived object with its proven 0x12CC layout; emitted code was unchanged.
 // left in scratch: exact size/frame/call parity and canonical field ownership; switch tail merge and
 //    loop constant hoisting remain broad VC5 codegen differences.
 
@@ -100,10 +103,13 @@ public:
     unsigned char pad_1435[3];
 };
 
-class RGE_RMM_Terrain_Generator {
+class RGE_RMM_Terrain_Generator : public RGE_Random_Map_Module {
 public:
-    char gap[0x12CC];
-    RGE_RMM_Terrain_Generator(void* map, void* module, RGE_Terrain_Info* info);
+    char gap_30[0x1298];
+    void* map_zone;
+    virtual unsigned char generate();
+    RGE_RMM_Terrain_Generator(RGE_Map* map, RGE_Random_Map_Module* module,
+                              RGE_Terrain_Info* info);
 };
 
 class RGE_RMM_Controller : public RGE_Random_Map_Module {

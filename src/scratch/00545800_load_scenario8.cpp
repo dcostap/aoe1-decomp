@@ -8,6 +8,11 @@
 // Source audit: named fields preserve the proven World offsets. The float angle and 32-bit object ids follow the scenario format.
 // Main-agent audit removed stale raw-offset macros, stack-adjacent aliases, and
 // the float-to-ID type pun. The separately read header owns next_object_id.
+// 6: A scoped object-count local worsened the frame-independent structural diff; rolled back.
+// 7: A separate object-count local with the prior index reused for the outer player loop improved shape to 83.07%.
+// 8: Reusing the dead compressed-count local for the delayed next-object-id header kept the 0x4c frame and improved shape to 85.94%.
+// 9: A typed player pointer local for the object guard restored the original saved-register prologue and reached the best natural diff (564 bytes); assignment-in-condition was worse and was rolled back.
+// Left in scratch: ordered calls and frame match, but structural drift remains in the header-count home, mapped-player guard, and final setup block.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
@@ -55,7 +60,6 @@ public:
 void RGE_Game_World::load_scenario8(int handle, RGE_Player_Info& info)
 {
     long count;
-    long header_size;
     float obj_angle;
     unsigned char obj_state;
     short master_id;
@@ -64,7 +68,7 @@ void RGE_Game_World::load_scenario8(int handle, RGE_Player_Info& info)
     float world_x;
     int obj_id;
     int player_id_hash[9];
-    int outer;
+    long object_count;
 
     world_update_counter = 0;
     rge_read_uncompressed(handle, &count, 4);
@@ -74,7 +78,7 @@ void RGE_Game_World::load_scenario8(int handle, RGE_Player_Info& info)
         rge_read_uncompressed(handle, buf, count);
         free(buf);
     }
-    rge_read(handle, &header_size, 4);
+    rge_read(handle, &count, 4);
     this->scenario_init(handle, this);
     this->scenario_make_map(handle);
     int n = this->player_num;
@@ -95,13 +99,13 @@ void RGE_Game_World::load_scenario8(int handle, RGE_Player_Info& info)
             ++map;
         } while (i < player_id_hash[8]);
     }
-    outer = 0;
+    i = 0;
     if (player_id_hash[8] > 0) {
         int* map = player_id_hash;
         do {
-            rge_read(handle, &count, 4);
+            rge_read(handle, &object_count, 4);
             int j = 0;
-            if (count > 0) {
+            if (object_count > 0) {
                 do {
                     rge_read(handle, &world_z, 4);
                     rge_read(handle, &world_y, 4);
@@ -111,20 +115,22 @@ void RGE_Game_World::load_scenario8(int handle, RGE_Player_Info& info)
                     rge_read(handle, &obj_state, 1);
                     rge_read(handle, &obj_angle, 4);
                     int mapped = *map;
-                    if (mapped >= 0 && this->players[mapped] != 0) {
+                    RGE_Player* player = 0;
+                    if (mapped >= 0) player = this->players[mapped];
+                    if (player != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[mapped]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
+                        player->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
-                } while (j < count);
+                } while (j < object_count);
             }
-            ++outer;
+            ++i;
             ++map;
-        } while (outer < player_id_hash[8]);
+        } while (i < player_id_hash[8]);
     }
-    this->next_object_id = header_size;
+    this->next_object_id = count;
     rge_read(handle, player_id_hash + 8, 4);
     i = 1;
     if (player_id_hash[8] > 1) {

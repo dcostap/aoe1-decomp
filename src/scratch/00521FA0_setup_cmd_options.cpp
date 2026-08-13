@@ -13,6 +13,8 @@
 // behavior probes (rolled back): temp_str+4 parsing and alternate >25 clamp
 // topology moved farther from the 60-byte best; the ordinary <25 / >200 clamp
 // is restored.
+// first-hunk lead: terminate cmd_line[255] after strncpy, matching the oracle's
+// post-push write to the last command-line byte rather than temp_str[3].
 
 #include <string.h>
 
@@ -73,7 +75,7 @@ int TRIBE_Game::setup_cmd_options()
     char encstr[512];
 
     strncpy(cmd_line, this->prog_info->cmd_line, 0xFF);
-    temp_str[3] = 0;
+    cmd_line[255] = 0;
     CharUpperA(cmd_line);
     encrypt_codes(cmd_line, encstr, 0x200);
 

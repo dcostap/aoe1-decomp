@@ -11,6 +11,9 @@
 //   recovered the original five-entry dispatch, call order, and exact size.
 // - Positive game-status arms recovered both music branch polarities; the
 //   remaining drift is three status-buffer stack displacement bytes (+4).
+// - Tested the exact-donor dllimport SendMessageA surface instead of the
+//   cached function-pointer local; it broke the frame and 998-byte structure,
+//   so it was rolled back. The cached-IAT source remains the best lead.
 // - Scoped/register/aggregate local-home probes were codegen-neutral and were
 //   not retained; the living source keeps separate named int/char locals.
 

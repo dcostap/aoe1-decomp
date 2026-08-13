@@ -24,6 +24,11 @@
 //     the emitted code stayed in the same basin.
 // 11: grouping those separate values in one record was a codegen duplicate.
 //     Keep their stream ownership separate in the final typed source.
+// 12: changed the final player-AI pass from a for loop to the natural do-while
+//     shape shown by the original pre-check and bottom player-count compare.
+// 13: spelled the scenario-player guard as `scenario_player_num <= j` so the
+//     typed compare follows the original counter-left branch form.
+//     It changed only two bytes without improving the metrics; restored `j >=`.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" int __cdecl rge_close(int);
@@ -161,7 +166,7 @@ void RGE_Game_World::load_scenario2(int handle, RGE_Player_Info& info)
     rge_close(handle);
     j = 1;
     if (this->player_num > 1) {
-        for (; j < this->player_num; ++j) {
+        do {
             if (j >= scenario_player_num) return;
             if (this->players[j] != 0 && player_id_hash[j] > -1) {
                 int s = j - 1;
@@ -171,6 +176,7 @@ void RGE_Game_World::load_scenario2(int handle, RGE_Player_Info& info)
                     this->scenario->Get_player_AI(s, 1),
                     this->scenario->GetPlayerPosture(s), -1);
             }
-        }
+            ++j;
+        } while (j < this->player_num);
     }
 }

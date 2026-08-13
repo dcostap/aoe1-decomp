@@ -20,6 +20,13 @@
 //   93.23% shape, 822 positional bytes (75.0000%), 255 edit bytes.  The remaining
 //   gap is broad VC5 register/block scheduling around the second diplomacy pass,
 //   transitive setup, and final panel null tests; no accepted_drift proposal.
+// shardA5 session: tested direct literal-one and for-loop diplomacy forms; they
+//   emitted the same code.  Direct players[i] reloads improved shape but widened
+//   size.  Named Player arrays and the transitive mutual-allies fields are kept.
+// final bounded result: 1082 rebuilt vs 1092 original, frame 0x8, 17/17 calls,
+//   88.92% shape, 832 positional bytes (76.1905%), 514 edit bytes.  The remaining
+//   structural gap starts in the prologue and second diplomacy pass; no exact or
+//   accepted_drift proposal.
 
 #include <stdio.h>
 
@@ -59,17 +66,14 @@ public:
 
 void RGE_Game_World::update_mutual_allies() {
     int i,j,k;
+    int pNum, index;
     fprintf(DVlogf,(const char*)0x58EF08,world_time);
     i=0;
     if (i < player_num) do {
         this->players[i]->mutualExploredMask=0;
         this->players[i]->mutualVisibleMask=0;
         this->players[i]->nonMutualVisibleMask=0;
-        int offset=0xdc;
-        do {
-            offset += 4;
-            *(int*)((char*)this->players[i]+offset-4)=0;
-        } while (offset < 0x100);
+        for (j=0; j<9; ++j) this->players[i]->removeVisibleBits[j]=0;
         int* mutual = this->players[i]->mutualAlly;
         j=0;
         do {
@@ -85,74 +89,57 @@ void RGE_Game_World::update_mutual_allies() {
     } while (i < player_num);
 
     {
-        int one=1;
-        i=one;
-        if (one < player_num) do {
-            Player* p=players[i];
-            if (p->allied_LOS_Enable==one) {
-                j=one;
-                if (one < player_num) do {
+        for (i=1; i < player_num; ++i) {
+            if (players[i]->allied_LOS_Enable==1) {
+                for (j=1; j < player_num; ++j) {
                     if (j != i) {
-                        if (!p->relations[j] && !players[j]->relations[i]) {
-                            p->mutualAlly[j]=one;
-                            p->mutualVisibleMask |= one << j;
-                            p->mutualExploredMask |= one << (j+16);
+                        if (!players[i]->relations[j] && !players[j]->relations[i]) {
+                            players[i]->mutualAlly[j]=1;
+                            players[i]->mutualVisibleMask |= 1 << j;
+                            players[i]->mutualExploredMask |= 1 << (j+16);
                         }
                     }
-                } while (++j < player_num);
+                }
             }
-            ++i;
-        } while (i < player_num);
+        }
     }
 
-    i=0;
-    int player_offset=0;
-    if (i < player_num) do {
-        j=1;
-        if (1 < player_num) {
-            int ally_offset=0xe0;
-            do {
-                if (j != i &&
-                    *(int*)((char*)*(Player**)((char*)this->players+player_offset)+ally_offset-0x30) == 0) {
-                    k=1;
-                    if (k < player_num) do {
-                        if (*(int*)((char*)*(Player**)((char*)this->players+player_offset)+0xac+k*4) == 0 &&
-                            *(int*)((char*)players[k]+ally_offset-0x30) == 1 &&
-                            *(int*)((char*)players[k]->mutualAlly+player_offset) == 1) {
-                            *(int*)((char*)*(Player**)((char*)this->players+player_offset)+0xd8) |= 1 << j;
-                            *(int*)((char*)*(Player**)((char*)this->players+player_offset)+ally_offset) |= 1 << k;
-                        }
-                        ++k;
-                    } while (k < player_num);
+    for (i=0; i < player_num; ++i) {
+        Player* p = players[i];
+        for (pNum=1; pNum < player_num; ++pNum) {
+            if (pNum != i && p->mutualAlly[pNum] == 0) {
+                for (index=1; index < player_num; ++index) {
+                    if (p->mutualAlly[index] == 0 &&
+                        players[index]->mutualAlly[pNum] == 1 &&
+                        players[index]->mutualAlly[i] == 1) {
+                        p->nonMutualVisibleMask |= 1 << pNum;
+                        p->mutualAlly[pNum] |= 1 << index;
+                    }
                 }
-                ++j;
-                ally_offset += 4;
-            } while (j < player_num);
+            }
         }
-        ++i;
-        player_offset += 4;
-    } while (i < player_num);
+    }
 
     for (i=0;i<player_num;i++) {
         fprintf(DVlogf,(const char*)0x58EEFC,i);
         fprintf(DVlogf,(const char*)0x58EEA0,players[i]->mutualExploredMask,players[i]->mutualVisibleMask,players[i]->nonMutualVisibleMask);
         fprintf(DVlogf,(const char*)0x58EE6C,players[i]->allied_LOS_Enable,players[i]->civ);
         fprintf(DVlogf,(const char*)0x58EE58);
-        for (j=0x88;j<0xac;j+=4) {
-            fprintf(DVlogf,(const char*)0x584610,*(int*)((char*)players[i]+j));
-            if (j < 0xa8) fprintf(DVlogf,(const char*)0x584ee4);
+        for (j=0;j<9;j++) {
+            fprintf(DVlogf,(const char*)0x584610,players[i]->unit_diplomacy[j]);
+            if (j < 8) fprintf(DVlogf,(const char*)0x584ee4);
             else fprintf(DVlogf,(const char*)0x58ee54);
         }
         fprintf(DVlogf,(const char*)0x58EE40);
-        for (j=0xac;j<0xd0;j+=4) {
-            fprintf(DVlogf,(const char*)0x584610,*(int*)((char*)players[i]+j));
-            if (j < 0xcc) fprintf(DVlogf,(const char*)0x584ee4);
+        for (j=0;j<9;j++) {
+            fprintf(DVlogf,(const char*)0x584610,players[i]->mutualAlly[j]);
+            if (j < 8) fprintf(DVlogf,(const char*)0x584ee4);
             else fprintf(DVlogf,(const char*)0x58ee54);
         }
         fprintf(DVlogf,(const char*)0x58EE28);
-        for (j=0xdc;j<0x100;j+=4) {
-            fprintf(DVlogf,(const char*)0x58EE20,*(int*)((char*)players[i]+j));
-            if (j < 0xfc) fprintf(DVlogf,(const char*)0x584ee4);
+        for (j=0;j<9;j++) {
+            fprintf(DVlogf,(const char*)0x58EE20,players[i]->removeVisibleBits[j]);
+            if (j < 8) fprintf(DVlogf,(const char*)0x584ee4);
             else fprintf(DVlogf,(const char*)0x58ee54);
         }
     }

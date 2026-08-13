@@ -27,6 +27,9 @@
 // RECT clipping reached 346 bytes/325 differing bytes and was rolled back.
 // Final clean candidate remains the prior 350-byte/238-difference typed source;
 // unresolved first hunk is the saved-register/zero-constant basin, not calls or CFG.
+// Probe shardD8_443520: flatten the four resource guards into one short-circuit
+// condition, matching the original's four common-exit tests without nested
+// lifetime blocks.
 
 struct tagRECT {
     long left;
@@ -92,10 +95,10 @@ void TDrawSystem::Paint(tagRECT* param_1)
     long b;
     long dest_top;
 
-    if (this->DrawType != 1) {
-        if (this->PrimarySurface) {
-            if (this->DrawArea) {
-                if (this->DrawArea->DrawSurface) {
+    if (this->DrawType != 1 &&
+        this->PrimarySurface != 0 &&
+        this->DrawArea != 0 &&
+        this->DrawArea->DrawSurface != 0) {
         if (this->ScreenMode == 1) {
         GetClientRect(this->Wnd, &src);
         dest.left = src.left;
@@ -144,8 +147,5 @@ void TDrawSystem::Paint(tagRECT* param_1)
 
         this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface,
                                   &src, 0x1000000, 0);
-                }
-            }
-        }
     }
 }

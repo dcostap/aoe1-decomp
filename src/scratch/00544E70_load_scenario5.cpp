@@ -13,6 +13,10 @@
 // kept the separately read next-object ID. This restored the original 0x4c frame
 // and improved shape to 92.43%, with all 28 ordered calls still aligned.
 // Left in scratch: remaining drift is structural local coloring and the final setup loop.
+// 11: spelled mapped-player invalid-index guards as <= -1; this recovered the original cmp/jle blocks in both load passes.
+// 12: confirmed the one-argument GetPlayerPosture ABI from the class packet; the early -1 belongs to loadAIInformation.
+// 13: removed the saved cleanup-player local and used a positive scenario bound guard; this recovered the original cleanup CFG and reduced the size gap to 2 bytes.
+// 14: a pointer-first cleanup local regressed register lifetime; restored the direct player lookup, which remains the cleanest candidate.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int file, void* dst, int size);
@@ -54,7 +58,7 @@ public:
     virtual void scenario_postload(int, long*, float);
     void remake_visible_map();
 };
-class RGE_Scenario { public: int GetPlayerPosture(int,int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
+class RGE_Scenario { public: int GetPlayerPosture(int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
 struct RGE_Player_Info { char gap[0x270]; int player_id[16]; };
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -85,14 +89,14 @@ void RGE_Game_World::load_scenario5(int file, RGE_Player_Info& info)
     if (n > 0) { do { this->players[i]->remake_visible_map(); i++; } while (i < this->player_num); }
     rge_read(file, &scenario_player_num, 4);
     i = 1;
-    if (scenario_player_num > 1) { long* map = player_id_hash + 1; do { RGE_Player* pl; if (i >= this->player_num || *map < 0 || (pl=this->players[*map])==0) pl=this->players[0]; load_factor=1.06f; pl->scenario_load(file, player_id_hash, load_factor); i++; map++; } while (i < scenario_player_num); }
+    if (scenario_player_num > 1) { long* map = player_id_hash + 1; do { RGE_Player* pl; if (i >= this->player_num || *map <= -1 || (pl=this->players[*map])==0) pl=this->players[0]; load_factor=1.06f; pl->scenario_load(file, player_id_hash, load_factor); i++; map++; } while (i < scenario_player_num); }
     outer = 0;
     if (scenario_player_num > 0) { long* map = player_id_hash; do { rge_read(file,&object_count,4); int j=0; if (object_count>0) { do { rge_read(file,&world_z,4); rge_read(file,&world_y,4); rge_read(file,&world_x,4); rge_read(file,&header_size,4); rge_read(file,&obj_angle,2); rge_read(file,&id,1); rge_read(file,&object_value,4); int pid=*map; if (pid>=0 && this->players[pid]!=0) { this->scenario_object_flag=1; this->scenario_object_id=header_size; this->players[pid]->make_scenario_obj(world_z, world_y, world_x, obj_angle, id, object_value); this->scenario_object_flag=0; } j++; } while (j<object_count); } outer++; map++; } while (outer < scenario_player_num); }
     this->next_object_id = next_object_id;
     rge_read(file, &scenario_player_num, 4);
     i = 1;
-    if (scenario_player_num > 1) { long* map = player_id_hash + 1; do { RGE_Player* pl; if (i >= this->player_num || *map < 0 || (pl=this->players[*map])==0) pl=this->players[0]; load_factor=1.06f; pl->scenario_postload(file, player_id_hash, load_factor); i++; map++; } while (i < scenario_player_num); }
+    if (scenario_player_num > 1) { long* map = player_id_hash + 1; do { RGE_Player* pl; if (i >= this->player_num || *map <= -1 || (pl=this->players[*map])==0) pl=this->players[0]; load_factor=1.06f; pl->scenario_postload(file, player_id_hash, load_factor); i++; map++; } while (i < scenario_player_num); }
     rge_close(file);
     i=1;
-    if (this->player_num > 1) { do { if (i >= scenario_player_num) return; if (this->players[i]!=0 && player_id_hash[i] > -1) { int idx=i-1; RGE_Player* pl=this->players[player_id_hash[i]]; pl->loadAIInformation(this->scenario->Get_BuildList(idx,1),this->scenario->Get_CityPlan(idx,1),this->scenario->Get_player_AI(idx,1),this->scenario->GetPlayerPosture(idx,-1),-1); } i++; } while (i < this->player_num); }
+    if (this->player_num > 1) { do { if (i < scenario_player_num) { if (this->players[i]!=0 && player_id_hash[i] > -1) { int idx=i-1; this->players[player_id_hash[i]]->loadAIInformation(this->scenario->Get_BuildList(idx,1),this->scenario->Get_CityPlan(idx,1),this->scenario->Get_player_AI(idx,1),this->scenario->GetPlayerPosture(idx),-1); } } else return; i++; } while (i < this->player_num); }
 }

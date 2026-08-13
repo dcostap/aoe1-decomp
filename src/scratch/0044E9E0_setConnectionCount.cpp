@@ -14,6 +14,12 @@
 //   virtual class surface because raw vptr modeling adds no evidence.
 // - donor declaration order with abs parity improved positional drift by 7
 //   bytes but lost exact blocks; restored the cleaner signed-parity form.
+// - fresh TU lead: hoisted direction to function scope to match the original
+//   EBP loop state and switch-arm placement; emitted code was unchanged, so
+//   restored the clean typed loop source.
+// - named xSize/ySize after the negative from checks moved the first mismatch
+//   no bytes, improved positional diff by 1 byte, but lost block alignment;
+//   restored the clean typed source.
 
 typedef unsigned char uchar;
 

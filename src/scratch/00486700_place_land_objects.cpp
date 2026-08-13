@@ -11,6 +11,7 @@
 // swapping output-local declaration order was a codegen duplicate.
 // swapped pop_stack output references; edit alignment changed but positional bytes did not improve.
 // restored the binary-proven tile terrain low-five-bit mask; exact size/frame/instruction/call parity, 17 localized bytes remain in pop-stack homes and register coloring.
+// reused the typed outer master pointer for the per-candidate reload; codegen was a duplicate and the first pop-stack hunk did not move.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 

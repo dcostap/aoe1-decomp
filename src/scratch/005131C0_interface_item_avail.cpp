@@ -23,6 +23,15 @@
 // a 15-byte late item-fill/block-layout difference; all eight calls and the
 // corrected six-output obj_cost relocation are aligned.  Further blind probes
 // are paused after the ten-hypothesis budget.
+// shardB4 reconstruction: keep the exact tplayer.cpp direct indexed ownership
+// in the extra item path, and model all six obj_cost outputs as typed shorts.
+// v11 typed the Item_Avail gaps, restored virtual object/list ownership, used
+// reference ABI outputs, and removed the cached extra master; 287 diff bytes.
+// v12 ordered the typed obj_cost outputs as Item_Avail fields; shape reached
+// 99.59% and the rebuilt size reached 806 bytes.
+// v13 preincrement spelling was a codegen duplicate.  An int output cursor
+// and a compound source-index increment were farther or duplicate; reverted.
+// v14 a for-loop rewrite was farther; the natural do/while source is retained.
 
 #include <stdlib.h>
 
@@ -47,7 +56,8 @@ public:
 
 class RGE_Static_Object {
 public:
-    char gap_00[8];
+    virtual ~RGE_Static_Object();
+    long object_id;
     RGE_Master_Static_Object* master_obj;
 };
 
@@ -55,7 +65,7 @@ struct ObjNode { RGE_Static_Object* object; ObjNode* next; };
 
 class RGE_Object_List {
 public:
-    virtual void destroy();
+    virtual ~RGE_Object_List();
     ObjNode* list;
 };
 
@@ -110,11 +120,26 @@ public:
     void* vr_list;
 };
 
-struct Item_Avail { char* name; short id; short pict; short inv1; float amt1; short inv2; float amt2; short inv3; float amt3; long help_message; long help_page; };
+struct Item_Avail {
+    char* name;
+    short id;
+    short pict;
+    short inventory_item_1;
+    unsigned char gap_0A[2];
+    float inventory_cost_1;
+    short inventory_item_2;
+    unsigned char gap_12[2];
+    float inventory_cost_2;
+    short inventory_item_3;
+    unsigned char gap_1A[2];
+    float inventory_cost_3;
+    long help_string_id;
+    long help_page_id;
+};
 
 class TRIBE_Player : public RGE_Player {
 public:
-    void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, float);
+    void obj_cost(short, char**, short&, short&, short&, short&, short&, short&, float);
     void interface_item_avail(Item_Avail**, short*, short);
 };
 
@@ -122,7 +147,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
 {
     short add_extra = 0;
     short count = 0;
-    short inv_amt_2, inv_3, inv_amt_3, tribe_flag, local_e;
+    short inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3;
 
     if (this->master_count > 0) {
         RGE_Master_Static_Object** pp = this->masters;
@@ -160,34 +185,33 @@ void TRIBE_Player::interface_item_avail(Item_Avail** out, short* count_out, shor
                 (*item_list)[out_i].id = idx;
                 (*item_list)[out_i].pict = this->masters[idx]->pict;
                 (*item_list)[out_i].name = this->masters[idx]->name;
-                this->obj_cost((short)idx, 0, (short*)&out, &inv_amt_2, &inv_3, &inv_amt_3, &tribe_flag, &local_e, 1.0f);
-                (*item_list)[out_i].inv1 = (short)out;
-                (*item_list)[out_i].amt1 = (float)(int)inv_amt_2;
-                (*item_list)[out_i].inv2 = inv_3;
-                (*item_list)[out_i].amt2 = (float)(int)inv_amt_3;
-                (*item_list)[out_i].inv3 = tribe_flag;
-                (*item_list)[out_i].amt3 = (float)(int)local_e;
-                (*item_list)[out_i].help_message = this->masters[idx]->get_help_message();
-                (*item_list)[out_i].help_page = this->masters[idx]->get_help_page();
-                out_i++;
+                this->obj_cost((short)idx, 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
+                (*item_list)[out_i].inventory_item_1 = inv_1;
+                (*item_list)[out_i].inventory_cost_1 = (float)(int)inv_amt_1;
+                (*item_list)[out_i].inventory_item_2 = inv_2;
+                (*item_list)[out_i].inventory_cost_2 = (float)(int)inv_amt_2;
+                (*item_list)[out_i].inventory_item_3 = inv_3;
+                (*item_list)[out_i].inventory_cost_3 = (float)(int)inv_amt_3;
+                (*item_list)[out_i].help_string_id = this->masters[idx]->get_help_message();
+                (*item_list)[out_i].help_page_id = this->masters[idx]->get_help_page();
+                ++out_i;
             }
             idx++;
         } while ((short)idx < this->master_count);
     }
 
     if (add_extra != 0) {
-        RGE_Master_Static_Object* m = this->masters[0x6d];
         (*item_list)[out_i].id = 0x6d;
-        (*item_list)[out_i].pict = m->pict;
-        (*item_list)[out_i].name = m->name;
-        this->obj_cost(0x6d, 0, (short*)&out, &inv_amt_2, &inv_3, &inv_amt_3, &tribe_flag, &local_e, 1.0f);
-        (*item_list)[out_i].inv1 = (short)out;
-        (*item_list)[out_i].amt1 = (float)(int)inv_amt_2;
-        (*item_list)[out_i].inv2 = inv_3;
-        (*item_list)[out_i].amt2 = (float)(int)inv_amt_3;
-        (*item_list)[out_i].inv3 = tribe_flag;
-        (*item_list)[out_i].amt3 = (float)(int)local_e;
-        (*item_list)[out_i].help_message = m->get_help_message();
-        (*item_list)[out_i].help_page = m->get_help_page();
+        (*item_list)[out_i].pict = this->masters[0x6d]->pict;
+        (*item_list)[out_i].name = this->masters[0x6d]->name;
+        this->obj_cost(0x6d, 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
+        (*item_list)[out_i].inventory_item_1 = inv_1;
+        (*item_list)[out_i].inventory_cost_1 = (float)(int)inv_amt_1;
+        (*item_list)[out_i].inventory_item_2 = inv_2;
+        (*item_list)[out_i].inventory_cost_2 = (float)(int)inv_amt_2;
+        (*item_list)[out_i].inventory_item_3 = inv_3;
+        (*item_list)[out_i].inventory_cost_3 = (float)(int)inv_amt_3;
+        (*item_list)[out_i].help_string_id = this->masters[0x6d]->get_help_message();
+        (*item_list)[out_i].help_page_id = this->masters[0x6d]->get_help_page();
     }
 }

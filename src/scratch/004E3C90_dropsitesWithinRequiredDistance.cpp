@@ -15,6 +15,13 @@
 // 17: declaration-order and contains-temporary probes were neutral or worse.
 // 18: moving total initialization before the array and swapping increment order
 // were rolled back. Best current reconstruction is 518 bytes, diff 230.
+// 19: an early local copy of resourceType was a codegen duplicate; rolled back.
+// 20: moved byteOffset initialization into the positive-resource path because
+// the original stores that cursor only after the count guard; testing that
+// natural guarded-path lifetime against the current pre-guard initialization.
+// 21: restored a natural boolean return as a cleanup-shape probe; it removed
+// one final delete call and shortened the function, so the clean split returns
+// remain the best structural reconstruction.
 
 extern "C" void* __cdecl operator_new(unsigned long sz);
 extern "C" void __cdecl operator_delete(void* p);
@@ -121,10 +128,10 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     numApplicableResources = 0;
     ManagedArray_int dropsites;
     totalApplicable = 0;
-    byteOffset = 0;
     index = 0;
 
     if (this->numResources[resourceType] > 0) {
+        byteOffset = 0;
         do {
             if (*(unsigned char*)((char*)this->resources[resourceType] + byteOffset + 0x0D) != 1) {
                 if (this->md->object(

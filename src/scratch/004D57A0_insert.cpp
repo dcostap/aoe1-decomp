@@ -15,11 +15,23 @@
 //    spellings were codegen duplicates or failed to restore the second call.
 // 10: reordered the natural p3 branches so p3 == -1 scans first and the
 //     indexed insertItem call follows, restoring the original call order.
+// 11: changed the list scan to one natural sentinel/null/built while chain;
+//     this improved the structural diff to 414 bytes and 41.76% shape.
+// 12-18: typed player, inherited BuildAIModule storage, virtual AIModule base,
+//     and separate receiver spellings did not change emitted code or call count.
+// 19-20: source-order and qualified-call variants were worse or neutral; the
+//     p3 == -1 scan-first source remains the closest clean reconstruction.
+// 21-23: restored the donor-backed inherited ABI and explicit RGE_Player type;
+//     the missing first insertItem call remains a VC5 common-tail merge.
+// 24: a typed BuildAIModule* local for the scan-path call was a codegen
+//     duplicate; restored the direct call with no call-count or CFG movement.
 // Best current reconstruction: typed fields and calls are correct, but VC5
 //    still merges the two insertItem sites and keeps this/category allocation
 //    in a different basin than the original.
 
 #include <stdlib.h>
+
+class RGE_Player;
 
 class BuildItem {
 public:
@@ -31,20 +43,25 @@ public:
 class TribeBuildMD {
 public:
     char gap_00[0xF0];
-    void* player;       // +0xF0
+    RGE_Player* player;  // +0xF0
 };
 
-class BuildAIModule {
+class AIModule {
 public:
-    int insertItem(void* player, int type, int val1, int flags,
+    virtual ~AIModule();
+    char gap_04[0xEC];
+};
+
+class BuildAIModule : public AIModule {
+public:
+    BuildItem buildList;
+    char gap_160[0x45C];
+    int insertItem(RGE_Player* player, int type, int val1, int flags,
                    int buildCategory, int p2, int p3);
 };
 
 class TribeBuildAIModule : public BuildAIModule {
 public:
-    char gap_000[0x0F0];
-    BuildItem buildList; // +0x0F0 (embedded sentinel)
-    char gap_160[0x45C];
     TribeBuildMD* md; // +0x5BC
 
     int insert(int p1, int p2, int p3);
@@ -171,12 +188,9 @@ L_after_switch:
         BuildItem* sentinel = &this->buildList;
         int count = 0;
 
-        if (item != sentinel) {
-            while (item != 0 && item->built() == 1) {
-                item = item->next;
-                count++;
-                if (item == sentinel) break;
-            }
+        while (item != sentinel && item != 0 && item->built() == 1) {
+            item = item->next;
+            count++;
         }
 
         return this->insertItem(this->md->player, p1, 1, flags, buildCat, p2, count);

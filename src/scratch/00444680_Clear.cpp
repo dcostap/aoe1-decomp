@@ -17,6 +17,9 @@
 //   count values, while retaining the late top <= bottom guard.  This moved
 //   the best check to 439 bytes, 217 differing bytes, and 85.39% shape; the
 //   DirectDraw temporary homes still shift, so the target remains unresolved.
+// - Rejected right > left / bottom > top guard spelling: it matched the
+//   compare direction locally but expanded the frame to 0x7C and worsened the
+//   result to 469 bytes and 335 differing bytes. The clean guard stays.
 
 #include <string.h>
 

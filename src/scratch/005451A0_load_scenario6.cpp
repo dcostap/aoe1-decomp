@@ -8,6 +8,12 @@
 // - Best check: 815 bytes versus 812, 487 differing bytes, 90.07% shape, 28 ordered calls.
 // - Remaining drift starts at the scenario-player count home (+0x58 versus +0x60).
 //   Later drift covers the object guard and the final player setup loop.
+// - Spelled the binary-proven negative guards as <= -1. This produced 818 bytes,
+//   351 differing bytes, and exact cmp/jle guard blocks.
+// - Restored the one-argument GetPlayerPosture ABI from scenario.cpp. The best
+//   typed candidate is 816 bytes with 344 differing bytes and 92.03% shape.
+// - A direct final-loop receiver changed the frame to 0x48 and was rolled back.
+//   A same-TU do-while footer also enlarged the body and was rolled back.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
@@ -22,7 +28,7 @@ struct RGE_Player_Info {
     int player_id[16];
 };
 
-struct RGE_Scenario { int GetPlayerPosture(int,int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
+struct RGE_Scenario { int GetPlayerPosture(int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
 struct RGE_Player {
     virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c(); virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c(); virtual void v20(); virtual void v24(); virtual void v28(); virtual void setup(char*,char*,char*,int,int); 
     virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3c(); virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4c(); virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5c(); virtual void make_scenario_obj(float,float,float,short,uchar,float); virtual void v64(); virtual void load1(int, int*, float); virtual void v6c(); virtual void load2(int, int*, float);
@@ -76,7 +82,7 @@ void RGE_Game_World::load_scenario6(int file, RGE_Player_Info& info)
     for (i=0; i<this->player_num; i++) this->players[i]->remake_visible_map();
     rge_read(file, &player_id_hash[8], 4);
     for (i=1; i<player_id_hash[8]; i++) {
-        if (i >= this->player_num || player_id_hash[i] < 0 || (p=this->players[player_id_hash[i]])==0) p=this->players[0];
+        if (i >= this->player_num || player_id_hash[i] <= -1 || (p=this->players[player_id_hash[i]])==0) p=this->players[0];
         p->load1(file, player_id_hash, 1.07f);
     }
     for (i=0; i<player_id_hash[8]; i++) {
@@ -89,7 +95,7 @@ void RGE_Game_World::load_scenario6(int file, RGE_Player_Info& info)
     }
     this->next_object_id = next_object_id;
     rge_read(file, &player_id_hash[8], 4);
-    for (i=1; i<player_id_hash[8]; i++) { if (i >= this->player_num || player_id_hash[i] < 0 || (p=this->players[player_id_hash[i]])==0) p=this->players[0]; p->load2(file, player_id_hash, 1.07f); }
+    for (i=1; i<player_id_hash[8]; i++) { if (i >= this->player_num || player_id_hash[i] <= -1 || (p=this->players[player_id_hash[i]])==0) p=this->players[0]; p->load2(file, player_id_hash, 1.07f); }
     rge_close(file);
-    for (i=1; i<this->player_num && i<player_id_hash[8]; i++) if (this->players[i] && player_id_hash[i] >= 0) { int k=i-1; p=this->players[player_id_hash[i]]; p->setup(this->scenario->Get_BuildList(k,1), this->scenario->Get_CityPlan(k,1), this->scenario->Get_player_AI(k,1), this->scenario->GetPlayerPosture(k,-1), -1); }
+    for (i=1; i<this->player_num && i<player_id_hash[8]; i++) if (this->players[i] && player_id_hash[i] > -1) { int k=i-1; p=this->players[player_id_hash[i]]; p->setup(this->scenario->Get_BuildList(k,1), this->scenario->Get_CityPlan(k,1), this->scenario->Get_player_AI(k,1), this->scenario->GetPlayerPosture(k), -1); }
 }

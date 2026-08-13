@@ -10,6 +10,8 @@
 // 8: Hoisting loop index before pick call improved to 40% positional / 21.6% edit and restored xor ESI/count EBP.
 // 9: Register y1 local did not change EBX (still y2).
 // 10: Volatile y2 worsened to 87.68% and first mismatch offset 1; rolled back.
+// 11: Used the incoming y1 parameter directly in both rectangle calls, matching the packet's direct y1 home reloads; VC5 emitted the same 495-byte code.
+// 12: Spelled the first direct selection block as an early failure break followed by picked_any=1; testing the call before the assignment was a natural source-order lead.
 // Bounded session probes: exact-source ABI correction fixed the two helper
 // relocations but did not move bytes; parameter-home reuse, declaration-order,
 // natural delta, header-context, and focused score-lifetime variants were
@@ -72,8 +74,7 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
     int picked_any = 0;
     RGE_Static_Object* picked_obj;
     register int i = 0;
-    register long y1r = y1;
-    register int count = this->pick_multi_objects(x1, y1r, x2, y2, 10, 20, this->player->id, p1, 1);
+    register int count = this->pick_multi_objects(x1, y1, x2, y2, 10, 20, this->player->id, p1, 1);
     if (count > 0) {
         int* pp = Picked_Objects;
         do {
@@ -81,8 +82,8 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
             if (idx != -1) {
                 RGE_Static_Object* obj = this->world->objectsValue[idx];
                 if (obj != 0 && obj->object_state < 7) {
-                    if (this->player->select_one_object(obj,0)) picked_any = 1;
-                    else break;
+                    if (!this->player->select_one_object(obj,0)) break;
+                    picked_any = 1;
                 }
             }
             i++;
@@ -100,7 +101,7 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
         if (dx < dy) r = dx;
     } else r = 50;
 
-    count = this->pick_objects(x1 + dx/2, y1r + dy/2, 10, 20, r, 4, 1);
+    count = this->pick_objects(x1 + dx/2, y1 + dy/2, 10, 20, r, 4, 1);
     if (count) {
         int bestScore = 0;
         picked_obj = 0;

@@ -22,6 +22,8 @@
 // the diff stayed 189 but size and CFG shape worsened, so the clean indexed source is restored.
 // probe: use the donor-proven mutable TDrawArea name ABI for both surface allocations;
 // no emitted bytes moved; retain the canonical typed constructor, with cursor-tail drift unchanged.
+// shardA6 probe: adding donor-proven virtual TDrawArea cleanup changed sizeof from 0x100 to 0x104;
+// operator-new size changed and diff worsened 189->190, so the clean surface ABI is restored.
 // Fresh claim probe: an early success return for Mouse_Mode/Max_Cursors moved
 // the first mismatch to the EH prologue and worsened the structural diff; rolled back.
 

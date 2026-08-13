@@ -12,6 +12,9 @@
 // - A single typed running y-state reached 43 positional bytes and 98.6% shape,
 //   but used the wrong final scheduling basin; a separate base/post-row state
 //   worsened the output to 775 bytes. Both probes were rolled back.
+// - Probe 17: one natural y-state following the original EBP add-23 schedule
+//   improved the diagnostic diff from 766 to 306 bytes and size gap to +4;
+//   restored because the final three button block still diverged.
 // Left in scratch after the bounded 10-hypothesis session.
 
 #include "..\..\include\game_globals.h"

@@ -21,6 +21,8 @@
 // probe 10: positive key-family spelling worsened ordered calls and was rolled
 // back. Final validated source is the probe-9 canonical reconstruction; paused
 // because the remaining block-order/register basin is not a bounded blind axis.
+// probe 11: typed low-message branch spelling sent the mouse family out of line,
+// but replaced the first child/command calls and worsened ordered alignment; restored.
 // Main-agent audit restored canonical panel/draw-area destructor ownership and
 // removed the function-pointer cache retained solely for codegen metrics. Final
 // audited check: exact 870-byte size/0xC frame, 30/30 calls with 83.33% ordered

@@ -16,6 +16,11 @@
 // the remaining drift is only the two commutative name-destination LEA
 // encodings at +00A0/+00D4. Pointer, array-index, and reversed-add spellings
 // did not change those bytes; named pointer temporaries worsened the frame.
+// 12: reversed the destination pointer-add operands in both typed name copies;
+// codegen was unchanged, so restored the natural pointer-plus-offset form.
+// 13: modeled both name buffers as typed NAME arrays and used the natural first
+// element member for the destination; codegen was unchanged, so restored the
+// clean pointer-plus-offset source.
 
 typedef unsigned short ushort;
 extern "C" char* __cdecl strcpy(char* dst, const char* src);

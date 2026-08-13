@@ -20,6 +20,10 @@
 //   rolled back.
 // - first-direction locals declared neighborY, neighborX, edgeResult in that
 //   order; this changed 4 bytes without improving alignment, so it was rolled back.
+// - named x plus an open-ended outer scan preserved the initial from.x load,
+//   but regressed to 686-690 differing bytes; rolled back.
+// - restored direct result updates and switch fall-through; this returns to
+//   the best 579-byte diagnostic basin, but the first prologue hunk remains.
 
 #include <stdlib.h>
 
@@ -72,12 +76,13 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                     if (rowsMap[y - this->yReferencePointValue][xOffset] >= minimum) {
                         int neighborX = x;
                         int neighborY = y;
-                        int edgeResult = result;
 
                         for (int direction = 0; direction < 8; ++direction) {
                             switch (direction) {
                             case 0:
                                 --neighborX;
+                                // fall through
+                            case 7:
                                 --neighborY;
                                 break;
                             case 1:
@@ -92,9 +97,6 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                             case 6:
                                 --neighborX;
                                 break;
-                            case 7:
-                                --neighborY;
-                                break;
                             }
 
                             if (allDirections || (abs(direction) & 1) != 0) {
@@ -102,14 +104,13 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                     neighborY < 0 || neighborY >= this->ySizeValue) {
                                     if ((mode1 == 1 && abs(direction) == 1) ||
                                         (mode2 == 1 && abs(direction) == 0)) {
-                                        --edgeResult;
+                                        --result;
                                     }
-                                    if (edgeResult <= 0)
+                                    if (result <= 0)
                                         break;
                                 }
                             }
                         }
-                        result = edgeResult;
                     }
 
                     int neighborX = x;
@@ -118,6 +119,8 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                         switch (direction) {
                         case 0:
                             --neighborX;
+                            // fall through
+                        case 7:
                             --neighborY;
                             break;
                         case 1:
@@ -131,9 +134,6 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                         case 5:
                         case 6:
                             --neighborX;
-                            break;
-                        case 7:
-                            --neighborY;
                             break;
                         }
 

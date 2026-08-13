@@ -13,6 +13,8 @@
 // probe: corrected the view geometry to world (+FC)/player (+100), matching exact vw_main donors;
 // probe: int pick_score is behavior-backed by the original direct EAX add, but is 5B farther than char.
 // probe: typed player object_count/object_list is canonical but changed the frame to 0x220; kept the named fields.
+// probe: inventory ABI confirms RGE_Pick_Obj_Info is 12 bytes with object_id at +0 and confidence at +4;
+// kept the natural typed record walk, which raises shape similarity to 74.14% without changing calls or size.
 // final gap: calls, filters, score accumulation, attacking output, and best-object return match the binary;
 // VC5 local lifetime and block layout remain non-exact. Left in scratch.
 
@@ -22,14 +24,15 @@ struct RGE_Static_Object;
 struct RGE_Master_Action_Object;
 struct RGE_World;
 
-struct PickedObjInfo {
-    int picked;
-    short action;
-    short pad;
-    int unused;
+struct RGE_Pick_Obj_Info {
+    int object_id;
+    short confidence;
+    short draw_level;
+    short draw_x;
+    short draw_y;
 };
 
-extern PickedObjInfo Picked_Objects[];
+extern RGE_Pick_Obj_Info Picked_Objects[];
 
 class RGE_Player {
 public:
@@ -130,9 +133,9 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
             target_count = 0;
             cur_target = selected_objects[j];
             if ((int)master_obj > 0) {
-                PickedObjInfo* info = &Picked_Objects[1];
+                RGE_Pick_Obj_Info* info = Picked_Objects;
                 do {
-                    int picked = info[-1].picked;
+                    int picked = info->object_id;
                     if (picked >= 0) {
                         RGE_Static_Object* obj = this->world->objects[picked];
                         if (obj != 0 && obj->owner_type < 7) {
@@ -142,7 +145,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                     action = 0;
                                 }
                                 if (action != 0) {
-                                    valid_target_count[target_count] += this->pick_score(obj, info->action);
+                                    valid_target_count[target_count] += this->pick_score(obj, info->confidence);
                                     if (cur_target->actions->accept(action)) {
                                         attacking[target_count] = 1;
                                     }
@@ -162,7 +165,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                                     action2 = 0;
                                                 }
                                                 if (action2 != 0) {
-                                                    valid_target_count[target_count] += this->pick_score(obj, info->action);
+                                                    valid_target_count[target_count] += this->pick_score(obj, info->confidence);
                                                     if (obj2->actions->accept(action2)) {
                                                         attacking[target_count] = 1;
                                                     }
@@ -191,11 +194,11 @@ next_target:
     RGE_Static_Object* best_obj = 0;
     int i = 0;
     if ((int)master_obj > 0) {
-        PickedObjInfo* info2 = Picked_Objects;
+        RGE_Pick_Obj_Info* info2 = Picked_Objects;
         do {
             int score = valid_target_count[i];
             if (score > best) {
-                int picked = info2->picked;
+                int picked = info2->object_id;
                 best_obj = this->world->objects[picked];
                 if (attacking_out != 0) {
                     *attacking_out = attacking[i];

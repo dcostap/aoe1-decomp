@@ -7,6 +7,13 @@
 //   `this` in EBX and zero in EBP vs original EBP/ESI). Fixed the reduction loop to the
 //   binary-observed 7 fixed passes; current mismatch is 5616/6631 positional bytes.
 //   Needs source-shape/register-pressure work.
+// - 2026-08-13: baseline check retained the named TRIBE_Player civ_id/playerAI ownership,
+//   125-entry weight array, and tplayer.cpp source family (7560 strict-diff bytes, 8320 body).
+// - 2026-08-13: typed the same-TU AI-module layout and changed history logging to the
+//   AIModule member surface. The source is more canonical, but codegen moved farther
+//   (7657 strict-diff bytes, 8336 body); no shared files changed.
+// - 2026-08-13: restored the common final difficulty rule call and retained the original
+//   no-call path for difficulty values outside 0..3. The emitted call-count gap remains.
 // Notes:
 // - The packet's decompiler folds the saved game difficulty into buildLists[0]; the
 //   real stack has `gameDifficulty` at +0x14 and `buildLists[125]` at +0x18.
@@ -41,7 +48,6 @@ typedef unsigned char uchar;
 #define S_I_AM_THE_CIV ((char*)0x0058B16C)
 
 extern int __cdecl debug_rand(char* file, int line);
-extern void __cdecl logCommonHistory(void* ai, char* fmt, ...);
 
 class RGE_Base_Game_00515E00 {
 public:
@@ -58,24 +64,83 @@ public:
     uchar deathMatch();
 };
 
-class TribeStrategyAIModule_00515E00 {
+class AIModule_00515E00 {
 public:
-    int rule(int id);
-    void setRule(int id, int value);
+    virtual ~AIModule_00515E00();
+    char gap_04[0xEC];
+    void logCommonHistory(char* fmt, ...);
 };
 
 class TribeInformationAIModule_00515E00 {
 public:
+    virtual ~TribeInformationAIModule_00515E00();
+    char gap_04[0x1008C];
     void loadUnitHistory();
     void unitsThatAreMostBuilt(int* difficultyLevel, int* mostBuiltUnit);
 };
 
-class TRIBE_Player {
+class TribeBuildAIModule_00515E00 {
 public:
-    char gap_000[0x105];
+    virtual ~TribeBuildAIModule_00515E00();
+    char gap_04[0x5BC];
+};
+
+class TribeConstructionAIModule_00515E00 {
+public:
+    virtual ~TribeConstructionAIModule_00515E00();
+    char gap_04[0x314];
+};
+
+class DiplomacyAIModule_00515E00 {
+public:
+    virtual ~DiplomacyAIModule_00515E00();
+    char gap_04[0x14C];
+};
+
+class EmotionalAIModule_00515E00 {
+public:
+    virtual ~EmotionalAIModule_00515E00();
+    char gap_04[0x1BC];
+};
+
+class TribeResourceAIModule_00515E00 {
+public:
+    virtual ~TribeResourceAIModule_00515E00();
+    char gap_04[0xF4];
+};
+
+class TribeStrategyAIModule_00515E00 {
+public:
+    virtual ~TribeStrategyAIModule_00515E00();
+    char gap_04[0x5F4];
+    int rule(int id);
+    void setRule(int id, int value);
+};
+
+class TribeMainDecisionAIModule_00515E00 : public AIModule_00515E00 {
+public:
+    char gap_base[0x14];
+    TribeBuildAIModule_00515E00 buildAI;
+    TribeConstructionAIModule_00515E00 constructionAI;
+    DiplomacyAIModule_00515E00 diplomacyAI;
+    EmotionalAIModule_00515E00 emotionalAI;
+    TribeInformationAIModule_00515E00 informationAI;
+    TribeResourceAIModule_00515E00 resourceAI;
+    TribeStrategyAIModule_00515E00 strategyAI;
+};
+
+class RGE_Player_00515E00 {
+public:
+    virtual ~RGE_Player_00515E00();
+    char gap_04[0x101];
     uchar civ_id; // +0x105
-    char gap_106[0x132];
-    void* playerAI; // +0x238
+    char gap_106[0x11A];
+};
+
+class TRIBE_Player : public RGE_Player_00515E00 {
+public:
+    char gap_220[0x18];
+    TribeMainDecisionAIModule_00515E00* playerAI; // +0x238
 
     void setupEgyptian(int* weights, int mapType, int victoryType, int mapSize);
     void setupGreek(int* weights, int mapType, int victoryType, int mapSize);
@@ -98,10 +163,8 @@ public:
                                                int mapType, int victoryType, int mapSize);
 };
 
-#define STRAT ((TribeStrategyAIModule_00515E00*)((char*)this->playerAI + 0x10E74))
-#define INFO  ((TribeInformationAIModule_00515E00*)((char*)this->playerAI + 0x0CEC))
-#define SET_RULE(rule_id, value) STRAT->setRule((rule_id), (value))
-#define GET_RULE(rule_id) STRAT->rule((rule_id))
+#define SET_RULE(rule_id, value) this->playerAI->strategyAI.setRule((rule_id), (value))
+#define GET_RULE(rule_id) this->playerAI->strategyAI.rule((rule_id))
 #define BL(n) buildLists[(n) - 1]
 #define DIV3_POS(x) do { if ((x) > 0) { (x) = (x) / 3; } } while (0)
 #define SIGN_MASK_MOD(v, mask) ((((((v) ^ ((v) >> 31)) - ((v) >> 31)) & (mask)) ^ ((v) >> 31)) - ((v) >> 31))
@@ -189,8 +252,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     if (rge_base_game->deathMatch() == 0) {
         difficultyLevel = -1;
         mostBuiltUnit1 = -1;
-        INFO->loadUnitHistory();
-        INFO->unitsThatAreMostBuilt(&difficultyLevel, &mostBuiltUnit1);
+        this->playerAI->informationAI.loadUnitHistory();
+        this->playerAI->informationAI.unitsThatAreMostBuilt(&difficultyLevel, &mostBuiltUnit1);
         switch (difficultyLevel) {
         case 0:
             BL(7) += 25;
@@ -525,10 +588,10 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     }
 
     rge_base_game->get_string((int)this->civ_id + 0x27F6, tempString, 0x100);
-    logCommonHistory(this->playerAI, S_I_AM_THE_CIV, tempString, (int)this->civ_id - 1);
-    logCommonHistory(this->playerAI, S_SELECTED_BEST_BUILD_LIST, buildListName);
+    this->playerAI->logCommonHistory(S_I_AM_THE_CIV, tempString, (int)this->civ_id - 1);
+    this->playerAI->logCommonHistory(S_SELECTED_BEST_BUILD_LIST, buildListName);
     strcpy(ruleSetName, S_RANDOM_GAME_SPECIALIZED);
-    logCommonHistory(this->playerAI, S_SETTING_AI_PERSONALITY);
+    this->playerAI->logCommonHistory(S_SETTING_AI_PERSONALITY);
 
     int workingMapType = mapType;
     switch (victoryType) {
@@ -753,18 +816,22 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     }
     SET_RULE(0x2F, workingMapType);
 
+    int difficultyRuleValue;
     if (gameDifficulty == 0) {
         SET_RULE(0xBA, 0xB4);
-        SET_RULE(0xBA, 200);
+        difficultyRuleValue = 200;
     } else if (gameDifficulty == 1) {
         SET_RULE(0xBA, 0xB4);
-        SET_RULE(0xBA, 0x96);
+        difficultyRuleValue = 0x96;
     } else if (gameDifficulty == 2) {
         SET_RULE(0xBA, 0xB4);
-        SET_RULE(0xBA, 100);
+        difficultyRuleValue = 100;
     } else if (gameDifficulty == 3) {
         SET_RULE(0xBA, 0xB4);
-        SET_RULE(0xBA, 0x32);
+        difficultyRuleValue = 0x32;
+    }
+    if (gameDifficulty >= 0 && gameDifficulty <= 3) {
+        SET_RULE(0xBA, difficultyRuleValue);
     }
 
     SET_RULE(0xB5, (debug_rand(S_TPLAYER_CPP, 0xF50) % 6 < 5));

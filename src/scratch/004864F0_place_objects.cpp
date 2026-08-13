@@ -19,6 +19,9 @@
 //     float cost output. Emitted bytes are unchanged; retain the safe typed form.
 // 12: direct typed world local before the player-id mask plus swapped pop_stack
 //     output order moved 10 bytes farther and lost aligned blocks; rolled back.
+// 13: hoisted the typed master lookup before the placement loop to test the
+//     original pre-pop lifetime; frame grew by 4 bytes and diff widened to 462,
+//     so restored the clean loop-local lookup.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 

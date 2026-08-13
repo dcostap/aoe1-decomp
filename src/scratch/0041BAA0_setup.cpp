@@ -25,6 +25,9 @@
 // - Current shard probes left the natural memory nesting and local order in place:
 //   both emitted the clean-source code.  Remaining structural drift is the +4
 //   frame/local home and the original memory branch's far tail placement.
+// - Removed the top-level game_info local and assigned player_game_info directly
+//   in each new-expression arm.  This reduced the size gap to +2 bytes but left
+//   the +4 frame and moved one later operator-new call target; restored clean.
 
 #include <windows.h>
 #include <stdio.h>

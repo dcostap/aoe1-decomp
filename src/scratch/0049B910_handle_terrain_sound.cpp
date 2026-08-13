@@ -24,6 +24,8 @@
 //   unchanged. Remaining drift is seven register-encoding bytes in the scan.
 // - declaring best_index before terrain_count was a natural ownership-order
 //   probe; output was unchanged, so the clean declaration order remains.
+// - named the typed terrain sound before get_file_name() as a natural dispatch
+//   probe; output was unchanged, so the seven scan register bytes remain.
 
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
 extern unsigned long debug_timeGetTime(const char* file, int line);

@@ -13,8 +13,12 @@
 // 0x988 frame; restoring the explicit cost local is retained as the more
 // period-plausible final source because it preserves the real pop ABI. Named
 // clumps/base-elevation locals, stack declaration order, and nested neighbor
-// guards were codegen duplicates. Final gap: +36 bytes / 0x98C frame, with
+// guards were codegen duplicates. Final gap: +14 bytes / 0x984 frame, with
 // calls and target order aligned; no raw/asm scaffolding retained.
+// Current claim probes: restoring the persistent height bound matched the
+// frame but worsened positional bytes; pointer-countdown init and source
+// ordering improved size and shape but left the same structural register and
+// local-window gap. All experiments were rolled back to this clean source.
 
 #include <math.h>
 

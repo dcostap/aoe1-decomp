@@ -124,6 +124,16 @@
 //   with no EH frame. No natural new surface selected the original family;
 //   keep this canonical typed source in scratch, not accepted-drift.
 
+// Retry 2026-08-13 shardE-40CDF0:
+// - Body assignments for player and the four ManagedArray fields produced a
+//   closer 102-byte section, but duplicated the inline constructor stores and
+//   reduced instruction-shape parity. Restored the member-initializer source.
+// - Defining the MainDecision destructor inline before the constructor was an
+//   emitted-code duplicate. The target still needs the FS-first EH frame;
+//   current VC5 emits the 78-byte no-EH basin.
+// - Leave the natural typed source in scratch. The remaining mismatch is the
+//   byte-zero EH/function-boundary topology, not accepted equivalent drift.
+
 template <class T>
 class ManagedArray {
 public:

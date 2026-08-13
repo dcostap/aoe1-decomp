@@ -14,6 +14,12 @@
 //   retained in the clean source.
 // - Current source keeps ordinary typed map-entry iteration; the remaining
 //   codegen lead is the original stack-home/register schedule at the loop tail.
+// - Making the base destructor virtual to match the same-TU donor did not
+//   change emitted code; the EH frame and first prologue hunk remain open.
+// - Adding the derived virtual-destructor declaration to the same fresh TU
+//   also left emitted code unchanged; no EH handler or frame appeared.
+// - Naming a local RGE_Map_Data* for the aggregate moved 336 bytes and made
+//   the size three bytes shorter, so the member-based clean form is restored.
 
 #include <stdlib.h>
 

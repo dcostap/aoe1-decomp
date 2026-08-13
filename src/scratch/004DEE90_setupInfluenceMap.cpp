@@ -8,11 +8,14 @@
 //   operator[] growth instead of decompiler cursor aliases.
 // - Reconstructed resource group dispatch with the binary's negative group
 //   guard; this restored ordered increment/decrement call sites.
+// - Same-TU RGE master donor fixes radius_x/radius_y to +0x30/+0x34, with
+//   LOS at +0x28 and an intervening float.  Radius placement keeps both
+//   binary-observed bound forms.
 // - Building bounds use the object's world coordinates; later mode radii use
 //   the master object's LOS field at +0x28.  The one-meaningful-probe volatile
 //   reload experiment matched frame/call shape better but was rolled back as
 //   compiler-steering scaffolding.
-// - Final clean candidate remains non-exact: frame is 0x6c vs 0x70 and eight
+// - Final clean candidate remains non-exact: frame is 0x6c vs 0x70 and six
 //   repeated building-coordinate ftol sites are still CSE'd by VC5.
 
 #include <stdlib.h>
@@ -117,6 +120,7 @@ public:
     short object_group;
     char gap_16[0x12];
     float los;
+    float radiusValue;
     float radius_x;
     float radius_y;
 };
@@ -441,7 +445,14 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         bMax.y += 2;
                     }
                 } else if (radiusX == 1.0) {
-                    if (placement != 6 && placement != 3) {
+                    if (placement == 6 || placement == 3) {
+                        bMin.x = (int)object->world_x;
+                        bMin.x -= 1;
+                        bMin.y = (int)object->world_y;
+                        bMin.y -= 1;
+                        bMax.x = (int)object->world_x;
+                        bMax.y = (int)object->world_y;
+                    } else {
                         bMin.x = (int)object->world_x;
                         bMin.x -= 2;
                         bMin.y = (int)object->world_y;
@@ -450,25 +461,23 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         bMax.x += 1;
                         bMax.y = (int)object->world_y;
                         bMax.y += 1;
+                    }
+                } else if (radiusX == 0.5) {
+                    if (placement == 6 || placement == 4) {
+                        bMin.x = (int)object->world_x;
+                        bMin.y = (int)object->world_y;
+                        bMax.x = (int)object->world_x;
+                        bMax.y = (int)object->world_y;
                     } else {
                         bMin.x = (int)object->world_x;
                         bMin.x -= 1;
                         bMin.y = (int)object->world_y;
                         bMin.y -= 1;
                         bMax.x = (int)object->world_x;
+                        bMax.x += 1;
                         bMax.y = (int)object->world_y;
+                        bMax.y += 1;
                     }
-                } else if (radiusX == 0.5) {
-                    if (placement != 6 && placement != 4) {
-                        logCommonHistory(this, "    Unsupported building size (%d x %d).",
-                                         (double)(radiusX + radiusX),
-                                         (double)((float)radiusY + (float)radiusY));
-                        continue;
-                    }
-                    bMin.x = (int)object->world_x;
-                    bMin.y = (int)object->world_y;
-                    bMax.x = (int)object->world_x;
-                    bMax.y = (int)object->world_y;
                 } else {
                     logCommonHistory(this, "    Unsupported building size (%d x %d).",
                                      (double)(radiusX + radiusX),

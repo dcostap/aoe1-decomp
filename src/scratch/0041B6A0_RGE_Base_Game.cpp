@@ -6,9 +6,12 @@
 //   call surfaces.  The current candidate uses the generated RGE_Base_Game layout,
 //   the real virtual-destructor class context, named member setters, and the
 //   period string/intrinsic surfaces.
+// - Moving the six binary-first member initializations into a natural constructor
+//   initializer list reproduced the delayed vptr scheduling and reached MATCH.
 // Source audit: the byte-exact variant used __declspec(novtable) plus an explicit
-// vptr store; that compiler-steering form is rejected.  The natural virtual
-// destructor candidate remains in scratch with a 27-byte prologue drift.
+// vptr store; that compiler-steering form is rejected.  The retained virtual
+// destructor class and member initializer list are natural and produce the same
+// delayed vptr store without an explicit vptr write.
 // Declaration probe: packet symbols require _iobuf* and char[260]. The full
 // binary-backed virtual surface through +0x140 changed no bytes. Exact setter
 // donors preserve their real narrow and wide parameter types. The remaining
@@ -286,15 +289,15 @@ public:
 };
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
+    : player_game_info(0),
+      random_game_seed(-1),
+      random_map_seed(-1),
+      save_random_game_seed(-1),
+      save_random_map_seed(-1),
+      quick_build(0)
 {
     int i;
 
-    this->player_game_info = 0;
-    this->random_game_seed = -1;
-    this->random_map_seed = -1;
-    this->save_random_game_seed = -1;
-    this->save_random_map_seed = -1;
-    this->quick_build = 0;
     do_draw_log = 0;
     safe_draw_log = 0;
     draw_log_name[0] = 0;

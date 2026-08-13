@@ -30,6 +30,8 @@
 // main-decision types preserved offsets but emitted the same 24-byte drift.
 // try 18: equivalent ids[0] indexing and post-increment output storage were
 // neutral; restored the clean explicit count update.
+// try 19: a typed ownerID local before the relation call was neutral; restored
+// the direct owner-id argument and kept the clean source.
 // left in scratch: 24 localized register/address bytes remain in the -5/-6
 // player filters and final ID store.  Size, frame, calls, CFG, and 89.52% of
 // blocks are exact; the remaining drift is not accepted_drift-safe.

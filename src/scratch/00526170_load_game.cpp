@@ -12,6 +12,9 @@
 //   call set closer, but the debug block still has unresolved source shape.
 // - Corrected world virtual slots so turn_sound_off is +0xB8 and load_game is
 //   +0xCC. Object update is modeled through the proven +0x1D0 slot.
+// - Duplicated the natural load_game_data failure guard to follow the first
+//   unmatched panelname call sequence. VC5 folded it into the existing tail;
+//   emitted code and structural metrics did not change.
 // - Remaining blocker: DEBUGLOAD has 21 fprintf calls, six waypoint scans,
 //   and compiler-generated floating conversion calls. The natural typed draft
 //   has 13 fprintf calls and a smaller frame. Leave this target paused.
@@ -346,15 +349,20 @@ int TRIBE_Game::load_game(char* file_name)
 
     this->show_status_message(0x44D, 0, -1);
     if (this->load_game_data() == 0) {
-        if (old_panel == 0 || old_panel->panelName() == 0)
-            goto load_game_failed;
+        if (old_panel == 0 || old_panel->panelName() == 0) {
+            this->close_status_message();
+            this->enable_input();
+            return 0;
+        }
         if (*old_panel->panelName() != 0) {
             panel_system.setCurrentPanel(old_panel->panelName(), 0);
             panel_system.destroyPanel("Status Screen");
             this->enable_input();
             return 0;
         }
-        goto load_game_failed;
+        this->close_status_message();
+        this->enable_input();
+        return 0;
     }
 
     this->show_status_message(0x452, 0, -1);

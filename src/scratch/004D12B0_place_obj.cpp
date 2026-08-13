@@ -13,6 +13,13 @@
 // tested typed pointer-to-member and pure-virtual can_place surfaces; codegen did not improve, restored the ordinary virtual method.
 // modeled the period virtual destructor surface; it preserved the call set but did not improve the frame.
 // reloaded the owner master-object table only for create, matching the original success block: 643 bytes, 0x18 frame, 165 differing bytes.
+// reordered the local radius declaration pairs to test the first paired stack-home hunk; codegen was unchanged, so restored the prior order.
+// tested expansion growth from a direct x87 reading: single radii doubled the
+// prototype radius and doubled radii added four times that radius; it added 25
+// bytes and was restored while the branch layout remains under test.
+// reversed the can_place condition so the retry path is the positive arm and
+// creation is its else target; this restored the original failure-before-success CFG.
+// reordered doubled-radius declarations before single-radius declarations; VC5 emitted the same code.
 // left in scratch: exact size, frame, and call set; remaining drift is localized in radius-slot ordering and later block liveness.
 
 #include "../../include/game_globals.h"
@@ -119,12 +126,13 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
                 break;
             }
             if (proto->can_place(
-                    this->obj->owner, this->place_x, this->place_y, 0, 1, 1, 1, 0, 0, 1) == 0) {
+                    this->obj->owner, this->place_x, this->place_y, 0, 1, 1, 1, 0, 0, 1)) {
+                ++tries;
+            } else {
                 *out = this->obj->owner->master_objects[this->obj_id]->create(
                     this->obj->owner, this->place_y, this->place_x, this->obj->world_z);
                 return 1;
             }
-            ++tries;
         } while (tries < 60);
         rx = proto->radius_x + rx + proto->radius_x * DAT_0057519c;
         ry = proto->radius_y + ry + proto->radius_y * DAT_0057519c;

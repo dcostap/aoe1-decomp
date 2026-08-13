@@ -27,6 +27,9 @@
 //   393 with proven absolute string addresses), but pointer-to-long argument
 //   scaffolding is not retained as living source. Argument declaration reordering
 //   was a duplicate; restore the clean typed direct switch.
+// - Legacy sprintf format constness and return type were unchanged codegen.
+// - &temp[0], an inlined two-argument helper, and a shared format pointer were
+//   unchanged codegen. The clean typed direct switch remains the best source model.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);

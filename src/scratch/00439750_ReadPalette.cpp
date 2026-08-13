@@ -12,8 +12,14 @@
 //   the original call-crossing register/lifetime basin.  Best validation is 421
 //   differing bytes, 25/25 calls, 0x10 frame, and 664/698 bytes; first mismatch
 //   is now the separator-buffer initialization.
-// left in scratch: remaining drift is separator-home construction, parser block
-// layout, gamma-table scheduling, and result/cleanup topology; not accepted-drift.
+// - Reconstructed the binary-backed three-byte space-newline separator literal;
+//   assigning all three early strtok results to tok moved the best check to 130
+//   differing bytes, 25/25 calls, 0x10 frame, and 668/698 bytes.
+// - Delayed the loop-index and parse-success homes until after the allocation
+//   check.  The precheck do-while and nested result guard were tested and rolled
+//   back because they added an extra strtok or widened the structural drift.
+// left in scratch: remaining drift is literal relocation, branch displacement,
+// allocation-block scheduling, and gamma-table register coloring; not accepted-drift.
 
 #include <string.h>
 
@@ -75,20 +81,22 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
         }
     }
     if (!own_mem) return 0;
-    char seps[4];
-    seps[0] = ' '; seps[1] = '\t'; seps[2] = '\n'; seps[3] = 0;
-    if (!strtok((char*)own_mem, seps)) goto cleanup;
-    if (!strtok(0, seps)) goto cleanup;
+    char seps[3] = " \n";
+    tok = strtok((char*)own_mem, seps);
+    if (tok == 0) goto cleanup;
     tok = strtok(0, seps);
-    if (!tok) goto cleanup;
+    if (tok == 0) goto cleanup;
+    tok = strtok(0, seps);
+    if (tok == 0) goto cleanup;
     n = (int)atol(tok);
-    res_id = 0;
     lp = (LOGPAL*)malloc(n * 4 + 8);
     if (!lp) goto cleanup;
-    lp->ver = 0x300;
+    i = 0;
+    res_id = 0;
     lp->cnt = (unsigned short)n;
+    lp->ver = 0x300;
     out = lp->e + 1;
-    for (i=0; i<n; ++i) {
+    for (; i<n; ++i) {
         tok = strtok(0, seps); if (!tok) break; out[-1] = (unsigned char)atoi(tok);
         tok = strtok(0, seps); if (!tok) break; out[0] = (unsigned char)atoi(tok);
         tok = strtok(0, seps); if (!tok) break; out[1] = (unsigned char)atoi(tok);

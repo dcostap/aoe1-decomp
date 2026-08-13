@@ -15,6 +15,9 @@
 // - Tested a natural { checksum; text[255]; } aggregate to make the marker
 //   lifetime explicit; it worsened the first mismatch to +007A and diff 8.
 //   Restored the named long plus buffer, which remains the clean 2-byte best.
+// - Reordered the natural buffer and named checksum declarations to test the
+//   binary-proven tmp[0]/tmp[4] stack adjacency; emitted code was unchanged.
+//   Restored the clean declaration order; the two-byte tmp-home drift remains.
 
 #include <stdio.h>
 

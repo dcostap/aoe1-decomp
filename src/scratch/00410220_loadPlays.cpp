@@ -22,6 +22,9 @@
 //   0x3A8, with the remaining drift concentrated in EH prologue/state ordering,
 //   scalar parser stack homes, and the late loop tail; no call or CFG behavior
 //   uncertainty remains in the reconstructed source.
+// - do-while reconstruction moved the positional diff to 4001 bytes, but it
+//   emitted a second-pass extra fgets (73/72 calls); rolled back to the exact
+//   ordered-call candidate.  The remaining lead is local lifetime/frame shape.
 
 #include <stdio.h>
 #include <string.h>

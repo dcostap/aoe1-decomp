@@ -7,6 +7,8 @@
 // Reordered/for-header locals were codegen duplicates; function-scope temp was
 // worse.  Remaining drift is five swapped local homes (tech/changed/prereq_done/
 // prereq_count/j; this and the hidden FILD temp now match), with no call/CFG gap.
+// The natural typed prerequisite comparison also produced duplicate codegen;
+// keep it because it removes unnecessary promotion casts from the source.
 
 struct Tech_Player_Tree {
     float research_done;
@@ -89,7 +91,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
                             }
                         }
                     }
-                    if ((int)prereq_done >= (int)tech[i].pre_reqs_required) {
+                    if (prereq_done >= tech[i].pre_reqs_required) {
                         if ((float)(int)tech[i].research <= this->tech_player_tree[i].research_done) {
                             do_tech(i);
                             active_count--;

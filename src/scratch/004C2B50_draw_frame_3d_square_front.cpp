@@ -8,6 +8,12 @@
 // short-parameter form widened the result to 675B / 552 bytes and was rolled
 // back. Remaining mismatch starts in VC5 geometry-load order and register
 // allocation; calls, frame, CFG, and the central draw block are aligned.
+// Probe 15: assign the canonical x outline radius before y, matching the
+// neighboring square-frame geometry source order; test the original B0/AC
+// load order without changing the typed ownership model.
+// Result: geometry prologue now matches through the panel guard; 671B / 100
+// bytes, up from 104. The remaining structural hunk is the front-face
+// coordinate-offset expression and its 16-bit VC5 scheduling.
 
 class TDrawArea {
 public:
@@ -114,8 +120,8 @@ void RGE_Static_Object::draw_frame_3d_square_front(
     short screen_y;
 
     RGE_Map* map = this->owner->world->map;
-    outline_y = this->master_obj->outline_radius_y;
     outline_x = this->master_obj->outline_radius_x;
+    outline_y = this->master_obj->outline_radius_y;
     radius_z = this->master_obj->radius_z;
     panel = rge_base_game->get_panel();
     if (panel != 0) {

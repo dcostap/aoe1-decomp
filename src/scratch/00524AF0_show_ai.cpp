@@ -20,6 +20,7 @@
 // 17: a pointer-cursor spelling moved four bytes closer but was less plausible than the direct indexed array loop, so it was rolled back.
 // 18: paused after the bounded pass: current natural source has 9/9 ordered calls, 0x604 frame, 640 emitted bytes versus 636, and broad register/prologue drift.
 // 19: renamed the panel declaration to TRIBE_Screen_Game; relocation identity is now period-canonical with no emitted-byte change.
+// 20: tested the packet's cmp-6/jle loop spelling as i <= 6; only resync cost improved, so restored i < 7.
 
 #include <string.h>
 #include <stdio.h>

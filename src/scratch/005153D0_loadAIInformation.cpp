@@ -19,6 +19,7 @@
 // the local home (the oracle does the reverse), the map-switch branch spans
 // differ, and the no-city/final learn tails have small block-layout shifts.
 // left in scratch: no custom flags or compiler-steering scaffolding retained.
+// shardB6 probe: typed save-local/global assignment chain left emitted order unchanged; restored clean source.
 
 typedef unsigned char uchar;
 

@@ -18,6 +18,8 @@
 // resync; the loop counter stayed in the incoming dst-reference home.
 // probe 10: hoisting count into an outer non-outside guard was one byte worse
 // and lost an exact block; rolled back to probe 9.
+// probe 12: removing the local yd copy and using the typed param_4 directly
+// left the first hunk and all metrics unchanged; restored the clean source.
 // scratch give-up: first-pass source understands clipping, allocation, one-blit, queue loop, and final fields, but VC5 local/frame and block-shape basin is still wrong.
 
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
@@ -82,7 +84,6 @@ void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, 
     int off;
     int count;
     int yd = param_4;
-
     outside = 0;
     if ((param_3 != 0) || (yd != 0)) {
         iVar6 = param_1.top;

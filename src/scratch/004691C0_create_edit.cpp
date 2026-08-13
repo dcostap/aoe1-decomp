@@ -15,6 +15,13 @@
 //   register-result probes did not change the best ordinary codegen basin.
 // - Mirrored same-TU create_auto_scrollbar's direct success/failure returns;
 //   VC5 emitted the same 461-byte basin, so no control-flow lead remains.
+// - A natural local TEditPanel owner before publishing the out slot left the
+//   emitted code unchanged; restored the direct out-slot construction.
+// - Inverted the allocation/error guard with one result return; VC5 normalized
+//   it to the same 461-byte basin and retained the duplicated return tail.
+// - Used explicit fail and done labels after separate allocation and error
+//   guards; VC5 again emitted the same 461-byte basin, so the tail remains a
+//   compiler/codegen blocker rather than an unresolved call or layout issue.
 // Left in scratch: typed source is behaviorally aligned with all 9 calls and
 //   proven field accesses; only the compiler's duplicated return tail remains.
 

@@ -8,6 +8,12 @@
 //   x/y local reuse, the absolute global pointer, and split text-height arithmetic.
 //   Only the typed font/global surfaces changed emitted bytes; duplicate/liveness
 //   probes were rolled back to the clean natural form.
+// - Typed the list child as a local TListPanel with the proven bot_line field;
+//   it worsened the structural diff by 2 bytes and was rolled back.
+// - Reordered the natural local declarations to match the original stack bands;
+//   VC5 emitted identical code, so declaration order is not the current blocker.
+// - Replaced the anonymous font gap with the generated RGE_Font fields
+//   (font, font_wid, font_hgt); field naming and layout were codegen-neutral.
 // - Swapping the height/yPosition operand order did not change codegen. Splitting
 //   that expression into ordered statements aligned all 27 calls with the oracle.
 // - Best current source is period-plausible typed ownership with abs() and direct
@@ -25,8 +31,9 @@ class TPanel;
 
 class RGE_Font {
 public:
-    char gap_00[8];
-    int text_height;
+    void* font;
+    long font_wid;
+    long font_hgt;
 };
 
 class RGE_Base_Game {
@@ -104,8 +111,8 @@ public:
 
 void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, long page_id, long x_limit, long y_limit)
 {
-    RGE_Font* rge_text_font;
     TPanel* tabList[2];
+    RGE_Font* rge_text_font;
     this->ok_button = 0;
     this->encyclopedia_button = 0;
     this->title = 0;
@@ -117,7 +124,7 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
     if (this->setup(parent->renderArea(), parent, 0x154, 0x190, parent->get_popup_info_file(), parent->get_popup_info_id(), 1)) {
         this->create_list(this, &this->list, y_limit, 10, 10, 0x14a, 0x186, 11, 0, 0, 1);
         int line_count = *(short*)((char*)this->list + 0xfe) + 2;
-        int text_h = line_count * rge_text_font->text_height + 0x37;
+        int text_h = line_count * rge_text_font->font_hgt + 0x37;
 
         int x = parent->width() + parent->xPosition();
         if (x >= x_limit + 0x163) {
@@ -145,12 +152,12 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
 
         this->set_rect(x, y, 0x154, text_h);
         this->set_something2(this->field_B0, this->field_B8);
-        this->list->set_rect(10, 10, 0x14a, line_count * rge_text_font->text_height);
+        this->list->set_rect(10, 10, 0x14a, line_count * rge_text_font->font_hgt);
 
         if (((RGE_Base_Game*)rge_base_game)->singlePlayerGame() && (int)more_text >= 0) {
             char* s = this->get_string((int)more_text);
             if (s != 0 && *s != 0) {
-                this->create_button(&this->encyclopedia_button, 0x243d, 0, 0, 25, line_count * rge_text_font->text_height + 20, 0x78, 25, 11, 0);
+                this->create_button(&this->encyclopedia_button, 0x243d, 0, 0, 25, line_count * rge_text_font->font_hgt + 20, 0x78, 25, 11, 0);
             }
         }
 
@@ -160,7 +167,7 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text, l
         } else {
             button_x = 0xc3;
         }
-        this->create_button(&this->ok_button, 0xfa1, 0, button_x, line_count * rge_text_font->text_height + 20, 0x78, 25, 11, 0, 0);
+        this->create_button(&this->ok_button, 0xfa1, 0, button_x, line_count * rge_text_font->font_hgt + 20, 0x78, 25, 11, 0, 0);
         this->ok_button->hotkey = 0x1b;
         this->ok_button->hotkey_shift = 0;
         this->set_curr_child(this->ok_button);

@@ -24,6 +24,22 @@
 // try 15: mutating one command byte in the Shape.cpp sibling idiom reached the
 // original size and better edit islands, but removed the required frame and
 // worsened positional bytes to 770; restored the 690-byte best candidate.
+// try 16: tested a direct typed Shape_Header reconstruction with do/while top-
+// row and visible-row loops. It emitted 736B/766 strict bytes versus the
+// pinned 764B/690 candidate, so it was rolled back.
+// try 17: confirmed the pinned typed reconstruction as this claim's baseline;
+// it remains 764B/690 strict bytes with all three calls aligned.
+// try 18: reordered the setup locals; output worsened to 762B/763 and was
+// restored.
+// try 19: shared the command byte only across visible and drain states; this
+// removed the frame but worsened output to 760B/764 and was restored.
+// try 20: added a separate per-row destination cursor; size and edit islands
+// improved, but strict output worsened to 781B/712, so it was restored.
+// try 21: hoisted that cursor declaration; codegen was unchanged.
+// try 22: changed the visible-row loop to do/while from binary topology;
+// output worsened to 751B/696 and was restored.
+// try 23: inlined the proven clipped-literal source offset expression; VC5
+// emitted the same 764B/690 code. The simpler expression is retained.
 // left in scratch: major behavior surface is reconstructed but code is too compact and not diffable/exact; not accepted_drift-safe.
 
 #include <string.h>
@@ -100,9 +116,8 @@ unsigned char TShape::shape_mirror_clipped(TDrawArea* area,long clip_right,long 
                             if (xpos <= x) {
                                 if (xpos < clip_left) {
                                     long copy_count = x - clip_left + 1;
-                                    long source_offset = xpos - x + count;
                                     state = 2;
-                                    src += source_offset - 1;
+                                    src += xpos - x + count - 1;
                                     while (copy_count--)
                                         *--save_buffer = *src++;
                                     src += clip_left - xpos;

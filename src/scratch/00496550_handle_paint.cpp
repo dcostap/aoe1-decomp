@@ -30,6 +30,9 @@
 // - tested donor-supported windows.h and stdio.h context; both were neutral.
 // - reused one function-scope panel/node pair with while loops; output was a
 //   duplicate, so the ordinary scoped for loops remain authoritative.
+// - tested the natural loop-continue spelling for the per-child paint gate;
+//   this follows the binary's skip-paint branch before the timing calls and
+//   reduced the mismatch from 158 to 133 bytes.  Retained as the best source.
 
 #include <windows.h>
 #include <stdio.h>
@@ -196,9 +199,10 @@ long TRIBE_Screen_Game::handle_paint() {
             debug_timeGetTime(s_scr_game_cpp, 0x5C9);
         TPanel* panel = node->panel;
 
-        if (draw_all_children || panel == this->curr_child) {
-            panel->handle_paint();
+        if (!draw_all_children && panel != this->curr_child) {
+            continue;
         }
+        panel->handle_paint();
 
         unsigned long child_end =
             debug_timeGetTime(s_scr_game_cpp, 0x5D0);

@@ -11,8 +11,9 @@
 //   the TRIBE_Game and communications globals provide the player setters.
 // - Fresh baseline: natural scenario-player compaction, first-any selection,
 //   random-game initialization, teams, humanity, and dropdown refresh.  The
-//   first-any locals follow the executable's actual roles: scenario-player
-//   index, civilization, palette color, and the register-only post-loop copy.
+//   first-any locals follow the executable's actual roles: the scenario index
+//   is first_any_civ, its civilization is first_any_color, and its palette
+//   color is local_4; first_any_player is the register-only post-loop copy.
 // - Corrected ABI evidence from basegame.cpp, tribegam.cpp, and com_hand.cpp:
 //   setNumberPlayers/setPlayerTeam/setPlayerColor take int values, while
 //   SetPlayerHumanity takes the PLAYERHUMANITY enum.  This reduced the clean
@@ -25,9 +26,13 @@
 //   EBP=this/EBX=count) plus the random-loop tail's compare/move order.
 // - Final unresolved source is restored to the simplest typed form; leave in
 //   scratch for a later worker rather than retain compiler-steering aliases.
-// - Fresh claim: function-scope declarations, assignment in the random-loop
-//   condition, and a flat screen base were codegen duplicates. Keep the clear
-//   role names and pinned natural source.
+// - Fresh claim: moving active-loop declarations to function scope, putting
+//   the random assignment in the do-while condition, and flattening the
+//   same-size screen base were codegen duplicates. Restored the pinned source.
+// - Scoped the screen alias to the scenario branch and called the final
+//   refresh through this; codegen stayed identical, so restored the clean form.
+// - Swapped the typed scenario-player and active-player declarations; the
+//   saved-source diff grew from 20 to 21 bytes, so restored the clean order.
 
 class RGE_Scenario {
 public:
@@ -92,16 +97,16 @@ extern TCommunications_Handler* comm;
 extern "C" int __cdecl debug_rand(char* file, int line);
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
-    int first_any_scenario_player;
-    int selected_scenario_player;
-    int first_any_civilization;
-    int first_any_player_color;
+    int first_any_civ;
+    int first_any_player;
+    int first_any_color;
+    int first_any_color_index;
     TribeMPSetupScreen* screen = this;
     if (rge_base_game->scenarioGame() != 0) {
-        first_any_scenario_player = -1;
-        selected_scenario_player = -1;
-        first_any_civilization = -1;
-        first_any_player_color = -1;
+        first_any_civ = -1;
+        first_any_player = -1;
+        first_any_color = -1;
+        first_any_color_index = -1;
 
         if (screen->scenarioInfo != 0) {
             int player_count = 0;
@@ -118,13 +123,13 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                         player_count, scenario_player + 1);
 
                     if (screen->scenarioInfo->Get_player_Type(scenario_player) == 1 &&
-                        first_any_scenario_player == -1) {
-                        first_any_scenario_player = scenario_player;
-                        first_any_civilization =
+                        first_any_civ == -1) {
+                        first_any_civ = scenario_player;
+                        first_any_color =
                             screen->scenarioInfo->Get_player_Civ(scenario_player);
-                        first_any_player_color = scenario_player + 1;
+                        first_any_color_index = scenario_player + 1;
                     }
-                    selected_scenario_player = first_any_scenario_player;
+                    first_any_player = first_any_civ;
                     ++player_count;
                 }
                 ++scenario_player;
@@ -132,12 +137,12 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         }
 
         rge_base_game->setNumberPlayers(screen->scenarioPlayerCount);
-        if (selected_scenario_player != -1) {
+        if (first_any_player != -1) {
             int player = 1;
             if (screen->scenarioPlayerCount > 1) {
                 while (player < screen->scenarioPlayerCount) {
                     if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(player) ==
-                        selected_scenario_player) {
+                        first_any_player) {
                         int scenario_player =
                             ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0);
                         ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
@@ -157,10 +162,10 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             }
 
             ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
-                0, selected_scenario_player);
-            ((TRIBE_Game*)rge_base_game)->setCivilization(0, first_any_civilization);
+                0, first_any_player);
+            ((TRIBE_Game*)rge_base_game)->setCivilization(0, first_any_color);
             ((TRIBE_Game*)rge_base_game)->setPlayerColor(
-                0, first_any_player_color);
+                0, first_any_color_index);
         }
     } else {
         int player = 0;

@@ -31,6 +31,13 @@
 // probe 15 (control-flow): made the surface QI failure an explicit cleanup path;
 //   typed pDDraw ownership now emits both missing Release/FreeLibrary calls and restores
 //   the original 47-call surface, but the separate path adds 16 bytes past the boundary.
+// probe 20 (abi): modeled the DirectX GUIDs as const objects and passed their addresses;
+//   this removes the pointer-variable loads, keeps 47-call parity, and reduces the size
+//   gap to 8 bytes. Positional diff worsens from register and local-slot reassignment.
+// probe 21 (control-flow, rolled back): shared the surface-QI success cleanup tail;
+//   VC5 also tail-merged the DInput-load failure cleanup and lost two target calls.
+// probe 22 (restore): retained the explicit surface-QI failure cleanup to preserve the
+//   target's duplicated DInput error-path calls; current source remains typed and natural.
 
 // OSVERSIONINFOA stub - VC5 SDK field order (confirmed from asm offsets)
 //   [esp+0x94]+0x08 = dwBuildNumber (compared with 0x549)
@@ -119,12 +126,19 @@ public:
     virtual unsigned long __stdcall Release() = 0;
 };
 
+struct GUID {
+    unsigned long Data1;
+    unsigned short Data2;
+    unsigned short Data3;
+    unsigned char Data4[8];
+};
+
 typedef int (__stdcall* DIRECTDRAWCREATE)( void*, IDirectDraw**, void* );
 
-extern const void* CLSID_DirectPlay;
-extern const void* IID_IDirectPlay3;
-extern const void* IID_IDirectDraw2;
-extern const void* IID_IDirectDrawSurface3;
+extern const GUID CLSID_DirectPlay;
+extern const GUID IID_IDirectPlay3;
+extern const GUID IID_IDirectDraw2;
+extern const GUID IID_IDirectDrawSurface3;
 
 int IsDPlay501a();
 
@@ -173,7 +187,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 
             *param_1 = 0x300;
             int coInitResult = CoInitialize( 0 );
-            hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3,
+            hr = CoCreateInstance( &CLSID_DirectPlay, 0, 1, &IID_IDirectPlay3,
                                    (void**)&dp3 );
             if (hr < 0) {
                 if (coInitResult != 0)
@@ -226,7 +240,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     }
 
     *param_1 = 0x100;
-    hr = pDDraw->QueryInterface( IID_IDirectDraw2, (void**)&pDDraw2 );
+    hr = pDDraw->QueryInterface( &IID_IDirectDraw2, (void**)&pDDraw2 );
     if (hr < 0) {
         pDDraw->Release();
         FreeLibrary( DDHinst );
@@ -277,7 +291,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         return;
     }
 
-    hr = pSurf->QueryInterface( IID_IDirectDrawSurface3, (void**)&pSurf3 );
+    hr = pSurf->QueryInterface( &IID_IDirectDrawSurface3, (void**)&pSurf3 );
     if (hr < 0) {
         pDDraw->Release();
         FreeLibrary( DDHinst );

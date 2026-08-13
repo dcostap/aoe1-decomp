@@ -18,14 +18,19 @@
 // - A shared result tail matches the original return topology. Its gotos are
 //   retained because the binary has one common epilogue for all return values.
 // - Narrow result state and alternate class layouts changed the call surface
-//   or emitted no new code. The current source keeps the natural long result,
-//   typed ownership, and direct calls.
+//   or emitted no new code. The current source keeps typed ownership and calls.
 // - The button-5 null-scenario path is a success path: it destroys the menu,
 //   sets the shared result, and skips the button-6 test before the fallback.
 // - This probe reduced the positional diff from 929 to 847 bytes and raised
 //   exact-block coverage from 60.25% to 65.98%; shared-tail drift remains.
 // - Initializing the long result to zero emitted identical code; retain the
 //   natural initialized declaration while the shared-tail drift remains.
+// - Narrowed the shared result state to unsigned char; VC5 restored one common
+//   success tail, reducing rebuilt size to 911 and the diff to 446 bytes.
+// - Rewrote the button-5 success/null split as an explicit if/else; VC5 emitted
+//   identical code and still merged the button-6 cleanup into a shared call.
+// - Made button 6 an else-if continuation of button 5; VC5 emitted identical
+//   code, retaining one shared cleanup call and one missing button cleanup site.
 
 #include <string.h>
 
@@ -100,7 +105,7 @@ long TRIBE_Dialog_Sed_Menu::action(
     TPanel* panel, long event, ulong param_3, ulong param_4)
 {
     TRIBE_Screen_Sed* sed = this->scenario_editor;
-    long result = 0;
+    unsigned char result = 0;
 
     if (event == 1) {
         if (panel == this->buttons[0]) {
@@ -149,16 +154,14 @@ long TRIBE_Dialog_Sed_Menu::action(
             char* scenario = sed->scenario_save_defaulted();
             if (scenario != 0) {
                 rge_base_game->test_scenario(scenario);
-                result = 1;
-                goto action_done;
+            } else {
+                panel_system.destroyPanel(s_Scenario_Menu_Dialog);
             }
-
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
             result = 1;
             goto action_done;
         }
 
-        if (panel == this->buttons[6]) {
+        else if (panel == this->buttons[6]) {
             panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
             panel_system.destroyPanel(s_Scenario_Menu_Dialog);
             result = 1;

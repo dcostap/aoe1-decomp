@@ -11,6 +11,10 @@
 //     619 differing bytes (63.3572%), 5/5 calls, 0x10 frame, 956/977 bytes.
 // 11: Function-scope alias hoisting made the prologue broadly worse and was
 //     rolled back; swapping the two out-local declarations was codegen-neutral.
+// 12: ABI evidence for Dib.cpp shows ClipDibBlt/GetDibDim use long-reference
+// parameters (AAJ in the original symbols), not long-pointer parameters (PAJ).
+// Switched these local declarations and calls to the period reference surface;
+// the parameter-home aliases for dstInfo and flipY remain binary-proven.
 // GIVEUP: best natural source remains in scratch.  The unresolved gap is VC5
 // parameter-home/local-slot scheduling around GetDibDim and the long blit loops;
 // no accepted_drift because the remaining positional drift is broad.
@@ -29,8 +33,8 @@ extern long SrcXTbl[];
 #pragma function(memcpy)
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 void __cdecl DibBlt(BITMAPINFO256*, uchar*, RECT*, long,long,long,long, BITMAPINFO256*, uchar*, long,long,long,long,int,int,int);
-int __cdecl ClipDibBlt(BITMAPINFO256*, RECT*, long*, long*, long*, long*, long*, long*, long*, long*, int, int);
-void __cdecl GetDibDim(BITMAPINFO256*, long*, long*, long*);
+int __cdecl ClipDibBlt(BITMAPINFO256*, RECT*, long&, long&, long&, long&, long&, long&, long&, long&, int, int);
+void __cdecl GetDibDim(BITMAPINFO256*, long&, long&, long&);
 
 void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                          long dx, long dy, long dw, long dh,
@@ -55,12 +59,12 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
     int clipFlipY = flipY;
     BITMAPINFO256* clipInfo = dstInfo;
     if (doClip == 0 ||
-        ClipDibBlt(clipInfo, dstRect, &dx, &dy, &dw, &dh, &sx, &sy, &sw, &sh, flipX, clipFlipY)) {
+        ClipDibBlt(clipInfo, dstRect, dx, dy, dw, dh, sx, sy, sw, sh, flipX, clipFlipY)) {
     long xStep = (sw << 8) / dw;
     DestOrien = (sh << 8) / dh;
 
-    GetDibDim(clipInfo, (long*)&doClip, &local_4, &DestTotHgt);
-    GetDibDim(srcInfo, (long*)&dstInfo, &sySkip, (long*)&flipY);
+    GetDibDim(clipInfo, (long&)doClip, local_4, DestTotHgt);
+    GetDibDim(srcInfo, (long&)dstInfo, sySkip, (long&)flipY);
     if (clipFlipY)
         flipY = -flipY;
 

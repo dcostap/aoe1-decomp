@@ -12,6 +12,9 @@
 // probes 7-8: a local palette copy removed a 7-byte store but worsened the
 // whole-function result; restored direct hpal ownership as the best source.
 // probe 10: delaying a bitmap-handle local was a codegen duplicate; removed it.
+// probe 11: initializing bm.bmType before the null guard was a natural typed
+// local/control reconstruction; it changed one byte and worsened resync, so
+// it was rolled back. The clean source remains the best reconstruction.
 // blocker: exact bytes still differ in early register coloring and local
 // liveness, while frame, call set, CFG, and emitted size are exact.
 

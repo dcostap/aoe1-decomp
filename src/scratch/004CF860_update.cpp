@@ -8,6 +8,11 @@
 // - Direct-state and floating-global probes were no-ops or worse. Restored the
 //   baseline. A late state-1 arm probe improved diff to 1282B but moved calls;
 //   it was diagnostic only and was restored.
+// - Original assembly proves state-8 uses target_obj2 for its distance guard,
+//   target_obj after gathering, and task sound/attribute fields; fixed these owners.
+// - Original jump tables prove the state-11/15 subaction arms and the state-8
+//   no-state-change path; restored those behaviors and moved state 1 late.
+// - Rebuilt code remains 1587B with 0xC frame; best current strict diff is 1237B.
 
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
@@ -22,6 +27,7 @@ public:
 };
 class RGE_Task;
 class RGE_Sound;
+class RGE_Sprite;
 
 class RGE_Game_World {
 public:
@@ -254,10 +260,38 @@ public:
 
 class RGE_Task {
 public:
-    char gap_00[0x14];
+    short task_type; // +00
+    short id; // +02
+    unsigned char is_default; // +04
+    unsigned char gap_05;
+    short action_type; // +06
+    short object_group; // +08
+    short object_id; // +0a
+    unsigned char combat_level; // +0c
+    unsigned char combat_level_flag; // +0d
+    short terrain_id; // +0e
+    unsigned char owner_type; // +10
+    unsigned char holding_attr; // +11
+    unsigned char state_building; // +12
+    unsigned char gap_13;
     short attribute_type; // +14
-    char gap_16[6];
-    float gather_amount; // +1c
+    short attribute_type2; // +16
+    short attribute_type3; // +18
+    short attribute_type4; // +1a
+    float work_val1; // +1c
+    float work_val2; // +20
+    float work_range; // +24
+    unsigned char search_flag; // +28
+    unsigned char gap_29[3];
+    float search_wait_time; // +2c
+    short work_flag; // +30
+    short work_flag2; // +32
+    RGE_Sprite* move_sprite; // +34
+    RGE_Sprite* work_sprite; // +38
+    RGE_Sprite* work_sprite2; // +3c
+    RGE_Sprite* carry_sprite; // +40
+    RGE_Sound* work_sound; // +44
+    RGE_Sound* work_sound2; // +48
 };
 
 class RGE_Base_Game {
@@ -317,13 +351,8 @@ unsigned char TRIBE_Action_Hunt::update()
     if (p != 0 && p->object_state >= 7)
         this->set_target_obj2(0);
 
-    switch ((int)this->state - 1) {
-    case 0:
-        if (this->obj->owner->computerPlayer() == 0)
-            this->set_state(2);
-        return 1;
-
-    case 2:
+    switch (this->state) {
+    case 3:
         if (this->timer < 0.0) {
             this->timer += *(float*)((char*)this->obj->owner->world + 0x84);
             if (this->timer > 0.0) {
@@ -333,7 +362,7 @@ unsigned char TRIBE_Action_Hunt::update()
             }
         }
         break;
-    case 3:
+    case 4:
         switch (this->sub_actions->get_value()) {
         case 1:
         case 2:
@@ -350,7 +379,7 @@ unsigned char TRIBE_Action_Hunt::update()
             return 0;
         }
         break;
-    case 5:
+    case 6:
         if (this->target_obj == 0) { this->set_state(3); return 0; }
         if (this->obj->turn_towards(this->target_obj, 0, 0)) {
             if (this->target_obj->attribute_amount_held <= DAT_00575150) {
@@ -360,7 +389,7 @@ unsigned char TRIBE_Action_Hunt::update()
         }
 state_default:
         this->set_state(3); return 0;
-    case 6: {
+    case 7: {
         RGE_Static_Object* holder = this->target_obj;
         if (holder == 0) {
             holder = (RGE_Static_Object*)this->obj;
@@ -370,10 +399,10 @@ state_default:
         if (rge_base_game->quick_build != 0)
             give_amount = holder->attribute_amount_held;
         else
-            give_amount = this->task->gather_amount * *(float*)((char*)this->obj->object_data + 0xe4) * *(float*)((char*)this->obj->owner->world + 0x84);
+            give_amount = this->task->work_val1 * *(float*)((char*)this->obj->object_data + 0xe4) * *(float*)((char*)this->obj->owner->world + 0x84);
         if (holder->attribute_amount_held < give_amount)
             give_amount = holder->attribute_amount_held;
-        short attr = *(short*)((char*)this->task + 0x16);
+        short attr = this->task->attribute_type2;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attribute_table[attr];
         max_hold = (float)*(short*)((char*)this->obj->object_data + 0x7c) * modifier - this->obj->attribute_amount_held;
@@ -385,7 +414,7 @@ state_default:
             this->set_state(8);
         break;
     }
-    case 7:
+    case 8:
         if (this->timer < 0.0) {
             this->timer += *(float*)((char*)this->obj->owner->world + 0x84);
             if (this->timer > 0.0) {
@@ -398,50 +427,50 @@ state_default:
             switch (this->sub_actions->get_value()) {
             case 1:
             case 2:
-                if (this->target_obj == 0) { this->set_state(8); return 0; }
+                if (this->target_obj2 == 0) { this->set_state(8); return 0; }
                 if (this->obj->distance_to_object(this->target_obj2) > DAT_00575168) {
                     this->timer = -1.5f;
                     this->obj->stop_moving();
                     return 0;
                 }
-                if (this->target_obj->sound != 0) this->target_obj->sound->play(1);
-                { short attr = this->target_obj->id; if (attr == -1) attr = this->obj->owner->fallback_attribute;
+                if (this->task->work_sound2 != 0) this->task->work_sound2->play(1);
+                { short attr = this->task->attribute_type3; if (attr == -1) attr = this->obj->owner->fallback_attribute;
                   this->obj->owner->add_attribute_num(attr, this->obj->attribute_amount_held, 0); }
                 this->obj->owner->trackUnitGather(this->obj->id, this->obj->id, (int)this->obj->attribute_amount_held);
                 this->obj->set_attribute(-1, 0.0f);
-                if (this->target_obj2 != 0) { this->set_target_obj2(0); this->set_state(4); return 0; }
+                if (this->target_obj != 0) { this->set_target_obj2(0); this->set_state(4); return 0; }
                 if (this->target_x != -1.0f && this->target_y != -1.0f) { this->set_state(11); return 0; }
                 goto computer_fallback;
             case 3:
             case 4:
             case 5:
-                this->timer = -1.5f; this->obj->stop_moving(); this->set_state(3); return 0;
+                this->timer = -1.5f; this->obj->stop_moving(); return 0;
             }
         }
         break;
-    case 10:
-    case 14:
+    case 11:
+    case 15:
         switch (this->sub_actions->get_value()) {
         case 1:
         case 2:
         case 5:
-            if (this->state == 11) { this->set_state(3); return 0; }
-            goto computer_fallback;
+            this->set_target_obj(0);
+            if (this->state == 11) { this->set_state(11); return 0; }
+            this->set_state(15); return 0;
         case 3:
             if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
             goto state_default;
         case 4:
-            this->set_target_obj(0);
-            if (this->state == 11) { this->set_state(11); return 0; }
-            this->set_state(15); return 0;
+            if (this->state == 11) { this->set_state(3); return 0; }
+            goto computer_fallback;
         }
         break;
-    case 11:
+    case 12:
         switch (this->sub_actions->get_value()) {
         case 1:
         case 2:
         case 5:
-            if (this->target_obj2 != 0) { this->set_state(4); return 0; }
+            if (this->target_obj != 0) { this->set_state(4); return 0; }
         case 3:
             this->set_state(3); return 0;
         case 4:
@@ -449,9 +478,14 @@ state_default:
             this->set_state(11); return 0;
         }
         break;
-    case 12:
+    case 13:
         this->obj->notify(this->obj->id, this->obj->id, 0x1f9, 0x265, 0, 0);
         return 3;
+
+    case 1:
+        if (this->obj->owner->computerPlayer() == 0)
+            this->set_state(2);
+        return 1;
 
     }
 computer_fallback:

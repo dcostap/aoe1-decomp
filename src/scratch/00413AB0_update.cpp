@@ -25,9 +25,10 @@
 // Pointer-to-virtual-member callbacks emitted direct thunks and four extra
 // calls, so they were rolled back. A raw vtable callback kept the same call
 // map but changed cleanup and worsened the shape, so it was also rolled back.
-// Remaining call-map gaps are diagnostic: processNotify/processOrder are
-// behavior-backed but the rebuilt vtable calls are classified separately;
-// the error purge is emitted before the normal tail instead of at its end.
+// Shard B narrow control probe: processNotify and processOrder are unconditional
+// callback loops whose bounds test supplies the empty-queue behavior. Removing
+// the two source preconditions aligned all 37 ordered calls and raised shape
+// similarity to 84.85%; the remaining drift is not a call-order gap.
 
 #include <stdio.h>
 
@@ -471,10 +472,10 @@ int UnitAIModule::update(unsigned long param_1)
     this->secondaryTimerValue += param_1;
     this->lookAroundTimerValue += param_1;
 
-    if (this->notifyQueueSizeValue > 0) {
+    {
         int i = 0;
         int offset = 0;
-        do {
+        while (i < this->notifyQueueSizeValue) {
             int result = this->processNotify(
                 (char*)this->notifyQueueValue + offset, param_1);
             if (result == 4) {
@@ -486,7 +487,7 @@ int UnitAIModule::update(unsigned long param_1)
             }
             ++i;
             offset += 0x18;
-        } while (i < this->notifyQueueSizeValue);
+        }
     }
 
     this->purgeNotifyQueue(param_1);
@@ -514,11 +515,10 @@ int UnitAIModule::update(unsigned long param_1)
         this->updateGroup(param_1);
     }
 
-    if (this->currentActionValue == -1 &&
-        this->orderQueueSizeValue > 0) {
+    if (this->currentActionValue == -1) {
         int i = 0;
         int offset = 0;
-        do {
+        while (i < this->orderQueueSizeValue) {
             int result = this->processOrder(
                 (char*)this->orderQueueValue + offset, i);
             if (result == 1) {
@@ -526,7 +526,7 @@ int UnitAIModule::update(unsigned long param_1)
             }
             ++i;
             offset += 0x24;
-        } while (i < this->orderQueueSizeValue);
+        }
     }
 
     this->processMisc();

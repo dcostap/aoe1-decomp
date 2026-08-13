@@ -6,6 +6,7 @@
 // - Used direct integer homes for integer getters and float homes for coordinate getters.
 // - Removed the decompiler-shaped tempString self store. VC5 then matched size, calls, CFG, and 1200 of 1266 bytes.
 // - Modeled the embedded BuildItem sentinel and typed next link from the original +0x15C read; codegen stayed unchanged.
+// - Tested a direct `item != &this->buildList && item != 0` loop condition instead of a precomputed sentinel; codegen stayed unchanged, so restored the clean source.
 // - Remaining drift is local scratch scheduling: saved-this and sentinel displacements, float FSTP placement, and integer homes.
 // - Best source reconstruction: 1266 bytes, 90 differing bytes, 94.79% edit similarity. Leave in scratch.
 #include <string.h>

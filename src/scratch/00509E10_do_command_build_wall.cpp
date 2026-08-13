@@ -18,6 +18,10 @@
 // Typed the world player table as RGE_Player** from the shared engine ABI;
 // output was codegen-duplicate at 500/500 B and 19 strict bytes. Retained the
 // natural typed ownership, but kept the clean source as the recovery authority.
+// Tried a natural cached player-table local; it was codegen-duplicate at 19 bytes
+// and was rolled back. The clean direct world member form remains authoritative.
+// Reordered natural early declarations to evaluate player before ids; this widened the
+// first hunk to 40 bytes and was rolled back. The clean declaration order remains best.
 
 typedef unsigned char uchar;
 

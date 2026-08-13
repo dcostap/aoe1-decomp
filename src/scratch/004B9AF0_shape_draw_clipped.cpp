@@ -30,6 +30,12 @@
 // and was removed from the retained natural source.
 // left in scratch: behavior and call surface are plausible, but the VC5 frame
 // and register topology still need validation against the 8-byte oracle.
+// shardE-4B9AF0 pass: moving the shared right-band cursor increments after
+// both memcpy arms worsened to 787 bytes and duplicated the prior basin.
+// A separate row source cursor was codegen-identical and was rolled back.
+// Explicit `(code & 1) == 1` tests improved shape but grew the function by
+// 28 bytes; the binary-compatible CRT memcpy prototype was also required.
+// A harmless `count + 0` spelling was codegen-identical. Restored clean.
 
 #include <string.h>
 #pragma function(memcpy)

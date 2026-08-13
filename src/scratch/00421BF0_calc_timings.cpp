@@ -21,6 +21,8 @@
 //   the typed reconstruction; exact gap is the timer block's first branch.
 // - Probe 12: a natural per-iteration reference alias for the timing record
 //   produced identical code; the typed pointer form remains the clean source.
+// - Probe 13: snapshot max_time after storing last_time to follow the
+//   original load/store order; emitted code was unchanged, so it was rolled back.
 
 #include <stdio.h>
 #include <stdlib.h>

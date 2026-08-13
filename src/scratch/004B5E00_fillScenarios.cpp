@@ -13,6 +13,9 @@
 //   stack-buffer +4 placement, and broad late block spans. Alternate while,
 //   for, do/while, explicit-label, initialization-order, and local-order
 //   forms were codegen duplicates. Kept the ordinary while source below.
+// - shardC5-4B5E00: tested a natural for-header guard/increment to remove the
+//   rebuilt extra get_scenario_name site; VC5 emitted the same 29-call code,
+//   so restored the ordinary while reconstruction.
 
 extern "C" char* strncpy(char* dst, const char* src, unsigned int count);
 extern "C" char* strcpy(char* dst, const char* src);

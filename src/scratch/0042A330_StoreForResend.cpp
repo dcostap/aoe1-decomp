@@ -16,6 +16,12 @@
 // rebuilt occupied diagnostics with the oracle's 13-vararg push order/8 recipient
 // dwords. Parameter-mutating copy loops retain the exact 0x8 frame and near-size
 // output; payload-only memcpy was a diagnostic -32B basin and was rolled back.
+// session: expressed the recipient-map copy as typed memcpy into ResendEntry::vals;
+// this natural field-owned form restores the oracle REP block and improves diff
+// 493->359, but leaves a -26B payload-loop size gap and structural CFG drift.
+// follow-up: retested typed memcpy lowering for the payload after the recipient-map
+// copy reached the REP family; rebuilt size fell 497->467 and the frame disappeared,
+// so restored the clean typed-map source.
 // left in scratch: behavior and layout modeled, but logging argument order/register allocation and copy-loop lowering remain broad; not accepted-drift-safe.
 
 #include <string.h>
@@ -82,17 +88,7 @@ int TCommunications_Handler::StoreForResend(unsigned int param_1, char* param_2,
             }
             e->used = param_1;
             unsigned int bytes = (unsigned int)this->resendPlayerCount * 4 + 4;
-            char* dst2 = (char*)&e->vals[0];
-            char* src2 = (char*)param_4;
-            unsigned int n2 = bytes;
-            for (unsigned int q2 = n2 >> 2; q2 != 0; q2--) {
-                *(unsigned int*)dst2 = *(unsigned int*)src2;
-                dst2 += 4;
-                src2 += 4;
-            }
-            for (n2 &= 3; n2 != 0; n2--) {
-                *dst2++ = *src2++;
-            }
+            memcpy(e->vals, param_4, bytes);
 
             L->Log("+++RGEGTD Store: %u %u %u", param_3, slot, param_1, this->resendPlayerCount);
             unsigned int i = 1;

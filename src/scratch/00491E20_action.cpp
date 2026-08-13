@@ -23,6 +23,8 @@
 //   one shared result/fallback shape; ordered calls aligned and the diff fell
 //   to 16 bytes.  The remaining differences are parameter-home setup, two
 //   stack-relative local addresses, and one exception-handler offset.
+// - liveness: moving the formatting arrays to function scope was neutral;
+//   VC5 kept the same first hunk and local addresses, so it was rolled back.
 // - left in scratch: exact frame/size, saved-register set, CFG, and all 22
 //   ordered calls now match; 16 bytes remain in parameter-home/EH setup and
 //   two stack-relative local addresses.

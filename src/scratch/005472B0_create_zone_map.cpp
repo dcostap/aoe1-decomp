@@ -46,6 +46,13 @@
 //   Kept it as the best readable reconstruction; shared EH teardown remains.
 // - Replaced the equivalent ternary with a failure-only assignment. VC5
 //   emitted the same 265B/37-byte result, so the clearer form remains.
+// - shardE-5472B0: explicit success self-assignment and failure assignment
+//   emitted the same 265B/37-byte result; rolled back.
+// - shardE-5472B0: explicit placement-new construction removed the EH
+//   registration and produced a 240-byte diff; rolled back.
+// - shardE-5472B0: removing the destructor declaration was codegen-duplicate.
+//   Function-scope pointer/goto and void-result/goto forms both produced the
+//   known 203-byte prologue/stack-home drift; restored the clean source.
 
 #include <stdlib.h>
 #include <string.h>

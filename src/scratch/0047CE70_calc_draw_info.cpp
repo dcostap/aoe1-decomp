@@ -31,6 +31,11 @@
 // - Fresh mapped-assembly donors confirmed natural virtual-call examples that
 //   use EDX for the vtable and EAX for a following result load.  No same-class
 //   source lead explains this final register color, so the typed source stays.
+// - Passed the stored zero scrollbar state as the second-branch set_active
+//   argument; emitted code was unchanged, so restored the literal zero.
+// - A natural long final_width local scoped to the common tail was a codegen
+//   duplicate; restored the direct width assignment. The paired register
+//   colors remain unchanged.
 
 struct tagRECT {
     long left;

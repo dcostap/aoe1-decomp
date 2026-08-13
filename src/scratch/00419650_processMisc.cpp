@@ -14,9 +14,7 @@
 // - Corrected the reusable ABI surface: order has 11 parameters and object
 //   vslot +0x10C is the no-argument weapon-range call used as its float arg.
 // - Final effective-order spelling uses explicit current-order/action arms;
-//   it reaches exact size and 83.98% shape similarity, with remaining drift
-//   concentrated in the dispatch branch polarity and two relocated movement
-//   call arms. Ten meaningful hypotheses exhausted; left in scratch.
+//   the clean typed source was 1368 bytes, 37 calls, and 84.99% shape.
 // Main-agent source audit: replaced the numeric Static_Object slot scaffold
 // with the ABI-named polymorphic surface. The +0x194/+0x198 calls are modeled
 // as the two canPath overloads, including the binary-sized XYZPoint value;
@@ -24,15 +22,20 @@
 // Shard B pass: swapped the proven canPath overload declaration order; this
 // removes the +0x194/+0x198 call-site replacement and raises ordered-call
 // similarity to 92.11%. Equality-first targetless movement was tested and
-// rolled back because it added a +0x94 site and grew the function. Per-arm
-// return spelling is retained for the oracle's separate movement exits, but
-// VC5 emits the same tail-merged code. Remaining drift is one relocated
-// +0x90 moveTo call and the known structural dispatch hunk.
-// Current post-audit check: 1368 rebuilt bytes, 37 calls, 84.41% shape; the
-// semantic source is retained despite the generic worker scaffold being closer
-// in size, because the executable evidence supports the typed overload.
+// rolled back because it added a +0x94 site and grew the function.
+// Shard B probe: reversed the inner action-validity condition so VC5 keeps the
+// non-invalid arm inline. The cleanup log now uses explicit non-null-first
+// branches, matching the oracle's branch polarity and improving shape.
+// Shard E probes: a targetless 0x2BD move-distance local restores the second
+// oracle +0x90 call and call-count parity. Shared DAT_0056EC00/DAT_0056EC08
+// declarations restore direct FPU memory operands. The 0x2BD movement gate
+// and canPath target use currentTargetValue, proven by oracle [esi+34].
+// Final check: 1389 rebuilt bytes, 38 calls, 91.62% shape, 1001 diff bytes.
+// The remaining structural gap is 6 bytes plus relocated canPath/movement
+// blocks. Leave this natural typed reconstruction in scratch for the next pass.
 
 #include <stdio.h>
+#include "../../include/game_globals.h"
 
 typedef unsigned char uchar;
 
@@ -294,8 +297,8 @@ public:
 #define actionSource ((const char*)0x57F980)
 #define minusOneFloat (*(float*)0x56EBD4)
 #define minusTenFloat (*(float*)0x56EBF8)
-#define oneBelow (*(double*)0x56EC00)
-#define oneAbove (*(double*)0x56EC08)
+#define oneBelow DAT_0056ec00
+#define oneAbove DAT_0056ec08
 
 int UnitAIModule::processMisc()
 {
@@ -305,11 +308,11 @@ int UnitAIModule::processMisc()
     if (this->currentOrderValue != invalidValue) {
         order = this->currentOrderValue;
     } else {
-        if (this->currentActionValue == invalidValue) {
-            order = invalidValue;
-        } else {
+        if (this->currentActionValue != invalidValue) {
             order = this->currentActionValue;
             order += 100;
+        } else {
+            order = invalidValue;
         }
     }
 
@@ -363,8 +366,12 @@ int UnitAIModule::processMisc()
                 this->defendTargetValue = invalidValue;
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    long objectID = this->objectValue == 0
-                        ? invalidValue : this->objectValue->id;
+                    long objectID;
+                    if (this->objectValue != 0) {
+                        objectID = this->objectValue->id;
+                    } else {
+                        objectID = invalidValue;
+                    }
                     fprintf(actionFile, actionFormat, objectID,
                             actionSource, 0x15C0);
                 }
@@ -382,8 +389,12 @@ int UnitAIModule::processMisc()
                 this->defendTargetValue = invalidValue;
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    long objectID = this->objectValue == 0
-                        ? invalidValue : this->objectValue->id;
+                    long objectID;
+                    if (this->objectValue != 0) {
+                        objectID = this->objectValue->id;
+                    } else {
+                        objectID = invalidValue;
+                    }
                     fprintf(actionFile, actionFormat, objectID,
                             actionSource, 0x15D9);
                 }
@@ -409,8 +420,8 @@ int UnitAIModule::processMisc()
                     this->objectValue->world_z);
             }
 
-            if (this->desiredTargetDistanceValue - minusOneFloat < distance) {
-                if (this->defendTargetValue == invalidValue) {
+            if (distance > this->desiredTargetDistanceValue - minusOneFloat) {
+                if (this->currentTargetValue == invalidValue) {
                     int x = (int)this->currentTargetXValue;
                     int y = (int)this->currentTargetYValue;
                     XYZPoint point = { x, y, invalidValue };
@@ -418,16 +429,17 @@ int UnitAIModule::processMisc()
                             point, this->desiredTargetDistanceValue,
                             invalidValue, 0, 0,
                             invalidValue, invalidValue) == 1) {
+                        float moveDistance = this->desiredTargetDistanceValue;
                         this->moveTo(
                             this->currentTargetXValue,
                             this->currentTargetYValue,
                             this->currentTargetZValue,
-                            this->desiredTargetDistanceValue, 1);
+                            moveDistance, 1);
                         return 10;
                     }
                 } else {
                     if (this->objectValue->canPath(
-                            this->defendTargetValue,
+                            this->currentTargetValue,
                             this->desiredTargetDistanceValue,
                             0, 0, invalidValue, invalidValue) == 1) {
                         this->moveTo(
@@ -462,8 +474,12 @@ int UnitAIModule::processMisc()
                 this->defendTargetValue = invalidValue;
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    long objectID = this->objectValue == 0
-                        ? invalidValue : this->objectValue->id;
+                    long objectID;
+                    if (this->objectValue != 0) {
+                        objectID = this->objectValue->id;
+                    } else {
+                        objectID = invalidValue;
+                    }
                     fprintf(actionFile, actionFormat, objectID,
                             actionSource, 0x1582);
                 }
@@ -486,8 +502,8 @@ int UnitAIModule::processMisc()
             yDiff = -10.0f;
         }
 
-        if ((double)xDiff < oneBelow || (double)xDiff > oneAbove ||
-            (double)yDiff < oneBelow || (double)yDiff > oneAbove) {
+        if (xDiff < oneBelow || xDiff > oneAbove ||
+            yDiff < oneBelow || yDiff > oneAbove) {
             float distance;
             if (this->currentTargetValue != invalidValue) {
                 this->currentTargetXValue = target->world_x;

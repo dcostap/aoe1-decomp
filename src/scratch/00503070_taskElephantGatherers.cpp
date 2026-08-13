@@ -17,6 +17,9 @@
 //   preincrement growth copy, and tested a counted outer loop. These produced
 //   duplicate code or only register/home drift. Reversed duplicate-scan compare
 //   operands reduced exact-block coverage and was restored.
+// - Replaced the outer counted for with a typed do-while to match the original
+//   count-positive entry guard and tail test; emitted code was unchanged and
+//   the clean counted-loop reconstruction was restored.
 // - Best current check: 620 rebuilt bytes versus 618 original, 86.43% shape,
 //   68.02% exact-block coverage, 100% ordered-call alignment, and 466 strict
 //   differing bytes. The remaining structural hunk starts at the outer loop

@@ -13,7 +13,14 @@
 // 10: Tried separate cancelTab local instead of tabList[5]; restored sub esp,18 but lost the near-exact tab-order block, leaving 12.5115% mismatch, first mismatch offset 202.
 // 11: Replaced cancelTab and the decompiler index order with one late five-element TPanel array in campaign, scenario, dropdown, cancel, ok slot order; set_tab_order now receives its base. This restored the original frame and reduced the mismatch to 13 bytes.
 // 12: Aggregate initialization, assignment permutations, and late declaration checks did not change the 13-byte result or improve the clean source model.
-// PAUSED: exact call set, size, frame, CFG, and all earlier blocks match. Remaining drift is the localized cancel/ok load scheduling at the array stores (+03D4..+03E3); no source-plausible lead remains in this session.
+// 13: Restored the binary-backed TButtonPanel* surface for ok/close outputs and
+//     removed generic create_button output casts, following the exact same-TU
+//     screen donor; this is the direct first-hunk type lead for cancel/ok loads.
+//     Result: unchanged 13-byte mismatch and unchanged +03D4 load order; keep
+//     the typed form as the more canonical source reconstruction.
+// PAUSED: exact call set, size, frame, CFG, and all earlier blocks match. The
+// remaining 13-byte drift is localized to cancel/ok load scheduling at the
+// array stores (+03D4..+03E3); no further source-plausible lead remains.
 // FLAGS: /GX
 
 class TPanel {
@@ -64,7 +71,7 @@ public:
     int create_list(TPanel*, TPanel**, long, long, long, long, long);
     int create_auto_scrollbar(TPanel**, TTextPanel*, long);
     int create_drop_down(TPanel*, TPanel**, long, long, long, long, long, long, long);
-    int create_button(TPanel*, TPanel**, long, long, long, long, long, long, long, long, long);
+    int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
 };
 class RGE_Base_Game { public: char gap[0x4c]; TDrawArea* draw_area; int difficulty(); };
 extern RGE_Base_Game* rge_base_game;
@@ -82,9 +89,9 @@ public:
     TPanel* scenarioScrollbar;   // +0x4B0
     TPanel* difficultyTitle;     // +0x4B4
     TDropDownPanel* difficultyDrop; // +0x4B8
-    TPanel* okButton;            // +0x4BC
+    TButtonPanel* okButton;      // +0x4BC
     TButtonPanel* cancelButton;  // +0x4C0
-    TPanel* close_button;        // +0x4C4
+    TButtonPanel* close_button;  // +0x4C4
     int campaignsLoaded;         // +0x4C8
 
     TRIBE_Screen_Campaign_Selection();
@@ -125,7 +132,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                         difficultyDrop->append_line(0x2BD0, 0);
                                         difficultyDrop->set_line(difficultyDrop->get_line(rge_base_game->difficulty()));
                                         if (create_button((TPanel*)this, &okButton, 0x0FA1, 0, 0x46, 0x1B8, 0x0F0, 0x1E, 0, 0, 0)) {
-                                            if (create_button((TPanel*)this, (TPanel**)&cancelButton, 0x0FA2, 0, 0x14A, 0x1B8, 0x0F0, 0x1E, 0, 0, 0)) {
+                                            if (create_button((TPanel*)this, &cancelButton, 0x0FA2, 0, 0x14A, 0x1B8, 0x0F0, 0x1E, 0, 0, 0)) {
                                                 TButtonPanel* cancel = cancelButton;
                                                 cancel->hotkey = 0x1B;
                                                 cancel->hotkey_shift = 0;

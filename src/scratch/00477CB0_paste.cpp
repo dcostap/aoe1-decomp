@@ -16,6 +16,9 @@
 // r1 focused capacity variant lab: five natural declaration/expression forms produced two groups and no exact match.
 // r1 local declaration reorder: one-byte farther and rolled back.
 // r2 typed ABI/control-flow reconstruction: used char buffers and the direct max_len <= input_len + len predicate; diff improved to 277, but shape/edit diagnostics worsened and codegen duplicated an earlier group; kept as the best natural typed source.
+// r3 rolled back: sum-first guard matched the original jl direction and improved shape, but diff grew to 278; clean direct guard remains best overall.
+// r1-2 rolled back: negated sum-first capacity predicate kept the original jl direction and improved shape, but diff grew to 278; register order stayed wrong.
+// r2 rolled back: typed remaining-capacity expression worsened diff to 280 and did not change chkstk/alloca_probe identity; direct guard restored.
 // left in scratch: behavior/calls/stack frame match closely through clipboard path; remaining mismatch starts at capacity-test register allocation (rebuilt computes sum in ecx and max in edx, original uses edx=len+input_len and eax=max), causing 2-byte shift and later scheduling/register-order drift around _mbsninc calls.
 
 typedef unsigned long ulong;

@@ -26,6 +26,13 @@
 //   removed from the living source as codegen-only evidence.  The remaining
 //   mismatch is structural ordering/state placement around the group call and
 //   the later distribution loop.
+// - 2026-08-13: tested typed group/resource members with ordered initializer
+//   lifetimes.  VC5 moved both calls into member initialization and removed
+//   many zero stores, producing 505-510 bytes and worse CFG shape; rolled back.
+// - 2026-08-13: tested placement construction in raw storage with compiler
+//   vptr emission.  VC5 emitted the derived vptr at entry and produced 849
+//   bytes; rolled back because the original stores its vptr after resource
+//   setup.
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* p);

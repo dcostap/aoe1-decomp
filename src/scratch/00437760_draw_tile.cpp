@@ -15,6 +15,9 @@
 //   branch shape as regular tiles; shape rose to 76.98% and exact blocks to
 //   35.22%, but positional drift rose to 1054 bytes. Kept as the structural
 //   lead; the first mismatch remains the prologue local/register topology.
+// - Tested natural long map_y/map_x locals before tile-row setup; this moved
+//   the first mismatch to the callee-save pushes and worsened diff to 1091.
+//   Rolled back to the clean direct-coordinate expression.
 // - Left in scratch after the 10-hypothesis budget; no inline asm or opaque
 //   codegen scaffolding is retained.
 

@@ -36,6 +36,10 @@
 // - a typed red-channel cursor alias was a diagnostic liveness probe; it
 //   collapsed the saved-register setup and widened the mismatch to 227 bytes,
 //   so the clean typed cursor reconstruction is restored.
+// - this claim revalidated the clean source at 277 bytes and 117 positional
+//   differences. Byte-pointer source/destination anchors widened the drift to
+//   217 bytes; an explicit decompiler-shaped next-cursor form widened it to
+//   227 bytes. Both forms were rolled back.
 // - left in scratch: ordered destination-cursor setup remains non-exact; calls,
 //   loop CFG, and final timestamp/FPU/flag logic align.
 

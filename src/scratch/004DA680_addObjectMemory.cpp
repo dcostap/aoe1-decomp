@@ -6,6 +6,7 @@
 // try 4: tried index-based COPY_ONE to encourage repeated reloads: no size/codegen change.
 // try 5: tested /Od only for diagnosis: exact-size comparable but broad debug-basin mismatch (93.6170% positional, first mismatch prologue), rolled back.
 // left in scratch: behavior skeleton covers duplicate update, empty-slot reuse, growth/fill, history side effect, and return paths, but not accepted_drift quality. Need exact original source/layout/codegen basin for ObjectMemory copy/store (likely real struct declarations and source-level field order) before further matching.
+// try 6: replaced the decompiler pointer-holder surface with typed player/world ownership and restored the proven map-field layout; direct member access is the bounded structural probe. Rebuilt size rose to 1221, shape rose to 65.66%, and the positional diff improved by 6 bytes; structural drift remains.
 
 typedef unsigned char uchar;
 
@@ -27,7 +28,17 @@ struct ObjectMemory {
     float range;
 };
 
-class RGE_Player { public: char gap[0x4a]; short id; int computerPlayer(); };
+struct RGE_Game_World { public: char gap[0x11d]; uchar playerNumber; };
+class RGE_Player {
+public:
+    char gap00[0x3c];
+    RGE_Game_World* world;
+    char gap40[0x0a];
+    short id;
+    char gap4c[0xd1];
+    uchar playerNumber;
+    int computerPlayer();
+};
 class RGE_Static_Object { public: char gap[0x0c]; RGE_Player* owner; };
 class RGE_Base_Game { public: int singlePlayerGame(); };
 extern RGE_Base_Game* rge_base_game;
@@ -35,18 +46,19 @@ void* __cdecl operator new(unsigned int);
 void __cdecl operator delete(void*);
 
 class TribeTacticalAIModule { public: int strategicNumber(int n); };
-struct PlayerHolder { char gap[0x3c]; void* player; };
-class MainDecisionAIModule { public: char gap0[0xf0]; PlayerHolder* playerHolder; char gapf4[0x11378]; TribeTacticalAIModule tacticalAI; };
+class MainDecisionAIModule { public: char gap0[0xf0]; RGE_Player* player; char gapf4[0x11378]; TribeTacticalAIModule tacticalAI; };
 
 class TribeInformationAIModule {
 public:
     char gap0[0x100];
     MainDecisionAIModule* md;
-    char gap104[0x8];
+    int mapXSize;
+    int mapYSize;
+    int lastUpdateRow;
     int maxImportantObjectMemory;
     ObjectMemory* importantObjectMemory;
     char gap118[0xfe4c];
-    int unitHistory[256];
+    int unitHistory[11];
     int convertUnitToIntType(RGE_Static_Object* obj);
     ObjectMemory* addObjectMemory(int id, short type, short group, uchar x, uchar y, uchar z, uchar owner, short hp, int attempts, uchar kills, float dmg, float rof, float range, RGE_Static_Object* obj);
 };
@@ -101,11 +113,9 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, shor
     }
 
     if (obj) {
-        MainDecisionAIModule* md = this->md;
-        PlayerHolder* ph = md->playerHolder;
-        unsigned int playerNum = *(unsigned char*)((char*)ph->player + 0x11d);
-        if (md->tacticalAI.strategicNumber(0xc9) == 1) {
-            short myNum = *(short*)((char*)md->playerHolder + 0x4a);
+        unsigned int playerNum = this->md->player->world->playerNumber;
+        if (this->md->tacticalAI.strategicNumber(0xc9) == 1) {
+            short myNum = this->md->player->id;
             if (playerNum == (unsigned short)myNum || playerNum == 0xff) {
                 RGE_Player* op = obj->owner;
                 if (op->id > 0 && op->computerPlayer() == 0 && rge_base_game->singlePlayerGame() == 1) {

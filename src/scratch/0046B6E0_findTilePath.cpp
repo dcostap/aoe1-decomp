@@ -8,6 +8,13 @@
 // - This is a broad behavioral scaffold, not an exact candidate.  The hard areas still needing packet-by-packet shaping are the FPU footprint conversion block, direction/footprint switch details, obstruction scanning topology, heap sift code, and duplicated obstruction-restore tails.
 // - Expanded the direction footprint rectangle switch enough for a full-length compare; no padding or inline asm was used.
 // - check_function 2026-05-30: MISMATCH, 6522/6946 positional bytes differ (93.8958%), edit diff 8355, first mismatch offset 4.  Rebuilt prologue has VC5 stack alignment (`and esp, -8`) and a smaller frame (`sub esp,74h`) while original is `sub esp,7Ch` without stack alignment.  A brief `#pragma optimize("y", off)` probe removed the alignment but shortened .text to 6688B, so it was rolled back.
+// - shardB5-6B6E0 baseline: the typed PathingSystem layout, pathsys call family,
+//   and full path-search control flow compile as a 7072-byte structural candidate.
+//   The current check is 6866 differing bytes, frame 0x74 versus 0x7c, and 66
+//   ordered calls versus 75.  The first hard gap is eight missing __ftol calls;
+//   structural and conversion-source work must precede any register variants.
+// - No codegen variants were run in this tranche.  The current source remains
+//   the best typed behavior reconstruction for the next worker.
 
 #include <math.h>
 #include <string.h>

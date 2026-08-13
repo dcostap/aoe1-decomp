@@ -20,6 +20,9 @@
 // - v13: removed the self alias; emitted code stayed unchanged.
 // - v14: initialized the fallback assigned-resource pointer at slot 1; this
 //   changed prologue register coloring and was restored.
+// - v15: tested an indexed resourceDifferenceValue store for the first scan;
+//   it moved the first mismatch into the prologue, worsened shape, and was
+//   restored. The direct pointer form remains the better reconstruction.
 // BLOCKER: the natural typed reconstruction has the exact frame, eight ordered
 // calls, correct field offsets, and 484 rebuilt bytes versus 478 original.
 // The first mismatch is local initialization at +0x2B: original keeps -1 in

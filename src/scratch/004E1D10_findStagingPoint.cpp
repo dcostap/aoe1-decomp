@@ -6,11 +6,29 @@
 // try 4: tested a volatile pad sink to inflate frame/size; worsened to .text 1168, rolled back.
 // try 5: tested /GX: no effect on 1200-byte no-EH body; rolled back.
 // try 6: tested /O1: much smaller (.text 922), rolled back.
+// shardB5: added the proven virtual gap before canPlace and removed one later
+// padding slot, restoring canPlace +0x114 and findDrop +0x1B0.
+// shardB5: modeled md->aiPlayer->visible and md->player->world->map; this
+// improved the typed map ownership basin from 1189 to 1198 bytes.
+// shardB5: direct tile guards improved block topology and retained the clean
+// source; a promoted p3 local produced duplicate code and was rolled back.
+// shardB5: inlined distance computation changed the frame to 0x68 and was
+// rolled back. Best current source is 1196 bytes, frame 0x6C, 902-byte diff.
+// shardB6: restored ObjectMemory z at +0x0A and owner at +0x0B from the
+// taiinfmd first-hunk byte loads; natural typed ownership improved 902 to 900.
 // left in scratch: behavior skeleton likely has the right major call set and nested scan, but not exact/accepted_drift quality; needs precise original source expression for inner passability and scoring to recover the missing 19+ bytes under default /O2.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
-struct ObjectMemory { int id; short mid; short group; unsigned char x; unsigned char y; unsigned char owner; unsigned char pad; };
+struct ObjectMemory {
+    int id;
+    short mid;
+    short group;
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
+    unsigned char owner;
+};
 
 class RGE_Visible_Map { public: unsigned char get_visible(int x, int y); };
 class RGE_Static_Object {
@@ -23,16 +41,29 @@ public:
     virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43(); virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
     virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51(); virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
     virtual void v56(); virtual void v57(); virtual void v58(); virtual void v59(); virtual void v60(); virtual void v61(); virtual void v62(); virtual void v63();
-    virtual void v64(); virtual void v65(); virtual void v66(); virtual void v67();
+    virtual void v64(); virtual void v65(); virtual void v66(); virtual void v67(); virtual void v68();
     virtual int canPlace(float y, float x, int flag); // +114
-    virtual void v69(); virtual void v70(); virtual void v71(); virtual void v72(); virtual void v73(); virtual void v74(); virtual void v75(); virtual void v76(); virtual void v77(); virtual void v78(); virtual void v79(); virtual void v80(); virtual void v81(); virtual void v82(); virtual void v83(); virtual void v84(); virtual void v85(); virtual void v86(); virtual void v87(); virtual void v88(); virtual void v89(); virtual void v90(); virtual void v91(); virtual void v92(); virtual void v93(); virtual void v94(); virtual void v95(); virtual void v96(); virtual void v97(); virtual void v98(); virtual void v99(); virtual void v100(); virtual void v101(); virtual void v102(); virtual void v103(); virtual void v104(); virtual void v105(); virtual void v106(); virtual void v107();
+    virtual void v69(); virtual void v70(); virtual void v71(); virtual void v72(); virtual void v73(); virtual void v74(); virtual void v75(); virtual void v76(); virtual void v77(); virtual void v78(); virtual void v79(); virtual void v80(); virtual void v81(); virtual void v82(); virtual void v83(); virtual void v84(); virtual void v85(); virtual void v86(); virtual void v87(); virtual void v88(); virtual void v89(); virtual void v90(); virtual void v91(); virtual void v92(); virtual void v93(); virtual void v94(); virtual void v95(); virtual void v96(); virtual void v97(); virtual void v98(); virtual void v99(); virtual void v100(); virtual void v101(); virtual void v102(); virtual void v103(); virtual void v104(); virtual void v105(); virtual void v106();
     virtual int findDrop(XYPoint* a, XYPoint* b, float c, XYPoint* d, int e); // +1B0
     int findClosestPointInTerrainType(XYPoint p, XYPoint* out, int type, int terrain, int radius);
     unsigned char lookupZone(int x, int y);
 };
-class MainDecisionAIModule { public: char gap0[0x38]; RGE_Visible_Map* vis; char gap3c[0xB4]; void* player; char gapf4[0x12478]; void* mapwrap; RGE_Static_Object* object(int id); };
-struct PlayerLike { char gap[0x28]; void* map; };
-struct MapLike { char gap[0x8D8C]; int** rows; };
+class RGE_PlayerLike {
+public:
+    char gap0[0x38];
+    RGE_Visible_Map* visible;
+};
+struct RGE_MapLike { char gap[0x8D8C]; int** rows; };
+struct RGE_WorldLike { char gap[0x28]; RGE_MapLike* map; };
+struct TribePlayerLike { char gap[0x3C]; RGE_WorldLike* world; };
+class MainDecisionAIModule {
+public:
+    char gap0[0xF0];
+    RGE_PlayerLike* aiPlayer;
+    char gapf4[0x12478];
+    TribePlayerLike* player;
+    RGE_Static_Object* object(int id);
+};
 class InfluenceMap { public: int lookupValue(int x, int y); };
 extern InfluenceMap losMap;
 extern InfluenceMap attackMap;
@@ -73,21 +104,24 @@ int TribeInformationAIModule::findStagingPoint(XYPoint p, XYPoint& out, int p3, 
     max.x = (int)target->x + radius; max.y = (int)target->y + radius; this->mapBound(&max);
     targetPoint.x = target->x; targetPoint.y = target->y; this->mapBound(&targetPoint);
 
+    RGE_PlayerLike* aiPlayer = this->md->aiPlayer;
+    TribePlayerLike* player = this->md->player;
+    RGE_Visible_Map* vis = aiPlayer->visible;
+    RGE_MapLike* map = player->world->map;
     int bestValue = -1;
-    RGE_Visible_Map* vis = this->md->vis;
-    PlayerLike* ai = (PlayerLike*)this->md->mapwrap;
-    MapLike* map = (MapLike*)ai->map;
 
     for (int y = min.x; y <= max.x; ++y) {
         int rowoff = y * 0x18;
         for (int x = min.y; x <= max.y; ++x) {
             unsigned char tile = (unsigned char)(*((unsigned char*)map->rows[x] + rowoff + 5) & 0x1f);
             vis->get_visible(y, x);
-            int ok = 0;
-            if (p3 == 1) { if (tile == 2) ok = 1; }
-            else if (p4 == 1) { if (tile != 1 && tile != 0x16) ok = 1; }
-            else { if (p4 != 0 || tile == 1 || tile == 0x16) ok = 1; }
-            if (!ok) continue;
+            if (p3 == 1) {
+                if (tile != 2) continue;
+            } else if (p4 == 1) {
+                if (tile == 1 || tile == 0x16) continue;
+            } else if (p4 == 0 && tile != 1 && tile != 0x16) {
+                continue;
+            }
             if (unit->lookupZone(y, x) != zone) continue;
             if (p3 == 1) {
                 XYPoint passMin, passMax;

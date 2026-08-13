@@ -96,6 +96,11 @@
 // - tu-rmmbase-4808D0: dossier and same-TU donors confirm the nine calls and
 //   typed list ABI. No new natural source lead removes the extra 0xC-frame
 //   home; the clean list sort remains the retained reconstruction.
+// - Shard E continuation: direct search->next, persistent current/next,
+//   function-scope pointer declarations, and shared-tail control flow were
+//   tested and rolled back. They stayed nonexact or worsened structural size.
+//   Final validation restores the clean typed list sort; blocker remains the
+//   0xC VC5 frame and opposite local/register basin versus the 0x8 oracle.
 
 #include <stddef.h>
 

@@ -17,8 +17,11 @@
 //   original failure block before the shared epilogue.
 // - review readiness: keep this natural source. Remaining work is localized
 //   tail/EH layout, not ownership, calls, or action ABI.
-// - A pointer-as-status result and centralized failure label reached a 20-byte
-//   diagnostic gap. Rejected it because target ownership and status differ.
+// - pointer-as-status and centralized failure-tail forms reached a 20-byte
+//   diagnostic gap but changed target ownership and status semantics.
+// - direct success-label and scalar-status variants were worse; rolled back.
+// - Typed the constructed action as RGE_Action to follow add_action ownership;
+//   emitted code was unchanged, so restored the derived action type.
 // FLAGS: config/flags/004CB060_hunt.rsp
 
 class RGE_Static_Object;

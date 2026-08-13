@@ -13,6 +13,9 @@
 // - Declared the packet cursor and resolved target before the accumulator
 //   locals, matching the exact do_command_work ownership order; VC5 emitted
 //   identical code, so the target-home lead remains unconfirmed.
+// - Kept the six bounding/total locals inside the n > 1 branch, matching the
+//   original line-521 initialization band; this is a natural scope lead for
+//   the remaining target and accumulator stack-home mismatch.
 
 #include "../../include/game_globals.h"
 
@@ -62,19 +65,13 @@ void RGE_Command::do_command_move(Order* order) {
     int n = order->unit_num;
     RGE_Obj_Info* ids = order->ids;
     RGE_Static_Object* target = this->get_obj(order->target);
-    float minx;
-    float maxx;
-    float miny;
-    float maxy;
-    float totalx;
-    float totaly;
     if (n > 1) {
-        minx = 10000.0f;
-        maxx = 0.0f;
-        miny = 10000.0f;
-        maxy = 0.0f;
-        totalx = 0.0f;
-        totaly = 0.0f;
+        float minx = 10000.0f;
+        float maxx = 0.0f;
+        float miny = 10000.0f;
+        float maxy = 0.0f;
+        float totalx = 0.0f;
+        float totaly = 0.0f;
         if (n > 0) {
             int i = n;
             RGE_Obj_Info* p = ids;

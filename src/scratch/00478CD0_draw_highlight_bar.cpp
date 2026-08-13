@@ -18,6 +18,10 @@
 // - reversed/split bottom-term and top/bottom declaration probes were either
 //   codegen duplicates or broad tail-merge regressions; restored this natural
 //   best source. Left in scratch: one localized address-term encoding byte.
+// - initialized bottom from spacer_size and compound-added rect.bottom; this
+//   was a codegen duplicate, so restored the direct typed addition.
+// - swapped bottom's natural operand order to spacer_size + rect.bottom;
+//   emitted code was unchanged, so restored the clean source.
 
 struct tagRECT {
     long left;

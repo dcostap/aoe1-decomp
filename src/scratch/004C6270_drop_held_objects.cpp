@@ -21,6 +21,13 @@
 // - removing register from the index and changing the outer traversal to a
 //   pretested while were codegen duplicates; retain the success-block alias
 //   candidate as the best source reconstruction for this pause.
+// - moving next-node capture outside the retry loop followed the 004C62C4 /
+//   004C62E0 split but worsened the rebuilt size and resync diff; rolled back.
+// - moving list-head capture between world_x and world_y setup also worsened
+//   the initial schedule; rolled back.
+// - scoped running radius pointers produced a 0xB8 frame and broad drift;
+//   rolled back because the original pointer-like EBP/EDI evidence is not a
+//   natural fit for this aggregate source.
 
 class RGE_Master_Static_Object { public: char gap_00[0x30]; float radius_x; float radius_y; };
 class RGE_Static_Object;

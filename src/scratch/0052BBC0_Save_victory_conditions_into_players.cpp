@@ -19,6 +19,10 @@
 //   calls); residual drift is VC5 stack-home/order and tail/register coloring.
 // - a fresh natural typed row cursor (`&sp_victory[row][0]` plus increment)
 //   widened the frame to 0x14 and lost early blocks; it was rolled back.
+// - matching the donor's trailing SP_Victory_Info padding as integer gaps did
+//   not change emitted code; using condition->x1 for the rectangle calls was
+//   natural but changed the frame to 0x0C and widened the structural drift, so
+//   it was rolled back.
 
 class RGE_Static_Object;
 class RGE_Game_World;

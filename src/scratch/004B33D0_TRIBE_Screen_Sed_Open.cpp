@@ -29,6 +29,10 @@
 // - Probe: initialized list through the existing output pointer local to test
 //   an early list-address lifetime; output worsened to 317 strict-diff bytes.
 //   Restored the clean source; no source-shape lead remains in this pass.
+//
+// Session shardA5-4B33D0-r2 (2026-08-13):
+// - Declared the proven list output pointer before tabList and info_file to
+//   mirror the original local order; emitted code was unchanged.
 
 #include <string.h>
 
@@ -119,9 +123,9 @@ public:
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     : TScreenPanel("Scenario Editor Open")
 {
+    TListPanel** listPtr = &list;
     TPanel* tabList[5];
     char info_file[260];
-    TListPanel** listPtr = &list;
 
     *(unsigned long*)this = 0x573C28;
 

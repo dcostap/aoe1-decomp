@@ -23,6 +23,10 @@
 // 15: a remap-slot pointer emitted the same 697-byte code as the positive-guard candidate; rolled back.
 // 16: initializing the scenario-load fallback player before its guard reached 691 bytes but changed
 //     the load-loop CFG and moved the first mismatch earlier; rolled back to the 697-byte candidate.
+// 17: duplicated the typed scenario_load call in mapped and fallback arms; VC5 merged the call and
+//     matched the original fallback receiver block, reducing the best diff to 112 bytes.
+// 18: mirrored same-TU loaders with a typed player-map pointer; emitted code was unchanged, so kept
+//     the clearer period-plausible map ownership.
 // Best retained reconstruction: 697 bytes, frame 0x60, all 24 calls and virtual slots aligned;
 // remaining drift is late register coloring and one scaled-address expression in AI setup.
 
@@ -260,15 +264,16 @@ void RGE_Game_World::load_scenario1(int file, RGE_Player_Info& info)
 
     i = 1;
     if (i < scenario_player_num) {
+        long* player_map = player_id_hash + 1;
         do {
-            RGE_Player* player;
-            if (i < this->player_num && player_id_hash[i] > -1 &&
-                (player = this->players[player_id_hash[i]]) != 0) {
+            if (i < this->player_num && *player_map > -1 &&
+                this->players[*player_map] != 0) {
+                this->players[*player_map]->scenario_load(file, player_id_hash, 1.0f);
             } else {
-                player = this->players[0];
+                this->players[0]->scenario_load(file, player_id_hash, 1.0f);
             }
-            player->scenario_load(file, player_id_hash, 1.0f);
             ++i;
+            ++player_map;
         } while (i < scenario_player_num);
     }
 

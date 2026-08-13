@@ -17,13 +17,22 @@
 //   the EH handler relocation and localized result/coordinate scheduling.
 // - Placement-new and direct-coordinate-store variants were rolled back; they
 //   worsened EH/size or merged one binary-observed ftol path.
-// - Left in scratch: remaining drift is compiler EH-handler/prologue identity,
-//   one missing +0x90 call-site alignment, and localized register/load order.
+// - Left in scratch: remaining drift is switch-tail placement, the branch-local
+//   +0x2C6 range scheduling, and localized register/load order.
 // Main-agent source audit: replaced raw vtable/gap-only object, player, world,
 // and master surfaces with donor-backed virtual destructors while preserving
 // every proven field offset. Revalidation is codegen-unchanged; the function
-// remains scratch because the rebuilt call map is 41/42 (one +0x90 call is
-// absent) and dispatch/EH topology are unresolved.
+// remains scratch because dispatch/tail topology and byte scheduling remain
+// unresolved.
+// - Preserved the 0x2C6 range as a branch-local float value; this
+//   keeps the original's separate +0x90 call site from collapsing into 0x2D4.
+//   The rebuilt call map is now 42/42, with 832 differing bytes.
+// - Probe: removed the branch-local float range; this merged the +0x2C6 call
+//   with +0x2D4 and lost one required virtual call, so restore the clean form.
+// - Probe: inlined the playbook result test; VC5 now emits the original test
+//   eax,eax and improves the best positional diff from 832 to 830 bytes.
+// - Pointer-range, forced-tail-goto, and logged-branch-break variants were
+//   rolled back; they lost the call map or expanded the function.
 
 #include <stdio.h>
 
@@ -207,15 +216,13 @@ public:
 
 int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     OrderEvent* order = param_1;
-    AIPlay* play;
     int result = 0;
 
     switch (order->orderType) {
     case 0x2D6: {
         result = 1;
-        play = this->objectValue->owner->world->playbook->play(
-            order->targetOwner);
-        if (!play) {
+        if (this->objectValue->owner->world->playbook->play(
+                order->targetOwner) == 0) {
             result = 0;
         } else {
             if (this->playStatus != 0) {
@@ -272,8 +279,11 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
         result = 1;
         break;
     case 0x2C6:
-        result = this->moveTo(order->targetX, order->targetY,
-                              order->targetZ, order->range, 1);
+        {
+            const float range = param_1->range;
+            result = this->moveTo(param_1->targetX, param_1->targetY,
+                                  param_1->targetZ, range, 1);
+        }
         break;
     case 0x2BC:
         result = this->attackObject(order->target, 1);

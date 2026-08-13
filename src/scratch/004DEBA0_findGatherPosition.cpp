@@ -16,7 +16,10 @@
 // - `maxDistance >= minDistance` reproduces the initial cmp edi,esi/jl guard; memory-left exclusion predicates reproduce two oracle blocks.
 // - XYPoint y,x layout, scalar/point declaration reorderings, and same-TU nonvirtual object declarations did not resolve the frame/local basin.
 // - bool blocked was tested and rolled back: it removed the one-byte size overflow but worsened the codegen basin.
+// - explicit outer do/while scans were tested from the repeated PDB loop bands; VC5 emitted the same bytes as the clean for-loop source, so no new lead was found.
 // Best retained reconstruction: typed virtual/reference ABI and natural nested scans with named XYPoint ownership; frame remains 0x50 vs 0x54.
+// The explicit outer do/while spelling was tested and emitted the same code as
+// the clean for-loop source. The source stays with the simpler natural form.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
@@ -104,8 +107,10 @@ int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clea
     setupInfluenceMap(0, -1, p, min, max);
     bestPointValue = -1;
     maxClear.x = groupInfluenceDimension(group);
-    for (j = min.y; j <= max.y; j++) {
-        for (i = minExclude.x; i <= minClear.x; i++) {
+    j = min.y;
+    if (j <= max.y) do {
+        i = minExclude.x;
+        if (i <= minClear.x) do {
             if (minExclude.y > j || j > maxExclude.y || maxExclude.x > i || i > cPosition.x) {
                 halfDistance = maxClear.x / 2;
                 minClear.y = j - halfDistance;
@@ -141,7 +146,9 @@ int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clea
                     }
                 }
             }
-        }
-    }
+            i++;
+        } while (i <= minClear.x);
+        j++;
+    } while (j <= max.y);
     return bestPointValue != -1;
 }

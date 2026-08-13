@@ -7,7 +7,8 @@
 // 5-8: combined guard, object id, same-TU UnitAIModule ABI, float coordinate fields, and natural new[]/delete[] growth restored exact call order and frame size.
 // 9: outer count guard plus while (i < count) reproduced the duplicated entry test and improved shape to 90.95%; the remaining gap is register coloring and late vptr spill.
 // 10: a base-pointer alias was codegen-identical and was removed as unsupported steering.
-// left in scratch: canonical source has exact call multiset, frame 0x08, and 100% call-site alignment, but remains nonexact with 8-byte size drift and broad register/block drift. The main lead is the original order-call register schedule and saved vptr slot. Not accepted_drift-safe.
+// 11: rewrote the typed evasive result tail as coordinate plus explicit negated displacement; restored the original fchs/fadd tail family, reducing the size gap to 4 bytes and positional diff to 521; first order-call hunk remains.
+// left in scratch: canonical source has exact call multiset, frame 0x08, and 100% call-site alignment, but remains nonexact with 4-byte size drift and broad register/block drift. The main lead is the original order-call register schedule and saved vptr slot. Not accepted_drift-safe.
 
 void* __cdecl operator new(unsigned int);
 void __cdecl operator delete(void*);
@@ -200,8 +201,8 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     }
 
     len = (float)sqrt(dx*dx + dy*dy);
-    this->evasiveMoveTo(this->obj->x - dx / len * evasiveMoveDistance,
-                        this->obj->y - dy / len * evasiveMoveDistance,
+    this->evasiveMoveTo(this->obj->x + (-(dx / len * evasiveMoveDistance)),
+                        this->obj->y + (-(dy / len * evasiveMoveDistance)),
                         this->obj->field40, 1);
     return 3;
 }

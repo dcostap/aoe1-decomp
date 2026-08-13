@@ -20,6 +20,12 @@
 //   ftol/radius stack stores); no natural bounded probe found the transition.
 // - behavior: added named radius_y1/radius_y2 bounds after the clamp as a
 //   redundant vertical gate while leaving the terrain scan otherwise unchanged.
+// - layout probe: removing both radius-bound locals and retaining the binary
+//   +/-2 zone guard eliminated ftol, reduced the frame to 0x14, and worsened
+//   the diff to 400; restored the clean candidate.
+// - behavior probe: removing radius bounds from the typed zone predicate while
+//   retaining the radius locals still eliminated ftol and reduced the frame to
+//   0x14; restored the clean candidate.
 
 typedef unsigned char uchar;
 

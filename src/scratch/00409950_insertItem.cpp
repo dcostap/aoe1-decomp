@@ -15,6 +15,10 @@
 // try 14: used a natural for-loop; bottom jl shape improved and size fell to 566B.
 // try 15: modeled BaseItem inheritance so inherited setters use the original BaseItem symbols; bytes stayed unchanged.
 // try 16: normal-object branch first increased size to 571B; shape improved but positional diff worsened, so restored the clean candidate.
+// try 17: removed the explicit derived destructor declaration; the same-TU constructor donor omits it, so this tests the narrow destructor-type surface without changing layout.
+// try 18: kept the typed successor across the insertion stores to model one list-link lifetime and avoid rereading pos->next.
+// try 19: moved the successor declaration after item->prev so the source follows the original link-store order.
+// result: typed successor reduced code size from 566B to 563B and positional diff from 509B to 502B; source order improved shape, but EH/return CFG remains broad drift.
 // BLOCKER: current natural source is 566B versus 542B. Original starts push -1/handler then mov fs and uses EBX=this with a stack home. VC5 emits mov fs first and uses EBP=this. The remaining EH/return topology and register basin are broad.
 
 #include <string.h>
@@ -108,9 +112,10 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
         item->setSkipCycles(0);
         item->setPermanentSkip(0);
         item->prev = pos;
-        item->next = pos->next;
+        BuildItem* next = pos->next;
+        item->next = next;
         seq++;
-        pos->next->prev = item;
+        next->prev = item;
         pos->next = item;
         this->buildListLengthValue++;
     }

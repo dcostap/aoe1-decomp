@@ -23,6 +23,18 @@
 //   diff), so it is not retained. Remaining blocker is structural: the oracle
 //   sends the existing-lot branch to a late handler at 004E044E while default
 //   VC5 lowering places that handler immediately after the scan.
+// - Reversed the typed x/y equality operands, following the neighboring
+//   taiinfmd lot helpers; this keeps parameter-byte loads in the first scan
+//   hunk and tests the direct source form without changing ownership.
+// - Direct indexed BuildingLot scan improved the diagnostic diff to 368 bytes
+//   and shape to 94.16%, but moved freeIndex into edi, added one byte, and
+//   lost the oracle's pointer-walk prologue; restored the pointer-walk source.
+// - Memory-first x/y comparisons fixed the local compare encoding only; the
+//   indexed scan stayed at 368 bytes and did not restore the original CFG.
+// - A natural matched-lot pointer carried the existing record past the scan;
+//   this moved the first prologue hunk and regressed to 451 bytes / 417 diff.
+//   Restored the pointer-walk source; the late existing-lot handler remains
+//   the structural blocker.
 
 #include <stddef.h>
 
@@ -56,7 +68,7 @@ void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
     if (this->maxBuildingLots > 0) {
         BuildingLot* lot = this->buildingLots;
         do {
-            if (lot->typeID == typeID && lot->x == x && lot->y == y) {
+            if (lot->typeID == typeID && x == lot->x && y == lot->y) {
                 this->buildingLots[i].status = built;
                 return;
             }

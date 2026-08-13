@@ -10,9 +10,14 @@
 // - grouped y-offset arithmetic made the body 704 bytes and was rolled back.
 // - a shared x-coordinate tail removed two debug_rand calls and was rolled
 //   back. The four separate calls are required by the original switch.
-// - final validation: 548 positional diff bytes; call sites and targets align.
+// - binary final-loop stores update the expanded radii, not the drop center;
+//   restored typed radius updates before testing the ordered object calls.
+// - prior validation: 548 positional diff bytes; call sites and targets align.
 //   Remaining drift starts at random side scaling (original mov/shl/imul).
 //   The natural typed spatial reconstruction remains in scratch.
+// - radius ownership probe kept 548 positional-diff bytes and the 0x8 frame;
+//   shape improved to 85.58% and edit diff to 176, so the radius form remains.
+// - final validation follows this source and the documented probe.
 
 extern "C" int debug_rand(char*, int);
 extern float DAT_00574720;
@@ -207,8 +212,8 @@ unsigned char RGE_Static_Object::find_drop_location(
             ++attempt;
         } while (attempt < 50);
 
-        drop_x += master->radius_x + master->radius_x;
-        drop_y += master->radius_y + master->radius_y;
+        radius_x += master->radius_x + master->radius_x;
+        radius_y += master->radius_y + master->radius_y;
         radius_2x += master->radius_x * 4.0f;
         radius_2y += master->radius_y * 4.0f;
         ++outer;

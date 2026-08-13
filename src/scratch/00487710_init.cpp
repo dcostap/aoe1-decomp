@@ -17,6 +17,7 @@
 // fresh probe: swapped typed cursor declarations returned to the old register basin; rolled back.
 // fresh probe: explicit placement construction removed EH cleanup but lost the original EH frame; rolled back.
 // fresh probe: a typed generator-pointer local changed early parameter reloads and worsened diff; rolled back.
+// fresh probe: mirrored exact same-TU add_shallows_module's long* second-field destination cursor with a typed source; diff improved 116 -> 115, but the cursor registers remain reversed.
 // Left in scratch: behavior, calls, frame, and size are close; remaining drift is the hot-spot local home/cursor allocation and automatic-new tail cleanup.
 // FLAGS: config/flags/00487710_init.rsp (/nologo /c /O2 /Oy /GX)
 
@@ -120,13 +121,13 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
 
         long n = this->hot_spot_count;
         if (n > 0) {
-            RGE_Cliffs_Hot_Spots* dst = &cliff_info.hot_spots[0];
+            long* dst = &cliff_info.hot_spots[0].y;
             RGE_Controller_Hot_Spots* src = &this->hot_spot_data[0];
             do {
-                dst->x = src->x;
-                dst->y = src->y;
-                dst->radius = src->radius;
-                dst++;
+                dst[-1] = src->x;
+                dst[0] = src->y;
+                dst[1] = src->radius;
+                dst += 3;
                 src++;
                 n--;
             } while (n != 0);

@@ -20,6 +20,10 @@
 //   source semantics. Remaining drift is localized to record homes and x87
 //   quantization/block placement; calls, fields, frame, and behavior topology
 //   are aligned.
+// - shardB5-53DBA0 tested natural whole-plus-fraction expressions and threshold
+//   branch forms. The retained branch-local addition reduces the size gap to 2
+//   bytes and keeps the original call set and CFG; other forms were duplicates
+//   or widened the structural gap. The remaining lead is the x87 faddp block.
 
 typedef void* HWND;
 
@@ -175,13 +179,18 @@ int RGE_Main_View::do_auto_scroll()
             } else {
                 scroll_dist2 = (float)elapsed / info->key_scroll_interval;
                 {
-                    int whole = (int)scroll_dist2;
+                    long whole = (long)scroll_dist2;
                     scroll_dist2 -= whole;
                     if (scroll_dist2 >= DAT_00577904)
+                    {
                         scroll_dist2 = DAT_00577904;
+                        scroll_dist2 += (float)whole;
+                    }
                     else
+                    {
                         scroll_dist2 = DAT_00577908;
-                    scroll_dist2 += whole;
+                        scroll_dist2 += (float)whole;
+                    }
                 }
             }
 

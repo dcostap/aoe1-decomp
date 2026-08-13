@@ -12,6 +12,11 @@
 //     compares full size; current result is MISMATCH, first mismatch at +0x25
 //     from null-param early-return block layout (original jumps to shared early
 //     epilogue; current source emits an inline epilogue).
+// [3] Added the typed TPanel virtual destructor. This moves activation/redraw
+//     calls to the binary-backed +0x14/+0x20 slots and improves call alignment;
+//     the remaining first mismatch is the shared early-return epilogue.
+// [4] Tried moving the shared result label after the action body. That worsened
+//     the first block and was rolled back; the TPanel-destructor candidate stays.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stdlib.h>
@@ -30,6 +35,7 @@ struct RGE_Scenario;
 struct T_Scenario;
 
 struct TPanel {
+    virtual ~TPanel();
     virtual void vf00();
     virtual void vf04();
     virtual void vf08();

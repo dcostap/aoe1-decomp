@@ -24,6 +24,11 @@
 // worker 2026-08-10: corrected text/state packed-color field ownership from the executable's sscanf
 // locals. Current source is the best canonical reconstruction; remaining drift begins at f2g's local
 // home (rebuilt [esp+20h] vs original [esp+18h]) and the large sscanf local-address schedule.
+// worker 2026-08-13: tested declaration-order variants; VC5 emitted the same code.
+// worker 2026-08-13: modeled the binary's common set_background2 tail with a selected filename and
+// reused parsed id. Reordered id assignment before filename selection; this improved size to -20
+// bytes and positional diff to 1006, but VC5 still spills the selected id instead of matching the
+// original branch argument schedule. The common-tail source is retained as the best natural lead.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -143,6 +148,8 @@ extern "C" unsigned char* __cdecl RESFILE_load(unsigned long type, unsigned long
 long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
                         long x, long y, long w, long h, int allow_shadow)
 {
+    char* background2_file_name;
+    int own_mem;
     int f2g;
     int f2r;
     int back_pic_id_b2;
@@ -181,7 +188,6 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     int shad_amt;
     int back_pic_id_b1;
     int resDataSize;
-    int own_mem;
     char temp_label[256];
     char info_file_name2[260];
     char background_pic_file_name_b1[260];
@@ -279,14 +285,17 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         set_use_bevels(1);
         if (this->render_area->width < 800 || stricmp(info_file_name2 + 0x100, "none") == 0) {
             set_background(button_pics_file_name + 0x100, bc3);
-            set_background2(background_pic_file_name_c2 + 0x100, f1g);
+            f2r = f1g;
+            background2_file_name = background_pic_file_name_c2 + 0x100;
         } else if (this->render_area->width < 0x400) {
             set_background(info_file_name2 + 0x100, shad_amt);
-            set_background2(palette_file_name + 0x100, f2r);
+            background2_file_name = palette_file_name + 0x100;
         } else {
             set_background(cursor_file_name + 0x100, t2g);
-            set_background2(background_pic_file_name_b1 + 0x100, f1b);
+            f2r = f1b;
+            background2_file_name = background_pic_file_name_b1 + 0x100;
         }
+        set_background2(background2_file_name, f2r);
         set_shadow_amount(t1r);
         set_palette(background_pic_file_name_a2 + 0x100, f1r);
         set_cursor(background_pic_file_name_b2 + 0x100, bc1);

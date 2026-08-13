@@ -30,6 +30,8 @@
 // no exact or size-matching candidate. A deliberately transposed access form
 // did flip the entry colors but changed the physical neighbor orientation and
 // is diagnostic only.
+// continuation probe: an explicit jump from the final interior mask test to
+// the shared return tail emitted the same 398-byte code; restored clean source.
 // left in scratch: canonical typed row-table source remains 398 bytes with
 // 308 positional-byte drift (+16 tail), first mismatch at entry parameter
 // coloring; original also retains a shared late return tail that VC5 does not

@@ -57,6 +57,9 @@
 // post-store game local both widened to ~6.21%. Flag probes /O1 and /Os emitted
 // undersized text; /Ob0 widened badly; /Gf no change. Palette pal7b arithmetic
 // or late declaration still collapsed to baseline.
+// 2026-08-13 shardA6-493D60-r1: naming the screen draw area before the inventory
+// panel constructor was a natural ownership probe, but added 4 bytes and widened
+// the positional diff from 3154 to 3999. Restored the clean reconstruction.
 
 #include "../../include/game_types.h"
 #include "../../include/game_globals.h"

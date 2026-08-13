@@ -16,6 +16,11 @@
 //    order and the no-scenario cleanup tail. Budget exhausted; left in scratch.
 // 6: swapped the natural calloc assignments so campaign_filename received the
 //    first allocation. This worsened the first block and was restored.
+// 7: reordered the typed array declarations; VC5 emitted the same stack homes.
+// 8: grouped the typed array declarations; VC5 emitted the same stack homes.
+// 9: moved the name declaration after the arrays; VC5 emitted the same homes.
+// 10: tested loop-scoped indices for pointer-home coloring; VC5 rejects the
+//    second declaration with C2374, so the shared top-level index was restored.
 
 typedef unsigned int uint;
 

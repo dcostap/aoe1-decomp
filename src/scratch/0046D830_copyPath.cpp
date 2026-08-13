@@ -16,6 +16,10 @@
 //   call target or ownership mismatch remains.  The final source is kept as
 //   the readable canonical reconstruction rather than a compiler-steering
 //   variant.
+// - Tested a natural typed facet-before-coordinate assignment order because
+//   the target loads the facet before its floating-point coordinate stores;
+//   it moved 25 positional bytes farther from the clean candidate and was
+//   rolled back.  The clean x/y/z/facet order remains the best reconstruction.
 
 #include <stddef.h>
 
@@ -98,7 +102,7 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual ~RGE_Static_Object();
+    void* vtable_ptr;
     long id;
     void* master_obj;
     void* owner;
@@ -184,7 +188,7 @@ public:
 
 class PathingSystem {
 public:
-    virtual ~PathingSystem();
+    void* vtable_ptr;
     int xSizeValue;
     int ySizeValue;
     uchar facetValue[255][255];

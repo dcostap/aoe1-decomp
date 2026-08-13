@@ -29,6 +29,13 @@
 // TU-group pass (tu-sprite-C0960): nonzero and reversed-operand inner count
 // guards stayed in the 157-byte basin. Restored the natural typed EH source;
 // the test-AX/jle guard and typed entry scheduling remain unresolved.
+// Shard E pass: outer `draw_list_num <= 0` plus a natural for loop reproduced
+// the oracle test-AX/jle gate and exact frame/call set. Repeated direct
+// `draw_list[i]` member expressions improved the typed entry basin to 92 bytes.
+// Binary parameter-home evidence corrected the child call to scale `frame`
+// and pass `facet`; the current natural candidate reaches 90-byte diff,
+// 94.74% shape, and 93.29% exact-block coverage. Remaining drift is the
+// shared zero-return/tail layout; no call-set or frame mismatch remains.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
@@ -138,23 +145,20 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
         max_x = 0;
         max_y = 0;
 
-        if ((this->draw_list_num < 1) || (this->draw_list == 0)) {
+        if ((this->draw_list_num <= 0) || (this->draw_list == 0)) {
             this->get_frame_min_max(min_x, min_y, max_x, max_y,
                                     frame, facet, 0, 0);
         } else {
-            int i = 0;
-            if (this->draw_list_num > 0) {
-                do {
-                    if (this->transparent_picking_flag > 0) {
-                        RGE_Picture_List* list = this->draw_list;
-                        list[i].sprite->get_frame_min_max(
-                            min_x, min_y, max_x, max_y,
-                            (list[i].sprite->facet_num * facet) /
-                                this->facet_num,
-                            frame, list[i].offset_x, list[i].offset_y);
-                    }
-                    ++i;
-                } while (i < this->draw_list_num);
+            for (int i = 0; i < this->draw_list_num; ++i) {
+                if (this->transparent_picking_flag > 0) {
+                    this->draw_list[i].sprite->get_frame_min_max(
+                        min_x, min_y, max_x, max_y,
+                        (this->draw_list[i].sprite->facet_num * frame) /
+                            this->facet_num,
+                        facet,
+                        this->draw_list[i].offset_x,
+                        this->draw_list[i].offset_y);
+                }
             }
         }
 

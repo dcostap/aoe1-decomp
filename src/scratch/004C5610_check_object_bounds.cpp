@@ -15,6 +15,13 @@
 // the x2/y2 spill-home swap and late return-compare block shape.
 // 12: equivalent x-overlap operand reversal was a codegen duplicate; restored
 // the direct `dx <= rx + rx2` spelling for source clarity.
+// 13: adopted the same-TU make_object_bounds_list donor's named radius,
+// bound-local order, and positive overlap arithmetic; codegen was unchanged,
+// so the donor-backed natural source is retained.
+// 14: reversed the typed x-overlap predicate to test the original fcompp
+// branch shape; emitted code was unchanged, so the clean predicate is kept.
+// 15: declared the natural outer y_index temp before y2 to test the first
+// spill-home topology; emitted code was unchanged, so the clean order is kept.
 
 typedef unsigned char uchar;
 
@@ -65,20 +72,17 @@ public:
 
 RGE_Static_Object* RGE_Static_Object::check_object_bounds()
 {
-    float dx;
-    short x1;
-    float ry2;
-    float ry;
-    float rx2;
-    float rx;
-    short y1;
+    float radius_x;
+    float radius_y;
     short x2;
+    short y1;
+    short x1;
     short y2;
     short y_index;
 
-    rx2 = this->master_obj->radius_x;
-    ry2 = this->master_obj->radius_y;
-    if (!(rx2 <= 0.0f && ry2 <= 0.0f)) {
+    radius_x = this->master_obj->radius_x;
+    radius_y = this->master_obj->radius_y;
+    if (!(radius_x <= 0.0f && radius_y <= 0.0f)) {
         x1 = (short)(int)(this->world_x - 0.5f);
         y1 = (short)(int)(this->world_y - 0.5f);
         x2 = (short)(int)(this->world_x + 0.5f);
@@ -102,14 +106,15 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
                             do {
                                 RGE_Static_Object* obj = n->node;
                                 RGE_Master_Static_Object* master = obj->master_obj;
-                                rx = master->radius_x;
-                                ry = master->radius_y;
-                                if (rx > 0.0f && ry > 0.0f) {
+                                float object_radius_y = master->radius_y;
+                                float object_radius_x = master->radius_x;
+                                if (object_radius_x > 0.0f && object_radius_y > 0.0f) {
                                     float dy = obj->world_y - this->world_y;
-                                    dx = obj->world_x - this->world_x;
+                                    float dx = obj->world_x - this->world_x;
                                     if (dy < 0.0f) dy = -dy;
                                     if (dx < 0.0f) dx = -dx;
-                                    if (dy <= ry + ry2 && dx <= rx + rx2) {
+                                    if (dy <= object_radius_y + radius_y &&
+                                        dx <= object_radius_x + radius_x) {
                                         return obj;
                                     }
                                 }

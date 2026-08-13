@@ -67,6 +67,10 @@
 // - sa-1ed6a47a-r1 ABI probe: normalized RGE_Game_World slot 0 to the exact-donor
 //   virtual unsigned char data_load_world(void*) surface instead of a virtual destructor;
 //   codegen stayed unchanged at 224 bytes and a 29-byte diff. No new ABI lead remains.
+// - shardE-533330 initialized a period-plausible point-entry alias before the state guard;
+//   VC5 folded it away and kept the 224-byte, 29-byte register-coloring gap.
+// - shardE-533330 delayed and then block-scoped an ordinary player alias around the scan;
+//   both forms created the 0x8 frame and 233-byte structural drift, so both were restored.
 
 class RGE_Game_World;
 

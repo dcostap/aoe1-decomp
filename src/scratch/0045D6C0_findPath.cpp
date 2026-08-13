@@ -9,6 +9,7 @@
 // 7: the original 0045D76B block is an unreachable compiler-generated vcall-thunk guard; an address-based diagnostic reproduced its CFG/size but was removed from the living source as opaque scaffolding.
 // 8: canonicalized Waypoint and moving-object field ownership (selected +36, actionRange +134, targetID +138); remaining drift is source/VC5 topology, not a proven field offset.
 // 9: paused after the bounded assignment; clean source is frame-exact with 49/50 calls, while the diagnostic guard reached size/CFG/call parity but was not a plausible source reconstruction.
+// 10: tested the natural pre-gate waiting-state reset from the ordered call map; it improved size but changed the later virtual call to an indirect register call, so it was restored.
 
 #include <math.h>
 #include <stdio.h>

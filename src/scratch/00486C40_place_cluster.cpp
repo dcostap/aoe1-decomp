@@ -11,8 +11,9 @@
 // - Player-local and while-loop spellings were codegen duplicates.
 // - Main audit removed a register hint and decompiler-style subtraction of a
 //   negative half. Ordinary local and += spellings preserve the same behavior.
-// - Best current result: 977 bytes versus 974, 19/19 calls aligned, 762
-//   differing bytes. The checker remains in STRUCTURAL RECONSTRUCTION.
+// - Named the binary-observed pop result and used one natural pop/count loop;
+//   this reached exact size, 19/19 calls, and 649 differing bytes.
+//   The checker now reports BLOCK SHAPE AND LIVENESS.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);
@@ -147,6 +148,7 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
     float tile_x;
     float tile_y_float;
     float cost;
+    Map_Stack* node;
     Map_Stack obj_stack;
 
     this->init_stack(&obj_stack);
@@ -173,8 +175,8 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
         (variance << 1)) / 0x7fff - variance;
     if (count < 1) count = 1;
 
-    if (this->pop_stack(&obj_stack, &tile_y, &x1, &cost) != 0) {
-        while (count > 0) {
+    node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+    while (node != 0 && count > 0) {
             RGE_Master_Static_Object* master =
                 player->master_objects[info.obj_id];
             tile_y_float = (float)tile_y;
@@ -218,10 +220,7 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x279));
                 }
             }
-            if (this->pop_stack(&obj_stack, &tile_y, &x1, &cost) == 0) {
-                break;
-            }
-        }
+        node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
     }
 
     this->deinit_stack(&obj_stack);

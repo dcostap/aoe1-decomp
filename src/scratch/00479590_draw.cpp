@@ -6,19 +6,13 @@
 // remaining drift: VC5 keeps the vtable carrier in EBX, not original EDI, and misses 4 frame bytes.
 // left in scratch: typed period-plausible draw source with 32 aligned calls; no exact lead remains.
 // shared-local lifetime probe: reordered x/y/wid/hgt with the original coordinate ownership; codegen unchanged, so keep the natural form.
-struct tagRECT { long left; long top; long right; long bottom; };
-struct tagSIZE { long cx; long cy; };
-struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
-
-extern int (__stdcall *SelectClipRgn)(void*, void*);
-extern void* (__stdcall *SelectObject)(void*, void*);
-extern unsigned int (__stdcall *GetPaletteEntries)(void*, unsigned int, unsigned int, tagPALETTEENTRY*);
-extern unsigned int (__stdcall *SetBkColor)(void*, unsigned int);
-extern int (__stdcall *SetBkMode)(void*, int);
-extern int (__stdcall *GetTextExtentPoint32A)(void*, const char*, int, tagSIZE*);
-extern unsigned int (__stdcall *SetTextColor)(void*, unsigned int);
-extern int (__stdcall *SetRect)(tagRECT*, int, int, int, int);
-extern int (__stdcall *DrawTextA)(void*, const char*, int, tagRECT*, unsigned int);
+// branch-layout: put the palette path first; this matches the original conditional edge and improves diff 833 -> 827.
+// source-shape: use inline strlen for both text extents; CFG parity improves and diff reaches 811.
+// layout: retain inner width/height locals, then add the origin before rectangle draws; diff reaches 775.
+// context: imported GDI declarations and the period Windows header restore the repeated palette-call shape; diff reaches 633.
+// left in scratch: exact call order and size match, but frame is 0x44 vs 0x48 and register/local scheduling still differs.
+#include <string.h>
+#include <windows.h>
 
 struct DrawSystem { char gap_00[8]; void* Pal; };
 struct GameBaseInner { char gap_00[0x48]; DrawSystem* draw_system; };
@@ -143,14 +137,14 @@ void TMessagePanel::draw() {
         if (dc != 0) {
             SelectClipRgn(this->render_area->hdc, this->clip_rgn);
             old_font = SelectObject(this->render_area->hdc, this->font);
-            if (this->index_color == 0) {
-                font_rgb = this->font_color1;
-                back_rgb = this->font_color2;
-            } else {
+            if (this->index_color != 0) {
                 GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &p);
                 font_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
                 GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &p);
                 back_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
+            } else {
+                font_rgb = this->font_color1;
+                back_rgb = this->font_color2;
             }
 
             if (this->message_type == 2) {
@@ -162,11 +156,10 @@ void TMessagePanel::draw() {
 
             x = this->draw_left;
             y = this->draw_top;
-            wid = this->pnl_wid + x - 1;
-            hgt = this->pnl_hgt + y - 1;
+            wid = this->pnl_wid - 2;
+            hgt = this->pnl_hgt - 2;
 
-            len = 0;
-            while (msg[len] != 0) ++len;
+            len = strlen(msg);
             GetTextExtentPoint32A(this->render_area->hdc, msg, len, &ts);
 
             unsigned int flags;
@@ -175,8 +168,7 @@ void TMessagePanel::draw() {
             } else if (this->message_type == 5) {
                 flags = 0x22;
             } else {
-                len = 0;
-                while (msg[len] != 0) ++len;
+                len = strlen(msg);
                 GetTextExtentPoint32A(this->render_area->hdc, msg, len, &ts);
                 flags = (this->word_wrap == 0 || ts.cx <= this->pnl_wid - 2) ? 0x20 : 0x10;
                 if (this->horz_just == 4) flags |= 1;
@@ -185,6 +177,8 @@ void TMessagePanel::draw() {
                 else if (this->vert_just == 1) flags |= 8;
             }
 
+            wid = wid + x + 1;
+            hgt = hgt + y + 1;
             SetTextColor(this->render_area->hdc, back_rgb);
             SetRect(&rect, x, y, wid - 2, hgt - 2);
             DrawTextA(this->render_area->hdc, msg, -1, &rect, flags);

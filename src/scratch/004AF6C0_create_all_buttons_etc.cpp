@@ -7,9 +7,11 @@
 // - Direct scenario-array cursors and the one-element options-button loop recover the
 //   original frame, size, and early block layout.  The Diplomacy player loop uses i=0
 //   with i+1 because the original reloads that display value from a zero-based counter.
-// - Best validation is 9090/9090 bytes, 358/358 calls, 95.05% exact blocks, and
-//   99.52% shape.  Remaining drift is register/stack scheduling around group-active
-//   locals, indirect relocations, and a one-byte epilogue displacement.
+// - Best validation is 9090/9090 bytes, 358/358 calls, 96.08% exact blocks, and
+//   99.68% shape. Remaining drift is register/stack scheduling around later locals,
+//   indirect relocations, and a one-byte epilogue displacement.
+// - Natural four-panel group ordering (ptr[0..3]) replaces split ptr/str4 storage;
+//   it recovers the +13DA block and improves the diagnostic diff by 5 bytes.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
 
 #include <stdio.h>
@@ -461,11 +463,11 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     OK(this->create_edit(this->bottom_panel, &this->victory_condition_artifacts, CSTR(0x580460), 2, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_artifacts, 0x770D, -1);
     OK(this->create_edit(this->bottom_panel, &this->victory_condition_discoveries, CSTR(0x580460), 2, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_discoveries, 0x770E, -1);
     OK(this->create_edit(this->bottom_panel, &this->victory_condition_gold, CSTR(0x580460), 5, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_gold, 0x770F, -1);
-    ptr[1] = this->victory_condition_explore;
-    ptr[2] = this->victory_condition_ruins;
-    ptr[3] = this->victory_condition_artifacts;
-    *(TPanel**)&str4[0] = this->victory_condition_discoveries;
-    ((TRIBE_Screen_Sed_Vtbl*)this)->set_group_active(&ptr[1], 4);
+    ptr[0] = this->victory_condition_explore;
+    ptr[1] = this->victory_condition_ruins;
+    ptr[2] = this->victory_condition_artifacts;
+    ptr[3] = this->victory_condition_discoveries;
+    ((TRIBE_Screen_Sed_Vtbl*)this)->set_group_active(ptr, 4);
 
     OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[0], 0x10EC));
     OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[1], 0x10E1));

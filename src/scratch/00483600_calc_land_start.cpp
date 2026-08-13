@@ -16,9 +16,11 @@
 // lost block coverage, so it was restored to the cleaner 1059-byte candidate.
 // try 16: named map-range and register-qualified radius probes were codegen
 // duplicates; no further source axis was productive within this assignment.
-// final: restored the best clean typed candidate; calls are exact (16/16), the
-// frame is exact (0x30), and remaining drift is structural/register/local-home
-// placement beginning at the saved-this/radius prologue.
+// try 17: changed the retry state from int to typed bool; the packet's byte
+// parameter-home writes became a 0x30-frame, 0-byte-size candidate and cut
+// positional drift from 970 to 575 bytes while preserving all 16 calls.
+// current: retain the bool candidate; calls and frame are exact, while the
+// remaining drift is block shape and register/local-home placement.
 
 #include <math.h>
 
@@ -98,7 +100,7 @@ void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int cou
     int j;
     int x;
     int y;
-    int retry;
+    bool retry;
     int two;
     float bound;
     float bound_square;

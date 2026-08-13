@@ -18,6 +18,10 @@
 // distinct group temporaries preserved all 13 ordered calls but expanded the emitted switch-table/function boundary by 148 bytes.
 // parameter-home pointer reuse expanded the prologue/frame and was rolled back; a distinct-temp group switch kept calls ordered but expanded by 224 bytes; sparse group switches with a shared tmp still merged one contains/resize pair.
 // final pause: natural typed candidate remains 747 bytes (597 positional diff, 11/13 calls); guard order 8, 7, 0x20 recovered 13/13 calls only at 903 bytes, so the clean candidate remains best.
+// shardB6 probe: combined group-32 strategic predicate was codegen-neutral; rolled back.
+// shardB6 probe: explicit ManagedArray aliases improved block shape but stayed at 11 calls and diff 599; rolled back.
+// shardB6 probe: taiinfmd parameter-home overwrite split group calls but grew to 975 bytes and duplicated special growth; rolled back.
+// shardB6 probe: group-8 contains != 0 reached diff 587 and two contains calls, but a distinct resize spelling grew to 935 bytes; rolled back.
 
 typedef unsigned char uchar;
 

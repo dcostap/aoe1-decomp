@@ -20,6 +20,8 @@
 // duplicate; retained only as the cleaner phase-local source form.
 // probe 10: swapping semantic start-x/start-y local ownership regressed the
 // proven initialization homes; restored the probe-9 source.
+// current claim probe: a separate natural left-x temporary was codegen-
+// duplicate; restored the clean source.
 // Paused blocker: the typed ABI/layout, frame, saved-register set, and three
 // direct calls are exact, but VC5 still chooses the wrong centered-bound
 // register/reload topology and omits the oracle's case-0 stack stores and

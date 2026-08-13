@@ -4,6 +4,7 @@
 // 1: initial natural reconstruction from Ghidra body, typed local arrays and direct call surfaces.
 // 2: corrected world/player offsets, float constants, and direct victory/message call surfaces; call set aligned but body remained structurally broad.
 // 3: tried source loop/local-shape reductions and external float constants; no exact basin, frame/size still drift.
+// 4: replaced the raw volatile game-state guard with the named game_state field; emitted code was unchanged, so the natural form remains.
 // Budget end: left in scratch. Best raw check remains MISMATCH, 1694 rebuilt bytes vs 1653 original, frame 0x1A8 vs 0x1A4, 14 vs 16 calls (missing two virtual vslot+0x40 message calls), first mismatch at +0002. Remaining divergence is broad team-array loop/block scheduling, not a localized safe drift.
 
 class RGE_Victory_Conditions {
@@ -107,7 +108,7 @@ unsigned char TRIBE_World::check_game_state()
     int player_team[9];
     TRIBE_Player* team_player[9][9];
 
-    if (*(volatile unsigned char*)((char*)this + 0x1d) == 0) {
+    if (this->game_state == 0) {
         if (this->victory_type == 2 && this->countdown_victory != 0 &&
             this->countdown_clock >= DAT_00577578) {
             this->countdown_clock = this->countdown_clock - (this->delta_time + this->delta_time);

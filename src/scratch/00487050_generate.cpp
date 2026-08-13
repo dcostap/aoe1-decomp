@@ -17,6 +17,9 @@
 // - control-flow: reversing the inner bound to `shallows_num > j` emitted
 //   cmp eax,ebp / jle and widened the gap to 6 bytes; restored the canonical
 //   `j < shallows_num` form.
+// - control-flow: initializing typed inner index k before the j guard gave
+//   exact block shape but widened positional drift to 6 bytes; restored the
+//   clean source with k initialized inside the guarded loop.
 // - final: calls, layout, frame, CFG, and all 418 bytes of size align. Remaining
 //   drift is five scheduling bytes: mov edi,ebp before jge and cmp ebx,eax.
 

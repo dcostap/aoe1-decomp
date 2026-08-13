@@ -31,6 +31,10 @@
 // same-TU command_save donor both require the historical exception basin).
 // Main-agent audit restored canonical world/panel destructor ownership; emitted
 // code and the shared-cleanup blocker are unchanged.
+// shardE probe: explicit common done labels with goto, including all three
+// arms, remained the 313-byte duplicated-EH basin; restored natural source.
+// shardE probe: switch-shaped guards worsened to 330 bytes; named boolean
+// predicates worsened to 327 bytes; neither changed the shared-tail blocker.
 
 class TPanelSystem {
 public:

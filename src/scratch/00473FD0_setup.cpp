@@ -33,6 +33,8 @@
 // before button width, and the failure path still duplicates the EH epilogue.
 // left in scratch: exact ABI/call/layout reconstruction is substantially
 // improved but not exact; no accepted_drift for this broad prologue/CFG drift.
+// shardB6 probe: binding val_num to p14 followed the first word-load reading
+// the earlier short parameter, but it caused 816-byte drift and was rolled back.
 
 struct TDrawArea;
 class TPanel;

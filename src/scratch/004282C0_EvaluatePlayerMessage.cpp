@@ -18,6 +18,12 @@
 // behavior-first baseline: the current source supersedes the compact-label attempt with the exact sparse opcode set and named calls.
 // call-map baseline: all 24 original direct calls align by target and order; remaining drift is codegen structure, not a missing handler.
 // left in scratch: clean behavior reconstruction is complete; exact codegen was not tuned in this tranche.
+// try 13: model the kill-message lookup as one bounded natural index, resetting it only after an unsuccessful scan.
+// try 14: keep the kill identifier declaration after the diagnostic call, matching the original handler's evaluation order.
+// try 15: let the scan index carry the found player number, avoiding a second result local.
+// try 16: rolled back a named advancing pointer; it added 105 bytes and reduced shape similarity.
+// try 17: rolled back a shared success goto; it added 101 bytes and reduced shape similarity.
+// try 18: dispatch on the wire opcode relative to the first protocol message; no emitted change, so retain the clean sparse switch.
 
 struct TDebuggingLog { void Log(char*, ...); };
 extern TDebuggingLog* L;
@@ -155,31 +161,25 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1, unsigned in
         }
         break;
     case 0x4B: {
-        unsigned long dco_id = *(unsigned long*)(data + 4);
         L->Log(S(0x58160C), player, *(unsigned long*)data);
-        unsigned int found = 0;
+        unsigned long dco_id = *(unsigned long*)(data + 4);
+        unsigned int i = 0;
         if (dco_id != 0) {
-            unsigned int i = this->LowPlayerNumber;
-            unsigned int high = this->HighPlayerNumber;
-            if (i <= high) {
-                do {
-                    if (this->dcoID[i] == dco_id) {
-                        found = i;
-                        break;
-                    }
-                    ++i;
-                } while (i <= high);
-            }
+            i = this->LowPlayerNumber;
+            while (i <= this->HighPlayerNumber && this->dcoID[i] != dco_id)
+                ++i;
+            if (i > this->HighPlayerNumber)
+                i = 0;
         }
-        if (found != 0) {
-            if (this->PlayerStopTurn[found] == 0)
-                this->DropDeadPlayer(found, dco_id);
-            if (found == this->Me) {
+        if (i != 0) {
+            if (this->PlayerStopTurn[i] == 0)
+                this->DropDeadPlayer(i, dco_id);
+            if (i == this->Me) {
                 this->NotifyWindow(0x17AA);
                 return 1;
             }
-            if (this->PlayerStopTurn[found] == 0) {
-                this->NotifyWindowParam(0x17B3, found);
+            if (this->PlayerStopTurn[i] == 0) {
+                this->NotifyWindowParam(0x17B3, i);
                 return 1;
             }
         }

@@ -3,6 +3,14 @@
 // constructor initializes only tech_tree; the world field belongs to the other
 // constructor and remains untouched here. The target has no base or EH setup.
 // Attempt log:
+// - Scoped name_buf to the positive tech-count branch. This moved the mismatch
+//   from 44 to 35 bytes and matched the original i/name homes at -0x1C/-0x80.
+// - Declared the shared inner j before tech_id in the record scope. Metrics stayed
+//   at 35 bytes, with no call or CFG change; retained this natural source form.
+// - Rejected function-scope j and tech_id. They shortened the function and broke
+//   structural parity.
+// Best current source: 35-byte drift remains in the tech_id/j stack homes and
+// later uses. Calls, frame size, size, and field ownership are aligned.
 // - Added the proven world field at +0x08. It does not affect this constructor.
 // - Tested function-scope and branch-scope loop declarations. Branch scope keeps
 //   the original block shape and frame.
@@ -53,24 +61,25 @@ public:
 
 TRIBE_Tech::TRIBE_Tech(char* filename)
 {
-    char name_buf[0x64];
     int file;
     unsigned char button_temp;
     int k;
     short used_read;
     short file_count;
     int len;
-
+    
     this->tech_tree = 0;
     file = (int)fopen(filename, "r");
     if (file != 0) {
         if (fscanf((void*)file, "%d %d", &this->tech_tree_num, &file_count) != -1) {
             if (this->tech_tree_num > 0) {
+                char name_buf[0x64];
                 short i;
                 this->tech_tree = (Tech_Entry*)calloc(0x3c, this->tech_tree_num);
                 for (i = 0; i < file_count; i++) {
+                    short j;
                     short tech_id;
-
+                    
                     fscanf((void*)file, "%hd", &tech_id);
                     fscanf((void*)file, "%s %hd %hd %hd %hd %hd %hd %hd",
                         name_buf,
@@ -90,18 +99,15 @@ TRIBE_Tech::TRIBE_Tech(char* filename)
                     }
                     this->tech_tree[tech_id].name = 0;
                     getstring(&this->tech_tree[tech_id].name, name_buf);
-                    {
-                        short j;
-                        for (j = 0; j < 4; j++) {
-                            fscanf((void*)file, "%hd", &this->tech_tree[tech_id].pre_reqs[j]);
-                        }
-                        for (j = 0; j < 3; j++) {
-                            fscanf((void*)file, "%hd %hd %hd",
-                                &this->tech_tree[tech_id].attribute[j],
-                                &this->tech_tree[tech_id].attribute_cost[j],
-                                &used_read);
-                            this->tech_tree[tech_id].attribute_used[j] = (unsigned char)used_read;
-                        }
+                    for (j = 0; j < 4; j++) {
+                        fscanf((void*)file, "%hd", &this->tech_tree[tech_id].pre_reqs[j]);
+                    }
+                    for (j = 0; j < 3; j++) {
+                        fscanf((void*)file, "%hd %hd %hd",
+                            &this->tech_tree[tech_id].attribute[j],
+                            &this->tech_tree[tech_id].attribute_cost[j],
+                            &used_read);
+                        this->tech_tree[tech_id].attribute_used[j] = (unsigned char)used_read;
                     }
                     fscanf((void*)file, "%hd %hd %ld %ld %ld",
                         &this->tech_tree[tech_id].string_id,

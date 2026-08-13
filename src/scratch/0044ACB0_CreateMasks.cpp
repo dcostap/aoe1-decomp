@@ -11,6 +11,10 @@
 //   set, mask values, and most local-store topology.  Remaining drift is the
 //   VC5 scheduling of late zero/interior stores and the Mask_2x2 copy hunk;
 //   best retained source is the direct typed dword-copy form below.
+// - Tried natural typed explicit assignments in the fractal donor's emitted
+//   stack order with an early Mask_2x2 capture; size moved 34 bytes closer but
+//   the first hunk moved earlier and the strict diff grew from 370 to 415.
+//   Restored the aggregate initializer source.
 
 void* __cdecl operator_new(unsigned int size);
 

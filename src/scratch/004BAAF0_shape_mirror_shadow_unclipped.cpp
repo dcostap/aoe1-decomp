@@ -13,6 +13,8 @@
 // - Focused variant lab (144 variants; count types/update spellings; size and call-set gated) found no exact. Best group was odd-long/even-uchar, 193 positional / 90 edit bytes, but it retained the same early row-home mismatch and was not adopted.
 // - Direct mutation of y for the even shadow run improved shape to 83.49% with the same 188 strict bytes but changed register coloring and table-load order; restored clean source.
 // - Final retained state: natural typed RLE decoder, 267-byte output, one aligned AlignedWidth call, 188 strict differing bytes (70.4120%), first mismatch at 004BAB1E. Paused: remaining gap is VC5 local-home/block scheduling, not unresolved behavior or call ABI.
+// - Fresh claim: moving the copy-count decrement into the do-while condition preserved the original DEC-flag loop and reduced the natural candidate to 267B/2 strict bytes.
+// - Explicit table-plus-index, typed index, table pointee, array-parameter, alias, and reversed pointer-index spellings all emitted the same two SIB-byte mismatch; no source-shape lead remains.
 //
 // sa-78979d2a-mshad probes (2026-08-09):
 // - Normalized the living source away from the prior goto/parameter-alias
@@ -134,9 +136,8 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
                             unsigned int count = c;
                             do {
                                 --d;
-                                --count;
                                 *d = table[*d];
-                            } while (count != 0);
+                            } while (--count);
                         }
                         src += c;
                     }
@@ -149,9 +150,8 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y,
                             unsigned int count = c;
                             do {
                                 --d;
-                                --count;
                                 *d = table[*d];
-                            } while (count != 0);
+                            } while (--count);
                         }
                         src++;
                     }

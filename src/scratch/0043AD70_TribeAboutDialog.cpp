@@ -23,6 +23,8 @@
 // P11: moved the natural background null initialization after credits, close,
 //      and circle-picture initialization to match the ordered member stores;
 //      diff improved 782 -> 710 bytes and exact-block coverage 74.50% -> 85.81%.
+// P12: tested a named picture-y local before setup as a natural typed source
+//      shape; VC5 emitted identical code, so the inline expression remains.
 // Left in scratch after the prior bounded session: canonical source is retained.
 // The remaining
 // hard blocker is VC5 emitting __chkstk where the original names __alloca_probe;

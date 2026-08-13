@@ -11,6 +11,11 @@
 //   this is source-control evidence, not a behavior change.
 // - Kept the cached base-game/master aliases after direct-member and outline
 //   cache probes regressed the emitted basin.
+// - Tried a typed geometry reorder: initialize map before master, read
+//   outline_type directly, and reload master fields in the health path. The
+//   frame fell to 0x44 and positional diff grew to 1275; restored the clean
+//   source. The first hunk still points to local-home lifetime and geometry
+//   temporary layout, not a call or CFG gap.
 // - Paused: current code is 1345 vs 1382 bytes, frame 0x48 vs 0x54, 100%
 //   ordered-call alignment, 70.45% shape, and 1168 positional diff bytes.
 //   Remaining structural lead is original local-home/register allocation and

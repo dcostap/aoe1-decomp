@@ -22,6 +22,13 @@
 //   OrderEvent; corrected the same-TU owner return surface. No bytes changed.
 // - Expanded the local class to the proven UnitAIModule field layout. All
 //   eight ordered calls and the 277-byte mismatch stayed unchanged.
+// - Fresh shardE baseline reconfirmed the same 306-byte source and 8-call
+//   surface. A volatile state byte, an inline identity helper around p2, and
+//   a branch-local p10 copy all emitted the same code. A size-optimization
+//   pragma changed the basin to 297 bytes and was rolled back.
+// - Restored the canonical source. The remaining evidence-backed blocker is
+//   VC5's entry push edi versus the oracle's branch-local push edi; ABI,
+//   layout, ordered calls, and all later blocks remain aligned.
 // - Best canonical source retained: positive state guard, direct p2 use, typed
 //   object/member ownership, real virtual calls, and standard FILE/fprintf ABI.
 

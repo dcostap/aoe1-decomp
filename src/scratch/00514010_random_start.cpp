@@ -27,6 +27,16 @@
 // - Moving the tries < 5000 limit to the outer retry guard and keeping
 //   check_placement as the natural break gate removed the duplicated virtual
 //   call site: ordered calls are now 32/32 aligned, with a 1294-byte rebuild.
+// - Direct integer delta expressions followed by combined float adjustments
+//   restore the original four-call evaluation order and stack cleanup.
+// - The inner bounds intentionally use map height for x and map width for y;
+//   these are the executable's observed field accesses, including its swap.
+// - The list fallback intentionally loads list->object without a null guard,
+//   matching both original fallback blocks and their proven object lifetime.
+// - The fallback map-location call uses the field order that reproduces the
+//   original +0x3c then +0x38 conversion sequence; set_view_loc stays natural.
+// - Removing the redundant outer player-count guard lets the player loop own
+//   its bound and recovers the original single compare and exact 1268-byte body.
 
 typedef unsigned char uchar;
 
@@ -246,20 +256,24 @@ void TRIBE_Player::random_start()
             town_center_object->build(10000.0f);
 
             int count = 3;
+            int x_delta;
+            int y_delta;
+            float x;
+            float y;
             do {
                 uchar bad = 1;
                 do {
-                    int r646 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x646);
-                    int r647 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x647);
-                    int x_delta = (r646 * 6) / 0x7fff - 3;
-                    int y_delta = (r647 * 6) / 0x7fff - 3;
-                    int r648 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x648);
-                    float x = (float)x_delta - (float)r648 * DAT_0057686c + w1;
-                    int r649 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x649);
-                    float y = (float)y_delta - (float)r649 * DAT_0057686c + h;
+                    x_delta = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x646) * 6) /
+                              0x7fff - 3;
+                    y_delta = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x647) * 6) /
+                              0x7fff - 3;
+                    x = (float)x_delta -
+                        (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x648) * DAT_0057686c + w1;
+                    y = (float)y_delta -
+                        (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x649) * DAT_0057686c + h;
 
-                    if (x >= DAT_00576828 && x < (float)this->world->map->map_width &&
-                        y >= DAT_00576828 && y < (float)this->world->map->map_height &&
+                    if (x >= DAT_00576828 && x < (float)this->world->map->map_height &&
+                        y >= DAT_00576828 && y < (float)this->world->map->map_width &&
                         this->master_objects[0x53]->check_placement(
                             this, y, x, 0, 0, 1, 1, 1, 1, 1) == 0) {
                         this->master_objects[0x53]->make_new_obj(this, y, x, 0);
@@ -273,24 +287,21 @@ void TRIBE_Player::random_start()
         RGE_Static_Object* town_center_object =
             this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
         if (town_center_object == 0) {
-            RGE_Object_Node* first = this->objects->list;
-            town_center_object = first ? first->object : 0;
+            town_center_object = this->objects->list->object;
         }
-        this->set_map_loc((short)town_center_object->world_y,
-                          (short)town_center_object->world_x);
+        this->set_map_loc((short)town_center_object->world_x,
+                          (short)town_center_object->world_y);
         this->set_view_loc(town_center_object->world_x,
                            town_center_object->world_y);
     }
 
-    if ((rge_base_game->multiplayerGame() || rge_base_game->randomGame()) &&
-        this->world->player_num > 1) {
+    if (rge_base_game->multiplayerGame() || rge_base_game->randomGame()) {
         for (int i = 1; i < this->world->player_num; ++i) {
             if (this->isAlly(i) && i != this->id) {
                 RGE_Static_Object* town_center_object =
                     this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
                 if (town_center_object == 0) {
-                    RGE_Object_Node* first = this->objects->list;
-                    town_center_object = first ? first->object : 0;
+                    town_center_object = this->objects->list->object;
                 }
                 if (town_center_object != 0) {
                     town_center_object->vd8(this->world->players[i], 0, -1);

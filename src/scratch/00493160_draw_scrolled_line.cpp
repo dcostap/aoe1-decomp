@@ -22,6 +22,14 @@
 // - using RECT.left as the computed x local worsened the frame and shape;
 //   the separate text_x local is restored. Primary-text declaration reorder
 //   was also codegen-neutral.
+// - a natural short or long line-number local was codegen-neutral; direct
+//   short parameter use remains the clean source form.
+// - adding the separate binary-looking secondary length local changed only
+//   edit alignment and was rolled back as duplicate emitted code.
+// - the RECT.left self-overlap form reached the original 692-byte size but
+//   worsened the positional diff to 656; it is a decompiler artifact here.
+// - the original still differs at structural stack coloring: it preserves a
+//   zero store and reuses incoming short-parameter homes for coordinates.
 
 #include <windows.h>
 #include <string.h>

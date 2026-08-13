@@ -16,6 +16,8 @@
 //   Move_To and state 6 new_sprite now use the typed helper.
 // - Placed state 6 before state 7 to retain the original emitted block order;
 //   ordered calls now align with no site gaps. One virtual-slot mismatch remains.
+// - Corrected the state-8 depleted-target branch to call set_target_obj(0),
+//   matching original vslot +0x54 at 004CF7D2; all calls now align.
 // - Validation: the source now matches the packet's state-to-block mapping;
 //   VC5 emitted the prior body unchanged because the jump table is relocated
 //   outside the compared function bytes. Leave register tuning for later.
@@ -338,7 +340,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
         }
         if (this->target_obj2 != 0 &&
             this->target_obj2->attribute_amount_held <= hunt_state_zero) {
-            this->set_target_obj2(0);
+            this->set_target_obj(0);
         }
         this->set_state(3);
         return;

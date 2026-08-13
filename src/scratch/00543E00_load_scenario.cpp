@@ -16,6 +16,19 @@
 //   did not inhibit VC5 tail merging and were removed.  The literal Ghidra
 //   nested source shape was retained only where it explains the observed
 //   repeated tails; compiler steering is not retained beyond that.
+// - Changed the player-info ABI from reference syntax to the exact donor's
+//   pointer syntax; VC5 emitted identical bytes, so no register lead remains.
+// - Rewrote the allocation failure as an explicit close guard; VC5 emitted
+//   identical bytes, confirming the resource lifetime was already modeled.
+// - Corrected the late 1.10 path with nested negative guards.  This adds the
+//   proven 1.10 success behavior, but VC5 places the close block before the
+//   shared load-110 tail: 657 bytes, 147 strict bytes, 10 returns.
+// - This claim's successful-allocation guard probe emitted no change.
+// - Grouping the v1.09/v1.11 transfer and letting v1.10 fall through also
+//   emitted no change.  The current source keeps both natural forms and the
+//   proven v1.10 success behavior.
+// - Remaining drift is structural block placement and the initial parameter
+//   register coloring; the historic best is 145 strict bytes.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl rge_open(char*, int);
@@ -83,22 +96,21 @@ public:
     virtual void scenario_make_map(int);
     virtual unsigned char load_scenario(char*, RGE_Player_Info*);
     virtual unsigned char load_scenario(RGE_Player_Info*);
-    virtual void load_101(int, RGE_Player_Info&);
-    virtual void load_102(int, RGE_Player_Info&);
-    virtual void load_104(int, RGE_Player_Info&);
-    virtual void load_105(int, RGE_Player_Info&);
-    virtual void load_106(int, RGE_Player_Info&);
-    virtual void load_107(int, RGE_Player_Info&);
-    virtual void load_108(int, RGE_Player_Info&);
-    virtual void load_110(int, RGE_Player_Info&);
+    virtual void load_101(int, RGE_Player_Info*);
+    virtual void load_102(int, RGE_Player_Info*);
+    virtual void load_104(int, RGE_Player_Info*);
+    virtual void load_105(int, RGE_Player_Info*);
+    virtual void load_106(int, RGE_Player_Info*);
+    virtual void load_107(int, RGE_Player_Info*);
+    virtual void load_108(int, RGE_Player_Info*);
+    virtual void load_110(int, RGE_Player_Info*);
     virtual void logStatus(void*, int);
     virtual ~RGE_Game_World();
-    virtual void setup_player_colors(RGE_Player_Info&);
+    virtual void setup_player_colors(RGE_Player_Info*);
     virtual void setup_player_colors();
-    unsigned char load_scenario(char*, RGE_Player_Info&);
 };
 
-unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
+unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info* info)
 {
     char scenario_name[304];
     int version;
@@ -156,15 +168,17 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
                     this->setup_player_colors(info);
                     return 1;
                 }
-                if (*(int*)scenario_name == version_109) {
-                    goto version110;
-                }
-                if (*(int*)scenario_name == version_111) {
+                if (*(int*)scenario_name == version_109 ||
+                    *(int*)scenario_name == version_111) {
                     goto version110;
                 }
                 if (*(int*)scenario_name != version_110) {
                     goto close_failed;
                 }
+version110:
+                this->load_110(file, info);
+                this->setup_player_colors(info);
+                return 1;
             }
 close_failed:
             rge_close(file);
@@ -174,11 +188,6 @@ close_failed:
 
 version2:
     this->load_102(file, info);
-    this->setup_player_colors(info);
-    return 1;
-
-version110:
-    this->load_110(file, info);
     this->setup_player_colors(info);
     return 1;
 }

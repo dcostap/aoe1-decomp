@@ -24,6 +24,9 @@
 // - Best clean reconstruction: exact frame/size/call set, remaining drift is
 //   VC5 local/register/block scheduling around the header and early returns;
 //   no inline asm or other codegen-only scaffold is retained.
+// - Tried named width and height locals for all header and row uses; the
+//   natural source changed the frame to 0x880 and lost exact blocks. Rolled
+//   back to the prior clean Drawarea form.
 
 #include <windows.h>
 #include <stdio.h>

@@ -13,7 +13,9 @@
 //   hunk and a later field/induction schedule gap.  A raw aggregate-zero alias
 //   reproduced one prologue store diagnostically (510-byte diff) but is not kept
 //   in the living source because it is compiler-steering rather than canonical
-//   source.  Pausing after the ten-hypothesis budget.
+//   source.  The prior worker paused after the ten-hypothesis budget.
+// - Rechecked the first result hunk: the returned max-distance field is also
+//   initialized to zero before the scan.
 
 typedef unsigned char uchar;
 
@@ -102,6 +104,7 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int obj
 
     c1 = 0;
     c2 = 0;
+    rVal.id = 0;
     rVal.type = 0;
     rVal.group = 0;
     rVal.hitPoints = 0;

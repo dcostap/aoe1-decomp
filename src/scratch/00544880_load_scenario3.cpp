@@ -16,6 +16,17 @@
 // 12: corrected the fallback comparison to `*map <= -1`; this matched the
 //     original jle form and restored all 25 direct-call relocation identities.
 // 13: final validation retained the 0x64 stack frame and all 29 ordered calls.
+// 14: matched the World.cpp resource donor's function-scope buffer; emitted code
+//     was unchanged, so the simpler block-scoped allocation remains canonical.
+// 15: removed the redundant scenario-player bound from the final cleanup loop;
+//     VC5 emitted the same CFG because the early return already proves the bound.
+// 16: grouped the next-object header and trailing read buffer in a typed record;
+//     emitted code was unchanged, so separate named stream values remain cleaner.
+// 17: read the first scenario-player byte through player_id_hash[8]; shape moved
+//     only +0.34 points with no positional gain, so this was not retained.
+// 18: used distinct typed player_id and master_player_id byte locals, as suggested
+//     by the scenario header read pattern. Frame moved to 0x60, diff to 82, and
+//     shape to 84.01%; this is the retained best source for this session.
 // Main-agent audit removed compensating stack aliases. The first four-byte
 // value owns next_object_id. Object records use x/y/z/id/master/state/angle.
 
@@ -96,6 +107,7 @@ public:
 
 void RGE_Game_World::load_scenario3(int file, RGE_Player_Info& info)
 {
+    uchar player_id;
     uchar master_player_id;
     long scenario_player_num;
     long next_object_id;
@@ -150,8 +162,8 @@ void RGE_Game_World::load_scenario3(int file, RGE_Player_Info& info)
     i = 0;
     if (scenario_player_num > 0) {
         do {
+            rge_read(file, &player_id, 1);
             rge_read(file, &master_player_id, 1);
-            rge_read(file, &obj_state, 1);
             i++;
         } while (i < scenario_player_num);
     }
@@ -211,6 +223,6 @@ void RGE_Game_World::load_scenario3(int file, RGE_Player_Info& info)
                 this->players[player_id_hash[i]]->loadAIInformation(this->scenario->Get_BuildList(idx,1), this->scenario->Get_CityPlan(idx,1), this->scenario->Get_player_AI(idx,1), this->scenario->GetPlayerPosture(idx), -1);
             }
             i++;
-        } while (i < this->player_num && i < scenario_player_num);
+        } while (i < this->player_num);
     }
 }

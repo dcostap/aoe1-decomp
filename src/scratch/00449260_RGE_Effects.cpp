@@ -22,6 +22,9 @@
 // - Tested the guarded infinite-loop form with a post-increment termination
 //   test (probe 012); it added a duplicate fscanf, grew to 526 bytes, and was
 //   restored.  The top-tested loop remains the best CFG.
+// - Tried a natural early return for fopen failure to test conditional ESI
+//   lifetime; it removed the late fclose call and worsened to 451 bytes, so it
+//   was restored.
 // - Remaining localized codegen gap: VC5 saves ESI in the prologue instead of
 //   conditionally at the fopen-success edge, and loads effect_list_num into DX
 //   before the inner guard where the oracle compares the field directly.  The

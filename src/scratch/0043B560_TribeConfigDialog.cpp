@@ -18,6 +18,12 @@
 // - behavior: title uses font/style argument 1, not the ordinary 0x0A font.
 // - control-flow: speed and size label loops retain switch-shaped dispatch;
 //   the bounded speed switch variant without a default was diagnostic only.
+// - control-flow: reordered the speed-label switch cases to 0, 1, 2 with a
+//   shared default; this matched the first sub/dec dispatch hunk and improved
+//   the positional diff to 2115, but changed a later call boundary.
+// - control-flow: tested an ordered if/else reconstruction from the first
+//   hunk; VC5 emitted test/jne instead of the original sub/dec chain. Restored
+//   the natural switch reconstruction because the binary supports its shape.
 // - abi: set_radio_info takes a TPanel* group; the game pointer is the proven
 //   absolute 0x62C574 global.  Named music/sound locals preserve loaded
 //   subsystem pointers across their null tests.
@@ -258,13 +264,15 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
 
     for (i = 0; i < 3; ++i) {
         switch (i) {
+        case 0:
+            string_id = 0x24D8;
+            break;
         case 1:
             string_id = 0x24D9;
             break;
         case 2:
             string_id = 0x24DA;
             break;
-        case 0:
         default:
             string_id = 0x24D8;
             break;

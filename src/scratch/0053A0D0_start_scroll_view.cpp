@@ -18,6 +18,10 @@
 // 10: reversed conversion order: 437 B, 338 strict diff; exact-codegen stage.
 // Final: restored the clean natural source. Remaining lead is result-home and
 // action-register scheduling. Diagnostic volatile forms are not retained.
+// 11: use one saved action value for dispatch and scroll state; codegen was
+// unchanged at 397 B / 418 strict-diff bytes, so the natural baseline remains.
+// 12: direct final return instead of a synthetic result local; codegen was
+// unchanged at 397 B / 418 strict-diff bytes, so the baseline was restored.
 
 struct RGE_Static_Object;
 struct RGE_Tile;

@@ -15,6 +15,9 @@
 //   assignment-in-condition, long ID types, and parameter reuse. The
 //   parameter-reuse form moved two swaps but added prologue drift. The
 //   natural baseline remained best. No ABI, call-set, or layout blocker.
+// - Mirrored the adjacent taskResearch source order: declare objectID at
+//   entry, assign it before the ManagedIntArray alias. This restored all four
+//   local-home bytes and produced MATCH (448/448). Default flags; no asm.
 
 struct ManagedIntArray {
     int* value;
@@ -167,6 +170,8 @@ public:
 
 int TribeTacticalAIModule::taskTrain(BuildItem* item)
 {
+    int objectID;
+
     if (item == 0) {
         this->logCommonHistory((char*)0x00588514);
         return 0;
@@ -185,8 +190,8 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
     item->setInProgress(1);
     item->setBuilt(0);
 
+    objectID = object->id;
     ManagedIntArray& arr = this->unitsTaskedThisUpdate;
-    int objectID = object->id;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
         if (i >= arr.maximumSizeValue)

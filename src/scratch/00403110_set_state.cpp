@@ -30,6 +30,8 @@
 //   618 positional-diff bytes.  Remaining structural gap is two missing
 //   duplicated find_by_master_ids/set_target_obj2 sites plus one call-site
 //   relocation alignment; no further blind variants remain in this claim.
+// - Fresh ACT_GATH TU switch dispatch probe kept one merged lookup call and
+//   lowered shape/resync similarity; restored the clean typed reconstruction.
 
 #include <stdlib.h>
 

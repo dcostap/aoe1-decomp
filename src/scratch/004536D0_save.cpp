@@ -9,6 +9,8 @@
 // 7: tried naming a `self` local for the object pointer; no improvement (still exact size, 73.3865% positional / 62.6541% edit).
 // 8: main remaining gap is register/prologue topology and serialization source shape: original pushes EBX then immediately keeps `this` in EBX, delays ESI/EDI saves until after early tests, uses ECX=-1 for memset-like local initialization and repne scasb; rebuilt saves EBP/ESI/EDI up front and uses EDI/ECX differently. Not accepted_drift-safe.
 // 9: replaced raw offsets and fake SpriteLike/SoundLike types with the canonical typed RGE_Master_Static_Object owner, virtual save slot, and typed 0x8 damage records; short selector locals, strlen, and positive do/while damage traversal preserve the observed topology. Current check: 219 strict-diff bytes, 99.40% shape, 68 ordered calls, and a 4-byte size gap; retained as the natural typed candidate.
+// 10: changed the outer damage-count guard to typed truth testing; this retained the second positive guard, reached original size, and reduced the diagnostic diff to 11 bytes. Rolled back because it changed the observed outer jbe to je and did not fix the attribute-loop pointer order.
+// 11: tried an unsigned-short positive inner guard with the original outer guard; VC5 returned to the clean 219-byte codegen. Restored the clean double positive guard.
 
 #include <string.h>
 

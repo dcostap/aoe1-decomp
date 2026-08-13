@@ -23,6 +23,9 @@
 // - Kept each primary normal TextOut in its typed style case, following the
 //   same-TU scrolling-line donor.  This restored all 23 ordered calls and the
 //   634-byte size; the remaining gap is frame/register topology.
+// - Removed the first text length initializer because text_len is read only
+//   after the non-null text branch.  This worsened the diff to 602 bytes and
+//   reduced shape similarity; restored the initialized local.
 // - Left in scratch: original frame 0x20 versus rebuilt 0x1C and early
 //   register/local topology drift.
 

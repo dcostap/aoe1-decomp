@@ -18,6 +18,10 @@
 // 13: Typed SDK global/vtable declarations worsened register and stack topology;
 //     reverted. Reusing the ignored second Lock output pair shrank the frame to
 //     0x20; reverted. The living source keeps separate period C output locals.
+// 14: ABI evidence and original stack homes show a third stream parameter: the
+//     second post-buffer virtual call reads entry arg +0x0C, not param_2.
+// 15: ABI lead improves 828B to 830B and aligns the third argument's call;
+//     no further structural source lead is supported by the current packet.
 // PAUSED: remaining drift is a broad VC5 ABI/layout basin (EBX zero vs EDI,
 //     EBP one/save, descriptor/output stack homes, and Lock argument scheduling),
 //     not a localized behavior-equivalent difference; no accepted_drift proposal.
@@ -65,7 +69,7 @@ struct DSBUFFERDESC_MINE {
     void* lpwfxFormat;
 };
 
-int ds_stream_file(char* filename, int param_2)
+int ds_stream_file(char* filename, int param_2, long param_3)
 {
     unsigned int dwLen1;
     unsigned char* lpWrite1;
@@ -142,7 +146,7 @@ int ds_stream_file(char* filename, int param_2)
     SendMessageA(_main_wnd, 0x502, 0, 0);
 
     (*(int (__stdcall **)(unsigned int, int))(*(unsigned int*)_lpDSBStreamBuffer + 0x34))(_lpDSBStreamBuffer, 0);
-    (*(int (__stdcall **)(unsigned int, int))(*(unsigned int*)_lpDSBStreamBuffer + 0x3C))(_lpDSBStreamBuffer, param_2);
+    (*(int (__stdcall **)(unsigned int, int))(*(unsigned int*)_lpDSBStreamBuffer + 0x3C))(_lpDSBStreamBuffer, param_3);
     (*(int (__stdcall **)(unsigned int, int, int, int))(*(unsigned int*)_lpDSBStreamBuffer + 0x30))(_lpDSBStreamBuffer, 0, 0, 1);
 
     if (timeBeginPeriod(0x32) != 0) {

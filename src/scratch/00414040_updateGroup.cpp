@@ -11,6 +11,21 @@
 // - Eight probes reached exact call-set parity, but the remaining gap is a
 //   broad VC5 frame and block-layout difference. No productive codegen lead
 //   remains in this assignment.
+// - Tried the period ManagedArray<int>::operator[] donor at both the first
+//   comparison and the later lookup. The repeated operator[] added one growth
+//   call pair and was rolled back.
+// - Kept operator[] only for the first comparison and phase-255 member read;
+//   direct value access remains after the separate resize call. This improved
+//   the structural check to 1714 differing bytes with exact call parity.
+// - Tried initializing the typed groupList sentinel before the phase-255 fill;
+//   the original zero store supports this group-layout hypothesis.
+// - Rolled back the sentinel initialization: it worsened the positional diff
+//   from 1714 to 1767 bytes and increased the rebuilt size by four bytes.
+// - This claim tested the combined outer play guard, array-pointer and loop-index
+//   spellings, and a repeated phase-command temporary. The best emitted code
+//   stayed at 1714 differing bytes and 42 aligned calls.
+// - Reversing the equivalent distance threshold improved resync similarity but
+//   worsened positional equality to 1762 bytes; restored the clean source.
 
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* block);
@@ -36,6 +51,24 @@ public:
     int maximumSizeValue;
 
     int resize(int newSize);
+
+    T& operator[](int index) {
+        if (index > this->maximumSizeValue - 1) {
+            int newSize = index + 1;
+            T* newValue = (T*)operator new(newSize * sizeof(T));
+            if (newValue != 0) {
+                for (int i = 0;
+                     i < this->maximumSizeValue && i < newSize;
+                     i++) {
+                    newValue[i] = this->value[i];
+                }
+                operator delete(this->value);
+                this->value = newValue;
+                this->maximumSizeValue = newSize;
+            }
+        }
+        return this->value[index];
+    }
 };
 
 class RGE_Game_World {
@@ -219,32 +252,13 @@ void UnitAIModule::updateGroup(unsigned long param_1)
                         goto foundTrigger;
                     }
 
-                    ManagedArray<int>* members = &object->groupMembers;
-                    if (members->maximumSizeValue - 1 < memberIndex) {
-                        int* values = (int*)operator new(memberIndex * 4 + 4);
-                        if (values != 0) {
-                            int copyIndex = 0;
-                            if (members->maximumSizeValue > 0) {
-                                do {
-                                    if (memberIndex + 1 <= copyIndex) {
-                                        break;
-                                    }
-                                    values[copyIndex] = members->value[copyIndex];
-                                    ++copyIndex;
-                                } while (copyIndex < members->maximumSizeValue);
-                            }
-                            operator delete(members->value);
-                            members->value = values;
-                            members->maximumSizeValue = memberIndex + 1;
-                        }
-                    }
-
                     object = this->objectValue;
-                    if (members->value[memberIndex] != object->id) {
+                    if (object->groupMembers[memberIndex] != object->id) {
                         if (object->groupMembers.maximumSizeValue - 1 < memberIndex) {
                             object->groupMembers.resize(memberIndex + 1);
                         }
-                        object = this->lookupObject(object->groupMembers.value[memberIndex]);
+                        object = this->lookupObject(
+                            object->groupMembers.value[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
                             UnitAIModule* memberAI = object->unitAI();
                             trigger = (AIPlayPhaseTrigger*)memberAI->find_unit(1, 0, 0);
@@ -281,28 +295,8 @@ foundTrigger:
             if (this->objectValue->groupMembers.numberValue > 0) {
                 trigger = (AIPlayPhaseTrigger*)(groupList + 1);
                 do {
-                    ManagedArray<int>* members = &this->objectValue->groupMembers;
-                    if (members->maximumSizeValue - 1 < deadCount) {
-                        int* values = (int*)operator new(deadCount * 4 + 4);
-                        if (values != 0) {
-                            int copyIndex = 0;
-                            if (members->maximumSizeValue > 0) {
-                                do {
-                                    if (deadCount + 1 <= copyIndex) {
-                                        break;
-                                    }
-                                    values[copyIndex] = members->value[copyIndex];
-                                    ++copyIndex;
-                                } while (copyIndex < members->maximumSizeValue);
-                            }
-                            operator delete(members->value);
-                            members->value = values;
-                            members->maximumSizeValue = deadCount + 1;
-                        }
-                    }
-
                     RGE_Static_Object* member = this->lookupObject(
-                        members->value[deadCount]);
+                        this->objectValue->groupMembers[deadCount]);
                     if (member != 0) {
                         *(int*)trigger = member->id;
                         ++memberCount;

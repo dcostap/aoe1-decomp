@@ -10,6 +10,9 @@
 // - Remaining drift is the VC5 prologue/register/local-home basin and a few
 //   loop block spans; direct parameter-home handle reuse was tested and made
 //   the function 131 bytes larger, so it was rolled back.
+// - Natural first-read handle split (incoming file for the first read, then a
+//   local handle for later reads) moved the result farther to 1161 bytes, so
+//   it was rolled back.
 
 class RGE_Static_Object;
 class RGE_Master_Static_Object;

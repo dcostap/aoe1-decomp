@@ -14,8 +14,12 @@
 //   replaced by zeroIndex on the nontransparent path.
 // - Moved the binary-proven grow-branch memmove before compression dispatch; this
 //   restores the original ordered 21-call surface and improves the structural diff.
-// left in scratch: the current reconstruction is 942 differing bytes (55.49% shape,
-// 21/21 ordered calls, frame 0x124 vs 0x128, code size 959 vs 1017); remaining drift
+// - Replaced the initial bits-address ternary with the explicit BI_BITFIELDS branch
+//   used by the neighboring Dib.cpp donors; this improves the diff from 942 to 911.
+// - Typed SizeImage as the packet-proven unsigned DWORD; VC5 emitted the same code,
+//   so the source-backed type correction is retained without a metric change.
+// left in scratch: the current reconstruction is 911 differing bytes (56.68% shape,
+// 21/21 ordered calls, frame 0x124 vs 0x128, code size 963 vs 1017); remaining drift
 // is structural (local-home/lifetime and resize/dispatch block layout), not an
 // established behavior gap.
 
@@ -49,7 +53,8 @@ void __cdecl xlatClut8(BYTE*, DWORD, BYTE*);
 void __cdecl xlatClut4(BYTE*, DWORD, BYTE*);
 
 void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero) {
-    int nDibColors=0, nPalColors=0, sizeImage=0;
+    int nDibColors=0, nPalColors=0;
+    DWORD sizeImage=0;
     BYTE zeroIndex=0, hitEnd=0;
     BYTE transIndex=0;
     PALETTEENTRY pe;
@@ -64,7 +69,10 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
     if (bih->biClrUsed == 0 && bih->biBitCount <= 8) nPalColors = 1 << bih->biBitCount; else nPalColors = bih->biClrUsed;
     sizeImage = bih->biSizeImage;
     if (!sizeImage) sizeImage = (((bih->biWidth * bih->biBitCount + 31) >> 3) & 0x1ffffffc) * bih->biHeight;
-    bits = (BYTE*)bih + bih->biSize + (bih->biCompression == 3 ? 12 : nPalColors * 4);
+    if (bih->biCompression == 3)
+        bits = (BYTE*)bih + bih->biSize + 12;
+    else
+        bits = (BYTE*)bih + bih->biSize + nPalColors * 4;
 
     if (transparent) {
         if (!zero) transIndex = 0; else transIndex = bits[((bih->biWidth + 3) & ~3) * (bih->biHeight - 1)];

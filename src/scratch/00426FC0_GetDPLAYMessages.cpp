@@ -12,6 +12,8 @@
 // were worse. Remaining drift is frame/local-home and COM argument scheduling.
 // probe: use signed loop indices with unsigned-short bounds; original scan branches
 // use signed JG after zero-extension, unlike the current unsigned JA branches.
+// follow-up: removing the pre-guard dcoFromID zero-init shrank code by 4 bytes,
+// but positional diff worsened from 792 to 807; rolled back to the clean source.
 // FLAGS: config/flags/00426FC0_GetDPLAYMessages.rsp (/nologo /c /O2 /Oy)
 // left in scratch: needs real Com_hand.cpp source/context to recover original prologue (global load before saves) and exact local stack topology.
 

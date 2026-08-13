@@ -18,6 +18,9 @@
 //   destination arms, following the exact Shape.cpp sibling topology.  This
 //   improved the structural basin to 1398 bytes, 1314 differing bytes, and
 //   59.66% shape; it remains a natural source-model lead, not codegen tuning.
+// try 9: used the exact Shape donor's direct member expression for orientation
+//   and width, removing the synthetic orientation local; this tests the first
+//   setup hunk without changing the typed clipped RLE phases.
 // left in scratch: canonical typed RLE/dither behavior is reconstructed, but
 //   VC5 still chooses a different early register/local-home basin (first
 //   mismatch is the prologue; 1344 strict bytes differ, 56.24% resync).
@@ -29,13 +32,12 @@ class TShape { public: uchar* shape; int load_type; int load_size; Shape_Header*
 
 uchar TShape::shape_dithered_clipped(TDrawArea* area, long x, long y, long clip_left, long clip_top, long clip_right, long clip_bottom, long p8, long p9)
 {
-    long orientation = area->Orien;
-    long width = area->AlignedWidth() * orientation;
+    long width = area->AlignedWidth() * area->Orien;
     Shape_Header* header = this->shape_header;
     uchar* src = (uchar*)(header + 1);
     long skip_rows;
     uchar* save_buffer;
-    if (orientation < 1)
+    if (area->Orien < 1)
         save_buffer = area->Bits + clip_left + (clip_top - area->Height + 1) * width;
     else
         save_buffer = area->Bits + clip_left + clip_top * width;

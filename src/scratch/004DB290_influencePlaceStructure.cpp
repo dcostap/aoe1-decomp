@@ -14,6 +14,11 @@
 // - Tried switch/receiver-temporary/register scheduling variants only as
 //   diagnostics; they did not close the strategic-number call gap and are not
 //   retained in this normalized source.
+// - Kept a block-scoped placement-2 result so VC5 emits the independent 0x57
+//   strategicNumber call; target call count now matches 55/55.
+// - Moved invalid-placement logging before zone/strategy dispatch; the call
+//   prefix improved to 25, then reordered availableLot before setupInfluenceMap
+//   to match the original branch layout (53 aligned calls, -2/+2 sites).
 
 #include <math.h>
 #include <stdlib.h>
@@ -399,6 +404,14 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
     placement = this->placementCode(x);
 
+    if (placement == -1) {
+        logCommonHistory(this,
+                         "Invalid influence placement type id (%d), bombing.",
+                         x);
+        state.active = 0;
+        return 0;
+    }
+
     if (item == 0 && state.active != 1) {
         placementObject->lookupZone(centerY, maxClearX);
     } else {
@@ -422,26 +435,20 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             centerPoint.x = this->md->tacticalAI.strategicNumber(0x56) *
                             placementRadius;
         } else if (placement == 2) {
+            int placementValue =
+                this->md->tacticalAI.strategicNumber(0x57);
             local_154 = 4;
-            centerPoint.x = this->md->tacticalAI.strategicNumber(0x57);
+            centerPoint.x = placementValue;
+        } else if (placement == 3 || placement == 4) {
+            local_154 = this->md->tacticalAI.strategicNumber(0x49);
+            centerPoint.x = this->md->tacticalAI.strategicNumber(0x4a);
         } else {
-            if (placement == 3 || placement == 4)
-                local_154 = this->md->tacticalAI.strategicNumber(0x49);
-            else
-                local_154 = 4;
+            local_154 = 4;
             centerPoint.x = this->md->tacticalAI.strategicNumber(0x4a);
         }
 
         coordinateObject->currentZone();
 
-    }
-
-    if (placement == -1) {
-        logCommonHistory(this,
-                         "Invalid influence placement type id (%d), bombing.",
-                         x);
-        state.active = 0;
-        return 0;
     }
 
     if (local_154 < centerPoint.x) {
@@ -461,11 +468,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         maxExclude.y = maxClear.x + local_154;
         this->mapBound(&maxExclude);
 
-        if (item == 0) {
-            if (state.active == 0)
-                this->setupInfluenceMap(placement, x, &centerPoint,
-                                        &min, &max);
-        } else if (state.active == 0) {
+        if (item != 0 && state.active == 0) {
             BuildingLot* lot = this->availableLot(x);
             if (lot != 0) {
                 if (placement == 4) {
@@ -492,6 +495,9 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                 return result;
             }
         }
+
+        if (item == 0 && state.active == 0)
+            this->setupInfluenceMap(placement, x, &centerPoint, &min, &max);
 
         if (state.active == 0) {
             int maxInfluence = this->md->tacticalAI.strategicNumber(0xa8);

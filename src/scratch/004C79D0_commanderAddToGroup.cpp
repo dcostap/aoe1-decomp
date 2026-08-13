@@ -22,6 +22,14 @@
 //   prologue or promoted EBP.  Restore the typed 26-entry source below.
 // - This bounded retry used 6 meaningful probes.  Calls and CFG behavior remain
 //   aligned; the remaining gap is VC5 local-slot and block scheduling drift.
+// - A named temp-base pointer carried through the final call promoted EBP into
+//   the parameter path and worsened the diff to 337 bytes; rolled back.
+// - A binary-backed local scratch aggregate with a spilled base field restored
+//   the 0x70 frame and 92.72% exact-block coverage, but added synthetic source
+//   structure and remained 310 bytes different; not retained.
+// - A named copied member value is natural and preserves the observed
+//   compare/store/reread order, but duplicates the direct typed codegen basin.
+// - Final pause: the clean typed ManagedArray source remains authoritative.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -94,8 +102,9 @@ int RGE_Static_Object::commanderAddToGroup(int id, float range)
     int i = 0;
     if (this->groupMembers.numberValue > 0) {
         do {
-            temp[i + 1] = this->groupMembers[i];
-            if (temp[i + 1] != this->id) {
+            int member = this->groupMembers[i];
+            temp[i + 1] = member;
+            if (member != this->id) {
                 RGE_Static_Object* object =
                     this->owner->world->object(this->groupMembers[i]);
                 if (object != 0) {

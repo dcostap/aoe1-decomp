@@ -16,6 +16,9 @@
 // attempt 10: separate adjacent button fields emitted the same code.
 // attempt 11: passed p5 as the dialog height to base setup per the original
 // stack load; this grew the body to 676 bytes and worsened the first hunk.
+// attempt 12: removed the redundant positive button-count wrapper; the packet
+// shows one loop-entry test before the create_button vtable load. Diff improved
+// 586->563 bytes, but shape and exact-block coverage worsened; kept natural code.
 // Best current result: exact size and ordered call parity; remaining drift is
 // register scheduling and prologue layout, first mismatch at +0005.
 
@@ -145,17 +148,15 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
     }
 
     int y = height - p9 - 7;
-    if (num_buttons > 0) {
-        TButtonPanel** next = &button0;
-        int x = space;
-        for (int i = 0; i < num_buttons; ++i) {
-            if (create_button((TPanel*)this, next, (char*)0, (char*)0,
-                    x, y, p8, p9, 0x0B, 0, 0) == 0) {
-                return 0;
-            }
-            x += space + p8;
-            ++next;
+    TButtonPanel** next = &button0;
+    int x = space;
+    for (int i = 0; i < num_buttons; ++i) {
+        if (create_button((TPanel*)this, next, (char*)0, (char*)0,
+                x, y, p8, p9, 0x0B, 0, 0) == 0) {
+            return 0;
         }
+        x += space + p8;
+        ++next;
     }
 
     long button_text;

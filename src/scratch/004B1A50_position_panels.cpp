@@ -9,6 +9,8 @@
 // - Best check is 3969/3969 bytes with 157/157 calls and 100% shape.  The only
 //   drift is nine option-loop register-color bytes; the natural TTextPanel cursor
 //   is retained after equivalent register probes produced no exact match.
+// - Tested a TPanel base cursor for the adjacent option fields; emitted bytes
+//   were unchanged, so the canonical TTextPanel cursor was restored.
 
 class TPanel {
 public:

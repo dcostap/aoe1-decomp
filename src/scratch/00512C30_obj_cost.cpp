@@ -9,7 +9,6 @@
 // try 8: /O1 flag probe; too small 592B, rolled back.
 // try 9: reviewed final repair if/else structure; source matches original branch family, kept.
 // try 10: reviewed parameter order and initialization; early init now matches prologue exactly through offset 180.
-// try 11 (shardB2-512C30): replaced flattened cost fields with ObjectCost costs[3] at +0x148; emitted code was unchanged, so the typed layout is retained without a loop or raw cursor.
 // BLOCKER: exact 642B with correct prologue/initialization, but cost blocks remain in a different narrow-vs-int codegen basin: original keeps __ftol result in BP then sign-extends BP for fild; rebuilt sign-extends AX into EBP directly and schedules fild/lea differently. Broad downstream positional drift remains, not accepted_drift-safe.
 //
 // Bounded retry sa274ecf51_objcost (2026-08-11, 10 hypotheses):
@@ -25,98 +24,101 @@
 // - Retained source is the simplest binary-supported typed model: short cost/availability/
 //   shortage values, PDB reference output ABI, and exact-sibling vptr/layout surfaces.
 //   Remaining drift is broad register/partial-width codegen, not accepted-drift-safe.
+//
+// ShardB6 retry:
+// - Restored the earlier pointer-ABI, explicit six-byte cost fields, and int shortage total.
+//   This rebuilt at 642 bytes with 178 strict diff bytes; the old 642-byte size was not exact.
+// - Removed explicit long casts from the natural float-to-short cost expression; code was unchanged.
+// - Changed check_obj_cost's second parameter from int to the exact short-pointer donor ABI; code was unchanged.
+// - Function-scope short cost/availability temporaries with an int total rebuilt at 642 bytes but worsened
+//   to 304 diff bytes. Rolled back.
+// - Final source keeps the binary-supported 642-byte candidate. The remaining first hunk is the oracle's
+//   mov bp,ax partial-register path; no natural typed source lead remains in this bounded retry.
 
 typedef unsigned char uchar;
 class TRIBE_Player;
-struct ObjectCost {
-    short type;
-    short amount;
-    uchar used;
-    char pad;
-};
 class ObjectInfo {
 public:
-    virtual ~ObjectInfo();
-    unsigned char type; char pad5[3]; char* name;
-    char pad0c[0x148-0x0c]; ObjectCost costs[3];
+    char pad0[4]; unsigned char type; char pad5[3]; char* name;
+    char pad0c[0x148-0x0c];
+    short cost1_type; short cost1_amount; unsigned char cost1_used;
+    char pad14d; short cost2_type; short cost2_amount; unsigned char cost2_used;
+    char pad153; short cost3_type; short cost3_amount; unsigned char cost3_used;
 };
 class TRIBE_Player {
 public:
-    virtual ~TRIBE_Player();
-    char pad4[0x20]; ObjectInfo** objects; char pad28[0x50-0x28]; float* resources;
-    uchar check_obj_cost(short, int, float, int);
-    void obj_cost(short, char**, short&, short&, short&, short&, short&, short&, float);
+    char pad0[0x24]; ObjectInfo** objects; char pad28[0x50-0x28]; float* resources;
+    uchar check_obj_cost(short, short*, float, int);
+    void obj_cost(short, char**, short*, short*, short*, short*, short*, short*, float);
 };
 extern "C" long __cdecl _ftol(void);
 
-void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1, short& t2, short& a2, short& t3, short& a3, float factor)
+void TRIBE_Player::obj_cost(short obj, char** nameOut, short* t1, short* a1, short* t2, short* a2, short* t3, short* a3, float factor)
 {
-    short cost;
-    short avail;
     short* amount_output;
-    short total = 0;
-    t1 = -1; a1 = total; t2 = -1; a2 = total; t3 = -1; a3 = total;
+    int total = 0;
+    *t1 = -1; *a1 = total; *t2 = -1; *a2 = total; *t3 = -1; *a3 = total;
     uchar can = this->check_obj_cost(obj, 0, 1.0f, 0);
     ObjectInfo* info = this->objects[obj];
     if (info == 0 || info->type < 0x46) return;
     if (nameOut) *nameOut = info->name;
 
-    if (info->costs[0].used) {
-        t1 = info->costs[0].type;
-        if (t1 >= 0) {
-            cost = (short)(int)(info->costs[0].amount * factor);
-            a1 = cost;
-            if ((float)cost > this->resources[t1] && can) {
-                avail = (short)(long)this->resources[t1];
+    if (info->cost1_used) {
+        *t1 = info->cost1_type;
+        if (*t1 >= 0) {
+            int cost = (short)(info->cost1_amount * factor);
+            *a1 = cost;
+            if ((float)cost > this->resources[*t1] && can) {
+                short avail = (short)(long)this->resources[*t1];
                 total = cost - avail;
-                a1 = avail;
+                *a1 = avail;
             }
         }
     }
-    if (info->costs[1].used) {
-        t2 = info->costs[1].type;
-        if (t2 >= 0) {
-            cost = (short)(int)(info->costs[1].amount * factor);
-            a2 = cost;
-            if ((float)cost > this->resources[t2] && can) {
-                avail = (short)(long)this->resources[t2];
+    if (info->cost2_used) {
+        *t2 = info->cost2_type;
+        if (*t2 >= 0) {
+            int cost = (short)(info->cost2_amount * factor);
+            *a2 = cost;
+            if ((float)cost > this->resources[*t2] && can) {
+                short avail = (short)(long)this->resources[*t2];
                 total += cost - avail;
-                a2 = avail;
+                *a2 = avail;
             }
         }
     }
-    if (info->costs[2].used) {
-        t3 = info->costs[2].type;
-        if (t3 >= 0) {
-            cost = (short)(int)(info->costs[2].amount * factor);
-            a3 = cost;
-            if ((float)cost > this->resources[t3] && can) {
-                avail = (short)(long)this->resources[t3];
+    if (info->cost3_used) {
+        *t3 = info->cost3_type;
+        if (*t3 >= 0) {
+            int cost = (short)(info->cost3_amount * factor);
+            *a3 = cost;
+            if ((float)cost > this->resources[*t3] && can) {
+                short avail = (short)(long)this->resources[*t3];
                 total += cost - avail;
-                a3 = avail;
+                *a3 = avail;
             }
         }
     }
     if (total > 0) {
-        if (t1 == 3 || t1 == -1) {
-            t1 = 3;
-            amount_output = &a1;
+        if (*t1 == 3 || *t1 == -1) {
+            *t1 = 3;
+            amount_output = a1;
         }
         else {
-            if (t2 != 3 && t2 != -1) {
-                if (t3 == 3 || t3 == -1) {
-                    t3 = 3;
-                    a3 = total;
+            if (*t2 != 3 && *t2 != -1) {
+                if (*t3 == 3 || *t3 == -1) {
+                    *t3 = 3;
+                    *a3 = total;
                 }
                 goto done_total;
             }
-            t2 = 3;
-            amount_output = &a2;
+            *t2 = 3;
+            amount_output = a2;
         }
         *amount_output += total;
     }
 done_total:
-    if (a1 <= 0) t1 = -1;
-    if (a2 <= 0) t2 = -1;
-    if (a3 <= 0) t3 = -1;
+    if (*a1 <= 0) *t1 = -1;
+    if (*a2 <= 0) *t2 = -1;
+    if (*a3 <= 0) *t3 = -1;
 }

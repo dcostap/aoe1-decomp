@@ -20,6 +20,9 @@
 //   scoped target local, and nonvolatile address-taken aliases; each changed to the broad
 //   432-byte basin. The exact 7-byte output still requires the prior fake-volatile reread,
 //   so the direct typed serializer is retained.
+// - Current worker rechecked a natural if-declaration, explicit file-handle alias,
+//   ordinary member reference, CRT header context, and canonical virtual declarations;
+//   all emitted the same 432-byte mismatch. Clean direct typed source restored.
 
 struct RGE_Player {
     char gap_00[0x4A];

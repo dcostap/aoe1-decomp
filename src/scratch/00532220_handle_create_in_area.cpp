@@ -29,6 +29,11 @@
 // - Combined the self-relation and allied-player guards to test the exact
 //   sibling short-circuit shape; it worsened the block coverage and was
 //   restored. The localized [eax+ebp] versus [ebp+eax] SIB gap remains.
+// - An explicit relation-element pointer at the loop head was codegen-neutral;
+//   restored the direct indexed access for the clean source.
+// - A polymorphic object-list with its list directly after the vptr preserves
+//   the proven +0x04 field, unlike the padded version; test exact-TU context.
+//   It was codegen-neutral; restored the pinned non-polymorphic padded source.
 // - tu-victory-532220 dossier and sibling review: the typed own/allied scans retain
 //   100% exact-block coverage and the 0xC frame. The only source-independent gap is
 //   the behavior-equivalent relation SIB encoding at +0x7F; no natural new lead remains.

@@ -17,6 +17,11 @@
 //   match; the target remains 420B while this source emits 394B.  The first
 //   unresolved hunk is the target's EDX/self stack home and its later
 //   parameter/register/local schedule, not behavior or call discovery.
+// - Tried removing the redundant object alias while keeping the cached sprite
+//   local; VC5 emitted identical code, so the self-home gap is not this alias.
+// - Tried the same-TU donor's flat typed building surface with named sprite
+//   and radius fields; it emitted identical code, so inheritance context is
+//   not the first self-home structural cause. Restored the canonical layout.
 
 #include "..\..\include\game_globals.h"
 

@@ -17,9 +17,11 @@
 //   slot. Ordered calls then matched all 10 sites.
 // - A natural do/while with canPath as its condition recovered the original
 //   top switch dispatch and 220-instruction shape. Initializing facet before
-//   baseDistance preserved the source ordering clue; a scoped object pointer
-//   was retained but emitted code was unchanged. Aggregate XYZPoint
+//   baseDistance preserved the source ordering clue. Aggregate XYZPoint
 //   initialization was tried and rolled back (diff 644).
+// - Probe 13 replaced the scoped object alias with direct this->objectValue
+//   ownership for point setup and initial canPath, as used by the same-TU
+//   evasiveMoveTo donor. VC5 emitted the same 414-byte diff and 0x10 frame.
 // - Best validated reconstruction: 666 bytes, 0x10 frame, 220 instructions,
 //   all 10 ordered calls/relocations aligned, 414 positional differing bytes
 //   (62.1622%), 74.09% shape. Remaining drift begins in the prologue's frame
@@ -214,10 +216,9 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
 
     point.x = (int)x;
     point.y = (int)y;
-    RGE_Static_Object* object = this->objectValue;
-    point.z = (int)object->world_z;
+    point.z = (int)this->objectValue->world_z;
 
-    if (object->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
+    if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
         facet = -1;
         baseDistance = this->objectValue->distance_to_position(
             x, y, this->objectValue->world_z);

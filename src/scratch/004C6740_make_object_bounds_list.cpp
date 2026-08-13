@@ -10,6 +10,8 @@
 // this moved the map accesses to the proven +8/+C/+8D8C fields.
 // probe liveness: cached the other-master x/y radii and used z >= -radius;
 // this recovered the original 0x40 frame/859-byte size and fcompp topology.
+// probe layout: a typed master-object owner local for the initial radius
+// precheck was an emitted-code duplicate; restored direct master ownership.
 // negative probes: short-bound declaration/identity reorder and register hint
 // were codegen duplicates; splitting the x-sign flag, a saved x-start, and an
 // int lower-x home did not improve the structural basin.  A precomputed extent

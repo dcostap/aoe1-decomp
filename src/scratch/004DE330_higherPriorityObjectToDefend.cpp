@@ -34,6 +34,8 @@
 // Current pause: calls, CFG counts, frame, size, and late blocks are aligned.
 // Remaining first hunk is base/entry/id register allocation at +0x5D; no new
 // evidence-backed source lead remains in this claim.
+// probe 34: scoped the canonical array base inside each outer iteration to
+// test the original reload feeding both id and entry address; duplicate codegen.
 
 #include <math.h>
 

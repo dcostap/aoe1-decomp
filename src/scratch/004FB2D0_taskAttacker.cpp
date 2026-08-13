@@ -28,6 +28,9 @@
 //     the call result directly, mirroring the donor-era declaration surface.
 // 18: reordered the top-level locals to the decompiler's attacker/unitAI/target/int
 //     sequence before the final validation checkpoint.
+// 19: reversed the target/no-target branch order as a natural typed call-order probe;
+//     it moved the no-target calls ahead of target lookup and worsened structural parity,
+//     so the clean canonical branch order is restored.
 // Final bounded state: the canonical typed reconstruction is retained in scratch.
 // The ten-probe run established exact call count/targets, vslot 0x10c weaponRange,
 // the 12-argument player order ABI, and exact size only under the early command

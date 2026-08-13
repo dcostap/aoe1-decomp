@@ -9,6 +9,8 @@
 // 6: tried staging fd into a local after header initialization; VC5 still schedules fd load before zero/vptr/list-link stores.
 // 7: remaining mismatch is broad constructor scheduling/EH-state and local-slot order: original zeroes list fields before loading fd, then writes vptr/list links and calls rge_read; rebuilt hoists fd/load/read setup earlier and interleaves differently despite exact size. Not accepted_drift-safe.
 // 8: added the same-TU AIModule base layout, virtual BuildItem/BuildAIModule destructors, destructible ManagedArray<int>, and natural BuildItem allocation; corrected virtual padding back to the proven 0xB0 object size. Diff improved, but frame and five float conversions remain.
+// 9: corrected serialized scalar types from direct int/float call evidence; removed five __ftol calls and three int-to-float conversions. Size and call set now match; +4 frame and constructor topology remain.
+// 10: removed the explicit fd local and used the constructor parameter directly; original keeps the file descriptor in the parameter-derived EBP path, and the local may account for the +4 frame.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
 
@@ -85,18 +87,18 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     int buildAttemptsValue;
     int terrainAdjOne;
     int skipValue;
-    float zSize;
-    int gameID;
-    float xSize;
+    int zSize;
+    float gameID;
+    int xSize;
     float x;
-    int uniqueID;
-    float y;
-    int buildCategory;
-    float z;
-    int terrainAdjTwo;
+    float uniqueID;
+    int y;
+    float buildCategory;
+    int z;
+    float terrainAdjTwo;
     int numberBuilds;
-    float ySize;
-    int numberSkipCycles;
+    int ySize;
+    float numberSkipCycles;
     int typeID;
     int permanentSkip;
     int terrainSet;
@@ -113,59 +115,57 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     this->typesToIgnore.maximumSizeValue = 0;
     this->buildList.next = &this->buildList;
     this->buildList.prev = &this->buildList;
-    int file = fd;
-
-    rge_read(file, &this->buildListLengthValue, 4);
-    rge_read(file, &buildCap, 4);
-    rge_read(file, this->buildListNameValue, buildCap);
+    rge_read(fd, &this->buildListLengthValue, 4);
+    rge_read(fd, &buildCap, 4);
+    rge_read(fd, this->buildListNameValue, buildCap);
     this->buildListNameValue[buildCap] = 0;
-    rge_read(file, &buildCap, 4);
-    rge_read(file, this->lastBuildItemRequestedValue, buildCap);
+    rge_read(fd, &buildCap, 4);
+    rge_read(fd, this->lastBuildItemRequestedValue, buildCap);
     this->lastBuildItemRequestedValue[buildCap] = 0;
-    rge_read(file, &buildCap, 4);
-    rge_read(file, this->currentBuildItemRequestedValue, buildCap);
+    rge_read(fd, &buildCap, 4);
+    rge_read(fd, this->currentBuildItemRequestedValue, buildCap);
     this->currentBuildItemRequestedValue[buildCap] = 0;
     if (save_game_version < *(float*)0x56E784) {
         strcpy(this->nextBuildItemRequestedValue, (char*)0x57F0BC);
     } else {
-        rge_read(file, &buildCap, 4);
-        rge_read(file, this->nextBuildItemRequestedValue, buildCap);
+        rge_read(fd, &buildCap, 4);
+        rge_read(fd, this->nextBuildItemRequestedValue, buildCap);
         this->nextBuildItemRequestedValue[buildCap] = 0;
     }
-    rge_read(file, &this->numberItemsIntoBuildListValue, 4);
+    rge_read(fd, &this->numberItemsIntoBuildListValue, 4);
 
     int i = 0;
     if (this->buildListLengthValue > 0) {
         do {
-            rge_read(file, &buildCap, 4);
-            rge_read(file, name + 4, buildCap);
+            rge_read(fd, &buildCap, 4);
+            rge_read(fd, name + 4, buildCap);
             name[buildCap + 4] = 0;
-            rge_read(file, &permanentSkip, 4);
-            rge_read(file, &xSize, 4);
-            rge_read(file, &y, 4);
-            rge_read(file, &uniqueID, 4);
-            rge_read(file, &buildCategory, 4);
-            rge_read(file, &terrainAdjTwo, 4);
-            rge_read(file, &x, 4);
-            rge_read(file, &numberSkipCycles, 4);
-            rge_read(file, &gameID, 4);
-            rge_read(file, &zSize, 4);
-            rge_read(file, &z, 4);
-            rge_read(file, &buildAttemptsValue, 4);
-            rge_read(file, &inProgressValue, 4);
-            rge_read(file, &terrainAdjOne, 4);
-            rge_read(file, &local_11c, 4);
-            rge_read(file, &placeOnElevation, 4);
-            rge_read(file, &skipValue, 4);
-            rge_read(file, &numberBuilds, 4);
-            rge_read(file, &buildFrom, 4);
-            rge_read(file, &ySize, 4);
+            rge_read(fd, &permanentSkip, 4);
+            rge_read(fd, &xSize, 4);
+            rge_read(fd, &y, 4);
+            rge_read(fd, &uniqueID, 4);
+            rge_read(fd, &buildCategory, 4);
+            rge_read(fd, &terrainAdjTwo, 4);
+            rge_read(fd, &x, 4);
+            rge_read(fd, &numberSkipCycles, 4);
+            rge_read(fd, &gameID, 4);
+            rge_read(fd, &zSize, 4);
+            rge_read(fd, &z, 4);
+            rge_read(fd, &buildAttemptsValue, 4);
+            rge_read(fd, &inProgressValue, 4);
+            rge_read(fd, &terrainAdjOne, 4);
+            rge_read(fd, &local_11c, 4);
+            rge_read(fd, &placeOnElevation, 4);
+            rge_read(fd, &skipValue, 4);
+            rge_read(fd, &numberBuilds, 4);
+            rge_read(fd, &buildFrom, 4);
+            rge_read(fd, &ySize, 4);
             builtValue = -1;
             if (save_game_version >= *(float*)0x56E788) {
-                rge_read(file, &builtValue, 4);
+                rge_read(fd, &builtValue, 4);
             }
-            rge_read(file, &typeID, 4);
-            rge_read(file, &terrainSet, 1);
+            rge_read(fd, &typeID, 4);
+            rge_read(fd, &terrainSet, 1);
             BuildItem* item = new BuildItem((int)z, (uchar)permanentSkip, (int)y, 1, 0, local_11c, name + 4, x, (float)numberSkipCycles, (float)gameID, placeOnElevation, skipValue, numberBuilds, buildFrom);
             item->setBuilt(inProgressValue);
             item->setInProgress(buildAttemptsValue);

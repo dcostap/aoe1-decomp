@@ -32,6 +32,9 @@
 //   match, but the prologue frame/register basin and a localized stack/FPU
 //   scheduling suffix remain non-exact.  Best source is natural typed C++;
 //   no compiler-only padding, volatile scaffolding, or inline asm retained.
+// - Added the binary-proven separate zone-map output home before zoneCounter
+//   and passed it by reference; the distinct LEA homes restored the 0x134 frame
+//   and reduced the positional diff from 126 to 116 bytes.
 
 void* operator new(unsigned int size);
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -203,6 +206,7 @@ public:
 ConstructionItem* TribeInformationAIModule::placeDock(
     BuildItem* item, float x, float targetY, int terrain_type, int tile_type)
 {
+    int zoneMapIndex;
     unsigned char zoneCounter[256];
     int i;
     RGE_Player* player;
@@ -230,7 +234,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 
     zoneMap = player->world->map->map_zones->get_zone_map(
         player->world->terrains[player->master_player->terrain],
-        player->world->terrain_size, *(int*)&zoneCounter[0]);
+        player->world->terrain_size, zoneMapIndex);
 
     randomOffset = debug_rand(
         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x6A9) % 0x32;

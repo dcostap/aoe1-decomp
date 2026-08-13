@@ -30,6 +30,8 @@
 // fcomp/test branch and Ghidra behavior evidence both enter vf138 when the
 // held amount is not above the threshold.  This improved one exact block and
 // reduced edit/resync drift by one byte.
+// Probe 16 (shardA6): typed the shared action as base RGE_Action for the
+// common add_action/setSubAction lifetime surface; emitted code was unchanged.
 // Final residual: exact calls, size, frame, CFG counts, and ordered call map;
 // 73 edit/resync bytes remain from a jump-table/EH relocation surface and
 // localized EAX/EDX choices in states 6/7 and the target comparison.

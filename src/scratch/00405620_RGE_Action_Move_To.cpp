@@ -75,6 +75,8 @@
 // 2026-08-13 tu-actmove-405620 pass: fresh block and raw-byte checks confirm a 137-byte exact prefix and the
 // same two branch-local stores; no new period-plausible source lead remains for the shared EH epilogue. Left the
 // canonical typed source unchanged; final mismatch is 47 bytes at the inner fallback join.
+// 2026-08-13 shardE-405620: reversed the natural inner arm order; VC5 kept the duplicated EH tail and worsened to
+// 205B/53B. Restored the canonical zero-first if/else; no new source lead remains.
 
 class RGE_Action_Object;
 class RGE_Sprite;

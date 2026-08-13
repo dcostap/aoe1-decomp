@@ -24,6 +24,9 @@
 //   normalization improved the strict diff from 570 to 569 bytes. The
 //   remaining drift begins in the first switch's byte-load/jump-table shape;
 //   budget exhausted without a source-plausible exact lead.
+// - Tried one natural loop-local event code for the draw switch; it improved
+//   strict diff to 479 bytes but added 74 bytes and lost block parity, so it
+//   was rolled back as a nonviable lifetime hypothesis.
 
 #include <string.h>
 

@@ -20,8 +20,17 @@
 // probe 8: do/while removal-loop variants moved farther; restored probe 7.
 // probe 9/10: fresh post-hit removal locals and a guarded do/while were also farther; restored
 // the probe-7 source shape.
+// probe 11: give the second removal search an explicit typed maximum local before its list pointer;
+// this follows the original max/caller/pointer load order without adding codegen-only scaffolding.
+// result: the body shrank from 832 to 828 bytes and positional diff improved 317 to 313, but
+// VC5 still reused the prior max register and kept the pointer-first removal CFG.
+// fresh worker probe: replaced the 0x2bb pointer-walk search with a natural indexed while and
+// a do/while compaction loop; size reached 600 and positional diff improved to 135.
+// kept the max/list locals with that do/while shape; event-pointer allocation returned to the
+// original prologue family and positional diff improved to 89 with all 11 calls aligned.
+// rolled back a direct-value variant; it moved the prologue and worsened the diff to 138.
 // left in scratch: all 11 call targets and the main 0x1f4/0x258 bodies align; remaining
-// mismatch is the 0x2bb register/loop topology and generated switch data placement.
+// mismatch is the dispatch-table relocation and 0x2bb max/list register order.
 
 // This function uses the period UnitAIModule layout and the same-TU virtual surfaces as
 // the exact transport/fishing processNotify donors.  The target class adds no fields.
@@ -278,19 +287,18 @@ changed_258:
 
 found_2bb:
         i = 0;
+        int max = this->attackingUnitsValue.maximumSizeValue;
         int* list = this->attackingUnitsValue.value;
-        if (this->attackingUnitsValue.maximumSizeValue > 0) {
-            while (*list != event->caller) {
-                ++i;
-                ++list;
-                if (i >= this->attackingUnitsValue.maximumSizeValue) break;
-            }
+        while (i < max && list[i] != event->caller) {
+            ++i;
         }
-        if (i >= this->attackingUnitsValue.maximumSizeValue)
+        if (i >= max)
             return 2;
-        if (i < this->attackingUnitsValue.maximumSizeValue - 1) {
-            for (++i; i < this->attackingUnitsValue.maximumSizeValue - 1; ++i)
-                this->attackingUnitsValue.value[i - 1] = this->attackingUnitsValue.value[i];
+        if (i < max - 1) {
+            do {
+                ++i;
+                list[i - 1] = list[i];
+            } while (i < max - 1);
         }
         this->attackingUnitsValue.numberValue--;
         if (this->attackingUnitsValue.numberValue < 0)

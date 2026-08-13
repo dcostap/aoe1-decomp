@@ -15,6 +15,10 @@
 // - Combining the line-backed mode-102-before-mode-101 order with the proven
 //   tail ownership retained a 569-byte diff, improved exact-block coverage to
 //   43.82%, and reduced the size gap to 40 bytes. The ordered tail gap remains.
+// - A natural switch-tail fallthrough duplicated an earlier 744-byte basin and
+//   dropped the packet's unload and redraw calls; it was rolled back.
+// - An inline default arm kept the call multiset but moved the first switch
+//   block and worsened the diff to 753 bytes; it was rolled back.
 
 class TShape;
 class RGE_Tile;

@@ -21,6 +21,8 @@
 //   218-byte drift; restored the clean branch-local typed source.
 // probe 16: declaring music_path before music_type was a codegen duplicate;
 //   restored the clean declaration order after the local-address probe.
+// probe 18: plain char music type plus a scoped path buffer was a codegen
+//   duplicate; VC5 kept the EBX fallback width and separate path slot.
 
 #include <stdio.h>
 

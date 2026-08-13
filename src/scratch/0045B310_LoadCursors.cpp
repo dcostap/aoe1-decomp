@@ -11,10 +11,23 @@
 // tried typed Shape_Info bounds with a combined predicate; no positional gain, then a height temp worsened size, rolled back.
 // tried typed Shape_Info validation records with an explicit shared failure label; the tail moved to the end, but the validation field schedule changed and the diff worsened to 304/91%, rolled back.
 // tried a positive Num_Cursors <= Max_Cursors guard with LoadOk failure assignment; size grew 41 bytes and a call crossed the boundary, rolled back.
+// tried typed Shape_Info field iteration; direct Width/Height fields changed the first paired hunk and worsened the diff to 304, rolled back.
+// kept a typed Shape_Info height pointer and field-first Width/Height predicates; the validation memory schedule now matches, but the failure tail remains misplaced.
 // left in scratch: behavior/calls/size are close, but post-scan failure-tail placement and validation-loop layout still differ broadly; not accepted_drift-safe.
 
 extern "C" int sprintf(char*, const char*, ...);
 extern "C" void operator_delete(void*);
+
+struct Shape_Info {
+    int shape_data_offset;
+    int shape_outline_offset;
+    int reserved_08;
+    int reserved_0c;
+    int Width;
+    int Height;
+    int Hotspot_X;
+    int Hotspot_Y;
+};
 
 class TDrawArea {
 public:
@@ -117,12 +130,12 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
         if (this->Num_Cursors > this->Max_Cursors) return 0;
         int i = zero;
         if (this->Num_Cursors > zero) {
-            char* q = (char*)this->Cursor_Shape->shape_info + 0x14;
+            Shape_Info* info = (Shape_Info*)this->Cursor_Shape->shape_info;
+            int* height = &info->Height;
             do {
-                if (*(int*)(q - 4) > this->Max_CX) return 0;
-                if (*(int*)q > this->Max_CY) return 0;
+                if (height[-1] > this->Max_CX || *height > this->Max_CY) return 0;
                 i++;
-                q += 0x20;
+                height += 8;
             } while (i < this->Num_Cursors);
         }
         int cur = zero;

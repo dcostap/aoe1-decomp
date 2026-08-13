@@ -21,6 +21,13 @@
 //   field register allocation and worsened the clean 86-byte diff to 173
 //   bytes at 485B; rolled back.  The original stack stores remain better
 //   represented by the omitted tab_list[0] source shape.
+// - Scoped the three-slot tab_list around only the final set_tab_order call
+//   to test whether its lifetime caused the first stack/register hunk.  VC5
+//   emitted identical code at 480B/86-byte diff; rolled back to the clean
+//   function-scope source.
+// - A persistent TEditPanel** name_input_out local reversed the same EBP/EBX
+//   address-color choice and reduced exact-block coverage to 59.86%; rolled
+//   back because it did not improve the 86-byte structural diff.
 // FLAGS: config/flags/004A6D50_TRIBE_Dialog_Name.rsp uses /GX; required for
 // the observed EH registration frame.
 // Left in scratch after the bounded pass: natural typed source is retained;

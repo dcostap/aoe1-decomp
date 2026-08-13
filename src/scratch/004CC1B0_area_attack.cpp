@@ -12,6 +12,8 @@
 // 8: inverted footprint clamp predicates to match the original FPU block layout.
 // 9: squared-distance x-first order improved the localized FPU hunk.
 // 10: radius-first comparison produced 100% instruction-shape and 771/776 positional bytes.
+// 11: restored same-TU polymorphic player/world declarations with proven offsets;
+//     emitted code was unchanged, so rolled back and retained the clean source.
 // left in scratch: five positional bytes differ only in initial register coloring and relocations.
 // Behavior retained: ignored-target filtering, special owner gate, level gate, footprint distance,
 // random hit chance, modifier calculation, typed damage argument order, and post-damage death call.

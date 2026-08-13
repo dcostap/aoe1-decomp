@@ -32,6 +32,13 @@
 //   locals, declaration-order changes, and separate index initialization all
 //   emitted the same 266-byte family. An infinite-loop break widened the
 //   structural drift to 197 bytes and was rolled back.
+// - Typed lookup probe bound this->zone_maps[i] to a local RGE_Zone_Map*
+//   before check_info and returned that pointer on a hit; it widened the
+//   body to 269 bytes and lost early exact blocks. Restored the clean source.
+// - Explicit found-label/common-result ordering, captured check_info result,
+//   do-while scan, and removal of the outer count guard were tested; the first
+//   and last emitted the same 266-byte family, while the captured/do-while
+//   forms widened or duplicated the check. Restored the guarded while source.
 
 #include <stdlib.h>
 #include <string.h>

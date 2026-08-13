@@ -35,6 +35,12 @@
 // - current pass: removing the first header-error MessageBox as an early-return
 //   probe reduced the extra ordered calls from four to three, but changed the
 //   executable's error behavior; restored the natural typed error path.
+// - current pass: typed node->directory as resfile_header and used named
+//   version/password fields; emitted code was unchanged, so the first hunk is
+//   the parent-owned header-error fragment rather than directory layout.
+// - shardE pass: rechecked the canonical source and donor evidence; the first
+//   mismatch remains the manifest-excluded 0047F00C error fragment, so no
+//   behavior-changing probe was kept.
 
 #include <stdlib.h>
 #include <string.h>
@@ -57,10 +63,12 @@ extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 extern "C" int __cdecl lseek(int fd, int offset, int whence);
 extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 
+struct resfile_header;
+
 struct ResFileNode {
     void* data;
     int fd;
-    void* directory;
+    resfile_header* directory;
     ResFileNode* next;
     char name[260];
 };
@@ -134,7 +142,7 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         if (isMapped == 0) {
             node->fd = -1;
             node->data = mappedData;
-            node->directory = mappedData;
+            node->directory = (resfile_header*)mappedData;
         } else {
             int n;
             node->fd = fHandle;
@@ -145,7 +153,7 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
                 MessageBoxA(0, "Error: Reading resfile header.", "RESOURCE ERROR", 0x30);
                 return;
             }
-            node->directory = malloc(rHdr.directory_size);
+            node->directory = (resfile_header*)malloc(rHdr.directory_size);
             lseek(fHandle, 0, 0);
             n = read(fHandle, node->directory, rHdr.directory_size);
             if (n != rHdr.directory_size) {
@@ -170,13 +178,13 @@ void __cdecl RESFILE_open_new_resource_file(char* name, char* cmpName, char* pat
         }
 
         {
-            if (strcmp((char*)node->directory + 0x2C, cmpName) != 0) {
+            if (strcmp(node->directory->password, cmpName) != 0) {
                 MessageBoxA(0, "Error: Open_ResFile, Corruption detected in resourcefile.", "RESOURCE ERROR", 0x30);
                 return;
             }
         }
 
-        if (strncmp((char*)node->directory + 0x28, "1.00", 4) != 0) {
+        if (strncmp(node->directory->version, "1.00", 4) != 0) {
             MessageBoxA(0, "Error: Open_ResFile, Resfile not correct version.", "RESOURCE ERROR", 0x30);
             return;
         }

@@ -18,6 +18,9 @@
 // - left in scratch: frame/saved-register and call topology match, but the
 //   original keeps a second bit-count reload and different late RGB-table
 //   branch/register schedule beginning at 00439F40.
+// - tried the period typed FixBitmapInfo macro for post-read header cleanup;
+//   it kept the DIBUTILS API surface but was a codegen duplicate, so it stays
+//   as the more natural source form with no metric change.
 
 #include <windows.h>
 #include <windowsx.h>
@@ -39,6 +42,11 @@
     ((lpbi)->biSizeImage == 0 ? \
         ((DWORD)(UINT)DibWidthBytes(lpbi) * \
             (DWORD)(UINT)(lpbi)->biHeight) : (lpbi)->biSizeImage)
+#define FixBitmapInfo(lpbi) \
+    if ((lpbi)->biSizeImage == 0) \
+        (lpbi)->biSizeImage = DibSizeImage(lpbi); \
+    if ((lpbi)->biClrUsed == 0) \
+        (lpbi)->biClrUsed = DibNumColors(lpbi)
 #define GlobalAllocPtr(flags, cb) \
     (GlobalLock(GlobalAlloc((flags), (cb))))
 
@@ -101,10 +109,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh)
 
     nNumColors = DibNumColors(&bi);
 
-    if (bi.biSizeImage == 0)
-        bi.biSizeImage = DibSizeImage(&bi);
-    if (bi.biClrUsed == 0)
-        bi.biClrUsed = DibNumColors(&bi);
+    FixBitmapInfo(&bi);
 
     pdib = (PDIB)GlobalAllocPtr(GMEM_MOVEABLE,
         (LONG)bi.biSize + nNumColors * sizeof(RGBQUAD));

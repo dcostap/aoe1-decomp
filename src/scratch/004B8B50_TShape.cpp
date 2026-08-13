@@ -30,6 +30,12 @@
 // this moved the flag push before the copy as in the original, reaching 635 bytes
 // and 381 strict diff bytes. Remaining first mismatch is the color_log argument
 // setup at 004B8B86; no class, signature, or flag changes were made.
+// shardE-4B8B50: shared int/char/register type locals for the repeated value 1
+// were codegen duplicates; restored the clean literal source.
+// shardE-4B8B50: moving Shape_Loads++ after the first open improved strict diff
+// by one byte but reduced block shape; restored the clean order.
+// shardE-4B8B50: a diagnostic name+4 comma-expression matched more early blocks
+// but worsened strict diff and source plausibility; restored the clean source.
 
 #include <string.h>
 

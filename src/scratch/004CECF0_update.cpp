@@ -20,13 +20,20 @@
 // from +0x88 to +0x8C without changing behavior or size.
 // Probe 11: a separate declaration-only state view did not prevent VC5 tail
 // merging; removed from the living source after recording the negative result.
-// Current topology probe: direct state-3/state-D case actions in the nested
-// switches left the first form unchanged; expanding both switches duplicated
-// one +0x5C call and grew output to 840 bytes past the original boundary.
-// Restored the clean labeled CFG; the natural case form is not a lead.
+// Session shardA6-4CECF0-r1 baseline: restored the typed tactical-health
+// ownership surface before changing the switch topology.
+// Ordered source correction: the binary/PDB bands place state 0x0B before
+// state 4. Direct natural case bodies entered an 840-byte basin and were
+// rolled back as a codegen-only variant.
+// Current source keeps that binary-backed order and shares only the proven
+// state-D and target-reset tails. Removing inner defaults, using the common
+// final return, and placing the state-0x0B state-3 tail before state 4 were
+// duplicate emissions. The source now has the correct typed state behavior,
+// but VC5 still merges its state-3 call with the state-6 null guard.
 // Best current check: 739-byte output, 469 positional diff bytes, 26/27 calls;
-// remaining structural gap is one merged +0x5C state-3 call and local switch data
-// placement. Leave in scratch for a later worker rather than forcing a match.
+// remaining structural gap is one merged +0x5C state-3 call and local switch
+// data placement. Leave in scratch for a later worker rather than forcing a
+// match.
 
 extern float DAT_005750e0;
 extern double DAT_005750e8;
@@ -259,50 +266,41 @@ uchar TRIBE_Action_Heal::update()
     }
 
     switch (this->state) {
-    case 4:
-        switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-        case 5:
-            goto state_early;
-        case 3:
-            goto state_done;
-        case 4:
-            this->set_target_obj(0);
-            this->set_state(0x0B);
-            return 0;
-        default:
-            break;
-        }
-        break;
-
-state_early:
-        this->set_state(3);
-        return 0;
-
     case 0x0B:
         switch (this->sub_actions->update()) {
         case 1:
         case 2:
-            goto state_ready;
+        case 5:
+            this->set_state(3);
+            return 0;
+        case 3:
+            goto state_done;
+        case 4:
+            goto state_target;
+        }
+        break;
+
+    case 4:
+        switch (this->sub_actions->update()) {
+        case 1:
+        case 2:
+            this->set_state(6);
+            return 0;
         case 3:
             goto state_done;
         case 4:
         case 5:
-            this->set_target_obj(0);
-            this->set_state(0x0B);
-            return 0;
-        default:
-            break;
+            goto state_target;
         }
         break;
 
-state_done:
-        this->set_state(0x0D);
+state_target:
+        this->set_target_obj(0);
+        this->set_state(0x0B);
         return 0;
 
-state_ready:
-        this->set_state(6);
+state_done:
+        this->set_state(0x0D);
         return 0;
 
     case 6:

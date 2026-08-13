@@ -9,6 +9,10 @@
 // duplicates or slightly worse. The clean named-bounds form is retained.
 // Probe: UsedScreenRect uses the TPanel render_rect origin, not panel size;
 // this is required by the original +8c/+90 reads. Store order was also aligned.
+// Probe: direct typed pnl_wid/pnl_hgt bounds restored the 0x114 frame without
+// padding, but made VC5 cache GDI imports and expanded the body; rolled back.
+// Probe: unsigned int text_flags matched the DrawText format ABI but emitted
+// duplicate 0x11c/931-byte code; restored the int local.
 // BLOCKER: original frame is 0x114 with EBP/EBX bounds and EDI flags; current
 // typed source uses a 0x11c frame with a different local/register basin.
 

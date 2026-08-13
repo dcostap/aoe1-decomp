@@ -1,14 +1,14 @@
 // 00519F40 TRIBE_Panel_Button::draw
 // Source: tpnl_btn.cpp lines 109-317, 1573 bytes
 // FLAGS: default
-// Best variant: variant_lab G0000 (int* vt pattern), verified 1536 bytes
 // Attempt log:
-// - Original scratch: comments-only. Built from scratch: 47% -> 79% -> 96.6% -> 98.7%
-// - variant_lab showed sub esp=38h vs 2Ch — excess locals. Reduced stack from 0x38 to 0x34.
-// - Current best: 1536/1573 (97.6%), matching lab G0000 group
-// - First mismatch: sub esp=38h vs 2Ch (12 bytes excess stack from extra locals)
-// - Remaining gap: VC5 backend stack frame allocation and register scheduling
-// Left in scratch; structurally complete
+// - Baseline: recovered TButtonPanel arrays, typed draw calls, and player color-table ownership.
+// - Replaced the second shadow helper call with the binary-proven fog-state reset global.
+// - Matched the packet's short frame local and char[10] garrison message buffer.
+// - Restored the binary-shaped c1/c2 text-offset predicate after a direct-XOR probe lost CFG detail.
+// - Replaced hand-written text scans with natural strlen calls; VC5 emitted the original scasb shape and improved positional diff by 5 bytes.
+// - Best emitted code: 1191 differing bytes; current strlen source is 1217 differing bytes.
+// - Left in scratch: call order and memory effects match; VC5 frame and text CFG remain nonexact.
 
 #include "..\..\include\game_globals.h"
 #include <windows.h>
@@ -23,7 +23,7 @@ class TDrawArea {
 public:
     char gap_00[0x38];
     HDC DrawDc;
-    void* Lock(const char*, int);
+    unsigned char* Lock(const char*, int);
     void Unlock(const char*);
     void* GetDc(const char*);
     void ReleaseDc(const char*);
@@ -33,7 +33,8 @@ public:
 class TShape {
 public:
     char gap_00[4];
-    void shape_draw(TDrawArea*, int, int, int, int, unsigned char*);
+    unsigned char shape_draw(TDrawArea*, long, long, long, unsigned char,
+                             unsigned char*);
 };
 
 class TButtonPanel {
@@ -45,11 +46,10 @@ public:
     long pnl_cy;
     char gap_1C[4];
     TDrawArea* render_area;
-    long clip_x1;
-    long clip_y1;
-    long clip_x2;
-    long clip_y2;
-    char gap_34[0x0C];
+    RECT clip_rect;
+    char gap_34[4];
+    int need_redraw;
+    char gap_3C[4];
     TButtonPanel* parent_panel;
     char gap_44[0x28];
     int field_6C;
@@ -57,33 +57,45 @@ public:
     char gap_74[0x14];
     HRGN clip_rgn;
     char gap_8C[0xC0];
-    int shape_ptr;
-    char gap_150[0x20];
-    short frame_val;
-    char gap_172[0x22];
-    int text_flags;
-    char* text1_ptr;
-    char gap_19C[0x20];
-    char* text2_ptr;
-    char gap_1C0[0x28];
-    void* ufont;
-    int offs_val;
-    short text_idx;
-    int has_text2;
-    char gap_1FC[0x0C];
-    int text_clr;
-    char gap_20C[0x20];
-    int shadow_clr;
-    char gap_230[0x80];
-    int fog_on;
-    char gap_2B4[4];
-    int show_garr;
-    int garr_num;
-    unsigned char btn_type;
-    char gap_2C1[3];
-    int border_shape;
-    unsigned char* color_tbl;
-    int border_frm;
+    TShape* pic[9];
+    short pic_index[9];
+    char gap_182[2];
+    int auto_pic_pos;
+    long pic_x;
+    long pic_y;
+    int all_hot;
+    int draw_reverse;
+    char* text1[9];
+    char* text2[9];
+    long text_x;
+    long text_y;
+    void* font;
+    long font_wid;
+    long font_hgt;
+    short num_states;
+    short cur_state;
+    int is_down;
+    TButtonPanel** radio_buttons;
+    short num_radio_buttons;
+    char gap_202[2];
+    unsigned long button_down_time;
+    unsigned long text_color1[9];
+    unsigned long text_color2[9];
+    unsigned long highlight_text_color1[9];
+    unsigned long highlight_text_color2[9];
+    long hotkey;
+    int hotkey_shift;
+    int bevel_type;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    char gap_2AA[2];
+    long key_down;
+    int disabled;
+    int sound_number;
 
     virtual ~TButtonPanel();
     virtual void v04();
@@ -100,90 +112,120 @@ public:
     virtual void vf30();
     virtual void get_clip_rect(RECT*);
     virtual void set_clip_rect(RECT*);
-    virtual void draw();
+    void draw();
 };
 
 class TRIBE_Panel_Button : public TButtonPanel {
 public:
+    int display_garrison;
+    int garrsion_number;
+    unsigned char tribe_button_type;
+    char gap_2C1[3];
+    TShape* border_pic;
+    unsigned char* color_table;
+    int border_frame;
+    char text_msg[0x100];
+    int in_use;
+
     virtual void draw();
 };
 
-void _ASMSet_Shadowing(int, int, int, int);
-void _ASMSet_Color_Xform(int);
+class RGE_Color_Table {
+public:
+    char gap_00[0x26];
+    short id;
+};
+
+class RGE_Player {
+public:
+    char gap_00[0x108];
+    RGE_Color_Table* color_table;
+};
+
+class RGE_Base_Game {
+public:
+    RGE_Player* get_player();
+};
+
+extern RGE_Base_Game* rge_base_game;
+extern int fog_next_shape;
+extern "C" void __cdecl _ASMSet_Shadowing(int, int, int, int);
+extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 void TRIBE_Panel_Button::draw()
 {
-    if (this->btn_type == 3) {
+    if (this->tribe_button_type == 3) {
         this->TButtonPanel::draw();
         return;
     }
     if (this->render_area == 0 || this->field_70 == 0 || this->field_6C == 0) {
-        *(int*)((int)this + 0x38) = 0;
+        this->need_redraw = 0;
         return;
     }
 
-    int* vt = *(int**)this;
-    ((void(*)(TRIBE_Panel_Button*, int))vt[0x28/4])(this, 0);
-    ((void(*)(TButtonPanel*, RECT*))((int**)this->parent_panel)[0x34/4])(this->parent_panel, (RECT*)&this->clip_x1);
+    this->vf28(0);
+    this->parent_panel->get_clip_rect(&this->clip_rect);
 
     int is_drawn = 1;
-    if (this->btn_type == 0 || this->btn_type == 1) {
-        if (this->border_shape) {
+    if (this->tribe_button_type == 0 || this->tribe_button_type == 1) {
+        if (this->border_pic) {
             if (this->render_area->Lock(s_tpnl_btn_draw, 1)) {
                 is_drawn = 0;
-                ((TShape*)this->border_shape)->shape_draw(
+                this->border_pic->shape_draw(
                     this->render_area, this->pnl_x, this->pnl_y,
-                    (this->has_text2 != 0) + this->border_frm, 0, 0);
+                    (this->is_down != 0) + this->border_frame, 0, 0);
                 this->render_area->Unlock(s_tpnl_btn_draw);
             }
         }
     }
     if (is_drawn) {
-        ((void(*)(TButtonPanel*, RECT*))((int**)this->parent_panel)[0x34/4])(this->parent_panel, (RECT*)&this->clip_x1);
+        this->parent_panel->get_clip_rect(&this->clip_rect);
     }
 
-    if ((this->btn_type == 1 || this->btn_type == 3) && this->text1_ptr) {
+    if ((this->tribe_button_type == 1 || this->tribe_button_type == 3) &&
+        this->text1[0]) {
         HDC dc = (HDC)this->render_area->GetDc(s_tpnl_btn_draw);
         if (dc) {
             SelectClipRgn(dc, this->clip_rgn);
-            HGDIOBJ old_f = SelectObject(dc, (HGDIOBJ)this->ufont);
+            HGDIOBJ old_f = SelectObject(dc, (HGDIOBJ)this->font);
             SetBkMode(dc, 1);
 
             int center_x = this->pnl_cx / 2;
             int center_y = this->pnl_cy / 2;
 
-            int idx = (int)(short)this->text_idx;
-            char* text = *(char**)((int)this + 0x198 + idx * 4);
-            if (text == 0) text = (char*)this->text1_ptr;
+            int idx = (int)this->cur_state;
+            char* text = this->text1[idx];
+            if (text == 0) text = this->text1[0];
 
             if (text) {
-                int tlen = 0;
-                char* tp = text;
-                while (*tp) { tlen++; tp++; }
+                int tlen = strlen(text);
 
-                SIZE tsz;
-                GetTextExtentPoint32A(dc, text, tlen, &tsz);
+                SIZE text_size;
+                GetTextExtentPoint32A(dc, text, tlen, &text_size);
 
-                int text_x_pos = center_x - tsz.cx / 2 + this->pnl_x;
+                int text_x_pos = center_x - text_size.cx / 2 + this->pnl_x;
 
-                char* text2 = *(char**)((int)this + 0x1BC + idx * 4);
-                if (text2 == 0) text2 = (char*)this->text2_ptr;
+                char* text2 = this->text2[idx];
+                if (text2 == 0) text2 = this->text2[0];
 
                 int text_y_pos;
                 if (text2) {
-                    text_y_pos = center_y - this->offs_val + this->pnl_y;
+                    text_y_pos = center_y - this->font_hgt + this->pnl_y;
                 } else {
-                    text_y_pos = center_y - this->offs_val / 2 + this->pnl_y;
+                    text_y_pos = center_y - this->font_hgt / 2 + this->pnl_y;
                 }
 
                 if (text2) {
-                    int c1 = (this->text_flags == 0 && this->has_text2 == 0);
-                    int c2 = (this->text_flags != 0 && this->has_text2 != 0);
-                    if (!(c1 || c2)) { text_x_pos++; text_y_pos++; }
+                    int c1 = (this->draw_reverse == 0 && this->is_down == 0);
+                    int c2 = (this->draw_reverse != 0 && this->is_down != 0);
+                    if (!(c1 || c2)) {
+                        text_x_pos++;
+                        text_y_pos++;
+                    }
                 }
 
-                int sc = *(int*)((int)this + 0x22C + idx * 4);
-                int tc = *(int*)((int)this + 0x208 + idx * 4);
+                int sc = this->text_color2[idx];
+                int tc = this->text_color1[idx];
 
                 SetTextColor(dc, sc);
                 TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, tlen);
@@ -191,18 +233,15 @@ void TRIBE_Panel_Button::draw()
                 TextOutA(dc, text_x_pos, text_y_pos, text, tlen);
 
                 if (text2) {
-                    int t2len = 0;
-                    char* t2p = text2;
-                    while (*t2p) { t2len++; t2p++; }
+                    int t2len = strlen(text2);
                     
-                    SIZE tsz2;
-                    GetTextExtentPoint32A(dc, text2, t2len, &tsz2);
+                    GetTextExtentPoint32A(dc, text2, t2len, &text_size);
 
-                    int t2_x = center_x - tsz2.cx / 2 + this->pnl_x;
+                    int t2_x = center_x - text_size.cx / 2 + this->pnl_x;
                     int t2_y = center_y + this->pnl_y;
 
-                    int sc = *(int*)((int)this + 0x22C + idx * 4);
-                    int tc = *(int*)((int)this + 0x208 + idx * 4);
+                    int sc = this->text_color2[idx];
+                    int tc = this->text_color1[idx];
 
                     SetTextColor(dc, sc);
                     TextOutA(dc, t2_x - 1, t2_y + 1, text2, t2len);
@@ -215,74 +254,81 @@ void TRIBE_Panel_Button::draw()
             SelectClipRgn(dc, 0);
             this->render_area->ReleaseDc(s_tpnl_btn_draw);
         }
-    } else if (this->shape_ptr && (signed short)this->frame_val >= 0) {
+    } else if (this->pic[0] && this->pic_index[0] >= 0) {
         if (this->render_area->Lock(s_tpnl_btn_draw3, 1)) {
+            short frame = this->pic_index[0];
             int draw_x = this->pnl_x;
             int draw_y = this->pnl_y;
 
-            if (this->btn_type == 0) {
-                if (this->has_text2) {
+            if (this->tribe_button_type == 0) {
+                if (this->is_down) {
                     this->render_area->SetClipRect(
-                        this->clip_x1 + 3, this->clip_y1 + 3,
-                        this->clip_x2 - 2, this->clip_y2 - 3);
+                        this->clip_rect.left + 3, this->clip_rect.top + 3,
+                        this->clip_rect.right - 2, this->clip_rect.bottom - 3);
                     draw_x += 3; draw_y += 3;
                 } else {
                     this->render_area->SetClipRect(
-                        this->clip_x1 + 2, this->clip_y1 + 2,
-                        this->clip_x2 - 2, this->clip_y2 - 2);
+                        this->clip_rect.left + 2, this->clip_rect.top + 2,
+                        this->clip_rect.right - 2, this->clip_rect.bottom - 2);
                     draw_x += 2; draw_y += 2;
                 }
-            } else if (this->btn_type == 1) {
+            } else if (this->tribe_button_type == 1) {
                 draw_x++;
                 draw_y++;
                 this->render_area->SetClipRect(
-                    this->clip_x1 + 1, this->clip_y1 + 1,
-                    this->clip_x2 - 1, this->clip_y2 - 1);
-                if (this->has_text2) {
+                    this->clip_rect.left + 1, this->clip_rect.top + 1,
+                    this->clip_rect.right - 1, this->clip_rect.bottom - 1);
+                if (this->is_down) {
                     draw_x++;
                     draw_y++;
                 }
             } else {
-                if (this->has_text2) {
-                    this->frame_val++;
+                if (this->is_down) {
+                    frame++;
                 }
             }
 
-            if (this->fog_on)
+            if (this->disabled) {
+                fog_next_shape = 1;
                 _ASMSet_Shadowing(0xFF00FF, 0, 0x00FF00FF, 0);
-
-            if (this->color_tbl) {
-                _ASMSet_Color_Xform(*(int*)this->color_tbl);
-                ((TShape*)this->shape_ptr)->shape_draw(this->render_area, draw_x, draw_y, this->frame_val, 1, this->color_tbl);
-            } else {
-                ((TShape*)this->shape_ptr)->shape_draw(this->render_area, draw_x, draw_y, this->frame_val, 0, 0);
             }
 
-            if (this->fog_on)
-                _ASMSet_Shadowing(0, 0, 0, 0);
+            if (this->color_table) {
+                _ASMSet_Color_Xform(
+                    (rge_base_game->get_player()->color_table->id + 1) * 0x10);
+                this->pic[0]->shape_draw(this->render_area, draw_x, draw_y,
+                                         frame, 1,
+                                         this->color_table);
+            } else {
+                this->pic[0]->shape_draw(this->render_area, draw_x, draw_y,
+                                         frame, 0, 0);
+            }
+
+            if (this->disabled)
+                fog_next_shape = 0;
             this->render_area->Unlock(s_tpnl_btn_draw3);
         }
     }
 
-    if (this->show_garr && this->garr_num > 0) {
+    if (this->display_garrison && this->garrsion_number > 0) {
         HDC gdc = (HDC)this->render_area->GetDc(s_tpnl_btn_draw2);
         if (gdc) {
-            char buf[16];
-            sprintf(buf, "%d", this->garr_num);
+            char msg[10];
+            sprintf(msg, "%d", this->garrsion_number);
 
-            int hf = this->has_text2 ? 1 : 0;
+            int hf = this->is_down ? 1 : 0;
             int xpos = this->pnl_x + 3 + hf;
             int ypos = this->pnl_y + 2 + hf;
 
             SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
             SetBkMode(this->render_area->DrawDc, 1);
             SetTextColor(this->render_area->DrawDc, 0xCCCCCC);
-            TextOutA(this->render_area->DrawDc, xpos, ypos, buf, strlen(buf));
+            TextOutA(this->render_area->DrawDc, xpos, ypos, msg, strlen(msg));
             SelectClipRgn(this->render_area->DrawDc, 0);
 
             this->render_area->ReleaseDc(s_tpnl_btn_draw2);
         }
     }
 
-    ((void(*)(TRIBE_Panel_Button*))vt[0x2C/4])(this);
+    this->vf2c();
 }

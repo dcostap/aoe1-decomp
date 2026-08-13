@@ -17,6 +17,9 @@
 //   register topology is unresolved; do not promote as accepted drift.
 // - Natural negative invalid-object guard spelling was codegen-identical; the
 //   remove-log fprintf remains an out-of-order cold call before the remove call.
+// - Declaring the persistent remove candidate before scan locals, as the
+//   packet's line 632 zeroing precedes the line 634 active-size test, produced
+//   identical code; the structural frame and first hunk remain unresolved.
 
 #include <stdio.h>
 
@@ -80,10 +83,10 @@ extern FILE* DDlogf;
 
 void RGE_Doppleganger_Creator::perform_doppleganger_checks()
 {
+    RGE_Static_Object* remove_me = 0;
     unsigned long map_value;
     int i;
     RGE_Static_Object* object = 0;
-    RGE_Static_Object* remove_me = 0;
 
     if (this->active_size > 0) {
         i = 0;

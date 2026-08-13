@@ -21,6 +21,9 @@
 //   panel/building aliases, and a post-switch float reload; these either
 //   worsened positional/codegen metrics or only changed tail sharing, so they
 //   were rolled back.
+// - moved the display-row local below the render/DC phase so it follows the
+//   original ESI row lifetime and does not initialize a stack home in the
+//   entry guard; this is the narrow first-block/render-call-order lead.
 // - left in scratch: frame is 0x15c versus 0x158; remaining drift is chiefly
 //   VC5 block/tail placement (three fewer draw_item virtual sites and two
 //   fewer ftol sites), not an unresolved graphics surface, object offset, or
@@ -600,7 +603,6 @@ void TRIBE_Panel_Object::draw()
     short temp;
     float cur_fval;
     float orig_fval;
-    int row = 0;
     char name[100];
     char str[100];
     char work_name[100];
@@ -735,6 +737,7 @@ void TRIBE_Panel_Object::draw()
         this->render_area->ReleaseDc((char*)s_tpnl_obj_draw);
     }
 
+    int row = 0;
     unsigned char level = this->game_obj->master_obj->unit_level;
 
     if (level == 3 || level == 4 || level == 5 || level == 6 ||

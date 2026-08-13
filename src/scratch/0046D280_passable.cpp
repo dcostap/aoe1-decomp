@@ -15,6 +15,9 @@
 //   the VC5 local/frame/FPU grouping and the large scan CFG (rebuilt 1076B,
 //   frame 0x18 versus target 1207B, frame 0x20); this is left as a readable
 //   reconstruction rather than padded or volatile compiler steering.
+// - Probe 12 split each footprint bound into ordinary multiply, subtraction,
+//   and -400 statements.  It improved resync similarity but worsened strict
+//   diff by 7 bytes, so restore the validated typed reconstruction.
 
 extern "C" double floor(double value);
 extern "C" long __ftol(void);
@@ -44,7 +47,7 @@ struct RGE_Master_Static_Object {
 };
 
 struct RGE_Static_Object {
-    virtual ~RGE_Static_Object();
+    void* vtable_ptr;
     long id;
     RGE_Master_Static_Object* master_obj;
     void* owner;
@@ -109,7 +112,7 @@ struct RGE_Border_Set {
 };
 
 struct RGE_Map {
-    virtual ~RGE_Map();
+    void* vtable_ptr;
     RGE_Tile* map;
     long map_width;
     long map_height;
@@ -134,7 +137,7 @@ struct ManagedArray_int {
 
 class PathingSystem {
 public:
-    virtual ~PathingSystem();
+    void* vtable_ptr;
     int xSizeValue;
     int ySizeValue;
     uchar facetValue[255][255];
@@ -199,7 +202,7 @@ public:
 int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             int checkObjects)
 {
-    uint obstruction_column = 0;
+    uint local_14 = 0;
 
     this->currentObject = object;
     this->currentTerrainTable =
@@ -258,8 +261,8 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                     RGE_Tile* tile =
                         &this->mapValue->map_row_offset[row][minX];
                     do {
-                        obstruction_column = col;
-                        if (this->initialTile.x != obstruction_column ||
+                        local_14 = col;
+                        if (this->initialTile.x != local_14 ||
                             this->initialTile.y != row) {
                             int terrain = tile->terrain_type & 0x1F;
                             if (terrain != this->currentTerrainException1 &&
@@ -312,16 +315,16 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             do {
                 int col = yMin;
                 while (col < yMax) {
-                    obstruction_column = (uint)col;
+                    local_14 = (uint)col;
                     uchar packed = this->obstructionValue[0]
-                        [row * 0xFF + (obstruction_column >> 2)];
+                        [row * 0xFF + (local_14 >> 2)];
                     if (((packed >>
-                          (ObstructionValueShift[obstruction_column & 3] & 0x1F)) & 3) != 0) {
+                          (ObstructionValueShift[local_14 & 3] & 0x1F)) & 3) != 0) {
                         if (this->currentTargetID == -1 ||
                             row < this->minTarget.x ||
                             this->maxTarget.x < row ||
-                            (int)obstruction_column < this->minTarget.y ||
-                            this->maxTarget.y < (int)obstruction_column) {
+                            (int)local_14 < this->minTarget.y ||
+                            this->maxTarget.y < (int)local_14) {
                             goto blocked;
                         }
                         foundBlockingGroup = true;

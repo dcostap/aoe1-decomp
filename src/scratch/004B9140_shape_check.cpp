@@ -21,6 +21,16 @@
 //     offsets worsened the prologue and structural coverage; restored.
 // 12: direct nested Shape_Data_Offsets row lookup was codegen-equivalent to the
 //     named row pointer; restored the named typed decoder.
+// 13: explicit py*4 row offset reused for both outline and data tables improved
+//     the positional diff from 505 to 503 bytes; retained.
+// 14: split data_offset and a named data-table cursor were codegen duplicates.
+// 15: typed the +1c frame table as Shape_Info[]; emitted code was unchanged.
+// 16: canonical SLhape_File_Header Version ownership worsened the prologue and
+//     structural coverage; restored.
+// 17: removing redundant case 15 worsened size and shape; default remains with
+//     the explicit case for the current best source.
+// 18: one shared byte cursor across both format branches was a codegen duplicate.
+// 19: unsigned-char data and frame cursor surfaces were codegen duplicates.
 // left in scratch: canonical per-frame Shape_Info decoder and legacy walk are
 // reconstructed; remaining drift is the stream pointer/register basin, switch
 // case reload/coloring, and legacy tail layout. Not accepted_drift-safe.
@@ -43,7 +53,7 @@ public:
     char* current;        // +0c
     char gap10[4];
     void* table14;        // +14
-    char* shapeData;      // +18
+    unsigned char* shapeData; // +18
     char* frames;         // +1c
     unsigned char Check_shape(long, char*);
     unsigned char shape_check(long x, long y, long frame);
@@ -51,10 +61,12 @@ public:
 
 unsigned char TShape::shape_check(long x, long y, long frame)
 {
+    unsigned char* p;
+
     if (frame < 0) return 0;
     if (Check_shape(frame, (char*)0x00587058)) return 0;
 
-    char* base = this->shapeData;
+    unsigned char* base = this->shapeData;
     if (base != 0) {
         char* fr = this->frames + (frame << 5);
         Shape_Info* info = (Shape_Info*)fr;
@@ -62,12 +74,14 @@ unsigned char TShape::shape_check(long x, long y, long frame)
         int py = info->Hotspot_Y + y;
         int width = info->Width;
         if (px < 0 || py < 0 || px >= width || py >= info->Height) return 0;
-        char* rowtab = base + info->Shape_Outline_Offset;
-        int minx = *(short*)(rowtab + py * 4);
-        int span = *(short*)(rowtab + py * 4 + 2);
+        int row_offset = py * 4;
+        unsigned char* rowtab = base + info->Shape_Outline_Offset;
+        int minx = *(short*)(rowtab + row_offset);
+        int span = *(short*)(rowtab + row_offset + 2);
         if (minx < 0 || px < minx || px > width - span) return 0;
-        int* row = (int*)(base + info->Shape_Data_Offsets);
-        unsigned char* p = (unsigned char*)(base + row[py]);
+        unsigned char* data = base + info->Shape_Data_Offsets;
+        int data_offset = *(int*)(data + row_offset);
+        p = (unsigned char*)(base + data_offset);
         while (minx < width) {
             if (px < minx) return 0;
             x = *p++;
@@ -133,7 +147,7 @@ unsigned char TShape::shape_check(long x, long y, long frame)
     int minY = *(int*)(rec + 0x0c);
     int minX2 = *(int*)(rec + 8);
     int maxX2 = *(int*)(rec + 0x10);
-    unsigned char* p = (unsigned char*)(rec + 0x18);
+    p = (unsigned char*)(rec + 0x18);
     int maxY2 = *(int*)(rec + 0x14);
     if (y < minY || y > maxY2 || x < minX2 || x > maxX2) return 0;
     if (minY < y) {

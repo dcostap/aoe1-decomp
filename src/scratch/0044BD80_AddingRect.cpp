@@ -10,9 +10,18 @@
 //   compare and dword signed-saturation topology.
 // - The donor-era <stdlib.h>/<string.h> context is retained: it moved the
 //   source into the 494-byte, 89.53%-shape / 62-edit-byte basin.
-// - Ten probes exhausted this assignment. Remaining drift begins at the
-//   initial row-count register copy and includes the later parameter-home /
-//   register schedule; no calls or ABI uncertainties remain.
+// - The binary's duplicated edge gate is best expressed as the natural
+//   arithmetic predicate `w - x >= 0`; moving the first cursor assignment
+//   before that gate restores the complete first setup block.
+// - The second and third edge updates use indexed ProbArray reads beside
+//   their store pointers, matching the close fractal.cpp donor forms.
+//   This reaches a 506-byte body, 94.19%-shape, and 31-edit-byte basin.
+// - Direct `w >= x`, h/y parameter-home mutations, and a one-shot row-width
+//   local were regressive or codegen duplicates and were not retained.
+// - A typed `rowCount = iVar3` second-edge loop-counter copy was also a
+//   codegen duplicate (506 bytes, diff 222); the clean source was restored.
+//   Remaining drift is the second-edge-row setup and later schedule; no
+//   calls or ABI uncertainties remain.
 
 #include <stdlib.h>
 #include <string.h>
@@ -68,9 +77,9 @@ void PointMaker::AddingRect(int x, int y, int w, int h) {
 
     if (iVar6 >= 0) {
         if (h - y >= 0) {
-            if (iVar6 >= 0) {
-            w = iVar6 + 1;
             iVar2 = iVar5;
+            if (w - x >= 0) {
+            w = iVar6 + 1;
             do {
                 int probAdd = ProbabilityAdd;
                 if (iVar2 >= 1 && iVar2 < SizeArrays - 1) {
@@ -87,11 +96,12 @@ void PointMaker::AddingRect(int x, int y, int w, int h) {
                 probAdd = ProbabilityAdd;
                 if (iVar8 >= 1 && iVar8 < SizeArrays - 1) {
                     char* p = ProbArray + iVar8;
-                    if (*p == 0) {
+                    char value = ProbArray[iVar8];
+                    if (value == 0) {
                         *p = (char)probAdd;
                         ProbabilityTiles++;
-                    } else if (probAdd + (int)*p < 0xFF) {
-                        *p = (char)(probAdd + (int)*p);
+                    } else if (probAdd + (int)value < 0xFF) {
+                        *p = (char)(probAdd + (int)value);
                     } else {
                         *p = (char)-1;
                     }
@@ -108,11 +118,12 @@ void PointMaker::AddingRect(int x, int y, int w, int h) {
                 int probAdd = ProbabilityAdd;
                 if (iVar5 >= 1 && iVar5 < SizeArrays - 1) {
                     char* p = ProbArray + iVar5;
-                    if (*p == 0) {
+                    char value = ProbArray[iVar5];
+                    if (value == 0) {
                         *p = (char)probAdd;
                         ProbabilityTiles++;
-                    } else if (probAdd + (int)*p < 0xFF) {
-                        *p = (char)(probAdd + (int)*p);
+                    } else if (probAdd + (int)value < 0xFF) {
+                        *p = (char)(probAdd + (int)value);
                     } else {
                         *p = (char)-1;
                     }

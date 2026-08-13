@@ -56,6 +56,11 @@
 //   best declaration probes were tested. The short and no-op forms regressed structure;
 //   the scoped-count and split-best forms were codegen duplicates. Restored the clean scalar
 //   source; the original four-slot local window remains the blocker.
+// - Shard E follow-up: period-plausible long locals were codegen-neutral; delayed best
+//   assignment regressed diff 153. Nested non-greater control flow, function-scope loop/value
+//   declarations, and an inner current initializer were duplicate or neutral. Restored the
+//   validated natural scalar source. No new structural lead; the original id spill and frame
+//   remain unresolved.
 
 class RGE_Game_World;
 

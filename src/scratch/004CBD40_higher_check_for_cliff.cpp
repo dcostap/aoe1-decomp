@@ -24,6 +24,12 @@
 // combat-object hierarchy, entry-declared node/cliff locals, and entry endpoint-y2 all emitted
 // the same 421-byte basin. Restored the clean typed source; unresolved clue remains oracle
 // EBP=y2 plus EBX=node while this build chooses EBP=node and EBX=angle.
+// fresh pass r3: reversed the typed map-height predicate to map->map_height <= row, matching
+// the decompiler predicate; VC5 reversed cmp operands and jge to jle, worsening the first hunk.
+// Restored the clean predicate; no source change retained.
+// fresh pass r4: split the typed terrain height and width bounds into separate natural guards;
+// VC5 reversed the height/width compares and worsened the first hunk by 4 bytes.
+// Restored the combined clean guard; no source change retained.
 // Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
 
 extern "C" double __cdecl atan2(double, double);

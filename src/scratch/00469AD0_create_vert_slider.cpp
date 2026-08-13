@@ -26,6 +26,8 @@
 // duplicates. Keep the typed full-ABI source and direct natural returns.
 // refill-469AD0-r2: explicit success-else-failure arms with a trailing success return were
 // codegen-identical (46-byte drift); VC5 still emits a cloned failure cleanup after success.
+// shardE-469AD0: nested status/setup blocks with an explicit result join were also a duplicate;
+// restored the direct natural guard. The only gap remains the shared /GX failure cleanup tail.
 
 struct tagRECT {
     long left;

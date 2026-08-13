@@ -16,6 +16,22 @@
 // Declaration initialization of the zero loop index was a duplicate. The
 // remaining structural gap starts at the entry zero-index scheduling and is
 // 78 bytes beyond the original boundary; no register-only tuning is justified.
+// claim shardA4-4E9820-r1: corrected the typed main-decision ownership so rule
+// evaluation uses md->aiPlayer at +0x1256C, while victory lookup keeps md->player.
+// This preserved the call set and improved exact-block coverage from 51.63% to 58.60%.
+// moved the natural zero iterator assignment before timeout polling and exposed
+// the idle score accumulator before its action loop; size fell by 5 bytes.
+// spelled the first idle count and capacity predicates in iterator order; the
+// capacity compare moved to the original instruction shape with no size change.
+// used the idle result directly for the action execute tail; this removed the
+// redundant result copy, reduced the body to 1463 bytes, and reached 1165 diff bytes.
+// scoped the score local before the array alias as a diagnostic variant; rolled it
+// back because it reached 1189 diff bytes. Best source keeps the typed result tail.
+// shardA6 probe lead: keep the final rule-set state behind the same typed array
+// alias used by the strategy loops, so operator[] and the follow-up execute call
+// share one source-level owner.
+// shardA6 result: the typed final rule-set alias was a codegen duplicate; restored
+// the direct state spelling because it did not move the first structural hunk.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
@@ -69,6 +85,8 @@ class TribeMainDecisionAIModule {
 public:
     char gap_00[0xF0];
     TRIBE_Player* player;
+    char gap_F4[0x12478];
+    TRIBE_Player* aiPlayer;
 };
 
 template <class T>
@@ -170,8 +188,9 @@ public:
 
 int TribeStrategyAIModule::update(int parameter)
 {
-    int i = 0;
+    int i;
     int result;
+    int bestResult;
     int worstRuleResult;
     int ruleResult;
     int rule;
@@ -180,6 +199,7 @@ int TribeStrategyAIModule::update(int parameter)
     RGE_Victory_Entry* victoryEntry;
     unsigned int victoryCondition;
 
+    i = 0;
     this->victoryConditionChangeTimeout++;
     if (this->victoryConditionChangeTimeout >= 0) {
         this->victoryConditionChangeTimeout = i;
@@ -209,33 +229,31 @@ int TribeStrategyAIModule::update(int parameter)
         }
     }
 
-    i = 0;
     result = -1;
+    bestResult = 0;
     worstRuleResult = -1;
-    if (this->idleRules.numberValue > 0) {
+    if (this->idleRules.numberValue > i) {
         ManagedArray<int>* idleRules = &this->idleRules;
-        int bestResult = 0;
         do {
-            if (this->idleRules.maximumSizeValue - 1 < i) {
+            if (i > this->idleRules.maximumSizeValue - 1) {
                 idleRules->resize(i + 1);
             }
             ruleResult = this->vcRules.evaluateAsNonInProgress(
-                this->md->player,
+                this->md->aiPlayer,
                 idleRules->value[i]);
             if (bestResult < ruleResult) {
                 result = (*idleRules)[i];
                 bestResult = ruleResult;
             }
             ++i;
-            worstRuleResult = result;
         } while (i < this->idleRules.numberValue);
     }
 
-    if (worstRuleResult != -1 &&
+    if (result != -1 &&
         this->vcRules.execute(
-            this->md->player,
+            this->md->aiPlayer,
             this->currentVictoryConditionValue,
-            worstRuleResult) == 1) {
+            result) == 1) {
         int executingCount = this->executingRules.numberValue;
         ManagedArray<int>* executingRules = &this->executingRules;
         i = 0;
@@ -244,7 +262,7 @@ int TribeStrategyAIModule::update(int parameter)
                 if (this->executingRules.maximumSizeValue <= i) {
                     break;
                 }
-                if (executingRules->value[i] == worstRuleResult) {
+                if (executingRules->value[i] == result) {
                     goto remove_idle_rule;
                 }
                 ++i;
@@ -253,7 +271,7 @@ int TribeStrategyAIModule::update(int parameter)
         if (this->executingRules.maximumSizeValue - 1 < executingCount) {
             executingRules->resize(executingCount + 1);
         }
-        executingRules->value[this->executingRules.numberValue] = worstRuleResult;
+        executingRules->value[this->executingRules.numberValue] = result;
         this->executingRules.numberValue++;
 
 remove_idle_rule:
@@ -262,7 +280,7 @@ remove_idle_rule:
         if (idleCount > 0) {
             int* idleValue = this->idleRules.value;
             do {
-                if (*idleValue == worstRuleResult) {
+                if (*idleValue == result) {
                     break;
                 }
                 ++i;
@@ -293,7 +311,7 @@ remove_idle_rule:
         ManagedArray<int>* executingRules = &this->executingRules;
         do {
             ruleResult = this->vcRules.evaluateAsInProgress(
-                this->md->player,
+                this->md->aiPlayer,
                 (*executingRules)[i]);
             if (ruleResult < result) {
                 if (this->executingRules.maximumSizeValue - 1 < i) {
@@ -308,7 +326,7 @@ remove_idle_rule:
     }
 
     if (worstRuleResult != -1 &&
-        this->vcRules.stopExecution(this->md->player, worstRuleResult) == 1) {
+        this->vcRules.stopExecution(this->md->aiPlayer, worstRuleResult) == 1) {
         int executingSize = this->executingRules.maximumSizeValue;
         i = 0;
         if (executingSize > 0) {
@@ -364,10 +382,10 @@ add_idle_rule:
     if (this->vcRuleSet.numberValue > 0) {
         do {
             ruleResult = this->vcRules.evaluateAsNonInProgress(
-                this->md->player, this->vcRuleSet[i]);
+                this->md->aiPlayer, this->vcRuleSet[i]);
             if (ruleResult == -1) {
                 this->vcRules.execute(
-                    this->md->player,
+                    this->md->aiPlayer,
                     this->currentVictoryConditionValue,
                     this->vcRuleSet[i]);
             }

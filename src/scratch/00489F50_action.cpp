@@ -17,6 +17,8 @@
 //   bytes and lost structural parity, so it is not retained.
 // - Focused variant lab of natural/switch/negated/repeated/ternary late gates
 //   found no invariant-eligible exact output; clean source remains authoritative.
+// - Tried a branch-local typed long alias for the late action code; emitted code
+//   was unchanged at 311 bytes, so restored the clean source.
 
 #include <string.h>
 

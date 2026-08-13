@@ -9,7 +9,10 @@
 // 6: Added temporary volatile pad to recover exact size under /O2 for diagnostics; got exact 979 bytes but first mismatch offset 4 and broad 87.0% positional due artificial early stores; removed before final because it is not a valid match path.
 // 7: Remaining blocker is broad VC5 frame/local topology: natural C has the right field offsets and broad call surface but compiles 3 bytes short; exact-size diagnostic forms are broad from prologue.
 // 8: Reconstructed named TPanel -> TEasy_Panel ownership and typed TDrawArea/TShape/RGE_Color_Table surfaces. Corrected need_redraw at +0x38 and background_pos at +0x318, and renamed draw_setup/draw_finish virtual slots. Baseline is 973 bytes with the original control flow preserved.
+// 9: Direct typed shadow_area member access improved positional diff by 36 bytes and exact-block coverage, but widened the size gap to 14 bytes; restored.
+// 10: Split the clear-color conditional into explicit use_alt branches recovered original clear blocks and shape, but remained non-exact; restored.
 // GIVEUP: left in scratch; no accepted_drift because natural build is size-short and diagnostic exact-size variants are broad/prologue-different.
+// shardE-4675C0: direct shadow_area calls plus reuse of pic_hgt as the shadow tile height improved structural coverage; centered-width swap was rolled back.
 
 typedef unsigned char uchar;
 
@@ -217,17 +220,18 @@ void TEasy_Panel::draw_background(int use_alt)
         if (this->need_redraw == 2)
             this->render_area->Clear(&this->clip_rect, this->background_color2);
 
-        TDrawArea* sarea = this->shadow_area;
-        int tile_h = sarea->Height;
-        int tile_w = sarea->Width;
+        pic_hgt = this->shadow_area->Height;
+        int tile_w = this->shadow_area->Width;
         switch (this->background_pos) {
         case 0:
-            sarea->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
+            this->shadow_area->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
             break;
         case 1: {
-            short xx = (short)this->pnl_x + (short)(this->pnl_wid / 2) - (short)(tile_w / 2);
-            short yy = (short)this->pnl_y + (short)(this->pnl_hgt / 2) - (short)(tile_h / 2);
-            sarea->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
+            short xx = (short)this->pnl_x + (short)(this->pnl_wid / 2);
+            xx -= (short)(tile_w / 2);
+            short yy = (short)this->pnl_y + (short)(this->pnl_hgt / 2);
+            yy -= (short)(pic_hgt / 2);
+            this->shadow_area->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
             break;
         }
         case 2: {
@@ -237,11 +241,11 @@ void TEasy_Panel::draw_background(int use_alt)
                     long xx = 0;
                     if (this->pnl_wid >= 0) {
                         do {
-                            sarea->Copy(this->render_area, xx + this->pnl_x, yy + this->pnl_y, 0, 0);
+                            this->shadow_area->Copy(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0);
                             xx += tile_w;
                         } while (xx <= this->pnl_wid);
                     }
-                    yy += tile_h;
+                    yy += pic_hgt;
                 } while (yy <= this->pnl_hgt);
             }
             break;
@@ -283,7 +287,7 @@ void TEasy_Panel::draw_background(int use_alt)
                     long xx = 0;
                     if (this->pnl_wid >= 0) {
                         do {
-                            pic->shape_draw(this->render_area, xx + this->pnl_x, yy + this->pnl_y, 0, 0, 0);
+                            pic->shape_draw(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0, 0);
                             xx += pic_w;
                         } while (xx <= this->pnl_wid);
                     }

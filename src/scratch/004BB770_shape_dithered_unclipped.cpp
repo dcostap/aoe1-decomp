@@ -42,6 +42,17 @@
 //   local declaration reorder were duplicate or worse basins; restored.
 // - Final lead remains the original source's height/pitch register coloring
 //   and save_buffer home, with calls, frame, CFG count, and RLE behavior known.
+// shardE-4BB770 probes (2026-08-13):
+// - Moving the payload cursor before the height expression improved the clean
+//   source from 326 to 324 strict bytes; it did not change the broad setup.
+// - A long done flag plus that payload order reached the prior 404-byte basin,
+//   then improved it to 318 bytes; this diagnostic source was not retained
+//   because the oracle's done home is byte-width and the natural source uses
+//   the proven byte flag.
+// - Splitting aligned width, copying rows, and local declaration reordering
+//   were worse or duplicate basins. Reversed pitch terms were duplicate.
+// - Restored the natural typed byte-RLE source. Remaining gap is the early
+//   pitch/height/source register coloring and save_buffer home allocation.
 
 typedef unsigned char uchar;
 struct Shape_Header { long bounds; long origin; long xmin; long ymin; long xmax; long ymax; };

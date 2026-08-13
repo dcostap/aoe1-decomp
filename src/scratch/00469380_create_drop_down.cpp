@@ -32,6 +32,18 @@
 // grew the frame; carrying the second calloc value had the same blocker.
 // 19: negated and ternary failure predicates emitted the unchanged 21-byte
 // tail; restored the clean == 0 spelling.
+// 20: localized direct return after final free, suggested by the original
+// delayed stack cleanup; emitted code was unchanged and the clean form remains authoritative.
+// 21: split the cleanup success return from the early zero finish; /GX duplicated
+// the EH epilogue and grew 33 bytes, so restored the shared finish.
+// 22: a pointer result carrier emitted the same 844-byte basin; restored.
+// 23: a comma return deferred the failure load past free but changed loop and
+// argument scheduling and left sete after EH restore; restored.
+// 24: an unsigned-byte result changed the frame to 0xC and emitted 837 bytes;
+// restored.
+// 25: a register-qualified result duplicated the 844-byte basin; restored.
+// 26: reusing the list home as the result changed the null branch and emitted
+// 826 bytes; restored. Clean source remains the best reconstruction.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>

@@ -13,6 +13,12 @@
 //   preserved size/frame/call-set but collapsed to the same code group.
 // - tested the Ghidra-derived color-table ownership expressions for both
 //   transparency scans; VC5 emitted the same five-byte register drift.
+// - reused the natural typed bits pointer for both scan calls; emitted code
+//   stayed unchanged.
+// - used a typed DIB header alias for the scan addresses; emitted code stayed
+//   unchanged.
+// - scoped a natural typed transparency bitmap pointer to the allocation-
+//   success access lifetime; emitted code stayed unchanged.
 // - left in scratch: natural typed source, 5 differing bytes at the two
 //   transparency scan address/register sequences.
 

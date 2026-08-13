@@ -60,6 +60,10 @@
 // base both changed the frame to 0x8 and widened the mismatch to 235 bytes.
 // Direct typed facet predicates reproduced the 215-byte result. Restored the
 // documented best source; no new raw list cursor was added.
+// Shard E pass: restored this clean source and confirmed the 215-byte result.
+// The remaining paired hunk is the transient list-base load into ECX before
+// the cursor add. Explicit list aliases changed the frame or duplicated code.
+// No new natural lead remains in this pass.
 
 #include <stdio.h>
 

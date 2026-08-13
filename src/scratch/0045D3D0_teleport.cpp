@@ -19,6 +19,8 @@
 //   regressive.  A redundant countdown reset improved shape but emitted 495B
 //   past the boundary, so it was rolled back.  Remaining gap is local/register
 //   coloring and stack-home order; no source-only exact match in this pass.
+// - Nested typed option-then-tile guards preserved the observed branch order
+//   but emitted the same 491B code; restored the combined natural guard.
 
 #include <math.h>
 

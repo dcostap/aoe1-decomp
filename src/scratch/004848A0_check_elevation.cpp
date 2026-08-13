@@ -38,6 +38,21 @@
 // evidence. Prior bounded probes already exhausted first-scan row/count and
 // second-scan liveness/layout families; no new source-supported lead justified
 // replacing this readable 397-byte canonical reconstruction.
+// Fresh worker (shardE-4848A0):
+// - Baseline repeated the canonical typed two-scan source (397 bytes, diff 349).
+// - Loading the second row base through row_ptr2 improved block/edit alignment
+//   without changing size or strict diff; retained as a natural cursor form.
+// - Reusing short-range names, hoisting first-scan declarations, and counted
+//   while/for variants were duplicate or broader basins. Explicit radius-home
+//   reuse was broader and was rolled back.
+// - Reordering first row_ptr before row_offset was the best new lead: 394 bytes,
+//   diff 323, shape 83.55%, with the oracle's saved-this, row-pointer, and
+//   offset homes aligned. It still misses the count/y2/x2 home rotation and
+//   remains structurally non-exact. A final index1 local probe broadened to 375
+//   bytes and was rolled back.
+// Paused: retain the readable row_ptr-before-offset reconstruction. Remaining
+// blocker is the first-scan local-home rotation; no further blind variants fit
+// the evidence budget.
 // Fresh worker probes (orch-rmmelev-fresh-03):
 // - Reusing the dead radius home for the first-scan clipped upper row bound
 //   improved the diagnostic output to 398 bytes / 322 differing bytes, but
@@ -110,11 +125,18 @@ public:
 uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev)
 {
     long count = 0;
+    long x1;
+    long y1;
+    long y2;
+    long x2;
+    long row_offset;
+    RGE_Tile** row_ptr;
+    char* row;
     if (radius > 0) {
-        long x1 = x - radius;
-        long y1 = y - radius;
-        long y2 = y + radius;
-        long x2 = radius + x;
+        x1 = x - radius;
+        y1 = y - radius;
+        y2 = y + radius;
+        x2 = radius + x;
         if (x1 < 0) {
             x1 = 0;
         }
@@ -127,9 +149,9 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         if (y2 >= this->map_height) {
             y2 = this->map_height - 1;
         }
-        long row_offset = x1 * 24;
-        RGE_Tile** row_ptr = &this->map_row_offset[y1];
-        char* row = (char*)*row_ptr;
+        row_ptr = &this->map_row_offset[y1];
+        row_offset = x1 * 24;
+        row = (char*)*row_ptr;
         for (; y1 <= y2; ++y1) {
             if (x1 <= x2) {
                 unsigned char* cell = (unsigned char*)row + row_offset + 5;
@@ -154,32 +176,35 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         }
     }
 
-    long x1b = x - 2;
-    long y1b = y - 2;
-    long x2b = x + 2;
-    long y2b = y + 2;
-    if (x1b < 0) {
-        x1b = 0;
+    {
+    long x1 = x - 2;
+    long y1 = y - 2;
+    long x2 = x + 2;
+    long y2 = y + 2;
+    if (x1 < 0) {
+        x1 = 0;
     }
-    if (y1b < 0) {
-        y1b = 0;
+    if (y1 < 0) {
+        y1 = 0;
     }
-    if (x2b >= this->map_width) {
-        x2b = this->map_width - 1;
+    if (x2 >= this->map_width) {
+        x2 = this->map_width - 1;
     }
-    if (y2b >= this->map_height) {
-        y2b = this->map_height - 1;
+    if (y2 >= this->map_height) {
+        y2 = this->map_height - 1;
     }
 
-    long row_offset2 = x1b * 24;
-    RGE_Tile** row_ptr2 = &this->map_row_offset[y1b];
-    unsigned char* row_base2 = (unsigned char*)this->map_row_offset[y1b] + row_offset2;
-    if (y1b <= y2b) {
-        long rows_left = y2b - y1b + 1;
+    long row_offset2 = x1 * 24;
+    RGE_Tile** row_ptr2 = &this->map_row_offset[y1];
+    // Keep the initial second-scan row load on the named row-table cursor.
+    // The oracle loads the row pointer and its row address as separate values.
+    unsigned char* row_base2 = (unsigned char*)*row_ptr2 + row_offset2;
+    if (y1 <= y2) {
+        long rows_left = y2 - y1 + 1;
         do {
-            if (x1b <= x2b) {
+            if (x1 <= x2) {
                 unsigned char* cell = row_base2 + 5;
-                long cols_left = x2b - x1b + 1;
+                long cols_left = x2 - x1 + 1;
                 do {
                     if ((*cell >> 5) == elev) {
                         ++count;
@@ -192,6 +217,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
             row_base2 = (unsigned char*)*row_ptr2 + row_offset2;
             --rows_left;
         } while (rows_left != 0);
+    }
     }
 
     return (uchar)count;

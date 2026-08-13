@@ -14,6 +14,7 @@
 // 11: Kept one ordinary initialized fill local for the three dropsite rows to test whether the original EDX=1 survives the preceding history REP fill; source remains semantically named and typed.
 // 12: Reused one ordinary loop counter across the sequential history/dropsite fills, matching the decompiler's shared iVar11 lifetime instead of separate block-local counters.
 // 13: Spelled the fixed play-history clear as a typed first-element memset with the proven 0xFA00 byte size; this tests intrinsic argument scheduling without raw frame/address plumbing.
+// 14: Replaced the play-history memset with a typed countdown fill; the first paired LEA/count hunk now matches and the first mismatch moved to the allocation guard at +0x232.
 // Main-agent audit: retained the canonical InformationAIModule/InfluenceMap
 // inheritance and named member layout. The remaining narrow I/P/B accesses
 // cover fields whose ownership/layout is not yet stable; the exact-size
@@ -192,7 +193,11 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
     for (i = 0; i < 11; i++) {
         this->unitHistory[i] = 0;
     }
-    memset(&this->playHistory[0], 0, 0xFA00);
+    int* playHistory = this->playHistory;
+    for (int remaining = 16000; remaining != 0; --remaining) {
+        *playHistory = 0;
+        ++playHistory;
+    }
 
     for (i = 0; i < 4; i++) {
         this->dropsitesByAge[0][i] = 0;

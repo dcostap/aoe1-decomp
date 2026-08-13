@@ -16,6 +16,12 @@
 //   typed cursor were tested.  A byte-stride cursor was diagnostic only and is
 //   not retained; the remaining lead is VC5 register/liveness scheduling in
 //   the rule stores and eligible-land loop.
+// - A typed selected land-info owner preserved the entry-plus-4 address, but
+//   VC5 allocated it to EBX instead of the original ESI and worsened the
+//   first hunk; restored the validated selected-entry form.
+// - Same-TU direct maps storage and the full module virtual-slot surface
+//   changed only resync bytes (368 versus 362) with no positional movement;
+//   restored the prior clean source.
 
 struct RGE_Map;
 struct RGE_Random_Map_Module_List;

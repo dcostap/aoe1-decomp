@@ -20,6 +20,9 @@
 // still compiler-tail-merged (1 rebuilt site versus 4 original sites).
 // probe 10: restored canonical nested COMMPLAYEROPTIONS ownership after the
 // flat overlay diagnostic; emitted code was unchanged.
+// probe 11: reordered the switch cases toward the original handler order;
+// call-site alignment improved to 86.36%, but size grew by 36 bytes and the
+// positional diff worsened, so restored the clean case order.
 // left in scratch: canonical typed behavior/call surface is reconstructed, but
 // the VC5 frame/parameter-home reuse, switch handler placement, and four
 // distinct free call sites remain structurally unresolved.

@@ -16,6 +16,13 @@
 //   emitted the same 618-byte code; retained the period-plausible switch.
 // - Restored the pinned clean source for closure; the remaining extra
 //   virtual +0x38 call is the unresolved shared sprite-tail gap.
+// - Grouped the master-sprite states into one typed post-switch call; VC5
+//   emitted the same 618-byte code and kept the extra virtual +0x38 call.
+// - Reordered the switch arms to the Ghidra listing order with a typed sprite
+//   result; code grew to 622 bytes and call alignment worsened, so restored.
+// - Tried a typed state enum with a sprite local declared after state storage;
+//   VC5 kept the extra virtual +0x38 call, grew to 622 bytes, and worsened the
+//   first dispatch hunk. Restored the clean direct-call source.
 
 class RGE_Sprite;
 class RGE_Sound;

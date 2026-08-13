@@ -36,6 +36,11 @@
 //     ENTIRE prologue byte-identical and raised shape to 65.0% (first mismatch now
 //     only the fog_flag local slot +0x90).
 //   p9 layout: restored natural declaration order - no change (negative).
+//   p10 control-flow: assigned direction before cur_col_num to match the
+//     original PDB statement order at view.cpp:2634/2637; strict diff improved
+//     2529 -> 2526 bytes, but edit/resync diff worsened. Rolled back to the
+//     clean natural source; the structural stage and corpus-boundary block
+//     remain unresolved.
 //   Status: structurally faithful (frame/saved-regs/calls/prologue exact, 65% shape,
 //     ~42% exact-block coverage); remaining drift is VC5 local-slot permutation
 //     (picked_type/fog_flag/tile/tile_ptr/start_map_row2/direction/tile_screen_row/
@@ -191,7 +196,7 @@ public:
     void* Terrain_Clip_Mask;      // +0x178
     void* Terrain_Fog_Clip_Mask;  // +0x17C
 
-    long view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, tagPOINT* p2,
+    long view_function(register unsigned char a1, register unsigned char a2, tagPOINT* p1, tagPOINT* p2,
                        void** out_obj, float* out_x, float* out_y, short* out_col, short* out_row);
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
     RGE_Static_Object* hit_object(RGE_Tile* tile, short x, short y, short a, short b,
@@ -200,7 +205,7 @@ public:
     int hit_tile(RGE_Tile* tile, short sx, short sy, short a, short b, tagPOINT* pt);
 };
 
-long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, tagPOINT* p2,
+long RGE_View::view_function(register unsigned char a1, register unsigned char a2, tagPOINT* p1, tagPOINT* p2,
                              void** out_obj, float* out_x, float* out_y, short* out_col, short* out_row)
 {
     unsigned char visible;

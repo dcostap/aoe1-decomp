@@ -24,6 +24,9 @@
 // proven vptr fields was tested and rolled back because it changed the early
 // VC5 prologue/register basin. The typed vptr fields remain explicit binary
 // layout evidence in this unresolved scratch reconstruction.
+// 19: Same-TU taiinf donors and ABI evidence show md->object returns a typed
+// RGE_Static_Object*. Corrected that ownership surface and removed two casts;
+// this is a direct typed-call probe, not a register-coloring adjustment.
 
 extern double __cdecl floor(double);
 extern float DAT_00575568;
@@ -78,7 +81,7 @@ struct MainDecisionAIModule {
     char gap0[0xF0];
     Player* player; // +F0
     ManagedArray_int objects; // +F4
-    int object(int id);
+    RGE_Static_Object* object(int id);
 };
 struct TribeTacticalAIModule {
     int numberGatherersWithTarget(int id);
@@ -107,7 +110,7 @@ public:
 int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId, float& outX, float& outY, int& outResourceId, int* exclude, int excludeCount)
 {
     outResourceId = -1;
-    RGE_Static_Object* gatherer = (RGE_Static_Object*)this->md->object(gathererId);
+    RGE_Static_Object* gatherer = this->md->object(gathererId);
     if (gatherer) {
 
     unsigned char zone = gatherer->currentZone();
@@ -143,7 +146,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 if (exclude[j] == mem->id) { excluded = 1; break; }
             }
             if (excluded == 1) goto next;
-            obj = (RGE_Static_Object*)this->md->object(mem->id);
+            obj = this->md->object(mem->id);
             if (!obj) {
                 mem->gone = 1;
                 if (this->dropsiteIds[resType] == mem->id) needUpdateDropsite = 1;

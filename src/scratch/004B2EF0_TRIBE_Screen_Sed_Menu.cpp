@@ -30,6 +30,12 @@
 // - stdlib header context was a codegen duplicate.  A title member-initializer
 //   was slightly worse.  The metric-best pointer-alias variant was 12 bytes
 //   short and structurally wrong, so it is not retained.
+// - title-before-button[0] matched the natural same-TU field order hypothesis,
+//   but reversed the two LEAs and worsened the diff to 415 bytes; restored.
+// - shardA6 session: natural button-array aliases improved the diagnostic diff
+//   to 398-406 bytes but shrank the body by 12 bytes; title-first layout was
+//   415 bytes, and positive success nesting grew the body to 527 bytes. All
+//   variants were rolled back; clean source remains 504 bytes and 412 diff.
 // - left in scratch: early constructor zero-carrier/store scheduling and
 //   setup-argument interleaving remain unresolved after the 10-probe budget.
 

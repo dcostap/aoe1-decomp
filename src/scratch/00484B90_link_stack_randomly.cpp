@@ -114,6 +114,12 @@ public:
 // guard/do-while tail remains a duplicate. Restored the natural direct-count
 // source. Source audit: canonical named Map_Stack fields, inherited map fields,
 // direct member calls, and no volatile, raw-address, or codegen-only scaffolding.
+// shardE-484B90: declaration-order, standalone-product, and late-width-local
+// probes all retained the two-byte terminal product-load mismatch. A direct
+// do/while count form widened the block shape and was rolled back. A neutral
+// width expression and separate product/division statement were codegen
+// duplicates. Restored the canonical for-loop source; no new natural lead
+// remains beyond the opposite commutative load order at 00484BE2/00484BE5.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     virtual unsigned char generate();

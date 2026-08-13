@@ -17,6 +17,9 @@
 // removed the compiler-generated duplicate call site and restored 1381 bytes,
 // 49 calls, and the original call order.  Remaining drift is localized around
 // EH/vtable relocation bytes and the branch before the default-player path.
+// 9: placed typed set_line calls in the two source branches, matching the
+// packet's branch-local line 403 and compiler tail merge; diff improved to 176
+// bytes with 86.26% exact-block coverage, so this natural form is retained.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
@@ -346,12 +349,12 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel((char*)0
                 break;
         }
         --idx;
+        this->player_number_list->set_line(idx);
     } else {
         this->set_player_active(0, 1);
         this->set_player_active(1, 1);
-        idx = 1;
+        this->player_number_list->set_line(1);
     }
-    this->player_number_list->set_line(idx);
     this->SavePlayerActiveStatus();
     this->set_curr_child(this->bottom_panel);
     this->position_panels();

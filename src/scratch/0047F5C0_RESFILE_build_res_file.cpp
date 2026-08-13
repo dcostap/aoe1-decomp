@@ -43,6 +43,11 @@
 //   Follow-up: reordered the typed predecessor and handle declarations; VC5
 //     emitted the same frame and code. Scoped input/output handles also emitted
 //     the same code. Restored the clean natural source.
+//   Shard-E: PDB-named numResTypes/buildFile ABI spelling was a codegen
+//     duplicate. A 0x3C header plus adjacent directory_size improved the
+//     diagnostic diff to 633 but reduced the frame to 0x49C; it was not kept.
+//     A banner_msg + 4 write, volatile ID_List home, and hoisted directory
+//     counters produced no useful clean-source gain. Restored the 0x40 header.
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -181,6 +181,7 @@
 // - converted case7 to reuse the incoming tactical parameter slot as the HP accumulator (with a saved tactical pointer), matching original [esp+30] accumulator and [esp+38] index topology. Positional worsened to 3288 but edit equality improved to 3940 and the first switch displacement moved much closer (0x1599 vs original 0x159e). Kept as a layout/fidelity lead; remaining local drift is EB P/EDI coloring (saved tactical in EBP, unit pointer in EDI) vs original tactical in EDI, unit pointer in EBP, plus roll still at [esp+40] instead of original [esp+18].
 // - register keyword and a far label for the case7 tactical-accumulator tail compiled identically; kept no keyword and source label only where useful.
 // - tactical-parameter-slot accumulator variant plus raw `*(int*)&tactical` call-surface probe worsened (3340 positional/3719 edit equal) and risked wrong call receiver; rolled back to the better positional case7 shape. A top-level rollScratch and unitp/tt declaration-order/register probes compiled identically.
+// - resumed narrow pass: packet asm shows case4 distance stays as an FPU value into calculatePriority; removed the unsupported int truncation. Calls now have exact aggregate target counts, with 3298 positional bytes and 105 bytes of extra code; left as best typed reconstruction.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
@@ -734,8 +735,8 @@ case20_next:
                         int busyAction = obj->unitAI()->currentAction();
                         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_28, *unitp, busyAction);
                     } else {
-                        int defDist = (int)obj->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z);
-                        int pri = tactical->calculatePriority((float)defDist);
+                        float defDist = obj->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z);
+                        int pri = tactical->calculatePriority(defDist);
                         if (targetTypeValue == 0x6d) {
                             int sn = tactical->strategicNumber(0x16);
                             tactical->taskDefender(*unitp, targetValue, (float)sn, pri);

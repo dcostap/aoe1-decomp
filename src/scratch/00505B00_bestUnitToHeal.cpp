@@ -18,14 +18,20 @@
 //     rolled back because the oracle rereads the bucket slot.
 // 13: Typed HealUnitRecord indexing and char* bucket offset were source-cleanup
 //     probes; both emitted the same 375-byte-diff basin as probe 9.
-// BLOCKER: remaining gap is TU/source-shape register allocation: original keeps this
-// in EBP, bucket-table slot in ESI, object in EDI, and frame 0x1c; current best keeps
-// self in EBX, bucket offset in EBP, and frame 0x18. Calls/CFG/size now match, but
-// checker remains in STRUCTURAL RECONSTRUCTION. Final best: 445/445 bytes,
-// 375 differing bytes (84.2697%), first mismatch offset 2.
+// 14: Typed five-entry count/list tables gave the same 445-byte basin with a
+//     small edit-distance gain; retained as canonical ownership.
+// 15: Removed the unit_id temporary and reread the typed record ID at lookup and
+//     canSee calls, matching the oracle reload order. Diff fell to 347 bytes and
+//     shape rose to 85.19%; this is the current clean reconstruction.
+// 16: Hoisting the record-slot pointer emitted identical code; rolled back.
+// 17: Typed views over scalar global declarations shortened the body; rolled back.
+// 18: Parallel count/list slot pointers kept the same register topology; rolled back.
+// BLOCKER: the natural typed source now matches the prologue, calls, CFG, size, and
+// most inner blocks, but VC5 keeps the table offset in EDI and object in ESI.
+// The oracle keeps the table slot in ESI, object in EDI, and one extra frame slot.
+// Current best: 445/445 bytes, 347 differing bytes (77.9775%), first mismatch +2.
 
 #include <stdlib.h>
-#include "../../include/game_globals.h"
 
 struct RGE_Master_Static_Object {
     char gap_00[0x14];
@@ -46,6 +52,9 @@ struct HealUnitRecord {
     unsigned char priority;
     unsigned char gap_05[3];
 };
+
+extern int DAT_0087d7cc[5];
+extern HealUnitRecord* DAT_0087d7e4[5];
 
 struct RGE_Static_Object {
     virtual void vf0();
@@ -240,22 +249,19 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
     int maxLimit = 2;
     int a;
     int i;
-    char* bucketOffset;
-
     if (this->objectValue->owner->id == 0) {
         maxLimit = 4;
     }
 
     a = 1;
-    bucketOffset = (char*)0;
     for (; a <= maxLimit; ++a) {
         i = 0;
-        if (*(int*)((char*)&DAT_0087d7cc + (int)bucketOffset) > 0) {
-            HealUnitRecord** listPtr = (HealUnitRecord**)((char*)&DAT_0087d7e4 + (int)bucketOffset);
+        if (DAT_0087d7cc[a - 1] > 0) {
+            HealUnitRecord** listPtr = &DAT_0087d7e4[a - 1];
             do {
-                int unit_id = (*listPtr)[i].object_id;
-                if (unit_id != this->objectValue->id) {
-                    RGE_Static_Object* unit = this->lookupObject(unit_id);
+                if ((*listPtr)[i].object_id != this->objectValue->id) {
+                    RGE_Static_Object* unit =
+                        this->lookupObject((*listPtr)[i].object_id);
                     if (unit != 0) {
                         if (unit->master_obj->object_group != 3) {
                             if ((float)(int)unit->master_obj->hp > unit->hp) {
@@ -264,7 +270,9 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
                                         (*listPtr)[i].priority <= 4) {
                                         if (this->objectValue->owner->id != 0 ||
                                             (*listPtr)[i].priority <= 2) {
-                                            if (this->objectValue->canSeeObject(unit_id, 1.0f, 0, 0, -1, -1)) {
+                                            if (this->objectValue->canSeeObject(
+                                                    (*listPtr)[i].object_id,
+                                                    1.0f, 0, 0, -1, -1)) {
                                                 float need = (float)(int)unit->master_obj->hp -
                                                     unit->hp / (float)(int)(*listPtr)[i].priority;
                                                 if (allyToHealID == -1 || need < allyNeed) {
@@ -283,12 +291,11 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
                     }
                 }
                 ++i;
-            } while (i < *(int*)((char*)&DAT_0087d7cc + (int)bucketOffset));
+            } while (i < DAT_0087d7cc[a - 1]);
         }
         if (allyToHealID != -1) {
             break;
         }
-        bucketOffset += 4;
     }
 
     return allyToHealID;

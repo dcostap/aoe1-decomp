@@ -10,6 +10,8 @@
 //   locals; none improved the canonical 306-byte frontier. Volatile pointer
 //   diagnostics matched the original frame locally but were rolled back as
 //   compiler-steering scaffolding.
+// - Typed VUR_Ptrs field trial recovered the 0x10 frame and reduced the size
+//   gap to 7 bytes, but positional diff worsened from 306 to 409; restored.
 // Left in scratch: broad prologue/stack-home/register coloring and the growth pointer-repair schedule remain; call set, cleanup convention, packed record effects, and copy width are established.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);

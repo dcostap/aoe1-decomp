@@ -23,6 +23,10 @@
 // probe 20: natural while traversal for the linked-node tail; codegen duplicate.
 // probe 21: decompiler-supported for-loop update form for the same traversal; duplicate.
 // probe 22: restored canonical Shape_Info long-field ownership; codegen duplicate.
+// probe 23: reordered natural bound/hotspot local declarations to follow the original
+// width/right/hotspot/bottom liveness schedule; emitted code was unchanged and rolled back.
+// probe 24: direct Draw_Clip_Nodes[yline] indexing in the natural allocation/link path;
+// emitted code was unchanged and rolled back.
 // left in scratch: canonical typed source is validated at 379 bytes with exact
 // call set/boundary. Null-link stores before scalar fields and direct Select_Box
 // rereads reproduce the long tail; remaining drift is the localized width/height
@@ -88,7 +92,7 @@ void DClipInfo_List::AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
                                  int draw_flag, unsigned char* color_table, int xform_mask,
                                  int draw_level, int object_id)
 {
-    int yline_tmp = this->YLine_Offset + yline;
+    volatile int yline_tmp = this->YLine_Offset + yline;
     yline = yline_tmp;
 
     if (draw_level > this->Accept_Max_Level)

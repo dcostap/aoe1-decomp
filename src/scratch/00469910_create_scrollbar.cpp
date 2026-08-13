@@ -38,6 +38,11 @@
 // and TPanel -> TTextPanel ABI from the exact Panel_ez sibling and scrollbar donors.
 // - A registered result with a common source return was a codegen duplicate;
 //   no stack home or CFG change appeared.  Restored the full typed ABI source.
+// shardE-469910: split failure guards into early returns; code grew by 30 bytes and was restored.
+// shardE-469910: explicit result arms, all-failure gotos, and registered-result forms were
+// duplicates or farther from the oracle.  Negative-OR and else-arm guard forms were duplicates.
+// Remaining evidence-backed blocker is the /GX shared EH cleanup tail: VC5 clones the failure
+// epilogue and omits the oracle's two-byte jump into one common cleanup block.
 
 struct tagRECT {
     long left;

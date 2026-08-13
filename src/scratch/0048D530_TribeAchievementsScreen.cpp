@@ -8,6 +8,9 @@
 // - Recovered world-time/player/civilization offsets and all 69 direct/virtual
 //   call sites. A 48-byte effective scratch variant matched the frame but was
 //   rejected as compiler steering; the PDB-backed 50-byte natural local is kept.
+// - Tested an uninitialized temptxt declaration from the decompiler; VC5
+//   elided the unused local, changing the frame to 0x1A4 and worsening diff.
+//   Rolled back to the validated natural source.
 
 #include <stdio.h>
 #include <string.h>
@@ -260,7 +263,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     : TScreenPanel("Achievements Screen")
 {
     unsigned long color;
-    int tab_count;
+    int local_1dc;
     TPanel* tabList[8];
     char temptxt[50] = {0};
     char str[100];
@@ -482,18 +485,18 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         this->win_decal = new TShape("defcheck.slp", 0xCB22);
     }
 
-    tab_count = 0;
+    local_1dc = 0;
     if (this->aftermathButton != 0) {
-        tabList[tab_count++] = this->aftermathButton;
+        tabList[local_1dc++] = this->aftermathButton;
     }
     if (this->timelineButton != 0) {
-        tabList[tab_count++] = this->timelineButton;
+        tabList[local_1dc++] = this->timelineButton;
     }
     if (this->restartButton != 0) {
-        tabList[tab_count++] = this->restartButton;
+        tabList[local_1dc++] = this->restartButton;
     }
-    tabList[tab_count++] = this->okButton;
-    set_tab_order(tabList, (short)tab_count);
+    tabList[local_1dc++] = this->okButton;
+    set_tab_order(tabList, (short)local_1dc);
     set_curr_child(this->okButton);
     this->backButton->vf_0C4(0, 0);
     this->backButton2->vf_0C4(0, 0);

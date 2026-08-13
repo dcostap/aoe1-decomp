@@ -14,6 +14,9 @@
 // - Initializing the inner column counter before loading the row pointer was a
 //   natural map.cpp line-order probe; VC5 emitted the same code, so it was
 //   restored.
+// - Split the outer long height counter from the inner int column counter,
+//   matching the original local types and h/y loop ownership; codegen was a
+//   duplicate, so the canonical typed loop form remains unresolved.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern float save_game_version;
@@ -83,8 +86,8 @@ void RGE_Map::load_map(int file)
 {
     long local_10;
     long width;
-    int x;
-    long y;
+    long h;
+    int y;
     unsigned char value;
 
     rge_read(file, &local_10, 4);
@@ -103,11 +106,11 @@ void RGE_Map::load_map(int file)
     rge_read(file, &this->fog_flag, 1);
 
     if (!(save_game_version < old_map_cutoff)) {
-        y = 0;
+        h = 0;
         if (this->map_height > 0) {
             do {
-                RGE_Tile* tile = this->map_row_offset[y];
-                x = 0;
+                RGE_Tile* tile = this->map_row_offset[h];
+                y = 0;
                 if (this->map_width > 0) {
                     do {
                         rge_read(file, tile, 2);
@@ -138,28 +141,28 @@ void RGE_Map::load_map(int file)
                         tile->draw_attribute = 0;
                         tile->last_drawn_shape2 = 0xff;
 
-                        ++x;
+                        ++y;
                         ++tile;
-                    } while (x < this->map_width);
+                    } while (y < this->map_width);
                 }
-                ++y;
-            } while (y < this->map_height);
+                ++h;
+            } while (h < this->map_height);
         }
     } else {
         rge_read(file, this->map,
                  this->map_width * this->map_height * 0x18);
-        y = 0;
+        h = 0;
         if (this->map_height > 0) {
             do {
-                x = 0;
+                y = 0;
                 if (this->map_width > 0) {
                     do {
-                        this->map_row_offset[y][x].objects.list = 0;
-                        ++x;
-                    } while (x < this->map_width);
+                        this->map_row_offset[h][y].objects.list = 0;
+                        ++y;
+                    } while (y < this->map_width);
                 }
-                ++y;
-            } while (y < this->map_height);
+                ++h;
+            } while (h < this->map_height);
         }
     }
 

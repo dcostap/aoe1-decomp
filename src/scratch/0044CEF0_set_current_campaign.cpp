@@ -15,6 +15,9 @@
 // - probe 031: initialized a uchar result and used a natural positive guard;
 //   this removed the EH handler relocation, changed the prologue, and widened
 //   positional drift to 307 bytes, so it was restored.
+// - probe 034: combined an initialized uchar result with a natural positive
+//   guard and one done label; this also widened positional drift to 307 bytes
+//   despite a closer size, so it was restored.
 // - left in scratch: canonical natural source; remaining drift is the VC5 EH
 //   return-tail layout (original shared cleanup versus rebuilt duplicated
 //   cleanup), not an unresolved campaign ownership or call-set issue. Keep

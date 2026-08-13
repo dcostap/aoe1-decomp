@@ -30,6 +30,9 @@
 // probe 7/restore: a separate save_buffer/row-destination split worsened the
 // prologue and frame; a function-scope command and a post-setup save_buffer alias
 // were likewise rolled back. Current best remains the simple signed-pitch form.
+// shardB4-B9E20 layout probe: direct typed save_buffer row-base plus per-row
+// destination cursor duplicated prior evidence and worsened to 883 bytes with
+// a 0x10 frame; restored the clean signed-pitch source.
 // GIVEUP blockers: exact clipped RLE source topology, parameter-slot reuse for min/max/x/y counters, state-byte placement at [esp+34], and register allocation for EDI=src/ESI=dst/EBP=xpos/EDX=min_x. No inline asm used; no accepted_drift proposal.
 
 typedef unsigned char byte;

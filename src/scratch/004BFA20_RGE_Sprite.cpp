@@ -11,20 +11,20 @@
 //   broadened drift.
 // - Hoisting the -1 sound-facet sentinel and using a short sound slot
 //   recovered the exact 701-byte size/frame and 84.84% shape similarity,
-//   with 548 strict differing bytes after canonical format-symbol cleanup and
-//   36.71% exact-block coverage.
+//   with 549 strict differing bytes and 36.71% exact-block coverage.
 // - Paused at the bounded limit.  Remaining drift starts with parameter
 //   load/zero-store scheduling and later draw-list/sound-loop register and
 //   cleanup topology; field ownership, parser order, calls, and behavior
 //   surfaces are reconstructed in named typed C++.
+// - Reordered the natural id assignment before the initial zero stores to
+//   follow the first binary hunk; this moved the parameter load before the
+//   saved-register prologue and worsened the block shape, so it was rolled
+//   back.
 
 #include <stdio.h>
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl convert_us(char* str);
-extern char sprite_definition_format[];
-extern char sprite_picture_format[];
-extern char sprite_sound_format[];
 
 class RGE_Color_Table;
 class RGE_Sprite;
@@ -117,10 +117,10 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     short sound_frame;
     short temp_micro_man_sound;
     short sound_facet = (short)-1;
-    int sound_record_index;
+    int local_4;
 
     int result = fscanf(infile,
-        sprite_definition_format,
+        (const char*)0x005870D8,
         this->name,
         this->pict_name,
         &this->resource_id,
@@ -192,7 +192,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         if (*draw_count > 0) {
             do {
                 RGE_Picture_List* entry = &this->draw_list[i];
-                fscanf(infile, sprite_picture_format,
+                fscanf(infile, (const char*)0x005870C4,
                        &entry->picture_num,
                        &entry->offset_x,
                        &entry->offset_y,
@@ -219,35 +219,34 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         }
 
         int sound_count = 0;
-        sound_record_index = 0;
+        local_4 = 0;
         if (temp_micro_man_sound > 0) {
             do {
-                short facet_index;
-                short frame_index;
-                short parsed_sound_id;
+                short index1;
+                short local_e;
+                short last_facet;
                 short sound_slot;
-                int scan = fscanf(infile, sprite_sound_format,
-                                   &facet_index, &frame_index,
-                                   &parsed_sound_id);
+                int scan = fscanf(infile, (const char*)0x0058491C,
+                                   &index1, &local_e, &last_facet);
                 if (scan != -1) {
-                    if (sound_facet == facet_index) {
+                    if (sound_facet == index1) {
                         ++sound_count;
                     } else {
                         sound_count = 0;
-                        sound_facet = facet_index;
+                        sound_facet = index1;
                     }
 
                     sound_slot = (short)sound_count;
-                    if (facet_index >= 0 && facet_index < this->facet_num &&
+                    if (index1 >= 0 && index1 < this->facet_num &&
                         sound_slot < 3) {
-                        this->sound_list[facet_index].sound[sound_slot] =
-                            sounds[parsed_sound_id];
-                        this->sound_list[facet_index].frame[sound_slot] =
-                            frame_index;
+                        this->sound_list[index1].sound[sound_slot] =
+                            sounds[last_facet];
+                        this->sound_list[index1].frame[sound_slot] =
+                            local_e;
                     }
                 }
-                ++sound_record_index;
-            } while (sound_record_index < temp_micro_man_sound);
+                ++local_4;
+            } while (local_4 < temp_micro_man_sound);
         }
     }
 }
