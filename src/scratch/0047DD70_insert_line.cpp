@@ -18,6 +18,8 @@
 //   a shared zero/counter local, middle-loop forms, and a focused four-variant
 //   natural init/loop lab did not change the emitted basin; the lab's best
 //   group remained 181 positional bytes different with exact size/call set.
+// - Moving the positional insertion counter into its natural non-sorted
+//   branch-local lifetime left the emitted code unchanged; restored the clean source.
 // - Restored the readable typed source after diagnostics: no parameter-home
 //   casts, raw text cursors, fake volatility, or register-forcing scaffolding.
 

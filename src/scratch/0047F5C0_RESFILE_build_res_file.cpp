@@ -40,6 +40,9 @@
 //     are not retained merely for byte proximity.
 //   Follow-up: an ordinary resHandle local for the ID-record size was a codegen
 //     duplicate and was rolled back; the frame gap remains unresolved.
+//   Follow-up: reordered the typed predecessor and handle declarations; VC5
+//     emitted the same frame and code. Scoped input/output handles also emitted
+//     the same code. Restored the clean natural source.
 
 #include <stdio.h>
 #include <stdlib.h>

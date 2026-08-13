@@ -22,6 +22,11 @@
 //     but changed call placement and retained diagnostic-only scaffolding.
 // 13: reordered unconditional tile casts; no productive register or frame
 //     change. Restored the natural named tile temporaries.
+// 14: matched the adjacent firstTileAlongLine source family: use the natural
+//     y-axis-greater-than-x-axis test and an early nonpositive-step return,
+//     rather than wrapping the do/while in a positive-step if. This raised
+//     shape similarity from 69.23% to 70.51% and exact-block coverage from
+//     13.73% to 20.26%, but positional diff stayed at 342 bytes.
 
 #include <math.h>
 
@@ -122,7 +127,7 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
     float xStep;
     float yStep;
 
-    if (fabs(xDistance) < fabs(yDistance)) {
+    if (fabs(yDistance) > fabs(xDistance)) {
         numSteps = abs((int)yDistance) * 2;
     } else {
         numSteps = abs((int)xDistance) * 2;
@@ -138,30 +143,32 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
     lastX = -999;
     lastY = -999;
 
-    if (numSteps > 0) {
-        do {
-            x += xStep;
-            y += yStep;
-            int tileX = (int)x;
-            int tileY = (int)y;
+    if (numSteps <= 0) {
+        return 1;
+    }
 
-            if (tileX != lastX || tileY != lastY) {
-                if (this->passableTile(x, y, terrain) == 0) {
-                    return 0;
-                }
+    do {
+        x += xStep;
+        y += yStep;
+        int tileX = (int)x;
+        int tileY = (int)y;
 
-                lastX = tileX;
-                lastY = tileY;
-                if ((float)sqrt(((float)x2 - x) * ((float)x2 - x) +
-                                ((float)y2 - y) * ((float)y2 - y)) <=
-                    maxDistance) {
-                    return 1;
-                }
+        if (tileX != lastX || tileY != lastY) {
+            if (this->passableTile(x, y, terrain) == 0) {
+                return 0;
             }
 
-            ++i;
-        } while (i < numSteps);
-    }
+            lastX = tileX;
+            lastY = tileY;
+            if ((float)sqrt(((float)x2 - x) * ((float)x2 - x) +
+                            ((float)y2 - y) * ((float)y2 - y)) <=
+                maxDistance) {
+                return 1;
+            }
+        }
+
+        ++i;
+    } while (i < numSteps);
 
     return 1;
 }

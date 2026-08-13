@@ -18,8 +18,13 @@
 //   local import surface, but remains the period-plausible living context.
 // - A named text_y local improved the strict diff to 481 bytes and preserved
 //   the natural coordinate model.  Pointer initialization was a duplicate.
-// - Left in scratch: original frame 0x20 versus rebuilt 0x1C, three missing
-//   indirect call sites from VC5 tail merging, and early register coloring.
+// - Wrapping the second-column switch in `if (text2 != 0)` was codegen-neutral;
+//   restored the early return after the primary text tail.
+// - Kept each primary normal TextOut in its typed style case, following the
+//   same-TU scrolling-line donor.  This restored all 23 ordered calls and the
+//   634-byte size; the remaining gap is frame/register topology.
+// - Left in scratch: original frame 0x20 versus rebuilt 0x1C and early
+//   register/local topology drift.
 
 #include <windows.h>
 
@@ -97,6 +102,9 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
     switch (this->text_style) {
     case 0:
         SetTextColor(dc, color1);
+        if (text != 0) {
+            TextOutA(dc, text_x, text_y, text, (int)text_len);
+        }
         break;
     case 1:
         SetTextColor(dc, color1);
@@ -105,6 +113,9 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
                      text, (int)text_len);
         }
         SetTextColor(dc, color2);
+        if (text != 0) {
+            TextOutA(dc, text_x, text_y, text, (int)text_len);
+        }
         break;
     case 2:
         SetTextColor(dc, color2);
@@ -113,13 +124,12 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
                      text, (int)text_len);
         }
         SetTextColor(dc, color1);
+        if (text != 0) {
+            TextOutA(dc, text_x, text_y, text, (int)text_len);
+        }
         break;
     default:
         break;
-    }
-
-    if (text != 0) {
-        TextOutA(dc, text_x, text_y, text, (int)text_len);
     }
 
     if (text2 == 0) {

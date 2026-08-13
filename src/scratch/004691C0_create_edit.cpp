@@ -13,6 +13,8 @@
 //   placement (54 positional bytes, +19 emitted bytes).
 // - Common result/goto, volatile-result, initialized-result, destructor, and
 //   register-result probes did not change the best ordinary codegen basin.
+// - Mirrored same-TU create_auto_scrollbar's direct success/failure returns;
+//   VC5 emitted the same 461-byte basin, so no control-flow lead remains.
 // Left in scratch: typed source is behaviorally aligned with all 9 calls and
 //   proven field accesses; only the compiler's duplicated return tail remains.
 
@@ -101,7 +103,6 @@ int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, in
                               long p6, long p7, long p8, long p9, long p10,
                               int p11, int p12)
 {
-    int result;
     int x = (p6 * this->width) / this->ideal_width;
     int y = (this->height * p7) / this->ideal_height;
     int width = (p8 * this->width) / this->ideal_width;
@@ -131,15 +132,11 @@ int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, in
             (*p2)->set_highlight_text_color(this->focus_color1, this->focus_color2);
             (*p2)->set_back_color(this->brush, this->brush_color, this->background_color1);
             (*p2)->set_ime_info(p11, p12);
-            
-            result = 1;
-            goto done;
+
+            return 1;
         }
     }
-    
-    this->error = 1;
-    result = 0;
 
-done:
-    return result;
+    this->error = 1;
+    return 0;
 }

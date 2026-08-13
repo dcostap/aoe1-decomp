@@ -10,6 +10,7 @@
 // self alias and scalar/panel declaration-order probes were codegen duplicates.
 // swapped fixed-arm bottom/right assignment to follow the original min_hgt load; positional drift improved locally.
 // long coordinate types and canonical named TPanel fields preserve the proven layout but do not change codegen.
+// tried one shared calc_hgt for fixed and centered bottom ownership; diff worsened 494->498, so restored.
 // left unresolved: residual prologue/register coloring and set_rect/centered scheduling drift; source is typed and period-plausible.
 // Main-agent audit restored the canonical virtual destructor surface; typed
 // panel geometry and recursive child ownership remain authoritative. Final

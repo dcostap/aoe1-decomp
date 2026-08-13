@@ -29,6 +29,8 @@
 // neither reached the oracle frame or register topology.
 // 17: retained /GX after testing the explicit EH frame.  Without it, VC5
 // removes the EH registration and emits a 558-byte non-period function.
+// 18: split the first-hunk coordinate declarations from their initializers;
+// no emitted-code movement, so restored the initializer form.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;

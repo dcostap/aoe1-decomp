@@ -13,11 +13,16 @@
 // tm.tmCharSet, and a 0x100-byte clear with temp_text+4 destination.
 // probes 7-9: declaration-order and period-polymorphic TPanel context tests;
 // the latter was a codegen duplicate.  Probe 10 scoped per-line locals, also a
-// duplicate.  Best surviving reconstruction has frame 0x170, exact 29-call
-// sequence/CFG counts, size 1055 vs 1064, and 71.7% shape similarity.
+// duplicate.  Before the current claim, the best reconstruction had frame
+// 0x170, exact 29-call sequence/CFG counts, size 1055 vs 1064, and 71.7%
+// shape similarity.
+// claim shardC4-47C640: split null and empty guards was a codegen duplicate.
+// Reordered the Japanese whitespace test before the character-pair tests;
+// this moved the build to size 1064, 76.8% shape, and 33.4% exact blocks.
+// A named panel alias and two local declaration-order variants were duplicates.
 // left in scratch: the remaining broad drift begins at VC5 prologue/register
 // coloring (parameter in EBX vs original ESI, this in ESI vs original EDI),
-// plus local slot/block placement; no exact promotion or accepted drift.
+// plus local slot/block placement; calls, frame, and size now match.
 
 #include <windows.h>
 #include <string.h>
@@ -86,14 +91,28 @@ public:
 
 int TTextPanel::word_wrap_append(char* text)
 {
-    int max_wid;
+    short text_len;
+    short chars;
+    short last_chars;
+    int found_break;
+    int found_return;
     void* dc;
+    int found_space;
+    unsigned char* last_char;
+    long max_wid;
+    unsigned char* next_char;
+    SIZE text_size;
+    int found_linefeed;
+    int found_char_break;
     int japanese;
     void* old_font;
     TEXTMETRICA tm;
     char temp_text[256];
 
-    if (text == 0 || *text == '\0') {
+    if (text == 0) {
+        return 1;
+    }
+    if (*text == '\0') {
         return 1;
     }
 
@@ -114,18 +133,6 @@ int TTextPanel::word_wrap_append(char* text)
     japanese = (tm.tmCharSet == 0x80);
 
     for (;;) {
-        short text_len;
-        short chars;
-        short last_chars;
-        unsigned char* next_char;
-        unsigned char* last_char;
-        SIZE text_size;
-        int found_break;
-        int found_linefeed;
-        int found_space;
-        int found_char_break;
-        int found_return;
-
     next_line:
         text_len = __mbslen(text);
         found_break = 0;
@@ -202,20 +209,20 @@ int TTextPanel::word_wrap_append(char* text)
                 --chars;
 
                 if (japanese) {
-                CharType first = this->char_type(next_char);
-                CharType second = this->char_type(old_next);
-                    if ((first == DoubleByteChar && second == DoubleByteChar) ||
-                    (first == SingleByteKanaChar && second == SingleByteKanaChar) ||
-                    (first == SingleByteChar && second == DoubleByteChar) ||
-                    (first == DoubleByteChar && second == SingleByteChar) ||
-                    (first == SingleByteChar && second == SingleByteKanaChar) ||
-                    (first == SingleByteKanaChar && second == SingleByteChar)) {
-                        found_break = 1;
-                        break;
-                    }
+                    CharType first = this->char_type(next_char);
+                    CharType second = this->char_type(old_next);
                     if (first == SingleByteChar && second == SingleByteChar &&
                         __ismbcspace(*next_char) != 0) {
                         found_char_break = 1;
+                        break;
+                    }
+                    if ((first == DoubleByteChar && second == DoubleByteChar) ||
+                        (first == SingleByteKanaChar && second == SingleByteKanaChar) ||
+                        (first == SingleByteChar && second == DoubleByteChar) ||
+                        (first == DoubleByteChar && second == SingleByteChar) ||
+                        (first == SingleByteChar && second == SingleByteKanaChar) ||
+                        (first == SingleByteKanaChar && second == SingleByteChar)) {
+                        found_break = 1;
                         break;
                     }
                 } else if (__ismbcspace(*next_char) != 0) {

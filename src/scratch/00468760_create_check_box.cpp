@@ -12,6 +12,8 @@
 // guard/if-else, operand-order, result-init, and declaration-initialized-x probes
 // were codegen duplicates or worse.  Best clean source keeps named scaled locals,
 // typed ownership, and the natural nested success/failure arms.
+// probe 12: changed the typed success path to goto a shared failure tail, matching
+// the oracle's success jump over one failure block; VC5 emitted identical code.
 // left in scratch: original is 604 bytes vs rebuilt 623; calls, frame, and most
 // body blocks align, but the early x-load/arithmetic scheduling and duplicated
 // success/failure EH epilogues remain broad enough to block promotion.

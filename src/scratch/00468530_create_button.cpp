@@ -15,6 +15,7 @@
 // 17-18: moved sound declaration/zero initialization and tested a separate zero local; compiler basin remained broad or unchanged, rolled back.
 // 19: joined failure/success through a typed result label; VC5 emitted the same split epilogues, rolled back.
 // 20: branch-local null sound assignment plus direct sx initializer worsened the frame and structural diff, rolled back.
+// 21: removed the artificial px alias and used x directly in sx; VC5 emitted the same code, kept the natural form.
 // FLAGS: config/flags/00468530_create_button.rsp uses /GX because original has EH frame and default build is only 496 B/no EH.
 // Left in scratch: restored the clean typed candidate after the 10-hypothesis session. Current best is 568 B with /GX, 317 positional diff bytes / 113 edit cost, 100% ordered calls, and 46.96% exact-block coverage; the structural gap starts at the pre-save x load and two-slot EH local topology. Not accepted_drift-safe.
 
@@ -82,11 +83,9 @@ int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, ch
     long sw;
     long sh;
     int i;
-    long px;
 
-    px = x;
     sound = 0;
-    sx = (px * this->width) / this->ideal_width;
+    sx = (x * this->width) / this->ideal_width;
     sy = (y * this->height) / this->ideal_height;
     sw = (w * this->width) / this->ideal_width;
     sh = (h * this->height) / this->ideal_height;

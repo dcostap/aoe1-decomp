@@ -6,8 +6,11 @@
 // - Positive count guards restored the executable's zero-compare CFG and most
 //   ordered call alignment.
 // - Land, terrain, and object records use their named fields and owned arrays.
-// - Remaining drift is register coloring, stack-home reuse, and one merged
-//   map-file fclose site after ten bounded hypotheses.
+// - Remaining drift is register coloring, stack-home reuse, and map-load CFG
+//   and size after the bounded hypotheses.
+// - Independent positive-load and nonpositive-fallback guards restore all 28
+//   ordered calls, including both map-file fclose sites; the extra predicate
+//   leaves a 13-byte size overrun and one CFG edge mismatch.
 
 extern "C" void* __cdecl fopen(const char*, const char*);
 extern "C" int __cdecl fclose(void*);
@@ -175,7 +178,6 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     infile = fopen(map_file, "r");
     if (infile == 0) {
         this->map_info.maps = 0;
-        this->map_info.map_num = 0;
     } else {
         fscanf(infile, " %d", &this->map_info);
         if (this->map_info.map_num > 0) {
@@ -188,11 +190,13 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
                     ++map_index;
                     map_offset += 0x48;
                 } while (map_index < this->map_info.map_num);
+                fclose(infile);
             }
-        } else {
-            this->map_info.maps = 0;
         }
-        fclose(infile);
+        if (this->map_info.map_num <= 0) {
+            this->map_info.maps = 0;
+            fclose(infile);
+        }
     }
 
     if (this->map_info.map_num > 0) {

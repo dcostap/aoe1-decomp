@@ -8,9 +8,16 @@
 // - Tried moving `new TButtonPanel` before vs after coordinate scaling. Allocating after scaling gives closer arithmetic order, but EH prologue changes to FS load before EH pushes; allocating before scaling keeps EH order closer but arithmetic/register allocation worse.
 // - Modeled the proven TButtonPanel allocation size as 0x2B8 and initialized sound before the scaling/new path; this improved the resynchronized body but still emitted a one-slot local and the wrong prologue family.
 // - Tried explicit ideal-x initialization/compound arithmetic, x capture, a nontrivial destructor declaration, direct out-slot construction, and a common result/goto tail; these emitted the same or farther codegen basin.
+// - Restated TButtonPanel as the period TPanel-derived type with inherited error and virtual destructor declarations from exact constructor/destructor donors; first-hunk codegen was unchanged.
 // - Final clean candidate keeps the named field ownership and natural direct factory source. Remaining blocker is structural VC5 EH/local-home placement: original reserves 8 bytes, preloads x before callee-save pushes, and shares one success/failure epilogue; rebuilt reserves one slot, reloads x from its parameter home, and duplicates cleanup. No accepted_drift proposal; no inline asm.
 
-class TPanel;
+class TPanel {
+public:
+    char gap_004[0xD4];
+    int error;
+    char gap_0DC[0xF4 - 0xDC];
+    virtual ~TPanel();
+};
 class TDrawArea;
 class TShape;
 class TDigital;
@@ -26,12 +33,11 @@ extern RGE_Base_Game* rge_base_game;
 static char s_space[] = " ";
 static char s_X[] = "X";
 
-class TButtonPanel {
+class TButtonPanel : public TPanel {
 public:
-    char gap_000[0xD8];
-    int error;
-    char gap_DC[0x2B8 - 0xDC];
+    char gap_0F4[0x2B8 - 0xF4];
     TButtonPanel();
+    virtual ~TButtonPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, int, TDigital*, int, long);
     void setDrawType(int t);
     void set_text_info(char*, int, int, int, int, int);

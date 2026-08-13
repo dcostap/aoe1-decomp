@@ -19,6 +19,12 @@
 //     recovered one initial jle, one bottom jl, matching frame size and nearly
 //     matching effective function size; remaining drift is the VC5 receiver /
 //     local-home allocation basin.
+// 12: removed named start-coordinate locals and used direct XYPoint fields;
+//     this changed only relocation bytes and did not move the structural hunk.
+// 13: tested the donor-backed XYPoint pointer ABI; VC5 emitted the same code
+//     under the current loop shape, so the PDB-decorated references remain.
+// 14: tested the adjacent do/while source family; it lost 12 code bytes and
+//     one CFG return, so the counted for loop is retained.
 
 #include <math.h>
 

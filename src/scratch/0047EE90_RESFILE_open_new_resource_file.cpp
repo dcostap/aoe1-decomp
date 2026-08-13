@@ -32,6 +32,9 @@
 //   first 0x17B-byte range now match structurally; the remaining mismatch starts
 //   at the excluded INT3 fragment and includes extra rebuilt fragment calls.
 // - decision: paused. Fragment alignment blocks whole-function exact comparison.
+// - current pass: removing the first header-error MessageBox as an early-return
+//   probe reduced the extra ordered calls from four to three, but changed the
+//   executable's error behavior; restored the natural typed error path.
 
 #include <stdlib.h>
 #include <string.h>

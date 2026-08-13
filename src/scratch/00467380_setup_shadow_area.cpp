@@ -30,6 +30,9 @@
 // 22: A named area_name+4 pointer was also a duplicate.  Remaining blocker is the first EH/new
 //     local-layout hunk: original reloads flags through EDX and reuses [esp+10] while VC5 keeps
 //     the canonical candidate's allocation/area homes at different offsets.  Left in scratch.
+// 23: Retaining a natural TDrawSystem pointer across flags, allocation, Init, and restoration
+//     improved positional diff to 348 but grew the frame to 0x114 and worsened block shape;
+//     rolled back to the clean direct-access reconstruction.
 // FLAGS: config/flags/00467380_setup_shadow_area.rsp uses /GX; needed for EH prologue around TDrawArea allocation/constructor.
 
 #include <windows.h>

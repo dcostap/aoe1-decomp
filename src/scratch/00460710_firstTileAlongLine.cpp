@@ -145,8 +145,6 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
                                            int checkTerrain) {
     int lastX;
     int lastY;
-    float x;
-    float y;
     float xDistance = (float)(b.x - a.x);
     float yDistance = (float)(b.y - a.y);
 
@@ -159,6 +157,8 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
     int i;
     float xStep;
     float yStep;
+    float x;
+    float y;
     RGE_Map* map;
     unsigned char tileType;
 

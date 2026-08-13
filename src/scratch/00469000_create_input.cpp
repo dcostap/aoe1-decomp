@@ -10,6 +10,7 @@
 // attempt 8: removed /GX diagnostically; object lost EH frame and .text was too small (400B), reverted.
 // attempt 9: /GX /Ob0; no codegen change, reverted.
 // attempt 10: reviewed setup arg surface/order and vtable slot declarations; current call order/body matches original through setup/bevel/color calls; remaining drift is tail/return lowering.
+// attempt 11: typed the PDB/SDK FormatType enum through create_input and setup; emitted code is unchanged, confirming the remaining first hunk is tail CFG placement.
 // ACCEPTED_DRIFT suggestion: with volatile result, all functional calls/memory effects match; extra writes are only to this function's stack result slot before common epilogue, and branch distances/tail layout differ. Needs review; not promoted.
 // session 2026-08-11: baseline rebuilt the volatile common-return candidate at 451 bytes; natural direct returns and nonvolatile result/goto joins both rebuilt at 457 bytes with the same 156-byte prefix and the success epilogue before failure.
 // session probes: a register result, a destructor declaration, and the packet-indicated virtual create_input ABI (with the proven gap adjustment) did not change that tail family; /O1 introduced an extra EH helper and broad structural drift.
@@ -18,6 +19,7 @@
 class TPanel {};
 class TDrawArea {};
 class TDigital {};
+enum FormatType { FormatSingleLine = 0, FormatMultiLine = 7 };
 class RGE_Font { public: void* font; long font_wid; long font_hgt; };
 class RGE_Base_Game { public: RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
@@ -46,7 +48,7 @@ public:
     TInputPanel();
     ~TInputPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, long, char, char, int, int, short, TDigital*, char*, int);
+               char*, long, char, char, int, int, short, TDigital*, char*, FormatType);
     void set_text_color(unsigned long c1, unsigned long c2);
     void set_highlight_text_color(unsigned long c1, unsigned long c2);
 };
@@ -77,11 +79,11 @@ public:
     unsigned long focus_color1; // +330
     unsigned long focus_color2; // +334
 
-    virtual int create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
+    virtual int create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, FormatType format,
                              long x, long y, long w, long h, long font_id);
 };
 
-int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
+int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, FormatType format,
                               long x, long y, long w, long h, long font_id)
 {
     long ideal_x = (x * this->base_width) / this->ideal_width;
