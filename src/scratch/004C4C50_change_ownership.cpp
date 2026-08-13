@@ -28,6 +28,10 @@
 // were also codegen duplicates. Remaining gap is the localized VC5 register
 // coloring at old-master lookup/sprite selection (oracle has mov eax,edx and
 // cmp ecx,[eax+...]; clean source has the swapped color and is retained).
+// follow-up worker: direct this->master_obj lookup without old_master widened
+// to 136B; retaining old_master with the direct index, a named master-table
+// alias, int index, declaration-order changes, and zero initialization all
+// emitted the same clean 301B/134 basin. Restored the clean source.
 
 class RGE_Sprite;
 class RGE_Active_Sprite_List;

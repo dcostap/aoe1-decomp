@@ -50,6 +50,14 @@
 //   broadened drift to 283 and 270 bytes. Restored the named typed row source.
 // - Current pause: natural ownership and all later blocks remain matched; only the first row
 //   address differs, with VC5 emitting dec-plus-scaled LEA instead of the oracle's folded -24.
+// Follow-up orch-438060-c:
+// - Focused row-form lab covered array subscripts, pointer/address subtraction and decrement,
+//   byte-span arithmetic, split row bases, and index declaration forms. All 45 invariant-safe
+//   variants emitted the same 10-byte hunk.
+// - Separate labs tested a void row field, a volatile row field, a pointer-to-one-row array,
+//   and the VC5 small flag basin. Each preserved 365 bytes and 7/7 calls but stayed at diff 10.
+// - No evidence-backed source or flag lead remains. Keep the natural named row source; the
+//   unresolved bytes are the first row address (oracle folded -24 LEA versus VC5 dec-plus-scale).
 
 extern float DAT_0056f604;
 

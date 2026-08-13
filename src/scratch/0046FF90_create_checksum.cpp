@@ -47,6 +47,13 @@
 //   mismatch.
 // - A state-first split checksum statement was tested to mirror the original
 //   state-load/ftol order; it worsened to 228B and was restored.
+// - Fresh pass: direct list->node rereads, including a hybrid cache through
+//   waypoint and reread for position/action, reached 268B/0x14 and diff 182
+//   with stronger shape, but did not recover the original frame or stack home.
+// - A cumulative checksum split, a natural per-object temp, top-level locals,
+//   long-width checksum/count locals, and reversed accumulator order were
+//   neutral or worse. Restored the cached-object clean source; the blocker is
+//   still the original loop-carried object checksum spill and frame-0x18 home.
 
 extern "C" long __cdecl __ftol(void);
 

@@ -34,6 +34,12 @@
 //   62 bytes.  An explicit vptr/nonvirtual-destructor surface was also neutral.
 //   The clean typed PDB-plausible source is restored; the unresolved hunk is
 //   not justified by compiler-steering scaffolding.
+// - New claim: early recipient-count/player order with delayed target-owner
+//   regressed the packet hunk to 62 bytes.  The exact same-TU command_ai_order
+//   field order improved block coverage but regressed to 58 bytes; both were
+//   restored.  A 24-variant priority/count/owner/player permutation lab kept
+//   size, frame, and calls exact but found no exact code; its best was 55 bytes.
+//   The clean typed PDB-plausible source remains the best living reconstruction.
 
 #include <stdlib.h>
 
