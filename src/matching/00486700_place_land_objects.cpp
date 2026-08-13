@@ -12,6 +12,8 @@
 // swapped pop_stack output references; edit alignment changed but positional bytes did not improve.
 // restored the binary-proven tile terrain low-five-bit mask; exact size/frame/instruction/call parity, 17 localized bytes remain in pop-stack homes and register coloring.
 // reused the typed outer master pointer for the per-candidate reload; codegen was a duplicate and the first pop-stack hunk did not move.
+// aligned the pop_stack coordinate roles with get_zone_info rows[param2][param1]; swapping y1/min_x0 and all placement call arguments reduced the drift to one byte.
+// reversed the zone equality operands to select the original memory-byte compare; exact match.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -223,10 +225,10 @@ void RGE_RMM_Object_Generator::place_land_objects(
         zone = zone_map->get_zone_info(x, y);
 
         long count = object->number_of_groups;
-        while (this->pop_stack(obj_stack, min_x0, y1, cost) != 0 &&
+        while (this->pop_stack(obj_stack, y1, min_x0, cost) != 0 &&
                count > 0) {
-                if (zone_map->get_zone_info(min_x0, y1) ==
-                        (unsigned char)zone &&
+                if ((unsigned char)zone ==
+                        zone_map->get_zone_info(y1, min_x0) &&
                     (object->terrain < 0 ||
                      (this->map_row_offset[min_x0][y1].terrain & 0x1f) ==
                          object->terrain) &&
@@ -248,18 +250,18 @@ void RGE_RMM_Object_Generator::place_land_objects(
 
                     if (!placement_master->can_place(player, fx, fy,
                         0, 0, 1, 1, 1, 1, 1)) {
-                        this->remove_area_from_lists(min_x0, y1,
+                        this->remove_area_from_lists(y1, min_x0,
                             object->object_exclusion_zone);
                         switch (object->group_flag) {
                         case 0:
                             player->place_object(object->obj_id, fx, fy, 0, 1);
                             break;
                         case 1:
-                            this->place_group(*object, min_x0, y1,
+                            this->place_group(*object, y1, min_x0,
                                 player);
                             break;
                         case 2:
-                            this->place_cluster(*object, min_x0, y1,
+                            this->place_cluster(*object, y1, min_x0,
                                 player);
                             break;
                         }

@@ -9,8 +9,9 @@
 //   schedule, saved-register use, frame, and all early video teardown bytes.
 // - The shared start-menu arm for cases 0/1/2/5 and direct default returns
 //   recovered the original five-entry dispatch, call order, and exact size.
-// - Positive game-status arms recovered both music branch polarities; the
-//   remaining drift is three status-buffer stack displacement bytes (+4).
+// - Positive game-status arms recovered both music branch polarities.
+// - Treating the status query as a write to the natural buffer base (str and
+//   str[0]) removed the Ghidra-only +4 offset and produced an exact match.
 // - Tested the exact-donor dllimport SendMessageA surface instead of the
 //   cached function-pointer local; it broke the frame and 998-byte structure,
 //   so it was rolled back. The cached-IAT source remains the best lead.
@@ -158,8 +159,8 @@ void TRIBE_Game::stop_video(unsigned char do_stop)
     if (this->video_window != 0) {
         SendMessageFn send_message = SendMessageA;
 
-        send_message(this->video_window, 0x46A, 100, (long)(str + 4));
-        if (str[4] != 0 && strcmp(str + 4, "stopped") != 0) {
+        send_message(this->video_window, 0x46A, 100, (long)str);
+        if (str[0] != 0 && strcmp(str, "stopped") != 0) {
             send_message(this->video_window, 0x808, 0, 0);
         }
 
