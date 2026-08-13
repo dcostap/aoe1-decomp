@@ -80,6 +80,9 @@
 // from exact donors 00430320, 004304B0, and 00430510. The emitted code was an
 // exact duplicate of the clean source; the EBP-versus-EBX armor-pointer basin
 // did not move. Restored the clean typed source.
+// Exact pass: the positive-count block declares the weapon pointer, then the
+// base-armor local, then the counter. This source order makes VC5 emit the
+// original base-armor load, counter home, EBP armor pointer, and 213-byte body.
 // Current bounded pass: baseline validation, ABI/dossier review, and a narrow
 // prologue donor search confirm the natural typed source and the same allocator
 // basin. No new source-backed lead remains; preserve this clean reconstruction.
@@ -267,10 +270,11 @@ float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* par
 
     if (param_1 > 0) {
         RGE_Armor_Weapon_Info* weapon = param_2;
+        int tot_armor = obj->base_armor;
         int cnt = param_1;
 
         do {
-            int attack = obj->base_armor;
+            int attack = tot_armor;
 
             if (nArmor > 0) {
                 RGE_Armor_Weapon_Info* srch = armorTbl;

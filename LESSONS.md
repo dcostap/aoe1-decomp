@@ -1003,3 +1003,10 @@ only the matching paragraphs and their section heading.
   `curr_player` at `+0x7C`; chat-group setup can use the latter without
   subtracting one.  Preserve nearby binary-proven guards: a mouse gate may
   test `prog_active` but pass `prog_window` without a separate null test.
+
+- In a counted damage loop, declaration order inside the positive-count guard
+  can control both the prologue register colors and the parameter-home stores.
+  A natural pointer local, base-value local, then counter can emit a base load,
+  counter save, and persistent armor pointer in the oracle order.  Try this
+  source order before register hints when the loop body and fields already
+  match.
