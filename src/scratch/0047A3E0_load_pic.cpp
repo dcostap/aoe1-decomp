@@ -19,16 +19,21 @@
 //   returned to the clean 20-byte result, so the local was not a useful source lead.
 // - modeled a named shape result from the line-120 member assignment; diff widened to
 //   28 bytes and lost the post-constructor block, so the clean direct-member form stays.
+// - 79-byte, 84-byte, and 76-byte-plus-result-local buffer layouts all lost the
+//   0x54 frame or widened the diff; an explicit pointer/file union widened it to 261.
+// - same-TU ABI donors support long resource IDs and the stdio declaration; these
+//   canonical type/header changes are byte-neutral and remain in the clean source.
 // - dossier, donor, ABI, and call-map evidence still show exact calls, frame, size, and
 //   CFG; remaining drift is localized to file_name stack coloring and store scheduling.
 
 #include "..\..\include\game_globals.h"
+#include <stdio.h>
 #include <string.h>
 
 class TShape {
 public:
     char gap_00[0x20];
-    TShape(char* name, int res_id);
+    TShape(char* name, long res_id);
     ~TShape();
     int is_loaded();
 };
@@ -37,7 +42,7 @@ class TPicture {
 public:
     void* Dib;           // +0x00
     char gap_04[0x1C];
-    TPicture(char* name, int param2, int param3, void* param4, int param5);
+    TPicture(char* name, long param2, int param3, void* param4, int param5);
     ~TPicture();
 };
 
@@ -49,7 +54,7 @@ public:
 class TPicturePanel : public TPanel {
 public:
     char pic_name[12];
-    int res_id;
+    long res_id;
     int size_from_pic;
     int keep_loaded;
     int own_pic;

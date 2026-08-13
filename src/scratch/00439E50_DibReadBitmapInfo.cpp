@@ -21,6 +21,11 @@
 // - tried the period typed FixBitmapInfo macro for post-read header cleanup;
 //   it kept the DIBUTILS API surface but was a codegen duplicate, so it stays
 //   as the more natural source form with no metric change.
+// - restored the DIBUTILS trailing BI_BITFIELDS no-op guard from the published
+//   header; it was a codegen duplicate and was removed from the clean source.
+// - same-TU DibCreatePalette donor suggested direct color-count staging;
+//   direct and separate temporary forms worsened or duplicated the first hunk.
+//   A positive nested guard improved only diagnostic bytes and was rolled back.
 
 #include <windows.h>
 #include <windowsx.h>

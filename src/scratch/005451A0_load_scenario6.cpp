@@ -21,6 +21,12 @@
 //   call keeps the 0x4C frame and reduces the rebuilt size to 814 bytes.
 //   Guard and slot-pointer spellings emitted duplicate code; the direct form
 //   remains the clean source reconstruction.
+// - Followed the exact scenario-loader donor topology for the object pass:
+//   separate outer index, hash pointer, mapped player id, and player slot.
+//   The do-while form restores the 812-byte size and reduces positional drift
+//   to 84 bytes. Remaining drift is localized to object-call register order.
+// - Renamed the final +0x2C virtual call to donor-proven loadAIInformation;
+//   emitted code is unchanged, but the living ABI surface is now canonical.
 
 typedef unsigned char uchar;
 extern "C" void __cdecl rge_read_uncompressed(int, void*, int);
@@ -38,7 +44,7 @@ struct RGE_Player_Info {
 struct RGE_Static_Object;
 struct RGE_Scenario { int GetPlayerPosture(int); char* Get_player_AI(int,int); char* Get_CityPlan(int,int); char* Get_BuildList(int,int); };
 struct RGE_Player {
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c(); virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c(); virtual void v20(); virtual void v24(); virtual void v28(); virtual void setup(char*,char*,char*,int,int); 
+    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c(); virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c(); virtual void v20(); virtual void v24(); virtual void v28(); virtual void loadAIInformation(char*,char*,char*,int,int);
     virtual void v30(); virtual void v34(); virtual void v38(); virtual void v3c(); virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4c(); virtual void v50(); virtual void v54(); virtual void v58(); virtual void v5c(); virtual RGE_Static_Object* make_scenario_obj(float,float,float,short,uchar,float); virtual void v64(); virtual void load1(int, int*, float); virtual void v6c(); virtual void load2(int, int*, float);
     void remake_visible_map();
 };
@@ -70,6 +76,7 @@ void RGE_Game_World::load_scenario6(int file, RGE_Player_Info& info)
     int scenario_player_count;
     int obj_count;
     int i,j;
+    int outer;
     void* buf;
     RGE_Player* p;
     world_update_counter = 0;
@@ -94,21 +101,29 @@ void RGE_Game_World::load_scenario6(int file, RGE_Player_Info& info)
         if (i >= this->player_num || player_id_hash[i] <= -1 || (p=this->players[player_id_hash[i]])==0) p=this->players[0];
         p->load1(file, player_id_hash, 1.07f);
     }
-    for (i=0; i<scenario_player_count; i++) {
-        rge_read(file, &obj_count, 4);
-        for (j=0; j<obj_count; j++) {
-            rge_read(file, &world_z, 4); rge_read(file, &world_y, 4); rge_read(file, &world_x, 4); rge_read(file, &header_size, 4); rge_read(file, &obj_angle, 2); rge_read(file, &id, 1); rge_read(file, &object_value, 4);
-            if (player_id_hash[i] < 0) continue;
-            if (0 == this->players[player_id_hash[i]]) continue;
-            this->scenario_object_flag=1;
-            this->scenario_object_id=header_size;
-            this->players[player_id_hash[i]]->make_scenario_obj(world_z, world_y, world_x, obj_angle, id, object_value);
-            this->scenario_object_flag=0;
-        }
+    outer = 0;
+    if (scenario_player_count > 0) {
+        int* map = player_id_hash;
+        do {
+            rge_read(file, &obj_count, 4);
+            for (j=0; j<obj_count; j++) {
+                rge_read(file, &world_z, 4); rge_read(file, &world_y, 4); rge_read(file, &world_x, 4); rge_read(file, &header_size, 4); rge_read(file, &obj_angle, 2); rge_read(file, &id, 1); rge_read(file, &object_value, 4);
+                int player_id = *map;
+                RGE_Player** player_slot = this->players + player_id;
+                if (player_id >= 0 && *player_slot != 0) {
+                    this->scenario_object_flag=1;
+                    this->scenario_object_id=header_size;
+                    (*player_slot)->make_scenario_obj(world_z, world_y, world_x, obj_angle, id, object_value);
+                    this->scenario_object_flag=0;
+                }
+            }
+            ++outer;
+            ++map;
+        } while (outer < scenario_player_count);
     }
     this->next_object_id = next_object_id;
     rge_read(file, &scenario_player_count, 4);
     for (i=1; i<scenario_player_count; i++) { if (i >= this->player_num || player_id_hash[i] <= -1 || (p=this->players[player_id_hash[i]])==0) p=this->players[0]; p->load2(file, player_id_hash, 1.07f); }
     rge_close(file);
-    for (i=1; i<this->player_num && i<scenario_player_count; i++) if (this->players[i] && player_id_hash[i] > -1) { int k=i-1; this->players[player_id_hash[i]]->setup(this->scenario->Get_BuildList(k,1), this->scenario->Get_CityPlan(k,1), this->scenario->Get_player_AI(k,1), this->scenario->GetPlayerPosture(k), -1); }
+    for (i=1; i<this->player_num && i<scenario_player_count; i++) if (this->players[i] && player_id_hash[i] > -1) { int k=i-1; this->players[player_id_hash[i]]->loadAIInformation(this->scenario->Get_BuildList(k,1), this->scenario->Get_CityPlan(k,1), this->scenario->Get_player_AI(k,1), this->scenario->GetPlayerPosture(k), -1); }
 }

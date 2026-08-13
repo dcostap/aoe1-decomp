@@ -23,6 +23,10 @@
 //    best union-backed source was restored.
 // 9: Changed only RGE_Map::get_point screen-coordinate formals from int to
 //    signed short; emitted code was unchanged, so the ABI probe was restored.
+// 10: Mutated the incoming short x/y parameters after pen selection to mirror
+//     the oracle's whole-word parameter-home loads at 004C2A28/004C2A3A;
+//     VC5 changed the prologue and worsened the function to 477B/313 diff,
+//     so the clean int-local source was restored.
 
 extern int dword_0062C50C;
 extern "C" __declspec(dllimport) void* __stdcall SelectClipRgn(void* hdc, void* rgn);

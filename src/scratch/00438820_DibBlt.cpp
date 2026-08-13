@@ -21,6 +21,21 @@
 //   opaque codegen scaffolding.
 // - A parameter-home alias reached the original frame size. It is diagnostic
 //   evidence only. The living source keeps the named vertical step.
+// - The original destination-address block multiplies the stride inside each
+//   orientation arm.  Replaced the shared dest_row temporary with two named
+//   pointer expressions to test that source-level control-flow topology.
+// - The fast path also has an orientation-arm multiply for the source row;
+//   moved that multiply into the two typed source-row arms.
+// - These two arm-shaped expressions are the best clean reconstruction so far:
+//   they restore the 0x8 frame and 39.91% exact-block coverage (365-byte diff).
+//   The first unresolved hunk is the swapped source stride/direction homes in
+//   the second GetDibDim call; its four calls and boundaries remain aligned.
+// - Tried precomputing the scaled destination stride in the existing local;
+//   that moved the bytes farther, so the source keeps the repeated expression.
+// - Scoped the source dimension locals at the second GetDibDim call to test
+//   whether source-only lifetimes recover the original output-home rotation.
+// - Swapped the natural inner-loop index and table-pointer declarations to
+//   test the original index/table register pair in the scaled row body.
 
 #include <windows.h>
 #include <windowsx.h>
@@ -47,9 +62,9 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
 {
     long dest_direction;
     long dest_bitmap_height;
-    long dest_stride;
     long src_direction;
     long src_bitmap_height;
+    long dest_stride;
     long src_stride;
 
     if (do_clip != 0) {
@@ -66,16 +81,20 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
 
     int x_step = (src_width << 8) / dest_width;
     int y_step = (src_height << 8) / dest_height;
-    int dest_row = dest_y;
-    if (dest_direction != 1)
-        dest_row = (dest_bitmap_height - dest_y) - 1;
-    BYTE* dest = dest_bits + dest_stride * dest_row + dest_x;
+    BYTE* dest;
+    if (dest_direction == 1) {
+        dest = dest_bits + dest_stride * dest_y + dest_x;
+    } else {
+        dest = dest_bits + dest_stride * (dest_bitmap_height - dest_y - 1) + dest_x;
+    }
 
     if (x_step == 0x100 && y_step == 0x100 && flip_x == 0) {
-        int src_row = src_y;
-        if (src_direction != 1)
-            src_row = src_bitmap_height - 1 - src_y;
-        src_row = src_stride * src_row;
+        int src_row;
+        if (src_direction == 1) {
+            src_row = src_stride * src_y;
+        } else {
+            src_row = src_stride * (src_bitmap_height - src_y - 1);
+        }
         dest_stride = dest_direction * dest_stride;
         src_stride = src_direction * src_stride;
         BYTE* src = src_bits + src_row + src_x;
@@ -122,8 +141,8 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
                 source_row = src_bitmap_height - 1 - source_row;
 
             if (dest_width > 0) {
-                long* x_entry = SrcXTbl;
                 int i = 0;
+                long* x_entry = SrcXTbl;
                 do {
                     dest[i] = src_bits[(int)*x_entry +
                         source_row * src_stride + src_x];
