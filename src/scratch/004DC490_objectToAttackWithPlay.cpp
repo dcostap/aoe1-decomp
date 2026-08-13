@@ -37,6 +37,10 @@
 // top-level score locals, and score-term order were emitted-code duplicates.
 // A named death-value temporary added 19 bytes and was rolled back. Remaining
 // drift is the early shared epilogues and callee-save rotation (this/play/flag).
+// luna-4DC490-r4: the natural positive count/target guard around the best
+// current loop basin was a codegen duplicate; restored the direct guard form.
+// luna-4DC490-r4: a combined play-null/human-play positive body gate, supported
+// by the shared oracle skip tail, was also a duplicate; restored the clean form.
 
 extern int debug_rand(char* file, int line);
 
