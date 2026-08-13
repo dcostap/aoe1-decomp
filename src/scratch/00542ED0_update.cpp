@@ -18,8 +18,12 @@
 // - Structural follow-up: direct indexed player-time access and a cached local
 //   status handle align the update loop and status-log entry blocks. Signed long
 //   status counters reproduce the original signed divide-by-60 blocks.
-// - Current validated source remains nonexact: player-update register coloring
-//   differs, and the status open path is three bytes past the original boundary.
+// - Capturing lastStatusLogTime before the status gate reuses the original EAX
+//   value and removes one redundant move. The best result is 678 differing bytes
+//   and one byte past the original boundary.
+// - A scoped players-array alias changed the frame to 0x10C and worsened the
+//   result. Reusing dead timing locals emitted duplicate code. Both were rolled
+//   back; keep the named status timestamp as the clean source model.
 
 #include <stdio.h>
 
@@ -193,6 +197,7 @@ unsigned char RGE_Game_World::update()
     long minutes;
     long hours;
     unsigned long elapsed;
+    unsigned long statusLogTime;
     unsigned char first_update = 0;
 
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
@@ -281,8 +286,9 @@ unsigned char RGE_Game_World::update()
     this->commands->com_hand->LastWorldRandom(this->random_seed);
 
     if (logStatusOn == 1 && this->game_state != 1) {
-        if (30000 < this->world_time - lastStatusLogTime ||
-            lastStatusLogTime == 0) {
+        statusLogTime = lastStatusLogTime;
+        if (30000 < this->world_time - statusLogTime ||
+            statusLogTime == 0) {
             FILE* statusFile = logStatusFile;
             if (statusFile == 0) {
                 sprintf(fileName, "AILog\\%s.log",

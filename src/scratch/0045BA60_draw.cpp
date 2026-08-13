@@ -19,6 +19,12 @@
 // 17: corrected TDrawArea::SetTrans's second parameter to the proven uchar ABI used by the exact Poll donor.
 // 18: removed the facet temporary and used direct typed next_facet indexing/argument; emitted code was unchanged, so restored.
 // 19: materialized typed draw_x/draw_y locals before shape_draw; emitted code was unchanged, so restored the clean call.
+// 20: exact Poll-style pre-indexed Shape_Info source grew the function to a 713-byte structural mismatch; restored.
+// 21: a natural TShape owner local did not change the 53-byte emitted basin.
+// 22: typed left/top coordinate locals did not change the 53-byte emitted basin.
+// 23: Shape_Info reference and entry-pointer forms both grew to 713 bytes; restored named base/index ownership.
+// 24: donor-era <memory.h> context did not change the localized register schedule.
+// 25: const-qualified Shape_Info metadata did not change the localized register schedule.
 // left in scratch: 53-byte nonexact drift begins at 0045BC43 in shape_draw register/argument scheduling; calls, frame, size, CFG, and all 13 call sites match.
 
 #include <windows.h>

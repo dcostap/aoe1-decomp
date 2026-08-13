@@ -15,14 +15,42 @@
 // 12: Reused one ordinary loop counter across the sequential history/dropsite fills, matching the decompiler's shared iVar11 lifetime instead of separate block-local counters.
 // 13: Spelled the fixed play-history clear as a typed first-element memset with the proven 0xFA00 byte size; this tests intrinsic argument scheduling without raw frame/address plumbing.
 // 14: Replaced the play-history memset with a typed countdown fill; the first paired LEA/count hunk now matches and the first mismatch moved to the allocation guard at +0x232.
+// 15: Scoped the important-memory offset inside its positive guard; this moved the max comparison before offset zeroing and recovered the original guard block.
+// 16: Replaced the building-lot and attack-memory raw fills with canonical typed fields; both allocation loops now match their original blocks and call layout.
+// 17: Replaced the final raw resource-array walk with named resources/maxResources/numResources fields; this removed the extra 13-byte tail and left 27 localized bytes.
+// 18: Reconstructed ObjectMemory ownership and initialized its named fields; all but two resource-fill bytes and the final intrinsic ordering now match.
+// 19: Replaced the resourceTypes raw walk with named resourceTypes/numberResourceTypes arrays; current drift is 12 bytes in the final fixed-zone memset scheduling.
 // Main-agent audit: retained the canonical InformationAIModule/InfluenceMap
 // inheritance and named member layout. The remaining narrow I/P/B accesses
 // cover fields whose ownership/layout is not yet stable; the exact-size
 // constructor still has one late REP-fill ordering gap and remains scratch.
+// ACCEPTED_DRIFT: main-agent adjudication confirmed the only remaining bytes
+// move the non-faulting LEA of fullyExploredZoneValue across MOV ECX and XOR
+// EAX before REP STOS. The effective address, fill count, value, writes, and
+// flags at REP STOS are identical. Calls, CFG, size, frame, and all later
+// instructions match.
 
 #include <string.h>
 
 typedef unsigned char uchar;
+
+struct ObjectMemory {
+    int id;
+    short type;
+    short group;
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
+    unsigned char owner;
+    short hitPoints;
+    unsigned char _pad_0[2];
+    int attackAttempts;
+    unsigned char kills;
+    unsigned char _pad_1[3];
+    float damageCapability;
+    float rateOfFire;
+    float range;
+};
 
 void* __cdecl operator new(unsigned int size);
 inline void* operator new(unsigned int, void* p) { return p; }
@@ -122,7 +150,7 @@ public:
     int mapYSizeValue;
     int lastUpdateRowValue;
     int maxImportantObjectMemory;
-    void* importantObjectMemory;
+    ObjectMemory* importantObjectMemory;
     ManagedArray<int> importantObjects;
     ManagedArray<int> importantUnits;
     ManagedArray<int> importantMiscs;
@@ -185,9 +213,9 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
 
     P(0x4C8) = operator new(0x10);
     P(0x4CC) = operator new(0x10);
-    for (int off=0; off<0x10; off+=4) {
-        *(int*)((char*)P(0x4CC)+off)=0;
-        *(int*)((char*)P(0x4C8)+off)=0;
+    for (i = 0; i < 4; i++) {
+        this->numberResourceTypesValue[i] = 0;
+        this->resourceTypesValue[i] = 0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -210,40 +238,41 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
         this->closestDropsiteResourceID[i] = -1;
     }
 
-    P(0x114) = operator new(I(0x110) * 0x24);
+    this->importantObjectMemory = (ObjectMemory*)operator new(
+        this->maxImportantObjectMemory * sizeof(ObjectMemory));
     if (P(0x114) != 0) {
-        int off = 0;
         int k = 0;
-        if (I(0x110) > 0) {
+        if (this->maxImportantObjectMemory > 0) {
             do {
-            *(int*)((char*)P(0x114)+off+0)=-1;
-            *(short*)((char*)P(0x114)+off+4)=-1;
-            *(short*)((char*)P(0x114)+off+6)=-1;
-            *((char*)P(0x114)+off+8)=0;
-            *((char*)P(0x114)+off+9)=0;
-            *((char*)P(0x114)+off+10)=0;
-            *((char*)P(0x114)+off+11)=0;
-            *(short*)((char*)P(0x114)+off+12)=0;
-            *(int*)((char*)P(0x114)+off+0x10)=0;
-            *((char*)P(0x114)+off+0x14)=0;
-            *(int*)((char*)P(0x114)+off+0x18)=0;
-            *(int*)((char*)P(0x114)+off+0x1c)=0;
-            *(int*)((char*)P(0x114)+off+0x20)=0;
+                this->importantObjectMemory[k].id = -1;
+                this->importantObjectMemory[k].type = -1;
+                this->importantObjectMemory[k].group = -1;
+                this->importantObjectMemory[k].x = 0;
+                this->importantObjectMemory[k].y = 0;
+                this->importantObjectMemory[k].z = 0;
+                this->importantObjectMemory[k].owner = 0;
+                this->importantObjectMemory[k].hitPoints = 0;
+                this->importantObjectMemory[k].attackAttempts = 0;
+                this->importantObjectMemory[k].kills = 0;
+                this->importantObjectMemory[k].damageCapability = 0;
+                this->importantObjectMemory[k].rateOfFire = 0;
+                this->importantObjectMemory[k].range = 0;
                 k++;
-                off += 0x24;
-            } while (k < I(0x110));
+            } while (k < this->maxImportantObjectMemory);
         }
     }
 
     P(0x1F8) = operator new(I(0x1F4) * 8);
     if (P(0x1F8) != 0) {
         int k = 0;
-        if (I(0x1F4) > 0) {
+        if (this->maxBuildingLots > 0) {
             do {
-            char* q=(char*)P(0x1F8)+k*8;
-            *(int*)q=-1; q[5]=0; q[6]=0; q[4]=0;
+                this->buildingLots[k].typeID = -1;
+                this->buildingLots[k].x = 0;
+                this->buildingLots[k].y = 0;
+                this->buildingLots[k].status = 0;
                 k++;
-            } while (k < I(0x1F4));
+            } while (k < this->maxBuildingLots);
         }
     }
 
@@ -251,22 +280,21 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
     if (P(0x200) != 0) {
         int off = 0;
         int k = 0;
-        if (I(0x1FC) > 0) {
+        if (this->maxAttackMemories > 0) {
             do {
-            *(int*)((char*)P(0x200)+off+0)=-1;
-            *(int*)((char*)P(0x200)+off+0)=-1;
-            *((char*)P(0x200)+off+5)=0;
-            *((char*)P(0x200)+off+6)=0;
-            *((char*)P(0x200)+off+7)=0;
-            *((char*)P(0x200)+off+8)=0;
-            *((char*)P(0x200)+off+9)=0xff;
-            *((char*)P(0x200)+off+10)=0xff;
-            *(short*)((char*)P(0x200)+off+12)=0;
-            *((char*)P(0x200)+off+14)=0;
-            *(int*)((char*)P(0x200)+off+0x14)=-1;
+                this->attackMemories[k].id = -1;
+                this->attackMemories[k].id = -1;
+                this->attackMemories[k].minX = 0;
+                this->attackMemories[k].minY = 0;
+                this->attackMemories[k].maxX = 0;
+                this->attackMemories[k].maxY = 0;
+                this->attackMemories[k].attackingOwner = 0xff;
+                this->attackMemories[k].targetOwner = 0xff;
+                this->attackMemories[k].kills = 0;
+                this->attackMemories[k].success = 0;
+                this->attackMemories[k].play = -1;
                 k++;
-                off += 0x18;
-            } while (k < I(0x1FC));
+            } while (k < this->maxAttackMemories);
         }
     }
 
@@ -274,13 +302,16 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
     int* c=(int*)((char*)this+0x1B8);
     for (int k=0;k<4;k++, c+=2) { c[-1]=-1; c[0]=-1; c[7]=-1; c[8]=-1; }
 
-    memset((char*)this + 0x308, 0, 0xFF);
+    memset(this->fullyExploredZoneValue, 0, sizeof(this->fullyExploredZoneValue));
 
     int* d=(int*)((char*)this+0x410);
     for (int y=0;y<4;y++) {
         for (int x=0;x<4;x++, d+=3) { d[-2]=0; d[-1]=0; d[0]=0; }
     }
 
-    int* e=(int*)((char*)this+0x4F0);
-    for (k=0;k<4;k++, e++) { e[-8]=0; e[0]=0; e[-4]=0; }
+    for (k = 0; k < 4; k++) {
+        this->resources[k] = 0;
+        this->maxResources[k] = 0;
+        this->numResources[k] = 0;
+    }
 }
