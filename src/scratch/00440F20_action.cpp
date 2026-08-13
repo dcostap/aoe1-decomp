@@ -15,9 +15,9 @@
 // - Direct named checkButton members restored the original eight compare
 //   encodings. An explicit radioButton[3] branch produced 154 bytes but added
 //   four entry-reachable bytes beyond the original boundary, so it is not kept.
-// - The remaining documented drift is the compiler's merged no-match tail:
-//   the oracle has a dead radioButton[3] reload and a separate sixth
-//   checkButtons call; the natural typed candidate retains five calls.
+// - A volatile radio-button array plus a no-effect radioButton[3] expression
+//   produced exact bytes. Main review rejected both codegen-only forms. The
+//   natural array and generic checkButtons tail remain authoritative.
 
 #include <string.h>
 
