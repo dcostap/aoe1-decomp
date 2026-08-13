@@ -18,15 +18,19 @@
 // - control-flow probes: source-leading list handling plus the existing-Game-
 //   Screen arm first restored the oracle's late virtual action and cold new
 //   block; ordered calls reached 36/36 with no site gaps.
+// - control-flow: explicit GAM/GMX handle branches restored four original
+//   load blocks.  Calling setCurrentPanel in each cancel arm lets VC5 tail
+//   merge the calls and emits the oracle's immediate panel-name pushes.
 // - layout: `char fileInfo[0x230]` exposed the binary-backed scratch extent;
 //   reducing it to 0x22C accounts for the compiler new-expression home and
 //   reaches the exact 0x438 frame.  The larger typed window is kept as the
 //   best period-plausible model, with `_finddata_t` used only at the API cast.
-// - ABI/context and event/panel-local aliases were codegen duplicates and
-//   were rolled back.  Final validation remains nonexact: 1005B, 0x438 frame,
-//   36/36 ordered calls, 50.18% exact-block coverage, 898 positional diff
-//   bytes.  The remaining broad gap starts in VC5 callee-save coloring and
-//   the EH prologue (target EBX=event/EDI=panel/EBP=this); left in scratch.
+// - ABI/context, delayed receiver/event aliases, and nested delete guards
+//   were codegen duplicates and were rolled back.  Current best remains
+//   nonexact: 1019B, 0x438 frame, 36/36 ordered calls, 74.54% exact-block
+//   coverage, 900 positional diff bytes.  The first gap is the VC5 prologue:
+//   target EBX=event/EDI=panel/EBP=this, while rebuilt code keeps this in EBX
+//   and panel in EBP.  The fallback then reloads event from its stack home.
 
 #include <io.h>
 #include <stdio.h>
@@ -228,13 +232,15 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
             return 1;
         }
 
-        if (panel == this->deleteButton && msg == 1) {
-            char* line = this->list->currentLine();
-            if (*line != 0) {
-                this->get_string(0x24CA, fileName, 0x100);
-                sprintf(fileInfo, fileName, this->list->currentLine());
-                this->popupYesNoDialog(fileInfo,
-                                       (char*)0x5860E4, 0x1C2, 100);
+        if (panel == this->deleteButton) {
+            if (msg == 1) {
+                char* line = this->list->currentLine();
+                if (*line != 0) {
+                    this->get_string(0x24CA, fileName, 0x100);
+                    sprintf(fileInfo, fileName, this->list->currentLine());
+                    this->popupYesNoDialog(fileInfo,
+                                           (char*)0x5860E4, 0x1C2, 100);
+                }
             }
         }
 
@@ -258,13 +264,11 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
                         fileNameNoExt);
                 long handle = _findfirst(fileName,
                                          (_finddata_t*)fileInfo);
-                char* format;
                 if (handle == -1) {
-                    format = (char*)0x586670;
+                    sprintf(fileName, (char*)0x586670, fileNameNoExt);
                 } else {
-                    format = (char*)0x586668;
+                    sprintf(fileName, (char*)0x586668, fileNameNoExt);
                 }
-                sprintf(fileName, format, fileNameNoExt);
                 int loaded = ((TRIBE_Game*)rge_base_game)->load_game(fileName);
                 if (loaded == 0) {
                     this->popupOKDialog(0x2501, 0, 0x1C2, 100);
@@ -277,19 +281,17 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long msg,
             }
 
             TPanel* game_screen = panel_system.panel((char*)0x5842CC);
-            char* next_panel;
             if (game_screen != 0) {
                 if (rge_base_game->singlePlayerGame() == msg &&
                     rge_base_game->save_paused == 0) {
-                        rge_base_game->set_paused(0, 0);
+                    rge_base_game->set_paused(0, 0);
                 }
-                next_panel = (char*)0x5842CC;
+                panel_system.setCurrentPanel((char*)0x5842CC, 0);
             } else {
                 rge_base_game->disable_input();
                 new TribeSPMenuScreen;
-                next_panel = (char*)0x586638;
+                panel_system.setCurrentPanel((char*)0x586638, 0);
             }
-            panel_system.setCurrentPanel(next_panel, 0);
             panel_system.destroyPanel((char*)0x586464);
         }
         return 1;

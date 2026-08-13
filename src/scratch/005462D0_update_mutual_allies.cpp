@@ -27,10 +27,36 @@
 //   88.92% shape, 832 positional bytes (76.1905%), 514 edit bytes.  The remaining
 //   structural gap starts in the prologue and second diplomacy pass; no exact or
 //   accepted_drift proposal.
+// orch-5462D0-a: proven image-address macros fixed the singleton loads and the
+//   transitive store was corrected to removeVisibleBits (+0xDC..+0xFC), not
+//   mutualAlly.  This restored the 0xC frame and improved the best diff to 778.
+//   Cached count, scoped loop locals, and direct array-pointer variants were
+//   duplicate or worse.  Raw row-cursor source improved edit alignment but was
+//   restored to named fields as a source-plausibility checkpoint.
+// validated pause candidate: 1099 rebuilt vs 1092 original, frame 0xC,
+//   17/17 calls, 89.54% shape, 778 positional bytes, 460 edit bytes.  The
+//   remaining structural lead is direct diplomacy register/block scheduling.
+// Replaced raw World.cpp debug-format addresses with named exact literals.
+// This retained the typed model and improved positional drift to 768 bytes.
 
 #include <stdio.h>
 
-extern FILE* DVlogf;
+#define DVlogf (*(FILE**)0x886C58)
+
+static const char s_update_visibilities[] =
+    "updating player visibilities @ wt=%d\n";
+static const char s_player[] = "player %d\n";
+static const char s_masks[] =
+    "  mutualExploredMask = %8.8x   mutualVisibleMask = %8.8x   "
+    "nonMutualVisibleMask = %8.8x\n";
+static const char s_player_flags[] =
+    "  allied_LOS_Enable = %d   allied_victory = %d \n";
+static const char s_diplomacy[] = "  unitDiplomacy = [";
+static const char s_mutual_allies[] = "  mututalAlly = [";
+static const char s_removed_visible_bits[] = "  RemoveVisibleBits = [";
+static const char s_decimal[] = "%d";
+static const char s_separator[] = ", ";
+static const char s_list_end[] = "]\n";
 
 class Panel {
 public:
@@ -46,7 +72,7 @@ public:
     virtual Panel* getA();
     virtual Panel* getB();
 };
-extern RGE_Base_Game* rge_base_game;
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
 struct Player {
     char gap0[0x84]; unsigned char* relations;
     int unit_diplomacy[9];    // +88..+A8
@@ -66,8 +92,9 @@ public:
 
 void RGE_Game_World::update_mutual_allies() {
     int i,j,k;
+    int one = 1;
     int pNum, index;
-    fprintf(DVlogf,(const char*)0x58EF08,world_time);
+    fprintf(DVlogf, s_update_visibilities, world_time);
     i=0;
     if (i < player_num) do {
         this->players[i]->mutualExploredMask=0;
@@ -89,19 +116,24 @@ void RGE_Game_World::update_mutual_allies() {
     } while (i < player_num);
 
     {
-        for (i=1; i < player_num; ++i) {
-            if (players[i]->allied_LOS_Enable==1) {
-                for (j=1; j < player_num; ++j) {
+        k = player_num;
+        i = one;
+        if (i < k) do {
+            if (players[i]->allied_LOS_Enable == one) {
+                j = one;
+                if (j < k) do {
                     if (j != i) {
                         if (!players[i]->relations[j] && !players[j]->relations[i]) {
-                            players[i]->mutualAlly[j]=1;
+                            players[i]->mutualAlly[j] = 1;
                             players[i]->mutualVisibleMask |= 1 << j;
-                            players[i]->mutualExploredMask |= 1 << (j+16);
+                            players[i]->mutualExploredMask |= 1 << (j + 16);
                         }
                     }
-                }
+                } while (++j < k);
             }
-        }
+            k = player_num;
+            ++i;
+        } while (i < k);
     }
 
     for (i=0; i < player_num; ++i) {
@@ -113,7 +145,7 @@ void RGE_Game_World::update_mutual_allies() {
                         players[index]->mutualAlly[pNum] == 1 &&
                         players[index]->mutualAlly[i] == 1) {
                         p->nonMutualVisibleMask |= 1 << pNum;
-                        p->mutualAlly[pNum] |= 1 << index;
+                        p->removeVisibleBits[pNum] |= 1 << index;
                     }
                 }
             }
@@ -121,26 +153,26 @@ void RGE_Game_World::update_mutual_allies() {
     }
 
     for (i=0;i<player_num;i++) {
-        fprintf(DVlogf,(const char*)0x58EEFC,i);
-        fprintf(DVlogf,(const char*)0x58EEA0,players[i]->mutualExploredMask,players[i]->mutualVisibleMask,players[i]->nonMutualVisibleMask);
-        fprintf(DVlogf,(const char*)0x58EE6C,players[i]->allied_LOS_Enable,players[i]->civ);
-        fprintf(DVlogf,(const char*)0x58EE58);
+        fprintf(DVlogf, s_player, i);
+        fprintf(DVlogf, s_masks, players[i]->mutualExploredMask, players[i]->mutualVisibleMask, players[i]->nonMutualVisibleMask);
+        fprintf(DVlogf, s_player_flags, players[i]->allied_LOS_Enable, players[i]->civ);
+        fprintf(DVlogf, s_diplomacy);
         for (j=0;j<9;j++) {
-            fprintf(DVlogf,(const char*)0x584610,players[i]->unit_diplomacy[j]);
-            if (j < 8) fprintf(DVlogf,(const char*)0x584ee4);
-            else fprintf(DVlogf,(const char*)0x58ee54);
+            fprintf(DVlogf, s_decimal, players[i]->unit_diplomacy[j]);
+            if (j < 8) fprintf(DVlogf, s_separator);
+            else fprintf(DVlogf, s_list_end);
         }
-        fprintf(DVlogf,(const char*)0x58EE40);
+        fprintf(DVlogf, s_mutual_allies);
         for (j=0;j<9;j++) {
-            fprintf(DVlogf,(const char*)0x584610,players[i]->mutualAlly[j]);
-            if (j < 8) fprintf(DVlogf,(const char*)0x584ee4);
-            else fprintf(DVlogf,(const char*)0x58ee54);
+            fprintf(DVlogf, s_decimal, players[i]->mutualAlly[j]);
+            if (j < 8) fprintf(DVlogf, s_separator);
+            else fprintf(DVlogf, s_list_end);
         }
-        fprintf(DVlogf,(const char*)0x58EE28);
+        fprintf(DVlogf, s_removed_visible_bits);
         for (j=0;j<9;j++) {
-            fprintf(DVlogf,(const char*)0x58EE20,players[i]->removeVisibleBits[j]);
-            if (j < 8) fprintf(DVlogf,(const char*)0x584ee4);
-            else fprintf(DVlogf,(const char*)0x58ee54);
+            fprintf(DVlogf, s_decimal, players[i]->removeVisibleBits[j]);
+            if (j < 8) fprintf(DVlogf, s_separator);
+            else fprintf(DVlogf, s_list_end);
         }
     }
     Panel* panel = rge_base_game->getA();

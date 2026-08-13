@@ -24,6 +24,13 @@
 // target relocations aligned, 1056 strict diff bytes, 69.90% shape similarity,
 // 33.87% exact-block coverage. Remaining drift is broad entry/local register
 // coloring and duplicated-tail scheduling; no call/layout/ABI blocker remains.
+// continuation probes: a shared done label matched the original 3-return CFG
+// and raised shape similarity to 80.27%, but reduced effective size by 21B.
+// Direct tile border-byte reloads moved the entry tile load into EBX before the
+// saved-register pushes, matching the original first hunk, but reduced the
+// frame to 0x20 and lost structural islands. Direct indexed border fields gave
+// a diagnostic 824B diff, but kept the 0x20 frame and swapped the EBP/EDI
+// index/base roles. Restored the pinned 0x28-frame natural source.
 
 struct TShape;
 

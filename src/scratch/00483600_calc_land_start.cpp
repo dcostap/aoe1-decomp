@@ -19,8 +19,16 @@
 // try 17: changed the retry state from int to typed bool; the packet's byte
 // parameter-home writes became a 0x30-frame, 0-byte-size candidate and cut
 // positional drift from 970 to 575 bytes while preserving all 16 calls.
+// worker probes: inverted the mode-2 bounds arm, removed the doubled-radius
+// local, named the controller, hoisted distance deltas, and saved the radius;
+// each was a codegen duplicate. Reusing the radius parameter as the loop index
+// preserved some late blocks but grew the frame to 0x34 and drift to 1002.
+// An explicit inner while loop was also a duplicate. Restore the typed-bool
+// candidate; the remaining gap is saved-register and local-home allocation.
 // current: retain the bool candidate; calls and frame are exact, while the
 // remaining drift is block shape and register/local-home placement.
+// Named rmm_dbct.cpp and debug-log literals retained the typed source and
+// improved positional drift to 570 bytes.
 
 #include <math.h>
 
@@ -30,6 +38,20 @@
 extern "C" int __cdecl debug_rand(const char*, int);
 extern "C" void __cdecl Log(void*, const char*, ...);
 extern void* L;
+
+static const char s_rmm_dbct_path[] = "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp";
+static const char s_calc_land_start[] =
+    "********Random Map calc land start, rand: %d";
+static const char s_calc_land_end_point1[] =
+    "********Random Map calc land end (point1) ";
+static const char s_calc_land_end_point2[] =
+    "********Random Map calc land end (point2) ";
+static const char s_calc_land_end_point3[] =
+    "********Random Map calc land end (point3) ";
+static const char s_calc_land_xy[] =
+    "********Random Map calc land xy player %d (%d, %d)";
+static const char s_calc_land_end[] =
+    "********Random Map calc land end, rand:";
 
 struct LandInfoLine {
     int land_size;
@@ -109,7 +131,7 @@ void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int cou
     int maxx;
     int maxy;
 
-    Log(L,(const char*)0x585D20, debug_rand((const char*)0x585D50,0x1c3));
+    Log(L, s_calc_land_start, debug_rand(s_rmm_dbct_path, 0x1c3));
     two = radius + radius;
     bound = (float)(this->map_width - two) / sqrt((float)count);
     if (count > 3 && count < 7)
@@ -129,26 +151,26 @@ void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int cou
 
     switch (land->placement) {
     case 0:
-        Log(L,(const char*)0x585C68);
+        Log(L, s_calc_land_end_point1);
         for (i=start;i<start+count;i++) {
-            land_info.land[i].x = (debug_rand((const char*)0x585D50,0x1e5) * (this->map_width - two)) / 0x7fff + radius;
-            land_info.land[i].y = (debug_rand((const char*)0x585D50,0x1e6) * (this->map_height - two)) / 0x7fff + radius;
+            land_info.land[i].x = (debug_rand(s_rmm_dbct_path, 0x1e5) * (this->map_width - two)) / 0x7fff + radius;
+            land_info.land[i].y = (debug_rand(s_rmm_dbct_path, 0x1e6) * (this->map_height - two)) / 0x7fff + radius;
         }
         break;
     case 1:
-        Log(L,(const char*)0x585C94);
+        Log(L, s_calc_land_end_point2);
         for (i=start;i<start+count;i++) {
             land_info.land[i].x = land->x;
             land_info.land[i].y = land->y;
         }
         break;
     case 2:
-        Log(L,(const char*)0x585CF4);
+        Log(L, s_calc_land_end_point3);
         for (i=start;i<start+count;i++) {
             retry = 0;
             do {
-                x = (debug_rand((const char*)0x585D50,0x1fc) * (this->map_width - two)) / 0x7fff + radius;
-                y = (debug_rand((const char*)0x585D50,0x1fd) * (this->map_height - two)) / 0x7fff + radius;
+                x = (debug_rand(s_rmm_dbct_path, 0x1fc) * (this->map_width - two)) / 0x7fff + radius;
+                y = (debug_rand(s_rmm_dbct_path, 0x1fd) * (this->map_height - two)) / 0x7fff + radius;
                 if (x > minx && x < maxx && y > miny && y < maxy) {
                     retry = 1;
                 }
@@ -160,7 +182,7 @@ void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int cou
                             if (j == i - 1) {
                                 land_info.land[i].x = x;
                                 land_info.land[i].y = y;
-                                Log(L,(const char*)0x585CC0,i,x,y);
+                                Log(L, s_calc_land_xy, i, x, y);
                             }
                             retry = 1;
                             break;
@@ -169,11 +191,11 @@ void RGE_RMM_Database_Controller::calc_land_start(int start, int radius, int cou
                 }
             } while (retry);
             land_info.land[i].x=x; land_info.land[i].y=y;
-            Log(L,(const char*)0x585CC0,i,x,y);
+            Log(L, s_calc_land_xy, i, x, y);
         }
         break;
     default:
         break;
     }
-    Log(L,(const char*)0x585C40);
+    Log(L, s_calc_land_end);
 }

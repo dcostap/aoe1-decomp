@@ -20,6 +20,12 @@
 // 17: Promoting x to an explicit int cursor moved its stack home closer (986 bytes, diff 1016) but still left the saved-this/row register basin and byte-local homes wrong; full virtual-prefix context changed only one byte.
 // 18: Restored the cleaner canonical typed reconstruction as the best current source. Remaining blocker is structural VC5 register/local-home allocation (original this=EDI, rows=ESI, x home +2C, y=EBP; rebuilt this=ESI, rows=EBP and different byte homes), not calls or layout.
 // 19: Re-tested separate typed x/y bounds guards from the exact get_tile_type donor; VC5 emitted the same code, so restored the canonical combined guard.
+// 20: In this claim, moved named x/y cursors before split guards; prologue and frame basin worsened, so restored clean source.
+// 21: Reused x/y parameter homes for terrain bytes; frame shrank and CFG moved, but positional diff widened, so restored.
+// 22: Swapped max-local declaration order; emitted code was unchanged.
+// 23: Initialized an outer row cursor before the column cursor; size shrank and first-block structure worsened, so restored.
+// 24: Put promoted cursor assignments in the bounds predicate; diff improved to 994, but code size fell to 944 and the source became decompiler-shaped, so restored.
+// 25: Final claim state retains the canonical typed source. Calls and frame match; remaining gap is saved-this/row register and local-home allocation.
 
 struct RGE_Tile {
     short screen_xpos;

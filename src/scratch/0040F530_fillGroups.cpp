@@ -20,6 +20,12 @@
 //   late register allocation. Source keeps named period-plausible ownership.
 // - Store each accepted unit before incrementing its type count. This natural
 //   order matches the original memory effects and improved the diff to 834.
+// - Tested explicit row cursors for the minimum-assignment loop. They made the
+//   structural output worse (882-byte diff, 52.60% shape), so they were rolled back.
+// - Named the surviving bucket unit ID before the overflow-mode calls. This
+//   preserves the original spilled candidate value and improved the diff to 833.
+// - Reordered that local and used a play declaration initializer. Both emitted
+//   the same 833-byte result; the simple named-local form remains.
 
 class RGE_Static_Object {};
 
@@ -90,6 +96,7 @@ int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
     int unitsByTypeCount[6];
     int unitsByType[6][50];
     int minUnits;
+    int unitId;
     int groupIndex;
     int i;
     int type;
@@ -102,12 +109,10 @@ int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
     int minimum;
     unsigned char inType;
     unsigned char maximum;
-    AIPlay* play;
+    AIPlay* play = world->playbook->play(status->playNumberValue);
     AIPlayGroup* group;
     int* unit;
     RGE_Static_Object* object;
-
-    play = world->playbook->play(status->playNumberValue);
 
     if (play == 0) {
         return 0;
@@ -174,7 +179,8 @@ int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
         count = unitsByTypeCount[type];
         for (j = 0; j < count; j++) {
             unit = &unitsByType[type][j];
-            if (*unit == -1) {
+            unitId = *unit;
+            if (unitId == -1) {
                 continue;
             }
 
@@ -201,7 +207,7 @@ int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
                 }
 
                 if (bestGroup != -1) {
-                    if (status->addGrouping(*unit,
+                    if (status->addGrouping(unitId,
                                             (unsigned char)bestGroup,
                                             (unsigned char)type) == 1) {
                         *unit = -1;
@@ -223,7 +229,7 @@ int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
                         maximum = group->maximum(type);
                         if (inType < maximum) {
                             if (status->addGrouping(
-                                    *unit, (unsigned char)groupIndex,
+                                    unitId, (unsigned char)groupIndex,
                                     (unsigned char)type) == 1) {
                                 *unit = -1;
                                 if (status->numberInPlay() ==

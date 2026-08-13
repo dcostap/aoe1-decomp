@@ -23,8 +23,12 @@
 //   was not canonical ownership.
 // - Direct object reloads improve the case-15 and case-18 block shape.  The
 //   exact donor reference ABI for get_frame produced no useful movement.
-// - Final: retained this period-plausible typed candidate.  Remaining drift
-//   starts at the local switch-table relocation and register/local coloring.
+// - Widened master_obj_id's local to int; this restored the original size and
+//   reduced the strict diff from 755 to 585 bytes.
+// - Removed the fallback command-player alias.  Repeated named world/player
+//   access restored the original reload topology and reduced the diff to 27.
+// - A typed four-short frame aggregate, with max_y before max_x, reduced the
+//   remaining local-output drift to 17 bytes.  The candidate stays in scratch.
 
 extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void*, void*);
@@ -33,6 +37,13 @@ extern "C" __declspec(dllimport) int __stdcall ScreenToClient(void*, void*);
 struct tagPOINT {
     long x;
     long y;
+};
+
+struct RGE_Frame_Bounds {
+    short min_x;
+    short min_y;
+    short max_y;
+    short max_x;
 };
 
 class TDrawSystem {
@@ -240,10 +251,7 @@ public:
 long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                                            int param_3, int param_4)
 {
-    short min_x;
-    short min_y;
-    short max_y;
-    short max_x;
+    RGE_Frame_Bounds frame;
     tagPOINT point;
     RGE_Pick_Info pick_info;
 
@@ -263,9 +271,10 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                     this->set_redraw(1);
                     if (((RGE_Static_Object*)pick_info.object)->sprite != 0) {
                         ((RGE_Static_Object*)pick_info.object)->get_frame(
-                            min_x, min_y, max_x, max_y);
-                        point.x = max_y - min_y;
-                        point.y = max_x - min_x;
+                            frame.min_x, frame.min_y,
+                            frame.max_x, frame.max_y);
+                        point.x = frame.max_x - frame.min_x;
+                        point.y = frame.max_y - frame.min_y;
                         if (this->render_area->draw_system->screen_mode == 1) {
                             ClientToScreen(this->render_area->wnd, &point);
                         }
@@ -282,7 +291,7 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                 if (this->pick1(0x28, 0, param_1, param_2,
                                 &pick_info, 0, 1) == 0x33) {
                     this->fixup_pick_info(&pick_info);
-                    short object_id = rge_base_game->master_obj_id;
+                    int object_id = rge_base_game->master_obj_id;
                     if (object_id != -1 &&
                         this->player->master_objects[object_id] != 0) {
                         RGE_Master_Static_Object* master =
@@ -293,12 +302,11 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                             object_id, pick_info.x, pick_info.y, 0.0f);
                     } else if (object_id != -1 && this->world->players[0]
                                ->master_objects[object_id] != 0) {
-                        RGE_Player* command_player = this->world->players[0];
                         RGE_Master_Static_Object* master =
-                            command_player->master_objects[object_id];
+                            this->world->players[0]->master_objects[object_id];
                         master->alignment(&pick_info.x, &pick_info.y,
                                           this->world, 0);
-                        command_player->command_place_object(
+                        this->world->players[0]->command_place_object(
                             object_id, pick_info.x, pick_info.y, 0.0f);
                     }
                 }
@@ -359,9 +367,10 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                         rge_base_game->set_game_mode(8, 1);
                         if (this->movable_object->sprite != 0) {
                             this->movable_object->get_frame(
-                                min_x, min_y, max_x, max_y);
-                            point.x = max_y - min_y;
-                            point.y = max_x - min_x;
+                                frame.min_x, frame.min_y,
+                                frame.max_x, frame.max_y);
+                            point.x = frame.max_x - frame.min_x;
+                            point.y = frame.max_y - frame.min_y;
                             if (this->render_area->draw_system->screen_mode == 1) {
                                 ClientToScreen(this->render_area->wnd, &point);
                             }

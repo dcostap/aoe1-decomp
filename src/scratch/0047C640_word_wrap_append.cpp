@@ -20,6 +20,15 @@
 // Reordered the Japanese whitespace test before the character-pair tests;
 // this moved the build to size 1064, 76.8% shape, and 33.4% exact blocks.
 // A named panel alias and two local declaration-order variants were duplicates.
+// claim orch-47C640-b: typed render_area/direct calls were a codegen duplicate;
+// an input cursor alias was also a duplicate.  A conditional max-width form
+// removed one structural spill and reached diff 801, but changed block shape;
+// restored the ordinary if/else form.  Splitting the wrap-loop width guard
+// was a codegen duplicate.
+// Binary pointer topology: the first extent call measures __mbsinc(text) but
+// keeps next_char at text; the original then advances it inside the loop.
+// Kept that natural source form.  A named first-length temp improved resync
+// but broke size and prologue parity, so it was rolled back.
 // left in scratch: the remaining broad drift begins at VC5 prologue/register
 // coloring (parameter in EBX vs original ESI, this in ESI vs original EDI),
 // plus local slot/block placement; calls, frame, and size now match.
@@ -40,6 +49,8 @@ extern "C" unsigned char* __cdecl __mbscat(unsigned char* dst,
                                                const unsigned char* src);
 extern "C" int __cdecl __ismbcspace(int ch);
 
+class TDrawArea;
+
 class TPanel {
 public:
     virtual ~TPanel();
@@ -58,7 +69,7 @@ public:
     long pnl_wid;                      // +0x14
     long pnl_hgt;                      // +0x18
     char gap_1C[0x04];
-    void* render_area;                 // +0x20
+    TDrawArea* render_area;             // +0x20
     char gap_24[0xD0];                 // through the TPanel boundary +0xF4
 };
 
@@ -123,7 +134,7 @@ int TTextPanel::word_wrap_append(char* text)
     }
     max_wid -= 10;
 
-    dc = ((TDrawArea*)this->render_area)->GetDc((char*)0x58547c);
+    dc = this->render_area->GetDc((char*)0x58547c);
     if (dc == 0) {
         return 0;
     }
@@ -149,13 +160,18 @@ int TTextPanel::word_wrap_append(char* text)
         }
 
         chars = 1;
-        next_char = __mbsinc((const unsigned char*)text);
+        next_char = (unsigned char*)text;
         GetTextExtentPoint32A((HDC)dc, text,
-                              (int)(short)(next_char - (unsigned char*)text),
+                              (int)(short)(__mbsinc(
+                                  (const unsigned char*)text) -
+                                           (unsigned char*)text),
                               &text_size);
         last_char = 0;
 
-        while (chars <= text_len && text_size.cx < max_wid) {
+        while (chars <= text_len) {
+            if (text_size.cx >= max_wid) {
+                break;
+            }
             if (*next_char == '\n') {
             --chars;
             found_linefeed = 1;
@@ -180,7 +196,7 @@ int TTextPanel::word_wrap_append(char* text)
 
     emit_line:
         if (!found_linefeed) {
-        GetTextExtentPoint32A((HDC)dc, text, (int)(short)strlen(text),
+            GetTextExtentPoint32A((HDC)dc, text, (int)(short)strlen(text),
                               &text_size);
             if (text_size.cx <= max_wid) {
                 goto append_all;
@@ -273,7 +289,7 @@ int TTextPanel::word_wrap_append(char* text)
     append_all:
         this->append_line(text, 0);
         SelectObject((HDC)dc, (HGDIOBJ)old_font);
-        ((TDrawArea*)this->render_area)->ReleaseDc((char*)0x58547c);
+        this->render_area->ReleaseDc((char*)0x58547c);
         return 1;
     }
 }
