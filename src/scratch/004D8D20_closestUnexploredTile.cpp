@@ -9,18 +9,15 @@
 //   the scan direction and quadrant edge choice.
 // - The zero canPath result owns the quadrant fallback. The nonzero result
 //   sets the path value to zero. This source order recovers all 16 call sites.
-// - Best current codegen is 968 bytes versus 977, with a 0x38 frame and
-//   72.92% shape similarity. The remaining drift starts in register setup.
-// - Structural probes kept the clean source as the canonical candidate. A
-//   self-alias plus nested do-style scan reached 977 bytes and diff 877 with
-//   75.62% shape similarity, but it changed block topology and byte semantics.
-// - The unsigned-byte lookupValue ABI probe regressed to diff 905. A nested
-//   nonnull guard reached diff 893 but reduced shape similarity to 70.72%.
-// - The clean candidate still has all 16 ordered calls. Its first hunk is the
-//   prologue: original saves all registers then uses EDI=this, while VC5 saves
-//   this in EBX before the remaining pushes and uses different stack homes.
-// - Left in scratch: no exact match. The remaining gap is broad register,
-//   stack-home, and block-layout drift after the clean typed reconstruction.
+// - XYPoint coordinates improved the structural basin to 977 bytes and 82.81%
+//   shape similarity. The byte explored temporary preserves the original AL
+//   lifetime; the typed uchar form is the retained semantic source.
+// - Explicit pretested do loops, canonical base layout, and score-term order
+//   produced no further code movement. All 16 ordered calls remain aligned.
+// - The best diagnostic source used a signed char and reached diff 876, but
+//   its 0xff comparison was not semantically safe. It is not retained.
+// - Left in scratch: no exact match. The remaining drift starts in the
+//   prologue register allocation and continues through stack-home placement.
 
 typedef unsigned char uchar;
 
@@ -52,6 +49,12 @@ public:
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 };
 
+class InformationAIModule {
+public:
+    virtual ~InformationAIModule();
+    char gap_04[0xec];
+};
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x14];
@@ -72,6 +75,11 @@ struct XYZPoint {
     int x;
     int y;
     int z;
+};
+
+struct XYPoint {
+    int x;
+    int y;
 };
 
 class RGE_Static_Object {
@@ -132,9 +140,16 @@ struct QuadrantLog {
 extern "C" int debug_rand(char* file, int line);
 extern float DAT_00575564;
 
-class TribeInformationAIModule {
+struct ManagedArray_int {
+    int* value;
+    int numberValue;
+    int desiredNumberValue;
+    int maximumSizeValue;
+};
+
+class TribeInformationAIModule : public InformationAIModule {
 public:
-    char gap_000[0x100];
+    ManagedArray_int farmsTaskedThisUpdate;
     TribeMainDecisionAIModule* md;
     int mapXSizeValue;
     int mapYSizeValue;
@@ -151,6 +166,7 @@ public:
 int TribeInformationAIModule::closestUnexploredTile(
     int objectId, float x, float y, float* outX, float* outY)
 {
+    XYPoint cPoint;
     RGE_Visible_Map* visible = this->md->player->visible;
     RGE_Static_Object* obj = this->md->player->world->object(objectId);
 
@@ -162,14 +178,16 @@ int TribeInformationAIModule::closestUnexploredTile(
     int direction = debug_rand(
         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x397) % 4;
 
-    int cPointX = (int)x;
-    int cPointY = (int)y;
+    cPoint.x = (int)x;
+    cPoint.y = (int)y;
     int offLeft = 0;
     int offRight = 0;
     int offTop = 0;
     int offBottom = 0;
     int pathDistance = 0;
     float pathResult;
+    int pass;
+    int i;
 
     for (;;) {
         if (offLeft != 0 && offRight != 0 && offTop != 0 && offBottom != 0) {
@@ -178,51 +196,54 @@ int TribeInformationAIModule::closestUnexploredTile(
         }
 
         ++pathDistance;
-        for (int pass = 0; pass < 2; ++pass) {
-            int i = 0;
+        pass = 0;
+        do {
+            i = 0;
             direction = (direction + 1) & 3;
-            while (i < pathDistance) {
+            if (pathDistance > 0) {
+                do {
                 switch (direction) {
                 case 0:
-                    ++cPointY;
+                    ++cPoint.y;
                     break;
                 case 1:
-                    ++cPointX;
+                    ++cPoint.x;
                     break;
                 case 2:
-                    --cPointY;
+                    --cPoint.y;
                     break;
                 case 3:
-                    --cPointX;
+                    --cPoint.x;
                     break;
                 }
 
-                if (cPointX < 0) {
+                if (cPoint.x < 0) {
                     offLeft = 1;
-                } else if (cPointX >= this->mapXSizeValue) {
+                } else if (cPoint.x >= this->mapXSizeValue) {
                     offRight = 1;
-                } else if (cPointY < 0) {
+                } else if (cPoint.y < 0) {
                     offTop = 1;
-                } else if (cPointY >= this->mapYSizeValue) {
+                } else if (cPoint.y >= this->mapYSizeValue) {
                     offBottom = 1;
                 } else {
-                    int explored = this->pathMap.lookupValue(cPointX, cPointY);
-                    uchar visibleValue = visible->get_visible(cPointX, cPointY);
+                    uchar explored = (uchar)this->pathMap.lookupValue(
+                        cPoint.x, cPoint.y);
+                    uchar visibleValue = visible->get_visible(cPoint.x, cPoint.y);
                     if (visibleValue != 0x0f &&
                         ((isBuilding == 1 && explored == 0xff) ||
                          (isBuilding == 0 &&
                           (explored == 0xff || explored == 2)))) {
-                        if (obj->passableTile((float)cPointX,
-                                              (float)cPointY, 1) != 0 &&
-                            obj->lookupZone(cPointX, cPointY) == initialZone) {
+                        if (obj->passableTile((float)cPoint.x,
+                                              (float)cPoint.y, 1) != 0 &&
+                            obj->lookupZone(cPoint.x, cPoint.y) == initialZone) {
                             XYZPoint point;
-                            point.x = cPointX;
-                            point.y = cPointY;
+                            point.x = cPoint.x;
+                            point.y = cPoint.y;
                             point.z = (int)obj->world_z;
                             if (obj->canPath(
                                     point, obj->master_obj->los - DAT_00575564,
                                     -1, &pathResult, 1, -1, -1) == 0) {
-                                this->pathMap.setValue(cPointX, cPointY, 1);
+                                this->pathMap.setValue(cPoint.x, cPoint.y, 1);
 
                                 int bestScore = -1;
                                 int bestX = 0;
@@ -232,15 +253,15 @@ int TribeInformationAIModule::closestUnexploredTile(
                                 QuadrantLog* quadrant = &this->quadrantLog[0][0];
                                 for (quadrantX = 0; quadrantX < 4; ++quadrantX) {
                                     for (quadrantY = 0; quadrantY < 4; ++quadrantY) {
-                                        int score = quadrant->numberAttacksOnUs * 25 +
-                                            quadrant->numberExploredTiles +
+                                        int score = quadrant->numberExploredTiles +
                                             debug_rand(
                                                 (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                                0x420) % 100;
+                                                0x420) % 100 +
+                                            quadrant->numberAttacksOnUs * 25;
                                         if (bestScore == -1 || score < bestScore) {
                                             bestScore = score;
-                                            bestX = this->mapXSizeValue * quadrantX / 4;
-                                            bestY = this->mapYSizeValue * quadrantY / 4;
+                                    bestX = this->mapXSizeValue * quadrantX / 4;
+                                    bestY = this->mapYSizeValue * quadrantY / 4;
                                         }
                                         ++quadrant;
                                     }
@@ -253,33 +274,35 @@ int TribeInformationAIModule::closestUnexploredTile(
                                     0x430) % 4;
                                 switch (choice) {
                                 case 0:
-                                    cPointX = bestX;
-                                    cPointY = bestY;
+                                    cPoint.x = bestX;
+                                    cPoint.y = bestY;
                                     break;
                                 case 1:
-                                    cPointX = bestX;
-                                    cPointY = maxY;
+                                    cPoint.x = bestX;
+                                    cPoint.y = maxY;
                                     break;
                                 case 2:
-                                    cPointX = maxX;
-                                    cPointY = maxY;
+                                    cPoint.x = maxX;
+                                    cPoint.y = maxY;
                                     break;
                                 default:
-                                    cPointX = maxX;
-                                    cPointY = bestY;
+                                    cPoint.x = maxX;
+                                    cPoint.y = bestY;
                                     break;
                                 }
                             } else {
-                                this->pathMap.setValue(cPointX, cPointY, 0);
+                                this->pathMap.setValue(cPoint.x, cPoint.y, 0);
                             }
-                            *outX = (float)cPointX;
-                            *outY = (float)cPointY;
+                            *outX = (float)cPoint.x;
+                            *outY = (float)cPoint.y;
                             return 1;
                         }
                     }
                 }
-                ++i;
+                    ++i;
+                } while (i < pathDistance);
             }
-        }
+            ++pass;
+        } while (pass < 2);
     }
 }
