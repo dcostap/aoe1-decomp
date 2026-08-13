@@ -26,6 +26,16 @@
 // shard C ABI probe: unsigned long old_time and cur_time produced the same widened family; rolled back.
 // No new evidence supports an unnatural volatile or aliasing form for this reload order.
 // scope probe: reused one function-scope int for both palette loops; emitted identical code, so rolled back.
+// follow-up claim: unsigned-char flag initializer was a duplicate 661B/0x810 basin; rolled back.
+// follow-up claim: function-scope palette cursors were a duplicate 661B/0x810 basin; rolled back.
+// follow-up claim: removing the destination cursor changed the frame to 0x80C and widened the diff; rolled back.
+// follow-up claim: source-first cursor declaration changed the frame and widened the diff; rolled back.
+// follow-up claim: explicit fade_time2/palette1 union reached 46 differing bytes with a 0x80C frame; rolled back.
+// follow-up claim: a 257-entry overlap union restored the 0x810 frame but left 21 differing bytes; rolled back.
+// follow-up claim: pairing that union with explicit +1 palette accesses widened the diff to 529 bytes; rolled back.
+// follow-up claim: reversing source/destination cursor updates was codegen-identical; rolled back.
+// follow-up claim: register-qualified draw_area was codegen-identical; rolled back.
+// paused: clean typed reconstruction remains 661B/0x810 with 10 bytes of localized post-copy reload drift.
 
 #include <windows.h>
 
