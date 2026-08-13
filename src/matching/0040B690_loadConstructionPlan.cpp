@@ -14,6 +14,8 @@
 // - Address-taken float comment storage reproduced neither the frame nor the body; restored named byte locals.
 // - A 64-byte name with an explicit four-byte prefix reproduced the frame but shifted temp and widened the body.
 // - A copied item width and a late xSize declaration were nonproductive; restored the direct parser argument.
+// - An unused int local was eliminated; a four-byte tail on itemName enlarged the frame but shifted temp.
+// - The original frame and all body bytes match when temp is the natural 260-byte buffer used at temp + 4.
 // FLAGS: config/flags/0040B690_loadConstructionPlan.rsp (/GX for EH frame)
 
 #include <stdio.h>
@@ -66,7 +68,7 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     float ySize;
     float item_arg_5;
     char itemName[60];
-    char temp[256];
+    char temp[260];
     FILE* fp;
     char* plan;
     char* saved_plan;
