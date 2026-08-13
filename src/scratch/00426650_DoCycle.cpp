@@ -42,6 +42,14 @@
 //   timeout calls before the drop-self calls, reduced size to +3, and improved
 //   strict diff 1622->1595 and shape 84.51%->85.28%; retain as the best source.
 
+// - [probe10 control-flow] equality ternary reproduced original sub/neg/sbb return;
+//   diff 1595->1303 and size +3->0.
+// - [probe11 control-flow] inclusive 5000ms dump interval reproduced cmp 1388/jb;
+//   diff 1303->1301.
+// - [probe12 abi] corrected SetPlayerTurnSpeed to exact same-TU uint/uchar/uchar;
+//   this keeps the decorated target identity, though current diff is 1390.
+// - [probe13 liveness] uint increment worsened size and CFG; probe14 restored uchar.
+
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned char uchar;
@@ -75,7 +83,7 @@ struct RGE_Base_Game {
 struct RGE_Communications_Speed {
     unsigned char GetHighLatencyCenti();
     uint GetAvgFrameRate();
-    void SetPlayerTurnSpeed(int player, uint avgframe, uchar centi);
+    void SetPlayerTurnSpeed(uint player, uchar avgframe, uchar centi);
     uint BufferFramesRemaining();
     uint BufferTimeToUse(uint turn);
     uint WaitingOnAcknowledgement();
@@ -144,14 +152,14 @@ public:
 int TCommunications_Handler::DoCycle(ulong param_1)
 {
     if (this->Multiplayer == 0) {
-        return -(int)(this->ProgramState != COMM_STATE_PAUSE);
+        return (this->ProgramState == COMM_STATE_PAUSE) ? 0 : -1;
     }
     if (this->Me > (uint)this->MaxGamePlayers) {
         return 0;
     }
 
     ulong now = debug_timeGetTime(S(0x580BF4), 0x20D);
-    if (now - LAST_COMM_DUMP > 4999) {
+    if (now - LAST_COMM_DUMP >= 5000) {
         L->Log(GetCommInfo(6));
         L->Log(GetCommInfo(5));
         L->Log(GetCommInfo(4));
