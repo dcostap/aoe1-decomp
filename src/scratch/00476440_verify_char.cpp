@@ -27,6 +27,9 @@
 // beep and direct percent comparison improved block alignment but added one
 // beep call and 12 bytes.  A nested file-dot branch added two calls and was
 // also rejected.  The clean typed switch remains authoritative.
+// New claim: direct percent/numeric branches, break-driven common-beep forms,
+// label ordering, an invalid-file trampoline, and an 8-variant lab did not
+// improve the clean 285-byte structural result.  Restore the clean source.
 
 extern "C" int (__stdcall* const MessageBeep)(unsigned int);
 extern "C" int (__stdcall* const IsDBCSLeadByte)(unsigned int);

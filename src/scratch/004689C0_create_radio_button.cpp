@@ -10,7 +10,10 @@
 // - Tried explicit ideal-x initialization/compound arithmetic, x capture, a nontrivial destructor declaration, direct out-slot construction, and a common result/goto tail; these emitted the same or farther codegen basin.
 // - Restated TButtonPanel as the period TPanel-derived type with inherited error and virtual destructor declarations from exact constructor/destructor donors; first-hunk codegen was unchanged.
 // - Tested declaring ideal_x before initialized sound and assigning it as a separate named local; emitted code was unchanged, so restored the clean candidate.
-// - Final clean candidate keeps the named field ownership and natural direct factory source. Remaining blocker is structural VC5 EH/local-home placement: original reserves 8 bytes, preloads x before callee-save pushes, and shares one success/failure epilogue; rebuilt reserves one slot, reloads x from its parameter home, and duplicates cleanup. No accepted_drift proposal; no inline asm.
+// - Adapted the exact sibling create_check_box local and shared-result shape to this radio setup. Explicit scaled-coordinate locals restored the 0x8 EH frame and reduced the positional diff from 570 to 114 bytes.
+// - Split the x assignment, named the decompiler-supported ideal_x input, and initialized the result local. All three emitted the same 114-byte code.
+// - The shared-result test was diagnostic. Keep ordinary success and failure
+//   returns in the living source. No accepted-drift proposal; no inline asm.
 
 class TPanel {
 public:
@@ -80,48 +83,54 @@ public:
 
 int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x, long y, long w, long h, long sound_id, long param8)
 {
-    TDigital* sound = 0;
-    long sx = (x * this->ideal_width) / this->screen_width;
+    TButtonPanel* button;
+    TDigital* sound;
+    long sx;
+    long sy;
+    long sw;
+    long sh;
+    long ideal_x;
 
-    y = (y * this->ideal_height) / this->screen_height;
-    w = (w * this->ideal_width) / this->screen_width;
-    h = (h * this->ideal_height) / this->screen_height;
+    sound = 0;
+    ideal_x = x;
+    sx = (ideal_x * this->ideal_width) / this->screen_width;
+    sy = (y * this->ideal_height) / this->screen_height;
+    sw = (w * this->ideal_width) / this->screen_width;
+    sh = (h * this->ideal_height) / this->screen_height;
 
-    *out = new TButtonPanel;
-    if (*out == 0 || (*out)->error != 0) {
-        this->error = 1;
-        return 0;
-    }
+    button = new TButtonPanel;
+    *out = button;
+    if (*out != 0 && (*out)->error == 0) {
+        if (sound_id >= 0) {
+            sound = rge_base_game->get_sound(sound_id);
+        }
 
-    if (sound_id >= 0) {
-        sound = rge_base_game->get_sound(sound_id);
-    }
+        if ((*out)->setup(this->draw_area, parent, sx, sy, sw, sh, 2, sound, 1, param8)) {
+            (*out)->set_sound_number(sound_id);
 
-    if (!(*out)->setup(this->draw_area, parent, sx, y, w, h, 2, sound, 1, param8)) {
-        this->error = 1;
-        return 0;
-    }
-    (*out)->set_sound_number(sound_id);
+            if (this->button_pics != 0) {
+                (*out)->setDrawType(6);
+                (*out)->set_picture(0, this->button_pics, 4);
+                (*out)->set_picture(1, this->button_pics, 6);
+            }
+            else {
+                RGE_Font* font;
+                (*out)->setDrawType(3);
+                font = rge_base_game->get_font(0);
+                (*out)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
+                (*out)->set_text(1, s_X);
+            }
 
-    if (this->button_pics != 0) {
-        (*out)->setDrawType(6);
-        (*out)->set_picture(0, this->button_pics, 4);
-        (*out)->set_picture(1, this->button_pics, 6);
+            if (this->use_bevels != 0) {
+                (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+            }
+            (*out)->set_text_color(0, this->text_color1, this->text_color2);
+            (*out)->set_highlight_text_color(0, this->focus_color1, this->focus_color2);
+            (*out)->set_text_color(1, this->state_color1, this->state_color2);
+            (*out)->set_highlight_text_color(1, this->focus_color1, this->focus_color2);
+            return 1;
+        }
     }
-    else {
-        RGE_Font* font;
-        (*out)->setDrawType(3);
-        font = rge_base_game->get_font(0);
-        (*out)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
-        (*out)->set_text(1, s_X);
-    }
-
-    if (this->use_bevels != 0) {
-        (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
-    }
-    (*out)->set_text_color(0, this->text_color1, this->text_color2);
-    (*out)->set_highlight_text_color(0, this->focus_color1, this->focus_color2);
-    (*out)->set_text_color(1, this->state_color1, this->state_color2);
-    (*out)->set_highlight_text_color(1, this->focus_color1, this->focus_color2);
-    return 1;
+    this->error = 1;
+    return 0;
 }
