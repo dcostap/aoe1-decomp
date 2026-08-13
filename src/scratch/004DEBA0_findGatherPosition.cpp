@@ -17,6 +17,8 @@
 // - XYPoint y,x layout, scalar/point declaration reorderings, and same-TU nonvirtual object declarations did not resolve the frame/local basin.
 // - bool blocked was tested and rolled back: it removed the one-byte size overflow but worsened the codegen basin.
 // - explicit outer do/while scans were tested from the repeated PDB loop bands; VC5 emitted the same bytes as the clean for-loop source, so no new lead was found.
+// - PDB declaration-order and first-bound assignment-order probes were codegen-neutral or worse; both were rolled back.
+// - field-address mapBound/setup/lineCollision casts improved edit resync but kept the 0x50 frame and 647-byte positional diff; the casts were rolled back as decompiler-shaped.
 // Best retained reconstruction: typed virtual/reference ABI and natural nested scans with named XYPoint ownership; frame remains 0x50 vs 0x54.
 // The explicit outer do/while spelling was tested and emitted the same code as
 // the clean for-loop source. The source stays with the simpler natural form.
