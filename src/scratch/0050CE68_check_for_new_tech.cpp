@@ -13,6 +13,10 @@
 // declarations, declaration reordering, volatile qualifiers, and unsigned
 // counter width were duplicates. Restored this clean source; the remaining
 // blocker is the proven five-way VC5 local-home rotation.
+// Probe luna-50CE68-r1: an initialized tech declaration moved the setup block
+// and worsened the diff to 36 bytes; restored the separate natural assignment.
+// Declaring tech before the scalar locals emitted the same 21-byte code; kept
+// the clean declaration order because it is clearer and remains the baseline.
 
 struct Tech_Player_Tree {
     float research_done;
