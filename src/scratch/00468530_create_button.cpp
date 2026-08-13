@@ -17,23 +17,37 @@
 // 20: branch-local null sound assignment plus direct sx initializer worsened the frame and structural diff, rolled back.
 // 21: removed the artificial px alias and used x directly in sx; VC5 emitted the same code, kept the natural form.
 // FLAGS: config/flags/00468530_create_button.rsp uses /GX because original has EH frame and default build is only 496 B/no EH.
-// Left in scratch: restored the clean typed candidate after the 10-hypothesis session. Current best is 568 B with /GX, 317 positional diff bytes / 113 edit cost, 100% ordered calls, and 46.96% exact-block coverage; the structural gap starts at the pre-save x load and two-slot EH local topology. Not accepted_drift-safe.
+// probe 37: an explicit ideal_x input and early button declaration were a codegen duplicate.
+// probe 39: modeled the proven TPanel base and TButtonPanel inheritance; this moved the first mismatch to the post-setup font guard and cut positional diff to 256 bytes.
+// probe 42: expressed font selection as two typed get_font branches; VC5 tail-merged the call and cut positional diff to 53 bytes.
+// probe 43-44: common-result goto and nested positive guards were codegen duplicates; the remaining structural gap is the shared success/failure epilogue.
+// Left in scratch: current best is 567 B with /GX, 53 positional diff bytes / 36 edit cost, 100% ordered calls, and 85.64% exact-block coverage. The remaining gap is the shared success/failure epilogue; not accepted_drift-safe.
 
 typedef unsigned char uchar;
 
-class TPanel;
 class TDrawArea;
 class TDigital;
 struct RGE_Font { void* font; int font_wid; int font_hgt; };
 
+class TPanel {
+public:
+    virtual ~TPanel();
+    char gap_04[0x14 - 0x04];
+    int width;
+    int height;
+    char gap_1C[4];
+    TDrawArea* draw_area;
+    char gap_24[0xD8 - 0x24];
+    int failed;
+    char gap_DC[0xF4 - 0xDC];
+};
+
 class RGE_Base_Game { public: TDigital* get_sound(int id); RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
 
-class TButtonPanel {
+class TButtonPanel : public TPanel {
 public:
-    char gap_00[0xD8];
-    int failed;
-    char gap_DC[0x2B8 - 0xDC];
+    char gap_F4[0x2B8 - 0xF4];
     TButtonPanel();
     long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long w, long h, int draw_text, TDigital* sound, int notify_action, long user);
     void set_sound_number(long sound_id);
@@ -44,16 +58,8 @@ public:
     void set_highlight_text_color(int index, int c1, int c2);
 };
 
-class TEasy_Panel {
+class TEasy_Panel : public TPanel {
 public:
-    char gap_00[0x14];
-    int width;
-    int height;
-    char gap_1C[4];
-    TDrawArea* draw_area;
-    char gap_24[0xD8 - 0x24];
-    int failed;
-    char gap_DC[0xF4 - 0xDC];
     int ideal_width;
     int ideal_height;
     char gap_FC[0x31C - 0xFC];
@@ -72,7 +78,7 @@ public:
     int state_color1;
     int state_color2;
 
-    int create_button(TPanel* panel, TButtonPanel** out, char* text, char* label, long x, long y, long w, long h, long font_id, long sound_id, long user);
+    virtual int create_button(TPanel* panel, TButtonPanel** out, char* text, char* label, long x, long y, long w, long h, long font_id, long sound_id, long user);
 };
 
 int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, char* label, long x, long y, long w, long h, long font_id, long sound_id, long user)
@@ -92,39 +98,42 @@ int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, ch
 
     TButtonPanel* button = new TButtonPanel;
     *out = button;
-    if (*out == 0 || (*out)->failed != 0) {
+    if (*out != 0 && (*out)->failed == 0) {
+        if (sound_id >= 0) {
+            sound = rge_base_game->get_sound(sound_id);
+        }
+
+        if ((*out)->setup(this->draw_area, panel, sx, sy, sw, sh, 3, sound, 1, user) != 0) {
+            (*out)->set_sound_number(sound_id);
+            RGE_Font* font;
+            if (font_id >= 0) {
+                font = rge_base_game->get_font(font_id);
+            } else {
+                font = rge_base_game->get_font(10);
+            }
+            (*out)->set_text_info(text, font->font, font->font_wid, font->font_hgt, -1, -1);
+            if (label != 0) {
+                (*out)->set_text(1, label);
+            }
+            if (this->use_bevels != 0) {
+                (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+            }
+            i = 0;
+            do {
+                (*out)->set_text_color(i, this->text_color1, this->text_color2);
+                (*out)->set_highlight_text_color(i, this->focus_color1, this->focus_color2);
+                ++i;
+            } while (i < 9);
+            (*out)->set_text_color(1, this->state_color1, this->state_color2);
+            (*out)->set_highlight_text_color(1, this->focus_color1, this->focus_color2);
+            i = 1;
+        } else {
+            this->failed = 1;
+            i = 0;
+        }
+    } else {
         this->failed = 1;
-        return 0;
+        i = 0;
     }
-
-    if (sound_id >= 0) {
-        sound = rge_base_game->get_sound(sound_id);
-    }
-
-    if ((*out)->setup(this->draw_area, panel, sx, sy, sw, sh, 3, sound, 1, user) == 0) {
-        this->failed = 1;
-        return 0;
-    }
-
-    (*out)->set_sound_number(sound_id);
-    if (font_id < 0) {
-        font_id = 10;
-    }
-    RGE_Font* font = rge_base_game->get_font(font_id);
-    (*out)->set_text_info(text, font->font, font->font_wid, font->font_hgt, -1, -1);
-    if (label != 0) {
-        (*out)->set_text(1, label);
-    }
-    if (this->use_bevels != 0) {
-        (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
-    }
-    i = 0;
-    do {
-        (*out)->set_text_color(i, this->text_color1, this->text_color2);
-        (*out)->set_highlight_text_color(i, this->focus_color1, this->focus_color2);
-        ++i;
-    } while (i < 9);
-    (*out)->set_text_color(1, this->state_color1, this->state_color2);
-    (*out)->set_highlight_text_color(1, this->focus_color1, this->focus_color2);
-    return 1;
+    return i;
 }

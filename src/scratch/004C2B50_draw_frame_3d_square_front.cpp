@@ -17,6 +17,15 @@
 // alternate health-bar spellings did not improve the clean source.
 // The panel clip region is a named field. The prior raw offset expression was
 // only a diagnostic form.
+// Probe r1: executable y-2..y-1 and x-12..x+12 health rectangles were tested;
+// direct forms emitted 674B and did not improve the structural basin.
+// Probe r1: int bar-left/bar-bottom bases, declared bottom before left, reduced
+// the mismatch to 56B / 670B. The bases are retained as the best clean source.
+// Probe r1: x2/y2 output aliases and reused bar bases regressed the CFG or
+// stack layout. A six-case health-bar variant lab found no eligible winner.
+// Probe r1 final: compound base updates regressed to 64B; restored the 56B
+// integer-base form. Calls, frame, and CFG align; final drift is health-bar
+// register/opcode scheduling and two bytes of tail size.
 
 class TDrawArea {
 public:
@@ -171,10 +180,13 @@ void RGE_Static_Object::draw_frame_3d_square_front(
                 value = 0;
             int denom = this->master_obj->hp;
             if (denom > 0) {
-                area->FillRect(x1 - 12, y1 - 12 + 24, x1 - 1,
-                               y1 - 12 + 24, 0x97);
-                area->FillRect(x1 - 12, y1 - 12,
-                               ((value * 24) / denom) + x1 - 12,
+                int bar_bottom = (-1) + y1;
+                int bar_left = (-12) + x1;
+                area->FillRect(bar_left, bar_bottom - 1,
+                               bar_left + 24, bar_bottom, 0x97);
+                int fill_height = (value * 24) / denom;
+                int fill_right = fill_height + x1 - 12;
+                area->FillRect(x1 - 12, y1 - 2, fill_right,
                                y1 - 1, 0x4a);
             }
         }

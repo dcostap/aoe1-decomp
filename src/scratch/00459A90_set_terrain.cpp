@@ -9,11 +9,12 @@
 //   terrain_type at +5; terrain records use 0x198-byte entries.
 // - Direct terrain_types access produced the best typed structural basin:
 //   613 bytes, 0x10 frame, and all three calls aligned.
-// - The call-site bytes push the player home as create_terrain_object's fifth
-//   argument. The source keeps that binary-observed cast; it is not the old
-//   tile terrain value suggested by the decompiler.
-// - Explicit row/tile byte-offset locals were a codegen duplicate. Restored
-//   typed row indexing.
+// - The create_terrain_object ABI and call bytes pass the tile's old terrain
+//   value. A player-cast argument was a smaller diagnostic diff, but it was
+//   not behaviorally valid and is not retained.
+// - The source-backed row and tile byte-offset locals produce the strongest
+//   structural basin: exact frame, 79.72% shape, and 35.10% exact blocks.
+//   The remaining mismatch is register allocation and block placement.
 // - Spelled terrain_to_draw as > -1 instead of >= 0. This reproduced the
 //   original cmp ax,-1/jle eligibility block, improved the positional diff
 //   from 561 to 420 bytes, and kept the typed terrain ownership natural.
@@ -130,6 +131,11 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
 {
     RGE_Map* map = this;
     short terrain_id;
+    short maprow;
+    short mapcol;
+    int row_offset;
+    int tile_offset;
+    unsigned char old_value;
 
     if ((short)(unsigned char)terrain < map->num_terrain) {
         terrain_id = (short)(unsigned char)terrain;
@@ -158,17 +164,19 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                 x2 = (short)(map->map_width - 1);
 
             if ((blend != 0 || player != 0) && y1 <= y2) {
-                short maprow = y1;
+                maprow = y1;
+                row_offset = (int)maprow * (int)sizeof(RGE_Tile*);
+                tile_offset = (int)x1 * (int)sizeof(RGE_Tile);
                 do {
-                    short mapcol = x1;
-                    RGE_Tile* tile = map->map_row_offset[maprow] + mapcol;
+                    mapcol = x1;
+                    RGE_Tile* tile = (RGE_Tile*)((char*)*(RGE_Tile**)
+                        ((char*)map->map_row_offset + row_offset) + tile_offset);
                     if (mapcol <= x2) {
                         do {
                             if (map->terrain_types[(unsigned char)terrain].tiles[
                                     tile->tile_type].count > 0) {
-                                unsigned char old_value = tile->terrain_type;
-                                short old_terrain = (short)(old_value & 0x1F);
-                                if (old_terrain != terrain_id) {
+                                old_value = tile->terrain_type;
+                                if ((short)(old_value & 0x1F) != terrain_id) {
                                     if (blend != 0) {
                                         tile->terrain_type =
                                             (unsigned char)((blend ^ old_value) & 0x1F) ^ old_value;
@@ -176,7 +184,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                                 }
                                 if (player != 0) {
                                     map->create_terrain_object(player, world,
-                                        maprow, mapcol, (short)(long)player,
+                                        maprow, mapcol, (short)(old_value & 0x1F),
                                         arg9, -1, -1);
                                 }
                             }
@@ -185,6 +193,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                         } while (mapcol <= x2);
                     }
                     ++maprow;
+                    row_offset += (int)sizeof(RGE_Tile*);
                 } while (maprow <= y2);
             }
 
@@ -197,18 +206,18 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
             if ((int)x2 < map->map_width - 1)
                 ++x2;
 
-            short border_row = y1;
-            if (border_row <= y2) {
+            maprow = y1;
+            if (maprow <= y2) {
                 do {
-                    short border_col = x1;
-                    if (border_col <= x2) {
+                    mapcol = x1;
+                    if (mapcol <= x2) {
                         do {
-                            map->get_border_type(border_col, border_row);
-                            ++border_col;
-                        } while (border_col <= x2);
+                            map->get_border_type(mapcol, maprow);
+                            ++mapcol;
+                        } while (mapcol <= x2);
                     }
-                    ++border_row;
-                } while (border_row <= y2);
+                    ++maprow;
+                } while (maprow <= y2);
             }
             map->request_redraw(x1, y1, x2, y2, 0);
         }

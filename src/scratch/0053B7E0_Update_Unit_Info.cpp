@@ -17,6 +17,15 @@
 //   bytes, but keeps the ownership model source-plausible.
 // - Normalized the object reference update to its owned +0x194 field. The
 //   cancelling refOffset/raw-cast expression was a decompiler artifact.
+// - Restored the binary-observed generic reference-offset expression; the
+//   clean integer-address form returns the prior 306-byte structural frontier.
+// - Promoting growth capacity to int worsened the positional diff to 431 and
+//   was reverted; scoped capacity, iterator locals, and loop spelling did not
+//   move emitted code. The integer-address form is retained for the observed
+//   +0x194 reference update schedule.
+// - Main review rejected the raw reference-offset form as codegen-only
+//   scaffolding. Restored the named visible_unit_ref owner field; raw address
+//   arithmetic remains diagnostic evidence only.
 // Left in scratch: broad prologue/stack-home/register coloring and the growth pointer-repair schedule remain; call set, cleanup convention, packed record effects, and copy width are established.
 
 #include <stdlib.h>
@@ -56,15 +65,15 @@ public:
 };
 
 void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, int y, int category, unsigned long old_mask, unsigned long new_mask, VisibleUnitRec** refs) {
-    old_mask = (new_mask ^ old_mask) & 0xffff;
+    unsigned long mask = (new_mask ^ old_mask) & 0xffff;
     if (category < this->Category_Count) {
         int p = 0;
         if (this->Player_Count > 0) {
             do {
-                if (old_mask == 0) {
+                if (mask == 0) {
                     return;
                 }
-                if ((old_mask & 1) == 1) {
+                if ((mask & 1) == 1) {
                     VisibleUnitPtr* bucket = &this->PlayerDataPtrs[p][category];
                     if ((new_mask & 1) == 1) {
                         short size = bucket->list_size;
@@ -112,7 +121,7 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                 }
                 refs++;
                 new_mask >>= 1;
-                old_mask >>= 1;
+                mask >>= 1;
                 p++;
             } while (p < this->Player_Count);
         }
