@@ -22,6 +22,9 @@
 // proven initialization homes; restored the probe-9 source.
 // current claim probe: a separate natural left-x temporary was codegen-
 // duplicate; restored the clean source.
+// current claim probe: reversed the three text-fit predicates so the overflow
+// arm stays inline and the fit arm branches to the later block; this reduced
+// the strict diff by one byte and improved block topology, so it is retained.
 // Paused blocker: the typed ABI/layout, frame, saved-register set, and three
 // direct calls are exact, but VC5 still chooses the wrong centered-bound
 // register/reload topology and omits the oracle's case-0 stack stores and
@@ -175,12 +178,12 @@ int Time_Line_Panel::calculate_icon_location(
     case 0:
         event->text_length1 = strlen(event->text1);
         bounds_result = this->body_font_wid * event->text_length1;
-        if (bounds_result + 2 + event->X_line_pos <
+        if (bounds_result + 2 + event->X_line_pos >=
             this->X_line_max_width + this->X_start_line_pos) {
-            start_y = event->X_line_pos + 2;
-        } else {
             start_y = this->X_line_max_width - bounds_result - 3 +
                       this->X_start_line_pos;
+        } else {
+            start_y = event->X_line_pos + 2;
         }
         bounds_result = event->Y_line_pos +
                         event->intermediate_y_line_segment -
@@ -190,12 +193,12 @@ int Time_Line_Panel::calculate_icon_location(
     case 1:
         event->text_length1 = strlen(event->text1);
         bounds_result = this->body_font_wid * event->text_length1;
-        if (bounds_result + 2 + event->X_line_pos <
+        if (bounds_result + 2 + event->X_line_pos >=
             this->X_line_max_width + this->X_start_line_pos) {
-            start_y = event->X_line_pos + 2;
-        } else {
             start_y = this->X_line_max_width - bounds_result - 8 +
                       this->X_start_line_pos;
+        } else {
+            start_y = event->X_line_pos + 2;
         }
         bounds_result = event->Y_line_pos;
         if (this->Y_start_line_pos + this->Y_line_max_length <=
@@ -212,12 +215,12 @@ int Time_Line_Panel::calculate_icon_location(
         event->text_length1 = strlen(event->text1);
         bounds_result = this->body_font_wid * event->text_length1;
         int case2_x;
-        if (bounds_result + 2 + event->X_line_pos <
+        if (bounds_result + 2 + event->X_line_pos >=
             this->X_line_max_width + this->X_start_line_pos) {
-            case2_x = event->X_line_pos + 2;
-        } else {
             case2_x = this->X_line_max_width - bounds_result - 3 +
                       this->X_start_line_pos;
+        } else {
+            case2_x = event->X_line_pos + 2;
         }
         bounds_result = event->Y_line_pos +
                         event->intermediate_y_line_segment -

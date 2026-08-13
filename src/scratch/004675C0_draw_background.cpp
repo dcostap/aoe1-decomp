@@ -18,11 +18,24 @@
 // An explicit clear-color branch moved to diff 826 and size 964; restored the clean source.
 // luna-4675C0-r1: remaining structural lead is the shadow/picture tiled-call scheduling;
 // the clean typed reconstruction remains best at diff 786, size 965/979, frame 0x1C.
+// luna-4675C0-r4: added the period Windows SDK/RECT context from exact same-TU donors;
+// diff improved to 763 with 73.37% exact-block coverage and a 973-byte body.
+// luna-4675C0-r4: the full TShape 0x20-byte surface and shape_minmax pointer/int ABI
+// emitted the same code.  Kept the proven declarations; no ABI mismatch was found.
+// luna-4675C0-r4: with the Windows context active, explicit alternate/background clear
+// branches reached the original 979-byte size, diff 760, and 77.62% exact-block coverage.
+// Centered short expressions, shadow dimension order, local background_pos, and a
+// short-circuit picture fallback were neutral or regressed; restored the best natural form.
+// luna-4675C0-r4: current best is size/frame/call/CFG aligned; remaining structural drift
+// starts in centered shadow Copy scheduling at +0xC6 and stays localized to code shape.
+
+// Panel_ez.cpp used the period Windows SDK surface.  Keep that TU context
+// visible while retaining the local class declarations below.
+#include <windows.h>
 
 typedef unsigned char uchar;
 
-struct tagRECT { long left, top, right, bottom; };
-typedef tagRECT RECT;
+typedef RECT tagRECT;
 
 class TDrawSystem;
 class DrawAreaNode;
@@ -82,7 +95,16 @@ public:
 
 class TShape {
 public:
-    uchar shape_minmax(long*, long*, long*, long*, long);
+    uchar* shape_data;
+    int load_type;
+    int load_size;
+    void* shape_header;
+    void* head;
+    void* offsets;
+    void* fshape;
+    void* shape_info;
+
+    uchar shape_minmax(long*, long*, long*, long*, int);
     uchar shape_draw(TDrawArea*, long, long, long, uchar, uchar*);
 };
 
@@ -225,17 +247,15 @@ void TEasy_Panel::draw_background(int use_alt)
         if (this->need_redraw == 2)
             this->render_area->Clear(&this->clip_rect, this->background_color2);
 
-        pic_hgt = this->shadow_area->Height;
         int tile_w = this->shadow_area->Width;
+        pic_hgt = this->shadow_area->Height;
         switch (this->background_pos) {
         case 0:
             this->shadow_area->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
             break;
         case 1: {
-            short xx = (short)this->pnl_x + (short)(this->pnl_wid / 2);
-            xx -= (short)(tile_w / 2);
-            short yy = (short)this->pnl_y + (short)(this->pnl_hgt / 2);
-            yy -= (short)(pic_hgt / 2);
+            short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
+            short xx = this->pnl_x + this->pnl_wid / 2 - tile_w / 2;
             this->shadow_area->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
             break;
         }
@@ -265,7 +285,10 @@ void TEasy_Panel::draw_background(int use_alt)
         pic = this->background_pic;
 
     if (this->need_redraw == 2 || pic == 0) {
-        this->render_area->Clear(&this->clip_rect, use_alt ? this->background_color2 : this->background_color1);
+        if (use_alt)
+            this->render_area->Clear(&this->clip_rect, this->background_color2);
+        else
+            this->render_area->Clear(&this->clip_rect, this->background_color1);
         if (pic == 0)
             goto bevels;
     }
@@ -276,8 +299,8 @@ void TEasy_Panel::draw_background(int use_alt)
         pic_hgt = y_max - y_min + 1;
         switch (this->background_pos) {
         case 1: {
-            short xx = (short)this->pnl_x + (short)(this->pnl_wid / 2) - (short)(pic_w / 2);
-            short yy = (short)this->pnl_y + (short)(this->pnl_hgt / 2) - (short)(pic_hgt / 2);
+            short xx = this->pnl_x + this->pnl_wid / 2 - pic_w / 2;
+            short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
             pic->shape_draw(this->render_area, (long)xx, (long)yy, 0, 0, 0);
             if (use_alt && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);

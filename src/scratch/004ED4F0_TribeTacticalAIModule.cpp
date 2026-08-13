@@ -85,6 +85,12 @@
 //   lifetime reordering, and improved the structural diff to 5325 bytes.
 // - A novtable derived-class context removed the compiler's early vptr store,
 //   but moved the first mismatch and worsened the structural diff. Rolled back.
+// - Tested moving lastGroupRebalanceTime initialization after the explicit
+//   Group constructor; it worsened the diff by 5 bytes and was rolled back.
+// - Declaring the proven derived virtual destructor preserved the clean metrics
+//   and improved one local alignment, but did not change the structural basin.
+// - Removing the decompiler tempUD self-assignment shortened the function but
+//   worsened the structural diff; restored the prior source.
 
 #include "..\..\include\game_globals.h"
 
@@ -117,6 +123,7 @@ public:
     PlacementState placementStateValue; int nextCivilianToTaskValue; int nextIdleSoldierGroupToTaskValue; int nextActiveSoldierGroupToTaskValue; int builtFirstStoragePit; int builtFirstGranary;
     unsigned long lastBuildTime; unsigned long lastAttackResponseBuildInsertionTime; unsigned long lastCoopTributeDemandTime; unsigned long lastCoopTributeGiftTime; unsigned long lastCoopAttackDemandTime;
     int zoomingToNextAge; unsigned long lastUngroupedSoldierTaskTime; AttackState attackStateValue; int hitsByPlayer[9]; int lastUpdateAreaTimeValue; int averageUpdateAreaTimeValue; int updateAreaAverageCount; int updateAreaAverageTotal;
+    virtual ~TribeTacticalAIModule();
     TribeTacticalAIModule(int param_1, int param_2);
 };
 

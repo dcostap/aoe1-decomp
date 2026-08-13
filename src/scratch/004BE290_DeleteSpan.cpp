@@ -22,6 +22,7 @@
 // typed ownership lead: the original final partial-delete path refreshes LeftMostPx/RightMostPx from the retained head/tail; it does not write boundary links here.
 // tried typed bound refresh: source now matches the original retained-list metadata, but VC5 moved the prologue and shrank output to 524 bytes; keep this behavior-faithful reconstruction and pause.
 // shardA6 control-flow: combined the full-span deletion predicates into the while guard; emitted code was unchanged, so restored the typed retained-bound candidate.
+// luna-r2 layout: exact spanlist.cpp manager donors use an embedded offset-zero VSList and qualified node-list calls; composition was tested and emitted code was unchanged.
 
 #include <stdlib.h>
 
@@ -55,8 +56,9 @@ public:
     int FreeThread(VSpan_Node* first, VSpan_Node* second);
 };
 
-class TSpan_List_Manager : public TSpan_Node_List {
+class TSpan_List_Manager {
 public:
+    TSpan_Node_List VSList;
     VSpan_Node** Line_Head_Ptrs;
     VSpan_Node** Line_Tail_Ptrs;
     int* LeftMostPx;
@@ -92,7 +94,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 if (left <= this->LeftMostPx[line]
                     && right >= this->RightMostPx[line]) {
                     VSpan_Node* tail = this->Line_Tail_Ptrs[line];
-                    this->FreeThread(head, tail);
+                    this->VSList.FreeThread(head, tail);
                     this->Line_Head_Ptrs[line] = 0;
                     this->Line_Tail_Ptrs[line] = 0;
                     this->Span_Count[line] = 0;
@@ -112,7 +114,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                 }
 
                 if (left > first->StartPx && right < first->EndPx) {
-                    VSpan_Node* node = this->GetNode();
+                    VSpan_Node* node = this->VSList.GetNode();
                     node->Prev = first;
                     node->Next = first->Next;
                     first->Next = node;
@@ -140,7 +142,7 @@ void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
                         VSpan_Node* next = first->Next;
                         if (next != 0) next->Prev = first->Prev;
                         VSpan_Node* n = first->Next;
-                        this->FreeNode(first);
+                        this->VSList.FreeNode(first);
                         this->Span_Count[line]--;
                         first = n;
                         cont = 1;
