@@ -13,7 +13,15 @@
 // r2 ABI: SetRect as a proven dllimport produced exact size and 37.15% exact blocks; kept. Full Win32 import surfaces changed the frame or worsened layout.
 // r2 ABI: GetTextExtentPoint32A and SetTextColor imports were neutral; GetPaletteEntries and DrawTextA imports worsened the basin and were rolled back.
 // remaining drift: structural first hunk is still the early text/ImageRect register assignment; ordered calls remain 31/31.
+// r3 control-flow: inverted the index-color branch so the palette path stays inline; diff 1340 -> 1320.
+// r3 layout: direct typed ImageRect member uses improved the best diff to 1260; pointer and reference aliases were rolled back.
+// r3 liveness: direct this->text for extent and DrawTextA, non-const scan text, and local declaration changes were neutral.
+// r3 ABI: extern-C const GetPaletteEntries pointer was neutral; dllimport forms worsened the early frame basin.
+// r3 final: PDB-ordered dimension assignments were neutral; remaining structural gap is target EBX ImageRect and EDI scan-text carriers.
+// r4 ABI: added the shared typed rge_base_game pointer declaration/definition with its proven 0062C574 seed; target codegen is unchanged at diff 1260.
+// r4 audit: use the shared typed fixed-storage accessor for the two palette reads; it emits [62C574] loads without a raw macro, but its natural source shape is farther from the current VC5 basin.
 #include <string.h>
+#include "..\..\include\rge_base_game_global.h"
 
 struct tagRECT { long left; long top; long right; long bottom; };
 struct tagSIZE { long cx; long cy; };
@@ -21,7 +29,7 @@ struct tagPALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 
 extern int (__stdcall *SelectClipRgn)(void*, void*);
 extern void* (__stdcall *SelectObject)(void*, void*);
-extern unsigned int (__stdcall *GetPaletteEntries)(void*, unsigned int, unsigned int, tagPALETTEENTRY*);
+extern "C" unsigned int (__stdcall *GetPaletteEntries)(void*, unsigned int, unsigned int, tagPALETTEENTRY*);
 extern unsigned int (__stdcall *SetBkColor)(void*, unsigned int);
 extern int (__stdcall *SetBkMode)(void*, int);
 extern "C" __declspec(dllimport) int __stdcall GetTextExtentPoint32A(void*, const char*, int, tagSIZE*);
@@ -30,8 +38,11 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetTextColor(void*, unsi
 extern int (__stdcall *DrawTextA)(void*, const char*, int, tagRECT*, unsigned int);
 
 struct DrawSystem { char gap_00[8]; void* Pal; };
-struct GameBaseInner { char gap_00[0x48]; DrawSystem* draw_system; };
-extern GameBaseInner* rge_base_game;
+class RGE_Base_Game {
+public:
+    char gap_00[0x48];
+    DrawSystem* draw_system;
+};
 
 struct Shape_Info {
     char gap_00[0x10];
@@ -120,8 +131,6 @@ public:
 };
 
 int TMessagePanel::render_to_image_buffer() {
-    tagRECT* image_rect;
-    const char* text;
     void* dc;
     void* old_font;
     tagPALETTEENTRY p;
@@ -145,10 +154,9 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    image_rect = &this->ImageRect;
-    this->ImageBuffer->PtrClear(image_rect, 1);
+    this->ImageBuffer->PtrClear(&this->ImageRect, 1);
 
-    text = this->text;
+    char* text = this->text;
     if (this->text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         SetRect(&this->UsedScreenRect, this->draw_left, this->draw_top, this->draw_left + 1, this->draw_top + 1);
@@ -161,18 +169,18 @@ int TMessagePanel::render_to_image_buffer() {
         return 0;
     }
 
-    this->ImageBuffer->SetClipRect(image_rect);
+    this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->hdc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->hdc, this->font);
 
-    if (this->index_color == 0) {
+    if (this->index_color != 0) {
+        GetPaletteEntries(rge_base_game_at_storage()->draw_system->Pal, this->font_color, 1, &p);
+        font_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
+        GetPaletteEntries(rge_base_game_at_storage()->draw_system->Pal, this->back_color, 1, &p);
+        back_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
+    } else {
         back_rgb = this->font_color2;
         font_rgb = this->font_color1;
-    } else {
-        GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &p);
-        font_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
-        GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &p);
-        back_rgb = ((unsigned long)p.peBlue << 16) | ((unsigned long)p.peGreen << 8) | p.peRed;
     }
 
     if (this->message_type == 2) {
@@ -182,16 +190,16 @@ int TMessagePanel::render_to_image_buffer() {
         SetBkMode(this->ImageBuffer->hdc, 1);
     }
 
-    x = image_rect->left;
-    y = image_rect->top;
     wid = this->pnl_wid - 2;
+    x = this->ImageRect.left;
     hgt = this->pnl_hgt - 2;
+    y = this->ImageRect.top;
 
     len = 0;
     while (text[len] != 0) {
         ++len;
     }
-    int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, text, len, &ts);
+    int ok = GetTextExtentPoint32A(this->ImageBuffer->hdc, this->text, len, &ts);
 
     if (ok == 0) {
         SetRect(&rect, x, y, x + wid - 2, y + hgt - 2);
@@ -257,16 +265,16 @@ int TMessagePanel::render_to_image_buffer() {
 
         SetTextColor(this->ImageBuffer->hdc, back_rgb);
         SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetRect(&rect, x, y + 2, x + wid - 1, y + hgt + 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetRect(&rect, x + 2, y, x + wid + 1, y + hgt - 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetRect(&rect, x + 2, y + 2, x + wid + 1, y + hgt + 1);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
         SetTextColor(this->ImageBuffer->hdc, font_rgb);
         SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
-        DrawTextA(this->ImageBuffer->hdc, text, -1, &rect, flags);
+        DrawTextA(this->ImageBuffer->hdc, this->text, -1, &rect, flags);
 
         if (this->Icon1 != 0) {
             Shape_Info* info = this->Icon1->shape_info;

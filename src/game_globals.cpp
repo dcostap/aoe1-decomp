@@ -1,5 +1,8 @@
 #include "..\include\game_globals.h"
 
+// Seed the shared pointer from the executable's proven storage.
+RGE_Base_Game* rge_base_game = rge_base_game_at_storage();
+
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
 

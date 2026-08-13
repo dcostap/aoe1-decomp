@@ -20,6 +20,18 @@
 //   reduced the byte diff but removed four real draw calls, so it was rolled back.
 // - Fresh r2 liveness probe: named the binary boundary aliases while keeping
 //   all 28 calls; size moved closer but shape moved farther, so it was rolled back.
+// - Restored the binary diagonal nesting and duplicated edge-loop order guards;
+//   this restored all 28 calls and improved structural coverage.
+// - Scoped row-boundary and saved-end-row lifetime probes reached the frame
+//   size, but changed early register homes; rolled back to the better basin.
+// - Coordinate-home swap and direct abs spelling were tested and rolled back.
+// - Final source: typed sentinel edge paths, 28 ordered calls, 0x44 frame versus
+//   the original 0x48; remaining drift is structural and starts at the frame.
+// - r4 ABI audit: used the landed canonical storage accessor so the global
+//   loads now encode 0062C574 instead of an unresolved extern relocation.
+
+#include <stdlib.h>
+#include "../../include/rge_base_game_global.h"
 
 struct tagPOINT {
     long x;
@@ -77,7 +89,6 @@ public:
     void get_mouse_pos(tagPOINT& point);
 };
 
-extern RGE_Base_Game* rge_base_game;
 extern "C" long __cdecl _ftol(void);
 
 class TPanel {
@@ -169,24 +180,27 @@ public:
 
 void TRIBE_Main_View::draw_multi_object_outline() {
     short master_id;
+    long calc_row2;
     TRIBE_Master_Building_Object* master;
-    long start_col;
-    long start_row;
     long end_col;
     long end_row;
+    long calc_col1;
+    long start_col;
+    long calc_col2;
+    long row_start;
+    long main_row;
+    long main_col;
+    long calc_row1;
+    long start_row;
     long col;
     long row;
-    long col_min;
-    long col_max;
-    long row_min;
-    long row_max;
     long endpoint;
     int row_distance;
     int col_distance;
     tagPOINT point;
     RGE_Pick_Info pick_info;
 
-    master_id = rge_base_game->master_obj_id;
+    master_id = rge_base_game_at_storage()->master_obj_id;
     if (master_id == -1)
         return;
 
@@ -199,7 +213,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
 
     if (this->get_selection_area(
             &start_col, &start_row, &end_col, &end_row, 0) == 0) {
-        rge_base_game->get_mouse_pos(point);
+        rge_base_game_at_storage()->get_mouse_pos(point);
         if (this->is_inside(point.x, point.y) == 0)
             return;
 
@@ -215,18 +229,19 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         end_row = start_row;
     }
 
+    main_row = end_row;
     col_distance = end_col - start_col;
     if (col_distance < 0)
         col_distance = -col_distance;
-    row_distance = end_row - start_row;
+    row_distance = main_row - start_row;
     if (row_distance < 0)
         row_distance = -row_distance;
 
     if (col_distance == row_distance) {
         if (end_col < start_col) {
+            col = end_col;
+            row = end_row;
             if (end_row < start_row) {
-                col = end_col;
-                row = end_row;
                 while (col <= start_col) {
                     this->draw_wall_outline(col, row, master, 2);
                     ++col;
@@ -235,10 +250,23 @@ void TRIBE_Main_View::draw_multi_object_outline() {
                 this->render_area->SetClipRect(0);
                 return;
             }
-
             col = start_col;
             row = start_row;
-            while (col >= end_col) {
+            if (end_col <= start_col) {
+                while (col >= end_col) {
+                    this->draw_wall_outline(col, row, master, 2);
+                    --col;
+                    ++row;
+                }
+                this->render_area->SetClipRect(0);
+                return;
+            }
+        }
+
+        col = end_col;
+        row = end_row;
+        if (end_row < start_row) {
+            while (col >= start_col) {
                 this->draw_wall_outline(col, row, master, 2);
                 --col;
                 ++row;
@@ -247,89 +275,120 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             return;
         }
 
-        if (end_row < start_row) {
-            col = start_col;
-            row = start_row;
+        col = start_col;
+        row = start_row;
+        if (start_col <= end_col) {
             while (col <= end_col) {
                 this->draw_wall_outline(col, row, master, 2);
                 ++col;
-                --row;
+                ++row;
             }
             this->render_area->SetClipRect(0);
             return;
         }
-
-        col = start_col;
-        row = start_row;
-        while (col <= end_col) {
-            this->draw_wall_outline(col, row, master, 2);
-            ++col;
-            ++row;
-        }
-        this->render_area->SetClipRect(0);
-        return;
     }
 
     if (col_distance > row_distance) {
-        col_min = start_col;
-        col_max = end_col;
-        if (col_max < col_min) {
-            col_min = end_col;
-            col_max = start_col;
+        long row_end;
+
+        calc_row1 = -1;
+        main_col = -1;
+        calc_row2 = end_row;
+        row_end = calc_row2;
+        end_row = end_col;
+        calc_col2 = start_col;
+        if (start_col < end_col) {
+            end_row = start_col;
+            calc_col2 = end_col;
         }
 
-        if (start_row < end_row) {
-            for (col = col_min; col <= col_max; ++col) {
-                endpoint = (col == start_col || col == end_col) ? 2 : 0;
-                this->draw_wall_outline(col, start_row, master, endpoint);
-            }
-            for (row = start_row + 1; row <= end_row; ++row) {
-                endpoint = (row == start_row || row == end_row) ? 2 : 1;
-                this->draw_wall_outline(end_col, row, master, endpoint);
-            }
-            this->render_area->SetClipRect(0);
-            return;
+        if (start_row < calc_row2) {
+            row_start = start_row + 1;
+            calc_row1 = end_col;
+            calc_col1 = calc_row2;
+            main_col = start_row;
+        } else if (calc_row2 < start_row) {
+            row_start = calc_row2;
+            calc_row1 = end_col;
+            calc_col1 = start_row;
+            main_col = start_row;
         }
 
-        for (col = col_min; col <= col_max; ++col) {
-            endpoint = (col == start_col || col == end_col) ? 2 : 0;
-            this->draw_wall_outline(col, start_row, master, endpoint);
-        }
-        for (row = end_row; row < start_row; ++row) {
-            endpoint = (row == start_row || row == end_row) ? 2 : 1;
-            this->draw_wall_outline(end_col, row, master, endpoint);
+        if (calc_row1 == -1 || start_row < row_start) {
+            if (end_row <= calc_col2) {
+                for (col = calc_col2; col >= end_row; --col) {
+                    endpoint = (col == start_col || col == end_col) ? 2 : 0;
+                    this->draw_wall_outline(col, start_row, master, endpoint);
+                }
+            }
+            if (calc_row1 != -1 && row_start <= calc_col1) {
+                for (row = row_start; row <= calc_col1; ++row) {
+                    endpoint = (row == start_row || row == row_end) ? 2 : 1;
+                    this->draw_wall_outline(calc_row1, row, master, endpoint);
+                }
+            }
+        } else {
+            if (calc_row1 != -1 && row_start <= calc_col1) {
+                for (row = row_start; row <= calc_col1; ++row) {
+                    endpoint = (row == start_row || row == row_end) ? 2 : 1;
+                    this->draw_wall_outline(calc_row1, row, master, endpoint);
+                }
+            }
+            if (end_row <= calc_col2) {
+                for (col = calc_col2; col >= end_row; --col) {
+                    endpoint = (col == start_col || col == end_col) ? 2 : 0;
+                    this->draw_wall_outline(col, start_row, master, endpoint);
+                }
+            }
         }
         this->render_area->SetClipRect(0);
         return;
     }
 
-    row_min = start_row;
-    row_max = end_row;
-    if (row_max < row_min) {
-        row_min = end_row;
-        row_max = start_row;
+    calc_row1 = start_row;
+    calc_row2 = end_row;
+    if (calc_row2 < calc_row1) {
+        calc_row1 = end_row;
+        calc_row2 = start_row;
     }
 
+    main_col = -1;
     if (start_col < end_col) {
-        for (row = row_min; row <= row_max; ++row) {
-            endpoint = (row == start_row || row == end_row) ? 2 : 0;
-            this->draw_wall_outline(start_col, row, master, endpoint);
-        }
-        for (col = start_col + 1; col <= end_col; ++col) {
-            endpoint = (col == start_col || col == end_col) ? 2 : 1;
-            this->draw_wall_outline(col, end_row, master, endpoint);
-        }
-        this->render_area->SetClipRect(0);
-        return;
+        main_col = end_row;
+        calc_col1 = start_col + 1;
+        calc_col2 = end_col;
+    } else if (end_col < start_col) {
+        main_col = end_row;
+        calc_col1 = end_col;
+        calc_col2 = start_col - 1;
     }
 
-    for (row = row_min; row <= row_max; ++row) {
-        endpoint = (row == start_row || row == end_row) ? 2 : 0;
-        this->draw_wall_outline(start_col, row, master, endpoint);
-    }
-    for (col = end_col; col < start_col; ++col) {
-        endpoint = (col == start_col || col == end_col) ? 2 : 1;
-        this->draw_wall_outline(col, end_row, master, endpoint);
+    if (main_col == -1 || calc_col2 < start_col) {
+        if (calc_row1 <= calc_row2) {
+            for (row = calc_row1; row <= calc_row2; ++row) {
+                endpoint = (row == start_row || row == end_row) ? 2 : 0;
+                this->draw_wall_outline(start_col, row, master, endpoint);
+            }
+        }
+        if (main_col != -1 && calc_col1 <= calc_col2) {
+            for (col = calc_col1; col <= calc_col2; ++col) {
+                endpoint = (col == start_col || col == end_col) ? 2 : 1;
+                this->draw_wall_outline(col, main_col, master, endpoint);
+            }
+        }
+    } else {
+        if (main_col != -1 && calc_col1 <= calc_col2) {
+            for (col = calc_col1; col <= calc_col2; ++col) {
+                endpoint = (col == start_col || col == end_col) ? 2 : 1;
+                this->draw_wall_outline(col, main_col, master, endpoint);
+            }
+        }
+        if (calc_row1 <= calc_row2) {
+            for (row = calc_row1; row <= calc_row2; ++row) {
+                endpoint = (row == start_row || row == end_row) ? 2 : 0;
+                this->draw_wall_outline(start_col, row, master, endpoint);
+            }
+        }
     }
     this->render_area->SetClipRect(0);
 }
