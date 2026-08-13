@@ -31,6 +31,8 @@
 // Follow-up: typed slot indexing with an unsigned bound preserves the observed
 // per-iteration Resend reload and improves shape to 96.85% with 96% exact blocks;
 // declaration order is a codegen duplicate. Keep this natural record form.
+// Follow-up probe: in-loop RESENDER base plus entry declarations preserved the
+// same 364-byte, 96.85%-shape output; restored the current typed source.
 
 class RESENDER;
 class HOLDER;

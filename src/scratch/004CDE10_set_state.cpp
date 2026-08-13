@@ -14,6 +14,8 @@
 //   body to 622 bytes; restored the natural direct-call source.
 // - Grouped and split no-op arms, and a zero-based dispatch expression, all
 //   emitted the same 618-byte code; retained the period-plausible switch.
+// - Restored the pinned clean source for closure; the remaining extra
+//   virtual +0x38 call is the unresolved shared sprite-tail gap.
 
 class RGE_Sprite;
 class RGE_Sound;

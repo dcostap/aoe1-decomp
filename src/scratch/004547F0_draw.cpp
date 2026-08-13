@@ -23,6 +23,9 @@
 // - A named y-line local widened the first block and worsened positional diff.
 // - Canonical Base_Game, Game_World, and Map virtual surfaces preserved all
 //   proven offsets but were codegen-neutral.
+// - Typed map-before-radii checkpoint with exact-donor pointer/int get_point
+//   and short-coordinate AddGDINode worsened strict diff to 338 bytes and
+//   retained the 0x0C frame; it was rolled back.
 // - A diagnostic narrow get_point surface plus all-int AddGDINode surface and
 //   map-before-radius order produced exact bytes. Exact callee donors reject
 //   those ABIs, so main-agent audit did not retain or promote that form.

@@ -5,6 +5,12 @@
 // - Baseline reconstruction follows the executable's panel-name filter,
 //   five-button dispatch, CD checks, typed screen allocations, and inherited
 //   TEasy_Panel fallback.
+// - Mirrored the PDB/Ghidra lVar5 assignment at each success arm with long
+//   result; VC5 widened the function to 854 bytes and produced nine returns.
+//   Rolled back because this changed the proven one-return block shape.
+// - Tested a direct return of the initialized success result after button 2;
+//   VC5 emitted the same 715-byte code as the clean source. Rolled back as a
+//   duplicate; the EAX-before-tail scheduling gap remains.
 // - A single success-result assignment before the event chain plus a common
 //   done label restored the original 715-byte size and one-return CFG; the
 //   remaining basin keeps the success value in ESI and reloads it at the

@@ -14,6 +14,9 @@
 //   cursor form.  Stdio context and function-scope icon locals were codegen
 //   neutral.  Remaining drift is broad local register/home and cursor layout,
 //   beginning with the saved-this stack slot; left in scratch for a later pass.
+// - initialized back_color to mirror the target's zeroed color register; this
+//   kept size and calls but worsened the diff from 1063 to 1078 bytes and did
+//   not move the saved-this home, so restored the clean source.
 
 #include <stdio.h>
 
