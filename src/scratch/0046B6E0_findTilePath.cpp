@@ -15,6 +15,17 @@
 //   structural and conversion-source work must precede any register variants.
 // - No codegen variants were run in this tranche.  The current source remains
 //   the best typed behavior reconstruction for the next worker.
+// - luna-46B6E0-r1 corrected min/max initial positions to use world coordinates,
+//   object radii, and the observed scale constant; this recovered four target
+//   __ftol calls and reduced the size gap.
+// - Reconstructed the separate float footprint bounds and four-times bounds
+//   after setInitialPoints.  Reusing dead parameter homes restored all twenty
+//   target __ftol calls and reduced the frame from 0x84 to 0x74.
+// - Split the success and failure obstruction-map tails to preserve the two
+//   observed current-object add sites.  The target call count now matches 75.
+// - Removed badBounds and reversed the tolerance comparison for direct guard
+//   and FPU order.  A local optimize-y pragma was tested and rolled back:
+//   it improved bytes but produced an implausible 0x68 frame.
 
 #include <math.h>
 #include <string.h>
@@ -397,7 +408,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                                 int useIterationCap, int checkObstructions, int checkTerrain,
                                 int step, int unobPlayerID, int unobGroupID)
 {
-    int badBounds;
     int dist;
     int initialEstimate;
     int currentEstimate;
@@ -447,10 +457,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int deltaMinY;
     int deltaMaxX;
     int deltaMaxY;
-    int deltaMinX4;
-    int deltaMinY4;
-    int deltaMaxX4;
-    int deltaMaxY4;
     int scanLeftRaw;
     int scanTopRaw;
     int scanRightRaw;
@@ -483,12 +489,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     unsigned int maskB;
     unsigned char* obstructionPtr;
 
-    badBounds = 0;
     if (startX < 0 || startY < 0 || startX > this->xSizeValue || startY > this->xSizeValue ||
         goalX < 0 || goalY < 0 || goalX > this->xSizeValue || goalY > this->xSizeValue) {
-        badBounds = 1;
-    }
-    if (badBounds) {
         if (mode == 1) {
             path = ACTIVE_PATH(obj);
             path->killPath();
@@ -496,7 +498,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         return 0;
     }
 
-    if (tolerance > FADDR(0x570E54)) {
+    if (FADDR(0x570E54) < tolerance) {
         ESTIMATE_DISTANCE(dist, goalX, goalY, startX, startY);
         if ((float)dist < tolerance * FADDR(0x570E58)) {
             if (costOut != 0) *costOut = FADDR(0x570E5C);
@@ -606,25 +608,16 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
     curObj = this->currentObject;
     master = curObj->master_obj;
-    this->minInitialPosition.x = (int)(((this->currentXOffset - FADDR(0x570E68)) - master->radius_x) - FADDR(0x570E6C)) - 100;
+    this->minInitialPosition.x = (int)((curObj->world_x - master->radius_x) * FADDR(0x570E60));
     if (this->minInitialPosition.x < 0) this->minInitialPosition.x = 0;
-    this->minInitialPosition.y = (int)(((this->currentYOffset - FADDR(0x570E68)) - master->radius_y) - FADDR(0x570E6C)) - 100;
+    this->minInitialPosition.y = (int)((curObj->world_y - master->radius_y) * FADDR(0x570E60));
     if (this->minInitialPosition.y < 0) this->minInitialPosition.y = 0;
-    this->maxInitialPosition.x = (int)((master->radius_x + this->currentXOffset) - FADDR(0x570E70)) - 100;
+    this->maxInitialPosition.x = (int)((master->radius_x + curObj->world_x) * FADDR(0x570E60));
     tmp = this->xSizeValue * 4;
     if (this->maxInitialPosition.x > tmp) this->maxInitialPosition.x = tmp;
-    this->maxInitialPosition.y = (int)((master->radius_y + this->currentYOffset) - FADDR(0x570E70)) - 100;
+    this->maxInitialPosition.y = (int)((master->radius_y + curObj->world_y) * FADDR(0x570E60));
     tmp = this->ySizeValue * 4;
     if (this->maxInitialPosition.y > tmp) this->maxInitialPosition.y = tmp;
-
-    deltaMinX = this->minInitialPosition.x;
-    deltaMinY = this->minInitialPosition.y;
-    deltaMaxX = this->maxInitialPosition.x;
-    deltaMaxY = this->maxInitialPosition.y;
-    deltaMinX4 = deltaMinX - 400;
-    deltaMinY4 = deltaMinY - 400;
-    deltaMaxX4 = deltaMaxX - 400;
-    deltaMaxY4 = deltaMaxY - 400;
 
     curObj->setInitialPoints(&this->minInitialPosition, &this->maxInitialPosition);
 
@@ -652,6 +645,15 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
     if ((float)step <= tolerance) bestLimit = (int)(tolerance * FADDR(0x570E58));
     else bestLimit = step << 4;
+
+    deltaMinX = (int)(((this->currentXOffset - FADDR(0x570E68)) - master->radius_x) - FADDR(0x570E6C)) - 100;
+    deltaMaxX = (int)((master->radius_x + this->currentXOffset) - FADDR(0x570E70)) - 100;
+    deltaMinY = (int)(((this->currentYOffset - FADDR(0x570E68)) - master->radius_y) - FADDR(0x570E6C)) - 100;
+    deltaMaxY = (int)((master->radius_y + this->currentYOffset) - FADDR(0x570E70)) - 100;
+    startX = -400 - (int)((this->currentXOffset - FADDR(0x570E68) - master->radius_x) * FADDR(0x570E74));
+    startY = -400 - (int)((this->currentYOffset - FADDR(0x570E68) - master->radius_y) * FADDR(0x570E74));
+    targetID = -400 - (int)((master->radius_x + this->currentXOffset - FADDR(0x570E68)) * FADDR(0x570E74));
+    unobPlayerID = -400 - (int)((master->radius_y + this->currentYOffset - FADDR(0x570E68)) * FADDR(0x570E74));
 
     tmp = goalX - startX;
     tmp2 = goalY - startY;
@@ -685,12 +687,12 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 ACTIVE_PATH(obj)->killPath();
                 RESTORE_COLLIDING_OBJECTS(this);
                 restoreResult = 0;
-                goto final_restore_object;
+                goto final_failure_restore;
             }
             if (costOut != 0) *costOut = (float)this->MGP_costValue[curX][curY];
             RESTORE_COLLIDING_OBJECTS(this);
             restoreResult = 1;
-            goto final_restore_object;
+            goto final_success_restore;
         }
 
         if (currentEstimate < this->MGP_bestTraversedPath.total) {
@@ -767,49 +769,49 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             scanBottomRaw = scanTopRaw + step * 4;
             switch (i) {
             case 0:
-                scanLeftRaw = nextX * 4 + deltaMinX4;
-                scanTopRaw = nextY * 4 + deltaMinY4;
+                scanLeftRaw = nextX * 4 + startX;
+                scanTopRaw = nextY * 4 + startY;
                 scanRightRaw = curX * 4 + deltaMaxX;
                 scanBottomRaw = curY * 4 + deltaMaxY;
                 break;
             case 1:
                 scanLeftRaw = nextX * 4 + deltaMinX;
-                scanTopRaw = nextY * 4 + deltaMinY4;
+                scanTopRaw = nextY * 4 + startY;
                 scanRightRaw = curX * 4 + deltaMaxX;
                 scanBottomRaw = curY * 4 + deltaMaxY;
                 break;
             case 2:
                 scanLeftRaw = curX * 4 + deltaMinX;
-                scanTopRaw = nextY * 4 + deltaMinY4;
-                scanRightRaw = nextX * 4 + deltaMaxX4;
+                scanTopRaw = nextY * 4 + startY;
+                scanRightRaw = nextX * 4 + targetID;
                 scanBottomRaw = curY * 4 + deltaMaxY;
                 break;
             case 3:
                 scanLeftRaw = curX * 4 + deltaMinX;
                 scanTopRaw = nextY * 4 + deltaMinY;
-                scanRightRaw = nextX * 4 + deltaMaxX4;
+                scanRightRaw = nextX * 4 + targetID;
                 scanBottomRaw = curY * 4 + deltaMaxY;
                 break;
             case 4:
                 scanLeftRaw = curX * 4 + deltaMinX;
                 scanTopRaw = curY * 4 + deltaMinY;
-                scanRightRaw = nextX * 4 + deltaMaxX4;
-                scanBottomRaw = nextY * 4 + deltaMaxY4;
+                scanRightRaw = nextX * 4 + targetID;
+                scanBottomRaw = nextY * 4 + unobPlayerID;
                 break;
             case 5:
                 scanLeftRaw = curX * 4 + deltaMinX;
                 scanTopRaw = curY * 4 + deltaMinY;
                 scanRightRaw = nextX * 4 + deltaMaxX;
-                scanBottomRaw = nextY * 4 + deltaMaxY4;
+                scanBottomRaw = nextY * 4 + unobPlayerID;
                 break;
             case 6:
-                scanLeftRaw = nextX * 4 + deltaMinX4;
+                scanLeftRaw = nextX * 4 + startX;
                 scanTopRaw = curY * 4 + deltaMinY;
                 scanRightRaw = curX * 4 + deltaMaxX;
-                scanBottomRaw = nextY * 4 + deltaMaxY4;
+                scanBottomRaw = nextY * 4 + unobPlayerID;
                 break;
             case 7:
-                scanLeftRaw = nextX * 4 + deltaMinX4;
+                scanLeftRaw = nextX * 4 + startX;
                 scanTopRaw = curY * 4 + deltaMinY;
                 scanRightRaw = curX * 4 + deltaMaxX;
                 scanBottomRaw = nextY * 4 + deltaMaxY;
@@ -991,12 +993,12 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                     ACTIVE_PATH(obj)->killPath();
                     RESTORE_COLLIDING_OBJECTS(this);
                     restoreResult = 0;
-                    goto final_restore_object;
+                    goto final_failure_restore;
                 }
                 if (costOut != 0) *costOut = (float)this->MGP_costValue[curX][curY];
                 RESTORE_COLLIDING_OBJECTS(this);
                 restoreResult = 1;
-                goto final_restore_object;
+                goto final_success_restore;
             }
 
 next_direction:
@@ -1041,7 +1043,13 @@ next_direction:
         restoreResult = 0;
     }
 
-final_restore_object:
+final_success_restore:
+    if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
+        this->currentObject->addToObstructionMap(this->aiPS);
+    }
+    return 1;
+
+final_failure_restore:
     if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
         this->currentObject->addToObstructionMap(this->aiPS);
     }
