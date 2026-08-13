@@ -7,17 +7,17 @@
 // - Replaced the prior raw-offset candidate with typed RGE_Map, RGE_Tile,
 //   terrain-set, and map-row ownership. The target reads tile_type at +4 and
 //   terrain_type at +5; terrain records use 0x198-byte entries.
-// - Direct terrain_types access produced the best typed structural basin:
-//   613 bytes, 0x10 frame, and all three calls aligned.
-// - The create_terrain_object ABI and call bytes pass the tile's old terrain
-//   value. A player-cast argument was a smaller diagnostic diff, but it was
-//   not behaviorally valid and is not retained.
-// - The source-backed row and tile byte-offset locals produce the strongest
-//   structural basin: exact frame, 79.72% shape, and 35.10% exact blocks.
-//   The remaining mismatch is register allocation and block placement.
+// - The create_terrain_object ABI passes the tile's old low-five terrain.
+//   A player-cast argument was a smaller diagnostic diff, but was invalid.
+// - The source-backed row and tile cursor follows the proven 4-byte row-table
+//   and 24-byte tile layout. All three direct calls and their order align.
 // - Spelled terrain_to_draw as > -1 instead of >= 0. This reproduced the
 //   original cmp ax,-1/jle eligibility block, improved the positional diff
 //   from 561 to 420 bytes, and kept the typed terrain ownership natural.
+// - The binary uses blend only as the update gate. The replacement low-five
+//   value comes from terrain, while create_terrain_object gets old terrain.
+//   The current source preserves both effects. The remaining gap is the
+//   target's 0x14 local frame and EDI/EBP allocation basin.
 
 class RGE_Player;
 class RGE_Game_World;
@@ -129,20 +129,14 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                           short x1, short y1, short x2, short y2,
                           unsigned char terrain, unsigned char blend, int arg9)
 {
-    RGE_Map* map = this;
     short terrain_id;
-    short maprow;
-    short mapcol;
-    int row_offset;
-    int tile_offset;
-    unsigned char old_value;
 
-    if ((short)(unsigned char)terrain < map->num_terrain) {
+    if ((short)(unsigned char)terrain < this->num_terrain) {
         terrain_id = (short)(unsigned char)terrain;
-        if (map->terrain_types[(unsigned char)terrain].loaded != 0 ||
-            (map->terrain_types[(unsigned char)terrain].terrain_to_draw > -1 &&
-             map->terrain_types[
-                 map->terrain_types[(unsigned char)terrain].terrain_to_draw].loaded == 1)) {
+        if (this->terrain_types[(unsigned char)terrain].loaded != 0 ||
+            (this->terrain_types[(unsigned char)terrain].terrain_to_draw > -1 &&
+             this->terrain_types[
+                 this->terrain_types[(unsigned char)terrain].terrain_to_draw].loaded == 1)) {
             if (y1 > y2) {
                 short temp = y1;
                 y1 = y2;
@@ -156,40 +150,42 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
 
             if (y1 < 0)
                 y1 = 0;
-            if ((int)y2 >= map->map_height)
-                y2 = (short)(map->map_height - 1);
+            if ((int)y2 >= this->map_height)
+                y2 = (short)(this->map_height - 1);
             if (x1 < 0)
                 x1 = 0;
-            if ((int)x2 >= map->map_width)
-                x2 = (short)(map->map_width - 1);
+            if ((int)x2 >= this->map_width)
+                x2 = (short)(this->map_width - 1);
 
             if ((blend != 0 || player != 0) && y1 <= y2) {
-                maprow = y1;
-                row_offset = (int)maprow * (int)sizeof(RGE_Tile*);
-                tile_offset = (int)x1 * (int)sizeof(RGE_Tile);
+                short maprow = y1;
+                int row_offset = (int)maprow * (int)sizeof(RGE_Tile*);
+                int tile_offset = (int)x1 * (int)sizeof(RGE_Tile);
                 do {
-                    mapcol = x1;
-                    RGE_Tile* tile = (RGE_Tile*)((char*)*(RGE_Tile**)
-                        ((char*)map->map_row_offset + row_offset) + tile_offset);
+                    short mapcol = x1;
+                    unsigned char* tile_terrain = (unsigned char*)
+                        ((char*)*(RGE_Tile**)((char*)this->map_row_offset + row_offset) +
+                         tile_offset + 5);
                     if (mapcol <= x2) {
                         do {
-                            if (map->terrain_types[(unsigned char)terrain].tiles[
-                                    tile->tile_type].count > 0) {
-                                old_value = tile->terrain_type;
-                                if ((short)(old_value & 0x1F) != terrain_id) {
+                            if (this->terrain_types[(unsigned char)terrain].tiles[
+                                    tile_terrain[-1]].count > 0) {
+                                unsigned char old_value = *tile_terrain;
+                                short old_terrain = (short)(old_value & 0x1F);
+                                if (old_terrain != terrain_id) {
                                     if (blend != 0) {
-                                        tile->terrain_type =
-                                            (unsigned char)((blend ^ old_value) & 0x1F) ^ old_value;
+                                        *tile_terrain =
+                                            (unsigned char)((terrain ^ old_value) & 0x1F) ^ old_value;
                                     }
                                 }
                                 if (player != 0) {
-                                    map->create_terrain_object(player, world,
-                                        maprow, mapcol, (short)(old_value & 0x1F),
+                                    this->create_terrain_object(player, world,
+                                        maprow, mapcol, old_terrain,
                                         arg9, -1, -1);
                                 }
                             }
                             ++mapcol;
-                            ++tile;
+                            tile_terrain += sizeof(RGE_Tile);
                         } while (mapcol <= x2);
                     }
                     ++maprow;
@@ -199,27 +195,27 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
 
             if (y1 > 0)
                 --y1;
-            if ((int)y2 < map->map_height - 1)
+            if ((int)y2 < this->map_height - 1)
                 ++y2;
             if (x1 > 0)
                 --x1;
-            if ((int)x2 < map->map_width - 1)
+            if ((int)x2 < this->map_width - 1)
                 ++x2;
 
-            maprow = y1;
-            if (maprow <= y2) {
+            short border_row = y1;
+            if (border_row <= y2) {
                 do {
-                    mapcol = x1;
-                    if (mapcol <= x2) {
+                    short border_col = x1;
+                    if (border_col <= x2) {
                         do {
-                            map->get_border_type(mapcol, maprow);
-                            ++mapcol;
-                        } while (mapcol <= x2);
+                            this->get_border_type(border_col, border_row);
+                            ++border_col;
+                        } while (border_col <= x2);
                     }
-                    ++maprow;
-                } while (maprow <= y2);
+                    ++border_row;
+                } while (border_row <= y2);
             }
-            map->request_redraw(x1, y1, x2, y2, 0);
+            this->request_redraw(x1, y1, x2, y2, 0);
         }
     }
 }
