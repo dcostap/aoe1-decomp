@@ -15,8 +15,16 @@
 // - making WM_MOUSEMOVE an ordinary switch arm produced the best structural
 //   checkpoint: 96% ordered-call alignment, 923-byte diff, and -2-byte size
 //   gap; the remaining frame is 0x20 versus the original 0x1C.
-// - unresolved: switch/default block placement and the remaining frame/local
-//   allocation drift; no further blind variants after the ten-probe budget.
+// - next structural lead: place the WM_PAINT arm before WM_ERASEBKGND so the
+//   first low-message call follows the original InvalidateRect/FillRect order.
+// - swapping the saved parameter declaration order did not change emitted
+//   code; the original still points to direct parameter homes and a 1C frame.
+// - the direct-parameter plus separate selection flag form restored the 1C
+//   frame and 84% shape; test one canonical lParam copy with that local order.
+// - restoring the original erase-before-paint source order improved the
+//   positional diff to 867 bytes with exact frame and call-count parity.
+// - unresolved: initial parameter register coloring, dispatch block placement,
+//   and one missing/shifted call site; stop after final validation.
 
 #include <windows.h>
 
@@ -108,17 +116,16 @@ extern TPanelSystem panel_system;
 long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                               unsigned int wparam, long lparam)
 {
-    unsigned int saved_msg = msg;
-    long saved_lparam = lparam;
     DWORD sel_start_before;
     DWORD sel_end_before;
     DWORD sel_start_after;
     DWORD sel_end_after;
+    int track_selection;
 
     if (this->edit_wnd != 0 && this->active != 0 &&
         this->visible != 0 && this->hidden == 0) {
-        if (saved_msg < 0x15) {
-            if (saved_msg == WM_ERASEBKGND) {
+        if (msg < 0x15) {
+            if (msg == WM_ERASEBKGND) {
                 if (this->brush != 0) {
                     RECT rect;
                     HDC hdc = (HDC)wparam;
@@ -127,12 +134,12 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                     FillRect(hdc, &rect, (HBRUSH)this->brush);
                     return 1;
                 }
-            } else if (saved_msg == WM_PAINT) {
+            } else if (msg == WM_PAINT) {
                 InvalidateRect((HWND)hwnd, 0, TRUE);
             }
         } else {
-            if (saved_msg < 0x201) {
-                switch (saved_msg) {
+            if (msg < 0x201) {
+                switch (msg) {
                 case WM_MOUSEMOVE:
                     if (rge_base_game->windows_mouse == 0) {
                         DAT_0062c4c4 = 1;
@@ -148,7 +155,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                         }
                     } else {
                         const long handled = this->parent_panel->wnd_proc(
-                            hwnd, saved_msg, wparam, saved_lparam);
+                            hwnd, msg, wparam, lparam);
                         if (handled != 0) {
                             return 0;
                         }
@@ -158,7 +165,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                             const int shift_down = (GetKeyState(VK_SHIFT) < 0);
                             DAT_0086b240 = 1;
                             this->parent_panel->handle_key_down(
-                                VK_TAB, (short)saved_lparam, alt_down,
+                                VK_TAB, (short)lparam, alt_down,
                                 ctrl_down, shift_down);
                             DAT_0086b240 = 0;
                             return 0;
@@ -193,8 +200,8 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                     if (this->imc == 0 || this->enable_ime == 0) {
                         SetFocus((HWND)this->render_area->Wnd);
                         PostMessageA((HWND)this->render_area->Wnd,
-                                     (UINT)saved_msg, (WPARAM)wparam,
-                                     (LPARAM)saved_lparam);
+                                     (UINT)msg, (WPARAM)wparam,
+                                     (LPARAM)lparam);
                     }
                     return 0;
                 default:
@@ -210,10 +217,10 @@ default_processing:
     sel_start_after = 0;
     sel_end_after = 0;
 
-    if (this->edit_wnd == 0 || saved_msg == EM_GETSEL) {
-        lparam = 0;
+    if (this->edit_wnd == 0 || msg == EM_GETSEL) {
+        track_selection = 0;
     } else {
-        lparam = 1;
+        track_selection = 1;
         SendMessageA((HWND)this->edit_wnd, EM_GETSEL,
                      (WPARAM)&sel_start_before,
                      (LPARAM)&sel_end_before);
@@ -221,10 +228,10 @@ default_processing:
 
     WNDPROC old_proc = (WNDPROC)this->old_sub_wnd_proc;
     long ret = (long)CallWindowProcA((FARPROC)old_proc, (HWND)hwnd,
-                                     (UINT)saved_msg, (WPARAM)wparam,
-                                     (LPARAM)saved_lparam);
+                                     (UINT)msg, (WPARAM)wparam,
+                                     (LPARAM)lparam);
 
-    if (lparam != 0) {
+    if (track_selection != 0) {
         SendMessageA((HWND)this->edit_wnd, EM_GETSEL,
                      (WPARAM)&sel_start_after,
                      (LPARAM)&sel_end_after);
@@ -235,14 +242,14 @@ default_processing:
         }
     }
 
-    if (saved_msg == WM_PASTE) {
+    if (msg == WM_PASTE) {
         this->update_text();
     }
 
-    if (saved_msg == WM_LBUTTONDOWN || saved_msg == WM_LBUTTONUP ||
-        saved_msg == WM_RBUTTONDOWN || saved_msg == WM_RBUTTONUP) {
-        const unsigned int x = (unsigned int)saved_lparam & 0xFFFF;
-        const unsigned int y = ((unsigned int)saved_lparam >> 16) & 0xFFFF;
+    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
+        msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
+        const unsigned int x = (unsigned int)lparam & 0xFFFF;
+        const unsigned int y = ((unsigned int)lparam >> 16) & 0xFFFF;
         const unsigned int nx =
             (unsigned int)(this->pnl_x + (long)x) & 0xFFFF;
         const unsigned int ny =
@@ -250,7 +257,7 @@ default_processing:
         const long new_lparam = (long)((ny << 16) | nx);
         TPanel* cp = panel_system.currentPanel();
         ret = cp->wnd_proc((void*)this->render_area->Wnd,
-                           saved_msg, wparam, new_lparam);
+                           msg, wparam, new_lparam);
     }
 
     return ret;
