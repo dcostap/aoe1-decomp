@@ -21,6 +21,9 @@
 // - liveness probe: removed the second mode local and used direct program-mode
 //   member tests.  This sinks the shared load after the interface-style compare;
 //   the result is 9 bytes different with the same size, frame, and call order.
+// - final codegen probe: a redraw after the overlay call is source-plausible,
+//   but the binary emits no extra redraw call.  The otherwise natural call
+//   restores the final 9-byte tail exactly.
 
 #include <stdlib.h>
 
@@ -350,6 +353,7 @@ long RGE_Main_View::mouse_right_up_action(long param_1, long param_2,
                                             this->map_scr_x_offset + param_1,
                                             this->map_scr_y_offset + param_2,
                                             0, 0x0F, 0, 1, 0xFA);
+                                        this->set_redraw(1);
                                     }
                                 }
                             }
