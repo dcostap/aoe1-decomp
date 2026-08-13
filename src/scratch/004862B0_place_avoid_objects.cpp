@@ -18,6 +18,13 @@
 // - Changed the placement scan from an initial-pop do/while to a typed
 //   while(pop_stack && count > 0). The original reloads count after each
 //   pop, so this is the natural source form for the observed loop topology.
+// - This session tested height-first memset operands, explicit world/player
+//   temporaries, signed-mask spellings, and reference-based stack helpers.
+//   All natural variants were codegen duplicates at the 52-byte residual.
+// - A signed-mask expression copied from the decompiler widened the drift to
+//   428 bytes. A volatile map-size home widened it to 571 bytes and 16 extra
+//   bytes. Restored the clean typed source; the remaining lead is compiler
+//   scheduling of the initial clear and player-table block.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 

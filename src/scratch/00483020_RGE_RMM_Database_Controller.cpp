@@ -10,9 +10,8 @@
 //   sixteen calls, but missed the original local frame and map-record stride.
 // - A diagnostic byte-offset record cursor recovered the 0x10 frame and exact
 //   size; splitting the map load and reversing the tail updates reached a
-//   32-byte emitted-code mismatch.  That cursor/parameter-home path is not
-//   retained in the clean source.
-// - Current source keeps ordinary typed map-entry iteration; the remaining
+//   32-byte emitted-code mismatch. It is not a valid living source surface.
+// - The living source uses ordinary typed map-entry iteration. The remaining
 //   codegen lead is the original stack-home/register schedule at the loop tail.
 // - Making the base destructor virtual to match the same-TU donor did not
 //   change emitted code; the EH frame and first prologue hunk remain open.
@@ -20,6 +19,8 @@
 //   also left emitted code unchanged; no EH handler or frame appeared.
 // - Naming a local RGE_Map_Data* for the aggregate moved 336 bytes and made
 //   the size three bytes shorter, so the member-based clean form is restored.
+// - The byte-cursor form is diagnostic evidence only. Keep typed pointer
+//   iteration even though it is farther from the current bytes.
 
 #include <stdlib.h>
 
@@ -180,8 +181,8 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int file)
                  this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
 
         int map_index = 0;
-        RGE_Map_Data_Entry* map = this->map_info.maps;
         if (this->map_info.map_num > 0) {
+            RGE_Map_Data_Entry* map = this->map_info.maps;
             do {
                 RGE_Land_Data* land_info = &map->land_info;
                 RGE_Terrain_Data* terrain_info = &map->terrain_info;

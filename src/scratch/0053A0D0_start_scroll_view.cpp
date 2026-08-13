@@ -22,6 +22,22 @@
 // unchanged at 397 B / 418 strict-diff bytes, so the natural baseline remains.
 // 12: direct final return instead of a synthetic result local; codegen was
 // unchanged at 397 B / 418 strict-diff bytes, so the baseline was restored.
+// 13: delayed result assignment remained a codegen duplicate.
+// 14: volatile result plus saved action restored the target prologue, four
+//     returns, and 437-byte size; result-home argument reload was one extra.
+// 15: plain result removed that structure; rolled back.
+// 16: hoisted col/row locals were a duplicate; rolled back.
+// 17: plain col with volatile final result reached 421 B / 414 diff.
+// 18: cached the volatile y conversion into plain col; reached 429 B / 66 diff.
+// 19: a raw local read at +8 reached 437 B / 2 diff with exact calls,
+//     returns, and all other bytes aligned. It has no proven field ownership.
+// 20: named first view-y value was a codegen duplicate.
+// 21: offset +4 collapsed the distinct late expression and regressed to 66.
+// 22: alternate alias spelling also regressed to 66; restored the offset +8
+//     diagnostic form as the best binary-supported reconstruction.
+// 23: normalized the living source by removing codegen-only volatile/register
+//     scheduling and the raw +8 read. Close scheduling evidence remains in
+//     checkpoint probe-026.
 
 struct RGE_Static_Object;
 struct RGE_Tile;
@@ -147,7 +163,7 @@ int RGE_View::start_scroll_view(unsigned char action, long x, long y,
     if (this->scroll_action == 6 || this->scroll_action == 8) {
         if (this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
             this->player->set_view_loc(pick_info.y - flt_5776C0,
-                                       pick_info.y - flt_5776C0);
+                                       pick_info.x - flt_5776C0);
             this->set_redraw(1);
             return 1;
         }

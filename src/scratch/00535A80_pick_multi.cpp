@@ -12,6 +12,12 @@
 // 10: Volatile y2 worsened to 87.68% and first mismatch offset 1; rolled back.
 // 11: Used the incoming y1 parameter directly in both rectangle calls, matching the packet's direct y1 home reloads; VC5 emitted the same 495-byte code.
 // 12: Spelled the first direct selection block as an early failure break followed by picked_any=1; testing the call before the assignment was a natural source-order lead.
+// 13: Replaced raw int pick-record access with a typed RGE_Pick_Obj_Info pointer and named confidence field; VC5 was a codegen duplicate.
+// 14: Declared the y delta before the x delta to test y1/EBX liveness coloring; diff worsened by 5 bytes, so restored x delta first.
+// 15: Reused y1 as the second-pass count and x2 as the selected-object home; this matched the observed parameter writes but was a codegen duplicate, so restored named locals.
+// 16: Carried y2 through a named local across both passes; VC5 was a codegen duplicate.
+// 17: Removed register qualifiers from count and loop index; both were codegen duplicates, and the natural unqualified locals remain.
+// 18: Used a positive second-pass do-while predicate; rebuilt size grew to 501 bytes and strict diff to 276, so restored count != 0.
 // Bounded session probes: exact-source ABI correction fixed the two helper
 // relocations but did not move bytes; parameter-home reuse, declaration-order,
 // natural delta, header-context, and focused score-lifetime variants were
@@ -22,7 +28,15 @@
 // later loop islands, but broad register/block-layout drift starts at the
 // initial y-coordinate load (original keeps y1 in EBX; rebuilt keeps y2).
 
-extern int Picked_Objects[];
+struct RGE_Pick_Obj_Info {
+    int object_id;
+    short confidence;
+    short draw_level;
+    short draw_x;
+    short draw_y;
+};
+
+extern RGE_Pick_Obj_Info Picked_Objects[];
 
 class RGE_Static_Object_Master { public: char pad[0x8d]; unsigned char select_level; };
 class RGE_Player;
@@ -73,12 +87,12 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
 {
     int picked_any = 0;
     RGE_Static_Object* picked_obj;
-    register int i = 0;
-    register int count = this->pick_multi_objects(x1, y1, x2, y2, 10, 20, this->player->id, p1, 1);
+    int i = 0;
+    int count = this->pick_multi_objects(x1, y1, x2, y2, 10, 20, this->player->id, p1, 1);
     if (count > 0) {
-        int* pp = Picked_Objects;
+        RGE_Pick_Obj_Info* pp = Picked_Objects;
         do {
-            int idx = *pp;
+            int idx = pp->object_id;
             if (idx != -1) {
                 RGE_Static_Object* obj = this->world->objectsValue[idx];
                 if (obj != 0 && obj->object_state < 7) {
@@ -87,7 +101,7 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
                 }
             }
             i++;
-            pp += 3;
+            ++pp;
         } while (i < count);
     }
     if (picked_any) return 1;
@@ -106,9 +120,9 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
         int bestScore = 0;
         picked_obj = 0;
         if (count > 0) {
-            int* pp = Picked_Objects;
+            RGE_Pick_Obj_Info* pp = Picked_Objects;
             do {
-                int idx = *pp;
+                int idx = pp->object_id;
                 if (idx >= 0) {
                     RGE_Static_Object* obj = this->world->objectsValue[idx];
                     if (obj && obj->object_state < 7 && obj->master_obj->select_level >= 2) {
@@ -117,13 +131,13 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
                             int vx = (int)obj->x;
                             if (this->player->visible->get_visible(vx, vy) != 0x0f) goto next;
                         }
-                        int score = this->pick_score(obj, (short)pp[1]);
+                        int score = this->pick_score(obj, pp->confidence);
                         if (obj->owner == this->player) score += 5;
                         if (score > bestScore) { picked_obj = obj; bestScore = score; }
                     }
                 }
 next:
-                pp += 3;
+                ++pp;
                 count--;
             } while (count != 0);
         }

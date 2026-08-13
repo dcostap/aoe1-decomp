@@ -30,6 +30,15 @@
 //   to 45 bytes. Rolled back; the 30-byte clean source remains best.
 // - v16: adopted the exact tplayer tech_cost output order and typed call surface
 //   from researchCost; emitted code was unchanged (30-byte diff), so restored.
+// - v17-v18: staged the master-table pointer, including an explicit source alias;
+//   both moved the field load after the tech-tree load and widened the diff to 45.
+// - v19-v21: volatile count/master access probes either added a stack store or
+//   duplicated the 30-byte output; all were rolled back.
+// - v22: separate master declaration and assignment after the count; duplicate
+//   45-byte output. v23: canonical world->tech->tech_tree ownership widened to 56.
+// - v24-v25: address/reference aliases for the master pointer widened to 427/45.
+// - v26: reused the decompiler's tech index across both scans; emitted code was
+//   unchanged. Final lead remains the initial DX-before-ESI VC5 scheduling gap.
 
 typedef unsigned char uchar;
 

@@ -21,6 +21,13 @@
 //   coloring and stack-home order; no source-only exact match in this pass.
 // - Nested typed option-then-tile guards preserved the observed branch order
 //   but emitted the same 491B code; restored the combined natural guard.
+// - Reordered case-local declarations and split the distance assignment; the
+//   compiler kept the same 491B code, so the clean source is retained.
+// - Reusing the short count as the loop countdown reduced the frame to 0x20;
+//   a typed master local raised it to 0x28.  Both were rolled back.
+// - A separate countdown reset before the inner gate recovered the oracle's
+//   stack homes and 62.66% exact-block coverage, but remained 303B/495B or
+//   303B/491B in nearby orderings.  The clean 256B basin remains best.
 
 #include <math.h>
 

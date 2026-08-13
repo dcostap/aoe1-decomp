@@ -20,6 +20,12 @@
 // - Rejected right > left / bottom > top guard spelling: it matched the
 //   compare direction locally but expanded the frame to 0x7C and worsened the
 //   result to 469 bytes and 335 differing bytes. The clean guard stays.
+// - Fresh structural pass: moving coordinate and pixel declarations, hoisting
+//   the pixel pointer, and modeling function-scope wid did not change codegen.
+//   Early-negative and nested guard forms repeated the 469-byte basin.
+// - Direct pointer arithmetic before step assignment expanded to 472 bytes.
+//   Reusing dest.left for width reached 459 bytes but worsened the diff to 317.
+//   The clean block-local width source remains the best reconstruction.
 
 #include <string.h>
 
