@@ -10,11 +10,9 @@
 // Probes 13 and 17 found the one-state y schedule that reproduces the original
 // button rows. A second state changed the allocator basin and was rolled back.
 // Corrected the final hotkey target to button[bi - 1] and passed bi to tab order.
-// The best emitted-code frontier is a one-byte immediate mismatch: an extra
-// source increment reaches the original register basin but shifts button rows.
-// The current source keeps the behavior-correct single y state instead.
-// Current gap: 124 bytes with the clean semantic source; no further evidence-
-// backed source-shape lead remains in this claim.
+// The r2 reconstruction keeps by at the Scenario row, then copies it to by2
+// and advances by2 before the later rows. This preserves button rows and emits
+// the original one-byte add immediate. The exact source is now validated.
 
 #include "..\..\include\game_globals.h"
 
@@ -149,33 +147,34 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent) : TDialogPanel("Menu Dial
 
     if (!this->create_button(this, &this->button[bi++], 0x243E, 0, 0x14, by, 0x168, 0x1E, 0, 0, 9))
         return;
-    by += 0x23;
+    int by2 = by;
+    by2 += 0x23;
 
     if (rge_base_game->singlePlayerGame()) {
-        if (!this->create_button(this, &this->button[bi++], 0x2438, 0, 0x14, by, 0x168, 0x1E, 0, 0, 1))
+        if (!this->create_button(this, &this->button[bi++], 0x2438, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 1))
             return;
-        by += 0x23;
-        if (!this->create_button(this, &this->button[bi++], 0x243C, 0, 0x14, by, 0x168, 0x1E, 0, 0, 3))
+        by2 += 0x23;
+        if (!this->create_button(this, &this->button[bi++], 0x243C, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 3))
             return;
-        by += 0x23;
-        if (!this->create_button(this, &this->button[bi++], 0x243F, 0, 0x14, by, 0x168, 0x1E, 0, 0, 0x0B))
+        by2 += 0x23;
+        if (!this->create_button(this, &this->button[bi++], 0x243F, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 0x0B))
             return;
-        by += 0x23;
+        by2 += 0x23;
     }
 
-    if (!this->create_button(this, &this->button[bi++], 0x243A, 0, 0x14, by, 0x168, 0x1E, 0, 0, 5))
+    if (!this->create_button(this, &this->button[bi++], 0x243A, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 5))
         return;
-    by += 0x23;
+    by2 += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x23F5, 0, 0x14, by, 0x168, 0x1E, 0, 0, 8))
+    if (!this->create_button(this, &this->button[bi++], 0x23F5, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 8))
         return;
-    by += 0x23;
+    by2 += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x23F9, 0, 0x14, by, 0x168, 0x1E, 0, 0, 10))
+    if (!this->create_button(this, &this->button[bi++], 0x23F9, 0, 0x14, by2, 0x168, 0x1E, 0, 0, 10))
         return;
-    by += 0x23;
+    by2 += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x243B, 0, 0x14, by + 0x0F, 0x168, 0x1E, 0, 0, 6))
+    if (!this->create_button(this, &this->button[bi++], 0x243B, 0, 0x14, by2 + 0x0F, 0x168, 0x1E, 0, 0, 6))
         return;
 
     TButtonPanel* p = this->button[bi - 1];
