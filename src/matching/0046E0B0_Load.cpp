@@ -22,8 +22,16 @@
 // - Allocator-inference probe: splitting the initial bitmap pointer from the
 //   post-allocation scan pointer was byte-identical. VC5 coalesces both roles
 //   before the remaining ECX/EDX transparency-address choice.
-// - left in scratch: natural typed source, 5 differing bytes at the two
-//   transparency scan address/register sequences.
+// - Reverse-traced C2's color.c assignment routine at 0x0042F660: the bitmap
+//   split shifts later pseudo ids but preserves every assigned color.
+// - One shared mutable biSize accumulator gets the desired ECX reuse in both
+//   scan arms, but VC5 hoists biSize above the compression test and widens the
+//   drift to 39 bytes. Branch-local offset and pointer accumulators collapse
+//   to the current five-byte group. The next lead is expression-tree ordering
+//   that keeps biSize as the ECX accumulator without moving its load.
+// - Exact: assign one transparency pointer in the compression arms, then call
+//   DibCheckTrans once after the join. VC5 tail-duplicates the call and return,
+//   and coalesces each final address into ECX. This matches all 438 bytes.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -144,16 +152,17 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
         this->TransInfo = info;
         if (info != 0) {
             bitmap = (BITMAPINFO256*)this->Dib;
+            unsigned char* transparency_bits;
             if (bitmap->bmiHeader.biCompression == 3) {
-                DibCheckTrans(bitmap, info,
-                    (unsigned char*)bitmap + bitmap->bmiHeader.biSize + 0xc);
-                return;
+                transparency_bits = (unsigned char*)bitmap +
+                    bitmap->bmiHeader.biSize + 0xc;
             } else {
-                DibCheckTrans(bitmap, info,
-                    (unsigned char*)bitmap + bitmap->bmiHeader.biSize +
-                    bitmap->bmiHeader.biClrUsed * 4);
-                return;
+                transparency_bits = (unsigned char*)bitmap +
+                    bitmap->bmiHeader.biSize +
+                    bitmap->bmiHeader.biClrUsed * 4;
             }
+            DibCheckTrans(bitmap, info, transparency_bits);
+            return;
         }
 
         DibFree(this->Dib);

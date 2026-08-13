@@ -53,6 +53,22 @@
 // - Allocator-inference probe: giving the loop countdown a function-scope source role was byte-identical.
 //   VC5 keeps the early virtual-table cache in EBX and the countdown in EBP.
 //   This rejects simple declaration lifetime as a lever for the remaining register swap.
+// Allocator trace follow-up (vc5-leads-play):
+// - C2's register order is EAX, ECX, EDX, ESI, EDI, EBX, EBP.
+//   At the global cost checkpoint, this scores 83 and maps to ESI.
+//   param_1 scores 37 and maps to EDI. The cached vtable scores 15 and maps
+//   to EBX. The countdown scores 7 and maps to EBP.
+//   The seven-byte drift is this cost-order result.
+// - PDB maps both emitted sendUnitAIOrder calls to line 603. Joined-call forms
+//   tested parameter mutation, separate locals, defaults, positive control,
+//   and conditional expressions. All forms merged to one call.
+//   They did not reproduce the two oracle call sites.
+//   Paired indexed/postincrement and 25-n loops normalized to the same 7 bytes.
+// - /Zd, /Zi, /Z7, /GX, /Ow, /Oi, /Og, /Ot, /Ob0, /Oa, /O1, /Ox, and related
+//   preset combinations did not swap the colors while preserving invariants.
+// - left in scratch: canonical typed source. A new lead must change the real
+//   vtable-versus-countdown score before coloring. It must preserve the loop,
+//   calls, frame, and 237-byte boundary.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

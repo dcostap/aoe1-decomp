@@ -500,6 +500,26 @@ Practical rules:
   that preserve the requested invariants. COFF relocation symbol identity is part
   of call-set grouping/gating.
 
+## VC5 compiler-internal diagnostics
+
+Matching workers may inspect retained VC5 intermediate-language streams and trace
+`C2.EXE`. Use these methods only for a narrow late-stage codegen blocker. First
+align behavior, calls, CFG, frame, layout, and function size.
+
+- `/Bd` shows compiler commands. `/Bk` retains frontend streams. Neither option
+  reports live ranges, conflicts, allocation costs, or register choices.
+- A worker may use read-only debugger instrumentation to inspect compiler state.
+  Store temporary scripts and captures under `build`.
+- Do not patch, replace, or reconfigure the pinned compiler. Do not switch the
+  toolchain to obtain better diagnostics.
+- Treat compiler traces as codegen evidence only. They do not prove behavior,
+  ABI, canonical ownership, or plausible original source.
+- Keep the clean typed source authoritative. Do not retain unnatural source only
+  because it changes an allocator score.
+- Record one focused trace campaign as one meaningful hypothesis family. Stop
+  when the trace gives no new source-backed lead.
+- Add a reusable capture or trace tool to `tools` only after normal review.
+
 ## Type/global policy: local first, exact layout always
 
 Current phase bias is match harvesting, not broad class cleanup.
