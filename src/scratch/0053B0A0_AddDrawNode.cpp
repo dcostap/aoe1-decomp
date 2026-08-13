@@ -27,6 +27,9 @@
 // width/right/hotspot/bottom liveness schedule; emitted code was unchanged and rolled back.
 // probe 24: direct Draw_Clip_Nodes[yline] indexing in the natural allocation/link path;
 // emitted code was unchanged and rolled back.
+// current claim probes: short hotspot/coordinate locals, mixed short/full locals, a focused
+// arithmetic-order lab, parenthesized/split bound subtraction, long locals, direct shape
+// reads, and entry-scope declarations all either duplicated the clean code or moved farther.
 // left in scratch: canonical typed source is validated at 379 bytes with exact
 // call set/boundary. Null-link stores before scalar fields and direct Select_Box
 // rereads reproduce the long tail; remaining drift is the localized width/height
