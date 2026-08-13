@@ -22,6 +22,14 @@
 // - tested exact same-TU box_hit_test-style guard clauses for sprite/frame
 //   dispatch and object-state/max-health exits; emitted code was unchanged,
 //   so restored the combined natural source form.
+// - hoisted outer rectangle coordinates and modeled health-bar bounds as
+//   mutable x1/y1/x2/y2 locals; this reproduced the original 313-byte shape.
+// - the first mutable update form left an 11-byte hunk before the second
+//   FillRect; restoring explicit updates confirmed the hunk was evaluation
+//   order, not layout.
+// - using pre-increment and compound-assignment arguments in the first health
+//   FillRect reproduced the original right-to-left VC5 argument schedule.
+//   Current source is an exact 313-byte match with default flags.
 
 #include <stdlib.h>
 
@@ -135,17 +143,21 @@ void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
     short min_y;
     short max_y;
     short max_x;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
 
     if (this->sprite != 0 && this->sprite_list != 0) {
         this->sprite_list->get_facetindex(this->sprite, this->facet);
 
         if (this->get_frame(min_x, min_y, max_x, max_y) != 0) {
-            int x1 = x + min_x + this->screen_x_offset - 1;
-            int y1 = y + min_y + this->screen_y_offset - 1;
+            x1 = x + min_x + this->screen_x_offset - 1;
+            y1 = y + min_y + this->screen_y_offset - 1;
+            x2 = x + max_x + this->screen_x_offset + 1;
+            y2 = y + max_y + this->screen_y_offset + 1;
 
-            area->DrawRect(x1, y1,
-                           x + max_x + this->screen_x_offset + 1,
-                           y + max_y + this->screen_y_offset + 1, 0xff);
+            area->DrawRect(x1, y1, x2, y2, 0xff);
 
             if (this->object_state <= 2) {
                 int health = (int)this->hp;
@@ -155,11 +167,15 @@ void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
 
                 int max_health = (int)this->master_obj->hp;
                 if (max_health > 0) {
-                    area->DrawRect(x1, y1 - 6, x1 + 26, y1 - 1, 0xff);
-                    area->FillRect(x1 + 1, y1 - 5, x1 + 24, y1 - 3, 0x55);
-                    area->FillRect(x1 + 1, y1 - 5,
-                                   (health * 25) / max_health + x1,
-                                   y1 - 2, 0x25);
+                    y1 -= 6;
+                    x2 = x1 + 26;
+                    y2 = y1 + 5;
+                    area->DrawRect(x1, y1, x2, y2, 0xff);
+
+                    area->FillRect(++x1, ++y1, x2 -= 2, y2 -= 2, 0x55);
+                    area->FillRect(x1, y1,
+                                   (health * 25) / max_health + x1 - 1,
+                                   y1 + 3, 0x25);
                 }
             }
         }
