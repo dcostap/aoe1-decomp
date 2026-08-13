@@ -17,11 +17,25 @@
 //   The natural typed spatial reconstruction remains in scratch.
 // - radius ownership probe kept 548 positional-diff bytes and the 0x8 frame;
 //   shape improved to 85.58% and edit diff to 176, so the radius form remains.
+// - inlining the side-selection debug_rand call reproduced the original
+//   mov/magic-multiply/shl division sequence; this removed the early hunk and
+//   reduced positional diff to 178 bytes.
+// - parenthesizing case-1 as drop_y + (scaled_y - radius_y) stopped VC5 from
+//   tail-sharing the case-0 y calculation; both original y blocks now align.
+// - spelling final updates as existing-radius + master increment preserved the
+//   typed ownership and restored the original 674-byte function size; current
+//   best is 152 positional bytes, 93.06% shape, and all ten calls aligned.
+// - remaining drift begins at the first bound-failure branch displacement and
+//   includes late block/return layout; no call, frame, or size uncertainty.
+// - Restored the named stat_obj.cpp debug source. The former raw address was
+//   diagnostic data plumbing.
 // - final validation follows this source and the documented probe.
 
 extern "C" int debug_rand(char*, int);
 extern float DAT_00574720;
 extern float DAT_00574764;
+
+static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
 class RGE_Game_World;
 class RGE_Player;
@@ -165,31 +179,29 @@ unsigned char RGE_Static_Object::find_drop_location(
     do {
         int attempt = 0;
         do {
-            int random_value = debug_rand((char*)0x587180, 0xf3a);
-            int side = (random_value * 4) / 0x7fff;
-
-            switch (side) {
+            switch ((debug_rand(s_stat_obj_cpp, 0xf3a) * 4) / 0x7fff) {
             case 0: {
                 *x = radius_x + drop_x;
-                int value = debug_rand((char*)0x587180, 0xf3e);
+                int value = debug_rand(s_stat_obj_cpp, 0xf3e);
                 *y = (float)value * radius_2y * DAT_00574764 - radius_y + drop_y;
                 break;
             }
             case 1: {
                 *x = drop_x - radius_x;
-                int value = debug_rand((char*)0x587180, 0xf42);
-                *y = (float)value * radius_2y * DAT_00574764 - radius_y + drop_y;
+                int value = debug_rand(s_stat_obj_cpp, 0xf42);
+                *y = drop_y +
+                     ((float)value * radius_2y * DAT_00574764 - radius_y);
                 break;
             }
             case 2: {
                 *y = radius_y + drop_y;
-                int value = debug_rand((char*)0x587180, 0xf46);
+                int value = debug_rand(s_stat_obj_cpp, 0xf46);
                 *x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
                 break;
             }
             case 3: {
                 *y = drop_y - radius_y;
-                int value = debug_rand((char*)0x587180, 0xf4a);
+                int value = debug_rand(s_stat_obj_cpp, 0xf4a);
                 *x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
                 break;
             }
@@ -212,10 +224,10 @@ unsigned char RGE_Static_Object::find_drop_location(
             ++attempt;
         } while (attempt < 50);
 
-        radius_x += master->radius_x + master->radius_x;
-        radius_y += master->radius_y + master->radius_y;
-        radius_2x += master->radius_x * 4.0f;
-        radius_2y += master->radius_y * 4.0f;
+        radius_x = radius_x + (master->radius_x + master->radius_x);
+        radius_y = radius_y + (master->radius_y + master->radius_y);
+        radius_2x = radius_2x + (master->radius_x * 4.0f);
+        radius_2y = radius_2y + (master->radius_y * 4.0f);
         ++outer;
     } while (outer < 2);
 
