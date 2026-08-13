@@ -17,6 +17,15 @@
 // - final bounded result: 420 positional bytes / 92.62% shape, 78 calls, frame
 //   0x128, first mismatch remains the initial timing local home and late timing
 //   tail/block placement. Left in scratch after the 10-hypothesis budget.
+// - follow-up: out-of-line case-21 labels, switch default/case order, timing
+//   declaration permutations, and declaration initialization were codegen
+//   duplicates; the direct world-time guard widened the body by 102 bytes.
+//   Explicit common-tail labels widened it by 94 bytes. Restored the clean
+//   natural source; the structural blocker remains unchanged.
+// - Restored virtual ownership and the named build-file format string. The
+//   raw vtable fields and absolute string address were diagnostic surfaces.
+
+static const char s_build_file_format[] = "%s.bld";
 
 struct XYPoint {
     int x;
@@ -418,7 +427,7 @@ int TribeTacticalAIModule::doSomething()
                     this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(3);
                     if (item != 0) {
-                        sprintf(tempName, (const char*)0x5883AC, item->name());
+                        sprintf(tempName, s_build_file_format, item->name());
                         this->md->buildAI.loadBuildList(tempName, this->md->aiPlayer);
                         this->md->updateBuildAIWithObjects();
                         this->updateNeededResources();

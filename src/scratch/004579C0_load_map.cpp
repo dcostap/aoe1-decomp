@@ -17,6 +17,13 @@
 // - Split the outer long height counter from the inner int column counter,
 //   matching the original local types and h/y loop ownership; codegen was a
 //   duplicate, so the canonical typed loop form remains unresolved.
+// - Swapping h/y declarations and preserving the file parameter in a second
+//   int were duplicates. A separate old-format x counter changed no metrics.
+// - Modeling the RGE_Object_List vtable and changing h to int were duplicates.
+// - Tile bitfields worsened the structural result to 325 bytes; restored the
+//   proven byte-field source. Old-format-first source worsened it to 428 bytes.
+// - Restored the clean typed source. The first structural gap remains the
+//   compiler's h/y stack-home assignment at the modern loop entry.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern float save_game_version;

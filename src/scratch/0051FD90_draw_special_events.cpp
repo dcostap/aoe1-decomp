@@ -27,6 +27,14 @@
 // - Tried one natural loop-local event code for the draw switch; it improved
 //   strict diff to 479 bytes but added 74 bytes and lost block parity, so it
 //   was rolled back as a nonviable lifetime hypothesis.
+// - Tried source-order-separated constant draw_icon cases.  This reproduced
+//   the original xor/mov-al jump-table load and improved strict diff to 419,
+//   but duplicated the shared call tail, added 74 bytes, and crossed the
+//   function boundary.  Rolled back.
+// - Tried shared draw_icon tails with int locals, mixed-width locals, and the
+//   function-scope short/uchar variables suggested by the decompiler.  These
+//   all changed the prologue or added 102-142 bytes.  Rolled back; the clean
+//   grouped switch remains the source-authoritative candidate.
 
 #include <string.h>
 
