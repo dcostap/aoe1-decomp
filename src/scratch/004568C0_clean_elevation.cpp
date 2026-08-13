@@ -16,6 +16,12 @@
 // 13: Ordered the final south-east guard as north-then-west, matching the oracle's compare order; diff improved 255B to 253B and the cold block aligned.
 // 14: The exact generator donor's *32 spelling was a codegen duplicate here; restored the shift form.
 // 15: A local byte value temporary for the first neighbor write was also a duplicate; restored the direct typed assignment.
+// 16: Modeling tile byte five as terrain/elevation bitfields broke the proven frame and CFG; restored the byte field.
+// 17: Casting the shifted high term and inlining current+1 matched the update increment and reduced diff 253B to 121B.
+// 18: Cast-after-product, cast-before-shift, split temporaries, reversed OR operands, and a shared shifted value were duplicates or worse.
+// 19: Matching the preclean donor's pointer-add update spelling was a codegen duplicate; it remains a natural typed form.
+// 20: A byte current local broke the exact word-compare topology; restored the short current reconstruction.
+// paused: remaining 121B drift is update-block operand scheduling; calls, frame, size, CFG, and early blocks are aligned.
 
 struct RGE_Tile {
     char gap_00[5];
@@ -165,41 +171,49 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
                 if (fix) {
                     if (current >= elevation) {
                         if (north_west) {
-                            tile[offset_nw].terrain_elevation =
-                                (current << 5) | (tile[offset_nw].terrain_elevation & 0x1f);
+                            (tile + offset_nw)->terrain_elevation =
+                                (unsigned char)(current << 5) |
+                                ((tile + offset_nw)->terrain_elevation & 0x1f);
                         }
                         if (north) {
-                            tile[offset_n].terrain_elevation =
-                                (current << 5) | (tile[offset_n].terrain_elevation & 0x1f);
+                            (tile + offset_n)->terrain_elevation =
+                                (unsigned char)(current << 5) |
+                                ((tile + offset_n)->terrain_elevation & 0x1f);
                         }
                         if (north_east) {
-                            tile[offset_ne].terrain_elevation =
-                                (current << 5) | (tile[offset_ne].terrain_elevation & 0x1f);
+                            (tile + offset_ne)->terrain_elevation =
+                                (unsigned char)(current << 5) |
+                                ((tile + offset_ne)->terrain_elevation & 0x1f);
                         }
                         if (east) {
                             tile[1].terrain_elevation =
-                                (current << 5) | (tile[1].terrain_elevation & 0x1f);
+                                (unsigned char)(current << 5) |
+                                (tile[1].terrain_elevation & 0x1f);
                         }
                         if (south_east) {
-                            tile[offset_se].terrain_elevation =
-                                (current << 5) | (tile[offset_se].terrain_elevation & 0x1f);
+                            (tile + offset_se)->terrain_elevation =
+                                (unsigned char)(current << 5) |
+                                ((tile + offset_se)->terrain_elevation & 0x1f);
                         }
                         if (south) {
-                            tile[width].terrain_elevation =
-                                (current << 5) | (tile[width].terrain_elevation & 0x1f);
+                            (tile + width)->terrain_elevation =
+                                (unsigned char)(current << 5) |
+                                ((tile + width)->terrain_elevation & 0x1f);
                         }
                         if (south_west) {
-                            tile[offset_sw].terrain_elevation =
-                                (current << 5) | (tile[offset_sw].terrain_elevation & 0x1f);
+                            (tile + offset_sw)->terrain_elevation =
+                                (unsigned char)(current << 5) |
+                                ((tile + offset_sw)->terrain_elevation & 0x1f);
                         }
                         if (west) {
                             tile[-1].terrain_elevation =
-                                (current << 5) | (tile[-1].terrain_elevation & 0x1f);
+                                (unsigned char)(current << 5) |
+                                (tile[-1].terrain_elevation & 0x1f);
                         }
                     } else {
-                        ++current;
-                        tile->terrain_elevation = (current << 5) ^
-                                                  (tile->terrain_elevation & 0x1f);
+                        tile->terrain_elevation =
+                            (unsigned char)((current + 1) << 5) ^
+                            (tile->terrain_elevation & 0x1f);
                     }
                     change_flag = 1;
                 }

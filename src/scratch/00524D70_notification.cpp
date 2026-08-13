@@ -29,6 +29,13 @@
 // - Isolating only the 0x7D body was a binary-guided call-tail probe; VC5
 //   emitted three vslot+0x28 calls and four show_message calls, so it was
 //   rolled back.  The clean source still has the documented five count gaps.
+// - Original 0x73 has its own play_sound/get_string call site, although it
+//   jumps into the 0x75 display/reset tail.  A shared selected-id get_string
+//   tail worsened the structural result, so the separate typed calls remain.
+// - Separate 0x7D/0x68 get_string2/show_message bodies added 254 bytes and
+//   over-emitted one pair; the shared group-A tail remains the best source.
+// - Case-5/6 selected-id and shared formatted-tail probes removed observed
+//   sprintf/display calls; restored their natural separate source bodies.
 
 #include <stdio.h>
 
@@ -400,7 +407,7 @@ public:
     void add_notification_loc(long x, long y);
 };
 
-#define player_dropped ((int*)0x86BCA8)
+extern int player_dropped[9];
 
 void TRIBE_Game::notification(int type, long player, long value,
                               long value2, long value3)
@@ -503,7 +510,7 @@ show_string_group_a:
         break;
 
 show_string_group_b:
-        ((RGE_Base_Game*)this)->get_string2(0x67, string_arg, 0, msg, 256);
+        this->get_string2(0x67, string_arg, 0, msg, 256);
         this->game_screen->show_message(1, msg, 0x55, 0);
         return;
 
@@ -741,6 +748,19 @@ wonder_tail:
         }
         return;
     }
+
+    case 0x73:
+        if (this->game_screen == 0) {
+            return;
+        }
+        if (this->world->victory_type != 0) {
+            return;
+        }
+        this->play_sound(0x0C);
+        this->get_string(0xBD6, msg, 256);
+        this->game_screen->display_system_message(msg);
+        this->game_screen->reset_clocks();
+        return;
 
     case 0x74: {
         RGE_Player* p1;
