@@ -24,6 +24,9 @@
 // try 10: modeled the persistent dither state as the binary-supported bool
 //   shown by the decompiler; VC5 emitted the unchanged 1398-byte candidate,
 //   so the width hypothesis was rolled back.
+// try 11: mutated the packed RLE command byte before assigning its count;
+//   original uses narrow SHR and byte parameter-home stores in every phase,
+//   so this tests the source shape without changing typed ownership.
 // left in scratch: canonical typed RLE/dither behavior is reconstructed, but
 //   VC5 still chooses a different early register/local-home basin (first
 //   mismatch is the prologue; 1344 strict bytes differ, 56.24% resync).

@@ -23,6 +23,9 @@
 //   function; restored the defined hr initialization.
 // - restored the typed packet-header owner for the four binary-proven fields;
 //   emitted code was unchanged, so kept the natural typed source.
+// - scoped send/count temporaries to mirror the original seven named stack
+//   locals; first diff improved by one byte, but size and CFG parity worsened,
+//   so restored the clean source.
 // - left in scratch: current best is a broad local-home/CFG mismatch.  The
 //   rebuilt OutCommBuff home remains [esp+1c] versus original [esp+18], while
 //   the original outgoing count home is [esp+20] versus rebuilt [esp+14].
