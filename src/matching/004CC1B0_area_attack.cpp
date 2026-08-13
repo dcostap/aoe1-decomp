@@ -18,8 +18,9 @@
 // 13: function-scope modifier local, split initialization, reference/const/register
 //     aliases, separate static-object surface, and standard-header context were
 //     all codegen-neutral in focused variants.
-// left in scratch: five positional bytes differ only in initial register coloring
-// and relocations; clean typed source remains authoritative.
+// 14: after a clean-source reset, declaring owner->world->map before the master
+//     radius preserves the original initial register coloring and closes all five bytes.
+// exact candidate: natural typed source, proven ownership, default VC5 flags, 776B.
 // Behavior retained: ignored-target filtering, special owner gate, level gate, footprint distance,
 // random hit chance, modifier calculation, typed damage argument order, and post-damage death call.
 
@@ -145,10 +146,10 @@ unsigned char TRIBE_Combat_Object::area_attack(float x, float y, float attack_mo
                                                 RGE_Combat_Object* attacker,
                                                 RGE_Static_Object* ignored)
 {
-    RGE_Master_Combat_Object* initial_master = this->master_obj;
     RGE_Player* initial_player = this->owner;
-    float radius = initial_master->area_effect_range;
     RGE_Map* map = initial_player->world->map;
+    RGE_Master_Combat_Object* initial_master = this->master_obj;
+    float radius = initial_master->area_effect_range;
     float radius_squared = radius * radius;
     short max_x = (short)map->map_width;
     short max_y = (short)map->map_height;

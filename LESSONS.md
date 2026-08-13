@@ -16,6 +16,7 @@ only the matching paragraphs and their section heading.
   with real `float` parameters so `-1.0f` remains a raw `0xBF800000` push;
   all-integer proxies/casts change argument bits and scheduling.
 - VC5 treats declaration scope/order, initialization site, and assignment form as codegen inputs: they alter scheduling, stack homes, callee-save choice, zero-register lifetime, and even prologues. Probe only against observed symptoms.
+- When two independent object-graph loads have the right assembly order but swapped entry registers, declare the map chain before the other object field in source. VC5 can still schedule the field load first while restoring the original register colors; keep this only when ownership and load independence are proven.
 - When an old-TU call zeroes two address-taken output locals before loading a later member-valued argument, declaring those locals at function scope and assigning them inside the guard can preserve the original VC5 zero-store/load order; nested declarations let the member load hoist. Prefer the period-plausible top-level declaration style over volatile or aggregate scheduling scaffolding.
 - Moving a counter out of a `for`, declaring before/after a guard, or splitting declaration/assignment moves zeroing/LEAs across calls. An inner-body invariant temp may be hoisted yet color registers differently from the same temp before the inner loop (`0044E900`).
 - Among call-crossing locals competing for one callee-saved register, earlier declarations often win; order locals to match register-versus-stack pushes (`00514720`).
@@ -967,6 +968,10 @@ only the matching paragraphs and their section heading.
   named dimension expressions can move the compiler from a 236-byte drift to
   exact output.  Keep the source typed and period-plausible; do not use raw
   cursors or volatile qualifiers as substitutes.
+- A local `tagRECT` with the same four `long` fields can still leave one
+  commutative LEA SIB byte wrong.  Replace it with the period SDK `<windows.h>`
+  `RECT` surface before using register-steering source; the header context can
+  select the original base/index encoding without changing the typed source.
 - When several action modes share a success tail, put the invalid-action label
   on the common return after the shared mode update.  Separate invalid and
   success returns can duplicate an epilogue and push a late virtual call past

@@ -1,6 +1,8 @@
 // TListPanel::draw_highlight_bar — draw the current-line highlight frame
 // VA: 00478CD0, Pnl_lst.cpp:515-572
 //
+#include <windows.h>
+
 // Canonical ownership follows the exact Pnl_txt.cpp/Drawarea.cpp donors:
 // TPanel owns the panel rectangle and render area, TTextPanel owns line,
 // bevel, and spacing fields, and TDrawArea owns the lock/draw/unlock surface.
@@ -25,13 +27,9 @@
 // - shared spacer and rect-bottom locals were codegen duplicates. Two focused
 //   ten-case geometry labs kept the one-byte LEA mismatch; one reverse local
 //   order widened the function. Left the natural direct expressions in place.
-
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
+// - Replaced the local tagRECT stub with the period SDK <windows.h> RECT
+//   surface. This flipped only the commutative LEA SIB byte and produced an
+//   exact 491-byte match; the minimal polymorphic panel surface is retained.
 
 extern char s_pnl_lst__draw_highlight_bar[];
 
