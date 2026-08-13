@@ -32,6 +32,14 @@
 //   improved CFG/block coverage and size (+6 bytes) but worsened positional diff;
 //   restored the validated clean source.  The original low-memory jump tail is
 //   evidence for a separate early-failure layout lead.
+// - Reconstructed the early gates and later setup failures as one natural
+//   nested success ladder.  This is supported by the decompiler nesting and
+//   removes the old flat failure scaffold without changing the clean codegen.
+// - Added the binary-proven destructors for the allocated records and scoped
+//   their pointer and file-number owners.  VC5 emitted the same code.
+// - Kept the memory-success body before the error 0x16 tail.  PDB line 629 and
+//   the oracle's far branch support this source order; it improves CFG coverage
+//   but leaves a six-byte size gap and the unresolved four-byte EH frame gap.
 
 #include <windows.h>
 #include <stdio.h>
@@ -50,18 +58,21 @@ class RGE_Game_Info {
 public:
     char gap_00[0x118];
     RGE_Game_Info(char* filename);
+    ~RGE_Game_Info();
 };
 
 class RGE_Scenario_File_Info {
 public:
     char gap_00[0x10C];
     RGE_Scenario_File_Info(char* filename);
+    ~RGE_Scenario_File_Info();
 };
 
 class DriveInformation {
 public:
-    char gap_00[0x274];
+    char gap_04[0x270];
     DriveInformation();
+    virtual ~DriveInformation();
 };
 
 class RGE_Prog_Info {
@@ -224,9 +235,6 @@ int RGE_Base_Game::setup()
     char s[256];
     OFSTRUCT of;
     _finddata_t file_info;
-    DriveInformation* drive_info;
-    int file_number;
-    RGE_Game_Info* game_info;
     debug_srand((char*)0x57FB08, 0x20A,
                 debug_timeGetTime((char*)0x57FB08, 0x20A));
 
@@ -286,178 +294,165 @@ int RGE_Base_Game::setup()
 
     if (_findfirst((char*)0x57FA8C, &file_info.time_create) == -1) {
         this->error_code = 0x17;
-        goto setup_fail;
-    }
-
-    if (!this->setup_cmd_options()) {
-        this->error_code = 2;
-        goto setup_fail;
-    }
-
-    StringTable = LoadLibraryA((char*)0x57FA10);
-    if (StringTable == 0) {
-        this->error_code = 1;
-        goto setup_fail;
-    }
-
-    GlobalMemoryStatus((LPMEMORYSTATUS)&ms.dwMemoryLoad);
-    if (((ms.dwTotalPageFile < 0x1400000 || ms.dwTotalVirtual < 0xA00000) &&
-         (ms.dwTotalPageFile < 0xA00000 || ms.dwTotalVirtual < 0x1400000)) &&
-        ms.dwTotalVirtual < 0x1E00000) {
-        this->error_code = 0x16;
     }
     else {
-        this->set_interface_messages();
-
-    if (debugActions == 1)
-        actionFile = fopen((char*)0x57FA78, (char*)0x57FA88);
-
-    if (this->prog_info->check_expiration != 0 &&
-        this->check_expiration() == 0) {
-        this->error_code = 3;
-        goto setup_fail;
-    }
-
-    if (this->prog_info->check_multi_copies != 0 &&
-        this->check_multi_copies() == 0) {
-        this->error_code = 4;
-        goto setup_fail;
-    }
-
-    if (this->check_prog_argument((char*)0x57FA6C) == 0) {
-        GetDXVersion(&DXVersion, &DXPlatform);
-        if (DXVersion < 0x501) {
-            this->error_code = 0x14;
-            goto setup_fail;
-        }
-    }
-
-    SystemParametersInfoA(0x10, 0, &this->screen_saver_enabled, 0);
-    if (this->screen_saver_enabled != 0)
-        SystemParametersInfoA(0x11, 0, 0, 2);
-    SystemParametersInfoA(0x53, 0, &this->low_power_enabled, 0);
-    if (this->low_power_enabled != 0)
-        SystemParametersInfoA(0x55, 0, 0, 2);
-
-    this->save_check_for_cd = this->check_for_cd(0);
-
-    if (!this->setup_class()) {
-        this->error_code = 5;
-        goto setup_fail;
-    }
-    if (!this->setup_main_window()) {
-        this->error_code = 6;
-        goto setup_fail;
-    }
-    if (!this->setup_graphics_system()) {
-        if (this->error_code == 0)
-            this->error_code = 7;
-        goto setup_fail;
-    }
-    if (!this->setup_palette()) {
-        this->error_code = 0x11;
-        goto setup_fail;
-    }
-    if (!this->setup_shapes()) {
-        this->error_code = 7;
-        goto setup_fail;
-    }
-    if (!this->setup_map_save_area()) {
-        this->error_code = 7;
-        goto setup_fail;
-    }
-    if (!this->setup_mouse()) {
-        this->error_code = 8;
-        goto setup_fail;
-    }
-    if (!this->setup_sound_system()) {
-        this->error_code = 0x0A;
-        goto setup_fail;
-    }
-    if (!this->setup_chat()) {
-        this->error_code = 0x10;
-        goto setup_fail;
-    }
-    if (!this->setup_comm()) {
-        this->error_code = 9;
-        goto setup_fail;
-    }
-    if (!this->setup_fonts()) {
-        this->error_code = 0x0B;
-        goto setup_fail;
-    }
-    if (!this->setup_sounds()) {
-        this->error_code = 0x0C;
-        goto setup_fail;
-    }
-
-    drive_info = new DriveInformation;
-    driveInfo = drive_info;
-    if (drive_info == 0)
-        goto setup_fail;
-
-    if (!this->setup_blank_screen()) {
-        this->error_code = 0x0D;
-        goto setup_fail;
-    }
-
-    this->set_prog_mode(0);
-    this->setup_timings();
-    this->handle_size(this->prog_window, 0, 0, 0);
-    this->prog_ready = 1;
-    ShowWindow(this->prog_window, 5);
-    SetFocus(this->prog_window);
-    this->mouse_on();
-    this->is_timer = SetTimer(this->prog_window, 1, 0x32, 0);
-
-    file_number = this->registry->RegGetInt(0, (char*)0x57FA58);
-    if (file_number >= 0) {
-        file_number = this->registry->RegGetInt(0, (char*)0x57FA58);
-        sprintf(filename + 4, (char*)0x57FA4C, file_number);
-        game_info = new RGE_Game_Info(filename + 4);
-    }
-    else {
-        int i;
-        for (i = 0; i < 9999; ++i) {
-            sprintf(filename + 4, (char*)0x57FA4C, i);
-            if (_findfirst(filename + 4, &file_info.time_create) == -1) {
-                this->registry->RegSetInt(0, (char*)0x57FA58, i);
-                game_info = new RGE_Game_Info(filename + 4);
-                break;
-            }
-        }
-    }
-    this->player_game_info = game_info;
-
-    sprintf(filename + 4, (char*)0x57FA3C,
-            this->prog_info->scenario_dir);
-    this->scenario_info = new RGE_Scenario_File_Info(filename + 4);
-
-    if (do_draw_log != 0) {
-        if (draw_log_name == 0) {
-            int i;
-            for (i = 0; i < 1000; ++i) {
-                sprintf(s + 4, (char*)0x57FA2C, i);
-                if (OpenFile(s + 4, (LPOFSTRUCT)&of.Reserved1, 0x4000) == -1) {
-                    draw_log = fopen(s + 4, (char*)0x57FA88);
-                    strcpy(&draw_log_name, s + 4);
-                    break;
-                }
-            }
+        if (!this->setup_cmd_options()) {
+            this->error_code = 2;
         }
         else {
-            draw_log = fopen(&draw_log_name, (char*)0x57FA88);
+            StringTable = LoadLibraryA((char*)0x57FA10);
+            if (StringTable == 0) {
+                this->error_code = 1;
+            }
+            else {
+                GlobalMemoryStatus((LPMEMORYSTATUS)&ms.dwMemoryLoad);
+                if ((ms.dwTotalPageFile >= 0x1400000 &&
+                     ms.dwTotalVirtual >= 0xA00000) ||
+                    (ms.dwTotalPageFile >= 0xA00000 &&
+                     ms.dwTotalVirtual >= 0x1400000) ||
+                    ms.dwTotalVirtual >= 0x1E00000) {
+                this->set_interface_messages();
+
+                if (debugActions == 1)
+                    actionFile = fopen((char*)0x57FA78, (char*)0x57FA88);
+
+                if (this->prog_info->check_expiration != 0 &&
+                    this->check_expiration() == 0) {
+                    this->error_code = 3;
+                }
+                else if (this->prog_info->check_multi_copies != 0 &&
+                         this->check_multi_copies() == 0) {
+                    this->error_code = 4;
+                }
+                else if (this->check_prog_argument((char*)0x57FA6C) == 0 &&
+                         (GetDXVersion(&DXVersion, &DXPlatform),
+                          DXVersion < 0x501)) {
+                    this->error_code = 0x14;
+                }
+                else {
+                    SystemParametersInfoA(0x10, 0,
+                                           &this->screen_saver_enabled, 0);
+                    if (this->screen_saver_enabled != 0)
+                        SystemParametersInfoA(0x11, 0, 0, 2);
+                    SystemParametersInfoA(0x53, 0,
+                                           &this->low_power_enabled, 0);
+                    if (this->low_power_enabled != 0)
+                        SystemParametersInfoA(0x55, 0, 0, 2);
+
+                    this->save_check_for_cd = this->check_for_cd(0);
+                    if (!this->setup_class())
+                        this->error_code = 5;
+                    else if (!this->setup_main_window())
+                        this->error_code = 6;
+                    else if (!this->setup_graphics_system()) {
+                        if (this->error_code == 0)
+                            this->error_code = 7;
+                    }
+                    else if (!this->setup_palette())
+                        this->error_code = 0x11;
+                    else if (!this->setup_shapes())
+                        this->error_code = 7;
+                    else if (!this->setup_map_save_area())
+                        this->error_code = 7;
+                    else if (!this->setup_mouse())
+                        this->error_code = 8;
+                    else if (!this->setup_sound_system())
+                        this->error_code = 0x0A;
+                    else if (!this->setup_chat())
+                        this->error_code = 0x10;
+                    else if (!this->setup_comm())
+                        this->error_code = 9;
+                    else if (!this->setup_fonts())
+                        this->error_code = 0x0B;
+                    else if (!this->setup_sounds())
+                        this->error_code = 0x0C;
+                    else {
+                        driveInfo = new DriveInformation;
+                        if (driveInfo != 0) {
+                            if (!this->setup_blank_screen()) {
+                                this->error_code = 0x0D;
+                            }
+                            else {
+                            int file_number;
+                            RGE_Game_Info* game_info;
+                            this->set_prog_mode(0);
+                            this->setup_timings();
+                            this->handle_size(this->prog_window, 0, 0, 0);
+                            this->prog_ready = 1;
+                            ShowWindow(this->prog_window, 5);
+                            SetFocus(this->prog_window);
+                            this->mouse_on();
+                            this->is_timer = SetTimer(this->prog_window,
+                                                      1, 0x32, 0);
+
+                            file_number = this->registry->RegGetInt(
+                                0, (char*)0x57FA58);
+                            if (file_number >= 0) {
+                                file_number = this->registry->RegGetInt(
+                                    0, (char*)0x57FA58);
+                                sprintf(filename + 4, (char*)0x57FA4C,
+                                        file_number);
+                                game_info = new RGE_Game_Info(filename + 4);
+                            }
+                            else {
+                                int i;
+                                for (i = 0; i < 9999; ++i) {
+                                    sprintf(filename + 4, (char*)0x57FA4C, i);
+                                    if (_findfirst(filename + 4,
+                                                   &file_info.time_create) == -1) {
+                                        this->registry->RegSetInt(
+                                            0, (char*)0x57FA58, i);
+                                        game_info = new RGE_Game_Info(filename + 4);
+                                        break;
+                                    }
+                                }
+                            }
+                            this->player_game_info = game_info;
+
+                            sprintf(filename + 4, (char*)0x57FA3C,
+                                    this->prog_info->scenario_dir);
+                            this->scenario_info = new RGE_Scenario_File_Info(
+                                filename + 4);
+
+                            if (do_draw_log != 0) {
+                                if (draw_log_name == 0) {
+                                    int i;
+                                    for (i = 0; i < 1000; ++i) {
+                                        sprintf(s + 4, (char*)0x57FA2C, i);
+                                        if (OpenFile(s + 4,
+                                                     (LPOFSTRUCT)&of.Reserved1,
+                                                     0x4000) == -1) {
+                                            draw_log = fopen(s + 4,
+                                                             (char*)0x57FA88);
+                                            strcpy(&draw_log_name, s + 4);
+                                            break;
+                                        }
+                                    }
+                                }
+                                else {
+                                    draw_log = fopen(&draw_log_name,
+                                                     (char*)0x57FA88);
+                                }
+                            }
+
+                            if (do_fps_log != 0) {
+                                fps_log = fopen((char*)0x57FA20,
+                                                (char*)0x57FA88);
+                                if (fps_log == 0)
+                                    do_fps_log = 0;
+                            }
+
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                this->error_code = 0x16;
+            }
         }
     }
-
-    if (do_fps_log != 0) {
-        fps_log = fopen((char*)0x57FA20, (char*)0x57FA88);
-        if (fps_log == 0)
-            do_fps_log = 0;
     }
-
-        return 1;
-    }
-setup_fail:
     return 0;
 }
