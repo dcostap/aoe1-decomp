@@ -44,6 +44,19 @@
 // 25: a register-qualified result duplicated the 844-byte basin; restored.
 // 26: reusing the list home as the result changed the null branch and emitted
 // 826 bytes; restored. Clean source remains the best reconstruction.
+// 27: decompiler-style result carrier with explicit zero on first calloc
+// failure changed the early branch and emitted 815 bytes / 556-byte diff.
+// 28: split carrier/list declarations produced the same codegen duplicate.
+// 29: comma-wrapped final free moved cleanup-loop scheduling and emitted 813
+// bytes / 70-byte diff; restored.
+// 30: a late char* result carrier moved the failure load before stack cleanup,
+// but spilled the setcc and emitted 819 bytes / 32-byte diff.
+// 31: register-qualified late char* and late int carriers were duplicates.
+// 32: split success return from the early finish duplicated EH cleanup and
+// emitted 844 bytes / 607-byte diff; restored.
+// 33: function-scope uninitialized int carrier duplicated the 32-byte basin.
+// 34: function-scope char* carrier assigned directly from second calloc was
+// a codegen duplicate of the clean 21-byte basin; restored.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>
