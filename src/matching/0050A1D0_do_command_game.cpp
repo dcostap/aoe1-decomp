@@ -7,7 +7,9 @@
 // Current baseline: restored the binary-proven command mapping, named globals, real member/helper surfaces, and a natural TRIBE_Screen_Status_Message new-expression before codegen probes.
 // 11: exact RGE/TRIBE/panel/communications names plus real virtual slots recovered all 30 ordered calls; /GX and the status-message constructor restored the 0x108 EH frame.
 // 12: reordered switch cases to the original 5,0,1,8,2,4,6,7 source order and restored default; output is 661 B with 185 instructions, 30/30 calls, exact CFG, and 196 strict bytes.
-// Current pause: remaining drift is dominated by standalone unresolved data/string relocations (extern globals and literals emit zero-address placeholders instead of original absolute data); raw absolute-address macros are disallowed by policy. A localized short-register difference remains in TRIBE_World::cheat.
+// Prior pause: standalone data/string relocations and the TRIBE_World::cheat
+// register colors remained unresolved. Raw absolute-address macros were not
+// used.
 // Main-agent audit removed the diagnostic +4 formatting-buffer window and restored
 // compiler-owned polymorphic world ownership. The direct buffer is authoritative.
 // 13: tested the repeated donor RGE_Base_Game* type for 0062C574 with explicit
