@@ -24,6 +24,8 @@
 // so restored the clean typed-map source.
 // follow-up: hoisted scan-state declarations before the delivery gates while keeping
 // initialization after the gates; emitted code was unchanged, so restored the clean source.
+// follow-up: typed 501-entry array induction, a typed free-slot entry reference, and
+// a register-qualified self alias were each codegen duplicates; restored the clean source.
 // left in scratch: behavior and layout modeled, but logging argument order/register allocation and copy-loop lowering remain broad; not accepted-drift-safe.
 
 #include <string.h>

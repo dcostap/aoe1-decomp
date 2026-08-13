@@ -24,6 +24,8 @@
 //   natural and improved the diff to 2796, but over-emitted one call of each.
 //   Separating the second group as well over-emitted five vslot calls; both
 //   probes were rolled back to the clean shared-tail reconstruction.
+// - Splitting the group-A and group-B selector values into separate typed
+//   locals did not change emitted code; restored the shared selector source.
 
 #include <stdio.h>
 
