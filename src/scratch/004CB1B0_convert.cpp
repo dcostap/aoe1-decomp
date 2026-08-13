@@ -32,6 +32,15 @@
 //   target pointer on a null task; it widened the positional diff to 49 bytes.
 // - assigning the constructor result into the status pointer was codegen
 //   neutral; removed it to retain the natural typed ownership model.
+// - direct literal returns for all success/failure paths broadened the CFG to
+//   391 bytes; rolled back.
+// - a separate int status with the typed target preserved improved that
+//   variant to 367 bytes but remained far from the clean tail; rolled back.
+// - routing only make_action failure to the common tail produced 331 bytes but
+//   changed the branch topology and reached a 49-byte diff; rolled back.
+// - separate target/result locals with a shared status tail reproduced the
+//   prior 350-byte frontier; rolled back. The clean pointer-result source is
+//   still the best plausible candidate.
 // FLAGS: config/flags/004CB1B0_convert.rsp
 
 class RGE_Static_Object;
