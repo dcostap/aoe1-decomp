@@ -25,6 +25,14 @@
 // - best current reconstruction: 4331 rebuilt bytes vs 4235, 77.66% shape,
 //   29.67% exact-block coverage, 97.48% ordered-call similarity, frame 0x20
 //   vs 0x30.  One __ftol site and three call-site gaps remain; no exact match.
+// - direct uses of incoming param_1 are codegen-neutral to the callerID local;
+//   keep the direct parameter form as the simpler source.
+// - duplicated near/far coop-coordinate call blocks were tested from the
+//   original line bands.  A full duplicate added three ftol calls; a direct
+//   near victory call was folded back to the same missing-ftol result.  The
+//   common post-branch call is restored.
+// - reusing param_2 as the caller-object home was codegen-neutral and was
+//   rejected as opaque source; retain the named callerObject ownership.
 
 #include <math.h>
 
@@ -614,7 +622,6 @@ public:
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
                                    long param_4, long param_5, long param_6)
 {
-    int callerID = param_1;
     int numberToRespond;
     RGE_Static_Object* targetObj;
     ulong entryTime;
@@ -622,7 +629,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
     XYPoint attackPoint;
     XYZPoint point;
     XYZPoint point_fffffff0;
-    attackPoint.x = (int)this->md->aiPlayer->world->object(callerID);
+    attackPoint.x = (int)this->md->aiPlayer->world->object(param_1);
     if (param_3 != 0x72 && param_3 != 0x74 && attackPoint.x == 0) {
         return;
     }
@@ -671,7 +678,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
     if (targetObj == 0) return;
     if (targetObj->owner->id == this->md->player->id) return;
 
-    callerObject = this->md->aiPlayer->world->object(callerID);
+    callerObject = this->md->aiPlayer->world->object(param_1);
     if (callerObject == 0) return;
 
     if (targetObj->owner->id == 0 &&
@@ -688,7 +695,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
         if (0 < this->civilians.numberValue) {
             do {
                 if (this->civilians.maximumSizeValue <= i) break;
-                if (this->civilians.value[i] == callerID) {
+                if (this->civilians.value[i] == param_1) {
                     explorerCount = this->civilianExplorers.numberValue;
                     i = 0;
                     if (explorerCount < 1) goto notify_difficulty;
@@ -702,7 +709,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
 notify_explorer_scan:
         do {
             if (this->civilianExplorers.maximumSizeValue <= i) break;
-            if (this->civilianExplorers.value[i] == callerID) goto notify_generic_unit;
+            if (this->civilianExplorers.value[i] == param_1) goto notify_generic_unit;
             i = i + 1;
         } while (i < explorerCount);
         goto notify_difficulty;
@@ -857,6 +864,7 @@ notify_after_owner:
             }
             numberToRespond = this->civilians.numberValue;
         }
+
     }
     else {
         int available;
@@ -913,7 +921,7 @@ notify_after_owner:
                     goto notify_try_attack;
                 }
 notify_try_attack:
-                if (this->workingArea[param_3] == callerID) {
+                if (this->workingArea[param_3] == param_1) {
                     if (unitObject->unitAI()->currentOrderPriority() != 100) {
                         point_fffffff0.x = (int)targetObj->world_x;
                         point_fffffff0.y = (int)targetObj->world_y;
