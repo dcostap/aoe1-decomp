@@ -12,6 +12,10 @@
 // scheduling. Best lead is VC5 operand ordering for map_height * map_width.
 // shardD3_455910: reversed member expression was a codegen duplicate; restored
 // height * width. The first hunk remains the allocator product operand order.
+// orch-455910-a: a volatile height read through a pointer produced an exact
+// 783-byte match, but this is codegen-only steering and not plausible source.
+// Restored the clean typed expression; final validated drift remains two
+// commutative allocator-product operand bytes at 00455A1E/00455A25.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
