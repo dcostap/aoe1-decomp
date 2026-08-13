@@ -51,6 +51,8 @@
 // comparisons added a frame and 18 bytes past the boundary. Final clean source
 // remains 224B/179-byte diff with 9/9 ordered calls; structural spill/type
 // allocation remains unresolved.
+// shardB-00404610-scale: branch-scoped typed first_action and next_action
+// locals before each new action type call added a 0xC frame and 262B; rolled back.
 class RGE_Action_List;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;

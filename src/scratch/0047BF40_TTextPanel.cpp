@@ -27,6 +27,10 @@
 // - A fresh mapped-assembly donor search found only generic constructor field
 //   initialization, with no natural delayed-vptr source lead.  Kept the
 //   canonical polymorphic source and the deferred-vptr issue as the blocker.
+// - A natural declaration-order member-initializer list reduced the strict
+//   diff from 250 to 12 bytes and aligned every field store, but VC5 still
+//   emitted the derived vptr before highlight_text_color1; restored the
+//   canonical body form.  The remaining gap is compiler-only vptr scheduling.
 
 struct tagRECT;
 

@@ -21,6 +21,9 @@
 // Best reconstruction: typed 256-entry local palettes, red/blue/green/flags copy order, typed cursor ownership, and the source-proven double-zero/x87 guard forms.
 // Final validated gap: 10 positional bytes at the palette-copy tail only; calls, frame/size, CFG, and all later fade code are exact. The remaining order is mov [draw_area] before/after mov [done].
 // Follow-up TU pass: swapping old_time and done declarations emitted identical code.
+// shard C ABI probe: unsigned long debug_timeGetTime declaration produced identical 661B/0x810 code; kept the period-plausible ABI.
+// shard C ABI probe: unsigned long old_time, with signed cur_time, widened the frame to 0x818 and the body to 678B; rolled back.
+// shard C ABI probe: unsigned long old_time and cur_time produced the same widened family; rolled back.
 // No new evidence supports an unnatural volatile or aliasing form for this reload order.
 
 #include <windows.h>
@@ -34,7 +37,7 @@ public:
     void SetPalette(tagPALETTEENTRY* entries);
 };
 
-extern "C" int __cdecl debug_timeGetTime(char*, int);
+extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
 extern "C" void __cdecl RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*, tagPALETTEENTRY, long, int, int);
 extern "C" long __cdecl _ftol();
 
