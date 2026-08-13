@@ -15,6 +15,11 @@
 // is restored.
 // first-hunk lead: terminate cmd_line[255] after strncpy, matching the oracle's
 // post-push write to the last command-line byte rather than temp_str[3].
+// focused probes (rolled back): combined predicates, explicit infinite loops,
+// comma sequencing, pointer-arithmetic spelling, block-local cursor aliasing,
+// and guarded do-while scans all retained or worsened the same loop rotation.
+// clean source restored; oracle still expects mov [eax+1] before inc eax in
+// each parser body, while VC5 emits mov [eax] after an early cursor increment.
 
 #include <string.h>
 

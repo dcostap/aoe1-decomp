@@ -31,10 +31,23 @@
 // removes the EH registration and emits a 558-byte non-period function.
 // 18: split the first-hunk coordinate declarations from their initializers;
 // no emitted-code movement, so restored the initializer form.
+// 19: replaced the manual bevel vtable expression with the proven TTextPanel
+// slot-59 virtual surface.  This removes the explicit this push and aligns
+// the vslot +0xEC call; the full TPanel slot surface is local to this TU.
+// 20: restored the oracle's inline empty-string copy with VC5 intrinsic strcpy
+// and the proven literal at 0x580460.  The rep scas/movsd/movsb block now
+// matches structurally; the declaration was moved before the pragma to avoid
+// the intrinsic warning.
+// 21: a synthetic scaled-coordinate aggregate improved stack homes, but it
+// is not a plausible source surface. Keep ordinary scalar coordinates.
+// The scalar form loses the exact frame and worsens the byte metrics. It is
+// still retained because its local ownership is source-plausible.
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
 
+extern "C" char* __cdecl strcpy(char* dst, const char* src);
+#pragma intrinsic(strcpy)
 extern "C" void* __cdecl calloc(uint count, uint size);
 extern "C" void __cdecl free(void* p);
 extern "C" void* __cdecl operator_new(uint size);
@@ -48,6 +61,62 @@ class TDrawArea;
 class TPanel {
 public:
     virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long,
+                                  TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(void*);
+    virtual void draw_offset(long, long, void*);
+    virtual void draw_rect2(void*);
+    virtual void draw_offset2(long, long, void*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(void*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
     char gap_04[0x10];
     int width;
     int height;
@@ -62,6 +131,10 @@ class TDrawArea {};
 class TTextPanel : public TPanel {
 public:
     virtual ~TTextPanel();
+    virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
+    virtual void set_bevel_info(int, int, int, int, int, int, int);
     char gap_F4[0x188 - 0xF4];
     long setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, int font, int font_wid, int font_hgt, char* text, int a, unsigned char b, int c, int d, int e, char** lines, int f);
     void set_text_color(ulong a, ulong b);
@@ -96,8 +169,6 @@ public:
     virtual int create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id);
 };
 
-typedef void (*BevelFn)(TListPanel*, int, int, int, int, int, int, int);
-
 int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id)
 {
     long ideal_x = (x * this->width) / this->ideal_width;
@@ -122,11 +193,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
     if (list_items[0] == 0) {
         goto cleanup_fail;
     }
-    {
-        char* dst = list_items[0];
-        const char* src = "";
-        while ((*dst++ = *src++) != 0) {}
-    }
+    strcpy(list_items[0], "");
 
     if (this->error == 0) {
         TListPanel* list = new TListPanel;
@@ -157,7 +224,7 @@ cleanup_success:
     free(list_items);
     if (this->use_bevels != 0) {
         TListPanel* list = *out;
-        (*(BevelFn*)((char*)*(int*)list + 0xEC))(list, 3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+        list->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     }
     (*out)->set_text_color(this->text_color1, this->text_color2);
     (*out)->set_highlight_text_color(this->focus_color1, this->focus_color2);

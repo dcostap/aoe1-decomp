@@ -11,9 +11,10 @@
 //   destructor/delete call sites and 63-byte strict diff (best codegen checkpoint).
 // - direct member assignment in both TShape constructor arms removed the named pointer;
 //   this improved the strict diff to 55 bytes and recovered the post-constructor block.
-// - remaining drift is the four-byte file_name stack anchor, one extra shape null
-//   compare before the member store, and the late cleanup tail; no further evidence-backed
-//   source hypothesis is retained for this pass.
+// - nested picture success under the nonnull allocation and unconditional shape clearing
+//   removed the extra cleanup blocks; size and CFG became exact, with a 20-byte diff.
+// - explicit destructor, union/file-size, and declaration-lifetime probes did not improve
+//   codegen; the remaining drift is the four-byte file_name anchor and cleanup scheduling.
 
 #include "..\..\include\game_globals.h"
 #include <string.h>
@@ -57,6 +58,7 @@ public:
 int TPicturePanel::load_pic()
 {
     char file_name[80];
+
     this->free_pic();
 
     if (this->pic_name[0] != 0) {
@@ -74,23 +76,22 @@ int TPicturePanel::load_pic()
         return 1;
     }
 
-    if (this->shape) {
-        delete this->shape;
-        this->shape = 0;
+    TShape* old_shape = this->shape;
+    if (old_shape) {
+        delete old_shape;
     }
+    this->shape = 0;
 
     sprintf(file_name + 4, "%s.bmp", this->pic_name);
-    TPicture* new_pic = new TPicture(file_name + 4, -1, 0, 0, 0);
+    this->pic = new TPicture(file_name + 4, -1, 0, 0, 0);
 
-    this->pic = new_pic;
-    if (new_pic && new_pic->Dib) {
-        this->pic_type = 0;
-        this->own_pic = 1;
-        return 1;
-    }
-
-    if (new_pic) {
-        delete new_pic;
+    if (this->pic) {
+        if (this->pic->Dib) {
+            this->pic_type = 0;
+            this->own_pic = 1;
+            return 1;
+        }
+        delete this->pic;
         this->pic = 0;
     }
 

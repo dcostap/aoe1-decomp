@@ -20,13 +20,18 @@
 // - Replaced the outer counted for with a typed do-while to match the original
 //   count-positive entry guard and tail test; emitted code was unchanged and
 //   the clean counted-loop reconstruction was restored.
-// - Best current check: 620 rebuilt bytes versus 618 original, 86.43% shape,
-//   68.02% exact-block coverage, 100% ordered-call alignment, and 466 strict
-//   differing bytes. The remaining structural hunk starts at the outer loop
-//   setup; the first paired code uses different zero/best-id register homes.
+// - Canonical bounded indexed scans removed the extra bottom capacity tests and
+//   restored the original scan blocks. The donor-style two-condition growth
+//   copy restored its complete copy block and reduced the best diff to 174.
+// - Direct return on no selected gatherer restored the original cold cleanup
+//   size, but changed later liveness; the shared break is retained instead.
+// - Best current check: 600 rebuilt bytes versus 618 original, 92.50% shape,
+//   89.85% exact-block coverage, 100% ordered-call alignment, and 174 strict
+//   differing bytes. The remaining structural hunk starts at outer-loop zero
+//   register setup; the FPU predicate remains a separate codegen gap.
 // - Left in scratch after the 10-check claim. No unsupported raw vtable or
-//   inline-assembly form is retained. Next lead: resolve VC5 outer-loop local
-//   lifetime/register-home allocation before tuning the FPU predicate.
+//   inline-assembly form is retained. Next lead: resolve the outer-loop zero
+//   register/home allocation before revisiting the FPU predicate.
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
@@ -180,9 +185,6 @@ void TribeTacticalAIModule::taskElephantGatherers(int first, int count, int targ
     if (targetObject != 0) {
         ManagedArray<int> alreadyTasked;
         int loop;
-        float bestDistance;
-        int bestValueID;
-        int i;
 
         alreadyTasked.resize(1);
         alreadyTasked.value[alreadyTasked.numberValue] = first;
@@ -190,7 +192,10 @@ void TribeTacticalAIModule::taskElephantGatherers(int first, int count, int targ
         loop = 0;
 
         if (count > 0) {
-            for (; loop < count; loop++) {
+            do {
+                float bestDistance;
+                int bestValueID;
+                int i;
                 bestDistance = -1.0f;
                 bestValueID = -1;
                 i = 0;
@@ -198,19 +203,12 @@ void TribeTacticalAIModule::taskElephantGatherers(int first, int count, int targ
                 if (this->numberGatherersValue > 0) {
                     UnitData* gatherer = this->gatherers;
                     do {
-                        int j = 0;
-                        int alreadyCount = alreadyTasked.numberValue;
                         RGE_Static_Object* object;
-                        if (alreadyCount > 0) {
-                            int* value = alreadyTasked.value;
-                            do {
-                                if (j >= alreadyTasked.maximumSizeValue)
-                                    break;
-                                if (*value == gatherer->id)
-                                    goto nextGatherer;
-                                j++;
-                                value++;
-                            } while (j < alreadyCount);
+                        for (int j = 0; j < alreadyTasked.numberValue; j++) {
+                            if (j >= alreadyTasked.maximumSizeValue)
+                                break;
+                            if (alreadyTasked.value[j] == gatherer->id)
+                                goto nextGatherer;
                         }
 
                         object = this->md->object(gatherer->id);
@@ -237,18 +235,11 @@ nextGatherer:
                     bestValueID, target, 0,
                     targetObject->world_x, targetObject->world_y);
 
-                int j = 0;
-                int alreadyCount = alreadyTasked.numberValue;
-                if (alreadyCount > 0) {
-                    int* value = alreadyTasked.value;
-                    do {
-                        if (j >= alreadyTasked.maximumSizeValue)
-                            break;
-                        if (*value == bestValueID)
-                            goto afterAdd;
-                        j++;
-                        value++;
-                    } while (j < alreadyCount);
+                for (int j = 0; j < alreadyTasked.numberValue; j++) {
+                    if (j >= alreadyTasked.maximumSizeValue)
+                        break;
+                    if (alreadyTasked.value[j] == bestValueID)
+                        goto afterAdd;
                 }
 
                 if (alreadyTasked.numberValue >
@@ -256,14 +247,10 @@ nextGatherer:
                     int newSize = alreadyTasked.numberValue + 1;
                     int* newValue = new int[newSize];
                     if (newValue != 0) {
-                        int k = 0;
-                        if (alreadyTasked.maximumSizeValue > 0) {
-                            do {
-                                if (k >= newSize)
-                                    break;
-                                k++;
-                                newValue[k - 1] = alreadyTasked.value[k - 1];
-                            } while (k < alreadyTasked.maximumSizeValue);
+                        for (int k = 0;
+                             k < alreadyTasked.maximumSizeValue && k < newSize;
+                             k++) {
+                            newValue[k] = alreadyTasked.value[k];
                         }
                         operator delete(alreadyTasked.value);
                         alreadyTasked.value = newValue;
@@ -275,8 +262,8 @@ nextGatherer:
                 alreadyTasked.numberValue++;
 
 afterAdd:
-                ;
-            }
+                loop++;
+            } while (loop < count);
         }
     }
 }

@@ -9,6 +9,10 @@
 // prereq_count/j; this and the hidden FILD temp now match), with no call/CFG gap.
 // The natural typed prerequisite comparison also produced duplicate codegen;
 // keep it because it removes unnecessary promotion casts from the source.
+// Claim orch-50CE68-a: nested counter scopes worsened block shape; late
+// declarations, declaration reordering, volatile qualifiers, and unsigned
+// counter width were duplicates. Restored this clean source; the remaining
+// blocker is the proven five-way VC5 local-home rotation.
 
 struct Tech_Player_Tree {
     float research_done;
