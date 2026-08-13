@@ -17,8 +17,9 @@
 //    explicit y-field addresses; the loop counter remains separate.
 // 6: the segment/pointer form kept size, frame, and ordered calls aligned but
 //    emitted the same 12-byte local-home drift; retained as the clean lead.
-// Main-agent audit restored the exact-donor XYPoint* virtual ABI. The casts
-// document the executable's overlapping point windows. Emitted code is unchanged.
+// 7: canonical contiguous XYPoint locals with typed point addresses and rVal.x
+//    removed the decompiler field mapping and reached an exact 406-byte match.
+// The exact-donor XYPoint* virtual ABI matches the executable.
 
 extern float DAT_00570B80;
 
@@ -33,12 +34,6 @@ struct Waypoint {
 struct XYPoint {
     int x;
     int y;
-};
-
-struct ExceptionSegment {
-    XYPoint p1;
-    XYPoint p2;
-    XYPoint rVal;
 };
 
 class Path {
@@ -172,7 +167,7 @@ public:
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     int terrain, float* result_x, float* result_y) {
     int i;
-    ExceptionSegment segment;
+    XYPoint p1, p2, rVal;
     Path* path = &this->exceptionPathValue;
 
     if (path->numberOfWaypoints() < 2) {
@@ -184,38 +179,34 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
         return 0;
     }
 
-    segment.p1.y = (int)path->currentWaypoint()->x;
-    segment.p2.x = (int)path->currentWaypoint()->y;
+    p1.x = (int)path->currentWaypoint()->x;
+    p1.y = (int)path->currentWaypoint()->y;
     path->moveToNextWaypoint();
     if (path->currentWaypoint() == 0) {
         return 0;
     }
 
-    segment.p2.y = (int)path->currentWaypoint()->x;
-    segment.rVal.x = (int)path->currentWaypoint()->y;
+    p2.x = (int)path->currentWaypoint()->x;
+    p2.y = (int)path->currentWaypoint()->y;
     i = 1;
     while (i < path->numberOfWaypoints()) {
-        // The executable passes three overlapping point windows. The first
-        // window starts at each named point's y field.
-        if (this->firstTileAlongLine((XYPoint*)&segment.p1.y,
-                                     (XYPoint*)&segment.p2.y,
-                                     (XYPoint*)&segment.rVal.y,
+        if (this->firstTileAlongLine(&p1, &p2, &rVal,
                                      terrain, terrain, 1) == 1) {
-            float result = (float)segment.rVal.y - DAT_00570B80;
+            float result = (float)rVal.x - DAT_00570B80;
             *result_x = result;
             *result_y = result;
             return 1;
         }
 
-        segment.p1.y = (int)path->currentWaypoint()->x;
-        segment.p2.x = (int)path->currentWaypoint()->y;
+        p1.x = (int)path->currentWaypoint()->x;
+        p1.y = (int)path->currentWaypoint()->y;
         path->moveToNextWaypoint();
         if (path->currentWaypoint() == 0) {
             return 0;
         }
 
-        segment.p2.y = (int)path->currentWaypoint()->x;
-        segment.rVal.x = (int)path->currentWaypoint()->y;
+        p2.x = (int)path->currentWaypoint()->x;
+        p2.y = (int)path->currentWaypoint()->y;
         ++i;
     }
 
