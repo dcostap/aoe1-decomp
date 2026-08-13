@@ -42,6 +42,12 @@
 // - Follow-up probes: signed-byte, named-color, record/member, volatile-cast,
 //   pointer-alias, and reversed pointer-addition forms all emitted duplicates;
 //   restore the canonical byte-table source and retain the one-byte SIB drift.
+// - Current worker probes: first-pass and post-call byte-pointer aliases, a
+//   split color-slot pointer, and historical short-cursor variants did not
+//   improve the one-byte store SIB; the mixed cursor form became structural.
+// - The pre-audit vtable context changed no bytes. Removing the player tail
+//   and restoring historical one-line formatting also left the compare SIB.
+//   Restored the canonical declarations and indexed source.
 //
 // FLAGS: /nologo /c /O2 /Oy
 

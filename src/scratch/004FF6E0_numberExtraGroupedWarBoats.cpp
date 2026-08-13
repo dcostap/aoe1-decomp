@@ -20,6 +20,10 @@
 // - A direct typed count predicate reversed the initial numberUnits/
 //   desiredNumberUnits call order and increased the diff to 19 bytes; restored
 //   the explicit count temporary.
+// - Scalar declaration permutations, split/chained initialization, scoped
+//   inner locals, and the unmapped decompiler j local were codegen duplicates.
+// - A natural for-loop added one numberUnits call and 11 bytes; volatile result
+//   storage caused broad drift. Both diagnostic variants were restored.
 // - Remaining drift is 10 stack-home bytes: VC5 assigns result/rNum/tempCount
 //   to [esp+10]/[esp+18]/[esp+14], while the oracle uses [esp+18]/[esp+14]/
 //   [esp+10]. No behavior or call-set drift remains.

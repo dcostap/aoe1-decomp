@@ -20,6 +20,24 @@
 // the typed common-height form as the best period-plausible reconstruction.
 // 11 hoisted x/tile declarations: codegen duplicate; restored the clean
 // block-scoped form because the four-byte tail reload order did not move.
+// 12 outer do-while changed to a for loop to test compiler loop-control
+// scheduling at the four-byte tail; no codegen change; rolled back.
+// 13 moved the outer increment into the do-while condition as ++y to test
+// expression-tree scheduling at the four-byte tail; no codegen change; rolled
+// back.
+// 14 declared y in a canonical for loop to test scope/lifetime scheduling;
+// no codegen change; rolled back.
+// 15 hoisted y's declaration to function scope while keeping its branch-local
+// initialization to test local lifetime and reload scheduling; no codegen
+// change; rolled back.
+// 16 restored source-level old-format-first ordering to test whether the
+// compiler's branch layout also restores the target loop-tail load order;
+// it changed the branch shape and grew the diff to 252 bytes; rolled back.
+// 17 reversed the outer bound comparison to *height > y to test operand-order
+// scheduling at the four-byte tail; it changed the comparison block and grew
+// the diff to 6 bytes; rolled back.
+// 18 no further source-backed axis remains after loop-form and scope probes;
+// preserve the clean typed reconstruction for final validation.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern float save_game_version;

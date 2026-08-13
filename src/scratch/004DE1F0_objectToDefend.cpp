@@ -52,6 +52,14 @@
 // and itemsToDefend count.  Scoped typed entry, list aliases, local lifetime
 // changes, and declaration order changes were duplicates or structural losses.
 // The best source keeps named nested ownership and the explicit object result.
+//
+// Session orch-4DE1F0-a: direct numberValue conditions, direct record-id
+// expressions, scoped id/count lifetime splits, assignment-in-condition,
+// field reference/pointer bindings, and a four-variant int/long plus
+// value/reference lab all preserved the same six-byte EDX/EDI register-color
+// gap.  One deliberate strategic-number local reuse worsened the call block
+// to 35 bytes; all other probes were duplicates or structural losses.  Restored
+// and validated the clean typed indexed scan; no evidence-backed lead remains.
 
 #include <stddef.h>
 
