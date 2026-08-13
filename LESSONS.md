@@ -102,6 +102,7 @@ only the matching paragraphs and their section heading.
 
 - For original `call dword [IAT]`, declare `extern "C" Ret (__stdcall* const Name)(...)`; normal declarations emit rel32. A narrow local function pointer can model branch-local IAT caching when observed. Preserve symbol/convention.
 - Use real VC5 headers/declarations. Header `<stdlib.h>` versus hand-declared `calloc`, `<string.h>` intrinsics, or `<mbstring.h>` MBCS surfaces can change EH and optimization basins.
+- If a natural `strcpy` destination has only commutative LEA/SIB byte drift, restore the period `<string.h>` declaration context before trying address casts; VC5 can flip the encoder while the named-pointer source stays unchanged.
 - `_mbsncpy(_mbsinc(p),...)` evaluates cdecl args right-to-left; split `p=_mbsinc(p); _mbsncpy(...)` when asm calls `_mbsinc` before pushes.
 - Split chained member calls/argument-producing helpers when nested right-to-left evaluation interleaves pushes unlike the original. Keep expressions inline when the original intentionally evaluates nested varargs before global-chain loads.
 - When a VC5 thiscall shows a literal argument pushed before the call that

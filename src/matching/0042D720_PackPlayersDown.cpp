@@ -21,9 +21,16 @@
 // 13: modeled both name buffers as typed NAME arrays and used the natural first
 // element member for the destination; codegen was unchanged, so restored the
 // clean pointer-plus-offset source.
+// 14: integer-cast destination addition was a codegen duplicate; rolled back.
+// 15: typed the offset as the pointer operand; VC5 still canonicalized the LEA.
+// 16: array-index destination spelling also emitted the same two-byte drift.
+// 17: mutable strcpy source declaration did not change codegen.
+// 18: restoring the period <string.h> declaration context flipped both SIB
+// encodings and reached an exact match; kept the natural named-pointer source.
+
+#include <string.h>
 
 typedef unsigned short ushort;
-extern "C" char* __cdecl strcpy(char* dst, const char* src);
 
 class TDebuggingLog { public: void Log(char* fmt, ...); };
 extern TDebuggingLog* L;
