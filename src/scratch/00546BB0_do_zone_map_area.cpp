@@ -18,10 +18,15 @@
 // 10: same-TU C++ linkage declarations for zone_push/zone_pop were a duplicate;
 //     restored the narrow declarations used by the clean build.
 // 11: const map-bound locals were a codegen duplicate; restored mutable locals.
+// 12: materializing the lower-neighbor y+1 row before map access moved only
+//     two positional bytes closer but reduced block/shape parity and size;
+//     restored the clean source.
 // Current pass: dossier, donor, ABI, call-map, and local asm evidence confirm
 // exact calls/frame/CFG but leave the x-stride/y-register hunk unresolved.
 // Main-agent audit restored canonical polymorphic map ownership and retained
 // named tile/zone-row flood-fill traversal.
+// 13: inlining only the first-arm tile member access worsened block shape and
+//     removed one instruction; restored the clean named tile/cell form.
 
 struct RGE_Tile {
     short sx;

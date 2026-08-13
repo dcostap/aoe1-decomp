@@ -18,6 +18,14 @@
 //     rolled back to direct member source.
 // 11: tested direct bottom-clipping expressions without the temporary; VC5 rewrote
 //     the subtraction into reverse add arithmetic, worsened CFG alignment, and was rolled back.
+// 12: matched the line-675 temporary order for top clipping; emitted code was a
+//     duplicate after rollback, with no positional gain.
+// 13: tested top-declared decompiler-style clipping locals; the frame grew to 0xC
+//     and structural similarity fell, so restored the natural block.
+// 14: mutating mouse_rect.bottom before the clipping reductions reached exact size,
+//     but caused broad CFG/register drift and was rolled back.
+// 15: reordered the natural POINT and in_game declarations to test the decompiler's
+//     local ordering; VC5 emitted an identical body, so restored the clean source.
 // left in scratch: remaining work, if any, should be localized source/declaration or
 // TU-context probes after validating the member-function baseline.
 

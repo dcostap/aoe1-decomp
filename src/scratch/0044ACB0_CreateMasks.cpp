@@ -15,6 +15,17 @@
 //   stack order with an early Mask_2x2 capture; size moved 34 bytes closer but
 //   the first hunk moved earlier and the strict diff grew from 370 to 415.
 //   Restored the aggregate initializer source.
+// - Reasserting omitted border-zero stores moved the mismatch from 370 to 383
+//   without moving the first structural hunk; restored the clean source.
+// - Full ordered assignments and shared loop locals stayed in the same 370-byte
+//   basin. Zero-initializing then filling interiors collapsed the body to 499.
+// - A typed Mask_2x2 destination pointer reduced the body to 737 bytes and
+//   improved resync similarity, but strict diff grew to 372; restored clean.
+//   The remaining lead is VC5 ordering of late zero/interior stores.
+// - Split each aggregate initializer into row-sized source lines, following
+//   the original PDB's row-like line bands while keeping flat typed arrays.
+//   This moved the first mismatch earlier and worsened the strict diff to 376;
+//   restored the clean aggregate source.
 
 void* __cdecl operator_new(unsigned int size);
 
