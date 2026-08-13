@@ -32,6 +32,11 @@
 //   target pointer on a null task; it widened the positional diff to 49 bytes.
 // - assigning the constructor result into the status pointer was codegen
 //   neutral; removed it to retain the natural typed ownership model.
+// - fresh task-null direct return, final-success direct return, and a separate
+//   task-failure alias all worsened the CFG (122/402/77-byte diffs); rolled back.
+// - boolean/equality status returns were 27-byte and 338/339-byte variants;
+//   action-derived boolean status was a codegen duplicate. Uninitialized and
+//   declaration-reordered scalar status forms widened to 287/67-byte diffs.
 // - direct literal returns for all success/failure paths broadened the CFG to
 //   391 bytes; rolled back.
 // - a separate int status with the typed target preserved improved that
