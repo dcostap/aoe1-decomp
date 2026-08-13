@@ -50,6 +50,9 @@
 //   EBX 25-count register swap at seven bytes.
 // - Completed the binary-proven RGE_Player virtual surface through slot 0xF4 before the function,
 //   including donor-proven pointer types; emitted code was unchanged, so it remains the clean candidate.
+// - Allocator-inference probe: giving the loop countdown a function-scope source role was byte-identical.
+//   VC5 keeps the early virtual-table cache in EBX and the countdown in EBP.
+//   This rejects simple declaration lifetime as a lever for the remaining register swap.
 
 class AIPlay;
 class AIPlayBook { public: AIPlay* play(int id); };

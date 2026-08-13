@@ -19,6 +19,9 @@
 //   unchanged.
 // - scoped a natural typed transparency bitmap pointer to the allocation-
 //   success access lifetime; emitted code stayed unchanged.
+// - Allocator-inference probe: splitting the initial bitmap pointer from the
+//   post-allocation scan pointer was byte-identical. VC5 coalesces both roles
+//   before the remaining ECX/EDX transparency-address choice.
 // - left in scratch: natural typed source, 5 differing bytes at the two
 //   transparency scan address/register sequences.
 
