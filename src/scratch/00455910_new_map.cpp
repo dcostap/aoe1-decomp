@@ -10,6 +10,8 @@
 // only two allocator-product operand bytes at 00455A1E/00455A25. Arithmetic,
 // local, and reference variants did not change that final hunk without worse
 // scheduling. Best lead is VC5 operand ordering for map_height * map_width.
+// shardD3_455910: reversed member expression was a codegen duplicate; restored
+// height * width. The first hunk remains the allocator product operand order.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);

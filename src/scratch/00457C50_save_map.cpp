@@ -18,6 +18,8 @@
 // exact, but the loop tail swapped the y/map reload order (4 bytes remain).
 // 9-10 direct-this and staged-product variants: codegen duplicates; retained
 // the typed common-height form as the best period-plausible reconstruction.
+// 11 hoisted x/tile declarations: codegen duplicate; restored the clean
+// block-scoped form because the four-byte tail reload order did not move.
 
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern float save_game_version;

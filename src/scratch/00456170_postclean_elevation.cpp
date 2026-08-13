@@ -9,6 +9,9 @@
 // probe 7: separate row/column cursors increased the frame and regressed shape.
 // probes 8-9: long column and uchar result forms were duplicate or worse.
 // probe 10: named width copy reproduced a worse duplicate basin.
+// probe 11: reordered short neighborhood offsets to the natural northwest,
+// northeast, north declaration/use order; diff improved to 719 bytes, but the
+// first prologue width-home mismatch remains.
 // Final blocker: VC5 register coloring and local-home reuse differ in the typed
 // candidate. Original reuses the y parameter home for old tile bytes and spills
 // the changed byte at an unaligned local slot; no natural typed variant matched.
@@ -48,14 +51,14 @@ unsigned char RGE_Map::postclean_elevation(long x0, long y0, long x1, long y1,
     unsigned short next_elevation;
     RGE_Tile* tile;
     long changed;
-    short offset1;
     short offset3;
     short offset2;
+    short offset1;
 
     width = (short)this->map_width;
     offset3 = (short)(-1 - width);
-    offset1 = (short)(-width);
     offset2 = (short)(1 - width);
+    offset1 = (short)(-width);
     changed = 0;
 
     if (x0 > 0)

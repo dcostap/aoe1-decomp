@@ -18,6 +18,10 @@
 //   in one prologue scheduling hunk: original `mov ecx,esi; state=1; store
 //   pathing; store world`, rebuilt `store world; mov ecx,esi; state=1; store
 //   pathing`.  Leave this readable candidate in scratch for the next worker.
+// - Reordered the natural pathing-cap and world assignments to match the
+//   decompiler-supported source order.  This moved the rebuilt pathing store
+//   before the call setup and reduced strict drift from 12 to 9 bytes; VC5
+//   still schedules `mov ecx,esi; state=1` after that store.
 
 #include <stdlib.h>
 
@@ -124,8 +128,8 @@ RGE_Player::RGE_Player(int file, RGE_Game_World* world_arg,
     int pathing_cap = pathingCapValue;
 
     this->id = player_id;
-    this->world = world_arg;
     *pathing = pathing_cap;
+    this->world = world_arg;
     this->reset_selected();
 
     this->doppleganger_creator =

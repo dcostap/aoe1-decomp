@@ -36,6 +36,9 @@
 // not change or improve the exact-size clean basin. The typed two-cursor source
 // remains the best period-plausible reconstruction; the row-anchor home is the
 // open blocker.
+// 9: packet-backed parser surface: restored the original semantic FILE* `infile`
+// name and separate float `pause_between_loops` local before the resource loop;
+// this tests the natural map.cpp declaration/use shape at the first fopen hunk.
 //
 // The border record layout is shared with the exact map.cpp constructors and
 // update routine.  The map file's signed color/index locals intentionally retain
@@ -148,11 +151,10 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
     RGE_TOB_Picts* p;
     RGE_TOB_Picts* row_start;
     float frame_rate;
-    int local_3c;
-    float infile;
-    FILE* local_30;
-    int resource_id;
-    int local_28;
+    float pause_between_loops;
+    FILE* infile;
+    long resource_id;
+    long local_28;
     char name[13];
     char pict_name[13];
 
@@ -160,28 +162,28 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
     for (i = 15; i >= 0; --i)
         this->border_types[i].loaded = 0;
 
-    local_30 = fopen(filename, "r");
-    if (local_30 != 0) {
-        fscanf(local_30, "%hd", &this->num_borders);
+    infile = fopen(filename, "r");
+    if (infile != 0) {
+        fscanf(infile, "%hd", &this->num_borders);
         short remaining = this->num_borders - 1;
         if (remaining >= 0) {
             resource_id = (int)remaining + 1;
             do {
                 short border_num;
                 short shape_index = 0;
-                if (fscanf(local_30,
+                if (fscanf(infile,
                            "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd",
                            &border_num, name + 4, pict_name + 4, &local_28,
                            &local_46, &is_animated, &animation_frames, &hi_color,
                            &med_color, &tile_flag, &underlay_terrain, &frame_rate,
-                           &infile, &border_style, &random, &local_48) != -1 &&
+                           &pause_between_loops, &border_style, &random, &local_48) != -1 &&
                     border_num < 16 && border_num >= 0) {
                     RGE_Border_Set* border = &this->border_types[border_num];
                     p = border->borders[0];
                     for (int row = 0; row < 19; ++row) {
                         row_start = p;
                         for (int col = 0; col < 12; ++col) {
-                            fscanf(local_30, "%hd %hd", &p->count,
+                            fscanf(infile, "%hd %hd", &p->count,
                                    &p->animations);
                             p->shape_index = shape_index;
                             shape_index += p->count * p->animations;
@@ -207,9 +209,9 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
                     if (frame_rate == DAT_005706ac)
                         border->pause_frames = 0;
                     else
-                        border->pause_frames = (short)(long)(infile / frame_rate);
+                        border->pause_frames = (short)(long)(pause_between_loops / frame_rate);
                     border->interval = frame_rate;
-                    border->pause_between_loops = infile;
+                    border->pause_between_loops = pause_between_loops;
                     border->frame = 0;
                     border->draw_frame = 0;
                     border->animate_last = 0.0f;
@@ -222,5 +224,5 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
             } while (--resource_id != 0);
         }
     }
-    fclose(local_30);
+    fclose(infile);
 }

@@ -16,6 +16,8 @@
 // places the proven stack records/buffers four bytes higher, and merges the
 // two identical Unknown-Error copies. No raw-address or inline-asm experiment
 // was retained; target remains scratch pending a later source/context pass.
+// Resumed lease: a direct-return structural edit was not compiled and was
+// restored; the pinned clean reconstruction remains the validated candidate.
 
 #include <stdio.h>
 #include <string.h>

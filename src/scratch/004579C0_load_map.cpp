@@ -11,6 +11,9 @@
 //   layout and the old-format bulk read with its post-read list reset.
 // - Ten meaningful probes completed.  The clean typed source is retained in
 //   scratch because the remaining drift is broad loop stack-home scheduling.
+// - Initializing the inner column counter before loading the row pointer was a
+//   natural map.cpp line-order probe; VC5 emitted the same code, so it was
+//   restored.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern float save_game_version;

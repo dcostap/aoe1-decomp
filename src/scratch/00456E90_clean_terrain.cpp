@@ -11,6 +11,9 @@
 // 8: Separate target terrain capture was a codegen duplicate.
 // 9: Reusing the terrain parameter home as changed made the frame exact but lost EBX/ESI/EDI lifetime and worsened diff to 1105; rolled back.
 // 10: bool changed was a codegen duplicate of the best separate-flag source. Final blocker is the remaining four-byte VC5 local-home/register basin; direct set_terrain call and all 91 conditional signals now align.
+// 11: Reordered neighbor flags to the compass order used by exact clean_elevation; shape rose but size and positional diff worsened, so restored.
+// 12: Declared per-tile fix before the neighbor flags to test the original AL fix and terrain-home changed split; emitted code was unchanged.
+// 13: Moved changed before width and offset declarations to match the clean_elevation lifetime order; emitted code was unchanged.
 
 struct RGE_Tile {
     char gap_00[5];

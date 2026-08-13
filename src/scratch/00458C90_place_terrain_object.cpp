@@ -12,6 +12,7 @@
 // 10: replaced raw terrain cursor arithmetic with the typed RGE_Tile_Set array and named density/flag fields. This restores canonical map ownership; compile result is the baseline for this worker.
 // 11: function-scope x/y locals moved the source into the best block basin: exact size/frame, 10/10 ordered calls, and 34.54% exact-block coverage.
 // 12: canonical full map/Terrain_Set prefixes, an int terrain index, map alias, terrain-set pointer, repeated guard, and cursor scope variants were neutral or worse; restored the typed direct-member source.
+// 13: tested an independent single-placement condition because the oracle reloads the mode parameter after mode zero. It improved positional diff by 12 bytes but broke size and block shape; restored the natural else-if form.
 // Binary facts: terrain_types records use this+0x8C, stride 0x198, obj_types +0x18A, obj_density +0x1C6, placement flags +0x202, and num_obj_type +0x220. Player master_objects is +0x24.
 // Binary behavior: get_terrain(col,row) selects each terrain set; mode 0 performs density-weighted placement and mode 1 tries one placement. Coordinates are (col - random, row - random) or (col + 0.5, row + 0.5). Failed can_place calls invoke place.
 // GIVEUP: left in scratch; calls, tile ownership, coordinates, and effects are reconstructed, but VC5 still colors this as ESI and the master object as EDI instead of the oracle's EDI/ESI pair.

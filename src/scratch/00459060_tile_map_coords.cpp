@@ -10,6 +10,7 @@
 // 6: explicit z declaration/assignment and register qualification emitted the same code.
 // 7: moving the final normalization into/around the switch default emitted the same code.
 // 8: duplicating switch arms without shared labels moved farther; restored the shared-label source.
+// 9: inverted case 1 to the natural greater-than coordinate test; preserved behavior and improved the first x87 branch hunk, but structural size drift remains.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 
 struct RGE_Tile { int pad0; unsigned char tile_type; };
@@ -35,8 +36,8 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
 
     switch (tile->tile_type) {
     case 1:
-        if (fx <= DAT_005706c0) z = (fy + fy) - ((DAT_005706c0 - fx) + (DAT_005706c0 - fx));
-        else z = (fy + fy) - ((fx - DAT_005706c0) + (fx - DAT_005706c0));
+        if (fx > DAT_005706c0) z = (fy + fy) - ((fx - DAT_005706c0) + (fx - DAT_005706c0));
+        else z = (fy + fy) - ((DAT_005706c0 - fx) + (DAT_005706c0 - fx));
         goto z_result;
     case 2:
         if (DAT_005706c0 < fx) { z = fx * DAT_005706d0 - (fy - DAT_005706c0); goto z_result; }

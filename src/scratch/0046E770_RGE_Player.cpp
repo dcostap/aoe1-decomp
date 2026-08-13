@@ -16,6 +16,10 @@
 //   pointer, a named pathing-cap local, and `<memory.h>` context were either
 //   codegen duplicates or worse.  A 15-variant /GX lab over initializer and
 //   early-field order also found no closer basin.
+// - Tested a natural EH-aware alternative that assigned the scalar pathing
+//   defaults in the body after embedded tile-list construction; VC5 moved the
+//   prologue and worsened the positional diff from 18 to 64 bytes.  Restored
+//   the member-initializer source.
 // - Best validated source is 897 bytes with all 22 calls/CFG/frame exact and
 //   18 positional bytes remaining.  The only localized drift is the first
 //   tile-list setup: the oracle emits `push 190h; lea; save this; store +8`,

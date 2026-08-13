@@ -19,6 +19,7 @@
 // 16: Self-alias, split-boundary, nested/assignment-carry, and shared-goto variants were rejected: they were unchanged or expanded the function to 1509-1568 bytes.
 // 17: Promoting x to an explicit int cursor moved its stack home closer (986 bytes, diff 1016) but still left the saved-this/row register basin and byte-local homes wrong; full virtual-prefix context changed only one byte.
 // 18: Restored the cleaner canonical typed reconstruction as the best current source. Remaining blocker is structural VC5 register/local-home allocation (original this=EDI, rows=ESI, x home +2C, y=EBP; rebuilt this=ESI, rows=EBP and different byte homes), not calls or layout.
+// 19: Re-tested separate typed x/y bounds guards from the exact get_tile_type donor; VC5 emitted the same code, so restored the canonical combined guard.
 
 struct RGE_Tile {
     short screen_xpos;

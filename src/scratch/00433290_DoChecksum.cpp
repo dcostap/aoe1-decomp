@@ -12,6 +12,9 @@
 // - Reordered locals, widened/aggregated the buffer, and union/reference
 //   overlays were diagnostic only; they either duplicated an earlier basin or
 //   restored the 0x108 frame. No custom flags or opaque aliases were kept.
+// - Tested a natural { checksum; text[255]; } aggregate to make the marker
+//   lifetime explicit; it worsened the first mismatch to +007A and diff 8.
+//   Restored the named long plus buffer, which remains the clean 2-byte best.
 
 #include <stdio.h>
 

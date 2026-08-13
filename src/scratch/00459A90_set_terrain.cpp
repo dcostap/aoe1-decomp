@@ -14,6 +14,9 @@
 //   tile terrain value suggested by the decompiler.
 // - Explicit row/tile byte-offset locals were a codegen duplicate. Restored
 //   typed row indexing.
+// - Spelled terrain_to_draw as > -1 instead of >= 0. This reproduced the
+//   original cmp ax,-1/jle eligibility block, improved the positional diff
+//   from 561 to 420 bytes, and kept the typed terrain ownership natural.
 
 class RGE_Player;
 class RGE_Game_World;
@@ -131,7 +134,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
     if ((short)(unsigned char)terrain < map->num_terrain) {
         terrain_id = (short)(unsigned char)terrain;
         if (map->terrain_types[(unsigned char)terrain].loaded != 0 ||
-            (map->terrain_types[(unsigned char)terrain].terrain_to_draw >= 0 &&
+            (map->terrain_types[(unsigned char)terrain].terrain_to_draw > -1 &&
              map->terrain_types[
                  map->terrain_types[(unsigned char)terrain].terrain_to_draw].loaded == 1)) {
             if (y1 > y2) {

@@ -16,6 +16,9 @@
 // - A separate low-bit local and a reordered terrain read worsened the output;
 //   both were restored.  The remaining gap is VC5 byte-width scheduling in the
 //   relative loop and late register coloring, not a call or layout mismatch.
+// - Replacing the relative-loop tile local with repeated typed row-tile member
+//   access was a natural pointer-order hypothesis, but it changed the prologue
+//   and broad layout (536 to 673 positional bytes); restored the clean source.
 
 class RGE_Tile;
 class RGE_Static_Object;

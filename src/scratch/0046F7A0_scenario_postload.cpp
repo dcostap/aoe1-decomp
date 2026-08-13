@@ -21,6 +21,9 @@
 //   exact ordered call set, and 3.56% bounded edit diff.  Remaining drift is
 //   a localized prologue/local-slot and block-shape mismatch; left in scratch
 //   after the ten-hypothesis budget.
+// - Continuation probes: short declaration reordering was codegen-neutral;
+//   reversing the final version gate improved block shape but not bytes. Restored
+//   this pinned clean source for a documented pause.
 
 #include <stdlib.h>
 

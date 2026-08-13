@@ -13,6 +13,9 @@
 // The positive sound-index guard follows the target branch shape but did not
 // improve positional drift. The remaining gap is the input-field overlay and
 // local home/register placement. Calls, cleanup, record stride, and widths match.
+// Fresh shard probe: moved shape_index initialization before the giant fscanf to
+// match the oracle's pre-call EBX clear; this worsened the diff by 2 bytes and
+// was restored. The input-field overlay remains the next structural blocker.
 
 #include <stdio.h>
 

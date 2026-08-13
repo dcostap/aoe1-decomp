@@ -23,6 +23,8 @@
 //   The final clean candidate keeps the named typed surfaces and no raw vtable
 //   plumbing; the density[-30] access is retained as the binary-proven adjacent
 //   obj_types/obj_density cursor topology.
+// - A typed RGE_Tile_Set* terrain-record alias for the initial count and paired
+//   arrays grew output to 795 bytes and worsened positional diff to 704; rolled back.
 // - bounded pause: calls are 10/10 aligned and size is exact, but the first
 //   mismatch remains the prologue/frame (rebuilt frame 0x14 vs 0x10), followed
 //   by broad local/register and shifted block drift. Not accepted-drift-safe.

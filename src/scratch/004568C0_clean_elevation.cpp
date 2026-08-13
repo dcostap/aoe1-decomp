@@ -7,6 +7,7 @@
 // 4: Shortened fix lifetime to the aggregation phase; VC5 kept the transient predicate in CL and aligned the four diagonal decision CFGs substantially.
 // 5: Moving change_flag or changing compass declaration order did not improve the canonical basin; the best form keeps short NW/N/NE/E/SE/S/SW/W flags and a byte fix.
 // 6: A bool NW experiment caused a 0x44 frame and broad register drift; restored the short-flag reconstruction. Remaining drift is flag stack-home coloring/order, the change_flag store schedule, and update block layout.
+// 7: Replaced row-plus-column traversal with the natural &map_row_offset[row][x1] form; VC5 emitted an identical 1501-byte function, so restored the validated pointer traversal.
 
 struct RGE_Tile {
     char gap_00[5];

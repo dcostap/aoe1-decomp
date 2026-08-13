@@ -16,6 +16,10 @@
 // - Final best remains a 653-byte, 20-call reconstruction with 386 differing
 //   bytes. Remaining drift is prologue scheduling, register coloring, and the
 //   relation-loop flag/pointer topology.
+// - Tried the same-TU map serialization donor's function-scope file handle
+//   with the first name-length read on the parameter. This saved EBP before
+//   ESI, but lost exact prologue blocks and raised strict drift to 403 bytes;
+//   restored the clean guarded handle form.
 
 #include <stdlib.h>
 
