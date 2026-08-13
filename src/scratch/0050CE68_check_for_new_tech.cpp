@@ -17,6 +17,9 @@
 // and worsened the diff to 36 bytes; restored the separate natural assignment.
 // Declaring tech before the scalar locals emitted the same 21-byte code; kept
 // the clean declaration order because it is clearer and remains the baseline.
+// Probe luna-50CE68-r2: inner-block j scope and the donor TU stdlib context were
+// exact codegen duplicates; signed byte flags worsened size and CFG. A full
+// declaration-cycle reorder also stayed at 21 bytes. Restored clean source.
 
 struct Tech_Player_Tree {
     float research_done;

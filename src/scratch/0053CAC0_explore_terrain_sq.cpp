@@ -16,6 +16,11 @@
 // selects the inverse homes; the later checksum/ally scheduling follows that split.
 // split the x-axis and y-axis rejection tests to mirror the two original source
 // line bands and preserve the height value for the following y clamp.
+// Follow-up probes: checksum-before-Revealed declaration order, dead-p6 checksum
+// reuse, removal of the explicit _rotl pragma, an explicit zero carried into the
+// negative-bound tests, an explicit inner while loop, and an array-backed checksum
+// all emitted the same 544-byte code.  The stack spill remains a source/context
+// blocker, not a proven ownership or control-flow difference.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)

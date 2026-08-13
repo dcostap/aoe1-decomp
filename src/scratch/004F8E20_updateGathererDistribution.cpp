@@ -13,6 +13,16 @@
 // 11: rewrote distribution totals and negative-resource correction as pointer loops; exact-block coverage improved to 43.37%, but the prologue remains structurally different.
 // 12: retained the desired-distribution cursor and corrected array index ownership from original stores; current structural best is 1258 bytes (91.8919%) with 100% ordered-call alignment.
 // 13: tested explicit absolute-remainder parity; it improved positional diff by one byte but reduced shape slightly, and remains the current clean reconstruction after the 10-hypothesis budget.
+// 14: nested the age dispatch in original order and removed the incorrect age1-to-age3 and age2-to-age4 fallbacks; structural shape improved.
+// 15: corrected the age4 no-research path to write desired distribution slots 0, 1, and 3, as shown by the original stores.
+// 16: tested weighted percentage operand order; VC5 emitted the same arithmetic basin.
+// 17: cached the proven object gameID after the action/type/state guard; this matches the original EDI overwrite before the first task-list scan and improved the first scan block.
+// 18: separated literal actual-distribution clears from the outer loop index; this improved positional diff by four bytes but did not solve the prologue.
+// 19: tried a structured found-label task scan to mirror the original skip-zero CFG; it worsened block shape and was rolled back.
+// 20: declared the special-result local before the desired cursor; this improved whole-function liveness by seven bytes and remains plausible source order.
+// 21: used pointer dereference spelling for first-slot desired writes; VC5 emitted a duplicate, so no codegen lead was found.
+// 22: moved outer-index initialization between the first two clears to mirror stack-store order; it worsened codegen and was rolled back.
+// Final clean reconstruction: natural typed ownership, corrected age dispatch and slot writes, 15 ordered calls aligned; remaining gap is structural prologue/CFG layout.
 
 typedef unsigned char uchar;
 
@@ -51,17 +61,16 @@ public:
 
 void TribeTacticalAIModule::updateGathererDistribution()
 {
-    int i=0;
+    int i;
     int gSTT;
     int gAction;
-    int local_4;
+    int local_4=0;
     int* g;
     int* distribution;
-    actualGathererDistribution[0]=i;
-    actualGathererDistribution[1]=i;
-    local_4=i;
-    actualGathererDistribution[2]=i;
-    actualGathererDistribution[3]=i;
+    actualGathererDistribution[0]=0;
+    actualGathererDistribution[1]=0;
+    actualGathererDistribution[2]=0;
+    actualGathererDistribution[3]=0;
     if (numberGatherersValue > 0) {
         g = &gatherers[0].data1;
         do {
@@ -71,9 +80,10 @@ void TribeTacticalAIModule::updateGathererDistribution()
                 gSTT=g[0];
                 g[3]=o->unitAI()->currentTarget();
                 if (gAction==0x261 && o->type->id==0x103 && gSTT) {
+                    int gameID=o->gameID;
                     for (i=0;i<unitsTaskedThisUpdate.numberValue && i<unitsTaskedThisUpdate.maximumSizeValue;i++)
-                        if (unitsTaskedThisUpdate.value[i]==o->gameID) break;
-                    if (i==unitsTaskedThisUpdate.numberValue || i==unitsTaskedThisUpdate.maximumSizeValue) { g[0]=0; gSTT=0; }
+                        if (unitsTaskedThisUpdate.value[i]==gameID) break;
+                    if (i==unitsTaskedThisUpdate.numberValue || i==unitsTaskedThisUpdate.maximumSizeValue) { g[0]=0; }
                 }
                 if (gSTT>=0 && gSTT<=3) {
                     if (gAction==0x261 || gAction==0x265) ++actualGathererDistribution[gSTT];
@@ -87,36 +97,57 @@ void TribeTacticalAIModule::updateGathererDistribution()
         } while (local_4 < numberGatherersValue);
     }
 
+    int special=0;
     distribution=desiredGathererDistribution;
-    distribution[0]=0;
+    *distribution=0;
     distribution[1]=0;
     distribution[2]=0;
     distribution[3]=0;
-    int special=0;
-    if (inAge(1) && age2flag==1) {
-        special=1;
-        if (BUILD.readyToResearch(2,1) && AGE_RES!=-1 && (RESOURCE.resource(1)>120 || specialGathererDistribution==1)) {
-            distribution[0]=desiredNumberGatherers;
-            g=&gatherers[0].data1;
-            for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
-            specialGathererDistribution=1;
-        } else goto tryAge3;
-    } else if (inAge(2) && age3flag==1) {
-tryAge3:
-        if (BUILD.readyToResearch(3,1) && (RESOURCE.resource(1)>240 || (RESOURCE.resource(1)>120 && AGE_RES<20))) {
-            special=1; distribution[0]=desiredNumberGatherers;
-            g=&gatherers[0].data1;
-            for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
-            specialGathererDistribution=1;
-        } else goto tryAge4;
-    } else if (inAge(3) && age4flag==1) {
-tryAge4:
-        if (BUILD.readyToResearch(4,1)) {
-            special=1; distribution[0]=desiredNumberGatherers/2; distribution[3]=distribution[0];
-            g=&gatherers[0].data1;
-            for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=3 && g[0]!=-1) g[1]=5;
-            specialGathererDistribution=1;
-        } else { distribution[0]=distribution[2]=distribution[3]=desiredNumberGatherers/3; specialGathererDistribution=0; special=1; }
+    if (inAge(1)) {
+        if (age2flag==1) {
+            if (BUILD.readyToResearch(2,1) && AGE_RES!=-1 && (RESOURCE.resource(1)>120 || specialGathererDistribution==1)) {
+                *distribution=desiredNumberGatherers;
+                g=&gatherers[0].data1;
+                for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
+                specialGathererDistribution=1;
+                special=1;
+            } else {
+                specialGathererDistribution=0;
+                distribution[1]=desiredNumberGatherers;
+                special=1;
+            }
+        } else specialGathererDistribution=0;
+    } else if (inAge(2)) {
+        if (age3flag==1) {
+            if (BUILD.readyToResearch(3,1) && (RESOURCE.resource(1)>240 || (RESOURCE.resource(1)>120 && AGE_RES<20))) {
+                *distribution=desiredNumberGatherers;
+                g=&gatherers[0].data1;
+                for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
+                specialGathererDistribution=1;
+                special=1;
+            } else {
+                specialGathererDistribution=0;
+                distribution[1]=desiredNumberGatherers;
+                special=1;
+            }
+        } else specialGathererDistribution=0;
+    } else if (inAge(3)) {
+        if (age4flag==1) {
+            if (BUILD.readyToResearch(4,1)) {
+                *distribution=desiredNumberGatherers/2;
+                distribution[3]=distribution[0];
+                g=&gatherers[0].data1;
+                for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=3 && g[0]!=-1) g[1]=5;
+                specialGathererDistribution=1;
+                special=1;
+            } else {
+                *distribution=desiredNumberGatherers/3;
+                distribution[1]=distribution[0];
+                distribution[3]=distribution[0];
+                specialGathererDistribution=0;
+                special=1;
+            }
+        } else specialGathererDistribution=0;
     } else specialGathererDistribution=0;
 
     if (!special) {

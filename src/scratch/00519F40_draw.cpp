@@ -11,6 +11,8 @@
 // - Hoisted SIZE and msg to function scope from the binary local map; frame grew to 0x38 with no diff gain, then restored.
 // - Tried the Ghidra local map with shared x/y/frame locals and direct state indexing; frame reached 0x28 but diff worsened to 1266, then restored.
 // - Moved center calculations before text selection per original 0051A074 order; shape and diff worsened, then restored.
+// - Tested explicit same-TU DLL-import declarations for the GDI and sprintf calls; VC5 output was unchanged, then restored.
+// - Tested /GX from the exact same-TU constructor; VC5 output was unchanged, then removed the custom flag file.
 // - Left in scratch: call order and memory effects match; VC5 frame and text CFG remain nonexact.
 
 #include "..\..\include\game_globals.h"
