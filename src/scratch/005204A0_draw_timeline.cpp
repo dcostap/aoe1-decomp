@@ -9,7 +9,12 @@
 //   correction/local counter topology; replaced diagnostic _ftol stubs with typed conversions.
 // - Probe: promoted the repeated segment temporary to the named local lifetime used by the draw loop.
 // - Probe: typed conversion and outer-temporary variants preserved the 19-call set but did not
-//   reduce the 0x64 frame; the best structural result remains 1565 bytes and 56.5% shape.
+//   reduce the 0x64 frame; the prior clean result was 1565 bytes and 56.5% shape.
+// - Probe: the binary's repeated player guard is `player_num - 1 > 0`; the simpler guard improved
+//   CFG parity from 37/41 to 37/38 conditions.
+// - Probe: direct repeated world/player expressions remove cached object homes and improve shape
+//   to 65.5%; the candidate is 1616 bytes with a 0x5C frame and 19 aligned calls.
+// - Probe: reusing local_38 as the inner player cursor is codegen-duplicate evidence.
 // - Left in scratch: original 0x54 frame and early CFG still differ. Next lead is exact local-home
 //   recovery around the initial zeroing and player-loop induction, not register scheduling.
 
@@ -129,21 +134,20 @@ void Time_Line_Panel::draw_timeline()
 
             temp_pop_num = 0.0f;
             error_correction_time_slice_thickness = 0;
-            RGE_Game_World* world = rge_base_game->world;
             int i = 0;
-            if ((world->player_num != 1) && ((int)world->player_num - 1 >= 0)) {
+            if ((int)rge_base_game->world->player_num - 1 > 0) {
                 int player_offset = 4;
                 do {
-                    TRIBE_Player* player = *(TRIBE_Player**)((char*)world->players + player_offset);
-                    temp_color = player->history_info->get_history_entry(0, (long)next_pop_total);
-                    if (player->history_info->get_history_event((long)next_pop_total, event) != 0) {
+                    temp_color = (*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
+                        ->history_info->get_history_entry(0, (long)next_pop_total);
+                    if ((*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
+                            ->history_info->get_history_event((long)next_pop_total, event) != 0) {
                         error_correction_time_slice_thickness = 1;
                     }
                     temp_pop_num = (float)temp_color + temp_pop_num;
                     i++;
                     player_offset += 4;
-                    world = rge_base_game->world;
-                } while (i < (int)world->player_num - 1);
+                } while (i < (int)rge_base_game->world->player_num - 1);
             }
 
             if (temp_pop_num == 0.0f) return;
@@ -162,19 +166,17 @@ void Time_Line_Panel::draw_timeline()
                     float_remainder = temp_pop_num;
                 } else {
                     float_remainder = 0.0f;
-                    world = rge_base_game->world;
                     i = 0;
-                    if ((world->player_num != 1) && ((int)world->player_num - 1 >= 0)) {
+                    if ((int)rge_base_game->world->player_num - 1 > 0) {
                         int player_offset = 4;
                         long next_index = next_pop_total + 1;
                         do {
-                            TRIBE_Player* player = *(TRIBE_Player**)((char*)world->players + player_offset);
-                            temp_color = player->history_info->get_history_entry(0, next_index);
+                            temp_color = (*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
+                                ->history_info->get_history_entry(0, next_index);
                             float_remainder = (float)temp_color + float_remainder;
                             i++;
                             player_offset += 4;
-                            world = rge_base_game->world;
-                        } while (i < (int)world->player_num - 1);
+                        } while (i < (int)rge_base_game->world->player_num - 1);
                     }
                     if (float_remainder == 0.0f) return;
                 }
@@ -201,14 +203,13 @@ void Time_Line_Panel::draw_timeline()
                         this->Y_line_pos = this->Y_start_line_pos;
                         cntr2 = 0;
                         cntr_droped_slice_rate = 0;
-                        world = rge_base_game->world;
                         local_34 = 0;
-                        if ((world->player_num != 1) && ((int)world->player_num - 1 >= 0)) {
-                            int player_offset = 4;
+                        if ((int)rge_base_game->world->player_num - 1 > 0) {
+                            local_38 = 4;
                             do {
-                                TRIBE_Player* player = *(TRIBE_Player**)((char*)world->players + player_offset);
                                 unsigned long color;
-                                switch (player->details->civilization) {
+                                switch ((*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
+                                            ->details->civilization) {
                                 case 0: color = 0x00C40000; break;
                                 case 1: color = 0x000000C8; break;
                                 case 2: color = 0x0000EAEA; break;
@@ -220,7 +221,8 @@ void Time_Line_Panel::draw_timeline()
                                 default: color = 0x00FFFFFF; break;
                                 }
                                 color = (unsigned long)GetNearestPaletteIndex((*(void***)this->draw_area)[2], color);
-                                time_slice = (long)player->history_info->get_history_entry(0, next_pop_total);
+                                time_slice = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
+                                    ->history_info->get_history_entry(0, next_pop_total);
                                 Y_line_total = this->Y_line_max_length;
                                 temp_pop_num = (float)time_slice / temp_pop_num * (float)Y_line_total;
                                 segment = (long)temp_pop_num;
@@ -228,7 +230,8 @@ void Time_Line_Panel::draw_timeline()
 
                                 if (this->bar_thickness != 1.0f) {
                                     if (next_pop_total != this->num_entries_page - 1) {
-                                        time_slice = (long)player->history_info->get_history_entry(0, y_line_segment_length);
+                                        time_slice = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
+                                            ->history_info->get_history_entry(0, y_line_segment_length);
                                     }
                                     Y_line_total = this->Y_line_max_length;
                                     long next_segment = (long)((float)time_slice /
@@ -245,23 +248,23 @@ void Time_Line_Panel::draw_timeline()
                                     }
                                 }
 
-                                if (local_34 == (int)world->player_num - 2) {
+                                if (local_34 == (int)rge_base_game->world->player_num - 2) {
                                     if (Y_line_total < segment + cntr2) segment = Y_line_total - cntr2;
                                     if (segment + cntr2 < Y_line_total) segment = Y_line_total - cntr2;
                                 }
 
                                 this->draw_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, segment, (unsigned char)color);
                                 if (intermediate_x_pos == 0) {
-                                this->record_special_event((unsigned char)(local_34 + 1), player->history_info,
+                                this->record_special_event((unsigned char)(local_34 + 1),
+                                    (*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))->history_info,
                                         (unsigned char)color, next_pop_total, this->X_line_pos,
                                         this->Y_line_pos, segment);
                                 }
                                 this->Y_line_pos += segment;
                                 cntr2 += segment;
                                 local_34++;
-                                player_offset += 4;
-                                world = rge_base_game->world;
-                            } while (local_34 < (int)world->player_num - 1);
+                                local_38 += 4;
+                            } while (local_34 < (int)rge_base_game->world->player_num - 1);
                         }
                         intermediate_x_pos++;
                         this->X_line_pos++;
