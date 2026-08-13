@@ -29,6 +29,8 @@
 //   the original 0x48; remaining drift is structural and starts at the frame.
 // - r4 ABI audit: used the landed canonical storage accessor so the global
 //   loads now encode 0062C574 instead of an unresolved extern relocation.
+// - r5 selection-home probe: let get_selection_area fill main_row as the
+//   third coordinate and carry that x-end directly through the outline paths.
 
 #include <stdlib.h>
 #include "../../include/rge_base_game_global.h"
@@ -212,7 +214,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     this->render_area->SetClipRect(&this->clip_rect);
 
     if (this->get_selection_area(
-            &start_col, &start_row, &end_col, &end_row, 0) == 0) {
+            &start_col, &start_row, &main_row, &end_row, 0) == 0) {
         rge_base_game_at_storage()->get_mouse_pos(point);
         if (this->is_inside(point.x, point.y) == 0)
             return;
@@ -224,16 +226,16 @@ void TRIBE_Main_View::draw_multi_object_outline() {
 
         this->fixup_pick_info(&pick_info);
         start_col = (int)pick_info.x;
-        end_col = start_col;
+        main_row = start_col;
         start_row = (int)pick_info.y;
         end_row = start_row;
     }
 
-    main_row = end_row;
+    end_col = main_row;
     col_distance = end_col - start_col;
     if (col_distance < 0)
         col_distance = -col_distance;
-    row_distance = main_row - start_row;
+    row_distance = end_row - start_row;
     if (row_distance < 0)
         row_distance = -row_distance;
 
