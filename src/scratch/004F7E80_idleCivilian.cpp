@@ -18,6 +18,10 @@
 //   The remaining structural lead is the original near JL fallthrough to its
 //   own -1 epilogue, followed by the found-object epilogue; VC5 keeps an inverted
 //   short JGE plus JMP and merges the failure epilogues in this source basin.
+// - Follow-up tail probes kept the clean source: one shared object local, a
+//   common foundObject, and an in-scope positive loop with break-failure all
+//   emitted the same 782-byte code or caused broad drift.  The clean source is
+//   restored; the tail remains a localized 55-byte structural mismatch.
 
 #include <stdlib.h>
 

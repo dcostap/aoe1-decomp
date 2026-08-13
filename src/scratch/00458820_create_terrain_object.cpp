@@ -25,6 +25,8 @@
 //   obj_types/obj_density cursor topology.
 // - A typed RGE_Tile_Set* terrain-record alias for the initial count and paired
 //   arrays grew output to 795 bytes and worsened positional diff to 704; rolled back.
+// - Matched the original place ABI and coordinate order: vslot 0x18 takes
+//   player, local_c, x, and one zero argument.  This recovered one exact block.
 // - bounded pause: calls are 10/10 aligned and size is exact, but the first
 //   mismatch remains the prologue/frame (rebuilt frame 0x14 vs 0x10), followed
 //   by broad local/register and shifted block drift. Not accepted-drift-safe.
@@ -64,7 +66,7 @@ public:
     virtual void vf0C();
     virtual void vf10();
     virtual void vf14();
-    virtual void place(RGE_Player*, float, float, int, int);
+    virtual void place(RGE_Player*, float, float, int);
     virtual void vf1C();
     virtual unsigned char can_place(RGE_Player*, float, float, int, int, int, int, int, int, int);
 
@@ -147,15 +149,21 @@ void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* /*world*
     short terrain = (short)this->get_terrain(col, row);
     short num_obj_type = this->terrain_types[terrain].num_obj_type;
     RGE_Object_Node* node;
+    unsigned char mode;
+    RGE_Static_Object* object;
+    short object_id;
+    unsigned char* placement;
+    short* density;
+    int remaining;
 
     if (num_obj_type > 0) {
         node = this->map_row_offset[row][col].objects.list;
         if (node != 0) {
             do {
-            RGE_Static_Object* object = node->node;
+            object = node->node;
             node = node->next;
 
-            short object_id = object->master_obj->id;
+            object_id = object->master_obj->id;
             if (object->owner == player &&
                 (object_id < min_id || object_id > max_id)) {
                 if (new_terrain < 0) {
@@ -191,17 +199,16 @@ void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* /*world*
         }
 
         if (num_obj_type > 0) {
-            unsigned char* placement =
-                this->terrain_types[terrain].obj_placement_flag;
-            short* density = this->terrain_types[terrain].obj_density;
-            int remaining = (int)num_obj_type;
+            placement = this->terrain_types[terrain].obj_placement_flag;
+            density = this->terrain_types[terrain].obj_density;
+            remaining = (int)num_obj_type;
             do {
                 short object_type = density[-30];
                 if (object_type != -1) {
                     short chance = *density;
                     RGE_Master_Static_Object* master =
                         player->master_objects[object_type];
-                    unsigned char mode = *placement;
+                    mode = *placement;
 
                     if (master != 0 && chance > 0) {
                         int chance_left = (int)chance;
@@ -231,9 +238,9 @@ void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* /*world*
                             }
 
                             if (place_it) {
-                                if (!master->can_place(player, x, local_c,
+                                if (!master->can_place(player, local_c, x,
                                                        0, 0, 1, 0, 1, 0, 1))
-                                    master->place(player, x, local_c, 0, 0);
+                                    master->place(player, local_c, x, 0);
                             }
 
                             chance -= 1000;

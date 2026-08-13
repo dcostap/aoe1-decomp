@@ -17,6 +17,10 @@
 // - Direct receiver/raw-pointer/direct-delta and assignment/reference probes
 //   did not reproduce the oracle's fild-before-fld order; restored the clean
 //   typed local form.
+// - New claim probes: a float amount temporary and implicit conversion were
+//   codegen duplicates; a void virtual return and base-typed receiver/cast were
+//   also duplicates. A volatile amount made a 717-byte structural mismatch.
+//   Restored the clean source after each diagnostic.
 // - Replaced temporary offset aliases with the canonical sn[0xba]/sn[0xbe]
 //   ownership and full managed-array prefix; emitted code stayed unchanged.
 // left in scratch: size/frame/call/CFG parity is exact, but the final call's
