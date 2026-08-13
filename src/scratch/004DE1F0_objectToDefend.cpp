@@ -60,6 +60,16 @@
 // gap.  One deliberate strategic-number local reuse worsened the call block
 // to 35 bytes; all other probes were duplicates or structural losses.  Restored
 // and validated the clean typed indexed scan; no evidence-backed lead remains.
+//
+// Session orch-4DE1F0-b: a persistent typed entry pointer changed the frame
+// to 0x14 and widened the mismatch to 291 bytes, so it was rolled back.
+// Register declarations for the list count, record id, and outer index were
+// neutral or structural duplicates.  A natural for-loop increment, direct
+// repeated id expressions, an id-address lvalue, and an inner-scope id were
+// also duplicates.  The clean indexed scan remains at 314 bytes with 97/97
+// instruction shapes and four ordered calls.  The only gap is the six-byte
+// EDX/EDI allocation swap at the inner list scan; no plausible source lead
+// remains in this claim.
 
 #include <stddef.h>
 

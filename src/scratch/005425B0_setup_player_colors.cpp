@@ -48,6 +48,10 @@
 // - The pre-audit vtable context changed no bytes. Removing the player tail
 //   and restoring historical one-line formatting also left the compare SIB.
 //   Restored the canonical declarations and indexed source.
+// - New worker probes: typed table overlays and primary typed/byte aliases did
+//   not change the localized store SIB; pointer-based store and post-call color
+//   pointer forms were also codegen duplicates. Restore the clean byte-table
+//   source; the remaining one-byte drift has no evidence-backed source lead.
 //
 // FLAGS: /nologo /c /O2 /Oy
 

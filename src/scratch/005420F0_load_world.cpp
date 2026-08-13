@@ -37,6 +37,14 @@
 //   index, and a cached short count all reproduced the 2-byte test basin.
 // - Reusing the cleared old_time field as the zero RHS widened the first load
 //   and regressed to 247 bytes. Restored the natural direct player_num guard.
+// - Comparing the first allocation gate against old_time's low word emitted a
+//   memory compare and 229 differing bytes; restored the clean source.
+// - Reloading old_time into the loop index after initialization changed the
+//   zero-store schedule and reached 278 differing bytes; restored.
+// - Corrected initializePathingSystem to its proven int return ABI; emitted
+//   bytes stayed unchanged at the 2-byte cmp/test basin, so the ABI is kept.
+// - Adding an explicit nonnegative loop-index conjunct regressed to 244 bytes;
+//   reversing the direct comparison operands reproduced the 2-byte basin.
 
 extern "C" void __cdecl rge_read(int, void*, int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);

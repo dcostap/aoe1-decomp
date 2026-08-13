@@ -27,6 +27,14 @@
 //   increment, inverted-predicate, labeled-backedge, and <=-bound spellings;
 //   all either broadened the function or canonicalized to the same six-byte
 //   gap. The clean do/while source remains the best reconstruction.
+// - this session reconfirmed the clean baseline, then tested scoped and
+//   predeclared-counter for headers; both changed register ownership and
+//   broadened the diff. A four-case loop-shape lab found no new invariant-
+//   eligible codegen group.
+// - a four-case predicate-shape lab (direct, negated-or, nested, and
+//   positive-else) collapsed to the same six-byte branch gap. The final
+//   predeclared-counter for probe was a duplicate of the scoped-for basin;
+//   the clean do/while remains authoritative.
 
 class TRIBE_Panel_Time {
 public:
