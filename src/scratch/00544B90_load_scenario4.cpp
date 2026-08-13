@@ -18,6 +18,19 @@
 // the frame moved from 0x4c to 0x48 and the structural diff worsened, but the source
 // now has no absolute-address macro. The typed serialization widths and virtual ABI
 // remain unchanged.
+// probe 18: reordered the stream locals to the adjacent scenario-loader family;
+// VC5 emitted the same code.
+// probe 20: restored the proven World.cpp singleton counter surface; the frame returned
+// to 0x4c and the candidate improved to 264 bytes of positional drift.
+// probe 22: reused player_id_hash[8] for the serialized player count; the frame fell to
+// 0x48 and drift increased to 281 bytes, so the separate count remains canonical.
+// probe 23: used long stream locals from load_scenario3; output was a codegen duplicate.
+// probe 28: combined direct indexed object loading with the do-while cleanup pass;
+// drift increased to 270 bytes and the body grew by 6 bytes, so both were rolled back.
+// current remaining drift: the target keeps the scenario-count read at a distinct +60
+// stack home while this natural source assigns that value to a nearer compiler home.
+// review correction: the absolute counter macro was diagnostic-only. The living source
+// uses the canonical declared global surface.
 
 extern int world_update_counter;
 

@@ -18,6 +18,10 @@
 // 15: Restored master-before-owner declaration order; duplicate.
 // 16: Added the proven virtual class surface, typed view ownership, and CRT header; all were codegen duplicates.
 // 17: Tested int coordinate parameters against raw original stack loads; size improved by 2 bytes but structural drift worsened, so restored short ABI.
+// 18: Query_abi confirmed RGE_Map::get_point uses short screen coordinates; the exact local ABI surface is retained, with no codegen change.
+// 19: Binary decompiler assignment order places owner->world->map between full x and y/z radius loads; the positive view guard and this order are codegen duplicates.
+// 20: Exact player/world virtual surfaces preserve proven offsets (+3C and +28); emitted code is unchanged.
+// 21: A short coordinate-local diagnostic reached 994 bytes but emitted 16-bit additions, unlike the original 32-bit parameter-home additions; rolled back.
 // GIVEUP: left in scratch; no accepted_drift because the natural source remains 4 bytes over the original boundary and the prologue/liveness drift is broad.
 
 #include <stdlib.h>
@@ -45,11 +49,22 @@ public:
 
 class RGE_Map_004C2DF0 {
 public:
-    void get_point(short* x, short* y, float rx, float ry, float rz, int sx, int sy);
+    virtual ~RGE_Map_004C2DF0();
+    void get_point(short* x, short* y, float rx, float ry, float rz, short sx, short sy);
 };
 
-struct RGE_World_004C2DF0 { char gap[0x28]; RGE_Map_004C2DF0* map; };
-struct RGE_Player_004C2DF0 { char gap[0x3C]; RGE_World_004C2DF0* world; };
+class RGE_World_004C2DF0 {
+public:
+    virtual void vf00();
+    char gap[0x24];
+    RGE_Map_004C2DF0* map;
+};
+class RGE_Player_004C2DF0 {
+public:
+    virtual ~RGE_Player_004C2DF0();
+    char gap[0x38];
+    RGE_World_004C2DF0* world;
+};
 struct MasterObj_004C2DF0 { char gap[0xAC]; float rx; float ry; float rz; };
 struct RGE_View_004C2DF0 { char gap[0x88]; HRGN clip_rgn; };
 class BaseGame_004C2DF0 { public: virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C(); virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C(); virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual RGE_View_004C2DF0* get_view(); };
@@ -77,7 +92,7 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
     short y2, x2, y1, x1;
     int px, py;
     float negRy;
-    float ry1, rz2, rz3, rz4, rx2, ry2, rzFull;
+    float rx2, ry1, ry2, rz2, rz3, rz4, rzFull;
     MasterObj_004C2DF0* m = this->master_obj;
     RGE_Player_004C2DF0* owner = this->owner;
     ry1 = m->rx * DAT_00574734;
@@ -85,17 +100,15 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
     rz3 = m->rz * DAT_00574734;
     rz4 = m->rz * DAT_00574738;
     rx2 = m->rx;
+    RGE_Map_004C2DF0* map = owner->world->map;
     ry2 = m->ry;
     rzFull = m->rz;
-    RGE_Map_004C2DF0* map = owner->world->map;
     RGE_View_004C2DF0* view = rge_base_game->get_view();
 
-    if (view == 0)
-        return;
-
-    area->Unlock(0);
-    HDC dc = area->GetDc(0);
-    if (dc != 0) {
+    if (view != 0) {
+        area->Unlock(0);
+        HDC dc = area->GetDc(0);
+        if (dc != 0) {
         SelectClipRgn(area->DrawDc, view->clip_rgn);
         if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0)
             SelectObject(area->DrawDc, GetStockObject(7));
@@ -127,6 +140,7 @@ void RGE_Static_Object_004C2DF0::draw_frame_3d_cube_back(TDrawArea_004C2DF0* are
 
         SelectClipRgn(area->DrawDc, 0);
         area->ReleaseDc(0);
+        }
+        area->Lock(0, 1);
     }
-    area->Lock(0, 1);
 }
