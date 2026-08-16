@@ -1,3 +1,12 @@
+// Attempt log:
+// - The natural ConstructionItem reference overload and the existing member
+//   declarations reproduce all 124 bytes, frame, CFG, and six call sites.
+// - The remaining checker discrepancy is the direct relocation at +0x1D:
+//   original target 0040A960 is named `operator==` by the inventory, while
+//   VC5 emits its decorated ConstructionItem overload symbol. The exact
+//   0040A960 donor has the same owner-symbol limitation. Do not replace this
+//   call with a fake helper or change the proven pointer/reference ABI.
+
 class ConstructionItem;
 
 int __cdecl operator==(const ConstructionItem& a, const ConstructionItem& b);

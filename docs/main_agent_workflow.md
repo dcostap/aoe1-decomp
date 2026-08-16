@@ -63,6 +63,18 @@ Treat source comments as hypotheses, not executable evidence.
 - Do not repeatedly poll participants.
 - Keep each assignment bounded. Avoid complete packet and history dumps.
 
+Wait for the next completion across all active participant groups. Use
+`subagent_wait` with `wait_mode: "any"` and the active agent IDs. Route each
+result by role. Review worker results while matching workers, auditors, and blind
+reviewers continue. Wait again only after useful integration work finishes.
+
+A blind-review cohort has a logical adjudication barrier, not a global wait
+barrier. Collect its reports as they finish, but adjudicate that candidate only
+after every cohort member returns. Continue to process unrelated completions.
+Use `wait_mode: "all"` only when the selected agents are the only remaining work
+and no unrelated result can require integration. A cancelled wait leaves agents
+running; do not launch replacements.
+
 A practical four-slot split is at most two workers and two read-only analysts.
 Reserve two read-only slots when a blind-review cohort is due.
 
