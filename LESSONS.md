@@ -147,6 +147,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - A declare-only output can coalesce with a dead parameter home.
 - An invalid-path reload can imply original uninitialized behavior.
 - Retain that behavior only with explicit binary evidence and a source comment.
+- Adding an initializer absent from the executable changes stores, lifetime, and homes.
+- A proven missing initialization can be original behavior, not incomplete reconstruction.
 - Keep an early address-taken temp separate from later parameter-home reuse.
 - A decompiler can fold a distinct terminator dword into `buffer[0]`.
 - Restore a separate marker when the frame and string addresses prove it.
@@ -177,6 +179,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Wrong ownership can enable a tail jump or wrong cleanup.
 - Member helpers must be members when ECX carries `this`.
 - Infer complete C helper arity from stack use, not a decompiler prototype.
+- `noreturn`, exception, import, and linkage attributes can change cleanup and epilogues.
+- Treat these declaration attributes as compiler inputs, not descriptive comments.
 - Use real period headers and declarations for CRT and API helpers.
 - Natural `strcpy` can emit VC5's combined scan and REP copy.
 - `strlen(x)` emits a decrement after the raw intrinsic count.
@@ -214,18 +218,30 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 
 - Translation-unit context can change VC5 output without changing body semantics.
 - Standard headers affect intrinsics, EH, allocator choices, and SIB encodings.
+- A VC4.2 campaign found that unused file-scope declarations changed register output.
+- Declaration kind and name length did not matter, while macros and unused members differed.
+- Token-neutral include placement also changed output through front-end state.
+- Treat these as old-MSVC context hypotheses until local VC5 evidence confirms them.
+- VC5 can exhaust its inline budget partway through one large function.
+- Early helper sites can inline while later sites call the same out-of-line body.
+- When that split is proved, test helper visibility, `/Ob`, or function-scoped
+  `#pragma inline_depth(0)`; the pragma can help one function and harm another.
 - `<windows.h>`, real `RECT`, and API declarations can select another basin.
 - `<stdlib.h>`, `<string.h>`, `<memory.h>`, and their combinations can do the same.
 - A header combination can work when either header alone does not.
 - Restore donor-supported period context before aliases, volatility, or raw cursors.
 - Keep a winning header only when donor or API evidence supports it.
 - Full SDK interfaces can change push and vtable-load scheduling at one called slot.
+- The compiler version does not identify the historical SDK version.
+- Include-path precedence can change declarations, vtable slots, and call targets.
 - A local `tagRECT` clone can still differ from the SDK `RECT` basin.
 - Correct typed world, player, master, or record ownership can alter allocation.
 - Raw offset views at the same addresses can remain in the wrong basin.
 - A named intermediate for `global->field->method()` can change absolute load encoding.
 - Scope it to one call so it does not become callee-saved.
 - Original compiler context is part of source recovery.
+- VC5 service packs can change code generation across many unrelated functions.
+- Isolate compiler binaries from headers and libraries during a version comparison.
 - An original EH frame is strong evidence to test `/GX`.
 - `/GX` can change frames, exits, vptr stores, cleanup, and whole-function scheduling.
 - Debug-style EBP code can justify a focused optimization-flag experiment.
