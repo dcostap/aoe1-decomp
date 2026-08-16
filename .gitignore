@@ -1,8 +1,10 @@
 build/
 orig/
 __pycache__/
+.pytest_cache/
 *.pyc
 *.pyo
+*.stackdump
 *.obj
 *.exe
 *.pdb

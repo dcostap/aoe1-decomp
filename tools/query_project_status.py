@@ -28,10 +28,7 @@ from target_session import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description=(
-            "Query current project function status from live repo state. "
-            "Does not read project_full_status.csv unless --from-csv is explicitly supplied."
-        )
+        description="Query current project function status from live repo state."
     )
     corpus = parser.add_mutually_exclusive_group()
     corpus.add_argument("--normal", action="store_true", help="Only normal corpus functions")
@@ -112,11 +109,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--csv", action="store_true", help="Emit CSV rows")
     parser.add_argument("--summary", action="store_true", help="Print bucket summary instead of rows")
     parser.add_argument(
-        "--from-csv",
-        type=Path,
-        help="Explicit stale/fast mode: read an existing generated status CSV instead of live repo state",
-    )
-    parser.add_argument(
         "--with-preview",
         action="store_true",
         help="Include source_preview while building live rows. Slower and usually unnecessary for CLI queries.",
@@ -130,9 +122,6 @@ def load_rows(
     include_vas: set[str] | None = None,
     exclude_vas: set[str] | None = None,
 ) -> list[dict[str, str]]:
-    if args.from_csv:
-        with args.from_csv.open("r", encoding="utf-8", errors="replace", newline="") as handle:
-            return list(csv.DictReader(handle))
     sort_key, _descending = sort_from_args(args)
     return build_status_rows(
         include_source_preview=False,
@@ -550,14 +539,13 @@ def main() -> None:
     rows = sort_status_rows(rows, sort=sort_key, descending=descending)
     total_before_limit = len(rows)
     rows = limited(rows, args.limit)
-    if not args.from_csv:
-        enrich_status_rows(
-            rows,
-            include_source_notes=bool(args.notes or args.work_history or args.json or args.csv),
-            include_source_preview=args.with_preview,
-            include_comment_lines=bool(args.json or args.csv),
-            include_diff_metrics=bool(args.json or args.csv),
-        )
+    enrich_status_rows(
+        rows,
+        include_source_notes=bool(args.notes or args.work_history or args.json or args.csv),
+        include_source_preview=args.with_preview,
+        include_comment_lines=bool(args.json or args.csv),
+        include_diff_metrics=bool(args.json or args.csv),
+    )
     if args.triage:
         rows = annotate_triage(rows)
 

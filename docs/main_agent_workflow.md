@@ -1,349 +1,207 @@
-# Main-agent project workflow
+# Main-agent workflow
 
-This document is for the user-designated main coordinating agent. `AGENTS.md`
-contains the common rules injected into every Pi instance; this file defines the
-additional top-level scheduling, integration, and semantic-review duties of the
-main agent.
+Read this file only when coordinating project work. `AGENTS.md` owns universal
+rules. `docs\agentic_matching_workflow.md` owns worker procedure. This file owns
+scheduling, integration, and semantic review.
 
-## Authority and responsibilities
+## Authority
 
-The main agent maintains the project queue, assigns work, tracks active leases,
-validates every returned edit, controls status moves, coordinates semantic
-reviews, updates logic-review ledgers, and makes final promotion decisions.
-Subagent output is always a proposal until the main agent reads the complete diff
-and source, checks policy compliance and unrelated changes, reruns the relevant
-validation, and confirms the reported result.
+The user-designated main agent owns:
 
-`AGENTS.md` is the canonical contract for ordinary worker behavior, source
-recovery, target sessions, probes, and finalization. This document adds only
-orchestrator policy. Do not copy ordinary worker instructions here.
+- queue and lease coordination;
+- participant assignment;
+- returned-work review;
+- status moves and commits;
+- reviewed shared ABI evidence;
+- semantic-review ledgers and promotion decisions.
 
-Within the user-supplied concurrency ceiling, the main agent may run matching
-workers concurrently on different targets. Only one worker may edit a given
-function at a time.
+Subagent output is a proposal. The main agent must inspect and validate it before
+integration.
 
-Use `python tools/query_project_status.py --logic-review-in-progress --paths`
-to inspect candidates currently in semantic review, and `--verified-logic` for
-completed semantic reconstructions.
+Honor the user's exact model, thinking, concurrency, and launch limits. Do not
+infer a missing execution contract.
 
-## User-supplied execution contract
+## Participant roles
 
-Before launching subagents, obtain the user's execution contract:
-
-- exact provider/model ID, not a nickname or inferred equivalent;
-- explicit thinking level;
-- an approximate maximum active-subagent count or an allowed range;
-- any per-role model differences or temporary stop/replacement instructions.
-
-Resolve an ambiguous model name with the local model-list command and confirm the
-exact ID. Never inherit or guess a subagent model or thinking level. Unless the
-user supplies separate role contracts, use the approved model/thinking pair for
-matching workers, readiness auditors, and semantic reviewers alike.
-
-Treat the user's maximum, or the upper end of a range, as a ceiling across active
-and queued subagents. It is not a requirement to keep every slot occupied. A
-lower end is a planning preference, not permission to launch low-value work. A
-later user instruction such as "wrap up" or "start no more" overrides the earlier
-contract immediately; do not replace completed or failed agents afterward.
-
-## Concurrency and scheduling
-
-Prefer a small live set whose results the main agent can review promptly. For a
-four-agent ceiling, the normal allocation is at most two matching workers and at
-most two read-only analysis/review workers. Adapt this split to the queue, but
-never place two editors on one function.
-
-Operational rules:
-
-1. Count queued work against the ceiling; do not create a long hidden backlog.
-2. Launch independent matching workers only on different targets.
-3. Integrate and commit completed edits before reflexively filling the freed
-   slot. The ceiling is not an occupancy target.
-4. Replace a failed agent only when the user still permits launches and the
-   replacement has a narrower, useful scope.
-5. Do not poll running agents repeatedly. Use completion notifications; request
-   status only when an orchestration decision actually depends on it.
-6. Reserve two read-only slots for a complete blind-review cohort once a function
-   enters logic review. Do not start one reviewer while the other cohort slot is
-   occupied by unrelated work.
-7. Matching results may be integrated individually as they finish. Blind-review
-   reports may likewise be collected individually, but they create a logical
-   barrier: do not adjudicate, edit the reviewed candidate, or act on any cohort
-   finding until every member of that cohort has finished.
-8. Do not turn a cohort's logical barrier into an immediate blocking wait for all
-   reviewers. Use completion notifications or collect whichever result is ready,
-   then continue independent orchestration work while the remaining reviewers
-   run. Block only when adjudication is the next useful action and the cohort is
-   still incomplete.
-
-Broad initial queues are counterproductive in a shared worktree. Start with the
-smallest useful batch, observe integration cost and compiler contention, and
-expand only within the user contract.
-
-Use `query_project_status.py --work-history` before assigning paused scratch
-targets. Review lifetime probes and claims, not only the current claim.
-
-## Participant briefings
-
-Every subagent prompt must assign exactly one role. Use `AGENTS.md` for the
-ordinary role contract. This section lists only the orchestrator additions.
+Assign each participant exactly one role.
 
 ### Matching worker
 
-`AGENTS.md` defines the complete matching-worker contract. The orchestrator
-brief must add one VA, one lease owner, the current evidence card, and one
-permitted role or lead. Do not assign a shopping list of targets.
+Assign one VA, one lease owner, a compact evidence card, and one useful lead.
+The worker follows `docs\agentic_matching_workflow.md` and edits only that target.
 
 ### Phase-readiness auditor
 
-Use this role only for matching-stall analysis. Give it one or two named
-functions. It may inspect the matching history needed to judge remaining leads.
-It does not decide semantic promotion.
-
-Do not assign an auditor a corpus-wide packet sweep. Use
-`query_project_status.py` to shortlist, then inspect at most a few candidates.
-If a broader scan is necessary, divide it into bounded source/TU groups.
+Use this read-only role to decide whether exact matching still has credible
+leads. Assign at most two named functions. The auditor may read bounded matching
+history, but does not decide semantic promotion.
 
 ### Blind semantic reviewer
 
-Give this role one named candidate and a fresh context. It follows the
-read-only and evidence rules in `AGENTS.md`. It must report findings and
-uncertainties with concrete binary evidence.
+Assign exactly one candidate in fresh, read-only context. The reviewer must not:
 
-Keep readiness audits separate from blind-review cohort membership.
+- edit files or claim a lease;
+- read `logic_reviews`;
+- read Git history or prior reports;
+- receive a claim that a difference is harmless.
 
-## Context and output discipline
+## Scheduling
 
-Subagent status `CH` means **cache-hit percentage**, not context consumed or
-context remaining; never use it to infer context exhaustion. The separate
-context-occupancy field is authoritative—for example, `12.3%/1049k` means
-12.3% of a 1,049,000-token context is occupied. Scope and steer assignments so
-each subagent normally stays at or below **300k occupied context tokens**.
+- Never assign two editors to one function.
+- Count queued work against the user's concurrency ceiling.
+- Keep the live set small enough for prompt review.
+- Integrate completed edits before filling every free slot.
+- Use `query_project_status.py --work-history` before reassigning paused work.
+- Give a later worker a new evidence-backed lead.
+- Do not repeatedly poll participants.
+- Keep each assignment bounded. Avoid complete packet and history dumps.
 
-- A matching worker receives one target, not a shopping list.
-- A readiness auditor normally receives no more than two targets.
-- A blind reviewer receives exactly one candidate.
-- Prefer concise checker maps, focused ranges, and dossier sections over complete
-  packet/history dumps.
-- Keep full records on disk. Do not paste raw target-session JSON into a prompt.
-- Use `target_session.py brief --va <VA>` for the initial handoff. Use bounded
-  history or checker views only to answer a specific open question.
-- Remind participants to use `everything_search` for filename/path discovery and
-  `rg` for contents; recursive `find` is inappropriate for ordinary indexed repo
-  discovery and can stall on large `orig`/`build` trees.
-- Ask for compact final reports containing outcome, probes or review scope,
-  metrics/findings, changed files, validation, and next lead.
-- If an audit approaches the model context limit, stop and return the bounded
-  evidence already established rather than loading more candidates.
+A practical four-slot split is at most two workers and two read-only analysts.
+Reserve two read-only slots when a blind-review cohort is due.
 
-## Matching assignments
+## Matching queue
 
-Assign one function to one matching worker. Require the worker to follow the
-canonical contract in `AGENTS.md`. Supply the target's evidence card and one
-specific lead. Do not assign a general source-shape pass to a heavily tested
-target without new evidence.
+Keep exact matching active while credible leads remain. Judge a stall from
+cumulative evidence, not probe count alone. Consider:
 
-The worker's session history and clean-source pin remain the durable matching
-record. The main agent reads them before assigning another claim. A later claim
-needs a new lead, such as donor evidence, ABI/layout evidence, TU/header
-evidence, a focused variant family, or a new binary behavior finding.
+- behavior, ABI, layout, structure, context, liveness, flags, and variant coverage;
+- convergence across independent workers;
+- metric and structural progress;
+- repeated emitted-code basins;
+- ordered calls, memory effects, cleanup, and block topology;
+- unresolved source, type, or ownership facts.
 
-Judge an exact-match stall from cumulative evidence, including:
+Do not start another broad source-shape pass without new evidence.
 
-- diversity and quality of attempted behavior, ABI, layout, structure, context,
-  liveness, flags, and variant hypotheses;
-- independent workers and whether they repeatedly converge on the same blocker;
-- metric and structural progress across assignments;
-- duplicate emitted-code basins and exhausted focused labs;
-- remaining credible leads in the attempt log;
-- whether calls, memory effects, block topology, and unresolved ABI facts are
-  actually understood.
+## Review returned matching work
 
-Do not infer a stall from raw attempt count alone. Keep assigning exact-matching
-work while credible unexplored leads remain and the expected value is reasonable.
+For every return:
 
-## Verify returned matching work
+1. inspect the complete diff and final source;
+2. confirm that only assigned files changed;
+3. preserve unrelated shared-worktree edits;
+4. inspect source plausibility and canonical ownership;
+5. inspect clean-source and metric-best checkpoints separately;
+6. rerun `python tools\check_function.py --va <VA>`;
+7. accept, revise, or reject the proposal;
+8. perform any status move;
+9. stage only reviewed paths.
 
-For every worker result:
+Do not trust folder placement or a reported match. Exact promotion requires a
+fresh local `MATCH` after the move.
 
-1. inspect the complete diff and resulting source;
-2. ensure only authorized files changed and preserve unrelated work;
-3. apply the source, asm, relocation, and attempt-log rules in `AGENTS.md`;
-4. rerun `check_function.py --va <VA>` and confirm the claimed outcome;
-5. inspect the session's clean-source and codegen-best lines separately;
-6. accept, revise, or reject the result;
-7. perform status moves and version-control integration only after verification.
+Use `accepted_drift` only for a localized, proved behavior-equivalent codegen
+difference. Never use it for changed calls, predicates, cleanup, memory effects,
+ABI, or broad unexplained drift.
 
-Also inspect `git status` before and after integration. Shared-tree workers must
-not silently rewrite line endings, leave compiler artifacts, or modify common
-headers without reusable evidence. Stage explicit reviewed paths rather than
-using a blanket add, and keep another running worker's changes out of the commit.
-If Git is temporarily locked by an active process, wait for that process; do not
-delete a live lock file.
+## Shared ABI evidence
 
-Exact functions go to `src\matching`. Rare near-exact functions may go to
-`src\accepted_drift` only under its existing narrow policy. Materially uncertain
-functions remain in `src\scratch`.
+The main agent owns `config\shared_abi_evidence.json`. Add an entry only after
+verifying:
 
-## Enter logic matching
+- canonical declaration and type;
+- symbol or storage identity;
+- shared header and definition;
+- measured effect on at least one target;
+- evidence strong enough for reuse.
 
-Only the main agent may decide to suspend exact matching and enter formal logic
-review. This requires substantial cumulative matching work and a candidate whose
-behavior appears reconstructable even though exact VC5 codegen remains stuck.
+Update the shared declaration and evidence entry in one reviewed change. Matching
+workers may consume this evidence but must not edit the registry.
 
-Before launching the first blind cohort, perform a source-normalization pass.
-Natural source is already the matching baseline; matching may temporarily test
-compiler-steering spellings in checkpoints or labs, while logic review requires
-all unjustified residue to be gone. Present the simplest ordinary C/C++ the
-original developers plausibly wrote. Replace codegen-only comma expressions,
-fake volatility, raw vtable/call
-casts, manual-offset plumbing, redundant aliases, declaration-order tricks, and
-decompiler scaffolding with canonical types, named fields, explicit statements,
-natural control flow, and typed calls whenever the executable does not require
-the odd form. Do not keep a lower diff at the cost of readability once exact
-matching has been suspended.
+## Enter semantic review
 
-An unnatural spelling may remain only when instruction evidence shows that it is
-needed for real behavior such as access width, overlap, aliasing, lifetime,
-evaluation/fault order, or an original bug. Document that reason. Rerun validation
-after normalization and record metric regressions as nonsemantic drift. If
-normalization exposes uncertain behavior, resolve it or return to matching work;
-do not ask reviewers to reverse-engineer opaque codegen-lab residue.
+Only the main agent may suspend exact matching. Enter semantic review only after
+substantial matching work leaves no reasonable exact lead and the candidate's
+behavior is reviewable.
 
-Create `logic_reviews\<slug>.md` from the format documented in
-`logic_reviews\README.md`. Record the phase-transition rationale, current exact
-and structural metrics, cumulative matching evidence, known assembly differences,
-and every semantic uncertainty present at entry. Keep the source's matching
-attempt log intact.
+Before review:
 
-The candidate normally remains in `src\scratch` during review. Folder placement
-changes only after final adjudication.
+1. remove codegen-only residue;
+2. restore canonical types, fields, calls, and natural control flow;
+3. retain an unusual form only when executable behavior requires it;
+4. validate the normalized source;
+5. create `logic_reviews\<slug>.md`;
+6. keep the source in `src\scratch`;
+7. preserve its complete matching attempt log.
 
-## Launch a blind review cohort
+The ledger must record:
 
-Launch a complete cohort of at least two fresh reviewers concurrently. Give them
-the candidate source and original evidence, but not the ledger, Git history,
-previous reports, or a claim that any difference is harmless. Reviewers must be
-explicitly read-only and must not claim the target.
+- transition reason and current checker metrics;
+- cumulative matching evidence and unresolved questions;
+- every reviewer report and assigned scope;
+- main-agent adjudication of each finding;
+- integrated fixes and validation;
+- later review rounds;
+- final decision and remaining nonsemantic differences.
 
-Every review prompt must state that the goal is the original executable's actual
-behavior, including bugs, odd signedness, incorrect-looking formulas, unintended
-side effects, and error behavior—not the likely intention of the programmer.
-Require concrete binary evidence for substantive findings.
+Use this status query:
 
-Use complementary scopes such as control flow and bounds; calls, ABI, layout, and
-memory effects; cleanup, ownership, and exceptional paths; and full adversarial
-semantic review. Include at least one broad reviewer that is not primed with a
-suspected issue.
+```bat
+python tools\query_project_status.py --logic-review-in-progress --paths
+```
 
-Do not start a partial cohort merely to occupy a slot. If the user's concurrency
-ceiling cannot provide at least two simultaneous read-only reviewers, finish or
-defer other work first, or ask the user to revise the contract. Launch every
-member of the cohort before collecting results. Record the cohort membership so
-that an early report cannot accidentally trigger adjudication. Collect completed
-reports as they arrive and continue unrelated useful work; cohort completeness
-is required for action, not for the main agent to remain responsive.
+## Blind review cohorts
 
-In a harness with `wait_mode`, prefer nonblocking completion notifications or
-`wait_mode="any"` when a result is currently needed. Keep the full cohort ID set
-as the outstanding barrier and remove members only as their reports are safely
-collected. Use a blocking `wait_mode="all"` only when no independent useful work
-remains and progress genuinely depends on the complete cohort. Do not replace
-this with repeated status polling.
+Launch at least two fresh reviewers concurrently. Do not launch a partial cohort.
+Use complementary scopes and include one broad adversarial review.
 
-A suitable neutral core prompt is:
+Ask each reviewer to compare the candidate directly with the executable. Require
+findings about paths, predicates, bounds, calls, arguments, and memory effects.
+Also require findings about offsets, returns, errors, ownership, cleanup,
+exceptions, and fault order.
 
-> Perform an independent, read-only semantic verification of `<VA>`. Do not edit
-> files, claim the target, inspect `logic_reviews`, inspect Git history, or seek
-> previous review conclusions. Compare the reconstructed function directly with
-> the original executable, which is the behavioral oracle. Reproduce its actual
-> logic, including bugs and unintended edge cases. Report definite behavioral
-> differences, plausible differences needing evidence, assumptions you verified,
-> areas you could not establish, and your overall conclusion. Check reachable
-> paths, predicates, loop bounds, calls and arguments, memory reads/writes and
-> widths, object offsets, return values, error paths, ownership, and cleanup.
+The complete cohort is an action barrier. Collect reports as they finish, but do
+not adjudicate or edit the candidate until every cohort member completes. Continue
+unrelated work while waiting. Reviewer count is not a vote; one proved behavior
+difference blocks promotion.
 
-## Adjudicate and integrate a review round
+## Adjudication
 
-Do not edit or adjudicate until the full concurrent cohort has completed. This is
-a logical gate, not a requirement to issue a blocking wait-all operation as soon
-as reviewers launch. Until the last report arrives, the main agent should keep
-integrating independent matching results, validating unrelated targets, updating
-the queue, or doing other non-conflicting work. Once complete, append all reports
-to the per-function ledger, deduplicate findings, and adjudicate each one against
-the binary as confirmed, unresolved, or cleared. Reviewer count is not a vote;
-one evidence-backed behavioral objection blocks promotion.
+After the full cohort completes:
 
-The main agent directly applies bounded, well-established review fixes to the
-function and updates the ledger in the same integration pass. Rerun the checker
-and inspect the complete diff. Do not delegate isolated review fixes merely to
-have another agent edit them.
+1. append every report to the ledger;
+2. deduplicate findings;
+3. classify each finding as confirmed, unresolved, or cleared;
+4. record direct binary evidence for the decision;
+5. apply only bounded, well-established fixes;
+6. rerun the checker;
+7. version source and ledger changes together.
 
-Write review fixes as plausible ordinary developer source, not as new
-compiler-scheduling puzzles. Prefer canonical declarations, explicit statements,
-and typed calls even when they worsen byte metrics. Keep low-level or unusual
-source only when the adjudicated executable behavior requires it, and record that
-evidence in the ledger.
+Use plausible ordinary source for fixes. If a finding needs broad reconstruction,
+return the function to matching work. After meaningful fixes, launch a fresh
+blind cohort without prior conclusions.
 
-After the round is adjudicated and validated, version the ledger and any source
-changes together. If the main agent stops with unresolved findings, version that
-ledger state as the durable handoff rather than leaving the only record in an
-agent transcript.
-
-If a finding requires broad reconstruction rather than bounded integration,
-record that result, stop the review phase, return the function to scratch matching
-work, and assign one matching worker. Restart formal review later with fresh
-reviewers.
-
-After meaningful source changes, launch another fresh blind cohort. Do not give
-new reviewers previous reports or adjudications. Repeated rediscovery is useful
-evidence; the main agent uses the ledger to determine whether it is a real issue,
-a failed fix, or a previously cleared function-specific false flag.
+Clear a difference only after bounded review proves that no shipped code can
+observe it. It must change no call, cleanup, handler, state, result, memory,
+exception, or fault result. Record that proof. This rule can clear dead compiler
+bookkeeping, but never real ABI, cleanup, lifetime, or fault-order differences.
 
 ## Promote verified logic
 
-Promotion requires extreme thoroughness rather than a fixed reviewer count.
-Require repeated independent review rounds to converge, all reachable behavior
-and important memory/call effects to be accounted for, and no substantive open
-finding. Every supposedly irrelevant finding needs an evidence-backed resolution
-in the ledger.
+Promote only after repeated fresh cohorts converge and no substantive uncertainty
+remains.
 
-Judge reachability in the shipped executable, not through every theoretical
-observer. A debugger, injected handler, external stack walker, or hypothetical
-routine that reads compiler bookkeeping does not block promotion when bounded
-review finds no such in-program observer. The main agent may clear dead EH states,
-unused unwind records, or transient frame-chain differences after proving they
-change no reachable cleanup, handler choice, call, state, result, exception, or
-fault outcome. Record the search scope and proof in the ledger. Do not clear real
-cleanup, destructor, catch, fault-order, ABI, or program-visible memory changes
-under this rule. Exact-match promotion remains byte-strict.
+Before promotion:
 
-When satisfied, the main agent:
+1. read the complete source and ledger;
+2. confirm every reachable behavior and important effect;
+3. confirm all unusual source has binary justification;
+4. run final validation;
+5. complete the ledger decision;
+6. move the source to `src\verified_logic`;
+7. version the source, ledger, and status change together.
 
-1. reads the complete source and ledger;
-2. confirms the source is normalized, readable, plausible original-developer
-   C/C++, with every remaining oddity justified by binary-observed behavior;
-3. performs final policy and behavioral adjudication;
-4. reruns final validation;
-5. completes the ledger's final-decision section;
-6. moves the source to `src\verified_logic`;
-7. versions the source, ledger, and status change together.
-
-`verified_logic` is non-exact and remains eligible for future exact-matching work.
-Moving it back into matching work must preserve its ledger and attempt history.
+`verified_logic` remains nonexact. Preserve its ledger and attempt log if later
+exact work resumes.
 
 ## State flow
 
 ```text
-project queue
-    -> one matching worker per function
-    -> main-agent validation
-       -> exact: matching
-       -> narrow reviewed codegen drift: accepted_drift
-       -> uncertain or still promising: scratch / another worker
-       -> cumulatively stalled but behavior-complete candidate: logic review
-          -> concurrent read-only reviewers
-          -> main-agent adjudication and bounded fixes
-          -> broad defect: scratch / matching worker
-          -> converged with no substantive open finding: verified_logic
+queue -> matching worker -> main-agent validation
+  exact                      -> matching
+  narrow reviewed drift      -> accepted_drift
+  uncertain or promising     -> scratch / later worker
+  stalled and behavior-ready -> blind cohorts -> adjudication
+     broad defect            -> scratch / matching
+     no substantive finding  -> verified_logic
 ```

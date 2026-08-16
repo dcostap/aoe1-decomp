@@ -29,10 +29,6 @@ QUERY_CASES = {
     "name_search": ["--query", "set_picture", "--normal", "--paths"],
     "normal_summary": ["--summary", "--normal"],
     "remaining_json": ["--remaining", "--normal", "--smallest", "--limit", "30", "--json"],
-    "from_csv_va": [
-        "--from-csv", "project_full_status.csv", "--va", "00401000",
-        "--paths", "--notes", "--leases",
-    ],
 }
 
 

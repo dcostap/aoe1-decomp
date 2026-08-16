@@ -30,6 +30,7 @@ BUCKET_COLORS = {
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
 HISTORY_CACHE_VERSION = 9
 DATA_MARKER = "__DASHBOARD_DATA__"
+DASHBOARD_DIR = REPO_ROOT / "build" / "status"
 
 
 def default_header_notes() -> dict[str, str]:
@@ -274,7 +275,8 @@ def write_html_dashboard(
     history_ref: str = "HEAD",
     include_history: bool = True,
 ) -> Path:
-    html_path = REPO_ROOT / "project_full_status.html"
+    DASHBOARD_DIR.mkdir(parents=True, exist_ok=True)
+    html_path = DASHBOARD_DIR / "project_full_status.html"
     payload = dashboard_payload(rows)
 
     if include_history:
@@ -373,7 +375,7 @@ def write_html_dashboard(
         json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
     )
     # A complete dashboard is tens of megabytes. Replace it atomically so an
-    # interrupted refresh cannot leave project_full_status.html half-written.
+    # interrupted refresh cannot leave the dashboard half-written.
     html_tmp_path = html_path.with_suffix(".html.tmp")
     html_tmp_path.write_text(html_text, encoding="utf-8")
     html_tmp_path.replace(html_path)
@@ -387,7 +389,8 @@ def main() -> None:
     args = parser.parse_args()
 
     rows = build_status_rows()
-    output_path = REPO_ROOT / "project_full_status.csv"
+    DASHBOARD_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = DASHBOARD_DIR / "project_full_status.csv"
     csv_tmp_path = output_path.with_suffix(".csv.tmp")
     write_status_csv(rows, csv_tmp_path)
     csv_tmp_path.replace(output_path)
