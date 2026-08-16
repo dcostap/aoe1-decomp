@@ -10,6 +10,7 @@ from common import (
     function_slug,
     load_asm_special_function_names,
     load_asm_special_regions,
+    load_padding_only_functions,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
 )
@@ -65,6 +66,7 @@ def main() -> None:
     toolchain_supplied_regions = load_toolchain_supplied_regions()
     asm_special_names = load_asm_special_function_names()
     asm_special_regions = load_asm_special_regions()
+    padding_only_functions = load_padding_only_functions()
 
     for va, source in SOURCES.items():
         record = function_record_by_va(int(va, 16))
@@ -74,6 +76,7 @@ def main() -> None:
             toolchain_supplied_regions=toolchain_supplied_regions,
             asm_special_names=asm_special_names,
             asm_special_regions=asm_special_regions,
+            padding_only_functions=padding_only_functions,
         )
         if corpus_bucket != "normal":
             print(f"[skip] {va} non-normal corpus bucket={corpus_bucket} ({corpus_reason})")

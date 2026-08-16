@@ -12,6 +12,7 @@ from common import (
     load_asm_special_function_names,
     load_asm_special_regions,
     load_functions,
+    load_padding_only_functions,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
 )
@@ -38,19 +39,41 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def source_bank_sources(bank: str) -> list[Path]:
+def source_bank_sources(
+    bank: str,
+    records: list[dict[str, str]],
+) -> tuple[list[Path], list[Path]]:
     source_dir = REPO_ROOT / "src" / bank
     if not source_dir.exists():
-        return []
-    return sorted(
-        child
-        for child in source_dir.iterdir()
-        if child.suffix.lower() in {".c", ".cpp"}
-    )
+        return [], []
+
+    records_by_va = {record["va"].upper(): record for record in records}
+    records_by_slug = {record["slug"].upper(): record for record in records}
+    candidates: dict[str, list[Path]] = {}
+    orphan_sources: list[Path] = []
+    for child in sorted(source_dir.iterdir()):
+        if child.suffix.lower() not in {".c", ".cpp"}:
+            continue
+        stem_key = child.stem.upper()
+        record = records_by_slug.get(stem_key)
+        if record is None and len(stem_key) >= 8:
+            record = records_by_va.get(stem_key[:8])
+        if record is None:
+            orphan_sources.append(child)
+            continue
+        candidates.setdefault(record["va"].upper(), []).append(child)
+
+    selected: list[Path] = []
+    for paths in candidates.values():
+        canonical = [path for path in paths if path.stem.upper() == records_by_va[path.stem[:8].upper()]["slug"].upper()]
+        choices = canonical or paths
+        selected.append(next((path for path in choices if path.suffix.lower() == ".c"), choices[0]))
+        orphan_sources.extend(path for path in paths if path not in selected)
+    return sorted(selected), sorted(set(orphan_sources))
 
 
 def inventory_by_slug() -> dict[str, dict[str, str]]:
-    return {record["slug"]: record for record in load_functions()}
+    return {record["slug"].upper(): record for record in load_functions()}
 
 
 def run_check(va: str) -> subprocess.CompletedProcess[str]:
@@ -71,12 +94,14 @@ def main() -> None:
         mode_label = "verified-logic"
     nonexact_bank = not args.matching_only
 
+    records = load_functions()
     slug_map = inventory_by_slug()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
     toolchain_supplied_regions = load_toolchain_supplied_regions()
     asm_special_names = load_asm_special_function_names()
     asm_special_regions = load_asm_special_regions()
-    sources = source_bank_sources(bank)
+    padding_only_functions = load_padding_only_functions()
+    sources, orphan_sources = source_bank_sources(bank, records)
     summary_dir = ensure_build_subdir("validator")
     summary_path = summary_dir / f"{mode_label}_summary.txt"
 
@@ -88,6 +113,10 @@ def main() -> None:
         return
 
     lines = [f"Mode: {mode_label}", f"Functions scanned: {len(sources)}", ""]
+    if orphan_sources:
+        lines.append(f"Non-canonical source files not scanned: {len(orphan_sources)}")
+        lines.extend(f"ORPHAN  {path.relative_to(REPO_ROOT)}" for path in orphan_sources)
+        lines.append("")
     passed = 0
     failed = 0
     missing_inventory = 0
@@ -95,7 +124,8 @@ def main() -> None:
 
     for source in sources:
         slug = source.stem
-        record = slug_map.get(slug)
+        source_key = slug.upper()
+        record = slug_map.get(source_key)
         if record is None:
             missing_inventory += 1
             failed += 1
@@ -110,6 +140,7 @@ def main() -> None:
             toolchain_supplied_regions=toolchain_supplied_regions,
             asm_special_names=asm_special_names,
             asm_special_regions=asm_special_regions,
+            padding_only_functions=padding_only_functions,
         )
         if corpus_bucket != "normal":
             skipped_non_normal += 1

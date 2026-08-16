@@ -54,6 +54,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(status_core, "load_asm_special_function_names", return_value=set()),
                 patch.object(status_core, "load_asm_special_regions", return_value=[]),
                 patch.object(status_core, "load_parent_owned_fragments", return_value={}),
+                patch.object(status_core, "load_padding_only_functions", return_value={}),
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
             ):
                 rows = status_core.build_status_rows(
@@ -90,6 +91,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(status_core, "load_asm_special_function_names", return_value=set()),
                 patch.object(status_core, "load_asm_special_regions", return_value=[]),
                 patch.object(status_core, "load_parent_owned_fragments", return_value={}),
+                patch.object(status_core, "load_padding_only_functions", return_value={}),
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
             ):
                 rows = status_core.build_status_rows(

@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: reconstruct the timestamp store and logging call order as ordinary C++
+
 // LogTimestamp (00436330) - TDebuggingLog::LogTimestamp
 // Debuglog.cpp:93-100
 //

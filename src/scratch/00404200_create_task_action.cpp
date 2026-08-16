@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: reconstruct the typed switch, allocations, constructors, and EH behavior
+
 class RGE_Action;
 class RGE_Action_Object;
 class RGE_Master_Combat_Object;

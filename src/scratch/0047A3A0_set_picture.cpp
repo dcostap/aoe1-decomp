@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: use the proven TPicturePanel layout, free_pic member, and virtual slot surface
+
 // set_picture (0047A3A0) - TPicturePanel::set_picture
 // Pnl_pic.cpp:93-99
 //

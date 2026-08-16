@@ -24,4 +24,5 @@
 005024B3 00502310 checkForAttackResponseBuildInsertions switch_shared_body
 
 00536912 00535FE0 view_function switch_case_codelet
+00536932 00535FE0 view_function switch_case_codelet
 00536957 00535FE0 view_function switch_continuation_region

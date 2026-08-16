@@ -47,6 +47,7 @@ the repo overview. `LESSONS.md` stores optional matching evidence.
 - Inline asm is forbidden for real functions unless the user explicitly requests
   it. See the narrow padding-only exception below.
 - High-confidence exclusions are listed in:
+  - `config\padding_only_functions.txt`
   - `config\parent_owned_fragments.txt`
   - `config\toolchain_supplied_functions.txt`
   - `config\toolchain_supplied_regions.txt`
@@ -61,6 +62,8 @@ targets:
 
 - `parent_owned_fragment`: real game-code blocks/switch arms/shared tails owned
   by a larger parent. Match them by matching the parent.
+- `padding_only`: reviewed non-behavioral padding and boundary labels. Keep the
+  exact byte shim, but do not treat the entry as a source function.
 - `toolchain_supplied`: import thunks, CRT/runtime baggage, helper islands.
 - `asm_special`: named handwritten assembly, for a future asm workstream.
 - `asm_region`: handwritten-assembly/codelet/data-dispatch neighborhoods.
@@ -148,8 +151,9 @@ prompt.
    `target_session.py brief --va <VA>` before proposing new
    experiments. Read bounded older history only for a specific open question.
 4. Before editing, claim the target with a short unique owner name for this
-   session and a default budget of **15 meaningful hypotheses**:
-   `python tools/target_session.py start --va <VA> --owner <unique-owner> --budget 15`.
+   session and a bounded planning budget of around 20 meaningful hypotheses
+   (for example, `--budget 20`):
+   `python tools/target_session.py start --va <VA> --owner <unique-owner> --budget 20`.
    Do not force-take an active lease. If the exact requested VA is leased by
    someone else, report the conflict unless the user explicitly authorizes a
    takeover.
@@ -196,18 +200,15 @@ prompt.
    block topology before register coloring or broad variants. `EXACT CODEGEN`
    means focused source-shape work is appropriate. Do not override the checker
    stage merely because frame size or call counts happen to match.
-9. Stop after 15 meaningful hypotheses by default, or earlier when exact, when a
-   real ABI/layout blocker is identified, or when further variants would be
-   blind. A source change that emits the same code as an earlier probe is useful
-   negative evidence, but heed the session's `Codegen duplicate` notice and do
-   not keep exploring the same compiler basin.
-   Fifteen is a maximum, not a target. Stop as soon as no evidence-backed
-   hypothesis remains. Do not add generic probes to consume the remaining budget.
-   A worker can use a 20-hypothesis budget when size, frame, ordered calls, and
-   CFG are aligned, and a localized evidence-backed codegen lead remains.
-   This is a per-worker bound, not a declaration that the function is globally
-   exhausted. Preserve enough evidence in the source attempt log for a later
-   worker and the project orchestrator to avoid repeating the same hypotheses.
+9. Use around 20 meaningful hypotheses as a planning bound, not a quota or a
+   fixed exhaustion rule. Stop earlier when exact, when a real ABI/layout blocker
+   is identified, or when further variants would be blind. Continue longer only
+   when a specific evidence-backed lead remains. A source change that emits the
+   same code as an earlier probe is useful negative evidence, but heed the
+   session's `Codegen duplicate` notice and do not keep exploring the same basin.
+   The current claim is one bounded assignment, not a declaration that the
+   function is globally exhausted. Preserve enough evidence in the source
+   attempt log for a later worker and the project orchestrator to avoid repeats.
 10. If exact, review source/flags, validate again, move (not copy) to
     `src/matching`, validate after the move, and release the lease. If unresolved,
     leave the best
@@ -273,7 +274,7 @@ Use `rg --files` for newly generated or potentially unindexed workspace files.
 When multiple agents share a working tree, claim a target before editing it:
 
 ```bat
-python tools\target_session.py start --va 005204A0 --owner AgentName --budget 15
+python tools\target_session.py start --va 005204A0 --owner AgentName --budget 20
 python tools\target_session.py list --active
 python tools\query_project_status.py --remaining --normal --unleased --smallest --work-history --leases
 ```
@@ -874,7 +875,8 @@ Narrow exception: padding-only pseudo-functions may use inline asm-like filler
 only when the entire body is non-behavioral padding (`nop`, repeated `nop`,
 `mov edi, edi`, `mov eax, eax`, simple combinations), has no memory effect, no
 real control flow/calls, and ordinary source cannot reasonably express the exact
-bytes. No real function may be promoted with inline asm.
+bytes. Reviewed entries belong in `config\padding_only_functions.txt`. No real
+function may be promoted with inline asm.
 
 If a real function seems to need inline asm, the source model is still wrong or
 incomplete. Investigate source shape, declaration context, types, or flags; if no
@@ -882,8 +884,10 @@ lead remains, leave it in scratch with clear notes.
 
 ## Non-normal manifest work
 
-Do not create scratch, accepted-drift, verified-logic, or matching files for
-entries classified into non-normal buckets. For duplicated generic helper labels
+Do not create scratch, accepted-drift, or verified-logic files for entries
+classified into non-normal buckets. `padding_only` entries may keep their reviewed
+exact byte shims in `src\matching`; do not treat them as game source functions.
+For duplicated generic helper labels
 inside known CRT/helper islands,
 prefer region manifests over brittle name lists. Use
 `tools\generate_toolchain_supplied_manifest.py` for safe exact-name toolchain

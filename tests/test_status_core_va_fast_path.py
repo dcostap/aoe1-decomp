@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,6 +15,37 @@ import status_core  # noqa: E402
 
 
 class StatusCoreVaFastPathTests(unittest.TestCase):
+    def test_logic_review_lookup_includes_sparse_tracked_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ledgers = root / "logic_reviews"
+            git_result = subprocess.CompletedProcess(
+                args=[],
+                returncode=0,
+                stdout="logic_reviews/0040CDF0_MainDecisionAIModule.md\n",
+                stderr="",
+            )
+            with (
+                patch.object(status_core, "REPO_ROOT", root),
+                patch.object(status_core.subprocess, "run", return_value=git_result),
+            ):
+                files = status_core.logic_review_files(ledgers)
+
+        self.assertEqual(
+            files["0040CDF0_MAINDECISIONAIMODULE"],
+            root / "logic_reviews" / "0040CDF0_MainDecisionAIModule.md",
+        )
+
+    def test_source_file_lookup_normalizes_hex_case(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            source = directory / "0040a000_target.cpp"
+            source.write_text("int target() { return 1; }\n", encoding="utf-8")
+
+            files = status_core.source_files(directory)
+
+        self.assertEqual(files["0040A000_TARGET"], source)
+
     def test_va_build_matches_the_same_row_from_a_full_build(self) -> None:
         records = [
             {
@@ -51,6 +83,7 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                 patch.object(status_core, "load_asm_special_function_names", return_value=set()),
                 patch.object(status_core, "load_asm_special_regions", return_value=[]),
                 patch.object(status_core, "load_parent_owned_fragments", return_value={}),
+                patch.object(status_core, "load_padding_only_functions", return_value={}),
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
             ):
                 full_rows = status_core.build_status_rows(

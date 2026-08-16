@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: reconstruct typed base-save and rge_write calls without the bridge helper
+
 class RGE_Sprite {
 public:
     char gap_00[0x72];

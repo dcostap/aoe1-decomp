@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: reconstruct the FPU range test and virtual calls as ordinary typed C++
+
 class UnitAIModule;
 class RGE_Action_Object;
 

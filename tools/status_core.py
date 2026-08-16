@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+import subprocess
 from pathlib import Path
 from typing import Iterable
 
@@ -12,6 +13,7 @@ from common import (
     load_asm_special_function_names,
     load_asm_special_regions,
     load_functions,
+    load_padding_only_functions,
     load_parent_owned_fragments,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
@@ -19,7 +21,7 @@ from common import (
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 SOURCE_BUCKETS = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
-CORPUS_BUCKETS = ["normal", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
+CORPUS_BUCKETS = ["normal", "padding_only", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 STATUS_FIELDNAMES = [
     "va",
     "name",
@@ -35,6 +37,8 @@ STATUS_FIELDNAMES = [
     "has_logic_review",
     "corpus_bucket",
     "corpus_reason",
+    "padding_only",
+    "padding_only_reason",
     "toolchain_supplied",
     "toolchain_supplied_reason",
     "parent_owned_fragment",
@@ -95,7 +99,37 @@ def source_files(path: Path) -> dict[str, Path]:
     for child in sorted(path.iterdir()):
         if child.suffix.lower() not in {".c", ".cpp"}:
             continue
-        files[child.stem] = child
+        # Function VAs are case-insensitive. Older source files contain lower-
+        # case hex digits while inventory slugs use upper-case hex digits.
+        files[child.stem.upper()] = child
+    return files
+
+
+def logic_review_files(path: Path) -> dict[str, Path]:
+    """Return present and tracked ledgers, including sparse-checkout files."""
+    files: dict[str, Path] = {}
+    if path.exists():
+        for child in sorted(path.iterdir()):
+            if child.suffix.lower() == ".md" and child.name.lower() != "readme.md":
+                files[child.stem.upper()] = child
+
+    try:
+        relative = path.relative_to(REPO_ROOT)
+    except ValueError:
+        return files
+    result = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "ls-files", "--", relative.as_posix()],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return files
+    for raw_line in result.stdout.splitlines():
+        tracked = Path(raw_line.strip())
+        if tracked.suffix.lower() != ".md" or tracked.name.lower() == "readme.md":
+            continue
+        files.setdefault(tracked.stem.upper(), REPO_ROOT / tracked)
     return files
 
 
@@ -281,6 +315,7 @@ def build_status_rows(
     matching_files = source_files(matching_dir)
     accepted_drift_files = source_files(accepted_drift_dir)
     verified_logic_files = source_files(verified_logic_dir)
+    logic_review_ledgers = logic_review_files(logic_reviews_dir)
 
     records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
@@ -288,6 +323,7 @@ def build_status_rows(
     asm_special_names = load_asm_special_function_names()
     asm_special_regions = load_asm_special_regions()
     parent_owned_fragments = load_parent_owned_fragments()
+    padding_only_functions = load_padding_only_functions()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
     va_norm = va.upper() if va else None
@@ -297,10 +333,11 @@ def build_status_rows(
 
     for record in records:
         slug = record["slug"]
-        scratch_path = scratch_files.get(slug)
-        matching_path = matching_files.get(slug)
-        accepted_drift_path = accepted_drift_files.get(slug)
-        verified_logic_path = verified_logic_files.get(slug)
+        slug_key = slug.upper()
+        scratch_path = scratch_files.get(slug_key)
+        matching_path = matching_files.get(slug_key)
+        accepted_drift_path = accepted_drift_files.get(slug_key)
+        verified_logic_path = verified_logic_files.get(slug_key)
         present_paths = [
             path
             for path in (matching_path, accepted_drift_path, verified_logic_path, scratch_path)
@@ -314,6 +351,7 @@ def build_status_rows(
             asm_special_names=asm_special_names,
             asm_special_regions=asm_special_regions,
             parent_owned_fragments=parent_owned_fragments,
+            padding_only_functions=padding_only_functions,
         )
 
         if len(present_paths) > 1:
@@ -365,14 +403,14 @@ def build_status_rows(
             continue
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
-        logic_review_path = logic_reviews_dir / f"{slug}.md"
+        logic_review_path = logic_review_ledgers.get(slug_key)
         source_text = (
             note_path.read_text(encoding="utf-8", errors="replace")
             if note_path is not None
             else ""
         )
         header_notes = parse_header_notes_text(source_text) if note_path is not None else default_header_notes()
-        if source_bucket == "verified_logic" and not logic_review_path.exists():
+        if source_bucket == "verified_logic" and logic_review_path is None:
             missing_ledger = "verified_logic source has no logic-review ledger"
             header_notes["BLOCKER"] = (
                 f"{header_notes['BLOCKER']} | {missing_ledger}"
@@ -422,10 +460,12 @@ def build_status_rows(
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
-            "logic_review_path": str(logic_review_path.relative_to(REPO_ROOT)) if logic_review_path.exists() else "",
-            "has_logic_review": "yes" if logic_review_path.exists() else "no",
+            "logic_review_path": str(logic_review_path.relative_to(REPO_ROOT)) if logic_review_path is not None else "",
+            "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,
             "corpus_reason": corpus_reason,
+            "padding_only": "yes" if corpus_bucket == "padding_only" else "no",
+            "padding_only_reason": corpus_reason if corpus_bucket == "padding_only" else "",
             "toolchain_supplied": "yes" if corpus_bucket == "toolchain_supplied" else "no",
             "toolchain_supplied_reason": corpus_reason if corpus_bucket == "toolchain_supplied" else "",
             "parent_owned_fragment": "yes" if corpus_bucket == "parent_owned_fragment" else "no",

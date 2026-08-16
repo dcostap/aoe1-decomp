@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: reconstruct the target and state flow with ordinary typed member calls
+
 class RGE_Static_Object;
 
 class RGE_Action_Attack {

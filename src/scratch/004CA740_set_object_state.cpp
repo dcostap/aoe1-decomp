@@ -1,3 +1,8 @@
+// STATUS: PAUSED
+// BLOCKER: legacy naked inline assembly also binds two wrong direct-call symbols
+// NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
+// NEXT: reconstruct typed state predicates and canonical member-call declarations
+
 // set_object_state (004CA740) - TRIBE_Combat_Object::set_object_state
 // t_c_obj.cpp:289-303
 

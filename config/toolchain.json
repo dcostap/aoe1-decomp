@@ -1,6 +1,6 @@
 {
   "toolchain_name": "vc5-host",
-  "status": "unproven",
+  "status": "calibrated",
   "compiler": {
     "cl": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\CL.EXE",
     "link": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\LINK.EXE",
@@ -28,8 +28,10 @@
     "link": "5.00.7022"
   },
   "notes": [
-    "Keep default flags minimal until calibration is complete.",
-    "Milestone 0 is a boring, repeatable compile-to-object proof.",
+    "Sentinel object calibration on 2026-08-15 matched 00448A80, 00447BC0, 00401000, 00401EC0, 00430320, and 0048C0D0.",
+    "00401000 is an EH constructor and requires its /GX response file; default flags remain /nologo /c /O2 /Oy for ordinary targets.",
+    "CL.EXE reports 11.00.7022 and LINK.EXE reports 5.00.7022.",
+    "This calibration covers pinned object matching. It does not prove every translation unit or a final linked image.",
     "Launch CL.EXE under a minimal environment; inheriting the full modern host PATH can break VC5 backend startup."
   ]
 }

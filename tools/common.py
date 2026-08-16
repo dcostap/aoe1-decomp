@@ -6,6 +6,7 @@ import json
 import os
 import struct
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 
@@ -19,6 +20,7 @@ TOOLCHAIN_SUPPLIED_REGIONS_PATH = CONFIG_DIR / "toolchain_supplied_regions.txt"
 ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
 ASM_SPECIAL_REGIONS_PATH = CONFIG_DIR / "asm_special_regions.txt"
 PARENT_OWNED_FRAGMENTS_PATH = CONFIG_DIR / "parent_owned_fragments.txt"
+PADDING_ONLY_FUNCTIONS_PATH = CONFIG_DIR / "padding_only_functions.txt"
 
 
 def repo_path(value: str | Path) -> Path:
@@ -163,6 +165,25 @@ def load_parent_owned_fragments() -> dict[int, tuple[int, str, str]]:
     return fragments
 
 
+@lru_cache(maxsize=1)
+def load_padding_only_functions() -> dict[int, str]:
+    """Load padding-only VA -> reason metadata."""
+    functions: dict[int, str] = {}
+    if not PADDING_ONLY_FUNCTIONS_PATH.exists():
+        return functions
+
+    for raw_line in PADDING_ONLY_FUNCTIONS_PATH.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        va = parse_hex(parts[0])
+        if va is None:
+            raise ValueError(f"Invalid padding-only function VA: {raw_line}")
+        functions[va] = parts[1].strip() if len(parts) > 1 else ""
+    return functions
+
+
 def parent_owned_fragment_for_va(
     va: int, configured_fragments: dict[int, tuple[int, str, str]] | None = None
 ) -> tuple[int, str, str] | None:
@@ -177,6 +198,7 @@ def classify_corpus_bucket(
     asm_special_names: set[str] | None = None,
     asm_special_regions: list[tuple[int, int, str]] | None = None,
     parent_owned_fragments: dict[int, tuple[int, str, str]] | None = None,
+    padding_only_functions: dict[int, str] | None = None,
 ) -> tuple[str, str]:
     name = record["name"]
     va = int(record["va"], 16)
@@ -190,6 +212,10 @@ def classify_corpus_bucket(
         if reason:
             detail += f" {reason}"
         return "parent_owned_fragment", detail
+
+    padding_functions = padding_only_functions if padding_only_functions is not None else load_padding_only_functions()
+    if va in padding_functions:
+        return "padding_only", padding_functions[va] or "manifest-va"
 
     if is_toolchain_supplied_function_name(name, toolchain_supplied_names):
         return "toolchain_supplied", "manifest-name"

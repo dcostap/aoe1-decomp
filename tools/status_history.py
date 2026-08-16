@@ -105,6 +105,17 @@ def _manifest_fragments(text: str) -> dict[int, tuple[int, str, str]]:
     return fragments
 
 
+def _manifest_va_reasons(text: str) -> dict[int, str]:
+    entries: dict[int, str] = {}
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        entries[int(parts[0], 16)] = parts[1].strip() if len(parts) > 1 else ""
+    return entries
+
+
 def _zero_diff(record: dict[str, str]) -> dict[str, object]:
     size = int(record.get("size_bytes") or 0)
     return {
@@ -250,6 +261,7 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
         "asm": _manifest_regions(snapshot.read_text("config/asm_special_regions.txt")),
     }
     fragments = _manifest_fragments(snapshot.read_text("config/parent_owned_fragments.txt"))
+    padding_only = _manifest_va_reasons(snapshot.read_text("config/padding_only_functions.txt"))
     status_csv_text = snapshot.read_text("project_full_status.csv")
     status_csv_rows = {
         row.get("va", "").upper(): row
@@ -278,6 +290,7 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
             asm_special_names=names["asm"],
             asm_special_regions=regions["asm"],
             parent_owned_fragments=fragments,
+            padding_only_functions=padding_only,
         )
         is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
         if is_remaining == "yes":
@@ -324,6 +337,8 @@ def build_historical_rows(snapshot: GitSnapshot) -> list[dict[str, str]]:
             "logic_review_path": logic_review_path if has_logic_review else "",
             "has_logic_review": "yes" if has_logic_review else "no",
             "corpus_bucket": corpus_bucket, "corpus_reason": corpus_reason,
+            "padding_only": "yes" if corpus_bucket == "padding_only" else "no",
+            "padding_only_reason": corpus_reason if corpus_bucket == "padding_only" else "",
             "toolchain_supplied": "yes" if corpus_bucket == "toolchain_supplied" else "no",
             "toolchain_supplied_reason": corpus_reason if corpus_bucket == "toolchain_supplied" else "",
             "parent_owned_fragment": "yes" if corpus_bucket == "parent_owned_fragment" else "no",
@@ -395,6 +410,7 @@ RELEVANT_PATHS = (
     "config/asm_special_functions.txt",
     "config/asm_special_regions.txt",
     "config/parent_owned_fragments.txt",
+    "config/padding_only_functions.txt",
     "project_full_status.csv",
 )
 

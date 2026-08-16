@@ -14,6 +14,10 @@ Subagent output is always a proposal until the main agent reads the complete dif
 and source, checks policy compliance and unrelated changes, reruns the relevant
 validation, and confirms the reported result.
 
+`AGENTS.md` is the canonical contract for ordinary worker behavior, source
+recovery, target sessions, probes, and finalization. This document adds only
+orchestrator policy. Do not copy ordinary worker instructions here.
+
 Within the user-supplied concurrency ceiling, the main agent may run matching
 workers concurrently on different targets. Only one worker may edit a given
 function at a time.
@@ -81,33 +85,20 @@ targets. Review lifetime probes and claims, not only the current claim.
 
 ## Participant briefings
 
-Every subagent prompt must assign exactly one role and include the relevant
-constraints below. Repository documents supplement the prompt; they do not make
-an ambiguous assignment safe.
+Every subagent prompt must assign exactly one role. Use `AGENTS.md` for the
+ordinary role contract. This section lists only the orchestrator additions.
 
 ### Matching worker
 
-- one explicit VA and one unique lease owner;
-- use the injected `AGENTS.md`; do not reread it or load `README.md`;
-- search `LESSONS.md` only for terms tied to the target's proven blocker, ABI,
-  owner, source file, or mismatch; never load the complete lessons file;
-- read the current source attempt log and the compact target briefing;
-- open older target history only when the briefing and attempt log do not answer
-  a specific question;
-- follow the ten-hypothesis target-session contract unless given another budget;
-- run dossier, donor, and ABI evidence before broad archaeology;
-- edit only the target source and narrowly justified flags/shared facts;
-- do not commit, change unrelated functions, or normalize whole-file line endings;
-- finish with attempt notes, unchanged validation, and pause or exact promotion.
+`AGENTS.md` defines the complete matching-worker contract. The orchestrator
+brief must add one VA, one lease owner, the current evidence card, and one
+permitted role or lead. Do not assign a shopping list of targets.
 
 ### Phase-readiness auditor
 
-- strictly read-only; no lease, edits, source-shape probes, or commits;
-- may inspect attempt logs, session evidence, concise checker output, and Git
-  history because this is matching-stall analysis, not blind semantic review;
-- normally assess one or two named functions only;
-- judge exact-match exhaustion separately from semantic completeness;
-- identify concrete remaining leads and the exact prerequisite for ledger entry.
+Use this role only for matching-stall analysis. Give it one or two named
+functions. It may inspect the matching history needed to judge remaining leads.
+It does not decide semantic promotion.
 
 Do not assign an auditor a corpus-wide packet sweep. Use
 `query_project_status.py` to shortlist, then inspect at most a few candidates.
@@ -115,17 +106,11 @@ If a broader scan is necessary, divide it into bounded source/TU groups.
 
 ### Blind semantic reviewer
 
-- one named function, fresh context, and explicitly read-only;
-- no lease, edits, commits, `logic_reviews`, Git history, prior reports, or prior
-  claims that a difference is harmless;
-- compare candidate source directly with executable evidence and treat comments
-  as untrusted hypotheses;
-- report definite differences, plausible concerns, verified assumptions,
-  unestablished areas, and a conclusion with concrete binary evidence.
+Give this role one named candidate and a fresh context. It follows the
+read-only and evidence rules in `AGENTS.md`. It must report findings and
+uncertainties with concrete binary evidence.
 
-A readiness audit is never counted as a blind semantic review. A reviewer that
-accidentally reads the ledger or prior conclusions is contaminated and cannot
-count toward an independent cohort.
+Keep readiness audits separate from blind-review cohort membership.
 
 ## Context and output discipline
 
@@ -154,28 +139,14 @@ each subagent normally stays at or below **300k occupied context tokens**.
 ## Matching assignments
 
 Assign one function to one matching worker. Require the worker to follow the
-normal target-session contract in `AGENTS.md`, including a default budget of ten
-meaningful hypotheses, a compact source attempt log, final validation, and a
-pause or exact promotion result. Begin from or restore a clean period-plausible
-reconstruction with canonical field/type ownership before localized codegen
-tuning. Do not frame a decompiler-shaped retained scratch file as authoritative
-source merely because it currently has the best diff.
+canonical contract in `AGENTS.md`. Supply the target's evidence card and one
+specific lead. Do not assign a general source-shape pass to a heavily tested
+target without new evidence.
 
-The worker's first integrated `baseline` check pins that reconstruction in the
-existing function history. There is still one living source file. Later experiments
-may occupy metric-best history checkpoints without moving the clean pin. An
-unresolved worker must restore or explicitly repin the defensible final source
-before pausing; the session tool enforces this after final validation.
-
-Ten hypotheses are a maximum, not a quota. Stop earlier when no evidence-backed
-hypothesis remains. They do not prove that the function is exhausted. Before a
-new assignment on a heavily tested target, require at least one new lead: exact
-assembly donor evidence, ABI/layout evidence, TU/header evidence, a focused
-variant family, or a new binary behavior finding. Do not assign another general
-source-shape pass only to occupy a slot. When prior workers optimized one raw
-pointer form, prefer a clean-source reset. Use exact donors, PDB line bands,
-canonical ownership, and original API idioms. Do not repeat register allocation
-experiments without new evidence.
+The worker's session history and clean-source pin remain the durable matching
+record. The main agent reads them before assigning another claim. A later claim
+needs a new lead, such as donor evidence, ABI/layout evidence, TU/header
+evidence, a focused variant family, or a new binary behavior finding.
 
 Judge an exact-match stall from cumulative evidence, including:
 
@@ -197,18 +168,11 @@ For every worker result:
 
 1. inspect the complete diff and resulting source;
 2. ensure only authorized files changed and preserve unrelated work;
-3. audit source plausibility: reject retained fake volatility, unused locals,
-   comma-expression scheduling, raw vtable/offset plumbing, or decompiler cursors
-   that have no original-source or behavior justification;
-4. reject forbidden asm, fake exactness, relocation mistakes, and policy drift;
-5. rerun `check_function.py --va <VA>` and confirm the claimed outcome;
-6. verify that the attempt log accurately records tried, kept, rolled-back, and
-   remaining hypotheses;
-7. inspect the session's clean-source and codegen-best lines separately; if an
-   opaque nonexact experiment only moved assembly closer, preserve its evidence
-   in notes and restore the clean reconstruction before integration;
-8. accept, revise, or reject the result;
-9. perform status moves and version-control integration only after verification.
+3. apply the source, asm, relocation, and attempt-log rules in `AGENTS.md`;
+4. rerun `check_function.py --va <VA>` and confirm the claimed outcome;
+5. inspect the session's clean-source and codegen-best lines separately;
+6. accept, revise, or reject the result;
+7. perform status moves and version-control integration only after verification.
 
 Also inspect `git status` before and after integration. Shared-tree workers must
 not silently rewrite line endings, leave compiler artifacts, or modify common

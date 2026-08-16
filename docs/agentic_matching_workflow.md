@@ -6,10 +6,10 @@ document describes the coordination and evidence tools intended for parallel
 agent work.
 
 In the project-wide model, the user-designated main agent maintains the queue and
-assigns one function to one matching worker at a time. A worker's default ten
-meaningful hypotheses bound one assignment, not the lifetime of the function.
-The main agent may send later fresh workers to the same paused target after
-reading and validating the accumulated attempt log. See
+assigns one function to one matching worker at a time. One worker claim is a
+bounded assignment, not the lifetime of the function. The main agent may send
+later fresh workers to the same paused target after reading and validating the
+accumulated attempt log. See
 `docs\main_agent_workflow.md` for the complete orchestrator and logic-review
 workflow.
 
@@ -36,7 +36,7 @@ packets. An explicitly assigned VA needs no candidate-shopping phase.
 leases to avoid editing the same target concurrently.
 
 ```bat
-python tools\target_session.py start --va 005204A0 --owner AgentName --budget 10
+python tools\target_session.py start --va 005204A0 --owner AgentName --budget 20
 python tools\target_session.py brief --va 005204A0
 python tools\target_session.py status --va 005204A0
 python tools\target_session.py list --active
@@ -48,9 +48,10 @@ different owner unless they explicitly use `--force`. A paused or released
 session retains its notebook but no longer blocks another owner.
 
 The budget counts **meaningful interpreted hypotheses**, not compiler launches.
-It is a maximum, not a quota. Stop when no evidence-backed hypothesis remains.
-It applies to the current claim; the target's cumulative probe history remains in
-the notebook across pauses and owner changes. The briefing fingerprints source,
+Follow the planning guidance in `AGENTS.md`. Stop when no evidence-backed
+hypothesis remains. The budget applies to the current claim; the target's
+cumulative probe history remains in the notebook across pauses and owner
+changes. The briefing fingerprints source,
 flags, compiler configuration, and repo-local includes before calling recorded
 checker metrics current.
 After a checker run, record what was tested and what the result means:
@@ -119,9 +120,8 @@ validation.
 or a claim with no recorded work. It cannot bypass the clean-source/final-validation
 contract for unresolved work.
 
-`--note` is accepted as an alias for `--reason`. A default autonomous matching
-assignment uses a budget of ten meaningful hypotheses unless the user requests a
-different bound; the complete short-prompt contract is in `AGENTS.md`.
+`--note` is accepted as an alias for `--reason`. The complete matching-worker
+contract, including the planning budget, is in `AGENTS.md`.
 
 The scratch-file attempt log remains the durable project notebook. Session files
 are local coordination state and are not committed; copy durable conclusions into
@@ -365,47 +365,15 @@ This is intentional: VC5 register allocation, stack homes, block placement, and
 branch distances are whole-function effects. Do not treat a separately compiled
 loop/helper as proof of the parent function's codegen.
 
-## Parallel roles for difficult targets
+## Parallel evidence work
 
-Several agents may investigate one large function, but one owner should edit the
-canonical scratch source at a time. Useful independent roles are:
+Use `docs\main_agent_workflow.md` for participant roles, concurrency, leases,
+context limits, and formal review cohorts. Use `AGENTS.md` for ordinary worker
+rules. This document defines the evidence tools and their limits.
 
-- evidence reconstruction;
-- ABI/type/global validation against exact sibling donors;
-- donor-TU/header context investigation;
-- localized codegen experiments;
-- final exactness and policy review.
-
-Analysts should return evidence or proposed patches to the target owner rather
-than creating competing scratch owners.
-
-The user supplies the exact subagent model/thinking contract and an approximate
-maximum concurrency or range. The orchestrator treats that as a ceiling, not a
-slot-filling target. Count queued work, avoid large backlogs, and integrate a
-completed worker before automatically launching a replacement. A four-agent
-working set normally means at most two matching editors on distinct functions
-and two read-only analysis/review roles.
-
-Keep assignments context-bounded: one VA per matching worker, one or two named
-targets per readiness auditor, and one function per blind semantic reviewer.
-Corpus-wide audits should shortlist with `query_project_status.py` and inspect
-only a few complete packets; broad packet/history sweeps are prone to context
-failure and produce weaker evidence than focused audits.
-
-Ordinary subagents do not commit or rewrite line endings. The main agent reviews
-and stages explicit paths so one worker's result cannot absorb another worker's
-live shared-tree edits.
-
-This matching-phase collaboration is distinct from a formal logic-review cohort.
-Formal logic reviewers are fresh, concurrent, and read-only. They do not inspect
-the function's logic-review ledger, Git history, or one another's reports. The
-main agent collects the complete cohort, adjudicates it, directly applies bounded
-accepted fixes, updates the ledger, and launches another fresh cohort when the
-candidate changes materially.
-
-A formal cohort contains at least two reviewers launched together. Do not count
-a phase-readiness auditor as a blind reviewer, and do not launch a partial cohort
-while another read-only slot is occupied by unrelated work.
+When several analysts study one target, return evidence to the target owner.
+Do not create competing compiler-facing sources. Keep generated experiments in
+`build\temp` or the variant-lab output area.
 
 ## Stop conditions
 

@@ -16,7 +16,7 @@ from status_history import append_live_snapshot, build_history, upgrade_history_
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 BUCKET_ORDER = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
 COMPLETED_PROGRESS_BUCKETS = {"matching", "accepted_drift", "verified_logic"}
-CORPUS_ORDER = ["normal", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
+CORPUS_ORDER = ["normal", "padding_only", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 BUCKET_COLORS = {
     "matching": "#22c55e",
     "accepted_drift": "#f59e0b",
@@ -28,7 +28,7 @@ BUCKET_COLORS = {
 
 
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
-HISTORY_CACHE_VERSION = 8
+HISTORY_CACHE_VERSION = 9
 DATA_MARKER = "__DASHBOARD_DATA__"
 
 
@@ -405,6 +405,7 @@ def main() -> None:
         f"unclaimed={counts['unclaimed']} "
         f"conflict={counts['conflict']} "
         f"normal={counts['normal']} "
+        f"padding_only={counts['padding_only']} "
         f"parent_owned_fragment={counts['parent_owned_fragment']} "
         f"toolchain_supplied={counts['toolchain_supplied']} "
         f"asm_special={counts['asm_special']} "

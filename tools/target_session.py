@@ -1158,7 +1158,12 @@ def parse_args() -> argparse.Namespace:
     )
     start.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     start.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
-    start.add_argument("--budget", type=int, default=15, help="Meaningful hypothesis budget (default 15).")
+    start.add_argument(
+        "--budget",
+        type=int,
+        default=20,
+        help="Planning budget for meaningful hypotheses (around 20; not a stop rule).",
+    )
     start.add_argument("--lease-hours", type=float, default=8.0, help="Lease duration in hours (default 8.0).")
     start.add_argument("--force", action="store_true", help="Deliberately take over another active lease (use with care).")
 
