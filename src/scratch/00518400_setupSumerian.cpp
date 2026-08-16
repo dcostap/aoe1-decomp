@@ -21,7 +21,13 @@
 //   retain this readable source-order hypothesis as the best reconstruction.
 // - a focused 144-case store-order lab found no exact bytes; delaying the two
 //   common 100 stores worsened the build to 321 bytes and was rolled back.
+// - Walkthrough18400 replaced the absolute rge_base_game macro with the reviewed
+//   shared extern and explicit TRIBE_Game use. VC5 emitted identical code.
+// - A focused exact-donor search for the remaining 15-instruction constant-store
+//   block found no matching source example. Do not repeat blind store permutations.
 // Final validation: 309 rebuilt bytes, 30 strict diff bytes, 27-byte edit diff.
+
+#include "../../include/rge_base_game_global.h"
 
 // Main-agent audit confirmed the shared canonical game/player/AI ownership;
 // direct civilization table stores remain authoritative.
@@ -42,8 +48,6 @@ public:
     unsigned char deathMatch();
 };
 
-extern TRIBE_Game* rge_base_game;
-
 class RGE_Player {
 public:
     virtual ~RGE_Player();
@@ -59,7 +63,7 @@ public:
 void TRIBE_Player::setupSumerian(int* p, int type, int unused1, int unused2) {
     this->playerAI->logCommonHistory("Setting up as Sumerians.");
 
-    if (rge_base_game->deathMatch() == 1) {
+    if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1) {
         if (type == 0 || type == 1) {
             p[0x46] = 100;
         } else if (type == 2 || type == 6) {
