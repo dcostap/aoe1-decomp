@@ -24,6 +24,12 @@
 // - Named the probability pointer before its byte load and stores, matching
 //   the binary-proven pcVar2 shape. This reached diff 482 but left the same
 //   structural gap; retained as the clearer typed source.
+// - A per-row `mask_base = mask_cursor - write_index` local restored the
+//   original 0x10 frame and moved the first mismatch to +4, but changed the
+//   receiver register and worsened the positional diff to 520.
+// - Independent size-3 dispatch plus parameter-home reuse improved structural
+//   shape to 80.1% and exact-block coverage to 43.4%, but worsened diff to 512.
+//   Restore the clean typed source until register-color evidence improves.
 
 class PointMaker {
 public:

@@ -26,6 +26,11 @@
 // - Tested a mixed API-width hypothesis with unsigned-char start_zone and int
 //   goal_zone; it added 7 bytes and broke the zone-gate block. Restored int
 //   locals; the original 17-byte register-coloring gap remains.
+// - A 128-sample ambient file-scope declaration sweep produced one 534-byte
+//   group with the same 17-byte gap. Explicit long/int zone-result forms,
+//   implicit coordinate conversions, and full function-scope declarations
+//   also stayed nonexact. Final validation remains 534 bytes, 192 instructions,
+//   27 ordered calls, and 17 differing bytes (3.1835%).
 
 struct XYPoint {
     int x;

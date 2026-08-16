@@ -25,6 +25,14 @@
 //   428 bytes. A volatile map-size home widened it to 571 bytes and 16 extra
 //   bytes. Restored the clean typed source; the remaining lead is compiler
 //   scheduling of the initial clear and player-table block.
+// - Batch worker probes restored the original terrain/FPU coordinate roles by
+//   using tile_x as the map row and x as the map column. Helper calls also use
+//   the original x,tile_x argument order. This gives 568 bytes, exact frame,
+//   204 instructions, 13 calls, and a 42-byte (7.3944%) positional diff.
+// - The remaining drift is confined to the initial dimension-load order and
+//   the first pop_stack setup. The bottom pop_stack call and all later blocks
+//   are positionally exact. World/player aliases, count scope, stack pointer
+//   aliases, and reference-form stack ABI were codegen duplicates or worse.
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
@@ -206,14 +214,14 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
 
     while (this->pop_stack(&stack, &x, &tile_x, (float*)&y) && count > 0) {
             if (info.terrain >= 0) {
-                if ((((RGE_Tile**)this->map_row_offset)[x][tile_x].terrain & 0x1f) !=
+                if ((((RGE_Tile**)this->map_row_offset)[tile_x][x].terrain & 0x1f) !=
                     (unsigned int)info.terrain) {
                     goto next;
                 }
             }
 
-            fx = (float)tile_x;
-            fy = (float)x;
+            fx = (float)x;
+            fy = (float)tile_x;
             master = player->master_objects[info.obj_id];
             zone = (short)(int)master->radius_x;
             if (master->radius_x - (float)zone > 0.0f) {
@@ -225,16 +233,16 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& info, l
             }
 
             if (!master->can_place(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
-                this->remove_area_from_lists(tile_x, x, info.object_exclusion_zone);
+                this->remove_area_from_lists(x, tile_x, info.object_exclusion_zone);
                 switch (info.group_flag) {
                 case 0:
                     player->place_object(info.obj_id, fx, fy, 0, 1);
                     break;
                 case 1:
-                    this->place_group(info, tile_x, x, player);
+                    this->place_group(info, x, tile_x, player);
                     break;
                 case 2:
-                    this->place_cluster(info, tile_x, x, player);
+                    this->place_cluster(info, x, tile_x, player);
                     break;
                 }
                 count--;

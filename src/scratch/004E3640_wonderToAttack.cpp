@@ -25,6 +25,10 @@
 // r2 probes: the proven InformationAIModule base, full RGE_Player vtable
 // surface, hoisted locals, and a two-induction for loop were tested; the
 // ABI/liveness forms were codegen duplicates and the for loop regressed.
+// Current pass: raw 0x24-byte cursor expressions improved the broad diagnostic
+// by four bytes. Main-agent review rejected that metric-only form because the
+// typed ObjectMemory array owns the same proven fields. The typed indexed form
+// remains the clean source. The saved-register basin is still unresolved.
 
 #include <stdlib.h>
 #include <string.h>

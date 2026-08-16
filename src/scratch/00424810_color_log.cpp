@@ -22,8 +22,21 @@
 //   and assignment-in-guard draw-system ownership were codegen duplicates.
 //   Combining the draw-system and primary-surface guards worsened to 374 bytes;
 //   all variants were restored.
-// - left in scratch: calls/size/frame match, but guard/register coloring and
-//   RECT/DDBLTFX stack-slot scheduling remain nonexact.
+// - recovery pass: the target stores an initial 10-pixel background RECT, a
+//   POINT at the computed position, then a transformed primary RECT.  The
+//   primary surface receives the initial-role RECT; the draw area receives the
+//   background-role RECT.  A scalar POINT or renamed RECT variant did not
+//   change VC5 output, so the period POINT form is retained.
+// - current: C linkage, six-slot DirectDraw Blt, IAT ClientToScreen, and the
+//   reviewed rge_base_game ownership are modeled.  Size, frame, calls, and
+//   boundary align.  The remaining mismatch starts at the shared zero/test
+//   guard basin and continues through local register coloring.  Final check:
+//   442 bytes, 0x8C frame, five calls, 178 differing bytes, 72.39% shape.
+// - Main-agent review rejected that final metric basin. Its POINT coordinates
+//   and RECT roles changed the observed drawing behavior. The source below
+//   restores the natural target-backed local and screen rectangles.
+//   Final validation emits 452 bytes with five aligned calls and 418 differing
+//   bytes. The frame remains 0x8C.
 
 
 struct tagRECT {
@@ -109,55 +122,57 @@ extern "C" int (__stdcall * const ClientToScreen)(void* hWnd, tagPOINT* point);
 #define rge_base_game (*(RGE_Base_Game**)0x62C574)
 #define do_color_log (*(unsigned char*)0x62C584)
 
-void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
+extern "C" void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
     if (!do_color_log)
         return;
-    if (!rge_base_game)
+    RGE_Base_Game* game = rge_base_game;
+    if (!game)
         return;
-    if (rge_base_game->prog_mode < 2)
+    if (game->prog_mode < 2)
         return;
 
-    TDrawSystem* sys = rge_base_game->draw_system;
+    TDrawSystem* sys = game->draw_system;
     if (!sys)
         return;
     if (!sys->PrimarySurface)
         return;
 
-    tagRECT scr_dest;
     tagRECT back_dest;
+    tagRECT scr_dest;
     tagPOINT point;
     _DDBLTFX ddbltfx;
 
-    back_dest.right = 0;
-    point.x = 10;
-    back_dest.top = (sys->DrawArea->Width / 2) + (2 - param_3) * 20;
-    back_dest.bottom = back_dest.top + 10;
-    ddbltfx.dwSize = 0;
-    point.y = back_dest.top;
+    back_dest.left = (sys->DrawArea->Width / 2) + (2 - param_3) * 20;
+    back_dest.top = 0;
+    back_dest.right = back_dest.left + 10;
+    back_dest.bottom = 10;
+
+    point.x = back_dest.left;
+    point.y = 0;
 
     if (sys->ScreenMode == 2) {
         ClientToScreen(sys->Wnd, &point);
     }
 
+    scr_dest.left = point.x;
     scr_dest.top = point.y;
-    scr_dest.right = ddbltfx.dwSize;
+    scr_dest.right = point.x + 10;
     scr_dest.bottom = point.y + 10;
-    back_dest.left = ddbltfx.dwSize + 10;
 
+    ddbltfx.dwSize = 0;
     ddbltfx.dwDDFX = 100;
     ddbltfx.dwColorSpaceLowValue = param_1;
 
     sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
 
-    back_dest.top = 100;
     ddbltfx.dwDDFX = 100;
     ddbltfx.dwColorSpaceLowValue = param_1;
     sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
 
     scr_dest.top += 10;
-    back_dest.left += 10;
-    back_dest.top = 100;
+    back_dest.top += 10;
     scr_dest.bottom += 10;
+    back_dest.bottom += 10;
 
     ddbltfx.dwDDFX = 100;
     ddbltfx.dwColorSpaceLowValue = param_2;

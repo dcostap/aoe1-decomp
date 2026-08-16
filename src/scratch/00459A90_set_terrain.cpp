@@ -21,6 +21,19 @@
 // - Added the PDB/decompiler-supported terrain index local for repeated
 //   terrain_types indexing. It is a codegen duplicate; no missing local
 //   ownership resolves the 0x14 versus 0x18 frame gap.
+// - Canonical ownership is now bounded by the original: RGE_Map dimensions
+//   are +0x08/+0x0C, num_terrain is +0x8D90, map_row_offset is +0x8D8C,
+//   RGE_Tile is 0x18 bytes with tile_type +4 and terrain_type +5, and each
+//   RGE_Tile_Set is 0x198 bytes. The three calls are direct RGE_Map members.
+// - The typed formal-bound loop reconstruction reaches the exact 0x14 frame,
+//   exact 649-byte size, all three ordered calls, and 70.89% shape similarity.
+//   Its strict diff is 505 bytes. The remaining gap is register and local
+//   scheduling: the oracle keeps this in EDI, row/column cursors in EBP/ESI,
+//   and terrain-index work in stack homes, while VC5 selects another basin.
+// - Tested decompiler/source-dump min/max locals, named and hoisted cursors,
+//   guarded do-loops, receiver aliases, full virtual prefix, stdlib headers,
+//   natural index casts, and direct terrain indexing. No tested variant was
+//   exact; duplicate codegen was restored to this typed formal-bound source.
 
 class RGE_Player;
 class RGE_Game_World;
@@ -81,6 +94,29 @@ public:
 class RGE_Map {
 public:
     virtual ~RGE_Map();
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char* a, char* b, char* c, char* d);
+    virtual unsigned char do_terrain_brush(long x, long y, long radius,
+                                           unsigned char terrain);
+    virtual unsigned char do_terrain_brush_stroke(long x0, long y0, long x1,
+                                                  long y1, long radius,
+                                                  unsigned char terrain);
+    virtual unsigned char do_elevation_brush(long x, long y, long radius,
+                                             unsigned char elevation);
+    virtual unsigned char do_elevation_brush_stroke(long x0, long y0,
+                                                    long x1, long y1,
+                                                    long radius,
+                                                    unsigned char elevation);
+    virtual unsigned char do_cliff_brush(long x, long y, unsigned char a,
+                                         unsigned char b);
+    virtual unsigned char do_cliff_brush_stroke(long x0, long y0, long x1,
+                                                long y1, unsigned char a,
+                                                unsigned char b);
+    virtual void map_generate(RGE_Player* player, RGE_Game_World* world,
+                              void* info, unsigned char* data);
+    virtual void map_generate2(RGE_Game_World* world, long a, long b,
+                               unsigned char terrain, long value);
+    virtual void save(int file);
     RGE_Tile* map;
     long map_width;
     long map_height;
@@ -163,39 +199,29 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
                 x2 = (short)(this->map_width - 1);
 
             if ((blend != 0 || player != 0) && y1 <= y2) {
-                short maprow = y1;
-                int row_offset = (int)maprow * (int)sizeof(RGE_Tile*);
-                int tile_offset = (int)x1 * (int)sizeof(RGE_Tile);
-                do {
-                    short mapcol = x1;
-                    unsigned char* tile_terrain = (unsigned char*)
-                        ((char*)*(RGE_Tile**)((char*)this->map_row_offset + row_offset) +
-                         tile_offset + 5);
-                    if (mapcol <= x2) {
-                        do {
+                for (short row = y1; row <= y2; ++row) {
+                    if (x1 <= x2) {
+                        RGE_Tile* tile =
+                            this->map_row_offset[(int)row] + (int)x1;
+                        for (short col = x1; col <= x2; ++col) {
                             if (this->terrain_types[terrain_index].tiles[
-                                    tile_terrain[-1]].count > 0) {
-                                unsigned char old_value = *tile_terrain;
+                                    (int)tile->tile_type].count > 0) {
+                                unsigned char old_value = tile->terrain_type;
                                 short old_terrain = (short)(old_value & 0x1F);
-                                if (old_terrain != terrain_id) {
-                                    if (blend != 0) {
-                                        *tile_terrain =
-                                            (unsigned char)((terrain ^ old_value) & 0x1F) ^ old_value;
-                                    }
+                                if (old_terrain != terrain_id && blend != 0) {
+                                    tile->terrain_type =
+                                        (unsigned char)((terrain ^ old_value) & 0x1F) ^ old_value;
                                 }
                                 if (player != 0) {
                                     this->create_terrain_object(player, world,
-                                        maprow, mapcol, old_terrain,
+                                        row, col, old_terrain,
                                         arg9, -1, -1);
                                 }
                             }
-                            ++mapcol;
-                            tile_terrain += sizeof(RGE_Tile);
-                        } while (mapcol <= x2);
+                            ++tile;
+                        }
                     }
-                    ++maprow;
-                    row_offset += (int)sizeof(RGE_Tile*);
-                } while (maprow <= y2);
+                }
             }
 
             if (y1 > 0)
@@ -207,18 +233,10 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
             if ((int)x2 < this->map_width - 1)
                 ++x2;
 
-            short border_row = y1;
-            if (border_row <= y2) {
-                do {
-                    short border_col = x1;
-                    if (border_col <= x2) {
-                        do {
-                            this->get_border_type(border_col, border_row);
-                            ++border_col;
-                        } while (border_col <= x2);
-                    }
-                    ++border_row;
-                } while (border_row <= y2);
+            for (short row = y1; row <= y2; ++row) {
+                for (short col = x1; col <= x2; ++col) {
+                    this->get_border_type(col, row);
+                }
             }
             this->request_redraw(x1, y1, x2, y2, 0);
         }

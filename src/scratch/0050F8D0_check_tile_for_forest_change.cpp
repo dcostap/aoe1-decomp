@@ -23,6 +23,14 @@
 // both were codegen duplicates. Probe 38: explicit row/tile pointers made
 // the source less natural and widened the diff to 388 bytes; restored.
 // probe 39: unqualified change_terrain calls were a codegen duplicate.
+// sa-068dd50f-r1 pass: revalidated the typed tile stride (0x18), terrain byte
+// (+5), object-list link (+0x10), master id (+0x14), object field (+0x48),
+// map dimensions (+8/+C), and row table (+0x8D8C). Tested coordinate
+// declaration order, flag order, pointer/count loops, tile initialization,
+// register qualification, and coordinate aliases. Only the current clean
+// direct-loop basin remained plausible; final validation is 423/434 bytes,
+// 255 differing bytes, 0x14 frame, and 3 calls. The unresolved drift is
+// parameter register coloring, forest-loop lowering, and self-call identity.
 // left in scratch: behavior and field ownership are reconstructed; remaining
 // drift is prologue/register scheduling plus recursive-call relocation. The
 // best validated source is the flag-order variant at 255 differing bytes.

@@ -25,8 +25,18 @@
 // 16: named the x-overlap sum before the final comparison to test a derived
 // bound matching the original fcompp; rebuilt 524 B with diff 120, so restored
 // the clean direct predicate.
+// 17: absolute zero and the 3/-3 coordinate constants are required for the
+// original memory operands; the extern declarations preserve that context.
+// 18: volatile dx recovered one stack reload and improved the diagnostic to
+// 98 bytes, but added an FPU exchange and was rejected as metric-only steering.
+// 19: final clean source restores nonvolatile dx, direct overlap arithmetic,
+// and the early y-range failure. Validation remains a 524-byte mismatch.
 
 typedef unsigned char uchar;
+
+extern float DAT_00574720;
+extern float DAT_00574748;
+extern float DAT_0057474c;
 
 class RGE_Static_Object;
 
@@ -77,60 +87,59 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
 {
     float radius_x;
     float radius_y;
-    short x2;
-    short y1;
     short x1;
+    short y1;
+    short x2;
     short y2;
     short y_index;
 
     radius_x = this->master_obj->radius_x;
     radius_y = this->master_obj->radius_y;
-    if (!(radius_x <= 0.0f && radius_y <= 0.0f)) {
-        x1 = (short)(int)(this->world_x - 0.5f);
-        y1 = (short)(int)(this->world_y - 0.5f);
-        x2 = (short)(int)(this->world_x + 0.5f);
-        y2 = (short)(int)(this->world_y + 0.5f);
+    if (!(radius_x <= DAT_00574720 && radius_y <= DAT_00574720)) {
+        x1 = (short)(int)(this->world_x - DAT_00574748);
+        y1 = (short)(int)(this->world_y - DAT_00574748);
+        x2 = (short)(int)(this->world_x - DAT_0057474c);
+        y2 = (short)(int)(this->world_y - DAT_0057474c);
         RGE_Map* map = this->owner->world->map;
         if (x1 < 0) x1 = 0;
         if (x2 >= map->map_width) x2 = (short)map->map_width - 1;
         if (y1 < 0) y1 = 0;
         if (y2 >= map->map_height) y2 = (short)map->map_height - 1;
         y_index = y1;
-        if (y1 <= y2) {
-            RGE_Tile** rows = map->map_row_offset;
-            int x_offset = (int)x1 * 24;
-            do {
-                RGE_Tile* tile = (RGE_Tile*)((char*)rows[y_index] + x_offset);
-                short x = x1;
-                if (x1 <= x2) {
-                    do {
-                        RGE_Object_Node* n = tile->objects;
-                        if (n != 0) {
-                            do {
-                                RGE_Static_Object* obj = n->node;
-                                RGE_Master_Static_Object* master = obj->master_obj;
-                                float object_radius_y = master->radius_y;
-                                float object_radius_x = master->radius_x;
-                                if (object_radius_x > 0.0f && object_radius_y > 0.0f) {
-                                    float dy = obj->world_y - this->world_y;
-                                    float dx = obj->world_x - this->world_x;
-                                    if (dy < 0.0f) dy = -dy;
-                                    if (dx < 0.0f) dx = -dx;
-                                    if (dy <= object_radius_y + radius_y &&
-                                        dx <= object_radius_x + radius_x) {
-                                        return obj;
-                                    }
+        if (y1 > y2) return 0;
+        RGE_Tile** rows = map->map_row_offset;
+        int x_offset = (int)x1 * 24;
+        do {
+            RGE_Tile* tile = (RGE_Tile*)((char*)rows[y_index] + x_offset);
+            short x = x1;
+            if (x1 <= x2) {
+                do {
+                    RGE_Object_Node* n = tile->objects;
+                    if (n != 0) {
+                        do {
+                            RGE_Static_Object* obj = n->node;
+                            RGE_Master_Static_Object* master = obj->master_obj;
+                            float object_radius_y = master->radius_y;
+                            float object_radius_x = master->radius_x;
+                            if (object_radius_x > DAT_00574720 && object_radius_y > DAT_00574720) {
+                                float dy = obj->world_y - this->world_y;
+                                float dx = obj->world_x - this->world_x;
+                                if (dy < DAT_00574720) dy = -dy;
+                                if (dx < DAT_00574720) dx = -dx;
+                                if (dy <= object_radius_y + radius_y &&
+                                    dx <= object_radius_x + radius_x) {
+                                    return obj;
                                 }
-                                n = n->next;
-                            } while (n != 0);
-                        }
-                        tile = (RGE_Tile*)((char*)tile + 24);
-                        x++;
-                    } while (x <= x2);
-                }
-                y_index++;
-            } while (y_index <= y2);
-        }
+                            }
+                            n = n->next;
+                        } while (n != 0);
+                    }
+                    tile = (RGE_Tile*)((char*)tile + 24);
+                    x++;
+                } while (x <= x2);
+            }
+            y_index++;
+        } while (y_index <= y2);
     }
     return 0;
 }

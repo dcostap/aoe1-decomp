@@ -8,8 +8,9 @@
 // the donor-shaped guarded do/while with the selected task loaded directly
 // recovered exact size/CFG and left only the no-task-list candidate reload.
 // Promotion audit rejected the prior exact diagnostic: it used a volatile,
-// type-punning reload of the target parameter as an RGE_Task*.  The oracle
-// instead supports a typed target-as-task fallback when the list is empty.
+// type-punning reload of the target parameter as an RGE_Task*.  The empty-list
+// path is instead left uninitialized below.  The oracle reloads the incoming
+// target home at that point, which is original undefined-path behavior.
 // Same-TU action declarations now retain the proven object and task offsets.
 // probe: direct typed target fallback improved the mismatch from 249 to 248
 // bytes; non-volatile address, memcpy, and reference aliases stayed at 248 or
@@ -21,9 +22,13 @@
 // reproduced the oracle's +0x83 parameter-home reload.
 // probe: using this as the empty-list task candidate improved positional diff
 // by four bytes but lost the shared jump block and worsened shape; restored the
-// typed target fallback because the candidate is not behavior-plausible.
+// uninitialized path because the candidate is not behavior-plausible.
 // fresh pass: dossier, same-TU donors, and stack-home lessons confirm the
 // remaining +0x83 reload as the only natural-source blocker; no new lead.
+// probe: leaving repair_task uninitialized when the task list is empty exactly
+// reproduces the oracle's mov esi,[esp+18h].  At this point that slot is the
+// incoming target home.  Keep the original undefined-path behavior because
+// the binary proves this reload.
 
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -211,6 +216,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
         repair_list = this->master_obj->tasks;
         i = 0;
         task_count = (int)repair_list->list_num;
+        // The original leaves repair_task uninitialized when the list is empty.
         if (task_count > 0) {
             repair_task = 0;
             task_list = repair_list->list;
@@ -232,8 +238,6 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
                 ++i;
                 ++task_list;
             } while (i < task_count);
-        } else {
-            repair_task = (RGE_Task*)target;
         }
 
         current_task = this->actions->get_task();

@@ -27,6 +27,9 @@
 //     rather than wrapping the do/while in a positive-step if. This raised
 //     shape similarity from 69.23% to 70.51% and exact-block coverage from
 //     13.73% to 20.26%, but positional diff stayed at 342 bytes.
+// 15: moved the cached tile-coordinate assignments before passableTile and
+//     used a natural counted for loop. This matches the original 0x14 frame,
+//     four saved registers, loop tail, and all 414 bytes exactly.
 
 #include <math.h>
 
@@ -112,8 +115,6 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
                                    float maxDistance, int terrain) {
     int lastX;
     int lastY;
-    float x;
-    float y;
     float xDistance = (float)(x2 - x1);
     float yDistance = (float)(y2 - y1);
 
@@ -126,6 +127,8 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
     int i;
     float xStep;
     float yStep;
+    float x;
+    float y;
 
     if (fabs(yDistance) > fabs(xDistance)) {
         numSteps = abs((int)yDistance) * 2;
@@ -133,33 +136,28 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
         numSteps = abs((int)xDistance) * 2;
     }
 
-    i = 0;
+    lastX = -999;
+    lastY = -999;
     xStep = 0.0f;
     xStep = xDistance / (float)numSteps;
     yStep = yDistance / (float)numSteps;
 
     x = (float)x1;
     y = (float)y1;
-    lastX = -999;
-    lastY = -999;
 
-    if (numSteps <= 0) {
-        return 1;
-    }
-
-    do {
+    for (i = 0; i < numSteps; ++i) {
         x += xStep;
         y += yStep;
         int tileX = (int)x;
         int tileY = (int)y;
 
         if (tileX != lastX || tileY != lastY) {
+            lastX = tileX;
+            lastY = tileY;
             if (this->passableTile(x, y, terrain) == 0) {
                 return 0;
             }
 
-            lastX = tileX;
-            lastY = tileY;
             if ((float)sqrt(((float)x2 - x) * ((float)x2 - x) +
                             ((float)y2 - y) * ((float)y2 - y)) <=
                 maxDistance) {
@@ -167,8 +165,7 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
             }
         }
 
-        ++i;
-    } while (i < numSteps);
+    }
 
     return 1;
 }

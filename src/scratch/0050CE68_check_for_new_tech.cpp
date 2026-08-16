@@ -25,6 +25,11 @@
 // were duplicates. Scoping tech or either prerequisite counter, a while-loop
 // rewrite, and a named research temp worsened structure. Restored clean source;
 // no evidence-backed natural lead remains for the five-way local-home rotation.
+// Probe sa-e74c8bae-r1: the prior declaration cycle, tech/j reorder, split index
+// init, scalar signedness/volatility, packed local windows, period headers,
+// helper declarations, and pointer-index spelling did not improve the 20-byte
+// mismatch. Restored this clean source; required homes remain tech=-1Ch,
+// changed=-4, prereq_done=-10h, prereq_count=-0Ch, j=-14h.
 
 struct Tech_Player_Tree {
     float research_done;

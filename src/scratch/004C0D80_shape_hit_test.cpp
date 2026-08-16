@@ -23,6 +23,16 @@
 // - Duplicated the typed upper x comparison inside both mirror arms to test
 //   the original paired compare hunk; this widened the function to 522 bytes
 //   and worsened the positional diff to 189 bytes.  Restored the clean arm.
+// - A fresh pass reversed the transparent-picking facet arm.  This recovered
+//   the original mirrored shape-check branch layout and reduced the diff to
+//   33 bytes with exact size, frame, calls, and 96.32% exact-block coverage.
+// - Confirmed ownership from sprite.cpp donors and binary calls: RGE_Sprite
+//   owns shape at +0x1C, loaded at +0x14, resource_id at +0x10, frame_num at
+//   +0x5E, and transparent_picking_flag at +0x2C.  TShape owns the lazy-load
+//   constructor and shape_minmax/shape_check calls.  The /GX frame and the
+//   ordered eleven-call set match the original.  shape_minmax uses the
+//   canonical min-x, min-y, max-x, max-y output order.  The mirror arm checks
+//   x against -max-x and -min-x; the normal arm checks min-x and max-x.
 
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
@@ -132,10 +142,10 @@ unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet,
 
     case 1:
         if (this->shape != 0) {
-            if (facet_index == 0) {
-                return this->shape->shape_check(x, y, shape_frame);
+            if (facet_index != 0) {
+                return this->shape->shape_check(-x, y, shape_frame);
             }
-            return this->shape->shape_check(-x, y, shape_frame);
+            return this->shape->shape_check(x, y, shape_frame);
         }
         break;
 

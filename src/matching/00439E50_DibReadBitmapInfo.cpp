@@ -1,37 +1,12 @@
 // VA: 00439E50 DibReadBitmapInfo
-// Attempt log:
-// - initial natural DIB loader from packet/decompiler with local Win16 bitmap
-//   structs had the right 544-byte size but broad prologue/register drift.
-// - restored the period DIBUTILS source family: ordered `off/size/i/nNumColors`
-//   locals, native BITMAPFILEHEADER/BITMAPINFOHEADER/BITMAPCOREHEADER types,
-//   aggregate `*pdib = bi`, and the RGBTRIPLE-to-RGBQUAD conversion loop.
-// - this is the canonical source reconstruction to test before any focused
-//   frame/register probes; no raw stack offsets or register forcing retained.
-// - split/nested color-count guards and exact historical WIDTHBYTES macro
-//   variants did not close the localized post-read scheduling gap; a focused
-//   27-variant lab found no exact output. The best diagnostic volatile reread
-//   moved structure but worsened positional bytes and was rolled back.
-// - reversed width-times-bitcount operands and removed an unproven stdlib
-//   include; both emitted the same code. A first-guard volatile reread moved
-//   the first mismatch three bytes earlier and worsened the diff, then was
-//   restored.
-// - left in scratch: frame/saved-register and call topology match, but the
-//   original keeps a second bit-count reload and different late RGB-table
-//   branch/register schedule beginning at 00439F40.
-// - tried the period typed FixBitmapInfo macro for post-read header cleanup;
-//   it kept the DIBUTILS API surface but was a codegen duplicate, so it stays
-//   as the more natural source form with no metric change.
-// - restored the DIBUTILS trailing BI_BITFIELDS no-op guard from the published
-//   header; it was a codegen duplicate and was removed from the clean source.
-// - same-TU DibCreatePalette donor suggested direct color-count staging;
-//   direct and separate temporary forms worsened or duplicated the first hunk.
-//   A positive nested guard improved only diagnostic bytes and was rolled back.
+// Exact reconstruction notes:
+// - The period DIBUTILS source family matches the complete function.
+// - Keep the unused hbi declaration from that source family.
+// - Keep only windows.h. Extra CRT and memory headers change VC5 scheduling.
+// - Native bitmap structures, FixBitmapInfo, aggregate assignment, and the
+//   RGBTRIPLE-to-RGBQUAD loop recover the original frame and control flow.
 
 #include <windows.h>
-#include <windowsx.h>
-#include <stdio.h>
-#include <memory.h>
-#include <stdlib.h>
 
 #define BFT_BITMAP 0x4d42
 #define WIDTHBYTES(i) ((unsigned)((i + 31) & (~31)) / 8)
@@ -60,6 +35,7 @@ typedef LPBITMAPINFOHEADER PDIB;
 PDIB __cdecl DibReadBitmapInfo(HFILE fh)
 {
     DWORD off;
+    HANDLE hbi = NULL;
     int size;
     int i;
     int nNumColors;

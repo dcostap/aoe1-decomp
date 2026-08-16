@@ -24,6 +24,8 @@
 // - right-edge coordinate locals produced 0x90 and 0x98 frames (diffs 456/640);
 //   y/x combined declaration, <new.h>, full TPanel fields, and block-scoped y
 //   were duplicates. The readable 0x94 source remains the canonical candidate.
+// - The batch left the direct-y 0x8C diagnostic in the file. Main review
+//   restored the named y local and the proven 0x94 clean-source topology.
 // - left in scratch: calls/behavior are understood, but VC5 local coloring and
 //   the GDI/string scheduling remain broadly nonexact.
 

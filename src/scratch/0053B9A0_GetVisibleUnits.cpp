@@ -22,9 +22,17 @@
 //   direct parameter-home decrement; VC5 retained the same load/decrement/store.
 // - Reordering y2 before y1 was tested against the proven stack homes; VC5
 //   emitted the same code, so both structural leads were rolled back.
-// Left in scratch: original prologue zero-register order, PDP/count stack homes,
-// and duplicated inner-save topology remain unresolved; the current source is
-// the clean typed byte-distance reconstruction, not a compiler-steering variant.
+// - Inventory type dumps confirm VISIBLE_UNIT_REC is five packed bytes after
+//   object_id, VISIBLE_UNIT_PTR is 8 bytes, and the manager is 0x24 bytes.
+// - Ternary distance clamping recovers the original entry zero register and
+//   early guard shape. It is the best current basin at 391 bytes and 290
+//   positional mismatches; the statement-form clamp exposes the original
+//   parameter-home store but falls to 392 bytes and 308 mismatches.
+// - Direct member and pointer-bucket forms, loop-scoped count, typed globals,
+//   and direct bound initializers were tested. Several are codegen duplicates.
+// Left in scratch: the clamp-home store, PDP/count homes, bucket LEA, and
+// inner byte/register topology remain unresolved. The source keeps the typed
+// record copy, 0x100 output bound, five global output buckets, and two scans.
 
 struct VisibleUnitRec {
     int object_id;
@@ -40,13 +48,13 @@ struct VisibleUnitPtr {
     short used;
 };
 
-extern void* VisibleUnitList[5];
+extern VisibleUnitRec* VisibleUnitList[5];
 extern int VisibleUnitList_Size[5];
 
 class Visible_Unit_Manager {
 public:
     VisibleUnitPtr** PlayerDataPtrs;
-    void* Return_Buffer[5];
+    VisibleUnitRec* Return_Buffer[5];
     int Player_Count;
     int Category_Count;
     unsigned char* distanceTable;
@@ -56,19 +64,16 @@ public:
 
 int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player, int* categories, int category_count, int* player_map) {
     int found = 0;
-    unsigned int count;
     unsigned char* distTable;
     VisibleUnitPtr* PDP;
-    VisibleUnitRec* rec;
+    VisibleUnitPtr* bucket;
     if (category_count <= 0) {
         return 0;
     }
     if (player >= this->Player_Count) {
         return 0;
     }
-    if (distance > 0x0f) {
-        distance = 0x0f;
-    }
+    distance = distance > 0x0f ? 0x0f : distance;
 
     distTable = this->distanceTable;
     PDP = this->PlayerDataPtrs[player];
@@ -78,46 +83,39 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
     VisibleUnitList_Size[3] = 0;
     VisibleUnitList_Size[4] = 0;
 
-    int x2 = x;
-    int x1 = x;
-    x2 += distance;
-    x1 -= distance;
-    int y1 = y;
-    int y2 = y;
-    y1 -= distance;
-    y2 += distance;
+    int x2 = x + distance;
+    int x1 = x - distance;
+    int y1 = y - distance;
+    int y2 = y + distance;
 
     do {
-        int category = *categories;
-        categories++;
-        VisibleUnitPtr& bucket = PDP[category];
-        rec = bucket.unit_list;
-        count = *(int*)&bucket.used & 0xffff;
-        while (count != 0) {
+        int category = *categories++;
+        bucket = PDP + category;
+        VisibleUnitRec* rec = bucket->unit_list;
+        unsigned int count = *(int*)&bucket->used & 0xffff;
+        for (; count != 0; count--) {
             int dx;
             int dy;
-            int rx = rec->pos_x;
-            if (rx <= x2) {
-                if (rx < x) {
-                    if (rx < x1) goto next_entry;
-                    dx = x - rx;
+            if (rec->pos_x <= x2) {
+                if (rec->pos_x < x) {
+                    if (rec->pos_x < x1) goto next_entry;
+                    dx = x - rec->pos_x;
                 } else {
-                    dx = rx - x;
+                    dx = rec->pos_x - x;
                 }
-                rx = rec->pos_y;
-                if (rx <= y2) {
-                    if (rx < y) {
-                        if (rx < y1) goto next_entry;
-                        dy = y - rx;
+                if (rec->pos_y <= y2) {
+                    if (rec->pos_y < y) {
+                        if (rec->pos_y < y1) goto next_entry;
+                        dy = y - rec->pos_y;
                     } else {
-                        dy = rx - y;
+                        dy = rec->pos_y - y;
                     }
                     unsigned char d = distTable[(dx & 0x0f) + ((dy & 0x0f) << 4)];
                     if (d <= distance) {
                         int mapped = player_map[rec->player];
                         int size = VisibleUnitList_Size[mapped];
                         if (size < 0x100) {
-                            VisibleUnitRec* out = (VisibleUnitRec*)VisibleUnitList[mapped] + size;
+                            VisibleUnitRec* out = VisibleUnitList[mapped] + size;
                             VisibleUnitList_Size[mapped] = size + 1;
                             *out = *rec;
                             out->distance = d;
@@ -128,7 +126,6 @@ int Visible_Unit_Manager::GetVisibleUnits(int x, int y, int distance, int player
             }
 next_entry:
             rec++;
-            count--;
         }
         category_count--;
     } while (category_count != 0);

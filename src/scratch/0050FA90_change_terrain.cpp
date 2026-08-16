@@ -22,6 +22,11 @@
 // shardD10_50FA90: gave RGE_Player its canonical polymorphic surface while
 // preserving diam_tile_list at +0x6C for the typed notification call; this
 // was a codegen duplicate, so restored the narrow local surface.
+// shard-dd8102ca: direct typed map indexing and a terrain-byte pointer reduced
+// strict diff to 337, but worsened the block shape and were restored. Widened
+// x/y aliases changed only clipping LEAs. A full RGE_Map vptr surface was a
+// codegen duplicate. Keeping old_border masked before get_border_type matched
+// the oracle's live-byte ordering better than a late mask.
 // left in scratch: canonical neighborhood behavior and field ownership are
 // reconstructed; remaining drift is VC5 prologue/register scheduling. The
 // rebuilt body remains 12 bytes longer than the 427-byte oracle.

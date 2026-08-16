@@ -21,12 +21,17 @@
 // negative-bound tests, an explicit inner while loop, and an array-backed checksum
 // all emitted the same 544-byte code.  The stack spill remains a source/context
 // blocker, not a proven ownership or control-flow difference.
+// Current pass: typed unified_map_offsets[256], named width/height bounds, and
+// the pretested inner while form preserve the terrain-array ownership and 550-byte
+// basin.  Advancing the typed tile cursor before the visible-byte store follows
+// the oracle's late p6 load and improves block alignment.  The checksum spill and
+// Revealed and pointer home rotation remain unresolved VC5 liveness differences.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
 
 extern int Map_Update_Suppresion;
-extern unsigned long* unified_map_offsets[];
+extern unsigned long* unified_map_offsets[256];
 
 extern "C" void __cdecl log_map_call(int world_time, int player_id, int type,
                                      int p6, int x1, int y1, int x2, int y2,
@@ -115,12 +120,13 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
 {
     unsigned char* p;
     unsigned long* unified;
-    int Revealed = 0;
+    int Revealed;
     RGE_Player* curVisPlayer;
     int isCurPlayer;
     unsigned long checksum;
     RGE_Tile* tile;
 
+    Revealed = 0;
     log_map_call(this->world->world_time, (int)this->player->id, 2, p6,
                  x1, y1, x2, y2, Map_Update_Suppresion);
 
@@ -153,23 +159,29 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             this->world->players[this->world->curr_player];
     }
 
-    if ((x1 >= this->widthValue) || (x2 < 0)) {
+    int width = this->widthValue;
+    int height = this->heightValue;
+
+    if ((x1 >= width) || (x2 < 0)) {
         return 0;
     }
-    if ((y1 >= this->heightValue) || (y2 < 0)) {
+    if (y1 >= height) {
+        return 0;
+    }
+    if (y2 < 0) {
         return 0;
     }
     if (x1 < 0) {
         x1 = 0;
     }
-    if (x2 >= this->widthValue) {
-        x2 = this->widthValue - 1;
+    if (x2 >= width) {
+        x2 = width - 1;
     }
     if (y1 < 0) {
         y1 = 0;
     }
-    if (y2 >= this->heightValue) {
-        y2 = this->heightValue - 1;
+    if (y2 >= height) {
+        y2 = height - 1;
     }
 
     for (; y1 <= y2; ++y1) {
@@ -179,7 +191,8 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             tile = this->map->map_row_offset[y1] + x1;
         }
 
-        for (int x = x1; x <= x2; ++x) {
+        int x = x1;
+        while (x <= x2) {
             unsigned char value = *p;
             ++value;
             if (value == 0) {
@@ -201,10 +214,11 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             if (value == 0xFA) {
                 value = 0xF9;
             }
+            ++tile;
             *p = value;
             ++p;
             ++unified;
-            ++tile;
+            ++x;
         }
     }
     return Revealed;

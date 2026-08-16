@@ -24,6 +24,8 @@
 //   both nonexact; no ordinary top-level declaration order recovered the homes.
 // Clean source retained: separate typed locals. The exact Check_Tech_Temps local
 // aggregate remains a diagnostic only and is not retained in living source.
+// The batch revalidated that aggregate under /Od, but found no historical or
+// semantic ownership for it. Main review kept the natural source in scratch.
 
 struct Tech_Player_Tree {
     float research_done;

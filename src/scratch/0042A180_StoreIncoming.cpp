@@ -23,6 +23,19 @@
 // Log returns. This preserves replacement or invalidation by the callback.
 // Follow-up: packet-backed `this->OnHold + i` assignment matched the original
 // pHVar9 form but emitted duplicate code; restored the indexed spelling.
+// Assigned pass sa-e4d2a8b8, 2026-08-16: baseline retained at 415 bytes, 144
+// instructions, 99.31% shape, six ordered calls, and 278 positional diff bytes.
+// Probes 1, 3-5, 9, 11-14, 17-18 produced the same code or the same basin.
+// Probe 2 repeated typed member access caused a 436-byte control-flow basin.
+// Probe 6 used the scan cursor for Length and worsened one store byte.
+// Probe 7 reduced diagnostic diff bytes to 128 but changed the cold loop basin.
+// Probe 8 moved pointer setup before Length and broke the prologue and CFG.
+// Probe 10 used a raw-style Length cursor and added a loop branch.
+// Probe 15 failed qualification because volatile OnHold needed unsafe casts.
+// Probe 16 reused the scan cursor for the successful slot and broke the frame.
+// Natural `new char[]` and the declared HOLDER class are codegen-identical and
+// remain the simplest period-plausible source. The remaining mismatch is local
+// register and SIB-base coloring around allocation and final record stores.
 
 #include <string.h>
 
@@ -31,15 +44,17 @@ typedef unsigned long ulong;
 
 class TDebuggingLog { public: void Log(char* fmt, ...); };
 extern TDebuggingLog* L;
-extern void* operator_new(unsigned int size);
 
-struct HOLDER {
+class HOLDER {
+public:
     char* HoldMsg;
     uint Serial;
     uint Length;
     ulong dcoFromID;
     ulong dcoReceiveID;
     int unused;
+    HOLDER();
+    ~HOLDER();
 };
 
 class TCommunications_Handler {
@@ -71,7 +86,7 @@ int TCommunications_Handler::StoreIncoming(uint serial, char* msg, uint len, ulo
         if (h[i].Length == 0 && len != 0) {
             this->OnHold[i].Length = len;
             h = &this->OnHold[i];
-            h->HoldMsg = (char*)operator_new(h->Length);
+            h->HoldMsg = new char[h->Length];
             if (h->HoldMsg != 0) {
                 memcpy(h->HoldMsg, msg, h->Length);
                 h->Length = len;
