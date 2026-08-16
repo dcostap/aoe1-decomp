@@ -25,7 +25,7 @@ Do not load unrelated task documents. The assigning prompt defines your role.
 - Use the pinned VC5 host toolchain from `config\toolchain.json`.
 - Normal compiler flags come from `config\flags\default.rsp`.
 - Exactness requires positional byte equality.
-- Exactness also requires the original boundary and direct-call symbol identity.
+- Exactness also requires the original boundary, provable owning symbol, and known direct call or tail-jump symbol identity.
 - Never infer exactness from folder placement, old metrics, or relocation masking.
 - Validate an exact claim with `check_function.py`.
 - A valid exact result says `Result: MATCH` and `0.0000%`.

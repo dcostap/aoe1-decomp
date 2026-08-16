@@ -133,7 +133,7 @@ def clean_symbol_name(name: str) -> str:
 
 
 def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
-    """Compare direct-call symbols without collapsing known overload identity.
+    """Compare direct-control symbols without collapsing known overload identity.
 
     Most original inventory names are undecorated, so they still require the
     historical normalized comparison.  When both sides have decorated C++
@@ -146,6 +146,12 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
         original_value = original_value[6:]
     if rebuilt_value.startswith("__imp_"):
         rebuilt_value = rebuilt_value[6:]
+    if original_value.startswith("~") and not rebuilt_value.startswith(("??1", "??_G", "??_E")):
+        return False
+    if rebuilt_value.startswith(("??1", "??_G", "??_E")) and not (
+        original_value.startswith("~") or original_value.startswith(("??1", "??_G", "??_E"))
+    ):
+        return False
     # VC5 LIBC.LIB chkstk.obj exports both names at offset zero for the same
     # 0x2F-byte helper body. The compiler can select either relocation name.
     stack_probe_aliases = {"__alloca_probe", "__chkstk"}
@@ -154,6 +160,31 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
     if original_value.startswith("?") and rebuilt_value.startswith("?"):
         return original_value == rebuilt_value
     return clean_symbol_name(original_value) == clean_symbol_name(rebuilt_value)
+
+
+_SIMPLE_OWNER_NAME_RE = re.compile(r"~?[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def owning_function_symbol_validation(expected_name: str, rebuilt_symbol: str) -> dict[str, str]:
+    """Validate a rebuilt owner when inventory has an unambiguous simple name."""
+    expected = expected_name.strip()
+    rebuilt = rebuilt_symbol.strip()
+    result = {
+        "expected": expected,
+        "rebuilt": rebuilt,
+        "expected_normalized": "",
+        "rebuilt_normalized": "",
+        "status": "unverified",
+    }
+    if not rebuilt or _SIMPLE_OWNER_NAME_RE.fullmatch(expected) is None:
+        return result
+    result["expected_normalized"] = clean_symbol_name(expected)
+    result["rebuilt_normalized"] = clean_symbol_name(rebuilt)
+    names_match = result["expected_normalized"] == result["rebuilt_normalized"]
+    rebuilt_is_destructor = rebuilt.startswith(("??1", "??_G", "??_E"))
+    kind_matches = rebuilt_is_destructor if expected.startswith("~") else not rebuilt_is_destructor
+    result["status"] = "match" if names_match and kind_matches else "mismatch"
+    return result
 
 
 @lru_cache(maxsize=1)
@@ -187,6 +218,12 @@ def _pdb_line_changes() -> dict[str, list[dict[str, str]]]:
 
 def original_call_target(instruction: DecodedInstruction, names_by_va: dict[int, str]) -> str:
     if instruction.flow_control != FlowControl.CALL:
+        return ""
+    return original_direct_target(instruction, names_by_va)
+
+
+def original_direct_target(instruction: DecodedInstruction, names_by_va: dict[int, str]) -> str:
+    if instruction.flow_control not in {FlowControl.CALL, FlowControl.UNCONDITIONAL_BRANCH}:
         return ""
     override = _original_symbol_overrides().get(instruction.target)
     if override:
@@ -963,7 +1000,7 @@ def compatible_relocation_masks(
 
     Applying rebuilt relocation offsets indiscriminately to a structurally
     different original creates artificial equal bytes. Known direct-call target
-    mismatches are deliberately left unmasked and therefore fail exactness.
+    call or tail-jump mismatches are left unmasked and therefore fail exactness.
     """
     original_instructions = (
         decode_instruction_ranges(original_bytes, original_ranges)
@@ -997,8 +1034,8 @@ def compatible_relocation_masks(
             incompatible += 1
             continue
 
-        if rebuilt_instruction.flow_control == FlowControl.CALL:
-            original_target = original_call_target(original_instruction, names)
+        if rebuilt_instruction.flow_control in {FlowControl.CALL, FlowControl.UNCONDITIONAL_BRANCH}:
+            original_target = original_direct_target(original_instruction, names)
             rebuilt_target = str(relocation.get("symbol_name") or "")
             rebuilt_clean = clean_symbol_name(rebuilt_target)
             if (
@@ -1010,6 +1047,11 @@ def compatible_relocation_masks(
                 target_mismatches.append(
                     {
                         "offset": rebuilt_instruction.offset,
+                        "kind": (
+                            "call"
+                            if rebuilt_instruction.flow_control == FlowControl.CALL
+                            else "tail-jump"
+                        ),
                         "original": original_target,
                         "rebuilt": rebuilt_target,
                     }

@@ -23,6 +23,7 @@ from function_diagnostics import (  # noqa: E402
     decode_instructions,
     instruction_alignment,
     iteration_delta,
+    owning_function_symbol_validation,
 )
 from mismatch_classifier import classify_mismatch  # noqa: E402
 
@@ -37,6 +38,7 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         call_target_deltas: list[dict[str, object]] | None = None,
         target_mismatches: list[dict[str, object]] | None = None,
         cfg_issues: list[dict[str, object]] | None = None,
+        owner_symbol_mismatch: dict[str, object] | None = None,
     ) -> dict[str, object]:
         original_bytes = bytes.fromhex(original_hex)
         rebuilt_bytes = bytes.fromhex(rebuilt_hex)
@@ -52,6 +54,7 @@ class CoffAndDiagnosticTests(unittest.TestCase):
             call_target_deltas=call_target_deltas or [],
             target_mismatches=target_mismatches or [],
             cfg_issues=cfg_issues or [],
+            owner_symbol_mismatch=owner_symbol_mismatch,
         )
 
     def test_mismatch_classifier_reports_consistent_register_recolor(self) -> None:
@@ -185,6 +188,8 @@ class CoffAndDiagnosticTests(unittest.TestCase):
             direct_call_symbols_match(string_overload, "??6ostream@@QAEAAV0@N@Z")
         )
         self.assertFalse(direct_call_symbols_match("operator<<", string_overload))
+        self.assertTrue(direct_call_symbols_match("~RGE_Action", "??1RGE_Action@@UAE@XZ"))
+        self.assertFalse(direct_call_symbols_match("~RGE_Action", "??0RGE_Action@@QAE@XZ"))
 
     def test_vc5_stack_probe_export_aliases_match(self) -> None:
         self.assertTrue(direct_call_symbols_match("__alloca_probe", "__chkstk"))
@@ -204,6 +209,62 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(right, rebuilt)
         self.assertEqual(info["compatible"], 0)
         self.assertEqual(info["incompatible"], 1)
+
+    def test_tail_jump_relocation_requires_the_original_target(self) -> None:
+        original = bytes.fromhex("E9 BB 54 00 00")  # 00402030 -> 004074F0 ~RGE_Action
+        rebuilt = bytes.fromhex("E9 00 00 00 00")
+        left, right, info = compatible_relocation_masks(
+            original,
+            rebuilt,
+            [{"offset": 1, "width": 4, "symbol_name": "?parent_destroy@RGE_Action@@QAEXXZ"}],
+            0x00402030,
+        )
+        self.assertNotEqual(left, right)
+        self.assertEqual(info["compatible"], 0)
+        self.assertEqual(info["target_mismatches"][0]["kind"], "tail-jump")
+
+        left, right, info = compatible_relocation_masks(
+            original,
+            rebuilt,
+            [{"offset": 1, "width": 4, "symbol_name": "??1RGE_Action@@UAE@XZ"}],
+            0x00402030,
+        )
+        self.assertEqual(left, right)
+        self.assertEqual(info["compatible"], 1)
+        self.assertEqual(info["target_mismatches"], [])
+
+    def test_owning_symbol_validation_rejects_a_different_method(self) -> None:
+        valid = owning_function_symbol_validation(
+            "~RGE_Action_Bird", "??1RGE_Action_Bird@@UAE@XZ"
+        )
+        invalid = owning_function_symbol_validation(
+            "~RGE_Action_Bird", "?destroy@RGE_Action_Bird@@QAEXXZ"
+        )
+        wrong_kind = owning_function_symbol_validation(
+            "~RGE_Action_Bird", "??0RGE_Action_Bird@@QAE@XZ"
+        )
+        wrong_reverse_kind = owning_function_symbol_validation(
+            "RGE_Action_Bird", "??1RGE_Action_Bird@@UAE@XZ"
+        )
+        ambiguous = owning_function_symbol_validation(
+            "`vector_deleting_destructor'", "??_GRGE_Action_Bird@@UAEPAXI@Z"
+        )
+        self.assertEqual(valid["status"], "match")
+        self.assertEqual(invalid["status"], "mismatch")
+        self.assertEqual(wrong_kind["status"], "mismatch")
+        self.assertEqual(wrong_reverse_kind["status"], "mismatch")
+        self.assertEqual(ambiguous["status"], "unverified")
+
+    def test_mismatch_classifier_reports_owner_symbol_difference(self) -> None:
+        result = self._classify(
+            "E9 00 00 00 00",
+            "E9 00 00 00 00",
+            owner_symbol_mismatch={
+                "expected": "~RGE_Action_Bird",
+                "rebuilt": "?destroy@RGE_Action_Bird@@QAEXXZ",
+            },
+        )
+        self.assertEqual(result["primary"], "FUNCTION_SYMBOL_DIFFERENCE")
 
     def test_instruction_alignment_resynchronizes_at_instruction_level(self) -> None:
         original = decode_instructions(bytes.fromhex("53 8B D8 5B C3"), 0x1000)

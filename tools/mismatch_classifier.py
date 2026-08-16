@@ -32,6 +32,8 @@ _COMPARE_JUMP_REVERSALS = {
     ("je", "je"), ("jne", "jne"),
 }
 _PRIMARY_PRIORITY = (
+    "FUNCTION_SYMBOL_DIFFERENCE",
+    "CONTROL_TRANSFER_TARGET_DIFFERENCE",
     "CALL_SURFACE_DIFFERENCE",
     "TEST_OPERAND_WITH_BRANCH_CHANGE",
     "COMPARE_OPERAND_OR_BRANCH_FORM",
@@ -185,6 +187,7 @@ def classify_mismatch(
     call_target_deltas: list[dict[str, object]],
     target_mismatches: list[dict[str, object]],
     cfg_issues: list[dict[str, object]],
+    owner_symbol_mismatch: dict[str, object] | None = None,
 ) -> dict[str, object]:
     """Describe mismatch patterns without asserting equivalence or changing status."""
     strict_offsets = {
@@ -193,7 +196,7 @@ def classify_mismatch(
         if (masked_original[offset] if offset < len(masked_original) else None)
         != (masked_rebuilt[offset] if offset < len(masked_rebuilt) else None)
     }
-    if not strict_offsets and not target_mismatches:
+    if not strict_offsets and not target_mismatches and not owner_symbol_mismatch:
         return {
             "audit_only": True,
             "establishes_equivalence": False,
@@ -220,11 +223,35 @@ def classify_mismatch(
             row["offsets"] = sorted(set(offsets))
         labels.append(row)
 
+    if owner_symbol_mismatch:
+        add(
+            "FUNCTION_SYMBOL_DIFFERENCE",
+            "high",
+            [
+                f"target name {owner_symbol_mismatch.get('expected')}",
+                f"rebuilt owner {owner_symbol_mismatch.get('rebuilt')}",
+            ],
+        )
+
+    jump_target_mismatches = [
+        row for row in target_mismatches if row.get("kind") == "tail-jump"
+    ]
+    call_target_mismatches = [
+        row for row in target_mismatches if row.get("kind") != "tail-jump"
+    ]
+    if jump_target_mismatches:
+        add(
+            "CONTROL_TRANSFER_TARGET_DIFFERENCE",
+            "high",
+            [f"{len(jump_target_mismatches)} direct tail-jump symbol mismatch(es)"],
+            [int(row["offset"]) for row in jump_target_mismatches],
+        )
+
     changed_call_rows = [row for row in call_map.get("rows") or [] if row.get("status") != "equal"]
-    if target_mismatches or call_target_deltas or changed_call_rows:
+    if call_target_mismatches or call_target_deltas or changed_call_rows:
         evidence = []
-        if target_mismatches:
-            evidence.append(f"{len(target_mismatches)} known direct-call symbol mismatch(es)")
+        if call_target_mismatches:
+            evidence.append(f"{len(call_target_mismatches)} known direct-call symbol mismatch(es)")
         if call_target_deltas:
             evidence.append(f"{len(call_target_deltas)} aggregate call-target count difference(s)")
         if changed_call_rows:

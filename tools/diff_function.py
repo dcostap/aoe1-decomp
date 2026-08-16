@@ -19,6 +19,7 @@ from function_diagnostics import (
     decode_instruction_ranges,
     instruction_alignment,
     iteration_delta,
+    owning_function_symbol_validation,
     paired_instruction_context,
     pdb_line_for_address,
     prologue_summary,
@@ -653,6 +654,7 @@ def _workflow_guidance(
     call_difference: tuple[int, int] | None,
     call_target_deltas: list[dict],
     relocation_validation: dict,
+    owner_symbol_validation: dict,
     metrics: dict,
 ) -> list[str]:
     overflow = int(size_meta.get("overflow_nonpadding_bytes") or 0)
@@ -661,21 +663,28 @@ def _workflow_guidance(
     size_delta = 0 if expected_size is None or effective_size is None else int(effective_size) - int(expected_size)
     shape_percent = float(shape["similarity_percent"])
     frame_differs = original_prologue.get("frame_size") != rebuilt_prologue.get("frame_size")
-    known_wrong_calls = len(relocation_validation.get("target_mismatches") or [])
+    known_wrong_transfers = len(relocation_validation.get("target_mismatches") or [])
+    wrong_owner = owner_symbol_validation.get("status") == "mismatch"
 
     lines: list[str] = []
-    if int(metrics["diff_bytes"]) == 0 and not known_wrong_calls and not size_delta:
+    if int(metrics["diff_bytes"]) == 0 and not known_wrong_transfers and not wrong_owner and not size_delta:
         return [
             "Workflow stage: COMPLETE",
             "Source gate: exact emitted code still requires a plausibility and policy audit before promotion.",
         ]
-    if known_wrong_calls and shape_percent >= 95.0 and not size_delta:
+    if wrong_owner and shape_percent >= 95.0 and not size_delta:
         return [
-            "Workflow stage: CALL TARGET INTEGRITY",
-            f"Why: instruction structure is aligned, but {known_wrong_calls} direct call(s) name the wrong external symbol.",
+            "Workflow stage: FUNCTION SYMBOL IDENTITY",
+            "Why: emitted instructions align, but the rebuilt owner names a different function.",
+            "Next: define the assigned function with its real C/C++ owner and method kind.",
+        ]
+    if known_wrong_transfers and shape_percent >= 95.0 and not size_delta:
+        return [
+            "Workflow stage: CONTROL TARGET INTEGRITY",
+            f"Why: instruction structure is aligned, but {known_wrong_transfers} direct control transfer(s) name the wrong external symbol.",
             "Next: fix the member/helper declaration or symbol binding; do not reshape the surrounding control flow.",
         ]
-    if size_delta or shape_percent < 75.0 or call_difference is not None or known_wrong_calls:
+    if size_delta or shape_percent < 75.0 or call_difference is not None or known_wrong_transfers or wrong_owner:
         lines.append("Workflow stage: STRUCTURAL RECONSTRUCTION")
         reasons: list[str] = []
         if overflow:
@@ -688,8 +697,10 @@ def _workflow_guidance(
             reasons.append("call/virtual-slot sequence is not aligned")
         if call_target_deltas:
             reasons.append(f"{len(call_target_deltas)} call target count(s) differ")
-        if known_wrong_calls:
-            reasons.append(f"{known_wrong_calls} known direct-call target mismatch(es)")
+        if known_wrong_transfers:
+            reasons.append(f"{known_wrong_transfers} known direct-control target mismatch(es)")
+        if wrong_owner:
+            reasons.append("rebuilt owner symbol names a different function")
         lines.append("Why: " + "; ".join(reasons) + ".")
         if call_target_deltas:
             lines.append(
@@ -933,6 +944,12 @@ def main() -> None:
         if rebuilt_lines_json.exists()
         else {}
     )
+    owner_symbol_validation = owning_function_symbol_validation(
+        record["name"], str((rebuilt_meta.get("symbol") or {}).get("name") or "")
+    )
+    owner_symbol_mismatch = (
+        owner_symbol_validation if owner_symbol_validation["status"] == "mismatch" else None
+    )
     if int(rebuilt_lines.get("schema") or 0) < 2:
         listing_path = asm_dir / f"rebuilt_{slug}.cod"
         if listing_path.exists():
@@ -1006,7 +1023,11 @@ def main() -> None:
     hard_discrepancies = _hard_discrepancies(
         call_map, actionable_target_mismatches, call_target_deltas, block_map
     )
-    exact = mismatch is None and not relocation_validation["target_mismatches"]
+    exact = (
+        mismatch is None
+        and not relocation_validation["target_mismatches"]
+        and owner_symbol_mismatch is None
+    )
     mismatch_classification = classify_mismatch(
         original_instructions,
         rebuilt_instructions,
@@ -1017,6 +1038,7 @@ def main() -> None:
         call_target_deltas=call_target_deltas,
         target_mismatches=relocation_validation["target_mismatches"],
         cfg_issues=cfg_issues,
+        owner_symbol_mismatch=owner_symbol_mismatch,
     )
 
     previous_bin = history_dir / "previous.bin"
@@ -1039,6 +1061,7 @@ def main() -> None:
         None if call_difference_row is None else (0, 0),
         call_target_deltas,
         guidance_relocation_validation,
+        owner_symbol_validation,
         metrics,
     )
     metrics_path = diff_dir / f"{slug}.json"
@@ -1052,6 +1075,7 @@ def main() -> None:
         "relocations_incompatible_unmasked": relocation_validation["incompatible"],
         "relocation_target_mismatch_candidates": relocation_validation["target_mismatches"],
         "relocation_target_mismatches": actionable_target_mismatches,
+        "owning_symbol_validation": owner_symbol_validation,
         "rebuilt_extraction": rebuilt_meta,
         "rebuilt_source_map": {
             "source": rebuilt_lines.get("source", ""),
@@ -1104,6 +1128,10 @@ def main() -> None:
         f"repl {call_site_status_counts['replace']}; target-count differences {len(call_target_deltas)}; "
         f"relocated call sites {len(relocated_call_pairs)}; "
         f"relocations safely masked {relocation_validation['compatible']}/{len(relocations)}",
+        "Owner symbol: "
+        f"{owner_symbol_validation['status']} "
+        f"(target {owner_symbol_validation['expected'] or '<unknown>'}; "
+        f"rebuilt {owner_symbol_validation['rebuilt'] or '<unknown>'})",
         "CFG signals (orig/rebuilt): "
         f"cond {original_flow['conditional_branches']}/{rebuilt_flow['conditional_branches']}, "
         f"jumps {original_flow['unconditional_branches']}/{rebuilt_flow['unconditional_branches']}, "
@@ -1203,9 +1231,18 @@ def main() -> None:
         detail.extend(_format_call_context(call_map, int(call_difference_row), va))
     if actionable_target_mismatches:
         detail.append("")
-        detail.append("Known direct-call target mismatches (not masked):")
+        detail.append("Known direct-control target mismatches (not masked):")
         for row in actionable_target_mismatches[:12]:
-            detail.append(f"  +{int(row['offset']):04X}: original {row['original']} | rebuilt {row['rebuilt']}")
+            detail.append(
+                f"  +{int(row['offset']):04X} {row.get('kind', 'call')}: "
+                f"original {row['original']} | rebuilt {row['rebuilt']}"
+            )
+    if owner_symbol_mismatch:
+        detail.append("")
+        detail.append("Owning function symbol mismatch:")
+        detail.append(
+            f"  target {owner_symbol_mismatch['expected']} | rebuilt {owner_symbol_mismatch['rebuilt']}"
+        )
     raw_detail: list[str] = []
     if mismatch is not None:
         raw_detail.append("")
