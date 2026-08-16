@@ -233,6 +233,25 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual(info["compatible"], 1)
         self.assertEqual(info["target_mismatches"], [])
 
+    def test_original_operator_override_preserves_overload_identity(self) -> None:
+        original = (b"\x90" * 29) + bytes.fromhex("E8 8E ED FF FF")
+        rebuilt = (b"\x90" * 29) + bytes.fromhex("E8 00 00 00 00")
+        left, right, info = compatible_relocation_masks(
+            original,
+            rebuilt,
+            [
+                {
+                    "offset": 30,
+                    "width": 4,
+                    "symbol_name": "??8@YAHABVConstructionItem@@0@Z",
+                }
+            ],
+            0x0040BBB0,
+        )
+        self.assertEqual(left, right)
+        self.assertEqual(info["compatible"], 1)
+        self.assertEqual(info["target_mismatches"], [])
+
     def test_owning_symbol_validation_rejects_a_different_method(self) -> None:
         valid = owning_function_symbol_validation(
             "~RGE_Action_Bird", "??1RGE_Action_Bird@@UAE@XZ"

@@ -13,3 +13,7 @@
 # instantiation from utmarray.h; retain its decorated call identity.
 00408D20 ??1?$ManagedArray@H@@QAE@XZ
 0046A9E0 ??4Path@@QAEAAU0@ABU0@@Z
+# Equality overloads called through wrappers in aibitm.cpp and aiconmod.cpp.
+# Their original packets preserve the complete decorated identities.
+00407F80 ??8@YAHABVBaseItem@@0@Z
+0040A960 ??8@YAHABVConstructionItem@@0@Z
