@@ -23,6 +23,7 @@ from common import (
     repo_path,
 )
 from function_diagnostics import basic_blocks, call_fingerprint, decode_instruction_ranges
+from shared_abi_evidence import load_shared_global_evidence, shared_globals_by_address
 
 
 MEMORY_RE = re.compile(r"\[([^\]]+)\]")
@@ -535,8 +536,10 @@ def _class_check(class_name: str, fields: list[dict[str, object]]) -> dict[str, 
 
 def _annotate_globals(rows: list[dict[str, object]]) -> None:
     globals_index = _load_csv_index(REPO_ROOT / "inventory" / "globals" / "all_globals.csv", "va")
+    reviewed_index = shared_globals_by_address(load_shared_global_evidence(REPO_ROOT))
     for row in rows:
         candidate = globals_index.get(str(row["address"]).upper())
+        reviewed = reviewed_index.get(str(row["address"]).upper())
         if candidate:
             row["global"] = {
                 "primary_name": candidate.get("primary_name", ""),
@@ -545,6 +548,14 @@ def _annotate_globals(rows: list[dict[str, object]]) -> None:
                 "hints": candidate.get("hints", ""),
                 "emit_c_type": candidate.get("emit_c_type", ""),
             }
+        if reviewed:
+            row["global"] = {
+                **(row.get("global") or {}),
+                "primary_name": reviewed["name"],
+                "emit_c_type": reviewed["declaration"],
+                "provenance": reviewed["provenance"],
+            }
+            row["shared_global_evidence"] = reviewed
 
 
 def _call_rows(instructions, line_changes: list[dict[str, str]]) -> list[dict[str, object]]:
@@ -735,12 +746,22 @@ def build_dossier(record: dict[str, str], *, class_name: str = "", refresh: bool
     callee_cleanups = direct_call_cleanups(instructions)
     memory = collect_memory_evidence(instructions, line_changes, callee_cleanups)
     _annotate_globals(memory["absolute_memory"])
+    shared_globals = []
+    seen_shared_globals: set[str] = set()
+    for row in memory["absolute_memory"]:
+        shared = row.get("shared_global_evidence")
+        if not isinstance(shared, dict):
+            continue
+        name = str(shared.get("name") or "")
+        if name and name not in seen_shared_globals:
+            seen_shared_globals.add(name)
+            shared_globals.append(shared)
     source_path = preferred_source_path(record)
     inferred_class = class_name or infer_class_name(source_path)
     calls = _call_rows(instructions, line_changes)
     evidence_bands = build_evidence_bands(instructions, line_changes, calls, memory)
     return {
-        "version": 1,
+        "version": 2,
         "target": {
             "va": record["va"],
             "name": record["name"],
@@ -764,6 +785,7 @@ def build_dossier(record: dict[str, str], *, class_name: str = "", refresh: bool
         "direct_call_cleanup_bytes": {
             f"{address:08X}": cleanup for address, cleanup in sorted(callee_cleanups.items())
         },
+        "shared_global_evidence": shared_globals,
         **memory,
         "class_layout_check": _class_check(inferred_class, memory["this_fields"]),
     }
@@ -847,6 +869,25 @@ def format_dossier(dossier: dict[str, object]) -> str:
             f"  {row['address']} width={row['width'] or '?'} {row['access']:<10} "
             f"x{row['occurrence_count']:<3} {name}"
         )
+
+    shared_globals = dossier["shared_global_evidence"]
+    assert isinstance(shared_globals, list)
+    lines.extend(["", f"Reviewed shared global evidence ({len(shared_globals)}):"])
+    if not shared_globals:
+        lines.append("  <none>")
+    for row in shared_globals:
+        lines.append(f"  {row['storage_va']} {row['name']}: {row['declaration']}")
+        lines.append(f"    header: {row['header']}")
+        if row.get("definition"):
+            lines.append(f"    definition: {row['definition']}")
+        if row.get("codegen_note"):
+            lines.append(f"    codegen: {row['codegen_note']}")
+        for evidence_row in row.get("evidence") or []:
+            if isinstance(evidence_row, dict):
+                lines.append(
+                    f"    evidence {evidence_row.get('va', '?')}: "
+                    f"{evidence_row.get('observation', '')}"
+                )
 
     stack = dossier["stack"]
     assert isinstance(stack, list)

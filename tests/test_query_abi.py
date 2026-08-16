@@ -11,9 +11,50 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 import query_abi  # noqa: E402
+from shared_abi_evidence import load_shared_global_evidence  # noqa: E402
 
 
 class QueryAbiTests(unittest.TestCase):
+    def test_reviewed_global_declaration_matches_shared_header(self) -> None:
+        rows = load_shared_global_evidence(REPO_ROOT)
+        row = next(item for item in rows if item["name"] == "rge_base_game")
+        header = REPO_ROOT / str(row["header"])
+        self.assertIn(str(row["declaration"]), header.read_text(encoding="utf-8"))
+
+    def test_va_query_reports_reviewed_global_used_by_target_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "config").mkdir(parents=True)
+            (root / "src" / "scratch").mkdir(parents=True)
+            (root / "config" / "shared_abi_evidence.json").write_text(
+                '{"version":1,"globals":[{'
+                '"name":"known_global","storage_va":"00123456",'
+                '"declaration":"extern int* known_global;",'
+                '"header":"include/known.h","codegen_note":"Use the symbol.",'
+                '"evidence":[{"va":"00001000","observation":"Reduced the difference."}]'
+                '}]}',
+                encoding="utf-8",
+            )
+            (root / "src" / "scratch" / "00001000_demo.cpp").write_text(
+                "void demo() { if (known_global) return; }\n", encoding="utf-8"
+            )
+            record = {
+                "va": "00001000",
+                "name": "demo",
+                "calling_convention": "__cdecl",
+                "size_bytes": "4",
+                "pdb_source_file": "demo.cpp",
+                "pdb_source_path": "demo.cpp",
+                "slug": "00001000_demo",
+            }
+            with (
+                patch.object(query_abi, "REPO_ROOT", root),
+                patch.object(query_abi, "load_functions", return_value=[record]),
+            ):
+                payload = query_abi.build_query(va="00001000")
+            self.assertEqual(payload["shared_globals"][0]["name"], "known_global")
+            self.assertEqual(payload["shared_globals"][0]["matched_by"], "name")
+
     def test_reference_kind_separates_declaration_from_call(self) -> None:
         self.assertEqual(
             query_abi._reference_kind("void rge_read(int file, void* out, int size);", "rge_read"),

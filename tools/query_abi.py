@@ -6,7 +6,12 @@ import json
 import re
 from pathlib import Path
 
-from common import REPO_ROOT, load_functions
+from common import REPO_ROOT, function_slug, load_functions
+from shared_abi_evidence import (
+    load_shared_global_evidence,
+    shared_global_matches,
+    shared_globals_referenced_by_text,
+)
 
 
 SOURCE_SUFFIXES = {".c", ".cpp", ".h", ".hpp", ".inl"}
@@ -113,6 +118,19 @@ def global_matches(query: str, *, va_only: bool = False) -> list[dict[str, objec
             }
         )
     return rows
+
+
+def _function_source_text(va: str) -> str:
+    record = next((row for row in load_functions() if row["va"].upper() == va.upper()), None)
+    if record is None:
+        return ""
+    slug = function_slug(record)
+    for bucket in ("matching", "accepted_drift", "verified_logic", "scratch"):
+        for suffix in (".c", ".cpp"):
+            path = REPO_ROOT / "src" / bucket / f"{slug}{suffix}"
+            if path.exists():
+                return path.read_text(encoding="utf-8", errors="replace")
+    return ""
 
 
 def class_matches(
@@ -418,10 +436,17 @@ def build_query(
 ) -> dict[str, object]:
     if limit < 0:
         raise ValueError("--limit must be zero or positive")
+    reviewed_globals = load_shared_global_evidence(REPO_ROOT)
     if va:
         normalized = _normalized_va(va)
         functions = function_matches(normalized, va_only=True)
         globals_found = global_matches(normalized, va_only=True)
+        if functions:
+            shared_globals = shared_globals_referenced_by_text(
+                reviewed_globals, _function_source_text(normalized)
+            )
+        else:
+            shared_globals = shared_global_matches(reviewed_globals, normalized)
         evidence_query = (
             str(functions[0]["name"])
             if functions
@@ -435,6 +460,7 @@ def build_query(
     elif class_name:
         functions = []
         globals_found = []
+        shared_globals = []
         classes = class_matches(class_name, exact=True)
         evidence_query = class_name
         query_kind = "class"
@@ -442,6 +468,7 @@ def build_query(
     elif global_name:
         functions = []
         globals_found = global_matches(global_name)
+        shared_globals = shared_global_matches(reviewed_globals, global_name)
         classes = []
         evidence_query = global_name
         query_kind = "global"
@@ -449,6 +476,7 @@ def build_query(
     else:
         functions = function_matches(symbol)
         globals_found = global_matches(symbol)
+        shared_globals = shared_global_matches(reviewed_globals, symbol)
         classes = class_matches(symbol, methods_only_match=True)
         evidence_query = symbol
         query_kind = "symbol"
@@ -461,16 +489,18 @@ def build_query(
     )
     candidates = declaration_candidates(evidence, evidence_query)
     return {
-        "version": 1,
+        "version": 2,
         "query": {"kind": query_kind, "value": query_value},
         "policy": [
             "The original EXE is the behavior oracle; this command joins reference metadata and living-source provenance.",
             "Generated signatures/layouts are candidates, not canonical ABI by themselves.",
             "Exact-source context is strong codegen evidence but local stubs may still be intentionally narrow or codegen-active.",
+            "Reviewed shared evidence is a verified starting point, not proof that every target needs the same source surface.",
             "No declaration is auto-promoted to shared headers by this tool.",
         ],
         "functions": functions,
         "globals": globals_found,
+        "shared_globals": shared_globals,
         "classes": classes,
         "source_evidence": evidence,
         "declaration_candidates": candidates,
@@ -510,6 +540,28 @@ def format_query(payload: dict[str, object]) -> str:
         )
         if row["aliases"]:
             lines.append(f"    aliases: {row['aliases']}")
+        lines.append(f"    provenance: {row['provenance']}")
+
+    shared_globals = payload["shared_globals"]
+    assert isinstance(shared_globals, list)
+    lines.extend(["", f"Reviewed shared global evidence ({len(shared_globals)}):"])
+    if not shared_globals:
+        lines.append("  <none>")
+    for row in shared_globals:
+        lines.append(
+            f"  {row['storage_va']} {row['name']}: {row['declaration']}"
+        )
+        lines.append(f"    header: {row['header']}")
+        if row.get("definition"):
+            lines.append(f"    definition: {row['definition']}")
+        if row.get("codegen_note"):
+            lines.append(f"    codegen: {row['codegen_note']}")
+        for evidence_row in row.get("evidence") or []:
+            if isinstance(evidence_row, dict):
+                lines.append(
+                    f"    evidence {evidence_row.get('va', '?')}: "
+                    f"{evidence_row.get('observation', '')}"
+                )
         lines.append(f"    provenance: {row['provenance']}")
 
     classes = payload["classes"]

@@ -1,6 +1,8 @@
 # VC5 matching lessons
 
-Shared reusable exact-match knowledge only; keep per-function attempts in source logs and semantic reviews in `logic_reviews`. Search/merge before adding; write terse symptom → source shape → codegen reason → caveat bullets, and promote mature general rules to `AGENTS.md`. Prefer binary-supported, period-plausible source and canonical ownership; use casts, volatility, overlays, gotos, manual vptrs, or odd source only when the executable proves the behavior/codegen need. Exactness still requires bytes, boundaries, and relocation identity per `AGENTS.md`.
+Store reusable exact-match findings here. Keep per-function attempts in source
+logs and semantic reviews in `logic_reviews`. Search and merge before adding.
+Put stable procedures in `docs\agentic_matching_workflow.md`.
 
 This file is a lookup bank. Agents must not read it from start to finish. Search
 with narrow target, owner, ABI, source-file, instruction, or blocker terms. Read
@@ -70,7 +72,7 @@ only the matching paragraphs and their section heading.
 - Address term order is not neutral: `[eax+ebp]` versus `[ebp+eax]` can change SIB bytes/instruction length and all branch spans. Preserve observed source-like term order and compare spelling.
 - Exception: VC5 canonicalizes `int+ptr` in terminator stores; if registers/load order already match, rewriting the subscript will not flip the SIB base/index. Treat it as a dead axis/TU artifact.
 - A global byte-offset base may need `extern char*`; a known global character buffer may need `extern char buffer[]` to preserve symbol-relative indexed stores. Prefer canonical typed declarations for ordinary data.
-- Prefer established extern globals/tables over literal absolute dereferences: even the same VA changes relocation, scheduling, and coloring. A narrow typed absolute macro is acceptable only for a proven address lacking stable identity; never bypass relocation checks.
+- Prefer established extern globals and tables over literal absolute dereferences. The same address can change relocation, scheduling, and register coloring. In `004A9CC0`, the extern `rge_base_game` form reduced the difference from 1,581 bytes to 122 bytes. Use a typed absolute macro only when stable symbol identity is unavailable. Never bypass relocation checks.
 - Fixed lookup tables should be `extern const`; local definitions change data/relocations. Inline repeated shift-table accesses can keep the count in `cl`, while a named temp may spill.
 - A flat local virtual dispatch view may use declaration-only padding slots (`offset/4`) to reach observed vtable offsets; account for its vptr and prefer the real inherited surface when known.
 - COM calls need explicit `__stdcall`: either a struct vtbl function pointer taking `self`, or a pure virtual `__stdcall` method. Ordinary C++ virtuals use `thiscall` and do not push `this`.

@@ -24,6 +24,31 @@ from target_dossier import (  # noqa: E402
 
 
 class TargetDossierTests(unittest.TestCase):
+    def test_absolute_address_joins_reviewed_shared_global_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "config").mkdir(parents=True)
+            (root / "inventory" / "globals").mkdir(parents=True)
+            (root / "inventory" / "globals" / "all_globals.csv").write_text(
+                "va,primary_name\n", encoding="utf-8"
+            )
+            (root / "config" / "shared_abi_evidence.json").write_text(
+                '{"version":1,"globals":[{'
+                '"name":"known_global","storage_va":"00123456",'
+                '"declaration":"extern int* known_global;",'
+                '"header":"include/known.h","codegen_note":"Use the symbol."'
+                '}]}',
+                encoding="utf-8",
+            )
+            rows = [{"address": "00123456"}]
+            with patch.object(target_dossier, "REPO_ROOT", root):
+                target_dossier._annotate_globals(rows)
+            self.assertEqual(rows[0]["global"]["primary_name"], "known_global")
+            self.assertEqual(
+                rows[0]["shared_global_evidence"]["declaration"],
+                "extern int* known_global;",
+            )
+
     def test_memory_expression_retains_fixed_offset_and_index_evidence(self) -> None:
         parsed = parse_memory_expression("esi+eax*4+504h")
         self.assertEqual(parsed["registers"], ["esi", "eax"])
