@@ -27,15 +27,16 @@ Assign each participant exactly one role.
 
 ### Matching worker
 
-Assign one VA, one lease owner, a compact evidence card, and one useful lead.
+Assign one VA, one lease owner, and a compact evidence card. Include known prior
+work, open questions, and useful observations. The worker chooses its methods.
 The worker follows `docs\agentic_matching_workflow.md` and works on only that
 target. Authorize any shared-file change separately.
 
 ### Phase-readiness auditor
 
-Use this read-only role to decide whether exact matching still has credible
-leads. Assign at most two named functions. The auditor may read bounded matching
-history, but does not decide semantic promotion.
+Use this read-only role to assess cumulative exact-matching coverage. Assign at
+most two named functions. The auditor may read bounded matching history, but does
+not declare a function impossible or decide semantic promotion.
 
 ### Blind semantic reviewer
 
@@ -55,8 +56,10 @@ Treat source comments as hypotheses, not executable evidence.
 - Count queued work against the user's concurrency ceiling.
 - Keep the live set small enough for prompt review.
 - Integrate completed edits before filling every free slot.
-- Review live work history before reassigning paused work.
-- Give a later worker a new evidence-backed lead.
+- Read the source comment log before reassigning scratch work. It is the
+  authoritative durable history.
+- Treat generated session history as optional local detail. Cleanup can remove it.
+- Give workers prior evidence and open questions. Let them choose their methods.
 - Do not repeatedly poll participants.
 - Keep each assignment bounded. Avoid complete packet and history dumps.
 
@@ -81,8 +84,9 @@ as blocked. That is a repository-integrity check, not a source-header decision.
 
 ## Matching queue
 
-Keep exact matching active while credible leads remain. Judge a stall from
-cumulative evidence, not probe count alone. Consider:
+A worker pause ends one assignment. It does not declare global exhaustion. Rotate
+workers when a fresh independent approach can help. Use cumulative evidence for
+scheduling, not as proof that exact matching is impossible. Consider:
 
 - behavior, ABI, layout, structure, context, liveness, flags, and variant coverage;
 - convergence across independent workers;
@@ -91,7 +95,9 @@ cumulative evidence, not probe count alone. Consider:
 - ordered calls, memory effects, cleanup, and block topology;
 - unresolved source, type, or ownership facts.
 
-Do not start another broad source-shape pass without new evidence.
+Workers can try new source forms, tools, compiler context, structured sweeps, and
+speculative investigative methods. Repeating an old experiment is valid when new
+context or a controlled comparison gives it a different purpose.
 
 ## Review returned matching work
 
@@ -131,8 +137,8 @@ workers may consume this evidence but must not edit the registry.
 ## Enter semantic review
 
 Only the main agent may suspend exact matching. Enter semantic review only after
-substantial matching work leaves no reasonable exact lead and the candidate's
-behavior is reviewable.
+repeated independent matching assignments, a deliberate main-agent decision to
+suspend exact work, and confirmation that the candidate's behavior is reviewable.
 
 Before review:
 
@@ -217,7 +223,8 @@ queue -> matching worker -> main-agent validation
   exact                      -> matching
   narrow reviewed drift      -> accepted_drift
   uncertain or promising     -> scratch / later worker
-  stalled and behavior-ready -> blind cohorts -> adjudication
+  exact work deliberately suspended and behavior-ready
+                             -> blind cohorts -> adjudication
      broad defect            -> scratch / matching
      no substantive finding  -> verified_logic
 ```

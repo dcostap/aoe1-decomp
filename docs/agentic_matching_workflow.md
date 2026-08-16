@@ -13,7 +13,9 @@ repository-wide rules. This file owns the matching procedure.
 - Keep one compiler-facing source owner.
 
 A claim is one bounded pass, not the lifetime of the function. Use about 20
-meaningful hypotheses as a planning limit. Stop earlier when evidence runs out.
+meaningful hypotheses as an initial planning checkpoint. It does not select the
+worker's methods or indicate exhaustion. Improvise, change hypothesis classes,
+and continue when additional experiments can teach you something.
 
 ## Procedure
 
@@ -25,10 +27,13 @@ meaningful hypotheses as a planning limit. Stop earlier when evidence runs out.
 6. Establish canonical field, array, class, global, and ABI ownership.
 7. Write the simplest period-plausible reconstruction.
 8. Record its first successful check as the baseline.
-9. Test only evidence-backed source, type, layout, control-flow, context, or flag
-   hypotheses.
+9. Use evidence to prioritize source, type, layout, control-flow, context, and
+   flag hypotheses. Bounded exploratory tests are valid when their result will
+   teach you something.
 10. Keep the clean source model authoritative. Discard opaque metric-only forms.
-11. Stop when exact, blocked, or out of useful hypotheses.
+11. Do not stop because early approaches fail or progress looks unlikely. End the
+    pass only at exact completion, an external constraint, or its assignment
+    boundary.
 12. Finish the target using the exact or unresolved procedure below.
 
 ## Status and leases
@@ -41,7 +46,7 @@ checkpoints, pauses, and releases.
 
 Open at most two or three complete packets while selecting. Skip selection when
 the user assigns a VA. Prefer small, unleased, normal targets with a useful next
-lead. Review cumulative history before you reassign paused work.
+state. Review the source comment log before you reassign paused work.
 
 ## Evidence order
 
@@ -89,8 +94,9 @@ Read its report as evidence. A completed mismatch is not a tool failure.
 ## Variant labs
 
 Use `variant_lab.py` only after behavior, calls, cleanup, and layout are known.
-Build deliberate source-level axes around one understood mismatch. Avoid blind
-whole-function products and compiler-only tricks.
+Build deliberate source-level axes around one understood mismatch. Broad and
+speculative sweeps are valid after the source model is understood. Do not retain
+an opaque nonexact result only because it changes compiler output.
 
 Associate a leased compile run with its target session. One lab run counts as one
 variant hypothesis family. Review any exact result as source, reduce its context,
@@ -122,5 +128,5 @@ local coordination state.
 ## Report
 
 Report the target, outcome, probe count, checkpoints, current metrics, and changed
-files. Include validation and the next evidence-backed lead. A documented pause
-is a valid result.
+files. Include validation, open questions, and useful possible approaches. A
+documented pause is a valid result.

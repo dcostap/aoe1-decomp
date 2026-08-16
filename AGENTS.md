@@ -5,9 +5,8 @@ it into all local sessions. Do not put role-only procedures in this file.
 
 Do not read `README.md` as startup work. It is a short human introduction.
 
-Do not read all of `LESSONS.md`. Search it only after evidence identifies a
-specific compiler, ABI, source, or layout problem. Read only matching paragraphs
-and their nearby heading.
+Matching workers must read the complete compact `LESSONS.md` before target work.
+Other roles read it when their task needs VC5 matching knowledge.
 
 ## Select the correct task document
 
@@ -134,5 +133,5 @@ Do not rely on ignored session files as the only record.
 Add a reusable lesson only after a non-obvious pattern is supported by exact or
 strong repeated evidence. Keep function-specific history out of `LESSONS.md`.
 
-When work stops, report the result, changed files, validation, open evidence, and
-the next concrete lead. A documented unresolved result is valid.
+When work stops, report the result, changed files, validation, open questions,
+and useful possible approaches. A documented unresolved result is valid.

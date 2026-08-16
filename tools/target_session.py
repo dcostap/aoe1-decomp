@@ -788,8 +788,8 @@ def run_checked_probe(
         clean_baseline = dict(session.get("clean_baseline") or {})
     if budget and used >= budget and kind not in NON_MEANINGFUL_PROBE_KINDS:
         print(
-            f"WARNING: meaningful probe budget is exhausted ({used}/{budget}); "
-            "continue only if this is a deliberate new lead.",
+            f"NOTICE: initial probe checkpoint reached ({used}/{budget}); "
+            "this is not a stop rule or evidence of exhaustion.",
             file=sys.stderr,
         )
     label = checkpoint.strip() or f"probe-{next_number:03d}-{kind}"

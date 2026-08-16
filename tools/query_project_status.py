@@ -88,7 +88,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--work-history",
         action="store_true",
-        help="Include lifetime claims, probes, progress, last worker, and next workflow",
+        help=(
+            "Include local generated claims, probes, progress, and last worker. "
+            "This data can reset with build cleanup; source comments are durable."
+        ),
     )
     parser.add_argument("--max-lifetime-probes", type=int, help="Maximum lifetime meaningful probes")
     parser.add_argument("--max-claims", type=int, help="Maximum lifetime target claims")
