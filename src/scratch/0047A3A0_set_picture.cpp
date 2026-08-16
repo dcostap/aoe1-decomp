@@ -1,5 +1,5 @@
 // STATUS: PAUSED
-// BLOCKER: exact legacy source uses forbidden naked inline assembly
+// BLOCKER: deferred after the inline-assembly audit; require explicit authorization before assignment
 // NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
 // NEXT: use the proven TPicturePanel layout, free_pic member, and virtual slot surface
 

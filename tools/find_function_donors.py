@@ -18,7 +18,16 @@ PUSH_REG_RE = re.compile(r"\bpush\s+(e(?:bx|bp|si|di))\b", re.IGNORECASE)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Rank exact-match donor functions by TU, class, ABI, call, field-offset, and prologue similarity."
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Rank donor functions by TU, class, ABI, calls, offsets, and prologue shape.\n"
+            "\n"
+            "The default donor bank is current exact source. Scores are discovery heuristics, not\n"
+            "proof of shared source, layout, or ABI. Inspect same-TU and same-class hits first.\n"
+            "\n"
+            "Example:\n"
+            "  python tools/find_function_donors.py --va 004407A0 --limit 20\n"
+        ),
     )
     parser.add_argument("--va", required=True, help="Target function VA in hex.")
     parser.add_argument("--limit", type=int, default=20, help="Maximum donors (default 20; 0 all scored candidates).")

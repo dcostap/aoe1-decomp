@@ -27,7 +27,26 @@ from function_history import (
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build, compare, and diagnose one function.")
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Build, compare, and diagnose one function.\n"
+            "\n"
+            "This is the authoritative local exactness check. MATCH requires positional byte\n"
+            "equality, the original reachable boundary, and known direct-call symbol identity.\n"
+            "A completed MISMATCH normally exits with status 1; inspect the report.\n"
+            "\n"
+            "The default build path uses fingerprinted cache entries. Diagnostic-only reuse\n"
+            "rejects missing or stale artifacts. Call counts alone do not prove call-site order.\n"
+            "\n"
+            "Examples:\n"
+            "  python tools/check_function.py --va 00449750\n"
+            "  python tools/check_function.py --va 00449750 --call-map-unmatched --map-limit 40\n"
+            "  python tools/check_function.py --va 00449750 --block-map-differences --map-limit 40\n"
+            "  python tools/check_function.py --va 00449750 --range orig:+40-+80\n"
+            "  python tools/check_function.py --va 00449750 --stack-map --no-build\n"
+        ),
+    )
     parser.add_argument("--va", required=True, help="Function VA in hex, for example 00449750.")
     parser.add_argument("--verbose", action="store_true", help="Show subprocess chatter and the longer diff report.")
     parser.add_argument("--quiet", action="store_true", help="Compatibility flag for batch callers; use concise diagnostics.")

@@ -28,7 +28,8 @@ Assign each participant exactly one role.
 ### Matching worker
 
 Assign one VA, one lease owner, a compact evidence card, and one useful lead.
-The worker follows `docs\agentic_matching_workflow.md` and edits only that target.
+The worker follows `docs\agentic_matching_workflow.md` and works on only that
+target. Authorize any shared-file change separately.
 
 ### Phase-readiness auditor
 
@@ -43,7 +44,10 @@ Assign exactly one candidate in fresh, read-only context. The reviewer must not:
 - edit files or claim a lease;
 - read `logic_reviews`;
 - read Git history or prior reports;
+- read the candidate's matching attempt-log header;
 - receive a claim that a difference is harmless.
+
+Treat source comments as hypotheses, not executable evidence.
 
 ## Scheduling
 
@@ -51,13 +55,29 @@ Assign exactly one candidate in fresh, read-only context. The reviewer must not:
 - Count queued work against the user's concurrency ceiling.
 - Keep the live set small enough for prompt review.
 - Integrate completed edits before filling every free slot.
-- Use `query_project_status.py --work-history` before reassigning paused work.
+- Review live work history before reassigning paused work.
 - Give a later worker a new evidence-backed lead.
 - Do not repeatedly poll participants.
 - Keep each assignment bounded. Avoid complete packet and history dumps.
 
 A practical four-slot split is at most two workers and two read-only analysts.
 Reserve two read-only slots when a blind-review cohort is due.
+
+## Obstacle notes
+
+`BLOCKER` is a manual obstacle note in a living source header. It is not a lease,
+status bank, corpus class, or automatic scheduling ban.
+
+A worker can add it during an unresolved finish. The main agent reviews it during
+integration. Use it for a specific obstacle that makes immediate reassignment
+low-value. Record the evidence or condition that can change the assessment.
+
+Status filters can include or exclude these notes. Nothing enforces them. Remove
+or update a stale note when new evidence resolves it. Corpus manifests own
+permanent non-normal classification.
+
+Status tooling also reports a verified-logic source without its required ledger
+as blocked. That is a repository-integrity check, not a source-header decision.
 
 ## Matching queue
 
@@ -82,7 +102,7 @@ For every return:
 3. preserve unrelated shared-worktree edits;
 4. inspect source plausibility and canonical ownership;
 5. inspect clean-source and metric-best checkpoints separately;
-6. rerun `python tools\check_function.py --va <VA>`;
+6. rerun the authoritative function checker;
 7. accept, revise, or reject the proposal;
 8. perform any status move;
 9. stage only reviewed paths.
@@ -134,11 +154,7 @@ The ledger must record:
 - later review rounds;
 - final decision and remaining nonsemantic differences.
 
-Use this status query:
-
-```bat
-python tools\query_project_status.py --logic-review-in-progress --paths
-```
+Use the live status tool's logic-review view to find active reviews.
 
 ## Blind review cohorts
 

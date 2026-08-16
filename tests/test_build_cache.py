@@ -12,6 +12,10 @@ import build_cache  # noqa: E402
 
 
 class BuildCacheTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        (REPO_ROOT / "build").mkdir(parents=True, exist_ok=True)
+
     def test_source_dependencies_follow_repo_local_includes(self) -> None:
         with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp:
             root = Path(temp)

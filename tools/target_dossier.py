@@ -67,7 +67,18 @@ REGISTER_WIDTHS = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a binary-evidence dossier for one matching target."
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Generate a binary-evidence dossier for one matching target.\n"
+            "\n"
+            "Use it before broad declaration or layout archaeology. The dossier combines calls,\n"
+            "memory accesses, frame evidence, PDB bands, and conservative class hypotheses.\n"
+            "Generated aliases and inferred extents are leads, not behavior or ABI proof.\n"
+            "Artifacts are written under build/dossiers/.\n"
+            "\n"
+            "Example:\n"
+            "  python tools/target_dossier.py --va 005204A0\n"
+        ),
     )
     parser.add_argument("--va", required=True, help="Function VA in hex, for example 005204A0.")
     parser.add_argument(

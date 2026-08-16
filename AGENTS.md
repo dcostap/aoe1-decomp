@@ -28,7 +28,7 @@ Do not load unrelated task documents. The assigning prompt defines your role.
 - Exactness requires positional byte equality.
 - Exactness also requires the original boundary and direct-call symbol identity.
 - Never infer exactness from folder placement, old metrics, or relocation masking.
-- Validate an exact claim with `python tools\check_function.py --va <VA>`.
+- Validate an exact claim with `check_function.py`.
 - A valid exact result says `Result: MATCH` and `0.0000%`.
 
 Inline assembly is forbidden for real functions unless the user requests it.
@@ -112,6 +112,9 @@ Do not commit unless the user or your assigned role authorizes commits.
 
 Pi runs shell commands through Bash. Use forward slashes in Bash command paths.
 Unquoted Windows backslashes can become escapes.
+
+Markdown files define policy and workflow, not command syntax. Before you use a
+repository tool, run its `--help`. Treat that output as the command reference.
 
 Use the harness `everything_search` tool for recursive path discovery. Use `rg`
 for file content searches. Do not recursively enumerate the repository with

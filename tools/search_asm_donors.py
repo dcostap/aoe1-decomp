@@ -770,9 +770,17 @@ def format_report(report: dict[str, object], source_results: int) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
-            "Search exact-matching functions for a local assembly pattern and show the C/C++ "
-            "that produced it."
+            "Search exact functions for a local assembly pattern and show its C/C++ source.\n"
+            "\n"
+            "Use a distinctive block of roughly 5-20 instructions. Avoid generic prologues and\n"
+            "epilogues. Fresh validation is authoritative; bank validation trusts folder status.\n"
+            "A hit is codegen evidence, not proof of common source, layout, or ABI.\n"
+            "\n"
+            "Examples:\n"
+            "  python tools/search_asm_donors.py --va 004407A0 --range +80-+C0\n"
+            "  python tools/search_asm_donors.py --va 004407A0 --at +9A\n"
         )
     )
     query = parser.add_mutually_exclusive_group(required=True)

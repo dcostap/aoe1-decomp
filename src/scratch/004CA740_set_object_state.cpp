@@ -1,5 +1,5 @@
 // STATUS: PAUSED
-// BLOCKER: legacy naked inline assembly also binds two wrong direct-call symbols
+// BLOCKER: deferred after the inline-assembly audit; require explicit authorization before assignment
 // NOTE: moved from matching after the 2026-08-16 inline-assembly policy audit
 // NEXT: reconstruct typed state predicates and canonical member-call declarations
 

@@ -28,7 +28,28 @@ from target_session import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Query current project function status from live repo state."
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Query current function status from live repository state.\n"
+            "\n"
+            "Use this tool before target selection, assignment, or status reporting.\n"
+            "Combine one corpus filter, one source-status filter, and optional sorting.\n"
+            "Triage and work-history views are for a small result set, not a full dump.\n"
+            "\n"
+            "BLOCKER semantics:\n"
+            "  A BLOCKER is a manual obstacle note in the living source's top comment header.\n"
+            "  The tool does not infer ordinary matching obstacles or enforce the note.\n"
+            "  A verified-logic source without its required ledger gets an integrity blocker.\n"
+            "  A blocker is not a lease, source status, or corpus class.\n"
+            "  Combine blocker filters with a source or remaining-work filter.\n"
+            "\n"
+            "Examples:\n"
+            "  python tools/query_project_status.py --va 0047A3A0 --paths --notes --leases\n"
+            "  python tools/query_project_status.py --unclaimed --normal --unleased --smallest --limit 12\n"
+            "  python tools/query_project_status.py --scratch --normal --work-history --notes --limit 12\n"
+            "  python tools/query_project_status.py --logic-review-in-progress --paths\n"
+            "  python tools/query_project_status.py --summary --normal\n"
+        ),
     )
     corpus = parser.add_mutually_exclusive_group()
     corpus.add_argument("--normal", action="store_true", help="Only normal corpus functions")
@@ -56,8 +77,8 @@ def parse_args() -> argparse.Namespace:
     )
 
     blockers = parser.add_mutually_exclusive_group()
-    blockers.add_argument("--no-blockers", action="store_true", help="Exclude functions with BLOCKER notes")
-    blockers.add_argument("--blockers", action="store_true", help="Only functions with BLOCKER notes")
+    blockers.add_argument("--no-blockers", action="store_true", help="Exclude rows with a parsed top-header BLOCKER note")
+    blockers.add_argument("--blockers", action="store_true", help="Only rows with a parsed top-header BLOCKER note")
 
     leases = parser.add_mutually_exclusive_group()
     leases.add_argument("--unleased", action="store_true", help="Only functions without an unexpired active target lease")

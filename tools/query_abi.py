@@ -19,7 +19,20 @@ SOURCE_SUFFIXES = {".c", ".cpp", ".h", ".hpp", ".inl"}
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Query generated ABI metadata with provenance from living exact-match sources."
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Query ABI evidence and show its provenance.\n"
+            "\n"
+            "Reviewed shared evidence appears first. Generated metadata is reference evidence.\n"
+            "Living exact source is strong codegen evidence, but one local stub does not prove\n"
+            "canonical shared ABI. Nonexact source is excluded unless requested.\n"
+            "\n"
+            "Examples:\n"
+            "  python tools/query_abi.py --va 004A9CC0\n"
+            "  python tools/query_abi.py --symbol rge_read\n"
+            "  python tools/query_abi.py --class TRIBE_Player\n"
+            "  python tools/query_abi.py --global rge_base_game\n"
+        ),
     )
     query = parser.add_mutually_exclusive_group(required=True)
     query.add_argument("--symbol", help="Search function/type/global names and exact source context.")

@@ -158,8 +158,8 @@ Localized splice templates
 For giant functions, a template may contain only the region being varied. Two
 unique marker lines in an unchanged full source delimit the replacement:
 
-  python tools/variant_lab.py --va 004F21F0 --template build/temp/gate.tpl.cpp ^
-    --splice-base src/scratch/004F21F0_taskActiveSoldiers.cpp ^
+  python tools/variant_lab.py --va 004F21F0 --template build/temp/gate.tpl.cpp \
+    --splice-base src/scratch/004F21F0_taskActiveSoldiers.cpp \
     --splice-start "// LAB START gate" --splice-end "// LAB END gate"
 
 The marker lines remain in the generated source; text between them is replaced by
