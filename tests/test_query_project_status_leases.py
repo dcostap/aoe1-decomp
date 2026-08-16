@@ -30,6 +30,7 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
         call = build_rows.call_args.kwargs
         self.assertEqual(call["va"], "00400000")
         self.assertFalse(call["include_source_preview"])
+        self.assertFalse(call["include_source_notes"])
         self.assertFalse(call["include_diff_metrics"])
         self.assertFalse(call["include_comment_lines"])
 
@@ -83,6 +84,29 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
         self.assertEqual(rows[0]["work_last_gain"], "#2@2026-08-02")
         self.assertEqual(rows[1]["lease_active"], "no")
         self.assertEqual(rows[2]["lease_state"], "")
+
+    def test_annotation_accepts_compact_session_summaries(self) -> None:
+        future = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat().replace("+00:00", "Z")
+        summary = {
+            "summary_version": 1,
+            "va": "00001000",
+            "owner": "AgentA",
+            "state": "active",
+            "lease_expires_at": future,
+            "meaningful_probe_count": 2,
+            "meaningful_probe_total": 7,
+            "claim_count": 3,
+            "best_diff_bytes": 8,
+            "last_positional_improvement": {"number": 6, "at": "2026-08-02T10:00:00Z"},
+            "last_metric_summary": {"diff_bytes": 9},
+            "clean_baseline": True,
+        }
+        row = annotate_leases([{"va": "00001000"}], [summary], include_work_history=True)[0]
+        self.assertEqual(row["lease_probes"], "2")
+        self.assertEqual(row["lease_probe_total"], "7")
+        self.assertEqual(row["lease_claim_total"], "3")
+        self.assertEqual(row["work_best_current_diff"], "8/9")
+        self.assertEqual(row["work_last_gain"], "#6@2026-08-02")
 
     def test_filters_support_unleased_active_and_owner(self) -> None:
         rows = annotate_leases([{"va": "00001000"}, {"va": "00002000"}, {"va": "00003000"}], self.sessions())

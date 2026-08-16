@@ -25,6 +25,7 @@ from function_history import checkpoint_info, record_checkpoint, restore_checkpo
 
 
 SESSION_VERSION = 3
+SESSION_INDEX_VERSION = 1
 CLEAN_CHECKPOINT_LABEL = "clean-source"
 OWNER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
 PROBE_KINDS = (
@@ -58,6 +59,10 @@ def _parse_iso(value: str) -> datetime:
 
 def _sessions_root() -> Path:
     return REPO_ROOT / "build" / "target_sessions"
+
+
+def _session_index_path() -> Path:
+    return REPO_ROOT / "build" / "target_session_index.json"
 
 
 def _session_path(record: dict[str, str]) -> Path:
@@ -109,13 +114,137 @@ def _load_session(record: dict[str, str]) -> dict | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _session_file_fingerprint() -> str:
+    """Return a cheap fingerprint of all session files without reading them."""
+    root = _sessions_root()
+    if not root.exists():
+        return ""
+    entries: list[tuple[str, int, int]] = []
+    with os.scandir(root) as children:
+        for child in children:
+            if not child.is_file() or not child.name.lower().endswith(".json"):
+                continue
+            stat = child.stat()
+            entries.append((child.name, stat.st_size, stat.st_mtime_ns))
+    digest = hashlib.sha256()
+    for name, size, modified in sorted(entries):
+        digest.update(name.encode("utf-8", errors="surrogatepass"))
+        digest.update(b"\0")
+        digest.update(f"{size}:{modified}\n".encode("ascii"))
+    return digest.hexdigest()
+
+
+def target_session_summary(session: dict) -> dict:
+    """Reduce one complete session to fields needed by project status queries."""
+    probes = list(session.get("probes") or [])
+    probe_diffs = [
+        int((probe.get("metrics") or {}).get("diff_bytes"))
+        for probe in probes
+        if (probe.get("metrics") or {}).get("diff_bytes") is not None
+    ]
+    improvement = last_positional_improvement(session)
+    return {
+        "summary_version": SESSION_INDEX_VERSION,
+        "va": str(session.get("va", "")).upper(),
+        "name": str(session.get("name", "")),
+        "slug": str(session.get("slug", "")),
+        "owner": str(session.get("owner", "")),
+        "state": str(session.get("state", "")),
+        "claimed_at": str(session.get("claimed_at", "")),
+        "updated_at": str(session.get("updated_at", "")),
+        "lease_expires_at": str(session.get("lease_expires_at", "")),
+        "meaningful_probe_budget": int(session.get("meaningful_probe_budget") or 0),
+        "meaningful_probe_count": meaningful_probe_count(session),
+        "meaningful_probe_total": meaningful_probe_count(session, current_claim_only=False),
+        "claim_count": session_claim_count(session),
+        "recorded_probe_count": len(probes),
+        "best_diff_bytes": min(probe_diffs) if probe_diffs else None,
+        "last_positional_improvement": (
+            {"number": improvement.get("number"), "at": improvement.get("at")}
+            if improvement
+            else None
+        ),
+        "last_metric_summary": dict(session.get("last_metric_summary") or {}),
+        "clean_baseline": bool(session.get("clean_baseline")),
+    }
+
+
+def _read_session_index() -> dict | None:
+    path = _session_index_path()
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    if payload.get("version") != SESSION_INDEX_VERSION or not isinstance(payload.get("sessions"), dict):
+        return None
+    return payload
+
+
+def _write_session_index(sessions: dict[str, dict], fingerprint: str) -> None:
+    path = _session_index_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".json.tmp")
+    payload = {
+        "version": SESSION_INDEX_VERSION,
+        "session_files_fingerprint": fingerprint,
+        "sessions": sessions,
+    }
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
+def _rebuild_session_index() -> dict:
+    summaries: dict[str, dict] = {}
+    root = _sessions_root()
+    if root.exists():
+        for path in sorted(root.glob("*.json")):
+            try:
+                session = json.loads(path.read_text(encoding="utf-8"))
+                summary = target_session_summary(session)
+            except (json.JSONDecodeError, OSError, TypeError, ValueError):
+                summary = {
+                    "summary_version": SESSION_INDEX_VERSION,
+                    "va": path.name.split("_", 1)[0].upper(),
+                    "slug": path.stem,
+                    "owner": "",
+                    "state": "invalid",
+                }
+            va = str(summary.get("va", "")).upper()
+            if va:
+                summaries[va] = summary
+    fingerprint = _session_file_fingerprint()
+    _write_session_index(summaries, fingerprint)
+    return {
+        "version": SESSION_INDEX_VERSION,
+        "session_files_fingerprint": fingerprint,
+        "sessions": summaries,
+    }
+
+
 def _write_session(record: dict[str, str], payload: dict) -> None:
     payload["version"] = SESSION_VERSION
+    prior_fingerprint = _session_file_fingerprint()
+    index = _read_session_index()
+    index_was_current = bool(
+        index and index.get("session_files_fingerprint") == prior_fingerprint
+    )
     path = _session_path(record)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     temporary.replace(path)
+    current_fingerprint = _session_file_fingerprint()
+    if index_was_current and index is not None:
+        sessions = dict(index["sessions"])
+        sessions[str(payload.get("va") or record["va"]).upper()] = target_session_summary(payload)
+        _write_session_index(sessions, current_fingerprint)
+    else:
+        _rebuild_session_index()
 
 
 def _lease_active(session: dict, now: datetime | None = None) -> bool:
@@ -137,6 +266,9 @@ def _probe_is_meaningful(probe: dict) -> bool:
 
 
 def meaningful_probe_count(session: dict, *, current_claim_only: bool = True) -> int:
+    if session.get("summary_version") == SESSION_INDEX_VERSION:
+        field = "meaningful_probe_count" if current_claim_only else "meaningful_probe_total"
+        return int(session.get(field) or 0)
     probes = list(session.get("probes") or [])
     if current_claim_only:
         probes = probes[int(session.get("probe_start_index") or 0) :]
@@ -145,6 +277,8 @@ def meaningful_probe_count(session: dict, *, current_claim_only: bool = True) ->
 
 def session_claim_count(session: dict) -> int:
     """Return lifetime claims without counting pause and probe events."""
+    if session.get("summary_version") == SESSION_INDEX_VERSION:
+        return int(session.get("claim_count") or 0)
     events = session.get("events") or []
     event_count = sum(event.get("kind") in {"start", "takeover"} for event in events)
     return max(event_count, 1 if session else 0)
@@ -152,6 +286,9 @@ def session_claim_count(session: dict) -> int:
 
 def last_positional_improvement(session: dict) -> dict | None:
     """Return the latest meaningful probe that lowered positional diff bytes."""
+    if session.get("summary_version") == SESSION_INDEX_VERSION:
+        improvement = session.get("last_positional_improvement")
+        return dict(improvement) if isinstance(improvement, dict) else None
     for probe in reversed(session.get("probes") or []):
         delta = (probe.get("metric_delta") or {}).get("diff_bytes") or {}
         if _probe_is_meaningful(probe) and delta.get("direction") == "improved":
@@ -929,9 +1066,43 @@ def _all_sessions() -> list[dict]:
     return rows
 
 
-def load_target_sessions() -> list[dict]:
-    """Return local shared-tree target session rows for status tooling."""
-    return _all_sessions()
+def load_target_sessions(vas: set[str] | None = None) -> list[dict]:
+    """Return compact session summaries for status tooling.
+
+    A bounded VA lookup reads only its session file. Broad lookups use an
+    atomic summary index. The index repairs itself when any session file changes.
+    """
+    if vas is not None:
+        rows: list[dict] = []
+        root = _sessions_root()
+        if not root.exists():
+            return rows
+        for va in sorted({value.upper() for value in vas}):
+            matches = sorted(root.glob(f"{va}_*.json"))
+            for path in matches:
+                try:
+                    rows.append(target_session_summary(json.loads(path.read_text(encoding="utf-8"))))
+                except (json.JSONDecodeError, OSError, TypeError, ValueError):
+                    rows.append(
+                        {
+                            "summary_version": SESSION_INDEX_VERSION,
+                            "va": va,
+                            "slug": path.stem,
+                            "owner": "",
+                            "state": "invalid",
+                        }
+                    )
+        return rows
+
+    fingerprint = _session_file_fingerprint()
+    index = _read_session_index()
+    if index is None or index.get("session_files_fingerprint") != fingerprint:
+        with _sessions_lock():
+            fingerprint = _session_file_fingerprint()
+            index = _read_session_index()
+            if index is None or index.get("session_files_fingerprint") != fingerprint:
+                index = _rebuild_session_index()
+    return [index["sessions"][va] for va in sorted(index["sessions"])]
 
 
 def session_is_active(session: dict) -> bool:

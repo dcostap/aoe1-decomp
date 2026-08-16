@@ -30,6 +30,14 @@ char quote = '\\'';
 """
         self.assertEqual(count_comment_lines_text(source), 0)
 
+    def test_handles_escapes_and_unterminated_block_comments(self) -> None:
+        source = '''const char* quoted = "escaped \\\" // text";
+char slash = '\\'';
+/* open block
+ * still open
+'''
+        self.assertEqual(count_comment_lines_text(source), 2)
+
     def test_comment_sort_uses_size_as_the_tie_breaker(self) -> None:
         rows = [
             {"va": "00400020", "source_comment_lines": "2", "size_bytes": "16"},

@@ -48,6 +48,79 @@ class TargetSessionTests(unittest.TestCase):
         self.assertEqual(target_session.session_claim_count(first), 1)
         self.assertEqual(target_session.session_claim_count(second), 1)
 
+    def test_compact_summary_preserves_status_aggregates(self) -> None:
+        session = {
+            "va": "00001000",
+            "owner": "AgentB",
+            "state": "pause",
+            "probe_start_index": 1,
+            "events": [{"kind": "start"}, {"kind": "takeover"}],
+            "probes": [
+                {"number": 1, "kind": "baseline", "meaningful": True, "metrics": {"diff_bytes": 12}},
+                {
+                    "number": 2,
+                    "kind": "liveness",
+                    "meaningful": True,
+                    "at": "2026-08-02T10:00:00Z",
+                    "metrics": {"diff_bytes": 8},
+                    "metric_delta": {"diff_bytes": {"direction": "improved"}},
+                },
+                {"number": 3, "kind": "validation", "meaningful": False, "metrics": {"diff_bytes": 9}},
+            ],
+            "last_metric_summary": {"diff_bytes": 9},
+            "clean_baseline": {"checkpoint_id": "clean"},
+        }
+        summary = target_session.target_session_summary(session)
+        self.assertNotIn("probes", summary)
+        self.assertEqual(target_session.meaningful_probe_count(summary), 1)
+        self.assertEqual(target_session.meaningful_probe_count(summary, current_claim_only=False), 2)
+        self.assertEqual(target_session.session_claim_count(summary), 2)
+        self.assertEqual(summary["best_diff_bytes"], 8)
+        self.assertEqual(target_session.last_positional_improvement(summary)["number"], 2)
+
+    def test_bounded_summary_load_reads_only_requested_session(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sessions = root / "build" / "target_sessions"
+            sessions.mkdir(parents=True)
+            for va in ("00001000", "00002000"):
+                (sessions / f"{va}_demo.json").write_text(
+                    json.dumps({"va": va, "owner": va, "state": "pause", "probes": []}),
+                    encoding="utf-8",
+                )
+            with patch.object(target_session, "REPO_ROOT", root):
+                rows = target_session.load_target_sessions({"00001000"})
+                index_exists = target_session._session_index_path().exists()
+        self.assertEqual([row["va"] for row in rows], ["00001000"])
+        self.assertFalse(index_exists)
+
+    def test_broad_summary_index_repairs_after_external_session_change(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sessions = root / "build" / "target_sessions"
+            sessions.mkdir(parents=True)
+            path = sessions / "00001000_demo.json"
+            path.write_text(
+                json.dumps({"va": "00001000", "owner": "AgentA", "state": "pause", "probes": []}),
+                encoding="utf-8",
+            )
+            with patch.object(target_session, "REPO_ROOT", root):
+                first = target_session.load_target_sessions()
+                path.write_text(
+                    json.dumps(
+                        {
+                            "va": "00001000",
+                            "owner": "AgentA",
+                            "state": "pause",
+                            "probes": [{"kind": "baseline", "meaningful": True}],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                second = target_session.load_target_sessions()
+        self.assertEqual(first[0]["meaningful_probe_total"], 0)
+        self.assertEqual(second[0]["meaningful_probe_total"], 1)
+
     def test_probe_snapshots_current_metrics_and_counts_meaningful_attempts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

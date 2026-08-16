@@ -10,6 +10,7 @@ from pathlib import Path
 from common import REPO_ROOT, load_functions
 from status_core import (
     build_status_rows,
+    enrich_status_rows,
     filter_status_rows,
     packet_path_for_row,
     sort_status_rows,
@@ -133,11 +134,11 @@ def load_rows(
         with args.from_csv.open("r", encoding="utf-8", errors="replace", newline="") as handle:
             return list(csv.DictReader(handle))
     sort_key, _descending = sort_from_args(args)
-    preserve_all_fields = args.json or args.csv
     return build_status_rows(
-        include_source_preview=args.with_preview,
-        include_diff_metrics=preserve_all_fields or sort_key in {"diff", "edit-diff", "first-mismatch"},
-        include_comment_lines=preserve_all_fields or sort_key == "comment-lines",
+        include_source_preview=False,
+        include_source_notes=bool(args.no_blockers or args.blockers or args.query),
+        include_diff_metrics=sort_key in {"diff", "edit-diff", "first-mismatch"},
+        include_comment_lines=sort_key == "comment-lines",
         va=args.va,
         source_bucket_filter=source_bucket_from_args(args),
         corpus_bucket_filter=corpus_bucket_from_args(args),
@@ -222,17 +223,21 @@ def annotate_leases(
         if include_work_history:
             claim_count = session_claim_count(session or {})
             improvement = last_positional_improvement(session or {})
-            probe_diffs = [
-                int((probe.get("metrics") or {}).get("diff_bytes"))
-                for probe in (session or {}).get("probes") or []
-                if (probe.get("metrics") or {}).get("diff_bytes") is not None
-            ]
+            if (session or {}).get("summary_version"):
+                best_diff = (session or {}).get("best_diff_bytes")
+            else:
+                probe_diffs = [
+                    int((probe.get("metrics") or {}).get("diff_bytes"))
+                    for probe in (session or {}).get("probes") or []
+                    if (probe.get("metrics") or {}).get("diff_bytes") is not None
+                ]
+                best_diff = min(probe_diffs) if probe_diffs else None
             current_metrics = (session or {}).get("last_metric_summary") or {}
             current_diff = current_metrics.get("diff_bytes")
             row["lease_claim_total"] = str(claim_count)
             row["work_best_current_diff"] = (
-                f"{min(probe_diffs)}/{current_diff if current_diff is not None else '-'}"
-                if probe_diffs else "-"
+                f"{best_diff}/{current_diff if current_diff is not None else '-'}"
+                if best_diff is not None else "-"
             )
             row["work_last_gain"] = (
                 f"#{improvement.get('number')}@{str(improvement.get('at') or '')[:10]}"
@@ -480,10 +485,25 @@ def main() -> None:
         or args.max_lifetime_probes is not None
         or args.max_claims is not None
     )
-    sessions = load_target_sessions()
-    include_vas, exclude_vas = lease_prefilter_vas(args, sessions)
+    needs_sessions = bool(
+        args.summary
+        or args.json
+        or args.csv
+        or args.leases
+        or args.work_history
+        or args.unleased
+        or args.active_leases
+        or args.owner
+        or args.max_lifetime_probes is not None
+        or args.max_claims is not None
+    )
+    sessions = load_target_sessions({args.va}) if needs_sessions and args.va else (
+        load_target_sessions() if needs_sessions else []
+    )
+    include_vas, exclude_vas = lease_prefilter_vas(args, sessions) if needs_sessions else (None, set())
     rows = load_rows(args, include_vas=include_vas, exclude_vas=exclude_vas)
-    rows = annotate_leases(rows, sessions, include_work_history=include_work_history)
+    if needs_sessions:
+        rows = annotate_leases(rows, sessions, include_work_history=include_work_history)
     rows = filter_status_rows(
         rows,
         corpus_bucket=corpus_bucket_from_args(args),
@@ -530,6 +550,14 @@ def main() -> None:
     rows = sort_status_rows(rows, sort=sort_key, descending=descending)
     total_before_limit = len(rows)
     rows = limited(rows, args.limit)
+    if not args.from_csv:
+        enrich_status_rows(
+            rows,
+            include_source_notes=bool(args.notes or args.work_history or args.json or args.csv),
+            include_source_preview=args.with_preview,
+            include_comment_lines=bool(args.json or args.csv),
+            include_diff_metrics=bool(args.json or args.csv),
+        )
     if args.triage:
         rows = annotate_triage(rows)
 

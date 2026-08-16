@@ -20,6 +20,10 @@ from common import (
 )
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
+COMMENT_TOKEN_RE = re.compile(
+    r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\r\n]*|/\*.*?(?:\*/|\Z)',
+    re.DOTALL,
+)
 SOURCE_BUCKETS = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
 CORPUS_BUCKETS = ["normal", "padding_only", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 STATUS_FIELDNAMES = [
@@ -136,8 +140,26 @@ def logic_review_files(path: Path) -> dict[str, Path]:
 def parse_header_notes(path: Path) -> dict[str, str]:
     if not path.exists():
         return default_header_notes()
-
-    return parse_header_notes_text(path.read_text(encoding="utf-8", errors="replace"))
+    notes = default_header_notes()
+    with path.open("r", encoding="utf-8", errors="replace") as handle:
+        for line in handle:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            if not stripped.startswith("//"):
+                break
+            match = HEADER_NOTE_RE.match(stripped)
+            if match is None:
+                continue
+            key = match.group(1)
+            value = match.group(2).strip()
+            if key not in notes:
+                continue
+            if key == "NOTE" and notes[key]:
+                notes[key] = notes[key] + " | " + value
+            else:
+                notes[key] = value
+    return notes
 
 
 def parse_header_notes_text(text: str) -> dict[str, str]:
@@ -197,65 +219,17 @@ def count_comment_lines_text(text: str) -> int:
     """
     comment_lines: set[int] = set()
     line = 0
-    index = 0
-    state = "code"
-    quote = ""
-    escaped = False
-
-    while index < len(text):
-        char = text[index]
-        next_char = text[index + 1] if index + 1 < len(text) else ""
-
-        if state == "block":
+    position = 0
+    for match in COMMENT_TOKEN_RE.finditer(text):
+        line += text.count("\n", position, match.start())
+        token = match.group(0)
+        if token.startswith("//"):
             comment_lines.add(line)
-            if char == "*" and next_char == "/":
-                state = "code"
-                index += 2
-                continue
-            if char == "\n":
-                line += 1
-            index += 1
-            continue
-
-        if state == "line":
-            comment_lines.add(line)
-            if char == "\n":
-                line += 1
-                state = "code"
-            index += 1
-            continue
-
-        if state == "string":
-            if char == "\n":
-                line += 1
-            elif escaped:
-                escaped = False
-            elif char == "\\":
-                escaped = True
-            elif char == quote:
-                state = "code"
-            index += 1
-            continue
-
-        if char == "\n":
-            line += 1
-            index += 1
-        elif char in ("'", '"'):
-            quote = char
-            state = "string"
-            escaped = False
-            index += 1
-        elif char == "/" and next_char == "/":
-            comment_lines.add(line)
-            state = "line"
-            index += 2
-        elif char == "/" and next_char == "*":
-            comment_lines.add(line)
-            state = "block"
-            index += 2
-        else:
-            index += 1
-
+        elif token.startswith("/*"):
+            last_line = line + token.count("\n") - int(token.endswith("\n"))
+            comment_lines.update(range(line, last_line + 1))
+        line += token.count("\n")
+        position = match.end()
     return len(comment_lines)
 
 
@@ -280,9 +254,116 @@ def packet_path_for_row(row: dict[str, str]) -> str:
     return str(Path("inventory") / "functions" / row["va"][:4] / f"{row['slug']}.txt")
 
 
+def _source_path_for_row(row: dict[str, str]) -> Path | None:
+    raw_paths = [value.strip() for value in row.get("source_path", "").split(" | ") if value.strip()]
+    if not raw_paths:
+        return None
+    priorities = ("src/scratch/", "src/verified_logic/", "src/accepted_drift/", "src/matching/")
+    normalized = [(value.replace("\\", "/"), value) for value in raw_paths]
+    for prefix in priorities:
+        for portable, original in normalized:
+            if portable.startswith(prefix):
+                return REPO_ROOT / original
+    return REPO_ROOT / raw_paths[0]
+
+
+def enrich_status_rows(
+    rows: list[dict[str, str]],
+    *,
+    include_source_notes: bool = False,
+    include_source_preview: bool = False,
+    include_comment_lines: bool = False,
+    include_diff_metrics: bool = False,
+) -> list[dict[str, str]]:
+    """Load optional file-backed fields for rows that survived filtering and limits."""
+    for row in rows:
+        source_path = _source_path_for_row(row)
+        source_text: str | None = None
+        if source_path is not None and (include_source_preview or include_comment_lines):
+            source_text = source_path.read_text(encoding="utf-8", errors="replace")
+
+        if include_source_notes:
+            if source_path is None:
+                notes = default_header_notes()
+            elif source_text is not None:
+                notes = parse_header_notes_text(source_text)
+            else:
+                notes = parse_header_notes(source_path)
+            if row.get("source_bucket") == "verified_logic" and row.get("has_logic_review") != "yes":
+                missing_ledger = "verified_logic source has no logic-review ledger"
+                notes["BLOCKER"] = (
+                    f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
+                )
+            row.update(
+                {
+                    "source_status": notes["STATUS"],
+                    "source_flags_note": notes["FLAGS"],
+                    "source_blocker": notes["BLOCKER"],
+                    "source_note": notes["NOTE"],
+                    "source_class": notes["CLASS"],
+                    "source_risk": notes["RISK"],
+                    "source_why": notes["WHY"],
+                    "source_next": notes["NEXT"],
+                    "has_blocker": "yes" if notes["BLOCKER"] else "no",
+                }
+            )
+        if include_source_preview:
+            row["source_preview"] = read_source_preview_text(source_text or "")
+        if include_comment_lines:
+            row["source_comment_lines"] = str(count_comment_lines_text(source_text or ""))
+
+        if include_diff_metrics:
+            diff_metrics: dict[str, object] = {}
+            diff_metrics_path = REPO_ROOT / "build" / "diff" / f"{row['slug']}.json"
+            if diff_metrics_path.exists():
+                try:
+                    diff_metrics = json.loads(diff_metrics_path.read_text(encoding="utf-8"))
+                except json.JSONDecodeError:
+                    diff_metrics = {}
+            elif row.get("source_bucket") == "matching":
+                diff_metrics = {
+                    "result": "MATCH",
+                    "diff_percent": 0.0,
+                    "diff_bytes": 0,
+                    "diff_spans": 0,
+                    "positional_diff_percent": 0.0,
+                    "positional_diff_bytes": 0,
+                    "positional_diff_spans": 0,
+                    "edit_diff_percent": 0.0,
+                    "edit_diff_bytes": 0,
+                    "edit_insert_bytes": 0,
+                    "edit_delete_bytes": 0,
+                    "edit_replace_bytes": 0,
+                    "edit_equal_bytes": int(row.get("size_bytes") or 0),
+                    "likely_shifted_alignment": "no",
+                    "first_mismatch_offset": "",
+                }
+            row.update(
+                {
+                    "diff_result": str(diff_metrics.get("result", "")),
+                    "diff_percent": f"{float(diff_metrics.get('diff_percent', 0.0)):.4f}" if diff_metrics else "",
+                    "diff_bytes": str(diff_metrics.get("diff_bytes", "")),
+                    "diff_spans": str(diff_metrics.get("diff_spans", "")),
+                    "positional_diff_percent": f"{float(diff_metrics.get('positional_diff_percent', diff_metrics.get('diff_percent', 0.0))):.4f}" if diff_metrics else "",
+                    "positional_diff_bytes": str(diff_metrics.get("positional_diff_bytes", diff_metrics.get("diff_bytes", ""))),
+                    "positional_diff_spans": str(diff_metrics.get("positional_diff_spans", diff_metrics.get("diff_spans", ""))),
+                    "edit_diff_percent": f"{float(diff_metrics.get('edit_diff_percent', diff_metrics.get('diff_percent', 0.0))):.4f}" if diff_metrics else "",
+                    "edit_diff_bytes": str(diff_metrics.get("edit_diff_bytes", diff_metrics.get("diff_bytes", ""))),
+                    "edit_insert_bytes": str(diff_metrics.get("edit_insert_bytes", "")),
+                    "edit_delete_bytes": str(diff_metrics.get("edit_delete_bytes", "")),
+                    "edit_replace_bytes": str(diff_metrics.get("edit_replace_bytes", "")),
+                    "edit_equal_bytes": str(diff_metrics.get("edit_equal_bytes", "")),
+                    "likely_shifted_alignment": "yes" if diff_metrics.get("likely_shifted_alignment") else ("no" if diff_metrics else ""),
+                    "first_mismatch_offset": str(diff_metrics.get("first_mismatch_offset", "")),
+                }
+            )
+    return rows
+
+
 def build_status_rows(
     *,
     include_source_preview: bool = True,
+    include_source_notes: bool = True,
     include_diff_metrics: bool = True,
     include_comment_lines: bool = True,
     va: str | None = None,
@@ -316,6 +397,11 @@ def build_status_rows(
     accepted_drift_files = source_files(accepted_drift_dir)
     verified_logic_files = source_files(verified_logic_dir)
     logic_review_ledgers = logic_review_files(logic_reviews_dir)
+    custom_flag_files = {
+        child.stem.upper(): child
+        for child in flags_dir.iterdir()
+        if child.suffix.lower() == ".rsp"
+    } if flags_dir.exists() else {}
 
     records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
@@ -356,28 +442,16 @@ def build_status_rows(
 
         if len(present_paths) > 1:
             source_bucket = "conflict"
-            source_path = " | ".join(str(path.relative_to(REPO_ROOT)) for path in present_paths)
-            note_path = scratch_path or verified_logic_path or accepted_drift_path or matching_path
         elif matching_path:
             source_bucket = "matching"
-            source_path = str(matching_path.relative_to(REPO_ROOT))
-            note_path = matching_path
         elif accepted_drift_path:
             source_bucket = "accepted_drift"
-            source_path = str(accepted_drift_path.relative_to(REPO_ROOT))
-            note_path = accepted_drift_path
         elif verified_logic_path:
             source_bucket = "verified_logic"
-            source_path = str(verified_logic_path.relative_to(REPO_ROOT))
-            note_path = verified_logic_path
         elif scratch_path:
             source_bucket = "scratch"
-            source_path = str(scratch_path.relative_to(REPO_ROOT))
-            note_path = scratch_path
         else:
             source_bucket = "unclaimed"
-            source_path = ""
-            note_path = None
 
         is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
         if is_remaining == "yes":
@@ -402,47 +476,11 @@ def build_status_rows(
         if max_size is not None and int(record.get("size_bytes") or 0) > max_size:
             continue
 
-        custom_flags_path = flags_dir / f"{slug}.rsp"
-        logic_review_path = logic_review_ledgers.get(slug_key)
-        source_text = (
-            note_path.read_text(encoding="utf-8", errors="replace")
-            if note_path is not None
-            else ""
+        source_path = " | ".join(
+            str(Path("src") / path.parent.name / path.name) for path in present_paths
         )
-        header_notes = parse_header_notes_text(source_text) if note_path is not None else default_header_notes()
-        if source_bucket == "verified_logic" and logic_review_path is None:
-            missing_ledger = "verified_logic source has no logic-review ledger"
-            header_notes["BLOCKER"] = (
-                f"{header_notes['BLOCKER']} | {missing_ledger}"
-                if header_notes["BLOCKER"]
-                else missing_ledger
-            )
-        diff_metrics: dict[str, object] = {}
-        if include_diff_metrics:
-            diff_metrics_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
-            if diff_metrics_path.exists():
-                try:
-                    diff_metrics = json.loads(diff_metrics_path.read_text(encoding="utf-8"))
-                except json.JSONDecodeError:
-                    diff_metrics = {}
-            elif source_bucket == "matching":
-                diff_metrics = {
-                    "result": "MATCH",
-                    "diff_percent": 0.0,
-                    "diff_bytes": 0,
-                    "diff_spans": 0,
-                    "positional_diff_percent": 0.0,
-                    "positional_diff_bytes": 0,
-                    "positional_diff_spans": 0,
-                    "edit_diff_percent": 0.0,
-                    "edit_diff_bytes": 0,
-                    "edit_insert_bytes": 0,
-                    "edit_delete_bytes": 0,
-                    "edit_replace_bytes": 0,
-                    "edit_equal_bytes": int(record.get("size_bytes") or 0),
-                    "likely_shifted_alignment": "no",
-                    "first_mismatch_offset": "",
-                }
+        custom_flags_path = custom_flag_files.get(slug_key)
+        logic_review_path = logic_review_ledgers.get(slug_key)
 
         parent_fragment = parent_owned_fragments.get(int(record["va"], 16))
         parent_va_text = f"{parent_fragment[0]:08X}" if parent_fragment else ""
@@ -460,7 +498,7 @@ def build_status_rows(
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
-            "logic_review_path": str(logic_review_path.relative_to(REPO_ROOT)) if logic_review_path is not None else "",
+            "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
             "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,
             "corpus_reason": corpus_reason,
@@ -475,36 +513,45 @@ def build_status_rows(
             "is_remaining": is_remaining,
             "remaining_size_rank": "",
             "remaining_asm_rank": "",
-            "uses_custom_flags": "yes" if custom_flags_path.exists() else "no",
-            "custom_flags_path": str(custom_flags_path.relative_to(REPO_ROOT)) if custom_flags_path.exists() else "",
-            "source_status": header_notes["STATUS"],
-            "source_flags_note": header_notes["FLAGS"],
-            "source_blocker": header_notes["BLOCKER"],
-            "source_note": header_notes["NOTE"],
-            "source_class": header_notes["CLASS"],
-            "source_risk": header_notes["RISK"],
-            "source_why": header_notes["WHY"],
-            "source_next": header_notes["NEXT"],
-            "source_preview": read_source_preview_text(source_text) if include_source_preview else "",
-            "source_comment_lines": str(count_comment_lines_text(source_text)) if include_comment_lines else "",
-            "has_blocker": "yes" if header_notes["BLOCKER"] else "no",
-            "diff_result": str(diff_metrics.get("result", "")),
-            "diff_percent": f"{float(diff_metrics.get('diff_percent', 0.0)):.4f}" if diff_metrics else "",
-            "diff_bytes": str(diff_metrics.get("diff_bytes", "")),
-            "diff_spans": str(diff_metrics.get("diff_spans", "")),
-            "positional_diff_percent": f"{float(diff_metrics.get('positional_diff_percent', diff_metrics.get('diff_percent', 0.0))):.4f}" if diff_metrics else "",
-            "positional_diff_bytes": str(diff_metrics.get("positional_diff_bytes", diff_metrics.get("diff_bytes", ""))),
-            "positional_diff_spans": str(diff_metrics.get("positional_diff_spans", diff_metrics.get("diff_spans", ""))),
-            "edit_diff_percent": f"{float(diff_metrics.get('edit_diff_percent', diff_metrics.get('diff_percent', 0.0))):.4f}" if diff_metrics else "",
-            "edit_diff_bytes": str(diff_metrics.get("edit_diff_bytes", diff_metrics.get("diff_bytes", ""))),
-            "edit_insert_bytes": str(diff_metrics.get("edit_insert_bytes", "")),
-            "edit_delete_bytes": str(diff_metrics.get("edit_delete_bytes", "")),
-            "edit_replace_bytes": str(diff_metrics.get("edit_replace_bytes", "")),
-            "edit_equal_bytes": str(diff_metrics.get("edit_equal_bytes", "")),
-            "likely_shifted_alignment": "yes" if diff_metrics.get("likely_shifted_alignment") else ("no" if diff_metrics else ""),
-            "first_mismatch_offset": str(diff_metrics.get("first_mismatch_offset", "")),
+            "uses_custom_flags": "yes" if custom_flags_path is not None else "no",
+            "custom_flags_path": str(Path("config") / "flags" / custom_flags_path.name) if custom_flags_path is not None else "",
+            "source_status": "",
+            "source_flags_note": "",
+            "source_blocker": "",
+            "source_note": "",
+            "source_class": "",
+            "source_risk": "",
+            "source_why": "",
+            "source_next": "",
+            "source_preview": "",
+            "source_comment_lines": "",
+            "has_blocker": "no",
+            "diff_result": "",
+            "diff_percent": "",
+            "diff_bytes": "",
+            "diff_spans": "",
+            "positional_diff_percent": "",
+            "positional_diff_bytes": "",
+            "positional_diff_spans": "",
+            "edit_diff_percent": "",
+            "edit_diff_bytes": "",
+            "edit_insert_bytes": "",
+            "edit_delete_bytes": "",
+            "edit_replace_bytes": "",
+            "edit_equal_bytes": "",
+            "likely_shifted_alignment": "",
+            "first_mismatch_offset": "",
         }
         rows.append(row)
+
+    if include_source_notes or include_source_preview or include_comment_lines or include_diff_metrics:
+        enrich_status_rows(
+            rows,
+            include_source_notes=include_source_notes,
+            include_source_preview=include_source_preview,
+            include_comment_lines=include_comment_lines,
+            include_diff_metrics=include_diff_metrics,
+        )
 
     size_ranks = rank_map(remaining_records, "size_bytes")
     asm_ranks = rank_map(remaining_records, "asm_lines")
