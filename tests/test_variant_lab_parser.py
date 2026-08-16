@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import io
+import subprocess
 import sys
+import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
@@ -95,6 +98,44 @@ B
         with self.assertRaisesRegex(ValueError, "duplicate @case label"):
             variant_lab.parse_template(text)
 
+    def test_ambient_declarations_generate_deterministic_cumulative_samples(self) -> None:
+        text = "before\n@ambient_declarations ambient samples=4 seed=demo\nafter\n"
+        plan = variant_lab.parse_template(text)
+        specs = variant_lab.make_specs(plan)
+
+        self.assertEqual([axis.name for axis in plan.axes], ["ambient"])
+        self.assertEqual(
+            [variant_lab.label_text(spec, plan.axes) for spec in specs],
+            [
+                "src.ambient=n0000",
+                "src.ambient=n0001",
+                "src.ambient=n0002",
+                "src.ambient=n0003",
+            ],
+        )
+        baseline = variant_lab.expand_source(plan, specs[0])
+        first = variant_lab.expand_source(plan, specs[1])
+        third = variant_lab.expand_source(plan, specs[3])
+        self.assertNotIn("struct codegen_ambient_ambient_", baseline)
+        self.assertEqual(first.count("struct codegen_ambient_ambient_"), 1)
+        self.assertEqual(third.count("struct codegen_ambient_ambient_"), 3)
+        self.assertEqual(len(baseline.splitlines()), len(first.splitlines()))
+        self.assertEqual(len(first.splitlines()), len(third.splitlines()))
+        first_declaration = next(line for line in first.splitlines() if line.startswith("struct "))
+        self.assertIn(first_declaration, third)
+
+        repeated = variant_lab.parse_template(text)
+        self.assertEqual(
+            variant_lab.expand_source(repeated, variant_lab.make_specs(repeated)[3]),
+            third,
+        )
+
+    def test_ambient_declarations_validate_arguments(self) -> None:
+        with self.assertRaisesRegex(ValueError, "must be positive"):
+            variant_lab.parse_template("@ambient_declarations ctx samples=0\n")
+        with self.assertRaisesRegex(ValueError, "unknown.*argument"):
+            variant_lab.parse_template("@ambient_declarations ctx samples=2 mode=random\n")
+
     def test_template_expansion_inside_case_is_parseable(self) -> None:
         text = """@choice outer
 @case with_template
@@ -165,6 +206,17 @@ B
         self.assertEqual(extent["effective_size"], 5)
         self.assertTrue(extent["has_code_overflow"])
 
+    def test_group_symbol_normalization_keeps_external_identity(self) -> None:
+        self.assertEqual(variant_lab.normalize_relocation_symbol_for_group("$L395"), "$L#")
+        self.assertEqual(
+            variant_lab.normalize_relocation_symbol_for_group("_value$S351"),
+            "_value$S#",
+        )
+        self.assertEqual(
+            variant_lab.normalize_relocation_symbol_for_group("?external@@YAXXZ"),
+            "?external@@YAXXZ",
+        )
+
     def test_variant_preview_is_compact_unless_full_is_requested(self) -> None:
         plan = variant_lab.parse_template(
             "before\n@choice x\n@case a\nA\n@case b\nB\n@endchoice\nafter\n"
@@ -186,6 +238,36 @@ B
                 plan, specs, specs[:1], full_source=True
             )
         self.assertIn("before\nA\nafter", full.getvalue())
+
+    def test_compile_timeout_becomes_a_bounded_tool_error(self) -> None:
+        plan = variant_lab.parse_template("void f() {}\n")
+        spec = variant_lab.make_specs(plan)[0]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(
+            variant_lab, "tool_env", return_value={}
+        ), patch.object(
+            variant_lab.subprocess,
+            "run",
+            side_effect=subprocess.TimeoutExpired(["cl"], 0.01),
+        ):
+            root = Path(temporary)
+            result = variant_lab.build_variant(
+                spec,
+                plan,
+                plan.axes,
+                root,
+                root / "work",
+                Path("cl"),
+                Path("default.rsp"),
+                {},
+                b"\xC3",
+                1,
+                0x401000,
+                "00401000_f",
+                variant_lab.LabConstraints(),
+                0.01,
+            )
+        self.assertEqual(result.status, "tool_error")
+        self.assertIn("compiler timeout", result.error_text)
 
 
 if __name__ == "__main__":

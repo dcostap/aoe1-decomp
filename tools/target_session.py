@@ -376,6 +376,7 @@ def current_metric_summary(record: dict[str, str]) -> dict[str, object]:
     return {
         "result": metrics.get("result"),
         "workflow_stage": metrics.get("workflow_stage"),
+        "diagnostic_class": (metrics.get("mismatch_classification") or {}).get("primary"),
         "diff_bytes": metrics.get("diff_bytes"),
         "diff_percent": metrics.get("diff_percent"),
         "first_mismatch_offset": first_mismatch,
@@ -995,6 +996,8 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
         )
         if metrics.get("workflow_stage"):
             lines.append(f"Checker stage: {metrics['workflow_stage']}")
+        if metrics.get("diagnostic_class") and metrics.get("diagnostic_class") != "EXACT":
+            lines.append(f"Diagnostic class (audit only): {metrics['diagnostic_class']}")
         if not metrics.get("artifact_fresh"):
             lines.append(f"Freshness: {metrics.get('freshness_reason')}")
     else:

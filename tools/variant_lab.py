@@ -51,6 +51,8 @@ from target_session import current_metric_summary, record_probe, require_clean_b
 # hours of manual churn. Keep a high default cap so accidental million-variant
 # explosions still fail early; pass --max-variants 0 to disable the cap.
 DEFAULT_MAX_VARIANTS = 250_000
+DEFAULT_AMBIENT_SAMPLES = 512
+DEFAULT_COMPILE_TIMEOUT_SECONDS = 120.0
 
 VARIANT_TEMPLATE_DIRS = [
     REPO_ROOT / "config" / "variant_templates",
@@ -151,6 +153,23 @@ Source choices
 Active axes select one case. Reusing the same axis name links choices together;
 if a later active block omits the selected label, that block emits nothing.
 Duplicate @case labels in one block are rejected.
+
+Ambient declaration sweeps
+--------------------------
+
+Insert a deterministic file-scope declaration-count axis at the directive site:
+
+  @ambient_declarations ambient samples=512 seed=aoe1
+
+Sample n0000 emits no declarations. Sample n0001 emits one declaration, and so
+on. Every later sample retains the prior declarations. This tests whether VC5
+code generation changes with ambient front-end declaration state. The directive
+keeps the generated preamble's line count constant across samples. It is
+diagnostic only. A matching generated preamble does not prove original source.
+
+Optional `prefix=NAME` controls the neutral generated struct-name prefix. The
+default sample count is 512. Place the directive after includes and before the
+target function or its supporting declarations.
 
 Localized splice templates
 --------------------------
@@ -277,6 +296,7 @@ Run controls
   --require-frame      require the original prologue frame size
   --require-call-set   require direct/virtual/indirect target counts and COFF symbol identity
   --session-owner NAME record one meaningful `variant` probe for the whole lab family
+  --compile-timeout S stop one compiler job after S seconds; 0 disables the limit
 
 Identical expanded source+flags are deduped before compile by default. Duplicate
 work dirs contain dedup_alias.txt pointing to the representative object.
@@ -357,11 +377,22 @@ class ChoiceBlock:
 
 
 @dataclass
+class AmbientDeclarationsBlock:
+    name: str
+    samples: int
+    seed: str
+    prefix: str
+    labels: list[str]
+    declarations: list[str]
+    index: int
+
+
+@dataclass
 class Axis:
     kind: str
     name: str
     labels: list[str] = field(default_factory=list)
-    blocks: list[ChoiceBlock] = field(default_factory=list)
+    blocks: list[object] = field(default_factory=list)
 
     def add_label(self, label: str) -> None:
         if label not in self.labels:
@@ -690,6 +721,13 @@ def mask_relocations(data: bytes, relocs: list[CoffReloc]) -> bytes:
     return bytes(mutable)
 
 
+def normalize_relocation_symbol_for_group(symbol_name: str) -> str:
+    """Keep external identity while removing VC5's ambient local counters."""
+    if re.fullmatch(r"\$L\d+", symbol_name):
+        return "$L#"
+    return re.sub(r"\$S\d+$", "$S#", symbol_name)
+
+
 def first_mismatch(left: bytes, right: bytes) -> int | None:
     limit = min(len(left), len(right))
     for i in range(limit):
@@ -842,6 +880,53 @@ CHOICE_DIRECTIVES = ("@choice", "@flagchoice", "@flags")
 END_DIRECTIVES = ("@endchoice", "@endflagchoice", "@endflags")
 
 
+def parse_ambient_declarations(
+    arg: str | None, line_no: int, block_index: int
+) -> AmbientDeclarationsBlock:
+    if not arg:
+        raise ValueError(f"@ambient_declarations requires an axis name on line {line_no}")
+    try:
+        parts = shlex.split(arg, posix=True)
+    except ValueError as exc:
+        raise ValueError(f"invalid @ambient_declarations arguments on line {line_no}: {exc}") from exc
+    if not parts or "=" in parts[0]:
+        raise ValueError(f"@ambient_declarations requires an axis name on line {line_no}")
+    axis = parts[0]
+    values: dict[str, str] = {}
+    for part in parts[1:]:
+        if "=" not in part:
+            raise ValueError(
+                f"unexpected @ambient_declarations argument {part!r} on line {line_no}; use key=value"
+            )
+        key, value = part.split("=", 1)
+        if key not in {"samples", "seed", "prefix"}:
+            raise ValueError(f"unknown @ambient_declarations argument {key!r} on line {line_no}")
+        values[key] = value
+    try:
+        samples = int(values.get("samples", str(DEFAULT_AMBIENT_SAMPLES)), 10)
+    except ValueError as exc:
+        raise ValueError(f"ambient sample count must be an integer on line {line_no}") from exc
+    if samples < 1:
+        raise ValueError(f"ambient sample count must be positive on line {line_no}")
+    seed = values.get("seed", axis)
+    prefix = sanitize_identifier(values.get("prefix", f"codegen_ambient_{axis}"))
+    width = max(4, len(str(samples - 1)))
+    labels = [f"n{index:0{width}d}" for index in range(samples)]
+    declarations = []
+    for index in range(samples - 1):
+        digest = hashlib.sha256(f"{seed}:{index}".encode("utf-8")).hexdigest()[:10]
+        declarations.append(f"struct {prefix}_{index:06d}_{digest};\n")
+    return AmbientDeclarationsBlock(
+        name=axis,
+        samples=samples,
+        seed=seed,
+        prefix=prefix,
+        labels=labels,
+        declarations=declarations,
+        index=block_index,
+    )
+
+
 def parse_template(text: str) -> TemplatePlan:
     """Parse a variant template, including choices nested inside cases.
 
@@ -870,6 +955,7 @@ def parse_template(text: str) -> TemplatePlan:
         return block
 
     def parse_nodes(i: int, stop_directives: set[str]) -> tuple[list[object], int]:
+        nonlocal block_index
         nodes: list[object] = []
         text_buf: list[str] = []
 
@@ -895,6 +981,21 @@ def parse_template(text: str) -> TemplatePlan:
                     flush_text()
                     block, i = parse_choice(i)
                     nodes.append(block)
+                    continue
+                if directive == "@ambient_declarations":
+                    flush_text()
+                    block = parse_ambient_declarations(_arg, i + 1, block_index)
+                    block_index += 1
+                    key = ("source", block.name)
+                    if key in axis_by_key:
+                        raise ValueError(
+                            f"ambient axis {block.name!r} is already defined near line {i + 1}"
+                        )
+                    axis = Axis(kind="source", name=block.name, labels=list(block.labels), blocks=[block])
+                    axis_by_key[key] = axis
+                    axes_order.append(key)
+                    nodes.append(block)
+                    i += 1
                     continue
             text_buf.append(lines[i])
             i += 1
@@ -987,6 +1088,14 @@ def expand_source_nodes(nodes: list[object], spec: VariantSpec) -> str:
                 chunks.append(expand_source_nodes(selected_case_nodes(node, spec), spec))
             # Flag blocks are intentionally removed from generated source, even
             # when nested inside a source case.
+        elif isinstance(node, AmbientDeclarationsBlock):
+            label = spec.labels.get(("source", node.name))
+            if label is not None:
+                count = int(label[1:], 10)
+                chunks.append(
+                    "".join(node.declarations[:count])
+                    + "\n" * (len(node.declarations) - count)
+                )
     return "".join(chunks)
 
 
@@ -1008,6 +1117,8 @@ def expand_flags_nodes(nodes: list[object], spec: VariantSpec, *, in_flag_case: 
                 # active under the chosen source branch.  Source text itself is
                 # ignored while collecting flags.
                 chunks.append(expand_flags_nodes(selected_case_nodes(node, spec), spec, in_flag_case=False))
+        elif isinstance(node, AmbientDeclarationsBlock):
+            continue
     return "".join(chunks)
 
 
@@ -1283,6 +1394,19 @@ def enumerate_label_states(plan: TemplatePlan) -> list[dict[tuple[str, str], str
         for node in nodes:
             if isinstance(node, str):
                 continue
+            if isinstance(node, AmbientDeclarationsBlock):
+                key = ("source", node.name)
+                next_states = []
+                for current in states:
+                    if key in current:
+                        next_states.append(current)
+                    else:
+                        for label in node.labels:
+                            branched = dict(current)
+                            branched[key] = label
+                            next_states.append(branched)
+                states = next_states
+                continue
             if not isinstance(node, ChoiceBlock):
                 continue
             key = (node.kind, node.name)
@@ -1494,6 +1618,7 @@ def build_variant(
     va: int,
     slug: str,
     constraints: LabConstraints,
+    compile_timeout_seconds: float | None = DEFAULT_COMPILE_TIMEOUT_SECONDS,
     source_body: str | None = None,
     extra_flags: str | None = None,
 ) -> VariantResult:
@@ -1540,7 +1665,26 @@ def build_variant(
     env["TMP"] = str(work_dir / "tmp")
 
     try:
-        proc = subprocess.run(command, cwd=REPO_ROOT, env=env, capture_output=True, text=True)
+        proc = subprocess.run(
+            command,
+            cwd=REPO_ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=compile_timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        text = f"compiler timeout after {compile_timeout_seconds:g} second(s)"
+        return VariantResult(
+            variant_id=spec.variant_id,
+            labels_text=labels,
+            status="tool_error",
+            error_key=stable_hash(text),
+            error_text=text,
+            source_path=str(source_path),
+            obj_path=str(obj_path),
+            flags_path=flags_path_text,
+        )
     except Exception as exc:  # pragma: no cover - defensive for lab robustness
         text = str(exc)
         return VariantResult(
@@ -1656,7 +1800,7 @@ def build_variant(
             str(effective_size).encode("ascii"),
             masked_full_rebuilt,
             "|".join(
-                f"{reloc.offset}:{reloc.reloc_type}:{reloc.symbol_name}"
+                f"{reloc.offset}:{reloc.reloc_type}:{normalize_relocation_symbol_for_group(reloc.symbol_name)}"
                 for reloc in identity_relocs
             ).encode("utf-8", "replace"),
         ]
@@ -1971,6 +2115,8 @@ def group_mismatch_snippet(group: GroupInfo, original_bytes: bytes, expected_siz
 
 
 def axis_template_note(axis: Axis, template_expansions: list[dict] | None) -> str:
+    if any(isinstance(block, AmbientDeclarationsBlock) for block in axis.blocks):
+        return " from @ambient_declarations"
     if not template_expansions:
         return ""
     matches: list[str] = []
@@ -1988,6 +2134,15 @@ def axis_template_note(axis: Axis, template_expansions: list[dict] | None) -> st
         if name not in unique:
             unique.append(name)
     return " from @template " + ",".join(unique)
+
+
+def axis_labels_text(axis: Axis, limit: int = 24) -> str:
+    labels = axis.labels
+    if len(labels) <= limit:
+        return ", ".join(labels)
+    head = limit // 2
+    tail = limit - head
+    return ", ".join([*labels[:head], f"... +{len(labels) - limit}", *labels[-tail:]])
 
 
 def write_axis_sensitivity(
@@ -2059,6 +2214,8 @@ def write_reports(
     template_expansions: list[dict] | None = None,
     compile_jobs: int | None = None,
     deduped_variants: int = 0,
+    workers: int | None = None,
+    compile_timeout_seconds: float | None = DEFAULT_COMPILE_TIMEOUT_SECONDS,
     constraints: LabConstraints | None = None,
 ) -> None:
     constraints = constraints or LabConstraints()
@@ -2294,6 +2451,12 @@ def write_reports(
         summary.append(f"Compile jobs: {compile_jobs}")
     if deduped_variants:
         summary.append(f"Deduped variants: {deduped_variants}")
+    if workers is not None:
+        summary.append(f"Workers: {workers}")
+    summary.append(
+        "Compile timeout: "
+        + ("disabled" if compile_timeout_seconds is None else f"{compile_timeout_seconds:g}s")
+    )
     summary.append(f"Compile OK: {compile_ok}")
     summary.append(f"Compile errors: {compile_errors}")
     summary.append(f"Extract errors: {extract_errors}")
@@ -2330,12 +2493,27 @@ def write_reports(
         summary.append("Note: preset flags are appended after default.rsp and are for classification; non-default-flag matches need normal review.")
     if template_expansions:
         summary.append("Template presets: " + ", ".join(record["name"] for record in template_expansions))
+    ambient_blocks = [
+        block
+        for axis in axes
+        for block in axis.blocks
+        if isinstance(block, AmbientDeclarationsBlock)
+    ]
+    if ambient_blocks:
+        summary.append(
+            "Ambient declaration sweeps: "
+            + ", ".join(
+                f"{block.name}(samples={block.samples}, seed={block.seed}, prefix={block.prefix})"
+                for block in ambient_blocks
+            )
+        )
+        summary.append("Note: ambient preambles are compiler-context diagnostics, not recovered source evidence.")
     summary.append("")
     summary.append("Axes:")
     for axis in axes:
         prefix = "flags" if axis.kind == "flags" else "source"
         note = axis_template_note(axis, template_expansions)
-        summary.append(f"  {prefix}.{axis.name}: {', '.join(axis.labels)}{note}")
+        summary.append(f"  {prefix}.{axis.name}: {axis_labels_text(axis)}{note}")
     summary.append("")
     if axis_sensitivity_lines:
         summary.append("")
@@ -2445,6 +2623,8 @@ def write_reports(
         "variants": len(specs),
         "compile_jobs": compile_jobs,
         "deduped_variants": deduped_variants,
+        "workers": workers,
+        "compile_timeout_seconds": compile_timeout_seconds,
         "compile_ok": compile_ok,
         "compile_errors": compile_errors,
         "extract_errors": extract_errors,
@@ -2468,6 +2648,17 @@ def write_reports(
             ],
         },
         "flag_presets": [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")],
+        "ambient_declarations": [
+            {
+                "axis": block.name,
+                "samples": block.samples,
+                "seed": block.seed,
+                "prefix": block.prefix,
+            }
+            for axis in axes
+            for block in axis.blocks
+            if isinstance(block, AmbientDeclarationsBlock)
+        ],
         "template_expansions": template_expansions or [],
         "axes": [
             {
@@ -2530,6 +2721,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument("--show-variant", metavar="ID", help="Print one expanded variant by index or V000123 and exit; no compile")
     parser.add_argument("--no-dedupe-expanded", action="store_true", help="Disable pre-compile deduping of identical expanded source/flag variants")
+    parser.add_argument(
+        "--compile-timeout",
+        type=float,
+        default=DEFAULT_COMPILE_TIMEOUT_SECONDS,
+        metavar="SECONDS",
+        help=(
+            "Stop one compiler job after this many seconds "
+            f"(default: {DEFAULT_COMPILE_TIMEOUT_SECONDS:g}; 0 disables the limit)."
+        ),
+    )
     parser.add_argument(
         "--focus-range",
         metavar="START-END",
@@ -2596,6 +2797,8 @@ def main(argv: list[str] | None = None) -> int:
         parse_args(["--help"])
         return 0
     args = parse_args(argv)
+    if args.compile_timeout < 0:
+        raise SystemExit("--compile-timeout must be zero or positive")
     splice_values = (args.splice_base, args.splice_start, args.splice_end)
     if any(splice_values) and not all(splice_values):
         raise SystemExit("--splice-base, --splice-start, and --splice-end must be supplied together")
@@ -2804,6 +3007,11 @@ def main(argv: list[str] | None = None) -> int:
     if len(specs_to_build) != len(specs):
         print(f"Deduped variants: {len(specs) - len(specs_to_build)}")
     print(f"Workers: {workers}")
+    print(
+        "Compile timeout: "
+        + ("disabled" if args.compile_timeout == 0 else f"{args.compile_timeout:g}s")
+    )
+    print(f"Maximum in-flight jobs: {max(workers, workers * 2)}")
     if constraints.enabled():
         print(
             "Constraints: "
@@ -2814,8 +3022,12 @@ def main(argv: list[str] | None = None) -> int:
     started_at = time.time()
     built_results: list[VariantResult] = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-        future_to_spec = {
-            executor.submit(
+        pending: dict[concurrent.futures.Future[VariantResult], VariantSpec] = {}
+        spec_iter = iter(specs_to_build)
+        in_flight_limit = max(workers, workers * 2)
+
+        def submit(spec: VariantSpec) -> None:
+            future = executor.submit(
                 build_variant,
                 spec,
                 plan,
@@ -2830,29 +3042,43 @@ def main(argv: list[str] | None = None) -> int:
                 va,
                 slug,
                 constraints,
-            ): spec
-            for spec in specs_to_build
-        }
+                None if args.compile_timeout == 0 else args.compile_timeout,
+            )
+            pending[future] = spec
+
+        def fill_pending() -> None:
+            while len(pending) < in_flight_limit:
+                try:
+                    submit(next(spec_iter))
+                except StopIteration:
+                    break
+
+        fill_pending()
         completed = 0
         total_jobs = len(specs_to_build)
-        for future in concurrent.futures.as_completed(future_to_spec):
-            completed += 1
-            try:
-                built_results.append(future.result())
-            except Exception as exc:  # pragma: no cover - defensive for lab robustness
-                spec = future_to_spec[future]
-                text = str(exc)
-                built_results.append(
-                    VariantResult(
-                        variant_id=spec.variant_id,
-                        labels_text=label_text(spec, plan.axes),
-                        status="tool_error",
-                        error_key=stable_hash(text),
-                        error_text=text,
+        while pending:
+            done, _not_done = concurrent.futures.wait(
+                pending, return_when=concurrent.futures.FIRST_COMPLETED
+            )
+            for future in done:
+                completed += 1
+                spec = pending.pop(future)
+                try:
+                    built_results.append(future.result())
+                except Exception as exc:  # pragma: no cover - defensive for lab robustness
+                    text = str(exc)
+                    built_results.append(
+                        VariantResult(
+                            variant_id=spec.variant_id,
+                            labels_text=label_text(spec, plan.axes),
+                            status="tool_error",
+                            error_key=stable_hash(text),
+                            error_text=text,
+                        )
                     )
-                )
-            if completed == total_jobs or completed % max(1, total_jobs // 20) == 0:
-                print(f"  completed {completed}/{total_jobs}")
+                if completed == total_jobs or completed % max(1, total_jobs // 20) == 0:
+                    print(f"  completed {completed}/{total_jobs}")
+            fill_pending()
 
     analyze_unique_groups(built_results, original_bytes, expected_size, va, constraints)
 
@@ -2880,6 +3106,8 @@ def main(argv: list[str] | None = None) -> int:
         template_expansions=template_expansions,
         compile_jobs=len(specs_to_build),
         deduped_variants=len(specs) - len(specs_to_build),
+        workers=workers,
+        compile_timeout_seconds=None if args.compile_timeout == 0 else args.compile_timeout,
         constraints=constraints,
     )
     if args.session_owner:

@@ -38,6 +38,7 @@ def parse_args() -> argparse.Namespace:
             "\n"
             "The default build path uses fingerprinted cache entries. Diagnostic-only reuse\n"
             "rejects missing or stale artifacts. Call counts alone do not prove call-site order.\n"
+            "Mismatch pattern labels are audit-only evidence. They never establish equivalence.\n"
             "\n"
             "Examples:\n"
             "  python tools/check_function.py --va 00449750\n"
@@ -95,7 +96,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--stack-map",
         action="store_true",
-        help="Print VC5 listing-derived rebuilt local stack homes and overlaps.",
+        help="Pair durable original and rebuilt stack homes at exact entry-relative coordinates.",
     )
     parser.add_argument(
         "--block-map-differences",

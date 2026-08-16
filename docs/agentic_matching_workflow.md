@@ -90,6 +90,8 @@ Equal call counts do not prove ordered call parity.
 
 Use `check_function.py` for focused call, block, range, and stack diagnostics.
 Read its report as evidence. A completed mismatch is not a tool failure.
+Its mismatch class names the observed emitted-code pattern. It does not prove
+equivalence, change status, or select the worker's method.
 
 ## Variant labs
 

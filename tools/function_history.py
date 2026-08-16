@@ -134,6 +134,7 @@ def _metric_summary(metrics: dict) -> dict[str, object]:
         "diff_percent": metrics.get("diff_percent"),
         "resync_similarity_percent": metrics.get("resync_similarity_percent"),
         "shape_percent": (metrics.get("instruction_shape") or {}).get("similarity_percent"),
+        "diagnostic_class": (metrics.get("mismatch_classification") or {}).get("primary"),
         "call_similarity_percent": call_map.get("similarity_percent"),
         "call_prefix": call_map.get("aligned_prefix_calls"),
         "block_coverage_percent": block_map.get("matched_coverage_percent"),

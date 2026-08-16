@@ -95,7 +95,7 @@ def main() -> None:
         listing_metadata = parse_listing_file(listing_path)
         listing_metadata.update(
             {
-                "schema": 1,
+                "schema": 2,
                 "listing": str(listing_path),
                 "input_fingerprint": fingerprint,
             }

@@ -15,10 +15,12 @@ class SourceListingTests(unittest.TestCase):
         text = """\tTITLE\tsrc/scratch/demo.cpp
 _first$12 = -8
 _second$13 = -8
+_parameter$ = 8
 ; 41 : first();
-  0000a\te8 00 00 00 00\t call first
+  0000a\t8b 45 f8\t mov eax, DWORD PTR _first$12[ebp]
 ; 52 : second();
-  00020\te8 00 00 00 00\t call second
+  00020\t8a 4d f8\t mov cl, BYTE PTR _second$13[ebp]
+  00023\t8b 55 08\t mov edx, DWORD PTR _parameter$[ebp]
 """
         metadata = parse_listing(text)
         self.assertEqual(metadata["source"], "src/scratch/demo.cpp")
@@ -28,6 +30,23 @@ _second$13 = -8
         self.assertEqual(
             metadata["stack_locals"],
             [{"name": "first", "offset": -8}, {"name": "second", "offset": -8}],
+        )
+        self.assertEqual(
+            metadata["stack_homes"],
+            [
+                {
+                    "name": "first", "kind": "local", "offset": -8,
+                    "entry_coordinate": -12, "widths": [4],
+                },
+                {
+                    "name": "second", "kind": "local", "offset": -8,
+                    "entry_coordinate": -12, "widths": [1],
+                },
+                {
+                    "name": "parameter", "kind": "parameter", "offset": 8,
+                    "entry_coordinate": 4, "widths": [4],
+                },
+            ],
         )
 
 

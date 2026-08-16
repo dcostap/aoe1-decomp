@@ -23,7 +23,9 @@ from function_diagnostics import (
     pdb_line_for_address,
     prologue_summary,
 )
-from source_listing import source_line_for_offset
+from mismatch_classifier import classify_mismatch
+from source_listing import parse_listing_file, source_line_for_offset
+from target_dossier import collect_memory_evidence, direct_call_cleanups
 
 
 def format_edit_hunks(metrics: dict, original: bytes, rebuilt: bytes, limit: int = 8) -> list[str]:
@@ -92,7 +94,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--stack-map",
         action="store_true",
-        help="Print VC5 listing-derived rebuilt local stack homes and overlaps.",
+        help="Pair durable original and rebuilt stack homes at exact entry-relative coordinates.",
     )
     parser.add_argument(
         "--block-map-differences",
@@ -417,17 +419,127 @@ def _format_iteration_call_deltas(rows: list[dict], limit: int = 10) -> list[str
     return lines
 
 
-def _format_stack_map(metadata: dict[str, object]) -> list[str]:
-    rows = list(metadata.get("stack_locals") or [])
+def _stack_home_pairing(
+    original_memory: dict[str, object], rebuilt_listing: dict[str, object]
+) -> dict[str, object]:
+    original_by_coordinate: dict[int, dict[str, object]] = {}
+    for source in original_memory.get("stack") or []:
+        coordinate = source.get("entry_coordinate")
+        if coordinate is None or int(coordinate) == 0:
+            continue
+        value = int(coordinate)
+        row = original_by_coordinate.setdefault(
+            value,
+            {"entry_coordinate": value, "widths": set(), "accesses": set(), "occurrence_count": 0},
+        )
+        if source.get("width") is not None:
+            row["widths"].add(int(source["width"]))
+        row["accesses"].add(str(source.get("access") or "unknown"))
+        row["occurrence_count"] = int(row["occurrence_count"]) + int(source.get("occurrence_count") or 0)
+
+    # A negative coordinate is a home candidate only when the original takes
+    # its address or both reads and writes it. This excludes most outgoing args.
+    original_candidates: dict[int, dict[str, object]] = {}
+    for coordinate, row in original_by_coordinate.items():
+        accesses = set(row["accesses"])
+        reads = bool(accesses & {"read", "read_write"})
+        writes = bool(accesses & {"write", "read_write"})
+        if coordinate > 0 or "address" in accesses or (reads and writes):
+            original_candidates[coordinate] = {
+                **row,
+                "widths": sorted(row["widths"]),
+                "accesses": sorted(accesses),
+                "region": "parameter" if coordinate > 0 else "local",
+            }
+
+    rebuilt_by_coordinate: dict[int, list[dict[str, object]]] = {}
+    for source in rebuilt_listing.get("stack_homes") or []:
+        rebuilt_by_coordinate.setdefault(int(source["entry_coordinate"]), []).append(dict(source))
+
+    rows: list[dict[str, object]] = []
+    for coordinate in sorted(set(original_candidates) | set(rebuilt_by_coordinate)):
+        original = original_candidates.get(coordinate)
+        rebuilt = sorted(
+            rebuilt_by_coordinate.get(coordinate, []),
+            key=lambda row: (str(row.get("kind")), str(row.get("name"))),
+        )
+        expected_kind = None if original is None else str(original["region"])
+        kind_compatible = original is not None and bool(
+            any(str(home.get("kind")) == expected_kind for home in rebuilt)
+        )
+        original_widths = set() if original is None else set(original["widths"])
+        rebuilt_widths = {
+            int(width)
+            for home in rebuilt
+            for width in home.get("widths") or []
+        }
+        width_compatible = not original_widths or not rebuilt_widths or bool(original_widths & rebuilt_widths)
+        if original is None:
+            status = "rebuilt_only"
+        elif not rebuilt:
+            status = "original_only"
+        elif not kind_compatible:
+            status = "role_mismatch"
+        elif not width_compatible:
+            status = "width_mismatch"
+        else:
+            status = "paired"
+        rows.append(
+            {
+                "entry_coordinate": coordinate,
+                "status": status,
+                "original": original,
+                "rebuilt": rebuilt,
+                "width_evidence": (
+                    "unknown"
+                    if not original_widths or not rebuilt_widths
+                    else "compatible" if width_compatible else "conflict"
+                ),
+            }
+        )
+    return {
+        "coordinate_system": "entry ESP: return address=0, first stack argument=+4",
+        "method": "exact entry coordinate, compatible role, and compatible observed width",
+        "rows": rows,
+        "status_counts": {
+            status: sum(row["status"] == status for row in rows)
+            for status in ("paired", "original_only", "rebuilt_only", "role_mismatch", "width_mismatch")
+        },
+    }
+
+
+def _format_stack_map(pairing: dict[str, object]) -> list[str]:
+    rows = list(pairing.get("rows") or [])
     if not rows:
-        return ["Rebuilt VC5 stack-local map:", "  (no listing-derived local symbols available; rebuild once to generate the .cod map)"]
-    grouped: dict[int, list[str]] = {}
+        return [
+            "Stack-home pairing (entry ESP; exact coordinates only):",
+            "  (no durable original homes or listing-derived rebuilt symbols)",
+        ]
+    lines = [
+        "Stack-home pairing (entry ESP; exact coordinates and compatible observed widths only):"
+    ]
     for row in rows:
-        grouped.setdefault(int(row["offset"]), []).append(str(row["name"]))
-    lines = ["Rebuilt VC5 stack-local map (same offset means an overlapped/reused home):"]
-    for offset in sorted(grouped):
-        names = sorted(set(grouped[offset]))
-        lines.append(f"  {offset:+5d} ({offset & 0xFFFFFFFF:08X}): {', '.join(names)}")
+        coordinate = int(row["entry_coordinate"])
+        original = row.get("original") or {}
+        rebuilt = list(row.get("rebuilt") or [])
+        if original:
+            widths = "/".join(str(width) for width in original.get("widths") or []) or "?"
+            accesses = "/".join(str(access) for access in original.get("accesses") or [])
+            left = (
+                f"original {original.get('region')} {accesses} width={widths} "
+                f"uses={original.get('occurrence_count')}"
+            )
+        else:
+            left = "no original home candidate"
+        if rebuilt:
+            names = []
+            for home in rebuilt:
+                widths = "/".join(str(width) for width in home.get("widths") or []) or "?"
+                names.append(f"{home.get('kind')} {home.get('name')} width={widths}")
+            right = ", ".join(names)
+        else:
+            right = "no rebuilt symbol"
+        lines.append(f"  {coordinate:+5d}: {left}  <->  {right}  [{row['status']}]")
     return lines
 
 
@@ -821,6 +933,15 @@ def main() -> None:
         if rebuilt_lines_json.exists()
         else {}
     )
+    if int(rebuilt_lines.get("schema") or 0) < 2:
+        listing_path = asm_dir / f"rebuilt_{slug}.cod"
+        if listing_path.exists():
+            rebuilt_lines = {
+                **rebuilt_lines,
+                **parse_listing_file(listing_path),
+                "schema": 2,
+                "listing": str(listing_path),
+            }
     rebuilt_line_lookup = lambda offset: source_line_for_offset(rebuilt_lines, offset)
     relocations = list(rebuilt_meta.get("relocations") or [])
 
@@ -833,6 +954,12 @@ def main() -> None:
 
     original_instructions = decode_instruction_ranges(original_bytes, original_meta.get("ranges") or [])
     rebuilt_instructions = decode_instructions(rebuilt_bytes, va, relocations)
+    original_memory = collect_memory_evidence(
+        original_instructions,
+        [],
+        direct_call_cleanups(original_instructions),
+    )
+    stack_home_pairing = _stack_home_pairing(original_memory, rebuilt_lines)
     shape = instruction_alignment(original_instructions, rebuilt_instructions)
     actionable_target_mismatches = (
         relocation_validation["target_mismatches"]
@@ -879,6 +1006,18 @@ def main() -> None:
     hard_discrepancies = _hard_discrepancies(
         call_map, actionable_target_mismatches, call_target_deltas, block_map
     )
+    exact = mismatch is None and not relocation_validation["target_mismatches"]
+    mismatch_classification = classify_mismatch(
+        original_instructions,
+        rebuilt_instructions,
+        masked_original,
+        masked_rebuilt,
+        shape=shape,
+        call_map=call_map,
+        call_target_deltas=call_target_deltas,
+        target_mismatches=relocation_validation["target_mismatches"],
+        cfg_issues=cfg_issues,
+    )
 
     previous_bin = history_dir / "previous.bin"
     previous_diff = history_dir / "previous.diff.json"
@@ -902,8 +1041,6 @@ def main() -> None:
         guidance_relocation_validation,
         metrics,
     )
-    exact = mismatch is None and not relocation_validation["target_mismatches"]
-
     metrics_path = diff_dir / f"{slug}.json"
     metrics_payload = {
         "va": record["va"],
@@ -920,7 +1057,9 @@ def main() -> None:
             "source": rebuilt_lines.get("source", ""),
             "line_changes": rebuilt_lines.get("line_changes", []),
             "stack_locals": rebuilt_lines.get("stack_locals", []),
+            "stack_homes": rebuilt_lines.get("stack_homes", []),
         },
+        "stack_home_pairing": stack_home_pairing,
         "instruction_shape": {key: value for key, value in shape.items() if key not in {"opcodes", "first_change"}},
         "original_prologue": original_prologue,
         "rebuilt_prologue": rebuilt_prologue,
@@ -935,6 +1074,7 @@ def main() -> None:
         "block_alignment": _compact_block_alignment(block_map),
         "cfg_alignment_issues": cfg_issues,
         "hard_discrepancies": hard_discrepancies,
+        "mismatch_classification": mismatch_classification,
         "iteration_call_target_deltas": iteration_call_deltas,
         "iteration_delta": delta,
         "workflow_stage": guidance[0].split(":", 1)[-1].strip() if guidance else "",
@@ -974,6 +1114,12 @@ def main() -> None:
         f"bounded cost {float(metrics['edit_cost_percent_total']):.2f}%, "
         f"similarity {float(metrics['resync_similarity_percent']):.2f}% ({metrics['edit_equal_bytes']} equal bytes)",
     ]
+    if not exact:
+        summary.append(
+            "Diagnostic class (audit only): "
+            f"{mismatch_classification['primary']} [{str(mismatch_classification['confidence']).upper()}]; "
+            "does not establish equivalence"
+        )
     if delta is not None:
         summary.append(
             "Emitted-code movement this iteration: "
@@ -990,6 +1136,13 @@ def main() -> None:
         summary.append(f"First strict mismatch: +{mismatch:04X} (VA {va + mismatch:08X})")
 
     detail: list[str] = []
+    if not exact:
+        detail.append("")
+        detail.append("Mismatch pattern evidence (audit only; exactness and status are unchanged):")
+        for label in list(mismatch_classification.get("labels") or [])[:6]:
+            detail.append(f"  [{str(label['confidence']).upper():6}] {label['id']}")
+            for evidence in list(label.get("evidence") or [])[:4]:
+                detail.append(f"           - {evidence}")
     if hard_discrepancies:
         detail.append("")
         detail.append("Prioritized call-surface discrepancies (diagnostic confidence shown):")
@@ -1093,7 +1246,7 @@ def main() -> None:
         )
     if args.stack_map:
         map_detail.append("")
-        map_detail.extend(_format_stack_map(rebuilt_lines))
+        map_detail.extend(_format_stack_map(stack_home_pairing))
     if args.focus_range:
         map_detail.append("")
         try:

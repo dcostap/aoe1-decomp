@@ -24,9 +24,107 @@ from function_diagnostics import (  # noqa: E402
     instruction_alignment,
     iteration_delta,
 )
+from mismatch_classifier import classify_mismatch  # noqa: E402
 
 
 class CoffAndDiagnosticTests(unittest.TestCase):
+    def _classify(
+        self,
+        original_hex: str,
+        rebuilt_hex: str,
+        *,
+        call_map: dict[str, object] | None = None,
+        call_target_deltas: list[dict[str, object]] | None = None,
+        target_mismatches: list[dict[str, object]] | None = None,
+        cfg_issues: list[dict[str, object]] | None = None,
+    ) -> dict[str, object]:
+        original_bytes = bytes.fromhex(original_hex)
+        rebuilt_bytes = bytes.fromhex(rebuilt_hex)
+        original = decode_instructions(original_bytes, 0x1000)
+        rebuilt = decode_instructions(rebuilt_bytes, 0x1000)
+        return classify_mismatch(
+            original,
+            rebuilt,
+            original_bytes,
+            rebuilt_bytes,
+            shape=instruction_alignment(original, rebuilt),
+            call_map=call_map or {"rows": []},
+            call_target_deltas=call_target_deltas or [],
+            target_mismatches=target_mismatches or [],
+            cfg_issues=cfg_issues or [],
+        )
+
+    def test_mismatch_classifier_reports_consistent_register_recolor(self) -> None:
+        result = self._classify(
+            "8B 01 03 41 04 50 C3",  # mov/add/push through eax
+            "8B 11 03 51 04 52 C3",  # same forms through edx
+        )
+        self.assertEqual(result["primary"], "CONSISTENT_REGISTER_RECOLOR")
+        self.assertEqual(result["register_map"], {"EAX": "EDX"})
+        self.assertFalse(result["establishes_equivalence"])
+
+    def test_mismatch_classifier_rejects_conflicting_register_map(self) -> None:
+        result = self._classify(
+            "8B C1 03 C2 C3",  # eax is the destination twice
+            "8B D1 03 C3 C3",  # rebuilt destinations disagree
+        )
+        self.assertEqual(result["primary"], "REGISTER_MAP_CONFLICT")
+        self.assertTrue(result["register_map_conflicts"])
+
+    def test_mismatch_classifier_reports_compare_reversal_without_equivalence(self) -> None:
+        result = self._classify(
+            "39 D8 7C 01 90 C3",  # cmp eax,ebx; jl
+            "39 C3 7F 01 90 C3",  # cmp ebx,eax; jg
+        )
+        self.assertEqual(result["primary"], "COMPARE_OPERAND_OR_BRANCH_FORM")
+        self.assertTrue(result["compare_events"][0]["compatible_jump_reversal"])
+        self.assertFalse(result["establishes_equivalence"])
+
+    def test_mismatch_classifier_flags_test_swap_with_changed_branch(self) -> None:
+        result = self._classify(
+            "85 D8 7F 01 90 C3",  # test eax,ebx; jg
+            "85 C3 7C 01 90 C3",  # test ebx,eax; jl (not equivalent)
+        )
+        self.assertEqual(result["primary"], "TEST_OPERAND_WITH_BRANCH_CHANGE")
+        self.assertTrue(result["test_events"][0]["branch_changed"])
+
+    def test_mismatch_classifier_reports_test_operand_order_with_same_branch(self) -> None:
+        result = self._classify(
+            "85 D8 74 01 90 C3",  # test eax,ebx; je
+            "85 C3 74 01 90 C3",  # test ebx,eax; je
+        )
+        self.assertEqual(result["primary"], "TEST_OPERAND_ORDER")
+        self.assertFalse(result["test_events"][0]["branch_changed"])
+
+    def test_mismatch_classifier_does_not_recolor_stack_pointer(self) -> None:
+        result = self._classify(
+            "8B C4 C3",  # mov eax,esp
+            "8B C1 C3",  # mov eax,ecx
+        )
+        self.assertEqual(result["primary"], "REGISTER_MAP_CONFLICT")
+        self.assertIn("stack-pointer", result["register_map_conflicts"][0])
+
+    def test_mismatch_classifier_reports_x87_operand_order(self) -> None:
+        result = self._classify(
+            "D9 45 FC D8 4D F8 C3",  # fld [ebp-4]; fmul [ebp-8]
+            "D9 45 F8 D8 4D FC C3",  # fld [ebp-8]; fmul [ebp-4]
+        )
+        self.assertEqual(result["primary"], "X87_OPERATION_ORDER")
+        self.assertEqual(len(result["x87_events"]), 1)
+
+    def test_mismatch_classifier_prioritizes_call_surface(self) -> None:
+        result = self._classify(
+            "90 C3",
+            "91 C3",
+            call_map={"rows": [{"status": "replace"}]},
+        )
+        self.assertEqual(result["primary"], "CALL_SURFACE_DIFFERENCE")
+
+    def test_mismatch_classifier_exact_result_has_no_mismatch_labels(self) -> None:
+        result = self._classify("8B C1 C3", "8B C1 C3")
+        self.assertEqual(result["primary"], "EXACT")
+        self.assertEqual(result["labels"], [])
+
     def test_duplicate_section_relocations_are_rebased(self) -> None:
         first = CoffSection(".text", b"AAAA", [CoffRelocation(1, 2, 0x14, 4)])
         second = CoffSection(".text", b"BBBBBB", [CoffRelocation(2, 3, 0x14, 4)])
