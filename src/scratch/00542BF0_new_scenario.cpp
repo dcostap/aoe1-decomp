@@ -63,6 +63,18 @@
 //   context and does not provide a new source lead for this function.
 // - Current session: no evidence-backed natural source axis remains after the
 //   prior seed/map variant family. Keep this clean typed reconstruction.
+// - Worker pass sa-828576d2: the unchanged clean-source check preserved the
+//   exact 275-byte size, frame, saved registers, CFG, and 12-call set. It still
+//   mismatches at +0x2D (the original copies EAX to ECX, stores random_seed,
+//   then pushes ECX). The prior natural seed, map, count, ABI, layout, and
+//   branch-shape probes remain the useful evidence; no new source axis was
+//   found. Leave this source in scratch for a later context or compiler study.
+// - Revisit sa-fd5f5826: typed seed aliases, assignment forms, declaration
+//   scope changes, player-pointer locals, standard-header combinations, and a
+//   512-sample ambient declaration sweep did not improve the clean codegen.
+//   One branch-local pointer was one byte larger; all other valid variants were
+//   duplicates. Keep this natural source. The next useful evidence is the
+//   historical World.cpp translation-unit or compiler context.
 
 #include <stdlib.h>
 
