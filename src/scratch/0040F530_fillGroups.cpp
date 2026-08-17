@@ -29,6 +29,16 @@
 // - Removed the first minimum-scan unit pointer temporary and used the typed
 //   bucket element directly. VC5 emitted the same 1112-byte code, so it was
 //   rolled back; this access spelling is compiler-neutral in the current TU.
+// - BINARY NOTE: 21 additional source probes kept the typed ABI and 22-call
+//   surface but did not move the first play-home mismatch or reach exactness.
+// - BINARY NOTE: direct maximum-left predicates improved block shape only when
+//   combined with a final-loop rewrite; they added a call or a 0x4FC frame.
+// - BINARY NOTE: a final-scan group local improved the diagnostic diff to 832
+//   bytes and 72.33% shape, but moved the early this home and was rolled back.
+// - BINARY NOTE: caching maximumNumberUnitsValue before numberInPlay added a
+//   0x4FC frame. The original loads this byte before the call without a home.
+// - LIKELY INTENT: the remaining drift is source lifetime and register color,
+//   not ownership or direct-call ABI. The clean baseline remains authoritative.
 
 class RGE_Static_Object {};
 
