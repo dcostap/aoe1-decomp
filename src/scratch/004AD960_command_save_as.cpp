@@ -64,6 +64,16 @@
 // screen constructor/destructors and popup call were neutral or removed EH.
 // A period stdio.h context was neutral. Final source is restored to the pinned
 // natural typed reconstruction; shared /GX cleanup-tail drift remains.
+// sa-3397897f-r1 independent audit: direct popup ownership, save-screen base and
+// destructor surfaces, scenario/world virtual surfaces, nested allocation scope,
+// cached scenario receiver, and <= 0 predicate variants were tested and restored.
+// The current source preserves the observed call order, null-allocation path,
+// constructor lifetime, panel side effects, and both validation guards. No
+// supported semantic or lifetime variant explains the duplicated normal EH exits.
+// BINARY NOTE: both popup failure arms jump to 004ADA58, while natural /GX source
+// emits two cleanup-and-return tails and adds 41 bytes after the original boundary.
+// The original EH handler is the constructor-allocation cleanup at 0055F50E; it
+// does not prove a source branch or object-lifetime difference in the popup arms.
 
 class TPanelSystem {
 public:
