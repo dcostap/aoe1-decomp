@@ -36,6 +36,19 @@
 //   AlliedVictory ownership remain the best period-plausible reconstruction;
 //   unresolved drift is the first setup scheduling swap, relation SIB
 //   encoding, and resulting one-byte branch-span shift.
+// - Fresh claim probes revalidated this basin. Flattened/raw relation terms,
+//   row aliases and references, pointer and index declaration scopes, pointer
+//   declaration order, and a real polymorphic RGE_Scenario base were either
+//   emitted-code duplicates or worse. An explicit running relation offset
+//   widened the frame to 0xC and produced a broad mismatch. The clean source
+//   remains the typed Friendliness/AlliedVictory form; no exact natural source
+//   was found. Remaining evidence is the same prologue store swap, one-byte
+//   relation LEA SIB difference, and its branch-span consequence.
+// - Fresh claim probes tested typed pointer and reference spellings, declaration
+//   order, real virtual-surface declarations, and invariant pointer placement.
+//   They were duplicates or worse. A 64-sample ambient declaration lab found
+//   one compiler-context basin with exact size and the target relation SIB, but
+//   it retained the reversed prologue store order and is diagnostic only.
 
 struct Player_Start_Info {
     int Gold;
