@@ -26,6 +26,17 @@
 // - left in scratch: remaining drift begins at the scenarioInfo null-test
 //   (original cmp against the active zero register vs rebuilt test), followed
 //   by source-order/register-coloring differences in the long summary body.
+// - completed 21 recorded hypotheses across liveness, layout, control flow,
+//   ABI, and compiler context. The clean baseline remains the best result:
+//   3522 bytes, 0x534 frame, 150 ordered calls, and 1554 differing bytes.
+// - the shared-index variant reproduced the original `xor ebx; cmp ecx,ebx`
+//   null guard and later zero reuse, but shifted every address-taken buffer by
+//   four bytes. Reversion is required because stack homes are binary evidence.
+// - BINARY NOTE: the executable reads a separate scenario-name panel at +624;
+//   the reviewed field is declared below. Direct use of that field changes the
+//   VC5 basin by 98 bytes, so this pass keeps the metric-preserving array form.
+// - next lead: recover the +624 panel use while preserving the baseline stack,
+//   register basin, and 3522-byte boundary.
 
 #include <io.h>
 #include <stdio.h>
@@ -189,7 +200,9 @@ class TribeMPSetupScreen : public TScreenPanel {
 public:
     char gap_478[0x178];                                        // to +5F0
     TDropDownPanel* scenarioPlayerDrop[8];                     // +5F0
-    char gap_610[0x1C];                                         // to +62C
+    char gap_610[0x14];                                         // to +624
+    TTextPanel* scenarioName;                                   // +624
+    char gap_628[4];                                            // to +62C
     TTextPanel* settingText[20];                                // +62C
     char gap_67C[0x60];                                         // to +6DC
     TPanel* numberPlayersTitle;                                 // +6DC
@@ -365,10 +378,8 @@ void TribeMPSetupScreen::updateSummary()
         }
     }
 
-    TTextPanel** setting_text = this->settingText;
     for (int i = 0; i < 20; ++i) {
-        setting_text[0]->set_active(0);
-        ++setting_text;
+        this->settingText[i]->set_active(0);
     }
 
     int setting = 0;
