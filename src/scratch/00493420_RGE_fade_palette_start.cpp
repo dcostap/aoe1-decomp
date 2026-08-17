@@ -91,6 +91,18 @@
 //   and explicit entry-zero bases. None improved the 117-byte clean basin;
 //   aggregate assignment and source-owned indexing were structural regressions.
 //   The policy-clean typed source is restored.
+// - independent per-entry audit: twenty natural typed probes tested entry
+//   references, indexed entries, copy grouping, channel assignment orders,
+//   signed channel casts, pointer update order, and loop induction. Typed
+//   references, indexing, comma grouping, signed casts, declaration order, and
+//   pointer update order were codegen duplicates or regressions. Aggregate
+//   entry copies and alternate channel orders broke the prologue or loop body.
+// - original line 701 stores red, blue, green, and flags in that order. Exact
+//   GetPalette and palette-step donors support four-byte PALETTEENTRY entries.
+//   The 274-byte/2-difference form still needs four byte-channel cursors. Its
+//   last two differences are SIB register-map bytes. No natural typed entry
+//   form recovered that setup without forbidden cursor plumbing. The pinned
+//   277-byte/117-difference typed source is restored.
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
