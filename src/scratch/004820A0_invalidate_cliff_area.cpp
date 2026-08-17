@@ -88,6 +88,14 @@
 //   ABI, class layout, x1/x2, and two bound locals. Original FPO reports 243
 //   bytes; the current object reports 242. A PDB-lifetime candidate improved
 //   the masked difference but retained the wrong y and right-bound registers.
+// - Source-gate audit removed parameter-home reuse. x1, y1, x2, and y2 are
+//   named bounds, while x, y, and spacing remain input parameters. The map
+//   pointer now uses the proven RGE_Map owner, with RGE_Tile row ownership.
+//   BINARY NOTE: the upper y clamp compares x2 with the height bound. Keep
+//   this original shipped behavior rather than correcting the comparison.
+//   The policy-clean source rebuilds to 228 bytes with no FPO local frame;
+//   the metric regression is accepted because the old frame came from a
+//   Restoring that frame would require the removed compiler-facing alias.
 
 struct Map_Stack {
     long x;
@@ -99,6 +107,7 @@ struct Map_Stack {
 };
 
 struct RGE_Tile;
+struct RGE_Map;
 
 class RGE_Random_Map_Module {
 public:
@@ -106,7 +115,7 @@ public:
 
     void* parent;
     void* list;
-    void* map;
+    RGE_Map* map;
     RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
@@ -149,46 +158,37 @@ public:
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long x, long y, long spacing) {
     long cliff_width2 = this->map_width / 3 - 1;
     long cliff_height2 = this->map_height / 3 - 1;
-    long cliff_width = x;
-    long cliff_height = y;
-    long cliff_x;
-    long cliff_y;
-    long cliff_x2;
-    long cliff_y2;
+    long x1 = x - spacing;
+    long y1 = y - spacing;
+    long x2 = spacing + x;
+    long y2 = spacing + y;
 
-    cliff_x = cliff_width - spacing;
-    cliff_y = cliff_height - spacing;
-    cliff_x2 = spacing + cliff_width;
-    cliff_y2 = spacing + cliff_height;
-
-    spacing = cliff_x;
-    x = cliff_x2;
-    if (cliff_x < 0) {
-        spacing = 0;
+    if (x1 < 0) {
+        x1 = 0;
     }
-    if (cliff_y < 0) {
-        cliff_y = 0;
+    if (y1 < 0) {
+        y1 = 0;
     }
-    if (cliff_x2 > cliff_width2) {
-        x = cliff_width2;
+    if (x2 > cliff_width2) {
+        x2 = cliff_width2;
     }
-    if (cliff_x2 > cliff_height2) {
-        cliff_y2 = cliff_height2;
+    if (x2 > cliff_height2) {
+        y2 = cliff_height2;
     }
 
-    if (cliff_y <= cliff_y2) {
-        long row = cliff_y;
-        long row_count = cliff_y2 - cliff_y + 1;
+    if (y1 <= y2) {
+        long row = y1;
+        long row_count = y2 - y1 + 1;
         do {
-            if (spacing <= x) {
-                long column = spacing;
+            if (x1 <= x2) {
+                long column = x1;
                 do {
                     if (this->search_map_rows[row][column] != 0) {
                         this->search_map_rows[row][column] = 0;
                         this->remove_stack_node(this->stack_offsets[row] + column);
                     }
                     column++;
-                    } while (column <= x);
+                } while (column <= x2);
             }
             row++;
             row_count--;
