@@ -24,6 +24,14 @@
 //   shape and reduced the localized drift from 413 to 266 bytes.
 // - The Windows header/HGDIOBJ surface and a const local API pointer were
 //   codegen duplicates; the local pointer was removed from the final source.
+// - Managed pass 2026-08-17: twenty focused probes kept this source as the
+//   clean best. A pre-guard do-while recovered the initial xor/cmp block but
+//   lost the natural loop basin. Typed counter/index locals, bound polarity,
+//   handle locals, continue form, import-pointer declarations, and local
+//   DeleteObject aliases were unchanged, worse, or added frame bytes.
+// - Original evidence still requires one cached DeleteObject IAT load in EBX,
+//   test EAX, and a post-call font_num reload. The clean source emits a direct
+//   IAT call and cmp EAX,EBX. No policy-compliant source cause is proven.
 
 #include <stdio.h>
 #include <windows.h>
