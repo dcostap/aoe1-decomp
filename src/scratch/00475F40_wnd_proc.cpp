@@ -96,6 +96,10 @@
 // match. PDB lists no local and maps both forwards to one source line. Exact
 // window procedures use different natural colors, so no object evidence supports
 // another source form for this allocator-only difference.
+// Policy audit: TEditPanel inherits TPanel's named virtual surface and declares
+// only its wnd_proc override. Base forwards return directly. The PDB-proven
+// message ABI remains void*, unsigned int, unsigned int, and long; Win32 calls
+// use the SDK declarations and typed window handles.
 
 #include <windows.h>
 
@@ -104,7 +108,8 @@ struct TDrawArea;
 typedef int PositionMode;
 typedef int RedrawMode;
 
-struct TPanel {
+class TPanel {
+public:
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(tagRECT);
@@ -224,7 +229,8 @@ struct TPanel {
     unsigned char need_restore;   // +0xF3
 };
 
-struct TEditPanel : TPanel {
+class TEditPanel : public TPanel {
+public:
     virtual ~TEditPanel();
     HWND edit_wnd;               // +0x0F4
     short fixed_len;             // +0x0F8
@@ -261,55 +267,15 @@ struct TEditPanel : TPanel {
     int turn_ime_on;             // +0x168
 
     virtual long wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4);
-    virtual long handle_idle();
-    virtual long handle_size(long, long);
-    virtual long handle_paint();
-    virtual long handle_key_down(long, short, int, int, int);
-    virtual long handle_char(long, short);
-    virtual long handle_command(unsigned int, long);
-    virtual long handle_user_command(unsigned int, long);
-    virtual long handle_timer_command(unsigned int, long);
-    virtual long handle_scroll(long, long);
-    virtual long handle_mouse_down(unsigned char, long, long, int, int);
-    virtual long handle_mouse_move(long, long, int, int);
-    virtual long handle_mouse_up(unsigned char, long, long, int, int);
-    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
-    virtual long mouse_move_action(long, long, int, int);
-    virtual long mouse_left_down_action(long, long, int, int);
-    virtual long mouse_left_hold_action(long, long, int, int);
-    virtual long mouse_left_move_action(long, long, int, int);
-    virtual long mouse_left_up_action(long, long, int, int);
-    virtual long mouse_left_dbl_click_action(long, long, int, int);
-    virtual long mouse_right_down_action(long, long, int, int);
-    virtual long mouse_right_hold_action(long, long, int, int);
-    virtual long mouse_right_move_action(long, long, int, int);
-    virtual long mouse_right_up_action(long, long, int, int);
-    virtual long mouse_right_dbl_click_action(long, long, int, int);
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long char_action(long, short);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void get_true_render_rect(tagRECT*);
-    virtual int is_inside(long, long);
-    virtual void set_focus(int);
-    virtual void set_tab_order(TPanel*, TPanel*);
-    virtual void set_tab_order(TPanel**, short);
-    virtual unsigned char get_help_info(char**, long*, long, long);
-    virtual void stop_sound_system();
-    virtual int restart_sound_system();
-    virtual void take_snapshot();
-    virtual void handle_reactivate();
 };
 
 long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4)
 {
     HWND edit_window = edit_wnd;
-    long result;
-
     if (edit_window != 0 && active != 0 && visible != 0 && hidden == 0) {
         switch (param_2) {
         case 7: {
-            result = TPanel::wnd_proc(param_1, 7, param_3, param_4);
-            return result;
+            return TPanel::wnd_proc(param_1, 7, param_3, param_4);
         }
 
         case 0x133:
@@ -328,6 +294,5 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2, unsigned int para
         }
         }
 
-    result = TPanel::wnd_proc(param_1, param_2, param_3, param_4);
-    return result;
+    return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
 }
