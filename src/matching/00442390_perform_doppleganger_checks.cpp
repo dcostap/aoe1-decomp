@@ -30,6 +30,10 @@
 //   reconstruction.
 // - Hoisting mask and reordering locals were codegen duplicates; kept the
 //   simpler inner mask declaration.
+// - Replacing the do/while scan and redundant inner guard with the natural
+//   for (i = 0; i < active_size; i++) form restored the original redundant
+//   zero-index active-size test and produced an exact 425-byte match. The
+//   same-TU remove helper shows this VC5 lowering for a zero-index for test.
 
 #include <stdio.h>
 
@@ -98,9 +102,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
     RGE_Static_Object* remove_me = 0;
 
     if (this->active_size > 0) {
-        i = 0;
-        if (this->active_size > 0) {
-            do {
+        for (i = 0; i < this->active_size; i++) {
                 map_value = *this->Map_Addresses[i];
                 if (map_value != this->Last_Map_Value[i]) {
                     if (this->Objects[i] != 0 &&
@@ -140,8 +142,6 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
                     }
                     this->Last_Map_Value[i] = map_value;
                 }
-                i++;
-            } while (i < this->active_size);
         }
         if (remove_me != 0) {
             this->remove_doppleganger_check(remove_me);
