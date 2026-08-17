@@ -19,12 +19,16 @@
 //   the condition's expression tree and broad block alignment, so restored the direct member expressions.
 // - v12/session variant family: end/item declaration order, branch-local versus top-level next, and /GX
 //   all collapsed to the same 495-byte emitted group; no further source/context lead remained.
+// - v13/session probe 7: the natural `while (item != end && item != 0)` guard changes the saved self
+//   register to EBX and reduces the mismatch from 94 to 30 bytes; the first 334 bytes then align.
+// - v14/session probes 8-11: initial field assignment order `mapX, mapY, xRef, yRef, zRef` preserves
+//   that alignment. Explicit bound/current temporaries, ordered gotos, and parameter-home mutation
+//   did not improve the localized upper-bound FPU stack-home mismatch; the last was diagnostic only.
 // BLOCKER: behavior, sizes, field offsets, direct-call ABI, and compiled length match (495/495), with
-// first 15 bytes equal. Remaining mismatch is a stable VC5 saved-register/prologue basin: the original
-// captures `this` in EBX after the first fcomp and delays EBP/ESI/EDI pushes while interleaving parameter
-// stores; rebuilt captures `this` in EDI and pushes all three immediately. The later body is mostly the
-// same but shifted and uses EDI where original uses EBX. The observed slot-0 cleanup declaration is kept;
-// natural virtual-destructor/delete lowering added a 4-byte null/cleanup block and moved farther.
+// first 334 bytes equal. Remaining 30 bytes are localized to x/y upper-bound FPU temporaries: original
+// stores each decremented bound at entry-home +8 before fsubr, while rebuilt reuses entry-home +4 after
+// fsubr. The observed slot-0 cleanup declaration is kept; natural virtual-destructor/delete lowering
+// added a 4-byte null/cleanup block and moved farther.
 
 typedef unsigned int uint;
 
@@ -75,25 +79,20 @@ public:
 
 void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, float yRef, float zRef)
 {
-    ConstructionAIModule* self = this;
-    self->mapXSizeValue = mapX;
-    self->yReferencePointValue = yRef;
-    self->mapYSizeValue = mapY;
-    self->xReferencePointValue = xRef;
-    self->zReferencePointValue = zRef;
+    this->mapXSizeValue = mapX;
+    this->mapYSizeValue = mapY;
+    this->xReferencePointValue = xRef;
+    this->yReferencePointValue = yRef;
+    this->zReferencePointValue = zRef;
 
     if (xRef <= 0.0 || yRef <= 0.0 || (float)mapX <= xRef || (float)mapY <= yRef) {
-        self->removeOldLots();
+        this->removeOldLots();
         return;
     }
 
-    ConstructionItem* item = self->constructionLots.next;
-    ConstructionItem* end = &self->constructionLots;
-    if (item == end || item == 0) {
-        return;
-    }
-
-    do {
+    ConstructionItem* item = this->constructionLots.next;
+    ConstructionItem* end = &this->constructionLots;
+    while (item != end && item != 0) {
         item->setX(item->x() + xRef);
         item->setY(item->y() + yRef);
         item->setZ(item->z() + zRef);
@@ -102,7 +101,7 @@ void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, flo
             item->y() - item->ySize() * 0.5f < 0.0f ||
             item->x() - item->xSize() * -0.5f > (float)(this->mapXSizeValue - 1) ||
             item->y() - item->ySize() * -0.5f > (float)(this->mapYSizeValue - 1)) {
-            self->numberConstructionLotsValue--;
+            this->numberConstructionLotsValue--;
             ConstructionItem* next = item->next;
             item->prev->next = next;
             item->next->prev = item->prev;
@@ -111,5 +110,5 @@ void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, flo
         } else {
             item = item->next;
         }
-    } while (item != end);
+    }
 }
