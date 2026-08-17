@@ -32,6 +32,19 @@
 // neutral; restored the clean explicit count update.
 // try 19: a typed ownerID local before the relation call was neutral; restored
 // the direct owner-id argument and kept the clean source.
+// revisit probes: direct final indexed assignment (without objectID), swapped
+// -5 comparison operands, a scoped -5 owner alias, and a TRIBE_Player-derived
+// aiPlayer type all stayed in the same 691-byte/24-byte-drift basin.  These
+// variants did not improve the localized register/address mismatch.  Restored
+// the pinned direct typed source; no policy-invalid form was retained.
+// revisit-2: completed 20 additional evidence-led hypotheses.  Canonical
+// object/master/world surfaces, AIModule inheritance, full player fields,
+// named information fields, relation ABI/casts, sentinel predicate forms,
+// scoped receiver/owner/ID/result locals, and output-array aliases either
+// duplicated the basin or worsened size/CFG.  A 128-variant lab combining
+// ambient TU declarations with four natural local/store axes produced one
+// 691-byte group.  An eight-variant standard-header context lab also produced
+// one 691-byte group.  No exact candidate or new source lead resulted.
 // left in scratch: 24 localized register/address bytes remain in the -5/-6
 // player filters and final ID store.  Size, frame, calls, CFG, and 89.52% of
 // blocks are exact; the remaining drift is not accepted_drift-safe.
