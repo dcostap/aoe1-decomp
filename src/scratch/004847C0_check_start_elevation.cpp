@@ -185,6 +185,22 @@
 // - The module owns an RGE_Map and typed RGE_Tile rows.
 // - The scan uses typed row and tile pointers, not byte cursors.
 // - The named row counter does not reuse an incoming parameter home.
+//
+// Continuation (sa-003282eb-r1):
+// - Directly deriving each carried row from map_row_offset[index1] removed the
+//   row-table local, but widened the result to 190 differing bytes. Restore it.
+// - PDB-named index1/y1 declaration order and a scoped row traversal were
+//   codegen-identical. The retained source uses index1 for the proven row local.
+// - An outer for loop, declaration-time row initialization, and alternate row
+//   update orders widened or changed the known loop basin. Restore the while.
+// - Bound initializers, sibling math/string headers, row-pointer seed spelling,
+//   split row_base arithmetic, and local declaration order were duplicates.
+// - The unchanged validation remains 224 bytes, 147 differing bytes, 80.21%
+//   shape, with zero calls and the canonical typed bitfield traversal.
+// - The unresolved bytes are the shipped parameter-home and register rotation:
+//   original y1/range home, row_ptr/y home, x1 in EBX, and terrain mask in CL.
+//   Recreating that rotation needs the rejected parameter aliases or raw byte
+//   cursor. Keep the natural typed source instead.
 
 class RGE_Map;
 class RGE_Object_Node;
@@ -256,7 +272,7 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
     long y0 = y - range;
     RGE_Tile** row_ptr;
     RGE_Tile* row_base;
-    long row;
+    long index1;
     long y1;
     long x1;
     y1 = y + range;
@@ -275,10 +291,10 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
         y1 = this->map_height - 1;
     }
 
-    row = y0;
+    index1 = y0;
     row_ptr = this->map_row_offset + y0;
     row_base = *row_ptr + x0;
-    while (row <= y1) {
+    while (index1 <= y1) {
         if (x0 <= x1) {
             RGE_Tile* cell = row_base;
             long col = x0;
@@ -293,7 +309,7 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
             } while (col <= x1);
         }
         row_ptr++;
-        row++;
+        ++index1;
         row_base = *row_ptr + x0;
     }
     return 1;
