@@ -95,6 +95,15 @@
 // this register, so it is not a supported reconstruction. The final source is
 // restored to 224B/179. The oracle still proves an early node home store and
 // two-byte result home that the natural source does not recover.
+// sa-9200e5fe-r1 TU pass: 256 ambient declaration prefixes, period allocator
+// headers, Windows.h combinations, debug flags, exact queue-donor prefixes,
+// target-following suffixes, full RGE_Action/Object declaration surfaces,
+// factory constructors, and calloc ABI spellings were tested. The ambient
+// sweep and every supported header/declaration surface were exact codegen
+// duplicates of 224B/179. Exact donor bodies before or after this function
+// also left codegen unchanged. Risky flags either stayed in the same basin
+// or changed the frame/prologue; default /O2 /Oy remains required. Preserve
+// the clean source. The TU context is not the cause of the two missing homes.
 class RGE_Action_List;
 class RGE_Static_Object;
 class RGE_Master_Action_Object;
