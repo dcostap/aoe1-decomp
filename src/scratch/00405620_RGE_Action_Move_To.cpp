@@ -227,3 +227,8 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
 // Explicit return and label forms were codegen-identical. Master and move-sprite locals were also identical.
 // A member-RMW form reached 187B/37B and one shared epilogue, but it stored move_sprite before its null test.
 // That changed the proven branch-local stores, so it is diagnostic only. Restored this typed nested if/else.
+// 2026-08-17 sa-2a70caf3-r1 audit: 20 semantic and control-flow probes found no natural source that shares
+// VC5 cleanup and keeps the original fault order, one move-sprite null test, and two branch-local stores.
+// Result locals and parameter mutation share cleanup only by merging the final store. Independent tests add a
+// redundant null test. The clean typed nested if/else remains authoritative; the 19-byte duplicated EH tail is
+// a VC5 code-layout blocker, not a behavior correction.

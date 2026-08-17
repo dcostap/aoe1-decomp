@@ -33,6 +33,11 @@
 // 14: original-TU context probes restored the complete PDB class surfaces, same-file constructor
 //     context, stdio/string/windows headers, CRT and _unlink declarations, and byte aliases; all
 //     emitted the same basin. The committed natural source remains the supported frontier.
+// 15: independent lifetime audit confirms the remaining bytes are home placement only. The original reuses the
+//     dead first four bytes of tempString for the saved this pointer, places integer tempInt at the float-adjacent
+//     home, places the float tempBOOL home one slot higher, and keeps the state home separate. The current source
+//     has the same values, calls, order, exits, and fault order. Late declarations and a nested serializer scope
+//     emitted the same 58-byte basin. Reproducing the original overlap would require an unsupported alias or filler.
 
 #include <string.h>
 
