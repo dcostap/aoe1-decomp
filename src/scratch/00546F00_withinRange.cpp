@@ -69,6 +69,16 @@
 //   reversed add terms, a scoped map alias, and windows.h context. They were
 //   duplicates or 196-byte variants. Restored and validated the pinned source;
 //   the natural 247-byte frontier and 15 strict bytes remain.
+// - Canonical ownership audit: the type dump gives XYPoint two int fields at
+//   +0/+4 and RGE_Map long dimensions at +0x8/+0xC behind its vptr. The target
+//   symbol is EUXYPoint with ret 10h and direct stack field loads, proving a
+//   by-value struct, not a reference or split ints. Exact callers construct
+//   XYPoint start/goal locals and pass them by value; the ABUXYPoint donor is a
+//   different reference ABI. Canonical RGE_Map, RGE_Zone_Map, constructor,
+//   destructor, overload, and neighboring-method surfaces all duplicated the
+//   15-byte frontier. The reference probe reached 258B/230B diff; split ints
+//   reached a 0x10 frame and 39B diff. No canonical ownership lead maps y to
+//   EBX naturally. Restored baseline.
 
 typedef unsigned char uchar;
 
