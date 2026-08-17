@@ -182,6 +182,11 @@
 // - register keyword and a far label for the case7 tactical-accumulator tail compiled identically; kept no keyword and source label only where useful.
 // - tactical-parameter-slot accumulator variant plus raw `*(int*)&tactical` call-surface probe worsened (3340 positional/3719 edit equal) and risked wrong call receiver; rolled back to the better positional case7 shape. A top-level rollScratch and unitp/tt declaration-order/register probes compiled identically.
 // - resumed narrow pass: packet asm shows case4 distance stays as an FPU value into calculatePriority; removed the unsupported int truncation. Calls now have exact aggregate target counts, with 3298 positional bytes and 105 bytes of extra code; left as best typed reconstruction.
+// - final unresolved pass: removing the unused attack-case UnitAIModule cache removed one extra unitAI call and reached 2884 bytes, but direct case20 re-fetches are required by the original call sequence.
+// - final unresolved pass: direct target-null logging has no unit or target varargs; the successful roundup-target log has both unit and target IDs. This restored exact call cleanup and produced a 5679-byte rebuild with 3067 positional differences.
+// - final unresolved pass: case11 uses a saved tactical receiver and a natural integer HP total. This is clearer than pointer arithmetic and keeps the original 207-call surface.
+// - final unresolved pass: case10 keeps an explicit non-firstTime return-one. It improves exact block coverage without changing size or call counts.
+// - final unresolved pass: 20 meaningful hypotheses tested. Current clean result is MISMATCH, 3067/5679 positional bytes, 5679-byte text, 0x1C frame, 99.52% call alignment, and 82.78% resync similarity. Remaining drift is block order, relocation-safe switch-table placement, and register/local topology.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
@@ -359,6 +364,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         consecutiveGatherAttemptsValue = 0;
 
     int oHP;
+    float distance;
     switch (taskID) {
     case 0:
     case 1: {
@@ -561,31 +567,37 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         busyOK = 0;
         int* unitp;
         RGE_Static_Object* obj;
-        UnitAIModule* ai;
-        int action20;
         unitp = unitsValue;
         do {
-            if (*unitp == -1) goto case20_next;
-            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_60, *unitp);
-            obj = md->object(*unitp);
-            if (obj == 0 || obj->unitAI() == 0) { TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_61, *unitp); removeUnitByIndex(busyOK, md); goto case20_next; }
-            ai = obj->unitAI();
-            action20 = ai->currentAction();
-            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_62, action20);
-            oHP = ((int)obj->hp); unitp[40] = oHP; stored20 += oHP;
-            if (busyOK == 0 && ai->currentAction() != -1) { TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_63, *unitp); goto case20_next; }
-            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_64, *unitp);
-            if (subTypeValue == 0 || subTypeValue == 4) {
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_65, *unitp, targetValue);
-                tactical->taskDefender(*unitp, targetValue, 2.0f, 100);
-            } else {
-                RGE_Static_Object* targ20 = md->object(targetValue);
-                if (targ20 == 0) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_66);
+            if (*unitp != -1) {
+                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_60, *unitp);
+                obj = md->object(*unitp);
+                if (obj == 0 || obj->unitAI() == 0) {
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_61, *unitp);
+                    removeUnitByIndex(busyOK, md);
                 } else {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_67, targetValue);
-                    tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ20->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 1);
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_62, obj->unitAI()->currentAction());
+                    oHP = ((int)obj->hp); unitp[40] = oHP; stored20 += oHP;
+                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_63, *unitp);
+                } else {
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_64, *unitp);
+                    if (subTypeValue == 0 || subTypeValue == 4) {
+                            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_65, *unitp, targetValue);
+                            tactical->taskDefender(*unitp, targetValue, 2.0f, 100);
+                        } else {
+                            RGE_Static_Object* targ20 = md->object(targetValue);
+                            // BINARY NOTE: the shipped null-target log has no unit or target arguments.
+                            if (targ20 == 0)
+                                goto case20_target_null;
+                            TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_67, *unitp, targetValue);
+                            tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ20->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 1);
+                        }
+                    }
                 }
+                goto case20_next;
+case20_target_null:
+                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_66);
             }
 case20_next:
             ++unitp;
@@ -614,7 +626,6 @@ case20_next:
         int i;
         int* unitp;
         RGE_Static_Object* obj;
-        UnitAIModule* ai;
         for (i = 0, unitp = unitsValue; i < 40; ++i, ++unitp) {
             if (*unitp == -1) continue;
             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_08, *unitp);
@@ -624,7 +635,7 @@ case20_next:
                 removeUnitByIndex(i, md);
                 continue;
             }
-            ai = obj->unitAI();
+            // BINARY NOTE: the null-test unitAI call is not cached for this read.
             int action = obj->unitAI()->currentAction();
             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_10, action);
             oHP = ((int)obj->hp); unitp[40] = oHP; stored += oHP;
@@ -641,68 +652,68 @@ case20_next:
                 tactical->taskDefender(*unitp, targetValue, 2.0f, 100);
             } else {
                 RGE_Static_Object* targ = md->object(targetValue);
-                if (targ == 0) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_14, *unitp, targetValue);
-                    continue;
-                }
-                if (madeMemory) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_15);
-                    XYPoint min;
-                    XYPoint max;
-                    TribeInformationAIModule* info = &md->informationAI;
-                    min.x = (int)targ->world_x - 7;
-                    min.y = (int)targ->world_y - 7;
-                    info->mapBound(&min);
-                    max.x = (int)targ->world_x + 7;
-                    max.y = (int)targ->world_y + 7;
-                    info->mapBound(&max);
-                    if (numberAttackWaypointsValue > 1) {
-                        Waypoint* prev = &attackWaypoints[numberAttackWaypointsValue - 2];
-                        if ((float)min.x <= prev->x)
-                            max.x = (int)prev->x;
-                        else
-                            min.x = (int)prev->x;
-                        if ((float)min.y <= prev->y)
-                            max.y = (int)prev->y;
-                        else
-                            min.y = (int)prev->y;
+                if (targ != 0) {
+                    if (madeMemory) {
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_15);
+                        XYPoint min;
+                        XYPoint max;
+                        TribeInformationAIModule* info = &md->informationAI;
+                        min.x = (int)targ->world_x - 7;
+                        min.y = (int)targ->world_y - 7;
+                        info->mapBound(&min);
+                        max.x = (int)targ->world_x + 7;
+                        max.y = (int)targ->world_y + 7;
+                        info->mapBound(&max);
+                        if (numberAttackWaypointsValue > 1) {
+                            Waypoint* prev = &attackWaypoints[numberAttackWaypointsValue - 2];
+                            if ((float)min.x <= prev->x)
+                                max.x = (int)prev->x;
+                            else
+                                min.x = (int)prev->x;
+                            if ((float)min.y <= prev->y)
+                                max.y = (int)prev->y;
+                            else
+                                min.y = (int)prev->y;
+                        }
+                        info->storeAttackMemory(0, (unsigned char)min.x, (unsigned char)min.y, (unsigned char)max.x, (unsigned char)max.y,
+                            (unsigned char)md->player->id, (unsigned char)targ->owner->id, 0, 0,
+                            md->player->world->world_time, -1);
+                        tactical->resetAttackSeparationTime(); madeMemory = 0;
                     }
-                    unsigned char myID = (unsigned char)md->player->id;
-                    unsigned char targetOwnerID = (unsigned char)targ->owner->id;
-                    info->storeAttackMemory(0, (unsigned char)min.x, (unsigned char)min.y, (unsigned char)max.x, (unsigned char)max.y, myID, targetOwnerID, 0, 0, md->player->world->world_time, -1);
-                    tactical->resetAttackSeparationTime(); madeMemory = 0;
-                }
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_16, *unitp, targetValue);
-                if (*unitp == commanderValue || tactical->importantGroupLeader(commanderValue) == 0 || tactical->strategicNumber(0x79) == 0) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_17);
-                    if (taskID == 21)
-                        tactical->moveUnit(*unitp, targetLocationValue.x, targetLocationValue.y, 100);
-                    else
-                        tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 0);
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_16, *unitp, targetValue);
+                    if (*unitp == commanderValue || tactical->importantGroupLeader(commanderValue) == 0 || tactical->strategicNumber(0x79) == 0) {
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_17);
+                        if (taskID == 21)
+                            tactical->moveUnit(*unitp, targetLocationValue.x, targetLocationValue.y, 100);
+                        else
+                            tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 0);
+                    } else {
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_18);
+                        int range = tactical->strategicNumber(0x83);
+                        tactical->taskDefender(*unitp, commanderValue, (float)range, 99);
+                    }
                 } else {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_18);
-                    int range = tactical->strategicNumber(0x83);
-                    tactical->taskDefender(*unitp, commanderValue, (float)range, 99);
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_14);
                 }
             }
             }
         }
         if (playNumberValue != -1) {
             int* list = (int*)operator new(numberUnitsValue << 2);
-            if (list != 0) {
-                int* scan = unitsValue;
-                int count = 40;
-                int* out = list;
-                do {
-                    if (*scan != -1) *out++ = *scan;
-                    ++scan;
-                    --count;
-                } while (count != 0);
-                tactical->taskPlay(commanderValue, list, numberUnitsValue, targetValue, playNumberValue, attackWaypoints, numberAttackWaypointsValue);
-                operator delete(list);
-            } else {
+            if (list == 0) {
                 TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_attack_play_alloc_fail);
+                return 0;
             }
+            int* scan = unitsValue;
+            int count = 40;
+            int* out = list;
+            do {
+                if (*scan != -1) *out++ = *scan;
+                ++scan;
+                --count;
+            } while (count != 0);
+            tactical->taskPlay(commanderValue, list, numberUnitsValue, targetValue, playNumberValue, attackWaypoints, numberAttackWaypointsValue);
+            operator delete(list);
             return 0;
         }
         inUseValue = 1;
@@ -735,8 +746,12 @@ case20_next:
                         int busyAction = obj->unitAI()->currentAction();
                         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_28, *unitp, busyAction);
                     } else {
-                        float defDist = obj->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z);
-                        int pri = tactical->calculatePriority(defDist);
+                        int pri;
+                        distance = 0.0f;
+                        {
+                            distance = obj->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z);
+                        }
+                        pri = tactical->calculatePriority(distance);
                         if (targetTypeValue == 0x6d) {
                             int sn = tactical->strategicNumber(0x16);
                             tactical->taskDefender(*unitp, targetValue, (float)sn, pri);
@@ -795,7 +810,7 @@ case20_next:
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            return 1;
         goto store_return_one_mid;
     }
 
@@ -808,8 +823,8 @@ store_return_one_mid:
         int* unitp;
         RGE_Static_Object* obj;
         TribeTacticalAIModule* tt = tactical;
+        int total = 0;
         TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_49);
-        tactical = (TribeTacticalAIModule*)0;
         busyOK = 0;
         unitp = unitsValue;
         do {
@@ -822,7 +837,7 @@ store_return_one_mid:
                 } else {
                     oHP = ((int)obj->hp);
                     unitp[40] = oHP;
-                    tactical = (TribeTacticalAIModule*)((int)tactical + oHP);
+                    total += oHP;
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
                         TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_52, *unitp, busyAction);
@@ -841,7 +856,7 @@ store_return_one_mid:
         inUseValue = 1;
         if (firstTime != 1)
             goto return_one_tail;
-        originalHitPointsValue = (int)tactical;
+        originalHitPointsValue = total;
         originalUnitNumberValue = numberUnitsValue;
         return 1;
     }
@@ -885,8 +900,7 @@ store_return_one_mid:
 
 
     default:
-        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_unknown_task, taskID);
-        return 0;
+        goto unknown_task_tail;
 
 
     }
@@ -915,6 +929,10 @@ store_return_zero:
     originalHitPointsValue = taskID;
     originalUnitNumberValue = numberUnitsValue;
     return 0;
+
+unknown_task_tail:
+    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_unknown_task, taskID);
+    goto return_zero_tail;
 
 
 store_return_one_zero_waypoints:
