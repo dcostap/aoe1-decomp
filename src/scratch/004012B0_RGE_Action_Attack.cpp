@@ -163,6 +163,16 @@
 //   use the reviewed canonical declarations.
 // - Proven object fields replace their old opaque spans. Remaining pads are
 //   PDB-proven alignment or end padding.
+// Fresh bounded pass (sa-5ca95fb2-r1):
+// - Tested 20 distinct initializer-list, body-order, inherited-field, and
+//   sprite-owner hypotheses from the original assembly and PDB line bands.
+// - Initializing derived fields moved or worsened the first block. Coordinate
+//   orders x/z/y and x/range/min/z/y reached 22 and 23 bytes, while the pinned
+//   x/range/z/min/y body stayed at 21 bytes. Typed base-owner and base-pointer
+//   forms were codegen duplicates. No natural initializer/body form recovered
+//   the original register map.
+// - Final validation: 237 bytes, 71 instructions, exact call set, no frame,
+//   and 21 positional bytes of register-only drift beginning at +0015.
 
 class RGE_Sprite;
 class RGE_Action_List;
