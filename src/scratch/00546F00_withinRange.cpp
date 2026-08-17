@@ -79,6 +79,28 @@
 //   15-byte frontier. The reference probe reached 258B/230B diff; split ints
 //   reached a 0x10 frame and 39B diff. No canonical ownership lead maps y to
 //   EBX naturally. Restored baseline.
+// - Independent bound/order lab compiled 18 natural variants. Direct y-first
+//   bounds remained the only 247B/15-byte group. PDB lines 335 and 336 cover
+//   the two max-coordinate additions, while exact same-TU
+//   findClosestPointInTerrainType uses x-first max fields and direct
+//   map_width - 1/map_height - 1 clamps. That donor supports an x-first
+//   hypothesis, but the target PDB has no source text to name those fields.
+//   X-first target variants were 248B with a 196-byte diff; reversed and
+//   equivalent bound comparisons changed the hunk or the CFG and did not
+//   recover EBX. No source comparison order is behaviorally forced here.
+// - Signedness/intermediate lab compiled 48 combinations (32 successful
+//   extractions, 16 size/frame/call-set eligible). Grouped radius/minimum
+//   declarations, long and unsigned radius forms, signed casts, an aggregate
+//   max, and comparison-order forms produced no exact candidate. The target's
+//   signed jge/jg/jle branches and signed imul agree with the pinned int
+//   coordinates, int radius, and long map fields. No natural intermediate or
+//   signedness change explains from.y in EBX.
+// - Exact same-TU checks remain MATCH for 00546ED0 (44B) and 00547080
+//   (249B); exact caller 0045F820 also remains MATCH (419B). These prove the
+//   by-value XYPoint ABI and donor field ownership, but their natural aliases
+//   do not transfer a register color to this function. Preserve the clean
+//   by-value baseline; the remaining 15 bytes are a register/SIB scheduling
+//   basin, not a recovered semantic defect.
 
 typedef unsigned char uchar;
 
