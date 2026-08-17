@@ -26,6 +26,20 @@
 // - Direct pointer arithmetic before step assignment expanded to 472 bytes.
 //   Reusing dest.left for width reached 459 bytes but worsened the diff to 317.
 //   The clean block-local width source remains the best reconstruction.
+// - Fresh worker pass: the clean source remains 439 bytes with the correct
+//   0x78 frame, five ordered calls, and a 217-byte positional diff.  The first
+//   mismatch is the equivalent clipped-region guard's compare direction.
+// - Tested direct pointer arithmetic, function-scope declaration orders,
+//   Ghidra-indicated coordinate declaration order, branch-local DirectDraw
+//   records, and a typed width/RECT union.  These duplicated the clean basin
+//   or worsened frame, size, and register coloring.  No variant was retained.
+// - The remaining DirectDraw homes need a source-supported explanation for
+//   the contiguous stack overlay at [esp+10h..24h]; do not use a metric-only
+//   union or a narrow opaque record as a replacement.
+// - Revisit probes: a negated nonpositive clip guard repeated the 469-byte,
+//   0x7C-frame basin; reversing the temporary declaration order duplicated
+//   the clean 439-byte result; a proven three-field destination record reduced
+//   the frame to 0x74 and worsened the diff to 225 bytes.  All were rejected.
 
 #include <string.h>
 
