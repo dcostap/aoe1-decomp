@@ -41,6 +41,27 @@
 // - paused: best clean reconstruction keeps zeroed edge minima and direct
 //   bound predicates; remaining drift is parameter register coloring, stack
 //   home ordering, and later branch/x87 topology.
+//
+// REVISIT (sa-f9d2922f-r1):
+// - baseline validation: 656B rebuilt, 458 strict diff, 73.88% shape,
+//   4/4 direct __ftol calls, exact symbol, and frame 0x8.
+// - donor search: no exact initial-x87 donor; one exact donor covered only
+//   the repeated sign-normalization block.
+// - context: reviewed DAT_00570618/30/34 externs changed size but not diff;
+//   rolled back. The complete known post-alignment virtual surface was codegen
+//   neutral. A narrow exact virtual alignment surface was also codegen neutral
+//   and is retained to avoid invented slots.
+// - behavior: updating edge minima during upper-bound correction worsened to
+//   524B diff; the binary-supported six-float source does not retain that form.
+// - control-flow: ordered upper-bound operands worsened to 465B diff. A
+//   positive flag guard improved shape to 77.33% but worsened strict diff to
+//   472B, so the clean direct guard remains authoritative.
+// - ABI/layout/liveness: pointer ABI, map locals, map declaration order,
+//   short declaration order, and compound remainder updates were neutral or
+//   worse. The pointer ABI changed the decorated symbol and is not retained.
+// - variant: a 9-case upper/lower guard sweep found four codegen groups and
+//   no exact result. It confirmed the first mismatch is independent of those
+//   guards. Twenty meaningful hypotheses are complete for this pass.
 
 class RGE_Game_World;
 class RGE_Map;
@@ -49,34 +70,9 @@ class RGE_Player;
 
 class RGE_Master_Static_Object {
 public:
-    // vtable slot 0: destructor
-    virtual ~RGE_Master_Static_Object();
-    // vt[1]: copy_obj
-    virtual void copy_obj(RGE_Master_Static_Object* src);
-    // vt[2]: modify
-    virtual void modify(float val, unsigned char op);
-    // vt[3]: modify_delta
-    virtual void modify_delta(float val, unsigned char op);
-    // vt[4]: modify_percent
-    virtual void modify_percent(float val, unsigned char op);
-    // vt[5]: save
-    virtual void save(int param_1);
-    // vt[6]: make_new_obj
-    virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x, float y, float z);
-    // vt[7]: make_new_master
-    virtual RGE_Master_Static_Object* make_new_master();
-    // vt[8]: check_placement
-    virtual unsigned char check_placement(RGE_Player* player, float x, float y, int* arr,
-        unsigned char p5, unsigned char p6, unsigned char p7, unsigned char p8,
-        unsigned char p9, unsigned char p10);
-    // vt[9]: alignment
     virtual unsigned char alignment(float& param_1, float& param_2, RGE_Game_World* param_3, unsigned char param_4);
-    virtual long calc_base_damage_ability(void* object);
-    virtual void play_command_sound();
 
-    // The implicit vptr occupies the first dword; the first named field is
-    // therefore reached with a 0x2C-byte post-vptr gap.
-    char gap_00[0x2C];
+    char gap_04[0x2C];
     float radius_x;       // +0x30
     float radius_y;       // +0x34
     float radius_z;       // +0x38
