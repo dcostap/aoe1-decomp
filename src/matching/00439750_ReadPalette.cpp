@@ -28,21 +28,26 @@
 //   and padded eight-byte gamma record reduced the mismatch to four bytes.
 // - A 16-variant local lab found no exact variant. Its best invariant result had
 //   no exact match after relocation-aware review, so it was not promoted.
-// - The remaining four bytes are gamma-table interior-pointer displacements.
-//   Keep the typed record and do not replace it with raw cursor arithmetic.
-// - Revisit checkpoint: the clean typed source still differs at offsets +0x231,
-//   +0x23B, +0x242, and +0x24E.  Each byte is the displacement in one gamma
-//   table load.  The rebuilt anchor is gamma_table+2; the executable anchor is
-//   DAT_005841e5, which yields equivalent loads with displacements one byte
-//   closer to zero.
+// - Revisit checkpoint: the clean typed source differed at offsets +0x231,
+//   +0x23B, +0x242, and +0x24E. Each byte was the displacement in one gamma
+//   table load. The rebuilt anchor was one byte before the executable anchor.
 // - Revisit probes tested natural record alignment, field grouping, nested
 //   color ownership, complete table declarations, mutable versus const table
 //   types, typed access forms, declaration and initialization order, pointer
 //   update forms, loop form, and typed palette-entry ownership.  All valid
 //   typed record variants stayed in the same four-byte codegen basin.
+// - BINARY NOTE: PAL_TABLE is a reviewed 0x8-byte record with index at +0 and
+//   red, green, blue, and reserved bytes at +4, +5, +6, and +7. The original
+//   System_color_Table symbol is at 005841e0, and its repeated 0x8-byte data
+//   records are referenced by both ReadPalette and CreateIdentityPalette.
+// - The named System_color_Table[] declaration gives the original decorated
+//   symbol and makes DAT_005841e5 the first record's green field. The loop
+//   reads colors from one record, advances one record, then reads the next
+//   record's index. This is the natural linked PAL_TABLE ownership model.
+//   No raw DAT_005841e5 cursor or shifted record is used.
 // - BINARY NOTE: the exact CreateIdentityPalette sibling uses a byte pointer
 //   anchored at DAT_005841e5 for this same linked color table.  That explains
-//   the shipped anchor, but a raw cursor is not retained in this reconstruction.
+//   the shipped anchor. Its typed PAL_TABLE owner is used here instead.
 
 #include <string.h>
 
@@ -62,17 +67,14 @@ extern "C" int __cdecl atoi(const char*);
 extern "C" void* (__stdcall* const CreatePalette)(void*);
 void __cdecl CreateIdentityPalette(void*);
 extern unsigned char shape_file_first;
-extern int global_gamma_index;
-#pragma pack(push, 1)
-struct GammaEntry {
+struct PAL_TABLE {
+    int index;
     unsigned char red;
     unsigned char green;
     unsigned char blue;
-    unsigned char pad_03;
-    int next_index;
+    unsigned char reserved;
 };
-#pragma pack(pop)
-extern const GammaEntry gamma_table[];
+extern PAL_TABLE System_color_Table[];
 struct DrawSystem {
     char gap_000[0x478];
     unsigned char DrawType;
@@ -150,16 +152,16 @@ void* ReadPalette(char* filename, long res_id, int do_gamma)
         }
 palette_entries_done:
         ;
-        if (res_id && n == 0x100 && global_gamma_index >= 0) {
-            int idx = global_gamma_index;
-            const GammaEntry* g = gamma_table;
+        if (res_id && n == 0x100 && System_color_Table[0].index >= 0) {
+            int idx = System_color_Table[0].index;
+            PAL_TABLE* g = System_color_Table;
             while (idx >= 0) {
                 lp->e[idx*4] = g->red;
                 lp->e[idx*4+1] = g->green;
                 lp->e[idx*4+2] = g->blue;
                 lp->e[idx*4+3] = 0;
-                idx = g->next_index;
                 ++g;
+                idx = g->index;
             }
         }
         if (res_id) {
