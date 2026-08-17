@@ -55,6 +55,17 @@
 // Binary operand audit: UP bevel case 1 draws from pnl_x+1,pnl_y+1; DOWN
 // case 1 draws from pnl_x,pnl_y. Keeping these distinct restores the fourth
 // DrawRect call and improves structural parity.
+// - Probe record (23 meaningful variants): the clean source remains the best
+//   call-surface model at 45/46 calls, 2044 bytes, and 1838-byte diff.
+//   A windows.h + RECT/SIZE context improved shape (72.99%) and diff (1837),
+//   but lost two indirect calls and shortened the body by 16 bytes.
+//   Reversed have_focus source order improved shape in a combined context,
+//   but retained the two-call gap. Explicit zero locals and zero casts were
+//   codegen duplicates. Explicit no-redraw gotos were worse.
+//   Direct this->pic[cur_state] reloads matched the minmax receiver setup and
+//   raised exact-block coverage, but caused broad register drift; the named
+//   alias remains the cleaner current source model. Coordinate operand-order
+//   probes did not change the emitted code after the first schedule change.
 
 #include <string.h>
 
