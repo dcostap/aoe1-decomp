@@ -5,24 +5,22 @@
 // Attempt log:
 // - Replaced the raw-pointer placeholder with typed playbook, phase-command,
 //   group-member, and UnitAIModule ownership.
-// - Used direct typed order calls in each recognized switch arm. VC5 merges
-//   their final virtual call into the observed common tail and preserves all
-//   25 ordered calls.
-// - Replaced the explicit member reset with a natural for loop. This matches
-//   the observed group-member increment and next-iteration object reload.
-// - Reused the incoming phase parameter for the distance result and kept the
-//   case-5 grouping scan over the 0x190-byte status grouping array.
-// - Tested early and delayed phase-counter initialization, point temporaries,
-//   declaration order, and explicit unitAI aliases. These did not close the
-//   frame or size gap.
-// - A typed common-tail reconstruction with the binary-observed member reset
-//   loop reaches 1268 vs 1298 bytes, frame 0x3C vs 0x44, and 1186 positional
-//   diff bytes. It keeps all 25 ordered calls and no compiler-only steering.
-// - A binary-supported unused local home and a no-flag common-tail variant had
-//   no useful gain and were rolled back.
+// - The source keeps all 25 ordered calls and the original direct-call ABI set.
+// - Binary tests covered branch shape, loop form, local scope, point layout,
+//   coordinate load order, vtable context, and case-5 result lifetime.
+// - The case-5 scan uses groupValue at grouping offset +4. The original loads
+//   this byte before lookup. It reuses param_1 for the found object id.
+// - The case-5 scan uses a body-first do-while. The original increments its
+//   8-byte cursor after the body and compares it with 0x190.
+// - The best natural source is 1248 rebuilt bytes versus 1298 original bytes.
+//   It has a 0x38 frame versus 0x44 and 1188 strict differing bytes.
+// - The earlier clean common-tail source had 1186 differing bytes, but kept
+//   an extra found-id local and a for loop. Those forms conflict with assembly.
+// - Twenty recorded probes did not reach an exact result. The main remaining
+//   gap is the original local frame and register schedule.
 //
 // Current status: structural reconstruction remains incomplete. Keep this
-// readable common-tail source as the best evidence-backed candidate.
+// readable common-tail source as the best behavior-backed candidate.
 
 void __cdecl operator delete(void* block);
 
@@ -161,6 +159,8 @@ public:
 
 int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 {
+    int phase = 0;
+
     if (this->playStatus == 0) {
         return 0;
     }
@@ -190,7 +190,7 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 
     this->playStatus->currentPhaseValue = (unsigned char)param_1;
 
-    int phase = 0;
+    phase = 0;
     do {
         AIPlayPhaseCommand* command = phaseObject->command(phase);
         if (command != 0 && command->typeValue != 0) {
@@ -271,29 +271,27 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 orderZ = (float)this->playStatus->originalPointZ;
                                 break;
                             case 5: {
-                                int foundId = -1;
                                 param_1 = -1;
-                                for (int groupingOffset = 0;
-                                     groupingOffset < 0x190;
-                                     groupingOffset += 8) {
+                                int groupingOffset = 0;
+                                do {
                                     AIPlayGrouping* grouping =
                                         (AIPlayGrouping*)((char*)this->playStatus + groupingOffset);
-                                    if (grouping->typeValue == command->value1Value) {
+                                    if (grouping->groupValue == command->value1Value) {
                                         RGE_Static_Object* found =
                                             this->lookupObject(grouping->id);
                                         if (found != 0 &&
                                             (int)found->master_obj->hitPoints + 1 <
                                                 found->master_obj->maximumHitPoints) {
-                                            foundId = found->id;
+                                            param_1 = found->id;
                                             break;
                                         }
                                     }
-                                }
-                                if (foundId != -1) {
+                                    groupingOffset += 8;
+                                } while (groupingOffset < 0x190);
+                                if (param_1 != -1) {
                                     memberAI = member->unitAI();
                                     sendOrder = 1;
                                     orderAction = 0x2BF;
-                                    param_1 = foundId;
                                 }
                                 break;
                             }
