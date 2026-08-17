@@ -38,6 +38,12 @@
 // - Current bounded result: 541-byte size and all 10 ordered calls match;
 //   remaining drift starts at the zero/id register hunk (0047DEB1) and
 //   requires a new allocator or source-context lead.
+// - Fresh revisit: a separate typed tail pointer for the append do-loop made
+//   the body five bytes farther from the original. Restored the direct tail
+//   walk.
+// - A period windows.h CompareStringA declaration, sorted-local previous
+//   lifetime, declaration-order swap, and node-init order were codegen
+//   duplicates or worse. Restored the clean typed source.
 
 #include <stdlib.h>
 #include <string.h>
