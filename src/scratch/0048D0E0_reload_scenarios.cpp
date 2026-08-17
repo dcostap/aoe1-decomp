@@ -41,6 +41,10 @@
 //   that compiler allocation difference without less natural source.
 // - likely intent: the two initial file scans are guarded do/while searches;
 //   the donor-supported form preserves their shipped enumeration behavior.
+// - Object audit confirms the 995-byte FPO body, 0x230 frame, ABI sizes, and
+//   separate file_info/file_name/version/handle PDB locals. PDB omits the live
+//   cursor. The oracle and rebuild color count and that cursor in opposite
+//   homes; no inline, compiler-version, or hidden-ABI evidence explains it.
 
 #include <stdio.h>
 #include <stdlib.h>
