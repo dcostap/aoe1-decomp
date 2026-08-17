@@ -88,6 +88,16 @@
 //   Every build duplicated the 275-byte / 25-byte-drift basin. These tests did
 //   not identify a natural missing assignment or field-ownership change.
 //   No policy-valid source lead remains. Keep this clean typed reconstruction.
+// - TU reconstruction closeout (sa-48973eab-r1): the pinned default flags remain
+//   /nologo /c /O2 /Oy. No-header, stddef, stdlib, string, memory, stdio, and
+//   windows contexts, their period combinations, repository game_types and
+//   game_globals headers, and both stddef include placements all rebuilt at
+//   275 bytes with the same 25-byte drift. Full setup declaration order, the
+//   complete class surfaces, the derived playerAI field type, early global
+//   declaration, and full Babylonian/Phoenician/Sumerian donor ordering also
+//   duplicated that basin. These are TU facts supported by local donors and
+//   probes; none selects the oracle EDX=14 preload or early param_2 reload.
+//   Baseline restored and validated. Preserve this source.
 
 #include <stddef.h>
 
