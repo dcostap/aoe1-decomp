@@ -30,6 +30,14 @@
 //   improved shape but worsened positional drift from 350 to 372 bytes and did
 //   not change the first local-home hunk or assist call order, so it was rolled
 //   back.
+// - Bounded pass: canonical const TacticalAIGroup getter and gatherLocation
+//   declarations kept codegen unchanged. Moving the first sentinel assignment
+//   into the nonempty-list arm improved drift to 339 bytes, but no exact source
+//   emerged. The unresolved facts are the id/assist call order and local homes.
+// - Follow-up: a direct typed `assist != &groups` entry guard recovered 90.62%
+//   of original blocks and 304 differing bytes, but emitted 444 bytes. While,
+//   goto, and point-alias variants kept that size excess, so the exact-size
+//   430-byte natural source remains the clean reconstruction.
 
 #include <math.h>
 
@@ -48,12 +56,12 @@ public:
     virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
 
-    int type();
-    int action();
-    int id();
-    int assistGroupID();
-    int commander();
-    Waypoint* gatherLocation();
+    int type() const;
+    int action() const;
+    int id() const;
+    int assistGroupID() const;
+    int commander() const;
+    const Waypoint& gatherLocation() const;
 };
 
 class RGE_Static_Object {
@@ -89,9 +97,9 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
     group = this->groups.next;
     best = 0;
     bestDistance = -1;
-    sentinel = &this->groups;
 
-    if (group != sentinel) {
+    if (group != &this->groups) {
+        sentinel = &this->groups;
         do {
             if (group == 0)
                 return best;
@@ -127,10 +135,10 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
                 }
 
                 int distanceSquared =
-                    (point.y - (int)group->gatherLocation()->y) *
-                    (point.y - (int)group->gatherLocation()->y) +
-                    (point.x - (int)group->gatherLocation()->x) *
-                    (point.x - (int)group->gatherLocation()->x);
+                    (point.y - (int)group->gatherLocation().y) *
+                    (point.y - (int)group->gatherLocation().y) +
+                    (point.x - (int)group->gatherLocation().x) *
+                    (point.x - (int)group->gatherLocation().x);
                 int distance = (int)sqrt((double)distanceSquared);
 
                 if ((distance < maxDistance && bestDistance == -1) ||
