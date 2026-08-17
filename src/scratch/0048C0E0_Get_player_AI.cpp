@@ -25,6 +25,9 @@
 // 22: left in scratch: all nine ordered calls, frame, size, and the first 277 bytes align. The remaining block/liveness drift is the compiler's saved TempText3 pointer around the two late sprintf returns (ESI+mov eax,esi versus oracle's delayed LEAs), with an 8-byte padded suffix.
 // 23: added standard stdio/string headers as period scenario.cpp context; emitted code was unchanged, so restored the clean typed source.
 // 24: batch probes for late return spelling, destination casts, fallback nesting/gotos, local index copies, and TU declarations were duplicate; reviewed extern global form kept metrics but changed relocations, so restored the inherited baseline.
+// 25: added the complete period RGE_Scenario suffix from exact scenario.cpp donors; codegen stayed at the 95-byte mismatch.
+// 26: inverted the fd success guard; this changed the call layout and worsened the result to a 290-byte mismatch, so restored the clean arm shape.
+// 27: retained the reviewed extern rge_base_game declaration for policy-correct relocation ownership; codegen stayed at 95 bytes.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl strcmp(const char*, const char*);
@@ -53,7 +56,7 @@ public:
     char gap_04[0x0C - 0x04];
     RGE_Prog_Info* prog_info;
 };
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+extern RGE_Base_Game* rge_base_game;
 
 class RGE_Scenario {
 public:
