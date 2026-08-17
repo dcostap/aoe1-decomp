@@ -10,6 +10,7 @@ repository-wide rules. This file owns the matching procedure.
 - Do not force an active lease.
 - Do not promote to `accepted_drift` or `verified_logic`.
 - Do not commit.
+- Do not search the web or use web search tools.
 - Keep one compiler-facing source owner.
 
 A claim is one bounded pass, not the lifetime of the function. Use about 20
