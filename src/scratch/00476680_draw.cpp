@@ -4,8 +4,9 @@
 // 1: Natural implementation from packet/decompiler with local TDrawArea/vtable and Win32 imports.
 // 2: First compiling pass had exact 940-byte size but field offsets after rect were 4 bytes early; fixed TEditPanel gap so dirty is +0x38, visible +0x70, brush +0x108, bevel_type +0x150, colors +0x154..+0x159.
 // 3: Fixed TDrawArea virtual surface: background border call is vtable +0x34 and high-bevel background call is +0x3c; inserted unused +0x38 slot.
-// 4: Changed palette access from virtual call to raw vtable slot load `(*(void***)draw_area)[2]`, matching original GetNearestPaletteIndex argument load.
-// 5: Implemented top pre_draw/post_draw flow, dirty clear, Clear/fill background path, background image/border path, bevel switch cases 1..7, Lock/Unlock calls, and edit HWND show/hide/DrawTextEx path.
+// 4: Recovered the palette access through the typed DrawSystem ownership,
+// matching the original GetNearestPaletteIndex argument load.
+// 5: Implemented top draw_setup/draw_finish flow, dirty clear, Clear/fill background path, background image/border path, bevel switch cases 1..7, Lock/Unlock calls, and edit HWND show/hide/DrawTextEx path.
 // 6: Bevel switch now uses original offsets/order for bevel_type and six colors; switch body is close enough that edit diff dropped to 18.8298% while size stayed exact.
 // 7: Restructured early visible test from early return to `if (visible != 0) { body }`; no codegen change, rolled form kept harmless.
 // 8: Probed /Ob0: no change. Probed /Og-: much worse (91.2766% positional, first mismatch 0), flag removed.
@@ -59,6 +60,11 @@
 // view include order did not change the 30-byte result. A positive outer
 // visible guard also did not change it. All probes were restored. The
 // standalone source has no evidence-backed prologue allocation change.
+// Source-gate audit: removed the artificial TPanel receiver lifetime and
+// replaced the generic virtual slots with the canonical panel surface.
+// Replaced the raw this-relative GDI field cursors with named fields at the
+// executable-proven +0x12C, +0x134, and +0x144 offsets. The clean validation
+// remains 940 bytes with 30 differing bytes and all 27 calls aligned.
 
 #include <windows.h>
 
@@ -86,15 +92,24 @@ struct TDrawArea {
 
 class TPanel {
 public:
-    virtual ~TPanel(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
-    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
-    virtual void vf20(); virtual void vf24();
-    virtual void pre_draw(int);
-    virtual void post_draw();
-    virtual void vf30();
-    virtual void border(RECT*);
-    virtual void vf38();
-    virtual void vf3C(RECT*);
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, uchar);
+    virtual void set_rect(RECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(uchar);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long,
+                                 long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(RECT*);
+    virtual void draw_offset(long, long, RECT*);
+    virtual void draw_rect2(RECT*);
+    virtual void draw_offset2(long, long, RECT*);
 
     char gap_04[8];
     long x;
@@ -134,11 +149,12 @@ public:
     COLORREF text_color2;
     char gap_11C[8];
     unsigned int back_color;
+    char gap_128[4];
     HGDIOBJ font;
     char gap_130[4];
     RECT draw_rect;
     unsigned int draw_format;
-    char gap_148[12];
+    char gap_148[8];
     int bevel_type;
     uchar bevel_color1;
     uchar bevel_color2;
@@ -156,9 +172,7 @@ void TEditPanel::draw()
     if (this->visible == 0) return;
     RECT r;
     HGDIOBJ old_font;
-    TPanel* panel = this;
-
-    panel->pre_draw(0);
+    this->draw_setup(0);
 
     if (this->brush && this->active && this->have_focus) {
         uchar c = (uchar)GetNearestPaletteIndex(this->draw_area->DrawSystem->Pal, this->back_color);
@@ -167,9 +181,9 @@ void TEditPanel::draw()
         TPanel* bg = this->background;
         if (bg) {
             if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-                bg->vf3C(&this->rect);
+                bg->draw_rect2(&this->rect);
             } else if (bg->field_84 == 0) {
-                bg->border(&this->rect);
+                bg->draw_rect(&this->rect);
             }
         } else {
             this->draw_area->Clear(&this->rect, this->back_index);
@@ -211,7 +225,7 @@ void TEditPanel::draw()
                 ShowWindow(this->edit_wnd, 5);
                 InvalidateRect(this->edit_wnd, 0, 1);
                 this->hidden = 0;
-                panel->post_draw();
+                this->draw_finish();
                 return;
             }
         } else {
@@ -222,19 +236,16 @@ void TEditPanel::draw()
             HDC dc = this->draw_area->GetDc("pnl_edit::draw");
             if (dc) {
                 SelectClipRgn(dc, this->clip_rgn);
-                // BINARY NOTE: these members are proven at +0x12C, +0x134,
-                // and +0x144 by the original loads. The compact class surface
-                // does not name the intervening fields.
-                old_font = SelectObject(dc, *(HGDIOBJ*)((char*)this + 0x12C));
+                old_font = SelectObject(dc, this->font);
                 SetBkMode(dc, 1);
                 SetTextColor(dc, this->text_color2);
-                r.left = ((RECT*)((char*)this + 0x134))->left - 1;
-                r.top = ((RECT*)((char*)this + 0x134))->top + 1;
-                r.right = ((RECT*)((char*)this + 0x134))->right - 1;
-                r.bottom = ((RECT*)((char*)this + 0x134))->bottom + 1;
-                DrawTextExA(dc, this->text, -1, &r, *(unsigned int*)((char*)this + 0x144), 0);
+                r.left = this->draw_rect.left - 1;
+                r.top = this->draw_rect.top + 1;
+                r.right = this->draw_rect.right - 1;
+                r.bottom = this->draw_rect.bottom + 1;
+                DrawTextExA(dc, this->text, -1, &r, this->draw_format, 0);
                 SetTextColor(dc, this->text_color1);
-                DrawTextExA(dc, this->text, -1, (RECT*)((char*)this + 0x134), *(unsigned int*)((char*)this + 0x144), 0);
+                DrawTextExA(dc, this->text, -1, &this->draw_rect, this->draw_format, 0);
                 SelectObject(dc, old_font);
                 SelectClipRgn(dc, 0);
                 this->draw_area->ReleaseDc("pnl_edit::draw");
@@ -242,5 +253,5 @@ void TEditPanel::draw()
         }
     }
 
-    panel->post_draw();
+    this->draw_finish();
 }
