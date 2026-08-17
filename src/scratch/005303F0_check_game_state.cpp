@@ -15,11 +15,17 @@
 // 13: tested the proven 00577580 global for held == -1 comparisons; kept it because the original has two absolute references.
 // 14: tested scoped base-game aliases at each message site and direct player_num bounds; call and block shape improved, but the source was compiler-steering and was rolled back.
 // 15: restored the clean cached-player reconstruction; remaining drift is team-array scheduling and the saved this home.
-// Main-agent audit replaced raw-address macros with named extern globals. The
-// same typed source now emits 1653 bytes with 1494 differing bytes.
-// Budget end: left in scratch. Frame is 0x1A4 and all 16 calls align. The
-// first mismatch is the saved-this home. Team-array and victory-block
-// scheduling remain divergent.
+// 16: direct team_size increments reduced the strict difference to 1457 bytes.
+// 17: keeping player_count only for the two fill loops and reloading player_num
+//     for the team loops reduced the strict difference to 1300 bytes.
+// 18-21: declaration, comparison, pointer-scope, and cursor variants did not
+//        change emitted code or improve the 1300-byte result.
+// Main-agent audit replaced raw-address macros with named extern globals.
+// Best clean result: 1653 rebuilt bytes, 0 size delta, exact frame, all 16
+// calls aligned, 1300 strict differing bytes, 87.03% shape similarity.
+// BINARY NOTE: The original reloads player_num at the team-loop backedge.
+// Keep those bounds as direct this->player_num expressions.
+// Unresolved: the victory guard hoists i=1 and team-array cursor homes differ.
 
 class RGE_Victory_Conditions {
 public:
@@ -124,9 +130,10 @@ unsigned char TRIBE_World::check_game_state()
 
     if (this->game_state == 0) {
         if (this->victory_type == 2 && this->countdown_victory != 0 &&
-            !(this->countdown_clock < DAT_00577578)) {
-            this->countdown_clock = this->countdown_clock - (this->delta_time + this->delta_time);
-            if (this->countdown_clock < DAT_00577578) {
+            this->countdown_clock >= DAT_00577578) {
+            if ((this->countdown_clock =
+                     this->countdown_clock - (this->delta_time + this->delta_time)) <
+                DAT_00577578) {
                 for (i = 0; i < 9; ++i)
                     team_size[i] = -1;
                 for (i = 1; i < this->player_num; ++i) {
@@ -171,24 +178,22 @@ unsigned char TRIBE_World::check_game_state()
             local_198 = 0;
             held_time = 1;
             team_count = 0;
-            for (i = 1; i < player_count; ++i) {
+            for (i = 1; i < this->player_num; ++i) {
                 if (player_team[i] == -1) {
                     player_team[i] = local_198;
-                    int count = team_size[local_198];
-                    team_player[local_198][count] = this->players[i];
-                    ++count;
-                    team_size[local_198] = count;
+                    team_player[local_198][team_size[local_198]] = this->players[i];
+                    ++team_size[local_198];
                     if (this->players[i]->allied_victory != 0) {
                         local_1a0 = 1;
-                        for (; local_1a0 < player_count; ++local_1a0) {
+                        for (; local_1a0 < this->player_num; ++local_1a0) {
                             if (player_team[local_1a0] == -1 &&
                                 this->players[local_1a0]->allied_victory != 0 &&
                                 this->players[i]->relation(local_1a0) == 0 &&
                                 this->players[local_1a0]->relation(i) == 0) {
-                                ++count;
                                 player_team[local_1a0] = local_198;
-                                team_player[local_198][count - 1] = this->players[local_1a0];
-                                team_size[local_198] = count;
+                                team_player[local_198][team_size[local_198]] =
+                                    this->players[local_1a0];
+                                ++team_size[local_198];
                             }
                         }
                     }
