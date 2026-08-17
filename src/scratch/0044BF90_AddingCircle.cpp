@@ -29,8 +29,17 @@
 // - Tested a named float radius local for the circle loop and all four trig
 //   products. VC5 emitted the same 540-byte code and retained the 0x18 frame;
 //   restored the clean direct parameter conversion.
+// - Revisit: the donor-supported <string.h> context restores the 0x1C frame,
+//   165 instructions, and the loop-step stack home. It also exposes several
+//   exact block islands.
+// - Hoisting a full-width probability-add local before the first bounds check
+//   restores the original EDX/EBP saturation tail. The best result is 245
+//   differing bytes with all nine ordered calls and the original size/frame.
+// - Typed pointer spellings and local declaration variants do not change the
+//   remaining pointer-register difference. Keep canonical ProbArray ownership.
 
 #include <stdlib.h>
+#include <string.h>
 
 int __cdecl debug_rand(char* param_1, int param_2);
 
@@ -94,26 +103,27 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
     int angle_step = 360 / (param_3 * 3);
     float width = (float)Width;
     float step;
-    float curx;
     float x;
     float W = 0.0f;
     float lasty = 0.0f;
+    float lastx;
     int angle = 0;
 
     do {
-        float lastx = trig.sin360(angle) * (float)param_3;
-        curx = trig.cos360(angle) * (float)param_3;
+        lastx = trig.sin360(angle) * (float)param_3;
+        float curx = trig.cos360(angle) * (float)param_3;
 
         if (lastx != lasty || curx != W) {
-            int loc = (int)(curx * width + lastx);
+            int loc = (int)(width * curx + lastx);
+            int prob_add = ProbabilityAdd;
+            char add = (char)prob_add;
             if (loc >= 1 && loc < SizeArrays - 1) {
-                char add = (char)ProbabilityAdd;
                 char* p = ProbArray + loc;
                 char cur = *p;
                 if (cur == 0) {
                     *p = add;
                     ProbabilityTiles++;
-                } else if (ProbabilityAdd + (int)cur < 0xFF) {
+                } else if (prob_add + (int)cur < 0xFF) {
                     *p = add + cur;
                 } else {
                     *p = (char)-1;
@@ -131,14 +141,14 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3) {
                 loc = (int)(width * ((float)random_2 + y - 1.0f) + step);
                 int addp1 = ProbabilityAdd + 1;
                 if (loc >= 1 && loc < SizeArrays - 1) {
-                    char add = (char)addp1;
-                    char* p = ProbArray + loc;
-                    char cur = *p;
-                    if (cur == 0) {
-                        *p = add;
-                        ProbabilityTiles++;
-                    } else if (addp1 + (int)cur < 0xFF) {
-                        *p = add + cur;
+                char add = (char)addp1;
+                char* p = ProbArray + loc;
+                char cur = *p;
+                if (cur == 0) {
+                    *p = add;
+                    ProbabilityTiles++;
+                } else if (addp1 + (int)cur < 0xFF) {
+                    *p = add + cur;
                     } else {
                         *p = (char)-1;
                     }
