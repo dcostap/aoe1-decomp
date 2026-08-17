@@ -11,11 +11,10 @@
 // - A diagnostic byte-offset record cursor recovered the 0x10 frame and exact
 //   size; splitting the map load and reversing the tail updates reached a
 //   32-byte emitted-code mismatch. It is not a valid living source surface.
-// - The living source uses ordinary typed map-entry iteration. The remaining
-//   codegen lead is the original stack-home/register schedule at the loop tail.
-// - A typed indexed access (maps[map_index]) restored the 0x10 frame and 466-byte
-//   size without raw cursor source; it leaves a localized 45-byte register/tail
-//   gap and is retained as the clean source frontier.
+// - The living source uses ordinary typed map-entry iteration. A shared map-entry
+//   local left a localized 45-byte register/tail gap.
+// - Direct typed member expressions for each map subrecord remove that gap and
+//   produce the exact 466-byte function without raw cursor source.
 // - A local RGE_Map_Data owner widened the gap to 130 bytes; rolled back.
 // - For-loop spelling and a named land-size temporary produced unchanged code.
 // - Reversing the map-count comparison made a 46-byte mismatch; the original
@@ -26,8 +25,7 @@
 //   also left emitted code unchanged; no EH handler or frame appeared.
 // - Naming a local RGE_Map_Data* for the aggregate moved 336 bytes and made
 //   the size three bytes shorter, so the member-based clean form is restored.
-// - The byte-cursor form is diagnostic evidence only. Keep typed indexed
-//   iteration even though the localized register gap remains.
+// - Pointer induction and raw byte-cursor forms are diagnostic evidence only.
 
 #include <stdlib.h>
 
@@ -190,11 +188,14 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int file)
         for (int map_index = 0;
              map_index < this->map_info.map_num;
              ++map_index) {
-            RGE_Map_Data_Entry* map = &this->map_info.maps[map_index];
-            RGE_Land_Data* land_info = &map->land_info;
-            RGE_Terrain_Data* terrain_info = &map->terrain_info;
-            RGE_Object_Data* object_info = &map->object_info;
-            RGE_Elevation_Data* elevation_info = &map->elevation_info;
+            RGE_Land_Data* land_info =
+                &this->map_info.maps[map_index].land_info;
+            RGE_Terrain_Data* terrain_info =
+                &this->map_info.maps[map_index].terrain_info;
+            RGE_Object_Data* object_info =
+                &this->map_info.maps[map_index].object_info;
+            RGE_Elevation_Data* elevation_info =
+                &this->map_info.maps[map_index].elevation_info;
 
             rge_read(file, land_info, sizeof(RGE_Land_Data));
             if (land_info->land_num > 0) {
