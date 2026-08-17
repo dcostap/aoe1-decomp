@@ -150,6 +150,10 @@
 //   - Restored the clean natural typed source after every probe. Final
 //     validation remains 202B/198 diff with five spans. The prior 199B/22
 //     result still required forbidden volatile dy and is not retained.
+//   - Object audit confirms the fresh 199-byte PDB range, one FPO local word,
+//     parameters, named dX/dY locals, and no hidden ABI or inline site. The dY
+//     debug home is stale after push ecx. No natural source evidence supports
+//     the missing pushed home or diagnostic x87 order.
 
 class RGE_Master_Static_Object {
 public:
