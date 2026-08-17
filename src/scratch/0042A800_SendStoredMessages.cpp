@@ -37,18 +37,28 @@
 // - layout: original LEA record+14 before both player scans proves DestMap+1;
 //   retained the natural index-1 skip, with unchanged strict diff and a small
 //   shape gain.
+// - PDB evidence: SendStoredMessages has only Now, items, OldestMessageElapsed,
+//   OldestMessageSlot, hr, and m as named locals.  RESENDER is 0x38 bytes;
+//   CurrentTurn is unsigned long and MaxGamePlayers is unsigned short.
+// - ABI: PDB and exact donors use char* for debug_timeGetTime, Log, and
+//   ShowReturn.  The non-const declarations and period casts are retained.
+// - control-flow: MaxGamePlayers < 1 recovers the oracle's compare-one/JB
+//   guard and is retained.  Direct Log returns, countdown-for syntax, a short
+//   count, volatile Now, and a register max-delay accumulator were rejected.
+// - unresolved pass: 20 meaningful probes; best clean source is 1210 bytes,
+//   24/24 calls, frame 0x24 versus 0x20, and 986 strict differing bytes.
 
 struct TDebuggingLog;
 struct RGE_Comm_Error;
 struct RGE_Communications_Speed;
 struct IDirectPlay3;
 
-extern unsigned long debug_timeGetTime(const char* file, int line);
+extern unsigned long debug_timeGetTime(char* file, int line);
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
 class TDebuggingLog {
 public:
-    void Log(const char* format, ...);
+    void Log(char* format, ...);
 };
 
 extern TDebuggingLog* L;
@@ -66,7 +76,7 @@ extern const char s_BAD_DCOID_0_NO_TX[];
 
 class RGE_Comm_Error {
 public:
-    void ShowReturn(long result, const char* text);
+    void ShowReturn(long result, char* text);
 };
 
 class IDirectPlay3 {
@@ -135,17 +145,17 @@ public:
     char gap_20[0xFC5 - 0x20];
     char TBuff[0x101];
     char gap_10C6[2];
-    int CurrentTurn;
+    unsigned long CurrentTurn;
     char gap_10CC[0x10E0 - 0x10CC];
     unsigned int Me;
     char gap_10E4[0x12A8 - 0x10E4];
     int ShuttingDown;
     char gap_12AC[0x12C0 - 0x12AC];
-    unsigned int TXPacketLength;
+    unsigned long TXPacketLength;
     char gap_12C4[0x12D8 - 0x12C4];
     unsigned short MaxGamePlayers;
     char gap_12DA[0x132C - 0x12DA];
-    unsigned int ResentToOther;
+    unsigned long ResentToOther;
     char gap_1330[0x149C - 0x1330];
     int Kicked[10];
     char gap_14C4[0x14D4 - 0x14C4];
@@ -175,7 +185,7 @@ public:
 
 int TCommunications_Handler::SendStoredMessages()
 {
-    const char* error_text;
+    char* error_text;
     {
     unsigned long now;
     unsigned int items;
@@ -201,16 +211,16 @@ int TCommunications_Handler::SendStoredMessages()
     char* name;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
-        error_text = s_RGEGTD_SendStore;
+        error_text = (char*)s_RGEGTD_SendStore;
         goto no_transmit;
     }
 
     if ((DAT_0062c5e4 & 1) == 0) {
         DAT_0062c5e4 |= 1;
-        DAT_0062c5a8 = debug_timeGetTime(s_Com_hand_cpp, 0xE00);
+        DAT_0062c5a8 = debug_timeGetTime((char*)s_Com_hand_cpp, 0xE00);
     }
 
-    now = debug_timeGetTime(s_Com_hand_cpp, 0xE02);
+    now = debug_timeGetTime((char*)s_Com_hand_cpp, 0xE02);
     if (!((float)DAT_0062cf28 / (now - DAT_0062c5a8) <=
           DAT_0056f210)) {
         return 0;
@@ -276,9 +286,9 @@ int TCommunications_Handler::SendStoredMessages()
 
     offset = resend_slot * 0x38;
     this->Resend[resend_slot].TimeSent =
-        debug_timeGetTime(s_Com_hand_cpp, 0xE55);
+        debug_timeGetTime((char*)s_Com_hand_cpp, 0xE55);
 
-    if (this->MaxGamePlayers == 0) {
+    if (this->MaxGamePlayers < 1) {
         return this->ResentToOther;
     }
 
@@ -297,19 +307,19 @@ int TCommunications_Handler::SendStoredMessages()
             L->Log("Resending #%d to P#%d dcoid=%d Length=%d  (elapsed=%d)",
                    resend_slot, player, dco[0], selected->Length,
                    oldest_message_slot,
-                   debug_timeGetTime(s_Com_hand_cpp, 0xE69));
+                   debug_timeGetTime((char*)s_Com_hand_cpp, 0xE69));
 
             if (DAT_0062cf04 == 0) {
-                error_text = s_BAD_DCOID_0_NO_TX;
+                error_text = (char*)s_BAD_DCOID_0_NO_TX;
                 goto no_transmit;
             }
 
-            send_start = debug_timeGetTime(s_Com_hand_cpp, 0xE76);
+            send_start = debug_timeGetTime((char*)s_Com_hand_cpp, 0xE76);
             L->Log("  >TX STOR #%d %d (%d)", player, resend_slot,
                    selected->Length);
             hr = DAT_0062c5ec->Send(DAT_0062cf04, dco[0], 0,
                                     selected->ResendMsg, selected->Length);
-            send_elapsed = debug_timeGetTime(s_Com_hand_cpp, 0xE86) - send_start;
+            send_elapsed = debug_timeGetTime((char*)s_Com_hand_cpp, 0xE86) - send_start;
             if (send_elapsed > 0x32) {
                 L->Log("!!!SendStoredMessages slow - %ld msec",
                        send_elapsed);
