@@ -33,19 +33,28 @@
 // declaration order is a codegen duplicate. Keep this natural record form.
 // Follow-up probe: in-loop RESENDER base plus entry declarations preserved the
 // same 364-byte, 96.85%-shape output; restored the current typed source.
+// Follow-up probe: direct typed member indexing forms the original loop block and
+// reduces the strict gap to 38 bytes. The remaining gap is only ESI/EDI coloring.
+// Pointer-scope, destructor-surface, vector-pointer, ambient-context, header, alias,
+// field-type, loop-type, and declaration-order probes did not change that basin.
+// Ownership review: FriendlyName/FormalName are NAME* and HOLDER is the canonical
+// six-field 0x18-byte record. Main review keeps source-level delete expressions;
+// compiler cleanup helpers and allocation cookies are not original source forms.
 
 class RESENDER;
 class HOLDER;
-void __cdecl operator_delete(void* p);
-extern "C" void __stdcall eh_vector_destructor_iterator(void* ptr, unsigned int size, int count, void* dtor);
-void __cdecl RESENDER_dtor(RESENDER* p);
-void __cdecl HOLDER_dtor(HOLDER* p);
+class NAME;
 
 class TDebuggingLog {
 public:
     void __cdecl Log(char* fmt, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 };
 extern TDebuggingLog* L;
+
+class NAME {
+public:
+    char Text[128];
+};
 
 class RESENDER {
 public:
@@ -59,7 +68,12 @@ public:
 
 class HOLDER {
 public:
-    char data[0x18];
+    char* HoldMsg;
+    unsigned int Serial;
+    unsigned int Length;
+    unsigned long dcoFromID;
+    unsigned long dcoReceiveID;
+    unsigned int fromPlayer;
     ~HOLDER();
 };
 
@@ -72,8 +86,8 @@ class RGE_Comm_Error { public: ~RGE_Comm_Error(); };
 class TCommunications_Handler {
 public:
     char gap_0000[0x12C8];
-    void* FriendlyName;                 // +0x12C8
-    void* FormalName;                   // +0x12CC
+    NAME* FriendlyName;                 // +0x12C8
+    NAME* FormalName;                   // +0x12CC
     char gap_12D0[0x1F4];
     RGE_Communications_Queue* InQ;      // +0x14C4
     char gap_14C8[4];
@@ -99,61 +113,26 @@ TCommunications_Handler::~TCommunications_Handler() {
     this->CloseSession();
     this->ReleaseComm();
     this->FreeOptions();
-    operator_delete(this->FriendlyName);
-    operator_delete(this->FormalName);
+    delete this->FriendlyName;
+    delete this->FormalName;
 
     unsigned int slot = 0;
-    RESENDER* resend;
     do {
-        resend = this->Resend + slot;
-        if (resend->Serial != 0) {
+        if (this->Resend[slot].Serial != 0) {
             L->Log("NO MSG Slot#%d  Ser#%d  Len=%d  DEST=%d,%d,%d,%d,%d,%d,%d,%d",
-                slot, resend->Serial, resend->Length,
-                resend->DestMap[1], resend->DestMap[2], resend->DestMap[3],
-                resend->DestMap[4], resend->DestMap[5], resend->DestMap[6],
-                resend->DestMap[7], resend->DestMap[8]);
+                slot, this->Resend[slot].Serial, this->Resend[slot].Length,
+                this->Resend[slot].DestMap[1], this->Resend[slot].DestMap[2], this->Resend[slot].DestMap[3],
+                this->Resend[slot].DestMap[4], this->Resend[slot].DestMap[5], this->Resend[slot].DestMap[6],
+                this->Resend[slot].DestMap[7], this->Resend[slot].DestMap[8]);
         }
         slot++;
     } while (slot <= 501);
 
-    if (this->Resend != 0) {
-        void* p = (char*)this->Resend - 4;
-        eh_vector_destructor_iterator(this->Resend, 0x38, *(int*)p, (void*)RESENDER_dtor);
-        operator_delete(p);
-    }
-    if (this->OnHold != 0) {
-        void* p = (char*)this->OnHold - 4;
-        eh_vector_destructor_iterator(this->OnHold, 0x18, *(int*)p, (void*)HOLDER_dtor);
-        operator_delete(p);
-    }
-
-    RGE_Communications_Queue* q = this->InQ;
-    if (q != 0) {
-        q->~RGE_Communications_Queue();
-        operator_delete(q);
-    }
-
-    RGE_Lobby* lobby = this->Lobby;
-    if (lobby != 0) {
-        lobby->~RGE_Lobby();
-        operator_delete(lobby);
-    }
-
-    RGE_Communications_Speed* speed = this->Speed;
-    if (speed != 0) {
-        speed->~RGE_Communications_Speed();
-        operator_delete(speed);
-    }
-
-    RGE_Communications_Synchronize* sync = this->Sync;
-    if (sync != 0) {
-        sync->~RGE_Communications_Synchronize();
-        operator_delete(sync);
-    }
-
-    RGE_Comm_Error* err = this->Err;
-    if (err != 0) {
-        err->~RGE_Comm_Error();
-        operator_delete(err);
-    }
+    delete[] this->Resend;
+    delete[] this->OnHold;
+    delete this->InQ;
+    delete this->Lobby;
+    delete this->Speed;
+    delete this->Sync;
+    delete this->Err;
 }
