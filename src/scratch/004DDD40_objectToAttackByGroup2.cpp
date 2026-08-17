@@ -1,15 +1,27 @@
 // VA 004DDD40 TribeInformationAIModule::objectToAttackByGroup2
 // PDB source: taiinfmd.cpp:4253-4435
 // Attempt log:
-// 1: Baseline decompiler-shaped helper/field scaffold was 1056 bytes with mismatched helper calls and broad drift.
-// 2: Reconstructed the canonical ObjectMemory/RGE object/visible-map/unit-AI surfaces, corrected the parameter order, and restored the period scoring expression and call sequence.
-// 3: Replaced fake liveness/zone/attack-factor helpers with direct unitAI/currentZone/visible-map/currentTarget/can-attack surfaces and the four observed coordinate conversions.
-// 4: Used narrow volatile coordinate rereads only for the binary-proven post-call __ftol pair; this preserves the two repeated conversions without volatile object state.
-// 5: Restored the observed <=2/>0 candidate gate, <=5 proximity algebra, priest result local, and candidate-coordinate lookupZone conversion.
-// 6: Removed the volatile post-distance temporaries but retained named lookup coordinates; the intervening calls already force the binary-proven commander reread.
-// 7: Bound zero/one comparisons to the shared DAT_00575580/DAT_00575564 constants, matching the original data references rather than literal constants.
-// 8: Matched binary promotion/reload surfaces: owner compares as promoted int, hp uses != zero, and kills/attack-attempt weighting are captured before later lookup calls.
-// 9: Declared the loop byte offset at function scope but initialized it at loop entry, matching the original low stack offset and delayed initialization.
+// 1: The prior scaffold had mismatched helper calls and broad code drift.
+// 2: Rebuilt the typed ObjectMemory, object, visible-map, and unit-AI surfaces.
+// 3: Exact donors prove both scoring helpers take (ids, count, object).
+// 4: The +0xC4 unit-AI call takes the candidate ObjectMemory id, not its pointer.
+// 5: The natural typed indexed array model is retained for important memories.
+// 6: Direct coordinate conversions recover the repeated __ftol and visibility
+//    sequence without volatile state or address macros.
+// 7: The score comparison is `score > bestScore`; this emits the original
+//    `test ah,41h` x87 predicate.
+// 8: The score terms are evaluated as 0xb8*targetTime, 0x4d/distance, and
+//    0x50*kills. The order follows the original strategic-number call sites.
+// 9: Reused dx/dy across both coordinate blocks. The compiler output is
+//    unchanged, which supports the ordinary shared-local model.
+// 10: Best current check is 1200 bytes, 332 instructions, and 597 differing
+//     bytes. Calls align 31/31 and the frame is 0x40, but the result is not exact.
+// 11: Restored canonical md->tacticalAI ownership and typed indexed memory
+//     access. Emitted code stayed unchanged.
+// 12: A typed per-iteration memory pointer was natural but lost 65 code bytes.
+//     Restored the indexed form.
+// Remaining drift is mainly VC5 register and local-home allocation around the
+// initial zero, coordinate scratch, and score locals.
 // Main-agent audit: replaced the generated VPAD padding with the named
 // UnitAIModule ABI surface through the binary-proven +0xC4 can_attack_mem
 // override. No codegen-only volatility or inline assembly is retained.
@@ -129,7 +141,7 @@ public:
     virtual int exploreAndDestroy(int, int, int);
     virtual int importantObject(int);
     virtual int convertToLOSResourceType(int);
-    virtual int can_attack_mem(ObjectMemory* memory);
+    virtual int can_attack_mem(int objectId);
     int currentTarget();
 };
 
@@ -159,6 +171,7 @@ class MainDecisionAIModule {
 public:
     char gap_00[0xF0];
     RGE_Player* player; // +0xF0
+    char gap_0F4[0x10];
     RGE_Static_Object* object(int id);
 };
 
@@ -167,24 +180,30 @@ public:
     int strategicNumber(int number);
 };
 
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    char gap_104[0x1146C - 0x104];
+    TribeTacticalAIModule tacticalAI; // +0x1146C
+};
+
 class TribeInformationAIModule {
 public:
     char gap_00[0x100];
-    MainDecisionAIModule* md; // +0x100
+    TribeMainDecisionAIModule* md; // +0x100
     char gap_104[0x0C];
     int maxImportantObjectMemory; // +0x110
     ObjectMemory* importantObjectMemory; // +0x114
 
     ObjectMemory* wonderToAttack(int type);
-    float damageInflictedPerSecond(int group, int* ids, RGE_Static_Object* object);
-    float timeToBeKilled(int group, int* ids, RGE_Static_Object* object);
+    float damageInflictedPerSecond(int* ids, int count, RGE_Static_Object* object);
+    float timeToBeKilled(int* ids, int count, RGE_Static_Object* object);
 
     ObjectMemory* objectToAttackByGroup2(int group, int* ids, int count);
 };
 
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* ids, int count)
 {
-    int byteOffset;
+    ObjectMemory* bestObject;
     ObjectMemory* wonder = this->wonderToAttack(-1);
     if (wonder != 0) {
         return wonder;
@@ -200,70 +219,76 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                     commanderIsPriest = 1;
                 }
 
-                float bestAttackValue = 0.0f;
+                bestObject = 0;
                 float bestScore = -1.0f;
-                float timeTK = 0.0f;
-                int i = 0;
-                ObjectMemory* bestObject = 0;
+                float bestAttackValue = 0.0f;
+                int timeTK = 0;
 
                 if (this->maxImportantObjectMemory > 0) {
-                    byteOffset = 0;
                     do {
-                        ObjectMemory* memory = (ObjectMemory*)((char*)this->importantObjectMemory + byteOffset);
-                        if (memory->owner == group) {
-                            RGE_Static_Object* object = this->md->object(memory->id);
+                        if (this->importantObjectMemory[timeTK].owner == group) {
+                            RGE_Static_Object* object =
+                                this->md->object(this->importantObjectMemory[timeTK].id);
                             if (object != 0) {
+                                int dx;
+                                int dy;
                                 if (object->object_state <= 2 && object->hp != DAT_00575580) {
-                                    int x = (int)object->world_x;
-                                    int y = (int)object->world_y;
-                                    int dx = (int)memory->x - x;
+                                    dx = (int)this->importantObjectMemory[timeTK].x - (int)object->world_x;
                                     if (dx < 0) {
                                         dx = -dx;
                                     }
-                                    int dy = (int)memory->y - y;
+                                    dy = (int)this->importantObjectMemory[timeTK].y - (int)object->world_y;
                                     if (dy < 0) {
                                         dy = -dy;
                                     }
 
                                     if ((dx <= 5 && dy <= 5) ||
-                                        this->md->player->visible->get_visible(x, y) == 0x0f) {
+                                        this->md->player->visible->get_visible(
+                                            (int)object->world_x, (int)object->world_y) == 0x0f) {
+                                        // BINARY NOTE: slot +0xC4 receives ObjectMemory::id.
                                         if (commanderIsPriest == 0 ||
-                                            commanderObj->unitAI()->can_attack_mem(memory) != 0) {
-                                            float damage = this->damageInflictedPerSecond(group, ids, object);
-                                            float hpOverDamage = object->hp / damage;
-                                            float time = this->timeToBeKilled(group, ids, object);
+                                            commanderObj->unitAI()->can_attack_mem(this->importantObjectMemory[timeTK].id) != 0) {
+                                            float damage;
+                                            float hpOverDamage;
+                                            float time;
+                                            float targetTime;
+                                            float targetDistance;
+                                            damage = this->damageInflictedPerSecond(ids, count, object);
+                                            hpOverDamage = object->hp / damage;
+                                            time = this->timeToBeKilled(ids, count, object);
                                             if (damage != DAT_00575580 && time != DAT_00575580) {
-                                                float targetTime = time / hpOverDamage;
+                                                targetTime = time / hpOverDamage;
                                                 int targetX = (int)commanderObj->world_x;
                                                 int targetY = (int)commanderObj->world_y;
-                                                int distanceX = (int)memory->x - targetX;
-                                                int distanceY = (int)memory->y - targetY;
-                                                float targetDistance = (float)sqrt((float)(distanceX * distanceX + distanceY * distanceY));
+                                                dx = (int)this->importantObjectMemory[timeTK].x - targetX;
+                                                dy = (int)this->importantObjectMemory[timeTK].y - targetY;
+                                                targetDistance = (float)sqrt((float)(dx * dx + dy * dy));
                                                 if (targetDistance < DAT_00575564) {
                                                     targetDistance = 1.0f;
                                                 }
 
-                                                int randomNumber = ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0x53);
+                                                int randomNumber = this->md->tacticalAI.strategicNumber(0x53);
                                                 if (randomNumber < 1) {
                                                     bestAttackValue = 0.0f;
                                                 } else {
-                                                    int randomRange = ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0x53);
+                                                    int randomRange = this->md->tacticalAI.strategicNumber(0x53);
                                                     bestAttackValue = (float)(debug_rand((char*)0x5878dc, 0x110b) % randomRange);
                                                 }
 
-                                                int killCount = memory->kills;
+                                                int killCount =
+                                                    this->importantObjectMemory[timeTK].kills;
                                                 float attackAttemptFactor =
-                                                    (float)((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0x59) *
-                                                    (float)memory->attackAttempts;
+                                                    (float)this->md->tacticalAI.strategicNumber(0x59) *
+                                                    (float)this->importantObjectMemory[timeTK].attackAttempts;
                                                 float targetRandomization = 0.0f;
                                                 int lookupX = (int)object->world_x;
                                                 int lookupY = (int)object->world_y;
                                                 if (commanderZone == commanderObj->lookupZone(lookupX, lookupY)) {
-                                                    targetRandomization = (float)((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0x7a);
+                                                    targetRandomization = (float)this->md->tacticalAI.strategicNumber(0x7a);
                                                 }
 
                                                 float zoneFactor = 0.0f;
-                                                int strategicB9 = ((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0xb9);
+                                                int strategicB9 = this->md->tacticalAI.strategicNumber(0xb9);
                                                 if (strategicB9 > 0) {
                                                     int currentTargetCount = 0;
                                                     int remaining = count;
@@ -272,25 +297,33 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                                         do {
                                                             RGE_Static_Object* currentObject = this->md->object(*currentID);
                                                             if (currentObject != 0 && currentObject->unitAI() != 0 &&
-                                                                currentObject->unitAI()->currentTarget() == memory->id) {
+                                                                currentObject->unitAI()->currentTarget() ==
+                                                                    this->importantObjectMemory[timeTK].id) {
                                                                 ++currentTargetCount;
                                                             }
                                                             ++currentID;
                                                             --remaining;
                                                         } while (remaining != 0);
                                                     }
-                                                    zoneFactor = (float)((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0xb9) * (float)currentTargetCount;
+                                                    zoneFactor = (float)this->md->tacticalAI.strategicNumber(0xb9) * (float)currentTargetCount;
                                                 }
 
-                                                float score = (float)((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0xb8) * (float)killCount;
-                                                score += (float)((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0x4d) / targetDistance;
-                                                score += (float)((TribeTacticalAIModule*)((char*)this->md + 0x1146C))->strategicNumber(0x50) * targetTime;
+                                                // BINARY NOTE: VC5 evaluates these weights in this order.
+                                                float score =
+                                                    (float)this->md->tacticalAI.strategicNumber(0xb8) *
+                                                    targetTime;
+                                                score +=
+                                                    (float)this->md->tacticalAI.strategicNumber(0x4d) /
+                                                    targetDistance;
+                                                score +=
+                                                    (float)this->md->tacticalAI.strategicNumber(0x50) *
+                                                    (float)killCount;
                                                 score += zoneFactor;
                                                 score += targetRandomization;
                                                 score += attackAttemptFactor;
                                                 score += bestAttackValue;
-                                                if (bestObject == 0 || bestScore < score) {
-                                                    bestObject = memory;
+                                                if (bestObject == 0 || score > bestScore) {
+                                                    bestObject = &this->importantObjectMemory[timeTK];
                                                     bestScore = score;
                                                 }
                                             }
@@ -299,9 +332,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                 }
                             }
                         }
-                        ++i;
-                        byteOffset += 0x24;
-                    } while (i < this->maxImportantObjectMemory);
+                        ++timeTK;
+                    } while (timeTK < this->maxImportantObjectMemory);
                 }
                 return bestObject;
             }
