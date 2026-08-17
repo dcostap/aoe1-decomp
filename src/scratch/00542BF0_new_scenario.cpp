@@ -75,6 +75,10 @@
 //   One branch-local pointer was one byte larger; all other valid variants were
 //   duplicates. Keep this natural source. The next useful evidence is the
 //   historical World.cpp translation-unit or compiler context.
+// - Object audit confirms the 275-byte FPO range, no locals, four saved
+//   registers, ABI, field layouts, and 12 relocations. PDB names only this,
+//   info, random_seed_in, and retval. Exact names are byte-neutral. No record
+//   supports a local_count alias for the remaining seed/count scheduling.
 
 #include <stdlib.h>
 
