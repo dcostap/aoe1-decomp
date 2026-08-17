@@ -106,6 +106,18 @@
 //   The natural scalar source remains the clean candidate. No volatile, gap, fake aggregate,
 //   address alias, or forced parameter-home form was retained. Final validation is 221 bytes,
 //   139-byte diff, 0xC frame versus the original 230 bytes and 0x10 frame.
+// - Independent PDB audit: DIA lists only this, node, points, and amount for this function.
+//   points and amount both use VFRAME +8, which is the incoming node home at function entry.
+//   DIA reports no live ranges, hidden locals, or inline frames. The complete point-entry UDT
+//   is 0x1C bytes with amount, points, curr_points, curr_attribute_amount, and next at +8,+C,
+//   +10,+14,+18. The sibling 00533180 has points at VFRAME -4 and amount at +8; sibling
+//   00533330 has amount at +8. These donors support the scalar fields and parameter-home reuse,
+//   but they do not support a new alias or forced home in this target.
+// - Independent follow-up: 20 natural probes tested PDB-named widths, implicit conversions,
+//   declaration order and scope, guard polarity, threshold operand order, owner expressions,
+//   loop-local pointer ownership, and current-member storage. All forms were neutral or worse.
+//   Restored the pinned scalar source. Final clean metrics remain 221 bytes, 139-byte diff,
+//   0xC frame versus the original 230 bytes and 0x10 frame.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;
