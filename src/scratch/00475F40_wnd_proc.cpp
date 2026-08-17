@@ -71,9 +71,27 @@
 // were tested. Direct returns and the alias were duplicates; if/else and an
 // explicit switch default broke the original CFG or call count. The Win32
 // constants and nested guards were duplicates. Restored this clean source.
+// Reassignment (sa-40ce08b0): the clean baseline was rechecked. Direct-return,
+// param_2-for-7, direct edit_wnd, and register-qualified forwarding aliases
+// were codegen duplicates. A 512-sample ambient-declaration lab and a 16-way
+// forwarding-form lab also produced one 242-byte group with the same eight
+// changed bytes. Final validation retained this source and found no exact
+// lead; the next useful evidence is original TU/header or compiler-context
+// provenance for the two forwarding register-color families.
+// Fresh pass (sa-a1bdd006-r1): the original decompiler's if-chain reconstruction
+// changed the function to 224 bytes and broke call/block alignment. Returning
+// only the default forward directly, omitting the redundant derived virtual
+// keyword, removing the case scope, and splitting result locals were all
+// 242-byte duplicates of the eight-byte drift. Restored this clean source.
 // Validation: remaining drift is only eight bytes in the two qualified base
 // forwarding call register-color families. The best six-byte diagnostic used
 // volatile parameter aliasing and is not retained as source.
+// Revisit (sa-3bddee8c-r1): original assembly and PDB line bands were reviewed
+// again. The two base calls remain separate. Both calls use source line 596.
+// Minimal and full class surfaces, field order, nested enum types, SDK aliases,
+// helper declarations, result lifetimes, aliases, and mixed returns were tested.
+// A shared goto merged the calls and changed the call count. Other forms stayed
+// at the same eight-byte recolor. The clean natural source remains authoritative.
 
 #include <windows.h>
 
