@@ -28,6 +28,10 @@
 //    emitted the same bytes, so the readable branch shape remains in scratch.
 // 13: scoped the paired array declarations inside the positive-count block; VC5
 //    emitted the same bytes, so the top-level declarations remain in the source.
+// 14: revisit tested the original allocation graph, duplicate getstring order,
+//    per-entry cleanup order, and inverted validity guard. The natural typed
+//    baseline remains best at 61 differing bytes; all weaker variants were
+//    restored. Direct new/delete campaign ownership remains authoritative.
 
 typedef unsigned int uint;
 
