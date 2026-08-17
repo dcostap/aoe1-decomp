@@ -10,8 +10,8 @@
 //   recovered the 0x10 frame, saved-register set, boundary, and call layout.
 // - A diagnostic byte-offset cursor reproduced the remaining stack schedule
 //   and reached a 22-byte mismatch, but was rolled back as raw cursor plumbing.
-// - The clean source uses typed map records with a period-plausible explicit
-//   0x48 byte stride; VC5's natural typed ++ form lost the original frame.
+// - The clean source keeps typed map records and the natural counted loop;
+//   VC5 emits the original frame and call topology without a byte cursor.
 // Fresh pass:
 // - Restored the prior byte-offset reconstruction as a diagnostic frontier. It
 //   still matches the frame, size, CFG, calls, and 86.51% of exact blocks;
@@ -40,6 +40,23 @@
 //   operands, opaque payload pointers, map-expression operand order, TU
 //   stdlib context, and long index type did not change the 22-byte frontier.
 //   Using data->maps regressed the frame to 0x0C. Restored this clean source.
+// Fresh pass:
+// - Original symbol decoration proves save is nonvirtual (QAEEH).  The source
+//   now uses that member form; emitted bytes remain unchanged.
+// - Reviewed typed base declarations and member order did not change output.
+// - A gated 54-case lab varied map addition and payload size forms.  It found
+//   two groups, 18 invariant variants, and no exact result.  The clean group
+//   remains 336 bytes with a 22-byte mismatch.
+// Fresh revisit:
+// - Valid commuted pointer arithmetic, typed maps[map_index], map references,
+//   full same-TU virtual declarations, and void payload pointers stayed in the
+//   same 336-byte group.  No exact candidate appeared.
+// Fresh revisit:
+// - Direct typed subrecord expressions, without a map-entry local, match the
+//   original map-base and payload register colors.  The mismatch is now 10
+//   bytes and one pre-loop zero-store/branch schedule hunk.
+// - A natural for-loop widened the function by 8 bytes.  The natural typed
+//   do-while remains authoritative; a forced zero store would violate policy.
 
 extern "C" {
     void rge_write(int file, void* data, int size);
@@ -47,22 +64,25 @@ extern "C" {
 
 class RGE_Map;
 class RGE_Game_World;
+class RGE_Tile;
+class RGE_Random_Map_Module_List;
+struct Map_Stack;
 
 class RGE_Random_Map_Module {
 public:
     virtual ~RGE_Random_Map_Module();
 
     RGE_Random_Map_Module* parent;
-    void* list;
+    RGE_Random_Map_Module_List* list;
     RGE_Map* map;
-    void* map_row_offset;
+    RGE_Tile** map_row_offset;
     long map_width;
     long map_height;
     float schedule;
     unsigned char* search_map;
-    void* stack_array;
     unsigned char** search_map_rows;
-    void* stack_offsets;
+    Map_Stack* stack_array;
+    Map_Stack** stack_offsets;
 };
 
 struct RGE_Land_Data_Entry {
@@ -185,7 +205,7 @@ public:
     RGE_Map_Data map_info;
 
     virtual unsigned char generate();
-    virtual unsigned char save(int file);
+    unsigned char save(int file);
 };
 
 unsigned char RGE_RMM_Database_Controller::save(int file)
@@ -193,24 +213,26 @@ unsigned char RGE_RMM_Database_Controller::save(int file)
     int file_handle = file;
     RGE_RMM_Database_Controller* controller = this;
     RGE_Map_Data* data = &controller->map_info;
+    int local_10;
 
     rge_write(file_handle, data, 8);
 
     if (data->map_num > 0) {
         rge_write(file_handle, controller->map_info.maps,
                   data->map_num * sizeof(RGE_Map_Data_Entry));
-
-        int local_10 = 0;
-        int index;
+        local_10 = 0;
+        int map_index;
         if (data->map_num > 0) {
-            index = 0;
+            map_index = 0;
             do {
-            RGE_Map_Data_Entry* map =
-                (RGE_Map_Data_Entry*)((char*)controller->map_info.maps + index);
-            RGE_Land_Data* land_info = &map->land_info;
-            RGE_Terrain_Data* terrain_info = &map->terrain_info;
-            RGE_Object_Data* object_info = &map->object_info;
-            RGE_Elevation_Data* elevation_info = &map->elevation_info;
+            RGE_Land_Data* land_info =
+                &controller->map_info.maps[map_index].land_info;
+            RGE_Terrain_Data* terrain_info =
+                &controller->map_info.maps[map_index].terrain_info;
+            RGE_Object_Data* object_info =
+                &controller->map_info.maps[map_index].object_info;
+            RGE_Elevation_Data* elevation_info =
+                &controller->map_info.maps[map_index].elevation_info;
 
             rge_write(file_handle, land_info, sizeof(RGE_Land_Data));
             if (land_info->land_num > 0) {
@@ -237,7 +259,7 @@ unsigned char RGE_RMM_Database_Controller::save(int file)
             }
 
             ++local_10;
-            index += sizeof(RGE_Map_Data_Entry);
+            ++map_index;
             } while (local_10 < data->map_num);
         }
     }
