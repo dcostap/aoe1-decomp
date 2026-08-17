@@ -31,15 +31,25 @@
 // - Restored named bitmap-header fields, the default file-name literal, and
 //   parallel spans/colors indexing. Raw stack-buffer stores and cross-array
 //   cursor arithmetic were diagnostic scaffolding, not living source.
+// - Revisit: removing the untyped BMPFile zero store from the typed source
+//   resynchronized the exact palette/open/body islands. Best result is 666
+//   bytes, frame 0x888, 202 instructions, 351 strict differing bytes, and
+//   91.09% shape. The original final zero is a bitmap-header field, not a
+//   filename initialization.
+// - Tested 257-entry palettes, a 0x40-byte filename buffer, +1 palette
+//   anchors, SDK Windows headers, declaration and field order, named totals,
+//   retry-loop forms, and CRT C linkage. No exact result; several were
+//   duplicate codegen. The current source keeps the typed period model and
+//   extern-C CRT declarations.
 
 #include <stdio.h>
 #include <string.h>
 
-void* __cdecl malloc(unsigned int size);
-void __cdecl free(void* p);
-int __cdecl open(const char* path, int flags, ...);
-int __cdecl close(int fd);
-int __cdecl write(int fd, const void* buf, unsigned int count);
+extern "C" void* __cdecl malloc(unsigned int size);
+extern "C" void __cdecl free(void* p);
+extern "C" int __cdecl open(const char* path, int flags, ...);
+extern "C" int __cdecl close(int fd);
+extern "C" int __cdecl write(int fd, const void* buf, unsigned int count);
 
 struct PALETTEENTRY { unsigned char peRed, peGreen, peBlue, peFlags; };
 struct RGBQUAD { unsigned char rgbBlue, rgbGreen, rgbRed, rgbReserved; };
@@ -105,13 +115,13 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
     Height = this->Num_Pixels;
     bmWide = (Height + 3) & 0xfffc;
 
-    bmFH.bfSize = bmWide * this->Num_Lines + 0x436;
+    bmFH.bfSize = Width * bmWide + 0x436;
     bmFH.bfType = 0x4d42;
     bmFH.bfReserved1 = 0;
     bmFH.bfReserved2 = 0;
     bmFH.bfOffBits = 0x436;
 
-    bmIH.biSize = sizeof(bmIH);
+    bmIH.biSize = 0x28;
     bmIH.biWidth = Height;
     bmIH.biHeight = Width;
     bmIH.biPlanes = 1;
@@ -122,8 +132,6 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number, TDrawArea* area,
     bmIH.biYPelsPerMeter = 0;
     bmIH.biClrUsed = 0;
     bmIH.biClrImportant = 0;
-    *(unsigned int*)BMPFile = 0;
-
     area->GetPalette(thePal);
     for (int p = 0; p < 0x100; ++p) {
         bmPAL[p].rgbBlue = thePal[p].peBlue;
