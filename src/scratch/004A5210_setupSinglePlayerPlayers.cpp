@@ -33,6 +33,14 @@
 //   refresh through this; codegen stayed identical, so restored the clean form.
 // - Swapped the typed scenario-player and active-player declarations; the
 //   saved-source diff grew from 20 to 21 bytes, so restored the clean order.
+// - Revisit: using the direct player+1 expression and then assigning that
+//   value back to player reproduces the random-loop tail.  The removed color
+//   temporary had caused a compare-before-move schedule.
+// - Revisit: the proven complete screen member surface and 128 ambient
+//   declaration samples did not change the remaining register coloring.
+// - Current clean candidate: 556 bytes with 15 differing bytes.  All calls,
+//   blocks, size, frame, and CFG signals match.  Remaining drift is only the
+//   EBX/EBP assignment for this and the active-player count.
 
 class RGE_Scenario {
 public:
@@ -82,9 +90,64 @@ public:
 
 class TribeMPSetupScreen : public TScreenPanel {
 public:
-    char gap_478[0x2B0];
+    TPanel* title;                 // +0x478
+    TPanel* playerTitle;           // +0x47C
+    TPanel* civTitle;              // +0x480
+    TPanel* settingsTitle;         // +0x484
+    TPanel* colorTitle;            // +0x488
+    TPanel* teamTitle;             // +0x48C
+    TPanel* playerNameText[8];     // +0x490
+    TPanel* playerCivText[8];      // +0x4B0
+    TPanel* scenarioPlayerText[8]; // +0x4D0
+    TPanel* playerCDText[8];       // +0x4F0
+    TPanel* playerVersionText[8];  // +0x510
+    TPanel* playerColorText[8];    // +0x530
+    TPanel* playerTeamText[8];     // +0x550
+    TPanel* playerColor[8];        // +0x570
+    TPanel* playerTeam[8];         // +0x590
+    TPanel* playerNameDrop[8];     // +0x5B0
+    TPanel* playerCivDrop[8];      // +0x5D0
+    TPanel* scenarioPlayerDrop[8];// +0x5F0
+    TPanel* chatInput;             // +0x610
+    TPanel* chatTitle;             // +0x614
+    TPanel* chatBox;               // +0x618
+    TPanel* chatScrollbar;         // +0x61C
+    TPanel* gameSettingsButton;    // +0x620
+    TPanel* scenarioName;          // +0x624
+    TPanel* victoryFixedText;      // +0x628
+    TPanel* settingText[20];       // +0x62C
+    TPanel* settingValue[20];      // +0x67C
+    TPanel* mapSizeLabel;          // +0x6CC
+    TPanel* mapSizeDrop;           // +0x6D0
+    TPanel* mapTypeLabel;          // +0x6D4
+    TPanel* mapTypeDrop;           // +0x6D8
+    TPanel* numberPlayersTitle;    // +0x6DC
+    TPanel* numberPlayersDrop;     // +0x6E0
+    TPanel* numberPlayersText;     // +0x6E4
+    TPanel* hiddenMapButton;       // +0x6E8
+    TPanel* hiddenMapText;         // +0x6EC
+    TPanel* victoryTypeLabel;       // +0x6F0
+    TPanel* victoryTypeDrop;        // +0x6F4
+    TPanel* victoryAmountLabel;     // +0x6F8
+    TPanel* victoryAmountInput;     // +0x6FC
+    TPanel* startButton;            // +0x700
+    TPanel* readyButtons[2];        // +0x704
+    TPanel* cancelButton;           // +0x70C
+    TPanel* help_button;            // +0x710
+    TPanel* ready_button;           // +0x714
+    TPanel* close_button;           // +0x718
+    TPanel* ready_button_label;     // +0x71C
+    int cancelMode;                 // +0x720
+    int playerToKick;               // +0x724
     int scenarioPlayerCount; // +0x728
-    char gap_72C[0x11C];
+    int myCivilization;      // +0x72C
+    int myScenarioPlayer;    // +0x730
+    int myPlayerColor;       // +0x734
+    int myPlayerTeam;        // +0x738
+    int myScenarioChecksum;  // +0x73C
+    char saveScenarioName[0x100]; // +0x740
+    int saveRandomGame;      // +0x840
+    int saveScenarioChecksum; // +0x844
     RGE_Scenario* scenarioInfo; // +0x848
     virtual ~TribeMPSetupScreen();
 
@@ -174,10 +237,9 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                 debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0xB31) %
                     16 + 1;
             ((TRIBE_Game*)rge_base_game)->setCivilization(player, civilization);
-            int color = player + 1;
             ((TRIBE_Game*)rge_base_game)->setPlayerColor(
-                player, color);
-            player = color;
+                player, player + 1);
+            player = player + 1;
         } while (player < 8);
     }
 
