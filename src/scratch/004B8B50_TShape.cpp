@@ -42,6 +42,13 @@
 // worse block shape, so the source-order and PDB-named clean form remains.
 // - Named the resource header version field. The raw dword cast was a file-format
 //   placeholder, not the owning source model.
+// sa-a74ff577 revisit (2026-08-17):
+// - Restored the inventory-proven typed TShape ownership: uchar* shape,
+//   Shape_File_Header, Shape_Offsets, SLhape_File_Header, and Shape_Info.
+// - Typed record arithmetic, a branch-local load-mode value, CRT header context,
+//   and a sequenced counter expression were either codegen duplicates or worse.
+// - Final natural source remains 635 bytes with 18 aligned calls; checker diff is
+//   381 bytes. The first mismatch is the original EBX-held color-log constant.
 
 #include <string.h>
 
@@ -58,20 +65,45 @@ extern unsigned char shape_file_first;
 extern int Shape_Loads;
 extern int shape_version_110;
 
+typedef unsigned char uchar;
+
 struct Shape_Header {
-    int version;
+    long bounds;
+    long origin;
+    long xmin;
+    long ymin;
+    long xmax;
+    long ymax;
 };
+
+struct Shape_File_Header {
+    long version;
+    long shape_num;
+};
+
+struct Shape_Offsets {
+    long shape;
+    long palette;
+};
+
+struct SLhape_File_Header {
+    char Version[4];
+    long Num_Shapes;
+    char Comment[24];
+};
+
+struct Shape_Info;
 
 class TShape {
 public:
-    void* shape;          // +00
+    uchar* shape;         // +00
     int load_type;        // +04
     int load_size;        // +08
-    void* shape_header;   // +0C
-    void* head;           // +10
-    void* offsets;        // +14
-    void* FShape;         // +18
-    void* shape_info;     // +1C
+    Shape_Header* shape_header;       // +0C
+    Shape_File_Header* head;          // +10
+    Shape_Offsets* offsets;           // +14
+    SLhape_File_Header* FShape;       // +18
+    Shape_Info* shape_info;           // +1C
 
     TShape(char* filename, long resource_id);
 };
@@ -95,11 +127,11 @@ TShape::TShape(char* filename, long resource_id)
     if (fd != -1) {
         lseek(fd, 0, 2);
         int sz = tell(fd);
-        this->FShape = malloc(sz);
+        this->FShape = (SLhape_File_Header*)malloc(sz);
         lseek(fd, 0, 0);
         read(fd, this->FShape, sz);
         close(fd);
-        this->shape_info = (char*)this->FShape + 0x20;
+        this->shape_info = (Shape_Info*)(this->FShape + 1);
         this->load_type = 1;
         this->load_size = sz;
     }
@@ -109,12 +141,12 @@ TShape::TShape(char* filename, long resource_id)
         if (fd != -1) {
             lseek(fd, 0, 2);
             int sz = tell(fd);
-            this->shape = malloc(sz);
+            this->shape = (uchar*)malloc(sz);
             lseek(fd, 0, 0);
             read(fd, this->shape, sz);
             close(fd);
-            this->head = this->shape;
-            this->offsets = (char*)this->shape + 8;
+            this->head = (Shape_File_Header*)this->shape;
+            this->offsets = (Shape_Offsets*)(this->shape + sizeof(Shape_File_Header));
             this->load_type = 1;
             this->load_size = sz;
         }
@@ -125,19 +157,19 @@ TShape::TShape(char* filename, long resource_id)
 
     if (this->FShape == 0 && this->shape == 0 && resource_id >= 0) {
         Shape_Loads++;
-        this->shape = RESFILE_load(0x73687020, resource_id, this->load_type, this->load_size);
+        this->shape = (uchar*)RESFILE_load(0x73687020, resource_id, this->load_type, this->load_size);
         if (this->shape != 0) {
-            if (((Shape_Header*)this->shape)->version == shape_version_110) {
-                this->head = this->shape;
-                this->offsets = (char*)this->shape + 8;
+            if (((Shape_File_Header*)this->shape)->version == shape_version_110) {
+                this->head = (Shape_File_Header*)this->shape;
+                this->offsets = (Shape_Offsets*)(this->shape + sizeof(Shape_File_Header));
                 return;
             }
         } else {
-            this->shape = RESFILE_load(0x736c7020, resource_id, this->load_type, this->load_size);
+            this->shape = (uchar*)RESFILE_load(0x736c7020, resource_id, this->load_type, this->load_size);
             if (this->shape != 0) {
-                this->FShape = this->shape;
+                this->FShape = (SLhape_File_Header*)this->shape;
                 this->shape = 0;
-                this->shape_info = (char*)this->FShape + 0x20;
+                this->shape_info = (Shape_Info*)(this->FShape + 1);
             }
         }
     }
