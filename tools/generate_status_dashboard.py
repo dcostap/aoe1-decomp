@@ -28,7 +28,7 @@ BUCKET_COLORS = {
 
 
 HTML_TEMPLATE_PATH = REPO_ROOT / "tools" / "status_dashboard_template.html"
-HISTORY_CACHE_VERSION = 9
+HISTORY_CACHE_VERSION = 11
 DATA_MARKER = "__DASHBOARD_DATA__"
 DASHBOARD_DIR = REPO_ROOT / "build" / "status"
 
@@ -306,7 +306,7 @@ def write_html_dashboard(
                         and len(cached_commits) <= len(commits)
                         and commits[: len(cached_commits)] == cached_commits
                     )
-                    if cached_key.get("version") in {6, 7} and cache_is_prefix:
+                    if cached_key.get("version") in {6, 7, 10} and cache_is_prefix:
                         candidate_history = cached.get("history")
                         candidate = cached.get("resume")
                         if (

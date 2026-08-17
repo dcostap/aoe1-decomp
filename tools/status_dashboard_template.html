@@ -1113,7 +1113,11 @@
       if (!HISTORY || !HISTORY.commits.length) return "";
       const commit = HISTORY.commits[timelineIndex] || {};
       const files = commit.changedFiles || [];
-      return `<div class="mini-row"><div class="note-label">commit ${escapeHtml(commit.shortHash || "")}</div><div>${escapeHtml(commit.subject || "(no subject)")} · ${escapeHtml(historyDate(commit))} · ${escapeHtml(commit.author || "")}${files.length ? ` · ${formatNumber(files.length)} files changed` : ""}</div></div>`;
+      const missingDiff = Math.max(0, derived.stats.remainingFunctions - derived.stats.diffKnown);
+      const diffNote = missingDiff
+        ? `<div class="inline-note">Historical diff metrics were not recorded for ${formatNumber(missingDiff)} remaining functions. Progress colors use source status for those functions.</div>`
+        : "";
+      return `<div class="mini-row"><div class="note-label">commit ${escapeHtml(commit.shortHash || "")}</div><div>${escapeHtml(commit.subject || "(no subject)")} · ${escapeHtml(historyDate(commit))} · ${escapeHtml(commit.author || "")}${files.length ? ` · ${formatNumber(files.length)} files changed` : ""}</div></div>${diffNote}`;
     }
 
     /* Keep the existing dashboard code below focused on one active snapshot. */
@@ -1427,6 +1431,7 @@
         remainingBytes: 0,
         blockers: 0,
         customFlags: 0,
+        diffKnown: 0,
         bucketCounts: Object.fromEntries(BUCKET_ORDER.map((bucket) => [bucket, 0])),
         bucketBytes: Object.fromEntries(BUCKET_ORDER.map((bucket) => [bucket, 0])),
       };
@@ -1449,6 +1454,9 @@
         }
         if (fn.usesCustomFlags) {
           stats.customFlags += 1;
+        }
+        if (fn.isRemaining && fn.diffResult) {
+          stats.diffKnown += 1;
         }
       }
 
@@ -1674,6 +1682,9 @@
         if (item.functionCount > 0 && item.completedCount === item.functionCount) {
           return soften(BUCKET_COLORS.matching || "#22c55e", 0.78);
         }
+        if (!item.diffKnownCount) {
+          return soften(BUCKET_COLORS[item.dominantBucket] || "#475569", 0.58);
+        }
         return soften(diffColor(item.avgEditDiffPercent ?? item.avgDiffPercent ?? 0, item.diffKnownCount > 0), 0.54);
       }
       const unresolved = item.valueBytes ? item.remainingBytes / item.valueBytes : 0;
@@ -1712,6 +1723,9 @@
         return BUCKET_COLORS[item.bucket] || "#475569";
       }
       if (state.colorMode === "progress") {
+        if (!item.diffResult) {
+          return soften(BUCKET_COLORS[item.bucket] || "#475569", 0.72);
+        }
         return diffColor(item.editDiffPercent ?? item.diffPercent ?? 0, Boolean(item.diffResult));
       }
       const complexity = clamp((item.sourceCommentLines || 0) / COMPLEXITY_COMMENT_LINE_LIMIT, 0, 1);
@@ -2081,7 +2095,7 @@
       }
       const diffText = item.diffResult
         ? `edit ${formatPercent(item.editDiffPercent ?? item.diffPercent ?? 0, 4)} · positional ${formatPercent(item.positionalDiffPercent ?? item.diffPercent ?? 0, 4)}`
-        : "diff unavailable";
+        : "historical diff not recorded";
       return `
         <div class="tooltip-title"><span class="mono">${escapeHtml(item.va)}</span> ${escapeHtml(item.name)}</div>
         <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)} · ${diffText} · ${formatNumber(item.sourceCommentLines || 0)} comment lines</div>
@@ -2141,7 +2155,8 @@
         statHtml("visible completed fn", formatPercent(visibleFnProgress, 1)),
         statHtml("visible completed bytes", formatPercent(visibleByteProgress, 1)),
         statHtml("visible remaining", formatBytes(derived.stats.remainingBytes)),
-        statHtml("color", state.colorMode === "progress" ? "edit diff %" : state.colorMode),
+        statHtml("color", state.colorMode === "progress" ? "edit diff % · status fallback" : state.colorMode),
+        statHtml("diff coverage", derived.stats.remainingFunctions ? `${formatNumber(derived.stats.diffKnown)} / ${formatNumber(derived.stats.remainingFunctions)}` : "complete"),
         statHtml("blockers", formatNumber(derived.stats.blockers)),
         statHtml("custom flags", formatNumber(derived.stats.customFlags)),
         statHtml("view", derived.zoomGroup ? "zoomed file" : state.viewMode),
@@ -2290,10 +2305,10 @@
       }
       const editDiffValue = fn.diffResult
         ? `${formatPercent(fn.editDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.editDiffBytes ?? fn.diffBytes ?? 0)} bytes`
-        : "unavailable";
+        : "not recorded for this snapshot";
       const positionalDiffValue = fn.diffResult
         ? `${formatPercent(fn.positionalDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.positionalDiffBytes ?? fn.diffBytes ?? 0)} / ${formatNumber(fn.positionalDiffSpans ?? fn.diffSpans ?? 0)} spans`
-        : "unavailable";
+        : "not recorded for this snapshot";
 
       elements.detailContent.innerHTML = `
         <div class="detail-title-row">

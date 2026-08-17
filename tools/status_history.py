@@ -656,6 +656,24 @@ def upgrade_history_diff_metrics(
     history["schema"] = schema
     field_indexes = {field: schema.index(field) for field in DIFF_CHILD_FIELDS}
     bucket_index = schema.index("bucket")
+    source_path_index = schema.index("sourcePath")
+    diff_indexes = set(field_indexes.values())
+
+    # Remove metrics written by an older upgrade pass before replaying the
+    # authoritative CSV snapshots. Structural history fields stay intact.
+    for delta in history.get("deltas", []):  # type: ignore[union-attr]
+        for change in delta.get("changes", []):
+            if "patch" in change:
+                change["patch"] = [
+                    pair for pair in change["patch"] if int(pair[0]) not in diff_indexes
+                ]
+            elif change.get("value") is not None:
+                value_row = change["value"]
+                while len(value_row) < len(schema):
+                    value_row.append(None)
+                values = _unknown_diff_values(str(value_row[bucket_index] or ""))
+                for field, value in values.items():
+                    value_row[field_indexes[field]] = value
 
     rows: dict[str, list[object]] = {}
     base = history.get("base") or {}
@@ -735,10 +753,12 @@ def upgrade_history_diff_metrics(
             delta = deltas[commit_index]
             if commit_index:
                 prior_buckets: dict[str, object] = {}
+                prior_source_paths: dict[str, object] = {}
                 for change in list(delta.get("changes", [])):
                     va = str(change.get("va", ""))
                     old_row = rows.get(va)
                     prior_buckets[va] = old_row[bucket_index] if old_row else None
+                    prior_source_paths[va] = old_row[source_path_index] if old_row else None
                     if "patch" in change:
                         if old_row is None:
                             continue
@@ -759,8 +779,16 @@ def upgrade_history_diff_metrics(
                         rows[va] = new_row
                 for va, prior_bucket in prior_buckets.items():
                     row = rows.get(va)
-                    if row is not None and row[bucket_index] != prior_bucket:
+                    if row is None:
+                        continue
+                    source_path = str(row[source_path_index] or "")
+                    source_changed = source_path != str(prior_source_paths.get(va) or "")
+                    became_matching = row[bucket_index] == "matching" and row[bucket_index] != prior_bucket
+                    if source_changed or became_matching:
                         set_values(va, _unknown_diff_values(str(row[bucket_index] or "")), delta)
+
+                # A workflow rename or ordinary source edit does not erase the
+                # last recorded metric. A later CSV snapshot replaces it.
 
             changed_files = commit.get("changedFiles", [])
             if not any(item.get("path") == "project_full_status.csv" for item in changed_files):
