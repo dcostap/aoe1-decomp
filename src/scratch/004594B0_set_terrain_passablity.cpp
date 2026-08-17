@@ -39,6 +39,16 @@
 // - Removing the x-bound swap narrowing cast was an emitted-code duplicate.
 //   Restored the clean natural tile-row source; the donor loop pattern is not
 //   a better living reconstruction for this target.
+// - Current worker: rechecked the clean source (288B, 247 differing bytes).
+//   Explicit row/tile byte-offset countdown loops reached exact size and 73.39%
+//   shape, but remained 293 differing bytes. Declaration order, short swap,
+//   pointer spelling, volatile count, and index-loop variants were duplicates
+//   or worse. Restored the clean source; the unresolved issue is VC5 register
+//   and stack-home allocation, not behavior or layout.
+// - Session sa-cbc3d2f1-r1: typed short-index count do-loops improved structure
+//   to 79.82% shape and 266 differing bytes, but added five bytes and changed
+//   the target's tile/count register basin. Int-count and asymmetric-bound
+//   variants were worse. Restored the clean ordinary-loop source.
 
 class RGE_Tile {
 public:
