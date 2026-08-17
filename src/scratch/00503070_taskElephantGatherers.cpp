@@ -29,12 +29,23 @@
 //   89.85% exact-block coverage, 100% ordered-call alignment, and 174 strict
 //   differing bytes. The remaining structural hunk starts at outer-loop zero
 //   register setup; the FPU predicate remains a separate codegen gap.
-// - Left in scratch after the 10-check claim. No unsupported raw vtable or
-//   inline-assembly form is retained. Next lead: resolve the outer-loop zero
-//   register/home allocation before revisiting the FPU predicate.
+// - Revisited with the natural counted while, the reviewed DAT_00575758
+//   sentinel, and bestDistance > distance. The external sentinel and operand
+//   order recover the original fcomp/test-ah,41 sequence.
+// - Returning directly when no gatherer is selected recovers the original
+//   separate destructor cleanup block: 618 bytes, 197 instructions, exact
+//   frame/CFG/call count, and 13/13 relocation identities.
+// - Current best is a four-byte local scheduling drift at +012E: VC5 reloads
+//   maximumSizeValue before numberValue, while the original reverses them.
+//   Expanded updates were duplicate codegen; pointer-first updates and a
+//   cached count were worse and were restored.
+// - Left in scratch after the revisit. No unsupported raw vtable or
+//   inline-assembly form is retained. Next lead: resolve the two natural
+//   ManagedArray reload order without compiler steering.
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
+extern float DAT_00575758;
 
 template <class T>
 class ManagedArray {
@@ -191,8 +202,7 @@ void TribeTacticalAIModule::taskElephantGatherers(int first, int count, int targ
         alreadyTasked.numberValue++;
         loop = 0;
 
-        if (count > 0) {
-            do {
+        while (loop < count) {
                 float bestDistance;
                 int bestValueID;
                 int i;
@@ -215,8 +225,8 @@ void TribeTacticalAIModule::taskElephantGatherers(int first, int count, int targ
                         if (object != 0 && object->unitAI() != 0 &&
                             gatherer->data1 == 0) {
                             float distance = object->distance_to_object(targetObject);
-                            if (bestDistance == -1.0f ||
-                                distance < bestDistance) {
+                            if (bestDistance == DAT_00575758 ||
+                                bestDistance > distance) {
                                 bestValueID = gatherer->id;
                                 bestDistance = distance;
                             }
@@ -229,7 +239,7 @@ nextGatherer:
                 }
 
                 if (bestValueID == -1)
-                    break;
+                    return;
 
                 this->md->aiPlayer->taskResourceGatherer(
                     bestValueID, target, 0,
@@ -263,7 +273,6 @@ nextGatherer:
 
 afterAdd:
                 loop++;
-            } while (loop < count);
         }
     }
 }
