@@ -20,6 +20,10 @@
 // and guarded do-while scans all retained or worsened the same loop rotation.
 // clean source restored; oracle still expects mov [eax+1] before inc eax in
 // each parser body, while VC5 emits mov [eax] after an early cursor increment.
+// revisit: pre/post-increment lookahead, postfix index updates, and for-loop
+// cursor updates were tested. They were duplicate or worse; clean source is
+// restored. Current validation keeps exact size/frame/calls with 59 differing
+// bytes, first at +0xA8, in the repeated parser-loop rotation.
 
 #include <string.h>
 
