@@ -28,6 +28,17 @@
 // worse. Restored the clean source. Remaining binary-backed gap is the entry frame/local-home
 // basin: original 0x1c frame, parameter homes, and late local dispatch schedule versus rebuilt
 // 0x18 frame. Calls and direct target order remain exact (14/14).
+// sa-c4cc9bee fresh pass: moved the RECT copy before the shape-null test, which follows PDB
+// lines 1741 then 1743 and restored the original rectangle setup block. Replaced min-then-subtract
+// span setup with the proven separate end_line dec/jmp/lea branches. Named SpanList and retained
+// branch-local draw-area receivers. The reduced natural source is 944B/889 strict bytes, 14/14
+// ordered direct calls, exact frame still unavailable (0x18 versus 0x1c), and 74.20% shape.
+// A diagnostic volatile ret_num plus branch-local receivers reached 944B/545 bytes and 87.84%
+// shape, with 50% exact-block coverage. Volatile is not retained: the binary proves the byte home
+// and store, but not volatile semantics. Computed-zero, pointer-address, register, alias-scope,
+// and aggregate-entry variants were duplicate or worse. Remaining blocker is VC5 local-home and
+// register coloring around the normal-shape bounds and late dispatch; all calls and behavior stay
+// aligned. No inline assembly or unsupported source scaffold is retained.
 
 typedef unsigned char byte;
 class TDrawArea;
@@ -100,13 +111,13 @@ public:
 byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mode, byte* table)
 {
     byte ret_num = 0;
-    TDrawArea* draw_area = td;
     long clip_y0;
     long shape_y1;
     Rect rect;
 
     if (shape_num >= 0 && this->Check_shape(shape_num, (char*)0x00587058) == 0) {
         if (this->fshape != 0) {
+            TDrawArea* draw_area = td;
             if (SDI_Capture_Info != 0) {
                 Shape_Info* info = (Shape_Info*)(this->fshape + shape_num + 1);
                 SDI_List->AddDrawNode(this->fshape, info, SDI_Draw_Line,
@@ -116,14 +127,18 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mo
                 return 1;
             }
 
-            int span_lines = draw_area->SpanList->Num_Lines;
+            TSpan_List_Manager* span_list = draw_area->SpanList;
+            int span_lines = span_list->Num_Lines;
             TSpan_List_Manager* current = draw_area->CurSpanList;
             int current_lines = current->Num_Lines;
+            int end_line;
             if (span_lines < current_lines)
-                current_lines = span_lines;
+                end_line = span_lines - 1;
+            else
+                end_line = current_lines - 1;
             ASMSet_Surface_Info(draw_area->CurDisplayOffsets,
                 current->Line_Head_Ptrs, current->Line_Tail_Ptrs,
-                0, 0, current->Max_Span_Px, current_lines - 1);
+                0, 0, current->Max_Span_Px, end_line);
             if (table != 0)
                 ASMSet_Xlate_Table(table);
 
@@ -137,8 +152,9 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num, byte mo
             return 1;
         }
 
+        rect = td->ClipRect;
         if (this->shape != 0) {
-            rect = draw_area->ClipRect;
+            TDrawArea* draw_area = td;
             Shape_Header* header = (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
             this->shape_header = header;
 
