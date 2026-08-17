@@ -86,22 +86,38 @@
 //   line-495 test split, emitted the same 221-byte basin and was rolled back.
 // - 2026-08-13 (tu-actobj-406860): renaming the incoming target parameter to the
 //   PDB-observed obj name and the candidate to master emitted the same 221-byte
-//   basin. Reused the exact getTask sibling's RGE_Master_Command command surface
-//   at +0xD8 and getTask ABI; this also emitted identical bytes and is retained as
-//   the canonical command-master hierarchy. Remaining drift is target/z/index
+//   basin. Reused the exact getTask sibling's RGE_Task_List surface at +0xD8 and
+//   get_target_task ABI; this also emitted identical bytes and is retained as the
+//   canonical task-list hierarchy. Remaining drift is target/z/index
 //   register coloring: target=EBP, z reloads, and i=EBX instead of target=EBX,
 //   z=EBP, and i at the target home.
 // - 2026-08-14 (sa-c107dda1-r1): removed the candidate local and repeated the
 //   canonical owner-array expression. Shape improved, but positional drift grew
 //   to 146 bytes and the call setup gained an extra object load; rolled back.
+// - 2026-08-17 (sa-f489d25b-r1): fresh baseline reproduced 221 bytes / 143-byte
+//   positional drift. A target alias, a separately declared while-loop index,
+//   and a first-call RGE_Task result local all emitted the same register basin;
+//   each was rolled back. Canonical natural for-loop source is retained.
+// - 2026-08-17 canonical ownership probe: the +0xD8 object is the reviewed
+//   RGE_Task_List field of RGE_Master_Action_Object, not a command wrapper.
+//   Its slot-1 get_target_task ABI is proven by the exact getTask and work2
+//   siblings. The body remains a direct early-return plus natural for scan.
+// - 2026-08-17 follow-up probes: first-call direct/named-result forms, bounded
+//   while/for forms, a compound candidate predicate, and split guards all kept
+//   the same 221-byte basin (143 positional bytes). A preload-while form was
+//   204 bytes. A direct full-slot RGE_Action_Object surface, 30 neutral forward
+//   declarations, and a register-qualified z parameter were also unchanged.
+//   These tests do not support changing the canonical source.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
 class RGE_Task;
 class RGE_Master_Static_Object;
 class RGE_Master_Action_Object;
-class RGE_Master_Command;
+class RGE_Task_List;
 class RGE_Player;
+class RGE_Sprite;
+class RGE_Sound;
 
 #define VPAD1(n) virtual void vf##n(void);
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -128,11 +144,12 @@ public:
 class RGE_Moving_Object : public RGE_Static_Object {
 };
 
-class RGE_Master_Command {
+class RGE_Task_List {
 public:
-    virtual void vf00(void);
-    virtual RGE_Task* getTask(RGE_Action_Object* action, RGE_Static_Object* target,
-                              float x, float y, float z);
+    virtual RGE_Task* create_task(short task_type, short id);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action,
+                                      RGE_Static_Object* target,
+                                      float x, float y, float z);
 };
 
 class RGE_Master_Static_Object {
@@ -144,12 +161,41 @@ public:
     char gap_16[0xA2];               // +0x16..+0xB7
 };
 
-class RGE_Master_Action_Object : public RGE_Master_Static_Object {
+class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
-    char gap_B8[0x20];               // +0xB8..+0xD7
-    RGE_Master_Command* command;     // +0xD8
-    char gap_DC[0x10];               // +0xDC..+0xEB
+    float speed;                     // +0xB8
+};
+
+class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
+public:
+    RGE_Sprite* move_sprite;         // +0xBC
+    RGE_Sprite* run_sprite;          // +0xC0
+    float turn_speed;                // +0xC4
+    unsigned char size_class;        // +0xC8
+    char gap_C9[1];                  // +0xC9
+    short obj_trail_id;              // +0xCA
+    unsigned char obj_trail_options; // +0xCC
+    char gap_CD[3];                  // +0xCD..+0xCF
+    float obj_trail_spacing;         // +0xD0
+    unsigned char move_algorithem;   // +0xD4
+    char gap_D5[3];                  // +0xD5..+0xD7
+};
+
+class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
+public:
+    RGE_Task_List* tasks;            // +0xD8
+    short default_task;              // +0xDC
+    char gap_DE[2];                   // +0xDE..+0xDF
+    float search_radius;              // +0xE0
+    float work_rate;                  // +0xE4
+    short drop_site;                  // +0xE8
+    short backup_drop_site;           // +0xEA
     unsigned char task_by_group;     // +0xEC
+    char gap_ED[3];                   // +0xED..+0xEF
+    RGE_Sound* command_sound;        // +0xF0
+    RGE_Sound* move_sound;           // +0xF4
+    unsigned char run_pattern;       // +0xF8
+    char gap_F9[3];                  // +0xF9..+0xFB
 };
 
 class RGE_Player {
@@ -172,7 +218,8 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Objec
     if (target == this || ((RGE_Master_Action_Object*)this->master_obj)->task_by_group == 0) {
         return this->master_obj;
     }
-    if (((RGE_Master_Action_Object*)this->master_obj)->command->getTask(this, target, x, y, z) != 0) {
+    if (((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(
+            this, target, x, y, z) != 0) {
         return this->master_obj;
     }
     if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
@@ -184,7 +231,8 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Objec
                 obj->master_type == this->master_obj->master_type &&
                 ((RGE_Master_Action_Object*)obj)->task_by_group ==
                     ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
-                if (((RGE_Master_Action_Object*)obj)->command->getTask(this, target, x, y, z) != 0) {
+                if (((RGE_Master_Action_Object*)obj)->tasks->get_target_task(
+                        this, target, x, y, z) != 0) {
                     return obj;
                 }
             }
