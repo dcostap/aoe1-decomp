@@ -108,6 +108,13 @@
 //   hidden inline context or natural local that could select the inverse EBX/EDI colors. The
 //   clean typed source remains authoritative; no alias, volatility, raw offset, or ABI change
 //   is supported by this audit.
+// - sa-7e040161-r1 pass: sixteen clean-source probes tested amount and pp declaration scope,
+//   loop update operators and order, nested threshold control flow, comparison direction,
+//   conversion width and spelling, const-qualified array slots, players[0] addressing, and
+//   parameter constness. Fifteen emitted the pinned 224-byte/29-byte group; reversed updates
+//   widened it to 32 bytes, and a const parameter changed the decorated ABI. All variants were
+//   restored. The canonical source remains the clean typed reconstruction; the only gap is the
+//   unsupported entry=EBX versus original entry=EDI and pp=EDI versus original pp=EBX colors.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;
