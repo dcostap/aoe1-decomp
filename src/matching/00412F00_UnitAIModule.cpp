@@ -34,6 +34,12 @@
 // - Pausing with the best source: remaining drift is the constructor's first
 //   block liveness/EH scheduling. Calls, layout, size, and tail are aligned.
 //   No inline asm or compiler-only filler used.
+// - Recovered the missing source shape: attackingUnitsValue is constructed
+//   with capacity 10 in the initializer list. Its natural member constructor
+//   zeroes the scalar fields and allocates the initial int storage. This
+//   reproduces the original member-construction EH schedule and MATCHes all
+//   356 bytes. The scalar delete is retained from the exact array destructor
+//   donor, including the original allocation/deallocation mismatch.
 
 struct OrderEvent {
     int issuer;
@@ -88,9 +94,17 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 
+    ManagedIntArray(int maxSize) {
+        value = 0;
+        numberValue = 0;
+        desiredNumberValue = 0;
+        maximumSizeValue = maxSize;
+        value = new int[maxSize];
+    }
+
     ~ManagedIntArray() {
         if (value) {
-            delete[] value;
+            delete value;
             value = 0;
         }
         numberValue = 0;
@@ -212,13 +226,8 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize)
       lastOrderValue(-1),
       lastActionValue(-1),
       lastTargetValue(-1),
-      lastTargetTypeValue(-1) {
-
-    attackingUnitsValue.value = 0;
-    attackingUnitsValue.numberValue = 0;
-    attackingUnitsValue.desiredNumberValue = 0;
-    attackingUnitsValue.maximumSizeValue = 10;
-    attackingUnitsValue.value = new int[10];
+      lastTargetTypeValue(-1),
+      attackingUnitsValue(10) {
 
     waypointQueueSizeValue = 0;
     lastUpdateTimeValue = 0;
