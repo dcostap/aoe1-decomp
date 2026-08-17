@@ -20,6 +20,13 @@
 // Probe 17 separate Data/temp_str/str arrays followed the binary local names;
 // size fell to 1263 and diff widened to 562. Restored the contiguous typed
 // local window.
+// Follow-up probes 2-22: direct list/close members and a cached cancel receiver
+// reduced the clean-source diff from 560 to 294 bytes. The receiver preserves
+// the original hotkey stores before the help-button factory call.
+// BINARY NOTE: tab-order setup loads cancelButton (+48C), not close_button
+// (+494). The close-button factory uses its direct member address.
+// Tested and rejected: absolute string/global forms, separate buffer locals,
+// tab-order aliases, pointer declaration orders, and nested tab-list scope.
 // Left in scratch: frame, size, CFG, and call set match. Remaining drift is
 // VC5 local-home and register assignment around the constructor prologue and
 // registry window. The best source keeps the natural output-pointer lifetime.
@@ -208,9 +215,9 @@ extern RGE_Base_Game* rge_base_game;
 TribeMPStartupScreen::TribeMPStartupScreen()
     : TScreenPanel("MP Startup Screen")
 {
-    TButtonPanel** cancel_button = &this->cancelButton;
-    TListPanel** list = &this->list;
+    TButtonPanel** cancel_button;
     TButtonPanel** ok_button;
+    TButtonPanel* cancel;
     HKEY ghUserKey;
     unsigned long dwSize;
     unsigned long dwType;
@@ -223,10 +230,10 @@ TribeMPStartupScreen::TribeMPStartupScreen()
         char pad_temp;
         char str[256];
     } strings;
-
+    cancel_button = &this->cancelButton;
     this->help_button = 0;
     this->okButton = 0;
-    *cancel_button = 0;
+    this->cancelButton = 0;
     this->close_button = 0;
 
     rge_base_game->setMultiplayerGame(0);
@@ -256,10 +263,11 @@ TribeMPStartupScreen::TribeMPStartupScreen()
             this->input->set_help_info(0x7595, -1);
             if (this->create_text(this, &this->connectionTitle, 0x258D,
                                   0x14, 0xA5, 600, 0x14, 4, 0, 0, 0) &&
-                this->create_list(this, list,
+                this->create_list(this, &this->list,
                                   0x14, 0xBE, 600, 0xD2, 0x0B) &&
-                this->create_auto_scrollbar(&this->scrollbar, *list, 0x14)) {
-                (*list)->set_help_info(0x7596, 0x25F08);
+                this->create_auto_scrollbar(&this->scrollbar, this->list,
+                                            0x14)) {
+                this->list->set_help_info(0x7596, 0x25F08);
                 ok_button = &this->okButton;
                 if (this->create_button(this, ok_button, 0x0FA1,
                                         0, 0x46, 0x1B8, 0xF0, 0x1E,
@@ -269,17 +277,18 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                                             0, 0x14A, 0x1B8, 0xF0, 0x1E,
                                             0, 0, 0)) {
                         (*cancel_button)->set_help_info(0x7532, -1);
-                        (*cancel_button)->hotkey = 0x1B;
-                        (*cancel_button)->hotkey_shift = 0;
+                        cancel = *cancel_button;
+                        cancel->hotkey = 0x1B;
+                        cancel->hotkey_shift = 0;
                         if (this->create_button(this, &this->help_button,
                                                 0x0FA9, 0, 0x244, 0x1B8,
                                                 0x1E, 0x1E, 0, 0, 0)) {
-                            cancel_button = &this->close_button;
-                            if (this->create_button(this, cancel_button,
+                            if (this->create_button(this,
+                                                    &this->close_button,
                                                     0x03EA, 0, 0, 0, 0, 0,
                                                     -1, -1, 0)) {
-                                (*cancel_button)->set_active(1);
-                                (*cancel_button)->set_positioning(
+                                this->close_button->set_active(1);
+                                this->close_button->set_positioning(
                                     9, 4, 4, 4, 4, 0x11, 0x11,
                                     0x11, 0x11, 0, 0, 0, 0);
 
@@ -326,8 +335,8 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                                 this->set_curr_child(this->input);
                                 tabList[3] = this->okButton;
                                 tabList[1] = this->input;
-                                tabList[2] = *list;
-                                tabList[4] = *cancel_button;
+                                tabList[2] = this->list;
+                                tabList[4] = this->cancelButton;
                                 this->set_tab_order(tabList + 1, 5);
                             }
                         }
