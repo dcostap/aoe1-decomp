@@ -24,24 +24,46 @@
 //   only the existing 506-byte group or a 510-byte regressive group.
 //   Remaining drift is the second-edge-row setup and later schedule; no
 //   calls or ABI uncertainties remain.
+// - Restored the reviewed PrimaryPt/PtToPt and mask-pointer PointMaker
+//   ownership. It preserves all observed field offsets and emits the same
+//   506-byte reconstruction.
 
 #include <stdlib.h>
 #include <string.h>
 
-class PointMaker {
+class PrimaryPt {
 public:
-    int Prime_x;
-    int Prime_y;
-    int Point[1000];
-    char gap_FA8[0x10];
     int x;
     int y;
-    char gap_FC0[0x14];
+};
+
+class PtToPt {
+public:
+    int x;
+    int y;
+};
+
+class PointMaker {
+public:
+    PrimaryPt Prime;
+    PtToPt Point[500];
+    char* Mask_2x2;
+    char* Mask_3x3;
+    char* Mask_4x4;
+    char* Mask_5x5;
+    int x;
+    int y;
+    int NumSplitsPerBranch;
+    int NumberOfSatellites;
+    int ChanceOfNextNode;
+    int MaxNumberOfBranches;
+    int MaxBranchFlag;
     int Width;
     int Height;
-    char gap_FDC[0x04];
+    int MinimumNumTiles;
     int NumNodes;
-    char gap_FE4[0x08];
+    int NumTilesActuallyChosen;
+    int CurrentPoint;
     int ProbabilityTiles;
     int TargetProbabilityCount;
     int ProbabilityAdd;
