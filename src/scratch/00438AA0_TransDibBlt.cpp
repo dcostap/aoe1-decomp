@@ -26,19 +26,43 @@
 // 16: Matched the same-TU DibBlt donor's int fixed-point step locals for xStep
 //     and yStep; the emitted code was unchanged, so the clean long-typed source
 //     remains the best period-plausible reconstruction.
-// GIVEUP: best natural source remains in scratch.  The unresolved gap is VC5
-// parameter-home/local-slot scheduling around GetDibDim and the long blit loops;
-// no accepted_drift because the remaining positional drift is broad.
+// Current pass, 2026-08-17, owner sa-3e20849d:
+// - Baseline: 619 differing bytes, 956/977 bytes, 0x10 frame, and 5/5 calls.
+// - Thirty-two focused probes tested local types, declaration order, parameter
+//   homes, loop lifetimes, redundant predicates, ABI casts, headers, and
+//   ambient VC5 declarations. No probe reached an exact result.
+// - The best current build differs by 603 bytes. It has 958/977 bytes, a 0x10
+//   frame, 5/5 ordered calls, and the original owner symbol.
+// - Binary evidence supports the dstRect y-step home, the srcInfo LineInfo
+//   overwrite, and the repeated first<last test. Keep these forms.
+// - The remaining gap starts at the GetDibDim output homes. VC5 assigns the
+//   three long outputs to a different rotation. Later table and loop register
+//   colors also differ.
+// - Ambient declarations produced two code groups and no exact result. This
+//   weakens a front-end declaration-state explanation.
+// - No ORIGINAL BUG is proved. No accepted_drift source is justified.
+// PAUSE: preserve this clean, typed reconstruction until new period source or
+// translation-unit evidence resolves the GetDibDim home rotation.
 
 #include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <memory.h>
 
 typedef unsigned char uchar;
 struct BITMAPINFO256 {
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];
 };
-struct LINEINFO_00438AA0 { int skip; int copy; int first; int last; };
-struct TRANSINFO_00438AA0 { int AnyTrans; char gap_04[0x10]; LINEINFO_00438AA0* LineInfo; };
+struct LINEINFO { int skip; int copy; int first; int last; };
+struct TRANSINFO {
+    int AnyTrans;
+    long x;
+    long y;
+    long w;
+    long h;
+    LINEINFO* LineInfo;
+};
 
 extern long SrcXTbl[];
 #pragma function(memcpy)
@@ -49,15 +73,18 @@ void __cdecl GetDibDim(BITMAPINFO256*, long&, long&, long&);
 
 void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                          long dx, long dy, long dw, long dh,
-                         BITMAPINFO256* srcInfo, uchar* src, TRANSINFO_00438AA0* trans,
+                         BITMAPINFO256* srcInfo, uchar* src, TRANSINFO* trans,
                          long sx, long sy, long sw, long sh,
                          int doClip, int flipX, int flipY, int transparent)
 {
     long SrcTotHgt;
-    long sySkip;
-    long DestOrien;
-    long local_4;
     long DestTotHgt;
+    long DestOrien;
+    long sySkip;
+    int local_4;
+    long* p;
+    long n;
+    long acc;
 
     if (trans != 0 && trans->AnyTrans == 0) {
         DibBlt(dstInfo, dst, dstRect, dx, dy, dw, dh, srcInfo, src, sx, sy, sw, sh, doClip, flipX, flipY);
@@ -71,15 +98,15 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
     BITMAPINFO256* clipInfo = dstInfo;
     if (doClip == 0 ||
         ClipDibBlt(clipInfo, dstRect, dx, dy, dw, dh, sx, sy, sw, sh, flipX, clipFlipY)) {
-    long xStep = (sw << 8) / dw;
+    int xStep = (sw << 8) / dw;
     DestOrien = (sh << 8) / dh;
 
-    GetDibDim(clipInfo, (long&)doClip, local_4, DestTotHgt);
+    GetDibDim(clipInfo, (long&)doClip, (long&)local_4, DestTotHgt);
     GetDibDim(srcInfo, (long&)dstInfo, sySkip, (long&)flipY);
     if (clipFlipY)
         flipY = -flipY;
 
-    long yStep = (dw << 8) / sw;
+    dstRect = (RECT*)((dw << 8) / sw);
     if (DestTotHgt == 1)
         flipX = doClip * dy;
     else
@@ -87,20 +114,20 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
 
     uchar* destLine = dst + flipX + dx;
 
-    long acc = sx;
+    acc = sx;
     if (!flipX) {
         if (dw > 0) {
-            long* p = SrcXTbl;
-            long n = dw;
+            p = SrcXTbl;
+            n = dw;
             do {
                 *p++ = acc >> 8;
                 acc += xStep;
             } while (--n);
         }
     } else {
-        long n = dw - 1;
+        n = dw - 1;
         if (n > -1) {
-            long* p = SrcXTbl + n;
+            p = SrcXTbl + n;
             ++n;
             do {
                 *p-- = acc >> 8;
@@ -109,11 +136,11 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
         }
     }
 
-    TRANSINFO_00438AA0* t = trans;
-    if (!flipX && t != 0 && t->LineInfo != 0) {
-        LINEINFO_00438AA0* lineInfo = t->LineInfo;
+    if (!flipX && trans != 0 &&
+        (srcInfo = (BITMAPINFO256*)trans->LineInfo, srcInfo != 0)) {
+        LINEINFO* lineInfo = (LINEINFO*)srcInfo;
         doClip = DestTotHgt * doClip;
-        trans = (TRANSINFO_00438AA0*)(sy << 8);
+        trans = (TRANSINFO*)(sy << 8);
         flipX = 0;
         if (dh > 0) {
             do {
@@ -125,20 +152,20 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                     srcOff = (sySkip - syi - 1) * (long)dstInfo + sx;
                 }
 
-                LINEINFO_00438AA0* li = &lineInfo[syi];
+                LINEINFO* li = &lineInfo[syi];
                 if (li->skip == 0) {
                     long first;
                     if (li->first < sx)
                         first = 0;
                     else
-                        first = ((li->first - sx) * yStep) >> 8;
-                    long last = (((li->last - sx) + 1) * yStep) >> 8;
+                        first = ((li->first - sx) * (long)dstRect) >> 8;
+                    long last = (((li->last - sx) + 1) * (long)dstRect) >> 8;
                     if (last > dw)
                         last = dw;
                     if (last > first) {
-                        if (yStep == 0x100 && li->copy != 0) {
+                        if ((long)dstRect == 0x100 && li->copy != 0) {
                             memcpy(destLine + first, src + first + srcOff, last - first);
-                        } else {
+                        } else if (first < last) {
                             long i = first;
                             long* tbl = SrcXTbl + first;
                             while (i < last) {
@@ -152,7 +179,7 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                     }
                 }
                 destLine += doClip;
-                trans = (TRANSINFO_00438AA0*)((long)trans + DestOrien);
+                trans = (TRANSINFO*)((long)trans + DestOrien);
                 ++flipX;
             } while (flipX < dh);
             return;
