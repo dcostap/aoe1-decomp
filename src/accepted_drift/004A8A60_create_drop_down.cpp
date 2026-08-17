@@ -51,6 +51,11 @@
 // 33-34 long-offset and typed-cursor checks were neutral; current source keeps
 //   canonical Tech_Entry ownership and the proven byte cursor. Remaining drift
 //   is only original [edx+edi+2A] versus rebuilt [edi+edx+2A].
+// 35-53 source-gate continuation: replaced the raw 592A40 address with the
+// named exact-bank s_592A40 object and replaced generic panel slots with the
+// named first six TPanel methods. Twenty focused typed pointer, lvalue,
+// declaration-scope, stride, owner-chain, and register probes kept the same
+// one-byte SIB basin, except for two rejected structural/helper forms.
 // Best current source: exact size/frame/calls/CFG and 2233/2234 bytes equal;
 // remaining drift is one localized equivalent SIB byte at tech string_id load
 // ([edi+edx+2A] rebuilt vs [edx+edi+2A] original).
@@ -61,13 +66,22 @@
 
 #include <string.h>
 
+class TDrawArea;
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
 class TPanel {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
     virtual void set_active(int active);
 
     char gap_04[0xD8 - 0x04];
@@ -168,14 +182,14 @@ public:
 
 class RGE_Base_Game {
 public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void v10();
-    virtual void v14();
-    virtual void v18();
-    virtual void v1C();
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string_extended(int, long, char*, int);
     virtual char* get_string(long string_id, char* buffer, int length);
 
     char gap_04[0x0C - 0x04];
@@ -186,7 +200,7 @@ public:
 
 extern RGE_Base_Game* rge_base_game;
 
-#define STR_EMPTY ((char*)0x00592A40)
+extern char s_592A40[];
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
@@ -473,7 +487,7 @@ create:
                                                             } else {
                                                                 if (out == this->cinematic_input + 3) {
                                                                     this->MakeFileList(*out,
-                                                                        STR_EMPTY,
+                                                                        s_592A40,
                                                                         (char*)".bmp", 1, 0);
                                                                     (*out)->set_line(0);
                                                                     goto done;
