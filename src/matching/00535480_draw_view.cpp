@@ -41,6 +41,8 @@
 // - current best: calls, frame, size, CFG, and the first 0x24 bytes match.
 //   Remaining drift is one delayed right-rectangle store, terrain call-setup
 //   register coloring, and post-lock area-compare register coloring.
+// - exact: placing the top-rectangle update before the right and bottom updates
+//   reproduces all 387 bytes, including the delayed-register scheduling.
 
 #include <windows.h>
 
@@ -90,11 +92,11 @@ void RGE_View::draw_view(unsigned char p1, TDrawArea* p2)
         save_render_rect.bottom = this->render_rect.bottom;
 
         this->render_rect.left -= save_render_rect.left;
-        this->render_rect.right -= save_render_rect.left;
         this->start_scr_col -= (short)save_render_rect.left;
         this->start_scr_row -= (short)save_render_rect.top;
-        this->render_rect.bottom -= save_render_rect.top;
         this->render_rect.top -= save_render_rect.top;
+        this->render_rect.right -= save_render_rect.left;
+        this->render_rect.bottom -= save_render_rect.top;
         this->map_scr_x_offset += save_render_rect.left;
         this->map_scr_y_offset += save_render_rect.top;
     }
