@@ -100,6 +100,12 @@
 //   donor-header fields and virtual methods. Restored `amount` and `next` on the point entry,
 //   and typed the victory-list pointers. The rebuilt bytes stayed at the clean 221-byte,
 //   139-byte-diff baseline, so this ownership cleanup does not explain the codegen gap.
+// - Natural frame/home follow-up: tested 21 evidence-led source forms after the ownership
+//   cleanup. Long `points`/`amount` locals, declaration scopes and orders, direct owner reads,
+//   typed indexed and cursor scans, loop forms, and assignment order were neutral or worse.
+//   The natural scalar source remains the clean candidate. No volatile, gap, fake aggregate,
+//   address alias, or forced parameter-home form was retained. Final validation is 221 bytes,
+//   139-byte diff, 0xC frame versus the original 230 bytes and 0x10 frame.
 
 class RGE_Game_World;
 class RGE_Victory_Entry;
