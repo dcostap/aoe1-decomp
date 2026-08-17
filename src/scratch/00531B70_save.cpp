@@ -23,9 +23,14 @@
 // - Current worker rechecked a natural if-declaration, explicit file-handle alias,
 //   ordinary member reference, CRT header context, and canonical virtual declarations;
 //   all emitted the same 432-byte mismatch. Clean direct typed source restored.
+// - Revisit restored the proven virtual surfaces for the victory conditions, player, and
+//   static object types while keeping their observed offsets; this corrected the member ABI
+//   spelling to UAEX without changing the 432-byte codegen basin. A post-ID typed alias was
+//   also neutral, so the direct member expression remains the simplest source model.
 
 struct RGE_Player {
-    char gap_00[0x4A];
+    virtual ~RGE_Player();
+    char gap_04[0x46];
     short id;                 // +0x4A
 };
 
@@ -35,7 +40,7 @@ struct RGE_Master_Object {
 };
 
 struct RGE_Static_Object {
-    char gap_00[4];
+    virtual ~RGE_Static_Object();
     long id;                  // +0x04
     RGE_Master_Object* master_obj; // +0x08
     RGE_Player* owner;        // +0x0C
@@ -76,7 +81,10 @@ struct RGE_Victory_Point_Entry {
 
 class RGE_Victory_Conditions {
 public:
-    void* vftable;            // +0x00
+    virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
+    virtual void handle_condition(RGE_Victory_Entry* entry);
+    virtual char* condition_description(RGE_Victory_Entry* entry);
+    virtual void save(int param_1);
     RGE_Victory_Entry* victory_list; // +0x04
     long list_num;            // +0x08
     RGE_Player* player;       // +0x0C
@@ -86,7 +94,6 @@ public:
     long point_list_num;      // +0x18
     long tot_victory_points;  // +0x1C
 
-    void save(int param_1);
 };
 
 extern "C" void rge_write(int param_1, void* data, int size);
