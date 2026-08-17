@@ -45,12 +45,16 @@
 //   The best clean source is 104 differing bytes at the original size and
 //   frame.  Calls and boundaries remain exact; the prologue is not exact.
 // - Exact same-TU closestDockDistance proves <math.h> context. Direct repeated
-//   coordinate expressions make the late x87 range exact and reduce the
-//   strict difference to 68 bytes. Early register allocation remains.
-// - Object audit confirms the taiinfmd.obj range, 0x134 FPO frame, /GX, ABI,
-//   layouts, symbols, relocations, and 17 calls. PDB has no inline or block
-//   records. PDB-shaped locals and declaration initializers regress, so no
-//   object evidence supports another early allocation model.
+//   coordinate expressions make the late x87 range exact. Early register
+//   allocation remains the only non-exact region in the current 32-byte result.
+// - PDB/type inventories identify md->aiPlayer as TRIBE_Player and the player
+//   terrain source as player->master_objects[0x13]->terrain (+0x66 on the
+//   master object). Replacing the invented master_player aggregate with this
+//   owning array, and using the already loaded AI-world map for map_zones,
+//   reduces the clean positional drift from 68 to 32 bytes.
+// - Canonical period AI, map, zone-map, and player subtype surfaces were
+//   restored without changing the 32-byte result. A natural md alias changed
+//   the frame to 0x138 and drifted to 811 bytes, so it is not retained.
 
 #include <math.h>
 
@@ -89,10 +93,28 @@ public:
     int buildAttemptsValue;
 
     ConstructionItem(float, float, float, float, float, float, int,
-                     const char*);
+                     char*);
 };
 
 class BuildItem : public BaseItem {
+public:
+    BuildItem* next;
+    BuildItem* prev;
+    int buildCategoryValue;
+    int numberValue;
+    int priorityValue;
+    int progressValue;
+    int builtValue;
+    int buildAttemptsValue;
+    int buildFromValue;
+    int terrainSetValue;
+    int terrainAdjacencyValue[2];
+    int placeOnElevationValue;
+    int numberBuildsValue;
+    int buildCapValue;
+    int skipCyclesValue;
+    unsigned char permanentSkipValue;
+    unsigned char gap_end[3];
 };
 
 class RGE_Zone_Map;
@@ -101,7 +123,6 @@ class RGE_Game_World;
 class RGE_Map;
 class RGE_Visible_Map;
 class RGE_Player;
-class RGE_Master_Player;
 
 class RGE_Zone_Map_List {
 public:
@@ -111,7 +132,8 @@ public:
 
 class RGE_Zone_Map {
 public:
-    char gap_00[0x408];
+    char gap_00[0x404];
+    unsigned char* zone_map; // +0x404
     unsigned char** zone_map_rows;
 
     unsigned char get_zone_info(long x, long y);
@@ -121,18 +143,19 @@ public:
 class RGE_Tile {
 public:
     char gap_00[5];
-    unsigned char terrainType;
+    unsigned char terrain_type;
     char gap_06[0x0C - 0x06];
     char gap_0C[0x18 - 0x0C];
 };
 
 class RGE_Map {
 public:
-    char gap_00[0x08];
+    virtual ~RGE_Map();
+    RGE_Tile* map;
     int map_width;
     int map_height;
     char gap_10[0x8D8C - 0x10];
-    RGE_Tile** mapRowOffset;
+    RGE_Tile** map_row_offset;
     char gap_8D90[0x34];
     RGE_Zone_Map_List* map_zones;
 };
@@ -150,42 +173,77 @@ public:
 
 class RGE_Visible_Map {
 public:
-    char gap_00[0x08];
+    unsigned char** map_offsets;
+    RGE_Game_World* world;
     RGE_Player* player;
-    char gap_0C[0x08];
-    int width;
-    int height;
+    RGE_Map* map;
+    unsigned char* visible_map;
+    int widthValue;
+    int heightValue;
 
     unsigned char get_visible(int x, int y);
 };
 
-class RGE_Master_Player {
+class RGE_Master_Static_Object {
 public:
-    char gap_00[0x4C];
-    short terrain;
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x62];
+    short terrain; // +0x66
 };
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
     char gap_04[0x20];
-    RGE_Master_Player* master_player;
+    RGE_Master_Static_Object** master_objects; // +0x24
     char gap_28[0x10];
     RGE_Visible_Map* visible;
     RGE_Game_World* world;
 };
 
-class ConstructionAIModule {
+class TRIBE_Player : public RGE_Player {
+};
+
+class TribeMainDecisionAIModule;
+
+class AIModule {
 public:
-    char gap_00[0x1E4];
-    ConstructionItem* randomConstructionLots;
+    virtual ~AIModule();
+    char gap_04[0xEC];
+};
+
+class ConstructionAIModule : public AIModule {
+public:
+    int numberConstructionLotsValue;
+    ConstructionItem constructionLots;
+    int numberRandomConstructionLotsValue;
+    ConstructionItem randomConstructionLots;
+    char constructionPlanNameValue[0x101];
+    unsigned char gap_2F9[3];
+    float xReferencePointValue;
+    float yReferencePointValue;
+    float zReferencePointValue;
+    int mapXSizeValue;
+    int mapYSizeValue;
+    int lastPlacementReturnCodeValue;
 
     ConstructionItem* randomLot(float x, float y);
 };
 
-class TribeTacticalAIModule {
+class TribeConstructionAIModule : public ConstructionAIModule {
 public:
-    char gap_00[0x100C];
+    TribeMainDecisionAIModule* md;
+};
+
+class TacticalAIModule {
+public:
+    virtual ~TacticalAIModule();
+    char gap_04[0xEC];
+};
+
+class TribeTacticalAIModule : public TacticalAIModule {
+public:
+    char gap_F0[0xF1C];
 
     int strategicNumber(int number);
 };
@@ -196,17 +254,15 @@ public:
     char gap_04[0xEC];
     RGE_Player* player;
     char gap_F4[0x6C4 - 0xF4];
-    ConstructionAIModule constructionAI;
-    char gap_8AC[0x1146C - 0x6C4 - sizeof(ConstructionAIModule)];
+    TribeConstructionAIModule constructionAI;
+    char gap_8AC[0x1146C - 0x6C4 - sizeof(TribeConstructionAIModule)];
     TribeTacticalAIModule tacticalAI;
     char gap_1247C[0x1256C - 0x1146C - sizeof(TribeTacticalAIModule)];
-    RGE_Player* aiPlayer;
+    TRIBE_Player* aiPlayer;
 };
 
-class InformationAIModule {
+class InformationAIModule : public AIModule {
 public:
-    virtual ~InformationAIModule();
-    char gap_04[0xEC];
 };
 
 class TribeInformationAIModule : public InformationAIModule {
@@ -225,6 +281,10 @@ ConstructionItem* TribeInformationAIModule::placeDock(
     BuildItem* item, float x, float targetY, int terrain_type, int tile_type)
 {
     // BINARY NOTE: The zone-map output and cache array use separate homes.
+    RGE_Player* aiPlayer = this->md->aiPlayer;
+    RGE_Player* player = this->md->player;
+    RGE_Map* map = aiPlayer->world->map;
+    RGE_Visible_Map* visible = aiPlayer->visible;
     int zoneMapIndex;
     unsigned char zoneCounter[256];
     int i;
@@ -233,10 +293,6 @@ ConstructionItem* TribeInformationAIModule::placeDock(
     float bestScore;
     int randomOffset;
     int y;
-    RGE_Player* aiPlayer = this->md->aiPlayer;
-    RGE_Player* player = this->md->player;
-    RGE_Map* map = aiPlayer->world->map;
-    RGE_Visible_Map* visible = aiPlayer->visible;
     RGE_Zone_Map* zoneMap;
 
     bestX = -1;
@@ -248,8 +304,8 @@ ConstructionItem* TribeInformationAIModule::placeDock(
         ((int*)zoneCounter)[i] = -1;
     }
 
-    zoneMap = player->world->map->map_zones->get_zone_map(
-        player->world->terrains[player->master_player->terrain],
+    zoneMap = map->map_zones->get_zone_map(
+        player->world->terrains[player->master_objects[0x13]->terrain],
         player->world->terrain_size, zoneMapIndex);
 
     randomOffset = debug_rand(
@@ -257,17 +313,17 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 
     {
         int currentZone = 1;
-        if (currentZone < visible->width - 2) {
+        if (currentZone < visible->widthValue - 2) {
             do {
                 y = 1;
-                if (y < visible->height - 2) {
+                if (y < visible->heightValue - 2) {
                     do {
                         if (visible->get_visible(currentZone, y) != 0 &&
                             currentZone - 1 >= 0 && y - 1 >= 0 &&
-                            currentZone + 1 <= visible->width - 1 &&
-                            y + 1 <= visible->height - 1) {
+                            currentZone + 1 <= visible->widthValue - 1 &&
+                            y + 1 <= visible->heightValue - 1) {
                             if (terrain_type == -1 ||
-                                (map->mapRowOffset[y][currentZone].terrainType & 0x1F) == terrain_type) {
+                                (map->map_row_offset[y][currentZone].terrain_type & 0x1F) == terrain_type) {
                                 unsigned char zone = zoneMap->get_zone_info(
                                     currentZone, y);
                                 int numberTiles =
@@ -320,11 +376,11 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                         }
 
                         y++;
-                    } while (y < visible->height - 2);
+                    } while (y < visible->heightValue - 2);
                 }
 
                 currentZone++;
-            } while (currentZone < visible->width - 2);
+            } while (currentZone < visible->widthValue - 2);
         }
     }
 
