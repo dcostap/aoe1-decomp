@@ -38,6 +38,10 @@
 // - A 28-byte prefix-size probe shrank the frame to 0x7C and widened the
 //   mismatch; restored the 32-byte arrays. Current best remains diff 12,
 //   with all calls aligned and only stack/local topology unresolved.
+// - DIA local-symbol evidence records s2/s3/s4/s1 at -128/-96/-64/-32 and
+//   ltime at -132. Function-scope ltime reproduces the 0x8C frame but shifts
+//   prefix storage and expands the body to 503 bytes; keep the natural clean
+//   block-local candidate.
 
 #include <stdio.h>
 #include <stdarg.h>
