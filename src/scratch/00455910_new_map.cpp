@@ -22,6 +22,16 @@
 // the diff to 12 bytes; /Oa changed broad structure and worsened it to 719 bytes.
 // Restored the direct typed expression and default flags. Validation remains a
 // 783-byte function with 24 calls aligned and only the two product bytes wrong.
+// revisit sa-18c0524d: twenty fresh probes tested period CRT declarations,
+// literal/sizeof forms, signed and unsigned count casts, int/long locals,
+// dimension aliases, reference/pointer views, and parameter versus field
+// counts. stdlib, sizeof(char), literal 1, signed-long, and algebraic forms
+// were codegen duplicates. Unsigned fields widened the drift to 8 bytes;
+// references and address-taken pointers widened it to 12; parameter counts
+// widened it to 546. No natural probe changed the two product bytes.
+// The clean typed source is restored. A focused donor search for the allocator
+// block found no exact matching-bank source donor. Keep the volatile exact
+// result rejected as compiler steering, not source recovery.
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
