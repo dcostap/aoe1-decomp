@@ -29,6 +29,13 @@
 //   gap, so it was restored. Direct exit logging and a negative multiplayer
 //   guard were also codegen-neutral or worse; the observed shared-exit gotos
 //   remain the best source form.
+// - the original post-loop tests use unsigned test/jbe/ja forms; an unsigned
+//   update counter with positive guards improved shape slightly but not bytes.
+// - narrowing update_flag to the update loop, expanded versus compound loop
+//   updates, separate getter temporaries, local declaration order, register
+//   hints, stdio context, and named-zero forms all stayed in the same basin.
+//   Direct close and game-over returns reached exact size but added a return
+//   and worsened the strict diff, so the shared exits were restored.
 //
 // unresolved structural lead: original materializes an early EBX zero and
 // later uses EBP=-1 before the loop, while this basin keeps EBP=0 and the
@@ -590,11 +597,10 @@ void TRIBE_Screen_Game::handle_game_update(void)
     unsigned char update_flag;
     int mode;
     int calc_game_time;
-    int update_counter;
+    unsigned long update_counter;
     int loop_i;
     int i;
 
-    update_flag = 0;
     update_counter = 0;
     color_log(0x24, 0x24, 5);
 
@@ -636,6 +642,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
     loop_i = 0;
     if (calc_game_time > 0) {
         do {
+            unsigned char update_flag;
             color_log(0x24, 0x4C, 5);
             color_log(0x24, 0x24, 1);
             now = debug_timeGetTime((char*)s_scr_game_cpp, 0x692);
@@ -795,7 +802,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
     }
     color_log(0x16, 0x4C, 5);
     now = debug_timeGetTime((char*)s_scr_game_cpp, 0x79C);
-    if (update_counter != 0) {
+    if (update_counter > 0) {
         RGE_Player* p = rge_base_game->get_player();
         if ((int)p->attributes[6] != this->save_age) {
             this->age_changed();
@@ -811,12 +818,12 @@ void TRIBE_Screen_Game::handle_game_update(void)
         this->curr_child == panel_system.panel((char*)s_Send_Quick_Message_Dialog) ||
         this->curr_child == panel_system.panel((char*)s_Help_Dialog)) {
         color_log(0x16, 0x54, 5);
-        if (update_counter != 0 ||
+        if (update_counter > 0 ||
             now - this->last_view_time >= this->view_interval) {
             this->main_view->set_redraw(1);
             this->last_view_time = now;
         }
-        if (update_counter != 0 &&
+        if (update_counter > 0 &&
             now - this->last_map_redraw_time >= this->map_redraw_interval) {
             this->map_view->set_redraw(1);
             this->last_map_redraw_time = now;
