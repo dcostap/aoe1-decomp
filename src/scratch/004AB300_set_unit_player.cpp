@@ -33,6 +33,11 @@
 //   broad and did not preserve the target shape.
 // - TU conclusion: local evidence does not recover a natural context that
 //   changes this zero/count scheduling. Keep this policy-valid baseline.
+// Object audit:
+// - FPO and current debug metadata match the 879-byte body, 0xC frame, saved
+//   registers, parameter count, and VC5 compiler. PDB shows no inline frame.
+// - The raw-cursor exact form remains rejected. No object record supports a
+//   different natural owner for the five-byte instruction-order difference.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>
