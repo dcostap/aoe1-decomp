@@ -22,6 +22,28 @@
 // Best retained reconstruction: typed virtual/reference ABI and natural nested scans with named XYPoint ownership; frame remains 0x50 vs 0x54.
 // The explicit outer do/while spelling was tested and emitted the same code as
 // the clean for-loop source. The source stays with the simpler natural form.
+//
+// Current pass sa-d3dbc29b-r1:
+// - Baseline was 746 bytes, frame 0x50 versus 0x54, 11 aligned calls, diff 647.
+// - Scalar-before-point declarations and point declaration permutations were
+//   codegen-neutral. Function-scope score and lookup temporaries were neutral.
+// - Early best-value initialization worsened the diff to 701 bytes.
+// - Explicit while scans were duplicate. Guarded do/while influence scans made
+//   the body 754 bytes; the strict diff fell to 613 but CFG and size worsened.
+// - A negated in-box conjunction worsened shape and exact-block coverage.
+// - Replaced fake object slots with the repository-local RGE_Static_Object
+//   surface. Real passableTile and canLinePath slots reduced the diff to 406
+//   bytes and restored the 745-byte size and all 11 ordered calls.
+// - VC5 selected slot 0x1AC when both old canLinePath overloads had that name.
+//   The local six-argument slot name canLinePathByInts keeps the proven 0x1B0
+//   XYPoint call without a cast or manual vtable. The same-name and void*
+//   overload variants returned to slot 0x1AC.
+// - A named collision-distance local, bool blocked, assignment-order changes,
+//   and group-sentinel order did not improve the 406-byte canonical basin.
+// - A two-variant declaration lab confirmed both point orders emit one 745-byte
+//   group with the same 395-byte positional diff and frame 0x50.
+// Current clean candidate remains scratch: diff 406 (54.4966%), shape 76.45%,
+// frame 0x50 versus 0x54, 11/11 ordered calls, and no policy-valid exact match.
 
 typedef unsigned char uchar;
 struct XYPoint { int x; int y; };
@@ -30,39 +52,118 @@ extern InfluenceMap iMap;
 
 class RGE_Static_Object {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
-    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v0A(); virtual void v0B();
-    virtual void v0C(); virtual void v0D(); virtual void v0E(); virtual void v0F();
-    virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13();
-    virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17();
-    virtual void v18(); virtual void v19(); virtual void v1A(); virtual void v1B();
-    virtual void v1C(); virtual void v1D(); virtual void v1E(); virtual void v1F();
-    virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-    virtual void v28(); virtual void v29(); virtual void v2A(); virtual void v2B();
-    virtual void v2C(); virtual void v2D(); virtual void v2E(); virtual void v2F();
-    virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33();
-    virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37();
-    virtual void v38(); virtual void v39(); virtual void v3A(); virtual void v3B();
-    virtual void v3C(); virtual void v3D(); virtual void v3E(); virtual void v3F();
-    virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43();
-    virtual void v44();
-    virtual int canPlace(float y, float x, int one); // vtable slot +0x114
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(void*, void*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, uchar);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(void*);
+    virtual void add_overlay_sprite(void*, uchar);
+    virtual void remove_overlay_sprite(void*);
+    virtual void change_ownership(void*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(void*);
+    virtual void copy_obj(void*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
+    virtual void die_die_die();
+    virtual void damage(int, void*, float, void*, RGE_Static_Object* = 0);
+    virtual float calculateDamage(int, void*, float, void*, RGE_Static_Object* = 0);
+    virtual void rotate(long);
+    virtual uchar can_attack();
+    virtual void set_attribute(short, float);
+    virtual void set_attribute_amount(float, uchar, uchar);
+    virtual int heal(int, int);
+    virtual uchar heal(float);
+    virtual int canRepair();
+    virtual void notify_of_relation(long, uchar);
+    virtual void do_command(RGE_Static_Object*, float, float, float);
+    virtual void move_to(RGE_Static_Object*, float, float, float);
+    virtual void work(RGE_Static_Object*, float, float, float);
+    virtual void stop();
+    virtual void set_attack(RGE_Static_Object*);
+    virtual void play_command_sound();
+    virtual void play_move_sound();
+    virtual void new_angle(float);
+    virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual void set_being_worked_on(void*, short, uchar);
+    virtual void release_being_worked_on(RGE_Static_Object*);
+    virtual uchar is_moving();
+    virtual RGE_Static_Object* get_target_obj();
+    virtual void enter_obj(RGE_Static_Object*);
+    virtual void exit_obj();
+    virtual int explore_terrain(void*, uchar, int);
+    virtual void unexplore_terrain(void*, uchar, int);
+    virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*);
+    virtual uchar underAttack();
+    virtual void setUnderAttack(uchar);
+    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float getSpeed();
+    virtual float getAngle();
+    virtual float maximumSpeed();
+    virtual float rateOfFire();
+    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability();
+    virtual float weaponRange();
+    virtual float minimumWeaponRange();
+    virtual int passableTile(float y, float x, int one); // vtable slot +0x114
+    virtual uchar facetToNextWaypoint();
+    virtual int currentTargetID();
+    virtual float currentTargetX();
+    virtual float currentTargetY();
+    virtual float currentTargetZ();
+    virtual void setWaitingToMove(uchar);
+    virtual uchar waitingToMove();
+    virtual uchar actionState();
+    virtual uchar keepGatheringWhenObjectIsOut(int);
+    virtual uchar produceWhenKilledBy(int);
+    virtual uchar useSameZoneDropsite();
+    virtual void logDebug(const char*, ...);
+    virtual void notify(int, int, int, long, long, long);
+    virtual int attack(float, float, float, int);
+    virtual int attack(int, int);
+    virtual int moveTo(float, float, float, float, int);
+    virtual int moveTo(int, float, int);
+    virtual int moveTo(int, int);
+    virtual int moveAwayFrom(int, int);
+    virtual int hunt(int, int);
+    virtual int gather(int, int);
+    virtual int convert(int, int);
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual int explore(int, int, int);
+    virtual int enter(int, int);
+    virtual int unload(int, float, float, float);
+    virtual int transport(float, float, float, int);
+    virtual int stopAction();
+    virtual int pause();
+    virtual int canPath(int, float, float*, int, int, int);
+    virtual int canPath(void*, float, int, float*, int, int, int);
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, void*);
+    virtual int canPathWithAdditionalPassability(void*, float, int, float*, int, int, int, int, int);
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
+    virtual int canLinePathByInts(int, int, int, int, float, int);
+    virtual int canLinePath(XYPoint* cPosition, XYPoint* from, float distance,
+                            XYPoint* linePoint, int one); // vtable slot +0x1B0
     unsigned char currentZone();
     unsigned char lookupZone(int x, int y);
-    virtual void v46(); virtual void v47(); virtual void v48(); virtual void v49();
-    virtual void v4A(); virtual void v4B(); virtual void v4C(); virtual void v4D();
-    virtual void v4E(); virtual void v4F(); virtual void v50(); virtual void v51();
-    virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
-    virtual void v56(); virtual void v57(); virtual void v58(); virtual void v59();
-    virtual void v5A(); virtual void v5B(); virtual void v5C(); virtual void v5D();
-    virtual void v5E(); virtual void v5F(); virtual void v60(); virtual void v61();
-    virtual void v62(); virtual void v63(); virtual void v64(); virtual void v65();
-    virtual void v66(); virtual void v67(); virtual void v68(); virtual void v69();
-    virtual void v6A(); virtual void v6B();
-    virtual int lineCollision(XYPoint* cPosition, XYPoint* from, float distance,
-                              XYPoint* linePoint, int one); // vtable slot +0x1B0
 };
 
 class TribeInformationAIModule {
@@ -75,10 +176,10 @@ public:
 
 int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clearDistance, int minDistance, int maxDistance, RGE_Static_Object* obj, XYPoint& out)
 {
-    XYPoint maxClear;
     XYPoint max;
-    XYPoint minClear;
+    XYPoint maxClear;
     XYPoint min;
+    XYPoint minClear;
     XYPoint minExclude;
     XYPoint maxExclude;
     XYPoint cPosition;
@@ -124,15 +225,15 @@ int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clea
                         blocked = 0;
                         for (yy = minClear.y; yy < maxClear.y && !blocked; yy++) {
                             for (xx = min.x; xx < max.x && !blocked; xx++) {
-                                if (obj->canPlace((float)yy, (float)xx, 1) == 0) blocked = 1;
+                                if (obj->passableTile((float)yy, (float)xx, 1) == 0) blocked = 1;
                             }
                         }
                         if (blocked != 1) {
                             int val = 0x80;
                             cPosition.y = j;
                             lineCollisionPoint.x = i;
-                            if (obj->lineCollision(&cPosition, &p, (float)minDistance,
-                                                   &lineCollisionPoint, 1) == 0) val = 0x40;
+                            if (obj->canLinePath(&cPosition, &p, (float)minDistance,
+                                                 &lineCollisionPoint, 1) == 0) val = 0x40;
                             for (yy2 = minClear.y; yy2 <= maxClear.y && !blocked; yy2++) {
                                 for (xx2 = min.x; xx2 <= max.x && !blocked; xx2++) {
                                     int v = iMap.lookupValue(yy2, xx2);
