@@ -26,6 +26,31 @@
 // 20: byte-offset radius store, constant-product parentheses, and function-scope loop-counter variants gave no useful codegen lead; restored typed source.
 // left in scratch: exact size/frame/call parity and canonical field ownership; switch tail merge and
 //    loop constant hoisting remain broad VC5 codegen differences.
+// Fresh worker pass: pinned the current source at diff 262, then tested nine
+// source hypotheses. Reordering terrain[1].terrain_size before type/clumps in
+// both arms stopped tail merge and reached diff 141, 440 bytes, and 137
+// instructions. The extra 26 bytes came from EBX holding radius 12 in the
+// hot-spot loop, then being cleared. One-arm reordering was a codegen duplicate.
+// Typed hot-spot cursors, indexed stores, const or register zero locals,
+// counter-update order, and <string.h> context did not restore the target.
+// Restored the pinned source. Final clean check remains diff 262, size 414,
+// frame none, two ordered calls, and four saved registers. The unresolved
+// basin is switch tail merge plus loop constant register allocation.
+// Natural-source follow-up: replaced the shifted long hot-spot cursor with a
+// typed RGE_Terrain_Hot_Spots pointer and field assignments. This preserves
+// the proven record ownership without raw cursor plumbing. The build keeps
+// the exact 414-byte size, frame, saved registers, and ordered calls, but the
+// compiler emits the hot-spot base at +0xC64 instead of the target's y-field
+// anchor at +0xC68 and still hoists radius 12 into EBX. The natural typed
+// loop is retained; the target's shifted-cursor basin is not policy-safe.
+// Revisit: re-tested the no-tail-merge size-before-type order with the typed
+// loop (diff 141, 440 bytes), indexed typed records (diff 194, 448 bytes),
+// record references, scoped size locals, and the reviewed virtual destructor
+// context. The last three were codegen duplicates; all probes were restored.
+// Final policy-clean source remains diff 262, 414 bytes, no frame, four saved
+// registers, and two ordered calls. Exactness still needs the target's switch
+// body layout and y-field anchor; raw shifted cursors and compiler steering
+// are not allowed. Rebuild-validated, pinned, and paused unresolved.
 
 #include <new.h>
 
@@ -171,19 +196,19 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& terrain_info,
     terrain_info.terrain[1].terrain_generated = 0;
     terrain_info.terrain[1].spacing = 0;
 
-    terrain_info.hot_spot_num = land_info.land_num;
     int i = 0;
+    terrain_info.hot_spot_num = land_info.land_num;
     if (terrain_info.hot_spot_num > 0) {
         RGE_Land_Info_Line* land = land_info.land;
-        long* hot_spot = &terrain_info.hot_spots[0].y;
+        RGE_Terrain_Hot_Spots* hot_spot = terrain_info.hot_spots;
         do {
-            hot_spot[-1] = land->x;
+            hot_spot->x = land->x;
             ++i;
-            hot_spot[0] = land->y;
-            hot_spot[1] = 12;
-            hot_spot[2] = 20;
+            hot_spot->y = land->y;
+            hot_spot->radius = 12;
+            hot_spot->fade = 20;
             ++land;
-            hot_spot += 4;
+            ++hot_spot;
         } while (i < terrain_info.hot_spot_num);
     }
 
