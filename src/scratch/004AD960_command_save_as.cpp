@@ -35,6 +35,17 @@
 // arms, remained the 313-byte duplicated-EH basin; restored natural source.
 // shardE probe: switch-shaped guards worsened to 330 bytes; named boolean
 // predicates worsened to 327 bytes; neither changed the shared-tail blocker.
+// sa-b7d0516a pass: explicit done goto, do/while-break, positive nested guards,
+// positive nested goto, final return, and a null-panel alias were rechecked;
+// none changed the best 313-byte basin or restored the shared cleanup tail.
+// sa-4131dd60 pass: immediate popup returns, success-only name scope with failure
+// gotos, full donor scenario/world virtual surfaces, the SaveScenario enum cast,
+// and an empty RAII scope were tested; the first four were codegen-neutral and
+// the RAII scope worsened the frame/CFG. Restored the pinned natural source.
+// sa-cd410ac2-r1 pass: flat and full screen layout surfaces, explicit base calls,
+// enum types, named count results, control-flow labels, period header contexts,
+// and symbol-backed panel strings were tested. Only the last source cleanup was
+// retained for policy; the shared /GX cleanup-tail blocker remains unchanged.
 
 class TPanelSystem {
 public:
@@ -43,6 +54,8 @@ public:
 };
 
 extern TPanelSystem panel_system;
+extern char s_Save_Game_Screen[];
+extern char s_Scenario_Menu_Dialog[];
 
 class T_Scenario {
 public:
@@ -100,7 +113,7 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
     } else {
         scenario_name[0] = 0;
         new TribeSaveGameScreen(2, scenario_name, post_action);
-        panel_system.setCurrentPanel((char*)0x005843B8, 0);
-        panel_system.destroyPanel((char*)0x005843CC);
+        panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
+        panel_system.destroyPanel(s_Scenario_Menu_Dialog);
     }
 }
