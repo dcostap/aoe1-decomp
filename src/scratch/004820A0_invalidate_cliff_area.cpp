@@ -73,6 +73,17 @@
 //   and TU context. The clean source stayed at 243 bytes and 172 differing
 //   bytes. Outer for/while forms reached 171 differing bytes but added one
 //   byte and one CFG edge. The clean do-loop source is restored.
+// - TU reconstruction pass: repository-local exact donors fix the definition
+//   order as constructor, generate, setup, generate_cliff, check, then this
+//   function. Setup supports <string.h>, a full RGE_Tile, and the complete
+//   stack-method surface. Generate supports debug_rand and the RGE_Map surface.
+// - Header, tile, base-method, class-method-order, donor-body, donor-order,
+//   pragma, ambient-declaration, and period-header variants all kept the
+//   243-byte frame and the same 172 raw differing bytes. No variant selected
+//   the target EBP y-home or EBX clipped-right liveness.
+// - Default config/flags/default.rsp (/O2 /Oy) remains the only supported
+//   flag context. /Oy-, /Ob0, /Ow, /O1, /Og-, and /Ot- changed codegen or
+//   lost the target frame. No TU-only exact lead is retained.
 
 struct Map_Stack {
     long x;
