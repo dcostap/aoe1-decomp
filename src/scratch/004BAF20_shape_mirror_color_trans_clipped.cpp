@@ -40,6 +40,33 @@
 //   to 905 bytes and was restored. The clean typed candidate remains best.
 // - left in scratch: original frame is 0x8 with two locals; current source
 //   retains the canonical typed decoder and exact three-call surface.
+//
+// sa-4bfbd14e bounded pass (2026-08-17; 20 meaningful hypotheses):
+// - Baseline was 955B, 0x1C frame, and 848 strict bytes. The three direct
+//   calls and their order were exact.
+// - A save_buffer/dst split with vertical parameter reuse was worse at 980B.
+// - One shared packet byte reached 979B, 0xC, and 875 strict bytes. The split
+//   source was restored because shape quality fell.
+// - Combining that byte with save_buffer reached 1004B and 959 strict bytes.
+// - The full eight-word TShape surface was codegen-identical to baseline.
+// - Reusing shape_idx as the crossing-literal counter changed only two bytes.
+// - Explicit masked parity tests reached 989B and 882 strict bytes. They gave
+//   better block shape but worse positional bytes.
+// - Assigning shape_y1 directly from clip_y0 changed one byte and was worse.
+// - Reusing clip_y0 for all packet counts reached 902B, 0x14, and 804 strict
+//   bytes. This was the best early structural basin.
+// - Reusing clip_y1 as the row counter changed that basin to 908B and 814
+//   strict bytes. A payload pointer spelling was codegen-identical.
+// - Removing fill-byte locals reached the exact 863B size, 0xC frame, and 788
+//   strict bytes. This is the retained natural source.
+// - Hoisting state and hoisting the count local were codegen-identical.
+// - A save_buffer/dst split reached 875B and 801 strict bytes. Splitting the
+//   width expression reached 811 strict bytes. Both were restored.
+// - The final masked-parity variant reached 881B and 808 strict bytes. It was
+//   restored because the direct-test source has better natural size and bytes.
+// - The remaining blocker is the original 0x8 frame and its EBX state,
+//   parameter-home, and row-tail allocation. Behavior and call identity are
+//   otherwise broad. No inline assembly or policy-unsafe form was used.
 
 typedef unsigned char byte;
 #include <string.h>
@@ -77,12 +104,11 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
                                                long clip_y0, long clip_x1,
                                                long clip_y1, byte* table)
 {
-    long orien = draw_area->Orien;
-    long pitch = draw_area->AlignedWidth() * orien;
-    byte* src = (byte*)this->shape_header + 0x18;
+    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+    byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
 
-    if (orien < 1) {
+    if (draw_area->Orien < 1) {
         dst = draw_area->Bits + (clip_y0 - draw_area->Height + 1) * pitch + clip_x1 + 1;
     } else {
         dst = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
@@ -108,7 +134,7 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
     }
 
     if (shape_y1 > clip_y1) return 1;
-    long rows = clip_y1 - shape_y1 + 1;
+    clip_y1 = clip_y1 - shape_y1 + 1;
 
     do {
         long xpos = shape_x1;
@@ -119,21 +145,21 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
             do {
                 byte code = *src++;
                 if (code & 1) {
-                    byte n = code >> 1;
-                    if (n == 0) {
-                        n = *src++;
-                        xpos -= n;
+                    clip_y0 = code >> 1;
+                    if (clip_y0 == 0) {
+                        clip_y0 = *src++;
+                        xpos -= clip_y0;
                         if (xpos <= clip_x1) {
                             if (xpos < clip_x0) state = 2;
                             else { dst += xpos - clip_x1; state = 1; }
                         }
                     } else {
-                        xpos -= n;
+                        xpos -= clip_y0;
                         if (xpos <= clip_x1) {
                             if (xpos < clip_x0) {
                                 unsigned int cnt = (unsigned char)(clip_x1 - clip_x0 + 1);
                                 state = 2;
-                                src += xpos - clip_x1 + n - 1;
+                                src += xpos - clip_x1 + clip_y0 - 1;
                                 while (cnt-- != 0) {
                                     --dst;
                                     *dst = table[*src++];
@@ -142,31 +168,30 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
                             } else {
                                 unsigned int cnt = (unsigned char)(clip_x1 - xpos);
                                 state = 1;
-                                src += n - cnt;
+                                src += clip_y0 - cnt;
                                 while (cnt-- != 0) {
                                     --dst;
                                     *dst = table[*src++];
                                 }
                             }
-                        } else src += n;
+                        } else src += clip_y0;
                     }
                 } else {
-                    byte n = code >> 1;
-                    if (n == 0) state = 3;
+                    clip_y0 = code >> 1;
+                    if (clip_y0 == 0) state = 3;
                     else {
-                        xpos -= n;
+                        xpos -= clip_y0;
                         if (xpos <= clip_x1) {
-                            byte c = table[*src];
                             if (xpos < clip_x0) {
                                 unsigned int cnt = (unsigned char)(clip_x1 - clip_x0 + 1);
                                 state = 2;
                                 dst -= cnt;
-                                memset(dst, c, cnt);
+                                memset(dst, table[*src], cnt);
                             } else {
                                 unsigned int cnt = (unsigned char)(clip_x1 - xpos);
                                 state = 1;
                                 dst -= cnt;
-                                memset(dst, c, cnt);
+                                memset(dst, table[*src], cnt);
                             }
                         }
                         ++src;
@@ -182,44 +207,43 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
             do {
                 byte code = *src++;
                 if (code & 1) {
-                    byte n = code >> 1;
-                    if (n == 0) {
-                        n = *src++;
-                        xpos -= n;
-                        dst -= n;
+                    clip_y0 = code >> 1;
+                    if (clip_y0 == 0) {
+                        clip_y0 = *src++;
+                        xpos -= clip_y0;
+                        dst -= clip_y0;
                         if (xpos < clip_x0) state = 1;
                     } else {
-                        xpos -= n;
+                        xpos -= clip_y0;
                         if (xpos < clip_x0) {
-                            unsigned int cnt = (unsigned char)(xpos - clip_x0 + n);
-                            unsigned int copied = cnt;
+                            unsigned int cnt = (unsigned char)(xpos - clip_x0 + clip_y0);
+                            shape_idx = cnt;
                             state = 1;
-                            while (copied-- != 0) {
+                            while (shape_idx-- != 0) {
                                 --dst;
                                 *dst = table[*src++];
                             }
-                            src += n - cnt;
+                            src += clip_y0 - cnt;
                         } else {
-                            while (n-- != 0) {
+                            while (clip_y0-- != 0) {
                                 --dst;
                                 *dst = table[*src++];
                             }
                         }
                     }
                 } else {
-                    byte n = code >> 1;
-                    if (n == 0) state = 3;
+                    clip_y0 = code >> 1;
+                    if (clip_y0 == 0) state = 3;
                     else {
-                        byte c = table[*src];
-                        xpos -= n;
+                        xpos -= clip_y0;
                         if (xpos < clip_x0) {
-                            unsigned int cnt = (unsigned char)(xpos - clip_x0 + n);
+                            unsigned int cnt = (unsigned char)(xpos - clip_x0 + clip_y0);
                             state = 1;
                             dst -= cnt;
-                            memset(dst, c, cnt);
+                            memset(dst, table[*src], cnt);
                         } else {
-                            dst -= n;
-                            memset(dst, c, n);
+                            dst -= clip_y0;
+                            memset(dst, table[*src], clip_y0);
                         }
                         ++src;
                     }
@@ -232,8 +256,8 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
             do {
                 byte code = *src++;
                 if (code & 1) {
-                    byte n = code >> 1;
-                    if (n != 0) src += n;
+                    clip_y0 = code >> 1;
+                    if (clip_y0 != 0) src += clip_y0;
                     else ++src;
                 } else {
                     if ((code & 0xfe) == 0) state = 2;
@@ -243,7 +267,8 @@ byte TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area,
         }
 
         dst += pitch;
-    } while (--rows != 0);
+        --clip_y1;
+    } while (clip_y1 != 0);
 
     return 1;
 }
