@@ -122,6 +122,44 @@
 //     485 ownership for both strategic-number calls, and no block or inline
 //     record. FPO and current metadata match. No object evidence selects the
 //     oracle branch normalization.
+// 47: Replaced the processItem state with one positive category guard.  The
+//     source stayed label-free, kept 115 calls, and improved the diff to 1496.
+// 48: A direct specialFailure return removed one setBuildAttempts call site
+//     (114/115).  Rejected; retain the call-preserving specialFailure local.
+// 49: Replaced the available state with a direct research/object guard.  The
+//     115-call source reached a 1495-byte diff before later grouped probes.
+// 50: A direct skip guard was worse alone (1514 bytes).  It was later tested
+//     again with the threshold guard as a grouped source change.
+// 51: Direct object/canPlace success guards duplicated the shared success code
+//     and added four calls.  Rejected; retain the found status local.
+// 52: Initializing withinCap from the first cap result was worse.  Rejected.
+// 53: A deferred specialFailure return was neutral in the grouped source and
+//     kept all calls.  The separate local remains for call-site preservation.
+// 54: Same-TU exact donor 004D4F80 supports `cap == -1 || numberBuilds <=
+//     buildCap`.  The label-free spelling improved structural coverage to
+//     55.45% with 115 calls and is retained.
+// 55: A local sentinel changed the prologue register colors and worsened the
+//     diff to 1540.  Rejected; use the direct sentinel expression.
+// 56: Widening the found declaration scope was codegen-duplicate.  Rejected.
+// 57: Initializing tryCost from `buildAttempts <= strategicNumber(0x72)`
+//     improved the diff to 1453 and exact-block coverage to 57.40%.
+// 58: Grouping that threshold guard with the direct skip guard improved the
+//     diff to 1422 and exact-block coverage to 58.05%, with 115 calls.
+// 59: A positive specialFailure body guard kept the same 1422-byte result and
+//     the distinct setter call.  Retain this natural nested form.
+// 60: Swapping realCount and count declarations worsened early stack stores.
+//     Rejected; retain the original declaration order.
+// 61: An int tryCost changed the diff to 1506.  Retain bool tryCost.
+// 62: Initializing specialFailure from one combined expression changed the
+//     diff to 1528.  Retain the separate predicate and local assignment.
+// 63: Reversing the threshold comparison operands was metric-neutral but had
+//     no source evidence.  Retain the assembly-observed operand order.
+// 64: Making the special failure the positive guard's else arm was metric
+//     neutral within three bytes.  Retain the clearer separate failure test.
+// 65: Splitting realCount declaration and initialization worsened the first
+//     stack stores.  Rejected.
+// 66: Reversing the loop sentinel/null tests moved the first CFG mismatch to
+//     the loop header.  Retain sentinel-first fault order.
 
 extern "C" char* __cdecl strncpy(char* dst, const char* src, unsigned int count);
 
@@ -395,15 +433,8 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                     }
                     else if (category != 3 || count <= 0) {
                         int buildCap = item->buildCap();
-                        bool withinCap = true;
-                        if (buildCap != -1) {
-                            int currentCap = item->buildCap();
-                            int numberBuilds = item->numberBuilds();
-                            if (numberBuilds > currentCap)
-                                withinCap = false;
-                        }
-
-                        if (withinCap) {
+                        if (buildCap == -1 ||
+                            item->numberBuilds() <= item->buildCap()) {
                             if (category == 1 &&
                                 (item->buildCategory() == 1 || item->buildCategory() == 4) &&
                                 this->md->aiPlayer->researchEverAvailable(item->typeID()) == 0) {
@@ -424,10 +455,8 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                     }
                                 }
 
-                                bool skipItem =
-                                    (item->skip() == 1 && item->buildAttempts() > 0) ||
-                                    item->permanentSkip() != 0;
-                                if (skipItem) {
+                                if ((item->skip() == 1 && item->buildAttempts() > 0) ||
+                                    item->permanentSkip() != 0) {
                                     item->decrementBuildAttempts();
                                 }
                                 else {
@@ -447,35 +476,24 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                             ++count;
                                         }
 
-                                        bool processItem = true;
-                                        if (category != 1) {
-                                            if (category != item->buildCategory()) {
-                                                processItem = false;
-                                            }
-                                        }
-                                        else {
-                                            if (item->buildCategory() != 1 &&
-                                                item->buildCategory() != 4) {
-                                                processItem = false;
-                                            }
-                                        }
-
-                                        if (processItem) {
+                                        if ((category == 1 &&
+                                             (item->buildCategory() == 1 ||
+                                              item->buildCategory() == 4)) ||
+                                            (category != 1 &&
+                                             category == item->buildCategory())) {
                                             bool specialFailure = false;
                                             if (category == 3 &&
                                                 item->buildCategory() != category) {
                                                 item->setBuildAttempts(0);
                                                 specialFailure = true;
                                             }
-                                            if (specialFailure) {
-                                                return 0;
-                                            }
-
-                                            item->incrementBuildAttempts();
+                                            if (!specialFailure) {
+                                                item->incrementBuildAttempts();
                                             int buildAttempts = item->buildAttempts();
-                                            bool tryCost = true;
-                                            if (buildAttempts >
-                                                this->md->tacticalAI.strategicNumber(0x72)) {
+                                            bool tryCost =
+                                                buildAttempts <=
+                                                this->md->tacticalAI.strategicNumber(0x72);
+                                            if (!tryCost) {
                                                 if (item->skip() == 0 &&
                                                     item->permanentSkip() == 0) {
                                                     if (category == 1 &&
@@ -518,19 +536,12 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                                     return item;
                                                 }
 
-                                                bool available = false;
-                                                if (category == 1) {
-                                                    available =
-                                                        this->md->aiPlayer->researchAvailable(
-                                                            item->typeID()) != 0;
-                                                }
-                                                else {
-                                                    available =
-                                                        this->md->aiPlayer->objectAvailable(
-                                                            item->typeID()) != 0;
-                                                }
-
-                                                if (available) {
+                                                if ((category == 1 &&
+                                                     this->md->aiPlayer->researchAvailable(
+                                                         item->typeID()) != 0) ||
+                                                    (category != 1 &&
+                                                     this->md->aiPlayer->objectAvailable(
+                                                         item->typeID()) != 0)) {
                                                     ResourceItem itemCost2(4);
                                                     if (category == 1) {
                                                         this->md->aiPlayer->researchCost(
@@ -569,7 +580,11 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                                     }
                                                 }
                                             }
+                                            if (specialFailure) {
+                                                return 0;
+                                            }
                                         }
+                                    }
                                     }
                             }
                         }
