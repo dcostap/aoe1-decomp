@@ -47,6 +47,13 @@ requirements in the worker prompt:
 - Stop before ten only for an exact match, a real external constraint, or a
   direct user instruction.
 - Report each attempt, its result, and the evidence learned from it.
+- Treat the first exact result as the start of the exact-finish retrospective.
+- Compare it with the last clean nonexact source. Walk back independent changes,
+  test interacting groups, and remove incidental context or source machinery.
+- Retain the smallest natural source that remains exact. Record which changes
+  were required, incidental, or inseparable.
+- Report reusable lesson candidates. Do not edit `LESSONS.md` unless the
+  assignment authorizes that shared-file change.
 
 Do not weaken this requirement with prompt text such as "otherwise pin and
 pause" without the effort conditions above.
@@ -143,6 +150,18 @@ For every return:
 7. accept, revise, or reject the proposal;
 8. perform any status move;
 9. stage only reviewed paths.
+
+For an exact return, require the worker's exact-finish retrospective. Inspect the
+first exact checkpoint, the last clean nonexact checkpoint, and all reported
+walkback tests. Do not treat `MATCH` as the end of source recovery. If the worker
+did not reduce the exact transition, continue the same assignment or perform the
+bounded walkback before promotion.
+
+Confirm that the retained source is the smallest supported natural form, not
+only the smallest byte-producing form. Recheck each unusual declaration, flag,
+scope, alias, control form, allocation choice, and ambient-context change. Record
+required, incidental, and inseparable changes in the source notes. Promote only
+after the reduced source still reports `MATCH` and `0.0000%`.
 
 Reject a shallow unresolved return. If the worker reports fewer than ten honest
 hypotheses, continue that same assignment. Do not count syntax repairs, unchanged

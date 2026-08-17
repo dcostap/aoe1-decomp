@@ -48,6 +48,9 @@ Low confidence, slow progress, a likely register-coloring issue, or a likely
 compiler-context issue is not an external constraint. Documented failure is a
 valid result only after this effort standard is met.
 
+An exact result ends open-ended hypothesis search. It does not end the
+assignment. Complete the exact-finish retrospective before you report.
+
 ## Procedure
 
 1. Query the target's status, paths, notes, history, and lease.
@@ -137,14 +140,32 @@ and validate it normally. Never auto-promote a lab result.
 
 ## Exact finish
 
-1. Review source, flags, ownership, and policy compliance.
-2. Run the authoritative function checker.
-3. Require `Result: MATCH` and `0.0000%`.
-4. Move, do not copy, the source into `src\matching`.
-5. Validate again after the move.
-6. Release the lease with a reason that records the exact result.
+The first exact result starts the finish process. Do not report immediately.
 
-Add a compact `LESSONS.md` entry only for a reusable, non-obvious discovery.
+1. Save and label the first exact checkpoint.
+2. Compare it with the last clean nonexact source. List every meaningful source,
+   declaration, flag, and context change in the exact transition.
+3. Walk those changes back. Revert one independent change at a time and check
+   whether the function stays exact.
+4. When changes interact, test small grouped reversions. Use bounded delta
+   reduction instead of assuming that every change was necessary.
+5. Remove incidental aliases, scopes, declarations, context, flags, and control
+   forms. Prefer the smallest natural, period-plausible source that stays exact.
+6. Do not retain a strange form only because it survived reduction. Apply the
+   source-recovery and ownership rules before you accept it.
+7. Review source, flags, ownership, and policy compliance.
+8. Run the authoritative function checker. Require `Result: MATCH` and
+   `0.0000%` on the reduced source.
+9. Update the source recovery notes. Record the decisive change, tested
+   reversions, required changes, incidental changes, and inseparable groups.
+   State evidence separately from explanations that remain hypotheses.
+10. Pin the reduced exact source and release the lease with the exact result.
+    Leave the status move and commit to the main agent.
+
+Report any reusable, non-obvious lesson candidate to the main agent. Do not add
+it to `LESSONS.md` without shared-file authorization. A first exact occurrence
+can suggest a lesson. Repeated exact or strong donor evidence must support the
+reusable claim.
 
 ## Unresolved finish
 
@@ -165,4 +186,5 @@ local coordination state.
 
 Report the target, outcome, probe count, checkpoints, current metrics, and changed
 files. Include validation, open questions, and useful possible approaches. A
-documented pause is a valid result.
+documented pause is a valid result. For an exact result, also report the
+walkback tests and why the retained source is the smallest supported form.
