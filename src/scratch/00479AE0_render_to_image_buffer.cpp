@@ -28,6 +28,11 @@
 // r6 layout: direct ImageRect.top matched the target's direct load but worsened strict diff to 1461; restored pointer ownership.
 // r6 liveness: making text function-scope live across PtrClear was neutral.
 // r6 behavior: combining that lifetime with strlen enlarged the frame to 0x44 and worsened diff to 1551; restored clean source.
+// r7 probes: 22 meaningful source, type, layout, ABI, and context hypotheses were checked in this claim.
+// r7 strlen: explicit cdecl strlen forms emit target-like repne scasb, but add a 0x44 frame and worsen positional drift; restored.
+// r7 layout: target icon blocks read TShape::shape_info at +0x1C. The gap before shape_info is retained from this binary evidence.
+// r7 layout checkpoint: the +0x1C TShape correction makes two late icon blocks exact and raises exact-block coverage to 49.16%; full diff remains 1431.
+// r7 unresolved: target keeps ImageRect in EBX and text in EDI before the empty-text gate; current natural source keeps ImageRect in EDI.
 #include <string.h>
 #include "..\..\include\rge_base_game_global.h"
 
@@ -99,6 +104,7 @@ public:
 
 class TShape {
 public:
+    char gap_00[0x1C];
     Shape_Info* shape_info;
     void shape_draw(TDrawArea* draw_area, long x, long y, long frame, unsigned char transparent, unsigned char* remap);
 };
@@ -217,14 +223,15 @@ int TMessagePanel::render_to_image_buffer() {
     } else {
         used_x = 0;
         used_y = 0;
-        used_w = ts.cx + 2;
         display_hgt = ts.cy + 2;
+        used_w = ts.cx + 2;
+        int message_type = this->message_type;
         tight = 1;
 
-        if (this->message_type == 1) {
+        if (message_type == 1) {
             flags = 0x21;
             used_x = ((this->pnl_wid - used_w) >> 1) - 1;
-        } else if (this->message_type == 5) {
+        } else if (message_type == 5) {
             flags = 0x22;
             used_x = (this->pnl_wid - used_w) - 1;
             used_y = 0;
