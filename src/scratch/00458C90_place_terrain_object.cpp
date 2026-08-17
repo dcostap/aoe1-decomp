@@ -15,7 +15,9 @@
 // 13: tested an independent single-placement condition because the oracle reloads the mode parameter after mode zero. It improved positional diff by 12 bytes but broke size and block shape; restored the natural else-if form.
 // Binary facts: terrain_types records use this+0x8C, stride 0x198, obj_types +0x18A, obj_density +0x1C6, placement flags +0x202, and num_obj_type +0x220. Player master_objects is +0x24.
 // Binary behavior: get_terrain(col,row) selects each terrain set; mode 0 performs density-weighted placement and mode 1 tries one placement. Coordinates are (col - random, row - random) or (col + 0.5, row + 0.5). Failed can_place calls invoke place.
-// GIVEUP: left in scratch; calls, tile ownership, coordinates, and effects are reconstructed, but VC5 still colors this as ESI and the master object as EDI instead of the oracle's EDI/ESI pair.
+// Prior pause: left in scratch; calls, tile ownership, coordinates, and effects
+// are reconstructed, but VC5 still colors this as ESI and the master object as
+// EDI instead of the oracle's EDI/ESI pair.
 // 14: widened the terrain selector and object count to int; this moved the
 // first block 8 bytes closer and restored the oracle's ECX selector home.
 // 15: a pretested for loop without an outer count guard restored 66.27% exact
@@ -23,8 +25,17 @@
 // 16: declaration order, map alias, and cursor initializer were emitted-code
 // duplicates. Remaining drift is the EDI-this/ESI-master register basin and
 // the initial pointer-setup order; calls, widths, effects, and CFG are stable.
+// 17-21: revisit recovered the four-argument place virtual ABI from its four
+// pushes, replaced the pointer cursor with typed obj_types[terrain_i], and
+// promoted the short object type to int. This reduced the mismatch to 307
+// bytes, 94.94% shape, exact size/frame, 10/10 ordered calls, and 88.35%
+// exact-block coverage. Separate mode guards, local scopes, aliases, and
+// stdlib context were neutral or worse. The remaining blocker is register
+// coloring: VC5 keeps this/master/density in ESI/EDI/SI instead of the
+// oracle's EDI/ESI/DI, plus the repeated mode-one null-test topology.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
+
 
 class RGE_Player;
 class RGE_Game_World;
@@ -37,7 +48,7 @@ public:
     virtual void vf0C();
     virtual void vf10();
     virtual void vf14();
-    virtual void place(RGE_Player* player, float x, float y, int a, int b);
+    virtual void place(RGE_Player* player, float x, float y, int a);
     virtual void vf1C();
     virtual unsigned char can_place(RGE_Player* player, float x, float y,
                                      int a, int b, int c, int d, int e,
@@ -126,23 +137,22 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world,
                                    int single_placement)
 {
     RGE_Master_Static_Object* master_obj;
-    RGE_Map* map = this;
-    int num_obj_type;
-    int terrain;
-    terrain = map->get_terrain(col, row);
-    num_obj_type = map->terrain_types[terrain].num_obj_type;
-    int terrain_i = 0;
     float x;
     float y;
-    short* obj_types;
+    short obj_density;
+    unsigned char obj_flag;
+    int num_obj_type;
+    int terrain;
+    terrain = this->get_terrain(col, row);
+    num_obj_type = this->terrain_types[terrain].num_obj_type;
+    int terrain_i = 0;
 
-    for (obj_types = map->terrain_types[terrain].obj_types;
-         terrain_i < num_obj_type; ++terrain_i, ++obj_types) {
-            if (*obj_types != -1) {
-                master_obj = player->master_objects[*obj_types];
-                short obj_density = map->terrain_types[terrain].obj_density[terrain_i];
-                unsigned char obj_flag =
-                    map->terrain_types[terrain].obj_placement_flag[terrain_i];
+    for (terrain_i = 0; terrain_i < num_obj_type; ++terrain_i) {
+            int object_type = (short)this->terrain_types[terrain].obj_types[terrain_i];
+            if (object_type != -1) {
+                master_obj = player->master_objects[object_type];
+                obj_density = this->terrain_types[terrain].obj_density[terrain_i];
+                obj_flag = this->terrain_types[terrain].obj_placement_flag[terrain_i];
 
                 if (master_obj != 0) {
                     if (single_placement == 0) {
@@ -179,7 +189,7 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world,
                                     if (!master_obj->can_place(
                                             player, x, y, 0, 0, 1, 0, 1, 0,
                                             1)) {
-                                        master_obj->place(player, x, y, 0, 0);
+                                            master_obj->place(player, x, y, 0);
                                     }
                                 }
 
@@ -204,7 +214,7 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world,
 
                         if (!master_obj->can_place(
                                 player, x, y, 0, 0, 1, 0, 1, 0, 1)) {
-                            master_obj->place(player, x, y, 0, 0);
+                            master_obj->place(player, x, y, 0);
                             return;
                         }
                     }
