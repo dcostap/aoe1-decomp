@@ -29,8 +29,13 @@
 // - A 128-sample ambient file-scope declaration sweep produced one 534-byte
 //   group with the same 17-byte gap. Explicit long/int zone-result forms,
 //   implicit coordinate conversions, and full function-scope declarations
-//   also stayed nonexact. Final validation remains 534 bytes, 192 instructions,
-//   27 ordered calls, and 17 differing bytes (3.1835%).
+//   also stayed nonexact; those variants remain discarded.
+// - Recovered the controlling source shape from the adjacent exact
+//   canBidirectionPath donor: declare result inside each path-system arm,
+//   duplicate the cleanup and return in both arms, and let VC5 tail-merge the
+//   common epilogue. This swaps zone_map to EBP and the first zone result to
+//   EBX without changing behavior or call order. The target now matches all
+//   534 bytes.
 
 struct XYPoint {
     int x;
@@ -190,10 +195,9 @@ int RGE_Moving_Object::canPathWithObstructions(
     }
 
     this->storePathInExceptionPath = 1;
-    int result;
     if (useAI != 0) {
         aiPathSystem.incrementCanPaths();
-        result = aiPathSystem.findTilePath(
+        int result = aiPathSystem.findTilePath(
             (int)this->world_x, (int)this->world_y,
             (int)target->world_x, (int)target->world_y, this,
             range, targetID, 1, costOut, 1, 1, 1, 1,
@@ -201,9 +205,11 @@ int RGE_Moving_Object::canPathWithObstructions(
         if (unobGroupID != -1) {
             aiPathSystem.copyUnobstructibles(*unobstructibles);
         }
+        this->storePathInExceptionPath = 0;
+        return result;
     } else {
         pathSystem.incrementCanPaths();
-        result = pathSystem.findTilePath(
+        int result = pathSystem.findTilePath(
             (int)this->world_x, (int)this->world_y,
             (int)target->world_x, (int)target->world_y, this,
             range, targetID, 1, costOut, 1, 1, 1, 1,
@@ -211,8 +217,7 @@ int RGE_Moving_Object::canPathWithObstructions(
         if (unobGroupID != -1) {
             pathSystem.copyUnobstructibles(*unobstructibles);
         }
+        this->storePathInExceptionPath = 0;
+        return result;
     }
-
-    this->storePathInExceptionPath = 0;
-    return result;
 }
