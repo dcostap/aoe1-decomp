@@ -39,6 +39,15 @@
 // - Paused in EXACT CODEGEN: remaining 14 bytes are localized register
 //   coloring at mode-102 (+0124) and repair mode-104 (+0240/+0273); no new
 //   source-backed lead remains within this claim.
+// - Fresh claim probes: top-level int/long coordinate temps, register
+//   parameters, positive and split guards, local declaration order, coordinate
+//   casts, inherited receiver casts, shared call-result locals, repair-result
+//   locals, object-id temps, and delayed receiver/game-mode aliases were either
+//   codegen duplicates or moved into a worse basin. Donor-supported stdlib,
+//   string, Windows, and combined header contexts were duplicates.
+// - A 9-variant lab combined direct/base/narrow call spellings for mode-102 and
+//   mode-104. All variants formed one 844-byte, 14-byte-diff group. The clean
+//   typed source remains authoritative; no policy-valid exact lead was found.
 
 class TShape;
 class RGE_Tile;
