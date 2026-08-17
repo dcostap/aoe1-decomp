@@ -25,6 +25,10 @@
 // r4: compound scopes, mixed return/break placement, null-return variants, and the Ghidra-backed positive success-return form for cases 6 and 9 all emitted the same merged setter tail.
 // r4: applying the Ghidra/PDB success-return topology to cases 1, 2, 5, 7, and 8 also emitted duplicate code; canonical class/vtable context and direct typed world->scenario spelling were neutral.
 // r4: explicit !=0/truthy predicate variants and mixed predicate spelling were neutral. Restore the clean negative guards; no natural source lead remains for the two missing call sites.
+// Managed pass: 20 meaningful probes completed; the clean baseline remains the best source.
+// Managed pass: explicit returns, positive guards, declaration scopes/order, long widths, reused dropdown temporaries, and stdlib.h context were duplicate or worse.
+// Managed pass: typed branch-local aliases in both selected-object cases raised the call count to 54/55 and separated the two object tails, but worsened the diff to 821 bytes and merged one SetSPAmount site. Keep the baseline.
+// Managed pass: the baseline is exact-size/frame (1375/0x14) with 53/55 static calls; the unresolved blocker is VC5's merged case-6/case-9 SetSPVictoryType/SetSPObject tail and the amount/player/object home permutation.
 
 extern "C" int __cdecl atoi(const char*);
 
