@@ -22,6 +22,10 @@
 //     order while preserving the natural branch behavior.
 //   probes 16-19: function-scope ret/pick_info and zero-basin variants were
 //     unchanged; the mode-mode zero expression was rejected as noncanonical.
+//   follow-up probes: standard-header contexts, shared zero locals, parameter
+//     result reuse, direct pick arguments, and interface-tail labels were all
+//     restored after emitting no improvement. The duplicated interface arms
+//     are required for the 72-call sequence; a common redraw tail loses calls.
 //
 // Current state: canonical source, size 2252/2252, frame 0x14/0x14, calls
 //   72/72 ordered and target-aligned, shape 92.85%, strict diff 1974 bytes.
