@@ -43,6 +43,9 @@
 //     Exact class surfaces, header orders, serializer declaration orders, BuildAIModule donor declarations,
 //     /Zi, /Z7, /G5, /G6, io.h, malloc.h, and WIN32/_WINDOWS context probes stayed in the same 58-byte basin.
 //     The supported TU context does not select the oracle overlap; preserve the natural baseline.
+// 17: object audit confirms the exact 0x4EF boundary, 0x118 FPO frame, 67 relocations, and serializer ABI.
+//     All differences are stack displacements. PDB names no extra stack object and has no block, range, or
+//     inline records that explain the overlap. An alias or filler would remain unsupported.
 
 #include <string.h>
 
