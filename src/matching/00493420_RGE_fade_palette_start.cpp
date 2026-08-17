@@ -99,10 +99,22 @@
 //   entry copies and alternate channel orders broke the prologue or loop body.
 // - original line 701 stores red, blue, green, and flags in that order. Exact
 //   GetPalette and palette-step donors support four-byte PALETTEENTRY entries.
-//   The 274-byte/2-difference form still needs four byte-channel cursors. Its
-//   last two differences are SIB register-map bytes. No natural typed entry
-//   form recovered that setup without forbidden cursor plumbing. The pinned
-//   277-byte/117-difference typed source is restored.
+//   The earlier 274-byte/2-difference form used four forbidden byte cursors.
+// - TU recovery: declaring DAT_0086b2b0 as an unsized external
+//   tagPALETTEENTRY array naturally derives the four channel cursors and
+//   recovers the original 274 bytes. A fixed [256] declaration stays in the
+//   277-byte basin. DAT_0086b6b0 is fixed at [256] here; fixed and unsized
+//   declarations both produce the exact result.
+// - exact-first checkpoint: unsized declarations for both palette globals,
+//   validated by check_function as 274 bytes and 0 differing bytes.
+// - exact reduction: restored the proven [256] extent for DAT_0086b6b0;
+//   DAT_0086b2b0 remains unsized and the result stays an exact MATCH.
+// - TU audit: global declaration order, same-TU step and credits declarations,
+//   Windows/SDK palette type context, standard headers, and tested pragmas did
+//   not change the fixed-array basin. The unsized declaration is the controlling
+//   source feature, not a hidden header or function-order effect.
+// - FLAGS: config/flags/default.rsp (/nologo /c /O2 /Oy). The small VC5 flag
+//   classification sweep stayed exact after the unsized declaration change.
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
@@ -126,7 +138,7 @@ extern int DAT_0086b298;
 extern int DAT_0086b29c;
 extern unsigned int DAT_0086b294;
 extern float DAT_0086b2ac;
-extern tagPALETTEENTRY DAT_0086b2b0[256];
+extern tagPALETTEENTRY DAT_0086b2b0[];
 extern tagPALETTEENTRY DAT_0086b6b0[256];
 extern TDrawArea* DAT_0086bab0;
 
