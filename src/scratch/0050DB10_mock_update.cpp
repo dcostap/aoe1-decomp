@@ -47,6 +47,14 @@
 // plus post-assignment null test improved the diagnostic to 524B/460 diff, but
 // VC5 still emitted compare-before-move and the source was less natural. Restored
 // the clean 520B typed scan; the structural rewind blocker remains.
+// Worker revisit (sa-ff84d27f-r1): revalidated the clean source at 520B/468
+// positional diff with all four calls aligned and the canonical typed object,
+// player, master, world, and timeline ownership intact. Explicit while, split
+// guards, for-header, do/while, direct-next, and reviewed game_globals.h context
+// probes did not improve the clean basin. The do/while typed probe reached
+// 524B/460 but added less natural guard blocks. Restored the clean source;
+// first blocker remains the redundant rewind post-next null compare and its
+// shifted predecessor blocks.
 
 struct RGE_Static_Object { virtual ~RGE_Static_Object(); };
 struct RGE_Master_Static_Object { virtual ~RGE_Master_Static_Object(); virtual void v4(); virtual void v8(); virtual void vc(); virtual void v10(); virtual void v14(); virtual RGE_Static_Object* create(void* player, int x, int y, int z); };
