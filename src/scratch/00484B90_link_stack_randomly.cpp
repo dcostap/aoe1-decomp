@@ -41,6 +41,9 @@
 // without changing ownership or statement order.
 // Next ownership-expression probe: spell only the root prev store through the
 // canonical member, leaving the persistent stack local for the linked-list walk.
+// Object audit: PDB names no dimension or product local. FPO, COFF, compiler,
+// calls, float field types, and ABI all match. No inline or macro record explains
+// the two commutative load bytes, so load-order steering remains unsupported.
 
 struct Map_Stack {
     long x;                 // +0x00
