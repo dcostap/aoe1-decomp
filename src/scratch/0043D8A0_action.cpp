@@ -35,6 +35,17 @@
 //   original LEA/store order and keeps the best source basin.
 // - declaration order, pointer aliases, register hints, split guards, and
 //   comparator spellings were tested. They were duplicates or worse.
+// Second-pass handler-layout probes:
+// - else-if, while, explicit-break, count-limit, cursor-scope, comparator,
+//   and update-condition forms were duplicates or worse.
+// - valid top-tested for forms moved the base call before the handlers and
+//   aligned all 124 calls, but added a duplicate count test, shortened the
+//   body by 98 bytes, and worsened the strict diff to 2882 bytes.
+// - behavior-backed handler labels with one base_action target were a VC5
+//   codegen duplicate. A malformed empty trailing while looked better at
+//   2811 bytes but is rejected as a source artifact.
+// - moving index initialization into the for header and using a top break
+//   did not improve the valid for frontier. The natural do/while is restored.
 // Final paused state: frame 0x108, 124/124 calls with 99.19% ordered alignment,
 // 83.97% shape similarity, 23.53% exact-block coverage, rebuilt size 3115 vs.
 // original 3201, strict diff 2868. The original uses EBX for the button index
