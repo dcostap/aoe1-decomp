@@ -132,6 +132,13 @@
 //   improved the field-owned source to diff 15 / 93.90% shape. Explicit calls
 //   were duplicate. The reduced source below keeps canonical Map_Stack field
 //   ownership and no invented aggregate; residual drift is frame and color.
+// - sa-1b0de2c9-r1 source-gate audit: removed the field-offset cursor overlay,
+//   raw pointer arithmetic, and x-field byte cursor. The living source now
+//   owns both loops through direct Map_Stack array elements and named fields.
+//   The class helper declarations use the protected symbol surface proved by
+//   the original inventory. Clean validation is 214 bytes with five aligned
+//   calls; the metric regression is accepted because the rejected overlay is
+//   not a valid source owner.
 // - sa-12f952f6-r1 H1-H20: no supported declaration or lifetime model moved the
 //   clean field-owned source out of the 0x964 frame basin. Reordering, sharing,
 //   nesting, and widening the real counters, pointer aliases, typed x aliases,
@@ -159,7 +166,7 @@ struct Map_Stack {
 };
 
 class RGE_Random_Map_Module {
-public:
+protected:
     void init_stack(Map_Stack* stack);
     void add_stack_node(Map_Stack* stack, Map_Stack* node);
     void randomize_stack(Map_Stack* param_1);
@@ -174,33 +181,25 @@ void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
         init_stack(&sub_stacks[i]);
     }
 
-    int outer = 2;
-    while (outer != 0) {
+    for (int outer = 2; outer != 0; outer--) {
         while (param_1->next != 0) {
             int r = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1E8) * 100) / 0x7FFF;
             add_stack_node(&sub_stacks[r], param_1->next);
         }
 
-        // BINARY NOTE: the shipped loop reuses sub_stacks[0].x as a byte cursor.
-        sub_stacks[0].x = 0x18;
-        Map_Stack** first = &sub_stacks[0].prev;
-        while (sub_stacks[0].x < 0x978) {
-            // BINARY NOTE: each pair starts at the two canonical prev fields.
-            Map_Stack** second = (Map_Stack**)((char*)&sub_stacks[0].prev + sub_stacks[0].x);
-
-            while (*first != 0 || *second != 0) {
-                if (*first != 0) {
-                    add_stack_node(param_1, *first);
+        int stack_index = 0;
+        while (stack_index < 100) {
+            while (sub_stacks[stack_index].next != 0 ||
+                   sub_stacks[stack_index + 1].next != 0) {
+                if (sub_stacks[stack_index].next != 0) {
+                    add_stack_node(param_1, sub_stacks[stack_index].next);
                 }
-                if (*second != 0) {
-                    add_stack_node(param_1, *second);
+                if (sub_stacks[stack_index + 1].next != 0) {
+                    add_stack_node(param_1, sub_stacks[stack_index + 1].next);
                 }
             }
 
-            first = (Map_Stack**)((char*)first + 0x30);
-            sub_stacks[0].x += 0x30;
+            stack_index += 2;
         }
-
-        outer--;
     }
 }
