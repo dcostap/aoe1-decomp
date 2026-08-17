@@ -29,6 +29,14 @@
 // reused parsed id. Reordered id assignment before filename selection; this improved size to -20
 // bytes and positional diff to 1006, but VC5 still spills the selected id instead of matching the
 // original branch argument schedule. The common-tail source is retained as the best natural lead.
+// worker 2026-08-17: completed 20 meaningful hypotheses. The original stack listing proves f2g at
+// [esp+18h], the RESFILE output and final ownership flag at [esp+10h], and a distinct sscanf local
+// address schedule. The clean source emits [esp+24h], [esp+14h], and a different schedule.
+// worker 2026-08-17: branch-local set_background2 forms improved resynchronization but worsened
+// positional bytes or size. Ambient declarations, Windows headers, risky flags, pointer scopes,
+// declaration order, casts, and reference ABI forms did not produce an exact group.
+// BINARY NOTE: The unresolved drift begins at the f2g home and continues through sscanf locals.
+// LIKELY INTENT: Recover the original Panel_ez.cpp declaration or translation-unit context next.
 
 #include <stdio.h>
 #include <stdlib.h>
