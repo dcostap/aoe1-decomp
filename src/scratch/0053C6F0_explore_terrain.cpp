@@ -26,6 +26,10 @@
 // source. The new blocker lead is therefore the old-TU local-lifetime/context
 // split that spills checksum to [ebp-14] and reuses the p6 home; do not retain
 // artificial stack or volatile steering.
+// Revisit probes: an explicit in-body Revealed return preserved the two-return
+// CFG but stayed in the 457-byte basin; an early curVisPlayer initializer
+// regressed to 531 bytes. A default-zero ally guard reached 468 bytes and was
+// also restored. The canonical typed source remains the clean owner.
 
 #include <stdlib.h>
 #pragma intrinsic(_rotl)
