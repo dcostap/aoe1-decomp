@@ -21,6 +21,22 @@
 // shardE-4BA1C0 probe 28 (layout, retained): direct stream derivation plus delayed row declaration and table alias; 805 diff, 79.77% shape.
 // final retained: shared eager command/count/state plus direct stream derivation, delayed row declaration, and explicit destination locals; 906 bytes, exact 0x08 frame, 1/1 call identity, 805 strict differing bytes. Remaining evidence-backed blocker is the original p/clip-parameter home and early register schedule.
 // left in scratch: behavior model is close to Ghidra but not an exact/accepted-drift candidate; needs a parameter-home-reuse rewrite mirroring original stack slots.
+// managed claim probes (sa-df68f809, 2026-08-17):
+// - Table alias declaration order, delayed table assignment, direct table use,
+//   typed Byte_Table views, and full TShape member context were duplicate 906B
+//   basins; the p cursor remained EBP and table reloads remained in copy loops.
+// - Moving command shifts into visible odd arms alone reached 879B/857 diff;
+//   initializing both arms reached 936B with a 0xC frame. Both were rolled back.
+// - p-before-pitch and state-first declaration orders were worse or duplicate.
+//   Long-return AlignedWidth, register table forms, row-local order, and an
+//   explicit zero-guarded do-loop were duplicate codegen basins.
+// - A dead draw-area assignment from p reached 856 diff. Reusing draw_area as
+//   the typed stream cursor reached 892B/861 diff. Both confirm the home lead
+//   but are not clean retained source forms.
+// - Final clean validation remains 906B, 0x08 frame, one alignedwidth call,
+//   79.77% shape, and 805 strict differing bytes. Calls and ownership are set;
+//   the open lead is a natural source form that gives p the draw-area home and
+//   table EBP without raw aliases or compiler-steering constructs.
 
 typedef unsigned char byte;
 
