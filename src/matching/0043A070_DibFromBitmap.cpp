@@ -29,9 +29,9 @@
 // the first mismatch to the SelectPalette usage store and is retained.
 // probe 18: keeping the local palette for final restoration worsened size;
 // probe 19: a separate paletteUsage local did not match the usage home.
-// blocker: exact bytes still differ in early register coloring and local
-// liveness and the SelectPalette result store, while frame, call set, CFG, and
-// emitted size are exact.
+// probe 20: assigning the SelectPalette result to hpal, while retaining the
+// local palette alias for setup, reproduced the original result-store and
+// final restoration ownership. The authoritative check is an exact MATCH.
 
 #include <windows.h>
 #include <windowsx.h>
@@ -105,7 +105,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     }
 
     hdc = CreateCompatibleDC(NULL);
-    usage = (UINT)SelectPalette(hdc, palette, FALSE);
+    hpal = (HPALETTE)SelectPalette(hdc, palette, FALSE);
     RealizePalette(hdc);
     SetStretchBltMode(hdc, 4);
 
