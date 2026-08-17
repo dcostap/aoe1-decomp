@@ -11,8 +11,8 @@
 // - common-goto/result and nested/function-scope declaration variants add a
 //   local stack home and broadly perturb the otherwise exact body; reversed
 //   guards do not remove the EH-tail drift.
-// - the known nonvirtual RGE_Zone_Map destructor is declared for the canonical
-//   type surface; it does not change the remaining emitted drift.
+// - RGE_Zone_Map uses its implicit nonvirtual destructor ABI here. Its body is
+//   owned only by VA 005469C0; this source defines no destructor facade.
 // - This TU-aware pass tested reusing the scan index through a shared done label
 //   and a post-loop hit/create if-else. Moving declarations for the goto changed
 //   the EH prologue; the if-else changed call/block layout. Restored the natural
@@ -91,7 +91,6 @@ public:
     RGE_Map* map;
 
     RGE_Zone_Map(RGE_Map* map, float* table, long count);
-    ~RGE_Zone_Map();
     RGE_Zone_Map* check_info(float* table, long count);
     unsigned char do_zone_map();
 };
