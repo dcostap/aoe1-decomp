@@ -26,6 +26,17 @@
 //     but caused broad CFG/register drift and was rolled back.
 // 15: reordered the natural POINT and in_game declarations to test the decompiler's
 //     local ordering; VC5 emitted an identical body, so restored the clean source.
+// Fresh pass: tested bool and initialized selector forms, nested guards, canonical
+// long coordinate widths, and function-scope TDrawArea/top-delta locals; none beat
+// the 758-byte baseline. Direct top/bottom clipping forms changed arithmetic or
+// CFG and were rolled back. Explicit cursor_rect pointer liveness worsened to 221.
+// Fresh pass: added the exact TMousePointer tail and Poll/GetDDBltError member
+// declarations, full TDrawArea and TDrawSystem donor surfaces, and period
+// windows.h/stdlib/string/memory/stdio headers. All emitted the same baseline.
+// Fresh pass: ambient declaration lab (32 variants) found one codegen group; a
+// six-variant selector type/test lab found only baseline and bool groups; no exact.
+// These probes confirm the remaining difference is the EBX/EDI/EBP allocation
+// basin and three-byte late clipping shift, not calls, frame, layout, or headers.
 // left in scratch: remaining work, if any, should be localized source/declaration or
 // TU-context probes after validating the member-function baseline.
 
