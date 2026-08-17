@@ -25,6 +25,13 @@
 // - A binary-guided facet cursor experiment recovered the original ESI/EDI
 //   prologue and improved the diagnostic diff to 286 bytes, but added 8 bytes
 //   and retained opaque cursor arithmetic. It was restored as diagnostic only.
+// - A common typed main-sound result and an explicit positive draw-count guard
+//   recovered the main-sound and draw-list CFG blocks and reduced the diff to
+//   262 bytes.
+// - An explicit positive micro-sound guard recovered the late zero-store
+//   topology and reduced the diff to 227 bytes (91.53% shape, 247 instructions,
+//   0x0C frame). Direct indexed and typed-pointer facet forms changed the frame
+//   or register basin and were restored.
 // - Final clean source keeps typed facet ownership. The blocker is the VC5
 //   allocation and branch topology after the serialized header.
 
@@ -134,24 +141,24 @@ RGE_Sprite::RGE_Sprite(int handle, RGE_Sound** sounds,
     rge_read(handle, &this->id, 2);
     rge_read(handle, &this->mirror_flag, 1);
 
+    RGE_Sound* main_sound;
     if (main_sound_id >= 0) {
-        this->main_sound = sounds[main_sound_id];
+        main_sound = sounds[main_sound_id];
     } else {
-        this->main_sound = 0;
+        main_sound = 0;
     }
+    this->main_sound = main_sound;
 
-    if (this->draw_list_num < 1) {
-        this->draw_list = 0;
-    } else {
+    if (this->draw_list_num > 0) {
         this->draw_list = (RGE_Picture_List*)calloc(
             (unsigned int)this->draw_list_num, 0x10);
         rge_read(handle, this->draw_list,
                  ((int)this->draw_list_num) << 4);
+    } else {
+        this->draw_list = 0;
     }
 
-    if (this->micro_man_sound == 0) {
-        this->sound_list = 0;
-    } else {
+    if (this->micro_man_sound != 0) {
         this->sound_list = (RGE_Sound_List*)calloc(
             (unsigned int)this->facet_num, 0x14);
 
@@ -172,5 +179,7 @@ RGE_Sprite::RGE_Sprite(int handle, RGE_Sound** sounds,
                 ++i;
             } while (i < this->facet_num);
         }
+    } else {
+        this->sound_list = 0;
     }
 }
