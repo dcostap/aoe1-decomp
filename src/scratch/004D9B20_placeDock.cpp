@@ -47,6 +47,10 @@
 // - Exact same-TU closestDockDistance proves <math.h> context. Direct repeated
 //   coordinate expressions make the late x87 range exact and reduce the
 //   strict difference to 68 bytes. Early register allocation remains.
+// - Object audit confirms the taiinfmd.obj range, 0x134 FPO frame, /GX, ABI,
+//   layouts, symbols, relocations, and 17 calls. PDB has no inline or block
+//   records. PDB-shaped locals and declaration initializers regress, so no
+//   object evidence supports another early allocation model.
 
 #include <math.h>
 
