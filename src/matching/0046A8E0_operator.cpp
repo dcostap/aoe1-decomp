@@ -4,8 +4,11 @@
 //
 // INVESTIGATED: prior ~14 source-shaped probes + 1728-variant lab, then a fresh
 //              default-/GX/source-shape pass in this session.
-// CURRENT BEST: 253-byte function, exact frame/size/CFG/calls and 251/253 bytes.
-// BLOCKER: two bytes remain at 0046A91F: VC5 emits `test eax,eax` for the first
+// CURRENT BEST: 253-byte function, exact frame/size/CFG/calls and all bytes.
+// RESOLUTION: a fresh pass preserved i as the second source-array index and
+//          used j as its separate loop count. This restores the oracle's
+//          `shl edi,4` without the extra `mov esi,edi`.
+// BLOCKER (resolved): VC5 initially emitted `test eax,eax` for the first
 //          count guard while the oracle uses `cmp eax,ebp` (EBP is the proven
 //          zero byte-offset local). Constructor register allocation and every
 //          later byte are now exact.
@@ -15,8 +18,7 @@
 //          all loop/copy bytes. Reversed comparison spelling and comparing against
 //          the zero offset did not change `test`; inline donor method bodies moved
 //          the constructor basin back and were rolled back.
-// Not ready for accepted_drift: remaining drift is localized but compiler-shaped.
-// Leave in scratch.
+// Exact source moved to src/matching after final validation.
 // probe sa-e158994a-r1 #3: default /GX exposed the target's exact EH frame;
 // switched both copy loops to do/while so the binary's single pre-loop guard
 // is represented directly, and seeded the second source offset from the
@@ -50,6 +52,10 @@
 // probe shardA3-46A8E0-r1 #1: compared currentSizeValue to the existing zero-
 // initialized loop index; VC5 folded it to the same test and left the natural
 // direct-indexing source unchanged.
+// probe sa-0cd2e7ef-r1 #1: int j = i retained the second offset but emitted
+// mov esi,edi instead of the oracle's xor esi,esi; result was 6 bytes off.
+// probe sa-0cd2e7ef-r1 #2: reset j to zero, kept i as the direct second-array
+// index, and incremented both values; result was an exact MATCH.
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -95,7 +101,8 @@ Path Path::operator+(const Path& other) const {
     int j = 0;
     if (other.currentSizeValue > 0) {
         do {
-            newPath.insertAtEnd(other.pathValue[j]);
+            newPath.insertAtEnd(other.pathValue[i]);
+            i++;
             j++;
         } while (j < other.currentSizeValue);
     }
