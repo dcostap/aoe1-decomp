@@ -29,6 +29,21 @@
 // callback loops whose bounds test supplies the empty-queue behavior. Removing
 // the two source preconditions aligned all 37 ordered calls and raised shape
 // similarity to 84.85%; the remaining drift is not a call-order gap.
+//
+// Follow-up probes:
+// - The reviewed extern FILE* actionFile declaration reduced the natural source
+//   to the exact 1372-byte boundary. Positive objectValue guards and one shared
+//   target log/stop tail remain binary-supported in this basin.
+// - Reversing the final look-around comparison to timer > timeout recovered the
+//   original load order and raised shape to 90.89%; the source still has 458
+//   instructions versus 461 and 1173 strict diff bytes.
+// - A for-loop scan improved raw diff to 1114 bytes but moved the operator[]
+//   growth block to a cold suffix. It was rolled back because the oracle keeps
+//   that block before the lookup path. Volatility, register hints, explicit
+//   labels, and alternate remove forms were also tested and discarded.
+// - The unresolved register basin is the oracle's EBP-held -1 sentinel and
+//   attacking-unit index. The current natural source uses immediate -1 forms
+//   and EBX for that scan. No ordered call gap remains.
 
 #include <stdio.h>
 
@@ -333,7 +348,7 @@ public:
 #define searchedThisUpdate (*(int*)0x592A4C)
 #define numberVisibleObjects (*(int*)0x592A50)
 #define numberDifferentPlayerObjectsVisible (*(int*)0x592A54)
-#define actionFile (*(FILE**)0x62C4CC)
+extern FILE* actionFile;
 #define actionFormat ((const char*)0x57F964)
 #define actionSource ((const char*)0x57F980)
 
@@ -365,10 +380,10 @@ int UnitAIModule::update(unsigned long param_1)
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     long objectID;
-                    if (this->objectValue == 0) {
-                        objectID = invalidValue;
-                    } else {
+                    if (this->objectValue != 0) {
                         objectID = this->objectValue->id;
+                    } else {
+                        objectID = invalidValue;
                     }
                     fprintf(actionFile, actionFormat, objectID,
                             actionSource, 0x306);
@@ -377,6 +392,8 @@ int UnitAIModule::update(unsigned long param_1)
                 this->idleTimerValue = this->idleTimeoutValue;
             }
         } else {
+            long targetLogObjectID;
+            int targetLogCode;
             if (this->objectValue->object_state == 2 && target->object_state > 2) {
                 if (this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
                     this->stopAfterTargetKilledValue = 0;
@@ -392,14 +409,13 @@ int UnitAIModule::update(unsigned long param_1)
                                         this->objectValue->weaponRange()) == 0) {
                                     this->removeCurrentTarget();
                                     if (actionFile != 0) {
-                                        long objectID;
-                                        if (this->objectValue == 0) {
-                                            objectID = invalidValue;
+                                        if (this->objectValue != 0) {
+                                            targetLogObjectID = this->objectValue->id;
                                         } else {
-                                            objectID = this->objectValue->id;
+                                            targetLogObjectID = invalidValue;
                                         }
-                                        fprintf(actionFile, actionFormat,
-                                                objectID, actionSource, 0x335);
+                                        targetLogCode = 0x335;
+                                        goto write_target_log;
                                     }
                                     this->stopObject(1);
                                 } else {
@@ -416,19 +432,26 @@ int UnitAIModule::update(unsigned long param_1)
                     } else {
                         this->removeCurrentTarget();
                         if (actionFile != 0) {
-                            long objectID;
-                            if (this->objectValue == 0) {
-                                objectID = invalidValue;
+                            if (this->objectValue != 0) {
+                                targetLogObjectID = this->objectValue->id;
                             } else {
-                                objectID = this->objectValue->id;
+                                targetLogObjectID = invalidValue;
                             }
-                            fprintf(actionFile, actionFormat, objectID,
-                                    actionSource, 0x356);
+                            targetLogCode = 0x356;
+                            goto write_target_log;
                         }
                         this->stopObject(1);
                     }
                 }
             }
+            goto write_target_log_done;
+
+write_target_log:
+            fprintf(actionFile, actionFormat, targetLogObjectID,
+                    actionSource, targetLogCode);
+            this->stopObject(1);
+
+write_target_log_done:
 
             if (this->objectValue->owner->computerPlayer() == 1 &&
                 this->currentOrderPriorityValue != -1 &&
@@ -548,7 +571,7 @@ int UnitAIModule::update(unsigned long param_1)
 
 update_tail:
     if (this->objectValue->owner->computerPlayer() == 1 &&
-        this->lookAroundTimeoutValue < this->lookAroundTimerValue) {
+        this->lookAroundTimerValue > this->lookAroundTimeoutValue) {
         this->lookAround();
     }
 
@@ -559,6 +582,5 @@ update_tail:
 #undef searchedThisUpdate
 #undef numberVisibleObjects
 #undef numberDifferentPlayerObjectsVisible
-#undef actionFile
 #undef actionFormat
 #undef actionSource
