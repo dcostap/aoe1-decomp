@@ -37,6 +37,17 @@
 //   and passed named locals by reference. The call now uses the original
 //   ?get_tile_bounding_coords@RGE_View@@IAEXHHAAH000@Z relocation; frame and
 //   emitted bytes stayed unchanged at 283B, so no lifetime variant was kept.
+// - this pass tested natural two-slot dimension aggregates, scalar dimension
+//   scratch reuse, declaration/assignment order, array storage, canonical
+//   long map fields, and local map/reference aliases. The best diagnostic
+//   shape was 301B/frame 8B/155 strict-drift bytes; its early dimension-load
+//   register colors and later loop homes still differ. All probes were
+//   restored to this ordinary named-dimension source.
+// - continuation probes revisited a typed Map_Dims aggregate, natural helper
+//   output owners, coordinate-local storage, and positive bound nesting. The
+//   aggregate reached 301B/frame 8B/189 strict-drift bytes, but its early
+//   divisor and register topology still differed. Policy-compliant exactness
+//   was not found; the pinned named-dimension source is restored below.
 // FLAGS: /nologo /c /O2 /Oy
 
 class RGE_Map {
