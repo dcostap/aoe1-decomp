@@ -44,6 +44,23 @@
 //   parameter loads and reached 214B diff. Donor-polymorphic RGE_Map context,
 //   including get_terrain, did not change the x-first basin. Restored the clean
 //   direct max.y-then-max.x source; no policy-clean lead remains.
+// - Related-donor follow-up retested the exact 00547080 RGE_Map surface,
+//   named y aliases, split lower-bound initialization, XYPoint min ownership,
+//   compound max additions, scalar bounds, and aggregate max copying. The
+//   donor surface and natural aliases were duplicates; scalar and aggregate
+//   forms were worse. Restored the clean 247B source and 15-byte hunk.
+// - Revisit probes tested the exact donor local shape, scalar max temporaries,
+//   int versus long map bounds, an XYPoint parameter copy, long radius, and
+//   long XYPoint coordinates. The typed/liveness variants were duplicate or
+//   worse. Restored the pinned natural source; the max-register hunk remains.
+// - This revisit ran a 35-variant source lab over natural coordinate aliases,
+//   declaration order, max assignment order, compound additions, and aggregate
+//   copies. It found four emitted groups and no exact candidate; the 247-byte
+//   group remained the 15-byte mismatch. Focused PDB-informed x-first and
+//   declaration-grouping probes were 196-byte variants or duplicates. A full
+//   period-plausible RGE_Zone_Map declaration surface was also a duplicate.
+//   Restored the clean source; final validation remains a 247-byte mismatch
+//   with one localized max-register/SIB hunk at +0x1B.
 
 typedef unsigned char uchar;
 
