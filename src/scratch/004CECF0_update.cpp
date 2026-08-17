@@ -34,6 +34,21 @@
 // remaining structural gap is one merged +0x5C state-3 call and local switch
 // data placement. Leave in scratch for a later worker rather than forcing a
 // match.
+// Current pass (sa-c2091eb6-r1): H1 break after the state-0x0B state-3 call;
+// H2 inner default break; H3 uchar return cast; H4 moved outer case 6;
+// H5 named uchar sub-action result; H6 named int result; H7 scoped result
+// cases; H8 outer default break; H9 base-typed set_state receiver; H10 const
+// state local; H11 reversed inner case 3/4 order; H12 mixed direct/shared
+// target reset; H13 inner default return; H14 positive state-6 guard; H15
+// scoped outer cases; H16 inherited set_state surface; H17 typed state-6 target
+// local. H1-H3, H5-H11, and H13-H17 emitted the same 739-byte, 26-call basin.
+// H4, H12, and H14 worsened control-flow alignment. All were rolled back.
+// Ambient-declaration lab: 32 context variants formed one identical group.
+// Flag lab: default, /Ob0, /Ob1, /Og-, and /Oy- formed three groups; no exact
+// result. The default group retained the current 739-byte, 26-call basin.
+// Final clean validation remains 739 bytes, 469 positional diff bytes, and
+// 26/27 calls. The missing call is the state-0x0B state-3 +0x5C tail, which
+// VC5 merges with the state-6 null-target tail under every tested source form.
 
 extern float DAT_005750e0;
 extern double DAT_005750e8;
