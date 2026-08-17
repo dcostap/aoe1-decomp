@@ -12,6 +12,17 @@
 //   indirect relocations, and a one-byte epilogue displacement.
 // - Natural four-panel group ordering (ptr[0..3]) replaces split ptr/str4 storage;
 //   it recovers the +13DA block and improves the diagnostic diff by 5 bytes.
+// try 2: restored the period ABI surfaces for long help/string IDs, short radio
+//        counts and edit widths, TShape, and the scenario-object constructor.
+//        This preserved the 9090-byte frame and 358 ordered calls.
+// try 3: reordered victory-button setup and update expressions, then moved the
+//        diplomacy counter setup before its cursor.  This reduced the mismatch
+//        from 2682 to 53 bytes and restored 353/355 relocation masks.
+// BINARY NOTE: The final drift is at the Diplomacy friend-row cursor.  The
+//              original uses EDI for row 0 and EBX for row 1; VC5 colors the
+//              natural equivalent as EDI=row 1 and EBX=row 0.
+// Tested 21 meaningful hypotheses.  The best clean source remains nonexact:
+// 9090/9090 bytes, 358/358 calls, 97.94% exact blocks, 99.84% shape, 53 bytes.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
 
 #include <stdio.h>
@@ -31,15 +42,15 @@ public:
     virtual void v10();
     virtual void set_active(int);
 
-    void set_help_info(int, int);
-    void set_z_order(unsigned char, unsigned char);
-    long width();
-    long height();
+    void set_help_info(long, long);
+    void set_z_order(unsigned char, short);
+    int width();
+    int height();
 };
 
 class TButtonPanel : public TPanel {
 public:
-    void set_radio_info(TButtonPanel**, int);
+    void set_radio_info(TButtonPanel**, short);
     void set_radio_button();
 };
 
@@ -51,17 +62,17 @@ class TScrollBarPanel : public TPanel {};
 class TDropDownPanel : public TPanel {
 public:
     void empty_list();
-    int append_line(int, int);
-    int append_line(char*, int);
-    void setCurrentLineNumber(long);
-    void set_line(int);
+    int append_line(long, long);
+    int append_line(char*, long);
+    void setCurrentLineNumber(int);
+    void set_line(long);
     long get_line();
 };
 
 class TShape {
 public:
     char payload[0x20];
-    TShape(char*, int);
+    TShape(char*, long);
     int is_loaded();
 };
 
@@ -70,15 +81,17 @@ public:
     char gap_04[0xD4];
     int failed; // +0xD8
     char gap_DC[0x140];
-    TRIBE_Scenario_Editor_Panel_Object(void*, TPanel*, int, int, int, TShape*, TShape**, void*);
+    TRIBE_Scenario_Editor_Panel_Object(void*, TPanel*, void*, long, long, TShape*, TShape**, class TRIBE_Player*);
 };
 
 class RGE_Font {
 public:
-    int font;
-    int font_wid;
-    int font_hgt;
+    void* font;
+    long font_wid;
+    long font_hgt;
 };
+
+class TRIBE_Player;
 
 class RGE_Base_Game {
 public:
@@ -249,13 +262,13 @@ public:
     TButtonPanel* Diplomacy_AlliedVictory[8]; // +0x908
     void* world; // +0x928
 
-    int create_button(TPanel*, TButtonPanel**, int, int);
+    int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
-    int create_text(TPanel*, TTextPanel**, int);
+    int create_text(TPanel*, TTextPanel**, long);
     int create_text(TPanel*, TTextPanel**, char*);
     int create_text(TPanel*, TTextPanel**, int, int, int, int, int, int, int, int, int);
     int create_drop_down(TPanel*, TDropDownPanel**);
-    int create_edit(TPanel*, TEditPanel**, char*, int, int, int, int);
+    int create_edit(TPanel*, TEditPanel**, char*, short, int, int, int);
     int create_list(TPanel*, TListPanel**, TScrollBarPanel**);
     int create_radio_button(TPanel*, TButtonPanel**);
     int create_check_box(TPanel*, TButtonPanel**);
@@ -511,8 +524,8 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     this->victory_time->append_line(0x2639, 5000);
     this->victory_time->append_line(0x263A, 3000);
 
-    pp = this->victory_button;
     i = 1;
+    pp = this->victory_button;
     do {
         sprintf(str1, CSTR(0x584610), i);
         sprintf(str2, CSTR(0x586D54), i);
@@ -521,7 +534,8 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
         OK(this->create_button(this->bottom_panel, pp, str1, str2, str3, str4));
         HELP(*pp, 0x7712, -1);
         ++pp;
-    } while (i++ < 12);
+        ++i;
+    } while (i - 1 < 12);
 
     OK(this->create_drop_down(this->bottom_panel, &this->victory_drop_down));
     OK(this->create_drop_down(this->bottom_panel, &this->victory_object_list));
@@ -615,8 +629,8 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     OK(this->create_text(this->bottom_panel, &this->options_disable_text[14], 0x32D8));
     OK(this->create_text(this->bottom_panel, &this->options_disable_text[15], 0x32D9));
 
-    tt = this->Diplomacy_player_text;
     i = 0;
+    tt = this->Diplomacy_player_text;
     do {
         sprintf(str1, CSTR(0x584610), i + 1);
         OK(this->create_text(this->bottom_panel, tt, str1));
