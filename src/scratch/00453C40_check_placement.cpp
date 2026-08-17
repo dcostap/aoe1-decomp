@@ -71,11 +71,20 @@
 // probe26 (layout): one shared perimeter counter declared before the short box coordinates
 //   (a natural declaration-order lead from the first-hunk evidence) changed only 14 emitted
 //   bytes, with no positional or shape gain; restored the scoped counters.
+// probe27-45 (worker_sa0966ff4c): completed 20 meaningful hypotheses. Register-qualified
+//   map, a receiver alias, an early terrain-index local, expanded edge assignments, int box
+//   bounds, direct node-slot aliases, split bound guards, cached map dimensions, alternate
+//   edge declaration permutations, and cached map-row pointers either duplicated the basin
+//   or worsened frame/shape. A bool spelling for the two terrain flags was codegen-neutral.
+//   Direct map-first player->world expressions gave the best clean frontier: 1718B strict
+//   diff, 72.82% shape, 0x44 frame, 11/11 calls, and 82/82 conditional CFG signals.
+//   A four-way edge-order variant lab found no exact result; the original lbrt order remained
+//   the smallest source and size basin. No exact result was reached.
 //
 // LEFT IN SCRATCH: semantically faithful, period-plausible reconstruction reproducing the
-//   original transposed-axis placement box. Best recorded state: 1720B strict diff, 67.31%
-//   resync similarity, 72.65% shape, 1898/1909 size, 596/587 instructions, 11/11 calls,
-//   82/82 conditional CFG, 37.48% exact-block coverage.
+//   original placement box. Best recorded state: 1718B strict diff, 67.21% resync similarity,
+//   72.82% shape, 1898/1909 size, 596/587 instructions, 11/11 calls, 82/82 conditional CFG,
+//   and 37.48% exact-block coverage.
 // NEXT LEADS:
 //  * Original saves this in EBP and carries map in EBX; the clean source currently saves this
 //    in ESI and leaves map in a local. This is a real declaration/liveness axis, not a reason
@@ -243,9 +252,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
     unsigned char p5, unsigned char p6, unsigned char p7,
     unsigned char p8, unsigned char p9, unsigned char p10)
 {
-    RGE_Game_World* world = player->world;
-    float* terrain_cost = world->terrains[terrain];
-    RGE_Map* map = world->map;
+    RGE_Map* map = player->world->map;
+    float* terrain_cost = player->world->terrains[terrain];
 
     float radius_x_value, radius_y_value;
     if (p8 != 0) {
@@ -311,8 +319,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
         edge_y_max = y_max;
     }
 
-    unsigned char bVar9 = 0;
-    unsigned char bVar10 = 0;
+    bool bVar9 = false;
+    bool bVar10 = false;
     short req_terrain1 = tile_req1;
 
     if (req_terrain1 >= 0 || tile_req2 >= 0) {
@@ -380,7 +388,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
     }
 
     // Interior cost / elevation / visibility check over the whole box.
-    bVar9 = 0;
+    bVar9 = false;
     for (short col = x_min; col <= x_max; col++) {
         for (short row = y_min; row <= y_max; row++) {
             unsigned char ct =
