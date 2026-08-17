@@ -32,6 +32,29 @@
 // registers and remains diagnostic rather than the canonical source.
 // Assigning the task result before its null test inverted the prologue and
 // widened diff to 321; an explicit update return widened diff to 203; restored.
+// bounded worker pass: explicit shared failure gotos reached 377 bytes, 2
+// returns, and diff 67, while direct success returns were codegen-identical.
+// The best form still duplicated the success cleanup; restored the clean
+// direct-return source because the result was nonexact.
+// bounded worker pass: typed target/result status reached 358 bytes and one
+// return, but diff 293 and an EBX result carrier; restored.
+// bounded worker pass: parameter-home status reached 415 bytes/diff 354;
+// transport-style status timing reached 379 bytes/one return/diff 243;
+// both changed the natural register and block basin; restored.
+// continuation: a typed pointer result declared before task reached the
+// original 358-byte size and one-return CFG, but carried status in EBX and
+// widened positional drift to 293 bytes; restored. A positive short-circuit
+// guard with an else arm and a null-only failure label were codegen duplicates
+// of the clean source. Reusing id as the status reached 420 bytes/diff 291;
+// restored. No natural source change improved the clean direct-return basin.
+// revisit sa-79ee4913: returning the task and constructor null results was
+// codegen-neutral at 398 bytes/diff 194. Reusing the target as the final
+// 0/1 result with one done label reached 371 bytes/diff 260 and moved the
+// entry load order; splitting its declaration was a duplicate. Restored the
+// pinned direct-return source. Same-TU constructor-EH donors confirm the
+// allocation and state sequence, but provide no source-shape lead for the
+// remaining shared success/failure epilogue. No policy-valid exact source was
+// found in this bounded pass.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 class RGE_Action;
