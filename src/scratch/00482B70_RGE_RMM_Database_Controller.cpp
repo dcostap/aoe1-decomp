@@ -26,6 +26,14 @@
 //   the original 395-instruction topology, 97.22% shape, and +8-byte size.
 // - A separate map handle, virtual declaration surface, and counter reset
 //   were codegen-neutral or worse; the direct typed-array form is retained.
+// - Fresh claim: twenty evidence-led probes tested declaration order, scalar
+//   widths, register hints, counter lifetimes, typed cursor and owner aliases,
+//   map-entry locals, CRT headers, and equivalent member lvalues. The clean
+//   code stayed at 1193 bytes with 28 aligned calls and a 0x34 frame; cursor
+//   and owner aliases worsened the frame or code shape. The remaining blocker
+//   is VC5 register coloring: the original starts the zero/index path in ESI
+//   and the clean source starts it in EBX, then the original has an 8-byte
+//   shorter fallback/record-tail layout. The pinned clean source is restored.
 
 struct _iobuf;
 extern "C" _iobuf* __cdecl fopen(const char*, const char*);
