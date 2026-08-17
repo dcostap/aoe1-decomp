@@ -31,6 +31,14 @@
 // probe 20: removed the explicit cast on the int id; duplicate of probe 18.
 // probe 21: restored both id varargs and made the id local const; duplicate of clean.
 // probe 22: split the id declaration from its assignment; duplicate of clean.
+// claim sa-40a4b942 probes 1-20: tested direct and branch-local civ expressions,
+// short/char/register civ widths, local declaration order, a byte-window temp,
+// reviewed global spelling, pointer and suffix aliases, headers, loop scopes,
+// a hoisted file handle, and a volatile unused local. No basin beat the clean
+// 1212-byte source. Probe 11 was closest at 1136 differing bytes but grew 14 bytes.
+// BINARY NOTE: the original preserves suffix in EBX, places temp.type at the
+// observed entry-relative stack window, and keeps the file handle in EBP.
+// These properties remain unresolved in the natural source below.
 
 #include <stdio.h>
 
