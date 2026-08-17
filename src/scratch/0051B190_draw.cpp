@@ -8,26 +8,18 @@
 // the period class surfaces needed to preserve those calls and offsets.
 //
 // Attempt log:
-// - baseline: typed panel/object reconstruction, render lock/DC sequence, and
-//   named RGE/TRIBE object ownership; 3138 bytes, with the state paths still
-//   structurally interleaved.
-// - split the combat-state owner/resource path from the building work path;
-//   this moved the call sequence to 88.6% alignment and brought the size gap
-//   from -249 to -65 bytes.
-// - restored the observed zero-subtraction expressions before the attribute,
-//   resource, and distance ftol conversions; the rebuilt size reached 3387
-//   bytes and the best positional report is 3161 differing bytes.
-// - tried a narrow row-byte liveness spelling, explicit shared-tail gotos,
-//   panel/building aliases, and a post-switch float reload; these either
-//   worsened positional/codegen metrics or only changed tail sharing, so they
-//   were rolled back.
-// - moved the display-row local below the render/DC phase so it follows the
-//   original ESI row lifetime and does not initialize a stack home in the
-//   entry guard; this is the narrow first-block/render-call-order lead.
-// - left in scratch: frame is 0x15c versus 0x158; remaining drift is chiefly
-//   VC5 block/tail placement (three fewer draw_item virtual sites and two
-//   fewer ftol sites), not an unresolved graphics surface, object offset, or
-//   ordered call target model.
+// - baseline: 3387 bytes and a 0x158 frame, with 92 rebuilt calls versus 88
+//   original calls; the first mismatch is the vtable register color.
+// - invalid resource attributes now skip the resource draw and continue at
+//   the distance path, matching the original jump to line 686.
+// - construction and work progress now select one value before one shared
+//   draw_item call, matching the original converged call site.
+// - resource amounts use separate source expressions for the 0x2D and other
+//   object paths; VC5 still merges their emitted call site in this context.
+// - the best clean probe is 2976 differing bytes, 66.67% shape similarity,
+//   0x158 frame, and 92 rebuilt calls. The source remains nonexact.
+// - tested 20 distinct hypotheses across control flow, value width, local
+//   lifetime, aliases, and call-site structure. No exact result was found.
 
 #include "../../include/game_globals.h"
 #include <stdio.h>
@@ -777,8 +769,7 @@ void TRIBE_Panel_Object::draw()
         }
 
         if (this->game_obj->owner != this->player) {
-            this->draw_finish();
-            return;
+            goto finish;
         }
 
         if (level == 7) {
@@ -839,7 +830,7 @@ void TRIBE_Panel_Object::draw()
             return;
         }
 
-        if ((int)(this->game_obj->attribute_amount_held - DAT_00576d84) < 1) {
+        if ((int)this->game_obj->attribute_amount_held < 1) {
             this->draw_finish();
             return;
         }
@@ -936,11 +927,12 @@ void TRIBE_Panel_Object::draw()
             }
 
             if (this->game_obj->owner == this->player) {
-                if (this->game_obj->object_state == 0) {
-                    this->draw_item(row, 9, 3,
-                                    this->game_obj->get_construction_progress(), 0);
-                    ++row;
-                } else if (work_type == 0x67 || work_type == 0x66) {
+                // BINARY NOTE: construction and work progress share one draw call.
+                if (this->game_obj->object_state == 0)
+                    progress = this->game_obj->get_construction_progress();
+
+                if (this->game_obj->object_state == 0 ||
+                    work_type == 0x67 || work_type == 0x66) {
                     this->draw_item(row, 9, 3, progress, 0);
                     ++row;
                 } else {
@@ -989,10 +981,8 @@ void TRIBE_Panel_Object::draw()
 
             if (show_resource) {
                 short resource_type = this->game_obj->attribute_type_held;
-                float resource_amount = this->game_obj->attribute_amount_held;
                 if (this->game_obj->master_obj->id == 0x2d) {
                     resource_type = 9;
-                    resource_amount = this->game_obj->owner->attributes[9];
                 }
 
                 int item_type;
@@ -1016,17 +1006,27 @@ void TRIBE_Panel_Object::draw()
                     item_type = 5;
                     break;
                 default:
-                    this->draw_finish();
-                    return;
+                    // BINARY NOTE: an invalid resource type skips this draw.
+                    goto resource_done;
                 }
 
+                if (this->game_obj->master_obj->id == 0x2d) {
+                    this->draw_item(
+                        row, item_type, 0,
+                        (int)(this->game_obj->owner->attributes[9] -
+                              DAT_00576d84), 0);
+                    goto resource_row_done;
+                }
                 this->draw_item(
                     row, item_type, 0,
-                    (int)(resource_amount - DAT_00576d84), 0);
+                    (int)(this->game_obj->attribute_amount_held -
+                          DAT_00576d84), 0);
+resource_row_done:
                 ++row;
             }
         }
 
+resource_done:
         if (this->game_obj->master_obj->id == 0x2d &&
             this->game_obj->owner != this->player) {
             RGE_Player* current_player = rge_base_game->get_player();
@@ -1057,5 +1057,6 @@ void TRIBE_Panel_Object::draw()
         }
     }
 
+finish:
     this->draw_finish();
 }
