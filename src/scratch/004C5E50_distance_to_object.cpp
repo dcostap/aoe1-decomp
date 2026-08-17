@@ -154,6 +154,18 @@
 // at 151B/164 diff. No inheritance, generic virtual methods, parameter-home alias, duplicated-Y
 // form, raw cursor, or diagnostic volatility is supported by this target.
 
+// sa-70edc786-r1 fresh direct-float lifetime/order pass 2026-08-17: ran twelve
+// natural, PDB-supported probes after the canonical class audit. Tested dX/dY
+// reuse, split declarations, radius pointer and float temporary ownership,
+// predeclared Y, top-scoped X/Y, combined declarations, implicit own-member
+// reads, compare operand order, split compound subtractions, and ternary clamps.
+// The direct source stayed in the 151B/164-diff basin except for equivalent
+// radius temporary ownership, which reached 167B/163 diff and 58.06% shape.
+// That size-matching form still lacked push ecx, the shifted parameter home,
+// and the target fused Y subtraction. It also added broad x87 stack changes.
+// The natural source was restored. Volatile, duplicated-Y, parameter-home,
+// double-radius, and metric-only diagnostics were not tested or retained.
+
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
