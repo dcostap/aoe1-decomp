@@ -137,6 +137,18 @@
 //   FPO/COFF shape, compiler, and no hidden inline cause. Oracle assigns row to
 //   the td home and count to p2; the natural source reverses them. A row-home
 //   cast remains rejected, and the extra skip-arm source increment stays open.
+// sa-d8c4454d-r1:
+// - Canonicalized the PDB class spellings and private decoder ABI. Added the
+//   proven Shape_File_Header, Shape_Offsets, SLhape_File_Header, and Shape_Info
+//   payload types. Calls stayed 2/2 and output stayed 268B with an 8B frame.
+// - A full TDrawArea field layout added 3 bytes and was rejected. The narrow
+//   typed overlay keeps only the proven decoder fields and class spelling.
+// - A shared source increment after skip and solid arms reached 268B but 255
+//   differing bytes. Restored the simple natural arm increments. It changed
+//   control flow and did not preserve the best source basin.
+// - Typed payload aliases, canonical Orien/width widths, a palette alias,
+//   direct header reads, and folded destination arithmetic were duplicates or
+//   worse. No parameter-home or row-home steering is retained.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -145,7 +157,8 @@ extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 typedef unsigned char uchar;
 
-struct Shape_Header {
+class Shape_Header {
+public:
     long bounds;
     long origin;
     long xmin;
@@ -154,7 +167,8 @@ struct Shape_Header {
     long ymax;
 };
 
-struct TDrawArea {
+class TDrawArea {
+public:
     char gap_00[0x08];
     uchar* Bits;           // +0x08
     void* BitmapInfo;      // +0x0C
@@ -170,16 +184,49 @@ struct TDrawArea {
     long AlignedWidth();
 };
 
-struct TShape {
+class Shape_File_Header {
+public:
+    long version;
+    long shape_num;
+};
+
+class Shape_Offsets {
+public:
+    long shape;
+    long palette;
+};
+
+class SLhape_File_Header {
+public:
+    char Version[4];
+    long Num_Shapes;
+    char Comment[24];
+};
+
+class Shape_Info {
+public:
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
+};
+
+class TShape {
+public:
     uchar* shape;                   // +0x00
     int load_type;                  // +0x04
     int load_size;                  // +0x08
     Shape_Header* shape_header;     // +0x0C
-    void* head;                     // +0x10
-    void* offsets;                  // +0x14
-    void* FShape;                   // +0x18
-    void* shape_info;               // +0x1C
+    Shape_File_Header* head;        // +0x10
+    Shape_Offsets* offsets;         // +0x14
+    SLhape_File_Header* FShape;     // +0x18
+    Shape_Info* shape_info;         // +0x1C
 
+private:
     uchar shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long p4, uchar* pal);
 };
 
@@ -189,7 +236,7 @@ uchar TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3, long 
     long width = (hdr->ymax - hdr->ymin) + 1;
     uchar* src = (uchar*)(hdr + 1);
 
-    long Orien = td->Orien;
+    int Orien = td->Orien;
     long stride = td->AlignedWidth() * Orien;
     uchar count;
     uchar* row;
