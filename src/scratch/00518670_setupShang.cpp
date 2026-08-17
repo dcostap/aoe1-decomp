@@ -46,6 +46,17 @@
 // - TU-group closeout: the common civilization-table and TRIBE_Game declaration
 //   context remains canonical; a fresh baseline emitted the same 285-byte basin.
 //   The EDX/ECX split and seven-byte size gap have no new source-backed lead.
+// v18 (sa-23c06259-r1): grouped/chained the repeated non-deathmatch stores to
+// mirror the PDB store bands. VC5 emitted the identical 285-byte result
+// (123 strict-diff bytes; first mismatch +0x97), so the clean literals remain.
+// v19 (sa-40f54d55-r1): fresh baseline and five natural probes preserved the
+// same 285-byte basin: a late mapType copy, reviewed base-game global typing,
+// non-polymorphic TRIBE_Game, explicit deathmatch returns, and fully chained
+// repeated stores. Retain this typed direct-store source; the only gap remains
+// the original EDX/ECX constant coloring and immediate-store encoding.
+// v20 (sa-63b9d937-r1): refreshed the dossier and searched exact local donors
+// for the +0x97 store block. No same-TU donor gives this EDX/ECX pattern.
+// The typed direct-store source remains the cleanest supported reconstruction.
 
 typedef unsigned char uchar;
 
