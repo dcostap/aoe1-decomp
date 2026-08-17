@@ -26,6 +26,19 @@
 // Direct this-member ownership in the coordinate loop, guided by the binary's
 // saved this while EBX is reused for tile access, was codegen-identical and
 // restored; the persistent alias is not the EBP/local-home cause.
+// This claim tested post-call self setup, a pointer-to-pointer self home,
+// visible.cpp LOS declarations, inverted suppression nesting, a y1 reference,
+// x1 register qualification, and local declaration order. All natural probes
+// were codegen duplicates; the row-cursor probe changed structure but not the
+// frame basin and was restored. A volatile p6 home was diagnostic only and was
+// also restored. The next useful evidence is a donor-level VC5 TU or ABI
+// context that explains the original EBP/local-home allocation.
+// Revisit claim: restoring the proven RGE_Map prefix, splitting the tile zero
+// declaration, using a typed owner reference, typed row indexing, and normal
+// C++ linkage for log_map_call all emitted the clean 356-byte basin unchanged.
+// An explicit outer while loop reached 360 bytes but changed the CFG and still
+// lacked the oracle frame, so it was restored. Typed map ownership and the
+// natural paired row/column traversal remain authoritative.
 // Left in scratch: default code is 25 bytes short with broad prologue/register
 // drift; canonical behavior and field ownership are stable, but source/ABI context
 // still needs a donor-level explanation for the original EBP/local topology.
