@@ -33,6 +33,14 @@
 // work window and retained natural enumeration, ownership transfer, and cleanup.
 // - first-hunk layout probe: moving the typed reload-work aggregate after the
 //   scalar declarations emitted an exact duplicate; restored the clean order.
+// - binary note: writing the open-success guard as `fd > -1` restores the
+//   original cmp -1/jle form. `fd >= 0` emits test/jl and shifts the suffix.
+// - binary note: the original keeps the final search count at [esp+18h] and
+//   uses [esp+14h] for a transient entry/name cursor. The clean source emits
+//   these two proven homes in reverse order; 23 focused probes did not resolve
+//   that compiler allocation difference without less natural source.
+// - likely intent: the two initial file scans are guarded do/while searches;
+//   the donor-supported form preserves their shipped enumeration behavior.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -131,18 +139,18 @@ void RGE_Scenario_File_Info::reload_scenarios()
 
     sprintf(work.file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(work.file_name + 4, &work.file_info);
-    while (handle != -1) {
-        ++total;
-        if (_findnext(handle, &work.file_info) == -1)
-            break;
+    if (handle != -1) {
+        do {
+            ++total;
+        } while (_findnext(handle, &work.file_info) != -1);
     }
 
     sprintf(work.file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(work.file_name + 4, &work.file_info);
-    while (handle != -1) {
-        ++total;
-        if (_findnext(handle, &work.file_info) == -1)
-            break;
+    if (handle != -1) {
+        do {
+            ++total;
+        } while (_findnext(handle, &work.file_info) != -1);
     }
 
     sprintf(work.file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
@@ -188,7 +196,7 @@ void RGE_Scenario_File_Info::reload_scenarios()
                     rge_base_game->prog_info->scenario_dir,
                     work.file_info.name);
             int fd = rge_open(work.file_name + 4, 0x8000);
-            if (fd >= 0) {
+            if (fd > -1) {
                 rge_read_uncompressed(fd, work.file_name, 4);
                 current->scenario_header = rge_base_game->new_scenario_header(fd);
                 rge_close(fd);
