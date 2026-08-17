@@ -38,6 +38,25 @@
 // constructor null-test/EH-tail branch layout.
 // Follow-up worker: retested positive constructor if/else, direct success return, and positive-goto tail forms; all entered the known 378-byte EH basin. Restored the validated 359-byte int-result source.
 // Current worker: tested a same-TU-style nested allocation scope for the Move_To pointer; emitted code was unchanged and the scope was rolled back.
+// Current pass: clean baseline rebuilt at 359 bytes with 54 strict differing bytes.
+// Pointer-as-status `(int)(move_action = new ...)` reached 359 bytes and 49 bytes,
+// but emitted `je` to the cleanup tail and `mov edi,1; mov eax,edi` on success.
+// Explicit if/else, null-first, goto-done, direct-return, and do-while-zero tails
+// either rebuilt 378/382 bytes or returned to the 54-byte basin. Restored clean.
+// Revisit pass: the original com_obj.cpp EH tail matches the same natural pattern
+// seen at 00431150 and 004CB450: test the typed constructor result, reset EH state,
+// branch to typed action work, return zero on null, and return one after add_action.
+// Direct-return, typed-pointer-result, explicit-goto, and result-initialization
+// variants did not reproduce this VC5 layout. The clean int-result source remains
+// authoritative; no shared ABI or layout change was justified.
+// Bounded follow-up (sa-ade25929-r1): rechecked positive/negative if-else tails,
+// boolean and integer constructor-status carriers, direct returns without the
+// unused result declaration, a null-pointer assignment carrier, return-assignment
+// spelling, and explicit fail/success/done labels. Results were 58, 49, 161, 71,
+// or 147 differing bytes, with no exact or new useful basin. Restored the pinned
+// 359-byte natural int-result source; the constructor EH-tail polarity remains
+// unresolved (oracle tests edi before the EH-state reset, while clean VC5 emits
+// xor eax before that test).
 
 #include <stddef.h>
 
