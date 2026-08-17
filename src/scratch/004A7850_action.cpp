@@ -113,7 +113,7 @@ public:
     int save_scenario(char* name);
 };
 
-extern TRIBE_Game* rge_base_game;
+extern RGE_Base_Game* rge_base_game;
 
 class TribeSaveGameScreen : public TEasy_Panel {
 public:
@@ -135,6 +135,7 @@ public:
 };
 
 long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsigned long p4) {
+    // BINARY NOTE: The executable keeps state bytes before the formatted text in both buffers.
     char tempFileName[260];
     char text[560];
 
@@ -151,9 +152,11 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                     sprintf(tempFileName + 4, "%s%s.scn", dir, this->list->currentLine());
                 }
                 _unlink(tempFileName + 4);
-                int mode2 = this->modeValue;
-                TRIBE_Game* game2 = rge_base_game;
+                int mode2;
+                mode2 = this->modeValue;
+                TRIBE_Game* game2 = (TRIBE_Game*)rge_base_game;
                 RGE_Prog_Info* prog2 = game2->prog_info;
+                // BINARY NOTE: Each extension arm fetches the current list line before formatting.
                 if (mode2 == 0) {
                     sprintf(tempFileName + 4, "%s%s.gmx", ((char*)prog2) + 0xB12, this->list->currentLine());
                 } else {
@@ -193,6 +196,7 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                 return 1;
             }
 
+            // BINARY NOTE: Byte 3 is the existence flag; formatted paths start at byte 4.
             tempFileName[3] = 0;
             if (this->modeValue == 0) {
                 sprintf(this->fileName, "%s.gam", base);
@@ -222,11 +226,11 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                 if (tempFileName[3] == 0) {
                     int mode = this->modeValue;
                     if (mode == 0) {
-                        if (!rge_base_game->save_game(this->fileName)) {
+                        if (!((TRIBE_Game*)rge_base_game)->save_game(this->fileName)) {
                             this->popupOKDialog(0x962, 0, 0x1C2, 100);
                         }
                     } else if (mode == 1) {
-                        if (!rge_base_game->save_scenario(this->fileName)) {
+                        if (!((TRIBE_Game*)rge_base_game)->save_scenario(this->fileName)) {
                             this->popupOKDialog(0x963, 0, 0x1C2, 100);
                         }
                     } else if (mode == 2) {
@@ -268,7 +272,7 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                     this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
                     sprintf(tempFileName + 4, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
                     _unlink(tempFileName + 4);
-                    if (!rge_base_game->save_game(this->fileName)) {
+                    if (!((TRIBE_Game*)rge_base_game)->save_game(this->fileName)) {
                         this->popupOKDialog(0x962, 0, 0x1C2, 100);
                     }
                     return 1;
@@ -277,7 +281,7 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                     this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
                     sprintf(tempFileName + 4, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
                     _unlink(tempFileName + 4);
-                    if (!rge_base_game->save_scenario(this->fileName)) {
+                    if (!((TRIBE_Game*)rge_base_game)->save_scenario(this->fileName)) {
                         this->popupOKDialog(0x963, 0, 0x1C2, 100);
                     }
                     return 1;
