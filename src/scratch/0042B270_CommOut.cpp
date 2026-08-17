@@ -16,11 +16,16 @@
 //   code size reached 1504 versus the 1505-byte original.
 // - caching the DirectPlay object before Send reproduced the original single
 //   global load and improved the call-site basin; signed count temporaries were
-//   codegen-neutral.  Initializing hr before the second scan was rolled back
-//   because it expanded the frame to 0x28.
-// - removing the post-scan hr initialization let EBX carry the count and
-//   improved block coverage, but worsened strict diff and produced a -5-byte
-//   function; restored the defined hr initialization.
+//   codegen-neutral.  A post-scan hr initialization changed the local-home
+//   basin, so the best codegen source leaves that assignment out.
+// - split the guaranteed-delivery accounting and StoreForResend tests.  This
+//   reproduces the original second TEST EBX, exact size, and 84.24% block
+//   coverage, but the function remains non-exact.
+// - BINARY NOTE: the original no-send path zeros EBX at 0042B728.  Several
+//   explicit hr-zero source forms reproduced that block but changed the wider
+//   register basin.  The no-send source model remains unresolved.
+// - BINARY NOTE: exact donor 00426530 uses int,int,int,int,uchar,int for
+//   AddCommand.  This local declaration emits the same bytes.
 // - restored the typed packet-header owner for the four binary-proven fields;
 //   emitted code was unchanged, so kept the natural typed source.
 // - scoped send/count temporaries to mirror the original seven named stack
@@ -137,7 +142,7 @@ public:
     uchar GetNextSequence(ulong turn);
     int StoreForResend(uint serial, char* message, uint length,
                        uint* dest_map);
-    int AddCommand(ulong turn, void* data, ulong length, int player,
+    int AddCommand(int turn, int data, int length, int player,
                    uchar sequence, int flags);
 
     long CommOut(ulong to, uchar type, void* data, int length, uchar flags);
@@ -242,7 +247,6 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         ++i;
     } while (i <= this->MaxGamePlayers);
 
-    hr = 0;
     if (this->RGE_Guaranteed_Delivery != 0) {
         if (full_length == 0) {
             L->Log("+++Damaged Msg 0b");
@@ -280,8 +284,11 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
                 recipient_count = 1;
             }
 
+            // BINARY NOTE: the shipped code tests the Send result twice.
             if (hr == 0) {
                 this->TXPacketLength += recipient_count * full_length;
+            }
+            if (hr == 0) {
                 this->StoreForResend(
                     out->Serialno, packet,
                     full_length,
@@ -351,7 +358,8 @@ sent:
     } else {
         ++this->TXPackets;
         if (type == '>') {
-            this->AddCommand(sync_turn, data, length, this->Me,
+            this->AddCommand((int)sync_turn, (int)data, (int)length,
+                             this->Me,
                              out->Sequence,
                              0);
         }
