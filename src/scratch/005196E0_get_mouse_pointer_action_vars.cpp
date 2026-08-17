@@ -23,9 +23,16 @@
 // probe 21: corrected the right-click table key to master->object_group; the original uses +0x10 for table lookup and +0x14 only for the player bound. The codegen basin became structurally worse, but this restores the executable's key behavior.
 // probe 22: reordered the local declarations and removed the explicit self alias after the key correction; both emitted the same 0x18-frame basin.
 // probe 23: declared the fallback scan pointer inside the positive-count block; this follows the original post-test iterator copy at line 5248 and improved CFG/block shape without changing size or calls.
+// probe 24: post-lookup current initialization plus a pretested fallback scan improved the clean result to 891 strict bytes and 74.35% shape; this is now pinned.
+// probes 25-32: zero-local, receiver-alias, entry-pointer, narrow-field, register, positive-guard, and context variants either duplicated code or worsened the clean basin.
+// probe 29: caching current_action_flags produced the original 0x1c frame and EDI receiver, but local homes and broad CFG drift worsened; do not retain the cache.
+// probe 26: a scoped rge_base_game receiver improved exact-block coverage but worsened strict bytes and did not recover the original ECX count color.
+// context sweep: 32 ambient declaration samples all emitted one unchanged nonexact basin; neutral front-end declarations are not the blocker.
+// Current clean checkpoint: 891 strict bytes (91.1043%), 74.35% shape, 26.87% exact blocks, 978-byte size, four ordered calls, 0x18 frame versus original 0x1c.
+// Remaining evidence-led lead: recover original saved-this home [esp+2c], object/local homes, and EDI/ECX/ESI ownership without synthetic volatility or padding.
 // Final candidate: typed object/master/player ownership, master-group table key, exact field widths/offsets, natural retry-table loop, and 978-byte default-flag build. Remaining drift is broad VC5 local/block topology, not an unresolved call set.
 // GIVEUP blockers: original saved-this home at the top local slot, 0x1c versus 0x18 frame/local coloring, and action-switch handler placement remain unresolved. No inline asm or accepted_drift proposal.
-// Current validation: pending final unchanged validation; no inline asm.
+// Final validation: unchanged source check remains MISMATCH at 891 strict bytes; no inline asm.
 
 extern int DAT_0086bc88;
 extern int DAT_0086bc8c;
@@ -146,8 +153,9 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
     int table_count;
     int action_code;
     int action_var;
-    int current = 0;
+    int current;
     object = this->world->object(id);
+    current = 0;
     action = 0;
     var = 0;
     if (object != 0) {
@@ -196,14 +204,14 @@ retry_table:
         int i = 0;
         if (table_count > 0) {
             RightClickEntry* scan = table;
-            do {
+            while (i < table_count) {
                 if (scan->key == object_player) {
                     entry = table + i;
                     break;
                 }
                 ++i;
                 ++scan;
-            } while (i < table_count);
+            }
         }
     }
     if (entry == 0) {
