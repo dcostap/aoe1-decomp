@@ -29,6 +29,21 @@
 // keeps next_char at text; the original then advances it inside the loop.
 // Kept that natural source form.  A named first-length temp improved resync
 // but broke size and prologue parity, so it was rolled back.
+// claim sa-a864d1c5: restored the pinned clean source before pause.  The
+// baseline remains 1064 bytes, 0x170 frame, 29 ordered calls, and 986 strict
+// differing bytes.  Local declaration order, __mbslen int return, int count
+// widths, bool flags, full TTextPanel layout, a derived draw slot, combined
+// guards, register qualifiers, max-width polarity, period MBSTRING.H calls,
+// and int text_len with narrow comparisons did not produce an exact result.
+// The int text_len/narrow-compare probe was the best diagnostic lead at 548
+// differing bytes, but its shape similarity fell to 76.49%; it was restored.
+// Ambient declaration context (64 variants) and the vc5-small flag family
+// (12 variants) each formed one unchanged nonexact group.  No tested source
+// or context change recovered the original ESI text / EDI this prologue.
+// BINARY NOTE: the original keeps the text length in EBP and the moving input
+// cursor in ESI, while the clean source keeps them in a stack home and EBX.
+// LIKELY INTENT: the remaining drift is a VC5 register-color or source-context
+// basin issue, not an unresolved call, frame, or helper ownership issue.
 // left in scratch: the remaining broad drift begins at VC5 prologue/register
 // coloring (parameter in EBX vs original ESI, this in ESI vs original EDI),
 // plus local slot/block placement; calls, frame, and size now match.
