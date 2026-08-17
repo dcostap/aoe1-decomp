@@ -22,10 +22,9 @@
 //   const tech; these stayed at 16, 24, or 32 bytes and were reverted.
 // - a 12-case /Od declaration-order lab found only two 391-byte codegen groups,
 //   both nonexact; no ordinary top-level declaration order recovered the homes.
-// Clean source retained: separate typed locals. The exact Check_Tech_Temps local
-// aggregate remains a diagnostic only and is not retained in living source.
-// The batch revalidated that aggregate under /Od, but found no historical or
-// semantic ownership for it. Main review kept the natural source in scratch.
+// Main review rejected the exact Check_Tech_Temps aggregate. It only grouped
+// unrelated locals to force stack homes, and no PDB or behavior evidence owns
+// that source object. Keep the separate typed locals in scratch.
 
 struct Tech_Player_Tree {
     float research_done;
