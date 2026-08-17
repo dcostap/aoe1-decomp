@@ -30,6 +30,25 @@
 //   the remaining bytes are localized register coloring in those two paths.
 // - Declaring the known TRIBE_Main_View command_make_do override and testing
 //   qualified and unqualified calls did not change the remaining 14 bytes.
+//
+// Current matching pass (sa-cbe724ac-r1):
+// - The clean baseline remains 844 bytes, 0x14 frame, 32 ordered calls, and
+//   14 strict differing bytes.  The first mismatch is mode 102 at +0125.
+// - Naming mode-104 object_id, caching its player, naming mode-102's result,
+//   reversing local declaration order, splitting mode initialization, adding
+//   exact-donor class declarations, and adding string.h were tested.
+// - A positive mode-102 action guard, a same-TU unused list declaration, local
+//   mode-102 coordinate copies, an explicit short cast, and consistent result
+//   locals across modes 101-103 were tested.
+// - Nested mode-104 guards, function-scope target storage, shared-label moves,
+//   inverted mode-102 success flow, and PDB-ordered default placement were
+//   tested.  These either emitted the same basin or lost structural parity.
+// - A six-variant mode-102/mode-104 lab and a 256-sample ambient declaration
+//   lab produced one 844-byte basin and no exact result.
+// - The named mode-102 result local was the only useful local change: it fixed
+//   the mode-104 register hunk, but the mode-102 register hunk remained.
+// - Final validation after restoring the pinned clean source is still a
+//   14-byte mismatch.  The source stays in scratch; no promotion was made.
 
 #include <stdlib.h>
 
