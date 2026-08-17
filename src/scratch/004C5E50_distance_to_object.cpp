@@ -169,6 +169,22 @@
 // and differs broadly because VC5 does not reproduce the original push/home and
 // x87 schedule without the unsupported cached-local scaffolding.
 //
+// Main-agent source review:
+// - The PDB records only obj, dY, and dX. Optimized PDB data can omit short-lived
+//   locals, so this fact alone does not reject the exact candidate.
+// - The line map is stronger evidence. Lines 3679 and 3680 compute dX and dY.
+//   Lines 3682 through 3685 perform their absolute-value checks.
+// - Line 3687 contains the complete X-radius calculation. Line 3688 contains
+//   the complete Y-radius calculation. Lines 3689 through 3692 clamp dX and dY.
+// - Line 3694 computes sqrt(dX*dX + dY*dY). This sequence supports direct dX
+//   and dY expressions. It does not show four separate radius declarations.
+// - Direct dX/dY reuse was tested again. It still emits 151 bytes with 164
+//   differences. The four cached radius locals still emit all 167 exact bytes.
+// - The cached locals are valid C++, but they are probably a compiler-context
+//   surrogate. Their exact bytes do not outweigh the PDB line-map evidence.
+// - Keep the direct source until new period source or translation-unit evidence
+//   supports the four cached locals.
+//
 // sa-70edc786-r1 fresh direct-float lifetime/order pass 2026-08-17: ran twelve
 // natural, PDB-supported probes after the canonical class audit. Tested dX/dY
 // reuse, split declarations, radius pointer and float temporary ownership,
