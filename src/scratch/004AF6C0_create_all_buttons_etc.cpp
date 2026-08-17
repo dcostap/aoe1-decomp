@@ -18,17 +18,14 @@
 // try 3: reordered victory-button setup and update expressions, then moved the
 //        diplomacy counter setup before its cursor.  This reduced the mismatch
 //        from 2682 to 53 bytes and restored 353/355 relocation masks.
-// BINARY NOTE: The final drift is at the Diplomacy friend-row cursor.  The
-//              original uses EDI for row 0 and EBX for row 1; VC5 colors the
-//              natural equivalent as EDI=row 1 and EBX=row 0.
-// Tested 21 meaningful hypotheses.  The best clean source remains nonexact:
-// 9090/9090 bytes, 358/358 calls, 97.94% exact blocks, 99.84% shape, 53 bytes.
-// second pass: Direct multidimensional indexing of Diplomacy_friend_box is
-//               the strongest row model.  It recovers the original row
+// BINARY NOTE: Ground-truth and screen type dumps declare
+//              Diplomacy_friend_box as TButtonPanel* [8][3] at +0x8A8.
+//              Direct [i][0..2] access is therefore the natural row owner.
+// second pass: Direct multidimensional indexing recovers the original row
 //               registers, body order, size, frame, calls, and 355/355 masks.
-//               It leaves only four bytes: the two final loop-home stores are
+//               Four bytes remain because the two final loop-home stores are
 //               reversed.  Dedicated counters and do/for update forms did not
-//               change that store order.  The pinned 53-byte source is kept.
+//               change that order.  This canonical typed form is retained.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
 
 #include <stdio.h>
@@ -288,7 +285,9 @@ const int FormatMultiLine = 7;
 
 void TRIBE_Screen_Sed::create_all_buttons_etc()
 {
+    TButtonPanel** pp;
     int i;
+    int diplomacy_i;
     int count;
     TPanel* ptr[4];
     char str4[20];
@@ -297,7 +296,6 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     char str[100];
     char str2[140];
     register TButtonPanel** cur;
-    TButtonPanel** pp;
     TTextPanel** tt;
     TButtonPanel** group;
 
@@ -646,15 +644,14 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     OK(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list)); HELP(this->Diplomacy_player_list, 0x773D, -1);
 
     pp = this->Diplomacy_AlliedVictory;
-    for (i = 0; i < 8; ++i) {
-        TButtonPanel** row = this->Diplomacy_friend_box[i];
-        OK(this->create_radio_button(this->bottom_panel, &row[0])); HELP(row[0], 0x773F, -1);
-        OK(this->create_radio_button(this->bottom_panel, &row[1])); HELP(row[1], 0x7740, -1);
-        OK(this->create_radio_button(this->bottom_panel, &row[2])); HELP(row[2], 0x7741, -1);
-        row[0]->set_radio_info(row, 3);
-        row[1]->set_radio_info(row, 3);
-        row[2]->set_radio_info(row, 3);
-        row[1]->set_radio_button();
+    for (diplomacy_i = 0; diplomacy_i < 8; ++diplomacy_i) {
+        OK(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[diplomacy_i][0])); HELP(this->Diplomacy_friend_box[diplomacy_i][0], 0x773F, -1);
+        OK(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[diplomacy_i][1])); HELP(this->Diplomacy_friend_box[diplomacy_i][1], 0x7740, -1);
+        OK(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[diplomacy_i][2])); HELP(this->Diplomacy_friend_box[diplomacy_i][2], 0x7741, -1);
+        this->Diplomacy_friend_box[diplomacy_i][0]->set_radio_info(this->Diplomacy_friend_box[diplomacy_i], 3);
+        this->Diplomacy_friend_box[diplomacy_i][1]->set_radio_info(this->Diplomacy_friend_box[diplomacy_i], 3);
+        this->Diplomacy_friend_box[diplomacy_i][2]->set_radio_info(this->Diplomacy_friend_box[diplomacy_i], 3);
+        this->Diplomacy_friend_box[diplomacy_i][1]->set_radio_button();
         OK(this->create_check_box(this->bottom_panel, pp));
         HELP(*pp, 0x773E, -1);
         ++pp;
