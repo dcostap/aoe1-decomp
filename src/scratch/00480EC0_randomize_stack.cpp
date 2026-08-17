@@ -160,6 +160,13 @@
 //   source to 219 bytes / 106 differences / 81.93% shape. It remains short
 //   of the target 0x968 frame because the target's extra scalar home has no
 //   proven source owner. No rejected field overlay or synthetic state remains.
+// - sa-f4f518cd-r1 H1-H10: direct-array declaration order, outer-loop forms,
+//   odd pair-loop forms, counter reuse, and a natural byte-offset subscript
+//   were tested. The direct-array source stayed in the 0x964 frame basin;
+//   the byte-offset form reached 0x968 but added division code and 275 bytes.
+//   All probes restored the odd-end direct-array source. Exact find_path and
+//   link_stack_randomly siblings support ordinary Map_Stack ownership and
+//   period C89 declarations, but do not explain the second target home.
 
 extern int __cdecl debug_rand(char* file, int line);
 
