@@ -232,3 +232,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* obj, RGE_Static_Object
 // Result locals and parameter mutation share cleanup only by merging the final store. Independent tests add a
 // redundant null test. The clean typed nested if/else remains authoritative; the 19-byte duplicated EH tail is
 // a VC5 code-layout blocker, not a behavior correction.
+// 2026-08-17 shared-tail audit: 20 natural constructor result, null-test, assignment, and return forms were rebuilt.
+// The oracle has one outer null test, one move-sprite null test, two branch-local stores, and one shared FS cleanup.
+// No tested source form kept all four facts and selected one local VC5 cleanup tail. The 187-byte member-RMW form is
+// rejected: it stores move_sprite before its null test. Preserve this canonical nested if/else source.
