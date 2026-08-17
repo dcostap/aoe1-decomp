@@ -21,23 +21,21 @@
 // - One-line initial stores, combined register hints, and <stdlib.h> context
 //   were codegen duplicates. The first paired hunk remains the ABI/liveness
 //   frontier.
+// - Follow-up claim probes tested parameter qualifier, pointer-local scope,
+//   receiver alias scope, handle typedefs, local declaration order, direct
+//   out-parameter use, and initial-store permutations.  These kept the 0x60C
+//   frame and all 15 ordered calls; none recovered the entry preload.
+// - The original palette loop writes Red, Blue, Green, Flags.  Restoring that
+//   proven order changed its LEA/store bytes and improved the full result.
+// - A 24-variant source lab and a 3072-variant ambient-declaration/context lab
+//   found no exact result.  All variants kept size, frame, and call-set gates.
+// - The best clean reconstruction is 802 bytes, 15/15 ordered calls, 0x60C
+//   frame, 446 differing bytes, and 91.29% shape similarity.  The first
+//   mismatch remains the natural entry parameter-load/store schedule.
 
 #include <string.h>
+#include <windows.h>
 #pragma function(memset)
-
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
-struct tagPALETTEENTRY {
-    unsigned char peRed;
-    unsigned char peGreen;
-    unsigned char peBlue;
-    unsigned char peFlags;
-};
 
 struct _DDCOLORKEY {
     unsigned long dwColorSpaceLowValue;
@@ -230,14 +228,14 @@ public:
 
 extern "C" long __stdcall DirectDrawCreate(void*, IDirectDraw**, void*);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
-    void*, unsigned int, unsigned int, tagPALETTEENTRY*);
-extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, tagRECT*);
+    void*, unsigned int, unsigned int, PALETTEENTRY*);
+extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, RECT*);
 
 class TDrawSystem {
 public:
-    void* Inst;                         // +0x00
-    void* Wnd;                          // +0x04
-    void* Pal;                          // +0x08
+    void* Inst;                          // +0x00
+    void* Wnd;                           // +0x04
+    void* Pal;                           // +0x08
     TDrawArea* DrawArea;                // +0x0C
     TDrawArea* PrimaryArea;             // +0x10
     void* DrawAreaList;                 // +0x14
@@ -265,7 +263,7 @@ public:
     long ModeAvail640_16;               // +0x6C
     long ModeAvail800_16;               // +0x70
     long ModeAvail1024_16;              // +0x74
-    tagPALETTEENTRY palette[256];       // +0x78 .. +0x477
+    PALETTEENTRY palette[256];          // +0x78 .. +0x477
     unsigned char DrawType;             // +0x478
     unsigned char ScreenMode;           // +0x479
 
@@ -275,18 +273,20 @@ public:
              long, long, unsigned long);
 };
 
-int TDrawSystem::Init(register void* inst, void* wnd, void* pal,
+int TDrawSystem::Init(void* inst, void* wnd, void* pal,
                       unsigned char draw_type, unsigned char screen_mode,
                       long width, long height, unsigned long flags)
 {
     _DDSURFACEDESC ddsd;
     _DDBLTFX ddbltfx;
     _DDCAPS ddcaps;
-    tagPALETTEENTRY color_table[256];
+    PALETTEENTRY color_table[256];
+    IDirectDraw** direct_draw;
+    IDirectDraw* dd;
 
-    this->Wnd = wnd;
-    this->Pal = pal;
     this->Inst = inst;
+    this->Pal = pal;
+    this->Wnd = wnd;
     this->ScreenMode = screen_mode;
     this->ScreenWidth = width;
     this->DrawType = draw_type;
@@ -295,14 +295,14 @@ int TDrawSystem::Init(register void* inst, void* wnd, void* pal,
     if (draw_type == 1)
         return 0;
 
-    IDirectDraw** direct_draw = &this->DirDraw;
+    direct_draw = &this->DirDraw;
     if (DirectDrawCreate(0, direct_draw, 0) != 0) {
         this->ErrorCode = 1;
         return 0;
     }
 
     this->CheckAvailModes(1);
-    IDirectDraw* dd = *direct_draw;
+    dd = *direct_draw;
     if (this->ScreenMode == 1) {
         if (dd->SetCooperativeLevel(this->Wnd, 8) != 0) {
             this->ErrorCode = 1;
@@ -347,8 +347,8 @@ int TDrawSystem::Init(register void* inst, void* wnd, void* pal,
 
     for (int i = 0; i < 0x100; ++i) {
         this->palette[i].peRed = 0;
-        this->palette[i].peGreen = 0;
         this->palette[i].peBlue = 0;
+        this->palette[i].peGreen = 0;
         this->palette[i].peFlags = 0;
     }
 
@@ -371,8 +371,8 @@ int TDrawSystem::Init(register void* inst, void* wnd, void* pal,
         return 0;
     }
 
+    ddcaps.dwSize = 0x13C;
     this->IsBanked = 0;
-    ddcaps.dwSize = sizeof(ddcaps);
     if ((*direct_draw)->GetCaps(&ddcaps, 0) == 0) {
         if ((ddcaps.dwCaps & 0x08000000) != 0)
             this->IsBanked = 1;
