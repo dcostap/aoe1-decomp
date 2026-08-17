@@ -6,43 +6,50 @@
 // - Recovered typed ownership: world->players[short] -> master_objects,
 //   RGE_Map rows of 0x18-byte RGE_Tile records, inline tile object lists, and
 //   RGE_Static_Object/master radius fields.  All six oracle calls are aligned.
-// - Short coordinate locals and named master radius locals reproduce the
-//   oracle's word clamps, four __ftol conversions, and x87 overlap predicate.
-// - A typed row/tile do-while is retained as the clean source.  Raw row-table
-//   byte-cursor and explicit world-alias variants were diagnostic only and
-//   regressed or were codegen-neutral; no opaque cursor survives here.
-// - Sequential pass probes: moving the horizontal-range gate inside the outer
-//   row loop recovered the oracle's per-row branch and raised the candidate to
-//   523 B/frame 0x18; an explicit x_min*0x18 tile offset improved block coverage
-//   without changing size.  Direct parameter-home mutation changed register
-//   coloring but was not kept; the final source uses named short bounds and a
-//   saved master id, while preserving the proven inner gate and tile offset.
-// - A volatile late radius-y home reached frame 0x1c/535 B but worsened shape;
-//   it was removed as codegen-only.  The final canonical candidate is 522 B,
-//   frame 0x18, six aligned calls, and 20.57% exact-block coverage.
-// - Left in scratch: rebuilt 522B/frame 0x18 versus oracle 560B/frame 0x20;
-//   remaining drift is structural local/parameter-home and register topology
-//   around the late tile-list loops, despite exact call set/CFG counts.
-// - Sequential TU pass: a combined overlap predicate and scoped world owners
-//   were neutral. Reordering the inner countdown regressed the loop schedule.
-//   Naming both object radii before coordinate math follows the oracle's early
-//   radius-y load and reaches 538B/frame 0x1c, but leaves the same structural
-//   prologue gap. Map aliases and a world reference changed no useful topology;
-//   direct typed map access remains the clean source form.
-// - Main-agent audit rolled back the radius-preload diagnostic. It changed no
-//   behavior evidence and was compiler steering, not plausible source recovery.
+// - Short coordinate locals reproduce the word clamps and four __ftol calls.
+//   The typed row/tile do-while preserves the natural object-list traversal.
+// - A direct row index plus the known 0x18-byte tile stride is closer than a
+//   cached row pointer. Raw byte cursors and parameter-home mutation are not
+//   retained because policy forbids them.
+// - Naming both real object radius fields before coordinate math, then using a
+//   combined overlap predicate, reaches 560 B/frame 0x20 and 81.42% shape.
+//   It also raises exact-block coverage to 43.43% with all six calls aligned.
+// - The pre-audit clean candidate was still a mismatch: 309 strict bytes
+//   differed, with 183 rebuilt instructions versus 175 original instructions.
+//   Its first mismatch was the natural world-pointer local at the prologue.
+// - World/map aliases and alternate radius operand directions were tested and
+//   discarded when they worsened or did not change the natural code shape.
+// - Canonical class-dump audit: replaced the world/object/list vfXX surfaces
+//   with their reviewed names and signatures, retained TRIBE_World inheritance,
+//   and used the canonical RGE_Tile/RGE_Object_Node fields.
+// - The row walk now uses map_row_offset[row_index] + x_min.  It does not use
+//   a raw byte cursor.  The notification call uses destroy_obj at vslot +0x68.
+// - This pass remains non-exact: 530 strict bytes differ and the rebuilt body
+//   is 543 bytes.  The canonical audit changed the compiler basin, but all six
+//   calls and the typed traversal remain aligned.
 
 class RGE_Map;
+class RGE_Game_World;
 class RGE_Player;
 class RGE_Master_Static_Object;
 class RGE_Static_Object;
 class RGE_Object_Node;
+class RGE_Player_Info;
+class RGE_Sound;
+class RGE_Scenario;
+class TSound_Driver;
+class TCommunications_Handler;
+class TDrawArea;
+class RGE_Color_Table;
+class RGE_Sprite;
+
+typedef void FILE;
 
 class RGE_Object_List {
 public:
-    virtual ~RGE_Object_List();
+    virtual void load(unsigned char load_flag, int file, RGE_Game_World* world);
     RGE_Object_Node* list;
-    short count;
+    short number_of_objects;
     char gap_0A[2];
 };
 
@@ -51,87 +58,128 @@ public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char gap_06[6];
+    unsigned char terrain_type : 5;
+    unsigned char border_type : 4;
+    unsigned char last_drawn_as;
+    unsigned char last_drawn_shape;
+    unsigned char draw_as;
+    unsigned char draw_attribute;
+    unsigned char last_drawn_shape2;
     RGE_Object_List objects;
 };
 
 class RGE_Map {
 public:
     virtual ~RGE_Map();
-    char gap_04[4];
-    int map_width;                 // +0x08
-    int map_height;                // +0x0C
-    char gap_10[0x8D7C];
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char* map_name, char* map_type,
+                                 char* map_size, char* map_info);
+    virtual unsigned char do_terrain_brush(long x, long y, long terrain,
+                                           unsigned char flag);
+    virtual unsigned char do_terrain_brush_stroke(
+        long x1, long y1, long x2, long y2, long terrain,
+        unsigned char flag);
+    virtual unsigned char do_elevation_brush(long x, long y, long elevation,
+                                             unsigned char flag);
+    virtual unsigned char do_elevation_brush_stroke(
+        long x1, long y1, long x2, long y2, long elevation,
+        unsigned char flag);
+    virtual unsigned char do_cliff_brush(long x, long y,
+                                         unsigned char cliff,
+                                         unsigned char flag);
+    virtual unsigned char do_cliff_brush_stroke(
+        long x1, long y1, long x2, long y2, unsigned char cliff,
+        unsigned char flag);
+    virtual void map_generate(RGE_Player* player, RGE_Game_World* world,
+                              RGE_Player_Info* info, unsigned char* data);
+    virtual void map_generate2(RGE_Game_World* world, long x, long y,
+                               unsigned char flag, long seed);
+    virtual void save(int file);
+
+    RGE_Tile* map;                 // +0x04
+    long map_width;                // +0x08
+    long map_height;               // +0x0C
+    long world_width;              // +0x10
+    long world_height;             // +0x14
+    char gap_18[0x8D74];
     RGE_Tile** map_row_offset;     // +0x8D8C
 };
 
 class RGE_Game_World {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
-    virtual void vf6C();
-    virtual void vf70();
-    virtual void vf74();
-    virtual void vf78();
-    virtual void vf7C();
-    virtual void vf80();
-    virtual void vf84();
-    virtual void vf88();
-    virtual void vf8C();
-    virtual void vf90();
-    virtual void vf94();
-    virtual void vf98();
-    virtual void vf9C();
+    virtual unsigned char data_load_world(FILE* file);
+    virtual unsigned char data_load_terrain_tables(char* file);
+    virtual unsigned char data_load_players(char* file);
+    virtual unsigned char data_load_objects(char* file);
+    virtual unsigned char data_load_sounds(char* file);
+    virtual unsigned char data_load_color_tables(char* file);
+    virtual unsigned char data_load_sprites(char* file);
+    virtual void data_load_players_type(short player, short type, FILE* file);
+    virtual void data_load_effects(char* file);
+    virtual void data_load_map(char* map_name, char* map_type, char* map_size,
+                               char* map_info, short width, short height,
+                               short terrain, RGE_Sound** sounds,
+                               char* filename);
+    virtual void data_load_random_map(char* map_name, char* map_type,
+                                      char* map_size, char* map_info);
+    virtual unsigned char init_player_type(int player, short type,
+                                           unsigned char flag);
+    virtual unsigned char init_player(int player);
+    virtual void load_player(int player, unsigned char type, short player_id);
+    virtual void color_table_init(int count);
+    virtual void terrain_tables_init(int count);
+    virtual void init_sounds(int count, TSound_Driver* driver);
+    virtual void init_sprites(int count);
+    virtual void map_init(int count, TSound_Driver* driver);
+    virtual void effects_init(int count);
+    virtual void master_player_init(int count);
+    virtual void command_init(int count, TCommunications_Handler* handler);
+    virtual void world_init(int count, TSound_Driver* driver,
+                            TCommunications_Handler* handler);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info* info);
+    virtual unsigned char new_random_game(RGE_Player_Info* info);
+    virtual void save(int file);
+    virtual void scenario_make_player(short player, unsigned char master_id,
+                                      unsigned char type, unsigned char civ,
+                                      char* info);
+    virtual void scenario_make_map(int file);
+    virtual unsigned char load_scenario(RGE_Player_Info* info);
+    virtual unsigned char load_scenario(char* file, RGE_Player_Info* info);
+    virtual void load_scenario1(int file, RGE_Player_Info* info);
+    virtual void load_scenario2(int file, RGE_Player_Info* info);
+    virtual void load_scenario3(int file, RGE_Player_Info* info);
+    virtual void load_scenario4(int file, RGE_Player_Info* info);
+    virtual void load_scenario5(int file, RGE_Player_Info* info);
+    virtual void load_scenario6(int file, RGE_Player_Info* info);
+    virtual void load_scenario7(int file, RGE_Player_Info* info);
+    virtual void load_scenario8(int file, RGE_Player_Info* info);
+    virtual void logStatus(FILE* file, int verbose);
     virtual ~RGE_Game_World();
-    virtual void vfA4();
-    virtual void vfA8();
-    virtual void vfAC();
-    virtual void vfB0();
-    virtual void vfB4();
-    virtual void vfB8();
-    virtual void vfBC();
-    virtual void vfC0();
-    virtual void vfC4();
-    virtual void vfC8();
-    virtual void vfCC();
-    virtual void vfD0();
-    virtual void vfD4();
-    virtual void vfD8();
-    virtual void vfDC();
-    virtual void vfE0();
-    virtual void vfE4();
-    virtual void vfE8();
-    virtual void vfEC();
-    virtual void vfF0();
-    virtual void vfF4();
-    virtual void vfF8();
-    virtual void vfFC();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info* info);
+    virtual unsigned char data_load(char* file, char* info);
+    virtual unsigned char init(char* file, TSound_Driver* driver,
+                               TCommunications_Handler* handler);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int file);
+    virtual unsigned char load_game(char* file);
+    virtual unsigned char new_game(RGE_Player_Info* info, int file);
+    virtual unsigned char new_scenario(RGE_Player_Info* info, int file);
+    virtual unsigned char save_game(char* file);
+    virtual void base_save(char* file);
+    virtual void base_save(int file);
+    virtual unsigned char save_scenario(char* file);
+    virtual RGE_Scenario* get_scenario_info(char* file);
+    virtual void pause(unsigned char flag);
+    virtual void scenario_init(RGE_Game_World* world);
+    virtual void scenario_init(int file, RGE_Game_World* world);
+    virtual int addObject(RGE_Static_Object* object);
+    virtual int removeObject(int id);
     char gap_04[0x24];
     RGE_Map* map;                  // +0x28
     char gap_2C[0x14];
@@ -159,43 +207,51 @@ public:
 
 class RGE_Object_Node {
 public:
-    RGE_Static_Object* object;
+    RGE_Static_Object* node;
     RGE_Object_Node* next;
+    RGE_Object_Node* prev;
+    unsigned char centered;
+    char gap_0D[3];
 };
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();     // deleting destructor at vslot +0x00
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();           // vslot +0x68
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* master,
+                                    RGE_Player* player, float x, float y,
+                                    float z);
+    virtual void recycle_out_of_game();
+    virtual void draw(TDrawArea* area, short x, short y,
+                      RGE_Color_Table* colors);
+    virtual void shadow_draw(TDrawArea* area, short x, short y,
+                             unsigned char flag);
+    virtual void normal_draw(TDrawArea* area, short x, short y);
+    virtual void draw_front_frame(TDrawArea* area, short x, short y);
+    virtual void draw_back_frame(TDrawArea* area, short x, short y);
+    virtual void draw_frame(TDrawArea* area, short x, short y);
+    virtual unsigned char update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int file);
+    virtual float teleport(float x, float y, float z);
+    virtual void new_sprite(RGE_Sprite* sprite);
+    virtual void add_overlay_sprite(RGE_Sprite* sprite, unsigned char flag);
+    virtual void remove_overlay_sprite(RGE_Sprite* sprite);
+    virtual void change_ownership(RGE_Player* player);
+    virtual void modify(float amount, unsigned char attribute);
+    virtual void modify_delta(float amount, unsigned char attribute);
+    virtual void modify_percent(float amount, unsigned char attribute);
+    virtual void transform(RGE_Master_Static_Object* master);
+    virtual void copy_obj(RGE_Master_Static_Object* master);
+    virtual void set_object_state(unsigned char state);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();           // vslot +0x68
 
-    char gap_04[4];
+    long id;                             // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
-    char gap_0C[0x2C];
+    RGE_Player* owner;                   // +0x0C
+    char gap_10[0x28];
     float world_x;                 // +0x38
     float world_y;                 // +0x3C
 };
@@ -231,24 +287,25 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                 y_max = this->map->map_height - 1;
 
             if (y_min <= y_max) {
-                RGE_Tile** row_ptr = this->map->map_row_offset + y_min;
+                int row_index = y_min;
                 int row_count = (int)y_max - (int)y_min + 1;
                 int column_count = (int)x_max - (int)x_min + 1;
-                int tile_offset = (int)x_min * (int)sizeof(RGE_Tile);
                 do {
                     if (x_min <= x_max) {
                         RGE_Tile* tile =
-                            (RGE_Tile*)((char*)*row_ptr + tile_offset);
+                            this->map->map_row_offset[row_index] + x_min;
                         int columns = column_count;
                         do {
                             RGE_Object_Node* node = tile->objects.list;
                             while (node != 0) {
-                                RGE_Static_Object* object = node->object;
+                                RGE_Static_Object* object = node->node;
                                 node = node->next;
                                 RGE_Master_Static_Object* object_master = object->master_obj;
 
                                 if (object_master->id != target_master_id &&
                                     object_master->can_be_built_on != 0) {
+                                    float object_radius_x = object_master->radius_x;
+                                    float object_radius_y = object_master->radius_y;
                                     float dy = object->world_y - y;
                                     float dx = object->world_x - x;
                                     if (dy < 0.0f)
@@ -256,15 +313,13 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                                     if (dx < 0.0f)
                                         dx = -dx;
 
-                                    if (dx < object_master->radius_x + radius_x) {
-                                        float object_radius_y = object_master->radius_y;
-                                        if (dy < object_radius_y + radius_y) {
-                                            if (flag != 0) {
-                                                if (object != 0)
-                                                    delete object;
-                                            } else {
-                                                object->vf68();
-                                            }
+                                    if (dx < object_radius_x + radius_x &&
+                                        dy < object_radius_y + radius_y) {
+                                        if (flag != 0) {
+                                            if (object != 0)
+                                                delete object;
+                                        } else {
+                                            object->destroy_obj();
                                         }
                                     }
                                 }
@@ -273,7 +328,7 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                             --columns;
                         } while (columns != 0);
                     }
-                    ++row_ptr;
+                    ++row_index;
                     --row_count;
                 } while (row_count != 0);
             }
