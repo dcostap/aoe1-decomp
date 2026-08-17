@@ -43,6 +43,11 @@
 //     similarity to 94.48%; the positional diff remained 356 bytes.
 // 28: A scoped DrawSystem pointer, explicit field-mask assignment, and area_name+4 pointer
 //     were duplicate codegen basins; restored the simplest direct member expressions.
+// 29: A scoped DrawSystem pointer for the mask only improved the diagnostic to 353 differing
+// bytes and 95.17% shape, but changed the proven register topology; restored the clean source.
+// 30: Outer DrawSystem/render-area aliases, a reference alias, direct shadow-area rereads,
+// split old_flags declaration, output-local permutations, and an Init-only DrawSystem alias
+// all reproduced the 356-byte basin. The natural clean source remains unresolved.
 // FLAGS: config/flags/00467380_setup_shadow_area.rsp uses /GX; needed for EH prologue around TDrawArea allocation/constructor.
 
 #include <windows.h>
