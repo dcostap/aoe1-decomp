@@ -30,6 +30,12 @@
 // - Swapped the final Queue/MaxQSize assignments to test the original epilogue
 //   store order.  Resync improved, but positional diff worsened 395 to 397;
 //   rolled back to the clean source.
+// - Reversed the newly allocated queue guard to `newQueue == 0` with the zero
+//   result arm first.  This restored both short failure blocks and reduced the
+//   positional diff from 395 bytes to 10 bytes without changing the frame.
+// - With those guards retained, assigned Queue before MaxQSize.  VC5 emitted
+//   the original parameter/new-queue load order and final stores: MATCH,
+//   0.0000%, 464 bytes, 139 instructions, and all five direct calls aligned.
 
 #include <string.h>
 
@@ -96,7 +102,10 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
     else {
         unsigned int count = param_1 + 1;
         MsgQueue* newQueue = new MsgQueue[count];
-        if (newQueue != 0) {
+        if (newQueue == 0) {
+            result = 0;
+        }
+        else {
             if (this->Queue != 0) {
                 for (unsigned int i = 0; i <= this->MaxQSize; ++i) {
                     if (this->Queue[i].Size != 0) {
@@ -128,12 +137,9 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
                 delete[] this->Queue;
             }
 
-            this->MaxQSize = param_1;
             this->Queue = newQueue;
+            this->MaxQSize = param_1;
             result = 1;
-        }
-        else {
-            result = 0;
         }
     }
 
