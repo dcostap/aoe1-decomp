@@ -68,6 +68,19 @@
 //   __declspec(nothrow) destructor forms all stayed at the 37-byte family.
 //   The exact shared EH cleanup needs the owned body to be visible in this TU.
 //   BLOCKER: no valid single-owner exact form was found.
+// - Ownership architecture audit: build_function.py compiles one source path
+//   selected by VA; no repository tool maps several VAs to one shared TU, and
+//   no source bank contains multiple `// VA:` owners. The exact neighboring
+//   create_zone_map source defines the 005469C0 destructor locally, but that
+//   is the same duplicate-owner pattern rejected here, not a valid precedent.
+// - Ten fresh context/ABI probes confirmed the boundary: inline destructor
+//   bodies, generic helper bodies, and declaration-only forms remain 266 B /
+//   37 bytes; an out-of-line empty/free/throw()/nothrow destructor before the
+//   target method reaches MATCH. Moving that definition after the method
+//   returns to 266 B. A generated include before the method also reaches
+//   MATCH, but still emits `??1RGE_Zone_Map@@QAE@XZ` in the target TU.
+//   No policy-valid one-owner shared-TU route exists without build-tool and
+//   source-bank restructuring. Restored the ownership-compliant baseline.
 
 #include <stdlib.h>
 #include <string.h>

@@ -69,11 +69,9 @@
 //   size but produced the known 203-byte prologue/register basin; declaration
 //   order did not change it. Restored the clean typed source.
 // - sa-83e45bf9-r1: defining the binary-proven nonvirtual zone-map destructor
-//   selected the original shared EH teardown and reduced the natural source
-//   to an 11-byte localized branch mismatch. Two natural returns in the hit
-//   arm (success return, then failure assignment and return) produced the
-//   exact 248-byte body. The destructor body follows 005469C0 and is required
-//   TU context for this exact result.
+//   selected the original shared EH teardown and produced an exact body.
+//   This form is rejected because VA 005469C0 owns the destructor. The current
+//   single-function build has no policy-valid shared-TU mapping.
 
 #include <stdlib.h>
 #include <string.h>
@@ -97,13 +95,6 @@ public:
     RGE_Zone_Map* check_info(float* table, long count);
     unsigned char do_zone_map();
 };
-
-RGE_Zone_Map::~RGE_Zone_Map()
-{
-    free(this->zone_map);
-    free(this->zone_map_rows);
-    free(this->terrain_passability_rules);
-}
 
 class RGE_Zone_Map_List {
 public:
