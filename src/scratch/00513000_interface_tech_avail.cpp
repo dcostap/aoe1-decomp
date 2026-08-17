@@ -39,11 +39,24 @@
 // - v24-v25: address/reference aliases for the master pointer widened to 427/45.
 // - v26: reused the decompiler's tech index across both scans; emitted code was
 //   unchanged. Final lead remains the initial DX-before-ESI VC5 scheduling gap.
+// - Prior pass: parameter-home reuse was tested but rejected by policy. The
+//   then-clean source kept a named output index. Register hints, declaration
+//   scope, and direct guard spellings did not change codegen. Staged master
+//   pointers, count-before-master order, guarded master assignment, and a
+//   hoisted countdown widened the result and were restored. The clean source
+//   reached a 30-byte mismatch, led by initial DX-before-ESI scheduling.
+// - Revisit: function-scope tech_cost short outputs, supported by the Ghidra
+//   local evidence, reduced the natural source to a 16-byte mismatch and made
+//   the whole body exact. This uses no explicit parameter-home assignment.
+// - Revisit probes for function-scope countdown/cursors, one shared scan cursor,
+//   declaration order, and the donor-supported stdlib.h context were duplicate.
+//   Typed master-table aliasing and guarded master assignment widened the code.
+//   Retain the natural function-scope output model; the initial DX-before-ESI
+//   scheduling basin remains unresolved.
+
+#include <stdlib.h>
 
 typedef unsigned char uchar;
-
-extern "C" void __cdecl free(void*);
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 
 struct Item_Avail {
     int name;              // +00
@@ -112,9 +125,11 @@ public:
 void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count, short button_location)
 {
     short count = 0;
-
+    short inv1, amt1, inv2, amt2, inv3, amt3;
+    short out_index;
+    short n;
     MasterTechEntry* master = *this->tech_source->master_techs;
-    register short n = this->tech_tree->tech_player_tree_num;
+    n = this->tech_tree->tech_player_tree_num;
     if (n > 0) {
         TechPlayerEntry* t = this->tech_tree->tech_player_tree;
         MasterTechEntry* m = master;
@@ -141,26 +156,25 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
 
     *out_items = (Item_Avail*)calloc((int)count, 0x28);
 
-    short tech_id = 0;
-    short out_index = 0;
+    n = 0;
+    out_index = 0;
     if (this->tech_tree->tech_player_tree_num <= 0) {
         return;
     }
 
     do {
-        int idx = (int)tech_id;
+        int idx = (int)n;
         if (this->tech_tree->tech_player_tree[idx].state == 1) {
             MasterTechEntry* entry = &master[idx];
             if (entry->button_location == button_location) {
                 int avail_index = (int)out_index;
                 Item_Avail* item = *out_items;
                 int off = avail_index * 0x28;
-                item[avail_index].id = tech_id;
+                item[avail_index].id = n;
                 (*out_items)[avail_index].pict = entry->pict;
                 (*out_items)[avail_index].name = entry->name;
 
-                short inv1, amt1, inv2, amt2, inv3, amt3;
-                this->tech_tree->tech_cost(tech_id, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3);
+                this->tech_tree->tech_cost(n, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3);
 
                 (*out_items)[avail_index].inv1 = inv1;
                 (*out_items)[avail_index].cost1 = (float)(int)amt1;
@@ -168,12 +182,12 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
                 (*out_items)[avail_index].cost2 = (float)(int)amt2;
                 (*out_items)[avail_index].inv3 = inv3;
                 (*out_items)[avail_index].cost3 = (float)(int)amt3;
-                (*out_items)[avail_index].help_msg = this->tech_tree->get_help_message(tech_id);
-                (*out_items)[avail_index].help_page = this->tech_tree->get_help_page(tech_id);
+                (*out_items)[avail_index].help_msg = this->tech_tree->get_help_message(n);
+                (*out_items)[avail_index].help_page = this->tech_tree->get_help_page(n);
 
                 out_index++;
             }
         }
-        tech_id++;
-    } while (tech_id < this->tech_tree->tech_player_tree_num);
+        n++;
+    } while (n < this->tech_tree->tech_player_tree_num);
 }
