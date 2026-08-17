@@ -73,6 +73,28 @@
 // byte-result initialization after facet normalization reached 65. Restored
 // the canonical typed source. No new source-backed lead beats the 45-byte
 // clean checkpoint; calls, size, frame, and the later draw loop remain aligned.
+// Subagent pass (sa-2ad40ec8-r1): 11 focused probes were run against the clean
+// 45-byte checkpoint. Direct returns, uninitialized and narrow result locals,
+// and register qualification were structural, 50-byte, 187-byte, or duplicate
+// basins. Child-first cursor and typed list-base forms were 217-byte and
+// 239-byte mismatches. Reversing the duplicate guard was 223 bytes. Sharing
+// count with the fallback result reached 181 bytes but changed the entry
+// address basin. All probes were restored. The remaining AX/CX count load and
+// ECX/EDX/LEA schedule needs new source or compiler-context evidence.
+// Revisit pass (sa-9357bf13-r1): one loop index as the return value made the
+// function 258 bytes and 201 differing bytes. Delayed fallback zeroing made
+// it 256 bytes and 183 differing bytes. Typed entry references, a local list
+// alias, repeated typed member access, pointer-plus-index spelling, inner
+// index scope, and implicit byte return conversion were duplicate or worse.
+// The clean typed source remains the best policy-compliant reconstruction.
+// Revisit pass (sa-d0f54e3b-r1): 17 focused probes confirmed the same result.
+// A shared count local reaches the original AX/EBX guard basin but changes the
+// typed entry address lowering and widens to 181 bytes. Function-scope typed
+// pointers, declaration reordering, long indices, and donor-shaped cursor
+// forms did not recover the original ECX/EDX/LEA schedule. Byte-result forms
+// reached 50-77 bytes or changed control flow. All probes were restored.
+// Final validation: 250-byte source, two aligned do_draw calls, 45 differing
+// bytes. Keep this natural typed source until new compiler-context evidence.
 
 #include <stdio.h>
 
