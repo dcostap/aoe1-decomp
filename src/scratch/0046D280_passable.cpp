@@ -26,6 +26,26 @@
 // - Named the fixed tile-row byte offset used by the terrain scan.  The best
 //   restored checkpoint is 837 bytes of positional diff, frame 0x1C, and
 //   9.88% exact-block coverage; the remaining gap is stack-home/CFG layout.
+// - Follow-up probes 2-34 tested flag width, terrain local width/scope,
+//   declaration order, tile-pointer forms, guard nesting/order, radius forms,
+//   mask order, signed packed indices, and math-header context.  Most changes
+//   were duplicate compiler basins or worse.  The retained basin uses a byte
+//   terrain local, a signed packed index, a table-threshold-first terrain guard,
+//   and the natural typed row/tile and split mask loops.
+// - Best current clean reconstruction: 1198 rebuilt bytes, frame 0x20,
+//   74.34% shape similarity, 782 positional diff bytes, 21.26% exact-block
+//   coverage, and all 11 direct calls aligned.  The byte terrain local moved
+//   the frame to the target 0x20 and recovered the terrain-scan stack shape.
+//   The table-threshold-first guard reduced positional diff from 829 to 782.
+//   Reverting that guard, changing terrain to int, changing the map tile
+//   pointer form, or using a named obstruction-row pointer worsened output.
+// - The unresolved gap is source-level VC5 register/home allocation in the
+//   footprint prelude and packed obstruction scan.  The original reloads
+//   yMax and xMin through dead parameter homes, and its general scan keeps
+//   separate row-base and sub-byte terms.  Current typed source preserves the
+//   proven behavior and call set without volatile or inline-assembly steering.
+
+#include <math.h>
 
 extern "C" double floor(double value);
 extern "C" long __ftol(void);
@@ -210,7 +230,7 @@ public:
 int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             int checkObjects)
 {
-    uint local_14 = 0;
+    int local_14 = 0;
 
     this->currentObject = object;
     this->currentTerrainTable =
@@ -230,30 +250,26 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
 
     int xTile = (int)x;
     xTile *= 4;
-    int xRadius = (int)(((xFraction - DAT_00570e68) - radiusX) *
-                        DAT_00570e74);
     int xMin = xTile;
-    xMin -= xRadius;
+    xMin -= (int)(((xFraction - DAT_00570e68) - radiusX) *
+                  DAT_00570e74);
     xMin -= 400;
 
     int yTile = (int)y;
     yTile *= 4;
-    int yRadius = (int)(((yFraction - DAT_00570e68) - radiusY) *
-                        DAT_00570e74);
     int yMin = yTile;
-    yMin -= yRadius;
+    yMin -= (int)(((yFraction - DAT_00570e68) - radiusY) *
+                  DAT_00570e74);
     yMin -= 400;
 
-    int xOtherRadius = (int)(((xFraction + radiusX) - DAT_00570e68) *
-                             DAT_00570e74);
     int xMax = xTile;
-    xMax -= xOtherRadius;
+    xMax -= (int)(((xFraction + radiusX) - DAT_00570e68) *
+                  DAT_00570e74);
     xMax -= 400;
 
-    int yOtherRadius = (int)(((yFraction + radiusY) - DAT_00570e68) *
-                             DAT_00570e74);
     int yMax = yTile;
-    yMax -= yOtherRadius;
+    yMax -= (int)(((yFraction + radiusY) - DAT_00570e68) *
+                  DAT_00570e74);
     yMax -= 400;
 
     if (xMin < 0)
@@ -271,8 +287,8 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             (int)maxY >= this->mapValue->map_height)
             return 0;
 
-        int tileOffset = minX * (int)sizeof(RGE_Tile);
         if (minY <= maxY) {
+            int tileOffset = minX * (int)sizeof(RGE_Tile);
             uchar row = minY;
             do {
                 uchar col = minX;
@@ -284,17 +300,19 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                         local_14 = col;
                         if (this->initialTile.x != local_14 ||
                             this->initialTile.y != row) {
-                            int terrain = tile->terrain_type & 0x1F;
-                            if (terrain != this->currentTerrainException1 &&
-                                terrain != this->currentTerrainException2 &&
-                                this->currentTerrainTable[terrain] <=
-                                    DAT_00570e80) {
-                                int border = tile->border_type & 0x0F;
-                                if (border == 0 ||
-                                    this->currentTerrainTable[
-                                        this->mapValue->border_types[border]
-                                            .underlay_terrain] <= DAT_00570e80)
-                                    return 0;
+                            uchar terrain;
+                            terrain = tile->terrain_type & 0x1F;
+                            if (this->currentTerrainTable[terrain] <=
+                                DAT_00570e80) {
+                                if (terrain != this->currentTerrainException1 &&
+                                    terrain != this->currentTerrainException2) {
+                                    int border = tile->border_type & 0x0F;
+                                    if (border == 0 ||
+                                        this->currentTerrainTable[
+                                            this->mapValue->border_types[border]
+                                                .underlay_terrain] <= DAT_00570e80)
+                                        return 0;
+                                }
                             }
                         }
                         tile++;
@@ -348,10 +366,9 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             do {
                 int col = yMin;
                 while (col < yMax) {
-                    local_14 = (uint)col;
-                    uchar packed = this->obstructionValue[0]
-                        [row * 0xFF + (local_14 >> 2)];
-                    if (((packed >>
+                    local_14 = col;
+                    if (((this->obstructionValue[0]
+                          [row * 0xFF + (local_14 >> 2)] >>
                           (ObstructionValueShift[local_14 & 3] & 0x1F)) & 3) != 0) {
                         if (this->currentTargetID == -1 ||
                             row < this->minTarget.x ||
