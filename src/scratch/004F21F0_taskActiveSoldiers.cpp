@@ -78,6 +78,9 @@
 // - an explicit goto split for subtype==-1 moved that cold handler too early, reduced call alignment to 88.86%, and was rolled back; keep the positive non-default subtype body for now.
 // - modeled the defend-distance selection as a real float and restored two shared gather-coordinate homes from the Ghidra fVar topology; frame is now exact at 0xD0 and the original +0407/+040F FILD blocks are exact. Reversed several equivalent threshold predicates to preserve binary-observed compare operand order, raising exact-block coverage from 33.04% to 37.08% and the longest aligned run from 96 to 106 while keeping all 440 call counts exact. Current size is +42, shape 78.24%, call prefix 360; first mismatch is +0x57 at the sentinel/zero-register choice.
 // - rolled back focused sentinel probes (direct member comparison, register local, and a scoped zero/null alias): they either compiled identically or changed only four unrelated later bytes; none recovered the original `lea ebx` / `xor ebp; cmp esi, ebp` opening.
+// - worker pass: 20 evidence-led checks. Best current source is 9618 bytes versus 9580, with 440/440 calls and 37.43% exact-block coverage.
+// - BINARY NOTE: original defend null exits and action-7 exception completion jump to the common tail at 004F4548 after their state stores. Keep those edges explicit through clear_attack_state.
+// - BINARY NOTE: original action-2 reset paths place the target-location store before the numberObjectsToDestroy store in their cold reset tail.
 // - reordered action-2 handling to the binary-supported positive valid-target branch first, with invalid-target replacement/reset as the else arm; emitted code stayed effectively duplicate (six changed bytes, one fewer diff byte) with no CFG or call movement, but the source now follows the decompiler-supported fallthrough.
 // - rolled back positive `isEnemy` arm order: it improved size/call-site count slightly but reduced block/edit alignment and did not move the misplaced virtual-dispatch block into the original +0x2400 family.
 
@@ -1760,19 +1763,18 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
     goto task_group; \
 } while (0)
     TacticalAIGroup* cur;
-    TacticalAIGroup* sentinel;
     int pendingTaskCode;
     int pendingTaskArg1;
     int pendingTaskArg2;
     ObjectMemory* mem;
+    int enemy;
     int t;
     float directGatherY;
     float directGatherZ;
 
     cur = this->groups.next;
     if (this->nextActiveSoldierGroupToTaskValue != -1) {
-        sentinel = &this->groups;
-        while (cur != sentinel) {
+        while (cur != &this->groups) {
             if (cur == 0) {
                 break;
             }
@@ -1786,8 +1788,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
         }
     }
 
-    sentinel = &this->groups;
-    if (cur != sentinel) {
+    if (cur != &this->groups) {
         do {
             if (cur == 0) {
                 break;
@@ -1805,8 +1806,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
             }
 
             if (!cur->inUse()) {
-                int allOutsideTransport;
                 RGE_Static_Object* commanderObj;
+                int allOutsideTransport;
 
                 mem = 0;
                 commanderObj = 0;
@@ -1826,13 +1827,13 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                         mem = this->md->informationAI.objectToDefend(commander);
                         if (mem == 0) {
                             cur->setAction(1);
-                            goto task_done;
+                            goto clear_attack_state;
                         } else {
                             commander = cur->commander();
                             commanderObj = this->md->object(commander);
                             if (commanderObj == 0) {
                                 cur->setAction(1);
-                                goto task_done;
+                                goto clear_attack_state;
                             } else {
                                 if (mem->type == 0x6d) {
                                     distance = (float)this->sn[0x16];
@@ -2617,8 +2618,7 @@ exception_after_task:
                                 cur->setInUse(1);
                                 cur->setWaitCode(200);
                                 cur->playNumberValue = -1;
-                                this->attackStateValue.active = 0;
-                                goto task_done;
+                                goto clear_attack_state;
                             } else {
                                 goto action7_timeout;
                             }
@@ -2717,7 +2717,8 @@ action7_done:
                                 goto task_done;
                             }
                         } else {
-                            if (((VMainDecisionIsEnemy*)this->md)->isEnemy(targetObj2->owner->id) == 0) {
+                            enemy = ((VMainDecisionIsEnemy*)this->md)->isEnemy(targetObj2->owner->id);
+                            if (enemy == 0) {
                                 if (cur->allUnitsIdle(this->md, 0) != 1) {
                                     TASK_GROUP(0x14, 0, 1);
                                 } else {
@@ -2737,6 +2738,7 @@ action7_done:
                                             cur->setTargetType(-1);
                                             cur->numberObjectsToDestroyValue = 0;
                                             cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                            goto clear_attack_state;
                                         }
                                     }
                                 }
@@ -2752,6 +2754,7 @@ action7_done:
                                 if (commanderObj8 != 0) {
                                     cur->setGatherLocation(commanderObj8->world_x, commanderObj8->world_y, commanderObj8->world_z);
                                 }
+                                goto clear_attack_state;
                             }
                         }
                         } else {
@@ -2850,17 +2853,16 @@ action7_done:
                         if (targetObj4 != 0) {
                             ObjectMemory* higher;
                             higher = this->md->informationAI.higherPriorityObjectToDefend(cur->commander(), cur->targetType(), (int)targetObj4->master_obj->object_group);
-                            if (higher != 0) {
-                                ObjectMemory* oldTarget;
-                                oldTarget = this->md->informationAI.objectMemory(cur->target());
-                                if (oldTarget != 0) {
-                                    oldTarget->attackAttempts = 0;
-                                }
-                                cur->setAction(1);
-                                cur->setInUse(0);
-                            } else {
+                            if (higher == 0) {
                                 goto loss_check;
                             }
+                            ObjectMemory* oldTarget;
+                            oldTarget = this->md->informationAI.objectMemory(cur->target());
+                            if (oldTarget != 0) {
+                                oldTarget->attackAttempts = 0;
+                            }
+                            cur->setAction(1);
+                            cur->setInUse(0);
                         } else {
                             goto loss_check;
                         }
@@ -2900,7 +2902,10 @@ action3:
                         cur->setTargetType(-1);
                         cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
                         this->attackStateValue.active = 0;
-                    } else if (cur->isGathered(this, this->md) != 0) {
+                    } else {
+                        if (cur->isGathered(this, this->md) == 0) {
+                            goto active_dispatch_done;
+                        }
                         cur->setAction(1);
                         cur->setInUse(0);
                         if (cur->type() == 0x65 || cur->type() == 0x68) {
@@ -3109,7 +3114,7 @@ task_done:
             if (debug_timeGetTime(s_C__msdev_work_age1_x1_taitacmd_c, 0x14fe) - param_1 >= param_2) {
                 return;
             }
-        } while (cur != sentinel);
+        } while (cur != &this->groups);
     }
     this->nextActiveSoldierGroupToTaskValue = -1;
 #undef RESET_GROUP
