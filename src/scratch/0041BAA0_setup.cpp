@@ -15,9 +15,9 @@
 // - Paused after the 10-hypothesis budget: current drift is 1263 positional bytes;
 //   remaining evidence points to a +4 frame/local-home mismatch and the memory
 //   predicate's block shape, not an unresolved call set.
-// - Removing the game_info local and assigning player_game_info at each
-//   allocation matched the no-break path clue but moved a later call target;
-//   restored the clean source before the next structural probe.
+// - Directly assigning player_game_info from each new-expression removes the
+//   saved pointer reload. It gives exact size and two more exact tail blocks.
+//   It remains the best clean source, with 1320 strict drift bytes.
 // - Recast the proven memory-pressure test as the natural if-bad/else-success
 //   setup shape; the oracle places the bad-path assignment in the final tail.
 // - Reordered the reused MEMORYSTATUS and DirectX locals to match the original
@@ -378,7 +378,6 @@ int RGE_Base_Game::setup()
                             }
                             else {
                             int file_number;
-                            RGE_Game_Info* game_info;
                             this->set_prog_mode(0);
                             this->setup_timings();
                             this->handle_size(this->prog_window, 0, 0, 0);
@@ -396,7 +395,8 @@ int RGE_Base_Game::setup()
                                     0, (char*)0x57FA58);
                                 sprintf(filename + 4, (char*)0x57FA4C,
                                         file_number);
-                                game_info = new RGE_Game_Info(filename + 4);
+                                this->player_game_info =
+                                    new RGE_Game_Info(filename + 4);
                             }
                             else {
                                 int i;
@@ -406,13 +406,12 @@ int RGE_Base_Game::setup()
                                                    &file_info.time_create) == -1) {
                                         this->registry->RegSetInt(
                                             0, (char*)0x57FA58, i);
-                                        game_info = new RGE_Game_Info(filename + 4);
+                                        this->player_game_info =
+                                            new RGE_Game_Info(filename + 4);
                                         break;
                                     }
                                 }
                             }
-                            this->player_game_info = game_info;
-
                             sprintf(filename + 4, (char*)0x57FA3C,
                                     this->prog_info->scenario_dir);
                             this->scenario_info = new RGE_Scenario_File_Info(
