@@ -2,48 +2,21 @@
 // scr_mps.cpp lines 812-1134
 //
 // Attempt log:
-// 1: natural reconstruction from packet + Ghidra decompiler, using the exact donor class layout
-//    (TribeMPSetupScreen destructor 004A1300) and matched helper surfaces (startGame scratch,
-//    004A6330 action pattern). /GX for the EH frame; new TribeGameSettingsScreen() supplies the
-//    try-state block. Locals: file_name[260] + _finddata_t; findfirst gets &file_info.time_create
-//    (binary proves arg at file_name_end + 4).
+// - Recovered the typed panel arrays, helper ABIs, 0x220 EH frame, and 105 direct calls.
+// - BINARY NOTE: The fallback is shared by null input, nonzero param_2, and exhausted loops.
+//   Keep the TEasy_Panel call as one tail. A natural fall-through changes this behavior.
+// - BINARY NOTE: All four scenario filename LEAs are four bytes before file_name+4.
+//   Direct file_name access restores the three scenario blocks without changing calls.
+// - BINARY NOTE: The final player loop has one initial numberPlayers call and one bottom call.
+//   A while(1) loop with a bottom break recovers the original condition count and CFG count.
+// - Tested 20 source hypotheses across fallback structure, loop form, cursor ownership,
+//   local order, filename base, CD evaluation, guards, and register hints.
+//   Most were neutral or reduced structural parity. The clean source keeps the natural,
+//   behavior-correct bottom-break loop and direct filename base.
 //
-// 2: fixed whoami to one call (local me = WhoAmI()-1), restored the missing SAVING MYCIV Log call,
-//    do-while final loop for the numberPlayers call count, TPanel/TEasy_Panel sizes (0xF4/0x478),
-//    TribeGameSettingsScreen size 0x560 (operator new pushes 560h), hoisted scenario_dir local,
-//    absolute string addresses instead of literals.  => calls 105/105 aligned, diff 1611.
-//
-// 3: wrapper-only structure let VC5 prove param_1==0 at the TEasy_Panel::action fallback (push 0)
-//    and misrouted the param_2!=0 / loop-exhausted paths (return 1 instead of base action).  The
-//    original reaches the fallback from 4 paths (entry param_1==0, param_2!=0, numPlayers<=0, loop
-//    exhausted) with param_1 pushed from ebx.  Restructured with goto L_1F72 so the fallback is a
-//    true shared tail.  This is the behaviorally correct CFG; it costs prologue scheduling: VC5 now
-//    loads param_2 into ebp at the prologue and restores ebp at the fallback, whereas the original
-//    defers the ebp load to its first branch use and reads [esp+244h] directly at the fallback.
-//
-// 4: final player loop tried the binary-proven cursor form (TDropDownPanel** pp = playerCivDrop;
-//    pp[-8]/pp[0]/pp[8]) which recovers the original +5D0 base and [edi-20]/[edi]/[edi+20]
-//    addressing (diff 1609 with wrapper, but behaviorally wrong fallback).  Reverted to the
-//    canonical indexed form this->playerNameDrop[i] etc. per source-recovery policy; A[0] is peeled
-//    by VC5 in both forms (original keeps playerNameDrop as the loop top with no peel).
-//
-// Final: indexed form + goto-shared fallback tail (behaviorally complete; 105/105 calls).
-//
-// Remaining leads (not behavior gaps):
-//  - prologue: original loads ebp=param_2 at 004A1716 (deferred); goto structure hoists it.
-//    If the shared-tail requirement can be met without extending param_2's register liveness (e.g.
-//    making the fallback read the stack home without restoring ebp), the prologue snaps.
-//  - final loop: playerNameDrop check is peeled to a pre-loop block; the original keeps it as the
-//    loop top with backedge to it.  Loop-rotation shape, not semantics.
-//  - locals: new-expression temp gets its own 4-byte slot at entry-0x22C, pushing file_name to
-//    entry-0x228; the original reuses file_name[0] (dead in that branch) for the temp.
-//  - ~M blocks: B015-B018 sprintf/findfirst region differs only by the [esp+1C] vs [esp+20]
-//    file_name offset; B025/B027 not-ready region; B112-B118 final-loop handlers.
-//
-// Session sa64f8-action: operand-order, nested-gate, explicit-return, parameter-address,
-// cursor-loop, and branch-initialization probes were either codegen duplicates or reduced
-// structural parity. Restored this canonical indexed/goto source; remaining blocker is the
-// proven VC5 parameter liveness/fallback stack-home schedule, not a missing call or behavior.
+// Current unresolved result: 2159 strict differing bytes, 98.13% shape similarity,
+// 89.11% exact-block coverage, and 105/105 ordered calls. The main gaps are the shared
+// fallback prologue schedule and final-loop register coloring. No behavior gap is known.
 
 #include <string.h>
 #include <io.h>
@@ -309,14 +282,14 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     this->myPlayerTeam = this->playerTeam[me]->get_state() + 1;
                     if (rge_base_game->scenarioGame()) {
                         char* dir = rge_base_game->prog_info->scenario_dir;
-                        sprintf(file_name + 4, "%s%s.scn", dir,
+                        sprintf(file_name, "%s%s.scn", dir,
                                 rge_base_game->scenarioName());
-                        if (_findfirst(file_name + 4, (struct _finddata_t*)&file_info.time_create) == -1) {
-                            sprintf(file_name + 4, "%s.scx", rge_base_game->scenarioName());
+                        if (_findfirst(file_name, (struct _finddata_t*)&file_info.time_create) == -1) {
+                            sprintf(file_name, "%s.scx", rge_base_game->scenarioName());
                         } else {
-                            sprintf(file_name + 4, "%s.scn", rge_base_game->scenarioName());
+                            sprintf(file_name, "%s.scn", rge_base_game->scenarioName());
                         }
-                        this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name + 4);
+                        this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name);
                     } else {
                         this->myScenarioChecksum = 0;
                     }
@@ -449,7 +422,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
 
         if (param_2 == 0 && rge_base_game->numberPlayers() > 0) {
             int i = 0;
-            do {
+            while (1) {
                 if (param_1 == this->playerNameDrop[i]) {
                     if (rge_base_game->multiplayerGame() &&
                         this->playerNameDrop[i]->get_line() > 0 &&
@@ -493,7 +466,8 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     goto L_1F6B;
                 }
                 i++;
-            } while (i < rge_base_game->numberPlayers());
+                if (i >= rge_base_game->numberPlayers()) break;
+            }
         }
         goto L_1F72;
 L_1F6B:
