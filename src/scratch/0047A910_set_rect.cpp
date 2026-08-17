@@ -40,6 +40,27 @@
 // - Direct horizontal geometry reads added 5 bytes and worsened shape; rolled back.
 // - Donor virtual method declarations and a shared down_right local were codegen duplicates; removed for source clarity.
 // - Final blocker remains the prologue EBP save and associated register/block topology.
+// Fresh bounded pass (sa-28199e0c):
+// - The available Pnl_scbr donor reconstruction with direct geometry expressions and const long locals produced
+//   the best natural basin: exact size, 3/3 ordered calls, early EBP save, 17.89% exact-block coverage, 138-byte
+//   strict diff, and 76.84% shape similarity. It was not exact and was restored before final validation.
+// - Widening the proven panel dimensions to long was a codegen duplicate. Shared range and function-scope local
+//   variants were duplicates or returned to the 272-byte clean basin. Grouped store order made the result worse.
+// - The clean typed source remains pinned. The blocker is still register assignment and source scheduling after
+//   the base call; behavior, direct calls, boundary, and field ownership remain established.
+// Fresh bounded pass (sa-03683be2):
+// - Restored the donor-supported const-long geometry source and tested interleaved typed rectangle stores,
+//   direct member dependencies, vertical declaration order, and explicit range/up-edge locals.
+// - The best natural result stayed at 138 strict bytes, exact size, 3/3 ordered calls, and 76.84% shape.
+// - The target's early EBP and post-base-call register map did not follow these source-level variants.
+// - Restored the pinned clean source. No behavior, ABI, layout, boundary, or call-set uncertainty was found.
+// Revisit pass (sa-79cd7e4d-r1, probes 038-048):
+// - Revalidated the 138-byte const-long donor basin, then tested natural range, store-order, chained-store,
+//   declaration-order, and decompiler-supported shared-local variants. None produced an exact result.
+// - The best result remained 138 strict bytes with exact size, 3/3 ordered calls, early EBP save, and 76.84%
+//   shape similarity. The shared six-local form reached 293 bytes; it was discarded.
+// - Restored the pinned clean source. Final blocker remains register assignment and post-base-call scheduling;
+//   behavior, ABI, layout, boundary, and call-set evidence remain established.
 
 struct tagRECT {
     long left;
