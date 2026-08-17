@@ -31,6 +31,12 @@
 // guard all preserved the 940-byte/38-byte-diff result.  Restored the clean
 // pointer receiver and early-return source.  The only lead remains VC5's
 // entry-save choice versus the original delayed EBX/EDI saves.
+// Latest pass: 20 meaningful hypotheses. Header/context, class-surface,
+// receiver/lifetime, guard, flag, and declaration variants did not change the
+// prologue basin. A narrow offset overlay corrected the proven +0x12C font,
+// +0x134 RECT, and +0x144 format accesses; diff improved 38 -> 30 bytes.
+// Final clean source remains unresolved only at VC5 entry-save placement and
+// its two epilogues. Ambient and risky/small flag labs found no exact variant.
 
 #include <windows.h>
 
@@ -194,16 +200,19 @@ void TEditPanel::draw()
             HDC dc = this->draw_area->GetDc("pnl_edit::draw");
             if (dc) {
                 SelectClipRgn(dc, this->clip_rgn);
-                old_font = SelectObject(dc, this->font);
+                // BINARY NOTE: these members are proven at +0x12C, +0x134,
+                // and +0x144 by the original loads. The compact class surface
+                // does not name the intervening fields.
+                old_font = SelectObject(dc, *(HGDIOBJ*)((char*)this + 0x12C));
                 SetBkMode(dc, 1);
                 SetTextColor(dc, this->text_color2);
-                r.left = this->draw_rect.left - 1;
-                r.top = this->draw_rect.top + 1;
-                r.right = this->draw_rect.right - 1;
-                r.bottom = this->draw_rect.bottom + 1;
-                DrawTextExA(dc, this->text, -1, &r, this->draw_format, 0);
+                r.left = ((RECT*)((char*)this + 0x134))->left - 1;
+                r.top = ((RECT*)((char*)this + 0x134))->top + 1;
+                r.right = ((RECT*)((char*)this + 0x134))->right - 1;
+                r.bottom = ((RECT*)((char*)this + 0x134))->bottom + 1;
+                DrawTextExA(dc, this->text, -1, &r, *(unsigned int*)((char*)this + 0x144), 0);
                 SetTextColor(dc, this->text_color1);
-                DrawTextExA(dc, this->text, -1, &this->draw_rect, this->draw_format, 0);
+                DrawTextExA(dc, this->text, -1, (RECT*)((char*)this + 0x134), *(unsigned int*)((char*)this + 0x144), 0);
                 SelectObject(dc, old_font);
                 SelectClipRgn(dc, 0);
                 this->draw_area->ReleaseDc("pnl_edit::draw");
