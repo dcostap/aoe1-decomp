@@ -149,6 +149,21 @@
 // 224 bytes with 141 differing bytes and 85.42% shape; no natural source
 // recovered the y1/range-home and row-pointer/y-home rotation.
 
+// Deeper local/row-ownership reassessment (sa-af6eaad7-r1):
+// - Nine row-surface forms (named row table, indexed row pointer, named row,
+//   top-scoped cell locals, and typed cell forms) produced the 224-byte/141-
+//   difference basin. Typed row/cell ownership entered 190-191-byte basins.
+// - Canonical RGE_Tile bitfields, sizeof(RGE_Tile) stride, full bound
+//   initialization, register locals, row aliases, nested row scope, and
+//   byte/char row-table member types produced no better policy-valid result.
+// - An integer row cursor and an explicit y-parameter pointer cursor both
+//   normalized to the clean basin. This does not prove a shipped raw cursor;
+//   retain the reviewed typed row-table ownership.
+// - A const row-table alias changed the prologue and reached 195 differences;
+//   the plain typed member remained best. Ten new variant families exhausted
+//   local-declaration and row-ownership leads without recovering the original
+//   y1/range-home, row-pointer/y-home, x1/EBX, or CL/BL rotation.
+
 struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
