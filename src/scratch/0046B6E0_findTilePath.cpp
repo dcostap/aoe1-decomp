@@ -50,8 +50,16 @@
 //   address until a matching shared declaration context is found.
 // - Tested delaying the display-mask store until after the typed tile-pointer
 //   increment.  It reduced positional diff by 129 bytes but made the source
-//   decompiler-shaped and worsened CFG/edit similarity.  Restored the direct
-//   typed store; the original source evidence supports that form.
+//   decompiler-shaped and worsened CFG/edit similarity.  The current pass
+//   retains it because the executable proves the byte load/store order.
+// - Current pass: 20 evidence-led probes.  The clean source keeps exact size,
+//   frame, and all 75 ordered calls, but remains nonexact at 6539 differing
+//   bytes.  The first blocker remains VC5 stack alignment and local-home
+//   layout.  No exact source was found.
+// - BINARY NOTE: the entry gate takes the full path when tolerance <= the
+//   shipped float at 00570E54.  The FPU status test proves this direction.
+// - BINARY NOTE: display clearing loads the draw byte before advancing the
+//   tile cursor, then stores the masked byte through the prior tile.
 
 #include <math.h>
 #include <string.h>
@@ -513,7 +521,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         return 0;
     }
 
-    if (FADDR(0x570E54) < tolerance) {
+    if (tolerance <= FADDR(0x570E54)) {
         ESTIMATE_DISTANCE(dist, goalX, goalY, startX, startY);
         if ((float)dist < tolerance * FADDR(0x570E58)) {
             if (costOut != 0) *costOut = 0;
@@ -545,14 +553,13 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         map = this->mapValue;
         row = 0;
         while (row < map->map_height) {
+            tile = map->map_row_offset[row];
             col = 0;
-            if (col < map->map_width) {
-                tile = map->map_row_offset[row];
-                while (col < map->map_width) {
-                    tile->draw_attribute = (unsigned char)(tile->draw_attribute & 0x70);
-                    ++tile;
-                    ++col;
-                }
+            while (col < map->map_width) {
+                unsigned char drawAttribute = tile->draw_attribute;
+                ++tile;
+                ++col;
+                (tile - 1)->draw_attribute = (unsigned char)(drawAttribute & 0x70);
             }
             ++row;
             map = this->mapValue;
