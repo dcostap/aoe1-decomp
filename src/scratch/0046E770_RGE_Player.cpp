@@ -36,6 +36,12 @@
 //   globals, header changes, inline-depth and optimization pragmas, literal
 //   types, initializer-side dependencies, and scalar body stores did not beat
 //   the clean source.  All experiments were restored before final validation.
+// - Revisit probes 1-13 tested the reviewed full virtual surface, canonical
+//   typed Player/World/Master/Tile layouts, same-TU donor declarations, enum
+//   defaults, narrow tile-count conversion, and method/data declaration order.
+//   Every valid probe remained an 18-byte mismatch with the same two spans.
+//   These results support a compiler scheduling or historical-TU-context
+//   blocker, not an unresolved field or helper ABI.
 
 #include <stdlib.h>
 #include <string.h>
