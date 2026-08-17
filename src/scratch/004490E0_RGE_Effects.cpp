@@ -1,9 +1,9 @@
 // VA: 004490E0 RGE_Effects::RGE_Effects(int fd)
 // effects.cpp lines 21-63
 // 352 bytes
-// BLOCKER: register allocation chooses esi/edi for this (needs ebx).
-// All C++ variants tried produce esi=this (or edi=this) while the original
-// uses ebx=this. This stems from a VC5 heuristic we couldn't influence.
+// BLOCKER: VC5 keeps one extra outer-entry jump in the natural typed source.
+// The current candidate keeps EBX as this. The remaining CFG drift is not an
+// ABI, field-layout, or call-order issue.
 //
 // Attempt log:
 // - natural C++ with vtable_ptr member: esi=this, ebx=&effect_num, ebp=0/running offset
@@ -51,8 +51,27 @@
 //   source form. Reordering fields before virtual declarations was also duplicate.
 // Main-agent audit replaced the byte-offset record cursor with typed effect
 // indexing. The first effect still owns each name read, as the executable shows.
-// Readiness audit moved the allocated-list store after the repeated count test.
-// This preserves the executable's fault and concurrent-change order.
+// The oracle's cmp/store/jle sequence proves that the allocated-list store is
+// before the repeated count test. The typed source now keeps that order.
+// Matching-worker pass (2026-08-16): fresh baseline rebuilt 360 bytes against
+// the 352-byte target, with 10/10 ordered calls, the 0x14 frame, and 262 strict
+// differing bytes. The receiver was EBX, so the prior register-color blocker
+// is not the current first mismatch.
+// - top-tested outer while, outer for, explicit outer bound-pointer reread,
+//   infinite-loop break, and an explicit source loop label were codegen
+//   duplicates; each kept the extra outer-entry restore jump.
+// - moving the allocated-list store before the inner guard added one exact
+//   block but kept the same strict diff; this is now the living source order.
+// - virtual declaration order, a self alias, function-scope pointer locals,
+//   and an explicit byte offset all produced no improvement or a 270-byte
+//   diff. Inverted and continue-based zero-list guards reached 264 bytes.
+// - rebuilt the assembly donor index and found no useful exact constructor or
+//   inner-record donor. The clean typed source remains the best natural basin.
+// - replaced the command byte cursor with typed command indexing. VC5 emitted
+//   the same natural codegen, so the source no longer encodes raw byte plumbing.
+// - outer while/for forms, direct effect-name access, and declaration-order
+//   variants all reproduce the same codegen basin. The remaining extra outer
+//   entry jump is unresolved compiler CFG scheduling, not an ABI or layout gap.
 // Best current source keeps the natural typed ownership and the binary-proven
 // count reread. Remaining gap is structural outer-entry sharing plus vtable
 // relocation context; no unresolved field layout or call ABI issue remains.
@@ -94,9 +113,9 @@ RGE_Effects::RGE_Effects(int fd) {
         outer_count = 0;
         if (outer_count < *peffect) {
             do {
-                RGE_Effect_Command** list_ptr;
                 RGE_Effect* effect;
                 RGE_Effect* fields;
+                RGE_Effect_Command** list_ptr;
                 short* count_ptr;
                 effect = this->effects;
                 fields = &this->effects[outer_count];
@@ -108,19 +127,17 @@ RGE_Effects::RGE_Effects(int fd) {
                     RGE_Effect_Command* allocated =
                         (RGE_Effect_Command*)calloc(fields->effect_list_num, 0x0C);
                     inner_count = 0;
+                    *list_ptr = allocated;
                     if (fields->effect_list_num > 0) {
-                        *list_ptr = allocated;
-                        fd = 0;
                         do {
-                            char* command = (char*)
-                                *list_ptr + fd;
-                            rge_read(file, command, 1);
-                            rge_read(file, command + 2, 2);
-                            rge_read(file, command + 4, 2);
-                            rge_read(file, command + 6, 2);
-                            rge_read(file, command + 8, 4);
+                            RGE_Effect_Command* command =
+                                &(*list_ptr)[inner_count];
+                            rge_read(file, &command->command, 1);
+                            rge_read(file, &command->change_num1, 2);
+                            rge_read(file, &command->change_num2, 2);
+                            rge_read(file, &command->change_num3, 2);
+                            rge_read(file, &command->change_amount, 4);
                             inner_count++;
-                            fd += 0x0C;
                         } while (inner_count < *(short*)count_ptr);
                     }
                 } else {
