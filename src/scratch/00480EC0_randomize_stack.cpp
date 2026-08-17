@@ -88,6 +88,21 @@
 //   self aliases, and the init_stack reference ABI did not improve it.
 //   Restored the clean named-array source because the aggregate is not proven
 //   original ownership; the exact-size result is diagnostic evidence.
+// - sa-2ff22d1e-r1: Reproduced that exact-size basin with an outer/offset/state
+//   aggregate and a direct base cursor. The residual stayed at 10 bytes and
+//   was a pure EBX/EDI recolor. Separate locals did not preserve the frame.
+//   Restored this clean named-array source.
+// - sa-5f352e47-r1: Natural typed member references with an outer/offset/state
+//   aggregate reached 237 bytes, the 0x968 frame, and diff 98 / 87.06% shape.
+//   Separate scalar locals reached diff 144. Both were diagnostic; the
+//   aggregate and member-reference aliases are not proven original ownership.
+//   Restored this clean Map_Stack array source and did not use raw cursors.
+// - sa-f86eab16-r1: Natural typed prev-field cursors with a separate offset
+//   scalar reached diff 142, but stayed in the 0x964 frame basin. A typed end
+//   pointer, prev-only field spelling, declaration-order swap, and separate
+//   outer/offset scalars were worse or codegen duplicates. The target's
+//   persisted byte offset and +0x04 bucket receiver remain unrecoverable by a
+//   policy-valid natural Map_Stack array source; restored this clean source.
 
 extern int __cdecl debug_rand(char* file, int line);
 
