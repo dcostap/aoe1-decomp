@@ -30,6 +30,20 @@
 //   worsened the positional diff to 656; it is a decompiler artifact here.
 // - the original still differs at structural stack coloring: it preserves a
 //   zero store and reuses incoming short-parameter homes for coordinates.
+// Current worker probes (2026-08-17):
+// - Rechecked natural declaration orders for primary/secondary text locals,
+//   RECT placement, and coordinate locals. These were emitted-code duplicates.
+// - Removing the y local expanded the frame mismatch and deleted one call.
+//   Restored the named y local.
+// - A typed RECT-member output window did not compile without an unsupported
+//   pointer cast. The prior overlapping RECT experiment remains rejected.
+// - SDK-only GDI declarations, a primary text-length initializer, combined
+//   null guard, line-count promotion, and a long line-number local did not
+//   improve the natural result. The SDK and guard forms were duplicates.
+// - Replacing either style switch with an if/else chain reduced structural
+//   quality or call alignment. The binary switch lowering remains canonical.
+// - Twelve meaningful checks found no policy-valid exact source. Clean source
+//   remains 685 bytes versus 692, with 23 ordered calls and diff 614.
 
 #include <windows.h>
 #include <string.h>
