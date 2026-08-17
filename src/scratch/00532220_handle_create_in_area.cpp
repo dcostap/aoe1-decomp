@@ -43,6 +43,22 @@
 //   regressed structure. A volatile relation pointer was also codegen-neutral.
 // - A four-case focused relation-expression lab produced one emitted-code group;
 //   no natural source spelling changed the +0x7F SIB. Restored the clean source.
+// - Worker recheck: the clean source still builds to 388 bytes with the 0xC
+//   frame, all 25 blocks, and the same single relation SIB mismatch at +0x7F;
+//   no new natural lead was found. Keep this source pending compiler-context or
+//   original-source evidence rather than using an opaque codegen workaround.
+// - Follow-up probes: typed relation tables/records, signedness, inline
+//   accessors, pointer-expression order, local references, and canonical
+//   virtual class surfaces all preserved the same 189-byte SIB basin. Splitting
+//   or reusing the counters changed the frame body and was restored. The clean
+//   typed reconstruction remains authoritative.
+// - Revisit probe: nested the allied relation, self-id, and allied-victory
+//   tests in the decompiler's natural short-circuit shape. VC5 emitted the
+//   same 388-byte function and the same 189-byte relation-SIB drift. The
+//   original `cmp byte [ebp+eax],0` and rebuilt `cmp byte [eax+ebp],0` read
+//   the same relation byte; the original encoding is one byte longer. No
+//   policy-valid source lead remains. Keep this source and pause for compiler
+//   context or original-source evidence.
 
 struct RGE_Master_Object {
     virtual ~RGE_Master_Object();
