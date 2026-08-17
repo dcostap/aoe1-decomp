@@ -30,6 +30,10 @@
 // New claim: direct percent/numeric branches, break-driven common-beep forms,
 // label ordering, an invalid-file trampoline, and an 8-variant lab did not
 // improve the clean 285-byte structural result.  Restore the clean source.
+// Revisit: positive file-invalid guards reached a 525-byte body and improved
+// the positional diff, but merged the flag-result beep with the file tail.
+// Direct or labeled result tails restored the call count only at larger size.
+// Typed natural baseline restored; remaining issue is switch-tail placement.
 
 extern "C" int (__stdcall* const MessageBeep)(unsigned int);
 extern "C" int (__stdcall* const IsDBCSLeadByte)(unsigned int);
