@@ -17,6 +17,13 @@
 // - inline source-delta arithmetic perturbed the whole function (586-byte
 //   diff); same-TU cursor declaration and shared-block probes moved only
 //   isolated encodings, not the target register basin, and were rolled back.
+// - function-scope cursors, one shared source delta, and an unsigned flag bound
+//   reached the best clean result: 58 strict bytes differ; direct pointer-bound
+//   forms changed the long-lived name cursor and were rejected.
+// BINARY NOTE: the shipped flag loop uses an unsigned compare against 3 and a
+//   -0x88 anchor. Keep that odd bound; a signed compare changes the branch.
+// LIKELY INTENT: the three short, float, and byte groups are copied by one
+//   source-relative offset because the source and destination objects share a layout.
 // left in scratch: all calls, frame, size, CFG counts, and the long scalar/tail
 // regions match; remaining drift is the localized attribute-loop register and
 // flag-loop bound/block scheduling hunk at 00453258..004532C1.
@@ -121,6 +128,11 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     unsigned char available_val = available;
     short hide_val = hide_in_scenario_editor;
     char** name_ptr = &name;
+    short* type;
+    float* amount;
+    unsigned char* flag;
+    int diff;
+    int count;
 
     if (*name_ptr != 0) {
         free(*name_ptr);
@@ -165,16 +177,16 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     movement_type = src->movement_type;
 
     {
-        short* type = attribute_type_held;
-        int diff = (int)src - (int)(RGE_Master_Static_Object*)this;
-        int count = 3;
+        type = attribute_type_held;
+        diff = (int)src - (int)(RGE_Master_Static_Object*)this;
+        count = 3;
         do {
             *type = *(short*)((int)type + diff);
             type++;
             count--;
         } while (count != 0);
 
-        float* amount = attribute_amount_held;
+        amount = attribute_amount_held;
         count = 3;
         do {
             *amount = *(float*)((int)amount + diff);
@@ -188,13 +200,12 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     multiple_attribute_mod = src->multiple_attribute_mod;
 
     {
-        unsigned char* flag = attribute_flag;
-        int flag_diff = (int)src - (int)(RGE_Master_Static_Object*)this;
+        flag = attribute_flag;
         int offset = -0x88;
         do {
-            *flag = *(unsigned char*)((int)flag + flag_diff);
+            *flag = *(unsigned char*)((int)flag + diff);
             flag++;
-        } while (offset + (int)flag - (int)(RGE_Master_Static_Object*)this < 3);
+        } while ((unsigned int)(offset + (int)flag - (int)(RGE_Master_Static_Object*)this) < 3);
     }
 
     area_effect_object_level = src->area_effect_object_level;
