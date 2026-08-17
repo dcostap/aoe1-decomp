@@ -28,6 +28,11 @@
 // VC5 output was unchanged.
 // this claim: common calc_wid/calc_hgt and SDK windows.h context were tested;
 // both returned larger or older basins, so direct width and local tagRECT stay.
+// this claim: rechecked typed parent/edge-panel ownership and natural resize
+// expressions. Self aliases, local declaration orders, and block-local height
+// lifetimes were codegen duplicates. A binary-supported shared bottom tail
+// improved block shape but reached 471/576 bytes, worse than the clean 437/585
+// basin, so the natural source remains pinned.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 enum PositionMode {
