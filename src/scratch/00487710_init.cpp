@@ -21,6 +21,9 @@
 // new claim probe: canonical RGE_Cliffs_Info ownership plus y-anchored source/destination cursors exposed the original +20DC/+2C addresses; the natural field form still added a 46-byte structural tail and kept registers reversed, so it was rolled back.
 // new claim probe: naming and assigning the proven trailing hot_spot_num reproduced the original [esp+4CC] count store; combined with y/radius cursors it reached diagnostic diff 85 but retained the 46-byte EH/new tail, so it was rolled back.
 // new claim probe: direct canonical number_of_cliffs ownership removed the decompiler-only variance alias but did not change the structural basin; restored the validated donor-shaped source.
+// revisit probe: a typed trailing hot_spot_num plus radius/y member cursors and a standalone new expression reduced the diagnostic diff to 10 bytes, but required volatile reloads; rejected by policy.
+// revisit probe: nonvolatile natural aliases, unions, and references collapsed the two proven fallback loads and stayed at a larger mismatch; restored the clean donor-shaped source.
+// final revisit state: retain the no-volatility typed model with the proven trailing count and radius/y member cursors; validation is exact-size, exact-frame, and exact-call but nonexact in bytes.
 // Left in scratch: behavior, calls, frame, and size are close; remaining drift is the hot-spot local home/cursor allocation and automatic-new tail cleanup.
 // FLAGS: config/flags/00487710_init.rsp (/nologo /c /O2 /Oy /GX)
 
@@ -56,7 +59,8 @@ struct RGE_Cliffs_Info {
     long cliff_terrain_spacing;
     long cliff_to_cliff_spacing;
     RGE_Cliffs_Hot_Spots hot_spots[99];
-    long tail[2];
+    long tail;
+    long hot_spot_num;
 };
 
 class RGE_RMM_Database_Controller {
@@ -92,7 +96,7 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
     this->RGE_RMM_Database_Controller::init(p1, p2, p3, p4, p5);
 
     if (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x40) > 0x1fff) {
-        volatile long number_of_cliffs;
+        long number_of_cliffs;
         long base_cliff_size;
         long cliff_size_variance;
         long size = this->map_size;
@@ -123,21 +127,22 @@ unsigned char TRIBE_RMM_Database_Controller::init(RGE_Map* p1, RGE_Game_World* p
         cliff_info.cliff_size_variance = cliff_size_variance - cliff_info.cliff_terrain_spacing;
 
         long n = this->hot_spot_count;
+        cliff_info.hot_spot_num = n;
         if (n > 0) {
-            long* dst = &cliff_info.hot_spots[0].y;
-            RGE_Controller_Hot_Spots* src = &this->hot_spot_data[0];
+            long* dst = &cliff_info.hot_spots[0].radius;
+            long* src = &this->hot_spot_data[0].y;
             do {
-                dst[-1] = src->x;
-                dst[0] = src->y;
-                dst[1] = src->radius;
+                dst[-1] = src[-1];
+                dst[0] = src[0];
+                dst[1] = src[1];
                 dst += 3;
-                src++;
+                src += 4;
                 n--;
             } while (n != 0);
         }
 
         if (cliff_info.cliff_size_variance > 0 && cliff_info.number_of_cliffs_variance > 0) {
-            number_of_cliffs = (long)new RGE_RMM_Cliffs_Generator(this->map, (RGE_Random_Map_Module*)this, cliff_info);
+            new RGE_RMM_Cliffs_Generator(this->map, (RGE_Random_Map_Module*)this, cliff_info);
         }
     }
     return 1;
