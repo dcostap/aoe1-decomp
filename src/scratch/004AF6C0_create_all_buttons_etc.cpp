@@ -27,24 +27,141 @@
 //               reversed.  Dedicated counters and do/for update forms did not
 //               change that order.  This canonical typed form is retained.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
+//
+// NATURALIZATION AUDIT:
+// - The source gate does not permit the former absolute string casts, the
+//   storage macro, or the generated screen surface.
+// - The string externs below name the executable objects proved by the data
+//   listing.  The inherited TPanel surface names the +0xC8 tab-order slot.
+// - Exact donor 004B2EF0 uses the same ordered TPanel virtual declarations.
+// - The type inventory gives TRIBE_Screen_Sed size 0x948 and keeps the
+//   Diplomacy_friend_box member as TButtonPanel* [8][3] at +0x8A8.
+// - The resulting source is policy-clean.  Its current build is 9090 bytes
+//   with 358 ordered calls, 388/388 relocation masks, and four store-order
+//   bytes remaining in the final diplomacy loop.
+// BINARY NOTE: Named string externs make a natural do-loop split into a
+//              first iteration and a loop body under VC5.  That split adds
+//              five call sites.  A bottom-tested while loop keeps one site.
+// BINARY NOTE: TRIBE_Scenario_Editor_Panel_Object owns the +0x214 and
+//              +0x218 fields through TRIBE_Panel_Object.  Its status field
+//              is the inherited TPanel error_code at +0xD8.
 
 #include <stdio.h>
 #include <new.h>
 
-#define CSTR(x) ((char*)(x))
-#define OK(expr) do { if (!(expr)) goto fail; } while (0)
-#define HELP(panel, id, flag) ((TPanel*)(panel))->set_help_info((id), (flag))
-#define ACTIVE(panel, value) ((TPanel*)(panel))->set_active((value))
+#include "../../include/rge_base_game_global.h"
+
+// The executable's string table gives these objects stable names and values.
+// Keep them as externs instead of hiding their addresses in casts.
+extern char s_space[];             // 00580460: " "
+extern char s_percent_d[];         // 00584610: "%d"
+extern char s_btnbldg_d_shp[];     // 00586340: "btnbldg%d.shp"
+extern char s_btnunit_shp[];       // 00586368: "btnunit.shp"
+extern char s_0[];                 // 00586D44: "0"
+extern char s_angle_d_star[];      // 00586D48: "<%d*>"
+extern char s_percent_d_star[];    // 00586D50: "%d*"
+extern char s_angle_d[];           // 00586D54: "<%d>"
+extern char s_300[];               // 00586D5C: "300"
+extern char s_400[];               // 00586D60: "400"
+extern char s_500[];               // 00586D64: "500"
+extern char s_600[];               // 00586D68: "600"
+extern char s_700[];               // 00586D6C: "700"
+extern char s_900[];               // 00586D70: "900"
+extern char s_1200[];              // 00586D74: "1200"
+extern char s_1500[];              // 00586D7C: "1500"
+extern char s_1800[];              // 00586D84: "1800"
+extern char s_2100[];              // 00586D8C: "2100"
+extern char s_2400[];              // 00586D94: "2400"
+extern char s_2700[];              // 00586D9C: "2700"
+extern char s_3000[];              // 00586DA4: "3000"
+extern char s_800[];               // 005800F8: "800"
+extern char s_empty[];             // 00592A40: ""
+
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
+class TDrawArea;
 
 class TPanel {
 public:
-    virtual void v0();
-    virtual void v4();
-    virtual void v8();
-    virtual void vC();
-    virtual void v10();
+    virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(tagRECT);
+    virtual void set_color(unsigned char);
     virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long, long, long,
+                                 TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel**, short);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panelNameValue;
+    TDrawArea* render_area;
+    char gap_24[0x54];
+    int have_focus;
+    char gap_7C[0x5C];
+    int error_code;
+    char gap_DC[0x8];
+    long help_string_id;
+    long help_page_id;
+    char gap_EC[0x8];
     void set_help_info(long, long);
     void set_z_order(unsigned char, short);
     int width();
@@ -76,14 +193,21 @@ class TShape {
 public:
     char payload[0x20];
     TShape(char*, long);
+    ~TShape();
     int is_loaded();
 };
 
-class TRIBE_Scenario_Editor_Panel_Object : public TPanel {
+class TRIBE_Panel_Object : public TPanel {
 public:
-    char gap_04[0xD4];
-    int failed; // +0xD8
-    char gap_DC[0x140];
+    char gap_F4[0x120];
+    virtual ~TRIBE_Panel_Object();
+};
+
+class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
+public:
+    void* master_game_obj; // +0x214
+    int master_culture_id; // +0x218
+    virtual ~TRIBE_Scenario_Editor_Panel_Object();
     TRIBE_Scenario_Editor_Panel_Object(void*, TPanel*, void*, long, long, TShape*, TShape**, class TRIBE_Player*);
 };
 
@@ -95,32 +219,48 @@ public:
 };
 
 class TRIBE_Player;
+class TRIBE_World;
+class TMessagePanel : public TPanel {
+public:
+    char gap_F4[0x28C];
+};
+
+class RGE_View : public TPanel {
+public:
+    char gap_F4[0x26C];
+};
+
+class RGE_Main_View : public RGE_View {};
+class TRIBE_Main_View : public RGE_Main_View {};
+
+class RGE_Diamond_Map : public TPanel {};
+class RGE_Diamond_Map_View : public RGE_Diamond_Map {};
 
 class RGE_Base_Game {
 public:
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
     RGE_Font* get_font(int);
 };
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
 
-#define VPAD1(n) virtual void vpad##n();
-#define VPAD2(n) VPAD1(n) VPAD1(n##_1)
-#define VPAD4(n) VPAD2(n) VPAD2(n##_2)
-#define VPAD8(n) VPAD4(n) VPAD4(n##_4)
-#define VPAD16(n) VPAD8(n) VPAD8(n##_8)
-#define VPAD32(n) VPAD16(n) VPAD16(n##_16)
-class TRIBE_Screen_Sed_Vtbl {
+class TEasy_Panel : public TPanel {
 public:
-    VPAD32(0) VPAD16(32) VPAD2(48)
-    virtual void set_group_active(TPanel**, int); // slot 50, +0xC8
+    char gap_F4[0x384];
+    virtual ~TEasy_Panel();
 };
 
-class TRIBE_Screen_Sed {
+class TScreenPanel : public TEasy_Panel {
 public:
-    char gap_000[0x20];
-    void* draw_area; // +0x20
-    char gap_024[0xB4];
-    int base_error_flag; // +0xD8
-    char gap_0DC[0x39C];
+    virtual ~TScreenPanel();
+};
+
+class TRIBE_Screen_Sed : public TScreenPanel {
+public:
     int is_multi_player; // +0x478
     int set_player_first_flag; // +0x47C
     void* SelectedObject; // +0x480
@@ -144,9 +284,9 @@ public:
     unsigned char valid_save_spot_flag; // +0x4C1
     unsigned char pad_4C2[0x2];
     TShape* background_pic; // +0x4C4
-    TPanel* main_view; // +0x4C8
-    TPanel* map_view; // +0x4CC
-    TPanel* message_panel; // +0x4D0
+    TRIBE_Main_View* main_view; // +0x4C8
+    RGE_Diamond_Map_View* map_view; // +0x4CC
+    TMessagePanel* message_panel; // +0x4D0
     TPanel* bottom_panel; // +0x4D4
     TButtonPanel* scenario_mode_button[10]; // +0x4D8
     TButtonPanel* menu_button; // +0x500
@@ -263,8 +403,16 @@ public:
     TTextPanel* Diplomacy_status_label[4]; // +0x898
     TButtonPanel* Diplomacy_friend_box[8][3]; // +0x8A8
     TButtonPanel* Diplomacy_AlliedVictory[8]; // +0x908
-    void* world; // +0x928
+    TRIBE_World* world; // +0x928
+    unsigned long update_interval; // +0x92C
+    unsigned long last_update_time; // +0x930
+    unsigned long map_redraw_interval; // +0x934
+    unsigned long last_map_redraw_time; // +0x938
+    int changed_system_colors; // +0x93C
+    unsigned long save_text_color; // +0x940
+    unsigned long save_window_color; // +0x944
 
+    virtual ~TRIBE_Screen_Sed();
     int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
     int create_text(TPanel*, TTextPanel**, long);
@@ -285,9 +433,8 @@ const int FormatMultiLine = 7;
 
 void TRIBE_Screen_Sed::create_all_buttons_etc()
 {
-    TButtonPanel** pp;
     int i;
-    int diplomacy_i;
+    TButtonPanel** pp;
     int count;
     TPanel* ptr[4];
     char str4[20];
@@ -295,31 +442,31 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     char str1[140];
     char str[100];
     char str2[140];
-    register TButtonPanel** cur;
+    TButtonPanel** cur;
     TTextPanel** tt;
     TButtonPanel** group;
 
     group = this->scenario_mode_button;
     cur = group;
-    OK(this->create_button((TPanel*)this, cur, 0x271A, 1)); HELP(*cur, 0x76C0, -1);
+    if (!(this->create_button(this, cur, 0x271A, 1))) goto fail; (*cur)->set_help_info(0x76C0, -1);
     cur = this->scenario_mode_button + 1;
-    OK(this->create_button((TPanel*)this, cur, 0x271B, 1)); HELP(*cur, 0x76C1, -1);
+    if (!(this->create_button(this, cur, 0x271B, 1))) goto fail; (*cur)->set_help_info(0x76C1, -1);
     cur = this->scenario_mode_button + 2;
-    OK(this->create_button((TPanel*)this, cur, 0x271C, 1)); HELP(*cur, 0x76C2, -1);
+    if (!(this->create_button(this, cur, 0x271C, 1))) goto fail; (*cur)->set_help_info(0x76C2, -1);
     cur = this->scenario_mode_button + 3;
-    OK(this->create_button((TPanel*)this, cur, 0x271D, 1)); HELP(*cur, 0x76C3, -1);
+    if (!(this->create_button(this, cur, 0x271D, 1))) goto fail; (*cur)->set_help_info(0x76C3, -1);
     cur = this->scenario_mode_button + 4;
-    OK(this->create_button((TPanel*)this, cur, 0x2722, 1)); HELP(*cur, 0x76C8, -1);
+    if (!(this->create_button(this, cur, 0x2722, 1))) goto fail; (*cur)->set_help_info(0x76C8, -1);
     cur = this->scenario_mode_button + 5;
-    OK(this->create_button((TPanel*)this, cur, 0x271E, 1)); HELP(*cur, 0x76C4, -1);
+    if (!(this->create_button(this, cur, 0x271E, 1))) goto fail; (*cur)->set_help_info(0x76C4, -1);
     cur = this->scenario_mode_button + 6;
-    OK(this->create_button((TPanel*)this, cur, 0x2723, 1)); HELP(*cur, 0x76C9, -1);
+    if (!(this->create_button(this, cur, 0x2723, 1))) goto fail; (*cur)->set_help_info(0x76C9, -1);
     cur = this->scenario_mode_button + 7;
-    OK(this->create_button((TPanel*)this, cur, 0x2721, 1)); HELP(*cur, 0x76C7, -1);
+    if (!(this->create_button(this, cur, 0x2721, 1))) goto fail; (*cur)->set_help_info(0x76C7, -1);
     cur = this->scenario_mode_button + 8;
-    OK(this->create_button((TPanel*)this, cur, 0x271F, 1)); HELP(*cur, 0x76C5, -1);
+    if (!(this->create_button(this, cur, 0x271F, 1))) goto fail; (*cur)->set_help_info(0x76C5, -1);
     cur = this->scenario_mode_button + 9;
-    OK(this->create_button((TPanel*)this, cur, 0x2720, 1)); HELP(*cur, 0x76C6, -1);
+    if (!(this->create_button(this, cur, 0x2720, 1))) goto fail; (*cur)->set_help_info(0x76C6, -1);
 
     cur = group;
     count = 10;
@@ -330,195 +477,195 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
         --count;
     } while (count != 0);
 
-    OK(this->create_button((TPanel*)this, &this->menu_button, 0x2724, 0));
-    HELP(this->menu_button, 0x774C, -1);
+    if (!(this->create_button(this, &this->menu_button, 0x2724, 0))) goto fail;
+    (this->menu_button)->set_help_info(0x774C, -1);
     this->menu_button->set_active(1);
-    OK(this->create_button((TPanel*)this, &this->help_button, 0x0FA9, 0));
+    if (!(this->create_button(this, &this->help_button, 0x0FA9, 0))) goto fail;
     this->help_button->set_active(1);
 
-    OK(this->create_text(this->bottom_panel, &this->map_type_label, 0x29A6));
-    OK(this->create_radio_button(this->bottom_panel, &this->map_type_button[0])); HELP(this->map_type_button[0], 0x76CF, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->map_type_button[1])); HELP(this->map_type_button[1], 0x76D0, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->map_type_button[2])); HELP(this->map_type_button[2], 0x76D1, -1);
-    OK(this->create_text(this->bottom_panel, &this->map_type_text[0], 0x299C));
-    OK(this->create_text(this->bottom_panel, &this->map_type_text[1], 0x299D));
-    OK(this->create_text(this->bottom_panel, &this->map_type_text[2], 0x299E));
-    OK(this->create_text(this->bottom_panel, &this->default_terrain_label, 0x299F));
-    OK(this->create_drop_down(this->bottom_panel, &this->default_terrain_drop)); HELP(this->default_terrain_drop, 0x76D6, -1);
-    OK(this->create_text(this->main_view, &this->map_generating_text, 0x29A5, 0, 0,
-                         (int)((TPanel*)this)->width(), (int)((TPanel*)this)->height() - 200, 1, 1, 1, 0));
+    if (!(this->create_text(this->bottom_panel, &this->map_type_label, 0x29A6))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[0]))) goto fail; (this->map_type_button[0])->set_help_info(0x76CF, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[1]))) goto fail; (this->map_type_button[1])->set_help_info(0x76D0, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[2]))) goto fail; (this->map_type_button[2])->set_help_info(0x76D1, -1);
+    if (!(this->create_text(this->bottom_panel, &this->map_type_text[0], 0x299C))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->map_type_text[1], 0x299D))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->map_type_text[2], 0x299E))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->default_terrain_label, 0x299F))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->default_terrain_drop))) goto fail; (this->default_terrain_drop)->set_help_info(0x76D6, -1);
+    if (!(this->create_text(this->main_view, &this->map_generating_text, 0x29A5, 0, 0,
+                         (int)(this)->width(), (int)(this)->height() - 200, 1, 1, 1, 0))) goto fail;
     this->map_generating_text->set_active(0);
 
-    OK(this->create_text(this->bottom_panel, &this->map_size_label, 0x29A0));
-    OK(this->create_drop_down(this->bottom_panel, &this->map_size_drop)); HELP(this->map_size_drop, 0x76D2, -1);
-    OK(this->create_text(this->bottom_panel, &this->map_style_label, 0x29A1));
-    OK(this->create_drop_down(this->bottom_panel, &this->map_style_drop)); HELP(this->map_style_drop, 0x76D3, -1);
-    OK(this->create_text(this->bottom_panel, &this->random_seed_label, 0x29A2));
-    OK(this->create_edit(this->bottom_panel, &this->random_seed_input, CSTR(0x586D44), 5, FormatUnsignedInt, 0, 0)); HELP(this->random_seed_input, 0x76D4, -1);
-    OK(this->create_text(this->bottom_panel, &this->random_seed_used_label, 0x29A3));
-    OK(this->create_text(this->bottom_panel, &this->random_seed_used_text, CSTR(0x586D44)));
-    OK(this->create_button(this->bottom_panel, &this->generate_map_button, 0x29A4, 0)); HELP(this->generate_map_button, 0x76D5, -1);
+    if (!(this->create_text(this->bottom_panel, &this->map_size_label, 0x29A0))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->map_size_drop))) goto fail; (this->map_size_drop)->set_help_info(0x76D2, -1);
+    if (!(this->create_text(this->bottom_panel, &this->map_style_label, 0x29A1))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->map_style_drop))) goto fail; (this->map_style_drop)->set_help_info(0x76D3, -1);
+    if (!(this->create_text(this->bottom_panel, &this->random_seed_label, 0x29A2))) goto fail;
+    if (!(this->create_edit(this->bottom_panel, &this->random_seed_input, s_0, 5, FormatUnsignedInt, 0, 0))) goto fail; (this->random_seed_input)->set_help_info(0x76D4, -1);
+    if (!(this->create_text(this->bottom_panel, &this->random_seed_used_label, 0x29A3))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->random_seed_used_text, s_0))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->generate_map_button, 0x29A4, 0))) goto fail; (this->generate_map_button)->set_help_info(0x76D5, -1);
     for (i = 0; i < 3; ++i) this->map_type_button[i]->set_radio_info(this->map_type_button, 3);
 
-    OK(this->create_text(this->bottom_panel, &this->brush_size_label, 0x29AF));
-    OK(this->create_text(this->bottom_panel, &this->paint_terrain_label, 0x29BC));
-    OK(this->create_radio_button(this->bottom_panel, &this->brush_size_button[0])); HELP(this->brush_size_button[0], 0x76D9, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->brush_size_button[1])); HELP(this->brush_size_button[1], 0x76DA, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->brush_size_button[2])); HELP(this->brush_size_button[2], 0x76DB, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->brush_size_button[3])); HELP(this->brush_size_button[3], 0x76DC, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->brush_size_button[4])); HELP(this->brush_size_button[4], 0x76DD, -1);
-    OK(this->create_text(this->bottom_panel, &this->brush_size_button_label[0], 0x29B0));
-    OK(this->create_text(this->bottom_panel, &this->brush_size_button_label[1], 0x29B1));
-    OK(this->create_text(this->bottom_panel, &this->brush_size_button_label[2], 0x29B2));
-    OK(this->create_text(this->bottom_panel, &this->brush_size_button_label[3], 0x29B3));
-    OK(this->create_text(this->bottom_panel, &this->brush_size_button_label[4], 0x29B4));
-    OK(this->create_text(this->bottom_panel, &this->paint_type_label, 0x29B9));
-    OK(this->create_radio_button(this->bottom_panel, &this->paint_type_button[0])); HELP(this->paint_type_button[0], 0x76DE, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->paint_type_button[1])); HELP(this->paint_type_button[1], 0x76DF, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->paint_type_button[2])); HELP(this->paint_type_button[2], 0x76E0, -1);
-    OK(this->create_text(this->bottom_panel, &this->paint_type_button_label[0], 0x271A));
-    OK(this->create_text(this->bottom_panel, &this->paint_type_button_label[1], 0x2987));
-    OK(this->create_text(this->bottom_panel, &this->paint_type_button_label[2], 0x29BA));
-    OK(this->create_list(this->bottom_panel, &this->paint_terrain_list, &this->paint_terrain_scrollbar)); HELP(this->paint_terrain_list, 0x76E1, -1);
-    OK(this->create_list(this->bottom_panel, &this->paint_elevation_list, &this->paint_elevation_scrollbar)); HELP(this->paint_elevation_list, 0x76E2, -1);
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_label, 0x29AF))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_terrain_label, 0x29BC))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[0]))) goto fail; (this->brush_size_button[0])->set_help_info(0x76D9, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[1]))) goto fail; (this->brush_size_button[1])->set_help_info(0x76DA, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[2]))) goto fail; (this->brush_size_button[2])->set_help_info(0x76DB, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[3]))) goto fail; (this->brush_size_button[3])->set_help_info(0x76DC, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[4]))) goto fail; (this->brush_size_button[4])->set_help_info(0x76DD, -1);
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[0], 0x29B0))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[1], 0x29B1))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[2], 0x29B2))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[3], 0x29B3))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[4], 0x29B4))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_label, 0x29B9))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[0]))) goto fail; (this->paint_type_button[0])->set_help_info(0x76DE, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[1]))) goto fail; (this->paint_type_button[1])->set_help_info(0x76DF, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[2]))) goto fail; (this->paint_type_button[2])->set_help_info(0x76E0, -1);
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[0], 0x271A))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[1], 0x2987))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[2], 0x29BA))) goto fail;
+    if (!(this->create_list(this->bottom_panel, &this->paint_terrain_list, &this->paint_terrain_scrollbar))) goto fail; (this->paint_terrain_list)->set_help_info(0x76E1, -1);
+    if (!(this->create_list(this->bottom_panel, &this->paint_elevation_list, &this->paint_elevation_scrollbar))) goto fail; (this->paint_elevation_list)->set_help_info(0x76E2, -1);
     for (i = 0; i < 5; ++i) this->brush_size_button[i]->set_radio_info(this->brush_size_button, 5);
     for (i = 0; i < 3; ++i) this->paint_type_button[i]->set_radio_info(this->paint_type_button, 3);
 
-    OK(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[0])); HELP(this->unit_mode_select[0], 0x76F8, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[1])); HELP(this->unit_mode_select[1], 0x76F7, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[2])); HELP(this->unit_mode_select[2], 0x76F9, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[3])); HELP(this->unit_mode_select[3], 0x76FA, -1);
-    OK(this->create_text(this->bottom_panel, &this->unit_mode_select_label[0], 0x2777));
-    OK(this->create_text(this->bottom_panel, &this->unit_mode_select_label[1], 0x2778));
-    OK(this->create_text(this->bottom_panel, &this->unit_mode_select_label[2], 0x2779));
-    OK(this->create_text(this->bottom_panel, &this->unit_mode_select_label[3], 0x277A));
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[0]))) goto fail; (this->unit_mode_select[0])->set_help_info(0x76F8, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[1]))) goto fail; (this->unit_mode_select[1])->set_help_info(0x76F7, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[2]))) goto fail; (this->unit_mode_select[2])->set_help_info(0x76F9, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[3]))) goto fail; (this->unit_mode_select[3])->set_help_info(0x76FA, -1);
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[0], 0x2777))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[1], 0x2778))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[2], 0x2779))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[3], 0x277A))) goto fail;
     for (i = 0; i < 4; ++i) this->unit_mode_select[i]->set_radio_info(this->unit_mode_select, 4);
     this->unit_mode_select[0]->set_radio_button();
 
-    OK(this->create_list((TPanel*)this, &this->unit_list, &this->unit_scrollbar));
-    HELP(this->unit_list, 0x76FB, -1);
+    if (!(this->create_list(this, &this->unit_list, &this->unit_scrollbar))) goto fail;
+    (this->unit_list)->set_help_info(0x76FB, -1);
     this->unit_list->set_z_order(2, 0);
 
-    this->button_unit_pics = new TShape(CSTR(0x586368), 0xC62A);
+    this->button_unit_pics = new TShape(s_btnunit_shp, 0xC62A);
     if (!this->button_unit_pics) goto bad;
     if (!this->button_unit_pics->is_loaded()) goto bad;
 
     for (i = 0; i < 5; ++i) {
         int idx = i;
         if (idx == 4) idx = 1;
-        sprintf(str, CSTR(0x586340), idx);
+        sprintf(str, s_btnbldg_d_shp, idx);
         this->button_bldg_pics[idx] = new TShape(str, idx + 0xC610);
         if (!this->button_bldg_pics[idx]) goto bad;
         if (!this->button_bldg_pics[idx]->is_loaded()) goto bad;
     }
 
-    OK(this->create_drop_down(this->bottom_panel, &this->unit_player_list)); HELP(this->unit_player_list, 0x76FC, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->unit_player_list))) goto fail; (this->unit_player_list)->set_help_info(0x76FC, -1);
     {
         RGE_Font* f = rge_base_game->get_font(10);
-        this->object_panel = new TRIBE_Scenario_Editor_Panel_Object(this->draw_area, (TPanel*)this, f->font, f->font_wid, f->font_hgt,
+        this->object_panel = new TRIBE_Scenario_Editor_Panel_Object(this->render_area, this, f->font, f->font_wid, f->font_hgt,
                                                                     this->button_unit_pics, this->button_bldg_pics, 0);
-        if (!this->object_panel || this->object_panel->failed != 0) goto bad;
+        if (!this->object_panel || this->object_panel->error_code != 0) goto bad;
         this->object_panel->set_active(0);
         this->unit_player_list->set_z_order(1, 0);
     }
 
-    OK(this->create_text(this->bottom_panel, &this->player_label, 0x2864));
-    OK(this->create_text(this->bottom_panel, &this->player_starting_age_label, 0x2815));
-    OK(this->create_drop_down(this->bottom_panel, &this->player_advance_civilization_drop)); HELP(this->player_advance_civilization_drop, 0x7765, -1);
+    if (!(this->create_text(this->bottom_panel, &this->player_label, 0x2864))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_starting_age_label, 0x2815))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->player_advance_civilization_drop))) goto fail; (this->player_advance_civilization_drop)->set_help_info(0x7765, -1);
     this->Set_player_advance_civilization_text(0);
-    OK(this->create_drop_down(this->bottom_panel, &this->player_list)); HELP(this->player_list, 0x76E6, -1);
-    OK(this->create_drop_down(this->bottom_panel, &this->player_number_list)); HELP(this->player_number_list, 0x76E7, -1);
-    OK(this->create_text(this->bottom_panel, &this->player_inven_label[0], 0x280B));
-    OK(this->create_text(this->bottom_panel, &this->player_inven_label[1], 0x280C));
-    OK(this->create_text(this->bottom_panel, &this->player_inven_label[2], 0x280D));
-    OK(this->create_text(this->bottom_panel, &this->player_inven_label[3], 0x280E));
-    OK(this->create_text(this->bottom_panel, &this->player_inven_label[4], 0x2805));
-    for (i = 0; i < 4; ++i) OK(this->create_edit(this->bottom_panel, &this->player_inven_input[i], CSTR(0x586D44), 5, FormatUnsignedInt, 0, 0));
-    HELP(this->player_inven_input[0], 0x76E8, 1);
-    HELP(this->player_inven_input[1], 0x76E9, 1);
-    HELP(this->player_inven_input[2], 0x76EB, 1);
-    HELP(this->player_inven_input[3], 0x76EA, 1);
-    OK(this->create_edit(this->bottom_panel, &this->player_inven_input[4], CSTR(0x592A40), 0x1C, FormatText, 1, 1)); HELP(this->player_inven_input[4], 0x76EC, 1);
-    OK(this->create_text(this->bottom_panel, &this->player_setting_label[0], 0x2810));
-    OK(this->create_text(this->bottom_panel, &this->player_setting_label[1], 0x2811));
-    for (i = 0; i < 2; ++i) OK(this->create_drop_down(this->bottom_panel, &this->player_setting_drop[i]));
-    HELP(this->player_setting_drop[0], 0x76ED, -1);
-    HELP(this->player_setting_drop[1], 0x76EE, -1);
-    OK(this->create_drop_down(this->bottom_panel, &this->BuildList)); HELP(this->BuildList, 0x76EF, -1);
-    OK(this->create_drop_down(this->bottom_panel, &this->CityLayout)); HELP(this->CityLayout, 0x76F0, -1);
-    OK(this->create_drop_down(this->bottom_panel, &this->AiRules)); HELP(this->AiRules, 0x76F1, -1);
-    OK(this->create_text(this->bottom_panel, &this->player_build_text, 0x2813));
-    OK(this->create_text(this->bottom_panel, &this->player_city_text, 0x2814));
-    OK(this->create_text(this->bottom_panel, &this->AiRules_text, 0x2812));
-    ((TRIBE_Screen_Sed_Vtbl*)this)->set_group_active((TPanel**)this->player_inven_input, 5);
+    if (!(this->create_drop_down(this->bottom_panel, &this->player_list))) goto fail; (this->player_list)->set_help_info(0x76E6, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->player_number_list))) goto fail; (this->player_number_list)->set_help_info(0x76E7, -1);
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[0], 0x280B))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[1], 0x280C))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[2], 0x280D))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[3], 0x280E))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[4], 0x2805))) goto fail;
+    for (i = 0; i < 4; ++i) if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[i], s_0, 5, FormatUnsignedInt, 0, 0))) goto fail;
+    (this->player_inven_input[0])->set_help_info(0x76E8, 1);
+    (this->player_inven_input[1])->set_help_info(0x76E9, 1);
+    (this->player_inven_input[2])->set_help_info(0x76EB, 1);
+    (this->player_inven_input[3])->set_help_info(0x76EA, 1);
+    if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[4], s_empty, 0x1C, FormatText, 1, 1))) goto fail; (this->player_inven_input[4])->set_help_info(0x76EC, 1);
+    if (!(this->create_text(this->bottom_panel, &this->player_setting_label[0], 0x2810))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_setting_label[1], 0x2811))) goto fail;
+    for (i = 0; i < 2; ++i) if (!(this->create_drop_down(this->bottom_panel, &this->player_setting_drop[i]))) goto fail;
+    (this->player_setting_drop[0])->set_help_info(0x76ED, -1);
+    (this->player_setting_drop[1])->set_help_info(0x76EE, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->BuildList))) goto fail; (this->BuildList)->set_help_info(0x76EF, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->CityLayout))) goto fail; (this->CityLayout)->set_help_info(0x76F0, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->AiRules))) goto fail; (this->AiRules)->set_help_info(0x76F1, -1);
+    if (!(this->create_text(this->bottom_panel, &this->player_build_text, 0x2813))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_city_text, 0x2814))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->AiRules_text, 0x2812))) goto fail;
+    this->set_tab_order((TPanel**)this->player_inven_input, 5);
 
-    OK(this->create_check_box(this->bottom_panel, &this->victory_cond_on[0])); HELP(this->victory_cond_on[0], 0x7704, -1);
-    OK(this->create_check_box(this->bottom_panel, &this->victory_cond_on[1])); HELP(this->victory_cond_on[1], 0x7706, -1);
-    OK(this->create_check_box(this->bottom_panel, &this->victory_cond_on[2])); HELP(this->victory_cond_on[2], 0x7707, -1);
-    OK(this->create_check_box(this->bottom_panel, &this->victory_cond_on[3])); HELP(this->victory_cond_on[3], 0x7708, -1);
-    OK(this->create_check_box(this->bottom_panel, &this->victory_cond_on[4])); HELP(this->victory_cond_on[4], 0x7709, -1);
-    OK(this->create_check_box(this->bottom_panel, &this->victory_cond_on[5])); HELP(this->victory_cond_on[5], 0x770A, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[0]))) goto fail; (this->victory_cond_on[0])->set_help_info(0x7704, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[1]))) goto fail; (this->victory_cond_on[1])->set_help_info(0x7706, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[2]))) goto fail; (this->victory_cond_on[2])->set_help_info(0x7707, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[3]))) goto fail; (this->victory_cond_on[3])->set_help_info(0x7708, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[4]))) goto fail; (this->victory_cond_on[4])->set_help_info(0x7709, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[5]))) goto fail; (this->victory_cond_on[5])->set_help_info(0x770A, -1);
 
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_and_or[0])); HELP(this->victory_and_or[0], 0x7701, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_and_or[1])); HELP(this->victory_and_or[1], 0x7703, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[0]))) goto fail; (this->victory_and_or[0])->set_help_info(0x7701, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[1]))) goto fail; (this->victory_and_or[1])->set_help_info(0x7703, -1);
     for (i = 0; i < 2; ++i) this->victory_and_or[i]->set_radio_info(this->victory_and_or, 2);
     this->victory_and_or[0]->set_radio_button();
-    OK(this->create_text(this->bottom_panel, &this->victory_text_and_or[0], 0x28A2));
-    OK(this->create_text(this->bottom_panel, &this->victory_text_and_or[1], 0x28A3));
-    OK(this->create_text(this->bottom_panel, &this->victory_amount_label, 0x28A4));
-    OK(this->create_text(this->bottom_panel, &this->victory_long_label, 0x28A5));
-    OK(this->create_text(this->bottom_panel, &this->victory_condition_label, 0x10E0));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_conquest, 0x10E1));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_explore, 0x10E2));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_explore_percent, 0x10E7));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_ruins, 0x10E3));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_artifacts, 0x10E4));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_discoveries, 0x10E5));
-    OK(this->create_text(this->bottom_panel, &this->victory_label_gold, 0x10E6));
-    OK(this->create_edit(this->bottom_panel, &this->victory_condition_explore, CSTR(0x580460), 3, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_explore, 0x770B, -1);
-    OK(this->create_edit(this->bottom_panel, &this->victory_condition_ruins, CSTR(0x580460), 2, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_ruins, 0x770C, -1);
-    OK(this->create_edit(this->bottom_panel, &this->victory_condition_artifacts, CSTR(0x580460), 2, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_artifacts, 0x770D, -1);
-    OK(this->create_edit(this->bottom_panel, &this->victory_condition_discoveries, CSTR(0x580460), 2, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_discoveries, 0x770E, -1);
-    OK(this->create_edit(this->bottom_panel, &this->victory_condition_gold, CSTR(0x580460), 5, FormatUnsignedInt, 0, 0)); HELP(this->victory_condition_gold, 0x770F, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_text_and_or[0], 0x28A2))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_text_and_or[1], 0x28A3))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_amount_label, 0x28A4))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_long_label, 0x28A5))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_condition_label, 0x10E0))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_conquest, 0x10E1))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_explore, 0x10E2))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_explore_percent, 0x10E7))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_ruins, 0x10E3))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_artifacts, 0x10E4))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_discoveries, 0x10E5))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_gold, 0x10E6))) goto fail;
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_explore, s_space, 3, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_explore)->set_help_info(0x770B, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_ruins, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_ruins)->set_help_info(0x770C, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_artifacts, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_artifacts)->set_help_info(0x770D, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_discoveries, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_discoveries)->set_help_info(0x770E, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_gold, s_space, 5, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_gold)->set_help_info(0x770F, -1);
     ptr[0] = this->victory_condition_explore;
     ptr[1] = this->victory_condition_ruins;
     ptr[2] = this->victory_condition_artifacts;
     ptr[3] = this->victory_condition_discoveries;
-    ((TRIBE_Screen_Sed_Vtbl*)this)->set_group_active(ptr, 4);
+    this->set_tab_order(ptr, 4);
 
-    OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[0], 0x10EC));
-    OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[1], 0x10E1));
-    OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[2], 0x10EA));
-    OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[3], 0x10E9));
-    OK(this->create_text(this->bottom_panel, &this->victory_cond_type_label[4], 0x10EB));
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[0])); HELP(this->victory_cond_type[0], 0x7756, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[1])); HELP(this->victory_cond_type[1], 0x7757, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[2])); HELP(this->victory_cond_type[2], 0x7758, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[3])); HELP(this->victory_cond_type[3], 0x7759, -1);
-    OK(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[4])); HELP(this->victory_cond_type[4], 0x775A, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[0], 0x10EC))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[1], 0x10E1))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[2], 0x10EA))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[3], 0x10E9))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[4], 0x10EB))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[0]))) goto fail; (this->victory_cond_type[0])->set_help_info(0x7756, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[1]))) goto fail; (this->victory_cond_type[1])->set_help_info(0x7757, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[2]))) goto fail; (this->victory_cond_type[2])->set_help_info(0x7758, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[3]))) goto fail; (this->victory_cond_type[3])->set_help_info(0x7759, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[4]))) goto fail; (this->victory_cond_type[4])->set_help_info(0x775A, -1);
     for (i = 0; i < 5; ++i) this->victory_cond_type[i]->set_radio_info(this->victory_cond_type, 5);
     this->victory_cond_type[1]->set_radio_button();
 
-    OK(this->create_text(this->bottom_panel, &this->victory_score_label, 0x10EA));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_score)); HELP(this->victory_score, 0x775B, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_score_label, 0x10EA))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_score))) goto fail; (this->victory_score)->set_help_info(0x775B, -1);
     this->victory_score->empty_list();
-    this->victory_score->append_line(CSTR(0x586DA4), 3000);
-    this->victory_score->append_line(CSTR(0x586D9C), 2700);
-    this->victory_score->append_line(CSTR(0x586D94), 2400);
-    this->victory_score->append_line(CSTR(0x586D8C), 2100);
-    this->victory_score->append_line(CSTR(0x586D84), 1800);
-    this->victory_score->append_line(CSTR(0x586D7C), 1500);
-    this->victory_score->append_line(CSTR(0x586D74), 1200);
-    this->victory_score->append_line(CSTR(0x586D70), 900);
-    this->victory_score->append_line(CSTR(0x5800F8), 800);
-    this->victory_score->append_line(CSTR(0x586D6C), 700);
-    this->victory_score->append_line(CSTR(0x586D68), 600);
-    this->victory_score->append_line(CSTR(0x586D64), 500);
-    this->victory_score->append_line(CSTR(0x586D60), 400);
-    this->victory_score->append_line(CSTR(0x586D5C), 300);
+    this->victory_score->append_line(s_3000, 3000);
+    this->victory_score->append_line(s_2700, 2700);
+    this->victory_score->append_line(s_2400, 2400);
+    this->victory_score->append_line(s_2100, 2100);
+    this->victory_score->append_line(s_1800, 1800);
+    this->victory_score->append_line(s_1500, 1500);
+    this->victory_score->append_line(s_1200, 1200);
+    this->victory_score->append_line(s_900, 900);
+    this->victory_score->append_line(s_800, 800);
+    this->victory_score->append_line(s_700, 700);
+    this->victory_score->append_line(s_600, 600);
+    this->victory_score->append_line(s_500, 500);
+    this->victory_score->append_line(s_400, 400);
+    this->victory_score->append_line(s_300, 300);
 
-    OK(this->create_text(this->bottom_panel, &this->victory_time_label, 0x10E9));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_time)); HELP(this->victory_time, 0x775C, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_time_label, 0x10E9))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_time))) goto fail; (this->victory_time)->set_help_info(0x775C, -1);
     this->victory_time->empty_list();
     this->victory_time->append_line(0x2634, 15000);
     this->victory_time->append_line(0x2635, 13000);
@@ -530,135 +677,138 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
 
     i = 1;
     pp = this->victory_button;
-    do {
-        sprintf(str1, CSTR(0x584610), i);
-        sprintf(str2, CSTR(0x586D54), i);
-        sprintf(str3, CSTR(0x586D50), i);
-        sprintf(str4, CSTR(0x586D48), i);
-        OK(this->create_button(this->bottom_panel, pp, str1, str2, str3, str4));
-        HELP(*pp, 0x7712, -1);
+    while (i - 1 < 12) {
+        sprintf(str1, s_percent_d, i);
+        sprintf(str2, s_angle_d, i);
+        sprintf(str3, s_percent_d_star, i);
+        sprintf(str4, s_angle_d_star, i);
+        if (!(this->create_button(this->bottom_panel, pp, str1, str2, str3, str4))) goto fail;
+        (*pp)->set_help_info(0x7712, -1);
         ++pp;
         ++i;
-    } while (i - 1 < 12);
+    }
 
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_drop_down));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_object_list));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_player_list));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_enemy_player_list));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_attribute_list));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_ages_list));
-    OK(this->create_drop_down(this->bottom_panel, &this->victory_tech_list));
-    HELP(this->victory_drop_down, 0x7716, -1);
-    HELP(this->victory_object_list, 0x7714, -1);
-    HELP(this->victory_player_list, 0x7713, -1);
-    HELP(this->victory_ages_list, 0x7715, -1);
-    HELP(this->victory_enemy_player_list, 0x7760, -1);
-    HELP(this->victory_attribute_list, 0x7761, -1);
-    HELP(this->victory_tech_list, 0x7762, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_drop_down))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_object_list))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_player_list))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_enemy_player_list))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_attribute_list))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_ages_list))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_tech_list))) goto fail;
+    (this->victory_drop_down)->set_help_info(0x7716, -1);
+    (this->victory_object_list)->set_help_info(0x7714, -1);
+    (this->victory_player_list)->set_help_info(0x7713, -1);
+    (this->victory_ages_list)->set_help_info(0x7715, -1);
+    (this->victory_enemy_player_list)->set_help_info(0x7760, -1);
+    (this->victory_attribute_list)->set_help_info(0x7761, -1);
+    (this->victory_tech_list)->set_help_info(0x7762, -1);
 
-    OK(this->create_text(this->bottom_panel, &this->victory_condition_text, 0x2870));
-    OK(this->create_text(this->bottom_panel, &this->victory_condition_type, 0x2871));
-    OK(this->create_button(this->bottom_panel, &this->victory_button_set_object, 0x2872, 0));
-    OK(this->create_button(this->bottom_panel, &this->victory_button_set_destination, 0x2873, 0));
-    OK(this->create_button(this->bottom_panel, &this->victory_button_go_to_dest, 0x2874, 0));
-    HELP(this->victory_button_set_object, 0x7717, -1);
-    HELP(this->victory_button_set_destination, 0x7718, -1);
-    HELP(this->victory_button_go_to_dest, 0x7719, -1);
-    OK(this->create_text(this->bottom_panel, &this->victory_amount_text, 0x2875));
-    OK(this->create_text(this->bottom_panel, &this->victory_which_enemy_text, 0x2876));
-    OK(this->create_edit(this->bottom_panel, &this->victory_amount_input, CSTR(0x586D44), 5, FormatUnsignedInt, 0, 0));
+    if (!(this->create_text(this->bottom_panel, &this->victory_condition_text, 0x2870))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_condition_type, 0x2871))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->victory_button_set_object, 0x2872, 0))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->victory_button_set_destination, 0x2873, 0))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->victory_button_go_to_dest, 0x2874, 0))) goto fail;
+    (this->victory_button_set_object)->set_help_info(0x7717, -1);
+    (this->victory_button_set_destination)->set_help_info(0x7718, -1);
+    (this->victory_button_go_to_dest)->set_help_info(0x7719, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_amount_text, 0x2875))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_which_enemy_text, 0x2876))) goto fail;
+    if (!(this->create_edit(this->bottom_panel, &this->victory_amount_input, s_0, 5, FormatUnsignedInt, 0, 0))) goto fail;
 
-    for (i = 0; i < 5; ++i) OK(this->create_radio_button(this->bottom_panel, &this->message_button[i]));
+    for (i = 0; i < 5; ++i) if (!(this->create_radio_button(this->bottom_panel, &this->message_button[i]))) goto fail;
     this->current_message = 0;
-    HELP(this->message_button[0], 0x771C, -1);
-    HELP(this->message_button[1], 0x771D, -1);
-    HELP(this->message_button[2], 0x771E, -1);
-    HELP(this->message_button[3], 0x771F, -1);
-    HELP(this->message_button[4], 0x7720, -1);
-    OK(this->create_text(this->bottom_panel, &this->message_button_label[0], 0x2A36));
-    OK(this->create_text(this->bottom_panel, &this->message_button_label[1], 0x2A37));
-    OK(this->create_text(this->bottom_panel, &this->message_button_label[2], 0x2A38));
-    OK(this->create_text(this->bottom_panel, &this->message_button_label[3], 0x2A39));
-    OK(this->create_text(this->bottom_panel, &this->message_button_label[4], 0x2A31));
+    (this->message_button[0])->set_help_info(0x771C, -1);
+    (this->message_button[1])->set_help_info(0x771D, -1);
+    (this->message_button[2])->set_help_info(0x771E, -1);
+    (this->message_button[3])->set_help_info(0x771F, -1);
+    (this->message_button[4])->set_help_info(0x7720, -1);
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[0], 0x2A36))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[1], 0x2A37))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[2], 0x2A38))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[3], 0x2A39))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[4], 0x2A31))) goto fail;
     for (i = 0; i < 5; ++i) this->message_button[i]->set_radio_info(this->message_button, 5);
-    OK(this->create_edit(this->bottom_panel, &this->message_input, CSTR(0x592A40), 0x0FFF, FormatMultiLine, 1, 1));
-    HELP(this->message_input, -1, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->message_input, s_empty, 0x0FFF, FormatMultiLine, 1, 1))) goto fail;
+    (this->message_input)->set_help_info(-1, -1);
 
-    OK(this->create_text(this->bottom_panel, &this->cinematic_label[0], 0x2AF9));
-    OK(this->create_text(this->bottom_panel, &this->cinematic_label[1], 0x2AFA));
-    OK(this->create_text(this->bottom_panel, &this->cinematic_label[2], 0x2AFB));
-    OK(this->create_text(this->bottom_panel, &this->cinematic_label[3], 0x2AFC));
-    for (i = 0; i < 4; ++i) OK(this->create_drop_down(this->bottom_panel, &this->cinematic_input[i]));
-    HELP(this->cinematic_input[0], 0x7724, -1);
-    HELP(this->cinematic_input[1], 0x7725, -1);
-    HELP(this->cinematic_input[2], 0x7726, -1);
-    HELP(this->cinematic_input[3], 0x7727, -1);
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[0], 0x2AF9))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[1], 0x2AFA))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[2], 0x2AFB))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[3], 0x2AFC))) goto fail;
+    for (i = 0; i < 4; ++i) if (!(this->create_drop_down(this->bottom_panel, &this->cinematic_input[i]))) goto fail;
+    (this->cinematic_input[0])->set_help_info(0x7724, -1);
+    (this->cinematic_input[1])->set_help_info(0x7725, -1);
+    (this->cinematic_input[2])->set_help_info(0x7726, -1);
+    (this->cinematic_input[3])->set_help_info(0x7727, -1);
 
-    OK(this->create_text(this->bottom_panel, &this->options_label[0], 0x2604));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_tech_text, 0x32D7));
-    for (i = 0; i < 1; ++i) OK(this->create_check_box(this->bottom_panel, &this->options_button[i]));
-    HELP(this->options_button[0], 0x7729, -1);
-    OK(this->create_drop_down(this->bottom_panel, &this->options_player_list)); HELP(this->options_player_list, 0x772B, -1);
-    for (i = 0; i < 16; ++i) OK(this->create_check_box(this->bottom_panel, &this->options_disable_button[i]));
-    HELP(this->options_disable_button[0], 0x772C, -1);
-    HELP(this->options_disable_button[1], 0x772D, -1);
-    HELP(this->options_disable_button[2], 0x772E, -1);
-    HELP(this->options_disable_button[3], 0x772F, -1);
-    HELP(this->options_disable_button[4], 0x7730, -1);
-    HELP(this->options_disable_button[5], 0x7731, -1);
-    HELP(this->options_disable_button[6], 0x7732, -1);
-    HELP(this->options_disable_button[7], 0x7733, -1);
-    HELP(this->options_disable_button[8], 0x7734, -1);
-    HELP(this->options_disable_button[9], 0x7735, -1);
-    HELP(this->options_disable_button[10], 0x7736, -1);
-    HELP(this->options_disable_button[11], 0x7737, -1);
-    HELP(this->options_disable_button[12], 0x7738, -1);
-    HELP(this->options_disable_button[13], 0x7739, -1);
-    HELP(this->options_disable_button[14], 0x773A, -1);
-    HELP(this->options_disable_button[15], 0x773B, -1);
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[0], 0x32C9));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[1], 0x32CA));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[2], 0x32CB));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[3], 0x32CC));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[4], 0x32CD));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[5], 0x32CE));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[6], 0x32CF));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[7], 0x32D0));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[8], 0x32D1));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[9], 0x32D2));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[10], 0x32D3));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[11], 0x32D4));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[12], 0x32D5));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[13], 0x32D6));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[14], 0x32D8));
-    OK(this->create_text(this->bottom_panel, &this->options_disable_text[15], 0x32D9));
+    if (!(this->create_text(this->bottom_panel, &this->options_label[0], 0x2604))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_tech_text, 0x32D7))) goto fail;
+    for (i = 0; i < 1; ++i) if (!(this->create_check_box(this->bottom_panel, &this->options_button[i]))) goto fail;
+    (this->options_button[0])->set_help_info(0x7729, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->options_player_list))) goto fail; (this->options_player_list)->set_help_info(0x772B, -1);
+    for (i = 0; i < 16; ++i) if (!(this->create_check_box(this->bottom_panel, &this->options_disable_button[i]))) goto fail;
+    (this->options_disable_button[0])->set_help_info(0x772C, -1);
+    (this->options_disable_button[1])->set_help_info(0x772D, -1);
+    (this->options_disable_button[2])->set_help_info(0x772E, -1);
+    (this->options_disable_button[3])->set_help_info(0x772F, -1);
+    (this->options_disable_button[4])->set_help_info(0x7730, -1);
+    (this->options_disable_button[5])->set_help_info(0x7731, -1);
+    (this->options_disable_button[6])->set_help_info(0x7732, -1);
+    (this->options_disable_button[7])->set_help_info(0x7733, -1);
+    (this->options_disable_button[8])->set_help_info(0x7734, -1);
+    (this->options_disable_button[9])->set_help_info(0x7735, -1);
+    (this->options_disable_button[10])->set_help_info(0x7736, -1);
+    (this->options_disable_button[11])->set_help_info(0x7737, -1);
+    (this->options_disable_button[12])->set_help_info(0x7738, -1);
+    (this->options_disable_button[13])->set_help_info(0x7739, -1);
+    (this->options_disable_button[14])->set_help_info(0x773A, -1);
+    (this->options_disable_button[15])->set_help_info(0x773B, -1);
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[0], 0x32C9))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[1], 0x32CA))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[2], 0x32CB))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[3], 0x32CC))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[4], 0x32CD))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[5], 0x32CE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[6], 0x32CF))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[7], 0x32D0))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[8], 0x32D1))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[9], 0x32D2))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[10], 0x32D3))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[11], 0x32D4))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[12], 0x32D5))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[13], 0x32D6))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[14], 0x32D8))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[15], 0x32D9))) goto fail;
 
     i = 0;
     tt = this->Diplomacy_player_text;
-    do {
-        sprintf(str1, CSTR(0x584610), i + 1);
-        OK(this->create_text(this->bottom_panel, tt, str1));
-        ++i;
+    while (1) {
+        sprintf(str1, s_percent_d, i + 1);
+        if (!(this->create_text(this->bottom_panel, tt, str1))) goto fail;
         ++tt;
-    } while (i < 8);
-    OK(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list)); HELP(this->Diplomacy_player_list, 0x773D, -1);
+        ++i;
+        if (i >= 8) break;
+    }
+    if (!(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list))) goto fail; (this->Diplomacy_player_list)->set_help_info(0x773D, -1);
 
     pp = this->Diplomacy_AlliedVictory;
-    for (diplomacy_i = 0; diplomacy_i < 8; ++diplomacy_i) {
-        OK(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[diplomacy_i][0])); HELP(this->Diplomacy_friend_box[diplomacy_i][0], 0x773F, -1);
-        OK(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[diplomacy_i][1])); HELP(this->Diplomacy_friend_box[diplomacy_i][1], 0x7740, -1);
-        OK(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[diplomacy_i][2])); HELP(this->Diplomacy_friend_box[diplomacy_i][2], 0x7741, -1);
-        this->Diplomacy_friend_box[diplomacy_i][0]->set_radio_info(this->Diplomacy_friend_box[diplomacy_i], 3);
-        this->Diplomacy_friend_box[diplomacy_i][1]->set_radio_info(this->Diplomacy_friend_box[diplomacy_i], 3);
-        this->Diplomacy_friend_box[diplomacy_i][2]->set_radio_info(this->Diplomacy_friend_box[diplomacy_i], 3);
-        this->Diplomacy_friend_box[diplomacy_i][1]->set_radio_button();
-        OK(this->create_check_box(this->bottom_panel, pp));
-        HELP(*pp, 0x773E, -1);
+    i = 0;
+    while (i < 8) {
+        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][0]))) goto fail; (this->Diplomacy_friend_box[i][0])->set_help_info(0x773F, -1);
+        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][1]))) goto fail; (this->Diplomacy_friend_box[i][1])->set_help_info(0x7740, -1);
+        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][2]))) goto fail; (this->Diplomacy_friend_box[i][2])->set_help_info(0x7741, -1);
+        this->Diplomacy_friend_box[i][0]->set_radio_info(this->Diplomacy_friend_box[i], 3);
+        this->Diplomacy_friend_box[i][1]->set_radio_info(this->Diplomacy_friend_box[i], 3);
+        this->Diplomacy_friend_box[i][2]->set_radio_info(this->Diplomacy_friend_box[i], 3);
+        this->Diplomacy_friend_box[i][1]->set_radio_button();
+        if (!(this->create_check_box(this->bottom_panel, pp))) goto fail;
+        (*pp)->set_help_info(0x773E, -1);
         ++pp;
+        ++i;
     }
-    OK(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[0], 0x29CD));
-    OK(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[1], 0x29CE));
-    OK(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[2], 0x29CF));
+    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[0], 0x29CD))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[1], 0x29CE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[2], 0x29CF))) goto fail;
     this->create_text(this->bottom_panel, &this->Diplomacy_status_label[3], 0x29D0);
 
 goto_done:
@@ -666,6 +816,6 @@ fail:
     return;
 
 bad:
-    this->base_error_flag = 1;
+    this->error_code = 1;
     return;
 }
