@@ -6,27 +6,15 @@
 //   ownership from the packet, exact move_obj.cpp donors, and original x87 flow.
 // - The speed reset is the inherited RGE_Animated_Object field at +0x88;
 //   trail_remainder begins at +0x8c and is not the field written by doMove.
-// - Shared range-success tails and the one-waypoint retry/passable/teleport
-//   behavior follow the observed branch and call structure.  Explicit retry
-//   labels and direct do/while spelling were codegen duplicates; the living
-//   source keeps the natural loop form.
-// - Reordered the initial squared-distance terms to reproduce the original
-//   distance-square-before-dY-square x87 evaluation.  A pointer-to-virtual-
-//   member experiment was rolled back: it emitted direct ?_9 calls and was
-//   neither an exact structural match nor a plausible original surface.
-// - Remaining structural gap: VC5 emits two extra indirect retry call sites
-//   for removeUserDefinedWaypoint and keeps a 0x10 frame versus the original
-//   0x18; no padding or manual-vtable source was retained.
-// - Ghidra confirms a separate int retry-success flag (bVar4) in both scans.
-//   Its natural form reached a 0x18 frame and diff 3048, but VC5 still used
-//   EAX for the cached vtable and emitted two retry calls. It was rolled back.
-// - A donor-backed raw member-pointer cache removed the two extra indirect
-//   call sites only when it loaded through an explicit saved vtable pointer;
-//   direct-this loading classified them as virtual calls and kept the frame
-//   at 0x10. The saved-vtable form reached a 0x18 frame and four new exact
-//   blocks, but duplicated vtable homes in the prologue, worsened diff to
-//   3359, and left the structural call gap. Both forms were rolled back as
-//   codegen steering rather than source reconstruction.
+// - Ghidra shows a separate retry-success local in both scans. Scoped natural
+//   retry loops remove the two peeled virtual-call sites and preserve the 0x18
+//   frame. Explicit cached waypoint-count loops match the action-log CFG.
+// - Binary control flow also requires the moveToNextWaypoint result, the fixed
+//   second retry-path return of 1, and asymmetric one-waypoint branches.
+// - The best clean reconstruction has diff 3076, 69.16% shape, 3333 rebuilt
+//   bytes, and 104/105 calls. The only call-count gap is one merged +0x1C0
+//   range-success call. The remaining gap is register, stack-home, and x87
+//   scheduling. No padding, manual vtable, or opaque codegen form is retained.
 
 struct Waypoint {
     float x;
@@ -367,7 +355,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     distance = distance - (this->targetRadiusX + this->master_obj->radius_x);
-    dY = dY - (this->targetRadiusY + this->master_obj->radius_y);
+    dY = dY - (this->master_obj->radius_y + this->targetRadiusY);
     if (distance < DAT_00570b48) {
         distance = 0.0f;
     }
@@ -433,13 +421,12 @@ int RGE_Moving_Object::doMove() {
             waypoint = path->currentWaypoint();
             float y = waypoint->y;
             waypoint = path->currentWaypoint();
-            path_result = pathSystem.passable(this, waypoint->x, y, path_result);
-            if (path_result != 0) {
+            if (pathSystem.passable(this, waypoint->x, y, path_result) != 0) {
                 this->teleport(path->currentWaypoint()->x,
                                path->currentWaypoint()->y,
                                path->currentWaypoint()->z);
             }
-            path->moveToNextWaypoint();
+            path_result = path->moveToNextWaypoint();
             this->closestDistanceToWaypoint = 100000.0f;
         }
     }
@@ -464,15 +451,19 @@ int RGE_Moving_Object::doMove() {
             return 2;
         }
 
-        do {
+        int retry_success = 0;
+        while (retry_success == 0) {
             this->removeUserDefinedWaypoint(0);
             if (this->numberUserDefinedWaypointsValue < 1) {
                 return 0;
             }
             retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
             retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
-        } while (newDY + this->actionRange - DAT_00570ba8 >=
-                 (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx));
+            if (newDY + this->actionRange - DAT_00570ba8 <
+                (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx)) {
+                retry_success = 1;
+            }
+        }
 
         int old_continue = this->continueCounter;
         int next_continue = old_continue - 1;
@@ -525,12 +516,16 @@ int RGE_Moving_Object::doMove() {
                     this->goalValue.x, this->goalValue.y);
             path->initToStart();
             int i = 0;
-            while (i < path->numberOfWaypoints()) {
-                fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
-                        path->currentWaypoint()->x,
-                        path->currentWaypoint()->y);
-                i++;
-                path->moveToNextWaypoint();
+            int n = path->numberOfWaypoints();
+            if (n > 0) {
+                do {
+                    fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
+                            path->currentWaypoint()->x,
+                            path->currentWaypoint()->y);
+                    i++;
+                    path->moveToNextWaypoint();
+                    n = path->numberOfWaypoints();
+                } while (i < n);
             }
             fprintf(actionFile, ".\n");
             path->initToStart();
@@ -541,17 +536,17 @@ int RGE_Moving_Object::doMove() {
             if (pathSystem.passable(this,
                                     (float)(floor((double)this->world_x) - DAT_00570b80),
                                     (float)(floor((double)this->world_y) - DAT_00570b80),
-                                    1)) {
-                if (this->world_x - (float)floor((double)this->world_x) == DAT_00570b90 &&
-                    this->world_y - (float)floor((double)this->world_y) == DAT_00570b90) {
-                    this->speed = 0.0f;
-                    this->rangeStatusValue = 2;
-                    if (this->numberUserDefinedWaypointsValue < 2) {
-                        return 0;
-                    }
-                    this->continueCounter += 5;
-                    return found;
+                                    1) == 0 ||
+                (this->world_x - (float)floor((double)this->world_x) == DAT_00570b90 &&
+                 this->world_y - (float)floor((double)this->world_y) == DAT_00570b90)) {
+                this->speed = 0.0f;
+                this->rangeStatusValue = 2;
+                if (this->numberUserDefinedWaypointsValue < 2) {
+                    return 0;
                 }
+                this->continueCounter += 5;
+                return found;
+            } else {
                 this->teleport(
                     (float)(floor((double)this->world_x) - DAT_00570b80),
                     (float)(floor((double)this->world_y) - DAT_00570b80),
@@ -559,17 +554,15 @@ int RGE_Moving_Object::doMove() {
             }
         }
 
+        int display_object_id = displayPathObjectID;
         if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
             path->initToStart();
             int i = 0;
             int n = path->numberOfWaypoints();
             while (i < n) {
-                RGE_Master_Static_Object* master =
-                    this->owner->master_objects[displayPathObjectID];
-                master->make_new_obj(this->owner,
-                                     path->currentWaypoint()->x,
-                                     path->currentWaypoint()->y,
-                                     1.0f);
+                    this->owner->master_objects[display_object_id]->make_new_obj(
+                        this->owner, path->currentWaypoint()->x,
+                        path->currentWaypoint()->y, 1.0f);
                 ++i;
                 path->moveToNextWaypoint();
                 n = path->numberOfWaypoints();
@@ -614,15 +607,19 @@ int RGE_Moving_Object::doMove() {
                 return 1;
             }
 
-            do {
+            int retry_success = 0;
+            while (retry_success == 0) {
                 this->removeUserDefinedWaypoint(0);
                 if (this->numberUserDefinedWaypointsValue < 1) {
                     return 0;
                 }
                 retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
                 retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
-            } while (newDY + this->actionRange - DAT_00570ba8 >=
-                     (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx));
+                if (newDY + this->actionRange - DAT_00570ba8 <
+                    (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx)) {
+                    retry_success = 1;
+                }
+            }
 
             if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
                 this->speed = 0.0f;
@@ -662,12 +659,16 @@ int RGE_Moving_Object::doMove() {
                         this->goalValue.x, this->goalValue.y);
                 path->initToStart();
                 int i = 0;
-                while (i < path->numberOfWaypoints()) {
-                    fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
-                            path->currentWaypoint()->x,
-                            path->currentWaypoint()->y);
-                    i++;
-                    path->moveToNextWaypoint();
+                int n = path->numberOfWaypoints();
+                if (n > 0) {
+                    do {
+                        fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
+                                path->currentWaypoint()->x,
+                                path->currentWaypoint()->y);
+                        i++;
+                        path->moveToNextWaypoint();
+                        n = path->numberOfWaypoints();
+                    } while (i < n);
                 }
                 fprintf(actionFile, ".\n");
                 path->initToStart();
@@ -687,7 +688,7 @@ int RGE_Moving_Object::doMove() {
                             return 0;
                         }
                         this->continueCounter += 5;
-                        return found;
+                        return 1;
                     }
                     this->teleport(
                         (float)(floor((double)this->world_x) - DAT_00570b80),
@@ -696,17 +697,15 @@ int RGE_Moving_Object::doMove() {
                 }
             }
 
+            int display_object_id = displayPathObjectID;
             if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
                 path->initToStart();
                 int i = 0;
                 int n = path->numberOfWaypoints();
                 while (i < n) {
-                    RGE_Master_Static_Object* master =
-                        this->owner->master_objects[displayPathObjectID];
-                    master->make_new_obj(this->owner,
-                                         path->currentWaypoint()->x,
-                                         path->currentWaypoint()->y,
-                                         1.0f);
+                    this->owner->master_objects[display_object_id]->make_new_obj(
+                        this->owner, path->currentWaypoint()->x,
+                        path->currentWaypoint()->y, 1.0f);
                     ++i;
                     path->moveToNextWaypoint();
                     n = path->numberOfWaypoints();
