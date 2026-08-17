@@ -24,6 +24,16 @@
 // basin or worsened it to 282 bytes. A volatile player pointer restored 381 exact
 // bytes, but this is compiler steering, so the ordinary typed pointer is retained.
 // A donor-era <stdlib.h> context changed the basin to 384 bytes and was removed.
+// Natural-source cleanup: direct typed attackMemories[count] accesses, combined
+// eligibility, and ordinary nested influence loops reproduce the 281-byte basin.
+// This removes the rejected byte-offset cursor and packed-record access forms.
+// Revisit sa-e82554ff-r1: the natural y,x point spelling with pointer mapBound,
+// complete AttackMemory fields, the reviewed polymorphic base, complete player
+// fields, unsigned owner ABI, short player id, typed reference aliases, and
+// declaration-order changes all reproduced the same 281-byte mismatch. The
+// pinned typed source is restored. The remaining first hunk reverses the
+// md/player and attackingOwner load order; the next hunk uses a different
+// record-address lowering. No policy-valid exact source was found.
 
 struct XYPoint {
     int x;
@@ -79,28 +89,21 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
 {
     XYPoint max;
     XYPoint min;
-    int offset;
     int count;
 
-    offset = 0;
     count = 0;
     if (this->maxAttackMemories > 0) {
         do {
-            AttackMemory* entry = (AttackMemory*)((char*)this->attackMemories + offset);
-            if (entry->id != -1 && (int)entry->targetOwner == targetOwner) {
-                MainDecisionAIModule* md = this->md;
-                RGE_Player* player = md->player;
-                unsigned short owner = entry->attackingOwner;
-                if (owner != player->id) {
-                    goto next_memory;
-                }
-                min.x = entry->minX;
-                min.y = entry->minY;
+            if (this->attackMemories[count].id != -1 &&
+                (int)this->attackMemories[count].targetOwner == targetOwner &&
+                (unsigned short)this->attackMemories[count].attackingOwner ==
+                    this->md->player->id) {
+                min.x = this->attackMemories[count].minX;
+                min.y = this->attackMemories[count].minY;
                 this->mapBound(&min);
 
-                AttackMemory& entry2 = *(AttackMemory*)((char*)this->attackMemories + offset);
-                max.x = *(unsigned char*)((char*)this->attackMemories + offset + 0x07);
-                max.y = entry2.maxY;
+                max.x = this->attackMemories[count].maxX;
+                max.y = this->attackMemories[count].maxY;
                 this->mapBound(&max);
 
                 for (int x = min.x; x <= max.x; ++x) {
@@ -122,9 +125,7 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
                     }
                 }
             }
-next_memory:
             ++count;
-            offset += 0x18;
         } while (count < this->maxAttackMemories);
     }
 }
