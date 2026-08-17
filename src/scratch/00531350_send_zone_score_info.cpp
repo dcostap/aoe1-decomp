@@ -40,6 +40,13 @@
 //   The supported lifetime conclusion is that score must stay live as the
 //   loop's address anchor, but the exact source ownership that also preserves
 //   later sender scheduling is unresolved.
+// - TU audit: canonical nested options, class-form packet records, enum field
+//   types, neighboring random-civ/WasKicked ownership, header combinations,
+//   inline-depth pragmas, same-TU fill_in_score ordering, and send-donor ABI
+//   spellings were codegen-neutral or nonexact.  Default, /Ob1, and /Ob0
+//   formed the same VC5 basin; /Oy- and /Oi- broke the frame or prologue.
+//   No supported TU context recovered the score anchor, so this baseline stays
+//   authoritative.  No context-only variant is retained.
 
 #include <string.h>
 
