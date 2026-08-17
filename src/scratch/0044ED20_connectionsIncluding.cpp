@@ -32,6 +32,18 @@
 //   With the hoisted y, this gives the exact prologue block, 64.26% exact
 //   block coverage, and 84.56% shape similarity; positional drift is 541B.
 //   Retained as the best binary-supported source reconstruction.
+// - focused pass: target parity lowering is signed remainder, so direction % 2
+//   improved block coverage to 84.34% but worsened positional drift to 560B.
+//   Named coordinate/size aliases, direct x-offset expressions, loop-form
+//   changes, shared direction/neighbor scopes, and declaration-order probes
+//   either duplicated codegen or left the clean basin unchanged.
+// - a natural independent case-0/case-7 switch with signed remainder produced
+//   a 249B body and 97.59% shape similarity, but retained a 312B positional
+//   mismatch from register-map conflicts. Its case split also lacks the target
+//   PDB-supported case-0 fall-through, so it was not retained.
+// - a 32-variant local lab covering switch form and parity spellings found no
+//   exact result. The best diagnostic group still had 306B positional drift;
+//   no lab source replaced this clean typed reconstruction.
 
 #include <stdlib.h>
 
