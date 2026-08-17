@@ -35,6 +35,10 @@
 //   order, update and store order, full PointMaker field types, and direct sum
 //   expressions were duplicate or worse basins.  The protected declaration
 //   restores the original IAEHXZ symbol without changing code bytes.
+// - Fresh delegated revisit: direct Point.x and Point.y local stores, plus an
+//   old-style top declaration order, were neutral or worse.  The clean typed
+//   source remains at 44 differing bytes; the EBX/EDI direction map is still
+//   unresolved without compiler steering.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
