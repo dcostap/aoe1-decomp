@@ -2,7 +2,7 @@
 // PDB source: taitacmd.cpp lines 3313-3548
 // __thiscall, int, ret 8
 //
-// Attempt log (dsb2-004F1600, 10 meaningful probes):
+// Attempt log (dsb2-004F1600, 30 meaningful probes across sessions):
 // - Fresh canonical reset: prior rejected source manually expanded five
 //   ManagedArray grow blocks. This reconstruction uses the natural typed
 //   ManagedArray<int> surface (inline operator[] grow, remove, out-of-line
@@ -38,16 +38,19 @@
 //   source reconstruction (1563B diff, 90.50% shape); pointer/reference
 //   forms added an unnecessary address alias. Split taskedCount initialization
 //   was emitted identically to `i + 1`.
-// - probes 25-28: a coordinate scalar changed register pressure and regressed;
-//   natural while/label resource-loop forms did not preserve the original
-//   tasked top check and were restored. Explicit resource labels changed CFG
-//   but not the useful source basin. Final restored candidate keeps the
-//   natural do/while resource loop and value temp before the explorer scan.
-// - Left in scratch: best current candidate is 1563B diff (75.04%), 90.50%
-//   shape, 39/39 ordered calls, frame 0x14 vs original 0x14, first mismatch
-//   in the coordinate/FPU setup. Remaining gaps are (a) the resource-loop
-//   tasked top-check rotation, (b) exact coordinate-store scheduling, and
-//   (c) residual register/home allocation around the refresh IVs.
+// - Worker session sa-9f7395fa-r1 ran 20 meaningful probes. The baseline was
+//   1563B strict diff and 90.50% shape. Comma and reverse coordinate forms,
+//   separate coordinate locals, local declaration order, direct member-call
+//   arguments, and combined refresh IV expressions were duplicate or worse.
+// - A top-tested resource loop plus a scoped civilianExplorers reference
+//   restored the original redundant tasked check and improved the clean source
+//   to 1260B diff, 96.59% shape, and 86.70% exact-block coverage. Explicit
+//   excess-removal labels gave 1150B strict diff but poor resynchronization and
+//   were rejected as a non-natural metric-only form. Timeout operand reversal
+//   improved compare parity without changing size or strict diff.
+// - The final unresolved candidate is 2083B versus 2062B, 39/39 ordered calls,
+//   frame 0x14, and first mismatch +003C in coordinate/FPU scheduling. The
+//   remaining evidence points to VC5 scheduling and refresh register homes.
 // - Canonical ownership: md +0xF0, civilians +0xF4 (ManagedArray<int>),
 //   civilianExplorers +0x104 (ManagedArray<int>), numberGatherersValue +0x9CC,
 //   desiredNumberGatherersValue +0x9D0, neededResourceValue[4] +0xD88,
@@ -200,13 +203,13 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
                     tasked = this->idleCivilian(-1);
                 }
                 taskedCount = tasked;
-                if (tasked == -1) {
-                    // Too many gatherers: convert the one carrying the highest-priority
-                    // needed resource into an explorer instead.
-                    if (this->desiredNumberGatherersValue < this->numberGatherersValue) {
-                        newExplorer = 3;
-                        do {
-                            if (tasked != -1) goto append_explorer;
+                if (tasked != -1) goto append_explorer;
+                // Too many gatherers: convert the one carrying the highest-priority
+                // needed resource into an explorer instead.
+                if (this->desiredNumberGatherersValue < this->numberGatherersValue) {
+                    newExplorer = 3;
+                    while (newExplorer > -1) {
+                        if (tasked != -1) goto append_explorer;
                             obj = this->md->object(tasked, tasked, tasked, 0x261, 0x25D,
                                                    tasked, tasked,
                                                    this->neededResourceValue[newExplorer],
@@ -228,23 +231,24 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
                                 this->removeGatherer(id);
                             }
 next_resource:
-                            newExplorer = newExplorer - 1;
-                        } while (newExplorer > -1);
+                        newExplorer = newExplorer - 1;
                     }
-                    if (tasked == -1) goto skip_append;
                 }
+                if (tasked == -1) goto skip_append;
 append_explorer:
                 // Append the tasked civilian to the explorer list (if not already there).
-                for (i = 0; i < this->civilianExplorers.numberValue &&
-                             i < this->civilianExplorers.maximumSizeValue; i++) {
-                    if (this->civilianExplorers.value[i] == tasked) goto skip_append;
+                {
+                    ManagedArray<int>& explorers = this->civilianExplorers;
+                    for (i = 0; i < explorers.numberValue &&
+                                 i < explorers.maximumSizeValue; i++) {
+                        if (explorers.value[i] == tasked) goto skip_append;
+                    }
+                    if (explorers.numberValue > explorers.maximumSizeValue - 1) {
+                        explorers.resize(explorers.numberValue + 1);
+                    }
+                    explorers.value[explorers.numberValue] = tasked;
+                    explorers.numberValue = explorers.numberValue + 1;
                 }
-                if (this->civilianExplorers.numberValue >
-                    this->civilianExplorers.maximumSizeValue - 1) {
-                    this->civilianExplorers.resize(this->civilianExplorers.numberValue + 1);
-                }
-                this->civilianExplorers.value[this->civilianExplorers.numberValue] = tasked;
-                this->civilianExplorers.numberValue = this->civilianExplorers.numberValue + 1;
             } while (this->civilianExplorers.numberValue <
                      this->civilianExplorers.desiredNumberValue);
         }
@@ -277,7 +281,7 @@ skip_append:
             this->civilians.resize(1);
         }
         this->nextCivilianToTaskValue = this->civilians.value[0];
-        if (param_2 <= debug_timeGetTime((const char*)0x005880C0, 0x0D8A) - param_1) {
+        if (debug_timeGetTime((const char*)0x005880C0, 0x0D8A) - param_1 >= param_2) {
             return 0;
         }
     }
@@ -313,7 +317,7 @@ task_done:
         newExplorer = newExplorer + 4;
         if (i >= this->civilians.numberValue) goto no_more;
         this->nextCivilianToTaskValue = this->civilians[i];
-        if (param_2 <= debug_timeGetTime((const char*)0x005880C0, 0x0DC6) - param_1) {
+        if (debug_timeGetTime((const char*)0x005880C0, 0x0DC6) - param_1 >= param_2) {
             if (i > 0) {
                 // Binary-proven capacity touch: ensure room for civilians[i-1]
                 // before returning, matching the inline operator[] grow.
