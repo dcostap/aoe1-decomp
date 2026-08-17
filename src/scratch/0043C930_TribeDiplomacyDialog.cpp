@@ -31,6 +31,16 @@
 //   which advances by 0xc, and removes the separate group-offset home.  The
 //   rebuilt frame moved to 0x128 and the positional diff improved to 2997;
 //   keep this natural cursor topology as the best current reconstruction.
+// - current bounded pass: restored the four total-field zero stores, used
+//   assignment-in-the-null-guard for both TShape allocations, and selected
+//   radio buttons through a row-local ally offset.  The last clean check is
+//   3474 rebuilt bytes, 0x128 frame, 112/112 calls, and 2753 positional bytes.
+//   This is still nonexact.  The H21 row local improves the ordered body
+//   without changing the call set.  The direct player alias and raw cursor
+//   spelling compiled to the same code and were not retained.
+// - durable next lead: recover the original 0x124 frame and the 0x55D047 EH
+//   handler value.  The body now has exact islands, but the constructor still
+//   enters a different compiler frame basin.
 
 #include <stdio.h>
 
@@ -364,6 +374,7 @@ void* __cdecl operator new(unsigned int);
 
 class TribeDiplomacyDialog : public TDialogPanel {
 public:
+    virtual ~TribeDiplomacyDialog();
     TTextPanel* title[8];
     TTextPanel* playerName[8];
     TTextPanel* playerVictoryScores[8];
@@ -409,9 +420,9 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
 {
     TButtonPanel** button;
     int y;
-    int player_id;
     RGE_Game_World* world;
     int humanity;
+    int player_id;
     int i;
     TButtonPanel** tab_buttons;
     int tab_count;
@@ -453,6 +464,10 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     this->playerStone = 0;
     this->playerGold = 0;
     this->playerFood = 0;
+    this->woodTotal = 0.0f;
+    this->stoneTotal = 0.0f;
+    this->foodTotal = 0.0f;
+    this->goldTotal = 0.0f;
     this->tribute_flag = 0;
 
     if (this->setup(parent->renderArea(), parent, 0x271, 0x195,
@@ -460,13 +475,12 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         return;
     }
 
-    this->buttonPics = new TShape((char*)0x584308, 0xC62C);
-    if (this->buttonPics == 0) {
+    // BINARY NOTE: VC5 keeps the allocation result through this null join.
+    if ((this->buttonPics = new TShape((char*)0x584308, 0xC62C)) == 0) {
         return;
     }
 
-    this->backgroundPics = new TShape((char*)0x5842F8, 0xC63A);
-    if (this->backgroundPics == 0) {
+    if ((this->backgroundPics = new TShape((char*)0x5842F8, 0xC63A)) == 0) {
         return;
     }
 
@@ -541,13 +555,19 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 disable_buttons = 1;
             } else {
                 if (rge_base_game->multiplayerGame()) {
-                    for (int j = 1; j <= rge_base_game->numberPlayers(); ++j) {
+                    int j = 1;
+                    int humanity_count = rge_base_game->numberPlayers();
+                    if (j <= humanity_count) {
+                        do {
                         if (rge_base_game->playerID(j) == player_id) {
                             int h = comm->GetPlayerHumanity(j);
                             if (h == 2 || h == 4) {
                                 humanity = h;
                             }
                         }
+                            ++j;
+                            humanity_count = rge_base_game->numberPlayers();
+                        } while (j <= humanity_count);
                     }
                     if (humanity != 2 && humanity != 4) {
                         disable_buttons = 1;
@@ -595,14 +615,17 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                     }
                 }
 
+                // BINARY NOTE: creation uses tab_buttons, but selection uses
+                // the owning ally row.  The executable has three call sites.
                 unsigned char relation = rge_base_game->get_player()->relation(player_id);
+                int row = (player_id - 1) * 3;
                 if (player_id == world->curr_player || relation == 0) {
-                    tab_buttons[0]->set_radio_button();
+                    this->allyButton[row]->set_radio_button();
                 } else {
                     if (relation == 1) {
-                        tab_buttons[1]->set_radio_button();
+                        this->allyButton[row + 1]->set_radio_button();
                     } else {
-                        tab_buttons[2]->set_radio_button();
+                        this->allyButton[row + 2]->set_radio_button();
                     }
                 }
             }
@@ -626,9 +649,9 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 }
 
                 button[0]->set_picture(0, this->buttonPics, 0);
-                button[8]->set_picture(2, this->buttonPics, 2);
-                button[-8]->set_picture(3, this->buttonPics, 3);
-                button[16]->set_picture(1, this->buttonPics, 1);
+                button[8]->set_picture(0, this->buttonPics, 2);
+                button[-8]->set_picture(0, this->buttonPics, 3);
+                button[16]->set_picture(0, this->buttonPics, 1);
                 button[0]->setDrawType(4);
                 button[8]->setDrawType(4);
                 button[-8]->setDrawType(4);
