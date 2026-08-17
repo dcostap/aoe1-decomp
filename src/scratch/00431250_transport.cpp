@@ -100,6 +100,19 @@
 // object ownership. A null-result goto grew to 249 bytes/82 diff. Initializing
 // success first grew to 283 bytes/179 diff and added a work call. Both probes
 // were restored. The clean typed positive-guard source remains the frontier.
+// Session sa-5b0a0308-r1: revisited the first divergence at +0x64 with 16
+// source-shape, lifetime, declaration, and control-flow hypotheses. Explicit
+// null/success arms and direct null returns reproduced the 249-byte/82-diff
+// basin. Split complementary guards reached 238 bytes/70 diff but added a
+// second null test. Declaration and initialization placement was codegen
+// neutral when it preserved the positive-guard basin; moving zero before new
+// grew the body to 284 bytes and added a work call. A /GX ambient-context lab
+// with 32 declaration samples and <new.h>/<stdlib.h> combinations produced one
+// unchanged 230-byte group, with no exact result. All variants were restored.
+// The clean typed positive-guard source remains 230 bytes with 67 strict
+// differing bytes. The blocker is still VC5 EH-tail block placement: rebuilt
+// zeroes EAX before the EH reset/test, while the oracle zeroes it after the test
+// and jumps to the shared epilogue.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stddef.h>
