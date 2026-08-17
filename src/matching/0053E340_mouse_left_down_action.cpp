@@ -30,14 +30,27 @@
 // - A typed four-short frame aggregate, with max_y before max_x, reduced the
 //   remaining local-output drift to 17 bytes.  The candidate stays in scratch.
 // - Sustained probe pass: 32 meaningful source, ABI, layout, liveness, and
-//   context hypotheses were tested.  The clean aggregate source remains best.
+//   context hypotheses were tested.  The clean aggregate source was best then.
 // - A branch-local RGE_Base_Game* alias reduced the strict diff from 17 to 4
 //   bytes and made all 30 relocations safe, but it did not fix the frame loads.
-//   It was diagnostic-only and is not retained in the clean source.
+//   The alias is retained in the exact source because its one use preserves the
+//   original global receiver load after set_player.
 // - Separate short locals, arrays, field permutations, pointer/reference
 //   get_frame forms, Windows/stdlib headers, receiver scopes, and volatile
 //   outputs were worse or codegen duplicates.  Exact donor 004C3B30 confirms
 //   the natural get_frame ABI and output order, but not this target's homes.
+// - Exact finish: the original reads pick_info.scr_x/scr_y for both point
+//   deltas.  Replacing frame.max_x/max_y removed the last four bytes.
+// - Exact walkback: branch-local frame references and point/frame declaration
+//   reordering were incidental.  Standalone short locals are the clearest
+//   exact form.  The tagRECT declaration preserves the period API context.
+// - Second pass: 14 meaningful hypotheses, first exact checkpoint at diff 0,
+//   reduced exact source retained after independent walkbacks.
+// - Canonical cleanup: named RGE_Player, TPanel, RGE_View, and RGE_Game_World
+//   surfaces replaced macro slots and the manual world vtable field.  Named
+//   world fields preserve players at +0x40 and the exact bytes.
+// - Canonical reduction: removing RGE_View's trailing named slots changed 26
+//   bytes.  The full donor-supported inherited surface remains required.
 
 extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void*, void*);
@@ -48,12 +61,12 @@ struct tagPOINT {
     long y;
 };
 
-struct RGE_Frame_Bounds {
-    // BINARY NOTE: The executable passes four short output references.
-    short min_x;
-    short min_y;
-    short max_y;
-    short max_x;
+// BINARY NOTE: vw_main.cpp uses the period Windows API type context here.
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
 };
 
 class TDrawSystem {
@@ -75,6 +88,15 @@ class RGE_Master_Static_Object;
 class RGE_Tile;
 class RGE_Sprite;
 class RGE_Active_Sprite_List;
+class RGE_Object_Node;
+class XYZBYTEPoint;
+class RGE_Master_Player;
+class RGE_Player_Info;
+class RGE_Sound;
+class RGE_Scenario;
+class RGE_Map;
+class TSound_Driver;
+class TCommunications_Handler;
 
 struct RGE_Pick_Info {
     float x;
@@ -135,31 +157,146 @@ public:
 
 class RGE_Game_World {
 public:
-    void* vtable_ptr;
-    char gap_04[0x3C];
+    virtual unsigned char data_load_world(void*);
+    virtual unsigned char data_load_terrain_tables(char*);
+    virtual unsigned char data_load_players(char*);
+    virtual unsigned char data_load_objects(char*);
+    virtual unsigned char data_load_sounds(char*);
+    virtual unsigned char data_load_color_tables(char*);
+    virtual unsigned char data_load_sprites(char*);
+    virtual void data_load_players_type(short, short, void*);
+    virtual void data_load_effects(char*);
+    virtual void data_load_map(char*, char*, char*, char*, short, short, short,
+                               RGE_Sound**, char*);
+    virtual void data_load_random_map(char*, char*, char*, char*);
+    virtual unsigned char init_player_type(int, short, unsigned char);
+    virtual unsigned char init_player(int);
+    virtual void load_player(int, unsigned char, short);
+    virtual void color_table_init(int);
+    virtual void terrain_tables_init(int);
+    virtual void init_sounds(int, TSound_Driver*);
+    virtual void init_sprites(int);
+    virtual void map_init(int, TSound_Driver*);
+    virtual void effects_init(int);
+    virtual void master_player_init(int);
+    virtual void command_init(int, TCommunications_Handler*);
+    virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
+    virtual void setup_gaia();
+    virtual void setup_players(RGE_Player_Info*);
+    virtual unsigned char new_random_game(RGE_Player_Info*);
+    virtual void save(int);
+    virtual void scenario_make_player(short, unsigned char, unsigned char,
+                                      unsigned char, char*);
+    virtual void scenario_make_map(int);
+    virtual unsigned char load_scenario(RGE_Player_Info*);
+    virtual unsigned char load_scenario(char*, RGE_Player_Info*);
+    virtual void load_scenario1(int, RGE_Player_Info*);
+    virtual void load_scenario2(int, RGE_Player_Info*);
+    virtual void load_scenario3(int, RGE_Player_Info*);
+    virtual void load_scenario4(int, RGE_Player_Info*);
+    virtual void load_scenario5(int, RGE_Player_Info*);
+    virtual void load_scenario6(int, RGE_Player_Info*);
+    virtual void load_scenario7(int, RGE_Player_Info*);
+    virtual void load_scenario8(int, RGE_Player_Info*);
+    virtual void logStatus(void*, int);
+    virtual ~RGE_Game_World();
+    virtual void setup_player_colors();
+    virtual void setup_player_colors(RGE_Player_Info*);
+    virtual unsigned char data_load(char*, char*);
+    virtual unsigned char init(char*, TSound_Driver*, TCommunications_Handler*);
+    virtual void turn_sound_off();
+    virtual void del_game_info();
+    virtual unsigned char update();
+    virtual unsigned char get_game_state();
+    virtual unsigned char check_game_state();
+    virtual unsigned char load_world(int);
+    virtual unsigned char load_game(char*);
+    virtual unsigned char new_game(RGE_Player_Info*, int);
+    virtual unsigned char new_scenario(RGE_Player_Info*, int);
+    virtual unsigned char save_game(char*);
+    virtual void base_save(char*);
+    virtual void base_save(int);
+    virtual unsigned char save_scenario(char*);
+    virtual RGE_Scenario* get_scenario_info(char*);
+    virtual void pause(unsigned char);
+    virtual void scenario_init(RGE_Game_World*);
+    virtual void scenario_init(int, RGE_Game_World*);
+    virtual int addObject(RGE_Static_Object*);
+    virtual int removeObject(int);
+
+    unsigned long world_time;
+    unsigned long old_world_time;
+    unsigned long world_time_delta;
+    float timer;
+    unsigned long old_time;
+    float game_speed;
+    unsigned char temp_pause;
+    unsigned char game_state;
+    unsigned char game_end_condition;
+    unsigned char gap_1F;
+    long sound_update_index;
+    long sprite_update_index;
+    RGE_Map* map;
+    short sound_num;
+    short gap_2E;
+    RGE_Sound** sounds;
+    short sprite_num;
+    short gap_36;
+    RGE_Sprite** sprites;
+    short player_num;
+    short gap_3E;
     RGE_Player** players;
 };
 
 class RGE_Player {
 public:
     virtual ~RGE_Player();
-#define PLAYER_VIRTUAL(n) virtual void player_v##n();
-    PLAYER_VIRTUAL(01) PLAYER_VIRTUAL(02) PLAYER_VIRTUAL(03)
-    PLAYER_VIRTUAL(04) PLAYER_VIRTUAL(05) PLAYER_VIRTUAL(06)
-    PLAYER_VIRTUAL(07) PLAYER_VIRTUAL(08) PLAYER_VIRTUAL(09)
-    PLAYER_VIRTUAL(10) PLAYER_VIRTUAL(11) PLAYER_VIRTUAL(12)
-    PLAYER_VIRTUAL(13) PLAYER_VIRTUAL(14) PLAYER_VIRTUAL(15)
-    PLAYER_VIRTUAL(16) PLAYER_VIRTUAL(17) PLAYER_VIRTUAL(18)
-    PLAYER_VIRTUAL(19) PLAYER_VIRTUAL(20) PLAYER_VIRTUAL(21)
-    PLAYER_VIRTUAL(22) PLAYER_VIRTUAL(23) PLAYER_VIRTUAL(24)
-    PLAYER_VIRTUAL(25) PLAYER_VIRTUAL(26) PLAYER_VIRTUAL(27)
-    PLAYER_VIRTUAL(28) PLAYER_VIRTUAL(29) PLAYER_VIRTUAL(30)
-    PLAYER_VIRTUAL(31) PLAYER_VIRTUAL(32) PLAYER_VIRTUAL(33)
-    PLAYER_VIRTUAL(34) PLAYER_VIRTUAL(35) PLAYER_VIRTUAL(36)
-    PLAYER_VIRTUAL(37) PLAYER_VIRTUAL(38) PLAYER_VIRTUAL(39)
-    PLAYER_VIRTUAL(40) PLAYER_VIRTUAL(41) PLAYER_VIRTUAL(42)
-    PLAYER_VIRTUAL(43)
-#undef PLAYER_VIRTUAL
+    virtual void set_game_status(unsigned char);
+    virtual void do_resign(int);
+    virtual void changeToHumanPlayer();
+    virtual void changeToComputerPlayer();
+    virtual char* aiStatus(int);
+    virtual int isEnemy(int);
+    virtual int isAlly(int);
+    virtual int isNeutral(int);
+    virtual int isAllNeutral();
+    virtual void setDiplomaticStance(int, int);
+    virtual void loadAIInformation(char*, char*, char*, int, int);
+    virtual void sendUnitAIOrder(int, int, int, int, int,
+                                 float, float, float, float, int, int, int);
+    virtual void processAIOrder(int, int, int, int, int,
+                                float, float, float, float, int, int, int);
+    virtual void kickAI(int);
+    virtual int strategicNumber(int);
+    virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float, float);
+    virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
+    virtual void sendPlayCommand(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int);
+    virtual int objectCostByType(int);
+    virtual void trackUnitGather(int, int, int);
+    virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
+                                                  unsigned char, float);
+    virtual void scenario_save(int);
+    virtual void scenario_load(int, long*, float);
+    virtual void scenario_postsave(int);
+    virtual void scenario_postload(int, long*, float);
+    virtual void load(int);
+    virtual void add_attribute_num(short, float, unsigned char);
+    virtual void update();
+    virtual void update_dopplegangers();
+    virtual void save(int);
+    virtual void save2(int);
+    virtual void save_info(int);
+    virtual void random_start();
+    virtual RGE_Static_Object* make_new_object(long, float, float, float, int);
+    virtual void analyize_selected_objects();
+    virtual int get_mouse_pointer_action_vars(int, int*, int*);
+    virtual unsigned char command_make_move(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_work(RGE_Static_Object*, float, float);
+    virtual unsigned char command_make_do(RGE_Static_Object*, float, float);
+    virtual unsigned char command_stop();
     virtual unsigned char command_place_object(
         short, float, float, float);
 
@@ -171,13 +308,14 @@ public:
     RGE_Static_Object* selected_obj;
 
     void unselect_object();
+    void select_one_object(RGE_Static_Object*);
     int select_one_object(RGE_Static_Object*, int);
 };
 
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void run();
+    virtual int run();
     virtual long wnd_proc(void*, unsigned int, unsigned int, long);
     virtual void set_prog_mode(int);
     virtual void set_game_mode(int, int);
@@ -197,14 +335,63 @@ public:
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual void panel_v1();
-    virtual void panel_v2();
-    virtual void panel_v3();
-    virtual void panel_v4();
-    virtual void panel_v5();
-    virtual void panel_v6();
-    virtual void panel_v7();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
+                       unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(int);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     char gap_04[0x1C];
     TDrawArea* render_area;
@@ -215,26 +402,13 @@ public:
 
 class RGE_View : public TPanel {
 public:
-#define VIEW_VIRTUAL(n) virtual void view_v##n();
-    VIEW_VIRTUAL(09) VIEW_VIRTUAL(10) VIEW_VIRTUAL(11)
-    VIEW_VIRTUAL(12) VIEW_VIRTUAL(13) VIEW_VIRTUAL(14)
-    VIEW_VIRTUAL(15) VIEW_VIRTUAL(16) VIEW_VIRTUAL(17)
-    VIEW_VIRTUAL(18) VIEW_VIRTUAL(19) VIEW_VIRTUAL(20)
-    VIEW_VIRTUAL(21) VIEW_VIRTUAL(22) VIEW_VIRTUAL(23)
-    VIEW_VIRTUAL(24) VIEW_VIRTUAL(25) VIEW_VIRTUAL(26)
-    VIEW_VIRTUAL(27) VIEW_VIRTUAL(28) VIEW_VIRTUAL(29)
-    VIEW_VIRTUAL(30) VIEW_VIRTUAL(31) VIEW_VIRTUAL(32)
-    VIEW_VIRTUAL(33) VIEW_VIRTUAL(34) VIEW_VIRTUAL(35)
-    VIEW_VIRTUAL(36) VIEW_VIRTUAL(37) VIEW_VIRTUAL(38)
-    VIEW_VIRTUAL(39) VIEW_VIRTUAL(40) VIEW_VIRTUAL(41)
-    VIEW_VIRTUAL(42) VIEW_VIRTUAL(43) VIEW_VIRTUAL(44)
-    VIEW_VIRTUAL(45) VIEW_VIRTUAL(46) VIEW_VIRTUAL(47)
-    VIEW_VIRTUAL(48) VIEW_VIRTUAL(49) VIEW_VIRTUAL(50)
-    VIEW_VIRTUAL(51) VIEW_VIRTUAL(52) VIEW_VIRTUAL(53)
-    VIEW_VIRTUAL(54) VIEW_VIRTUAL(55) VIEW_VIRTUAL(56)
-    VIEW_VIRTUAL(57)
-#undef VIEW_VIRTUAL
+    virtual int pick_through_fog(RGE_Static_Object*);
+    virtual int pick_weight(RGE_Static_Object*, int);
     virtual int start_scroll_view(unsigned char, long, long, int, int);
+    virtual int handle_scroll_view(long, long);
+    virtual void end_scroll_view();
+    virtual int do_paint(long, long, long, long, int);
+    virtual void draw_multi_object_outline();
 
     TDrawArea* cur_render_area;
     int calc_draw_count;
@@ -249,7 +423,13 @@ extern RGE_Base_Game* rge_base_game;
 
 class RGE_Main_View : public RGE_View {
 public:
-    char gap_360[0x1C];
+    TPanel* map_view;
+    unsigned long last_mouse_scroll_time;
+    int mouse_scrolling;
+    long mouse_last_x;
+    long mouse_last_y;
+    unsigned long last_key_scroll_time;
+    int key_scrolling;
     RGE_Player* save_player;
 
     long mouse_left_down_action(long, long, int, int);
@@ -261,7 +441,10 @@ public:
 long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                                            int param_3, int param_4)
 {
-    RGE_Frame_Bounds frame;
+    short min_x;
+    short min_y;
+    short max_y;
+    short max_x;
     tagPOINT point;
     RGE_Pick_Info pick_info;
 
@@ -281,10 +464,11 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                     this->set_redraw(1);
                     if (((RGE_Static_Object*)pick_info.object)->sprite != 0) {
                         ((RGE_Static_Object*)pick_info.object)->get_frame(
-                            frame.min_x, frame.min_y,
-                            frame.max_x, frame.max_y);
-                        point.x = frame.max_x - frame.min_x;
-                        point.y = frame.max_y - frame.min_y;
+                            min_x, min_y, max_x, max_y);
+                        // ORIGINAL BUG: The shipped code subtracts the frame
+                        // origin from pick_info's screen coordinates.
+                        point.x = pick_info.scr_x - min_x;
+                        point.y = pick_info.scr_y - min_y;
                         if (this->render_area->draw_system->screen_mode == 1) {
                             ClientToScreen(this->render_area->wnd, &point);
                         }
@@ -366,7 +550,8 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                         this->save_player = rge_base_game->get_player();
                         rge_base_game->set_player(
                             ((RGE_Static_Object*)pick_info.object)->owner->id);
-                        rge_base_game->master_obj_id =
+                        RGE_Base_Game* base_game = rge_base_game;
+                        base_game->master_obj_id =
                             ((RGE_Static_Object*)pick_info.object)->master_obj->id;
                         this->movable_object =
                             (RGE_Static_Object*)pick_info.object;
@@ -377,10 +562,11 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2,
                         rge_base_game->set_game_mode(8, 1);
                         if (this->movable_object->sprite != 0) {
                             this->movable_object->get_frame(
-                                frame.min_x, frame.min_y,
-                                frame.max_x, frame.max_y);
-                            point.x = frame.max_x - frame.min_x;
-                            point.y = frame.max_y - frame.min_y;
+                                min_x, min_y, max_x, max_y);
+                            // ORIGINAL BUG: The shipped code subtracts the
+                            // frame origin from pick_info's screen coordinates.
+                            point.x = pick_info.scr_x - min_x;
+                            point.y = pick_info.scr_y - min_y;
                             if (this->render_area->draw_system->screen_mode == 1) {
                                 ClientToScreen(this->render_area->wnd, &point);
                             }
