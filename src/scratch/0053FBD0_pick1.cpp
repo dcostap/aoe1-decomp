@@ -41,6 +41,20 @@
 // rolled back to the clean branch-local reconstruction.
 // try 17: express successful output as the positive selected-object branch,
 // matching the oracle's `cmp selected,0; je return32` block shape.
+// try 18: an absolute Picked_Objects address was rejected; it changed the
+// relocation basin and worsened the strict diff.
+// try 19: moving PickedInfo cursors recovered the oracle's 12-byte cursor
+// updates and improved the strict diff from 566 to 559 bytes.
+// try 20: split screen declarations were a codegen duplicate.
+// tries 21-23: biased cursors, explicit while scans, and shared screen pairs
+// worsened code or shape; restored typed branch-local forms.
+// try 24: direct this calls, y reused for the post-pick count, and x reused
+// for the no-exclude score reached 547 strict differing bytes and 74.36%
+// shape similarity. This is the best clean unresolved source.
+// BINARY NOTE: the oracle walks Picked_Objects with a 12-byte moving cursor.
+// BINARY NOTE: the oracle reuses dead coordinate parameter homes for the
+// post-pick count and no-exclude score after pick_objects returns.
+// Open: the oracle has an 8-byte local frame; this source remains at 0xC.
 
 typedef unsigned char byte;
 
@@ -200,32 +214,30 @@ public:
 
 byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, RGE_Static_Object* exclude, int alt)
 {
-    int count;
-    RGE_Main_View* self = this;
     if (cmd == 0x29) {
         out->x = 0; out->y = 0; out->sx = 0; out->sy = 0; out->obj = 0; out->tile = 0;
         if (!small)
-            count = self->pick_objects(x, y, 0, 40, 15, 4, 1);
+            y = this->pick_objects(x, y, 0, 40, 15, 4, 1);
         else
-            count = self->pick_objects(x, y, 10, 20, 15, 4, 1);
-        if (!count) return 0x32;
+            y = this->pick_objects(x, y, 10, 20, 15, 4, 1);
+        if (!y) return 0x32;
         if (!exclude) {
             RGE_Static_Object* best = 0;
-            int bestScore = 0;
             short bestx = 0, besty = 0;
-            for (int i = 0; i < count; ++i) {
-                PickedInfo* p = &Picked_Objects[i];
+            x = 0;
+            PickedInfo* p = Picked_Objects;
+            for (int i = 0; i < y; ++i, ++p) {
                 if (p->id >= 0) {
-                    RGE_Static_Object* obj = self->world->objects[p->id];
+                    RGE_Static_Object* obj = this->world->objects[p->id];
                     if (obj && obj->owner < 7 && obj->master_obj->select_level >= small) {
-                        if (alt || self->map->flag || self->pick_through_fog(obj) ||
-                            self->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f) {
-                            int s = self->pick_weight(obj, p->confidence);
-                            if (s > bestScore) {
-                                bestx = self->render_rect.left + p->sx;
-                                besty = self->render_rect.top + p->sy;
+                        if (alt || this->map->flag || this->pick_through_fog(obj) ||
+                            this->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f) {
+                            int s = this->pick_weight(obj, p->confidence);
+                            if (s > x) {
+                                bestx = this->render_rect.left + p->sx;
+                                besty = this->render_rect.top + p->sy;
                                 best = obj;
-                                bestScore = s;
+                                x = s;
                             }
                         }
                     }
@@ -243,20 +255,21 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
         } else {
             int seenExclude = 0;
             RGE_Static_Object* chosen = 0;
-            short cx = 0, cy = 0;
-            for (int j = 0; j < count; ++j) {
-                PickedInfo* p = &Picked_Objects[j];
+            short cx = 0;
+            short cy = 0;
+            PickedInfo* p = Picked_Objects;
+            for (int j = 0; j < y; ++j, ++p) {
                 if (p->id >= 0) {
-                    RGE_Static_Object* obj = self->world->objects[p->id];
+                    RGE_Static_Object* obj = this->world->objects[p->id];
                     if (obj && obj->owner < 7 && obj->master_obj->select_level >= small) {
-                        int s = self->pick_weight(obj, p->confidence);
-                        if (s > 0 && (alt || self->map->flag || self->pick_through_fog(obj) ||
-                                      self->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f)) {
+                        int s = this->pick_weight(obj, p->confidence);
+                        if (s > 0 && (alt || this->map->flag || this->pick_through_fog(obj) ||
+                                      this->player->visible->get_visible((int)obj->x, (int)obj->y) == 0x0f)) {
                             if (obj == exclude) seenExclude = 1;
                             else if (!seenExclude) {
-                                if (!chosen) { chosen = obj; cx = self->render_rect.left + p->sx; cy = self->render_rect.top + p->sy; }
+                                if (!chosen) { chosen = obj; cx = this->render_rect.left + p->sx; cy = this->render_rect.top + p->sy; }
                             } else {
-                                chosen = obj; cx = self->render_rect.left + p->sx; cy = self->render_rect.top + p->sy; break;
+                                chosen = obj; cx = this->render_rect.left + p->sx; cy = this->render_rect.top + p->sy; break;
                             }
                         }
                     }
@@ -264,8 +277,8 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
             }
             if (seenExclude && !chosen) {
                 chosen = exclude;
-                cx = self->render_rect.left + Picked_Objects[count].sx;
-                cy = self->render_rect.top + Picked_Objects[count].sy;
+                cx = this->render_rect.left + Picked_Objects[y].sx;
+                cy = this->render_rect.top + Picked_Objects[y].sy;
             }
             if (chosen) {
                 out->obj = chosen;
@@ -279,7 +292,7 @@ byte RGE_Main_View::pick1(byte cmd, byte small, long x, long y, PickInfo* out, R
         }
     }
     if (cmd == 0x2a) {
-        if (self->pick1(0x29, small, x, y, out, exclude, 1) == 0x34) return 0x34;
+        if (pick1(0x29, small, x, y, out, exclude, 1) == 0x34) return 0x34;
     }
-    return self->pick(0x28, small, x, y, out, exclude);
+    return this->pick(0x28, small, x, y, out, exclude);
 }
