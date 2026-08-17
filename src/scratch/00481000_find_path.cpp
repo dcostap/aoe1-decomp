@@ -102,26 +102,40 @@
 // - tu-rmmbase-481000: dossier and donors reconfirm the five map fields, ten
 //   ordered calls, exact frame, and typed path ownership. No supported natural
 //   source lead remains for the FPU/local-slot scheduler gap.
+// 2026-08-17 sa-032a8cec-r1 follow-up (20 meaningful probes):
+// - The clean baseline is 2422 bytes, 0x24 frame, four saved registers, all ten
+//   ordered calls aligned, 2011 strict differing bytes, and 71.82% shape.
+// - Target-left spellings for the y+ and x+ heuristic comparisons, including both
+//   x+ diagonal adjustments, are natural and raise shape to 72.08% without changing
+//   size, frame, calls, or behavior. Retained in the source.
+// - Plain byte terrain/border fields and a non-pure same-TU generate declaration are
+//   period-plausible. Both are codegen-neutral and retained as simpler ownership.
+// - Removed unused unnamed-constant declarations. This is codegen-neutral.
+// - Rejected direct absolute zero/heuristic constants, named target-y and long-typed
+//   ty aliases, separate flag locals, extra terrain locals, header additions, and
+//   neutral ambient declarations. They either worsened the basin or changed nothing.
+// BINARY NOTE: The target has ten direct calls in fixed order, a 0x24 frame, and
+// four saved registers. The remaining mismatch starts at the post-gate distance
+// block: VC5 colors the x/y working registers opposite the executable and places
+// cost/hcost at opposite float homes.
+// LIKELY INTENT: The source performs an eight-neighbor path search with a shared
+// stack and a byte search map. The shipped FPU/local scheduler gap is unresolved.
+// Final unresolved candidate: 2422 bytes, 72.08% shape, 2011 differing bytes.
 
 #include <string.h>
 
 extern "C" double sqrt(double value);
 #pragma intrinsic(sqrt)
 
-extern float DAT_00571e4c;
 extern float DAT_00571e50;
-extern float DAT_00571e54;
-extern float DAT_00571e58;
-extern float DAT_00571e5c;
-extern float DAT_00571e60;
 
 class RGE_Tile {
 public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char border_type : 4;
+    unsigned char terrain_type;
+    unsigned char border_type;
     unsigned char last_drawn_as;
     unsigned char last_drawn_shape;
     unsigned char draw_as;
@@ -142,7 +156,7 @@ public:
 
 class RGE_Random_Map_Module {
 public:
-    virtual unsigned char generate() = 0;
+    virtual unsigned char generate();
     RGE_Random_Map_Module* parent;
     void* list;
     void* map;
@@ -196,10 +210,10 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
         while (cost != 0.0) {
             if (y < map_w) {
                 float hcost;
-                if (y < *target_y) {
-                    hcost = cost - 1.0f;
-                } else {
+                if (*target_y <= y) {
                     hcost = cost - -1.0f;
+                } else {
+                    hcost = cost - 1.0f;
                 }
     
                 cell = this->search_map_rows[y + 1] + x;
@@ -357,10 +371,10 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
     
             if (x < local_4) {
                 float hcost;
-                if (x < *target_x) {
-                    hcost = cost - 1.0f;
-                } else {
+                if (*target_x <= x) {
                     hcost = cost - -1.0f;
+                } else {
+                    hcost = cost - 1.0f;
                 }
     
                 cell = this->search_map_rows[y] + x + 1;
@@ -397,10 +411,10 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                             if (calc_cost[1] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 10;
-                                if (y < *target_y) {
-                                    hcost = hcost - 0.41f;
-                                } else {
+                                if (*target_y <= y) {
                                     hcost = hcost - -0.41f;
+                                } else {
+                                    hcost = hcost - 0.41f;
                                 }
                                 this->push_stack(path_stack, x + 1, map_h,
                                                  tcost, tcost + hcost);
@@ -426,10 +440,10 @@ unsigned char RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, lo
                             if (calc_cost[2] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 11;
-                                if (y < *target_y) {
-                                    hcost = hcost - 0.41f;
-                                } else {
+                                if (*target_y <= y) {
                                     hcost = hcost - -0.41f;
+                                } else {
+                                    hcost = hcost - 0.41f;
                                 }
                                 this->push_stack(path_stack, x + 1, map_h,
                                                  tcost, tcost + hcost);
