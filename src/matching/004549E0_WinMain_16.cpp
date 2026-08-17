@@ -25,8 +25,10 @@
 // get_error_code() result. Modeling that bug reduced the mismatch to 4 bytes.
 // probe: pointer field ABI changed to void* with no codegen change. Instance
 // assignment permutations and late aliases did not reproduce the final order.
-// left in scratch: four bytes are only the hPrev/hInst load and store order;
-// the canonical source, calls, size, and all behavior-backed stores match.
+// exact-finish: reversing the independent instance assignments matched all
+// four remaining bytes. Reverting that one change restored the 4-byte diff.
+// The retained order is the smallest natural source form; no compiler
+// scaffolding or manual exception ownership was added.
 
 #include <stdio.h>
 #include <string.h>
@@ -169,8 +171,8 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     info.vol_ser_num = 0;
     info.verify_cd = 1;
     info.max_players_per_cd = 3;
-    info.prev_instance = hPrev;
     info.instance = hInst;
+    info.prev_instance = hPrev;
     info.show_wnd_flag = nShow;
 
     info.mouse_scroll_interval = 0x54;
