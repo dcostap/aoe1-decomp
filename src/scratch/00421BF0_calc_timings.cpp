@@ -33,6 +33,23 @@
 // - Current pass: a four-way timer statement-order lab kept size, frame, and
 //   calls but produced no exact group.  A 512-variant ambient declaration lab
 //   also produced no exact group; its best context was still nonexact.
+// - Behavior audit: the original only accumulates include_in_total for
+//   non-summary records, and emits view_update_fps before world_update_fps.
+//   Restoring both facts reduced the clean mismatch from 44 to 30 bytes in
+//   four spans; the remaining gap is the first timer block's instruction order.
+// - Object/ABI audit: the original PDB names this method as protected
+//   (?calc_timings@RGE_Base_Game@@MAEXXZ) and names debug_timeGetTime with C++
+//   linkage (?debug_timeGetTime@@YAKPADH@Z).  The local declarations now emit
+//   those exact COFF symbols; these ABI changes were byte-neutral.
+// - Object audit: the original basegame module records VC5 11.00, Pentium,
+//   hardware floating point, near code/data, a 0x3A6 function range, and no
+//   inline-line records.  The /Z7 VC5 probe emits the same function range and
+//   compile record.  No object evidence supports omitted locals or a stale
+//   PDB boundary.
+// - PDB type audit: canonical RGE_Object_List is 12 bytes with one virtual
+//   load slot and list at +4.  A local canonical test worsened the body to
+//   46 bytes by reversing two late logger loads, so the narrow +8 field stub
+//   remains.  This target proves only number_of_objects at +8.
 // BINARY NOTE: The executable reloads include_in_total after the first timer
 //   probe and performs the 8-byte cleanup after that reload.
 // LIKELY INTENT: The timer record is a typed 0x20-byte array.  The remaining
@@ -43,7 +60,7 @@
 #include <string.h>
 #include <windows.h>
 
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern int do_fps_log;
 extern FILE* fps_log;
 extern unsigned long start_mem_total;
@@ -165,6 +182,8 @@ public:
     virtual int action_exit_menu();
     virtual int action_size();
     virtual int action_close();
+
+protected:
     virtual void calc_timings();
     virtual void calc_timing_text();
     virtual void show_timings();
@@ -210,10 +229,10 @@ void RGE_Base_Game::calc_timings()
             timing->max_time = 0;
             timing->start_time = debug_timeGetTime(
                 (char*)0x57FB08, 0x12B5);
-        }
 
-        if (timing->include_in_total != 0)
-            total_time += timing->last_time;
+            if (timing->include_in_total != 0)
+                total_time += timing->last_time;
+        }
 
         ++timing;
     } while (--count != 0);
@@ -250,20 +269,20 @@ void RGE_Base_Game::calc_timings()
         this->fps = 1000 / (total / this->frame_count);
     }
 
-    if (total == 0 || this->world_update_count == 0 ||
-        total / this->world_update_count == 0) {
-        this->world_update_fps = 0;
-    } else {
-        this->world_update_fps =
-            1000 / (total / this->world_update_count);
-    }
-
     if (total == 0 || this->view_update_count == 0 ||
         total / this->view_update_count == 0) {
         this->view_update_fps = 0;
     } else {
         this->view_update_fps =
             1000 / (total / this->view_update_count);
+    }
+
+    if (total == 0 || this->world_update_count == 0 ||
+        total / this->world_update_count == 0) {
+        this->world_update_fps = 0;
+    } else {
+        this->world_update_fps =
+            1000 / (total / this->world_update_count);
     }
 
     this->calc_timing_text();
