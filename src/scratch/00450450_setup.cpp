@@ -42,6 +42,12 @@
 //   output from the first paired hunk; the first mismatch moved 31 bytes later,
 //   but positional diff stayed 150 and one later span worsened. Restored the
 //   named local; this is a first-hunk scheduling clue, not a retained source.
+// - Fresh local-order probe was codegen-duplicate. The original assembly proves
+//   parser homes for base armor, area level, and sprite index at the file,
+//   sounds, and count entry homes, with break/fire at local -4/-2. The natural
+//   named-local source rotates the first three homes. A count-before-field
+//   statement probe worsened 150 to 175 bytes and was restored. Do not encode
+//   the original parameter-home reuse in source.
 
 #include <stdio.h>
 #include <stdlib.h>
