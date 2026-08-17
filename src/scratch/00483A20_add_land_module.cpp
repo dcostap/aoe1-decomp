@@ -39,6 +39,21 @@
 // 6 (shardC5-483A20): moved the natural map-entry declaration before the scalar
 //    locals to follow the same-TU/decompiler declaration order; codegen was
 //    unchanged, so restored the clean cursor-form source.
+// 7 (sa-4bcc071c): rewrote the relation grouping with preincremented typed
+//    cursors and direct land_num loop bounds.  This changed the basin from
+//    1561 to 1555 strict-diff bytes and kept the frame and three calls exact.
+// 8 (sa-4bcc071c): wrote the bubble-sort test as team_size[l] >
+//    team_size[l + 1].  This follows the target compare order and improved
+//    shape to 80.00% with 1554 differing bytes.
+// 9 (sa-4bcc071c): tested delayed land_wanted materialization, zero-based
+//    team-size cursors, narrow loop indices, self aliases, typed land-entry
+//    cursors, and phase-A do/while forms.  These were neutral or worse.  The
+//    zero-based cursor reached 1538 differing bytes, but lost target block
+//    shape and the target boundary, so it was not retained.
+// 10 (sa-4bcc071c): completed 22 meaningful probes.  No exact result was
+//     found.  The final clean source keeps typed records, one proven raw
+//     packed-array cursor family, the direct relation call, and no aliases,
+//     absolute address macros, or compiler-steering volatility.
 // Left in scratch: phase A is byte-close (only this-home [esp+18h] vs
 // [esp+10h] and a few slot permutations); phase B is correct and close but
 // not exact. Probe 4's miscompile is documented negative evidence.
@@ -259,7 +274,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1)
                 do {
                     changed = 1;
                     for (long l = 1; l < land_wanted; l++) {
-                        if (team_size[l + 1] < team_size[l]) {
+                        if (team_size[l] > team_size[l + 1]) {
                             long t = team_size[l];
                             team_size[l] = team_size[l + 1];
                             team_size[l + 1] = t;
@@ -281,30 +296,32 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1)
         index = 0;
         index1 = 0;
         if (land_wanted > 0) {
-            long* ppt = &player_teams[1];
+            long* ppt = player_teams;
             long* psize = &team_size[1];
             local_174 = 4 - (long)&player_teams[1];
             do {
+                ++ppt;
                 if (*ppt == -1) {
                     *ppt = index;
                     *psize = 1;
                     swap = local_174 + (long)ppt;
-                    long* store = &player_teams[1];
-                    for (long j = 0; j < land_wanted - 1; j++) {
-                        RGE_Player* seed =
-                            *(RGE_Player**)((int)this->world->players + swap);
-                        if (seed->relation(j + 1) == 0) {
+                    long* store = player_teams;
+                    int j = 0;
+                    if (land_wanted > 0) {
+                        do {
+                            ++store;
+                            ++j;
+                        if ((*(RGE_Player**)((int)this->world->players + swap))->relation(j) == 0) {
                             *store = index;
                             (*psize)++;
                         }
-                        store++;
+                        } while (j < this->land_info.land_num);
                     }
                     index++;
                 }
                 index1++;
-                ppt++;
                 psize++;
-            } while (index1 < land_wanted);
+            } while (index1 < this->land_info.land_num);
         }
 
         for (long k = 0; k < land_wanted; k++)
@@ -339,16 +356,16 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1)
                                     break;
                                 }
                             }
-                            long other_team = -1;
+                            int other_team = -1;
                             if (land_wanted > 0) {
                                 for (long k = 0; k < land_wanted; k++) {
-                                    long land = distances[start_land][k];
+                                    int land = distances[start_land][k];
                                     if (ty[land + 1] != index1 && ty[land + 1] >= 0) {
                                         other_team = ty[land + 1];
                                         local_178 = land;
                                         if (swap > 0) {
                                             for (long m = 0; m < swap; m++) {
-                                                long land2 = distances[ty[0]][m];
+                                                int land2 = distances[ty[0]][m];
                                                 if (ty[land2 + 1] == other_team) {
                                                     local_178 = land2;
                                                     break;
@@ -363,10 +380,10 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1)
                             ty[local_178 + 1] = -1;
                             if (land_wanted - 1 >= 0) {
                                 for (long k = land_wanted - 1; k >= 0; k--) {
-                                    long land = distances[other_team][k];
+                                    int land = distances[other_team][k];
                                     if (ty[land + 1] == other_team) {
                                         for (long m = 0; m < land_wanted; m++) {
-                                            long land2 = distances[start_land][m];
+                                            int land2 = distances[start_land][m];
                                             if (ty[land2 + 1] == -1 && land2 != local_178) {
                                                 ty[land + 1] = -1;
                                                 ty[land2 + 1] = other_team;
