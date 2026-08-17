@@ -24,9 +24,15 @@
 // - outer post-move dispatch is owned by missile_type at +0x148; missile_hit_info
 //   at +0x14A remains the collision-mode switch. Reordering the natural mode-3
 //   branch before the <=2 collision-list branch aligned all 24 ordered calls.
-// - state-gate switch probe improved the block from 337 to 348 instructions;
-//   diff 717B, size 920B, and exact-block coverage 46.74%; retained as the
-//   best natural state/update reconstruction, but it still adds one return.
+// - late state returns, branch-local node->object reads, direct mode-1 attack
+//   arms, and z-before-velocity ballistic source order gave 955B, frame 0x18,
+//   357 instructions, 87.11% shape, 69.97% exact blocks, and diff 653B.
+// - BINARY NOTE: the remaining first mismatch is timer x87 operand order
+//   (oracle fld time; fadd timer versus rebuilt fld timer; fadd time).
+// - BINARY NOTE: the oracle duplicates mode-1 receiver setup before one shared
+//   virtual call. Direct branch-local calls preserve this shipped code shape.
+// - LIKELY INTENT: collision mode 1 selects the stored target when present and
+//   the missile object when absent; preserve the explicit arms for code shape.
 
 extern float DAT_0056e380;
 extern double DAT_0056e388;
@@ -432,32 +438,33 @@ unsigned char RGE_Action_Missile::update()
 
         switch (this->state) {
         case 1:
-            return 1;
+            goto return_one;
         case 4:
             break;
         default:
-            return 0;
+            goto return_zero;
         }
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 0) {
-            this->timer += time;
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type != 0) {
+            if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 3) {
+                x = this->velocity_x;
+                y = this->velocity_y;
+                z = this->velocity_z;
+            }
+        } else {
+            this->timer = time + this->timer;
             x = this->velocity_x * time;
             y = this->velocity_y * time;
             z = this->velocity_z * time;
             if (((RGE_Missile_Object*)this->obj)->max_range <= this->timer) {
                 this->set_state(1);
             }
-        } else if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 3) {
-            x = this->velocity_x;
-            y = this->velocity_y;
-            z = this->velocity_z;
         }
 
         if (((RGE_Master_Missile_Object*)this->obj->master_obj)->ballistics_ratio > DAT_0056e388) {
             float acceleration = this->ballistic_acceleration * delta;
-            float old_velocity = this->ballistic_velocity;
+            z = (this->ballistic_velocity + acceleration * DAT_0056e380) * delta + z;
             this->ballistic_velocity = acceleration + this->ballistic_velocity;
-            z = (acceleration * DAT_0056e380 + old_velocity) * delta + z;
         }
 
         this->obj->set_velocity(x, y, z);
@@ -484,7 +491,6 @@ unsigned char RGE_Action_Missile::update()
             if (collision_list != 0) {
                 RGE_Check_Node* node = collision_list->list;
                 while (node != 0) {
-                    RGE_Static_Object* candidate = node->object;
                     RGE_Combat_Object* attack_target;
                     RGE_Static_Object* attack_object;
                     int collision_mode =
@@ -492,11 +498,12 @@ unsigned char RGE_Action_Missile::update()
 
                     switch (collision_mode) {
                     case 0: {
-                        if (candidate == this->target_obj) {
+                        if (node->object == this->target_obj) {
                             attack_object = this->target_obj;
-                            attack_target =
-                                (RGE_Combat_Object*)this->target_obj2;
-                            if (attack_target == 0) {
+                            if (this->target_obj2 != 0) {
+                                attack_target =
+                                    (RGE_Combat_Object*)this->target_obj2;
+                            } else {
                                 attack_target = (RGE_Combat_Object*)this->obj;
                             }
                             goto collision_do_attack;
@@ -505,15 +512,23 @@ unsigned char RGE_Action_Missile::update()
                     }
 
                     case 1: {
-                        if (candidate->owner != this->obj->owner &&
-                            candidate->owner->id != 0) {
-                            attack_object = candidate;
-                            attack_target =
-                                (RGE_Combat_Object*)this->target_obj2;
-                            if (attack_target == 0) {
-                                attack_target = (RGE_Combat_Object*)this->obj;
+                        if (node->object->owner != this->obj->owner &&
+                            node->object->owner->id != 0) {
+                            attack_object = node->object;
+                            if (this->target_obj2 == 0) {
+                                ((RGE_Combat_Object*)this->obj)->do_attack(
+                                    attack_object,
+                                    (RGE_Combat_Object*)this->obj,
+                                    this->obj->world_x, this->obj->world_y,
+                                    this->obj->world_z);
+                            } else {
+                                ((RGE_Combat_Object*)this->target_obj2)->do_attack(
+                                    attack_object,
+                                    (RGE_Combat_Object*)this->target_obj2,
+                                    this->obj->world_x, this->obj->world_y,
+                                    this->obj->world_z);
                             }
-                            goto collision_do_attack;
+                            goto collision_state;
                         }
                         break;
                     }
@@ -522,12 +537,12 @@ unsigned char RGE_Action_Missile::update()
                         attack_target =
                             (RGE_Combat_Object*)this->target_obj2;
                         if (attack_target != 0) {
-                            if (candidate == (RGE_Static_Object*)attack_target) {
+                            if (node->object == (RGE_Static_Object*)attack_target) {
                                 break;
                             }
-                            if (candidate->owner != this->obj->owner &&
-                                candidate->owner->id != 0) {
-                                attack_object = candidate;
+                            if (node->object->owner != this->obj->owner &&
+                                node->object->owner->id != 0) {
+                                attack_object = node->object;
                                 goto collision_do_attack;
                             } else {
                                 attack_target->area_attack(this->obj->world_x,
@@ -536,9 +551,9 @@ unsigned char RGE_Action_Missile::update()
                                                             attack_target, 0);
                                 goto collision_state;
                             }
-                        } else if (candidate->owner != this->obj->owner &&
-                                   candidate->owner->id != 0) {
-                            attack_object = candidate;
+                        } else if (node->object->owner != this->obj->owner &&
+                                   node->object->owner->id != 0) {
+                            attack_object = node->object;
                             attack_target = (RGE_Combat_Object*)this->obj;
                             goto collision_do_attack;
                         } else {
@@ -582,5 +597,9 @@ unsigned char RGE_Action_Missile::update()
             }
             this->set_state(1);
         }
+return_zero:
     return 0;
+
+return_one:
+    return 1;
 }
