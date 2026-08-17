@@ -24,14 +24,29 @@
 // at the top of each loop.
 // probe: loading a guard receiver before ID zeroing reproduces the exact prologue
 // and keeps the repeated global DirectPlay loads in the call sites.
+// subagent pass: typed external L/DAT globals removed raw global dereferences;
+// this reduced the size gap from +37B to -10B and raised block coverage to 93.89%.
+// subagent pass: a same-TU for scan with signed int bounds and direct dcoID
+// ownership recovered both loop blocks exactly. Pointer and while variants did not.
+// subagent pass: separate result locals, result initialization, guard inversion,
+// hoisted scan locals, pointer-base caching, and explicit log labels did not fix
+// the second found arm. The literal strings and const timer declaration were neutral.
+// subagent pass: a late label after the receive loop was tested from the PDB late
+// block, but VC5 folded it back into the hot path. The clean natural source remains
+// 809B versus 819B, 21/21 ordered calls, 231 strict-diff bytes (28.2051%),
+// and 93.89% block coverage.
+// final unresolved pass: 20 meaningful hypotheses tested. The remaining mismatch
+// is the second player scan's rare found arm: the oracle branches to +32EC, moves
+// EBP, then jumps to the log block; natural VC5 source keeps that move inline.
 
 typedef unsigned long ulong;
-extern ulong __cdecl debug_timeGetTime(char* file, int line);
+extern ulong __cdecl debug_timeGetTime(const char* file, int line);
 class TDebuggingLog { public: void Log(char* fmt, ...); };
 class RGE_Comm_Error { public: void ShowReturn(long result, char* msg); };
-#define log_obj (*(TDebuggingLog**)0x0062C4FC)
-#define dplay (*(IDirectPlay4A**)0x0062C5EC)
-#define dplay_id (*(ulong*)0x0062CF04)
+class IDirectPlay4A;
+extern TDebuggingLog* L;
+extern IDirectPlay4A* DAT_0062c5ec;
+extern ulong DAT_0062cf04;
 
 class IDirectPlay4A {
 public:
@@ -73,33 +88,33 @@ void TCommunications_Handler::GetDPLAYMessages() {
     ulong dwSize;
     ulong local_4;
     long hr;
-    IDirectPlay4A* guard_dplay = dplay;
+    IDirectPlay4A* guard_dplay = DAT_0062c5ec;
     dcoFromID = 0;
     dcoReceiveID = 0;
     if (guard_dplay == 0) return;
     dwCount = 4000;
     dwSize = 4000;
     char* buf = this->InCommBuff;
-    local_4 = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3d4);
+    local_4 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3d4);
     dwPreSize = 0;
-    hr = dplay->GetMessageCount(dplay_id, &dwPreSize);
-    if (hr == 0 && dwPreSize > 10) log_obj->Log((char*)"!!! DPMsgCount = %u", dwPreSize);
+    hr = DAT_0062c5ec->GetMessageCount(DAT_0062cf04, &dwPreSize);
+    if (hr == 0 && dwPreSize > 10) L->Log((char*)"!!! DPMsgCount = %u", dwPreSize);
     while (1) {
-        ulong t = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3e1);
-        hr = dplay->Receive(&dcoFromID, &dcoReceiveID, 8, 0, &dwCount);
-        ulong elapsed = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3ec) - t;
-        if (elapsed > 50) log_obj->Log((char*)"!!! Receive Peek slow - %u msec", elapsed);
-        if (hr == 0 && dwCount >= 4000) { log_obj->Log((char*)"True overflow %d requested.  Max = %d", dwCount, 4000); return; }
+        ulong t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3e1);
+        hr = DAT_0062c5ec->Receive(&dcoFromID, &dcoReceiveID, 8, 0, &dwCount);
+        ulong elapsed = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x3ec) - t;
+        if (elapsed > 50) L->Log((char*)"!!! Receive Peek slow - %u msec", elapsed);
+        if (hr == 0 && dwCount >= 4000) { L->Log((char*)"True overflow %d requested.  Max = %d", dwCount, 4000); return; }
         dwSize = dwCount;
         if (hr != 0) dwSize = 4000;
-        t = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x403);
-        hr = dplay->Receive(&dcoFromID, &dcoReceiveID, 1, buf, &dwSize);
-        elapsed = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x40c) - t;
-        if (elapsed > 50) log_obj->Log((char*)"!!! Receive slow - %u msec", elapsed);
-        elapsed = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x417) - local_4;
+        t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x403);
+        hr = DAT_0062c5ec->Receive(&dcoFromID, &dcoReceiveID, 1, buf, &dwSize);
+        elapsed = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x40c) - t;
+        if (elapsed > 50) L->Log((char*)"!!! Receive slow - %u msec", elapsed);
+        elapsed = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x417) - local_4;
         if (elapsed > 500) {
-            ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x419);
-            log_obj->Log((char*)"!!! In Receive Loop for %u ms", now - local_4);
+            ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x419);
+            L->Log((char*)"!!! In Receive Loop for %u ms", now - local_4);
         }
         if (hr == (long)0x887700BE) return;
         if (dwSize == 0) return;
@@ -110,35 +125,31 @@ void TCommunications_Handler::GetDPLAYMessages() {
             int hi = this->HighPlayerNumber;
             if (i <= hi) {
                 ulong* p = this->dcoID + i;
-                do {
+                for (; i <= hi; i++, p++) {
                     if (*p == dcoFromID)
                         goto found_first_player;
-                    i++;
-                    p++;
-                } while (i <= hi);
+                }
             }
             i = 0;
 found_first_player:
             pno = i;
         } else pno = 0;
-        log_obj->Log((char*)"  >RX #%d %c-%d (%u)", pno, (int)*buf, (int)*buf, dwSize);
+        L->Log((char*)"  >RX #%d %c-%d (%u)", pno, (int)*buf, (int)*buf, dwSize);
         if (dcoFromID != 0) {
             int i = this->LowPlayerNumber;
             int hi = this->HighPlayerNumber;
             if (i <= hi) {
                 ulong* p = this->dcoID + i;
-                do {
+                for (; i <= hi; i++, p++) {
                     if (*p == dcoFromID)
                         goto found_second_player;
-                    i++;
-                    p++;
-                } while (i <= hi);
+                }
             }
             i = 0;
 found_second_player:
             pno = i;
         } else pno = 0;
-        log_obj->Log((char*)"COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno, dcoFromID, dwSize, (int)*buf, (int)*buf, debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x435));
+        L->Log((char*)"COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno, dcoFromID, dwSize, (int)*buf, (int)*buf, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Com_hand.cpp", 0x435));
         this->RXPacketLength += dwSize;
         this->RXPackets++;
         buf[dwSize] = 0;
