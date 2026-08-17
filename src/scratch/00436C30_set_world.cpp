@@ -1,24 +1,19 @@
 // 00436C30 RGE_Diamond_Map::set_world (diam_map.cpp:227-354)
-// Initial reconstruction: map/image ownership and the natural tile-row
-// projection tables are named from the validated diam_map donors.
 // Attempt log:
-// - Canonical RGE_Map/RGE_Game_World offsets, 0x24-byte tile rows, four
-//   __ftol sites, and the TPanel update_view(+0x20) call are established.
-// - Full natural projection/table reconstruction reached 997 bytes versus
-//   1081 original, with 7/7 ordered calls, matching frame 0x10, and 66.67%
-//   instruction-shape similarity.  Reciprocal draw-step spelling, early
-//   image-line store, and float row-state reuse were retained; local width /
-//   height and merged-home variants were tested and rolled back.
-// - Reintroduced a natural local map owner so width used world->map while
-//   height reloaded this->map; this followed the oracle's ordered accesses,
-//   but worsened the positional diff from 971 to 989 bytes and was rolled back.
-// - Recast the early return as a positive world/image-line guard with the
-//   normal path returning before the common null-map tail; emitted code was
-//   identical, but this source shape follows the oracle's control flow.
-// - Remaining broad drift starts in the dimension-store/x87 local-home basin;
-//   the oracle reloads [esp+14] before each row and preserves a longer FPU
-//   expression tree.  No raw cursor, fake volatility, or manual vtable form
-//   is retained.
+// - The field offsets, row size, four __ftol calls, and virtual slot +0x20
+//   match local binary evidence. The call set is 7/7 and the frame is 0x10.
+// - BINARY NOTE: each image line stores its computed tile_row before the
+//   destination row table is filled.
+// - BINARY NOTE: both row passes use one array base with separate row offsets.
+//   Direct typed indexing keeps this ownership model.
+// - BINARY NOTE: the executable carries draw height into the final ratio
+//   stores. The source keeps draw_height live for that reason.
+// - LIKELY INTENT: col_step maps image pixels to map tiles. draw_step maps
+//   map tiles to image pixels. ratio handles sub-pixel tile placement.
+// - Forty meaningful probes tested source order, local lifetime, field type,
+//   loop shape, row ownership, global form, and register color. The best
+//   retained source is still nonexact. The main drift is in x87 homes and
+//   saved-register colors. No raw cursor or manual vtable form is retained.
 
 #include <stdlib.h>
 
@@ -124,27 +119,30 @@ void RGE_Diamond_Map::set_world(RGE_Game_World* world)
     }
     this->map_tile_rows = (RGE_Map_Tile_Row*)calloc(this->map_tile_row_cnt, 0x24);
 
-    float col_step = 0.0f;
+    float col_step;
     this->map_row_step = (float)this->map_tile_row_cnt /
                          (float)this->map_image_hgt;
+    col_step = 0.0f;
     if (this->map_tile_row_cnt > this->map_image_hgt) {
         col_step = this->map_row_step * DAT_0056f600;
     }
 
-    float tile_row = 0.0f;
+    float tile_row = DAT_0056f5fc;
     short total_draw_wid = 0;
     short image_line = 0;
     if (this->map_image_hgt > 0) {
         do {
-            short line_len = this->map_image_lines[image_line].line_len;
             short row = (short)tile_row;
+            short line_len =
+                this->map_image_lines[image_line].line_len;
 
             if (row >= this->map_tile_row_cnt) {
                 row = this->map_tile_row_cnt - 1;
             }
 
-            RGE_Map_Tile_Row* table_row = &this->map_tile_rows[row];
-            table_row->image_line = image_line;
+            this->map_image_lines[image_line].tile_row = row;
+
+            this->map_tile_rows[row].image_line = image_line;
             short row_len_tiles;
             if (row < this->map_wid) {
                 row_len_tiles = this->map_hgt;
@@ -155,31 +153,33 @@ void RGE_Diamond_Map::set_world(RGE_Game_World* world)
                 row_len_tiles = this->map_hgt - row - 1 + this->map_wid;
             }
 
-            tile_row = (float)row_len_tiles;
-            float line_width = (float)line_len;
-            float ratio = tile_row / line_width;
-            float draw_step = DAT_0056f604 / ratio;
+            this->map_tile_rows[row].col_step =
+                (float)row_len_tiles / (float)line_len;
+            float draw_step = DAT_0056f604 /
+                              this->map_tile_rows[row].col_step;
             short draw_wid = (short)draw_step;
             if ((float)draw_wid != draw_step) {
                 ++draw_wid;
             }
 
-            table_row->draw = 1;
-            table_row->row_len = row_len_tiles;
-            table_row->col_step = line_width;
-            table_row->draw_wid = draw_wid;
-            table_row->draw_step = draw_step;
-            table_row->num_tiles = (short)(tile_row / draw_step);
-            table_row->ratio = ratio;
-            table_row->col_extra = ratio < DAT_0056f604
-                ? ratio * DAT_0056f600 : DAT_0056f5fc;
+            this->map_tile_rows[row].draw = 1;
+            this->map_tile_rows[row].row_len = row_len_tiles;
+            this->map_tile_rows[row].draw_wid = draw_wid;
+            this->map_tile_rows[row].draw_step = draw_step;
+            this->map_tile_rows[row].num_tiles =
+                (short)((float)line_len / draw_step);
+            this->map_tile_rows[row].ratio = draw_step / (float)line_len;
+            this->map_tile_rows[row].col_extra =
+                this->map_tile_rows[row].ratio < DAT_0056f604
+                    ? this->map_tile_rows[row].col_step * DAT_0056f600
+                    : DAT_0056f5fc;
 
             if (row < this->map_wid) {
-                table_row->map_row = 0;
-                table_row->map_col = this->map_wid - row - 1;
+                this->map_tile_rows[row].map_row = 0;
+                this->map_tile_rows[row].map_col = this->map_wid - row - 1;
             } else {
-                table_row->map_row = row - this->map_wid + 1;
-                table_row->map_col = 0;
+                this->map_tile_rows[row].map_row = row - this->map_wid + 1;
+                this->map_tile_rows[row].map_col = 0;
             }
 
             tile_row = (float)draw_wid;
@@ -200,27 +200,26 @@ void RGE_Diamond_Map::set_world(RGE_Game_World* world)
         this->map_tile_draw_wid = 1;
     }
 
-    this->map_col_ratio = (float)this->map_tile_draw_hgt /
-                          (float)this->map_tile_row_cnt;
-    this->map_row_ratio = (float)this->map_tile_draw_wid /
+    this->map_col_ratio = draw_height / (float)this->map_image_hgt;
+    this->map_row_ratio = (float)this->map_image_hgt /
                           (float)this->map_tile_row_cnt;
 
     short row = 0;
     short source_row = 0;
     if (this->map_tile_row_cnt > 0) {
         do {
-            RGE_Map_Tile_Row* dst = &this->map_tile_rows[row];
             short source = row;
-            if (dst->draw == 0) {
+            unsigned char draw = this->map_tile_rows[row].draw;
+            if (draw == 0) {
                 source = source_row;
-                dst->image_line = this->map_tile_rows[source].image_line;
-                dst->row_len = this->map_tile_rows[source].row_len;
-                dst->col_step = this->map_tile_rows[source].col_step;
-                dst->draw_wid = this->map_tile_rows[source].draw_wid;
-                dst->draw_step = this->map_tile_rows[source].draw_step;
-                dst->num_tiles = this->map_tile_rows[source].num_tiles;
-                dst->ratio = this->map_tile_rows[source].ratio;
-                dst->col_extra = this->map_tile_rows[source].col_extra;
+                this->map_tile_rows[row].image_line = this->map_tile_rows[source].image_line;
+                this->map_tile_rows[row].row_len = this->map_tile_rows[source].row_len;
+                this->map_tile_rows[row].col_step = this->map_tile_rows[source].col_step;
+                this->map_tile_rows[row].draw_wid = this->map_tile_rows[source].draw_wid;
+                this->map_tile_rows[row].draw_step = this->map_tile_rows[source].draw_step;
+                this->map_tile_rows[row].num_tiles = this->map_tile_rows[source].num_tiles;
+                this->map_tile_rows[row].ratio = this->map_tile_rows[source].ratio;
+                this->map_tile_rows[row].col_extra = this->map_tile_rows[source].col_extra;
             }
             ++row;
             source_row = source;
