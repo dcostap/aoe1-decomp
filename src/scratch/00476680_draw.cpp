@@ -72,6 +72,17 @@
 // header change. All twelve natural probes remained a 30-byte mismatch.
 // The remaining spans stay limited to the VC5 delayed EBX/EDI saves and the
 // two corresponding pop orders. No natural source evidence changes them.
+// Claim follow-up: twenty additional natural probes covered reviewed class
+// method surfaces, method constness, declaration order, guard switch scopes,
+// local lifetimes, named field access, and period header context.
+// BINARY NOTE: all supported class and context changes stayed at 940 bytes,
+// 27 ordered calls, and the same 30-byte three-span mismatch.
+// BINARY NOTE: a render_area alias in the background path extended receiver
+// liveness and worsened the result to 143 bytes; direct field access is kept.
+// BINARY NOTE: branch scopes, declaration points, unqualified member calls,
+// full TPanel/TDrawArea/TDrawSystem surfaces, and exact sibling header context
+// did not move the delayed EBX/EDI saves.
+// The canonical clean source is restored after this bounded pass.
 
 #include <windows.h>
 #include <stdlib.h>
