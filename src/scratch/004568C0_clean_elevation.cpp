@@ -28,6 +28,21 @@
 // 24: Reversed SW OR operands were also a duplicate. The remaining 29B is one
 // SW update block plus the current increment block.
 // paused: 29B localized drift remains after the focused four-probe pass.
+// Managed pass 2026-08-17:
+// 25: Indexed SE update spelling was a codegen duplicate.
+// 26: Reversed SE OR operands were a codegen duplicate.
+// 27: A byte high temporary for the SE update reduced diff 29B to 11B.
+// 28: Advancing tile before col reduced diff 11B to 7B.
+// 29: High, low, cast, XOR, and byte-next forms for the current update were
+//     duplicates or worse. Mutating current caused 146B drift.
+// 30: Unsigned current changed signed word branches and caused 16B drift.
+// 31: Added string.h caused 117B drift. Signed tile byte caused 1150B drift.
+// 32: Indexed current tile and branch-local tile pointer were duplicates.
+// 33: A wide SE high temporary caused 510B drift.
+// Best clean result is 1478B, 0x48 frame, 3 calls, 99.78% shape, and 7B
+// positional diff. The remaining drift is the current-tile increment block:
+// original increments AL before masking BL; VC5 emits the reverse order and
+// stores through BL. Keep the natural typed source and the two improvements.
 
 #include <stdlib.h>
 
@@ -100,7 +115,7 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
 
         for (long row = y1; row <= y2; ++row) {
             RGE_Tile* tile = this->map_row_offset[row] + x1;
-            for (long col = x1; col <= x2; ++col, ++tile) {
+            for (long col = x1; col <= x2; ++tile, ++col) {
                 short north_west = 0;
                 short north = 0;
                 short north_east = 0;
@@ -199,8 +214,9 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
                                 (tile[1].terrain_elevation & 0x1f);
                         }
                         if (south_east) {
+                            unsigned char high = (unsigned char)(current << 5);
                             (tile + offset_se)->terrain_elevation =
-                                (unsigned char)(current << 5) |
+                                high |
                                 ((tile + offset_se)->terrain_elevation & 0x1f);
                         }
                         if (south) {
