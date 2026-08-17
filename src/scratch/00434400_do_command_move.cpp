@@ -26,6 +26,15 @@
 // - Mirrored the same-TU do_command_order source shape by computing both
 //   adjusted coordinates before either map clamp; this is the original FPU
 //   interleave at Command.cpp:583-589, not a compiler-steering change.
+// - Sustained pass (22 meaningful probes): target declaration/assignment and
+//   accumulator declaration/order/scope variants, shared loop locals, typed
+//   pointer views, const qualifiers, loop forms, compare spellings, CRT header
+//   context, and a 64-sample ambient declaration lab all stayed in the same
+//   1186-byte basin. The best clean source remains this natural form.
+// - Evidence: the original stores target at [esp+24] and reuses [esp+2c] for
+//   the post-scan outer index; this source stores target at [esp+1c] and
+//   reuses [esp+2c] for totalY. Calls, frame, size, and CFG signals align.
+//   No tested source change recovered the original stack-home allocation.
 
 #include "../../include/game_globals.h"
 
