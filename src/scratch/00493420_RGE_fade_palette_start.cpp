@@ -42,6 +42,19 @@
 //   227 bytes. Both forms were rolled back.
 // - left in scratch: ordered destination-cursor setup remains non-exact; calls,
 //   loop CFG, and final timestamp/FPU/flag logic align.
+// - the prior byte-channel cursor basin reaches 274 bytes with two residual SIB
+//   bytes, but raw cursor plumbing is not a valid source model for this target.
+// - keep the typed palette-entry ownership and signed address-bound loop. A typed
+//   destination loop is 277 bytes with 117 differences, but preserves the target
+//   behavior and policy. Do not force the SIB order with opaque arithmetic.
+// - the exact RGE_fade_palette donor in color.cpp shows the same SIB store family;
+//   it does not justify changing this target's typed global ownership or timing.
+// - repository-only follow-up: the 274-byte/2-difference candidate uses four
+//   unsigned-char channel cursors. The original copy setup requires that
+//   topology, but the assignment forbids byte cursors and opaque address tuning.
+// - natural typed-entry ownership remains 277 bytes with 117 differences. Its
+//   initialization, calls, loop behavior, and timestamp tail align; no policy-
+//   valid typed rewrite recovered the original per-channel setup.
 
 struct tagPALETTEENTRY {
     unsigned char peRed;
