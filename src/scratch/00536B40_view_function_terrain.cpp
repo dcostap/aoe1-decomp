@@ -161,6 +161,26 @@
 // current validated reconstruction remains in scratch: 5896-byte text versus
 // the original 5760, frame 0xF4 versus 0x110, strict diff 5471 bytes, with
 // structural reconstruction still blocked by early local/register topology.
+//
+// continuation 2026-08-17: completed 24 meaningful probes plus one unchanged
+// validation check. The retained source is 5760 bytes with a 0x110 frame,
+// exact 83/83 ordered calls, 68.01% shape similarity, and 4913 differing
+// bytes. The first mismatch is +0x0A: the oracle clears EBX before saving ESI
+// and EDI; VC5 clears EDI after those saves.
+// BINARY NOTE: the +0x180 view field is Master_Clip_Mask. TSpan line heads and
+// tails are +0x3C/+0x40, bounds are +0x58..+0x64, and TDrawArea dimensions
+// are +0x18/+0x1C. These layouts restored exact size and many exact blocks.
+// BINARY NOTE: PtrSpanCopy uses save_area1->ClipRect and the master line-head
+// array. The future relink, low-level draw, mouse, and panel phases stay in
+// the executable order.
+// Probe facts: the natural cached-visibility rectangle branch, short-circuit
+// TileVisibleMask initialization, memcmp node comparison, function-scope
+// POINT/RECT/text locals, and direct save-area dimension rereads improved the
+// result. Declaration initializers, pointer tile cursors, and early-bound
+// invalid-map exits did not improve the retained exact source.
+// Open lead: recover the original early local/register topology, especially
+// the EBX zero color and the setup stack homes. Do not add padding or register
+// hints without binary-supported source evidence.
 
 #include <windows.h>
 #include <string.h>
@@ -371,10 +391,10 @@ public:
     char gap_169[3];
     long mouse_last_x;              // +0x16C
     long mouse_last_y;              // +0x170
-    TSpan_List_Manager* Master_Clip_Mask; // +0x174
+    char gap_174[0x178 - 0x174];
     TSpan_List_Manager* Terrain_Clip_Mask; // +0x178
     TSpan_List_Manager* Terrain_Fog_Clip_Mask; // +0x17C
-    void* Master_Clip_Mask2;        // +0x180 donor placeholder
+    TSpan_List_Manager* Master_Clip_Mask; // +0x180
     Tile_FogEdge_Table** Tile_Edge_Tables; // +0x184
     long** Black_Edge_Tables;       // +0x188
     char gap_18C[0x2A0 - 0x18C];
@@ -446,14 +466,16 @@ class TDrawArea_Prefix {
 public:
     char gap_00[0x08];
     unsigned char* Bits;            // +0x08
-    char gap_0C[0xB0];
-    void** DisplayOffsets;          // +0xBC
+    char gap_0C[0x0C];
+    long Width;                      // +0x18
+    long Height;                     // +0x1C
+    char gap_20[0x08];
+    RECT ClipRect;                   // +0x28
+    char gap_38[0x88];
+    void** DisplayOffsets;          // +0xC0
     char gap_C0[0x0C];
     void* SavedMask;                // +0xCC donor from final restore
     void* CurrentMask;              // +0xD0 written to Master_Clip_Mask
-    long Width;                     // donor; verify exact offset later
-    long Height;
-
     void PtrSpanCopy(TDrawArea_Prefix* dst, long x, long y, RECT* clip, unsigned char** lines);
     void DrawLine(long x1, long y1, long x2, long y2, unsigned char color);
     void FillRect(long left, long top, long right, long bottom, unsigned char color);
@@ -468,13 +490,13 @@ struct Tile_FogEdge_Table {
 class TSpan_List_Manager {
 public:
     char gap_00[0x3C];
-    long Min_Line;                  // +0x3C
-    long Max_Line;                  // +0x40
+    void* Line_Head_Ptrs;           // +0x3C
+    void* Line_Tail_Ptrs;           // +0x40
     char gap_44[0x58 - 0x44];
-    void* Line_Head_Ptrs;           // +0x58
-    void* Line_Tail_Ptrs;           // +0x5C
-    long Min_Span_Px;               // +0x60
-    long Max_Span_Px;               // +0x64
+    long Min_Span_Px;               // +0x58
+    long Max_Span_Px;               // +0x5C
+    long Min_Line;                  // +0x60
+    long Max_Line;                  // +0x64
 
     void SetSpanRegions(long left, long top, long right, long bottom);
     void AddMiniList(void* list, long x, long y);
@@ -641,20 +663,25 @@ extern "C" void __cdecl _ASMDraw_Sprite(long base, long x, long y, long width, l
 extern "C" void __cdecl _ASMSet_Shadowing(long a, long b, long c, long d);
 
 long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
-    long col_num;
+    long scan = 0;
+    long col;
+    long row;
+    unsigned long MapVis;
     long start_row;
-    long cols_2_scan;
-    long rows_2_scan;
+    long col_num;
     long map_width;
     long map_height;
+    long cols_2_scan;
+    long rows_2_scan;
     unsigned long TileVisibleMask;
     unsigned long TileFoggedMask;
     unsigned long TileExploredMask;
     unsigned long row_index;
-    unsigned long MapVis;
-    long scan;
-    long col;
-    long row;
+    POINT pt;
+    RECT pr;
+    char text[128];
+    long facet;
+    long text_id;
 
     if (this->DispSel_List_Size > 0) {
         this->update_display_selected_objects();
@@ -668,8 +695,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     map_height = this->map->map_height;
     this->function_mode = mode;
 
-    for (scan = 0; scan < this->map->num_terrain; ++scan) {
-        ((RGE_Terrain_Type_Prefix*)((char*)this->map + 0))[scan].drawn = 0;
+    for (long terrain_index = 0; terrain_index < this->map->num_terrain; ++terrain_index) {
+        ((RGE_Terrain_Type_Prefix*)((char*)this->map + 0))[terrain_index].drawn = 0;
     }
 
     TileExploredMask = this->player->mutualExploredMask;
@@ -678,8 +705,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     ((DClipInfo_List*)this->futur_objs)->ReclaimAllNodes();
 
     MapVis = (unsigned long)-1;
-    TileVisibleMask = 0;
-    if (this->player->visible == 0 || this->map->map_visible_flag != 0) {
+    if (this->player->visible == 0 ||
+        (TileVisibleMask = 0, this->map->map_visible_flag != 0)) {
         TileVisibleMask = 1;
     }
 
@@ -711,12 +738,17 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                     tile->last_drawn_as = 0;
                 }
 
-                long fog_mask_num = -1;
-                long black_mask_num = -1;
-                long normal_draw = 0;
-                long fog_draw = 0;
-                unsigned char terrain = tile->terrain_flags & 0x1f;
+                long fog_mask_num;
+                long black_mask_num;
+                long normal_draw;
+                long fog_draw;
+                unsigned char terrain;
 
+                terrain = tile->terrain_flags & 0x1f;
+                fog_mask_num = -1;
+                black_mask_num = -1;
+                normal_draw = 0;
+                fog_draw = 0;
                 if (draw_as != 0) {
                     long screen_right = screen_x + this->tile_wid;
                     long screen_bottom = screen_y + this->map->tilesizes[tile->tile_type].height;
@@ -728,6 +760,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                             ((RGE_Terrain_Type_Prefix*)((char*)this->map))[terrain].drawn++;
                         }
 
+                        int full_visibility = 0;
+                        int clip_to = 0;
                         if (this->render_terrain_mode != 0 && tile->last_drawn_as == draw_as) {
                             if (draw_as == 0x0f) {
                                 if (this->map->fog_flag == 0) {
@@ -735,133 +769,136 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                                 } else {
                                     fog_mask_num = this->get_tile_mask_num(col, row, map_width, map_height, TileFoggedMask);
                                 }
+                                if (tile->last_drawn_shape != (unsigned char)fog_mask_num) {
+                                    goto TileOffScreen;
+                                }
                             }
                             if (draw_as == 0x0f || draw_as == 0x80) {
-                                if (TileVisibleMask != 0) {
-                                    black_mask_num = 0;
+                                if (TileVisibleMask == 0) {
+                                    black_mask_num = this->get_tile_mask_num(col, row, map_width, map_height,
+                                                                              TileExploredMask);
                                 } else {
-                                    black_mask_num = this->get_tile_mask_num(col, row, map_width, map_height, TileExploredMask);
+                                    black_mask_num = 0;
+                                }
+                                if (tile->last_drawn_shape2 != (unsigned char)black_mask_num) {
+                                    goto TileOffScreen;
                                 }
                             }
-                            if (tile->last_drawn_shape == (unsigned char)fog_mask_num &&
-                                tile->last_drawn_shape2 == (unsigned char)black_mask_num) {
+                            if (this->Limited_Render_Rect == 0) {
                                 goto TileOffScreen;
+                            }
+                            if (this->Use_Rect2 != 0 &&
+                                (this->Render_Rect2.right < screen_x ||
+                                 screen_right < this->Render_Rect2.left ||
+                                 this->Render_Rect2.bottom < screen_y ||
+                                 (full_visibility = 1, screen_bottom < this->Render_Rect2.top))) {
+                                full_visibility = 0;
+                            }
+                            if (this->Render_Rect1.right < screen_x ||
+                                screen_right < this->Render_Rect1.left ||
+                                this->Render_Rect1.bottom < screen_y ||
+                                screen_bottom < this->Render_Rect1.top) {
+                                if (full_visibility == 0) {
+                                    goto TileOffScreen;
+                                }
+                                full_visibility = 0;
+                                clip_to = 2;
+                            } else {
+                                clip_to = 1;
                             }
                         }
 
-                        if (this->Limited_Render_Rect != 0) {
-                            int in_rect1 = !(this->Render_Rect1.right < screen_x ||
-                                             screen_right < this->Render_Rect1.left ||
-                                             this->Render_Rect1.bottom < screen_y ||
-                                             screen_bottom < this->Render_Rect1.top);
-                            int in_rect2 = 0;
-                            if (this->Use_Rect2 != 0) {
-                                in_rect2 = !(this->Render_Rect2.right < screen_x ||
-                                             screen_right < this->Render_Rect2.left ||
-                                             this->Render_Rect2.bottom < screen_y ||
-                                             screen_bottom < this->Render_Rect2.top);
-                            }
-                            if (!in_rect1 && !in_rect2) {
-                                goto TileOffScreen;
-                            }
-                            if (in_rect2 && !in_rect1) {
-                                if (MapVis != 2) {
-                                    this->Terrain_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
-                                        this->Render_Rect2.right, this->Render_Rect2.bottom);
-                                    this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
-                                        this->Render_Rect2.right, this->Render_Rect2.bottom);
-                                    MapVis = 2;
-                                }
-                            } else if (MapVis != 1) {
-                                this->Terrain_Clip_Mask->SetSpanRegions(this->Render_Rect1.left, this->Render_Rect1.top,
-                                    this->Render_Rect1.right, this->Render_Rect1.bottom);
-                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->Render_Rect1.left, this->Render_Rect1.top,
-                                    this->Render_Rect1.right, this->Render_Rect1.bottom);
-                                MapVis = 1;
-                            }
+                        Tile_FogEdge_Table* edge_table = this->Tile_Edge_Tables[tile->tile_type];
+                        long* black_edges = this->Black_Edge_Tables[tile->tile_type];
+                        if (this->map->fog_flag == 0) {
+                            fog_mask_num = 0;
                         }
-
+                        if (TileVisibleMask != 0) {
+                            black_mask_num = 0;
+                        }
                         if (fog_mask_num == -1) {
-                            if (draw_as == 0x0f && this->map->fog_flag != 0) {
+                            if (draw_as == 0x0f) {
                                 fog_mask_num = this->get_tile_mask_num(col, row, map_width, map_height, TileFoggedMask);
                             } else {
                                 fog_mask_num = 0;
                             }
                         }
                         if (black_mask_num == -1) {
-                            if (draw_as != 0 && TileVisibleMask == 0) {
-                                black_mask_num = this->get_tile_mask_num(col, row, map_width, map_height, TileExploredMask);
+                            if (draw_as != 0) {
+                                black_mask_num = this->get_tile_mask_num(col, row, map_width, map_height,
+                                                                          TileExploredMask);
                             } else {
                                 black_mask_num = 0;
                             }
                         }
-
-                        {
-                            int full_visibility_redraw = 0;
-                            if (this->Limited_Render_Rect != 0 && this->Use_Rect2 != 0) {
-                                int in_rect1_again = !(this->Render_Rect1.right < screen_x ||
-                                    screen_right < this->Render_Rect1.left ||
-                                    this->Render_Rect1.bottom < screen_y ||
-                                    screen_bottom < this->Render_Rect1.top);
-                                int in_rect2_again = !(this->Render_Rect2.right < screen_x ||
-                                    screen_right < this->Render_Rect2.left ||
-                                    this->Render_Rect2.bottom < screen_y ||
-                                    screen_bottom < this->Render_Rect2.top);
-                                full_visibility_redraw = (in_rect1_again && in_rect2_again);
-                            }
-                            Tile_FogEdge_Table* edge_table = this->Tile_Edge_Tables[tile->tile_type];
-                            long* black_edges = this->Black_Edge_Tables[tile->tile_type];
-                            void* normal_list = edge_table[fog_mask_num].normal_draw;
-                            void* fog_list = edge_table[fog_mask_num].fog_draw;
-                            void* black_list = (void*)black_edges[black_mask_num];
-                            if (draw_as == 0x80) {
-                                normal_list = edge_table[0].normal_draw;
-                                normal_draw = 0;
-                                fog_draw = 1;
-                            } else {
-                                normal_draw = (normal_list != 0);
-                                fog_draw = (fog_list != 0);
-                            }
-                            if (MapVis != 0) {
+                        void* normal_list = edge_table[fog_mask_num].normal_draw;
+                        void* fog_list = edge_table[fog_mask_num].fog_draw;
+                        void* black_list = (void*)black_edges[black_mask_num];
+                        if (draw_as == 0x80) {
+                            fog_list = edge_table[0].normal_draw;
+                            normal_draw = 0;
+                            fog_draw = 1;
+                        } else {
+                            normal_draw = (normal_list != 0);
+                            fog_draw = (fog_list != 0);
+                        }
+                        if (black_mask_num < 1 || black_list == 0) {
+                            black_list = 0;
+                        }
+                        if (clip_to != (int)MapVis) {
+                            if (clip_to == 0) {
                                 this->Terrain_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
                                     this->render_rect.right, this->render_rect.bottom);
                                 this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
                                     this->render_rect.right, this->render_rect.bottom);
-                                MapVis = 0;
                             }
+                            if (clip_to == 1) {
+                                this->Terrain_Clip_Mask->SetSpanRegions(this->Render_Rect1.left, this->Render_Rect1.top,
+                                    this->Render_Rect1.right, this->Render_Rect1.bottom);
+                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->Render_Rect1.left, this->Render_Rect1.top,
+                                    this->Render_Rect1.right, this->Render_Rect1.bottom);
+                            }
+                            MapVis = clip_to;
+                            if (clip_to == 2) {
+                                this->Terrain_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
+                                    this->Render_Rect2.right, this->Render_Rect2.bottom);
+                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
+                                    this->Render_Rect2.right, this->Render_Rect2.bottom);
+                                MapVis = clip_to;
+                            }
+                        }
+                        if (normal_draw) {
+                            this->Terrain_Clip_Mask->AddMiniList(normal_list, screen_x, screen_y);
+                        }
+                        if (fog_draw) {
+                            this->Terrain_Fog_Clip_Mask->AddMiniList(fog_list, screen_x, screen_y);
+                        }
+                        if (black_list != 0) {
+                            if (normal_draw) {
+                                this->Terrain_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
+                            }
+                            if (fog_draw) {
+                                this->Terrain_Fog_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
+                            }
+                        }
+                        if (full_visibility != 0) {
+                            this->Terrain_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
+                                this->Render_Rect2.right, this->Render_Rect2.bottom);
+                            this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
+                                this->Render_Rect2.right, this->Render_Rect2.bottom);
+                            MapVis = 2;
                             if (normal_draw) {
                                 this->Terrain_Clip_Mask->AddMiniList(normal_list, screen_x, screen_y);
                             }
                             if (fog_draw) {
                                 this->Terrain_Fog_Clip_Mask->AddMiniList(fog_list, screen_x, screen_y);
                             }
-                            if (black_mask_num > 0 && black_list != 0) {
+                            if (black_list != 0) {
                                 if (normal_draw) {
                                     this->Terrain_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
                                 }
                                 if (fog_draw) {
                                     this->Terrain_Fog_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
-                                }
-                            }
-                            if (full_visibility_redraw) {
-                                this->Terrain_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
-                                    this->Render_Rect2.right, this->Render_Rect2.bottom);
-                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->Render_Rect2.left, this->Render_Rect2.top,
-                                    this->Render_Rect2.right, this->Render_Rect2.bottom);
-                                MapVis = 2;
-                                if (normal_draw) {
-                                    this->Terrain_Clip_Mask->AddMiniList(normal_list, screen_x, screen_y);
-                                }
-                                if (fog_draw) {
-                                    this->Terrain_Fog_Clip_Mask->AddMiniList(fog_list, screen_x, screen_y);
-                                }
-                                if (black_mask_num > 0 && black_list != 0) {
-                                    if (normal_draw) {
-                                        this->Terrain_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
-                                    }
-                                    if (fog_draw) {
-                                        this->Terrain_Fog_Clip_Mask->SubtractMiniList(black_list, screen_x, screen_y);
-                                    }
                                 }
                             }
                         }
@@ -1023,8 +1060,35 @@ TileOffScreen:
     this->render_rect.right -= rect.left;
     this->render_rect.bottom -= rect.top;
 
-    // Pre-master low-level sprite pass over draw levels 0..5. Original draws
-    // normal terrain-clipped and fog-clipped lanes separately for sprite nodes.
+    // Relink the future object list from Y-line buckets into draw-level buckets.
+    // This mirrors the compact 00537789-005377DD phase and gives the later
+    // master-clip/draw phases a typed DClipInfo surface to grow from.
+    {
+        DClipInfo_List* list = (DClipInfo_List*)this->futur_objs;
+        for (long y = 0; y < list->YLine_Size; ++y) {
+            for (DClipInfo_Node* node = list->Draw_Clip_Nodes[y]; node != 0; node = node->Next) {
+                long level = node->Draw_Level;
+                DClipInfo_Node* tail = list->Draw_Level_Tail[level];
+                if (tail == 0) {
+                    list->Draw_Level_Head[level] = node;
+                } else {
+                    tail->NextOnLevel = node;
+                }
+                list->Draw_Level_Tail[level] = node;
+            }
+        }
+    }
+
+    Clip_draw = 0;
+    Clip_remove = 0;
+    if (MapVis != 0) {
+        this->Terrain_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
+            this->render_rect.right, this->render_rect.bottom);
+        this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
+            this->render_rect.right, this->render_rect.bottom);
+    }
+
+    // Draw captured terrain sprites through the normal and fog clip masks.
     {
         DClipInfo_List* list = (DClipInfo_List*)this->futur_objs;
         for (long level = 0; level < 6; ++level) {
@@ -1052,32 +1116,12 @@ TileOffScreen:
         }
     }
 
-    // Relink the future object list from Y-line buckets into draw-level buckets.
-    // This mirrors the compact 00537789-005377DD phase and gives the later
-    // master-clip/draw phases a typed DClipInfo surface to grow from.
-    {
-        DClipInfo_List* list = (DClipInfo_List*)this->futur_objs;
-        for (long y = 0; y < list->YLine_Size; ++y) {
-            for (DClipInfo_Node* node = list->Draw_Clip_Nodes[y]; node != 0; node = node->Next) {
-                long level = node->Draw_Level;
-                DClipInfo_Node* tail = list->Draw_Level_Tail[level];
-                if (tail == 0) {
-                    list->Draw_Level_Head[level] = node;
-                } else {
-                    tail->NextOnLevel = node;
-                }
-                list->Draw_Level_Tail[level] = node;
-            }
-        }
-    }
-
     if (MouseSystem != 0) {
         MouseSystem->Poll();
     }
     if (rge_base_game != 0 && rge_base_game->prog_mode == 4 && this->some_pick_gate != 0 &&
         MouseSystem != 0 && MouseSystem->get_game_enable() != 0) {
         unsigned long now = debug_timeGetTime(s_C__msdev_work_age1_x1_view_cpp, 0xF11);
-        POINT pt;
         if (this->Get_Cursor_Position(&pt, -rect.left, -rect.top) != 0) {
             long touched = 0;
             if (this->pick_touched_object(this->futur_objs, pt.x, pt.y, 10, 0x28, &touched) == 1) {
@@ -1087,12 +1131,11 @@ TileOffScreen:
                     }
                     this->UC_ObjectTouched = 1;
                     this->UC_TouchedObj = touched;
-                    long facet = 0;
-                    long text_id = 0;
+                    facet = 0;
+                    text_id = 0;
                     if (this->player->rollover_info(touched, &facet, &text_id) == 1) {
                         MouseSystem->set_game_facet(facet);
                         if (this->message_panel != 0 && rge_base_game->rollover != 0) {
-                            char text[128];
                             this->get_string(text_id, text, 0x7F);
                             ((TMessagePanel_Prefix*)this->message_panel)->show_message(0, text, 'p', 0, 0, 0, 0);
                         }
@@ -1118,7 +1161,6 @@ TileOffScreen:
     for (Panel_List_Node* pn = this->panel_list; pn != 0; pn = pn->next) {
         TPanel_Prefix* panel = pn->panel;
         if (panel->gdi_enabled != 0 && panel->visible != 0) {
-            RECT pr;
             panel->get_rect(&pr);
             long x1 = pr.left - rect.left;
             long y1 = pr.top - rect.top;
@@ -1141,21 +1183,17 @@ TileOffScreen:
         }
     }
 
-    if (MapVis != 0) {
-        this->Terrain_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
-            this->render_rect.right, this->render_rect.bottom);
-        this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
-            this->render_rect.right, this->render_rect.bottom);
-    }
-
     // Initial Master_Clip_Mask construction. The exact original has a large
     // futur/prior DClipInfo comparison when render_terrain_mode is enabled; this
     // preserves the two high-level source families so later work can fill that
     // comparison in place.
     if (this->render_terrain_mode == 0) {
-        TDrawArea_Prefix* area = (TDrawArea_Prefix*)this->save_area1;
-        for (long y = 0; y < area->Height; ++y) {
-            this->Master_Clip_Mask->AddSpan(0, area->Width - 1, y);
+        long y = 0;
+        if (this->save_area1->Height > 0) {
+            do {
+                this->Master_Clip_Mask->AddSpan(0, this->save_area1->Width - 1, y);
+                ++y;
+            } while (y < this->save_area1->Height);
         }
         ((DClipInfo_List*)this->prior_objs)->ReclaimAllNodes();
     } else {
@@ -1178,26 +1216,19 @@ TileOffScreen:
         for (long y = 0; y < future->YLine_Size; ++y) {
             for (DClipInfo_Node* f = future->Draw_Clip_Nodes[y]; f != 0; f = f->Next) {
                 if (f->Draw_Level > 5) {
-                    int found = 0;
-                    for (DClipInfo_Node* p = prior->Draw_Clip_Nodes[y]; p != 0; p = p->Next) {
+                    int different = 1;
+                    DClipInfo_Node* p = prior->Draw_Clip_Nodes[y];
+                    while (p != 0) {
                         long bytes = (f->Node_Type != 0) ? 0x14 : 0x24;
-                        char* a = (char*)&f->Shape;
-                        char* b = (char*)&p->Shape;
-                        long same = 1;
-                        for (long n = 0; n < bytes; ++n) {
-                            if (a[n] != b[n]) {
-                                same = 0;
-                                break;
-                            }
-                        }
-                        if (same) {
-                            found = 1;
+                        if (memcmp(&f->Shape, &p->Shape, bytes) == 0) {
+                            different = 0;
                             ++Clip_remove;
                             p->Node_Type = -1;
                             break;
                         }
+                        p = p->Next;
                     }
-                    if (!found) {
+                    if (different) {
                         if (f->Node_Type == 0) {
                             this->Master_Clip_Mask->AddShape_Align(f->Shape_Base, f->Shape,
                                 f->Draw_X, f->Draw_Y, ((f->Draw_Flag & 2) == 2));
@@ -1210,24 +1241,17 @@ TileOffScreen:
             }
             for (DClipInfo_Node* p = prior->Draw_Clip_Nodes[y]; p != 0; p = p->Next) {
                 if (p->Draw_Level > 5 && p->Node_Type != -1) {
-                    int found = 0;
-                    for (DClipInfo_Node* f = future->Draw_Clip_Nodes[y]; f != 0; f = f->Next) {
+                    int different = 1;
+                    DClipInfo_Node* f = future->Draw_Clip_Nodes[y];
+                    while (f != 0) {
                         long bytes = (p->Node_Type != 0) ? 0x14 : 0x24;
-                        char* a = (char*)&f->Shape;
-                        char* b = (char*)&p->Shape;
-                        long same = 1;
-                        for (long n = 0; n < bytes; ++n) {
-                            if (a[n] != b[n]) {
-                                same = 0;
-                                break;
-                            }
-                        }
-                        if (same) {
-                            found = 1;
+                        if (memcmp(&f->Shape, &p->Shape, bytes) == 0) {
+                            different = 0;
                             break;
                         }
+                        f = f->Next;
                     }
-                    if (!found) {
+                    if (different) {
                         if (p->Node_Type == 0) {
                             this->Master_Clip_Mask->AddShape_Align(p->Shape_Base, p->Shape,
                                 p->Draw_X, p->Draw_Y, ((p->Draw_Flag & 2) == 2));
@@ -1246,17 +1270,18 @@ TileOffScreen:
     this->render_rect.right += rect.left;
     this->render_rect.bottom += rect.top;
     this->save_area1->PtrSpanCopy(this->render_area, this->render_rect.left, this->render_rect.top,
-                                  &this->render_rect, (unsigned char**)0);
+                                  &this->save_area1->ClipRect,
+                                  (unsigned char**)this->Master_Clip_Mask->Line_Head_Ptrs);
     this->Update_Render_Pointers();
     this->render_rect.left -= rect.left;
     this->render_rect.top -= rect.top;
     this->render_rect.right -= rect.left;
     this->render_rect.bottom -= rect.top;
-    this->save_area1->CurrentMask = this->Master_Clip_Mask;
     _ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
         this->Master_Clip_Mask->Line_Tail_Ptrs, this->Master_Clip_Mask->Min_Span_Px,
         this->Master_Clip_Mask->Min_Line, this->Master_Clip_Mask->Max_Span_Px,
         this->Master_Clip_Mask->Max_Line);
+    this->save_area1->CurrentMask = this->Master_Clip_Mask;
 
     // Final draw-level walk skeleton (original levels 6..40, byte offset
     // 0x18..0xA0 through Draw_Level_Head). Surface setup/shadowing/PtrSpanCopy
@@ -1298,22 +1323,30 @@ TileOffScreen:
 
     if (view_debug_spans != 0 && this->render_terrain_mode != 0) {
         unsigned char color = (unsigned char)(frame_count % 0xDC + 0x10);
-        for (long y = 0; y < this->save_area1->Height; ++y) {
-            this->save_area1->DrawLine(0, y, this->save_area1->Width - 1, y, color);
+        long y = 0;
+        if (this->save_area1->Height > 0) {
+            do {
+                this->save_area1->DrawLine(0, y, this->save_area1->Width - 1, y, color);
+                ++y;
+            } while (y < this->save_area1->Height);
         }
     }
 
     if (view_debug_palette != 0) {
         unsigned char row_base = 0;
-        for (long y = 0x20; y < 0x120; y += 0x10) {
+        long y = 0x20;
+        do {
             unsigned char c = 0;
-            for (long x = 0; x < 0x200; x += 0x20) {
+            long x = 0;
+            do {
                 this->save_area1->FillRect(x, y, x + 0x1F, y + 0x0F,
                                            (unsigned char)(c + row_base * 0x10));
+                x += 0x20;
                 ++c;
-            }
+            } while (x < 0x200);
+            y += 0x10;
             ++row_base;
-        }
+        } while (y < 0x120);
     }
 
     this->save_area1->Unlock(s_view__view_function_terrain);
