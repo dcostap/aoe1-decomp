@@ -29,6 +29,14 @@
 //   produced 12.69% exact-block coverage and a 52-byte size gap.
 // - Tried preloading action log fields before direct calls; it crossed the
 //   original boundary and was rolled back.
+// - BINARY NOTE: the loading flag is at sound_system +1 through this +0x60;
+//   comm_handler remains at this +0x18C for player-name calls.
+// - BINARY NOTE: load_game's byte result is widened to int, then the reset
+//   loop rereads world->player_num on each backedge.
+// - BINARY NOTE: DEBUGLOAD packs num3, num2, action_checksum, and num1 into
+//   one checksum before it updates the two totals.
+// - Unresolved: exact codegen still differs by 2852 bytes. The first mismatch
+//   is the old-panel and this-pointer home assignment at +0x1B.
 
 #include <stdio.h>
 #include <string.h>
@@ -57,6 +65,12 @@ public:
     unsigned char game_loading;
     void SetPlayerName(int player, char* name);
     void SetPlayerHumanity(int player, int humanity);
+};
+
+class TSound_System {
+public:
+    char gap_00;
+    unsigned char game_loading;
 };
 
 class RGE_Victory_Conditions {
@@ -341,7 +355,9 @@ public:
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    char gap_04[0x188];
+    char gap_04[0x5C];
+    TSound_System* sound_system; // +0x60
+    char gap_64[0x128];
     TCommunications_Handler* comm_handler; // +18C
     char gap_190[0x20];
     int prog_mode; // +1B0
@@ -383,21 +399,19 @@ public:
 int TRIBE_Game::load_game(char* file_name)
 {
     TPanel* old_panel;
-    unsigned char loaded;
+    int loaded;
     RGE_Object_Node* list;
     RGE_Action_Node* act_node;
-    RGE_Player* p;
     long action_checksum;
     long num2;
     long num3;
     float temp_position_checksum;
+    int i;
     long total_action_checksum;
     long total_checksum;
+    long checksum;
     long num1;
     long num4;
-    int i;
-    int player_count;
-    char action_name[4];
     char target_name_1[50];
     char target_name_2[50];
     char target_name[50];
@@ -426,23 +440,20 @@ int TRIBE_Game::load_game(char* file_name)
     }
 
     this->show_status_message(0x452, 0, -1);
-    if (this->comm_handler != 0)
-        this->comm_handler->game_loading = 1;
+    if (this->sound_system != 0)
+        this->sound_system->game_loading = 1;
 
     if (this->check_prog_argument("DEBUGSAVEGAME") != 0)
         ENABLE_COMPRESSION = 0;
 
     loaded = this->world->load_game(file_name);
-    i = 0;
-    player_count = this->world->player_num;
-    while (i < player_count) {
+    for (i = 0; i < this->world->player_num; ++i) {
         this->reset_countdown_timer(i);
-        ++i;
     }
 
     ENABLE_COMPRESSION = 1;
-    if (this->comm_handler != 0)
-        this->comm_handler->game_loading = 0;
+    if (this->sound_system != 0)
+        this->sound_system->game_loading = 0;
 
     if (loaded == 0) {
         if (old_panel == 0 || old_panel->panelName() == 0)
@@ -451,7 +462,6 @@ int TRIBE_Game::load_game(char* file_name)
             goto load_game_failed;
         goto load_game_panel;
     }
-
     goto load_game_success;
 
 load_game_panel:
@@ -553,7 +563,6 @@ load_game_success:
                         ++num4;
                     }
                     num2 = 0;
-                    p = 0;
                     list = player->objects->list;
                     while (list != 0) {
                         RGE_Static_Object* object = list->object;
@@ -781,13 +790,14 @@ load_game_success:
                         list = list->next;
                     }
 
-                    num3 += num1;
-                    total_action_checksum += action_checksum;
-                    total_checksum += num2;
+                    checksum = (((num3 * 0x100 + num2) * 0x100 +
+                                 action_checksum) * 0x100) + num1;
+                    total_action_checksum += checksum;
+                    total_checksum += action_checksum;
                     fprintf(debug_file,
                             "  p#%d checksum=%d, 1=%d, 2=%d, 3=%d, 4=%d, act=%d\n",
-                            player->id, num1, num1, action_checksum, num2,
-                            num3, p);
+                            player->id, checksum, num1, action_checksum, num2,
+                            num3, action_checksum);
                 }
 
                 fprintf(debug_file, "total checksum=%d, act=%d\n",
