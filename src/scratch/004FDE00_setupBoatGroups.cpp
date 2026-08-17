@@ -31,6 +31,13 @@
 //   sn[0x3e]/sn[0x3d], matching original offsets 0x28C/0x288; shape improved
 //   from 94.07% to 94.39% and exact blocks from 70.87% to 71.29%, with the
 //   same 745-byte positional diff.
+// - fresh pass: 20 evidence-led declaration, lifetime, arithmetic, and loop
+//   probes kept the same 745-byte codegen basin. A volatile
+//   numPotentialEGroups restored the 0x2C frame and 81.57% exact blocks, but
+//   added 16 bytes after the boundary; it is diagnostic evidence only.
+// - fresh pass: explicit shared-balance gotos, address-taking, split count
+//   lifetimes, register hints, function-scope group pointers, and loop-form
+//   rewrites were codegen duplicates or worse. Restored this clean source.
 // - current best is still non-exact: 745 positional diff bytes, 94.39% shape,
 //   71.29% exact blocks, 93/93 ordered calls, and frame 0x28 versus 0x2C.
 //   Remaining lead is the real local-lifetime/register basin around the target
