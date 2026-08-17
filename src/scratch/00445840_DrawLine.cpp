@@ -33,6 +33,12 @@
 //   improved block shape but made VC5 emit a sixth helper call; both an
 //   explicit break and return were rolled back. The clean five-call source is
 //   retained; the remaining lead is the original parameter/register basin.
+// - Revisit: the decompiler-backed endpoint/cursor model reduced the checked
+//   diff to 236 bytes, but added five bytes and lost block shape; it was rolled back.
+// - Revisit: direct endpoint mutation and a redundant vertical range guard
+//   stayed nonexact; the pinned five-call endpoint-local form remains cleaner.
+// - Revisit: the call-first steep loop preserved the original update order but
+//   emitted a sixth helper call; no natural exact source was found.
 
 extern "C" void __cdecl _ASMDraw_HLine(int x0, int x1, int y, unsigned int color);
 
@@ -69,7 +75,8 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
             y1 = t;
         }
 
-        int dx = x2 - x1 + 1;
+        int dx;
+        dx = x2 - x1 + 1;
         if (y1 < y2) {
             dy = y2 - y1;
             step = 1;
@@ -79,7 +86,7 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
         }
         ++dy;
 
-        if (dy <= dx) {
+        if (dx >= dy) {
             int error = 0;
             int line_start = x1;
             for (; x1 < x2; ++x1) {
