@@ -37,6 +37,21 @@
 // +0x134 RECT, and +0x144 format accesses; diff improved 38 -> 30 bytes.
 // Final clean source remains unresolved only at VC5 entry-save placement and
 // its two epilogues. Ambient and risky/small flag labs found no exact variant.
+// New claim #2: analyzed all three strict spans before probing. Span
+// +0003..+0018 (00476683..00476698) is the entry-save and branch-span hunk.
+// The original saves only EBP/ESI, then conditionally pushes EDI/EBX after
+// the visible test. VC5 saves EBX/EBP/ESI at entry and EDI before that test.
+// Spans +0297..+029A (00476917..0047691A) and +03A4..+03A7
+// (00476A24..00476A27) are the matching pop-order hunks. The original pops
+// EBX, EDI, ESI, EBP. The rebuilt code pops EDI, ESI, EBP, EBX.
+// These three spans account for all 30 strict bytes. Calls, owner identity,
+// frame size, and all body bytes outside the spans match after relocation
+// masking. Twenty new natural hypotheses covered class ownership, full
+// declarations, receiver and local lifetimes, control flow, local types,
+// same-TU method declarations, and header context. The best result stayed
+// 30 bytes in three spans. The canonical clean source is restored.
+// BLOCKER: the remaining difference is VC5 callee-save shrink wrapping in
+// this standalone TU. Prior flags and context probes did not recover it.
 
 #include <windows.h>
 
