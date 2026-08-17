@@ -61,6 +61,16 @@
 // shardC5-425A40 control-flow lead: separate typed remaining counters with
 //   do/while loops changed the build to 1676B, removed two CFG conditions, and
 //   introduced wrong EH call relocation; restored the clean while-loop source.
+//
+// Exact-finish retrospective (2026-08-17):
+// - First exact checkpoint: probe-019-liveness / first-exact, 1700B, diff 0.
+// - Required group: scoped NAME allocation blocks, pointer walks using
+//   `i <= count - 1`, and a branch-local result assigned in both arms.
+// - Incidental change removed: `NAME* result = names`; an uninitialized
+//   declaration stayed exact because both arms assign it before use.
+// - Reversions tested: removed nonnull result stores, removed allocation
+//   scopes, and restored while loops. Each changed emitted bytes or CFG.
+// - Reduced validation: reduced-exact, Result: MATCH, 0.0000%.
 
 #include <string.h>
 
@@ -424,31 +434,39 @@ TCommunications_Handler::TCommunications_Handler(void* hwnd, unsigned char maxPl
     // LAB-START nameblock (variant-lab splice region; keep identical in both blocks)
     this->CommunicationsVersionCode = 0x2E2887;
     int count = maxPlayers + 1;
-    NAME* names = new NAME[count];
-    if (names != 0) {
-        NAME* p = names;
-        while (count > 0) {
-            strcpy(p->Text, " ");
-            ++p;
-            --count;
+    // BINARY NOTE: Each allocation result crosses its guarded fixed-size fill loop.
+    // LIKELY INTENT: Initialize one NAME record for every player slot and the extra terminator slot.
+    {
+        NAME* names = new NAME[count];
+        NAME* result;
+        if (names != 0) {
+            NAME* p = names;
+            for (int i = 0; i <= count - 1; ++i) {
+                strcpy(p->Text, " ");
+                ++p;
+            }
+            result = names;
+        } else {
+            result = 0;
         }
-        this->FriendlyName = names;
-    } else {
-        this->FriendlyName = names;
+        this->FriendlyName = result;
     }
 
     count = maxPlayers + 1;
-    names = new NAME[count];
-    if (names != 0) {
-        NAME* p = names;
-        while (count > 0) {
-            strcpy(p->Text, " ");
-            ++p;
-            --count;
+    {
+        NAME* names = new NAME[count];
+        NAME* result;
+        if (names != 0) {
+            NAME* p = names;
+            for (int i = 0; i <= count - 1; ++i) {
+                strcpy(p->Text, " ");
+                ++p;
+            }
+            result = names;
+        } else {
+            result = 0;
         }
-        this->FormalName = names;
-    } else {
-        this->FormalName = names;
+        this->FormalName = result;
     }
     // LAB-END nameblock
 
