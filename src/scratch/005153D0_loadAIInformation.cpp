@@ -28,6 +28,10 @@
 // improved strict diff 1281->1279, exact blocks 78.04%->79.53%, and resync similarity 89.56%->90.62%.
 // luna-r2 probe: a donor-backed local RGE_Base_Game pointer for both get_string calls improved strict diff
 // 1279->1274 but changed a direct call target and worsened shape; restored the clean source.
+// extern-global probe: reviewed rge_base_game ownership restored the original direct get_string
+// register schedule and improved strict diff 1279->808; use a derived cast only for direct TRIBE_Game
+// map getters.  An absolute image macro is retained for debug-random state because no reviewed symbol
+// owns those addresses and named extern probes left unresolved external relocations.
 
 typedef unsigned char uchar;
 
@@ -209,7 +213,9 @@ extern "C" unsigned int __cdecl strlen(const char*);
 
 #define debug_random_on (*(int*)0x0062C4D4)
 #define saved_debug2 (*(int*)0x0086BC94)
-#define base_game (*(TRIBE_Game**)0x0062C574)
+extern RGE_Base_Game* rge_base_game;
+#define base_game rge_base_game
+#define tribe_game ((TRIBE_Game*)rge_base_game)
 
 void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* personalityFile, int buildId, int unused)
 {
@@ -226,7 +232,7 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
     debug_random_on = 0;
 
     if (this->playerAI) {
-        switch (base_game->mapType()) {
+        switch (tribe_game->mapType()) {
         case 0: this->playerAI->logCommonHistory((char*)0x58B114); break;
         case 1: this->playerAI->logCommonHistory((char*)0x58B0F8); break;
         case 2: this->playerAI->logCommonHistory((char*)0x58B0D8); break;
@@ -244,7 +250,7 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
             if (strcmp(aiFile, randomString) == 0) {
                 do {
                     this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                        base_game->mapType(), base_game->victoryType(), base_game->mapSize());
+                        tribe_game->mapType(), tribe_game->victoryType(), tribe_game->mapSize());
                     this->playerAI->logCommonHistory((char*)0x58B034, buildListName);
                 } while (this->playerAI->buildAI.load(buildListName, this) == 0);
             } else {
@@ -254,7 +260,7 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
         } else {
             do {
                 this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                    base_game->mapType(), base_game->victoryType(), base_game->mapSize());
+                    tribe_game->mapType(), tribe_game->victoryType(), tribe_game->mapSize());
                 this->playerAI->logCommonHistory((char*)0x58AFFC, buildListName);
             } while (this->playerAI->buildAI.load(buildListName, this) == 0);
         }
