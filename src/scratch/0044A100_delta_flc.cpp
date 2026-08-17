@@ -38,6 +38,31 @@
 // - This claim: char* stream cursor plus sparse switch improved size to 400 B
 //   and shape to 72.09%, but worsened positional diff to 383 B and frame to
 //   0x10; restored the clean ushort-cursor source.
+// Matching-worker pass (sa-9c74babf-r1):
+// - Rechecked the pinned natural ushort/two-cursor source: 397 emitted bytes,
+//   367 differing bytes, 0xC frame, and no calls.  The first structural gap
+//   remains the missing early EBP save and packet-cursor coloring.
+// - Tested byte cursors, one-cursor forms, explicit byte increments, signed
+//   packet counts, split cur_y initialization, full class context, payload
+//   aliases, and register qualification.  None improved the clean result.
+// - An ambient declaration lab with 64 variants produced two codegen groups;
+//   all remained 397 bytes with no size/frame-valid improvement.
+// Matching-worker pass (sa-47d20a98-r1):
+// - Revalidated the pinned source at 397 bytes / 367 differing bytes / 0xC
+//   frame.  The original still requires an early EBP save for the stream
+//   cursor; the clean source assigns EBP to a packet value instead.
+// - Tested packet zeroing and classifier operands, one-cursor ushort loops,
+//   byte-stream cursors, declaration order, and typed byte views.  The best
+//   source-model variant reached 394 bytes / 377 differing bytes; none beat
+//   the pinned natural two-cursor source.
+// - Restored the pinned clean source.  The remaining blocker is the EBP
+//   stream-cursor allocation basin without compiler-steering source forms.
+// Matching-worker pass (sa-82ebd704-r1):
+// - Moving scalar declarations to function scope produced duplicate codegen.
+// - One advancing ushort classifier cursor, including the inverted scan-owner
+//   form, produced the 399-byte / 373-diff basin and was rejected.
+// - Restored the pinned natural two-cursor decoder.  The unresolved blocker is
+//   still the original EBP stream-cursor allocation and prologue basin.
 
 #include <string.h>
 
