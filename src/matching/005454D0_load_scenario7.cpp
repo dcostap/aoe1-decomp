@@ -23,12 +23,20 @@
 // - Same-TU save/read x/y/z order improved the best source to 295 bytes and
 //   93.05% shape. Direct object-guard and players-array variants were tested,
 //   then rolled back because they increased size or positional drift.
-// - Current claim restored the proven World gap at 0x6c, placing the scenario
-//   object id and flag at +0x70/+0x74. A typed players-array slot for the
-//   object guard reduced the positional diff to 167 bytes without changing
-//   calls. The final mapped-id guard as > -1 reduced it to 164 bytes; the
-//   rebuilt body remains 820 bytes versus 812 and structural drift remains.
-// Baseline: typed reconstruction of the scenario 1.08 loader.  The scenario
+// - H1 duplicated the mapped and fallback scenario_load/postload calls, as in
+//   exact same-TU loaders. This reduced the positional diff from 164 to 109.
+// - H2 used direct indexed players[player_id] ownership for object creation.
+//   This reduced the diff to 94 and recovered the object-record block.
+// - H3 used the donor-backed final while loop. This reduced the size gap from
+//   8 bytes to 2 and reduced the diff to 86.
+// - H4 corrected GetPlayerPosture to its one-argument period ABI. The outer
+//   loadAIInformation call supplies the separate -1 argument and produced an
+//   exact 812-byte MATCH.
+// - H5 tested natural new uchar[]/delete[]. VC5 emitted operator new/delete,
+//   not the binary-proven malloc/free calls. Restored the exact C buffer form.
+// - Final validation: 812/812 bytes, 0.0000%, 28 ordered calls, 23/23 safe
+//   relocation matches, matching owner symbol, frame, and saved registers.
+// Baseline: typed reconstruction of the scenario 1.08 loader. The scenario
 // record widths follow the executable, including its narrow legacy fields.
 
 extern "C" int world_update_counter;
@@ -48,7 +56,7 @@ struct RGE_Player_Info {
 
 class RGE_Scenario {
 public:
-    int GetPlayerPosture(int, int);
+    int GetPlayerPosture(int);
     char* Get_player_AI(int, int);
     char* Get_CityPlan(int, int);
     char* Get_BuildList(int, int);
@@ -231,12 +239,12 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
     if (scenario_player_count > 1) {
         long* map = player_id_hash + 1;
         do {
-            RGE_Player* player;
             if (i >= this->player_num || *map <= -1 ||
-                (player = this->players[*map]) == 0) {
-                player = this->players[0];
+                this->players[*map] == 0) {
+                this->players[0]->scenario_load(file, player_id_hash, 1.08f);
+            } else {
+                this->players[*map]->scenario_load(file, player_id_hash, 1.08f);
             }
-            player->scenario_load(file, player_id_hash, 1.08f);
             ++i;
             ++map;
         } while (i < scenario_player_count);
@@ -258,11 +266,10 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
                     rge_read(file, &obj_state, 1);
                     rge_read(file, &obj_angle, 4);
                     int player_id = *map;
-                    RGE_Player** player = this->players + player_id;
-                    if (player_id >= 0 && *player != 0) {
+                    if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = id;
-                        (*player)->make_scenario_obj(
+                        this->players[player_id]->make_scenario_obj(
                             world_x, world_y, world_z, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
@@ -280,12 +287,12 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
     if (scenario_player_count > 1) {
         long* map = player_id_hash + 1;
         do {
-            RGE_Player* player;
             if (i >= this->player_num || *map <= -1 ||
-                (player = this->players[*map]) == 0) {
-                player = this->players[0];
+                this->players[*map] == 0) {
+                this->players[0]->scenario_postload(file, player_id_hash, 1.08f);
+            } else {
+                this->players[*map]->scenario_postload(file, player_id_hash, 1.08f);
             }
-            player->scenario_postload(file, player_id_hash, 1.08f);
             ++i;
             ++map;
         } while (i < scenario_player_count);
@@ -293,18 +300,16 @@ void RGE_Game_World::load_scenario7(int file, RGE_Player_Info& info)
 
     rge_close(file);
     i = 1;
-    if (i < this->player_num) {
-        do {
-            if (i >= scenario_player_count) return;
-            if (this->players[i] != 0 && player_id_hash[i] > -1) {
-                int player_index = i - 1;
-                this->players[player_id_hash[i]]->loadAIInformation(
-                    this->scenario->Get_BuildList(player_index, 1),
-                    this->scenario->Get_CityPlan(player_index, 1),
-                    this->scenario->Get_player_AI(player_index, 1),
-                    this->scenario->GetPlayerPosture(player_index, -1), -1);
-            }
-            ++i;
-        } while (i < this->player_num);
+    while (i < this->player_num) {
+        if (i >= scenario_player_count) return;
+        if (this->players[i] != 0 && player_id_hash[i] > -1) {
+            int player_index = i - 1;
+            this->players[player_id_hash[i]]->loadAIInformation(
+                this->scenario->Get_BuildList(player_index, 1),
+                this->scenario->Get_CityPlan(player_index, 1),
+                this->scenario->Get_player_AI(player_index, 1),
+                this->scenario->GetPlayerPosture(player_index), -1);
+        }
+        ++i;
     }
 }
