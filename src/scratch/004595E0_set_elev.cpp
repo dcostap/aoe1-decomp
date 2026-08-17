@@ -26,6 +26,14 @@
 //   relative update lab found no size/frame/call-set eligible variant.  Restored
 //   the clean typed candidate; the first structural mismatch remains at the
 //   relative terrain load (+0x97), with exact frame and calls.
+// - Revisit probes tested 20 distinct type, lifetime, access, guard, header,
+//   declaration-order, and loop-shape hypotheses.  Short/int terrain locals,
+//   direct rereads, row locals, references, scoped pointers, new-terrain
+//   temporaries, alternate guards, and <string.h> did not improve the clean
+//   basin.  A 36-variant lab confirmed the direct typed cached-byte form as
+//   the only size/frame/call-set basin at 801 bytes; no exact variant exists.
+//   The clean source is restored and remains 536 positional bytes from the
+//   792-byte original.
 
 class RGE_Tile;
 class RGE_Static_Object;
