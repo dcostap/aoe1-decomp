@@ -118,6 +118,20 @@
 //   EBX/EDI color swap. Receiver aliases, bucket aliases, header context, and
 //   cursor declaration scope were codegen duplicates. Restored this clean
 //   natural source; no policy-valid exact lead was found.
+// - sa-d8bf38bf-r1 DIA audit: the original PDB function has only this, stack,
+//   and sub_stacks locals. sub_stacks has entry-relative offset -0x960; the
+//   apparent local_968 is compiler-generated state, not an invented aggregate.
+// - sa-d8bf38bf-r1 H1-H18: using the real sub_stacks[0].x field as the byte
+//   cursor and the canonical prev fields recovered the target 237-byte size,
+//   82 instructions, and pair-loop CFG. Declaration lifetimes, full class
+//   declarations, standard headers, receiver aliases, and cursor types were
+//   codegen duplicates; the frame remained 0x964 and the receiver/cursor colors
+//   remained swapped.
+// - sa-d8bf38bf-r1 H19: combining debug_rand scaling into one initializer
+//   delayed the param_1->next reload to the target arithmetic boundary and
+//   improved the field-owned source to diff 15 / 93.90% shape. Explicit calls
+//   were duplicate. The reduced source below keeps canonical Map_Stack field
+//   ownership and no invented aggregate; residual drift is frame and color.
 
 extern int __cdecl debug_rand(char* file, int line);
 
@@ -146,29 +160,33 @@ void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
         init_stack(&sub_stacks[i]);
     }
 
-    for (int outer = 2; outer != 0; outer--) {
+    int outer = 2;
+    while (outer != 0) {
         while (param_1->next != 0) {
-            int r = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1E8);
-            r = (r * 100) / 0x7FFF;
-            Map_Stack* node = param_1->next;
-            add_stack_node(&sub_stacks[r], node);
+            int r = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1E8) * 100) / 0x7FFF;
+            add_stack_node(&sub_stacks[r], param_1->next);
         }
 
-        int stack_index = 0;
-        while (stack_index < 100) {
-            Map_Stack* first = &sub_stacks[stack_index];
-            Map_Stack* second = &sub_stacks[stack_index + 1];
+        // BINARY NOTE: the shipped loop reuses sub_stacks[0].x as a byte cursor.
+        sub_stacks[0].x = 0x18;
+        Map_Stack** first = &sub_stacks[0].prev;
+        while (sub_stacks[0].x < 0x978) {
+            // BINARY NOTE: each pair starts at the two canonical prev fields.
+            Map_Stack** second = (Map_Stack**)((char*)&sub_stacks[0].prev + sub_stacks[0].x);
 
-            while (first->next != 0 || second->next != 0) {
-                if (first->next != 0) {
-                    add_stack_node(param_1, first->next);
+            while (*first != 0 || *second != 0) {
+                if (*first != 0) {
+                    add_stack_node(param_1, *first);
                 }
-                if (second->next != 0) {
-                    add_stack_node(param_1, second->next);
+                if (*second != 0) {
+                    add_stack_node(param_1, *second);
                 }
             }
 
-            stack_index += 2;
+            first = (Map_Stack**)((char*)first + 0x30);
+            sub_stacks[0].x += 0x30;
         }
+
+        outer--;
     }
 }
