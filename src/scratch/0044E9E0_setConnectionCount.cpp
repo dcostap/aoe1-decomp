@@ -33,6 +33,11 @@
 //   stayed in the same basin or lost the clean result. The natural typed source
 //   remains pinned; exact switch layout and register coloring need new donor or
 //   compiler-context evidence.
+// - this pass moved rowIndex into the inner preheader and changed its
+//   assignment to a declaration initializer; both emitted the same 346-byte
+//   mismatch. A direct from.y <= to.y guard moved the y load and worsened the
+//   result to 355 bytes, so it was restored. Direct this member expressions
+//   changed one setup hunk but kept the 346-byte result; the alias is retained.
 
 typedef unsigned char uchar;
 
