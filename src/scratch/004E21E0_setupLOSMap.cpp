@@ -55,6 +55,20 @@
 // - Final unchanged validation remains a 269-byte MISMATCH with 25 differing
 //   bytes, 9 aligned calls, an 0x8 frame, and first mismatch at +0x8B.
 //   The pinned typed source is restored; no policy-valid natural MATCH exists.
+// - Revisit pass: twenty meaningful source, type, scope, and context probes
+//   did not reach an exact result. The best natural maxX-before-y source still
+//   has a register-map mismatch and does not preserve the clean source model.
+// - Binary span audit: at +0x8B the original computes maxX and minX after
+//   loading y but before its third __ftol call, then spills maxX. The clean
+//   source completes that call first and spills minX. At +0xAB the original
+//   compares against absolute DAT_00575580; a local 0.0f or extern spelling
+//   did not produce a policy-valid matching relocation. At +0xC6 the changed
+//   bound homes alter the push encodings for incrementValue arguments.
+// - Function-scope maxX, direct member repeats, declaration grouping, typed
+//   width/signedness changes, stdlib context, and a 256-variant ambient-TU
+//   lab either duplicated the clean basin or changed structure. All probes
+//   were restored. Final validation remains 269 bytes with 25 differing
+//   bytes, 9 aligned calls, and first mismatch +0x8B.
 
 typedef unsigned char uchar;
 
