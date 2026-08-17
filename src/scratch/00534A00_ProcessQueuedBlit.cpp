@@ -145,31 +145,19 @@
 // 199 differing bytes and improved edit resync only; it did not improve the
 // strict positional result. Long force, a RECT reference, and a const queue
 // entry were duplicates or invalid ABI choices. All experiments were restored.
+// Source-gate audit: keep the typed queue records and native DirectDraw slot
+// order from the period VC4.2 headers. Ignore the BltFast result instead of
+// aliasing the force home.
+// Validation: the canonical interface keeps the two ordered calls at
+// vslot+0x34 and vslot+0x1C. The source-gate build remains 219 bytes with a
+// 195-byte mismatch; the old extra EBX save and scheduling drift remain.
 
-struct tagRECT { long left; long top; long right; long bottom; };
+#include <windows.h>
+#include <ddraw.h>
 
 struct Blit_Queue_Entry {
-    tagRECT src;   // +0x0
-    tagRECT dest;  // +0x10
-};
-
-// DirectDraw surface vtable (IDirectDrawSurface), slots 0..13 used:
-// BltFast = slot 7 (0x1C), GetBltStatus = slot 13 (0x34).
-struct IDirectDrawSurface {
-    virtual long __stdcall QueryInterface(void*, void*);
-    virtual long __stdcall AddRef();
-    virtual long __stdcall Release();
-    virtual long __stdcall AddAttachedSurface(void*);
-    virtual long __stdcall AddOverlayDirtyRect(void*);
-    virtual long __stdcall Blt(void*, void*, void*, unsigned long, void*);
-    virtual long __stdcall BltBatch(void*, void*, unsigned long, unsigned long);
-    virtual long __stdcall BltFast(long, long, IDirectDrawSurface*, tagRECT*, unsigned long);
-    virtual long __stdcall DeleteAttachedSurface(unsigned long, void*);
-    virtual long __stdcall EnumAttachedSurfaces(void*, void*);
-    virtual long __stdcall EnumOverlayZOrders(unsigned long, void*, void*);
-    virtual long __stdcall Flip(void*, unsigned long);
-    virtual long __stdcall GetAttachedSurface(void*, void*);
-    virtual long __stdcall GetBltStatus(unsigned long);
+    RECT src;   // +0x0
+    RECT dest;  // +0x10
 };
 
 class TDrawArea {
@@ -190,7 +178,7 @@ public:
     long pnl_hgt;                      // +0x18
     char* panel_name;                  // +0x1C
     TDrawArea* render_area;            // +0x20
-    tagRECT clip_rect;                 // +0x24
+    RECT clip_rect;                    // +0x24
     char gap_34[0xF4 - 0x34];
 };
 
@@ -260,13 +248,13 @@ public:
     void* master_clip_mask;             // +0x180
     void* tile_edge_tables;             // +0x184
     void* black_edge_tables;            // +0x188
-    tagRECT overlaid_panel;              // +0x18C
+    RECT overlaid_panel;                 // +0x18C
     int overlaid_panel_active;           // +0x19C
     unsigned char edge_number[0x100];   // +0x1A0
     int limited_render_rect;            // +0x2A0
     int use_rect2;                      // +0x2A4
-    tagRECT render_rect1;               // +0x2A8
-    tagRECT render_rect2;               // +0x2B8
+    RECT render_rect1;                  // +0x2A8
+    RECT render_rect2;                  // +0x2B8
     void** float_scroll_offsets;        // +0x2C8
     int float_scroll_offsets_sz;        // +0x2CC
     int Float_X_Delta;                  // +0x2D0
@@ -320,7 +308,7 @@ void RGE_View::ProcessQueuedBlit(int force)
         src.left = entry->src.left + this->Blit_Offset_X;
         src.bottom = entry->src.bottom + this->Blit_Offset_Y + 1;
         src.right = entry->src.right + this->Blit_Offset_X + 1;
-        force = this->render_area->DrawSurface->BltFast(
+        this->render_area->DrawSurface->BltFast(
             entry->dest.left + this->Blit_Offset_X,
             entry->dest.top + this->Blit_Offset_Y,
             this->render_area->DrawSurface, &src, 16);
