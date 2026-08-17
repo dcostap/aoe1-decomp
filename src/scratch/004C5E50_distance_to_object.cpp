@@ -89,6 +89,35 @@
 // needs compiler-steering volatility and cannot move the other-Y fsub into
 // the pending X-status window. No exact natural lead remains.
 
+// sa-43937d1d fresh pass 2026-08-16: tested a diagnostic high-parity source
+// that rebuilt at 167B/22-diff with 96.36% shape. A five-variant radius-expression
+// lab reproduced the same 167B/22-diff basin except for the known no-push
+// y-before-X family. A seven-variant follow-up with address-taken and volatile
+// X copies did not restore push ecx or improve the localized gap. A volatile
+// other-Y radius home caused an 8-byte frame and 179B output, so it was rejected.
+// The diagnostic source required fake volatility and promoted radius locals,
+// so the main-agent review restored the clean direct-float model below. The gap is
+// the original fsubr [esp+8], fsub [other+34] sequence between X fcomp and test;
+// VC5 emits fnstsw/test and the X clamp store first. This changes fault and
+// scratch-write order. No exact natural lead was found; keep the source in scratch.
+
+// sa-54daf59e fresh pass 2026-08-17: revalidated the clean direct-float source
+// at 151B/164 diff. A proven DAT_00574720 zero symbol reached 152B with the
+// same positional diff and worse edit cost. Natural dx reuse, named master
+// pointers, split declarations, split compound subtractions, and unqualified
+// own-member reads all rebuilt the same 151B/164-diff basin. Restored the clean
+// direct-float source. No exact natural lead was found; the push/home and x87
+// scheduling gap remains broad.
+
+// sa-0e0fce4a-r1 fresh pass 2026-08-17: six natural probes did not recover the
+// target stack home. Explicit double radius temporaries reached 147B/163 diff
+// with better instruction shape but a larger size gap. An explicit other-object
+// alias was codegen-neutral. Staging dy through double then float, using the
+// register keyword, and declaring dx/dy before assignment all reproduced the
+// 151B/164-diff no-push basin. Restored the pinned direct-float source and kept
+// the prior high-parity 167B/22-diff form only as diagnostic history; it needs
+// volatility and remains wrong in the pre-branch fsubr/fsub order.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
