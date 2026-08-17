@@ -35,6 +35,15 @@
 //   this moved the first prologue hunk and regressed to 451 bytes / 417 diff.
 //   Restored the pointer-walk source; the late existing-lot handler remains
 //   the structural blocker.
+// - This pass tested explicit late labels, explicit returns, negative-arm
+//   nesting, and removeLot-style scan labels; VC5 emitted the same 448-byte
+//   basin and kept the matched-lot handler beside the scan.
+// - A canonical for-loop changed the prologue and grew the body to 454 bytes.
+//   A break plus post-loop guard changed the prologue and fell to 444 bytes.
+//   Both were restored because they lost the proven source shape.
+// - Final validation: 448 bytes versus 450, calls and frame match, 381 strict
+//   differing bytes. The unresolved drift is the two-byte loop reversal and
+//   the late matched-lot block placement.
 
 #include <stddef.h>
 
