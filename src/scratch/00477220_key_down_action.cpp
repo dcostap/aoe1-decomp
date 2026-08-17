@@ -10,6 +10,12 @@
 // - the original page tail conditionally clamps cur_col after get_text/mbslen; duplicating that condition in both page cases expands the function by 178 bytes, so that behavior/layout lead remains open.
 // - tested binary-shaped shared labels for left/down/page cursor tails; VC5 merged the calc/redraw blocks, lost call sites, or grew 150 bytes, so rolled back.
 // - tested the prior early-guard/local-column variant; it reaches 1067 positional bytes but changes a direct-call target and loses structural call alignment, so rolled back.
+// - restored the single paste call by routing case 0x2D through the case 0x56 paste tail; this removes one call and reaches the exact 1289-byte size.
+// - restored the explicit default-zero/common return-one switch tail from the original CFG; this improves shape and preserves break-path behavior.
+// - restored the shared page clamp and carried the selected page line in a short local; this returns the exact size and restores both page get_text/mbslen pairs.
+// - a direct down-arrow tail produces the full call count but grows 154 bytes and splits the home/end tail; the shared page tail is the best clean basin.
+// - twenty meaningful probes completed. Best clean result is 1082 positional bytes, 84.91% shape, exact size, 32/36 ordered calls.
+// - unresolved compiler basin: VC5 tail-merges the up calc/redraw pair into a later tail and omits the down-specific get_text/mbslen pair; direct-tail variants restore calls but lose size and shape.
 // - left in scratch: remaining drift is switch-table relocation masking, one calc_input_pos/redraw tail pair, and the shared page clamp.
 
 #include <stddef.h>
@@ -111,6 +117,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
 {
     short len;
     short col;
+    short line;
 
     switch (key) {
     case 0x25:
@@ -160,8 +167,9 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
                 this->cur_col = __mbslen(this->get_text(this->cur_line));
             this->calc_input_pos();
             this->set_redraw(1);
+            return 1;
         }
-        return 1;
+        break;
 
     case 0x28:
         if (this->num_lines < 1)
@@ -169,11 +177,8 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         if (this->cur_line >= this->num_lines - 1)
             return 1;
         this->cur_line++;
-        if (this->cur_col > __mbslen(this->get_text(this->cur_line)))
-            this->cur_col = __mbslen(this->get_text(this->cur_line));
-        this->calc_input_pos();
-        this->set_redraw(1);
-        return 1;
+        line = this->cur_line;
+        goto page_update;
 
     case 0x24:
         if (this->num_lines < 1)
@@ -220,29 +225,32 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             return 1;
         if (this->cur_line <= 0)
             return 1;
-        if (this->cur_line < this->top_line || this->cur_line > this->bot_line)
-            this->cur_line = this->top_line;
-        if (this->cur_line == this->top_line) {
+        line = this->cur_line;
+        if (line < this->top_line || line > this->bot_line)
+            line = this->top_line;
+        if (line == this->top_line) {
             this->scroll(5, 0, 1);
-            this->cur_line = this->top_line;
+            line = this->top_line;
         }
-        this->cur_col = __mbslen(this->get_text(this->cur_line));
-        this->calc_input_pos();
-        this->set_redraw(1);
-        return 1;
+        goto page_update;
 
     case 0x22:
         if (this->num_lines < 1)
             return 1;
         if (this->cur_line >= this->num_lines - 1)
             return 1;
-        if (this->cur_line < this->top_line || this->cur_line > this->bot_line)
-            this->cur_line = this->bot_line;
-        if (this->cur_line == this->bot_line) {
+        line = this->cur_line;
+        if (line < this->top_line || line > this->bot_line)
+            line = this->bot_line;
+        if (line == this->bot_line) {
             this->scroll(4, 0, 1);
-            this->cur_line = this->bot_line;
+            line = this->bot_line;
         }
-        this->cur_col = __mbslen(this->get_text(this->cur_line));
+page_update:
+        this->cur_line = line;
+        len = __mbslen(this->get_text(this->cur_line));
+        if (this->cur_col > len)
+            this->cur_col = __mbslen(this->get_text(this->cur_line));
         this->calc_input_pos();
         this->set_redraw(1);
         return 1;
@@ -253,8 +261,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
 
     case 0x2D:
         if (param5 != 0) {
-            this->paste();
-            return 1;
+            goto paste_action;
         }
         if (param4 != 0)
             return 1;
@@ -282,8 +289,12 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
     case 0x56:
         if (param4 == 0)
             return 0;
+paste_action:
         this->paste();
         return 1;
+
+    default:
+        return 0;
     }
-    return 0;
+    return 1;
 }
