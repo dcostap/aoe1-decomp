@@ -1,31 +1,18 @@
 // 004B3C90 TribeSelectScenarioScreen::TribeSelectScenarioScreen
-// Attempt log:
-// try 1-11: prior scaffold used the wrong setup overload and panel factory
-// surface. It modeled list/input/picture helpers instead of the constructor's
-// list, scrollbar, text, and button sequence.
-// probe 1: restored the Scr_sels.cpp call surface and nested success topology;
-// all 33 calls then aligned, but size was 15 bytes short.
-// probe 2: corrected TEasy_Panel size to 0x478; exact block coverage rose to
-// 69.94%, with the full-size code still differing in register/liveness shape.
-// probe 3: cached draw_area and reversed the second-column expression; diff
-// fell to 715 bytes, but the early setup argument schedule moved farther.
-// probe 4: cached the game object; diff fell to 622 bytes, but the early
-// setup schedule and later field scheduling moved. Restored this basin.
-// probe 5: explicit second-column temporary did not improve codegen; restored.
-// probe 14: hoisted draw_area as a local and kept the second multiplayer call
-// direct; the original setup block became byte-exact, but the narrow bevel
-// stub made the rebuilt body 14 bytes short.
-// probe 15: restored the exact int bevel ABI; six zero extensions returned,
-// size became exact, and exact-block coverage rose to 84.97%.
-// probes 16-20: reversed the multiply, used sequential arithmetic, qualified
-// the list call, and varied the output-pointer type; VC5 emitted duplicates.
-// probe 21: delayed a named list reload; it worsened the block shape. Restored
-// the natural member-call form.
-// blockers: original setup hoists draw-area into EDI and calls multiplayerGame
-// after pushing setup args; current typed source preserves calls and behavior
-// and now reproduces that setup block. The remaining first paired hunk is the
-// second-column register schedule; later field writes differ in VC5 liveness.
-// No inline asm or shared-surface changes.
+// Exact finish:
+// BINARY NOTE: TPanel slots through +0xDC and TTextPanel slots +0xE0..+0xEC
+// are required for the list's virtual text calls and exact register coloring.
+// BINARY NOTE: The +0xE4 call is TTextPanel::set_text(long), not a TPanel stub.
+// BINARY NOTE: The extern game pointer stays exact and avoids a raw address
+// macro. The repository reviews this global surface.
+// BINARY NOTE: The named string externs follow the PDB and inventory symbols.
+// Decisive changes: period virtual surfaces, set_text(long), extern global,
+// and missionTextX before missionTextY.
+// Required group: the TTextPanel virtual overloads and the set_text call.
+// Incidental cleanup: ABI names and types for unused virtual slots do not alter
+// output. Walkbacks proved that the mission assignment order is required.
+// LIKELY INTENT: The source order preserves the original VC5 register colors.
+// Exact: 1134 bytes, MATCH, 0.0000%. No inline asm or shared changes.
 // FLAGS: config/flags/004B3C90_TribeSelectScenarioScreen.rsp (/GX)
 
 struct tagRECT;
@@ -35,10 +22,16 @@ class TListPanel;
 class TScrollBarPanel;
 class TButtonPanel;
 
+extern char s_Select_Scenario_Screen[];
+extern char s_scr2[];
+extern char s_scr3[];
+extern char s_592A40[];
+
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup();
+    virtual long setup(TDrawArea* draw_area, TPanel* parent, long p3,
+                       long p4, long p5, long p6, unsigned char p7);
     virtual void set_rect(tagRECT rect);
     virtual void set_rect(long left, long top, long right, long bottom);
     virtual void set_color(unsigned char color);
@@ -57,57 +50,66 @@ public:
     int setup_error;                         // +0xD8
     char gap_DC[0x18];                       // +0xF4
 
-    virtual void vf07();
-    virtual void vf08();
-    virtual void vf09();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();
-    virtual void vf17();
-    virtual void vf18();
-    virtual void vf19();
-    virtual void vf20();
-    virtual void vf21();
-    virtual void vf22();
-    virtual void vf23();
-    virtual void vf24();
-    virtual void vf25();
-    virtual void vf26();
-    virtual void vf27();
-    virtual void vf28();
-    virtual void vf29();
-    virtual void vf30();
-    virtual void vf31();
-    virtual void vf32();
-    virtual void vf33();
-    virtual void vf34();
-    virtual void vf35();
-    virtual void vf36();
-    virtual void vf37();
-    virtual void vf38();
-    virtual void vf39();
-    virtual void vf40();
-    virtual void vf41();
-    virtual void vf42();
-    virtual void vf43();
-    virtual void vf44();
-    virtual void vf45();
-    virtual void vf46();
-    virtual void vf47();
-    virtual void vf48();
-    virtual void vf49();
-    virtual void vf50();
-    virtual void vf51();
-    virtual void vf52();
-    virtual void vf53();
-    virtual void vf54();
-    virtual void vf55();
-    virtual void vf56();
-    virtual void set_string_id(long id);     // vslot +0xE4
+    // BINARY NOTE: These named slots preserve the period TPanel ABI.
+    virtual void set_fixed_position(long x, long y, long width, long height);
+    virtual void set_redraw(int mode);
+    virtual void set_overlapped_redraw(TPanel* panel1, TPanel* panel2,
+                                       int mode);
+    virtual void draw_setup(int mode);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT* rect);
+    virtual void draw_offset(long x, long y, tagRECT* rect);
+    virtual void draw_rect2(tagRECT* rect);
+    virtual void draw_offset2(long x, long y, tagRECT* rect);
+    virtual void paint();
+    virtual long wnd_proc(void* hwnd, unsigned int message,
+                          unsigned int wparam, long lparam);
+    virtual long handle_idle();
+    virtual long handle_size(long width, long height);
+    virtual long handle_paint();
+    virtual long handle_key_down(long key, short repeat, int ctrl,
+                                 int shift, int alt);
+    virtual long handle_char(long key, short repeat);
+    virtual long handle_command(unsigned int command, long param);
+    virtual long handle_user_command(unsigned int command, long param);
+    virtual long handle_timer_command(unsigned int command, long param);
+    virtual long handle_scroll(long scroll, long param);
+    virtual long handle_mouse_down(unsigned char button, long x, long y,
+                                   int ctrl, int shift);
+    virtual long handle_mouse_move(long x, long y, int ctrl, int shift);
+    virtual long handle_mouse_up(unsigned char button, long x, long y,
+                                 int ctrl, int shift);
+    virtual long handle_mouse_dbl_click(unsigned char button, long x, long y,
+                                        int ctrl, int shift);
+    virtual long mouse_move_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_left_down_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_left_hold_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_left_move_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_left_up_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_left_dbl_click_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_right_down_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_right_hold_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_right_move_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_right_up_action(long x, long y, int ctrl, int shift);
+    virtual long mouse_right_dbl_click_action(long x, long y, int ctrl,
+                                              int shift);
+    virtual long key_down_action(long key, short repeat, int ctrl,
+                                 int shift, int alt);
+    virtual long char_action(long key, short repeat);
+    virtual long action(TPanel* panel, long code, unsigned long p3,
+                        unsigned long p4);
+    virtual void get_true_render_rect(tagRECT* rect);
+    virtual int is_inside(long x, long y);
+    virtual void set_focus(int focus);
+    virtual void set_tab_order(TPanel* first, TPanel* second);
+    virtual void set_tab_order(TPanel** panels, short count);
+    virtual unsigned char get_help_info(char** text, long* page, long p3,
+                                        long p4);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
 
     void set_help_info(long help_id, long page_id);
     void set_curr_child(TPanel* child);
@@ -115,11 +117,14 @@ public:
 
 class TTextPanel : public TPanel {
 public:
+    virtual ~TTextPanel();
+    virtual void set_text(char** texts, short count);
+    virtual void set_text(long string_id);
     virtual void set_text(char* text);       // vslot +0xE8
     virtual void set_bevel_info(int mode, int c1, int c2, int c3, int c4,
                                 int c5, int c6); // +0xEC
-    void set_second_column_pos(int position);
-    void set_alignment(int horizontal, int vertical);
+    void set_second_column_pos(long position);
+    void set_alignment(int vertical, int horizontal);
 };
 
 class TListPanel : public TTextPanel {
@@ -176,7 +181,7 @@ public:
     int multiplayerGame();
 };
 
-#define rge_base_game (*(RGE_Base_Game**)0x0062C574)
+extern RGE_Base_Game* rge_base_game;
 
 class TribeSelectScenarioScreen : public TScreenPanel {
 public:
@@ -215,7 +220,7 @@ public:
 };
 
 TribeSelectScenarioScreen::TribeSelectScenarioScreen()
-    : TScreenPanel((char*)0x005868B0)
+    : TScreenPanel(s_Select_Scenario_Screen)
 {
     char* setup_file;
     TDrawArea* draw_area;
@@ -224,9 +229,9 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
     this->init_vars();
 
     multiplayer = rge_base_game->multiplayerGame();
-    setup_file = (char*)0x00586174;
+    setup_file = s_scr3;
     if (multiplayer == 0)
-        setup_file = (char*)0x00586138;
+        setup_file = s_scr2;
 
     draw_area = rge_base_game->draw_area;
 
@@ -253,7 +258,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
             this->scenarioList->set_second_column_pos(
                 ((this->scenarioListWidth - 0x3C) * this->pnl_wid) /
                 this->ideal_width);
-            this->scenarioList->set_string_id(0x25FD);
+            // BINARY NOTE: The list uses the TTextPanel +0xE4 text slot.
+            this->scenarioList->set_text((long)0x25FD);
 
             if (this->create_auto_scrollbar(&this->scenarioScrollbar,
                                             this->scenarioList, 0x14)) {
@@ -271,9 +277,11 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                           0xC8, 0x14, 4, 0, 0, 0)) {
                         this->scenarioPlayersTitle->set_alignment(3, 2);
 
+                        // BINARY NOTE: This assignment order selects the exact
+                        // VC5 register colors for the mission setup block.
+                        this->missionTextX = this->scenarioListX;
                         this->missionTextY = this->scenarioListHeight +
                                              this->scenarioListY + 0x19;
-                        this->missionTextX = this->scenarioListX;
                         this->missionTextWidth = this->scenarioListWidth;
                         this->missionTextHeight = 0x3C;
 
@@ -283,7 +291,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                               0x190, 0x14, 4, 0, 0, 0)) {
                             if (this->create_text(
                                     this, &this->missionText,
-                                    (char*)0x00592A40, this->missionTextX,
+                                    s_592A40, this->missionTextX,
                                     this->missionTextY,
                                     this->missionTextWidth,
                                     this->missionTextHeight,
