@@ -15,19 +15,21 @@
 // kept a typed Shape_Info height pointer and field-first Width/Height predicates; the validation memory schedule now matches, but the failure tail remains misplaced.
 // tried routing the same typed validation failures and early exits through a source-level load_failed tail; VC5 emitted the identical early return block (294-byte diff), rolled back.
 // left in scratch: behavior/calls/size are close, but post-scan failure-tail placement and validation-loop layout still differ broadly; not accepted_drift-safe.
+// revisit: replaced the direct operator_delete helper with natural typed delete; emitted bytes were unchanged.
+// revisit: typed both Shape_Info walks and canonicalized Shape_Info ownership/long fields; emitted bytes were unchanged.
+// revisit: a top-tested while scan improved the diagnostic diff to 72 but moved shape_info setup before the proven count guard; restored the guarded do-loop for fault order.
 
 extern "C" int sprintf(char*, const char*, ...);
-extern "C" void operator_delete(void*);
 
 struct Shape_Info {
-    int shape_data_offset;
-    int shape_outline_offset;
-    int reserved_08;
-    int reserved_0c;
-    int Width;
-    int Height;
-    int Hotspot_X;
-    int Hotspot_Y;
+    unsigned long Shape_Data_Offsets;
+    unsigned long Shape_Outline_Offset;
+    long Reserved1;
+    long Reserved2;
+    long Width;
+    long Height;
+    long Hotspot_X;
+    long Hotspot_Y;
 };
 
 class TDrawArea {
@@ -43,7 +45,7 @@ class TShape {
 public:
     char gap_00[0x18];
     void* FShape;          // +18
-    void* shape_info;      // +1c
+    Shape_Info* shape_info; // +1c
     TShape(char* filename, int file_id);
     ~TShape();
     int is_loaded();
@@ -81,14 +83,12 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
 {
     int LoadOk = 1;
     int count;
-    register int zero = 0;
     TShape* old = this->Cursor_Shape;
     if (old != 0) {
-        old->~TShape();
-        operator_delete(old);
+        delete old;
     }
 
-    if (keep_name == zero) {
+    if (keep_name == 0) {
         this->cursor_file_id = file_id;
         sprintf(this->cursor_file, "%s.slp", base);
     }
@@ -101,24 +101,24 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
 
     count = this->Cursor_Shape->shape_count();
     this->Num_Cursors = count;
-    this->Max_CX = zero;
-    this->Max_CY = zero;
-    if (count > zero) {
+    this->Max_CX = 0;
+    this->Max_CY = 0;
+    if (count > 0) {
         TShape* sh = this->Cursor_Shape;
-        int off = zero;
+        int off = 0;
         int n = count;
         do {
-            char* p = (char*)sh->shape_info + off;
-            int w = *(int*)(p + 0x10);
+            Shape_Info* p = (Shape_Info*)((char*)sh->shape_info + off);
+            int w = p->Width;
             if (w > this->Max_CX) this->Max_CX = w;
-            int h = *(int*)(p + 0x14);
+            int h = p->Height;
             if (h > this->Max_CY) this->Max_CY = h;
             off += 0x20;
             n--;
         } while (n != 0);
     }
 
-    if (this->Max_CX == zero || this->Max_CY == zero) return 0;
+    if (this->Max_CX == 0 || this->Max_CY == 0) return 0;
     this->Max_CX = 0x40;
     this->Max_CY = 0x30;
     if (this->save_area == 0) {
@@ -127,33 +127,33 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
     this->set_facet(this->facet);
     this->set_game_facet(this->game_facet);
 
-    if (this->Mouse_Mode == zero) {
+    if (this->Mouse_Mode == 0) {
         if (this->Num_Cursors > this->Max_Cursors) return 0;
-        int i = zero;
-        if (this->Num_Cursors > zero) {
+        int i = 0;
+        if (this->Num_Cursors > 0) {
             Shape_Info* info = (Shape_Info*)this->Cursor_Shape->shape_info;
-            int* height = &info->Height;
+            long* height = &info->Height;
             do {
                 if (height[-1] > this->Max_CX || *height > this->Max_CY) return 0;
                 i++;
                 height += 8;
             } while (i < this->Num_Cursors);
         }
-        int cur = zero;
-        if (this->Max_Cursors > zero) {
-            int off = zero;
+        int cur = 0;
+        if (this->Max_Cursors > 0) {
+            int off = 0;
             TDrawArea** pp = this->cursors;
             do {
-                (*pp)->Clear(0, zero);
-                (*pp)->SetTrans(1, (unsigned char)zero);
+                (*pp)->Clear(0, 0);
+                (*pp)->SetTrans(1, (unsigned char)0);
                 if (cur < this->Num_Cursors) {
                     if ((*pp)->Lock("mouseptr::LoadCursors", 1)) {
-                        (*pp)->FillRect(0, 0, this->Max_CX, this->Max_CY, (unsigned char)zero);
-                        char* si = (char*)this->Cursor_Shape->shape_info + off;
-                        this->Cursor_Shape->shape_draw(*pp, *(long*)(si + 0x18), *(long*)(si + 0x1c), cur, (unsigned char)zero, 0);
+                        (*pp)->FillRect(0, 0, this->Max_CX, this->Max_CY, (unsigned char)0);
+                        Shape_Info* si = (Shape_Info*)((char*)this->Cursor_Shape->shape_info + off);
+                        this->Cursor_Shape->shape_draw(*pp, si->Hotspot_X, si->Hotspot_Y, cur, (unsigned char)0, 0);
                         (*pp)->Unlock("mouseptr::LoadCursors");
                     } else {
-                        LoadOk = zero;
+                        LoadOk = 0;
                     }
                 }
                 cur++;
