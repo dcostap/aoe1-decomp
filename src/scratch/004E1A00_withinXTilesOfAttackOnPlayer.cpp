@@ -131,10 +131,14 @@
 //   200 equal bytes, two ordered __ftol calls, and three returns. The semantic
 //   square-local source is pinned as the clean reconstruction. No raw cursor,
 //   home alias, volatility, helper, wrapper, or compiler steering is retained.
+// - Object audit: FPO confirms one real local word, four saved registers, no
+//   SEH, and the expected parameters. PDB confirms AttackMemory and coordinate
+//   layouts, plus compiler home reuse for objY and i. No inline or ABI defect
+//   explains the remaining allocation. The direct-square diagnostic stays rejected.
 
 class RGE_Static_Object {
 public:
-    virtual void v00();
+    virtual ~RGE_Static_Object();
     int id;                              // +0x04
     char gap_08[0x38 - 0x08];
     float world_x;                       // +0x38
