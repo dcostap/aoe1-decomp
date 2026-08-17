@@ -244,6 +244,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Isolate compiler binaries from headers and libraries during a version comparison.
 - An original EH frame is strong evidence to test `/GX`.
 - `/GX` can change frames, exits, vptr stores, cleanup, and whole-function scheduling.
+- A shared cleanup tail inside one symbol is intra-function VC5 CFG layout.
+- Linker ICF folds complete COMDAT sections. It does not merge function suffixes.
 - Debug-style EBP code can justify a focused optimization-flag experiment.
 - A flag match still needs source, ABI, relocation, and policy review.
 
