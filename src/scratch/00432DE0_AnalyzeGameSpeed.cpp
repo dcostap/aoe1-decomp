@@ -32,6 +32,12 @@
 //   the initialization block. Size remains 456 versus 455; no broad tuning was attempted.
 // - Reopened on the one-byte boundary lead; array-index terminal stores were
 //   codegen-identical, so the canonical dereference stores remain.
+// - Follow-up local probes tested direct and split total-turn expressions,
+//   product naming/order, output aliases, final-call receiver aliases, and
+//   decompiler ABI widths. All emitted the same 154-diff basin. The remaining
+//   oracle drift is register coloring at the total-turn load, loop receiver,
+//   minimum-throughput product, and final output/call setup. No metric-only
+//   source form was retained.
 // Left in scratch after the bounded 10-hypothesis assignment.
 
 #include <stdlib.h>
