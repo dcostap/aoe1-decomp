@@ -34,6 +34,14 @@
 // - Tried a typed shared destroy label for button-5 null and event-2 paths,
 //   based on the original CFG; VC5 kept the missing destroy call and grew the
 //   function, so restored the clean typed source.
+// - Sustained probes covered result width, declaration order, direct returns,
+//   nested guards, labels, argument spelling, redundant tests, and call-result
+//   expressions. The best codegen used int result and set it before button-6's
+//   destroyPanel call: 40 calls, 921 bytes, and 31 positional-diff bytes.
+//   It kept result in ESI across the call, while the executable writes EAX=1.
+//   This is compiler steering, not a natural source model, so it was not kept.
+// - BINARY NOTE: button 6 has its own destroyPanel call at 004405C3. The clean
+//   source lets VC5 merge it with the button-5 null-path call, leaving 39 calls.
 
 #include <string.h>
 
