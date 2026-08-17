@@ -23,8 +23,11 @@
 //   Restored the clean source after each diagnostic.
 // - Replaced temporary offset aliases with the canonical sn[0xba]/sn[0xbe]
 //   ownership and full managed-array prefix; emitted code stayed unchanged.
-// left in scratch: size/frame/call/CFG parity is exact, but the final call's
-//   target FPU order and the consequent late branch displacements remain.
+// - Exact natural form: materialize the resource delta as a float local before
+//   the current-attribute float local. This restores the original fild/fld
+//   order without compiler steering or opaque helpers.
+// Exact candidate: size/frame/call/CFG parity and the final call's FPU order
+// are exact.
 
 extern int debug_rand(const char* file, int line);
 static const char str_taitacmd_path[] =
@@ -280,13 +283,13 @@ void TribeTacticalAIModule::checkForCoopTributeGift()
                 } while (j < world->player_count);
             }
             if (bestCP != -1) {
-                int amount =
-                    this->md->resourceAI.resource(i) - *minimum;
+                float amount =
+                    (float)(this->md->resourceAI.resource(i) - *minimum);
                 TRIBE_Player* aiPlayer = this->md->aiPlayer;
                 float current = aiPlayer->attributes[0x2e];
                 aiPlayer->command_give_attribute(
                     bestCP, i,
-                    (float)amount,
+                    amount,
                     current);
             }
         }
