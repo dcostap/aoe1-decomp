@@ -73,6 +73,13 @@
 //   widened the result or changed control flow. The target keeps row base in
 //   ECX, row end in ESI, and the inner pixel cursor in EDX. The clean source
 //   keeps a persistent pixel cursor and remains the best natural source.
+// - Translation-unit audit: scalar clip fields, the full TDrawArea field
+//   surface, uchar pixel types, an unused DDSys global, memset pragma/prototype,
+//   RGE_Color_Table class spelling, and nearby declarations were duplicate.
+//   stdio, stdlib, string, windows, and game_types headers moved to 77-82
+//   differences. Full palette methods moved to 82 differences. Imported API
+//   declarations moved the tail to 48 differences. No tested context restored
+//   the original row-base ECX and pixel EDX schedule. The baseline is restored.
 
 struct tagRECT {
     long left;
