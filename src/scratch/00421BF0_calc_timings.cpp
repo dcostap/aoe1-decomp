@@ -55,6 +55,14 @@
 // - Current pass: incrementing the player-list pointer before decrementing its
 //   remaining count reproduces the observed setup order and reduces the gap to
 //   2 bytes.  The remaining two bytes are the quotient sum load order.
+// - Specialist audit: PDB line 4900 and the Ghidra stack locals support the
+//   seven quotient results as outgoing homes.  Reverse-order named quotient
+//   locals, a named denominator, and a sequential sum all emit the same
+//   2-byte mismatch.  A guarded named sum changes the CFG and is rejected.
+// - Specialist audit: the original hunk loads timing[10] at +0x221 and
+//   timing[12] at +0x227.  Natural direct and reversed `+` expressions both
+//   load timing[12] first under this VC5 context.  The exact calc_timing_text
+//   donor confirms that the surrounding use changes this commutative schedule.
 // BINARY NOTE: The executable reloads include_in_total after the first timer
 //   probe and performs the 8-byte cleanup after that reload.
 // LIKELY INTENT: The timer record is a typed 0x20-byte array.  The remaining
