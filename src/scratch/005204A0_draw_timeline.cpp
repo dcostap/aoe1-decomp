@@ -21,8 +21,16 @@
 //   original EAX switch constants and reduced strict drift to 1300 bytes with 73.7% shape similarity.
 // - Probe: ordered the Y-line total load before the explicit sample conversion; the current clean source is
 //   1600 bytes with a 0x50 frame, 19 aligned calls, and 1299-byte strict drift.
-// - Left in scratch: original 0x54 frame and early CFG still differ. Next lead is exact local-home
-//   recovery around the initial zeroing and player-loop induction, not register scheduling.
+// - Current claim probes 1-20: tested loop forms, local types and order, interpolation groupings,
+//   canonical class context, and Windows header context. Header context and alternate loop forms did not
+//   improve strict output. Duplicate codegen ruled out several declaration and cast variants.
+// - Binary-supported recovery: the inner bar loop has independent intermediate_x_pos and special_event_flag
+//   counters. The stack uses [esp+4Ch] for interpolation and [esp+48h] for first-column event gating.
+//   Restoring both counters reaches the original 0x54 frame and 19-call set, but remains nonexact at 1620
+//   bytes, 70.04% shape, and 1310 strict-drift bytes. The pinned final source keeps this natural model.
+// - Unresolved: initial local-home permutation, early page/history CFG layout, and x87 sample conversion
+//   scheduling still differ. The separate bar_length local is retained because its source form is closer
+//   than the binary-overlapped reuse variant; no unsupported register steering or inline assembly was used.
 
 extern "C" unsigned char (__stdcall* const GetNearestPaletteIndex)(void*, unsigned long);
 
@@ -64,11 +72,55 @@ public:
     void DrawVertLine(long x, long y, long h, unsigned char color);
 };
 
-class Time_Line_Panel {
+class TPanel {
 public:
-    char gap_000[0x20];
+    virtual ~TPanel();
+    char gap_04[0x1c];
     TDrawArea* draw_area;
-    char gap_024[0x4b8];
+    char gap_024[0xd0];
+};
+
+class TEasy_Panel : public TPanel {
+public:
+    char gap_0f4[0x384];
+};
+
+class Time_Line_Panel : public TEasy_Panel {
+public:
+    void* axis_font;
+    long axis_font_wid;
+    long axis_font_hgt;
+    void* body_font;
+    long body_font_wid;
+    long body_font_hgt;
+    int text_style;
+    int text_color1;
+    int text_color2;
+    int highlight_text_color1;
+    int highlight_text_color2;
+    int text_wid;
+    int text_hgt;
+    void* background_pic;
+    short background_pic_wid;
+    short background_pic_hgt;
+    int fill_back;
+    unsigned char back_color;
+    char gap_4b9[3];
+    int outline;
+    unsigned char outline_color;
+    char gap_4c1[3];
+    int sorted;
+    int bevel_type;
+    unsigned char bevel_color1;
+    unsigned char bevel_color2;
+    unsigned char bevel_color3;
+    unsigned char bevel_color4;
+    unsigned char bevel_color5;
+    unsigned char bevel_color6;
+    char gap_4d2[2];
+    void* special_events_pic;
+    short special_events_pic_wid;
+    short special_events_pic_hgt;
     long X_start_line_pos;
     long Y_start_line_pos;
     long X_line_pos;
@@ -119,6 +171,7 @@ void Time_Line_Panel::draw_timeline()
     long y_line_segment_length;
     long temp_color;
     long segment;
+    int special_event_flag;
 
     if (this->timeline_flag == 0) return;
 
@@ -131,7 +184,6 @@ void Time_Line_Panel::draw_timeline()
     pop_sample_cntr = 0;
     local_28 = 0;
     next_pop_total = 0;
-    pop_total = 0.0f;
 
     if (this->num_history_entries > 0) {
         error_correction_drop_time_slice_rate = 1;
@@ -204,6 +256,7 @@ void Time_Line_Panel::draw_timeline()
                     local_10++;
                 }
                 intermediate_x_pos = 0;
+                special_event_flag = 0;
                 if (bar_length > 0) {
                     do {
                         this->Y_line_pos = this->Y_start_line_pos;
@@ -232,7 +285,8 @@ void Time_Line_Panel::draw_timeline()
                                     ->history_info->get_history_entry(0, next_pop_total);
                                 Y_line_total = this->Y_line_max_length;
                                 time_slice = (float)temp_color;
-                                temp_pop_num = time_slice / temp_pop_num * (float)Y_line_total;
+                                temp_pop_num = (time_slice / temp_pop_num) *
+                                                (float)Y_line_total;
                                 segment = (long)temp_pop_num;
                                 if ((time_slice >= 1.0f) && (segment < 1)) segment = 1;
 
@@ -246,7 +300,9 @@ void Time_Line_Panel::draw_timeline()
                                                                float_remainder *
                                                                (float)Y_line_total);
                                     long difference = next_segment - segment;
-                                    temp_pop_num = (float)difference / this->bar_thickness + (float)segment;
+                                    temp_pop_num = (float)segment +
+                                                    (float)difference *
+                                                    ((float)intermediate_x_pos / this->bar_thickness);
                                     segment = (long)temp_pop_num;
                                     if ((time_slice >= 1.0f) && (segment < 1)) segment = 1;
                                     cntr_droped_slice_rate += temp_pop_num - (float)segment;
@@ -262,7 +318,7 @@ void Time_Line_Panel::draw_timeline()
                                 }
 
                                 this->draw_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, segment, (unsigned char)color);
-                                if (intermediate_x_pos == 0) {
+                                if (special_event_flag == 0) {
                                 this->record_special_event((unsigned char)(local_34 + 1),
                                     (*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))->history_info,
                                         (unsigned char)color, next_pop_total, this->X_line_pos,
@@ -275,6 +331,7 @@ void Time_Line_Panel::draw_timeline()
                             } while (local_34 < (int)rge_base_game->world->player_num - 1);
                         }
                         intermediate_x_pos++;
+                        special_event_flag++;
                         this->X_line_pos++;
                     } while (intermediate_x_pos < bar_length);
                 }
