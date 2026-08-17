@@ -39,6 +39,18 @@
 // emitted code was identical and the EH tail remained cloned.
 // probe 30 variant: explicit default-constructor parentheses on new
 // TribeMPSetupScreen emitted identical code; restored the clean spelling.
+// Revisit probes 31-34: direct returns, failure-first create-result order,
+// one common create-result return, and one success label all stayed in the
+// 865-byte EH-tail basin or moved calls. Canonical derived destructors and
+// function-scope locals were unchanged. A fully joined result tree reached
+// 873B/0x14, then an initialized result reached 854B but broadened drift.
+// Revisit probes 35-37: windows.h, memory.h, and stdlib.h context stayed in
+// the same basin. Variant lab /Ob0 and /Ob1 also stayed identical. Direct
+// PlayerStopTurn memset and direct parent popup expressions changed late
+// scheduling or a call target; restored typed aliases. No exact result.
+// Revisit probes 38-40: a split GUID declaration and a memcpy spelling were
+// codegen-identical to aggregate assignment. The clean source remains the
+// 865B typed reconstruction; the EH tail and shared-return shape stay open.
 
 #include <string.h>
 
