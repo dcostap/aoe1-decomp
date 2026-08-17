@@ -80,6 +80,9 @@
 //   differences. Full palette methods moved to 82 differences. Imported API
 //   declarations moved the tail to 48 differences. No tested context restored
 //   the original row-base ECX and pixel EDX schedule. The baseline is restored.
+// - Object audit confirms the VC5 target, 271-byte FPO body, no locals or SEH,
+//   four long parameters, layouts, and AlignedWidth call. No inline record or
+//   metadata supports another source owner for the row/pixel register swap.
 
 struct tagRECT {
     long left;
