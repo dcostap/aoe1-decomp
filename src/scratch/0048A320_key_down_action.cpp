@@ -36,6 +36,15 @@
 //   return count, and CFG; remaining drift is 43 bytes and a 0xC/0x10 frame.
 // - Left in scratch: source-backed call topology is solved; remaining blocker
 //   is stack/local topology around the fifth selection local and frame home.
+// - Moved the four typed selection locals to function scope. This restored the
+//   0x10 frame and reduced the positional diff from 43 to 14 bytes.
+// - Direct player ownership, typed local scope/order, object-first case order,
+//   and a branch-local view alias did not change the 14-byte result.
+// - Early-return pause and object forms, and an if/else dispatch, worsened the
+//   emitted CFG or call layout. The remaining drift is ESI/EDI recoloring:
+//   original self=ESI/object=EDI; rebuilt self=EDI/object=ESI.
+// - Main review replaced generic virtual-slot declarations with real TPanel
+//   inheritance and the canonical RGE_Static_Object method surface.
 
 typedef unsigned char uchar;
 
@@ -49,36 +58,25 @@ class RGE_Sprite;
 class TPanel {
 public:
     virtual ~TPanel();
+    virtual long setup(void*, TPanel*, long, long, long, long, uchar);
+    virtual void set_rect(void*);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(uchar);
+    virtual void set_active(int);
+    virtual void set_positioning(int, long, long, long, long, long, long,
+                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(int mode);
     char gap_04[0xF0];
 };
 
-class RGE_View {
+class RGE_View : public TPanel {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void set_redraw(int mode);
-
     int get_selection_area(long* col1, long* row1, long* col2, long* row2,
                            int normalize);
 };
 
-class RGE_Diamond_Map {
-public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void set_redraw(int mode);
+class RGE_Diamond_Map : public TPanel {
 };
 
 class RGE_Map {
@@ -120,33 +118,33 @@ public:
 
 class RGE_Static_Object {
 public:
-    virtual void vf00();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
-    virtual void vf38();
-    virtual void vf3C();
-    virtual void vf40();
-    virtual void vf44();
-    virtual void vf48();
-    virtual void vf4C();
-    virtual void vf50();
-    virtual void vf54();
-    virtual void vf58();
-    virtual void vf5C();
-    virtual void vf60();
-    virtual void vf64();
-    virtual void vf68();
+    virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(void*, RGE_Player*, float, float, float);
+    virtual void recycle_out_of_game();
+    virtual void draw(void*, short, short, void*);
+    virtual void shadow_draw(void*, short, short, uchar);
+    virtual void normal_draw(void*, short, short);
+    virtual void draw_front_frame(void*, short, short);
+    virtual void draw_back_frame(void*, short, short);
+    virtual void draw_frame(void*, short, short);
+    virtual uchar update();
+    virtual void check_damage_sprites();
+    virtual void rehook();
+    virtual void save(int);
+    virtual float teleport(float, float, float);
+    virtual void new_sprite(RGE_Sprite*);
+    virtual void add_overlay_sprite(RGE_Sprite*, uchar);
+    virtual void remove_overlay_sprite(RGE_Sprite*);
+    virtual void change_ownership(RGE_Player*);
+    virtual void modify(float, uchar);
+    virtual void modify_delta(float, uchar);
+    virtual void modify_percent(float, uchar);
+    virtual void transform(void*);
+    virtual void copy_obj(void*);
+    virtual void set_object_state(uchar);
+    virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying();
+    virtual void destroy_obj();
 
     char gap_04[0x0C];
     RGE_Sprite* sprite;
@@ -174,18 +172,41 @@ extern RGE_Base_Game* rge_base_game;
 long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
                                          int a5)
 {
+    long local_4;
+    long x1;
+    long y1;
+    long x2;
+
     if (rge_base_game->get_paused() == 0) {
         if (rge_base_game->prog_mode != 4 &&
             rge_base_game->prog_mode != 6 &&
             rge_base_game->prog_mode != 7)
             return 0;
 
-        long local_4;
-        long x1;
-        long y1;
-        long x2;
-
     switch (key) {
+    case 0x2E:
+        if (rge_base_game->game_mode != 0x12)
+            return 0;
+        {
+            RGE_Player* player = rge_base_game->get_player();
+            RGE_Static_Object* object = player->selected_obj;
+            if (object != 0) {
+                uchar draw_level;
+                if (object->sprite_list != 0) {
+                    draw_level = object->sprite_list->get_lowest_draw_level();
+                } else if (object->sprite != 0) {
+                    draw_level = object->sprite->get_lowest_draw_level();
+                } else {
+                    draw_level = 0x14;
+                }
+
+                object->destroy_obj();
+                if (draw_level == 0)
+                    this->view->set_redraw(2);
+            }
+            return 1;
+        }
+
     case 0x21:
         if (rge_base_game->game_mode != 3)
             return 0;
@@ -205,29 +226,6 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
             (short)local_4, (short)x1, (short)y1, (short)x2, 0, -1, 1);
         rge_base_game->world->map->clean_elevation(local_4, x1, y1, x2, 8);
         break;
-
-    case 0x2E:
-        if (rge_base_game->game_mode != 0x12)
-            return 0;
-        {
-            RGE_Player* player = rge_base_game->get_player();
-            RGE_Static_Object* object = player->selected_obj;
-            if (object != 0) {
-                uchar draw_level;
-                if (object->sprite_list != 0) {
-                    draw_level = object->sprite_list->get_lowest_draw_level();
-                } else if (object->sprite != 0) {
-                    draw_level = object->sprite->get_lowest_draw_level();
-                } else {
-                    draw_level = 0x14;
-                }
-
-                object->vf68();
-                if (draw_level == 0)
-                    this->view->set_redraw(2);
-            }
-            return 1;
-        }
 
     default:
         return 0;
