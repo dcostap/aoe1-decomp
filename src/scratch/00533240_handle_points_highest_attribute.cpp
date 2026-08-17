@@ -85,6 +85,13 @@
 //   accumulator widened drift to 189 bytes and is not retained. Restored the pinned natural
 //   scalar source; the target's parameter-home val reuse, spilled id, and base/cursor colors
 //   remain unresolved.
+// - TU-only audit: 20 further probes kept the clean 221-byte / 0xC-frame source. A 4096-variant
+//   period-standard-header sweep, plus Windows headers, ambient declarations, the repository
+//   type/global headers, canonical list and class surfaces, full victory method declarations,
+//   point-dispatch context, neighboring point-handler order, declaration order, protected
+//   access, period typedefs, PDB `node` naming, and supported VC5 flag families were neutral or
+//   worse. Default `/O2 /Oy` remains the only supported flag basin. The original four-slot local
+//   window is not caused by recoverable TU context in this source model.
 
 class RGE_Game_World;
 
