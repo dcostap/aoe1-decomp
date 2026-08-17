@@ -22,32 +22,87 @@
 // shardB6 probe: explicit ManagedArray aliases improved block shape but stayed at 11 calls and diff 599; rolled back.
 // shardB6 probe: taiinfmd parameter-home overwrite split group calls but grew to 975 bytes and duplicated special growth; rolled back.
 // shardB6 probe: group-8 contains != 0 reached diff 587 and two contains calls, but a distinct resize spelling grew to 935 bytes; rolled back.
+// Revisit sa-3023930d-r1:
+// - Baseline was 747 bytes, 597 positional diff, and 11/13 ordered calls.
+// - A separate count plus do/while scan was worse.  It hoisted the array base
+//   and changed the proven indexed loop.  The original combined bounds form
+//   remains the natural loop input.
+// - Branch-local ManagedArray aliases for all four master-id append paths
+//   recovered the original +0x148 receiver update and reduced the diff to 289.
+//   Those four paths then matched through their complete append block.
+// - A sparse group switch with one shared failure label improved the best
+//   source to 263 positional diff and 76.92% shape similarity.  VC5 still
+//   merged the group-8 and group-32 strategic/append path, leaving 10/13
+//   calls.  The original has separate 0x32 and 0x33 strategic calls, two
+//   contains calls, and three resize calls in this tail.
+// - Distinct group temporaries restored all 13 calls only at 899 bytes
+//   (+152).  Parameter-home id reuse restored the observed stack writes but
+//   grew to 959 bytes (+212).  A sparse switch with distinct temporaries was
+//   also 899 bytes.  These are metric-only shapes and were rejected.
+// - Canonical inherited vptr surfaces, the corrected +0x100 md gap, the
+//   ManagedArray<int> template spelling, stdlib context, receiver aliases,
+//   predicate spellings, and source case order were neutral or worse.
+// - Final validation: 747-byte boundary, 226/234 instructions, 10/13 calls,
+//   263 positional diff (35.2075%), first mismatch +0x4B.  Retain the typed
+//   sparse-switch/common-failure reconstruction for the next evidence pass.
 
 typedef unsigned char uchar;
 
-struct RGE_Master_Object { char pad0[0x10]; short id; char pad1[2]; short object_group; };
-struct RGE_Player { char pad0[0x4a]; short id; };
-struct RGE_Static_Object { char pad0[4]; int id; RGE_Master_Object* master; RGE_Player* owner; };
+struct RGE_Master_Object {
+    virtual void v00();
+    char pad0[0x0c];
+    short id;
+    char pad1[2];
+    short object_group;
+};
+struct RGE_Player {
+    virtual void v00();
+    char pad0[0x46];
+    short id;
+};
+struct RGE_Static_Object {
+    virtual void v00();
+    int id;
+    RGE_Master_Object* master;
+    RGE_Player* owner;
+};
 
 class TribeTacticalAIModule { public: int strategicNumber(int); };
-class TribeMainDecisionAIModule { public: char pad0[0xf0]; RGE_Player* player; char pad1[0x1146c - 0xf4]; TribeTacticalAIModule tacticalAI; };
+class MainDecisionAIModule {
+public:
+    virtual void v00();
+    char pad0[0xec];
+    RGE_Player* player;
+};
+class TribeMainDecisionAIModule : public MainDecisionAIModule {
+public:
+    char pad1[0x1146c - 0xf4];
+    TribeTacticalAIModule tacticalAI;
+};
 
-struct IntArray {
-    int* value;
+template <class T>
+class ManagedArray {
+public:
+    T* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
     int resize(int);
-    int contains(const int&) const;
-    int add(int);
+    int contains(const T&) const;
+    int add(T);
 };
 
-class TribeInformationAIModule {
+class InformationAIModule {
 public:
-    char pad0[0x100];
+    virtual void v00();
+    char pad0[0xec];
+};
+class TribeInformationAIModule : public InformationAIModule {
+public:
+    char pad0[0x10];
     TribeMainDecisionAIModule* mainDecisionAI;
     char pad1[0x148 - 0x104];
-    IntArray importantObjects;
+    ManagedArray<int> itemsToDefend;
     int checkDefend(RGE_Static_Object*);
 };
 
@@ -60,86 +115,108 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
 
     switch (obj->master->id) {
     case 109: {
-        if (owner != this->mainDecisionAI->player->id) return 0;
-        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x38) <= 0) return 0;
+        if (owner != this->mainDecisionAI->player->id) goto checkDefend_fail;
+        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x38) <= 0) goto checkDefend_fail;
         id = obj->id;
-        for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
-            if (this->importantObjects.value[i] == id) return 1;
+        {
+            ManagedArray<int>* list = &this->itemsToDefend;
+            int numValues = list->numberValue;
+            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
+                if (list->value[i] == id) return 1;
+            }
+            if (list->numberValue > list->maximumSizeValue - 1)
+                list->resize(list->numberValue + 1);
+            list->value[list->numberValue] = id;
+            list->numberValue++;
         }
-        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
-            this->importantObjects.resize(this->importantObjects.numberValue + 1);
-        this->importantObjects.value[this->importantObjects.numberValue] = id;
-        this->importantObjects.numberValue++;
         return 1;
     }
     case 45: {
-        if (owner != this->mainDecisionAI->player->id) return 0;
-        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x46) <= 0) return 0;
+        if (owner != this->mainDecisionAI->player->id) goto checkDefend_fail;
+        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x46) <= 0) goto checkDefend_fail;
         id = obj->id;
-        for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
-            if (this->importantObjects.value[i] == id) return 1;
+        {
+            ManagedArray<int>* list = &this->itemsToDefend;
+            int numValues = list->numberValue;
+            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
+                if (list->value[i] == id) return 1;
+            }
+            if (list->numberValue > list->maximumSizeValue - 1)
+                list->resize(list->numberValue + 1);
+            list->value[list->numberValue] = id;
+            list->numberValue++;
         }
-        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
-            this->importantObjects.resize(this->importantObjects.numberValue + 1);
-        this->importantObjects.value[this->importantObjects.numberValue] = id;
-        this->importantObjects.numberValue++;
         return 1;
     }
     case 0x9f: {
-        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x37) <= 0) return 0;
+        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x37) <= 0) goto checkDefend_fail;
         id = obj->id;
-        for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
-            if (this->importantObjects.value[i] == id) return 1;
+        {
+            ManagedArray<int>* list = &this->itemsToDefend;
+            int numValues = list->numberValue;
+            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
+                if (list->value[i] == id) return 1;
+            }
+            if (list->numberValue > list->maximumSizeValue - 1)
+                list->resize(list->numberValue + 1);
+            list->value[list->numberValue] = id;
+            list->numberValue++;
         }
-        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
-            this->importantObjects.resize(this->importantObjects.numberValue + 1);
-        this->importantObjects.value[this->importantObjects.numberValue] = id;
-        this->importantObjects.numberValue++;
         return 1;
     }
     case 0x9e:
     case 0xa3: {
-        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x36) <= 0) return 0;
+        if (this->mainDecisionAI->tacticalAI.strategicNumber(0x36) <= 0) goto checkDefend_fail;
         id = obj->id;
-        for (int i = 0; i < this->importantObjects.numberValue && i < this->importantObjects.maximumSizeValue; i++) {
-            if (this->importantObjects.value[i] == id) return 1;
+        {
+            ManagedArray<int>* list = &this->itemsToDefend;
+            int numValues = list->numberValue;
+            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
+                if (list->value[i] == id) return 1;
+            }
+            if (list->numberValue > list->maximumSizeValue - 1)
+                list->resize(list->numberValue + 1);
+            list->value[list->numberValue] = id;
+            list->numberValue++;
         }
-        if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
-            this->importantObjects.resize(this->importantObjects.numberValue + 1);
-        this->importantObjects.value[this->importantObjects.numberValue] = id;
-        this->importantObjects.numberValue++;
         return 1;
     }
     default:
-        if (group == 7) {
-            if (this->mainDecisionAI->tacticalAI.strategicNumber(0x34) <= 0) return 0;
-            this->importantObjects.add(obj->id);
+        switch (group) {
+        case 7:
+            if (this->mainDecisionAI->tacticalAI.strategicNumber(0x34) <= 0)
+                goto checkDefend_fail;
+            this->itemsToDefend.add(obj->id);
+            return 1;
+        case 8: {
+            int result8 = this->mainDecisionAI->tacticalAI.strategicNumber(0x33);
+            if (result8 <= 0) goto checkDefend_fail;
+            tmp = obj->id;
+            if (this->itemsToDefend.contains(tmp) == 1) return 1;
+            int numValues = this->itemsToDefend.numberValue;
+            if (this->itemsToDefend.maximumSizeValue - 1 < numValues)
+                this->itemsToDefend.resize(numValues + 1);
+            this->itemsToDefend.value[this->itemsToDefend.numberValue] = tmp;
+            this->itemsToDefend.numberValue++;
             return 1;
         }
-        else if (group == 8) {
-            int result8 = this->mainDecisionAI->tacticalAI.strategicNumber(0x33);
-            if (result8 > 0) {
-                tmp = obj->id;
-                if (this->importantObjects.contains(tmp) == 1) return 1;
-                if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
-                    this->importantObjects.resize(this->importantObjects.numberValue + 1);
-                this->importantObjects.value[this->importantObjects.numberValue] = tmp;
-                this->importantObjects.numberValue++;
-                return 1;
-            }
-        }
-        else if (group == 32) {
+        case 32: {
             int result32 = this->mainDecisionAI->tacticalAI.strategicNumber(0x32);
-            if (result32 > 0) {
-                tmp = obj->id;
-                if (this->importantObjects.contains(tmp) == 1) return 1;
-                if (this->importantObjects.numberValue > this->importantObjects.maximumSizeValue - 1)
-                    this->importantObjects.resize(this->importantObjects.numberValue + 1);
-                this->importantObjects.value[this->importantObjects.numberValue] = tmp;
-                this->importantObjects.numberValue++;
-                return 1;
-            }
+            if (result32 <= 0) goto checkDefend_fail;
+            tmp = obj->id;
+            if (this->itemsToDefend.contains(tmp) == 1) return 1;
+            int numValues = this->itemsToDefend.numberValue;
+            if (this->itemsToDefend.maximumSizeValue - 1 < numValues)
+                this->itemsToDefend.resize(numValues + 1);
+            this->itemsToDefend.value[this->itemsToDefend.numberValue] = tmp;
+            this->itemsToDefend.numberValue++;
+            return 1;
         }
-        return 0;
+        default:
+            goto checkDefend_fail;
+        }
     }
+
+checkDefend_fail:
+    return 0;
 }
