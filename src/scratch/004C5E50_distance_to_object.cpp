@@ -118,6 +118,16 @@
 // the prior high-parity 167B/22-diff form only as diagnostic history; it needs
 // volatility and remains wrong in the pre-branch fsubr/fsub order.
 
+// sa-e400f46a-r1 revisit 2026-08-17: completed 20 fresh meaningful probes and
+// restored the pinned 151B/164-diff natural source. Reproduced the prior
+// 167B/22-diff high-parity basin with volatile binary32 dy, ordered master
+// aliases, and double radius expression temps. Partial duplicated Y-prefix
+// statements improved that diagnostic to 14 diff bytes, but the other-Y
+// subtraction still stayed after the X status branch. Tested compare polarity,
+// const fields and aliases, zero-global compare operands, ternary and scoped
+// control forms, radius and coordinate widths, and grouped radius arithmetic.
+// None recovered the original push/home plus pre-branch other-Y ordering.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
