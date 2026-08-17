@@ -35,6 +35,25 @@
 // the checker to structural reconstruction; restored the do/while body.
 // shardC5-53B370: explicit `YLine_Size - 1 >= neg` reproduces the prior
 // 166-byte direct-bound basin; restored the 157-byte member-bound source.
+// fresh-r1: Baseline rebuilt at 261 bytes with 157 positional mismatches; the
+// positive copy and final node-walk regions remain exact, while drift starts
+// at the negative-copy guard and source-index setup.
+// fresh-r1: Ambient declaration, standard-header, unused type/member, and full
+// DClipInfo method-surface context sweeps changed only the 152-157 byte basin;
+// none matched. Direct negative bounds matched the compare shape but not the
+// reverse source-address lowering.
+// fresh-r1: Named reverse source cursors grew the function to 284 bytes and
+// changed the loop schedule. The clean typed do/while reconstruction remains
+// authoritative. Next evidence needed: full view.cpp TU context or a stronger
+// exact source donor for the negative-copy lowering.
+// revisit-r1: Direct natural bounds, typed source-index locals, declaration-order
+// changes, equivalent coordinate spellings, and loop-form changes did not improve
+// the clean 261-byte basin. Keep the typed do/while source and direct coordinates.
+// revisit-r2: A natural reverse-copy source index (`source = YLine_Size - 1 +
+// scroll_y`) with the direct `i >= -scroll_y` guard reproduces 260/261 bytes.
+// The only remaining byte is the equivalent LEA base/index encoding at +0x63
+// (`[esi+edx-1]` versus original `[edx+esi-1]`). Typed pointer cursors and
+// declaration or expression-order variants were worse. Keep this source.
 
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00
@@ -103,12 +122,13 @@ void DClipInfo_List::Scroll(int scroll_x, int scroll_y)
     if (scroll_y < 0) {
         int neg = -scroll_y;
         int i = this->YLine_Size - 1;
+        int source = this->YLine_Size - 1 + scroll_y;
 
-        if (scroll_y + this->YLine_Size - 1 >= 0) {
+        if (i >= neg) {
             do {
-                int next = i - 1;
-                this->Draw_Clip_Nodes[i] = this->Draw_Clip_Nodes[i + scroll_y];
-                i = next;
+                this->Draw_Clip_Nodes[i] = this->Draw_Clip_Nodes[source];
+                i = i - 1;
+                source = source - 1;
             } while (i >= neg);
         }
 
