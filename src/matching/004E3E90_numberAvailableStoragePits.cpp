@@ -83,6 +83,15 @@
 //   and a named storage-pit scalar both duplicated the stable basin.
 // - Restored the pinned natural typed source. No exact or structural lead was
 //   found; the remaining drift is the known 15-byte this/md/object2 coloring.
+// - Exact transition (sa-98828d60-r1): inlining the final strategicNumber call
+//   into the closestDropsiteValue comparison changed the 15-byte basin to an
+//   exact 238-byte match. Restoring the named strategicN temporary returned
+//   the 15-byte mismatch. Removing the explicit 1/0 ternary kept the match and
+//   reduced the source to a direct boolean return.
+// - BINARY NOTE: The shipped tail calls strategicNumber first, then reloads
+//   closestDropsiteValue from this before the compare. The direct expression
+//   is the smallest natural source that emits this=EDI and md=ESI without
+//   dummy liveness, volatility, register hints, or no-effect expressions.
 
 class RGE_Static_Object;
 
@@ -195,8 +204,8 @@ public:
 class RGE_Static_Object {
 public:
     char gap_00[0x38];
-    float field_0x38;
-    float field_0x3C;
+    float world_x;
+    float world_y;
 
     unsigned char currentZone();
     unsigned char lookupZone(int, int);
@@ -224,8 +233,8 @@ int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
 
         if (obj2 != 0) {
             int zone = obj1->currentZone() & 0xff;
-            int y = (int)(obj2->field_0x3C);
-            int x = (int)(obj2->field_0x38);
+            int y = (int)(obj2->world_y);
+            int x = (int)(obj2->world_x);
             int lookup = obj1->lookupZone(x, y) & 0xff;
 
             if (zone != lookup) {
@@ -234,6 +243,6 @@ int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
         }
     }
 
-    int strategicN = this->md->tacticalAI.strategicNumber(param_1 + 0xA3);
-    return (this->closestDropsiteValue[param_1] > strategicN) ? 1 : 0;
+    return this->closestDropsiteValue[param_1] >
+           this->md->tacticalAI.strategicNumber(param_1 + 0xA3);
 }
