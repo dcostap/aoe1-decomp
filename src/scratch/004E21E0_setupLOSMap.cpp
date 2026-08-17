@@ -35,9 +35,26 @@
 //   was restored because raw global addresses and byte-indexed records are not
 //   canonical living source. The typed global and indexed ObjectMemory array
 //   remain authoritative.
+// - This worker reconfirmed the clean 269-byte source under default flags:
+//   25 positional bytes remain, with all calls, frame facts, and CFG signals
+//   aligned. The first hunk is the y-bound conversion schedule at +0x8B.
+// - A period-supported <math.h> include was codegen-neutral. Direct repeated
+//   x casts and multi-declarator bound forms regressed to 123-128 bytes.
+// - A natural split with maxX assigned before objY and minX after objY reached
+//   20 bytes, but it moved minX and the y conversion after the virtual setup;
+//   it was restored because the clean source remains authoritative.
+// - The maxX-only/direct-argument form removed the proven frame and regressed
+//   to 258 bytes. No natural probe reached MATCH; clean source is restored.
 // - Current lease baseline reconfirmed the clean 269-byte basin. The remaining
 //   25 bytes are localized FPU/int bound-scheduling drift after y conversion;
 //   prior natural bound-order probes regressed structurally.
+// - Follow-up probes reconfirmed that maxX-only/direct y-bound expressions
+//   reproduce the 258-byte structural regression. Full named bounds with
+//   maxX-before-y reach 20 bytes but retain a register-map conflict. Splitting
+//   maxX declaration and assignment is codegen-neutral at 25 bytes.
+// - Final unchanged validation remains a 269-byte MISMATCH with 25 differing
+//   bytes, 9 aligned calls, an 0x8 frame, and first mismatch at +0x8B.
+//   The pinned typed source is restored; no policy-valid natural MATCH exists.
 
 typedef unsigned char uchar;
 
