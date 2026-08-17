@@ -1,26 +1,7 @@
 // VA: 004B75A0 TribeSelectTribeScreen ctor (2085B)
 // scr_trb.cpp lines 37-157
-// Baseline: reconstructed the TScreenPanel child-panel creation sequence from
-// the original call order and proven panel sizes. /GX is required by the EH
-// cleanup frame around the constructor's new expressions.
-// Probe 2: used the draw-area width for background selection; improved the
-// first structural hunk.
-// Probe 3: kept that width in a local; recovered the original load/compare.
-// Probe 4: selected one background string and copied it once; improved size.
-// Probe 5: used the original negative resolution test; duplicate codegen.
-// Probe 6: used direct branch-local copies; improved the copy block.
-// Probe 7: restored panel sizes 0x11C, 0x188, and 0x2B8.
-// Probe 8: reused this->render_area for child setup; improved 642 bytes.
-// Probe 9: carried background in a local through positioning; improved 70.
-// Probe 10: reordered loop initialization; improved 5 bytes.
-// Main-agent ABI audit restored the canonical rge_base_game global and the
-// short set_tab_order count. Calls remain aligned; positional diff improved by one byte.
-// Probe 14: used the scr_trb button draw-type enum 3 instead of the decompiler's
-// DrawTextA label; improved size and structural coverage, but the loop setup
-// still diverges at the zero-register/first button allocation hunk.
-// Best unresolved source: all 34 calls and CFG match, frame is 0x54, but the
-// constructor remains 81 bytes too large. The remaining drift starts at the
-// button-loop setup and later local/register scheduling.
+// Exact reconstruction. /GX is required by the EH cleanup frame around the
+// constructor's new expressions. The fixed tab-list copy is a REP MOVSD block.
 
 #include <string.h>
 
@@ -218,7 +199,9 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     i = 0;
     TButtonPanel** button = this->tribeButton;
 
-    do {
+    // BINARY NOTE: The shipped loop re-enters through a zero-register reset.
+    // LIKELY INTENT: The initial zero state makes this guard equivalent to do/while.
+    while (i < 9) {
         *button = new TButtonPanel;
         if (*button == 0) {
             this->setup_error = 1;
@@ -243,7 +226,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         ++i;
         ++button;
         ++secondHeight;
-    } while (i < 9);
+    }
 
     font = rge_base_game->get_font(0xB);
     this->tribeText = new TTextPanel;
@@ -259,7 +242,8 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 0x3C / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, "");
-    this->tribeText->set_alignment(6, 0);
+    // BINARY NOTE: The original call pushes alignment values 6 then 3.
+    this->tribeText->set_alignment(3, 6);
 
     this->okButton = new TButtonPanel;
     if (this->okButton == 0) {
@@ -295,15 +279,8 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     this->background->set_curr_child(this->tribeButton[0]);
     this->fillTribeText(0);
 
-    tabList[0] = this->tribeButton[0];
-    tabList[1] = this->tribeButton[1];
-    tabList[2] = this->tribeButton[2];
-    tabList[3] = this->tribeButton[3];
-    tabList[4] = this->tribeButton[4];
-    tabList[5] = this->tribeButton[5];
-    tabList[6] = this->tribeButton[6];
-    tabList[7] = this->tribeButton[7];
-    tabList[8] = this->tribeButton[8];
+    // BINARY NOTE: Nine button pointers are copied by one REP MOVSD block.
+    memcpy(tabList, this->tribeButton, 9 * sizeof(this->tribeButton[0]));
     tabList[9] = this->okButton;
     this->set_tab_order(tabList, 10);
 }
