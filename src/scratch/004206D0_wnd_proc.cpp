@@ -37,6 +37,9 @@
 //   remaining tail-placement drift.
 // - Probes 1-25 tested owner ABI, return-tail predicates, stack aliases,
 //   global forms, SDK context, boolean width, and switch source order.
+// - Direct external declarations for the fixed storage slots recover the
+//   original absolute load/store form without pointer aliases.  The remaining
+//   drift is the compiler's shared WM_SIZE logging tail and shifted blocks.
 
 #include <windows.h>
 
@@ -44,17 +47,16 @@ extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 extern void color_log(unsigned char a, unsigned char b, int c);
 
-// Named typed storage follows the committed fixed-storage pattern used for
-// the process-wide base-game pointer.  It avoids unresolved global symbols.
-static int* const system_ignore_size_messages_storage = (int*)0x0062E63C;
-static int* const MouseCursorInChildContol_storage = (int*)0x0062C558;
-static int* const mouse_cursor_in_child_control_storage = (int*)0x0062C4C4;
-static void*& save_active_wnd_storage = *(void**)0x0062C570;
-static int* const do_restore_palette_storage = (int*)0x0062C504;
-static unsigned long* const restore_palette_timer_storage =
-    (unsigned long*)0x0062C508;
-static int* const restore_mouse_after_paint_storage = (int*)0x0062C55C;
-static int* const debug_timeGetTime_on_storage = (int*)0x0062C4E8;
+// BINARY NOTE: these external objects occupy the fixed storage slots observed
+// in the executable.  Direct objects preserve the original absolute accesses.
+extern int system_ignore_size_messages_storage;
+extern int MouseCursorInChildContol_storage;
+extern int mouse_cursor_in_child_control_storage;
+extern void* save_active_wnd_storage;
+extern int do_restore_palette_storage;
+extern unsigned long restore_palette_timer_storage;
+extern int restore_mouse_after_paint_storage;
+extern int debug_timeGetTime_on_storage;
 
 class TSound_Driver {
 public:
@@ -263,7 +265,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         goto panel_return_alt;
 
     case 5:
-        if (*system_ignore_size_messages_storage != 0)
+        if (system_ignore_size_messages_storage != 0)
             goto default_window_proc;
         color_log(0x32, 0xBA, 3);
         if (self->handle_size(hwnd, 5, wparam, lparam) != 0)
@@ -300,12 +302,12 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
     case 0x1C:
         if (self->prog_ready != 0) {
             if (wparam == 1) {
-                if (*MouseCursorInChildContol_storage != 0) {
+                if (MouseCursorInChildContol_storage != 0) {
                     SetCursor(0);
                     SetClassLongA(self->prog_window, -12, 0);
                     if (self->prog_mode != 1)
                         self->restart_sound_system();
-                    *MouseCursorInChildContol_storage = 0;
+                    MouseCursorInChildContol_storage = 0;
                     if (self->draw_system != 0) {
                         self->draw_system->CheckSurfaces();
                         self->draw_system->ClearRestored();
@@ -319,17 +321,17 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
                         }
                         self->set_render_all();
                         InvalidateRect(self->prog_window, 0, 1);
-                        *do_restore_palette_storage = 10;
-                        *restore_palette_timer_storage = debug_timeGetTime(
+                        do_restore_palette_storage = 10;
+                        restore_palette_timer_storage = debug_timeGetTime(
                             (char*)0x57FB08, 0xE9B);
-                        *restore_mouse_after_paint_storage = 1;
+                        restore_mouse_after_paint_storage = 1;
                     }
                 }
-            } else if (*MouseCursorInChildContol_storage == 0) {
+            } else if (MouseCursorInChildContol_storage == 0) {
                 SetClassLongA(self->prog_window, -12, 0);
                 if (self->prog_mode != 1)
                     self->stop_sound_system();
-                *MouseCursorInChildContol_storage = 1;
+                MouseCursorInChildContol_storage = 1;
                 if (self->prog_mode != 1 && self->mouse_pointer != 0)
                     self->mouse_pointer->Shutdown_Mouse();
             }
@@ -390,15 +392,15 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
     case 0x200:
         color_log(0x24, 0x54, 3);
         if (self->handle_mouse_move(hwnd, 0x200, wparam, lparam) != 0) {
-            if (*mouse_cursor_in_child_control_storage != 0) {
+            if (mouse_cursor_in_child_control_storage != 0) {
                 if (self->windows_mouse == 0) {
                     SetCursor(0);
                     SetClassLongA(self->prog_window, -12, 0);
                     self->mouse_on();
-                    *mouse_cursor_in_child_control_storage = 0;
+                    mouse_cursor_in_child_control_storage = 0;
                 } else {
                     SetCursor(self->mouse_cursor);
-                    *mouse_cursor_in_child_control_storage = 0;
+                    mouse_cursor_in_child_control_storage = 0;
                 }
             }
             goto default_window_proc;
@@ -443,16 +445,16 @@ panel_return_after_exit_menu:
     case 0x400:
         color_log(0x24, 0x24, 3);
         {
-            int old_time = *debug_timeGetTime_on_storage;
-            *debug_timeGetTime_on_storage = 0;
+            int old_time = debug_timeGetTime_on_storage;
+            debug_timeGetTime_on_storage = 0;
             if (self->handle_user_command(hwnd, 0x400, wparam, lparam) == 0) {
                 if (mouse_down != 0)
                     color_log(0x4C, 0x5F, 4);
                 color_log(0x24, 0x5F, 3);
-                *debug_timeGetTime_on_storage = old_time;
+                debug_timeGetTime_on_storage = old_time;
                 return (long)panel_result;
             }
-            *debug_timeGetTime_on_storage = old_time;
+            debug_timeGetTime_on_storage = old_time;
         }
         goto default_window_proc;
 
