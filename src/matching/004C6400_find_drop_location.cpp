@@ -41,11 +41,15 @@
 // - Ghidra-supported `if (outer >= 2) return 0; do { ... } while (true)` fixed
 //   the late loop and return layout. It reduced the diff to 28 bytes and
 //   raised shape to 97.17%; the exact late body now spans +00CA through +0296.
-// - A binary-supported success goto after the infinite loop fixes the initial
-//   FPU schedule. The result is 5 differing bytes and 99.06% shape. A local
-//   success result and braces were neutral. The remaining bytes move `mov al,1`
+// - A binary-supported success goto after the infinite loop fixed the initial
+//   FPU schedule. The result was 5 differing bytes and 99.06% shape. A local
+//   success result and braces were neutral. The remaining bytes moved `mov al,1`
 //   across the success epilogue pops.
-// - final validation follows this source and the documented probe.
+// - Recovered the outer retry as `while (outer < 2)` with failure after the
+//   loop. This moves `mov al,1` before all saved-register pops and yields MATCH.
+//   A walkback kept MATCH with the success goto, but the direct return is
+//   simpler and agrees with the decompiler's source evidence.
+// - final validation follows this source and the documented exact checkpoint.
 
 extern int __cdecl debug_rand(char*, int);
 extern float DAT_00574720;
@@ -190,7 +194,7 @@ unsigned char RGE_Static_Object::find_drop_location(
     float radius_2y = radius_y + radius_y;
     short outer = 1;
 
-    do {
+    while (outer < 2) {
         short attempt = 0;
         do {
             switch ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3a) * 4) / 0x7fff) {
@@ -229,10 +233,11 @@ unsigned char RGE_Static_Object::find_drop_location(
                         terrain != (int)this->lookupZone((int)*x, (int)*y)) {
                         goto retry_attempt;
                     }
+                    // BINARY NOTE: success returns from inside the retry loop.
                     if (master->check_placement(this->owner, *x, *y,
                         0, 1, 1, 1, 0, 1, 1) == 0 &&
                         object->passableTile(*x, *y, 0) == 1) {
-                        goto success;
+                        return 1;
                     }
                 }
             }
@@ -245,11 +250,7 @@ retry_attempt:
         radius_2x = radius_2x + (master->radius_x * 4.0f);
         radius_2y = radius_2y + (master->radius_y * 4.0f);
         ++outer;
-        if (outer >= 2) {
-            return 0;
-        }
-    } while (true);
+    }
 
-success:
-    return 1;
+    return 0;
 }

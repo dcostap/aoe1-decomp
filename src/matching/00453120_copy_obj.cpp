@@ -17,16 +17,18 @@
 // - inline source-delta arithmetic perturbed the whole function (586-byte
 //   diff); same-TU cursor declaration and shared-block probes moved only
 //   isolated encodings, not the target register basin, and were rolled back.
-// - function-scope cursors, one shared source delta, and an unsigned flag bound
-//   reached the best clean result: 58 strict bytes differ; direct pointer-bound
-//   forms changed the long-lived name cursor and were rejected.
-// BINARY NOTE: the shipped flag loop uses an unsigned compare against 3 and a
-//   -0x88 anchor. Keep that odd bound; a signed compare changes the branch.
-// LIKELY INTENT: the three short, float, and byte groups are copied by one
-//   source-relative offset because the source and destination objects share a layout.
-// left in scratch: all calls, frame, size, CFG counts, and the long scalar/tail
-// regions match; remaining drift is the localized attribute-loop register and
-// flag-loop bound/block scheduling hunk at 00453258..004532C1.
+// - The first pass reached a 58-byte frontier. Direct pointer-bound forms
+//   changed the long-lived name cursor and were rejected.
+// - Second pass: three natural unsigned indexed loops reached MATCH. Reverting
+//   the amount loop or flag loop separately lost exactness. Removing unused
+//   cursor declarations did not change the exact result.
+// BINARY NOTE: the flag branch is unsigned and all three groups run for three
+//   elements. Unsigned indices preserve the branch and SIB forms.
+// LIKELY INTENT: the typed arrays have one shared three-element layout on both
+//   objects. Ordinary indexed copies express that layout without raw cursors.
+// Exact finish: the required changes are the three indexed loops and virtual
+//   member declaration. Function-scope cursor, delta, count, and unused cursor
+//   declarations were tested and reduced where they were incidental.
 
 class RGE_Sprite;
 class RGE_Sound;
@@ -119,7 +121,7 @@ public:
     float outline_radius_y;   // +0xB0
     float outline_radius_z;   // +0xB4
 
-    void copy_obj(RGE_Master_Static_Object* src);
+    virtual void copy_obj(RGE_Master_Static_Object* src);
 };
 
 void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
@@ -128,11 +130,6 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     unsigned char available_val = available;
     short hide_val = hide_in_scenario_editor;
     char** name_ptr = &name;
-    short* type;
-    float* amount;
-    unsigned char* flag;
-    int diff;
-    int count;
 
     if (*name_ptr != 0) {
         free(*name_ptr);
@@ -177,22 +174,17 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     movement_type = src->movement_type;
 
     {
-        type = attribute_type_held;
-        diff = (int)src - (int)(RGE_Master_Static_Object*)this;
-        count = 3;
+        unsigned int type_index = 0;
         do {
-            *type = *(short*)((int)type + diff);
-            type++;
-            count--;
-        } while (count != 0);
+            attribute_type_held[type_index] = src->attribute_type_held[type_index];
+            type_index++;
+        } while (type_index < 3);
 
-        amount = attribute_amount_held;
-        count = 3;
+        unsigned int amount_index = 0;
         do {
-            *amount = *(float*)((int)amount + diff);
-            amount++;
-            count--;
-        } while (count != 0);
+            attribute_amount_held[amount_index] = src->attribute_amount_held[amount_index];
+            amount_index++;
+        } while (amount_index < 3);
     }
 
     attribute_max_amount = src->attribute_max_amount;
@@ -200,12 +192,11 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     multiple_attribute_mod = src->multiple_attribute_mod;
 
     {
-        flag = attribute_flag;
-        int offset = -0x88;
+        unsigned int flag_index = 0;
         do {
-            *flag = *(unsigned char*)((int)flag + diff);
-            flag++;
-        } while ((unsigned int)(offset + (int)flag - (int)(RGE_Master_Static_Object*)this) < 3);
+            attribute_flag[flag_index] = src->attribute_flag[flag_index];
+            flag_index++;
+        } while (flag_index < 3);
     }
 
     area_effect_object_level = src->area_effect_object_level;
