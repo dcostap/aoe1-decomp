@@ -39,6 +39,16 @@
 // 9: packet-backed parser surface: restored the original semantic FILE* `infile`
 // name and separate float `pause_between_loops` local before the resource loop;
 // this tests the natural map.cpp declaration/use shape at the first fopen hunk.
+// Fresh pass, probes 2-12: map.obj PDB local declaration order and canonical
+// parsed field names worsened or duplicated the clean basin. Function-scope and
+// block-scope row anchors, pointer declaration order, valid-arm cursor init,
+// function-scope row/column counters, late row-anchor declaration, and the
+// PDB-supported resource_id/infile orders all emitted the same 679-byte group.
+// A six-variant row-anchor lab tested function/block scope, typed indexing, and
+// cursor rebasing. All six matched the clean group; none moved the +0x24 home.
+// The PDB confirms RGE_Border_Set size 0x5A0, RGE_TOB_Picts size 6, and all
+// member offsets used here. The remaining binary-backed gap is local-home and
+// register placement, not ownership, size, calls, or cleanup.
 //
 // The border record layout is shared with the exact map.cpp constructors and
 // update routine.  The map file's signed color/index locals intentionally retain
