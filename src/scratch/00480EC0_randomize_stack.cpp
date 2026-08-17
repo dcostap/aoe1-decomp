@@ -153,6 +153,13 @@
 //   0x960-byte sub_stacks array. The pair-loop cursor actively uses one home.
 //   The extra word is not alignment, alloca, EH, inline residue, or a boundary
 //   error. PDB omits its source owner, so a synthetic local remains unjustified.
+// - sa-246858c7-r1 H1-H22: natural pointer cursors, field-pointer cursors,
+//   declaration order, loop rotation, and pair bounds were tested. Pointer
+//   cursors did not recover the target frame or CFG. Counting odd pair ends
+//   (`1, 3, ..., 99`) with direct Map_Stack.next ownership improved the clean
+//   source to 219 bytes / 106 differences / 81.93% shape. It remains short
+//   of the target 0x968 frame because the target's extra scalar home has no
+//   proven source owner. No rejected field overlay or synthetic state remains.
 
 extern int __cdecl debug_rand(char* file, int line);
 
@@ -187,19 +194,16 @@ void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
             add_stack_node(&sub_stacks[r], param_1->next);
         }
 
-        int stack_index = 0;
-        while (stack_index < 100) {
-            while (sub_stacks[stack_index].next != 0 ||
-                   sub_stacks[stack_index + 1].next != 0) {
+        for (int stack_index = 1; stack_index < 100; stack_index += 2) {
+            while (sub_stacks[stack_index - 1].next != 0 ||
+                   sub_stacks[stack_index].next != 0) {
+                if (sub_stacks[stack_index - 1].next != 0) {
+                    add_stack_node(param_1, sub_stacks[stack_index - 1].next);
+                }
                 if (sub_stacks[stack_index].next != 0) {
                     add_stack_node(param_1, sub_stacks[stack_index].next);
                 }
-                if (sub_stacks[stack_index + 1].next != 0) {
-                    add_stack_node(param_1, sub_stacks[stack_index + 1].next);
-                }
             }
-
-            stack_index += 2;
         }
     }
 }
