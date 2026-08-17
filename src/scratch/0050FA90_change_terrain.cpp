@@ -30,6 +30,14 @@
 // left in scratch: canonical neighborhood behavior and field ownership are
 // reconstructed; remaining drift is VC5 prologue/register scheduling. The
 // rebuilt body remains 12 bytes longer than the 427-byte oracle.
+// sa-44c7d2a6-r1: local Ghidra evidence supports distinct narrow and widened
+// coordinate lives, but typed alias variants were duplicates or worse. A
+// guarded do-while rewrite changed the CFG and frame, so the natural for
+// loops remain authoritative. The unresolved gap is structural codegen only.
+// sa-956e4590-r1: verified the target's row/column roles against the original
+// map access and tested swapped parameter naming and coordinate expressions;
+// both emitted the same or worse nonexact structural basin. Restored the
+// pinned natural map_row_offset[y] + x reconstruction for final validation.
 
 class RGE_Tile_List {
 public:
