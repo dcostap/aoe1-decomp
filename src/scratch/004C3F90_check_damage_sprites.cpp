@@ -24,8 +24,13 @@
 // - Fresh structural probes tried the binary-looking byte-pointer walk,
 //   counter width, declaration order, and master scope; all were nonexact
 //   duplicates or worse (best fresh diff 432), so restored the 415-byte source.
-// - Removed forced shared-tail labels. Ordinary flag branches express the
-//   observed cases without retaining decompiler-shaped goto control flow.
+// - A prior pass removed forced shared-tail labels, but the current binary-backed
+//   switch keeps one proven add_sprite tail and preserves the ordered call set.
+// - Revisited the typed scan and flag ownership. A named count in the indexed
+//   scan was codegen-active, while direct typed member indexing was unchanged.
+//   A natural grouped old-flag switch recovered the observed <=1/==2 compare
+//   sequence and a 544-byte rebuild with all 10 ordered calls; it remains
+//   nonexact at 415 positional bytes, so the source stays in scratch.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
@@ -81,8 +86,8 @@ public:
 void RGE_Static_Object::check_damage_sprites()
 {
     RGE_Master_Static_Object* master = this->master_obj;
-    int old_damage_loc = -1;
-    int new_damage_loc = -1;
+    long old_damage_loc = -1;
+    long new_damage_loc = -1;
     unsigned char new_percent;
 
     if (master->hp <= 0) return;
@@ -92,10 +97,9 @@ void RGE_Static_Object::check_damage_sprites()
     if (new_percent == this->curr_damage_percent) return;
 
     if (new_percent < 100 && master->damage_sprite_num > 0) {
-        for (int i = 0; i < master->damage_sprite_num; i++) {
-            DamageSpriteInfo* info = &master->damage_sprites[i];
-            if (info->damage_percent < new_percent) new_damage_loc = i;
-            if (info->damage_percent < this->curr_damage_percent) old_damage_loc = i;
+        for (int i = 0, n = master->damage_sprite_num; i < n; i++) {
+            if (master->damage_sprites[i].damage_percent < new_percent) new_damage_loc = i;
+            if (master->damage_sprites[i].damage_percent < this->curr_damage_percent) old_damage_loc = i;
         }
     }
 
@@ -106,12 +110,13 @@ void RGE_Static_Object::check_damage_sprites()
             RGE_Sprite* sprite;
             long add_x;
             long add_y;
-            if (flag < 2) {
-                if (flag == 0) {
-                    sprite = info->sprite;
-                    add_x = 0;
-                    add_y = 0;
-                } else {
+            switch (flag) {
+            case 0:
+                sprite = info->sprite;
+                add_x = 0;
+                add_y = 0;
+                goto add_damage_sprite;
+            case 1: {
                     RGE_Master_Static_Object* m = this->master_obj;
                     float rand_x = (float)debug_rand(s_stat_obj_cpp, 0x774);
                     float fx = (this->world_x - (short)this->world_x) +
@@ -124,22 +129,32 @@ void RGE_Static_Object::check_damage_sprites()
                     sprite = info->sprite;
                     add_x = sx;
                     add_y = sy;
+                    goto add_damage_sprite;
                 }
-                this->sprite_list->add_sprite(sprite, 0x5A, add_x, add_y);
-            } else if (flag == 2) {
+            case 2:
                 this->new_sprite(info->sprite);
+                goto damage_sprite_done;
+            default:
+                goto damage_sprite_done;
             }
+
+        add_damage_sprite:
+            this->sprite_list->add_sprite(sprite, 0x5A, add_x, add_y);
+        damage_sprite_done:;
         }
 
         if (old_damage_loc > -1) {
             DamageSpriteInfo* oldInfo = &this->master_obj->damage_sprites[old_damage_loc];
-            if (oldInfo->flag == 2) {
+            switch (oldInfo->flag) {
+            case 0:
+            case 1:
+                this->sprite_list->remove_sprite(oldInfo->sprite);
+                break;
+            case 2:
                 if (new_damage_loc < 0 || this->master_obj->damage_sprites[new_damage_loc].flag != 2) {
                     this->new_sprite(this->master_obj->sprite);
                 }
-            }
-            else if (oldInfo->flag < 2) {
-                this->sprite_list->remove_sprite(oldInfo->sprite);
+                break;
             }
         }
     }
