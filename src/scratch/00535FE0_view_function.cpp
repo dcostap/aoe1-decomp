@@ -61,6 +61,15 @@
 //     (picked_type/fog_flag/tile/tile_ptr/start_map_row2/direction/tile_screen_row/
 //     last_picked_obj region) and ebx/ebp register roles. Exact check is BLOCKED by
 //     the corpus split (see note above); further probing would be blind allocation tuning.
+//   latest pass (sa-c5cf6e0b): twelve fresh hypotheses were compiled and checked.
+//     Narrow list_size, signed fog_flag, narrow/full picked_type, narrow direction,
+//     narrow col_num, short tile_screen_row, full max_row_num2, paired narrow types,
+//     reordered initializers, a separate visibility local, and register hints for
+//     the persistent short states all regressed or produced duplicate codegen.
+//     The clean source remains best at 2423 strict-diff bytes, 65.02% shape,
+//     41.72% exact-block coverage, frame 0x78, and all 15 calls aligned.
+//     No hypothesis changed the corpus overflow. Restore the clean source before
+//     pause; the remaining lead is the proven local-home/register basin, not ABI.
 
 #include <windows.h>
 
