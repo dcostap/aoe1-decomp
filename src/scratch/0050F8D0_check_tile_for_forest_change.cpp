@@ -31,6 +31,15 @@
 // direct-loop basin remained plausible; final validation is 423/434 bytes,
 // 255 differing bytes, 0x14 frame, and 3 calls. The unresolved drift is
 // parameter register coloring, forest-loop lowering, and self-call identity.
+// sa-0cb5a865-r1 revisit: Ghidra-supported mutable-column traversal improved
+// structural resync but worsened strict bytes; typed row cursors, map-row
+// aliases, a proven vtable slot, declaration orders, and y/register qualifiers
+// were worse or codegen duplicates. Restored the clean direct-loop source.
+// sa-86e6c1ab-r1 revisit: signed terrain typing was a codegen duplicate. An
+// int row/cell pointer-count loop reduced edit cost but kept 255 strict bytes;
+// precomputed pointer guards and a named terrain byte worsened the basin.
+// Restored the pinned direct-loop source. Final validation remains 255 differing
+// bytes, 423/434 bytes, 0x14 frame, 3 calls, and unresolved self-call identity.
 // left in scratch: behavior and field ownership are reconstructed; remaining
 // drift is prologue/register scheduling plus recursive-call relocation. The
 // best validated source is the flag-order variant at 255 differing bytes.
