@@ -39,6 +39,24 @@
 // nested if/do scan was restored.  Final current candidate is 356 bytes with
 // all seven call targets aligned; the 35-byte prologue/register and scan gap
 // remains a structural blocker for this assignment.
+//
+// sa-0ba55ae7 pass: baseline check confirmed 356 bytes, 7/7 ordered calls,
+// no frame, and 332 differing bytes.  Direct object/master expressions,
+// adjacent create_terrain_object declaration order, result width and init
+// placement, complete map virtual context, register hints, and a named tile
+// pointer were all codegen duplicates.  The inner guarded while scan removed
+// two required call sites and was restored.  The clean typed reconstruction
+// remains unresolved; the next useful evidence is a compiler-basin donor or
+// source declaration proof for the target EBX map and EBP result allocation.
+//
+// sa-4633c59f-r1 revisit: the pinned source remains the clean 356-byte basin.
+// A placement-only current_node->node reload reproduced four late exact blocks
+// but merged one earlier cleanup call, yielding 346 bytes and 6 calls.  Scoping
+// or removing the object alias merged more cleanup calls.  Direct master-id
+// use, cleanup-polarity reversal, declaration reordering, and swapping the
+// active/next node locals were duplicates or worse.  Restore the typed source
+// until a period declaration or compiler-basin donor explains the EBX/EBP
+// allocation and the target's separate cleanup sites.
 
 class RGE_Game_World;
 class RGE_Player;
