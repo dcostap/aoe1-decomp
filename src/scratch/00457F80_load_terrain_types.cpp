@@ -23,6 +23,13 @@
 // negative-first sound guard is retained; it reaches the best 331-byte diff.
 // Paused: frame remains 0x60 versus 0x5C, with the scan-id home and tile-pointer
 // topology still differing. Calls, cleanup, record stride, and widths match.
+// Revisit pass: twenty fresh probes tested scan-field ownership, declaration
+// scope/order, input-buffer overlays, counter widths, field remapping, and the
+// reviewed timing global. They did not beat the pinned 331-byte clean source.
+// One exploratory alias of the post-float short removed the third float home,
+// reached frame 0x5C and diff 324, but it merged two distinct input fields and
+// is not a valid source reconstruction. It was discarded. The clean source is
+// restored. The remaining blocker is the natural local-home overlay.
 
 #include <stdio.h>
 
