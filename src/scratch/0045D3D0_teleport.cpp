@@ -28,6 +28,10 @@
 // - A separate countdown reset before the inner gate recovered the oracle's
 //   stack homes and 62.66% exact-block coverage, but remained 303B/495B or
 //   303B/491B in nearby orderings.  The clean 256B basin remains best.
+// - A direct (float)count cast with a loop_count inner gate reached a 494B /
+//   174-byte-diff basin with 62.66% exact blocks, but retained register-map
+//   conflicts and a three-byte size overrun.  Four count-shape lab variants
+//   found no exact result; the natural baseline remains authoritative.
 
 #include <math.h>
 
