@@ -44,6 +44,19 @@
 //   period PDB long/const ABI.
 // - restored the six PDB-proven TListPanel data fields after TTextPanel; this
 //   layout correction is codegen-neutral and keeps the local model canonical.
+// - fresh worker probes of a post-arithmetic list-panel receiver local, a named
+//   right-edge temporary, and an inline arithmetic helper were codegen
+//   duplicates; restored the pinned natural source after each test.
+// - fresh worker lab tested 12 natural edge-expression spellings across 64
+//   neutral file-scope declaration contexts (768 variants); every variant
+//   stayed in the same 253-byte group with the +00C8 scheduling mismatch.
+// - fresh worker probes of top-level parameter const qualifiers, inherited
+//   TListPanel mouse virtuals, a post-arithmetic reference receiver, and
+//   original-style one-line call formatting were all codegen duplicates.
+// - reverse width/x local declarations select the oracle LEA SIB but retain
+//   the same 15-byte shifted param3 push; combining that form with a named
+//   right-edge temporary is also a duplicate. Restored the simpler pinned
+//   natural source.
 
 class TPanel {
 public:
