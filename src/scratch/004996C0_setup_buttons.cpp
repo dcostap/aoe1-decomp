@@ -224,7 +224,7 @@ public:
     uchar culture;
     uchar built;
     char gap_1E6[0x0E];
-    int work_status(short*, short*, short*, char*, short);
+    int work_status(short&, short&, short&, char*, short);
 };
 
 class RGE_Player {
@@ -465,8 +465,7 @@ void TRIBE_Screen_Game::setup_buttons()
     this->mouse_last_y = -1;
 
     if (this->game_obj == 0) {
-        this->disable_unused_buttons();
-        return;
+        goto finish_disable_buttons;
     }
 
     player = (TRIBE_Player*)rge_base_game->get_player();
@@ -672,7 +671,7 @@ void TRIBE_Screen_Game::setup_buttons()
                 short work_target;
                 short progress;
 
-                building->work_status(&work_type, &work_target, &progress,
+                building->work_status(work_type, work_target, progress,
                                       name + 4, 0x200);
                 if (progress == 100) {
                     work_type = 0;
@@ -694,7 +693,7 @@ void TRIBE_Screen_Game::setup_buttons()
                 } else if ((object_state == 2) &&
                            ((work_type != 0x66) ||
                             (production_queues_is_use != 0))) {
-                    short tech_count_local = 0;
+                    short tech_count_local;
                     short make_count;
                     player->interface_tech_avail(&this->tech_list,
                                                  &tech_count_local,
@@ -704,7 +703,7 @@ void TRIBE_Screen_Game::setup_buttons()
                                                  building->master_obj->id);
                     this->start_item = make_count + tech_count_local;
 
-                    uchar show_queue =
+                    bool show_queue =
                         (production_queues_is_use != 0) &&
                         (building->production_queue_count > 0);
                     if (show_queue) {
@@ -761,8 +760,7 @@ void TRIBE_Screen_Game::setup_buttons()
 
                     int tech_disabled = 0;
                     if (show_queue) {
-                        this->disable_unused_buttons();
-                        return;
+                        goto finish_disable_buttons;
                     }
 
                     if ((building->master_obj->id == 0x6D) &&
@@ -910,5 +908,16 @@ void TRIBE_Screen_Game::setup_buttons()
 finish_normal_buttons:
     this->set_button(final_pic, 0x0B, final_frame, final_type, 0,
                      0x1D4D9, -1, 0, (uchar*)0, (char*)0, (char*)0, 0);
+
+finish_disable_buttons:
     this->disable_unused_buttons();
 }
+
+// Managed pass 2026-08-17 notes:
+// Baseline: 4268 differing bytes, 4129 rebuilt bytes, and 80 calls.
+// The reviewed work_status reference ABI emitted the same bytes as pointers.
+// The pointer spelling was not canonical, so this source uses references.
+// The original passes tech_count_local to interface_tech_avail without a store.
+// Removing its zero initializer added one exact block in a valid source model.
+// Late disable labels for null-object and queue exits were codegen-neutral.
+// Byte culture changed compare width. Other tested aliases and guards were worse.
