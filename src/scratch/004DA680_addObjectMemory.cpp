@@ -27,6 +27,18 @@
 // luna-4DA680-r4: localized four-axis scan declaration lab kept size/frame/call gates and grouped all variants at the same 431-byte diff.
 // luna-4DA680-r4: reusing the scan pointer for allocation was byte-identical; delaying the base load with outer guard or early goto broke size and CFG.
 // luna-4DA680-r5: inspected the original duplicate block; EAX carries scan index i, while EDI is only the first-empty index for normal insertion. The 286-byte STORE(empty) diagnostic was not an original duplicate write and remains discarded.
+// sa-53b45eb0 pass: baseline and final validation remain 1316 bytes, six calls,
+// no frame, 19 conditional edges, and 431 positional bytes different.
+// sa-53b45eb0 pass: tested 20 distinct source hypotheses. Outer positive guards,
+// goto and do/while scans, direct owner bounds, declaration and initialization
+// order, pointer and count reuse, player-number widths, register hints, const,
+// nested predicates, and direct field stores did not improve the clean source.
+// sa-53b45eb0 pass: original setup loads maxImportantObjectMemory into EBP,
+// sentinel into EDI, and the memory cursor after the count test. Clean source
+// loads max into EDI, sentinel into EBP, and hoists the cursor load. This is the
+// remaining codegen lead; no supported source axis found the original basin.
+// sa-53b45eb0 pass: restored and pinned the clean typed while-scan. Next lead is
+// original source scope or translation-unit context, not metric-only steering.
 // luna-4DA680-r5: the remaining source-backed discrepancy is saved-register coloring at the scan prologue; no fresh natural axis remains after the eligible declaration lab.
 
 typedef unsigned char uchar;
