@@ -114,6 +114,26 @@
 //     202B/198 diff. The blocker is the original pushed parameter-home and
 //     pending-x87 schedule. No natural, policy-valid exact lead remains.
 
+// sa-39d1e9fa-r1 revisit 2026-08-17:
+//   - Read the complete local lessons, workflow, target history, negative
+//     evidence, target assembly, and exact neighboring stat_obj methods.
+//   - Tested 20 new context and ownership hypotheses. These used the exact
+//     canonical class fields, real neighboring method declarations, partial
+//     real virtual surfaces, period standard-header combinations, #line state,
+//     stat_obj helper and rdata declarations, declaration order, and natural
+//     x87 temporary ownership. No policy-valid variant recovered push ecx,
+//     the [esp+8] parameter home, or the fused other-Y subtraction.
+//   - A 64-sample ambient declaration lab emitted one unchanged basin. An
+//     eight-case standard-header lab emitted three basins, all worse than
+//     exact and none closer to the target. Full canonical class context was
+//     codegen-neutral. These are negative TU-context results, not source.
+//   - The exact decompiler local order remained a 182-byte, 197-diff no-push
+//     basin. Acquiring master pointers before coordinates improved the raw
+//     diff to 195 but worsened shape and did not create the target home.
+//   - Restored the clean natural typed source after every probe. Final
+//     validation remains 202B/198 diff with five spans. The prior 199B/22
+//     result still required forbidden volatile dy and is not retained.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
