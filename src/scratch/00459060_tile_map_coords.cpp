@@ -28,6 +28,27 @@
 //     tested for block placement; both worsened positional output and rolled back.
 // 18: reversing the case-3 comparison operands was a codegen duplicate; kept
 //     the period-plausible fx*half < raw_y spelling.
+// worker pass, 2026-08-17:
+// 19: baseline rebuilt 754 bytes with frame 0x10 and 356 positional mismatches.
+// 20: direct case-10 fy < one improved shape but raised the mismatch to 473.
+// 21: inverted case 13 to match original handler order; diff stayed 356, coverage improved.
+// 22: swapped case-7 update order; VC5 emitted a duplicate.
+// 23: changed result to double; diff rose to 408.
+// 24: used compound add and reversed add operands; both stayed in the same basin.
+// 25: named a case-3 diagonal; size and diff worsened.
+// 26: preloaded case-3 result; diff rose to 383.
+// 27: declared constants const; diff stayed 356 and relocation identity changed.
+// 28: retested direct case-10 spelling after case-13; diff rose to 474.
+// 29: used a positive case-10 fy >= one block; diff stayed 473.
+// 30: made case-3 false work an explicit else; emitted bytes stayed unchanged.
+// 31: reversed case-16 comparison; size grew by 74 bytes.
+// 32: used case-16 >=; size remained 74 bytes too large.
+// 33: named the case-16 threshold; VC5 emitted the pinned duplicate.
+// 34: used !(raw_y <= threshold); size grew by 74 bytes.
+// 35: added donor-supported <stdlib.h>; emitted bytes stayed unchanged.
+// 36: used game_globals.h; bytes stayed unchanged but owner decoration changed.
+// 37: variant lab tested four case-3/case-10 combinations; no exact result.
+// Final: restored and pinned the natural source. Validation remains a 356-byte MISMATCH.
 // left in scratch: exact source expression/FPU stack shaping remains under test.
 
 struct RGE_Tile { int pad0; unsigned char tile_type; };
@@ -83,8 +104,8 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* out1, flo
         z = 0.0;
         goto default_result;
     case 13:
-        if (fx <= DAT_005706c0) result = ((DAT_005706c0 - fx) + fy) + ((DAT_005706c0 - fx) + fy);
-        else result = ((fx - DAT_005706c0) + fy) + ((fx - DAT_005706c0) + fy);
+        if (fx > DAT_005706c0) result = ((fx - DAT_005706c0) + fy) + ((fx - DAT_005706c0) + fy);
+        else result = ((DAT_005706c0 - fx) + fy) + ((DAT_005706c0 - fx) + fy);
         goto z_result;
     case 14:
         if (fx <= DAT_005706c0) goto tile_case6;
