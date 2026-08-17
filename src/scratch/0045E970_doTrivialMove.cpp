@@ -30,9 +30,20 @@
 //   stack hunk; size moved 6 bytes closer and positional diff improved to 2826.
 // - naming the owner world and radius components was emitted-code duplicate or
 //   worse; kept only the natural target-distance temporaries.
+// - this pass tested 23 meaningful source and context hypotheses. The first
+//   separate angle-X local improved five strict bytes and six exact blocks.
+// - the shipped second-turn x87 block starts with fsin; the retained reverse
+//   assignment order follows that binary order.
+// - BINARY NOTE: the late next-distance value uses a qword store and fmul.
+//   A natural double local restores the original 0x2C frame.
+// - the stdlib.h context is retained because it reduced positional drift by
+//   eight bytes in the reduced double-local source.
+// - unresolved: current result is 2814 differing bytes, 72.35% shape, and
+//   exact call-site order; the remaining drift starts at the local frame.
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct Waypoint {
     float x;
@@ -295,23 +306,25 @@ extern double DAT_00570bf0;
 
 int RGE_Moving_Object::doTrivialMove(float x, float y)
 {
-    int numberFacets;
-    float dX;
     float targetDY;
+    float angleDX;
     float newAngle;
-    float dY;
-    float newY;
     float distanceToCover;
-    int curDistance;
+    float dX;
+    float newY;
+    float curDistance;
+    int alreadyMoving;
+    float dY;
+    int numberFacets;
     int i;
     int found;
     int passable;
 
-    curDistance = 1;
+    alreadyMoving = 1;
 
     if (this->speed == DAT_00570b98) {
         RGE_Sprite* sprite = this->sprite;
-        curDistance = 0;
+        alreadyMoving = 0;
         if (sprite == 0 || sprite->base_speed <= DAT_00570b98) {
             this->speed = ((RGE_Master_Animated_Object*)this->master_obj)->speed;
         } else {
@@ -344,15 +357,15 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         numberFacets = 8;
     }
 
-    if (curDistance == 1) {
-        dX = x - this->world_x;
+    if (alreadyMoving == 1) {
+        angleDX = x - this->world_x;
         dY = y - this->world_y;
     } else {
-        dX = x - ((float)floor((double)this->world_x) - DAT_00570b80);
+        angleDX = x - ((float)floor((double)this->world_x) - DAT_00570b80);
         dY = y - ((float)floor((double)this->world_y) - DAT_00570b80);
     }
 
-    targetDY = (float)atan2((double)dY, (double)dX);
+    targetDY = (float)atan2((double)dY, (double)angleDX);
     this->boundAngle(&targetDY, -1);
 
     dY = targetDY - this->angle;
@@ -537,15 +550,15 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
 
     this->closestDistanceToWaypoint = 100000.0f;
 
-    if (curDistance == 1) {
-        dX = path->currentWaypoint()->x - this->world_x;
+    if (alreadyMoving == 1) {
+        angleDX = path->currentWaypoint()->x - this->world_x;
         dY = path->currentWaypoint()->y - this->world_y;
     } else {
-        dX = path->currentWaypoint()->x - ((float)floor((double)this->world_x) - DAT_00570b80);
+        angleDX = path->currentWaypoint()->x - ((float)floor((double)this->world_x) - DAT_00570b80);
         dY = path->currentWaypoint()->y - ((float)floor((double)this->world_y) - DAT_00570b80);
     }
 
-    targetDY = (float)atan2((double)dY, (double)dX);
+    targetDY = (float)atan2((double)dY, (double)angleDX);
     this->boundAngle(&targetDY, -1);
     dY = targetDY - this->angle;
     newY = dY * (float)numberFacets * DAT_00570b78;
@@ -572,8 +585,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     this->boundAngle(&this->angle, numberFacets);
     this->set_angle();
 
-    this->velocity_x = (float)cos((double)this->angle) * newAngle;
     this->velocity_y = (float)sin((double)this->angle) * newAngle;
+    this->velocity_x = (float)cos((double)this->angle) * newAngle;
     distanceToCover = this->velocity_y;
     dX = this->world_x + this->velocity_x;
     newY = this->world_y + distanceToCover;
@@ -603,20 +616,22 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     if (waypoint == 0) {
         float dx = x - dX;
         float dy = y - newY;
-        distanceToCover = (float)sqrt(dy * dy + dx * dx);
+        curDistance = (float)sqrt(dy * dy + dx * dx);
         destinationZ = this->world_z + this->velocity_z;
     } else {
         float dx = path->currentWaypoint()->x - this->world_x;
         float dy = path->currentWaypoint()->y - this->world_y;
-        distanceToCover = (float)sqrt(dy * dy + dx * dx);
+        curDistance = (float)sqrt(dy * dy + dx * dx);
 
         dx = path->currentWaypoint()->x - (this->world_x + this->velocity_x);
         dy = path->currentWaypoint()->y - (this->world_y + this->velocity_y);
-        float nextDistance = (float)sqrt(dy * dy + dx * dx);
+        // BINARY NOTE: VC5 emits the original qword x87 temporary for this value.
+        double nextDistance = sqrt((double)dy * (double)dy +
+                                   (double)dx * (double)dx);
 
-        if ((this->closestDistanceToWaypoint > nextDistance && distanceToCover < 0.25f) ||
+        if ((this->closestDistanceToWaypoint < nextDistance && curDistance < 0.25f) ||
             (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet &&
-             distanceToCover < 0.5f)) {
+             curDistance < 0.5f)) {
             int ok = 1;
             waypoint = path->currentWaypoint();
             float waypointY = waypoint->y;
@@ -641,7 +656,7 @@ moved:
     float speedMultiplier = 1.0f;
     this->lastFacet2 = this->lastFacet;
     this->lastFacet = this->facet;
-    this->closestDistanceToWaypoint = distanceToCover;
+    this->closestDistanceToWaypoint = curDistance;
 
     if (deltaZ < DAT_00570be0) {
         speedMultiplier = 0.9f;
