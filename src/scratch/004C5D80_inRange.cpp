@@ -154,20 +154,40 @@
 //     parameters, named dX/dY locals, and no hidden ABI or inline site. The dY
 //     debug home is stale after push ecx. No natural source evidence supports
 //     the missing pushed home or diagnostic x87 order.
+// sa-d91bd63d-r1 audit 2026-08-17:
+//   - Canonicalized the proven standalone static/master class surfaces. The
+//     master has a vptr, radius_x/+30, radius_y/+34, and radius_z/+38. The
+//     static object has id/+4, master_obj/+8, owner/+C, and world_x/+38.
+//     This source change emitted the same 202B/198-diff body.
+//   - A 32-variant PDB class-surface lab tested the full virtual slot counts,
+//     canonical unused fields, and direct radius-member expressions. Virtual
+//     slots and unused fields were codegen-neutral. Direct float radius reads
+//     fell to 186B and a broad structural mismatch. The direct form is kept
+//     because it removes compiler-steering aliases and temporary types.
+//   - Ten natural checks tested radius widths, declaration order, delta order,
+//     abs and clamp forms, and hoisted master reads. None improved the source.
+//     The policy-clean source is 186B/198 diff. The first mismatch is the
+//     missing pushed parameter home at entry. The fused Y subtraction and its
+//     fault order remain unresolved.
+
+class RGE_Player;
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[0x30];
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x2C];
     float radius_x;  // +0x30
     float radius_y;  // +0x34
+    float radius_z;  // +0x38
 };
 
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
-    char gap_04[4];
+    long id;  // +0x04
     RGE_Master_Static_Object* master_obj; // +0x08
-    char gap_0C[0x2C];
+    RGE_Player* owner; // +0x0C
+    char gap_10[0x28];
     float world_x; // +0x38
     float world_y; // +0x3C
 
@@ -186,17 +206,12 @@ int RGE_Static_Object::inRange(RGE_Static_Object* other, float range)
         dy = -dy;
     }
 
-    RGE_Master_Static_Object* this_master = this->master_obj;
-    RGE_Master_Static_Object* other_master = other->master_obj;
-    double other_radius_x = other_master->radius_x;
-    double this_radius_x = this_master->radius_x;
-    float x = dx - this_radius_x - other_radius_x;
-    double this_radius_y = this_master->radius_y;
+    float x = dx - this->master_obj->radius_x - other->master_obj->radius_x;
 
     if (x < 0.0f) {
         x = 0.0f;
     }
-    float y = dy - this_radius_y - other_master->radius_y;
+    float y = dy - this->master_obj->radius_y - other->master_obj->radius_y;
     if (y < 0.0f) {
         y = 0.0f;
     }
