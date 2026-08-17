@@ -21,7 +21,38 @@
 // 18: modeled the proven virtual master/map/player surfaces and RGE_Combat_Object base; codegen was unchanged, restored.
 // 19: grouped the four coordinate initializers; diff improved to 170B and the x homes matched, but the required ownership use was wrong, restored.
 // 20: reordered row/tile locals, tried typed row-pointer traversal, and moved bounds declarations; each worsened or duplicated codegen, restored.
+// 21: revalidated the pinned 821B baseline; all nine calls and the 0x3C frame
+// remain exact, but coordinate-result homes and the tail still differ.
+// 22: reviewed DAT_00570934/38/3c/40 externs; named globals changed no checked
+// metric, but they remain the binary-supported constant surface.
+// 23: natural map_row_offset[y][x] indexing reduced code size but moved to a
+// 0x34 frame and broad drift; restored for comparison.
+// 24: declaration-order and coordinate-name swaps were codegen duplicates.
+// 25: removing the explicit positive-body else was a codegen duplicate.
+// 26: explicit int row/column indices reached 803B but lost the original CFG
+// and frame topology.
+// 27: real virtual destructors changed the destructor call to an indirect call
+// and removed the required delete site; rejected as an ABI mismatch.
+// 28: <stdlib.h> changed local scheduling but not checked metrics.
+// 29: typed row-pointer cursors, split row pointers, and cached row tables all
+// entered worse 0x34-frame basins.
+// 30: result initialization before the radius guard was a codegen duplicate.
+// 31: declaration initializers changed expression order or were duplicates.
+// 32: direct typed tile addressing with map_row_offset[y][x] was the best
+// policy-valid natural form tested, but measured 787B, 0x34 frame, and 547
+// positional bytes; natural counted short loops were also worse.
+// 33: a nine-variant lab over coordinate declaration and map-index forms found
+// no size/frame/call-set eligible variant and six emitted-code groups.
+// 34: final policy source uses reviewed constants, typed map_row_offset[y][x],
+// natural new/delete, and a real object-list destructor declaration.  Final
+// validation is 787B versus 802B, 0x34 versus 0x3C frame, 547 positional bytes,
+// and nine aligned calls.  No policy-valid exact source was found.
 // FLAGS: config/flags/0045AB20_make_object_collision_list.rsp (/nologo /c /O2 /Oy /GX)
+
+extern float DAT_00570934;
+extern float DAT_00570938;
+extern float DAT_0057093c;
+extern float DAT_00570940;
 // left in scratch: 821B rebuilt vs 802B original, 208 positional bytes, exact frame/call set; remaining gap is coordinate-result register/home assignment plus tail/block layout.
 
 struct RGE_Check_Node;
@@ -74,7 +105,7 @@ public:
 
 class RGE_Object_List {
 public:
-    void* vtable;
+    virtual ~RGE_Object_List();
     RGE_Object_Node* list;
     short number_of_objects;
     unsigned char gap_0A[2];
@@ -116,7 +147,7 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     float dx = master->radius_x;
     float dy = master->radius_y;
 
-    if (dx <= 0.0f || dy <= 0.0f) {
+    if (dx <= DAT_00570934 || dy <= DAT_00570934) {
         return 0;
     } else {
 
@@ -124,10 +155,10 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     short local_40;
     short sVar9;
     short sVar10;
-    x1 = (short)(int)(this->world_x - 3.0f);
-    sVar9 = (short)(int)(this->world_y - 3.0f);
-    local_40 = (short)(int)(this->world_x + 3.0f);
-    sVar10 = (short)(int)(this->world_y + 3.0f);
+    x1 = (short)(int)(this->world_x - DAT_00570938);
+    sVar9 = (short)(int)(this->world_y - DAT_00570938);
+    local_40 = (short)(int)(this->world_x - DAT_0057093c);
+    sVar10 = (short)(int)(this->world_y - DAT_0057093c);
 
     RGE_Map* map = this->owner->world->map;
     RGE_Check_List* list = new RGE_Check_List;
@@ -146,13 +177,10 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     }
 
     if (sVar9 <= sVar10) {
-        int tile_offset = (int)x1 * (int)sizeof(RGE_Tile);
-        int row_offset = (int)sVar9 * (int)sizeof(RGE_Tile*);
         int row_count = (int)sVar10 - (int)sVar9 + 1;
         do {
             if (x1 <= local_40) {
-                RGE_Tile* tile = (RGE_Tile*)((char*)
-                    *(RGE_Tile**)((char*)map->map_row_offset + row_offset) + tile_offset);
+                RGE_Tile* tile = &map->map_row_offset[sVar9][x1];
                 int column_count = (int)local_40 - (int)x1 + 1;
                 do {
                     RGE_Object_Node* node = tile->objects.list;
@@ -162,21 +190,21 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
                             RGE_Master_Static_Object* object_master = object->master_obj;
                             float object_dy = object_master->radius_y;
                             float object_dx = object_master->radius_x;
-                            if (object_dy > 0.0f && object_dx > 0.0f) {
+                            if (object_dy > DAT_00570934 && object_dx > DAT_00570934) {
                                 float dz = object->world_z - this->world_z;
-                                if (dz >= -(object_master->radius_z - -0.1f) &&
-                                    dz <= this->master_obj->radius_z - -0.1f) {
+                                if (dz >= -(object_master->radius_z - DAT_00570940) &&
+                                    dz <= this->master_obj->radius_z - DAT_00570940) {
                                     float rx = object->world_x - this->world_x;
                                     float ry = object->world_y - this->world_y;
-                                    if (rx < 0.0f) {
+                                    if (rx < DAT_00570934) {
                                         rx = -rx;
                                     }
-                                    if (ry < 0.0f) {
+                                    if (ry < DAT_00570934) {
                                         ry = -ry;
                                     }
                                     rx = rx - (object_dx + dx + extra);
                                     ry = ry - (object_dy + dy + extra);
-                                    if (rx <= 0.0f && ry <= 0.0f) {
+                                    if (rx <= DAT_00570934 && ry <= DAT_00570934) {
                                         list->add_node(object, rx, ry, 0);
                                     }
                                 }
@@ -188,7 +216,6 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
                     column_count--;
                 } while (column_count != 0);
             }
-            row_offset += 4;
             row_count--;
         } while (row_count != 0);
     }
