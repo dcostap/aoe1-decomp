@@ -33,8 +33,15 @@
 //   clamp expressions were tested and restored; they reduced source clarity or
 //   structural coverage.  One phaseValue1 local now names the shared phase
 //   parser value; it emits the same code as the prior value1 spelling.
-// - original asm resets currentPhase to -1 before copying the EndPlay name;
-//   this behavior correction is retained despite its small codegen regression.
+// - Ghidra stack evidence separates the phase state from the two `%c` outputs.
+//   The clean source now keeps phaseState and phaseValue1 separate.
+// - direct quote scans and the separated parser state improve structural
+//   coverage, but the current natural source remains nonexact.
+// - 28 meaningful probes covered flags, headers, ABI surfaces, lifetimes,
+//   declaration order, control flow, and local layout.  The best metric-only
+//   basin aliases phaseState with value1 and is not behavior-safe.
+// - final validation: 72/72 ordered calls, frame 0x3A8, size +95, diff 4280;
+//   the remaining blocker is VC5 EH/local-home topology.
 // - reusing the quote end counter and adding the unmapped temp3 local did not
 //   change emitted code; the narrow char comment locals remain preferred.
 
@@ -191,14 +198,11 @@ public:
 };
 
 int AIPlayBook::loadPlays(char* filename) {
-    char temp2[0x100];
-    char temp[0x100];
-    char temp6[0x100];
     int temp4;
     int phaseValue1;
-    char commentSecond;
     int currentPhase;
-    char commentFirst;
+    int phaseState;
+    int j;
     int groupPhase;
     int currentPlay;
     int refPhase;
@@ -207,6 +211,9 @@ int AIPlayBook::loadPlays(char* filename) {
     int temp7;
     int fileValue;
     FILE* file;
+    char temp2[0x100];
+    char temp[0x100];
+    char temp6[0x100];
 
 
     if (filename == 0 || strcmp(filename, s_NONE) == 0) {
@@ -249,7 +256,7 @@ int AIPlayBook::loadPlays(char* filename) {
 
     rewind(file);
     refPhase = -1;
-    currentPhase = -1;
+    phaseState = -1;
 
     while (refPhase < 0x3E80 && fgets(temp + 4, 0x100, file) != 0) {
         if (strlen(temp + 4) == 0) {
@@ -264,11 +271,13 @@ int AIPlayBook::loadPlays(char* filename) {
         fileValue = 0;
         temp7 = 0;
 
+        // BINARY NOTE: VC5 writes the two comment bytes into byte 3 of int
+        // homes.  The adjacent phase state has a separate home.
         if (sscanf(temp + 4, s_format_comment,
-                  &commentFirst, &commentSecond) == -1) {
+                  ((char*)&j) + 3, ((char*)&currentPhase) + 3) == -1) {
             continue;
         }
-        if (commentSecond == '/' && commentFirst == '/') {
+        if (((char*)&j)[3] == '/' && ((char*)&currentPhase)[3] == '/') {
             continue;
         }
 
@@ -276,31 +285,23 @@ int AIPlayBook::loadPlays(char* filename) {
         if (strcmp(temp2 + 4, s_Play) == 0) {
             temp4 = 0;
             i = 0;
-            // `temp` reserves four bytes before the fgets destination.  The
-            // original parser starts its quote scan at that destination.
-            char current = temp[4];
-
-            while (current != '"') {
-                current = temp[i + 5];
+            while (temp[i + 4] != '"') {
                 ++i;
                 ++temp4;
             }
             ++i;
             ++temp4;
 
-            char* source = temp + i + 4;
-            int length = temp4;
-            if (*source != '"') {
-                do {
-                    ++source;
-                    ++length;
-                } while (*source != '"');
+            phaseValue1 = temp4;
+            while (temp[i + 4] != '"') {
+                ++i;
+                ++phaseValue1;
             }
 
-            if (temp4 < length) {
-                memcpy(temp2 + 4, temp + temp4 + 4, length - temp4);
+            if (temp4 < phaseValue1) {
+                memcpy(temp2 + 4, temp + temp4 + 4, phaseValue1 - temp4);
             }
-            temp2[4 + (length - temp4)] = 0;
+            temp2[4 + (phaseValue1 - temp4)] = 0;
 
             ++refPhase;
             if (refPhase >= 0x3E80) {
@@ -360,7 +361,7 @@ int AIPlayBook::loadPlays(char* filename) {
         } else if (strcmp(temp2 + 4, s_NumberGroups) == 0 && refPhase != -1) {
             sscanf(temp + 4, s_format_skip_string_int, &temp4);
             this->plays[refPhase].numberGroupsValue = (unsigned char)temp4;
-        } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && currentPhase == -1) {
+        } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && phaseState == -1) {
             sscanf(temp + 4, s_format_group_range,
                    &temp4, temp6 + 4, &phaseValue1, &i);
             if (temp4 >= 0 && temp4 < 5) {
@@ -383,39 +384,40 @@ int AIPlayBook::loadPlays(char* filename) {
             }
         } else if (strcmp(temp2 + 4, s_Phase) == 0 && refPhase != -1) {
             sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            currentPhase = temp4;
-        } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && currentPhase != -1) {
+            // BINARY NOTE: Phase updates the state used by later Group lines.
+            phaseState = temp4;
+        } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_command,
                    &temp4, temp6 + 4, &phaseValue1, &i, &fileValue);
             if (temp4 >= 0 && temp4 < 5) {
-                AIPlayPhase* phase = this->plays[refPhase].phase(currentPhase);
+                AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
                     AIPlayPhaseCommand command(
                     (unsigned char)temp4, temp6 + 4, phaseValue1, i, fileValue);
                 phase->addCommand(&command);
             }
-        } else if (strcmp(temp2 + 4, s_Trigger) == 0 && refPhase != -1 && currentPhase != -1) {
+        } else if (strcmp(temp2 + 4, s_Trigger) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_trigger,
                    &temp4, temp6 + 4, &phaseValue1, &temp7);
             if (temp4 >= 0 && temp4 < 5) {
-                AIPlayPhase* phase = this->plays[refPhase].phase(currentPhase);
+                AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
                 AIPlayPhaseTrigger trigger(
                     temp6 + 4, phaseValue1, temp7,
-                    (unsigned char)currentPhase, (unsigned char)temp4, 0);
+                    (unsigned char)phaseState, (unsigned char)temp4, 0);
                 phase->addTrigger(&trigger);
             }
-        } else if (strcmp(temp2 + 4, s_RTrigger) == 0 && refPhase != -1 && currentPhase != -1) {
+        } else if (strcmp(temp2 + 4, s_RTrigger) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_command,
                    &temp4, temp6 + 4, &phaseValue1, &temp7, &fileValue);
             if (temp4 >= 0 && temp4 < 5) {
-                AIPlayPhase* phase = this->plays[refPhase].phase(currentPhase);
-                AIPlayPhaseTrigger trigger(
+                AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
+                AIPlayPhaseTrigger rtrigger(
                     temp6 + 4, phaseValue1, temp7,
-                    (unsigned char)currentPhase, (unsigned char)temp4, fileValue);
-                phase->addTrigger(&trigger);
+                    (unsigned char)phaseState, (unsigned char)temp4, fileValue);
+                phase->addTrigger(&rtrigger);
             }
         } else if (strcmp(temp2 + 4, s_EndPlay) == 0 && refPhase != -1) {
             int oldPhase = refPhase;
-            currentPhase = -1;
+            phaseState = -1;
             strcpy(temp2 + 4, this->plays[oldPhase].nameValue);
             if (temp2[4] == 'H' && temp2[5] == 'P') {
                 this->numberPlaysValue -= 7;
