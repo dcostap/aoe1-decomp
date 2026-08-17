@@ -1,4 +1,4 @@
-void __cdecl operator_delete(void* p);
+#include <stdlib.h>
 
 class RGE_Zone_Map {
 public:
@@ -12,7 +12,7 @@ public:
 };
 
 RGE_Zone_Map::~RGE_Zone_Map() {
-    operator_delete(this->field_404);
-    operator_delete(this->field_408);
-    operator_delete(this->field_510);
+    free(this->field_404);
+    free(this->field_408);
+    free(this->field_510);
 }
