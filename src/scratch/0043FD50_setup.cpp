@@ -3,8 +3,8 @@
 
 // attempt 1 baseline: simple panel stubs, but wrong virtual slots and setup order
 // attempt 2: restored the period panel virtual surface; create_text is vt[64]
-// and create_button(char*, char*) is vt[59]. Base setup uses p4/p8; p5 is
-// not read by the original body. Button/text ownership remains named.
+// and create_button(char*, char*) is vt[59]. Base setup uses p4/p5. Button
+// and text ownership remains named.
 // attempt 3: nested renderArea evaluation kept the base setup call ordered.
 // attempt 4: reserved the two unused text overload slots to select vt[64].
 // attempt 5: shared the button text and hotkey switch tail.
@@ -22,9 +22,15 @@
 // claim orch-43FD50-a: result-local and array variants worsened structural shape;
 // chained button initialization retained the original first-hunk basin.
 // Local draw-area staging with p5 base height is the best period-plausible source
-// reconstruction here; it reaches diff 534 with exact size and ordered calls.
-// Best current result: exact size and ordered call parity; remaining drift is
-// register scheduling and prologue layout, first mismatch at +0005.
+// reconstruction here; it reaches exact size and ordered calls.
+// attempt 13: restored the two empty string arguments proven by the button-call
+// relocations. This reduced the diff by one byte and improved block shape.
+// attempt 14: ordered the count switch as cases 0, 4, and 1-3 from PDB blocks.
+// attempt 15: ordered the text switch as cases 0, 1, 2, 4, and 3 from PDB
+// blocks. Direct case-local button1 calls recover the original immediate pushes.
+// Declaration, loop-form, spacing, and separate-zero probes were unchanged or
+// worse. Best current result: exact size and ordered call parity; diff 525,
+// shape 80.85%, with the first mismatch at +0005 in register scheduling.
 
 #define VPAD1(n) virtual void vpad##n();
 #define VPAD2(n) VPAD1(n) VPAD1(n##_1)
@@ -131,13 +137,13 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
     case 0:
         num_buttons = 1;
         break;
+    case 4:
+        num_buttons = 3;
+        break;
     case 1:
     case 2:
     case 3:
         num_buttons = 2;
-        break;
-    case 4:
-        num_buttons = 3;
         break;
     default:
         return 0;
@@ -154,7 +160,7 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
     TButtonPanel** next = &button0;
     int x = space;
     for (int i = 0; i < num_buttons; ++i) {
-        if (create_button((TPanel*)this, next, (char*)0, (char*)0,
+        if (create_button((TPanel*)this, next, (char*)"", (char*)"",
                 x, y, p8, p9, 0x0B, 0, 0) == 0) {
             return 0;
         }
@@ -162,7 +168,6 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         ++next;
     }
 
-    long button_text;
     TButtonPanel* hotkey_button;
     switch (msg_type) {
     case 0:
@@ -170,16 +175,14 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         goto set_tab_order;
     case 1:
         button0->set_text(0, 0xFA1);
-        button_text = 0xFA2;
-        break;
+        button1->set_text(0, 0xFA2);
+        hotkey_button = button1;
+        goto set_hotkey;
     case 2:
         button0->set_text(0, 0xFA3);
-        button_text = 0xFA4;
-        break;
-    case 3:
-        button0->set_text(0, 0xFA5);
-        button_text = 0xFA7;
-        break;
+        button1->set_text(0, 0xFA4);
+        hotkey_button = button1;
+        goto set_hotkey;
     case 4:
         button0->set_text(0, 0xFA3);
         button1->set_text(0, 0xFA4);
@@ -187,12 +190,15 @@ long TMessageDialog::setup(TPanel* p1, char* p2, long p3, long p4,
         hotkey_button = button2;
         goto set_hotkey;
         break;
+    case 3:
+        button0->set_text(0, 0xFA5);
+        button1->set_text(0, 0xFA7);
+        hotkey_button = button1;
+        goto set_hotkey;
     default:
         goto set_tab_order;
     }
 
-    button1->set_text(0, button_text);
-    hotkey_button = button1;
 set_hotkey:
     hotkey_button->hotkey = 0x1B;
     hotkey_button->hotkey_shift = 0;
