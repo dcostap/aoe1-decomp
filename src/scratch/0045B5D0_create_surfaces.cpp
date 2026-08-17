@@ -26,14 +26,31 @@
 // operator-new size changed and diff worsened 189->190, so the clean surface ABI is restored.
 // Fresh claim probe: an early success return for Mouse_Mode/Max_Cursors moved
 // the first mismatch to the EH prologue and worsened the structural diff; rolled back.
+// continuation sa-a6ac71bd-r1: nested guards, negative gates, explicit success
+// labels, cursor-fail goto, scoped i/NameBuf, stdio.h, and corrected polymorphic
+// TDrawArea size were duplicate or worse. The guarded do/while remains the best
+// diagnostic at 400 bytes/diff 173, but its jge+jmp backedge is not oracle code.
+// Clean source remains 419 bytes/diff 189, exact through +0xDB, seven calls aligned.
+// revisit sa-6fc3a436-r1: typed TDrawArea::DrawSystem at offset 0 preserves the
+// 0x100 allocation and all bytes. Natural loop and common-tail variants remain
+// structural duplicates or worse; retain the indexed for-loop.
+// revisit sa-903341f9-r1: the binary-supported direct indexed do/while with the
+// typed DrawSystem owner improves 419/394 to 400/394 and 173 positional bytes.
+// The remaining six bytes are VC5's jge-plus-jmp loop exit and block order.
+// Pointer-backed, nested, explicit-label, early-return, and comma-increment
+// variants were duplicate or worse. This direct do/while is now the pinned
+// clean source until a new structural clue appears.
 
 extern "C" int sprintf(char* buffer, const char* format, ...);
 
+class TDrawSystem;
+
 class TDrawArea {
 public:
-    char gap[0x100];
+    TDrawSystem* DrawSystem;
+    char gap[0xFC];
     TDrawArea(char* name, int height);
-    int Init(void* draw_system, int width, int height, int x, int y);
+    int Init(TDrawSystem* draw_system, int width, int height, int x, int y);
 };
 
 class TMousePointer {
@@ -67,24 +84,26 @@ int TMousePointer::create_surfaces()
         if (this->save_area == 0) {
             return 0;
         }
-        if (this->save_area->Init(*(void**)this->render_area, this->Max_CX, this->Max_CY, 0, 0) == 0) {
+        if (this->save_area->Init(this->render_area->DrawSystem, this->Max_CX, this->Max_CY, 0, 0) == 0) {
             return 0;
         }
     }
 
     if (this->Mouse_Mode == 0 && 0 < this->Max_Cursors) {
-        for (i = 0; i < this->Max_Cursors; i++) {
+        i = 0;
+        do {
             if (this->cursors[i] == 0) {
                 sprintf(NameBuf, "Mouse Cursor #%d", i);
                 this->cursors[i] = new TDrawArea(NameBuf, 0);
                 if (this->cursors[i] == 0) {
                     return 0;
                 }
-                if (this->cursors[i]->Init(*(void**)this->render_area, this->Max_CX, this->Max_CY, 0, 0) == 0) {
+                if (this->cursors[i]->Init(this->render_area->DrawSystem, this->Max_CX, this->Max_CY, 0, 0) == 0) {
                     return 0;
                 }
             }
-        }
+            ++i;
+        } while (i < this->Max_Cursors);
     }
 
     return 1;
