@@ -68,6 +68,11 @@
 //   aliases, complete base method declarations, and split bound declarations.
 //   These emitted the existing 172-byte mismatch or a worse basin. The EBP
 //   y-home and EBX clipped-right value remain the evidence gap.
+// - Final revisit probes 078-097 tested direct and compound endpoint forms,
+//   loop forms, row and stack-offset locals, field types, declaration order,
+//   and TU context. The clean source stayed at 243 bytes and 172 differing
+//   bytes. Outer for/while forms reached 171 differing bytes but added one
+//   byte and one CFG edge. The clean do-loop source is restored.
 
 struct Map_Stack {
     long x;
