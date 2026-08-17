@@ -1,5 +1,13 @@
 // 005396F0 RGE_View::pick_multi_objects
 // Attempt log:
+// current pass: canonicalized the local world, master, player, and object
+// overlays to the repository names and proven field ownership; matched the
+// protected member access from the original decorated symbol. Split the
+// viewport and level guards to follow the PDB bands; VC5 emitted the same
+// 566-byte body.
+// tested a loop-scoped object-id lifetime through duplicate suppression and
+// output; it grew to 571B with a 0x10 frame and was restored. A canonical
+// TPanel-base view surface moved 2 bytes farther and was restored.
 // initial decompiler-shaped source from packet: behavior/field offsets plausible but broad mismatch; VC5 chose EBP=this and ECX=count while original has EBX=this and EBP=count.
 // added local self alias and register num_picked; no register allocation improvement.
 // changed early returns to shared goto fail; improved positional diff from 88.69% to 70.85% by avoiding inline early-return epilogues, kept.
@@ -18,7 +26,11 @@
 // matching-worker probe: a natural do-while duplicate scan removed the repeated output-pointer loop test; size reached 566B and strict diff improved to 420B, but register coloring remained broad.
 // matching-worker diagnostics: direct confidence-field cursor plus the do-while scan reached 566B/417B, but raw field-pointer writes were rolled back in favor of the typed record source.
 // matching-worker probes: self alias and register-qualified count were codegen duplicates; split record/confidence aliases regressed to 482B.
-// final bounded best: natural typed record output, combined initial guard, and do-while duplicate scan; 566 rebuilt bytes, 420 strict diff, 72.09% shape, 34.30% exact-block coverage. Remaining drift is broad VC5 register/block topology and global-address relocation, not safe localized drift.
+// final bounded best: natural typed record output, split viewport/level
+// guards, and do-while duplicate scan; 566 rebuilt bytes, 420 strict diff,
+// 72.09% shape, 34.30% exact-block coverage. Remaining drift is broad VC5
+// register/block topology and global-address relocation, not safe localized drift.
+// Main review replaced manual vptr fields with typed virtual ownership.
 
 class RGE_Pick_Obj_Info {
 public:
@@ -31,17 +43,29 @@ public:
 
 extern RGE_Pick_Obj_Info Picked_Objects[];
 
-struct RGE_Master_Object { char gap_00[0x8d]; unsigned char select_level; };
-struct RGE_Player { char gap_00[0x4a]; short id; };
+struct RGE_Master_Static_Object {
+    virtual ~RGE_Master_Static_Object();
+    char gap_04[0x89];
+    unsigned char select_level;
+};
+struct RGE_Player {
+    virtual ~RGE_Player();
+    char gap_04[0x46];
+    short id;
+};
 struct RGE_Static_Object {
-    void* vtbl;
-    char gap_04[4];
-    RGE_Master_Object* master_obj; // +8
+    virtual ~RGE_Static_Object();
+    long id;
+    RGE_Master_Static_Object* master_obj; // +8
     RGE_Player* owner;             // +c
     char gap_10[0x48-0x10];
     unsigned char object_state;     // +48
 };
-struct RGE_World { char gap_00[0x88]; RGE_Static_Object** objectsValue; };
+struct RGE_Game_World {
+    virtual ~RGE_Game_World();
+    char gap_04[0x84];
+    RGE_Static_Object** objectsValue;
+};
 struct DClipInfo_Node {
     char gap_00[4];
     DClipInfo_Node* NextOnLevel; // +4
@@ -68,10 +92,11 @@ public:
     int max_x; // +94
     int max_y; // +98
     char gap_9c[0xfc-0x9c];
-    RGE_World* world; // +fc
+    RGE_Game_World* world; // +fc
     char gap_100[0x334-0x100];
     DClipInfo_List* prior_objs; // +334
 
+protected:
     int pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, int max_level, int player_id, unsigned char select_level, int flag);
 };
 
@@ -80,8 +105,9 @@ int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, 
     int num_picked = 0;
     int z;
     if (x2 < this->min_x || x1 > this->max_x ||
-        y2 < this->min_y || y1 > this->max_y ||
-        min_level > 40 || max_level < 0)
+        y2 < this->min_y || y1 > this->max_y)
+        return 0;
+    if (min_level > 40 || max_level < 0)
         return 0;
     if (min_level < 0) min_level = 0;
     if (max_level > 40) max_level = 40;
