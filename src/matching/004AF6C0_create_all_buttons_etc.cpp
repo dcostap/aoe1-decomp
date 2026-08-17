@@ -22,10 +22,12 @@
 //              Diplomacy_friend_box as TButtonPanel* [8][3] at +0x8A8.
 //              Direct [i][0..2] access is therefore the natural row owner.
 // second pass: Direct multidimensional indexing recovers the original row
-//               registers, body order, size, frame, calls, and 355/355 masks.
-//               Four bytes remain because the two final loop-home stores are
-//               reversed.  Dedicated counters and do/for update forms did not
-//               change that order.  This canonical typed form is retained.
+//               registers, body order, size, frame, calls, and relocation masks.
+// EXACT NOTE: The original PDB lists i but no pp local for this function.
+//              Direct Diplomacy_AlliedVictory[i] indexing recovers the final
+//              loop-home store order and the complete 9090-byte function.
+//              The remaining pp is only the victory_button cursor.  Replacing
+//              it with victory_button[i - 1] changed four bytes at +0x185C.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
 //
 // NATURALIZATION AUDIT:
@@ -37,8 +39,16 @@
 // - The type inventory gives TRIBE_Screen_Sed size 0x948 and keeps the
 //   Diplomacy_friend_box member as TButtonPanel* [8][3] at +0x8A8.
 // - The resulting source is policy-clean.  Its current build is 9090 bytes
-//   with 358 ordered calls, 388/388 relocation masks, and four store-order
-//   bytes remaining in the final diplomacy loop.
+//   with 358 ordered calls and 388/388 relocation masks.
+// TYPE GATE:
+// - Inventory types identify setup and the editor constructor's first
+//   parameter as TDrawArea*, master_game_obj as RGE_Master_Static_Object*,
+//   SelectedObject and DestinationObject as RGE_Static_Object*, and
+//   unit_list_info as the nested 0x66-byte List_Info record.
+// - RGE_Font::font and the editor constructor's font parameter remain void*;
+//   TPanel::wnd_proc's first parameter is the Windows HWND-equivalent void*.
+// - TShape uses the inventory-backed eight-field 0x20-byte surface.  No
+//   aggregate payload, fake virtual slot, address cast, VPAD, or macro remains.
 // BINARY NOTE: Named string externs make a natural do-loop split into a
 //              first iteration and a loop body under VC5.  That split adds
 //              five call sites.  A bottom-tested while loop keeps one site.
@@ -85,11 +95,18 @@ struct tagRECT {
 };
 
 class TDrawArea;
+class RGE_Static_Object;
+class RGE_Master_Static_Object;
+class Shape_Header;
+class Shape_File_Header;
+class Shape_Offsets;
+class SLhape_File_Header;
+class Shape_Info;
 
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(long, long, long, long);
     virtual void set_rect(tagRECT);
     virtual void set_color(unsigned char);
@@ -191,7 +208,14 @@ public:
 
 class TShape {
 public:
-    char payload[0x20];
+    unsigned char* shape;
+    int load_type;
+    int load_size;
+    Shape_Header* shape_header;
+    Shape_File_Header* head;
+    Shape_Offsets* offsets;
+    SLhape_File_Header* FShape;
+    Shape_Info* shape_info;
     TShape(char*, long);
     ~TShape();
     int is_loaded();
@@ -205,10 +229,10 @@ public:
 
 class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
 public:
-    void* master_game_obj; // +0x214
+    RGE_Master_Static_Object* master_game_obj; // +0x214
     int master_culture_id; // +0x218
     virtual ~TRIBE_Scenario_Editor_Panel_Object();
-    TRIBE_Scenario_Editor_Panel_Object(void*, TPanel*, void*, long, long, TShape*, TShape**, class TRIBE_Player*);
+    TRIBE_Scenario_Editor_Panel_Object(TDrawArea*, TPanel*, void*, long, long, TShape*, TShape**, class TRIBE_Player*);
 };
 
 class RGE_Font {
@@ -261,10 +285,16 @@ public:
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
+    class List_Info {
+    public:
+        char text[100];
+        short id;
+    };
+
     int is_multi_player; // +0x478
     int set_player_first_flag; // +0x47C
-    void* SelectedObject; // +0x480
-    void* DestinationObject; // +0x484
+    RGE_Static_Object* SelectedObject; // +0x480
+    RGE_Static_Object* DestinationObject; // +0x484
     float px1; // +0x488
     float py1; // +0x48C
     float px2; // +0x490
@@ -338,7 +368,7 @@ public:
     TTextPanel* unit_mode_select_label[4]; // +0x62C
     TListPanel* unit_list; // +0x63C
     TScrollBarPanel* unit_scrollbar; // +0x640
-    void* unit_list_info; // +0x644
+    List_Info* unit_list_info; // +0x644
     TShape* button_unit_pics; // +0x648
     TShape* button_bldg_pics[5]; // +0x64C
     TRIBE_Scenario_Editor_Panel_Object* object_panel; // +0x660
@@ -791,7 +821,6 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     }
     if (!(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list))) goto fail; (this->Diplomacy_player_list)->set_help_info(0x773D, -1);
 
-    pp = this->Diplomacy_AlliedVictory;
     i = 0;
     while (i < 8) {
         if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][0]))) goto fail; (this->Diplomacy_friend_box[i][0])->set_help_info(0x773F, -1);
@@ -801,9 +830,8 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
         this->Diplomacy_friend_box[i][1]->set_radio_info(this->Diplomacy_friend_box[i], 3);
         this->Diplomacy_friend_box[i][2]->set_radio_info(this->Diplomacy_friend_box[i], 3);
         this->Diplomacy_friend_box[i][1]->set_radio_button();
-        if (!(this->create_check_box(this->bottom_panel, pp))) goto fail;
-        (*pp)->set_help_info(0x773E, -1);
-        ++pp;
+        if (!(this->create_check_box(this->bottom_panel, &this->Diplomacy_AlliedVictory[i]))) goto fail;
+        this->Diplomacy_AlliedVictory[i]->set_help_info(0x773E, -1);
         ++i;
     }
     if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[0], 0x29CD))) goto fail;
@@ -811,7 +839,6 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[2], 0x29CF))) goto fail;
     this->create_text(this->bottom_panel, &this->Diplomacy_status_label[3], 0x29D0);
 
-goto_done:
 fail:
     return;
 
