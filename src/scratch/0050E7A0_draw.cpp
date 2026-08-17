@@ -31,6 +31,13 @@
 //   repeated stack loads and is not plausible source; it was rolled back.
 // - Raw 32-bit reads of short coordinate homes changed the frame and broad
 //   CFG, so target raw EDI/EBX pushes are not a reason to retain pointer casts.
+// - Revisited under a fresh lease: typed reference aliases, the full static
+//   virtual declaration surface, direct members, interleaved output scopes,
+//   local declaration context, an outline-only receiver alias, and a named
+//   negative-radius temporary all emitted the same 394B code.
+// - Original stack evidence still shows dead parameter homes reused for later
+//   map outputs. Forcing that shape would violate the clean-source policy;
+//   retain the typed natural rendering flow instead.
 // - Current clean reconstruction remains the best plausible source. The
 //   unresolved structural lead is VC5 self-home/register scheduling before
 //   the first field load; calls and behavior remain aligned.
