@@ -10,23 +10,24 @@
 //   locals; none improved the canonical 306-byte frontier. Volatile pointer
 //   diagnostics matched the original frame locally but were rolled back as
 //   compiler-steering scaffolding.
-// - Typed VUR_Ptrs field trial recovered the 0x10 frame and reduced the size
-//   gap to 7 bytes, but positional diff worsened from 306 to 409; restored.
+// - Typed VUR_Ptrs[9] owner storage is required by the caller object layout;
+//   the direct typed form recovers the 0x10 frame.
 // - Same-TU AddResource uses the period stdlib/string header context; retaining
 //   those headers and the proven polymorphic static-object boundary changed no
 //   bytes, but keeps the ownership model source-plausible.
-// - Normalized the object reference update to its owned +0x194 field. The
-//   cancelling refOffset/raw-cast expression was a decompiler artifact.
-// - Restored the binary-observed generic reference-offset expression; the
-//   clean integer-address form returns the prior 306-byte structural frontier.
-// - Promoting growth capacity to int worsened the positional diff to 431 and
-//   was reverted; scoped capacity, iterator locals, and loop spelling did not
-//   move emitted code. The integer-address form is retained for the observed
-//   +0x194 reference update schedule.
-// - Main review rejected the raw reference-offset form as codegen-only
-//   scaffolding. Restored the named visible_unit_ref owner field; raw address
-//   arithmetic remains diagnostic evidence only.
-// Left in scratch: broad prologue/stack-home/register coloring and the growth pointer-repair schedule remain; call set, cleanup convention, packed record effects, and copy width are established.
+// - A top-tested player loop plus direct typed owner-array indexing is the
+//   simplest baseline. It gives a 0x10 frame and a 409-byte strict diff.
+// - Widened capacity, owner-slot aliases, split mask statements, and a guarded
+//   do-loop did not improve the clean frontier and were rolled back.
+// - A typed moving current_refs alias is period-plausible and matches the
+//   observed moving refs ownership. It improves the strict diff to 284 bytes,
+//   with a 0x10 frame and 39.01% exact-block coverage, but is not exact.
+// - Scoping current_refs inside the guard, pointer-difference owner indexes,
+//   owner-array references, and function-scope player indexes all worsened it.
+// - The original repair stores use the moving refs pointer plus a local offset;
+//   the typed alias improves the owner schedule but does not recover that
+//   source form. Raw offset forms are rejected as compiler-steering scaffolding.
+// Left in scratch: prologue register coloring and owner repair scheduling remain.
 
 #include <stdlib.h>
 #include <string.h>
@@ -48,7 +49,7 @@ struct VisibleUnitPtr {
 struct RGE_Static_Object {
     virtual ~RGE_Static_Object();
     char gap_04[0x190];
-    VisibleUnitRec* visible_unit_ref;
+    VisibleUnitRec* VUR_Ptrs[9];
 };
 
 extern RGE_Static_Object** VIS_UNIT_objectsValue;
@@ -66,10 +67,11 @@ public:
 
 void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, int y, int category, unsigned long old_mask, unsigned long new_mask, VisibleUnitRec** refs) {
     unsigned long mask = (new_mask ^ old_mask) & 0xffff;
+    VisibleUnitRec** current_refs = refs;
     if (category < this->Category_Count) {
         int p = 0;
         if (this->Player_Count > 0) {
-            do {
+            while (p < this->Player_Count) {
                 if (mask == 0) {
                     return;
                 }
@@ -89,7 +91,7 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                                 do {
                                     RGE_Static_Object* obj = VIS_UNIT_objectsValue[r->object_id];
                                     if (obj != 0) {
-                                        obj->visible_unit_ref = r;
+                                        obj->VUR_Ptrs[p] = r;
                                     }
                                     i++;
                                     r++;
@@ -104,26 +106,26 @@ void Visible_Unit_Manager::Update_Unit_Info(int object_id, int player, int x, in
                         rec->pos_x = (unsigned char)x;
                         rec->pos_y = (unsigned char)y;
                         bucket->used++;
-                        *refs = rec;
+                        *current_refs = rec;
                     } else {
-                        VisibleUnitRec* rec = *refs;
+                        VisibleUnitRec* rec = *current_refs;
                         VisibleUnitRec* last = bucket->unit_list + bucket->used - 1;
                         if (last != rec) {
                             *rec = *last;
                             RGE_Static_Object* obj = VIS_UNIT_objectsValue[rec->object_id];
                             if (obj != 0) {
-                                obj->visible_unit_ref = rec;
+                                obj->VUR_Ptrs[p] = rec;
                             }
                         }
-                        *refs = 0;
+                        *current_refs = 0;
                         bucket->used--;
                     }
                 }
-                refs++;
+                current_refs++;
                 new_mask >>= 1;
                 mask >>= 1;
                 p++;
-            } while (p < this->Player_Count);
+            }
         }
     }
 }
