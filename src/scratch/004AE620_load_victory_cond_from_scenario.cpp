@@ -24,6 +24,16 @@
 // 22: Made the adjacent slot an int field used as the itoa value; this restored the original dead local store and reduced the diff to 14 stack-displacement bytes.
 // 23: Typed RGE_Static_Obj pointers and declaration reorders were neutral; reversed aggregate fields moved the string home and worsened the diff.
 // GIVEUP: left in scratch; exact calls, size, frame, CFG, and block topology match. Remaining drift is 14 local stack displacements.
+// Managed claim notes: the natural source remains the 14-byte clean reconstruction.
+// The first 20-probe checkpoint tested stack ownership, declaration order, field
+// types, liveness, comma evaluation, register qualification, and aggregate forms.
+// A typed amount/destination/text aggregate plus a separate scalar destination
+// reduced the diagnostic drift to 9 bytes, but it required a redundant explicit
+// field copy and was not retained as canonical source. Its only mismatch was
+// spill scheduling: the original pushes the next getter argument, then spills
+// the destination result; the aggregate copy stores it before that push.
+// Reversions restored the natural source. Open lead: recover that spill timing
+// through a period-plausible local ownership model, not a duplicate alias.
 
 extern "C" char* __cdecl itoa(int, char*, int);
 
