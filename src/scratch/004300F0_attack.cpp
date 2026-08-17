@@ -38,6 +38,21 @@
 // - Tried the audit's natural radius_x-first range expression, with direct
 //   radius_y terms and no cast. It grew to 309 bytes and diff 257; the first
 //   hunk moved to the angle loads. Restored the clean 305-byte source.
+// - Worker probes restored the pinned 305-byte source after testing direct
+//   radius expressions, radius_x-only and delayed-assignment locals, range
+//   declaration order, inline range evaluation, direct factory ownership,
+//   direct angle reads, and implicit trig casts. The best source remains
+//   305 bytes with 178 strict differing bytes, exact guard/tail blocks, and
+//   all three ordered calls aligned. Direct radius order was codegen-neutral;
+//   only-radius and delayed-assignment forms were worse. Inline range fell to
+//   289 bytes; direct factory ownership was a duplicate. The binary-proven
+//   DAT_0056f4ac spelling changed the basin to 303 bytes and was rolled back.
+// - Revisit probes tested natural radius declaration/assignment forms, local
+//   scope and order, operand order, const locals, angle aliases, range placement
+//   between trig calls, split radius-distance math, and - -6.0f spelling.
+//   Same-TU 0042FF50 proves a sibling x87 basin with function-scope c/s/range,
+//   but that shape forces this target to a 0xC frame and 259 bytes. The clean
+//   target source remains the typed 0x8-frame, 305-byte form at 178-byte diff.
 
 class RGE_Combat_Object;
 class RGE_Missile_Object;
