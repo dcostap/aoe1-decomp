@@ -31,6 +31,17 @@
 //   widens the function to 779 bytes; those probes were rolled back. The live
 //   source remains the natural branch-local typed addition, with a localized
 //   fxch before faddp still unresolved.
+// - Fresh revisit: the original stack reads prove the source's vertical tests
+//   use point.x against rect.left/right, while horizontal tests use point.y
+//   against rect.top/bottom. Swapping these four typed fields recovers every
+//   coordinate block and improves exact-block coverage from 90.95% to 99.55%.
+// - Fresh revisit: natural whole-plus-threshold spellings, int/long lifetime
+//   variants, declaration scope, explicit casts, common tails, reversed
+//   predicates, and selected-threshold locals did not remove the one fxch.
+//   A direct-constant expression replaces faddp with fadd and loses two exact
+//   blocks. Ambient declaration sweeps and stdlib/math header probes were
+//   codegen-neutral or worse. The best result remains 775 bytes (+2), 15/15
+//   ordered calls, 0x2C frame, and 99.55% exact-block coverage.
 
 typedef void* HWND;
 
@@ -167,14 +178,14 @@ int RGE_Main_View::do_auto_scroll()
     info = rge_base_game->prog_info;
 
     if (GetAsyncKeyState(1) >= 0 && GetAsyncKeyState(2) >= 0) {
-        if (point.y < rect.top + info->mouse_scroll_edge)
+        if (point.x < rect.left + info->mouse_scroll_edge)
             vert_scroll = -1;
-        else if (point.y > rect.bottom - info->mouse_scroll_edge)
+        else if (point.x > rect.right - info->mouse_scroll_edge)
             vert_scroll = 1;
 
-        if (point.x < rect.left + info->mouse_scroll_edge)
+        if (point.y < rect.top + info->mouse_scroll_edge)
             horz_scroll = -1;
-        else if (point.x > rect.right - info->mouse_scroll_edge)
+        else if (point.y > rect.bottom - info->mouse_scroll_edge)
             horz_scroll = 1;
 
         if (vert_scroll != 0 || horz_scroll != 0) {
@@ -185,19 +196,17 @@ int RGE_Main_View::do_auto_scroll()
                 this->mouse_scrolling = 1;
             } else {
                 scroll_dist2 = (float)elapsed / info->key_scroll_interval;
+                long whole = (long)scroll_dist2;
+                scroll_dist2 -= (float)whole;
+                if (scroll_dist2 < DAT_00577904)
                 {
-                    long whole = (long)scroll_dist2;
-                    scroll_dist2 -= whole;
-                    if (scroll_dist2 < DAT_00577904)
-                    {
-                        scroll_dist2 = DAT_00577908;
-                        scroll_dist2 += (float)whole;
-                    }
-                    else
-                    {
-                        scroll_dist2 = DAT_00577904;
-                        scroll_dist2 += (float)whole;
-                    }
+                    scroll_dist2 = DAT_00577908;
+                    scroll_dist2 += (float)whole;
+                }
+                else
+                {
+                    scroll_dist2 = DAT_00577904;
+                    scroll_dist2 += (float)whole;
                 }
             }
 
