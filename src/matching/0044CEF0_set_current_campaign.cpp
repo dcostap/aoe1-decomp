@@ -27,10 +27,10 @@
 // - probe 046: a full decompiler-style result assignment and explicit do-loop
 //   added duplicate get_name/verify calls and widened the diff to 304 bytes,
 //   so it was restored.
-// - left in scratch: canonical natural source; remaining drift is the VC5 EH
-//   return-tail layout (original shared cleanup versus rebuilt duplicated
-//   cleanup), not an unresolved campaign ownership or call-set issue. Keep
-//   /O2 /Oy /GX; no productive source lead remains in this bounded pass.
+// - matching pass: defining the binary-supported RGE_Campaign_Info destructor
+//   in this translation unit selected the original shared EH return tail.
+//   The target then matched at 337 bytes; reviewed 255-byte name fields also
+//   preserved the match. Keep /O2 /Oy /GX.
 
 #include <string.h>
 
@@ -43,7 +43,8 @@ struct RGE_Campaign {
 };
 
 struct RGE_Campaign_Info {
-    char name[256];          // +0x000
+    char name[255];          // +0x000
+    unsigned char name_pad;  // +0x0FF
     int current_scenario;    // +0x100
     int scenario_num;        // +0x104
     char* scenario_info;     // +0x108
@@ -51,11 +52,13 @@ struct RGE_Campaign_Info {
     RGE_Campaign* campaign;  // +0x110
 
     RGE_Campaign_Info(RGE_Campaign* camp);
+    ~RGE_Campaign_Info();
     unsigned char verify_campaign_name(char* name);
 };
 
 struct RGE_Person_Info {
-    char name[256];                   // +0x000
+    char name[255];                   // +0x000
+    unsigned char name_pad;            // +0x0FF
     int current_campaign;             // +0x100
     int campaign_info_num;            // +0x104
     RGE_Campaign_Info** campaign_info; // +0x108
@@ -64,6 +67,13 @@ struct RGE_Person_Info {
 
     unsigned char set_current_campaign(long index);
 };
+
+RGE_Campaign_Info::~RGE_Campaign_Info() {
+    if (scenario_info != 0) {
+        free(scenario_info);
+        scenario_info = 0;
+    }
+}
 
 unsigned char RGE_Person_Info::set_current_campaign(long index) {
     // Bounds check
