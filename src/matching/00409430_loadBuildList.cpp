@@ -9,9 +9,23 @@
 // instead parses A/B/C/E/G/L/R/T/U and calls BuildItem::setBuildCap.
 // The binary PDB line order and jump table put the arms in B, A, R, C, U,
 // T, L, E, G order.  This order is retained in the living source.
-// Switch-order probe: diff 456 -> 420 -> 386 bytes; five cold blocks aligned.
-// Field-pointer null/strlen probes followed Ghidra ownership but worsened
-// codegen, so the parameter-based guard remains the best source basin.
+// Exact recovery notes:
+// - The first typed source was 386 bytes different. Calls, frame, and size
+//   already matched.
+// - Direct repeated member expressions in the initial guard select the
+//   original reload and register map. A local alias and an inline accessor
+//   were tested and removed from the final source.
+// - The binary uses the canonical radius layout at +0x30/+0x34, but the
+//   source swaps the radius axes. This preserves the original behavior.
+// - The original x87 order needs ySize doubling before xSize doubling.
+// - Chained 1.5f initialization and the ySize,xSize constructor argument
+//   order preserve the two local-home pairs.
+// - The no-build arm tests the pointer before the NULL copy. A first-byte
+//   test changes the boundary and the complete control flow.
+// - Exact-finish reversions: declaration order and the local alias were
+//   incidental. Radius-axis order, doubling order, chained initialization,
+//   constructor arguments, and pointer testing are required.
+// Final reduced source: MATCH, 0 differing bytes, 1015 bytes.
 
 #include <stdio.h>
 #include <string.h>
@@ -83,7 +97,6 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
     int quantity;
     int buildFrom;
     int fileIn;
-    char* buildListName;
     char name[64];
     char temp[256];
     FILE* fp;
@@ -93,15 +106,15 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
     char buildCategoryAsChar;
     char commentTemp2;
 
-    buildListName = this->buildListNameValue;
-    strncpy(buildListName, filename, 0x3F);
-    if (strcmp(buildListName, "NONE") == 0 ||
-        filename == 0 || strlen(filename) == 0) {
+    strncpy(this->buildListNameValue, filename, 0x3F);
+    if (strcmp(this->buildListNameValue, "NONE") == 0 ||
+        this->buildListNameValue == 0 ||
+        strlen(this->buildListNameValue) == 0) {
         goto no_build_list;
     }
 
     this->logCommonHistory("Trying to load build list in file '%s'.", filename);
-    sprintf(temp, "%s", buildListName);
+    sprintf(temp, "%s", this->buildListNameValue);
     fp = fopen(temp, "r");
     if (fp == 0) {
         this->logCommonHistory("  I cannot do it cap'n!");
@@ -115,8 +128,7 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
     this->buildListLengthValue = 0;
 
     while (fgets(temp, 0x100, fp) != 0) {
-        xSize = 1.5f;
-        ySize = 1.5f;
+        xSize = ySize = 1.5f;
         typeID = -1;
         sscanf(temp, " %c%c", &commentTemp1, &commentTemp2);
         if (commentTemp1 == '/' && commentTemp2 == '/') {
@@ -179,17 +191,17 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
             quantity < player->master_object_num &&
             player->master_objects[quantity] != 0) {
             RGE_Master_Static_Object* master = player->master_objects[quantity];
-            ySize = master->radius_y;
-            xSize = master->radius_x;
+            ySize = master->radius_x;
+            xSize = master->radius_y;
         }
-        xSize += xSize;
         ySize += ySize;
+        xSize += xSize;
 
         int i;
         for (i = 0; i < buildFrom; ++i) {
             BuildItem* item = new BuildItem(
                 buildCategory, quantity, this->buildListLengthValue,
-                1, 0, fileIn, name, xSize, ySize, 0.0f,
+                1, 0, fileIn, name, ySize, xSize, 0.0f,
                 -1, -1, -1, 0);
 
             ++this->buildListLengthValue;
@@ -206,14 +218,14 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
     }
 
     fclose(fp);
-    if (strstr(buildListName, ".tmp") != 0) {
-        unlink(buildListName);
+    if (strstr(this->buildListNameValue, ".tmp") != 0) {
+        unlink(this->buildListNameValue);
     }
     return 1;
 
 no_build_list:
-    if (buildListName[0] == 0) {
-        strcpy(buildListName, "NULL");
+    if (this->buildListNameValue == 0) {
+        strcpy(this->buildListNameValue, "NULL");
     }
     this->logCommonHistory("There is no build list to load.");
     return 1;
