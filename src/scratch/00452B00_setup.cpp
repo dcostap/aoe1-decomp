@@ -15,6 +15,9 @@
 // Attempt 16: a 24-case scalar store-order lab found edit diff 92 and positional diff 196, but every case kept the first mismatch and reversed PDB order; diagnostic only.
 // Worker pass: 20 additional probes covered statement order, result lifetimes, declaration order, headers, class surface,
 // register hints, flags, and damage-pointer ownership. None improved the pinned source; all are recorded in target history.
+// Revisit pass: ten focused probes covered natural local declarations, typed widths, lexical grouping, member qualification,
+// and isolated sound/sprite result lifetimes. Natural locals changed the frame to 0xC0 and 982 bytes. The other forms were worse
+// or codegen-duplicate. The clean aggregate-backed source remains the smallest validated frontier.
 // BINARY NOTE: the original stores undead_sprite at 00452E24 before the scalar-byte block. The natural source below preserves
 // that behavior, but VC5 schedules two later byte loads before the store. Do not add volatility or address tricks without proof.
 // left in scratch: 199-byte strict drift begins at 00452E24 in scalar-store scheduling after the final lookup; calls, size, frame, and CFG match.
