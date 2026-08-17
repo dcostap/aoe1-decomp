@@ -27,6 +27,20 @@
 // - Restored the reviewed PrimaryPt/PtToPt and mask-pointer PointMaker
 //   ownership. It preserves all observed field offsets and emits the same
 //   506-byte reconstruction.
+// - Revisit probes tested dead-y and block-scoped row counters, explicit
+//   do-while forms, guarded row advances, and postdecrement conditions.
+//   The postdecrement form reproduced the original dec/test/inc pattern but
+//   kept the count in the h home; explicit y forms coalesced to the same code.
+//   No policy-valid exact source was found. The clean final check remains a
+//   506-byte body with diff 222 and first mismatch +0x40.
+// - The original IAEX decoration supports a protected method. The reviewed
+//   full PointMaker tail and same-TU method surface were restored; codegen did
+//   not change.
+// - A structured 16-variant loop lab found no exact result. Its closest
+//   size-valid postdecrement variant had diff 227. A seven-variant counter and
+//   Width-carrier lab produced only 505- and 511-byte groups.
+// - Direct signed while, truth-test, explicit do-while, named Width, local
+//   counter, and proven x/y-home reuse probes did not improve the clean basin.
 
 #include <stdlib.h>
 #include <string.h>
@@ -80,7 +94,34 @@ public:
     char* ExternalArray;
     char* ProbArray;
     char* PlacementArray;
+    char* WritableExternalArray;
+    int DoNotDrawOnFlag;
+    int DrawOnOnlyFlag;
+    int DrawOnlyInExternalArrayFlag;
+    int DrawToOneArrayFlag;
+    int BorderDepthPercentage;
+    int LeftLimit;
+    int RightLimit;
+    int TopLimit;
+    int BottomLimit;
+    char SpecialLandType;
+    char pad_end[3];
 
+protected:
+    void ClearArrays();
+    void PrepareLimits();
+    void ErrorCheckingAndCorrection();
+    void CreateMapBasedOnProbabilityArray();
+    void MapCleanUpEliminatingSinglesOnly();
+    void DrawPrimaryIntoProbabilityArray();
+    int MakeFirstLink();
+    int MakeNewLink();
+    int MakeSatelliteLink();
+    void DrawCurrentBranchIntoProbArray(int param_1);
+    void DrawCurrentSatelliteIntoProbArray(int param_1);
+    void Branch(int param_1);
+    void AddingCircle(int param_1, int param_2, int param_3);
+    int CreateShape();
     void AddingRect(int x, int y, int w, int h);
 };
 
