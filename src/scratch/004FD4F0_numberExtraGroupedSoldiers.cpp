@@ -22,10 +22,18 @@
 // - probe 11: changed the outer list walk to a natural while loop and scoped
 //   rNum/tempCount inside the counted-group block; output reached 473 bytes
 //   with a 16-byte diff and exact outer CFG, leaving only the result home.
+// - probe 12: named numberUnits after desiredUnits and used the original
+//   comparison operand order; this reduced the positional diff to 10 bytes.
+// - probes 13-16: local scope, declaration order, initialization, and stdlib
+//   context changes were codegen duplicates or worse; they were removed.
+// - revisit probe 20: replaced the manual vptr field with a natural virtual
+//   destructor surface. The emitted code was unchanged, so this typed layout
+//   is retained as the cleaner ownership model.
 // BLOCKER: current typed source has 473 bytes, all 16 direct calls aligned,
-// and a 16-byte positional diff. The remaining drift is the result home in
-// the VC5 prologue: original stores result at [esp+18], while current stores
-// it at [esp+10]. The source keeps canonical group and ManagedArray ownership.
+// and a 10-byte positional diff. The remaining drift is three local homes and
+// their transient uses: original result/rNum/tempCount use
+// [esp+18]/[esp+14]/[esp+10], while current uses [esp+10]/[esp+18]/[esp+14].
+// The source keeps canonical ownership.
 
 extern "C" {
     void* operator_new(unsigned int size);
@@ -41,7 +49,7 @@ struct Waypoint {
 
 class TacticalAIGroup {
 public:
-    void* vtable_ptr;
+    virtual ~TacticalAIGroup();
     TacticalAIGroup* next;
     TacticalAIGroup* prev;
     int idValue;
@@ -154,10 +162,11 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers()
              group->type() == 102) &&
             (group->action() == 1 || group->action() == 0)) {
             int desiredUnits = group->desiredNumberUnits();
-            if (desiredUnits < group->numberUnits()) {
+            int numberUnits = group->numberUnits();
+            if (numberUnits > desiredUnits) {
                 int rNum = group->numberUnits();
                 int tempCount = 0;
-                if (group->desiredNumberUnits() < rNum) {
+                if (rNum > group->desiredNumberUnits()) {
                     while (1) {
                         if (tempCount >= group->numberUnits())
                             break;
@@ -167,7 +176,7 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers()
                             result++;
                         }
                         tempCount++;
-                        if (group->desiredNumberUnits() >= rNum)
+                        if (rNum <= group->desiredNumberUnits())
                             break;
                     }
                 }
