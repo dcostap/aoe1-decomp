@@ -25,9 +25,9 @@
 // - A focused six-form natural loop lab, direct char overlay, reversed addition,
 //   inline length, short-lived text alias, and indexed address spelling found no
 //   closer emitted group. The direct typed form remains the clean source.
-// - Directly returning the TListDialog::setup(...) result used the exact-bank
-//   boolean-return pattern, removed the seven-byte tail, and restored 376-byte
-//   size; the first-scan address order remains unresolved.
+// - The oracle boolifies the TListDialog::setup(...) result. The natural
+//   `!= 0` return improves block shape, but the first scan still adds four
+//   bytes until its address and copy lowering is recovered.
 // - Remaining structural hunk is original EDI=list_info; rebuilt EAX=list_info,
 //   EDI=offset, then add. It shifts the seven-byte loop suffix; no ABI or call
 //   mismatch remains.
@@ -44,6 +44,19 @@
 //   guarded do-loop form, register-qualified aliases, and inline strlen length
 //   all duplicated the 376-byte basin. The char-pointer and do-loop forms were
 //   diagnostic only and were removed. The clean typed source remains best.
+// - Current bounded pass: short-lived and retained text/list-info aliases,
+//   inline length, long locals, declaration-order changes, malloc-header and
+//   intrinsic-pragmas context, a char-pointer list-info overlay, and reversed
+//   update order all duplicated or worsened the 376-byte basin. The clean typed
+//   source was restored. The unresolved hunk remains the original EDI=list_info
+//   scan base versus rebuilt EAX=list_info followed by EDI=offset.
+// - Latest claim probes kept typed class and record ownership. Indexed text
+//   spelling and direct strlen-plus-one lowering were duplicates. A typed alias
+//   worsened the frame. The final natural source keeps the oracle bool return.
+// - Revisit probes for char-pointer and fixed-stride overlays, reversed and
+//   indexed address forms, list_type offset reuse, and a combined allocation
+//   guard all reproduced 380 bytes and 223 differing bytes. The pinned typed
+//   source is restored; direct EDI scan-base allocation remains unresolved.
 
 #include <stdlib.h>
 #include <string.h>
@@ -196,13 +209,11 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
 
     int i;
     int offset;
-    int length;
     i = 0;
     if (i < this->list_size) {
         offset = 0;
         while (i < this->list_size) {
-            length = strlen(this->list_info->text + offset) + 1;
-            this->list_text[i] = (char*)calloc((unsigned int)length, 1);
+            this->list_text[i] = (char*)calloc(strlen(this->list_info->text + offset) + 1, 1);
             if (this->list_text[i] == 0) {
                 return 0;
             }
@@ -217,5 +228,5 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
         0x136, 0x190, 0x0A, 0x0A, 0x122,
         0x19, title, 0x0A, 0x2D, 0x122,
         0x131, this->list_text, this->list_size, this->list_line,
-        0x0A, 0xA0, 0x168, 0x8C, 0x1E);
+        0x0A, 0xA0, 0x168, 0x8C, 0x1E) != 0;
 }
