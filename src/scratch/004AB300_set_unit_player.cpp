@@ -18,6 +18,21 @@
 // - Canonical declarations retain exact size, frame, calls, and all but five bytes.
 // - The remaining five bytes are VC5's zero/count initialization order in the first
 //   natural indexed scan. The raw byte cursor is exact but is not policy-valid.
+// TU audit:
+// - PDB evidence places this function in scr_sed.cpp after the exact comparator
+//   at 004AB2D0. The comparator body was restored before this function as a test.
+// - Repository evidence supports the nested List_Info type and full player,
+//   master-object, view, map, panel, and base-game surfaces. Those surfaces did
+//   not change the five-byte hunk. The full TTextPanel surface changed the call
+//   surface and was rejected.
+// - Tested 512 ambient declaration counts, exact donor macros, standard header
+//   order and placement, external declaration order, exact donor ABI widths,
+//   and the preceding comparator. All valid context variants stayed in one
+//   five-byte codegen group.
+// - The pinned period flags remain /nologo /c /O2 /Oy. Prior /Od history was
+//   broad and did not preserve the target shape.
+// - TU conclusion: local evidence does not recover a natural context that
+//   changes this zero/count scheduling. Keep this policy-valid baseline.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>
