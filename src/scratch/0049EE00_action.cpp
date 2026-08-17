@@ -27,6 +27,19 @@
 // - Tested assigning the validated event value to the shared success result;
 //   output changed by one byte farther from the original, so restored the
 //   clean result assignment. The per-arm EAX move gap remains unresolved.
+// - Current pass tested eleven distinct natural hypotheses. Direct returns,
+//   per-arm result writes, direct fallback, and early result initialization
+//   widened or changed the body. Typed button pointers, comparison reversal,
+//   int result, and zero result initialization were unchanged or worse.
+// - A structured lab covered 192 source/flag variants across result timing,
+//   fallback form, button surface, event comparison, and VC5 flag axes.
+//   It produced 12 code groups, 40 invariant-eligible variants, and no match.
+//   The closest /GX group kept 715 bytes and one return but still missed the
+//   original early branch spans and the per-arm EAX moves.
+// - Remaining blocker: natural source preserves all calls, offsets, frame,
+//   boundary, and CFG counts, but VC5 places the success value in ESI and
+//   reloads it at the common tail. The original moves ESI to EAX on each
+//   success edge and returns the fallback call value directly.
 // FLAGS: /GX (EH)
 
 #include <string.h>
