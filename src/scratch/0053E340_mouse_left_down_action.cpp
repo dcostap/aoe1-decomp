@@ -29,6 +29,15 @@
 //   access restored the original reload topology and reduced the diff to 27.
 // - A typed four-short frame aggregate, with max_y before max_x, reduced the
 //   remaining local-output drift to 17 bytes.  The candidate stays in scratch.
+// - Sustained probe pass: 32 meaningful source, ABI, layout, liveness, and
+//   context hypotheses were tested.  The clean aggregate source remains best.
+// - A branch-local RGE_Base_Game* alias reduced the strict diff from 17 to 4
+//   bytes and made all 30 relocations safe, but it did not fix the frame loads.
+//   It was diagnostic-only and is not retained in the clean source.
+// - Separate short locals, arrays, field permutations, pointer/reference
+//   get_frame forms, Windows/stdlib headers, receiver scopes, and volatile
+//   outputs were worse or codegen duplicates.  Exact donor 004C3B30 confirms
+//   the natural get_frame ABI and output order, but not this target's homes.
 
 extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void*, void*);
@@ -40,6 +49,7 @@ struct tagPOINT {
 };
 
 struct RGE_Frame_Bounds {
+    // BINARY NOTE: The executable passes four short output references.
     short min_x;
     short min_y;
     short max_y;
