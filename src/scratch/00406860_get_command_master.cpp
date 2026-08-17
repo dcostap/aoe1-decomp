@@ -108,6 +108,16 @@
 //   204 bytes. A direct full-slot RGE_Action_Object surface, 30 neutral forward
 //   declarations, and a register-qualified z parameter were also unchanged.
 //   These tests do not support changing the canonical source.
+// - 2026-08-17 deeper action-TU pass: twenty new evidence-led probes restored
+//   the clean source after each test. Separate guards, assignment-in-condition,
+//   named task-list and target aliases, scoped z copy, typed candidate master,
+//   base-qualified fields, destructor-bearing class context, all-coordinate
+//   register hints, signed task_by_group, function-scope i, do/while, body
+//   increment, and candidate scopes all stayed at 221/143 or were worse.
+//   A branch-local master alias was 222/156. Reconstructed sibling headers
+//   could not compile because their common.h requires unavailable stdint.h.
+//   The target/z/index allocation basin is therefore not controlled by these
+//   proved action-TU declaration or lifetime contexts.
 
 class RGE_Static_Object;
 class RGE_Action_Object;
