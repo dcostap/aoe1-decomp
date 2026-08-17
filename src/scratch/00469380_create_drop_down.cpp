@@ -80,6 +80,13 @@
 // 21-byte basin; no exact form was found.
 // 46: moving the final outer-list free outside the cleanup scope is a codegen
 // duplicate. The pinned natural goto-finish source remains authoritative.
+// Current pass: exact Panel_ez sibling cleanup declaration order, explicit CRT
+// free/strcpy declarations, pointer-size allocation spelling, and cdecl argument
+// order all retained the 21-byte basin. A direct cleanup return grew 33 bytes.
+// A named post-cleanup error local grew the diff by 4 bytes. A carried calloc
+// result local changed the body or duplicated the clean basin. Empty guards and
+// dead pointer clearing were codegen duplicates. The unresolved tail is the
+// VC5 cleanup scheduler: the oracle loads error before final stack cleanup.
 // FLAGS: config\flags\00469380_create_drop_down.rsp
 
 #include <string.h>
