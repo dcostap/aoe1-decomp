@@ -28,14 +28,20 @@
 //   into two calls and was rolled back; the custom IAT surface remains required.
 // - R3 tested the one-state do/while transparent search suggested by the
 //   HitEnd/zeroIndex branches. It shortened the function and worsened shape.
-// left in scratch: the current reconstruction is 910 differing bytes (56.97% shape,
-// 21/21 ordered calls, frame 0x124 vs 0x128, code size 963 vs 1017); remaining drift
-// is structural (local-home/lifetime and resize/dispatch block layout), not an
-// established behavior gap.
+// - Focused probes confirmed that the DWORD image-size formula needs unsigned
+//   width/bit-depth operands, while local-order and loop-state variants did not
+//   improve the clean result.
+// - The original table lookup uses the Windows COLORREF order: red low, green
+//   middle, blue high. Keep that byte order even when compiler output is unchanged.
+// BINARY NOTE: the shipped function has a 0x128 frame and a dword transparent-search
+// state, but the cleanest current source stays at 0x124 without that state model.
+// left in scratch: 910 differing bytes (56.97% shape, 21/21 ordered calls,
+// frame 0x124 vs 0x128, code size 963 vs 1017); remaining drift is structural.
 
 typedef unsigned char BYTE;
 typedef unsigned short WORD;
 typedef unsigned long DWORD;
+#define DIB_RGB(r, g, b) ((DWORD)(BYTE)(r) | ((DWORD)(BYTE)(g) << 8) | ((DWORD)(BYTE)(b) << 16))
 typedef void* HPALETTE;
 typedef void* HBITMAP;
 #include <string.h>
@@ -78,7 +84,7 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
     GetObjectA(hbm, 4, &nDibColors);
     if (bih->biClrUsed == 0 && bih->biBitCount <= 8) nPalColors = 1 << bih->biBitCount; else nPalColors = bih->biClrUsed;
     sizeImage = bih->biSizeImage;
-    if (!sizeImage) sizeImage = (((bih->biWidth * bih->biBitCount + 31) >> 3) & 0x1ffffffc) * bih->biHeight;
+    if (!sizeImage) sizeImage = ((((DWORD)bih->biWidth * (DWORD)bih->biBitCount + 31) >> 3) & 0x1ffffffc) * bih->biHeight;
     if (bih->biCompression == 3)
         bits = (BYTE*)bih + bih->biSize + 12;
     else
@@ -102,13 +108,13 @@ void DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm, int transparent, int zero
     }
     for (i=0;i<nPalColors;i++) {
         if (!transparent) {
-            unsigned long c = ((unsigned)rgb[i].rgbRed<<16)|((unsigned)rgb[i].rgbGreen<<8)|rgb[i].rgbBlue;
-            table[i] = (BYTE)GetNearestPaletteIndex(hbm,c);
+            table[i] = (BYTE)GetNearestPaletteIndex(hbm,
+                DIB_RGB(rgb[i].rgbRed, rgb[i].rgbGreen, rgb[i].rgbBlue));
         } else if (i == transIndex) {
             table[i] = 0;
         } else {
-            unsigned long c = ((unsigned)rgb[i].rgbRed<<16)|((unsigned)rgb[i].rgbGreen<<8)|rgb[i].rgbBlue;
-            BYTE v=(BYTE)GetNearestPaletteIndex(hbm,c);
+            BYTE v=(BYTE)GetNearestPaletteIndex(hbm,
+                DIB_RGB(rgb[i].rgbRed, rgb[i].rgbGreen, rgb[i].rgbBlue));
             table[i] = v ? v : zeroIndex;
         }
     }
