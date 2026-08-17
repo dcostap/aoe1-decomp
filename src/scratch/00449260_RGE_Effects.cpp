@@ -41,6 +41,14 @@
 //   encoding; calls, frame, CFG count, and all named layout accesses align.
 // - Normalized the command scan to its real short local. The former path-home
 //   reuse passed a char** to %hd and was codegen scaffolding, not valid source.
+// - Matching-worker pass: direct effect_num access, int/reference count aliases,
+//   declaration-order changes, a combined fopen guard, counter-left top-tested
+//   loops, and guarded do-while spelling were tested. Direct access and aliases
+//   were codegen duplicates; counter-left forms added two bytes and changed the
+//   loop basin; do-while added one fscanf call and 47 bytes. The clean natural
+//   source remains the 479-byte basin with 47 strict differing bytes. The next
+//   useful evidence is compiler/TU context or a source form that shrink-wraps
+//   ESI without artificial register control; no such source form is retained.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,9 +81,8 @@ RGE_Effects::RGE_Effects(char* path) {
 
     FILE* fp = fopen(path, "r");
     if (fp != 0) {
-        long* pNum = &effect_num;
-        if (fscanf(fp, "%d %d", pNum, &local_4) != -1) {
-            effects = (RGE_Effect*)calloc(*pNum, 0x2C);
+        if (fscanf(fp, "%d %d", &effect_num, &local_4) != -1) {
+            effects = (RGE_Effect*)calloc(effect_num, 0x2C);
             for (count = 0; count < local_4; count++) {
                 short sVar7 = 0;
                 fscanf(fp, "%d", &index);
@@ -99,7 +106,7 @@ RGE_Effects::RGE_Effects(char* path) {
             }
             fclose(fp);
         } else {
-            *pNum = 0;
+            effect_num = 0;
             effects = 0;
             fclose(fp);
         }
