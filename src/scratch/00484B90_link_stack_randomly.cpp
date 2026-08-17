@@ -189,6 +189,19 @@ struct RGE_Elevation_Info {
 // [this+18] as the imul memory operand, while the oracle selects the opposite
 // register/operand order at 00484BE2 and 00484BE5. The exact adjacent-field
 // overlay is raw layout plumbing and is not an allowed source model.
+// TU audit (sa-cca4d07f-r1): repository-local context tests did not change the
+// two-byte basin. A 512-sample ambient declaration sweep, the exact
+// generate_modifiers donor body with its math/string headers, the complete
+// elevation method declaration surface, and exact generate plus donor body
+// ordering all rebuilt to 234 bytes with the same two displacement bytes.
+// A 4096-state VC5 standard-header sweep also produced one 234-byte basin.
+// Windows, game_types, and game_globals include contexts were separate no-op
+// tests. The exact sibling uchar typedef was also a no-op. The vc5-small flag
+// classification kept the default /O2 /Oy basin; /Ow widened it and no flag
+// state was exact. These results support the calibrated default flags and the
+// current clean direct-field source. No repository-supported TU declaration,
+// header, macro, donor-order, type-surface, or flag context selected the
+// oracle's height-first commutative load order. Keep the baseline unchanged.
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
     RGE_Elevation_Info info;
