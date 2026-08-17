@@ -39,10 +39,11 @@
 //   saved register and broad drift; restored the do-while structural match.
 // - Inline initialization of townCenter duplicated the 383-byte code; the
 //   separate initialization order remains the clean reconstruction.
-// - Paused after the ten-hypothesis budget.  Remaining localized gap is the
-//   original townCenter/result callee-save allocation and the associated x87
-//   argument scratch-slot order; no call target, CFG, frame, or field-layout
-//   uncertainty remains.
+// - Naming the converted town-center distance before multiplying the unit
+//   count recovered the original EBX town-center allocation, x87 scratch-slot
+//   order, 393-byte body, and exact bytes.
+// - The clean source now matches the original 393-byte body exactly under the
+//   default VC5 flags.  No inline assembly or custom flags are used.
 
 #include <stdlib.h>
 
@@ -138,10 +139,11 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
                             this->importantObjectMemory[i].y, 5);
 
                         if (townCenter != 0) {
-                            result = (int)townCenter->distance_to_position(
+                            int distance = (int)townCenter->distance_to_position(
                                 (float)this->importantObjectMemory[i].x,
                                 (float)this->importantObjectMemory[i].y,
-                                (float)this->importantObjectMemory[i].z) * result;
+                                (float)this->importantObjectMemory[i].z);
+                            result = distance * result;
                         }
 
                         if (bestMemory == 0 || result < bestResult) {
