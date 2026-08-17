@@ -8,7 +8,7 @@
 // try 5: modeled alive-player loop from player 1, requiring both diplomacy bytes zero before setting mutual ally entry and ORing bit masks.
 // try 6: modeled transitive mutual/indirect relation pass setting +0xD8 and +0xDC.. entries when i and j are connected through k.
 // try 7: modeled debug dump for each player: header, bitmasks, alive/civ, and relation/mutual/indirect arrays.
-// try 8: modeled final UI refresh through global view 0x62C574 virtual getA/getB and setMode(2).
+// try 8: modeled final UI refresh through get_view_panel/get_map_panel and set_redraw(2).
 // try 9: /GX probe made no code/size change; removed flag file.
 // try 10: current source compiles but rebuilt .text is 896B vs original 1092B, no full diff.
 // try 11: reviewed original: main missing size is exact debug-print punctuation loops and low-level pointer/offset topology (offset loops 0x88/0xAC/0xDC, comma/newline prints) plus exact nested-loop register scheduling.
@@ -38,10 +38,25 @@
 //   remaining structural lead is direct diplomacy register/block scheduling.
 // Replaced raw World.cpp debug-format addresses with named exact literals.
 // This retained the typed model and improved positional drift to 768 bytes.
+// exact-finish: direct players[i] expressions plus independent literal-one
+// diplomacy loops reduced the result to 53 differing bytes and 1095 bytes.
+// The reviewed extern rge_base_game was decisive: reverting it restored the
+// 53-byte panel-call mismatch.  The extern DVlogf form is also exact and avoids
+// an unsupported raw singleton macro.  Removing unused k and the fake vptr
+// was incidental; both grouped reversions stayed exact.  The direct-expression
+// and loop-shape changes remain an inseparable source-recovery group.
+// First exact checkpoint: first-exact. Reduced exact checkpoint: final-exact.
+// canonical ABI cleanup: exact donors 0041C250/0041C260 name the returned
+// panels get_view_panel (view) and get_map_panel (map).  Donors 00420F60 and
+// 004213E0 prove TPanel::set_redraw at +0x20 and the preceding TPanel surface.
+// The same donors prove the RGE_Base_Game surface through both panel getters.
+// Replacing every generic slot and method name preserved MATCH byte-for-byte.
+// Exact-finish grouped walkback of the old generic ABI also matched, but it is
+// policy-invalid.  The canonical named surface is the reduced source kept.
 
 #include <stdio.h>
 
-#define DVlogf (*(FILE**)0x886C58)
+extern FILE* DVlogf;
 
 static const char s_update_visibilities[] =
     "updating player visibilities @ wt=%d\n";
@@ -52,27 +67,49 @@ static const char s_masks[] =
 static const char s_player_flags[] =
     "  allied_LOS_Enable = %d   allied_victory = %d \n";
 static const char s_diplomacy[] = "  unitDiplomacy = [";
+// ORIGINAL BUG: The shipped debug label spells "mututalAlly" with two t's.
 static const char s_mutual_allies[] = "  mututalAlly = [";
 static const char s_removed_visible_bits[] = "  RemoveVisibleBits = [";
 static const char s_decimal[] = "%d";
 static const char s_separator[] = ", ";
 static const char s_list_end[] = "]\n";
 
-class Panel {
+struct tagRECT;
+class TDrawArea;
+typedef int PositionMode;
+typedef int RedrawMode;
+
+class TPanel {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
-    virtual void setMode(int);
+    virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(PositionMode, long, long, long, long,
+                                 long, long, long, long, TPanel*, TPanel*,
+                                 TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
 };
 class RGE_Base_Game {
 public:
-    virtual void v00(); virtual void v04(); virtual void v08(); virtual void v0c();
-    virtual void v10(); virtual void v14(); virtual void v18(); virtual void v1c();
-    virtual void v20(); virtual void v24(); virtual void v28();
-    virtual Panel* getA();
-    virtual Panel* getB();
+    virtual ~RGE_Base_Game();
+    virtual int run();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual void set_prog_mode(int);
+    virtual void set_game_mode(int, int);
+    virtual void set_player(short);
+    virtual int get_error_code();
+    virtual char* get_string(int, long, char*, int);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(long);
+    virtual char* get_string2(int, long, long, char*, int);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
 };
-#define rge_base_game (*(RGE_Base_Game**)0x62C574)
+extern RGE_Base_Game* rge_base_game;
 struct Player {
     char gap0[0x84]; unsigned char* relations;
     int unit_diplomacy[9];    // +88..+A8
@@ -86,13 +123,13 @@ struct Player {
 };
 class RGE_Game_World {
 public:
-    void* vtbl; int world_time; char gap08[0x3c-0x08]; short player_num; Player** players;
+    char gap0[4]; int world_time; char gap08[0x3c-0x08]; short player_num; Player** players;
     void update_mutual_allies();
 };
 
 void RGE_Game_World::update_mutual_allies() {
-    int i,j,k;
     int one = 1;
+    int i,j;
     int pNum, index;
     fprintf(DVlogf, s_update_visibilities, world_time);
     i=0;
@@ -116,36 +153,35 @@ void RGE_Game_World::update_mutual_allies() {
     } while (i < player_num);
 
     {
-        k = player_num;
-        i = one;
-        if (i < k) do {
+        i = 1;
+        if (i < player_num) do {
             if (players[i]->allied_LOS_Enable == one) {
-                j = one;
-                if (j < k) do {
+                j = 1;
+                if (j < player_num) do {
                     if (j != i) {
                         if (!players[i]->relations[j] && !players[j]->relations[i]) {
-                            players[i]->mutualAlly[j] = 1;
+                            players[i]->mutualAlly[j] = one;
                             players[i]->mutualVisibleMask |= 1 << j;
                             players[i]->mutualExploredMask |= 1 << (j + 16);
                         }
                     }
-                } while (++j < k);
+                } while (++j < player_num);
             }
-            k = player_num;
             ++i;
-        } while (i < k);
+        } while (i < player_num);
     }
 
+    // BINARY NOTE: The indirect pass requires all three mutualAlly predicates
+    // before it sets either visibility mask.
     for (i=0; i < player_num; ++i) {
-        Player* p = players[i];
-        for (pNum=1; pNum < player_num; ++pNum) {
-            if (pNum != i && p->mutualAlly[pNum] == 0) {
-                for (index=1; index < player_num; ++index) {
-                    if (p->mutualAlly[index] == 0 &&
+        for (pNum=one; pNum < player_num; ++pNum) {
+            if (pNum != i && players[i]->mutualAlly[pNum] == 0) {
+                for (index=one; index < player_num; ++index) {
+                    if (players[i]->mutualAlly[index] == 0 &&
                         players[index]->mutualAlly[pNum] == 1 &&
                         players[index]->mutualAlly[i] == 1) {
-                        p->nonMutualVisibleMask |= 1 << pNum;
-                        p->removeVisibleBits[pNum] |= 1 << index;
+                        players[i]->nonMutualVisibleMask |= 1 << pNum;
+                        players[i]->removeVisibleBits[pNum] |= 1 << index;
                     }
                 }
             }
@@ -175,8 +211,7 @@ void RGE_Game_World::update_mutual_allies() {
             else fprintf(DVlogf, s_list_end);
         }
     }
-    Panel* panel = rge_base_game->getA();
-    if (panel) panel->setMode(2);
-    panel = rge_base_game->getB();
-    if (panel) panel->setMode(2);
+    TPanel* panel;
+    if ((panel = rge_base_game->get_view_panel()) != 0) panel->set_redraw(2);
+    if ((panel = rge_base_game->get_map_panel()) != 0) panel->set_redraw(2);
 }
