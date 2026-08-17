@@ -29,13 +29,27 @@
 //   includes late block/return layout; no call, frame, or size uncertainty.
 // - Restored the named stat_obj.cpp debug source. The former raw address was
 //   diagnostic data plumbing.
+// - revisit: signed short retry counters reproduce the original cmp ax,32h
+//   and cmp ax,2 forms; both counters improve the strict diff from 152 to
+//   149 bytes and shape from 93.06% to 93.49% without changing size, frame,
+//   saved registers, or calls. The first late-success label test was neutral
+//   in the old loop basin.
+// - revisit r2: a 64-variant lab covered counter widths, passable tests,
+//   retry conditions, radius update forms, and outer conditions. No variant
+//   matched. Ghidra-supported strict map bounds and a positive terrain guard
+//   improved the clean source to 147 differing bytes and 94.42% shape.
+// - Ghidra-supported `if (outer >= 2) return 0; do { ... } while (true)` fixed
+//   the late loop and return layout. It reduced the diff to 28 bytes and
+//   raised shape to 97.17%; the exact late body now spans +00CA through +0296.
+// - A binary-supported success goto after the infinite loop fixes the initial
+//   FPU schedule. The result is 5 differing bytes and 99.06% shape. A local
+//   success result and braces were neutral. The remaining bytes move `mov al,1`
+//   across the success epilogue pops.
 // - final validation follows this source and the documented probe.
 
-extern "C" int debug_rand(char*, int);
+extern int __cdecl debug_rand(char*, int);
 extern float DAT_00574720;
 extern float DAT_00574764;
-
-static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
 class RGE_Game_World;
 class RGE_Player;
@@ -170,38 +184,38 @@ unsigned char RGE_Static_Object::find_drop_location(
     RGE_Static_Object* object, float drop_x, float drop_y,
     float radius_x, float radius_y)
 {
-    radius_x += master->radius_x;
-    radius_y += master->radius_y;
+    radius_x = radius_x + master->radius_x;
+    radius_y = radius_y + master->radius_y;
     float radius_2x = radius_x + radius_x;
     float radius_2y = radius_y + radius_y;
-    int outer = 1;
+    short outer = 1;
 
     do {
-        int attempt = 0;
+        short attempt = 0;
         do {
-            switch ((debug_rand(s_stat_obj_cpp, 0xf3a) * 4) / 0x7fff) {
+            switch ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3a) * 4) / 0x7fff) {
             case 0: {
                 *x = radius_x + drop_x;
-                int value = debug_rand(s_stat_obj_cpp, 0xf3e);
+                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
                 *y = (float)value * radius_2y * DAT_00574764 - radius_y + drop_y;
                 break;
             }
             case 1: {
                 *x = drop_x - radius_x;
-                int value = debug_rand(s_stat_obj_cpp, 0xf42);
+                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
                 *y = drop_y +
                      ((float)value * radius_2y * DAT_00574764 - radius_y);
                 break;
             }
             case 2: {
                 *y = radius_y + drop_y;
-                int value = debug_rand(s_stat_obj_cpp, 0xf46);
+                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
                 *x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
                 break;
             }
             case 3: {
                 *y = drop_y - radius_y;
-                int value = debug_rand(s_stat_obj_cpp, 0xf4a);
+                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
                 *x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
                 break;
             }
@@ -209,18 +223,20 @@ unsigned char RGE_Static_Object::find_drop_location(
 
             if (*x >= DAT_00574720 && *y >= DAT_00574720) {
                 RGE_Map* map = this->owner->world->map;
-                if ((float)map->map_width >= *x &&
-                    (float)map->map_height >= *y) {
-                    if (terrain == -1 ||
-                        terrain == (int)this->lookupZone((int)*x, (int)*y)) {
-                        if (master->check_placement(this->owner, *x, *y,
-                                                    0, 1, 1, 1, 0, 1, 1) == 0 &&
-                            object->passableTile(*x, *y, 0) == 1) {
-                            return 1;
-                        }
+                if (*x < (float)map->map_width &&
+                    *y < (float)map->map_height) {
+                    if (terrain != -1 &&
+                        terrain != (int)this->lookupZone((int)*x, (int)*y)) {
+                        goto retry_attempt;
+                    }
+                    if (master->check_placement(this->owner, *x, *y,
+                        0, 1, 1, 1, 0, 1, 1) == 0 &&
+                        object->passableTile(*x, *y, 0) == 1) {
+                        goto success;
                     }
                 }
             }
+retry_attempt:
             ++attempt;
         } while (attempt < 50);
 
@@ -229,7 +245,11 @@ unsigned char RGE_Static_Object::find_drop_location(
         radius_2x = radius_2x + (master->radius_x * 4.0f);
         radius_2y = radius_2y + (master->radius_y * 4.0f);
         ++outer;
-    } while (outer < 2);
+        if (outer >= 2) {
+            return 0;
+        }
+    } while (true);
 
-    return 0;
+success:
+    return 1;
 }
