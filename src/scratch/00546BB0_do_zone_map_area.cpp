@@ -27,6 +27,19 @@
 // named tile/zone-row flood-fill traversal.
 // 13: inlining only the first-arm tile member access worsened block shape and
 //     removed one instruction; restored the clean named tile/cell form.
+// 14: direct nested row expressions, branch-local row aliases, named x-1
+//     indices, and canonical RGE_Map/RGE_Zone_Map context were rechecked;
+//     only the direct expressions and named index changed codegen, both worse.
+// 15: restored the decorated C++ helper ABI: zone_push takes long values and
+//     zone_pop takes long references; made this private method's owning symbol
+//     match the original AAEX spelling. Bytes remain the clean 663-byte result.
+// Continuation pass: full RGE_Map field/vtable context, RGE_Zone_Map destructor
+// context, char row-pointer casts, plain terrain byte masking, combined
+// predicates, function-scope tile/cell pointers, explicit return placement,
+// and 10 other natural source forms all reproduced the same mismatch.
+// A 108-variant lab found only the 663-byte baseline group and a worse 690-byte
+// boolean group. A 64-sample ambient declaration lab produced one 663-byte
+// group, so file-scope context is not the controlling basin here.
 
 struct RGE_Tile {
     short sx;
@@ -44,12 +57,18 @@ struct RGE_Tile {
 struct RGE_Map { virtual ~RGE_Map(); char pad04[4]; int map_width; int map_height; char pad10[0x8d8c-0x10]; RGE_Tile** map_row_offset; };
 struct Zone_Queue;
 extern double DAT_00577a20;
-extern "C" void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y);
-extern "C" unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long* x, long* y);
+void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y);
+unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail, long& x, long& y);
 
 class RGE_Zone_Map {
-public:
-    char pad0[0x408]; unsigned char** zone_map_rows; char pad40c[0x510-0x40c]; float* terrain_passability_rules; char pad514[4]; RGE_Map* map;
+    int numberTilesInZoneValue[257];
+    unsigned char* zone_map;
+    unsigned char** zone_map_rows;
+    unsigned char zone_info[257];
+    char pad50d[3];
+    float* terrain_passability_rules;
+    int terrain_passability_rules_num;
+    RGE_Map* map;
     void do_zone_map_area(long x, long y, unsigned char passable, unsigned char zone);
 };
 
@@ -104,5 +123,5 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable, unsi
                 }
             }
         }
-    } while (zone_pop(&zone_end, &zone_queue, &x, &y));
+    } while (zone_pop(&zone_end, &zone_queue, x, y));
 }
