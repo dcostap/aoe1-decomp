@@ -62,6 +62,27 @@
 // codegen-neutral. The volatile diagnostic was rejected because it only steers
 // scheduling. No natural lead exists for the fsubr/other-Y fault-order gap.
 
+// sa-3d0c180c-r1 fresh pass 2026-08-17:
+//   - Revalidated the pinned source after removing all diagnostic volatility.
+//     The current natural typed source rebuilds to 202B/198 differing bytes;
+//     the earlier 199B/22-diff result required volatile dy and is not retained.
+//   - Natural float radius locals, direct master-member expressions, reference
+//     aliases, complete-Y-before-X evaluation, predeclared y, and split dy
+//     initialization produced no better source model. The direct float radius
+//     form fell to 186B and changed the x87 topology.
+//   - Restored this typed double-radius reconstruction. It preserves the
+//     binary-supported float stores and natural non-volatile behavior. The
+//     remaining gap is the original pushed parameter home and fused Y-radius
+//     subtraction, which requires compiler-steering volatility to reproduce.
+
+// sa-0e26f47a-r1 revisit 2026-08-17:
+//   - Tested natural Y-before-X and split-Y source order, swapped and split
+//     declarations, direct float radii, explicit double casts, ternary clamps,
+//     ternary absolute values, and the reviewed DAT_00574720 zero symbol.
+//   - The zero-symbol variant improved relocation-aware diagnostics but changed
+//     the clamp store sequence. No variant recovered the original push/home
+//     topology or fused Y subtraction. Restored this pinned typed source.
+
 class RGE_Master_Static_Object {
 public:
     char gap_00[0x30];
