@@ -25,6 +25,14 @@
 //   from 479 to 346 bytes, but the remaining block-shape drift is unresolved.
 // - removed the explicit self alias while retaining the named rows and
 //   coordinate references; codegen was unchanged, so restored the clean alias.
+// - original local evidence confirms the typed switch behavior: case 0 falls
+//   through case 7; cases 1/2, 3/4, and 5/6 use cold out-of-line arms. A
+//   numeric common-label probe reproduced the cold-arm shape but worsened
+//   positional bytes and used an unsupported source label, so it was dropped.
+// - fresh declaration-order, loop-form, scope, and switch-label probes either
+//   stayed in the same basin or lost the clean result. The natural typed source
+//   remains pinned; exact switch layout and register coloring need new donor or
+//   compiler-context evidence.
 
 typedef unsigned char uchar;
 
