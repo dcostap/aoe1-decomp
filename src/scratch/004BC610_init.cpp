@@ -41,6 +41,30 @@
 // - Moved the natural DirectSound receiver initialization below GetCaps; this
 //   worsened the first mismatch to the capability flag and raised the diff to
 //   310 bytes, so restored the captured receiver before final validation.
+// - This claim rechecked the clean captured-receiver source: 12 ordered calls,
+//   frame 0x88, and saved EBX/EBP/ESI/EDI remain exact, but the alias adds a
+//   pre-GetCaps mov ebx,eax and leaves a 7-byte size excess.
+// - Removing the alias, delaying it, or using branch-local pointer, reference,
+//   alternate COM, and inline-wrapper receivers removes one Release call site
+//   and expands the structural mismatch to 402 meaningful bytes; all were
+//   restored. These forms do not preserve the original cleanup CFG.
+// - Final unchanged validation remains MISMATCH: 171 strict differing bytes
+//   (40.0468%), 427 rebuilt bytes, 12/12 ordered calls, and matching frame.
+// - Next evidence needed is the period Sounddrv.cpp cleanup expression or a
+//   source-level distinction that keeps both direct-member Release sites
+//   without the early alias load. No source owner or ABI change is justified.
+// - A new focused claim tested natural conditional/comma cleanup forms, typed
+//   pointer aliases, explicit else flow, and IUnknown receiver spellings.
+//   These either duplicate the clean result, merge one Release site, or emit
+//   a wrong direct IUnknown call. The captured receiver remains authoritative.
+// - Revisited the clean source with the target dossier and original listing.
+//   The success call reloads this->main_wnd at 004BC781, not the incoming hwnd
+//   home, so restored that natural member expression. This improved the strict
+//   diff from 171 to 166 bytes and reduced rebuilt size from 427 to 423 bytes.
+// - Nested Play-success return, direct duplicate Release, reference alias,
+//   short-lived Play-result, and explicit buffer-failure label forms were
+//   tested. They either merged one Release call, changed the call/CFG shape,
+//   or duplicated the clean result. The member-reload source remains pinned.
 #include <string.h>
 #include <dsound.h>
 
@@ -130,7 +154,7 @@ int TSound_Driver::init(void* hwnd, char* path) {
     }
 
     this->ready = 1;
-    ds_stream_init(hwnd, this->direct_sound, this->primary_buffer);
+    ds_stream_init(this->main_wnd, this->direct_sound, this->primary_buffer);
     this->open_mixer();
     return this->ready;
 }
