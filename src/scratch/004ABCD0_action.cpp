@@ -29,8 +29,12 @@
 //     +0xE0 call as a local virtual slot.
 // [9] Kept map-center arithmetic as an integer before the float view calls;
 //     this removes the rebuilt-only center ftol and is the current best.
-// Remaining structural gap: VC5 merges the five TPanel::set_help_info arms and
-// the two unit-panel tails, while the original keeps separate call sites.
+// [10-23] Binary checks confirmed the unit redraw status values, the
+// world-player master lookup, the distinct object-panel redraw flags, and
+// natural repeated panelName/strcmp lowering. Independent help predicates
+// restore call count but add an unsupported 190-byte control-flow expansion.
+// Keep the natural switch until a source donor explains the original calls.
+// Remaining structural gap: VC5 merges the five TPanel::set_help_info arms.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 #include <stdlib.h>
@@ -535,27 +539,12 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         if (param_1 == this->menu_button || param_1 == this->help_button) return 1;
     }
 
-    panel_name = param_1->panelName();
-    if (panel_name != 0) {
-        lit = (unsigned char*)0x584EB4;
-        scan = (unsigned char*)param_1->panelName();
-        while (1) {
-            ch = *scan;
-            if (ch != *lit) { cmp_value = (ch < *lit) ? -1 : 1; break; }
-            if (ch == 0) { cmp_value = 0; break; }
-            ch = scan[1];
-            if (ch != lit[1]) { cmp_value = (ch < lit[1]) ? -1 : 1; break; }
-            scan += 2;
-            lit += 2;
-            if (ch == 0) { cmp_value = 0; break; }
-        }
-        if (cmp_value == 0) {
+    if (param_1->panelName() != 0 && strcmp(param_1->panelName(), s_OKDialog) == 0) {
             if (param_2 == 0) {
                 panel_system.destroyPanel(s_OKDialog);
                 this->set_scenario_mode(ScenarioModePlayers);
             }
             return 1;
-        }
     }
 
     switch (this->scenario_mode) {
@@ -705,15 +694,21 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 line = this->unit_player_list->get_line();
                 this->set_unit_player((short)line);
                 line = this->unit_player_list->get_line();
-                if (line != 0) {
+                if (line == 0) {
+                    // BINARY NOTE: the shipped path redraws with status 3.
+                    ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(rge_base_game->game_mode, 3);
+                } else {
+                    // BINARY NOTE: status 4 precedes master-panel setup.
+                    ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(rge_base_game->game_mode, 4);
+                    // BINARY NOTE: master ownership is world->players[id].
                     RGE_Master_Static_Object* player_master;
                     TRIBE_Player* player_tribe;
-                    GAME_REDRAW0();
+                    short master_id = rge_base_game->master_obj_id;
                     if (rge_base_game->master_obj_id == -1 || GAME_PLAYER() == 0) {
                         player_tribe = 0;
                         player_master = 0;
                     } else {
-                        player_master = GAME_PLAYER()->master_objects[rge_base_game->master_obj_id];
+                        player_master = this->world->players[GAME_PLAYER()->id]->master_objects[master_id];
                         player_tribe = (TRIBE_Player*)GAME_PLAYER();
                     }
                     this->object_panel->set_master_info(player_master, player_tribe);
@@ -721,7 +716,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     this->object_panel->redraw(2);
                     return 1;
                 }
-                GAME_REDRAW0();
             }
         }
         if (param_2 == 2 || param_2 == 1) {
@@ -732,17 +726,22 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 this->set_unit((short)i);
                 if (rge_base_game->game_mode != 8 && rge_base_game->game_mode != 0x15) this->unit_mode_select[0]->set_radio_button();
                 if (rge_base_game->master_obj_id == -1 || GAME_PLAYER() == 0) { list_tribe = 0; list_master = 0; }
-                else { list_master = GAME_PLAYER()->master_objects[rge_base_game->master_obj_id]; list_tribe = (TRIBE_Player*)GAME_PLAYER(); }
+                else {
+                    short master_id = rge_base_game->master_obj_id;
+                    list_master = this->world->players[GAME_PLAYER()->id]->master_objects[master_id];
+                    list_tribe = (TRIBE_Player*)GAME_PLAYER();
+                }
                 this->object_panel->set_master_info(list_master, list_tribe);
                 this->set_paint_object_mode();
-                this->object_panel->redraw(2);
+                // BINARY NOTE: the list path redraws with flag 1, not 2.
+                this->object_panel->redraw(1);
                 return 1;
             }
             if (param_2 == 1) {
                 if (param_1 == this->unit_mode_select[0]) this->set_paint_object_mode();
-                else if (param_1 == this->unit_mode_select[1]) { GAME_PLAYER()->unselect_object(); GAME_REDRAW0(); }
-                else if (param_1 == this->unit_mode_select[2]) GAME_REDRAW0();
-                else if (param_1 == this->unit_mode_select[3]) GAME_REDRAW0();
+                else if (param_1 == this->unit_mode_select[1]) { GAME_PLAYER()->unselect_object(); ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0xE, 0); }
+                else if (param_1 == this->unit_mode_select[2]) ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0xF, 0);
+                else if (param_1 == this->unit_mode_select[3]) ((RGE_Base_Game_Dispatch*)rge_base_game)->redraw(0x14, 0);
             }
         }
         break;
@@ -867,31 +866,17 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
             for (i = 0; i < 5; i++) if (param_1 == this->message_button[i]) { this->current_message = i; break; }
             this->message_input->set_text(this->world->scenario->Get_message(this->current_message));
             switch (this->current_message) {
-            case 0: ((TTextPanel*)this->message_input)->set_help_info(0x7770, -1); break;
-            case 1: ((TTextPanel*)this->message_input)->set_help_info(0x7771, -1); break;
-            case 2: ((TTextPanel*)this->message_input)->set_help_info(0x7772, -1); break;
-            case 3: ((TTextPanel*)this->message_input)->set_help_info(0x7773, -1); break;
-            case 4: ((TTextPanel*)this->message_input)->set_help_info(0x7774, -1); break;
+            case 0: ((TPanel*)this->message_input)->set_help_info(0x7770, -1); break;
+            case 1: ((TPanel*)this->message_input)->set_help_info(0x7771, -1); break;
+            case 2: ((TPanel*)this->message_input)->set_help_info(0x7772, -1); break;
+            case 3: ((TPanel*)this->message_input)->set_help_info(0x7773, -1); break;
+            case 4: ((TPanel*)this->message_input)->set_help_info(0x7774, -1); break;
             }
         }
         break;
     }
 
-    panel_name = param_1->panelName();
-    if (panel_name != 0) {
-        lit = (unsigned char*)0x586D18;
-        scan = (unsigned char*)param_1->panelName();
-        while (1) {
-            ch = *scan;
-            if (ch != *lit) { cmp_value = (ch < *lit) ? -1 : 1; break; }
-            if (ch == 0) { cmp_value = 0; break; }
-            ch = scan[1];
-            if (ch != lit[1]) { cmp_value = (ch < lit[1]) ? -1 : 1; break; }
-            scan += 2;
-            lit += 2;
-            if (ch == 0) { cmp_value = 0; break; }
-        }
-        if (cmp_value == 0) {
+    if (param_1->panelName() != 0 && strcmp(param_1->panelName(), s_QuitSaveDialog) == 0) {
             panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
             panel_system.destroyPanel(s_QuitSaveDialog);
             if (param_2 == 0) this->command_save((unsigned char)param_2, 1);
@@ -900,24 +885,9 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 else panel_system.destroyPanel(s_Scenario_Editor_Screen);
             }
             return 1;
-        }
     }
 
-    panel_name = param_1->panelName();
-    if (panel_name != 0) {
-        lit = (unsigned char*)0x586D08;
-        scan = (unsigned char*)param_1->panelName();
-        while (1) {
-            ch = *scan;
-            if (ch != *lit) { cmp_value = (ch < *lit) ? -1 : 1; break; }
-            if (ch == 0) { cmp_value = 0; break; }
-            ch = scan[1];
-            if (ch != lit[1]) { cmp_value = (ch < lit[1]) ? -1 : 1; break; }
-            scan += 2;
-            lit += 2;
-            if (ch == 0) { cmp_value = 0; break; }
-        }
-        if (cmp_value == 0) {
+    if (param_1->panelName() != 0 && strcmp(param_1->panelName(), s_OpenSaveDialog) == 0) {
             panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
             panel_system.destroyPanel(s_OpenSaveDialog);
             if (param_2 == 0) this->command_save((unsigned char)param_2, 2);
@@ -927,30 +897,14 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 panel_system.setCurrentPanel(s_Scenario_Editor_Open, 0);
             }
             return 1;
-        }
     }
 
-    panel_name = param_1->panelName();
-    if (panel_name != 0) {
-        lit = (unsigned char*)0x586CF8;
-        scan = (unsigned char*)param_1->panelName();
-        while (1) {
-            ch = *scan;
-            if (ch != *lit) { cmp_value = (ch < *lit) ? -1 : 1; break; }
-            if (ch == 0) { cmp_value = 0; break; }
-            ch = scan[1];
-            if (ch != lit[1]) { cmp_value = (ch < lit[1]) ? -1 : 1; break; }
-            scan += 2;
-            lit += 2;
-            if (ch == 0) { cmp_value = 0; break; }
-        }
-        if (cmp_value == 0) {
+    if (param_1->panelName() != 0 && strcmp(param_1->panelName(), s_NewSaveDialog) == 0) {
             panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
             panel_system.destroyPanel(s_NewSaveDialog);
             if (param_2 == 0) this->command_save((unsigned char)param_2, 3);
             else if (param_2 == 1) ((TRIBE_Game*)rge_base_game)->start_scenario_editor(0, 0);
             return 1;
-        }
     }
 
     return 0;
