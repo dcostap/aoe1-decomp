@@ -44,6 +44,11 @@
 //   order, type width, class surface, headers, and local initialization.
 //   The best clean source is 104 differing bytes at the original size and
 //   frame.  Calls and boundaries remain exact; the prologue is not exact.
+// - Exact same-TU closestDockDistance proves <math.h> context. Direct repeated
+//   coordinate expressions make the late x87 range exact and reduce the
+//   strict difference to 68 bytes. Early register allocation remains.
+
+#include <math.h>
 
 void* operator new(unsigned int size);
 extern "C" int __cdecl debug_rand(char* file, int line);
@@ -273,10 +278,10 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                             (float)currentZone - DAT_00575570,
                                             (float)y - DAT_00575570);
                                     if (lot == 0) {
-                                        float distanceX = (float)currentZone - x;
-                                        float distanceY = (float)y - targetY;
-                                        float score = distanceX * distanceX +
-                                                      distanceY * distanceY;
+                                        float score = ((float)currentZone - x) *
+                                                      ((float)currentZone - x) +
+                                                      ((float)y - targetY) *
+                                                      ((float)y - targetY);
                                         if (zoneCounter[zone] == 0xFF) {
                                             zoneCounter[zone] = (unsigned char)
                                                 this->numberDocksInZone(
