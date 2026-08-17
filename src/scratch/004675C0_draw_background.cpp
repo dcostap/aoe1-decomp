@@ -28,6 +28,16 @@
 // short-circuit picture fallback were neutral or regressed; restored the best natural form.
 // luna-4675C0-r4: current best is size/frame/call/CFG aligned; remaining structural drift
 // starts in centered shadow Copy scheduling at +0xC6 and stays localized to code shape.
+// sa-dbc4a910 H1-H19 and H21-H24: direct shadow-width rereads, cached selectors, inline centers,
+// four center permutations, short/int/long coordinate locals, dimension declaration
+// order, two switch-to-if rewrites, a named panel-height local, and an added standard
+// header were tested and restored.  The swapped shadow Copy basin reached 135 differing
+// bytes and 80.45% exact-block coverage, but it reverses the proven Copy(x,y) ABI and
+// was not retained.  The clean canonical source remains 762 differing bytes, 979 bytes,
+// 0x1C frame, 20 aligned calls, and 80.45% exact-block coverage.
+// sa-dbc4a910 validation: unchanged clean source checked at 762 differing bytes;
+// paused because the remaining lead is VC5 register allocation in the centered Copy
+// block, not behavior, call order, layout, frame, or control-flow reconstruction.
 
 // Panel_ez.cpp used the period Windows SDK surface.  Keep that TU context
 // visible while retaining the local class declarations below.
@@ -249,6 +259,8 @@ void TEasy_Panel::draw_background(int use_alt)
 
         int tile_w = this->shadow_area->Width;
         pic_hgt = this->shadow_area->Height;
+        // BINARY NOTE: +0x318 selects 0/1/2 shadow placement and +0x18/+0x1C
+        // supply the proven width/height tile increments.
         switch (this->background_pos) {
         case 0:
             this->shadow_area->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
@@ -256,6 +268,7 @@ void TEasy_Panel::draw_background(int use_alt)
         case 1: {
             short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
             short xx = this->pnl_x + this->pnl_wid / 2 - tile_w / 2;
+            // BINARY NOTE: Copy receives the panel x coordinate before y.
             this->shadow_area->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
             break;
         }
@@ -299,8 +312,8 @@ void TEasy_Panel::draw_background(int use_alt)
         pic_hgt = y_max - y_min + 1;
         switch (this->background_pos) {
         case 1: {
-            short xx = this->pnl_x + this->pnl_wid / 2 - pic_w / 2;
             short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
+            short xx = this->pnl_x + this->pnl_wid / 2 - pic_w / 2;
             pic->shape_draw(this->render_area, (long)xx, (long)yy, 0, 0, 0);
             if (use_alt && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);
