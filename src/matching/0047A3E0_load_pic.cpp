@@ -25,6 +25,9 @@
 //   canonical type/header changes are byte-neutral and remain in the clean source.
 // - dossier, donor, ABI, and call-map evidence still show exact calls, frame, size, and
 //   CFG; remaining drift is localized to file_name stack coloring and store scheduling.
+// - nested shape validity and direct file_name use matched the original exactly. The
+//   decompiler's file_name + 4 was an EH temporary overlap artifact, not source offset.
+//   Result: MATCH, 463/463 bytes, 0.0000% positional diff.
 
 #include "..\..\include\game_globals.h"
 #include <stdio.h>
@@ -73,28 +76,30 @@ int TPicturePanel::load_pic()
     this->free_pic();
 
     if (this->pic_name[0] != 0) {
-        sprintf(file_name + 4, "%s.shp", this->pic_name);
-        this->shape = new TShape(file_name + 4, this->res_id);
+        sprintf(file_name, "%s.shp", this->pic_name);
+        this->shape = new TShape(file_name, this->res_id);
     } else if (this->res_id != -1) {
         this->shape = new TShape("", this->res_id);
     } else {
         return 0;
     }
 
-    if (this->shape && this->shape->is_loaded()) {
-        this->pic_type = 1;
-        this->own_pic = 1;
-        return 1;
+    if (this->shape) {
+        if (this->shape->is_loaded()) {
+            this->pic_type = 1;
+            this->own_pic = 1;
+            return 1;
+        }
+
+        TShape* old_shape = this->shape;
+        if (old_shape) {
+            delete old_shape;
+        }
+        this->shape = 0;
     }
 
-    TShape* old_shape = this->shape;
-    if (old_shape) {
-        delete old_shape;
-    }
-    this->shape = 0;
-
-    sprintf(file_name + 4, "%s.bmp", this->pic_name);
-    this->pic = new TPicture(file_name + 4, -1, 0, 0, 0);
+    sprintf(file_name, "%s.bmp", this->pic_name);
+    this->pic = new TPicture(file_name, -1, 0, 0, 0);
 
     if (this->pic) {
         if (this->pic->Dib) {
