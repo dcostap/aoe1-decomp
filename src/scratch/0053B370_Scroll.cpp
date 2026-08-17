@@ -54,6 +54,12 @@
 // The only remaining byte is the equivalent LEA base/index encoding at +0x63
 // (`[esi+edx-1]` versus original `[edx+esi-1]`). Typed pointer cursors and
 // declaration or expression-order variants were worse. Keep this source.
+// revisit-r3: Rebuilt the clean source after 20 focused probes. Split bases,
+// long types, subtraction trees, declaration order, direct indexing, gap-only
+// class context, and <stddef.h> context did not change the one-byte result.
+// Direct indexed reverse copy returned to the 166-byte mismatch basin.
+// The remaining blocker is VC5's equivalent SIB operand ordering in the source
+// index LEA. Final validation remains 260/261 bytes with one mismatch at +0x63.
 
 struct DClipInfo_Node {
     DClipInfo_Node* Next;        // +0x00
