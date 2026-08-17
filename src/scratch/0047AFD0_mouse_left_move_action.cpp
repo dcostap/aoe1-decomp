@@ -37,6 +37,12 @@
 // Probe 37: added the explicit binary-supported switch default arm; VC5 emitted identical code and relocation.
 // Probe 38: carried current/min locals through each orientation while keeping compound updates; this added a stack
 // home and worsened the mismatch to 894 bytes, so restored the clean source.
+// Follow-up claim: tested 20 additional source and context hypotheses. Combined edge guards, cached edge fields,
+// reference aliases, branch-local delta, register-qualified y, SDK RECT context, and alternate update forms were
+// worse or codegen duplicates. The original value-clamp compare is value > (list_len - 1), not the decompiler's
+// reversed spelling; using that source form in both orientation arms improves the clean result from 320 to 318
+// changed bytes, 93.08% shape, and 83.57% exact-block coverage. A partial reversion returned 320 bytes.
+// Unresolved: the remaining drift is the horizontal/vertical edge reload topology and the resulting branch spans.
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
@@ -200,7 +206,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                         value = 0;
                     } else {
                         long max_value = this->list_len - 1;
-                        if (max_value < value) {
+                        if (value > max_value) {
                             value = max_value;
                         }
                     }
@@ -239,7 +245,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                         value = 0;
                     } else {
                         long max_value = this->list_len - 1;
-                        if (max_value < value) {
+                        if (value > max_value) {
                             value = max_value;
                         }
                     }
