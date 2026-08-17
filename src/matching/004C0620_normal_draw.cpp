@@ -95,6 +95,9 @@
 // reached 50-77 bytes or changed control flow. All probes were restored.
 // Final validation: 250-byte source, two aligned do_draw calls, 45 differing
 // bytes. Keep this natural typed source until new compiler-context evidence.
+// Exact policy audit (sa-9e1373e7-r2): one count local carries both the
+// fallback result and scan return. Direct typed draw_list[index] access keeps
+// the canonical RGE_Picture_List ownership and recovers all 250 bytes.
 
 #include <stdio.h>
 
@@ -184,7 +187,6 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
                                       long param_4, RGE_Color_Table* param_5,
                                       TDrawArea* param_6)
 {
-    int result;
     long facet;
     int index;
     int count;
@@ -197,22 +199,21 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
         if (this->draw_level == 0x14) {
             this->do_draw(facet, param_2, param_3, param_4, param_5, param_6, 0);
         }
-        result = 1;
+        count = 1;
     }
     else {
-        result = 0;
         count = 0;
         if (0 < this->draw_list_num) {
             index = 0;
             do {
-                RGE_Picture_List* entry = &this->draw_list[index];
-                RGE_Sprite* sprite = entry->sprite;
+                RGE_Sprite* sprite = this->draw_list[index].sprite;
                 if ((sprite->draw_level == 0x14) &&
-                    ((entry->facet < 0) || (entry->facet == facet))) {
+                    ((this->draw_list[index].facet < 0) ||
+                     (this->draw_list[index].facet == facet))) {
                     sprite->do_draw((sprite->facet_num * facet) / (int)this->facet_num,
                                   param_2,
-                                  (long)entry->offset_x + param_3,
-                                  (long)entry->offset_y + param_4,
+                                  (long)this->draw_list[index].offset_x + param_3,
+                                  (long)this->draw_list[index].offset_y + param_4,
                                   param_5, param_6, 0);
                 }
                 count = count + 1;
@@ -221,5 +222,5 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3,
             return (unsigned char)count;
         }
     }
-    return result;
+    return (unsigned char)count;
 }
