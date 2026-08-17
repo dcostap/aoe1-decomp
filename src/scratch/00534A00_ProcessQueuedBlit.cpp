@@ -100,6 +100,22 @@
 //   discarded BltFast result, explicit queued guard, reversed bound terms, and
 //   SDK DWORD coordinate types were duplicates or worse. Restored this clean
 //   typed source; the first mismatch remains the extra EBX save at +0003.
+// sa-f2967bfc-r1 continuation: protected access matched the original IAEXH
+//   symbol but did not change codegen. A named BltFast flags value was also a
+//   duplicate. Restored the canonical source; the extra EBX save remains.
+// sa-d5f42b52-r1 continuation: source-RECT declaration order and function scope,
+//   queue-entry pointer scope, an address-taken force result, and the proven
+//   TPanel virtual surface were all codegen duplicates (219B, diff=199).
+//   A natural five-form source lab (surface alias, entry reference, aggregate
+//   RECT, and direct queue indexing) produced only two nonexact groups; all
+//   size-eligible variants retained the extra EBX save. A 128-sample neutral
+//   ambient declaration sweep also produced no new group. Restore the pinned
+//   source; the isolated save/register and COM scheduling basin remains.
+// sa-900450cb reassessment: destination-coordinate locals, string.h and
+// windows.h context, a polymorphic TDrawArea, a full DirectDraw method surface,
+// a named BltFast result, and size-left final-bound spelling were each natural
+// probes. They were duplicate or worse (the headers reached diff=195 with
+// weaker shape). Restored the pinned 219-byte source; extra EBX save remains.
 
 struct tagRECT { long left; long top; long right; long bottom; };
 
@@ -253,6 +269,7 @@ public:
     int DispSel_List_Size;              // +0x358
     int DispSel_List_Max;               // +0x35C
 
+protected:
     void ProcessQueuedBlit(int force);
 };
 
