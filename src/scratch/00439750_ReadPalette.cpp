@@ -30,6 +30,19 @@
 //   no exact match after relocation-aware review, so it was not promoted.
 // - The remaining four bytes are gamma-table interior-pointer displacements.
 //   Keep the typed record and do not replace it with raw cursor arithmetic.
+// - Revisit checkpoint: the clean typed source still differs at offsets +0x231,
+//   +0x23B, +0x242, and +0x24E.  Each byte is the displacement in one gamma
+//   table load.  The rebuilt anchor is gamma_table+2; the executable anchor is
+//   DAT_005841e5, which yields equivalent loads with displacements one byte
+//   closer to zero.
+// - Revisit probes tested natural record alignment, field grouping, nested
+//   color ownership, complete table declarations, mutable versus const table
+//   types, typed access forms, declaration and initialization order, pointer
+//   update forms, loop form, and typed palette-entry ownership.  All valid
+//   typed record variants stayed in the same four-byte codegen basin.
+// - BINARY NOTE: the exact CreateIdentityPalette sibling uses a byte pointer
+//   anchored at DAT_005841e5 for this same linked color table.  That explains
+//   the shipped anchor, but a raw cursor is not retained in this reconstruction.
 
 #include <string.h>
 
