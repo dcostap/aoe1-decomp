@@ -23,6 +23,20 @@
 // 21: used pointer dereference spelling for first-slot desired writes; VC5 emitted a duplicate, so no codegen lead was found.
 // 22: moved outer-index initialization between the first two clears to mirror stack-store order; it worsened codegen and was rolled back.
 // Final clean reconstruction: natural typed ownership, corrected age dispatch and slot writes, 15 ordered calls aligned; remaining gap is structural prologue/CFG layout.
+// Managed pass: 20 meaningful probes confirmed the pinned 1369-byte source as
+// the best clean natural reconstruction (1237 positional bytes, 83.93% shape,
+// 48.21% exact-block coverage, 15/15 ordered calls, and a 0x0C frame).
+// Evidence-led layout correction: the resource scan fields include a proven
+// DA8-DB8 gap, builtFirstGranary is at +F8C, and zoomingToNextAge is at +FA4.
+// The earlier single-field model wrote the wrong member, even though its code
+// size stayed equal. The corrected model improved exact blocks and is retained.
+// Rejected managed probes: initialization reordering, found-label scan CFG,
+// unsigned remainder parity, bool special flag, declaration-order changes,
+// receiver aliases, sum-count aliases, nested age syntax, and standard-header
+// combinations either worsened codegen or emitted the same bytes. Polymorphic
+// donor-supported type surfaces also emitted the same bytes. The remaining
+// blocker is structural prologue/register scheduling and the first-loop scan
+// CFG, not call identity or field ownership.
 
 typedef unsigned char uchar;
 
@@ -49,7 +63,9 @@ public:
     int actualGathererDistribution[4];
     int desiredGathererDistribution[4];
     int neededResourceValue[4]; int resourceDifferenceValue[4];
-    char gapDB8[0xFA4-0xDB8]; int specialGathererDistribution;
+    char gapDA8[0xDB8-0xDA8];
+    char gapDB8[0xF8C-0xDB8]; int builtFirstGranary;
+    char gapF90[0xFA4-0xF90]; int specialGathererDistribution;
     int inAge(int);
     void updateGathererDistribution();
 };
@@ -97,15 +113,15 @@ void TribeTacticalAIModule::updateGathererDistribution()
         } while (local_4 < numberGatherersValue);
     }
 
-    int special=0;
     distribution=desiredGathererDistribution;
+    int special=0;
     *distribution=0;
     distribution[1]=0;
     distribution[2]=0;
     distribution[3]=0;
     if (inAge(1)) {
         if (age2flag==1) {
-            if (BUILD.readyToResearch(2,1) && AGE_RES!=-1 && (RESOURCE.resource(1)>120 || specialGathererDistribution==1)) {
+            if (BUILD.readyToResearch(2,1) && AGE_RES!=-1 && (RESOURCE.resource(1)>120 || builtFirstGranary==1)) {
                 *distribution=desiredNumberGatherers;
                 g=&gatherers[0].data1;
                 for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
@@ -151,10 +167,10 @@ void TribeTacticalAIModule::updateGathererDistribution()
     } else specialGathererDistribution=0;
 
     if (!special) {
-        desiredGathererDistribution[2]=(sn_gold2+sn_gold1)*desiredNumberGatherers/100;
-        desiredGathererDistribution[3]=(sn_stone2+sn_wood1)*desiredNumberGatherers/100;
-        desiredGathererDistribution[1]=(sn_wood2+sn_stone1)*desiredNumberGatherers/100;
-        desiredGathererDistribution[0]=(sn_food2+sn_food1)*desiredNumberGatherers/100;
+        desiredGathererDistribution[2]=(sn_gold1+sn_gold2)*desiredNumberGatherers/100;
+        desiredGathererDistribution[3]=(sn_wood1+sn_stone2)*desiredNumberGatherers/100;
+        desiredGathererDistribution[1]=(sn_stone1+sn_wood2)*desiredNumberGatherers/100;
+        desiredGathererDistribution[0]=(sn_food1+sn_food2)*desiredNumberGatherers/100;
     }
 
     int sum=0;
