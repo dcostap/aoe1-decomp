@@ -19,6 +19,19 @@
 // - Kept the first text2 layout test separate from the later text2[0] fallback, matching original branch behavior.
 // - Applied the text offset predicate unconditionally; original converges both text2 layout paths before that test.
 // - Function-scope center_y, frame, and text declarations matched no new emitted code; kept as natural local-map reconstruction.
+// - New pass: tested 29 meaningful source hypotheses against the original.
+// - Explicit positive/else text fallbacks restored the original branch shape.
+// - Short text lengths restored the original movsx and stack-length paths.
+// - Direct color-member rereads restored the original GDI load order.
+// - Inline garrison coordinates restored the delayed message-position schedule.
+// - Repeated the offset predicate for the second text line, as the binary proves.
+// - Function-scope SIZE restored the 0x2C frame and exact total code size.
+// - Reversed picture clip-arm source order restored most picture CFG shape.
+// - Staged border-frame arithmetic and branch-local picture coordinates improved alignment.
+// - Best final clean result: 575 differing bytes, 95.20% shape similarity,
+//   55.49% exact-block coverage, 42/42 aligned calls, and matching frame/size.
+// - Remaining drift is concentrated in register allocation, stack-slot reuse,
+//   and four CFG edge shapes. No exact result reached in this pass.
 // - Left in scratch: ordered calls and memory effects match; VC5 frame and text CFG remain nonexact.
 
 #include "..\..\include\game_globals.h"
@@ -165,9 +178,14 @@ extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 void TRIBE_Panel_Button::draw()
 {
-    int center_y;
-    short frame;
+    long y;
     char* text;
+    long x;
+    short frame;
+    HGDIOBJ old_f;
+    int iStack_1c;
+    short tlen;
+    SIZE text_size;
 
     if (this->tribe_button_type == 3) {
         this->TButtonPanel::draw();
@@ -186,9 +204,11 @@ void TRIBE_Panel_Button::draw()
         if (this->border_pic) {
             if (this->render_area->Lock(s_tpnl_btn_draw, 1)) {
                 is_drawn = 0;
+                long border_frame = (this->is_down != 0);
+                border_frame += this->border_frame;
                 this->border_pic->shape_draw(
                     this->render_area, this->pnl_x, this->pnl_y,
-                    (this->is_down != 0) + this->border_frame, 0, 0);
+                    border_frame, 0, 0);
                 this->render_area->Unlock(s_tpnl_btn_draw);
             }
         }
@@ -202,62 +222,67 @@ void TRIBE_Panel_Button::draw()
         HDC dc = (HDC)this->render_area->GetDc(s_tpnl_btn_draw);
         if (dc) {
             SelectClipRgn(dc, this->clip_rgn);
-            HGDIOBJ old_f = SelectObject(dc, (HGDIOBJ)this->font);
+            old_f = SelectObject(dc, (HGDIOBJ)this->font);
             SetBkMode(dc, 1);
 
             int center_x = this->pnl_cx / 2;
-            center_y = this->pnl_cy / 2;
+            iStack_1c = this->pnl_cy / 2;
 
-            text = this->text1[this->cur_state];
-            if (text == 0) text = this->text1[0];
+            if (this->text1[this->cur_state]) {
+                text = this->text1[this->cur_state];
+            } else {
+                text = this->text1[0];
+            }
 
             if (text) {
-                int tlen = strlen(text);
+                tlen = strlen(text);
 
-                SIZE text_size;
                 GetTextExtentPoint32A(dc, text, tlen, &text_size);
 
-                int text_x_pos = center_x - text_size.cx / 2 + this->pnl_x;
+                x = center_x - text_size.cx / 2 + this->pnl_x;
 
-                int text_y_pos;
+                y = 0;
                 if (this->text2[this->cur_state]) {
-                    text_y_pos = center_y - this->font_hgt + this->pnl_y;
+                    y = iStack_1c - this->font_hgt + this->pnl_y;
                 } else {
-                    text_y_pos = center_y - this->font_hgt / 2 + this->pnl_y;
+                    y = iStack_1c - this->font_hgt / 2 + this->pnl_y;
                 }
 
-                int c1 = (this->draw_reverse == 0 && this->is_down == 0);
-                int c2 = (this->draw_reverse != 0 && this->is_down != 0);
-                if (!(c1 || c2)) {
-                    text_x_pos++;
-                    text_y_pos++;
+                if ((this->draw_reverse == 0 && this->is_down != 0) ||
+                    (this->draw_reverse != 0 && this->is_down == 0)) {
+                    x++;
+                    y++;
                 }
 
-                int sc = this->text_color2[this->cur_state];
-                int tc = this->text_color1[this->cur_state];
+                SetTextColor(dc, this->text_color2[this->cur_state]);
+                TextOutA(dc, x - 1, y + 1, text, tlen);
+                SetTextColor(dc, this->text_color1[this->cur_state]);
+                TextOutA(dc, x, y, text, tlen);
 
-                SetTextColor(dc, sc);
-                TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, tlen);
-                SetTextColor(dc, tc);
-                TextOutA(dc, text_x_pos, text_y_pos, text, tlen);
-
-                char* text2 = this->text2[this->cur_state];
-                if (text2 == 0) text2 = this->text2[0];
+                char* text2;
+                if (this->text2[this->cur_state]) {
+                    text2 = this->text2[this->cur_state];
+                } else {
+                    text2 = this->text2[0];
+                }
                 if (text2) {
-                    int t2len = strlen(text2);
+                    short t2len = strlen(text2);
                     
                     GetTextExtentPoint32A(dc, text2, t2len, &text_size);
 
-                    text_x_pos = center_x - text_size.cx / 2 + this->pnl_x;
-                    text_y_pos = center_y + this->pnl_y;
+                    x = center_x - text_size.cx / 2 + this->pnl_x;
+                    y = iStack_1c + this->pnl_y;
 
-                    int sc = this->text_color2[this->cur_state];
-                    int tc = this->text_color1[this->cur_state];
+                    if ((this->draw_reverse == 0 && this->is_down != 0) ||
+                        (this->draw_reverse != 0 && this->is_down == 0)) {
+                        x++;
+                        y++;
+                    }
 
-                    SetTextColor(dc, sc);
-                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text2, t2len);
-                    SetTextColor(dc, tc);
-                    TextOutA(dc, text_x_pos, text_y_pos, text2, t2len);
+                    SetTextColor(dc, this->text_color2[this->cur_state]);
+                    TextOutA(dc, x - 1, y + 1, text2, t2len);
+                    SetTextColor(dc, this->text_color1[this->cur_state]);
+                    TextOutA(dc, x, y, text2, t2len);
                 }
             }
 
@@ -268,32 +293,37 @@ void TRIBE_Panel_Button::draw()
     } else if (this->pic[0] && this->pic_index[0] >= 0) {
         if (this->render_area->Lock(s_tpnl_btn_draw3, 1)) {
             frame = this->pic_index[0];
-            int draw_x = this->pnl_x;
-            int draw_y = this->pnl_y;
 
             if (this->tribe_button_type == 0) {
-                if (this->is_down) {
-                    this->render_area->SetClipRect(
-                        this->clip_rect.left + 3, this->clip_rect.top + 3,
-                        this->clip_rect.right - 2, this->clip_rect.bottom - 3);
-                    draw_x += 3; draw_y += 3;
-                } else {
+                x = this->pnl_x;
+                if (!this->is_down) {
+                    y = this->pnl_y;
                     this->render_area->SetClipRect(
                         this->clip_rect.left + 2, this->clip_rect.top + 2,
                         this->clip_rect.right - 2, this->clip_rect.bottom - 2);
-                    draw_x += 2; draw_y += 2;
+                    x += 2; y += 2;
+                } else {
+                    y = this->pnl_y;
+                    this->render_area->SetClipRect(
+                        this->clip_rect.left + 3, this->clip_rect.top + 3,
+                        this->clip_rect.right - 2, this->clip_rect.bottom - 3);
+                    x += 3; y += 3;
                 }
             } else if (this->tribe_button_type == 1) {
-                draw_x++;
-                draw_y++;
+                x = this->pnl_x;
+                y = this->pnl_y;
+                x++;
+                y++;
                 this->render_area->SetClipRect(
                     this->clip_rect.left + 1, this->clip_rect.top + 1,
                     this->clip_rect.right - 1, this->clip_rect.bottom - 1);
                 if (this->is_down) {
-                    draw_x++;
-                    draw_y++;
+                    x++;
+                    y++;
                 }
             } else {
+                x = this->pnl_x;
+                y = this->pnl_y;
                 if (this->is_down) {
                     frame++;
                 }
@@ -307,11 +337,11 @@ void TRIBE_Panel_Button::draw()
             if (this->color_table) {
                 _ASMSet_Color_Xform(
                     (rge_base_game->get_player()->color_table->id + 1) * 0x10);
-                this->pic[0]->shape_draw(this->render_area, draw_x, draw_y,
+                this->pic[0]->shape_draw(this->render_area, x, y,
                                          frame, 1,
                                          this->color_table);
             } else {
-                this->pic[0]->shape_draw(this->render_area, draw_x, draw_y,
+                this->pic[0]->shape_draw(this->render_area, x, y,
                                          frame, 0, 0);
             }
 
@@ -327,14 +357,13 @@ void TRIBE_Panel_Button::draw()
             char msg[10];
             sprintf(msg, "%d", this->garrsion_number);
 
-            int hf = this->is_down ? 1 : 0;
-            int xpos = this->pnl_x + 3 + hf;
-            int ypos = this->pnl_y + 2 + hf;
-
             SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
             SetBkMode(this->render_area->DrawDc, 1);
             SetTextColor(this->render_area->DrawDc, 0xCCCCCC);
-            TextOutA(this->render_area->DrawDc, xpos, ypos, msg, strlen(msg));
+            TextOutA(this->render_area->DrawDc,
+                     this->pnl_x + 3 + (this->is_down != 0),
+                     this->pnl_y + 2 + (this->is_down != 0),
+                     msg, strlen(msg));
             SelectClipRgn(this->render_area->DrawDc, 0);
 
             this->render_area->ReleaseDc(s_tpnl_btn_draw2);
