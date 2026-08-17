@@ -2,6 +2,14 @@
 // taistrmd.cpp
 //
 // Attempt log:
+// source-gate pass: replaced the synthetic TribeStrategyAIModule base gap with
+// the real 0xF0 AIModule base, typed md, Waypoint, and sn[226]. The AIModule
+// message slots now use AIModuleMessage*, and StrategyAIModule inherits them.
+// Removed explicit name padding and the parameter-home a/value temporaries.
+// The direct rge_read calls and ManagedArray<int>::add behavior remain.
+// Validation after the grouped source-gate changes: 28-byte mismatch, 0x0C
+// rebuilt frame, 28 calls, and exact 1231-byte size. The prior four-byte source
+// was metric-closer but used synthetic layout and parameter-home aliases.
 // baseline reset: canonical StrategyAIModule(void*,int) ABI, virtual derived
 // construction, real ManagedArray<int> members, and the period inline add
 // implementation. Earlier work used an int-typed base shim and a macro-expanded
@@ -76,8 +84,13 @@ extern "C" void __cdecl operator_delete(void* pointer);
 extern float save_game_version;
 extern float DAT_00575690;
 
+class AIModuleMessage;
+class TribeMainDecisionAIModule;
+
 class AIModule {
 public:
+    char gap_04[0xEC];
+
     virtual ~AIModule();
     virtual int loggingHistory();
     virtual void setLogHistory(int value);
@@ -89,10 +102,10 @@ public:
     virtual int loadState(char* filename);
     virtual int saveState(char* filename);
     virtual int gleanState(int value);
-    virtual int processMessage(void* message);
+    virtual int processMessage(AIModuleMessage* message);
     virtual int update(int parameter);
-    virtual void setCallbackMessage(void* message);
-    virtual int filterOutMessage(void* message);
+    virtual void setCallbackMessage(AIModuleMessage* message);
+    virtual int filterOutMessage(AIModuleMessage* message);
     AIModule(char* name, int id, int parameter, void* object);
 };
 
@@ -100,20 +113,6 @@ class StrategyAIModule : public AIModule {
 public:
     StrategyAIModule(void* object, int parameter);
     virtual ~StrategyAIModule();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int value);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char* filename);
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int value);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char* filename);
-    virtual int saveState(char* filename);
-    virtual int gleanState(int value);
-    virtual int processMessage(void* message);
-    virtual int update(int parameter);
-    virtual void setCallbackMessage(void* message);
-    virtual int filterOutMessage(void* message);
 };
 
 template <class T>
@@ -174,26 +173,28 @@ class VictoryConditionRuleSystem {
 public:
     virtual ~VictoryConditionRuleSystem();
     VictoryConditionRuleSystem();
-    char data[0x388];
+    int sn[226];
 };
 
-struct WaypointBytes {
-    char data[0x10];
+struct Waypoint {
+    float x;
+    float y;
+    float z;
+    unsigned char facetToNextWaypoint;
+    unsigned char padding[3];
 };
 
 class TribeStrategyAIModule : public StrategyAIModule {
 public:
-    char gap_base[0xEC];
-    void* md;                          // +0xF0
+    TribeMainDecisionAIModule* md;     // +0xF0
     int currentVictoryConditionValue;  // +0xF4
     char ruleSetNameValue[0x101];      // +0xF8
-    unsigned char ruleSetNamePadding[3];
     int targetIDValue;                 // +0x1FC
     int targetTypeValue;               // +0x200
     int secondTargetIDValue;           // +0x204
     int secondTargetTypeValue;         // +0x208
-    WaypointBytes targetPoint1Value;   // +0x20C
-    WaypointBytes targetPoint2Value;   // +0x21C
+    Waypoint targetPoint1Value;        // +0x20C
+    Waypoint targetPoint2Value;        // +0x21C
     int targetAttributeValue;          // +0x22C
     int targetNumberValue;             // +0x230
     int victoryConditionChangeTimeout; // +0x234
@@ -204,13 +205,13 @@ public:
     int difficultyLevel;               // +0x5F4
 
     virtual ~TribeStrategyAIModule();
-    TribeStrategyAIModule(int a, int file);
+    TribeStrategyAIModule(int playerID, int infile);
     int loadRules(char* name);
     void setDifficultyLevel(int level);
 };
 
-TribeStrategyAIModule::TribeStrategyAIModule(int a, int file)
-    : StrategyAIModule((void*)0, a),
+TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
+    : StrategyAIModule((void*)0, playerID),
       md(0),
       vcRuleSet(),
       executingRules(),
@@ -218,45 +219,42 @@ TribeStrategyAIModule::TribeStrategyAIModule(int a, int file)
       vcRules(),
       difficultyLevel(0)
 {
-    rge_read(file, &this->currentVictoryConditionValue, 4);
-    rge_read(file, &this->targetIDValue, 4);
-    rge_read(file, &this->secondTargetIDValue, 4);
-    rge_read(file, &this->secondTargetTypeValue, 4);
-    rge_read(file, &this->targetPoint1Value, 0x10);
-    rge_read(file, &this->targetPoint2Value, 0x10);
-    rge_read(file, &this->targetAttributeValue, 4);
-    rge_read(file, &this->targetNumberValue, 4);
-    rge_read(file, &this->victoryConditionChangeTimeout, 4);
+    rge_read(infile, &this->currentVictoryConditionValue, 4);
+    rge_read(infile, &this->targetIDValue, 4);
+    rge_read(infile, &this->secondTargetIDValue, 4);
+    rge_read(infile, &this->secondTargetTypeValue, 4);
+    rge_read(infile, &this->targetPoint1Value, 0x10);
+    rge_read(infile, &this->targetPoint2Value, 0x10);
+    rge_read(infile, &this->targetAttributeValue, 4);
+    rge_read(infile, &this->targetNumberValue, 4);
+    rge_read(infile, &this->victoryConditionChangeTimeout, 4);
     if (save_game_version >= DAT_00575690) {
-        rge_read(file, &this->difficultyLevel, 4);
+        rge_read(infile, &this->difficultyLevel, 4);
     }
 
-    int value;
-    int length;
-    rge_read(file, &length, 4);
-    rge_read(file, this->ruleSetNameValue, length);
-    this->ruleSetNameValue[length] = 0;
+    int tempIntNum;
+    int i;
+    int tempInt;
+
+    rge_read(infile, &tempIntNum, 4);
+    rge_read(infile, this->ruleSetNameValue, tempIntNum);
+    this->ruleSetNameValue[tempIntNum] = 0;
     this->loadRules(this->ruleSetNameValue);
     this->setDifficultyLevel(this->difficultyLevel);
 
-    int count;
-    int i;
-    rge_read(file, &count, 4);
-    for (i = 0; i < count; ++i) {
-        rge_read(file, &a, 4);
-        value = a;
-        this->vcRuleSet.add(value);
+    rge_read(infile, &tempIntNum, 4);
+    for (i = 0; i < tempIntNum; ++i) {
+        rge_read(infile, &tempInt, 4);
+        this->vcRuleSet.add(tempInt);
     }
-    rge_read(file, &count, 4);
-    for (i = 0; i < count; ++i) {
-        rge_read(file, &a, 4);
-        value = a;
-        this->executingRules.add(value);
+    rge_read(infile, &tempIntNum, 4);
+    for (i = 0; i < tempIntNum; ++i) {
+        rge_read(infile, &tempInt, 4);
+        this->executingRules.add(tempInt);
     }
-    rge_read(file, &count, 4);
-    for (i = 0; i < count; ++i) {
-        rge_read(file, &a, 4);
-        value = a;
-        this->idleRules.add(value);
+    rge_read(infile, &tempIntNum, 4);
+    for (i = 0; i < tempIntNum; ++i) {
+        rge_read(infile, &tempInt, 4);
+        this->idleRules.add(tempInt);
     }
 }
