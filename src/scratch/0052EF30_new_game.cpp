@@ -13,8 +13,8 @@
 // - Replaced the description-path goto with one negated guard; VC5 emitted the
 //   same bytes, so the natural guard remains the source form.
 // - Collapsed duplicate base-new-game result locals; VC5 emitted the same bytes.
-// - Cached the post-save victory getter; this changed the call schedule and was
-//   rolled back.
+// - Cached the post-save victory getter after Save_victory_conditions_into_players;
+//   this removes one rebuilt call and matches the oracle's single post-save call.
 // - Modeled the generator's binary-proven 0x1920 object size with derived padding;
 //   this fixed the allocation ABI and improved the structural call surface.
 // - Restored explicit branches for the Yes/No description selectors; this fixed
@@ -29,6 +29,13 @@
 //   five source conquest calls into two emitted calls.
 // - Tested the period VictoryType enum return surface from the Ghidra source;
 //   VC5 emitted identical bytes and the enum surface was rolled back.
+// - Tested 20 source, type, control-flow, context, and flag hypotheses. /Ob1 and
+//   header changes were duplicates. /Ob0 and /O1 were worse.
+// - The oracle uses a buffered difficulty format-string fetch, not generic
+//   append_line. This restores one virtual call slot and 247 positional bytes.
+// - VC5 still merges four conquest setter tails. Separate if arms restore all
+//   four calls but add 168 bytes, so the switch remains the clean source.
+// - The stack helper still emits __chkstk instead of the oracle's __alloca_probe.
 
 #include <stdio.h>
 #include <string.h>
@@ -256,6 +263,7 @@ static __inline void append_line(char* description, char* temp, const char* fmt,
 }
 
 uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
+    int postVictoryType;
     RGE_RMM_Object_Generator* generator;
     int victoryAmount;
     uchar ret_num;
@@ -345,7 +353,10 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
 
     rge_base_game->difficulty();
     rge_base_game->get_string(rge_base_game->difficulty() + 0x2bd0, str1, 0x100);
-    append_line(description, (char*)str3, "%s", 0x25e0, str1);
+    // BINARY NOTE: the shipped block buffers its format string before sprintf.
+    rge_base_game->get_string(0x25e0, str2, 0x100);
+    sprintf(str3, str2, str1);
+    sprintf(description, S_NEWLINE_JOIN, description, str3);
 
     if (rge_base_game->randomizePositions() == 0) {
         rge_base_game->get_string(0x0fa3, str1, 0x100);
@@ -435,10 +446,12 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
                 break;
             }
             this->scenario->Save_victory_conditions_into_players(0);
-            if (rge_base_game->victoryType() == 8) {
+            // BINARY NOTE: the executable makes one post-save victoryType call.
+            postVictoryType = rge_base_game->victoryType();
+            if (postVictoryType == 8) {
                 this->countdown_victory = 1;
                 this->countdown_clock = (float)victoryAmount;
-            } else if (rge_base_game->victoryType() == 9) {
+            } else if (postVictoryType == 9) {
                 for (i = 1; i < this->player_num; ++i) {
                     this->players[i]->victory->add_victory_points(0, victoryAmount, 1);
                 }
