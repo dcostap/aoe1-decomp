@@ -48,6 +48,29 @@
 //     diagnostic diff to 633 but reduced the frame to 0x49C; it was not kept.
 //     A banner_msg + 4 write, volatile ID_List home, and hoisted directory
 //     counters produced no useful clean-source gain. Restored the 0x40 header.
+//   sustained follow-up (more than 20 distinct source hypotheses):
+//     - Binary stack evidence shows every local text buffer at byte +4. Keeping
+//       those windows and making build_filename 264 bytes moves the frame to
+//       0x4A4 and raises shape to 91.34% (from 85.74%).
+//     - The header bytes also use the +4 window. The typed fields remain at
+//       their proven offsets; the source preserves the observed local window.
+//       This raises shape to 91.96% and lowers the strict diff to 686 bytes.
+//     - Cleanup while-loops save each next pointer before delete. This matches
+//       the target load-before-delete order and raises edit similarity.
+//     - Scoped handles, declaration permutations, SDK headers, aliases, extra
+//       count locals, alternate buffer sizes, and direct iq cleanup were tested.
+//       They were duplicates or worse. The direct iq form also changed a delete
+//       call alignment, so ID_List remains the cleanup owner.
+//     - Current clean checkpoint: frame 0x4A4, 1656 rebuilt bytes, 560 rebuilt
+//       instructions, 35/35 calls, 91.96% shape, 64.26% exact-block coverage,
+//       686 strict-diff bytes. The remaining gap is header-copy scheduling and
+//       scalar-home order, not behavior or ordered calls.
+//     - Evidence: the executable proves the +4 stack addresses and next-before-
+//       delete order. Explanation: the original local declarations or VC5
+//       register basin that caused the remaining header spills is unresolved.
+//   next leads: test a donor-supported Res_file.cpp declaration context or a
+//     focused header-copy source form. Do not retain raw address steering only
+//     for metrics without stronger source evidence.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,7 +122,7 @@ extern unsigned long BUILDRES_get_files_resource_type(char* filename);
 
 int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, char* target_path)
 {
-    char build_filename[260];
+    char build_filename[264];
     char resource_filename[260];
     char data_filename[260];
     char temp_filename[260];
@@ -117,19 +140,19 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
     iq = 0;
     rId = 0;
 
-    sprintf(build_filename, "%s%s", source_path, build_list_file);
+    sprintf(build_filename + 4, "%s%s", source_path, build_list_file);
 
-    buildFile = fopen(build_filename, "r");
+    buildFile = fopen(build_filename + 4, "r");
     if (buildFile == 0) {
         Log(L, "Error: could not find resource build file: %s", build_list_file);
         return 0;
     }
 
-    fscanf(buildFile, "%s %s", temp_filename, rPassword);
-    sprintf(resource_filename, "%s%s", target_path, temp_filename);
+    fscanf(buildFile, "%s %s", temp_filename + 4, rPassword + 4);
+    sprintf(resource_filename + 4, "%s%s", target_path, temp_filename + 4);
 
     while (1) {
-        if (fscanf(buildFile, "%s", temp_filename) == -1) break;
+        if (fscanf(buildFile, "%s", temp_filename + 4) == -1) break;
         if (fscanf(buildFile, "%d", &idDirNode.id) == -1) break;
         {
             unsigned long typeID;
@@ -140,11 +163,11 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             int fd;
             long size;
 
-            sprintf(data_filename, "%s%s", source_path, temp_filename);
+            sprintf(data_filename + 4, "%s%s", source_path, temp_filename + 4);
 
-            typeID = BUILDRES_get_files_resource_type(temp_filename);
+            typeID = BUILDRES_get_files_resource_type(temp_filename + 4);
             if (typeID == 0) {
-                Log(L, "Error: could not determine file type of: %s", temp_filename);
+                Log(L, "Error: could not determine file type of: %s", temp_filename + 4);
                 return 0;
             }
 
@@ -202,11 +225,11 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             pNode->resData = 0;
             pNode->resSize = 0;
             pNode->next = 0;
-            strcpy(pNode->fName, data_filename);
+            strcpy(pNode->fName, data_filename + 4);
 
-            fd = _open(data_filename, 0x8000);
+            fd = _open(data_filename + 4, 0x8000);
             if (fd == -1) {
-                Log(L, "Error: unable to open file: %s", data_filename);
+                Log(L, "Error: unable to open file: %s", data_filename + 4);
                 delete pNode;
             } else {
                 if (previous == 0) {
@@ -221,7 +244,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                 size = lseek(fd, 0, 2);
                 lseek(fd, 0, 0);
                 if (size <= 0) {
-                    Log(L, "Error: file is empty/NULL: %s", data_filename);
+                    Log(L, "Error: file is empty/NULL: %s", data_filename + 4);
                     return 0;
                 }
                 pNode->resData = (unsigned char*)malloc(size);
@@ -231,7 +254,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                 }
                 pNode->resSize = size;
                 if (read(fd, pNode->resData, size) != size) {
-                    Log(L, "Error: error reading file: %s", data_filename);
+                    Log(L, "Error: error reading file: %s", data_filename + 4);
                     return 0;
                 }
                 close(fd);
@@ -240,9 +263,9 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
     }
 
     fclose(buildFile);
-    resourceFile = _open(resource_filename, 0x8301, 0x180);
+    resourceFile = _open(resource_filename + 4, 0x8301, 0x180);
     if (resourceFile == -1) {
-        Log(L, "Error: unable to create resource file file: %s", resource_filename);
+        Log(L, "Error: unable to create resource file file: %s", resource_filename + 4);
         return 0;
     }
 
@@ -265,10 +288,11 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             }
         }
 
-        memset(&theHeader, 0, 0x40);
-        strcpy(theHeader.banner_msg, "Copyright (c) 1997 Ensemble Studios.\x1a");
-        strcpy(theHeader.version, "1.00");
-        strcpy(theHeader.password, rPassword);
+        // BINARY NOTE: The shipped function uses the local header at byte +4.
+        memset(theHeader.banner_msg + 4, 0, 0x40);
+        strcpy(theHeader.banner_msg + 4, "Copyright (c) 1997 Ensemble Studios.\x1a");
+        strcpy(theHeader.version + 4, "1.00");
+        strcpy(theHeader.password + 4, rPassword + 4);
 
         theHeader.num_res_types = rId;
         theHeader.directory_size = dirSize;
@@ -326,15 +350,23 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
 
     {
         BuildRes_id_node* pNode;
+        BuildRes_type_node* nextType;
+        BuildRes_id_node* nextNode;
         ID_List = iq;
-        for (; ID_List; ID_List = ID_List->next) {
-            for (pNode = ID_List->idList; pNode; pNode = pNode->next) {
+        while (ID_List) {
+            pNode = ID_List->idList;
+            while (pNode) {
                 if (pNode->resData != 0) {
                     free(pNode->resData);
                 }
+                // BINARY NOTE: The executable reads next before delete.
+                nextNode = pNode->next;
                 delete pNode;
+                pNode = nextNode;
             }
+            nextType = ID_List->next;
             delete ID_List;
+            ID_List = nextType;
         }
     }
 
