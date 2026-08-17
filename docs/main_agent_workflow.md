@@ -32,6 +32,25 @@ work, open questions, and useful observations. The worker chooses its methods.
 The worker follows `docs\agentic_matching_workflow.md` and works on only that
 target. Authorize any shared-file change separately.
 
+Every assignment must request honest, sustained matching work. Include these
+requirements in the worker prompt:
+
+- Do not stop after a few failed probes.
+- Try at least ten meaningful, evidence-led hypotheses before an unresolved
+  pause.
+- Test distinct source, type, layout, control-flow, lifetime, or compiler-context
+  ideas. Do not inflate the count with cosmetic edits or repeated checks.
+- Use exact donors, nearby functions, assembly evidence, and a structured
+  variant lab when they apply.
+- Ten attempts are a minimum, not a stop target. Continue while useful leads
+  remain.
+- Stop before ten only for an exact match, a real external constraint, or a
+  direct user instruction.
+- Report each attempt, its result, and the evidence learned from it.
+
+Do not weaken this requirement with prompt text such as "otherwise pin and
+pause" without the effort conditions above.
+
 ### Phase-readiness auditor
 
 Use this read-only role to assess cumulative exact-matching coverage. Assign at
@@ -124,6 +143,11 @@ For every return:
 7. accept, revise, or reject the proposal;
 8. perform any status move;
 9. stage only reviewed paths.
+
+Reject a shallow unresolved return. If the worker reports fewer than ten honest
+hypotheses, continue that same assignment. Do not count syntax repairs, unchanged
+reruns, cosmetic edits, or unsupported register guesses as honest hypotheses.
+Also reject a ten-item list that leaves useful evidence-led approaches untested.
 
 Do not trust folder placement or a reported match. Exact promotion requires a
 fresh local `MATCH` after the move.

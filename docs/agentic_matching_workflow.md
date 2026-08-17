@@ -17,6 +17,37 @@ meaningful hypotheses as an initial planning checkpoint. It does not select the
 worker's methods or indicate exhaustion. Improvise, change hypothesis classes,
 and continue when additional experiments can teach you something.
 
+## Required effort
+
+Do honest, sustained work on the assigned function. Do not stop after a few
+failed probes or after you identify a likely compiler-codegen blocker.
+
+Before an unresolved pause, try at least ten meaningful, evidence-led
+hypotheses. Ten is a minimum, not a stop target. Continue while useful leads
+remain. A normal pass should still use about 20 meaningful hypotheses as its
+first planning checkpoint.
+
+Each hypothesis must test a distinct idea about source structure, types, layout,
+control flow, lifetimes, translation-unit context, or another supported cause.
+Compile it, measure it, and record what the result proves. Do not inflate the
+count with syntax repairs, unchanged reruns, cosmetic edits, renamed locals, or
+unsupported register guesses.
+
+Use the available evidence. Search exact donors and nearby functions. Inspect the
+relevant assembly ranges. Run a structured variant lab when controlled source
+axes can test the blocker. Try a different hypothesis class when one class keeps
+producing the same codegen basin.
+
+You can stop before ten hypotheses only for one of these reasons:
+
+- the function matches exactly;
+- a real external constraint prevents more work; or
+- the user or main agent directly tells you to stop.
+
+Low confidence, slow progress, a likely register-coloring issue, or a likely
+compiler-context issue is not an external constraint. Documented failure is a
+valid result only after this effort standard is met.
+
 ## Procedure
 
 1. Query the target's status, paths, notes, history, and lease.
@@ -32,8 +63,8 @@ and continue when additional experiments can teach you something.
    teach you something.
 10. Keep the clean source model authoritative. Discard opaque metric-only forms.
 11. Do not stop because early approaches fail or progress looks unlikely. End the
-    pass only at exact completion, an external constraint, or its assignment
-    boundary.
+    pass only at exact completion, a real external constraint, or after the
+    required effort and useful evidence-led approaches are exhausted.
 12. Finish the target using the exact or unresolved procedure below.
 
 ## Status and leases
@@ -116,6 +147,9 @@ and validate it normally. Never auto-promote a lab result.
 Add a compact `LESSONS.md` entry only for a reusable, non-obvious discovery.
 
 ## Unresolved finish
+
+Before this finish, confirm that you met the required-effort rules. Do not use
+this procedure as an early exit after a small number of probes.
 
 1. Restore the clean source when an experiment changed it.
 2. Update the source attempt log with tested facts and the next needed evidence.
