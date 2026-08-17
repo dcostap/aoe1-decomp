@@ -34,6 +34,16 @@
 // - Continuation probes: short declaration reordering was codegen-neutral;
 //   reversing the final version gate improved block shape but not bytes. Restored
 //   this pinned clean source for a documented pause.
+// - Revisit evidence: the local Ghidra listing confirms the original stack
+//   model: int has_team, short player_count, short count, uchar temp_byte, and
+//   local_4. It also shows count read into has_team+2 and the relation byte in
+//   the file parameter home. Those overlay forms are not policy-valid source.
+// - Revisit probes (18 meaningful): widening has_team/count, short declaration
+//   permutations, temp/index/player-count scope changes, direct file use,
+//   final-gate reversal, LOS-reset order, and string/memory header context all
+//   either duplicated the 16-byte basin or worsened it. An ambient declaration
+//   sweep of 16 variants produced one 703-byte group with no exact result.
+//   The clean typed source remains the best policy-valid reconstruction.
 
 #include <stdlib.h>
 
