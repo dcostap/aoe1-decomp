@@ -23,11 +23,17 @@
 //   as the first structural blocker.
 // - Structural follow-up: direct indexed lines, register-qualified typed
 //   cursors, indexed collision scans, declaration-order changes, and hoisted
-//   locals were all codegen duplicates. The raw area cursor still gives the
-//   diagnostic best (941 bytes, 73.25% shape) but retains the 0x34 frame.
-// GIVEUP: remaining broad VC5 register/lifetime and 4-byte local-frame drift;
-// calls, CFG, field ownership, math constants, random scaling, and generator
-// constructor relocation are aligned.
+//   locals were codegen duplicates or worse. The natural area cursor, original
+//   guard operand order, and stored land count improved the clean source to
+//   937 strict-diff bytes, 84.57% shape, and the 0x30 frame.
+// - A 22-probe subagent pass tested scope, alias, register, width, volatility,
+//   cursor, and declaration-order axes. Volatile found was a useful diagnostic:
+//   it reached 926 bytes by forcing the dead land_num byte home. It is rejected
+//   as fake source volatility, and the clean 937-byte source is restored.
+//   Volatile height, named width, direct indexing, and explicit parameter-byte
+//   aliases were worse or nonproductive. Calls and ownership remain aligned.
+// GIVEUP: unresolved VC5 register coloring keeps this in EBP/ESI/EDI shapes
+// where the oracle uses EBX/EDI/ESI/EBP. The clean source remains pinned.
 
 #include <math.h>
 #include <new.h>
@@ -185,27 +191,27 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& land_info,
 
     long index = 0;
     if (0 < land_num) {
-        RGE_Land_Info_Line* land = land_info.land;
+        long* land = &land_info.land[0].area;
         do {
             switch (type) {
             case 0:
-                land->land_size = 0;
-                land->terrain_type = 7;
+                land[-4] = 0;
+                *land = 7;
                 goto set_land_defaults;
             case 1:
-                land->land_size = 0;
-                land->terrain_type = 4;
+                land[-4] = 0;
+                *land = 4;
             set_land_defaults:
-                land->base_size = 5;
-                land->zone = (uchar)index;
+                land[-1] = 5;
+                ((uchar*)land)[4] = (uchar)index;
                 break;
             case 2:
             case 3:
             case 4:
-                land->land_size = 0;
-                land->terrain_type = 3;
-                land->base_size = 5;
-                land->zone = 0;
+                land[-4] = 0;
+                *land = 3;
+                land[-1] = 5;
+                ((uchar*)land)[4] = 0;
                 break;
             default:
                 break;
@@ -221,43 +227,43 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& land_info,
                 y = debug_rand(rmm_cntr_cpp_path, 0xD2) *
                     (this->map_height - 16) / 0x7fff + 8;
 
-                if ((mid_x2 < x) && (x < mid_y1) &&
-                    (index2 < y) && (y < mid_y2)) {
+                if ((x > mid_x2) && (x < mid_y1) &&
+                    (y > index2) && (y < mid_y2)) {
                     found = 1;
                 }
                 else {
                     long inner = 0;
                     if (0 < index) {
-                        RGE_Land_Info_Line* previous = land_info.land;
+                        long* previous = &land_info.land[0].x;
                         do {
-                            long dx = x - previous->x;
+                            long dx = x - previous[0];
                             if (dx < 0) {
                                 dx = -dx;
                             }
-                            long dy = y - previous->y;
+                            long dy = y - previous[1];
                             if (dy < 0) {
                                 dy = -dy;
                             }
                             if ((float)(dx * dx + dy * dy) <= bound_square) {
                                 if ((!found) && (inner == index - 1)) {
-                                    previous->y = y;
-                                    previous->x = x;
+                                    previous[1] = y;
+                                    previous[0] = x;
                                 }
                                 found = 1;
                             }
                             ++inner;
-                            ++previous;
+                            previous += 13;
                         } while (inner < index);
                     }
                 }
             } while (found);
 
-            land->x = x;
-            land->y = y;
-            land->land_size = land_tile_num / land_num;
+            land[-3] = x;
+            land[-2] = y;
+            land[-4] = land_tile_num / land_info.land_num;
             ++index;
-            ++land;
-        } while (index < land_num);
+            land += 13;
+        } while (index < land_info.land_num);
     }
 
     new RGE_RMM_Land_Generator(this->map, this, &land_info);
