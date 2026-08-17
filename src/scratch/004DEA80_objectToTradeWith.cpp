@@ -2,40 +2,18 @@
 // taiinfmd.cpp:4736-4787, 277 bytes
 //
 // Attempt log:
-// - Replaced the decompiler-shaped byte-record and embedded attribute array
-//   with the canonical typed ObjectMemory, player, object, and module surfaces
-//   from exact same-TU donors 004E1BD0 and 004D7070.
-// - ObjectMemory uses id +0x00, type +0x04, x +0x08, y +0x09,
-//   owner +0x0B, and a 0x24-byte stride.
-// - The mission/player id is a short at +0x4A. Object owner attributes are
-//   a float pointer at +0x50. Unsigned ObjectMemory fields preserve the
-//   executable's zero-extended owner/x/y loads.
-// - Baseline had the right frame and calls but initialized result locals too
-//   early. Moving them after the null return and using a typed byte offset
-//   improved the body from 264 to 270 bytes and reduced the diff to 199.
-// - A scoped direct-index variant was rolled back: it returned to a 245-byte
-//   diff. The retained source is the typed byte-offset reconstruction.
-// - Recomputing a typed candidate after the object/attribute call preserved the
-//   original record-address reload and improved the body to 195 bytes of drift.
-// - Loading the typed record id before forming the guard pointer reproduced the
-//   original id-plus-address access order and reduced drift to 117 bytes.
-// - An explicit x-conversion order was a codegen duplicate. Inlining the x
-//   record expression worsened drift to 124 bytes and was rolled back.
-// - Main-agent audit restored direct typed array indexing. The raw byte cursor
-//   was diagnostic compiler steering and did not express required behavior.
-// - Reordering the natural result declarations before the unit changed saved
-//   registers and worsened the first prologue hunk; it was rolled back.
-// - A persistent typed ObjectMemory pointer walk reduced the frame and moved
-//   farther from the original scan; it was rolled back.
-// - Same-TU declaration-then-assignment initialization was a codegen duplicate
-//   of the clean typed source and was not retained.
-// - Reintroduced the binary-proven byte cursor and post-call candidate pointer;
-//   this restored the 277-byte body and reduced drift from 245 to 117 bytes.
-// - Split coordinate conversions, reordered candidate declaration, and ran a
-//   six-case focused coordinate lab; all stayed in the same 117-byte basin or
-//   worsened size. The remaining hunk starts at the first x/y conversion.
-// - Adding math.h or stdlib.h changed the body to 280 bytes and 193-byte drift;
-//   both contexts were rolled back. A char cursor produced identical bytes.
+// - Recovered typed ObjectMemory, player, object, and module surfaces from
+//   exact same-TU donors 004E1BD0 and 004D7070.
+// - ObjectMemory has id +0x00, type +0x04, x +0x08, y +0x09,
+//   owner +0x0B, and a 0x24-byte stride. Player id is at +0x4A.
+// - The natural scan keeps the sentinel, owner, type, dock-attribute, and
+//   nearest squared-distance tests in the original order.
+// - Direct indexed records added 15 bytes and a larger frame. A typed pointer
+//   walk reduced the frame and moved farther from the original scan.
+// - The current indexed typed candidate has the original size, frame, and four
+//   ordered calls. Its 117 differing bytes start at the coordinate conversion.
+// - Split coordinate statements and candidate assignment forms emit the same
+//   117-byte result. No raw cursor or compiler-steering form is retained.
 
 extern float DAT_00575580;
 
@@ -104,22 +82,19 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
     if (unit == 0)
         return 0;
 
-    int byte_offset = 0;
     ObjectMemory* bestDock = 0;
     int bestDockDistance = 0;
     int i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            int id = *(int*)((char*)this->importantObjectMemory + byte_offset);
-            ObjectMemory* memory =
-                (ObjectMemory*)((char*)this->importantObjectMemory + byte_offset);
-                if (id != -1 && memory->owner != this->md->player->id &&
-                    memory->type == 0x2D) {
-                    RGE_Static_Object* dock = this->md->object(id);
-                    if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
-                    ObjectMemory* candidate =
-                        (ObjectMemory*)((char*)this->importantObjectMemory + byte_offset);
+            if (this->importantObjectMemory[i].id != -1 &&
+                this->importantObjectMemory[i].owner != this->md->player->id &&
+                this->importantObjectMemory[i].type == 0x2D) {
+                RGE_Static_Object* dock = this->md->object(
+                    this->importantObjectMemory[i].id);
+                if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
+                    ObjectMemory* candidate = &this->importantObjectMemory[i];
                     int dx = (int)candidate->x - (int)unit->x;
                     int dy = (int)candidate->y - (int)unit->y;
                     int dist = dx * dx + dy * dy;
@@ -130,7 +105,6 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
                 }
             }
             i++;
-            byte_offset += 0x24;
         } while (i < this->maxImportantObjectMemory);
     }
 
