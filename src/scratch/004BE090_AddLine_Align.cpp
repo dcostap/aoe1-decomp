@@ -31,6 +31,21 @@
 //   both stayed structural mismatches, so the validated x1v source is restored.
 // - Fresh spanlist loop-shape lead: the vertical axis uses a guarded do/while,
 //   matching the original compare-before-body and same-TU span traversal.
+// - This claim baseline rebuilt 335 meaningful bytes with all five AddSpan
+//   sites aligned; the first mismatch remains the saved-this/register basin.
+// - A natural endpoint-local source from the sibling spanlist reconstruction
+//   emitted 356 bytes and six AddSpan sites under this TU; rejected.
+// - Direct x1 parameter mutation, delayed diagonal x1v creation, and the
+//   binary-observed y-before-x swap order produced 327, 331, and 325 bytes;
+//   all were worse than the clean source despite some stronger block islands.
+// - A carried manager alias was codegen-identical to the delayed-x1 variant.
+//   The clean source is restored. Next evidence needed is original TU/source
+//   context that explains prologue register coloring and vertical homes.
+// - Claim sa-36e3fb9c-r1 retested direct x1/x2 aliases, PDB-local yd/xt/yl
+//   declarations, endpoint-local removal, axial for-loop forms, the PDB VSList
+//   class layout, and <memory.h>; all were duplicate or worse. Clean restored.
+// - A branch-local equal-x line cursor plus dy>=dx operand order reduced the
+//   positional diff to 184 bytes with 91.61% shape; retained as the frontier.
 // FLAGS: /nologo /c /O2 /Oy /GX
 
 // Main-agent audit confirmed canonical span-manager ownership and retained the
@@ -69,10 +84,11 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
 {
     int x1v = x1;
     if (x1v == x2) {
-        if (y1 > y2) { int t = y1; y1 = y2; y2 = t; }
+        int line = y1;
+        if (line > y2) { int t = line; line = y2; y2 = t; }
         int a = x1v & ~3;
         int b = x1v | 3;
-        while (y1 <= y2) { AddSpan(a, b, y1); y1++; }
+        while (line <= y2) { AddSpan(a, b, line); line++; }
     } else if (y1 == y2) {
         AddSpan(x1v & ~3, x2 | 3, y1);
     } else {
@@ -84,7 +100,7 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
         int dx, step_y;
         if (y1 < y2) { dx = y2 - y1 + 1; step_y = 1; }
         else { dx = y1 - y2 + 1; step_y = -1; }
-        if (dx >= dy) {
+        if (dy >= dx) {
             int err = 0;
             int span_x = x1v;
             int cur_x = x1v;
