@@ -134,7 +134,16 @@
 // - Object audit: FPO confirms one real local word, four saved registers, no
 //   SEH, and the expected parameters. PDB confirms AttackMemory and coordinate
 //   layouts, plus compiler home reuse for objY and i. No inline or ABI defect
-//   explains the remaining allocation. The direct-square diagnostic stays rejected.
+//   explains the remaining allocation at that checkpoint. A later reduced
+//   direct-square form produced a useful allocation improvement below.
+// - Fresh allocation pass: twenty natural object/layout/lifetime/control-flow
+//   probes tested the remaining home and register basin. Object field spelling,
+//   full object surface, char field widths, const forms, pointer spelling, and
+//   guard polarity were unchanged or worse. Direct typed square expressions
+//   were the only useful lead: they restore the original ty/i parameter homes,
+//   retain the 233-byte boundary, and reduce strict drift from 144 to 128 bytes.
+//   The reduced source has 79.79% exact-block coverage and the same two calls.
+//   Remaining drift is square arithmetic lowering and branch displacement.
 
 class RGE_Static_Object {
 public:
@@ -191,22 +200,22 @@ int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(
         if (am->id == -1 || !am->attackingOwner || (unsigned char)am->targetOwner != playerId)
             continue;
 
-        int dy = (unsigned char)am->minY - ty;
-        int dx = (unsigned char)am->minX - tx;
-        int dySquared = dy * dy;
-        int dxSquared = dx * dx;
+        int dxSquared = ((unsigned char)am->minX - tx) *
+                        ((unsigned char)am->minX - tx);
+        int dySquared = ((unsigned char)am->minY - ty) *
+                        ((unsigned char)am->minY - ty);
         if (dySquared + dxSquared <= tilesSq) return 1;
 
-        dy = (unsigned char)am->maxY - ty;
-        dySquared = dy * dy;
+        dySquared = ((unsigned char)am->maxY - ty) *
+                    ((unsigned char)am->maxY - ty);
         if (dySquared + dxSquared <= tilesSq) return 1;
 
-        dx = (unsigned char)am->maxX - tx;
-        dxSquared = dx * dx;
+        dxSquared = ((unsigned char)am->maxX - tx) *
+                    ((unsigned char)am->maxX - tx);
         if (dySquared + dxSquared <= tilesSq) return 1;
 
-        dy = (unsigned char)am->minY - ty;
-        dySquared = dy * dy;
+        dySquared = ((unsigned char)am->minY - ty) *
+                    ((unsigned char)am->minY - ty);
         if (dySquared + dxSquared <= tilesSq) return 1;
     }
 
