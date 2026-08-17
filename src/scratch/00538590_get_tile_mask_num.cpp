@@ -41,6 +41,18 @@
 // 308 positional-byte drift (+16 tail), first mismatch at entry parameter
 // coloring; original also retains a shared late return tail that VC5 does not
 // select from the tested natural source forms.
+// matching pass sa-092c01cf-r1: baseline rechecked at 398 bytes, 308 differing
+// bytes, 83.87% shape, and no calls. Restored clean source after every probe.
+// The absolute row-table plus swapped semantic aliases improved shape to
+// 92.74% and exact blocks to 95%, but produced 399 bytes and transposed the
+// proven coordinate ownership, so it was discarded. A common-tail goto was a
+// codegen duplicate. Hoisting the x stride added 61 bytes. A pointer-to-pointer
+// global added an EBP frame and 55 bytes. All four decompiler locals, a Windows
+// SDK include, reordered guards, and a guarded done label were codegen-neutral
+// or worse. No natural exact candidate was found; retain the canonical source.
+// matching pass sa-3bf37621-r1: named col/row, bounds, and mask-number locals
+// preserve the caller's (col,row,width,height,mask) ownership. This source
+// compiles to the same clean basin as the pinned candidate.
 
 extern unsigned long* unified_map_offsets[];
 
@@ -49,57 +61,56 @@ public:
     char gap_000[0x1A0];
     unsigned char EdgeNumber[0x100]; // +0x1A0
 
-    int get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, unsigned long param_5);
+    int get_tile_mask_num(int col, int row, int map_width, int map_height,
+                          unsigned long mask);
 };
 
-int RGE_View::get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, unsigned long param_5)
+int RGE_View::get_tile_mask_num(int col, int row, int map_width,
+                                int map_height, unsigned long mask)
 {
-    int iVar1;
-    int iVar3;
-    unsigned int uVar5;
-    uVar5 = 0;
-    if (0 < param_1 && 0 < param_2 && param_1 < param_3 - 1 && param_2 < param_4 - 1) {
-        iVar1 = param_1 * 4;
-        if ((unified_map_offsets[param_2 - 1][param_1] & param_5) == 0)
-            uVar5 = 0x80;
-        if ((unified_map_offsets[param_2][param_1 + 1] & param_5) == 0)
-            uVar5 |= 0x40;
-        if ((unified_map_offsets[param_2 + 1][param_1] & param_5) == 0)
-            uVar5 |= 0x20;
-        if ((unified_map_offsets[param_2][param_1 - 1] & param_5) == 0)
-            uVar5 |= 0x10;
-        if ((unified_map_offsets[param_2 - 1][param_1 + 1] & param_5) == 0)
-            uVar5 |= 0x08;
-        if ((unified_map_offsets[param_2 + 1][param_1 + 1] & param_5) == 0)
-            uVar5 |= 0x04;
-        if ((unified_map_offsets[param_2 + 1][param_1 - 1] & param_5) == 0)
-            uVar5 |= 0x02;
-        if ((unified_map_offsets[param_2 - 1][param_1 - 1] & param_5) == 0)
-            uVar5 |= 0x01;
+    unsigned int mask_number = 0;
+
+    if (0 < col && 0 < row && col < map_width - 1 && row < map_height - 1) {
+        if ((unified_map_offsets[row - 1][col] & mask) == 0)
+            mask_number = 0x80;
+        if ((unified_map_offsets[row][col + 1] & mask) == 0)
+            mask_number |= 0x40;
+        if ((unified_map_offsets[row + 1][col] & mask) == 0)
+            mask_number |= 0x20;
+        if ((unified_map_offsets[row][col - 1] & mask) == 0)
+            mask_number |= 0x10;
+        if ((unified_map_offsets[row - 1][col + 1] & mask) == 0)
+            mask_number |= 0x08;
+        if ((unified_map_offsets[row + 1][col + 1] & mask) == 0)
+            mask_number |= 0x04;
+        if ((unified_map_offsets[row + 1][col - 1] & mask) == 0)
+            mask_number |= 0x02;
+        if ((unified_map_offsets[row - 1][col - 1] & mask) == 0)
+            mask_number |= 0x01;
     } else {
-        if (0 < param_1 && (unified_map_offsets[param_2][param_1 - 1] & param_5) == 0)
-        uVar5 = 0x10;
-    iVar1 = param_3 - 1;
-    if (param_1 < iVar1 && (unified_map_offsets[param_2][param_1 + 1] & param_5) == 0)
-        uVar5 |= 0x40;
-    if (0 < param_2 && (unified_map_offsets[param_2 - 1][param_1] & param_5) == 0)
-        uVar5 |= 0x80;
-    iVar3 = param_4 - 1;
-    if (param_2 < iVar3 && (unified_map_offsets[param_2 + 1][param_1] & param_5) == 0)
-        uVar5 |= 0x20;
-    if (0 < param_1) {
-        if (0 < param_2 && (unified_map_offsets[param_2 - 1][param_1 - 1] & param_5) == 0)
-            uVar5 |= 0x01;
-        if (param_2 < iVar3 && (unified_map_offsets[param_2 + 1][param_1 - 1] & param_5) == 0)
-            uVar5 |= 0x02;
-    }
-        if (param_1 < iVar1) {
-            if (0 < param_2 && (unified_map_offsets[param_2 - 1][param_1 + 1] & param_5) == 0)
-                uVar5 |= 0x08;
-            if (param_2 < iVar3 && (unified_map_offsets[param_2 + 1][param_1 + 1] & param_5) == 0)
-                uVar5 |= 0x04;
+        if (0 < col && (unified_map_offsets[row][col - 1] & mask) == 0)
+            mask_number = 0x10;
+        int max_col = map_width - 1;
+        if (col < max_col && (unified_map_offsets[row][col + 1] & mask) == 0)
+            mask_number |= 0x40;
+        if (0 < row && (unified_map_offsets[row - 1][col] & mask) == 0)
+            mask_number |= 0x80;
+        int max_row = map_height - 1;
+        if (row < max_row && (unified_map_offsets[row + 1][col] & mask) == 0)
+            mask_number |= 0x20;
+        if (0 < col) {
+            if (0 < row && (unified_map_offsets[row - 1][col - 1] & mask) == 0)
+                mask_number |= 0x01;
+            if (row < max_row && (unified_map_offsets[row + 1][col - 1] & mask) == 0)
+                mask_number |= 0x02;
+        }
+        if (col < max_col) {
+            if (0 < row && (unified_map_offsets[row - 1][col + 1] & mask) == 0)
+                mask_number |= 0x08;
+            if (row < max_row && (unified_map_offsets[row + 1][col + 1] & mask) == 0)
+                mask_number |= 0x04;
         }
     }
 
-    return this->EdgeNumber[uVar5];
+    return this->EdgeNumber[mask_number];
 }
