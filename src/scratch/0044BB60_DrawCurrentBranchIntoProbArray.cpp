@@ -43,6 +43,26 @@
 // - Grouping the point_x, BranchRadius, and point_y initial declarations was a
 //   clean typed probe, but worsened the diff from 325 to 331 bytes and moved
 //   the first mismatch to +3.  Restored the separate declarations.
+// - The original parameter is recorded as `which` in CodeView; renaming the
+//   source parameter was codegen-neutral.  Spelling the probability lower
+//   bound as `>= 1` recovered the target cmp-1 form and improved the diff from
+//   325 to 299 bytes without changing size, frame, calls, or CFG.
+// - A nine-case early-input/tail variant lab found no exact result.  Named
+//   coordinate reuse, point-element pointers, and post-index add locals were
+//   regressive or changed the frame.  The natural typed source is restored;
+//   remaining drift starts at the pre-save parameter/index register basin.
+// - Revisited the setup basin with natural statement order.  Assigning the
+//   radius before loading point_y, then assigning min_x before max_x, matches
+//   the target setup, clipping, and draw-loop register ownership through the
+//   shared loop exit.  This reduces drift from 299 to 111 bytes and raises
+//   exact-block coverage from 69.92% to 85.37%, but leaves a two-byte size
+//   excess and the probability-index/tail block nonexact.  Retain this typed
+//   source as the strongest natural reconstruction; no opaque allocator aids.
+// - Fresh tail probes moved the typed add initialization before the probability
+//   guard.  A full-width prob_add local reached 61 differing bytes, exact size,
+//   and 89.43% exact-block coverage, but its load/register order remained
+//   nonexact.  Direct indexed stores were codegen-neutral.  Restored this
+//   pinned natural source; no metric-only tail variant is retained.
 
 class PrimaryPt {
 public:
@@ -109,22 +129,23 @@ public:
     char pad_end[3];                     // +0x1055
 
     void AddingRect(int param1, int param2, int param3, int param4);
-    void DrawCurrentBranchIntoProbArray(int point_index);
+    void DrawCurrentBranchIntoProbArray(int which);
 };
 
-void PointMaker::DrawCurrentBranchIntoProbArray(int point_index) {
-    int point_x = Point[point_index].x;
+void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
+    int point_x = Point[which].x;
     int radius;
-    int point_y = Point[point_index].y;
-    int min_y;
+    int point_y;
     int max_x;
     int min_x;
+    int min_y;
     int max_y;
     int ring;
 
     radius = BranchRadius;
-    max_x = radius + point_x;
+    point_y = Point[which].y;
     min_x = point_x - radius;
+    max_x = radius + point_x;
     min_y = point_y - radius;
     max_y = point_y + radius;
 
@@ -147,8 +168,8 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int point_index) {
             }
         }
 
-        int prob_idx = Width * Point[point_index].y + Point[point_index].x;
-        if (prob_idx > 0 && prob_idx < SizeArrays - 1) {
+        int prob_idx = Width * Point[which].y + Point[which].x;
+        if (prob_idx >= 1 && prob_idx < SizeArrays - 1) {
             char* p = ProbArray + prob_idx;
             char old = *p;
             char add = (char)ProbabilityAdd;
