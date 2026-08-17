@@ -92,6 +92,10 @@
 // helper declarations, result lifetimes, aliases, and mixed returns were tested.
 // A shared goto merged the calls and changed the call count. Other forms stayed
 // at the same eight-byte recolor. The clean natural source remains authoritative.
+// Object audit: PDB, FPO, COFF, ABI widths, owner, section, calls, and CFG all
+// match. PDB lists no local and maps both forwards to one source line. Exact
+// window procedures use different natural colors, so no object evidence supports
+// another source form for this allocator-only difference.
 
 #include <windows.h>
 
