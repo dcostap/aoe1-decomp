@@ -31,6 +31,10 @@
 //   pointer arithmetic, so the clean named-field source was restored.
 // - a hybrid cursor using typed AttribType values but named tail fields emitted
 //   the same 224-byte result as the prior cursor probe; it was restored.
+// - the current clean frontier keeps a typed AttribType anchor for integer
+//   dispatch and one explicit PlayerID/object-type fallback arm.  It emits the
+//   original size, frame, CFG, and all 37 ordered calls; only two stack-displacement
+//   bytes differ in the fallback rectangle call.
 
 class RGE_Static_Object;
 class RGE_Game_World;
@@ -262,28 +266,32 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
         int condition_index = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[row][condition_index];
-            int type = condition->VictoryType;
+            // BINARY NOTE: the original integer cursor is AttribType, not the
+            // record start.  Its -2/-1 offsets produce the shipped dispatch.
+            int type = (&condition->AttribType)[-2];
             if (type != 0) {
                 if (type == 4) {
-                    int attribute = condition->AttribType;
+                    int* attribute_field = &condition->AttribType;
+                    int attribute = *attribute_field;
                     if (attribute == 6) {
-                        conditions->add_explore(1, condition->Amount, 1);
+                        conditions->add_explore(1, attribute_field[-1], 1);
                     } else if (attribute == 4) {
-                        conditions->add_attributes(1, 11, condition->Amount, 0);
+                        conditions->add_attributes(1, 11, attribute_field[-1], 0);
                     } else if (attribute == 3) {
-                        conditions->add_attributes(1, 0, condition->Amount, 0);
+                        conditions->add_attributes(1, 0, attribute_field[-1], 0);
                     } else if (attribute == 2) {
-                        conditions->add_attributes(1, 2, condition->Amount, 0);
+                        conditions->add_attributes(1, 2, attribute_field[-1], 0);
                     } else if (attribute == 1) {
-                        conditions->add_attributes(1, 1, condition->Amount, 0);
+                        conditions->add_attributes(1, 1, attribute_field[-1], 0);
                     } else if (attribute == 0) {
-                        conditions->add_attributes(1, 3, condition->Amount, 0);
+                        conditions->add_attributes(1, 3, attribute_field[-1], 0);
                     } else if (attribute == 5) {
-                        conditions->add_attributes(1, 6, condition->Amount, 0);
+                        conditions->add_attributes(1, 6, attribute_field[-1], 0);
                     }
                 } else if (type == 6) {
-                    conditions->add_attributes(1, condition->AttribType,
-                                               condition->Amount, 0);
+                    int* attribute_field = &condition->AttribType;
+                    conditions->add_attributes(1, *attribute_field,
+                                               attribute_field[-1], 0);
                 } else if (type == 5) {
                     conditions->add_capture(1,
                                             this->get_object_pointer(condition->obj_ID), 1);
@@ -294,9 +302,11 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
                             this->get_object_pointer(condition->obj_ID),
                             this->get_object_pointer(condition->dest_obj_ID));
                     } else {
+                        // BINARY NOTE: this fallback lookup reads obj_ID at
+                        // [ESI+4], not Amount at [ESI-4].
                         conditions->add_bring(
                             1,
-                            this->get_object_pointer(condition->Amount),
+                            this->get_object_pointer(condition->obj_ID),
                             this->sp_victory[row][condition_index].x1,
                             condition->y1, condition->x2, condition->y2);
                     }
@@ -313,21 +323,25 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
                 } else if (type == 7) {
                     conditions->add_tech(1, condition->AttribType);
                 } else if (type == 1) {
-                    if (condition->ObjType != 0 && condition->AllFlag != 0) {
-                        conditions->add_destroy(1, condition->ObjType,
+                    // BINARY NOTE: keep these tests in one fallback arm.  This
+                    // preserves the original late branch layout and register lives.
+                    int object_type = condition->ObjType;
+                    if (object_type != 0 && condition->AllFlag != 0) {
+                        conditions->add_destroy(1, object_type,
                                                 (RGE_Player*)0);
-                    } else if (condition->PlayerID != 0) {
-                        if (condition->ObjType != 0) {
+                    } else {
+                        int player_id = condition->PlayerID;
+                        if (player_id != 0 && object_type != 0) {
                             conditions->add_destroy(
-                                1, condition->ObjType, condition->Amount,
-                                this->world->players[condition->PlayerID]);
-                        } else {
+                                1, object_type, condition->Amount,
+                                this->world->players[player_id]);
+                        } else if (player_id != 0) {
+                            conditions->add_destroy(1,
+                                                    this->world->players[player_id]);
+                        } else if (this->get_object_pointer(condition->obj_ID) != 0) {
                             conditions->add_destroy(
-                                1, this->world->players[condition->PlayerID]);
+                                1, this->get_object_pointer(condition->obj_ID));
                         }
-                    } else if (this->get_object_pointer(condition->obj_ID) != 0) {
-                        conditions->add_destroy(
-                            1, this->get_object_pointer(condition->obj_ID));
                     }
                 }
             }
