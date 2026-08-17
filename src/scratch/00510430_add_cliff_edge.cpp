@@ -23,6 +23,28 @@
 // orch-510430-a: the oracle returns the existing parameter (zero) when the
 // requested facing already exists and existing is zero; keep that behavior in
 // the final clean source despite the common-return codegen gap.
+//
+// sa-ae373c87-r1 final pass: ran 22 source-led probes after the baseline.
+// The clean baseline remains the smallest natural source model. It has 1270
+// rebuilt bytes versus 1317 original bytes, 23/23 ordered calls, frame 0x24,
+// and 1166 differing positions (88.5345%). The best experimental basin used
+// an explicit empty zero arm and bool found: 1274 bytes and 1130 differences,
+// but that arm is not a supported source reconstruction. It was rolled back.
+//
+// Evidence learned: helper ABI, aggregate return storage, object layout,
+// tile-list ownership, destructor call, frame, and call order are stable.
+// The remaining drift starts at the facing local and candidate slot colors.
+// The original uses direction1/facing1/direction2/facing2 homes at entry
+// offsets -0x24/-0x20/-0x1C/-0x18. VC5 keeps a different color basin here.
+// The original also uses a shared zero-return edge and a larger cold layout.
+//
+// Tested and rolled back: combined and inverted early guards, a common-return
+// goto, direction/facing declaration and assignment orders, register and const
+// facing, narrow facing, narrow counters, int candidate locals, scoped aliases,
+// split aggregate assignment, int found, tile temporaries, and a full RGE_Map
+// base. These tests were neutral, worse, or reached a broad different basin.
+// Open lead: recover the original tmap.cpp translation-unit context or source
+// control-flow form that selects the original saved-local color and cold layout.
 
 struct TRIBE_Cliff_Info {
     int info[4];
