@@ -133,6 +133,10 @@
 //   translation-unit context naturally selects the oracle parameter-home
 //   basin.  Remaining drift is source liveness/home allocation, not a proven
 //   missing header, macro, declaration, function order, or flag.
+// - Object audit confirms the 268-byte range, two local words, five parameters,
+//   FPO/COFF shape, compiler, and no hidden inline cause. Oracle assigns row to
+//   the td home and count to p2; the natural source reverses them. A row-home
+//   cast remains rejected, and the extra skip-arm source increment stays open.
 // FLAGS: /nologo /c /O2 /Oy
 
 extern "C" void* __cdecl memset(void*, int, unsigned int);
