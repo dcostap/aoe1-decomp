@@ -34,6 +34,18 @@
 // modes-6/8 parameter-home spill.  The remaining branch/case placement and
 // final temporary coloring are structural/source-shape leads, not a safe blind
 // register tweak.  No inline asm or opaque address plumbing was used.
+// claim probes 1-27: case-local mode bounds recovered the exact function size
+// and several exact handler blocks.  A reversed case-1 Y predicate and a
+// case-0 text-X local improved the clean source, but did not change the first
+// centered-bound mismatch.  Nested geometry guards, inherited panel context,
+// Windows and standard-library header variants, and an eight-variant source
+// lab produced no exact result.  The nested guard had better metrics, but the
+// extra ok test is not in the oracle and was not retained.
+// BINARY NOTE: the oracle writes case-0 text results to a local stack home and
+// reuses the dead parameter-2 home in modes 6 and 8.  The clean source still
+// misses both stores while preserving the proven behavior and ABI.
+// LIKELY INTENT: the source uses one centered icon bound and separate text
+// placement paths for event modes 0, 1, 2, 6, and 8.
 
 #include <string.h>
 
@@ -127,10 +139,6 @@ int Time_Line_Panel::calculate_icon_location(
     int local_4 = 0;
     long start_y = 0;
     long start_x = 0;
-    int body_height;
-    int max_length;
-    int top;
-    int max_x;
 
     event->icon_flag = 0;
 
@@ -179,19 +187,23 @@ int Time_Line_Panel::calculate_icon_location(
 
     switch (event->event) {
     case 0:
+    {
+        int text_x;
         event->text_length1 = strlen(event->text1);
+        text_x = event->X_line_pos;
         bounds_result = this->body_font_wid * event->text_length1;
-        if (bounds_result + 2 + event->X_line_pos >=
+        if (bounds_result + 2 + text_x >=
             this->X_line_max_width + this->X_start_line_pos) {
             start_y = this->X_line_max_width - bounds_result - 3 +
                       this->X_start_line_pos;
         } else {
-            start_y = event->X_line_pos + 2;
+            start_y = text_x + 2;
         }
         bounds_result = event->Y_line_pos +
                         event->intermediate_y_line_segment -
                         this->body_font_hgt;
         break;
+    }
 
     case 1:
         event->text_length1 = strlen(event->text1);
@@ -204,8 +216,8 @@ int Time_Line_Panel::calculate_icon_location(
             start_y = event->X_line_pos + 2;
         }
         bounds_result = event->Y_line_pos;
-        if (this->Y_start_line_pos + this->Y_line_max_length <=
-            this->body_font_hgt + 2 + bounds_result) {
+        if (this->body_font_hgt + 2 + bounds_result >=
+            this->Y_start_line_pos + this->Y_line_max_length) {
             bounds_result = this->Y_start_line_pos +
                             this->Y_line_max_length -
                             this->body_font_hgt - 2;
@@ -236,7 +248,11 @@ int Time_Line_Panel::calculate_icon_location(
         goto store_location;
 
     case 6:
-        max_x = this->X_start_line_pos + this->X_line_max_width;
+    {
+        int max_x = this->X_start_line_pos + this->X_line_max_width;
+        int body_height;
+        int max_length;
+        int top;
         if ((int)(strlen(event->text1) * this->body_font_wid +
                   event->X_line_pos) > max_x) {
             event->text_length1 =
@@ -257,9 +273,14 @@ int Time_Line_Panel::calculate_icon_location(
         start_y = local_4;
         bounds_result = start_x + 1 + bounds_result;
         goto store_location;
+    }
 
     case 8:
-        max_x = this->X_start_line_pos + this->X_line_max_width;
+    {
+        int max_x = this->X_start_line_pos + this->X_line_max_width;
+        int body_height;
+        int max_length;
+        int top;
         if ((int)(strlen(event->text1) * this->body_font_wid +
                   event->X_line_pos) > max_x) {
             event->text_length1 =
@@ -280,6 +301,7 @@ int Time_Line_Panel::calculate_icon_location(
         start_y = local_4;
         bounds_result = start_x + 1 + bounds_result;
         goto store_location;
+    }
     }
 
     bounds_result -= 2;
