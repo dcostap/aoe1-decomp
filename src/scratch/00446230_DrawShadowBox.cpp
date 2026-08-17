@@ -96,6 +96,22 @@
 //   reaches 271 bytes with 199 differing bytes. It keeps the table local and
 //   direct Bits indexing. No row_start, row_end, pixel cursor, raw view, or
 //   steering form is retained.
+// - Fresh direct-index frontier: PDB symbols contain only this and four long
+//   parameter records. No local record proves a row or pixel cursor. The exact
+//   FillRect and Shape pixel-fill siblings support typed indexed loops, but
+//   their cursor locals were not restored here.
+// - Splitting the AlignedWidth result from its orientation multiply improved
+//   the unchanged 271-byte result from 199 to 182 differing bytes. A named
+//   aligned-width intermediate emitted the same bytes and was removed.
+// - Direct Bits term reordering, explicit indexed row arithmetic, row-count
+//   int width, table declaration order, and a while form were codegen
+//   duplicates. A direct typed table owner lost the required saved-register
+//   prologue and was removed.
+// - Redundant late y guards and do-loop forms improved shape but moved strict
+//   bytes or added guards. Mutating parameter homes for the row count widened
+//   the function. The retained source is the smallest natural typed-index
+//   form, with one AlignedWidth call, typed table ownership, and preserved
+//   table-before-Bits fault order.
 
 struct tagRECT {
     long left;
@@ -202,7 +218,8 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
 
         {
             long orientation = this->Orien;
-            long row_pitch = orientation * this->AlignedWidth();
+            long row_pitch = this->AlignedWidth();
+            row_pitch *= orientation;
             unsigned char* table;
             long row_offset;
 
