@@ -40,6 +40,9 @@
 //     one-object reload and improved strict drift to 546 bytes.
 // 26: a narrow radio-array alias for the first help call was unchanged; retain
 //     it as the binary-supported pointer ownership form.
+// 27: passing the language buffer base, not base + 4, restored both observed
+//     LEA displacements and improved strict drift from 546 to 544 bytes. Radio
+//     register coloring remains the first unresolved structural hunk.
 // Main-agent audit replaced fixed string addresses and cross-member pointer
 // arithmetic with literals and direct playerName/playerCivilization/checkButton/
 // commPlayers row ownership. The canonical source validates at 1605 bytes with
@@ -272,10 +275,12 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
                              font, 0, 1, 0))
                 return;
 
+            // BINARY NOTE: The executable passes this buffer base to both
+            // language and civilization creation. It does not use a +4 offset.
             rge_base_game->language(0x69, world->players[id]->master_player_id,
-                                    0, temp_str + 4, 100);
+                                    0, temp_str, 100);
             if (!create_text(this, &playerCivilization[row],
-                             temp_str + 4, 0x104, y, 0x78, 0x1E, 0x0B, 0, 1, 0))
+                             temp_str, 0x104, y, 0x78, 0x1E, 0x0B, 0, 1, 0))
                 return;
 
             if (humanity != comm->WhoAmI()) {
