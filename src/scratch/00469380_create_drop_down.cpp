@@ -3,7 +3,7 @@
 // 1: natural reconstruction from packet with EH/new ctor and TDropDownPanel member calls.
 // 2: modeled scaled coordinate math exactly from asm: param*width/ideal_width and param*height/ideal_height, plus width*18/ideal_width.
 // 3: modeled negative font id fallback to 10 and rge_base_game->get_font calls at both observed sites.
-// 4: modeled calloc(1,4), calloc(0x14,1), copy of literal at 0x580460, and cleanup free loop.
+// 4: modeled calloc(1,4), calloc(0x14,1), copy of the single-space literal, and cleanup free loop.
 // 5: modeled operator_new(0x144) + placement constructor; VC5 needed a local placement-new declaration to compile.
 // 6: tried /GX response file because original has EH registration; no improvement, object .text still too short for extraction, removed flag.
 // 7: modeled TDropDownPanel setup argument list in observed push order from decompiler/asm.
@@ -86,16 +86,81 @@
 #include <stdlib.h>
 
 class TDrawArea;
+struct tagRECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+typedef int PositionMode;
+typedef int RedrawMode;
+
 class TPanel {
 public:
     virtual ~TPanel();
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
+    virtual void set_rect(tagRECT);
+    virtual void set_rect(long, long, long, long);
+    virtual void set_color(unsigned char);
+    virtual void set_active(int);
+    virtual void set_positioning(PositionMode, long, long, long, long, long, long, long, long,
+                                  TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_fixed_position(long, long, long, long);
+    virtual void set_redraw(RedrawMode);
+    virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
+    virtual void draw_setup(int);
+    virtual void draw_finish();
+    virtual void draw();
+    virtual void draw_rect(tagRECT*);
+    virtual void draw_offset(long, long, tagRECT*);
+    virtual void draw_rect2(tagRECT*);
+    virtual void draw_offset2(long, long, tagRECT*);
+    virtual void paint();
+    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long handle_idle();
+    virtual long handle_size(long, long);
+    virtual long handle_paint();
+    virtual long handle_key_down(long, short, int, int, int);
+    virtual long handle_char(long, short);
+    virtual long handle_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_timer_command(unsigned int, long);
+    virtual long handle_scroll(long, long);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_move(long, long, int, int);
+    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
+    virtual long mouse_move_action(long, long, int, int);
+    virtual long mouse_left_down_action(long, long, int, int);
+    virtual long mouse_left_hold_action(long, long, int, int);
+    virtual long mouse_left_move_action(long, long, int, int);
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_down_action(long, long, int, int);
+    virtual long mouse_right_hold_action(long, long, int, int);
+    virtual long mouse_right_move_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual long mouse_right_dbl_click_action(long, long, int, int);
+    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long, short);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual void get_true_render_rect(tagRECT*);
+    virtual int is_inside(long, long);
+    virtual void set_focus(int);
+    virtual void set_tab_order(TPanel*, TPanel*);
+    virtual void set_tab_order(TPanel**, short);
+    virtual unsigned char get_help_info(char**, long*, long, long);
+    virtual void stop_sound_system();
+    virtual int restart_sound_system();
+    virtual void take_snapshot();
+    virtual void handle_reactivate();
     char gap_04[0x10];
     int width;
     int height;
     char gap_1c[4];
     TDrawArea* draw_area;
     char gap_24[0xb4];
-    int failure;
+    int error;
     char gap_dc[0x18];
 };
 class TShape;
@@ -104,23 +169,12 @@ class RGE_Font { public: void* font; int font_wid; int font_hgt; };
 class RGE_Base_Game { public: RGE_Font* get_font(int id); };
 extern RGE_Base_Game* rge_base_game;
 
-class TTextPanel {
+class TTextPanel : public TPanel {
 public:
-    virtual void vf00(); virtual void vf01(); virtual void vf02(); virtual void vf03();
-    virtual void vf04(); virtual void vf05(); virtual void vf06(); virtual void vf07();
-    virtual void vf08(); virtual void vf09(); virtual void vf10(); virtual void vf11();
-    virtual void vf12(); virtual void vf13(); virtual void vf14(); virtual void vf15();
-    virtual void vf16(); virtual void vf17(); virtual void vf18(); virtual void vf19();
-    virtual void vf20(); virtual void vf21(); virtual void vf22(); virtual void vf23();
-    virtual void vf24(); virtual void vf25(); virtual void vf26(); virtual void vf27();
-    virtual void vf28(); virtual void vf29(); virtual void vf30(); virtual void vf31();
-    virtual void vf32(); virtual void vf33(); virtual void vf34(); virtual void vf35();
-    virtual void vf36(); virtual void vf37(); virtual void vf38(); virtual void vf39();
-    virtual void vf40(); virtual void vf41(); virtual void vf42(); virtual void vf43();
-    virtual void vf44(); virtual void vf45(); virtual void vf46(); virtual void vf47();
-    virtual void vf48(); virtual void vf49(); virtual void vf50(); virtual void vf51();
-    virtual void vf52(); virtual void vf53(); virtual void vf54(); virtual void vf55();
-    virtual void vf56(); virtual void vf57(); virtual void vf58();
+    virtual ~TTextPanel();
+    virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
 };
 class TButtonPanel;
@@ -161,17 +215,16 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** out, long x, 
     else
         rge_base_game->get_font(10);
     char** list = (char**)calloc(1,4);
-    if (list == 0) { this->failure = 1; goto finish; }
+    if (list == 0) { this->error = 1; goto finish; }
     list[0] = (char*)calloc(0x14,1);
     // The original returns through the shared result epilogue here and leaks
     // the outer list allocation.
     if (list[0] == 0) goto finish;
-    // string literal at 580460 is " "
-    strcpy(list[0], (const char*)0x580460);
-    if (this->failure == 0) {
+    strcpy(list[0], " ");
+    if (this->error == 0) {
         TDropDownPanel* p = new TDropDownPanel;
         *out = p;
-        if (p != 0 && p->failure == 0) {
+        if (p != 0 && p->error == 0) {
             RGE_Font* font = rge_base_game->get_font(font_id);
             if ((*out)->setup(this->draw_area,parent,font->font,font->font_wid,font->font_hgt,0,0,1,0xff,ix,iy,iw,ih,0,0,bh,ih,0,px,py,list,1,bh,0,0,0,0,bh,bh)) {
                 if (this->button_pics) (*out)->set_buttons(this->button_pics,0xe,-1,8,10,0xc);
@@ -184,7 +237,7 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** out, long x, 
                 goto cleanup;
             }
         }
-        this->failure = 1;
+        this->error = 1;
     }
 cleanup:
     {
@@ -198,5 +251,5 @@ cleanup:
         free(list);
     }
 finish:
-    return this->failure == 0;
+    return this->error == 0;
 }
