@@ -36,6 +36,32 @@
 // Explicit `(code & 1) == 1` tests improved shape but grew the function by
 // 28 bytes; the binary-compatible CRT memcpy prototype was also required.
 // A harmless `count + 0` spelling was codegen-identical. Restored clean.
+//
+// sa-ac5b3de6 claim pass (2026-08-17; 20 meaningful probes plus one 64-case
+// ambient-declaration family):
+// - Split the middle literal memcpy into two source arms. Factoring the
+//   cursor updates still emitted one call; duplicating those updates restored
+//   the 813-byte/741-diff clean basin, but the call count stayed 2/3.
+// - A widened copy-length local, orientation/width declaration splits, header
+//   aliases, local declaration reorders, reversed bound spelling, and a
+//   function-scope packet byte were duplicate or worse basins.
+// - One explicit top parity comparison grew the function by 10 bytes. Four
+//   explicit parity comparisons grew it by 28 bytes. The natural truth tests
+//   remain pinned despite better shape in those diagnostic variants.
+// - A 64-case ambient declaration lab produced one 813-byte group with no
+//   movement. It did not alter the unresolved allocator basin.
+// - Using save_buffer as the working destination aligned all six calls, but
+//   removed the original frame and fell to 776 strict bytes. The separate
+//   typed row destination remains the cleaner 813-byte reconstruction.
+// - Windows.h, memory.h, operand-order, command declaration, early destination
+//   declaration, and direct left-band source-expression probes were duplicate
+//   or worse. The direct left-band form reached six calls but was 818 bytes
+//   and 787 strict bytes.
+// - Final validation after restore: 813-byte rebuilt body, 0x8 frame, 33/33
+//   conditional signals, 5/6 ordered calls, 741 strict differing bytes.
+//   The remaining blocker is the Shape.cpp VC5 register/local basin and one
+//   merged middle-band memcpy call. No inline assembly or compiler steering
+//   was retained.
 
 #include <string.h>
 #pragma function(memcpy)
@@ -113,6 +139,7 @@ uchar TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
     uchar* src = (uchar*)(this->shape_header + 1);
     uchar* save_buffer;
     uchar count;
+
 
     if (area->Orien < 1)
         save_buffer = area->Bits + (clip_top - area->Height + 1) * pitch;
