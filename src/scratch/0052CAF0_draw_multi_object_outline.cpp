@@ -37,6 +37,19 @@
 //   binary-proven horizontal row boundary; this removed the 20-byte excess.
 // - r6 diagonal guard and operand forms were codegen duplicates. Best current
 //   source is exact-size/frame with 28 calls and a 1081-byte strict diff.
+// - Current matching pass: 19 meaningful probes tested distance lowering,
+//   selection-home aliases, coordinate widths, fallback assignment order,
+//   declaration scope, and branch topology.  Every probe was rolled back.
+// - BINARY NOTE: The clean source emits 28 ordered calls, a 0x48 frame, and
+//   all four saved registers.  Its first mismatch is at +0x18 because VC5
+//   keeps this in ESI instead of the original EBP and chooses other output
+//   homes for get_selection_area.
+// - BINARY NOTE: The original distance block uses branchless signed-absolute
+//   arithmetic in ESI/EAX.  Natural abs expressions entered a worse basin and
+//   added 14 bytes, so the clean manual form remains pinned.
+// - Next lead: recover the original local-home and register basin from the
+//   period tvw_main.cpp declaration and translation-unit context.  Do not add
+//   aliases or fake volatility without new binary evidence.
 
 #include <stdlib.h>
 #include "../../include/rge_base_game_global.h"
