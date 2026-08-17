@@ -82,6 +82,37 @@
 //   - The zero-symbol variant improved relocation-aware diagnostics but changed
 //     the clamp store sequence. No variant recovered the original push/home
 //     topology or fused Y subtraction. Restored this pinned typed source.
+//
+// sa-696cdc9a-r1 revisit 2026-08-17:
+//   - Re-read the complete local evidence and checked every strict span in the
+//     current 202B/198-diff baseline. The five spans are +0000..+0025,
+//     +0026..+0061, +0062..+0090, +0091..+00C0, and +00C1..+00C7.
+//   - Span 1 is the missing entry `push ecx` and the different coordinate
+//     scratch shape. The target stores dy in the shifted other-parameter home
+//     at [esp+8]. The rebuild stores a coordinate value at [esp+4] and has no
+//     local push.
+//   - Span 2 is the resulting second absolute-value and pointer-load shift.
+//     The target reloads and stores the parameter home. The rebuild uses extra
+//     x87 swaps and the unshifted parameter home.
+//   - Span 3 is the decisive Y-radius schedule. The target emits
+//     `fsubr [esp+8]` and then `fnstsw`, followed by `fsub [ecx+34h]`. The
+//     rebuild emits `fnstsw`, the X branch and store, then both subtractions.
+//     This also changes memory fault and scratch-write order.
+//   - Span 4 is the shifted clamp and final FPU setup. The target uses the
+//     local at [esp] and range at [esp+0Ch]. The rebuild uses [esp+4] and
+//     [esp+8]. Span 5 is the missing `pop ecx` and three-byte boundary overflow.
+//   - Tested 20 natural hypotheses in this claim. These covered direct field
+//     expressions, float and double radius locals, pointer and reference
+//     ownership, declaration and initialization scope, Y-before-X order,
+//     ternary and split arithmetic, the proven zero object, const lifetimes,
+//     period header context, and return control forms. No source moved the
+//     target push/home topology or the fused Y subtraction.
+//   - The binary-proven zero object improved the raw result to 203B/194B, but
+//     it changed relocations and clamp stores. It is not retained. The earlier
+//     199B/22-diff diagnostic used volatile dy; this claim did not use it.
+//   - All probes were restored. The clean natural typed source remains
+//     202B/198 diff. The blocker is the original pushed parameter-home and
+//     pending-x87 schedule. No natural, policy-valid exact lead remains.
 
 class RGE_Master_Static_Object {
 public:
