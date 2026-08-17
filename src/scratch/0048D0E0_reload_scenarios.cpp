@@ -5,46 +5,11 @@
 // Attempt log:
 // - baseline reconstruction: period-plausible typed _finddata_t traversal,
 //   named scenario-entry ownership, typed base-game virtual header creation,
-//   and natural delete/free cleanup. Raw decompiler cursors were removed.
-// - probe: use the source-like pre-tested `while` scan for existing entries and
-//   reorder the long-lived locals toward the sceninfo declaration order.
-// - probe: use the named scenario array directly for existing-entry lookup,
-//   removing the extra destination-header cursor and keeping ownership typed.
-// - probe: restored the PDB/decompiler-indicated long `version` local between
-//   the output pointer and file buffers to test the missing 4-byte local window.
-// - probe: grouped the proven contiguous file-name/version/find-data work
-//   window in a typed aggregate, preserving the name base while adding the
-//   binary-observed 4-byte gap before _finddata_t.
-// - final pass: a typed old-name alias regressed frame/CFG; restored the
-//   direct indexed array form. Best source is exact-size/frame with all 22
-//   calls aligned; remaining drift is the handle/name stack-home order and
-//   late block placement.
-// - same-corpus VC5 _finddata_t layout was modeled explicitly. Removing the
-//   decompiler-shaped file_info.name + 4 moved the best diff from 277 to 274;
-//   separate file/find-data locals and typed cursor variants regressed frame or
-//   block shape. The unused function-scope version local had no emitted effect
-//   and was removed. Final source keeps the typed aggregate and direct index.
-// - paused after bounded probes: exact size/frame and all 22 calls align. The
-//   remaining drift is the original count/old-entry stack-home swap plus late
-//   block placement.
-// - Main-agent audit corrected a new entry's cached time to time_write. The
-//   executable compares that same timestamp when it decides to reuse a header.
-// Main-agent audit confirmed the binary-proven typed filename/version/find-data
-// work window and retained natural enumeration, ownership transfer, and cleanup.
-// - first-hunk layout probe: moving the typed reload-work aggregate after the
-//   scalar declarations emitted an exact duplicate; restored the clean order.
-// - binary note: writing the open-success guard as `fd > -1` restores the
-//   original cmp -1/jle form. `fd >= 0` emits test/jl and shifts the suffix.
-// - binary note: the original keeps the final search count at [esp+18h] and
-//   uses [esp+14h] for a transient entry/name cursor. The clean source emits
-//   these two proven homes in reverse order; 23 focused probes did not resolve
-//   that compiler allocation difference without less natural source.
-// - likely intent: the two initial file scans are guarded do/while searches;
-//   the donor-supported form preserves their shipped enumeration behavior.
-// - Object audit confirms the 995-byte FPO body, 0x230 frame, ABI sizes, and
-//   separate file_info/file_name/version/handle PDB locals. PDB omits the live
-//   cursor. The oracle and rebuild color count and that cursor in opposite
-//   homes; no inline, compiler-version, or hidden-ABI evidence explains it.
+//   and natural delete/free cleanup.
+// - source-gate audit: file_name and _finddata_t remain separate typed locals;
+//   new_scenario_header(int) is the named virtual method for slot 0x38.
+// - binary note: `fd > -1` preserves the observed cmp -1/jle open-success form.
+// - binary note: the two initial scans use guarded do/while searches.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,27 +47,33 @@ public:
 };
 
 class RGE_Game_Info;
+class RGE_Scenario;
+class RGE_Scenario_File_Info;
+class TPanel;
 
 class RGE_Base_Game {
 public:
     virtual ~RGE_Base_Game();
-    virtual void vf04();
-    virtual void vf08();
-    virtual void vf0C();
-    virtual void vf10();
-    virtual void vf14();
-    virtual void vf18();
-    virtual void vf1C();
-    virtual void vf20();
-    virtual void vf24();
-    virtual void vf28();
-    virtual void vf2C();
-    virtual void vf30();
-    virtual void vf34();
+    virtual int run();
+    virtual long wnd_proc(void* param_1, unsigned int param_2,
+                          unsigned int param_3, long param_4);
+    virtual void set_prog_mode(int param_1);
+    virtual void set_game_mode(int param_1, int param_2);
+    virtual void set_player(short param_1);
+    virtual int get_error_code();
+    virtual char* get_string(int param_1, long param_2, char* param_3,
+                             int param_4);
+    virtual char* get_string(long param_1, char* param_2, int param_3);
+    virtual char* get_string(long param_1);
+    virtual char* get_string2(int param_1, long param_2, long param_3,
+                              char* param_4, int param_5);
+    virtual TPanel* get_view_panel();
+    virtual TPanel* get_map_panel();
     virtual RGE_Scenario_Header* new_scenario_header(int fd);
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
 
     RGE_Game_Info* player_game_info;
-    char gap_008[4];
+    RGE_Scenario_File_Info* scenario_info;
     RGE_Prog_Info* prog_info;
 };
 
@@ -112,12 +83,6 @@ struct RGE_Scenario_File_Entry {
     long time;
     RGE_Scenario_Header* scenario_header;
     char name[260];
-};
-
-struct RGE_Scenario_Reload_Work {
-    char file_name[256];
-    long version;
-    struct _finddata_t file_info;
 };
 
 class RGE_Scenario_File_Info {
@@ -131,7 +96,8 @@ public:
 
 void RGE_Scenario_File_Info::reload_scenarios()
 {
-    RGE_Scenario_Reload_Work work;
+    char file_name[256];
+    struct _finddata_t file_info;
     long handle;
     long count;
     int total = 0;
@@ -141,30 +107,30 @@ void RGE_Scenario_File_Info::reload_scenarios()
     int index;
     char found_in_list;
 
-    sprintf(work.file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
-    handle = _findfirst(work.file_name + 4, &work.file_info);
+    sprintf(file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
+    handle = _findfirst(file_name + 4, &file_info);
     if (handle != -1) {
         do {
             ++total;
-        } while (_findnext(handle, &work.file_info) != -1);
+        } while (_findnext(handle, &file_info) != -1);
     }
 
-    sprintf(work.file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
-    handle = _findfirst(work.file_name + 4, &work.file_info);
+    sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+    handle = _findfirst(file_name + 4, &file_info);
     if (handle != -1) {
         do {
             ++total;
-        } while (_findnext(handle, &work.file_info) != -1);
+        } while (_findnext(handle, &file_info) != -1);
     }
 
-    sprintf(work.file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
+    sprintf(file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     if (total <= 0)
         return;
 
-    count = _findfirst(work.file_name + 4, &work.file_info);
+    count = _findfirst(file_name + 4, &file_info);
     if (count == -1) {
-        sprintf(work.file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
-        count = _findfirst(work.file_name + 4, &work.file_info);
+        sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+        count = _findfirst(file_name + 4, &file_info);
         looped = 1;
     }
 
@@ -179,8 +145,8 @@ void RGE_Scenario_File_Info::reload_scenarios()
         found_in_list = 0;
 
         while (index < this->scenario_num) {
-            if (strcmp(this->scenarios[index].name, work.file_info.name) == 0) {
-                if (work.file_info.time_write <= this->scenarios[index].time) {
+            if (strcmp(this->scenarios[index].name, file_info.name) == 0) {
+                if (file_info.time_write <= this->scenarios[index].time) {
                     strcpy(current->name, this->scenarios[index].name);
                     found_in_list = 1;
                     current->time = this->scenarios[index].time;
@@ -193,15 +159,15 @@ void RGE_Scenario_File_Info::reload_scenarios()
         }
 
         if (!found_in_list) {
-            strcpy(current->name, work.file_info.name);
-            current->time = work.file_info.time_write;
+            strcpy(current->name, file_info.name);
+            current->time = file_info.time_write;
 
-            sprintf(work.file_name + 4, "%s%s",
+            sprintf(file_name + 4, "%s%s",
                     rge_base_game->prog_info->scenario_dir,
-                    work.file_info.name);
-            int fd = rge_open(work.file_name + 4, 0x8000);
+                    file_info.name);
+            int fd = rge_open(file_name + 4, 0x8000);
             if (fd > -1) {
-                rge_read_uncompressed(fd, work.file_name, 4);
+                rge_read_uncompressed(fd, file_name, 4);
                 current->scenario_header = rge_base_game->new_scenario_header(fd);
                 rge_close(fd);
             }
@@ -209,12 +175,12 @@ void RGE_Scenario_File_Info::reload_scenarios()
 
         ++current;
 
-        if (_findnext(count, &work.file_info) == -1) {
+        if (_findnext(count, &file_info) == -1) {
             if (looped)
                 break;
 
-            sprintf(work.file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
-            count = _findfirst(work.file_name + 4, &work.file_info);
+            sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+            count = _findfirst(file_name + 4, &file_info);
             if (count == -1)
                 break;
             looped = 1;
