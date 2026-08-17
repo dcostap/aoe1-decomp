@@ -5,25 +5,22 @@
 // - baseline reconstruction: named information-AI, PlacementState, InfluenceMap,
 //   building-lot, and master-building ownership; /GX new ConstructionItem paths;
 //   ordered placement/zone/map-bound calls and nested candidate scans.
-// - Current source is the clean period-plausible reconstruction.  Exact checks,
-//   including the source/type/layout hypothesis, are recorded by target_session.
-// - /GX and the full AIModule/MainDecision layout were verified as structural
-//   prerequisites; the remaining emitted drift is broad and the session budget
-//   is exhausted.  The last clean source keeps the delayed currentZone call,
-//   candidate-coordinate undesirableLot arguments, and named object ownership.
-// - Tried switch/receiver-temporary/register scheduling variants only as
-//   diagnostics; they did not close the strategic-number call gap and are not
-//   retained in this normalized source.
-// - Kept a block-scoped placement-2 result so VC5 emits the independent 0x57
-//   strategicNumber call; target call count now matches 55/55.
-// - Moved invalid-placement logging before zone/strategy dispatch; the call
-//   prefix improved to 25, then reordered availableLot before setupInfluenceMap
-//   to match the original branch layout (53 aligned calls, -2/+2 sites).
-// - Used state.builderID, rather than the incoming builderID, for the builder
-//   lookup while resuming an active placement; original asm branches on active
-//   and pushes the state field.  This improved the size gap and diff.
-// - Kept positive outer guards for placement object and master object, matching
-//   the original null paths and shared final active cleanup.
+// - This claim tested 20 meaningful source, ABI, layout, control-flow, and
+//   liveness hypotheses.  A diagnostic branch variant reached 3,425 diff bytes.
+// - The current source is the best natural reconstruction after the probes.
+//   It emits 3,834 of 3,868 bytes, 55 calls, and 67.14% shape similarity.
+// - The source keeps /GX, the +0x3c player world field, and the inherited
+//   AIModule logCommonHistory varargs surface from binary evidence.
+// - A late timeout save label moves the second state strncpy near the original
+//   block.  A late unsupported-size label preserves the original cold path.
+// - The size-3 placement branch uses size-5 bounds for placements other than
+//   6, 3, 4, 1, 2, and 8.  The original branch proves this behavior.
+// - Direct builderID/state.builderID calls and separate currentZone fallback
+//   receivers match the original branch order and improve call alignment.
+// - Tested and rejected: direct master expressions, coordinate receiver
+//   branches, state aliases, declaration scopes, label order, and ABI aliases.
+// - Open drift: the frame is 0x188 versus 0x190.  The early register colors,
+//   first cold log block, and many stack homes still differ.
 
 #include <math.h>
 #include <stdlib.h>
@@ -74,6 +71,7 @@ public:
     int intelligenceLevelValue;
     int priorityValue;
     int processFrameValue;
+    void logCommonHistory(char* format, ...);
 };
 
 class InformationAIModule : public AIModule {
@@ -162,7 +160,7 @@ public:
     virtual ~RGE_Player();
     char gap_04[0x20];
     RGE_Master_Static_Object** master_objects;
-    char gap_28[0x14];
+    char gap_28[0x10];
     RGE_Game_World* world;
 };
 
@@ -300,12 +298,12 @@ public:
 };
 
 void* operator new(unsigned int size);
+void operator delete(void* ptr);
 
 extern "C" char* strncpy(char* destination, const char* source,
                           unsigned int count);
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
-extern "C" void __cdecl logCommonHistory(void* self, const char* format, ...);
 
 extern float DAT_00575564;
 extern float DAT_00575570;
@@ -324,9 +322,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     int buildingType;
     int x;
     int randSelect;
-    int placement;
-    int placementRadius;
     int placementType;
+    int placement;
     XYPoint bestPoint;
     int basePlacementTotal;
     int y;
@@ -340,7 +337,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     int local_154;
     XYPoint max;
     ulong availableTime;
-    ulong firstTimeThrough;
+    int firstTimeThrough;
     int useExcludeRegion;
     XYPoint min;
     XYPoint maxExclude;
@@ -348,14 +345,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     int blockingObject;
     int local_120;
     XYPoint newPosition;
-    RGE_Master_Static_Object* masterObj;
     char buildingName[0x100];
     RGE_Static_Object* townCenter;
     RGE_Static_Object* builderObject;
     RGE_Static_Object* coordinateObject;
     RGE_Static_Object* placementObject;
-    ConstructionItem* result;
-    int actualBuilderID;
 
     placementObject = this->md->object(-1, -1, 4, -1, -1,
                                        -1, -1, -1, -1, -1);
@@ -380,14 +374,15 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     newPosition.x = buildingType;
     y = buildingType * buildingType * 0x14;
 
-    masterObj = this->md->player->master_objects[x];
-    if (masterObj != 0) {
+    if (this->md->player->master_objects[x] != 0) {
+        RGE_Master_Static_Object* masterObj =
+            this->md->player->master_objects[x];
         townCenter = this->md->object(-1, 0x6d, -1, -1, -1,
                                       -1, -1, -1, -1, -1);
-        actualBuilderID = builderID;
         if (state.active == 1)
-            actualBuilderID = state.builderID;
-        builderObject = this->md->object(actualBuilderID);
+            builderObject = this->md->object(state.builderID);
+        else
+            builderObject = this->md->object(builderID);
 
     if (item == 0 && state.active != 1) {
         centerPoint.x = centerX;
@@ -408,15 +403,15 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     placement = this->placementCode(x);
 
     if (placement == -1) {
-        logCommonHistory(this,
-                         "Invalid influence placement type id (%d), bombing.",
-                         x);
+        this->logCommonHistory(
+            (char*)"Invalid influence placement type id (%d), bombing.", x);
     } else {
     if (item == 0 && state.active != 1) {
         placementObject->lookupZone(centerY, maxClearX);
     } else {
         if (placement == 1) {
             local_154 = 7;
+            int placementRadius;
             placementRadius = this->md->tacticalAI.inAge(2);
             if (placementRadius == 0) {
                 placementRadius = this->md->tacticalAI.inAge(3);
@@ -447,7 +442,9 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             centerPoint.x = this->md->tacticalAI.strategicNumber(0x4a);
         }
 
-        coordinateObject->currentZone();
+        if (townCenter == 0)
+            townCenter = placementObject;
+        townCenter->currentZone();
 
     }
 
@@ -471,6 +468,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         if (item != 0 && state.active == 0) {
             BuildingLot* lot = this->availableLot(x);
             if (lot != 0) {
+                ConstructionItem* result;
                 if (placement == 4) {
                     this->lastWallPosition2.x = this->lastWallPosition.x;
                     this->lastWallPosition2.y = this->lastWallPosition.y;
@@ -557,21 +555,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                         0xb16);
                     maximumDistance = min.y;
                     if (availableTime <= firstTimeThrough - currentTime) {
-                        state.buildingTypeID = x;
-                        strncpy(state.buildingName, buildingName + 4,
-                                0xff);
-                        state.buildingSize = buildingSize;
-                        state.builderID = builderID;
-                        state.minimumDistance = local_154;
-                        state.maximumDistance = centerPoint.x;
-                        state.bestPoint.x = bestPoint.x;
-                        state.active = 1;
-                        state.bestPoint.y = basePlacementTotal;
-                        state.bestPointValue = minimumDistanceValue;
-                        state.iterationX = randSelect;
-                        state.randomInfluence = placementType;
-                        state.buildItem = item;
-                        return 0;
+                        goto save_state_second;
                     }
                 }
 
@@ -589,19 +573,20 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                 maxClear.y = candidate + 2;
                                 bestPointValue = candidate - 2;
                             } else if (buildingSize == DAT_0057557c) {
-                                if (placement != 6 && placement != 3 &&
-                                    placement != 4) {
+                                if (placement == 6 || placement == 3 ||
+                                    placement == 4 || placement == 1 ||
+                                    placement == 2 || placement == 8) {
                                     minClear.x = randSelect - 1;
                                     minClear.y = candidate - 1;
                                     maxClear.x = randSelect + 1;
                                     maxClear.y = candidate + 1;
                                     bestPointValue = candidate - 1;
                                 } else {
-                                    minClear.x = randSelect - 1;
-                                    minClear.y = candidate - 1;
-                                    maxClear.x = randSelect + 1;
-                                    maxClear.y = candidate + 1;
-                                    bestPointValue = candidate - 1;
+                                    minClear.x = randSelect - 2;
+                                    minClear.y = candidate - 2;
+                                    maxClear.x = randSelect + 2;
+                                    maxClear.y = candidate + 2;
+                                    bestPointValue = candidate - 2;
                                 }
                             } else if (buildingSize == DAT_00575574) {
                                 if (placement == 6 || placement == 3 ||
@@ -620,12 +605,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                 }
                             } else {
                                 if (buildingSize != DAT_00575564) {
-                                    logCommonHistory(
-                                        this,
-                                        "    Unsupported building size (%d x %d), failing.",
-                                        buildingSize, buildingSize);
-                                    state.active = 0;
-                                    return 0;
+                                    goto unsupported_size;
                                 }
                                 minClear.x = randSelect;
                                 minClear.y = candidate;
@@ -762,7 +742,6 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                         }
 
 candidate_done:
-                        minimumDistanceValue = minimumDistanceValue;
                         candidate++;
                     } while (candidate <= max.y);
                 }
@@ -789,6 +768,7 @@ candidate_done:
                 return (ConstructionItem*)1;
             }
 
+            ConstructionItem* result;
             if (buildingSize == DAT_00575574) {
                 result = new ConstructionItem(
                     (float)bestPoint.x, (float)basePlacementTotal,
@@ -816,6 +796,26 @@ candidate_done:
     }
     }
 
+save_state_second:
+    state.buildingTypeID = x;
+    strncpy(state.buildingName, buildingName + 4, 0xff);
+    state.buildingSize = buildingSize;
+    state.builderID = builderID;
+    state.minimumDistance = local_154;
+    state.maximumDistance = centerPoint.x;
+    state.bestPoint.x = bestPoint.x;
+    state.active = 1;
+    state.bestPoint.y = basePlacementTotal;
+    state.bestPointValue = minimumDistanceValue;
+    state.iterationX = randSelect;
+    state.randomInfluence = placementType;
+    state.buildItem = item;
+    return 0;
+
+unsupported_size:
+    this->logCommonHistory(
+        (char*)"    Unsupported building size (%d x %d), failing.",
+        buildingSize, buildingSize);
     }
     state.active = 0;
     }
