@@ -24,6 +24,16 @@
 //   natural source; the structural blocker remains unchanged.
 // - Restored virtual ownership and the named build-file format string. The
 //   raw vtable fields and absolute string address were diagnostic surfaces.
+// - Fresh pass: extern-C timer linkage, timer declaration/assignment order,
+//   switch-label order, scoped timer locals, explicit loop breaks, and several
+//   coordinate assignment orders were duplicate or worse.
+// - The PDB-backed case-19 resource scan is best written as a for-loop with
+//   cursor updates in its increment clause. This restores the original JL
+//   backedge and improves the clean result to 417 differing bytes, 92.92%
+//   shape, 78/78 calls, and 0x128 frame.
+// - Signed world-time delta variants emit the original signed magic divide in
+//   case 0x15 but add auxiliary section bytes and worsen the complete result.
+//   Keep the unsigned field model and natural expression.
 
 static const char s_build_file_format[] = "%s.bld";
 
@@ -286,14 +296,13 @@ public:
     void evaluateBuildListInsertions();
 };
 
-extern unsigned long debug_timeGetTime(char*, int);
+extern "C" unsigned long debug_timeGetTime(char*, int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
 int TribeTacticalAIModule::doSomething()
 {
     unsigned long updateTime;
     unsigned long startTime;
-    unsigned long availableTime;
     unsigned long currentTime;
     int incUpdateArea;
     XYPoint position;
@@ -306,7 +315,8 @@ int TribeTacticalAIModule::doSomething()
 
     if (updateTime > 0) {
         do {
-            availableTime = debug_timeGetTime((char*)0x5880C0, 0x99F);
+            unsigned long availableTime =
+                debug_timeGetTime((char*)0x5880C0, 0x99F);
             incUpdateArea = 1;
 
             switch (this->updateArea) {
@@ -559,15 +569,13 @@ int TribeTacticalAIModule::doSomething()
                 this->evaluateOpenTasks();
                 int i = 0;
                 int* difference = this->resourceDifferenceValue;
-                do {
+                for (; i < 4; ++i, ++difference) {
                     if (*difference > 0 &&
                         this->md->resourceAI.resource(i) + *difference < 0) {
                         this->updateNeededResources();
                         break;
                     }
-                    ++i;
-                    ++difference;
-                } while (i < 4);
+                }
                 this->checkForCoopTributeDemand();
                 this->checkForCoopTributeGift();
                 this->checkForASAPAgeResearch();
