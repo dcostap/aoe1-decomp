@@ -184,6 +184,15 @@
 //   surrogate. Their exact bytes do not outweigh the PDB line-map evidence.
 // - Keep the direct source until new period source or translation-unit evidence
 //   supports the four cached locals.
+// - A ten-worker isolated race then tested the remaining source space. The
+//   workers covered line-map expressions, declarations, x87 trees, class and
+//   translation-unit context, fault order, clamps, headers, and PDB lifetimes.
+// - Large focused labs included 620 and 696 variants. Direct forms stayed in
+//   the 151-byte basin. Other natural forms reached 155 bytes. One 167-byte
+//   direct form still differed by 137 bytes and had the wrong x87 order.
+// - No eligible exact source recovered push ecx, the dY parameter home, and
+//   the target fsubp sequence. The four cached radius locals remain the only
+//   known exact basin. Keep them rejected under the line-map evidence above.
 //
 // sa-70edc786-r1 fresh direct-float lifetime/order pass 2026-08-17: ran twelve
 // natural, PDB-supported probes after the canonical class audit. Tested dX/dY
