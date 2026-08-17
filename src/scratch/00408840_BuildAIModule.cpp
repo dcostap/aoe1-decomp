@@ -16,6 +16,7 @@
 // 13: tested original initial-store order; emitted bytes did not move and edit/resync worsened, so restored the prior natural order.
 // 14: moved the loop counter initialization before the numberItems read to match Ghidra's iVar9 placement; emitted code was unchanged, so restored the clean source.
 // 15: moved the proven scalar defaults into the member-initializer sequence, following the same-TU constructor donor; diff improved 287 -> 272 and delayed the fd load, but the first mismatch remains in constructor scheduling at +0064.
+// 16-28: continued source, lifetime, stack-layout, ABI-global, header-context, and raw-allocation probes. The decisive ABI-context change is using the declared version_2_2 global; it moves the second compare/store sequence into positional parity and reduces the clean diff to 3 bytes. The remaining three bytes are only the name buffer's stack displacement: original name+4 is [esp+78]/name terminator [esp+84], while rebuilt uses [esp+7C]/[esp+88]. Union, scoped-buffer, register, declaration-order, pointer-alias, direct-link, placement-new, and standard-header variants did not reduce this hunk. Current source is the smallest natural 1240-byte reconstruction with 51/51 calls, exact frame, and 3 differing bytes; do not retain raw overlap steering.
 // Main review removed the old manual derived-vptr store and kept compiler-owned
 // constructor setup. ManagedArray now uses its natural array-delete form.
 
@@ -44,7 +45,8 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 
-    ManagedArray() {}
+    ManagedArray()
+        : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(0) {}
     ~ManagedArray() {
         if (value != 0) {
             delete[] value;
@@ -113,10 +115,6 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     int local_11c;
     char name[257];
 
-    this->typesToIgnore.value = 0;
-    this->typesToIgnore.numberValue = 0;
-    this->typesToIgnore.desiredNumberValue = 0;
-    this->typesToIgnore.maximumSizeValue = 0;
     this->buildList.next = &this->buildList;
     this->buildList.prev = &this->buildList;
     rge_read(fd, &this->buildListLengthValue, 4);
@@ -129,12 +127,12 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     rge_read(fd, &buildCap, 4);
     rge_read(fd, this->currentBuildItemRequestedValue, buildCap);
     this->currentBuildItemRequestedValue[buildCap] = 0;
-    if (save_game_version < *(float*)0x56E784) {
-        strcpy(this->nextBuildItemRequestedValue, (char*)0x57F0BC);
-    } else {
+    if (save_game_version >= *(float*)0x56E784) {
         rge_read(fd, &buildCap, 4);
         rge_read(fd, this->nextBuildItemRequestedValue, buildCap);
         this->nextBuildItemRequestedValue[buildCap] = 0;
+    } else {
+        strcpy(this->nextBuildItemRequestedValue, (char*)0x57F0BC);
     }
     rge_read(fd, &this->numberItemsIntoBuildListValue, 4);
 
@@ -165,7 +163,7 @@ BuildAIModule::BuildAIModule(int p1, int fd)
             rge_read(fd, &buildFrom, 4);
             rge_read(fd, &ySize, 4);
             builtValue = -1;
-            if (save_game_version >= *(float*)0x56E788) {
+            if (save_game_version >= version_2_2) {
                 rge_read(fd, &builtValue, 4);
             }
             rge_read(fd, &typeID, 4);
