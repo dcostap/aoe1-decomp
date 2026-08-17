@@ -96,6 +96,12 @@
 //   The policy-clean source rebuilds to 228 bytes with no FPO local frame;
 //   the metric regression is accepted because the old frame came from a
 //   Restoring that frame would require the removed compiler-facing alias.
+// - This follow-up kept the named x1/y1/x2/y2 source and tested typed map-row
+//   and stack-row locals, grouped and reordered endpoint declarations, split
+//   endpoint arithmetic, row-count spelling, typed cell cursors, and for-loop
+//   forms. These were duplicates or worse. Direct repeated typed row indexing
+//   and the do-counted loops remain the clearest natural structure. No
+//   parameter-home aliases were restored.
 
 struct Map_Stack {
     long x;
