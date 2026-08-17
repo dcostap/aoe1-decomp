@@ -67,6 +67,29 @@
 // row counter [esp+10], result [esp+14], row pointer [esp+18], saved this
 // [esp+1c], and offset [esp+20]) versus the natural compiler allocation;
 // second-scan behavior and canonical map ownership are modeled.
+// Revisit (sa-1f308ade-r1):
+// - The clean typed baseline rebuilt to 394 bytes with 323 differing bytes.
+// - Reusing the radius home, a byte result, or a separate row index alone
+//   moved to broader structural basins and was rolled back.
+// - A natural x2-before-y2 order reached 394 bytes and 320 differing bytes,
+//   the best strict metric, but did not improve structural resynchronization.
+// - A corrected row_index plus carried typed row-base form reached the exact
+//   408-byte boundary and 348 differing bytes, with 88.96% shape, but its
+//   local allocation remained farther from the oracle than the clean source.
+// Retain the pinned clean source. The unresolved evidence-backed blocker is
+// the first-scan register and local-home rotation, not map or terrain ownership.
+// Revisit (sa-7c3536d6-r1):
+// - The pinned source rebuilt unchanged at 394 bytes and 323 differing bytes.
+// - Same-TU math/string headers plus x2-before-y2 ordering improved the
+//   diagnostic result to 396 bytes and 313 differing bytes, but did not fix
+//   the first local-home mismatch; this context lead was rolled back.
+// - A for-header or function-scope first-row index reached 408 bytes but
+//   entered the known broad 375/393-byte structural basins.
+// - A row-base carry, including its corrected non-duplicated offset, was
+//   broader and was rolled back.
+// - The final policy-compliant source uses typed RGE_Tile rows and cells,
+//   the reviewed terrain byte at offset +5, and no byte cursor. It rebuilt to
+//   399 bytes and 374 differing bytes. No exact source lead was found.
 
 typedef unsigned char uchar;
 
@@ -85,8 +108,7 @@ struct RGE_Tile {
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type : 5;
-    unsigned char elevation : 3;
+    unsigned char terrain_type;
     unsigned char border_type : 4;
     unsigned char border_shape : 4;
     unsigned char last_drawn_as;
@@ -129,9 +151,8 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
     long y1;
     long y2;
     long x2;
-    long row_offset;
     RGE_Tile** row_ptr;
-    char* row;
+    RGE_Tile* row;
     if (radius > 0) {
         x1 = x - radius;
         y1 = y - radius;
@@ -150,29 +171,27 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
             y2 = this->map_height - 1;
         }
         row_ptr = &this->map_row_offset[y1];
-        row_offset = x1 * 24;
-        row = (char*)*row_ptr;
+        row = *row_ptr + x1;
         for (; y1 <= y2; ++y1) {
             if (x1 <= x2) {
-                unsigned char* cell = (unsigned char*)row + row_offset + 5;
+                RGE_Tile* cell = row;
                 long xx = x1;
                 do {
                     if (terrain == 0xFF) {
                         return 0;
                     }
-                    unsigned char v = *cell;
-                    if ((v & 0x1F) != terrain) {
+                    if ((cell->terrain_type & 0x1F) != terrain) {
                         return 0;
                     }
-                    if ((v >> 5) < min_elev) {
+                    if ((cell->terrain_type >> 5) < min_elev) {
                         return 0;
                     }
                     ++xx;
-                    cell += 24;
+                    ++cell;
                 } while (xx <= x2);
             }
             ++row_ptr;
-            row = (char*)*row_ptr;
+            row = *row_ptr + x1;
         }
     }
 
@@ -194,27 +213,26 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
         y2 = this->map_height - 1;
     }
 
-    long row_offset2 = x1 * 24;
     RGE_Tile** row_ptr2 = &this->map_row_offset[y1];
     // Keep the initial second-scan row load on the named row-table cursor.
     // The oracle loads the row pointer and its row address as separate values.
-    unsigned char* row_base2 = (unsigned char*)*row_ptr2 + row_offset2;
+    RGE_Tile* row_base2 = *row_ptr2 + x1;
     if (y1 <= y2) {
         long rows_left = y2 - y1 + 1;
         do {
             if (x1 <= x2) {
-                unsigned char* cell = row_base2 + 5;
+                RGE_Tile* cell = row_base2;
                 long cols_left = x2 - x1 + 1;
                 do {
-                    if ((*cell >> 5) == elev) {
+                    if ((cell->terrain_type >> 5) == elev) {
                         ++count;
                     }
-                    cell += 24;
+                    ++cell;
                     --cols_left;
                 } while (cols_left != 0);
             }
             ++row_ptr2;
-            row_base2 = (unsigned char*)*row_ptr2 + row_offset2;
+            row_base2 = *row_ptr2 + x1;
             --rows_left;
         } while (rows_left != 0);
     }
