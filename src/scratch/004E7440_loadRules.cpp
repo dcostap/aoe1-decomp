@@ -35,6 +35,27 @@
 // left in scratch: canonical behavior and frame/call topology match; the
 // remaining difference is the original VC5 allocation/load order for the two
 // sscanf comment-byte destinations (4 bytes, 1.0152%).
+// this session: standalone and combined reversed char declarations, and moving
+// ruleValue before the byte locals, all reproduced the same 4-byte mismatch.
+// A two-byte array or named two-byte struct forced VC5 to use a word load and
+// widened drift to 190 bytes; volatile byte reads widened the frame and drift.
+// Reversed destination names kept the bytes but reversed parsed-byte behavior.
+// Restored and validated the clean scalar parser; no natural exact source found.
+// revisit: a nested second-byte scope, reversed scalar declarations, two separate
+// one-byte wrapper objects, and a typed line-buffer union all emitted the same
+// four-byte mismatch. A 256-sample neutral TU-declaration sweep also produced
+// one VC5 basin with the same four-byte mismatch. Positive directive filtering
+// and period stdio/string/io headers with FILE* were codegen duplicates.
+// Restored the clean scalar parser; the remaining drift is the two sscanf byte
+// destination homes, with no policy-compliant natural exact source found.
+// current revisit: local declaration-order sweeps and separate one-byte arrays produced no new basin.
+// First-byte and both-byte loop scopes also produced no new basin.
+// Inner ruleValue/file scopes and explicit sscanf char-pointer casts produced no new basin.
+// Equivalent predicate forms produced no new basin.
+// Reversing only sscanf destinations or predicate byte order reached the diagnostic two-byte basin.
+// Those forms reversed emitted byte tests relative to the original.
+// Reversing both returned to the four-byte basin. No exact or policy-valid source was found.
+// Restored the pinned scalar parser for final validation.
 
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 extern "C" unsigned int __cdecl strlen(const char* text);
