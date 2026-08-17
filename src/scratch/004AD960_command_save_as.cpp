@@ -135,6 +135,8 @@ public:
     virtual void rehook();
     virtual void save(int handle);
 
+    char gap_04[0x198C];
+
     int active_player_count();
     int any_player_count();
 };
@@ -156,7 +158,7 @@ public:
     virtual unsigned char data_load_players(char* file);
     virtual unsigned char data_load_objects(char* file);
     char gap_04[0x58];
-    T_Scenario* scenario;
+    RGE_Scenario* scenario;
     char gap_60[0xA4];
 };
 
@@ -179,17 +181,37 @@ public:
 
 class TribeSaveGameScreen : public TScreenPanel {
 public:
+    enum Mode {
+        SaveGame = 0,
+        SaveScenario,
+        SaveScenarioEdit
+    };
+    virtual ~TribeSaveGameScreen();
     char gap_0478[0x6A4 - 0x478];
-    TribeSaveGameScreen(int mode, char* name, int quit_after_save);
+    TribeSaveGameScreen(Mode mode, char* name, int quit_after_save);
 };
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
-    virtual ~TRIBE_Screen_Sed();
+    enum ScenarioMode {
+        ScenarioModeNone = 0,
+        ScenarioModeMap,
+        ScenarioModeTerrain,
+        ScenarioModePlayers,
+        ScenarioModeUnits,
+        ScenarioModeDiplomacy,
+        ScenarioModeVictory,
+        ScenarioModeVictoryMulti,
+        ScenarioModeOptions,
+        ScenarioModeMessages,
+        ScenarioModeCinematics,
+        ScenarioModeSave
+    };
     char gap_0478[0x4B0];
     TRIBE_World* world;
+    char gap_92C[0x1C];
 
-    void set_scenario_mode(int mode);
+    void set_scenario_mode(ScenarioMode mode);
     void command_save_as(unsigned char post_action);
 };
 
@@ -197,16 +219,18 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
 {
     char scenario_name[224];
 
-    this->set_scenario_mode(11);
-    this->world->scenario->Save_victory_conditions_into_players(1);
+    this->set_scenario_mode(ScenarioModeSave);
+    static_cast<T_Scenario*>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(0x2742, (char*)0, 0x1C2, 100);
+        static_cast<TEasy_Panel*>(this)->popupOKDialog(0x2742, (char*)0, 0x1C2, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(0x2743, (char*)0, 0x1C2, 100);
+        static_cast<TEasy_Panel*>(this)->popupOKDialog(0x2743, (char*)0, 0x1C2, 100);
     } else {
         scenario_name[0] = 0;
-        new TribeSaveGameScreen(2, scenario_name, post_action);
+        new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenarioEdit,
+                                scenario_name, post_action);
         panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
     }
+    return;
 }
