@@ -34,6 +34,10 @@
 // - The final mismatch is limited to the early area multiply order and count
 //   store scheduling.  A count-before-area probe regressed to 43 bytes; rolled
 //   back.  The current clean source is the 38-byte indexed reconstruction.
+// - Fresh pass: moving elevation_num before the first elevation rule store is
+//   period-plausible and reduced the positional mismatch from 38 to 15 bytes.
+//   Typed area-expression and accumulator-order probes left the same 15-byte
+//   basin, so the simple field expression and natural indexed insertion stay.
 
 struct RGE_Map;
 struct RGE_Random_Map_Module_List;
@@ -190,9 +194,9 @@ void RGE_RMM_Database_Controller::add_elevation_module()
                      this->map_width *
                      this->map_height) / 100;
 
-    this->elevation_info.elevation[0].elevation = 1;
-
     this->elevation_info.elevation_num = 4;
+
+    this->elevation_info.elevation[0].elevation = 1;
 
     this->elevation_info.elevation[0].clumps = 10;
     this->elevation_info.elevation[0].base_terrain_type = 0;
