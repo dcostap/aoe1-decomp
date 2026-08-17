@@ -12,7 +12,7 @@
 // - Policy audit: canonical TScreenPanel inheritance remains exact.
 // Policy repair:
 // - Replaced RGE_Base_Game fake slots with the reviewed named prefix and fields.
-// - Replaced TListPanel VPAD slots with the named TPanel/TTextPanel/TListPanel surface.
+// - Replaced generated TListPanel padding slots with the named TPanel/TTextPanel/TListPanel surface.
 // - Replaced screen offset gaps with reviewed TRIBE_Screen_Sed fields and base types.
 // - Replaced master-object byte cursors with typed indexed array access.
 // - Canonical declarations retain exact size, frame, calls, and all but five bytes.
@@ -23,8 +23,9 @@
 //   at 004AB2D0. The comparator body was restored before this function as a test.
 // - Repository evidence supports the nested List_Info type and full player,
 //   master-object, view, map, panel, and base-game surfaces. Those surfaces did
-//   not change the five-byte hunk. The full TTextPanel surface changed the call
-//   surface and was rejected.
+//   not change the five-byte hunk. An earlier broad TTextPanel context changed
+//   the call surface and was rejected; the focused four-slot audit below is
+//   codegen-neutral.
 // - Tested 512 ambient declaration counts, exact donor macros, standard header
 //   order and placement, external declaration order, exact donor ABI widths,
 //   and the preceding comparator. All valid context variants stayed in one
@@ -38,6 +39,13 @@
 //   registers, parameter count, and VC5 compiler. PDB shows no inline frame.
 // - The raw-cursor exact form remains rejected. No object record supports a
 //   different natural owner for the five-byte instruction-order difference.
+// Panel audit:
+// - Moved the four reviewed set_text slots to TTextPanel and removed the
+//   one-slot TListPanel facade. The target codegen stayed unchanged.
+// - Replaced remaining generic panel slot pointer types with the reviewed
+//   TDrawArea, TPanel, text, button, input, edit, scrollbar, and slider types.
+//   The target codegen stayed unchanged.
+// - No generic panel slots or padding macros remain in this source.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>
@@ -138,6 +146,13 @@ public:
     void set_map_loc(short x, short y);
 };
 struct List_Info { char text[100]; short id; };
+class TDrawArea;
+class TButtonPanel;
+class TInputPanel;
+class TEditPanel;
+class TScrollBarPanel;
+class TVerticalSliderPanel;
+class THorizontalSliderPanel;
 
 // Keep the helper declarations on the owning classes used by the exact
 // player/view methods.  These are separate game-state surfaces in the
@@ -237,7 +252,7 @@ class TListPanel;
 class TPanel {
 public:
     virtual ~TPanel();
-    virtual long setup(void*, TPanel*, long, long, long, long, unsigned char);
+    virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
     virtual void set_rect(tagRECT);
     virtual void set_rect(long, long, long, long);
     virtual void set_color(unsigned char);
@@ -448,6 +463,12 @@ public:
     void* clip_rgn2;
     int border_size;
     int spacer_size;
+    // These are the canonical TTextPanel slots.  Keep text ownership on the
+    // text panel instead of declaring a one-slot TListPanel facade.
+    virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
+    virtual void set_bevel_info(int, int, int, int, int, int, int);
     void empty_list();
 };
 class TDropDownPanel : public TTextPanel {
@@ -458,7 +479,6 @@ class TMessagePanel : public TPanel {};
 class TListPanel : public TTextPanel {
 public:
     virtual ~TListPanel();
-    virtual void set_text(char** data, short count);
     int auto_track;
     unsigned long mouse_scroll_last_time;
     unsigned long mouse_scroll_interval;
@@ -472,22 +492,22 @@ public:
     virtual ~TScreenPanel();
     virtual void draw_background(int);
     virtual void set_ideal_size(long, long);
-    virtual int create_button(void*, void*, long, long, long, long, long, long, long, long, long);
-    virtual int create_button(void*, void*, char*, char*, long, long, long, long, long, long, long);
-    virtual int create_check_box(void*, void*, long, long, long, long, long, long);
-    virtual int create_radio_button(void*, void*, long, long, long, long, long, long);
-    virtual int create_text(void*, void*, int, long, long, long, long, long, int, int, int);
-    virtual int create_text(void*, void*, char**, long, long, long, long, long, long, int, int);
-    virtual int create_text(void*, void*, char*, long, long, long, long, long, int, int, int);
-    virtual int create_input(void*, void*, char*, short, int, long, long, long, long, long);
-    virtual int create_edit(void*, void*, char*, short, int, long, long, long, long, long, int, int);
-    virtual int create_drop_down(void*, void*, long, long, long, long, long, long, long);
-    virtual int create_list(void*, TListPanel**, long, long, long, long, long);
-    virtual int create_scrollbar(void**, void*, void*, long, long, long, long, long);
-    virtual int create_auto_scrollbar(void**, void*, long);
-    virtual int create_vert_slider(void*, void*, long, long, long, long, long, long, long);
-    virtual int create_horz_slider(void*, void*, long, long, long, long, long, long, long);
-    virtual void position_panel(void*, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long, long, long, long, long, long, long);
+    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long, long, int, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long, long, long, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long, long, int, int, int);
+    virtual int create_input(TPanel*, TInputPanel**, char*, short, int, long, long, long, long, long);
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long, long, long, long, long, int, int);
+    virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long, long, long, long);
+    virtual int create_list(TPanel*, TListPanel**, long, long, long, long, long);
+    virtual int create_scrollbar(TPanel*, TScrollBarPanel**, TTextPanel*, long, long, long, long, long);
+    virtual int create_auto_scrollbar(TScrollBarPanel**, TTextPanel*, long);
+    virtual int create_vert_slider(TPanel*, TVerticalSliderPanel**, long, long, long, long, long, long, long);
+    virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long, long, long, long, long, long, long);
+    virtual void position_panel(TPanel*, long, long, long, long);
 };
 class TRIBE_Main_View : public RGE_View {};
 class RGE_Diamond_Map_View : public RGE_Diamond_Map {};
