@@ -148,6 +148,20 @@
 // all match. PDB has no omitted local or inline frame that can keep this live.
 // The remaining md/product swap is allocator coloring; a fake later this use
 // remains unsupported.
+//
+// Exact finish (sa-5dc5a657-r1, 2026-08-17): DIA records only this and the
+// PDB parameters numStoragePits, numUnbuiltStoragePits, and rType. The target
+// has two int references and one int parameter. Renaming parameters to these
+// names and changing declaration order did not change the six-byte basin.
+// DIA reports a thiscall function type with const=0, so the method stays
+// non-const; the decorated symbol also proves the two-reference ABI.
+// A natural direct assignment of the final build count to the first reference
+// changed the basin to an exact 222-byte match. The prior local-plus-copy form
+// was walked back and restored the six-byte mismatch. Removing the branch-local
+// decision alias also stayed exact, so direct typed md expressions are retained.
+// Current source preserves InformationAIModule inheritance, the +0xF0 member
+// frontier, informationAI size 0x10090, resourceAI +0x10D7C, six ordered calls,
+// and the original behavior.
 
 #include <stdlib.h>
 
@@ -256,19 +270,17 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
 
     value = this->sn[0x96];
     if (value != -1) {
-        TribeMainDecisionAIModule* decision = this->md;
-        capacity_or_count = (int)decision->player->attributes[6];
+        capacity_or_count = (int)this->md->player->attributes[6];
         if (capacity_or_count == 0) {
             capacity_or_count = 1;
         }
         product = capacity_or_count * value;
-        capacity_or_count = decision->buildAI.numberItemsOfType(0x67, 0);
+        capacity_or_count = this->md->buildAI.numberItemsOfType(0x67, 0);
         remaining = product - capacity_or_count;
         param1 = capacity_or_count;
         return ((int)remaining < 0) ? 0 : remaining;
     } else {
-        value = this->md->buildAI.numberItemsOfType(0x67, 0);
-        param1 = value;
+        param1 = this->md->buildAI.numberItemsOfType(0x67, 0);
         return this->md->informationAI.numberAvailableStoragePits(param3);
     }
 }
