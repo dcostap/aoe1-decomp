@@ -33,7 +33,13 @@
 //   47.53% exact-block coverage with all 15 calls aligned.
 // - Direct search-map expressions and explicit retry break/return loops were
 //   tested for the early map branch; they worsened codegen or duplicated
-//   pop_stack. Restored the typed do/pop retry as the best source.
+//   pop_stack. The final `while (1)` form with a positive map-byte break and
+//   an empty-stack return reproduces the target's one pop block.
+// - The list-drain guard is `cliff.next`, not `cliff.prev`; `init_stack` and
+//   `pop_stack` use the local as a list head. This fixes the target stack home.
+// - Nested guards for the three site checks, first-cliff test, and fourth site
+//   check preserve the target assignment block and byte-flag store. This is
+//   the exact source shape: 751 bytes, 263 instructions, and 15 aligned calls.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
@@ -50,15 +56,19 @@ struct RGE_Tile;
 
 class RGE_Map {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0c(void);
-    virtual void draw_line(long x1, long y1, long x2, long y2, long color, long width);
-    virtual void vf18(void);
-    virtual void vf1c(void);
-    virtual void vf20(void);
-    virtual void draw_rect(long x1, long y1, long x2, long y2, long color, long width);
+    virtual ~RGE_Map();
+    virtual void data_load_random_map(int file);
+    virtual void load_random_map(char*, char*, char*, char*);
+    virtual unsigned char do_terrain_brush(long, long, long, unsigned char);
+    virtual unsigned char do_terrain_brush_stroke(
+        long, long, long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush(long, long, long, unsigned char);
+    virtual unsigned char do_elevation_brush_stroke(
+        long, long, long, long, long, unsigned char);
+    virtual unsigned char do_cliff_brush(
+        long, long, unsigned char, unsigned char);
+    virtual unsigned char do_cliff_brush_stroke(
+        long, long, long, long, unsigned char, unsigned char);
 };
 
 class RGE_Random_Map_Module {
@@ -106,8 +116,8 @@ public:
     RGE_Cliffs_Info info;
     Map_Stack valid_cliff_sites;
 
-    unsigned char check_for_valid_cliff_site(long direction, long* y,
-                                              long* valid_height, long index);
+    unsigned char check_for_valid_cliff_site(long direction, long& y,
+                                              long& valid_height, long index);
     void invalidate_cliff_area(long x, long y, long spacing);
     void generate_cliff(void);
 };
@@ -140,15 +150,17 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
     this->init_stack(&cliff);
     unsigned char* map_row;
     long column;
-    do {
+    while (1) {
         this->pop_stack(&this->valid_cliff_sites, &y, &valid_height,
                         &stack_cost);
         map_row = this->search_map_rows[valid_height];
         column = y;
-    } while (map_row[column] == 0 &&
-             this->valid_cliff_sites.next != 0);
-    if (map_row[column] == 0) {
-        return;
+        if (map_row[column] != 0) {
+            break;
+        }
+        if (this->valid_cliff_sites.next == 0) {
+            return;
+        }
     }
 
     index = this->search_map_rows[valid_height][y];
@@ -175,12 +187,16 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
                 }
             }
 
-            if (this->check_for_valid_cliff_site(direction, &y, &valid_height, index) == 0 &&
-                this->check_for_valid_cliff_site(direction + 1, &y, &valid_height, index) == 0 &&
-                this->check_for_valid_cliff_site(direction - 1, &y, &valid_height, index) == 0 &&
-                (first_cliff == 0 ||
-                 this->check_for_valid_cliff_site(direction - 2, &y, &valid_height, index) == 0)) {
-                cliff_end_found = 1;
+            if (this->check_for_valid_cliff_site(direction, y, valid_height, index) == 0) {
+                if (this->check_for_valid_cliff_site(direction + 1, y, valid_height, index) == 0) {
+                    if (this->check_for_valid_cliff_site(direction - 1, y, valid_height, index) == 0) {
+                        if (first_cliff == 0) {
+                            cliff_end_found = 1;
+                        } else if (this->check_for_valid_cliff_site(direction - 2, y, valid_height, index) == 0) {
+                            cliff_end_found = 1;
+                        }
+                    }
+                }
             }
             first_cliff = 0;
             if (cliff_end_found != 0) {
@@ -192,16 +208,18 @@ void RGE_RMM_Cliffs_Generator::generate_cliff(void) {
         } while (this_cliff_size < cost);
     }
 
-    while (cliff.prev != 0) {
+    while (cliff.next != 0) {
         this->pop_stack(&cliff, &y, &valid_height, &stack_cost);
         if (start_x == -1) {
             start_x = y;
             start_y = valid_height;
         }
-        this->map->draw_line(start_x * 3 + 1, start_y * 3 + 1,
-                             y * 3 + 1, valid_height * 3 + 1, 1, 0x10);
-        this->map->draw_rect(start_x * 3 + 1, start_y * 3 + 1,
-                             y * 3 + 1, valid_height * 3 + 1, 0, 0);
+        this->map->do_terrain_brush_stroke(
+            start_x * 3 + 1, start_y * 3 + 1,
+            y * 3 + 1, valid_height * 3 + 1, 1, 0x10);
+        this->map->do_cliff_brush_stroke(
+            start_x * 3 + 1, start_y * 3 + 1,
+            y * 3 + 1, valid_height * 3 + 1, 0, 0);
         start_x = y;
         start_y = valid_height;
         this->invalidate_cliff_area(y, valid_height, this->info.cliff_to_cliff_spacing);
