@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 // 00437EC0 RGE_Diamond_Map::draw_visible_object (diam_map.cpp:1021-1112)
 // Attempt log (sa-d55a5d35-draw_visible_object, bounded 10-probe pass):
 // - Reconstructed the typed object/master/player/map and doppleganger surfaces, coordinate
@@ -37,24 +39,58 @@
 //   short or branch-local full-width color temporaries, and hoisting map were nonproductive.
 // - Final source restores the clean int-level ordinary switch. The remaining structural gap is
 //   compiler folding of equivalent case-2/case-3 calls; no evidence-backed natural variant remains.
+// Follow-up sa-11cad2ac:
+// - An absolute unified_map_offsets probe improved relocation masking only.
+//   Restore the named global declaration for the living source.
+// - A positive nested visibility guard reached exact 397-byte size and 336 differing bytes;
+//   a combined short-circuit guard had better shape but worse edit distance, so it was rolled back.
+// - Complete TPanel and RGE_Diamond_Map field surfaces, declaration scope, short row spelling,
+//   and distinct case argument spellings did not change emitted code. The two call sites still fold.
+// - Current natural source keeps the positive nested visibility guard, named map table, short
+//   row, ordinary int switch, and separate case-two return. No exact result; pause for new evidence.
 
-extern unsigned long* unified_map_offsets[];
+// Follow-up sa-52e29a9a:
+// - Rechecked the target dossier, local ABI evidence, same-TU donors, and bounded target history.
+// - Corrected the reviewed master layout: unit_level is +0x8F, so map_color is +0x90. The old
+//   source read +0x8F. This changes one emitted displacement but not the 336-byte mismatch.
+// - Positive map visibility polarity, semantic coordinate-name variants, the 256-row map symbol,
+//   repeated direct mask expressions, and proven pointer vptr surfaces were codegen-duplicate.
+// - Moving level-3 color assignment before the switch reduced the diff by two bytes but shortened
+//   the body by 13 bytes and lowered shape; restore the 397-byte natural switch source.
+// - The clean natural source retains typed ownership, the named map symbol, and ordinary switch flow.
+// Follow-up sa-83abdfae:
+// - The period-supported stdlib context improved shape to 67.41% and edit cost to 274,
+//   but the result stayed 336 bytes different with one missing draw_object call.
+// - Exact donor TPanel signatures worsened the result to 337 bytes and 65.19% shape;
+//   restore the local generic slot surface. The reviewed full object virtual surface was neutral.
+// - Direct case-3 color1, explicit casts, branch-local color copies, player alias removal,
+//   declaration-order changes, and unsigned level widths did not recover the separate call.
+// - Final validation remains 397 bytes, 336 differing bytes, 3/4 calls, and MISMATCH.
+//   The unresolved gap is the original case-2 call topology and this/player register homes.
+
+extern unsigned long* unified_map_offsets[256];
 
 class RGE_Visible_Map;
 class RGE_Tile;
+class RGE_Color_Table;
 
 class RGE_Master_Static_Object {
 public:
-    char gap_00[0x65];
+    virtual ~RGE_Master_Static_Object();
+
+    char gap_04[0x61];
     unsigned char fog_flag;
     char gap_66[0x28];
     unsigned char map_draw_level;
+    unsigned char unit_level;
     unsigned char map_color;
 };
 
 class RGE_Player {
 public:
-    char gap_00[0x38];
+    virtual ~RGE_Player();
+
+    char gap_04[0x34];
     RGE_Visible_Map* visible;
     char gap_3C[0x0E];
     short id;
@@ -66,7 +102,9 @@ public:
 
 class RGE_Map {
 public:
-    char gap_00[0x8DB8];
+    virtual ~RGE_Map();
+
+    char gap_04[0x8DB4];
     unsigned char map_visible_flag;
     unsigned char fog_flag;
 };
@@ -74,6 +112,27 @@ public:
 class RGE_Static_Object {
 public:
     virtual ~RGE_Static_Object();
+    virtual void recycle_in_to_game(); virtual void recycle_out_of_game();
+    virtual void draw(); virtual void shadow_draw(); virtual void normal_draw();
+    virtual void draw_front_frame(); virtual void draw_back_frame(); virtual void draw_frame();
+    virtual unsigned char update(); virtual void check_damage_sprites(); virtual void rehook();
+    virtual void save(int); virtual float teleport(float, float, float); virtual void new_sprite();
+    virtual void add_overlay_sprite(); virtual void remove_overlay_sprite();
+    virtual void change_ownership(RGE_Player*); virtual void modify(); virtual void modify_delta();
+    virtual void modify_percent(); virtual void transform(); virtual void copy_obj();
+    virtual void set_object_state(unsigned char); virtual void remove_visible_resource();
+    virtual void create_doppleganger_when_dying(); virtual void destroy_obj(); virtual void die_die_die();
+    virtual void damage(); virtual float calculateDamage(); virtual void rotate(long);
+    virtual unsigned char can_attack(); virtual void set_attribute(); virtual void set_attribute_amount();
+    virtual int heal(int, int); virtual unsigned char heal(float); virtual int canRepair();
+    virtual void notify_of_relation(); virtual void do_command(); virtual void move_to(); virtual void work();
+    virtual void stop(); virtual void set_attack(); virtual void play_command_sound();
+    virtual void play_move_sound(); virtual void new_angle(float); virtual RGE_Static_Object* spawn_death_obj();
+    virtual void* get_command_master(); virtual void set_being_worked_on();
+    virtual void release_being_worked_on(); virtual unsigned char is_moving();
+    virtual RGE_Static_Object* get_target_obj(); virtual void enter_obj(); virtual void exit_obj();
+    virtual int explore_terrain(); virtual void unexplore_terrain(); virtual void* get_los_table();
+    virtual int inAttackRange(RGE_Static_Object*); virtual unsigned char underAttack();
 
     long id;
     RGE_Master_Static_Object* master_obj;
@@ -107,7 +166,7 @@ public:
 class RGE_Doppleganger_Object : public RGE_Animated_Object {
 public:
     RGE_Static_Object* doppled_object;
-    void* draw_color;
+    RGE_Color_Table* draw_color;
     RGE_Master_Static_Object* doppled_master_obj;
     int doppled_player;
     unsigned long* MapAddress;
@@ -127,6 +186,7 @@ struct tagRECT {
 };
 
 class TDrawArea;
+class RGE_Game_World;
 
 class TPanel {
 public:
@@ -182,7 +242,7 @@ public:
                              short mode, RGE_Static_Object* object);
     virtual void draw_view_rect();
 
-    void* world;
+    RGE_Game_World* world;
     RGE_Player* player;
     RGE_Map* map;
     char gap_100[0x60];
@@ -193,18 +253,17 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* object,
                                           unsigned char color1,
                                           unsigned char color2)
 {
-    RGE_Player* player;
     if (object->tile == 0)
         return;
 
-    short col = (short)object->world_x;
-    int row = (int)object->world_y;
+    short col;
+    short row;
+    RGE_Player* player;
+    col = (short)object->world_x;
+    row = (short)object->world_y;
     player = this->player;
     unsigned char visibility;
-
-    if (player->visible == 0) {
-        visibility = 0x0F;
-    } else {
+    if (player->visible != 0) {
         RGE_Map* map = this->map;
         if (map->map_visible_flag != 0 && map->fog_flag == 0) {
             visibility = 0x0F;
@@ -220,6 +279,8 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* object,
             if (map->fog_flag == 0 && visibility == 0x80)
                 visibility = 0x0F;
         }
+    } else {
+        visibility = 0x0F;
     }
 
     if (visibility != 0x0F &&
@@ -260,7 +321,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* object,
         break;
     case 3:
         color2 = color1;
-        this->draw_object(col, (short)row, color2, 2, object);
+        this->draw_object(col, row, color2, 2, object);
         break;
     default:
         return;
