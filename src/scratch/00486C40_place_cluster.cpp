@@ -23,6 +23,17 @@
 //   EBP and widened drift to 895 bytes; no form reproduced EBX zero.
 // - A focused seven-form initialization lab and a proven base-class context
 //   were diagnostic only; the clean typed source remains the best reconstruction.
+// - Managed claim probes 1-20 tested stack-link forms, parameter-home reuse,
+//   declaration scope, flag types, helper references, and local aliases.
+// - The best natural source uses a distinct x_start local for the lower bound
+//   and the reviewed Map_Stack reference ABI. It reaches 648 differing bytes,
+//   92.33% shape, exact size, and 19/19 aligned calls.
+// - The x_start form emits the same bytes as direct reuse of the second scalar
+//   parameter home. This supports a compiler coalescing explanation, not a
+//   requirement for parameter mutation in source.
+// - Explicit next/prev stores, aggregate zero initialization, named zero
+//   locals, float zone, byte equality-to-one, and player aliases were worse or
+//   codegen duplicates. No exact result was found.
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern "C" long __cdecl ftol(float);
@@ -135,11 +146,11 @@ public:
     Map_Stack** stack_offsets;
     RGE_Game_World* world;
 
-    void init_stack(Map_Stack* stack);
-    void deinit_stack(Map_Stack* stack);
-    void add_stack_node(Map_Stack* target, Map_Stack* node);
-    Map_Stack* pop_stack(Map_Stack* head, long* x, long* y, float* cost);
-    void push_stack(Map_Stack* list, long x, long y, float cost,
+    void init_stack(Map_Stack& stack);
+    void deinit_stack(Map_Stack& stack);
+    void add_stack_node(Map_Stack& target, Map_Stack& node);
+    Map_Stack* pop_stack(Map_Stack& head, long& x, long& y, float& cost);
+    void push_stack(Map_Stack& list, long x, long y, float cost,
         float total_cost);
     void place_cluster(RGE_Object_Info_Line& info, long x, long y,
         RGE_Player* player);
@@ -152,6 +163,7 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
     long x1;
     long y0;
     long y1;
+    long x_start;
     long zone;
     long count;
     float tile_x;
@@ -160,20 +172,20 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
     Map_Stack* node;
 
     Map_Stack obj_stack;
-    this->init_stack(&obj_stack);
-    this->add_stack_node(&obj_stack, &this->stack_offsets[y][x]);
+    this->init_stack(obj_stack);
+    this->add_stack_node(obj_stack, this->stack_offsets[y][x]);
 
     y1 = y - info.group_area;
     y0 = x + info.group_area;
     zone = y + info.group_area;
-    x = x - info.group_area;
-    if (x < 0) x = 0;
+    x_start = x - info.group_area;
+    if (x_start < 0) x_start = 0;
     if (y1 < 0) y1 = 0;
     if (y0 >= this->width) y0 = this->width - 1;
     if (zone >= this->height) zone = this->height - 1;
 
     for (x1 = y1; x1 <= zone; ++x1) {
-        for (tile_y = x; tile_y <= y0; ++tile_y) {
+        for (tile_y = x_start; tile_y <= y0; ++tile_y) {
             this->search_map_rows[x1][tile_y] = 1;
         }
     }
@@ -184,7 +196,7 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
         (variance << 1)) / 0x7fff - variance;
     if (count < 1) count = 1;
 
-    node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+    node = this->pop_stack(obj_stack, tile_y, x1, cost);
     while (node != 0 && count > 0) {
             RGE_Master_Static_Object* master =
                 player->master_objects[info.obj_id];
@@ -204,33 +216,33 @@ void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info,
                 --count;
                 this->search_map_rows[x1][tile_y] = 0;
 
-                if (tile_y > x &&
+                if (tile_y > x_start &&
                     this->search_map_rows[x1][tile_y - 1] != 0) {
-                    this->push_stack(&obj_stack, tile_y - 1, x1, 0.0f,
+                    this->push_stack(obj_stack, tile_y - 1, x1, 0.0f,
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x270));
                 }
                 if (tile_y < y0 &&
                     this->search_map_rows[x1][tile_y + 1] != 0) {
-                    this->push_stack(&obj_stack, tile_y + 1, x1, 0.0f,
+                    this->push_stack(obj_stack, tile_y + 1, x1, 0.0f,
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x273));
                 }
                 if (x1 > y1 &&
                     this->search_map_rows[x1 - 1][tile_y] != 0) {
-                    this->push_stack(&obj_stack, tile_y, x1 - 1, 0.0f,
+                    this->push_stack(obj_stack, tile_y, x1 - 1, 0.0f,
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x276));
                 }
                 if (x1 < zone &&
                     this->search_map_rows[x1 + 1][tile_y] != 0) {
-                    this->push_stack(&obj_stack, tile_y, x1 + 1, 0.0f,
+                    this->push_stack(obj_stack, tile_y, x1 + 1, 0.0f,
                         (float)debug_rand(
                             "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x279));
                 }
             }
-        node = this->pop_stack(&obj_stack, &tile_y, &x1, &cost);
+        node = this->pop_stack(obj_stack, tile_y, x1, cost);
     }
 
-    this->deinit_stack(&obj_stack);
+    this->deinit_stack(obj_stack);
 }
