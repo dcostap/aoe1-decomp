@@ -18,22 +18,31 @@
 // 16: Carried y2 through a named local across both passes; VC5 was a codegen duplicate.
 // 17: Removed register qualifiers from count and loop index; both were codegen duplicates, and the natural unqualified locals remain.
 // 18: Used a positive second-pass do-while predicate; rebuilt size grew to 501 bytes and strict diff to 276, so restored count != 0.
+// 19: A separate remaining count, initialized after the second cursor setup,
+// recovered the original second-pass stack-home and reduced the diff to 40.
+// 20: Reusing y1 for the second result, and moving remaining before the score,
+// were duplicates or regressions. The separate remaining form remains best.
+// 21: Split delta declarations were a duplicate. dx >= dy reduced the diff to
+// 39. An explicit sub-50 if/else grew the body to 497 bytes and was restored.
+// 22: Restored the canonical TPanel base surface. VC5 emitted a duplicate.
+// 23: A 4x4 call/coordinate variant lab and a 32-sample ambient-context lab
+// emitted one 495-byte group. No alias, delta, or ambient form moved bytes.
 // Bounded session probes: exact-source ABI correction fixed the two helper
 // relocations but did not move bytes; parameter-home reuse, declaration-order,
 // natural delta, header-context, and focused score-lifetime variants were
 // codegen duplicates or regressed size. The retained source below is the
 // simplest typed reconstruction: the PDB-proven picked_obj local is function
 // scoped, while the score/count remain ordinary locals.
-// Current pass: the 495-byte baseline rebuilt with 9 aligned calls and no
-// frame/EH; strict diff is 213 bytes (43.0303%), first mismatch +0x0e.
+// Current pass: the retained typed source builds to 495 bytes with 9 aligned
+// calls and no frame/EH. The best strict diff is 39 bytes (7.8788%), first
+// mismatch +0x0e.
 // Direct y1/x2 parameter-home reuse, a split 56-slot TPanel surface, coordinate
 // aliases, and register-qualified locals were codegen duplicates. A bool flag,
 // declaration-site pointer initialization, and explicit radius arms regressed.
-// The dx>=dy spelling alone reached 212 bytes but was not retained as a metric
-// variant. Final source is restored to the clean natural baseline.
 // Left in scratch: rebuilt size/calls/frame match, with exact first-pass and
-// later loop islands, but broad register/block-layout drift starts at the
-// initial y-coordinate load (original keeps y1 in EBX; rebuilt keeps y2).
+// later loop islands. The first mismatch remains the initial y-coordinate load:
+// original keeps y1 in EBX, while rebuilt keeps y2. The radius block also uses
+// a different coordinate register map. No policy-valid exact source was found.
 
 struct RGE_Pick_Obj_Info {
     int object_id;
@@ -64,10 +73,9 @@ class RGE_Visible_Map { public: unsigned char get_visible(int x, int y); };
 class RGE_Player { public: char pad[0x38]; RGE_Visible_Map* visible; char pad2[0x4a-0x3c]; short id; int select_one_object(RGE_Static_Object*, int); };
 class RGE_Map { public: char pad[0x8db8]; unsigned char map_visible_flag; };
 
-class RGE_View {
+class TPanel {
 public:
     virtual void v0();
-    // pad to vt[0xe0/4=56], vt[0xe4/4=57]
     virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
     virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
     virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
@@ -75,10 +83,14 @@ public:
     virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
     virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43(); virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
     virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51(); virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
+    char pad004[0xfc-4];
+};
+
+class RGE_View : public TPanel {
+public:
     virtual int can_pick(RGE_Static_Object*);
     virtual int pick_score(RGE_Static_Object*, int picked_index);
 
-    char pad004[0xfc-4];
     RGE_World* world; // +fc
     RGE_Player* player; // +100
     RGE_Map* map; // +104
@@ -92,10 +104,11 @@ protected:
 
 unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, long y2)
 {
+    int count;
+    int i = 0;
     int picked_any = 0;
     RGE_Static_Object* picked_obj;
-    int i = 0;
-    int count = this->pick_multi_objects(x1, y1, x2, y2, 10, 20, this->player->id, p1, 1);
+    count = this->pick_multi_objects(x1, y1, x2, y2, 10, 20, this->player->id, p1, 1);
     if (count > 0) {
         RGE_Pick_Obj_Info* pp = Picked_Objects;
         do {
@@ -113,10 +126,12 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
     }
     if (picked_any) return 1;
 
-    int dx = x2 - x1;
-    int dy = y2 - y1;
+    int dx;
+    int dy;
+    dx = x2 - x1;
+    dy = y2 - y1;
     int r = dx;
-    if (dy <= dx) r = dy;
+    if (dx >= dy) r = dy;
     if (r < 50) {
         r = dy;
         if (dx < dy) r = dx;
@@ -126,8 +141,10 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
     if (count) {
         int bestScore = 0;
         picked_obj = 0;
+        int remaining;
         if (count > 0) {
             RGE_Pick_Obj_Info* pp = Picked_Objects;
+            remaining = count;
             do {
                 int idx = pp->object_id;
                 if (idx >= 0) {
@@ -145,8 +162,8 @@ unsigned char RGE_View::pick_multi(unsigned char p1, long x1, long y1, long x2, 
                 }
 next:
                 ++pp;
-                count--;
-            } while (count != 0);
+                remaining--;
+            } while (remaining != 0);
         }
         if (picked_obj && this->player->select_one_object(picked_obj,0)) return 1;
     }
