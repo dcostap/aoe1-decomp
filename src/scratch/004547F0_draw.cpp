@@ -34,6 +34,18 @@
 //   issue, not permission to use incompatible local prototypes.
 // - An entry self alias modeled the original this home at [esp+0C], but VC5
 //   emitted the same 331-byte code; rolled back as neutral evidence.
+// - This pass retested period standard-header context, map/world declaration
+//   forms, radius initialization and order, coordinate local scope/order,
+//   receiver reference aliases, register-qualified screen parameters, and
+//   explicit coordinate casts. Compatible forms were neutral or worse.
+// - A function-scope sprite local, natural short-to-int promotion, persistent
+//   screen-coordinate locals, and the same-TU donor's combined typed receiver
+//   and world aliases were each codegen-neutral; all were rolled back.
+// - Final unchanged validation remains 331 bytes, 0x0C frame, six ordered
+//   calls, and 316 strict differing bytes; the pinned natural source is kept.
+// - Fresh revisit tested the decompiler's coordinate copies, signed y local,
+//   post-sprite receiver alias, and exact same-TU class declaration surface;
+//   each emitted the same 331-byte basin. The clean typed source is restored.
 
 class TDrawArea;
 class RGE_Color_Table;
