@@ -107,6 +107,18 @@
  * locals, and a 9-case x/y expression lab all kept the same clean 7-byte output.
  * Restored the pinned direct typed source. The remaining bytes are the x/y reverse-arm
  * subtraction ordering: the oracle subtracts r before c, while VC5 emits c before r.
+ * sa-48616227 continuation: independently split the reverse x/y updates and delayed
+ * the x endpoint declaration. Both probes were codegen duplicates. Restored the pinned
+ * source; the 7-byte reverse-arm ordering drift remains.
+ * sa-5d91df15 pass: reverse compound updates, endpoint swaps, parenthesized radius-plus-byte
+ * terms, and a late reverse-x byte local were duplicates or much worse. Explicit unsigned-int
+ * byte promotion improved one block but widened the complete result to 18 bytes. Restored
+ * the pinned natural source; no simple source form changed the 7-byte ordering drift.
+ * sa-3fda77e1 pass: tested split reverse updates, operand order, unsigned-int promotions,
+ * shared byte locals, endpoint declaration scope, and result locals. Reverse-x promotion
+ * made its block exact but changed reverse-y register colors; hoisted endpoint storage
+ * corrected only the other block. Combined forms stayed at 18 bytes or worse. Restored
+ * the pinned natural source; final validation remains the 7-byte reverse-arm drift.
  */
 
 class RGE_Map {
