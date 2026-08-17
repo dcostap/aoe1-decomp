@@ -32,19 +32,17 @@
 // blocker: target still homes receiver/current-tribe locals in opposite slots
 // and differs in early register/global-load coloring despite matching calls,
 // frame, size, and CFG signals.
-// probe: replaced the unresolved external global with the committed storage
-// accessor and a local typed TRIBE_Game pointer; this should restore [62C574].
-// r5 probe: moving typed game initialization after the initial this store
-// improved accessor-source diff 511 to 489, but kept a 0x7DC frame and homes
-// game at [esp+18] instead of the original receiver [esp+10].
-// r5 probes: repeated typed accessor use removed the extra frame slot but
-// worsened diff to 554; scoped game/reference forms and declaration-order swaps
-// were unchanged or worse. The after-store game pointer is the best clean lead.
-// blocker: accessor policy and canonical TRIBE typing prevent the original
-// global-variable basin; no further evidence-backed declaration lead remains.
+// revisit: restore the reviewed TRIBE_Game global surface and remove the
+// accessor/game aliases. The original homes this at [esp+10] and reloads the
+// global for each game operation; a persistent game alias adds the wrong home.
+// revisit result: direct global access restored the 0x7D8 frame, 159 emitted
+// instructions, and the 10-call set; strict diff improved 489 to 433 bytes.
+// revisit probes: a scoped game pointer worsened the result to 544 bytes;
+// receiver pointer/reference aliases, declaration moves, canonical screen
+// fields, and the RGE_Base_Game base surface were neutral or codegen-duplicate.
+// final lead: keep the typed TRIBE_Game/RGE_Game_World scenario-editor flow;
+// the remaining gap is the original register/home coloring and one-byte size.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
-
-#include "../../include/rge_base_game_global.h"
 
 struct RGE_Scenario { int Get_player_Active(int index); };
 struct TDropDownPanel { void set_line(long line); };
@@ -72,31 +70,55 @@ struct RGE_Game_World {
     RGE_Scenario* scenario;
 };
 
-struct TRIBE_Game {
-    char gap_00[0x60];
+class RGE_Base_Game {
+public:
+    virtual ~RGE_Base_Game();
+    char gap_04[0x5C];
     Sound_Driver* sound_system;
     char gap_64[0x3F4 - 0x64];
     RGE_Game_World* world;
+};
+
+class TRIBE_Game : public RGE_Base_Game {
+public:
     void show_status_message(int string_id, char* text, long param);
     int load_game_data();
     void close_status_message();
 };
+extern TRIBE_Game* rge_base_game;
 struct TPanel {
     virtual ~TPanel();
 };
 
 struct TScreenPanel : TPanel {
     char gap_04[0x478 - 0x04];
+    virtual ~TScreenPanel();
 };
 
 struct TRIBE_Screen_Sed : TScreenPanel {
-    char gap_478[0x4C0 - 0x478];
-    char need_to_save_flag;
+    int is_multi_player;
+    char gap_47C[4];
+    void* SelectedObject;
+    void* DestinationObject;
+    float px1, py1, px2, py2;
+    int CurrentVictory;
+    int CurrentPlayer;
+    char gap_4A0[4];
+    int scenario_mode;
+    int map_type;
+    int mp_victory_type;
+    int brush_size;
+    int paint_type;
+    short player_num;
+    char gap_4BA[2];
+    int message_type;
+    unsigned char need_to_save_flag;
     char gap_4C1[0x5B8 - 0x4C1];
     TDropDownPanel* player_number_list;
     char gap_5BC[0x928 - 0x5BC];
     RGE_Game_World* world;
 
+    virtual ~TRIBE_Screen_Sed();
     void set_string(char* dst, long string_id, int len);
     void SavePlayerActiveStatus();
     int command_new_map(char* scenario_name, int param_2, int param_3, int param_4, int param_5, int show_status);
@@ -142,26 +164,24 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     RGE_Map_Gen_Info map_info;
 
     this->need_to_save_flag = 0;
-    TRIBE_Game* const game = (TRIBE_Game*)rge_base_game_at_storage();
-    TRIBE_Screen_Sed* tribe = this;
-    if (game->world == 0) {
+    if (rge_base_game->world == 0) {
         if (show_status != 0) {
-            game->show_status_message(0x44d, 0, -1);
+            rge_base_game->show_status_message(0x44d, 0, -1);
         }
-        if (game->load_game_data() == 0) {
+        if (rge_base_game->load_game_data() == 0) {
             if (show_status != 0) {
-                game->close_status_message();
+                rge_base_game->close_status_message();
             }
             return 0;
         }
     }
 
-    tribe->world = game->world;
+    this->world = rge_base_game->world;
     if (show_status != 0) {
         if (scenario_name == 0) {
-            game->show_status_message(0x44e, 0, -1);
+            rge_base_game->show_status_message(0x44e, 0, -1);
         } else {
-            game->show_status_message(0x44f, 0, -1);
+            rge_base_game->show_status_message(0x44f, 0, -1);
         }
     }
 
@@ -176,10 +196,10 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
 
     for (i = 0; i < 8; i++) {
         current_tribe++;
-        if (current_tribe >= tribe->world->player_count) {
+        if (current_tribe >= this->world->player_count) {
             current_tribe = 1;
         }
-        tribe->set_string(player_info.name[i], (long)(player_info.type + name_base_delta + i), 0x41);
+        this->set_string(player_info.name[i], (long)(player_info.type + name_base_delta + i), 0x41);
         player_info.type[i] = 0;
         player_info.tribe[i] = (char)current_tribe;
         player_info.color[i] = -1;
@@ -188,30 +208,30 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     player_info.player_id_hash[i] = i;
     map_info.land.clump_num = 0;
 
-    if (game->sound_system != 0) {
-        game->sound_system->mute = 1;
+    if (rge_base_game->sound_system != 0) {
+        rge_base_game->sound_system->mute = 1;
     }
-    result = tribe->world->new_scenario((void*)player_info.name, param_3) & 0xff;
-    if (result != 0 && tribe->world->player_count < 8) {
+    result = this->world->new_scenario((void*)player_info.name, param_3) & 0xff;
+    if (result != 0 && this->world->player_count < 8) {
         result = 0;
-        tribe->world->del_game_info();
+        this->world->del_game_info();
     }
-    if (game->sound_system != 0) {
-        game->sound_system->mute = 0;
+    if (rge_base_game->sound_system != 0) {
+        rge_base_game->sound_system->mute = 0;
     }
 
-    if (result != 0 && tribe->player_number_list != 0) {
+    if (result != 0 && this->player_number_list != 0) {
         i = 0;
         while (i < 8) {
-            if (tribe->world->scenario->Get_player_Active(i) == 0) {
+            if (this->world->scenario->Get_player_Active(i) == 0) {
                 break;
             }
             i++;
         }
         if (i < 8 && i > 0) {
-            tribe->player_number_list->set_line(i - 1);
+            this->player_number_list->set_line(i - 1);
         }
-        tribe->SavePlayerActiveStatus();
+        this->SavePlayerActiveStatus();
     }
     return result;
 }
