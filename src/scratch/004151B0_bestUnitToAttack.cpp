@@ -1,37 +1,22 @@
 // VA: 004151B0 UnitAIModule::bestUnitToAttack (2136B)
 // aiuaimod.cpp
+#include "../../include/game_globals.h"
+#include "../../include/rge_base_game_global.h"
 // Attempt log:
-// - Replaced the unrelated placeholder with the visible-unit scan from the
-//   executable, including the current-target retention and scoring passes.
-// - Baseline uses named world, player, master-object, and virtual AI surfaces.
-//   It keeps the original wall, diplomacy, distance, hit-point, and threat
-//   filters. Exact codegen remains under investigation.
-// - The running threat score is float, and the nearest emergency target ID
-//   stays separate from the current-target building flag.
-// - Corrected the current-target denominator to damaging-units * distance * 3.
-// - Nine probes reached exact call-set and frame parity. Remaining drift is a
-//   broad source-layout and block-scheduling gap, not an open call or ABI gap.
-// - Structural lead: the executable reloads world for difficulty, then saves
-//   it only before the visible-unit loops. Use that direct ownership shape.
-// - Reused the original function-scope difficulty setting temporary; this
-//   moved the first mismatch to the target setup and raised block coverage.
-// - Confirmed the >=3 difficulty gate and the OR setting predicate from the
-//   executable. Separate loop indices and distance locals were negative.
-// - Remaining gap: early stack-local ownership differs at +0125. Calls and
-//   frame match, but broad loop/block scheduling still differs.
-// - Reordered the setup to match the oracle: save world and range state before
-//   current-target lookup, then initialize scan counters after that lookup.
-//   This reduced the positional diff from 1704 to 1473 bytes.
-// - Binary compares use object_state <= 2 in both scans, not the equivalent
-//   source spelling < 3. The current-target score adds attackValue * 100,
-//   divides after hit-point normalization, then updates the damage count and
-//   threat count. The second scan tests the threat-count gate first.
-// - Shared the function-scope distance temporary for the first scan and
-//   current-target score. Remaining drift is structural and local-stack order;
-//   calls and frame remain exact.
-
-extern int DAT_0087d7c8[5];
-extern int DAT_0087d7d8[5];
+// - Reconstructed the visible-unit scan, current-target retention, and score
+//   passes from the executable. The current source is not exact.
+// - BINARY NOTE: slot +10C is called without pushes for range tests.
+// - BINARY NOTE: three later slot +10C calls push four path arguments.
+//   The source uses a narrow casted surface for those calls.
+// - BINARY NOTE: the +3C counter uses dword inc, so it is an int.
+// - BINARY NOTE: the final group value is sign-extended to an int.
+// - BINARY NOTE: the threat gate uses test and jle, which proves <= 0.
+// - BINARY NOTE: the second scan stores the selected ID and building flag
+//   into separate locals.
+// - Tested 21 distinct hypotheses. Calls now align 49/49 and the frame is
+//   0x38, but strict drift remains 1748 bytes (81.8352%).
+// - Main remaining leads are table-symbol ownership, local-home coloring,
+//   and the final x87 score-compare form.
 
 struct VisibleUnitEntry {
     int object_id;
@@ -40,6 +25,7 @@ struct VisibleUnitEntry {
     unsigned char gap_06[2];
 };
 
+extern int DAT_0087d7c8[5];
 extern VisibleUnitEntry* DAT_0087d7e0[5];
 
 class RGE_Base_Game;
@@ -115,7 +101,7 @@ public:
     virtual int canAttack(RGE_Static_Object* object);
     VPAD8(58)
     virtual float threat();
-    virtual float defenseRange(int a, int b, int c, int d);
+    virtual float defenseRange();
     virtual float maxReactDistance();
     VPAD32(69)
     virtual int checkTarget(int id, float range);
@@ -136,6 +122,23 @@ public:
     char gap_49[0x1B];
 
     float distance_to_object(RGE_Static_Object* object);
+};
+
+// The shipped call sites use this same slot with four explicit path arguments.
+// Keep that narrow ABI separate from the no-argument weapon-range getter.
+class RGE_Static_Object_Path_Query {
+public:
+    virtual ~RGE_Static_Object_Path_Query();
+    VPAD32(1)
+    VPAD16(33)
+    VPAD8(49)
+    virtual int canAttack(RGE_Static_Object* object);
+    VPAD8(58)
+    virtual float threat();
+    virtual float weaponRange(int a, int b, int c, int d);
+    virtual float maxReactDistance();
+    VPAD32(69)
+    virtual int checkTarget(int id, float range);
 };
 
 class UnitAIModule {
@@ -176,8 +179,9 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
 {
     float numberMovingTargets;
     int numberDamagingUnits;
-    int largestThreatIsBuilding;
     int currentTargetIsBuilding;
+    int numberObjectsInRange;
+    int largestThreatIsBuilding;
     int i;
     int j;
     RGE_Game_World* world;
@@ -186,8 +190,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     int modifier;
     int numberNonCurrentTargets;
     int currentTargetIsWall;
-    int numberObjectsInRange;
-    float closestEnemyDistance;
+    int closestEnemyDistance;
     float enemyDistance;
     float distance;
     int currentTarget;
@@ -212,7 +215,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
             maxReactDistance = difficulty == 3 ? 75 : 50;
         }
         modifier = (int)((float)maxReactDistance *
-                         this->objectValue->master_obj->field_28 * 10.0f);
+                         this->objectValue->master_obj->field_28 * DAT_0056ebc4);
         if (modifier < 1) {
             modifier = 1;
         }
@@ -238,7 +241,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     largestThreatIsBuilding = 0;
     currentTargetIsWall = 0;
     enemyDistance = 100000.0f;
-    closestEnemyDistance = 0.0f;
+    closestEnemyDistance = 0;
     currentTarget = -1;
 
     for (i = 4; i > 1; --i) {
@@ -269,11 +272,11 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                         if (target->master_obj->object_group != 3) {
                             ++numberDamagingUnits;
                         }
-                        if (target->threat() > 0.0f) {
+                        if (target->threat() > DAT_0056ebc8) {
                             ++largestThreatIsBuilding;
                         }
                         if (target->master_obj->object_group != 3) {
-                            if (distance < this->objectValue->defenseRange(0, 0, -1, -1) - -1.0f) {
+                            if (distance < this->objectValue->defenseRange() - DAT_0056ebd4) {
                                 ++closestEnemyDistance;
                             }
                             if (distance < enemyDistance) {
@@ -302,8 +305,10 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     goto skipCurrentTarget;
                 }
                 if (this->objectValue->canAttack(target) != 1 &&
-                    this->objectValue->checkTarget(this->currentTargetValue,
-                                        this->objectValue->defenseRange(0, 0, -1, -1)) != 1) {
+                    this->objectValue->checkTarget(
+                        this->currentTargetValue,
+                        ((RGE_Static_Object_Path_Query*)this->objectValue)
+                            ->weaponRange(0, 0, -1, -1)) != 1) {
                     goto skipCurrentTarget;
                 }
             }
@@ -314,12 +319,12 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     return target->id;
                 }
                 numberNonCurrentTargets = this->currentTargetValue;
-                numberMovingTargets = target->threat() * 50.0f;
+                numberMovingTargets = target->threat() * DAT_0056ebd8;
                 numberObjectsInRange =
                     target->master_obj->attackValue(this->objectValue->master_obj);
                 numberMovingTargets =
-                    (float)numberObjectsInRange * 100.0f + numberMovingTargets;
-                if (target->hitPoints > 0.0f) {
+                    (float)numberObjectsInRange * DAT_0056ebc0 + numberMovingTargets;
+                if (target->hitPoints > DAT_0056ebc8) {
                     numberMovingTargets /= target->hitPoints;
                 }
                 distance = target->distance_to_object(this->objectValue);
@@ -327,7 +332,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     numberMovingTargets /= distance;
                 } else {
                     numberMovingTargets /=
-                        (float)numberDamagingUnits * distance * 3.0f;
+                        (float)numberDamagingUnits * distance * DAT_0056ebdc;
                 }
                 if (target->master_obj->object_group != 3) {
                     ++numberDamagingUnits;
@@ -335,7 +340,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                 } else {
                     currentTargetIsBuilding = 1;
                 }
-                if (target->threat() > 0.0f) {
+                if (target->threat() > DAT_0056ebc8) {
                     ++largestThreatIsBuilding;
                 }
             }
@@ -350,7 +355,9 @@ skipCurrentTarget:
                 return currentTarget;
             }
             if (this->objectValue->checkTarget(
-                    currentTarget, this->objectValue->defenseRange(0, 0, -1, -1)) == 1) {
+                    currentTarget,
+                    ((RGE_Static_Object_Path_Query*)this->objectValue)
+                        ->weaponRange(0, 0, -1, -1)) == 1) {
                 return currentTarget;
             }
         }
@@ -382,16 +389,17 @@ skipCurrentTarget:
                         if (param_2 == 0 && this->objectValue->canAttack(target) == 0 &&
                             this->objectValue->checkTarget(
                                 DAT_0087d7e0[i][j].object_id,
-                                this->objectValue->defenseRange(0, 0, -1, -1)) == 0) {
+                                ((RGE_Static_Object_Path_Query*)this->objectValue)
+                                    ->weaponRange(0, 0, -1, -1)) == 0) {
                             goto skipTarget;
                         }
-                        float threat = target->threat() * 50.0f;
-                        if (largestThreatIsBuilding < 1 || threat != 0.0f) {
+                        float threat = target->threat() * DAT_0056ebd8;
+                        if (largestThreatIsBuilding <= 0 || threat != DAT_0056ebc8) {
                             float score =
                                 (float)target->master_obj->attackValue(
-                                    this->objectValue->master_obj) * 100.0f +
+                                    this->objectValue->master_obj) * DAT_0056ebc0 +
                                 threat;
-                            if (target->hitPoints > 0.0f) {
+                            if (target->hitPoints > DAT_0056ebc8) {
                                 score /= target->hitPoints;
                             }
                             if (DAT_0087d7e0[i][j].distance != 0) {
@@ -403,16 +411,16 @@ skipCurrentTarget:
                                 score /= (float)(distanceValue * distanceValue *
                                                   distanceValue);
                             }
-                            short group = target->master_obj->object_group;
+                            int group = target->master_obj->object_group;
                             if (numberNonCurrentTargets == -1 ||
                                 ((currentTargetIsBuilding != 0 || group != 3) &&
                                  (numberNonCurrentTargets == -1 ||
                                   ((currentTargetIsBuilding == 1 && group != 3) ||
-                                   (float)numberMovingTargets <
-                                       (float)score)))) {
+                                   (float)score >
+                                       (float)numberMovingTargets)))) {
                                 numberNonCurrentTargets =
                                     DAT_0087d7e0[i][j].object_id;
-                                currentTarget = (group == 3);
+                                currentTargetIsBuilding = (group == 3);
                                 numberMovingTargets = score;
                             }
                         }
