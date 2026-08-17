@@ -46,6 +46,25 @@
 //   TDrawArea, TPanel, text, button, input, edit, scrollbar, and slider types.
 //   The target codegen stayed unchanged.
 // - No generic panel slots or padding macros remain in this source.
+// Frontier audit (sa-8c9700ac-r1, 20 probes):
+// - PDB names val as short, i as short at VFRAME+8, j as short at VFRAME-12,
+//   and end_i/default_item as overlapping short locals. It names no master
+//   array or object local. The target PDB assigns both frontier instructions
+//   to closing line 2172, so it does not prove their source order.
+// - Canonical RGE_Player ownership remains master_object_num at +0x22 and the
+//   typed master_objects pointer array at +0x24. Canonical TPanel/TTextPanel,
+//   TListPanel, and TScreenPanel surfaces preserve all panel call slots.
+// - Declaration scope, index/count order, short/int/long count width, typed
+//   pointer-plus-index spelling, shared index lifetime, update spelling, and
+//   do/while/for loop forms were compiled and checked. Natural variants either
+//   stayed in the 879-byte five-byte group or lost the target loop topology.
+// - Exact same-TU neighbors at 004AB2D0 and 004AB670, plus exact set_player and
+//   create_list donors, support the current ownership and period source model.
+//   They provide no evidence for a natural zero-before-count scheduling rule.
+// - BINARY NOTE: the original emits xor ecx,ecx then movsx edx,di at +0xE8;
+//   every policy-valid direct-array form emits the reverse order. The exact
+//   byte-offset cursor donor is not retained because it is not canonical typed
+//   array source. Keep this clean five-byte frontier.
 // FLAGS: default config/flags/default.rsp (/nologo /c /O2 /Oy).
 
 #include <string.h>
