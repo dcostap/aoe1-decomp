@@ -30,6 +30,25 @@
 //   widened the frame to 0x1c; initializing tw/y widened it to 0x18.
 // - restored the natural typed candidate; remaining gap is the original EBX
 //   save and EAX/ECX scan register topology despite exact calls/frame/size.
+// - current claim probes tested raw_width register/int/order/initialization
+//   forms, scan update forms, inner declaration order, function-scope flags,
+//   LineInfo cursors, and period DIB header context; all returned the same
+//   197-byte basin or worsened structure.
+// - an ambient declaration sweep of 512 VC5 front-end states produced one
+//   emitted group and no exact result; the natural source remains clean.
+// - revisit probes tested typed direct indexing, scan-pointer scope and spelling,
+//   raw-width aliases and declaration order, narrow index types, sizeof allocation,
+//   and typed LINEINFO pointer induction; none improved the 197-byte basin.
+// - final local evidence still shows exact calls, frame, size, and scan CFG, but
+//   the oracle's EBX width save, EAX scan base, ECX index, and EBP line cursor
+//   remain unrecovered without forbidden cursor or register-steering source.
+// - revisit claim: the local dossier and type records reconfirmed BITMAPINFO256
+//   size 0x428, LINEINFO size 0x10, TRANSINFO::LineInfo at +0x14, and the
+//   long-reference GetDibDim ABI. The unchanged typed source rebuilt at 345
+//   bytes with the 0x14 frame and all 3 ordered calls, but still differed by
+//   197 bytes. The first hunk remains the prologue and register/save topology;
+//   no policy-valid natural edit improved it. Keep this clean source paused
+//   until period source or new translation-unit evidence becomes available.
 
 #include <windows.h>
 #include <stdlib.h>
