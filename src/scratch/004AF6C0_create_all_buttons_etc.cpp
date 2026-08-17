@@ -23,6 +23,12 @@
 //              natural equivalent as EDI=row 1 and EBX=row 0.
 // Tested 21 meaningful hypotheses.  The best clean source remains nonexact:
 // 9090/9090 bytes, 358/358 calls, 97.94% exact blocks, 99.84% shape, 53 bytes.
+// second pass: Direct multidimensional indexing of Diplomacy_friend_box is
+//               the strongest row model.  It recovers the original row
+//               registers, body order, size, frame, calls, and 355/355 masks.
+//               It leaves only four bytes: the two final loop-home stores are
+//               reversed.  Dedicated counters and do/for update forms did not
+//               change that store order.  The pinned 53-byte source is kept.
 // FLAGS: /GX (original has VC5 EH frame for new TShape/new editor object)
 
 #include <stdio.h>
