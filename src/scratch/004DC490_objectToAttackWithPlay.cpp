@@ -41,6 +41,16 @@
 // current loop basin was a codegen duplicate; restored the direct guard form.
 // luna-4DC490-r4: a combined play-null/human-play positive body gate, supported
 // by the shared oracle skip tail, was also a duplicate; restored the clean form.
+// Revisit sa-41eba353: 19 source probes revisited loop form, invalid
+// width, declaration scope, guard polarity, score staging, and local order.
+// The byte-sized invalid state with the original do-scan remains the cleanest
+// natural basin: exact size/frame and all 13 calls, diff 639. Full int invalid
+// with for/while scans improved shape but lost the original local homes.
+// Branch-local score staging matched the PDB line split hypothesis but added
+// 17-19 bytes and worsened the prologue. A function-scope status moved its
+// constructor before the play loop and was rejected. No ABI, call, or layout
+// issue was found. The remaining drift is register rotation, early epilogues,
+// and loop-tail shape; paused unresolved after validation below.
 
 extern int debug_rand(char* file, int line);
 
