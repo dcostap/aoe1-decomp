@@ -31,8 +31,14 @@
 // stack home while this natural source assigns that value to a nearer compiler home.
 // review correction: the absolute counter macro was diagnostic-only. The living source
 // uses the canonical declared global surface.
+// follow-up claim sa-f3fb7fc5-r1: restored the period long global symbol and tested
+// separate object-count, declaration/lifetime, pointer-guard, and duplicated-call
+// forms. A distinct object_count recovered the original 0x4c frame and all early
+// stack homes. Mirroring the exact load_scenario1 donor's duplicated mapped/fallback
+// scenario_load arms, then using the direct indexed object guard, produced the full
+// 721-byte positional MATCH with 26 ordered calls and 22/22 relocations masked.
 
-extern int world_update_counter;
+extern long world_update_counter;
 
 typedef unsigned char uchar;
 
@@ -170,9 +176,10 @@ public:
 
 void RGE_Game_World::load_scenario4(int file, RGE_Player_Info& info)
 {
-    int next_object_id;
-    int count;
-    int id;
+    long next_object_id;
+    long count;
+    long object_count;
+    long id;
     float obj_angle;
     uchar obj_state;
     short master_id;
@@ -180,8 +187,7 @@ void RGE_Game_World::load_scenario4(int file, RGE_Player_Info& info)
     float world_y;
     float world_x;
     long player_id_hash[9];
-    int outer;
-    int scenario_player_num;
+    long outer;
 
     world_update_counter = 0;
     rge_read_uncompressed(file, &count, 4);
@@ -223,18 +229,18 @@ void RGE_Game_World::load_scenario4(int file, RGE_Player_Info& info)
         } while (i < this->player_num);
     }
 
+    long scenario_player_num;
     rge_read(file, &scenario_player_num, 4);
     i = 1;
     if (scenario_player_num > 1) {
         long* map = player_id_hash + 1;
         do {
-            RGE_Player* player;
             if (i < this->player_num && *map > -1 &&
-                (player = this->players[*map]) != 0) {
+                this->players[*map] != 0) {
+                this->players[*map]->scenario_load(file, player_id_hash, 1.04f);
             } else {
-                player = this->players[0];
+                this->players[0]->scenario_load(file, player_id_hash, 1.04f);
             }
-            player->scenario_load(file, player_id_hash, 1.04f);
             ++i;
             ++map;
         } while (i < scenario_player_num);
@@ -244,9 +250,9 @@ void RGE_Game_World::load_scenario4(int file, RGE_Player_Info& info)
     if (scenario_player_num > 0) {
         long* map = player_id_hash;
         do {
-            rge_read(file, &count, 4);
+            rge_read(file, &object_count, 4);
             int j = 0;
-            if (count > 0) {
+            if (object_count > 0) {
                 do {
                     rge_read(file, &world_x, 4);
                     rge_read(file, &world_y, 4);
@@ -256,17 +262,15 @@ void RGE_Game_World::load_scenario4(int file, RGE_Player_Info& info)
                     rge_read(file, &obj_state, 1);
                     rge_read(file, &obj_angle, 4);
                     int player_id = *map;
-                    if (player_id >= 0) {
-                        RGE_Player** player_slot = this->players + player_id;
-                        if (*player_slot != 0) {
-                            this->scenario_object_flag = 1;
-                            this->scenario_object_id = id;
-                            (*player_slot)->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state, obj_angle);
-                            this->scenario_object_flag = 0;
-                        }
+                    if (player_id >= 0 && this->players[player_id] != 0) {
+                        this->scenario_object_flag = 1;
+                        this->scenario_object_id = id;
+                        this->players[player_id]->make_scenario_obj(
+                            world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                        this->scenario_object_flag = 0;
                     }
                     ++j;
-                } while (j < count);
+                } while (j < object_count);
             }
             ++outer;
             ++map;
