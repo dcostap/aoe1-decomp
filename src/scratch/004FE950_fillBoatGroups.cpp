@@ -23,6 +23,20 @@
 // Tried a natural for-loop increment for the second boat-type scan because
 // the original has separate type-skip and underfilled-false increment blocks;
 // it changed diff 2472 to 2481 and was rolled back.
+// Managed pass 2026-08-17: ran 22 meaningful hypotheses. The clean baseline
+// remains the best codegen result: 2935 bytes, 2472 differing bytes, 92.95%
+// shape, exact frame, and 103 aligned calls. The pass tested group-local
+// reuse, loop polarity and do-loop forms, scope and declaration order, the
+// repeated nearest-fill loop, desired/number call order, exact ManagedArray
+// copy forms, C-linkage allocation helpers, and fallback cursor reuse.
+// The original proves a repeated nearest-fill backedge at 004FEDCA and a
+// desired-then-number call order at 004FF156. Adding that loop improved the
+// behavior model but moved the result to 2937 bytes and 2481 differing bytes;
+// it was restored because it did not preserve the original physical layout.
+// All array, pointer, and candidate-local variants were codegen-neutral or
+// worse. The remaining lead is the compiler's second-pass register and block
+// allocation: original uses EBP for the sentinel and EDI for the boat group,
+// while the clean source uses EBX for the sentinel and EBP for that group.
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
