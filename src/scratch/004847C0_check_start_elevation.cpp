@@ -168,6 +168,19 @@
 //   only index1 and y1, so its optimized local records are incomplete. Assembly
 //   proves the remaining homes; extra aliases or raw cursors stay unjustified.
 
+// Continuation (sa-644fc685-r1):
+// - Directly deriving each cell from the typed row-table cursor shortened the
+//   function and broadened the CFG; retain the carried row_base lifetime.
+// - Natural outer for and positive-guarded do-while forms were farther from the
+//   oracle. The ordinary top-tested while form remains the closest clean loop.
+// - Separate clipped-bound aliases, late declarations, direct row indexing,
+//   and scoped cell lifetimes were codegen-identical or worse. Prefix/suffix
+//   and induction-update spellings were also duplicate codegen.
+// - Canonical terrain/elevation bitfields at byte 5 are codegen-identical to
+//   the explicit byte mask and shift. Keep the proven RGE_Tile field surface.
+// - The remaining stack-home rotation requires the shipped parameter reuse and
+//   raw byte cursor that policy removed. No natural typed lifetime recovered it.
+
 // Policy audit:
 // - The module owns an RGE_Map and typed RGE_Tile rows.
 // - The scan uses typed row and tile pointers, not byte cursors.
@@ -200,7 +213,8 @@ public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
+    unsigned char terrain_type : 5;
+    unsigned char elevation : 3;
     unsigned char border_type : 4;
     unsigned char border_shape : 4;
     unsigned char last_drawn_as;
@@ -270,8 +284,8 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
             long col = x0;
             do {
                 if (terrain == 0xFF
-                    || (cell->terrain_type & 0x1F) != terrain
-                    || (cell->terrain_type >> 5) < elevation) {
+                    || cell->terrain_type != terrain
+                    || cell->elevation < elevation) {
                     return 0;
                 }
                 col++;
